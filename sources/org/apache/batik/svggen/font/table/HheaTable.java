@@ -37,7 +37,7 @@ public class HheaTable implements Table {
     private short caretSlopeRise;
     private short caretSlopeRun;
     private short metricDataFormat;
-    private short numberOfHMetrics;
+    private int   numberOfHMetrics;
 
     protected HheaTable(DirectoryEntry de,RandomAccessFile raf) throws IOException {
         raf.seek(de.getOffset());
@@ -55,7 +55,7 @@ public class HheaTable implements Table {
             raf.readShort();
         }
         metricDataFormat = raf.readShort();
-        numberOfHMetrics = raf.readShort();
+        numberOfHMetrics = raf.readUnsignedShort();
     }
 
     public short getAdvanceWidthMax() {
@@ -94,7 +94,7 @@ public class HheaTable implements Table {
         return minRightSideBearing;
     }
 
-    public short getNumberOfHMetrics() {
+    public int getNumberOfHMetrics() {
         return numberOfHMetrics;
     }
 

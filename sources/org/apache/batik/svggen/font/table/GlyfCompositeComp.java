@@ -40,7 +40,7 @@ public class GlyfCompositeComp {
     private short argument1;
     private short argument2;
     private short flags;
-    private short glyphIndex;
+    private int    glyphIndex;
     private double xscale = 1.0;
     private double yscale = 1.0;
     private double scale01 = 0.0;
@@ -50,11 +50,9 @@ public class GlyfCompositeComp {
     private int point1 = 0;
     private int point2 = 0;
 
-    protected GlyfCompositeComp(int firstIndex, int firstContour, ByteArrayInputStream bais) {
-        this.firstIndex = firstIndex;
-        this.firstContour = firstContour;
-        flags = (short)(bais.read()<<8 | bais.read());
-        glyphIndex = (short)(bais.read()<<8 | bais.read());
+    protected GlyfCompositeComp(ByteArrayInputStream bais) {
+        flags      = (short)((bais.read()<<8) | bais.read());
+        glyphIndex =        ((bais.read()<<8) | bais.read());
 
         // Get the arguments as just their raw values
         if ((flags & ARG_1_AND_2_ARE_WORDS) != 0) {
@@ -95,10 +93,17 @@ public class GlyfCompositeComp {
         }
     }
 
+    public void setFirstIndex(int idx) {
+        firstIndex = idx;
+    }
+
     public int getFirstIndex() {
         return firstIndex;
     }
 
+    public void setFirstContour(int idx) {
+        firstContour = idx;
+    }
     public int getFirstContour() {
         return firstContour;
     }
@@ -115,7 +120,7 @@ public class GlyfCompositeComp {
         return flags;
     }
 
-    public short getGlyphIndex() {
+    public int getGlyphIndex() {
         return glyphIndex;
     }
 
