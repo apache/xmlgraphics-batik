@@ -634,9 +634,9 @@ public class DefaultXBLManager implements XBLManager, XBLConstants {
                                       e.getLocalName());
             setActiveDefinition((BindableElement) e, defRec);
         } else {
-            for (Node n = e.getFirstChild();
-                    n != null;
-                    n = n.getNextSibling()) {
+            NodeList nl = getXblScopedChildNodes(e);
+            for (int i = 0; i < nl.getLength(); i++) {
+                Node n = nl.item(i);
                 if (n.getNodeType() == Node.ELEMENT_NODE) {
                     bind((Element) n);
                 }
@@ -813,10 +813,6 @@ public class DefaultXBLManager implements XBLManager, XBLConstants {
      * that are within the same shadow scope.
      */
     public NodeList getXblScopedChildNodes(Node n) {
-        NodeList nl = getXblDefinitions(n);
-        if (nl.getLength() == 0) {
-            return n.getChildNodes();
-        }
         XBLRecord rec = getRecord(n);
         if (rec.scopedChildNodes == null) {
             rec.scopedChildNodes = new XblScopedChildNodes(rec);
@@ -1047,7 +1043,16 @@ public class DefaultXBLManager implements XBLManager, XBLConstants {
         if (b != null) {
             Element s = getXblShadowTree(b);
             if (s != null) {
-                return (ContentManager) contentManagers.get(s);
+                ContentManager cm;
+                Document doc = b.getOwnerDocument();
+                if (doc != document) {
+                    DefaultXBLManager xm = (DefaultXBLManager)
+                        ((AbstractDocument) doc).getXBLManager();
+                    cm = (ContentManager) xm.contentManagers.get(s);
+                } else {
+                    cm = (ContentManager) contentManagers.get(s);
+                }
+                return cm;
             }
         }
         return null;

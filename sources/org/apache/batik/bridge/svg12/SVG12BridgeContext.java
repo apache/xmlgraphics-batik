@@ -32,6 +32,7 @@ import org.apache.batik.dom.events.EventSupport;
 import org.apache.batik.dom.events.NodeEventTarget;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.svg12.XBLEventSupport;
+import org.apache.batik.dom.xbl.XBLManager;
 import org.apache.batik.script.Interpreter;
 import org.apache.batik.script.InterpreterPool;
 import org.apache.batik.util.SVGConstants;
@@ -169,9 +170,10 @@ public class SVG12BridgeContext extends BridgeContext {
      */
     public void removeBindingListener() {
         AbstractDocument doc = (AbstractDocument) document;
-        DefaultXBLManager xm = (DefaultXBLManager) doc.getXBLManager();
-        if (xm != null) {
-            xm.removeBindingListener(bindingListener);
+        XBLManager xm = doc.getXBLManager();
+        if (xm instanceof DefaultXBLManager) {
+            DefaultXBLManager dxm = (DefaultXBLManager) xm;
+            dxm.removeBindingListener(bindingListener);
         }
     }
 
