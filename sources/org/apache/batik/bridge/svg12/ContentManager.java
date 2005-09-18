@@ -371,7 +371,7 @@ public class ContentManager {
             added.addAll(newlySelectedNodes);
             added.removeAll(previouslySelectedNodes);
 
-            if (!first) {            
+            if (!first) {
                 xblManager.shadowTreeSelectedContentChanged(removed, added);
             }
         }
