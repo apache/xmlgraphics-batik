@@ -22,11 +22,14 @@ import org.apache.batik.bridge.DocumentLoader;
 import org.apache.batik.bridge.Messages;
 import org.apache.batik.bridge.ScriptingEnvironment;
 import org.apache.batik.bridge.SVGUtilities;
+import org.apache.batik.bridge.svg12.SVG12BridgeContext;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.AbstractElement;
+import org.apache.batik.dom.svg12.SVGGlobal;
 import org.apache.batik.dom.svg12.XBLEventSupport;
 import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.dom.util.TriplyIndexedTable;
+import org.apache.batik.script.Interpreter;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.SVG12Constants;
 import org.apache.batik.util.XMLConstants;
@@ -34,6 +37,7 @@ import org.apache.batik.util.XMLConstants;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.events.Event;
+import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.events.EventListener;
 
 /**
@@ -250,6 +254,51 @@ public class SVG12ScriptingEnvironment extends ScriptingEnvironment {
             }
 
             runEventHandler(script, evt, lang, desc);
+        }
+    }
+
+    /**
+     * Creates a new Window object.
+     */
+    public org.apache.batik.script.Window createWindow(Interpreter interp,
+                                                       String lang) {
+        return new Global(interp, lang);
+    }
+
+    /**
+     * The SVGGlobal object.
+     */
+    protected class Global
+            extends ScriptingEnvironment.Window
+            implements SVGGlobal  {
+
+        /**
+         * Creates a new Global object.
+         */
+        public Global(Interpreter interp, String lang) {
+            super(interp, lang);
+        }
+
+        /**
+         * Implements
+         * {@link org.apache.batik.dom.svg12.SVGGlobal#startMouseCapture(EventTarget,boolean,boolean)}.
+         */
+        public void startMouseCapture(EventTarget target, boolean sendAll,
+                                      boolean autoRelease) {
+            // XXX not sure if it's right to do this on the
+            //     primary bridge context
+            ((SVG12BridgeContext) bridgeContext.getPrimaryBridgeContext())
+                .startMouseCapture(target, sendAll, autoRelease);
+        }
+
+        /**
+         * Stops mouse capture.
+         */
+        public void stopMouseCapture() {
+            // XXX not sure if it's right to do this on the
+            //     primary bridge context
+            ((SVG12BridgeContext) bridgeContext.getPrimaryBridgeContext())
+                .stopMouseCapture();
         }
     }
 }

@@ -94,8 +94,14 @@ public abstract class SVG12BridgeEventSupport extends BridgeEventSupport {
             extends BridgeEventSupport.Listener 
             implements GraphicsNodeMouseWheelListener {
 
+        /**
+         * The BridgeContext downcasted to an SVG12BridgeContext.
+         */
+        protected SVG12BridgeContext ctx12;
+
         public Listener(BridgeContext ctx, UserAgent u) {
             super(ctx, u);
+            ctx12 = (SVG12BridgeContext) ctx;
         }
 
         // Key -------------------------------------------------------------
@@ -612,17 +618,8 @@ public abstract class SVG12BridgeEventSupport extends BridgeEventSupport {
         // MouseWheel ------------------------------------------------------
 
         public void mouseWheelMoved(GraphicsNodeMouseWheelEvent evt) {
-            FocusManager fmgr = context.getFocusManager();
-            if (fmgr == null) {
-                return;
-            }
-
-            Element targetElement = (Element) fmgr.getCurrentEventTarget();
-            if (targetElement == null) {
-                return;
-            }
-            Document doc = targetElement.getOwnerDocument();
-            targetElement = doc.getDocumentElement();
+            Document doc = context.getPrimaryBridgeContext().getDocument();
+            Element targetElement = doc.getDocumentElement();
             DocumentEvent d = (DocumentEvent) doc;
             SVGOMWheelEvent wheelEvt
                 = (SVGOMWheelEvent) d.createEvent("WheelEvent");
@@ -729,6 +726,28 @@ public abstract class SVG12BridgeEventSupport extends BridgeEventSupport {
                                0);
         }
 
+
+        /**
+         * Dispatches a DOM MouseEvent according to the specified
+         * parameters.
+         *
+         * @param eventType the event type
+         * @param targetElement the target of the event
+         * @param relatedElement the related target if any
+         * @param clientXY the mouse coordinates in the client space
+         * @param evt the GVT GraphicsNodeMouseEvent
+         * @param cancelable true means the event is cancelable
+         */
+        protected void dispatchMouseEvent(String eventType,
+                                          Element targetElement,
+                                          Element relatedElement,
+                                          Point clientXY,
+                                          GraphicsNodeMouseEvent evt,
+                                          boolean cancelable) {
+            dispatchMouseEvent(eventType, targetElement, relatedElement,
+                               clientXY, evt, cancelable, 0);
+        }
+
         /**
          * Dispatches a DOM MouseEvent according to the specified
          * parameters.
@@ -749,40 +768,63 @@ public abstract class SVG12BridgeEventSupport extends BridgeEventSupport {
                                           GraphicsNodeMouseEvent evt,
                                           boolean cancelable,
                                           int bubbleLimit) {
-            if (targetElement == null) {
-                return;
+            if (ctx12.mouseCaptureTarget != null) {
+                NodeEventTarget net = null;
+                if (targetElement != null) {
+                    net = (NodeEventTarget) targetElement;
+                    while (net != null && net != ctx12.mouseCaptureTarget) {
+                        net = net.getParentNodeEventTarget();
+                    }
+                }
+                if (net == null) {
+                    if (ctx12.mouseCaptureSendAll) {
+                        targetElement = (Element) ctx12.mouseCaptureTarget;
+                    } else {
+                        targetElement = null;
+                    }
+                }
             }
-            short button = getButton(evt);
-            Point screenXY = evt.getScreenPoint();
-            // create the coresponding DOM MouseEvent
-            DocumentEvent d = (DocumentEvent)targetElement.getOwnerDocument();
-            DOMMouseEvent mouseEvt
-                = (DOMMouseEvent) d.createEvent("MouseEvents");
-            String modifiers
-                = DOMUtilities.getModifiersList(evt.getLockState(),
-                                                evt.getModifiers());
-            mouseEvt.initMouseEventNS(XMLConstants.XML_EVENTS_NAMESPACE_URI,
-                                      eventType, 
-                                      true, 
-                                      cancelable, 
-                                      null,
-                                      evt.getClickCount(),
-                                      screenXY.x, 
-                                      screenXY.y,
-                                      clientXY.x,
-                                      clientXY.y,
-                                      button, 
-                                      (EventTarget)relatedElement,
-                                      modifiers);
 
-            ((AbstractEvent) mouseEvt).setBubbleLimit(bubbleLimit);
+            if (targetElement != null) {
+                short button = getButton(evt);
+                Point screenXY = evt.getScreenPoint();
+                // create the coresponding DOM MouseEvent
+                DocumentEvent d
+                    = (DocumentEvent) targetElement.getOwnerDocument();
+                DOMMouseEvent mouseEvt
+                    = (DOMMouseEvent) d.createEvent("MouseEvents");
+                String modifiers
+                    = DOMUtilities.getModifiersList(evt.getLockState(),
+                                                    evt.getModifiers());
+                mouseEvt.initMouseEventNS(XMLConstants.XML_EVENTS_NAMESPACE_URI,
+                                          eventType, 
+                                          true, 
+                                          cancelable, 
+                                          null,
+                                          evt.getClickCount(),
+                                          screenXY.x, 
+                                          screenXY.y,
+                                          clientXY.x,
+                                          clientXY.y,
+                                          button, 
+                                          (EventTarget)relatedElement,
+                                          modifiers);
 
-            try {
-                ((EventTarget)targetElement).dispatchEvent(mouseEvt);
-            } catch (RuntimeException e) {
-                ua.displayError(e);
-            } finally {
-                lastTargetElement = targetElement;
+                ((AbstractEvent) mouseEvt).setBubbleLimit(bubbleLimit);
+
+                try {
+                    ((EventTarget) targetElement).dispatchEvent(mouseEvt);
+                } catch (RuntimeException e) {
+                    ua.displayError(e);
+                } finally {
+                    lastTargetElement = targetElement;
+                }
+            }
+
+            if (ctx12.mouseCaptureTarget != null
+                    && ctx12.mouseCaptureAutoRelease
+                    && "mouseup".equals(eventType)) {
+                ctx12.stopMouseCapture();
             }
         }
     }

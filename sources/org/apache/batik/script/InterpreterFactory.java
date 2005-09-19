@@ -38,6 +38,7 @@ public interface InterpreterFactory {
      * interface implementation.
      * 
      * @param documentURL the url for the document which will be scripted
+     * @param svg12 whether the document is an SVG 1.2 document
      */
-    public Interpreter createInterpreter(URL documentURL);
+    public Interpreter createInterpreter(URL documentURL, boolean svg12);
 }

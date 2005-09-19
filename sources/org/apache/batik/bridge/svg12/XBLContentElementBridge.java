@@ -128,7 +128,9 @@ public class XBLContentElementBridge extends AbstractGraphicsNodeBridge {
                 Node n = nl.item(i);
                 if (n.getNodeType() == Node.ELEMENT_NODE) {
                     GraphicsNode gn = builder.build(ctx, (Element) n);
-                    cgn.add(gn);
+                    if (gn != null) {
+                        cgn.add(gn);
+                    }
                 }
             }
         }

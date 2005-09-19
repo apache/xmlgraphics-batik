@@ -241,6 +241,12 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     protected XBLManager xblManager;
 
     /**
+     * The bridge context for the primary document, if this is a bridge
+     * context for a resource document.
+     */
+    protected BridgeContext primaryContext;
+
+    /**
      * Constructs a new empty bridge context.
      */
     protected BridgeContext() {}
@@ -299,6 +305,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
 
         BridgeContext subCtx;
         subCtx = createBridgeContext();
+        subCtx.primaryContext = primaryContext != null ? primaryContext : this;
         subCtx.dynamicStatus = dynamicStatus;
         subCtx.setGVTBuilder(getGVTBuilder());
         subCtx.setTextPainter(getTextPainter());
@@ -645,6 +652,16 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      */
     public boolean isSVG12() {
         return isSVG12;
+    }
+
+    /**
+     * Returns the primary bridge context.
+     */
+    public BridgeContext getPrimaryBridgeContext() {
+        if (primaryContext != null) {
+            return primaryContext;
+        }
+        return this;
     }
 
     // reference management //////////////////////////////////////////////////

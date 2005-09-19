@@ -46,8 +46,9 @@ public class JPythonInterpreterFactory implements InterpreterFactory {
      * Creates an instance of <code>JPythonInterpreter</code> class.
      * 
      * @param documentURL the url for the document which will be scripted
+     * @param svg12 whether the document is an SVG 1.2 document
      */
-    public Interpreter createInterpreter(URL documentURL) {
+    public Interpreter createInterpreter(URL documentURL, boolean svg12) {
         return new JPythonInterpreter();
     }
 }
