@@ -98,8 +98,10 @@ public class InterpreterPool {
         InterpreterFactory factory = (InterpreterFactory)factories.get(language);
         if (factory == null) return null;
 
+        SVGOMDocument svgDoc = (SVGOMDocument) document;
         Interpreter interpreter = factory.createInterpreter
-                (((SVGOMDocument)document).getURLObject());
+            (svgDoc.getURLObject(), svgDoc.isSVG12());
+
         if (interpreter == null) return null;
 
         if (document != null)

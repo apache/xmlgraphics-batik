@@ -60,6 +60,22 @@ public class SVG12BridgeContext extends BridgeContext {
     protected BindingListener bindingListener;
 
     /**
+     * The EventTarget that has the mouse capture.
+     */
+    protected EventTarget mouseCaptureTarget;
+
+    /**
+     * Whether the mouse capture event target will receive events
+     * that do not intersect with its geometry.
+     */
+    protected boolean mouseCaptureSendAll;
+
+    /**
+     * Whether the mouse capture will be released on mouse up.
+     */
+    protected boolean mouseCaptureAutoRelease;
+
+    /**
      * Constructs a new bridge context.
      * @param userAgent the user agent
      */
@@ -383,6 +399,23 @@ public class SVG12BridgeContext extends BridgeContext {
             }
         }
         return subCtx;
+    }
+
+    /**
+     * Starts mouse capture.
+     */
+    public void startMouseCapture(EventTarget target, boolean sendAll,
+                                  boolean autoRelease) {
+        mouseCaptureTarget = target;
+        mouseCaptureSendAll = sendAll;
+        mouseCaptureAutoRelease = autoRelease;
+    }
+
+    /**
+     * Stops mouse capture.
+     */
+    public void stopMouseCapture() {
+        mouseCaptureTarget = null;
     }
 
     /**

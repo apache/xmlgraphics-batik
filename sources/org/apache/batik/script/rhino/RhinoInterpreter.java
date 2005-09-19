@@ -148,21 +148,16 @@ public class RhinoInterpreter implements Interpreter {
         // entering a context
         Context ctx = enterContext();
         try {
-            try {
-                Scriptable scriptable = ctx.initStandardObjects(null, false);
-                ScriptableObject.defineClass(scriptable, WindowWrapper.class);
-            } catch (Exception e) {
-                // cannot happen
-            }
+            Scriptable scriptable = ctx.initStandardObjects(null, false);
+            defineGlobalWrapperClass(scriptable);
             // we now have the window object as the global object from the
             // launch of the interpreter.
             // 1. it works around a Rhino bug introduced in 15R4 (but fixed
             // by a later patch).
             // 2. it sounds cleaner.
-            WindowWrapper wWrapper = new WindowWrapper(ctx);
-            globalObject = wWrapper;
+            globalObject = createGlobalObject(ctx);
             // import Java lang package & DOM Level 2 & SVG DOM packages
-            NativeJavaPackage[] p= new NativeJavaPackage[TO_BE_IMPORTED.length];
+            NativeJavaPackage[] p = new NativeJavaPackage[TO_BE_IMPORTED.length];
             for (int i = 0; i < TO_BE_IMPORTED.length; i++) {
                 p[i] = new NativeJavaPackage(TO_BE_IMPORTED[i], rhinoClassLoader);
             } try {
@@ -174,6 +169,24 @@ public class RhinoInterpreter implements Interpreter {
         } finally {
             Context.exit();
         }
+    }
+
+    /**
+     * Defines the class for the global object.
+     */
+    protected void defineGlobalWrapperClass(Scriptable global) {
+        try {
+            ScriptableObject.defineClass(global, WindowWrapper.class);
+        } catch (Exception ex) {
+            // cannot happen
+        }
+    }
+
+    /**
+     * Creates the global object.
+     */
+    protected ScriptableObject createGlobalObject(Context ctx) {
+        return new WindowWrapper(ctx);
     }
 
     /**
