@@ -149,35 +149,53 @@ class EventTargetWrapper extends NativeJavaObject {
         }
 
         public String getType() {
-            return (String) Context.toType(call("getType"), String.class);
+            return (String) Context.toType
+                (scriptable.get("type", scriptable), String.class);
         }
 
         public EventTarget getTarget() {
-            return (EventTarget) call("getTarget");
+            Object target = scriptable.get("target", scriptable);
+            if (target instanceof NativeJavaObject) {
+                target = ((NativeJavaObject) target).unwrap();
+            }
+            return (EventTarget) target;
         }
 
         public void setTarget(EventTarget target) {
-            call("setTarget", new Object[] { target });
+            scriptable.put("target", scriptable,
+                           Context.toObject(target, scriptable));
         }
 
         public EventTarget getCurrentTarget() {
-            return (EventTarget) call("getCurrentTarget");
+            Object target = scriptable.get("currentTarget", scriptable);
+            if (target instanceof NativeJavaObject) {
+                target = ((NativeJavaObject) target).unwrap();
+            }
+            return (EventTarget) target;
         }
 
         public short getEventPhase() {
-            return (short) ((Integer) Context.toType(call("getEventPhase"), Integer.class)).intValue();
+            Object ep = scriptable.get("eventPhase", scriptable);
+            Integer i = (Integer) Context.toType(ep, Integer.class);
+            return (short) i.intValue();
         }
 
         public boolean getBubbles() {
-            return ((Boolean) Context.toType(call("getBubbles"), Boolean.class)).booleanValue();
+            Object ep = scriptable.get("bubbles", scriptable);
+            Boolean i = (Boolean) Context.toType(ep, Boolean.class);
+            return i.booleanValue();
         }
 
         public boolean getCancelable() {
-            return ((Boolean) Context.toType(call("getCancelable"), Boolean.class)).booleanValue();
+            Object ep = scriptable.get("cancelable", scriptable);
+            Boolean i = (Boolean) Context.toType(ep, Boolean.class);
+            return i.booleanValue();
         }
 
         public long getTimeStamp() {
-            return (long) ((Double) Context.toType(call("getTimeStamp"), Double.class)).doubleValue();
+            Object ts = scriptable.get("timeStamp", scriptable);
+            Double d = (Double) Context.toType(ts, Double.class);
+            return (long) d.doubleValue();
         }
 
         public void stopPropagation() {
@@ -193,11 +211,14 @@ class EventTargetWrapper extends NativeJavaObject {
         }
 
         public String getNamespaceURI() {
-            return (String) Context.toType(call("getNamespaceURI"), String.class);
+            return (String) Context.toType
+                (scriptable.get("namespaceURI", scriptable), String.class);
         }
 
         public boolean isCustom() {
-            return ((Boolean) Context.toType(call("isCustom"), Boolean.class)).booleanValue();
+            Boolean b = (Boolean) Context.toType
+                (call("isCustom"), Boolean.class);
+            return b.booleanValue();
         }
 
         public void stopImmediatePropagation() {
@@ -205,11 +226,14 @@ class EventTargetWrapper extends NativeJavaObject {
         }
 
         public boolean isDefaultPrevented() {
-            return ((Boolean) Context.toType(call("isDefaultPrevented"), Boolean.class)).booleanValue();
+            Boolean b = (Boolean) Context.toType
+                (call("isDefaultPrevented"), Boolean.class);
+            return b.booleanValue();
         }
 
         public void initEventNS(String ns, String t, boolean b, boolean c) {
-            call("initEventNS", new Object[] { ns, t, new Boolean(b), new Boolean(c) });
+            call("initEventNS", new Object[] { ns, t, new Boolean(b),
+                                               new Boolean(c) });
         }
 
         public void setDispatchState(EventTarget t, short phase) {
@@ -217,11 +241,15 @@ class EventTargetWrapper extends NativeJavaObject {
         }
 
         public boolean isPropagationStopped() {
-            return ((Boolean) Context.toType(call("isPropagationStopped"), Boolean.class)).booleanValue();
+            Boolean b = (Boolean) Context.toType
+                (call("isPropagationStopped"), Boolean.class);
+            return b.booleanValue();
         }
 
         public boolean isImmediatePropagationStopped() {
-            return ((Boolean) Context.toType(call("isImmediatePropagationStopped"), Boolean.class)).booleanValue();
+            Boolean b = (Boolean) Context.toType
+                (call("isImmediatePropagationStopped"), Boolean.class);
+            return b.booleanValue();
         }
 
         public void resumePropagation() {
@@ -229,8 +257,25 @@ class EventTargetWrapper extends NativeJavaObject {
         }
 
         public CustomEvent retarget(EventTarget target) {
-            Object ret = call("retarget", new Object[] { target });
+            Object ret = call("cloneEventObject", new Object[] { target });
             if (ret instanceof ScriptableObject) {
+                ScriptableObject e = (ScriptableObject) ret;
+                e.put("originalEvent", e, scriptable);
+                e.put("target", e, Context.toObject(target, scriptable));
+                e.put("type", e,
+                        scriptable.get("type", scriptable));
+                e.put("currentTarget", e,
+                        scriptable.get("currentTarget", scriptable));
+                e.put("eventPhase", e,
+                        scriptable.get("eventPhase", scriptable));
+                e.put("bubbles", e,
+                        scriptable.get("bubbles", scriptable));
+                e.put("cancelable", e,
+                        scriptable.get("cancelable", scriptable));
+                e.put("timeStamp", e,
+                        scriptable.get("timeStamp", scriptable));
+                e.put("namespaceURI", e,
+                        scriptable.get("namespaceURI", scriptable));
                 CustomEvent evt = new ObjectCustomEvent((NativeObject) ret,
                                                         interpreter,
                                                         eventMap);
@@ -242,21 +287,11 @@ class EventTargetWrapper extends NativeJavaObject {
         }
 
         public Event getOriginalEvent() {
-            Object origEvt = call("getOriginalEvent");
-            if (origEvt instanceof NativeObject) {
-                SoftReference sr = (SoftReference) eventMap.get(origEvt);
-                if (sr == null) {
-                    CustomEvent evt = new ObjectCustomEvent((NativeObject) origEvt,
-                                                            interpreter,
-                                                            eventMap);
-                    eventMap.put(origEvt, new SoftReference(evt));
-                    return evt;
-                }
-            } else if (origEvt instanceof NativeJavaObject) {
-                return (Event) ((NativeJavaObject) origEvt).unwrap();
+            Object target = scriptable.get("target", scriptable);
+            if (target instanceof NativeJavaObject) {
+                target = ((NativeJavaObject) target).unwrap();
             }
-            // XXX some error here
-            return null;
+            return (Event) target;
         }
     }
 
