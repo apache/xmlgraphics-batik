@@ -20,6 +20,7 @@ package org.apache.batik.dom.svg;
 import org.apache.batik.css.engine.CSSNavigableNode;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.AbstractDocumentFragment;
+import org.apache.batik.dom.events.NodeEventTarget;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -118,6 +119,14 @@ public class SVGOMUseShadowRoot
      */
     public boolean isHiddenFromSelectors() {
         return false;
+    }
+
+    /**
+     * Implements {@link
+     * org.apache.batik.dom.events.NodeEventTarget#getParentNodeEventTarget()}.
+     */
+    public NodeEventTarget getParentNodeEventTarget() {
+        return (NodeEventTarget) getCSSParentNode();
     }
 
     /**
