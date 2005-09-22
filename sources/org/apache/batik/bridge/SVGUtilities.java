@@ -742,6 +742,58 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
         return region;
     }
 
+
+    public static Rectangle2D 
+        getBaseFilterPrimitiveRegion(Element filterPrimitiveElement,
+                                     Element filteredElement,
+                                     GraphicsNode filteredNode,
+                                     Rectangle2D defaultRegion,
+                                     BridgeContext ctx) {
+        String s;
+
+        // resolve units in the (referenced) filteredElement's
+        // coordinate system
+        UnitProcessor.Context uctx;
+        uctx = UnitProcessor.createContext(ctx, filteredElement);
+
+        // 'x' attribute - default is defaultRegion.getX()
+        double x = defaultRegion.getX();
+        s = filterPrimitiveElement.getAttributeNS(null, SVG_X_ATTRIBUTE);
+        if (s.length() != 0) {
+            x = UnitProcessor.svgHorizontalCoordinateToUserSpace
+                (s, SVG_X_ATTRIBUTE, uctx);
+        }
+
+        // 'y' attribute - default is defaultRegion.getY()
+        double y = defaultRegion.getY();
+        s = filterPrimitiveElement.getAttributeNS(null, SVG_Y_ATTRIBUTE);
+        if (s.length() != 0) {
+            y = UnitProcessor.svgVerticalCoordinateToUserSpace
+                (s, SVG_Y_ATTRIBUTE, uctx);
+        }
+
+        // 'width' attribute - default is defaultRegion.getWidth()
+        double w = defaultRegion.getWidth();
+        s = filterPrimitiveElement.getAttributeNS(null, SVG_WIDTH_ATTRIBUTE);
+        if (s.length() != 0) {
+            w = UnitProcessor.svgHorizontalLengthToUserSpace
+                (s, SVG_WIDTH_ATTRIBUTE, uctx);
+        }
+
+        // 'height' attribute - default is defaultRegion.getHeight()
+        double h = defaultRegion.getHeight();
+        s = filterPrimitiveElement.getAttributeNS(null, SVG_HEIGHT_ATTRIBUTE);
+        if (s.length() != 0) {
+            h = UnitProcessor.svgVerticalLengthToUserSpace
+                (s, SVG_HEIGHT_ATTRIBUTE, uctx);
+        }
+
+        // NOTE: it may be that dx/dy/dw/dh should be applied here 
+        //       but since this is mostly aimed at feImage I am
+        //       unsure that it is really needed.
+        return new Rectangle2D.Double(x, y, w, h);
+    }
+
     /**
      * Returns the filter primitive region according to the x, y,
      * width, height, and filterUnits attributes. Processing the

@@ -115,9 +115,10 @@ public class SVGFeImageElementBridge
         }
 
         
-        contentElement.setAttributeNS(XLinkSupport.XLINK_NAMESPACE_URI, XMLConstants.XLINK_PREFIX + 
-                                    ":" + SVG_HREF_ATTRIBUTE,
-                                    uriStr);
+        contentElement.setAttributeNS(XLinkSupport.XLINK_NAMESPACE_URI, 
+                                      XMLConstants.XLINK_PREFIX + 
+                                      ":" + SVG_HREF_ATTRIBUTE,
+                                      uriStr);
 
         Element proxyElement = document.createElementNS(SVG_NAMESPACE_URI,
                                                         SVG_G_TAG);
@@ -125,15 +126,32 @@ public class SVGFeImageElementBridge
 
         // feImage's default region is that of the filter chain.
         Rectangle2D defaultRegion = filterRegion;
+        Element filterDefElement = (Element)(filterElement.getParentNode());
 
-        // Compute the transform from object bounding box to user
-        // space if needed.
-        AffineTransform at = new AffineTransform();
+        Rectangle2D primitiveRegion =
+            SVGUtilities.getBaseFilterPrimitiveRegion(filterElement,
+                                                      filteredElement,
+                                                      filteredNode,
+                                                      defaultRegion,
+                                                      ctx);
+        
+        // System.err.println(">>>>>>>> primitiveRegion : " + primitiveRegion);
 
+        contentElement.setAttributeNS(null, SVG_X_ATTRIBUTE, 
+                                      "" + primitiveRegion.getX());
+        contentElement.setAttributeNS(null, SVG_Y_ATTRIBUTE, 
+                                      "" + primitiveRegion.getY());
+        contentElement.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE, 
+                                      "" + primitiveRegion.getWidth());
+        contentElement.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE, 
+                                      "" + primitiveRegion.getHeight());
+        
+
+        GraphicsNode node = ctx.getGVTBuilder().build(ctx, proxyElement);
+        Filter filter = node.getGraphicsNodeRable(true);
+        
         // 'primitiveUnits' attribute - default is userSpaceOnUse
         short coordSystemType;
-        Element filterDefElement = (Element)(filterElement.getParentNode());
-        boolean isBBox = false;
         String s = SVGUtilities.getChainableAttributeNS
             (filterDefElement, null, SVG_PRIMITIVE_UNITS_ATTRIBUTE, ctx);
         if (s.length() == 0) {
@@ -143,11 +161,17 @@ public class SVGFeImageElementBridge
                     (filterDefElement, SVG_PRIMITIVE_UNITS_ATTRIBUTE, s);
         }
         
+        // Compute the transform from object bounding box to user
+        // space if needed.
+        AffineTransform at = new AffineTransform();
         if (coordSystemType == SVGUtilities.OBJECT_BOUNDING_BOX) {
-            isBBox = true;
             at = SVGUtilities.toObjectBBox(at, filteredNode);
         }
-        
+        filter = new AffineRable8Bit(filter, at);
+
+        // handle the 'color-interpolation-filters' property
+        handleColorInterpolationFilters(filter, filterElement);
+
         // get filter primitive chain region
         Rectangle2D primitiveRegionUserSpace
             = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
@@ -156,35 +180,8 @@ public class SVGFeImageElementBridge
                                                         defaultRegion,
                                                         filterRegion,
                                                         ctx);
-        Rectangle2D primitiveRegion = primitiveRegionUserSpace;
-
-        if (isBBox) {
-            try {
-                AffineTransform ati = at.createInverse();
-                primitiveRegion = ati.createTransformedShape(primitiveRegion).getBounds2D();
-            } catch (NoninvertibleTransformException nite) {
-                // Should never happen, seem above
-                throw new Error();
-            }
-        }
-
-        contentElement.setAttributeNS(null, SVG_X_ATTRIBUTE, "" + primitiveRegion.getX());
-        contentElement.setAttributeNS(null, SVG_Y_ATTRIBUTE, "" + primitiveRegion.getY());
-        contentElement.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE, "" + primitiveRegion.getWidth());
-        contentElement.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE, "" + primitiveRegion.getHeight());
-        
-        // System.err.println(">>>>>>>>>>>> primitiveRegion : " + primitiveRegion);
-        // System.err.println(">>>>>>>>>>>> at              : " + at);
-
-        GraphicsNode node = ctx.getGVTBuilder().build(ctx, proxyElement);
-        Filter filter = node.getGraphicsNodeRable(true);
-        
-        filter = new AffineRable8Bit(filter, at);
-
-        // handle the 'color-interpolation-filters' property
-        handleColorInterpolationFilters(filter, filterElement);
-
-        filter = new PadRable8Bit(filter, primitiveRegionUserSpace, PadMode.ZERO_PAD);
+        filter = new PadRable8Bit(filter, primitiveRegionUserSpace, 
+                                  PadMode.ZERO_PAD);
 
         // update the filter Map
         updateFilterMap(filterElement, filter, filterMap);
