@@ -564,7 +564,7 @@ class EventTargetWrapper extends NativeJavaObject {
                     ((String)args[0],
                      (String)args[1],
                      el,
-                     ((Boolean)args[2]).booleanValue());
+                     ((Boolean)args[3]).booleanValue());
                 return Undefined.instance;
             }
             if (args[2] instanceof NativeObject) {
@@ -585,7 +585,7 @@ class EventTargetWrapper extends NativeJavaObject {
                     ((String)args[0],
                      (String)args[1],
                      el,
-                     ((Boolean)args[2]).booleanValue());
+                     ((Boolean)args[3]).booleanValue());
                 return Undefined.instance;
             }
             return delegate.call(ctx, scope, thisObj, args);
