@@ -162,14 +162,16 @@ public class SVGFont extends AbstractSVGConverter {
      */
     public void recordFontUsage(String string, Font font) {
 
-        Font commonSizeFont = createCommonSizeFont(font);
-        String fontKey = commonSizeFont.getFamily() + commonSizeFont.getStyle();
+        Font   commonSizeFont = createCommonSizeFont(font);
+        String fontKey        = (commonSizeFont.getFamily() + 
+                                 commonSizeFont.getStyle());
         String textUsingFont = (String)fontStringMap.get(fontKey);
         if (textUsingFont == null) {
             // font has not been used before
             textUsingFont = "";
         }
         // append any new characters to textUsingFont
+        // FIXX: This is horribly inefficent, consider binary tree, Set, etc.
         char ch;
         for (int i = 0; i < string.length(); i++) {
             ch = string.charAt(i);
@@ -188,6 +190,8 @@ public class SVGFont extends AbstractSVGConverter {
     private static Font createCommonSizeFont(Font font) {
         HashMap attributes = new HashMap(font.getAttributes());
         attributes.put(TextAttribute.SIZE, new Float(COMMON_FONT_SIZE));
+        // Remove Transform from font otherwise it will be applied twice.
+        attributes.remove(TextAttribute.TRANSFORM);
         return new Font(attributes);
     }
 
@@ -213,6 +217,11 @@ public class SVGFont extends AbstractSVGConverter {
      * @return description of attribute values that describe the font
      */
     public SVGFontDescriptor toSVG(Font font, FontRenderContext frc) {
+        // Remove affine from FRC otherwise it will be applied twice.
+        FontRenderContext localFRC;
+        localFRC = new FontRenderContext(new AffineTransform(), 
+                                         frc.isAntiAliased(), 
+                                         frc.usesFractionalMetrics());
 
         String fontSize = "" + doubleString(font.getSize2D());
         String fontWeight = weightToSVG(font);
@@ -220,7 +229,8 @@ public class SVGFont extends AbstractSVGConverter {
         String fontFamilyStr = familyToSVG(font);
 
         Font commonSizeFont = createCommonSizeFont(font);
-        String fontKey = commonSizeFont.getFamily() + commonSizeFont.getStyle();
+        String fontKey = (commonSizeFont.getFamily() + 
+                          commonSizeFont.getStyle());
 
         String textUsingFont = (String)fontStringMap.get(fontKey);
 
@@ -257,7 +267,8 @@ public class SVGFont extends AbstractSVGConverter {
             Element fontFace = domFactory.createElementNS(SVG_NAMESPACE_URI,
                                                           SVG_FONT_FACE_TAG);
             String svgFontFamilyString = fontFamilyStr;
-            if (fontFamilyStr.startsWith("'") && fontFamilyStr.endsWith("'")) {
+            if (fontFamilyStr.startsWith("'") && 
+                fontFamilyStr.endsWith("'")) {
                 // get rid of the quotes
                 svgFontFamilyString
                     = fontFamilyStr.substring(1, fontFamilyStr.length()-1);
@@ -281,7 +292,8 @@ public class SVGFont extends AbstractSVGConverter {
 
             int missingGlyphCode[] = new int[1];
             missingGlyphCode[0] = commonSizeFont.getMissingGlyphCode();
-            GlyphVector gv = commonSizeFont.createGlyphVector(frc, missingGlyphCode);
+            GlyphVector gv;
+            gv = commonSizeFont.createGlyphVector(localFRC, missingGlyphCode);
             Shape missingGlyphShape = gv.getGlyphOutline(0);
             GlyphMetrics gm = gv.getGlyphMetrics(0);
 
@@ -301,7 +313,7 @@ public class SVGFont extends AbstractSVGConverter {
             fontDef.setAttributeNS(null, SVG_HORIZ_ADV_X_ATTRIBUTE,  "" + gm.getAdvance());
 
             // set the ascent and descent attributes
-            LineMetrics lm = commonSizeFont.getLineMetrics("By", frc);
+            LineMetrics lm = commonSizeFont.getLineMetrics("By", localFRC);
             fontFace.setAttributeNS(null, SVG_ASCENT_ATTRIBUTE, "" + lm.getAscent());
             fontFace.setAttributeNS(null, SVG_DESCENT_ATTRIBUTE, "" + lm.getDescent());
 
@@ -339,7 +351,8 @@ public class SVGFont extends AbstractSVGConverter {
                     = domFactory.createElementNS(SVG_NAMESPACE_URI,
                                                  SVG_GLYPH_TAG);
 
-                GlyphVector gv = commonSizeFont.createGlyphVector(frc, ""+c);
+                GlyphVector gv;
+                gv = commonSizeFont.createGlyphVector(localFRC, ""+c);
                 Shape glyphShape = gv.getGlyphOutline(0);
                 GlyphMetrics gm = gv.getGlyphMetrics(0);
 

@@ -260,8 +260,8 @@ public class DOMGroupManager implements SVGSyntax, ErrorConstants {
      * in gc that are different from the values in referenceGc will be
      * present in the delta. Other values will no.
      */
-    protected SVGGraphicContext processDeltaGC(SVGGraphicContext gc,
-                                             SVGGraphicContext referenceGc) {
+    static SVGGraphicContext processDeltaGC(SVGGraphicContext gc,
+                                            SVGGraphicContext referenceGc) {
         Map groupDelta = processDeltaMap(gc.getGroupContext(),
                                          referenceGc.getGroupContext());
         Map graphicElementDelta = gc.getGraphicElementContext();
@@ -311,7 +311,7 @@ public class DOMGroupManager implements SVGSyntax, ErrorConstants {
      * are different from values in referenceMap are place in the
      * returned delta Map.
      */
-    protected Map processDeltaMap(Map map, Map referenceMap) {
+    static Map processDeltaMap(Map map, Map referenceMap) {
         // no need to be synch => HashMap
         Map mapDelta = new HashMap();
         Iterator iter = map.keySet().iterator();

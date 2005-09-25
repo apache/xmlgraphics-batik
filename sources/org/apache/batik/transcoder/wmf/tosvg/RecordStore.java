@@ -14,7 +14,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 
- */
+*/
 
 package org.apache.batik.transcoder.wmf.tosvg;
 
@@ -98,7 +98,7 @@ public class RecordStore {
                     b[ i ] = is.readByte();
                 }
                 String str = new String( b );
-                mr = new StringRecord( str );
+                mr = new MetaRecord.StringRecord( str );
             }
             break;
 
