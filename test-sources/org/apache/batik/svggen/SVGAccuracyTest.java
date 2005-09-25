@@ -50,7 +50,7 @@ import org.w3c.dom.DOMImplementation;
 /**
  * This test validates that a given rendering sequence, modeled
  * by a <tt>Painter</tt> is properly converted to an SVG document
- * by comparing the generated SVG document to a know, valid
+ * by comparing the generated SVG document to a known, valid
  * SVG reference.
  *
  * @author <a href="mailto:vhardy@apache.org">Vincent Hardy</a>

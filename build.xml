@@ -1116,6 +1116,7 @@ To display the available targets type:
     <mkdir dir="${test-references}/svgbe/accepted-variation"/>
     <mkdir dir="${test-references}/svgbe/candidate-variation"/>
     <mkdir dir="${test-references}/svgbe/candidate-reference"/>
+    <mkdir dir="${test-references}/org/apache/batik/transcoder/wmf/candidate"/>
     <mkdir dir="${test-references}/org/apache/batik/svggen/candidate-ref" />
     <mkdir dir="${test-references}/org/apache/batik/svggen/rendering/candidate-variation" />
     <mkdir dir="${test-references}/org/apache/batik/svggen/rendering/candidate-reference" />

@@ -25,6 +25,15 @@
 <!--                         TranscoderInput Test                       -->
 <!-- ================================================================== -->
 
-<test id="TranscoderInput" class="org.apache.batik.transcoder.TranscoderInputTest" />
+   <test id="TranscoderInput" 
+         class="org.apache.batik.transcoder.TranscoderInputTest" />
+
+   <testGroup id="transcoder.WMFTranscoder" 
+              class="org.apache.batik.transcoder.wmf.WMFAccuracyTest">
+      <test id="samples/tests/resources/wmf/black_shapes.wmf"/>
+      <test id="samples/tests/resources/wmf/imageWMF.wmf"/>
+      <test id="samples/tests/resources/wmf/testChart.wmf"/>
+      <test id="samples/tests/resources/wmf/textGreek.wmf"/>
+   </testGroup>
 
 </testSuite>
