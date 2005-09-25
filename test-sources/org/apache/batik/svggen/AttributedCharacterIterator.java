@@ -53,21 +53,28 @@ public class AttributedCharacterIterator implements Painter {
         //
 
         // "Attributed" is in Bold
-        styledText.addAttribute(TextAttribute.WEIGHT, TextAttribute.WEIGHT_BOLD, 0, 10);
+        styledText.addAttribute(TextAttribute.WEIGHT, 
+                                TextAttribute.WEIGHT_BOLD, 0, 10);
 
         // "String" is italic
-        // styledText.addAttribute(TextAttribute.POSTURE, TextAttribute.POSTURE_OBLIQUE, 11, 18);
+        styledText.addAttribute(TextAttribute.POSTURE, 
+                                TextAttribute.POSTURE_OBLIQUE, 11, 18);
 
-        // fun is Bold and underlined
-        styledText.addAttribute(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON, 23, 28);
-        // styledText.addAttribute(TextAttribute.SWAP_COLORS, TextAttribute.SWAP_COLORS_ON);
-        // styledText.addAttribute(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON, 23, 28);
+        // fun is Bold and underlined and strike through
+        styledText.addAttribute(TextAttribute.UNDERLINE, 
+                                TextAttribute.UNDERLINE_ON, 23, 28);
+        styledText.addAttribute(TextAttribute.STRIKETHROUGH, 
+                                TextAttribute.STRIKETHROUGH_ON, 23, 28);
+
+        // styledText.addAttribute(TextAttribute.SWAP_COLORS, 
+        //                         TextAttribute.SWAP_COLORS_ON);
 
         /*TextLayout aLayout = new TextLayout("A", font, frc);
           Shape aShape = aLayout.getOutline(null);
 
           ShapeGraphicAttribute aReplacement = new ShapeGraphicAttribute(aShape, GraphicAttribute.ROMAN_BASELINE, true);
-          styledText.addAttribute(TextAttribute.CHAR_REPLACEMENT, aReplacement, 0, 1);
+          styledText.addAttribute(TextAttribute.CHAR_REPLACEMENT, 
+                                  aReplacement, 0, 1);
 
 
           // Create a BufferedImage to decorate the Shape
@@ -113,16 +120,26 @@ public class AttributedCharacterIterator implements Painter {
         //
 
         // "Attributed" is in dard red
-        styledText.addAttribute(TextAttribute.FOREGROUND, new Color(128, 0, 0), 0, 10);
+        styledText.addAttribute(TextAttribute.FOREGROUND, 
+                                new Color(128, 0, 0), 0, 10);
 
         // "String" is blue
-        styledText.addAttribute(TextAttribute.FOREGROUND, new Color(70, 107, 132), 11, 18);
+        styledText.addAttribute(TextAttribute.FOREGROUND, 
+                                new Color(70, 107, 132), 11, 18);
 
-        // "fun" is yellow on blue background
-        styledText.addAttribute(TextAttribute.FOREGROUND, new Color(236, 214, 70), 23, 28);
-        styledText.addAttribute(TextAttribute.BACKGROUND, new Color(70, 107, 132), 23, 28);
+        // "fun" is yellow
+        styledText.addAttribute(TextAttribute.FOREGROUND, 
+                                new Color(236, 214, 70), 23, 28);
 
         java.text.AttributedCharacterIterator iter = styledText.getIterator();
+        g.drawString(iter, 10, 100);
+
+
+        // "fun" is now yellow on a blue background
+        styledText.addAttribute(TextAttribute.BACKGROUND, 
+                                new Color(70, 107, 132), 23, 28);
+
+        iter = styledText.getIterator();
         /*TextLayout layout = new TextLayout(iter, frc);
 
         Rectangle bounds = layout.getBounds().getBounds();
@@ -130,6 +147,6 @@ public class AttributedCharacterIterator implements Painter {
         bounds.height += 50;
 
         layout.draw(g, 25, layout.getAscent() + 25);*/
-        g.drawString(iter, 10, 100);
+        g.drawString(iter, 10, 130);
     }
 }

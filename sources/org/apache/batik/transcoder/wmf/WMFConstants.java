@@ -103,7 +103,7 @@ public interface WMFConstants
     public static final int META_CREATEBRUSH		  = 0x00F8;
     public static final int META_CREATEBITMAPINDIRECT	  = 0x02FD;
     public static final int META_CREATEBITMAP		  = 0x06FE;
-
+    
     public static final int META_OBJ_WHITE_BRUSH        = 0;
     public static final int META_OBJ_LTGRAY_BRUSH       = 1;
     public static final int META_OBJ_GRAY_BRUSH         = 2;
@@ -121,4 +121,209 @@ public interface WMFConstants
     public static final int META_OBJ_DEVICE_DEFAULT_FONT = 14;
     public static final int META_OBJ_DEFAULT_PALETTE    = 15;
     public static final int META_OBJ_SYSTEM_FIXED_FONT  = 16;
+    
+/* New StretchBlt() Modes */    
+    public static final int STRETCH_BLACKONWHITE = 1;
+    public static final int STRETCH_WHITEONBLACK = 2;
+    public static final int STRETCH_COLORONCOLOR = 3;
+    public static final int STRETCH_HALFTONE = 4;
+    public static final int STRETCH_ANDSCANS = 1;
+    public static final int STRETCH_ORSCANS = 2;
+    public static final int STRETCH_DELETESCANS = 3;    
+    
+    // new values for PATBLT value
+
+    /** new constant for PATBLT. 
+     */  
+    public static final int META_PATCOPY                = 0x00F00021;
+    /** new constant for PATBLT. 
+     */    
+    public static final int META_PATINVERT              = 0x005A0049;
+    /** new constant for PATBLT. 
+     */    
+    public static final int META_DSTINVERT              = 0x00550009;
+    /** new constant for PATBLT. 
+     */    
+    public static final int META_BLACKNESS              = 0x00000042;
+    /** new constant for PATBLT. 
+     */    
+    public static final int META_WHITENESS              = 0x00FF0062;
+    
+    // new constants for pen styles 
+    public static final int META_PS_SOLID = 0;
+    public static final int META_PS_DASH = 1;
+    public static final int META_PS_DOT = 2;
+    public static final int META_PS_DASHDOT = 3;
+    public static final int META_PS_DASHDOTDOT = 4;
+    public static final int META_PS_NULL = 5;
+    public static final int META_PS_INSIDEFRAME = 6;
+
+    // new constants for charsets 
+    
+    /** ANSI charset WMF ID.
+     */
+    public static final int META_CHARSET_ANSI = 0;
+
+    /** DEFAULT charset WMF ID.
+     */
+    public static final int META_CHARSET_DEFAULT = 1;
+
+    /** SYMBOL charset WMF ID.
+     */
+    public static final int META_CHARSET_SYMBOL = 2;
+
+    /** GREEK charset WMF ID.
+     */
+    public static final int META_CHARSET_GREEK = 161;
+
+    /** HEBREW charset WMF ID.
+     */
+    public static final int META_CHARSET_HEBREW = 177;
+
+    /** ARABIC charset WMF ID.
+     */
+    public static final int META_CHARSET_ARABIC = 178;
+
+    /** RUSSIAN (CYRILLIC) charset WMF ID.
+     */
+    public static final int META_CHARSET_RUSSIAN = 204;
+    
+    // new constants for charset names, useful for decoding and encoding text.
+
+    /** ANSI charset Java name, ie "ISO-8859-1" charset.
+     */
+    public static final String CHARSET_ANSI = "ISO-8859-1";
+
+    /** DEFAULT charset Java name, by default taken as "US-ASCII" charset.
+     */    
+    public static final String CHARSET_DEFAULT = "US-ASCII";
+
+    /** GREEK charset Java name, ie "windows-1253" charset.
+     */    
+    public static final String CHARSET_GREEK = "windows-1253";
+
+    /** CYRILLIC charset Java name, ie "windows-1251" charset.
+     */        
+    public static final String CHARSET_CYRILLIC = "windows-1251";
+
+    /** HEBREW charset Java name, ie "windows-1255" charset.
+     */            
+    public static final String CHARSET_HEBREW = "windows-1255";
+
+    /** ARABIC charset Java name, ie "windows-1256" charset.
+     */                
+    public static final String CHARSET_ARABIC = "windows-1256";    
+    
+    /** conversion from inches to Millimeters
+     */
+    public static final float INCH_TO_MM = 25.4f;
+        
+    /** number of inches default values
+     */
+    public static final int DEFAULT_INCH_VALUE = 576;
+    
+    // constants concerning map modes
+    public static final int MM_TEXT = 1;
+    public static final int MM_LOMETRIC = 2;
+    public static final int MM_HIMETRIC = 3;
+    public static final int MM_LOENGLISH = 4;
+    public static final int MM_HIENGLISH = 5;
+    public static final int MM_HITWIPS = 6;
+    public static final int MM_ISOTROPIC = 7;
+    public static final int MM_ANISOTROPIC = 8;
+    
+    // other WMF constants.
+    public static final int BS_SOLID = 0;
+    public static final int BS_HOLLOW = 1;
+    public static final int BS_NULL = 1;
+    public static final int BS_HATCHED = 2;
+    public static final int BS_PATTERN = 3;
+    public static final int BS_DIBPATTERN = 5;
+    public static final int HS_HORIZONTAL = 0;
+    public static final int HS_VERTICAL = 1;
+    public static final int HS_FDIAGONAL = 2;
+    public static final int HS_BDIAGONAL = 3;
+    public static final int HS_CROSS = 4;
+    public static final int HS_DIAGCROSS = 5;
+    public static final int DIB_RGB_COLORS = 0;
+    public static final int DIB_PAL_COLORS = 1;
+    public static final int FW_DONTCARE = 100;
+    public static final int FW_THIN = 100;
+    public static final int FW_NORMAL = 400;
+    public static final int FW_BOLD = 700;
+    public static final int FW_BLACK = 900;
+    public static final byte ANSI_CHARSET = 0;
+    public static final byte DEFAULT_CHARSET = 1;
+    public static final byte SYMBOL_CHARSET = 2;
+    public static final byte SHIFTJIS_CHARSET = -128;
+    public static final byte OEM_CHARSET = -1;
+    public static final byte OUT_DEFAULT_PRECIS = 0;
+    public static final byte OUT_STRING_PRECIS = 1;
+    public static final byte OUT_CHARACTER_PRECIS = 2;
+    public static final byte OUT_STROKE_PRECIS = 3;
+    public static final byte OUT_TT_PRECIS = 4;
+    public static final byte OUT_DEVICE_PRECIS = 5;
+    public static final byte OUT_RASTER_PRECIS = 6;
+    public static final byte CLIP_DEFAULT_PRECIS = 0;
+    public static final byte CLIP_CHARACTER_PRECIS = 1;
+    public static final byte CLIP_STROKE_PRECIS = 2;
+    public static final byte CLIP_MASK = 15;
+    public static final byte CLIP_LH_ANGLES = 16;
+    public static final byte CLIP_TT_ALWAYS = 32;
+    public static final byte DEFAULT_QUALITY = 0;
+    public static final byte DRAFT_QUALITY = 1;
+    public static final byte PROOF_QUALITY = 2;
+    public static final byte DEFAULT_PITCH = 0;
+    public static final byte FIXED_PITCH = 1;
+    public static final byte VARIABLE_PITCH = 2;
+    public static final byte FF_DONTCARE = 0;
+    public static final byte FF_ROMAN = 16;
+    public static final byte FF_SWISS = 32;
+    public static final byte FF_MODERN = 48;
+    public static final byte FF_SCRIPT = 64;
+    public static final byte FF_DECORATIVE = 80;
+    public static final int TRANSPARENT = 1;
+    public static final int OPAQUE = 2;
+    public static final int ALTERNATE = 1;
+    public static final int WINDING = 2;
+    public static final int TA_TOP = 0;
+    public static final int TA_BOTTOM = 8;
+    public static final int TA_BASELINE = 24;
+    public static final int TA_LEFT = 0;
+    public static final int TA_RIGHT = 2;
+    public static final int TA_CENTER = 6;
+    public static final int TA_NOUPDATECP = 0;
+    public static final int TA_UPDATECP = 1;
+    public static final int R2_BLACK = 1;
+    public static final int R2_NOTMERGEPEN = 2;
+    public static final int R2_MASKNOTPENNOT = 3;
+    public static final int R2_NOTCOPYPEN = 4;
+    public static final int R2_MASKPENNOT = 5;
+    public static final int R2_NOT = 6;
+    public static final int R2_XORPEN = 7;
+    public static final int R2_NOTMASKPEN = 8;
+    public static final int R2_MASKPEN = 9;
+    public static final int R2_NOTXORPEN = 10;
+    public static final int R2_NOP = 11;
+    public static final int R2_MERGENOTPEN = 12;
+    public static final int R2_COPYPEN = 13;
+    public static final int R2_MERGEPENNOT = 14;
+    public static final int R2_MERGEPEN = 15;
+    public static final int R2_WHITE = 16;
+    public static final int ETO_OPAQUE = 2;
+    public static final int ETO_CLIPPED = 4;
+    public static final int BLACKNESS = 66;
+    public static final int NOTSRCERASE = 0x1100a6;
+    public static final int NOTSRCCOPY = 0x330008;
+    public static final int SRCERASE = 0x440328;
+    public static final int DSTINVERT = 0x550009;
+    public static final int PATINVERT = 0x5a0049;
+    public static final int SRCINVERT = 0x660046;
+    public static final int SRCAND = 0x8800c6;
+    public static final int MERGEPAINT = 0xbb0226;
+    public static final int SRCCOPY = 0xcc0020;
+    public static final int SRCPAINT = 0xee0086;
+    public static final int PATCOPY = 0xf00021;
+    public static final int PATPAINT = 0xfb0a09;
+    public static final int WHITENESS = 0xff0062;        
 }
