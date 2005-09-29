@@ -989,7 +989,10 @@ public class DefaultXBLManager implements XBLManager, XBLConstants {
         rec.linksValid = true;
         Node p = getXblParentNode(n);
         if (p != null) {
-            getXblChildNodes(p);
+            NodeList xcn = getXblChildNodes(p);
+            if (xcn instanceof XblChildNodes) {
+                ((XblChildNodes) xcn).update();
+            }
         }
     }
 
