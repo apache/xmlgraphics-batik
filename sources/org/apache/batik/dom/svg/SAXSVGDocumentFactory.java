@@ -309,8 +309,13 @@ public class SAXSVGDocumentFactory
         if ((ver == null) || (ver.length()==0) || 
             ver.equals("1.0") || ver.equals("1.1"))
             return SVGDOMImplementation.getDOMImplementation();
-
-        return SVG12DOMImplementation.getDOMImplementation();
+        if (ver == null || ver.length() == 0
+                || ver.equals("1.0") || ver.equals("1.1")) {
+            return SVGDOMImplementation.getDOMImplementation();
+        } else if (ver.equals("1.2")) {
+            return SVG12DOMImplementation.getDOMImplementation();
+        }
+        throw new RuntimeException("Unsupported SVG version '" + ver + "'");
     }
 
     /**
@@ -319,8 +324,9 @@ public class SAXSVGDocumentFactory
      */
     public void startDocument() throws SAXException {
         super.startDocument();
-	namespaces.put("", SVGDOMImplementation.SVG_NAMESPACE_URI);
-	namespaces.put("xlink", XLinkSupport.XLINK_NAMESPACE_URI);
+        // Do not assume namespace declarations when no DTD has been specified.
+        // namespaces.put("", SVGDOMImplementation.SVG_NAMESPACE_URI);
+        // namespaces.put("xlink", XLinkSupport.XLINK_NAMESPACE_URI);
     }
 
     /**
