@@ -46,7 +46,7 @@ public class SVGRenderingAccuracyTestValidator extends DefaultTestSuite {
      * Simple valid SVG content used for this test
      */
     private static final String validSVG 
-        = "<svg width=\"450\" height=\"500\" viewBox=\"0 0 450 500\"> \n" +
+        = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"450\" height=\"500\" viewBox=\"0 0 450 500\"> \n" +
         "    <rect x=\"25\" y=\"25\" width=\"400\" height=\"450\" fill=\"blue\" /> \n" +
         "</svg>\n";
 
@@ -54,7 +54,7 @@ public class SVGRenderingAccuracyTestValidator extends DefaultTestSuite {
      * Simple valid SVG content used for this test
      */
     private static final String validSVGVariation
-        = "<svg width=\"450\" height=\"500\" viewBox=\"0 0 450 500\"> \n" +
+        = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"450\" height=\"500\" viewBox=\"0 0 450 500\"> \n" +
         "    <rect x=\"25\" y=\"25\" width=\"400\" height=\"450\" fill=\"#0000cc\" /> \n" +
         "</svg>\n";
 
@@ -62,7 +62,7 @@ public class SVGRenderingAccuracyTestValidator extends DefaultTestSuite {
      * Simple valid SVG content used for this test, small size
      */
     private static final String validSmallSVG 
-        = "<svg width=\"45\" height=\"50\" viewBox=\"0 0 45 50\"> \n" +
+        = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"45\" height=\"50\" viewBox=\"0 0 45 50\"> \n" +
         "    <rect x=\"2.5\" y=\"2.5\" width=\"40\" height=\"45\" fill=\"blue\" /> \n" +
         "</svg>\n";
 
@@ -70,7 +70,7 @@ public class SVGRenderingAccuracyTestValidator extends DefaultTestSuite {
      * Simple valid SVG content used for this test, red rectangle
      */
     private static final String validRedSVG 
-        = "<svg width=\"450\" height=\"500\" viewBox=\"0 0 450 500\"> \n" +
+        = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"450\" height=\"500\" viewBox=\"0 0 450 500\"> \n" +
         "    <rect x=\"25\" y=\"25\" width=\"400\" height=\"450\" fill=\"red\" /> \n" +
         "</svg>\n";
 
@@ -80,7 +80,7 @@ public class SVGRenderingAccuracyTestValidator extends DefaultTestSuite {
      * end of the width attribute value.
      */
     private static final String invalidSVG 
-        = "<svg width=\"450 height=\"500\" viewBox=\"0 0 450 500\"> \n" +
+        = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"450 height=\"500\" viewBox=\"0 0 450 500\"> \n" +
         "    <rect x=\"25\" y=\"25\" width=\"400\" height=\"450\" fill=\"blue\" /> \n" +
         "</svg>\n";
 
