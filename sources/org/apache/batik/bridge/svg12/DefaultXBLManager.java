@@ -1457,6 +1457,14 @@ public class DefaultXBLManager implements XBLManager, XBLConstants {
                 evt = XBLEventSupport.getUltimateOriginalEvent(evt);
                 target = evt.getTarget();
                 if (target instanceof BindableElement) {
+                    // only bind it if it's not the child of a bound element
+                    Node n = getXblParentNode((Node) target);
+                    while (n != null) {
+                        if (n instanceof BindableElement
+                                && getRecord(n).definitionElement != null) {
+                            return;
+                        }
+                    }
                     bind((Element) target);
                 }
             }
