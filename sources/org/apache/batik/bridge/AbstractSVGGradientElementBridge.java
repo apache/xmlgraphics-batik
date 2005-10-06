@@ -25,6 +25,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.batik.dom.svg.SVGOMDocument;
+import org.apache.batik.dom.svg.XMLBaseSupport;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.ext.awt.MultipleGradientPaint;
 import org.apache.batik.gvt.GraphicsNode;
@@ -191,12 +192,8 @@ public abstract class AbstractSVGGradientElementBridge extends AbstractSVGBridge
                 return null; // no xlink:href found, exit
             }
             // check if there is circular dependencies
-            SVGOMDocument doc = (SVGOMDocument)paintElement.getOwnerDocument();
-            ParsedURL purl = new ParsedURL(doc.getURL(), uri);
-            if (!purl.complete())
-                throw new BridgeException(paintElement,
-                                          ERR_URI_MALFORMED,
-                                          new Object[] {uri});
+            String baseURI = XMLBaseSupport.getCascadedXMLBase(paintElement);
+            ParsedURL purl = new ParsedURL(baseURI, uri);
 
             if (contains(refs, purl)) {
                 throw new BridgeException(paintElement,

@@ -28,6 +28,7 @@ import java.util.StringTokenizer;
 
 import org.apache.batik.css.engine.CSSEngine;
 import org.apache.batik.dom.svg.SVGOMDocument;
+import org.apache.batik.dom.svg.XMLBaseSupport;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.gvt.GraphicsNode;
@@ -266,13 +267,8 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
             if (uriStr.length() == 0) { // exit if no more xlink:href
                 return "";
             }
-            SVGDocument svgDoc = (SVGDocument)e.getOwnerDocument();
-            String baseURI = ((SVGOMDocument)svgDoc).getURL();
-
+            String baseURI = XMLBaseSupport.getCascadedXMLBase(e);
             ParsedURL purl = new ParsedURL(baseURI, uriStr);
-            if (!purl.complete()) 
-                throw new BridgeException(e, ERR_URI_MALFORMED,
-                                          new Object[] {uriStr});
 
             Iterator iter = refs.iterator();
             while (iter.hasNext()) {
@@ -283,6 +279,7 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
             }
 
             try {
+                SVGDocument svgDoc = (SVGDocument)e.getOwnerDocument();
                 URIResolver resolver = new URIResolver(svgDoc, loader);
                 e = resolver.getElement(purl.toString(), e);
                 refs.add(purl);

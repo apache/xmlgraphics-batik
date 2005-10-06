@@ -21,6 +21,7 @@ import java.awt.color.ICC_Profile;
 import java.io.IOException;
 
 import org.apache.batik.dom.svg.SVGOMDocument;
+import org.apache.batik.dom.svg.XMLBaseSupport;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.ext.awt.color.ICCColorSpaceExt;
 import org.apache.batik.ext.awt.color.NamedProfileCache;
@@ -98,17 +99,17 @@ public class SVGColorProfileElementBridge extends AbstractSVGBridge
         String href = XLinkSupport.getXLinkHref(profile);
         ICC_Profile p = null;
         if (href != null) {
-            String baseURI= ((SVGOMDocument)doc).getURL();
-            ParsedURL purl = new ParsedURL(baseURI, href);
+            String baseURI = XMLBaseSupport.getCascadedXMLBase(profile);
+            ParsedURL pDocURL = null;
+            if (baseURI != null) {
+                pDocURL = new ParsedURL(baseURI);
+            }
+
+            ParsedURL purl = new ParsedURL(pDocURL, href);
             if (!purl.complete()) 
                 throw new BridgeException(paintedElement, ERR_URI_MALFORMED,
                                           new Object[] {href});
             try{
-                ParsedURL pDocURL = null;
-                if (baseURI != null) {
-                    pDocURL = new ParsedURL(baseURI);
-                }
-
                ctx.getUserAgent().checkLoadExternalResource(purl, 
                                                             pDocURL);
 
