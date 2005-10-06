@@ -98,17 +98,17 @@ public class SVGColorProfileElementBridge extends AbstractSVGBridge
         String href = XLinkSupport.getXLinkHref(profile);
         ICC_Profile p = null;
         if (href != null) {
-            String baseURI= ((SVGOMDocument)doc).getURL();
-            ParsedURL purl = new ParsedURL(baseURI, href);
+            String baseURI = profile.getBaseURI();
+            ParsedURL pDocURL = null;
+            if (baseURI != null) {
+                pDocURL = new ParsedURL(baseURI);
+            }
+
+            ParsedURL purl = new ParsedURL(pDocURL, href);
             if (!purl.complete()) 
                 throw new BridgeException(paintedElement, ERR_URI_MALFORMED,
                                           new Object[] {href});
             try{
-                ParsedURL pDocURL = null;
-                if (baseURI != null) {
-                    pDocURL = new ParsedURL(baseURI);
-                }
-
                ctx.getUserAgent().checkLoadExternalResource(purl, 
                                                             pDocURL);
 

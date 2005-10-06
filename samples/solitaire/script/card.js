@@ -126,6 +126,7 @@ Card.prototype.asString = function() {
 }
 
 Card.prototype.setPos = function(x, y) {
+  if ((this.x == x) && (this.y == y)) return;
   this.x = x;
   this.y = y;
   this.elem.setAttribute("transform", "translate("+x+","+y+")");
