@@ -24,11 +24,13 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.batik.dom.AbstractNode;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.ext.awt.MultipleGradientPaint;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.util.ParsedURL;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -191,7 +193,7 @@ public abstract class AbstractSVGGradientElementBridge extends AbstractSVGBridge
                 return null; // no xlink:href found, exit
             }
             // check if there is circular dependencies
-            String baseURI = paintElement.getBaseURI();
+            String baseURI = ((AbstractNode) paintElement).getBaseURI();
             ParsedURL purl = new ParsedURL(baseURI, uri);
 
             if (contains(refs, purl)) {
