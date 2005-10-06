@@ -20,11 +20,13 @@ package org.apache.batik.bridge;
 import java.awt.color.ICC_Profile;
 import java.io.IOException;
 
+import org.apache.batik.dom.AbstractNode;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.ext.awt.color.ICCColorSpaceExt;
 import org.apache.batik.ext.awt.color.NamedProfileCache;
 import org.apache.batik.util.ParsedURL;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -98,7 +100,7 @@ public class SVGColorProfileElementBridge extends AbstractSVGBridge
         String href = XLinkSupport.getXLinkHref(profile);
         ICC_Profile p = null;
         if (href != null) {
-            String baseURI = profile.getBaseURI();
+            String baseURI = ((AbstractNode) profile).getBaseURI();
             ParsedURL pDocURL = null;
             if (baseURI != null) {
                 pDocURL = new ParsedURL(baseURI);
