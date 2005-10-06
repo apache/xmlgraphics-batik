@@ -191,12 +191,8 @@ public abstract class AbstractSVGGradientElementBridge extends AbstractSVGBridge
                 return null; // no xlink:href found, exit
             }
             // check if there is circular dependencies
-            SVGOMDocument doc = (SVGOMDocument)paintElement.getOwnerDocument();
-            ParsedURL purl = new ParsedURL(doc.getURL(), uri);
-            if (!purl.complete())
-                throw new BridgeException(paintElement,
-                                          ERR_URI_MALFORMED,
-                                          new Object[] {uri});
+            String baseURI = paintElement.getBaseURI();
+            ParsedURL purl = new ParsedURL(baseURI, uri);
 
             if (contains(refs, purl)) {
                 throw new BridgeException(paintElement,
