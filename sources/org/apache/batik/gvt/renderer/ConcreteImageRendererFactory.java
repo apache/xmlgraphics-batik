@@ -37,6 +37,8 @@ public class ConcreteImageRendererFactory implements ImageRendererFactory {
      * Creates a new static image renderer
      */
     public ImageRenderer createStaticImageRenderer(){
+        if (onMacOSX)
+            return new MacRenderer();
         return new StaticRenderer();
     }
 
@@ -44,6 +46,15 @@ public class ConcreteImageRendererFactory implements ImageRendererFactory {
      * Creates a new dynamic image renderer
      */
     public ImageRenderer createDynamicImageRenderer(){
+        if (onMacOSX)
+            return new MacRenderer();
         return new DynamicRenderer();
+    }
+
+
+    static final boolean onMacOSX;
+    static {
+        // This should be OK for applets.
+        onMacOSX = ("Mac OS X".equals(System.getProperty("os.name")));
     }
 }
