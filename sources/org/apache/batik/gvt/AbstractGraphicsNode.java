@@ -445,25 +445,36 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
         // Set up graphic context. It is important to setup the
         // transform first, because the clip is defined in this node's
         // user space.
-        Shape defaultClip = g2d.getClip();
-        Composite defaultComposite = g2d.getComposite();
-        AffineTransform defaultTransform = g2d.getTransform();
-        RenderingHints defaultHints = null;
+        Composite       defaultComposite = null;
+        AffineTransform defaultTransform = null;
+        RenderingHints  defaultHints     = null;
+        Graphics2D      baseG2d          = null;
 
-        if (hints != null) {
-            defaultHints = g2d.getRenderingHints();
-            g2d.addRenderingHints(hints);
-        }
-        if (transform != null) {
-            g2d.transform(transform);
-        }
-        if (composite != null) {
-            g2d.setComposite(composite);
-        }
-        if (clip != null){
+        if (clip != null)  { 
+            baseG2d = g2d;
+            g2d = (Graphics2D)g2d.create();
+            if (hints != null) 
+                g2d.addRenderingHints(hints);
+            if (transform != null)
+                g2d.transform(transform);
+            if (composite != null)
+                g2d.setComposite(composite);
             g2d.clip(clip.getClipPath());
+        } else {
+            if (hints != null) {
+                defaultHints = g2d.getRenderingHints();
+                g2d.addRenderingHints(hints);
+            }
+            if (transform != null) {
+                defaultTransform = g2d.getTransform();
+                g2d.transform(transform);
+            }
+            if (composite != null) {
+                defaultComposite = g2d.getComposite();
+                g2d.setComposite(composite);
+            }
         }
-
+            
         Shape curClip = g2d.getClip();
         g2d.setRenderingHint(RenderingHintsKeyExt.KEY_AREA_OF_INTEREST, 
                              curClip);
@@ -520,6 +531,12 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
                     filteredImage = clip;
                 }
 
+                baseG2d = g2d;
+                // Only muck with the clip on a 'child'
+                // graphics 2D otherwise when we restore the
+                // clip it might 'wander' by a pixel.
+                g2d = (Graphics2D)g2d.create();
+
                 if(antialiasedClip){
                     // Remove hard edged clip
                     g2d.setClip(null);
@@ -530,17 +547,23 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
 
                 org.apache.batik.ext.awt.image.GraphicsUtil.drawImage
                     (g2d, filteredImage);
+
+                g2d = baseG2d;
+                baseG2d = null;
             }
         }
 
         // Restore default rendering attributes
-        if (defaultHints != null) {
-            g2d.setRenderingHints(defaultHints);
-        }
-        g2d.setTransform(defaultTransform);
-        g2d.setClip(defaultClip);
-        if (composite != null) {
-            g2d.setComposite(defaultComposite);
+        if (baseG2d != null) {
+            g2d.dispose();
+        } else {
+            if (defaultHints != null)
+                g2d.setRenderingHints(defaultHints);
+            if (defaultTransform != null)
+                g2d.setTransform(defaultTransform);
+            if (defaultComposite != null) {
+                g2d.setComposite(defaultComposite);
+            }
         }
     }
 
