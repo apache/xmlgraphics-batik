@@ -121,7 +121,6 @@ public class SVG12TextElementBridge
     protected class DOMSubtreeModifiedEventListener
             extends SVGTextElementBridge.DOMSubtreeModifiedEventListener {
         public void handleEvent(Event evt) {
-            System.err.println("***");
             super.handleEvent(EventSupport.getUltimateOriginalEvent(evt));
         }
     }
