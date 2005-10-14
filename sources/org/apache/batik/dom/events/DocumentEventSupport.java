@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001-2003  The Apache Software Foundation 
+   Copyright 2001-2005  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -65,6 +65,11 @@ public class DocumentEventSupport {
     public static final String TEXT_EVENT_TYPE = "TextEvent";
     
     /**
+     * The CustomEvent type.
+     */
+    public static final String CUSTOM_EVENT_TYPE = "CustomEvent";
+
+    /**
      * The Event type.
      */
     public static final String EVENT_DOM2_TYPE = "Events";
@@ -109,6 +114,8 @@ public class DocumentEventSupport {
                            new UIEventFactory());
         eventFactories.put(TEXT_EVENT_TYPE.toLowerCase(),
                            new TextEventFactory());
+        eventFactories.put(CUSTOM_EVENT_TYPE.toLowerCase(),
+                           new CustomEventFactory());
         // DOM 2 event names:
         eventFactories.put(EVENT_DOM2_TYPE.toLowerCase(),
                            new SimpleEventFactory());
@@ -273,6 +280,18 @@ public class DocumentEventSupport {
          */
         public Event createEvent() {
             return new DOMTextEvent();
+        }
+    }
+
+    /**
+     * To create a Custom event.
+     */
+    protected static class CustomEventFactory implements EventFactory {
+        /**
+         * Creates a new Event object.
+         */
+        public Event createEvent() {
+            return new DOMCustomEvent();
         }
     }
 }

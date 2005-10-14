@@ -103,7 +103,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
     // in this text element.
     protected WeakHashMap elemTPI = new WeakHashMap();
 
-    // This s true if any of the spans of this text element
+    // This is true if any of the spans of this text element
     // use a 'complex' SVG font (meaning the font uses more
     // and just the 'd' attribute on the glyph element.
     // In this case we need to recreate the font when ever
@@ -258,13 +258,38 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         return false;
     }
 
+    // Tree navigation ------------------------------------------------------
+
+    /**
+     * Returns the first child node of the given node that should be
+     * processed by the text bridge.
+     */
+    protected Node getFirstChild(Node n) {
+        return n.getFirstChild();
+    }
+
+    /**
+     * Returns the next sibling node of the given node that should be
+     * processed by the text bridge.
+     */
+    protected Node getNextSibling(Node n) {
+        return n.getNextSibling();
+    }
+
+    /**
+     * Returns the parent node of the given node that should be
+     * processed by the text bridge.
+     */
+    protected Node getParentNode(Node n) {
+        return n.getParentNode();
+    }
+
     // Listener implementation ----------------------------------------------
 
     /**
      * The DOM EventListener to receive 'DOMNodeRemoved' event.
      */
-    protected DOMChildNodeRemovedEventListener childNodeRemovedEventListener = 
-        new DOMChildNodeRemovedEventListener();
+    protected DOMChildNodeRemovedEventListener childNodeRemovedEventListener;
 
     /**
      * The DOM EventListener invoked when a node is removed.
@@ -282,8 +307,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
     /**
      * The DOM EventListener to receive 'DOMSubtreeModified' event.
      */
-    protected DOMSubtreeModifiedEventListener subtreeModifiedEventListener = 
-        new DOMSubtreeModifiedEventListener();
+    protected DOMSubtreeModifiedEventListener subtreeModifiedEventListener;
 
     /**
      * The DOM EventListener invoked when the subtree is modified.
@@ -301,54 +325,80 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
     // BridgeUpdateHandler implementation -----------------------------------
 
     /**
-     * This method insures that any modification to a text
+     * This method ensures that any modification to a text
      * element and its children is going to be reflected 
      * into the GVT tree.
      */
     protected void initializeDynamicSupport(BridgeContext ctx,
                                             Element e,
                                             GraphicsNode node) {
-        super.initializeDynamicSupport(ctx,e,node);
+        super.initializeDynamicSupport(ctx, e, node);
 
         if (!ctx.isDynamic())
             return;             // Only add the listeners if we are dynamic
 
-
-        NodeEventTarget evtTarget = (NodeEventTarget)e;
-
-        //to be notified when a child is removed from the 
-        //<text> element.
-        evtTarget.addEventListenerNS
-            (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMNodeRemoved",
-             childNodeRemovedEventListener, true, null);
-        ctx.storeEventListenerNS
-            (evtTarget, XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMNodeRemoved",
-             childNodeRemovedEventListener, true);
-        
-        //to be notified when the modification of the subtree
-        //of the <text> element is done
-        evtTarget.addEventListenerNS
-            (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMSubtreeModified",
-             subtreeModifiedEventListener, false, null);
-        ctx.storeEventListenerNS
-            (evtTarget, XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMSubtreeModified",
-             subtreeModifiedEventListener, false);
+        addTextEventListeners(ctx, (NodeEventTarget) e);
 
         // traverse the children to add context on 
         // <tspan>, <tref> and <textPath>
-        Node child  = e.getFirstChild();
+        Node child = getFirstChild(e);
         while (child != null) {
             if (child.getNodeType() == Node.ELEMENT_NODE) {
                 addContextToChild(ctx,(Element)child);
             }
-            child = child.getNextSibling();
+            child = getNextSibling(child);
         }
     }
 
     /**
+     * Adds the DOM listeners for this text bridge.
+     */
+    protected void addTextEventListeners(BridgeContext ctx, NodeEventTarget e) {
+        if (childNodeRemovedEventListener == null) {
+            childNodeRemovedEventListener =
+                new DOMChildNodeRemovedEventListener();
+        }
+        if (subtreeModifiedEventListener == null) {
+            subtreeModifiedEventListener =
+                new DOMSubtreeModifiedEventListener();
+        }
+
+        //to be notified when a child is removed from the 
+        //<text> element.
+        e.addEventListenerNS
+            (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMNodeRemoved",
+             childNodeRemovedEventListener, true, null);
+        ctx.storeEventListenerNS
+            (e, XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMNodeRemoved",
+             childNodeRemovedEventListener, true);
+        
+        //to be notified when the modification of the subtree
+        //of the <text> element is done
+        e.addEventListenerNS
+            (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMSubtreeModified",
+             subtreeModifiedEventListener, false, null);
+        ctx.storeEventListenerNS
+            (e, XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMSubtreeModified",
+             subtreeModifiedEventListener, false);
+    }
+
+    /**
+     * Removes the DOM listeners for this text bridge.
+     */
+    protected void removeTextEventListeners(BridgeContext ctx,
+                                            NodeEventTarget e) {
+        e.removeEventListenerNS
+            (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMNodeRemoved",
+             childNodeRemovedEventListener, true);
+        e.removeEventListenerNS
+            (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMSubtreeModified",
+             subtreeModifiedEventListener, false);
+    }
+
+    /**
      * Add to the element children of the node, a
-     * <code>SVGContext</code> to support dynamic updated . This is
-     * recurssive, the children of the nodes are also traversed to add
+     * <code>SVGContext</code> to support dynamic update. This is
+     * recursive, the children of the nodes are also traversed to add
      * to the support elements their context
      *
      * @param ctx a <code>BridgeContext</code> value
@@ -371,12 +421,12 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             }
         }
 
-        Node child  = e.getFirstChild();
+        Node child = getFirstChild(e);
         while (child != null) {
             if (child.getNodeType() == Node.ELEMENT_NODE) {
                 addContextToChild(ctx, (Element)child);
             }        
-            child = child.getNextSibling();
+            child = getNextSibling(child);
         }
     }
 
@@ -410,16 +460,10 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
     }
 
     /**
-     * Invoked when an MutationEvent of type 'DOMNodeInserted' is fired.
+     * Invoked when an MutationEvent of type 'DOMNodeRemoved' is fired.
      */
     public void handleDOMNodeRemovedEvent(MutationEvent evt) {
-        NodeEventTarget evtTarget = (NodeEventTarget) evt.getTarget();
-        evtTarget.removeEventListenerNS
-            (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMNodeRemoved",
-             childNodeRemovedEventListener, true);
-        evtTarget.removeEventListenerNS
-            (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMSubtreeModified",
-             subtreeModifiedEventListener, false);
+        removeTextEventListeners(ctx, (NodeEventTarget) evt.getTarget());
         super.handleDOMNodeRemovedEvent(evt);
     }
 
@@ -454,7 +498,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
     /**
      * Invoked when an MutationEvent of type 'DOMSubtree' is fired.
      */
-    public void handleDOMSubtreeModifiedEvent(MutationEvent evt){
+    public void handleDOMSubtreeModifiedEvent(MutationEvent evt) {
         //an operation occured onto the children of the
         //text element, check if the layout was discarded
         if (laidoutText == null) {
@@ -485,7 +529,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
      *   &lt;altGlyph&gt;
      */
     protected boolean isParentDisplayed(Node childNode) {
-        Node parentNode = childNode.getParentNode();
+        Node parentNode = getParentNode(childNode);
         return isTextElement((Element)parentNode);
     }
 
@@ -493,7 +537,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
      * Recompute the layout of the &lt;text&gt; node.
      *
      * Assign onto the TextNode pending to the element
-     * the new recomputed AtrributedString. Also
+     * the new recomputed AttributedString. Also
      * update <code>laidoutText</code> with the new
      * value.
      */
@@ -571,9 +615,9 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                                                Element element,
                                                BridgeContext ctx) {
         // Add Paint attributres for children of text element
-        for (Node child = element.getFirstChild();
+        for (Node child = getFirstChild(element);
              child != null;
-             child = child.getNextSibling()) {
+             child = getNextSibling(child)) {
             if (child.getNodeType() != Node.ELEMENT_NODE) 
                 continue;
 
@@ -828,9 +872,9 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
 	if (o != null)
 	    subBidiLevel = ((Integer)o);
 
-        for (Node n = element.getFirstChild();
+        for (Node n = getFirstChild(element);
              n != null;
-             n = n.getNextSibling()) {
+             n = getNextSibling(n)) {
 
             if (preserve) {
                 prevEndsWithSpace = false;
@@ -1154,9 +1198,9 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         if (node2 == null || node1 == null) {
             return false;
         }
-        Node parent = node2.getParentNode();
+        Node parent = getParentNode(node2);
         while (parent != null && parent != node1) {
-            parent = parent.getParentNode();
+            parent = getParentNode(parent);
         }
         return (parent == node1);
     }
@@ -1291,9 +1335,9 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                                                    Element element,
                                                    BridgeContext ctx) {
         // do the same for each child element
-        for (Node child = element.getFirstChild();
+        for (Node child = getFirstChild(element);
              child != null;
-             child = child.getNextSibling()) {
+             child = getNextSibling(child)) {
             if (child.getNodeType() != Node.ELEMENT_NODE) continue;
 
             Element childElement = (Element)child;
@@ -1328,9 +1372,9 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                                            TextPaintInfo parentPI,
                                            BridgeContext ctx) {
         // Add Paint attributres for children of text element
-        for (Node child = element.getFirstChild();
+        for (Node child = getFirstChild(element);
              child != null;
-             child = child.getNextSibling()) {
+             child = getNextSibling(child)) {
             if (child.getNodeType() != Node.ELEMENT_NODE) {
                 continue;
             }
@@ -2845,7 +2889,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
 
             Element p = runElem;
             while ((p != null) && (p != txtElem) && (p != elem)) {
-                p = (Element)p.getParentNode();
+                p = (Element) txtBridge.getParentNode(p);
             }
             if (p != elem) continue;
 
@@ -2907,7 +2951,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
 
             Element p = runElem;
             while ((p != null) && (p != txtElem) && (p != elem)) {
-                p = (Element)p.getParentNode();
+                p = (Element) txtBridge.getParentNode(p);
             }
             if (p != elem) continue;
 

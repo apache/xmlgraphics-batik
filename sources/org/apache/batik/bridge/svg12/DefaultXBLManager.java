@@ -797,10 +797,6 @@ public class DefaultXBLManager implements XBLManager, XBLConstants {
      * Get the list of child nodes of a node in the fully flattened tree.
      */
     public NodeList getXblChildNodes(Node n) {
-        NodeList nl = getXblDefinitions(n);
-        if (nl.getLength() == 0) {
-            return n.getChildNodes();
-        }
         XBLRecord rec = getRecord(n);
         if (rec.childNodes == null) {
             rec.childNodes = new XblChildNodes(rec);

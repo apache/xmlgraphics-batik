@@ -35,4 +35,10 @@ public interface SVG12BridgeUpdateHandler extends BridgeUpdateHandler {
      * Invoked when a bindable element's binding has changed.
      */
     void handleBindingEvent(Element bindableElement, Element shadowTree);
+
+    /**
+     * Invoked when the xblChildNodes property has changed because a
+     * descendant xbl:content element has updated its selected nodes.
+     */
+    void handleContentSelectionChangedEvent(ContentSelectionChangedEvent csce);
 }
