@@ -468,10 +468,10 @@ To display the available targets type:
   <!-- All batik in a single jar (dependencies: none) -->
   <target name="all-jar" depends="compile, prepare-build" description="Creates a combined JAR file of the Batik libraries in ${build}/lib">
     <jar jarfile="${build}/lib/${project}-all.jar">
-      <fileset dir="${dest}" excludes="**/CVS">
+      <fileset dir="${dest}" excludes="**/.svn/">
         <include name="**"/>
       </fileset>
-      <fileset dir="${resources}" excludes="${resources}/**/CVS">
+      <fileset dir="${resources}" excludes="**/.svn/">
         <include name="**"/>
       </fileset>
     </jar>
@@ -482,14 +482,14 @@ To display the available targets type:
        (dependencies: batik-ext.jar) -->
   <target name="libs-jar" depends="compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-libs.jar">
-      <fileset dir="${dest}" excludes="**/CVS">
+      <fileset dir="${dest}" excludes="**/.svn/">
         <include name="org/apache/batik/**"/>
         <include name="org/w3c/css/sac/**"/>
         <include name="org/w3c/dom/smil/**"/>
         <include name="org/w3c/dom/svg/**"/>
         <include name="org/w3c/dom/svg12/**"/>
       </fileset>
-      <fileset dir="${resources}" excludes="${resources}/**/CVS">
+      <fileset dir="${resources}" excludes="**/.svn/">
         <include name="**"/>
       </fileset>
     </jar>
@@ -523,7 +523,7 @@ To display the available targets type:
         <include name="${package-prefix}/util/io/*.class"/>
         <include name="${package-prefix}/xml/*.class"/>
       </fileset>
-      <fileset dir="${resources}" excludes="${resources}/**/CVS">
+      <fileset dir="${resources}" excludes="**/.svn/">
         <include name="${package-prefix}/bridge/**"/>
         <include name="${package-prefix}/css/**"/>
         <include name="${package-prefix}/dom/**"/>
@@ -560,7 +560,7 @@ To display the available targets type:
         <include name="${package-prefix}/Version.class"/>
         <include name="${package-prefix}/util/resources/*.class"/>
       </fileset>
-      <fileset dir="${resources}" excludes="${resources}/**/CVS">
+      <fileset dir="${resources}" excludes="**/.svn/">
         <include name="${package-prefix}/util/resources/**"/>
         <include name="${package-prefix}/util/io/resources/**"/>
       </fileset>
@@ -575,7 +575,7 @@ To display the available targets type:
         <include name="${package-prefix}/ext/awt/**/*.class"/>
         <include name="${package-prefix}/ext/swing/**/*.class"/>
       </fileset>
-      <fileset dir="${resources}" excludes="${resources}/**/CVS">
+      <fileset dir="${resources}" excludes="**/.svn/">
         <include name="${package-prefix}/ext/awt/image/**"/>
         <include name="${package-prefix}/ext/swing/**"/>
       </fileset>
@@ -589,7 +589,7 @@ To display the available targets type:
       <fileset dir="${dest}">
         <include name="${package-prefix}/svggen/**/*.class"/>
       </fileset>
-      <fileset dir="${resources}" excludes="${resources}/**/CVS">
+      <fileset dir="${resources}" excludes="**/.svn/">
         <include name="${package-prefix}/svggen/font/resources/**"/>
       </fileset>
     </jar>
@@ -605,7 +605,7 @@ To display the available targets type:
         <include name="${package-prefix}/ext/awt/g2d/*.class"/>
         <include name="${package-prefix}/util/*Constants.class"/>
       </fileset>
-      <fileset dir="${resources}" excludes="${resources}/**/CVS">
+      <fileset dir="${resources}" excludes="**/.svn/">
         <include name="${package-prefix}/svggen/font/resources/**"/>
       </fileset>
     </jar>
@@ -618,7 +618,7 @@ To display the available targets type:
       <fileset dir="${dest}">
         <include name="${package-prefix}/util/gui/**/*.class"/>
       </fileset>
-      <fileset dir="${resources}" excludes="${resources}/**/CVS">
+      <fileset dir="${resources}" excludes="**/.svn/">
         <include name="${package-prefix}/util/gui/**/resources/**"/>
       </fileset>
     </jar>
@@ -634,7 +634,7 @@ To display the available targets type:
         <include name="${package-prefix}/dom/traversal/*.class"/>
         <include name="${package-prefix}/dom/util/*.class"/>
       </fileset>
-      <fileset dir="${resources}" excludes="${resources}/**/CVS">
+      <fileset dir="${resources}" excludes="**/.svn/">
         <include name="${package-prefix}/dom/resources/*"/>
         <include name="${package-prefix}/dom/events/resources/**"/>
         <include name="${package-prefix}/dom/traversal/resources/**"/>
@@ -657,7 +657,7 @@ To display the available targets type:
         <include name="${package-prefix}/css/engine/value/svg12/*.class"/>
         <include name="${package-prefix}/css/parser/*.class"/>
       </fileset>
-      <fileset dir="${resources}" excludes="${resources}/**/CVS">
+      <fileset dir="${resources}" excludes="**/.svn/">
         <include name="${package-prefix}/css/dom/resources/**"/>
         <include name="${package-prefix}/css/engine/resources/**"/>
         <include name="${package-prefix}/css/engine/sac/resources/**"/>
@@ -677,7 +677,7 @@ To display the available targets type:
         <include name="${package-prefix}/dom/svg/*.class"/>
         <include name="${package-prefix}/dom/svg12/*.class"/>
       </fileset>
-      <fileset dir="${resources}" excludes="${resources}/**/CVS">
+      <fileset dir="${resources}" excludes="**/.svn/">
         <include name="${package-prefix}/dom/svg/resources/**"/>
         <include name="${package-prefix}/dom/svg12/resources/**"/>
       </fileset>
@@ -691,7 +691,7 @@ To display the available targets type:
       <fileset dir="${dest}">
         <include name="${package-prefix}/gvt/**/*.class"/>
       </fileset>
-      <fileset dir="${resources}" excludes="${resources}/**/CVS">
+      <fileset dir="${resources}" excludes="**/.svn/">
         <include name="${package-prefix}/gvt/**/resources/*"/>
       </fileset>
     </jar>
@@ -704,7 +704,7 @@ To display the available targets type:
       <fileset dir="${dest}">
         <include name="${package-prefix}/parser/**/*.class"/>
       </fileset>
-      <fileset dir="${resources}" excludes="${resources}/**/CVS">
+      <fileset dir="${resources}" excludes="**/.svn/">
         <include name="${package-prefix}/parser/**/resources/*"/>
       </fileset>
     </jar>
@@ -717,7 +717,7 @@ To display the available targets type:
       <fileset dir="${dest}">
         <include name="${package-prefix}/script/**/*.class"/>
       </fileset>
-      <fileset dir="${resources}" excludes="${resources}/**/CVS">
+      <fileset dir="${resources}" excludes="**/.svn/">
         <include name="${package-prefix}/script/**/resources/*"/>
         <include name="META-INF/services/org.apache.batik.script.InterpreterFactory"/>
       </fileset>
@@ -731,7 +731,7 @@ To display the available targets type:
       <fileset dir="${dest}">
         <include name="${package-prefix}/transcoder/**/*.class"/>
       </fileset>
-      <fileset dir="${resources}" excludes="${resources}/**/CVS">
+      <fileset dir="${resources}" excludes="**/.svn/">
         <include name="${package-prefix}/transcoder/**/resources/*"/>
       </fileset>
     </jar>
@@ -743,7 +743,7 @@ To display the available targets type:
       <fileset dir="${dest}">
         <include name="${package-prefix}/xml/**/*.class"/>
       </fileset>
-      <fileset dir="${resources}" excludes="${resources}/**/CVS">
+      <fileset dir="${resources}" excludes="**/.svn/">
         <include name="${package-prefix}/xml/**/resources/*"/>
       </fileset>
     </jar>
@@ -755,7 +755,7 @@ To display the available targets type:
       <fileset dir="${dest}">
         <include name="${package-prefix}/bridge/**/*.class"/>
       </fileset>
-      <fileset dir="${resources}" excludes="${resources}/**/CVS">
+      <fileset dir="${resources}" excludes="**/.svn/">
         <include name="${package-prefix}/bridge/BrokenLink.svg"/>
         <include name="${package-prefix}/bridge/**/resources/*"/>
       </fileset>
@@ -768,7 +768,7 @@ To display the available targets type:
       <fileset dir="${dest}">
         <include name="${package-prefix}/swing/**/*.class"/>
       </fileset>
-      <fileset dir="${resources}" excludes="${resources}/**/CVS">
+      <fileset dir="${resources}" excludes="**/.svn/">
         <include name="${package-prefix}/swing/**/resources/*"/>
       </fileset>
     </jar>
@@ -777,14 +777,14 @@ To display the available targets type:
   <!-- Extensions (dependencies: all) -->
   <target name="extension-jar" depends="compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-extension.jar">
-      <fileset dir="${resources}" excludes="${resources}/**/CVS">
+      <fileset dir="${resources}" excludes="**/.svn/">
         <include name="META-INF/services/*"/>
         <exclude name="META-INF/services/org.apache.batik.script.InterpreterFactory"/>
       </fileset>
       <fileset dir="${dest}">
         <include name="${package-prefix}/extension/**/*.class"/>
       </fileset>
-      <fileset dir="${resources}" excludes="${resources}/**/CVS">
+      <fileset dir="${resources}" excludes="**/.svn/">
         <include name="${package-prefix}/extension/**/resources/*"/>
       </fileset>
     </jar>
@@ -802,7 +802,7 @@ To display the available targets type:
       <fileset dir="${dest}">
         <include name="${package-prefix}/apps/svgpp/**/*.class"/>
       </fileset>
-      <fileset dir="${resources}" excludes="${resources}/**/CVS">
+      <fileset dir="${resources}" excludes="**/.svn/">
         <include name="${package-prefix}/apps/svgpp/**/resources/**"/>
       </fileset>
     </jar>
@@ -820,7 +820,7 @@ To display the available targets type:
       <fileset dir="${dest}">
         <include name="${package-prefix}/apps/slideshow/**/*.class"/>
       </fileset>
-      <fileset dir="${resources}" excludes="${resources}/**/CVS">
+      <fileset dir="${resources}" excludes="**/.svn/">
         <include name="${package-prefix}/apps/slideshow/**/resources/**"/>
       </fileset>
     </jar>
@@ -844,7 +844,7 @@ To display the available targets type:
         <include name="${package-prefix}/apps/svgbrowser/**/*.class"/>
         <include name="${package-prefix}/experiment/**/*.class"/>
       </fileset>
-      <fileset dir="${resources}" excludes="${resources}/**/CVS">
+      <fileset dir="${resources}" excludes="**/.svn/">
         <include name="${package-prefix}/apps/svgbrowser/**/resources/**"/>
         <exclude name="${package-prefix}/apps/svgbrowser/resources/squiggle.xsl" />
         <exclude name="${package-prefix}/apps/svgbrowser/resources/squiggle.svg" />
@@ -865,7 +865,7 @@ To display the available targets type:
         <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}"/>
         <attribute name="Implementation-Vendor" value="Apache Software Foundation (http://xml.apache.org/batik/)"/>
       </manifest>
-        <fileset dir="${resources}" excludes="${resources}/**/CVS">
+        <fileset dir="${resources}" excludes="**/.svn/">
             <include name="META-INF/services/**"/>
         </fileset>
      </jar>
@@ -890,15 +890,15 @@ To display the available targets type:
       <fileset dir="${dest}">
         <include name="${package-prefix}/apps/rasterizer/**/*.class"/>
       </fileset>
-      <fileset dir="${resources}" excludes="${resources}/**/CVS">
+      <fileset dir="${resources}" excludes="**/.svn/">
         <include name="${package-prefix}/apps/rasterizer/**/resources/**"/>
       </fileset>
     </jar>
-     <move file="${resources}/${package-prefix}/apps/rasterizer/resources/rasterizer.policy"
+    <move file="${resources}/${package-prefix}/apps/rasterizer/resources/rasterizer.policy"
           tofile="${resources}/${package-prefix}/apps/rasterizer/resources/rasterizer.bin.policy" />
     <move file="${resources}/${package-prefix}/apps/rasterizer/resources/rasterizer.classes.policy"
           tofile="${resources}/${package-prefix}/apps/rasterizer/resources/rasterizer.policy" />
- </target>
+  </target>
 
   <target name="rasterizer-ext-jar" depends="rasterizer-jar">
      <mkdir dir="${build}/extensions"/>
@@ -909,7 +909,7 @@ To display the available targets type:
         <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}"/>
         <attribute name="Implementation-Vendor" value="Apache Software Foundation (http://xml.apache.org/batik/)"/>
       </manifest>
-        <fileset dir="${resources}" excludes="${resources}/**/CVS">
+        <fileset dir="${resources}" excludes="**/.svn/">
             <include name="META-INF/services/**"/>
         </fileset>
      </jar>
