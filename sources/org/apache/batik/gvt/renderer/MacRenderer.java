@@ -75,13 +75,15 @@ public class MacRenderer implements ImageRenderer {
      * Constructs a new dynamic renderer with the specified buffer image.
      */
     public MacRenderer() {
-        renderingHints = new RenderingHints(defaultRenderingHints);
+        renderingHints = new RenderingHints(null);
+        renderingHints.add(defaultRenderingHints);
         usr2dev = new AffineTransform();
     }
 
     public MacRenderer(RenderingHints rh,
                        AffineTransform at){
-        renderingHints = new RenderingHints(rh);
+        renderingHints = new RenderingHints(null);
+        renderingHints.add(rh);
         if (at == null) at = new AffineTransform();
         else            at = new AffineTransform(at);
     }
@@ -142,7 +144,8 @@ public class MacRenderer implements ImageRenderer {
      * @param rh Set of rendering hints to use for future renderings
      */
     public void setRenderingHints(RenderingHints rh) {
-        this.renderingHints = new RenderingHints(rh);
+        this.renderingHints = new RenderingHints(null);
+        this.renderingHints.add(rh);
         damagedAreas = null;
     }
         

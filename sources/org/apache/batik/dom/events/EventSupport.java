@@ -736,7 +736,7 @@ public class EventSupport {
          */
         public void resumePropagation() {
             try {
-                resumePropagationMethod.invoke(e, null);
+                resumePropagationMethod.invoke(e, (Object[]) null);
             } catch (InvocationTargetException ite) {
                 ite.printStackTrace();
             } catch (IllegalAccessException iae) {
@@ -783,7 +783,7 @@ public class EventSupport {
          */
         public Event getOriginalEvent() {
             try {
-                return (Event) getOriginalEventMethod.invoke(e, null);
+                return (Event) getOriginalEventMethod.invoke(e, (Object[])null);
             } catch (InvocationTargetException ite) {
                 ite.printStackTrace();
             } catch (IllegalAccessException iae) {
@@ -823,7 +823,7 @@ public class EventSupport {
          */
         public void stopImmediatePropagation() {
             try {
-                stopImmediatePropagationMethod.invoke(e, (Object[])null);
+                stopImmediatePropagationMethod.invoke(e, (Object[]) null);
             } catch (InvocationTargetException ite) {
                 ite.printStackTrace();
             } catch (IllegalAccessException iae) {
@@ -837,8 +837,9 @@ public class EventSupport {
          */
         public boolean isDefaultPrevented() {
             try {
-                return ((Boolean) isDefaultPreventedMethod.invoke(e, (Object[])null))
-                    .booleanValue();
+                Boolean b = (Boolean)
+                    isDefaultPreventedMethod.invoke(e, (Object[]) null);
+                return b.booleanValue();
             } catch (InvocationTargetException ite) {
                 ite.printStackTrace();
             } catch (IllegalAccessException iae) {
