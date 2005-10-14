@@ -43,6 +43,7 @@ import org.apache.batik.css.engine.CSSEngineUserAgent;
 import org.apache.batik.css.engine.SVGCSSEngine;
 import org.apache.batik.css.engine.SystemColorSupport;
 import org.apache.batik.css.engine.value.Value;
+import org.apache.batik.dom.AbstractNode;
 import org.apache.batik.dom.events.NodeEventTarget;
 import org.apache.batik.dom.svg.SVGContext;
 import org.apache.batik.dom.svg.SVGDOMImplementation;
@@ -1536,12 +1537,12 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         }
 
         /**
-         * Handles 'DOMNodeRemoved' event type.
+         * Handles 'DOMCharacterDataModified' event type.
          */
         public void handleEvent(Event evt) {
             Node node = (Node)evt.getTarget();
             while (node != null && !(node instanceof SVGOMElement)) {
-                node = node.getParentNode();
+                node = (Node) ((AbstractNode) node).getParentNodeEventTarget();
             }
             BridgeUpdateHandler h = getBridgeUpdateHandler(node);
             if (h != null) {
@@ -1578,7 +1579,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
                     ((Element)elem.getParentNode());
                 if ((pgn == null) || !(pgn instanceof CompositeGraphicsNode)) {
                     // Something changed in this element but we really don't
-                    // care since it's parent isn't displayed either.
+                    // care since its parent isn't displayed either.
                     return;
                 }
                 CompositeGraphicsNode parent = (CompositeGraphicsNode)pgn;

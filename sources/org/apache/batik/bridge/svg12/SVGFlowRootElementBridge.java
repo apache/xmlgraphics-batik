@@ -1,6 +1,6 @@
 /*
 
-   Copyright 1999-2003  The Apache Software Foundation 
+   Copyright 1999-2003,2005  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@
 
 package org.apache.batik.bridge.svg12;
 
+import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.font.TextAttribute;
 import java.awt.geom.AffineTransform;
@@ -52,9 +53,12 @@ import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.css.engine.value.ValueConstants;
 
 import org.apache.batik.dom.events.NodeEventTarget;
+import org.apache.batik.dom.svg.SVGOMElement;
+import org.apache.batik.dom.svg12.SVGOMFlowRegionElement;
 import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.dom.util.XLinkSupport;
 
+import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.flow.BlockInfo;
 import org.apache.batik.gvt.flow.FlowTextNode;
@@ -74,7 +78,7 @@ import org.apache.batik.util.XMLConstants;
  * @author <a href="mailto:deweese@apache.org">Thomas DeWeese</a>
  * @version $Id$
  */
-public class SVGFlowRootElementBridge extends SVGTextElementBridge {
+public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
 
     public static final AttributedCharacterIterator.Attribute FLOW_PARAGRAPH
         = GVTAttributedCharacterIterator.TextAttribute.FLOW_PARAGRAPH;
@@ -125,8 +129,61 @@ public class SVGFlowRootElementBridge extends SVGTextElementBridge {
         return false;
     }
 
+    /**
+     * Creates a <tt>GraphicsNode</tt> according to the specified parameters.
+     *
+     * @param ctx the bridge context to use
+     * @param e the element that describes the graphics node to build
+     * @return a graphics node that represents the specified element
+     */
+    public GraphicsNode createGraphicsNode(BridgeContext ctx, Element e) {
+        // 'requiredFeatures', 'requiredExtensions' and 'systemLanguage'
+        if (!SVGUtilities.matchUserAgent(e, ctx.getUserAgent())) {
+            return null;
+        }
+
+        CompositeGraphicsNode cgn = new CompositeGraphicsNode();
+
+        // 'transform'
+        String s = e.getAttributeNS(null, SVG_TRANSFORM_ATTRIBUTE);
+        if (s.length() != 0) {
+            cgn.setTransform
+                (SVGUtilities.convertTransform(e, SVG_TRANSFORM_ATTRIBUTE, s));
+        }
+        // 'visibility'
+        cgn.setVisible(CSSUtilities.convertVisibility(e));
+
+        // 'text-rendering' and 'color-rendering'
+        RenderingHints hints = null;
+        hints = CSSUtilities.convertColorRendering(e, hints);
+        hints = CSSUtilities.convertTextRendering (e, hints);
+        if (hints != null) {
+            cgn.setRenderingHints(hints);
+        }
+
+        // first child holds the flow region nodes
+        CompositeGraphicsNode cgn2 = new CompositeGraphicsNode();
+        cgn.add(cgn2);
+
+        // second child is the text node
+        FlowTextNode tn = new FlowTextNode();
+        tn.setLocation(getLocation(ctx, e));
+
+        // specify the text painter to use
+        if (ctx.getTextPainter() != null) {
+            tn.setTextPainter(ctx.getTextPainter());
+        }
+
+        cgn.add(tn);
+
+        return cgn;
+    }
+
+    /**
+     * Creates the graphics node for this element.
+     */
     protected GraphicsNode instantiateGraphicsNode() {
-        return new FlowTextNode();
+        return null; // createGraphicsNode is fully overridden
     }
 
     /**
@@ -163,10 +220,74 @@ public class SVGFlowRootElementBridge extends SVGTextElementBridge {
                 nodeName.equals(SVG12Constants.SVG_FLOW_SPAN_TAG));
     }
     
+    /**
+     * Builds using the specified BridgeContext and element, the
+     * specified graphics node.
+     *
+     * @param ctx the bridge context to use
+     * @param e the element that describes the graphics node to build
+     * @param node the graphics node to build
+     */
+    public void buildGraphicsNode(BridgeContext ctx,
+                                  Element e,
+                                  GraphicsNode node) {
+        CompositeGraphicsNode cgn = (CompositeGraphicsNode) node;
+
+        // build flowRegion shapes
+        CompositeGraphicsNode cgn2 = (CompositeGraphicsNode) cgn.get(0);
+        GVTBuilder builder = ctx.getGVTBuilder();
+        for (Node n = getFirstChild(e); n != null; n = getNextSibling(n)) {
+            if (n instanceof SVGOMFlowRegionElement) {
+                for (Node m = getFirstChild(n);
+                        m != null;
+                        m = getNextSibling(m)) {
+                    if (m.getNodeType() != Node.ELEMENT_NODE) {
+                        continue;
+                    }
+                    GraphicsNode gn = builder.build(ctx, (Element) m);
+                    if (gn != null) {
+                        cgn2.add(gn);
+                    }
+                }
+            }
+        }
+
+        // build text node
+        GraphicsNode tn = (GraphicsNode) cgn.get(1);
+        super.buildGraphicsNode(ctx, e, tn);
+    }
+
     protected void computeLaidoutText(BridgeContext ctx, 
                                        Element e,
                                        GraphicsNode node) {
         super.computeLaidoutText(ctx, getFlowDivElement(e), node);
+    }
+
+    /**
+     * Add to the element children of the node, a
+     * <code>SVGContext</code> to support dynamic update. This is
+     * recursive, the children of the nodes are also traversed to add
+     * to the support elements their context
+     *
+     * @param ctx a <code>BridgeContext</code> value
+     * @param e an <code>Element</code> value
+     *
+     * @see org.apache.batik.dom.svg.SVGContext
+     * @see org.apache.batik.bridge.BridgeUpdateHandler
+     */
+    protected void addContextToChild(BridgeContext ctx, Element e) {
+        if (SVG_NAMESPACE_URI.equals(e.getNamespaceURI())) {
+            String ln = e.getLocalName();
+            if (ln.equals(SVG12Constants.SVG_FLOW_DIV_TAG)
+                    || ln.equals(SVG12Constants.SVG_FLOW_LINE_TAG)
+                    || ln.equals(SVG12Constants.SVG_FLOW_PARA_TAG)
+                    || ln.equals(SVG12Constants.SVG_FLOW_SPAN_TAG)) {
+                ((SVGOMElement) e).setSVGContext
+                    (new FlowContentBridge(ctx, this, e));
+            }
+        }
+
+        super.addContextToChild(ctx, e);
     }
 
     /**
@@ -216,8 +337,8 @@ public class SVGFlowRootElementBridge extends SVGTextElementBridge {
 
         if (!nodeName.equals(SVG12Constants.SVG_FLOW_ROOT_TAG)) return null;
         
-        for (Node n = elem.getFirstChild();
-             n != null; n = n.getNextSibling()) {
+        for (Node n = getFirstChild(elem);
+             n != null; n = getNextSibling(n)) {
             if (n.getNodeType()     != Node.ELEMENT_NODE) continue;
 
             String nNS = n.getNamespaceURI();
@@ -244,8 +365,8 @@ public class SVGFlowRootElementBridge extends SVGTextElementBridge {
         List paraEnds  = new ArrayList();
         List paraElems = new ArrayList();
         List lnLocs    = new ArrayList();
-        for (Node n = div.getFirstChild();
-             n != null; n = n.getNextSibling()) {
+        for (Node n = getFirstChild(div);
+             n != null; n = getNextSibling(n)) {
             if (n.getNodeType()     != Node.ELEMENT_NODE) continue;
             if (!getNamespaceURI().equals(n.getNamespaceURI())) continue;
             Element e = (Element)n;
@@ -311,8 +432,8 @@ public class SVGFlowRootElementBridge extends SVGTextElementBridge {
         // Element comes in as flowDiv element we want flowRoot.
         element = (Element)element.getParentNode();
         List ret = new LinkedList();
-        for (Node n = element.getFirstChild();
-             n != null; n = n.getNextSibling()) {
+        for (Node n = getFirstChild(element);
+             n != null; n = getNextSibling(n)) {
             
             if (n.getNodeType()     != Node.ELEMENT_NODE) continue;
             if (!SVG12Constants.SVG_NAMESPACE_URI.equals(n.getNamespaceURI())) 
@@ -334,22 +455,22 @@ public class SVGFlowRootElementBridge extends SVGTextElementBridge {
     protected void gatherRegionInfo(BridgeContext ctx, Element rgn,
                                     float verticalAlign, List regions) {
 
-        GVTBuilder builder = ctx.getGVTBuilder();
-        for (Node n = rgn.getFirstChild(); 
-             n != null; n = n.getNextSibling()) {
+        for (Node n = getFirstChild(rgn); n != null; n = getNextSibling(n)) {
 
-            if (n.getNodeType()     != Node.ELEMENT_NODE) continue;
-            if (!getNamespaceURI().equals(n.getNamespaceURI())) continue;
-            Element e = (Element)n;
+            if (n.getNodeType() != Node.ELEMENT_NODE) {
+                continue;
+            }
 
-            GraphicsNode gn = builder.build(ctx, e) ;
-            if (gn == null) continue;
-
+            GraphicsNode gn = ctx.getGraphicsNode((Element) n);
             Shape s = gn.getOutline();
-            if (s == null) continue;
+            if (s == null) {
+                continue;
+            }
+
             AffineTransform at = gn.getTransform();
-            if (at != null) 
+            if (at != null) {
                 s = at.createTransformedShape(s);
+            }
             regions.add(new RegionInfo(s, verticalAlign));
         }
     }
@@ -393,9 +514,9 @@ public class SVGFlowRootElementBridge extends SVGTextElementBridge {
         if (lnLocs.size() != 0)
             lineBreak = ((Integer)lnLocs.get(lnLocs.size()-1)).intValue();
 
-        for (Node n = element.getFirstChild();
+        for (Node n = getFirstChild(element);
              n != null;
-             n = n.getNextSibling()) {
+             n = getNextSibling(n)) {
             
             if (preserve) {
                 prevEndsWithSpace = false;
@@ -656,5 +777,20 @@ public class SVGFlowRootElementBridge extends SVGTextElementBridge {
             ((LineHeightValue)v).getFontSizeRelative())
             lineHeight *= fontSize;
         return lineHeight;
+    }
+
+    /**
+     * Bridge class for flow text children that contain text.
+     */
+    protected class FlowContentBridge extends AbstractTextChildTextContent {
+
+        /**
+         * Creates a new FlowContentBridge.
+         */
+        public FlowContentBridge(BridgeContext ctx,
+                                 SVGTextElementBridge parent,
+                                 Element e) {
+            super(ctx, parent, e);
+        }
     }
 }

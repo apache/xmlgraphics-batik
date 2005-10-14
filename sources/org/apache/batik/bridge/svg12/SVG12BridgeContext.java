@@ -32,6 +32,8 @@ import org.apache.batik.dom.events.EventSupport;
 import org.apache.batik.dom.events.NodeEventTarget;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.svg12.XBLEventSupport;
+import org.apache.batik.dom.svg12.XBLOMShadowTreeElement;
+import org.apache.batik.dom.xbl.NodeXBL;
 import org.apache.batik.dom.xbl.XBLManager;
 import org.apache.batik.script.Interpreter;
 import org.apache.batik.script.InterpreterPool;
@@ -57,7 +59,12 @@ public class SVG12BridgeContext extends BridgeContext {
     /**
      * The BindingListener for XBL binding events.
      */
-    protected BindingListener bindingListener;
+    protected XBLBindingListener bindingListener;
+
+    /**
+     * The ContentSelectionChangedListener for xbl:content element events.
+     */
+    protected XBLContentListener contentListener;
 
     /**
      * The EventTarget that has the mouse capture.
@@ -178,6 +185,8 @@ public class SVG12BridgeContext extends BridgeContext {
         if (xm != null) {
             bindingListener = new XBLBindingListener();
             xm.addBindingListener(bindingListener);
+            contentListener = new XBLContentListener();
+            xm.addContentSelectionChangedListener(contentListener);
         }
     }
 
@@ -190,6 +199,7 @@ public class SVG12BridgeContext extends BridgeContext {
         if (xm instanceof DefaultXBLManager) {
             DefaultXBLManager dxm = (DefaultXBLManager) xm;
             dxm.removeBindingListener(bindingListener);
+            dxm.removeContentSelectionChangedListener(contentListener);
         }
     }
 
@@ -491,6 +501,34 @@ public class SVG12BridgeContext extends BridgeContext {
                     h12.handleBindingEvent(bindableElement, shadowTree);
                 } catch (Exception e) {
                     userAgent.displayError(e);
+                }
+            }
+        }
+    }
+
+    /**
+     * The ContentSelectionChangedListener.
+     */
+    protected class XBLContentListener
+            implements ContentSelectionChangedListener {
+        
+        /**
+         * Invoked after an xbl:content element has updated its selected
+         * nodes list.
+         * @param csce the ContentSelectionChangedEvent object
+         */
+        public void contentSelectionChanged(ContentSelectionChangedEvent csce) {
+            Element e = (Element) csce.getContentElement().getParentNode();
+            if (e instanceof XBLOMShadowTreeElement) {
+                e = ((NodeXBL) e).getXblBoundElement();
+            }
+            BridgeUpdateHandler h = getBridgeUpdateHandler(e);
+            if (h instanceof SVG12BridgeUpdateHandler) {
+                SVG12BridgeUpdateHandler h12 = (SVG12BridgeUpdateHandler) h;
+                try {
+                    h12.handleContentSelectionChangedEvent(csce);
+                } catch (Exception ex) {
+                    userAgent.displayError(ex);
                 }
             }
         }

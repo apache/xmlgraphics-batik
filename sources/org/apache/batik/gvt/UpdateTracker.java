@@ -1,6 +1,6 @@
 /*
 
-   Copyright 1999-2003  The Apache Software Foundation 
+   Copyright 1999-2003,2005  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@ import java.util.Set;
 import org.apache.batik.gvt.event.GraphicsNodeChangeAdapter;
 import org.apache.batik.gvt.event.GraphicsNodeChangeEvent;
 import org.apache.batik.ext.awt.image.renderable.Filter;
+
 /**
  * This class tracks the changes on a GVT tree
  *
@@ -166,7 +167,7 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
 
     /**
      * This returns the dirty region for gn in the coordinate system
-     * given by <code>at</at>.
+     * given by <code>at</code>.
      * @param gn Node tree to return dirty region for.
      * @param at Affine transform to coordinate space to accumulate
      *           dirty regions in.
@@ -211,7 +212,7 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
     }
 
     /**
-     * Recieves notification of a change to a GraphicsNode.
+     * Receives notification of a change to a GraphicsNode.
      * @param gnce The event object describing the GraphicsNode change.
      */
     public void changeStarted(GraphicsNodeChangeEvent gnce) {

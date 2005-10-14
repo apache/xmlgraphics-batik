@@ -705,7 +705,8 @@ public abstract class AbstractDocument
                 || eventType.equals("MouseEvent")
                 || eventType.equals("KeyEvent")
                 || eventType.equals("KeyboardEvent")
-                || eventType.equals("TextEvent");
+                || eventType.equals("TextEvent")
+                || eventType.equals("CustomEvent");
         }
         return false;
     }

@@ -214,6 +214,14 @@ public class BindableElementBridge
     }
 
     /**
+     * Invoked when the xblChildNodes property has changed because a
+     * descendant xbl:content element has updated its selected nodes.
+     */
+    public void handleContentSelectionChangedEvent
+            (ContentSelectionChangedEvent csce) {
+    }
+
+    /**
      * Rebuild the graphics tree.
      */
     protected void handleElementAdded(CompositeGraphicsNode gn, 
