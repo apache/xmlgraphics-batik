@@ -254,7 +254,7 @@ To display the available targets type:
        </fileset>
     </copy>
     <copy todir="${build}/samples">
-      <fileset dir="samples"/>
+      <fileset dir="samples" excludes="**/.svn/"/>
     </copy>
     <zip zipfile="${project}-${version}.zip" basedir="." includes="${build}/**"/> 
   </target>
@@ -294,7 +294,7 @@ To display the available targets type:
     <copy file="${resources}/${package-prefix}/extensions/README.txt" 
           todir="${build}/extensions"/>
     <copy todir="${build}/samples">
-      <fileset dir="samples"/>
+      <fileset dir="samples" excludes="**/.svn/"/>
     </copy>
     <tar tarfile="${project}-${version}.tar" basedir="." includes="${build}/**"/>
     <gzip zipfile="${project}-${version}.tar.gz" src="${project}-${version}.tar"/>
