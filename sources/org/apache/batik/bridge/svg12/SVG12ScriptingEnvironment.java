@@ -25,6 +25,7 @@ import org.apache.batik.bridge.SVGUtilities;
 import org.apache.batik.bridge.svg12.SVG12BridgeContext;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.AbstractElement;
+import org.apache.batik.dom.events.EventSupport;
 import org.apache.batik.dom.svg12.SVGGlobal;
 import org.apache.batik.dom.svg12.XBLEventSupport;
 import org.apache.batik.dom.util.DOMUtilities;
@@ -76,6 +77,9 @@ public class SVG12ScriptingEnvironment extends ScriptingEnvironment {
      * Adds DOM listeners to the document.
      */
     protected void addDocumentListeners() {
+        domNodeInsertedListener = new DOMNodeInsertedListener();
+        domNodeRemovedListener = new DOMNodeRemovedListener();
+        domAttrModifiedListener = new DOMAttrModifiedListener();
         AbstractDocument doc = (AbstractDocument) document;
         XBLEventSupport es = (XBLEventSupport) doc.initializeEventSupport();
         es.addImplementationEventListenerNS
@@ -110,6 +114,33 @@ public class SVG12ScriptingEnvironment extends ScriptingEnvironment {
             (XMLConstants.XML_EVENTS_NAMESPACE_URI,
              "DOMAttrModified",
              domAttrModifiedListener, false);
+    }
+
+    /**
+     * The listener class for 'DOMNodeInserted' event.
+     */
+    protected class DOMNodeInsertedListener
+            extends ScriptingEnvironment.DOMNodeInsertedListener {
+        public void handleEvent(Event evt) {
+            super.handleEvent(EventSupport.getUltimateOriginalEvent(evt));
+        }
+    }
+
+    /**
+     * The listener class for 'DOMNodeRemoved' event.
+     */
+    protected class DOMNodeRemovedListener
+            extends ScriptingEnvironment.DOMNodeRemovedListener {
+        public void handleEvent(Event evt) {
+            super.handleEvent(EventSupport.getUltimateOriginalEvent(evt));
+        }
+    }
+
+    protected class DOMAttrModifiedListener
+            extends ScriptingEnvironment.DOMAttrModifiedListener {
+        public void handleEvent (Event evt) {
+            super.handleEvent(EventSupport.getUltimateOriginalEvent(evt));
+        }
     }
 
     /**
