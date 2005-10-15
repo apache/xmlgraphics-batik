@@ -155,20 +155,17 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
     /**
      * The DOMNodeInserted event listener.
      */
-    protected EventListener domNodeInsertedListener 
-        = new DOMNodeInsertedListener();
+    protected EventListener domNodeInsertedListener;
 
     /**
      * The DOMNodeRemoved event listener.
      */
-    protected EventListener domNodeRemovedListener
-        = new DOMNodeRemovedListener();
+    protected EventListener domNodeRemovedListener;
 
     /**
      * The DOMAttrModified event listener.
      */
-    protected EventListener domAttrModifiedListener 
-        = new DOMAttrModifiedListener();
+    protected EventListener domAttrModifiedListener;
 
     /**
      * The SVGAbort event listener.
@@ -354,6 +351,9 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
      * Adds DOM listeners to the document.
      */
     protected void addDocumentListeners() {
+        domNodeInsertedListener = new DOMNodeInsertedListener();
+        domNodeRemovedListener = new DOMNodeRemovedListener();
+        domAttrModifiedListener = new DOMAttrModifiedListener();
         NodeEventTarget et = (NodeEventTarget) document;
         et.addEventListenerNS
             (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMNodeInserted",
