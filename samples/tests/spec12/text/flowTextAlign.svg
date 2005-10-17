@@ -46,13 +46,13 @@
       	 <flowText xmlns="http://xml.apache.org/batik/ext"
       	           font-size="24" xml:space="preserve">
       	    <flowRegion vertical-align="top">
-      	            <rect x="12.5"  y="0" width="125" height="36"/>
+      	            <rect x="12.5"  y="0" width="125" height="36" visibility="hidden"/>
       	    </flowRegion>
       	    <flowRegion vertical-align="middle">
-      	            <rect x="162.5"  y="0" width="125" height="36"/>
+      	            <rect x="162.5"  y="0" width="125" height="36" visibility="hidden"/>
       	    </flowRegion>
       	    <flowRegion vertical-align="bottom">
-      	            <rect x="312.5"  y="0" width="125" height="36"/>
+      	            <rect x="312.5"  y="0" width="125" height="36" visibility="hidden"/>
       	    </flowRegion>
       	    <flowDiv>
 	       <flowRegionBreak justification="middle"
@@ -78,16 +78,16 @@
       	 <flowText xmlns="http://xml.apache.org/batik/ext"
       	           font-size="24" xml:space="preserve">
       	    <flowRegion vertical-align="top">
-      	            <rect x="12.5"  y="0"  width="125" height="36"/>
-      	            <rect x="12.5"  y="40" width="125" height="36"/>
+      	            <rect x="12.5"  y="0"  width="125" height="36" visibility="hidden"/>
+      	            <rect x="12.5"  y="40" width="125" height="36" visibility="hidden"/>
       	    </flowRegion>
       	    <flowRegion vertical-align="middle">
-      	            <rect x="162.5"  y="0"  width="125" height="36"/>
-      	            <rect x="162.5"  y="40" width="125" height="36"/>
+      	            <rect x="162.5"  y="0"  width="125" height="36" visibility="hidden"/>
+      	            <rect x="162.5"  y="40" width="125" height="36" visibility="hidden"/>
       	    </flowRegion>
       	    <flowRegion vertical-align="bottom">
-      	            <rect x="312.5"  y="0"  width="125" height="36"/>
-      	            <rect x="312.5"  y="40" width="125" height="36"/>
+      	            <rect x="312.5"  y="0"  width="125" height="36" visibility="hidden"/>
+      	            <rect x="312.5"  y="40" width="125" height="36" visibility="hidden"/>
       	    </flowRegion>
       	    <flowDiv>
 	       <flowRegionBreak justification="middle"
@@ -110,13 +110,13 @@
       	 <flowText xmlns="http://xml.apache.org/batik/ext"
       	           font-size="24" xml:space="preserve">
       	    <flowRegion vertical-align="top">
-      	            <rect x="12.5"  y="0"  width="125" height="72"/>
+      	            <rect x="12.5"  y="0"  width="125" height="72" visibility="hidden"/>
       	    </flowRegion>
       	    <flowRegion vertical-align="middle">
-      	            <rect x="162.5"  y="0"  width="125" height="72"/>
+      	            <rect x="162.5"  y="0"  width="125" height="72" visibility="hidden"/>
       	    </flowRegion>
       	    <flowRegion vertical-align="bottom">
-      	            <rect x="312.5"  y="0"  width="125" height="72"/>
+      	            <rect x="312.5"  y="0"  width="125" height="72" visibility="hidden"/>
       	    </flowRegion>
       	    <flowDiv>
 	       <flowRegionBreak justification="middle"
@@ -139,13 +139,13 @@
       	 <flowText xmlns="http://xml.apache.org/batik/ext"
       	           font-size="24" xml:space="preserve">
       	    <flowRegion vertical-align="top">
-      	            <rect x="12.5"  y="0"  width="125" height="72"/>
+      	            <rect x="12.5"  y="0"  width="125" height="72" visibility="hidden"/>
       	    </flowRegion>
       	    <flowRegion vertical-align="middle">
-      	            <rect x="162.5"  y="0"  width="125" height="72"/>
+      	            <rect x="162.5"  y="0"  width="125" height="72" visibility="hidden"/>
       	    </flowRegion>
       	    <flowRegion vertical-align="bottom">
-      	            <rect x="312.5"  y="0"  width="125" height="72"/>
+      	            <rect x="312.5"  y="0"  width="125" height="72" visibility="hidden"/>
       	    </flowRegion>
       	    <flowDiv>
 	       <flowPara justification="middle"

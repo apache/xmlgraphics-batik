@@ -52,8 +52,8 @@
 
       <flowRoot font-size="20" xml:space="preserve">
          <flowRegion>
-	    <rect x="17"  y="80" width="200" height="200"/>
-	    <rect x="233" y="80" width="200" height="200"/>
+           <rect x="17"  y="80" width="200" height="200" visibility="hidden"/>
+           <rect x="233" y="80" width="200" height="200" visibility="hidden"/>
          </flowRegion>
 
          <flowDiv>
@@ -67,7 +67,7 @@
          <flowRegion>
             <path d="M  17,290 v150 h200 v-150 z
                      M 220,290 v150 h10  v-150 z
-                     M 233,290 v150 h200 v-150 z"/>
+                     M 233,290 v150 h200 v-150 z" visibility="hidden"/>
          </flowRegion>
 
          <flowDiv>
