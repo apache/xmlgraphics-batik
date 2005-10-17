@@ -63,7 +63,7 @@ public class FlowGlyphLayout extends GlyphLayout {
 
         int numChunks = acis.length;
         // System.out.println("Len: " + acis.length + " Size: " + 
-        //                    chunkLayouts.size());
+        //                     chunkLayouts.size());
 
         // Make a list of the GlyphVectors so we can construct a
         // multiGlyphVector that makes them all look like one big
@@ -77,7 +77,7 @@ public class FlowGlyphLayout extends GlyphLayout {
         BlockInfo [] blockInfos = new BlockInfo[acis.length];
         float      [] topSkip   = new float[acis.length];
         for (int chunk=0; clIter.hasNext(); chunk++) {
-            // System.out.println("Chunk: " + chunk);
+            // System.err.print("Chunk: " + chunk + " Str: '");
             AttributedCharacterIterator aci = acis[chunk];
             List gvl = new LinkedList();
             List layouts = (List)clIter.next();
@@ -296,7 +296,10 @@ public class FlowGlyphLayout extends GlyphLayout {
         
         int aciWordStart = aciIdx;
         GVTFont gvtFont = (GVTFont)aci.getAttribute(GVT_FONT);
-        float lineHeight = ((Float)aci.getAttribute(LINE_HEIGHT)).floatValue();
+        float lineHeight = 1.f;
+        Float lineHeightFloat = (Float)aci.getAttribute(LINE_HEIGHT);
+        if (lineHeightFloat != null) 
+            lineHeight = lineHeightFloat.floatValue();
         int runLimit = aci.getRunLimit(szAtts);
         WordInfo prevWI = null;
         float   [] lastAdvAdj = new float  [numGlyphs];
