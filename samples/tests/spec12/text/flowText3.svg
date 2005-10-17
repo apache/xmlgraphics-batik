@@ -52,7 +52,7 @@
          <flowRegion>
             <path d="M  17,80 v400 h200 v-400 z
                          M 220,80 v400 h10  v-400 z
-                         M 233,80 v400 h200 v-400 z"/>
+                         M 233,80 v400 h200 v-400 z" visibility="hidden"/>
          </flowRegion>
 
          <flowDiv>

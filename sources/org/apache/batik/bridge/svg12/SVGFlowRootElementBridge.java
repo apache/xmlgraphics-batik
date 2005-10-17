@@ -26,6 +26,7 @@ import java.awt.geom.Point2D;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.LinkedList;
@@ -95,6 +96,11 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
 
     public static final AttributedCharacterIterator.Attribute LINE_HEIGHT
         = GVTAttributedCharacterIterator.TextAttribute.LINE_HEIGHT;
+
+    /**
+     * Map of flowRegion elements to their graphics nodes.
+     */
+    protected Map flowRegionNodes;
 
     /**
      * Constructs a new bridge for the &lt;flowRoot> element.
@@ -234,6 +240,10 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
         CompositeGraphicsNode cgn = (CompositeGraphicsNode) node;
 
         // build flowRegion shapes
+        boolean isStatic = !ctx.isDynamic();
+        if (isStatic) {
+            flowRegionNodes = new HashMap();
+        }
         CompositeGraphicsNode cgn2 = (CompositeGraphicsNode) cgn.get(0);
         GVTBuilder builder = ctx.getGVTBuilder();
         for (Node n = getFirstChild(e); n != null; n = getNextSibling(n)) {
@@ -247,6 +257,9 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
                     GraphicsNode gn = builder.build(ctx, (Element) m);
                     if (gn != null) {
                         cgn2.add(gn);
+                        if (isStatic) {
+                            flowRegionNodes.put(m, gn);
+                        }
                     }
                 }
             }
@@ -428,6 +441,9 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
         return ret;
     }
 
+    /**
+     * Returns a list of Shapes that define the flow regions.
+     */
     protected List getRegions(BridgeContext ctx, Element element)  {
         // Element comes in as flowDiv element we want flowRoot.
         element = (Element)element.getParentNode();
@@ -455,13 +471,15 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
     protected void gatherRegionInfo(BridgeContext ctx, Element rgn,
                                     float verticalAlign, List regions) {
 
+        boolean isStatic = !ctx.isDynamic();
         for (Node n = getFirstChild(rgn); n != null; n = getNextSibling(n)) {
 
             if (n.getNodeType() != Node.ELEMENT_NODE) {
                 continue;
             }
 
-            GraphicsNode gn = ctx.getGraphicsNode((Element) n);
+            GraphicsNode gn = isStatic ? (GraphicsNode) flowRegionNodes.get(n)
+                                       : ctx.getGraphicsNode((Element) n);
             Shape s = gn.getOutline();
             if (s == null) {
                 continue;

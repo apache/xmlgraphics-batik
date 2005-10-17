@@ -48,8 +48,8 @@
 
       <flowRoot font-size="20">
          <flowRegion>
-	    <rect x="17"  y="80" width="200" height="400"/>
-	    <rect x="233" y="80" width="200" height="400"/>
+           <rect x="17"  y="80" width="200" height="400" visibility="hidden"/>
+           <rect x="233" y="80" width="200" height="400" visibility="hidden"/>
          </flowRegion>
 
          <flowDiv>

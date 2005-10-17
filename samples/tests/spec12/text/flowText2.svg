@@ -55,9 +55,9 @@
 
       <flowRoot font-size="20">
          <flowRegion>
-            <path d="M 67,80 l-50,400 h200 l-50,-400 z"/>
-	    <!-- <rect x="17"  y="80" width="200" height="400"/> -->
-	    <rect x="233" y="80" width="200" height="400"/>
+            <path d="M 67,80 l-50,400 h200 l-50,-400 z" visibility="hidden"/>
+	    <!-- <rect x="17"  y="80" width="200" height="400" visibility="hidden"/> -->
+	    <rect x="233" y="80" width="200" height="400" visibility="hidden"/>
          </flowRegion>
 
          <flowDiv>

@@ -45,9 +45,9 @@
        >B</text>
       <flowRoot font-size="10">
          <flowRegion>
-            <text x="225" y="450" font-size="500" font-weight="bold" text-anchor="middle">B</text>
-	    <!-- <rect x="17"  y="80" width="200" height="400"/> 
-	         <rect x="233" y="80" width="200" height="400"/>-->
+            <text x="225" y="450" font-size="500" font-weight="bold" text-anchor="middle" visibility="hidden">B</text>
+	    <!-- <rect x="17"  y="80" width="200" height="400" visibility="hidden"/> 
+	         <rect x="233" y="80" width="200" height="400" visibility="hidden"/>-->
          </flowRegion>
 
          <flowDiv>
