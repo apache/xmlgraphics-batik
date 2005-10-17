@@ -218,7 +218,7 @@ public abstract class AbstractParentNode extends AbstractNode {
 	    ExtendedNode n = childNodes.append((ExtendedNode)newChild);
 	    n.setParentNode(this);
 
-            nodeAdded(n);
+        nodeAdded(n);
 
 	    // Mutation event
 	    fireDOMNodeInsertedEvent(n);
