@@ -300,7 +300,7 @@ public class XBLEventSupport extends EventSupport {
         HashSet toBeStoppedGroups = new HashSet();
         for (int i = 0; i < minAncestor; i++) {
             NodeEventTarget node = ancestors[i];
-//             System.err.println("\t--   CAPTURE  " + ((Node) node).getNodeName());
+//             System.err.println("\t--   CAPTURING " + e.getType() + "  " + ((Node) node).getNodeName());
             if (isCustom) {
                 ces[i].setDispatchState(node, Event.CAPTURING_PHASE);
                 fireImplementationEventListeners(node, ces[i], true, true);
@@ -312,7 +312,7 @@ public class XBLEventSupport extends EventSupport {
         }
         for (int i = minAncestor; i < ancestors.length; i++) {
             NodeEventTarget node = ancestors[i];
-//             System.err.println("\t-- * CAPTURING " + ((Node) node).getNodeName());
+//             System.err.println("\t-- * CAPTURING " + e.getType() + "  " + ((Node) node).getNodeName());
             if (isCustom) {
                 ces[i].setDispatchState(node, Event.CAPTURING_PHASE);
                 fireImplementationEventListeners(node, ces[i], true, true);
@@ -337,32 +337,30 @@ public class XBLEventSupport extends EventSupport {
             toBeStoppedGroups.clear();
         }
         // AT_TARGET : fire local event listeners
-        if (someEvents) {
-//             System.err.println("\t-- * AT_TARGET " + ((Node) target).getNodeName());
-            if (isCustom) {
-                ce.setDispatchState(target, Event.AT_TARGET);
-            } else {
-                setEventPhase(aevt, Event.AT_TARGET);
-                setCurrentTarget(aevt, target);
-            }
-            fireImplementationEventListeners(target, e, false, isCustom);
-            fireEventListeners(target, e, false,
-                               stoppedGroups, toBeStoppedGroups, isCustom);
-            fireHandlerGroupEventListeners
-                (node, e, false, stoppedGroups, toBeStoppedGroups, isCustom);
-            stoppedGroups.addAll(toBeStoppedGroups);
-            toBeStoppedGroups.clear();
-            if (isCustom) {
-                preventDefault = preventDefault || ce.isDefaultPrevented();
-            } else {
-                preventDefault = preventDefault || aevt.isDefaultPrevented();
-            }
+//             System.err.println("\t-- * AT_TARGET " + e.getType() + "  " + ((Node) target).getNodeName());
+        if (isCustom) {
+            ce.setDispatchState(target, Event.AT_TARGET);
+        } else {
+            setEventPhase(aevt, Event.AT_TARGET);
+            setCurrentTarget(aevt, target);
+        }
+        fireImplementationEventListeners(target, e, false, isCustom);
+        fireEventListeners(target, e, false,
+                           stoppedGroups, toBeStoppedGroups, isCustom);
+        fireHandlerGroupEventListeners
+            (node, e, false, stoppedGroups, toBeStoppedGroups, isCustom);
+        stoppedGroups.addAll(toBeStoppedGroups);
+        toBeStoppedGroups.clear();
+        if (isCustom) {
+            preventDefault = preventDefault || ce.isDefaultPrevented();
+        } else {
+            preventDefault = preventDefault || aevt.isDefaultPrevented();
         }
         // BUBBLING_PHASE : fire event listeners from target to top
         if (e.getBubbles()) {
             for (int i = ancestors.length - 1; i >= minAncestor; i--) {
                 NodeEventTarget node = ancestors[i];
-//                 System.err.println("\t-- * BUBBLING  " + ((Node) node).getNodeName());
+//                 System.err.println("\t-- * BUBBLING  " + e.getType() + "  " + ((Node) node).getNodeName());
                 if (isCustom) {
                     ces[i].setDispatchState(node, Event.BUBBLING_PHASE);
                     fireImplementationEventListeners(node, ces[i], false, true);
@@ -393,7 +391,7 @@ public class XBLEventSupport extends EventSupport {
             }
             for (int i = minAncestor - 1; i >= 0; i--) {
                 NodeEventTarget node = ancestors[i];
-//                 System.err.println("\t--   BUBBLING  " + ((Node) node).getNodeName());
+//                 System.err.println("\t--   BUBBLING  " + e.getType() + "  " + ((Node) node).getNodeName());
                 if (isCustom) {
                     ces[i].setDispatchState(node, Event.BUBBLING_PHASE);
                     fireImplementationEventListeners

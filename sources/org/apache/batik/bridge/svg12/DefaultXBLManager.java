@@ -184,18 +184,18 @@ public class DefaultXBLManager implements XBLManager, XBLConstants {
         // Add document listeners.
         AbstractDocument doc = (AbstractDocument) document;
         XBLEventSupport es = (XBLEventSupport) doc.initializeEventSupport();
-        es.addEventListenerNS
+        es.addImplementationEventListenerNS
             (XMLConstants.XML_EVENTS_NAMESPACE_URI,
              "DOMNodeRemoved",
-             docRemovedListener, true, null);
-        es.addEventListenerNS
+             docRemovedListener, true);
+        es.addImplementationEventListenerNS
             (XMLConstants.XML_EVENTS_NAMESPACE_URI,
              "DOMNodeInserted",
-             docInsertedListener, true, null);
-        es.addEventListenerNS
+             docInsertedListener, true);
+        es.addImplementationEventListenerNS
             (XMLConstants.XML_EVENTS_NAMESPACE_URI,
              "DOMSubtreeModified",
-             docSubtreeListener, true, null);
+             docSubtreeListener, true);
 
         // Add definitions.
         for (int i = 0; i < defs.length; i++) {
@@ -231,15 +231,15 @@ public class DefaultXBLManager implements XBLManager, XBLConstants {
         // Remove document listeners.
         AbstractDocument doc = (AbstractDocument) document;
         XBLEventSupport es = (XBLEventSupport) doc.initializeEventSupport();
-        es.removeEventListenerNS
+        es.removeImplementationEventListenerNS
             (XMLConstants.XML_EVENTS_NAMESPACE_URI,
              "DOMNodeRemoved",
              docRemovedListener, true);
-        es.removeEventListenerNS
+        es.removeImplementationEventListenerNS
             (XMLConstants.XML_EVENTS_NAMESPACE_URI,
              "DOMNodeInserted",
              docInsertedListener, true);
-        es.removeEventListenerNS
+        es.removeImplementationEventListenerNS
             (XMLConstants.XML_EVENTS_NAMESPACE_URI,
              "DOMSubtreeModified",
              docSubtreeListener, true);
@@ -698,8 +698,8 @@ public class DefaultXBLManager implements XBLManager, XBLConstants {
      */
     protected void setXblShadowTree(BindableElement elt,
                                     XBLOMShadowTreeElement newShadow) {
-        XBLShadowTreeElement oldShadow
-            = (XBLShadowTreeElement) getXblShadowTree(elt);
+        XBLOMShadowTreeElement oldShadow
+            = (XBLOMShadowTreeElement) getXblShadowTree(elt);
         if (oldShadow != null) {
             fireShadowTreeEvent(elt, XBL_UNBINDING_EVENT_TYPE, oldShadow);
             ContentManager cm = getContentManager(oldShadow);
@@ -709,8 +709,16 @@ public class DefaultXBLManager implements XBLManager, XBLConstants {
             elt.setShadowTree(null);
             XBLRecord rec = getRecord(oldShadow);
             rec.boundElement = null;
+            oldShadow.removeEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI,
+                 "DOMSubtreeModified",
+                 docSubtreeListener, false);
         }
         if (newShadow != null) {
+            newShadow.addEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI,
+                 "DOMSubtreeModified",
+                 docSubtreeListener, false, null);
             fireShadowTreeEvent(elt, XBL_PREBIND_EVENT_TYPE, newShadow);
             elt.setShadowTree(newShadow);
             XBLRecord rec = getRecord(newShadow);
@@ -1452,10 +1460,18 @@ public class DefaultXBLManager implements XBLManager, XBLConstants {
             } else {
                 evt = XBLEventSupport.getUltimateOriginalEvent(evt);
                 target = evt.getTarget();
+                Node parent = getXblParentNode((Node) target);
+                if (parent != null) {
+                    invalidateChildNodes(parent);
+                }
                 if (target instanceof BindableElement) {
-                    // only bind it if it's not the child of a bound element
-                    Node n = getXblParentNode((Node) target);
-                    while (n != null) {
+                    // Only bind it if it's not the descendent of a bound
+                    // element.  If it is, and this new element will be
+                    // selected by an xbl:content element in the shadow tree,
+                    // the ContentManager will bind it.
+                    for (Node n = ((Node) target).getParentNode();
+                            n != null;
+                            n = n.getParentNode()) {
                         if (n instanceof BindableElement
                                 && getRecord(n).definitionElement != null) {
                             return;
@@ -1483,6 +1499,11 @@ public class DefaultXBLManager implements XBLManager, XBLConstants {
         protected LinkedList importsToBeRemoved = new LinkedList();
 
         /**
+         * List of nodes to have their XBL child lists invalidated.
+         */
+        protected LinkedList nodesToBeInvalidated = new LinkedList();
+
+        /**
          * Handles the event.
          */
         public void handleEvent(Event evt) {
@@ -1497,6 +1518,11 @@ public class DefaultXBLManager implements XBLManager, XBLConstants {
                 if (getXblBoundElement((Node) target) == null) {
                     importsToBeRemoved.add(target);
                 }
+            }
+
+            Node parent = getXblParentNode((Node) target);
+            if (parent != null) {
+                nodesToBeInvalidated.add(parent);
             }
         }
     }
@@ -1527,6 +1553,12 @@ public class DefaultXBLManager implements XBLManager, XBLConstants {
             docRemovedListener.importsToBeRemoved.clear();
             for (int i = 0; i < imps.length; i++) {
                 removeImport((Element) imps[i]);
+            }
+
+            Object[] nodes = docRemovedListener.nodesToBeInvalidated.toArray();
+            docRemovedListener.nodesToBeInvalidated.clear();
+            for (int i = 0; i < nodes.length; i++) {
+                invalidateChildNodes((Node) nodes[i]);
             }
         }
     }
