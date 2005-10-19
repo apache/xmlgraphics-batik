@@ -337,7 +337,7 @@ public class XBLEventSupport extends EventSupport {
             toBeStoppedGroups.clear();
         }
         // AT_TARGET : fire local event listeners
-//             System.err.println("\t-- * AT_TARGET " + e.getType() + "  " + ((Node) target).getNodeName());
+//         System.err.println("\t-- * AT_TARGET " + e.getType() + "  " + ((Node) target).getNodeName());
         if (isCustom) {
             ce.setDispatchState(target, Event.AT_TARGET);
         } else {

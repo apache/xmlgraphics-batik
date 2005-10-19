@@ -482,6 +482,13 @@ public class SVG12BridgeContext extends BridgeContext {
         public void handleEvent(Event evt) {
             listener.handleEvent(EventSupport.getUltimateOriginalEvent(evt));
         }
+
+        /**
+         * String representation of this listener wrapper.
+         */
+        public String toString() {
+            return super.toString() + " [wrapping " + listener.toString() + "]";
+        }
     }
 
     /**
