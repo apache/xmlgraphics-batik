@@ -201,7 +201,7 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
     }
 
     /**
-     * Invoked when the geometry of an graphical element has changed.
+     * Invoked when the geometry of a graphical element has changed.
      */
     protected void handleGeometryChanged() {
         node.setFilter(CSSUtilities.convertFilter(e, node, ctx));

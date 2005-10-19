@@ -53,9 +53,11 @@ import org.apache.batik.css.engine.value.svg12.LineHeightValue;
 import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.css.engine.value.ValueConstants;
 
+import org.apache.batik.dom.AbstractNode;
 import org.apache.batik.dom.events.NodeEventTarget;
 import org.apache.batik.dom.svg.SVGOMElement;
 import org.apache.batik.dom.svg12.SVGOMFlowRegionElement;
+import org.apache.batik.dom.svg12.XBLEventSupport;
 import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.dom.util.XLinkSupport;
 
@@ -69,9 +71,13 @@ import org.apache.batik.gvt.flow.TextLineBreaks;
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
 import org.apache.batik.gvt.text.TextPath;
 
+import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.SVG12Constants;
 import org.apache.batik.util.SVG12CSSConstants;
 import org.apache.batik.util.XMLConstants;
+
+import org.w3c.dom.events.Event;
+import org.w3c.dom.events.EventListener;
 
 /**
  * Bridge class for the &lt;flowRoot> element.
@@ -125,6 +131,11 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
      * Map of flowRegion elements to their graphics nodes.
      */
     protected Map flowRegionNodes;
+
+    /**
+     * Listener for flowRegion changes.
+     */
+    protected RegionChangeListener regionChangeListener;
 
     /**
      * Constructs a new bridge for the &lt;flowRoot> element.
@@ -267,6 +278,8 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
         boolean isStatic = !ctx.isDynamic();
         if (isStatic) {
             flowRegionNodes = new HashMap();
+        } else {
+            regionChangeListener = new RegionChangeListener();
         }
         CompositeGraphicsNode cgn2 = (CompositeGraphicsNode) cgn.get(0);
         GVTBuilder builder = ctx.getGVTBuilder();
@@ -285,6 +298,16 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
                             flowRegionNodes.put(m, gn);
                         }
                     }
+                }
+
+                if (!isStatic) {
+                    AbstractNode an = (AbstractNode) n;
+                    XBLEventSupport es =
+                        (XBLEventSupport) an.initializeEventSupport();
+                    es.addImplementationEventListenerNS
+                        (SVGConstants.SVG_NAMESPACE_URI,
+                         "shapechange",
+                         regionChangeListener, false);
                 }
             }
         }
@@ -821,6 +844,21 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
                                  SVGTextElementBridge parent,
                                  Element e) {
             super(ctx, parent, e);
+        }
+    }
+
+    /**
+     * svg:shapechange listener for flowRegion elements.
+     */
+    protected class RegionChangeListener implements EventListener {
+
+        /**
+         * Handles the svg:shapechange event.
+         */
+        public void handleEvent(Event evt) {
+            // the flowRegion geometry may have changed, so relayout text
+            laidoutText = null;
+            computeLaidoutText(ctx, e, node);
         }
     }
 }
