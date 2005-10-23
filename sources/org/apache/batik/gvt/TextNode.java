@@ -147,7 +147,13 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
      * Returns the text of this <tt>TextNode</tt> as a string.
      */
     public String getText() {
-        if (text == null) {
+
+        if (text != null) 
+            return text;
+
+        if (aci == null) {
+            text = "";
+        } else {
             StringBuffer buf = new StringBuffer(aci.getEndIndex());
             for (char c = aci.first();
                  c != CharacterIterator.DONE;
@@ -344,6 +350,7 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
 
         int[] ranges = textPainter.getSelected(beginMark, endMark);
         Object o = null;
+        if (aci == null) return o;
 
         // TODO: later we can return more complex things like
         // noncontiguous selections
