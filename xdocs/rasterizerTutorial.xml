@@ -213,7 +213,7 @@ raster image height is not provided (using the
 dimension by keeping the aspect ratio of the SVG document.
 </p>
 <source>
-t.addTranscodingHint(JPEGTranscoder.KEY_WIDTH, new Integer(100));
+t.addTranscodingHint(JPEGTranscoder.KEY_WIDTH, new Float(100));
 </source>
 <p>
 The transcoder will have the same behavior if you specify the
