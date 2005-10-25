@@ -1083,7 +1083,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      * registered for the capture phase as the 'default' behavior
      * for cursors is handled by the BridgeContext during the 
      * capture phase and the 'custom' behavior (handling of 'auto'
-     * on anchors, for example), is handled during the bubling phase.
+     * on anchors, for example), is handled during the bubbling phase.
      */
     public void addUIEventListeners(Document doc) {
         NodeEventTarget evtTarget = (NodeEventTarget)doc.getDocumentElement();
