@@ -75,17 +75,24 @@ public class XPathPatternContentSelector extends AbstractContentSelector {
                                        Element bound,
                                        String selector) {
         super(cm, content, bound);
+        expression = selector;
+        parse();
+    }
+
+    /**
+     * Parses the XPath selector.
+     */
+    protected void parse() {
+        context = new XPathContext();
         try {
-            xpath = new XPath(selector, null, prefixResolver, XPath.MATCH);
-            context = new XPathContext();
-            expression = selector;
+            xpath = new XPath(expression, null, prefixResolver, XPath.MATCH);
         } catch (javax.xml.transform.TransformerException te) {
             AbstractDocument doc
-                = (AbstractDocument) content.getOwnerDocument();
+                = (AbstractDocument) contentElement.getOwnerDocument();
             throw doc.createXPathException
                 (XPathException.INVALID_EXPRESSION_ERR,
                  "xpath.invalid.expression",
-                 new Object[] { selector, te.getMessage() });
+                 new Object[] { expression, te.getMessage() });
         }
     }
 
@@ -112,6 +119,7 @@ public class XPathPatternContentSelector extends AbstractContentSelector {
             selectedContent = new SelectedNodes();
             return true;
         }
+        parse();
         return selectedContent.update();
     }
 

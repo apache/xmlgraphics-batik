@@ -19,7 +19,7 @@ package org.apache.batik.dom.svg12;
 
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.svg.AttributeInitializer;
-import org.apache.batik.dom.svg.SVGStylableElement;
+import org.apache.batik.dom.svg.SVGGraphicsElement;
 
 import org.w3c.dom.Node;
 
@@ -30,7 +30,7 @@ import org.w3c.dom.Node;
  * @author <a href="mailto:cam%40mcc%2eid%2eau">Cameron McCormack</a>
  * @version $Id$
  */
-public class BindableElement extends SVGStylableElement {
+public class BindableElement extends SVGGraphicsElement {
 
     /**
      * The namespace URI of the custom element.
