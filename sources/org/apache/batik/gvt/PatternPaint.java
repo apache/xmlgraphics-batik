@@ -143,6 +143,10 @@ public class PatternPaint implements Paint {
         return patternTransform;
     }
 
+    public boolean getOverflow() {
+        return overflow;
+    }
+
     /**
      * Creates and returns a context used to generate the pattern.
      */
