@@ -207,7 +207,7 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
         cgn.add(cgn2);
 
         // second child is the text node
-        FlowTextNode tn = new FlowTextNode();
+        FlowTextNode tn = (FlowTextNode)instantiateGraphicsNode();
         tn.setLocation(getLocation(ctx, e));
 
         // specify the text painter to use
@@ -224,7 +224,7 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
      * Creates the graphics node for this element.
      */
     protected GraphicsNode instantiateGraphicsNode() {
-        return null; // createGraphicsNode is fully overridden
+        return new FlowTextNode();
     }
 
     /**
