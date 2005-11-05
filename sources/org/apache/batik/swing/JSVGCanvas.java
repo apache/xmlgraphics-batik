@@ -190,8 +190,12 @@ public class JSVGCanvas extends JSVGComponent {
     protected Map toolTipMap = null;
     protected EventListener toolTipListener = new ToolTipModifier();
     protected EventTarget   lastTarget = null;;
-    protected Set toolTipDocs = null;
-
+    protected Map toolTipDocs = null;
+    /**
+     * This is used as the value in the toolTipDocs WeakHashMap.
+     * This way we can tell if a document has already been added.
+     */
+    protected final static Object MAP_TOKEN = new Object();
     /**
      * The time of the last tool tip event.
      */
@@ -553,10 +557,10 @@ public class JSVGCanvas extends JSVGComponent {
 
     protected void installSVGDocument(SVGDocument doc) {
         if (toolTipDocs != null) {
-            Iterator i = toolTipDocs.iterator();
+            Iterator i = toolTipDocs.keySet().iterator();
             while (i.hasNext()) {
                 SVGDocument ttdoc;
-                ttdoc = (SVGDocument)((WeakReference)i.next()).get();
+                ttdoc = (SVGDocument)i.next();
                 if (ttdoc == null) continue;
 
                 EventTarget root;
@@ -1008,11 +1012,10 @@ public class JSVGCanvas extends JSVGComponent {
                 toolTipMap = new WeakHashMap();
             }
             if (toolTipDocs == null) {
-                toolTipDocs = new HashSet();
+                toolTipDocs = new WeakHashMap();
             }
             SVGDocument doc = (SVGDocument)elt.getOwnerDocument();
-            WeakReference wr = new WeakReference(doc);
-            if (toolTipDocs.add(wr)) {
+            if (toolTipDocs.put(doc, MAP_TOKEN) == null) {
                 EventTarget root;
                 root = (EventTarget)doc.getRootElement();
                 // On mouseover, it sets the tooltip to the given value
