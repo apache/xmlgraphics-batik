@@ -161,6 +161,9 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
                 }
             }
         }
+
+        fromBounds.clear();
+        dirtyNodes.clear();
         return ret;
     }
 
@@ -181,6 +184,7 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
             at.concatenate(nat);
         }
 
+        Filter f= gn.getFilter();
         Rectangle2D ret = null;
         if (gn instanceof CompositeGraphicsNode) {
             CompositeGraphicsNode cgn = (CompositeGraphicsNode)gn;
@@ -190,15 +194,23 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
                 GraphicsNode childGN = (GraphicsNode)iter.next();
                 Rectangle2D r2d = getNodeDirtyRegion(childGN, at);
                 if (r2d != null) {
+                    if (f != null) {
+                        // If we have a filter and a change region
+                        // Update our full filter extents.
+                        Shape s = at.createTransformedShape(f.getBounds2D());
+                        ret = s.getBounds2D();
+                        break;
+                    }
                     if ((ret == null) || (ret == NULL_RECT)) ret = r2d;
                     else ret = ret.createUnion(r2d);
                 }
             }
         } else {
             ret = (Rectangle2D)fromBounds.remove(gnWRef);
-            if (ret == null) 
-                ret = gn.getBounds();
-            else if (ret == NULL_RECT) 
+            if (ret == null) {
+                if (f != null) ret = f.getBounds2D();
+                else           ret = gn.getBounds();
+            } else if (ret == NULL_RECT) 
                 ret = null;
             if (ret != null)
                 ret = at.createTransformedShape(ret).getBounds2D();
