@@ -26,6 +26,7 @@ import java.awt.image.WritableRaster;
 
 import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.ext.awt.image.Light;
+import org.apache.batik.ext.awt.image.SpotLight;
 
 /**
  * 
@@ -160,8 +161,38 @@ public class SpecularLightingRed extends AbstractTiledRed{
         final double[][][] NA = bumpMap.getNormalArray(minX, minY, w, h);
 
         // System.out.println("Entering Specular Lighting");
-        if(!light.isConstant()){
-            final double[][] LA = new double[w][3];
+        if (light instanceof SpotLight) {
+            SpotLight slight = (SpotLight)light;
+            final double[][] LA = new double[w][4];
+            for(i=0; i<h; i++){
+                // System.out.println("Row: " + i);
+                final double [][] NR = NA[i];
+                slight.getLightRow4(x, y+i*scaleY, scaleX, w, NR, LA);
+                for (j=0; j<w; j++){
+                    // Get Normal 
+                    final double [] N = NR[j];
+                    
+                    // Get Light Vector
+                    final double [] L = LA[j];
+                    double vs = L[3];
+                    if (vs == 0) {
+                        a = 0;
+                    } else {
+                        L[2] += 1;
+                        norm = L[0]*L[0] + L[1]*L[1] + L[2]*L[2];
+                        norm = Math.sqrt(norm);
+                        double dot = N[0]*L[0] + N[1]*L[1] + N[2]*L[2];
+                        vs = vs*Math.pow(dot/norm, specularExponent);
+                        a = (int)(mult*vs + 0.5);
+                        if ((a & 0xFFFFFF00) != 0)
+                            a = ((a & 0x80000000) != 0)?0:255;
+                    }
+                    pixels[p++] = (a << 24 | pixel);
+                }
+                p += adjust;
+            }
+        } else if(!light.isConstant()){
+            final double[][] LA = new double[w][4];
             for(i=0; i<h; i++){
                 // System.out.println("Row: " + i);
                 final double [][] NR = NA[i];
@@ -172,20 +203,15 @@ public class SpecularLightingRed extends AbstractTiledRed{
                     
                     // Get Light Vector
                     final double [] L = LA[j];
-
-                    // Compute Half-way vector
                     L[2] += 1;
                     norm = L[0]*L[0] + L[1]*L[1] + L[2]*L[2];
-                    if(norm == 0) 
-                        a = (int)(mult+0.5);
-                    else {
-                        norm = Math.sqrt(norm);
-                        a = (int)(mult*Math.pow((N[0]*L[0] + 
-                                                 N[1]*L[1] + N[2]*L[2])/norm, 
-                                                specularExponent) + 0.5);
-                        if ((a & 0xFFFFFF00) != 0)
-                            a = ((a & 0x80000000) != 0)?0:255;
-                    }
+                    norm = Math.sqrt(norm);
+                    double dot = N[0]*L[0] + N[1]*L[1] + N[2]*L[2];
+                    // vs = vs/norm;
+                    norm = Math.pow(dot/norm, specularExponent);
+                    a = (int)(mult*norm + 0.5);
+                    if ((a & 0xFFFFFF00) != 0)
+                        a = ((a & 0x80000000) != 0)?0:255;
                     pixels[p++] = (a << 24 | pixel);
                 }
                 p += adjust;
