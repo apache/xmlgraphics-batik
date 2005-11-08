@@ -1248,6 +1248,7 @@ To display the available targets type:
     <java classname="${stylebook-class}" fork="yes">
       <classpath refid="libs-build-classpath"/>
       <arg line="targetDirectory=${docs} ${xdocs}/book.xml ${site-skin}"/>
+      <jvmarg value="-Djava.awt.headless=true"/>
     </java>
   </target>
 
