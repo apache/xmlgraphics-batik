@@ -27,7 +27,8 @@ import org.w3c.dom.svg.SVGPathSegList;
  * This class is the implementation of
  * the SVGAnimatedPathData interface.
  *
- * @author <a href="mailto:nicolas.socheleau@bitflash.com">Nicolas Socheleau</a>
+ * @author <a href="mailto:nicolas.socheleau@bitflash.com">Nicolas Socheleau</a>,
+ * <a href="mailto:andrest@world-affair.com">Andres Toussaint</a>
  * @version $Id$
  */
 public class SVGOMAnimatedPathData 
@@ -60,6 +61,11 @@ public class SVGOMAnimatedPathData
     protected AbstractSVGPathSegList pathSegs;
 
     /**
+     * SVGNormPathSegList mapping the static 'd' attribute.
+     */
+    protected AbstractSVGNormPathSegList normalizedPathSegs;
+	
+    /**
      * Default value for the 'd' attribute.
      */
     protected String defaultValue;
@@ -91,9 +97,30 @@ public class SVGOMAnimatedPathData
     }
 
     /**
+     * returns the SVGPathSegList mapping
+     * the normalized static 'd' attribute
+     * of the element.
+     * <p>A normalized path is composed only of 
+     * ABSOLUTE Moveto, Lineto and Cubicto segments (M,L,C). 
+     * Using this subset, you can preserve the path description 
+     * with less segment types. Be aware that the normalized d 
+     * attribute will be a larger String that the original.</p>
+     * <p>Relative values are transformed into Absoulte, 
+     * Quadratic curves are promoted to Cubic curves, and
+     * Arcs are converted into one or more Cubic curves 
+     * (one per quadrant).</p>
+     * <p>Modifications to the normalized SVGPathSegList will result 
+     * in substituting the original path with a set of normalized path 
+     * segments.
+     * </p>
+     *
+     * @return a path seg list containing the normalized version of the path.
      */
     public SVGPathSegList getNormalizedPathSegList(){
-        throw new RuntimeException("TODO :  getNormalizedPathSegList() !!");
+        if ( normalizedPathSegs == null ){
+            normalizedPathSegs = new SVGOMNormalizedPathSegList();
+        }
+         return normalizedPathSegs;
     }
           
 
@@ -117,6 +144,7 @@ public class SVGOMAnimatedPathData
     public void attrAdded(Attr node, String newv) {
         if (!changing && pathSegs != null) {
             pathSegs.invalidate();
+			if (normalizedPathSegs != null) normalizedPathSegs.invalidate();
         }
     }
 
@@ -126,6 +154,7 @@ public class SVGOMAnimatedPathData
     public void attrModified(Attr node, String oldv, String newv) {
         if (!changing && pathSegs != null) {
             pathSegs.invalidate();
+			if (normalizedPathSegs != null) normalizedPathSegs.invalidate();
         }
     }
 
@@ -135,6 +164,7 @@ public class SVGOMAnimatedPathData
     public void attrRemoved(Attr node, String oldv) {
         if (!changing && pathSegs != null) {
             pathSegs.invalidate();
+			if (normalizedPathSegs != null) normalizedPathSegs.invalidate();
         }
     }
     
@@ -187,4 +217,57 @@ public class SVGOMAnimatedPathData
             }
         }
     }
+	
+	
+	/**
+     * SVGPointList implementation for the
+     * static normalized 'points' attribute of the element.
+     * @author <a href="mailto:andrest@world-affair.com">Andres Toussaint</a>
+     */
+    public class SVGOMNormalizedPathSegList extends AbstractSVGNormPathSegList {
+
+        /**
+         * Create a DOMException.
+         */
+        protected DOMException createDOMException(short    type,
+                                                  String   key,
+                                                  Object[] args){
+            return element.createDOMException(type,key,args);
+        }
+
+        /**
+         * Create a SVGException.
+         */
+        protected SVGException createSVGException(short    type,
+                                                  String   key,
+                                                  Object[] args){
+
+            return ((SVGOMElement)element).createSVGException(type,key,args);
+        }
+
+        /**
+         * Retrieve the normalized value of the attribute 'points'.
+         */
+        protected String getValueAsString() throws SVGException {
+            Attr attr = element.getAttributeNodeNS(namespaceURI, localName);
+            if (attr == null) {
+                return defaultValue;
+            }
+            return attr.getValue();
+        }
+
+        /**
+         * Set the value of the attribute 'points'
+         */
+        protected void setAttributeValue(String value){
+            try{
+                changing = true;
+                element.setAttributeNS(namespaceURI, localName, value);
+            }
+            finally{
+                changing = false;
+            }
+        }
+    }
+	
 }
