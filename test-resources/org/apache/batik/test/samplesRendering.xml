@@ -375,6 +375,7 @@
         <test id="samples/tests/spec/scripting/intersectionList2.svg" />
         <test id="samples/tests/spec/scripting/line.svg" />
         <test id="samples/tests/spec/scripting/nestedsvg.svg" />
+        <test id="samples/tests/spec/scripting/normalizedPathTest.svg" />
         <test id="samples/tests/spec/scripting/paintType.svg" />
         <test id="samples/tests/spec/scripting/path.svg" />
         <test id="samples/tests/spec/scripting/pathLength.svg" />
