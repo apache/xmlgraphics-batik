@@ -337,8 +337,8 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
      */
     public boolean selectAll(double x, double y) {
         beginMark = textPainter.selectFirst(this);
-        endMark = textPainter.selectLast(this);
-        return true;
+        endMark   = textPainter.selectLast(this);
+        return true; // assume this always changes selection, for now.
     }
 
     /**
@@ -347,10 +347,10 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
      * @return an object containing the selected content.
      */
     public Object getSelection() {
-
-        int[] ranges = textPainter.getSelected(beginMark, endMark);
         Object o = null;
         if (aci == null) return o;
+
+        int[] ranges = textPainter.getSelected(beginMark, endMark);
 
         // TODO: later we can return more complex things like
         // noncontiguous selections

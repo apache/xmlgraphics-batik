@@ -48,6 +48,7 @@
   .f7 { font: italic bold 20/15px times; }
   .f8 { font: 700 20/1em times; }
   .f9 { font: 700 20/75% times; }
+  flowRegion > rect { fill: none; }
 ]]></style>
 
    <g id="testContent" font="8pt sanserif">

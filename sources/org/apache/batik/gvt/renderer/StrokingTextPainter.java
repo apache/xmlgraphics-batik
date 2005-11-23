@@ -162,6 +162,8 @@ public class StrokingTextPainter extends BasicTextPainter {
     public void paint(TextNode node, Graphics2D g2d) {
         AttributedCharacterIterator aci;
         aci = node.getAttributedCharacterIterator();
+        if (aci == null)
+            return;
 
         List textRuns = getTextRuns(node, aci);
 
@@ -1029,7 +1031,10 @@ public class StrokingTextPainter extends BasicTextPainter {
     public Shape getOutline(TextNode node) {
 
         GeneralPath outline = null;
-        AttributedCharacterIterator aci = node.getAttributedCharacterIterator();
+        AttributedCharacterIterator aci;
+        aci = node.getAttributedCharacterIterator();
+        if (aci == null)
+            return null;
 
         // get the list of text runs
         List textRuns = getTextRuns(node, aci);
@@ -1097,6 +1102,8 @@ public class StrokingTextPainter extends BasicTextPainter {
      public Rectangle2D getBounds2D(TextNode node) {
         AttributedCharacterIterator aci;
         aci = node.getAttributedCharacterIterator();
+        if (aci == null)
+            return null;
 
         // get the list of text runs
         List textRuns = getTextRuns(node, aci);
@@ -1412,6 +1419,9 @@ public class StrokingTextPainter extends BasicTextPainter {
     public Mark getMark(TextNode node, int index, boolean leadingEdge) {
         AttributedCharacterIterator aci;
         aci = node.getAttributedCharacterIterator();
+        if (aci == null)
+            return null;
+
         if ((index < aci.getBeginIndex()) ||
             (index > aci.getEndIndex()))
             return null;
@@ -1423,6 +1433,8 @@ public class StrokingTextPainter extends BasicTextPainter {
     protected Mark hitTest(double x, double y, TextNode node) {
         AttributedCharacterIterator aci;
         aci = node.getAttributedCharacterIterator();
+        if (aci == null)
+            return null;
                            
         // get the list of text runs
         List textRuns = getTextRuns(node, aci);
@@ -1446,6 +1458,9 @@ public class StrokingTextPainter extends BasicTextPainter {
     public Mark selectFirst(TextNode node) {
         AttributedCharacterIterator aci;
         aci = node.getAttributedCharacterIterator();
+        if (aci == null)
+            return null;
+
         TextHit textHit = new TextHit(aci.getBeginIndex(), false);
         return new BasicTextPainter.BasicMark(node, textHit);
     }
@@ -1456,6 +1471,9 @@ public class StrokingTextPainter extends BasicTextPainter {
     public Mark selectLast(TextNode node) {
         AttributedCharacterIterator aci;
         aci = node.getAttributedCharacterIterator();
+        if (aci == null)
+            return null;
+
         TextHit textHit = new TextHit(aci.getEndIndex()-1, false);
         return  new BasicTextPainter.BasicMark(node, textHit);
     }
@@ -1484,11 +1502,15 @@ public class StrokingTextPainter extends BasicTextPainter {
         }
 
         TextNode textNode = start.getTextNode();
+        if (textNode == null)
+            return null;
         if (textNode != finish.getTextNode()) 
             throw new Error("Markers are from different TextNodes!");
 
         AttributedCharacterIterator aci;
         aci = textNode.getAttributedCharacterIterator();
+        if (aci == null)
+            return null;
                              
         int[] result = new int[2];
         result[0] = start.getHit().getCharIndex();
@@ -1564,10 +1586,15 @@ public class StrokingTextPainter extends BasicTextPainter {
                 ("This Mark was not instantiated by this TextPainter class!");
         }
 
-        TextNode textNode = begin.getTextNode();
+        TextNode textNode = begin.getTextNode(); 
+        if (textNode == null)
+            return null;
         if (textNode != end.getTextNode()) 
             throw new Error("Markers are from different TextNodes!");
-        if (textNode == null)
+
+        AttributedCharacterIterator aci;
+        aci = textNode.getAttributedCharacterIterator();
+        if (aci == null)
             return null;
 
         int beginIndex = begin.getHit().getCharIndex();
@@ -1582,8 +1609,7 @@ public class StrokingTextPainter extends BasicTextPainter {
         }
 
         // get the list of text runs
-        List textRuns = getTextRuns
-            (textNode, textNode.getAttributedCharacterIterator());
+        List textRuns = getTextRuns(textNode, aci);
 
         GeneralPath highlightedShape = new GeneralPath();
 
