@@ -114,10 +114,11 @@
       document.getElementById("test3").setAttribute("class", "xxx");
       document.getElementById("test4").setAttribute("class", "");
       document.getElementById("test5").setAttribute("id", "foo");
-      regardTestInstance.scriptDone();
       toggleSelected(document.getElementById("cb"));
 
       document.getElementById("a").setAttribute("class", "");
+
+      regardTestInstance.scriptDone();
     }
   ]]></script>
 
