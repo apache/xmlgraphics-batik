@@ -111,6 +111,14 @@ public class JPEGRegistryEntry
                         // Something bad happened here...
                         filt = ImageTagRegistry.getBrokenLinkImage
                             (this, errCode, errParam);
+                    } catch (ThreadDeath td) {
+                        filt = ImageTagRegistry.getBrokenLinkImage
+                            (this, errCode, errParam);
+                        dr.setSource(filt);
+                        throw td;
+                    } catch (Throwable t) {
+                        filt = ImageTagRegistry.getBrokenLinkImage
+                            (this, errCode, errParam);
                     }
 
                     dr.setSource(filt);

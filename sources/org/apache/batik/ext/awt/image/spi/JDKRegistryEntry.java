@@ -107,17 +107,22 @@ public class JDKRegistryEntry extends AbstractRegistryEntry
         Thread t = new Thread() {
                 public void run() {
                     Filter filt = null;
+                    try {
+                        Toolkit tk = Toolkit.getDefaultToolkit();
+                        Image img = tk.createImage(url);
 
-                    Toolkit tk = Toolkit.getDefaultToolkit();
-                    Image img = tk.createImage(url);
-
-                    if (img != null) {
-                        RenderedImage ri = loadImage(img, dr);
-                        if (ri != null) {
-                            filt = new RedRable(GraphicsUtil.wrap(ri));
+                        if (img != null) {
+                            RenderedImage ri = loadImage(img, dr);
+                            if (ri != null) {
+                                filt = new RedRable(GraphicsUtil.wrap(ri));
+                            }
                         }
-                    }
-
+                    } catch (ThreadDeath td) {
+                        filt = ImageTagRegistry.getBrokenLinkImage
+                            (this, errCode, errParam);
+                        dr.setSource(filt);
+                        throw td;
+                    } catch (Throwable t) { }
                     if (filt == null)
                         filt = ImageTagRegistry.getBrokenLinkImage
                             (this, errCode, errParam);
