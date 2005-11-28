@@ -17,10 +17,11 @@
  */
 package org.apache.batik.swing;
 
-import java.awt.Rectangle;
-import java.awt.Dimension;
 import java.awt.Component;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.Rectangle;
 
 import java.awt.event.ComponentAdapter;
 /*
@@ -49,6 +50,8 @@ import org.apache.batik.dom.events.NodeEventTarget;
 import org.apache.batik.gvt.GraphicsNode;
 
 import org.apache.batik.swing.gvt.JGVTComponentListener;
+import org.apache.batik.swing.gvt.GVTTreeRendererListener;
+import org.apache.batik.swing.gvt.GVTTreeRendererEvent;
 import org.apache.batik.swing.svg.SVGDocumentLoaderAdapter;
 import org.apache.batik.swing.svg.SVGDocumentLoaderEvent;
 import org.apache.batik.swing.svg.SVGDocumentLoaderListener;
@@ -105,7 +108,7 @@ public class JSVGScrollPane extends JPanel
         // create components
         vertical = new JScrollBar(JScrollBar.VERTICAL, 0, 0, 0, 0);
         horizontal = new JScrollBar(JScrollBar.HORIZONTAL, 0, 0, 0, 0);
-		
+        
         // create a spacer next to the horizontal bar
         horizontalPanel = new JPanel(new BorderLayout());
         horizontalPanel.add(horizontal, BorderLayout.CENTER);
@@ -123,7 +126,7 @@ public class JSVGScrollPane extends JPanel
 		
         // by default, scrollbars are not visible
         horizontalPanel.setVisible(false);
-        vertical.setVisible(false);
+        vertical       .setVisible(false);
 		
         // addMouseWheelListener(new WheelListener());
 		
@@ -139,9 +142,10 @@ public class JSVGScrollPane extends JPanel
         // canvas listeners
         ScrollListener xlistener = createScrollListener();
         this.addComponentListener(xlistener);
-        canvas.addJGVTComponentListener(xlistener);
-        canvas.addGVTTreeBuilderListener(xlistener);
-        canvas.addUpdateManagerListener(xlistener);
+        canvas.addGVTTreeRendererListener(xlistener);
+        canvas.addJGVTComponentListener  (xlistener);
+        canvas.addGVTTreeBuilderListener (xlistener);
+        canvas.addUpdateManagerListener  (xlistener);
     }// JSVGScrollPane()
 
 
@@ -203,7 +207,7 @@ public class JSVGScrollPane extends JPanel
     {
         viewBox = null;
         horizontalPanel.setVisible(false);
-        vertical.setVisible(false);
+        vertical       .setVisible(false);
         revalidate();
     }// reset()
 	
@@ -342,7 +346,7 @@ public class JSVGScrollPane extends JPanel
     /** Handle scroll, zoom, and resize events */
     protected class ScrollListener extends ComponentAdapter 
         implements JGVTComponentListener, GVTTreeBuilderListener, 
-                   UpdateManagerListener
+                   GVTTreeRendererListener, UpdateManagerListener
     {
         protected boolean isReady = false;
 		
@@ -373,6 +377,22 @@ public class JSVGScrollPane extends JPanel
             viewBox = null;   // new document forget old viewBox if any.
         }// gvtRenderingCompleted()
 		
+        public void gvtRenderingCompleted(GVTTreeRendererEvent e) {
+            if (viewBox == null) {
+                resizeScrollBars();
+                return;
+            }
+
+            Rectangle2D newview = getViewBoxRect();
+            if ((newview.getX() != viewBox.getX()) ||
+                (newview.getY() != viewBox.getY()) ||
+                (newview.getWidth() != viewBox.getWidth()) ||
+                (newview.getHeight() != viewBox.getHeight())) {
+                viewBox = newview;
+                resizeScrollBars();
+            }
+        }
+
         public void updateCompleted(UpdateManagerEvent e) { 
             if (viewBox == null) {
                 resizeScrollBars();
@@ -392,6 +412,11 @@ public class JSVGScrollPane extends JPanel
 
         public void gvtBuildCancelled(GVTTreeBuilderEvent e) { }
         public void gvtBuildFailed   (GVTTreeBuilderEvent e) { }
+
+        public void gvtRenderingPrepare  (GVTTreeRendererEvent e) { }
+        public void gvtRenderingStarted  (GVTTreeRendererEvent e) { }
+        public void gvtRenderingCancelled(GVTTreeRendererEvent e) { }
+        public void gvtRenderingFailed   (GVTTreeRendererEvent e) { }
 
         public void managerStarted  (UpdateManagerEvent e) { }
         public void managerSuspended(UpdateManagerEvent e) { }
@@ -421,7 +446,7 @@ public class JSVGScrollPane extends JPanel
         if (vbt == null) vbt = new AffineTransform();
 
         Rectangle r2d = vbt.createTransformedShape(viewBox).getBounds();
-        // System.out.println("VB: " + r2d);
+        // System.err.println("VB: " + r2d);
 
         // compute translation
         int maxW = r2d.width;
@@ -434,13 +459,10 @@ public class JSVGScrollPane extends JPanel
 
         // System.err.println("   maxW = "+maxW+"; maxH = "+maxH + 
         //                    " tx = "+tx+"; ty = "+ty);
-        vertical.setValue(ty);
-        horizontal.setValue(tx);
 
         // Changing scrollbar visibility may change the
         // canvas's dimensions so get the end result.
-        Dimension vpSize = updateScrollbarVisibility
-            (tx, ty, maxW, maxH);
+        Dimension vpSize = updateScrollbarVisibility(tx, ty, maxW, maxH);
 
         // set scroll params
         vertical.  setValues(ty, vpSize.height, 0, maxH);
@@ -457,6 +479,11 @@ public class JSVGScrollPane extends JPanel
         vertical.  setUnitIncrement( (int) (0.2f * vpSize.height) );
         horizontal.setUnitIncrement( (int) (0.2f * vpSize.width) );
 		
+        doLayout();
+        horizontalPanel.doLayout();
+        horizontal.doLayout();
+        vertical.doLayout();
+
         ignoreScrollChange = false;
         //System.out.println("  -- end resizeScrollBars()");
     }// resizeScrollBars()
@@ -490,57 +517,25 @@ public class JSVGScrollPane extends JPanel
         // System.err.println("MAX: [" + maxW + "," + maxH + "]");
 
         // Fist check if we need either scrollbar (given maxVPW/H).
-        boolean vVis = (maxH > maxVPH) || (vertical.getValue() != 0);
-        boolean hVis = (maxW > maxVPW) || (horizontal.getValue() != 0);
-        Dimension ret = new Dimension();
+        boolean hVis = (maxW > maxVPW) || (tx != 0);
+        boolean vVis = (maxH > maxVPH) || (ty != 0);
+        // System.err.println("Vis flags: " + hVis +", " + vVis);
         
         // This makes sure that if one scrollbar is visible
         // we 'recheck' the other scroll bar with the minVPW/H
         // since making one visible makes the room for displaying content
         // in the other dimension smaller. (This also makes the
         // 'corner box' visible if both scroll bars are visible).
-        if (vVis) {
-            if (hVis) {
-                horizontalPanel.setVisible(true);
-                vertical.setVisible(true);
-                cornerBox.setVisible(true);
+        if      (vVis && !hVis) hVis = (maxW > minVPW);
+        else if (hVis && !vVis) vVis = (maxH > minVPH);
 
-                ret.width  = minVPW;
-                ret.height = minVPH;
-            } else {
-                vertical.setVisible(true);
-                ret.width = minVPW;
-                if (maxW > minVPW) {
-                    horizontalPanel.setVisible(true);
-                    cornerBox.setVisible(true);
-                    ret.height = minVPH;
-                } else {
-                    horizontalPanel.setVisible(false);
-                    cornerBox.setVisible(false);
-                    ret.height = maxVPH;
-                }
-            }
-        } else {
-            if (hVis) {
-                horizontalPanel.setVisible(true);
-                ret.height = minVPH;
-                if (maxH > minVPH) {
-                    vertical.setVisible(true);
-                    cornerBox.setVisible(true);
-                    ret.width  = minVPW;
-                } else {
-                    vertical.setVisible(false);
-                    cornerBox.setVisible(false);
-                    ret.width  = maxVPW;
-                }
-            } else {
-                vertical       .setVisible(false);
-                horizontalPanel.setVisible(false);
-                cornerBox      .setVisible(false);
-                ret.width  = maxVPW;
-                ret.height = maxVPH;
-            }
-        }
+        Dimension ret = new Dimension();
+        ret.width  = (hVis)?minVPW:maxVPW;
+        ret.height = (vVis)?minVPH:maxVPH;
+
+        vertical       .setVisible(vVis);
+        horizontalPanel.setVisible(hVis);
+        cornerBox      .setVisible(vVis && hVis);
 
         //  Return the new size of the canvas.
         return ret;
