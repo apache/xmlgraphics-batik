@@ -1336,6 +1336,11 @@ abstract class MultipleGradientPaintContext implements PaintContext {
             {
                 raster = getCachedRaster(dataModel, w, h);
                 saved = raster;
+                // NOTE:We would like to use 'x' & 'y' here instead of
+                // '0', '0' but this will fail on MacOSX.  Since it
+                // doesn't have an effect on other JVMs.
+                raster = raster.createWritableChild
+                    (raster.getMinX(), raster.getMinY(), w, h, 0, 0, null);
             }
 
         // Access raster internal int array. Because we use a DirectColorModel,
