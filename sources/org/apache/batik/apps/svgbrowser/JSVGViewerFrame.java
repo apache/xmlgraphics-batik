@@ -817,17 +817,18 @@ public class JSVGViewerFrame
                     }
 
                     if (st != null) {
+                        String fi = svgCanvas.getFragmentIdentifier();
                         if (svgDocument != null) {
                             ParsedURL docPURL 
                                 = new ParsedURL(svgDocument.getURL());
                             ParsedURL purl = new ParsedURL(docPURL, st);
-                            String fi = svgCanvas.getFragmentIdentifier();
                             fi = (fi == null) ? "" : fi;
                             if (docPURL.equals(purl) && t.equals(fi)) {
                                 return;
                             }
                         }
                         if (t.length() != 0) {
+                            st = st.substring(0, st.length()-(fi.length()+1));
                             st += "#" + t;
                         }
                         locationBar.setText(st);
@@ -2337,6 +2338,7 @@ public class JSVGViewerFrame
 
             if (s.indexOf("#") != -1) {
                 localHistory.update(s);
+                locationBar.setText(s);
                 application.addVisitedURI(s);
                 backAction.update();
                 forwardAction.update();
