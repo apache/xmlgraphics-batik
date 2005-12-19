@@ -397,9 +397,15 @@ class EventTargetWrapper extends NativeJavaObject {
             throws JavaScriptException {
             NativeJavaObject  njo = (NativeJavaObject)thisObj;
             if (args[1] instanceof Function) {
-                EventListener evtListener = new FunctionEventListener
-                    ((Function)args[1], interpreter);
-                listenerMap.put(args[1], new SoftReference(evtListener));
+                EventListener evtListener = null;
+                SoftReference sr = (SoftReference)listenerMap.get(args[1]);
+                if (sr != null) 
+                    evtListener = (EventListener)sr.get();
+                if (evtListener == null) {
+                    evtListener = new FunctionEventListener
+                        ((Function)args[1], interpreter);
+                    listenerMap.put(args[1], new SoftReference(evtListener));
+                }
                 // we need to marshall args
                 Class[] paramTypes = { String.class, Function.class,
                                        Boolean.TYPE };
@@ -411,10 +417,16 @@ class EventTargetWrapper extends NativeJavaObject {
                 return Undefined.instance;
             }
             if (args[1] instanceof NativeObject) {
-                EventListener evtListener =
-                    new HandleEventListener((Scriptable)args[1],
-                                            interpreter);
-                listenerMap.put(args[1], new SoftReference(evtListener));
+                EventListener evtListener = null;
+                SoftReference sr = (SoftReference)listenerMap.get(args[1]);
+                if (sr != null) 
+                    evtListener = (EventListener)sr.get();
+                if (evtListener == null) {
+                    evtListener = new HandleEventListener((Scriptable)args[1],
+                                                          interpreter);
+                    listenerMap.put(args[1], new SoftReference(evtListener));
+                }
+
                 // we need to marshall args
                 Class[] paramTypes = { String.class, Scriptable.class,
                                        Boolean.TYPE };
@@ -448,6 +460,7 @@ class EventTargetWrapper extends NativeJavaObject {
                 EventListener el = (EventListener)sr.get();
                 if (el == null)
                     return Undefined.instance;
+
                 // we need to marshall args
                 Class[] paramTypes = { String.class, Function.class,
                                        Boolean.TYPE };
@@ -469,7 +482,6 @@ class EventTargetWrapper extends NativeJavaObject {
                                        Boolean.TYPE };
                 for (int i = 0; i < args.length; i++)
                     args[i] = Context.toType(args[i], paramTypes[i]);
-
                 ((EventTarget)njo.unwrap()).removeEventListener
                     ((String)args[0], el, ((Boolean)args[2]).booleanValue());
                 return Undefined.instance;
