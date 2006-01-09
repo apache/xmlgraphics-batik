@@ -93,6 +93,11 @@ public class SVGConverterURLSource implements SVGConverterSource {
 
         return purl.equals(((SVGConverterURLSource)o).purl);
     }
+    
+    public int hashCode() {
+        return purl.hashCode();
+    }
+
 
     public InputStream openStream() throws IOException {
         return purl.openStream();
