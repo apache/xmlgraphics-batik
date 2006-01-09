@@ -790,52 +790,51 @@ public class JSVGViewerFrame
                     t = st.substring(i + 1);
                     st = st.substring(0, i);
                 }
-                if (!st.equals("")) {
-                    try{
-                        File f = new File(st);
-                        if (f.exists()) {
-                            if (f.isDirectory()) {
-                                st = null;
-                            } else {
-                                try {
-                                    st = f.getCanonicalPath();
-                                    if (st.startsWith("/")) {
-                                        st = "file:" + st;
-                                    } else {
-                                        st = "file:/" + st;
-                                    }
-                                } catch (IOException ex) {
-                                }
-                            }
-                        }
-                    }catch(SecurityException se){
-                        // Could not patch the file URI for security
-                        // reasons (e.g., when run as an unsigned
-                        // JavaWebStart jar): file access is not
-                        // allowed. Loading will fail, but there is
-                        // nothing more to do at this point.
-                    }
 
-                    if (st != null) {
-                        String fi = svgCanvas.getFragmentIdentifier();
-                        if (svgDocument != null) {
-                            ParsedURL docPURL 
-                                = new ParsedURL(svgDocument.getURL());
-                            ParsedURL purl = new ParsedURL(docPURL, st);
-                            fi = (fi == null) ? "" : fi;
-                            if (docPURL.equals(purl) && t.equals(fi)) {
-                                return;
+                if (st.equals("")) 
+                    return;
+
+                try{
+                    File f = new File(st);
+                    if (f.exists()) {
+                        if (f.isDirectory()) {
+                            return;
+                        } else {
+                            try {
+                                st = f.getCanonicalPath();
+                                if (st.startsWith("/")) {
+                                    st = "file:" + st;
+                                } else {
+                                    st = "file:/" + st;
+                                }
+                            } catch (IOException ex) {
                             }
                         }
-                        if (t.length() != 0) {
-                            st = st.substring(0, st.length()-(fi.length()+1));
-                            st += "#" + t;
-                        }
-                        locationBar.setText(st);
-                        locationBar.addToHistory(st);
-                        showSVGDocument(st);
+                    }
+                }catch(SecurityException se){
+                    // Could not patch the file URI for security
+                    // reasons (e.g., when run as an unsigned
+                    // JavaWebStart jar): file access is not
+                    // allowed. Loading will fail, but there is
+                    // nothing more to do at this point.
+                }
+
+                String fi = svgCanvas.getFragmentIdentifier();
+                if (svgDocument != null) {
+                    ParsedURL docPURL 
+                        = new ParsedURL(svgDocument.getURL());
+                    ParsedURL purl = new ParsedURL(docPURL, st);
+                    fi = (fi == null) ? "" : fi;
+                    if (docPURL.equals(purl) && t.equals(fi)) {
+                        return;
                     }
                 }
+                if (t.length() != 0) {
+                    st += "#" + t;
+                }
+                locationBar.setText(st);
+                locationBar.addToHistory(st);
+                showSVGDocument(st);
             }
         });
 
@@ -2045,11 +2044,6 @@ public class JSVGViewerFrame
         stopAction.update(false);
         svgCanvas.setCursor(DEFAULT_CURSOR);
         String s = svgDocumentURL;
-        String t = svgCanvas.getFragmentIdentifier();
-        if (t != null) {
-            s += "#" + t;
-        }
-
         locationBar.setText(s);
         if (title == null) {
             title = getTitle();
