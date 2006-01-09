@@ -55,11 +55,6 @@ import org.apache.batik.gvt.text.TextSpanLayout;
  */
 public class GlyphLayout implements TextSpanLayout {
 
-    public static final char SOFT_HYPHEN       = 0x00AD;
-    public static final char ZERO_WIDTH_SPACE  = 0x200B;
-    public static final char ZERO_WIDTH_JOINER = 0x200D;
-    public static final char SPACE             = ' ';
-
     private GVTGlyphVector gv;
     private GVTFont font;
     private GVTLineMetrics metrics;

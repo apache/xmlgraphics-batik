@@ -1024,10 +1024,10 @@ public class SVGConverter {
         String dest = null;
         if (suffixStart != -1) {
             // Replace existing suffix.
-            dest = new String(oldName.substring(0, suffixStart) + newSuffix);
+            dest = oldName.substring(0, suffixStart) + newSuffix;
         } else {
             // Add new suffix.
-            dest = new String(oldName + newSuffix);
+            dest = oldName + newSuffix;
         }
 
         return dest;

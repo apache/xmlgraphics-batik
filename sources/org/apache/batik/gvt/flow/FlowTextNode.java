@@ -23,6 +23,24 @@ import java.util.List;
 import org.apache.batik.gvt.TextNode;
 import org.apache.batik.gvt.TextPainter;
 
+import java.text.AttributedCharacterIterator;
+import java.util.ArrayList;
+import java.util.Iterator;
+
+import java.awt.geom.Point2D;
+import java.awt.font.FontRenderContext;
+import java.awt.font.TextAttribute;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Set;
+
+import org.apache.batik.gvt.font.GVTFont;
+import org.apache.batik.gvt.font.GVTGlyphVector;
+import org.apache.batik.gvt.font.GVTLineMetrics;
+import org.apache.batik.gvt.font.MultiGlyphVector;
+import org.apache.batik.gvt.text.GlyphLayout;
+import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
+import org.apache.batik.gvt.renderer.StrokingTextPainter.TextRun;
 
 /**
  * One line Class Desc
@@ -44,5 +62,4 @@ public class FlowTextNode extends TextNode{
         else
             this.textPainter = textPainter;
     }
-
 };

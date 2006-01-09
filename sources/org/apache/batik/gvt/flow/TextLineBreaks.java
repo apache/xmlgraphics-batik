@@ -68,6 +68,7 @@ public class TextLineBreaks {
             return;
         char ch = aci.current(), prevCh = (char)-1;
         byte         cls = getCharCharClass(ch);
+        if (cls == CHAR_CLASS_LF) cls = CHAR_CLASS_BK;
         byte      curCls = cls;
         byte     prevCls = cls;
         byte prevPrevCls = -1;
@@ -77,6 +78,7 @@ public class TextLineBreaks {
         int ich = wordBegin+1;
         int lineEnd = aci.getRunLimit(lineBrks);
 
+        // handle case where input starts with an LF
         if (cls >= CHAR_CLASS_CM) cls = CHAR_CLASS_AL;
 
         for (ch = aci.next();
@@ -97,7 +99,8 @@ public class TextLineBreaks {
                 lineEnd = aci.getRunLimit(lineBrks);
                 continue;
             }
-              // handle spaces
+
+            // handle spaces
             curCls = getCharCharClass(ch);
             if (curCls == CHAR_CLASS_SP) {
                 // pbrk[ich-1] = BREAK_ACTION_PROHIBITED;
@@ -121,6 +124,24 @@ public class TextLineBreaks {
             if ((ch == CHAR_ZERO_WIDTH_JOINER) ||
                 (prevCh == CHAR_ZERO_WIDTH_JOINER))
                 continue; // Don't allow break around JOINER.
+
+            if ((curCls == CHAR_CLASS_BK) || (curCls == CHAR_CLASS_LF)) {
+                as.addAttribute(WORD_LIMIT, new Integer(wordCnt++),
+                                wordBegin, ich);
+                wordBegin = ich;
+                cls = CHAR_CLASS_BK;
+                continue;
+            }
+            if (prevCls == CHAR_CLASS_CR) {
+                as.addAttribute(WORD_LIMIT, new Integer(wordCnt++),
+                                wordBegin, ich-1);
+                wordBegin = ich-1;
+                cls = CHAR_CLASS_BK;
+                continue;
+            }
+            if (curCls == CHAR_CLASS_CR) {
+                continue;
+            }
  
             // handle combining marks
             if (curCls == CHAR_CLASS_CM) {
@@ -139,6 +160,11 @@ public class TextLineBreaks {
                     }
                 }
                 // pbrk[ich-1] = BREAK_ACTION_PROHIBITED;
+                continue;
+            }
+
+            if (cls == CHAR_CLASS_BK) {
+                cls = curCls;
                 continue;
             }
 
@@ -255,11 +281,11 @@ public class TextLineBreaks {
     final public static byte CHAR_CLASS_SA = 20;
     final public static byte CHAR_CLASS_SP = 21;
     final public static byte CHAR_CLASS_BK = 22;
-    final public static byte CHAR_CLASS_AI = 23;
-    final public static byte CHAR_CLASS_CR = 24;
-    final public static byte CHAR_CLASS_LF = 25;
-    final public static byte CHAR_CLASS_SG = 26;
-    final public static byte CHAR_CLASS_XX = 27;
+    final public static byte CHAR_CLASS_AI = CHAR_CLASS_AL; // 23;
+    final public static byte CHAR_CLASS_CR = 24; // Can't occur (space res)
+    final public static byte CHAR_CLASS_LF = 25; // Can't occur (space res)
+    final public static byte CHAR_CLASS_SG = CHAR_CLASS_AL; // 26;
+    final public static byte CHAR_CLASS_XX = CHAR_CLASS_AL; // 27;
     final public static byte CHAR_CLASS_CB = 28;
 
     final public static String [] clsStrs = {
