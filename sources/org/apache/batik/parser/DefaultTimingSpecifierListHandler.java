@@ -18,17 +18,33 @@
 package org.apache.batik.parser;
 
 /**
- * This interface must be implemented and then registered as the
- * handler of a {@link ClockParser} instance in order
- * to be notified of parsing events.
+ * An adapter class for {@link TimingSpecifierListHandler}.
  *
  * @author <a href="mailto:cam%40mcc%2eid%2eau">Cameron McCormack</a>
  * @version $Id$
  */
-public interface ClockHandler {
+public class DefaultTimingSpecifierListHandler
+        extends DefaultTimingSpecifierHandler
+        implements TimingSpecifierListHandler {
 
     /**
-     * Invoked when an clock value is parsed.
+     * The default handler.
      */
-    void clockValue(float clockValue);
+    public final static TimingSpecifierListHandler INSTANCE
+        = new DefaultTimingSpecifierListHandler();
+
+    protected DefaultTimingSpecifierListHandler() {
+    }
+
+    /**
+     * Invoked when parsing of a timing specifier list commences.
+     */
+    public void startTimingSpecifierList() {
+    }
+
+    /**
+     * Invoked when parsing of a timing specifier list ends.
+     */
+    public void endTimingSpecifierList() {
+    }
 }

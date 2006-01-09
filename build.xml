@@ -494,6 +494,7 @@ To display the available targets type:
                                transcoder-jar,
                                bridge-jar,
                                swing-jar,
+			       anim-jar,
                                extension-jar,
                                xml-jar,
                                root-jar,
@@ -820,6 +821,18 @@ To display the available targets type:
       </fileset>
       <fileset dir="${resources}" excludes="**/.svn/">
         <include name="${package-prefix}/swing/**/resources/*"/>
+      </fileset>
+    </jar>
+  </target>
+
+  <!-- Animation (dependencies: dom, util, xml, parser) -->
+  <target name="anim-jar" depends="compile, prepare-build">
+    <jar jarfile="${build}/lib/${project}-anim.jar">
+      <fileset dir="${dest}">
+        <include name="${package-prefix}/anim/*.class"/>
+      </fileset>
+      <fileset dir="${resources}" excludes="**/.svn/">
+        <include name="${package-prefix}/anim/**/resources/*"/>
       </fileset>
     </jar>
   </target>

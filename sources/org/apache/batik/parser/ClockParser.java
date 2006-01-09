@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2000  The Apache Software Foundation 
+   Copyright 2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -17,29 +17,54 @@
  */
 package org.apache.batik.parser;
 
+import java.io.IOException;
+
 /**
- * This interface represents an event-based parser for the SVG clock
- * values.
+ * A parser for clock values.
  *
- * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
+ * @author <a href="mailto:cam%40mcc%2eid%2eau">Cameron McCormack</a>
  * @version $Id$
  */
-public interface ClockParser extends Parser {
-    /**
-     * Allows an application to register an clock handler.
-     *
-     * <p>If the application does not register a handler, all
-     * events reported by the parser will be silently ignored.
-     *
-     * <p>Applications may register a new or different handler in the
-     * middle of a parse, and the parser must begin using the new
-     * handler immediately.</p>
-     * @param handler The clock handler.
-     */
-    void setClockHandler(ClockHandler handler);
+public class ClockParser extends TimingParser {
 
     /**
-     * Returns the clock handler in use.
+     * The handler used to report parse events.
      */
-    ClockHandler getClockHandler();
+    protected ClockHandler clockHandler;
+
+    /**
+     * Creates a new ClockParser.
+     */
+    public ClockParser() {
+        super(false, false);
+    }
+
+    /**
+     * Registers a parse event handler.
+     */
+    public void setClockHandler(ClockHandler handler) {
+        clockHandler = handler;
+    }
+
+    /**
+     * Returns the parse event handler in use.
+     */
+    public ClockHandler getClockHandler() {
+        return clockHandler;
+    }
+
+    /**
+     * Parses a clock value.
+     */
+    protected void doParse() throws ParseException, IOException {
+        current = reader.read();
+        float clockValue = parseClockValue();
+        if (current != -1) {
+            reportError("end.of.stream.expected",
+                        new Object[] { new Integer(current) });
+        }
+        if (clockHandler != null) {
+            clockHandler.clockValue(clockValue);
+        }
+    }
 }
