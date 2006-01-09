@@ -78,6 +78,10 @@ public class SVGConverterFileSource implements SVGConverterSource {
         return file.equals(((SVGConverterFileSource)o).file);
     }
 
+    public int hashCode() {
+        return file.hashCode();
+    }
+
     public InputStream openStream() throws FileNotFoundException{
         return new FileInputStream(file);
     }
