@@ -43,8 +43,7 @@
       	    <rect x="312.5" y="0" width="125" height="36"/>
 	 </g>
 
-      	 <flowText xmlns="http://xml.apache.org/batik/ext"
-      	           font-size="24" xml:space="preserve">
+      	 <flowRoot font-size="24" xml:space="preserve">
       	    <flowRegion vertical-align="top">
       	            <rect x="12.5"  y="0" width="125" height="36" visibility="hidden"/>
       	    </flowRegion>
@@ -62,7 +61,7 @@
                <flowRegionBreak justification="middle"
 		      >Try bottom</flowRegionBreak>
 	    </flowDiv>
-      	 </flowText>
+      	 </flowRoot>
       </g>
 
       <g font-family="serif" transform="translate(0,120)" >
@@ -75,8 +74,7 @@
       	    <rect x="312.5" y="40" width="125" height="36"/>
 	 </g>
 
-      	 <flowText xmlns="http://xml.apache.org/batik/ext"
-      	           font-size="24" xml:space="preserve">
+      	 <flowRoot font-size="24" xml:space="preserve">
       	    <flowRegion vertical-align="top">
       	            <rect x="12.5"  y="0"  width="125" height="36" visibility="hidden"/>
       	            <rect x="12.5"  y="40" width="125" height="36" visibility="hidden"/>
@@ -97,7 +95,7 @@
                <flowRegionBreak justification="middle"
 		      >Bottom two lines</flowRegionBreak>
 	    </flowDiv>
-      	 </flowText>
+      	 </flowRoot>
       </g>
 
       <g font-family="serif" transform="translate(0,220)" >
@@ -107,8 +105,7 @@
       	    <rect x="312.5" y="0"  width="125" height="72"/>
 	 </g>
 
-      	 <flowText xmlns="http://xml.apache.org/batik/ext"
-      	           font-size="24" xml:space="preserve">
+      	 <flowRoot font-size="24" xml:space="preserve">
       	    <flowRegion vertical-align="top">
       	            <rect x="12.5"  y="0"  width="125" height="72" visibility="hidden"/>
       	    </flowRegion>
@@ -126,7 +123,7 @@
                <flowRegionBreak justification="middle"
 		      >Bottom two lines</flowRegionBreak>
 	    </flowDiv>
-      	 </flowText>
+      	 </flowRoot>
       </g>
 
       <g font-family="serif" transform="translate(0,320)" >
@@ -136,8 +133,7 @@
       	    <rect x="312.5" y="0"  width="125" height="72"/>
 	 </g>
 
-      	 <flowText xmlns="http://xml.apache.org/batik/ext"
-      	           font-size="24" xml:space="preserve">
+      	 <flowRoot font-size="24" xml:space="preserve">
       	    <flowRegion vertical-align="top">
       	            <rect x="12.5"  y="0"  width="125" height="72" visibility="hidden"/>
       	    </flowRegion>
@@ -161,12 +157,12 @@
                <flowRegionBreak justification="middle"
 		      >two lines</flowRegionBreak>
 	    </flowDiv>
-      	 </flowText>
+      	 </flowRoot>
       </g>
    </g>
 
     <!-- ============================================================= -->
     <!-- Batik sample mark                                             -->
     <!-- ============================================================= -->
-    <use xlink:href="../batikLogo.svg#Batik_Tag_Box" />
+    <use xlink:href="../../../batikLogo.svg#Batik_Tag_Box" />
 </svg>

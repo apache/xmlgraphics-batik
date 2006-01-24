@@ -588,7 +588,7 @@ public class JGVTComponent extends JComponent {
 
     public void setRenderingTransform(AffineTransform at, 
                                       boolean performRedraw) {
-        renderingTransform = at;
+        renderingTransform = new AffineTransform(at);
         suspendInteractions = true;
         if (eventDispatcher != null) {
             try {
@@ -616,14 +616,14 @@ public class JGVTComponent extends JComponent {
      * Returns the initial transform.
      */
     public AffineTransform getInitialTransform() {
-        return initialTransform;
+        return new AffineTransform(initialTransform);
     }
 
     /**
      * Returns the current rendering transform.
      */
     public AffineTransform getRenderingTransform() {
-        return renderingTransform;
+        return new AffineTransform(renderingTransform);
     }
 
     /**

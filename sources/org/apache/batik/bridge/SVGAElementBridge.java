@@ -22,6 +22,7 @@ import java.awt.Cursor;
 import org.apache.batik.dom.events.AbstractEvent;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.gvt.GraphicsNode;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
@@ -36,6 +37,10 @@ import org.w3c.dom.svg.SVGAElement;
  * @version $Id$
  */
 public class SVGAElementBridge extends SVGGElementBridge {
+
+    protected AnchorListener          al;
+    protected CursorMouseOverListener bl;
+    protected CursorMouseOutListener  cl;
 
     /**
      * Constructs a new bridge for the &lt;a> element.
@@ -72,20 +77,36 @@ public class SVGAElementBridge extends SVGGElementBridge {
 
         if (ctx.isInteractive()) {
             EventTarget target = (EventTarget)e;
-            EventListener l = new AnchorListener(ctx.getUserAgent());
-            target.addEventListener(SVG_EVENT_CLICK, l, false);
-            ctx.storeEventListener(target, SVG_EVENT_CLICK, l, false);
+            al = new AnchorListener(ctx.getUserAgent());
+            target.addEventListener(SVG_EVENT_CLICK, al, false);
+            ctx.storeEventListener(target, SVG_EVENT_CLICK, al, false);
 
-            l = new CursorMouseOverListener(ctx.getUserAgent());
-            target.addEventListener(SVG_EVENT_MOUSEOVER, l, false);
-            ctx.storeEventListener(target, SVG_EVENT_MOUSEOVER, l, false);
+            bl = new CursorMouseOverListener(ctx.getUserAgent());
+            target.addEventListener(SVG_EVENT_MOUSEOVER, bl, false);
+            ctx.storeEventListener(target, SVG_EVENT_MOUSEOVER, bl, false);
 
-            l = new CursorMouseOutListener(ctx.getUserAgent());
-            target.addEventListener(SVG_EVENT_MOUSEOUT, l, false);
-            ctx.storeEventListener(target, SVG_EVENT_MOUSEOUT, l, false);
+            cl = new CursorMouseOutListener(ctx.getUserAgent());
+            target.addEventListener(SVG_EVENT_MOUSEOUT, cl, false);
+            ctx.storeEventListener(target, SVG_EVENT_MOUSEOUT, cl, false);
         }
     }
 
+    public void dispose() {
+        EventTarget target = (EventTarget)e;
+        if (al != null) {
+            target.removeEventListener(SVG_EVENT_CLICK, al, false);
+            al = null;
+        }
+        if (bl != null) {
+            target.removeEventListener(SVG_EVENT_MOUSEOVER, bl, false);
+            bl = null;
+        }
+        if (cl != null) {
+            target.removeEventListener(SVG_EVENT_MOUSEOUT, cl, false);
+            cl = null;
+        }
+        super.dispose();
+    }
     /**
      * Returns true as the &lt;a> element is a container.
      */
