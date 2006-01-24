@@ -38,6 +38,10 @@ import org.w3c.dom.svg.SVGAElement;
  */
 public class SVGAElementBridge extends SVGGElementBridge {
 
+    protected AnchorListener          al;
+    protected CursorMouseOverListener bl;
+    protected CursorMouseOutListener  cl;
+
     /**
      * Constructs a new bridge for the &lt;a> element.
      */
@@ -73,32 +77,56 @@ public class SVGAElementBridge extends SVGGElementBridge {
 
         if (ctx.isInteractive()) {
             NodeEventTarget target = (NodeEventTarget)e;
-            EventListener l = new AnchorListener(ctx.getUserAgent());
+            al = new AnchorListener(ctx.getUserAgent());
             target.addEventListenerNS
                 (XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_CLICK,
-                 l, false, null);
+                 al, false, null);
             ctx.storeEventListenerNS
-                (target, XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_CLICK,
-                 l, false);
+                (target, 
+                 XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_CLICK,
+                 al, false);
 
-            l = new CursorMouseOverListener(ctx.getUserAgent());
+            bl = new CursorMouseOverListener(ctx.getUserAgent());
             target.addEventListenerNS
                 (XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_MOUSEOVER,
-                 l, false, null);
+                 bl, false, null);
             ctx.storeEventListenerNS
-                (target, XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_MOUSEOVER,
-                 l, false);
-
-            l = new CursorMouseOutListener(ctx.getUserAgent());
+                (target, 
+                 XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_MOUSEOVER,
+                 bl, false);
+            cl = new CursorMouseOutListener(ctx.getUserAgent());
             target.addEventListenerNS
                 (XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_MOUSEOUT,
-                 l, false, null);
+                 cl, false, null);
             ctx.storeEventListenerNS
-                (target, XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_MOUSEOUT,
-                 l, false);
+                (target, 
+                 XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_MOUSEOUT,
+                 cl, false);
         }
     }
 
+    public void dispose() {
+        NodeEventTarget target = (NodeEventTarget)e;
+        if (al != null) {
+            target.removeEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_CLICK, 
+                 al, false);
+            al = null;
+        }
+        if (bl != null) {
+            target.removeEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_MOUSEOVER, 
+                 bl, false);
+            bl = null;
+        }
+        if (cl != null) {
+            target.removeEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_MOUSEOUT, 
+                 cl, false);
+            cl = null;
+        }
+        super.dispose();
+    }
     /**
      * Returns true as the &lt;a> element is a container.
      */

@@ -81,6 +81,7 @@ public class FlowRegions {
     }
 
     public int getNumRangeOnLine() {
+        if (validRanges == null) return 0;
         return validRanges.size();
     }
     public void resetRange() {
