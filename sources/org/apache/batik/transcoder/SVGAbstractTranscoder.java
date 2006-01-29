@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2002-2004  The Apache Software Foundation 
+   Copyright 2002-2004,2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -38,6 +38,7 @@ import org.apache.batik.bridge.ScriptSecurity;
 import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.bridge.UserAgentAdapter;
 import org.apache.batik.bridge.ViewBox;
+import org.apache.batik.bridge.svg12.SVG12BridgeContext;
 import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
 import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.dom.svg.SVGOMDocument;
@@ -70,7 +71,8 @@ import org.w3c.dom.svg.SVGSVGElement;
  * </ul>
  *
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
- * @version $Id$ */
+ * @version $Id$
+ */
 public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
     /**
      * Value used as a default for the default font-family hint
@@ -185,17 +187,16 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
             }
         }
 
-        ctx = createBridgeContext();
         SVGOMDocument svgDoc = (SVGOMDocument)document;
         SVGSVGElement root = svgDoc.getRootElement();
+        ctx = createBridgeContext(svgDoc);
 
         // build the GVT tree
         builder = new GVTBuilder();
         // flag that indicates if the document is dynamic
         boolean isDynamic = 
-            (hints.containsKey(KEY_EXECUTE_ONLOAD) &&
-             ((Boolean)hints.get(KEY_EXECUTE_ONLOAD)).booleanValue() &&
-             ctx.isDynamicDocument(svgDoc));
+            hints.containsKey(KEY_EXECUTE_ONLOAD) &&
+             ((Boolean)hints.get(KEY_EXECUTE_ONLOAD)).booleanValue();
 
         GraphicsNode gvtRoot;
         try {
@@ -293,7 +294,10 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
      * BridgeContext so subclasses can insert new/modified
      * bridges in the context.
      */
-    protected BridgeContext createBridgeContext() {
+    protected BridgeContext createBridgeContext(SVGOMDocument doc) {
+        if (doc.isSVG12()) {
+            return new SVG12BridgeContext(userAgent);
+        }
         return new BridgeContext(userAgent);
     }
 
