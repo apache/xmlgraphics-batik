@@ -113,6 +113,7 @@ public class DOMUIEvent extends AbstractEvent implements UIEvent {
                     a.add(sb.toString());
                     break;
                 }
+                sb.append(c);
             }
             if (i == len) {
                 a.add(sb.toString());
