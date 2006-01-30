@@ -194,8 +194,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
         // flag that indicates if the document is dynamic
         boolean isDynamic = 
             (hints.containsKey(KEY_EXECUTE_ONLOAD) &&
-             ((Boolean)hints.get(KEY_EXECUTE_ONLOAD)).booleanValue() &&
-             ctx.isDynamicDocument(svgDoc));
+             ((Boolean)hints.get(KEY_EXECUTE_ONLOAD)).booleanValue());
 
         GraphicsNode gvtRoot;
         try {
