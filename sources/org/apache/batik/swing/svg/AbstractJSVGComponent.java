@@ -3496,7 +3496,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
          * for content referenced by images so you can't actually see
          * the info).
          *
-         * @param e   The <image> element that can't be loaded.
+         * @param e   The &lt;image> element that can't be loaded.
          * @param url The resolved url that can't be loaded.
          * @param message As best as can be determined the reason it can't be
          *                loaded (not available, corrupt, unknown format,...).
@@ -3504,12 +3504,12 @@ public class AbstractJSVGComponent extends JGVTComponent {
         public SVGDocument getBrokenLinkDocument(Element e, 
                                                  String url, 
                                                  String message) {
-            Class cls = JSVGComponent.class;
-            URL blURL = cls.getResource("BrokenLink.svg");
+            Class cls = AbstractJSVGComponent.class;
+            URL blURL = cls.getResource("resources/BrokenLink.svg");
             if (blURL == null) 
                 throw new BridgeException
                     (e, ErrorConstants.ERR_URI_IMAGE_BROKEN,
-                     new Object[] {url, message });
+                     new Object[] { url, message });
 
             DocumentLoader loader  = bridgeContext.getDocumentLoader();
             SVGDocument    doc = null;

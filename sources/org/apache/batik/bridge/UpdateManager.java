@@ -145,7 +145,26 @@ public class UpdateManager  {
 
         graphicsNode = gn;
 
-        SVGOMDocument d = (SVGOMDocument) doc;
+        initializeScriptingEnvironment(bridgeContext);
+
+        // Any BridgeContexts for resource documents that exist
+        // when initializing the scripting environment for the
+        // primary document also need to have their scripting
+        // environments initialized.
+        BridgeContext[] children = ctx.getChildContexts();
+        for (int i = 0; i < children.length; i++) {
+            BridgeContext resCtx = children[i];
+            resCtx.setUpdateManager(this);
+            initializeScriptingEnvironment(resCtx);
+        }
+    }
+
+    /**
+     * Creates an appropriate ScriptingEnvironment and XBL manager for
+     * the given document.
+     */
+    protected void initializeScriptingEnvironment(BridgeContext ctx) {
+        SVGOMDocument d = (SVGOMDocument) ctx.getDocument();
         if (d.isSVG12()) {
             scriptingEnvironment = new SVG12ScriptingEnvironment(ctx);
             ctx.xblManager = new DefaultXBLManager(d, ctx);
