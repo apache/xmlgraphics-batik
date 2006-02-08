@@ -488,7 +488,7 @@ public class XBLEventSupport extends EventSupport {
                 AbstractNode nextAncestorNode
                     = (AbstractNode) ancestors[index];
                 Node nextBoundElement = nextAncestorNode.getXblBoundElement();
-                if (singleScope && nextBoundElement != boundElement) {
+                if (!singleScope && nextBoundElement != boundElement) {
                     events[index] = retargetEvent
                         (events[index + 1], ancestors[index], isCustom);
                 } else {

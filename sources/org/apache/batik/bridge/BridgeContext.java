@@ -248,6 +248,11 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     protected BridgeContext primaryContext;
 
     /**
+     * Set of child BridgeContexts.
+     */
+    protected HashSet childContexts = new HashSet();
+
+    /**
      * Constructs a new empty bridge context.
      */
     protected BridgeContext() {}
@@ -305,8 +310,9 @@ public class BridgeContext implements ErrorConstants, CSSContext {
             return (BridgeContext)newDoc.getCSSEngine().getCSSContext();
 
         BridgeContext subCtx;
-        subCtx = createBridgeContext();
+        subCtx = createBridgeContext(newDoc);
         subCtx.primaryContext = primaryContext != null ? primaryContext : this;
+        subCtx.primaryContext.childContexts.add(subCtx);
         subCtx.dynamicStatus = dynamicStatus;
         subCtx.setGVTBuilder(getGVTBuilder());
         subCtx.setTextPainter(getTextPainter());
@@ -320,9 +326,9 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     /** 
      * This function creates a new BridgeContext, it mostly
      * exists so subclasses can provide an instance of 
-     * themselves when a sub BridgeContext is needed
+     * themselves when a sub BridgeContext is needed.
      */
-    public BridgeContext createBridgeContext() {
+    public BridgeContext createBridgeContext(SVGOMDocument doc) {
         return new BridgeContext(getUserAgent(), getDocumentLoader());
     }
 
@@ -663,6 +669,13 @@ public class BridgeContext implements ErrorConstants, CSSContext {
             return primaryContext;
         }
         return this;
+    }
+
+    /**
+     * Returns an array of the child contexts.
+     */
+    public BridgeContext[] getChildContexts() {
+        return (BridgeContext[]) childContexts.toArray(new BridgeContext[0]);
     }
 
     // reference management //////////////////////////////////////////////////
@@ -1325,7 +1338,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      * Disposes this BridgeContext.
      */
     public void dispose() {
-
+        childContexts.clear();
         synchronized (eventListenerSet) {
             // remove all listeners added by Bridges
             Iterator iter = eventListenerSet.iterator();
