@@ -164,4 +164,3 @@ public class RhinoClassLoader extends URLClassLoader implements GeneratedClassLo
         return perms;
     }
 }
-
