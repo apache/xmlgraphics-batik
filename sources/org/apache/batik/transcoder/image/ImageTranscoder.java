@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001-2004  The Apache Software Foundation 
+   Copyright 2001-2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -24,6 +24,8 @@ import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
+import java.awt.image.SinglePixelPackedSampleModel;
 
 import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.gvt.renderer.ConcreteImageRendererFactory;
@@ -129,6 +131,47 @@ public abstract class ImageTranscoder extends SVGAbstractTranscoder {
             writeImage(dest, output);
         } catch (Exception ex) {
             throw new TranscoderException(ex);
+        }
+    }
+
+    /**
+     * Converts an image so that viewers which do not support the alpha channel will
+     * see a white background (and not a black one).
+     * @param img the image to convert
+     * @param sppsm
+     */
+    protected void forceTransparentWhite(BufferedImage img, SinglePixelPackedSampleModel sppsm) {
+        //
+        // This is a trick so that viewers which do not support
+        // the alpha channel will see a white background (and not
+        // a black one).
+        //
+        int w = img.getWidth();
+        int h = img.getHeight();
+        DataBufferInt biDB=(DataBufferInt)img.getRaster().getDataBuffer();
+        int scanStride = sppsm.getScanlineStride();
+        int dbOffset = biDB.getOffset();
+        int pixels[] = biDB.getBankData()[0];
+        int p = dbOffset;
+        int adjust = scanStride - w;
+        int a=0, r=0, g=0, b=0, pel=0;
+        for(int i=0; i<h; i++){
+            for(int j=0; j<w; j++){
+                pel = pixels[p];
+                a = (pel >> 24) & 0xff;
+                r = (pel >> 16) & 0xff;
+                g = (pel >> 8 ) & 0xff;
+                b =  pel        & 0xff;
+                r = (255*(255 -a) + a*r)/255;
+                g = (255*(255 -a) + a*g)/255;
+                b = (255*(255 -a) + a*b)/255;
+                pixels[p++] =
+                    (a<<24 & 0xff000000) |
+                    (r<<16 & 0xff0000) |
+                    (g<<8  & 0xff00) |
+                    (b     & 0xff);
+            }
+            p += adjust;
         }
     }
 

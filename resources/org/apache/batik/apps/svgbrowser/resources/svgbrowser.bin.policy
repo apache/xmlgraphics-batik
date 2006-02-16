@@ -14,6 +14,10 @@
 //    limitations under the License.
 // -------------------------------------------------------------------------
 
+grant codeBase "${app.jar.base}/lib/xml-apis-dom3.jar" {
+  permission java.security.AllPermission;
+};
+
 grant codeBase "${app.jar.base}/lib/xerces_2_5_0.jar" {
   permission java.security.AllPermission;
 };

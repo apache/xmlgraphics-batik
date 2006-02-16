@@ -17,7 +17,7 @@
  */
 package org.apache.batik.ext.awt.image.codec.tiff;
 
-import  org.apache.batik.ext.awt.image.codec.ImageDecodeParam;
+import  org.apache.batik.ext.awt.image.codec.util.ImageDecodeParam;
 
 /**
  * An instance of <code>ImageDecodeParam</code> for decoding images in

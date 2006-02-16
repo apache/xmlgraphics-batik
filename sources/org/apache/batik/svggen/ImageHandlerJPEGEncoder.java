@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001,2003  The Apache Software Foundation 
+   Copyright 2001,2003,2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -24,9 +24,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import com.sun.image.codec.jpeg.JPEGCodec;
-import com.sun.image.codec.jpeg.JPEGEncodeParam;
-import com.sun.image.codec.jpeg.JPEGImageEncoder;
+import org.apache.batik.ext.awt.image.spi.ImageWriter;
+import org.apache.batik.ext.awt.image.spi.ImageWriterParams;
+import org.apache.batik.ext.awt.image.spi.ImageWriterRegistry;
 
 /**
  * This implementation of the abstract AbstractImageHandlerEncoder
@@ -77,12 +77,16 @@ public class ImageHandlerJPEGEncoder extends AbstractImageHandlerEncoder {
         throws SVGGraphics2DIOException {
         try{
             OutputStream os = new FileOutputStream(imageFile);
-            JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(os);
-            JPEGEncodeParam param = encoder.getDefaultJPEGEncodeParam(buf);
-            param.setQuality(1, false);
-            encoder.encode(buf, param);
-            os.flush();
-            os.close();
+            try {
+                ImageWriter writer = ImageWriterRegistry.getInstance()
+                    .getWriterFor("image/jpeg");
+                ImageWriterParams params = new ImageWriterParams();
+                params.setJPEGQuality(1, false);
+                writer.writeImage(buf, os, params);
+                
+            } finally {
+                os.close();
+            }
         } catch(IOException e) {
             throw new SVGGraphics2DIOException(ERR_WRITE+imageFile.getName());
         }

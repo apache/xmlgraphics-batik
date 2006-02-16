@@ -304,6 +304,7 @@ public class Main implements Application {
             = new ApplicationSecurityEnforcer(this.getClass(),
                                               SQUIGGLE_SECURITY_POLICY);
 
+
         try {
             preferenceManager = new XMLPreferenceManager(SQUIGGLE_CONFIGURATION_FILE,
                                                          defaults);

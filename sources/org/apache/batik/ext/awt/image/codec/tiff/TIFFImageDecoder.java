@@ -20,9 +20,9 @@ package org.apache.batik.ext.awt.image.codec.tiff;
 import java.awt.image.RenderedImage;
 import java.io.IOException;
 
-import org.apache.batik.ext.awt.image.codec.ImageDecodeParam;
-import org.apache.batik.ext.awt.image.codec.ImageDecoderImpl;
-import org.apache.batik.ext.awt.image.codec.SeekableStream;
+import org.apache.batik.ext.awt.image.codec.util.ImageDecodeParam;
+import org.apache.batik.ext.awt.image.codec.util.ImageDecoderImpl;
+import org.apache.batik.ext.awt.image.codec.util.SeekableStream;
 
 /**
  * A baseline TIFF reader. The reader has some functionality in addition to 

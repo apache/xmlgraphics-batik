@@ -69,6 +69,8 @@ To display the available targets type:
 -->
 
 <project default="help" basedir=".">
+  <!-- Configuring the build -->
+  <property file="${basedir}/build-local.properties"/>
 
   <!-- Initializations .................................................... -->
   <target name="init-args" unless="args">
@@ -90,10 +92,12 @@ To display the available targets type:
     <property name="deprecation"        value="on"/>
 
     <property name="src"                value="sources"/>
+    <property name="src-internal-codec" value="sources-internal-codec"/>
     <property name="resources"          value="resources"/>
     <property name="testsrc"            value="test-sources"/>
     <property name="testresources"      value="test-resources"/>
     <property name="dest"               value="classes"/>
+    <property name="dest-internal-codec" value="classes-internal-codec"/>
     <property name="build"              value="${project}-${version}"/>
     <property name="docs"               value="${build}/docs"/>
     <property name="lib"                value="lib"/>
@@ -128,7 +132,18 @@ To display the available targets type:
       <classpath refid="libs-classpath"/>
     </available>
     <available property="jdk14.present" classname="java.lang.CharSequence"/>
-
+    
+    <!-- When compiling Batik under GNU Classpath, the Sun codecs are not available. -->
+    <condition property="sun-codecs.present">
+      <and>
+        <available classname="com.sun.image.codec.jpeg.JPEGCodec" 
+                   classpathref="libs-classpath"/>
+        <not>
+          <equals arg1="${sun-codecs.disabled}" arg2="true"/>
+        </not>
+      </and>
+    </condition>
+    
     <condition property="src-jdk" value="sources-1.4">
       <equals arg1="${jdk14.present}" arg2="true"/>
     </condition>
@@ -425,29 +440,25 @@ To display the available targets type:
     </jar>
   </target>
 
-
-  <target name       ="compile"
-          depends    ="init"
-          description="Compiles the source files">
+  <target name       ="compile-prepare"
+          depends    ="init">
     <mkdir dir="${dest}"/>
     <echo message="debug ${debug}, optimize ${optimize}, deprecation ${deprecation}"/>
+  </target>
+
+  <target name       ="compile"
+          depends    ="init, compile-prepare">
     <javac destdir="${dest}" deprecation="${deprecation}" 
            debug="${debug}" optimize="${optimize}">
       <src path="${src}"/>
       <src path="${src-jdk}"/>
       <classpath refid="libs-classpath"/>
       <exclude name="**/*.html"/>
-      <exclude name="**/rhino/*" unless="rhino.present"/>      
+      <exclude name="**/rhino/*"   unless="rhino.present"/>      
       <exclude name="**/jpython/*" unless="jpython.present"/>
-      <exclude name="**/jacl/*" unless="jacl.present"/>
-    </javac>
-    <javac srcdir="${src-jdk}" destdir="${dest}" deprecation="${deprecation}" 
-           debug="${debug}" optimize="${optimize}">
-      <classpath refid="libs-classpath"/>
-      <exclude name="**/*.html"/>
-      <exclude name="**/rhino/*" unless="rhino.present"/>      
-      <exclude name="**/jpython/*" unless="jpython.present"/>
-      <exclude name="**/jacl/*" unless="jacl.present"/>
+      <exclude name="**/jacl/*"    unless="jacl.present"/>
+      <exclude name="${src}/${package-prefix}/ext/awt/image/codec/jpeg/*"
+               unless="sun-codecs.present"/>
     </javac>
   </target>
 
@@ -494,6 +505,7 @@ To display the available targets type:
                                transcoder-jar,
                                bridge-jar,
                                swing-jar,
+                               codec-jar,
                                extension-jar,
                                xml-jar,
                                root-jar,
@@ -626,6 +638,25 @@ To display the available targets type:
       <fileset dir="${resources}" excludes="**/.svn/">
         <include name="${package-prefix}/ext/awt/image/**"/>
         <include name="${package-prefix}/ext/swing/**"/>
+      </fileset>
+    </jar>
+  </target>
+
+
+  <!-- Codecs (dependencies: awt-util, transcoder) -->
+  <target name="codec-jar" depends="compile, prepare-build" >
+    <jar jarfile="${build}/lib/${project}-codec.jar">
+      <fileset dir="${dest}" >
+        <include name="${package-prefix}/ext/awt/image/codec/util/*.class"/>
+        <include name="${package-prefix}/ext/awt/image/codec/png/*.class"/>
+        <include name="${package-prefix}/ext/awt/image/codec/tiff/*.class"/>
+        <include name="${package-prefix}/ext/awt/image/codec/jpeg/*.class"
+                 if="sun-codecs.present"/>
+        <include name="${package-prefix}/ext/awt/image/codec/imageio/*.class"
+                 if="jdk14.present"/>
+      </fileset>
+      <fileset dir="${resources}" excludes="**/.svn/" >
+        <include name="${package-prefix}/ext/awt/image/codec/**/properties"/>
       </fileset>
     </jar>
   </target>

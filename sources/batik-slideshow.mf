@@ -11,6 +11,7 @@ Class-Path: lib/batik-ext.jar \
             lib/batik-transcoder.jar \
             lib/batik-gui-util.jar \
             lib/batik-awt-util.jar \
+            lib/batik-codec.jar \
             lib/batik-util.jar \
             lib/batik-xml.jar \
             lib/xerces_2_5_0.jar \

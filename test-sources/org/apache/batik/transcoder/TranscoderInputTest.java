@@ -24,6 +24,9 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.net.URL;
 
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 
@@ -56,7 +59,11 @@ public class TranscoderInputTest extends AbstractTest {
 
         // XMLReader
         {
-            XMLReader xmlReader = XMLReaderFactory.createXMLReader();
+            SAXParserFactory saxFactory = SAXParserFactory.newInstance();
+            saxFactory.setValidating(false);
+            SAXParser parser = saxFactory.newSAXParser();
+            XMLReader xmlReader = parser.getXMLReader();
+            //XMLReader xmlReader = XMLReaderFactory.createXMLReader();
             TranscoderInput ti = new TranscoderInput(xmlReader);
             ti.setURI(TEST_URI);
             t.transcode(ti, out);

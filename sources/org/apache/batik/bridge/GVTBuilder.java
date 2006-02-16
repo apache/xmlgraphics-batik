@@ -81,7 +81,7 @@ public class GVTBuilder implements SVGConstants {
             ex.setGraphicsNode(rootNode);
             Element errElement = ex.getElement();
             ex.setLineNumber(ctx.getDocumentLoader().getLineNumber(errElement));
-            //ex.printStackTrace();
+            ex.printStackTrace();
             throw ex; // re-throw the udpated exception
         }
 

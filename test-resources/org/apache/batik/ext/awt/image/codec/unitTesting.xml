@@ -22,6 +22,6 @@
     <!-- ========================================================================== -->
     <!-- Validates that PNGEncoding is operating as expected                        -->
     <!-- ========================================================================== -->
-    <test id="PNGEncoderTest" class="org.apache.batik.ext.awt.image.codec.PNGEncoderTest" />
-    <test id="Base64PNGEncoderTest" class="org.apache.batik.ext.awt.image.codec.Base64PNGEncoderTest" />
+    <test id="PNGEncoderTest" class="org.apache.batik.ext.awt.image.codec.png.PNGEncoderTest" />
+    <test id="Base64PNGEncoderTest" class="org.apache.batik.ext.awt.image.codec.png.Base64PNGEncoderTest" />
 </testSuite>

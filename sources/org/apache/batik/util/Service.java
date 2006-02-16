@@ -125,6 +125,8 @@ public class Service {
                 }
             } catch (Exception ex) {
                 // Just try the next file...
+            } catch (LinkageError le) {
+                // Just try the next file...
             }
         }
         return l.iterator();

@@ -1,6 +1,6 @@
 /*
 
-   Copyright 1999-2003  The Apache Software Foundation 
+   Copyright 1999-2003,2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -19,25 +19,13 @@
 package org.apache.batik.transcoder.image;
 
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBuffer;
-import java.awt.image.DataBufferInt;
-import java.awt.image.PixelInterleavedSampleModel;
-import java.awt.image.RenderedImage;
-import java.awt.image.SampleModel;
 import java.awt.image.SinglePixelPackedSampleModel;
-import java.io.IOException;
-import java.io.OutputStream;
 
-import org.apache.batik.ext.awt.image.GraphicsUtil;
-import org.apache.batik.ext.awt.image.codec.tiff.TIFFEncodeParam;
-import org.apache.batik.ext.awt.image.codec.tiff.TIFFField;
-import org.apache.batik.ext.awt.image.codec.tiff.TIFFImageDecoder;
-import org.apache.batik.ext.awt.image.codec.tiff.TIFFImageEncoder;
-import org.apache.batik.ext.awt.image.rendered.FormatRed;
+import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.TranscodingHints;
-import org.apache.batik.transcoder.image.resources.Messages;
+import org.apache.batik.transcoder.keys.StringKey;
 
 
 /**
@@ -55,6 +43,11 @@ public class TIFFTranscoder extends ImageTranscoder {
         hints.put(KEY_FORCE_TRANSPARENT_WHITE, Boolean.FALSE);
     }
 
+    /** @return the transcoder's user agent */
+    public UserAgent getUserAgent() {
+        return this.userAgent;
+    }
+    
     /**
      * Creates a new ARGB image with the specified dimension.
      * @param width the image width in pixels
@@ -64,6 +57,21 @@ public class TIFFTranscoder extends ImageTranscoder {
         return new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
     }
 
+    private WriteAdapter getWriteAdapter(String className) {
+        WriteAdapter adapter;
+        try {
+            Class clazz = Class.forName(className);
+            adapter = (WriteAdapter)clazz.newInstance();
+            return adapter;
+        } catch (ClassNotFoundException e) {
+            return null;
+        } catch (InstantiationException e) {
+            return null;
+        } catch (IllegalAccessException e) {
+            return null;
+        }
+    }
+    
     /**
      * Writes the specified image to the specified output.
      * @param img the image to write
@@ -73,100 +81,61 @@ public class TIFFTranscoder extends ImageTranscoder {
     public void writeImage(BufferedImage img, TranscoderOutput output)
             throws TranscoderException {
 
-        OutputStream ostream = output.getOutputStream();
-        if (ostream == null) {
-            throw new TranscoderException(
-                Messages.formatMessage("tiff.badoutput", null));
-        }
-
-        TIFFEncodeParam params = new TIFFEncodeParam();
-
-        float PixSzMM = userAgent.getPixelUnitToMillimeter();
-        // num Pixs in 100 Meters
-        int numPix      = (int)(((1000*100)/PixSzMM)+0.5); 
-        int denom       = 100*100;  // Centimeters per 100 Meters;
-        long [] rational = {numPix, denom};
-        TIFFField [] fields = {
-            new TIFFField(TIFFImageDecoder.TIFF_RESOLUTION_UNIT, 
-                          TIFFField.TIFF_SHORT, 1, 
-                          new char [] { (char)3 }),
-            new TIFFField(TIFFImageDecoder.TIFF_X_RESOLUTION, 
-                          TIFFField.TIFF_RATIONAL, 1, 
-                          new long [][] { rational }),
-            new TIFFField(TIFFImageDecoder.TIFF_Y_RESOLUTION, 
-                          TIFFField.TIFF_RATIONAL, 1, 
-                          new long [][] { rational }) 
-                };
-
-        params.setExtraFields(fields);
-
         //
         // This is a trick so that viewers which do not support the alpha
         // channel will see a white background (and not a black one).
         //
         boolean forceTransparentWhite = false;
 
-        if (hints.containsKey(KEY_FORCE_TRANSPARENT_WHITE)) {
+        if (hints.containsKey(PNGTranscoder.KEY_FORCE_TRANSPARENT_WHITE)) {
             forceTransparentWhite =
                 ((Boolean)hints.get
-                 (KEY_FORCE_TRANSPARENT_WHITE)).booleanValue();
+                 (PNGTranscoder.KEY_FORCE_TRANSPARENT_WHITE)).booleanValue();
         }
-
-        int w = img.getWidth();
-        int h = img.getHeight();
-        SinglePixelPackedSampleModel sppsm;
-        sppsm = (SinglePixelPackedSampleModel)img.getSampleModel();
 
         if (forceTransparentWhite) {
-            //
-            // This is a trick so that viewers which do not support
-            // the alpha channel will see a white background (and not
-            // a black one).
-            //
-            DataBufferInt biDB=(DataBufferInt)img.getRaster().getDataBuffer();
-            int scanStride = sppsm.getScanlineStride();
-            int dbOffset = biDB.getOffset();
-            int pixels[] = biDB.getBankData()[0];
-            int p = dbOffset;
-            int adjust = scanStride - w;
-            int a=0, r=0, g=0, b=0, pel=0;
-            for(int i=0; i<h; i++){
-                for(int j=0; j<w; j++){
-                    pel = pixels[p];
-                    a = (pel >> 24) & 0xff;
-                    r = (pel >> 16) & 0xff;
-                    g = (pel >> 8 ) & 0xff;
-                    b =  pel        & 0xff;
-                    r = (255*(255 -a) + a*r)/255;
-                    g = (255*(255 -a) + a*g)/255;
-                    b = (255*(255 -a) + a*b)/255;
-                    pixels[p++] =
-                        (a<<24 & 0xff000000) |
-                        (r<<16 & 0xff0000) |
-                        (g<<8  & 0xff00) |
-                        (b     & 0xff);
-                }
-                p += adjust;
-            }
+            SinglePixelPackedSampleModel sppsm;
+            sppsm = (SinglePixelPackedSampleModel)img.getSampleModel();
+            forceTransparentWhite(img, sppsm);
         }
 
-        try {
-            TIFFImageEncoder tiffEncoder = 
-                new TIFFImageEncoder(ostream, params);
-            int bands = sppsm.getNumBands();
-            int [] off = new int[bands];
-            for (int i=0; i<bands; i++)
-                off[i] = i;
-            SampleModel sm = new PixelInterleavedSampleModel
-                (DataBuffer.TYPE_BYTE, w, h, bands, w*bands, off);
-            
-            RenderedImage rimg = new FormatRed(GraphicsUtil.wrap(img), sm);
-            tiffEncoder.encode(rimg);
-        } catch (IOException ex) {
-            throw new TranscoderException(ex);
+        WriteAdapter adapter = getWriteAdapter(
+                "org.apache.batik.ext.awt.image.codec.tiff.TIFFTranscoderInternalCodecWriteAdapter");
+        if (adapter == null) {
+            adapter = getWriteAdapter(
+                "org.apache.batik.transcoder.image.TIFFTranscoderImageIOWriteAdapter");
         }
+        if (adapter == null) {
+            throw new TranscoderException(
+                    "Could not write TIFF file because no WriteAdapter is availble");
+        }
+        adapter.writeImage(this, img, output);
     }
+    
+    // --------------------------------------------------------------------
+    // TIFF specific interfaces
+    // --------------------------------------------------------------------
 
+    /**
+     * This interface is used by <tt>TIFFTranscoder</tt> to write TIFF images 
+     * through different codecs.
+     *
+     * @version $Id$
+     */
+    public interface WriteAdapter {
+        
+        /**
+         * Writes the specified image to the specified output.
+         * @param transcoder the calling PNGTranscoder
+         * @param img the image to write
+         * @param output the output where to store the image
+         * @throws TranscoderException if an error occured while storing the image
+         */
+        void writeImage(TIFFTranscoder transcoder, BufferedImage img, 
+                TranscoderOutput output) throws TranscoderException;
+
+    }
+    
 
     // --------------------------------------------------------------------
     // Keys definition
@@ -205,4 +174,27 @@ public class TIFFTranscoder extends ImageTranscoder {
     public static final TranscodingHints.Key KEY_FORCE_TRANSPARENT_WHITE
         = ImageTranscoder.KEY_FORCE_TRANSPARENT_WHITE;
 
+    /**
+     * The compression method for the image.
+     * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Key: </TH>
+     * <TD VALIGN="TOP">KEY_COMPRESSION_METHOD</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
+     * <TD VALIGN="TOP">String ("none", "packbits", "jpeg" etc.)</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
+     * <TD VALIGN="TOP">"none" (no compression)</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Required: </TH>
+     * <TD VALIGN="TOP">Recommended</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
+     * <TD VALIGN="TOP">Specify the compression method used to encode the image.</TD></TR>
+     * </TABLE>
+     */
+    public static final TranscodingHints.Key KEY_COMPRESSION_METHOD
+        = new StringKey();
+    
 }

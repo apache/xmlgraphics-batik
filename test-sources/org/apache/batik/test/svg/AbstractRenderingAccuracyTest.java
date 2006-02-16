@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2003  The Apache Software Foundation 
+   Copyright 2003,2005  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -43,10 +43,9 @@ import java.awt.image.ColorModel;
 import org.apache.batik.ext.awt.image.GraphicsUtil;
 
 import org.apache.batik.ext.awt.image.spi.ImageTagRegistry;
+import org.apache.batik.ext.awt.image.spi.ImageWriter;
+import org.apache.batik.ext.awt.image.spi.ImageWriterRegistry;
 import org.apache.batik.ext.awt.image.renderable.Filter;
-
-import org.apache.batik.ext.awt.image.codec.PNGImageEncoder;
-import org.apache.batik.ext.awt.image.codec.PNGEncodeParam;
 
 import org.apache.batik.util.ParsedURL;
 
@@ -635,18 +634,22 @@ public abstract class AbstractRenderingAccuracyTest extends AbstractTest {
         if(!imgFile.exists()){
             imgFile.createNewFile();
         }
-        saveImage(img, new FileOutputStream(imgFile));
+        OutputStream out = new FileOutputStream(imgFile);
+        try {
+            saveImage(img, out);
+        } finally {
+            out.close();
+        }
     }
 
     /**
      * Saves an image in a given File
      */
     protected void saveImage(BufferedImage img, OutputStream os)
-        throws IOException {
-        PNGImageEncoder encoder = new PNGImageEncoder
-            (os, PNGEncodeParam.getDefaultEncodeParam(img));
-        
-        encoder.encode(img);
+            throws IOException {
+        ImageWriter writer = ImageWriterRegistry.getInstance()
+            .getWriterFor("image/png");
+        writer.writeImage(img, os);
     }
 
     /**
@@ -784,11 +787,7 @@ public abstract class AbstractRenderingAccuracyTest extends AbstractTest {
         
         imageFile.deleteOnExit();
 
-        PNGImageEncoder encoder = new PNGImageEncoder
-            (new FileOutputStream(imageFile),
-             PNGEncodeParam.getDefaultEncodeParam(img));
-        
-        encoder.encode(img);
+        saveImage(img, imageFile);
         
         return imageFile;
     }
