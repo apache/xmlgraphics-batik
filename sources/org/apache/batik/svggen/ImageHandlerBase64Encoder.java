@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001,2003  The Apache Software Foundation 
+   Copyright 2001,2003,2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -27,8 +27,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.apache.batik.ext.awt.image.codec.ImageEncoder;
-import org.apache.batik.ext.awt.image.codec.PNGImageEncoder;
+import org.apache.batik.ext.awt.image.spi.ImageWriter;
+import org.apache.batik.ext.awt.image.spi.ImageWriterRegistry;
 import org.apache.batik.util.Base64EncoderStream;
 import org.w3c.dom.Element;
 
@@ -151,8 +151,9 @@ public class ImageHandlerBase64Encoder extends DefaultImageHandler {
     public void encodeImage(RenderedImage buf, OutputStream os)
         throws SVGGraphics2DIOException {
         try{
-            ImageEncoder encoder = new PNGImageEncoder(os, null);
-            encoder.encode(buf);
+            ImageWriter writer = ImageWriterRegistry.getInstance()
+                .getWriterFor("image/png");
+            writer.writeImage(buf, os);
         } catch(IOException e) {
             // We are doing in-memory processing. This should not happen.
             throw new SVGGraphics2DIOException(ERR_UNEXPECTED);

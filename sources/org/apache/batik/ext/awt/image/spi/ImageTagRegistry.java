@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001-2003  The Apache Software Foundation 
+   Copyright 2001-2003,2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -320,9 +320,9 @@ public class ImageTagRegistry implements ErrorConstants {
         
         registry = new ImageTagRegistry();
 
-        registry.register(new PNGRegistryEntry());
-        registry.register(new TIFFRegistryEntry());
-        registry.register(new JPEGRegistryEntry());
+        //registry.register(new PNGRegistryEntry());
+        //registry.register(new TIFFRegistryEntry());
+        //registry.register(new JPEGRegistryEntry());
         registry.register(new JDKRegistryEntry());
 
         Iterator iter = Service.providers(RegistryEntry.class);

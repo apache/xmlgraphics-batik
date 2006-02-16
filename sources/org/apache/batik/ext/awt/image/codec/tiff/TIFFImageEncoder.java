@@ -42,9 +42,9 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.zip.Deflater;
 
-import org.apache.batik.ext.awt.image.codec.ImageEncodeParam;
-import org.apache.batik.ext.awt.image.codec.ImageEncoderImpl;
-import org.apache.batik.ext.awt.image.codec.SeekableOutputStream;
+import org.apache.batik.ext.awt.image.codec.util.ImageEncodeParam;
+import org.apache.batik.ext.awt.image.codec.util.ImageEncoderImpl;
+import org.apache.batik.ext.awt.image.codec.util.SeekableOutputStream;
 
 import com.sun.image.codec.jpeg.JPEGEncodeParam;
 import com.sun.image.codec.jpeg.JPEGQTable;
