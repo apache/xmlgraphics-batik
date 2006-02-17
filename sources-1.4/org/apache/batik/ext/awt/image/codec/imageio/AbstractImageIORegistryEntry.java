@@ -36,6 +36,8 @@ import org.apache.batik.ext.awt.image.renderable.RedRable;
 import org.apache.batik.ext.awt.image.rendered.Any2sRGBRed;
 import org.apache.batik.ext.awt.image.rendered.FormatRed;
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
+import org.apache.batik.ext.awt.image.spi.ImageTagRegistry;
+import org.apache.batik.ext.awt.image.spi.MagicNumberRegistryEntry;
 import org.apache.batik.util.ParsedURL;
 
 /**

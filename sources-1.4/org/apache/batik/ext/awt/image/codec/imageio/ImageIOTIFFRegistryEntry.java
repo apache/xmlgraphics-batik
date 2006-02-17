@@ -17,6 +17,8 @@
  */
 package org.apache.batik.ext.awt.image.codec.imageio;
 
+import org.apache.batik.ext.awt.image.spi.MagicNumberRegistryEntry;
+
 /**
  * RegistryEntry implementation for loading TIFF images through Image I/O.
  *

@@ -22,9 +22,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import org.apache.batik.ext.awt.image.rendered.IndexImage;
-import org.apache.batik.ext.awt.image.util.ImageWriter;
-import org.apache.batik.ext.awt.image.util.ImageWriterParams;
-import org.apache.batik.ext.awt.image.util.ImageWriterRegistry;
+import org.apache.batik.ext.awt.image.spi.ImageWriter;
+import org.apache.batik.ext.awt.image.spi.ImageWriterParams;
+import org.apache.batik.ext.awt.image.spi.ImageWriterRegistry;
 import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.TranscodingHints;
