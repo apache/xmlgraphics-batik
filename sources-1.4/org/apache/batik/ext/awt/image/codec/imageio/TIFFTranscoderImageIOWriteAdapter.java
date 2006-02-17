@@ -28,12 +28,13 @@ import java.io.OutputStream;
 
 import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.ext.awt.image.rendered.FormatRed;
-import org.apache.batik.ext.awt.image.util.ImageWriter;
-import org.apache.batik.ext.awt.image.util.ImageWriterParams;
-import org.apache.batik.ext.awt.image.util.ImageWriterRegistry;
+import org.apache.batik.ext.awt.image.spi.ImageWriter;
+import org.apache.batik.ext.awt.image.spi.ImageWriterParams;
+import org.apache.batik.ext.awt.image.spi.ImageWriterRegistry;
 import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.TranscodingHints;
+import org.apache.batik.transcoder.image.TIFFTranscoder;
 
 /**
  * This class is a helper to <tt>TIFFTranscoder</tt> that writes TIFF images 
@@ -41,8 +42,8 @@ import org.apache.batik.transcoder.TranscodingHints;
  *
  * @version $Id$
  */
-public class TIFFTranscoderImageIOWriteAdapter implements
-        TIFFTranscoder.WriteAdapter {
+public class TIFFTranscoderImageIOWriteAdapter 
+    implements TIFFTranscoder.WriteAdapter {
 
     /**
      * @throws TranscoderException 
