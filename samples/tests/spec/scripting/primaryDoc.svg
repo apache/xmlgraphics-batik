@@ -51,7 +51,7 @@
 
     function checkElem() {
       regardTestInstance.checkObjects(all);
-      System.err.println("finished checking, waiting 10s"); java.lang.Thread.sleep(10000);
+      // System.err.println("finished checking, waiting 10s"); java.lang.Thread.sleep(10000);
       regardTestInstance.scriptDone();
     }
 ]]></script>
