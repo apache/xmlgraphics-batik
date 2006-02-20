@@ -22,6 +22,7 @@ import java.awt.geom.Dimension2D;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.lang.ref.SoftReference;
+import java.lang.ref.WeakReference;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -34,6 +35,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
+import org.apache.batik.bridge.svg12.SVG12BridgeContext;
 import org.apache.batik.bridge.svg12.SVG12BridgeExtension;
 import org.apache.batik.css.engine.CSSContext;
 import org.apache.batik.css.engine.CSSEngine;
@@ -248,7 +250,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     protected BridgeContext primaryContext;
 
     /**
-     * Set of child BridgeContexts.
+     * Set of WeakReferences to child BridgeContexts.
      */
     protected HashSet childContexts = new HashSet();
 
@@ -312,7 +314,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         BridgeContext subCtx;
         subCtx = createBridgeContext(newDoc);
         subCtx.primaryContext = primaryContext != null ? primaryContext : this;
-        subCtx.primaryContext.childContexts.add(subCtx);
+        subCtx.primaryContext.childContexts.add(new WeakReference(subCtx));
         subCtx.dynamicStatus = dynamicStatus;
         subCtx.setGVTBuilder(getGVTBuilder());
         subCtx.setTextPainter(getTextPainter());
@@ -329,6 +331,9 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      * themselves when a sub BridgeContext is needed.
      */
     public BridgeContext createBridgeContext(SVGOMDocument doc) {
+        if (doc.isSVG12()) {
+            return new SVG12BridgeContext(getUserAgent(), getDocumentLoader());
+        }
         return new BridgeContext(getUserAgent(), getDocumentLoader());
     }
 
@@ -428,20 +433,19 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     }
 
     /**
-     * Set Element Data.
-     * Associates data object with element so it can be
-     * retrieved later.
+     * Associates a data object with a node so it can be retrieved later.
+     * This is primarily used for caching the graphics node generated from
+     * a 'pattern' element.  A soft reference to the data object is used.
      */
     public void setElementData(Node n, Object data) {
-        if (elementDataMap == null)
+        if (elementDataMap == null) {
             elementDataMap = new WeakHashMap();
+        }
         elementDataMap.put(n, new SoftReference(data));
     }
 
     /**
-     * Set Element Data.
-     * Associates data object with element so it can be
-     * retrieved later.
+     * Retrieves a data object associated with the given node.
      */
     public Object getElementData(Node n) {
         if (elementDataMap == null)
@@ -675,7 +679,13 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      * Returns an array of the child contexts.
      */
     public BridgeContext[] getChildContexts() {
-        return (BridgeContext[]) childContexts.toArray(new BridgeContext[0]);
+        BridgeContext[] res = new BridgeContext[childContexts.size()];
+        Iterator it = childContexts.iterator();
+        for (int i = 0; i < res.length; i++) {
+            WeakReference wr = (WeakReference) it.next();
+            res[i] = (BridgeContext) wr.get();
+        }
+        return res;
     }
 
     // reference management //////////////////////////////////////////////////
