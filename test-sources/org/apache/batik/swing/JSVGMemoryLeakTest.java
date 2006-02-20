@@ -28,6 +28,7 @@ import org.w3c.dom.Element;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.UpdateManager;
 import org.apache.batik.dom.svg.SVGContext;
+import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.svg.SVGOMElement;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.test.DefaultTestReport;
@@ -125,8 +126,25 @@ public class JSVGMemoryLeakTest extends MemoryLeakTest
         if (e instanceof SVGOMElement) {
             SVGOMElement svge = (SVGOMElement)e;
             SVGContext svgctx = svge.getSVGContext();
-            if (svgctx != null) 
+            if (svgctx != null) {
                 registerObjectDesc(svgctx, desc+"_CTX");
+            }
+        }
+    }
+
+    public void registerResourceContext(String uriSubstring, String desc) {
+        UpdateManager um = theCanvas.getUpdateManager();
+        BridgeContext bc = um.getBridgeContext();
+        BridgeContext[] ctxs = bc.getChildContexts();
+        for (int i = 0; i < ctxs.length; i++) {
+            bc = ctxs[i];
+            if (bc == null) {
+                continue;
+            }
+            String url = ((SVGOMDocument) bc.getDocument()).getURL();
+            if (url.indexOf(uriSubstring) != -1) {
+                registerObjectDesc(ctxs[i], desc);
+            }
         }
     }
 
@@ -155,7 +173,21 @@ public class JSVGMemoryLeakTest extends MemoryLeakTest
     public void canvasRendered(JSVGCanvas canvas) {
         // System.err.println("Rendered");
         registerObjectDesc(canvas.getGraphicsNode(), "GVT");
-        registerObjectDesc(canvas.getUpdateManager(), "updateManager");
+        UpdateManager um = canvas.getUpdateManager();
+        if (um == null) {
+            return;
+        }
+        BridgeContext bc = um.getBridgeContext();
+        registerObjectDesc(um, "updateManager");
+        registerObjectDesc(bc, "bridgeContext");
+        BridgeContext[] subCtxs = bc.getChildContexts();
+        for (int i = 0; i < subCtxs.length; i++) {
+            if (subCtxs[i] != null) {
+                SVGOMDocument doc = (SVGOMDocument) subCtxs[i].getDocument();
+                registerObjectDesc(subCtxs[i], "BridgeContext_" + doc.getURL());
+                System.err.println("found subctx for " + doc.getURL());
+            }
+        }
     }
 
     public boolean canvasUpdated(JSVGCanvas canvas) {
