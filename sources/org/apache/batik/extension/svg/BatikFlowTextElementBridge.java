@@ -135,6 +135,8 @@ public class BatikFlowTextElementBridge extends SVGTextElementBridge
                                                      Element element) {
         List rgns = getRegions(ctx, element);
         AttributedString ret = getFlowDiv(ctx, element);
+        if (ret == null) return ret;
+
         ret.addAttribute(FLOW_REGIONS, rgns, 0, 1);
         return ret;
     }

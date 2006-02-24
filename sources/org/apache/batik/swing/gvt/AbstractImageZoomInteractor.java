@@ -106,20 +106,22 @@ public class AbstractImageZoomInteractor extends InteractorAdapter {
      * bounds of the component).
      */
     public void mouseDragged(MouseEvent e) {
+        AffineTransform at;
         JGVTComponent c = (JGVTComponent)e.getSource();
 
         xCurrent = e.getX();
         yCurrent = e.getY();
 
-        AffineTransform at = AffineTransform.getTranslateInstance(xStart, yStart);
+        at = AffineTransform.getTranslateInstance(xStart, yStart);
         int dy = yCurrent - yStart;
+        double s;
         if (dy < 0) {
-            dy = (dy > -5) ? 15 : dy - 10;
+            dy -= 10;
+            s = (dy > -15) ? 1.0 : -15.0/dy;
         } else {
-            dy = (dy < 5) ? 15 : dy + 10;
+            dy += 10;
+            s = (dy <  15) ? 1.0 : dy/15.0;
         }
-        double s = dy / 15.0;
-        s = (s > 0) ? s : -1 / s;
 
         at.scale(s, s);
         at.translate(-xStart, -yStart);

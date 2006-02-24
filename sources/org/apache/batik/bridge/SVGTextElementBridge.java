@@ -827,10 +827,10 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         if (preserve)
             endLimit = asb.length();
         
-	Map map = getAttributeMap(ctx, element, textPath, bidiLevel);
-	Object o = map.get(TextAttribute.BIDI_EMBEDDING);
+        Map map = getAttributeMap(ctx, element, textPath, bidiLevel);
+        Object o = map.get(TextAttribute.BIDI_EMBEDDING);
         Integer subBidiLevel = bidiLevel;
-	if (o != null)
+        if (o != null)
 	    subBidiLevel = ((Integer)o);
 
         for (Node n = element.getFirstChild();

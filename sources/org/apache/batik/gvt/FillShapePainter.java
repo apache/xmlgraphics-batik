@@ -65,6 +65,13 @@ public class FillShapePainter implements ShapePainter {
     }
 
     /**
+     * Gets the paint used to draw the outline of the shape.
+     */
+    public Paint getPaint() {
+        return paint;
+    }
+
+    /**
      * Paints the specified shape using the specified Graphics2D.
      *
      * @param g2d the Graphics2D to use

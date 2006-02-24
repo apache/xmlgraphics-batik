@@ -77,12 +77,26 @@ public class StrokeShapePainter implements ShapePainter {
     }
 
     /**
+     * Gets the stroke used to draw the outline of the shape.
+     */
+    public Stroke getStroke() {
+        return stroke;
+    }
+
+    /**
      * Sets the paint used to fill a shape.
      *
      * @param newPaint the paint object used to draw the shape
      */
     public void setPaint(Paint newPaint) {
         this.paint = newPaint;
+    }
+
+    /**
+     * Gets the paint used to draw the outline of the shape.
+     */
+    public Paint getPaint() {
+        return paint;
     }
 
     /**
