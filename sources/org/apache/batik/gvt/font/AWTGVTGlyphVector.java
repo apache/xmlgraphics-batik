@@ -799,11 +799,7 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
         int end   = endGlyphIndex+ci.getBeginIndex();
 
         for (char c = ci.setIndex(start); ci.getIndex() <= end; c=ci.next()) {
-            if (ArabicTextHandler.isLigature(c)) {
-                charCount += ArabicTextHandler.getNumChars(c);
-            } else {
-                charCount++;
-            }
+            charCount += ArabicTextHandler.getNumChars(c);
         }
 
         return charCount;
