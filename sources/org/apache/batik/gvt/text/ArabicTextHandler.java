@@ -263,11 +263,14 @@ public class ArabicTextHandler {
      */
     public static boolean arabicCharTransparent(char c) {
         int charVal = c;
-        if ((charVal >= 0x064B && charVal <= 0x0655) ||
+        if ((charVal  < 0x064B) || (charVal > 0x06ED)) 
+            return false;
+
+        if ((charVal <= 0x0655)                      ||
             (charVal == 0x0670)                      ||
             (charVal >= 0x06D6 && charVal <= 0x06E4) ||
             (charVal >= 0x06E7 && charVal <= 0x06E8) ||
-            (charVal >= 0x06EA && charVal <= 0x06ED)) {
+            (charVal >= 0x06EA)) {
             return true;
         }
         return false;
@@ -466,33 +469,37 @@ public class ArabicTextHandler {
     }
 
     /**
-     * Returns the number of characters the glyph for the specified character
-     * represents. If the glyph represents a ligature this will be 2, otherwise 1.
+     * Returns the number of characters the glyph for the specified
+     * character represents. If the glyph represents a ligature this
+     * will be 2, otherwise 1.
      *
      * @param c The character to test.
      * @return The number of characters the glyph for c represents.
      */
     public static int getNumChars(char c) {
         // if c is a ligature returns 2, else returns 1
-        if (isLigature(c)) {
+        if (isLigature(c))
             // at the moment only support ligatures with two chars
             return 2;
-        }
         return 1;
     }
 
     /**
-     * Returns true if the glyph for the specified character respresents a ligature.
+     * Returns true if the glyph for the specified character
+     * respresents a ligature.
      *
      * @param c The character to test.
      * @return True if c is a ligature, false otherwise.
      */
     public static boolean isLigature(char c) {
         int charVal = c;
-        if ((charVal >= 0xFE70 && charVal <= 0xFE72)
-            || (charVal == 0xFE74)
-            || (charVal >= 0xFE76 && charVal <= 0xFE7F)
-            || (charVal >= 0xFEF5 && charVal <= 0xFEFC)) {
+        if ((charVal < 0xFE70) || (charVal > 0xFEFC)) 
+            return false;
+
+        if ((charVal <= 0xFE72)                      ||
+            (charVal == 0xFE74)                      ||
+            (charVal >= 0xFE76 && charVal <= 0xFE7F) ||
+            (charVal >= 0xFEF5)) {
             return true;
         }
         return false;
