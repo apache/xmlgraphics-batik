@@ -47,11 +47,11 @@ public abstract class AbstractAttributeCondition
      * @param obj the reference object with which to compare.
      */
     public boolean equals(Object obj) {
-	if (obj == null || !(obj.getClass() != getClass())) {
-	    return false;
-	}
-	AbstractAttributeCondition c = (AbstractAttributeCondition)obj;
-	return c.value.equals(value);
+        if (obj == null || (obj.getClass() != getClass())) {
+            return false;
+        }
+        AbstractAttributeCondition c = (AbstractAttributeCondition)obj;
+        return c.value.equals(value);
     }
 
     /**

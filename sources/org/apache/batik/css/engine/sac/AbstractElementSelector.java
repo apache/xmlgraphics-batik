@@ -46,8 +46,8 @@ public abstract class AbstractElementSelector
      * Creates a new ElementSelector object.
      */
     protected AbstractElementSelector(String uri, String name) {
-	namespaceURI = uri;
-	localName    = name;
+        namespaceURI = uri;
+        localName    = name;
     }
 
     /**
@@ -55,12 +55,12 @@ public abstract class AbstractElementSelector
      * @param obj the reference object with which to compare.
      */
     public boolean equals(Object obj) {
-	if (obj == null || !(obj.getClass() != getClass())) {
-	    return false;
-	}
-	AbstractElementSelector s = (AbstractElementSelector)obj;
-	return s.namespaceURI.equals(namespaceURI) &&
-	       s.localName.equals(localName);
+        if (obj == null || (obj.getClass() != getClass())) {
+            return false;
+        }
+        AbstractElementSelector s = (AbstractElementSelector)obj;
+        return (s.namespaceURI.equals(namespaceURI) &&
+                s.localName.equals(localName));
     }
 
     /**
@@ -68,7 +68,7 @@ public abstract class AbstractElementSelector
      * org.w3c.css.sac.ElementSelector#getNamespaceURI()}.
      */
     public String getNamespaceURI() {
-	return namespaceURI;
+        return namespaceURI;
     }
 
     /**
@@ -76,7 +76,7 @@ public abstract class AbstractElementSelector
      * org.w3c.css.sac.ElementSelector#getLocalName()}.
      */
     public String getLocalName() {
-	return localName;
+        return localName;
     }
 
     /**
