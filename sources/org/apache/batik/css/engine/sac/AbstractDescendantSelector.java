@@ -56,11 +56,11 @@ public abstract class AbstractDescendantSelector
      * @param obj the reference object with which to compare.
      */
     public boolean equals(Object obj) {
-	if (obj == null || !(obj.getClass() != getClass())) {
-	    return false;
-	}
-	AbstractDescendantSelector s = (AbstractDescendantSelector)obj;
-	return s.simpleSelector.equals(simpleSelector);
+        if (obj == null || (obj.getClass() != getClass())) {
+            return false;
+        }
+        AbstractDescendantSelector s = (AbstractDescendantSelector)obj;
+        return s.simpleSelector.equals(simpleSelector);
     }
 
     /**

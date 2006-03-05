@@ -48,11 +48,11 @@ public class CSSPseudoClassCondition extends AbstractAttributeCondition {
      * @param obj the reference object with which to compare.
      */
     public boolean equals(Object obj) {
-	if (!super.equals(obj)) {
-	    return false;
-	}
-	CSSPseudoClassCondition c = (CSSPseudoClassCondition)obj;
-	return c.namespaceURI.equals(namespaceURI);
+        if (!super.equals(obj)) {
+            return false;
+        }
+        CSSPseudoClassCondition c = (CSSPseudoClassCondition)obj;
+        return c.namespaceURI.equals(namespaceURI);
     }
 
     /**

@@ -62,13 +62,13 @@ public class CSSAttributeCondition extends AbstractAttributeCondition {
      * @param obj the reference object with which to compare.
      */
     public boolean equals(Object obj) {
-	if (!super.equals(obj)) {
-	    return false;
-	}
-	CSSAttributeCondition c = (CSSAttributeCondition)obj;
-	return c.namespaceURI.equals(namespaceURI) &&
-	       c.localName.equals(localName) &&
-	       c.specified == specified;
+        if (!super.equals(obj)) {
+            return false;
+        }
+        CSSAttributeCondition c = (CSSAttributeCondition)obj;
+        return (c.namespaceURI.equals(namespaceURI) &&
+                c.localName.equals(localName)       &&
+                c.specified == specified);
     }
 
     /**
