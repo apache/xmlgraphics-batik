@@ -70,11 +70,11 @@ public abstract class AbstractSiblingSelector
      * @param obj the reference object with which to compare.
      */
     public boolean equals(Object obj) {
-	if (obj == null || !(obj.getClass() != getClass())) {
-	    return false;
-	}
-	AbstractSiblingSelector s = (AbstractSiblingSelector)obj;
-	return s.simpleSelector.equals(simpleSelector);
+        if (obj == null || (obj.getClass() != getClass())) {
+            return false;
+        }
+        AbstractSiblingSelector s = (AbstractSiblingSelector)obj;
+        return s.simpleSelector.equals(simpleSelector);
     }
 
     /**

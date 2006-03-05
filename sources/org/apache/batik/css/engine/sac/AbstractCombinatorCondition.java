@@ -54,12 +54,12 @@ public abstract class AbstractCombinatorCondition
      * @param obj the reference object with which to compare.
      */
     public boolean equals(Object obj) {
-	if (obj == null || !(obj.getClass() != getClass())) {
-	    return false;
-	}
-	AbstractCombinatorCondition c = (AbstractCombinatorCondition)obj;
-	return c.firstCondition.equals(firstCondition) &&
-	       c.secondCondition.equals(secondCondition);
+        if (obj == null || (obj.getClass() != getClass())) {
+            return false;
+        }
+        AbstractCombinatorCondition c = (AbstractCombinatorCondition)obj;
+        return (c.firstCondition.equals(firstCondition) &&
+                c.secondCondition.equals(secondCondition));
     }
 
     /**
