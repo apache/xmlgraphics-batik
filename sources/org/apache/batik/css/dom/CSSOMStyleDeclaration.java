@@ -235,7 +235,6 @@ public class CSSOMStyleDeclaration implements CSSStyleDeclaration {
          * Returns the value at the given.
          */
         String item(int idx);
-
     }
 
     /**
@@ -258,7 +257,6 @@ public class CSSOMStyleDeclaration implements CSSStyleDeclaration {
          */
         void propertyChanged(String name, String value, String prio)
             throws DOMException;
-
     }
 
     /**
@@ -307,6 +305,5 @@ public class CSSOMStyleDeclaration implements CSSStyleDeclaration {
         public Value getValue() {
             return CSSOMStyleDeclaration.this.valueProvider.getValue(property);
         }
-
     }
 }

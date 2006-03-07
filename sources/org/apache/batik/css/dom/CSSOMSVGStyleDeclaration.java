@@ -171,5 +171,4 @@ public class CSSOMSVGStyleDeclaration extends CSSOMStyleDeclaration {
         }
 
     }
-    
 }

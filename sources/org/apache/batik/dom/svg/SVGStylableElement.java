@@ -22,16 +22,18 @@ import java.net.URL;
 
 import org.apache.batik.css.dom.CSSOMSVGColor;
 import org.apache.batik.css.dom.CSSOMSVGPaint;
-import org.apache.batik.css.dom.CSSOMSVGStyleDeclaration;
+import org.apache.batik.css.dom.CSSOMStoredStyleDeclaration;
 import org.apache.batik.css.dom.CSSOMValue;
 import org.apache.batik.css.engine.CSSEngine;
 import org.apache.batik.css.engine.CSSStylableElement;
 import org.apache.batik.css.engine.SVGCSSEngine;
+import org.apache.batik.css.engine.StyleDeclarationProvider;
 import org.apache.batik.css.engine.StyleMap;
 import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.css.engine.value.svg.SVGColorManager;
 import org.apache.batik.css.engine.value.svg.SVGPaintManager;
 import org.apache.batik.dom.AbstractDocument;
+
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
@@ -56,6 +58,11 @@ public abstract class SVGStylableElement
     protected StyleMap computedStyleMap;
 
     /**
+     * The override style declaration for this element.
+     */
+    protected OverrideStyleDeclaration overrideStyleDeclaration;
+
+    /**
      * Creates a new SVGStylableElement object.
      */
     protected SVGStylableElement() {
@@ -70,6 +77,17 @@ public abstract class SVGStylableElement
         super(prefix, owner);
     }
     
+    /**
+     * Returns the override style declaration for this element.
+     */
+    public CSSStyleDeclaration getOverrideStyle() {
+        if (overrideStyleDeclaration == null) {
+            CSSEngine eng = ((SVGOMDocument) getOwnerDocument()).getCSSEngine();
+            overrideStyleDeclaration = new OverrideStyleDeclaration(eng);
+        }
+        return overrideStyleDeclaration;
+    }
+
     // CSSStylableElement //////////////////////////////////////////
     
     /**
@@ -133,6 +151,15 @@ public abstract class SVGStylableElement
             return n == null;
         }
         return false;
+    }
+
+    /**
+     * Returns the object that gives access to the underlying
+     * {@link org.apache.batik.css.engine.StyleDeclaration} for the override
+     * style of this element.
+     */
+    public StyleDeclarationProvider getOverrideStyleDeclarationProvider() {
+        return (StyleDeclarationProvider) getOverrideStyle();
     }
 
     // SVGStylable support ///////////////////////////////////////////////////
@@ -509,17 +536,10 @@ public abstract class SVGStylableElement
      * This class represents the 'style' attribute.
      */
     public class StyleDeclaration
-        extends CSSOMSVGStyleDeclaration
+        extends CSSOMStoredStyleDeclaration
         implements LiveAttributeValue,
-                   CSSOMSVGStyleDeclaration.ValueProvider,
-                   CSSOMSVGStyleDeclaration.ModificationHandler,
                    CSSEngine.MainPropertyReceiver {
         
-        /**
-         * The associated CSS object.
-         */
-        protected org.apache.batik.css.engine.StyleDeclaration declaration;
-
         /**
          * Whether the mutation comes from this object.
          */
@@ -529,62 +549,11 @@ public abstract class SVGStylableElement
          * Creates a new StyleDeclaration.
          */
         public StyleDeclaration(CSSEngine eng) {
-            super(null, null, eng);
-            valueProvider = this;
-            setModificationHandler(this);
+            super(eng);
 
             declaration = cssEngine.parseStyleDeclaration
                 (SVGStylableElement.this,
                  getAttributeNS(null, SVG_STYLE_ATTRIBUTE));
-        }
-
-        // ValueProvider ////////////////////////////////////////
-
-        /**
-         * Returns the current value associated with this object.
-         */
-        public Value getValue(String name) {
-            int idx = cssEngine.getPropertyIndex(name);
-            for (int i = 0; i < declaration.size(); i++) {
-                if (idx == declaration.getIndex(i)) {
-                    return declaration.getValue(i);
-                }
-            }
-            return null;
-        }
-
-        /**
-         * Tells whether the given property is important.
-         */
-        public boolean isImportant(String name) {
-            int idx = cssEngine.getPropertyIndex(name);
-            for (int i = 0; i < declaration.size(); i++) {
-                if (idx == declaration.getIndex(i)) {
-                    return declaration.getPriority(i);
-                }
-            }
-            return false;
-        }
-
-        /**
-         * Returns the text of the declaration.
-         */
-        public String getText() {
-            return declaration.toString(cssEngine);
-        }
-
-        /**
-         * Returns the length of the declaration.
-         */
-        public int getLength() {
-            return declaration.size();
-        }
-
-        /**
-         * Returns the value at the given.
-         */
-        public String item(int idx) {
-            return cssEngine.getPropertyName(declaration.getIndex(idx));
         }
 
         // LiveAttributeValue //////////////////////////////////////
@@ -649,13 +618,33 @@ public abstract class SVGStylableElement
             }
         }
 
+        /**
+         * Called when a property was changed.
+         */
+        public void propertyChanged(String name, String value, String prio)
+            throws DOMException {
+            boolean important = prio != null && prio.length() > 0;
+            cssEngine.setMainProperties(SVGStylableElement.this,
+                                        this, name, value, important);
+            mutate = true;
+            setAttributeNS(null, SVG_STYLE_ATTRIBUTE,
+                           declaration.toString(cssEngine));
+            mutate = false;
+        }
+
+        // MainPropertyReceiver //////////////////////////////////////////////
+
+        /**
+         * Sets a main property value in response to a shorthand property
+         * being set.
+         */
         public void setMainProperty(String name, Value v, boolean important) {
             int idx = cssEngine.getPropertyIndex(name);
             if (idx == -1) 
                 return;   // unknown property
 
-            int i=0;
-            for (; i < declaration.size(); i++) {
+            int i;
+            for (i = 0; i < declaration.size(); i++) {
                 if (idx == declaration.getIndex(i))
                     break;
             }
@@ -664,19 +653,48 @@ public abstract class SVGStylableElement
             else
                 declaration.append(v, idx, important);
         }
+    }
+
+    /**
+     * This class is a CSSStyleDeclaration for the override style of
+     * the element.
+     */
+    protected class OverrideStyleDeclaration
+        extends CSSOMStoredStyleDeclaration {
+
+        /**
+         * Creates a new OverrideStyleDeclaration.
+         */
+        public OverrideStyleDeclaration(CSSEngine eng) {
+            super(eng);
+            declaration = new org.apache.batik.css.engine.StyleDeclaration();
+        }
+
+        // ModificationHandler ///////////////////////////////////////////////
+
+        /**
+         * Called when the value text has changed.
+         */
+        public void textChanged(String text) throws DOMException {
+            ((SVGOMDocument) ownerDocument).overrideStyleTextChanged
+                (SVGStylableElement.this, text);
+        }
+
+        /**
+         * Called when a property was removed.
+         */
+        public void propertyRemoved(String name) throws DOMException {
+            ((SVGOMDocument) ownerDocument).overrideStylePropertyRemoved
+                (SVGStylableElement.this, name);
+        }
 
         /**
          * Called when a property was changed.
          */
         public void propertyChanged(String name, String value, String prio)
-            throws DOMException {
-            boolean important = ((prio != null) && (prio.length() >0));
-            cssEngine.setMainProperties(SVGStylableElement.this,
-                                        this, name, value, important);
-            mutate = true;
-            setAttributeNS(null, SVG_STYLE_ATTRIBUTE,
-                           declaration.toString(cssEngine));
-            mutate = false;
+                throws DOMException {
+            ((SVGOMDocument) ownerDocument).overrideStylePropertyChanged
+                (SVGStylableElement.this, name, value, prio);
         }
     }
 }

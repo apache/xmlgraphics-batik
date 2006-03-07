@@ -57,4 +57,21 @@ public interface CSSNavigableDocumentListener {
      */
     void attrModified(Element e, Attr attr, short attrChange,
                       String prevValue, String newValue);
+
+    /**
+     * The text of the override style declaration for this element has been
+     * modified.
+     */
+    void overrideStyleTextChanged(CSSStylableElement e, String text);
+
+    /**
+     * A property in the override style declaration has been removed.
+     */
+    void overrideStylePropertyRemoved(CSSStylableElement e, String name);
+
+    /**
+     * A property in the override style declaration has been changed.
+     */
+    void overrideStylePropertyChanged(CSSStylableElement e, String name,
+                                      String val, String prio);
 }

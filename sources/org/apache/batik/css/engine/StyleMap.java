@@ -54,6 +54,7 @@ public class StyleMap {
     public final static short NON_CSS_ORIGIN       = 0x4000; // 0100
     public final static short AUTHOR_ORIGIN        = 0x6000; // 0110
     public final static short INLINE_AUTHOR_ORIGIN = (short)0x8000; // 1000
+    public final static short OVERRIDE_ORIGIN      = (short)0xA000; // 1010
 
     /**
      * The values.

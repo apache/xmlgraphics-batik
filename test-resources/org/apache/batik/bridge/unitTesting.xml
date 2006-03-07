@@ -179,7 +179,7 @@
             <property name="ExpectedErrorCode" class="java.lang.String"
                       value="css.uri.badTarget" />
         </test>
-    <!-- No longer generats exception - just user warning
+    <!-- No longer generates exception - just user warning
         <test id="bridge/error/css-invalid">
             <property name="ExpectedExceptionClass" class="java.lang.String"
                       value="org.w3c.dom.DOMException" />
