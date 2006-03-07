@@ -821,6 +821,24 @@ public abstract class CSSEngine {
                     }
                 }
             }
+
+            // Apply the override rules to the result.
+            StyleDeclarationProvider p =
+                elt.getOverrideStyleDeclarationProvider();
+            StyleDeclaration over = p.getStyleDeclaration();
+            if (over != null) {
+                int ol = over.size();
+                for (int i = 0; i < ol; i++) {
+                    int idx = over.getIndex(i);
+                    Value value = over.getValue(i);
+                    boolean important = over.getPriority(i);
+                    if (!result.isImportant(idx) || important) {
+                        result.putValue(idx, value);
+                        result.putImportant(idx, important);
+                        result.putOrigin(idx, StyleMap.OVERRIDE_ORIGIN);
+                    }
+                }
+            }
         } finally {
             element = null;
             cssBaseURI = null;
@@ -951,6 +969,7 @@ public abstract class CSSEngine {
      * set.  Shorthand properties will be expanded "automatically".
      */
     public interface MainPropertyReceiver {
+
         /**
          * Called with a non-shorthand property name and it's value.
          */
@@ -1258,6 +1277,9 @@ public abstract class CSSEngine {
                 break;
             case StyleMap.AUTHOR_ORIGIN:
                 cond = !dimp || imp;
+                break;
+            case StyleMap.OVERRIDE_ORIGIN:
+                cond = false;
                 break;
             default:
                 cond = true;
@@ -1856,13 +1878,14 @@ public abstract class CSSEngine {
 
             if (prevValue != null && prevValue.length() > 0) {
                 // Check if the style map has cascaded styles which
-                // come from the inline style attribute.
+                // come from the inline style attribute or override style.
                 for (int i = getNumberOfProperties() - 1; i >= 0; --i) {
-                    if (style.isComputed(i) &&
-                        style.getOrigin(i) == StyleMap.INLINE_AUTHOR_ORIGIN &&
-                        !updated[i]) {
-                        removed = true;
-                        updated[i] = true;
+                    if (style.isComputed(i) && !updated[i]) {
+                        short origin = style.getOrigin(i);
+                        if (origin >= StyleMap.INLINE_AUTHOR_ORIGIN) {
+                            removed = true;
+                            updated[i] = true;
+                        }
                     }
                 }
             }
@@ -2166,9 +2189,7 @@ public abstract class CSSEngine {
             return;
         }
 
-        switch (style.getOrigin(idx)) {
-        case StyleMap.AUTHOR_ORIGIN:
-        case StyleMap.INLINE_AUTHOR_ORIGIN:
+        if (style.getOrigin(idx) >= StyleMap.AUTHOR_ORIGIN) {
             // The current value has a greater priority
             return;
         }
@@ -2313,7 +2334,19 @@ public abstract class CSSEngine {
      * To handle mutations of a CSSNavigableDocument.
      */
     protected class CSSNavigableDocumentHandler
-            implements CSSNavigableDocumentListener {
+            implements CSSNavigableDocumentListener,
+                       MainPropertyReceiver {
+
+        /**
+         * Array to hold which properties have been changed by a call to
+         * setMainProperties.
+         */
+        protected boolean[] mainPropertiesChanged;
+
+        /**
+         * The StyleDeclaration to use from the MainPropertyReceiver.
+         */
+        protected StyleDeclaration declaration;
 
         /**
          * A node has been inserted into the CSSNavigableDocument tree.
@@ -2399,6 +2432,93 @@ public abstract class CSSEngine {
                                  String prevValue,
                                  String newValue) {
             handleAttrModified(e, attr, attrChange, prevValue, newValue);
+        }
+
+        /**
+         * The text of the override style declaration for this element has been
+         * modified.
+         */
+        public void overrideStyleTextChanged(CSSStylableElement elt,
+                                             String text) {
+            StyleDeclarationProvider p =
+                elt.getOverrideStyleDeclarationProvider();
+            StyleDeclaration declaration = p.getStyleDeclaration();
+            int ds = declaration.size();
+            boolean[] updated = new boolean[getNumberOfProperties()];
+            for (int i = 0; i < ds; i++) {
+                updated[declaration.getIndex(i)] = true;
+            }
+            declaration = parseStyleDeclaration(elt, text);
+            p.setStyleDeclaration(declaration);
+            ds = declaration.size();
+            for (int i = 0; i < ds; i++) {
+                updated[declaration.getIndex(i)] = true;
+            }
+            invalidateProperties(elt, null, updated, true);
+        }
+
+        /**
+         * A property in the override style declaration has been removed.
+         */
+        public void overrideStylePropertyRemoved(CSSStylableElement elt,
+                                                 String name) {
+            StyleDeclarationProvider p =
+                elt.getOverrideStyleDeclarationProvider();
+            StyleDeclaration declaration = p.getStyleDeclaration();
+            int idx = getPropertyIndex(name);
+            int ds = declaration.size();
+            for (int i = 0; i < ds; i++) {
+                if (idx == declaration.getIndex(i)) {
+                    declaration.remove(i);
+                    StyleMap style = elt.getComputedStyleMap(null);
+                    if (style.getOrigin(idx) == StyleMap.OVERRIDE_ORIGIN
+                            && style.isComputed(idx)) {
+                        invalidateProperties
+                            (elt, new int[] { idx }, null, true);
+                    }
+                    break;
+                }
+            }
+        }
+
+        /**
+         * A property in the override style declaration has been changed.
+         */
+        public void overrideStylePropertyChanged(CSSStylableElement elt,
+                                                 String name, String val,
+                                                 String prio) {
+            boolean important = prio != null && prio.length() != 0;
+            StyleDeclarationProvider p =
+                elt.getOverrideStyleDeclarationProvider();
+            declaration = p.getStyleDeclaration();
+            setMainProperties(elt, this, name, val, important);
+            declaration = null;
+            invalidateProperties(elt, null, mainPropertiesChanged, true);
+        }
+
+        // MainPropertyReceiver //////////////////////////////////////////////
+
+        /**
+         * Sets a main property value in response to a shorthand property
+         * being set.
+         */
+        public void setMainProperty(String name, Value v, boolean important) {
+            int idx = getPropertyIndex(name);
+            if (idx == -1) {
+                return;   // unknown property
+            }
+
+            int i;
+            for (i = 0; i < declaration.size(); i++) {
+                if (idx == declaration.getIndex(i)) {
+                    break;
+                }
+            }
+            if (i < declaration.size()) {
+                declaration.put(i, v, idx, important);
+            } else {
+                declaration.append(v, idx, important);
+            }
         }
     }
 

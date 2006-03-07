@@ -60,4 +60,10 @@ public interface CSSStylableElement extends Element {
      * class.
      */
     boolean isPseudoInstanceOf(String pseudoClass);
+
+    /**
+     * Returns the object that gives access to the underlying
+     * {@link StyleDeclaration} for the override style of this element.
+     */
+    StyleDeclarationProvider getOverrideStyleDeclarationProvider();
 }
