@@ -1,5 +1,5 @@
 <!--
-   Copyright 1999-2003,2005 The Apache Software Foundation.
+   Copyright 1999-2003,2005-2006 The Apache Software Foundation.
    
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -24,6 +24,8 @@
              class="org.apache.batik.swing.JSVGMemoryLeakTest">
     <test id="samples/anne.svg" />
     <test id="samples/tests/spec/scripting/memoryLeak1.svg"/>
+    <test id="samples/tests/spec/scripting/primaryDoc.svg"/>
+    <test id="samples/tests/spec/scripting/resourceDocDynamic11.svg"/>
   </testGroup>
 
   <!--test id="NullURITest" 

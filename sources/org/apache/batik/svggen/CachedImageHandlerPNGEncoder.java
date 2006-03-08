@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001,2003  The Apache Software Foundation 
+   Copyright 2001,2003,2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -21,8 +21,9 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.apache.batik.ext.awt.image.codec.ImageEncoder;
-import org.apache.batik.ext.awt.image.codec.PNGImageEncoder;
+import org.apache.batik.ext.awt.image.spi.ImageWriter;
+import org.apache.batik.ext.awt.image.spi.ImageWriterParams;
+import org.apache.batik.ext.awt.image.spi.ImageWriterRegistry;
 
 /**
  * GenericImageHandler which caches PNG images.
@@ -57,8 +58,10 @@ public class CachedImageHandlerPNGEncoder extends DefaultCachedImageHandler {
      */
     public void encodeImage(BufferedImage buf, OutputStream os)
             throws IOException {
-        ImageEncoder encoder = new PNGImageEncoder(os, null);
-        encoder.encode(buf);
+        ImageWriter writer = ImageWriterRegistry.getInstance()
+            .getWriterFor("image/png");
+        ImageWriterParams params = new ImageWriterParams();
+        writer.writeImage(buf, os);
     }
 
     public int getBufferedImageType(){

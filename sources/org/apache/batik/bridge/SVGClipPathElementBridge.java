@@ -39,8 +39,8 @@ import org.w3c.dom.Node;
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
-public class SVGClipPathElementBridge extends AbstractSVGBridge
-    implements ClipBridge {
+public class SVGClipPathElementBridge extends AnimatableGenericSVGBridge
+        implements ClipBridge {
 
     /**
      * Constructs a new bridge for the &lt;clipPath> element.

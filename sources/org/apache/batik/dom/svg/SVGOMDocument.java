@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2000-2003,2005  The Apache Software Foundation 
+   Copyright 2000-2003,2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -21,12 +21,18 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.MissingResourceException;
 
+import org.apache.batik.anim.timing.TimedDocumentRoot;
+import org.apache.batik.anim.timing.TimedElement;
 import org.apache.batik.css.engine.CSSNavigableDocument;
 import org.apache.batik.css.engine.CSSNavigableDocumentListener;
+import org.apache.batik.css.engine.CSSStylableElement;
 import org.apache.batik.dom.AbstractStylableDocument;
 import org.apache.batik.dom.GenericAttr;
 import org.apache.batik.dom.GenericAttrNS;
@@ -38,6 +44,7 @@ import org.apache.batik.dom.GenericEntityReference;
 import org.apache.batik.dom.GenericProcessingInstruction;
 import org.apache.batik.dom.GenericText;
 import org.apache.batik.dom.StyleSheetFactory;
+import org.apache.batik.dom.events.DOMTimeEvent;
 import org.apache.batik.dom.events.EventSupport;
 import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.i18n.LocalizableSupport;
@@ -56,8 +63,10 @@ import org.w3c.dom.EntityReference;
 import org.w3c.dom.Node;
 import org.w3c.dom.ProcessingInstruction;
 import org.w3c.dom.Text;
+import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
+import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.events.MutationEvent;
 import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGLangSpace;
@@ -73,7 +82,8 @@ public class SVGOMDocument
     extends    AbstractStylableDocument
     implements SVGDocument,
                SVGConstants,
-               CSSNavigableDocument {
+               CSSNavigableDocument,
+               IdContainer {
     
     /**
      * The error messages bundle class name.
@@ -422,6 +432,45 @@ public class SVGOMDocument
     }
 
     /**
+     * The text of the override style declaration for this element has been
+     * modified.
+     */
+    protected void overrideStyleTextChanged(CSSStylableElement e, String text) {
+        Iterator i = cssNavigableDocumentListeners.keySet().iterator();
+        while (i.hasNext()) {
+            CSSNavigableDocumentListener l =
+                (CSSNavigableDocumentListener) i.next();
+            l.overrideStyleTextChanged(e, text);
+        }
+    }
+
+    /**
+     * A property in the override style declaration has been removed.
+     */
+    protected void overrideStylePropertyRemoved(CSSStylableElement e,
+                                                String name) {
+        Iterator i = cssNavigableDocumentListeners.keySet().iterator();
+        while (i.hasNext()) {
+            CSSNavigableDocumentListener l =
+                (CSSNavigableDocumentListener) i.next();
+            l.overrideStylePropertyRemoved(e, name);
+        }
+    }
+
+    /**
+     * A property in the override style declaration has been changed.
+     */
+    protected void overrideStylePropertyChanged
+            (CSSStylableElement e, String name, String value, String prio) {
+        Iterator i = cssNavigableDocumentListeners.keySet().iterator();
+        while (i.hasNext()) {
+            CSSNavigableDocumentListener l =
+                (CSSNavigableDocumentListener) i.next();
+            l.overrideStylePropertyChanged(e, name, value, prio);
+        }
+    }
+
+    /**
      * DOM node inserted listener wrapper.
      */
     protected class DOMNodeInsertedListenerWrapper implements EventListener {
@@ -559,6 +608,20 @@ public class SVGOMDocument
         }
     }
 
+    // DocumentCSS ////////////////////////////////////////////////////////////
+
+    /**
+     * <b>DOM</b>: Implements
+     * {@link DocumentCSS#getOverrideStyle(Element,String)}.
+     */
+    public CSSStyleDeclaration getOverrideStyle(Element elt,
+                                                String pseudoElt) {
+        if (elt instanceof SVGStylableElement && pseudoElt == null) {
+            return ((SVGStylableElement) elt).getOverrideStyle();
+        }
+        return null;
+    }
+
     // AbstractDocument ///////////////////////////////////////////////
 
     /**
@@ -587,13 +650,13 @@ public class SVGOMDocument
      * @param n a node of the type of this.
      */
     protected Node copyInto(Node n) {
-	super.copyInto(n);
-	SVGOMDocument sd = (SVGOMDocument)n;
+        super.copyInto(n);
+        SVGOMDocument sd = (SVGOMDocument)n;
         sd.localizableSupport = new LocalizableSupport
             (RESOURCES, getClass().getClassLoader());
         sd.referrer = referrer;
         sd.url = url;
-	return n;
+        return n;
     }
 
     /**
@@ -601,13 +664,13 @@ public class SVGOMDocument
      * @param n a node of the type of this.
      */
     protected Node deepCopyInto(Node n) {
-	super.deepCopyInto(n);
+        super.deepCopyInto(n);
         SVGOMDocument sd = (SVGOMDocument)n;
         sd.localizableSupport = new LocalizableSupport
             (RESOURCES, getClass().getClassLoader());
         sd.referrer = referrer;
         sd.url = url;
-	return n;
+        return n;
     }
 
     // Serialization //////////////////////////////////////////////////////

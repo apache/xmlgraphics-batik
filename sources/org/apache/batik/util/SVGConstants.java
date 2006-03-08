@@ -379,7 +379,10 @@ public interface SVGConstants extends CSSConstants {
     String SVG_ASCENT_ATTRIBUTE = "ascent";
     String SVG_AZIMUTH_ATTRIBUTE = "azimuth";
     String SVG_ALPHABETIC_ATTRIBUTE = "alphabetic";
+    String SVG_ATTRIBUTE_NAME_ATTRIBUTE = "attributeName";
+    String SVG_ATTRIBUTE_TYPE_ATTRIBUTE = "attributeType";
     String SVG_BASE_FREQUENCY_ATTRIBUTE = "baseFrequency";
+    String SVG_BEGIN_ATTRIBUTE = "begin";
     String SVG_BBOX_ATTRIBUTE = "bbox";
     String SVG_BIAS_ATTRIBUTE = "bias";
     String SVG_CALC_MODE_ATTRIBUTE = "calcMode";
@@ -396,12 +399,14 @@ public interface SVGConstants extends CSSConstants {
     String SVG_DESCENT_ATTRIBUTE = "descent";
     String SVG_DIFFUSE_CONSTANT_ATTRIBUTE = "diffuseConstant";
     String SVG_DIVISOR_ATTRIBUTE = "divisor";
+    String SVG_DUR_ATTRIBUTE = "dur";
     String SVG_DX_ATTRIBUTE = "dx";
     String SVG_DY_ATTRIBUTE = "dy";
     String SVG_D_ATTRIBUTE = "d";
     String SVG_EDGE_MODE_ATTRIBUTE = "edgeMode";
     String SVG_ELEVATION_ATTRIBUTE = "elevation";
     String SVG_ENABLE_BACKGROUND_ATTRIBUTE = CSS_ENABLE_BACKGROUND_PROPERTY;
+    String SVG_END_ATTRIBUTE = "end";
     String SVG_EXPONENT_ATTRIBUTE = "exponent";
     String SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE = "externalResourcesRequired";
     String SVG_FILL_ATTRIBUTE = CSS_FILL_PROPERTY;
@@ -419,6 +424,7 @@ public interface SVGConstants extends CSSConstants {
     String SVG_FONT_STYLE_ATTRIBUTE = CSS_FONT_STYLE_PROPERTY;
     String SVG_FONT_VARIANT_ATTRIBUTE = CSS_FONT_VARIANT_PROPERTY;
     String SVG_FONT_WEIGHT_ATTRIBUTE = CSS_FONT_WEIGHT_PROPERTY;
+    String SVG_FROM_ATTRIBUTE = "from";
     String SVG_FX_ATTRIBUTE = "fx";
     String SVG_FY_ATTRIBUTE = "fy";
     String SVG_G1_ATTRIBUTE = "g1";
@@ -538,6 +544,7 @@ public interface SVGConstants extends CSSConstants {
     String SVG_TEXT_LENGTH_ATTRIBUTE = "textLength";
     String SVG_TEXT_RENDERING_ATTRIBUTE = CSS_TEXT_RENDERING_PROPERTY;
     String SVG_TITLE_ATTRIBUTE = "title";
+    String SVG_TO_ATTRIBUTE = "to";
     String SVG_TRANSFORM_ATTRIBUTE = "transform";
     String SVG_TYPE_ATTRIBUTE = "type";
     String SVG_U1_ATTRIBUTE = "u1";

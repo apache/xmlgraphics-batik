@@ -58,9 +58,8 @@ public class WallclockTimingSpecifier extends TimingSpecifier {
      * to the owner's instance time list or setting up any event listeners.
      */
     public void initialize() {
-        long begin = owner.getRoot().getDocumentBeginTime().getTimeInMillis();
-        long t = time.getTimeInMillis();
-        instance = new InstanceTime(this, (t - begin) / 1000f, null, false);
+        float t = owner.getRoot().convertWallclockTime(time);
+        instance = new InstanceTime(this, t, null, false);
         owner.addInstanceTime(instance, isBegin);
     }
 }

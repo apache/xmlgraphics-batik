@@ -58,12 +58,12 @@ public class CSSConditionalSelector
      * @param obj the reference object with which to compare.
      */
     public boolean equals(Object obj) {
-	if (obj == null || !(obj.getClass() != getClass())) {
-	    return false;
-	}
-	CSSConditionalSelector s = (CSSConditionalSelector)obj;
-	return s.simpleSelector.equals(simpleSelector) &&
-	       s.condition.equals(condition);
+        if (obj == null || (obj.getClass() != getClass())) {
+            return false;
+        }
+        CSSConditionalSelector s = (CSSConditionalSelector)obj;
+        return (s.simpleSelector.equals(simpleSelector) &&
+                s.condition.equals(condition));
     }
 
     /**

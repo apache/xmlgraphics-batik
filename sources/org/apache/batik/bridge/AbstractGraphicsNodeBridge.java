@@ -61,26 +61,16 @@ import org.w3c.dom.svg.SVGFitToViewBox;
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
-public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
+public abstract class AbstractGraphicsNodeBridge extends AnimatableSVGBridge
     implements SVGContext, 
                BridgeUpdateHandler, 
                GraphicsNodeBridge, 
                ErrorConstants {
     
     /**
-     * The element that has been handled by this bridge.
-     */
-    protected Element e;
-
-    /**
      * The graphics node constructed by this bridge.
      */
     protected GraphicsNode node;
-
-    /**
-     * The bridge context to use for dynamic updates.
-     */
-    protected BridgeContext ctx;
 
     /**
      * Whether the document is an SVG 1.2 document.
@@ -158,7 +148,7 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
 
     /**
      * This method is invoked during the build phase if the document
-     * is dynamic. The responsability of this method is to ensure that
+     * is dynamic. The responsibility of this method is to ensure that
      * any dynamic modifications of the element this bridge is
      * dedicated to, happen on its associated GVT product.
      */
@@ -390,7 +380,6 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
      */
     public float getPixelToMM() {
         return getPixelUnitToMillimeter();
-            
     }
 
     protected SoftReference bboxShape = null;

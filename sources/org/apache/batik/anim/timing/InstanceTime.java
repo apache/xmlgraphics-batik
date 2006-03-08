@@ -94,7 +94,9 @@ public class InstanceTime implements Comparable {
         //     time system into this time system.  Not
         //     strictly necessary in SVG.
         time = newTime;
-        creator.handleTimebaseUpdate(this, time);
+        if (creator != null) {
+            creator.handleTimebaseUpdate(this, time);
+        }
     }
 
     /**

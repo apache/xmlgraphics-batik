@@ -27,14 +27,15 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.apache.batik.ext.awt.image.GraphicsUtil;
-import org.apache.batik.ext.awt.image.codec.PNGEncodeParam;
-import org.apache.batik.ext.awt.image.codec.PNGImageEncoder;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.spi.ImageTagRegistry;
+import org.apache.batik.ext.awt.image.spi.ImageWriter;
+import org.apache.batik.ext.awt.image.spi.ImageWriterRegistry;
 import org.apache.batik.test.AbstractTest;
 import org.apache.batik.test.TestReport;
 import org.apache.batik.util.ParsedURL;
@@ -257,11 +258,14 @@ public class ImageCompareTest extends AbstractTest {
         File imageFile =  makeRandomFileName(imageType);
         imageFile.deleteOnExit();
 
-        PNGImageEncoder encoder 
-            = new PNGImageEncoder(new FileOutputStream(imageFile),
-                                  PNGEncodeParam.getDefaultEncodeParam(img));
-        
-        encoder.encode(img);
+        ImageWriter writer = ImageWriterRegistry.getInstance()
+            .getWriterFor("image/png");
+        OutputStream out = new FileOutputStream(imageFile);
+        try {
+            writer.writeImage(img, out);
+        } finally {
+            out.close();
+        }
         
         return imageFile;
         

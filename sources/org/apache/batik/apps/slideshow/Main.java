@@ -297,7 +297,7 @@ public class Main extends JComponent {
                 int idx = str.indexOf('#');
                 if (idx != -1)
                     str = str.substring(0, idx);
-                str.trim();
+                str = str.trim();
                 if (str.length() == 0)
                     continue;
                 try {
@@ -309,6 +309,8 @@ public class Main extends JComponent {
             }
         } catch (IOException ioe) {
             System.err.println("Error while reading file-list: " + file);
+        } finally {
+            try { br.close(); } catch (IOException ioe) { }
         }
     }
 

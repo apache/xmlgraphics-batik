@@ -18,9 +18,10 @@
 package org.apache.batik.dom.svg12;
 
 import org.apache.batik.dom.AbstractDocument;
-import org.apache.batik.dom.svg.SVGStylableElement;
+import org.apache.batik.dom.svg.SVGOMTextContentElement;
 import org.apache.batik.util.SVG12Constants;
 import org.w3c.dom.Node;
+import org.w3c.dom.svg.SVGTextContentElement;
 
 /**
  * This class implements a regular polygon extension to SVG
@@ -28,7 +29,9 @@ import org.w3c.dom.Node;
  * @author <a href="mailto:thomas.deweese@kodak.com">Thomas DeWeese</a>
  * @version $Id$
  */
-public class SVGOMFlowParaElement extends SVGStylableElement {
+public class SVGOMFlowParaElement 
+    extends    SVGOMTextContentElement
+    implements SVGTextContentElement {
 
     /**
      * Creates a new BatikRegularPolygonElement object.

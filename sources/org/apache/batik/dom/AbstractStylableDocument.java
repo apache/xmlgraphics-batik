@@ -121,5 +121,4 @@ public abstract class AbstractStylableDocument extends AbstractDocument
                                                 String pseudoElt) {
         throw new RuntimeException(" !!! Not implemented");
     }
-
 };

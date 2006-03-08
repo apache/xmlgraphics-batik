@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001,2003  The Apache Software Foundation 
+   Copyright 2001,2003,2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -114,63 +114,136 @@ public abstract class MagicNumberRegistryEntry
      * Constructor, simplifies construction of entry when only
      * one extension and one magic number is required.
      * @param name        Format Name
+     * @param priority    the priority of the RegistryEntry
      * @param ext         Standard extension
+     * @param mimeType    the supported MIME type
+     * @param offset      Offset of magic number
+     * @param magicNumber byte array to match.
+     */
+    public MagicNumberRegistryEntry(String name,
+                                    float priority,
+                                    String ext,
+                                    String mimeType,
+                                    int offset, byte[]magicNumber) {
+        super(name, priority, ext, mimeType);
+        magicNumbers    = new MagicNumber[1];
+        magicNumbers[0] = new MagicNumber(offset, magicNumber);
+    }
+    
+    /**
+     * Constructor, simplifies construction of entry when only
+     * one extension and one magic number is required.
+     * @param name        Format Name
+     * @param ext         Standard extension
+     * @param mimeType    the supported MIME type
      * @param offset      Offset of magic number
      * @param magicNumber byte array to match.
      */
     public MagicNumberRegistryEntry(String name,
                                     String ext,
                                     String mimeType,
-                                    int offset, byte[]magicNumber) {
-        super(name, PRIORITY, ext, mimeType);
-        magicNumbers    = new MagicNumber[1];
-        magicNumbers[0] = new MagicNumber(offset, magicNumber);
+                                    int offset, byte[] magicNumber) {
+        this(name, PRIORITY, ext, mimeType, offset, magicNumber);
     }
     
     /**
      * Constructor, simplifies construction of entry when only
      * one extension is required.
      * @param name         Format Name
+     * @param priority     the priority of the RegistryEntry
      * @param ext          Standard extension
+     * @param mimeType     the supported MIME type
+     * @param magicNumbers Array of magic numbers any of which can match.
+     */
+    public MagicNumberRegistryEntry(String name,
+                                    float priority,
+                                    String ext,
+                                    String mimeType,
+                                    MagicNumber[] magicNumbers) {
+        super(name, priority, ext, mimeType);
+        this.magicNumbers = magicNumbers;
+    }
+
+    /**
+     * Constructor, simplifies construction of entry when only
+     * one extension is required.
+     * @param name         Format Name
+     * @param ext          Standard extension
+     * @param mimeType     the supported MIME type
      * @param magicNumbers Array of magic numbers any of which can match.
      */
     public MagicNumberRegistryEntry(String name,
                                     String ext,
                                     String mimeType,
-                                    MagicNumber [] magicNumbers) {
-        super(name, PRIORITY, ext, mimeType);
-        this.magicNumbers = magicNumbers;
+                                    MagicNumber[] magicNumbers) {
+        this(name, PRIORITY, ext, mimeType, magicNumbers);
     }
 
     /**
      * Constructor, simplifies construction of entry when only
      * one magic number is required.
      * @param name Format Name
+     * @param priority the priority of the RegistryEntry
      * @param exts Standard set of extensions
+     * @param mimeTypes array of supported MIME types
+     * @param offset Offset of magic number
+     * @param magicNumber byte array to match.
+     */
+    public MagicNumberRegistryEntry(String    name,
+                                    float     priority,
+                                    String [] exts,
+                                    String [] mimeTypes,
+                                    int offset, byte[]magicNumber) {
+        super(name, priority, exts, mimeTypes);
+        magicNumbers    = new MagicNumber[1];
+        magicNumbers[0] = new MagicNumber(offset, magicNumber);
+    }
+    
+    /**
+     * Constructor, simplifies construction of entry when only
+     * one magic number is required.
+     * @param name Format Name
+     * @param exts Standard set of extensions
+     * @param mimeTypes array of supported MIME types
      * @param offset Offset of magic number
      * @param magicNumber byte array to match.
      */
     public MagicNumberRegistryEntry(String    name,
                                     String [] exts,
                                     String [] mimeTypes,
-                                    int offset, byte[]magicNumber) {
-        super(name, PRIORITY, exts, mimeTypes);
-        magicNumbers    = new MagicNumber[1];
-        magicNumbers[0] = new MagicNumber(offset, magicNumber);
+                                    int offset, byte[] magicNumbers) {
+        this(name, PRIORITY, exts, mimeTypes, offset, magicNumbers);
+    }
+    
+    /**
+     * Constructor
+     * @param name Format Name
+     * @param priority the priority of the RegistryEntry
+     * @param exts Standard set of extensions
+     * @param mimeTypes array of supported MIME types
+     * @param magicNumbers array of magic numbers any of which can match.
+     */
+    public MagicNumberRegistryEntry(String    name,
+                                    float     priority,
+                                    String [] exts,
+                                    String [] mimeTypes,
+                                    MagicNumber [] magicNumbers) {
+        super(name, priority, exts, mimeTypes);
+        this.magicNumbers = magicNumbers;
     }
     
     /**
      * Constructor
      * @param name Format Name
      * @param exts Standard set of extensions
+     * @param mimeTypes array of supported MIME types
      * @param magicNumbers array of magic numbers any of which can match.
      */
     public MagicNumberRegistryEntry(String    name,
                                     String [] exts,
                                     String [] mimeTypes,
                                     MagicNumber [] magicNumbers) {
-        super(name, PRIORITY, exts, mimeTypes);
-        this.magicNumbers = magicNumbers;
+        this(name, PRIORITY, exts, mimeTypes, magicNumbers);
     }
     
     /**

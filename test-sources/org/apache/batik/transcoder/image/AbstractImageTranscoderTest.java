@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001-2003  The Apache Software Foundation 
+   Copyright 2001-2003,2005  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
@@ -35,10 +36,9 @@ import java.net.URL;
 import java.util.Map;
 
 import org.apache.batik.ext.awt.image.spi.ImageTagRegistry;
+import org.apache.batik.ext.awt.image.spi.ImageWriter;
+import org.apache.batik.ext.awt.image.spi.ImageWriterRegistry;
 import org.apache.batik.ext.awt.image.renderable.Filter;
-
-import org.apache.batik.ext.awt.image.codec.PNGImageEncoder;
-import org.apache.batik.ext.awt.image.codec.PNGEncodeParam;
 
 import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderInput;
@@ -283,11 +283,14 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
                 String s = new File(filename).getName();
                 s = ("test-references/org/apache/batik/transcoder/image/"+
                      "candidate-variation/"+s);
-                PNGImageEncoder encoder 
-                    = new PNGImageEncoder
-                    (new FileOutputStream(s),
-                     PNGEncodeParam.getDefaultEncodeParam(diff));
-                encoder.encode(diff);
+                ImageWriter writer = ImageWriterRegistry.getInstance()
+                    .getWriterFor("image/png");
+                OutputStream out = new FileOutputStream(s);
+                try {
+                    writer.writeImage(diff, out);
+                } finally {
+                    out.close();
+                }
                 report.addDescriptionEntry(DIFFERENCE_IMAGE,new File(s));
             } catch (Exception e) { }
         }

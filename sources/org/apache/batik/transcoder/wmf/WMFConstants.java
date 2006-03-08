@@ -100,29 +100,29 @@ public interface WMFConstants
     public static final int META_CREATEBRUSHINDIRECT    = 0x02FC;
     public static final int META_CREATEREGION           = 0x06FF;
     public static final int META_POLYBEZIER16           = 0x1000;
-    public static final int META_CREATEBRUSH		  = 0x00F8;
-    public static final int META_CREATEBITMAPINDIRECT	  = 0x02FD;
-    public static final int META_CREATEBITMAP		  = 0x06FE;
+    public static final int META_CREATEBRUSH            = 0x00F8;
+    public static final int META_CREATEBITMAPINDIRECT   = 0x02FD;
+    public static final int META_CREATEBITMAP           = 0x06FE;
     
-    public static final int META_OBJ_WHITE_BRUSH        = 0;
-    public static final int META_OBJ_LTGRAY_BRUSH       = 1;
-    public static final int META_OBJ_GRAY_BRUSH         = 2;
-    public static final int META_OBJ_DKGRAY_BRUSH       = 3;
-    public static final int META_OBJ_BLACK_BRUSH        = 4;
-    public static final int META_OBJ_NULL_BRUSH         = 5;
-    public static final int META_OBJ_HOLLOW_BRUSH       = 5;
-    public static final int META_OBJ_WHITE_PEN          = 6;
-    public static final int META_OBJ_BLACK_PEN          = 7;
-    public static final int META_OBJ_NULL_PEN           = 8;
-    public static final int META_OBJ_OEM_FIXED_FONT     = 10;
-    public static final int META_OBJ_ANSI_FIXED_FONT    = 11;
-    public static final int META_OBJ_ANSI_VAR_FONT      = 12;
-    public static final int META_OBJ_SYSTEM_FONT        = 13;
+    public static final int META_OBJ_WHITE_BRUSH         = 0;
+    public static final int META_OBJ_LTGRAY_BRUSH        = 1;
+    public static final int META_OBJ_GRAY_BRUSH          = 2;
+    public static final int META_OBJ_DKGRAY_BRUSH        = 3;
+    public static final int META_OBJ_BLACK_BRUSH         = 4;
+    public static final int META_OBJ_NULL_BRUSH          = 5;
+    public static final int META_OBJ_HOLLOW_BRUSH        = 5;
+    public static final int META_OBJ_WHITE_PEN           = 6;
+    public static final int META_OBJ_BLACK_PEN           = 7;
+    public static final int META_OBJ_NULL_PEN            = 8;
+    public static final int META_OBJ_OEM_FIXED_FONT      = 10;
+    public static final int META_OBJ_ANSI_FIXED_FONT     = 11;
+    public static final int META_OBJ_ANSI_VAR_FONT       = 12;
+    public static final int META_OBJ_SYSTEM_FONT         = 13;
     public static final int META_OBJ_DEVICE_DEFAULT_FONT = 14;
-    public static final int META_OBJ_DEFAULT_PALETTE    = 15;
-    public static final int META_OBJ_SYSTEM_FIXED_FONT  = 16;
+    public static final int META_OBJ_DEFAULT_PALETTE     = 15;
+    public static final int META_OBJ_SYSTEM_FIXED_FONT   = 16;
     
-/* New StretchBlt() Modes */    
+    /* New StretchBlt() Modes */    
     public static final int STRETCH_BLACKONWHITE = 1;
     public static final int STRETCH_WHITEONBLACK = 2;
     public static final int STRETCH_COLORONCOLOR = 3;

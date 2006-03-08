@@ -50,11 +50,11 @@ public class CSSLangCondition
      * @param obj the reference object with which to compare.
      */
     public boolean equals(Object obj) {
-	if (obj == null || !(obj.getClass() != getClass())) {
-	    return false;
-	}
-	CSSLangCondition c = (CSSLangCondition)obj;
-	return c.lang.equals(lang);
+        if (obj == null || (obj.getClass() != getClass())) {
+            return false;
+        }
+        CSSLangCondition c = (CSSLangCondition)obj;
+        return c.lang.equals(lang);
     }
 
     /**

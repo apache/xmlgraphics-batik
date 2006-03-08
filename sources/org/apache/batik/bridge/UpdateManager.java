@@ -126,6 +126,17 @@ public class UpdateManager  {
     protected boolean started;
 
     /**
+     * Array of resource documents' BridgeContexts.
+     */
+    protected BridgeContext[] secondaryBridgeContexts;
+
+    /**
+     * Array of resource documents' ScriptingEnvironments that should
+     * have their SVGLoad event dispatched.
+     */
+    protected ScriptingEnvironment[] secondaryScriptingEnvironments;
+
+    /**
      * Creates a new update manager.
      * @param ctx The bridge context.
      * @param gn GraphicsNode whose updates are to be tracked.
@@ -145,27 +156,74 @@ public class UpdateManager  {
 
         graphicsNode = gn;
 
-        SVGOMDocument d = (SVGOMDocument) doc;
+        scriptingEnvironment = initializeScriptingEnvironment(bridgeContext);
+
+        // Any BridgeContexts for resource documents that exist
+        // when initializing the scripting environment for the
+        // primary document also need to have their scripting
+        // environments initialized.
+        secondaryBridgeContexts =
+            (BridgeContext[]) ctx.getChildContexts().clone();
+        secondaryScriptingEnvironments =
+            new ScriptingEnvironment[secondaryBridgeContexts.length];
+        for (int i = 0; i < secondaryBridgeContexts.length; i++) {
+            BridgeContext resCtx = secondaryBridgeContexts[i];
+            if (!((SVGOMDocument) resCtx.getDocument()).isSVG12()) {
+                continue;
+            }
+            resCtx.setUpdateManager(this);
+            ScriptingEnvironment se = initializeScriptingEnvironment(resCtx);
+            secondaryScriptingEnvironments[i] = se;
+        }
+    }
+
+    /**
+     * Creates an appropriate ScriptingEnvironment and XBL manager for
+     * the given document.
+     */
+    protected ScriptingEnvironment initializeScriptingEnvironment
+            (BridgeContext ctx) {
+        SVGOMDocument d = (SVGOMDocument) ctx.getDocument();
+        ScriptingEnvironment se;
         if (d.isSVG12()) {
-            scriptingEnvironment = new SVG12ScriptingEnvironment(ctx);
+            se = new SVG12ScriptingEnvironment(ctx);
             ctx.xblManager = new DefaultXBLManager(d, ctx);
             d.setXBLManager(ctx.xblManager);
         } else {
-            scriptingEnvironment = new ScriptingEnvironment(ctx);
+            se = new ScriptingEnvironment(ctx);
         }
+        return se;
     }
 
     /**
      * Dispatches an 'SVGLoad' event to the document.
      */
     public synchronized void dispatchSVGLoadEvent()
-        throws InterruptedException {
-        scriptingEnvironment.loadScripts();
-        scriptingEnvironment.dispatchSVGLoadEvent();
-        if (bridgeContext.isSVG12() && bridgeContext.xblManager != null) {
-            SVG12BridgeContext ctx12 = (SVG12BridgeContext) bridgeContext;
+            throws InterruptedException {
+        dispatchSVGLoadEvent(bridgeContext, scriptingEnvironment);
+        for (int i = 0; i < secondaryScriptingEnvironments.length; i++) {
+            BridgeContext ctx = secondaryBridgeContexts[i];
+            if (!((SVGOMDocument) ctx.getDocument()).isSVG12()) {
+                continue;
+            }
+            ScriptingEnvironment se = secondaryScriptingEnvironments[i];
+            dispatchSVGLoadEvent(ctx, se);
+        }
+        secondaryBridgeContexts = null;
+        secondaryScriptingEnvironments = null;
+    }
+
+    /**
+     * Dispatches an 'SVGLoad' event to the document.
+     */
+    protected void dispatchSVGLoadEvent(BridgeContext ctx,
+                                        ScriptingEnvironment se) {
+        se.loadScripts();
+        se.dispatchSVGLoadEvent();
+        if (ctx.isSVG12() && ctx.xblManager != null) {
+            SVG12BridgeContext ctx12 = (SVG12BridgeContext) ctx;
             ctx12.addBindingListener();
-            bridgeContext.xblManager.startProcessing();
+            ctx12.xblManager.startProcessing();
         }
     }
 

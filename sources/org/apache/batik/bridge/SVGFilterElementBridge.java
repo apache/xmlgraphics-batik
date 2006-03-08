@@ -43,8 +43,8 @@ import org.w3c.dom.Node;
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
-public class SVGFilterElementBridge extends AbstractSVGBridge
-    implements FilterBridge, ErrorConstants {
+public class SVGFilterElementBridge extends AnimatableGenericSVGBridge
+        implements FilterBridge, ErrorConstants {
 
     /**
      * Constructs a new bridge for the &lt;filter> element.

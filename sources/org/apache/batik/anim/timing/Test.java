@@ -46,7 +46,7 @@ public class Test {
         public org.apache.batik.dom.events.EventSupport getEventSupport() { return null; }
         public org.apache.batik.dom.events.NodeEventTarget getParentNodeEventTarget() { return null; }
         public Root() {
-            super(Calendar.getInstance(), false, true);
+            super(false, true);
         }
         protected TimedElement getTimedElementById(String id) {
             return (TimedElement) elements.get(id);

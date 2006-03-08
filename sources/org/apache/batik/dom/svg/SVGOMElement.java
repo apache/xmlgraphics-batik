@@ -19,10 +19,14 @@ package org.apache.batik.dom.svg;
 
 import org.apache.batik.css.engine.CSSEngine;
 import org.apache.batik.css.engine.CSSNavigableNode;
+import org.apache.batik.css.engine.value.ShorthandManager;
+import org.apache.batik.css.engine.value.ValueManager;
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.dom.AbstractStylableDocument;
 import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.SVGConstants;
+import org.apache.batik.util.SVGTypes;
 import org.apache.batik.util.XMLConstants;
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
@@ -48,7 +52,8 @@ import org.w3c.dom.svg.SVGSVGElement;
 public abstract class SVGOMElement
     extends    AbstractElement
     implements SVGElement,
-               SVGConstants {
+               SVGConstants,
+               ExtendedTraitAccess {
 
     /**
      * Is this element immutable?
@@ -367,6 +372,121 @@ public abstract class SVGOMElement
             putLiveAttributeValue(ns, ln, (LiveAttributeValue)result);
         }
         return result;
+    }
+
+    // ExtendedTraitAccess ///////////////////////////////////////////////////
+
+    /**
+     * Returns whether the given CSS property is available on this element.
+     */
+    public boolean hasProperty(String pn) {
+        AbstractStylableDocument doc = (AbstractStylableDocument) ownerDocument;
+        CSSEngine eng = doc.getCSSEngine();
+        return eng.getPropertyIndex(pn) != -1
+            || eng.getShorthandIndex(pn) != -1;
+    }
+
+    /**
+     * Returns whether the given trait is available on this element.
+     */
+    public boolean hasTrait(String ns, String ln) {
+        // XXX no traits yet
+        return false;
+    }
+
+    /**
+     * Returns whether the given CSS property is animatable.
+     */
+    public boolean isPropertyAnimatable(String pn) {
+        AbstractStylableDocument doc = (AbstractStylableDocument) ownerDocument;
+        CSSEngine eng = doc.getCSSEngine();
+        int idx = eng.getPropertyIndex(pn);
+        if (idx != -1) {
+            ValueManager[] vms = eng.getValueManagers();
+            return vms[idx].isAnimatableProperty();
+        }
+        idx = eng.getShorthandIndex(pn);
+        if (idx != -1) {
+            ShorthandManager[] sms = eng.getShorthandManagers();
+            return sms[idx].isAnimatableProperty();
+        }
+        return false;
+    }
+
+    /**
+     * Returns whether the given XML attribute is animatable.
+     */
+    public boolean isAttributeAnimatable(String ns, String ln) {
+        // XXX no attributes yet
+        return false;
+    }
+
+    /**
+     * Returns whether the given CSS property is additive.
+     */
+    public boolean isPropertyAdditive(String pn) {
+        AbstractStylableDocument doc = (AbstractStylableDocument) ownerDocument;
+        CSSEngine eng = doc.getCSSEngine();
+        int idx = eng.getPropertyIndex(pn);
+        if (idx != -1) {
+            ValueManager[] vms = eng.getValueManagers();
+            return vms[idx].isAdditiveProperty();
+        }
+        idx = eng.getShorthandIndex(pn);
+        if (idx != -1) {
+            ShorthandManager[] sms = eng.getShorthandManagers();
+            return sms[idx].isAdditiveProperty();
+        }
+        return false;
+    }
+
+    /**
+     * Returns whether the given XML attribute is additive.
+     */
+    public boolean isAttributeAdditive(String ns, String ln) {
+        // XXX no attributes yet
+        return false;
+    }
+
+    /**
+     * Returns whether the given trait is animatable.
+     */
+    public boolean isTraitAnimatable(String ns, String tn) {
+        // XXX no traits yet
+        return false;
+    }
+
+    /**
+     * Returns whether the given trait is additive.
+     */
+    public boolean isTraitAdditive(String ns, String tn) {
+        // XXX no traits yet
+        return false;
+    }
+
+    /**
+     * Returns the type of the given property.
+     * XXX should be in ExtendedTraitAccess
+     */
+    public int getPropertyType(String pn) {
+        AbstractStylableDocument doc =
+            (AbstractStylableDocument) ownerDocument;
+        CSSEngine eng = doc.getCSSEngine();
+        int idx = eng.getPropertyIndex(pn);
+        if (idx != -1) {
+            ValueManager[] vms = eng.getValueManagers();
+            return vms[idx].getPropertyType();
+        }
+        return SVGTypes.TYPE_UNKNOWN;
+    }
+
+    /**
+     * Returns the type of the given attribute.
+     * XXX should be in ExtendedTraitAccess
+     */
+    public int getAttributeType(String ns, String ln) {
+        // XXX no attributes yet
+        return SVGTypes.TYPE_UNKNOWN;
     }
 
     // Importation/Cloning ///////////////////////////////////////////

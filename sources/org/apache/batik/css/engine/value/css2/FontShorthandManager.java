@@ -63,6 +63,20 @@ public class FontShorthandManager
 	return CSSConstants.CSS_FONT_PROPERTY;
     }
 
+    /**
+     * Implements {@link ShorthandManager#isAnimatableProperty()}.
+     */
+    public boolean isAnimatableProperty() {
+        return true;
+    }
+
+    /**
+     * Implements {@link ValueManager#isAdditiveProperty()}.
+     */
+    public boolean isAdditiveProperty() {
+        return false;
+    }
+
     static LexicalUnit NORMAL_LU = CSSLexicalUnit.createString
         (LexicalUnit.SAC_IDENT, CSSConstants.CSS_NORMAL_VALUE, null);
     static LexicalUnit BOLD_LU = CSSLexicalUnit.createString
@@ -134,7 +148,7 @@ public class FontShorthandManager
         switch (lu.getLexicalUnitType()) {
         case LexicalUnit.SAC_INHERIT: return;
         case LexicalUnit.SAC_IDENT: {
-            String s= lu.getStringValue().toLowerCase();
+            String s = lu.getStringValue().toLowerCase();
             if (values.contains(s)) {
                 handleSystemFont(eng, ph, s, imp);
                 return;
@@ -161,7 +175,7 @@ public class FontShorthandManager
         IdentifierManager fstVM = (IdentifierManager)vMgrs[fst];
         IdentifierManager fvVM  = (IdentifierManager)vMgrs[fv];
         IdentifierManager fwVM  = (IdentifierManager)vMgrs[fw];
-        FontSizeManager fszVM = (FontSizeManager)vMgrs[fsz];
+        FontSizeManager   fszVM = (FontSizeManager)vMgrs[fsz];
         ValueManager      ffVM  = vMgrs[ff];
 
         StringMap fstSM = fstVM.getIdentifiers();
@@ -170,43 +184,45 @@ public class FontShorthandManager
         StringMap fszSM = fszVM.getIdentifiers();
 
 
-        // Check for font-style, font-varient, & font-weight
+        // Check for font-style, font-variant, & font-weight
         // These are all optional.
 
         boolean svwDone= false;
-        LexicalUnit intLU = null;;
+        LexicalUnit intLU = null;
         while (!svwDone && (lu != null)) {
             switch (lu.getLexicalUnitType()) {
             case LexicalUnit.SAC_IDENT: {
-                String s= lu.getStringValue().toLowerCase().intern();
-                if ((fontStyle   == null) && (fstSM.get(s) != null)) {
-                    fontStyle   = lu; 
+                String s = lu.getStringValue().toLowerCase().intern();
+                if (fontStyle == null && fstSM.get(s) != null) {
+                    fontStyle = lu; 
                     if (intLU != null) {
                         if (fontWeight == null) {
                             fontWeight = intLU;
                             intLU = null;
-                        } else 
+                        } else {
                             throw createInvalidLexicalUnitDOMException
                                 (intLU.getLexicalUnitType());
+                        }
                     }
                     break; 
                 }
 
-                if ((fontVariant == null) && (fvSM.get(s)  != null)) {
+                if (fontVariant == null && fvSM.get(s) != null) {
                     fontVariant = lu; 
                     if (intLU != null) {
                         if (fontWeight == null) {
                             fontWeight = intLU;
                             intLU = null;
-                        } else 
+                        } else {
                             throw createInvalidLexicalUnitDOMException
                                 (intLU.getLexicalUnitType());
+                        }
                     }
                     break; 
                 }
 
-                if ((intLU == null) && (fontWeight  == null) && 
-                    (fwSM.get(s)  != null)) {
+                if (intLU == null && fontWeight == null
+                        && fwSM.get(s) != null) {
                     fontWeight = lu; 
                     break; 
                 }
@@ -215,7 +231,7 @@ public class FontShorthandManager
                 break;
             }
             case LexicalUnit.SAC_INTEGER:
-                if ((intLU == null) && (fontWeight == null)) {
+                if (intLU == null && fontWeight == null) {
                     intLU = lu;
                     break;
                 }
@@ -314,8 +330,9 @@ public class FontShorthandManager
         ph.property(CSSConstants.CSS_FONT_VARIANT_PROPERTY, fontVariant, imp);
         ph.property(CSSConstants.CSS_FONT_WEIGHT_PROPERTY,  fontWeight,  imp);
         ph.property(CSSConstants.CSS_FONT_SIZE_PROPERTY,    fontSize,    imp);
-        if (lh!=-1)
+        if (lh != -1) {
             ph.property(CSSConstants.CSS_LINE_HEIGHT_PROPERTY,  
                         lineHeight,  imp);
+        }
     }
 }

@@ -34,8 +34,8 @@ import org.w3c.dom.Node;
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
-public class SVGMaskElementBridge extends AbstractSVGBridge
-    implements MaskBridge {
+public class SVGMaskElementBridge extends AnimatableGenericSVGBridge
+        implements MaskBridge {
 
     /**
      * Constructs a new bridge for the &lt;mask> element.

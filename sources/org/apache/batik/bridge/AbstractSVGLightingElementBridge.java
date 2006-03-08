@@ -112,7 +112,7 @@ public abstract class AbstractSVGLightingElementBridge
      * The base bridge class for light element.
      */
     protected static abstract class AbstractSVGLightElementBridge
-        extends AbstractSVGBridge {
+        extends AnimatableGenericSVGBridge {
 
         /**
          * Creates a <tt>Light</tt> according to the specified parameters.

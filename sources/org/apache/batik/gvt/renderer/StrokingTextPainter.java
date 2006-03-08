@@ -204,7 +204,7 @@ public class StrokingTextPainter extends BasicTextPainter {
         // System.out.println("Reorder: " + reorderTime + " FontMatching: " + fontMatchingTime + " Layout: " + layoutTime);
         // cache the textRuns so don't need to recalculate
         node.setTextRuns(textRuns);
-        return textRuns;
+        return node.getTextRuns();
    }
 
     public List computeTextRuns(TextNode node, 
@@ -1673,7 +1673,7 @@ public class StrokingTextPainter extends BasicTextPainter {
             this.anchorType = TextNode.Anchor.ANCHOR_START;
 
             TextNode.Anchor anchor = (TextNode.Anchor) aci.getAttribute
-		(GVTAttributedCharacterIterator.TextAttribute.ANCHOR_TYPE);
+                (GVTAttributedCharacterIterator.TextAttribute.ANCHOR_TYPE);
             if (anchor != null) {
                 this.anchorType = anchor.getType();
             }

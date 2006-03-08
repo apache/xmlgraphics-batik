@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2000-2003,2005  The Apache Software Foundation 
+   Copyright 2000-2003,2005  The Apache Software Foundation
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ import org.w3c.dom.events.EventTarget;
 
 /**
  * The class allows registration and removal of EventListeners on
- * an NodeEventTarget and dispatch of events to that NodeEventTarget.  
+ * an NodeEventTarget and dispatch of events to that NodeEventTarget.
  *
  * @see NodeEventTarget
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
@@ -91,9 +91,9 @@ public class EventSupport {
      * dispatched to any <code>EventTargets</code> beneath them in the
      * tree.  Events which are bubbling upward through the tree will
      * not trigger an <code>EventListener</code> designated to use
-     * capture.  
+     * capture.
      */
-    public void addEventListener(String type, EventListener listener, 
+    public void addEventListener(String type, EventListener listener,
 				 boolean useCapture) {
         addEventListenerNS(null, type, listener, useCapture, null);
     }
@@ -152,9 +152,9 @@ public class EventSupport {
      * capturing listener or not.  If a listener was registered twice,
      * one with capture and one without, each must be removed
      * separately.  Removal of a capturing listener does not affect a
-     * non-capturing version of the same listener, and vice versa.  
+     * non-capturing version of the same listener, and vice versa.
      */
-    public void removeEventListener(String type, EventListener listener, 
+    public void removeEventListener(String type, EventListener listener,
 				    boolean useCapture) {
         removeEventListenerNS(null, type, listener, useCapture);
     }
@@ -221,9 +221,9 @@ public class EventSupport {
      *   the event before <code>dispatchEvent</code> was
      *   called. Specification of the <code>Event</code>'s type as
      *   <code>null</code> or an empty string will also trigger this
-     *   exception.  
+     *   exception.
      */
-    public boolean dispatchEvent(NodeEventTarget target, Event e) 
+    public boolean dispatchEvent(NodeEventTarget target, Event e)
 	    throws EventException {
 	if (e == null) {
 	    return false;
@@ -233,7 +233,7 @@ public class EventSupport {
         boolean isCustom;
         if (e instanceof CustomEvent) {
             isCustom = true;
-            ce = (CustomEvent) ce;
+            ce = (CustomEvent)e;
         } else if (e instanceof org.w3c.dom.events.CustomEvent) {
             isCustom = true;
             ce = new WrappedEvent((org.w3c.dom.events.CustomEvent) e);
@@ -384,7 +384,7 @@ public class EventSupport {
     /**
      * Fires the registered listeners on the given event target.
      */
-    protected void fireEventListeners(NodeEventTarget node, 
+    protected void fireEventListeners(NodeEventTarget node,
                                       Event e,
                                       boolean useCapture,
                                       HashSet stoppedGroups,
@@ -452,10 +452,10 @@ public class EventSupport {
     /**
      * Returns a list event listeners depending on the specified event
      * type and phase.
-     * @param type the event type 
+     * @param type the event type
      * @param useCapture
      */
-    public EventListenerList getEventListeners(String type, 
+    public EventListenerList getEventListeners(String type,
 					       boolean useCapture) {
 	HashTable listeners
             = useCapture ? capturingListeners : bubblingListeners;
@@ -698,8 +698,8 @@ public class EventSupport {
         /**
          * Initializes this event object.
          */
-        public void initEvent(String eventTypeArg, 
-                              boolean canBubbleArg, 
+        public void initEvent(String eventTypeArg,
+                              boolean canBubbleArg,
                               boolean cancelableArg) {
             e.initEvent(eventTypeArg, canBubbleArg, cancelableArg);
         }
@@ -852,9 +852,9 @@ public class EventSupport {
          * Initializes this event object.
          * @see org.w3c.dom.events.Event#initEventNS
          */
-        public void initEventNS(String namespaceURIArg, 
-                                String eventTypeArg, 
-                                boolean canBubbleArg, 
+        public void initEventNS(String namespaceURIArg,
+                                String eventTypeArg,
+                                boolean canBubbleArg,
                                 boolean cancelableArg) {
             // This method is not needed for event processing.
         }

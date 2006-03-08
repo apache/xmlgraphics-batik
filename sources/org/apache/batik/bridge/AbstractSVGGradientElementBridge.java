@@ -40,8 +40,9 @@ import org.w3c.dom.Node;
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
-public abstract class AbstractSVGGradientElementBridge extends AbstractSVGBridge
-    implements PaintBridge, ErrorConstants {
+public abstract class AbstractSVGGradientElementBridge
+        extends AnimatableGenericSVGBridge
+        implements PaintBridge, ErrorConstants {
 
     /**
      * Constructs a new AbstractSVGGradientElementBridge.
@@ -288,8 +289,8 @@ public abstract class AbstractSVGGradientElementBridge extends AbstractSVGBridge
     /**
      * Bridge class for the gradient &lt;stop> element.
      */
-    public static class SVGStopElementBridge extends AbstractSVGBridge
-        implements Bridge {
+    public static class SVGStopElementBridge extends AnimatableGenericSVGBridge
+            implements Bridge {
 
         /**
          * Returns 'stop'.

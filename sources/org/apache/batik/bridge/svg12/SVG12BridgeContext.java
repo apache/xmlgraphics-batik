@@ -133,6 +133,7 @@ public class SVG12BridgeContext extends BridgeContext {
         AbstractNode n = (AbstractNode) document;
         XBLEventSupport es = (XBLEventSupport) n.initializeEventSupport();
 
+        childContexts.clear();
         synchronized (eventListenerSet) {
             // remove all listeners added by Bridges
             Iterator iter = eventListenerSet.iterator();
@@ -378,10 +379,13 @@ public class SVG12BridgeContext extends BridgeContext {
     /** 
      * This function creates a new BridgeContext, it mostly
      * exists so subclasses can provide an instance of 
-     * themselves when a sub BridgeContext is needed
+     * themselves when a sub BridgeContext is needed.
      */
-    public BridgeContext createBridgeContext() {
-        return new SVG12BridgeContext(getUserAgent(), getDocumentLoader());
+    public BridgeContext createBridgeContext(SVGOMDocument doc) {
+        if (doc.isSVG12()) {
+            return new SVG12BridgeContext(getUserAgent(), getDocumentLoader());
+        }
+        return new BridgeContext(getUserAgent(), getDocumentLoader());
     }
 
     public BridgeContext createSubBridgeContext(SVGOMDocument newDoc) {
@@ -391,21 +395,24 @@ public class SVG12BridgeContext extends BridgeContext {
         }
 
         BridgeContext subCtx = super.createSubBridgeContext(newDoc);
-        if (isDynamic()) {
+        if (isDynamic() && subCtx.isDynamic()) {
             setUpdateManager(subCtx, updateManager);
-            ScriptingEnvironment se;
-            if (newDoc.isSVG12()) {
-                se = new SVG12ScriptingEnvironment(subCtx);
-            } else {
-                se = new ScriptingEnvironment(subCtx);
-            }
-            se.loadScripts();
-            se.dispatchSVGLoadEvent();
-            if (newDoc.isSVG12()) {
-                DefaultXBLManager xm = new DefaultXBLManager(newDoc, subCtx);
-                setXBLManager(subCtx, xm);
-                newDoc.setXBLManager(xm);
-                xm.startProcessing();
+            if (updateManager != null) {
+                ScriptingEnvironment se;
+                if (newDoc.isSVG12()) {
+                    se = new SVG12ScriptingEnvironment(subCtx);
+                } else {
+                    se = new ScriptingEnvironment(subCtx);
+                }
+                se.loadScripts();
+                se.dispatchSVGLoadEvent();
+                if (newDoc.isSVG12()) {
+                    DefaultXBLManager xm =
+                        new DefaultXBLManager(newDoc, subCtx);
+                    setXBLManager(subCtx, xm);
+                    newDoc.setXBLManager(xm);
+                    xm.startProcessing();
+                }
             }
         }
         return subCtx;

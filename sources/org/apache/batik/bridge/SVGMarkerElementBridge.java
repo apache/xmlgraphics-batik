@@ -37,8 +37,8 @@ import org.w3c.dom.Node;
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
-public class SVGMarkerElementBridge extends AbstractSVGBridge
-    implements MarkerBridge, ErrorConstants {
+public class SVGMarkerElementBridge extends AnimatableGenericSVGBridge
+        implements MarkerBridge, ErrorConstants {
 
     /**
      * Constructs a new bridge for the &lt;marker> element.

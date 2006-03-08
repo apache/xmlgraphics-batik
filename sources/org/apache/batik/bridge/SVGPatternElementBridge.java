@@ -45,8 +45,8 @@ import org.w3c.dom.Node;
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
-public class SVGPatternElementBridge extends AbstractSVGBridge
-    implements PaintBridge, ErrorConstants {
+public class SVGPatternElementBridge extends AnimatableGenericSVGBridge
+        implements PaintBridge, ErrorConstants {
 
     /**
      * Constructs a new SVGPatternElementBridge.
@@ -360,6 +360,4 @@ public class SVGPatternElementBridge extends AbstractSVGBridge
         }
 
     }
-
 }
-

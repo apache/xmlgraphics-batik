@@ -51,9 +51,10 @@ public abstract class SVGDescriptiveElementBridge extends AbstractSVGBridge
      * <tt>SVGDescElementBridge</tt>.
      *
      * @param ctx the bridge context to use
-     * @param e the element that describes the graphics node to build
+     * @param e the element to be handled
      */
     public void handleElement(BridgeContext ctx, Element e){
+        System.err.println("desc handledElement");
         UserAgent ua = ctx.getUserAgent();
         ua.handleElement(e, Boolean.TRUE);
         

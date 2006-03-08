@@ -18,6 +18,7 @@
 package org.apache.batik.dom.svg12;
 
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.dom.svg.IdContainer;
 import org.apache.batik.dom.xbl.XBLShadowTreeElement;
 
 import org.w3c.dom.Node;
@@ -29,8 +30,9 @@ import org.w3c.dom.Element;
  * @author <a href="mailto:cam%40mcc%2eid%2eau">Cameron McCormack</a>
  * @version $Id$
  */
-public class XBLOMShadowTreeElement extends XBLOMElement
-                                    implements XBLShadowTreeElement {
+public class XBLOMShadowTreeElement
+        extends XBLOMElement
+        implements XBLShadowTreeElement, IdContainer {
 
     /**
      * Creates a new XBLOMShadowTreeElement.

@@ -17,15 +17,20 @@
  */
 package org.apache.batik.dom.svg;
 
+import java.util.Calendar;
+
+import org.apache.batik.anim.timing.TimedElement;
 import org.apache.batik.dom.AbstractDocument;
+
 import org.w3c.dom.DOMException;
+import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.svg.SVGAnimatedBoolean;
 import org.w3c.dom.svg.SVGAnimationElement;
 import org.w3c.dom.svg.SVGElement;
 import org.w3c.dom.svg.SVGStringList;
 
 /**
- * This class provides an implementation of the SVGAnimationElement interface.
+ * This class provides an implementation of the {@link SVGAnimationElement} interface.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
@@ -47,7 +52,6 @@ public abstract class SVGOMAnimationElement
      */
     protected SVGOMAnimationElement(String prefix, AbstractDocument owner) {
         super(prefix, owner);
-
     }
 
     /**
@@ -75,7 +79,14 @@ public abstract class SVGOMAnimationElement
      * <b>DOM</b>: Implements {@link SVGAnimationElement#getSimpleDuration()}.
      */
     public float getSimpleDuration() throws DOMException {
-        throw new RuntimeException("!!! TODO: getSimpleDuration()");
+        throw new RuntimeException("!!! TODO: getCurrentTime()");
+//         float dur = timedElement.getSimpleDur();
+//         if (dur == TimedElement.INDEFINITE) {
+//             throw createDOMException(DOMException.NOT_SUPPORTED_ERR,
+//                                      "animation.dur.indefinite",
+//                                      null);
+//         }
+//         return dur;
     }
 
     // ElementTimeControl ////////////////////////////////////////////////

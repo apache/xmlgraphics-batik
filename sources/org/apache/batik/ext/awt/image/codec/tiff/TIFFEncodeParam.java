@@ -20,7 +20,7 @@ package org.apache.batik.ext.awt.image.codec.tiff;
 import java.util.Iterator;
 import java.util.zip.Deflater;
 
-import org.apache.batik.ext.awt.image.codec.ImageEncodeParam;
+import org.apache.batik.ext.awt.image.codec.util.ImageEncodeParam;
 
 import com.sun.image.codec.jpeg.JPEGEncodeParam;
 

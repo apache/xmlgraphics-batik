@@ -22,7 +22,7 @@ import java.awt.Paint;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.batik.bridge.AbstractSVGBridge;
+import org.apache.batik.bridge.AnimatableGenericSVGBridge;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeException;
 import org.apache.batik.bridge.CSSUtilities;
@@ -48,8 +48,8 @@ import org.w3c.dom.css.CSSValue;
  *
  * @author <a href="mailto:thomas.deweese@kodak.com">Thomas Deweese</a>
  */
-public class SVGSolidColorElementBridge extends AbstractSVGBridge
-    implements PaintBridge {
+public class SVGSolidColorElementBridge extends AnimatableGenericSVGBridge
+        implements PaintBridge {
 
     /**
      * Constructs a new bridge for the &lt;rect> element.

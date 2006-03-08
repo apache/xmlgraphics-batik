@@ -36,6 +36,16 @@ public interface ShorthandManager {
     String getPropertyName();
     
     /**
+     * Whether the handled property can be animated.
+     */
+    boolean isAnimatableProperty();
+
+    /**
+     * Whether the handled property can be additively animated.
+     */
+    boolean isAdditiveProperty();
+
+    /**
      * Sets the properties which are affected by this shorthand
      * property.
      * @param eng  The current CSSEngine.

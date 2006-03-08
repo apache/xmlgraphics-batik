@@ -959,6 +959,44 @@ public abstract class TimedElement {
     }
 
     /**
+     * Adds a time to the begin time instance list that will cause
+     * the element to begin immediately (if restart semantics allow it).
+     */
+    public void beginElement() {
+        beginElement(0);
+    }
+
+    /**
+     * Adds a time to the begin time instance list that will cause
+     * the element to begin at some offset to the current time (if restart
+     * semantics allow it).
+     */
+    public void beginElement(float offset) {
+        float t = root.convertWallclockTime(Calendar.getInstance());
+        InstanceTime it = new InstanceTime(null, t + offset, null, true);
+        addInstanceTime(it, true);
+    }
+
+    /**
+     * Adds a time to the end time instance list that will cause
+     * the element to end immediately (if restart semantics allow it).
+     */
+    public void endElement() {
+        endElement(0);
+    }
+
+    /**
+     * Adds a time to the end time instance list that will cause
+     * the element to end at some offset to the current time (if restart
+     * semantics allow it).
+     */
+    public void endElement(float offset) {
+        float t = root.convertWallclockTime(Calendar.getInstance());
+        InstanceTime it = new InstanceTime(null, t + offset, null, true);
+        addInstanceTime(it, false);
+    }
+
+    /**
      * Fires a TimeEvent of the given type on this element.
      * @param eventType the type of TimeEvent ("beginEvent", "endEvent"
      *                  or "repeatEvent").

@@ -22,6 +22,7 @@ import java.awt.geom.Dimension2D;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.lang.ref.SoftReference;
+import java.lang.ref.WeakReference;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -34,6 +35,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
+import org.apache.batik.bridge.svg12.SVG12BridgeContext;
 import org.apache.batik.bridge.svg12.SVG12BridgeExtension;
 import org.apache.batik.css.engine.CSSContext;
 import org.apache.batik.css.engine.CSSEngine;
@@ -248,14 +250,24 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     protected BridgeContext primaryContext;
 
     /**
-     * Constructs a new empty bridge context.
+     * Set of WeakReferences to child BridgeContexts.
      */
-    protected BridgeContext() {}
+    protected HashSet childContexts = new HashSet();
+
+    /**
+     * The animation engine for the document.
+     */
+    protected SVGAnimationEngine animationEngine;
 
     /**
      * By default we share a unique instance of InterpreterPool.
      */
     private static InterpreterPool sharedPool = new InterpreterPool();
+
+    /**
+     * Constructs a new empty bridge context.
+     */
+    protected BridgeContext() {}
 
     /**
      * Constructs a new bridge context.
@@ -305,8 +317,9 @@ public class BridgeContext implements ErrorConstants, CSSContext {
             return (BridgeContext)newDoc.getCSSEngine().getCSSContext();
 
         BridgeContext subCtx;
-        subCtx = createBridgeContext();
+        subCtx = createBridgeContext(newDoc);
         subCtx.primaryContext = primaryContext != null ? primaryContext : this;
+        subCtx.primaryContext.childContexts.add(new WeakReference(subCtx));
         subCtx.dynamicStatus = dynamicStatus;
         subCtx.setGVTBuilder(getGVTBuilder());
         subCtx.setTextPainter(getTextPainter());
@@ -320,9 +333,12 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     /** 
      * This function creates a new BridgeContext, it mostly
      * exists so subclasses can provide an instance of 
-     * themselves when a sub BridgeContext is needed
+     * themselves when a sub BridgeContext is needed.
      */
-    public BridgeContext createBridgeContext() {
+    public BridgeContext createBridgeContext(SVGOMDocument doc) {
+        if (doc.isSVG12()) {
+            return new SVG12BridgeContext(getUserAgent(), getDocumentLoader());
+        }
         return new BridgeContext(getUserAgent(), getDocumentLoader());
     }
 
@@ -422,20 +438,19 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     }
 
     /**
-     * Set Element Data.
-     * Associates data object with element so it can be
-     * retrieved later.
+     * Associates a data object with a node so it can be retrieved later.
+     * This is primarily used for caching the graphics node generated from
+     * a 'pattern' element.  A soft reference to the data object is used.
      */
     public void setElementData(Node n, Object data) {
-        if (elementDataMap == null)
+        if (elementDataMap == null) {
             elementDataMap = new WeakHashMap();
+        }
         elementDataMap.put(n, new SoftReference(data));
     }
 
     /**
-     * Set Element Data.
-     * Associates data object with element so it can be
-     * retrieved later.
+     * Retrieves a data object associated with the given node.
      */
     public Object getElementData(Node n) {
         if (elementDataMap == null)
@@ -663,6 +678,30 @@ public class BridgeContext implements ErrorConstants, CSSContext {
             return primaryContext;
         }
         return this;
+    }
+
+    /**
+     * Returns an array of the child contexts.
+     */
+    public BridgeContext[] getChildContexts() {
+        BridgeContext[] res = new BridgeContext[childContexts.size()];
+        Iterator it = childContexts.iterator();
+        for (int i = 0; i < res.length; i++) {
+            WeakReference wr = (WeakReference) it.next();
+            res[i] = (BridgeContext) wr.get();
+        }
+        return res;
+    }
+
+    /**
+     * Returns the AnimationEngine for the document.  Creates one if
+     * it doesn't exist.
+     */
+    public SVGAnimationEngine getAnimationEngine() {
+        if (animationEngine == null) {
+            animationEngine = new SVGAnimationEngine(document, this);
+        }
+        return animationEngine;
     }
 
     // reference management //////////////////////////////////////////////////
@@ -1325,7 +1364,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      * Disposes this BridgeContext.
      */
     public void dispose() {
-
+        childContexts.clear();
         synchronized (eventListenerSet) {
             // remove all listeners added by Bridges
             Iterator iter = eventListenerSet.iterator();
@@ -1365,7 +1404,8 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     }
 
     /**
-     * Returns the SVGContext associated to the specified Node or null if any.
+     * Returns the SVGContext associated to the specified Node or null if
+     * there is none.
      */
     protected static SVGContext getSVGContext(Node node) {
         if (node instanceof SVGOMElement) {
@@ -1376,7 +1416,8 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     }
 
     /**
-     * Returns the SVGContext associated to the specified Node or null if any.
+     * Returns the BridgeUpdateHandler associated to the specified Node
+     * or null if there is none.
      */
     protected static BridgeUpdateHandler getBridgeUpdateHandler(Node node) {
         SVGContext ctx = getSVGContext(node);

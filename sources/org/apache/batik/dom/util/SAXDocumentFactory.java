@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001-2003  The Apache Software Foundation 
+   Copyright 2001-2003,2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -24,6 +24,11 @@ import java.io.Reader;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+
+import javax.xml.parsers.FactoryConfigurationError;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
@@ -383,6 +388,10 @@ public class SAXDocumentFactory
         return ret;
     }
 
+    static SAXParserFactory saxFactory;
+    static {
+        saxFactory = SAXParserFactory.newInstance();
+    }
 
     /**
      * Creates a Document.
@@ -391,8 +400,19 @@ public class SAXDocumentFactory
      */
     protected Document createDocument(InputSource is)
 	throws IOException {
-	try {
-            parser = XMLReaderFactory.createXMLReader(parserClassName);
+        try {
+            if (parserClassName != null) {
+                parser = XMLReaderFactory.createXMLReader(parserClassName);
+            } else {
+                SAXParser saxParser;
+                try {
+                    saxParser = saxFactory.newSAXParser();
+                } catch (ParserConfigurationException pce) {
+                    throw new IOException("Could not create SAXParser: "
+                            + pce.getMessage());
+                }
+                parser = saxParser.getXMLReader();
+            }
 
             parser.setContentHandler(this);
             parser.setDTDHandler(this);
@@ -404,9 +424,9 @@ public class SAXDocumentFactory
 			      true);
             parser.setFeature("http://xml.org/sax/features/namespace-prefixes",
                               true);
-	    parser.setFeature("http://xml.org/sax/features/validation",
+            parser.setFeature("http://xml.org/sax/features/validation",
 			      isValidating);
-	    parser.setProperty("http://xml.org/sax/properties/lexical-handler",
+            parser.setProperty("http://xml.org/sax/properties/lexical-handler",
 			       this);
             parser.parse(is);
 	} catch (SAXException e) {

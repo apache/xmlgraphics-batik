@@ -219,7 +219,7 @@ public class Main implements Application {
      * Controls whether the application can override the 
      * system security policy property. This is done when there
      * was no initial security policy specified when the application
-     * stated, in which case Batik will use that property.
+     * started, in which case Batik will use that property.
      */
     protected boolean overrideSecurityPolicy = false;
 
@@ -303,6 +303,7 @@ public class Main implements Application {
         securityEnforcer 
             = new ApplicationSecurityEnforcer(this.getClass(),
                                               SQUIGGLE_SECURITY_POLICY);
+
 
         try {
             preferenceManager = new XMLPreferenceManager(SQUIGGLE_CONFIGURATION_FILE,

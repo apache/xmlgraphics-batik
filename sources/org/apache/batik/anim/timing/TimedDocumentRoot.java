@@ -61,16 +61,14 @@ public abstract class TimedDocumentRoot extends TimeContainer {
 
     /**
      * Creates a new TimedDocumentRoot.
-     * @param begin the document begin time
      * @param useSVG11AccessKeys allows the use of accessKey() timing
      *                           specifiers with a single character
      * @param useSVG12Accesskeys allows the use of accessKey() with a
      *                           DOM 3 key name
      */
-    public TimedDocumentRoot(Calendar begin, boolean useSVG11AccessKeys,
+    public TimedDocumentRoot(boolean useSVG11AccessKeys,
                              boolean useSVG12AccessKeys) {
         root = this;
-        documentBeginTime = begin;
         this.useSVG11AccessKeys = useSVG11AccessKeys;
         this.useSVG12AccessKeys = useSVG12AccessKeys;
     }
@@ -120,8 +118,12 @@ public abstract class TimedDocumentRoot extends TimeContainer {
     /**
      * Resets the entire timegraph.
      */
-    public void resetDocument() {
-        documentBeginTime = Calendar.getInstance();
+    public void resetDocument(Calendar documentBeginTime) {
+        if (documentBeginTime == null) {
+            this.documentBeginTime = Calendar.getInstance();
+        } else {
+            this.documentBeginTime = documentBeginTime;
+        }
         reset(true);
     }
 
@@ -130,6 +132,15 @@ public abstract class TimedDocumentRoot extends TimeContainer {
      */
     public Calendar getDocumentBeginTime() {
         return documentBeginTime;
+    }
+
+    /**
+     * Converts a wallclock time to document time.
+     */
+    public float convertWallclockTime(Calendar time) {
+        long begin = documentBeginTime.getTimeInMillis();
+        long t = time.getTimeInMillis();
+        return (t - begin) / 1000f;
     }
 
     /**

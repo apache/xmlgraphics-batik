@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001,2003  The Apache Software Foundation 
+   Copyright 2001,2003,2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -22,14 +22,13 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import org.apache.batik.ext.awt.image.spi.ImageWriter;
+import org.apache.batik.ext.awt.image.spi.ImageWriterParams;
+import org.apache.batik.ext.awt.image.spi.ImageWriterRegistry;
 import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.TranscodingHints;
 import org.apache.batik.transcoder.image.resources.Messages;
-
-import com.sun.image.codec.jpeg.JPEGCodec;
-import com.sun.image.codec.jpeg.JPEGEncodeParam;
-import com.sun.image.codec.jpeg.JPEGImageEncoder;
 
 /**
  * This class is an <tt>ImageTranscoder</tt> that produces a JPEG image.
@@ -86,18 +85,14 @@ public class JPEGTranscoder extends ImageTranscoder {
                 quality = .75f;
             }
 
-            JPEGImageEncoder jpegEncoder;
-            JPEGEncodeParam params;
-            jpegEncoder = JPEGCodec.createJPEGEncoder(ostream);
-            params      = JPEGCodec.getDefaultJPEGEncodeParam(img);
-            params.setQuality(quality, true);
-
+            ImageWriter writer = ImageWriterRegistry.getInstance()
+                .getWriterFor("image/jpeg");
+            ImageWriterParams params = new ImageWriterParams();
+            params.setJPEGQuality(quality, true);
             float PixSzMM = userAgent.getPixelUnitToMillimeter();
-            int PixSzInch = (int)(25.4/PixSzMM+0.5);
-            params.setDensityUnit(JPEGEncodeParam.DENSITY_UNIT_DOTS_INCH);
-            params.setXDensity(PixSzInch);
-            params.setYDensity(PixSzInch);
-            jpegEncoder.encode(img, params);
+            int PixSzInch = (int)(25.4 / PixSzMM + 0.5);
+            params.setResolution(PixSzInch);
+            writer.writeImage(img, ostream, params);
             ostream.flush();
         } catch (IOException ex) {
             throw new TranscoderException(ex);

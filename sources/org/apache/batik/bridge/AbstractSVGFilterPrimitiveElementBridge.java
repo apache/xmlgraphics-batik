@@ -39,8 +39,8 @@ import org.w3c.dom.Element;
  * @version $Id$
  */
 public abstract class AbstractSVGFilterPrimitiveElementBridge
-    extends AbstractSVGBridge
-    implements FilterPrimitiveBridge, ErrorConstants {
+        extends AnimatableGenericSVGBridge
+        implements FilterPrimitiveBridge, ErrorConstants {
 
     /**
      * Constructs a new bridge for a filter primitive element.

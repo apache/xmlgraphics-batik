@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001,2003  The Apache Software Foundation 
+   Copyright 2001,2003,2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -21,9 +21,9 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import com.sun.image.codec.jpeg.JPEGCodec;
-import com.sun.image.codec.jpeg.JPEGEncodeParam;
-import com.sun.image.codec.jpeg.JPEGImageEncoder;
+import org.apache.batik.ext.awt.image.spi.ImageWriter;
+import org.apache.batik.ext.awt.image.spi.ImageWriterParams;
+import org.apache.batik.ext.awt.image.spi.ImageWriterRegistry;
 
 /**
  * GenericImageHandler which caches JPEG images.
@@ -56,11 +56,12 @@ public class CachedImageHandlerJPEGEncoder extends DefaultCachedImageHandler {
      * Uses JPEG encoding.
      */
     public void encodeImage(BufferedImage buf, OutputStream os)
-        throws IOException {
-        JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(os);
-        JPEGEncodeParam param = encoder.getDefaultJPEGEncodeParam(buf);
-        param.setQuality(1, false);
-        encoder.encode(buf, param);
+            throws IOException {
+        ImageWriter writer = ImageWriterRegistry.getInstance()
+                .getWriterFor("image/jpeg");
+        ImageWriterParams params = new ImageWriterParams();
+        params.setJPEGQuality(1, false);
+        writer.writeImage(buf, os, params);
     }
 
     public int getBufferedImageType(){

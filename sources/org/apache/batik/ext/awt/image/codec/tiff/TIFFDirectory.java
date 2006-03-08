@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
-import org.apache.batik.ext.awt.image.codec.SeekableStream;
+import org.apache.batik.ext.awt.image.codec.util.SeekableStream;
 
 /**
  * A class representing an Image File Directory (IFD) from a TIFF 6.0

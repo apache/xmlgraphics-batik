@@ -34,7 +34,7 @@ import org.w3c.dom.Element;
  * @author <a href="mailto:bella.robinson@cmis.csiro.au">Bella Robinson</a>
  * @version $Id$
  */
-public class SVGTextPathElementBridge extends AbstractSVGBridge
+public class SVGTextPathElementBridge extends AnimatableGenericSVGBridge
                                       implements ErrorConstants {
 
     /**
@@ -137,7 +137,4 @@ public class SVGTextPathElementBridge extends AbstractSVGBridge
 
         return textPath;
     }
-
-
 }
-

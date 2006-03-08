@@ -227,7 +227,7 @@ public class SVGFeComponentTransferElementBridge
      * The base bridge class for component transfer function.
      */
     protected static abstract class SVGFeFuncElementBridge
-        extends AbstractSVGBridge {
+            extends AnimatableGenericSVGBridge {
 
         /**
          * Constructs a new bridge for component transfer function.

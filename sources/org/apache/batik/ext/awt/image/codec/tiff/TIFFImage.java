@@ -40,7 +40,7 @@ import java.util.Map;
 import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
 
-import org.apache.batik.ext.awt.image.codec.SeekableStream;
+import org.apache.batik.ext.awt.image.codec.util.SeekableStream;
 import org.apache.batik.ext.awt.image.rendered.AbstractRed;
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
 

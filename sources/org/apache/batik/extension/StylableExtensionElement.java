@@ -1,6 +1,6 @@
 /*
 
-   Copyright 1999-2003  The Apache Software Foundation 
+   Copyright 1999-2003,2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.apache.batik.css.engine.CSSStylableElement;
+import org.apache.batik.css.engine.StyleDeclarationProvider;
 import org.apache.batik.css.engine.StyleMap;
 import org.apache.batik.dom.AbstractDocument;
 import org.w3c.dom.Node;
@@ -132,6 +133,15 @@ public abstract class StylableExtensionElement
             return n == null;
         }
         return false;
+    }
+
+    /**
+     * Returns the object that gives access to the underlying
+     * {@link org.apache.batik.css.engine.StyleDeclaration} for the override
+     * style of this element.
+     */
+    public StyleDeclarationProvider getOverrideStyleDeclarationProvider() {
+        return null;
     }
 
     // SVGStylable //////////////////////////////////////////////////

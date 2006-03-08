@@ -23,52 +23,52 @@ import org.w3c.dom.DOMException;
 import org.w3c.dom.svg.SVGMatrix;
 
 /**
- * This class is the implementation of
- * the SVGTransform interface.
- *
- * Create an identity SVGTransform
+ * This class is the implementation of the SVGTransform interface.
  *
  * @author <a href="mailto:nicolas.socheleau@bitflash.com">Nicolas Socheleau</a>
  * @version $Id$
  */
 public class SVGOMTransform extends AbstractSVGTransform {
 
-
-    public SVGOMTransform(){
-        super();
+    /**
+     * Creates a new SVGOMTransform.
+     */
+    public SVGOMTransform() {
         affineTransform = new AffineTransform();
     }
 
-    protected SVGMatrix createMatrix(){
-        return new AbstractSVGMatrix(){
-                protected AffineTransform getAffineTransform(){
-                    return SVGOMTransform.this.affineTransform;
-                }
-
-                public void setA(float a) throws DOMException {
-                    SVGOMTransform.this.setType(SVG_TRANSFORM_MATRIX);
-                    super.setA(a);
-                }
-                public void setB(float b) throws DOMException {
-                    SVGOMTransform.this.setType(SVG_TRANSFORM_MATRIX);
-                    super.setB(b);
-                }
-                public void setC(float c) throws DOMException {
-                    SVGOMTransform.this.setType(SVG_TRANSFORM_MATRIX);
-                    super.setC(c);
-                }
-                public void setD(float d) throws DOMException {
-                    SVGOMTransform.this.setType(SVG_TRANSFORM_MATRIX);
-                    super.setD(d);
-                }
-                public void setE(float e) throws DOMException {
-                    SVGOMTransform.this.setType(SVG_TRANSFORM_MATRIX);
-                    super.setE(e);
-                }
-                public void setF(float f) throws DOMException {
-                    SVGOMTransform.this.setType(SVG_TRANSFORM_MATRIX);
-                    super.setF(f);
-                }
-            };
+    /**
+     * Creates a new, modifiable SVGMatrix.
+     */
+    protected SVGMatrix createMatrix() {
+        return new AbstractSVGMatrix() {
+            protected AffineTransform getAffineTransform() {
+                return SVGOMTransform.this.affineTransform;
+            }
+            public void setA(float a) throws DOMException {
+                SVGOMTransform.this.setType(SVG_TRANSFORM_MATRIX);
+                super.setA(a);
+            }
+            public void setB(float b) throws DOMException {
+                SVGOMTransform.this.setType(SVG_TRANSFORM_MATRIX);
+                super.setB(b);
+            }
+            public void setC(float c) throws DOMException {
+                SVGOMTransform.this.setType(SVG_TRANSFORM_MATRIX);
+                super.setC(c);
+            }
+            public void setD(float d) throws DOMException {
+                SVGOMTransform.this.setType(SVG_TRANSFORM_MATRIX);
+                super.setD(d);
+            }
+            public void setE(float e) throws DOMException {
+                SVGOMTransform.this.setType(SVG_TRANSFORM_MATRIX);
+                super.setE(e);
+            }
+            public void setF(float f) throws DOMException {
+                SVGOMTransform.this.setType(SVG_TRANSFORM_MATRIX);
+                super.setF(f);
+            }
+        };
     }
 }

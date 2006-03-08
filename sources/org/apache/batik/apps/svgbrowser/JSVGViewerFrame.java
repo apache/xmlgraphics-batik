@@ -789,52 +789,51 @@ public class JSVGViewerFrame
                     t = st.substring(i + 1);
                     st = st.substring(0, i);
                 }
-                if (!st.equals("")) {
-                    try{
-                        File f = new File(st);
-                        if (f.exists()) {
-                            if (f.isDirectory()) {
-                                st = null;
-                            } else {
-                                try {
-                                    st = f.getCanonicalPath();
-                                    if (st.startsWith("/")) {
-                                        st = "file:" + st;
-                                    } else {
-                                        st = "file:/" + st;
-                                    }
-                                } catch (IOException ex) {
-                                }
-                            }
-                        }
-                    }catch(SecurityException se){
-                        // Could not patch the file URI for security
-                        // reasons (e.g., when run as an unsigned
-                        // JavaWebStart jar): file access is not
-                        // allowed. Loading will fail, but there is
-                        // nothing more to do at this point.
-                    }
 
-                    if (st != null) {
-                        String fi = svgCanvas.getFragmentIdentifier();
-                        if (svgDocument != null) {
-                            ParsedURL docPURL 
-                                = new ParsedURL(svgDocument.getURL());
-                            ParsedURL purl = new ParsedURL(docPURL, st);
-                            fi = (fi == null) ? "" : fi;
-                            if (docPURL.equals(purl) && t.equals(fi)) {
-                                return;
+                if (st.equals("")) 
+                    return;
+
+                try{
+                    File f = new File(st);
+                    if (f.exists()) {
+                        if (f.isDirectory()) {
+                            return;
+                        } else {
+                            try {
+                                st = f.getCanonicalPath();
+                                if (st.startsWith("/")) {
+                                    st = "file:" + st;
+                                } else {
+                                    st = "file:/" + st;
+                                }
+                            } catch (IOException ex) {
                             }
                         }
-                        if (t.length() != 0) {
-                            st = st.substring(0, st.length()-(fi.length()+1));
-                            st += "#" + t;
-                        }
-                        locationBar.setText(st);
-                        locationBar.addToHistory(st);
-                        showSVGDocument(st);
+                    }
+                }catch(SecurityException se){
+                    // Could not patch the file URI for security
+                    // reasons (e.g., when run as an unsigned
+                    // JavaWebStart jar): file access is not
+                    // allowed. Loading will fail, but there is
+                    // nothing more to do at this point.
+                }
+
+                String fi = svgCanvas.getFragmentIdentifier();
+                if (svgDocument != null) {
+                    ParsedURL docPURL 
+                        = new ParsedURL(svgDocument.getURL());
+                    ParsedURL purl = new ParsedURL(docPURL, st);
+                    fi = (fi == null) ? "" : fi;
+                    if (docPURL.equals(purl) && t.equals(fi)) {
+                        return;
                     }
                 }
+                if (t.length() != 0) {
+                    st += "#" + t;
+                }
+                locationBar.setText(st);
+                locationBar.addToHistory(st);
+                showSVGDocument(st);
             }
         });
 
@@ -1219,8 +1218,11 @@ public class JSVGViewerFrame
                         //
                         // Set transcoding hints
                         //
-                        pt.addTranscodingHint(PrintTranscoder.KEY_XML_PARSER_CLASSNAME,
-                                              application.getXMLParserClassName());
+                        if (application.getXMLParserClassName() != null) {
+                            pt.addTranscodingHint
+                                (JPEGTranscoder.KEY_XML_PARSER_CLASSNAME,
+                                    application.getXMLParserClassName());
+                        }
 
                         pt.addTranscodingHint(PrintTranscoder.KEY_SHOW_PAGE_DIALOG,
                                               Boolean.TRUE);
@@ -1396,9 +1398,11 @@ public class JSVGViewerFrame
                     int w = buffer.getWidth();
                     int h = buffer.getHeight();
                     final ImageTranscoder trans = new JPEGTranscoder();
-                    trans.addTranscodingHint
-                        (JPEGTranscoder.KEY_XML_PARSER_CLASSNAME,
-                         application.getXMLParserClassName());
+                    if (application.getXMLParserClassName() != null) {
+                        trans.addTranscodingHint
+                            (JPEGTranscoder.KEY_XML_PARSER_CLASSNAME,
+                                application.getXMLParserClassName());
+                    }
                     trans.addTranscodingHint
                         (JPEGTranscoder.KEY_QUALITY, new Float(quality));
 
@@ -1416,7 +1420,6 @@ public class JSVGViewerFrame
                                 OutputStream ostream =
                                     new BufferedOutputStream(new FileOutputStream(f));
                                 trans.writeImage(img, new TranscoderOutput(ostream));
-                                ostream.flush();
                                 ostream.close();
                             } catch (Exception ex) { }
                             statusBar.setMessage
@@ -1460,8 +1463,11 @@ public class JSVGViewerFrame
                     int w = buffer.getWidth();
                     int h = buffer.getHeight();
                     final ImageTranscoder trans = new PNGTranscoder();
-                    trans.addTranscodingHint(PNGTranscoder.KEY_XML_PARSER_CLASSNAME,
-                                             application.getXMLParserClassName());
+                    if (application.getXMLParserClassName() != null) {
+                        trans.addTranscodingHint
+                            (JPEGTranscoder.KEY_XML_PARSER_CLASSNAME,
+                                application.getXMLParserClassName());
+                    }
                     trans.addTranscodingHint(PNGTranscoder.KEY_FORCE_TRANSPARENT_WHITE,
                                              new Boolean(true));
 
@@ -1485,7 +1491,7 @@ public class JSVGViewerFrame
                                     new BufferedOutputStream(new FileOutputStream(f));
                                 trans.writeImage(img,
                                                  new TranscoderOutput(ostream));
-                                ostream.flush();
+                                ostream.close();
                             } catch (Exception ex) {}
                             statusBar.setMessage
                                 (resources.getString("Message.done"));
@@ -1522,9 +1528,11 @@ public class JSVGViewerFrame
                     int w = buffer.getWidth();
                     int h = buffer.getHeight();
                     final ImageTranscoder trans = new TIFFTranscoder();
-                    trans.addTranscodingHint
-                        (TIFFTranscoder.KEY_XML_PARSER_CLASSNAME,
-                         application.getXMLParserClassName());
+                    if (application.getXMLParserClassName() != null) {
+                        trans.addTranscodingHint
+                            (JPEGTranscoder.KEY_XML_PARSER_CLASSNAME,
+                                application.getXMLParserClassName());
+                    }
                     final BufferedImage img = trans.createImage(w, h);
 
                     // paint the buffer to the image
@@ -1538,7 +1546,7 @@ public class JSVGViewerFrame
                                     (new FileOutputStream(f));
                                 trans.writeImage
                                     (img, new TranscoderOutput(ostream));
-                                ostream.flush();
+                                ostream.close();
                             } catch (Exception ex) {}
                             statusBar.setMessage
                                 (resources.getString("Message.done"));
@@ -2044,11 +2052,6 @@ public class JSVGViewerFrame
         stopAction.update(false);
         svgCanvas.setCursor(DEFAULT_CURSOR);
         String s = svgDocumentURL;
-        String t = svgCanvas.getFragmentIdentifier();
-        if (t != null) {
-            s += "#" + t;
-        }
-
         locationBar.setText(s);
         if (title == null) {
             title = getTitle();
