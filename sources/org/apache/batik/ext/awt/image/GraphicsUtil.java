@@ -487,7 +487,19 @@ public class GraphicsUtil {
     }
 
 
-    public final static boolean WARN_DESTINATION = true;
+    public final static boolean WARN_DESTINATION;
+    static {
+        boolean warn = true;
+        try {
+            String s = System.getProperty
+                ("org.apache.batik.warn_destination", "true");
+            warn = Boolean.valueOf(s).booleanValue();
+        } catch (SecurityException se) {
+        } catch (NumberFormatException nfe) {
+        } finally {
+            WARN_DESTINATION = warn;
+        }
+    }
 
     public static BufferedImage getDestination(Graphics2D g2d) {
         Object o = g2d.getRenderingHint
@@ -503,7 +515,7 @@ public class GraphicsUtil {
             (g2d.getRenderingHint(RenderingHintsKeyExt.KEY_TRANSCODING) !=
                 RenderingHintsKeyExt.VALUE_TRANSCODING_PRINTING))
             // throw new IllegalArgumentException
-            System.out.println
+            System.err.println
                 ("Graphics2D from BufferedImage lacks BUFFERED_IMAGE hint");
 
         return null;
