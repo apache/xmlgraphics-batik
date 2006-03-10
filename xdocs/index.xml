@@ -188,36 +188,25 @@
         <p>While it is hard to track projects and products which are using Batik, here are a few
         ones which are known:</p>
         <ul>
-        <li><link href="http://luxor-xul.sourceforge.net/index.html">Luxor XUL</link> is a free, open-source XML User Interface Language (XUL) toolkit in Java released under the GNU
-GPL that supports hand-picked Mozilla XUL goodies and
-also includes a ultra-lightweight, multi-threaded web
-server, a portal engine, a scripting engine, a
-template engine and much more. Gerard Bauer, the Luxor project lead, has written an extensive
-<link href="http://luxor-xul.sourceforge.net/talk/jug-nov-2002/slides.html">SVG presentation</link>.</li>
-        <li><link href="http://www.bitflash.com/products/brilliance.asp">BitFlash Brilliance</link> delivers a robust 
-        set of graphic-design and source-code editing tools for fast and flexible Mobile
-         SVG development. It uses Batik to display SVG Images.</li>
-        <li><link href="http://xml.apache.org/fop">The Apache FOP project</link> uses Batik to handle SVG images. It uses the SVG rasterizer and extends the Batik transcoder 
-            architecture to offer SVG to PDF conversion.</li>
         <li><link href="http://xml.apache.org/cocoon">The Apache Cocoon project</link> uses Batik to rasterize SVG images. </li>
-        <li><link href="http://www.object-refinery.com/jfreechart/index.html">The JFreeChart Project</link> uses Batik to export charts in the SVG format. </li>
-        <li><link href="http://www.ilog.com/products/jviews">ILOG JViews Component Suite</link>, a product for advanced visualization, uses and extends the Batik SVG export module. </li>
-        <li><link href="http://www2.ilog.com/preview/Discovery/">ILOG Discovery Preview</link>, a free visual data analysis tool letting you visualize and edit data sets in a very wide variety of views (2D graphs and charts, various kinds of treemaps, parallel coordinates, parallel histograms and much more), uses the Batik SVG export module. </li>
-        <li><link href="http://www.kiyut.com/">Sketsa</link> is a vector drawing application based on SVG. With Sketsa, you can create vector graphics that can be scaled and printed at any resolution, without losing detail or clarity.</li>
-        <li><link href="http://otn.oracle.com/products/jdev/content.html">Oracle Corp.'s JDeveloper9i</link> uses Batik to export class diagrams in SVG. It uses the
-        SVG export module (SVGGraphics2D).</li>
-        <li><link href="http://www.optimalj.com">OptimalJ</link>, a UML Class Diagram Editor for NetBeans, uses Batik to export SVG. </li>
-        <li><link href="http://www.togethersoft.com/products/controlcenter/whats_new.jsp">Together Control Center 5.5</link> uses Batik to export UML diagrams in SVG.</li>
-        <li><link href="http://xweb.sf.net">XWeb</link>, a tool to create websites automatically out of XML input. Uses the Batik SVG Rasterizer.</li>
-        <li><link href="http://www.elixirtech.com/ElixirReport">ElixirTech's ElixirReport</link> uses 
-        Batik for charting and for its SVG component.</li>
-        <li><link href="http://lagoon.sourceforge.net/">Lagoon</link>, an XML-based framework for web site maintenance, uses the Batik SVG Rasterizer to render SVG as bitmap graphics for web publishing</li>
+        <li><link href="http://xml.apache.org/fop">The Apache FOP project</link> uses Batik to handle SVG images. It uses the SVG rasterizer and extends the Batik transcoder architecture to offer SVG to PDF conversion.</li>
+        <li><link href="http://www.bitflash.com/products/brilliance.asp">BitFlash Brilliance</link> delivers a robust set of graphic-design and source-code editing tools for fast and flexible Mobile SVG development. It uses Batik to display SVG Images.</li>
         <li><link href="http://burma.free.fr">eDoc</link>, a page layout software, is using the Batik SVG generator to export pages to SVG</li>
-        <li><link href="http://www.isacat.net/2002/svolgo/index.htm">Svolgo</link>,a Graph Visualisation/Transformation Framework for the
-                Semantic Web Cross-model transformation, node and arc diagrams, representation in SVG. This project uses Batik's SVG DOM implementation.</li>
-        <li><link href="http://www.throneworld.com/lords/gms/dev.html">Lords Map</link>, a program to allow players and visitors to view the current map
-                of various campaigns. Lord Map uses Batik's SVG DOM and SVG Generator.</li>
+        <li><link href="http://www.elixirtech.com/ElixirReport">ElixirTech's ElixirReport</link> uses Batik for charting and for its SVG component.</li>
+        <li><link href="http://glipssvgeditor.sourceforge.net/">GLIPS Graffiti</link> is an Open Source Extensible Full Feature Native SVG Editor.</li>        
+        <li><link href="http://www2.ilog.com/preview/Discovery/">ILOG Discovery Preview</link>, a free visual data analysis tool letting you visualize and edit data sets in a very wide variety of views (2D graphs and charts, various kinds of treemaps, parallel coordinates, parallel histograms and much more), uses the Batik SVG export module. </li>
+        <li><link href="http://www.ilog.com/products/jviews">ILOG JViews Component Suite</link>, a product for advanced visualization, uses and extends the Batik SVG export module. </li>
+        <li><link href="http://www.object-refinery.com/jfreechart/index.html">The JFreeChart Project</link> uses Batik to export charts in the SVG format. </li>
+        <li><link href="http://lagoon.sourceforge.net/">Lagoon</link>, an XML-based framework for web site maintenance, uses the Batik SVG Rasterizer to render SVG as bitmap graphics for web publishing</li>
+        <li><link href="http://www.throneworld.com/lords/gms/dev.html">Lords Map</link>, a program to allow players and visitors to view the current map of various campaigns. Lord Map uses Batik's SVG DOM and SVG Generator.</li>
+        <li><link href="http://luxor-xul.sourceforge.net/index.html">Luxor XUL</link> is a free, open-source XML User Interface Language (XUL) toolkit in Java released under the GNU GPL that supports hand-picked Mozilla XUL goodies and also includes a ultra-lightweight, multi-threaded web server, a portal engine, a scripting engine, a template engine and much more. Gerard Bauer, the Luxor project lead, has written an extensive <link href="http://luxor-xul.sourceforge.net/talk/jug-nov-2002/slides.html">SVG presentation</link>.</li>
+        <li><link href="http://www.optimalj.com">OptimalJ</link>, a UML Class Diagram Editor for NetBeans, uses Batik to export SVG. </li>
+        <li><link href="http://otn.oracle.com/products/jdev/content.html">Oracle Corp.'s JDeveloper9i</link> uses Batik to export class diagrams in SVG. It uses the SVG export module (SVGGraphics2D).</li>
+        <li><link href="http://www.kiyut.com/">Sketsa</link> is a vector drawing application based on SVG. With Sketsa, you can create vector graphics that can be scaled and printed at any resolution, without losing detail or clarity.</li>
+        <li><link href="http://www.isacat.net/2002/svolgo/index.htm">Svolgo</link>,a Graph Visualisation/Transformation Framework for the Semantic Web Cross-model transformation, node and arc diagrams, representation in SVG. This project uses Batik's SVG DOM implementation.</li>
+        <li><link href="http://www.togethersoft.com/products/controlcenter/whats_new.jsp">Together Control Center 5.5</link> uses Batik to export UML diagrams in SVG.</li>
         <li><link href="http://bitflux.ch/developer/misc/70/">XML_svg2image, </link> is a PHP class which translates svg files to png or jpeg using Batik</li>
+        <li><link href="http://xweb.sf.net">XWeb</link>, a tool to create websites automatically out of XML input. Uses the Batik SVG Rasterizer.</li>
         </ul>
         </s1>
     </body>
