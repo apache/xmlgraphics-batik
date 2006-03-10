@@ -19,24 +19,22 @@
    limitations under the License.
 
 -->
-<!-- ========================================================================= -->
-<!-- Draws <text> elements using SVG fonts with glyphs                         -->
-<!-- using the d attribute. Tests glyph layout by                              -->
-<!-- comparing equivalent SVG for the <text> element, both                     -->
-<!-- on a grid and as a mask.                                                  -->
-<!-- Kerning is also tested.                                                   -->
-<!--                                                                           -->
-<!-- @author dean.jackson@cmis.csiro.au                                        -->
-<!-- @version $Id$ -->
-<!-- ========================================================================= -->
+<!-- ====================================================================== -->
+<!-- Draws <text> elements using SVG fonts with glyphs                      -->
+<!-- using the d attribute. Tests glyph layout by                           -->
+<!-- comparing equivalent SVG for the <text> element, both                  -->
+<!-- on a grid and as a mask.                                               -->
+<!-- Kerning is also tested.                                                -->
+<!--                                                                        -->
+<!-- @author dean.jackson@cmis.csiro.au                                     -->
+<!-- @version $Id$  -->
+<!-- ====================================================================== -->
 <?xml-stylesheet type="text/css" href="../../resources/style/test.css" ?>  
 
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="body" width="450" height="500" viewBox="0 0 450 500">
-<title>SVGFont - both glyph types test</title>
-
-    <style type="text/css"><![CDATA[
-        
-    ]]></style>
+<svg id="body" width="450" height="500" viewBox="0 0 450 500"
+     xmlns="http://www.w3.org/2000/svg" 
+     xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>SVGFont - both glyph types test</title>
 
     <g id="content">
 

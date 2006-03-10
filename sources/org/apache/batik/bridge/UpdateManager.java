@@ -51,13 +51,13 @@ import org.w3c.dom.events.EventTarget;
  */
 public class UpdateManager  {
 
-    static final long MIN_REPAINT_TIME;
+    static final int MIN_REPAINT_TIME;
     static {
-        long value = 20;
+        int value = 20;
         try {
             String s = System.getProperty
             ("org.apache.batik.min_repaint_time", "20");
-            value = Long.parseLong(s);
+            value = Integer.parseInt(s);
         } catch (SecurityException se) {
         } catch (NumberFormatException nfe){
         } finally {
@@ -137,6 +137,11 @@ public class UpdateManager  {
     protected ScriptingEnvironment[] secondaryScriptingEnvironments;
 
     /**
+     * The current minRepaintTime
+     */
+    protected int minRepaintTime;
+
+    /**
      * Creates a new update manager.
      * @param ctx The bridge context.
      * @param gn GraphicsNode whose updates are to be tracked.
@@ -175,6 +180,15 @@ public class UpdateManager  {
             ScriptingEnvironment se = initializeScriptingEnvironment(resCtx);
             secondaryScriptingEnvironments[i] = se;
         }
+        minRepaintTime = MIN_REPAINT_TIME;
+    }
+
+    public int getMinRepaintTime() {
+        return minRepaintTime;
+    }
+
+    public void setMinRepaintTime(int minRepaintTime) {
+        this.minRepaintTime = minRepaintTime;
     }
 
     /**
@@ -518,7 +532,7 @@ public class UpdateManager  {
         if (!updateTracker.hasChanged()) 
             return;
         long ctime = System.currentTimeMillis();
-        if (ctime-outOfDateTime < MIN_REPAINT_TIME) {
+        if (ctime-outOfDateTime < minRepaintTime) {
             // We very recently did a repaint check if other 
             // repaint runnables are pending.
             synchronized (updateRunnableQueue.getIteratorLock()) {
