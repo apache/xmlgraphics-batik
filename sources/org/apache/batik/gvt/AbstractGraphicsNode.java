@@ -548,8 +548,9 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
                 org.apache.batik.ext.awt.image.GraphicsUtil.drawImage
                     (g2d, filteredImage);
 
+                g2d.dispose();
                 g2d = baseG2d;
-                baseG2d = null;
+                baseG2d = null;// Don't leave null we need g2d restored...
             }
         }
 
