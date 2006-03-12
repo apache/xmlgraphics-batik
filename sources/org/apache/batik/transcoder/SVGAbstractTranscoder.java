@@ -211,6 +211,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
                 se.dispatchSVGLoadEvent();
             }
         } catch (BridgeException ex) {
+            ex.printStackTrace();
             throw new TranscoderException(ex);
         }
 

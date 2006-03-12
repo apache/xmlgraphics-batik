@@ -899,24 +899,28 @@ public class GraphicsUtil {
                 DataBufferByte retDBT = (DataBufferByte)retDB;
                 System.arraycopy(srcDBT.getData(b), offsets[b],
                                  retDBT.getData(b), offsets[b], len);
+                break;
             }
             case DataBuffer.TYPE_INT: {
                 DataBufferInt srcDBT = (DataBufferInt)srcDB;
                 DataBufferInt retDBT = (DataBufferInt)retDB;
                 System.arraycopy(srcDBT.getData(b), offsets[b],
                                  retDBT.getData(b), offsets[b], len);
+                break;
             }
             case DataBuffer.TYPE_SHORT: {
                 DataBufferShort srcDBT = (DataBufferShort)srcDB;
                 DataBufferShort retDBT = (DataBufferShort)retDB;
                 System.arraycopy(srcDBT.getData(b), offsets[b],
                                  retDBT.getData(b), offsets[b], len);
+                break;
             }
             case DataBuffer.TYPE_USHORT: {
                 DataBufferUShort srcDBT = (DataBufferUShort)srcDB;
                 DataBufferUShort retDBT = (DataBufferUShort)retDB;
                 System.arraycopy(srcDBT.getData(b), offsets[b],
                                  retDBT.getData(b), offsets[b], len);
+                break;
             }
             }
         }

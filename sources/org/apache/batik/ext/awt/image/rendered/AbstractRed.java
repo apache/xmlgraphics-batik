@@ -96,8 +96,8 @@ public abstract class AbstractRed implements CachableRed {
      * @param props this initializes the props Map.  */
     protected AbstractRed(CachableRed src, Map props) {
         init(src, src.getBounds(), src.getColorModel(), src.getSampleModel(),
-             (src==null)?0:src.getTileGridXOffset(),
-             (src==null)?0:src.getTileGridYOffset(),
+             src.getTileGridXOffset(),
+             src.getTileGridYOffset(),
              props);
     }
 
@@ -111,17 +111,17 @@ public abstract class AbstractRed implements CachableRed {
      * @param props this initializes the props Map.  */
     protected AbstractRed(CachableRed src, Rectangle bounds, Map props) {
         init(src, bounds, src.getColorModel(), src.getSampleModel(),
-             (src==null)?0:src.getTileGridXOffset(),
-             (src==null)?0:src.getTileGridYOffset(),
+             src.getTileGridXOffset(),
+             src.getTileGridYOffset(),
              props);
     }
 
     /**
      * Construct an Abstract RenderedImage from a source image, bounds
      * rect and props (may be null).
-     * @param src will be the first (and only) member of the srcs
-     * Vector. Src is also used to set the ColorModel, SampleModel,
-     * and tile grid offsets.
+     * @param src if not null, will be the first (and only) member 
+     * of the srcs Vector. Also if it is not null it provides the
+     * tile grid offsets, otherwise they are zero.
      * @param bounds The bounds of this image.
      * @param cm The ColorModel to use. If null it will default to
      * ComponentColorModel.

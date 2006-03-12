@@ -94,7 +94,7 @@ public class SVGMultiImageElementBridge extends SVGImageElementBridge {
      * Returns a new instance of this bridge.
      */
     public Bridge getInstance() {
-        return new SVGImageElementBridge();
+        return new SVGMultiImageElementBridge();
     }
 
      /**

@@ -79,17 +79,18 @@ public class ScrollExample
 		JFrame frame = new JFrame("ScrollExample: "+url.getFile());
 		frame.setResizable(true);
 		frame.setSize(new Dimension(500,500));
-                frame.addWindowListener(new java.awt.event.WindowAdapter() {
-                        public void windowClosing
-                            (java.awt.event.WindowEvent e) {
-                            System.exit(0);
-                        }
-                    });
+        frame.addWindowListener(new java.awt.event.WindowAdapter() {
+                public void windowClosing
+                    (java.awt.event.WindowEvent e) {
+                    System.exit(0);
+                }
+            });
                 
 		// frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		
-                JSVGCanvas     canvas   = new JSVGCanvas();
+        JSVGCanvas     canvas   = new JSVGCanvas();
 		JSVGScrollPane scroller = new JSVGScrollPane(canvas);
+        // scroller.setScrollbarsAlwaysVisible(true);
 		canvas.setURI(url.toString());
 		
 		frame.getContentPane().add(scroller);
