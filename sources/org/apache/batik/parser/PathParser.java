@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2000-2003  The Apache Software Foundation 
+   Copyright 2000-2003  The Apache Software Foundation
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ public class PathParser extends NumberParser {
      * Creates a new PathParser.
      */
     public PathParser() {
-	pathHandler = DefaultPathHandler.INSTANCE;
+        pathHandler = DefaultPathHandler.INSTANCE;
     }
 
     /**
@@ -52,21 +52,21 @@ public class PathParser extends NumberParser {
      * @param handler The transform list handler.
      */
     public void setPathHandler(PathHandler handler) {
-	pathHandler = handler;
+        pathHandler = handler;
     }
 
     /**
      * Returns the path handler in use.
      */
     public PathHandler getPathHandler() {
-	return pathHandler;
+        return pathHandler;
     }
 
     protected void doParse() throws ParseException, IOException {
-	pathHandler.startPath();
+        pathHandler.startPath();
 
-	current = reader.read();
-	loop: for (;;) {
+        current = reader.read();
+        loop: for (;;) {
             try {
                 switch (current) {
                 case 0xD:
@@ -80,265 +80,256 @@ public class PathParser extends NumberParser {
                     current = reader.read();
                     pathHandler.closePath();
                     break;
-                case 'm':
-                    parsem();
-                case 'l':
-                    parsel();
-                    break;
-                case 'M':
-                    parseM();
-                case 'L':
-                    parseL();
-                    break;
-                case 'h':
-                    parseh();
-                    break;
-                case 'H':
-                    parseH();
-                    break;
-                case 'v':
-                    parsev();
-                    break;
-                case 'V':
-                    parseV();
-                    break;
-                case 'c':
-                    parsec();
-                    break;
-                case 'C':
-                    parseC();
-                    break;
-                case 'q':
-                    parseq();
-                    break;
-                case 'Q':
-                    parseQ();
-                    break;
-                case 's':
-                    parses();
-                    break;
-                case 'S':
-                    parseS();
-                    break;
-                case 't':
-                    parset();
-                    break;
-                case 'T':
-                    parseT();
-                    break;
-                case 'a':
-                    parsea();
-                    break;
-                case 'A':
-                    parseA();
-                    break;
-                case -1:
-                    break loop;
+                case 'm': parsem(); break;
+                case 'M': parseM(); break;
+                case 'l': parsel(); break;
+                case 'L': parseL(); break;
+                case 'h': parseh(); break;
+                case 'H': parseH(); break;
+                case 'v': parsev(); break;
+                case 'V': parseV(); break;
+                case 'c': parsec(); break;
+                case 'C': parseC(); break;
+                case 'q': parseq(); break;
+                case 'Q': parseQ(); break;
+                case 's': parses(); break;
+                case 'S': parseS(); break;
+                case 't': parset(); break;
+                case 'T': parseT(); break;
+                case 'a': parsea(); break;
+                case 'A': parseA(); break;
+                case -1:  break loop;
                 default:
-                    reportError("character.unexpected",
-                                new Object[] { new Integer(current) });
-                    skipSubPath();
+                    reportUnexpected(current);
+                    break;
                 }
-	    } catch (ParseException e) {
+            } catch (ParseException e) {
                 errorHandler.error(e);
                 skipSubPath();
             }
-	}
+        }
 
-	skipSpaces();
-	if (current != -1) {
-	    reportError("end.of.stream.expected",
-			new Object[] { new Integer(current) });
-	}
+        skipSpaces();
+        if (current != -1) {
+            reportError("end.of.stream.expected",
+                        new Object[] { new Integer(current) });
+        }
 
-	pathHandler.endPath();
+        pathHandler.endPath();
     }
 
     /**
      * Parses a 'm' command.
      */
     protected void parsem() throws ParseException, IOException {
-	current = reader.read();
-	skipSpaces();
+        current = reader.read();
+        skipSpaces();
 
         float x = parseFloat();
         skipCommaSpaces();
         float y = parseFloat();
-
         pathHandler.movetoRel(x, y);
-        skipCommaSpaces();
-    }
 
-    /**
-     * Parses a 'l' command.
-     */
-    protected void parsel() throws ParseException, IOException {
-	if (current == 'l') {
-	    current = reader.read();
-	}
-	skipSpaces();
-        for (;;) {
-	    switch (current) {
-	    case '+': case '-': case '.':
-	    case '0': case '1': case '2': case '3': case '4':
-	    case '5': case '6': case '7': case '8': case '9':
-                float x = parseFloat();
-                skipCommaSpaces();
-                float y = parseFloat();
-
-                pathHandler.linetoRel(x, y);
-		break;
-	    default:
-		return;
-	    }
-	    skipCommaSpaces();
-	}
+        boolean expectNumber = skipCommaSpaces2();
+        _parsel(expectNumber);
     }
 
     /**
      * Parses a 'M' command.
      */
     protected void parseM() throws ParseException, IOException {
-	current = reader.read();
-	skipSpaces();
+        current = reader.read();
+        skipSpaces();
 
         float x = parseFloat();
         skipCommaSpaces();
         float y = parseFloat();
-	    
         pathHandler.movetoAbs(x, y);
-        skipCommaSpaces();
+
+        boolean expectNumber = skipCommaSpaces2();
+        _parseL(expectNumber);
+    }
+
+    /**
+     * Parses a 'l' command.
+     */
+    protected void parsel() throws ParseException, IOException {
+	    current = reader.read();
+        skipSpaces();
+        _parsel(true);
+    }
+
+    protected void _parsel(boolean expectNumber)
+        throws ParseException, IOException {
+        for (;;) {
+            switch (current) {
+            default:
+                if (expectNumber) reportUnexpected(current);
+                return;
+            case '+': case '-': case '.':
+            case '0': case '1': case '2': case '3': case '4':
+            case '5': case '6': case '7': case '8': case '9':
+                break;
+            }
+            float x = parseFloat();
+            skipCommaSpaces();
+            float y = parseFloat();
+
+            pathHandler.linetoRel(x, y);
+            expectNumber = skipCommaSpaces2();
+        }
     }
 
     /**
      * Parses a 'L' command.
      */
     protected void parseL() throws ParseException, IOException {
-	if (current == 'L') {
 	    current = reader.read();
-	}
-	skipSpaces();
-        for (;;) {
-	    switch (current) {
-	    case '+': case '-': case '.':
-	    case '0': case '1': case '2': case '3': case '4':
-	    case '5': case '6': case '7': case '8': case '9':
-                float x = parseFloat();
-                skipCommaSpaces();
-                float y = parseFloat();
+        skipSpaces();
+        _parseL(true);
+    }
 
-                pathHandler.linetoAbs(x, y);
-                break;
-	    default:
+    protected void _parseL(boolean expectNumber)
+        throws ParseException, IOException {
+        for (;;) {
+            switch (current) {
+            default:
+                if (expectNumber) reportUnexpected(current);
                 return;
-	    }
-	    skipCommaSpaces();
-	}
+            case '+': case '-': case '.':
+            case '0': case '1': case '2': case '3': case '4':
+            case '5': case '6': case '7': case '8': case '9':
+                break;
+            }
+            float x = parseFloat();
+            skipCommaSpaces();
+            float y = parseFloat();
+            
+            pathHandler.linetoAbs(x, y);
+            expectNumber = skipCommaSpaces2();
+        }
     }
 
     /**
      * Parses a 'h' command.
      */
     protected void parseh() throws ParseException, IOException {
-	current = reader.read();
-	skipSpaces();
+        current = reader.read();
+        skipSpaces();
+        boolean expectNumber = true;
 
-	for (;;) {
-	    switch (current) {
-	    case '+': case '-': case '.':
-	    case '0': case '1': case '2': case '3': case '4':
-	    case '5': case '6': case '7': case '8': case '9':
-                float x = parseFloat();
-                pathHandler.linetoHorizontalRel(x);
-		break;
-	    default:
-		return;
-	    }
-	    skipCommaSpaces();
-	}
+        for (;;) {
+            switch (current) {
+            default:
+                if (expectNumber) reportUnexpected(current);
+                return;
+            case '+': case '-': case '.':
+            case '0': case '1': case '2': case '3': case '4':
+            case '5': case '6': case '7': case '8': case '9':
+                break;
+            }
+            float x = parseFloat();
+            pathHandler.linetoHorizontalRel(x);
+            expectNumber = skipCommaSpaces2();
+        }
     }
 
     /**
      * Parses a 'H' command.
      */
     protected void parseH() throws ParseException, IOException {
-	current = reader.read();
-	skipSpaces();
+        current = reader.read();
+        skipSpaces();
+        boolean expectNumber = true;
 
-	for (;;) {
-	    switch (current) {
-	    case '+': case '-': case '.':
-	    case '0': case '1': case '2': case '3': case '4':
-	    case '5': case '6': case '7': case '8': case '9':
-                float x = parseFloat();
-                pathHandler.linetoHorizontalAbs(x);
-		break;
-	    default:
-		return;
-	    }
-	    skipCommaSpaces();
-	}
+        for (;;) {
+            switch (current) {
+            default:
+                if (expectNumber) reportUnexpected(current);
+                return;
+
+            case '+': case '-': case '.':
+            case '0': case '1': case '2': case '3': case '4':
+            case '5': case '6': case '7': case '8': case '9':
+                break;
+            }
+            float x = parseFloat();
+            pathHandler.linetoHorizontalAbs(x);
+            expectNumber = skipCommaSpaces2();
+        }
     }
 
     /**
      * Parses a 'v' command.
      */
     protected void parsev() throws ParseException, IOException {
-	current = reader.read();
-	skipSpaces();
+        current = reader.read();
+        skipSpaces();
+        boolean expectNumber = true;
 
-	for (;;) {
-	    switch (current) {
-	    case '+': case '-': case '.':
-	    case '0': case '1': case '2': case '3': case '4':
-	    case '5': case '6': case '7': case '8': case '9':
-                float x = parseFloat();
-                pathHandler.linetoVerticalRel(x);
-		break;
-	    default:
-		return;
-	    }
-	    skipCommaSpaces();
-	}
+        for (;;) {
+            switch (current) {
+            default:
+                if (expectNumber) reportUnexpected(current);
+                return;
+
+            case '+': case '-': case '.':
+            case '0': case '1': case '2': case '3': case '4':
+            case '5': case '6': case '7': case '8': case '9':
+                break;
+            }
+            float x = parseFloat();
+
+            pathHandler.linetoVerticalRel(x);
+            expectNumber = skipCommaSpaces2();
+        }
     }
 
     /**
      * Parses a 'V' command.
      */
     protected void parseV() throws ParseException, IOException {
-	current = reader.read();
-	skipSpaces();
+        current = reader.read();
+        skipSpaces();
+        boolean expectNumber = true;
 
-	for (;;) {
-	    switch (current) {
-	    case '+': case '-': case '.':
-	    case '0': case '1': case '2': case '3': case '4':
-	    case '5': case '6': case '7': case '8': case '9':
-                float x = parseFloat();
-                pathHandler.linetoVerticalAbs(x);
-		break;
-	    default:
-		return;
-	    }
-	    skipCommaSpaces();
-	}
+        for (;;) {
+            switch (current) {
+            default:
+                if (expectNumber) reportUnexpected(current);
+                return;
+
+            case '+': case '-': case '.':
+            case '0': case '1': case '2': case '3': case '4':
+            case '5': case '6': case '7': case '8': case '9':
+                break;
+            }
+            float x = parseFloat();
+
+            pathHandler.linetoVerticalAbs(x);
+            expectNumber = skipCommaSpaces2();
+        }
     }
 
     /**
      * Parses a 'c' command.
      */
     protected void parsec() throws ParseException, IOException {
-	current = reader.read();
-	skipSpaces();
-	
-	for (;;) {
-	    switch (current) {
-	    default:
-		return;
-	    case '+': case '-': case '.':
-	    case '0': case '1': case '2': case '3': case '4':
-	    case '5': case '6': case '7': case '8': case '9':
-	    }
+        current = reader.read();
+        skipSpaces();
+        boolean expectNumber = true;
+
+        for (;;) {
+            switch (current) {
+            default:
+                if (expectNumber) reportUnexpected(current);
+                return;
+
+            case '+': case '-': case '.':
+            case '0': case '1': case '2': case '3': case '4':
+            case '5': case '6': case '7': case '8': case '9':
+                break;
+            }
 
             float x1 = parseFloat();
             skipCommaSpaces();
@@ -353,25 +344,29 @@ public class PathParser extends NumberParser {
             float y = parseFloat();
 
             pathHandler.curvetoCubicRel(x1, y1, x2, y2, x, y);
-	    skipCommaSpaces();
-	}
-    }		
+            expectNumber = skipCommaSpaces2();
+        }
+    }
 
     /**
      * Parses a 'C' command.
      */
     protected void parseC() throws ParseException, IOException {
-	current = reader.read();
-	skipSpaces();
-	
-	for (;;) {
-	    switch (current) {
-	    default:
-		return;
-	    case '+': case '-': case '.':
-	    case '0': case '1': case '2': case '3': case '4':
-	    case '5': case '6': case '7': case '8': case '9':
-	    }
+        current = reader.read();
+        skipSpaces();
+        boolean expectNumber = true;
+
+        for (;;) {
+            switch (current) {
+            default:
+                if (expectNumber) reportUnexpected(current);
+                return;
+
+            case '+': case '-': case '.':
+            case '0': case '1': case '2': case '3': case '4':
+            case '5': case '6': case '7': case '8': case '9':
+                break;
+            }
 
             float x1 = parseFloat();
             skipCommaSpaces();
@@ -386,25 +381,29 @@ public class PathParser extends NumberParser {
             float y = parseFloat();
 
             pathHandler.curvetoCubicAbs(x1, y1, x2, y2, x, y);
-	    skipCommaSpaces();
-	}
+            expectNumber = skipCommaSpaces2();
+        }
     }
 
     /**
      * Parses a 'q' command.
      */
     protected void parseq() throws ParseException, IOException {
-	current = reader.read();
-	skipSpaces();
+        current = reader.read();
+        skipSpaces();
+        boolean expectNumber = true;
 
-	for (;;) {
-	    switch (current) {
-	    default:
-		return;
-	    case '+': case '-': case '.':
-	    case '0': case '1': case '2': case '3': case '4':
-	    case '5': case '6': case '7': case '8': case '9':
-	    }
+        for (;;) {
+            switch (current) {
+            default:
+                if (expectNumber) reportUnexpected(current);
+                return;
+
+            case '+': case '-': case '.':
+            case '0': case '1': case '2': case '3': case '4':
+            case '5': case '6': case '7': case '8': case '9':
+                break;
+            }
 
             float x1 = parseFloat();
             skipCommaSpaces();
@@ -415,25 +414,29 @@ public class PathParser extends NumberParser {
             float y = parseFloat();
 
             pathHandler.curvetoQuadraticRel(x1, y1, x, y);
-	    skipCommaSpaces();
-	}
+            expectNumber = skipCommaSpaces2();
+        }
     }
 
     /**
      * Parses a 'Q' command.
      */
     protected void parseQ() throws ParseException, IOException {
-	current = reader.read();
-	skipSpaces();
+        current = reader.read();
+        skipSpaces();
+        boolean expectNumber = true;
 
-	for (;;) {
-	    switch (current) {
-	    default:
-		return;
-	    case '+': case '-': case '.':
-	    case '0': case '1': case '2': case '3': case '4':
-	    case '5': case '6': case '7': case '8': case '9':
-	    }
+        for (;;) {
+            switch (current) {
+            default:
+                if (expectNumber) reportUnexpected(current);
+                return;
+
+            case '+': case '-': case '.':
+            case '0': case '1': case '2': case '3': case '4':
+            case '5': case '6': case '7': case '8': case '9':
+                break;
+            }
 
             float x1 = parseFloat();
             skipCommaSpaces();
@@ -444,26 +447,30 @@ public class PathParser extends NumberParser {
             float y = parseFloat();
 
             pathHandler.curvetoQuadraticAbs(x1, y1, x, y);
-	    skipCommaSpaces();
-	}
+            expectNumber = skipCommaSpaces2();
+        }
     }
 
     /**
      * Parses a 's' command.
      */
     protected void parses() throws ParseException, IOException {
-	current = reader.read();
-	skipSpaces();
+        current = reader.read();
+        skipSpaces();
+        boolean expectNumber = true;
 
-	for (;;) {
-	    switch (current) {
-	    default:
-		return;
-	    case '+': case '-': case '.':
-	    case '0': case '1': case '2': case '3': case '4':
-	    case '5': case '6': case '7': case '8': case '9':
-	    }
-	    
+        for (;;) {
+            switch (current) {
+            default:
+                if (expectNumber) reportUnexpected(current);
+                return;
+
+            case '+': case '-': case '.':
+            case '0': case '1': case '2': case '3': case '4':
+            case '5': case '6': case '7': case '8': case '9':
+                break;
+            }
+
             float x2 = parseFloat();
             skipCommaSpaces();
             float y2 = parseFloat();
@@ -473,26 +480,30 @@ public class PathParser extends NumberParser {
             float y = parseFloat();
 
             pathHandler.curvetoCubicSmoothRel(x2, y2, x, y);
-	    skipCommaSpaces();
-	}
-    }		
+            expectNumber = skipCommaSpaces2();
+        }
+    }
 
     /**
      * Parses a 'S' command.
      */
     protected void parseS() throws ParseException, IOException {
-	current = reader.read();
-	skipSpaces();
+        current = reader.read();
+        skipSpaces();
+        boolean expectNumber = true;
 
-	for (;;) {
-	    switch (current) {
-	    default:
-		return;
-	    case '+': case '-': case '.':
-	    case '0': case '1': case '2': case '3': case '4':
-	    case '5': case '6': case '7': case '8': case '9':
-	    }
-	    
+        for (;;) {
+            switch (current) {
+            default:
+                if (expectNumber) reportUnexpected(current);
+                return;
+
+            case '+': case '-': case '.':
+            case '0': case '1': case '2': case '3': case '4':
+            case '5': case '6': case '7': case '8': case '9':
+                break;
+            }
+
             float x2 = parseFloat();
             skipCommaSpaces();
             float y2 = parseFloat();
@@ -502,75 +513,87 @@ public class PathParser extends NumberParser {
             float y = parseFloat();
 
             pathHandler.curvetoCubicSmoothAbs(x2, y2, x, y);
-	    skipCommaSpaces();
-	}
-    }		
+            expectNumber = skipCommaSpaces2();
+        }
+    }
 
     /**
      * Parses a 't' command.
      */
     protected void parset() throws ParseException, IOException {
-	current = reader.read();
-	skipSpaces();
+        current = reader.read();
+        skipSpaces();
+        boolean expectNumber = true;
 
-	for (;;) {
-	    switch (current) {
-	    default:
-		return;
-	    case '+': case '-': case '.':
-	    case '0': case '1': case '2': case '3': case '4':
-	    case '5': case '6': case '7': case '8': case '9':
-	    }
+        for (;;) {
+            switch (current) {
+            default:
+                if (expectNumber) reportUnexpected(current);
+                return;
+
+            case '+': case '-': case '.':
+            case '0': case '1': case '2': case '3': case '4':
+            case '5': case '6': case '7': case '8': case '9':
+                break;
+            }
 
             float x = parseFloat();
             skipCommaSpaces();
             float y = parseFloat();
-            
+
             pathHandler.curvetoQuadraticSmoothRel(x, y);
-	    skipCommaSpaces();
-	}		
+            expectNumber = skipCommaSpaces2();
+        }
     }
 
     /**
      * Parses a 'T' command.
      */
     protected void parseT() throws ParseException, IOException {
-	current = reader.read();
-	skipSpaces();
+        current = reader.read();
+        skipSpaces();
+        boolean expectNumber = true;
 
-	for (;;) {
-	    switch (current) {
-	    default:
-		return;
-	    case '+': case '-': case '.':
-	    case '0': case '1': case '2': case '3': case '4':
-	    case '5': case '6': case '7': case '8': case '9':
-	    }
+        for (;;) {
+            switch (current) {
+            default:
+                if (expectNumber) reportUnexpected(current);
+                return;
+
+            case '+': case '-': case '.':
+            case '0': case '1': case '2': case '3': case '4':
+            case '5': case '6': case '7': case '8': case '9':
+                break;
+            }
 
             float x = parseFloat();
             skipCommaSpaces();
             float y = parseFloat();
 
             pathHandler.curvetoQuadraticSmoothAbs(x, y);
-	    skipCommaSpaces();
-	}		
+            expectNumber = skipCommaSpaces2();
+        }
     }
 
     /**
      * Parses a 'a' command.
      */
     protected void parsea() throws ParseException, IOException {
-	current = reader.read();
-	skipSpaces();
+        current = reader.read();
+        skipSpaces();
+        boolean expectNumber = true;
 
-	for (;;) {
-	    switch (current) {
-	    default:
-		return;
-	    case '+': case '-': case '.':
-	    case '0': case '1': case '2': case '3': case '4':
-	    case '5': case '6': case '7': case '8': case '9':
-	    }
+        for (;;) {
+            switch (current) {
+            default:
+                if (expectNumber) reportUnexpected(current);
+                return;
+
+            case '+': case '-': case '.':
+            case '0': case '1': case '2': case '3': case '4':
+            case '5': case '6': case '7': case '8': case '9':
+                break;
+            }
 
             float rx = parseFloat();
             skipCommaSpaces();
@@ -578,20 +601,12 @@ public class PathParser extends NumberParser {
             skipCommaSpaces();
             float ax = parseFloat();
             skipCommaSpaces();
-		
+
             boolean laf;
             switch (current) {
-            case '0':
-                laf = false;
-                break;
-            case '1':
-                laf = true;
-                break;
-            default:
-                reportError("character.unexpected",
-                            new Object[] { new Integer(current) });
-                skipSubPath();
-                return;
+            default:  reportUnexpected(current); return;
+            case '0': laf = false; break;
+            case '1': laf = true;  break;
             }
 
             current = reader.read();
@@ -599,17 +614,9 @@ public class PathParser extends NumberParser {
 
             boolean sf;
             switch (current) {
-            case '0':
-                sf = false;
-                break;
-            case '1':
-                sf = true;
-                break;
-            default:
-                reportError("character.unexpected",
-                            new Object[] { new Integer(current) });
-                skipSubPath();
-                return;
+            default: reportUnexpected(current); return;
+            case '0': sf = false; break;
+            case '1': sf = true;  break;
             }
 
             current = reader.read();
@@ -620,25 +627,29 @@ public class PathParser extends NumberParser {
             float y = parseFloat();
 
             pathHandler.arcRel(rx, ry, ax, laf, sf, x, y);
-	    skipCommaSpaces();
-	}
+            expectNumber = skipCommaSpaces2();
+        }
     }
 
     /**
      * Parses a 'A' command.
      */
     protected void parseA() throws ParseException, IOException {
-	current = reader.read();
-	skipSpaces();
+        current = reader.read();
+        skipSpaces();
+        boolean expectNumber = true;
 
-	for (;;) {
-	    switch (current) {
-	    default:
-		return;
-	    case '+': case '-': case '.':
-	    case '0': case '1': case '2': case '3': case '4':
-	    case '5': case '6': case '7': case '8': case '9':
-	    }
+        for (;;) {
+            switch (current) {
+            default:
+                if (expectNumber) reportUnexpected(current);
+                return;
+
+            case '+': case '-': case '.':
+            case '0': case '1': case '2': case '3': case '4':
+            case '5': case '6': case '7': case '8': case '9':
+                break;
+            }
 
             float rx = parseFloat();
             skipCommaSpaces();
@@ -646,38 +657,22 @@ public class PathParser extends NumberParser {
             skipCommaSpaces();
             float ax = parseFloat();
             skipCommaSpaces();
-            
+
             boolean laf;
             switch (current) {
-            case '0':
-                laf = false;
-                break;
-            case '1':
-                laf = true;
-                break;
-            default:
-                reportError("character.unexpected",
-                            new Object[] { new Integer(current) });
-                skipSubPath();
-                return;
+            default: reportUnexpected(current); return;
+            case '0': laf = false; break;
+            case '1': laf = true;  break;
             }
-            
+
             current = reader.read();
             skipCommaSpaces();
 
             boolean sf;
             switch (current) {
-            case '0':
-                sf = false;
-                break;
-            case '1':
-                sf = true;
-                break;
-            default:
-                reportError("character.unexpected",
-                            new Object[] { new Integer(current) });
-                skipSubPath();
-                return;
+            default: reportUnexpected(current); return;
+            case '0': sf = false; break;
+            case '1': sf = true; break;
             }
 
             current = reader.read();
@@ -687,25 +682,51 @@ public class PathParser extends NumberParser {
             float y = parseFloat();
 
             pathHandler.arcAbs(rx, ry, ax, laf, sf, x, y);
-	    skipCommaSpaces();
-	}
+            expectNumber = skipCommaSpaces2();
+        }
     }
 
     /**
      * Skips a sub-path.
      */
     protected void skipSubPath() throws ParseException, IOException {
-	for (;;) {
-	    switch (current) {
-	    case 'm':
-	    case 'M':
-		return;
-	    default:
-		if (current == -1) {
-		    return;
-		}
-		current = reader.read();
-	    }
-	}
+        for (;;) {
+            switch (current) {
+            case -1: case 'm': case 'M': return;
+            default:                     break;
+            }
+            current = reader.read();
+        }
+    }
+
+    protected void reportUnexpected(int ch) 
+        throws ParseException, IOException {
+        reportError("character.unexpected", new Object[] { new Integer(ch) });
+        skipSubPath();
+    }
+
+    /**
+     * Skips the whitespaces and an optional comma.
+     * @returns true if comma was skipped.
+     */
+    protected boolean skipCommaSpaces2() throws IOException {
+        wsp1: for (;;) {
+            switch (current) {
+            default: break wsp1;
+            case 0x20: case 0x9: case 0xD: case 0xA: break;
+            }
+            current = reader.read();
+        }
+
+        if (current != ',') 
+            return false; // no comma.
+
+        wsp2: for (;;) {
+            switch (current = reader.read()) {
+            default: break wsp2;
+            case 0x20: case 0x9: case 0xD: case 0xA: break;
+            }
+        }
+        return true;  // had comma
     }
 }
