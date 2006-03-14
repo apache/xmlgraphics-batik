@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001-2004  The Apache Software Foundation 
+   Copyright 2001-2004,2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -376,9 +376,12 @@ public class SVGSVGElementBridge
                 
                 if (clip != null) {
                     try {
-                        AffineTransform at;
-                        at = cgn.getPositionTransform();
-                        at = new AffineTransform(at);
+                        AffineTransform at = cgn.getPositionTransform();
+                        if (at == null) {
+                            at = new AffineTransform();
+                        } else {
+                            at = new AffineTransform(at);
+                        }
                         at.concatenate(newVT);
                         at = at.createInverse(); // clip in user space
                         clip = at.createTransformedShape(clip);
