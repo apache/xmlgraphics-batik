@@ -56,12 +56,6 @@ public final class ARGBChannel implements Serializable{
     public static final ARGBChannel A 
         = new ARGBChannel(CHANNEL_A, ALPHA);
 
-    /**
-     * All values
-     */
-    private static final 
-        ARGBChannel[] enumValues = {R, G, B, A};
-
     private String desc;
     private int val;
 

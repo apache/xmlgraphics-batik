@@ -35,7 +35,7 @@ public class JSVGComponent extends AbstractJSVGComponent {
     /**
      * Creates a new AbstractJSVGComponent.
      * @param ua a SVGUserAgent instance or null.
-     * @param eventEnabled Whether the GVT tree should be reactive
+     * @param eventsEnabled Whether the GVT tree should be reactive
      *        to mouse and key events.
      * @param selectableText Whether the text should be selectable.
      */

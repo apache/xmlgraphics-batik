@@ -283,7 +283,6 @@ public class XPathSubsetContentSelector extends AbstractContentSelector {
 
         /**
          * <b>DOM</b>: Implements {@link org.w3c.dom.NodeList#getLength()}.
-         * @return {@link #children}.
          */
         public int getLength() {
             return nodes.size();

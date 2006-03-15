@@ -19,7 +19,6 @@ package org.apache.batik.gvt.text;
 
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
-import java.util.HashMap;
 import java.util.Map;
 
 
@@ -36,8 +35,6 @@ public class ArabicTextHandler {
 
     private final static int arabicStart = 0x0600;
     private final static int arabicEnd = 0x06FF;
-
-    private final static Map charMap = new HashMap(54);
 
     private static final AttributedCharacterIterator.Attribute ARABIC_FORM =
         GVTAttributedCharacterIterator.TextAttribute.ARABIC_FORM;
@@ -390,8 +387,8 @@ public class ArabicTextHandler {
     /**
      * Will try and find a substitute character of the specified form.
      *
-     * @param unicode The unicode value of the glyph to try and replace. It
-     * may be ligature and so may contain more than one character.
+     * @param ch1 The first character of two to replace.
+     * @param ch2 The second character of two to replace.
      * @param form Indicates the required arabic form.
      * (isolated = 1, final = 2, initial = 3, medial = 4)
      *

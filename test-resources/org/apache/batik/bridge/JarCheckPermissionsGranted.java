@@ -140,13 +140,8 @@ public class JarCheckPermissionsGranted implements ScriptHandler {
     private Object[][] permissions;
 
     /**
-     * Reference to the rectangles which show the test status
-     */
-    private Element[] statusRects;
-
-    /**
      * Runs this handler.  
-     * @param doc The current document.
+     * @param document The current document.
      * @param win An object which represents the current viewer.
      */
     public void run(final Document document, final Window win){

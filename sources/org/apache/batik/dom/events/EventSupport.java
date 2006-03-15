@@ -27,6 +27,7 @@ import org.apache.batik.dom.AbstractNode;
 import org.apache.batik.dom.util.HashTable;
 
 import org.w3c.dom.DOMException;
+import org.w3c.dom.Node;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventException;
 import org.w3c.dom.events.EventListener;

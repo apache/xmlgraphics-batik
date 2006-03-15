@@ -255,20 +255,15 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
                     // If these are both zero then it is axially aligned 
                     // on it's "side"...
                     rotated[i] = false;
-                    double dx13 = p1.getX()-p3.getX();
-                    double dy12 = p1.getY()-p2.getY();
-                        
                 } else if ((Math.abs(tdx13) < 0.001) &&
                            (Math.abs(tdy12) < 0.001)) {
                     // If these are both zero then it is axially aligned 
                     // vertically.
                     rotated[i] = false;
-                    double dx12 = p1.getX()-p2.getX();
-                    double dy13 = p1.getY()-p3.getY();
                 } else {
-                    rotated [i] = true;
+                    rotated[i] = true;
                 }
-                    
+
                 Rectangle2D rectBounds;
                 rectBounds = tempLogicalBounds[i].getBounds2D();
                 if (rectBounds.getWidth() > maxWidth) 
@@ -302,9 +297,6 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
 
                 if ((i < getNumGlyphs()-1) && 
                     (tempLogicalBounds[i+1] != null)) {
-                    // make this glyph extend to the start of the next one
-                    Rectangle2D nextGlyphBounds = 
-                        tempLogicalBounds[i+1].getBounds2D();
                     // make this glyph extend to the start of the next one
                     Rectangle2D ngb = tempLogicalBounds[i+1].getBounds2D();
 

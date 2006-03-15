@@ -53,7 +53,6 @@ public class SVGUpdateOverlay implements Overlay {
 
     public void endUpdate() {
         int i=0;
-        int total =0;
         for (; i<counts.length-1; i++) {
             counts[i] = counts[i+1];
         }

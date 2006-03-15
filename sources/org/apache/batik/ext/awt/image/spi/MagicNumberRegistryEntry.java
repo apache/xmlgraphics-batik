@@ -206,7 +206,7 @@ public abstract class MagicNumberRegistryEntry
      * @param exts Standard set of extensions
      * @param mimeTypes array of supported MIME types
      * @param offset Offset of magic number
-     * @param magicNumber byte array to match.
+     * @param magicNumbers byte array to match.
      */
     public MagicNumberRegistryEntry(String    name,
                                     String [] exts,

@@ -17,18 +17,16 @@
  */
 package org.apache.batik.script.rhino;
 
+import java.security.AccessControlContext;
+import java.security.AccessController;
+import java.security.PrivilegedExceptionAction;
+
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.GeneratedClassLoader;
 import org.mozilla.javascript.JavaScriptException;
 import org.mozilla.javascript.Script;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.SecurityController;
-
-import java.security.AccessController;
-import java.security.AccessControlContext;
-import java.security.PrivilegedAction;
-import java.security.PrivilegedExceptionAction;
-import java.security.PrivilegedActionException;
 
 /**
  * This implementation of the Rhino <tt>SecurityController</tt> interface is
@@ -109,6 +107,5 @@ public class BatikSecurityController extends SecurityController {
         } catch (Exception e) {
             throw new JavaScriptException(e);
         }
-
     }
 }

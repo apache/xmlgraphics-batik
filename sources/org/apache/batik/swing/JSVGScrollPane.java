@@ -20,7 +20,6 @@ package org.apache.batik.swing;
 import java.awt.Component;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Frame;
 import java.awt.Rectangle;
 
 import java.awt.event.ComponentAdapter;
@@ -254,6 +253,8 @@ public class JSVGScrollPane extends JPanel
      *
      *  This is commented out because it requires JDK 1.4 and currently
      *  Batik targets JDK 1.3.
+     *  
+     *  TODO Move this to a JDK 1.4 specific class in sources-1.4.
      */
     /*
     protected class WheelListener implements MouseWheelListener

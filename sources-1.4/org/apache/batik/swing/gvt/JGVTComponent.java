@@ -41,7 +41,7 @@ public class JGVTComponent extends AbstractJGVTComponent {
 
     /**
      * Creates a new JGVTComponent.
-     * @param eventEnabled Whether the GVT tree should be reactive
+     * @param eventsEnabled Whether the GVT tree should be reactive
      *        to mouse and key events.
      * @param selectableText Whether the text should be selectable.
      *        if eventEnabled is false, this flag is ignored.

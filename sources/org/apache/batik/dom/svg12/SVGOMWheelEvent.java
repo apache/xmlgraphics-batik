@@ -51,8 +51,6 @@ public class SVGOMWheelEvent extends DOMUIEvent {
      *   <code>AbstractView</code>.
      * @param wheelDeltaArg Specifices the number of clicks the mouse wheel has
      *   been moved.
-     * @param modifiersList Specifies which modifiers were in effect for this
-     *   <code>Event</code>.
      */
     public void initWheelEvent(String typeArg, 
                                boolean canBubbleArg, 
@@ -74,8 +72,6 @@ public class SVGOMWheelEvent extends DOMUIEvent {
      *   <code>AbstractView</code>.
      * @param wheelDeltaArg Specifices the number of clicks the mouse wheel has
      *   been moved.
-     * @param modifiersList Specifies which modifiers were in effect for this
-     *   <code>Event</code>.
      */
     public void initWheelEventNS(String namespaceURIArg,
                                  String typeArg,

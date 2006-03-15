@@ -17,8 +17,6 @@
  */
 package org.apache.batik.bridge;
 
-import org.w3c.dom.Element;
-
 /**
  * Bridge class for the &lt;desc&gt; element.
  *

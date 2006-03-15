@@ -32,10 +32,8 @@ public class RunnableQueueTest extends AbstractTest {
     public RunnableQueue rq;
 
     /**
-     * Constructor
+     * Creates a new RunnableQueueTest.
      * @param nThreads number of runnables to queue
-     * @param sync     Should requests be made synchronously (from
-     *                 different threads).
      */
     public RunnableQueueTest(int nThreads) {
         this.nThreads = nThreads;

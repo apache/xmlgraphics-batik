@@ -19,15 +19,12 @@ package org.apache.batik.bridge.svg12;
 
 import java.util.ArrayList;
 
-import org.apache.batik.bridge.BridgeException;
-import org.apache.batik.bridge.ErrorConstants;
-import org.apache.batik.dom.AbstractDocument;
-import org.apache.batik.dom.svg12.XBLOMContentElement;
-import org.apache.batik.util.XBLConstants;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.objects.XObject;
+
+import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.dom.svg12.XBLOMContentElement;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -211,7 +208,6 @@ public class XPathPatternContentSelector extends AbstractContentSelector {
 
         /**
          * <b>DOM</b>: Implements {@link org.w3c.dom.NodeList#getLength()}.
-         * @return {@link #children}.
          */
         public int getLength() {
             return nodes.size();

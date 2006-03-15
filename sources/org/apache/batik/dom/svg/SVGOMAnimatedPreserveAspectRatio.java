@@ -23,7 +23,6 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.svg.SVGAnimatedPreserveAspectRatio;
 import org.w3c.dom.svg.SVGPreserveAspectRatio;
-import org.w3c.dom.svg.SVGException;
 
 /**
  * This class implements the {@link SVGAnimatedPreserveAspectRatio} interface.

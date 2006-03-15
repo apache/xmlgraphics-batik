@@ -17,11 +17,8 @@
  */
 package org.apache.batik.ext.awt.geom;
 
-import java.util.Arrays;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.io.PrintStream;
-import java.io.FileOutputStream;
 
 /**
  * A class representing a linear path segment.

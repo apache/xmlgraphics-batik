@@ -17,7 +17,6 @@
  */
 package org.apache.batik.ext.awt.geom;
 
-import java.awt.geom.CubicCurve2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.QuadCurve2D;
 import java.awt.geom.Rectangle2D;

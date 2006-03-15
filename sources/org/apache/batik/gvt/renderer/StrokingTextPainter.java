@@ -18,7 +18,6 @@
 
 package org.apache.batik.gvt.renderer;
 
-import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.RenderingHints;
@@ -37,7 +36,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.Vector;
 
 import org.apache.batik.gvt.TextNode;
 import org.apache.batik.gvt.TextPainter;
@@ -52,8 +50,8 @@ import org.apache.batik.gvt.text.BidiAttributedCharacterIterator;
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
 import org.apache.batik.gvt.text.Mark;
 import org.apache.batik.gvt.text.TextHit;
-import org.apache.batik.gvt.text.TextPath;
 import org.apache.batik.gvt.text.TextPaintInfo;
+import org.apache.batik.gvt.text.TextPath;
 import org.apache.batik.gvt.text.TextSpanLayout;
 
 
@@ -1113,7 +1111,6 @@ public class StrokingTextPainter extends BasicTextPainter {
         // the overall outline
         for (int i = 0; i < textRuns.size(); ++i) {
             TextRun textRun = (TextRun)textRuns.get(i);
-            AttributedCharacterIterator textRunACI = textRun.getACI();
             TextSpanLayout textRunLayout = textRun.getLayout();
             Rectangle2D runBounds = textRunLayout.getBounds2D();
             if (runBounds != null) {

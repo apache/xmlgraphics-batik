@@ -17,9 +17,6 @@
  */
 package org.apache.batik.bridge;
 
-import java.awt.Paint;
-import java.awt.Stroke;
-import java.awt.font.TextAttribute;
 import java.text.AttributedCharacterIterator;
 
 import org.apache.batik.dom.AbstractNode;
@@ -32,7 +29,6 @@ import org.apache.batik.util.XMLConstants;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
 
 /**
  * Bridge class for the &lt;altGlyph> element.

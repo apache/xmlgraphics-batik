@@ -18,15 +18,12 @@
 
 package org.apache.batik.transcoder.wmf.tosvg;
 
+import java.awt.Rectangle;
+import java.awt.Toolkit;
+import java.awt.geom.Rectangle2D;
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.net.URL;
 import java.util.Vector;
-import java.awt.Font;
-import java.awt.Toolkit;
-import java.awt.Rectangle;
-import java.awt.geom.Dimension2D;
-import java.awt.geom.Rectangle2D;
 
 import org.apache.batik.transcoder.wmf.WMFConstants;
 
@@ -299,7 +296,7 @@ public abstract class AbstractWMFReader {
      *               readShort(is);
      *          break;
      * </pre>
-     * @see svglab.encoding.wmf.WMFConstants
+     * @see WMFConstants
      */
     protected abstract boolean readRecords(DataInputStream is) throws IOException;
     

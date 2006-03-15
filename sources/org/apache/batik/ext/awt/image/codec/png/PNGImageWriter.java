@@ -34,7 +34,7 @@ import org.apache.batik.ext.awt.image.spi.ImageWriterParams;
 public class PNGImageWriter implements ImageWriter {
 
     /**
-     * @see org.apache.batik.ext.awt.image.util.ImageWriter#writeImage(java.awt.image.RenderedImage, java.io.OutputStream)
+     * @see ImageWriter#writeImage(java.awt.image.RenderedImage, java.io.OutputStream)
      */
     public void writeImage(RenderedImage image, OutputStream out)
             throws IOException {
@@ -42,7 +42,7 @@ public class PNGImageWriter implements ImageWriter {
     }
 
     /**
-     * @see org.apache.batik.ext.awt.image.util.ImageWriter#writeImage(java.awt.image.RenderedImage, java.io.OutputStream, org.apache.batik.ext.awt.image.util.ImageWriterParams)
+     * @see ImageWriter#writeImage(java.awt.image.RenderedImage, java.io.OutputStream, org.apache.batik.ext.awt.image.spi.ImageWriterParams)
      */
     public void writeImage(RenderedImage image, OutputStream out,
             ImageWriterParams params) throws IOException {
@@ -51,10 +51,9 @@ public class PNGImageWriter implements ImageWriter {
     }
 
     /**
-     * @see org.apache.batik.ext.awt.image.util.ImageWriter#getMIMEType()
+     * @see ImageWriter#getMIMEType()
      */
     public String getMIMEType() {
         return "image/png";
     }
-
 }

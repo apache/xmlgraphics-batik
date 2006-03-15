@@ -17,17 +17,6 @@
  */
 package org.apache.batik.swing;
 
-import java.awt.Dimension;
-
-import javax.swing.JFrame;
-
-import org.apache.batik.swing.gvt.GVTTreeRendererAdapter;
-import org.apache.batik.swing.gvt.GVTTreeRendererEvent;
-import org.apache.batik.swing.svg.SVGDocumentLoaderAdapter;
-import org.apache.batik.swing.svg.SVGDocumentLoaderEvent;
-import org.apache.batik.test.AbstractTest;
-import org.apache.batik.test.TestReport;
-
 /**
  * This test makes sure that setting the canvas's document uri to 
  * null does not cause a NullPointerException

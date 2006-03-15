@@ -43,7 +43,7 @@ public class DefaultFontFamilyTest extends AbstractImageTranscoderTest {
      * Constructs a new <tt>DefaultFontFamilyTest</tt>.
      *
      * @param inputURI the URI of the input image
-     * @param the URI of the reference image
+     * @param refImageURI the URI of the reference image
      * @param defaultFontFamily the default font-family to use
      */
     public DefaultFontFamilyTest(String inputURI, 

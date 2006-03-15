@@ -549,9 +549,6 @@ class TIFFFaxDecoder {
 
     /**
      * @param fillOrder   The fill order of the compressed data bytes.
-     * @param compData    Array containing compressed data.
-     * @param w
-     * @param h
      */
     public TIFFFaxDecoder(int fillOrder, int w, int h) {
 	this.fillOrder = fillOrder;

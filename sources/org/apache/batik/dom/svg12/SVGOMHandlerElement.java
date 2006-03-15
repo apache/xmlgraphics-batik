@@ -24,7 +24,7 @@ import org.apache.batik.util.SVG12Constants;
 import org.w3c.dom.Node;
 
 /**
- * This class implements {@link org.w3c.dom.svg.SVGHandlerElement}.
+ * This class implements SVGHandlerElement.
  *
  * @author <a href="mailto:cam%40mcc%2eid%2eau">Cameron McCormack</a>
  * @version $Id$

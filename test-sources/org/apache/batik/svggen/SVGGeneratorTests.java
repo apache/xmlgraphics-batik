@@ -66,9 +66,6 @@ public class SVGGeneratorTests extends DefaultTestSuite {
 
     public static final String CUSTOM_CONTEXT_GENERATION_PREFIX = "Context";
 
-    /**
-     * @param name of the <tt>Painter</tt> class
-     */
     public SVGGeneratorTests(){
     }
 

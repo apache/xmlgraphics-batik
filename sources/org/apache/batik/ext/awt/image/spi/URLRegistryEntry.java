@@ -27,8 +27,8 @@ import org.apache.batik.util.ParsedURL;
  * these cases you should be aware that in order for the construction
  * of the URL object to succeed you must register a @see
  * URLStreamHandler using one of the methods listed in 
- * @see java.net.URL#URL(java.lang.String, java.lang.String, int, java.lang.String).
- *  */
+ * @see java.net.URL#URL(java.lang.String, java.lang.String, int, java.lang.String)
+ */
 public interface URLRegistryEntry extends RegistryEntry {
     /**
      * Check if the URL references an image that can be

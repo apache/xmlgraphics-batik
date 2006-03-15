@@ -18,22 +18,19 @@
 
 package org.apache.batik.transcoder.wmf.tosvg;
 
-import java.awt.Rectangle;
 import java.awt.Color;
-import java.awt.geom.Rectangle2D;
-import java.awt.geom.Point2D;
-import java.awt.geom.Dimension2D;
+import java.awt.Rectangle;
 import java.awt.Shape;
-import java.io.File;
-import java.io.IOException;
-import java.io.DataInputStream;
-import java.io.FileInputStream;
+import java.awt.geom.Rectangle2D;
 import java.io.BufferedInputStream;
-import java.util.ArrayList;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 
-import org.apache.batik.transcoder.wmf.WMFConstants;
 import org.apache.batik.ext.awt.geom.Polygon2D;
 import org.apache.batik.ext.awt.geom.Polyline2D;
+import org.apache.batik.transcoder.wmf.WMFConstants;
 
 /** This class holds simple properties about a WMF Metafile. It can be used whenever general 
  * informations must be retrieved about this file.

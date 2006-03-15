@@ -129,7 +129,6 @@ public class LineInfo {
             double range = ranges[2*r+1]-ranges[2*r];
             float adv=0;
             float rangeAdvance = 0;
-            double pdelta = range;
 
             while (i<ggSz) {
                 GlyphGroupInfo ggi = ggis[i];

@@ -34,8 +34,8 @@ public class TileBlock {
     /**
      * Construct a tile block this represents a block of contigous
      * tiles.
-     * @param xloc The x index of left edge of the tile block.
-     * @param yloc The y index of top edge of the tile block.
+     * @param xOff The x index of left edge of the tile block.
+     * @param yOff The y index of top edge of the tile block.
      * @param w    The number of tiles across in the block
      * @param h    The number of tiles down  the block
      * @param occupied Which entries in the block are already

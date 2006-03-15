@@ -27,17 +27,17 @@ import java.util.MissingResourceException;
 import java.util.Properties;
 
 import org.apache.batik.dom.AbstractDocument;
-import org.apache.batik.dom.util.SAXDocumentFactory;
-import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.svg12.SVG12DOMImplementation;
+import org.apache.batik.dom.util.SAXDocumentFactory;
 import org.apache.batik.util.MimeTypeConstants;
 import org.apache.batik.util.ParsedURL;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.DOMImplementation;
-import org.w3c.dom.svg.SVGDocument;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
+import org.w3c.dom.svg.SVGDocument;
 
 /**
  * This class contains methods for creating SVGDocument instances

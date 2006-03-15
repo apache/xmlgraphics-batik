@@ -18,20 +18,11 @@
 
 package org.apache.batik.gvt.flow;
 
-import java.awt.geom.Point2D;
 import java.awt.font.FontRenderContext;
+import java.awt.geom.Point2D;
 import java.text.AttributedCharacterIterator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.LinkedList;
 
-import org.apache.batik.gvt.font.GVTFont;
-import org.apache.batik.gvt.font.GVTGlyphVector;
-import org.apache.batik.gvt.font.GVTLineMetrics;
-import org.apache.batik.gvt.font.MultiGlyphVector;
 import org.apache.batik.gvt.text.GlyphLayout;
-
-import org.apache.batik.gvt.TextNode;
 
 /**
  * One line Class Desc

@@ -17,9 +17,7 @@
  */
 package org.apache.batik.bridge;
 
-import java.awt.Paint;
 import java.awt.Shape;
-import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.util.StringTokenizer;
@@ -27,12 +25,13 @@ import java.util.Vector;
 
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.font.Glyph;
 import org.apache.batik.gvt.font.GVTFontFace;
+import org.apache.batik.gvt.font.Glyph;
 import org.apache.batik.gvt.text.TextPaintInfo;
 import org.apache.batik.parser.AWTPathProducer;
 import org.apache.batik.parser.ParseException;
 import org.apache.batik.parser.PathParser;
+
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;

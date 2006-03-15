@@ -25,6 +25,7 @@ import org.w3c.dom.events.EventTarget;
 /**
  * An interface DOM 3 custom events should implement to be used with
  * Batik's DOM implementation.
+ * XXX This description is out of date.
  * <p>
  *   This interface exists because of issues running under JDK &lt; 1.5.
  *   In these environments where only the DOM Level 2 interfaces are

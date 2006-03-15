@@ -219,8 +219,15 @@ final class RadialGradientPaintContext extends MultipleGradientPaintContext {
     /**
      * Return a Raster containing the colors generated for the graphics
      * operation.
-     * @param x,y,w,h The area in device space for which colors are
-     * generated.
+     *
+     * @param x The x coordinate of the area in device space for which colors
+     *          are generated.
+     * @param y The y coordinate of the area in device space for which colors
+     *          are generated.
+     * @param w The width of the area in device space for which colors
+     *          are generated.
+     * @param h The height of the area in device space for which colors
+     *          are generated.
      */
     protected void fillRaster(int pixels[], int off, int adjust,
                               int x, int y, int w, int h) {

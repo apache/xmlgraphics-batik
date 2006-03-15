@@ -30,7 +30,6 @@ import org.apache.batik.css.engine.value.StringMap;
 import org.apache.batik.css.parser.CSSLexicalUnit;
 import org.apache.batik.util.CSSConstants;
 import org.w3c.css.sac.LexicalUnit;
-import org.w3c.dom.DOMException;
 
 /**
  * This class provides support for the CSS2 'font' shorthand property.
@@ -81,7 +80,7 @@ public class FontShorthandManager
         (LexicalUnit.SAC_IDENT, CSSConstants.CSS_NORMAL_VALUE, null);
     static LexicalUnit BOLD_LU = CSSLexicalUnit.createString
         (LexicalUnit.SAC_IDENT, CSSConstants.CSS_BOLD_VALUE, null);
-    
+
     static LexicalUnit MEDIUM_LU = CSSLexicalUnit.createString
         (LexicalUnit.SAC_IDENT, CSSConstants.CSS_MEDIUM_VALUE, null);
 
@@ -117,7 +116,7 @@ public class FontShorthandManager
                                  ShorthandManager.PropertyHandler ph,
                                  String s,
                                  boolean imp) {
-        
+
         LexicalUnit fontStyle   = NORMAL_LU;
         LexicalUnit fontVariant = NORMAL_LU;
         LexicalUnit fontWeight  = NORMAL_LU;
@@ -164,19 +163,17 @@ public class FontShorthandManager
         LexicalUnit fontFamily  = null;
 
         ValueManager[]vMgrs = eng.getValueManagers();
-        int fst, fv, fw, fsz, lh, ff;
+        int fst, fv, fw, fsz, lh;
         fst = eng.getPropertyIndex(CSSConstants.CSS_FONT_STYLE_PROPERTY);
         fv  = eng.getPropertyIndex(CSSConstants.CSS_FONT_VARIANT_PROPERTY);
         fw  = eng.getPropertyIndex(CSSConstants.CSS_FONT_WEIGHT_PROPERTY);
         fsz = eng.getPropertyIndex(CSSConstants.CSS_FONT_SIZE_PROPERTY);
         lh  = eng.getPropertyIndex(CSSConstants.CSS_LINE_HEIGHT_PROPERTY);
-        ff  = eng.getPropertyIndex(CSSConstants.CSS_FONT_FAMILY_PROPERTY);
 
         IdentifierManager fstVM = (IdentifierManager)vMgrs[fst];
         IdentifierManager fvVM  = (IdentifierManager)vMgrs[fv];
         IdentifierManager fwVM  = (IdentifierManager)vMgrs[fw];
         FontSizeManager   fszVM = (FontSizeManager)vMgrs[fsz];
-        ValueManager      ffVM  = vMgrs[ff];
 
         StringMap fstSM = fstVM.getIdentifiers();
         StringMap fvSM  = fvVM.getIdentifiers();
@@ -275,7 +272,7 @@ public class FontShorthandManager
             lu = lu.getNextLexicalUnit();
             break;
         }
-        
+
 
         if (fontSize == null) {
             // We must have a font-size so see if we can use intLU...
@@ -298,7 +295,7 @@ public class FontShorthandManager
                     (intLU.getLexicalUnitType());
             }
         }
-        
+
         // Must have Font-Family, so if it's null now we are done!
         if (lu == null)
             throw createMalformedLexicalUnitDOMException();

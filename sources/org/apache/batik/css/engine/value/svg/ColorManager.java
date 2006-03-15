@@ -19,6 +19,7 @@ package org.apache.batik.css.engine.value.svg;
 
 import org.apache.batik.css.engine.value.AbstractColorManager;
 import org.apache.batik.css.engine.value.Value;
+import org.apache.batik.css.engine.value.ValueManager;
 import org.apache.batik.util.CSSConstants;
 import org.apache.batik.util.SVGTypes;
 

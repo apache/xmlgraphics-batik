@@ -43,7 +43,7 @@ public class MediaTest extends AbstractImageTranscoderTest {
      * Constructs a new <tt>MediaTest</tt>.
      *
      * @param inputURI the URI of the input image
-     * @param the URI of the reference image
+     * @param refImageURI the URI of the reference image
      * @param media the CSS media
      */
     public MediaTest(String inputURI, String refImageURI, String media) {

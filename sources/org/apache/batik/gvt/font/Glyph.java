@@ -18,9 +18,7 @@
 package org.apache.batik.gvt.font;
 
 import java.awt.Graphics2D;
-import java.awt.Paint;
 import java.awt.Shape;
-import java.awt.Stroke;
 import java.awt.font.GlyphMetrics;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
@@ -29,7 +27,6 @@ import java.awt.geom.Rectangle2D;
 import java.util.Vector;
 
 import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.text.ArabicTextHandler;
 import org.apache.batik.gvt.text.TextPaintInfo;
 
 

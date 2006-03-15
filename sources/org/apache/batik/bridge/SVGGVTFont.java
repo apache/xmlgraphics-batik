@@ -18,10 +18,7 @@
 package org.apache.batik.bridge;
 
 import java.awt.Font;
-import java.awt.Paint;
-import java.awt.Stroke;
 import java.awt.font.FontRenderContext;
-import java.awt.font.TextAttribute;
 import java.text.AttributedCharacterIterator;
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
@@ -42,6 +39,7 @@ import org.apache.batik.gvt.font.SVGGVTGlyphVector;
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
 import org.apache.batik.gvt.text.TextPaintInfo;
 import org.apache.batik.util.SVGConstants;
+
 import org.w3c.dom.Element;
 
 /**

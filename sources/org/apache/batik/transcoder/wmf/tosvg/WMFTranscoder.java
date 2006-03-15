@@ -19,40 +19,23 @@
 package org.apache.batik.transcoder.wmf.tosvg;
 
 import java.awt.Dimension;
-import java.awt.BasicStroke;
-import java.awt.geom.Rectangle2D;
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 
-import org.w3c.dom.svg.SVGDocument;
-import org.apache.batik.transcoder.TranscodingHints;
-import org.apache.batik.transcoder.keys.*;
-import org.apache.batik.dom.svg.SVGDOMImplementation;
-import org.apache.batik.transcoder.AbstractTranscoder;
+import org.apache.batik.svggen.SVGGraphics2D;
+import org.apache.batik.transcoder.ToSVGAbstractTranscoder;
 import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
-import org.apache.batik.util.SVGConstants;
-import org.w3c.dom.DOMImplementation;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.xml.sax.XMLFilter;
-import org.apache.batik.svggen.SVGGraphics2D;
-import org.apache.batik.util.SVGConstants;
-import org.apache.batik.transcoder.ToSVGAbstractTranscoder;
-
-import org.w3c.dom.Node;
-import org.w3c.dom.DocumentFragment;
 
 /** This class implements the <tt>Transcoder</tt> interface and
  *  can convert a WMF input document into an SVG document.
