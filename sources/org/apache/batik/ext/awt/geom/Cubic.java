@@ -69,7 +69,6 @@ public class Cubic extends AbstractSegment {
     private void getMinMax(double p1, double p2, 
                            double p3, double p4,
                            double [] minMax) {
-        double min, max;
         if (p4 > p1){
             minMax[0] = p1; minMax[1] = p4;
         } else {
@@ -271,7 +270,6 @@ public class Cubic extends AbstractSegment {
     }
 
     private static int count = 0;
-    private static int countExp = 0;
 
     protected double subLength(double leftLegLen, double rightLegLen,
                                double maxErr) {

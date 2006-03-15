@@ -20,6 +20,7 @@ package org.apache.batik.css.engine.value.svg;
 import org.apache.batik.css.engine.value.IdentifierManager;
 import org.apache.batik.css.engine.value.StringMap;
 import org.apache.batik.css.engine.value.Value;
+import org.apache.batik.css.engine.value.ValueManager;
 import org.apache.batik.util.CSSConstants;
 
 /**

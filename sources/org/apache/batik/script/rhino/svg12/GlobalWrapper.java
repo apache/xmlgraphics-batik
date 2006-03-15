@@ -95,7 +95,6 @@ public class GlobalWrapper extends WindowWrapper {
                                         Scriptable thisObj,
                                         Object[] args,
                                         Function funObj) {
-        int len = args.length;
         GlobalWrapper gw = (GlobalWrapper) thisObj;
         SVGGlobal global = (SVGGlobal) gw.window;
         global.stopMouseCapture();

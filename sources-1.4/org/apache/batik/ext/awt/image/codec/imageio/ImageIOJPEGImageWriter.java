@@ -45,7 +45,7 @@ public class ImageIOJPEGImageWriter extends ImageIOImageWriter {
     }
  
     /**
-     * @see org.apache.batik.ext.awt.image.util.ImageIOImageWriter#updateMetadata(javax.imageio.metadata.IIOMetadata, org.apache.batik.ext.awt.image.util.ImageWriterParams)
+     * @see ImageIOImageWriter#updateMetadata(javax.imageio.metadata.IIOMetadata, ImageWriterParams)
      */
     protected IIOMetadata updateMetadata(IIOMetadata meta, ImageWriterParams params) {
         //ImageIODebugUtil.dumpMetadata(meta);
@@ -136,7 +136,7 @@ public class ImageIOJPEGImageWriter extends ImageIOImageWriter {
     }    
     
     /**
-     * @see org.apache.batik.ext.awt.image.util.ImageIOImageWriter#getDefaultWriteParam(javax.imageio.ImageWriter, java.awt.image.RenderedImage, org.apache.batik.ext.awt.image.util.ImageWriterParams)
+     * @see ImageIOImageWriter#getDefaultWriteParam(javax.imageio.ImageWriter, java.awt.image.RenderedImage, ImageWriterParams)
      */
     protected ImageWriteParam getDefaultWriteParam(
             ImageWriter iiowriter, RenderedImage image,

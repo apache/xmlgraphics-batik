@@ -19,7 +19,6 @@ package org.apache.batik.gvt.text;
 
 import java.awt.Composite;
 import java.awt.Paint;
-import java.awt.Shape;
 import java.awt.Stroke;
 
 /**

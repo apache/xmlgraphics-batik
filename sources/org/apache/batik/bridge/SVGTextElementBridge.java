@@ -1759,7 +1759,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                                              TextPaintInfo parent,
                                              BridgeContext ctx) {
         // Force the engine to update stuff..
-        Value val = CSSUtilities.getComputedStyle
+        CSSUtilities.getComputedStyle
             (element, SVGCSSEngine.TEXT_DECORATION_INDEX);
 
         TextPaintInfo pi = new TextPaintInfo(parent);

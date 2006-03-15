@@ -18,25 +18,21 @@
 package org.apache.batik.bridge;
 
 import java.awt.Font;
-import java.awt.GraphicsEnvironment;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
+import org.apache.batik.dom.AbstractNode;
+import org.apache.batik.gvt.font.AWTFontFamily;
+import org.apache.batik.gvt.font.FontFamilyResolver;
+import org.apache.batik.gvt.font.GVTFontFace;
+import org.apache.batik.gvt.font.GVTFontFamily;
 import org.apache.batik.util.ParsedURL;
+import org.apache.batik.util.XMLConstants;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGDocument;
-
-import org.apache.batik.dom.AbstractNode;
-import org.apache.batik.gvt.font.GVTFontFamily;
-import org.apache.batik.gvt.font.GVTFontFace;
-import org.apache.batik.gvt.font.AWTFontFamily;
-import org.apache.batik.gvt.font.FontFamilyResolver;
-import org.apache.batik.util.XMLConstants;
 
 /**
  * This class represents a &lt;font-face> element or @font-face rule

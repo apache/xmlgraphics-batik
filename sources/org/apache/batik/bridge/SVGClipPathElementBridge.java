@@ -24,7 +24,6 @@ import java.awt.geom.Area;
 import java.awt.geom.GeneralPath;
 
 import org.apache.batik.dom.svg.SVGOMUseElement;
-import org.apache.batik.dom.svg.SVGOMUseShadowRoot;
 import org.apache.batik.ext.awt.image.renderable.ClipRable;
 import org.apache.batik.ext.awt.image.renderable.ClipRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.Filter;

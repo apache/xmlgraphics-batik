@@ -20,7 +20,6 @@ package org.apache.batik.bridge;
 import java.awt.Shape;
 import java.awt.geom.GeneralPath;
 
-import org.apache.batik.css.engine.CSSEngineEvent;
 import org.apache.batik.css.engine.SVGCSSEngine;
 import org.apache.batik.gvt.ShapeNode;
 import org.apache.batik.parser.AWTPolygonProducer;

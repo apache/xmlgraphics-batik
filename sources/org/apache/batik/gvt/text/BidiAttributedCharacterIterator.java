@@ -43,7 +43,6 @@ public class BidiAttributedCharacterIterator implements AttributedCharacterItera
     private int chunkStart;
     private int [] newCharOrder;
     private final static Float FLOAT_NAN = new Float(Float.NaN);
-    private final static Map mirroredGlyphs = new HashMap(50);
 
 
     protected BidiAttributedCharacterIterator

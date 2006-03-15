@@ -20,7 +20,6 @@ package org.apache.batik.css.engine;
 import java.net.URL;
 
 import org.apache.batik.css.engine.value.ShorthandManager;
-import org.apache.batik.css.engine.value.ValueConstants;
 import org.apache.batik.css.engine.value.ValueManager;
 import org.apache.batik.css.engine.value.svg.SVGColorManager;
 import org.apache.batik.css.engine.value.svg.OpacityManager;

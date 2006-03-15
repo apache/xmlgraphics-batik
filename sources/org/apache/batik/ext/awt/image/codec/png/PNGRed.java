@@ -141,10 +141,6 @@ public class PNGRed extends AbstractRed {
     public static final int PNG_FILTER_AVERAGE = 3;
     public static final int PNG_FILTER_PAETH = 4;
 
-    private static final int RED_OFFSET = 2;
-    private static final int GREEN_OFFSET = 1;
-    private static final int BLUE_OFFSET = 0;
-
     private int[][] bandOffsets = {
         null,
         { 0 }, // G
@@ -178,8 +174,6 @@ public class PNGRed extends AbstractRed {
     private int maxOpacity;
 
     private int[] significantBits = null;
-
-    private boolean hasBackground = false;
 
     // Parameter information
 
@@ -997,8 +991,6 @@ public class PNGRed extends AbstractRed {
     }
 
     private void parse_bKGD_chunk(PNGChunk chunk) {
-        hasBackground = true;
-
         switch (colorType) {
         case PNG_COLOR_PALETTE:
             int bkgdIndex = chunk.getByte(0) & 0xff;

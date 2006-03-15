@@ -17,15 +17,9 @@
  */
 package org.apache.batik.dom;
 
-import org.apache.batik.test.AbstractTest;
-import org.apache.batik.test.TestReport;
-
-import org.apache.batik.dom.AbstractDocument;
-import org.apache.batik.dom.AbstractNode;
-import org.apache.batik.dom.svg.SVGDOMImplementation;
-import org.apache.batik.util.SVGConstants;
-
-import org.w3c.dom.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.UserDataHandler;
 
 /**
  * Tests Node.setUserData and Node.getUserData.

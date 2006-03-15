@@ -28,7 +28,6 @@ import java.util.List;
 import org.apache.batik.dom.events.DOMKeyEvent;
 import org.apache.batik.dom.events.DOMMouseEvent;
 import org.apache.batik.dom.events.NodeEventTarget;
-import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.TextNode;
@@ -147,7 +146,6 @@ public abstract class BridgeEventSupport implements SVGConstants {
         public Listener(BridgeContext ctx, UserAgent u) {
             context = ctx;
             ua = u;
-            SVGOMDocument doc = (SVGOMDocument) ctx.getDocument();
         }
 
         // Key -------------------------------------------------------------

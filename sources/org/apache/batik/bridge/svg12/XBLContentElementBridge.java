@@ -21,20 +21,15 @@ import org.apache.batik.bridge.AbstractGraphicsNodeBridge;
 import org.apache.batik.bridge.Bridge;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.GVTBuilder;
-import org.apache.batik.bridge.SVGUtilities;
-import org.apache.batik.bridge.svg12.ContentManager;
-import org.apache.batik.bridge.svg12.ContentSelectionChangedEvent;
-import org.apache.batik.bridge.svg12.ContentSelectionChangedListener;
-import org.apache.batik.bridge.svg12.DefaultXBLManager;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.svg12.XBLOMContentElement;
-import org.apache.batik.util.XBLConstants;
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.util.XBLConstants;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.events.MutationEvent;
 
 /**
  * Bridge class for the &lt;xbl:content&gt; element.

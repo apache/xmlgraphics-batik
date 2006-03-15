@@ -20,15 +20,13 @@ package org.apache.batik.gvt.renderer;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
-import java.awt.Shape;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
 import java.awt.image.SampleModel;
 import java.awt.image.WritableRaster;
-import java.util.Iterator;
 import java.util.Collection;
+import java.util.Iterator;
 
 import org.apache.batik.ext.awt.geom.RectListManager;
 import org.apache.batik.ext.awt.image.GraphicsUtil;

@@ -228,8 +228,7 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
 	/**
 	 * Constructs a new <tt>DiffImageTranscoder</tt>.
 	 *
-	 * @param refImg the reference image
-	 * @param report the test report into which errors have been sent
+	 * @param refImgData the reference image data
 	 */
 	public DiffImageTranscoder(byte [] refImgData) {
 	    this.refImgData = refImgData;
@@ -250,7 +249,7 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
 	 *
 	 * @param img the image to write
 	 * @param output the output (ignored)
-	 * @param TranscoderException if an error occured while storing the
+	 * @throw TranscoderException if an error occured while storing the
 	 * image 
 	 */
 	public void writeImage(BufferedImage img, TranscoderOutput output)

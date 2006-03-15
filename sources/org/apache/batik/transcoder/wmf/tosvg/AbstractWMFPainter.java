@@ -60,9 +60,10 @@ public class AbstractWMFPainter {
      *  @return the Image associated with the bitmap (null if the dimensions detected in the
      *     header are not consistent with the assumed dimensions)
      */ 
-    protected BufferedImage getImage(byte[] bit, int width, int height) {       
+    protected BufferedImage getImage(byte[] bit, int width, int height) {
+        // XXX This created BufferedImage with the given dimensions is wasted?
         BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-        WritableRaster raster = img.getRaster();                  
+        WritableRaster raster = img.getRaster();
         // get the header of the bitmap, first the width and height
         int _width = (((int)bit[7] & 0x00ff) << 24) | (((int)bit[6] & 0x00ff) << 16)
                     | (((int)bit[5] & 0x00ff) << 8) | (int)bit[4] & 0x00ff;

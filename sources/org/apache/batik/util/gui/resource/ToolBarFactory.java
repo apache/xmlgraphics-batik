@@ -48,11 +48,6 @@ public class ToolBarFactory extends ResourceManager {
     private final static String SEPARATOR = "-";
 
     /**
-     * The table which contains the actions
-     */
-    private ActionMap actions;
-
-    /**
      * The button factory
      */
     private ButtonFactory buttonFactory;
@@ -65,7 +60,6 @@ public class ToolBarFactory extends ResourceManager {
      */
     public ToolBarFactory(ResourceBundle rb, ActionMap am) {
 	super(rb);
-	actions = am;
 	buttonFactory = new ButtonFactory(rb, am);
     }
 

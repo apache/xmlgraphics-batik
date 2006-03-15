@@ -32,7 +32,6 @@ import java.awt.geom.Rectangle2D;
 import java.text.AttributedCharacterIterator;
 import java.text.CharacterIterator;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.batik.gvt.font.AWTGVTFont;
@@ -41,10 +40,6 @@ import org.apache.batik.gvt.font.GVTFont;
 import org.apache.batik.gvt.font.GVTGlyphMetrics;
 import org.apache.batik.gvt.font.GVTGlyphVector;
 import org.apache.batik.gvt.font.GVTLineMetrics;
-import org.apache.batik.gvt.TextNode;
-import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
-import org.apache.batik.gvt.text.TextHit;
-import org.apache.batik.gvt.text.TextSpanLayout;
 
 /**
  * Implementation of TextSpanLayout which uses java.awt.font.GlyphVector.
@@ -59,12 +54,10 @@ public class GlyphLayout implements TextSpanLayout {
     private GVTFont font;
     private GVTLineMetrics metrics;
     private AttributedCharacterIterator aci;
-    private FontRenderContext frc;
     private Point2D advance;
     private Point2D offset;
     private float   xScale=1;
     private float   yScale=1;
-    private Point2D prevCharPosition;
     private TextPath textPath;
     private Point2D textPathAdvance;
     private int []  charMap;
@@ -187,7 +180,6 @@ public class GlyphLayout implements TextSpanLayout {
                        FontRenderContext frc) {
 
         this.aci = aci;
-        this.frc = frc;
         this.offset = offset;
         this.font = getFont();
         this.charMap = charMap;

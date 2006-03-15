@@ -18,12 +18,21 @@
 package org.apache.batik.test.svg;
 
 import java.io.File;
+import java.io.FilePermission;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.AccessControlContext;
+import java.security.AccessController;
+import java.security.CodeSource;
+import java.security.Permission;
+import java.security.PermissionCollection;
+import java.security.Permissions;
+import java.security.Policy;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
+import java.security.ProtectionDomain;
 import java.security.cert.Certificate;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import java.util.Enumeration;
 
 import org.apache.batik.bridge.BaseScriptingEnvironment;
 import org.apache.batik.bridge.BridgeContext;
@@ -39,29 +48,16 @@ import org.apache.batik.bridge.NoLoadScriptSecurity;
 import org.apache.batik.bridge.RelaxedExternalResourceSecurity;
 import org.apache.batik.bridge.RelaxedScriptSecurity;
 import org.apache.batik.bridge.ScriptSecurity;
-import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.bridge.UserAgentAdapter;
 import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
 import org.apache.batik.test.AbstractTest;
 import org.apache.batik.test.TestReport;
+import org.apache.batik.util.ApplicationSecurityEnforcer;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.XMLResourceDescriptor;
-import org.apache.batik.util.ApplicationSecurityEnforcer;
 
-import java.security.AccessController;
-import java.security.AccessControlContext;
-import java.security.CodeSource;
-import java.security.PrivilegedExceptionAction;
-import java.security.PrivilegedActionException;
-import java.security.ProtectionDomain;
-import java.security.Permission;
-import java.security.PermissionCollection;
-import java.security.Permissions;
-import java.security.Policy;
-
-import java.io.FilePermission;
-
-import java.util.Enumeration;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * This test takes an SVG file as an input. It processes the input SVG

@@ -206,17 +206,15 @@ public abstract class AbstractTest implements Test {
 
             }catch(Exception ex){
                 ex.printStackTrace();
-            }finally {
-                //
-                // In case we are in severe trouble, even filling in the 
-                // TestReport may fail. Because the TestReport instance
-                // was created up-front, this ensures we can return 
-                // the report, even though it may be incomplete.
-                e.printStackTrace();
-                System.out.println("SERIOUS ERROR");
-                return report;
             }
-                
+
+            // In case we are in severe trouble, even filling in the 
+            // TestReport may fail. Because the TestReport instance
+            // was created up-front, this ensures we can return 
+            // the report, even though it may be incomplete.
+            e.printStackTrace();
+            System.out.println("SERIOUS ERROR");
+            return report;
         }
     }
 

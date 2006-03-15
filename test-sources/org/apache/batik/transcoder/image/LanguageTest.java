@@ -46,7 +46,7 @@ public class LanguageTest extends AbstractImageTranscoderTest {
      * Constructs a new <tt>LanguageTest</tt>.
      *
      * @param inputURI the URI of the input image
-     * @param the URI of the reference image
+     * @param refImageURI the URI of the reference image
      * @param language the preferred language
      */
     public LanguageTest(String inputURI, 

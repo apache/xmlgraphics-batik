@@ -36,7 +36,6 @@ import java.util.List;
 import javax.swing.event.EventListenerList;
 
 import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.TextNode;
 
 /**
  * An EventDispatcher implementation based on AWT events.

@@ -2123,7 +2123,10 @@ public abstract class CSSEngine {
              n != null;
              n = getCSSNextSibling(n)) {
             if (n.getNodeType() == Node.ELEMENT_NODE) {
-                CSSEngine eng = cssContext.getCSSEngineForElement((Element) n);
+                // XXX Should this invalidateProperties be called on eng?
+                // In r216064 with CSSImportedElementRoot, the imported
+                // element's CSSEngine was indeed used.
+                // CSSEngine eng = cssContext.getCSSEngineForElement((Element) n);
                 invalidateProperties(n, inherited, null, recascade);
             }
         }

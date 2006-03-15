@@ -17,15 +17,10 @@
  */
 package org.apache.batik.dom;
 
-import org.apache.batik.test.AbstractTest;
-import org.apache.batik.test.TestReport;
-
-import org.apache.batik.dom.svg.SVGDOMImplementation;
-import org.apache.batik.dom.AbstractNode;
-import org.apache.batik.util.SVGConstants;
-
-import org.w3c.dom.*;
-import org.w3c.dom.events.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.events.Event;
+import org.w3c.dom.events.EventListener;
 
 /**
  * Tests EventTarget.addEventListenerNS.

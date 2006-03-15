@@ -36,7 +36,6 @@ import org.apache.batik.util.SVG12Constants;
 import org.apache.batik.util.XMLConstants;
 
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.events.EventListener;

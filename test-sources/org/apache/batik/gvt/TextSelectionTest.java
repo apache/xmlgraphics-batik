@@ -117,11 +117,10 @@ public class TextSelectionTest extends JSVGRenderingAccuracyTest {
 
     /**
      * Constructor. ref is ignored if action == ROUND.
-     * @param svg    The svg file to load
-     * @param id     The element to select text from (must be a <text> element)
+     * @param textID The element to select text from (must be a <text> element)
      * @param start  The first character to select
      * @param end    The last character to select
-     * @param ref    The reference file.
+     * @param file   The reference file.
      */
     public TextSelectionTest(String file,   String textID, 
                              Integer start, Integer end) {

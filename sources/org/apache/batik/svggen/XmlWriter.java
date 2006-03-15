@@ -48,7 +48,6 @@ class XmlWriter implements SVGConstants {
     static private String EOL;
     static private final String TAG_END = "/>";
     static private final String TAG_START = "</";
-    static private final String SPACE = " ";
 
     static private final char[] SPACES = 
     { ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',

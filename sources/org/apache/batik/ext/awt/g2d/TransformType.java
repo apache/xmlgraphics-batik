@@ -52,15 +52,6 @@ public class TransformType{
     public static final TransformType SHEAR = new TransformType(TRANSFORM_SHEAR, SHEAR_STRING);
     public static final TransformType GENERAL = new TransformType(TRANSFORM_GENERAL, GENERAL_STRING);
 
-    /**
-     * All values
-     */
-    private static final TransformType[] enumValues = { TRANSLATE,
-                                                        ROTATE,
-                                                        SCALE,
-                                                        SHEAR,
-                                                        GENERAL };
-
     private String desc;
     private int val;
 

@@ -52,9 +52,9 @@ import java.util.Set;
 
 import org.apache.batik.ext.awt.g2d.AbstractGraphics2D;
 import org.apache.batik.ext.awt.g2d.GraphicContext;
-import org.apache.batik.util.XMLConstants;
 import org.apache.batik.util.CSSConstants;
-import org.apache.batik.util.SVGConstants;
+import org.apache.batik.util.XMLConstants;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
@@ -789,7 +789,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
      * @see         java.awt.Component#paint
      * @see         java.awt.Component#update
      * @see         java.awt.Component#getGraphics
-     * @see         java.awt.Graphics#create
+     * @see         java.awt.Graphics#create()
      */
     public void dispose() {
         this.domTreeManager.removeGroupManager(this.domGroupManager);
@@ -802,14 +802,12 @@ public class SVGGraphics2D extends AbstractGraphics2D
      * <code>Paint</code>, <code>Composite</code> and
      * <code>Stroke</code> attributes.
      * @param s the <code>Shape</code> to be rendered
-     * @see #setStroke
-     * @see #setPaint
+     * @see #setStroke(Stroke)
+     * @see #setPaint(Paint)
      * @see java.awt.Graphics#setColor
-     * @see #transform
-     * @see #setTransform
-     * @see #clip
-     * @see #setClip
-     * @see #setComposite
+     * @see #setTransform(AffineTransform)
+     * @see #setClip(Shape)
+     * @see #setComposite(java.awt.Composite)
      */
     public void draw(Shape s) {
         // Only BasicStroke can be converted to an SVG attribute equivalent.
@@ -847,11 +845,9 @@ public class SVGGraphics2D extends AbstractGraphics2D
      * @return <code>true</code> if the <code>Image</code> is
      * fully loaded and completely rendered;
      * <code>false</code> if the <code>Image</code> is still being loaded.
-     * @see #transform
-     * @see #setTransform
-     * @see #setComposite
-     * @see #clip
-     * @see #setClip
+     * @see #setTransform(AffineTransform)
+     * @see #setComposite(java.awt.Composite)
+     * @see #setClip(Shape)
      */
     public boolean drawImage(Image img,
                              AffineTransform xform,
@@ -902,11 +898,9 @@ public class SVGGraphics2D extends AbstractGraphics2D
      *          corner of the image is rendered
      * @param y the y coordinate in user space where the upper left
      *          corner of the image is rendered
-     * @see #transform
-     * @see #setTransform
-     * @see #setComposite
-     * @see #clip
-     * @see #setClip
+     * @see #setTransform(AffineTransform)
+     * @see #setComposite(java.awt.Composite)
+     * @see #setClip(Shape)
      */
     public void drawImage(BufferedImage img,
                           BufferedImageOp op,
@@ -1020,11 +1014,9 @@ public class SVGGraphics2D extends AbstractGraphics2D
      * noninvertible.
      * @param img the image to be rendered
      * @param trans2 the transformation from image space into user space
-     * @see #transform
-     * @see #setTransform
-     * @see #setComposite
-     * @see #clip
-     * @see #setClip
+     * @see #setTransform(AffineTransform)
+     * @see #setComposite(java.awt.Composite)
+     * @see #setClip(Shape)
      */
     public void drawRenderedImage(RenderedImage img,
                                   AffineTransform trans2) {
@@ -1100,11 +1092,9 @@ public class SVGGraphics2D extends AbstractGraphics2D
      * {@link #drawRenderedImage(RenderedImage, AffineTransform)}.
      * @param img the image to be rendered
      * @param trans2 the transformation from image space into user space
-     * @see #transform
-     * @see #setTransform
-     * @see #setComposite
-     * @see #clip
-     * @see #setClip
+     * @see #setTransform(AffineTransform)
+     * @see #setComposite(java.awt.Composite)
+     * @see #setClip(Shape)
      * @see #drawRenderedImage
      */
     public void drawRenderableImage(RenderableImage img,
@@ -1177,12 +1167,12 @@ public class SVGGraphics2D extends AbstractGraphics2D
      *          should be rendered
      * @param y the y coordinate where the <code>String</code>
      *          should be rendered
-     * @see #setPaint
+     * @see #setPaint(Paint)
      * @see java.awt.Graphics#setColor
      * @see java.awt.Graphics#setFont
-     * @see #setTransform
-     * @see #setComposite
-     * @see #setClip
+     * @see #setTransform(AffineTransform)
+     * @see #setComposite(java.awt.Composite)
+     * @see #setClip(Shape)
      */
     public void drawString(String s, float x, float y) {
         if (textAsShapes)  {
@@ -1201,7 +1191,6 @@ public class SVGGraphics2D extends AbstractGraphics2D
                 getFontConverter().recordFontUsage(s, getFont());
         }
 
-        Font font = getFont();            
         // Account for the font transform if there is one           
         AffineTransform savTxf = getTransform();
         AffineTransform txtTxf = transformText(x, y);            
@@ -1259,14 +1248,14 @@ public class SVGGraphics2D extends AbstractGraphics2D
      * on the baseline.<br />
      *
      *
-     * @param iterator the iterator whose text is to be rendered
+     * @param ati the iterator whose text is to be rendered
      * @param x the x coordinate where the iterator's text is to be rendered
      * @param y the y coordinate where the iterator's text is to be rendered
-     * @see #setPaint
+     * @see #setPaint(Paint)
      * @see java.awt.Graphics#setColor
-     * @see #setTransform
-     * @see #setComposite
-     * @see #setClip
+     * @see #setTransform(AffineTransform)
+     * @see #setComposite(java.awt.Composite)
+     * @see #setClip(Shape)
      */
     public void drawString(AttributedCharacterIterator ati, float x, float y) {
         if ((textAsShapes) || (usesUnsupportedAttributes(ati))) {
@@ -1278,8 +1267,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
         // ati. This will be used to decide if we create tspan
         // Elements under the text Element or not
         boolean multiSpans = false;
-        if (ati.getRunLimit() < ati.getEndIndex()) multiSpans = true;        
-        Font font = getFont();        
+        if (ati.getRunLimit() < ati.getEndIndex()) multiSpans = true;  
         
         // create the parent text Element
         Element text = getDOMFactory().createElementNS(SVG_NAMESPACE_URI, 
@@ -1381,13 +1369,11 @@ public class SVGGraphics2D extends AbstractGraphics2D
      * include the <code>Clip</code>, <code>Transform</code>,
      * <code>Paint</code>, and <code>Composite</code>.
      * @param s the <code>Shape</code> to be filled
-     * @see #setPaint
+     * @see #setPaint(Paint)
      * @see java.awt.Graphics#setColor
-     * @see #transform
-     * @see #setTransform
-     * @see #setComposite
-     * @see #clip
-     * @see #setClip
+     * @see #setTransform(AffineTransform)
+     * @see #setComposite(java.awt.Composite)
+     * @see #setClip(Shape)
      */
     public void fill(Shape s) {
         Element svgShape = shapeConverter.toSVG(s);

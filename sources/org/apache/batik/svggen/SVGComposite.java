@@ -53,18 +53,12 @@ public class SVGComposite implements SVGConverter {
     private SVGCustomComposite svgCustomComposite;
 
     /**
-     * Used to create DOM elements
-     */
-    private SVGGeneratorContext generatorContext;
-
-    /**
      * @param generatorContext The generator context used for handling
      *        custom and alpha composites
      */
     public SVGComposite(SVGGeneratorContext generatorContext) {
         this.svgAlphaComposite =  new SVGAlphaComposite(generatorContext);
         this.svgCustomComposite = new SVGCustomComposite(generatorContext);
-        this.generatorContext = generatorContext;
     }
 
     /**

@@ -43,7 +43,7 @@ public class ParametrizedDOMTest extends AbstractImageTranscoderTest {
      * Constructs a new <tt>ParametrizedDOMTest</tt>.
      *
      * @param inputURI the URI of the input image
-     * @param the URI of the reference image
+     * @param refImageURI the URI of the reference image
      */
     public ParametrizedDOMTest(String inputURI, String refImageURI) {
 	this.inputURI = inputURI;

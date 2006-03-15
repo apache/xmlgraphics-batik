@@ -17,7 +17,6 @@
  */
 package org.apache.batik.dom;
 
-import java.net.URL;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -31,9 +30,6 @@ import org.apache.batik.css.engine.value.ShorthandManager;
 import org.apache.batik.css.engine.value.ValueManager;
 import org.apache.batik.css.parser.ExtendedParser;
 import org.apache.batik.css.parser.ExtendedParserWrapper;
-import org.apache.batik.dom.AbstractDocument;
-import org.apache.batik.dom.GenericElement;
-import org.apache.batik.dom.GenericElementNS;
 import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.dom.util.DoublyIndexedTable;
 import org.apache.batik.i18n.Localizable;
@@ -41,14 +37,12 @@ import org.apache.batik.i18n.LocalizableSupport;
 import org.apache.batik.util.Service;
 import org.apache.batik.util.XMLResourceDescriptor;
 
-import org.w3c.css.sac.InputSource;
 import org.w3c.css.sac.Parser;
+import org.w3c.dom.DOMException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.css.DOMImplementationCSS;
 import org.w3c.dom.css.ViewCSS;
-import org.w3c.dom.Document;
-import org.w3c.dom.DOMException;
-import org.w3c.dom.DOMImplementation;
-import org.w3c.dom.Element;
 
 /**
  * This class implements the {@link org.w3c.dom.DOMImplementation} interface.
