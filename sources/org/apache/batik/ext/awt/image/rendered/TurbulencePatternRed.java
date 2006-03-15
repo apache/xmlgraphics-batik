@@ -79,14 +79,14 @@ public final class TurbulencePatternRed extends AbstractRed {
         /**
          * Value beyond which values are wrapped on
          * the x-axis.
-         * @see #noise2Stitch
+         * @see TurbulencePatternRed#noise2Stitch
          */
         int wrapX;
 
         /**
          * Value beyond which values are wrapped on
          * the y-axis.
-         * @see #noise2Stitch
+         * @see TurbulencePatternRed#noise2Stitch
          */
         int wrapY;
 
@@ -140,8 +140,7 @@ public final class TurbulencePatternRed extends AbstractRed {
     private StitchInfo stitchInfo = null;
 
     /**
-     * Identity transform, default used when null input in generatePattern
-     * @see #generatePattern
+     * Identity transform, default used when null input in the constructor.
      */
     private static final AffineTransform IDENTITY = new AffineTransform();
 
@@ -210,8 +209,6 @@ public final class TurbulencePatternRed extends AbstractRed {
     private static final int BSize = 0x100;
     private static final int BM = 0xff;
     private static final double PerlinN = 0x1000;
-    private static final int NP = 12 /* 2^PerlinN */;
-    private static final int NM = 0xfff;
     private final int latticeSelector[] = new int[BSize + 1];
     private final double gradient[] = new double[(BSize+1)*8];
 
@@ -492,7 +489,8 @@ public final class TurbulencePatternRed extends AbstractRed {
      * 'turbFunctionResult', as defined in the spec.  This is
      * special case for 4 bands of output.
      *
-     * @param point x and y coordinates of the point to process.
+     * @param pointX x coordinate of the point to process.
+     * @param pointY y coordinate of the point to process.
      * @param fSum array used to avoid reallocating double array for each pixel
      * @return The ARGB pixel value.
      */
@@ -600,7 +598,8 @@ public final class TurbulencePatternRed extends AbstractRed {
      * This is the heart of the turbulence calculation. It returns
      * 'turbFunctionResult', as defined in the spec.
      * @param rgb array for the four color components
-     * @param point x and y coordinates of the point to process.
+     * @param pointX x coordinate of the point to process.
+     * @param pointY y coordinate of the point to process.
      * @param fSum array used to avoid reallocating double array for each pixel
      * @param noise array used to avoid reallocating double array for
      *        each pixel
@@ -711,7 +710,8 @@ public final class TurbulencePatternRed extends AbstractRed {
      * This is the heart of the turbulence calculation. It returns
      * 'turbFunctionResult', as defined in the spec.
      * @param rgb array for the four color components
-     * @param point x and y coordinates of the point to process.
+     * @param pointX x coordinate of the point to process.
+     * @param pointY y coordinate of the point to process.
      * @param fSum array used to avoid reallocating double array for each pixel
      * @param noise array used to avoid reallocating double array for
      * each pixel
@@ -825,7 +825,8 @@ public final class TurbulencePatternRed extends AbstractRed {
      * This is the heart of the turbulence calculation. It returns
      * 'turbFunctionResult', as defined in the spec.  This handles the
      * case where we are generating 4 channels of noise.
-     * @param point x and y coordinates of the point to process.
+     * @param pointX x coordinate of the point to process.
+     * @param pointY y coordinate of the point to process.
      * @param fSum array used to avoid reallocating double array for each pixel
      * @return The ARGB pixel
      */
@@ -920,7 +921,8 @@ public final class TurbulencePatternRed extends AbstractRed {
      * This is the heart of the turbulence calculation. It returns
      * 'turbFunctionResult', as defined in the spec.
      * @param rgb array for the four color components
-     * @param point x and y coordinates of the point to process.
+     * @param pointX x coordinate of the point to process.
+     * @param pointY y coordinate of the point to process.
      * @param fSum array used to avoid reallocating double array for each pixel
      * @param noise array used to avoid reallocating double array for
      * each pixel 
@@ -978,7 +980,8 @@ public final class TurbulencePatternRed extends AbstractRed {
      * This is the heart of the turbulence calculation. It returns
      * 'turbFunctionResult', as defined in the spec.
      * @param rgb array for the four color components
-     * @param point x and y coordinates of the point to process.
+     * @param pointX x coordinate of the point to process.
+     * @param pointY y coordinate of the point to process.
      * @param fSum array used to avoid reallocating double array for each pixel
      * @param noise array used to avoid reallocating double array for
      * each pixel

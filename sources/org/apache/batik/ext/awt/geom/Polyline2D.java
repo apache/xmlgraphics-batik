@@ -18,16 +18,15 @@
 
 package org.apache.batik.ext.awt.geom;
 
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
-import java.awt.Polygon;
-import java.awt.Point;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.PathIterator;
 import java.awt.geom.GeneralPath;
+import java.awt.geom.Line2D;
+import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.awt.geom.Line2D;
 
 /**
  * This class has the same behavior than {@link Polygon2D}, except that
@@ -214,7 +213,7 @@ public class Polyline2D implements Shape, Cloneable, java.io.Serializable {
      * @param       x the specified x coordinate
      * @param       y the specified y coordinate
      * @see         java.awt.Polygon#getBounds
-     * @see         java.awt.Polygon#contains
+     * @see         java.awt.Polygon#contains(double,double)
      */
     public void addPoint(float x, float y) {
 	if (npoints == xpoints.length) {

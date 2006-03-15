@@ -17,7 +17,6 @@
  */
 package org.apache.batik.dom.events;
 
-import org.w3c.dom.Node;
 import org.w3c.dom.events.TextEvent;
 import org.w3c.dom.views.AbstractView;
 

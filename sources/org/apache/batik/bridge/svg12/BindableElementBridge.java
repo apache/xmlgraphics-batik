@@ -21,12 +21,10 @@ import org.apache.batik.bridge.AbstractGraphicsNodeBridge;
 import org.apache.batik.bridge.Bridge;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.GVTBuilder;
-import org.apache.batik.bridge.ScriptingEnvironment;
 import org.apache.batik.bridge.SVGUtilities;
+import org.apache.batik.bridge.ScriptingEnvironment;
 import org.apache.batik.bridge.UpdateManager;
-import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.svg12.BindableElement;
-import org.apache.batik.dom.xbl.ShadowTreeEvent;
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
 

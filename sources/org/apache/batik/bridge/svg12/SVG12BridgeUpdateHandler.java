@@ -18,7 +18,6 @@
 package org.apache.batik.bridge.svg12;
 
 import org.apache.batik.bridge.BridgeUpdateHandler;
-import org.apache.batik.dom.xbl.ShadowTreeEvent;
 
 import org.w3c.dom.Element;
 

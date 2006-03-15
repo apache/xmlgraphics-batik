@@ -1870,7 +1870,6 @@ public class AbstractJSVGComponent extends JGVTComponent {
 
                             List l = e.getDirtyAreas();
                             if (l != null) {
-                                Rectangle visRect = getRenderRect();
                                 Iterator i = l.iterator();
                                 while (i.hasNext()) {
                                     Rectangle r = (Rectangle)i.next();
@@ -2914,8 +2913,8 @@ public class AbstractJSVGComponent extends JGVTComponent {
          *
          * @param e   The <image> element that can't be loaded.
          * @param url The resolved url that can't be loaded.
-         * @param message As best as can be determined the reason it can't be
-         *                loaded (not available, corrupt, unknown format,...).
+         * @param msg As best as can be determined the reason it can't be
+         *            loaded (not available, corrupt, unknown format,...).
          */
         public SVGDocument getBrokenLinkDocument(final Element e, 
                                                  final String url, 

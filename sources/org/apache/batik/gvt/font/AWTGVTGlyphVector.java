@@ -27,7 +27,6 @@ import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphJustificationInfo;
 import java.awt.font.GlyphMetrics;
 import java.awt.font.GlyphVector;
-import java.awt.font.TextAttribute;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
@@ -669,7 +668,7 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
 
             // if c is a transparent arabic char then need to shift the
             // following glyphs left so that the current glyph is overwritten
-            char c = ci.setIndex(i + ci.getBeginIndex());
+            /*char c =*/ ci.setIndex(i + ci.getBeginIndex());
             /*
             if (ArabicTextHandler.arabicCharTransparent(c)) {
                 int j;

@@ -707,7 +707,7 @@ public class PathParser extends NumberParser {
 
     /**
      * Skips the whitespaces and an optional comma.
-     * @returns true if comma was skipped.
+     * @return true if comma was skipped.
      */
     protected boolean skipCommaSpaces2() throws IOException {
         wsp1: for (;;) {

@@ -43,7 +43,7 @@ public class PixelToMMTest extends AbstractImageTranscoderTest {
      * Constructs a new <tt>PixelToMMTest</tt>.
      *
      * @param inputURI the URI of the input image
-     * @param the URI of the reference image
+     * @param refImageURI the URI of the reference image
      * @param px2mm the pixel to mm conversion factor
      */
     public PixelToMMTest(String inputURI, 

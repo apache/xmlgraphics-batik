@@ -17,15 +17,11 @@
  */
 package org.apache.batik.dom;
 
-import org.apache.batik.test.AbstractTest;
-import org.apache.batik.test.TestReport;
-
-import org.apache.batik.dom.AbstractDocument;
-import org.apache.batik.dom.svg.SVGDOMImplementation;
-import org.apache.batik.util.SVGConstants;
-
-import org.w3c.dom.*;
-import org.w3c.dom.svg.*;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.svg.SVGGElement;
+import org.w3c.dom.svg.SVGSVGElement;
 
 /**
  * Tests Document.renameNode.
@@ -36,7 +32,6 @@ import org.w3c.dom.svg.*;
 public class DocumentRenameNodeTest extends DOM3Test {
     public boolean runImplBase() throws Exception {
         Document doc = newSVGDoc();
-        Element e = doc.getDocumentElement();
         Element e2 = doc.createElementNS(SVG_NAMESPACE_URI, "g");
         boolean pass = e2 instanceof SVGGElement;
         e2 = (Element) ((AbstractDocument) doc).renameNode(e2, SVG_NAMESPACE_URI, "svg");

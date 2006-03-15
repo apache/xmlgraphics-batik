@@ -22,7 +22,6 @@ import java.awt.geom.Rectangle2D;
 
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
-import org.w3c.dom.svg.SVGMatrix;
 import org.w3c.dom.svg.SVGPoint;
 import org.w3c.dom.svg.SVGRect;
 
@@ -32,8 +31,7 @@ import org.w3c.dom.svg.SVGRect;
  * @author nicolas.socheleau@bitflash.com
  * @version $Id$
  */
-public class SVGTextContentSupport
-{
+public class SVGTextContentSupport {
 
     /**
      * To implement {@link
@@ -45,7 +43,6 @@ public class SVGTextContentSupport
 
         return (((SVGTextContent)svgelt.getSVGContext()).getNumberOfChars());
     }
-
 
     /**
      * To implement {@link
@@ -62,8 +59,7 @@ public class SVGTextContentSupport
         }
         
         final SVGTextContent context = (SVGTextContent)svgelt.getSVGContext();
-        Rectangle2D r2d = getExtent(svgelt, context, charnum);
-            
+        
         return new SVGRect() {
                 public float getX() {
                     return (float)SVGTextContentSupport.getExtent
@@ -132,7 +128,6 @@ public class SVGTextContentSupport
         }
         
         final SVGTextContent context = (SVGTextContent)svgelt.getSVGContext();
-        Point2D p2d = getStartPos(svgelt, context, charnum);
 
         return new SVGTextPoint(svgelt){
                 public float getX(){
@@ -171,7 +166,6 @@ public class SVGTextContentSupport
         }
         
         final SVGTextContent context = (SVGTextContent)svgelt.getSVGContext();
-        Point2D p2d = getEndPos(svgelt, context, charnum);
 
         return new SVGTextPoint(svgelt){
                 public float getX(){
@@ -294,5 +288,4 @@ public class SVGTextContentSupport
                  "readonly.point", null);
         }
     }
-
 }

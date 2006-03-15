@@ -26,7 +26,6 @@ import org.apache.batik.css.engine.CSSEngineEvent;
 import org.apache.batik.css.engine.SVGCSSEngine;
 import org.apache.batik.dom.events.AbstractEvent;
 import org.apache.batik.dom.svg.SVGContext;
-import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.svg.SVGOMElement;
 import org.apache.batik.ext.awt.geom.SegmentList;
 import org.apache.batik.gvt.CanvasGraphicsNode;
@@ -329,7 +328,6 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
             if (!getDisplay(e)) {
                 // Remove the subtree.
                 CompositeGraphicsNode parent = node.getParent();
-                int idx = parent.indexOf(node);
                 parent.remove(node);
                 disposeTree(e);
             }

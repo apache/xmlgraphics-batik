@@ -27,12 +27,9 @@ import java.net.URL;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.w3c.dom.DOMImplementation;
-import org.w3c.dom.Document;
-
 import org.apache.batik.dom.GenericDOMImplementation;
-import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
+import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.dom.util.SAXDocumentFactory;
 import org.apache.batik.test.AbstractTest;
 import org.apache.batik.test.TestReport;
@@ -40,7 +37,9 @@ import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLResourceDescriptor;
 
 import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
+
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
 
 /**
  * This test validates that the various configurations of TranscoderInput 

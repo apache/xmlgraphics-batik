@@ -17,13 +17,10 @@
  */
 package org.apache.batik.dom.svg;
 
-import java.util.StringTokenizer;
-
-import org.apache.batik.util.SVGConstants;
-import org.apache.batik.parser.ParseException;
 import org.apache.batik.parser.DefaultPreserveAspectRatioHandler;
-import org.apache.batik.parser.PreserveAspectRatioHandler;
+import org.apache.batik.parser.ParseException;
 import org.apache.batik.parser.PreserveAspectRatioParser;
+import org.apache.batik.util.SVGConstants;
 
 import org.w3c.dom.DOMException;
 import org.w3c.dom.svg.SVGPreserveAspectRatio;

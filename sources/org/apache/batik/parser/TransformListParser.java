@@ -207,7 +207,6 @@ public class TransformListParser extends NumberParser {
 
     /**
      * Parses a rotate transform. 'r' is assumed to be the current character.
-     * @return the current character.
      */
     protected void parseRotate() throws ParseException, IOException {
 	current = reader.read();
@@ -296,7 +295,6 @@ public class TransformListParser extends NumberParser {
     /**
      * Parses a translate transform. 't' is assumed to be
      * the current character.
-     * @return the current character.
      */
     protected void parseTranslate() throws ParseException, IOException {
 	current = reader.read();
@@ -405,7 +403,6 @@ public class TransformListParser extends NumberParser {
 
     /**
      * Parses a scale transform. 'c' is assumed to be the current character.
-     * @return the current character.
      */
     protected void parseScale() throws ParseException, IOException {
 	current = reader.read();
@@ -474,7 +471,6 @@ public class TransformListParser extends NumberParser {
 
     /**
      * Parses a skew transform. 'e' is assumed to be the current character.
-     * @return the current character.
      */
     protected void parseSkew() throws ParseException, IOException {
 	current = reader.read();
@@ -542,7 +538,6 @@ public class TransformListParser extends NumberParser {
 
     /**
      * Skips characters in the given reader until a ')' is encountered.
-     * @return the first character after the ')'.
      */
     protected void skipTransform() throws IOException {
 	loop: for (;;) {

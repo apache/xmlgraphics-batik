@@ -321,7 +321,7 @@ public class GraphicContext implements Cloneable{
      * @return      a <code>Shape</code> object representing the
      *              current clipping area, or <code>null</code> if
      *              no clip is set.
-     * @see         java.awt.Graphics#getClipBounds
+     * @see         java.awt.Graphics#getClipBounds()
      * @see         java.awt.Graphics#clipRect
      * @see         java.awt.Graphics#setClip(int, int, int, int)
      * @see         java.awt.Graphics#setClip(Shape)
@@ -373,12 +373,13 @@ public class GraphicContext implements Cloneable{
      * there is a security manager, its <code>checkPermission</code>
      * method is called with an <code>AWTPermission("readDisplayPixels")</code>
      * permission.
+     * 
+     * @param comp the <code>Composite</code> object to be used for rendering
      * @throws SecurityException
      *         if a custom <code>Composite</code> object is being
      *         used to render to the screen and a security manager
      *         is set and its <code>checkPermission</code> method
      *         does not allow the operation.
-     * @param comp the <code>Composite</code> object to be used for rendering
      * @see java.awt.Graphics#setXORMode
      * @see java.awt.Graphics#setPaintMode
      * @see java.awt.AlphaComposite
@@ -846,7 +847,7 @@ public class GraphicContext implements Cloneable{
      *
      * @return a reference to an instance of FontRenderContext.
      * @see java.awt.font.FontRenderContext
-     * @see java.awt.Font#createGlyphVector
+     * @see java.awt.Font#createGlyphVector(FontRenderContext,char[])
      * @see java.awt.font.TextLayout
      * @since     JDK1.2
      */

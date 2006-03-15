@@ -32,10 +32,10 @@ import java.awt.image.SampleModel;
 import java.awt.image.WritableRaster;
 import java.awt.image.renderable.RenderContext;
 import java.lang.ref.SoftReference;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Collection;
+import java.util.Iterator;
 
+import org.apache.batik.ext.awt.geom.RectListManager;
 import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.ext.awt.image.PadMode;
 import org.apache.batik.ext.awt.image.renderable.Filter;
@@ -43,7 +43,6 @@ import org.apache.batik.ext.awt.image.rendered.CachableRed;
 import org.apache.batik.ext.awt.image.rendered.PadRed;
 import org.apache.batik.ext.awt.image.rendered.TileCacheRed;
 import org.apache.batik.ext.awt.image.rendered.TranslateRed;
-import org.apache.batik.ext.awt.geom.RectListManager;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.util.HaltingThread;
 
@@ -55,13 +54,6 @@ import org.apache.batik.util.HaltingThread;
  * @version $Id$
  */
 public class StaticRenderer implements ImageRenderer {
-    /**
-     * Error messages
-     */
-    private static final String ILLEGAL_ARGUMENT_NULL_OFFSCREEN =
-        "offScreen should not be null";
-    private static final String ILLEGAL_ARGUMENT_ZERO_WIDTH_OR_HEIGHT =
-        "offScreen should have positive width/height";
 
     /**
      * Tree this Renderer paints.

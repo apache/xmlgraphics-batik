@@ -17,11 +17,10 @@
  */
 package org.apache.batik.ext.awt.image.spi;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.HashMap;
 
-import org.apache.batik.ext.awt.image.spi.RegistryEntry;
 import org.apache.batik.util.Service;
 
 public class ImageWriterRegistry {

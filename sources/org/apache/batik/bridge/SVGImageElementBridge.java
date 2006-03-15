@@ -388,7 +388,6 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
 
         // Bind the nodes for interactive and dynamic
         // HACK due to the way images are represented in GVT
-        ImageNode imgNode = (ImageNode)node;
         ctx.bind(e, node);
 
         if (ctx.isDynamic()) {

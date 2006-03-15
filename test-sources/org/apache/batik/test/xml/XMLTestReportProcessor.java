@@ -152,7 +152,7 @@ public class XMLTestReportProcessor
     }
 
     /**
-     * @param reportConsumer consumer for the XML report generated
+     * @param consumer consumer for the XML report generated
      *        by this object. May be null.
      */
     public XMLTestReportProcessor(XMLTestReportProcessor.XMLReportConsumer consumer){

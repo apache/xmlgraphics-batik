@@ -376,18 +376,6 @@ public class SVG12BridgeContext extends BridgeContext {
         }
     }
 
-    /** 
-     * This function creates a new BridgeContext, it mostly
-     * exists so subclasses can provide an instance of 
-     * themselves when a sub BridgeContext is needed.
-     */
-    public BridgeContext createBridgeContext(SVGOMDocument doc) {
-        if (doc.isSVG12()) {
-            return new SVG12BridgeContext(getUserAgent(), getDocumentLoader());
-        }
-        return new BridgeContext(getUserAgent(), getDocumentLoader());
-    }
-
     public BridgeContext createSubBridgeContext(SVGOMDocument newDoc) {
         CSSEngine eng = newDoc.getCSSEngine();
         if (eng != null) {

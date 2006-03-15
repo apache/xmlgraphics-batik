@@ -41,18 +41,6 @@ import org.w3c.dom.Document;
  */
 public class InterpreterPool {
 
-    /** The InterpreterFactory classname for Rhino. */
-    private static final String RHINO =
-        "org.apache.batik.script.rhino.RhinoInterpreterFactory";
-
-    /** The InterpreterFactory classname for JPython. */
-    private static final String JPYTHON =
-        "org.apache.batik.script.jpython.JPythonInterpreterFactory";
-
-    /** The InterpreterFactory classname for Jacl. */
-    private static final String JACL =
-        "org.apache.batik.script.jacl.JaclInterpreterFactory";
-
     /**
      * Name of the "document" object when referenced by scripts
      */
@@ -130,4 +118,3 @@ public class InterpreterPool {
         factories.remove(language);
     }
 }
-

@@ -17,6 +17,7 @@
  */
 package org.apache.batik.swing.gvt;
 
+import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 

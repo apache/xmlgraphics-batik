@@ -29,9 +29,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.batik.dom.svg.SVGSVGContext;
 import org.apache.batik.dom.svg.SVGContext;
 import org.apache.batik.dom.svg.SVGOMElement;
+import org.apache.batik.dom.svg.SVGSVGContext;
 import org.apache.batik.ext.awt.image.renderable.ClipRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.gvt.CanvasGraphicsNode;
@@ -39,16 +39,13 @@ import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.ShapeNode;
 import org.apache.batik.gvt.TextNode;
-import org.apache.batik.gvt.font.GVTGlyphVector;
-import org.apache.batik.gvt.renderer.StrokingTextPainter;
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
-import org.apache.batik.gvt.text.TextSpanLayout;
 import org.apache.batik.util.SVGConstants;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.events.MutationEvent;
 import org.w3c.dom.svg.SVGDocument;
-import org.w3c.dom.svg.SVGSVGElement;
 import org.w3c.dom.svg.SVGRect;
 
 /**

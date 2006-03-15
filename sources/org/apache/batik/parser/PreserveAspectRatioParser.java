@@ -394,7 +394,6 @@ public class PreserveAspectRatioParser extends AbstractParser {
 
     /**
      * Skips characters in the given reader until a white space is encountered.
-     * @return the first character after the space.
      */
     protected void skipIdentifier() throws IOException {
 	loop: for (;;) {

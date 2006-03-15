@@ -59,18 +59,13 @@ public class DefaultTestSuiteReport implements TestSuiteReport {
     /**
      * Descriptions in addition to that coming from children.
      */
-    protected Entry[] description = null;
+    protected Entry[] description;
 
     /**
      * Parent report in case this report is part of a bigger one.
      */
     protected TestSuiteReport parent;
 
-    /**
-     * Status of the TestSuite
-     */
-    private boolean passed = true;
-    
     public DefaultTestSuiteReport(TestSuite testSuite){
         if(testSuite == null){
             throw new IllegalArgumentException();

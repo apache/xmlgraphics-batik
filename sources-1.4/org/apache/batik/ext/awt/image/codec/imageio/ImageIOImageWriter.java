@@ -56,14 +56,14 @@ public class ImageIOImageWriter implements ImageWriter, IIOWriteWarningListener 
     }
     
     /**
-     * @see org.apache.batik.ext.awt.image.util.ImageWriter#writeImage(java.awt.image.RenderedImage, java.io.OutputStream)
+     * @see ImageWriter#writeImage(java.awt.image.RenderedImage, java.io.OutputStream)
      */
     public void writeImage(RenderedImage image, OutputStream out) throws IOException {
         writeImage(image, out, null);
     }
 
     /**
-     * @see org.apache.batik.ext.awt.image.util.ImageWriter#writeImage(java.awt.image.RenderedImage, java.io.OutputStream, org.apache.batik.ext.awt.image.util.ImageWriterParams)
+     * @see ImageWriter#writeImage(java.awt.image.RenderedImage, java.io.OutputStream, ImageWriterParams)
      */
     public void writeImage(RenderedImage image, OutputStream out, 
             ImageWriterParams params) 
@@ -179,7 +179,7 @@ public class ImageIOImageWriter implements ImageWriter, IIOWriteWarningListener 
     }
 
     /**
-     * @see org.apache.batik.ext.awt.image.util.ImageWriter#getMIMEType()
+     * @see ImageWriter#getMIMEType()
      */
     public String getMIMEType() {
         return this.targetMIME;
@@ -193,5 +193,4 @@ public class ImageIOImageWriter implements ImageWriter, IIOWriteWarningListener 
         System.err.println("Problem while writing image using ImageI/O: " 
                 + warning);
     }
-
 }

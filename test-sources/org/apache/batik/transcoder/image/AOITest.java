@@ -51,7 +51,7 @@ public class AOITest extends AbstractImageTranscoderTest {
      * Constructs a new <tt>AOITest</tt>.
      *
      * @param inputURI the URI of the input image
-     * @param the URI of the reference image
+     * @param refImageURI the URI of the reference image
      * @param x the x coordinate of the area of interest
      * @param y the y coordinate of the area of interest
      * @param width the width of the area of interest
@@ -77,7 +77,7 @@ public class AOITest extends AbstractImageTranscoderTest {
      * Constructs a new <tt>AOITest</tt>.
      *
      * @param inputURI the URI of the input image
-     * @param the URI of the reference image
+     * @param refImageURI the URI of the reference image
      * @param x the x coordinate of the area of interest
      * @param y the y coordinate of the area of interest
      * @param width the width of the area of interest

@@ -43,7 +43,7 @@ public class AlternateStylesheetTest extends AbstractImageTranscoderTest {
      * Constructs a new <tt>AlternateStylesheetTest</tt>.
      *
      * @param inputURI the URI of the input image
-     * @param the URI of the reference image
+     * @param refImageURI the URI of the reference image
      * @param alternateStylesheet the alternate stylesheet CSS media
      */
     public AlternateStylesheetTest(String inputURI, 

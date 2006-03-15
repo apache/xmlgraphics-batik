@@ -18,10 +18,6 @@
 
 package org.apache.batik.transcoder.wmf;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -34,15 +30,16 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
 
-import org.apache.batik.util.SVGConstants;
 import org.apache.batik.test.AbstractTest;
 import org.apache.batik.test.DefaultTestReport;
 import org.apache.batik.test.TestReport;
-
-import org.apache.batik.transcoder.wmf.tosvg.WMFTranscoder;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
+import org.apache.batik.transcoder.wmf.tosvg.WMFTranscoder;
+import org.apache.batik.util.SVGConstants;
 
 /**
  * This test validates that a given WMF file is properly converted to
@@ -169,14 +166,6 @@ public class WMFAccuracyTest extends AbstractTest
         return ret;
     }
 
-    /**
-     * Constructor
-     * @param painter the <tt>Painter</tt> object which will
-     *        perform an arbitrary rendering sequence.
-     * @param refURL the location of a reference SVG which
-     *        should be exactly identical to that generated
-     *        by the painter.
-     */
     public WMFAccuracyTest(){
     }
 

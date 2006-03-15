@@ -164,7 +164,7 @@ public class DefaultGraphics2D extends AbstractGraphics2D {
      * @see         java.awt.Component#paint
      * @see         java.awt.Component#update
      * @see         java.awt.Component#getGraphics
-     * @see         java.awt.Graphics#create
+     * @see         java.awt.Graphics#create()
      */
     public void dispose(){
         System.out.println("dispose");
@@ -177,14 +177,12 @@ public class DefaultGraphics2D extends AbstractGraphics2D {
      * <code>Paint</code>, <code>Composite</code> and
      * <code>Stroke</code> attributes.
      * @param s the <code>Shape</code> to be rendered
-     * @see #setStroke
-     * @see #setPaint
+     * @see #setStroke(java.awt.Stroke)
+     * @see #setPaint(java.awt.Paint)
      * @see java.awt.Graphics#setColor
-     * @see #transform
-     * @see #setTransform
-     * @see #clip
-     * @see #setClip
-     * @see #setComposite
+     * @see #setTransform(AffineTransform)
+     * @see #setClip(Shape)
+     * @see #setComposite(java.awt.Composite)
      */
     public void draw(Shape s){
         System.out.println("draw(Shape)");
@@ -204,11 +202,9 @@ public class DefaultGraphics2D extends AbstractGraphics2D {
      * noninvertible.
      * @param img the image to be rendered
      * @param xform the transformation from image space into user space
-     * @see #transform
-     * @see #setTransform
-     * @see #setComposite
-     * @see #clip
-     * @see #setClip
+     * @see #setTransform(AffineTransform)
+     * @see #setComposite(java.awt.Composite)
+     * @see #setClip(Shape)
      */
     public void drawRenderedImage(RenderedImage img,
                                   AffineTransform xform) {
@@ -239,11 +235,9 @@ public class DefaultGraphics2D extends AbstractGraphics2D {
      *{@link #drawRenderedImage(RenderedImage, AffineTransform) drawRenderedImage}.
      * @param img the image to be rendered
      * @param xform the transformation from image space into user space
-     * @see #transform
-     * @see #setTransform
-     * @see #setComposite
-     * @see #clip
-     * @see #setClip
+     * @see #setTransform(AffineTransform)
+     * @see #setComposite(java.awt.Composite)
+     * @see #setClip(Shape)
      * @see #drawRenderedImage
      */
      public void drawRenderableImage(RenderableImage img,
@@ -268,12 +262,12 @@ public class DefaultGraphics2D extends AbstractGraphics2D {
      *          rendered
      * @param y the y coordinate where the <code>String</code> should be
      *          rendered
-     * @see #setPaint
+     * @see #setPaint(java.awt.Paint)
      * @see java.awt.Graphics#setColor
      * @see java.awt.Graphics#setFont
-     * @see #setTransform
-     * @see #setComposite
-     * @see #setClip
+     * @see #setTransform(AffineTransform)
+     * @see #setComposite(java.awt.Composite)
+     * @see #setClip(Shape)
      */
     public void drawString(String s, float x, float y){
         System.out.println("drawString(String)");
@@ -296,11 +290,11 @@ public class DefaultGraphics2D extends AbstractGraphics2D {
      * @param iterator the iterator whose text is to be rendered
      * @param x the x coordinate where the iterator's text is to be rendered
      * @param y the y coordinate where the iterator's text is to be rendered
-     * @see #setPaint
+     * @see #setPaint(java.awt.Paint)
      * @see java.awt.Graphics#setColor
-     * @see #setTransform
-     * @see #setComposite
-     * @see #setClip
+     * @see #setTransform(AffineTransform)
+     * @see #setComposite(java.awt.Composite)
+     * @see #setClip(Shape)
      */
      public void drawString(AttributedCharacterIterator iterator,
                             float x, float y) {
@@ -315,13 +309,11 @@ public class DefaultGraphics2D extends AbstractGraphics2D {
      * include the <code>Clip</code>, <code>Transform</code>,
      * <code>Paint</code>, and <code>Composite</code>.
      * @param s the <code>Shape</code> to be filled
-     * @see #setPaint
+     * @see #setPaint(java.awt.Paint)
      * @see java.awt.Graphics#setColor
-     * @see #transform
-     * @see #setTransform
-     * @see #setComposite
-     * @see #clip
-     * @see #setClip
+     * @see #setTransform(AffineTransform)
+     * @see #setComposite(java.awt.Composite)
+     * @see #setClip(Shape)
      */
     public void fill(Shape s){
         System.err.println("fill");

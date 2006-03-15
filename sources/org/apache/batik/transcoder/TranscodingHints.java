@@ -81,7 +81,7 @@ public class TranscodingHints extends HashMap {
      *
      * @param key the trancoding hint key.
      * @param value the trancoding hint value.
-     * @exception <tt>IllegalArgumentException</tt> value is not
+     * @exception IllegalArgumentException value is not
      * appropriate for the specified key.
      * @exception ClassCastException key is not of type
      * <tt>TranscodingHints.Key</tt>

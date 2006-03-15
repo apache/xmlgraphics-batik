@@ -22,6 +22,7 @@ import java.io.DataInputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UTFDataFormatException;
 
 /**
  * An abstract subclass of <code>java.io.InputStream</code> that allows seeking

@@ -286,13 +286,10 @@ public class XBLEventSupport extends EventSupport {
         Object evts = getRetargettedEvents(target, ancestors, e, isCustom);
         CustomEvent[] ces = null;
         AbstractEvent[] aevts = null;
-        boolean someEvents;
         if (isCustom) {
             ces = (CustomEvent[]) evts;
-            someEvents = ces.length > 0;
         } else {
             aevts = (AbstractEvent[]) evts;
-            someEvents = aevts.length > 0;
         }
         boolean preventDefault = false;
         // CAPTURING_PHASE : fire event listeners from top to EventTarget

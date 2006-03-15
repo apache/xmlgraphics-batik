@@ -46,8 +46,6 @@ public abstract class SwingSVGPrettyPrint implements SVGSyntax {
     /**
      * @param cmp Swing component to be converted to SVG
      * @param svgGen SVGraphics2D to use to paint Swing components
-     * @return an SVG fragment containing an SVG equivalent of the Swing
-     *         component tree.
      */
     public static void print(JComponent cmp, SVGGraphics2D svgGen) {
         if ((cmp instanceof JComboBox) || (cmp instanceof JScrollBar)) {

@@ -22,7 +22,6 @@ import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 
-import org.apache.batik.css.engine.CSSEngine;
 import org.apache.batik.dom.events.NodeEventTarget;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.svg.SVGOMUseElement;
@@ -122,7 +121,6 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
         BridgeContext theCtx = ctx;
         subCtx = null;
         if (!isLocal) {
-            CSSEngine eng = refDocument.getCSSEngine();
             subCtx = (BridgeContext)refDocument.getCSSEngine().getCSSContext();
             theCtx = subCtx;
         }

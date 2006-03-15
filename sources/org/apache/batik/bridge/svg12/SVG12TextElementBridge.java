@@ -25,7 +25,6 @@ import org.apache.batik.dom.svg12.XBLEventSupport;
 import org.apache.batik.dom.events.EventSupport;
 import org.apache.batik.dom.events.NodeEventTarget;
 import org.apache.batik.dom.xbl.NodeXBL;
-import org.apache.batik.dom.xbl.ShadowTreeEvent;
 import org.apache.batik.util.XMLConstants;
 
 import org.w3c.dom.Element;

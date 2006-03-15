@@ -25,7 +25,6 @@
     <test id="samples/anne.svg" />
     <test id="samples/tests/spec/scripting/memoryLeak1.svg"/>
     <test id="samples/tests/spec/scripting/primaryDoc.svg"/>
-    <test id="samples/tests/spec/scripting/resourceDocDynamic11.svg"/>
   </testGroup>
 
   <!--test id="NullURITest" 

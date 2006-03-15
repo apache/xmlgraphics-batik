@@ -81,16 +81,15 @@ public abstract class AbstractGraphics2D extends Graphics2D implements Cloneable
      *        convertion. No text is output.
      *
      */
-    public AbstractGraphics2D(boolean textAsShapes){
+    public AbstractGraphics2D(boolean textAsShapes) {
         this.textAsShapes = textAsShapes;
     }
 
     /**
-     * This private constructor is used in create
-     *
-     * @see #create
+     * Creates a new AbstractGraphics2D from an existing instance.
+     * @param g the AbstractGraphics2D whose properties should be copied
      */
-    public AbstractGraphics2D(AbstractGraphics2D g){
+    public AbstractGraphics2D(AbstractGraphics2D g) {
         this.gc = (GraphicContext)g.gc.clone();
         this.gc.validateTransformStack();
         this.textAsShapes = g.textAsShapes;
@@ -240,8 +239,8 @@ public abstract class AbstractGraphics2D extends Graphics2D implements Cloneable
      * @return      a <code>Shape</code> object representing the
      *              current clipping area, or <code>null</code> if
      *              no clip is set.
-     * @see         java.awt.Graphics#getClipBounds
-     * @see         java.awt.Graphics#clipRect
+     * @see         java.awt.Graphics#getClipBounds()
+     * @see         java.awt.Graphics#clipRect(int, int, int, int)
      * @see         java.awt.Graphics#setClip(int, int, int, int)
      * @see         java.awt.Graphics#setClip(Shape)
      * @since       JDK1.1
@@ -557,7 +556,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements Cloneable
      * @param        xPoints   a an array of <code>x</code> coordinates.
      * @param        yPoints   a an array of <code>y</code> coordinates.
      * @param        nPoints   a the total number of points.
-     * @see          java.awt.Graphics#fillPolygon
+     * @see          java.awt.Graphics#fillPolygon(int[],int[],int)
      * @see          java.awt.Graphics#drawPolyline
      */
     public void drawPolygon(int xPoints[], int yPoints[],
@@ -866,7 +865,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements Cloneable
      * @see #setTransform
      * @see #setComposite
      * @see #clip
-     * @see #setClip
+     * @see #setClip(Shape)
      */
     public boolean drawImage(Image img,
                              AffineTransform xform,
@@ -918,7 +917,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements Cloneable
      * @see #setTransform
      * @see #setComposite
      * @see #clip
-     * @see #setClip
+     * @see #setClip(Shape)
      */
     public void drawImage(BufferedImage img,
                           BufferedImageOp op,
@@ -948,13 +947,13 @@ public abstract class AbstractGraphics2D extends Graphics2D implements Cloneable
      * @param y the y position in user space where the glyphs should be
      *        rendered
      *
-     * @see java.awt.Font#createGlyphVector
+     * @see java.awt.Font#createGlyphVector(FontRenderContext, char[])
      * @see java.awt.font.GlyphVector
      * @see #setPaint
      * @see java.awt.Graphics#setColor
      * @see #setTransform
      * @see #setComposite
-     * @see #setClip
+     * @see #setClip(Shape)
      */
     public void drawGlyphVector(GlyphVector g, float x, float y){
         Shape glyphOutline = g.getOutline(x, y);
@@ -983,12 +982,12 @@ public abstract class AbstractGraphics2D extends Graphics2D implements Cloneable
      * @return <code>true</code> if there is a hit; <code>false</code>
      * otherwise.
      * @see #setStroke
-     * @see #fill
-     * @see #draw
+     * @see #fill(Shape)
+     * @see #draw(Shape)
      * @see #transform
      * @see #setTransform
      * @see #clip
-     * @see #setClip
+     * @see #setClip(Shape)
      */
     public boolean hit(Rectangle rect,
                        Shape s,
@@ -1016,12 +1015,12 @@ public abstract class AbstractGraphics2D extends Graphics2D implements Cloneable
      * there is a security manager, its <code>checkPermission</code>
      * method is called with an <code>AWTPermission("readDisplayPixels")</code>
      * permission.
+     * @param comp the <code>Composite</code> object to be used for rendering
      * @throws SecurityException
      *         if a custom <code>Composite</code> object is being
      *         used to render to the screen and a security manager
      *         is set and its <code>checkPermission</code> method
      *         does not allow the operation.
-     * @param comp the <code>Composite</code> object to be used for rendering
      * @see java.awt.Graphics#setXORMode
      * @see java.awt.Graphics#setPaintMode
      * @see java.awt.AlphaComposite
@@ -1410,7 +1409,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements Cloneable
      *
      * @return a reference to an instance of FontRenderContext.
      * @see java.awt.font.FontRenderContext
-     * @see java.awt.Font#createGlyphVector
+     * @see java.awt.Font#createGlyphVector(FontRenderContext,char[])
      * @see java.awt.font.TextLayout
      * @since     JDK1.2
      */

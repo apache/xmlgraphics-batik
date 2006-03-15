@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import org.apache.batik.ext.awt.image.spi.ImageWriter;
-import org.apache.batik.ext.awt.image.spi.ImageWriterParams;
 import org.apache.batik.ext.awt.image.spi.ImageWriterRegistry;
 
 /**
@@ -60,7 +59,6 @@ public class CachedImageHandlerPNGEncoder extends DefaultCachedImageHandler {
             throws IOException {
         ImageWriter writer = ImageWriterRegistry.getInstance()
             .getWriterFor("image/png");
-        ImageWriterParams params = new ImageWriterParams();
         writer.writeImage(buf, os);
     }
 

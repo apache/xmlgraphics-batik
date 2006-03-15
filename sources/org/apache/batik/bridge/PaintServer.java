@@ -24,7 +24,6 @@ import java.awt.Shape;
 import java.awt.Stroke;
 
 import org.apache.batik.css.engine.SVGCSSEngine;
-import org.apache.batik.css.engine.value.ListValue;
 import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.css.engine.value.svg.ICCColor;
 import org.apache.batik.ext.awt.color.ICCColorSpaceExt;

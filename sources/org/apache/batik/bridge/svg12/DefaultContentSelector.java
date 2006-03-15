@@ -17,7 +17,6 @@
  */
 package org.apache.batik.bridge.svg12;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import org.apache.batik.dom.svg12.XBLOMContentElement;
@@ -126,7 +125,6 @@ public class DefaultContentSelector extends AbstractContentSelector {
 
         /**
          * <b>DOM</b>: Implements {@link org.w3c.dom.NodeList#getLength()}.
-         * @return {@link #children}.
          */
         public int getLength() {
             return nodes.size();

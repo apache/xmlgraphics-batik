@@ -30,6 +30,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.MissingResourceException;
 
 import org.apache.batik.bridge.InterruptedBridgeException;
 import org.apache.batik.script.Interpreter;

@@ -18,13 +18,9 @@
 package org.apache.batik.gvt.text;
 
 import java.awt.Shape;
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
-import java.text.CharacterIterator;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -52,9 +48,6 @@ public class ConcreteTextSelector implements Selector {
     private ArrayList listeners;
     private GraphicsNode selectionNode;
     private RootGraphicsNode selectionNodeRoot;
-    private GraphicsNode currentNode;
-    private int firstHit;
-    private int lastHit;
 
     public ConcreteTextSelector() {
     }
@@ -68,13 +61,11 @@ public class ConcreteTextSelector implements Selector {
     }
 
     public void mouseEntered(GraphicsNodeMouseEvent evt) {
-        currentNode = evt.getGraphicsNode();
         checkSelectGesture(evt);
     }
 
     public void mouseExited(GraphicsNodeMouseEvent evt) {
         checkSelectGesture(evt);
-        currentNode = null;
     }
 
     public void mouseMoved(GraphicsNodeMouseEvent evt) {

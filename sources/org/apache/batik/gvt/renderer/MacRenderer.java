@@ -17,17 +17,16 @@
  */
 package org.apache.batik.gvt.renderer;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
-import java.awt.Graphics2D;
-import java.awt.AlphaComposite;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.GeneralPath;
 import java.awt.image.BufferedImage;
-import java.util.Iterator;
 import java.util.Collection;
+import java.util.Iterator;
 
 import org.apache.batik.ext.awt.geom.RectListManager;
 import org.apache.batik.ext.awt.image.GraphicsUtil;

@@ -165,14 +165,11 @@ class ClipKey {
     }
 
     /**
-     * @param object to compare
+     * @param clipKey object to compare
      * @return true if equal, false otherwise
      */
-    public boolean equals(Object clipKey){
-        boolean isEqual = false;
-        if((clipKey != null) &&clipKey instanceof ClipKey)
-            isEqual = (hashCodeValue == ((ClipKey)clipKey).hashCodeValue);
-
-        return isEqual;
+    public boolean equals(Object clipKey) {
+        return clipKey instanceof ClipKey
+            && hashCodeValue == ((ClipKey) clipKey).hashCodeValue;
     }
 }

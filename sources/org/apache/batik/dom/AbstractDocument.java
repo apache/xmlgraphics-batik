@@ -43,14 +43,14 @@ import org.apache.batik.util.CleanerThread;
 import org.apache.batik.util.DOMConstants;
 import org.apache.batik.util.SoftDoublyIndexedTable;
 import org.apache.batik.util.XMLConstants;
+
 import org.apache.xml.utils.PrefixResolver;
+
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
 
 import org.w3c.dom.Attr;
-import org.w3c.dom.Document;
-import org.w3c.dom.DocumentType;
 import org.w3c.dom.DOMConfiguration;
 import org.w3c.dom.DOMError;
 import org.w3c.dom.DOMErrorHandler;
@@ -58,19 +58,20 @@ import org.w3c.dom.DOMException;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.DOMLocator;
 import org.w3c.dom.DOMStringList;
+import org.w3c.dom.Document;
+import org.w3c.dom.DocumentType;
 import org.w3c.dom.Element;
-import org.w3c.dom.events.DocumentEvent;
-import org.w3c.dom.events.Event;
-import org.w3c.dom.events.MutationNameEvent;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
+import org.w3c.dom.UserDataHandler;
+import org.w3c.dom.events.DocumentEvent;
+import org.w3c.dom.events.Event;
+import org.w3c.dom.events.MutationNameEvent;
 import org.w3c.dom.traversal.DocumentTraversal;
 import org.w3c.dom.traversal.NodeFilter;
 import org.w3c.dom.traversal.NodeIterator;
 import org.w3c.dom.traversal.TreeWalker;
-import org.w3c.dom.UserDataHandler;
 import org.w3c.dom.xpath.XPathEvaluator;
 import org.w3c.dom.xpath.XPathException;
 import org.w3c.dom.xpath.XPathExpression;
@@ -1259,7 +1260,7 @@ public abstract class AbstractDocument
     }
 
     /**
-     * Helper function for {@link normalizeDocument()}.
+     * Helper function for {@link #normalizeDocument()}.
      */
     protected boolean normalizeDocument(Element e,
                                         boolean cdataSections,
@@ -1355,7 +1356,6 @@ public abstract class AbstractDocument
                     toRemove.add(a);
                 } else {
                     // namespace normalization
-                    boolean def = a.getNodeName().equals(XMLConstants.XMLNS_PREFIX);
                     String ns = a.getNodeValue();
                     if (a.getNodeValue().equals(XMLConstants.XMLNS_NAMESPACE_URI)
                             || !ns.equals(XMLConstants.XMLNS_NAMESPACE_URI)) {
@@ -1648,16 +1648,13 @@ public abstract class AbstractDocument
     protected boolean checkChars(String s) {
         int len = s.length();
         if (xmlVersion.equals(XMLConstants.XML_VERSION_11)) {
-            char c;
             for (int i = 0; i < len; i++) {
-                c = s.charAt(i);
                 if (!DOMUtilities.isXML11Character(s.charAt(i))) {
                     return false;
                 }
             }
         } else {
             // assume XML 1.0
-            char c;
             for (int i = 0; i < len; i++) {
                 if (!DOMUtilities.isXMLCharacter(s.charAt(i))) {
                     return false;
@@ -2583,7 +2580,7 @@ public abstract class AbstractDocument
 
         /**
          * <b>DOM</b>: Implements
-         * {@link org.w3c.dom.xpath.XPathNSResolver.lookupNamespaceURI(String)}.
+         * {@link org.w3c.dom.xpath.XPathNSResolver#lookupNamespaceURI(String)}.
          */
         public String lookupNamespaceURI(String prefix) {
             return ((AbstractNode) contextNode).lookupNamespaceURI(prefix);

@@ -47,7 +47,7 @@ public class DimensionTest extends AbstractImageTranscoderTest {
      * Constructs a new <tt>DimensionTest</tt>.
      *
      * @param inputURI the URI of the input image
-     * @param the URI of the reference image
+     * @param refImageURI the URI of the reference image
      * @param width the image width
      * @param height the image height
      */

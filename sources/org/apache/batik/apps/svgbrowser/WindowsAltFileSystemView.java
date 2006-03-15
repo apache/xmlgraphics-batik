@@ -19,7 +19,6 @@ package org.apache.batik.apps.svgbrowser;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.util.Vector;
 
 import javax.swing.filechooser.FileSystemView;
@@ -61,12 +60,6 @@ class WindowsAltFileSystemView extends FileSystemView {
     public static final String FLOPPY_DRIVE = 
         "AltFileSystemView.floppy.drive";
 
-    private static final Object[] noArgs = {};
-    private static final Class[] noArgTypes = {};
-    
-    private static Method listRootsMethod = null;
-    private static boolean listRootsMethodChecked = false;
-    
     /**
      * Returns true if the given file is a root.
      */

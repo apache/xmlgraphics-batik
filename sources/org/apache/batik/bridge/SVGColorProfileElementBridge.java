@@ -21,7 +21,6 @@ import java.awt.color.ICC_Profile;
 import java.io.IOException;
 
 import org.apache.batik.dom.AbstractNode;
-import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.ext.awt.color.ICCColorSpaceExt;
 import org.apache.batik.ext.awt.color.NamedProfileCache;

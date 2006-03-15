@@ -41,7 +41,7 @@ public class InputStreamTest extends AbstractImageTranscoderTest {
      * Constructs a new <tt>InputStreamTest</tt>.
      *
      * @param inputURI the URI of the input image
-     * @param the URI of the reference image
+     * @param refImageURI the URI of the reference image
      */
     public InputStreamTest(String inputURI, String refImageURI) {
 	this.inputURI = inputURI;
