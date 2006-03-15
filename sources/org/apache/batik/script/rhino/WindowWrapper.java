@@ -1,6 +1,6 @@
 /*
 
-   Copyright 1999-2003  The Apache Software Foundation 
+   Copyright 1999-2003,2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -360,22 +360,29 @@ public class WindowWrapper extends ImporterTopLevel {
         int len = args.length;
         WindowWrapper ww = (WindowWrapper)thisObj;
         Window window = ww.window;
-        switch (len) {
-        case 0:
-            return Context.toObject("", thisObj);
-
-        case 1:
-            String message =
-                (String)Context.toType(args[0], String.class);
-            return Context.toObject(window.prompt(message), thisObj);
-
-        default:
-            message =
-                (String)Context.toType(args[0], String.class);
-            String defVal =
-                (String)Context.toType(args[1], String.class);
-            return Context.toObject(window.prompt(message, defVal), thisObj);
+        Object result;
+        switch (args.length) {
+            case 0:
+                result = "";
+                break;
+            case 1:
+                String message =
+                    (String)Context.toType(args[0], String.class);
+                result = window.prompt(message);
+                break;
+            default:
+                message =
+                    (String)Context.toType(args[0], String.class);
+                String defVal =
+                    (String)Context.toType(args[1], String.class);
+                result = window.prompt(message, defVal);
+                break;
         }
+
+        if (result == null) {
+            return null;
+        }
+        return Context.toObject(result, thisObj);
     }
 
     /**
