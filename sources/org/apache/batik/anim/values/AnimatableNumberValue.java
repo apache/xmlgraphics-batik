@@ -10,6 +10,13 @@ public class AnimatableNumberValue extends AnimatableValue {
     protected float value;
 
     /**
+     * Creates a new, uninitialized AnimatableNumberValue.
+     */
+    protected AnimatableNumberValue(AnimationTarget target) {
+        super(target);
+    }
+    
+    /**
      * Creates a new AnimatableNumberValue.
      */
     public AnimatableNumberValue(AnimationTarget target, float v) {
@@ -20,19 +27,28 @@ public class AnimatableNumberValue extends AnimatableValue {
     /**
      * Performs interpolation to the given value.
      */
-    public AnimatableValue interpolate(AnimatableValue to,
+    public AnimatableValue interpolate(AnimatableValue result,
+                                       AnimatableValue to,
                                        float interpolation,
                                        AnimatableValue accumulation) {
         float v = value;
         if (to != null) {
             AnimatableNumberValue toNumber = (AnimatableNumberValue) to;
-            v += value + interpolation * (toNumber.getValue() - value);
+            v += value + interpolation * (toNumber.value - value);
         }
         if (accumulation != null) {
             AnimatableNumberValue accNumber = (AnimatableNumberValue) accumulation;
-            v += accNumber.getValue();
+            v += accNumber.value;
         }
-        return new AnimatableNumberValue(target, v);
+        
+        AnimatableNumberValue res;
+        if (result == null) {
+            res = new AnimatableNumberValue(target);
+        } else {
+            res = (AnimatableNumberValue) result;
+        }
+        res.value = v;
+        return res;
     }
 
     /**
@@ -47,5 +63,12 @@ public class AnimatableNumberValue extends AnimatableValue {
      */
     public AnimatableValue getZeroValue() {
         return new AnimatableNumberValue(target, 0);
+    }
+
+    /**
+     * Returns the CSS text representation of the value.
+     */
+    public String getCssText() {
+        return Float.toString(value);
     }
 }

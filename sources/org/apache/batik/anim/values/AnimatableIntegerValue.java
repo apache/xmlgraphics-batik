@@ -10,6 +10,13 @@ public class AnimatableIntegerValue extends AnimatableValue {
     protected int value;
 
     /**
+     * Creates a new, uninitialized AnimatableIntegerValue.
+     */
+    protected AnimatableIntegerValue(AnimationTarget target) {
+        super(target);
+    }
+
+    /**
      * Creates a new AnimatableIntegerValue.
      */
     public AnimatableIntegerValue(AnimationTarget target, int v) {
@@ -20,7 +27,8 @@ public class AnimatableIntegerValue extends AnimatableValue {
     /**
      * Performs interpolation to the given value.
      */
-    public AnimatableValue interpolate(AnimatableValue to,
+    public AnimatableValue interpolate(AnimatableValue result,
+                                       AnimatableValue to,
                                        float interpolation,
                                        AnimatableValue accumulation) {
         int v = value;
@@ -32,7 +40,15 @@ public class AnimatableIntegerValue extends AnimatableValue {
             AnimatableIntegerValue accInteger = (AnimatableIntegerValue) accumulation;
             v += accInteger.getValue();
         }
-        return new AnimatableIntegerValue(target, v);
+        
+        AnimatableIntegerValue res;
+        if (result == null) {
+            res = new AnimatableIntegerValue(target);
+        } else {
+            res = (AnimatableIntegerValue) result;
+        }
+        res.value = v;
+        return res;
     }
 
     /**
@@ -47,5 +63,12 @@ public class AnimatableIntegerValue extends AnimatableValue {
      */
     public AnimatableValue getZeroValue() {
         return new AnimatableIntegerValue(target, 0);
+    }
+
+    /**
+     * Returns the CSS text representation of the value.
+     */
+    public String getCssText() {
+        return Integer.toString(value);
     }
 }

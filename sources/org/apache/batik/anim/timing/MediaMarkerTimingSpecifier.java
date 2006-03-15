@@ -17,8 +17,6 @@
  */
 package org.apache.batik.anim.timing;
 
-import java.util.Calendar;
-
 /**
  * A class to handle media marker SMIL timing specifiers.  This class
  * of timing specifier is currently unused.

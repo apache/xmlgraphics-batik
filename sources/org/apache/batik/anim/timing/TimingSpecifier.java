@@ -17,15 +17,6 @@
  */
 package org.apache.batik.anim.timing;
 
-import java.io.IOException;
-import java.util.Calendar;
-import java.util.TimeZone;
-import java.util.SimpleTimeZone;
-
-import org.apache.batik.parser.ParseException;
-
-import org.w3c.dom.events.EventTarget;
-
 /**
  * An abstract class for SMIL timing specifiers.
  *

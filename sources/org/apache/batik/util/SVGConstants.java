@@ -374,6 +374,7 @@ public interface SVGConstants extends CSSConstants {
     /////////////////////////////////////////////////////////////////////////
 
     String SVG_ACCENT_HEIGHT_ATTRIBUTE = "accent-height";
+    String SVG_ADDITIVE_ATTRIBUTE = "additive";
     String SVG_AMPLITUDE_ATTRIBUTE = "amplitude";
     String SVG_ARABIC_FORM_ATTRIBUTE = "arabic-form";
     String SVG_ASCENT_ATTRIBUTE = "ascent";

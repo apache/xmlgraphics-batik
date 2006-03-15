@@ -38,7 +38,7 @@ public class TimingSpecifierParser extends TimingParser {
      * Creates a new TimingSpecifierParser.
      * @param useSVG11AccessKeys allows the use of accessKey() timing
      *                           specifiers with a single character
-     * @param useSVG12Accesskeys allows the use of accessKey() with a
+     * @param useSVG12AccessKeys allows the use of accessKey() with a
      *                           DOM 3 key name
      */
     public TimingSpecifierParser(boolean useSVG11AccessKeys,

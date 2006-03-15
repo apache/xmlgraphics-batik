@@ -19,7 +19,6 @@ package org.apache.batik.parser;
 
 import java.io.IOException;
 import java.util.Calendar;
-import java.util.TimeZone;
 import java.util.SimpleTimeZone;
 
 import org.apache.batik.xml.XMLUtilities;
@@ -59,7 +58,7 @@ public abstract class TimingParser extends AbstractParser {
      * Creates a new TimingParser.
      * @param useSVG11AccessKeys allows the use of accessKey() timing
      *                           specifiers with a single character
-     * @param useSVG12Accesskeys allows the use of accessKey() with a
+     * @param useSVG12AccessKeys allows the use of accessKey() with a
      *                           DOM 3 key name
      */
     public TimingParser(boolean useSVG11AccessKeys,

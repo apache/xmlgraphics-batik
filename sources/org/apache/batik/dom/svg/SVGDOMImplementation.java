@@ -26,24 +26,19 @@ import org.apache.batik.css.engine.SVGCSSEngine;
 import org.apache.batik.css.engine.value.ShorthandManager;
 import org.apache.batik.css.engine.value.ValueManager;
 import org.apache.batik.css.parser.ExtendedParser;
-import org.apache.batik.css.parser.ExtendedParserWrapper;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.AbstractStylableDocument;
 import org.apache.batik.dom.ExtensibleDOMImplementation;
 import org.apache.batik.dom.GenericDocumentType;
-import org.apache.batik.dom.GenericElement;
-import org.apache.batik.dom.GenericElementNS;
-import org.apache.batik.dom.StyleSheetFactory;
+import org.apache.batik.dom.events.DOMTimeEvent;
 import org.apache.batik.dom.events.DocumentEventSupport;
 import org.apache.batik.dom.util.CSSStyleDeclarationFactory;
 import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.dom.util.HashTable;
 import org.apache.batik.i18n.LocalizableSupport;
 import org.apache.batik.util.SVGConstants;
-import org.apache.batik.util.XMLResourceDescriptor;
 
 import org.w3c.css.sac.InputSource;
-import org.w3c.css.sac.Parser;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
@@ -225,6 +220,12 @@ public class SVGDOMImplementation
                                     new DocumentEventSupport.EventFactory() {
                                             public Event createEvent() {
                                                 return new SVGOMEvent();
+                                            }
+                                        });
+        result.registerEventFactory("TimeEvent",
+                                    new DocumentEventSupport.EventFactory() {
+                                            public Event createEvent() {
+                                                return new DOMTimeEvent();
                                             }
                                         });
         return result;

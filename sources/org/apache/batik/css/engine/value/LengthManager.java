@@ -34,7 +34,7 @@ import org.w3c.dom.css.CSSValue;
  * @version $Id$
  */
 public abstract class LengthManager extends AbstractValueManager {
-    
+
     /**
      * Implements {@link ValueManager#createValue(LexicalUnit,CSSEngine)}.
      */

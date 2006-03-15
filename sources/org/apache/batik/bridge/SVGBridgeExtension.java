@@ -148,7 +148,7 @@ public class SVGBridgeExtension implements BridgeExtension {
         ctx.putBridge(new SVGUseElementBridge());
         ctx.putBridge(new SVGVKernElementBridge());
         ctx.putBridge(new SVGSetElementBridge());
-        System.err.println("added");
+        ctx.putBridge(new SVGAnimateElementBridge());
     }
 
     /**
@@ -166,7 +166,7 @@ public class SVGBridgeExtension implements BridgeExtension {
         String ln = e.getLocalName();
         if (ln.equals(SVGConstants.SVG_SCRIPT_TAG)
                 || ln.startsWith("animate")
-                || ln.equals("set")) {
+                || ln.equals(SVGConstants.SVG_SET_TAG)) {
             return true;
         }
         return false;

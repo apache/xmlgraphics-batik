@@ -17,13 +17,10 @@
  */
 package org.apache.batik.dom.svg;
 
-import java.util.Calendar;
-
-import org.apache.batik.anim.timing.TimedElement;
+// import org.apache.batik.anim.timing.TimedElement;
 import org.apache.batik.dom.AbstractDocument;
 
 import org.w3c.dom.DOMException;
-import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.svg.SVGAnimatedBoolean;
 import org.w3c.dom.svg.SVGAnimationElement;
 import org.w3c.dom.svg.SVGElement;

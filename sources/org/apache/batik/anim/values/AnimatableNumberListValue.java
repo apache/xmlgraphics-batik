@@ -10,6 +10,13 @@ public class AnimatableNumberListValue extends AnimatableValue {
     protected float[] numbers;
 
     /**
+     * Creates a new, uninitialized AnimatableNumberListValue.
+     */
+    protected AnimatableNumberListValue(AnimationTarget target) {
+        super(target);
+    }
+    
+    /**
      * Creates a new AnimatableNumberListValue.
      */
     public AnimatableNumberListValue(AnimationTarget target, float[] numbers) {
@@ -20,36 +27,40 @@ public class AnimatableNumberListValue extends AnimatableValue {
     /**
      * Performs interpolation to the given value.
      */
-    public AnimatableValue interpolate(AnimatableValue to,
+    public AnimatableValue interpolate(AnimatableValue result,
+                                       AnimatableValue to,
                                        float interpolation,
                                        AnimatableValue accumulation) {
-        if ((to == null || interpolation == 0) && accumulation == null) {
-            return this;
+        AnimatableNumberListValue res;
+        if (result == null) {
+            res = new AnimatableNumberListValue(target);
+            res.numbers = new float[numbers.length];
+        } else {
+            res = (AnimatableNumberListValue) result;
+            if (res.numbers == null || res.numbers.length != numbers.length) {
+                res.numbers = new float[numbers.length];
+            }
         }
+        
         AnimatableNumberListValue toNumList = (AnimatableNumberListValue) to;
         AnimatableNumberListValue accNumList =
             (AnimatableNumberListValue) accumulation;
-        float[] newNums = new float[numbers.length];
-        for (int i = 0; i < numbers.length; i++) {
-            newNums[i] = numbers[i];
-        }
+        System.arraycopy(numbers, 0, res.numbers, 0, numbers.length);
         if (to != null) {
-            float[] toNums = toNumList.getNumbers();
-            if (toNums.length == numbers.length) {
-                for (int i = 0; i < toNums.length; i++) {
-                    newNums[i] += interpolation * toNums[i];
+            if (toNumList.numbers.length == numbers.length) {
+                for (int i = 0; i < numbers.length; i++) {
+                    res.numbers[i] += interpolation * toNumList.numbers[i];
                 }
             }
         }
         if (accumulation != null) {
-            float[] accNums = accNumList.getNumbers();
-            if (accNums.length == numbers.length) {
-                for (int i = 0; i < accNums.length; i++) {
-                    newNums[i] += accNums[i];
+            if (accNumList.numbers.length == numbers.length) {
+                for (int i = 0; i < numbers.length; i++) {
+                    res.numbers[i] += accNumList.numbers[i];
                 }
             }
         }
-        return new AnimatableNumberListValue(target, newNums);
+        return res;
     }
 
     /**
@@ -65,5 +76,18 @@ public class AnimatableNumberListValue extends AnimatableValue {
     public AnimatableValue getZeroValue() {
         float[] ns = new float[numbers.length];
         return new AnimatableNumberListValue(target, ns);
+    }
+
+    /**
+     * Returns the CSS text representation of the value.
+     */
+    public String getCssText() {
+        StringBuffer sb = new StringBuffer();
+        sb.append(numbers[0]);
+        for (int i = 1; i < numbers.length; i++) {
+            sb.append(' ');
+            sb.append(numbers[i]);
+        }
+        return sb.toString();
     }
 }

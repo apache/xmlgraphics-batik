@@ -23,11 +23,10 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Vector;
 
-import org.apache.batik.parser.ClockParser;
 import org.apache.batik.parser.ClockHandler;
+import org.apache.batik.parser.ClockParser;
 import org.apache.batik.parser.ParseException;
 
-import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
 
 /**
@@ -75,7 +74,7 @@ public abstract class TimedElement {
     protected TimingSpecifier[] endTimes;
 
     /**
-     * Duration of this element, if {@code {@link #durMedia} = false}.
+     * Duration of this element, if {@link #durMedia}{@code = false}.
      * If unspecified, it will be {@link #UNRESOLVED}.
      */
     protected float simpleDur;
@@ -496,6 +495,7 @@ public abstract class TimedElement {
      * Calculates the local simple time.
      */
     protected void sampleAt(float parentSimpleTime) {
+        // System.err.println("Timed element " + toString() + " sampling at " + parentSimpleTime);
         float time = parentSimpleTime; // No time containers in SVG.
         if (currentInterval != null) {
             float begin = currentInterval.getBegin();
@@ -611,15 +611,20 @@ public abstract class TimedElement {
 
         float d = getSimpleDur();
         if (isActive) {
+            // System.err.println("element sampling at simple time " + (time - lastRepeatTime));
             sampledAt(time - lastRepeatTime, d, currentRepeatIteration);
         } else if (isFrozen) {
             Interval previousInterval = (Interval) previousIntervals.getLast();
             float end = previousInterval.getEnd();
             if ((end - lastRepeatTime) % d == 0) {
                 sampledLastValue(currentRepeatIteration);
+                // System.err.println("element sampling last value");
             } else {
                 sampledAt(end, d, currentRepeatIteration);
+                // System.err.println("element sampling at simple time " + end);
             }
+        } else {
+            // System.err.println("element not sampling");
         }
 
         lastSampleTime = time;
@@ -727,6 +732,7 @@ public abstract class TimedElement {
      * Resets this element.
      */
     protected void reset(boolean clearCurrentBegin) {
+        // System.err.println("reset");
         Iterator i = beginInstanceTimes.iterator(); 
         while (i.hasNext()) {
             InstanceTime it = (InstanceTime) i.next();
@@ -778,6 +784,9 @@ public abstract class TimedElement {
      * Parses a new 'begin' attribute.
      */
     public void parseBegin(String begin) throws ParseException {
+        if (begin.length() == 0) {
+            begin = "0";
+        }
         beginTimes = TimingSpecifierListProducer.parseTimingSpecifierList
             (TimedElement.this, true, begin,
              root.useSVG11AccessKeys, root.useSVG12AccessKeys);
@@ -942,7 +951,7 @@ public abstract class TimedElement {
             beginTimes[i].initialize();
         }
         for (int i = 0; i < endTimes.length; i++) {
-            beginTimes[i].initialize();
+            endTimes[i].initialize();
         }
     }
 

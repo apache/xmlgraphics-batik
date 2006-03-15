@@ -19,9 +19,6 @@ package org.apache.batik.anim.timing;
 
 import java.util.Calendar;
 import java.util.HashSet;
-import java.util.Iterator;
-
-import org.w3c.dom.events.EventTarget;
 
 /**
  * An abstract base class for the root time container element
@@ -63,7 +60,7 @@ public abstract class TimedDocumentRoot extends TimeContainer {
      * Creates a new TimedDocumentRoot.
      * @param useSVG11AccessKeys allows the use of accessKey() timing
      *                           specifiers with a single character
-     * @param useSVG12Accesskeys allows the use of accessKey() with a
+     * @param useSVG12AccessKeys allows the use of accessKey() with a
      *                           DOM 3 key name
      */
     public TimedDocumentRoot(boolean useSVG11AccessKeys,
@@ -95,6 +92,7 @@ public abstract class TimedDocumentRoot extends TimeContainer {
      * Samples the entire timegraph at the given time.
      */
     public void seekTo(float time) {
+        // System.err.println("\nseekTo: " + time);
         // No time containers in SVG, so we don't have to worry
         // about a partial ordering of timed elements to sample.
         TimedElement[] es = getChildren();

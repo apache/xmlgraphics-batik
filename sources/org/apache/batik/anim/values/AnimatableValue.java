@@ -18,21 +18,33 @@ public abstract class AnimatableValue {
 
     /**
      * Performs interpolation to the given value.
+     * @param result the object in which to store the result of the
+     *               interpolation, or null if a new object should be created
+     * @param to the value this value should be interpolated towards, or null
+     *           if no actual interpolation should be performed
+     * @param interpolation the interpolation distance, 0 &lt;= interpolation
+     *                      &lt;= 1
+     * @param accumulation an accumulation to add to the interpolated value 
      */
-    public abstract AnimatableValue interpolate(AnimatableValue to,
+    public abstract AnimatableValue interpolate(AnimatableValue result,
+                                                AnimatableValue to,
                                                 float interpolation,
                                                 AnimatableValue accumulation);
-
-    /**
-     * Adds the given AnimatableValue to this one and returns the result.
-     */
-    public /*abstract*/ AnimatableValue add(AnimatableValue v) {
-        // XXX
-        return null;
-    }
 
     /**
      * Returns a zero value of this AnimatableValue's type.
      */
     public abstract AnimatableValue getZeroValue();
+
+    /**
+     * Returns the CSS text representation of the value.
+     */
+    public abstract String getCssText();
+    
+    /**
+     * Returns a string representation of this object.
+     */
+    public String toString() {
+        return getClass().getName() + "[" + getCssText() + "]";
+    }
 }

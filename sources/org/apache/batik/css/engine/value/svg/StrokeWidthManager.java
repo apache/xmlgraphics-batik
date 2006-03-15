@@ -34,7 +34,7 @@ import org.w3c.dom.DOMException;
  * @version $Id$
  */
 public class StrokeWidthManager extends LengthManager {
-    
+
     /**
      * Implements {@link ValueManager#isInheritedProperty()}.
      */
@@ -87,7 +87,6 @@ public class StrokeWidthManager extends LengthManager {
         }
         return super.createValue(lu, engine);
     }
-
 
     /**
      * Indicates the orientation of the property associated with

@@ -1,15 +1,23 @@
 package org.apache.batik.anim.values;
 
-import java.awt.Color;
-
 import org.apache.batik.anim.AnimationTarget;
 
 public class AnimatableColorValue extends AnimatableValue {
 
     /**
-     * The color.
+     * The red component.
      */
-    protected Color color;
+    protected float red;
+
+    /**
+     * The green component.
+     */
+    protected float green;
+
+    /**
+     * The blue component.
+     */
+    protected float blue;
 
     /**
      * Creates a new AnimatableColorValue.
@@ -21,51 +29,63 @@ public class AnimatableColorValue extends AnimatableValue {
     /**
      * Creates a new AnimatableColorValue.
      */
-    public AnimatableColorValue(AnimationTarget target, Color c) {
+    public AnimatableColorValue(AnimationTarget target, float r, float g,
+                                float b) {
         super(target);
-        color = c;
+        red = r;
+        green = g;
+        blue = b;
     }
 
     /**
      * Performs interpolation to the given value.
      */
-    public AnimatableValue interpolate(AnimatableValue to,
+    public AnimatableValue interpolate(AnimatableValue result,
+                                       AnimatableValue to,
                                        float interpolation,
                                        AnimatableValue accumulation) {
-        if ((to == null || interpolation == 0) && accumulation == null) {
-            return this;
-        }
-        float[] comp = this.getRGBColorComponents(null);
         AnimatableColorValue toColor = (AnimatableColorValue) to;
         AnimatableColorValue accColor = (AnimatableColorValue) accumulation;
+        float r = red;
+        float g = green;
+        float b = blue;
         // XXX Only sRGB colours, and only sRGB interpolation.
         if (to != null) {
-            float[] comp2 = toColor.getRGBColorComponents(null);
-            comp[0] += interpolation * (comp2[0] - comp[0]);
-            comp[1] += interpolation * (comp2[1] - comp[1]);
-            comp[2] += interpolation * (comp2[2] - comp[2]);
+            r += interpolation * (toColor.red - r);
+            g += interpolation * (toColor.green - g);
+            b += interpolation * (toColor.blue - b);
         }
         if (accumulation != null) {
-            float[] comp2 = accColor.getRGBColorComponents(null);
-            comp[0] += interpolation * (comp2[0] - comp[0]);
-            comp[1] += interpolation * (comp2[1] - comp[1]);
-            comp[2] += interpolation * (comp2[2] - comp[2]);
+            r += accColor.red;
+            g += accColor.green;
+            b += accColor.blue;
         }
-        return new AnimatableColorValue
-            (target, new Color(comp[0], comp[1], comp[2]));
-    }
 
-    /**
-     * Returns the sRGB color components of this color value.
-     */
-    public float[] getRGBColorComponents(float[] comp) {
-        return color.getRGBColorComponents(comp);
+        AnimatableColorValue res;
+        if (result == null) {
+            res = new AnimatableColorValue(target);
+        } else {
+            res = (AnimatableColorValue) result;
+        }
+        res.red = r;
+        res.green = g;
+        res.blue = b;
+        return res;
     }
 
     /**
      * Returns a zero value of this AnimatableValue's type.
      */
     public AnimatableValue getZeroValue() {
-        return new AnimatableColorValue(target, Color.BLACK);
+        return new AnimatableColorValue(target, 0f, 0f, 0f);
+    }
+
+    /**
+     * Returns the CSS text representation of the value.
+     */
+    public String getCssText() {
+        return "rgb(" + Math.round(red * 255) + ","
+                      + Math.round(green * 255) + ","
+                      + Math.round(blue * 255) + ")";
     }
 }

@@ -1,6 +1,7 @@
 package org.apache.batik.anim.values;
 
 import org.apache.batik.anim.AnimationTarget;
+import org.apache.batik.css.engine.value.FloatValue;
 
 import org.w3c.dom.svg.SVGLength;
 
@@ -18,6 +19,13 @@ public class AnimatableLengthValue extends AnimatableValue {
     protected float lengthValue;
 
     /**
+     * Creates a new AnimatableLengthValue with no length.
+     */
+    protected AnimatableLengthValue(AnimationTarget target) {
+        super(target);
+    }
+    
+    /**
      * Creates a new AnimatableLengthValue.
      */
     public AnimatableLengthValue(AnimationTarget target, int type, float v) {
@@ -29,16 +37,14 @@ public class AnimatableLengthValue extends AnimatableValue {
     /**
      * Performs interpolation to the given value.
      */
-    public AnimatableValue interpolate(AnimatableValue to,
+    public AnimatableValue interpolate(AnimatableValue result,
+                                       AnimatableValue to,
                                        float interpolation,
                                        AnimatableValue accumulation) {
-        if ((to == null || interpolation == 0) && accumulation == null) {
-            return this;
-        }
         AnimatableLengthValue toLength = (AnimatableLengthValue) to;
         AnimatableLengthValue accLength = (AnimatableLengthValue) accumulation;
-        boolean convert = to != null && !compatibleTypes(toLength.getLengthType(), lengthType)
-            || accumulation != null && !compatibleTypes(accLength.getLengthType(), lengthType);
+        boolean convert = to != null && !compatibleTypes(toLength.lengthType, lengthType)
+            || accumulation != null && !compatibleTypes(accLength.lengthType, lengthType);
         int type = convert ? SVGLength.SVG_LENGTHTYPE_NUMBER : lengthType;
         float value = convert ? toType(lengthType, lengthValue, type) : lengthValue;
         if (to != null) {
@@ -53,7 +59,16 @@ public class AnimatableLengthValue extends AnimatableValue {
                                      : accLength.getLengthValue();
             value += accValue;
         }
-        return new AnimatableLengthValue(target, type, value);
+        
+        AnimatableLengthValue res;
+        if (result == null) {
+            res = new AnimatableLengthValue(target);
+        } else {
+            res = (AnimatableLengthValue) result;
+        }
+        res.lengthType = type;
+        res.lengthValue = value;
+        return res;
     }
 
     protected boolean compatibleTypes(int t1, int t2) {
@@ -83,5 +98,12 @@ public class AnimatableLengthValue extends AnimatableValue {
     public AnimatableValue getZeroValue() {
         return new AnimatableLengthValue
             (target, SVGLength.SVG_LENGTHTYPE_NUMBER, 0);
+    }
+
+    /**
+     * Returns the CSS text representation of the value.
+     */
+    public String getCssText() {
+        return FloatValue.getCssText((short) (lengthType - 1), lengthValue);
     }
 }

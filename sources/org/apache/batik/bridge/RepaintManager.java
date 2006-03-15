@@ -74,7 +74,7 @@ public class RepaintManager {
             int x1 = (int)Math.ceil(r2d.getX()+r2d.getWidth());
             int y1 = (int)Math.ceil(r2d.getY()+r2d.getHeight());
             // This rectangle must be outset one pixel to ensure
-            // it includes the effects of anti-aliasing on object.s
+            // it includes the effects of anti-aliasing on objects.
             Rectangle r = new Rectangle(x0-1, y0-1, x1-x0+3, y1-y0+3);
                 
             rects.add(r);

@@ -18,6 +18,13 @@ public class AnimatableLengthListValue extends AnimatableValue {
     protected float[] lengthValues;
 
     /**
+     * Creates a new, uninitialized AnimatableLengthListValue.
+     */
+    protected AnimatableLengthListValue(AnimationTarget target) {
+        super(target);
+    }
+
+    /**
      * Creates a new AnimatableLengthListValue.
      */
     public AnimatableLengthListValue(AnimationTarget target, int types[],
@@ -30,9 +37,11 @@ public class AnimatableLengthListValue extends AnimatableValue {
     /**
      * Performs interpolation to the given value.
      */
-    public AnimatableValue interpolate(AnimatableValue to,
+    public AnimatableValue interpolate(AnimatableValue result,
+                                       AnimatableValue to,
                                        float interpolation,
                                        AnimatableValue accumulation) {
+        // XXX Can't return 'this'.
         if ((to == null || interpolation == 0) && accumulation == null) {
             return this;
         }
@@ -70,7 +79,16 @@ public class AnimatableLengthListValue extends AnimatableValue {
                 }
             }
         }
-        return new AnimatableLengthListValue(target, newTypes, newValues);
+
+        AnimatableLengthListValue res;
+        if (result == null) {
+            res = new AnimatableLengthListValue(target);
+        } else {
+            res = (AnimatableLengthListValue) result;
+        }
+        res.lengthTypes = newTypes;
+        res.lengthValues = newValues;
+        return res;
     }
 
     /**
@@ -93,5 +111,13 @@ public class AnimatableLengthListValue extends AnimatableValue {
     public AnimatableValue getZeroValue() {
         float[] vs = new float[lengthValues.length];
         return new AnimatableLengthListValue(target, lengthTypes, vs);
+    }
+
+    /**
+     * Returns the CSS text representation of the value.
+     * Length lists can never be used for CSS properties.
+     */
+    public String getCssText() {
+        return null;
     }
 }
