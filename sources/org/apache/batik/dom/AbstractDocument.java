@@ -551,8 +551,8 @@ public abstract class AbstractDocument
      * Returns an ElementsByTagNameNS object from the cache, if any.
      */
     public ElementsByTagNameNS getElementsByTagNameNS(Node n,
-                                                    String ns,
-                                                    String ln) {
+                                                      String ns,
+                                                      String ln) {
         if (elementsByTagNamesNS == null) {
             return null;
         }

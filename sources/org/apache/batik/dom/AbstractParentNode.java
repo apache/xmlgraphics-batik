@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2000-2003  The Apache Software Foundation 
+   Copyright 2000-2003,2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -284,6 +284,9 @@ public abstract class AbstractParentNode extends AbstractNode {
 	if (localName == null) {
 	    return EMPTY_NODE_LIST;
 	}
+        if (namespaceURI != null && namespaceURI.length() == 0) {
+            namespaceURI = null;
+        }
         AbstractDocument ad = getCurrentDocument();
         ElementsByTagNameNS result =
             ad.getElementsByTagNameNS(this, namespaceURI,

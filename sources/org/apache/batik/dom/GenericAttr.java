@@ -27,6 +27,7 @@ import org.w3c.dom.Node;
  * @version $Id$
  */
 public class GenericAttr extends AbstractAttr {
+
     /**
      * Is this attribute immutable?
      */
