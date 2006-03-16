@@ -272,6 +272,9 @@ public abstract class AbstractEvent
                             String eventTypeArg,
                             boolean canBubbleArg,
                             boolean cancelableArg) {
+        if (namespaceURI != null && namespaceURI.length() == 0) {
+            namespaceURI = null;
+        }
         namespaceURI = namespaceURIArg;
 	type = eventTypeArg;
 	isBubbling = canBubbleArg;

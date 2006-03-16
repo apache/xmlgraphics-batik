@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2000-2003,2005  The Apache Software Foundation 
+   Copyright 2000-2003,2005-2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -948,6 +948,9 @@ public abstract class AbstractNode
         if (eventSupport == null) {
             initializeEventSupport();
         }
+        if (namespaceURI != null && namespaceURI.length() == 0) {
+            namespaceURI = null;
+        }
         eventSupport.addEventListenerNS(namespaceURI,
                                         type,
                                         listener,
@@ -978,6 +981,9 @@ public abstract class AbstractNode
                                       EventListener listener,
                                       boolean useCapture) {
         if (eventSupport != null) {
+            if (namespaceURI != null && namespaceURI.length() == 0) {
+                namespaceURI = null;
+            }
             eventSupport.removeEventListenerNS(namespaceURI,
                                                type,
                                                listener,
@@ -1019,6 +1025,9 @@ public abstract class AbstractNode
     public boolean hasEventListenerNS(String namespaceURI, String type) {
         if (eventSupport == null) {
             return false;
+        }
+        if (namespaceURI != null && namespaceURI.length() == 0) {
+            namespaceURI = null;
         }
         return eventSupport.hasEventListenerNS(namespaceURI, type);
     }
