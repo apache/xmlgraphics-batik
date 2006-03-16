@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2000-2003,2005  The Apache Software Foundation 
+   Copyright 2000-2003,2005-2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -173,7 +173,7 @@ public abstract class AbstractDocument
     /**
      * The XBL manager for this document.
      */
-    protected XBLManager xblManager = new GenericXBLManager();
+    protected transient XBLManager xblManager = new GenericXBLManager();
 
     /**
      * The elementsById lists.
@@ -646,8 +646,8 @@ public abstract class AbstractDocument
      * Returns an ElementsByTagNameNS object from the cache, if any.
      */
     public ElementsByTagNameNS getElementsByTagNameNS(Node n,
-                                                    String ns,
-                                                    String ln) {
+                                                      String ns,
+                                                      String ln) {
         if (elementsByTagNamesNS == null) {
             return null;
         }
@@ -697,6 +697,9 @@ public abstract class AbstractDocument
     public boolean canDispatch(String ns, String eventType) {
         if (eventType == null) {
             return false;
+        }
+        if (ns != null && ns.length() == 0) {
+            ns = null;
         }
         if (ns == null || ns.equals(XMLConstants.XML_EVENTS_NAMESPACE_URI)) {
             return eventType.equals("Event")
@@ -1056,6 +1059,9 @@ public abstract class AbstractDocument
                                                     qn });
         }
         String prefix = DOMUtilities.getPrefix(qn);
+        if (ns != null && ns.length() == 0) {
+            ns = null;
+        }
         if (prefix != null && ns == null) {
             throw createDOMException(DOMException.NAMESPACE_ERR,
                                      "prefix",
