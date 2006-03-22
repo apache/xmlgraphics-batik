@@ -61,6 +61,7 @@ import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.MutationEvent;
 import org.w3c.dom.svg.SVGDocument;
+import org.w3c.dom.views.DocumentView;
 
 /**
  * This class contains the informations needed by the SVG scripting.
@@ -801,7 +802,8 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
     /**
      * Represents the window object of this environment.
      */
-    protected class Window implements org.apache.batik.script.Window {
+    protected class Window implements org.apache.batik.script.Window,
+                                      org.w3c.dom.window.Window {
 
         /**
          * The associated interpreter.
@@ -1295,6 +1297,31 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
          */
         public Interpreter getInterpreter() {
             return interpreter;
+        }
+
+        // AbstractView //////////////////////////////////////////////////////
+
+        /**
+         * Returns the document that has this window object as its view.
+         */
+        public DocumentView getDocument() {
+            return (DocumentView) document;
+        }
+
+        // org.w3c.dom.window.Window /////////////////////////////////////////
+
+        /**
+         * Returns the window object.
+         */
+        public org.w3c.dom.window.Window getWindow() {
+            return this;
+        }
+
+        /**
+         * Returns this window object.
+         */
+        public org.w3c.dom.window.Window getSelf() {
+            return this;
         }
     }
 

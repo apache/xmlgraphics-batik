@@ -28,6 +28,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.stylesheets.StyleSheetList;
 import org.w3c.dom.views.DocumentView;
 import org.w3c.dom.views.AbstractView;
+import org.w3c.dom.window.DocumentWindow;
 
 /**
  * A Document that supports CSS styling.
@@ -37,7 +38,7 @@ import org.w3c.dom.views.AbstractView;
  */
 public abstract class AbstractStylableDocument extends AbstractDocument
     implements DocumentCSS,
-               DocumentView {
+               DocumentWindow {
 
     /**
      * The default view.

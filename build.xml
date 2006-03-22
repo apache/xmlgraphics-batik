@@ -548,6 +548,7 @@ To display the available targets type:
         <include name="org/w3c/dom/smil/**"/>
         <include name="org/w3c/dom/svg/**"/>
         <include name="org/w3c/dom/svg12/**"/>
+        <include name="org/w3c/dom/window/**"/>
       </fileset>
       <fileset dir="${resources}" excludes="**/.svn/">
         <include name="**"/>
