@@ -634,27 +634,30 @@ public class CSSOMSVGColor
          * Called when the red value text has changed.
          */
         public void redTextChanged(String text) throws DOMException {
+            StringBuffer sb = new StringBuffer(40);
             switch (getColorType()) {
             case SVG_COLORTYPE_RGBCOLOR:
-                text = "rgb(" +
-                    text + ", " +
-                    getValue().getGreen().getCssText() + ", " +
-                    getValue().getBlue().getCssText() + ")";
+                sb.append("rgb(");
+                sb.append(text); sb.append(',');
+                sb.append(getValue().getGreen().getCssText()); sb.append(',');
+                sb.append(getValue().getBlue().getCssText()); sb.append(')');
                 break;
 
             case SVG_COLORTYPE_RGBCOLOR_ICCCOLOR:
-                text = "rgb(" +
-                    text + ", " +
-                    getValue().item(0).getGreen().getCssText() + ", " +
-                    getValue().item(0).getBlue().getCssText() + ") " +
-                    getValue().item(1).getCssText();
+                sb.append("rgb(");
+                sb.append(text); sb.append(',');
+                sb.append(getValue().item(0).getGreen().getCssText()); 
+                sb.append(',');
+                sb.append(getValue().item(0).getBlue().getCssText()); 
+                sb.append(')');
+                sb.append(getValue().item(1).getCssText());
                 break;
-
+            
             default:
                 throw new DOMException
                     (DOMException.NO_MODIFICATION_ALLOWED_ERR, "");
             }
-            textChanged(text);
+            textChanged(sb.toString());
         }
 
         /**
@@ -662,55 +665,62 @@ public class CSSOMSVGColor
          */
         public void redFloatValueChanged(short unit, float value)
             throws DOMException {
-            String text;
+            StringBuffer sb = new StringBuffer(40);
             switch (getColorType()) {
             case SVG_COLORTYPE_RGBCOLOR:
-                text = "rgb(" +
-                    FloatValue.getCssText(unit, value) + ", " +
-                    getValue().getGreen().getCssText() + ", " +
-                    getValue().getBlue().getCssText() + ")";
+                sb.append("rgb(");
+                sb.append(FloatValue.getCssText(unit, value)); sb.append(',');
+                sb.append(getValue().getGreen().getCssText()); sb.append(',');
+                sb.append(getValue().getBlue().getCssText()); sb.append(')');
                 break;
 
             case SVG_COLORTYPE_RGBCOLOR_ICCCOLOR:
-                text = "rgb(" +
-                    FloatValue.getCssText(unit, value) + ", " +
-                    getValue().item(0).getGreen().getCssText() + ", " +
-                    getValue().item(0).getBlue().getCssText() + ") " +
-                    getValue().item(1).getCssText();
+                sb.append("rgb(");
+                sb.append(FloatValue.getCssText(unit, value)); 
+                sb.append(',');
+                sb.append(getValue().item(0).getGreen().getCssText()); 
+                sb.append(',');
+                sb.append(getValue().item(0).getBlue().getCssText()); 
+                sb.append(')');
+                sb.append(getValue().item(1).getCssText());
                 break;
 
             default:
                 throw new DOMException
                     (DOMException.NO_MODIFICATION_ALLOWED_ERR, "");
             }
-            textChanged(text);
+            textChanged(sb.toString());
         }
 
         /**
          * Called when the green value text has changed.
          */
         public void greenTextChanged(String text) throws DOMException {
+            StringBuffer sb = new StringBuffer(40);
             switch (getColorType()) {
             case SVG_COLORTYPE_RGBCOLOR:
-                text = "rgb(" +
-                    getValue().getRed().getCssText() + ", " +
-                    text + ", " +
-                    getValue().getBlue().getCssText() + ")";
+                sb.append("rgb(");
+                sb.append(getValue().getRed().getCssText()); sb.append(',');
+                sb.append(text); sb.append(',');
+                sb.append(getValue().getBlue().getCssText()); sb.append(')');
                 break;
 
             case SVG_COLORTYPE_RGBCOLOR_ICCCOLOR:
-                text = "rgb(" +
-                    getValue().item(0).getRed().getCssText() + ", " +
-                    text + ", " +
-                    getValue().item(0).getBlue().getCssText() + ") " +
-                    getValue().item(1).getCssText();
+                sb.append("rgb(");
+                sb.append(getValue().item(0).getRed().getCssText()); 
+                sb.append(',');
+                sb.append(text); 
+                sb.append(',');
+                sb.append(getValue().item(0).getBlue().getCssText()); 
+                sb.append(')');
+                sb.append(getValue().item(1).getCssText());
                 break;
 
             default:
                 throw new DOMException
                     (DOMException.NO_MODIFICATION_ALLOWED_ERR, "");
             }
-            textChanged(text);
+            textChanged(sb.toString());
         }
 
         /**
@@ -718,54 +728,62 @@ public class CSSOMSVGColor
          */
         public void greenFloatValueChanged(short unit, float value)
             throws DOMException {
-            String text;
+            StringBuffer sb = new StringBuffer(40);
             switch (getColorType()) {
             case SVG_COLORTYPE_RGBCOLOR:
-                text = "rgb(" +
-                    getValue().getRed().getCssText() + ", " +
-                    FloatValue.getCssText(unit, value) + ", " +
-                    getValue().getBlue().getCssText() + ")";
+                sb.append("rgb(");
+                sb.append(getValue().getRed().getCssText()); sb.append(',');
+                sb.append(FloatValue.getCssText(unit, value)); sb.append(',');
+                sb.append(getValue().getBlue().getCssText()); sb.append(')');
                 break;
 
             case SVG_COLORTYPE_RGBCOLOR_ICCCOLOR:
-                text = "rgb(" +
-                    getValue().item(0).getRed().getCssText() + ", " +
-                    FloatValue.getCssText(unit, value) + ", " +
-                    getValue().item(0).getBlue().getCssText() + ") " +
-                    getValue().item(1).getCssText();
+                sb.append("rgb(");
+                sb.append(getValue().item(0).getRed().getCssText()); 
+                sb.append(',');
+                sb.append(FloatValue.getCssText(unit, value)); 
+                sb.append(',');
+                sb.append(getValue().item(0).getBlue().getCssText()); 
+                sb.append(')');
+                sb.append(getValue().item(1).getCssText());
                 break;
 
             default:
                 throw new DOMException
                     (DOMException.NO_MODIFICATION_ALLOWED_ERR, "");
             }
-            textChanged(text);
+            textChanged(sb.toString());
         }
 
         /**
          * Called when the blue value text has changed.
          */
         public void blueTextChanged(String text) throws DOMException {
+            StringBuffer sb = new StringBuffer(40);
             switch (getColorType()) {
             case SVG_COLORTYPE_RGBCOLOR:
-                text = "rgb(" +
-                    getValue().getRed().getCssText() + ", " +
-                    getValue().getGreen().getCssText() + ", " +
-                    text + ")";
+                sb.append("rgb(");
+                sb.append(getValue().getRed().getCssText()); sb.append(',');
+                sb.append(getValue().getGreen().getCssText()); sb.append(',');
+                sb.append(text); sb.append(')');
                 break;
 
             case SVG_COLORTYPE_RGBCOLOR_ICCCOLOR:
-                text = "rgb(" +
-                    getValue().item(0).getRed().getCssText() + ", " +
-                    getValue().item(0).getGreen().getCssText() + ", " +
-                    text + ") " +
-                    getValue().item(1).getCssText();
+                sb.append("rgb(");
+                sb.append(getValue().item(0).getRed().getCssText()); 
+                sb.append(',');
+                sb.append(getValue().item(0).getGreen().getCssText()); 
+                sb.append(',');
+                sb.append(text); 
+                sb.append(')');
+                sb.append(getValue().item(1).getCssText());
+                break;
 
             default:
                 throw new DOMException
                     (DOMException.NO_MODIFICATION_ALLOWED_ERR, "");
             }
-            textChanged(text);
+            textChanged(sb.toString());
         }
 
         /**
@@ -773,28 +791,31 @@ public class CSSOMSVGColor
          */
         public void blueFloatValueChanged(short unit, float value)
             throws DOMException {
-            String text;
+            StringBuffer sb = new StringBuffer(40);
             switch (getColorType()) {
             case SVG_COLORTYPE_RGBCOLOR:
-                text = "rgb(" +
-                    getValue().getRed().getCssText() + ", " +
-                    getValue().getGreen().getCssText() + ", " +
-                    FloatValue.getCssText(unit, value) + ")";
+                sb.append("rgb(");
+                sb.append(getValue().getRed().getCssText()); sb.append(',');
+                sb.append(getValue().getGreen().getCssText()); sb.append(',');
+                sb.append(FloatValue.getCssText(unit, value)); sb.append(')');
                 break;
 
             case SVG_COLORTYPE_RGBCOLOR_ICCCOLOR:
-                text = "rgb(" +
-                    getValue().item(0).getRed().getCssText() + ", " +
-                    getValue().item(0).getGreen().getCssText() + ", " +
-                    FloatValue.getCssText(unit, value) + ") " +
-                    getValue().item(1).getCssText();
+                sb.append("rgb(");
+                sb.append(getValue().item(0).getRed().getCssText()); 
+                sb.append(',');
+                sb.append(getValue().item(0).getGreen().getCssText()); 
+                sb.append(',');
+                sb.append(FloatValue.getCssText(unit, value)); 
+                sb.append(')');
+                sb.append(getValue().item(1).getCssText());
                 break;
 
             default:
                 throw new DOMException
                     (DOMException.NO_MODIFICATION_ALLOWED_ERR, "");
             }
-            textChanged(text);
+            textChanged(sb.toString());
         }
         
         /**
@@ -867,10 +888,10 @@ public class CSSOMSVGColor
                 sb.append(cp);
                 ICCColor iccc = (ICCColor)getValue().item(1);
                 for (int i = 0; i < iccc.getLength(); i++) {
-                    sb.append(",");
+                    sb.append(',');
                     sb.append(iccc.getColor(i));
                 }
-                sb.append(")");
+                sb.append(')');
                 textChanged(sb.toString());
                 break;
 
@@ -891,7 +912,7 @@ public class CSSOMSVGColor
                 sb.append(" icc-color(");
                 ICCColor iccc = (ICCColor)getValue().item(1);
                 sb.append(iccc.getColorProfile());
-                sb.append(")");
+                sb.append(')');
                 textChanged(sb.toString());
                 break;
 
@@ -912,9 +933,9 @@ public class CSSOMSVGColor
                 sb.append(" icc-color(");
                 ICCColor iccc = (ICCColor)getValue().item(1);
                 sb.append(iccc.getColorProfile());
-                sb.append(",");
+                sb.append(',');
                 sb.append(f);
-                sb.append(")");
+                sb.append(')');
                 textChanged(sb.toString());
                 break;
 
@@ -936,16 +957,16 @@ public class CSSOMSVGColor
                 ICCColor iccc = (ICCColor)getValue().item(1);
                 sb.append(iccc.getColorProfile());
                 for (int i = 0; i < idx; i++) {
-                    sb.append(",");
+                    sb.append(',');
                     sb.append(iccc.getColor(i));
                 }
-                sb.append(",");
+                sb.append(',');
                 sb.append(f);
                 for (int i = idx; i < iccc.getLength(); i++) {
-                    sb.append(",");
+                    sb.append(',');
                     sb.append(iccc.getColor(i));
                 }
-                sb.append(")");
+                sb.append(')');
                 textChanged(sb.toString());
                 break;
 
@@ -967,16 +988,16 @@ public class CSSOMSVGColor
                 ICCColor iccc = (ICCColor)getValue().item(1);
                 sb.append(iccc.getColorProfile());
                 for (int i = 0; i < idx; i++) {
-                    sb.append(",");
+                    sb.append(',');
                     sb.append(iccc.getColor(i));
                 }
-                sb.append(",");
+                sb.append(',');
                 sb.append(f);
                 for (int i = idx + 1; i < iccc.getLength(); i++) {
-                    sb.append(",");
+                    sb.append(',');
                     sb.append(iccc.getColor(i));
                 }
-                sb.append(")");
+                sb.append(')');
                 textChanged(sb.toString());
                 break;
 
@@ -998,14 +1019,14 @@ public class CSSOMSVGColor
                 ICCColor iccc = (ICCColor)getValue().item(1);
                 sb.append(iccc.getColorProfile());
                 for (int i = 0; i < idx; i++) {
-                    sb.append(",");
+                    sb.append(',');
                     sb.append(iccc.getColor(i));
                 }
                 for (int i = idx + 1; i < iccc.getLength(); i++) {
-                    sb.append(",");
+                    sb.append(',');
                     sb.append(iccc.getColor(i));
                 }
-                sb.append(")");
+                sb.append(')');
                 textChanged(sb.toString());
                 break;
 
@@ -1027,12 +1048,12 @@ public class CSSOMSVGColor
                 ICCColor iccc = (ICCColor)getValue().item(1);
                 sb.append(iccc.getColorProfile());
                 for (int i = 0; i < iccc.getLength(); i++) {
-                    sb.append(",");
+                    sb.append(',');
                     sb.append(iccc.getColor(i));
                 }
-                sb.append(",");
+                sb.append(',');
                 sb.append(f);
-                sb.append(")");
+                sb.append(')');
                 textChanged(sb.toString());
                 break;
 
