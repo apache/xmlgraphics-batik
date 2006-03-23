@@ -612,13 +612,6 @@ public class SVGOMDocument
     // ViewCSS ///////////////////////////////////////////////////////////////
 
     /**
-     * Creates the default view for this document.
-     */
-    protected AbstractView createDefaultView() {
-        return new DefaultView();
-    }
-
-    /**
      * Clears the view CSS.
      */
     public void clearViewCSS() {
@@ -626,97 +619,18 @@ public class SVGOMDocument
             cssEngine.dispose();
         }
         cssEngine = null;
-        ((DefaultView) defaultView).clearViewCSS();
+        if (defaultView instanceof ViewCSSProxy) {
+            ((ViewCSSProxy) defaultView).clearViewCSS();
+        } else {
+            defaultView = null;
+        }
     }
 
     /**
      * Sets the Window object to be used by the default view.
      */
-    public void setWindow(Window window) {
-        DefaultView defaultView = (DefaultView) getDefaultView();
-        defaultView.setWindow(window);
-    }
-
-    /**
-     * The default view for this document.
-     */
-    protected class DefaultView implements ViewCSS, Window {
-
-        /**
-         * The proxied ViewCSS object.
-         */
-        protected ViewCSS viewCSS;
-
-        /**
-         * The proxied Window object.
-         */
-        protected Window window;
-
-        /**
-         * Clears the proxied ViewCSS object in response to a change
-         * of CSSEngine on the document.
-         */
-        public void clearViewCSS() {
-            viewCSS = null;
-        }
-
-        /**
-         * Sets the Window object to be proxied by this default view.
-         */
-        public void setWindow(Window window) {
-            this.window = window;
-        }
-
-        /**
-         * Creates a proxied ViewCSS object.
-         */
-        protected void createViewCSS() {
-            ExtensibleDOMImplementation impl =
-                (ExtensibleDOMImplementation) implementation;
-            viewCSS = impl.createViewCSS(SVGOMDocument.this);
-        }
-
-        // AbstractView //////////////////////////////////////////////////////
-
-        /**
-         * The source <code>DocumentView</code> of which this is an
-         * <code>AbstractView</code>.
-         */
-        public DocumentView getDocument() {
-            return (DocumentView) SVGOMDocument.this;
-        }
-
-        // ViewCSS ///////////////////////////////////////////////////////////
-
-        /**
-         * <b>DOM</b>: Implements {@link
-         * org.w3c.dom.css.ViewCSS#getComputedStyle(Element,String)}.
-         */
-        public CSSStyleDeclaration getComputedStyle(Element elt,
-                                                    String pseudoElt) {
-            if (viewCSS == null) {
-                createViewCSS();
-            }
-            return viewCSS.getComputedStyle(elt, pseudoElt);
-        }
-
-        // Window ////////////////////////////////////////////////////////////
-
-        /**
-         * <b>DOM</b>: Implements
-         * {@link org.w3c.dom.window.Window#getWindow()}.
-         */
-        public Window getWindow() {
-            return window.getWindow();
-        }
-
-        /**
-         * <b>DOM</b>: Implements
-         * {@link org.w3c.dom.window.Window#getSelf()}.
-         */
-        public Window getSelf() {
-            return window.getSelf();
-        }
+    public void setDefaultView(AbstractView defaultView) {
+        this.defaultView = defaultView;
     }
 
     // DocumentCSS ////////////////////////////////////////////////////////////

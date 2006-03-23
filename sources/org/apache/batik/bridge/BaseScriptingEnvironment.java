@@ -264,6 +264,21 @@ public class BaseScriptingEnvironment {
     }
 
     /**
+     * Initializes the environment of the given interpreter.
+     */
+    public void initializeEnvironment(Interpreter interp, String lang) {
+        org.apache.batik.script.Window window = createWindow(interp, lang);
+        interp.bindObject("window", window);
+        registerWindowObject(window);
+    }
+
+    /**
+     * Registers a newly created Window object with the document.
+     */
+    protected void registerWindowObject(org.apache.batik.script.Window window) {
+    }
+
+    /**
      * Returns the default Interpreter for this document.
      */
     public Interpreter getInterpreter() {
@@ -293,13 +308,6 @@ public class BaseScriptingEnvironment {
             initializeEnvironment(interpreter, lang);
         }
         return interpreter;
-    }
-
-    /**
-     * Initializes the environment of the given interpreter.
-     */
-    public void initializeEnvironment(Interpreter interp, String lang) {
-        interp.bindObject("window", createWindow(interp, lang));
     }
 
     /**
@@ -362,6 +370,7 @@ public class BaseScriptingEnvironment {
 
                         if (window == null) {
                             window = createWindow();
+                            registerWindowObject(window);
                         }
 
                         h.run(document, window);
@@ -376,6 +385,7 @@ public class BaseScriptingEnvironment {
 
                         if (window == null) {
                             window = createWindow();
+                            registerWindowObject(window);
                         }
 
                         initializer.initializeEventListeners((SVGDocument)document);

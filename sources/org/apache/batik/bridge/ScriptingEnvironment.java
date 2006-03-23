@@ -38,10 +38,13 @@ import java.util.TimerTask;
 import java.util.zip.GZIPOutputStream;
 import java.util.zip.DeflaterOutputStream;
 
+import org.apache.batik.dom.AbstractStylableDocument;
+import org.apache.batik.dom.ExtensibleDOMImplementation;
 import org.apache.batik.dom.GenericDOMImplementation;
 import org.apache.batik.dom.events.NodeEventTarget;
 import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
 import org.apache.batik.dom.svg.SVGOMDocument;
+import org.apache.batik.dom.svg.ViewCSSProxy;
 import org.apache.batik.dom.util.SAXDocumentFactory;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.script.Interpreter;
@@ -57,6 +60,8 @@ import org.apache.batik.util.XMLResourceDescriptor;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.css.CSSStyleDeclaration;
+import org.w3c.dom.css.ViewCSS;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.MutationEvent;
@@ -392,15 +397,13 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
     }
 
     /**
-     * Initializes the environment of the given interpreter.
+     * Registers a newly created Window object with the document.
      */
-    public void initializeEnvironment(Interpreter interp, String lang) {
-        org.w3c.dom.window.Window window = 
-            (org.w3c.dom.window.Window) createWindow(interp, lang);
-        interp.bindObject("window", window);
-        Object doc = window.getDocument();
+    protected void registerWindowObject(org.apache.batik.script.Window window) {
+        org.w3c.dom.window.Window w = (org.w3c.dom.window.Window) window;
+        Object doc = w.getDocument();
         if (doc instanceof SVGOMDocument) {
-            ((SVGOMDocument) doc).setWindow(window);
+            ((SVGOMDocument) doc).setDefaultView(w);
         }
     }
 
@@ -816,7 +819,9 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
      * Represents the window object of this environment.
      */
     protected class Window implements org.apache.batik.script.Window,
-                                      org.w3c.dom.window.Window {
+                                      org.w3c.dom.window.Window,
+                                      ViewCSS,
+                                      ViewCSSProxy {
 
         /**
          * The associated interpreter.
@@ -827,6 +832,11 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
          * The associated language.
          */
         protected String language;
+
+        /**
+         * The ViewCSS this Window object is proxying.
+         */
+        protected ViewCSS viewCSS;
 
         /**
          * Creates a new Window for the given language.
@@ -1335,6 +1345,32 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
          */
         public org.w3c.dom.window.Window getSelf() {
             return this;
+        }
+
+        // ViewCSS ///////////////////////////////////////////////////////////
+
+        /**
+         * <b>DOM</b>: Implements {@link
+         * org.w3c.dom.css.ViewCSS#getComputedStyle(Element,String)}.
+         */
+        public CSSStyleDeclaration getComputedStyle(Element elt,
+                                                    String pseudoElt) {
+            if (viewCSS == null) {
+                ExtensibleDOMImplementation impl =
+                    (ExtensibleDOMImplementation) document.getImplementation();
+                viewCSS = impl.createViewCSS
+                    ((AbstractStylableDocument) document);
+            }
+            return viewCSS.getComputedStyle(elt, pseudoElt);
+        }
+
+        // ViewCSSProxy //////////////////////////////////////////////////////
+
+        /**
+         * Invalidates the current ViewCSS object.
+         */
+        public void clearViewCSS() {
+            viewCSS = null;
         }
     }
 
