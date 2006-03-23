@@ -69,7 +69,7 @@ final class RadialGradientPaintContext extends MultipleGradientPaintContext {
     private int fillMethod;
     
     /** Amount for offset when clamping focus. */
-    private static final float SCALEBACK = .97f;
+    private static final float SCALEBACK = .999f;
     
     /** 
      * Constructor for RadialGradientPaintContext.

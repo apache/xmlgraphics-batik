@@ -362,6 +362,7 @@
         <test id="samples/tests/spec/scripting/bbox.svg" />
         <test id="samples/tests/spec/scripting/circle.svg" />
         <test id="samples/tests/spec/scripting/display.svg" />
+        <test id="samples/tests/spec/scripting/domSVGColor.svg" />
         <test id="samples/tests/spec/scripting/ellipse.svg" />
         <test id="samples/tests/spec/scripting/enclosureList.svg" />
         <test id="samples/tests/spec/scripting/enclosureList2.svg" />

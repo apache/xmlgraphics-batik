@@ -56,9 +56,12 @@ import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.TextNode;
+import org.apache.batik.gvt.font.FontFamilyResolver;
+import org.apache.batik.gvt.font.GVTFont;
 import org.apache.batik.gvt.font.GVTFontFamily;
 import org.apache.batik.gvt.font.GVTGlyphMetrics;
 import org.apache.batik.gvt.font.GVTGlyphVector;
+import org.apache.batik.gvt.font.UnresolvedFontFamily;
 import org.apache.batik.gvt.renderer.StrokingTextPainter;
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
 import org.apache.batik.gvt.text.Mark;
@@ -98,6 +101,25 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         AttributedCharacterIterator.Attribute ALT_GLYPH_HANDLER =
         GVTAttributedCharacterIterator.TextAttribute.ALT_GLYPH_HANDLER;
         
+    public static final 
+        AttributedCharacterIterator.Attribute GVT_FONT_FAMILIES 
+        = GVTAttributedCharacterIterator.TextAttribute.GVT_FONT_FAMILIES;
+
+    public static final 
+        AttributedCharacterIterator.Attribute TEXTPATH
+        = GVTAttributedCharacterIterator.TextAttribute.TEXTPATH;
+
+    public static final 
+        AttributedCharacterIterator.Attribute ANCHOR_TYPE
+        = GVTAttributedCharacterIterator.TextAttribute.ANCHOR_TYPE;
+
+    public static final 
+        AttributedCharacterIterator.Attribute GVT_FONTS
+        = GVTAttributedCharacterIterator.TextAttribute.GVT_FONTS;
+
+    public static final 
+        AttributedCharacterIterator.Attribute BASELINE_SHIFT
+        = GVTAttributedCharacterIterator.TextAttribute.BASELINE_SHIFT;
 
     protected AttributedString laidoutText;
 
@@ -499,6 +521,8 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                                        Element e,
                                        GraphicsNode node) {
         TextNode tn = (TextNode)node;
+        elemTPI.clear();
+
         AttributedString as = buildAttributedString(ctx, e);
         if (as == null) {
             tn.setAttributedCharacterIterator(null);
@@ -509,10 +533,6 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         if (ctx.isDynamic()) {
             laidoutText = new AttributedString(as.getIterator());
         }
-        elemTPI.clear();
-        // Add null TPI objects to the text (after we set it on the
-        // Text we will swap in the correct values.
-        addNullPaintAttributes(as, e, ctx);
 
         // Install the ACI in the text node.
         tn.setAttributedCharacterIterator(as.getIterator());
@@ -530,56 +550,6 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         if (usingComplexSVGFont) {
             // Force Complex SVG fonts to be recreated, if we have them.
             tn.setAttributedCharacterIterator(as.getIterator());
-        }
-    }
-
-    /**
-     * This creates 'dummy' TPI objects for each element and records
-     * them in the elemTPI map so we can later update them with 
-     * the correct paint attributes.
-     */
-    protected void addNullPaintAttributes(AttributedString as, 
-                                          Element element,
-                                          BridgeContext ctx) {
-        // 'requiredFeatures', 'requiredExtensions' and 'systemLanguage'
-        if ((!SVGUtilities.matchUserAgent(element, ctx.getUserAgent())) ||
-            (!CSSUtilities.convertDisplay(element))) {
-            return;
-        }
-
-        AttributedCharacterIterator aci = as.getIterator();
-
-        // calculate which chars in the string belong to this element
-        int firstChar = getElementStartIndex(aci, element);
-        if (firstChar == -1)
-            return; // Element not part of aci (no chars in elem usually)
-
-        int lastChar = getElementEndIndex(aci, element);
-        TextPaintInfo pi = new TextPaintInfo();
-        // Set some basic props so we can get bounds info for complex paints.
-        pi.visible   = true;        
-        pi.fillPaint = Color.black;
-
-        as.addAttribute(PAINT_INFO, pi, firstChar, lastChar+1);
-        elemTPI.put(element, pi);
-
-        addChildNullPaintAttributes(as, element, ctx);
-    }
-    
-    protected void addChildNullPaintAttributes(AttributedString as,
-                                               Element element,
-                                               BridgeContext ctx) {
-        // Add Paint attributres for children of text element
-        for (Node child = element.getFirstChild();
-             child != null;
-             child = child.getNextSibling()) {
-            if (child.getNodeType() != Node.ELEMENT_NODE) 
-                continue;
-
-            Element childElement = (Element)child;
-            if (isTextChild(childElement)) {
-                addNullPaintAttributes(as, childElement, ctx);
-            }
         }
     }
 
@@ -726,8 +696,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             //and only update the section of the AtrtibutedString of
             //the child
             TextPaintInfo parentPI;
-            parentPI = getParentTextPaintInfo
-                (tn.getAttributedCharacterIterator(), cssProceedElement);
+            parentPI = getParentTextPaintInfo(cssProceedElement);
             pi = getTextPaintInfo(cssProceedElement, tn, parentPI, ctx);
             oldPI = (TextPaintInfo)elemTPI.get(cssProceedElement);
         }
@@ -740,36 +709,16 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                 (tn.getAttributedCharacterIterator());
     }
 
-    int getElementStartIndex
-        (AttributedCharacterIterator aci, Element element) {
-        if (aci == null) return -1;
-
-        // calculate which chars in the string belong to this element
-        for (int i = 0; i < aci.getEndIndex();) {
-            aci.setIndex(i);
-            Element delimeter;
-            delimeter = (Element)aci.getAttribute(TEXT_COMPOUND_DELIMITER);
-            if (delimeter == element || nodeAncestorOf(element, delimeter))
-                return i;
-            i = aci.getRunLimit(TEXT_COMPOUND_DELIMITER);
-        }
-        return -1;  
+    int getElementStartIndex(Element element) {
+        TextPaintInfo tpi = (TextPaintInfo)elemTPI.get(element);
+        if (tpi == null) return -1;
+        return tpi.startChar;
     }
 
-    int getElementEndIndex
-        (AttributedCharacterIterator aci, Element element) {
-        if (aci == null) return -1;
-
-        // calculate which chars in the string belong to this element
-        for (int i = aci.getEndIndex()-1; i >= 0;) {
-            aci.setIndex(i);
-            Element delimeter;
-            delimeter = (Element)aci.getAttribute(TEXT_COMPOUND_DELIMITER);
-            if (delimeter == element || nodeAncestorOf(element, delimeter))
-                return i;
-            i = aci.getRunStart(TEXT_COMPOUND_DELIMITER)-1;
-        }
-        return -1;  
+    int getElementEndIndex(Element element) {
+        TextPaintInfo tpi = (TextPaintInfo)elemTPI.get(element);
+        if (tpi == null) return -1;
+        return tpi.endChar;
     }
 
     // -----------------------------------------------------------------------
@@ -821,6 +770,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         boolean preserve = s.equals(SVG_PRESERVE_VALUE);
         boolean prevEndsWithSpace;
         Element nodeElement = element;
+        int elementStartChar = asb.length();
 
         if (top)
             endLimit = 0;
@@ -882,9 +832,15 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                     s = TextUtilities.getElementContent(ref);
                     s = normalizeString(s, preserve, prevEndsWithSpace);
                     if (s != null) {
+                        int trefStart = asb.length();
                         Map m = getAttributeMap(ctx, nodeElement, 
                                                 textPath, bidiLevel);
                         asb.append(s, m);
+                        int trefEnd = asb.length()-1;
+                        TextPaintInfo tpi;
+                        tpi = (TextPaintInfo)elemTPI.get(nodeElement);
+                        tpi.startChar = trefStart;
+                        tpi.endChar   = trefEnd;
                     }
                 } else if (ln.equals(SVG_A_TAG)) {
                     EventTarget target = (EventTarget)nodeElement;
@@ -912,9 +868,27 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         }
 
         if (top) {
-            while ((endLimit < asb.length()) && (asb.getLastChar() == ' '))
+            boolean strippedSome = false;
+            while ((endLimit < asb.length()) && (asb.getLastChar() == ' ')) {
                 asb.stripLast();
+                strippedSome = true;
+            }
+            if (strippedSome) {
+                Iterator iter = elemTPI.values().iterator();
+                while (iter.hasNext()) {
+                    TextPaintInfo tpi = (TextPaintInfo)iter.next();
+                    if (tpi.endChar >= asb.length()) {
+                        tpi.endChar = asb.length()-1;
+                        if (tpi.startChar > tpi.endChar)
+                            tpi.startChar = tpi.endChar;
+                    }
+                }
+            }
         }
+        int elementEndChar = asb.length()-1;
+        TextPaintInfo tpi = (TextPaintInfo)elemTPI.get(element);
+        tpi.startChar = elementStartChar;
+        tpi.endChar   = elementEndChar;
     }
 
     /**
@@ -1184,11 +1158,11 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         AttributedCharacterIterator aci = as.getIterator();
 
         // calculate which chars in the string belong to this element
-        int firstChar = getElementStartIndex(aci, element);
+        int firstChar = getElementStartIndex(element);
         // No match so no chars to annotate.
         if (firstChar == -1) return;
 
-        int lastChar = getElementEndIndex(aci, element);
+        int lastChar = getElementEndIndex(element);
 
         // get all of the glyph position attribute values
         String xAtt      = element.getAttributeNS(null, SVG_X_ATTRIBUTE);
@@ -1318,8 +1292,9 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             return;
         }
         Object o = elemTPI.get(element);
-        if (o == null) return;
-        node.swapTextPaintInfo(pi, (TextPaintInfo)o);
+        if (o != null) {
+            node.swapTextPaintInfo(pi, (TextPaintInfo)o);
+        }
         addChildPaintAttributes(as, element, node, pi, ctx);
     }
 
@@ -1352,16 +1327,20 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         map.put(TEXT_COMPOUND_DELIMITER, element);
 
         // Font size.
-        map.put(TextAttribute.SIZE, TextUtilities.convertFontSize(element));
+        map.put(TextAttribute.SIZE, 
+                TextUtilities.convertFontSize(element));
 
         // Font stretch
-        map.put(TextAttribute.WIDTH, TextUtilities.convertFontStretch(element));
+        map.put(TextAttribute.WIDTH, 
+                TextUtilities.convertFontStretch(element));
 
         // Font weight
-        map.put(TextAttribute.WEIGHT, TextUtilities.convertFontWeight(element));
+        map.put(TextAttribute.WEIGHT, 
+                TextUtilities.convertFontWeight(element));
 
         // Font style
-        map.put(TextAttribute.POSTURE, TextUtilities.convertFontStyle(element));
+        map.put(TextAttribute.POSTURE, 
+                TextUtilities.convertFontStyle(element));
 
         return map;
     }
@@ -1385,30 +1364,53 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                        new SVGAltGlyphHandler(ctx, element));
         }
 
+        // Add null TPI objects to the text (after we set it on the
+        // Text we will swap in the correct values.
+        TextPaintInfo pi = new TextPaintInfo();
+        // Set some basic props so we can get bounds info for complex paints.
+        pi.visible   = true;        
+        pi.fillPaint = Color.black;
+        result.put(PAINT_INFO, pi);
+        elemTPI.put(element, pi);
+
         if (textPath != null) {
-            result.put(GVTAttributedCharacterIterator.TextAttribute.TEXTPATH,
-                       textPath);
+            result.put(TEXTPATH, textPath);
         }
 
         // Text-anchor
         TextNode.Anchor a = TextUtilities.convertTextAnchor(element);
-        result.put(GVTAttributedCharacterIterator.TextAttribute.ANCHOR_TYPE,
-                   a);
+        result.put(ANCHOR_TYPE, a);
 
         // get font size/width/weight/posture properties
         getFontProperties(ctx, element, result);
 
         // Font family
         List fontFamilyList = getFontFamilyList(element, ctx);
-        result.put
-            (GVTAttributedCharacterIterator.TextAttribute.GVT_FONT_FAMILIES,
-             fontFamilyList);
+        // result.put(GVT_FONT_FAMILIES, fontFamilyList);
+
+        List fonts = new ArrayList(fontFamilyList.size());
+        Iterator iter = fontFamilyList.iterator();
+        float fontSize = 12;
+        Float fsFloat = (Float)result.get(TextAttribute.SIZE);
+        if (fsFloat != null) {
+            fontSize = fsFloat.floatValue();
+        }
+        while (iter.hasNext()) {
+            GVTFontFamily ff = (GVTFontFamily)iter.next();
+            if (ff instanceof UnresolvedFontFamily) {
+                ff = FontFamilyResolver.resolve((UnresolvedFontFamily)ff);
+            }
+            if (ff == null) continue;
+            GVTFont ft = ff.deriveFont(fontSize, result);
+            fonts.add(ft);
+        }
+        result.put(GVT_FONTS, fonts);
+
 
         // Text baseline adjustment.
         Object bs = TextUtilities.convertBaselineShift(element);
         if (bs != null) {
-            result.put(GVTAttributedCharacterIterator.
-                       TextAttribute.BASELINE_SHIFT, bs);
+            result.put(BASELINE_SHIFT, bs);
         }
 
         // Unicode-bidi mode
@@ -1665,34 +1667,13 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
      * @param child an <code>Element</code> value
      * @return a <code>TextDecoration</code> value
      */
-    protected TextPaintInfo getParentTextPaintInfo
-        (AttributedCharacterIterator aci, Element child) {
-        if (aci == null)
-            return new TextPaintInfo();
-
-        Element parent = null;
-        // calculate which chars in the string belong to the parent
-        int firstChar = -1;
-        for (int i = 0; i < aci.getEndIndex();) {
-            aci.setIndex(i);
-            Element delimeter;
-            delimeter = (Element)aci.getAttribute(TEXT_COMPOUND_DELIMITER);
-            if (nodeAncestorOf(delimeter,child) &&
-                ((parent == null) || nodeAncestorOf(parent, delimeter))) {
-                parent = delimeter;
-                firstChar = i;
-            }
-            if (delimeter == child || nodeAncestorOf(child, delimeter)) {
-                break;
-            }
-            i = aci.getRunLimit(TEXT_COMPOUND_DELIMITER);
+    protected TextPaintInfo getParentTextPaintInfo(Element child) {
+        Node parent = child.getParentNode();
+        while (parent != null) {
+            TextPaintInfo tpi = (TextPaintInfo)elemTPI.get(parent);
+            if (tpi != null) return tpi;
         }
-
-        if ( parent == null)
-            return new TextPaintInfo(); //no parent
-
-        aci.setIndex(firstChar);
-        return (TextPaintInfo)aci.getAttribute(PAINT_INFO);
+        return null;
     }
 
     /**
@@ -1702,13 +1683,13 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
      */
     protected TextPaintInfo getTextPaintInfo(Element element,
                                              GraphicsNode node,
-                                             TextPaintInfo parent,
+                                             TextPaintInfo parentTPI,
                                              BridgeContext ctx) {
         // Force the engine to update stuff..
         Value val = CSSUtilities.getComputedStyle
             (element, SVGCSSEngine.TEXT_DECORATION_INDEX);
 
-        TextPaintInfo pi = new TextPaintInfo(parent);
+        TextPaintInfo pi = new TextPaintInfo(parentTPI);
 
         // Was text-decoration explicity set on this element?
         StyleMap sm = ((CSSStylableElement)element).getComputedStyleMap(null);
@@ -2176,12 +2157,12 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
 
         //get the index in the aci for the first character
         //of the element
-        int firstChar = getElementStartIndex(aci,element);
+        int firstChar = getElementStartIndex(element);
 
         if (firstChar == -1)
             return 0; // Element not part of aci (no chars in elem usually)
 
-        int lastChar = getElementEndIndex(aci,element);
+        int lastChar = getElementEndIndex(element);
 
         return( lastChar - firstChar + 1 );
     }
@@ -2197,7 +2178,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         aci = ((TextNode)node).getAttributedCharacterIterator();
         if (aci == null) return null;
 
-        int firstChar = getElementStartIndex(aci,element);
+        int firstChar = getElementStartIndex(element);
 
         if ( firstChar == -1 )
             return null;
@@ -2255,7 +2236,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         if (aci == null) 
             return null;
 
-        int firstChar = getElementStartIndex(aci,element);
+        int firstChar = getElementStartIndex(element);
         if ( firstChar == -1 )
             return null;
 
@@ -2306,7 +2287,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         if (aci == null)
             return null;
 
-        int firstChar = getElementStartIndex(aci,element);
+        int firstChar = getElementStartIndex(element);
         if ( firstChar == -1 )
             return null;
 
@@ -2359,7 +2340,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             return 0;
 
         //first the first character for the element
-        int firstChar = getElementStartIndex(aci,element);
+        int firstChar = getElementStartIndex(element);
         if ( firstChar == -1 )
             return 0;
 
@@ -2440,7 +2421,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             return -1;
 
         TextNode textNode = (TextNode)node;
-        int firstChar = getElementStartIndex(aci,element);
+        int firstChar = getElementStartIndex(element);
 
         if ( firstChar == -1 )
             return -1;
@@ -2576,14 +2557,14 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             return;
 
         TextNode textNode = (TextNode)node;
-        int firstChar = getElementStartIndex(aci,element);
+        int firstChar = getElementStartIndex(element);
 
         if ( firstChar == -1 )
             return;
 
         List list = getTextRuns(textNode);
 
-        int lastChar = getElementEndIndex(aci,element);
+        int lastChar = getElementEndIndex(element);
 
         CharacterInformation firstInfo, lastInfo;
         firstInfo = getCharacterInformation(list, firstChar,charnum,aci);
@@ -2628,8 +2609,8 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
 
 
         //found an hit, check if it belong to the element
-        int first = getElementStartIndex( aci, e );
-        int last  = getElementEndIndex( aci, e );
+        int first = getElementStartIndex( e );
+        int last  = getElementEndIndex( e );
 
         int hitIndex = hit.getCharIndex();
 

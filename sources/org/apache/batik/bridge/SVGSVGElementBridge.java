@@ -433,10 +433,6 @@ public class SVGSVGElementBridge
         }
     }
 
-    public static final 
-        AttributedCharacterIterator.Attribute TEXT_COMPOUND_DELIMITER 
-        = GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER;
-
     public List getIntersectionList(SVGRect svgRect, Element end) {
         List ret = new ArrayList();
         Rectangle2D rect = new Rectangle2D.Float(svgRect.getX(),

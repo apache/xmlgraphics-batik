@@ -49,6 +49,8 @@ public class TextPaintInfo {
     public Paint  strikethroughStrokePaint;
     public Stroke strikethroughStroke;
 
+    public int    startChar, endChar;
+
     public TextPaintInfo() { }
     
     public TextPaintInfo(TextPaintInfo pi) {

@@ -105,10 +105,6 @@ public class GlyphLayout implements TextSpanLayout {
         = GVTAttributedCharacterIterator.TextAttribute.LINE_HEIGHT;
 
     public static final AttributedCharacterIterator.Attribute 
-        TEXT_COMPOUND_DELIMITER 
-        = GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER;
-
-    public static final AttributedCharacterIterator.Attribute 
         VERTICAL_ORIENTATION 
         = GVTAttributedCharacterIterator.TextAttribute.VERTICAL_ORIENTATION;
 

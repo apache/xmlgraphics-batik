@@ -46,7 +46,6 @@ import org.apache.batik.gvt.font.GVTFont;
 import org.apache.batik.gvt.font.GVTFontFamily;
 import org.apache.batik.gvt.font.GVTGlyphMetrics;
 import org.apache.batik.gvt.font.GVTLineMetrics;
-import org.apache.batik.gvt.font.UnresolvedFontFamily;
 import org.apache.batik.gvt.text.AttributedCharacterSpanIterator;
 import org.apache.batik.gvt.text.BidiAttributedCharacterIterator;
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
@@ -92,8 +91,8 @@ public class StrokingTextPainter extends BasicTextPainter {
         = GVTAttributedCharacterIterator.TextAttribute.GVT_FONT;
 
     public static final 
-        AttributedCharacterIterator.Attribute GVT_FONT_FAMILIES 
-        = GVTAttributedCharacterIterator.TextAttribute.GVT_FONT_FAMILIES;
+        AttributedCharacterIterator.Attribute GVT_FONTS
+        = GVTAttributedCharacterIterator.TextAttribute.GVT_FONTS;
 
     public static final 
         AttributedCharacterIterator.Attribute BIDI_LEVEL
@@ -226,7 +225,7 @@ public class StrokingTextPainter extends BasicTextPainter {
             // reorderTime += t1-t0;
             // t0=t1;
             chunkACIs    [i] = createModifiedACIForFontMatching
-                (node, chunkACIs[i]);
+                (chunkACIs[i]);
             
             chunkStart += (chunkACIs[i].getEndIndex()-
                            chunkACIs[i].getBeginIndex());
@@ -410,8 +409,8 @@ public class StrokingTextPainter extends BasicTextPainter {
      *
      * @return The new modified aci.  
      */
-    protected AttributedCharacterIterator createModifiedACIForFontMatching
-        (TextNode node, AttributedCharacterIterator aci) {
+    protected static AttributedCharacterIterator createModifiedACIForFontMatching
+        (AttributedCharacterIterator aci) {
 
         aci.first();
         AttributedString as = null; 
@@ -424,39 +423,21 @@ public class StrokingTextPainter extends BasicTextPainter {
             end = aci.getRunLimit(TEXT_COMPOUND_DELIMITER);
             int aciLength = end-start;
 
-            List fontFamilies;
-            fontFamilies = (List)aci.getAttributes().get(GVT_FONT_FAMILIES);
+            List fonts;
+            fonts = (List)aci.getAttributes().get(GVT_FONTS);
 
-            if (fontFamilies == null ) {
-                // no font families set this chunk so just increment...
-                asOff += aciLength;
-                moreChunks = (aci.setIndex(end) != AttributedCharacterIterator.DONE);
-                continue;
-            }
 
-            // resolve any unresolved font families in the list
-            List resolvedFontFamilies = new ArrayList(fontFamilies.size());
-            for (int i = 0; i < fontFamilies.size(); i++) {
-                GVTFontFamily fontFamily = (GVTFontFamily)fontFamilies.get(i);
-                if (fontFamily instanceof UnresolvedFontFamily) {
-                    fontFamily = FontFamilyResolver.resolve
-                        ((UnresolvedFontFamily)fontFamily);
-                }
-                if (fontFamily != null) // Add font family if resolved
-                    resolvedFontFamilies.add(fontFamily);
-            }
+            float fontSize = 12;
+            Float fsFloat = (Float)aci.getAttributes().get(TextAttribute.SIZE);
+            if (fsFloat != null)
+                fontSize = fsFloat.floatValue();
 
             // if could not resolve at least one of the fontFamilies
             // then use the default font
-            if (resolvedFontFamilies.size() == 0) {
-                resolvedFontFamilies.add(FontFamilyResolver.defaultFont);
-            }
-
-            // create a list of fonts of the correct size
-            float fontSize = 12;
-            Float fsFloat = (Float)aci.getAttributes().get(TextAttribute.SIZE);
-            if (fsFloat != null) {
-                fontSize = fsFloat.floatValue();
+            if (fonts.size() == 0) {
+                // create a list of fonts of the correct size
+                fonts.add(FontFamilyResolver.defaultFont.deriveFont
+                    (fontSize, aci));
             }
 
             // now for each char or group of chars in the string,
@@ -470,16 +451,14 @@ public class StrokingTextPainter extends BasicTextPainter {
             int numSet=0;
             int firstUnset=start;
             boolean firstUnsetSet;
-            for (int i = 0; i < resolvedFontFamilies.size(); i++) {
+            for (int i = 0; i < fonts.size(); i++) {
                 // assign this font to all characters it can display if it has
                 // not already been assigned
                 int currentIndex = firstUnset;
                 firstUnsetSet = false;
                 aci.setIndex(currentIndex);
 
-                GVTFontFamily ff;
-                ff = ((GVTFontFamily)resolvedFontFamilies.get(i));
-                GVTFont font = ff.deriveFont(fontSize, aci);
+                GVTFont font = (GVTFont)fonts.get(i);
                 if (defaultFont == null)
                     defaultFont = font;
 
