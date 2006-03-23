@@ -39,6 +39,7 @@ import org.apache.batik.dom.GenericElement;
 import org.apache.batik.dom.GenericEntityReference;
 import org.apache.batik.dom.GenericProcessingInstruction;
 import org.apache.batik.dom.GenericText;
+import org.apache.batik.dom.ExtensibleDOMImplementation;
 import org.apache.batik.dom.StyleSheetFactory;
 import org.apache.batik.dom.events.EventSupport;
 import org.apache.batik.dom.util.XMLSupport;
@@ -62,12 +63,16 @@ import org.w3c.dom.ProcessingInstruction;
 import org.w3c.dom.Text;
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.DocumentCSS;
+import org.w3c.dom.css.ViewCSS;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.MutationEvent;
 import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGLangSpace;
 import org.w3c.dom.svg.SVGSVGElement;
+import org.w3c.dom.views.AbstractView;
+import org.w3c.dom.views.DocumentView;
+import org.w3c.dom.window.Window;
 
 /**
  * This class implements {@link SVGDocument}.
@@ -601,6 +606,116 @@ public class SVGOMDocument
                                   mevt.getAttrChange(),
                                   mevt.getPrevValue(),
                                   mevt.getNewValue());
+        }
+    }
+
+    // ViewCSS ///////////////////////////////////////////////////////////////
+
+    /**
+     * Creates the default view for this document.
+     */
+    protected AbstractView createDefaultView() {
+        return new DefaultView();
+    }
+
+    /**
+     * Clears the view CSS.
+     */
+    public void clearViewCSS() {
+        if (cssEngine != null) {
+            cssEngine.dispose();
+        }
+        cssEngine = null;
+        ((DefaultView) defaultView).clearViewCSS();
+    }
+
+    /**
+     * Sets the Window object to be used by the default view.
+     */
+    public void setWindow(Window window) {
+        DefaultView defaultView = (DefaultView) getDefaultView();
+        defaultView.setWindow(window);
+    }
+
+    /**
+     * The default view for this document.
+     */
+    protected class DefaultView implements ViewCSS, Window {
+
+        /**
+         * The proxied ViewCSS object.
+         */
+        protected ViewCSS viewCSS;
+
+        /**
+         * The proxied Window object.
+         */
+        protected Window window;
+
+        /**
+         * Clears the proxied ViewCSS object in response to a change
+         * of CSSEngine on the document.
+         */
+        public void clearViewCSS() {
+            viewCSS = null;
+        }
+
+        /**
+         * Sets the Window object to be proxied by this default view.
+         */
+        public void setWindow(Window window) {
+            this.window = window;
+        }
+
+        /**
+         * Creates a proxied ViewCSS object.
+         */
+        protected void createViewCSS() {
+            ExtensibleDOMImplementation impl =
+                (ExtensibleDOMImplementation) implementation;
+            viewCSS = impl.createViewCSS(SVGOMDocument.this);
+        }
+
+        // AbstractView //////////////////////////////////////////////////////
+
+        /**
+         * The source <code>DocumentView</code> of which this is an
+         * <code>AbstractView</code>.
+         */
+        public DocumentView getDocument() {
+            return (DocumentView) SVGOMDocument.this;
+        }
+
+        // ViewCSS ///////////////////////////////////////////////////////////
+
+        /**
+         * <b>DOM</b>: Implements {@link
+         * org.w3c.dom.css.ViewCSS#getComputedStyle(Element,String)}.
+         */
+        public CSSStyleDeclaration getComputedStyle(Element elt,
+                                                    String pseudoElt) {
+            if (viewCSS == null) {
+                createViewCSS();
+            }
+            return viewCSS.getComputedStyle(elt, pseudoElt);
+        }
+
+        // Window ////////////////////////////////////////////////////////////
+
+        /**
+         * <b>DOM</b>: Implements
+         * {@link org.w3c.dom.window.Window#getWindow()}.
+         */
+        public Window getWindow() {
+            return window.getWindow();
+        }
+
+        /**
+         * <b>DOM</b>: Implements
+         * {@link org.w3c.dom.window.Window#getSelf()}.
+         */
+        public Window getSelf() {
+            return window.getSelf();
         }
     }
 

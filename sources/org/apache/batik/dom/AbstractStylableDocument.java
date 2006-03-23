@@ -94,11 +94,18 @@ public abstract class AbstractStylableDocument extends AbstractDocument
      */
     public AbstractView getDefaultView() {
         if (defaultView == null) {
-            ExtensibleDOMImplementation impl;
-            impl = (ExtensibleDOMImplementation)implementation;
-            defaultView = impl.createViewCSS(this);
+            defaultView = createDefaultView();
         }
         return defaultView;
+    }
+
+    /**
+     * Creates the default view for this document.
+     */
+    protected AbstractView createDefaultView() {
+        ExtensibleDOMImplementation impl =
+            (ExtensibleDOMImplementation) implementation;
+        return impl.createViewCSS(this);
     }
 
     /**

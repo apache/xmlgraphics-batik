@@ -392,6 +392,19 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
     }
 
     /**
+     * Initializes the environment of the given interpreter.
+     */
+    public void initializeEnvironment(Interpreter interp, String lang) {
+        org.w3c.dom.window.Window window = 
+            (org.w3c.dom.window.Window) createWindow(interp, lang);
+        interp.bindObject("window", window);
+        Object doc = window.getDocument();
+        if (doc instanceof SVGOMDocument) {
+            ((SVGOMDocument) doc).setWindow(window);
+        }
+    }
+
+    /**
      * Runs an event handler.
      */
     public void runEventHandler(String script, Event evt, 
