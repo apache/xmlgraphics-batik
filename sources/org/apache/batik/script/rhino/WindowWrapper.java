@@ -351,14 +351,14 @@ public class WindowWrapper extends ImporterTopLevel {
                 break;
             case 1:
                 String message =
-                    (String)Context.toType(args[0], String.class);
+                    (String)Context.jsToJava(args[0], String.class);
                 result = window.prompt(message);
                 break;
             default:
                 message =
-                    (String)Context.toType(args[0], String.class);
+                    (String)Context.jsToJava(args[0], String.class);
                 String defVal =
-                    (String)Context.toType(args[1], String.class);
+                    (String)Context.jsToJava(args[1], String.class);
                 result = window.prompt(message, defVal);
                 break;
         }
