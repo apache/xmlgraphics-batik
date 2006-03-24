@@ -24,16 +24,22 @@ import org.apache.batik.util.SoftReferenceCache;
 
 /**
  * This class manages a cache of soft references to Images that
- * we have already loaded.  Adding an image is two fold.
- * First you add the ParsedURL, this lets the cache know that someone is
- * working on this ParsedURL.  Then when the completed RenderedImage is
- * ready you put it into the cache.<P>
+ * we have already loaded.
  *
- * If someone requests a ParsedURL after it has been added but before it has
- * been put they will be blocked until the put.
+ * <p>
+ *   Adding an image is two fold. First you add the ParsedURL, this lets
+ *   the cache know that someone is working on this ParsedURL.  Then when
+ *   the completed RenderedImage is ready you put it into the cache.
+ * </p>
+ * <p>
+ *   If someone requests a ParsedURL after it has been added but before it has
+ *   been put they will be blocked until the put.
+ * </p>
+ *
+ * @author <a href="mailto:thomas.deweese@kodak.com">Thomas DeWeese</a>
+ * @version $Id$
  */
-
-public class URLImageCache extends SoftReferenceCache{
+public class URLImageCache extends SoftReferenceCache {
 
     static URLImageCache theCache = new URLImageCache();
 

@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2005  The Apache Software Foundation 
+   Copyright 2005-2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -22,9 +22,7 @@ import org.apache.batik.script.rhino.WindowWrapper;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
-import org.mozilla.javascript.JavaScriptException;
 import org.mozilla.javascript.NativeJavaObject;
-import org.mozilla.javascript.PropertyException;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 
@@ -44,12 +42,8 @@ public class GlobalWrapper extends WindowWrapper {
     public GlobalWrapper(Context context) {
         super(context);
         String[] names = { "startMouseCapture", "stopMouseCapture" };
-        try {
-            this.defineFunctionProperties(names, GlobalWrapper.class,
-                                          ScriptableObject.DONTENUM);
-        } catch (PropertyException e) {
-            throw new Error();  // should never happen
-        }
+        this.defineFunctionProperties(names, GlobalWrapper.class,
+                                      ScriptableObject.DONTENUM);
     }
 
     public String getClassName() {
@@ -66,8 +60,7 @@ public class GlobalWrapper extends WindowWrapper {
     public static void startMouseCapture(Context cx,
                                          Scriptable thisObj,
                                          Object[] args,
-                                         Function funObj)
-            throws JavaScriptException {
+                                         Function funObj) {
         int len = args.length;
         GlobalWrapper gw = (GlobalWrapper) thisObj;
         SVGGlobal global = (SVGGlobal) gw.window;

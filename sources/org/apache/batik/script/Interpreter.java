@@ -29,6 +29,7 @@ import java.io.Writer;
  * @version $Id$
  */
 public interface Interpreter extends org.apache.batik.i18n.Localizable {
+
     /**
      * This method should evaluate a piece of script associated to a given 
      * description.
@@ -39,7 +40,7 @@ public interface Interpreter extends org.apache.batik.i18n.Localizable {
      * @return if no exception is thrown during the call, should return the
      * value of the last expression evaluated in the script
      */
-    public Object evaluate(Reader scriptreader, String description)
+    Object evaluate(Reader scriptreader, String description)
         throws InterpreterException, IOException;
 
     /**
@@ -49,7 +50,7 @@ public interface Interpreter extends org.apache.batik.i18n.Localizable {
      * @return if no exception is thrown during the call, should return the
      * value of the last expression evaluated in the script
      */
-    public Object evaluate(Reader scriptreader)
+    Object evaluate(Reader scriptreader)
         throws InterpreterException, IOException;
 
     /**
@@ -61,7 +62,7 @@ public interface Interpreter extends org.apache.batik.i18n.Localizable {
      * @return if no exception is thrown during the call, should return the
      * value of the last expression evaluated in the script
      */
-    public Object evaluate(String script)
+    Object evaluate(String script)
         throws InterpreterException;
 
     /**
@@ -71,7 +72,7 @@ public interface Interpreter extends org.apache.batik.i18n.Localizable {
      * @param name the name of the script object to create
      * @param object the Java object
      */
-    public void bindObject(String name, Object object);
+    void bindObject(String name, Object object);
 
     /**
      * This method should change the output <code>Writer</code> that will be
@@ -79,12 +80,12 @@ public interface Interpreter extends org.apache.batik.i18n.Localizable {
      *
      * @param output the new out <code>Writer</code>.
      */
-    public void setOut(Writer output);
+    void setOut(Writer output);
 
     /**
      * This method can dispose resources used by the interpreter when it is
      * no longer used. Be careful, you SHOULD NOT use this interpreter instance
      * after calling this method.
      */
-    public void dispose();
+    void dispose();
 }
