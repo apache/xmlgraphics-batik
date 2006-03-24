@@ -1,6 +1,6 @@
 <?xml version="1.0" standalone="no"?>
 <!-- ====================================================================== 
-     Copyright 2002,2004 The Apache Software Foundation
+     Copyright 2002,2004,2006  The Apache Software Foundation
      
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -101,7 +101,7 @@
            >squiggle</tspan></text>
           <text font-size="17" x="246" y="115"><tspan
           >Built with the Batik SVG toolkit</tspan
-          ><tspan dy="1em" x="246">http://xml.apache.org/batik</tspan></text>
+          ><tspan dy="1em" x="246">http://xmlgraphics.apache.org/batik</tspan></text>
           <text x="487" y="140" text-anchor="end" font-size="16" 
             fill="red"><xsl:value-of select="$version" />
           <xsl:if test="$revisionType != 'revisionType'">

@@ -1,5 +1,5 @@
 The pdf-transcoder.jar file from the Apache Fop project
-(http://xml.apache.org/fop), this is only needed if you want to
+(http://xmlgraphics.apache.org/fop), this is only needed if you want to
 transcode to PDF, otherwise it can be removed from distributions.
 
 This jar file is slightly modified from the standard

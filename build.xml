@@ -1,6 +1,6 @@
 <!--
 
-   Copyright 2000-2005  The Apache Software Foundation 
+   Copyright 2000-2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -566,7 +566,7 @@ To display the available targets type:
       <manifest>
         <attribute name="Implementation-Title" value="Batik Java Bean"/>
         <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}"/>
-        <attribute name="Implementation-Vendor" value="Apache Software Foundation (http://xml.apache.org/batik/)"/>
+        <attribute name="Implementation-Vendor" value="Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
       </manifest>
       <fileset dir="${dest}">
         <include name="org/w3c/**"/>
@@ -878,7 +878,7 @@ To display the available targets type:
       <manifest>
         <attribute name="Implementation-Title" value="Batik XML Pretty Printer"/>
         <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}"/>
-        <attribute name="Implementation-Vendor" value="Apache Software Foundation (http://xml.apache.org/batik/)"/>
+        <attribute name="Implementation-Vendor" value="Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
       </manifest>
       <fileset dir="${dest}">
         <include name="${package-prefix}/apps/svgpp/**/*.class"/>
@@ -896,7 +896,7 @@ To display the available targets type:
       <manifest>
         <attribute name="Implementation-Title" value="Batik SVG Slide Show Tool"/>
         <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}"/>
-        <attribute name="Implementation-Vendor" value="Apache Software Foundation (http://xml.apache.org/batik/)"/>
+        <attribute name="Implementation-Vendor" value="Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
       </manifest>
       <fileset dir="${dest}">
         <include name="${package-prefix}/apps/slideshow/**/*.class"/>
@@ -919,7 +919,7 @@ To display the available targets type:
       <manifest>
         <attribute name="Implementation-Title" value="Batik Squiggle Viewer"/>
         <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}"/>
-        <attribute name="Implementation-Vendor" value="Apache Software Foundation (http://xml.apache.org/batik/)"/>
+        <attribute name="Implementation-Vendor" value="Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
       </manifest>
       <fileset dir="${dest}">
         <include name="${package-prefix}/apps/svgbrowser/**/*.class"/>
@@ -944,7 +944,7 @@ To display the available targets type:
       <manifest>
         <attribute name="Implementation-Title" value="Batik Squiggle Viewer With Extensions"/>
         <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}"/>
-        <attribute name="Implementation-Vendor" value="Apache Software Foundation (http://xml.apache.org/batik/)"/>
+        <attribute name="Implementation-Vendor" value="Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
       </manifest>
         <fileset dir="${resources}" excludes="**/.svn/">
             <include name="META-INF/services/**"/>
@@ -966,7 +966,7 @@ To display the available targets type:
       <manifest>
         <attribute name="Implementation-Title" value="Batik SVG Rasterizer"/>
         <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}"/>
-        <attribute name="Implementation-Vendor" value="Apache Software Foundation (http://xml.apache.org/batik/)"/>
+        <attribute name="Implementation-Vendor" value="Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
       </manifest>
       <fileset dir="${dest}">
         <include name="${package-prefix}/apps/rasterizer/**/*.class"/>
@@ -988,7 +988,7 @@ To display the available targets type:
       <manifest>
         <attribute name="Implementation-Title" value="Batik SVG Rasterizer With Extensions"/>
         <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}"/>
-        <attribute name="Implementation-Vendor" value="Apache Software Foundation (http://xml.apache.org/batik/)"/>
+        <attribute name="Implementation-Vendor" value="Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
       </manifest>
         <fileset dir="${resources}" excludes="**/.svn/">
             <include name="META-INF/services/**"/>
@@ -1003,7 +1003,7 @@ To display the available targets type:
       <manifest>
         <attribute name="Implementation-Title" value="Batik TrueType to SVG Font Converter"/>
         <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}"/>
-        <attribute name="Implementation-Vendor" value="Apache Software Foundation (http://xml.apache.org/batik/)"/>
+        <attribute name="Implementation-Vendor" value="Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
       </manifest>
       <fileset dir="${dest}">
         <include name="${package-prefix}/apps/ttf2svg/**/*.class"/>
@@ -1018,7 +1018,7 @@ To display the available targets type:
       <manifest>
         <attribute name="Implementation-Title" value="Batik All Jar"/>
         <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}"/>
-        <attribute name="Implementation-Vendor" value="Apache Software Foundation (http://xml.apache.org/batik/)"/>
+        <attribute name="Implementation-Vendor" value="Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
       </manifest>
     </jar>
   </target>

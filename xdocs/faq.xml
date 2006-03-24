@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!--
 
-   Copyright 2000-2005  The Apache Software Foundation 
+   Copyright 2000-2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -251,9 +251,9 @@
     <question>How does Batik relate to other Apache projects?</question>
     <answer>
         <p>
-        Batik is used in <link href="http://xml.apache.org/cocoon/index.html">Cocoon</link> 
+        Batik is used in <link href="http://cocoon.apache.org/">Cocoon</link> 
         for server side rasterization of SVG images. In addition, the Batik is used in the 
-        <link href="http://xml.apache.org/fop/index.html">FOP</link> project to convert 
+        <link href="http://xmlgraphics.apache.org/fop/">FOP</link> project to convert 
         SVG images to PDF format.
         </p>
     </answer>

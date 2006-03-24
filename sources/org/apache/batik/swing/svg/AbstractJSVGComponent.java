@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001-2005  The Apache Software Foundation 
+   Copyright 2001-2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -693,11 +693,8 @@ public class AbstractJSVGComponent extends JGVTComponent {
             break;
         case AUTODETECT:
             isDynamicDocument = bridgeContext.isDynamicDocument(doc);
-            if (isDynamicDocument)
-                isInteractiveDocument = true;
-            else
-                isInteractiveDocument = 
-                    bridgeContext.isInteractiveDocument(doc);
+            isInteractiveDocument =
+                isDynamicDocument || bridgeContext.isInteractiveDocument(doc);
         }
 
         if (isInteractiveDocument) {

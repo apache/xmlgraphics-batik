@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2003-2004  The Apache Software Foundation 
+   Copyright 2003-2004,2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -21,12 +21,13 @@ import java.security.AccessControlContext;
 import java.security.AccessController;
 import java.security.PrivilegedExceptionAction;
 
+import org.mozilla.javascript.Callable;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.GeneratedClassLoader;
-import org.mozilla.javascript.JavaScriptException;
 import org.mozilla.javascript.Script;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.SecurityController;
+import org.mozilla.javascript.WrappedException;
 
 /**
  * This implementation of the Rhino <tt>SecurityController</tt> interface is
@@ -48,7 +49,7 @@ public class BatikSecurityController extends SecurityController {
         if (securityDomain instanceof RhinoClassLoader) {
             return (RhinoClassLoader)securityDomain;
         }
-		
+
         // FIXX: This should be supported by intersecting perms.
         // Calling var script = Script(source); script(); is not supported
         throw new SecurityException("Script() objects are not supported");
@@ -75,19 +76,21 @@ public class BatikSecurityController extends SecurityController {
     }
 
     /**
-     * Call {@link Script#exec(Context cx, Scriptable scope)} of
-     * <i>script</i> under restricted security domain where an action is
+     * Calls {@link Callable#call(Context, Scriptable, Scriptable, Object[])} of
+     * <code>callable</code> under restricted security domain where an action is
      * allowed only if it is allowed according to the Java stack on the
-     * moment of the <i>execWithDomain</i> call and <i>securityDomain</i>.
-     * Any call to {@link #getDynamicSecurityDomain(Object)} during
-     * execution of {@link Script#exec(Context cx, Scriptable scope)}
+     * moment of the <code>callWithDomain</code> call and
+     * <code>securityDomain</code>. Any call to
+     * {@link #getDynamicSecurityDomain(Object)} during execution of
+     * {@link Callable#call(Context, Scriptable, Scriptable, Object[])}
      * should return a domain incorporate restrictions imposed by
-     * <i>securityDomain</i>.
+     * <code>securityDomain</code>.
      */
-    public Object execWithDomain(final Context cx, final Scriptable scope,
-                                 final Script script, Object securityDomain)
-        throws JavaScriptException {
-        
+    public Object callWithDomain(Object securityDomain, final Context cx,
+                                 final Callable callable,
+                                 final Scriptable scope,
+                                 final Scriptable thisObj,
+                                 final Object[] args) {
         AccessControlContext acc;
         if (securityDomain instanceof AccessControlContext)
             acc = (AccessControlContext)securityDomain;
@@ -96,16 +99,15 @@ public class BatikSecurityController extends SecurityController {
             acc = loader.rhinoAccessControlContext;
         }
 
+        PrivilegedExceptionAction execAction = new PrivilegedExceptionAction() {
+            public Object run() {
+                return callable.call(cx, scope, thisObj, args);
+            }
+        };
         try {
-            // acc = new AccessController(acc, acc.getDomainCombiner());
-            return AccessController.doPrivileged
-                (new PrivilegedExceptionAction() {
-                        public Object run() throws JavaScriptException {
-                            return script.exec(cx, scope);
-                        }
-                    }, acc );
+            return AccessController.doPrivileged(execAction, acc);
         } catch (Exception e) {
-            throw new JavaScriptException(e);
+            throw new WrappedException(e);
         }
     }
 }
