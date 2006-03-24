@@ -23,10 +23,13 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.Vector;
 import java.util.jar.Manifest;
 
 import org.apache.batik.dom.AbstractElement;
@@ -245,7 +248,7 @@ public class BaseScriptingEnvironment {
         bridgeContext = ctx;
         document = ctx.getDocument();
         docPURL = new ParsedURL(((SVGDocument)document).getURL());
-        userAgent     = bridgeContext.getUserAgent();
+        userAgent = bridgeContext.getUserAgent();
     }
 
     /**
@@ -314,8 +317,6 @@ public class BaseScriptingEnvironment {
      * Loads the scripts contained in the <script> elements.
      */
     public void loadScripts() {
-        org.apache.batik.script.Window window = null;
-
         NodeList scripts = document.getElementsByTagNameNS
             (SVGConstants.SVG_NAMESPACE_URI, SVGConstants.SVG_SCRIPT_TAG);
         int len = scripts.getLength();
@@ -324,142 +325,182 @@ public class BaseScriptingEnvironment {
             return;
         }
 
-        for (int i = 0; i < len; i++) {
-            AbstractElement script = (AbstractElement) scripts.item(i);
-            String type = script.getAttributeNS
-                (null, SVGConstants.SVG_TYPE_ATTRIBUTE);
+        AbstractElement[] elements      = new AbstractElement[len];
+        String[]          types         = new String[len];
+        boolean[]         typesJava     = new boolean[len];
+        String[]          hrefs         = new String[len];
+        ParsedURL[]       scriptPURLs   = new ParsedURL[len];
+        Vector            jarURLs       = new Vector();
+        HashMap           handlerNames1 = new HashMap();
+        HashMap           handlerNames2 = new HashMap();
 
-            if (type.length() == 0) {
-                type = SVGConstants.SVG_SCRIPT_TYPE_DEFAULT_VALUE;
+        // Collect details about the script elements.
+        for (int i = 0; i < len; i++) {
+            try {
+                elements[i] = (AbstractElement) scripts.item(i);
+                types[i] = elements[i].getAttributeNS
+                    (null, SVGConstants.SVG_TYPE_ATTRIBUTE);
+
+                if (types[i].length() == 0) {
+                    types[i] = SVGConstants.SVG_SCRIPT_TYPE_DEFAULT_VALUE;
+                }
+
+                typesJava[i] =
+                    types[i].equals(SVGConstants.SVG_SCRIPT_TYPE_JAVA);
+                hrefs[i] = XLinkSupport.getXLinkHref(elements[i]);
+                scriptPURLs[i] =
+                    new ParsedURL(elements[i].getBaseURI(), hrefs[i]);
+                checkCompatibleScriptURL(types[i], scriptPURLs[i]);
+                if (typesJava[i]) {
+                    jarURLs.add(new URL(scriptPURLs[i].toString()));
+                }
+            } catch (Exception e) {
+                if (userAgent != null) {
+                    userAgent.displayError(e);
+                }
+                elements[i] = null;
+            }
+        }
+
+        DocumentJarClassLoader cll = null;
+        URL docURL = null;
+        if (!jarURLs.isEmpty()) {
+            try {
+                docURL = new URL(docPURL.toString());
+            } catch (MalformedURLException mue) {
+                /* nothing just let docURL be null */
+            }
+            // Make a class loader that lets all jar files see each other.
+            cll = new DocumentJarClassLoader
+                ((URL[]) jarURLs.toArray(new URL[0]), docURL);
+
+            // Get the 'Script-Handler' and 'SVG-Handler-Class' attributes
+            // from the jar files.
+            try {
+                Enumeration e = cll.findResources("META-INF/MANIFEST.MF");
+                while (e.hasMoreElements()) {
+                    URL url = (URL) e.nextElement();
+                    String fullURL = url.toString();
+                    String jarURL = fullURL.substring(4, fullURL.indexOf('!'));
+                    Manifest man = new Manifest(url.openStream());
+                    String handler =
+                        man.getMainAttributes().getValue("Script-Handler");
+                    if (handler != null) {
+                        handlerNames1.put(jarURL, handler);
+                    }
+                    handler =
+                        man.getMainAttributes().getValue("SVG-Handler-Class");
+                    if (handler != null) {
+                        handlerNames2.put(jarURL, handler);
+                    }
+                }
+            } catch (Exception ex) {
+                if (userAgent != null) {
+                    userAgent.displayError(ex);
+                }
+            }
+        }
+
+        // Create a window object.
+        org.apache.batik.script.Window window = createWindow();
+        registerWindowObject(window);
+
+        // Execute each of the scripts.
+        for (int i = 0; i < len; i++) {
+            if (elements[i] == null) {
+                continue;
             }
 
-            //
-            // Java code invocation.
-            //
-            if (type.equals(SVGConstants.SVG_SCRIPT_TYPE_JAVA)) {
+            if (typesJava[i]) {
+                //
+                // Java code invocation.
+                //
                 try {
-                    String href = XLinkSupport.getXLinkHref(script);
-                    ParsedURL purl = new ParsedURL(script.getBaseURI(), href);
-
-                    checkCompatibleScriptURL(type, purl);
-
-                    DocumentJarClassLoader cll;
-                    URL docURL = null;
-                    try {
-                        docURL = new URL(docPURL.toString());
-                    } catch (MalformedURLException mue) {
-                        /* nothing just let docURL be null */
-                    }
-                    cll = new DocumentJarClassLoader
-                        (new URL(purl.toString()), docURL);
-
-                    // Get the 'Script-Handler' entry in the manifest.
-                    URL url = cll.findResource("META-INF/MANIFEST.MF");
-                    if (url == null) {
-                        continue;
-                    }
-                    Manifest man = new Manifest(url.openStream());
-
-                    String sh;
-
-                    sh = man.getMainAttributes().getValue("Script-Handler");
-                    if (sh != null) {
-                        // Run the script handler.
+                    // Run the script handler specified by 'Script-Handler'.
+                    String jarURL = scriptPURLs[i].toString();
+                    String handler = (String) handlerNames1.get(jarURL);
+                    if (handler != null) {
                         ScriptHandler h;
-                        h = (ScriptHandler)cll.loadClass(sh).newInstance();
-
-                        if (window == null) {
-                            window = createWindow();
-                            registerWindowObject(window);
-                        }
-
+                        h = (ScriptHandler)cll.loadClass(handler).newInstance();
                         h.run(document, window);
                     }
 
-                    sh = man.getMainAttributes().getValue("SVG-Handler-Class");
-                    if (sh != null) {
-                        // Run the initializer
+                    // Run the script handler specified by 'SVG-Handler-Class'.
+                    handler = (String) handlerNames2.get(jarURL);
+                    if (handler != null) {
                         EventListenerInitializer initializer;
-                        initializer =
-                            (EventListenerInitializer)cll.loadClass(sh).newInstance();
+                        initializer = (EventListenerInitializer)
+                            cll.loadClass(handler).newInstance();
 
-                        if (window == null) {
-                            window = createWindow();
-                            registerWindowObject(window);
-                        }
-
-                        initializer.initializeEventListeners((SVGDocument)document);
+                        initializer.initializeEventListeners
+                            ((SVGDocument)document);
                     }
                 } catch (Exception e) {
                     if (userAgent != null) {
                         userAgent.displayError(e);
                     }
                 }
-                continue;
-            }
+            } else {
+                //
+                // Scripting language invocation.
+                //
+                Interpreter interpreter = getInterpreter(types[i]);
+                if (interpreter == null) {
+                    // Can't find interpreter so just skip this script block.
+                    continue;
+                }
 
-            //
-            // Scripting language invocation.
-            //
-            Interpreter interpreter = getInterpreter(type);
-            if (interpreter == null)
-                // Can't find interpreter so just skip this script block.
-                continue;
+                try {
+                    String desc = null;
+                    Reader reader;
 
-            try {
-                String href = XLinkSupport.getXLinkHref(script);
-                String desc = null;
-                Reader reader;
+                    if (hrefs[i].length() > 0) {
+                        desc = hrefs[i];
 
-                if (href.length() > 0) {
-                    desc = href;
-
-                    // External script.
-                    ParsedURL purl = new ParsedURL(script.getBaseURI(), href);
-
-                    checkCompatibleScriptURL(type, purl);
-                    reader = new InputStreamReader(purl.openStream());
-                } else {
-                    checkCompatibleScriptURL(type, docPURL);
-                    DocumentLoader dl = bridgeContext.getDocumentLoader();
-                    Element e = script;
-                    SVGDocument d = (SVGDocument)e.getOwnerDocument();
-                    int line = dl.getLineNumber(script);
-                    desc = Messages.formatMessage
-                        (INLINE_SCRIPT_DESCRIPTION,
-                         new Object [] {d.getURL(),
-                                        "<"+script.getNodeName()+">", 
-                                        new Integer(line)});
-                    // Inline script.
-                    Node n = script.getFirstChild();
-                    if (n != null) {
-                        StringBuffer sb = new StringBuffer();
-                        while (n != null) {
-                            if (n.getNodeType() == Node.CDATA_SECTION_NODE
-                                || n.getNodeType() == Node.TEXT_NODE)
-                                sb.append(n.getNodeValue());
-                            n = n.getNextSibling();
-                        }
-                        reader = new StringReader(sb.toString());
+                        // External script.
+                        reader = new InputStreamReader
+                            (scriptPURLs[i].openStream());
                     } else {
-                        continue;
+                        DocumentLoader dl = bridgeContext.getDocumentLoader();
+                        SVGDocument d =
+                            (SVGDocument) elements[i].getOwnerDocument();
+                        int line = dl.getLineNumber(elements[i]);
+                        desc = Messages.formatMessage
+                            (INLINE_SCRIPT_DESCRIPTION,
+                             new Object [] {d.getURL(),
+                                            "<"+elements[i].getNodeName()+">", 
+                                            new Integer(line)});
+                        // Inline script.
+                        Node n = elements[i].getFirstChild();
+                        if (n != null) {
+                            StringBuffer sb = new StringBuffer();
+                            while (n != null) {
+                                if (n.getNodeType() == Node.CDATA_SECTION_NODE
+                                    || n.getNodeType() == Node.TEXT_NODE)
+                                    sb.append(n.getNodeValue());
+                                n = n.getNextSibling();
+                            }
+                            reader = new StringReader(sb.toString());
+                        } else {
+                            continue;
+                        }
                     }
-                }
 
-                interpreter.evaluate(reader, desc);
+                    interpreter.evaluate(reader, desc);
 
-            } catch (IOException e) {
-                if (userAgent != null) {
-                    userAgent.displayError(e);
-                }
-                return;
-            } catch (InterpreterException e) {
-                System.err.println("InterpExcept: " + e);
-                handleInterpreterException(e);
-                return;
-            } catch (SecurityException e) {
-                if (userAgent != null) {
-                    userAgent.displayError(e);
+                } catch (IOException e) {
+                    if (userAgent != null) {
+                        userAgent.displayError(e);
+                    }
+                    return;
+                } catch (InterpreterException e) {
+                    System.err.println("InterpExcept: " + e);
+                    handleInterpreterException(e);
+                    return;
+                } catch (SecurityException e) {
+                    if (userAgent != null) {
+                        userAgent.displayError(e);
+                    }
                 }
             }
         }

@@ -39,53 +39,62 @@ import java.util.Enumeration;
  * @version $Id$
  */
 public class DocumentJarClassLoader extends URLClassLoader {
+
     /**
-     * CodeSource for the Document which referenced the Jar file
+     * CodeSource for the Document which referenced the jar file.
+     *
      * @see #getPermissions
      */
-    protected CodeSource documentCodeSource = null;
+    protected CodeSource documentCodeSource;
 
     /**
-     * Constructor
+     * Creates a new DocumentJarClassLoader for a single jar file.
      */
-    public DocumentJarClassLoader(URL jarURL,
-                                  URL documentURL){
-        super(new URL[]{jarURL});
+    public DocumentJarClassLoader(URL jarURL, URL documentURL) {
+        this(new URL[] { jarURL }, documentURL);
+    }
+
+    /**
+     * Creates a new DocumentJarClassLoader for multiple jar files.
+     */
+    public DocumentJarClassLoader(URL[] jarURLs, URL documentURL) {
+        super(jarURLs);
 
         if (documentURL != null) {
-            documentCodeSource = new CodeSource
-                (documentURL, (Certificate[])null);
+            documentCodeSource = new CodeSource(documentURL,
+                                                (Certificate[]) null);
         }
     }
 
     /**
      * Returns the permissions for the given codesource object.
-     * The implementation of this method first gets the permissions
-     * granted by the policy, and then adds additional permissions
-     * based on the URL of the codesource.
      * <p>
-     * Then, if the documentURL passed at construction time is
-     * not null, the permissions granted to that URL are added.
-     *
-     * As a result, the jar file code will only be able to 
-     * connect to the server which served the document.
+     *   The implementation of this method first gets the permissions
+     *   granted by the policy, and then adds additional permissions
+     *   based on the URL of the codesource.
+     * </p>
+     * <p>
+     *   Then, if the documentURL passed at construction time is
+     *   not null, the permissions granted to that URL are added.
+     *   As a result, the jar file code will only be able to 
+     *   connect to the server which served the document.
+     * </p>
      *
      * @param codesource the codesource
      * @return the permissions granted to the codesource
      */
-    protected PermissionCollection getPermissions(CodeSource codesource)
-    {
+    protected PermissionCollection getPermissions(CodeSource codesource) {
         // First, get the permissions which may be granted 
         // through the policy file(s)
-	Policy p = Policy.getPolicy();
+        Policy p = Policy.getPolicy();
 
-	PermissionCollection pc = null;
-	if (p != null) {
-	    pc = p.getPermissions(codesource);
-	}
+        PermissionCollection pc = null;
+        if (p != null) {
+            pc = p.getPermissions(codesource);
+        }
 
         // Now, add permissions if the documentCodeSource is not null
-        if (documentCodeSource != null){
+        if (documentCodeSource != null) {
             PermissionCollection urlPC 
                 = super.getPermissions(documentCodeSource);
 
@@ -99,6 +108,6 @@ public class DocumentJarClassLoader extends URLClassLoader {
             }
         }
 
-	return pc;
+        return pc;
     }
 }
