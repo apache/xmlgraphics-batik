@@ -35,9 +35,8 @@ public class GlyphIterator {
     public static final AttributedCharacterIterator.Attribute FLOW_LINE_BREAK 
         = GVTAttributedCharacterIterator.TextAttribute.FLOW_LINE_BREAK;
 
-    public static final AttributedCharacterIterator.Attribute 
-        TEXT_COMPOUND_DELIMITER 
-        = GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER;
+    public static final AttributedCharacterIterator.Attribute TEXT_COMPOUND_ID
+        = GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_ID;
     public static final 
         AttributedCharacterIterator.Attribute GVT_FONT 
         = GVTAttributedCharacterIterator.TextAttribute.GVT_FONT;
@@ -122,7 +121,7 @@ public class GlyphIterator {
         this.maxDescent  = -Float.MAX_VALUE;
 
         // Figure out where the font size might change again...
-        this.runLimit  = aci.getRunLimit(TEXT_COMPOUND_DELIMITER);
+        this.runLimit  = aci.getRunLimit(TEXT_COMPOUND_ID);
         
         this.lineBreakRunLimit = aci.getRunLimit(FLOW_LINE_BREAK);
         Object o = aci.getAttribute(FLOW_LINE_BREAK);
@@ -307,7 +306,7 @@ public class GlyphIterator {
 
         if (aciIdx >= runLimit) {
             updateLineMetrics(aciIdx);
-            runLimit = aci.getRunLimit(TEXT_COMPOUND_DELIMITER);
+            runLimit = aci.getRunLimit(TEXT_COMPOUND_ID);
             font     = (GVTFont)aci.getAttribute(GVT_FONT);
             if (font == null) {
                 font = new AWTGVTFont(aci.getAttributes());

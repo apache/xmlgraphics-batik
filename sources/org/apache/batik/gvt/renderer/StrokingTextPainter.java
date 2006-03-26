@@ -81,8 +81,8 @@ public class StrokingTextPainter extends BasicTextPainter {
         GVTAttributedCharacterIterator.TextAttribute.FLOW_PARAGRAPH;
 
     public static final 
-        AttributedCharacterIterator.Attribute TEXT_COMPOUND_DELIMITER 
-        = GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER;
+        AttributedCharacterIterator.Attribute TEXT_COMPOUND_ID 
+        = GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_ID;
 
     public static final 
         AttributedCharacterIterator.Attribute GVT_FONT 
@@ -133,7 +133,7 @@ public class StrokingTextPainter extends BasicTextPainter {
 
     static {
         extendedAtts.add(FLOW_PARAGRAPH);
-        extendedAtts.add(TEXT_COMPOUND_DELIMITER);
+        extendedAtts.add(TEXT_COMPOUND_ID);
         extendedAtts.add(GVT_FONT);
         // extendedAtts.add(BIDI_LEVEL);
     }
@@ -323,7 +323,7 @@ public class StrokingTextPainter extends BasicTextPainter {
                 }
 
                 // find end of compound.
-                end   = aci.getRunLimit(TEXT_COMPOUND_DELIMITER);
+                end   = aci.getRunLimit(TEXT_COMPOUND_ID);
 
                 if (start != chunkStartIndex)
                     // If we aren't starting a new chunk then we know
@@ -415,10 +415,10 @@ public class StrokingTextPainter extends BasicTextPainter {
         int asOff = 0;
         int begin = aci.getBeginIndex();
         boolean moreChunks = true;
-        int start, end   = aci.getRunStart(TEXT_COMPOUND_DELIMITER);
+        int start, end   = aci.getRunStart(TEXT_COMPOUND_ID);
         while (moreChunks) {
             start = end;
-            end = aci.getRunLimit(TEXT_COMPOUND_DELIMITER);
+            end = aci.getRunLimit(TEXT_COMPOUND_ID);
             int aciLength = end-start;
 
             List fonts;

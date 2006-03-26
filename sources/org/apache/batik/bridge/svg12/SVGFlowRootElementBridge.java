@@ -834,18 +834,17 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
         else
             textAlign = BlockInfo.ALIGN_FULL;
 
-        Map   fontAttrs      = getFontProperties(ctx, element, null);
+        Map   fontAttrs      = new HashMap(20);
+        List  fontList       = getFontList(ctx, element, fontAttrs);
         Float fs             = (Float)fontAttrs.get(TextAttribute.SIZE);
         float fontSize       = fs.floatValue();
         float lineHeight     = getLineHeight(ctx, element, fontSize);
-        List  fontFamilyList = getFontFamilyList(element, ctx);
 
         String ln = element.getLocalName();
         boolean rgnBr;
         rgnBr = ln.equals(SVG12Constants.SVG_FLOW_REGION_BREAK_TAG);
         return new BlockInfo(top, right, bottom, left, indent, textAlign, 
-                             lineHeight, fontFamilyList, fontAttrs,
-                             rgnBr);
+                             lineHeight, fontList, fontAttrs, rgnBr);
     }
 
     protected float getLineHeight(BridgeContext ctx, Element element, 
