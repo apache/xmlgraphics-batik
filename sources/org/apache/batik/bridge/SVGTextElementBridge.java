@@ -92,6 +92,10 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         AttributedCharacterIterator.Attribute TEXT_COMPOUND_DELIMITER =
         GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER;
 
+    public static final 
+        AttributedCharacterIterator.Attribute TEXT_COMPOUND_ID =
+        GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_ID;
+
     public static final AttributedCharacterIterator.Attribute PAINT_INFO =
          GVTAttributedCharacterIterator.TextAttribute.PAINT_INFO;
 
@@ -99,10 +103,6 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         AttributedCharacterIterator.Attribute ALT_GLYPH_HANDLER =
         GVTAttributedCharacterIterator.TextAttribute.ALT_GLYPH_HANDLER;
         
-    public static final 
-        AttributedCharacterIterator.Attribute GVT_FONT_FAMILIES 
-        = GVTAttributedCharacterIterator.TextAttribute.GVT_FONT_FAMILIES;
-
     public static final 
         AttributedCharacterIterator.Attribute TEXTPATH
         = GVTAttributedCharacterIterator.TextAttribute.TEXTPATH;
@@ -271,6 +271,9 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         node.setPointerEventType(CSSUtilities.convertPointerEvents(e));
 
         initializeDynamicSupport(ctx, e, node);
+        if (!ctx.isDynamic()) {
+            elemTPI.clear();
+        }
     }
 
     /**
@@ -1373,30 +1376,81 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         }
     }
 
-    protected Map getFontProperties(BridgeContext ctx, Element element, 
-                                    Map map) {
-        if (map == null) map = new HashMap(4);
+    /**
+     * This method adds all the font related properties to <tt>result</tt>
+     * It also builds a List of the GVTFonts and returns it.
+     */
+    protected List getFontList(BridgeContext ctx, 
+                               Element       element, 
+                               Map           result) {
 
-        // Needed for SVG fonts.
-        map.put(TEXT_COMPOUND_DELIMITER, element);
+        // Unique value for text element - used for run identification.
+        result.put(TEXT_COMPOUND_ID, new Object());
 
+        Float fsFloat = TextUtilities.convertFontSize(element);
+        float fontSize = fsFloat.floatValue();
         // Font size.
-        map.put(TextAttribute.SIZE, 
-                TextUtilities.convertFontSize(element));
+        result.put(TextAttribute.SIZE, fsFloat);
 
         // Font stretch
-        map.put(TextAttribute.WIDTH, 
+        result.put(TextAttribute.WIDTH, 
                 TextUtilities.convertFontStretch(element));
 
-        // Font weight
-        map.put(TextAttribute.WEIGHT, 
-                TextUtilities.convertFontWeight(element));
-
         // Font style
-        map.put(TextAttribute.POSTURE, 
+        result.put(TextAttribute.POSTURE, 
                 TextUtilities.convertFontStyle(element));
 
-        return map;
+        // Font weight
+        result.put(TextAttribute.WEIGHT, 
+                TextUtilities.convertFontWeight(element));
+
+        // Font weight
+        Value v = CSSUtilities.getComputedStyle
+            (element, SVGCSSEngine.FONT_WEIGHT_INDEX);
+        String fontWeightString = v.getCssText();
+
+        // Font style
+        String fontStyleString = CSSUtilities.getComputedStyle
+            (element, SVGCSSEngine.FONT_STYLE_INDEX).getStringValue();
+
+        // Needed for SVG fonts (also for dynamic documents).
+        result.put(TEXT_COMPOUND_DELIMITER, element);
+
+        //  make a list of GVTFont objects
+        Value val = CSSUtilities.getComputedStyle
+            (element, SVGCSSEngine.FONT_FAMILY_INDEX);
+        List fontList = new ArrayList();
+        int len = val.getLength();
+        for (int i = 0; i < len; i++) {
+            Value it = val.item(i);
+            String fontFamilyName = it.getStringValue();
+            GVTFontFamily fontFamily;
+            fontFamily = SVGFontUtilities.getFontFamily
+                (element, ctx, fontFamilyName,
+                 fontWeightString, fontStyleString);
+            if (fontFamily == null) continue;
+            if (fontFamily instanceof UnresolvedFontFamily) {
+                fontFamily = FontFamilyResolver.resolve
+                    ((UnresolvedFontFamily)fontFamily);
+                if (fontFamily == null) continue;
+            }
+            if (fontFamily instanceof SVGFontFamily) {
+                SVGFontFamily svgFF = (SVGFontFamily)fontFamily;
+                if (svgFF.isComplex()) {
+                    usingComplexSVGFont = true;
+                }
+            }
+            GVTFont ft = fontFamily.deriveFont(fontSize, result);
+            fontList.add(ft);
+        }
+
+        if (!ctx.isDynamic()) {
+            // Only leave this in the map for dynamic documents.
+            // Otherwise it will cause the whole DOM to stay when
+            // we don't really need it.
+            result.remove(TEXT_COMPOUND_DELIMITER);
+        }
+        return fontList;
     }
 
     /**
@@ -1435,30 +1489,9 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         TextNode.Anchor a = TextUtilities.convertTextAnchor(element);
         result.put(ANCHOR_TYPE, a);
 
-        // get font size/width/weight/posture properties
-        getFontProperties(ctx, element, result);
-
         // Font family
-        List fontFamilyList = getFontFamilyList(element, ctx);
-        // result.put(GVT_FONT_FAMILIES, fontFamilyList);
-
-        List fonts = new ArrayList(fontFamilyList.size());
-        Iterator iter = fontFamilyList.iterator();
-        float fontSize = 12;
-        Float fsFloat = (Float)result.get(TextAttribute.SIZE);
-        if (fsFloat != null) {
-            fontSize = fsFloat.floatValue();
-        }
-        while (iter.hasNext()) {
-            GVTFontFamily ff = (GVTFontFamily)iter.next();
-            if (ff instanceof UnresolvedFontFamily) {
-                ff = FontFamilyResolver.resolve((UnresolvedFontFamily)ff);
-            }
-            if (ff == null) continue;
-            GVTFont ft = ff.deriveFont(fontSize, result);
-            fonts.add(ft);
-        }
-        result.put(GVT_FONTS, fonts);
+        List fontList = getFontList(ctx, element, result);
+        result.put(GVT_FONTS, fontList);
 
 
         // Text baseline adjustment.
@@ -1678,39 +1711,6 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         return result;
     }
 
-
-    protected List getFontFamilyList(Element element, BridgeContext ctx) {
-        // Font weight
-        Value v = CSSUtilities.getComputedStyle
-            (element, SVGCSSEngine.FONT_WEIGHT_INDEX);
-        String fontWeightString = v.getCssText();
-
-        // Font style
-        String fontStyleString = CSSUtilities.getComputedStyle
-            (element, SVGCSSEngine.FONT_STYLE_INDEX).getStringValue();
-
-        Value val = CSSUtilities.getComputedStyle
-            (element, SVGCSSEngine.FONT_FAMILY_INDEX);
-        //  make a list of GVTFontFamily objects
-        List fontFamilyList = new ArrayList();
-        int len = val.getLength();
-        for (int i = 0; i < len; i++) {
-            Value it = val.item(i);
-            String fontFamilyName = it.getStringValue();
-            GVTFontFamily fontFamily
-                = SVGFontUtilities.getFontFamily(element, ctx, fontFamilyName,
-                                                 fontWeightString, 
-                                                 fontStyleString);
-            if (fontFamily instanceof SVGFontFamily) {
-                SVGFontFamily svgFF = (SVGFontFamily)fontFamily;
-                if (svgFF.isComplex()) {
-                    usingComplexSVGFont = true;
-                }
-            }
-            fontFamilyList.add(fontFamily);
-        }
-        return fontFamilyList;
-    }
 
     /**
      * Retrieve in the AttributeString the closest parent
