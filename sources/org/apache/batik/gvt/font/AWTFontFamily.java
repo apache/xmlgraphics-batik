@@ -32,6 +32,10 @@ import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
  */
 public class AWTFontFamily implements GVTFontFamily {
 
+    public static final 
+        AttributedCharacterIterator.Attribute TEXT_COMPOUND_DELIMITER =
+        GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER;
+
     protected GVTFontFace fontFace;
     protected Font   font;
 
@@ -106,7 +110,7 @@ public class AWTFontFamily implements GVTFontFamily {
         Map fontAttributes = new HashMap(attrs);
         fontAttributes.put(TextAttribute.SIZE, new Float(size));
         fontAttributes.put(TextAttribute.FAMILY, fontFace.getFamilyName());
-        fontAttributes.remove(GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER);
+        fontAttributes.remove(TEXT_COMPOUND_DELIMITER);
         return new AWTGVTFont(fontAttributes);
     }
      
