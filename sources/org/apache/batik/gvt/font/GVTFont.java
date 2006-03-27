@@ -83,6 +83,11 @@ public interface GVTFont {
     public GVTFont deriveFont(float size);
 
     /**
+     * Returns the font family name of this font.
+     */
+    public String getFamilyName();
+
+    /**
      *  Returns a GVTLineMetrics object created with the specified arguments.
      */
     public GVTLineMetrics getLineMetrics(char[] chars, int beginIndex,
