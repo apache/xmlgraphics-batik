@@ -210,6 +210,10 @@ public class AWTGVTFont implements GVTFont {
         return new AWTGVTFont(awtFont, size/this.size);
     }
 
+    public String getFamilyName() {
+        return awtFont.getFamily();
+    }
+
     /**
      *  Returns a LineMetrics object created with the specified arguments.
      */

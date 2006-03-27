@@ -970,7 +970,7 @@ public class GlyphLayout implements TextSpanLayout {
      */
     protected GVTFont getFont() {
         aci.first();
-        GVTFont gvtFont = (GVTFont)aci.getAttributes().get(GVT_FONT);
+        GVTFont gvtFont = (GVTFont)aci.getAttribute(GVT_FONT);
 
         if (gvtFont != null) 
             return gvtFont;

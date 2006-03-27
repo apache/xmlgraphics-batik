@@ -716,6 +716,10 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
                               hkernElements, vkernElements, textElement);
     }
 
+    public String getFamilyName() {
+        return fontFace.getFamilyName();
+    }
+
     protected GVTLineMetrics getLineMetrics(int beginIndex, int limit) {
         if (lineMetrics != null) 
             return lineMetrics;
