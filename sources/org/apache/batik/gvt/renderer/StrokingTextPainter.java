@@ -424,11 +424,11 @@ public class StrokingTextPainter extends BasicTextPainter {
             int aciLength = end-start;
 
             List fonts;
-            fonts = (List)aci.getAttributes().get(GVT_FONTS);
+            fonts = (List)aci.getAttribute(GVT_FONTS);
 
 
             float fontSize = 12;
-            Float fsFloat = (Float)aci.getAttributes().get(TextAttribute.SIZE);
+            Float fsFloat = (Float)aci.getAttribute(TextAttribute.SIZE);
             if (fsFloat != null)
                 fontSize = fsFloat.floatValue();
 
@@ -466,7 +466,8 @@ public class StrokingTextPainter extends BasicTextPainter {
                     int displayUpToIndex = font.canDisplayUpTo
                         (aci, currentIndex, end);
 
-                    Object altGlyphElement = aci.getAttributes().get(ALT_GLYPH_HANDLER);
+                    Object altGlyphElement;
+                    altGlyphElement = aci.getAttribute(ALT_GLYPH_HANDLER);
                     if ( altGlyphElement != null ){
                         //found all the glyph to be displayed
                         //consider the font matching done
