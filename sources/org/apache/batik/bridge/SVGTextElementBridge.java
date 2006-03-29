@@ -29,6 +29,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.lang.ref.SoftReference;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
 import java.text.AttributedCharacterIterator.Attribute;
@@ -112,6 +113,10 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
     public static final 
         AttributedCharacterIterator.Attribute ANCHOR_TYPE
         = GVTAttributedCharacterIterator.TextAttribute.ANCHOR_TYPE;
+
+    public static final 
+        AttributedCharacterIterator.Attribute GVT_FONT_FAMILIES
+        = GVTAttributedCharacterIterator.TextAttribute.GVT_FONT_FAMILIES;
 
     public static final 
         AttributedCharacterIterator.Attribute GVT_FONTS
@@ -1331,7 +1336,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                                Map           result) {
 
         // Unique value for text element - used for run identification.
-        result.put(TEXT_COMPOUND_ID, new Object());
+        result.put(TEXT_COMPOUND_ID, new SoftReference(element));
 
         Float fsFloat = TextUtilities.convertFontSize(element);
         float fontSize = fsFloat.floatValue();
@@ -1365,6 +1370,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         //  make a list of GVTFont objects
         Value val = CSSUtilities.getComputedStyle
             (element, SVGCSSEngine.FONT_FAMILY_INDEX);
+        List fontFamilyList = new ArrayList();
         List fontList = new ArrayList();
         int len = val.getLength();
         for (int i = 0; i < len; i++) {
@@ -1380,6 +1386,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                     ((UnresolvedFontFamily)fontFamily);
                 if (fontFamily == null) continue;
             }
+            fontFamilyList.add(fontFamily);
             if (fontFamily instanceof SVGFontFamily) {
                 SVGFontFamily svgFF = (SVGFontFamily)fontFamily;
                 if (svgFF.isComplex()) {
@@ -1389,6 +1396,10 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             GVTFont ft = fontFamily.deriveFont(fontSize, result);
             fontList.add(ft);
         }
+
+        // Eventually this will need to go for SVG fonts it 
+        // holds hard ref to DOM.
+        result.put(GVT_FONT_FAMILIES, fontFamilyList);
 
         if (!ctx.isDynamic()) {
             // Only leave this in the map for dynamic documents.
@@ -2734,7 +2745,9 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             TextSpanLayout layout = run.getLayout();
             AttributedCharacterIterator aci = run.getACI();
             aci.first();
-            Element elem = (Element)aci.getAttribute(TEXT_COMPOUND_DELIMITER);
+            SoftReference sr;
+            sr =(SoftReference)aci.getAttribute(TEXT_COMPOUND_ID);
+            Element elem = (Element)sr.get();
 
             if (elem == null) continue;
             if (elems.contains(elem)) continue;
@@ -2779,7 +2792,9 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             TextSpanLayout layout = run.getLayout();
             AttributedCharacterIterator aci = run.getACI();
             aci.first();
-            Element elem = (Element)aci.getAttribute(TEXT_COMPOUND_DELIMITER);
+            SoftReference sr;
+            sr =(SoftReference)aci.getAttribute(TEXT_COMPOUND_ID);
+            Element elem = (Element)sr.get();
 
             if (elem == null) continue;
             if (reject.contains(elem)) continue;
@@ -2845,8 +2860,9 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             TextSpanLayout layout = run.getLayout();
             AttributedCharacterIterator aci = run.getACI();
             aci.first();
-            Element runElem = (Element)aci.getAttribute
-                (TEXT_COMPOUND_DELIMITER);
+            SoftReference sr;
+            sr =(SoftReference)aci.getAttribute(TEXT_COMPOUND_ID);
+            Element runElem = (Element)sr.get();
             if (runElem == null) continue;
 
             // Only consider runElem if it is sensitive.
@@ -2909,8 +2925,9 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             TextSpanLayout layout = run.getLayout();
             AttributedCharacterIterator aci = run.getACI();
             aci.first();
-            Element runElem = (Element)aci.getAttribute
-                (TEXT_COMPOUND_DELIMITER);
+            SoftReference sr;
+            sr =(SoftReference)aci.getAttribute(TEXT_COMPOUND_ID);
+            Element runElem = (Element)sr.get();
             if (runElem == null) continue;
 
             // Only consider runElem if it is sensitive.

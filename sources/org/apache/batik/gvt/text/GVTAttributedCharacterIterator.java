@@ -323,6 +323,9 @@ public interface GVTAttributedCharacterIterator extends AttributedCharacterItera
         public final static TextAttribute HORIZONTAL_ORIENTATION_ANGLE =
                                           new TextAttribute("HORIZONTAL_ORIENTATION_ANGLE");
 
+        public final static TextAttribute GVT_FONT_FAMILIES =
+                       new TextAttribute("GVT_FONT_FAMILIES");
+
         public final static TextAttribute GVT_FONTS =
                                           new TextAttribute("GVT_FONTS");
 
