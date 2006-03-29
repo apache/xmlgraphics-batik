@@ -364,6 +364,8 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
      */
     protected AttributedString buildAttributedString(BridgeContext ctx,
                                                      Element element) {
+        if (element == null) return null;
+
         List rgns = getRegions(ctx, element);
         AttributedString ret = getFlowDiv(ctx, element);
         if (ret == null) return ret;

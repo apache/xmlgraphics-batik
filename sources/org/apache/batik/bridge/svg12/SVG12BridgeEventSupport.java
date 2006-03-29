@@ -57,6 +57,8 @@ import org.w3c.dom.events.EventTarget;
  */
 public abstract class SVG12BridgeEventSupport extends BridgeEventSupport {
 
+    protected SVG12BridgeEventSupport() {}
+
     /**
      * Is called only for the root element in order to dispatch GVT
      * events to the DOM.

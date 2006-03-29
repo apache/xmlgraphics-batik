@@ -17,6 +17,7 @@
  */
 package org.apache.batik.bridge;
 
+import java.lang.ref.SoftReference;
 import java.text.AttributedCharacterIterator;
 import java.util.Map;
 
@@ -39,8 +40,8 @@ import org.w3c.dom.NodeList;
 public class SVGFontFamily implements GVTFontFamily {
 
     public static final 
-        AttributedCharacterIterator.Attribute TEXT_COMPOUND_DELIMITER =
-        GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER;
+        AttributedCharacterIterator.Attribute TEXT_COMPOUND_ID =
+        GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_ID;
 
     protected GVTFontFace fontFace;
     protected Element fontElement;
@@ -104,8 +105,8 @@ public class SVGFontFamily implements GVTFontFamily {
     public GVTFont deriveFont(float size, Map attrs) {
         SVGFontElementBridge fontBridge;
         fontBridge = (SVGFontElementBridge)ctx.getBridge(fontElement);
-        Element textElement;
-        textElement = (Element)attrs.get(TEXT_COMPOUND_DELIMITER);
+        SoftReference sr = (SoftReference)attrs.get(TEXT_COMPOUND_ID);
+        Element textElement = (Element)sr.get();
         return fontBridge.createFont(ctx, fontElement, textElement, 
                                      size, fontFace);
     }
