@@ -657,6 +657,8 @@ To display the available targets type:
       </fileset>
       <fileset dir="${resources}" excludes="**/.svn/" >
         <include name="${package-prefix}/ext/awt/image/codec/**/properties"/>
+        <include name="META-INF/services/org.apache.batik.ext.awt.image.spi.ImageWriter"/>
+        <include name="META-INF/services/org.apache.batik.ext.awt.image.spi.RegistryEntry"/>
       </fileset>
     </jar>
   </target>
