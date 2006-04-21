@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001-2003  The Apache Software Foundation 
+   Copyright 2001-2003  The Apache Software Foundation
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -135,7 +135,7 @@ public class AWTEventDispatcher implements EventDispatcher,
             ((baseTransform == null) || (!baseTransform.equals(t))))
             // new Display transform so events are not where user
             // thinks they were.
-            eventQueue.clear(); 
+            eventQueue.clear();
         baseTransform = t;
     }
 
@@ -297,6 +297,10 @@ public class AWTEventDispatcher implements EventDispatcher,
      * @param listenerType the type of the listeners to return
      */
     public EventListener [] getListeners(Class listenerType) {
+
+        // TODO the listeners should be cached per class in a map.
+        // this list is build again and again in mouse-event-handling...
+        // note: the cache must be flushed when the gListeners is modified
         Object array =
             Array.newInstance(listenerType,
                               glisteners.getListenerCount(listenerType));
@@ -327,6 +331,7 @@ public class AWTEventDispatcher implements EventDispatcher,
     public void setEventQueueMaxSize(int n) {
         eventQueueMaxSize = n;
         if (n == 0) eventQueue.clear();
+        // the current size is larger than the new size: shrink
         while(eventQueue.size() > eventQueueMaxSize)
             eventQueue.remove(0);
     }
@@ -344,7 +349,7 @@ public class AWTEventDispatcher implements EventDispatcher,
                 while (eventQueue.size() > eventQueueMaxSize)
                     // Limit how many events we queue - don't want
                     // user waiting forever for them to clear.
-                    eventQueue.remove(0); 
+                    eventQueue.remove(0);
             }
             return;
         }
@@ -392,7 +397,7 @@ public class AWTEventDispatcher implements EventDispatcher,
         }
 
         GraphicsNode node = root.nodeHitAt(gnp);
-        
+
         // If the receiving node has changed, send a notification
         // check if we enter a new node
         Point screenPos;
@@ -429,8 +434,7 @@ public class AWTEventDispatcher implements EventDispatcher,
                                                     MouseEvent.
                                                     MOUSE_ENTERED,
                                                     evt.getWhen(),
-                                                    evt.
-                                                    getModifiers(),
+                                                    evt.getModifiers(),
                                                     (float)gnp.getX(),
                                                     (float)gnp.getY(),
                                                     (int)Math.floor(p.getX()),
@@ -528,7 +532,8 @@ public class AWTEventDispatcher implements EventDispatcher,
                 }
                 break;
             default:
-                throw new Error("Unknown Mouse Event type: "+evt.getID());
+                throw new IllegalArgumentException
+                    ("Unknown Mouse Event type: "+evt.getID());
             }
         }
     }
@@ -562,7 +567,8 @@ public class AWTEventDispatcher implements EventDispatcher,
                 }
                 break;
             default:
-                throw new Error("Unknown Key Event type: "+evt.getID());
+                throw new IllegalArgumentException
+                    ("Unknown Key Event type: "+evt.getID());
             }
         }
         evt.consume();
@@ -571,12 +577,12 @@ public class AWTEventDispatcher implements EventDispatcher,
 
     private void incrementKeyTarget() {
         // <!> FIXME TODO: Not implemented.
-        throw new Error("Increment not implemented.");
+        throw new UnsupportedOperationException("Increment not implemented.");
     }
 
     private void decrementKeyTarget() {
         // <!> FIXME TODO: Not implemented.
-        throw new Error("Decrement not implemented.");
+        throw new UnsupportedOperationException("Decrement not implemented.");
     }
 
     /**
@@ -611,11 +617,32 @@ public class AWTEventDispatcher implements EventDispatcher,
      * @param e the input event
      */
     protected boolean isNodeIncrementEvent(InputEvent e) {
-        // TODO: Improve code readability!
-        return ((e.getID() == nodeIncrementEventID) &&
-                ((e instanceof KeyEvent) ?
-                     (((KeyEvent) e).getKeyCode() == nodeIncrementEventCode) : true) &&
-                ((e.getModifiers() & nodeIncrementEventModifiers) != 0));
+        // DONE: Improve code readability!
+        //        return ((e.getID() == nodeIncrementEventID) &&
+        //                ((e instanceof KeyEvent) ?
+        //                     (((KeyEvent) e).getKeyCode() == nodeIncrementEventCode) : true) &&
+        //                ((e.getModifiers() & nodeIncrementEventModifiers) != 0));
+
+        if ( e.getID() != nodeIncrementEventID ){
+            // not an incrementEvent: false
+            return false;
+        }
+
+        if (( e instanceof KeyEvent ) ){
+            if (( (KeyEvent) e).getKeyCode() != nodeIncrementEventCode ){
+                // it was a KeyEvent, but not a nodeIncrementEventCode : false
+                return false;
+            }
+        }
+        // here: it was not a KeyEvent at all OR a KeyEvent with
+        // nodeIncrementEventCode
+        if (( e.getModifiers() & nodeIncrementEventModifiers ) == 0 ) {
+            // no nodeIncrementEventModifiers were set: false
+            return false;
+        }
+
+        // this is the only path to success...
+        return true;
     }
 
     /**
@@ -623,11 +650,31 @@ public class AWTEventDispatcher implements EventDispatcher,
      * false otherwise.
      */
     protected boolean isNodeDecrementEvent(InputEvent e) {
-        // TODO: Improve code readability!
-        return ((e.getID() == nodeDecrementEventID) &&
-                ((e instanceof KeyEvent) ?
-                     ( ((KeyEvent) e).getKeyCode() == nodeDecrementEventCode) : true) &&
-                ((e.getModifiers() & nodeDecrementEventModifiers) != 0  ));
+        // DONE: Improve code readability!   YES !!
+        //        return ((e.getID() == nodeDecrementEventID) &&
+        //                ((e instanceof KeyEvent) ?
+        //                     ( ((KeyEvent) e).getKeyCode() == nodeDecrementEventCode) : true) &&
+        //                ((e.getModifiers() & nodeDecrementEventModifiers) != 0  ));
 
+        if ( e.getID() != nodeDecrementEventID ){
+            // not an nodeDecrementEvent: false
+            return false;
+        }
+
+        if (( e instanceof KeyEvent ) ){
+            if (( (KeyEvent) e).getKeyCode() != nodeDecrementEventCode ){
+                // it was a KeyEvent, but not a nodeDecrementEventCode : false
+                return false;
+            }
+        }
+        // here: it was not a KeyEvent at all OR a KeyEvent with
+        // nodeIncrementEventCode
+        if (( e.getModifiers() & nodeDecrementEventModifiers ) == 0 ) {
+            // no nodeDecrementEventModifiers were set: false
+            return false;
+        }
+
+        // this is the only path to success...
+        return true;
     }
 }

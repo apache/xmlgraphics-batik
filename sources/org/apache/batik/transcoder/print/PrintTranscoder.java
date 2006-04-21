@@ -244,6 +244,10 @@ public class PrintTranscoder extends SVGAbstractTranscoder
             pageFormat = tmpPageFormat;
         }
 
+        // Set printable before showing printer dialog so
+        // it can update the pageFormat if it wishes...
+        printerJob.setPrintable(this, pageFormat);
+
         //
         // If required, pop up a dialog to select the printer
         //
@@ -258,7 +262,6 @@ public class PrintTranscoder extends SVGAbstractTranscoder
         }
 
         // Print now
-        printerJob.setPrintable(this, pageFormat);
         printerJob.print();
 
     }

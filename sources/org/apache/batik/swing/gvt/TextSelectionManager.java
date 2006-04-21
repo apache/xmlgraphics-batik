@@ -1,18 +1,18 @@
 /*
 
-   Copyright 1999-2003  The Apache Software Foundation 
+Copyright 1999-2003  The Apache Software Foundation 
 
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-       http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
 */
 
@@ -142,14 +142,14 @@ public class TextSelectionManager {
      * @param color the new color of the selection overlay
      */
     public void setSelectionOverlayColor(Color color) {
-	this.selectionOverlayColor = color;
+        this.selectionOverlayColor = color;
     }
 
     /**
      * Returns the color of the selection overlay.
      */
     public Color getSelectionOverlayColor() {
-	return selectionOverlayColor;
+        return selectionOverlayColor;
     }
 
     /**
@@ -159,14 +159,14 @@ public class TextSelectionManager {
      * @param color the new color of the outline of the selection overlay 
      */
     public void setSelectionOverlayStrokeColor(Color color) {
-	this.selectionOverlayStrokeColor = color;
+        this.selectionOverlayStrokeColor = color;
     }
 
     /**
      * Returns the color of the outline of the selection overlay.
      */
     public Color getSelectionOverlayStrokeColor() {
-	return selectionOverlayStrokeColor;
+        return selectionOverlayStrokeColor;
     }
 
     /**
@@ -176,7 +176,7 @@ public class TextSelectionManager {
      * @param state true implies the selection overlay will be in XOR mode 
      */
     public void setSelectionOverlayXORMode(boolean state) {
-	this.xorMode = state;
+        this.xorMode = state;
     }
 
     /**
@@ -184,7 +184,7 @@ public class TextSelectionManager {
      * otherwise.
      */
     public boolean isSelectionOverlayXORMode() {
-	return xorMode;
+        return xorMode;
     }
 
     /**
@@ -212,7 +212,7 @@ public class TextSelectionManager {
      * Clears the selection.
      */
     public void clearSelection() {
-	textSelector.clearSelection();
+        textSelector.clearSelection();
     }
 
     /**
@@ -338,19 +338,19 @@ public class TextSelectionManager {
                 Shape s = at.createTransformedShape(selectionHighlight);
 
                 Graphics2D g2d = (Graphics2D)g;
-		if (xorMode) {
-		    g2d.setColor(Color.black);
-		    g2d.setXORMode(Color.white);
-		    g2d.fill(s);
-		} else {
-		    g2d.setColor(selectionOverlayColor);
-		    g2d.fill(s);
-		    if (selectionOverlayStrokeColor != null) {
-			g2d.setStroke(new java.awt.BasicStroke(1.0f));
-			g2d.setColor(selectionOverlayStrokeColor);
-			g2d.draw(s);
-		    }
-		}
+                if (xorMode) {
+                    g2d.setColor(Color.black);
+                    g2d.setXORMode(Color.white);
+                    g2d.fill(s);
+                } else {
+                    g2d.setColor(selectionOverlayColor);
+                    g2d.fill(s);
+                    if (selectionOverlayStrokeColor != null) {
+                        g2d.setStroke(new java.awt.BasicStroke(1.0f));
+                        g2d.setColor(selectionOverlayStrokeColor);
+                        g2d.draw(s);
+                    }
+                }
             }
         }
     }
