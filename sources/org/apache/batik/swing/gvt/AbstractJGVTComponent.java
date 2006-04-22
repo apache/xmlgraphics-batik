@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001-2003  The Apache Software Foundation 
+   Copyright 2001-2003  The Apache Software Foundation
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -256,7 +256,7 @@ public abstract class AbstractJGVTComponent extends JComponent {
     }
 
     /**
-     * Returns true if all 'interactor' objects 
+     * Returns true if all 'interactor' objects
      * (pan, zoom, etc) are disabled.
      */
     public boolean getDisableInteractions() {
@@ -514,10 +514,10 @@ public abstract class AbstractJGVTComponent extends JComponent {
         if (EventQueue.isDispatchThread()) {
             Rectangle visRect = getRenderRect();
             if (doubleBufferedRendering)
-                repaint(visRect.x,     visRect.y, 
+                repaint(visRect.x,     visRect.y,
                         visRect.width, visRect.height);
             else
-                paintImmediately(visRect.x,     visRect.y, 
+                paintImmediately(visRect.x,     visRect.y,
                                  visRect.width, visRect.height);
         } else {
             try {
@@ -525,10 +525,10 @@ public abstract class AbstractJGVTComponent extends JComponent {
                         public void run() {
                             Rectangle visRect = getRenderRect();
                             if (doubleBufferedRendering)
-                                repaint(visRect.x,     visRect.y, 
+                                repaint(visRect.x,     visRect.y,
                                         visRect.width, visRect.height);
                             else
-                                paintImmediately(visRect.x,    visRect.y, 
+                                paintImmediately(visRect.x,    visRect.y,
                                                  visRect.width,visRect.height);
                         }
                     });
@@ -548,7 +548,7 @@ public abstract class AbstractJGVTComponent extends JComponent {
         Rectangle visRect = getRenderRect();
         g2d.setComposite(AlphaComposite.SrcOver);
         g2d.setPaint(getBackground());
-        g2d.fillRect(visRect.x,     visRect.y, 
+        g2d.fillRect(visRect.x,     visRect.y,
                      visRect.width, visRect.height);
 
         if (image != null) {
@@ -590,7 +590,7 @@ public abstract class AbstractJGVTComponent extends JComponent {
         setRenderingTransform(at, true);
     }
 
-    public void setRenderingTransform(AffineTransform at, 
+    public void setRenderingTransform(AffineTransform at,
                                       boolean performRedraw) {
         renderingTransform = new AffineTransform(at);
         suspendInteractions = true;
@@ -704,7 +704,7 @@ public abstract class AbstractJGVTComponent extends JComponent {
         try {
             inv = renderingTransform.createInverse();
         } catch (NoninvertibleTransformException e) {
-            throw new InternalError(e.getMessage());
+            throw new IllegalStateException( "NoninvertibleTransformEx:" + e.getMessage() );
         }
         Shape s = inv.createTransformedShape(visRect);
 
@@ -847,7 +847,7 @@ public abstract class AbstractJGVTComponent extends JComponent {
                                         if (progressivePaintThread ==
                                             thisThread) {
                                             Rectangle vRect = getRenderRect();
-                                            repaint(vRect.x,     vRect.y, 
+                                            repaint(vRect.x,     vRect.y,
                                                     vRect.width, vRect.height);
                                         }
                                     }
@@ -1064,7 +1064,7 @@ public abstract class AbstractJGVTComponent extends JComponent {
                          e.getY(),
                          e.getClickCount(),
                          e.isPopupTrigger());
-							
+
                     mouseClicked(click);
                 }
             }
@@ -1210,9 +1210,9 @@ public abstract class AbstractJGVTComponent extends JComponent {
         }
     }
 
-    protected class UnixTextSelectionListener 
+    protected class UnixTextSelectionListener
         extends SelectionAdapter {
-        
+
         public void selectionDone(SelectionEvent evt) {
             if (!useUnixTextSelection) return;
 

@@ -52,29 +52,40 @@ public class SVGConverterURLSource implements SVGConverterSource {
 
         // Get the path portion
         String path = this.purl.getPath();
-        if (path == null || 
-            !(path.toLowerCase().endsWith(SVG_EXTENSION) ||
-              path.toLowerCase().endsWith(SVGZ_EXTENSION))){
-            throw new SVGConverterException(ERROR_INVALID_URL,
-                                            new Object[]{url});
-        }
-
-        int n = path.lastIndexOf("/");
+        int n = path.lastIndexOf('/');
+        String file = path;
         if (n != -1){
             // The following is safe because we know there is at least ".svg"
             // after the slash.
-            path = path.substring(n+1);
+            file = path.substring(n+1);
         }
-            
-        name = path;
+        if (file.length() == 0) {
+            int idx = path.lastIndexOf('/', n-1);
+            file = path.substring(idx+1, n);
+        }
+        if (file.length() == 0) {
+            throw new SVGConverterException(ERROR_INVALID_URL,
+                                            new Object[]{url});
+        }
+        n = file.indexOf('?');
+        String args = "";
+        if (n != -1) {
+            args = file.substring(n+1);
+            file = file.substring(0, n);
+        }
+
+        name = file;
 
         //
         // The following will force creation of different output file names
         // for urls with references (e.g., anne.svg#svgView(viewBox(0,0,4,5)))
         //
         String ref = this.purl.getRef();
-        if (ref != null && (ref.length()!=0)) {
-            name += "" + ref.hashCode();
+        if ((ref != null) && (ref.length()!=0)) {
+            name += "_" + ref.hashCode();
+        }
+        if ((args != null) && (args.length()!=0)) {
+            name += "_" + args.hashCode();
         }
     }
 
