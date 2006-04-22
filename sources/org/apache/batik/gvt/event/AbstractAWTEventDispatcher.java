@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001-2003  The Apache Software Foundation 
+   Copyright 2001-2003  The Apache Software Foundation
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -139,7 +139,7 @@ public abstract class AbstractAWTEventDispatcher
             ((baseTransform == null) || (!baseTransform.equals(t))))
             // new Display transform so events are not where user
             // thinks they were.
-            eventQueue.clear(); 
+            eventQueue.clear();
         baseTransform = t;
     }
 
@@ -326,6 +326,10 @@ public abstract class AbstractAWTEventDispatcher
      * @param listenerType the type of the listeners to return
      */
     public EventListener [] getListeners(Class listenerType) {
+
+        // TODO the listeners should be cached per class in a map.
+        // this list is build again and again in mouse-event-handling...
+        // note: the cache must be flushed when the gListeners is modified
         Object array =
             Array.newInstance(listenerType,
                               glisteners.getListenerCount(listenerType));
@@ -356,6 +360,7 @@ public abstract class AbstractAWTEventDispatcher
     public void setEventQueueMaxSize(int n) {
         eventQueueMaxSize = n;
         if (n == 0) eventQueue.clear();
+        // the current size is larger than the new size: shrink
         while(eventQueue.size() > eventQueueMaxSize)
             eventQueue.remove(0);
     }
@@ -373,7 +378,7 @@ public abstract class AbstractAWTEventDispatcher
                 while (eventQueue.size() > eventQueueMaxSize)
                     // Limit how many events we queue - don't want
                     // user waiting forever for them to clear.
-                    eventQueue.remove(0); 
+                    eventQueue.remove(0);
             }
             return;
         }
@@ -401,28 +406,28 @@ public abstract class AbstractAWTEventDispatcher
             if (t.getLockingKeyState(KeyEvent.VK_KANA_LOCK)) {
                 lockState++;
             }
-        } catch (java.lang.UnsupportedOperationException ex) {
+        } catch (UnsupportedOperationException ex) {
         }
         lockState <<= 1;
         try {
             if (t.getLockingKeyState(KeyEvent.VK_SCROLL_LOCK)) {
                 lockState++;
             }
-        } catch (java.lang.UnsupportedOperationException ex) {
+        } catch (UnsupportedOperationException ex) {
         }
         lockState <<= 1;
         try {
             if (t.getLockingKeyState(KeyEvent.VK_NUM_LOCK)) {
                 lockState++;
             }
-        } catch (java.lang.UnsupportedOperationException ex) {
+        } catch (UnsupportedOperationException ex) {
         }
         lockState <<= 1;
         try {
             if (t.getLockingKeyState(KeyEvent.VK_CAPS_LOCK)) {
                 lockState++;
             }
-        } catch (java.lang.UnsupportedOperationException ex) {
+        } catch (UnsupportedOperationException ex) {
         }
         return lockState;
     }
@@ -434,7 +439,7 @@ public abstract class AbstractAWTEventDispatcher
      * @param evt the key event to dispatch
      */
     protected abstract void dispatchKeyEvent(KeyEvent evt);
-    
+
     /**
      * Dispatches the specified AWT mouse event.
      * @param evt the mouse event to dispatch
@@ -448,7 +453,7 @@ public abstract class AbstractAWTEventDispatcher
         }
 
         GraphicsNode node = root.nodeHitAt(gnp);
-        
+
         // If the receiving node has changed, send a notification
         // check if we enter a new node
         Point screenPos;
@@ -460,6 +465,8 @@ public abstract class AbstractAWTEventDispatcher
             screenPos.y += evt.getY();
         }
 
+        int currentLockState = getCurrentLockState();
+
         if (lastHit != node) {
             // post a MOUSE_EXITED event
             if (lastHit != null) {
@@ -468,11 +475,11 @@ public abstract class AbstractAWTEventDispatcher
                                                     MOUSE_EXITED,
                                                     evt.getWhen(),
                                                     evt.getModifiers(),
-                                                    getCurrentLockState(),
+                                                    currentLockState,
                                                     (float)gnp.getX(),
                                                     (float)gnp.getY(),
-                                                    (int)Math.floor(p.getX()),
-                                                    (int)Math.floor(p.getY()),
+                                                    (int)Math.floor(p.getX()),  // evt.getX() ??
+                                                    (int)Math.floor(p.getY()),  // evt.getY() ??
                                                     screenPos.x,
                                                     screenPos.y,
                                                     evt.getClickCount(),
@@ -486,9 +493,8 @@ public abstract class AbstractAWTEventDispatcher
                                                     MouseEvent.
                                                     MOUSE_ENTERED,
                                                     evt.getWhen(),
-                                                    evt.
-                                                    getModifiers(),
-                                                    getCurrentLockState(),
+                                                    evt.getModifiers(),
+                                                    currentLockState,
                                                     (float)gnp.getX(),
                                                     (float)gnp.getY(),
                                                     (int)Math.floor(p.getX()),
@@ -507,7 +513,7 @@ public abstract class AbstractAWTEventDispatcher
                                                 evt.getID(),
                                                 evt.getWhen(),
                                                 evt.getModifiers(),
-                                                getCurrentLockState(),
+                                                currentLockState,
                                                 (float)gnp.getX(),
                                                 (float)gnp.getY(),
                                                 (int)Math.floor(p.getX()),
@@ -526,7 +532,7 @@ public abstract class AbstractAWTEventDispatcher
                                                 evt.getID(),
                                                 evt.getWhen(),
                                                 evt.getModifiers(),
-                                                getCurrentLockState(),
+                                                currentLockState,
                                                 (float)gnp.getX(),
                                                 (float)gnp.getY(),
                                                 (int)Math.floor(p.getX()),
@@ -588,7 +594,7 @@ public abstract class AbstractAWTEventDispatcher
                 }
                 break;
             default:
-                throw new Error("Unknown Mouse Event type: "+evt.getID());
+                throw new IllegalArgumentException("Unknown Mouse Event type: "+evt.getID());
             }
         }
     }
@@ -622,7 +628,7 @@ public abstract class AbstractAWTEventDispatcher
                 }
                 break;
             default:
-                throw new Error("Unknown Key Event type: "+evt.getID());
+                throw new IllegalArgumentException("Unknown Key Event type: "+evt.getID());
             }
         }
         evt.consume();
@@ -630,12 +636,12 @@ public abstract class AbstractAWTEventDispatcher
 
     private void incrementKeyTarget() {
         // <!> FIXME TODO: Not implemented.
-        throw new Error("Increment not implemented.");
+        throw new UnsupportedOperationException("Increment not implemented.");
     }
 
     private void decrementKeyTarget() {
         // <!> FIXME TODO: Not implemented.
-        throw new Error("Decrement not implemented.");
+        throw new UnsupportedOperationException("Decrement not implemented.");
     }
 
     /**
@@ -670,11 +676,31 @@ public abstract class AbstractAWTEventDispatcher
      * @param e the input event
      */
     protected boolean isNodeIncrementEvent(InputEvent e) {
-        // TODO: Improve code readability!
-        return ((e.getID() == nodeIncrementEventID) &&
-                ((e instanceof KeyEvent) ?
-                     (((KeyEvent) e).getKeyCode() == nodeIncrementEventCode) : true) &&
-                ((e.getModifiers() & nodeIncrementEventModifiers) != 0));
+        // DONE: Improve code readability!
+        //        return ((e.getID() == nodeIncrementEventID) &&
+        //                ((e instanceof KeyEvent) ?
+        //                     (((KeyEvent) e).getKeyCode() == nodeIncrementEventCode) : true) &&
+        //                ((e.getModifiers() & nodeIncrementEventModifiers) != 0));
+
+        if ( e.getID() != nodeIncrementEventID ){
+            // not an incrementEvent: false
+            return false;
+        }
+
+        if (( e instanceof KeyEvent ) ){
+            if (( (KeyEvent) e).getKeyCode() != nodeIncrementEventCode ){
+                // it was a KeyEvent, but not a nodeIncrementEventCode : false
+                return false;
+            }
+        }
+        // here: it was not a KeyEvent at all OR a KeyEvent with nodeIncrementEventCode
+        if (( e.getModifiers() & nodeIncrementEventModifiers ) == 0 ) {
+            // no nodeIncrementEventModifiers were set: false
+            return false;
+        }
+
+        // this is the only path to success...
+        return true;
     }
 
     /**
@@ -682,11 +708,30 @@ public abstract class AbstractAWTEventDispatcher
      * false otherwise.
      */
     protected boolean isNodeDecrementEvent(InputEvent e) {
-        // TODO: Improve code readability!
-        return ((e.getID() == nodeDecrementEventID) &&
-                ((e instanceof KeyEvent) ?
-                     ( ((KeyEvent) e).getKeyCode() == nodeDecrementEventCode) : true) &&
-                ((e.getModifiers() & nodeDecrementEventModifiers) != 0  ));
+        // DONE: Improve code readability!   YES !!
+        //        return ((e.getID() == nodeDecrementEventID) &&
+        //                ((e instanceof KeyEvent) ?
+        //                     ( ((KeyEvent) e).getKeyCode() == nodeDecrementEventCode) : true) &&
+        //                ((e.getModifiers() & nodeDecrementEventModifiers) != 0  ));
 
+        if ( e.getID() != nodeDecrementEventID ){
+            // not an nodeDecrementEvent: false
+            return false;
+        }
+
+        if (( e instanceof KeyEvent ) ){
+            if (( (KeyEvent) e).getKeyCode() != nodeDecrementEventCode ){
+                // it was a KeyEvent, but not a nodeDecrementEventCode : false
+                return false;
+            }
+        }
+        // here: it was not a KeyEvent at all OR a KeyEvent with nodeIncrementEventCode
+        if (( e.getModifiers() & nodeDecrementEventModifiers ) == 0 ) {
+            // no nodeDecrementEventModifiers were set: false
+            return false;
+        }
+
+        // this is the only path to success...
+        return true;
     }
 }

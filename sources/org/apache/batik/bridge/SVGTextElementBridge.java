@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001-2005  The Apache Software Foundation 
+   Copyright 2001-2005  The Apache Software Foundation
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -84,43 +84,43 @@ import org.w3c.dom.events.MutationEvent;
  * @author <a href="mailto:bill.haneman@ireland.sun.com">Bill Haneman</a>
  * @version $Id$
  */
-public class SVGTextElementBridge extends AbstractGraphicsNodeBridge 
+public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
     implements SVGTextContent {
 
     protected final static Integer ZERO = new Integer(0);
 
-    public static final 
+    public static final
         AttributedCharacterIterator.Attribute TEXT_COMPOUND_DELIMITER =
         GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER;
 
-    public static final 
+    public static final
         AttributedCharacterIterator.Attribute TEXT_COMPOUND_ID =
         GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_ID;
 
     public static final AttributedCharacterIterator.Attribute PAINT_INFO =
          GVTAttributedCharacterIterator.TextAttribute.PAINT_INFO;
 
-    public static final 
+    public static final
         AttributedCharacterIterator.Attribute ALT_GLYPH_HANDLER =
         GVTAttributedCharacterIterator.TextAttribute.ALT_GLYPH_HANDLER;
-        
-    public static final 
+
+    public static final
         AttributedCharacterIterator.Attribute TEXTPATH
         = GVTAttributedCharacterIterator.TextAttribute.TEXTPATH;
 
-    public static final 
+    public static final
         AttributedCharacterIterator.Attribute ANCHOR_TYPE
         = GVTAttributedCharacterIterator.TextAttribute.ANCHOR_TYPE;
 
-    public static final 
+    public static final
         AttributedCharacterIterator.Attribute GVT_FONT_FAMILIES
         = GVTAttributedCharacterIterator.TextAttribute.GVT_FONT_FAMILIES;
 
-    public static final 
+    public static final
         AttributedCharacterIterator.Attribute GVT_FONTS
         = GVTAttributedCharacterIterator.TextAttribute.GVT_FONTS;
 
-    public static final 
+    public static final
         AttributedCharacterIterator.Attribute BASELINE_SHIFT
         = GVTAttributedCharacterIterator.TextAttribute.BASELINE_SHIFT;
 
@@ -330,7 +330,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
          * Handles 'DOMNodeRemoved' event type.
          */
         public void handleEvent(Event evt) {
-            handleDOMChildNodeRemovedEvent((MutationEvent)evt);            
+            handleDOMChildNodeRemovedEvent((MutationEvent)evt);
         }
     }
 
@@ -356,7 +356,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
 
     /**
      * This method ensures that any modification to a text
-     * element and its children is going to be reflected 
+     * element and its children is going to be reflected
      * into the GVT tree.
      */
     protected void initializeDynamicSupport(BridgeContext ctx,
@@ -369,7 +369,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
 
         addTextEventListeners(ctx, (NodeEventTarget) e);
 
-        // traverse the children to add context on 
+        // traverse the children to add context on
         // <tspan>, <tref> and <textPath>
         Node child = getFirstChild(e);
         while (child != null) {
@@ -393,7 +393,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                 new DOMSubtreeModifiedEventListener();
         }
 
-        //to be notified when a child is removed from the 
+        //to be notified when a child is removed from the
         //<text> element.
         e.addEventListenerNS
             (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMNodeRemoved",
@@ -401,7 +401,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         ctx.storeEventListenerNS
             (e, XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMNodeRemoved",
              childNodeRemovedEventListener, true);
-        
+
         //to be notified when the modification of the subtree
         //of the <text> element is done
         e.addEventListenerNS
@@ -455,7 +455,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         while (child != null) {
             if (child.getNodeType() == Node.ELEMENT_NODE) {
                 addContextToChild(ctx, (Element)child);
-            }        
+            }
             child = getNextSibling(child);
         }
     }
@@ -465,12 +465,12 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
      */
     public void handleDOMNodeInsertedEvent(MutationEvent evt) {
         Node childNode = (Node)evt.getTarget();
-        
+
         //check the type of the node inserted before discard the layout
         //in the case of <title> or <desc> or <metadata>, the layout
         //is unchanged
         switch( childNode.getNodeType() ){
-        case Node.TEXT_NODE:
+        case Node.TEXT_NODE:        // fall-through is intended
         case Node.CDATA_SECTION_NODE:
             laidoutText = null;
             break;
@@ -507,14 +507,14 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         //in the case of <title> or <desc> or <metadata>, the layout
         //is unchanged
         switch (childNode.getNodeType()) {
-            case Node.TEXT_NODE:
+            case Node.TEXT_NODE:           // fall-through is intended
             case Node.CDATA_SECTION_NODE:
                 //the parent has to be a displayed node
                 if (isParentDisplayed( childNode)) {
                     laidoutText = null;
                 }
                 break;
-            case Node.ELEMENT_NODE: 
+            case Node.ELEMENT_NODE:
                 if (isTextChild((Element)childNode)) {
                     laidoutText = null;
                 }
@@ -537,7 +537,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
     }
 
     /**
-     * Invoked when an MutationEvent of type 'DOMCharacterDataModified' 
+     * Invoked when an MutationEvent of type 'DOMCharacterDataModified'
      * is fired.
      */
     public void handleDOMCharacterDataModified(MutationEvent evt){
@@ -554,7 +554,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
      * &lt;title&gt;, &lt;desc&gt; and &lt;metadata&gt;
      * are non displayable elements.
      *
-     * @return true if the parent of the node is &lt;text&gt;, 
+     * @return true if the parent of the node is &lt;text&gt;,
      *   &lt;tspan&gt;, &lt;tref&gt;, &lt;textPath&gt;, &lt;a&gt;,
      *   &lt;altGlyph&gt;
      */
@@ -571,7 +571,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
      * update <code>laidoutText</code> with the new
      * value.
      */
-    protected void computeLaidoutText(BridgeContext ctx, 
+    protected void computeLaidoutText(BridgeContext ctx,
                                       Element e,
                                       GraphicsNode node) {
         TextNode tn = (TextNode)node;
@@ -656,7 +656,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         int [] properties = evt.getProperties();
         // first try to find CSS properties that change the layout
         for (int i=0; i < properties.length; ++i) {
-            switch(properties[i]) {
+            switch(properties[i]) {         // fall-through is intended
             case SVGCSSEngine.BASELINE_SHIFT_INDEX:
             case SVGCSSEngine.DIRECTION_INDEX:
             case SVGCSSEngine.DISPLAY_INDEX:
@@ -667,7 +667,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             case SVGCSSEngine.FONT_WEIGHT_INDEX:
             case SVGCSSEngine.GLYPH_ORIENTATION_HORIZONTAL_INDEX:
             case SVGCSSEngine.GLYPH_ORIENTATION_VERTICAL_INDEX:
-            case SVGCSSEngine.KERNING_INDEX: 
+            case SVGCSSEngine.KERNING_INDEX:
             case SVGCSSEngine.LETTER_SPACING_INDEX:
             case SVGCSSEngine.TEXT_ANCHOR_INDEX:
             case SVGCSSEngine.UNICODE_BIDI_INDEX:
@@ -694,7 +694,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
      * Invoked for each CSS property that has changed.
      */
     protected void handleCSSPropertyChanged(int property) {
-        switch(property) {
+        switch(property) {                  // fall-through is intended
         case SVGCSSEngine.FILL_INDEX:
         case SVGCSSEngine.FILL_OPACITY_INDEX:
         case SVGCSSEngine.STROKE_INDEX:
@@ -708,8 +708,8 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         case SVGCSSEngine.TEXT_DECORATION_INDEX:
             rebuildACI();
             break;
- 
-        case SVGCSSEngine.VISIBILITY_INDEX: 
+
+        case SVGCSSEngine.VISIBILITY_INDEX:
             rebuildACI();
             super.handleCSSPropertyChanged(property);
             break;
@@ -728,7 +728,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                 node.setRenderingHints(hints);
             }
             break;
-        } 
+        }
         default:
             super.handleCSSPropertyChanged(property);
         }
@@ -761,7 +761,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         if (oldPI == null) return;
 
         tn.swapTextPaintInfo(pi, oldPI);
-        if (usingComplexSVGFont) 
+        if (usingComplexSVGFont)
             // Force Complex SVG fonts to be recreated
             tn.setAttributedCharacterIterator
                 (tn.getAttributedCharacterIterator());
@@ -793,7 +793,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
      */
     protected AttributedString buildAttributedString(BridgeContext ctx,
                                                      Element element) {
-        
+
         AttributedStringBuffer asb = new AttributedStringBuffer();
         fillAttributedStringBuffer(ctx, element, true, null, null, asb);
         return asb.toAttributedString();
@@ -823,7 +823,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             (!CSSUtilities.convertDisplay(element))) {
             return;
         }
-        
+
         String s = XMLSupport.getXMLSpace(element);
         boolean preserve = s.equals(SVG_PRESERVE_VALUE);
         boolean prevEndsWithSpace;
@@ -834,7 +834,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             endLimit = 0;
         if (preserve)
             endLimit = asb.length();
-        
+
         Map map = getAttributeMap(ctx, element, textPath, bidiLevel);
         Object o = map.get(TextAttribute.BIDI_EMBEDDING);
         Integer subBidiLevel = bidiLevel;
@@ -848,7 +848,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             if (preserve) {
                 prevEndsWithSpace = false;
             } else {
-                if (asb.length() == 0) 
+                if (asb.length() == 0)
                     prevEndsWithSpace = true;
                 else
                     prevEndsWithSpace = (asb.getLastChar() == ' ');
@@ -858,11 +858,11 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             case Node.ELEMENT_NODE:
                 if (!SVG_NAMESPACE_URI.equals(n.getNamespaceURI()))
                     break;
-                
+
                 nodeElement = (Element)n;
 
                 String ln = n.getLocalName();
-                
+
                 if (ln.equals(SVG_TSPAN_TAG) ||
                     ln.equals(SVG_ALT_GLYPH_TAG)) {
                     fillAttributedStringBuffer(ctx,
@@ -891,7 +891,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                     s = normalizeString(s, preserve, prevEndsWithSpace);
                     if (s != null) {
                         int trefStart = asb.length();
-                        Map m = getAttributeMap(ctx, nodeElement, 
+                        Map m = getAttributeMap(ctx, nodeElement,
                                                 textPath, bidiLevel);
                         asb.append(s, m);
                         int trefEnd = asb.length()-1;
@@ -910,7 +910,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                     ctx.storeEventListenerNS
                         (target, XMLConstants.XML_EVENTS_NAMESPACE_URI,
                          SVG_EVENT_CLICK, l, false);
-                    
+
                     fillAttributedStringBuffer(ctx,
                                                nodeElement,
                                                false,
@@ -919,7 +919,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                                                asb);
                 }
                 break;
-            case Node.TEXT_NODE:
+            case Node.TEXT_NODE:                     // fall-through is intended
             case Node.CDATA_SECTION_NODE:
                 s = n.getNodeValue();
                 s = normalizeString(s, preserve, prevEndsWithSpace);
@@ -963,7 +963,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         if (preserve) {
             for (int i = 0; i < s.length(); i++) {
                 char c = s.charAt(i);
-                switch (c) {
+                switch (c) {                // fall-through is intended
                 case 10:
                 case 13:
                 case '\t':
@@ -982,7 +982,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                 switch (s.charAt(idx)) {
                 default:
                     break loop;
-                case 10:
+                case 10:                   // fall-through is intended
                 case 13:
                 case ' ':
                 case '\t':
@@ -995,10 +995,10 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         for (int i = idx; i < s.length(); i++) {
             char c = s.charAt(i);
             switch (c) {
-            case 10:
+            case 10:                      // fall-through is intended
             case 13:
                 break;
-            case ' ':
+            case ' ':                     // fall-through is intended
             case '\t':
                 if (!space) {
                     sb.append(' ');
@@ -1028,7 +1028,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
          * The attributes.
          */
         protected List attributes;
-        
+
         /**
          * The number of items.
          */
@@ -1038,7 +1038,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
          * The length of the attributed string.
          */
         protected int length;
-        
+
         /**
          * Creates a new empty AttributedStringBuffer.
          */
@@ -1055,7 +1055,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         public boolean isEmpty() {
             return count == 0;
         }
-        
+
         /**
          * Returns the length in chars of the current Attributed String
          */
@@ -1090,7 +1090,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
          */
         public void stripFirst() {
             String s = (String)strings.get(0);
-            if (s.charAt(s.length() - 1) != ' ') 
+            if (s.charAt(s.length() - 1) != ' ')
                 return;
 
             length--;
@@ -1110,7 +1110,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
          */
         public void stripLast() {
             String s = (String)strings.get(count - 1);
-            if (s.charAt(s.length() - 1) != ' ') 
+            if (s.charAt(s.length() - 1) != ' ')
                 return;
 
             length--;
@@ -1385,8 +1385,8 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
      * This method adds all the font related properties to <tt>result</tt>
      * It also builds a List of the GVTFonts and returns it.
      */
-    protected List getFontList(BridgeContext ctx, 
-                               Element       element, 
+    protected List getFontList(BridgeContext ctx,
+                               Element       element,
                                Map           result) {
 
         // Unique value for text element - used for run identification.
@@ -1398,15 +1398,15 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         result.put(TextAttribute.SIZE, fsFloat);
 
         // Font stretch
-        result.put(TextAttribute.WIDTH, 
+        result.put(TextAttribute.WIDTH,
                 TextUtilities.convertFontStretch(element));
 
         // Font style
-        result.put(TextAttribute.POSTURE, 
+        result.put(TextAttribute.POSTURE,
                 TextUtilities.convertFontStyle(element));
 
         // Font weight
-        result.put(TextAttribute.WEIGHT, 
+        result.put(TextAttribute.WEIGHT,
                 TextUtilities.convertFontWeight(element));
 
         // Font weight
@@ -1451,7 +1451,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             fontList.add(ft);
         }
 
-        // Eventually this will need to go for SVG fonts it 
+        // Eventually this will need to go for SVG fonts it
         // holds hard ref to DOM.
         result.put(GVT_FONT_FAMILIES, fontFamilyList);
 
@@ -1476,10 +1476,10 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         Map result = new HashMap();
         String s;
         float f;
-        
+
         if (SVG_NAMESPACE_URI.equals(element.getNamespaceURI()) &&
             element.getLocalName().equals(SVG_ALT_GLYPH_TAG)) {
-            result.put(ALT_GLYPH_HANDLER, 
+            result.put(ALT_GLYPH_HANDLER,
                        new SVGAltGlyphHandler(ctx, element));
         }
 
@@ -1487,7 +1487,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         // Text we will swap in the correct values.
         TextPaintInfo pi = new TextPaintInfo();
         // Set some basic props so we can get bounds info for complex paints.
-        pi.visible   = true;        
+        pi.visible   = true;
         pi.fillPaint = Color.black;
         result.put(PAINT_INFO, pi);
         elemTPI.put(element, pi);
@@ -1554,7 +1554,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
 		else                    cbidi++; // was even now odd
                 break;
 	    }
-	    
+
 	    switch (s.charAt(0)) {
 	    case 'b': // bidi-override
 		cbidi = -cbidi; // For bidi-override we want a negative number.
@@ -1594,7 +1594,8 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
 
         val = CSSUtilities.getComputedStyle
             (element, SVGCSSEngine.GLYPH_ORIENTATION_VERTICAL_INDEX);
-        switch (val.getPrimitiveType()) {
+        int primitiveType = val.getPrimitiveType();
+        switch ( primitiveType ) {
         case CSSPrimitiveValue.CSS_IDENT: // auto
             result.put(GVTAttributedCharacterIterator.
                        TextAttribute.VERTICAL_ORIENTATION,
@@ -1630,14 +1631,15 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             break;
         default:
             // Cannot happen
-            throw new InternalError();
+            throw new IllegalStateException("unexpected primitiveType (V):" + primitiveType );
         }
 
         // glyph-orientation-horizontal
 
         val = CSSUtilities.getComputedStyle
             (element, SVGCSSEngine.GLYPH_ORIENTATION_HORIZONTAL_INDEX);
-        switch (val.getPrimitiveType()) {
+        primitiveType = val.getPrimitiveType();
+        switch ( primitiveType ) {
         case CSSPrimitiveValue.CSS_DEG:
             result.put(GVTAttributedCharacterIterator.
                        TextAttribute.HORIZONTAL_ORIENTATION_ANGLE,
@@ -1655,7 +1657,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             break;
         default:
             // Cannot happen
-            throw new InternalError();
+            throw new IllegalStateException("unexpected primitiveType (H):" + primitiveType );
         }
 
         // text spacing properties...
@@ -1728,7 +1730,6 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
      * of the node 'child' and extract the text decorations
      * of the parent.
      *
-     * @param aci an <code>AttributedCharacterIterator</code> value
      * @param child an <code>Element</code> value
      * @return a <code>TextDecoration</code> value
      */
@@ -1843,11 +1844,11 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             pi.underlinePaint = null;
             pi.underlineStrokePaint = null;
             pi.underlineStroke = null;
-            
+
             pi.overlinePaint = null;
             pi.overlineStrokePaint = null;
             pi.overlineStroke = null;
-            
+
             pi.strikethroughPaint = null;
             pi.strikethroughStrokePaint = null;
             pi.strikethroughStroke = null;
@@ -1859,7 +1860,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
      * Implementation of <ode>SVGContext</code> for
      * the children of &lt;text&gt;
      */
-    public abstract class AbstractTextChildSVGContext 
+    public abstract class AbstractTextChildSVGContext
         implements SVGContext {
 
         /** Bridge Context */
@@ -1885,7 +1886,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         }
 
         public SVGTextElementBridge getTextBridge() { return textBridge; }
-        
+
         /**
          * Returns the size of a px CSS unit in millimeters.
          */
@@ -1900,7 +1901,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
          */
         public float getPixelToMM() {
             return getPixelUnitToMillimeter();
-            
+
         }
         /**
          * Returns the tight bounding box in current user space (i.e.,
@@ -1959,7 +1960,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         public float getViewportWidth() {
             return ctx.getBlockWidth(e);
         }
-        
+
         /**
          * Returns the height of the viewport which directly contains the
          * given element.
@@ -1967,7 +1968,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         public float getViewportHeight() {
             return ctx.getBlockHeight(e);
         }
-        
+
         /**
          * Returns the font-size on the associated element.
          */
@@ -1987,13 +1988,13 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
      * <code>SVGTextElementBridge</code> which can determine
      * the impact of a change of one of its children for the others.
      */
-    protected abstract class AbstractTextChildBridgeUpdateHandler 
+    protected abstract class AbstractTextChildBridgeUpdateHandler
         extends AbstractTextChildSVGContext implements BridgeUpdateHandler {
 
         /**
          * Initialize the BridgeUpdateHandler implementation.
          */
-        public AbstractTextChildBridgeUpdateHandler
+        protected AbstractTextChildBridgeUpdateHandler
             (BridgeContext ctx,
              SVGTextElementBridge parent,
              Element e) {
@@ -2023,7 +2024,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         }
 
         /**
-         * Invoked when an MutationEvent of type 'DOMCharacterDataModified' 
+         * Invoked when an MutationEvent of type 'DOMCharacterDataModified'
          * is fired.
          */
         public void handleDOMCharacterDataModified(MutationEvent evt) {
@@ -2046,14 +2047,14 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         }
     }
 
-    protected class AbstractTextChildTextContent 
+    protected class AbstractTextChildTextContent
         extends AbstractTextChildBridgeUpdateHandler
         implements SVGTextContent{
 
         /**
          * Initialize the AbstractTextChildBridgeUpdateHandler implementation.
          */
-        public AbstractTextChildTextContent
+        protected AbstractTextChildTextContent
             (BridgeContext ctx,
              SVGTextElementBridge parent,
              Element e) {
@@ -2066,7 +2067,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         public int getNumberOfChars(){
             return textBridge.getNumberOfChars(e);
         }
-        
+
         public Rectangle2D getExtentOfChar(int charnum ){
             return textBridge.getExtentOfChar(e,charnum);
         }
@@ -2090,7 +2091,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         public float getComputedTextLength(){
             return textBridge.getComputedTextLength(e);
         }
-        
+
         public float getSubStringLength(int charnum, int nchars){
             return textBridge.getSubStringLength(e,charnum,nchars);
         }
@@ -2103,17 +2104,17 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
     /**
      * BridgeUpdateHandle for &lt;tref&gt; element.
      */
-    protected class TRefBridge 
+    protected class TRefBridge
         extends AbstractTextChildTextContent {
 
-        public TRefBridge(BridgeContext ctx,
+        protected TRefBridge(BridgeContext ctx,
                           SVGTextElementBridge parent,
                           Element e) {
             super(ctx,parent,e);
         }
 
         /**
-         * Handle the dynamic update for the attributes of 
+         * Handle the dynamic update for the attributes of
          * &lt;tspan&gt; : 'x', 'y', 'dx', 'dy' and 'rotate'.
          */
         public void handleDOMAttrModifiedEvent(MutationEvent evt){
@@ -2124,19 +2125,19 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                 attrName.equals(SVG_DY_ATTRIBUTE) ||
                 attrName.equals(SVG_ROTATE_ATTRIBUTE)) {
                 //recompute the layout of the text node
-                textBridge.computeLaidoutText(ctx, textBridge.e, 
+                textBridge.computeLaidoutText(ctx, textBridge.e,
                                                textBridge.node);
             }
-        }        
+        }
     }
 
     /**
      * BridgeUpdateHandle for &lt;textPath&gt; element.
      */
-    protected class TextPathBridge 
+    protected class TextPathBridge
         extends AbstractTextChildTextContent{
 
-        public TextPathBridge(BridgeContext ctx,
+        protected TextPathBridge(BridgeContext ctx,
                               SVGTextElementBridge parent,
                               Element e){
             super(ctx,parent,e);
@@ -2146,17 +2147,17 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
     /**
      * BridgeUpdateHandle for &lt;tspan&gt; element.
      */
-    protected class TspanBridge 
+    protected class TspanBridge
         extends AbstractTextChildTextContent {
 
-        public TspanBridge(BridgeContext ctx,
+        protected TspanBridge(BridgeContext ctx,
                            SVGTextElementBridge parent,
                            Element e){
             super(ctx,parent,e);
         }
-        
+
         /**
-         * Handle the dynamic update for the attributes of 
+         * Handle the dynamic update for the attributes of
          * &lt;tspan&gt; : 'x', 'y', 'dx', 'dy' and 'rotate'.
          */
         public void handleDOMAttrModifiedEvent(MutationEvent evt){
@@ -2167,10 +2168,10 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                 attrName.equals(SVG_DY_ATTRIBUTE) ||
                 attrName.equals(SVG_ROTATE_ATTRIBUTE)) {
                 //recompute the layout of the text node
-                textBridge.computeLaidoutText(ctx, textBridge.e, 
+                textBridge.computeLaidoutText(ctx, textBridge.e,
                                                textBridge.node);
             }
-        }        
+        }
     }
 
     //Implementation of TextContent
@@ -2189,7 +2190,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
     public Point2D getEndPositionOfChar(int charnum){
         return getEndPositionOfChar(e,charnum);
     }
-    
+
     public void selectSubString(int charnum, int nchars){
         selectSubString(e,charnum,nchars);
     }
@@ -2255,7 +2256,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         //find the character 'charnum' in the text run
         CharacterInformation info;
         info = getCharacterInformation(list, firstChar,charnum, aci);
-            
+
         if ( info == null )
             return null;
 
@@ -2270,11 +2271,11 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                 b = it.getGlyphOutline(info.glyphIndexStart);
         } else {
             GeneralPath path = null;
-            for( int k = info.glyphIndexStart ; 
+            for( int k = info.glyphIndexStart ;
                  k <= info.glyphIndexEnd;
                  k++){
                 if (it.isGlyphVisible(k)) {
-                    if (path == null) 
+                    if (path == null)
                         path = new GeneralPath(it.getGlyphOutline(k));
                     else
                         path.append(it.getGlyphOutline(k),false);
@@ -2283,9 +2284,9 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             b = path;
         }
 
-        if (b == null) 
+        if (b == null)
             return null;
-                
+
         //return the bounding box of the outline
         return b.getBounds2D();
     }
@@ -2299,7 +2300,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
 
         AttributedCharacterIterator aci;
         aci = ((TextNode)node).getAttributedCharacterIterator();
-        if (aci == null) 
+        if (aci == null)
             return null;
 
         int firstChar = getElementStartIndex(element);
@@ -2315,8 +2316,8 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
 
         if ( info == null )
             return null;
-        
-        return getStartPoint( info );            
+
+        return getStartPoint( info );
     }
 
     protected Point2D getStartPoint(CharacterInformation info){
@@ -2363,7 +2364,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         //find the glyph information for the character 'charnum'
         CharacterInformation info;
         info = getCharacterInformation(list, firstChar,charnum, aci);
-            
+
         if ( info == null )
             return null;
         return getEndPoint(info);
@@ -2374,18 +2375,18 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         GVTGlyphVector it = info.layout.getGlyphVector();
         if (!it.isGlyphVisible(info.glyphIndexEnd))
             return null;
-        
+
         Point2D b = it.getGlyphPosition(info.glyphIndexEnd);
-        
+
         AffineTransform glyphTransform;
         glyphTransform = it.getGlyphTransform(info.glyphIndexEnd);
-        
+
         GVTGlyphMetrics metrics = it.getGlyphMetrics(info.glyphIndexEnd);
-        
-        
+
+
         Point2D.Float result = new Point2D.Float
             (metrics.getHorizontalAdvance(), 0);
-            
+
         if ( glyphTransform != null )
             glyphTransform.transform(result,result);
 
@@ -2416,7 +2417,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         //find the glyph information for the character 'charnum'
         CharacterInformation info;
         info = getCharacterInformation(list, firstChar,charnum, aci);
-            
+
         double angle = 0.0;
         int nbGlyphs = 0;
 
@@ -2429,7 +2430,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                 if (!it.isGlyphVisible(k)) continue;
 
                 nbGlyphs++;
-                
+
                 //the glyph transform contains only a scale and a rotate.
                 AffineTransform glyphTransform = it.getGlyphTransform(k);
                 if ( glyphTransform == null ) continue;
@@ -2437,7 +2438,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                 double glyphAngle = 0.0;
                 double cosTheta = glyphTransform.getScaleX();
                 double sinTheta = glyphTransform.getShearX();
-                
+
                 //extract the angle
                 if ( cosTheta == 0.0 ){
                     if ( sinTheta > 0 ) glyphAngle = Math.PI;
@@ -2448,10 +2449,10 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                         glyphAngle += Math.PI;
                 }
                 //get a degrees value for the angle
-                //SVG angle are clock wise java anticlockwise 
-                
+                //SVG angle are clock wise java anticlockwise
+
                 glyphAngle = (Math.toDegrees( - glyphAngle ) ) % 360.0;
-                
+
                 //remove the orientation from the value
                 angle += glyphAngle - info.getComputedOrientationAngle();
             }
@@ -2473,7 +2474,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
      * org.w3c.dom.svg.SVGTextContentElement#getSubStringLength(int charnum,int nchars)}.
      */
     protected float getSubStringLength(Element element,
-                                       int charnum, 
+                                       int charnum,
                                        int nchars){
         if (nchars == 0) {
             return 0;
@@ -2528,7 +2529,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                 lastCharacterInRunInfo = getCharacterInformation
                     (list,firstChar,k-1,aci);
 
-                //if the text run change compute the distance between the 
+                //if the text run change compute the distance between the
                 //first character of the run and the last
                 length += distanceFirstLastCharacterInRun
                     (currentInfo,lastCharacterInRunInfo);
@@ -2565,9 +2566,9 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
 
     protected float distanceFirstLastCharacterInRun
         (CharacterInformation first, CharacterInformation last){
-        
+
         float [] advs = first.layout.getGlyphAdvances();
-        
+
         int firstStart = first.glyphIndexStart;
         int firstEnd   = first.glyphIndexEnd;
         int lastStart  = last.glyphIndexStart;
@@ -2580,7 +2581,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
 
     protected float distanceBetweenRun
         (CharacterInformation last, CharacterInformation first){
-        
+
         float distance;
         Point2D startPoint;
         Point2D endPoint;
@@ -2605,10 +2606,10 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         else{
             distance = (float)(endPoint.getX() - startPoint.getX());
         }
-    
+
         return distance;
     }
-                                                    
+
 
     /**
      * Select an ensemble of characters for that element.
@@ -2635,7 +2636,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         CharacterInformation firstInfo, lastInfo;
         firstInfo = getCharacterInformation(list, firstChar,charnum,aci);
         lastInfo  = getCharacterInformation(list, firstChar,charnum+nchars-1,aci);
-        
+
         Mark firstMark, lastMark;
         firstMark = textNode.getMarkerForChar(firstInfo.characterIndex,true);
 
@@ -2650,7 +2651,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
     }
 
     protected int getCharNumAtPosition(Element e, float x, float y){
-        
+
         TextNode textNode = (TextNode)node;
         AttributedCharacterIterator aci;
         aci = textNode.getAttributedCharacterIterator();
@@ -2687,7 +2688,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
     }
 
     /**
-     * Retrieve the list of layout for the 
+     * Retrieve the list of layout for the
      * text node.
      */
     protected List getTextRuns(TextNode node){
@@ -2705,20 +2706,20 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
      * Retrieve the information about a character
      * of en element. The element first character in
      * the ACI is 'firstChar' and the character
-     * look for is the charnum th character in the 
+     * look for is the charnum th character in the
      * element
      *
      * @param list list of the layouts
      * @param startIndex index in the ACI of the first
      *   character for the element
-     * @param charnum index of the character (among the 
+     * @param charnum index of the character (among the
      *   characters of the element) looked for.
      *
      * @return information about the glyph representing the
      *  character
      */
     protected CharacterInformation getCharacterInformation
-        (List list,int startIndex, int charnum, 
+        (List list,int startIndex, int charnum,
          AttributedCharacterIterator aci)
     {
         CharacterInformation info = new CharacterInformation();
@@ -2732,9 +2733,9 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                 continue;
 
             info.layout = run.getLayout();
-            
+
             aci.setIndex(info.characterIndex);
-            
+
             //check is it is a altGlyph
             if (aci.getAttribute(ALT_GLYPH_HANDLER) != null){
                 info.glyphIndexStart = 0;
@@ -2742,7 +2743,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             } else {
                 info.glyphIndexStart = info.layout.getGlyphIndex
                     (info.characterIndex);
-                
+
                 //special case when the glyph does not have a unicode
                 //associated to it, it will return -1
                 if ( info.glyphIndexStart == -1 ){
@@ -2856,7 +2857,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                 reject.add(elem);
                 continue;
             }
-                        
+
             Rectangle2D glBounds = layout.getBounds2D();
             if (glBounds != null)
                 glBounds = at.createTransformedShape
@@ -2879,12 +2880,12 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                                               Rectangle2D rect,
                                               boolean checkSensitivity) {
         SVGContext svgCtx = null;
-        if (elem instanceof SVGOMElement) 
+        if (elem instanceof SVGOMElement)
             svgCtx  = ((SVGOMElement)elem).getSVGContext();
         if (svgCtx == null) return false;
 
         SVGTextElementBridge txtBridge = null;
-        if (svgCtx instanceof SVGTextElementBridge) 
+        if (svgCtx instanceof SVGTextElementBridge)
             txtBridge = (SVGTextElementBridge)svgCtx;
         else if (svgCtx instanceof AbstractTextChildSVGContext) {
             AbstractTextChildSVGContext childCtx;
@@ -2895,7 +2896,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
 
         TextNode tn      = (TextNode)txtBridge.node;
         List list = tn.getTextRuns();
-        if (list == null) 
+        if (list == null)
             return false;
 
         Element  txtElem = txtBridge.e;
@@ -2933,7 +2934,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             if (glBounds == null) continue;
             glBounds = at.createTransformedShape(glBounds).getBounds2D();
             if (!rect.intersects(glBounds)) continue;
-            
+
             GVTGlyphVector gv = layout.getGlyphVector();
             for (int g = 0; g < gv.getNumGlyphs(); g++) {
                 Shape gBounds = gv.getGlyphLogicalBounds(g);
@@ -2951,12 +2952,12 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
     public static Rectangle2D getTextBounds(BridgeContext ctx, Element elem,
                                             boolean checkSensitivity) {
         SVGContext svgCtx = null;
-        if (elem instanceof SVGOMElement) 
+        if (elem instanceof SVGOMElement)
             svgCtx  = ((SVGOMElement)elem).getSVGContext();
         if (svgCtx == null) return null;
 
         SVGTextElementBridge txtBridge = null;
-        if (svgCtx instanceof SVGTextElementBridge) 
+        if (svgCtx instanceof SVGTextElementBridge)
             txtBridge = (SVGTextElementBridge)svgCtx;
         else if (svgCtx instanceof AbstractTextChildSVGContext) {
             AbstractTextChildSVGContext childCtx;
@@ -2967,7 +2968,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
 
         TextNode tn      = (TextNode)txtBridge.node;
         List list = tn.getTextRuns();
-        if (list == null) 
+        if (list == null)
             return null;
 
         Element  txtElem = txtBridge.e;
@@ -3002,18 +3003,18 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         }
         return ret;
     }
-         
+
 
     public static boolean isTextSensitive(Element e) {
         int     ptrEvts = CSSUtilities.convertPointerEvents(e);
         switch (ptrEvts) {
-        case GraphicsNode.VISIBLE_PAINTED:
+        case GraphicsNode.VISIBLE_PAINTED:   // fall-through is intended
         case GraphicsNode.VISIBLE_FILL:
         case GraphicsNode.VISIBLE_STROKE:
         case GraphicsNode.VISIBLE:
             return CSSUtilities.convertVisibility(e);
         case GraphicsNode.PAINTED:
-        case GraphicsNode.FILL:
+        case GraphicsNode.FILL:              // fall-through is intended
         case GraphicsNode.STROKE:
         case GraphicsNode.ALL:
             return true;

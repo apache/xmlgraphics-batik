@@ -359,6 +359,17 @@ public class AbstractJSVGComponent extends JGVTComponent {
     protected boolean isInteractiveDocument;
 
     /**
+     * Set to true before component calls setDisableInteractors
+     * so it knows that the users isn't the one calling it.
+     */
+    protected boolean selfCallingDisableInteractions = false;
+
+    /**
+     * Set to true if the user ever calls setDisableInteractions
+     */
+    protected boolean userSetDisableInteractions = false;
+
+    /**
      * The document state.
      */
     protected int documentState;
@@ -404,6 +415,42 @@ public class AbstractJSVGComponent extends JGVTComponent {
 
     public void dispose() {
         setSVGDocument(null);
+    }
+
+    public void setDisableInteractions(boolean b) {
+        super.setDisableInteractions(b);
+        if (!selfCallingDisableInteractions)
+            userSetDisableInteractions = true;
+    }
+
+    /**
+     * Clears the boolean that indicates the 'user'
+     * has set disable interactions so that the canvas
+     * uses the value from documents.
+     */
+    public void clearUserSetDisableInteractions() {
+        userSetDisableInteractions = false;
+        updateZoomAndPanEnable(svgDocument);
+    }
+
+    /**
+     * Enables/Disables Zoom And Pan based on the zoom and
+     * pan attribute of the currently installed document,
+     * Unless the user has set the Interactions State.
+     */
+    public void updateZoomAndPanEnable(Document doc) {
+        if (userSetDisableInteractions) return;
+        if (doc == null) return;
+        try {
+            Element root = doc.getDocumentElement();
+            String znp = root.getAttributeNS
+                (null, SVGConstants.SVG_ZOOM_AND_PAN_ATTRIBUTE);
+            boolean enable = SVGConstants.SVG_MAGNIFY_VALUE.equals(znp);
+            selfCallingDisableInteractions = true;
+            setDisableInteractions(!enable);
+        } finally {
+            selfCallingDisableInteractions = false;
+        }
     }
 
     /**
@@ -704,11 +751,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
                 bridgeContext.setDynamicState(BridgeContext.INTERACTIVE);
         }
 
-        Element root = doc.getDocumentElement();
-        String znp = root.getAttributeNS
-            (null, SVGConstants.SVG_ZOOM_AND_PAN_ATTRIBUTE);
-
-        setDisableInteractions(!znp.equals(SVGConstants.SVG_MAGNIFY_VALUE));
+        updateZoomAndPanEnable(doc);
 
         nextGVTTreeBuilder = new GVTTreeBuilder(doc, bridgeContext);
         nextGVTTreeBuilder.setPriority(Thread.MIN_PRIORITY);

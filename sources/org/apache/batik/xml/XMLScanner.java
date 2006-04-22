@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2002-2003  The Apache Software Foundation 
+   Copyright 2002-2003  The Apache Software Foundation
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -137,7 +137,7 @@ public class XMLScanner implements Localizable {
      * The localizable support.
      */
     protected LocalizableSupport localizableSupport =
-        new LocalizableSupport(BUNDLE_CLASSNAME, 
+        new LocalizableSupport(BUNDLE_CLASSNAME,
                                XMLScanner.class.getClassLoader());
 
     /**
@@ -507,7 +507,7 @@ public class XMLScanner implements Localizable {
                 return nextInEnumeration();
 
             default:
-                throw new InternalError();
+                throw new IllegalArgumentException("unexpected ctx:" + ctx );
             }
         } catch (IOException e) {
             throw new XMLException(e);
@@ -566,7 +566,7 @@ public class XMLScanner implements Localizable {
 		    throw createXMLException("xml.reserved");
 		}
 		return LexicalUnits.PI_START;
-                
+
             case '!':
                 switch (nextChar()) {
                 case '-':
@@ -590,7 +590,7 @@ public class XMLScanner implements Localizable {
 
         case -1:
             return LexicalUnits.EOF;
-            
+
         default:
             if (depth == 0) {
                 throw createXMLException("invalid.character");
@@ -742,7 +742,7 @@ public class XMLScanner implements Localizable {
 		case '&':
                     context = ATTRIBUTE_VALUE_CONTEXT;
                     return LexicalUnits.FIRST_ATTRIBUTE_FRAGMENT;
-                    
+
 		case '<':
                     throw createXMLException("invalid.character");
 
@@ -765,7 +765,7 @@ public class XMLScanner implements Localizable {
 		case '&':
                     context = ATTRIBUTE_VALUE_CONTEXT;
                     return LexicalUnits.FIRST_ATTRIBUTE_FRAGMENT;
-                    
+
 		case '<':
                     throw createXMLException("invalid.character");
 
@@ -929,7 +929,7 @@ public class XMLScanner implements Localizable {
 	    context = CONTENT_CONTEXT;
 	    return LexicalUnits.SECTION_END;
 	}
-	
+
 	while (current != -1) {
 	    while (current != ']' && current != -1) {
 		nextChar();
@@ -1349,7 +1349,7 @@ public class XMLScanner implements Localizable {
 	    nextChar();
 	    context = DTD_DECLARATIONS_CONTEXT;
 	    return type = LexicalUnits.END_CHAR;
-	    
+
 	case '%':
 	    int t = readName(LexicalUnits.PARAMETER_ENTITY_REFERENCE);
 	    if (current != ';') {
@@ -1382,7 +1382,7 @@ public class XMLScanner implements Localizable {
 		    nextChar();
 		} while (current != -1 &&
                          XMLUtilities.isXMLNameCharacter((char)current));
-		return LexicalUnits.NAME; 
+		return LexicalUnits.NAME;
 	    }
 	    nextChar();
 	    if (current == -1 ||
@@ -1517,7 +1517,7 @@ public class XMLScanner implements Localizable {
                         nextChar();
                     } while (current != -1 &&
                              XMLUtilities.isXMLNameCharacter((char)current));
-                    return LexicalUnits.NAME; 
+                    return LexicalUnits.NAME;
                 }
                 nextChar();
                 if (current == -1 ||
@@ -1550,7 +1550,7 @@ public class XMLScanner implements Localizable {
 		    nextChar();
 		} while (current != -1 &&
                          XMLUtilities.isXMLNameCharacter((char)current));
-		return LexicalUnits.NAME; 
+		return LexicalUnits.NAME;
 	    }
 	    nextChar();
 	    if (current == -1 ||
@@ -1574,7 +1574,7 @@ public class XMLScanner implements Localizable {
 		    nextChar();
 		} while (current != -1 &&
                          XMLUtilities.isXMLNameCharacter((char)current));
-		return type = LexicalUnits.NAME; 
+		return type = LexicalUnits.NAME;
 	    }
 	    nextChar();
 	    if (current == -1 ||
@@ -1604,7 +1604,7 @@ public class XMLScanner implements Localizable {
 			nextChar();
 		    } while (current != -1 &&
                              XMLUtilities.isXMLNameCharacter((char)current));
-		    return LexicalUnits.NAME; 
+		    return LexicalUnits.NAME;
 		}
 		nextChar();
 		if (current == -1 ||
@@ -1629,7 +1629,7 @@ public class XMLScanner implements Localizable {
 		    nextChar();
 		} while (current != -1 &&
                          XMLUtilities.isXMLNameCharacter((char)current));
-		return LexicalUnits.NAME; 
+		return LexicalUnits.NAME;
 	    }
 
 	case '"':
@@ -1804,7 +1804,7 @@ public class XMLScanner implements Localizable {
 	    if (current == -1) {
 		throw createXMLException("unexpected.eof");
 	    }
-            
+
 	    if (current != '"' && current != '&' && current != '%') {
 		do {
 		    nextChar();
@@ -1834,7 +1834,7 @@ public class XMLScanner implements Localizable {
 	    if (current == -1) {
 		throw createXMLException("unexpected.eof");
 	    }
-            
+
 	    if (current != '\'' && current != '&' && current != '%') {
 		do {
 		    nextChar();
@@ -1900,7 +1900,7 @@ public class XMLScanner implements Localizable {
 	    return LexicalUnits.FIRST_ATTRIBUTE_FRAGMENT;
 	}
     }
-    
+
     /**
      * Returns the next lexical unit in the context of a notation type.
      */
