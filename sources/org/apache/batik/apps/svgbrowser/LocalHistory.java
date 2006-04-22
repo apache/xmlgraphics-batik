@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001-2003  The Apache Software Foundation 
+   Copyright 2001-2003  The Apache Software Foundation
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ public class LocalHistory {
     /**
      * The frame to manage.
      */
-    protected JSVGViewerFrame svgFrame;    
+    protected JSVGViewerFrame svgFrame;
 
     /**
      * The menu which contains the history.
@@ -85,7 +85,7 @@ public class LocalHistory {
     /**
      * Creates a new local history.
      * @param mb The menubar used to display the history. It must
-     *        contains one '@@@' item used as marker to place the
+     *        contain one '@@@' item used as marker to place the
      *        history items.
      * @param svgFrame The frame to manage.
      */
@@ -164,7 +164,7 @@ public class LocalHistory {
      */
     public void update(String uri) {
         if (currentURI < -1) {
-            throw new InternalError();
+            throw new IllegalStateException("Unexpected currentURI:" + currentURI );
         }
         state = STABLE_STATE;
         if (++currentURI < visitedURIs.size()) {
@@ -194,9 +194,9 @@ public class LocalHistory {
 
         // Computes the button text.
         String text = uri;
-        int i = uri.lastIndexOf("/");
+        int i = uri.lastIndexOf('/');
         if (i == -1) {
-            i = uri.lastIndexOf("\\");
+            i = uri.lastIndexOf('\\' );
             if (i != -1) {
                 text = uri.substring(i + 1);
             }
@@ -222,7 +222,9 @@ public class LocalHistory {
             break;
         case RELOAD_PENDING_STATE:
             currentURI++;
+            break;
         case FORWARD_PENDING_STATE:
+            // fall-through intended
         case STABLE_STATE:
         }
     }
@@ -230,21 +232,26 @@ public class LocalHistory {
     /**
      * To listen to the radio buttons.
      */
-    protected class RadioListener implements ActionListener {
-        public RadioListener() {}
-	public void actionPerformed(ActionEvent e) {
-	    String uri = e.getActionCommand();
-            currentURI = getItemIndex((JMenuItem)e.getSource()) - 1;
-	    svgFrame.showSVGDocument(uri);
-	}
-        public int getItemIndex(JMenuItem item) {
+    protected class RadioListener
+            implements ActionListener {
+
+        protected RadioListener() {
+        }
+
+        public void actionPerformed( ActionEvent e ) {
+            String uri = e.getActionCommand();
+            currentURI = getItemIndex( (JMenuItem)e.getSource() ) - 1;
+            svgFrame.showSVGDocument( uri );
+        }
+
+        public int getItemIndex( JMenuItem item ) {
             int ic = menu.getItemCount();
-            for (int i = index; i < ic; i++) {
-                if (menu.getItem(i) == item) {
+            for ( int i = index; i < ic; i++ ) {
+                if ( menu.getItem( i ) == item ) {
                     return i - index;
                 }
             }
-            throw new InternalError();
+            throw new IllegalArgumentException("MenuItem is not from my menu!" );
         }
     }
 }

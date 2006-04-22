@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2000-2003  The Apache Software Foundation 
+   Copyright 2000-2003  The Apache Software Foundation
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -26,24 +26,18 @@ import org.apache.batik.css.engine.SVGCSSEngine;
 import org.apache.batik.css.engine.value.ShorthandManager;
 import org.apache.batik.css.engine.value.ValueManager;
 import org.apache.batik.css.parser.ExtendedParser;
-import org.apache.batik.css.parser.ExtendedParserWrapper;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.AbstractStylableDocument;
 import org.apache.batik.dom.ExtensibleDOMImplementation;
 import org.apache.batik.dom.GenericDocumentType;
-import org.apache.batik.dom.GenericElement;
-import org.apache.batik.dom.GenericElementNS;
-import org.apache.batik.dom.StyleSheetFactory;
 import org.apache.batik.dom.events.DocumentEventSupport;
 import org.apache.batik.dom.util.CSSStyleDeclarationFactory;
 import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.dom.util.HashTable;
 import org.apache.batik.i18n.LocalizableSupport;
 import org.apache.batik.util.SVGConstants;
-import org.apache.batik.util.XMLResourceDescriptor;
 
 import org.w3c.css.sac.InputSource;
-import org.w3c.css.sac.Parser;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
@@ -52,7 +46,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSStyleSheet;
-import org.w3c.dom.css.DOMImplementationCSS;
 import org.w3c.dom.css.ViewCSS;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.stylesheets.StyleSheet;
@@ -65,9 +58,9 @@ import org.w3c.dom.stylesheets.StyleSheet;
  * @version $Id$
  */
 public class SVGDOMImplementation
-    extends    ExtensibleDOMImplementation 
+    extends    ExtensibleDOMImplementation
     implements CSSStyleDeclarationFactory {
-    
+
     /**
      * The SVG namespace uri.
      */
@@ -106,12 +99,12 @@ public class SVGDOMImplementation
             (RESOURCES, getClass().getClassLoader());
     }
 
-    public CSSEngine createCSSEngine(AbstractStylableDocument doc, 
+    public CSSEngine createCSSEngine(AbstractStylableDocument doc,
                                      CSSContext               ctx,
                                      ExtendedParser           ep,
-                                     ValueManager     []      vms, 
+                                     ValueManager     []      vms,
                                      ShorthandManager []      sms) {
-                                     
+
         URL durl = ((SVGOMDocument)doc).getURLObject();
         CSSEngine result = new SVGCSSEngine(doc, durl, ep, vms, sms, ctx);
 
@@ -165,7 +158,8 @@ public class SVGDOMImplementation
      * DOMImplementationCSS#createCSSStyleSheet(String,String)}.
      */
     public CSSStyleSheet createCSSStyleSheet(String title, String media) {
-        throw new InternalError("Not implemented");
+
+        throw new UnsupportedOperationException("Not implemented");
     }
 
     // CSSStyleDeclarationFactory ///////////////////////////////////////////
@@ -175,7 +169,7 @@ public class SVGDOMImplementation
      * @return a CSSOMStyleDeclaration instance.
      */
     public CSSStyleDeclaration createCSSStyleDeclaration() {
-        throw new InternalError("Not implemented");
+        throw new UnsupportedOperationException("Not implemented");
     }
 
     // StyleSheetFactory /////////////////////////////////////////////
@@ -185,14 +179,14 @@ public class SVGDOMImplementation
      * processing instruction or return null.
      */
     public StyleSheet createStyleSheet(Node n, HashTable attrs) {
-        throw new InternalError("Not implemented");
+        throw new UnsupportedOperationException("Not implemented");
     }
 
     /**
      * Returns the user-agent stylesheet.
      */
     public CSSStyleSheet getUserAgentStyleSheet() {
-        throw new InternalError("Not implemented");
+        throw new UnsupportedOperationException("Not implemented");
     }
 
     /**
@@ -495,7 +489,7 @@ public class SVGDOMImplementation
             return new SVGOMAElement(prefix, (AbstractDocument)doc);
         }
     }
-    
+
     /**
      * To create a 'altGlyph' element.
      */

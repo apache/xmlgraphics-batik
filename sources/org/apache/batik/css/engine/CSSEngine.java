@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2002-2004  The Apache Software Foundation 
+   Copyright 2002-2004,2006  The Apache Software Foundation
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -39,6 +39,7 @@ import org.apache.batik.css.engine.value.ValueManager;
 import org.apache.batik.css.parser.ExtendedParser;
 import org.apache.batik.util.CSSConstants;
 import org.apache.batik.util.ParsedURL;
+
 import org.w3c.css.sac.CSSException;
 import org.w3c.css.sac.DocumentHandler;
 import org.w3c.css.sac.InputSource;
@@ -54,6 +55,7 @@ import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.events.MutationEvent;
+
 
 /**
  * This is the base class for all the CSS engines.
@@ -138,7 +140,7 @@ public abstract class CSSEngine {
      * The CSS context.
      */
     protected CSSContext cssContext;
-    
+
     /**
      * The associated document.
      */
@@ -223,7 +225,7 @@ public abstract class CSSEngine {
      * The style attribute local name.
      */
     protected String styleLocalName;
-    
+
     /**
      * The class attribute namespace URI.
      */
@@ -233,7 +235,7 @@ public abstract class CSSEngine {
      * The class attribute local name.
      */
     protected String classLocalName;
-    
+
     /**
      * The non CSS presentational hints.
      */
@@ -717,11 +719,19 @@ public abstract class CSSEngine {
                     Node attr = attrs.item(i);
                     String an = attr.getNodeName();
                     if (nonCSSPresentationalHints.contains(an)) {
+                      String attrValue = attr.getNodeValue();          // -- dvh
                         try {
                             LexicalUnit lu;
                             lu = parser.parsePropertyValue(attr.getNodeValue());
                             ph.property(an, lu, false);
                         } catch (Exception e) {
+
+                          System.err.println("\n***** CSSEngine: exception property.syntax.error:" + e );  // ---
+                          System.err.println("\nAttrValue:" + attrValue );
+                          System.err.println("\nException:" + e.getClass().getName() );
+                          e.printStackTrace( System.err );                           // ---
+                          System.err.println("\n***** CSSEngine: exception...." );   // ---
+
                             String m = e.getMessage();
                             if (m == null) m = "";
                             String u = ((documentURI == null)?"<unknown>":
@@ -770,6 +780,11 @@ public abstract class CSSEngine {
                         parser.parseStyleDeclaration(style);
                         styleDeclarationDocumentHandler.styleMap = null;
                     } catch (Exception e) {
+                      System.err.println("\n***** CSSEngine: exception style.syntax.error:" + e );  // ---
+                      System.err.println("\nException:" + e.getClass().getName() );
+                      e.printStackTrace( System.err );                           // ---
+                      System.err.println("\n***** CSSEngine: exception...." );   // ---
+
                         String m = e.getMessage();
                         if (m == null) m = "";
                         String u = ((documentURI == null)?"<unknown>":
@@ -805,14 +820,14 @@ public abstract class CSSEngine {
         }
 
         Value value = sm.getValue(propidx);
-        if (sm.isComputed(propidx)) 
+        if (sm.isComputed(propidx))
             return value;
 
         Value result = value;
         ValueManager vm = valueManagers[propidx];
         CSSStylableElement p = getParentCSSStylableElement(elt);
         if (value == null) {
-            if ((p == null) || !vm.isInheritedProperty()) 
+            if ((p == null) || !vm.isInheritedProperty())
                 result = vm.getDefaultValue();
         } else if ((p != null) && (value == InheritValue.INSTANCE)) {
             result = null;
@@ -917,7 +932,7 @@ public abstract class CSSEngine {
          * Called with a non-shorthand property name and it's value.
          */
         public void setMainProperty(String name, Value v, boolean important);
-    };
+    }
 
     public void setMainProperties
         (CSSStylableElement elt, final MainPropertyReceiver dst,
@@ -947,7 +962,7 @@ public abstract class CSSEngine {
             ph.property(pname, lu, important);
         } catch (Exception e) {
             String m = e.getMessage();
-            if (m == null) m = "";
+            if (m == null) m = "";                  // todo - better handling of NPE
             String u = ((documentURI == null)?"<unknown>":
                         documentURI.toString());
             String s = Messages.formatMessage
@@ -1094,7 +1109,7 @@ public abstract class CSSEngine {
             return;
         }
 
-	try {
+    try {
             // Check that access to the uri is allowed
              ParsedURL pDocURL = null;
              if (documentURI != null) {
@@ -1102,10 +1117,10 @@ public abstract class CSSEngine {
              }
              ParsedURL pURL = new ParsedURL(uri);
              cssContext.checkLoadExternalResource(pURL, pDocURL);
-             
+
              parseStyleSheet(ss, new InputSource(uri.toString()), uri);
-	} catch (SecurityException e) {
-            throw e; 
+    } catch (SecurityException e) {
+            throw e;
         } catch (Exception e) {
             String m = e.getMessage();
             if (m == null) m = "";
@@ -1348,23 +1363,23 @@ public abstract class CSSEngine {
      * CSSEngine object.
      */
     protected boolean mediaMatch(SACMediaList ml) {
-	if (media == null ||
+    if (media == null ||
             ml == null ||
             media.getLength() == 0 ||
             ml.getLength() == 0) {
-	    return true;
-	}
-	for (int i = 0; i < ml.getLength(); i++) {
+        return true;
+    }
+    for (int i = 0; i < ml.getLength(); i++) {
             if (ml.item(i).equalsIgnoreCase("all"))
                 return true;
-	    for (int j = 0; j < media.getLength(); j++) {
-		if (media.item(j).equalsIgnoreCase("all") ||
+        for (int j = 0; j < media.getLength(); j++) {
+        if (media.item(j).equalsIgnoreCase("all") ||
                     ml.item(i).equalsIgnoreCase(media.item(j))) {
-		    return true;
-		}
-	    }
-	}
-	return false;
+            return true;
+        }
+        }
+    }
+    return false;
     }
 
     /**
@@ -1374,7 +1389,7 @@ public abstract class CSSEngine {
         extends DocumentAdapter
         implements ShorthandManager.PropertyHandler {
         public StyleMap styleMap;
-    
+
         /**
          * <b>SAC</b>: Implements {@link
          * DocumentHandler#property(String,LexicalUnit,boolean)}.
@@ -1407,7 +1422,7 @@ public abstract class CSSEngine {
         extends DocumentAdapter
         implements ShorthandManager.PropertyHandler {
         public StyleDeclaration styleDeclaration;
-    
+
         /**
          * <b>SAC</b>: Implements {@link
          * DocumentHandler#property(String,LexicalUnit,boolean)}.
@@ -1449,27 +1464,27 @@ public abstract class CSSEngine {
         public void startDocument(InputSource source)
             throws CSSException {
         }
-    
+
         /**
          * <b>SAC</b>: Implements {@link
          * DocumentHandler#endDocument(InputSource)}.
          */
         public void endDocument(InputSource source) throws CSSException {
         }
-    
+
         /**
          * <b>SAC</b>: Implements {@link
          * org.w3c.css.sac.DocumentHandler#ignorableAtRule(String)}.
          */
         public void ignorableAtRule(String atRule) throws CSSException {
         }
-    
+
         /**
          * <b>SAC</b>: Implements {@link
          * DocumentHandler#importStyle(String,SACMediaList,String)}.
          */
         public void importStyle(String       uri,
-                                SACMediaList media, 
+                                SACMediaList media,
                                 String       defaultNamespaceURI)
             throws CSSException {
             ImportRule ir = new ImportRule();
@@ -1485,7 +1500,7 @@ public abstract class CSSEngine {
             }
             styleSheet.append(ir);
         }
-    
+
         /**
          * <b>SAC</b>: Implements {@link
          * org.w3c.css.sac.DocumentHandler#startMedia(SACMediaList)}.
@@ -1497,7 +1512,7 @@ public abstract class CSSEngine {
             styleSheet.append(mr);
             styleSheet = mr;
         }
-    
+
         /**
          * <b>SAC</b>: Implements {@link
          * org.w3c.css.sac.DocumentHandler#endMedia(SACMediaList)}.
@@ -1505,15 +1520,15 @@ public abstract class CSSEngine {
         public void endMedia(SACMediaList media) throws CSSException {
             styleSheet = styleSheet.getParent();
         }
-    
+
         /**
          * <b>SAC</b>: Implements {@link
          * org.w3c.css.sac.DocumentHandler#startPage(String,String)}.
-         */    
+         */
         public void startPage(String name, String pseudo_page)
             throws CSSException {
         }
-    
+
         /**
          * <b>SAC</b>: Implements {@link
          * org.w3c.css.sac.DocumentHandler#endPage(String,String)}.
@@ -1521,7 +1536,7 @@ public abstract class CSSEngine {
         public void endPage(String name, String pseudo_page)
             throws CSSException {
         }
-    
+
         /**
          * <b>SAC</b>: Implements {@link
          * org.w3c.css.sac.DocumentHandler#startFontFace()}.
@@ -1529,7 +1544,7 @@ public abstract class CSSEngine {
         public void startFontFace() throws CSSException {
             styleDeclaration = new StyleDeclaration();
         }
-    
+
         /**
          * <b>SAC</b>: Implements {@link
          * org.w3c.css.sac.DocumentHandler#endFontFace()}.
@@ -1542,7 +1557,7 @@ public abstract class CSSEngine {
                 sm.putValue(idx, styleDeclaration.getValue(i));
                 sm.putImportant(idx, styleDeclaration.getPriority(i));
                 // Not sure on this..
-                sm.putOrigin(idx, StyleMap.AUTHOR_ORIGIN); 
+                sm.putOrigin(idx, StyleMap.AUTHOR_ORIGIN);
             }
             styleDeclaration = null;
 
@@ -1555,7 +1570,7 @@ public abstract class CSSEngine {
             if (base != null) purl = new ParsedURL(base);
             fontFaces.add(new FontFaceRule(sm, purl));
         }
-    
+
         /**
          * <b>SAC</b>: Implements {@link
          * org.w3c.css.sac.DocumentHandler#startSelector(SelectorList)}.
@@ -1567,7 +1582,7 @@ public abstract class CSSEngine {
             styleRule.setStyleDeclaration(styleDeclaration);
             styleSheet.append(styleRule);
         }
-    
+
         /**
          * <b>SAC</b>: Implements {@link
          * org.w3c.css.sac.DocumentHandler#endSelector(SelectorList)}.
@@ -1602,7 +1617,9 @@ public abstract class CSSEngine {
     }
 
     /**
-     * Provides an adapter for the DocumentHandler interface.
+     * Provides an (empty) adapter for the DocumentHandler interface.
+     * Most methods just throw an UnsupportedOperationException, so
+     * the subclasses <i>must</i> override them with 'real' methods.
      */
     protected static class DocumentAdapter implements DocumentHandler {
 
@@ -1610,131 +1627,131 @@ public abstract class CSSEngine {
          * <b>SAC</b>: Implements {@link
          * DocumentHandler#startDocument(InputSource)}.
          */
-        public void startDocument(InputSource source)
-            throws CSSException {
-            throw new InternalError();
+        public void startDocument(InputSource source){
+            throwUnsupportedEx();
         }
-    
+
         /**
          * <b>SAC</b>: Implements {@link
          * DocumentHandler#endDocument(InputSource)}.
          */
-        public void endDocument(InputSource source) throws CSSException {
-            throw new InternalError();
+        public void endDocument(InputSource source) {
+            throwUnsupportedEx();
         }
-    
+
         /**
          * <b>SAC</b>: Implements {@link
          * DocumentHandler#comment(String)}.
          */
-        public void comment(String text) throws CSSException {
+        public void comment(String text) {
             // We always ignore the comments.
         }
-    
+
         /**
          * <b>SAC</b>: Implements {@link
          * DocumentHandler#ignorableAtRule(String)}.
          */
-        public void ignorableAtRule(String atRule) throws CSSException {
-            throw new InternalError();
+        public void ignorableAtRule(String atRule) {
+            throwUnsupportedEx();
         }
-    
+
         /**
          * <b>SAC</b>: Implements {@link
          * DocumentHandler#namespaceDeclaration(String,String)}.
          */
-        public void namespaceDeclaration(String prefix, String uri) 
-            throws CSSException {
-            throw new InternalError();
+        public void namespaceDeclaration(String prefix, String uri) {
+            throwUnsupportedEx();
         }
-    
+
         /**
          * <b>SAC</b>: Implements {@link
          * DocumentHandler#importStyle(String,SACMediaList,String)}.
          */
         public void importStyle(String       uri,
-                                SACMediaList media, 
-                                String       defaultNamespaceURI)
-            throws CSSException {
-            throw new InternalError();
+                                SACMediaList media,
+                                String       defaultNamespaceURI) {
+            throwUnsupportedEx();
         }
-    
+
         /**
          * <b>SAC</b>: Implements {@link
          * DocumentHandler#startMedia(SACMediaList)}.
          */
-        public void startMedia(SACMediaList media) throws CSSException {
-            throw new InternalError();
+        public void startMedia(SACMediaList media) {
+            throwUnsupportedEx();
         }
-    
+
         /**
          * <b>SAC</b>: Implements {@link
          * DocumentHandler#endMedia(SACMediaList)}.
          */
-        public void endMedia(SACMediaList media) throws CSSException {
-            throw new InternalError();
+        public void endMedia(SACMediaList media) {
+            throwUnsupportedEx();
         }
-    
+
         /**
          * <b>SAC</b>: Implements {@link
          * DocumentHandler#startPage(String,String)}.
-         */    
-        public void startPage(String name, String pseudo_page)
-            throws CSSException {
-            throw new InternalError();
+         */
+        public void startPage(String name, String pseudo_page) {
+            throwUnsupportedEx();
         }
-    
+
         /**
          * <b>SAC</b>: Implements {@link
          * DocumentHandler#endPage(String,String)}.
          */
-        public void endPage(String name, String pseudo_page)
-            throws CSSException {
-            throw new InternalError();
+        public void endPage(String name, String pseudo_page) {
+            throwUnsupportedEx();
         }
-    
+
         /**
          * <b>SAC</b>: Implements {@link DocumentHandler#startFontFace()}.
          */
-        public void startFontFace() throws CSSException {
-            throw new InternalError();
+        public void startFontFace() {
+            throwUnsupportedEx();
         }
-    
+
         /**
          * <b>SAC</b>: Implements {@link DocumentHandler#endFontFace()}.
          */
-        public void endFontFace() throws CSSException {
-            throw new InternalError();
+        public void endFontFace() {
+            throwUnsupportedEx();
         }
-        
+
         /**
          * <b>SAC</b>: Implements {@link
          * DocumentHandler#startSelector(SelectorList)}.
          */
-        public void startSelector(SelectorList selectors) throws CSSException {
-            throw new InternalError();
+        public void startSelector(SelectorList selectors) {
+            throwUnsupportedEx();
         }
-    
+
         /**
          * <b>SAC</b>: Implements {@link
          * DocumentHandler#endSelector(SelectorList)}.
          */
-        public void endSelector(SelectorList selectors) throws CSSException {
-            throw new InternalError();
+        public void endSelector(SelectorList selectors) {
+            throwUnsupportedEx();
         }
-    
+
         /**
          * <b>SAC</b>: Implements {@link
          * DocumentHandler#property(String,LexicalUnit,boolean)}.
          */
-        public void property(String name, LexicalUnit value, boolean important)
-            throws CSSException {
-            throw new InternalError();
+        public void property(String name, LexicalUnit value, boolean important) {
+            throwUnsupportedEx();
+        }
+
+
+        private void throwUnsupportedEx(){
+            throw new UnsupportedOperationException
+                ("Used an empty method in Adapter-class" );
         }
     }
 
     // CSS events /////////////////////////////////////////////////////////
-    
+
     protected final static CSSEngineListener[] LISTENER_ARRAY =
         new CSSEngineListener[0];
 
@@ -1769,7 +1786,7 @@ public abstract class CSSEngine {
     }
 
     // Dynamic updates ////////////////////////////////////////////////////
-    
+
     /**
      * Called when the inline style of the given element has been updated.
      */
@@ -1782,7 +1799,7 @@ public abstract class CSSEngine {
         }
 
         switch (evt.getAttrChange()) {
-        case MutationEvent.ADDITION:
+        case MutationEvent.ADDITION:       // intentional fall-through
         case MutationEvent.MODIFICATION:
             String decl = evt.getNewValue();
             // System.err.println("Inline Style Update: '" + decl + "'");
@@ -1844,11 +1861,11 @@ public abstract class CSSEngine {
                 boolean cl = (colorIndex == -1)
                     ? false
                     : updated[colorIndex];
-                
+
                 for (int i = getNumberOfProperties() - 1; i >= 0; --i) {
                     if (updated[i]) {
                         count++;
-                    } 
+                    }
                     else if ((fs && style.isFontSizeRelative(i)) ||
                              (lh && style.isLineHeightRelative(i)) ||
                              (cl && style.isColorRelative(i))) {
@@ -1873,7 +1890,7 @@ public abstract class CSSEngine {
 
         default:
             // Must not happen
-            throw new InternalError("Invalid attrChangeType");
+            throw new IllegalStateException("Invalid attrChangeType");
         }
     }
 
@@ -1894,10 +1911,10 @@ public abstract class CSSEngine {
 
     /**
      * Invalidates all the properties of the given node.
-     * 
+     *
      */
-    protected void invalidateProperties(Node node, 
-                                        int [] properties, 
+    protected void invalidateProperties(Node node,
+                                        int [] properties,
                                         boolean [] updated,
                                         boolean recascade) {
 
@@ -1908,12 +1925,10 @@ public abstract class CSSEngine {
         StyleMap style = elt.getComputedStyleMap(null);
         if (style == null)
             return;  // Nothing to invalidate.
-        
+
         boolean [] diffs = new boolean[getNumberOfProperties()];
         if (updated != null) {
-            for (int i=0; i< updated.length; i++) {
-                diffs[i] = updated[i];
-            }
+            System.arraycopy( updated, 0, diffs, 0, updated.length );
         }
         if (properties != null) {
             for (int i=0; i<properties.length; i++) {
@@ -1977,7 +1992,7 @@ public abstract class CSSEngine {
      * again to see if the any new rules apply (or old rules don't
      * apply).
      */
-    protected void propagateChanges(Node node, int[] props, 
+    protected void propagateChanges(Node node, int[] props,
                                     boolean recascade) {
         if (!(node instanceof CSSStylableElement))
             return;
@@ -2037,7 +2052,7 @@ public abstract class CSSEngine {
 
         int [] inherited = props;
         if (props != null) {
-            // Filter out uninheritable properties when we 
+            // Filter out uninheritable properties when we
             // propogate to children.
             int count = 0;
             for (int i=0; i<props.length; i++) {
@@ -2045,7 +2060,7 @@ public abstract class CSSEngine {
                 if (vm.isInheritedProperty()) count++;
                 else props[i] = -1;
             }
-            
+
             if (count == 0) {
                 // nothing to propogate for sure
                 inherited = null;
@@ -2061,14 +2076,12 @@ public abstract class CSSEngine {
         CSSImportedElementRoot ier = getImportedChild(node);
         if (ier != null) {
             Element e = (Element)ier.getFirstChild();
-            // Don't recascade trees that have been imported.
-            // If you do it will use the stylesheets from this
-            // document instead of the original document.  Also
-            // currently there isn't any supported way to modify
-            // the content imported from the other document so
-            // the cascade can't change.
+            // Use the CSSEngine from the imported element so it
+            // uses stylesheets from it's original document.
             CSSEngine subEng = cssContext.getCSSEngineForElement(e);
-            subEng.invalidateProperties(e, inherited, null, recascade);
+            if (subEng != null) {
+                subEng.invalidateProperties(e, inherited, null, recascade);
+            }
         }
         for (Node n = node.getFirstChild();
              n != null;
@@ -2143,9 +2156,9 @@ public abstract class CSSEngine {
             // The current value has a greater priority
             return;
         }
-        
+
         switch (evt.getAttrChange()) {
-        case MutationEvent.ADDITION:
+        case MutationEvent.ADDITION:      // intentional fall-through
         case MutationEvent.MODIFICATION:
             element = elt;
             try {
@@ -2173,7 +2186,7 @@ public abstract class CSSEngine {
             }
             break;
 
-        case MutationEvent.REMOVAL: 
+        case MutationEvent.REMOVAL:
             {
                 int [] invalid = { idx };
                 invalidateProperties(elt, invalid, null, true);
@@ -2227,7 +2240,7 @@ public abstract class CSSEngine {
             if (et instanceof CSSStyleSheetNode) {
                 styleSheetNodes = null;
                 // Invalidate all the CSSStylableElements in the document.
-                invalidateProperties(document.getDocumentElement(), 
+                invalidateProperties(document.getDocumentElement(),
                                      null, null, true);
                 return;
             }
@@ -2276,7 +2289,7 @@ public abstract class CSSEngine {
                 styleSheetNodes = null;
 
                 // Invalidate all the CSSStylableElements in the document.
-                invalidateProperties(document.getDocumentElement(), 
+                invalidateProperties(document.getDocumentElement(),
                                      null, null, true);
             } else if (removedStylableElementSibling != null) {
                 // Invalidate the CSSStylableElement siblings, to
@@ -2301,7 +2314,7 @@ public abstract class CSSEngine {
             if (n.getParentNode() instanceof CSSStyleSheetNode) {
                 styleSheetNodes = null;
                 // Invalidate all the CSSStylableElements in the document.
-                invalidateProperties(document.getDocumentElement(), 
+                invalidateProperties(document.getDocumentElement(),
                                      null, null, true);
             }
         }
@@ -2325,10 +2338,10 @@ public abstract class CSSEngine {
 
             Node attr = mevt.getRelatedNode();
             String attrNS = attr.getNamespaceURI();
-            String name   = ((attrNS == null) ? 
+            String name   = ((attrNS == null) ?
                              attr.getNodeName() :
                              attr.getLocalName());
-                
+
             CSSStylableElement elt = (CSSStylableElement)et;
             StyleMap style = elt.getComputedStyleMap(null);
             if (style != null) {

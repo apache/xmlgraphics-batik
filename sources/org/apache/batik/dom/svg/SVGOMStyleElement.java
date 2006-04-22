@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2000-2003  The Apache Software Foundation 
+   Copyright 2000-2003  The Apache Software Foundation
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -113,15 +113,17 @@ public class SVGOMStyleElement
                     text = sb.toString();
                 }
                 URL burl = null;
+                String bu = "<unknown>";
                 try {
-                    String bu = XMLBaseSupport.getCascadedXMLBase(this);
-                    if (bu != null) {
-                        burl = new URL(bu);
+                    String base = XMLBaseSupport.getCascadedXMLBase(this);
+                    if (base != null) {
+                        bu = base;
+                        burl = new URL(base);
                     }
                 } catch (MalformedURLException ex) {
-                    // !!! TODO
-                    ex.printStackTrace();
-                    throw new InternalError();
+                    String msg = ("MalformedURLException:" + 
+                                  ex.getMessage() + ':' + bu);
+                    throw new IllegalArgumentException( msg );
                 }
                 String  media = getAttributeNS(null, SVG_MEDIA_ATTRIBUTE);
                 styleSheet = e.parseStyleSheet(text, burl, media);

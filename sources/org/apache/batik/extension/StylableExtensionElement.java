@@ -1,6 +1,6 @@
 /*
 
-   Copyright 1999-2003  The Apache Software Foundation 
+   Copyright 1999-2003,2006  The Apache Software Foundation
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import org.apache.batik.css.engine.CSSStylableElement;
 import org.apache.batik.css.engine.StyleMap;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.svg.XMLBaseSupport;
+
 import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSValue;
@@ -71,7 +72,7 @@ public abstract class StylableExtensionElement
     }
 
     // CSSStylableElement //////////////////////////////////////////
-    
+
     /**
      * Returns the computed style of this element/pseudo-element.
      */
@@ -105,16 +106,17 @@ public abstract class StylableExtensionElement
      */
     public URL getCSSBase() {
         if (cssBase == null) {
+            String bu = "<unknown>";
             try {
-                String bu = XMLBaseSupport.getCascadedXMLBase(this);
-                if (bu == null) {
-                    return null;
+                String base = XMLBaseSupport.getCascadedXMLBase(this);
+                if (base != null) {
+                    bu = base;
+                    cssBase = new URL(base);
                 }
-                cssBase = new URL(XMLBaseSupport.getCascadedXMLBase(this));
-            } catch (MalformedURLException e) {
-                // !!! TODO
-                e.printStackTrace();
-                throw new InternalError();
+            } catch (MalformedURLException mue) {
+                String msg = ("MalformedURLException:" + 
+                              mue.getMessage() + ':' + bu);
+                throw new IllegalArgumentException( msg );
             }
         }
         return cssBase;
@@ -141,7 +143,7 @@ public abstract class StylableExtensionElement
      * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGStylable#getStyle()}.
      */
     public CSSStyleDeclaration getStyle() {
-        throw new InternalError("Not implemented");
+        throw new UnsupportedOperationException("Not implemented");
     }
 
     /**
@@ -149,7 +151,7 @@ public abstract class StylableExtensionElement
      * org.w3c.dom.svg.SVGStylable#getPresentationAttribute(String)}.
      */
     public CSSValue getPresentationAttribute(String name) {
-        throw new InternalError("Not implemented");
+        throw new UnsupportedOperationException("Not implemented");
     }
 
     /**
@@ -157,6 +159,6 @@ public abstract class StylableExtensionElement
      * org.w3c.dom.svg.SVGStylable#getClassName()}.
      */
     public SVGAnimatedString getClassName() {
-        throw new InternalError("Not implemented");
+        throw new UnsupportedOperationException("Not implemented");
     }
 }

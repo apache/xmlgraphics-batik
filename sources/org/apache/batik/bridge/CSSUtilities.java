@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001-2003  The Apache Software Foundation 
+   Copyright 2001-2003,2005  The Apache Software Foundation
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -78,7 +78,7 @@ public abstract class CSSUtilities
     public static Value getComputedStyle(Element e, int property) {
         CSSEngine engine = getCSSEngine(e);
         if (engine == null) return null;
-        return engine.getComputedStyle((CSSStylableElement)e, 
+        return engine.getComputedStyle((CSSStylableElement)e,
                                        null, property);
     }
 
@@ -115,7 +115,8 @@ public abstract class CSSUtilities
                 case 's':
                     return GraphicsNode.VISIBLE_STROKE;
                 default:
-                    throw new Error(); // can't be reached
+                    // can't be reached
+                    throw new IllegalStateException("unexpected event, must be one of (p,f,s) is:" + s.charAt(7) );
                 }
             }
         case 'p':
@@ -129,7 +130,8 @@ public abstract class CSSUtilities
         case 'n':
             return GraphicsNode.NONE;
         default:
-            throw new Error(); // can't be reached
+            // can't be reached
+            throw new IllegalStateException("unexpected event, must be one of (v,p,f,s,a,n) is:" + s.charAt(0) );
         }
     }
 
@@ -162,7 +164,7 @@ public abstract class CSSUtilities
             return new Rectangle2D.Float(x, y, w, h);
 
         default:
-            throw new InternalError(); // Cannot happen
+            throw new IllegalStateException("Unexpected length:" + length ); // Cannot happen
         }
     }
 
@@ -209,8 +211,8 @@ public abstract class CSSUtilities
      * Checks if the cursor property on the input element is set to auto
      */
     public static boolean isAutoCursor(Element e) {
-        Value cursorValue = 
-            CSSUtilities.getComputedStyle(e, 
+        Value cursorValue =
+            CSSUtilities.getComputedStyle(e,
                                           SVGCSSEngine.CURSOR_INDEX);
 
         boolean isAuto = false;
@@ -229,9 +231,9 @@ public abstract class CSSUtilities
                        cursorValue.getLength() == 1) {
                 Value lValue = cursorValue.item(0);
                 if (lValue != null
-                    && 
+                    &&
                     lValue.getCssValueType() == CSSValue.CSS_PRIMITIVE_VALUE
-                    && 
+                    &&
                     lValue.getPrimitiveType() == CSSPrimitiveValue.CSS_IDENT
                     &&
                     lValue.getStringValue().charAt(0) == 'a') {
@@ -306,7 +308,7 @@ public abstract class CSSUtilities
 
         if (hints == null)
             hints = new RenderingHints(null);
-        
+
         switch(s.charAt(0)) {
         case 'o': // optimizeSpeed
             hints.put(RenderingHints.KEY_RENDERING,
@@ -626,7 +628,8 @@ public abstract class CSSUtilities
      */
     public static float[] convertClip(Element e) {
         Value v = getComputedStyle(e, SVGCSSEngine.CLIP_INDEX);
-        switch (v.getPrimitiveType()) {
+        int primitiveType = v.getPrimitiveType();
+        switch ( primitiveType ) {
         case CSSPrimitiveValue.CSS_RECT:
             float [] off = new float[4];
             off[0] = v.getTop().getFloatValue();
@@ -637,7 +640,8 @@ public abstract class CSSUtilities
         case CSSPrimitiveValue.CSS_IDENT:
             return null; // 'auto' means no offsets
         default:
-            throw new Error(); // can't be reached
+            // can't be reached
+            throw new IllegalStateException("Unexpected primitiveType:" + primitiveType );
         }
     }
 
@@ -659,7 +663,8 @@ public abstract class CSSUtilities
                                        GraphicsNode filteredNode,
                                        BridgeContext ctx) {
         Value v = getComputedStyle(filteredElement, SVGCSSEngine.FILTER_INDEX);
-        switch (v.getPrimitiveType()) {
+        int primitiveType = v.getPrimitiveType();
+        switch ( primitiveType ) {
         case CSSPrimitiveValue.CSS_IDENT:
             return null; // 'filter:none'
 
@@ -677,8 +682,8 @@ public abstract class CSSUtilities
                                                        filteredElement,
                                                        filteredNode);
         default:
-            throw new InternalError(); // can't be reached
-            
+            throw new IllegalStateException("Unexpected primitive type:" + primitiveType ); // can't be reached
+
         }
     }
 
@@ -700,7 +705,8 @@ public abstract class CSSUtilities
                                             BridgeContext ctx) {
         Value v = getComputedStyle(clippedElement,
                                    SVGCSSEngine.CLIP_PATH_INDEX);
-        switch (v.getPrimitiveType()) {
+        int primitiveType = v.getPrimitiveType();
+        switch ( primitiveType ) {
         case CSSPrimitiveValue.CSS_IDENT:
             return null; // 'clip-path:none'
 
@@ -718,8 +724,7 @@ public abstract class CSSUtilities
                                                    clippedElement,
                                                    clippedNode);
         default:
-            throw new InternalError(); // can't be reached
-            
+            throw new IllegalStateException("Unexpected primitive type:" + primitiveType ); // can't be reached
         }
     }
 
@@ -753,7 +758,8 @@ public abstract class CSSUtilities
                                    GraphicsNode maskedNode,
                                    BridgeContext ctx) {
         Value v = getComputedStyle(maskedElement, SVGCSSEngine.MASK_INDEX);
-        switch (v.getPrimitiveType()) {
+        int primitiveType = v.getPrimitiveType();
+        switch ( primitiveType ) {
         case CSSPrimitiveValue.CSS_IDENT:
             return null; // 'mask:none'
 
@@ -771,8 +777,7 @@ public abstract class CSSUtilities
                                                    maskedElement,
                                                    maskedNode);
         default:
-            throw new InternalError(); // can't be reached
-            
+            throw new IllegalStateException("Unexpected primitive type:" + primitiveType ); // can't be reached
         }
     }
 
@@ -888,7 +893,7 @@ public abstract class CSSUtilities
 
         CSSEngine engine    = CSSUtilities.getCSSEngine(localRefElement);
         CSSEngine refEngine = CSSUtilities.getCSSEngine(refElement);
-        
+
         engine.importCascadedStyleMaps(refElement, refEngine, localRefElement);
     }
 

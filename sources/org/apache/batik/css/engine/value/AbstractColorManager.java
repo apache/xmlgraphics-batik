@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2002-2003  The Apache Software Foundation 
+   Copyright 2002-2003  The Apache Software Foundation
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ import org.w3c.dom.css.CSSPrimitiveValue;
  * @version $Id$
  */
 public abstract class AbstractColorManager extends IdentifierManager {
-    
+
     /**
      * The identifier values.
      */
@@ -205,7 +205,7 @@ public abstract class AbstractColorManager extends IdentifierManager {
             }
             // Must be a system color...
             if (values.get(ident) == null) {
-                throw new InternalError();
+                throw new IllegalStateException("Not a system-color:" + ident );
             }
             return engine.getCSSContext().getSystemColor(ident);
         }

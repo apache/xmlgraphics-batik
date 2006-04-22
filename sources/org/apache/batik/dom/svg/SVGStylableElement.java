@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001-2004  The Apache Software Foundation 
+   Copyright 2001-2004,2006  The Apache Software Foundation
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -69,9 +69,9 @@ public abstract class SVGStylableElement
     protected SVGStylableElement(String prefix, AbstractDocument owner) {
         super(prefix, owner);
     }
-    
+
     // CSSStylableElement //////////////////////////////////////////
-    
+
     /**
      * Returns the computed style of this element/pseudo-element.
      */
@@ -102,19 +102,23 @@ public abstract class SVGStylableElement
 
     /**
      * Returns the CSS base URL of this element.
+     * @throws IllegalArgumentException when the result of getBaseURI() 
+     *         cannot be used as an URL.
      */
     public URL getCSSBase() {
+        String bu = "<unknown>";
         try {
-            String bu = XMLBaseSupport.getCascadedXMLBase(this);
-            if (bu == null) {
-                return null;
+            String base = XMLBaseSupport.getCascadedXMLBase(this);
+            if (base != null) {
+                bu = base;
+                return new URL(base);
             }
-            return new URL(bu);
-        } catch (MalformedURLException e) {
-            // !!! TODO
-            e.printStackTrace();
-            throw new InternalError();
+        } catch (MalformedURLException mue) {
+            String msg = ("MalformedURLException:" + 
+                          mue.getMessage() + ':' + bu);
+            throw new IllegalArgumentException( msg );
         }
+        return null;
     }
 
     /**
@@ -159,7 +163,7 @@ public abstract class SVGStylableElement
 
         CSSEngine eng = ((SVGOMDocument)getOwnerDocument()).getCSSEngine();
         int idx = eng.getPropertyIndex(name);
-        if (idx == -1) 
+        if (idx == -1)
             return null;
 
         if (idx > SVGCSSEngine.FINAL_INDEX) {
@@ -175,13 +179,13 @@ public abstract class SVGStylableElement
             case SVGCSSEngine.STROKE_INDEX:
                 result = new PresentationAttributePaintValue(eng, name);
                 break;
-                
+
             case SVGCSSEngine.FLOOD_COLOR_INDEX:
             case SVGCSSEngine.LIGHTING_COLOR_INDEX:
             case SVGCSSEngine.STOP_COLOR_INDEX:
                 result = new PresentationAttributeColorValue(eng, name);
                 break;
-                
+
             default:
                 result = new PresentationAttributeValue(eng, name);
             }
@@ -511,7 +515,7 @@ public abstract class SVGStylableElement
                    CSSOMSVGStyleDeclaration.ValueProvider,
                    CSSOMSVGStyleDeclaration.ModificationHandler,
                    CSSEngine.MainPropertyReceiver {
-        
+
         /**
          * The associated CSS object.
          */
@@ -648,7 +652,7 @@ public abstract class SVGStylableElement
 
         public void setMainProperty(String name, Value v, boolean important) {
             int idx = cssEngine.getPropertyIndex(name);
-            if (idx == -1) 
+            if (idx == -1)
                 return;   // unknown property
 
             int i=0;
@@ -656,7 +660,7 @@ public abstract class SVGStylableElement
                 if (idx == declaration.getIndex(i))
                     break;
             }
-            if (i < declaration.size()) 
+            if (i < declaration.size())
                 declaration.put(i, v, idx, important);
             else
                 declaration.append(v, idx, important);

@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001-2003  The Apache Software Foundation 
+   Copyright 2001-2003  The Apache Software Foundation
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -41,7 +41,9 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Hashtable;
 import java.util.TimeZone;
-import java.util.Vector;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 
@@ -57,7 +59,10 @@ public class PNGRed extends AbstractRed {
 	byte[] data;
 	int crc;
 
-	String typeString;
+    /**
+    *  denotes the type of the chunk - must not change after construction!
+    */
+    final String typeString;
 
 	public PNGChunk(int length, int type, byte[] data, int crc) {
 	    this.length = length;
@@ -65,12 +70,8 @@ public class PNGRed extends AbstractRed {
 	    this.data = data;
 	    this.crc = crc;
 
-	    typeString = new String();
-	    typeString += (char)(type >> 24);
-	    typeString += (char)((type >> 16) & 0xff);
-	    typeString += (char)((type >> 8) & 0xff);
-	    typeString += (char)(type & 0xff);
-	}
+        typeString = asString4( type );
+    }
 
 	public int getLength() {
 	    return length;
@@ -105,11 +106,11 @@ public class PNGRed extends AbstractRed {
 	    return ((data[offset] & 0xff) << 24) |
 		((data[offset + 1] & 0xff) << 16) |
 		((data[offset + 2] & 0xff) << 8) |
-		(data[offset + 3] & 0xff);
+		 (data[offset + 3] & 0xff);
 	}
 
 	public String getString4(int offset) {
-	    String s = new String();
+	    String s = "";
 	    s += (char)data[offset];
 	    s += (char)data[offset + 1];
 	    s += (char)data[offset + 2];
@@ -157,7 +158,7 @@ public class PNGRed extends AbstractRed {
     private int compressionMethod;
     private int filterMethod;
     private int interlaceMethod;
-    
+
     private int paletteEntries;
     private byte[] redPalette;
     private byte[] greenPalette;
@@ -186,7 +187,7 @@ public class PNGRed extends AbstractRed {
 
     // If true, perform palette lookup internally
     private boolean expandPalette = false;
-    
+
     // If true, output < 8 bit gray images in 8 bit components format
     private boolean output8BitGray = false;
 
@@ -247,13 +248,13 @@ public class PNGRed extends AbstractRed {
     private static final int POST_ADD_GRAY_TRANS = 6;
 
     // Add transparency to a given RGB value (w/ optional gamma)
-    private static final int POST_ADD_RGB_TRANS = 7; 
+    private static final int POST_ADD_RGB_TRANS = 7;
 
     // Remove the alpha channel from a gray image (w/ optional gamma)
     private static final int POST_REMOVE_GRAY_TRANS = 8;
 
     // Remove the alpha channel from an RGB image (w/optional gamma)
-    private static final int POST_REMOVE_RGB_TRANS = 9; 
+    private static final int POST_REMOVE_RGB_TRANS = 9;
 
     // Mask to add expansion of GA -> GGGA
     private static final int POST_EXP_MASK = 16;
@@ -271,10 +272,10 @@ public class PNGRed extends AbstractRed {
         POST_GRAY_LUT_ADD_TRANS | POST_EXP_MASK;
 
     // Add transparency to a given gray value, expand
-    private static final int POST_ADD_GRAY_TRANS_EXP = 
+    private static final int POST_ADD_GRAY_TRANS_EXP =
         POST_ADD_GRAY_TRANS | POST_EXP_MASK;
 
-    private Vector streamVec = new Vector();
+    private List streamVec = new ArrayList();
     private DataInputStream dataStream;
 
     private int bytesPerPixel; // number of bytes per input pixel
@@ -284,11 +285,11 @@ public class PNGRed extends AbstractRed {
     // Number of private chunks
     private int chunkIndex = 0;
 
-    private Vector textKeys = new Vector();
-    private Vector textStrings = new Vector();
+    private List textKeys = new ArrayList();
+    private List textStrings = new ArrayList();
 
-    private Vector ztextKeys = new Vector();
-    private Vector ztextStrings = new Vector();
+    private List ztextKeys = new ArrayList();
+    private List ztextStrings = new ArrayList();
 
     private WritableRaster theTile;
     private Rectangle bounds;
@@ -315,6 +316,9 @@ public class PNGRed extends AbstractRed {
         }
     }
 
+    /**
+     *  be aware of sign-extension when you use values from this table!
+     */
     private final byte[][] expandBits = {
         null,
         { (byte)0x00, (byte)0xff },
@@ -338,7 +342,7 @@ public class PNGRed extends AbstractRed {
             }
         } else {
             for (int i = 0; i < len; i++) {
-                grayLut[i] = expandBits[bits][i];
+                grayLut[i] = expandBits[bits][i];    // todo : mask 0xff ???
             }
         }
     }
@@ -372,7 +376,7 @@ public class PNGRed extends AbstractRed {
             output8BitGray = true;
         }
         this.generateEncodeParam = decodeParam.getGenerateEncodeParam();
-        
+
         if (emitProperties) {
             properties.put("file_type", "PNG v. 1.0");
         }
@@ -388,11 +392,11 @@ public class PNGRed extends AbstractRed {
             String msg = PropertyUtil.getString("PNGImageDecoder1");
             throw new RuntimeException(msg);
         }
-            
+
         do {
             try {
                 PNGChunk chunk;
-                
+
                 String chunkType = getChunkType(distream);
                 if (chunkType.equals("IHDR")) {
                     chunk = readChunk(distream);
@@ -485,11 +489,8 @@ public class PNGRed extends AbstractRed {
             int type      =    distream.readInt();
             distream.reset();
 
-            String typeString = new String();
-            typeString += (char)(type >> 24);
-            typeString += (char)((type >> 16) & 0xff);
-            typeString += (char)((type >> 8) & 0xff);
-            typeString += (char)(type & 0xff);
+            String typeString = asString4( type );
+
             return typeString;
         } catch (Exception e) {
             e.printStackTrace();
@@ -504,7 +505,7 @@ public class PNGRed extends AbstractRed {
             byte[] data = new byte[length];
             distream.readFully(data);
             int crc = distream.readInt();
-            
+
             return new PNGChunk(length, type, data, crc);
         } catch (Exception e) {
             e.printStackTrace();
@@ -516,10 +517,10 @@ public class PNGRed extends AbstractRed {
         int width  = chunk.getInt4(0);
         int height = chunk.getInt4(4);
 
-	bounds = new Rectangle(0, 0, width, height);
+	    bounds = new Rectangle(0, 0, width, height);
 
         bitDepth = chunk.getInt1(8);
-        
+
         if ((bitDepth != 1) && (bitDepth != 2) && (bitDepth != 4) &&
             (bitDepth != 8) && (bitDepth != 16)) {
             // Error -- bad bit depth
@@ -595,7 +596,7 @@ public class PNGRed extends AbstractRed {
             }
         }
 
-        compressionMethod = chunk.getInt1(10); 
+        compressionMethod = chunk.getInt1(10);
         if (compressionMethod != 0) {
             // Error -- only know about compression method 0
             String msg = PropertyUtil.getString("PNGImageDecoder9");
@@ -629,7 +630,7 @@ public class PNGRed extends AbstractRed {
             String msg = PropertyUtil.getString("PNGImageDecoder11");
             throw new RuntimeException(msg);
         }
-        
+
         bytesPerPixel = (bitDepth == 16) ? 2 : 1;
 
         switch (colorType) {
@@ -713,12 +714,12 @@ public class PNGRed extends AbstractRed {
         int textLen = textKeys.size();
         String[] textArray = new String[2*textLen];
         for (int i = 0; i < textLen; i++) {
-            String key = (String)textKeys.elementAt(i);
-            String val = (String)textStrings.elementAt(i);
+            String key = (String)textKeys.get(i);
+            String val = (String)textStrings.get(i);
             textArray[2*i] = key;
             textArray[2*i + 1] = val;
             if (emitProperties) {
-                String uniqueKey = "text_" + i + ":" + key;
+                String uniqueKey = "text_" + i + ':' + key;
                 properties.put(uniqueKey.toLowerCase(), val);
             }
         }
@@ -730,12 +731,12 @@ public class PNGRed extends AbstractRed {
         int ztextLen = ztextKeys.size();
         String[] ztextArray = new String[2*ztextLen];
         for (int i = 0; i < ztextLen; i++) {
-            String key = (String)ztextKeys.elementAt(i);
-            String val = (String)ztextStrings.elementAt(i);
+            String key = (String)ztextKeys.get(i);
+            String val = (String)ztextStrings.get(i);
             ztextArray[2*i] = key;
             ztextArray[2*i + 1] = val;
             if (emitProperties) {
-                String uniqueKey = "ztext_" + i + ":" + key;
+                String uniqueKey = "ztext_" + i + ':' + key;
                 properties.put(uniqueKey.toLowerCase(), val);
             }
         }
@@ -744,15 +745,15 @@ public class PNGRed extends AbstractRed {
         }
 
         // Parse prior IDAT chunks
-        InputStream seqStream = 
-            new SequenceInputStream(streamVec.elements());
+        InputStream seqStream =
+            new SequenceInputStream( Collections.enumeration( streamVec ) );
         InputStream infStream =
             new InflaterInputStream(seqStream, new Inflater());
         dataStream = new DataInputStream(infStream);
-        
+
         // Create an empty WritableRaster
         int depth = bitDepth;
-        if ((colorType == PNG_COLOR_GRAY) && 
+        if ((colorType == PNG_COLOR_GRAY) &&
             (bitDepth < 8) && output8BitGray) {
             depth = 8;
         }
@@ -798,7 +799,7 @@ public class PNGRed extends AbstractRed {
                                                  greenPalette,
                                                  bluePalette);
             }
-        } else if ((colorType == PNG_COLOR_GRAY) && 
+        } else if ((colorType == PNG_COLOR_GRAY) &&
                    (bitDepth < 8) && !output8BitGray) {
             byte[] palette = expandBits[bitDepth];
             cm = new IndexColorModel(bitDepth,
@@ -970,12 +971,12 @@ public class PNGRed extends AbstractRed {
 
         int pltIndex = 0;
 
-        // gAMA chunk must precede PLTE chunk 
+        // gAMA chunk must precede PLTE chunk
         if (performGammaCorrection) {
             if (gammaLut == null) {
                 initGammaLut(bitDepth == 16 ? 16 : 8);
             }
-            
+
             for (int i = 0; i < paletteEntries; i++) {
                 byte r = chunk.getByte(pltIndex++);
                 byte g = chunk.getByte(pltIndex++);
@@ -1010,7 +1011,8 @@ public class PNGRed extends AbstractRed {
                     setBackgroundPaletteIndex(bkgdIndex);
             }
             break;
-        case PNG_COLOR_GRAY: case PNG_COLOR_GRAY_ALPHA:
+        case PNG_COLOR_GRAY:         // fall-through
+        case PNG_COLOR_GRAY_ALPHA:
             int bkgdGray = chunk.getInt2(0);
             bkgdRed = bkgdGreen = bkgdBlue = bkgdGray;
 
@@ -1019,7 +1021,8 @@ public class PNGRed extends AbstractRed {
                     setBackgroundGray(bkgdGray);
             }
             break;
-        case PNG_COLOR_RGB: case PNG_COLOR_RGB_ALPHA:
+        case PNG_COLOR_RGB:          // fall-through
+        case PNG_COLOR_RGB_ALPHA:
             bkgdRed = chunk.getInt2(0);
             bkgdGreen = chunk.getInt2(2);
             bkgdBlue = chunk.getInt2(4);
@@ -1041,9 +1044,10 @@ public class PNGRed extends AbstractRed {
             g = bkgdGreen;
             b = bkgdBlue;
         } else if (bitDepth < 8) {
-            r = expandBits[bitDepth][bkgdRed];
-            g = expandBits[bitDepth][bkgdGreen];
-            b = expandBits[bitDepth][bkgdBlue];
+            // beware of negative values from sign-extended bytes !
+            r = expandBits[bitDepth][bkgdRed]   & 0xff;    // fix 29552
+            g = expandBits[bitDepth][bkgdGreen] & 0xff;
+            b = expandBits[bitDepth][bkgdBlue]  & 0xff;
         } else if (bitDepth == 16) {
             r = bkgdRed >> 8;
             g = bkgdGreen >> 8;
@@ -1102,7 +1106,7 @@ public class PNGRed extends AbstractRed {
             properties.put("gamma", new Float(fileGamma*exp));
         }
     }
-    
+
     private void parse_hIST_chunk(PNGChunk chunk) {
         if (redPalette == null) {
             String msg = PropertyUtil.getString("PNGImageDecoder18");
@@ -1114,14 +1118,14 @@ public class PNGRed extends AbstractRed {
         for (int i = 0; i < length; i++) {
             hist[i] = chunk.getInt2(2*i);
         }
-        
+
         if (encodeParam != null) {
             encodeParam.setPaletteHistogram(hist);
         }
     }
 
     private void parse_iCCP_chunk(PNGChunk chunk) {
-        String name = new String();
+        String name = "";
         byte b;
 
         int textIndex = 0;
@@ -1143,7 +1147,7 @@ public class PNGRed extends AbstractRed {
         if (emitProperties) {
             properties.put("x_pixels_per_unit", new Integer(xPixelsPerUnit));
             properties.put("y_pixels_per_unit", new Integer(yPixelsPerUnit));
-            properties.put("pixel_aspect_ratio", 
+            properties.put("pixel_aspect_ratio",
                            new Float((float)xPixelsPerUnit/yPixelsPerUnit));
             if (unitSpecifier == 1) {
                 properties.put("pixel_units", "Meters");
@@ -1220,21 +1224,21 @@ public class PNGRed extends AbstractRed {
     }
 
     private void parse_tEXt_chunk(PNGChunk chunk) {
-        String key = new String();
-        String value = new String();
+        StringBuffer key = new StringBuffer( 20 );
+        StringBuffer value = new StringBuffer( 20 );
         byte b;
-        
+
         int textIndex = 0;
         while ((b = chunk.getByte(textIndex++)) != 0) {
-            key += (char)b;
+            key.append( (char)b );
         }
 
         for (int i = textIndex; i < chunk.getLength(); i++) {
-            value += (char)chunk.getByte(i);
+            value.append( (char)chunk.getByte(i) );
         }
 
-        textKeys.add(key);
-        textStrings.add(value);
+        textKeys.add( key.toString());
+        textStrings.add( value.toString() );
     }
 
     private void parse_tIME_chunk(PNGChunk chunk) {
@@ -1244,14 +1248,14 @@ public class PNGRed extends AbstractRed {
         int hour = chunk.getInt1(4);
         int minute = chunk.getInt1(5);
         int second = chunk.getInt1(6);
-        
+
         TimeZone gmt = TimeZone.getTimeZone("GMT");
-        
+
         GregorianCalendar cal = new GregorianCalendar(gmt);
         cal.set(year, month, day,
                 hour, minute, second);
         Date date = cal.getTime();
-        
+
         if (encodeParam != null) {
             encodeParam.setModificationTime(date);
         }
@@ -1274,7 +1278,7 @@ public class PNGRed extends AbstractRed {
             for (int i = 0; i < entries; i++) {
                 alphaPalette[i] = chunk.getByte(i);
             }
-            
+
             // Fill rest of palette with 255
             for (int i = entries; i < paletteEntries; i++) {
                 alphaPalette[i] = (byte)255;
@@ -1290,7 +1294,7 @@ public class PNGRed extends AbstractRed {
             }
         } else if (colorType == PNG_COLOR_GRAY) {
             grayTransparentAlpha = chunk.getInt2(0);
-            
+
             if (!suppressAlpha) {
                 if (bitDepth < 8) {
                     output8BitGray = true;
@@ -1306,7 +1310,7 @@ public class PNGRed extends AbstractRed {
                 } else {
                     outputBands = 2;
                 }
-                
+
                 if (encodeParam != null) {
                     ((PNGEncodeParam.Gray)encodeParam).
                         setTransparentGray(grayTransparentAlpha);
@@ -1320,7 +1324,7 @@ public class PNGRed extends AbstractRed {
             if (!suppressAlpha) {
                 outputBands = 4;
                 postProcess = POST_ADD_RGB_TRANS;
-                
+
                 if (encodeParam != null) {
                     int[] rgbTrans = new int[3];
                     rgbTrans[0] = redTransparentAlpha;
@@ -1339,13 +1343,13 @@ public class PNGRed extends AbstractRed {
     }
 
     private void parse_zTXt_chunk(PNGChunk chunk) {
-        String key = new String();
-        String value = new String();
+        StringBuffer key = new StringBuffer( 20 );
+        StringBuffer value = new StringBuffer( 20 );
         byte b;
-        
+
         int textIndex = 0;
         while ((b = chunk.getByte(textIndex++)) != 0) {
-            key += (char)b;
+            key.append( (char)b );
         }
         /* int method = */ chunk.getByte(textIndex++);
 
@@ -1355,14 +1359,14 @@ public class PNGRed extends AbstractRed {
             InputStream cis =
                 new ByteArrayInputStream(data, textIndex, length);
             InputStream iis = new InflaterInputStream(cis);
-            
+
             int c;
             while ((c = iis.read()) != -1) {
-                value += (char)c;
+                value.append( (char)c );
             }
-            
-            ztextKeys.add(key);
-            ztextStrings.add(value);
+
+            ztextKeys.add( key.toString() );
+            ztextStrings.add( value.toString() );
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1406,20 +1410,20 @@ public class PNGRed extends AbstractRed {
 
     private static void decodeSubFilter(byte[] curr, int count, int bpp) {
         for (int i = bpp; i < count; i++) {
-            int val;
+            byte val;
 
-            val = curr[i] & 0xff;
-            val += curr[i - bpp] & 0xff;
+            val = curr[i];
+            val += curr[i - bpp];
 
-            curr[i] = (byte)val;
+            curr[i] = val;
         }
     }
 
     private static void decodeUpFilter(byte[] curr, byte[] prev,
                                        int count) {
         for (int i = 0; i < count; i++) {
-            int raw = curr[i] & 0xff;
-            int prior = prev[i] & 0xff;
+            byte raw   = curr[i];
+            byte prior = prev[i];
 
             curr[i] = (byte)(raw + prior);
         }
@@ -1432,7 +1436,7 @@ public class PNGRed extends AbstractRed {
         for (int i = 0; i < bpp; i++) {
             raw = curr[i] & 0xff;
             priorRow = prev[i] & 0xff;
-            
+
             curr[i] = (byte)(raw + priorRow/2);
         }
 
@@ -1440,7 +1444,7 @@ public class PNGRed extends AbstractRed {
             raw = curr[i] & 0xff;
             priorPixel = curr[i - bpp] & 0xff;
             priorRow = prev[i] & 0xff;
-            
+
             curr[i] = (byte)(raw + (priorPixel + priorRow)/2);
         }
     }
@@ -1458,21 +1462,21 @@ public class PNGRed extends AbstractRed {
         } else {
             return c;
         }
-    } 
+    }
 
     private static void decodePaethFilter(byte[] curr, byte[] prev,
                                           int count, int bpp) {
-        int raw, priorPixel, priorRow, priorRowPixel;
+        int priorPixel, priorRow, priorRowPixel;
 
         for (int i = 0; i < bpp; i++) {
-            raw = curr[i] & 0xff;
+            byte raw = curr[i];
             priorRow = prev[i] & 0xff;
 
             curr[i] = (byte)(raw + priorRow);
         }
 
         for (int i = bpp; i < count; i++) {
-            raw = curr[i] & 0xff;
+            byte raw = curr[i];
             priorPixel = curr[i - bpp] & 0xff;
             priorRow = prev[i] & 0xff;
             priorRowPixel = prev[i - bpp] & 0xff;
@@ -1505,12 +1509,12 @@ public class PNGRed extends AbstractRed {
         case POST_GAMMA:
             for (srcX = 0; srcX < width; srcX++) {
                 src.getPixel(srcX, 0, ps);
-                    
+
                 for (int i = 0; i < inputBands; i++) {
                     int x = ps[i];
                     ps[i] = gammaLut[x];
                 }
-                    
+
                 dst.setPixel(dstX, y, ps);
                 dstX += step;
             }
@@ -1538,7 +1542,7 @@ public class PNGRed extends AbstractRed {
                 } else {
                     pd[1] = maxOpacity;
                 }
-                
+
                 dst.setPixel(dstX, y, pd);
                 dstX += step;
             }
@@ -1547,12 +1551,12 @@ public class PNGRed extends AbstractRed {
         case POST_PALETTE_TO_RGB:
             for (srcX = 0; srcX < width; srcX++) {
                 src.getPixel(srcX, 0, ps);
-                
+
                 int val = ps[0];
                 pd[0] = redPalette[val];
                 pd[1] = greenPalette[val];
                 pd[2] = bluePalette[val];
-                
+
                 dst.setPixel(dstX, y, pd);
                 dstX += step;
             }
@@ -1663,7 +1667,7 @@ public class PNGRed extends AbstractRed {
         case POST_GAMMA_EXP:
             for (srcX = 0; srcX < width; srcX++) {
                 src.getPixel(srcX, 0, ps);
-                    
+
                 int val = ps[0];
                 int alpha = ps[1];
                 int gamma = gammaLut[val];
@@ -1671,7 +1675,7 @@ public class PNGRed extends AbstractRed {
                 pd[1] = gamma;
                 pd[2] = gamma;
                 pd[3] = alpha;
-                    
+
                 dst.setPixel(dstX, y, pd);
                 dstX += step;
             }
@@ -1680,14 +1684,14 @@ public class PNGRed extends AbstractRed {
         case POST_GRAY_ALPHA_EXP:
             for (srcX = 0; srcX < width; srcX++) {
                 src.getPixel(srcX, 0, ps);
-                    
+
                 int val = ps[0];
                 int alpha = ps[1];
                 pd[0] = val;
                 pd[1] = val;
                 pd[2] = val;
                 pd[3] = alpha;
-                    
+
                 dst.setPixel(dstX, y, pd);
                 dstX += step;
             }
@@ -1729,7 +1733,7 @@ public class PNGRed extends AbstractRed {
                 } else {
                     pd[3] = maxOpacity;
                 }
-                
+
                 dst.setPixel(dstX, y, pd);
                 dstX += step;
             }
@@ -1738,7 +1742,7 @@ public class PNGRed extends AbstractRed {
     }
 
     /**
-     * Reads in an image of a given size and returns it as a 
+     * Reads in an image of a given size and returns it as a
      * WritableRaster.
      */
     private void decodePass(WritableRaster imRas,
@@ -1856,5 +1860,15 @@ public class PNGRed extends AbstractRed {
             throw new IllegalArgumentException(msg);
         }
         return theTile;
+    }
+
+
+    static String asString4( int type ){
+        StringBuffer result = new StringBuffer( 4 );
+        result.append((char) (type >> 24));
+        result.append((char)((type >> 16)&0xFF));
+        result.append((char)((type >>  8)&0xFF));
+        result.append((char)((type      )&0xFF));
+        return result.toString();
     }
 }
