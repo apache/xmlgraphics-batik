@@ -385,9 +385,8 @@
         these solutions:
         </p>
         <ul>
-            <li><link href="http://xml.apache.org/xalan-j/index.html">Xalan for XSLT</link></li>
-            <li><link href="http://xml.apache.org/xerces-j/index.html">Xerces</link> and
-                <link href="http://java.sun.com/xml/download.html">Crimson</link> for the DOM API</li>
+            <li><link href="http://xalan.apache.org/">Xalan for XSLT</link></li>
+            <li><link href="http://xerces.apache.org/">Xerces</link> for the DOM API</li>
             <li><link href="svggen.html">SVG Generator</link></li>
         </ul>
     </answer>
@@ -812,7 +811,7 @@
     What is happening?
     </question>
     <answer>
-    <p>The Batik <link href="http://xml.apache.org/batik/batikDemo.html">demo</link> uses Java Web Start. Java Web Start (under the Applications/Utilities
+    <p>The Batik <link href="http://xmlgraphics.apache.org/batik/batikDemo.html">demo</link> uses Java Web Start. Java Web Start (under the Applications/Utilities
     folder), lets you start a Java application from a web browser. You can see the debug
     traces by enabling the Java console for Java Web Start. If you do, you will see that
     there is a <code>java.lang.NoSuchMethodError</code> exception thrown.</p>
