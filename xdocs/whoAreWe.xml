@@ -212,7 +212,7 @@ contributed some text functionnalities and SVG DOM interface implementations.
               mailing lists.</li>
           <li><link href="mailto:Christophe.Held@sophia.inria.fr">Christophe Held</link> - Contributed a math formula in SVG 
               generated from MathML. </li>
-          <li><link href="mailto:keiron@aftexsw.com">Keiron Liddle</link> - A <link href="http://xmlgraphics.apache.org/fop">FOP</link>
+          <li><link href="mailto:keiron@aftexsw.com">Keiron Liddle</link> - A <link href="http://xmlgraphics.apache.org/fop/">FOP</link>
               member who is working on an SVG to PDF transcoder that will be part of FOP but that will work in 
               the Batik infrastructure</li>
           <li><link href="mailto:john.morrison@uk.experian.com">John Morrison</link> - Contributed a set of XSL stylesheets
