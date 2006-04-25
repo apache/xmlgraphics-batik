@@ -105,7 +105,7 @@ For creating a distribution the following steps must be done:
     This makes sure that the distribution is mirrored nicely around
     the world.
 
-    Start by logging into cvs.apache.org (e.g. 'ssh vhardy@cvs.apache.org').
+    Start by logging into people.apache.org (e.g. 'ssh vhardy@people.apache.org').
 
     First make sure file permissions are correct.  The
     new files should be owned by group 'xml' and be group writable.
@@ -141,19 +141,17 @@ Site Creation
 
 For creating the web site, the following steps must be done:
 
-[Note: due to JVM font-rendering problems, this is best done on a windows machine]
+[Note: due to JVM font-rendering problems, this is best done on a
+       windows machine]
 
- 1) make sure you checked out the module "xml-site/targets/batik" in
-    the same directory as your project module
+ 1) Make sure you checked out the SVN directory
+     https://svn.apache.org/repos/asf/xmlgraphics/site/deploy/batik
+    as "xml-site/targets/batik" in the same directory as your project module
  2) run the build script with target "site"
- 3) commit the xml-site/targets/[project] directory
+ 3) commit the site/deploy/batik directory
  4) connect to xml.apache.org with your account
- 5) execute "cd /www/xml.apache.org/[project]"
- 6) execute "cvs update"
- 7) zip the Batik javadoc of the latest stable Batik release
- 8) ftp the Batik javadoc to xml.apache.org/batik 
- 9) upzip the Batik java so that the javadoc is available
-    at xml.apache.org/batik/javadoc/index.html
+ 5) execute "cd /www/xmlgraphics.apache.org/batik"
+ 6) execute "svn update"
  
 [NOTE: you must have commit access on xml-site to be able to do this]
 
@@ -161,4 +159,4 @@ Nightly Builds
 --------------
 
 The nightly builds are current performed by a crontab entry in
-Thomas DeWeese's cvs.apache.org account: /home/deweese/bin/nightly.csh
+Thomas DeWeese's people.apache.org account: /home/deweese/bin/nightly.csh

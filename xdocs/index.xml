@@ -3,7 +3,7 @@
 
 <!--
 
-   Copyright 2000-2004  The Apache Software Foundation 
+   Copyright 2000-2004,2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -188,8 +188,8 @@
         <p>While it is hard to track projects and products which are using Batik, here are a few
         ones which are known:</p>
         <ul>
-        <li><link href="http://xml.apache.org/cocoon">The Apache Cocoon project</link> uses Batik to rasterize SVG images. </li>
-        <li><link href="http://xml.apache.org/fop">The Apache FOP project</link> uses Batik to handle SVG images. It uses the SVG rasterizer and extends the Batik transcoder architecture to offer SVG to PDF conversion.</li>
+        <li><link href="http://cocoon.apache.org/">The Apache Cocoon project</link> uses Batik to rasterize SVG images. </li>
+        <li><link href="http://xmlgraphics.apache.org/fop">The Apache FOP project</link> uses Batik to handle SVG images. It uses the SVG rasterizer and extends the Batik transcoder architecture to offer SVG to PDF conversion.</li>
         <li><link href="http://www.bitflash.com/products/brilliance.asp">BitFlash Brilliance</link> delivers a robust set of graphic-design and source-code editing tools for fast and flexible Mobile SVG development. It uses Batik to display SVG Images.</li>
         <li><link href="http://burma.free.fr">eDoc</link>, a page layout software, is using the Batik SVG generator to export pages to SVG</li>
         <li><link href="http://www.elixirtech.com/ElixirReport">ElixirTech's ElixirReport</link> uses Batik for charting and for its SVG component.</li>

@@ -2,7 +2,7 @@
 
 <!--
 
-   Copyright 2000-2001 The Apache Software Foundation 
+   Copyright 2000-2001,2006 The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -59,7 +59,7 @@
 
    <xsl:if test="@fixes-bug">
     <xsl:text> Fixes </xsl:text>
-    <link href="http://xml.apache.org/bugs/show_bug.cgi?id={@fixes-bug}">
+    <link href="http://issues.apache.org/bugzilla/show_bug.cgi?id={@fixes-bug}">
      <xsl:text>bug </xsl:text><xsl:value-of select="@fixes-bug"/>
     </link>
     <xsl:text>.</xsl:text>

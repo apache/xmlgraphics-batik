@@ -1,7 +1,7 @@
 <?xml version="1.0" standalone="no"?>
 <!--
 
-   Copyright 2002,2004-2005  The Apache Software Foundation 
+   Copyright 2002,2004-2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -101,7 +101,7 @@
         <text x="246" y="95"><tspan font-size="95"
         >batik</tspan> <xsl:value-of select="$version" /></text>
         <text font-size="17" x="246" y="130"
-          >http://xml.apache.org/batik</text>
+          >http://xmlgraphics.apache.org/batik</text>
       </g>
 
       <xsl:if test="$revisionType != 'revisionType'">

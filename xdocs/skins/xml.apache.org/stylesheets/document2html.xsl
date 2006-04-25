@@ -63,12 +63,12 @@
             <td width="100%" height="20" valign="top" align="left" bgcolor="#0086b2" background="resources/bottom.gif">
               <img width="3" height="20" src="resources/bottom.gif" hspace="0" vspace="0" border="0" align="left"/>
             </td>
-            <td align="right" bgcolor="#0086b2" height="20" valign="top" width="288" background="resources/bottom.gif">
-              <table border="0" cellpadding="0" cellspacing="0" width="288">
+            <td align="right" bgcolor="#0086b2" height="20" valign="top" width="336" background="resources/bottom.gif">
+              <table border="0" cellpadding="0" cellspacing="0" width="336">
                 <tr>
-                  <td width="96" height="20" valign="top" align="left">
-                    <a href="http://xml.apache.org/" onMouseOver="rolloverOn('xml');" onMouseOut="rolloverOff('xml');" target="new">
-                      <img alt="http://xml.apache.org/" width="96" height="20" src="resources/button-xml-lo.gif"
+                  <td width="144" height="20" valign="top" align="left">
+                    <a href="http://xmlgraphics.apache.org/" onMouseOver="rolloverOn('xml');" onMouseOut="rolloverOff('xml');" target="new">
+                      <img alt="http://xmlgraphics.apache.org/" width="144" height="20" src="resources/button-xml-lo.gif"
                            name="xml" hspace="0" vspace="0" border="0"
                            onLoad="rolloverLoad('xml','resources/button-xml-hi.gif','resources/button-xml-lo.gif');"/>
                     </a>
