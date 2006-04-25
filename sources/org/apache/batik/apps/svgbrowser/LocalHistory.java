@@ -197,14 +197,14 @@ public class LocalHistory {
         int i = uri.lastIndexOf('/');
         if (i == -1) {
             i = uri.lastIndexOf('\\' );
-            if (i != -1) {
-                text = uri.substring(i + 1);
-            }
-        } else {
+        }
+         
+        if (i != -1) {
             text = uri.substring(i + 1);
         }
 
         JMenuItem mi = new JRadioButtonMenuItem(text);
+        mi.setToolTipText(uri);
         mi.setActionCommand(uri);
         mi.addActionListener(actionListener);
         group.add(mi);
