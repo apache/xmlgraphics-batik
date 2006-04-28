@@ -399,7 +399,7 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
      * shape.
      */
     public Rectangle2D getGlyphCellBounds(int glyphIndex) {
-        return (Rectangle2D) getGlyphLogicalBounds(glyphIndex).getBounds2D();
+        return getGlyphLogicalBounds(glyphIndex).getBounds2D();
     }
 
     /**
