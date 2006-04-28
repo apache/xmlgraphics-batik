@@ -133,6 +133,15 @@ public class MultiGlyphVector implements GVTGlyphVector {
     }
 
     /**
+     * Returns the bounding box of the specified glyph, considering only the
+     * glyph's metrics (ascent, descent, advance) rather than the actual glyph
+     * shape.
+     */
+    public Rectangle2D getGlyphCellBounds(int glyphIndex) {
+        return getGlyphLogicalBounds(glyphIndex).getBounds2D();
+    }
+
+    /**
      * Returns the position of the specified glyph within this GlyphVector.
      */
     public Point2D getGlyphPosition(int glyphIndex) {
