@@ -59,7 +59,7 @@ public class ArabicTextHandler {
 
     }
 
-    /*
+    /**
      * If the AttributedString contains any arabic chars, assigns an
      * arabic form attribute, i&#x2e;e&#x2e; initial|medial|terminal|isolated,
      * to each arabic char.
