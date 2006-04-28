@@ -81,6 +81,13 @@ public interface GVTGlyphVector {
     Shape getGlyphOutline(int glyphIndex);
 
     /**
+     * Returns the bounding box of the specified glyph, considering only the
+     * glyph's metrics (ascent, descent, advance) rather than the actual glyph
+     * shape.
+     */
+    Rectangle2D getGlyphCellBounds(int glyphIndex);
+
+    /**
      * Returns the position of the specified glyph within this GlyphVector.
      */
     Point2D getGlyphPosition(int glyphIndex);
@@ -103,10 +110,10 @@ public interface GVTGlyphVector {
     Shape getGlyphVisualBounds(int glyphIndex);
 
     /**
-     *  Returns the logical bounds of this GlyphVector.  This is a
-     *  good bound for hit detection and highlighting it is not tight
-     *  in any sense, and in some (rare) * cases may exclude parts of
-     *  the glyph.
+     * Returns the logical bounds of this GlyphVector.  This is a
+     * good bound for hit detection and highlighting it is not tight
+     * in any sense, and in some (rare) cases may exclude parts of
+     * the glyph.
      */
     Rectangle2D getLogicalBounds();
 
