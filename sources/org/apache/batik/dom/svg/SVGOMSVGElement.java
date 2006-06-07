@@ -209,14 +209,14 @@ public class SVGOMSVGElement
         return getSVGContext().getPixelUnitToMillimeter();
     }
     public boolean getUseCurrentView( ) {
-        throw new Error();
+        throw new UnsupportedOperationException("!!! Not implemented.");
     }
     public void      setUseCurrentView( boolean useCurrentView )
         throws DOMException {
-        throw new Error();
+        throw new UnsupportedOperationException("!!! Not implemented.");
     }
     public SVGViewSpec getCurrentView( ) {
-        throw new Error();
+        throw new UnsupportedOperationException("!!! Not implemented.");
     }
     public float getCurrentScale( ) {
         AffineTransform scrnTrans = getSVGContext().getScreenTransform();
@@ -286,32 +286,32 @@ public class SVGOMSVGElement
     }
 
     public int          suspendRedraw ( int max_wait_milliseconds ) {
-        throw new Error();
+        throw new UnsupportedOperationException("!!! Not implemented.");
     }
     public void          unsuspendRedraw ( int suspend_handle_id )
         throws DOMException {
-        throw new Error();
+        throw new UnsupportedOperationException("!!! Not implemented.");
     }
     public void          unsuspendRedrawAll (  ) {
-        throw new Error();
+        throw new UnsupportedOperationException("!!! Not implemented.");
     }
     public void          forceRedraw (  ) {
-        throw new Error();
+        throw new UnsupportedOperationException("!!! Not implemented.");
     }
     public void          pauseAnimations (  ) {
-        throw new Error();
+        throw new UnsupportedOperationException("!!! Not implemented.");
     }
     public void          unpauseAnimations (  ) {
-        throw new Error();
+        throw new UnsupportedOperationException("!!! Not implemented.");
     }
     public boolean       animationsPaused (  ) {
-        throw new Error();
+        throw new UnsupportedOperationException("!!! Not implemented.");
     }
     public float         getCurrentTime (  ) {
-        throw new Error();
+        throw new UnsupportedOperationException("!!! Not implemented.");
     }
     public void          setCurrentTime ( float seconds ) {
-        throw new Error();
+        throw new UnsupportedOperationException("!!! Not implemented.");
     }
 
     public NodeList      getIntersectionList ( SVGRect rect,
@@ -363,7 +363,7 @@ public class SVGOMSVGElement
     }
 
     public SVGAngle               createSVGAngle (  ) {
-        throw new Error();
+        throw new UnsupportedOperationException("!!! Not implemented");
     }
 
     /**
