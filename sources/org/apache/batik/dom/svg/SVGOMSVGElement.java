@@ -286,17 +286,30 @@ public class SVGOMSVGElement
     }
 
     public int          suspendRedraw ( int max_wait_milliseconds ) {
-        throw new Error();
+        if (max_wait_milliseconds > 60000) 
+            max_wait_milliseconds = 60000;
+        else if (max_wait_milliseconds < 0) max_wait_milliseconds = 0;
+
+        SVGSVGContext ctx = (SVGSVGContext)getSVGContext();
+        return ctx.suspendRedraw(max_wait_milliseconds);
     }
     public void          unsuspendRedraw ( int suspend_handle_id )
         throws DOMException {
-        throw new Error();
+        SVGSVGContext ctx = (SVGSVGContext)getSVGContext();
+        boolean ok = ctx.unsuspendRedraw(suspend_handle_id);
+        if (!ok) {
+            throw new DOMException(DOMException.NOT_FOUND_ERR,
+                                   "Bad suspend_handle_id: " + 
+                                   suspend_handle_id);
+        }
     }
     public void          unsuspendRedrawAll (  ) {
-        throw new Error();
+        SVGSVGContext ctx = (SVGSVGContext)getSVGContext();
+        ctx.unsuspendRedrawAll();
     }
     public void          forceRedraw (  ) {
-        throw new Error();
+        SVGSVGContext ctx = (SVGSVGContext)getSVGContext();
+        ctx.forceRedraw();
     }
     public void          pauseAnimations (  ) {
         throw new Error();
