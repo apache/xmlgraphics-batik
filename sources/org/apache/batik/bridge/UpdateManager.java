@@ -25,6 +25,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.apache.batik.bridge.svg12.DefaultXBLManager;
 import org.apache.batik.bridge.svg12.SVG12BridgeContext;
@@ -529,9 +531,22 @@ public class UpdateManager  {
      * Repaints the dirty areas, if needed.
      */
     protected void repaint() {
-        if (!updateTracker.hasChanged()) 
+        if (!updateTracker.hasChanged()) { 
+            // No changes, nothing to repaint.
+            outOfDateTime = 0;
             return;
+        }
+
         long ctime = System.currentTimeMillis();
+        if (ctime < allResumeTime) {
+            createRepaintTimer();
+            return;
+        }
+        if (allResumeTime > 0) {
+            // All suspendRedraw requests have expired.
+            releaseAllRedrawSuspension();
+        }
+
         if (ctime-outOfDateTime < minRepaintTime) {
             // We very recently did a repaint check if other 
             // repaint runnables are pending.
@@ -555,6 +570,169 @@ public class UpdateManager  {
         outOfDateTime = 0;
     }
 
+    /**
+     * Users of Batik should essentially never call 
+     * this directly from Java.  If the Canvas is not
+     * updating when you change the SVG Document it is almost
+     * certainly because you are not making your changes
+     * in the RunnableQueue (getUpdateRunnableQueue()).
+     * You will have problems if you are not making all
+     * changes to the document in the UpdateManager's
+     * RunnableQueue.
+     *
+     * This method exists to implement the 
+     * 'SVGSVGElement.forceRedraw()' method.
+     */
+    public void forceRepaint() {
+        if (!updateTracker.hasChanged()) { 
+            // No changes, nothing to repaint.
+            outOfDateTime = 0;
+            return;
+        }
+
+        List dirtyAreas = updateTracker.getDirtyAreas();
+        updateTracker.clear();
+        if (dirtyAreas != null) {
+            updateRendering(dirtyAreas, false);
+        }
+        outOfDateTime = 0;
+    }
+
+    protected class SuspensionInfo {
+        /** 
+         * The index of this redraw suspension
+         */
+        int index;
+        /**
+         * The system time in millisec that this suspension
+         * will expire and redraws can resume (at least for
+         * this suspension.
+         */
+        long resumeMilli;
+        public SuspensionInfo(int index, long resumeMilli) {
+            this.index = index;
+            this.resumeMilli = resumeMilli;
+        }
+        public int getIndex() { return index; }
+        public long getResumeMilli() { return resumeMilli; }
+    }
+
+    protected class RepaintTimerTask extends TimerTask {
+        UpdateManager um;
+        RepaintTimerTask(UpdateManager um) {
+            this.um = um;
+        }
+        public void run() {
+            RunnableQueue rq = um.getUpdateRunnableQueue();
+            if (rq == null) return;
+            rq.invokeLater(new Runnable() {
+                    public void run() { }
+                });
+        }
+    }
+
+    List suspensionList = new ArrayList();
+    int nextSuspensionIndex = 1;
+    long allResumeTime = -1;
+    Timer repaintTriggerTimer = null;
+    TimerTask repaintTimerTask = null;
+
+    void createRepaintTimer() {
+        if (repaintTimerTask != null) return;
+        if (allResumeTime < 0)        return;
+        if (repaintTriggerTimer == null)
+            repaintTriggerTimer = new Timer(true);
+
+        long delay = allResumeTime - System.currentTimeMillis();
+        if (delay < 0) delay = 0;
+        repaintTimerTask = new RepaintTimerTask(this);
+        repaintTriggerTimer.schedule(repaintTimerTask, delay);
+        // System.err.println("CTimer delay: " + delay);
+    }
+    /**
+     * Sets up a timer that will trigger a repaint
+     * when it fires.
+     * If create is true it will construct a timer even
+     * if one 
+     */
+    void resetRepaintTimer() {
+        if (repaintTimerTask == null) return;
+        if (allResumeTime < 0)        return;
+        if (repaintTriggerTimer == null)
+            repaintTriggerTimer = new Timer(true);
+        
+        long delay = allResumeTime - System.currentTimeMillis();
+        if (delay < 0) delay = 0;
+        repaintTimerTask = new RepaintTimerTask(this);
+        repaintTriggerTimer.schedule(repaintTimerTask, delay);
+        // System.err.println("Timer delay: " + delay);
+    }
+                
+    int addRedrawSuspension(int max_wait_milliseconds) {
+        long resumeTime = System.currentTimeMillis() + max_wait_milliseconds;
+        SuspensionInfo si = new SuspensionInfo(nextSuspensionIndex++,
+                                               resumeTime);
+        if (resumeTime > allResumeTime) {
+            allResumeTime = resumeTime;
+            // System.err.println("Added AllRes Time: " + allResumeTime);
+            resetRepaintTimer();
+        }
+        suspensionList.add(si);
+        return si.getIndex();
+    }
+
+    void releaseAllRedrawSuspension() {
+        suspensionList.clear();
+        allResumeTime = -1;
+        resetRepaintTimer();
+    }
+
+    boolean releaseRedrawSuspension(int index) {
+        if (index > nextSuspensionIndex) return false;
+        if (suspensionList.size() == 0) return true;
+
+        int lo = 0, hi=suspensionList.size()-1;
+        while (lo < hi) {
+            int mid = (lo+hi)>>1;
+            SuspensionInfo si = (SuspensionInfo)suspensionList.get(mid);
+            int idx = si.getIndex();
+            if      (idx == index) { lo = hi = mid; }
+            else if (idx <  index) { lo = mid+1; }
+            else                   { hi = mid-1; } 
+        }
+
+        SuspensionInfo si = (SuspensionInfo)suspensionList.get(lo);
+        int idx = si.getIndex();
+        if (idx != index) 
+            return true;  // currently not in list but was at some point...
+        
+        suspensionList.remove(lo);
+        if (suspensionList.size() == 0) {
+            // No more active suspensions
+            allResumeTime = -1;
+            resetRepaintTimer();
+        } else {
+            // Check if we need to find a new 'bounding' suspension.
+            long resumeTime = si.getResumeMilli();
+            if (resumeTime == allResumeTime) {
+                allResumeTime = findNewAllResumeTime();
+                // System.err.println("New AllRes Time: " + allResumeTime);
+                resetRepaintTimer();
+            }
+        }
+        return true;
+    }
+
+    long findNewAllResumeTime() {
+        long ret = -1;
+        Iterator i = suspensionList.iterator();
+        while (i.hasNext()) {
+            SuspensionInfo si = (SuspensionInfo)i.next();
+            long t = si.getResumeMilli();
+            if (t > ret) ret = t;
+        }
+        return ret;
+    }
 
     /**
      * Adds a UpdateManagerListener to this UpdateManager.
