@@ -286,17 +286,30 @@ public class SVGOMSVGElement
     }
 
     public int          suspendRedraw ( int max_wait_milliseconds ) {
-        throw new UnsupportedOperationException("!!! Not implemented.");
+        if (max_wait_milliseconds > 60000) 
+            max_wait_milliseconds = 60000;
+        else if (max_wait_milliseconds < 0) max_wait_milliseconds = 0;
+
+        SVGSVGContext ctx = (SVGSVGContext)getSVGContext();
+        return ctx.suspendRedraw(max_wait_milliseconds);
     }
     public void          unsuspendRedraw ( int suspend_handle_id )
         throws DOMException {
-        throw new UnsupportedOperationException("!!! Not implemented.");
+        SVGSVGContext ctx = (SVGSVGContext)getSVGContext();
+        boolean ok = ctx.unsuspendRedraw(suspend_handle_id);
+        if (!ok) {
+            throw new DOMException(DOMException.NOT_FOUND_ERR,
+                                   "Bad suspend_handle_id: " + 
+                                   suspend_handle_id);
+        }
     }
     public void          unsuspendRedrawAll (  ) {
-        throw new UnsupportedOperationException("!!! Not implemented.");
+        SVGSVGContext ctx = (SVGSVGContext)getSVGContext();
+        ctx.unsuspendRedrawAll();
     }
     public void          forceRedraw (  ) {
-        throw new UnsupportedOperationException("!!! Not implemented.");
+        SVGSVGContext ctx = (SVGSVGContext)getSVGContext();
+        ctx.forceRedraw();
     }
     public void          pauseAnimations (  ) {
         throw new UnsupportedOperationException("!!! Not implemented.");

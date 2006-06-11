@@ -851,4 +851,29 @@ public class SVGSVGElementBridge
     public void deselectAll() {
         ctx.getUserAgent().deselectAll();
     }
+
+    public int          suspendRedraw ( int max_wait_milliseconds ) {
+        UpdateManager um = ctx.getUpdateManager();
+        if (um != null)
+            return um.addRedrawSuspension(max_wait_milliseconds);
+        return -1;
+    }
+    public boolean      unsuspendRedraw ( int suspend_handle_id ) {
+        UpdateManager um = ctx.getUpdateManager();
+        if (um != null)
+            return um.releaseRedrawSuspension(suspend_handle_id);
+        return false; // no UM so couldn't have issued an id...
+    }
+    public void         unsuspendRedrawAll (  ) {
+        UpdateManager um = ctx.getUpdateManager();
+        if (um != null)
+            um.releaseAllRedrawSuspension();
+    }
+
+    public void          forceRedraw (  ) {
+        UpdateManager um = ctx.getUpdateManager();
+        if (um != null)
+            um.forceRepaint();
+    }
+    
 }
