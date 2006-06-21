@@ -25,6 +25,7 @@ import java.lang.ref.SoftReference;
 import org.apache.batik.css.engine.CSSEngineEvent;
 import org.apache.batik.css.engine.SVGCSSEngine;
 import org.apache.batik.dom.events.AbstractEvent;
+import org.apache.batik.dom.svg.AnimatedLiveAttributeValue;
 import org.apache.batik.dom.svg.SVGContext;
 import org.apache.batik.dom.svg.SVGOMElement;
 import org.apache.batik.ext.awt.geom.SegmentList;
@@ -38,6 +39,7 @@ import org.w3c.dom.events.DocumentEvent;
 import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.events.MutationEvent;
 import org.w3c.dom.svg.SVGFitToViewBox;
+import org.w3c.dom.svg.SVGLength;
 
 /**
  * The base bridge class for SVG graphics node. By default, the namespace URI is
@@ -77,6 +79,11 @@ public abstract class AbstractGraphicsNodeBridge extends AnimatableSVGBridge
     protected boolean isSVG12;
 
     /**
+     * The unit context for length conversions.
+     */
+    protected UnitProcessor.Context unitContext;
+    
+    /**
      * Constructs a new abstract bridge.
      */
     protected AbstractGraphicsNodeBridge() {}
@@ -103,6 +110,9 @@ public abstract class AbstractGraphicsNodeBridge extends AnimatableSVGBridge
         }
         // 'visibility'
         node.setVisible(CSSUtilities.convertVisibility(e));
+
+        associateSVGContext(ctx, e, node);
+
         return node;
     }
 
@@ -146,6 +156,22 @@ public abstract class AbstractGraphicsNodeBridge extends AnimatableSVGBridge
     }
 
     /**
+     * Associates the {@link SVGContext} with the element.  This method should
+     * be called even for static documents, since some bridges will need to
+     * access animated attribute values even during the first build.
+     */
+    protected void associateSVGContext(BridgeContext ctx,
+                                       Element e,
+                                       GraphicsNode node) {
+        this.e = e;
+        this.node = node;
+        this.ctx = ctx;
+        this.unitContext = UnitProcessor.createContext(ctx, e);
+        this.isSVG12 = ctx.isSVG12();
+        ((SVGOMElement)e).setSVGContext(this);
+    }
+
+    /**
      * This method is invoked during the build phase if the document
      * is dynamic. The responsibility of this method is to ensure that
      * any dynamic modifications of the element this bridge is
@@ -154,19 +180,9 @@ public abstract class AbstractGraphicsNodeBridge extends AnimatableSVGBridge
     protected void initializeDynamicSupport(BridgeContext ctx,
                                             Element e,
                                             GraphicsNode node) {
-        if (!ctx.isInteractive())
-            return;
-
-        // Bind the nodes for interactive and dynamic
-        ctx.bind(e, node);
-
-        if (ctx.isDynamic()) {
-            // only set context for dynamic documents not interactive.
-            this.e = e;
-            this.node = node;
-            this.ctx = ctx;
-            ((SVGOMElement)e).setSVGContext(this);
-            isSVG12 = ctx.isSVG12();
+        if (ctx.isInteractive()) {
+            // Bind the nodes for interactive and dynamic.
+            ctx.bind(e, node);
         }
     }
 
@@ -261,19 +277,30 @@ public abstract class AbstractGraphicsNodeBridge extends AnimatableSVGBridge
         ctx.unbind(e);
     }
 
-
     /**
-     * Disposes all resources related to the specified node and its subtree
+     * Disposes all resources related to the specified node and its subtree.
      */
     protected void disposeTree(Node node) {
+        disposeTree(node, true);
+    }
+
+    /**
+     * Disposes all resources related to the specified node and its subtree,
+     * and optionally removes the nodes' {@link SVGContext}.
+     */
+    protected void disposeTree(Node node, boolean removeContext) {
         if (node instanceof SVGOMElement) {
             SVGOMElement elt = (SVGOMElement)node;
             BridgeUpdateHandler h = (BridgeUpdateHandler)elt.getSVGContext();
-            if (h != null)
+            if (h != null) {
+                if (removeContext) {
+                    elt.setSVGContext(null);
+                }
                 h.dispose();
+            }
         }
-        for (Node n = node.getFirstChild(); n!=null; n = n.getNextSibling()) {
-            disposeTree(n);
+        for (Node n = node.getFirstChild(); n != null; n = n.getNextSibling()) {
+            disposeTree(n, removeContext);
         }
     }
 
@@ -319,10 +346,17 @@ public abstract class AbstractGraphicsNodeBridge extends AnimatableSVGBridge
                 // Remove the subtree.
                 CompositeGraphicsNode parent = node.getParent();
                 parent.remove(node);
-                disposeTree(e);
+                disposeTree(e, false);
             }
             break;
         }
+    }
+
+    /**
+     * Invoked when the animated value of an animatable attribute has changed.
+     */
+    public void handleAnimatedAttributeChanged
+            (AnimatedLiveAttributeValue alav) {
     }
 
     /**
@@ -483,5 +517,26 @@ public abstract class AbstractGraphicsNodeBridge extends AnimatableSVGBridge
     public float getFontSize() {
         return CSSUtilities.getComputedStyle
             (e, SVGCSSEngine.FONT_SIZE_INDEX).getFloatValue();
+    }
+
+    /**
+     * Converts the given SVG length into user units.
+     * @param v the SVG length value
+     * @param type the SVG length units (one of the
+     *             {@link SVGLength}.SVG_LENGTH_* constants)
+     * @param pcInterp how to interpretet percentage values (one of the
+     *             {@link SVGContext}.PERCENTAGE_* constants) 
+     * @return the SVG value in user units
+     */
+    public float svgToUserSpace(float v, int type, int pcInterp) {
+        if (pcInterp == PERCENTAGE_FONT_SIZE
+                && type == SVGLength.SVG_LENGTHTYPE_PERCENTAGE) {
+            // XXX
+            return 0f;
+        } else {
+            return UnitProcessor.svgToUserSpace(v, (short) type,
+                                                (short) (3 - pcInterp),
+                                                unitContext);
+        }
     }
 }

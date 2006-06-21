@@ -133,7 +133,7 @@ public class AccesskeyTimingSpecifier
             matched = evt.getKeyIdentifier().equals(keyName);
         }
         if (matched) {
-            // XXX check for event sensitivity
+            // XXX Need to check for event sensitivity.
             long time = e.getTimeStamp() -
                 owner.getRoot().getDocumentBeginTime().getTimeInMillis();
             InstanceTime instance =

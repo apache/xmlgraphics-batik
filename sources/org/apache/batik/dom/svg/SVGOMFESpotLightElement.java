@@ -17,7 +17,10 @@
  */
 package org.apache.batik.dom.svg;
 
+import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.util.SVGTypes;
+
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedNumber;
 import org.w3c.dom.svg.SVGFESpotLightElement;
@@ -120,5 +123,82 @@ public class SVGOMFESpotLightElement
      */
     protected Node newNode() {
         return new SVGOMFESpotLightElement();
+    }
+
+    // ExtendedTraitAccess ///////////////////////////////////////////////////
+
+    /**
+     * Returns whether the given XML attribute is animatable.
+     */
+    public boolean isAttributeAnimatable(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_X_ATTRIBUTE)
+                    || ln.equals(SVG_Y_ATTRIBUTE)
+                    || ln.equals(SVG_Z_ATTRIBUTE)
+                    || ln.equals(SVG_POINTS_AT_X_ATTRIBUTE)
+                    || ln.equals(SVG_POINTS_AT_Y_ATTRIBUTE)
+                    || ln.equals(SVG_POINTS_AT_Z_ATTRIBUTE)
+                    || ln.equals(SVG_SPECULAR_EXPONENT_ATTRIBUTE)
+                    || ln.equals(SVG_LIMITING_CONE_ANGLE_ATTRIBUTE)) {
+                return true;
+            }
+        }
+        return super.isAttributeAnimatable(ns, ln);
+    }
+
+    /**
+     * Returns the type of the given attribute.
+     */
+    public int getAttributeType(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_X_ATTRIBUTE)
+                    || ln.equals(SVG_Y_ATTRIBUTE)
+                    || ln.equals(SVG_Z_ATTRIBUTE)
+                    || ln.equals(SVG_POINTS_AT_X_ATTRIBUTE)
+                    || ln.equals(SVG_POINTS_AT_Y_ATTRIBUTE)
+                    || ln.equals(SVG_POINTS_AT_Z_ATTRIBUTE)
+                    || ln.equals(SVG_SPECULAR_EXPONENT_ATTRIBUTE)
+                    || ln.equals(SVG_LIMITING_CONE_ANGLE_ATTRIBUTE)) {
+                return SVGTypes.TYPE_NUMBER;
+            }
+        }
+        return super.getAttributeType(ns, ln);
+    }
+
+    // AnimationTarget ///////////////////////////////////////////////////////
+
+    /**
+     * Updates an attribute value in this target.
+     */
+    public void updateAttributeValue(String ns, String ln,
+                                     AnimatableValue val) {
+        if (ns == null) {
+            if (ln.equals(SVG_X_ATTRIBUTE)) {
+                updateNumberAttributeValue(getX(), val);
+                return;
+            } else if (ln.equals(SVG_Y_ATTRIBUTE)) {
+                updateNumberAttributeValue(getY(), val);
+                return;
+            } else if (ln.equals(SVG_Z_ATTRIBUTE)) {
+                updateNumberAttributeValue(getZ(), val);
+                return;
+            } else if (ln.equals(SVG_POINTS_AT_X_ATTRIBUTE)) {
+                updateNumberAttributeValue(getPointsAtX(), val);
+                return;
+            } else if (ln.equals(SVG_POINTS_AT_Y_ATTRIBUTE)) {
+                updateNumberAttributeValue(getPointsAtY(), val);
+                return;
+            } else if (ln.equals(SVG_POINTS_AT_Z_ATTRIBUTE)) {
+                updateNumberAttributeValue(getPointsAtZ(), val);
+                return;
+            } else if (ln.equals(SVG_SPECULAR_EXPONENT_ATTRIBUTE)) {
+                updateNumberAttributeValue(getSpecularExponent(), val);
+                return;
+            } else if (ln.equals(SVG_LIMITING_CONE_ANGLE_ATTRIBUTE)) {
+                updateNumberAttributeValue(getLimitingConeAngle(), val);
+                return;
+            }
+        }
+        super.updateAttributeValue(ns, ln, val);
     }
 }

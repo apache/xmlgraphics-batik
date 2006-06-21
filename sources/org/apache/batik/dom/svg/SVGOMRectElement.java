@@ -17,7 +17,11 @@
  */
 package org.apache.batik.dom.svg;
 
+import org.apache.batik.anim.AnimationTarget;
+import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.util.SVGTypes;
+
 import org.w3c.dom.Attr;
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedLength;
@@ -61,7 +65,7 @@ public class SVGOMRectElement
     public SVGAnimatedLength getX() {
         return getAnimatedLengthAttribute
             (null, SVG_X_ATTRIBUTE, SVG_RECT_X_DEFAULT_VALUE,
-             SVGOMAnimatedLength.HORIZONTAL_LENGTH);
+             SVGOMAnimatedLength.HORIZONTAL_LENGTH, false);
     } 
 
     /**
@@ -70,7 +74,7 @@ public class SVGOMRectElement
     public SVGAnimatedLength getY() {
         return getAnimatedLengthAttribute
             (null, SVG_Y_ATTRIBUTE, SVG_RECT_Y_DEFAULT_VALUE,
-             SVGOMAnimatedLength.VERTICAL_LENGTH);
+             SVGOMAnimatedLength.VERTICAL_LENGTH, false);
     }
 
     /**
@@ -79,7 +83,7 @@ public class SVGOMRectElement
     public SVGAnimatedLength getWidth() {
         return getAnimatedLengthAttribute
             (null, SVG_WIDTH_ATTRIBUTE, "",
-             SVGOMAnimatedLength.HORIZONTAL_LENGTH);
+             SVGOMAnimatedLength.HORIZONTAL_LENGTH, true);
     } 
 
     /**
@@ -88,7 +92,7 @@ public class SVGOMRectElement
     public SVGAnimatedLength getHeight() {
         return getAnimatedLengthAttribute
             (null, SVG_HEIGHT_ATTRIBUTE, "",
-             SVGOMAnimatedLength.VERTICAL_LENGTH);
+             SVGOMAnimatedLength.VERTICAL_LENGTH, true);
     }
 
     /**
@@ -100,7 +104,7 @@ public class SVGOMRectElement
         if (result == null) {
             result = new AbstractSVGAnimatedLength
                 (this, null, SVG_RX_ATTRIBUTE,
-                 SVGOMAnimatedLength.HORIZONTAL_LENGTH) {
+                 SVGOMAnimatedLength.HORIZONTAL_LENGTH, true) {
                     protected String getDefaultValue() {
                         Attr attr = getAttributeNodeNS(null, SVG_RY_ATTRIBUTE);
                         if (attr == null) {
@@ -124,7 +128,7 @@ public class SVGOMRectElement
         if (result == null) {
             result = new AbstractSVGAnimatedLength
                 (this, null, SVG_RY_ATTRIBUTE,
-                 SVGOMAnimatedLength.HORIZONTAL_LENGTH) {
+                 SVGOMAnimatedLength.HORIZONTAL_LENGTH, true) {
                     protected String getDefaultValue() {
                         Attr attr = getAttributeNodeNS(null, SVG_RX_ATTRIBUTE);
                         if (attr == null) {
@@ -144,5 +148,87 @@ public class SVGOMRectElement
      */
     protected Node newNode() {
         return new SVGOMRectElement();
+    }
+
+    // ExtendedTraitAccess ///////////////////////////////////////////////////
+
+    /**
+     * Returns whether the given XML attribute is animatable.
+     */
+    public boolean isAttributeAnimatable(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_X_ATTRIBUTE)
+                    || ln.equals(SVG_Y_ATTRIBUTE)
+                    || ln.equals(SVG_WIDTH_ATTRIBUTE)
+                    || ln.equals(SVG_HEIGHT_ATTRIBUTE)
+                    || ln.equals(SVG_RX_ATTRIBUTE)
+                    || ln.equals(SVG_RY_ATTRIBUTE)) {
+                return true;
+            }
+        }
+        return super.isAttributeAnimatable(ns, ln);
+    }
+
+    /**
+     * Returns the type of the given attribute.
+     */
+    public int getAttributeType(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_X_ATTRIBUTE)
+                    || ln.equals(SVG_Y_ATTRIBUTE)
+                    || ln.equals(SVG_RX_ATTRIBUTE)
+                    || ln.equals(SVG_RY_ATTRIBUTE)
+                    || ln.equals(SVG_WIDTH_ATTRIBUTE)
+                    || ln.equals(SVG_HEIGHT_ATTRIBUTE)) {
+                return SVGTypes.TYPE_LENGTH;
+            }
+        }
+        return super.getAttributeType(ns, ln);
+    }
+
+    // AnimationTarget ///////////////////////////////////////////////////////
+
+    /**
+     * Gets how percentage values are interpreted by the given attribute.
+     */
+    protected int getAttributePercentageInterpretation(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_X_ATTRIBUTE) || ln.equals(SVG_RX_ATTRIBUTE)) {
+                return AnimationTarget.PERCENTAGE_VIEWPORT_WIDTH;
+            }
+            if (ln.equals(SVG_Y_ATTRIBUTE) || ln.equals(SVG_RY_ATTRIBUTE)) {
+                return AnimationTarget.PERCENTAGE_VIEWPORT_HEIGHT;
+            }
+        }
+        return super.getAttributePercentageInterpretation(ns, ln);
+    }
+
+    /**
+     * Updates an attribute value in this target.
+     */
+    public void updateAttributeValue(String ns, String ln,
+                                     AnimatableValue val) {
+        if (ns == null) {
+            if (ln.equals(SVG_X_ATTRIBUTE)) {
+                updateLengthAttributeValue(getX(), val);
+                return;
+            } else if (ln.equals(SVG_Y_ATTRIBUTE)) {
+                updateLengthAttributeValue(getY(), val);
+                return;
+            } else if (ln.equals(SVG_RX_ATTRIBUTE)) {
+                updateLengthAttributeValue(getRx(), val);
+                return;
+            } else if (ln.equals(SVG_RY_ATTRIBUTE)) {
+                updateLengthAttributeValue(getRy(), val);
+                return;
+            } else if (ln.equals(SVG_WIDTH_ATTRIBUTE)) {
+                updateLengthAttributeValue(getWidth(), val);
+                return;
+            } else if (ln.equals(SVG_HEIGHT_ATTRIBUTE)) {
+                updateLengthAttributeValue(getHeight(), val);
+                return;
+            }
+        }
+        super.updateAttributeValue(ns, ln, val);
     }
 }

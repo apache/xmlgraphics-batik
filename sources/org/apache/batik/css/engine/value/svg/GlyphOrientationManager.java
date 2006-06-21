@@ -62,7 +62,7 @@ public abstract class GlyphOrientationManager extends AbstractValueManager {
      * Implements {@link ValueManager#getPropertyType()}.
      */
     public int getPropertyType() {
-        return SVGTypes.TYPE_ANGLE_OR_IDENT;
+        return SVGTypes.TYPE_ANGLE;
     }
 
     /**

@@ -17,7 +17,10 @@
  */
 package org.apache.batik.dom.svg;
 
+import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.util.SVGTypes;
+
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedBoolean;
 import org.w3c.dom.svg.SVGAnimatedPreserveAspectRatio;
@@ -140,5 +143,62 @@ public class SVGOMViewElement
      */
     protected Node newNode() {
         return new SVGOMViewElement();
+    }
+
+    // ExtendedTraitAccess ///////////////////////////////////////////////////
+
+    /**
+     * Returns whether the given XML attribute is animatable.
+     */
+    public boolean isAttributeAnimatable(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE)
+                    || ln.equals(SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE)
+                    || ln.equals(SVG_VIEW_TARGET_ATTRIBUTE)) {
+                return true;
+            }
+        }
+        return super.isAttributeAnimatable(ns, ln);
+    }
+
+    /**
+     * Returns the type of the given attribute.
+     */
+    public int getAttributeType(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE)) {
+                return SVGTypes.TYPE_PRESERVE_ASPECT_RATIO_VALUE;
+            } else if (ln.equals(SVG_VIEW_BOX_ATTRIBUTE)) {
+                return SVGTypes.TYPE_LENGTH_LIST;
+            } else if (ln.equals(SVG_VIEW_TARGET_ATTRIBUTE)) {
+                return SVGTypes.TYPE_CDATA;
+            } else if (ln.equals(SVG_ZOOM_AND_PAN_ATTRIBUTE)) {
+                return SVGTypes.TYPE_IDENT;
+            } else if (ln.equals(SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE)) {
+                return SVGTypes.TYPE_BOOLEAN;
+            }
+        }
+        return super.getAttributeType(ns, ln);
+    }
+
+    // AnimationTarget ///////////////////////////////////////////////////////
+
+    /**
+     * Updates an attribute value in this target.
+     */
+    public void updateAttributeValue(String ns, String ln,
+                                     AnimatableValue val) {
+        if (ns == null) {
+            if (ln.equals(SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE)) {
+                updateBooleanAttributeValue(getExternalResourcesRequired(),
+                                            val);
+                return;
+            } else if (ln.equals(SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE)) {
+                updatePreserveAspectRatioAttributeValue
+                    (getPreserveAspectRatio(), val);
+                return;
+            }
+        }
+        super.updateAttributeValue(ns, ln, val);
     }
 }

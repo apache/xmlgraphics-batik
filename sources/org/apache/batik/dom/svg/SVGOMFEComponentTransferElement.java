@@ -18,6 +18,9 @@
 package org.apache.batik.dom.svg;
 
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.anim.values.AnimatableValue;
+import org.apache.batik.util.SVGTypes;
+
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedString;
 import org.w3c.dom.svg.SVGFEComponentTransferElement;
@@ -67,5 +70,47 @@ public class SVGOMFEComponentTransferElement
      */
     protected Node newNode() {
         return new SVGOMFEComponentTransferElement();
+    }
+
+    // ExtendedTraitAccess ///////////////////////////////////////////////////
+
+    /**
+     * Returns whether the given XML attribute is animatable.
+     */
+    public boolean isAttributeAnimatable(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_IN_ATTRIBUTE)) {
+                return true;
+            }
+        }
+        return super.isAttributeAnimatable(ns, ln);
+    }
+
+    /**
+     * Returns the type of the given attribute.
+     */
+    public int getAttributeType(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_IN_ATTRIBUTE)) {
+                return SVGTypes.TYPE_CDATA;
+            }
+        }
+        return super.getAttributeType(ns, ln);
+    }
+
+    // AnimationTarget ///////////////////////////////////////////////////////
+
+    /**
+     * Updates an attribute value in this target.
+     */
+    public void updateAttributeValue(String ns, String ln,
+                                     AnimatableValue val) {
+        if (ns == null) {
+            if (ln.equals(SVG_IN_ATTRIBUTE)) {
+                updateStringAttributeValue(getIn1(), val);
+                return;
+            }
+        }
+        super.updateAttributeValue(ns, ln, val);
     }
 }

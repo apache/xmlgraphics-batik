@@ -179,4 +179,16 @@ public class SVGOMGlyphRefElement
     protected Node newNode() {
         return new SVGOMGlyphRefElement();
     }
+
+    // ExtendedTraitAccess ///////////////////////////////////////////////////
+
+    /**
+     * Returns the type of the given attribute.
+     */
+    public int getAttributeType(String ns, String ln) {
+        if (ns == null) {
+            // XXX Fill in these attributes.
+        }
+        return super.getAttributeType(ns, ln);
+    }
 }

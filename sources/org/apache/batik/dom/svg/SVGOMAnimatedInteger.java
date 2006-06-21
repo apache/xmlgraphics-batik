@@ -28,28 +28,33 @@ import org.w3c.dom.svg.SVGAnimatedInteger;
  * @version $Id$
  */
 public class SVGOMAnimatedInteger
-    implements SVGAnimatedInteger,
-               LiveAttributeValue {
-
-    /**
-     * The associated element.
-     */
-    protected AbstractElement element;
-
-    /**
-     * The attribute's namespace URI.
-     */
-    protected String namespaceURI;
-
-    /**
-     * The attribute's local name.
-     */
-    protected String localName;
+        extends AbstractSVGAnimatedValue
+        implements SVGAnimatedInteger {
 
     /**
      * The default value.
      */
     protected int defaultValue;
+
+    /**
+     * Whether the base value is valid.
+     */
+    protected boolean valid;
+
+    /**
+     * The current base value.
+     */
+    protected int baseVal;
+
+    /**
+     * The current animated value.
+     */
+    protected int animVal;
+
+    /**
+     * Whether the value is changing.
+     */
+    protected boolean changing;
 
     /**
      * Creates a new SVGOMAnimatedInteger.
@@ -59,12 +64,10 @@ public class SVGOMAnimatedInteger
      * @param val The default value, if the attribute is not specified.
      */
     public SVGOMAnimatedInteger(AbstractElement elt,
-                                String ns,
-                                String ln,
-                                int  val) {
-        element = elt;
-        namespaceURI = ns;
-        localName = ln;
+                               String ns,
+                               String ln,
+                               int    val) {
+        super(elt, ns, ln);
         defaultValue = val;
     }
 
@@ -72,43 +75,106 @@ public class SVGOMAnimatedInteger
      * <b>DOM</b>: Implements {@link SVGAnimatedInteger#getBaseVal()}.
      */
     public int getBaseVal() {
+        if (!valid) {
+            update();
+        }
+        return baseVal;
+    }
+
+    /**
+     * Updates the base value from the attribute.
+     */
+    protected void update() {
         Attr attr = element.getAttributeNodeNS(namespaceURI, localName);
         if (attr == null) {
-            return defaultValue;
+            baseVal = defaultValue;
+        } else {
+            baseVal = Integer.parseInt(attr.getValue());
         }
-        return Integer.parseInt(attr.getValue());
+        valid = true;
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGAnimatedInteger#setBaseVal(int)}.
      */
     public void setBaseVal(int baseVal) throws DOMException {
-        element.setAttributeNS(namespaceURI, localName,
-                               String.valueOf(baseVal));
+        try {
+            this.baseVal = baseVal;
+            valid = true;
+            changing = true;
+            element.setAttributeNS(namespaceURI, localName,
+                                   String.valueOf(baseVal));
+        } finally {
+            changing = false;
+        }
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGAnimatedInteger#getAnimVal()}.
      */
     public int getAnimVal() {
-        throw new RuntimeException("!!! TODO: getAnimVal()");
+        if (hasAnimVal) {
+            return animVal;
+        }
+        if (!valid) {
+            update();
+        }
+        return baseVal;
+    }
+
+    /**
+     * Sets the animated value.
+     */
+    public void setAnimatedValue(int animVal) {
+        hasAnimVal = true;
+        this.animVal = animVal;
+        fireAnimatedAttributeListeners();
+    }
+
+    /**
+     * Removes the animated value.
+     */
+    public void resetAnimatedValue() {
+        hasAnimVal = false;
+        fireAnimatedAttributeListeners();
     }
 
     /**
      * Called when an Attr node has been added.
      */
     public void attrAdded(Attr node, String newv) {
+        if (!changing) {
+            valid = false;
+        }
+        // XXX Notify baseVal listeners (if we need them).
+        if (!hasAnimVal) {
+            fireAnimatedAttributeListeners();
+        }
     }
 
     /**
      * Called when an Attr node has been modified.
      */
     public void attrModified(Attr node, String oldv, String newv) {
+        if (!changing) {
+            valid = false;
+        }
+        // XXX Notify baseVal listeners (if we need them).
+        if (!hasAnimVal) {
+            fireAnimatedAttributeListeners();
+        }
     }
 
     /**
      * Called when an Attr node has been removed.
      */
     public void attrRemoved(Attr node, String oldv) {
+        if (!changing) {
+            valid = false;
+        }
+        // XXX Notify baseVal listeners (if we need them).
+        if (!hasAnimVal) {
+            fireAnimatedAttributeListeners();
+        }
     }
 }

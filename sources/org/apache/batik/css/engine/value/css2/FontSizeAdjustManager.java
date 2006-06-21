@@ -63,7 +63,7 @@ public class FontSizeAdjustManager extends AbstractValueManager {
      * Implements {@link ValueManager#getPropertyType()}.
      */
     public int getPropertyType() {
-        return SVGTypes.TYPE_NUMBER_OR_IDENT;
+        return SVGTypes.TYPE_FONT_SIZE_ADJUST_VALUE;
     }
 
     /**

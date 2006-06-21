@@ -1958,10 +1958,8 @@ public abstract class CSSEngine {
         style.putComputed(n, false);
     }
 
-
     /**
      * Invalidates all the properties of the given node.
-     * 
      */
     protected void invalidateProperties(Node node, 
                                         int [] properties, 

@@ -17,6 +17,8 @@
  */
 package org.apache.batik.dom;
 
+import org.apache.batik.util.XMLConstants;
+
 import org.w3c.dom.Attr;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Comment;
@@ -40,8 +42,10 @@ import org.w3c.dom.Text;
 public class GenericDocument
     extends AbstractDocument {
 
-    /** Local name for 'id' attributes. */
-    protected final static String ATTR_ID = "id";
+    /**
+     * Local name for 'id' attributes.
+     */
+    protected final static String ATTR_ID = XMLConstants.XML_ID_ATTRIBUTE;
 
     /**
      * Is this document immutable?

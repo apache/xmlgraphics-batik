@@ -23,6 +23,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Locale;
 import java.util.MissingResourceException;
 
@@ -119,6 +120,18 @@ public class SVGOMDocument
      * DOM listeners.
      */
     protected HashMap cssNavigableDocumentListeners = new HashMap();
+
+    /**
+     * The main {@link AnimatedAttributeListener} that redispatches to all
+     * listeners in {@link #animatedAttributeListeners}.
+     */
+    protected AnimatedAttributeListener mainAnimatedAttributeListener =
+        new AnimAttrListener();
+
+    /**
+     * List of {@link AnimatedAttributeListener}s attached to this document.
+     */
+    protected LinkedList animatedAttributeListeners = new LinkedList();
 
     /**
      * Creates a new uninitialized document.
@@ -429,6 +442,13 @@ public class SVGOMDocument
     }
 
     /**
+     * Returns the {@link AnimatedAttributeListener} for the document.
+     */
+    protected AnimatedAttributeListener getAnimatedAttributeListener() {
+        return mainAnimatedAttributeListener;
+    }
+
+    /**
      * The text of the override style declaration for this element has been
      * modified.
      */
@@ -465,6 +485,26 @@ public class SVGOMDocument
                 (CSSNavigableDocumentListener) i.next();
             l.overrideStylePropertyChanged(e, name, value, prio);
         }
+    }
+
+    /**
+     * Adds an {@link AnimatedAttributeListener} to this document, to be
+     * notified of animated XML attribute changes.
+     */
+    public void addAnimatedAttributeListener
+            (AnimatedAttributeListener aal) {
+        if (animatedAttributeListeners.contains(aal)) {
+            return;
+        }
+        animatedAttributeListeners.add(aal);
+    }
+
+    /**
+     * Removes an {@link AnimatedAttributeListener} from this document.
+     */
+    public void removeAnimatedAttributeListener
+            (AnimatedAttributeListener aal) {
+        animatedAttributeListeners.remove(aal);
     }
 
     /**
@@ -602,6 +642,29 @@ public class SVGOMDocument
                                   mevt.getAttrChange(),
                                   mevt.getPrevValue(),
                                   mevt.getNewValue());
+        }
+    }
+
+    /**
+     * Listener class for animated attribute changes.
+     */
+    protected class AnimAttrListener implements AnimatedAttributeListener {
+
+        /**
+         * Called to notify an object of a change to the animated value of
+         * an animatable XML attribute.
+         * @param e the owner element of the changed animatable attribute
+         * @param ns the namespace URI of the animatable attribute that changed
+         * @param ln the local name of the animatable attribute that changed
+         */
+        public void animatedAttributeChanged(Element e,
+                                             AnimatedLiveAttributeValue alav) {
+            Iterator i = animatedAttributeListeners.iterator();
+            while (i.hasNext()) {
+                AnimatedAttributeListener aal =
+                    (AnimatedAttributeListener) i.next();
+                aal.animatedAttributeChanged(e, alav);
+            }
         }
     }
 

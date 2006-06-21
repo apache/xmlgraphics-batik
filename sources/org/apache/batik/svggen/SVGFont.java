@@ -320,7 +320,7 @@ public class SVGFont extends AbstractSVGConverter {
             //
             // Font ID
             //
-            fontDef.setAttributeNS(null, ATTR_ID,
+            fontDef.setAttributeNS(null, SVG_ID_ATTRIBUTE,
                                    generatorContext.idGenerator.
                                    generateID(ID_PREFIX_FONT));
         }

@@ -17,9 +17,12 @@
  */
 package org.apache.batik.dom.svg;
 
+import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.util.XMLSupport;
+import org.apache.batik.util.SVGTypes;
+
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedBoolean;
 import org.w3c.dom.svg.SVGMPathElement;
@@ -97,5 +100,48 @@ public class SVGOMMPathElement
      */
     protected Node newNode() {
         return new SVGOMMPathElement();
+    }
+
+    // ExtendedTraitAccess ///////////////////////////////////////////////////
+
+    /**
+     * Returns whether the given XML attribute is animatable.
+     */
+    public boolean isAttributeAnimatable(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE)) {
+                return true;
+            }
+        }
+        return super.isAttributeAnimatable(ns, ln);
+    }
+
+    /**
+     * Returns the type of the given attribute.
+     */
+    public int getAttributeType(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE)) {
+                return SVGTypes.TYPE_BOOLEAN;
+            }
+        }
+        return super.getAttributeType(ns, ln);
+    }
+
+    // AnimationTarget ///////////////////////////////////////////////////////
+
+    /**
+     * Updates an attribute value in this target.
+     */
+    public void updateAttributeValue(String ns, String ln,
+                                     AnimatableValue val) {
+        if (ns == null) {
+            if (ln.equals(SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE)) {
+                updateBooleanAttributeValue(getExternalResourcesRequired(),
+                                            val);
+                return;
+            }
+        }
+        super.updateAttributeValue(ns, ln, val);
     }
 }

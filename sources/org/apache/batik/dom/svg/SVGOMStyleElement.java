@@ -26,6 +26,7 @@ import org.apache.batik.css.engine.StyleSheet;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.util.XMLConstants;
+import org.apache.batik.util.SVGTypes;
 
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
@@ -156,9 +157,7 @@ public class SVGOMStyleElement
      * <b>DOM</b>: Implements {@link SVGStyleElement#setXMLspace(String)}.
      */
     public void setXMLspace(String space) throws DOMException {
-        setAttributeNS(XMLSupport.XML_NAMESPACE_URI,
-                       XMLSupport.XML_SPACE_ATTRIBUTE,
-                       space);
+        setAttributeNS(XML_NAMESPACE_URI, XML_SPACE_QNAME, space);
     }
 
     /**
@@ -226,5 +225,21 @@ public class SVGOMStyleElement
         public void handleEvent(Event evt) {
             styleSheet = null;
         }
+    }
+
+    // ExtendedTraitAccess ///////////////////////////////////////////////////
+
+    /**
+     * Returns the type of the given attribute.
+     */
+    public int getAttributeType(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_MEDIA_ATTRIBUTE)
+                    || ln.equals(SVG_TITLE_ATTRIBUTE)
+                    || ln.equals(SVG_TYPE_ATTRIBUTE)) {
+                return SVGTypes.TYPE_CDATA;
+            }
+        }
+        return super.getAttributeType(ns, ln);
     }
 }

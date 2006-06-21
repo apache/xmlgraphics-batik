@@ -47,6 +47,8 @@ import org.apache.batik.css.engine.SystemColorSupport;
 import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.dom.AbstractNode;
 import org.apache.batik.dom.events.NodeEventTarget;
+import org.apache.batik.dom.svg.AnimatedAttributeListener;
+import org.apache.batik.dom.svg.AnimatedLiveAttributeValue;
 import org.apache.batik.dom.svg.SVGContext;
 import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.dom.svg.SVGOMDocument;
@@ -1103,6 +1105,11 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     protected CSSEngineListener cssPropertiesChangedListener;
 
     /**
+     * The listener to receive notification of animated attribute changes.
+     */
+    protected AnimatedAttributeListener animatedAttributeListener;
+
+    /**
      * The EventListener that is responsible of managing DOM focus event.
      */
     protected FocusManager focusManager;
@@ -1185,37 +1192,39 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      * properties and update the GVT tree in response.
      */
     public void addDOMListeners() {
-        NodeEventTarget evtTarget = (NodeEventTarget)document;
+        SVGOMDocument doc = (SVGOMDocument)document;
 
         domAttrModifiedEventListener = new DOMAttrModifiedEventListener();
-        evtTarget.addEventListenerNS
+        doc.addEventListenerNS
             (XMLConstants.XML_EVENTS_NAMESPACE_URI,
              "DOMAttrModified",
              domAttrModifiedEventListener, true, null);
 
         domNodeInsertedEventListener = new DOMNodeInsertedEventListener();
-        evtTarget.addEventListenerNS
+        doc.addEventListenerNS
             (XMLConstants.XML_EVENTS_NAMESPACE_URI,
              "DOMNodeInserted",
              domNodeInsertedEventListener, true, null);
 
         domNodeRemovedEventListener = new DOMNodeRemovedEventListener();
-        evtTarget.addEventListenerNS
+        doc.addEventListenerNS
             (XMLConstants.XML_EVENTS_NAMESPACE_URI,
              "DOMNodeRemoved",
              domNodeRemovedEventListener, true, null);
 
         domCharacterDataModifiedEventListener = 
             new DOMCharacterDataModifiedEventListener();
-        evtTarget.addEventListenerNS
+        doc.addEventListenerNS
             (XMLConstants.XML_EVENTS_NAMESPACE_URI,
              "DOMCharacterDataModified",
              domCharacterDataModifiedEventListener, true, null);
 
+        animatedAttributeListener = new AnimatedAttrListener();
+        doc.addAnimatedAttributeListener(animatedAttributeListener);
+        
         focusManager = new FocusManager(document);
 
-        SVGOMDocument svgDocument = (SVGOMDocument)document;
-        CSSEngine cssEngine = svgDocument.getCSSEngine();
+        CSSEngine cssEngine = doc.getCSSEngine();
         cssPropertiesChangedListener = new CSSPropertiesChangedListener();
         cssEngine.addCSSEngineListener(cssPropertiesChangedListener);
     }
@@ -1224,28 +1233,29 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      * Removes event listeners from the DOM and CSS engine.
      */
     protected void removeDOMListeners() {
-        NodeEventTarget evtTarget = (NodeEventTarget)document;
+        SVGOMDocument doc = (SVGOMDocument)document;
 
-        evtTarget.removeEventListenerNS
+        doc.removeEventListenerNS
             (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMAttrModified",
              domAttrModifiedEventListener, true);
-        evtTarget.removeEventListenerNS
+        doc.removeEventListenerNS
             (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMNodeInserted",
              domNodeInsertedEventListener, true);
-        evtTarget.removeEventListenerNS
+        doc.removeEventListenerNS
             (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMNodeRemoved",
              domNodeRemovedEventListener, true);
-        evtTarget.removeEventListenerNS
+        doc.removeEventListenerNS
             (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMCharacterDataModified",
              domCharacterDataModifiedEventListener, true);
         
-        SVGOMDocument svgDocument = (SVGOMDocument)document;
-        CSSEngine cssEngine = svgDocument.getCSSEngine();
+        doc.removeAnimatedAttributeListener(animatedAttributeListener);
+
+        CSSEngine cssEngine = doc.getCSSEngine();
         if (cssEngine != null) {
             cssEngine.removeCSSEngineListener
                 (cssPropertiesChangedListener);
             cssEngine.dispose();
-            svgDocument.setCSSEngine(null);
+            doc.setCSSEngine(null);
         }
     }
 
@@ -1664,6 +1674,31 @@ public class BridgeContext implements ErrorConstants, CSSContext {
                 }
             } if (ctx != null && (ctx instanceof BridgeUpdateHandler)) {
                 ((BridgeUpdateHandler)ctx).handleCSSEngineEvent(evt);
+            }
+        }
+    }
+
+    /**
+     * A listener class for changes to animated attributes in the document.
+     */
+    protected class AnimatedAttrListener
+        implements AnimatedAttributeListener {
+
+        /**
+         * Called to notify an object of a change to the animated value of
+         * an animated XML attribute.
+         * @param e the owner element of the changed animated attribute
+         * @param alav the AnimatedLiveAttributeValue that changed
+         */
+        public void animatedAttributeChanged(Element e,
+                                             AnimatedLiveAttributeValue alav) {
+            BridgeUpdateHandler h = getBridgeUpdateHandler(e);
+            if (h != null) {
+                try {
+                    h.handleAnimatedAttributeChanged(alav);
+                } catch (Exception ex) {
+                    userAgent.displayError(ex);
+                }
             }
         }
     }

@@ -1,11 +1,32 @@
+/*
+
+   Copyright 2006  The Apache Software Foundation 
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+ */
 package org.apache.batik.anim;
 
 import org.apache.batik.anim.values.AnimatableValue;
 
 import org.w3c.dom.Element;
+import org.w3c.dom.svg.SVGLength;
 
 /**
  * An interface for targets of animation to provide context information.
+ *
+ * @author <a href="mailto:cam%40mcc%2eid%2eau">Cameron McCormack</a>
+ * @version $Id$
  */
 public interface AnimationTarget {
 
@@ -43,11 +64,15 @@ public interface AnimationTarget {
     boolean useLinearRGBColorInterpolation();
 
     /**
-     * Converts a length from one unit to another.  The {@code fromType}
-     * and {@code toType} parameters should be one of the constants defined
-     * in {@link org.w3c.dom.svg.SVGLength}.
+     * Converts the given SVG length into user units.
+     * @param v the SVG length value
+     * @param type the SVG length units (one of the
+     *             {@link SVGLength}.SVG_LENGTH_* constants)
+     * @param pcInterp how to interpretet percentage values (one of the
+     *             {@link AnimationTarget}.PERCENTAGE_* constants) 
+     * @return the SVG value in user units
      */
-    float convertLength(int fromType, float value, int toType);
+    float svgToUserSpace(float v, int type, int pcInterp);
 
     // Listeners
 

@@ -18,7 +18,8 @@
 package org.apache.batik.anim.timing;
 
 import java.util.Calendar;
-import java.util.HashSet;
+
+import org.apache.batik.util.DoublyIndexedSet;
 
 /**
  * An abstract base class for the root time container element
@@ -40,11 +41,6 @@ public abstract class TimedDocumentRoot extends TimeContainer {
     protected float accumulatedOffset;
 
     /**
-     * Set of timed elements that need to be sampled.
-     */
-    protected HashSet dirtyNodes = new HashSet();
-
-    /**
      * Allows the use of accessKey() timing specifiers with a single
      * character, as specified in SVG 1.1.
      */
@@ -55,6 +51,12 @@ public abstract class TimedDocumentRoot extends TimeContainer {
      * key name, as specified in SVG 1.2.
      */
     protected boolean useSVG12AccessKeys;
+
+    /**
+     * A set to determine when propagation of new Instance times should
+     * be stopped.
+     */
+    protected DoublyIndexedSet propagationFlags = new DoublyIndexedSet();
 
     /**
      * Creates a new TimedDocumentRoot.
@@ -92,7 +94,8 @@ public abstract class TimedDocumentRoot extends TimeContainer {
      * Samples the entire timegraph at the given time.
      */
     public void seekTo(float time) {
-        // System.err.println("\nseekTo: " + time);
+        Trace.enter(this, "seekTo", new Object[] { new Float(time) } ); try {
+        root.clearPropagationFlags();
         // No time containers in SVG, so we don't have to worry
         // about a partial ordering of timed elements to sample.
         TimedElement[] es = getChildren();
@@ -111,6 +114,7 @@ public abstract class TimedDocumentRoot extends TimeContainer {
                 }
             }
         } while (needsUpdates);
+        } finally { Trace.exit(); }
     }
 
     /**
@@ -139,6 +143,28 @@ public abstract class TimedDocumentRoot extends TimeContainer {
         long begin = documentBeginTime.getTimeInMillis();
         long t = time.getTimeInMillis();
         return (t - begin) / 1000f;
+    }
+
+    /**
+     * Returns whether the specified newly created {@link Interval} should 
+     * propagate its times to the given {@link TimingSpecifier}.
+     * @param i the Interval that has just been created
+     * @param ts the TimingSpecifier that is a dependent of the Interval
+     * @param isBegin whether the dependency is on the begin or end time of
+     *        the Interval
+     */
+    boolean shouldPropagate(Interval i, TimingSpecifier ts, boolean isBegin) {
+        InstanceTime it = isBegin ? i.getBeginInstanceTime()
+                                  : i.getEndInstanceTime();
+        if (propagationFlags.contains(it, ts)) {
+            return false;
+        }
+        propagationFlags.add(it, ts);
+        return true;
+    }
+
+    void clearPropagationFlags() {
+        propagationFlags.clear();
     }
 
     /**

@@ -17,8 +17,11 @@
  */
 package org.apache.batik.dom.svg;
 
+import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.XMLSupport;
+import org.apache.batik.util.SVGTypes;
+
 import org.w3c.dom.DOMException;
 import org.w3c.dom.svg.SVGAnimatedBoolean;
 import org.w3c.dom.svg.SVGAnimatedEnumeration;
@@ -73,7 +76,7 @@ public abstract class SVGOMTextContentElement
         if (result == null) {
             result = new AbstractSVGAnimatedLength
                 (this, null, SVG_TEXT_LENGTH_ATTRIBUTE,
-                 SVGOMAnimatedLength.HORIZONTAL_LENGTH) {
+                 SVGOMAnimatedLength.HORIZONTAL_LENGTH, true) {
                     boolean usedDefault;
 
                     protected String getDefaultValue() {
@@ -226,9 +229,7 @@ public abstract class SVGOMTextContentElement
      * <b>DOM</b>: Sets the xml:lang attribute value.
      */
     public void setXMLlang(String lang) {
-        setAttributeNS(XMLSupport.XML_NAMESPACE_URI,
-                       XMLSupport.XML_LANG_ATTRIBUTE,
-                       lang);
+        setAttributeNS(XML_NAMESPACE_URI, XML_LANG_QNAME, lang);
     }
     
     /**
@@ -242,9 +243,7 @@ public abstract class SVGOMTextContentElement
      * <b>DOM</b>: Sets the xml:space attribute value.
      */
     public void setXMLspace(String space) {
-        setAttributeNS(XMLSupport.XML_NAMESPACE_URI,
-                       XMLSupport.XML_SPACE_ATTRIBUTE,
-                       space);
+        setAttributeNS(XML_NAMESPACE_URI, XML_SPACE_QNAME, space);
     }
 
     // SVGTests support ///////////////////////////////////////////////////
@@ -279,5 +278,60 @@ public abstract class SVGOMTextContentElement
      */
     public boolean hasExtension(String extension) {
 	return SVGTestsSupport.hasExtension(this, extension);
+    }
+
+    // ExtendedTraitAccess ///////////////////////////////////////////////////
+
+    /**
+     * Returns whether the given XML attribute is animatable.
+     */
+    public boolean isAttributeAnimatable(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE)
+                    || ln.equals(SVG_TEXT_LENGTH_ATTRIBUTE)
+                    || ln.equals(SVG_LENGTH_ADJUST_ATTRIBUTE)) {
+                return true;
+            }
+        }
+        return super.isAttributeAnimatable(ns, ln);
+    }
+
+    /**
+     * Returns the type of the given attribute.
+     */
+    public int getAttributeType(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_TEXT_LENGTH_ATTRIBUTE)) {
+                return SVGTypes.TYPE_LENGTH;
+            } else if (ln.equals(SVG_LENGTH_ADJUST_ATTRIBUTE)) {
+                return SVGTypes.TYPE_IDENT;
+            } else if (ln.equals(SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE)) {
+                return SVGTypes.TYPE_BOOLEAN;
+            }
+        }
+        return super.getAttributeType(ns, ln);
+    }
+
+    // AnimationTarget ///////////////////////////////////////////////////////
+
+    /**
+     * Updates an attribute value in this target.
+     */
+    public void updateAttributeValue(String ns, String ln,
+                                     AnimatableValue val) {
+        if (ns == null) {
+            if (ln.equals(SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE)) {
+                updateBooleanAttributeValue(getExternalResourcesRequired(),
+                                            val);
+                return;
+            } else if (ln.equals(SVG_TEXT_LENGTH_ATTRIBUTE)) {
+                updateLengthAttributeValue(getTextLength(), val);
+                return;
+            } else if (ln.equals(SVG_LENGTH_ADJUST_ATTRIBUTE)) {
+                updateEnumerationAttributeValue(getLengthAdjust(), val);
+                return;
+            }
+        }
+        super.updateAttributeValue(ns, ln, val);
     }
 }

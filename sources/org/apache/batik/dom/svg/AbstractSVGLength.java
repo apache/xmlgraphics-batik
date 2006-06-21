@@ -97,7 +97,6 @@ public abstract class AbstractSVGLength
      */
     protected abstract SVGOMElement getAssociatedElement();
 
-
     /**
      * Creates a new AbstractSVGLength.
      */
@@ -245,8 +244,8 @@ public abstract class AbstractSVGLength
          * Returns the size of a px CSS unit in millimeters.
          */
         public float getPixelUnitToMillimeter() {
-            SVGContext ctx = getAssociatedElement().getSVGContext();
-            return ctx.getPixelUnitToMillimeter();
+            return getAssociatedElement().getSVGContext()
+                .getPixelUnitToMillimeter();
         }
         
         /**
@@ -276,16 +275,14 @@ public abstract class AbstractSVGLength
          * Returns the viewport width used to compute units.
          */
         public float getViewportWidth() {
-            return getAssociatedElement().getSVGContext().
-                getViewportWidth();
+            return getAssociatedElement().getSVGContext().getViewportWidth();
         }
         
         /**
          * Returns the viewport height used to compute units.
          */
         public float getViewportHeight() {
-            return getAssociatedElement().getSVGContext().
-                getViewportHeight();
+            return getAssociatedElement().getSVGContext().getViewportHeight();
         }
     }   
 }

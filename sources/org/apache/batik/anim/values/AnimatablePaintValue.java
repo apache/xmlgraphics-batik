@@ -1,7 +1,30 @@
+/*
+
+   Copyright 2006  The Apache Software Foundation 
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+ */
 package org.apache.batik.anim.values;
 
 import org.apache.batik.anim.AnimationTarget;
 
+/**
+ * An SVG paint value in the animation system.
+ *
+ * @author <a href="mailto:cam%40mcc%2eid%2eau">Cameron McCormack</a>
+ * @version $Id$
+ */
 public class AnimatablePaintValue extends AnimatableColorValue {
 
     // Constants for paintType.
@@ -132,7 +155,8 @@ public class AnimatablePaintValue extends AnimatableColorValue {
     public AnimatableValue interpolate(AnimatableValue result,
                                        AnimatableValue to,
                                        float interpolation,
-                                       AnimatableValue accumulation) {
+                                       AnimatableValue accumulation,
+                                       int multiplier) {
         AnimatablePaintValue res;
         if (result == null) {
             res = new AnimatablePaintValue(target);
@@ -141,12 +165,24 @@ public class AnimatablePaintValue extends AnimatableColorValue {
         }
         
         if (paintType == PAINT_COLOR) {
-            AnimatablePaintValue toPaint = (AnimatablePaintValue) to;
-            if (toPaint.paintType == PAINT_COLOR) {
+            boolean canInterpolate = true;
+            if (to != null) {
+                AnimatablePaintValue toPaint = (AnimatablePaintValue) to;
+                canInterpolate = toPaint.paintType == PAINT_COLOR;
+            }
+            if (accumulation != null) {
+                AnimatablePaintValue accPaint =
+                    (AnimatablePaintValue) accumulation;
+                canInterpolate =
+                    canInterpolate && accPaint.paintType == PAINT_COLOR;
+            }
+            if (canInterpolate) {
                 res.paintType = PAINT_COLOR;
-                return super.interpolate(res, to, interpolation, accumulation);
+                return super.interpolate
+                    (res, to, interpolation, accumulation, multiplier);
             }
         }
+
         res.paintType = paintType;
         res.uri = uri;
         res.red = red;

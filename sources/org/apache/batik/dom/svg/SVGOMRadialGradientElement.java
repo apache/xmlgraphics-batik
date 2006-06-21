@@ -17,7 +17,11 @@
  */
 package org.apache.batik.dom.svg;
 
+import org.apache.batik.anim.AnimationTarget;
+import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.util.SVGTypes;
+
 import org.w3c.dom.Attr;
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedLength;
@@ -62,7 +66,7 @@ public class SVGOMRadialGradientElement
     public SVGAnimatedLength getCx() {
         return getAnimatedLengthAttribute
             (null, SVG_CX_ATTRIBUTE, SVG_RADIAL_GRADIENT_CX_DEFAULT_VALUE,
-             SVGOMAnimatedLength.HORIZONTAL_LENGTH);
+             SVGOMAnimatedLength.HORIZONTAL_LENGTH, false);
     }
 
     /**
@@ -72,7 +76,7 @@ public class SVGOMRadialGradientElement
     public SVGAnimatedLength getCy() {
         return getAnimatedLengthAttribute
             (null, SVG_CY_ATTRIBUTE, SVG_RADIAL_GRADIENT_CY_DEFAULT_VALUE,
-             SVGOMAnimatedLength.VERTICAL_LENGTH);
+             SVGOMAnimatedLength.VERTICAL_LENGTH, false);
     }
 
     /**
@@ -82,7 +86,7 @@ public class SVGOMRadialGradientElement
     public SVGAnimatedLength getR() {
         return getAnimatedLengthAttribute
             (null, SVG_R_ATTRIBUTE, SVG_RADIAL_GRADIENT_R_DEFAULT_VALUE,
-             SVGOMAnimatedLength.OTHER_LENGTH);
+             SVGOMAnimatedLength.OTHER_LENGTH, true);
     }
 
     /**
@@ -95,7 +99,7 @@ public class SVGOMRadialGradientElement
         if (result == null) {
             result = new AbstractSVGAnimatedLength
                 (this, null, SVG_FX_ATTRIBUTE,
-                 SVGOMAnimatedLength.HORIZONTAL_LENGTH) {
+                 SVGOMAnimatedLength.HORIZONTAL_LENGTH, false) {
                     protected String getDefaultValue() {
                         Attr attr = getAttributeNodeNS(null, SVG_CX_ATTRIBUTE);
                         if (attr == null) {
@@ -120,7 +124,7 @@ public class SVGOMRadialGradientElement
         if (result == null) {
             result = new AbstractSVGAnimatedLength
                 (this, null, SVG_FY_ATTRIBUTE,
-                 SVGOMAnimatedLength.VERTICAL_LENGTH) {
+                 SVGOMAnimatedLength.VERTICAL_LENGTH, false) {
                     protected String getDefaultValue() {
                         Attr attr = getAttributeNodeNS(null, SVG_CY_ATTRIBUTE);
                         if (attr == null) {
@@ -140,5 +144,82 @@ public class SVGOMRadialGradientElement
      */
     protected Node newNode() {
         return new SVGOMRadialGradientElement();
+    }
+
+    // ExtendedTraitAccess ///////////////////////////////////////////////////
+
+    /**
+     * Returns whether the given XML attribute is animatable.
+     */
+    public boolean isAttributeAnimatable(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_CX_ATTRIBUTE)
+                    || ln.equals(SVG_CY_ATTRIBUTE)
+                    || ln.equals(SVG_R_ATTRIBUTE)
+                    || ln.equals(SVG_FX_ATTRIBUTE)
+                    || ln.equals(SVG_FY_ATTRIBUTE)) {
+                return true;
+            }
+        }
+        return super.isAttributeAnimatable(ns, ln);
+    }
+
+    /**
+     * Returns the type of the given attribute.
+     */
+    public int getAttributeType(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_CX_ATTRIBUTE)
+                    || ln.equals(SVG_CY_ATTRIBUTE)
+                    || ln.equals(SVG_FX_ATTRIBUTE)
+                    || ln.equals(SVG_FY_ATTRIBUTE)
+                    || ln.equals(SVG_R_ATTRIBUTE)) {
+                return SVGTypes.TYPE_LENGTH;
+            }
+        }
+        return super.getAttributeType(ns, ln);
+    }
+
+    // AnimationTarget ///////////////////////////////////////////////////////
+
+    /**
+     * Gets how percentage values are interpreted by the given attribute.
+     */
+    protected int getAttributePercentageInterpretation(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_CX_ATTRIBUTE) || ln.equals(SVG_FX_ATTRIBUTE)) {
+                return AnimationTarget.PERCENTAGE_VIEWPORT_WIDTH;
+            }
+            if (ln.equals(SVG_CY_ATTRIBUTE) || ln.equals(SVG_FY_ATTRIBUTE)) {
+                return AnimationTarget.PERCENTAGE_VIEWPORT_HEIGHT;
+            }
+        }
+        return super.getAttributePercentageInterpretation(ns, ln);
+    }
+
+    /**
+     * Updates an attribute value in this target.
+     */
+    public void updateAttributeValue(String ns, String ln,
+                                     AnimatableValue val) {
+        if (ns == null) {
+            if (ln.equals(SVG_CX_ATTRIBUTE)) {
+                updateLengthAttributeValue(getCx(), val);
+                return;
+            } else if (ln.equals(SVG_CY_ATTRIBUTE)) {
+                updateLengthAttributeValue(getCy(), val);
+                return;
+            } else if (ln.equals(SVG_R_ATTRIBUTE)) {
+                updateLengthAttributeValue(getR(), val);
+                return;
+            } else if (ln.equals(SVG_FX_ATTRIBUTE)) {
+                updateLengthAttributeValue(getFx(), val);
+                return;
+            } else if (ln.equals(SVG_FY_ATTRIBUTE)) {
+                updateLengthAttributeValue(getFy(), val);
+                return;
+            }
+        }
+        super.updateAttributeValue(ns, ln, val);
     }
 }

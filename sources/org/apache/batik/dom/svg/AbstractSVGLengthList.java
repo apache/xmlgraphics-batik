@@ -67,7 +67,7 @@ public abstract class AbstractSVGLengthList
                                                        Object[] args);
 
     /**
-     * return the element owning this SVGLengthList.
+     * Returns the element owning this SVGLengthList.
      */
     protected abstract Element getElement();
 

@@ -138,7 +138,7 @@ public class SVGAlphaComposite extends AbstractSVGConverter {
                 // Process the filter value
                 StringBuffer filterAttrBuf = new StringBuffer(URL_PREFIX);
                 filterAttrBuf.append(SIGN_POUND);
-                filterAttrBuf.append(filterDef.getAttributeNS(null, ATTR_ID));
+                filterAttrBuf.append(filterDef.getAttributeNS(null, SVG_ID_ATTRIBUTE));
                 filterAttrBuf.append(URL_SUFFIX);
 
                 filterValue = filterAttrBuf.toString();
@@ -230,7 +230,7 @@ public class SVGAlphaComposite extends AbstractSVGConverter {
         Element compositeFilter =
             generatorContext.domFactory.createElementNS(SVG_NAMESPACE_URI,
                                                         SVG_FILTER_TAG);
-        compositeFilter.setAttributeNS(null, ATTR_ID, id);
+        compositeFilter.setAttributeNS(null, SVG_ID_ATTRIBUTE, id);
         compositeFilter.setAttributeNS(null, SVG_FILTER_UNITS_ATTRIBUTE,
                                      SVG_OBJECT_BOUNDING_BOX_VALUE);
         compositeFilter.setAttributeNS(null, SVG_X_ATTRIBUTE, SVG_ZERO_PERCENT_VALUE);

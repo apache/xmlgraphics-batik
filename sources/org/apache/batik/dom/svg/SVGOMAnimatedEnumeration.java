@@ -28,25 +28,9 @@ import org.w3c.dom.svg.SVGAnimatedEnumeration;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class SVGOMAnimatedEnumeration
-    implements SVGAnimatedEnumeration,
-               LiveAttributeValue {
+public class SVGOMAnimatedEnumeration extends AbstractSVGAnimatedValue
+                                      implements SVGAnimatedEnumeration {
     
-    /**
-     * The associated element.
-     */
-    protected AbstractElement element;
-
-    /**
-     * The attribute's namespace URI.
-     */
-    protected String namespaceURI;
-
-    /**
-     * The attribute's local name.
-     */
-    protected String localName;
-
     /**
      * The values in this enumeration.
      */
@@ -56,6 +40,26 @@ public class SVGOMAnimatedEnumeration
      * The default value, if the attribute is not specified.
      */
     protected short defaultValue;
+
+    /**
+     * Whether the current base value is valid.
+     */
+    protected boolean valid;
+
+    /**
+     * The current base value.
+     */
+    protected short baseVal;
+
+    /**
+     * The current animated value.
+     */
+    protected short animVal;
+
+    /**
+     * Whether the value is changing.
+     */
+    protected boolean changing;
 
     /**
      * Creates a new SVGOMAnimatedEnumeration.
@@ -70,9 +74,7 @@ public class SVGOMAnimatedEnumeration
                                     String ln,
                                     String[] val,
                                     short def) {
-        element = elt;
-        namespaceURI = ns;
-        localName = ln;
+        super(elt, ns, ln);
         values = val;
         defaultValue = def;
     }
@@ -81,12 +83,31 @@ public class SVGOMAnimatedEnumeration
      * <b>DOM</b>: Implements {@link SVGAnimatedEnumeration#getBaseVal()}.
      */
     public short getBaseVal() {
+        if (!valid) {
+            update();
+        }
+        return baseVal;
+    }
+
+    /**
+     * Updates the base value from the attribute.
+     */
+    protected void update() {
         String val = element.getAttributeNS(namespaceURI, localName);
         if (val.length() == 0) {
-            return defaultValue;
+            baseVal = defaultValue;
+        } else {
+            baseVal = getEnumerationNumber(val);
         }
+        valid = true;
+    }
+
+    /**
+     * Returns the enumeration number of the specified string.
+     */
+    protected short getEnumerationNumber(String s) {
         for (short i = 0; i < values.length; i++) {
-            if (val.equals(values[i])) {
+            if (s.equals(values[i])) {
                 return i;
             }
         }
@@ -99,7 +120,15 @@ public class SVGOMAnimatedEnumeration
      */
     public void setBaseVal(short baseVal) throws DOMException {
         if (baseVal >= 0 && baseVal < values.length) {
-            element.setAttributeNS(namespaceURI, localName, values[baseVal]);
+            try {
+                this.baseVal = baseVal;
+                valid = true;
+                changing = true;
+                element.setAttributeNS(namespaceURI, localName,
+                                       values[baseVal]);
+            } finally {
+                changing = false;
+            }
         }
     }
 
@@ -107,24 +136,75 @@ public class SVGOMAnimatedEnumeration
      * <b>DOM</b>: Implements {@link SVGAnimatedEnumeration#getAnimVal()}.
      */
     public short getAnimVal() {
-        throw new RuntimeException("!!! TODO: getAnimVal()");
+        if (hasAnimVal) {
+            return animVal;
+        }
+        if (!valid) {
+            update();
+        }
+        return baseVal;
+    }
+
+    /**
+     * Sets the animated value.
+     */
+    public void setAnimatedValue(short animVal) {
+        hasAnimVal = true;
+        this.animVal = animVal;
+        fireAnimatedAttributeListeners();
+    }
+
+    /**
+     * Sets the animated value.
+     */
+    public void setAnimatedValue(String animValStr) {
+        setAnimatedValue(getEnumerationNumber(animValStr));
+    }
+
+    /**
+     * Removes the animated value.
+     */
+    public void resetAnimatedValue() {
+        hasAnimVal = false;
+        fireAnimatedAttributeListeners();
     }
 
     /**
      * Called when an Attr node has been added.
      */
     public void attrAdded(Attr node, String newv) {
+        if (!changing) {
+            valid = false;
+        }
+        // XXX Notify baseVal listeners (if we need them).
+        if (!hasAnimVal) {
+            fireAnimatedAttributeListeners();
+        }
     }
 
     /**
      * Called when an Attr node has been modified.
      */
     public void attrModified(Attr node, String oldv, String newv) {
+        if (!changing) {
+            valid = false;
+        }
+        // XXX Notify baseVal listeners (if we need them).
+        if (!hasAnimVal) {
+            fireAnimatedAttributeListeners();
+        }
     }
 
     /**
      * Called when an Attr node has been removed.
      */
     public void attrRemoved(Attr node, String oldv) {
+        if (!changing) {
+            valid = false;
+        }
+        // XXX Notify baseVal listeners (if we need them).
+        if (!hasAnimVal) {
+            fireAnimatedAttributeListeners();
+        }
     }
 }

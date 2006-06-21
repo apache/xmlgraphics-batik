@@ -170,11 +170,6 @@ public abstract class TimedElement {
     protected Interval currentInterval;
 
     /**
-     * The InstanceTime that defined the begin time of the current interval.
-     */
-    protected InstanceTime currentIntervalBeginInstance;
-
-    /**
      * The end time of the previous interval, initially
      * {@link Float#NEGATIVE_INFINITY}.
      */
@@ -246,6 +241,7 @@ public abstract class TimedElement {
      * created by a syncbase element.
      */
     protected void addInstanceTime(InstanceTime time, boolean isBegin) {
+        Trace.enter(this, "addInstanceTime", new Object[] { time, new Boolean(isBegin) } ); try {
         Vector instanceTimes = isBegin ? beginInstanceTimes : endInstanceTimes;
         int index = Collections.binarySearch(instanceTimes, time);
         if (index < 0) {
@@ -253,6 +249,7 @@ public abstract class TimedElement {
         }
         instanceTimes.insertElementAt(time, index);
         shouldUpdateCurrentInterval = true;
+        } finally { Trace.exit(); }
     }
 
     /**
@@ -261,6 +258,7 @@ public abstract class TimedElement {
      * Interval.
      */
     protected void removeInstanceTime(InstanceTime time, boolean isBegin) {
+        Trace.enter(this, "removeInstanceTime", new Object[] { time, new Boolean(isBegin) } ); try {
         Vector instanceTimes = isBegin ? beginInstanceTimes : endInstanceTimes;
         int index = Collections.binarySearch(instanceTimes, time);
         for (int i = index; index >= 0; index--) {
@@ -285,7 +283,9 @@ public abstract class TimedElement {
             }
         }
         shouldUpdateCurrentInterval = true;
-        System.err.println("Instance time not found!"); // XXX
+        // XXX Shouldn't get here.
+        System.err.println("Instance time not found!");
+        } finally { Trace.exit(); }
     }
 
     /**
@@ -294,18 +294,22 @@ public abstract class TimedElement {
      * syncbase change.
      */
     protected void instanceTimeChanged(InstanceTime time, boolean isBegin) {
+        Trace.enter(this, "instanceTimeChanged", new Object[] { time, new Boolean(isBegin) } ); try {
         shouldUpdateCurrentInterval = true;
+        } finally { Trace.exit(); }
     }
 
     /**
      * Adds a dependent TimingSpecifier for this element.
      */
     protected void addDependent(TimingSpecifier dependent, boolean forBegin) {
+        Trace.enter(this, "addDependent", new Object[] { dependent, new Boolean(forBegin) } ); try {
         if (forBegin) {
             beginDependents.add(dependent);
         } else {
             endDependents.add(dependent);
         }
+        } finally { Trace.exit(); }
     }
 
     /**
@@ -313,11 +317,13 @@ public abstract class TimedElement {
      */
     protected void removeDependent(TimingSpecifier dependent,
                                    boolean forBegin) {
+        Trace.enter(this, "removeDependent", new Object[] { dependent, new Boolean(forBegin) } ); try {
         if (forBegin) {
             beginDependents.remove(dependent);
         } else {
             endDependents.remove(dependent);
         }
+        } finally { Trace.exit(); }
     }
 
     /**
@@ -463,22 +469,35 @@ public abstract class TimedElement {
      * Notifies dependents of a new interval.
      */
     protected void notifyNewInterval(Interval interval) {
+        Trace.enter(this, "notifyNewInterval", new Object[] { interval } ); try {
         Iterator i = beginDependents.iterator();
         while (i.hasNext()) {
             TimingSpecifier ts = (TimingSpecifier) i.next();
-            ts.newInterval(interval);
+            Trace.print(ts.owner + "'s " + (ts.isBegin ? "begin" : "end" ) + ": " + ts);
+            if (root.shouldPropagate(interval, ts, true)) {
+                ts.newInterval(interval);
+            } else {
+                Trace.print("(but not propagating)");
+            }
         }
         i = endDependents.iterator();
         while (i.hasNext()) {
             TimingSpecifier ts = (TimingSpecifier) i.next();
-            ts.newInterval(interval);
+            Trace.print(ts.owner + "'s " + (ts.isBegin ? "begin" : "end" ) + ": " + ts);
+            if (root.shouldPropagate(interval, ts, false)) {
+                ts.newInterval(interval);
+            } else {
+                Trace.print("(but not propagating)");
+            }
         }
+        } finally { Trace.exit(); }
     }
 
     /**
      * Notifies dependents of a removed interval.
      */
     protected void notifyRemoveInterval(Interval interval) {
+        Trace.enter(this, "notifyRemoveInterval", new Object[] { interval } ); try {
         Iterator i = beginDependents.iterator();
         while (i.hasNext()) {
             TimingSpecifier ts = (TimingSpecifier) i.next();
@@ -489,13 +508,14 @@ public abstract class TimedElement {
             TimingSpecifier ts = (TimingSpecifier) i.next();
             ts.removeInterval(interval);
         }
+        } finally { Trace.exit(); }
     }
 
     /**
      * Calculates the local simple time.
      */
     protected void sampleAt(float parentSimpleTime) {
-        // System.err.println("Timed element " + toString() + " sampling at " + parentSimpleTime);
+        Trace.enter(this, "sampleAt", new Object[] { new Float(parentSimpleTime) } ); try {
         float time = parentSimpleTime; // No time containers in SVG.
         if (currentInterval != null) {
             float begin = currentInterval.getBegin();
@@ -525,6 +545,7 @@ public abstract class TimedElement {
                               currentRepeatIteration);
             }
         }
+        Trace.print("begin loop");
         while (shouldUpdateCurrentInterval || hasEnded) {
             if (hasEnded) {
                 previousIntervals.add(currentInterval);
@@ -544,6 +565,7 @@ public abstract class TimedElement {
                     }
                     currentInterval = computeInterval(first, false, beginAfter);
                     if (currentInterval != null) {
+                        Trace.print("creating new interval " + currentInterval + ", propagating to:");
                         notifyNewInterval(currentInterval);
                         float beginEventTime = currentInterval.getBegin();
                         if (time >= beginEventTime) {
@@ -600,6 +622,7 @@ public abstract class TimedElement {
             shouldUpdateCurrentInterval = false;
             hasEnded = currentInterval != null && time >= currentInterval.getEnd();
         }
+        Trace.print("end loop");
 
         if (!wasActive && isActive) {
             isFrozen = false;
@@ -628,6 +651,7 @@ public abstract class TimedElement {
         }
 
         lastSampleTime = time;
+        } finally { Trace.exit(); }
     }
 
     /**
@@ -641,6 +665,8 @@ public abstract class TimedElement {
      */
     protected Interval computeInterval(boolean first, boolean fixedBegin,
                                        float beginAfter) {
+        Trace.enter(this, "computeInterval", new Object[] { new Boolean(first), new Boolean(fixedBegin), new Float(beginAfter)} ); try {
+        Trace.print("computing interval from begins=" + beginInstanceTimes + ", ends=" + endInstanceTimes);
         Iterator beginIterator = beginInstanceTimes.iterator();
         Iterator endIterator = endInstanceTimes.iterator();
         float parentSimpleDur = parent.getSimpleDur();
@@ -653,6 +679,12 @@ public abstract class TimedElement {
             float tempBegin;
             if (fixedBegin) {
                 tempBegin = beginAfter;
+                while (beginIterator.hasNext()) {
+                    InstanceTime it = (InstanceTime) beginIterator.next();
+                    if (it.getTime() > tempBegin) {
+                        break;
+                    }
+                }
             } else {
                 for (;;) {
                     if (!beginIterator.hasNext()) {
@@ -674,13 +706,15 @@ public abstract class TimedElement {
             if (endTimes.length == 0) {
                 // no 'end' attribute specified
                 tempEnd = tempBegin + getActiveDur(tempBegin, INDEFINITE);
+                Trace.print("no end specified, so tempEnd = " + tempEnd);
             } else {
                 if (endInstanceTimes.isEmpty()) {
                     tempEnd = UNRESOLVED;
                 } else {
                     tempEnd = endInstanceTime.getTime();
                     if (first && !firstEnd && tempEnd == tempBegin
-                            || !first && tempEnd == currentInterval.getEnd()) {
+                            || !first && currentInterval != null
+                                && tempEnd == currentInterval.getEnd()) {
                         for (;;) {
                             if (!endIterator.hasNext()) {
                                 return null;
@@ -714,18 +748,20 @@ public abstract class TimedElement {
                     InstanceTime nextBeginInstance =
                         (InstanceTime) beginIterator.next();
                     float nextBegin = nextBeginInstance.getTime();
+                    Trace.print("nextBegin == " + nextBegin);
                     if (nextBegin < tempEnd) {
                         tempEnd = nextBegin;
                     }
                 }
-                currentIntervalBeginInstance = beginInstanceTime;
-                return new Interval(tempBegin, tempEnd);
+                return new Interval(tempBegin, tempEnd,
+                                    beginInstanceTime, endInstanceTime);
             }
             if (fixedBegin) {
                 return null;
             }
             beginAfter = tempEnd;
         }
+        } finally { Trace.exit(); }
     }
 
     /**
@@ -739,7 +775,7 @@ public abstract class TimedElement {
             if (it.getClearOnReset() &&
                     (clearCurrentBegin
                         || currentInterval == null
-                        || currentIntervalBeginInstance != it)) {
+                        || currentInterval.getBeginInstanceTime() != it)) {
                 i.remove();
             }
         }
@@ -892,7 +928,7 @@ public abstract class TimedElement {
                 }
             } catch (NumberFormatException ex) {
             }
-            // XXX
+            // XXX Should disable animation instead of throwing.
             throw new RuntimeException
                 ("Invalid value for 'repeatCount': \"" + repeatCount + "\"");
         }
@@ -920,7 +956,7 @@ public abstract class TimedElement {
         } else if (fill.equals("freeze")) {
             fillMode = FILL_FREEZE;
         } else {
-            // XXX
+            // XXX Should disable animation instead of throwing.
             throw new RuntimeException
                 ("Invalid value for 'fill': \"" + fill + "\"");
         }
@@ -937,7 +973,7 @@ public abstract class TimedElement {
         } else if (restart.equals("never")) {
             restartMode = RESTART_NEVER;
         } else {
-            // XXX
+            // XXX Should disable animation instead of throwing.
             throw new RuntimeException
                 ("Invalid value for 'restart': \"" + restart + "\"");
         }
@@ -1073,6 +1109,13 @@ public abstract class TimedElement {
      * Returns the event target with the given ID.
      */
     protected abstract EventTarget getEventTargetById(String id);
+
+    /**
+     * Returns the event target that is the parent of the given
+     * timed element.  Used for eventbase timing specifiers where
+     * the element ID is omitted.
+     */
+    protected abstract EventTarget getParentEventTarget(TimedElement e);
 
     /**
      * Returns the event target that should be listened to for

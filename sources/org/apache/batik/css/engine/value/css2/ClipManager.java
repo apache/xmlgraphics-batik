@@ -56,7 +56,7 @@ public class ClipManager extends RectManager {
      * Implements {@link ValueManager#isAdditiveProperty()}.
      */
     public boolean isAdditiveProperty() {
-        return true;
+        return false;
     }
 
     /**

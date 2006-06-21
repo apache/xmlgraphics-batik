@@ -1,7 +1,30 @@
+/*
+
+   Copyright 2006  The Apache Software Foundation 
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+ */
 package org.apache.batik.anim.values;
 
 import org.apache.batik.anim.AnimationTarget;
 
+/**
+ * An SVG color value in the animation system.
+ *
+ * @author <a href="mailto:cam%40mcc%2eid%2eau">Cameron McCormack</a>
+ * @version $Id$
+ */
 public class AnimatableColorValue extends AnimatableValue {
 
     /**
@@ -29,8 +52,8 @@ public class AnimatableColorValue extends AnimatableValue {
     /**
      * Creates a new AnimatableColorValue.
      */
-    public AnimatableColorValue(AnimationTarget target, float r, float g,
-                                float b) {
+    public AnimatableColorValue(AnimationTarget target,
+                                float r, float g, float b) {
         super(target);
         red = r;
         green = g;
@@ -43,33 +66,36 @@ public class AnimatableColorValue extends AnimatableValue {
     public AnimatableValue interpolate(AnimatableValue result,
                                        AnimatableValue to,
                                        float interpolation,
-                                       AnimatableValue accumulation) {
-        AnimatableColorValue toColor = (AnimatableColorValue) to;
-        AnimatableColorValue accColor = (AnimatableColorValue) accumulation;
-        float r = red;
-        float g = green;
-        float b = blue;
-        // XXX Only sRGB colours, and only sRGB interpolation.
-        if (to != null) {
-            r += interpolation * (toColor.red - r);
-            g += interpolation * (toColor.green - g);
-            b += interpolation * (toColor.blue - b);
-        }
-        if (accumulation != null) {
-            r += accColor.red;
-            g += accColor.green;
-            b += accColor.blue;
-        }
-
+                                       AnimatableValue accumulation,
+                                       int multiplier) {
         AnimatableColorValue res;
         if (result == null) {
             res = new AnimatableColorValue(target);
         } else {
             res = (AnimatableColorValue) result;
         }
-        res.red = r;
-        res.green = g;
-        res.blue = b;
+
+        res.red = red;
+        res.green = green;
+        res.blue = blue;
+
+        AnimatableColorValue toColor = (AnimatableColorValue) to;
+        AnimatableColorValue accColor = (AnimatableColorValue) accumulation;
+
+        // XXX Should handle non-sRGB colours and non-sRGB interpolation.
+
+        if (to != null) {
+            res.red += interpolation * (toColor.red - res.red);
+            res.green += interpolation * (toColor.green - res.green);
+            res.blue += interpolation * (toColor.blue - res.blue);
+        }
+
+        if (accumulation != null) {
+            res.red += multiplier * accColor.red;
+            res.green += multiplier * accColor.green;
+            res.blue += multiplier * accColor.blue;
+        }
+
         return res;
     }
 

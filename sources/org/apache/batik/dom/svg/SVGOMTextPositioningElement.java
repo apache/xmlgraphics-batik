@@ -17,7 +17,11 @@
  */
 package org.apache.batik.dom.svg;
 
+import org.apache.batik.anim.AnimationTarget;
+import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.util.SVGTypes;
+
 import org.w3c.dom.svg.SVGAnimatedLengthList;
 import org.w3c.dom.svg.SVGAnimatedNumberList;
 import org.w3c.dom.svg.SVGTextPositioningElement;
@@ -87,4 +91,81 @@ public abstract class SVGOMTextPositioningElement
         throw new RuntimeException(" !!! SVGOMTextPositioningElement.getRotate()");
     }
 
+    // ExtendedTraitAccess ///////////////////////////////////////////////////
+
+    /**
+     * Returns whether the given XML attribute is animatable.
+     */
+    public boolean isAttributeAnimatable(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_X_ATTRIBUTE)
+                    || ln.equals(SVG_Y_ATTRIBUTE)
+                    || ln.equals(SVG_DX_ATTRIBUTE)
+                    || ln.equals(SVG_DY_ATTRIBUTE)
+                    || ln.equals(SVG_ROTATE_ATTRIBUTE)) {
+                return true;
+            }
+        }
+        return super.isAttributeAnimatable(ns, ln);
+    }
+
+    /**
+     * Returns the type of the given attribute.
+     */
+    public int getAttributeType(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_X_ATTRIBUTE)
+                    || ln.equals(SVG_Y_ATTRIBUTE)
+                    || ln.equals(SVG_DX_ATTRIBUTE)
+                    || ln.equals(SVG_DY_ATTRIBUTE)) {
+                return SVGTypes.TYPE_LENGTH_LIST;
+            } else if (ln.equals(SVG_ROTATE_ATTRIBUTE)) {
+                return SVGTypes.TYPE_NUMBER_LIST;
+            }
+        }
+        return super.getAttributeType(ns, ln);
+    }
+
+    // AnimationTarget ///////////////////////////////////////////////////////
+
+    /**
+     * Gets how percentage values are interpreted by the given attribute.
+     */
+    protected int getAttributePercentageInterpretation(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_X_ATTRIBUTE) || ln.equals(SVG_DX_ATTRIBUTE)) {
+                return AnimationTarget.PERCENTAGE_VIEWPORT_WIDTH;
+            }
+            if (ln.equals(SVG_Y_ATTRIBUTE) || ln.equals(SVG_DY_ATTRIBUTE)) {
+                return AnimationTarget.PERCENTAGE_VIEWPORT_HEIGHT;
+            }
+        }
+        return super.getAttributePercentageInterpretation(ns, ln);
+    }
+
+    /**
+     * Updates an attribute value in this target.
+     */
+    public void updateAttributeValue(String ns, String ln,
+                                     AnimatableValue val) {
+        if (ns == null) {
+            if (ln.equals(SVG_X_ATTRIBUTE)) {
+                updateLengthListAttributeValue(getX(), val);
+                return;
+            } else if (ln.equals(SVG_Y_ATTRIBUTE)) {
+                updateLengthListAttributeValue(getY(), val);
+                return;
+            } else if (ln.equals(SVG_DX_ATTRIBUTE)) {
+                updateLengthListAttributeValue(getDx(), val);
+                return;
+            } else if (ln.equals(SVG_DY_ATTRIBUTE)) {
+                updateLengthListAttributeValue(getDy(), val);
+                return;
+            } else if (ln.equals(SVG_ROTATE_ATTRIBUTE)) {
+                updateNumberListAttributeValue(getRotate(), val);
+                return;
+            }
+        }
+        super.updateAttributeValue(ns, ln, val);
+    }
 }

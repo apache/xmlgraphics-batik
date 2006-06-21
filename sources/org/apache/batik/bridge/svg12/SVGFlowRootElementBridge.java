@@ -217,6 +217,8 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
 
         cgn.add(tn);
 
+        associateSVGContext(ctx, e, cgn);
+
         return cgn;
     }
 

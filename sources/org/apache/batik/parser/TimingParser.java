@@ -349,7 +349,6 @@ public abstract class TimingParser extends AbstractParser {
      */
     protected float parseFraction() throws ParseException, IOException {
         float value = 0;
-        current = reader.read();
         if (current < '0' || current > '9') {
             reportError("character.unexpected",
                         new Object[] { new Integer(current) });

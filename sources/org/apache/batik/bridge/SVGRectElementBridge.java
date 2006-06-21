@@ -21,6 +21,9 @@ import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
 
+import org.apache.batik.dom.svg.AnimatedLiveAttributeValue;
+import org.apache.batik.dom.svg.LiveAttributeException;
+import org.apache.batik.dom.svg.SVGOMRectElement;
 import org.apache.batik.gvt.ShapeNode;
 import org.apache.batik.gvt.ShapePainter;
 
@@ -65,113 +68,71 @@ public class SVGRectElementBridge extends SVGShapeElementBridge {
                               Element e,
                               ShapeNode shapeNode) {
 
-        UnitProcessor.Context uctx = UnitProcessor.createContext(ctx, e);
-        String s;
+        try {
+            SVGOMRectElement re = (SVGOMRectElement) e;
 
-        // 'x' attribute - default is 0
-        s = e.getAttributeNS(null, SVG_X_ATTRIBUTE);
-        float x = 0;
-        if (s.length() != 0) {
-            x = UnitProcessor.svgHorizontalCoordinateToUserSpace
-                (s, SVG_X_ATTRIBUTE, uctx);
-        }
+            // 'x' attribute - default is 0
+            float x = re.getX().getAnimVal().getValue();
 
-        // 'y' attribute - default is 0
-        s = e.getAttributeNS(null, SVG_Y_ATTRIBUTE);
-        float y = 0;
-        if (s.length() != 0) {
-            y = UnitProcessor.svgVerticalCoordinateToUserSpace
-                (s, SVG_Y_ATTRIBUTE, uctx);
-        }
+            // 'y' attribute - default is 0
+            float y = re.getY().getAnimVal().getValue();
 
-        // 'width' attribute - required
-        s = e.getAttributeNS(null, SVG_WIDTH_ATTRIBUTE);
-        float w;
-        if (s.length() != 0) {
-            w = UnitProcessor.svgHorizontalLengthToUserSpace
-                (s, SVG_WIDTH_ATTRIBUTE, uctx);
-        } else {
-            throw new BridgeException(e, ERR_ATTRIBUTE_MISSING,
-                                      new Object[] {SVG_WIDTH_ATTRIBUTE, s});
-        }
+            // 'width' attribute - required
+            float w = re.getWidth().getAnimVal().getValue();
 
-        // 'height' attribute - required
-        s = e.getAttributeNS(null, SVG_HEIGHT_ATTRIBUTE);
-        float h;
-        if (s.length() != 0) {
-            h = UnitProcessor.svgVerticalLengthToUserSpace
-                (s, SVG_HEIGHT_ATTRIBUTE, uctx);
-        } else {
-            throw new BridgeException(e, ERR_ATTRIBUTE_MISSING,
-                                      new Object[] {SVG_HEIGHT_ATTRIBUTE, s});
-        }
+            // 'height' attribute - required
+            float h = re.getHeight().getAnimVal().getValue();
 
-        // 'rx' attribute - default is 0
-        s = e.getAttributeNS(null, SVG_RX_ATTRIBUTE);
-        boolean rxs = (s.length() != 0);
-        float rx = 0;
-        if (rxs) {
-            rx = UnitProcessor.svgHorizontalLengthToUserSpace
-                (s, SVG_RX_ATTRIBUTE, uctx);
-        }
-        rx = (rx > w / 2) ? w / 2 : rx;
+            // 'rx' attribute - default is 0
+            float rx = re.getRx().getAnimVal().getValue();
+            if (rx > w / 2) {
+                rx = w / 2;
+            }
 
-        // 'ry' attribute - default is 0
-        s = e.getAttributeNS(null, SVG_RY_ATTRIBUTE);
-        boolean rys = (s.length() != 0);
-        float ry = 0;
-        if (rys) {
-            ry = UnitProcessor.svgVerticalLengthToUserSpace
-                (s, SVG_RY_ATTRIBUTE, uctx);
-        }
-        ry = (ry > h / 2) ? h / 2 : ry;
+            // 'ry' attribute - default is ry
+            float ry = re.getRy().getAnimVal().getValue();
+            if (ry > h / 2) {
+                ry = h / 2;
+            }
 
-        Shape shape = null;
-        if (rxs && rys) {
+            Shape shape;
             if (rx == 0 || ry == 0) {
                 shape = new Rectangle2D.Float(x, y, w, h);
             } else {
                 shape = new RoundRectangle2D.Float(x, y, w, h, rx*2, ry*2);
             }
-        } else if (rxs) {
-            if (rx == 0) {
-                shape = new Rectangle2D.Float(x, y, w, h);
-            } else {
-                shape = new RoundRectangle2D.Float(x, y, w, h, rx*2, rx*2);
-            }
-        } else if (rys) {
-            if (ry == 0) {
-                shape = new Rectangle2D.Float(x, y, w, h);
-            } else {
-                shape = new RoundRectangle2D.Float(x, y, w, h, ry*2, ry*2);
-            }
-        } else {
-            shape = new Rectangle2D.Float(x, y, w, h);
+            shapeNode.setShape(shape);
+        } catch (LiveAttributeException ex) {
+            throw new BridgeException
+                (ex.getElement(),
+                 ex.isMissing() ? ERR_ATTRIBUTE_MISSING
+                                : ERR_ATTRIBUTE_VALUE_MALFORMED,
+                 new Object[] { ex.getAttributeName(), ex.getValue() });
         }
-        shapeNode.setShape(shape);
     }
 
     // BridgeUpdateHandler implementation //////////////////////////////////
 
     /**
-     * Invoked when an MutationEvent of type 'DOMAttrModified' is fired.
+     * Invoked when the animated value of an animatable attribute has changed.
      */
-    public void handleDOMAttrModifiedEvent(MutationEvent evt) {
-        String attrName = evt.getAttrName();
-        if (attrName.equals(SVG_X_ATTRIBUTE) ||
-            attrName.equals(SVG_Y_ATTRIBUTE) ||
-            attrName.equals(SVG_WIDTH_ATTRIBUTE) ||
-            attrName.equals(SVG_HEIGHT_ATTRIBUTE) ||
-            attrName.equals(SVG_RX_ATTRIBUTE) ||
-            attrName.equals(SVG_RY_ATTRIBUTE)) {
-
-            buildShape(ctx, e, (ShapeNode)node);
-            handleGeometryChanged();
-        } else {
-            super.handleDOMAttrModifiedEvent(evt);
+    public void handleAnimatedAttributeChanged
+            (AnimatedLiveAttributeValue alav) {
+        if (alav.getNamespaceURI() == null) {
+            String ln = alav.getLocalName();
+            if (ln.equals(SVG_X_ATTRIBUTE)
+                    || ln.equals(SVG_Y_ATTRIBUTE)
+                    || ln.equals(SVG_WIDTH_ATTRIBUTE)
+                    || ln.equals(SVG_HEIGHT_ATTRIBUTE)
+                    || ln.equals(SVG_RX_ATTRIBUTE)
+                    || ln.equals(SVG_RY_ATTRIBUTE)) {
+                buildShape(ctx, e, (ShapeNode)node);
+                handleGeometryChanged();
+                return;
+            }
         }
+        super.handleAnimatedAttributeChanged(alav);
     }
-
 
     protected ShapePainter createShapePainter(BridgeContext ctx,
                                               Element e,

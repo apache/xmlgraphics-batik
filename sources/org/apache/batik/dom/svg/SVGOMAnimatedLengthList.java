@@ -76,8 +76,7 @@ public class SVGOMAnimatedLengthList
                                    String ns,
                                    String ln,
                                    String defaultValue,
-                                   short direction){
-        
+                                   short direction) {
         element = elt;
         namespaceURI = ns;
         localName = ln;

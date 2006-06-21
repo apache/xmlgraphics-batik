@@ -90,7 +90,8 @@ import org.w3c.dom.Node;
  * @see                org.w3c.dom.Document
  */
 public class SVGGraphics2D extends AbstractGraphics2D
-    implements Cloneable, SVGSyntax, XMLConstants, ErrorConstants, CSSConstants {
+    implements Cloneable, SVGSyntax, ErrorConstants {
+
     /*
      * Constants definitions
      */
@@ -1201,7 +1202,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
         text.setAttributeNS(null, SVG_Y_ATTRIBUTE, generatorCtx.doubleString(y));
             
         text.setAttributeNS(XML_NAMESPACE_URI,
-                            XML_SPACE_ATTRIBUTE,
+                            XML_SPACE_QNAME,
                             XML_PRESERVE_VALUE);
         text.appendChild(getDOMFactory().createTextNode(s));
         domGroupManager.addElement(text, DOMGroupManager.FILL);

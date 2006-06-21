@@ -28,7 +28,7 @@ import org.w3c.dom.svg.SVGTransform;
  * This is the base implementation for SVGTransform
  * 
  * @author nicolas.socheleau@bitflash.com
- * @version $Id :$
+ * @version $Id$
  */
 public abstract class AbstractSVGTransform implements SVGTransform {
 

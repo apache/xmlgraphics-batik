@@ -40,10 +40,7 @@ public class SVGExternalResourcesRequiredSupport implements SVGConstants {
         LiveAttributeValue lav;
         lav = elt.getLiveAttributeValue(null, ATTR_NAME);
         if (lav == null) {
-            lav = new SVGOMAnimatedBoolean(elt, null, ATTR_NAME,
-                                           elt.getAttributeNodeNS(null,
-                                                                  ATTR_NAME),
-                                           "false");
+            lav = new SVGOMAnimatedBoolean(elt, null, ATTR_NAME, false);
             elt.putLiveAttributeValue(null, ATTR_NAME, lav);
         }
         return (SVGAnimatedBoolean)lav;

@@ -17,7 +17,10 @@
  */
 package org.apache.batik.dom.svg;
 
+import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.util.SVGTypes;
+
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedEnumeration;
 import org.w3c.dom.svg.SVGAnimatedNumber;
@@ -124,5 +127,79 @@ public class SVGOMFECompositeElement
      */
     protected Node newNode() {
         return new SVGOMFECompositeElement();
+    }
+
+    // ExtendedTraitAccess ///////////////////////////////////////////////////
+
+    /**
+     * Returns whether the given XML attribute is animatable.
+     */
+    public boolean isAttributeAnimatable(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_IN_ATTRIBUTE)
+                    || ln.equals(SVG_IN2_ATTRIBUTE)
+                    || ln.equals(SVG_OPERATOR_ATTRIBUTE)
+                    || ln.equals(SVG_K1_ATTRIBUTE)
+                    || ln.equals(SVG_K2_ATTRIBUTE)
+                    || ln.equals(SVG_K3_ATTRIBUTE)
+                    || ln.equals(SVG_K4_ATTRIBUTE)) {
+                return true;
+            }
+        }
+        return super.isAttributeAnimatable(ns, ln);
+    }
+
+    /**
+     * Returns the type of the given attribute.
+     */
+    public int getAttributeType(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_IN_ATTRIBUTE)
+                    || ln.equals(SVG_IN2_ATTRIBUTE)) {
+                return SVGTypes.TYPE_CDATA;
+            } else if (ln.equals(SVG_OPERATOR_ATTRIBUTE)) {
+                return SVGTypes.TYPE_IDENT;
+            } else if (ln.equals(SVG_K1_ATTRIBUTE)
+                    || ln.equals(SVG_K2_ATTRIBUTE)
+                    || ln.equals(SVG_K3_ATTRIBUTE)
+                    || ln.equals(SVG_K4_ATTRIBUTE)) {
+                return SVGTypes.TYPE_NUMBER;
+            }
+        }
+        return super.getAttributeType(ns, ln);
+    }
+
+    // AnimationTarget ///////////////////////////////////////////////////////
+
+    /**
+     * Updates an attribute value in this target.
+     */
+    public void updateAttributeValue(String ns, String ln,
+                                     AnimatableValue val) {
+        if (ns == null) {
+            if (ln.equals(SVG_IN_ATTRIBUTE)) {
+                updateStringAttributeValue(getIn1(), val);
+                return;
+            } else if (ln.equals(SVG_IN2_ATTRIBUTE)) {
+                updateStringAttributeValue(getIn2(), val);
+                return;
+            } else if (ln.equals(SVG_OPERATOR_ATTRIBUTE)) {
+                updateEnumerationAttributeValue(getOperator(), val);
+                return;
+            } else if (ln.equals(SVG_K1_ATTRIBUTE)) {
+                updateNumberAttributeValue(getK1(), val);
+                return;
+            } else if (ln.equals(SVG_K2_ATTRIBUTE)) {
+                updateNumberAttributeValue(getK2(), val);
+                return;
+            } else if (ln.equals(SVG_K3_ATTRIBUTE)) {
+                updateNumberAttributeValue(getK3(), val);
+                return;
+            } else if (ln.equals(SVG_K4_ATTRIBUTE)) {
+                updateNumberAttributeValue(getK4(), val);
+                return;
+            }
+        }
+        super.updateAttributeValue(ns, ln, val);
     }
 }

@@ -116,6 +116,8 @@ public class SVGMultiImageElementBridge extends SVGImageElementBridge {
             return null;
         }
 
+        associateSVGContext(ctx, e, imgNode);
+
         Rectangle2D b = getImageBounds(ctx, e);
 
         // 'transform'
@@ -231,18 +233,10 @@ public class SVGMultiImageElementBridge extends SVGImageElementBridge {
     protected void initializeDynamicSupport(BridgeContext ctx,
                                             Element e,
                                             GraphicsNode node) {
-        if (!ctx.isInteractive())
-            return;
-
-        // HACK due to the way images are represented in GVT
-        ImageNode imgNode = (ImageNode)node;
-        ctx.bind(e, imgNode.getImage());
-
-        if (ctx.isDynamic()) {
-            this.e = e;
-            this.node = node;
-            this.ctx = ctx;
-            ((SVGOMElement)e).setSVGContext(this);
+        if (ctx.isInteractive()) {
+            // HACK due to the way images are represented in GVT
+            ImageNode imgNode = (ImageNode)node;
+            ctx.bind(e, imgNode.getImage());
         }
     }
 
@@ -295,8 +289,8 @@ public class SVGMultiImageElementBridge extends SVGImageElementBridge {
         Document doc = e.getOwnerDocument();
         Element imgElem = doc.createElementNS(SVG_NAMESPACE_URI, 
                                               SVG_IMAGE_TAG);
-        imgElem.setAttributeNS(XLinkSupport.XLINK_NAMESPACE_URI, 
-                               "href", purl.toString());
+        imgElem.setAttributeNS(XLINK_NAMESPACE_URI, 
+                               XLINK_HREF_ATTRIBUTE, purl.toString());
         // move the attributes from <subImageRef> to the <image> element
         NamedNodeMap attrs = e.getAttributes();
         int len = attrs.getLength();

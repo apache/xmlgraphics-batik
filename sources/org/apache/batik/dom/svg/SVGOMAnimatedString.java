@@ -27,24 +27,13 @@ import org.w3c.dom.svg.SVGAnimatedString;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class SVGOMAnimatedString
-    implements SVGAnimatedString,
-               LiveAttributeValue {
+public class SVGOMAnimatedString extends AbstractSVGAnimatedValue
+                                 implements SVGAnimatedString {
 
     /**
-     * The associated element.
+     * The current animated value.
      */
-    protected AbstractElement element;
-
-    /**
-     * The attribute's namespace URI.
-     */
-    protected String namespaceURI;
-
-    /**
-     * The attribute's local name.
-     */
-    protected String localName;
+    protected String animVal;
 
     /**
      * Creates a new SVGOMAnimatedString.
@@ -55,9 +44,7 @@ public class SVGOMAnimatedString
     public SVGOMAnimatedString(AbstractElement elt,
                                String ns,
                                String ln) {
-        element = elt;
-        namespaceURI = ns;
-        localName = ln;
+        super(elt, ns, ln);
     }
 
     /**
@@ -78,24 +65,53 @@ public class SVGOMAnimatedString
      * <b>DOM</b>: Implements {@link SVGAnimatedString#getAnimVal()}.
      */
     public String getAnimVal() {
-        throw new RuntimeException("!!! TODO: getAnimVal()");
+        if (hasAnimVal) {
+            return animVal;
+        }
+        return element.getAttributeNS(namespaceURI, localName);
+    }
+
+    /**
+     * Sets the animated value.
+     */
+    public void setAnimatedValue(String s) {
+        hasAnimVal = true;
+        animVal = s;
+        fireAnimatedAttributeListeners();
+    }
+
+    /**
+     * Removes the animated value.
+     */
+    public void resetAnimatedValue() {
+        hasAnimVal = false;
+        fireAnimatedAttributeListeners();
     }
 
     /**
      * Called when an Attr node has been added.
      */
     public void attrAdded(Attr node, String newv) {
+        if (!hasAnimVal) {
+            fireAnimatedAttributeListeners();
+        }
     }
 
     /**
      * Called when an Attr node has been modified.
      */
     public void attrModified(Attr node, String oldv, String newv) {
+        if (!hasAnimVal) {
+            fireAnimatedAttributeListeners();
+        }
     }
 
     /**
      * Called when an Attr node has been removed.
      */
     public void attrRemoved(Attr node, String oldv) {
+        if (!hasAnimVal) {
+            fireAnimatedAttributeListeners();
+        }
     }
 }

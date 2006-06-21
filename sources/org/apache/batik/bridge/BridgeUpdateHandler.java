@@ -18,6 +18,9 @@
 package org.apache.batik.bridge;
 
 import org.apache.batik.css.engine.CSSEngineEvent;
+import org.apache.batik.dom.svg.AnimatedLiveAttributeValue;
+
+import org.w3c.dom.Element;
 import org.w3c.dom.events.MutationEvent;
 
 /**
@@ -54,6 +57,11 @@ public interface BridgeUpdateHandler {
      * Invoked when an CSSEngineEvent is fired.
      */
     void handleCSSEngineEvent(CSSEngineEvent evt);
+
+    /**
+     * Invoked when the animated value of an animated attribute has changed.
+     */
+    void handleAnimatedAttributeChanged(AnimatedLiveAttributeValue alav);
 
     /**
      * Disposes this BridgeUpdateHandler and releases all resources.

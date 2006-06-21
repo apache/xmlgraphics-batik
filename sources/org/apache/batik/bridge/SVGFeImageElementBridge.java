@@ -114,9 +114,8 @@ public class SVGFeImageElementBridge
         }
 
         
-        contentElement.setAttributeNS(XLinkSupport.XLINK_NAMESPACE_URI, 
-                                      XMLConstants.XLINK_PREFIX + 
-                                      ":" + SVG_HREF_ATTRIBUTE,
+        contentElement.setAttributeNS(XLINK_NAMESPACE_URI, 
+                                      XLINK_HREF_QNAME,
                                       uriStr);
 
         Element proxyElement = document.createElementNS(SVG_NAMESPACE_URI,

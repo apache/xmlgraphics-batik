@@ -109,7 +109,7 @@ public class FontSizeManager extends LengthManager {
      * Implements {@link ValueManager#getPropertyType()}.
      */
     public int getPropertyType() {
-        return SVGTypes.TYPE_LENGTH_OR_IDENT;
+        return SVGTypes.TYPE_FONT_SIZE_VALUE;
     }
 
     /**

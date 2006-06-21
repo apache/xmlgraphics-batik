@@ -119,12 +119,14 @@ public class GVTBuilder implements SVGConstants {
             handleGenericBridges(ctx, e);
             return null;
         } else if (bridge == null || !(bridge instanceof GraphicsNodeBridge)) {
+            handleGenericBridges(ctx, e);
             return null;
         }
         // create the associated graphics node
         GraphicsNodeBridge gnBridge = (GraphicsNodeBridge)bridge;
         // check the display property
         if (!gnBridge.getDisplay(e)) {
+            handleGenericBridges(ctx, e);
             return null;
         }
         GraphicsNode gn = gnBridge.createGraphicsNode(ctx, e);
@@ -191,10 +193,12 @@ public class GVTBuilder implements SVGConstants {
             handleGenericBridges(ctx, e);
             return;
         } else if (bridge == null || !(bridge instanceof GraphicsNodeBridge)) {
+            handleGenericBridges(ctx, e);
             return;
         }
         // check the display property
         if (!CSSUtilities.convertDisplay(e)) {
+            handleGenericBridges(ctx, e);
             return;
         }
         GraphicsNodeBridge gnBridge = (GraphicsNodeBridge)bridge;
@@ -212,6 +216,8 @@ public class GVTBuilder implements SVGConstants {
                     handleGenericBridges(ctx, e);
                 }
                 gnBridge.buildGraphicsNode(ctx, e, gn);
+            } else {
+                handleGenericBridges(ctx, e);
             }
         } catch (BridgeException ex) {
             // some bridge may decide that the node in error can be
@@ -241,8 +247,8 @@ public class GVTBuilder implements SVGConstants {
                 Bridge b = ctx.getBridge(e2);
                 if (b instanceof GenericBridge) {
                     ((GenericBridge) b).handleElement(ctx, e2);
-                    handleGenericBridges(ctx, e2);
                 }
+                handleGenericBridges(ctx, e2);
             }
         }
     }

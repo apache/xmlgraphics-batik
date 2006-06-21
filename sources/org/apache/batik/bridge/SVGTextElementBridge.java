@@ -46,6 +46,7 @@ import org.apache.batik.css.engine.StyleMap;
 import org.apache.batik.css.engine.value.ListValue;
 import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.dom.events.NodeEventTarget;
+import org.apache.batik.dom.svg.AnimatedLiveAttributeValue;
 import org.apache.batik.dom.svg.SVGContext;
 import org.apache.batik.dom.svg.SVGOMElement;
 import org.apache.batik.dom.svg.SVGTextContent;
@@ -72,6 +73,7 @@ import org.w3c.dom.css.CSSValue;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.MutationEvent;
+import org.w3c.dom.svg.SVGLength;
 
 /**
  * Bridge class for the &lt;text> element.
@@ -141,6 +143,18 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         TextNode node = (TextNode)super.createGraphicsNode(ctx, e);
         if (node == null)
             return null;
+
+        associateSVGContext(ctx, e, node);
+
+        // traverse the children to add context on 
+        // <tspan>, <tref> and <textPath>
+        Node child = getFirstChild(e);
+        while (child != null) {
+            if (child.getNodeType() == Node.ELEMENT_NODE) {
+                addContextToChild(ctx,(Element)child);
+            }
+            child = getNextSibling(child);
+        }
 
         // specify the text painter to use
         if (ctx.getTextPainter() != null)
@@ -334,19 +348,9 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                                             GraphicsNode node) {
         super.initializeDynamicSupport(ctx, e, node);
 
-        if (!ctx.isDynamic())
-            return;             // Only add the listeners if we are dynamic
-
-        addTextEventListeners(ctx, (NodeEventTarget) e);
-
-        // traverse the children to add context on 
-        // <tspan>, <tref> and <textPath>
-        Node child = getFirstChild(e);
-        while (child != null) {
-            if (child.getNodeType() == Node.ELEMENT_NODE) {
-                addContextToChild(ctx,(Element)child);
-            }
-            child = getNextSibling(child);
+        if (ctx.isDynamic()) {
+            // Only add the listeners if we are dynamic.
+            addTextEventListeners(ctx, (NodeEventTarget) e);
         }
     }
 
@@ -1982,6 +1986,18 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             return CSSUtilities.getComputedStyle
                 (e, SVGCSSEngine.FONT_SIZE_INDEX).getFloatValue();
         }
+        
+        public float svgToUserSpace(float v, int type, int pcInterp) {
+            if (pcInterp == PERCENTAGE_FONT_SIZE
+                    && type == SVGLength.SVG_LENGTHTYPE_PERCENTAGE) {
+                // XXX
+                return 0f;
+            } else {
+                return UnitProcessor.svgToUserSpace(v, (short) type,
+                                                    (short) (3 - pcInterp),
+                                                    unitContext);
+            }
+        }
     }
 
     /**
@@ -2007,6 +2023,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
 
             super(ctx,parent,e);
         }
+
         /**
          * Invoked when an MutationEvent of type 'DOMAttrModified' is fired.
          */
@@ -2045,6 +2062,14 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         }
 
         /**
+         * Invoked when the animated value of an animatable attribute has
+         * changed.
+         */
+        public void handleAnimatedAttributeChanged
+                (AnimatedLiveAttributeValue alav) {
+        }
+
+        /**
          * Disposes this BridgeUpdateHandler and releases all resources.
          */
         public void dispose(){
@@ -2055,7 +2080,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
 
     protected class AbstractTextChildTextContent 
         extends AbstractTextChildBridgeUpdateHandler
-        implements SVGTextContent{
+        implements SVGTextContent {
 
         /**
          * Initialize the AbstractTextChildBridgeUpdateHandler implementation.

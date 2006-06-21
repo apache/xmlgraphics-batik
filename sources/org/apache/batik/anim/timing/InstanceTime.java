@@ -60,6 +60,7 @@ public class InstanceTime implements Comparable {
                         float time,
                         Interval timebase,
                         boolean clearOnReset) {
+        Trace.enter(this, null, new Object[] { creator, new Float(time), timebase, new Boolean(clearOnReset) } ); try {
         this.creator = creator;
         // XXX Convert time from the creator's syncbase's
         //     time system into this time system.  Not
@@ -67,6 +68,7 @@ public class InstanceTime implements Comparable {
         this.time = time;
         this.timebase = timebase;
         this.clearOnReset = clearOnReset;
+        } finally { Trace.exit(); }
     }
 
     /**
@@ -90,6 +92,7 @@ public class InstanceTime implements Comparable {
      * @param newTime the new time, in parent simple time
      */
     void dependentUpdate(float newTime) {
+        Trace.enter(this, "dependentUpdate", new Object[] { new Float(newTime) } ); try {
         // XXX Convert time from the creator's syncbase's
         //     time system into this time system.  Not
         //     strictly necessary in SVG.
@@ -97,6 +100,7 @@ public class InstanceTime implements Comparable {
         if (creator != null) {
             creator.handleTimebaseUpdate(this, time);
         }
+        } finally { Trace.exit(); }
     }
 
     /**

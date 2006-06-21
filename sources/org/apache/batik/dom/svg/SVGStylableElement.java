@@ -20,6 +20,7 @@ package org.apache.batik.dom.svg;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.css.dom.CSSOMSVGColor;
 import org.apache.batik.css.dom.CSSOMSVGPaint;
 import org.apache.batik.css.dom.CSSOMStoredStyleDeclaration;
@@ -33,6 +34,7 @@ import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.css.engine.value.svg.SVGColorManager;
 import org.apache.batik.css.engine.value.svg.SVGPaintManager;
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.util.SVGTypes;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
@@ -160,6 +162,32 @@ public abstract class SVGStylableElement
      */
     public StyleDeclarationProvider getOverrideStyleDeclarationProvider() {
         return (StyleDeclarationProvider) getOverrideStyle();
+    }
+
+    // AnimationTarget ///////////////////////////////////////////////////////
+    
+    /**
+     * Updates a property value in this target.
+     */
+    public void updatePropertyValue(String pn, AnimatableValue val) {
+        CSSStyleDeclaration over = getOverrideStyle();
+        //System.err.println(e.getAttributeNS(null, "id") + "." + pn + " val is " + val);
+        if (val == null) {
+            over.removeProperty(pn);
+        } else {
+            over.setProperty(pn, val.getCssText(), "");
+        }
+    }
+
+    /**
+     * Returns whether color interpolations should be done in linear RGB
+     * color space rather than sRGB.
+     */
+    public boolean useLinearRGBColorInterpolation() {
+        CSSEngine eng = ((SVGOMDocument) getOwnerDocument()).getCSSEngine();
+        Value v = eng.getComputedStyle(this, null,
+                                       SVGCSSEngine.COLOR_INTERPOLATION_INDEX);
+        return v.getStringValue().charAt(0) == 'l';
     }
 
     // SVGStylable support ///////////////////////////////////////////////////
@@ -696,5 +724,20 @@ public abstract class SVGStylableElement
             ((SVGOMDocument) ownerDocument).overrideStylePropertyChanged
                 (SVGStylableElement.this, name, value, prio);
         }
+    }
+
+    // ExtendedTraitAccess ///////////////////////////////////////////////////
+
+    /**
+     * Returns the type of the given attribute.
+     */
+    public int getAttributeType(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_CLASS_ATTRIBUTE)
+                    || ln.equals(SVG_STYLE_ATTRIBUTE)) {
+                return SVGTypes.TYPE_CDATA;
+            }
+        }
+        return super.getAttributeType(ns, ln);
     }
 }

@@ -17,7 +17,10 @@
  */
 package org.apache.batik.dom.svg;
 
+import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.util.SVGTypes;
+
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedNumber;
 import org.w3c.dom.svg.SVGPathElement;
@@ -909,5 +912,60 @@ public class SVGOMPathElement
      */
     protected Node newNode() {
         return new SVGOMPathElement();
+    }
+
+    // ExtendedTraitAccess ///////////////////////////////////////////////////
+
+    /**
+     * Returns whether the given XML attribute is animatable.
+     */
+    public boolean isAttributeAnimatable(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE)
+                    || ln.equals(SVG_PATH_LENGTH_ATTRIBUTE)
+                    || ln.equals(SVG_D_ATTRIBUTE)) {
+                return true;
+            }
+        }
+        return super.isAttributeAnimatable(ns, ln);
+    }
+
+    /**
+     * Returns the type of the given attribute.
+     */
+    public int getAttributeType(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_D_ATTRIBUTE)) {
+                return SVGTypes.TYPE_PATH_DATA;
+            } else if (ln.equals(SVG_PATH_LENGTH_ATTRIBUTE)) {
+                return SVGTypes.TYPE_NUMBER;
+            } else if (ln.equals(SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE)) {
+                return SVGTypes.TYPE_BOOLEAN;
+            }
+        }
+        return super.getAttributeType(ns, ln);
+    }
+
+    // AnimationTarget ///////////////////////////////////////////////////////
+
+    /**
+     * Updates an attribute value in this target.
+     */
+    public void updateAttributeValue(String ns, String ln,
+                                     AnimatableValue val) {
+        if (ns == null) {
+            if (ln.equals(SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE)) {
+                updateBooleanAttributeValue(getExternalResourcesRequired(),
+                                            val);
+                return;
+            } else if (ln.equals(SVG_PATH_LENGTH_ATTRIBUTE)) {
+                updateNumberAttributeValue(getPathLength(), val);
+                return;
+            } else if (ln.equals(SVG_D_ATTRIBUTE)) {
+                // XXX Update the animatedPathSegList/animatedNormalizedPathSegList.
+                return;
+            }
+        }
+        super.updateAttributeValue(ns, ln, val);
     }
 }

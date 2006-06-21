@@ -1,3 +1,20 @@
+/*
+
+   Copyright 2006  The Apache Software Foundation 
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+ */
 package org.apache.batik.bridge;
 
 import java.awt.geom.AffineTransform;
@@ -11,6 +28,7 @@ import org.apache.batik.anim.AnimationTarget;
 import org.apache.batik.anim.timing.TimedElement;
 import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.css.engine.CSSEngineEvent;
+import org.apache.batik.dom.svg.AnimatedLiveAttributeValue;
 import org.apache.batik.dom.svg.SVGContext;
 import org.apache.batik.dom.svg.SVGOMElement;
 import org.apache.batik.dom.util.XLinkSupport;
@@ -22,6 +40,9 @@ import org.w3c.dom.events.MutationEvent;
 
 /**
  * An abstract base class for the SVG animation element bridges.
+ *
+ * @author <a href="mailto:cam%40mcc%2eid%2eau">Cameron McCormack</a>
+ * @version $Id$
  */
 public abstract class SVGAnimationElementBridge extends AbstractSVGBridge
         implements GenericBridge,
@@ -112,7 +133,7 @@ public abstract class SVGAnimationElementBridge extends AbstractSVGBridge
      * @param e the element being handled
      */
     public void handleElement(BridgeContext ctx, Element e) {
-        if (ctx.isDynamic()) {
+        if (ctx.isDynamic() && ctx.getSVGContext(e) == null) {
             SVGAnimationElementBridge b =
                 (SVGAnimationElementBridge) getInstance();
             b.element = (SVGOMElement) e;
@@ -124,7 +145,7 @@ public abstract class SVGAnimationElementBridge extends AbstractSVGBridge
     }
 
     /**
-     * Parses the animation element's attributes and adds it to the
+     * Parses the animation element's target attributes and adds it to the
      * document's AnimationEngine.
      */
     protected void initializeAnimation() {
@@ -143,10 +164,7 @@ public abstract class SVGAnimationElementBridge extends AbstractSVGBridge
         animationTarget = null;
         if (t instanceof SVGOMElement) {
             targetElement = (SVGOMElement) t;
-            Object svgContext = targetElement.getSVGContext();
-            if (svgContext instanceof AnimationTarget) {
-                animationTarget = (AnimationTarget) svgContext;
-            }
+            animationTarget = targetElement;
         }
         if (animationTarget == null) {
             // XXX
@@ -170,8 +188,8 @@ public abstract class SVGAnimationElementBridge extends AbstractSVGBridge
             attributeNamespaceURI = element.lookupNamespaceURI(prefix);
             attributeLocalName = an.substring(ci + 1);
         }
-        if (isCSS && !element.isPropertyAnimatable(attributeLocalName)
-                || !isCSS && !element.isAttributeAnimatable
+        if (isCSS && !targetElement.isPropertyAnimatable(attributeLocalName)
+                || !isCSS && !targetElement.isAttributeAnimatable
                     (attributeNamespaceURI, attributeLocalName)) {
             // XXX
             throw new RuntimeException("Attribute '" + an + "' cannot be animated");
@@ -179,12 +197,15 @@ public abstract class SVGAnimationElementBridge extends AbstractSVGBridge
 
         timedElement = createTimedElement();
         animation = createAnimation();
-        if (isCSS) {
-            eng.addCSSAnimation(animationTarget, attributeLocalName, animation);
-        } else {
-            eng.addXMLAnimation(animationTarget, attributeNamespaceURI,
-                                attributeLocalName, animation);
-        }
+        eng.addAnimation(animationTarget, attributeNamespaceURI, attributeLocalName,
+                         isCSS, animation);
+    }
+
+    /**
+     * Parses the animation element's timing attributes and initializes the
+     * {@link TimedElement} object.
+     */
+    protected void initializeTimedElement() {
         initializeTimedElement(timedElement);
         timedElement.initialize();
     }
@@ -205,15 +226,12 @@ public abstract class SVGAnimationElementBridge extends AbstractSVGBridge
      * Parses an attribute as an AnimatableValue.
      */
     protected AnimatableValue parseAnimatableValue(String an) {
-        String s = element.getAttributeNS(null, an);
-        int type;
-        if (isCSS) {
-            type = element.getPropertyType(attributeLocalName);
-        } else {
-            type = element.getAttributeType(attributeNamespaceURI,
-                                            attributeLocalName);
+        if (!element.hasAttributeNS(null, an)) {
+            return null;
         }
-        return eng.parseAnimatableValue(animationTarget, type, s);
+        String s = element.getAttributeNS(null, an);
+        return eng.parseAnimatableValue(animationTarget, attributeNamespaceURI,
+                                        attributeLocalName, isCSS, s);
     }
 
     /**
@@ -250,7 +268,7 @@ public abstract class SVGAnimationElementBridge extends AbstractSVGBridge
      * Invoked when an MutationEvent of type 'DOMNodeRemoved' is fired.
      */
     public void handleDOMNodeRemovedEvent(MutationEvent evt) {
-        // XXX correct?
+        element.setSVGContext(null);
         dispose();
     }
 
@@ -268,10 +286,21 @@ public abstract class SVGAnimationElementBridge extends AbstractSVGBridge
     }
 
     /**
+     * Invoked when the animated value of an animatable attribute has changed.
+     */
+    public void handleAnimatedAttributeChanged
+            (AnimatedLiveAttributeValue alav) {
+    }
+
+    /**
      * Disposes this BridgeUpdateHandler and releases all resources.
      */
     public void dispose() {
-        element = null;
+        if (element.getSVGContext() == null) {
+            // Only clear the references if this is not part of a rebuild.
+            // XXX Should also remove this animation.
+            element = null;
+        }
     }
 
     // SVGContext ///////////////////////////////////////////////////////////
@@ -309,11 +338,21 @@ public abstract class SVGAnimationElementBridge extends AbstractSVGBridge
         return ctx.getBlockHeight(element);
     }
     public float getFontSize() { return 0; }
+    public float svgToUserSpace(float v, int type, int pcInterp) {
+        return 0;
+    }
 
     /**
      * A TimedElement class for SVG animation elements.
      */
     protected class SVGTimedElement extends TimedElement {
+
+        /**
+         * Returns the DOM element this timed element is for.
+         */
+        protected Element getElement() {
+            return element;
+        }
 
         /**
          * Fires a TimeEvent of the given type on this element.
@@ -397,12 +436,23 @@ public abstract class SVGAnimationElementBridge extends AbstractSVGBridge
         }
 
         /**
+         * Returns the event target that is the parent of the given
+         * timed element.  Used for eventbase timing specifiers where
+         * the element ID is omitted.
+         */
+        protected EventTarget getParentEventTarget(TimedElement e) {
+            return AnimationSupport.getParentEventTarget(e);
+        }
+
+        /**
          * Returns a string representation of this animation.
          */
         public String toString() {
-            String id = element.getAttributeNS(null, "id");
-            if (id.length() != 0) {
-                return id;
+            if (element != null) {
+                String id = element.getAttributeNS(null, "id");
+                if (id.length() != 0) {
+                    return id;
+                }
             }
             return super.toString();
         }

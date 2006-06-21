@@ -183,7 +183,7 @@ public class SimpleImageHandler implements GenericImageHandler, SVGSyntax, Error
               
     protected void handleEmptyImage(Element imageElement) {
         imageElement.setAttributeNS(XLINK_NAMESPACE_URI,
-                                    ATTR_XLINK_HREF, "");
+                                    XLINK_HREF_QNAME, "");
         imageElement.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE, "0");
         imageElement.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE, "0");
     }

@@ -34,8 +34,11 @@ import org.apache.batik.css.engine.SVGCSSEngine;
 import org.apache.batik.dom.AbstractNode;
 import org.apache.batik.dom.events.DOMMouseEvent;
 import org.apache.batik.dom.events.NodeEventTarget;
+import org.apache.batik.dom.svg.AnimatedLiveAttributeValue;
+import org.apache.batik.dom.svg.LiveAttributeException;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.svg.SVGOMElement;
+import org.apache.batik.dom.svg.SVGOMImageElement;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.ext.awt.color.ICCColorSpaceExt;
 import org.apache.batik.ext.awt.image.renderable.ClipRable8Bit;
@@ -108,6 +111,8 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
             return null;
         }
 
+        associateSVGContext(ctx, e, imageNode);
+
         hitCheckChildren = false;
         GraphicsNode node = buildImageGraphicsNode(ctx,e);
 
@@ -168,8 +173,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
 
     protected GraphicsNode createImageGraphicsNode(BridgeContext ctx, 
                                                    Element e,
-                                                   ParsedURL purl)
-    {
+                                                   ParsedURL purl) {
         Rectangle2D bounds = getImageBounds(ctx, e);
         if ((bounds.getWidth() == 0) || (bounds.getHeight() == 0)) {
             ShapeNode sn = new ShapeNode();
@@ -402,6 +406,38 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
     // BridgeUpdateHandler implementation //////////////////////////////////
 
     /**
+     * Invoked when the animated value of an animatable attribute has changed.
+     */
+    public void handleAnimatedAttributeChanged
+            (AnimatedLiveAttributeValue alav) {
+        if (alav.getNamespaceURI() == null) {
+            String ln = alav.getLocalName();
+            if (ln.equals(SVG_X_ATTRIBUTE)
+                    || ln.equals(SVG_Y_ATTRIBUTE)) {
+                updateImageBounds();
+                return;
+            } else if (ln.equals(SVG_WIDTH_ATTRIBUTE)
+                    || ln.equals(SVG_HEIGHT_ATTRIBUTE)) {
+                SVGOMImageElement ie = (SVGOMImageElement) e;
+                ImageNode imageNode = (ImageNode) node;
+                float val;
+                if (ln.charAt(0) == 'w') {
+                    val = ie.getWidth().getAnimVal().getValue();
+                } else {
+                    val = ie.getHeight().getAnimVal().getValue();
+                }
+                if (val == 0 || imageNode.getImage() instanceof ShapeNode) {
+                    rebuildImageNode();
+                } else {
+                    updateImageBounds();
+                }
+                return;
+            }
+        }
+        super.handleAnimatedAttributeChanged(alav);
+    }
+
+    /**
      * Invoked when an MutationEvent of type 'DOMAttrModified' is fired.
      */
     public void handleDOMAttrModifiedEvent(MutationEvent evt) {
@@ -409,43 +445,19 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         String attrName = evt.getAttrName();
         Node evtNode = evt.getRelatedNode();
 
-        if (attrName.equals(SVG_X_ATTRIBUTE) ||
-            attrName.equals(SVG_Y_ATTRIBUTE) ||
-	    attrName.equals(SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE)){
+        if (attrName.equals(SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE)) {
             updateImageBounds();
-        } else if (( XLinkSupport.XLINK_NAMESPACE_URI.equals
-                     (evtNode.getNamespaceURI()) ) 
-                   && SVG_HREF_ATTRIBUTE.equals(evtNode.getLocalName()) ){
+        } else if (XLINK_NAMESPACE_URI.equals(evtNode.getNamespaceURI())
+                && XLINK_HREF_ATTRIBUTE.equals(evtNode.getLocalName())) {
             rebuildImageNode();
-	} else if(attrName.equals(SVG_WIDTH_ATTRIBUTE) ||
-                  attrName.equals(SVG_HEIGHT_ATTRIBUTE)) {
-            float oldV = 0, newV=0;
-            String s = evt.getPrevValue();
-            UnitProcessor.Context uctx = UnitProcessor.createContext(ctx, e);
-
-            if (s.length() != 0) {
-                oldV = UnitProcessor.svgHorizontalCoordinateToUserSpace
-                    (s, attrName, uctx);
-            }
-            s = evt.getNewValue();
-            if (s.length() != 0) {
-                newV = UnitProcessor.svgHorizontalCoordinateToUserSpace
-                    (s, attrName, uctx);
-            }
-            if (oldV == newV) return;
-            
-            if ((oldV == 0) || (newV == 0))
-                rebuildImageNode();
-            else
-                updateImageBounds();
         } else {
             super.handleDOMAttrModifiedEvent(evt);
-	}
+        }
     }
 
     protected void updateImageBounds() {
         //retrieve the new bounds of the image tag
-        Rectangle2D	bounds = getImageBounds(ctx, e);
+        Rectangle2D bounds = getImageBounds(ctx, e);
         GraphicsNode imageNode = ((ImageNode)node).getImage();
         float [] vb = null;
         if (imageNode instanceof RasterImageNode) {
@@ -923,50 +935,31 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
      * @param ctx the bridge context
      * @param element the image element
      */
-    protected static
-        Rectangle2D getImageBounds(BridgeContext ctx, Element element) {
+    protected static Rectangle2D getImageBounds(BridgeContext ctx,
+                                                Element element) {
+        try {
+            SVGOMImageElement ie = (SVGOMImageElement) element;
 
-        UnitProcessor.Context uctx = UnitProcessor.createContext(ctx, element);
+            // 'x' attribute - default is 0
+            float x = ie.getX().getAnimVal().getValue();
 
-        // 'x' attribute - default is 0
-        String s = element.getAttributeNS(null, SVG_X_ATTRIBUTE);
-        float x = 0;
-        if (s.length() != 0) {
-            x = UnitProcessor.svgHorizontalCoordinateToUserSpace
-                (s, SVG_X_ATTRIBUTE, uctx);
+            // 'y' attribute - default is 0
+            float y = ie.getY().getAnimVal().getValue();
+
+            // 'width' attribute - required
+            float w = ie.getWidth().getAnimVal().getValue();
+
+            // 'height' attribute - required
+            float h = ie.getHeight().getAnimVal().getValue();
+
+            return new Rectangle2D.Float(x, y, w, h);
+        } catch (LiveAttributeException ex) {
+            throw new BridgeException
+                (ex.getElement(),
+                 ex.isMissing() ? ERR_ATTRIBUTE_MISSING
+                                : ERR_ATTRIBUTE_VALUE_MALFORMED,
+                 new Object[] { ex.getAttributeName(), ex.getValue() });
         }
-
-        // 'y' attribute - default is 0
-        s = element.getAttributeNS(null, SVG_Y_ATTRIBUTE);
-        float y = 0;
-        if (s.length() != 0) {
-            y = UnitProcessor.svgVerticalCoordinateToUserSpace
-                (s, SVG_Y_ATTRIBUTE, uctx);
-        }
-
-        // 'width' attribute - required
-        s = element.getAttributeNS(null, SVG_WIDTH_ATTRIBUTE);
-        float w;
-        if (s.length() == 0) {
-            throw new BridgeException(element, ERR_ATTRIBUTE_MISSING,
-                                      new Object[] {SVG_WIDTH_ATTRIBUTE});
-        } else {
-            w = UnitProcessor.svgHorizontalLengthToUserSpace
-                (s, SVG_WIDTH_ATTRIBUTE, uctx);
-        }
-
-        // 'height' attribute - required
-        s = element.getAttributeNS(null, SVG_HEIGHT_ATTRIBUTE);
-        float h;
-        if (s.length() == 0) {
-            throw new BridgeException(element, ERR_ATTRIBUTE_MISSING,
-                                      new Object[] {SVG_HEIGHT_ATTRIBUTE});
-        } else {
-            h = UnitProcessor.svgVerticalLengthToUserSpace
-                (s, SVG_HEIGHT_ATTRIBUTE, uctx);
-        }
-
-        return new Rectangle2D.Float(x, y, w, h);
     }
 
     GraphicsNode createBrokenImageNode

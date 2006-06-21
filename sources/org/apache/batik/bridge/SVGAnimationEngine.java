@@ -1,3 +1,20 @@
+/*
+
+   Copyright 2006  The Apache Software Foundation 
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+ */
 package org.apache.batik.bridge;
 
 import java.awt.Color;
@@ -10,7 +27,12 @@ import org.apache.batik.anim.AnimationEngine;
 import org.apache.batik.anim.AnimationTarget;
 import org.apache.batik.anim.timing.TimedDocumentRoot;
 import org.apache.batik.anim.timing.TimedElement;
+import org.apache.batik.anim.values.AnimatableBooleanValue;
+import org.apache.batik.anim.values.AnimatableIntegerValue;
+import org.apache.batik.anim.values.AnimatableLengthValue;
 import org.apache.batik.anim.values.AnimatableLengthOrIdentValue;
+import org.apache.batik.anim.values.AnimatableNumberOrIdentValue;
+import org.apache.batik.anim.values.AnimatableStringValue;
 import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.anim.values.AnimatableColorValue;
 import org.apache.batik.anim.values.AnimatablePaintValue;
@@ -18,11 +40,16 @@ import org.apache.batik.css.engine.CSSEngine;
 import org.apache.batik.css.engine.CSSStylableElement;
 import org.apache.batik.css.engine.StyleMap;
 import org.apache.batik.css.engine.value.FloatValue;
+import org.apache.batik.css.engine.value.StringValue;
 import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.css.engine.value.ValueManager;
 import org.apache.batik.css.engine.value.svg.SVGValueConstants;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.svg.SVGOMElement;
+import org.apache.batik.parser.DefaultLengthHandler;
+import org.apache.batik.parser.LengthHandler;
+import org.apache.batik.parser.LengthParser;
+import org.apache.batik.parser.ParseException;
 import org.apache.batik.util.CSSConstants;
 import org.apache.batik.util.RunnableQueue;
 import org.apache.batik.util.XMLConstants;
@@ -33,9 +60,13 @@ import org.w3c.dom.css.CSSValue;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
+import org.w3c.dom.svg.SVGLength;
 
 /**
  * An AnimationEngine for SVG documents.
+ *
+ * @author <a href="mailto:cam%40mcc%2eid%2eau">Cameron McCormack</a>
+ * @version $Id$
  */
 public class SVGAnimationEngine extends AnimationEngine {
 
@@ -50,15 +81,34 @@ public class SVGAnimationEngine extends AnimationEngine {
     protected CSSEngine cssEngine;
 
     /**
+     * The factory for unparsed string values.
+     */
+    protected UncomputedAnimatableStringValueFactory 
+        uncomputedAnimatableStringValueFactory = 
+            new UncomputedAnimatableStringValueFactory();
+    
+    /**
+     * The factory for length-or-ident values.
+     */
+    protected AnimatableLengthOrIdentFactory
+        animatableLengthOrIdentFactory = new AnimatableLengthOrIdentFactory();
+
+    /**
+     * The factory for number-or-ident values.
+     */
+    protected AnimatableNumberOrIdentFactory
+        animatableNumberOrIdentFactory = new AnimatableNumberOrIdentFactory();
+
+    /**
      * Factories for AnimatableValue parsing.
      */
     protected Factory[] factories = {
         null, // TYPE_UNKNOWN
-        null, // TYPE_INTEGER
+        new AnimatableIntegerValueFactory(), // TYPE_INTEGER
         null, // TYPE_NUMBER
-        null, // TYPE_LENGTH
+        new AnimatableLengthValueFactory(), // TYPE_LENGTH
         null, // TYPE_NUMBER_OPTIONAL_NUMBER
-        null, // TYPE_ANGLE
+        null, // TYPE_ANGLE XXX can inherit
         new AnimatableColorValueFactory(), // TYPE_COLOR
         new AnimatablePaintValueFactory(), // TYPE_PAINT
         null, // TYPE_PERCENTAGE
@@ -68,30 +118,41 @@ public class SVGAnimationEngine extends AnimationEngine {
         null, // TYPE_TIME
         null, // TYPE_NUMBER_LIST
         null, // TYPE_LENGTH_LIST
-        null, // TYPE_IDENT
-        null, // TYPE_CDATA
-        new AnimatableLengthOrIdentFactory(), // TYPE_LENGTH_OR_IDENT
-        null, // TYPE_IDENT_LIST
-        null, // TYPE_CLIP_VALUE
-        null, // TYPE_URI_OR_IDENT
-        null, // TYPE_CURSOR_VALUE
+        uncomputedAnimatableStringValueFactory, // TYPE_IDENT
+        uncomputedAnimatableStringValueFactory, // TYPE_CDATA
+        animatableLengthOrIdentFactory, // TYPE_LENGTH_OR_INHERIT
+        uncomputedAnimatableStringValueFactory, // TYPE_IDENT_LIST
+        uncomputedAnimatableStringValueFactory, // TYPE_CLIP_VALUE
+        uncomputedAnimatableStringValueFactory, // TYPE_URI_OR_IDENT
+        uncomputedAnimatableStringValueFactory, // TYPE_CURSOR_VALUE
         null, // TYPE_PATH_DATA
-        null, // TYPE_ENABLE_BACKGROUND_VALUE
+        uncomputedAnimatableStringValueFactory, // TYPE_ENABLE_BACKGROUND_VALUE
         null, // TYPE_TIME_VALUE_LIST
-        null, // TYPE_NUMBER_OR_IDENT
-        null, // TYPE_FONT_FAMILY_VALUE
+        animatableNumberOrIdentFactory, // TYPE_NUMBER_OR_INHERIT
+        uncomputedAnimatableStringValueFactory, // TYPE_FONT_FAMILY_VALUE
         null, // TYPE_FONT_FACE_FONT_SIZE_VALUE
-        null, // TYPE_FONT_WEIGHT_VALUE
-        null, // TYPE_ANGLE_OR_IDENT
+        animatableNumberOrIdentFactory, // TYPE_FONT_WEIGHT_VALUE
+        uncomputedAnimatableStringValueFactory, // TYPE_ANGLE_OR_IDENT XXX
         null, // TYPE_KEY_SPLINES_VALUE
         null, // TYPE_POINTS_VALUE
         null, // TYPE_PRESERVE_ASPECT_RATIO_VALUE
         null, // TYPE_URI_LIST
-        null, // TYPE_LENGTH_LIST_OR_IDENT
+        uncomputedAnimatableStringValueFactory, // TYPE_LENGTH_LIST_OR_IDENT
         null, // TYPE_CHARACTER_OR_UNICODE_RANGE_LIST
         null, // TYPE_UNICODE_RANGE_LIST
         null, // TYPE_FONT_VALUE
         null, // TYPE_FONT_DECSRIPTOR_SRC_VALUE
+        animatableLengthOrIdentFactory, // TYPE_FONT_SIZE_VALUE
+        animatableLengthOrIdentFactory, // TYPE_BASELINE_SHIFT_VALUE
+        animatableLengthOrIdentFactory, // TYPE_KERNING_VALUE
+        animatableLengthOrIdentFactory, // TYPE_SPACING_VALUE
+        animatableLengthOrIdentFactory, // TYPE_LINE_HEIGHT_VALUE
+        animatableNumberOrIdentFactory, // TYPE_FONT_SIZE_ADJUST_VALUE
+        null, // TYPE_LANG_VALUE
+        null, // TYPE_LANG_LIST_VALUE
+        null, // TYPE_NUMBER_OR_PERCENTAGE
+        null, // TYPE_TIMING_SPECIFIER_LIST
+        new AnimatableBooleanValueFactory(), // TYPE_BOOLEAN
     };
 
     /**
@@ -112,7 +173,7 @@ public class SVGAnimationEngine extends AnimationEngine {
     /**
      * A StyleMap used by the {@link Factory}s when computing CSS values.
      */
-    protected StyleMap dummyStyleMap = new StyleMap(1);
+    protected StyleMap dummyStyleMap;
 
     /**
      * The thread that ticks the animation engine.
@@ -164,6 +225,7 @@ public class SVGAnimationEngine extends AnimationEngine {
         this.ctx = ctx;
         SVGOMDocument d = (SVGOMDocument) doc;
         cssEngine = d.getCSSEngine();
+        dummyStyleMap = new StyleMap(cssEngine.getNumberOfProperties());
         isSVG12 = d.isSVG12();
 
         SVGOMElement svg = (SVGOMElement) d.getDocumentElement();
@@ -192,13 +254,22 @@ public class SVGAnimationEngine extends AnimationEngine {
      * Parses an AnimatableValue.
      */
     public AnimatableValue parseAnimatableValue(AnimationTarget target,
-                                                int type, String s) {
+                                                String ns, String ln,
+                                                boolean isCSS,
+                                                String s) {
+        SVGOMElement elt = (SVGOMElement) target.getElement();
+        int type;
+        if (isCSS) {
+            type = elt.getPropertyType(ln);
+        } else {
+            type = elt.getAttributeType(ns, ln);
+        }
         Factory factory = factories[type];
         if (factory == null) {
-            // XXX
+            // XXX Should disable animation instead of throwing.
             throw new RuntimeException("Attribute type " + type + " is not animatable");
         }
-        return factories[type].createValue(target, s);
+        return factories[type].createValue(target, ns, ln, isCSS, s);
     }
 
     /**
@@ -212,146 +283,22 @@ public class SVGAnimationEngine extends AnimationEngine {
             int type = vms[idx].getPropertyType();
             Factory factory = factories[type];
             if (factory == null) {
-                // XXX
+                // XXX Should disable animation instead of throwing.
                 throw new RuntimeException("Attribute type " + type + " is not animatable");
             }
             Value v = cssEngine.getComputedStyle
                 ((CSSStylableElement) target.getElement(), null, idx);
-            return factories[type].createValue(target, v);
+            return factories[type].createValue(target, pn, v);
         }
-        // XXX doesn't handle shorthands
+        // XXX Doesn't handle shorthands.
         return null;
     }
-    
+
     /**
      * Creates a new returns a new TimedDocumentRoot object for the document.
      */
     protected TimedDocumentRoot createDocumentRoot() {
         return new AnimationRoot();
-    }
-
-    /**
-     * Interface for AnimatableValue factories.
-     */
-    protected interface Factory {
-        AnimatableValue createValue(AnimationTarget target, String s);
-        AnimatableValue createValue(AnimationTarget target, Value v);
-    }
-
-    /**
-     * Factory class for AnimatableValues constructed from CSS Value objects.
-     */
-    protected abstract class CSSValueFactory implements Factory {
-        public AnimatableValue createValue(AnimationTarget target, String s) {
-            return createValue(target, createCSSValue(target, s));
-        }
-        protected abstract String getPropertyName();
-        protected Value createCSSValue(AnimationTarget t, String s) {
-            CSSStylableElement elt = (CSSStylableElement) t.getElement();
-            String pn = getPropertyName();
-            Value v = cssEngine.parsePropertyValue(elt, pn, s);
-            ValueManager[] vms = cssEngine.getValueManagers();
-            int idx = cssEngine.getPropertyIndex(pn);
-            if (idx != -1) {
-                v = vms[idx].computeValue(elt, null, cssEngine, 0,
-                                          dummyStyleMap, v);
-            }
-            // XXX doesn't handle shorthands
-            return v;
-        }
-    }
-
-    /**
-     * Factory class for AnimatableLengthOrIdent values.
-     */
-    protected class AnimatableLengthOrIdentFactory extends CSSValueFactory {
-        protected String getPropertyName() {
-            return CSSConstants.CSS_STROKE_WIDTH_PROPERTY;
-        }
-        public AnimatableValue createValue(AnimationTarget target, Value v) {
-            if (v == SVGValueConstants.INHERIT_VALUE) {
-                return new AnimatableLengthOrIdentValue(target, "inherit");
-            }
-            FloatValue fv = (FloatValue) v;
-            return new AnimatableLengthOrIdentValue
-                (target, fv.getPrimitiveType() + 1, fv.getFloatValue());
-        }
-    }
-
-    /**
-     * Factory class for AnimatableColorValues.
-     */
-    protected class AnimatableColorValueFactory extends CSSValueFactory {
-        protected String getPropertyName() {
-            return CSSConstants.CSS_STOP_COLOR_PROPERTY;
-        }
-        public AnimatableValue createValue(AnimationTarget target, Value v) {
-            Paint p = PaintServer.convertPaint
-                (target.getElement(), null, v, 1f, ctx);
-            if (p instanceof Color) {
-                Color c = (Color) p;
-                return new AnimatableColorValue(target,
-                                                c.getRed() / 255f,
-                                                c.getGreen() / 255f,
-                                                c.getBlue() / 255f);
-            }
-            // XXX
-            return null;
-        }
-    }
-
-    /**
-     * Factory class for AnimatablePaintValues.
-     */
-    protected class AnimatablePaintValueFactory extends CSSValueFactory {
-        protected String getPropertyName() {
-            return CSSConstants.CSS_FILL_PROPERTY;
-        }
-        protected AnimatablePaintValue createColorPaintValue(AnimationTarget t,
-                                                             Color c) {
-            return AnimatablePaintValue.createColorPaintValue
-                (t, c.getRed() / 255f, c.getGreen() / 255f, c.getBlue() / 255f);
-        }
-        public AnimatableValue createValue(AnimationTarget target, Value v) {
-            if (v.getCssValueType() == CSSValue.CSS_PRIMITIVE_VALUE) {
-                switch (v.getPrimitiveType()) {
-                    case CSSPrimitiveValue.CSS_IDENT:
-                        return AnimatablePaintValue.createNonePaintValue(target);
-                    case CSSPrimitiveValue.CSS_RGBCOLOR: {
-                        Paint p = PaintServer.convertPaint
-                            (target.getElement(), null, v, 1f, ctx);
-                        return createColorPaintValue(target, (Color) p);
-                    }
-                    case CSSPrimitiveValue.CSS_URI:
-                        return AnimatablePaintValue.createURIPaintValue
-                            (target, v.getStringValue());
-                }
-            } else {
-                Value v1 = v.item(0);
-                switch (v1.getPrimitiveType()) {
-                    case CSSPrimitiveValue.CSS_RGBCOLOR: {
-                        Paint p = PaintServer.convertPaint
-                            (target.getElement(), null, v, 1f, ctx);
-                        return createColorPaintValue(target, (Color) p);
-                    }
-                    case CSSPrimitiveValue.CSS_URI: {
-                        Value v2 = v.item(1);
-                        switch (v2.getPrimitiveType()) {
-                            case CSSPrimitiveValue.CSS_IDENT:
-                                return AnimatablePaintValue.createURINonePaintValue
-                                    (target, v1.getStringValue());
-                            case CSSPrimitiveValue.CSS_RGBCOLOR: {
-                                Paint p = PaintServer.convertPaint
-                                    (target.getElement(), null, v.item(1), 1f, ctx);
-                                return createColorPaintValue(target, (Color) p);
-                            }
-                        }
-                    }
-                }
-            }
-            // XXX
-            return null;
-        }
     }
 
     /**
@@ -484,6 +431,15 @@ public class SVGAnimationEngine extends AnimationEngine {
         }
 
         /**
+         * Returns the event target that is the parent of the given
+         * timed element.  Used for eventbase timing specifiers where
+         * the element ID is omitted.
+         */
+        protected EventTarget getParentEventTarget(TimedElement e) {
+            return AnimationSupport.getParentEventTarget(e);
+        }
+
+        /**
          * Returns the event target that should be listened to for
          * access key events.
          */
@@ -514,6 +470,11 @@ public class SVGAnimationEngine extends AnimationEngine {
                     (SVGAnimationElementBridge) bridges[i];
                 bridge.initializeAnimation();
             }
+            for (int i = 0; i < bridges.length; i++) {
+                SVGAnimationElementBridge bridge =
+                    (SVGAnimationElementBridge) bridges[i];
+                bridge.initializeTimedElement();
+            }
             tick(0);
             // animationThread = new AnimationThread();
             // animationThread.start();
@@ -528,14 +489,20 @@ public class SVGAnimationEngine extends AnimationEngine {
     protected class AnimationTickRunnable implements Runnable {
         protected Calendar time = Calendar.getInstance();
         double second = -1.;
+        int idx = -1;
+        int frames;
         public void run() {
             time.setTimeInMillis(System.currentTimeMillis());
             float t = timedDocumentRoot.convertWallclockTime(time);
-            /*if (Math.floor(t) > second) {
+            if (Math.floor(t) > second) {
                 second = Math.floor(t);
-                tick(t);
-            }*/
+                System.err.println("fps: " + frames);
+                frames = 0;
+                // tick(t);
+            }
             tick(t);
+            frames++;
+            //Thread.yield();
             try {
                 Thread.sleep(1);
             } catch (InterruptedException ie) {
@@ -609,9 +576,367 @@ public class SVGAnimationEngine extends AnimationEngine {
              * Ticks the animation over.
              */
             public void run() {
-                System.err.println("TICK " + t);
+                // System.err.println("TICK " + t);
                 tick(t);
             }
+        }
+    }
+
+    // AnimatableValue factories
+
+    /**
+     * Interface for AnimatableValue factories.
+     */
+    protected interface Factory {
+
+        /**
+         * Creates a new AnimatableValue from a string.
+         */
+        AnimatableValue createValue(AnimationTarget target, String ns,
+                                    String ln, boolean isCSS, String s);
+
+        /**
+         * Creates a new AnimatableValue from a CSS {@link Value}.
+         */
+        AnimatableValue createValue(AnimationTarget target, String pn, Value v);
+    }
+
+    /**
+     * Factory class for AnimatableValues for CSS properties.
+     * XXX Shorthand properties are not supported.
+     */
+    protected abstract class CSSValueFactory implements Factory {
+
+        public AnimatableValue createValue(AnimationTarget target, String ns,
+                                           String ln, boolean isCSS, String s) {
+            // XXX Always parsing as a CSS value.
+            return createValue(target, ln, createCSSValue(target, ln, s));
+        }
+
+        public AnimatableValue createValue(AnimationTarget target, String pn,
+                                           Value v) {
+            CSSStylableElement elt = (CSSStylableElement) target.getElement();
+            v = computeValue(elt, pn, v);
+            return createAnimatableValue(target, pn, v);
+        }
+
+        /**
+         * Creates a new AnimatableValue from a CSS {@link Value}, after
+         * computation and inheritance.
+         */
+        protected abstract AnimatableValue createAnimatableValue
+            (AnimationTarget target, String pn, Value v);
+
+        /**
+         * Creates a new CSS {@link Value} from a string.
+         */
+        protected Value createCSSValue(AnimationTarget t, String pn, String s) {
+            CSSStylableElement elt = (CSSStylableElement) t.getElement();
+            Value v = cssEngine.parsePropertyValue(elt, pn, s);
+            return computeValue(elt, pn, v);
+        }
+
+        /**
+         * Computes a CSS {@link Value} and performance inheritance if the
+         * specified value is 'inherit'.
+         */
+        protected Value computeValue(CSSStylableElement elt, String pn,
+                                     Value v) {
+            ValueManager[] vms = cssEngine.getValueManagers();
+            int idx = cssEngine.getPropertyIndex(pn);
+            if (idx != -1) {
+                if (v.getCssValueType() == CSSValue.CSS_INHERIT) {
+                    elt = CSSEngine.getParentCSSStylableElement(elt);
+                    if (elt != null) {
+                        return cssEngine.getComputedStyle(elt, null, idx);
+                    }
+                    return vms[idx].getDefaultValue();
+                }
+                v = vms[idx].computeValue(elt, null, cssEngine, idx,
+                                          dummyStyleMap, v);
+            }
+            return v;
+        }
+    }
+
+    /**
+     * Factory class for {@link AnimatableBooleanValue}s.
+     */
+    protected class AnimatableBooleanValueFactory implements Factory {
+
+        /**
+         * Creates a new AnimatableValue from a string.
+         */
+        public AnimatableValue createValue(AnimationTarget target, String ns,
+                                           String ln, boolean isCSS, String s) {
+            return new AnimatableBooleanValue(target, "true".equals(s));
+        }
+
+        /**
+         * Creates a new AnimatableValue from a CSS {@link Value}.
+         */
+        public AnimatableValue createValue(AnimationTarget target, String pn,
+                                           Value v) {
+            return new AnimatableBooleanValue(target,
+                                              "true".equals(v.getCssText()));
+        }
+    }
+
+    /**
+     * Factory class for {@link AnimatableIntegerValue}s.
+     */
+    protected class AnimatableIntegerValueFactory implements Factory {
+
+        /**
+         * Creates a new AnimatableValue from a string.
+         */
+        public AnimatableValue createValue(AnimationTarget target, String ns,
+                                           String ln, boolean isCSS, String s) {
+            return new AnimatableIntegerValue(target, Integer.parseInt(s));
+        }
+
+        /**
+         * Creates a new AnimatableValue from a CSS {@link Value}.
+         */
+        public AnimatableValue createValue(AnimationTarget target, String pn,
+                                           Value v) {
+            return new AnimatableIntegerValue(target,
+                                              Math.round(v.getFloatValue()));
+        }
+    }
+
+    /**
+     * Factory class for {@link AnimatableLengthValue}s.
+     */
+    protected class AnimatableLengthValueFactory implements Factory {
+
+        /**
+         * The parsed length unit type.
+         */
+        protected int type;
+
+        /**
+         * The parsed length value.
+         */
+        protected float value;
+
+        /**
+         * Parser for lengths.
+         */
+        protected LengthParser parser = new LengthParser();
+
+        /**
+         * Handler for the length parser.
+         */
+        protected LengthHandler handler = new DefaultLengthHandler() {
+            public void startLength() throws ParseException {
+                type = SVGLength.SVG_LENGTHTYPE_NUMBER;
+            }
+            public void lengthValue(float v) throws ParseException {
+                value = v;
+            }
+            public void em() throws ParseException {
+                type = SVGLength.SVG_LENGTHTYPE_EMS;
+            }
+            public void ex() throws ParseException {
+                type = SVGLength.SVG_LENGTHTYPE_EXS;
+            }
+            public void in() throws ParseException {
+                type = SVGLength.SVG_LENGTHTYPE_IN;
+            }
+            public void cm() throws ParseException {
+                type = SVGLength.SVG_LENGTHTYPE_CM;
+            }
+            public void mm() throws ParseException {
+                type = SVGLength.SVG_LENGTHTYPE_MM;
+            }
+            public void pc() throws ParseException {
+                type = SVGLength.SVG_LENGTHTYPE_PC;
+            }
+            public void pt() throws ParseException {
+                type = SVGLength.SVG_LENGTHTYPE_PT;
+            }
+            public void px() throws ParseException {
+                type = SVGLength.SVG_LENGTHTYPE_PX;
+            }
+            public void percentage() throws ParseException {
+                type = SVGLength.SVG_LENGTHTYPE_PERCENTAGE;
+            }
+            public void endLength() throws ParseException {
+            }
+        };
+
+        /**
+         * Creates a new AnimatableLengthValueFactory.
+         */
+        public AnimatableLengthValueFactory() {
+            parser.setLengthHandler(handler);
+        }
+
+        /**
+         * Creates a new AnimatableValue from a string.
+         */
+        public AnimatableValue createValue(AnimationTarget target, String ns,
+                                           String ln, boolean isCSS, String s) {
+            int pcInterp = target.getPercentageInterpretation(ns, ln, isCSS);
+            try {
+                parser.parse(s);
+                return new AnimatableLengthValue
+                    (target, type, value, pcInterp);
+            } catch (ParseException e) {
+                // XXX Do something better than returning null.
+                return null;
+            }
+        }
+
+        /**
+         * Creates a new AnimatableValue from a CSS {@link Value}.
+         */
+        public AnimatableValue createValue(AnimationTarget target, String pn,
+                                           Value v) {
+            return new AnimatableIntegerValue(target,
+                                              Math.round(v.getFloatValue()));
+        }
+    }
+
+    /**
+     * Factory class for {@link AnimatableStringValue}s.
+     */
+    protected class UncomputedAnimatableStringValueFactory implements Factory {
+
+        public AnimatableValue createValue(AnimationTarget target, String ns,
+                                           String ln, boolean isCSS, String s) {
+            return new AnimatableStringValue(target, s);
+        }
+
+        public AnimatableValue createValue(AnimationTarget target, String pn,
+                                           Value v) {
+            return new AnimatableStringValue(target, v.getCssText());
+        }
+    }
+
+    /**
+     * Factory class for {@link AnimatableLengthOrIdentValue}s.
+     */
+    protected class AnimatableLengthOrIdentFactory extends CSSValueFactory {
+
+        protected AnimatableValue createAnimatableValue(AnimationTarget target,
+                                                        String pn, Value v) {
+            if (v instanceof StringValue) {
+                return new AnimatableLengthOrIdentValue(target,
+                                                        v.getStringValue());
+            }
+            int pcInterp = target.getPercentageInterpretation(null, pn, true);
+            FloatValue fv = (FloatValue) v;
+            return new AnimatableLengthOrIdentValue
+                (target, fv.getPrimitiveType(), fv.getFloatValue(), pcInterp);
+        }
+    }
+
+    /**
+     * Factory class for {@link AnimatableNumberOrIdentValue}s.
+     */
+    protected class AnimatableNumberOrIdentFactory extends CSSValueFactory {
+
+        protected AnimatableValue createAnimatableValue(AnimationTarget target,
+                                                        String pn, Value v) {
+            if (v instanceof StringValue) {
+                return new AnimatableNumberOrIdentValue(target,
+                                                        v.getStringValue());
+            }
+            FloatValue fv = (FloatValue) v;
+            return new AnimatableNumberOrIdentValue(target, fv.getFloatValue());
+        }
+    }
+    
+    /**
+     * Factory class for {@link AnimatableColorValue}s.
+     */
+    protected class AnimatableColorValueFactory extends CSSValueFactory {
+
+        protected AnimatableValue createAnimatableValue(AnimationTarget target,
+                                                        String pn, Value v) {
+            Paint p = PaintServer.convertPaint
+                (target.getElement(), null, v, 1f, ctx);
+            if (p instanceof Color) {
+                Color c = (Color) p;
+                return new AnimatableColorValue(target,
+                                                c.getRed() / 255f,
+                                                c.getGreen() / 255f,
+                                                c.getBlue() / 255f);
+            }
+            // XXX Indicate that the parsed value wasn't a Color?
+            return null;
+        }
+    }
+
+    /**
+     * Factory class for {@link AnimatablePaintValue}s.
+     */
+    protected class AnimatablePaintValueFactory extends CSSValueFactory {
+
+        /**
+         * Creates a new {@link AnimatablePaintValue} from a {@link Color}
+         * object.
+         */
+        protected AnimatablePaintValue createColorPaintValue(AnimationTarget t,
+                                                             Color c) {
+            return AnimatablePaintValue.createColorPaintValue
+                (t, c.getRed() / 255f, c.getGreen() / 255f, c.getBlue() / 255f);
+
+        }
+
+        protected AnimatableValue createAnimatableValue(AnimationTarget target,
+                                                        String pn, Value v) {
+            if (v.getCssValueType() == CSSValue.CSS_PRIMITIVE_VALUE) {
+                switch (v.getPrimitiveType()) {
+                    case CSSPrimitiveValue.CSS_IDENT:
+                        return AnimatablePaintValue.createNonePaintValue(target);
+                    case CSSPrimitiveValue.CSS_RGBCOLOR: {
+                        Paint p = PaintServer.convertPaint
+                            (target.getElement(), null, v, 1f, ctx);
+                        return createColorPaintValue(target, (Color) p);
+                    }
+                    case CSSPrimitiveValue.CSS_URI:
+                        return AnimatablePaintValue.createURIPaintValue
+                            (target, v.getStringValue());
+                }
+            } else {
+                Value v1 = v.item(0);
+                switch (v1.getPrimitiveType()) {
+                    case CSSPrimitiveValue.CSS_RGBCOLOR: {
+                        Paint p = PaintServer.convertPaint
+                            (target.getElement(), null, v, 1f, ctx);
+                        return createColorPaintValue(target, (Color) p);
+                    }
+                    case CSSPrimitiveValue.CSS_URI: {
+                        Value v2 = v.item(1);
+                        switch (v2.getPrimitiveType()) {
+                            case CSSPrimitiveValue.CSS_IDENT:
+                                return AnimatablePaintValue.createURINonePaintValue
+                                    (target, v1.getStringValue());
+                            case CSSPrimitiveValue.CSS_RGBCOLOR: {
+                                Paint p = PaintServer.convertPaint
+                                    (target.getElement(), null, v.item(1), 1f, ctx);
+                                return createColorPaintValue(target, (Color) p);
+                            }
+                        }
+                    }
+                }
+            }
+            // XXX Indicate that the specified Value wasn't a Color?
+            return null;
+        }
+    }
+    
+    /**
+     * Factory class for computed CSS {@link AnimatableStringValue}s.
+     */
+    protected class AnimatableStringValueFactory extends CSSValueFactory {
+
+        protected AnimatableValue createAnimatableValue(AnimationTarget target,
+                                                        String pn, Value v) {
+            return new AnimatableStringValue(target, v.getCssText());
         }
     }
 }

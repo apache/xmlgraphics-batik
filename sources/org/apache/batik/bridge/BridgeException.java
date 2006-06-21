@@ -35,6 +35,11 @@ public class BridgeException extends RuntimeException {
     /** The error code. */
     protected String code;
 
+    /**
+     * The message.
+     */
+    protected String message;
+
     /** The paramters to use for the error message. */
     protected Object [] params;
 
@@ -55,6 +60,18 @@ public class BridgeException extends RuntimeException {
         this.e = e;
         this.code = code;
         this.params = params;
+    }
+
+    /**
+     * Constructs a new <tt>BridgeException</tt> with the specified parameters.
+     *
+     * @param e the element on which the error occured
+     * @param code the error code
+     * @param params the parameters to use for the error message
+     */
+    public BridgeException(Element e, String message) {
+        this.e = e;
+        this.message = message;
     }
 
     /**
@@ -91,6 +108,10 @@ public class BridgeException extends RuntimeException {
      * Returns the error message according to the error code and parameters.
      */
     public String getMessage() {
+        if (message != null) {
+            return message;
+        }
+
         String uri;
         String lname = "<Unknown Element>";
         SVGDocument doc = null;

@@ -17,7 +17,11 @@
  */
 package org.apache.batik.dom.svg;
 
+import org.apache.batik.anim.values.AnimatableValue;
+import org.apache.batik.anim.values.AnimatableNumberOptionalNumberValue;
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.util.SVGTypes;
+
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedBoolean;
 import org.w3c.dom.svg.SVGAnimatedEnumeration;
@@ -143,7 +147,7 @@ public class SVGOMFEConvolveMatrixElement
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGFEConvolveMatrixElement#getKernelUnitLengthX()}.
      */
-    public SVGAnimatedLength getKernelUnitLengthX() {
+    public SVGAnimatedNumber getKernelUnitLengthX() {
         throw new RuntimeException("!!! TODO: getKernelUnitLengthX()");
     }
 
@@ -151,7 +155,7 @@ public class SVGOMFEConvolveMatrixElement
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGFEConvolveMatrixElement#getKernelUnitLengthY()}.
      */
-    public SVGAnimatedLength getKernelUnitLengthY() {
+    public SVGAnimatedNumber getKernelUnitLengthY() {
         throw new RuntimeException("!!! TODO: getKernelUnitLengthY()");
     }
 
@@ -164,9 +168,7 @@ public class SVGOMFEConvolveMatrixElement
         lav = getLiveAttributeValue(null, SVG_PRESERVE_ALPHA_ATTRIBUTE);
         if (lav == null) {
             lav = new SVGOMAnimatedBoolean
-                (this, null, SVG_PRESERVE_ALPHA_ATTRIBUTE,
-                 getAttributeNodeNS(null, SVG_PRESERVE_ALPHA_ATTRIBUTE),
-                 "false");
+                (this, null, SVG_PRESERVE_ALPHA_ATTRIBUTE, false);
             putLiveAttributeValue(null, SVG_PRESERVE_ALPHA_ATTRIBUTE, lav);
         }
         return (SVGAnimatedBoolean)lav;
@@ -177,5 +179,127 @@ public class SVGOMFEConvolveMatrixElement
      */
     protected Node newNode() {
         return new SVGOMFEConvolveMatrixElement();
+    }
+
+    // ExtendedTraitAccess ///////////////////////////////////////////////////
+
+    /**
+     * Returns whether the given XML attribute is animatable.
+     */
+    public boolean isAttributeAnimatable(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_ORDER_ATTRIBUTE)
+                    || ln.equals(SVG_KERNEL_MATRIX_ATTRIBUTE)
+                    || ln.equals(SVG_DIVISOR_ATTRIBUTE)
+                    || ln.equals(SVG_BIAS_ATTRIBUTE)
+                    || ln.equals(SVG_TARGET_X_ATTRIBUTE)
+                    || ln.equals(SVG_TARGET_Y_ATTRIBUTE)
+                    || ln.equals(SVG_EDGE_MODE_ATTRIBUTE)
+                    || ln.equals(SVG_KERNEL_UNIT_LENGTH_ATTRIBUTE)
+                    || ln.equals(SVG_PRESERVE_ALPHA_ATTRIBUTE)) {
+                return true;
+            }
+        }
+        return super.isAttributeAnimatable(ns, ln);
+    }
+
+    /**
+     * Returns the type of the given attribute.
+     */
+    public int getAttributeType(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_IN_ATTRIBUTE)) {
+                return SVGTypes.TYPE_CDATA;
+            } else if (ln.equals(SVG_ORDER_ATTRIBUTE)
+                    || ln.equals(SVG_KERNEL_UNIT_LENGTH_ATTRIBUTE)) {
+                return SVGTypes.TYPE_NUMBER_OPTIONAL_NUMBER;
+            } else if (ln.equals(SVG_KERNEL_MATRIX_ATTRIBUTE)) {
+                return SVGTypes.TYPE_NUMBER_LIST;
+            } else if (ln.equals(SVG_DIVISOR_ATTRIBUTE)
+                    || ln.equals(SVG_BIAS_ATTRIBUTE)) {
+                return SVGTypes.TYPE_NUMBER;
+            } else if (ln.equals(SVG_TARGET_X_ATTRIBUTE)
+                    || ln.equals(SVG_TARGET_Y_ATTRIBUTE)) {
+                return SVGTypes.TYPE_INTEGER;
+            } else if (ln.equals(SVG_EDGE_MODE_ATTRIBUTE)) {
+                return SVGTypes.TYPE_IDENT;
+            } else if (ln.equals(SVG_PRESERVE_ALPHA_ATTRIBUTE)) {
+                return SVGTypes.TYPE_BOOLEAN;
+            }
+        }
+        return super.getAttributeType(ns, ln);
+    }
+
+    // AnimationTarget ///////////////////////////////////////////////////////
+
+    /**
+     * Updates an attribute value in this target.
+     */
+    public void updateAttributeValue(String ns, String ln,
+                                     AnimatableValue val) {
+        if (ns == null) {
+            if (ln.equals(SVG_KERNEL_MATRIX_ATTRIBUTE)) {
+                updateNumberListAttributeValue(getKernelMatrix(), val);
+                return;
+            } else if (ln.equals(SVG_DIVISOR_ATTRIBUTE)) {
+                updateNumberAttributeValue(getDivisor(), val);
+                return;
+            } else if (ln.equals(SVG_BIAS_ATTRIBUTE)) {
+                updateNumberAttributeValue(getBias(), val);
+                return;
+            } else if (ln.equals(SVG_TARGET_X_ATTRIBUTE)) {
+                updateIntegerAttributeValue(getTargetX(), val);
+                return;
+            } else if (ln.equals(SVG_TARGET_Y_ATTRIBUTE)) {
+                updateIntegerAttributeValue(getTargetY(), val);
+                return;
+            } else if (ln.equals(SVG_EDGE_MODE_ATTRIBUTE)) {
+                updateEnumerationAttributeValue(getEdgeMode(), val);
+                return;
+            } else if (ln.equals(SVG_PRESERVE_ALPHA_ATTRIBUTE)) {
+                updateBooleanAttributeValue(getPreserveAlpha(), val);
+                return;
+            } else if (ln.equals(SVG_ORDER_ATTRIBUTE)) {
+                // XXX Needs testing.
+                if (val == null) {
+                    updateIntegerAttributeValue(getOrderX(), null);
+                    updateIntegerAttributeValue(getOrderY(), null);
+                } else {
+                    AnimatableNumberOptionalNumberValue anonv =
+                        (AnimatableNumberOptionalNumberValue) val;
+                    SVGOMAnimatedInteger ai =
+                        (SVGOMAnimatedInteger) getOrderX();
+                    ai.setAnimatedValue(Math.round(anonv.getNumber()));
+                    ai = (SVGOMAnimatedInteger) getOrderY();
+                    if (anonv.hasOptionalNumber()) {
+                        ai.setAnimatedValue
+                            (Math.round(anonv.getOptionalNumber()));
+                    } else {
+                        ai.setAnimatedValue(Math.round(anonv.getNumber()));
+                    }
+                }
+                return;
+            } else if (ln.equals(SVG_KERNEL_UNIT_LENGTH_ATTRIBUTE)) {
+                // XXX Needs testing.
+                if (val == null) {
+                    updateNumberAttributeValue(getKernelUnitLengthX(), null);
+                    updateNumberAttributeValue(getKernelUnitLengthY(), null);
+                } else {
+                    AnimatableNumberOptionalNumberValue anonv =
+                        (AnimatableNumberOptionalNumberValue) val;
+                    SVGOMAnimatedNumber an =
+                        (SVGOMAnimatedNumber) getKernelUnitLengthX();
+                    an.setAnimatedValue(anonv.getNumber());
+                    an = (SVGOMAnimatedNumber) getKernelUnitLengthY();
+                    if (anonv.hasOptionalNumber()) {
+                        an.setAnimatedValue(anonv.getOptionalNumber());
+                    } else {
+                        an.setAnimatedValue(anonv.getNumber());
+                    }
+                }
+                return;
+            }
+        }
+        super.updateAttributeValue(ns, ln, val);
     }
 }

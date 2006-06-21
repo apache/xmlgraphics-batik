@@ -72,12 +72,15 @@ public class EventbaseTimingSpecifier
         super(owner, isBegin, offset);
         this.eventbaseID = eventbaseID;
         TimedDocumentRoot root = owner.getRoot();
-        this.eventbase = root.getTimedElementById(eventbaseID);
         this.eventNamespaceURI = root.getEventNamespaceURI(eventName);
         this.eventType = root.getEventType(eventName);
-        this.eventTarget = eventbase.getEventTargetById(eventbaseID);
+        if (eventbaseID == null) {
+            this.eventTarget = root.getParentEventTarget(owner);
+        } else {
+            this.eventTarget = owner.getEventTargetById(eventbaseID);
+        }
     }
-    
+
     /**
      * Returns a string representation of this timing specifier.
      */
@@ -109,7 +112,7 @@ public class EventbaseTimingSpecifier
      * Handles an event fired on the eventbase element.
      */
     public void handleEvent(Event e) {
-        // XXX check for event sensitivity
+        // XXX Need to check for event sensitivity.
         long time = e.getTimeStamp() -
             owner.getRoot().getDocumentBeginTime().getTimeInMillis();
         InstanceTime instance =

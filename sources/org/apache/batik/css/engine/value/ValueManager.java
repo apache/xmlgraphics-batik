@@ -55,7 +55,8 @@ public interface ValueManager {
 
     /**
      * Returns the type of value this manager handles.  This should be
-     * one of the constants defined in {@link org.apache.batik.util.SVGTypes}.
+     * one of the TYPE_* constants defined in
+     * {@link org.apache.batik.util.SVGTypes}.
      */
     int getPropertyType();
 

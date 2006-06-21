@@ -21,6 +21,8 @@ import java.awt.Image;
 import java.awt.image.RenderedImage;
 import java.awt.image.renderable.RenderableImage;
 
+import org.apache.batik.util.XMLConstants;
+
 import org.w3c.dom.Element;
 
 /**
@@ -32,11 +34,8 @@ import org.w3c.dom.Element;
  * @version $Id$
  * @see             org.apache.batik.svggen.SVGGraphics2D
  */
-public class DefaultImageHandler implements ImageHandler, ErrorConstants {
-    // duplicate the string here to remove dependencies on
-    // org.apache.batik.dom.util.XLinkSupport
-    static final String XLINK_NAMESPACE_URI =
-        "http://www.w3.org/1999/xlink";
+public class DefaultImageHandler
+    implements ImageHandler, ErrorConstants, XMLConstants {
 
     /**
      * Build a <code>DefaultImageHandler</code>.
@@ -143,7 +142,7 @@ public class DefaultImageHandler implements ImageHandler, ErrorConstants {
         throws SVGGraphics2DIOException {
         // Simply write a placeholder
         imageElement.setAttributeNS(XLINK_NAMESPACE_URI,
-                                    ATTR_XLINK_HREF, image.toString());
+                                    XLINK_HREF_QNAME, image.toString());
     }
 
     /**
@@ -155,7 +154,7 @@ public class DefaultImageHandler implements ImageHandler, ErrorConstants {
         throws SVGGraphics2DIOException {
         // Simply write a placeholder
         imageElement.setAttributeNS(XLINK_NAMESPACE_URI,
-                                    ATTR_XLINK_HREF, image.toString());
+                                    XLINK_HREF_QNAME, image.toString());
     }
 
     /**
@@ -167,7 +166,7 @@ public class DefaultImageHandler implements ImageHandler, ErrorConstants {
         throws SVGGraphics2DIOException {
         // Simply write a placeholder
         imageElement.setAttributeNS(XLINK_NAMESPACE_URI,
-                                    ATTR_XLINK_HREF, image.toString());
+                                    XLINK_HREF_QNAME, image.toString());
     }
 }
 

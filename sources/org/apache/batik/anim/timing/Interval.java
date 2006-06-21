@@ -39,6 +39,16 @@ public class Interval {
     protected float end;
 
     /**
+     * The InstanceTime that defined the begin time of the current interval.
+     */
+    protected InstanceTime beginInstanceTime;
+
+    /**
+     * The InstanceTime that defined the end time of the current interval.
+     */
+    protected InstanceTime endInstanceTime;
+
+    /**
      * The list of {@link InstanceTime} objects that are dependent
      * on the begin time of this Interval.
      */
@@ -52,10 +62,21 @@ public class Interval {
 
     /**
      * Creates a new Interval.
+     * @param begin the begin time of the Interval
+     * @param end the end time of the Interval
+     * @param beginInstanceTime the {@link InstanceTime} object that defined
+     *        the begin time of the Interval
+     * @param endInstanceTime the {@link InstanceTime} object that defined
+     *        the end time of the Interval
      */
-    public Interval(float begin, float end) {
+    public Interval(float begin, float end, InstanceTime beginInstanceTime,
+                    InstanceTime endInstanceTime) {
+        Trace.enter(this, null, new Object[] { new Float(begin), new Float(end), beginInstanceTime, endInstanceTime } ); try {
         this.begin = begin;
         this.end = end;
+        this.beginInstanceTime = beginInstanceTime;
+        this.endInstanceTime = endInstanceTime;
+        } finally { Trace.exit(); }
     }
 
     /**
@@ -80,48 +101,72 @@ public class Interval {
     }
 
     /**
+     * Returns the {@link InstanceTime} that defined the begin time of this
+     * interval.
+     */
+    public InstanceTime getBeginInstanceTime() {
+        return beginInstanceTime;
+    }
+
+    /**
+     * Returns the {@link InstanceTime} that defined the end time of this
+     * interval.
+     */
+    public InstanceTime getEndInstanceTime() {
+        return endInstanceTime;
+    }
+
+    /**
      * Adds a dependent InstanceTime for this Interval.
      */
     void addDependent(InstanceTime dependent, boolean forBegin) {
+        Trace.enter(this, "addDependent", new Object[] { dependent, new Boolean(forBegin) } ); try {
         if (forBegin) {
             beginDependents.add(dependent);
         } else {
             endDependents.add(dependent);
         }
+        } finally { Trace.exit(); }
     }
 
     /**
      * Removes a dependent InstanceTime for this Interval.
      */
     void removeDependent(InstanceTime dependent, boolean forBegin) {
+        Trace.enter(this, "removeDependent", new Object[] { dependent, new Boolean(forBegin) } ); try {
         if (forBegin) {
             beginDependents.remove(dependent);
         } else {
             endDependents.remove(dependent);
         }
+        } finally { Trace.exit(); }
     }
 
     /**
      * Updates the begin time for this interval.
      */
     void setBegin(float begin) {
+        Trace.enter(this, "setBegin", new Object[] { new Float(begin) } ); try {
         this.begin = begin;
         Iterator i = beginDependents.iterator();
         while (i.hasNext()) {
             InstanceTime it = (InstanceTime) i.next();
             it.dependentUpdate(begin);
         }
+        } finally { Trace.exit(); }
     }
 
     /**
      * Updates the end time for this interval.
      */
     void setEnd(float end) {
+        Trace.enter(this, "setEnd", new Object[] { new Float(end) } ); try {
         this.end = end;
         Iterator i = endDependents.iterator();
         while (i.hasNext()) {
             InstanceTime it = (InstanceTime) i.next();
             it.dependentUpdate(end);
         }
+        } finally { Trace.exit(); }
     }
 }

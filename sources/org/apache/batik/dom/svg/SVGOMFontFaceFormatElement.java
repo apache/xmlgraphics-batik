@@ -18,6 +18,8 @@
 package org.apache.batik.dom.svg;
 
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.util.SVGTypes;
+
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGFontFaceFormatElement;
 
@@ -59,5 +61,19 @@ public class SVGOMFontFaceFormatElement
      */
     protected Node newNode() {
         return new SVGOMFontFaceFormatElement();
+    }
+
+    // ExtendedTraitAccess ///////////////////////////////////////////////////
+
+    /**
+     * Returns the type of the given attribute.
+     */
+    public int getAttributeType(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_STRING_ATTRIBUTE)) {
+                return SVGTypes.TYPE_CDATA;
+            }
+        }
+        return super.getAttributeType(ns, ln);
     }
 }

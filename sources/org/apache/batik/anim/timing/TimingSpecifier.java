@@ -44,6 +44,13 @@ public abstract class TimingSpecifier {
     }
 
     /**
+     * Returns the element that owns this timing specifier.
+     */
+    public TimedElement getOwner() {
+        return owner;
+    }
+
+    /**
      * Initializes this timing specifier by adding the initial instance time
      * to the owner's instance time list or setting up any event listeners.
      * This should be overriden in descendant classes.
@@ -64,7 +71,6 @@ public abstract class TimingSpecifier {
      * time instances based on the interval of a timebase element.
      */
     void newInterval(Interval interval) {
-        // XXX ...
     }
 
     /**
@@ -73,14 +79,14 @@ public abstract class TimingSpecifier {
      * time instances based on the interval of a timebase element.
      */
     void removeInterval(Interval interval) {
-        // XXX ...
     }
 
     /**
      * Called by an {@link InstanceTime} created by this TimingSpecifier
-     * to indicate that its value has changed.
+     * to indicate that its value has changed.  This should be overriden
+     * in descendant classes that generate time instances based on the
+     * interval of a timebase element.
      */
     void handleTimebaseUpdate(InstanceTime instanceTime, float newTime) {
-        // XXX ...
     }
 }

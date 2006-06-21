@@ -17,7 +17,9 @@
  */
 package org.apache.batik.dom.svg;
 
+import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.AbstractDocument;
+
 import org.w3c.dom.svg.SVGAnimatedString;
 
 /**
@@ -50,5 +52,31 @@ public abstract class SVGURIReferenceGraphicsElement
      */
     public SVGAnimatedString getHref() {
         return SVGURIReferenceSupport.getHref(this);
+    }
+
+    // ExtendedTraitAccess ///////////////////////////////////////////////////
+
+    /**
+     * Returns whether the given XML attribute is animatable.
+     */
+    public boolean isAttributeAnimatable(String ns, String ln) {
+        return ns == XLINK_NAMESPACE_URI && ln == XLINK_HREF_ATTRIBUTE
+            || super.isAttributeAnimatable(ns, ln);
+    }
+
+    // AnimationTarget ///////////////////////////////////////////////////////
+
+    /**
+     * Updates an attribute value in this target.
+     */
+    public void updateAttributeValue(String ns, String ln,
+                                     AnimatableValue val) {
+        if (ns == XLINK_NAMESPACE_URI
+                && ln.equals(XLINK_HREF_ATTRIBUTE)) {
+            SVGOMAnimatedString href = (SVGOMAnimatedString) getHref();
+            updateStringAttributeValue(href, val);
+        } else {
+            super.updateAttributeValue(ns, ln, val);
+        }
     }
 }

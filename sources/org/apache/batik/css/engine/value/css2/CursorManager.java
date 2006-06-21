@@ -100,7 +100,7 @@ public class CursorManager extends AbstractValueManager {
      * Implements {@link ValueManager#isAdditiveProperty()}.
      */
     public boolean isAdditiveProperty() {
-        return true;
+        return false;
     }
 
     /**

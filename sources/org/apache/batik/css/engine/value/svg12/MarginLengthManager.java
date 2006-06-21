@@ -67,7 +67,7 @@ public class MarginLengthManager extends LengthManager {
      * Implements {@link ValueManager#getPropertyType()}.
      */
     public int getPropertyType() {
-        return SVGTypes.TYPE_LENGTH_OR_IDENT;
+        return SVGTypes.TYPE_LENGTH_OR_INHERIT;
     }
 
     /**

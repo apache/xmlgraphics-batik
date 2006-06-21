@@ -20,6 +20,8 @@ package org.apache.batik.dom.svg;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 
+import org.apache.batik.parser.UnitProcessor.Context;
+
 /**
  * This interface is the placeholder for SVG application informations.
  *
@@ -27,6 +29,12 @@ import java.awt.geom.Rectangle2D;
  * @version $Id$
  */
 public interface SVGContext {
+
+    // Constants for percentage interpretation.
+    static final int PERCENTAGE_FONT_SIZE       = 0;
+    static final int PERCENTAGE_VIEWPORT_WIDTH  = 1;
+    static final int PERCENTAGE_VIEWPORT_HEIGHT = 2;
+    static final int PERCENTAGE_VIEWPORT_SIZE   = 3;
 
     /**
      * Returns the size of a px CSS unit in millimeters.
@@ -88,4 +96,14 @@ public interface SVGContext {
      */
     float getFontSize();
 
+    /**
+     * Converts the given SVG length into user units.
+     * @param v the SVG length value
+     * @param type the SVG length units (one of the
+     *             {@link SVGLength}.SVG_LENGTH_* constants)
+     * @param pcInterp how to interpretet percentage values (one of the
+     *             {@link SVGContext}.PERCENTAGE_* constants) 
+     * @return the SVG value in user units
+     */
+    float svgToUserSpace(float v, int type, int pcInterp);
 }

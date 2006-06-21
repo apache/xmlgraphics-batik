@@ -62,7 +62,7 @@ public class StrokeMiterlimitManager extends AbstractValueManager {
      * Implements {@link ValueManager#getPropertyType()}.
      */
     public int getPropertyType() {
-        return SVGTypes.TYPE_NUMBER_OR_IDENT;
+        return SVGTypes.TYPE_NUMBER_OR_INHERIT;
     }
 
     /**

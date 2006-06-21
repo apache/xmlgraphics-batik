@@ -20,6 +20,8 @@ package org.apache.batik.anim;
 import org.apache.batik.anim.timing.TimedElement;
 import org.apache.batik.anim.values.AnimatableValue;
 
+import org.apache.batik.anim.timing.Trace;
+
 /**
  * An abstract base class for the different types of animation.
  *
@@ -110,31 +112,46 @@ public abstract class AbstractAnimation {
      * Returns the composed value of this animation, or null if it isn't active.
      */
     public AnimatableValue getComposedValue() {
+        Trace.enter(this, "getComposedValue", null); try {
+        Trace.print("isActive == " + isActive + ", isFrozen == " + isFrozen + ", isDirty == " + isDirty);
         if (!isActive && !isFrozen) {
             return null;
         }
         if (isDirty) {
+            Trace.print("willReplace() == " + willReplace());
+            Trace.print("value == " + value);
             if (!willReplace()) {
                 AnimatableValue lowerValue;
+                Trace.print("lowerAnimation == " + lowerAnimation);
                 if (lowerAnimation == null) {
                     lowerValue = animatableElement.getUnderlyingValue();
                 } else {
                     lowerValue = lowerAnimation.getComposedValue();
                 }
+                Trace.print("lowerValue == " + lowerValue);
                 if (lowerValue != null) {
                     composedValue =
-                        lowerValue.interpolate(composedValue, null, 0f, value);
+                        lowerValue.interpolate(composedValue, null, 0f, value, 1);
                 } else {
                     composedValue =
-                        value.interpolate(composedValue, null, 0f, null);
+                        value.interpolate(composedValue, null, 0f, null, 0);
                 }
             } else {
                 composedValue =
-                    value.interpolate(composedValue, null, 0f, null);
+                    value.interpolate(composedValue, null, 0f, null, 0);
             }
+            Trace.print("composedValue == " + composedValue);
             isDirty = false;
         }
         return composedValue;
+        } finally { Trace.exit(); }
+    }
+
+    /**
+     * Returns a string representation of this animation.
+     */
+    public String toString() {
+        return timedElement.toString();
     }
 
     /**

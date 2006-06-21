@@ -25,6 +25,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.events.MutationEvent;
 
 import org.apache.batik.css.engine.CSSEngineEvent;
+import org.apache.batik.dom.svg.AnimatedLiveAttributeValue;
 import org.apache.batik.dom.svg.SVGContext;
 import org.apache.batik.dom.svg.SVGOMElement;
 
@@ -54,7 +55,6 @@ public abstract class SVGDescriptiveElementBridge extends AbstractSVGBridge
      * @param e the element to be handled
      */
     public void handleElement(BridgeContext ctx, Element e){
-        System.err.println("desc handledElement");
         UserAgent ua = ctx.getUserAgent();
         ua.handleElement(e, Boolean.TRUE);
         
@@ -93,6 +93,9 @@ public abstract class SVGDescriptiveElementBridge extends AbstractSVGBridge
 
     public void handleDOMAttrModifiedEvent(MutationEvent evt) { }
     public void handleCSSEngineEvent(CSSEngineEvent evt) { }
+    public void handleAnimatedAttributeChanged
+        (AnimatedLiveAttributeValue alav) { }
+
 
     // SVGContext implementation ///////////////////////////////////////////
 
@@ -129,4 +132,7 @@ public abstract class SVGDescriptiveElementBridge extends AbstractSVGBridge
         return theCtx.getBlockHeight(theElt);
     }
     public float getFontSize() { return 0; }
+    public float svgToUserSpace(float v, int type, int pcInterp) {
+        return 0;
+    }
 };
