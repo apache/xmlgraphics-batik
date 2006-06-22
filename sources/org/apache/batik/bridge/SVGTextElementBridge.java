@@ -1857,7 +1857,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
     }
 
     /**
-     * Implementation of <ode>SVGContext</code> for
+     * Implementation of <code>SVGContext</code> for
      * the children of &lt;text&gt;
      */
     public abstract class AbstractTextChildSVGContext
@@ -2266,26 +2266,28 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
 
         Shape b = null;
 
-        if ( info.glyphIndexStart == info.glyphIndexEnd ){
-            if (it.isGlyphVisible(info.glyphIndexStart))
-                b = it.getGlyphOutline(info.glyphIndexStart);
+        if (info.glyphIndexStart == info.glyphIndexEnd) {
+            if (it.isGlyphVisible(info.glyphIndexStart)) {
+                b = it.getGlyphCellBounds(info.glyphIndexStart);
+            }
         } else {
             GeneralPath path = null;
-            for( int k = info.glyphIndexStart ;
-                 k <= info.glyphIndexEnd;
-                 k++){
+            for (int k = info.glyphIndexStart; k <= info.glyphIndexEnd; k++) {
                 if (it.isGlyphVisible(k)) {
-                    if (path == null)
-                        path = new GeneralPath(it.getGlyphOutline(k));
-                    else
-                        path.append(it.getGlyphOutline(k),false);
+                    Rectangle2D gb = it.getGlyphCellBounds(k);
+                    if (path == null) {
+                        path = new GeneralPath(gb);
+                    } else {
+                        path.append(gb, false);
+                    }
                 }
             }
             b = path;
         }
 
-        if (b == null)
+        if (b == null) {
             return null;
+        }
 
         //return the bounding box of the outline
         return b.getBounds2D();

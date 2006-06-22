@@ -32,18 +32,18 @@ import java.util.zip.InflaterInputStream;
 import java.util.zip.ZipException;
 
 /**
- * Holds the data for more URL's
+ * Holds the data for more URLs.
  *
  * @author <a href="mailto:deweese@apache.org">Thomas DeWeese</a>
  * @version $Id$ 
  */
 public class ParsedURLData {
     
-    String HTTP_USER_AGENT_HEADER      = "User-Agent";
+    protected final static String HTTP_USER_AGENT_HEADER      = "User-Agent";
 
-    String HTTP_ACCEPT_HEADER          = "Accept";
-    String HTTP_ACCEPT_LANGUAGE_HEADER = "Accept-Language";
-    String HTTP_ACCEPT_ENCODING_HEADER = "Accept-Encoding";
+    protected final static String HTTP_ACCEPT_HEADER          = "Accept";
+    protected final static String HTTP_ACCEPT_LANGUAGE_HEADER = "Accept-Language";
+    protected final static String HTTP_ACCEPT_ENCODING_HEADER = "Accept-Encoding";
 
     protected static List acceptedEncodings = new LinkedList();
     static {
@@ -125,7 +125,7 @@ public class ParsedURLData {
     public String contentEncoding = null;
 
     public InputStream stream     = null;
-    public boolean     hasBeenOpened  = false;
+    public boolean hasBeenOpened  = false;
 
     /**
      * Void constructor
@@ -191,7 +191,7 @@ public class ParsedURLData {
         if (host != null)
             hc ^= host.hashCode();
 
-        // For some URLS path and ref can get fairly long
+        // For some URLs path and ref can get fairly long
         // and the most unique part is towards the end
         // so we grab that part for HC purposes
         if (path != null) {
