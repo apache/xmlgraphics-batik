@@ -50,6 +50,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.util.HashMap;
@@ -102,7 +103,6 @@ import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.HashTable;
 import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.ext.swing.JAffineTransformChooser;
-import org.apache.batik.script.rhino.RhinoInterpreter;
 import org.apache.batik.swing.JSVGCanvas;
 import org.apache.batik.swing.gvt.GVTTreeRendererEvent;
 import org.apache.batik.swing.gvt.GVTTreeRendererListener;
@@ -140,8 +140,6 @@ import org.apache.batik.util.gui.resource.MissingListenerException;
 import org.apache.batik.util.gui.resource.ResourceManager;
 import org.apache.batik.util.gui.resource.ToolBarFactory;
 import org.apache.batik.xml.XMLUtilities;
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.ContextFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.css.ViewCSS;
@@ -315,12 +313,11 @@ public class JSVGViewerFrame
         /**
          * Returns the Rhino interpreter for this canvas.
          */
-        public RhinoInterpreter getRhinoInterpreter() {
+        public Object getRhinoInterpreter() {
             if (bridgeContext == null) {
                 return null;
             }
-            return (RhinoInterpreter)
-                bridgeContext.getInterpreter("text/ecmascript");
+            return bridgeContext.getInterpreter("text/ecmascript");
         }
     }
 
@@ -825,8 +822,8 @@ public class JSVGViewerFrame
      * Shows the Rhino debugger.
      */
     public void showDebugger() {
-        if (debugger == null) {
-            debugger = new Debugger(locationBar.getText());
+        if (debugger == null && Debugger.isPresent) {
+            debugger = new Debugger(this, locationBar.getText());
             debugger.initialize();
         }
     }
@@ -846,21 +843,114 @@ public class JSVGViewerFrame
     /**
      * Rhino debugger class.
      */
-    protected class Debugger
-        extends org.mozilla.javascript.tools.debugger.Main {
+    protected static class Debugger {
+
+        /**
+         * Whether the Rhino debugger classes are present.
+         */
+        protected static boolean isPresent;
+
+        /**
+         * The Rhino debugger class.
+         */
+        protected static Class debuggerClass;
+
+        /**
+         * The Rhino ContextFactory class.
+         */
+        protected static Class contextFactoryClass;
+
+        // Indexes into the debuggerMethods array.
+        protected static final int CLEAR_ALL_BREAKPOINTS_METHOD = 0;
+        protected static final int GO_METHOD                    = 1;
+        protected static final int SET_EXIT_ACTION_METHOD       = 2;
+        protected static final int ATTACH_TO_METHOD             = 3;
+        protected static final int DETACH_METHOD                = 4;
+        protected static final int DISPOSE_METHOD               = 5;
+        protected static final int GET_DEBUG_FRAME_METHOD       = 6;
+
+        /**
+         * Rhino debugger class constructor.
+         */
+        protected static Constructor debuggerConstructor;
+
+        /**
+         * Rhino debugger class methods.
+         */
+        protected static Method debuggerMethods[];
+
+        /**
+         * The RhinoInterpreter class.
+         */
+        protected static Class rhinoInterpreterClass;
+
+        /**
+         * The {code getContextFactory} method on the {@link RhinoInterpreter}
+         * class.
+         */
+        protected static Method getContextFactoryMethod;
+
+        static {
+            try {
+                Class dc =
+                    Class.forName("org.mozilla.javascript.tools.debugger.Main");
+                Class cfc =
+                    Class.forName("org.mozilla.javascript.ContextFactory");
+                rhinoInterpreterClass = Class.forName
+                    ("org.apache.batik.script.rhino.RhinoInterpreter");
+                debuggerConstructor =
+                    dc.getConstructor(new Class[] { String.class });
+                debuggerMethods = new Method[] {
+                    dc.getMethod("clearAllBreakpoints", null),
+                    dc.getMethod("go", null),
+                    dc.getMethod("setExitAction", new Class[] {Runnable.class}),
+                    dc.getMethod("attachTo", new Class[] { cfc }),
+                    dc.getMethod("detach", null),
+                    dc.getMethod("dispose", null),
+                    dc.getMethod("getDebugFrame", null)
+                };
+                getContextFactoryMethod =
+                    rhinoInterpreterClass.getMethod("getContextFactory", null);
+                debuggerClass = dc;
+                isPresent = true;
+            } catch (ClassNotFoundException cnfe) {
+            } catch (NoSuchMethodException nsme) {
+            } catch (SecurityException se) {
+            }
+        }
+
+        /**
+         * The Rhino debugger instance.
+         */
+        protected Object debuggerInstance;
+
+        /**
+         * The JSVGViewerFrame.
+         */
+        protected JSVGViewerFrame svgFrame;
 
         /**
          * Creates a new Debugger.
          */
-        public Debugger(String url) {
-            super("JavaScript Debugger - " + url);
+        public Debugger(JSVGViewerFrame frame, String url) {
+            svgFrame = frame;
+            try {
+                debuggerInstance = debuggerConstructor.newInstance
+                    (new Object[] { "JavaScript Debugger - " + url });
+            } catch (IllegalAccessException iae) {
+                throw new RuntimeException(iae);
+            } catch (InvocationTargetException ite) {
+                throw new RuntimeException(ite);
+            } catch (InstantiationException ie) {
+                throw new RuntimeException(ie);
+            }
         }
 
         /**
          * Sets the document URL to use in the window title.
          */
         public void setDocumentURL(String url) {
-            debugGui.setTitle("JavaScript Debugger - " + url);
+            getDebugFrame().setTitle("JavaScript Debugger - " + url);
         }
 
         /**
@@ -870,8 +960,9 @@ public class JSVGViewerFrame
         public void initialize() {
             // Customize the menubar a bit, disable menu
             // items that can't be used and change 'Exit' to 'Close'.
-            JMenuBar menuBar = debugGui.getJMenuBar();
-            JMenu    menu    = menuBar.getMenu(0);
+            JFrame   debugGui = getDebugFrame();
+            JMenuBar menuBar  = debugGui.getJMenuBar();
+            JMenu    menu     = menuBar.getMenu(0);
             menu.getItem(0).setEnabled(false); // Open...
             menu.getItem(1).setEnabled(false); // Run...
             menu.getItem(3).setText
@@ -883,18 +974,133 @@ public class JSVGViewerFrame
             debugGui.pack();
             setExitAction(new Runnable() {
                     public void run() {
-                        hideDebugger();
+                        svgFrame.hideDebugger();
                     }});
             WindowAdapter wa = new WindowAdapter() {
                     public void windowClosing(WindowEvent e) {
-                        hideDebugger();
+                        svgFrame.hideDebugger();
                     }};
             debugGui.addWindowListener(wa);
-            setVisible(true);
-            RhinoInterpreter interpreter = svgCanvas.getRhinoInterpreter();
+            debugGui.setVisible(true);
+            attach();
+        }
+
+        /**
+         * Attaches the debugger to the canvas' current interpreter.
+         */
+        public void attach() {
+            Object interpreter = svgFrame.svgCanvas.getRhinoInterpreter();
             if (interpreter != null) {
-                ContextFactory contextFactory = interpreter.getContextFactory();
-                attachTo(contextFactory);
+                attachTo(getContextFactory(interpreter));
+            }
+        }
+
+        /**
+         * Calls {@code getDebugFrame} on {@link debuggerInstance}.
+         */
+        protected JFrame getDebugFrame() {
+            try {
+                return (JFrame) debuggerMethods[GET_DEBUG_FRAME_METHOD].invoke
+                    (debuggerInstance, null);
+            } catch (InvocationTargetException ite) {
+                throw new RuntimeException(ite);
+            } catch (IllegalAccessException iae) {
+                throw new RuntimeException(iae);
+            }
+        }
+
+        /**
+         * Calls {@code setExitAction} on {@link debuggerInstance}.
+         */
+        protected void setExitAction(Runnable r) {
+            try {
+                debuggerMethods[SET_EXIT_ACTION_METHOD].invoke
+                    (debuggerInstance, new Object[] { r });
+            } catch (InvocationTargetException ite) {
+                throw new RuntimeException(ite);
+            } catch (IllegalAccessException iae) {
+                throw new RuntimeException(iae);
+            }
+        }
+
+        /**
+         * Calls {@code attachTo} on {@link debuggerInstance}.
+         */
+        public void attachTo(Object contextFactory) {
+            try {
+                debuggerMethods[ATTACH_TO_METHOD].invoke
+                    (debuggerInstance, new Object[] { contextFactory });
+            } catch (InvocationTargetException ite) {
+                throw new RuntimeException(ite);
+            } catch (IllegalAccessException iae) {
+                throw new RuntimeException(iae);
+            }
+        }
+
+        /**
+         * Calls {@code detach} on {@link debuggerInstance}.
+         */
+        public void detach() {
+            try {
+                debuggerMethods[DETACH_METHOD].invoke(debuggerInstance, null);
+            } catch (InvocationTargetException ite) {
+                throw new RuntimeException(ite);
+            } catch (IllegalAccessException iae) {
+                throw new RuntimeException(iae);
+            }
+        }
+
+        /**
+         * Calls {@code go} on {@link debuggerInstance}.
+         */
+        public void go() {
+            try {
+                debuggerMethods[GO_METHOD].invoke(debuggerInstance, null);
+            } catch (InvocationTargetException ite) {
+                throw new RuntimeException(ite);
+            } catch (IllegalAccessException iae) {
+                throw new RuntimeException(iae);
+            }
+        }
+
+        /**
+         * Calls {@code clearAllBreakpoints} on {@link debuggerInstance}.
+         */
+        public void clearAllBreakpoints() {
+            try {
+                debuggerMethods[CLEAR_ALL_BREAKPOINTS_METHOD].invoke
+                    (debuggerInstance, null);
+            } catch (InvocationTargetException ite) {
+                throw new RuntimeException(ite);
+            } catch (IllegalAccessException iae) {
+                throw new RuntimeException(iae);
+            }
+        }
+
+        /**
+         * Calls {@code dispose} on {@link debuggerInstance}.
+         */
+        public void dispose() {
+            try {
+                debuggerMethods[DISPOSE_METHOD].invoke(debuggerInstance, null);
+            } catch (InvocationTargetException ite) {
+                throw new RuntimeException(ite);
+            } catch (IllegalAccessException iae) {
+                throw new RuntimeException(iae);
+            }
+        }
+
+        /**
+         * Calls {@code getContextFactory} on the given instance of
+         * {@link RhinoInterpreter}.
+         */
+        protected Object getContextFactory(Object rhinoInterpreter) {
+            try {
+                return getContextFactoryMethod.invoke(rhinoInterpreter, null);
+            } catch (InvocationTargetException ite) {
+                throw new RuntimeException(ite);
+            } catch (IllegalAccessException iae) {
+                throw new RuntimeException(iae);
             }
         }
     }
@@ -2170,8 +2376,7 @@ public class JSVGViewerFrame
             (application.isSelectionOverlayXORMode());
         svgCanvas.requestFocus();  // request focus when load completes.
         if (debugger != null) {
-            RhinoInterpreter interpreter = svgCanvas.getRhinoInterpreter();
-            debugger.attachTo(interpreter.getContextFactory());
+            debugger.attach();
         }
     }
 

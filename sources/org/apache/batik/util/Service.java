@@ -33,7 +33,7 @@ import java.util.List;
  * This class handles looking up service providers on the class path.
  * It implements the system described in:
  *
- * <a href='http://java.sun.com/j2se/1.3/docs/guide/jar/jar.html#Service Provider'> JAR
+ * <a href='http://java.sun.com/j2se/1.3/docs/guide/jar/jar.html#Service Provider'>JAR
  * File Specification Under Service Provider</a>. Note that this
  * interface is very similar to the one they describe which seems to
  * be missing in the JDK.
