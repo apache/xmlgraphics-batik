@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2000  The Apache Software Foundation 
+   Copyright 2000,2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -28,8 +28,8 @@ import org.w3c.dom.Node;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-
 public abstract class AbstractElementNS extends AbstractElement {
+
     /**
      * The namespace URI
      */
@@ -60,10 +60,13 @@ public abstract class AbstractElementNS extends AbstractElement {
                                 AbstractDocument owner)
 	throws DOMException {
 	super(qname, owner);
+        if (nsURI != null && nsURI.length() == 0) {
+            nsURI = null;
+        }
 	namespaceURI = nsURI;
 	String prefix = DOMUtilities.getPrefix(qname);
 	if (prefix != null) {
-	    if (nsURI == null || nsURI.equals("") ||
+	    if (nsURI == null ||
 		("xml".equals(prefix) &&
 		 !XMLSupport.XML_NAMESPACE_URI.equals(nsURI))) {
 		throw createDOMException

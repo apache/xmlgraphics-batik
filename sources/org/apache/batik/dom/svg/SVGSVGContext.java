@@ -67,4 +67,10 @@ public interface SVGSVGContext extends SVGContext {
      */
     public void deselectAll();
 
+
+    public int     suspendRedraw ( int max_wait_milliseconds );
+    public boolean unsuspendRedraw ( int suspend_handle_id );
+    public void    unsuspendRedrawAll (  );
+    public void    forceRedraw (  );
+
 };

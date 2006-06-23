@@ -25,23 +25,35 @@ import java.util.HashMap;
  * take some time to load or create, such as images loaded from the 
  * network.
  *
- * Adding an object is two fold: <br />
- * + First you add the key, this lets the cache know that someone is
- *   working on that key.  <br />
- * + Then when the completed object is ready you put it into the cache.<P>
+ * <p>Adding an object is two fold:</p>
+ * <ul>
+ *   <li>
+ *     First you add the key, this lets the cache know that someone is
+ *     working on that key.
+ *   </li>
+ *   <li>
+ *     Then when the completed object is ready you put it into the cache.
+ *   </li>
+ * </ul>
+ * <p>
+ *   If someone requests a key after it has been added but before it has
+ *   been put they will be blocked until the put.
+ * </p>
  *
- * If someone requests a key after it has been added but before it has
- * been put they will be blocked until the put.
+ * @author <a href="mailto:vhardy@apache.org">Vincent Hardy</a>
+ * @version $Id$
  */
-
 public class SoftReferenceCache {
-    HashMap map = new HashMap();
 
     /**
-     * Let people create there own caches.
+     * The map of cached objects.
+     */
+    protected HashMap map = new HashMap();
+
+    /**
+     * Let people create their own caches.
      */
     protected SoftReferenceCache() { }
-
 
     /**
      * Let people flush the cache (remove any cached data).  Pending

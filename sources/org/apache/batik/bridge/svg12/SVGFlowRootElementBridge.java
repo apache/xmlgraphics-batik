@@ -18,6 +18,7 @@
 
 package org.apache.batik.bridge.svg12;
 
+import java.awt.Color;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.font.TextAttribute;
@@ -69,6 +70,7 @@ import org.apache.batik.gvt.flow.RegionInfo;
 import org.apache.batik.gvt.flow.TextLineBreaks;
 
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
+import org.apache.batik.gvt.text.TextPaintInfo;
 import org.apache.batik.gvt.text.TextPath;
 
 import org.apache.batik.util.SVGConstants;
@@ -364,6 +366,8 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
      */
     protected AttributedString buildAttributedString(BridgeContext ctx,
                                                      Element element) {
+        if (element == null) return null;
+
         List rgns = getRegions(ctx, element);
         AttributedString ret = getFlowDiv(ctx, element);
         if (ret == null) return ret;
@@ -429,6 +433,12 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
 
     protected AttributedString gatherFlowPara
         (BridgeContext ctx, Element div) {
+        TextPaintInfo divTPI = new TextPaintInfo();
+        // Set some basic props so we can get bounds info for complex paints.
+        divTPI.visible   = true;        
+        divTPI.fillPaint = Color.black;
+        elemTPI.put(div, divTPI);
+
         AttributedStringBuffer asb = new AttributedStringBuffer();
         List paraEnds  = new ArrayList();
         List paraElems = new ArrayList();
@@ -452,6 +462,8 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
                 paraEnds.add(new Integer(asb.length()));
             }
         }
+        divTPI.startChar = 0;
+        divTPI.endChar   = asb.length()-1;
 
         // Layer in the PARAGRAPH/LINE_BREAK Attributes so we can
         // break up text chunks.
@@ -572,6 +584,7 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
         boolean preserve = s.equals(SVG_PRESERVE_VALUE);
         boolean prevEndsWithSpace;
         Element nodeElement = element;
+        int elementStartChar = asb.length();
 
         if (top)
             endLimit = startLen = asb.length();
@@ -665,9 +678,15 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
                     s = TextUtilities.getElementContent(ref);
                     s = normalizeString(s, preserve, prevEndsWithSpace);
                     if (s != null) {
+                        int trefStart = asb.length();
                         Map m = getAttributeMap(ctx, nodeElement, null, 
                                                 bidiLevel);
                         asb.append(s, m);
+                        int trefEnd = asb.length()-1;
+                        TextPaintInfo tpi;
+                        tpi = (TextPaintInfo)elemTPI.get(nodeElement);
+                        tpi.startChar = trefStart;
+                        tpi.endChar   = trefEnd;
                     }
                 }
                 break;
@@ -683,6 +702,7 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
         }
 
         if (top) {
+            boolean strippedSome = false;
             while ((endLimit < asb.length()) && (asb.getLastChar() == ' ')) {
                 int idx = lnLocs.size()-1;
                 int len = asb.length();
@@ -702,8 +722,25 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
                     }
                 }
                 asb.stripLast();
+                strippedSome = true;
+            }
+            if (strippedSome) {
+                Iterator iter = elemTPI.values().iterator();
+                while (iter.hasNext()) {
+                    TextPaintInfo tpi = (TextPaintInfo)iter.next();
+                    if (tpi.endChar >= asb.length()) {
+                        tpi.endChar = asb.length()-1;
+                        if (tpi.startChar > tpi.endChar)
+                            tpi.startChar = tpi.endChar;
+                    }
+                }
             }
         }
+
+        int elementEndChar = asb.length()-1;
+        TextPaintInfo tpi = (TextPaintInfo)elemTPI.get(element);
+        tpi.startChar = elementStartChar;
+        tpi.endChar   = elementEndChar;
     }
 
     /**
@@ -801,18 +838,17 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
         else
             textAlign = BlockInfo.ALIGN_FULL;
 
-        Map   fontAttrs      = getFontProperties(ctx, element, null);
+        Map   fontAttrs      = new HashMap(20);
+        List  fontList       = getFontList(ctx, element, fontAttrs);
         Float fs             = (Float)fontAttrs.get(TextAttribute.SIZE);
         float fontSize       = fs.floatValue();
         float lineHeight     = getLineHeight(ctx, element, fontSize);
-        List  fontFamilyList = getFontFamilyList(element, ctx);
 
         String ln = element.getLocalName();
         boolean rgnBr;
         rgnBr = ln.equals(SVG12Constants.SVG_FLOW_REGION_BREAK_TAG);
         return new BlockInfo(top, right, bottom, left, indent, textAlign, 
-                             lineHeight, fontFamilyList, fontAttrs,
-                             rgnBr);
+                             lineHeight, fontList, fontAttrs, rgnBr);
     }
 
     protected float getLineHeight(BridgeContext ctx, Element element, 

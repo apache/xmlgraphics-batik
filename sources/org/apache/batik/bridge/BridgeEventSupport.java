@@ -22,6 +22,7 @@ import java.awt.event.KeyEvent;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.lang.ref.SoftReference;
 import java.text.AttributedCharacterIterator;
 import java.util.List;
 
@@ -58,6 +59,12 @@ import org.w3c.dom.events.EventTarget;
  * @version $Id$
  */
 public abstract class BridgeEventSupport implements SVGConstants {
+
+    public static final 
+        AttributedCharacterIterator.Attribute TEXT_COMPOUND_ID =
+        GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_ID;
+
+    protected BridgeEventSupport() {}
 
     /**
      * Is called only for the root element in order to dispatch GVT
@@ -464,8 +471,10 @@ public abstract class BridgeEventSupport implements SVGConstants {
                         Rectangle2D bounds = layout.getBounds2D();
                         if ((textHit != null) && 
                             (bounds != null) && bounds.contains(x, y)) {
-                            Object delimiter = aci.getAttribute
-                                (GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER);
+                            SoftReference sr;
+                            sr =(SoftReference)aci.getAttribute
+                                (TEXT_COMPOUND_ID);
+                            Object delimiter = sr.get();
                             if (delimiter instanceof Element) {
                                 return (Element)delimiter;
                             }

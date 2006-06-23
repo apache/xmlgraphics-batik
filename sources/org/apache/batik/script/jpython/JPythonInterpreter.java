@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001-2003  The Apache Software Foundation 
+   Copyright 2001-2003,2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -41,12 +41,12 @@ public class JPythonInterpreter implements org.apache.batik.script.Interpreter {
     // org.apache.batik.script.Intepreter implementation
 
     public Object evaluate(Reader scriptreader)
-        throws InterpreterException, IOException {
+        throws IOException {
         return evaluate(scriptreader, "");
     }
 
     public Object evaluate(Reader scriptreader, String description)
-        throws InterpreterException, IOException {
+        throws IOException {
 
         // oups jpython doesn't accept reader in its eval method :-(
         StringBuffer sbuffer = new StringBuffer();
@@ -59,8 +59,7 @@ public class JPythonInterpreter implements org.apache.batik.script.Interpreter {
         return evaluate(str);
     }
 
-    public Object evaluate(String script)
-        throws InterpreterException {
+    public Object evaluate(String script) {
         try {
             interpreter.exec(script);
         } catch (org.python.core.PyException e) {

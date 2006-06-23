@@ -87,13 +87,14 @@ public class JSVGScrollPane extends JPanel
     protected JScrollBar vertical;
     protected JScrollBar horizontal;
     protected Component cornerBox;
+    protected boolean scrollbarsAlwaysVisible = false;
+
     protected SBListener hsbListener;
     protected SBListener vsbListener;
 	
     protected Rectangle2D viewBox = null; // SVG Root element viewbox 
     protected boolean ignoreScrollChange = false;
 	
-
     /**
      *	Creates a JSVGScrollPane, which will scroll an JSVGCanvas.
      *
@@ -105,7 +106,7 @@ public class JSVGScrollPane extends JPanel
         canvas.setRecenterOnResize(false);
 
         // create components
-        vertical = new JScrollBar(JScrollBar.VERTICAL, 0, 0, 0, 0);
+        vertical   = new JScrollBar(JScrollBar.VERTICAL,   0, 0, 0, 0);
         horizontal = new JScrollBar(JScrollBar.HORIZONTAL, 0, 0, 0, 0);
         
         // create a spacer next to the horizontal bar
@@ -123,9 +124,8 @@ public class JSVGScrollPane extends JPanel
         vsbListener = createScrollBarListener(true);
         vertical.getModel().addChangeListener(vsbListener);
 		
-        // by default, scrollbars are not visible
-        horizontalPanel.setVisible(false);
-        vertical       .setVisible(false);
+        // by default, scrollbars are not needed
+        updateScrollbarState(false, false);
 		
         // addMouseWheelListener(new WheelListener());
 		
@@ -147,6 +147,14 @@ public class JSVGScrollPane extends JPanel
         canvas.addUpdateManagerListener  (xlistener);
     }// JSVGScrollPane()
 
+    public boolean getScrollbarsAlwaysVisible() {
+        return scrollbarsAlwaysVisible;
+    }
+
+    public void setScrollbarsAlwaysVisible(boolean vis) {
+        scrollbarsAlwaysVisible = vis;
+        resizeScrollBars();
+    }
 
     /**
      * Scrollbar listener factory method so subclasses can
@@ -205,8 +213,7 @@ public class JSVGScrollPane extends JPanel
     public void reset()
     {
         viewBox = null;
-        horizontalPanel.setVisible(false);
-        vertical       .setVisible(false);
+        updateScrollbarState(false, false);
         revalidate();
     }// reset()
 	
@@ -368,9 +375,7 @@ public class JSVGScrollPane extends JPanel
         public void gvtBuildStarted  (GVTTreeBuilderEvent e) { 
             isReady = false;
             // Start by assuming we won't need them.
-            vertical       .setVisible(false);
-            horizontalPanel.setVisible(false);
-            cornerBox      .setVisible(false);
+            updateScrollbarState(false, false);
         }
         public void gvtBuildCompleted(GVTTreeBuilderEvent e)
         {
@@ -502,6 +507,7 @@ public class JSVGScrollPane extends JPanel
         // minVPW/H is the viewport W/H with scrollbars.
         int maxVPW = vpSize.width;  int minVPW = vpSize.width;
         int maxVPH = vpSize.height; int minVPH = vpSize.height;
+
         if (vertical.isVisible()) {
             maxVPW += vertical.getPreferredSize().width;
         } else {
@@ -518,30 +524,52 @@ public class JSVGScrollPane extends JPanel
         // System.err.println("MAX: [" + maxW + "," + maxH + "]");
 
         // Fist check if we need either scrollbar (given maxVPW/H).
-        boolean hVis = (maxW > maxVPW) || (tx != 0);
-        boolean vVis = (maxH > maxVPH) || (ty != 0);
-        // System.err.println("Vis flags: " + hVis +", " + vVis);
-        
-        // This makes sure that if one scrollbar is visible
-        // we 'recheck' the other scroll bar with the minVPW/H
-        // since making one visible makes the room for displaying content
-        // in the other dimension smaller. (This also makes the
-        // 'corner box' visible if both scroll bars are visible).
-        if      (vVis && !hVis) hVis = (maxW > minVPW);
-        else if (hVis && !vVis) vVis = (maxH > minVPH);
-
+        boolean hNeeded, vNeeded;
         Dimension ret = new Dimension();
-        ret.width  = (hVis)?minVPW:maxVPW;
-        ret.height = (vVis)?minVPH:maxVPH;
 
-        vertical       .setVisible(vVis);
-        horizontalPanel.setVisible(hVis);
-        cornerBox      .setVisible(vVis && hVis);
+        if (scrollbarsAlwaysVisible) {
+            hNeeded = (maxW > minVPW);
+            vNeeded = (maxH > minVPH);
+            ret.width  = minVPW;
+            ret.height = minVPH;
+        } else {
+            hNeeded = (maxW > maxVPW) || (tx != 0);
+            vNeeded = (maxH > maxVPH) || (ty != 0);
+            // System.err.println("Vis flags: " + hNeeded +", " + vNeeded);
+        
+            // This makes sure that if one scrollbar is visible
+            // we 'recheck' the other scroll bar with the minVPW/H
+            // since making one visible makes the room for displaying content
+            // in the other dimension smaller. (This also makes the
+            // 'corner box' visible if both scroll bars are visible).
+            if      (vNeeded && !hNeeded) hNeeded = (maxW > minVPW);
+            else if (hNeeded && !vNeeded) vNeeded = (maxH > minVPH);
+
+            ret.width  = (hNeeded)?minVPW:maxVPW;
+            ret.height = (vNeeded)?minVPH:maxVPH;
+        }
+
+        updateScrollbarState(hNeeded, vNeeded);
 
         //  Return the new size of the canvas.
         return ret;
     }
 	
+    protected void updateScrollbarState(boolean hNeeded, boolean vNeeded) {
+        horizontal.setEnabled(hNeeded);
+        vertical  .setEnabled(vNeeded);
+
+        if (scrollbarsAlwaysVisible) {
+            horizontalPanel.setVisible(true);
+            vertical       .setVisible(true);
+            cornerBox      .setVisible(true);
+        } else {
+            horizontalPanel.setVisible(hNeeded);
+            vertical       .setVisible(vNeeded);
+            cornerBox      .setVisible(hNeeded&&vNeeded);
+        }
+    }
+
     /** 
      *	Derives the SVG Viewbox from the SVG root element. 
      *	Caches it. Assumes that it will not change.

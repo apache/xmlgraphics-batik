@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001-2006  The Apache Software Foundation 
+   Copyright 2001-2006  The Apache Software Foundation
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -78,7 +78,7 @@ public abstract class SVGStylableElement
     protected SVGStylableElement(String prefix, AbstractDocument owner) {
         super(prefix, owner);
     }
-    
+
     /**
      * Returns the override style declaration for this element.
      */
@@ -91,7 +91,7 @@ public abstract class SVGStylableElement
     }
 
     // CSSStylableElement //////////////////////////////////////////
-    
+
     /**
      * Returns the computed style of this element/pseudo-element.
      */
@@ -122,21 +122,22 @@ public abstract class SVGStylableElement
 
     /**
      * Returns the CSS base URL of this element.
+     * @throws IllegalArgumentException when the result of getBaseURI() 
+     *         cannot be used as an URL.
      */
     public URL getCSSBase() {
+        if (getXblBoundElement() != null) {
+            return null;
+        }
+        String bu = getBaseURI();
+        if (bu == null) {
+            return null;
+        }
         try {
-            if (getXblBoundElement() != null) {
-                return null;
-            }
-            String bu = getBaseURI();
-            if (bu == null) {
-                return null;
-            }
             return new URL(bu);
         } catch (MalformedURLException e) {
-            // !!! TODO
-            e.printStackTrace();
-            throw new InternalError();
+            String msg = "MalformedURLException:" + e.getMessage() + ':' + bu;
+            throw new IllegalArgumentException( msg );
         }
     }
 
@@ -217,7 +218,7 @@ public abstract class SVGStylableElement
 
         CSSEngine eng = ((SVGOMDocument)getOwnerDocument()).getCSSEngine();
         int idx = eng.getPropertyIndex(name);
-        if (idx == -1) 
+        if (idx == -1)
             return null;
 
         if (idx > SVGCSSEngine.FINAL_INDEX) {
@@ -233,13 +234,13 @@ public abstract class SVGStylableElement
             case SVGCSSEngine.STROKE_INDEX:
                 result = new PresentationAttributePaintValue(eng, name);
                 break;
-                
+
             case SVGCSSEngine.FLOOD_COLOR_INDEX:
             case SVGCSSEngine.LIGHTING_COLOR_INDEX:
             case SVGCSSEngine.STOP_COLOR_INDEX:
                 result = new PresentationAttributeColorValue(eng, name);
                 break;
-                
+
             default:
                 result = new PresentationAttributeValue(eng, name);
             }
@@ -567,7 +568,7 @@ public abstract class SVGStylableElement
         extends CSSOMStoredStyleDeclaration
         implements LiveAttributeValue,
                    CSSEngine.MainPropertyReceiver {
-        
+
         /**
          * Whether the mutation comes from this object.
          */
@@ -668,7 +669,7 @@ public abstract class SVGStylableElement
          */
         public void setMainProperty(String name, Value v, boolean important) {
             int idx = cssEngine.getPropertyIndex(name);
-            if (idx == -1) 
+            if (idx == -1)
                 return;   // unknown property
 
             int i;
@@ -676,7 +677,7 @@ public abstract class SVGStylableElement
                 if (idx == declaration.getIndex(i))
                     break;
             }
-            if (i < declaration.size()) 
+            if (i < declaration.size())
                 declaration.put(i, v, idx, important);
             else
                 declaration.append(v, idx, important);
@@ -693,7 +694,7 @@ public abstract class SVGStylableElement
         /**
          * Creates a new OverrideStyleDeclaration.
          */
-        public OverrideStyleDeclaration(CSSEngine eng) {
+        protected OverrideStyleDeclaration(CSSEngine eng) {
             super(eng);
             declaration = new org.apache.batik.css.engine.StyleDeclaration();
         }

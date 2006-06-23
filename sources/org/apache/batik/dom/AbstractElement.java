@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2000-2003  The Apache Software Foundation 
+   Copyright 2000-2003,2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -216,6 +216,9 @@ public abstract class AbstractElement
      * org.w3c.dom.Element#hasAttributeNS(String,String)}.
      */
     public boolean hasAttributeNS(String namespaceURI, String localName) {
+        if (namespaceURI != null && namespaceURI.length() == 0) {
+            namespaceURI = null;
+        }
 	return attributes != null &&
 	       attributes.getNamedItemNS(namespaceURI, localName) != null;
     }
@@ -228,6 +231,9 @@ public abstract class AbstractElement
 	if (attributes == null) {
 	    return "";
 	}
+        if (namespaceURI != null && namespaceURI.length() == 0) {
+            namespaceURI = null;
+        }
 	Attr attr = (Attr)attributes.getNamedItemNS(namespaceURI, localName);
 	return (attr == null) ? "" : attr.getValue();
     }
@@ -242,6 +248,9 @@ public abstract class AbstractElement
 	if (attributes == null) {
 	    attributes = createAttributes();
 	}
+        if (namespaceURI != null && namespaceURI.length() == 0) {
+            namespaceURI = null;
+        }
         Attr attr = getAttributeNodeNS(namespaceURI, qualifiedName);
         if (attr == null) {
             attr = getOwnerDocument().createAttributeNS(namespaceURI,
@@ -259,6 +268,9 @@ public abstract class AbstractElement
      */
     public void removeAttributeNS(String namespaceURI, 
 				  String localName) throws DOMException {
+        if (namespaceURI != null && namespaceURI.length() == 0) {
+            namespaceURI = null;
+        }
 	if (!hasAttributeNS(namespaceURI, localName)) {
             return;
 	}
@@ -271,6 +283,9 @@ public abstract class AbstractElement
      */
     public Attr getAttributeNodeNS(String namespaceURI, 
 				   String localName) {
+        if (namespaceURI != null && namespaceURI.length() == 0) {
+            namespaceURI = null;
+        }
 	if (attributes == null) {
 	    return null;
 	}
@@ -326,6 +341,9 @@ public abstract class AbstractElement
      */
     public void setIdAttributeNS(String ns, String ln, boolean isId)
             throws DOMException {
+        if (ns != null && ns.length() == 0) {
+            ns = null;
+        }
         AbstractAttr a = (AbstractAttr) getAttributeNodeNS(ns, ln);
         if (a == null) {
             throw createDOMException(DOMException.NOT_FOUND_ERR,
@@ -740,6 +758,9 @@ public abstract class AbstractElement
 	 * org.w3c.dom.NamedNodeMap#getNamedItemNS(String,String)}.
 	 */
 	public Node getNamedItemNS(String namespaceURI, String localName) {
+            if (namespaceURI != null && namespaceURI.length() == 0) {
+                namespaceURI = null;
+            }
             return get(namespaceURI, localName);
 	}
 
@@ -775,6 +796,9 @@ public abstract class AbstractElement
 					 "attribute.missing",
 					 new Object[] { "" });
 	    }
+            if (namespaceURI != null && namespaceURI.length() == 0) {
+                namespaceURI = null;
+            }
 	    AbstractAttr n = (AbstractAttr)remove(namespaceURI, localName);
 	    if (n == null) {
 		throw createDOMException(DOMException.NOT_FOUND_ERR,
@@ -794,6 +818,9 @@ public abstract class AbstractElement
  	 */
 	public Node setNamedItem(String ns, String name, Node arg)
             throws DOMException {
+            if (ns != null && ns.length() == 0) {
+                ns = null;
+            }
 	    ((AbstractAttr)arg).setOwnerElement(AbstractElement.this);
 	    AbstractAttr result = (AbstractAttr)put(ns, name, arg);
 

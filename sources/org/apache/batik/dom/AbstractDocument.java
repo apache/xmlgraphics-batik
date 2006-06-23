@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2000-2003,2005  The Apache Software Foundation 
+   Copyright 2000-2003,2005-2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -51,6 +51,8 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
 
 import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.DocumentType;
 import org.w3c.dom.DOMConfiguration;
 import org.w3c.dom.DOMError;
 import org.w3c.dom.DOMErrorHandler;
@@ -58,20 +60,18 @@ import org.w3c.dom.DOMException;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.DOMLocator;
 import org.w3c.dom.DOMStringList;
-import org.w3c.dom.Document;
-import org.w3c.dom.DocumentType;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.UserDataHandler;
 import org.w3c.dom.events.DocumentEvent;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.MutationNameEvent;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.w3c.dom.traversal.DocumentTraversal;
 import org.w3c.dom.traversal.NodeFilter;
 import org.w3c.dom.traversal.NodeIterator;
 import org.w3c.dom.traversal.TreeWalker;
+import org.w3c.dom.UserDataHandler;
 import org.w3c.dom.xpath.XPathEvaluator;
 import org.w3c.dom.xpath.XPathException;
 import org.w3c.dom.xpath.XPathExpression;
@@ -173,7 +173,7 @@ public abstract class AbstractDocument
     /**
      * The XBL manager for this document.
      */
-    protected XBLManager xblManager = new GenericXBLManager();
+    protected transient XBLManager xblManager = new GenericXBLManager();
 
     /**
      * The elementsById lists.
@@ -646,8 +646,8 @@ public abstract class AbstractDocument
      * Returns an ElementsByTagNameNS object from the cache, if any.
      */
     public ElementsByTagNameNS getElementsByTagNameNS(Node n,
-                                                    String ns,
-                                                    String ln) {
+                                                      String ns,
+                                                      String ln) {
         if (elementsByTagNamesNS == null) {
             return null;
         }
@@ -697,6 +697,9 @@ public abstract class AbstractDocument
     public boolean canDispatch(String ns, String eventType) {
         if (eventType == null) {
             return false;
+        }
+        if (ns != null && ns.length() == 0) {
+            ns = null;
         }
         if (ns == null || ns.equals(XMLConstants.XML_EVENTS_NAMESPACE_URI)) {
             return eventType.equals("Event")
@@ -1056,6 +1059,9 @@ public abstract class AbstractDocument
                                                     qn });
         }
         String prefix = DOMUtilities.getPrefix(qn);
+        if (ns != null && ns.length() == 0) {
+            ns = null;
+        }
         if (prefix != null && ns == null) {
             throw createDOMException(DOMException.NAMESPACE_ERR,
                                      "prefix",

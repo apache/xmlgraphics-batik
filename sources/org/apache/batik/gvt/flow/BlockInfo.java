@@ -23,11 +23,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.batik.gvt.font.FontFamilyResolver;
 import org.apache.batik.gvt.font.GVTFont;
-import org.apache.batik.gvt.font.GVTFontFamily;
 import org.apache.batik.gvt.font.GVTLineMetrics;
-import org.apache.batik.gvt.font.UnresolvedFontFamily;
 
 public class BlockInfo {
     public final static int ALIGN_START  = 0;
@@ -45,7 +42,7 @@ public class BlockInfo {
     protected int     alignment;
 
     protected float   lineHeight;
-    protected List    fontFamilyList;
+    protected List    fontList;
     protected Map     fontAttrs;
     protected float   ascent=-1;
     protected float   descent=-1;
@@ -55,7 +52,7 @@ public class BlockInfo {
 
     public BlockInfo(float top, float right, float bottom, float left,
                      float indent, int alignment, float lineHeight,
-                     List fontFamilyList, Map fontAttrs, 
+                     List fontList, Map fontAttrs, 
                      boolean flowRegionBreak) {
         this.top    = top;
         this.right  = right;
@@ -66,9 +63,9 @@ public class BlockInfo {
 
         this.alignment = alignment;
 
-        this.lineHeight       = lineHeight;
-        this.fontFamilyList   = fontFamilyList;
-        this.fontAttrs        = fontAttrs;
+        this.lineHeight      = lineHeight;
+        this.fontList        = fontList;
+        this.fontAttrs       = fontAttrs;
 
         this.flowRegionBreak = flowRegionBreak;
     }
@@ -93,17 +90,9 @@ public class BlockInfo {
         if (fsFloat != null) 
             fontSize = fsFloat.floatValue();
 
-        Iterator i = fontFamilyList.iterator();
+        Iterator i = fontList.iterator();
         while (i.hasNext()) {
-            GVTFontFamily fontFamily = (GVTFontFamily)i.next();
-            if (fontFamily instanceof UnresolvedFontFamily) {
-                fontFamily = FontFamilyResolver.resolve
-                    ((UnresolvedFontFamily)fontFamily);
-            }
-            if (fontFamily == null) continue;
-            
-            
-            GVTFont font = fontFamily.deriveFont(fontSize, fontAttrs);
+            GVTFont font = (GVTFont)i.next();
             GVTLineMetrics lm = font.getLineMetrics("", frc);
             this.ascent = lm.getAscent();
             this.descent = lm.getDescent();
@@ -126,7 +115,7 @@ public class BlockInfo {
 
 
     public float   getLineHeight()      { return lineHeight; }
-    public List    getFontFamilyList()  { return fontFamilyList; }
+    public List    getFontList()        { return fontList; }
     public Map     getFontAttrs()       { return fontAttrs; }
     public float   getAscent()          { return ascent; }
     public float   getDescent()         { return descent; }

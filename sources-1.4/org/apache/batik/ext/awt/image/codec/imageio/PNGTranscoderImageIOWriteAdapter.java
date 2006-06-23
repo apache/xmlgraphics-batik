@@ -41,7 +41,7 @@ public class PNGTranscoderImageIOWriteAdapter implements
 
     /**
      * @throws TranscoderException 
-     * @see PNGTranscoder.WriteAdapter#writeImage(org.apache.batik.transcoder.image.PNGTranscoder, java.awt.image.BufferedImage, org.apache.batik.transcoder.TranscoderOutput)
+     * @see org.apache.batik.transcoder.image.PNGTranscoder.WriteAdapter#writeImage(org.apache.batik.transcoder.image.PNGTranscoder, java.awt.image.BufferedImage, org.apache.batik.transcoder.TranscoderOutput)
      */
     public void writeImage(PNGTranscoder transcoder, BufferedImage img,
             TranscoderOutput output) throws TranscoderException {

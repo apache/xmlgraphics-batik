@@ -137,20 +137,21 @@ public class FontFamilyResolver {
         if (resolvedFontFamilies == null) {
             resolvedFontFamilies = new HashMap();
         }
+        familyName = familyName.toLowerCase();
 
         // first see if this font family has already been resolved
         GVTFontFamily resolvedFF = 
-            (GVTFontFamily)resolvedFontFamilies.get(familyName.toLowerCase());
+            (GVTFontFamily)resolvedFontFamilies.get(familyName);
 
         if (resolvedFF == null) { // hasn't been resolved yet
             // try to find a matching family name in the list of
             // available fonts
-            String awtFamilyName = (String)fonts.get(familyName.toLowerCase());
+            String awtFamilyName = (String)fonts.get(familyName);
             if (awtFamilyName != null) {
                 resolvedFF = new AWTFontFamily(awtFamilyName);
             }
 
-            resolvedFontFamilies.put(familyName.toLowerCase(), resolvedFF);
+            resolvedFontFamilies.put(familyName, resolvedFF);
         }
 
         //  if (resolvedFF != null) {

@@ -18,7 +18,7 @@
 package org.apache.batik.dom.svg12;
 
 import org.apache.batik.dom.AbstractDocument;
-import org.apache.batik.dom.svg.SVGStylableElement;
+import org.apache.batik.dom.svg.SVGGraphicsElement;
 import org.apache.batik.util.SVG12Constants;
 import org.w3c.dom.Node;
 
@@ -28,7 +28,7 @@ import org.w3c.dom.Node;
  * @author <a href="mailto:thomas.deweese@kodak.com">Thomas DeWeese</a>
  * @version $Id$
  */
-public class SVGOMFlowRootElement extends SVGStylableElement {
+public class SVGOMFlowRootElement extends SVGGraphicsElement {
 
     /**
      * Creates a new BatikRegularPolygonElement object.

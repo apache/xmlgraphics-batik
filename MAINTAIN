@@ -3,7 +3,8 @@
                          -------------------------
                      
 This document introduces newcomers to the management and maintenance of 
-the Batik project hosted under xml.apache.org (http://xml.apache.org/batik).
+the Batik project hosted under xmlgraphics.apache.org
+(http://xmlgraphics.apache.org/batik).
 
 Each project is required to use Ant as build tool and to be coherent with the
 rest of the build systems of the other projects, so that nightly builds and
@@ -27,12 +28,12 @@ For creating a distribution the following steps must be done:
     Batik if it isn't already there.  The following link has the
     details on what this means and how to do it.
 
-        http://nagoya.apache.org/wiki/apachewiki.cgi?SigningReleases
+        http://wiki.apache.org/old/SigningReleases
 
  3) Update the splash screens:
     build splash
 
- 4) Commit these changes to CVS, in general only the following files
+ 4) Commit these changes to SVN, in general only the following files
     should be modified:
 
     build.xml
@@ -41,18 +42,18 @@ For creating a distribution the following steps must be done:
     xdocs/images/splash.svg
     resources/org/apache/batik/apps/svgbrowser/resources/squiggle.png
 
- 5) tag the release on CVS:
-      cvs rtag <tag> <module>
-      e.g., cvs rtag batik-1_1rc3 xml-batik. 
+ 5) tag the release on SVN:
+      svn copy http://svn.apache.org/repos/asf/xmlgraphics/batik/trunk \
+               http://svn.apache.org/repos/asf/xmlgraphics/batik/tags/<tag>
+    where <tag> is the version name, e.g. "batik-1_1rc3".
+
     Note: sometimes, it is necessary to remove a tag because the 
     tests failed and a fix was required. To remove a tag, use
-    the rtag command:
-      cvs rtag -d <tag> <module>
-      e.g., cvs rtag -d batik-1_1rc3 xml-batik
+    the delete command:
+      svn delete http://svn.apache.org/repos/asfk/xmlgraphics/batik/tags/<tag>
 
  6) checkout the tagged release to a new directory:
-      cvs co -r <tag> xml-batik
-      e.g., cvs co -r batik-1_1rc3 xml-batik
+      svn co http://svn.apache.org/repos/asfk/xmlgraphics/batik/tags/<tag>
 
  7) run the build script with target "dist-zip"
       build dist-zip 
@@ -76,7 +77,7 @@ For creating a distribution the following steps must be done:
 
  9) Update the README file describing the content of the release and
     the modifications which have taken place:
-    http://xml.apache.org/batik/dist/README 
+    http://www.apache.org/dist/xml/batik/README
 
 10) If you are creating a release candidate, rename the distribution files
     to an rc name. For example:
@@ -86,7 +87,7 @@ For creating a distribution the following steps must be done:
     has full details on how to sign things (if you don't want to know
     anything the last section 'Using GPG' tells you what commands work).
 
-        http://nagoya.apache.org/wiki/apachewiki.cgi?SigningReleases
+        http://wiki.apache.org/old/SigningReleases
 
     e.g. gpg --detach-sig --armor --output batik-1.5.zip.asc batik-1.5.zip
          md5 batik-1.5.zip > batik-1.5.zip.md5
@@ -95,17 +96,17 @@ For creating a distribution the following steps must be done:
     files), the README, and the KEYS file under 
         /www/www.apache.org/dist/xml/batik/
 
-     e.g., 'scp batik-1.1rc1.zip* vhardy@xml.apache.org:/www/www.apache.org/dist/xml/batik/'
+     e.g., 'scp batik-1.1rc1.zip* vhardy@xmlgraphics.apache.org:/www/www.apache.org/dist/xml/batik/'
 
 11) Finish setting up the distribution directory in accordance with:
 
       http://www.apache.org/dev/mirrors.html
-      http://cvs.apache.org/~bodewig/mirror.html
+      http://people.apache.org/~bodewig/mirror.html
     
     This makes sure that the distribution is mirrored nicely around
     the world.
 
-    Start by logging into cvs.apache.org (e.g. 'ssh vhardy@cvs.apache.org').
+    Start by logging into svn.apache.org (e.g. 'ssh vhardy@svn.apache.org').
 
     First make sure file permissions are correct.  The
     new files should be owned by group 'xml' and be group writable.
@@ -141,19 +142,17 @@ Site Creation
 
 For creating the web site, the following steps must be done:
 
-[Note: due to JVM font-rendering problems, this is best done on a windows machine]
+[Note: due to JVM font-rendering problems, this is best done on a
+       windows machine]
 
- 1) make sure you checked out the module "xml-site/targets/batik" in
-    the same directory as your project module
+ 1) Make sure you checked out the SVN directory
+     https://svn.apache.org/repos/asf/xmlgraphics/site/deploy/batik
+    as "xml-site/targets/batik" in the same directory as your project module
  2) run the build script with target "site"
- 3) commit the xml-site/targets/[project] directory
+ 3) commit the site/deploy/batik directory
  4) connect to xml.apache.org with your account
- 5) execute "cd /www/xml.apache.org/[project]"
- 6) execute "cvs update"
- 7) zip the Batik javadoc of the latest stable Batik release
- 8) ftp the Batik javadoc to xml.apache.org/batik 
- 9) upzip the Batik java so that the javadoc is available
-    at xml.apache.org/batik/javadoc/index.html
+ 5) execute "cd /www/xmlgraphics.apache.org/batik"
+ 6) execute "svn update"
  
 [NOTE: you must have commit access on xml-site to be able to do this]
 
@@ -161,4 +160,4 @@ Nightly Builds
 --------------
 
 The nightly builds are current performed by a crontab entry in
-Thomas DeWeese's cvs.apache.org account: /home/deweese/bin/nightly.csh
+Thomas DeWeese's people.apache.org account: /home/deweese/bin/nightly.csh

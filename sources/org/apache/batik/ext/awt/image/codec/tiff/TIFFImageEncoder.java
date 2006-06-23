@@ -832,6 +832,7 @@ public class TIFFImageEncoder extends ImageEncoderImpl {
                    ColorSpace.TYPE_RGB) {
                     jpegRGBToYCbCr = true;
                 }
+                break;
             case COMP_DEFLATE:
                 bufSize = (int)bytesPerTile;
                 deflater = new Deflater(encodeParam.getDeflateLevel());

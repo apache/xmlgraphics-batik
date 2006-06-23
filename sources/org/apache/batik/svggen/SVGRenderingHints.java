@@ -22,7 +22,7 @@ import java.awt.RenderingHints;
 import org.apache.batik.ext.awt.g2d.GraphicContext;
 
 /**
- * Utility class that converts a RenderingHins object into
+ * Utility class that converts a RenderingHints object into
  * a set of SVG properties. Here is how individual hints
  * are converted.
  * + RENDERING -> sets all other hints to

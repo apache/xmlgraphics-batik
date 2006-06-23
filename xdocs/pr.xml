@@ -3,7 +3,7 @@
 
 <!--
 
-   Copyright 2000-2002,2004-2005  The Apache Software Foundation 
+   Copyright 2000-2002,2004-2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -146,7 +146,7 @@ and made more flexible.</li>
 
 <p>Batik delivers a number of sample applications that leverage its core
 modules, such as an SVG browser. Screenshots of that browser can
-be seen at: <link href="http://xml.apache.org/batik/svgviewer.html">http://xml.apache.org/batik/svgviewer.html</link></p>
+be seen at: <link href="http://xmlgraphics.apache.org/batik/svgviewer.html">http://xmlgraphics.apache.org/batik/svgviewer.html</link></p>
  
 <p>In the near future, the Batik team aims to provide developers worldwide
 support for full dynamic behavior, including scripting and SMIL
@@ -192,7 +192,7 @@ representation capabilities.</p>
 <link href="http://xmlgraphics.apache.org/mail.html">http://xmlgraphics.apache.org/mail.html</link></p>
  
 <p>For more information about the Batik project please see
-<link href="http://xml.apache.org/batik/">http://xml.apache.org/batik/</link></p>
+<link href="http://xmlgraphics.apache.org/batik/">http://xmlgraphics.apache.org/batik/</link></p>
  
 <p><em>ABOUT THE APACHE SOFTWARE FOUNDATION</em><br /><br />
  

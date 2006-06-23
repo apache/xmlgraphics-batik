@@ -230,6 +230,11 @@ public interface GVTAttributedCharacterIterator extends AttributedCharacterItera
         public final static TextAttribute TEXT_COMPOUND_DELIMITER =
                               new TextAttribute("TEXT_COMPOUND_DELIMITER");
 
+        /** Element identifier all chars from same element will share an
+         *  ID. */
+        public final static TextAttribute TEXT_COMPOUND_ID =
+                              new TextAttribute("TEXT_COMPOUND_ID");
+
         /** Anchor type.*/
         public final static TextAttribute ANCHOR_TYPE =
                               new TextAttribute("ANCHOR_TYPE");
@@ -319,7 +324,10 @@ public interface GVTAttributedCharacterIterator extends AttributedCharacterItera
                                           new TextAttribute("HORIZONTAL_ORIENTATION_ANGLE");
 
         public final static TextAttribute GVT_FONT_FAMILIES =
-                                          new TextAttribute("GVT_FONT_FAMILIES");
+                       new TextAttribute("GVT_FONT_FAMILIES");
+
+        public final static TextAttribute GVT_FONTS =
+                                          new TextAttribute("GVT_FONTS");
 
         public final static TextAttribute GVT_FONT =
                                           new TextAttribute("GVT_FONT");

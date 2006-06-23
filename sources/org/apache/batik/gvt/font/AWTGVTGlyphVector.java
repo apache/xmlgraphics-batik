@@ -208,7 +208,7 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
     }
 
     /**
-     *  Returns the logical bounds of this GlyphVector.
+     * Returns the logical bounds of this GlyphVector.
      * This is a bound useful for hit detection and highlighting.
      */
     public Rectangle2D getLogicalBounds() {
@@ -220,8 +220,8 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
     }
 
     /**
-     *  Returns the logical bounds of the specified glyph within this
-     *  GlyphVector.
+     * Returns the logical bounds of the specified glyph within this
+     * GlyphVector.
      */
     public Shape getGlyphLogicalBounds(int glyphIndex) {
         if (glyphLogicalBounds[glyphIndex] == null &&
@@ -520,6 +520,15 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
     // that are positioned (otherwise they are always at 0,0).
     static boolean outlinesPositioned() {
         return outlinesPositioned;
+    }
+
+    /**
+     * Returns the bounding box of the specified glyph, considering only the
+     * glyph's metrics (ascent, descent, advance) rather than the actual glyph
+     * shape.
+     */
+    public Rectangle2D getGlyphCellBounds(int glyphIndex) {
+        return getGlyphLogicalBounds(glyphIndex).getBounds2D();
     }
 
     /**

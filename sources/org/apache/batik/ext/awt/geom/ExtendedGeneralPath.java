@@ -688,11 +688,11 @@ public class ExtendedGeneralPath implements ExtendedShape, Cloneable {
             result.path = (GeneralPath) path.clone();
 
             result.values = new float[values.length];
-            System.arraycopy(result.values, 0, values, 0, values.length);
+            System.arraycopy(values, 0, result.values, 0, values.length);
             result.numVals = numVals;
 
             result.types = new int[types.length];
-            System.arraycopy(result.types, 0, types, 0, types.length);
+            System.arraycopy(types, 0, result.types, 0, types.length);
             result.numSeg = numSeg;
 
             return result;

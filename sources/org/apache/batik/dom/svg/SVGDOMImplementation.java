@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2000-2003  The Apache Software Foundation 
+   Copyright 2000-2003  The Apache Software Foundation
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -47,7 +47,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSStyleSheet;
-import org.w3c.dom.css.DOMImplementationCSS;
 import org.w3c.dom.css.ViewCSS;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.stylesheets.StyleSheet;
@@ -60,9 +59,9 @@ import org.w3c.dom.stylesheets.StyleSheet;
  * @version $Id$
  */
 public class SVGDOMImplementation
-    extends    ExtensibleDOMImplementation 
+    extends    ExtensibleDOMImplementation
     implements CSSStyleDeclarationFactory {
-    
+
     /**
      * The SVG namespace uri.
      */
@@ -100,12 +99,12 @@ public class SVGDOMImplementation
             (RESOURCES, getClass().getClassLoader());
     }
 
-    public CSSEngine createCSSEngine(AbstractStylableDocument doc, 
+    public CSSEngine createCSSEngine(AbstractStylableDocument doc,
                                      CSSContext               ctx,
                                      ExtendedParser           ep,
-                                     ValueManager     []      vms, 
+                                     ValueManager     []      vms,
                                      ShorthandManager []      sms) {
-                                     
+
         URL durl = ((SVGOMDocument)doc).getURLObject();
         CSSEngine result = new SVGCSSEngine(doc, durl, ep, vms, sms, ctx);
 
@@ -159,7 +158,8 @@ public class SVGDOMImplementation
      * DOMImplementationCSS#createCSSStyleSheet(String,String)}.
      */
     public CSSStyleSheet createCSSStyleSheet(String title, String media) {
-        throw new InternalError("Not implemented");
+
+        throw new UnsupportedOperationException("Not implemented");
     }
 
     // CSSStyleDeclarationFactory ///////////////////////////////////////////
@@ -169,7 +169,7 @@ public class SVGDOMImplementation
      * @return a CSSOMStyleDeclaration instance.
      */
     public CSSStyleDeclaration createCSSStyleDeclaration() {
-        throw new InternalError("Not implemented");
+        throw new UnsupportedOperationException("Not implemented");
     }
 
     // StyleSheetFactory /////////////////////////////////////////////
@@ -179,14 +179,14 @@ public class SVGDOMImplementation
      * processing instruction or return null.
      */
     public StyleSheet createStyleSheet(Node n, HashTable attrs) {
-        throw new InternalError("Not implemented");
+        throw new UnsupportedOperationException("Not implemented");
     }
 
     /**
      * Returns the user-agent stylesheet.
      */
     public CSSStyleSheet getUserAgentStyleSheet() {
-        throw new InternalError("Not implemented");
+        throw new UnsupportedOperationException("Not implemented");
     }
 
     /**
@@ -495,7 +495,7 @@ public class SVGDOMImplementation
             return new SVGOMAElement(prefix, (AbstractDocument)doc);
         }
     }
-    
+
     /**
      * To create a 'altGlyph' element.
      */

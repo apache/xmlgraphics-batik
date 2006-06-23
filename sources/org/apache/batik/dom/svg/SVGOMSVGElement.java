@@ -233,21 +233,21 @@ public class SVGOMSVGElement
      * <b>DOM</b>: Implements {@link SVGSVGElement#getUseCurrentView()}.
      */
     public boolean getUseCurrentView() {
-        throw new Error();
+        throw new UnsupportedOperationException("!!! Not implemented.");
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGSVGElement#setUseCurrentView(boolean)}.
      */
     public void setUseCurrentView(boolean useCurrentView) throws DOMException {
-        throw new Error();
+        throw new UnsupportedOperationException("!!! Not implemented.");
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGSVGElement#getCurrentView()}.
      */
     public SVGViewSpec getCurrentView() {
-        throw new Error();
+        throw new UnsupportedOperationException("!!! Not implemented.");
     }
 
     /**
@@ -328,32 +328,45 @@ public class SVGOMSVGElement
     }
 
     public int          suspendRedraw ( int max_wait_milliseconds ) {
-        throw new Error();
+        if (max_wait_milliseconds > 60000) 
+            max_wait_milliseconds = 60000;
+        else if (max_wait_milliseconds < 0) max_wait_milliseconds = 0;
+
+        SVGSVGContext ctx = (SVGSVGContext)getSVGContext();
+        return ctx.suspendRedraw(max_wait_milliseconds);
     }
     public void          unsuspendRedraw ( int suspend_handle_id )
         throws DOMException {
-        throw new Error();
+        SVGSVGContext ctx = (SVGSVGContext)getSVGContext();
+        boolean ok = ctx.unsuspendRedraw(suspend_handle_id);
+        if (!ok) {
+            throw new DOMException(DOMException.NOT_FOUND_ERR,
+                                   "Bad suspend_handle_id: " + 
+                                   suspend_handle_id);
+        }
     }
     public void          unsuspendRedrawAll (  ) {
-        throw new Error();
+        SVGSVGContext ctx = (SVGSVGContext)getSVGContext();
+        ctx.unsuspendRedrawAll();
     }
     public void          forceRedraw (  ) {
-        throw new Error();
+        SVGSVGContext ctx = (SVGSVGContext)getSVGContext();
+        ctx.forceRedraw();
     }
     public void          pauseAnimations (  ) {
-        throw new Error();
+        throw new UnsupportedOperationException("!!! Not implemented.");
     }
     public void          unpauseAnimations (  ) {
-        throw new Error();
+        throw new UnsupportedOperationException("!!! Not implemented.");
     }
     public boolean       animationsPaused (  ) {
-        throw new Error();
+        throw new UnsupportedOperationException("!!! Not implemented.");
     }
     public float         getCurrentTime (  ) {
-        throw new Error();
+        throw new UnsupportedOperationException("!!! Not implemented.");
     }
     public void          setCurrentTime ( float seconds ) {
-        throw new Error();
+        throw new UnsupportedOperationException("!!! Not implemented.");
     }
 
     public NodeList      getIntersectionList ( SVGRect rect,

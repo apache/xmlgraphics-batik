@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001-2003,2005  The Apache Software Foundation 
+   Copyright 2001-2003,2005-2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -25,8 +25,8 @@ import org.apache.batik.dom.AbstractNode;
 import org.apache.batik.dom.events.CustomEvent;
 import org.apache.batik.script.ScriptEventWrapper;
 import org.mozilla.javascript.Context;
+import org.mozilla.javascript.ContextAction;
 import org.mozilla.javascript.Function;
-import org.mozilla.javascript.JavaScriptException;
 import org.mozilla.javascript.NativeJavaObject;
 import org.mozilla.javascript.NativeObject;
 import org.mozilla.javascript.Scriptable;
@@ -62,21 +62,13 @@ class EventTargetWrapper extends NativeJavaObject {
             interpreter = i;
         }
         public void handleEvent(Event evt) {
-            try {
-                Object event;
-                if (evt instanceof ScriptEventWrapper) {
-                    event = ((ScriptEventWrapper) evt).getEventObject();
-                } else {
-                    event = evt;
-                }
-                interpreter.callHandler(function, event);
-            } catch (JavaScriptException e) {
-                // the only simple solution is to forward it as a
-                // RuntimeException to be catched by event dispatching
-                // in BridgeEventSupport.java
-                // another solution will to give UserAgent to interpreters
-                throw new WrappedException(e);
+            Object event;
+            if (evt instanceof ScriptEventWrapper) {
+                event = ((ScriptEventWrapper) evt).getEventObject();
+            } else {
+                event = evt;
             }
+            interpreter.callHandler(function, event);
         }
     }
 
@@ -92,23 +84,19 @@ class EventTargetWrapper extends NativeJavaObject {
             this.interpreter = interpreter;
         }
         public void handleEvent(Event evt) {
-            try {
-                if (evt instanceof ScriptEventWrapper) {
-                    array[0] = ((ScriptEventWrapper) evt).getEventObject();
-                } else {
-                    array[0] = evt;
-                }
-                interpreter.enterContext();
-                ScriptableObject.callMethod(scriptable, HANDLE_EVENT, array);
-            } catch (JavaScriptException e) {
-                // the only simple solution is to forward it as a
-                // RuntimeException to be caught by event dispatching
-                // in BridgeEventSupport.java
-                // another solution will to give UserAgent to interpreters
-                throw new WrappedException(e);
-            } finally {
-                Context.exit();
+            if (evt instanceof ScriptEventWrapper) {
+                array[0] = ((ScriptEventWrapper) evt).getEventObject();
+            } else {
+                array[0] = evt;
             }
+            ContextAction handleEventAction = new ContextAction() {
+                public Object run(Context cx) {
+                    ScriptableObject.callMethod
+                        (scriptable, HANDLE_EVENT, array);
+                    return null;
+                }
+            };
+            interpreter.call(handleEventAction);
         }
     }
 
@@ -137,19 +125,17 @@ class EventTargetWrapper extends NativeJavaObject {
             return call(fn, null);
         }
 
-        protected Object call(String fn, Object[] args) {
-            try {
-                interpreter.enterContext();
-                return ScriptableObject.callMethod(scriptable, fn, args);
-            } catch (JavaScriptException e) {
-                throw new WrappedException(e);
-            } finally {
-                Context.exit();
-            }
+        protected Object call(final String fn, final Object[] args) {
+            ContextAction callMethodAction = new ContextAction() {
+                public Object run(Context cx) {
+                    return ScriptableObject.callMethod(scriptable, fn, args);
+                }
+            };
+            return interpreter.call(callMethodAction);
         }
 
         public String getType() {
-            return (String) Context.toType
+            return (String) Context.jsToJava
                 (scriptable.get("type", scriptable), String.class);
         }
 
@@ -176,25 +162,25 @@ class EventTargetWrapper extends NativeJavaObject {
 
         public short getEventPhase() {
             Object ep = scriptable.get("eventPhase", scriptable);
-            Integer i = (Integer) Context.toType(ep, Integer.class);
+            Integer i = (Integer) Context.jsToJava(ep, Integer.class);
             return (short) i.intValue();
         }
 
         public boolean getBubbles() {
             Object ep = scriptable.get("bubbles", scriptable);
-            Boolean i = (Boolean) Context.toType(ep, Boolean.class);
+            Boolean i = (Boolean) Context.jsToJava(ep, Boolean.class);
             return i.booleanValue();
         }
 
         public boolean getCancelable() {
             Object ep = scriptable.get("cancelable", scriptable);
-            Boolean i = (Boolean) Context.toType(ep, Boolean.class);
+            Boolean i = (Boolean) Context.jsToJava(ep, Boolean.class);
             return i.booleanValue();
         }
 
         public long getTimeStamp() {
             Object ts = scriptable.get("timeStamp", scriptable);
-            Double d = (Double) Context.toType(ts, Double.class);
+            Double d = (Double) Context.jsToJava(ts, Double.class);
             return (long) d.doubleValue();
         }
 
@@ -211,12 +197,12 @@ class EventTargetWrapper extends NativeJavaObject {
         }
 
         public String getNamespaceURI() {
-            return (String) Context.toType
+            return (String) Context.jsToJava
                 (scriptable.get("namespaceURI", scriptable), String.class);
         }
 
         public boolean isCustom() {
-            Boolean b = (Boolean) Context.toType
+            Boolean b = (Boolean) Context.jsToJava
                 (call("isCustom"), Boolean.class);
             return b.booleanValue();
         }
@@ -226,7 +212,7 @@ class EventTargetWrapper extends NativeJavaObject {
         }
 
         public boolean isDefaultPrevented() {
-            Boolean b = (Boolean) Context.toType
+            Boolean b = (Boolean) Context.jsToJava
                 (call("isDefaultPrevented"), Boolean.class);
             return b.booleanValue();
         }
@@ -241,13 +227,13 @@ class EventTargetWrapper extends NativeJavaObject {
         }
 
         public boolean isPropagationStopped() {
-            Boolean b = (Boolean) Context.toType
+            Boolean b = (Boolean) Context.jsToJava
                 (call("isPropagationStopped"), Boolean.class);
             return b.booleanValue();
         }
 
         public boolean isImmediatePropagationStopped() {
-            Boolean b = (Boolean) Context.toType
+            Boolean b = (Boolean) Context.jsToJava
                 (call("isImmediatePropagationStopped"), Boolean.class);
             return b.booleanValue();
         }
@@ -303,8 +289,7 @@ class EventTargetWrapper extends NativeJavaObject {
         }
 
         public Scriptable construct(Context cx,
-                                    Scriptable scope, Object[] args)
-            throws JavaScriptException {
+                                    Scriptable scope, Object[] args) {
             return this.delegate.construct(cx, scope, args);
         }
 
@@ -393,9 +378,8 @@ class EventTargetWrapper extends NativeJavaObject {
         }
 
         public Object call(Context ctx, Scriptable scope,
-                           Scriptable thisObj, Object[] args)
-            throws JavaScriptException {
-            NativeJavaObject  njo = (NativeJavaObject)thisObj;
+                           Scriptable thisObj, Object[] args) {
+            NativeJavaObject njo = (NativeJavaObject)thisObj;
             if (args[1] instanceof Function) {
                 EventListener evtListener = null;
                 SoftReference sr = (SoftReference)listenerMap.get(args[1]);
@@ -410,7 +394,7 @@ class EventTargetWrapper extends NativeJavaObject {
                 Class[] paramTypes = { String.class, Function.class,
                                        Boolean.TYPE };
                 for (int i = 0; i < args.length; i++)
-                    args[i] = Context.toType(args[i], paramTypes[i]);
+                    args[i] = Context.jsToJava(args[i], paramTypes[i]);
                 ((EventTarget)njo.unwrap()).addEventListener
                     ((String)args[0], evtListener,
                      ((Boolean)args[2]).booleanValue());
@@ -431,7 +415,7 @@ class EventTargetWrapper extends NativeJavaObject {
                 Class[] paramTypes = { String.class, Scriptable.class,
                                        Boolean.TYPE };
                 for (int i = 0; i < args.length; i++)
-                    args[i] = Context.toType(args[i], paramTypes[i]);
+                    args[i] = Context.jsToJava(args[i], paramTypes[i]);
                 ((EventTarget)njo.unwrap()).addEventListener
                     ((String)args[0], evtListener,
                      ((Boolean)args[2]).booleanValue());
@@ -450,9 +434,8 @@ class EventTargetWrapper extends NativeJavaObject {
         }
 
         public Object call(Context ctx, Scriptable scope,
-                           Scriptable thisObj, Object[] args)
-            throws JavaScriptException {
-            NativeJavaObject  njo = (NativeJavaObject)thisObj;
+                           Scriptable thisObj, Object[] args) {
+            NativeJavaObject njo = (NativeJavaObject)thisObj;
             if (args[1] instanceof Function) {
                 SoftReference sr = (SoftReference)listenerMap.get(args[1]);
                 if (sr == null)
@@ -465,7 +448,7 @@ class EventTargetWrapper extends NativeJavaObject {
                 Class[] paramTypes = { String.class, Function.class,
                                        Boolean.TYPE };
                 for (int i = 0; i < args.length; i++)
-                    args[i] = Context.toType(args[i], paramTypes[i]);
+                    args[i] = Context.jsToJava(args[i], paramTypes[i]);
                 ((EventTarget)njo.unwrap()).removeEventListener
                     ((String)args[0], el, ((Boolean)args[2]).booleanValue());
                 return Undefined.instance;
@@ -481,7 +464,7 @@ class EventTargetWrapper extends NativeJavaObject {
                 Class[] paramTypes = { String.class, Scriptable.class,
                                        Boolean.TYPE };
                 for (int i = 0; i < args.length; i++)
-                    args[i] = Context.toType(args[i], paramTypes[i]);
+                    args[i] = Context.jsToJava(args[i], paramTypes[i]);
                 ((EventTarget)njo.unwrap()).removeEventListener
                     ((String)args[0], el, ((Boolean)args[2]).booleanValue());
                 return Undefined.instance;
@@ -502,9 +485,8 @@ class EventTargetWrapper extends NativeJavaObject {
         }
 
         public Object call(Context ctx, Scriptable scope,
-                           Scriptable thisObj, Object[] args)
-            throws JavaScriptException {
-            NativeJavaObject  njo = (NativeJavaObject)thisObj;
+                           Scriptable thisObj, Object[] args) {
+            NativeJavaObject njo = (NativeJavaObject)thisObj;
             if (args[2] instanceof Function) {
                 EventListener evtListener = new FunctionEventListener
                     ((Function)args[2], interpreter);
@@ -514,7 +496,7 @@ class EventTargetWrapper extends NativeJavaObject {
                                        Function.class, Boolean.TYPE,
                                        Object.class };
                 for (int i = 0; i < args.length; i++)
-                    args[i] = Context.toType(args[i], paramTypes[i]);
+                    args[i] = Context.jsToJava(args[i], paramTypes[i]);
                 AbstractNode target = (AbstractNode) njo.unwrap();
                 target.addEventListenerNS
                     ((String)args[0],
@@ -533,7 +515,7 @@ class EventTargetWrapper extends NativeJavaObject {
                                        Scriptable.class, Boolean.TYPE,
                                        Object.class };
                 for (int i = 0; i < args.length; i++)
-                    args[i] = Context.toType(args[i], paramTypes[i]);
+                    args[i] = Context.jsToJava(args[i], paramTypes[i]);
                 AbstractNode target = (AbstractNode) njo.unwrap();
                 target.addEventListenerNS
                     ((String)args[0],
@@ -556,9 +538,8 @@ class EventTargetWrapper extends NativeJavaObject {
         }
 
         public Object call(Context ctx, Scriptable scope,
-                           Scriptable thisObj, Object[] args)
-            throws JavaScriptException {
-            NativeJavaObject  njo = (NativeJavaObject)thisObj;
+                           Scriptable thisObj, Object[] args) {
+            NativeJavaObject njo = (NativeJavaObject)thisObj;
             if (args[2] instanceof Function) {
                 SoftReference sr = (SoftReference)listenerMap.get(args[2]);
                 if (sr == null)
@@ -570,7 +551,7 @@ class EventTargetWrapper extends NativeJavaObject {
                 Class[] paramTypes = { String.class, String.class,
                                        Function.class, Boolean.TYPE };
                 for (int i = 0; i < args.length; i++)
-                    args[i] = Context.toType(args[i], paramTypes[i]);
+                    args[i] = Context.jsToJava(args[i], paramTypes[i]);
                 AbstractNode target = (AbstractNode) njo.unwrap();
                 target.removeEventListenerNS
                     ((String)args[0],
@@ -590,7 +571,7 @@ class EventTargetWrapper extends NativeJavaObject {
                 Class[] paramTypes = { String.class, String.class,
                                        Scriptable.class, Boolean.TYPE };
                 for (int i = 0; i < args.length; i++)
-                    args[i] = Context.toType(args[i], paramTypes[i]);
+                    args[i] = Context.jsToJava(args[i], paramTypes[i]);
 
                 AbstractNode target = (AbstractNode) njo.unwrap();
                 target.removeEventListenerNS
@@ -615,15 +596,14 @@ class EventTargetWrapper extends NativeJavaObject {
         }
 
         public Object call(Context ctx, Scriptable scope,
-                           Scriptable thisObj, Object[] args)
-            throws JavaScriptException {
+                           Scriptable thisObj, Object[] args) {
             NativeJavaObject njo = (NativeJavaObject) thisObj;
             if (args[0] instanceof NativeObject) {
                 Event evt = new ObjectCustomEvent((NativeObject) args[0],
                                                   interpreter,
                                                   eventMap);
                 eventMap.put(args[0], new SoftReference(evt));
-                args[0] = Context.toType(args[0], Scriptable.class);
+                args[0] = Context.jsToJava(args[0], Scriptable.class);
                 ((EventTarget) njo.unwrap()).dispatchEvent(evt);
                 return Undefined.instance;
             }

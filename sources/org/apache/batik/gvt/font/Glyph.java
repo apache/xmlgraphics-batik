@@ -124,7 +124,7 @@ public class Glyph {
      * Returns the orientation of this glyph.
      * Indicates what inline-progression-direction this glyph
      * can be used in. Should be either "h" for horizontal only, "v" for vertical
-     * only, or empty which indicates that the glpyh can be use in both.
+     * only, or empty which indicates that the glyph can be used in both.
      *
      * @return The glyph orientation.
      */

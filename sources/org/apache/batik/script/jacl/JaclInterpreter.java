@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001-2003  The Apache Software Foundation 
+   Copyright 2001-2003,2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -47,13 +47,13 @@ public class JaclInterpreter implements org.apache.batik.script.Interpreter {
 
     // org.apache.batik.script.Intepreter implementation
 
-    public Object evaluate(Reader scriptreader)
-        throws InterpreterException, IOException {
+    public Object evaluate(Reader scriptreader) throws IOException {
         return evaluate(scriptreader, "");
     }
 
-    public Object evaluate(Reader scriptreader, String description) throws IOException, InterpreterException {
-        // oups jacl doesn't accept reader in its eval method :-(
+    public Object evaluate(Reader scriptreader, String description)
+        throws IOException {
+        // oops jacl doesn't accept reader in its eval method :-(
         StringBuffer sbuffer = new StringBuffer();
         char[] buffer = new char[1024];
         int val = 0;
@@ -64,8 +64,7 @@ public class JaclInterpreter implements org.apache.batik.script.Interpreter {
         return evaluate(str);
     }
 
-    public Object evaluate(String script)
-        throws InterpreterException {
+    public Object evaluate(String script) {
         try {
             interpreter.eval(script, 0);
         } catch (TclException e) {

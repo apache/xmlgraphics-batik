@@ -27,8 +27,7 @@ import org.apache.batik.util.SoftReferenceCache;
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-
-public class NamedProfileCache extends SoftReferenceCache{
+public class NamedProfileCache extends SoftReferenceCache {
 
     static NamedProfileCache theCache = new NamedProfileCache();
 

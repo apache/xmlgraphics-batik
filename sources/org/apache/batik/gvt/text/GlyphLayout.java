@@ -98,10 +98,6 @@ public class GlyphLayout implements TextSpanLayout {
         = GVTAttributedCharacterIterator.TextAttribute.LINE_HEIGHT;
 
     public static final AttributedCharacterIterator.Attribute 
-        TEXT_COMPOUND_DELIMITER 
-        = GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER;
-
-    public static final AttributedCharacterIterator.Attribute 
         VERTICAL_ORIENTATION 
         = GVTAttributedCharacterIterator.TextAttribute.VERTICAL_ORIENTATION;
 
@@ -974,7 +970,7 @@ public class GlyphLayout implements TextSpanLayout {
      */
     protected GVTFont getFont() {
         aci.first();
-        GVTFont gvtFont = (GVTFont)aci.getAttributes().get(GVT_FONT);
+        GVTFont gvtFont = (GVTFont)aci.getAttribute(GVT_FONT);
 
         if (gvtFont != null) 
             return gvtFont;

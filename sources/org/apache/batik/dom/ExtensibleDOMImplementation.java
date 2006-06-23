@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001-2003  The Apache Software Foundation 
+   Copyright 2001-2003,2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -231,6 +231,9 @@ public abstract class ExtensibleDOMImplementation
     public Element createElementNS(AbstractDocument document,
                                    String           namespaceURI,
                                    String           qualifiedName) {
+        if (namespaceURI != null && namespaceURI.length() == 0) {
+            namespaceURI = null;
+        }
         if (namespaceURI == null)
             return new GenericElement(qualifiedName.intern(), document);
 
@@ -292,5 +295,4 @@ public abstract class ExtensibleDOMImplementation
 
         return extensions;
     }
-
 }
