@@ -60,7 +60,7 @@ public abstract class SVGURIReferenceGraphicsElement
      * Returns whether the given XML attribute is animatable.
      */
     public boolean isAttributeAnimatable(String ns, String ln) {
-        return ns == XLINK_NAMESPACE_URI && ln == XLINK_HREF_ATTRIBUTE
+        return XLINK_NAMESPACE_URI.equals(ns) && XLINK_HREF_ATTRIBUTE.equals(ln)
             || super.isAttributeAnimatable(ns, ln);
     }
 
@@ -71,7 +71,7 @@ public abstract class SVGURIReferenceGraphicsElement
      */
     public void updateAttributeValue(String ns, String ln,
                                      AnimatableValue val) {
-        if (ns == XLINK_NAMESPACE_URI
+        if (XLINK_NAMESPACE_URI.equals(ns)
                 && ln.equals(XLINK_HREF_ATTRIBUTE)) {
             SVGOMAnimatedString href = (SVGOMAnimatedString) getHref();
             updateStringAttributeValue(href, val);

@@ -86,8 +86,11 @@ public class AnimatableAngleValue extends AnimatableNumberValue {
             }
         }
 
-        res.value = v;
-        res.unit = u;
+        if (res.value != v && res.unit != u) {
+            res.value = v;
+            res.unit = u;
+            res.hasChanged = true;
+        }
         return res;
     }
 

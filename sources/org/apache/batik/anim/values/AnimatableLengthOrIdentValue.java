@@ -47,8 +47,8 @@ public class AnimatableLengthOrIdentValue extends AnimatableLengthValue {
     /**
      * Creates a new AnimatableLengthOrIdentValue for a length value.
      */
-    public AnimatableLengthOrIdentValue(AnimationTarget target, int type,
-                                        float v, int pcInterp) {
+    public AnimatableLengthOrIdentValue(AnimationTarget target, short type,
+                                        float v, short pcInterp) {
         super(target, type, v, pcInterp);
     }
 
@@ -99,13 +99,59 @@ public class AnimatableLengthOrIdentValue extends AnimatableLengthValue {
             res = (AnimatableLengthOrIdentValue) result;
         }
         
-        if (isIdent) {
-            res.ident = ident;
-            res.isIdent = true;
+        if (to == null) {
+            if (isIdent) {
+                res.hasChanged = !res.isIdent || !res.ident.equals(ident);
+                res.ident = ident;
+                res.isIdent = true;
+            } else {
+                short oldLengthType = res.lengthType;
+                float oldLengthValue = res.lengthValue;
+                short oldPercentageInterpretation = res.percentageInterpretation;
+                super.interpolate(res, to, interpolation, accumulation,
+                                  multiplier);
+                if (res.lengthType != oldLengthType
+                        || res.lengthValue != oldLengthValue
+                        || res.percentageInterpretation
+                            != oldPercentageInterpretation) {
+                    res.hasChanged = true;
+                }
+            }
         } else {
-            super.interpolate(res, to, interpolation, accumulation, multiplier);
-            res.isIdent = false;
+            AnimatableLengthOrIdentValue toValue
+                = (AnimatableLengthOrIdentValue) to;
+            if (isIdent || toValue.isIdent) {
+                if (interpolation >= 0.5) {
+                    if (res.isIdent != toValue.isIdent
+                            || res.lengthType != toValue.lengthType
+                            || res.lengthValue != toValue.lengthValue
+                            || res.isIdent && toValue.isIdent
+                                && !toValue.ident.equals(ident)) {
+                        res.isIdent = toValue.isIdent;
+                        res.ident = toValue.ident;
+                        res.lengthType = toValue.lengthType;
+                        res.lengthValue = toValue.lengthValue;
+                        res.hasChanged = true;
+                    }
+                } else {
+                    if (res.isIdent != isIdent
+                            || res.lengthType != lengthType
+                            || res.lengthValue != lengthValue
+                            || res.isIdent && isIdent
+                                && !res.ident.equals(ident)) {
+                        res.isIdent = isIdent;
+                        res.ident = ident;
+                        res.ident = ident;
+                        res.lengthType = lengthType;
+                        res.hasChanged = true;
+                    }
+                }
+            } else {
+                super.interpolate(res, to, interpolation, accumulation,
+                                  multiplier);
+            }
         }
+
         return res;
     }
 }

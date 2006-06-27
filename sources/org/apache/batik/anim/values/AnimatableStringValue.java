@@ -61,7 +61,20 @@ public class AnimatableStringValue extends AnimatableValue {
         } else {
             res = (AnimatableStringValue) result;
         }
-        res.string = string;
+
+        String newString;
+        if (to != null && interpolation >= 0.5) {
+            AnimatableStringValue toValue =
+                (AnimatableStringValue) to;
+            newString = toValue.string;
+        } else {
+            newString = string;
+        }
+
+        if (res.string == null || !res.string.equals(newString)) {
+            res.string = newString;
+            res.hasChanged = true;
+        }
         return res;
     }
 

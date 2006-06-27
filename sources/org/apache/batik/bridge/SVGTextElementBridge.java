@@ -47,9 +47,13 @@ import org.apache.batik.css.engine.StyleMap;
 import org.apache.batik.css.engine.value.ListValue;
 import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.dom.events.NodeEventTarget;
+import org.apache.batik.dom.svg.AbstractSVGAnimatedLength;
 import org.apache.batik.dom.svg.AnimatedLiveAttributeValue;
+import org.apache.batik.dom.svg.LiveAttributeException;
 import org.apache.batik.dom.svg.SVGContext;
 import org.apache.batik.dom.svg.SVGOMElement;
+import org.apache.batik.dom.svg.SVGOMTextContentElement;
+import org.apache.batik.dom.svg.SVGOMTextPositioningElement;
 import org.apache.batik.dom.svg.SVGTextContent;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.util.XMLSupport;
@@ -78,6 +82,9 @@ import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.MutationEvent;
 import org.w3c.dom.svg.SVGLength;
+import org.w3c.dom.svg.SVGLengthList;
+import org.w3c.dom.svg.SVGNumberList;
+import org.w3c.dom.svg.SVGTextContentElement;
 
 /**
  * Bridge class for the &lt;text> element.
@@ -215,27 +222,31 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
      * @param e the text element
      */
     protected Point2D getLocation(BridgeContext ctx, Element e) {
-        UnitProcessor.Context uctx = UnitProcessor.createContext(ctx, e);
+        try {
+            SVGOMTextPositioningElement te = (SVGOMTextPositioningElement) e;
 
-        // 'x' attribute - default is 0
-        String s = e.getAttributeNS(null, SVG_X_ATTRIBUTE);
-        float x = 0;
-        if (s.length() != 0) {
-            StringTokenizer st = new StringTokenizer(s, ", ", false);
-            x = UnitProcessor.svgHorizontalCoordinateToUserSpace
-                (st.nextToken(), SVG_X_ATTRIBUTE, uctx);
+            // 'x' attribute - default is 0
+            SVGLengthList xs = te.getX().getAnimVal();
+            float x = 0;
+            if (xs.getNumberOfItems() > 0) {
+                x = xs.getItem(0).getValue();
+            }
+
+            // 'y' attribute - default is 0
+            SVGLengthList ys = te.getY().getAnimVal();
+            float y = 0;
+            if (ys.getNumberOfItems() > 0) {
+                y = ys.getItem(0).getValue();
+            }
+
+            return new Point2D.Float(x, y);
+        } catch (LiveAttributeException ex) {
+            throw new BridgeException
+                (ex.getElement(),
+                 ex.isMissing() ? ERR_ATTRIBUTE_MISSING
+                                : ERR_ATTRIBUTE_VALUE_MALFORMED,
+                 new Object[] { ex.getAttributeName(), ex.getValue() });
         }
-
-        // 'y' attribute - default is 0
-        s = e.getAttributeNS(null, SVG_Y_ATTRIBUTE);
-        float y = 0;
-        if (s.length() != 0) {
-            StringTokenizer st = new StringTokenizer(s, ", ", false);
-            y = UnitProcessor.svgVerticalCoordinateToUserSpace
-                (st.nextToken(), SVG_Y_ATTRIBUTE, uctx);
-        }
-
-        return new Point2D.Float(x, y);
     }
 
     protected boolean isTextElement(Element e) {
@@ -628,26 +639,28 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
     private Element cssProceedElement;
 
     /**
-     * Invoked when an MutationEvent of type 'DOMAttrModified' is fired.
+     * Invoked when the animated value of an animatable attribute has changed.
      */
-    public void handleDOMAttrModifiedEvent(MutationEvent evt) {
-        String attrName = evt.getAttrName();
-        if (attrName.equals(SVG_X_ATTRIBUTE) ||
-            attrName.equals(SVG_Y_ATTRIBUTE) ||
-            attrName.equals(SVG_DX_ATTRIBUTE) ||
-            attrName.equals(SVG_DY_ATTRIBUTE) ||
-            attrName.equals(SVG_ROTATE_ATTRIBUTE) ){
-
-            if ( attrName.equals(SVG_X_ATTRIBUTE) ||
-                 attrName.equals(SVG_Y_ATTRIBUTE)){
-                ((TextNode)node).setLocation(getLocation(ctx, e));
+    public void handleAnimatedAttributeChanged
+            (AnimatedLiveAttributeValue alav) {
+        if (alav.getNamespaceURI() == null) {
+            String ln = alav.getLocalName();
+            if (ln.equals(SVG_X_ATTRIBUTE)
+                    || ln.equals(SVG_Y_ATTRIBUTE)
+                    || ln.equals(SVG_DX_ATTRIBUTE)
+                    || ln.equals(SVG_DY_ATTRIBUTE)
+                    || ln.equals(SVG_ROTATE_ATTRIBUTE)
+                    || ln.equals(SVG_TEXT_LENGTH_ATTRIBUTE)
+                    || ln.equals(SVG_LENGTH_ADJUST_ATTRIBUTE)) {
+                char c = ln.charAt(0);
+                if (c == 'x' || c == 'y') {
+                    ((TextNode) node).setLocation(getLocation(ctx, e));
+                }
+                computeLaidoutText(ctx, e, node);
+                return;
             }
-
-            computeLaidoutText(ctx, e, node);
         }
-        else{
-            super.handleDOMAttrModifiedEvent(evt);
-        }
+        super.handleAnimatedAttributeChanged(alav);
     }
 
     /**
@@ -1231,101 +1244,81 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         int lastChar = getElementEndIndex(element);
 
         // get all of the glyph position attribute values
-        String xAtt      = element.getAttributeNS(null, SVG_X_ATTRIBUTE);
-        String yAtt      = element.getAttributeNS(null, SVG_Y_ATTRIBUTE);
-        String dxAtt     = element.getAttributeNS(null, SVG_DX_ATTRIBUTE);
-        String dyAtt     = element.getAttributeNS(null, SVG_DY_ATTRIBUTE);
-        String rotateAtt = element.getAttributeNS(null, SVG_ROTATE_ATTRIBUTE);
+        SVGOMTextPositioningElement te = (SVGOMTextPositioningElement) e;
 
-        ArrayList al;
-        int len;
+        try {
+            SVGLengthList xs  = te.getX().getAnimVal();
+            SVGLengthList ys  = te.getY().getAnimVal();
+            SVGLengthList dxs = te.getDx().getAnimVal();
+            SVGLengthList dys = te.getDy().getAnimVal();
+            SVGNumberList rs  = te.getRotate().getAnimVal();
 
-        // process the x attribute
-        if (xAtt.length() != 0) {
-            al = TextUtilities.svgHorizontalCoordinateArrayToUserSpace
-                (element, SVG_X_ATTRIBUTE, xAtt, ctx);
-            len = al.size();
-            for (int i = 0; i < len; i++) {
-                if (firstChar + i <= lastChar) {
-                    as.addAttribute
-                        (GVTAttributedCharacterIterator.TextAttribute.X,
-                         al.get(i), firstChar+i, firstChar+i+1);
-                }
+            ArrayList al;
+            int len;
+
+            // process the x attribute
+            len = xs.getNumberOfItems();
+            for (int i = 0; i < len && firstChar + i <= lastChar; i++) {
+                as.addAttribute
+                    (GVTAttributedCharacterIterator.TextAttribute.X,
+                     new Float(xs.getItem(i).getValue()), firstChar + i,
+                               firstChar + i + 1);
             }
-        }
 
-
-       // process the y attribute
-        if (yAtt.length() != 0) {
-            al = TextUtilities.svgVerticalCoordinateArrayToUserSpace
-                (element, SVG_Y_ATTRIBUTE, yAtt, ctx);
-            len = al.size();
-
-            for (int i = 0; i < len; i++) {
-                if (firstChar+i <= lastChar) {
-                    as.addAttribute
-                        (GVTAttributedCharacterIterator.TextAttribute.Y,
-                         al.get(i), firstChar+i, firstChar+i+1);
-                }
+            // process the y attribute
+            len = ys.getNumberOfItems();
+            for (int i = 0; i < len && firstChar + i <= lastChar; i++) {
+                as.addAttribute
+                    (GVTAttributedCharacterIterator.TextAttribute.Y,
+                     new Float(ys.getItem(i).getValue()), firstChar + i,
+                               firstChar + i + 1);
             }
-        }
 
-        // process dx attribute
-        if (dxAtt.length() != 0) {
-            al = TextUtilities.svgHorizontalCoordinateArrayToUserSpace
-                (element, SVG_DX_ATTRIBUTE, dxAtt, ctx);
-            len = al.size();
-
-            for (int i = 0; i < len; i++) {
-                if (firstChar+i <= lastChar) {
-                    as.addAttribute
-                        (GVTAttributedCharacterIterator.TextAttribute.DX,
-                         al.get(i), firstChar+i, firstChar+i+1);
-                }
+            // process dx attribute
+            len = dxs.getNumberOfItems();
+            for (int i = 0; i < len && firstChar + i <= lastChar; i++) {
+                as.addAttribute
+                    (GVTAttributedCharacterIterator.TextAttribute.DX,
+                     new Float(dxs.getItem(i).getValue()), firstChar + i,
+                               firstChar + i + 1);
             }
-        }
 
-        // process dy attribute
-        if (dyAtt.length() != 0) {
-            al = TextUtilities.svgVerticalCoordinateArrayToUserSpace
-                (element, SVG_DY_ATTRIBUTE, dyAtt, ctx);
-            len = al.size();
-
-            for (int i = 0; i < len; i++) {
-                if (firstChar+i <= lastChar) {
-                    as.addAttribute
-                        (GVTAttributedCharacterIterator.TextAttribute.DY,
-                         al.get(i), firstChar+i, firstChar+i+1);
-                }
+            // process dy attribute
+            len = dys.getNumberOfItems();
+            for (int i = 0; i < len && firstChar + i <= lastChar; i++) {
+                as.addAttribute
+                    (GVTAttributedCharacterIterator.TextAttribute.DY,
+                     new Float(dys.getItem(i).getValue()), firstChar + i,
+                               firstChar + i + 1);
             }
-        }
 
-        // process rotate attribute
-        if (rotateAtt.length() != 0) {
-            al = TextUtilities.svgRotateArrayToFloats
-                (element, SVG_ROTATE_ATTRIBUTE, rotateAtt, ctx);
-            len = al.size();
-
+            // process rotate attribute
+            len = rs.getNumberOfItems();
             if (len == 1) {  // not a list
                 // each char will have the same rotate value
+                Float rad = new Float(Math.toRadians(rs.getItem(0).getValue()));
                 as.addAttribute
                     (GVTAttributedCharacterIterator.TextAttribute.ROTATION,
-                     al.get(0), firstChar, lastChar + 1);
+                     rad, firstChar, lastChar + 1);
 
-            } else {  // its a list
+            } else if (len > 1) {  // its a list
                 // set each rotate value from the list
-                for (int i = 0; i < len; i++) {
-                    if (firstChar+i <= lastChar) {
-                        as.addAttribute
-                            (GVTAttributedCharacterIterator.
-                             TextAttribute.ROTATION,
-                             al.get(i), firstChar+i, firstChar+i+1);
-                    }
+                for (int i = 0; i < len && firstChar + i <= lastChar; i++) {
+                    Float rad = new Float(Math.toRadians(rs.getItem(i).getValue()));
+                    as.addAttribute
+                        (GVTAttributedCharacterIterator.TextAttribute.ROTATION,
+                         rad, firstChar + i, firstChar + i + 1);
                 }
             }
-        }
 
-        addChildGlyphPositionAttributes(as, element, ctx);
+            addChildGlyphPositionAttributes(as, element, ctx);
+        } catch (LiveAttributeException ex) {
+            throw new BridgeException
+                (ex.getElement(),
+                 ex.isMissing() ? ERR_ATTRIBUTE_MISSING
+                                : ERR_ATTRIBUTE_VALUE_MALFORMED,
+                 new Object[] { ex.getAttributeName(), ex.getValue() });
+        }
     }
 
     protected void addChildGlyphPositionAttributes(AttributedString as,
@@ -1475,7 +1468,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                                   Element element,
                                   TextPath textPath,
                                   Integer bidiLevel) {
-        UnitProcessor.Context uctx = UnitProcessor.createContext(ctx, element);
+        SVGTextContentElement tce = (SVGTextContentElement) element;
 
         Map result = new HashMap();
         String s;
@@ -1698,31 +1691,38 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                        Boolean.TRUE);
         }
 
-        // textLength
-        s = element.getAttributeNS(null, SVG_TEXT_LENGTH_ATTRIBUTE);
-        if (s.length() != 0) {
-            f = UnitProcessor.svgOtherLengthToUserSpace
-                (s, SVG_TEXT_LENGTH_ATTRIBUTE, uctx);
-            result.put(GVTAttributedCharacterIterator.TextAttribute.BBOX_WIDTH,
-                       new Float(f));
+        try {
+            // textLength
+            AbstractSVGAnimatedLength textLength =
+                (AbstractSVGAnimatedLength) tce.getTextLength();
+            if (textLength.isSpecified()) {
+                result.put(GVTAttributedCharacterIterator.TextAttribute.
+                               BBOX_WIDTH,
+                           new Float(textLength.getAnimVal().getValue()));
 
-            // lengthAdjust
-            s = element.getAttributeNS(null, SVG_LENGTH_ADJUST_ATTRIBUTE);
-
-            if (s.length() < 10) {
-                result.put(GVTAttributedCharacterIterator.
-                           TextAttribute.LENGTH_ADJUST,
-                           GVTAttributedCharacterIterator.
-                           TextAttribute.ADJUST_SPACING);
-                result.put(GVTAttributedCharacterIterator.
-                           TextAttribute.CUSTOM_SPACING,
-                           Boolean.TRUE);
-            } else {
-                result.put(GVTAttributedCharacterIterator.
-                           TextAttribute.LENGTH_ADJUST,
-                           GVTAttributedCharacterIterator.
-                           TextAttribute.ADJUST_ALL);
+                // lengthAdjust
+                if (tce.getLengthAdjust().getAnimVal() ==
+                        SVGTextContentElement.LENGTHADJUST_SPACINGANDGLYPHS) {
+                    result.put(GVTAttributedCharacterIterator.
+                               TextAttribute.LENGTH_ADJUST,
+                               GVTAttributedCharacterIterator.
+                               TextAttribute.ADJUST_ALL);
+                } else {
+                    result.put(GVTAttributedCharacterIterator.
+                               TextAttribute.LENGTH_ADJUST,
+                               GVTAttributedCharacterIterator.
+                               TextAttribute.ADJUST_SPACING);
+                    result.put(GVTAttributedCharacterIterator.
+                               TextAttribute.CUSTOM_SPACING,
+                               Boolean.TRUE);
+                }
             }
+        } catch (LiveAttributeException ex) {
+            throw new BridgeException
+                (ex.getElement(),
+                 ex.isMissing() ? ERR_ATTRIBUTE_MISSING
+                                : ERR_ATTRIBUTE_VALUE_MALFORMED,
+                 new Object[] { ex.getAttributeName(), ex.getValue() });
         }
 
         return result;
@@ -2139,20 +2139,27 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         }
 
         /**
-         * Handle the dynamic update for the attributes of
-         * &lt;tspan&gt; : 'x', 'y', 'dx', 'dy' and 'rotate'.
+         * Invoked when the animated value of an animatable attribute has
+         * changed on a 'tref' element.
          */
-        public void handleDOMAttrModifiedEvent(MutationEvent evt){
-            String attrName = evt.getAttrName();
-            if (attrName.equals(SVG_X_ATTRIBUTE) ||
-                attrName.equals(SVG_Y_ATTRIBUTE) ||
-                attrName.equals(SVG_DX_ATTRIBUTE) ||
-                attrName.equals(SVG_DY_ATTRIBUTE) ||
-                attrName.equals(SVG_ROTATE_ATTRIBUTE)) {
-                //recompute the layout of the text node
-                textBridge.computeLaidoutText(ctx, textBridge.e,
-                                               textBridge.node);
+        public void handleAnimatedAttributeChanged
+                (AnimatedLiveAttributeValue alav) {
+            if (alav.getNamespaceURI() == null) {
+                String ln = alav.getLocalName();
+                if (ln.equals(SVG_X_ATTRIBUTE)
+                        || ln.equals(SVG_Y_ATTRIBUTE)
+                        || ln.equals(SVG_DX_ATTRIBUTE)
+                        || ln.equals(SVG_DY_ATTRIBUTE)
+                        || ln.equals(SVG_ROTATE_ATTRIBUTE)
+                        || ln.equals(SVG_TEXT_LENGTH_ATTRIBUTE)
+                        || ln.equals(SVG_LENGTH_ADJUST_ATTRIBUTE)) {
+                    // Recompute the layout of the text node.
+                    textBridge.computeLaidoutText(ctx, textBridge.e,
+                                                  textBridge.node);
+                    return;
+                }
             }
+            super.handleAnimatedAttributeChanged(alav);
         }
     }
 
@@ -2182,20 +2189,27 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         }
 
         /**
-         * Handle the dynamic update for the attributes of
-         * &lt;tspan&gt; : 'x', 'y', 'dx', 'dy' and 'rotate'.
+         * Invoked when the animated value of an animatable attribute has
+         * changed on a 'tspan' element.
          */
-        public void handleDOMAttrModifiedEvent(MutationEvent evt){
-            String attrName = evt.getAttrName();
-            if (attrName.equals(SVG_X_ATTRIBUTE) ||
-                attrName.equals(SVG_Y_ATTRIBUTE) ||
-                attrName.equals(SVG_DX_ATTRIBUTE) ||
-                attrName.equals(SVG_DY_ATTRIBUTE) ||
-                attrName.equals(SVG_ROTATE_ATTRIBUTE)) {
-                //recompute the layout of the text node
-                textBridge.computeLaidoutText(ctx, textBridge.e,
-                                               textBridge.node);
+        public void handleAnimatedAttributeChanged
+                (AnimatedLiveAttributeValue alav) {
+            if (alav.getNamespaceURI() == null) {
+                String ln = alav.getLocalName();
+                if (ln.equals(SVG_X_ATTRIBUTE)
+                        || ln.equals(SVG_Y_ATTRIBUTE)
+                        || ln.equals(SVG_DX_ATTRIBUTE)
+                        || ln.equals(SVG_DY_ATTRIBUTE)
+                        || ln.equals(SVG_ROTATE_ATTRIBUTE)
+                        || ln.equals(SVG_TEXT_LENGTH_ATTRIBUTE)
+                        || ln.equals(SVG_LENGTH_ADJUST_ATTRIBUTE)) {
+                    // Recompute the layout of the text node.
+                    textBridge.computeLaidoutText(ctx, textBridge.e,
+                                                  textBridge.node);
+                    return;
+                }
             }
+            super.handleAnimatedAttributeChanged(alav);
         }
     }
 

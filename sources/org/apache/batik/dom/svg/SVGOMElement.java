@@ -43,7 +43,6 @@ import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.SVGTypes;
 
-
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
@@ -55,6 +54,7 @@ import org.w3c.dom.svg.SVGAnimatedLength;
 import org.w3c.dom.svg.SVGAnimatedLengthList;
 import org.w3c.dom.svg.SVGAnimatedNumber;
 import org.w3c.dom.svg.SVGAnimatedNumberList;
+import org.w3c.dom.svg.SVGAnimatedPoints;
 import org.w3c.dom.svg.SVGAnimatedPreserveAspectRatio;
 import org.w3c.dom.svg.SVGAnimatedRect;
 import org.w3c.dom.svg.SVGAnimatedString;
@@ -524,7 +524,7 @@ public abstract class SVGOMElement
             if (ln.equals(SVG_ID_ATTRIBUTE)) {
                 return SVGTypes.TYPE_CDATA;
             }
-        } else if (ns == XML_NAMESPACE_URI) {
+        } else if (ns.equals(XML_NAMESPACE_URI)) {
             if (ln.equals(XML_BASE_ATTRIBUTE)) {
                 return SVGTypes.TYPE_URI;
             } else if (ln.equals(XML_SPACE_ATTRIBUTE)
@@ -533,7 +533,7 @@ public abstract class SVGOMElement
             } else if (ln.equals(XML_LANG_ATTRIBUTE)) {
                 return SVGTypes.TYPE_LANG;
             }
-        } else if (ns == XLINK_NAMESPACE_URI) {
+        } else if (ns.equals(XLINK_NAMESPACE_URI)) {
             if (ln.equals(XLINK_HREF_ATTRIBUTE)) {
                 return SVGTypes.TYPE_URI;
             }
@@ -646,7 +646,7 @@ public abstract class SVGOMElement
      */
     protected void updateLengthAttributeValue(SVGAnimatedLength a,
                                               AnimatableValue val) {
-        SVGOMAnimatedLength al = (SVGOMAnimatedLength) a;
+        AbstractSVGAnimatedLength al = (AbstractSVGAnimatedLength) a;
         if (val == null) {
             al.resetAnimatedValue();
         } else {
@@ -662,15 +662,15 @@ public abstract class SVGOMElement
      */
     protected void updateLengthListAttributeValue(SVGAnimatedLengthList a,
                                                   AnimatableValue val) {
-        // XXX Rewrite SVGOMAnimatedLengthList.
-//         SVGOMAnimatedLengthList all = (SVGOMAnimatedLengthList) a;
-//         if (val == null) {
-//             all.resetAnimatedValue();
-//         } else {
-//             AnimatableLengthListValue animLengthList =
-//                 (AnimatableLengthListValue) val;
-//             all.setAnimatedValue(animLengthList.getLengthList());
-//         }
+        SVGOMAnimatedLengthList all = (SVGOMAnimatedLengthList) a;
+        if (val == null) {
+            all.resetAnimatedValue();
+        } else {
+            AnimatableLengthListValue animLengthList =
+                (AnimatableLengthListValue) val;
+            all.setAnimatedValue(animLengthList.getLengthTypes(),
+                                 animLengthList.getLengthValues());
+        }
     }
 
     /**
@@ -696,17 +696,16 @@ public abstract class SVGOMElement
      */
     protected void updatePreserveAspectRatioAttributeValue
             (SVGAnimatedPreserveAspectRatio a, AnimatableValue val) {
-        // XXX Rewrite SVGOMAnimatedPreserveAspectRatio.
-//         SVGOMAnimatedPreserveAspectRatio par =
-//             (SVGOMAnimatedPreserveAspectRatio) a;
-//         if (val == null) {
-//             par.resetAnimatedValue();
-//         } else {
-//             AnimatablePreserveAspectRatioValue animPreserveAspectRatio =
-//                 (AnimatablePreserveAspectRatioValue) val;
-//             par.setAnimatedValue(animPreserveAspectRatio.getAlign(),
-//                                  animPreserveAspectRatio.getMeetOrSlice());
-//         }
+        SVGOMAnimatedPreserveAspectRatio par =
+            (SVGOMAnimatedPreserveAspectRatio) a;
+        if (val == null) {
+            par.resetAnimatedValue();
+        } else {
+            AnimatablePreserveAspectRatioValue animPreserveAspectRatio =
+                (AnimatablePreserveAspectRatioValue) val;
+            par.setAnimatedValue(animPreserveAspectRatio.getAlign(),
+                                 animPreserveAspectRatio.getMeetOrSlice());
+        }
     }
 
     /**
@@ -715,15 +714,30 @@ public abstract class SVGOMElement
      */
     protected void updateNumberListAttributeValue(SVGAnimatedNumberList a,
                                                   AnimatableValue val) {
-        // XXX Rewrite SVGOMAnimatedNumberList.
-//         SVGOMAnimatedNumberList anl = (SVGOMAnimatedNumberList) a;
-//         if (val == null) {
-//             anl.resetAnimatedValue();
-//         } else {
-//             AnimatableNumberListValue animNumberList =
-//                 (AnimatableNumberListValue) val;
-//             anl.setAnimatedValue(animNumberList.getNumberList());
-//         }
+        SVGOMAnimatedNumberList anl = (SVGOMAnimatedNumberList) a;
+        if (val == null) {
+            anl.resetAnimatedValue();
+        } else {
+            AnimatableNumberListValue animNumberList =
+                (AnimatableNumberListValue) val;
+            anl.setAnimatedValue(animNumberList.getNumbers());
+        }
+    }
+
+    /**
+     * Updates an {@link SVGOMAnimatedPoints} with the given
+     * {@link AnimatableValue}.
+     */
+    protected void updatePointsAttributeValue(SVGAnimatedPoints a,
+                                              AnimatableValue val) {
+        SVGOMAnimatedPoints ap = (SVGOMAnimatedPoints) a;
+        if (val == null) {
+            ap.resetAnimatedValue();
+        } else {
+            AnimatablePointListValue animPointList =
+                (AnimatablePointListValue) val;
+            ap.setAnimatedValue(animPointList.getNumbers());
+        }
     }
 
     /**
@@ -746,8 +760,8 @@ public abstract class SVGOMElement
      * Gets how percentage values are interpreted by the given attribute
      * or property.
      */
-    public int getPercentageInterpretation(String ns, String an,
-                                           boolean isCSS) {
+    public short getPercentageInterpretation(String ns, String an,
+                                             boolean isCSS) {
         if (isCSS || ns == null) {
             if (an.equals(CSSConstants.CSS_BASELINE_SHIFT_PROPERTY)
                     || an.equals(CSSConstants.CSS_FONT_SIZE_PROPERTY)) {
@@ -764,7 +778,7 @@ public abstract class SVGOMElement
     /**
      * Gets how percentage values are interpreted by the given attribute.
      */
-    protected int getAttributePercentageInterpretation(String ns, String ln) {
+    protected short getAttributePercentageInterpretation(String ns, String ln) {
         return AnimationTarget.PERCENTAGE_VIEWPORT_SIZE;
     }
 
@@ -786,7 +800,7 @@ public abstract class SVGOMElement
      *             {@link SVGContext}.PERCENTAGE_* constants) 
      * @return the SVG value in user units
      */
-    public float svgToUserSpace(float v, int type, int pcInterp) {
+    public float svgToUserSpace(float v, short type, short pcInterp) {
         return svgContext.svgToUserSpace(v, type, pcInterp);
     }
 

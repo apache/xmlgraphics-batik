@@ -70,10 +70,11 @@ public abstract class SVGOMTextContentElement
      * org.w3c.dom.svg.SVGTextContentElement#getTextLength()}.
      */
     public SVGAnimatedLength getTextLength() {
-        SVGAnimatedLength result =
-            (SVGAnimatedLength)getLiveAttributeValue
+        AbstractSVGAnimatedLength result =
+            (AbstractSVGAnimatedLength)getLiveAttributeValue
             (null, SVG_TEXT_LENGTH_ATTRIBUTE);
         if (result == null) {
+            SVGOMDocument doc = (SVGOMDocument) ownerDocument;
             result = new AbstractSVGAnimatedLength
                 (this, null, SVG_TEXT_LENGTH_ATTRIBUTE,
                  SVGOMAnimatedLength.HORIZONTAL_LENGTH, true) {
@@ -106,6 +107,8 @@ public abstract class SVGOMTextContentElement
                         }
                     }
                 };
+            result.addAnimatedAttributeListener
+                (doc.getAnimatedAttributeListener());
             putLiveAttributeValue(null, SVG_TEXT_LENGTH_ATTRIBUTE,
                                   (LiveAttributeValue)result);
         }
@@ -128,7 +131,6 @@ public abstract class SVGOMTextContentElement
      */
     public int getNumberOfChars() {
         return SVGTextContentSupport.getNumberOfChars(this);
-        //throw new RuntimeException(" !!! SVGOMTextContentElement.getNumberOfChars()");
     }
 
     /**
@@ -137,7 +139,6 @@ public abstract class SVGOMTextContentElement
      */
     public float getComputedTextLength() {
         return SVGTextContentSupport.getComputedTextLength(this);
-        //throw new RuntimeException(" !!! SVGOMTextContentElement.getComputedTextLength()");
     }
 
     /**
@@ -146,8 +147,7 @@ public abstract class SVGOMTextContentElement
      */
     public float getSubStringLength(int charnum, int nchars)
         throws DOMException {
-        return SVGTextContentSupport.getSubStringLength(this,charnum,nchars);
-        //throw new RuntimeException(" !!! SVGOMTextContentElement.getSubStringLength()");
+        return SVGTextContentSupport.getSubStringLength(this, charnum, nchars);
     }
 
     /**
@@ -155,8 +155,7 @@ public abstract class SVGOMTextContentElement
      * org.w3c.dom.svg.SVGTextContentElement#getStartPositionOfChar(int)}.
      */
     public SVGPoint getStartPositionOfChar(int charnum) throws DOMException {
-        //throw new RuntimeException(" !!! SVGOMTextContentElement.getStartPositionOfChar()");
-        return SVGTextContentSupport.getStartPositionOfChar(this,charnum);
+        return SVGTextContentSupport.getStartPositionOfChar(this, charnum);
     }
 
     /**
@@ -164,8 +163,7 @@ public abstract class SVGOMTextContentElement
      * org.w3c.dom.svg.SVGTextContentElement#getEndPositionOfChar(int)}.
      */
     public SVGPoint getEndPositionOfChar(int charnum) throws DOMException {
-        //throw new RuntimeException(" !!! SVGOMTextContentElement.getEndPositionOfChar()");
-        return SVGTextContentSupport.getEndPositionOfChar(this,charnum);
+        return SVGTextContentSupport.getEndPositionOfChar(this, charnum);
     }
 
     /**
@@ -173,8 +171,7 @@ public abstract class SVGOMTextContentElement
      * org.w3c.dom.svg.SVGTextContentElement#getExtentOfChar(int)}.
      */
     public SVGRect getExtentOfChar(int charnum) throws DOMException {
-        //throw new RuntimeException(" !!! SVGOMTextContentElement.getExtentOfChar()");
-        return SVGTextContentSupport.getExtentOfChar(this,charnum);
+        return SVGTextContentSupport.getExtentOfChar(this, charnum);
     }
 
     /**
@@ -182,8 +179,7 @@ public abstract class SVGOMTextContentElement
      * org.w3c.dom.svg.SVGTextContentElement#getRotationOfChar(int)}.
      */
     public float getRotationOfChar(int charnum) throws DOMException {
-        //throw new RuntimeException(" !!! SVGOMTextContentElement.getRotationOfChar()");
-        return SVGTextContentSupport.getRotationOfChar(this,charnum);
+        return SVGTextContentSupport.getRotationOfChar(this, charnum);
     }
 
     /**
@@ -191,8 +187,8 @@ public abstract class SVGOMTextContentElement
      * org.w3c.dom.svg.SVGTextContentElement#getCharNumAtPosition(SVGPoint)}.
      */
     public int getCharNumAtPosition(SVGPoint point) {
-        //throw new RuntimeException(" !!! SVGOMTextContentElement.getCharNumAtPosition()");
-        return SVGTextContentSupport.getCharNumAtPosition(this,point.getX(),point.getY());
+        return SVGTextContentSupport.getCharNumAtPosition
+            (this, point.getX(), point.getY());
     }
 
     /**
@@ -201,8 +197,7 @@ public abstract class SVGOMTextContentElement
      */
     public void selectSubString(int charnum, int nchars)
         throws DOMException {
-        SVGTextContentSupport.selectSubString(this,charnum, nchars);
-        //throw new RuntimeException(" !!! SVGOMTextContentElement.getSubStringLength()");
+        SVGTextContentSupport.selectSubString(this, charnum, nchars);
     }
 
     // SVGExternalResourcesRequired support /////////////////////////////
@@ -212,7 +207,7 @@ public abstract class SVGOMTextContentElement
      * org.w3c.dom.svg.SVGExternalResourcesRequired#getExternalResourcesRequired()}.
      */
     public SVGAnimatedBoolean getExternalResourcesRequired() {
-	return SVGExternalResourcesRequiredSupport.
+        return SVGExternalResourcesRequiredSupport.
             getExternalResourcesRequired(this);
     }
 
@@ -253,7 +248,7 @@ public abstract class SVGOMTextContentElement
      * org.w3c.dom.svg.SVGTests#getRequiredFeatures()}.
      */
     public SVGStringList getRequiredFeatures() {
-	return SVGTestsSupport.getRequiredFeatures(this);
+        return SVGTestsSupport.getRequiredFeatures(this);
     }
 
     /**
@@ -261,7 +256,7 @@ public abstract class SVGOMTextContentElement
      * org.w3c.dom.svg.SVGTests#getRequiredExtensions()}.
      */
     public SVGStringList getRequiredExtensions() {
-	return SVGTestsSupport.getRequiredExtensions(this);
+        return SVGTestsSupport.getRequiredExtensions(this);
     }
 
     /**
@@ -269,7 +264,7 @@ public abstract class SVGOMTextContentElement
      * org.w3c.dom.svg.SVGTests#getSystemLanguage()}.
      */
     public SVGStringList getSystemLanguage() {
-	return SVGTestsSupport.getSystemLanguage(this);
+        return SVGTestsSupport.getSystemLanguage(this);
     }
 
     /**
@@ -277,7 +272,7 @@ public abstract class SVGOMTextContentElement
      * org.w3c.dom.svg.SVGTests#hasExtension(String)}.
      */
     public boolean hasExtension(String extension) {
-	return SVGTestsSupport.hasExtension(this, extension);
+        return SVGTestsSupport.hasExtension(this, extension);
     }
 
     // ExtendedTraitAccess ///////////////////////////////////////////////////

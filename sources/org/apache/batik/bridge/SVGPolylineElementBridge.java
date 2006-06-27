@@ -21,12 +21,18 @@ import java.awt.Shape;
 import java.awt.geom.GeneralPath;
 
 import org.apache.batik.css.engine.SVGCSSEngine;
+import org.apache.batik.dom.svg.AnimatedLiveAttributeValue;
+import org.apache.batik.dom.svg.LiveAttributeException;
+import org.apache.batik.dom.svg.SVGOMPolylineElement;
 import org.apache.batik.gvt.ShapeNode;
 import org.apache.batik.parser.AWTPolylineProducer;
 import org.apache.batik.parser.ParseException;
 import org.apache.batik.parser.PointsParser;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.events.MutationEvent;
+import org.w3c.dom.svg.SVGPoint;
+import org.w3c.dom.svg.SVGPointList;
 
 /**
  * Bridge class for the &lt;polyline> element.
@@ -72,44 +78,48 @@ public class SVGPolylineElementBridge extends SVGDecoratedShapeElementBridge {
                               Element e,
                               ShapeNode shapeNode) {
 
-        String s = e.getAttributeNS(null, SVG_POINTS_ATTRIBUTE);
-        if (s.length() != 0) {
-            AWTPolylineProducer app = new AWTPolylineProducer();
-            app.setWindingRule(CSSUtilities.convertFillRule(e));
-            try {
-                PointsParser pp = new PointsParser();
-                pp.setPointsHandler(app);
-                pp.parse(s);
-            } catch (ParseException ex) {
-                BridgeException bex
-                    = new BridgeException(e, ERR_ATTRIBUTE_VALUE_MALFORMED,
-                                          new Object[] {SVG_POINTS_ATTRIBUTE});
-                bex.setGraphicsNode(shapeNode);
-                throw bex;
-            } finally {
+        try {
+            SVGOMPolylineElement pe = (SVGOMPolylineElement) e;
+            SVGPointList pl = pe.getAnimatedPoints();
+            int size = pl.getNumberOfItems();
+            if (size == 0) {
+                shapeNode.setShape(DEFAULT_SHAPE);
+            } else {
+                AWTPolylineProducer app = new AWTPolylineProducer();
+                app.setWindingRule(CSSUtilities.convertFillRule(e));
+                app.startPoints();
+                for (int i = 0; i < size; i++) {
+                    SVGPoint p = pl.getItem(i);
+                    app.point(p.getX(), p.getY());
+                }
+                app.endPoints();
                 shapeNode.setShape(app.getShape());
             }
+        } catch (LiveAttributeException ex) {
+            throw new BridgeException
+                (ex.getElement(),
+                 ex.isMissing() ? ERR_ATTRIBUTE_MISSING
+                                : ERR_ATTRIBUTE_VALUE_MALFORMED,
+                 new Object[] { ex.getAttributeName(), ex.getValue() });
         }
     }
 
     // BridgeUpdateHandler implementation //////////////////////////////////
 
     /**
-     * Invoked when an MutationEvent of type 'DOMAttrModified' is fired.
+     * Invoked when the animated value of an animatable attribute has changed.
      */
-    public void handleDOMAttrModifiedEvent(MutationEvent evt) {
-        String attrName = evt.getAttrName();
-        if (attrName.equals(SVG_POINTS_ATTRIBUTE)) {
-            if ( evt.getNewValue().length() == 0 ){
-                ((ShapeNode)node).setShape(DEFAULT_SHAPE);
-            }
-            else{
+    public void handleAnimatedAttributeChanged
+            (AnimatedLiveAttributeValue alav) {
+        if (alav.getNamespaceURI() == null) {
+            String ln = alav.getLocalName();
+            if (ln.equals(SVG_POINTS_ATTRIBUTE)) {
                 buildShape(ctx, e, (ShapeNode)node);
+                handleGeometryChanged();
+                return;
             }
-            handleGeometryChanged();
-        } else {
-            super.handleDOMAttrModifiedEvent(evt);
         }
+        super.handleAnimatedAttributeChanged(alav);
     }
 
     protected void handleCSSPropertyChanged(int property) {

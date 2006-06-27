@@ -69,8 +69,23 @@ public class AnimatablePreserveAspectRatioValue extends AnimatableValue {
         } else {
             res = (AnimatablePreserveAspectRatioValue) result;
         }
-        res.align = align;
-        res.meetOrSlice = meetOrSlice;
+
+        short newAlign, newMeetOrSlice;
+        if (to != null && interpolation >= 0.5) {
+            AnimatablePreserveAspectRatioValue toValue =
+                (AnimatablePreserveAspectRatioValue) to;
+            newAlign = toValue.align;
+            newMeetOrSlice = toValue.meetOrSlice;
+        } else {
+            newAlign = align;
+            newMeetOrSlice = meetOrSlice;
+        }
+
+        if (res.align != newAlign || res.meetOrSlice != newMeetOrSlice) {
+            res.align = align;
+            res.meetOrSlice = meetOrSlice;
+            res.hasChanged = true;
+        }
         return res;
     }
 

@@ -84,9 +84,30 @@ public class AnimatableNumberOptionalNumberValue extends AnimatableValue {
         } else {
             res = (AnimatableNumberOptionalNumberValue) result;
         }
-        res.number = number;
-        res.optionalNumber = optionalNumber;
-        res.hasOptionalNumber = hasOptionalNumber;
+
+        float newNumber, newOptionalNumber;
+        boolean newHasOptionalNumber;
+
+        if (to != null && interpolation >= 0.5) {
+            AnimatableNumberOptionalNumberValue toValue
+                = (AnimatableNumberOptionalNumberValue) to;
+            newNumber = toValue.number;
+            newOptionalNumber = toValue.optionalNumber;
+            newHasOptionalNumber = toValue.hasOptionalNumber;
+        } else {
+            newNumber = number;
+            newOptionalNumber = optionalNumber;
+            newHasOptionalNumber = hasOptionalNumber;
+        }
+
+        if (res.number != newNumber
+                || res.hasOptionalNumber != newHasOptionalNumber
+                || res.optionalNumber != newOptionalNumber) {
+            res.number = number;
+            res.optionalNumber = optionalNumber;
+            res.hasOptionalNumber = hasOptionalNumber;
+            res.hasChanged = true;
+        }
         return res;
     }
 

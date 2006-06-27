@@ -259,7 +259,7 @@ public abstract class AbstractSVGAnimatedLength
     }
 
     /**
-     * This class represents the SVGLength returned by getAnimVal().
+     * This class represents the SVGLength returned by {@link #getAnimVal()}.
      */
     protected class AnimSVGLength extends AbstractSVGLength {
 

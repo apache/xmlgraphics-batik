@@ -20,15 +20,18 @@ package org.apache.batik.bridge;
 import java.awt.geom.AffineTransform;
 import java.util.StringTokenizer;
 
+import org.apache.batik.dom.svg.LiveAttributeException;
 import org.apache.batik.parser.AWTTransformProducer;
 import org.apache.batik.parser.FragmentIdentifierHandler;
 import org.apache.batik.parser.FragmentIdentifierParser;
 import org.apache.batik.parser.ParseException;
 import org.apache.batik.parser.PreserveAspectRatioParser;
 import org.apache.batik.util.SVGConstants;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.svg.SVGAnimatedPreserveAspectRatio;
 import org.w3c.dom.svg.SVGPreserveAspectRatio;
 
 /**
@@ -217,7 +220,7 @@ public abstract class ViewBox implements SVGConstants, ErrorConstants {
      */
     public static
         AffineTransform getPreserveAspectRatioTransform(Element e,
-							float [] vb,
+							float[] vb,
 							float w,
 							float h) {
 
@@ -238,6 +241,36 @@ public abstract class ViewBox implements SVGConstants, ErrorConstants {
         }
 
         return getPreserveAspectRatioTransform(vb, ph.align, ph.meet, w, h);
+    }
+
+    /**
+     * Returns the transformation matrix to apply to initalize a viewport or
+     * null if the specified viewBox disables the rendering of the element.
+     *
+     * @param e the element with a viewbox
+     * @param vb the viewBox definition as float
+     * @param w the width of the effective viewport
+     * @param h The height of the effective viewport 
+     * @param aPAR The animated preserveAspectRatio value
+     */
+    public static AffineTransform getPreserveAspectRatioTransform
+            (Element e, float[] vb, float w, float h,
+             SVGAnimatedPreserveAspectRatio aPAR) {
+
+        // 'preserveAspectRatio' attribute
+        try {
+            SVGPreserveAspectRatio pAR = aPAR.getAnimVal();
+            short align = pAR.getAlign();
+            boolean meet = pAR.getMeetOrSlice() ==
+                SVGPreserveAspectRatio.SVG_MEETORSLICE_MEET;
+            return getPreserveAspectRatioTransform(vb, align, meet, w, h);
+        } catch (LiveAttributeException ex) {
+            throw new BridgeException
+                (ex.getElement(),
+                 ex.isMissing() ? ERR_ATTRIBUTE_MISSING
+                                : ERR_ATTRIBUTE_VALUE_MALFORMED,
+                 new Object[] { ex.getAttributeName(), ex.getValue() });
+        }
     }
 
     /**

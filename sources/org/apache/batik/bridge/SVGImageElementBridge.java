@@ -38,8 +38,6 @@ import org.apache.batik.dom.svg.AnimatedLiveAttributeValue;
 import org.apache.batik.dom.svg.LiveAttributeException;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.svg.SVGOMElement;
-import org.apache.batik.dom.svg.SVGOMImageElement;
-import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.ext.awt.color.ICCColorSpaceExt;
 import org.apache.batik.ext.awt.image.renderable.ClipRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.Filter;
@@ -63,7 +61,9 @@ import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.events.MutationEvent;
+import org.w3c.dom.svg.SVGAnimatedPreserveAspectRatio;
 import org.w3c.dom.svg.SVGDocument;
+import org.w3c.dom.svg.SVGImageElement;
 import org.w3c.dom.svg.SVGSVGElement;
 
 /**
@@ -117,7 +117,8 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         GraphicsNode node = buildImageGraphicsNode(ctx,e);
 
         if (node == null) {
-            String uriStr = XLinkSupport.getXLinkHref(e);
+            SVGImageElement ie = (SVGImageElement) e;
+            String uriStr = ie.getHref().getAnimVal();
             throw new BridgeException(e, ERR_URI_IMAGE_INVALID,
                                       new Object[] {uriStr});
         }
@@ -149,8 +150,10 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
     protected GraphicsNode buildImageGraphicsNode
         (BridgeContext ctx, Element e){
 
+        SVGImageElement ie = (SVGImageElement) e;
+
         // 'xlink:href' attribute - required
-        String uriStr = XLinkSupport.getXLinkHref(e);
+        String uriStr = ie.getHref().getAnimVal();
         if (uriStr.length() == 0) {
             throw new BridgeException(e, ERR_ATTRIBUTE_MISSING,
                                       new Object[] {"xlink:href"});
@@ -410,49 +413,46 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
      */
     public void handleAnimatedAttributeChanged
             (AnimatedLiveAttributeValue alav) {
-        if (alav.getNamespaceURI() == null) {
+        try {
+            String ns = alav.getNamespaceURI();
             String ln = alav.getLocalName();
-            if (ln.equals(SVG_X_ATTRIBUTE)
-                    || ln.equals(SVG_Y_ATTRIBUTE)) {
-                updateImageBounds();
-                return;
-            } else if (ln.equals(SVG_WIDTH_ATTRIBUTE)
-                    || ln.equals(SVG_HEIGHT_ATTRIBUTE)) {
-                SVGOMImageElement ie = (SVGOMImageElement) e;
-                ImageNode imageNode = (ImageNode) node;
-                float val;
-                if (ln.charAt(0) == 'w') {
-                    val = ie.getWidth().getAnimVal().getValue();
-                } else {
-                    val = ie.getHeight().getAnimVal().getValue();
-                }
-                if (val == 0 || imageNode.getImage() instanceof ShapeNode) {
-                    rebuildImageNode();
-                } else {
+            if (ns == null) {
+                if (ln.equals(SVG_X_ATTRIBUTE)
+                        || ln.equals(SVG_Y_ATTRIBUTE)) {
+                    updateImageBounds();
+                    return;
+                } else if (ln.equals(SVG_WIDTH_ATTRIBUTE)
+                        || ln.equals(SVG_HEIGHT_ATTRIBUTE)) {
+                    SVGImageElement ie = (SVGImageElement) e;
+                    ImageNode imageNode = (ImageNode) node;
+                    float val;
+                    if (ln.charAt(0) == 'w') {
+                        val = ie.getWidth().getAnimVal().getValue();
+                    } else {
+                        val = ie.getHeight().getAnimVal().getValue();
+                    }
+                    if (val == 0 || imageNode.getImage() instanceof ShapeNode) {
+                        rebuildImageNode();
+                    } else {
+                        updateImageBounds();
+                    }
+                    return;
+                } else if (ln.equals(SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE)) {
                     updateImageBounds();
                 }
+            } else if (ns.equals(XLINK_NAMESPACE_URI)
+                    && ln.equals(XLINK_HREF_ATTRIBUTE)) {
+                rebuildImageNode();
                 return;
             }
+        } catch (LiveAttributeException ex) {
+            throw new BridgeException
+                (ex.getElement(),
+                 ex.isMissing() ? ERR_ATTRIBUTE_MISSING
+                                : ERR_ATTRIBUTE_VALUE_MALFORMED,
+                 new Object[] { ex.getAttributeName(), ex.getValue() });
         }
         super.handleAnimatedAttributeChanged(alav);
-    }
-
-    /**
-     * Invoked when an MutationEvent of type 'DOMAttrModified' is fired.
-     */
-    public void handleDOMAttrModifiedEvent(MutationEvent evt) {
-
-        String attrName = evt.getAttrName();
-        Node evtNode = evt.getRelatedNode();
-
-        if (attrName.equals(SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE)) {
-            updateImageBounds();
-        } else if (XLINK_NAMESPACE_URI.equals(evtNode.getNamespaceURI())
-                && XLINK_HREF_ATTRIBUTE.equals(evtNode.getLocalName())) {
-            rebuildImageNode();
-        } else {
-            super.handleDOMAttrModifiedEvent(evt);
-        }
     }
 
     protected void updateImageBounds() {
@@ -539,7 +539,8 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         imgNode.setImage(inode);
 
         if (inode == null) {
-            String uriStr = XLinkSupport.getXLinkHref(e);
+            SVGImageElement ie = (SVGImageElement) e;
+            String uriStr = ie.getHref().getAnimVal();
             throw new BridgeException(e, ERR_URI_IMAGE_INVALID,
                                       new Object[] {uriStr});
         }
@@ -851,7 +852,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
     protected static void initializeViewport(BridgeContext ctx,
                                              Element e,
                                              GraphicsNode node,
-                                             float [] vb,
+                                             float[] vb,
                                              Rectangle2D bounds) {
 
         float x = (float)bounds.getX();
@@ -859,36 +860,47 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         float w = (float)bounds.getWidth();
         float h = (float)bounds.getHeight();
 
-        AffineTransform at
-            = ViewBox.getPreserveAspectRatioTransform(e, vb, w, h);
-        at.preConcatenate(AffineTransform.getTranslateInstance(x, y));
-        node.setTransform(at);
+        try {
+            SVGImageElement ie = (SVGImageElement) e;
+            SVGAnimatedPreserveAspectRatio aPAR = ie.getPreserveAspectRatio();
 
-        // 'overflow' and 'clip'
-        Shape clip = null;
-        if (CSSUtilities.convertOverflow(e)) { // overflow:hidden
-            float [] offsets = CSSUtilities.convertClip(e);
-            if (offsets == null) { // clip:auto
-                clip = new Rectangle2D.Float(x, y, w, h);
-            } else { // clip:rect(<x> <y> <w> <h>)
-                // offsets[0] = top
-                // offsets[1] = right
-                // offsets[2] = bottom
-                // offsets[3] = left
-                clip = new Rectangle2D.Float(x+offsets[3],
-                                             y+offsets[0],
-                                             w-offsets[1]-offsets[3],
-                                             h-offsets[2]-offsets[0]);
+            AffineTransform at
+                = ViewBox.getPreserveAspectRatioTransform(e, vb, w, h, aPAR);
+            at.preConcatenate(AffineTransform.getTranslateInstance(x, y));
+            node.setTransform(at);
+
+            // 'overflow' and 'clip'
+            Shape clip = null;
+            if (CSSUtilities.convertOverflow(e)) { // overflow:hidden
+                float [] offsets = CSSUtilities.convertClip(e);
+                if (offsets == null) { // clip:auto
+                    clip = new Rectangle2D.Float(x, y, w, h);
+                } else { // clip:rect(<x> <y> <w> <h>)
+                    // offsets[0] = top
+                    // offsets[1] = right
+                    // offsets[2] = bottom
+                    // offsets[3] = left
+                    clip = new Rectangle2D.Float(x+offsets[3],
+                                                 y+offsets[0],
+                                                 w-offsets[1]-offsets[3],
+                                                 h-offsets[2]-offsets[0]);
+                }
             }
-        }
 
-        if (clip != null) {
-            try {
-                at = at.createInverse(); // clip in user space
-                Filter filter = node.getGraphicsNodeRable(true);
-                clip = at.createTransformedShape(clip);
-                node.setClip(new ClipRable8Bit(filter, clip));
-            } catch (java.awt.geom.NoninvertibleTransformException ex) {}
+            if (clip != null) {
+                try {
+                    at = at.createInverse(); // clip in user space
+                    Filter filter = node.getGraphicsNodeRable(true);
+                    clip = at.createTransformedShape(clip);
+                    node.setClip(new ClipRable8Bit(filter, clip));
+                } catch (java.awt.geom.NoninvertibleTransformException ex) {}
+            }
+        } catch (LiveAttributeException ex) {
+            throw new BridgeException
+                (ex.getElement(),
+                 ex.isMissing() ? ERR_ATTRIBUTE_MISSING
+                                : ERR_ATTRIBUTE_VALUE_MALFORMED,
+                 new Object[] { ex.getAttributeName(), ex.getValue() });
         }
     }
 
@@ -938,7 +950,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
     protected static Rectangle2D getImageBounds(BridgeContext ctx,
                                                 Element element) {
         try {
-            SVGOMImageElement ie = (SVGOMImageElement) element;
+            SVGImageElement ie = (SVGImageElement) element;
 
             // 'x' attribute - default is 0
             float x = ie.getX().getAnimVal().getValue();

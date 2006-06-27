@@ -27,90 +27,218 @@ import org.w3c.dom.svg.SVGPreserveAspectRatio;
 /**
  * This class implements the {@link SVGAnimatedPreserveAspectRatio} interface.
  *
- * @author  Tonny Kohar
+ * @author <a href="mailto:tonny@kiyut.com">Tonny Kohar</a>
  * @version $Id$
  */
-public class SVGOMAnimatedPreserveAspectRatio 
-    implements SVGAnimatedPreserveAspectRatio, LiveAttributeValue {
+public class SVGOMAnimatedPreserveAspectRatio
+        extends AbstractSVGAnimatedValue
+        implements SVGAnimatedPreserveAspectRatio {
+
     /**
-     * The associated element.
+     * The base value.
      */
-    protected AbstractElement element;
-    
+    protected BaseSVGPARValue baseVal;
+
+    /**
+     * The animated value.
+     */
+    protected AnimSVGPARValue animVal;
+
     /**
      * Whether the value is changing.
      */
-    protected boolean changing = false;
-    
+    protected boolean changing;
+
     /**
-     * SVGPreserveAspectRatio mapping the static 'preserveAspectRatio'
-     * attribute.
+     * Creates a new SVGOMAnimatedPreserveAspectRatio.
+     * @param elt The associated element.
      */
-    protected AbstractSVGPreserveAspectRatio preserveAspectRatio;
-    
-    
-    /** Creates a new instance of SVGOMAnimatePreserveAspectRatio */
-    public SVGOMAnimatedPreserveAspectRatio(AbstractElement elt)  {
-        element = elt;
-        preserveAspectRatio = new SVGOMPreserveAspectRatio();
-        String attrValue = elt.getAttributeNS
-            (null,SVGConstants.SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE);
-        if (attrValue != null) {
-            preserveAspectRatio.setValueAsString(attrValue);
-        }
+    public SVGOMAnimatedPreserveAspectRatio(AbstractElement elt) {
+        super(elt, null, SVGConstants.SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE);
     }
-    
-    public void attrAdded(Attr node, String newv) {
-        if (!changing) {
-            preserveAspectRatio.setValueAsString(newv);
-            // System.out.println("attr added: " + newv);
-        }
-    }
-    
-    public void attrModified(Attr node, String oldv, String newv) {
-        if (!changing) {
-            preserveAspectRatio.setValueAsString(newv);
-        }
-    }
-    
-    public void attrRemoved(Attr node, String oldv) {
-        if (!changing) {
-            preserveAspectRatio.reset();
-        }
-    }
-    
-    public SVGPreserveAspectRatio getAnimVal() {
-        throw new RuntimeException("!!! TODO: getAnimVal()");
-        
-    }
-    
+
+    /**
+     * <b>DOM</b>: Implements {@link SVGAnimatedPreserveAspectRatio#getBaseVal()}.
+     */
     public SVGPreserveAspectRatio getBaseVal() {
-        return preserveAspectRatio;
+        if (baseVal == null) {
+            baseVal = new BaseSVGPARValue();
+        }
+        return baseVal;
     }
-    
-    /** The implementation of SVGPreserveAspectRatio
+
+    /**
+     * <b>DOM</b>: Implements {@link SVGAnimatedPreserveAspectRatio#getAnimVal()}.
      */
-    public class SVGOMPreserveAspectRatio 
-        extends AbstractSVGPreserveAspectRatio {
+    public SVGPreserveAspectRatio getAnimVal() {
+        if (animVal == null) {
+            animVal = new AnimSVGPARValue();
+        }
+        return animVal;
+    }
+
+    /**
+     * Sets the animated value.
+     */
+    public void setAnimatedValue(short align, short meetOrSlice) {
+        if (animVal == null) {
+            animVal = new AnimSVGPARValue();
+        }
+        hasAnimVal = true;
+        animVal.setAnimatedValue(align, meetOrSlice);
+        fireAnimatedAttributeListeners();
+    }
+
+    /**
+     * Resets the animated value.
+     */
+    public void resetAnimatedValue() {
+        hasAnimVal = false;
+        fireAnimatedAttributeListeners();
+    }
+
+    /**
+     * Called when an Attr node has been added.
+     */
+    public void attrAdded(Attr node, String newv) {
+        if (!changing && baseVal != null) {
+            baseVal.invalidate();
+        }
+        // XXX Notify baseVal listeners (if we need them).
+        if (!hasAnimVal) {
+            fireAnimatedAttributeListeners();
+        }
+    }
+
+    /**
+     * Called when an Attr node has been modified.
+     */
+    public void attrModified(Attr node, String oldv, String newv) {
+        if (!changing && baseVal != null) {
+            baseVal.invalidate();
+        }
+        // XXX Notify baseVal listeners (if we need them).
+        if (!hasAnimVal) {
+            fireAnimatedAttributeListeners();
+        }
+    }
+
+    /**
+     * Called when an Attr node has been removed.
+     */
+    public void attrRemoved(Attr node, String oldv) {
+        if (!changing && baseVal != null) {
+            baseVal.invalidate();
+        }
+        // XXX Notify baseVal listeners (if we need them).
+        if (!hasAnimVal) {
+            fireAnimatedAttributeListeners();
+        }
+    }
+
+    /**
+     * This class represents the SVGPreserveAspectRatio returned by {@link
+     * #getBaseVal()}.
+     */
+    public class BaseSVGPARValue extends AbstractSVGPreserveAspectRatio {
         
         /**
          * Create a DOMException.
          */
-        protected DOMException createDOMException(short    type,
-                                                  String   key,
-                                                  Object[] args){
-            return element.createDOMException(type,key,args);
+        protected DOMException createDOMException(short type, String key,
+                                                  Object[] args) {
+            return element.createDOMException(type, key, args);
         }
-        
+
+        /**
+         * Sets the associated DOM attribute.
+         */
         protected void setAttributeValue(String value) throws DOMException {
             try {
                 changing = true;
                 element.setAttributeNS
-                    (null,SVGConstants.SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE,
+                    (null, SVGConstants.SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE,
                      value);
             } finally {
                 changing = false;
             }
+        }
+
+        /**
+         * Re-reads the DOM attribute value.
+         */
+        protected void invalidate() {
+            String s = element.getAttributeNS
+                (null, SVGConstants.SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE);
+            setValueAsString(s);
+        }
+    }
+
+    /**
+     * This class represents the SVGPreserveAspectRatio returned by {@link
+     * #getAnimVal()}.
+     */
+    public class AnimSVGPARValue extends AbstractSVGPreserveAspectRatio {
+        
+        /**
+         * Create a DOMException.
+         */
+        protected DOMException createDOMException(short type, String key,
+                                                  Object[] args) {
+            return element.createDOMException(type, key, args);
+        }
+
+        /**
+         * Sets the associated DOM attribute.  Does nothing, since animated
+         * values aren't reflected in the DOM.
+         */
+        protected void setAttributeValue(String value) throws DOMException {
+        }
+
+        /**
+         * <b>DOM</b>: Implements {@link SVGPreservAspectRatio#getAlign()}.
+         */
+        public short getAlign() {
+            if (hasAnimVal) {
+                return super.getAlign();
+            }
+            return getBaseVal().getAlign();
+        }
+        
+        /**
+         * <b>DOM</b>: Implements {@link SVGPreservAspectRatio#getMeetOrSlice()}.
+         */
+        public short getMeetOrSlice() {
+            if (hasAnimVal) {
+                return super.getMeetOrSlice();
+            }
+            return getBaseVal().getMeetOrSlice();
+        }
+
+        /**
+         * <b>DOM</b>: Implements {@link SVGPreservAspectRatio#setAlign(short)}.
+         */
+        public void setAlign(short align) {
+            throw element.createDOMException
+                (DOMException.NO_MODIFICATION_ALLOWED_ERR,
+                 "readonly.preserve.aspect.ratio", null);
+        }
+
+        /**
+         * <b>DOM</b>: Implements {@link SVGPreservAspectRatio#setMeetOrSlice(short)}.
+         */
+        public void setMeetOrSlice(short meetOrSlice) {
+            throw element.createDOMException
+                (DOMException.NO_MODIFICATION_ALLOWED_ERR,
+                 "readonly.preserve.aspect.ratio", null);
+        }
+
+        /**
+         * Updates the animated value.
+         */
+        protected void setAnimatedValue(short align, short meetOrSlice) {
+            this.align = align;
+            this.meetOrSlice = meetOrSlice;
         }
     }
 }

@@ -81,10 +81,28 @@ public class AnimatableRectValue extends AnimatableValue {
         } else {
             res = (AnimatableRectValue) result;
         }
-        res.x = x;
-        res.y = y;
-        res.width = width;
-        res.height = height;
+
+        float newX, newY, newWidth, newHeight;
+        if (to != null && interpolation >= 0.5) {
+            AnimatableRectValue toValue = (AnimatableRectValue) to;
+            newX = toValue.x;
+            newY = toValue.y;
+            newWidth = toValue.width;
+            newHeight = toValue.height;
+        } else {
+            newX = x;
+            newY = y;
+            newWidth = width;
+            newHeight = height;
+        }
+        if (res.x != newX || res.y != newY
+                || res.width != newWidth || res.height != newHeight) {
+            res.x = newX;
+            res.y = newY;
+            res.width = newWidth;
+            res.height = newHeight;
+            res.hasChanged = true;
+        }
         return res;
     }
 

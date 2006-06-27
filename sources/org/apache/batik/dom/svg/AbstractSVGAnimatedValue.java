@@ -109,8 +109,9 @@ public abstract class AbstractSVGAnimatedValue
     protected void fireAnimatedAttributeListeners() {
         Iterator i = listeners.iterator();
         while (i.hasNext()) {
-            ((AnimatedAttributeListener) i.next()).animatedAttributeChanged
-                (element, this);
+            AnimatedAttributeListener listener =
+                (AnimatedAttributeListener) i.next();
+            listener.animatedAttributeChanged(element, this);
         }
     }
 }

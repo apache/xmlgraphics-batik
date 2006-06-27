@@ -31,10 +31,10 @@ import org.w3c.dom.svg.SVGLength;
 public interface AnimationTarget {
 
     // Constants for percentage interpretation.
-    static final int PERCENTAGE_FONT_SIZE       = 0;
-    static final int PERCENTAGE_VIEWPORT_WIDTH  = 1;
-    static final int PERCENTAGE_VIEWPORT_HEIGHT = 2;
-    static final int PERCENTAGE_VIEWPORT_SIZE   = 3;
+    static final short PERCENTAGE_FONT_SIZE       = 0;
+    static final short PERCENTAGE_VIEWPORT_WIDTH  = 1;
+    static final short PERCENTAGE_VIEWPORT_HEIGHT = 2;
+    static final short PERCENTAGE_VIEWPORT_SIZE   = 3;
 
     /**
      * Returns the element.
@@ -55,7 +55,7 @@ public interface AnimationTarget {
      * Gets how percentage values are interpreted by the given attribute
      * or property.
      */
-    int getPercentageInterpretation(String ns, String an, boolean isCSS);
+    short getPercentageInterpretation(String ns, String an, boolean isCSS);
 
     /**
      * Returns whether color interpolations should be done in linear RGB
@@ -72,7 +72,7 @@ public interface AnimationTarget {
      *             {@link AnimationTarget}.PERCENTAGE_* constants) 
      * @return the SVG value in user units
      */
-    float svgToUserSpace(float v, int type, int pcInterp);
+    float svgToUserSpace(float v, short type, short pcInterp);
 
     // Listeners
 

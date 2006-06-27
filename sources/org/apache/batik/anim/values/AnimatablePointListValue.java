@@ -33,14 +33,14 @@ public class AnimatablePointListValue extends AnimatableNumberListValue {
     protected AnimatablePointListValue(AnimationTarget target) {
         super(target);
     }
-    
+
     /**
      * Creates a new AnimatablePointListValue.
      */
     public AnimatablePointListValue(AnimationTarget target, float[] numbers) {
         super(target, numbers);
     }
-    
+
     /**
      * Performs interpolation to the given value.
      */

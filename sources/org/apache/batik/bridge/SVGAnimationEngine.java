@@ -30,7 +30,11 @@ import org.apache.batik.anim.timing.TimedElement;
 import org.apache.batik.anim.values.AnimatableBooleanValue;
 import org.apache.batik.anim.values.AnimatableIntegerValue;
 import org.apache.batik.anim.values.AnimatableLengthValue;
+import org.apache.batik.anim.values.AnimatableLengthListValue;
 import org.apache.batik.anim.values.AnimatableLengthOrIdentValue;
+import org.apache.batik.anim.values.AnimatableNumberListValue;
+import org.apache.batik.anim.values.AnimatablePointListValue;
+import org.apache.batik.anim.values.AnimatablePreserveAspectRatioValue;
 import org.apache.batik.anim.values.AnimatableNumberOrIdentValue;
 import org.apache.batik.anim.values.AnimatableStringValue;
 import org.apache.batik.anim.values.AnimatableValue;
@@ -46,10 +50,17 @@ import org.apache.batik.css.engine.value.ValueManager;
 import org.apache.batik.css.engine.value.svg.SVGValueConstants;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.svg.SVGOMElement;
+import org.apache.batik.parser.DefaultPreserveAspectRatioHandler;
+import org.apache.batik.parser.FloatArrayProducer;
 import org.apache.batik.parser.DefaultLengthHandler;
+import org.apache.batik.parser.LengthArrayProducer;
 import org.apache.batik.parser.LengthHandler;
+import org.apache.batik.parser.LengthListParser;
 import org.apache.batik.parser.LengthParser;
+import org.apache.batik.parser.NumberListParser;
+import org.apache.batik.parser.PointsParser;
 import org.apache.batik.parser.ParseException;
+import org.apache.batik.parser.PreserveAspectRatioParser;
 import org.apache.batik.util.CSSConstants;
 import org.apache.batik.util.RunnableQueue;
 import org.apache.batik.util.XMLConstants;
@@ -61,6 +72,7 @@ import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.svg.SVGLength;
+import org.w3c.dom.svg.SVGPreserveAspectRatio;
 
 /**
  * An AnimationEngine for SVG documents.
@@ -113,11 +125,11 @@ public class SVGAnimationEngine extends AnimationEngine {
         new AnimatablePaintValueFactory(), // TYPE_PAINT
         null, // TYPE_PERCENTAGE
         null, // TYPE_TRANSFORM_LIST
-        null, // TYPE_URI
+        uncomputedAnimatableStringValueFactory, // TYPE_URI
         null, // TYPE_FREQUENCY
         null, // TYPE_TIME
-        null, // TYPE_NUMBER_LIST
-        null, // TYPE_LENGTH_LIST
+        new AnimatableNumberListValueFactory(), // TYPE_NUMBER_LIST
+        new AnimatableLengthListValueFactory(), // TYPE_LENGTH_LIST
         uncomputedAnimatableStringValueFactory, // TYPE_IDENT
         uncomputedAnimatableStringValueFactory, // TYPE_CDATA
         animatableLengthOrIdentFactory, // TYPE_LENGTH_OR_INHERIT
@@ -134,8 +146,8 @@ public class SVGAnimationEngine extends AnimationEngine {
         animatableNumberOrIdentFactory, // TYPE_FONT_WEIGHT_VALUE
         uncomputedAnimatableStringValueFactory, // TYPE_ANGLE_OR_IDENT XXX
         null, // TYPE_KEY_SPLINES_VALUE
-        null, // TYPE_POINTS_VALUE
-        null, // TYPE_PRESERVE_ASPECT_RATIO_VALUE
+        new AnimatablePointListValueFactory(), // TYPE_POINTS_VALUE
+        new AnimatablePreserveAspectRatioValueFactory(), // TYPE_PRESERVE_ASPECT_RATIO_VALUE
         null, // TYPE_URI_LIST
         uncomputedAnimatableStringValueFactory, // TYPE_LENGTH_LIST_OR_IDENT
         null, // TYPE_CHARACTER_OR_UNICODE_RANGE_LIST
@@ -706,6 +718,159 @@ public class SVGAnimationEngine extends AnimationEngine {
     }
 
     /**
+     * Factory class for {@link AnimatablePreserveAspectRatioValue}s.
+     */
+    protected class AnimatablePreserveAspectRatioValueFactory implements Factory {
+
+        /**
+         * The parsed 'align' value.
+         */
+        protected short align;
+
+        /**
+         * The parsed 'meetOrSlice' value.
+         */
+        protected short meetOrSlice;
+
+        /**
+         * Parser for preserveAspectRatio values.
+         */
+        protected PreserveAspectRatioParser parser =
+            new PreserveAspectRatioParser();
+
+        /**
+         * Handler for the preserveAspectRatio parser.
+         */
+        protected DefaultPreserveAspectRatioHandler handler =
+            new DefaultPreserveAspectRatioHandler() {
+
+            /**
+             * Implements {@link
+             * PreserveAspectRatioHandler#startPreserveAspectRatio()}.
+             */
+            public void startPreserveAspectRatio() throws ParseException {
+                align = SVGPreserveAspectRatio.SVG_PRESERVEASPECTRATIO_UNKNOWN;
+                meetOrSlice = SVGPreserveAspectRatio.SVG_MEETORSLICE_UNKNOWN;
+            }
+            
+            /**
+             * Implements {@link PreserveAspectRatioHandler#none()}.
+             */
+            public void none() throws ParseException {
+                align = SVGPreserveAspectRatio.SVG_PRESERVEASPECTRATIO_NONE;
+            }
+
+            /**
+             * Implements {@link PreserveAspectRatioHandler#xMaxYMax()}.
+             */
+            public void xMaxYMax() throws ParseException {
+                align = SVGPreserveAspectRatio.SVG_PRESERVEASPECTRATIO_XMAXYMAX;
+            }
+
+            /**
+             * Implements {@link PreserveAspectRatioHandler#xMaxYMid()}.
+             */
+            public void xMaxYMid() throws ParseException {
+                align = SVGPreserveAspectRatio.SVG_PRESERVEASPECTRATIO_XMAXYMID;
+            }
+
+            /**
+             * Implements {@link PreserveAspectRatioHandler#xMaxYMin()}.
+             */
+            public void xMaxYMin() throws ParseException {
+                align = SVGPreserveAspectRatio.SVG_PRESERVEASPECTRATIO_XMAXYMIN;
+            }
+
+            /**
+             * Implements {@link PreserveAspectRatioHandler#xMidYMax()}.
+             */
+            public void xMidYMax() throws ParseException {
+                align = SVGPreserveAspectRatio.SVG_PRESERVEASPECTRATIO_XMIDYMAX;
+            }
+
+            /**
+             * Implements {@link PreserveAspectRatioHandler#xMidYMid()}.
+             */
+            public void xMidYMid() throws ParseException {
+                align = SVGPreserveAspectRatio.SVG_PRESERVEASPECTRATIO_XMIDYMID;
+            }
+
+            /**
+             * Implements {@link PreserveAspectRatioHandler#xMidYMin()}.
+             */
+            public void xMidYMin() throws ParseException {
+                align = SVGPreserveAspectRatio.SVG_PRESERVEASPECTRATIO_XMIDYMIN;
+            }
+
+            /**
+             * Implements {@link PreserveAspectRatioHandler#xMinYMax()}.
+             */
+            public void xMinYMax() throws ParseException {
+                align = SVGPreserveAspectRatio.SVG_PRESERVEASPECTRATIO_XMINYMAX;
+            }
+
+            /**
+             * Implements {@link PreserveAspectRatioHandler#xMinYMid()}.
+             */
+            public void xMinYMid() throws ParseException {
+                align = SVGPreserveAspectRatio.SVG_PRESERVEASPECTRATIO_XMINYMID;
+            }
+
+            /**
+             * Implements {@link PreserveAspectRatioHandler#xMinYMin()}.
+             */
+            public void xMinYMin() throws ParseException {
+                align = SVGPreserveAspectRatio.SVG_PRESERVEASPECTRATIO_XMINYMIN;
+            }
+
+            /**
+             * Implements {@link PreserveAspectRatioHandler#meet()}.
+             */
+            public void meet() throws ParseException {
+                meetOrSlice = SVGPreserveAspectRatio.SVG_MEETORSLICE_MEET;
+            }
+
+            /**
+             * Implements {@link PreserveAspectRatioHandler#slice()}.
+             */
+            public void slice() throws ParseException {
+                meetOrSlice = SVGPreserveAspectRatio.SVG_MEETORSLICE_SLICE;
+            }
+        };
+
+        /**
+         * Creates a new AnimatablePreserveAspectRatioValueFactory.
+         */
+        public AnimatablePreserveAspectRatioValueFactory() {
+            parser.setPreserveAspectRatioHandler(handler);
+        }
+
+        /**
+         * Creates a new AnimatableValue from a string.
+         */
+        public AnimatableValue createValue(AnimationTarget target, String ns,
+                                           String ln, boolean isCSS, String s) {
+            try {
+                parser.parse(s);
+                return new AnimatablePreserveAspectRatioValue(target, align,
+                                                              meetOrSlice);
+            } catch (ParseException e) {
+                // XXX Do something better than returning null.
+                return null;
+            }
+        }
+
+        /**
+         * Creates a new AnimatableValue from a CSS {@link Value}.  Returns null
+         * since preserveAspectRatio values aren't used in CSS values.
+         */
+        public AnimatableValue createValue(AnimationTarget target, String pn,
+                                           Value v) {
+            return null;
+        }
+    }
+
+    /**
      * Factory class for {@link AnimatableLengthValue}s.
      */
     protected class AnimatableLengthValueFactory implements Factory {
@@ -713,7 +878,7 @@ public class SVGAnimationEngine extends AnimationEngine {
         /**
          * The parsed length unit type.
          */
-        protected int type;
+        protected short type;
 
         /**
          * The parsed length value.
@@ -778,7 +943,7 @@ public class SVGAnimationEngine extends AnimationEngine {
          */
         public AnimatableValue createValue(AnimationTarget target, String ns,
                                            String ln, boolean isCSS, String s) {
-            int pcInterp = target.getPercentageInterpretation(ns, ln, isCSS);
+            short pcInterp = target.getPercentageInterpretation(ns, ln, isCSS);
             try {
                 parser.parse(s);
                 return new AnimatableLengthValue
@@ -796,6 +961,151 @@ public class SVGAnimationEngine extends AnimationEngine {
                                            Value v) {
             return new AnimatableIntegerValue(target,
                                               Math.round(v.getFloatValue()));
+        }
+    }
+
+    /**
+     * Factory class for {@link AnimatableLengthListValue}s.
+     */
+    protected class AnimatableLengthListValueFactory implements Factory {
+
+        /**
+         * Parser for length lists.
+         */
+        protected LengthListParser parser = new LengthListParser();
+
+        /**
+         * The producer class that accumulates the lengths.
+         */
+        protected LengthArrayProducer producer = new LengthArrayProducer();
+
+        /**
+         * Creates a new AnimatableLengthListValueFactory.
+         */
+        public AnimatableLengthListValueFactory() {
+            parser.setLengthListHandler(producer);
+        }
+
+        /**
+         * Creates a new AnimatableValue from a string.
+         */
+        public AnimatableValue createValue(AnimationTarget target, String ns,
+                                           String ln, boolean isCSS, String s) {
+            try {
+                short pcInterp = target.getPercentageInterpretation
+                    (ns, ln, isCSS);
+                parser.parse(s);
+                return new AnimatableLengthListValue
+                    (target, producer.getLengthTypeArray(),
+                     producer.getLengthValueArray(),
+                     pcInterp);
+            } catch (ParseException e) {
+                // XXX Do something better than returning null.
+                return null;
+            }
+        }
+
+        /**
+         * Creates a new AnimatableValue from a CSS {@link Value}.  Returns null
+         * since point lists aren't used in CSS values.
+         */
+        public AnimatableValue createValue(AnimationTarget target, String pn,
+                                           Value v) {
+            return null;
+        }
+    }
+
+    /**
+     * Factory class for {@link AnimationNumberListValue}s.
+     */
+    protected class AnimatableNumberListValueFactory implements Factory {
+
+        /**
+         * Parser for number lists.
+         */
+        protected NumberListParser parser = new NumberListParser();
+
+        /**
+         * The producer class that accumulates the numbers.
+         */
+        protected FloatArrayProducer producer = new FloatArrayProducer();
+
+        /**
+         * Creates a new AnimatableNumberListValueFactory.
+         */
+        public AnimatableNumberListValueFactory() {
+            parser.setNumberListHandler(producer);
+        }
+
+        /**
+         * Creates a new AnimatableValue from a string.
+         */
+        public AnimatableValue createValue(AnimationTarget target, String ns,
+                                           String ln, boolean isCSS, String s) {
+            try {
+                parser.parse(s);
+                return new AnimatableNumberListValue(target,
+                                                     producer.getFloatArray());
+            } catch (ParseException e) {
+                // XXX Do something better than returning null.
+                return null;
+            }
+        }
+
+        /**
+         * Creates a new AnimatableValue from a CSS {@link Value}.  Returns null
+         * since number lists aren't used in CSS values.
+         */
+        public AnimatableValue createValue(AnimationTarget target, String pn,
+                                           Value v) {
+            return null;
+        }
+    }
+
+    /**
+     * Factory class for {@link AnimationPointListValue}s.
+     */
+    protected class AnimatablePointListValueFactory implements Factory {
+
+        /**
+         * Parser for point lists.
+         */
+        protected PointsParser parser = new PointsParser();
+
+        /**
+         * The producer class that accumulates the points.
+         */
+        protected FloatArrayProducer producer = new FloatArrayProducer();
+
+        /**
+         * Creates a new AnimatablePointListValueFactory.
+         */
+        public AnimatablePointListValueFactory() {
+            parser.setPointsHandler(producer);
+        }
+
+        /**
+         * Creates a new AnimatableValue from a string.
+         */
+        public AnimatableValue createValue(AnimationTarget target, String ns,
+                                           String ln, boolean isCSS, String s) {
+            try {
+                parser.parse(s);
+                return new AnimatablePointListValue(target,
+                                                    producer.getFloatArray());
+            } catch (ParseException e) {
+                // XXX Do something better than returning null.
+                return null;
+            }
+        }
+
+        /**
+         * Creates a new AnimatableValue from a CSS {@link Value}.  Returns null
+         * since point lists aren't used in CSS values.
+         */
+        public AnimatableValue createValue(AnimationTarget target, String pn,
+                                           Value v) {
+            return null;
         }
     }
 
@@ -826,7 +1136,7 @@ public class SVGAnimationEngine extends AnimationEngine {
                 return new AnimatableLengthOrIdentValue(target,
                                                         v.getStringValue());
             }
-            int pcInterp = target.getPercentageInterpretation(null, pn, true);
+            short pcInterp = target.getPercentageInterpretation(null, pn, true);
             FloatValue fv = (FloatValue) v;
             return new AnimatableLengthOrIdentValue
                 (target, fv.getPrimitiveType(), fv.getFloatValue(), pcInterp);

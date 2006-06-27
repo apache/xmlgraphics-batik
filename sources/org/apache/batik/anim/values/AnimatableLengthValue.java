@@ -39,7 +39,7 @@ public class AnimatableLengthValue extends AnimatableValue {
     /**
      * The length type.
      */
-    protected int lengthType;
+    protected short lengthType;
 
     /**
      * The length value.  This should be one of the constants defined in
@@ -51,7 +51,7 @@ public class AnimatableLengthValue extends AnimatableValue {
      * How to interpret percentage values.  One of the
      * {@link AnimationTarget}.PERCENTAGE_* constants.
      */
-    protected int percentageInterpretation;
+    protected short percentageInterpretation;
     
     /**
      * Creates a new AnimatableLengthValue with no length.
@@ -63,8 +63,8 @@ public class AnimatableLengthValue extends AnimatableValue {
     /**
      * Creates a new AnimatableLengthValue.
      */
-    public AnimatableLengthValue(AnimationTarget target, int type, float v,
-                                 int pcInterp) {
+    public AnimatableLengthValue(AnimationTarget target, short type, float v,
+                                 short pcInterp) {
         super(target);
         lengthType = type;
         lengthValue = v;
@@ -85,6 +85,10 @@ public class AnimatableLengthValue extends AnimatableValue {
         } else {
             res = (AnimatableLengthValue) result;
         }
+
+        short oldLengthType = res.lengthType;
+        float oldLengthValue = res.lengthValue;
+        short oldPercentageInterpretation = res.percentageInterpretation;
 
         res.lengthType = lengthType;
         res.lengthValue = lengthValue;
@@ -129,6 +133,11 @@ public class AnimatableLengthValue extends AnimatableValue {
             res.lengthValue += multiplier * accValue;
         }
         
+        if (oldPercentageInterpretation != res.percentageInterpretation
+                || oldLengthType != res.lengthType
+                || oldLengthValue != res.lengthValue) {
+            res.hasChanged = true;
+        }
         return res;
     }
 
@@ -139,7 +148,8 @@ public class AnimatableLengthValue extends AnimatableValue {
      * @param t2 the second SVG length type
      * @param pi2 the second percentage interpretation type
      */
-    public static boolean compatibleTypes(int t1, int pi1, int t2, int pi2) {
+    public static boolean compatibleTypes(short t1, short pi1, short t2,
+                                          short pi2) {
         return t1 == t2
             && (t1 != SVGLength.SVG_LENGTHTYPE_PERCENTAGE || pi1 == pi2)
             || t1 == SVGLength.SVG_LENGTHTYPE_NUMBER
@@ -148,10 +158,16 @@ public class AnimatableLengthValue extends AnimatableValue {
                 && t2 == SVGLength.SVG_LENGTHTYPE_NUMBER;
     }
 
+    /**
+     * Returns the unit type of this length value.
+     */
     public int getLengthType() {
         return lengthType;
     }
 
+    /**
+     * Returns the magnitude of this length value.
+     */
     public float getLengthValue() {
         return lengthValue;
     }

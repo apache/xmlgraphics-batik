@@ -72,7 +72,10 @@ public class AnimatableNumberValue extends AnimatableValue {
             v += multiplier * accNumber.value;
         }
 
-        res.value = v;
+        if (res.value != v) {
+            res.value = v;
+            res.hasChanged = true;
+        }
         return res;
     }
 

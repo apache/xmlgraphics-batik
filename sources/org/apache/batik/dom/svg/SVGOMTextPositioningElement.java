@@ -56,7 +56,6 @@ public abstract class SVGOMTextPositioningElement
      * <b>DOM</b>: Implements {@link SVGTextPositioningElement#getX()}.
      */
     public SVGAnimatedLengthList getX() {
-        //throw new RuntimeException(" !!! SVGOMTextPositioningElement.getX()");
         return SVGTextPositioningElementSupport.getX(this);
     }
 
@@ -64,7 +63,6 @@ public abstract class SVGOMTextPositioningElement
      * <b>DOM</b>: Implements {@link SVGTextPositioningElement#getY()}.
      */
     public SVGAnimatedLengthList getY() {
-        //throw new RuntimeException(" !!! SVGOMTextPositioningElement.getY()");
         return SVGTextPositioningElementSupport.getY(this);
     }
 
@@ -72,7 +70,6 @@ public abstract class SVGOMTextPositioningElement
      * <b>DOM</b>: Implements {@link SVGTextPositioningElement#getDx()}.
      */
     public SVGAnimatedLengthList getDx() {
-        //throw new RuntimeException(" !!! SVGOMTextPositioningElement.getDx()");
         return SVGTextPositioningElementSupport.getDx(this);
     }
 
@@ -80,7 +77,6 @@ public abstract class SVGOMTextPositioningElement
      * <b>DOM</b>: Implements {@link SVGTextPositioningElement#getDy()}.
      */
     public SVGAnimatedLengthList getDy() {
-        //throw new RuntimeException(" !!! SVGOMTextPositioningElement.getDy()");
         return SVGTextPositioningElementSupport.getDy(this);
     }
 
@@ -88,7 +84,7 @@ public abstract class SVGOMTextPositioningElement
      * <b>DOM</b>: Implements {@link SVGTextPositioningElement#getRotate()}.
      */
     public SVGAnimatedNumberList getRotate() {
-        throw new RuntimeException(" !!! SVGOMTextPositioningElement.getRotate()");
+        return SVGTextPositioningElementSupport.getRotate(this);
     }
 
     // ExtendedTraitAccess ///////////////////////////////////////////////////
@@ -131,7 +127,7 @@ public abstract class SVGOMTextPositioningElement
     /**
      * Gets how percentage values are interpreted by the given attribute.
      */
-    protected int getAttributePercentageInterpretation(String ns, String ln) {
+    protected short getAttributePercentageInterpretation(String ns, String ln) {
         if (ns == null) {
             if (ln.equals(SVG_X_ATTRIBUTE) || ln.equals(SVG_DX_ATTRIBUTE)) {
                 return AnimationTarget.PERCENTAGE_VIEWPORT_WIDTH;

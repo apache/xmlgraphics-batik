@@ -161,6 +161,9 @@ public class AnimatableTransformListValue extends AnimatableValue {
             }
         }
 
+        // XXX Do better checking for changes.
+        res.hasChanged = true;
+
         return res;
     }
 

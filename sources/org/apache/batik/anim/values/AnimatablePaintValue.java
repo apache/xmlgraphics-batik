@@ -163,7 +163,7 @@ public class AnimatablePaintValue extends AnimatableColorValue {
         } else {
             res = (AnimatablePaintValue) result;
         }
-        
+
         if (paintType == PAINT_COLOR) {
             boolean canInterpolate = true;
             if (to != null) {
@@ -183,11 +183,39 @@ public class AnimatablePaintValue extends AnimatableColorValue {
             }
         }
 
-        res.paintType = paintType;
-        res.uri = uri;
-        res.red = red;
-        res.green = green;
-        res.blue = blue;
+        int newPaintType;
+        String newURI;
+        float newRed, newGreen, newBlue;
+
+        if (to != null && interpolation >= 0.5) {
+            AnimatablePaintValue toValue = (AnimatablePaintValue) to;
+            newPaintType = toValue.paintType;
+            newURI = toValue.uri;
+            newRed = toValue.red;
+            newGreen = toValue.green;
+            newBlue = toValue.blue;
+        } else {
+            newPaintType = paintType;
+            newURI = uri;
+            newRed = red;
+            newGreen = green;
+            newBlue = blue;
+        }
+
+        if (res.paintType != newPaintType
+                || res.uri == null
+                || !res.uri.equals(newURI)
+                || res.red != newRed
+                || res.green != newGreen
+                || res.blue != newBlue) {
+            res.paintType = newPaintType;
+            res.uri = newURI;
+            res.red = newRed;
+            res.green = newGreen;
+            res.blue = newBlue;
+            res.hasChanged = true;
+        }
+
         return res;
     }
 

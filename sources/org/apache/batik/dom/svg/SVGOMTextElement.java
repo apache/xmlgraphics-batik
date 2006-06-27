@@ -140,10 +140,13 @@ public class SVGOMTextElement
         SVGOMAnimatedLengthList result = (SVGOMAnimatedLengthList)
             getLiveAttributeValue(null, SVGConstants.SVG_X_ATTRIBUTE);
         if (result == null) {
+            SVGOMDocument doc = (SVGOMDocument) ownerDocument;
             result = new SVGOMAnimatedLengthList(this, null,
                                                  SVGConstants.SVG_X_ATTRIBUTE,
                                                  X_DEFAULT_VALUE,
                                                  AbstractSVGLength.HORIZONTAL_LENGTH);
+            result.addAnimatedAttributeListener
+                (doc.getAnimatedAttributeListener());
             putLiveAttributeValue(null,
                                   SVGConstants.SVG_X_ATTRIBUTE, result);
         }
@@ -158,10 +161,13 @@ public class SVGOMTextElement
         SVGOMAnimatedLengthList result = (SVGOMAnimatedLengthList)
             getLiveAttributeValue(null, SVGConstants.SVG_Y_ATTRIBUTE);
         if (result == null) {
+            SVGOMDocument doc = (SVGOMDocument) ownerDocument;
             result = new SVGOMAnimatedLengthList(this, null,
                                                  SVGConstants.SVG_Y_ATTRIBUTE,
                                                  Y_DEFAULT_VALUE,
                                                  AbstractSVGLength.VERTICAL_LENGTH);
+            result.addAnimatedAttributeListener
+                (doc.getAnimatedAttributeListener());
             putLiveAttributeValue(null,
                                   SVGConstants.SVG_Y_ATTRIBUTE, result);
         }

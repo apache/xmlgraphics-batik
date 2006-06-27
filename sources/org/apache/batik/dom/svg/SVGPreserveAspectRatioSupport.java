@@ -23,9 +23,11 @@ import org.w3c.dom.svg.SVGAnimatedPreserveAspectRatio;
 
 /**
  * Support for the 'preserveAspectRatio' interface on the SVG element.
- * @author  Tonny Kohar
+ * @author <a href="mailto:tonny@kiyut.com">Tonny Kohar</a>
+ * @version $Id$
  */
 public class SVGPreserveAspectRatioSupport {
+
     /**
      * To implement getPreserveAspectRatio.
      * Returns the value of the 'preserveAspectRatio' attribute of the
@@ -38,7 +40,10 @@ public class SVGPreserveAspectRatioSupport {
             (null, SVGConstants.SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE);
 
         if (ret == null) {
+            SVGOMDocument doc = (SVGOMDocument) elt.getOwnerDocument();
             ret = new SVGOMAnimatedPreserveAspectRatio(elt);
+            ret.addAnimatedAttributeListener
+                (doc.getAnimatedAttributeListener());
             elt.putLiveAttributeValue
                 (null, SVGConstants.SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE, ret);
         }

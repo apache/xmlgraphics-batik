@@ -142,7 +142,7 @@ outer:  while (i < len) {
             }
             start = i++;
             c = valuesString.charAt(i);
-            while (c != ' ' && c != ';') {
+            while (c != ';') {
                 i++;
                 if (i == len) {
                     break;

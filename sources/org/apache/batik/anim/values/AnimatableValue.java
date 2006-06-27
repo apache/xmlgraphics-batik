@@ -30,6 +30,13 @@ public abstract class AnimatableValue {
     protected AnimationTarget target;
 
     /**
+     * Whether this value has changed since the last call to
+     * {@link #hasChanged()}.  This must be updated within {@link #interpolate}
+     * in descendant classes.
+     */
+    protected boolean hasChanged = true;
+
+    /**
      * Creates a new AnimatableValue.
      */
     protected AnimatableValue(AnimationTarget target) {
@@ -64,6 +71,15 @@ public abstract class AnimatableValue {
      */
     public abstract String getCssText();
     
+    /**
+     * Returns whether the value in this AnimatableValue has been modified.
+     */
+    public boolean hasChanged() {
+        boolean ret = hasChanged;
+        hasChanged = false;
+        return ret;
+    }
+
     /**
      * Returns a string representation of this object.
      */

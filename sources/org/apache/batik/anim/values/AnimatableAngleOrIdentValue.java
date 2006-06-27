@@ -97,14 +97,56 @@ public class AnimatableAngleOrIdentValue extends AnimatableAngleValue {
         } else {
             res = (AnimatableAngleOrIdentValue) result;
         }
-        
-        if (isIdent) {
-            res.ident = ident;
-            res.isIdent = true;
+
+        if (to == null) {
+            if (isIdent) {
+                res.hasChanged = !res.isIdent || !res.ident.equals(ident);
+                res.ident = ident;
+                res.isIdent = true;
+            } else {
+                short oldUnit = res.unit;
+                float oldValue = res.value;
+                super.interpolate(res, to, interpolation, accumulation,
+                                  multiplier);
+                if (res.unit != oldUnit || res.value != oldValue) {
+                    res.hasChanged = true;
+                }
+            }
         } else {
-            super.interpolate(res, to, interpolation, accumulation, multiplier);
-            res.isIdent = false;
+            AnimatableAngleOrIdentValue toValue
+                = (AnimatableAngleOrIdentValue) to;
+            if (isIdent || toValue.isIdent) {
+                if (interpolation >= 0.5) {
+                    if (res.isIdent != toValue.isIdent
+                            || res.unit != toValue.unit
+                            || res.value != toValue.value
+                            || res.isIdent && toValue.isIdent
+                                && !toValue.ident.equals(ident)) {
+                        res.isIdent = toValue.isIdent;
+                        res.ident = toValue.ident;
+                        res.unit = toValue.unit;
+                        res.value = toValue.value;
+                        res.hasChanged = true;
+                    }
+                } else {
+                    if (res.isIdent != isIdent
+                            || res.unit != unit
+                            || res.value != value
+                            || res.isIdent && isIdent
+                                && !res.ident.equals(ident)) {
+                        res.isIdent = isIdent;
+                        res.ident = ident;
+                        res.unit = unit;
+                        res.value = value;
+                        res.hasChanged = true;
+                    }
+                }
+            } else {
+                super.interpolate(res, to, interpolation, accumulation,
+                                  multiplier);
+            }
         }
+
         return res;
     }
 }

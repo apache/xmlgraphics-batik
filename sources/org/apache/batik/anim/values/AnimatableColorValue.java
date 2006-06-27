@@ -75,6 +75,10 @@ public class AnimatableColorValue extends AnimatableValue {
             res = (AnimatableColorValue) result;
         }
 
+        float oldRed = res.red;
+        float oldGreen = res.green;
+        float oldBlue = res.blue;
+
         res.red = red;
         res.green = green;
         res.blue = blue;
@@ -96,6 +100,9 @@ public class AnimatableColorValue extends AnimatableValue {
             res.blue += multiplier * accColor.blue;
         }
 
+        if (res.red != oldRed || res.green != oldGreen || res.blue != oldBlue) {
+            res.hasChanged = true;
+        }
         return res;
     }
 

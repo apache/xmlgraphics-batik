@@ -32,7 +32,7 @@ public class SVGOMAnimatedLength extends AbstractSVGAnimatedLength {
     protected String defaultValue;
 
     /**
-     * Creates a new SVGAnimatedLength.
+     * Creates a new SVGOMAnimatedLength.
      * @param elt The associated element.
      * @param ns The attribute's namespace URI.
      * @param ln The attribute's local name.

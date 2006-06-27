@@ -125,7 +125,7 @@ public class SVGOMAltGlyphElement
     /**
      * Gets how percentage values are interpreted by the given attribute.
      */
-    protected int getAttributePercentageInterpretation(String ns, String ln) {
+    protected short getAttributePercentageInterpretation(String ns, String ln) {
         if (ns == null) {
             if (ln.equals(SVG_X_ATTRIBUTE) || ln.equals(SVG_DX_ATTRIBUTE)) {
                 return AnimationTarget.PERCENTAGE_VIEWPORT_WIDTH;

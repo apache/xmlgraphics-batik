@@ -100,7 +100,7 @@ public class SVGOMPolygonElement
     public int getAttributeType(String ns, String ln) {
         if (ns == null) {
             if (ln.equals(SVG_POINTS_ATTRIBUTE)) {
-                return SVGTypes.TYPE_NUMBER_LIST;
+                return SVGTypes.TYPE_POINTS_VALUE;
             }
         }
         return super.getAttributeType(ns, ln);
@@ -115,7 +115,10 @@ public class SVGOMPolygonElement
                                      AnimatableValue val) {
         if (ns == null) {
             if (ln.equals(SVG_POINTS_ATTRIBUTE)) {
-                // XXX Handle points.
+                SVGOMAnimatedPoints p =
+                    SVGAnimatedPointsSupport.getSVGOMAnimatedPoints(this);
+                updatePointsAttributeValue(p, val);
+                return;
             }
         }
         super.updateAttributeValue(ns, ln, val);

@@ -286,7 +286,7 @@ public class SVGOMMarkerElement
     /**
      * Gets how percentage values are interpreted by the given attribute.
      */
-    protected int getAttributePercentageInterpretation(String ns, String ln) {
+    protected short getAttributePercentageInterpretation(String ns, String ln) {
         if (ns == null) {
             if (ln.equals(SVG_REF_X_ATTRIBUTE)
                     || ln.equals(SVG_MARKER_WIDTH_ATTRIBUTE)) {

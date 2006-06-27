@@ -48,42 +48,59 @@ public class AnimatableNumberListValue extends AnimatableValue {
     }
 
     /**
-     * Performs interpolation to the given value.
+     * Performs interpolation to the given value.  Number list values cannot
+     * be interpolated.
      */
     public AnimatableValue interpolate(AnimatableValue result,
                                        AnimatableValue to,
                                        float interpolation,
                                        AnimatableValue accumulation,
                                        int multiplier) {
-        AnimatableNumberListValue res;
-        if (result == null) {
-            res = new AnimatableNumberListValue(target);
-            res.numbers = new float[numbers.length];
-        } else {
-            res = (AnimatableNumberListValue) result;
-            if (res.numbers == null || res.numbers.length != numbers.length) {
-                res.numbers = new float[numbers.length];
-            }
-        }
-        
         AnimatableNumberListValue toNumList = (AnimatableNumberListValue) to;
         AnimatableNumberListValue accNumList =
             (AnimatableNumberListValue) accumulation;
-        System.arraycopy(numbers, 0, res.numbers, 0, numbers.length);
-        if (to != null) {
-            if (toNumList.numbers.length == numbers.length) {
-                for (int i = 0; i < numbers.length; i++) {
-                    res.numbers[i] += interpolation * toNumList.numbers[i];
-                }
+
+        boolean hasTo = to != null;
+        boolean hasAcc = accumulation != null;
+        boolean canInterpolate =
+            !(hasTo && toNumList.numbers.length != numbers.length)
+                && !(hasAcc && accNumList.numbers.length != numbers.length);
+
+        float[] baseValues;
+        if (!canInterpolate && hasTo && interpolation >= 0.5) {
+            baseValues = toNumList.numbers;
+        } else {
+            baseValues = numbers;
+        }
+        int len = baseValues.length;
+
+        AnimatableNumberListValue res;
+        if (result == null) {
+            res = new AnimatableNumberListValue(target);
+            res.numbers = new float[len];
+        } else {
+            res = (AnimatableNumberListValue) result;
+            if (res.numbers == null || res.numbers.length != len) {
+                res.numbers = new float[len];
             }
         }
-        if (accumulation != null) {
-            if (accNumList.numbers.length == numbers.length) {
-                for (int i = 0; i < numbers.length; i++) {
-                    res.numbers[i] += multiplier * accNumList.numbers[i];
+
+        for (int i = 0; i < len; i++) {
+            float newValue = baseValues[i];
+            if (canInterpolate) {
+                if (hasTo) {
+                    newValue += interpolation * (toNumList.numbers[i] - newValue);
+                }
+                if (hasAcc) {
+                    newValue += multiplier * accNumList.numbers[i];
                 }
             }
+            if (res.numbers[i] != newValue) {
+                res.numbers[i] = newValue;
+                res.hasChanged = true;
+            }
         }
+
         return res;
     }
 

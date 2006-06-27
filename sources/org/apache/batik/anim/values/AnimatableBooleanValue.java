@@ -61,7 +61,19 @@ public class AnimatableBooleanValue extends AnimatableValue {
         } else {
             res = (AnimatableBooleanValue) result;
         }
-        res.value = value;
+
+        boolean newValue;
+        if (to != null && interpolation >= 0.5) {
+            AnimatableBooleanValue toValue = (AnimatableBooleanValue) to;
+            newValue = toValue.value;
+        } else {
+            newValue = value;
+        }
+
+        if (res.value != newValue) {
+            res.value = newValue;
+            res.hasChanged = true;
+        }
         return res;
     }
 

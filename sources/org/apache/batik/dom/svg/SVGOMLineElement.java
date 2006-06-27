@@ -138,7 +138,7 @@ public class SVGOMLineElement
     /**
      * Gets how percentage values are interpreted by the given attribute.
      */
-    protected int getAttributePercentageInterpretation(String ns, String ln) {
+    protected short getAttributePercentageInterpretation(String ns, String ln) {
         if (ns == null) {
             if (ln.equals(SVG_X1_ATTRIBUTE) || ln.equals(SVG_X2_ATTRIBUTE)) {
                 return AnimationTarget.PERCENTAGE_VIEWPORT_WIDTH;

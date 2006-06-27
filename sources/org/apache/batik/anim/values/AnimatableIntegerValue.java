@@ -55,23 +55,28 @@ public class AnimatableIntegerValue extends AnimatableValue {
                                        float interpolation,
                                        AnimatableValue accumulation,
                                        int multiplier) {
-        int v = value;
-        if (to != null) {
-            AnimatableIntegerValue toInteger = (AnimatableIntegerValue) to;
-            v += value + interpolation * (toInteger.getValue() - value);
-        }
-        if (accumulation != null) {
-            AnimatableIntegerValue accInteger = (AnimatableIntegerValue) accumulation;
-            v += multiplier * accInteger.getValue();
-        }
-        
         AnimatableIntegerValue res;
         if (result == null) {
             res = new AnimatableIntegerValue(target);
         } else {
             res = (AnimatableIntegerValue) result;
         }
-        res.value = v;
+
+        int v = value;
+        if (to != null) {
+            AnimatableIntegerValue toInteger = (AnimatableIntegerValue) to;
+            v += value + interpolation * (toInteger.getValue() - value);
+        }
+        if (accumulation != null) {
+            AnimatableIntegerValue accInteger =
+                (AnimatableIntegerValue) accumulation;
+            v += multiplier * accInteger.getValue();
+        }
+        
+        if (res.value != v) {
+            res.value = v;
+            res.hasChanged = true;
+        }
         return res;
     }
 
