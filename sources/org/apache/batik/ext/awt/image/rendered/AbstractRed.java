@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001,2003  The Apache Software Foundation 
+   Copyright 2001,2003,2006  The Apache Software Foundation
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -119,7 +119,7 @@ public abstract class AbstractRed implements CachableRed {
     /**
      * Construct an Abstract RenderedImage from a source image, bounds
      * rect and props (may be null).
-     * @param src if not null, will be the first (and only) member 
+     * @param src if not null, will be the first (and only) member
      * of the srcs Vector. Also if it is not null it provides the
      * tile grid offsets, otherwise they are zero.
      * @param bounds The bounds of this image.
@@ -445,7 +445,7 @@ public abstract class AbstractRed implements CachableRed {
     public String [] getPropertyNames() {
         Set keys = props.keySet();
         Iterator iter = keys.iterator();
-        String [] ret  = new String[keys.size()];
+        String[] ret  = new String[keys.size()];
         int i=0;
         while (iter.hasNext()) {
             ret[i++] = (String)iter.next();
@@ -457,7 +457,7 @@ public abstract class AbstractRed implements CachableRed {
             String [] srcProps = ri.getPropertyNames();
             if (srcProps.length != 0) {
                 String [] tmp = new String[ret.length+srcProps.length];
-                System.arraycopy(tmp,0,tmp,0,ret.length);
+                System.arraycopy(ret,0,tmp,0,ret.length);
                 System.arraycopy(tmp,ret.length,srcProps,0,srcProps.length);
                 ret = tmp;
             }
@@ -472,7 +472,7 @@ public abstract class AbstractRed implements CachableRed {
                 ("Nonexistant source requested.");
 
         // Return empty rect if they don't intersect.
-        if (outputRgn.intersects(bounds) == false)
+        if ( ! outputRgn.intersects(bounds) )
             return new Rectangle();
 
         // We only depend on our source for stuff that is inside
@@ -486,7 +486,7 @@ public abstract class AbstractRed implements CachableRed {
                 ("Nonexistant source requested.");
 
         // Return empty rect if they don't intersect.
-        if (inputRgn.intersects(bounds) == false)
+        if ( ! inputRgn.intersects(bounds) )
             return new Rectangle();
 
         // Changes in the input region don't propogate outside our
@@ -568,7 +568,7 @@ public abstract class AbstractRed implements CachableRed {
         if (tx1 >= minTileX+numXTiles) tx1 = minTileX+numXTiles-1;
         if (ty1 >= minTileY+numYTiles) ty1 = minTileY+numYTiles-1;
 
-        final boolean is_INT_PACK = 
+        final boolean is_INT_PACK =
             GraphicsUtil.is_INT_PACK_Data(getSampleModel(), false);
 
         for (int y=ty0; y<=ty1; y++)
@@ -606,19 +606,19 @@ public abstract class AbstractRed implements CachableRed {
 
         WritableRaster wr;
         wr = Raster.createWritableRaster(sm, pt);
-        // if (!(sm instanceof SinglePixelPackedSampleModel)) 
+        // if (!(sm instanceof SinglePixelPackedSampleModel))
         //     wr = Raster.createWritableRaster(sm, pt);
         // else {
         //     SinglePixelPackedSampleModel sppsm;
         //     sppsm = (SinglePixelPackedSampleModel)sm;
         //     int stride = sppsm.getScanlineStride();
         //     int sz = stride*sppsm.getHeight();
-        // 
+        //
         //     int [] data = reclaim.request(sz);
         //     DataBuffer db = new DataBufferInt(data, sz);
-        // 
+        //
         //     reclaim.register(db);
-        // 
+        //
         //     wr = Raster.createWritableRaster(sm, db, pt);
         // }
 
@@ -644,7 +644,7 @@ public abstract class AbstractRed implements CachableRed {
         return wr;
     }
 
-    public static void copyBand(Raster         src, int srcBand, 
+    public static void copyBand(Raster         src, int srcBand,
                                 WritableRaster dst, int dstBand) {
         Rectangle srcR = new Rectangle(src.getMinX(),  src.getMinY(),
                                        src.getWidth(), src.getHeight());
