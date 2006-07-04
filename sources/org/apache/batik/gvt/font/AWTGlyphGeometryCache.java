@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001,2003  The Apache Software Foundation 
+   Copyright 2001,2003  The Apache Software Foundation
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ public class AWTGlyphGeometryCache {
     /**
      * The initial capacity
      */
-    protected final static int INITIAL_CAPACITY = 71;
+    protected static final int INITIAL_CAPACITY = 71;
 
     /**
      * The underlying array
@@ -124,7 +124,8 @@ public class AWTGlyphGeometryCache {
 
         // The key is not in the hash table
         int len = table.length;
-        if (count++ >= (len * 3) >>> 2) {
+        if (count++ >= (len - (len >> 2))) {
+            // more than 75% loaded: grow
             rehash();
             index = hash % table.length;
         }
