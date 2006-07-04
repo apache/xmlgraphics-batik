@@ -65,7 +65,7 @@ public final class Version {
      */
     public static String getVersion() {
         String version = "development version";
-        String headURL = "$HeadURL: https://svn.apache.org/repos/asf/xmlgraphics/batik/trunk/sources/org/apache/batik/Version.java $";
+        String headURL = "$HeadURL$";
         String prefix = "$HeadURL: ";
         String suffix = "/sources/org/apache/batik/Version.java $";
         if (headURL.startsWith(prefix) && headURL.endsWith(suffix)) {
