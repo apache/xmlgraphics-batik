@@ -25,27 +25,87 @@ package org.apache.batik;
  * @version $Id$
  */
 public final class Version {
-    public static final String LABEL_DEVELOPMENT_BUILD
-        = "development.build";
-    
+
     /**
-     * @return the Batik version. This is based on the CVS tag.
-     * If this Version is not part of a tagged release, then
-     * the returned value is a constant reflecting a development
-     * build.
+     * Returns the Batik version.
+     * <p>
+     *   This is based on the 'HeadURL' keyword.  This will be substituted with
+     *   the URL of this file, which is then inspected to determine if this
+     *   file was compiled from the trunk, a tag (a release verison), or a
+     *   branch.  The format of the returned string will be one of the
+     *   following:
+     * </p>
+     * <table>
+     *   <tr>
+     *     <th>Source</th>
+     *     <th>Version string</th>
+     *   <tr>
+     *   </tr>
+     *     <td>Release version</td>
+     *     <td><em>version</em></td>
+     *   <tr>
+     *   </tr>
+     *     <td>Trunk</td>
+     *     <td>SVN+<em>yyyymmdd</em></td>
+     *   <tr>
+     *   </tr>
+     *     <td>Branch</td>
+     *     <td><em>branch-name</em> branch; SVN+<em>yyyymmdd</em></td>
+     *   </tr>
+     *   </tr>
+     *     <td>Unknown</td>
+     *     <td>development version</td>
+     *   </tr>
+     * </table>
+     * <p>
+     *   Prior to SVN+20060704 and release 1.6, the version string would
+     *   be the straight tag (e.g. <code>"batik-1_6"</code>) or the
+     *   string <code>"development.version"</code>.
+     * </p>
      */
     public static String getVersion() {
-        String tagName = "$Name$";
-        if (tagName.startsWith("$Name:")) {
-            tagName = tagName.substring(6, tagName.length()-1);
-        } else {
-            tagName = "";
-        }
-        
-        if(tagName.trim().intern().equals("")){
-            tagName = LABEL_DEVELOPMENT_BUILD;
+        String version = "development version";
+        String headURL = "$HeadURL$";
+        String prefix = "$HeadURL: ";
+        String suffix = "/sources/org/apache/batik/Version.java $";
+        if (headURL.startsWith(prefix) && headURL.endsWith(suffix)) {
+            headURL = headURL.substring
+                (prefix.length(), headURL.length() - suffix.length());
+            if (headURL.endsWith("/trunk")) {
+                // SVN trunk
+                version = "SVN+" + getDate();
+            } else {
+                int index1 = headURL.lastIndexOf('/');
+                int index2 = headURL.lastIndexOf('/', index1 - 1);
+                String name = headURL.substring(index1 + 1);
+                String type = headURL.substring(index2 + 1, index1);
+                String tagPrefix = "batik-";
+                if (type.equals("tags") && name.startsWith(tagPrefix)) {
+                    // Release
+                    version = name.substring(tagPrefix.length())
+                                  .replace('_', '.');
+                } else if (type.equals("branches")) {
+                    // SVN branch
+                    version = name + "; SVN+" + getDate();
+                }
+            }
         }
 
-        return tagName;
+        return version;
+    }
+
+    /**
+     * Returns the last modified date of this file in <em>YYYYMMDD</em>
+     * format.
+     */
+    protected static String getDate() {
+        String date = "$Date$";
+        String prefix = "$Date: ";
+        if (date.startsWith(prefix)) {
+            return date.substring(7, 11)
+                 + date.substring(12, 14)
+                 + date.substring(15, 17);
+        }
+        return "unknown";
     }
 }
