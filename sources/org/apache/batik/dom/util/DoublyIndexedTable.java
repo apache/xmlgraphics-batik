@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001  The Apache Software Foundation 
+   Copyright 2001,2006  The Apache Software Foundation
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ package org.apache.batik.dom.util;
  * @version $Id$
  */
 public class DoublyIndexedTable {
-    
+
     /**
      * The initial capacity
      */
@@ -34,12 +34,12 @@ public class DoublyIndexedTable {
      * The underlying array
      */
     protected Entry[] table;
-	    
+
     /**
      * The number of entries
      */
     protected int count;
-	    
+
     /**
      * Creates a new DoublyIndexedTable.
      */
@@ -60,9 +60,9 @@ public class DoublyIndexedTable {
      * Returns the size of this table.
      */
     public int size() {
-	return count;
+      	return count;
     }
-    
+
     /**
      * Puts a value in the table.
      * @return the old value or null
@@ -70,7 +70,7 @@ public class DoublyIndexedTable {
     public Object put(Object o1, Object o2, Object value) {
         int hash  = hashCode(o1, o2) & 0x7FFFFFFF;
         int index = hash % table.length;
-	
+
         for (Entry e = table[index]; e != null; e = e.next) {
             if ((e.hash == hash) && e.match(o1, o2)) {
                 Object old = e.value;
@@ -78,14 +78,15 @@ public class DoublyIndexedTable {
                 return old;
             }
         }
-	
+
         // The key is not in the hash table
         int len = table.length;
-        if (count++ >= (len * 3) >>> 2) {
+        if (count++ >= (len - (len >> 2))) {
+            // more than 75% loaded: grow
             rehash();
             index = hash % table.length;
         }
-            
+
         Entry e = new Entry(hash, o1, o2, value, table[index]);
         table[index] = e;
         return null;
@@ -98,7 +99,7 @@ public class DoublyIndexedTable {
     public Object get(Object o1, Object o2) {
         int hash  = hashCode(o1, o2) & 0x7FFFFFFF;
         int index = hash % table.length;
-	
+
         for (Entry e = table[index]; e != null; e = e.next) {
             if ((e.hash == hash) && e.match(o1, o2)) {
                 return e.value;
@@ -106,7 +107,7 @@ public class DoublyIndexedTable {
         }
         return null;
     }
-    
+
     /**
      * Removes an entry from the table.
      * @return the value or null
@@ -165,14 +166,14 @@ public class DoublyIndexedTable {
      */
     protected void rehash() {
         Entry[] oldTable = table;
-	
+
         table = new Entry[oldTable.length * 2 + 1];
-	
+
         for (int i = oldTable.length-1; i >= 0; i--) {
             for (Entry old = oldTable[i]; old != null;) {
                 Entry e = old;
                 old = old.next;
-                    
+
                 int index = e.hash % table.length;
                 e.next = table[index];
                 table[index] = e;
@@ -181,7 +182,7 @@ public class DoublyIndexedTable {
     }
 
     /**
-     * Computes a hash code corresponding to the given objects. 
+     * Computes a hash code corresponding to the given objects.
      */
     protected int hashCode(Object o1, Object o2) {
         int result = (o1 == null) ? 0 : o1.hashCode();
@@ -196,27 +197,27 @@ public class DoublyIndexedTable {
 	 * The hash code
 	 */
 	public int hash;
-	
+
 	/**
 	 * The first key
 	 */
 	public Object key1;
-	
+
 	/**
 	 * The second key
 	 */
 	public Object key2;
-	
+
 	/**
 	 * The value
 	 */
 	public Object value;
-	
+
 	/**
 	 * The next entry
 	 */
 	public Entry next;
-	
+
 	/**
 	 * Creates a new entry
 	 */
