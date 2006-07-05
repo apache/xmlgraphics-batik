@@ -62,6 +62,11 @@ public class SVGOMAnimatedLengthList
     protected String defaultValue;
 
     /**
+     * Whether empty length lists are allowed.
+     */
+    protected boolean emptyAllowed;
+
+    /**
      * The direction of the lengths in this list.
      */
     protected short direction;
@@ -72,15 +77,18 @@ public class SVGOMAnimatedLengthList
      * @param ns The attribute's namespace URI.
      * @param ln The attribute's local name.
      * @param defaultValue The default value if the attribute is not specified.
+     * @param emptyAllowed Whether a list with no items is allowed.
      * @param direction The direction of the lengths in the list.
      */
     public SVGOMAnimatedLengthList(AbstractElement elt,
                                    String ns,
                                    String ln,
                                    String defaultValue,
+                                   boolean emptyAllowed,
                                    short direction) {
         super(elt, ns, ln);
         this.defaultValue = defaultValue;
+        this.emptyAllowed = emptyAllowed;
         this.direction = direction;
     }
 
@@ -232,23 +240,29 @@ public class SVGOMAnimatedLengthList
             }
 
             String s = getValueAsString();
-            if (s == null) {
+            boolean isEmpty = s != null && s.length() == 0;
+            if (s == null || isEmpty && !emptyAllowed) {
                 throw new LiveAttributeException(element, localName, true,
                                                  null);
             }
-            try {
-                ListBuilder builder = new ListBuilder();
-
-                doParse(s, builder);
-
-                if (builder.getList() != null) {
-                    clear(itemList);
-                }
-                itemList = builder.getList();
-            } catch (ParseException e) {
+            if (isEmpty) {
                 itemList = new ArrayList(1);
-                valid = true;
-                throw new LiveAttributeException(element, localName, false, s);
+            } else {
+                try {
+                    ListBuilder builder = new ListBuilder();
+
+                    doParse(s, builder);
+
+                    if (builder.getList() != null) {
+                        clear(itemList);
+                    }
+                    itemList = builder.getList();
+                } catch (ParseException e) {
+                    itemList = new ArrayList(1);
+                    valid = true;
+                    throw new LiveAttributeException(element, localName, false,
+                                                     s);
+                }
             }
             valid = true;
         }

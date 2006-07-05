@@ -143,7 +143,7 @@ public class SVGOMTextElement
             SVGOMDocument doc = (SVGOMDocument) ownerDocument;
             result = new SVGOMAnimatedLengthList(this, null,
                                                  SVGConstants.SVG_X_ATTRIBUTE,
-                                                 X_DEFAULT_VALUE,
+                                                 X_DEFAULT_VALUE, false,
                                                  AbstractSVGLength.HORIZONTAL_LENGTH);
             result.addAnimatedAttributeListener
                 (doc.getAnimatedAttributeListener());
@@ -164,7 +164,7 @@ public class SVGOMTextElement
             SVGOMDocument doc = (SVGOMDocument) ownerDocument;
             result = new SVGOMAnimatedLengthList(this, null,
                                                  SVGConstants.SVG_Y_ATTRIBUTE,
-                                                 Y_DEFAULT_VALUE,
+                                                 Y_DEFAULT_VALUE, false,
                                                  AbstractSVGLength.VERTICAL_LENGTH);
             result.addAnimatedAttributeListener
                 (doc.getAnimatedAttributeListener());

@@ -53,7 +53,7 @@ public class SVGTextPositioningElementSupport {
             SVGOMDocument doc = (SVGOMDocument) e.getOwnerDocument();
             result = new SVGOMAnimatedLengthList(e, null,
                                                  SVGConstants.SVG_X_ATTRIBUTE,
-                                                 X_DEFAULT_VALUE,
+                                                 X_DEFAULT_VALUE, true,
                                                  AbstractSVGLength.HORIZONTAL_LENGTH);
             result.addAnimatedAttributeListener
                 (doc.getAnimatedAttributeListener());
@@ -75,7 +75,7 @@ public class SVGTextPositioningElementSupport {
             SVGOMDocument doc = (SVGOMDocument) e.getOwnerDocument();
             result = new SVGOMAnimatedLengthList(e, null,
                                                  SVGConstants.SVG_Y_ATTRIBUTE,
-                                                 Y_DEFAULT_VALUE,
+                                                 Y_DEFAULT_VALUE, true,
                                                  AbstractSVGLength.VERTICAL_LENGTH);
             result.addAnimatedAttributeListener
                 (doc.getAnimatedAttributeListener());
@@ -97,7 +97,7 @@ public class SVGTextPositioningElementSupport {
             SVGOMDocument doc = (SVGOMDocument) e.getOwnerDocument();
             result = new SVGOMAnimatedLengthList(e, null,
                                                  SVGConstants.SVG_DX_ATTRIBUTE,
-                                                 DX_DEFAULT_VALUE,
+                                                 DX_DEFAULT_VALUE, true,
                                                  AbstractSVGLength.HORIZONTAL_LENGTH);
             result.addAnimatedAttributeListener
                 (doc.getAnimatedAttributeListener());
@@ -119,7 +119,7 @@ public class SVGTextPositioningElementSupport {
             SVGOMDocument doc = (SVGOMDocument) e.getOwnerDocument();
             result = new SVGOMAnimatedLengthList(e, null,
                                                  SVGConstants.SVG_DY_ATTRIBUTE,
-                                                 DY_DEFAULT_VALUE,
+                                                 DY_DEFAULT_VALUE, true,
                                                  AbstractSVGLength.VERTICAL_LENGTH);
             result.addAnimatedAttributeListener
                 (doc.getAnimatedAttributeListener());
@@ -141,7 +141,7 @@ public class SVGTextPositioningElementSupport {
             SVGOMDocument doc = (SVGOMDocument) e.getOwnerDocument();
             result = new SVGOMAnimatedNumberList(e, null,
                                                  SVGConstants.SVG_ROTATE_ATTRIBUTE,
-                                                 ROTATE_DEFAULT_VALUE);
+                                                 ROTATE_DEFAULT_VALUE, true);
             result.addAnimatedAttributeListener
                 (doc.getAnimatedAttributeListener());
             e.putLiveAttributeValue(null,
