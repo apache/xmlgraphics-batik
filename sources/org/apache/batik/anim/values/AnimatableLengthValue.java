@@ -178,7 +178,7 @@ public class AnimatableLengthValue extends AnimatableValue {
     public AnimatableValue getZeroValue() {
         return new AnimatableLengthValue
             (target, SVGLength.SVG_LENGTHTYPE_NUMBER, 0f,
-             AnimationTarget.PERCENTAGE_VIEWPORT_SIZE);
+             percentageInterpretation);
     }
 
     /**

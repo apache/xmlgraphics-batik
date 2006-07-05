@@ -136,7 +136,10 @@ public class AnimatableNumberOptionalNumberValue extends AnimatableValue {
      * Returns a zero value of this AnimatableValue's type.
      */
     public AnimatableValue getZeroValue() {
-        return null;
+        if (hasOptionalNumber) {
+            return new AnimatableNumberOptionalNumberValue(target, 0f, 0f);
+        }
+        return new AnimatableNumberOptionalNumberValue(target, 0f);
     }
 
     /**

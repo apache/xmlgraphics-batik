@@ -20,6 +20,8 @@ package org.apache.batik.anim.values;
 import org.apache.batik.anim.AnimationTarget;
 import org.apache.batik.dom.svg.AbstractSVGPreserveAspectRatio;
 
+import org.w3c.dom.svg.SVGPreserveAspectRatio;
+
 /**
  * An SVG preserveAspectRatio value in the animation system.
  *
@@ -107,7 +109,9 @@ public class AnimatablePreserveAspectRatioValue extends AnimatableValue {
      * Returns a zero value of this AnimatableValue's type.
      */
     public AnimatableValue getZeroValue() {
-        return null;
+        return new AnimatablePreserveAspectRatioValue
+            (target, SVGPreserveAspectRatio.SVG_PRESERVEASPECTRATIO_NONE,
+             SVGPreserveAspectRatio.SVG_MEETORSLICE_MEET);
     }
 
     /**

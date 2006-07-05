@@ -150,7 +150,6 @@ public abstract class AbstractSVGLengthList
         
         lengthListParser.setLengthListHandler(builder);
         lengthListParser.parse(value);
-        
     }
 
     /**

@@ -30,6 +30,9 @@ import org.w3c.dom.Element;
 /**
  * This is a Service interface for classes that want to extend the
  * functionality of the Bridge, to support new tags in the rendering tree.
+ *
+ * @author <a href="mailto:thomas.deweese@kodak.com">Thomas DeWeese</a>
+ * @version $Id$
  */
 public class SVG12BridgeExtension extends SVGBridgeExtension {
 

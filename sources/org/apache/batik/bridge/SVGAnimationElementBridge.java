@@ -29,14 +29,16 @@ import org.apache.batik.anim.timing.TimedElement;
 import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.css.engine.CSSEngineEvent;
 import org.apache.batik.dom.svg.AnimatedLiveAttributeValue;
-import org.apache.batik.dom.svg.SVGContext;
+import org.apache.batik.dom.svg.SVGAnimationContext;
 import org.apache.batik.dom.svg.SVGOMElement;
 import org.apache.batik.dom.util.XLinkSupport;
 
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.events.MutationEvent;
+import org.w3c.dom.svg.SVGElement;
 
 /**
  * An abstract base class for the SVG animation element bridges.
@@ -47,7 +49,7 @@ import org.w3c.dom.events.MutationEvent;
 public abstract class SVGAnimationElementBridge extends AbstractSVGBridge
         implements GenericBridge,
                    BridgeUpdateHandler,
-                   SVGContext,
+                   SVGAnimationContext,
                    AnimatableElement {
 
     /**
@@ -340,6 +342,80 @@ public abstract class SVGAnimationElementBridge extends AbstractSVGBridge
     public float getFontSize() { return 0; }
     public float svgToUserSpace(float v, int type, int pcInterp) {
         return 0;
+    }
+
+    // SVGAnimationContext ///////////////////////////////////////////////////
+
+    /**
+     * <b>DOM</b>: Implements {@link SVGAnimationElement#getTargetElement()}.
+     */
+    public SVGElement getTargetElement() {
+        return targetElement;
+    }
+
+    /**
+     * <b>DOM</b>: Implements {@link SVGAnimationElement#getStartTime()}.
+     */
+    public float getStartTime() {
+        return timedElement.getCurrentBeginTime();
+    }
+
+    /**
+     * <b>DOM</b>: Implements {@link SVGAnimationElement#getCurrentTime()}.
+     */
+    public float getCurrentTime() {
+        return timedElement.getLastSampleTime();
+    }
+
+    /**
+     * <b>DOM</b>: Implements {@link SVGAnimationElement#getSimpleDuration()}.
+     * With the difference that an indefinite simple duration is returned as
+     * {@link TimedElement.INDEFINITE}, rather than throwing an exception.
+     */
+    public float getSimpleDuration() {
+        return timedElement.getSimpleDur();
+    }
+
+    // ElementTimeControl ////////////////////////////////////////////////////
+
+    /**
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.smil.ElementTimeControl#beginElement()}.
+     */
+    public boolean beginElement() throws DOMException {
+        timedElement.beginElement();
+        return timedElement.canBegin();
+    }
+    
+    /**
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.smil.ElementTimeControl#beginElementAt(float)}.
+     */
+    public boolean beginElementAt(float offset) throws DOMException {
+        timedElement.beginElement(offset);
+        // XXX Not right, but who knows if it is possible to begin
+        //     at some arbitrary point in the future.
+        return true;
+    }
+    
+    /**
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.smil.ElementTimeControl#endElement()}.
+     */
+    public boolean endElement() throws DOMException {
+        timedElement.endElement();
+        return timedElement.canEnd();
+    }
+    
+    /**
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.smil.ElementTimeControl#endElementAt(float)}.
+     */
+    public boolean endElementAt(float offset) throws DOMException {
+        timedElement.endElement(offset);
+        // XXX Not right, but who knows if it is possible to begin
+        //     at some arbitrary point in the future.
+        return true;
     }
 
     /**

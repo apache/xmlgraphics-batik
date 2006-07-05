@@ -1042,6 +1042,41 @@ public abstract class TimedElement {
     }
 
     /**
+     * Returns the last sample time of this element, in local active time.
+     */
+    public float getLastSampleTime() {
+        return lastSampleTime;
+    }
+
+    /**
+     * Returns the begin time of the current interval, in parent simple time,
+     * or <code>Float.NaN</code> if the element is not active.
+     */
+    public float getCurrentBeginTime() {
+        float begin;
+        if (currentInterval == null
+                || (begin = currentInterval.getBegin()) < lastSampleTime) {
+            return Float.NaN;
+        }
+        return begin;
+    }
+
+    /**
+     * Returns whether this element can be begun or restarted currently.
+     */
+    public boolean canBegin() {
+        return currentInterval == null
+            || isActive && restartMode != RESTART_NEVER;
+    }
+
+    /**
+     * Returns whether this element can be ended currently.
+     */
+    public boolean canEnd() {
+        return isActive;
+    }
+
+    /**
      * Fires a TimeEvent of the given type on this element.
      * @param eventType the type of TimeEvent ("beginEvent", "endEvent"
      *                  or "repeatEvent").

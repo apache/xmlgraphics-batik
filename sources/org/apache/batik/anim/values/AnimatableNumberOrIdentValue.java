@@ -61,6 +61,13 @@ public class AnimatableNumberOrIdentValue extends AnimatableNumberValue {
     }
 
     /**
+     * Returns a zero value of this AnimatableValue's type.
+     */
+    public AnimatableValue getZeroValue() {
+        return new AnimatableNumberOrIdentValue(target, 0f);
+    }
+
+    /**
      * Returns the CSS text representation of the value.
      */
     public String getCssText() {

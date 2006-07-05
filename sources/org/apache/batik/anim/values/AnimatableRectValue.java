@@ -138,7 +138,7 @@ public class AnimatableRectValue extends AnimatableValue {
      * Returns a zero value of this AnimatableValue's type.
      */
     public AnimatableValue getZeroValue() {
-        return null;
+        return new AnimatableRectValue(target, 0f, 0f, 0f, 0f);
     }
 
     /**

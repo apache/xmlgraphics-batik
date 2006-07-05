@@ -88,7 +88,7 @@ public class AnimatableBooleanValue extends AnimatableValue {
      * Returns a zero value of this AnimatableValue's type.
      */
     public AnimatableValue getZeroValue() {
-        return null;
+        return new AnimatableBooleanValue(target, false);
     }
 
     /**

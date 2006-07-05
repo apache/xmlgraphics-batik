@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2000-2003,2005  The Apache Software Foundation 
+   Copyright 2000-2003,2005-2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import org.apache.batik.anim.values.AnimatableLengthValue;
 import org.apache.batik.anim.values.AnimatableLengthListValue;
 import org.apache.batik.anim.values.AnimatableNumberValue;
 import org.apache.batik.anim.values.AnimatableNumberListValue;
+import org.apache.batik.anim.values.AnimatablePathDataValue;
 import org.apache.batik.anim.values.AnimatablePreserveAspectRatioValue;
 import org.apache.batik.anim.values.AnimatablePointListValue;
 import org.apache.batik.anim.values.AnimatableRectValue;
@@ -54,6 +55,7 @@ import org.w3c.dom.svg.SVGAnimatedLength;
 import org.w3c.dom.svg.SVGAnimatedLengthList;
 import org.w3c.dom.svg.SVGAnimatedNumber;
 import org.w3c.dom.svg.SVGAnimatedNumberList;
+import org.w3c.dom.svg.SVGAnimatedPathData;
 import org.w3c.dom.svg.SVGAnimatedPoints;
 import org.w3c.dom.svg.SVGAnimatedPreserveAspectRatio;
 import org.w3c.dom.svg.SVGAnimatedRect;
@@ -737,6 +739,23 @@ public abstract class SVGOMElement
             AnimatablePointListValue animPointList =
                 (AnimatablePointListValue) val;
             ap.setAnimatedValue(animPointList.getNumbers());
+        }
+    }
+
+    /**
+     * Updates an {@link SVGOMAnimatedPathData} with the given
+     * {@link AnimatableValue}.
+     */
+    protected void updatePathDataAttributeValue(SVGAnimatedPathData a,
+                                                AnimatableValue val) {
+        SVGOMAnimatedPathData apd = (SVGOMAnimatedPathData) a;
+        if (val == null) {
+            apd.resetAnimatedValue();
+        } else {
+            AnimatablePathDataValue animPathData =
+                (AnimatablePathDataValue) val;
+            apd.setAnimatedValue(animPathData.getCommands(),
+                                 animPathData.getParameters());
         }
     }
 

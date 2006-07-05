@@ -55,4 +55,12 @@ public class AnimatablePointListValue extends AnimatableNumberListValue {
         return super.interpolate
             (result, to, interpolation, accumulation, multiplier);
     }
+
+    /**
+     * Returns a zero value of this AnimatableValue's type.
+     */
+    public AnimatableValue getZeroValue() {
+        float[] ns = new float[numbers.length];
+        return new AnimatablePointListValue(target, ns);
+    }
 }

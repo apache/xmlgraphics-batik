@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2004  The Apache Software Foundation 
+   Copyright 2004,2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -141,9 +141,9 @@ public abstract class AbstractSVGPreserveAspectRatio
             align = ph.getAlign();
             meetOrSlice = ph.getMeetOrSlice();
         } catch (ParseException ex) {
-            throw createDOMException(SVG_PRESERVEASPECTRATIO_UNKNOWN,
-                                     "invalid value for preserveAspectRatio",
-                                     null);
+            throw createDOMException
+                (DOMException.INVALID_MODIFICATION_ERR, "preserve.aspect.ratio",
+                 new Object[] { value });
         }
     }
 

@@ -27,12 +27,17 @@ import org.apache.batik.anim.AnimationEngine;
 import org.apache.batik.anim.AnimationTarget;
 import org.apache.batik.anim.timing.TimedDocumentRoot;
 import org.apache.batik.anim.timing.TimedElement;
+import org.apache.batik.anim.values.AnimatableAngleValue;
+import org.apache.batik.anim.values.AnimatableAngleOrIdentValue;
 import org.apache.batik.anim.values.AnimatableBooleanValue;
 import org.apache.batik.anim.values.AnimatableIntegerValue;
 import org.apache.batik.anim.values.AnimatableLengthValue;
 import org.apache.batik.anim.values.AnimatableLengthListValue;
 import org.apache.batik.anim.values.AnimatableLengthOrIdentValue;
+import org.apache.batik.anim.values.AnimatableNumberValue;
 import org.apache.batik.anim.values.AnimatableNumberListValue;
+import org.apache.batik.anim.values.AnimatableNumberOrPercentageValue;
+import org.apache.batik.anim.values.AnimatablePathDataValue;
 import org.apache.batik.anim.values.AnimatablePointListValue;
 import org.apache.batik.anim.values.AnimatablePreserveAspectRatioValue;
 import org.apache.batik.anim.values.AnimatableNumberOrIdentValue;
@@ -58,6 +63,8 @@ import org.apache.batik.parser.LengthHandler;
 import org.apache.batik.parser.LengthListParser;
 import org.apache.batik.parser.LengthParser;
 import org.apache.batik.parser.NumberListParser;
+import org.apache.batik.parser.PathArrayProducer;
+import org.apache.batik.parser.PathParser;
 import org.apache.batik.parser.PointsParser;
 import org.apache.batik.parser.ParseException;
 import org.apache.batik.parser.PreserveAspectRatioParser;
@@ -71,6 +78,7 @@ import org.w3c.dom.css.CSSValue;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
+import org.w3c.dom.svg.SVGAngle;
 import org.w3c.dom.svg.SVGLength;
 import org.w3c.dom.svg.SVGPreserveAspectRatio;
 
@@ -112,15 +120,15 @@ public class SVGAnimationEngine extends AnimationEngine {
         animatableNumberOrIdentFactory = new AnimatableNumberOrIdentFactory();
 
     /**
-     * Factories for AnimatableValue parsing.
+     * Factories for {@link AnimatableValue} parsing.
      */
     protected Factory[] factories = {
         null, // TYPE_UNKNOWN
         new AnimatableIntegerValueFactory(), // TYPE_INTEGER
-        null, // TYPE_NUMBER
+        new AnimatableNumberValueFactory(), // TYPE_NUMBER
         new AnimatableLengthValueFactory(), // TYPE_LENGTH
         null, // TYPE_NUMBER_OPTIONAL_NUMBER
-        null, // TYPE_ANGLE XXX can inherit
+        new AnimatableAngleValueFactory(), // TYPE_ANGLE
         new AnimatableColorValueFactory(), // TYPE_COLOR
         new AnimatablePaintValueFactory(), // TYPE_PAINT
         null, // TYPE_PERCENTAGE
@@ -137,14 +145,14 @@ public class SVGAnimationEngine extends AnimationEngine {
         uncomputedAnimatableStringValueFactory, // TYPE_CLIP_VALUE
         uncomputedAnimatableStringValueFactory, // TYPE_URI_OR_IDENT
         uncomputedAnimatableStringValueFactory, // TYPE_CURSOR_VALUE
-        null, // TYPE_PATH_DATA
+        new AnimatablePathDataFactory(), // TYPE_PATH_DATA
         uncomputedAnimatableStringValueFactory, // TYPE_ENABLE_BACKGROUND_VALUE
         null, // TYPE_TIME_VALUE_LIST
         animatableNumberOrIdentFactory, // TYPE_NUMBER_OR_INHERIT
         uncomputedAnimatableStringValueFactory, // TYPE_FONT_FAMILY_VALUE
         null, // TYPE_FONT_FACE_FONT_SIZE_VALUE
         animatableNumberOrIdentFactory, // TYPE_FONT_WEIGHT_VALUE
-        uncomputedAnimatableStringValueFactory, // TYPE_ANGLE_OR_IDENT XXX
+        new AnimatableAngleOrIdentFactory(), // TYPE_ANGLE_OR_IDENT
         null, // TYPE_KEY_SPLINES_VALUE
         new AnimatablePointListValueFactory(), // TYPE_POINTS_VALUE
         new AnimatablePreserveAspectRatioValueFactory(), // TYPE_PRESERVE_ASPECT_RATIO_VALUE
@@ -162,7 +170,7 @@ public class SVGAnimationEngine extends AnimationEngine {
         animatableNumberOrIdentFactory, // TYPE_FONT_SIZE_ADJUST_VALUE
         null, // TYPE_LANG_VALUE
         null, // TYPE_LANG_LIST_VALUE
-        null, // TYPE_NUMBER_OR_PERCENTAGE
+        new AnimatableNumberOrPercentageValueFactory(), // TYPE_NUMBER_OR_PERCENTAGE
         null, // TYPE_TIMING_SPECIFIER_LIST
         new AnimatableBooleanValueFactory(), // TYPE_BOOLEAN
     };
@@ -718,6 +726,69 @@ public class SVGAnimationEngine extends AnimationEngine {
     }
 
     /**
+     * Factory class for {@link AnimatableNumberValue}s.
+     */
+    protected class AnimatableNumberValueFactory implements Factory {
+
+        /**
+         * Creates a new AnimatableValue from a string.
+         */
+        public AnimatableValue createValue(AnimationTarget target, String ns,
+                                           String ln, boolean isCSS, String s) {
+            return new AnimatableNumberValue(target, Float.parseFloat(s));
+        }
+
+        /**
+         * Creates a new AnimatableValue from a CSS {@link Value}.
+         */
+        public AnimatableValue createValue(AnimationTarget target, String pn,
+                                           Value v) {
+            return new AnimatableNumberValue(target, v.getFloatValue());
+        }
+    }
+
+    /**
+     * Factory class for {@link AnimatableNumberOrPercentageValue}s.
+     */
+    protected class AnimatableNumberOrPercentageValueFactory
+            implements Factory {
+
+        /**
+         * Creates a new AnimatableValue from a string.
+         */
+        public AnimatableValue createValue(AnimationTarget target, String ns,
+                                           String ln, boolean isCSS, String s) {
+            float v;
+            boolean pc;
+            if (s.charAt(s.length() - 1) == '%') {
+                v = Float.parseFloat(s.substring(0, s.length() - 1));
+                pc = true;
+            } else {
+                v = Float.parseFloat(s);
+                pc = false;
+            }
+            return new AnimatableNumberOrPercentageValue(target, v, pc);
+        }
+
+        /**
+         * Creates a new AnimatableValue from a CSS {@link Value}.
+         */
+        public AnimatableValue createValue(AnimationTarget target, String pn,
+                                           Value v) {
+            switch (v.getPrimitiveType()) {
+                case CSSPrimitiveValue.CSS_PERCENTAGE:
+                    return new AnimatableNumberOrPercentageValue
+                        (target, v.getFloatValue(), true);
+                case CSSPrimitiveValue.CSS_NUMBER:
+                    return new AnimatableNumberOrPercentageValue
+                        (target, v.getFloatValue());
+            }
+            // XXX Do something better than returning null.
+            return null;
+        }
+    }
+
+    /**
      * Factory class for {@link AnimatablePreserveAspectRatioValue}s.
      */
     protected class AnimatablePreserveAspectRatioValueFactory implements Factory {
@@ -1110,6 +1181,54 @@ public class SVGAnimationEngine extends AnimationEngine {
     }
 
     /**
+     * Factory class for {@link AnimatablePathDataValue}s.
+     */
+    protected class AnimatablePathDataFactory implements Factory {
+
+        /**
+         * Parser for path data.
+         */
+        protected PathParser parser = new PathParser();
+
+        /**
+         * The producer class that accumulates the path segments.
+         */
+        protected PathArrayProducer producer = new PathArrayProducer();
+
+        /**
+         * Creates a new AnimatablePathDataFactory.
+         */
+        public AnimatablePathDataFactory() {
+            parser.setPathHandler(producer);
+        }
+
+        /**
+         * Creates a new AnimatableValue from a string.
+         */
+        public AnimatableValue createValue(AnimationTarget target, String ns,
+                                           String ln, boolean isCSS, String s) {
+            try {
+                parser.parse(s);
+                return new AnimatablePathDataValue
+                    (target, producer.getPathCommands(),
+                     producer.getPathParameters());
+            } catch (ParseException e) {
+                // XXX Do something better than returning null.
+                return null;
+            }
+        }
+
+        /**
+         * Creates a new AnimatableValue from a CSS {@link Value}.  Returns null
+         * since point lists aren't used in CSS values.
+         */
+        public AnimatableValue createValue(AnimationTarget target, String pn,
+                                           Value v) {
+            return null;
+        }
+    }
+
+    /**
      * Factory class for {@link AnimatableStringValue}s.
      */
     protected class UncomputedAnimatableStringValueFactory implements Factory {
@@ -1156,6 +1275,67 @@ public class SVGAnimationEngine extends AnimationEngine {
             }
             FloatValue fv = (FloatValue) v;
             return new AnimatableNumberOrIdentValue(target, fv.getFloatValue());
+        }
+    }
+    
+    /**
+     * Factory class for {@link AnimatableAngleValue}s.
+     */
+    protected class AnimatableAngleValueFactory extends CSSValueFactory {
+
+        protected AnimatableValue createAnimatableValue(AnimationTarget target,
+                                                        String pn, Value v) {
+            FloatValue fv = (FloatValue) v;
+            short unit;
+            switch (fv.getPrimitiveType()) {
+                case CSSPrimitiveValue.CSS_NUMBER:
+                case CSSPrimitiveValue.CSS_DEG:
+                    unit = SVGAngle.SVG_ANGLETYPE_DEG;
+                    break;
+                case CSSPrimitiveValue.CSS_RAD:
+                    unit = SVGAngle.SVG_ANGLETYPE_RAD;
+                    break;
+                case CSSPrimitiveValue.CSS_GRAD:
+                    unit = SVGAngle.SVG_ANGLETYPE_GRAD;
+                    break;
+                default:
+                    // XXX Do something better than returning null.
+                    return null;
+            }
+            return new AnimatableAngleValue(target, fv.getFloatValue(), unit);
+        }
+    }
+    
+    /**
+     * Factory class for {@link AnimatableAngleOrIdentValue}s.
+     */
+    protected class AnimatableAngleOrIdentFactory extends CSSValueFactory {
+
+        protected AnimatableValue createAnimatableValue(AnimationTarget target,
+                                                        String pn, Value v) {
+            if (v instanceof StringValue) {
+                return new AnimatableAngleOrIdentValue(target,
+                                                       v.getStringValue());
+            }
+            FloatValue fv = (FloatValue) v;
+            short unit;
+            switch (fv.getPrimitiveType()) {
+                case CSSPrimitiveValue.CSS_NUMBER:
+                case CSSPrimitiveValue.CSS_DEG:
+                    unit = SVGAngle.SVG_ANGLETYPE_DEG;
+                    break;
+                case CSSPrimitiveValue.CSS_RAD:
+                    unit = SVGAngle.SVG_ANGLETYPE_RAD;
+                    break;
+                case CSSPrimitiveValue.CSS_GRAD:
+                    unit = SVGAngle.SVG_ANGLETYPE_GRAD;
+                    break;
+                default:
+                    // XXX Do something better than returning null.
+                    return null;
+            }
+            return new AnimatableAngleOrIdentValue(target, fv.getFloatValue(),
+                                                   unit);
         }
     }
     

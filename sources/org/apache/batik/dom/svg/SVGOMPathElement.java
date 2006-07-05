@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2000-2003  The Apache Software Foundation 
+   Copyright 2000-2003,2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -127,11 +127,12 @@ public class SVGOMPathElement
      * <b>DOM</b>: Implements {@link SVGPathElement#getAnimatedPathSegList()}.
      */
     public SVGPathSegList getAnimatedPathSegList() {
-        return SVGAnimatedPathDataSupport.getAnimatedNormalizedPathSegList(this);
+        return SVGAnimatedPathDataSupport.getAnimatedPathSegList(this);
     }
 
     /**
-     * <b>DOM</b>: Implements {@link SVGPathElement#getAnimatedNormalizedPathSegList()}.
+     * <b>DOM</b>: Implements {@link
+     * SVGPathElement#getAnimatedNormalizedPathSegList()}.
      */
     public SVGPathSegList getAnimatedNormalizedPathSegList() {
         return SVGAnimatedPathDataSupport.getAnimatedNormalizedPathSegList
@@ -962,7 +963,9 @@ public class SVGOMPathElement
                 updateNumberAttributeValue(getPathLength(), val);
                 return;
             } else if (ln.equals(SVG_D_ATTRIBUTE)) {
-                // XXX Update the animatedPathSegList/animatedNormalizedPathSegList.
+                SVGOMAnimatedPathData apd =
+                    SVGAnimatedPathDataSupport.getAnimatedPathData(this);
+                updatePathDataAttributeValue(apd, val);
                 return;
             }
         }

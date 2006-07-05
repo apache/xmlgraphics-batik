@@ -213,7 +213,7 @@ public abstract class AbstractSVGLength
      * of the parsing of this value.
      * @param s String representation of a SVGlength.
      */
-    protected void parse(String s){
+    protected void parse(String s) {
         try {
             LengthParser lengthParser = new LengthParser();
             UnitProcessor.UnitResolver ur =

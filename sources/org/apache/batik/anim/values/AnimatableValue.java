@@ -21,6 +21,9 @@ import org.apache.batik.anim.AnimationTarget;
 
 /**
  * An abstract class for values in the animation engine.
+ *
+ * @author <a href="mailto:cam%40mcc%2eid%2eau">Cameron McCormack</a>
+ * @version $Id$
  */
 public abstract class AnimatableValue {
 

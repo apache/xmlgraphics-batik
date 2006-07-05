@@ -23,6 +23,8 @@ import org.w3c.dom.views.AbstractView;
  * The <code>KeyEvent</code> interface provides specific contextual  
  * information associated with Key events. 
  *
+ * @author <a href="mailto:tkormann@ilog.fr">Thierry Kormann</a>
+ * @version $Id$
  * @since DOM Level 2 (Working Draft)
  */
 public class DOMKeyEvent extends DOMUIEvent {
@@ -300,7 +302,7 @@ public class DOMKeyEvent extends DOMUIEvent {
                              int keyCodeArg, 
                              int charCodeArg, 
                              AbstractView viewArg) {
-	initUIEvent(typeArg, canBubbleArg, cancelableArg, viewArg, 0);
+        initUIEvent(typeArg, canBubbleArg, cancelableArg, viewArg, 0);
         ctrlKey = ctrlKeyArg;
         altKey = altKeyArg;
         shiftKey = shiftKeyArg;
@@ -309,4 +311,3 @@ public class DOMKeyEvent extends DOMUIEvent {
         charCode = charCodeArg;
     }
 }
-

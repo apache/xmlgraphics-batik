@@ -102,6 +102,14 @@ public class AnimatableAngleValue extends AnimatableNumberValue {
     }
 
     /**
+     * Returns a zero value of this AnimatableValue's type.
+     */
+    public AnimatableValue getZeroValue() {
+        return new AnimatableAngleValue
+            (target, 0, SVGAngle.SVG_ANGLETYPE_UNSPECIFIED);
+    }
+
+    /**
      * Converts an angle value to radians.
      */
     protected float rad(float v, short unit) {

@@ -19,6 +19,8 @@ package org.apache.batik.anim.values;
 
 import org.apache.batik.anim.AnimationTarget;
 
+import org.w3c.dom.svg.SVGAngle;
+
 /**
  * An SVG angle-or-identifier value in the animation system.
  *
@@ -72,6 +74,14 @@ public class AnimatableAngleOrIdentValue extends AnimatableAngleValue {
      */
     public String getIdent() {
         return ident;
+    }
+
+    /**
+     * Returns a zero value of this AnimatableValue's type.
+     */
+    public AnimatableValue getZeroValue() {
+        return new AnimatableAngleOrIdentValue
+            (target, 0, SVGAngle.SVG_ANGLETYPE_UNSPECIFIED);
     }
 
     /**

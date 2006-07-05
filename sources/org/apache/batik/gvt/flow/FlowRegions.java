@@ -30,6 +30,7 @@ import org.apache.batik.ext.awt.geom.Segment;
 /**
  * A class to hold flow region information for a given shape.
  *
+ * @author <a href="mailto:thomas.deweese@kodak.com">Thomas DeWeese</a>
  * @version $Id$
  */
 public class FlowRegions {

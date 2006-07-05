@@ -22,25 +22,44 @@ import java.awt.Shape;
 
 /**
  * This class holds the neccessary information to render a
- * <batik:regin> that is defined within the <batik:flowRegion>
+ * &lt;batik:flowRegion> that is defined within the &lt;batik:flowRoot>
  * element.  Namely it holds the bounds of the region and the desired
  * vertical alignment.
+ *
+ * @author <a href="mailto:thomas.deweese@kodak.com">Thomas DeWeese</a>
+ * @version $Id$
  */
-public class RegionInfo
-{
-    private Shape shape;
-    private float verticalAlignment = 0.0f;
+public class RegionInfo {
 
+    /**
+     * The shape that defines the region.
+     */
+    private Shape shape;
+
+    /**
+     * The alignment proportion.
+     */
+    private float verticalAlignment;
+
+    /**
+     * Creates a new RegionInfo with the given shape and alignment.
+     */
     public RegionInfo(Shape s, float verticalAlignment) {
         this.shape = s;
         this.verticalAlignment = verticalAlignment;
     }
 
+    /**
+     * Returns the flow region shape.
+     */
     public Shape getShape() {
         return shape;
     }
 
-    public void setShape(Shape  s) {
+    /**
+     * Sets the flow region shape.
+     */
+    public void setShape(Shape s) {
         this.shape = s;
     }
 

@@ -19,6 +19,8 @@ package org.apache.batik.anim.values;
 
 import org.apache.batik.anim.AnimationTarget;
 
+import org.w3c.dom.svg.SVGLength;
+
 /**
  * An SVG length-or-identifier value in the animation system.
  *
@@ -73,6 +75,15 @@ public class AnimatableLengthOrIdentValue extends AnimatableLengthValue {
      */
     public String getIdent() {
         return ident;
+    }
+
+    /**
+     * Returns a zero value of this AnimatableValue's type.
+     */
+    public AnimatableValue getZeroValue() {
+        return new AnimatableLengthOrIdentValue
+            (target, SVGLength.SVG_LENGTHTYPE_NUMBER, 0f,
+             percentageInterpretation);
     }
 
     /**

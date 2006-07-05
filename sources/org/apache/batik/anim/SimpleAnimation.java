@@ -289,6 +289,8 @@ public class SimpleAnimation extends AbstractAnimation {
 
         this.value = value.interpolate(this.value, nextValue, interpolation,
                                        accumulation, repeatIteration);
-        markDirty();
+        if (this.value.hasChanged()) {
+            markDirty();
+        }
     }
 }

@@ -169,9 +169,9 @@ public abstract class AnimationEngine {
                 Sandwich sandwich = (Sandwich) e2.getValue();
                 if (sandwich.shouldUpdate || sandwich.animation.isDirty) {
                     AnimatableValue av = sandwich.animation.getComposedValue();
-                    if (av == null || av.hasChanged()) {
+                    // if (av == null || av.hasChanged()) {
                         target.updateAttributeValue(namespaceURI, localName, av);
-                    }
+                    // }
                     sandwich.shouldUpdate = false;
                     sandwich.animation.isDirty = false;
                 }
@@ -188,7 +188,7 @@ public abstract class AnimationEngine {
                     //     needed, to avoid clearing the property value before
                     //     getting the composed value.
                     AnimatableValue av = sandwich.animation.getComposedValue();
-                    if (av == null || av.hasChanged()) {
+                    // if (av == null || av.hasChanged()) {
                         boolean hasAdditive = true;
                         if (hasAdditive) {
                             target.updatePropertyValue(propertyName, null);
@@ -196,7 +196,7 @@ public abstract class AnimationEngine {
                         if (!(hasAdditive && av == null)) {
                             target.updatePropertyValue(propertyName, av);
                         }
-                    }
+                    // }
                     sandwich.shouldUpdate = false;
                     sandwich.animation.isDirty = false;
                 }

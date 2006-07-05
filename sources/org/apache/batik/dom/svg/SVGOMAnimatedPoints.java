@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2003  The Apache Software Foundation 
+   Copyright 2003,2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -222,6 +222,8 @@ public class SVGOMAnimatedPoints
                 itemList = builder.getList();
             } catch (ParseException e) {
                 itemList = new ArrayList(1);
+                valid = true;
+                throw new LiveAttributeException(element, localName, false, s);
             }
             valid = true;
         }
