@@ -805,7 +805,7 @@ public class JGVTComponent extends JComponent {
         boolean checkClick = false;
         boolean hadDrag = false;
         int startX, startY;
-        long startTime;
+        long startTime, fakeClickTime;
         int MAX_DISP = 4*4;
         long CLICK_TIME = 200;
 
@@ -998,6 +998,13 @@ public class JGVTComponent extends JComponent {
          * Invoked when the mouse has been clicked on a component.
          */
         public void mouseClicked(MouseEvent e) {
+            // Supress mouse click if we generated a
+            // fake click with the same time stamp.
+            if (fakeClickTime != e.getWhen())
+                handleMouseClicked(e);
+        }
+
+        public void handleMouseClicked(MouseEvent e) {
             selectInteractor(e);
             if (interactor != null) {
                 interactor.mouseClicked(e);
@@ -1020,7 +1027,8 @@ public class JGVTComponent extends JComponent {
         public void mousePressed(MouseEvent e) {
             startX = e.getX();
             startY = e.getY();
-            startTime = System.currentTimeMillis();
+            startTime = e.getWhen();
+
             checkClick = true;
 
             selectInteractor(e);
@@ -1046,7 +1054,7 @@ public class JGVTComponent extends JComponent {
             if ((checkClick) && hadDrag) {
                 int dx = startX-e.getX();
                 int dy = startY-e.getY();
-                long cTime = System.currentTimeMillis();
+                long cTime = e.getWhen();
                 if ((dx*dx+dy*dy < MAX_DISP) &&
                     (cTime-startTime) < CLICK_TIME) {
                     // our drag was short! dispatch a CLICK event.
@@ -1061,7 +1069,8 @@ public class JGVTComponent extends JComponent {
                          e.getClickCount(),
                          e.isPopupTrigger());
 
-                    mouseClicked(click);
+                    fakeClickTime = click.getWhen();
+                    handleMouseClicked(click);
                 }
             }
             checkClick = false;
