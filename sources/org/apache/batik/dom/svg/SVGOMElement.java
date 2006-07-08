@@ -681,15 +681,14 @@ public abstract class SVGOMElement
      */
     protected void updateTransformListAttributeValue(SVGAnimatedTransformList a,
                                                      AnimatableValue val) {
-        // XXX Rewrite SVGOMAnimatedTransformList.
-//         SVGOMAnimatedTransformList atl = (SVGOMAnimatedTransformList) a;
-//         if (val == null) {
-//             atl.resetAnimatedValue();
-//         } else {
-//             AnimatableTransformListValue animTransformList =
-//                 (AnimatableTransformListValue) val;
-//             atl.setAnimatedValue(animTransformList.getTransforms());
-//         }
+        SVGOMAnimatedTransformList atl = (SVGOMAnimatedTransformList) a;
+        if (val == null) {
+            atl.resetAnimatedValue();
+        } else {
+            AnimatableTransformListValue animTransformList =
+                (AnimatableTransformListValue) val;
+            atl.setAnimatedValue(animTransformList.getTransforms());
+        }
     }
 
     /**

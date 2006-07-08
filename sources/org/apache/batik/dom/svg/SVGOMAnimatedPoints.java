@@ -230,7 +230,7 @@ public class SVGOMAnimatedPoints
     }
 
     /**
-     * {@link SVGPointList} implementation for the base point list value.
+     * {@link SVGPointList} implementation for the animated point list value.
      */
     protected class AnimSVGPointList extends AbstractSVGPointList {
 

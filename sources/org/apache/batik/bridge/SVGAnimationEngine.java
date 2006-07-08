@@ -52,7 +52,6 @@ import org.apache.batik.css.engine.value.FloatValue;
 import org.apache.batik.css.engine.value.StringValue;
 import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.css.engine.value.ValueManager;
-import org.apache.batik.css.engine.value.svg.SVGValueConstants;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.svg.SVGOMElement;
 import org.apache.batik.parser.DefaultPreserveAspectRatioHandler;
@@ -68,7 +67,6 @@ import org.apache.batik.parser.PathParser;
 import org.apache.batik.parser.PointsParser;
 import org.apache.batik.parser.ParseException;
 import org.apache.batik.parser.PreserveAspectRatioParser;
-import org.apache.batik.util.CSSConstants;
 import org.apache.batik.util.RunnableQueue;
 import org.apache.batik.util.XMLConstants;
 

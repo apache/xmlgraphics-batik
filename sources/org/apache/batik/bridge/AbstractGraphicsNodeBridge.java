@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001-2005  The Apache Software Foundation 
+   Copyright 2001-2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import org.apache.batik.css.engine.CSSEngineEvent;
 import org.apache.batik.css.engine.SVGCSSEngine;
 import org.apache.batik.dom.events.AbstractEvent;
 import org.apache.batik.dom.svg.AnimatedLiveAttributeValue;
+import org.apache.batik.dom.svg.LiveAttributeException;
 import org.apache.batik.dom.svg.SVGContext;
 import org.apache.batik.dom.svg.SVGOMElement;
 import org.apache.batik.ext.awt.geom.SegmentList;
@@ -40,6 +41,9 @@ import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.events.MutationEvent;
 import org.w3c.dom.svg.SVGFitToViewBox;
 import org.w3c.dom.svg.SVGLength;
+import org.w3c.dom.svg.SVGMatrix;
+import org.w3c.dom.svg.SVGTransformList;
+import org.w3c.dom.svg.SVGTransformable;
 
 /**
  * The base bridge class for SVG graphics node. By default, the namespace URI is
@@ -102,12 +106,10 @@ public abstract class AbstractGraphicsNodeBridge extends AnimatableSVGBridge
         }
 
         GraphicsNode node = instantiateGraphicsNode();
+
         // 'transform'
-        String s = e.getAttributeNS(null, SVG_TRANSFORM_ATTRIBUTE);
-        if (s.length() != 0) {
-            node.setTransform
-                (SVGUtilities.convertTransform(e, SVG_TRANSFORM_ATTRIBUTE, s));
-        }
+        setTransform(node, e);
+
         // 'visibility'
         node.setVisible(CSSUtilities.convertVisibility(e));
 
@@ -156,6 +158,34 @@ public abstract class AbstractGraphicsNodeBridge extends AnimatableSVGBridge
     }
 
     /**
+     * Sets the graphics node's transform to the current animated transform
+     * value.
+     */
+    protected void setTransform(GraphicsNode n, Element e) {
+        SVGTransformable te = (SVGTransformable) e;
+        try {
+            // 'transform'
+            AffineTransform at = new AffineTransform();
+            SVGTransformList tl = te.getTransform().getAnimVal();
+            int count = tl.getNumberOfItems();
+            for (int i = 0; i < count; i++) {
+                SVGMatrix m = tl.getItem(i).getMatrix();
+                at.concatenate(new AffineTransform(m.getA(), m.getB(),
+                                                   m.getC(), m.getD(),
+                                                   m.getE(), m.getF()));
+                                                 
+            }
+            n.setTransform(at);
+        } catch (LiveAttributeException ex) {
+            throw new BridgeException
+                (ex.getElement(),
+                 ex.isMissing() ? ERR_ATTRIBUTE_MISSING
+                                : ERR_ATTRIBUTE_VALUE_MALFORMED,
+                 new Object[] { ex.getAttributeName(), ex.getValue() });
+        }
+    }
+
+    /**
      * Associates the {@link SVGContext} with the element.  This method should
      * be called even for static documents, since some bridges will need to
      * access animated attribute values even during the first build.
@@ -192,17 +222,6 @@ public abstract class AbstractGraphicsNodeBridge extends AnimatableSVGBridge
      * Invoked when an MutationEvent of type 'DOMAttrModified' is fired.
      */
     public void handleDOMAttrModifiedEvent(MutationEvent evt) {
-        String attrName = evt.getAttrName();
-        if (attrName.equals(SVG_TRANSFORM_ATTRIBUTE)) {
-            String s = evt.getNewValue();
-            AffineTransform at = GraphicsNode.IDENTITY;
-            if (s.length() != 0) {
-                at = SVGUtilities.convertTransform
-                    (e, SVG_TRANSFORM_ATTRIBUTE, s);
-            }
-            node.setTransform(at);
-            handleGeometryChanged();
-        }
     }
 
     /**
@@ -357,6 +376,11 @@ public abstract class AbstractGraphicsNodeBridge extends AnimatableSVGBridge
      */
     public void handleAnimatedAttributeChanged
             (AnimatedLiveAttributeValue alav) {
+        if (alav.getNamespaceURI() == null
+                && alav.getLocalName().equals(SVG_TRANSFORM_ATTRIBUTE)) {
+            setTransform(node, e);
+            handleGeometryChanged();
+        }
     }
 
     /**

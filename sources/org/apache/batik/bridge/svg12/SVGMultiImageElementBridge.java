@@ -36,7 +36,6 @@ import org.apache.batik.bridge.SVGImageElementBridge;
 import org.apache.batik.bridge.SVGUtilities;
 import org.apache.batik.bridge.Viewport;
 import org.apache.batik.dom.AbstractNode;
-import org.apache.batik.dom.svg.SVGOMElement;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.ImageNode;

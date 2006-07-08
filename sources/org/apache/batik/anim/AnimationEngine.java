@@ -79,7 +79,7 @@ public abstract class AnimationEngine {
         animations.put(anim, animInfo);
 
 //         getSandwich(target, pn);
-        TargetInfo targetInfo = getTargetInfo(target);
+//         TargetInfo targetInfo = getTargetInfo(target);
         Sandwich sandwich;
         if (isCSS) {
             sandwich = getSandwich(target, an);

@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2000-2003  The Apache Software Foundation 
+   Copyright 2000-2003,2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -26,7 +26,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedBoolean;
 import org.w3c.dom.svg.SVGAnimatedEnumeration;
 import org.w3c.dom.svg.SVGAnimatedInteger;
-import org.w3c.dom.svg.SVGAnimatedLength;
 import org.w3c.dom.svg.SVGAnimatedNumber;
 import org.w3c.dom.svg.SVGAnimatedNumberList;
 import org.w3c.dom.svg.SVGAnimatedString;

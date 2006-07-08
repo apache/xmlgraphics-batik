@@ -32,7 +32,7 @@ public class TransformAnimation extends SimpleAnimation {
      * The transform type.  This should take one of the constants defined
      * in {@link org.w3c.dom.svg.SVGTransform}.
      */
-    protected int type;
+    protected short type;
 
     /**
      * Creates a new TransformAnimation.
@@ -48,7 +48,7 @@ public class TransformAnimation extends SimpleAnimation {
                               AnimatableValue from,
                               AnimatableValue to,
                               AnimatableValue by,
-                              int type) {
+                              short type) {
         super(timedElement, animatableElement, calcMode, keyTimes, keySplines,
               additive, cumulative, values, from, to, by);
     }

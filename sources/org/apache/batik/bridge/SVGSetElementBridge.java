@@ -18,6 +18,7 @@
 package org.apache.batik.bridge;
 
 import org.apache.batik.anim.AbstractAnimation;
+import org.apache.batik.anim.AnimationTarget;
 import org.apache.batik.anim.SetAnimation;
 import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.util.SVGConstants;
@@ -47,7 +48,7 @@ public class SVGSetElementBridge extends SVGAnimationElementBridge {
     /**
      * Creates the animation object for the animation element.
      */
-    protected AbstractAnimation createAnimation() {
+    protected AbstractAnimation createAnimation(AnimationTarget target) {
         AnimatableValue to =
             parseAnimatableValue(SVGConstants.SVG_TO_ATTRIBUTE);
         return new SetAnimation(timedElement, this, to);

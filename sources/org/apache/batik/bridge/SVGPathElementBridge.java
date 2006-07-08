@@ -29,15 +29,11 @@ import org.apache.batik.dom.svg.SVGPathContext;
 import org.apache.batik.ext.awt.geom.PathLength;
 import org.apache.batik.gvt.ShapeNode;
 import org.apache.batik.parser.AWTPathProducer;
-import org.apache.batik.parser.ParseException;
-import org.apache.batik.parser.PathParser;
 
 import org.w3c.dom.Element;
-import org.w3c.dom.events.MutationEvent;
 import org.w3c.dom.svg.SVGPathSeg;
 import org.w3c.dom.svg.SVGPathSegArcAbs;
 import org.w3c.dom.svg.SVGPathSegArcRel;
-import org.w3c.dom.svg.SVGPathSegClosePath;
 import org.w3c.dom.svg.SVGPathSegCurvetoCubicAbs;
 import org.w3c.dom.svg.SVGPathSegCurvetoCubicRel;
 import org.w3c.dom.svg.SVGPathSegCurvetoCubicSmoothAbs;

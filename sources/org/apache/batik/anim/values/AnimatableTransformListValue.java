@@ -17,6 +17,7 @@
  */
 package org.apache.batik.anim.values;
 
+import java.util.Iterator;
 import java.util.Vector;
 
 import org.apache.batik.anim.AnimationTarget;
@@ -33,26 +34,25 @@ import org.w3c.dom.svg.SVGTransform;
 public class AnimatableTransformListValue extends AnimatableValue {
 
     /**
-     * List of transforms, when the object is being used as an "accumulate"
-     * value.
+     * List of transforms.
      */
     protected Vector transforms;
-
-    /**
-     * The transform, when the object is being used as a "to" value.
-     */
-    protected Transform transform;
-
-    /**
-     * Whether this object is a transform list, or just a single transform.
-     */
-    protected boolean isTransformList;
 
     /**
      * Creates a new, uninitialized AnimatableTransformListValue.
      */
     protected AnimatableTransformListValue(AnimationTarget target) {
         super(target);
+    }
+
+    /**
+     * Creates a new AnimatableTransformListValue with a single transform.
+     */
+    public AnimatableTransformListValue(AnimationTarget target,
+                                        Transform t) {
+        super(target);
+        this.transforms = new Vector();
+        this.transforms.add(t);
     }
 
     /**
@@ -66,21 +66,10 @@ public class AnimatableTransformListValue extends AnimatableValue {
         for (int i = 0; i < size; i++) {
             this.transforms.setElementAt(transforms.elementAt(i), i);
         }
-        this.isTransformList = true;
     }
 
     /**
-     * Creates a new AnimatableTransformListValue with a single transform.
-     */
-    public AnimatableTransformListValue(AnimationTarget target,
-                                        Transform transform) {
-        super(target);
-        this.transform = transform;
-    }
-
-    /**
-     * Performs interpolation to the given value.  Interpolation for transform
-     * lists is appending a transform to the list.
+     * Performs interpolation to the given value.
      */
     public AnimatableValue interpolate(AnimatableValue result,
                                        AnimatableValue to,
@@ -94,16 +83,18 @@ public class AnimatableTransformListValue extends AnimatableValue {
             (AnimatableTransformListValue) accumulation;
 
         int accSize = accumulation == null ? 0 : accTransformList.transforms.size();
-        int newSize = (to == null ? 0 : 1) + accSize * multiplier;
+        int newSize = 1 + accSize * multiplier;
 
         AnimatableTransformListValue res;
         if (result == null) {
             res = new AnimatableTransformListValue(target);
             res.transforms = new Vector(newSize);
+            res.transforms.setSize(newSize);
         } else {
             res = (AnimatableTransformListValue) result;
             if (res.transforms == null) {
                 res.transforms = new Vector(newSize);
+                res.transforms.setSize(newSize);
             } else if (res.transforms.size() != newSize) {
                 res.transforms.setSize(newSize);
             }
@@ -117,8 +108,10 @@ public class AnimatableTransformListValue extends AnimatableValue {
         }
 
         if (to != null) {
-            int type = transform.getType();
-            if (type == toTransformList.transform.getType()) {
+            Transform ft = (Transform) transforms.lastElement();
+            int type = ft.getType();
+            Transform tt = (Transform) toTransformList.transforms.lastElement();
+            if (type == tt.getType()) {
                 Transform t =
                     (Transform) res.transforms.elementAt(newSize - 1);
                 if (t == null) {
@@ -130,9 +123,8 @@ public class AnimatableTransformListValue extends AnimatableValue {
                     case SVGTransform.SVG_TRANSFORM_ROTATE:
                     case SVGTransform.SVG_TRANSFORM_SKEWX:
                     case SVGTransform.SVG_TRANSFORM_SKEWY:
-                        r = transform.getAngle();
-                        r += interpolation *
-                            (toTransformList.transform.getAngle() - r);
+                        r = ft.getAngle();
+                        r += interpolation * (tt.getAngle() - r);
                         if (type == SVGTransform.SVG_TRANSFORM_SKEWX) {
                             t.setSkewX(r);
                             break;
@@ -143,12 +135,10 @@ public class AnimatableTransformListValue extends AnimatableValue {
                         // fall through
                     case SVGTransform.SVG_TRANSFORM_TRANSLATE:
                     case SVGTransform.SVG_TRANSFORM_SCALE:
-                        x = transform.getX();
-                        y = transform.getY();
-                        x += interpolation *
-                            (toTransformList.transform.getX() - x);
-                        y += interpolation *
-                            (toTransformList.transform.getY() - y);
+                        x = ft.getX();
+                        y = ft.getY();
+                        x += interpolation * (tt.getX() - x);
+                        y += interpolation * (tt.getY() - y);
                         if (type == SVGTransform.SVG_TRANSFORM_TRANSLATE) {
                             t.setTranslate(x, y);
                         } else if (type == SVGTransform.SVG_TRANSFORM_SCALE) {
@@ -159,6 +149,14 @@ public class AnimatableTransformListValue extends AnimatableValue {
                         break;
                 }
             }
+        } else {
+            Transform ft = (Transform) transforms.lastElement();
+            Transform t = (Transform) res.transforms.elementAt(newSize - 1);
+            if (t == null) {
+                t = new Transform();
+                res.transforms.setElementAt(t, newSize - 1);
+            }
+            t.assign(ft);
         }
 
         // XXX Do better checking for changes.
@@ -170,23 +168,8 @@ public class AnimatableTransformListValue extends AnimatableValue {
     /**
      * Gets the transforms.
      */
-    public Vector getTransforms() {
-        return transforms;
-    }
-
-    /**
-     * Gets the transform.
-     */
-    public SVGOMTransform getTransform() {
-        return transform;
-    }
-
-    /**
-     * Returns whether this object holds a single transform, or a whole
-     * transform list.
-     */
-    public boolean isTransformList() {
-        return isTransformList;
+    public Iterator getTransforms() {
+        return transforms.iterator();
     }
 
     /**
@@ -237,6 +220,14 @@ public class AnimatableTransformListValue extends AnimatableValue {
         public void setSkewY(float angle) {
             super.setSkewY(angle);
             this.angle = angle;
+        }
+
+        protected void assign(Transform t) {
+            type = t.type;
+            affineTransform = t.affineTransform;
+            angle = t.angle;
+            x = t.x;
+            y = t.y;
         }
     }
 }

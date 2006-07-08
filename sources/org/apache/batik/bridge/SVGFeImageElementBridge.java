@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001-2003  The Apache Software Foundation 
+   Copyright 2001-2003,2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import java.awt.geom.Rectangle2D;
 import java.util.Map;
 
 import org.apache.batik.dom.util.XLinkSupport;
-import org.apache.batik.util.XMLConstants;
 import org.apache.batik.ext.awt.image.PadMode;
 import org.apache.batik.ext.awt.image.renderable.AffineRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.Filter;
@@ -103,14 +102,14 @@ public class SVGFeImageElementBridge
         //
         
         Document document = filterElement.getOwnerDocument();
-        boolean isUse = (uriStr.indexOf("#") != -1);
+        boolean isUse = uriStr.indexOf("#") != -1;
         Element contentElement = null;
         if (isUse) {
             contentElement = document.createElementNS(SVG_NAMESPACE_URI,
-                                                    SVG_USE_TAG);
+                                                      SVG_USE_TAG);
         } else {
             contentElement = document.createElementNS(SVG_NAMESPACE_URI,
-                                                    SVG_IMAGE_TAG);
+                                                      SVG_IMAGE_TAG);
         }
 
         

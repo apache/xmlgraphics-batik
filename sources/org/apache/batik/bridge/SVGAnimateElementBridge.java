@@ -20,6 +20,7 @@ package org.apache.batik.bridge;
 import java.util.ArrayList;
 
 import org.apache.batik.anim.AbstractAnimation;
+import org.apache.batik.anim.AnimationTarget;
 import org.apache.batik.anim.SimpleAnimation;
 import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.util.SVGConstants;
@@ -33,7 +34,7 @@ import org.apache.batik.util.SVGConstants;
 public class SVGAnimateElementBridge extends SVGAnimationElementBridge {
 
     /**
-     * Returns 'set'.
+     * Returns 'animate'.
      */
     public String getLocalName() {
         return SVG_ANIMATE_TAG;
@@ -49,7 +50,7 @@ public class SVGAnimateElementBridge extends SVGAnimationElementBridge {
     /**
      * Creates the animation object for the animation element.
      */
-    protected AbstractAnimation createAnimation() {
+    protected AbstractAnimation createAnimation(AnimationTarget target) {
         AnimatableValue from =
             parseAnimatableValue(SVGConstants.SVG_FROM_ATTRIBUTE);
         AnimatableValue to =
@@ -70,7 +71,7 @@ public class SVGAnimateElementBridge extends SVGAnimationElementBridge {
     }
 
     /**
-     * Returns the parsed calcMode attribute from the animation element.
+     * Returns the parsed 'calcMode' attribute from the animation element.
      */
     protected int parseCalcMode() {
         String calcModeString =

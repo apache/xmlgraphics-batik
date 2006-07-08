@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001-2004  The Apache Software Foundation 
+   Copyright 2001-2004,2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -55,12 +55,10 @@ import org.apache.batik.util.XMLConstants;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.events.DocumentEvent;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
-import org.w3c.dom.events.MutationEvent;
 import org.w3c.dom.svg.SVGAnimatedPreserveAspectRatio;
 import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGImageElement;

@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2003  The Apache Software Foundation 
+   Copyright 2003,2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -256,8 +256,18 @@ public abstract class AbstractSVGTransformList
             return itemStringValue;
         }
 
-        protected SVGTransformItem(SVGTransform transform){
-            super();
+        /**
+         * Creates a new SVGTransformItem from the given {@link SVGTransform}.
+         */
+        protected SVGTransformItem(SVGTransform transform) {
+            assign(transform);
+        }
+
+        /**
+         * Copies the values from the given {@link SVGTransform} into this
+         * {@link SVGTransformItem}.
+         */
+        public void assign(SVGTransform transform) {
             type = transform.getType();
             SVGMatrix matrix = transform.getMatrix();
             switch(type){
@@ -294,7 +304,6 @@ public abstract class AbstractSVGTransformList
                 setMatrix(matrix);
                 break;
             }
-            
         }
 
         protected void translate(float x){

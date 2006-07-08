@@ -269,7 +269,7 @@ public class SVGOMAnimatedLengthList
     }
 
     /**
-     * {@link SVGLengthList} implementation for the base point list value.
+     * {@link SVGLengthList} implementation for the animated length list value.
      */
     protected class AnimSVGLengthList extends AbstractSVGLengthList {
 

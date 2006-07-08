@@ -23,7 +23,6 @@ import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Rectangle2D;
-import java.text.AttributedCharacterIterator;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -42,7 +41,6 @@ import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.ShapeNode;
 import org.apache.batik.gvt.TextNode;
-import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
 import org.apache.batik.util.SVGConstants;
 
 import org.w3c.dom.Element;

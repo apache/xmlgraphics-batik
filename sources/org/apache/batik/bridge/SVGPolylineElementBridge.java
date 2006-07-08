@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001-2004  The Apache Software Foundation 
+   Copyright 2001-2004,2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -26,11 +26,8 @@ import org.apache.batik.dom.svg.LiveAttributeException;
 import org.apache.batik.dom.svg.SVGOMPolylineElement;
 import org.apache.batik.gvt.ShapeNode;
 import org.apache.batik.parser.AWTPolylineProducer;
-import org.apache.batik.parser.ParseException;
-import org.apache.batik.parser.PointsParser;
 
 import org.w3c.dom.Element;
-import org.w3c.dom.events.MutationEvent;
 import org.w3c.dom.svg.SVGPoint;
 import org.w3c.dom.svg.SVGPointList;
 

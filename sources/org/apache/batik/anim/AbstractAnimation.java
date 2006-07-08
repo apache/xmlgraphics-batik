@@ -120,8 +120,8 @@ public abstract class AbstractAnimation {
         if (isDirty) {
             Trace.print("willReplace() == " + willReplace());
             Trace.print("value == " + value);
+            AnimatableValue lowerValue = null;
             if (!willReplace()) {
-                AnimatableValue lowerValue;
                 Trace.print("lowerAnimation == " + lowerAnimation);
                 if (lowerAnimation == null) {
                     lowerValue = animatableElement.getUnderlyingValue();
@@ -129,17 +129,9 @@ public abstract class AbstractAnimation {
                     lowerValue = lowerAnimation.getComposedValue();
                 }
                 Trace.print("lowerValue == " + lowerValue);
-                if (lowerValue != null) {
-                    composedValue =
-                        lowerValue.interpolate(composedValue, null, 0f, value, 1);
-                } else {
-                    composedValue =
-                        value.interpolate(composedValue, null, 0f, null, 0);
-                }
-            } else {
-                composedValue =
-                    value.interpolate(composedValue, null, 0f, null, 0);
             }
+            composedValue =
+                value.interpolate(composedValue, null, 0f, lowerValue, 1);
             Trace.print("composedValue == " + composedValue);
             isDirty = false;
         }

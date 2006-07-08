@@ -253,7 +253,7 @@ public class SVGOMAnimatedNumberList
     }
 
     /**
-     * {@link SVGNumberList} implementation for the base point list value.
+     * {@link SVGNumberList} implementation for the animated number list value.
      */
     protected class AnimSVGNumberList extends AbstractSVGNumberList {
 

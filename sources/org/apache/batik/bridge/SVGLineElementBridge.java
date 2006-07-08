@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001-2004  The Apache Software Foundation 
+   Copyright 2001-2004,2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -26,7 +26,6 @@ import org.apache.batik.gvt.ShapeNode;
 import org.apache.batik.gvt.ShapePainter;
 
 import org.w3c.dom.Element;
-import org.w3c.dom.events.MutationEvent;
 
 /**
  * Bridge class for the &lt;line> element.

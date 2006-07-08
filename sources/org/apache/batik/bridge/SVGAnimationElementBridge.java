@@ -135,7 +135,7 @@ public abstract class SVGAnimationElementBridge extends AbstractSVGBridge
      * @param e the element being handled
      */
     public void handleElement(BridgeContext ctx, Element e) {
-        if (ctx.isDynamic() && ctx.getSVGContext(e) == null) {
+        if (ctx.isDynamic() && BridgeContext.getSVGContext(e) == null) {
             SVGAnimationElementBridge b =
                 (SVGAnimationElementBridge) getInstance();
             b.element = (SVGOMElement) e;
@@ -198,7 +198,7 @@ public abstract class SVGAnimationElementBridge extends AbstractSVGBridge
         }
 
         timedElement = createTimedElement();
-        animation = createAnimation();
+        animation = createAnimation(animationTarget);
         eng.addAnimation(animationTarget, attributeNamespaceURI, attributeLocalName,
                          isCSS, animation);
     }
@@ -222,7 +222,7 @@ public abstract class SVGAnimationElementBridge extends AbstractSVGBridge
     /**
      * Creates the animation object for the animation element.
      */
-    protected abstract AbstractAnimation createAnimation();
+    protected abstract AbstractAnimation createAnimation(AnimationTarget t);
 
     /**
      * Parses an attribute as an AnimatableValue.

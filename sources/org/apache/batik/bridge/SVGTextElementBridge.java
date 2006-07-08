@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001-2005  The Apache Software Foundation
+   Copyright 2001-2006  The Apache Software Foundation
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -37,7 +37,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.StringTokenizer;
 import java.util.WeakHashMap;
 
 import org.apache.batik.css.engine.CSSEngineEvent;
@@ -52,7 +51,6 @@ import org.apache.batik.dom.svg.AnimatedLiveAttributeValue;
 import org.apache.batik.dom.svg.LiveAttributeException;
 import org.apache.batik.dom.svg.SVGContext;
 import org.apache.batik.dom.svg.SVGOMElement;
-import org.apache.batik.dom.svg.SVGOMTextContentElement;
 import org.apache.batik.dom.svg.SVGOMTextPositioningElement;
 import org.apache.batik.dom.svg.SVGTextContent;
 import org.apache.batik.dom.util.XLinkSupport;
@@ -1234,8 +1232,6 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             return;
         }
 
-        AttributedCharacterIterator aci = as.getIterator();
-
         // calculate which chars in the string belong to this element
         int firstChar = getElementStartIndex(element);
         // No match so no chars to annotate.
@@ -1253,7 +1249,6 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             SVGLengthList dys = te.getDy().getAnimVal();
             SVGNumberList rs  = te.getRotate().getAnimVal();
 
-            ArrayList al;
             int len;
 
             // process the x attribute
@@ -1472,7 +1467,6 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
 
         Map result = new HashMap();
         String s;
-        float f;
 
         if (SVG_NAMESPACE_URI.equals(element.getNamespaceURI()) &&
             element.getLocalName().equals(SVG_ALT_GLYPH_TAG)) {
