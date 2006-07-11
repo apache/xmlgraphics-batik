@@ -62,4 +62,12 @@ public class WallclockTimingSpecifier extends TimingSpecifier {
         instance = new InstanceTime(this, t, null, false);
         owner.addInstanceTime(instance, isBegin);
     }
+
+    /**
+     * Returns whether this timing specifier is event-like (i.e., if it is
+     * an eventbase, accesskey or a repeat timing specifier).
+     */
+    public boolean isEventCondition() {
+        return false;
+    }
 }

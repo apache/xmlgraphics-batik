@@ -81,6 +81,14 @@ public class SyncbaseTimingSpecifier extends OffsetTimingSpecifier {
     }
 
     /**
+     * Returns whether this timing specifier is event-like (i.e., if it is
+     * an eventbase, accesskey or a repeat timing specifier).
+     */
+    public boolean isEventCondition() {
+        return false;
+    }
+
+    /**
      * Called by the timebase element when it creates a new Interval.
      */
     void newInterval(Interval interval) {

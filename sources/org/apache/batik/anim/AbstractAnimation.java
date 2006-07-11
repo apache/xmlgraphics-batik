@@ -73,6 +73,13 @@ public abstract class AbstractAnimation {
     protected boolean isFrozen;
 
     /**
+     * The time at which this animation became active.  Used for ensuring the
+     * sandwich order is correct when multiple animations become active
+     * simultaneously.
+     */
+    protected float beginTime;
+
+    /**
      * The value of this animation.
      */
     protected AnimatableValue value;

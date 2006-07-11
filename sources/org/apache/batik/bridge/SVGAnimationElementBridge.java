@@ -28,6 +28,7 @@ import org.apache.batik.anim.AnimationTarget;
 import org.apache.batik.anim.timing.TimedElement;
 import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.css.engine.CSSEngineEvent;
+import org.apache.batik.dom.AbstractNode;
 import org.apache.batik.dom.svg.AnimatedLiveAttributeValue;
 import org.apache.batik.dom.svg.SVGAnimationContext;
 import org.apache.batik.dom.svg.SVGOMElement;
@@ -142,7 +143,12 @@ public abstract class SVGAnimationElementBridge extends AbstractSVGBridge
             b.ctx = ctx;
             b.eng = ctx.getAnimationEngine();
             b.element.setSVGContext(b);
-            b.eng.addInitialBridge(b);
+            if (b.eng.hasStarted()) {
+                b.initializeAnimation();
+                b.initializeTimedElement();
+            } else {
+                b.eng.addInitialBridge(b);
+            }
         }
     }
 
@@ -151,7 +157,7 @@ public abstract class SVGAnimationElementBridge extends AbstractSVGBridge
      * document's AnimationEngine.
      */
     protected void initializeAnimation() {
-        // target element
+        // Determine the target element.
         String uri = XLinkSupport.getXLinkHref(element);
         Node t;
         if (uri.length() == 0) {
@@ -173,7 +179,7 @@ public abstract class SVGAnimationElementBridge extends AbstractSVGBridge
             throw new RuntimeException("Element cannot be the target of an animation");
         }
 
-        // attribute name
+        // Get the attribute/property name.
         String an = element.getAttributeNS(null, SVG_ATTRIBUTE_NAME_ATTRIBUTE);
         int ci = an.indexOf(':');
         if (ci == -1) {
@@ -197,6 +203,7 @@ public abstract class SVGAnimationElementBridge extends AbstractSVGBridge
             throw new RuntimeException("Attribute '" + an + "' cannot be animated");
         }
 
+        // Add the animation.
         timedElement = createTimedElement();
         animation = createAnimation(animationTarget);
         eng.addAnimation(animationTarget, attributeNamespaceURI, attributeLocalName,
@@ -299,8 +306,8 @@ public abstract class SVGAnimationElementBridge extends AbstractSVGBridge
      */
     public void dispose() {
         if (element.getSVGContext() == null) {
-            // Only clear the references if this is not part of a rebuild.
-            // XXX Should also remove this animation.
+            // Only remove the animation if this is not part of a rebuild.
+            eng.removeAnimation(animation);
             element = null;
         }
     }
@@ -518,6 +525,16 @@ public abstract class SVGAnimationElementBridge extends AbstractSVGBridge
          */
         protected EventTarget getParentEventTarget(TimedElement e) {
             return AnimationSupport.getParentEventTarget(e);
+        }
+
+        /**
+         * Returns whether this timed element comes before the given timed
+         * element in document order.
+         */
+        public boolean isBefore(TimedElement other) {
+            Element e = ((SVGTimedElement) other).getElement();
+            int pos = ((AbstractNode) element).compareDocumentPosition(e);
+            return (pos & AbstractNode.DOCUMENT_POSITION_PRECEDING) != 0;
         }
 
         /**

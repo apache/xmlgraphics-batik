@@ -63,4 +63,12 @@ public class MediaMarkerTimingSpecifier extends TimingSpecifier {
     public String toString() {
         return syncbaseID + ".marker(" + markerName + ")";
     }
+
+    /**
+     * Returns whether this timing specifier is event-like (i.e., if it is
+     * an eventbase, accesskey or a repeat timing specifier).
+     */
+    public boolean isEventCondition() {
+        return false;
+    }
 }

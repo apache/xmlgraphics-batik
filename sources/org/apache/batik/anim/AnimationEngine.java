@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.batik.anim.timing.TimedDocumentRoot;
+import org.apache.batik.anim.timing.TimedElement;
 import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.util.DoublyIndexedTable;
 
@@ -78,8 +79,6 @@ public abstract class AnimationEngine {
         animInfo.target = target;
         animations.put(anim, animInfo);
 
-//         getSandwich(target, pn);
-//         TargetInfo targetInfo = getTargetInfo(target);
         Sandwich sandwich;
         if (isCSS) {
             sandwich = getSandwich(target, an);
@@ -95,6 +94,37 @@ public abstract class AnimationEngine {
             anim.higherAnimation = null;
         }
         sandwich.animation = anim;
+        } finally { org.apache.batik.anim.timing.Trace.exit(); }
+    }
+
+    /**
+     * Removes an animation from the document.
+     */
+    public void removeAnimation(AbstractAnimation anim) {
+        org.apache.batik.anim.timing.Trace.enter(this, "removeAnimation", new Object[] { anim } ); try {
+        timedDocumentRoot.removeChild(anim.getTimedElement());
+        AnimationInfo animInfo = getAnimationInfo(anim);
+        AbstractAnimation nextHigher = anim.higherAnimation;
+        if (nextHigher != null) {
+            nextHigher.markDirty();
+        }
+        moveToBottom(anim);
+        if (anim.higherAnimation != null) {
+            anim.higherAnimation.lowerAnimation = null;
+        }
+        Sandwich sandwich;
+        if (animInfo.isCSS) {
+            sandwich = getSandwich(animInfo.target,
+                                   animInfo.attributeLocalName);
+        } else {
+            sandwich = getSandwich(animInfo.target,
+                                   animInfo.attributeNamespaceURI,
+                                   animInfo.attributeLocalName);
+        }
+        if (sandwich.animation == anim) {
+            sandwich.animation = null;
+            sandwich.shouldUpdate = true;
+        }
         } finally { org.apache.batik.anim.timing.Trace.exit(); }
     }
 
@@ -169,9 +199,7 @@ public abstract class AnimationEngine {
                 Sandwich sandwich = (Sandwich) e2.getValue();
                 if (sandwich.shouldUpdate || sandwich.animation.isDirty) {
                     AnimatableValue av = sandwich.animation.getComposedValue();
-                    // if (av == null || av.hasChanged()) {
-                        target.updateAttributeValue(namespaceURI, localName, av);
-                    // }
+                    target.updateAttributeValue(namespaceURI, localName, av);
                     sandwich.shouldUpdate = false;
                     sandwich.animation.isDirty = false;
                 }
@@ -188,15 +216,13 @@ public abstract class AnimationEngine {
                     //     needed, to avoid clearing the property value before
                     //     getting the composed value.
                     AnimatableValue av = sandwich.animation.getComposedValue();
-                    // if (av == null || av.hasChanged()) {
-                        boolean hasAdditive = true;
-                        if (hasAdditive) {
-                            target.updatePropertyValue(propertyName, null);
-                        }
-                        if (!(hasAdditive && av == null)) {
-                            target.updatePropertyValue(propertyName, av);
-                        }
-                    // }
+                    boolean hasAdditive = true;
+                    if (hasAdditive) {
+                        target.updatePropertyValue(propertyName, null);
+                    }
+                    if (!(hasAdditive && av == null)) {
+                        target.updatePropertyValue(propertyName, av);
+                    }
                     sandwich.shouldUpdate = false;
                     sandwich.animation.isDirty = false;
                 }
@@ -211,14 +237,63 @@ public abstract class AnimationEngine {
      * @param begin the time the element became active, in document simple time
      */
     public void toActive(AbstractAnimation anim, float begin) {
-        // XXX Animation should not always be moved to the very top; it
-        //     should be based on the document order if it became active
-        //     at the same time as another.
-        // XXX is this the right amount of dirty marking?
         moveToTop(anim);
         anim.isActive = true;
+        anim.beginTime = begin;
         anim.isFrozen = false;
+        // Move the animation down, in case it began at the same time as another
+        // animation in the sandwich and it's earlier in document order.
+        pushDown(anim);
         anim.markDirty();
+    }
+
+    /**
+     * Moves the animation down the sandwich such that it is in the right
+     * position according to begin time and document order.
+     */
+    protected void pushDown(AbstractAnimation anim) {
+        TimedElement e = anim.getTimedElement();
+        AbstractAnimation top = null;
+        boolean moved = false;
+        while (anim.lowerAnimation != null
+                && (anim.lowerAnimation.isActive
+                    || anim.lowerAnimation.isFrozen)
+                && (anim.lowerAnimation.beginTime > anim.beginTime
+                    || anim.lowerAnimation.beginTime == anim.beginTime
+                        && e.isBefore(anim.lowerAnimation.getTimedElement()))) {
+            AbstractAnimation higher = anim.higherAnimation;
+            AbstractAnimation lower = anim.lowerAnimation;
+            AbstractAnimation lowerLower = lower.lowerAnimation;
+            if (higher != null) {
+                higher.lowerAnimation = lower;
+            }
+            if (lowerLower != null) {
+                lowerLower.higherAnimation = anim;
+            }
+            lower.lowerAnimation = anim;
+            lower.higherAnimation = higher;
+            anim.lowerAnimation = lowerLower;
+            anim.higherAnimation = lower;
+            if (!moved) {
+                top = lower;
+                moved = true;
+            }
+        }
+        if (moved) {
+            AnimationInfo animInfo = getAnimationInfo(anim);
+            Sandwich sandwich;
+            if (animInfo.isCSS) {
+                sandwich = getSandwich(animInfo.target,
+                                       animInfo.attributeLocalName);
+            } else {
+                sandwich = getSandwich(animInfo.target,
+                                       animInfo.attributeNamespaceURI,
+                                       animInfo.attributeLocalName);
+            }
+            if (sandwich.animation == anim) {
+                sandwich.animation = top;
+            }
+        }
     }
 
     /**

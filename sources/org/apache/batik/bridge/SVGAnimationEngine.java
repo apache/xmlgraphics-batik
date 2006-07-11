@@ -54,6 +54,7 @@ import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.css.engine.value.ValueManager;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.svg.SVGOMElement;
+import org.apache.batik.dom.svg.SVGStylableElement;
 import org.apache.batik.parser.DefaultPreserveAspectRatioHandler;
 import org.apache.batik.parser.FloatArrayProducer;
 import org.apache.batik.parser.DefaultLengthHandler;
@@ -72,6 +73,7 @@ import org.apache.batik.util.XMLConstants;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.css.CSSPrimitiveValue;
+import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSValue;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
@@ -97,6 +99,13 @@ public class SVGAnimationEngine extends AnimationEngine {
      * The CSSEngine used for CSS value parsing.
      */
     protected CSSEngine cssEngine;
+
+    /**
+     * Whether animation processing has started.  This affects whether
+     * animation element bridges add their animation on to the initial
+     * bridge list, or process them immediately.
+     */
+    protected boolean started;
 
     /**
      * The factory for unparsed string values.
@@ -269,6 +278,13 @@ public class SVGAnimationEngine extends AnimationEngine {
     }
 
     /**
+     * Returns whether animation processing has begun.
+     */
+    public boolean hasStarted() {
+        return started;
+    }
+
+    /**
      * Parses an AnimatableValue.
      */
     public AnimatableValue parseAnimatableValue(AnimationTarget target,
@@ -304,8 +320,16 @@ public class SVGAnimationEngine extends AnimationEngine {
                 // XXX Should disable animation instead of throwing.
                 throw new RuntimeException("Attribute type " + type + " is not animatable");
             }
-            Value v = cssEngine.getComputedStyle
-                ((CSSStylableElement) target.getElement(), null, idx);
+            SVGStylableElement e = (SVGStylableElement) target.getElement();
+            CSSStyleDeclaration over = e.getOverrideStyle();
+            String oldValue = over.getPropertyValue(pn);
+            if (oldValue != null) {
+                over.removeProperty(pn);
+            }
+            Value v = cssEngine.getComputedStyle(e, null, idx);
+            if (oldValue != null) {
+                over.setProperty(pn, oldValue, null);
+            }
             return factories[type].createValue(target, pn, v);
         }
         // XXX Doesn't handle shorthands.
@@ -464,6 +488,14 @@ public class SVGAnimationEngine extends AnimationEngine {
         protected EventTarget getRootEventTarget() {
             return (EventTarget) document;
         }
+
+        /**
+         * Returns whether this timed element comes before the given timed
+         * element in document order.
+         */
+        public boolean isBefore(TimedElement other) {
+            return false;
+        }
     }
 
     /**
@@ -493,6 +525,7 @@ public class SVGAnimationEngine extends AnimationEngine {
                     (SVGAnimationElementBridge) bridges[i];
                 bridge.initializeTimedElement();
             }
+            started = true;
             tick(0);
             // animationThread = new AnimationThread();
             // animationThread.start();

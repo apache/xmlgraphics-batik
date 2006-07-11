@@ -66,6 +66,12 @@ public abstract class TimingSpecifier {
     }
 
     /**
+     * Returns whether this timing specifier is event-like (i.e., if it is
+     * an eventbase, accesskey or a repeat timing specifier).
+     */
+    public abstract boolean isEventCondition();
+
+    /**
      * Called by the timebase element when it creates a new Interval.
      * This should be overridden in descendant classes that generate
      * time instances based on the interval of a timebase element.

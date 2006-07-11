@@ -655,6 +655,19 @@ public abstract class TimedElement {
     }
 
     /**
+     * Returns whether the end timing specifier list contains any eventbase,
+     * accesskey or repeat timing specifiers.
+     */
+    protected boolean endHasEventConditions() {
+        for (int i = 0; i < endTimes.length; i++) {
+            if (endTimes[i].isEventCondition()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Computes an interval from the begin and end instance time lists.
      * @param first indicates whether this is the first interval to compute
      * @param fixedBegin if true, specifies that the value given for
@@ -717,6 +730,10 @@ public abstract class TimedElement {
                                 && tempEnd == currentInterval.getEnd()) {
                         for (;;) {
                             if (!endIterator.hasNext()) {
+                                if (endHasEventConditions()) {
+                                    tempEnd = UNRESOLVED;
+                                    break;
+                                }
                                 return null;
                             }
                             endInstanceTime = (InstanceTime) endIterator.next();
@@ -732,6 +749,10 @@ public abstract class TimedElement {
                             break;
                         }
                         if (!endIterator.hasNext()) {
+                            if (endHasEventConditions()) {
+                                tempEnd = UNRESOLVED;
+                                break;
+                            }
                             return null;
                         }
                         endInstanceTime = (InstanceTime) endIterator.next();
@@ -743,7 +764,8 @@ public abstract class TimedElement {
                     tempEnd = tempBegin + ad;
                 }
             }
-            if (!first || tempEnd > 0) {
+            if (!first || tempEnd > 0 || tempBegin == 0 && tempEnd == 0
+                    || isUnresolved(tempEnd)) {
                 if (restartMode == RESTART_ALWAYS && beginIterator.hasNext()) {
                     InstanceTime nextBeginInstance =
                         (InstanceTime) beginIterator.next();
@@ -1157,6 +1179,12 @@ public abstract class TimedElement {
      * access key events.
      */
     protected abstract EventTarget getRootEventTarget();
+
+    /**
+     * Returns whether this timed element comes before the given timed element
+     * in document order.
+     */
+    public abstract boolean isBefore(TimedElement other);
 
     /**
      * Returns a string representation of the given time value.
