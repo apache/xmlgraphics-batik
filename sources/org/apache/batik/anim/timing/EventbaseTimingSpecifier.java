@@ -118,21 +118,10 @@ public class EventbaseTimingSpecifier
     // EventListener /////////////////////////////////////////////////////////
 
     /**
-     * Handles an event fired on the eventbase element.  For event sensitivity,
-     * the event only resolves an instance time if:
-     * <ul>
-     *   <li>the element is inactive and this is a begin time</li>
-     *   <li>the element is active, restart="always" and this is a begin time,
-     *     or</li>
-     *   <li>the element is active, restart="never|whenNotActive" and this is
-     *     an end time.</li>
-     * </ul>
+     * Handles an event fired on the eventbase element.
      */
     public void handleEvent(Event e) {
-        if (!owner.isActive && isBegin || owner.isActive
-                && (owner.restartMode == TimedElement.RESTART_ALWAYS && isBegin
-                    || owner.restartMode != TimedElement.RESTART_ALWAYS
-                        && !isBegin)) {
+        if (checkEventSensitivity()) {
             long time = e.getTimeStamp() -
                 owner.getRoot().getDocumentBeginTime().getTimeInMillis();
             InstanceTime instance =

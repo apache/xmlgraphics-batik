@@ -110,8 +110,8 @@ public class SimpleAnimation extends AbstractAnimation {
                 } else if (by != null) {
                     values[1] = from.interpolate(null, null, 0f, by, 1); 
                 } else {
-                    // XXX Should disable animation instead of throwing.
-                    throw new RuntimeException("None of 'values', 'to' or 'by' were specified");
+                    throw timedElement.createException
+                        ("values.to.by.missing", new Object[] { null });
                 }
             } else {
                 if (to != null) {
@@ -125,8 +125,8 @@ public class SimpleAnimation extends AbstractAnimation {
                     values[0] = by.getZeroValue();
                     values[1] = by;
                 } else {
-                    // XXX Should disable animation instead of throwing.
-                    throw new RuntimeException("None of 'values', 'to' or 'by' were specified");
+                    throw timedElement.createException
+                        ("values.to.by.missing", new Object[] { null });
                 }
             }
         }
@@ -152,8 +152,10 @@ public class SimpleAnimation extends AbstractAnimation {
                 }
             }
             if (invalidKeyTimes) {
-                // XXX Should disable animation instead of throwing.
-                throw new RuntimeException("Invalid 'keyTimes' specified");
+                throw timedElement.createException
+                    ("attribute.malformed",
+                     new Object[] { null,
+                                    SMILConstants.SMIL_KEY_TIMES_ATTRIBUTE });
             }
         } else {
             if (calcMode == CALC_MODE_LINEAR || calcMode == CALC_MODE_SPLINE) {
@@ -174,8 +176,10 @@ public class SimpleAnimation extends AbstractAnimation {
         if (calcMode == CALC_MODE_SPLINE
                 && (keySplines == null
                     || keySplines.length != (keyTimes.length - 1) * 4)) {
-            // XXX Should disable animation instead of throwing.
-            throw new RuntimeException("Invalid 'keySplines' specified");
+            throw timedElement.createException
+                ("attribute.malformed",
+                 new Object[] { null,
+                                SMILConstants.SMIL_KEY_SPLINES_ATTRIBUTE });
         }
 
         this.calcMode = calcMode;
@@ -239,7 +243,8 @@ public class SimpleAnimation extends AbstractAnimation {
                     nextValue = values[keyTimeIndex + 1];
                     if (calcMode == CALC_MODE_SPLINE) {
                         if (unitTime != 0) {
-                            // XXX This could be done better.
+                            // XXX This could be done better, e.g. with
+                            //     Newton-Raphson.
                             Cubic c = new Cubic(0, 0,
                                                 keySplines[keyTimeIndex * 4],
                                                 keySplines[keyTimeIndex * 4 + 1],

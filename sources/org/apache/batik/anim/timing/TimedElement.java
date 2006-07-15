@@ -21,12 +21,19 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Locale;
+import java.util.MissingResourceException;
 import java.util.Vector;
 
+import org.apache.batik.anim.AnimationException;
+import org.apache.batik.anim.SMILConstants;
 import org.apache.batik.parser.ClockHandler;
 import org.apache.batik.parser.ClockParser;
 import org.apache.batik.parser.ParseException;
 
+import org.apache.batik.i18n.LocalizableSupport;
+
+import org.w3c.dom.Element;
 import org.w3c.dom.events.EventTarget;
 
 /**
@@ -38,7 +45,7 @@ import org.w3c.dom.events.EventTarget;
  * @author <a href="mailto:cam%40mcc%2eid%2eau">Cameron McCormack</a>
  * @version $Id$
  */
-public abstract class TimedElement {
+public abstract class TimedElement implements SMILConstants {
 
     // Constants for fill mode.
     public static final int FILL_REMOVE = 0;
@@ -199,6 +206,11 @@ public abstract class TimedElement {
     protected boolean shouldUpdateCurrentInterval = true;
 
     /**
+     * Whether this timed element has parsed its timing attributes yet.
+     */
+    protected boolean hasParsed;
+
+    /**
      * Creates a new TimedElement.
      */
     public TimedElement() {
@@ -282,9 +294,8 @@ public abstract class TimedElement {
                 break;
             }
         }
+        // The instance time wasn't found, shouldn't get here.
         shouldUpdateCurrentInterval = true;
-        // XXX Shouldn't get here.
-        System.err.println("Instance time not found!");
         } finally { Trace.exit(); }
     }
 
@@ -525,7 +536,7 @@ public abstract class TimedElement {
                 }
                 isActive = true;
                 lastRepeatTime = begin;
-                fireTimeEvent("beginEvent", currentInterval.getBegin(), 0);
+                fireTimeEvent(SMIL_BEGIN_EVENT_NAME, currentInterval.getBegin(), 0);
             }
         }
         boolean wasActive = isActive;
@@ -551,7 +562,7 @@ public abstract class TimedElement {
                 previousIntervals.add(currentInterval);
                 isActive = false;
                 isFrozen = false;
-                fireTimeEvent("endEvent", currentInterval.getEnd(), 0);
+                fireTimeEvent(SMIL_END_EVENT_NAME, currentInterval.getEnd(), 0);
             }
             boolean first =
                 currentInterval == null && previousIntervals.isEmpty();
@@ -575,7 +586,7 @@ public abstract class TimedElement {
                             }
                             isActive = true;
                             isFrozen = false;
-                            fireTimeEvent("beginEvent", beginEventTime, 0);
+                            fireTimeEvent(SMIL_BEGIN_EVENT_NAME, beginEventTime, 0);
                             float d = getSimpleDur();
                             while (time - lastRepeatTime >= d) {
                                 lastRepeatTime += d;
@@ -826,24 +837,27 @@ public abstract class TimedElement {
     public void parseAttributes(String begin, String dur, String end,
                                 String min, String max, String repeatCount,
                                 String repeatDur, String fill,
-                                String restart) throws ParseException {
-        parseBegin(begin);
-        parseDur(dur);
-        parseEnd(end);
-        parseMin(min);
-        parseMax(max);
-        parseRepeatCount(repeatCount);
-        parseRepeatDur(repeatDur);
-        parseFill(fill);
-        parseRestart(restart);
+                                String restart) {
+        if (!hasParsed) {
+            parseBegin(begin);
+            parseDur(dur);
+            parseEnd(end);
+            parseMin(min);
+            parseMax(max);
+            parseRepeatCount(repeatCount);
+            parseRepeatDur(repeatDur);
+            parseFill(fill);
+            parseRestart(restart);
+            hasParsed = true;
+        }
     }
 
     /**
      * Parses a new 'begin' attribute.
      */
-    public void parseBegin(String begin) throws ParseException {
+    protected void parseBegin(String begin) {
         if (begin.length() == 0) {
-            begin = "0";
+            begin = SMIL_BEGIN_DEFAULT_VALUE;
         }
         beginTimes = TimingSpecifierListProducer.parseTimingSpecifierList
             (TimedElement.this, true, begin,
@@ -853,16 +867,22 @@ public abstract class TimedElement {
     /**
      * Parses a new 'dur' attribute.
      */
-    public void parseDur(String dur) throws ParseException {
-        if (dur.equals("media")) {
+    protected void parseDur(String dur) {
+        if (dur.equals(SMIL_MEDIA_VALUE)) {
             durMedia = true;
             simpleDur = UNRESOLVED;
         } else {
             durMedia = false;
-            if (dur.length() == 0 || dur.equals("indefinite")) {
+            if (dur.length() == 0 || dur.equals(SMIL_INDEFINITE_VALUE)) {
                 simpleDur = INDEFINITE;
             } else {
-                simpleDur = parseClockValue(dur);
+                try {
+                    simpleDur = parseClockValue(dur);
+                } catch (ParseException e) {
+                    throw createException
+                        ("attribute.malformed",
+                         new Object[] { null, SMIL_DUR_ATTRIBUTE });
+                }
                 if (simpleDur < 0) {
                     simpleDur = INDEFINITE;
                 }
@@ -890,7 +910,7 @@ public abstract class TimedElement {
     /**
      * Parses a new 'end' attribute.
      */
-    public void parseEnd(String end) throws ParseException {
+    protected void parseEnd(String end) {
         endTimes = TimingSpecifierListProducer.parseTimingSpecifierList
             (TimedElement.this, false, end,
              root.useSVG11AccessKeys, root.useSVG12AccessKeys);
@@ -899,8 +919,8 @@ public abstract class TimedElement {
     /**
      * Parses a new 'min' attribute.
      */
-    public void parseMin(String min) throws ParseException {
-        if (min.equals("media")) {
+    protected void parseMin(String min) {
+        if (min.equals(SMIL_MEDIA_VALUE)) {
             minMedia = true;
         } else {
             minMedia = false;
@@ -918,12 +938,12 @@ public abstract class TimedElement {
     /**
      * Parses a new 'max' attribute.
      */
-    public void parseMax(String max) throws ParseException {
-        if (max.equals("media")) {
+    protected void parseMax(String max) {
+        if (max.equals(SMIL_MEDIA_VALUE)) {
             maxMedia = true;
         } else {
             maxMedia = false;
-            if (max.length() == 0 || max.equals("indefinite")) {
+            if (max.length() == 0 || max.equals(SMIL_INDEFINITE_VALUE)) {
                 this.max = INDEFINITE;
             } else {
                 this.max = parseClockValue(max);
@@ -937,10 +957,10 @@ public abstract class TimedElement {
     /**
      * Parses a new 'repeatCount' attribute.
      */
-    public void parseRepeatCount(String repeatCount) throws ParseException {
+    protected void parseRepeatCount(String repeatCount) {
         if (repeatCount.length() == 0) {
             this.repeatCount = UNRESOLVED;
-        } else if (repeatCount.equals("indefinite")) {
+        } else if (repeatCount.equals(SMIL_INDEFINITE_VALUE)) {
             this.repeatCount = INDEFINITE;
         } else {
             try {
@@ -949,55 +969,61 @@ public abstract class TimedElement {
                     return;
                 }
             } catch (NumberFormatException ex) {
+                throw createException
+                    ("attribute.malformed",
+                     new Object[] { null, SMIL_REPEAT_COUNT_ATTRIBUTE });
             }
-            // XXX Should disable animation instead of throwing.
-            throw new RuntimeException
-                ("Invalid value for 'repeatCount': \"" + repeatCount + "\"");
         }
     }
 
     /**
      * Parses a new 'repeatDur' attribute.
      */
-    public void parseRepeatDur(String repeatDur) throws ParseException {
-        if (repeatDur.length() == 0) {
-            this.repeatDur = UNRESOLVED;
-        } else if (repeatDur.equals("indefinite")) {
-            this.repeatDur = INDEFINITE;
-        } else {
-            this.repeatDur = parseClockValue(repeatDur);
+    protected void parseRepeatDur(String repeatDur) {
+        try {
+            if (repeatDur.length() == 0) {
+                this.repeatDur = UNRESOLVED;
+            } else if (repeatDur.equals(SMIL_INDEFINITE_VALUE)) {
+                this.repeatDur = INDEFINITE;
+            } else {
+                this.repeatDur = parseClockValue(repeatDur);
+            }
+        } catch (ParseException ex) {
+            throw createException
+                ("attribute.malformed",
+                 new Object[] { null, SMIL_REPEAT_DUR_ATTRIBUTE });
         }
     }
 
     /**
      * Parses a new 'fill' attribute.
      */
-    public void parseFill(String fill) throws ParseException {
-        if (fill.length() == 0 || fill.equals("remove")) {
+    protected void parseFill(String fill) {
+        if (fill.length() == 0 || fill.equals(SMIL_REMOVE_VALUE)) {
             fillMode = FILL_REMOVE;
-        } else if (fill.equals("freeze")) {
+        } else if (fill.equals(SMIL_FREEZE_VALUE)) {
             fillMode = FILL_FREEZE;
         } else {
-            // XXX Should disable animation instead of throwing.
-            throw new RuntimeException
-                ("Invalid value for 'fill': \"" + fill + "\"");
+            throw createException
+                ("attribute.malformed",
+                 new Object[] { null, SMIL_FILL_ATTRIBUTE });
         }
     }
 
     /**
      * Parses a new 'restart' attribute.
      */
-    public void parseRestart(String restart) throws ParseException {
-        if (restart.length() == 0 || restart.equals("always")) {
+    protected void parseRestart(String restart) {
+        if (restart.length() == 0 || restart.equals(SMIL_ALWAYS_VALUE)) {
             restartMode = RESTART_ALWAYS;
-        } else if (restart.equals("whenNotActive")) {
+        } else if (restart.equals(SMIL_WHEN_NOT_ACTIVE_VALUE)) {
             restartMode = RESTART_WHEN_NOT_ACTIVE;
-        } else if (restart.equals("never")) {
+        } else if (restart.equals(SMIL_NEVER_VALUE)) {
             restartMode = RESTART_NEVER;
         } else {
-            // XXX Should disable animation instead of throwing.
-            throw new RuntimeException
-                ("Invalid value for 'restart': \"" + restart + "\"");
+            throw createException
+                ("attribute.malformed",
+                 new Object[] { null, SMIL_RESTART_ATTRIBUTE });
         }
     }
 
@@ -1181,10 +1207,62 @@ public abstract class TimedElement {
     protected abstract EventTarget getRootEventTarget();
 
     /**
+     * Returns the DOM element that corresponds to this timed element, if
+     * such a DOM element exists.
+     */
+    public abstract Element getElement();
+
+    /**
      * Returns whether this timed element comes before the given timed element
      * in document order.
      */
     public abstract boolean isBefore(TimedElement other);
+
+    /**
+     * Creates and returns a new {@link AnimationException}.
+     */
+    public AnimationException createException(String code, Object[] params) {
+        Element e = getElement();
+        if (e != null) {
+            params[0] = e.getNodeName();
+        }
+        return new AnimationException(this, code, params);
+    }
+
+    /**
+     * The error messages bundle class name.
+     */
+    protected final static String RESOURCES =
+        "org.apache.batik.anim.resources.Messages";
+
+    /**
+     * The localizable support for the error messages.
+     */
+    protected static LocalizableSupport localizableSupport =
+        new LocalizableSupport(RESOURCES, TimedElement.class.getClassLoader());
+
+    /**
+     * Implements {@link org.apache.batik.i18n.Localizable#setLocale(Locale)}.
+     */
+    public static void setLocale(Locale l) {
+        localizableSupport.setLocale(l);
+    }
+
+    /**
+     * Implements {@link org.apache.batik.i18n.Localizable#getLocale()}.
+     */
+    public static Locale getLocale() {
+        return localizableSupport.getLocale();
+    }
+
+    /**
+     * Implements {@link
+     * org.apache.batik.i18n.Localizable#formatMessage(String,Object[])}.
+     */
+    public static String formatMessage(String key, Object[] args)
+        throws MissingResourceException {
+        return localizableSupport.formatMessage(key, args);
+    }
 
     /**
      * Returns a string representation of the given time value.

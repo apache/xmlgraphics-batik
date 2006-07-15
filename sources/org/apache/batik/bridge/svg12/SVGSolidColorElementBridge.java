@@ -122,7 +122,7 @@ public class SVGSolidColorElementBridge extends AnimatableGenericSVGBridge
             // check if there is circular dependencies
             if (refs.containsKey(purl)) {
                 throw new BridgeException
-                    (paintElement,
+                    (ctx, paintElement,
                      ErrorConstants.ERR_XLINK_HREF_CIRCULAR_DEPENDENCIES,
                      new Object[] {uri});
             }
@@ -172,7 +172,7 @@ public class SVGSolidColorElementBridge extends AnimatableGenericSVGBridge
             // check if there is circular dependencies
             if (refs.containsKey(purl)) {
                 throw new BridgeException
-                    (paintElement,
+                    (ctx, paintElement,
                      ErrorConstants.ERR_XLINK_HREF_CIRCULAR_DEPENDENCIES,
                      new Object[] {uri});
             }

@@ -191,7 +191,8 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
         String s = e.getAttributeNS(null, SVG_TRANSFORM_ATTRIBUTE);
         if (s.length() != 0) {
             cgn.setTransform
-                (SVGUtilities.convertTransform(e, SVG_TRANSFORM_ATTRIBUTE, s));
+                (SVGUtilities.convertTransform(e, SVG_TRANSFORM_ATTRIBUTE, s,
+                                               ctx));
         }
         // 'visibility'
         cgn.setVisible(CSSUtilities.convertVisibility(e));

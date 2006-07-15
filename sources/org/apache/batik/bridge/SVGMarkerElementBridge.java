@@ -131,7 +131,7 @@ public class SVGMarkerElementBridge extends AnimatableGenericSVGBridge
                 orient = SVGUtilities.convertSVGNumber(s);
             } catch (NumberFormatException ex) {
                 throw new BridgeException
-                    (markerElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                    (ctx, markerElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
                      new Object [] {SVG_ORIENT_ATTRIBUTE, s});
             }
         }
@@ -148,7 +148,7 @@ public class SVGMarkerElementBridge extends AnimatableGenericSVGBridge
             unitsType = SVGUtilities.STROKE_WIDTH;
         } else {
             unitsType = SVGUtilities.parseMarkerCoordinateSystem
-                (markerElement, SVG_MARKER_UNITS_ATTRIBUTE, s);
+                (markerElement, SVG_MARKER_UNITS_ATTRIBUTE, s, ctx);
         }
 
         //
@@ -169,7 +169,7 @@ public class SVGMarkerElementBridge extends AnimatableGenericSVGBridge
         AffineTransform preserveAspectRatioTransform
             = ViewBox.getPreserveAspectRatioTransform(markerElement,
                                                       markerWidth,
-                                                      markerHeight);
+                                                      markerHeight, ctx);
         if (preserveAspectRatioTransform == null) {
             // disable the rendering of the element
             return null;

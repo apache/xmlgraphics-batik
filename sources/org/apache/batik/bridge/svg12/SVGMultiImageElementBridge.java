@@ -122,10 +122,12 @@ public class SVGMultiImageElementBridge extends SVGImageElementBridge {
         // 'transform'
         AffineTransform at = null;
         String s = e.getAttribute(SVG_TRANSFORM_ATTRIBUTE);
-        if (s.length() != 0)
-            at = SVGUtilities.convertTransform(e, SVG_TRANSFORM_ATTRIBUTE, s);
-        else
+        if (s.length() != 0) {
+            at = SVGUtilities.convertTransform(e, SVG_TRANSFORM_ATTRIBUTE, s,
+                                               ctx);
+        } else {
             at = new AffineTransform();
+        }
 
         at.translate(b.getX(), b.getY());
         imgNode.setTransform(at);
@@ -278,7 +280,7 @@ public class SVGMultiImageElementBridge extends SVGImageElementBridge {
                               Rectangle2D bounds) {
         String uriStr = XLinkSupport.getXLinkHref(e);
         if (uriStr.length() == 0) {
-            throw new BridgeException(e, ERR_ATTRIBUTE_MISSING,
+            throw new BridgeException(ctx, e, ERR_ATTRIBUTE_MISSING,
                                       new Object[] {"xlink:href"});
         }
         String baseURI = AbstractNode.getBaseURI(e);
@@ -331,8 +333,8 @@ public class SVGMultiImageElementBridge extends SVGImageElementBridge {
         s = e.getAttribute(attr);
         if (s.length() == 0) return null;
 
-        Float [] vals = SVGUtilities.convertSVGNumberOptionalNumber
-            (e, attr, s);
+        Float[] vals = SVGUtilities.convertSVGNumberOptionalNumber
+            (e, attr, s, ctx);
 
         if (vals[0] == null) return null;
 

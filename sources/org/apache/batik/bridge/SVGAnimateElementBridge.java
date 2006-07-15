@@ -21,6 +21,7 @@ import java.util.ArrayList;
 
 import org.apache.batik.anim.AbstractAnimation;
 import org.apache.batik.anim.AnimationTarget;
+import org.apache.batik.anim.SMILConstants;
 import org.apache.batik.anim.SimpleAnimation;
 import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.util.SVGConstants;
@@ -78,17 +79,20 @@ public class SVGAnimateElementBridge extends SVGAnimationElementBridge {
             element.getAttributeNS(null, SVGConstants.SVG_CALC_MODE_ATTRIBUTE);
         if (calcModeString.length() == 0) {
             return getDefaultCalcMode();
-        } else if (calcModeString.equals("linear")) {
+        } else if (calcModeString.equals(SMILConstants.SMIL_LINEAR_VALUE)) {
             return SimpleAnimation.CALC_MODE_LINEAR;
-        } else if (calcModeString.equals("discrete")) {
+        } else if (calcModeString.equals(SMILConstants.SMIL_DISCRETE_VALUE)) {
             return SimpleAnimation.CALC_MODE_DISCRETE;
-        } else if (calcModeString.equals("paced")) {
+        } else if (calcModeString.equals(SMILConstants.SMIL_PACED_VALUE)) {
             return SimpleAnimation.CALC_MODE_PACED;
-        } else if (calcModeString.equals("spline")) {
+        } else if (calcModeString.equals
+                (SMILConstants.SMIL_CALC_MODE_ATTRIBUTE)) {
             return SimpleAnimation.CALC_MODE_SPLINE;
         }
-        // XXX
-        throw new RuntimeException("Invalid value for 'calcMode' attribute: \"" + calcModeString + "\"");
+        throw new BridgeException
+            (ctx, element, ErrorConstants.ERR_ATTRIBUTE_VALUE_MALFORMED,
+             new Object[] { SVGConstants.SVG_CALC_MODE_ATTRIBUTE,
+                            calcModeString });
     }
 
     /**
@@ -97,13 +101,16 @@ public class SVGAnimateElementBridge extends SVGAnimationElementBridge {
     protected boolean parseAdditive() {
         String additiveString =
             element.getAttributeNS(null, SVGConstants.SVG_ADDITIVE_ATTRIBUTE);
-        if (additiveString.length() == 0 || additiveString.equals("replace")) {
+        if (additiveString.length() == 0 ||
+                additiveString.equals(SMILConstants.SMIL_REPLACE_VALUE)) {
             return false;
-        } else if (additiveString.equals("sum")) {
+        } else if (additiveString.equals(SMILConstants.SMIL_SUM_VALUE)) {
             return true;
         }
-        // XXX
-        throw new RuntimeException("Invalid value for 'additive' attribute: \"" + additiveString + "\"");
+        throw new BridgeException
+            (ctx, element, ErrorConstants.ERR_ATTRIBUTE_VALUE_MALFORMED,
+             new Object[] { SVGConstants.SVG_ADDITIVE_ATTRIBUTE,
+                            additiveString });
     }
     
     /**
@@ -112,13 +119,16 @@ public class SVGAnimateElementBridge extends SVGAnimationElementBridge {
     protected boolean parseAccumulate() {
         String accumulateString =
             element.getAttributeNS(null, SVGConstants.SVG_ACCUMULATE_ATTRIBUTE);
-        if (accumulateString.length() == 0 || accumulateString.equals("none")) {
+        if (accumulateString.length() == 0 ||
+                accumulateString.equals(SMILConstants.SMIL_NONE_VALUE)) {
             return false;
-        } else if (accumulateString.equals("sum")) {
+        } else if (accumulateString.equals(SMILConstants.SMIL_SUM_VALUE)) {
             return true;
         }
-        // XXX
-        throw new RuntimeException("Invalid value for 'accumulate' attribute: \"" + accumulateString + "\"");
+        throw new BridgeException
+            (ctx, element, ErrorConstants.ERR_ATTRIBUTE_VALUE_MALFORMED,
+             new Object[] { SVGConstants.SVG_ACCUMULATE_ATTRIBUTE,
+                            accumulateString });
     }
 
     /**
@@ -152,8 +162,8 @@ outer:  while (i < len) {
             }
             end = i++;
             AnimatableValue val = eng.parseAnimatableValue
-                (animationTarget, attributeNamespaceURI, attributeLocalName,
-                 isCSS, valuesString.substring(start, end));
+                (element, animationTarget, attributeNamespaceURI,
+                 attributeLocalName, isCSS, valuesString.substring(start, end));
             values.add(val);
         }
         AnimatableValue[] ret = new AnimatableValue[values.size()];
@@ -197,8 +207,10 @@ outer:  while (i < len) {
                     Float.parseFloat(keyTimesString.substring(start, end));
                 keyTimes.add(new Float(keyTime));
             } catch (NumberFormatException nfe) {
-                // XXX
-                throw new RuntimeException("Invalid value for 'keyTimes' attribute: \"" + keyTimesString + "\"");
+                throw new BridgeException
+                    (ctx, element, ErrorConstants.ERR_ATTRIBUTE_VALUE_MALFORMED,
+                     new Object[] { SVGConstants.SVG_KEY_TIMES_ATTRIBUTE,
+                                    keyTimesString });
             }
         }
         len = keyTimes.size();

@@ -84,7 +84,7 @@ public class SVGEllipseElementBridge extends SVGShapeElementBridge {
                                                    rx * 2, ry * 2));
         } catch (LiveAttributeException ex) {
             throw new BridgeException
-                (ex.getElement(),
+                (ctx, ex.getElement(),
                  ex.isMissing() ? ERR_ATTRIBUTE_MISSING
                                 : ERR_ATTRIBUTE_VALUE_MALFORMED,
                  new Object[] { ex.getAttributeName(), ex.getValue() });

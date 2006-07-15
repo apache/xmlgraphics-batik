@@ -46,15 +46,27 @@ public class UserAgentAdapter implements UserAgent {
     protected Set FEATURES   = new HashSet();
     protected Set extensions = new HashSet();
 
-    public UserAgentAdapter() {
+    /**
+     * The BridgeContext to use for error information.
+     */
+    protected BridgeContext ctx;
+
+    /**
+     * Sets the BridgeContext to be used for error information.
+     */
+    public void setBridgeContext(BridgeContext ctx) {
+        this.ctx = ctx;
     }
 
+    /**
+     * Adds the standard SVG feature strings to the set of features supported
+     * by this user agent.
+     */
     public void addStdFeatures() {
         FEATURES.add(SVGConstants.SVG_ORG_W3C_SVG_FEATURE);
         FEATURES.add(SVGConstants.SVG_ORG_W3C_SVG_LANG_FEATURE);
         FEATURES.add(SVGConstants.SVG_ORG_W3C_SVG_STATIC_FEATURE);
     }
-
 
     /**
      * Returns the default size of this user agent (400x400).
@@ -426,7 +438,7 @@ public class UserAgentAdapter implements UserAgent {
     /**
      * This Implementation simply throws a BridgeException.
      *
-     * @param e   The <image> element that can't be loaded.
+     * @param e   The &lt;image> element that can't be loaded.
      * @param url The resolved url that can't be loaded.
      * @param message As best as can be determined the reason it can't be
      *                loaded (not available, corrupt, unknown format,...).
@@ -434,8 +446,7 @@ public class UserAgentAdapter implements UserAgent {
     public SVGDocument getBrokenLinkDocument(Element e, 
                                              String url, 
                                              String message) {
-        throw new BridgeException(e, ErrorConstants.ERR_URI_IMAGE_BROKEN,
+        throw new BridgeException(ctx, e, ErrorConstants.ERR_URI_IMAGE_BROKEN,
                                   new Object[] {url, message });
     }
 }
-

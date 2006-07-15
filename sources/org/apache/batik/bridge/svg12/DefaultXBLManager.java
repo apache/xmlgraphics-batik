@@ -291,8 +291,9 @@ public class DefaultXBLManager implements XBLManager, XBLConstants {
         Element e = ctx.getReferencedElement(defRef, ref);
         if (!XBL_NAMESPACE_URI.equals(e.getNamespaceURI())
                 || !XBL_DEFINITION_TAG.equals(e.getLocalName())) {
-            throw new BridgeException(defRef, ErrorConstants.ERR_URI_BAD_TARGET,
-                                      new Object[] { ref });
+            throw new BridgeException
+                (ctx, defRef, ErrorConstants.ERR_URI_BAD_TARGET,
+                 new Object[] { ref });
         }
         ImportRecord ir = new ImportRecord(defRef, e);
         imports.put(defRef, ir);
@@ -333,8 +334,9 @@ public class DefaultXBLManager implements XBLManager, XBLConstants {
         if (n.getNodeType() == Node.ELEMENT_NODE
                 && !(XBL_NAMESPACE_URI.equals(n.getNamespaceURI())
                         && XBL_XBL_TAG.equals(n.getLocalName()))) {
-            throw new BridgeException(imp, ErrorConstants.ERR_URI_BAD_TARGET,
-                                      new Object[] { n });
+            throw new BridgeException
+                (ctx, imp, ErrorConstants.ERR_URI_BAD_TARGET,
+                 new Object[] { n });
         }
         ImportRecord ir = new ImportRecord(imp, n);
         imports.put(imp, ir);

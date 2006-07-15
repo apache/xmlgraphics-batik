@@ -39,7 +39,8 @@ public abstract class TimeContainer extends TimedElement {
     public void addChild(TimedElement e) {
         children.add(e);
         e.parent = this;
-        setRoot(e, this.root);
+        setRoot(e, root);
+        root.fireElementAdded(e);
     }
 
     /**
@@ -64,6 +65,7 @@ public abstract class TimeContainer extends TimedElement {
         children.remove(e);
         e.parent = null;
         setRoot(e, null);
+        root.fireElementRemoved(e);
     }
 
     /**

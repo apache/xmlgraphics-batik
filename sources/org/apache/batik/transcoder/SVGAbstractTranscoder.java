@@ -248,12 +248,12 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
                 (null, SVGConstants.SVG_VIEW_BOX_ATTRIBUTE);
 
             if ((ref != null) && (ref.length() != 0)) {
-                Px = ViewBox.getViewTransform(ref, root, width, height);
+                Px = ViewBox.getViewTransform(ref, root, width, height, ctx);
             } else if ((viewBox != null) && (viewBox.length() != 0)) {
                 String aspectRatio = root.getAttributeNS
                     (null, SVGConstants.SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE);
                 Px = ViewBox.getPreserveAspectRatioTransform
-                    (root, viewBox, aspectRatio, width, height);
+                    (root, viewBox, aspectRatio, width, height, ctx);
             } else {
                 // no viewBox has been specified, create a scale transform
                 float xscale, yscale;

@@ -56,17 +56,19 @@ public abstract class ViewBox implements SVGConstants, ErrorConstants {
      * @param e the element interested in its view transform
      * @param w the width of the effective viewport
      * @param h The height of the effective viewport
+     * @param ctx The BridgeContext to use for error information
      * @exception BridgeException if an error occured while computing the
      *            preserveAspectRatio transform
      */
     public static AffineTransform getViewTransform(String ref,
                                                    Element e,
                                                    float w,
-                                                   float h) {
+                                                   float h,
+                                                   BridgeContext ctx) {
 
         // no reference has been specified, no extra viewBox is defined
         if (ref == null || ref.length() == 0) {
-            return getPreserveAspectRatioTransform(e, w, h);
+            return getPreserveAspectRatioTransform(e, w, h, ctx);
         }
 
         ViewHandler vh = new ViewHandler();
@@ -80,7 +82,7 @@ public abstract class ViewBox implements SVGConstants, ErrorConstants {
             attrDefElement = document.getElementById(vh.id);
         }
         if (attrDefElement == null) {
-            throw new BridgeException(e, ERR_URI_MALFORMED,
+            throw new BridgeException(ctx, e, ERR_URI_MALFORMED,
                                       new Object[] {ref});
         }
         // if the referenced element is not a view, the attribute
@@ -97,7 +99,7 @@ public abstract class ViewBox implements SVGConstants, ErrorConstants {
         } else {
             String viewBoxStr = attrDefElement.getAttributeNS
                 (null, SVG_VIEW_BOX_ATTRIBUTE);
-            vb = parseViewBoxAttribute(attrDefElement, viewBoxStr);
+            vb = parseViewBoxAttribute(attrDefElement, viewBoxStr, ctx);
         }
 
         // 'preserveAspectRatio'
@@ -116,7 +118,7 @@ public abstract class ViewBox implements SVGConstants, ErrorConstants {
                 pp.parse(aspectRatio);
             } catch (ParseException ex) {
                 throw new BridgeException
-                    (attrDefElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                    (ctx, attrDefElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
                      new Object[] {SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE,
                                        aspectRatio, ex});
             }
@@ -158,17 +160,18 @@ public abstract class ViewBox implements SVGConstants, ErrorConstants {
      * @param e the element with a viewbox
      * @param w the width of the effective viewport
      * @param h The height of the effective viewport 
+     * @param ctx The BridgeContext to use for error information
      */
-    public static AffineTransform getPreserveAspectRatioTransform(Element e,
-                                                                  float w,
-                                                                  float h) {
+    public static AffineTransform getPreserveAspectRatioTransform
+            (Element e, float w, float h, BridgeContext ctx) {
         String viewBox
             = e.getAttributeNS(null, SVG_VIEW_BOX_ATTRIBUTE);
 
         String aspectRatio
             = e.getAttributeNS(null, SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE);
 
-        return getPreserveAspectRatioTransform(e, viewBox, aspectRatio, w, h);
+        return getPreserveAspectRatioTransform(e, viewBox, aspectRatio, w, h,
+                                               ctx);
     }
 
     /**
@@ -179,19 +182,21 @@ public abstract class ViewBox implements SVGConstants, ErrorConstants {
      * @param viewBox the viewBox definition
      * @param w the width of the effective viewport
      * @param h The height of the effective viewport 
+     * @param ctx The BridgeContext to use for error information
      */
     public static
         AffineTransform getPreserveAspectRatioTransform(Element e,
                                                         String viewBox,
                                                         String aspectRatio,
                                                         float w,
-                                                        float h) {
+                                                        float h,
+                                                        BridgeContext ctx) {
 
         // no viewBox specified
         if (viewBox.length() == 0) {
             return new AffineTransform();
         }
-        float[] vb = parseViewBoxAttribute(e, viewBox);
+        float[] vb = parseViewBoxAttribute(e, viewBox, ctx);
 
         // 'preserveAspectRatio' attribute
         PreserveAspectRatioParser p = new PreserveAspectRatioParser();
@@ -201,7 +206,7 @@ public abstract class ViewBox implements SVGConstants, ErrorConstants {
             p.parse(aspectRatio);
         } catch (ParseException ex) {
             throw new BridgeException
-                (e, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                (ctx, e, ERR_ATTRIBUTE_VALUE_MALFORMED,
                  new Object[] {SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE,
                                    aspectRatio, ex});
         }
@@ -217,12 +222,14 @@ public abstract class ViewBox implements SVGConstants, ErrorConstants {
      * @param vb the viewBox definition as float
      * @param w the width of the effective viewport
      * @param h The height of the effective viewport 
+     * @param ctx The BridgeContext to use for error information
      */
     public static
         AffineTransform getPreserveAspectRatioTransform(Element e,
 							float[] vb,
 							float w,
-							float h) {
+							float h,
+                                                        BridgeContext ctx) {
 
         String aspectRatio
             = e.getAttributeNS(null, SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE);
@@ -235,7 +242,7 @@ public abstract class ViewBox implements SVGConstants, ErrorConstants {
             p.parse(aspectRatio);
         } catch (ParseException ex) {
             throw new BridgeException
-                (e, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                (ctx, e, ERR_ATTRIBUTE_VALUE_MALFORMED,
                  new Object[] {SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE,
                                    aspectRatio, ex});
         }
@@ -252,10 +259,11 @@ public abstract class ViewBox implements SVGConstants, ErrorConstants {
      * @param w the width of the effective viewport
      * @param h The height of the effective viewport 
      * @param aPAR The animated preserveAspectRatio value
+     * @param ctx The BridgeContext to use for error information
      */
     public static AffineTransform getPreserveAspectRatioTransform
             (Element e, float[] vb, float w, float h,
-             SVGAnimatedPreserveAspectRatio aPAR) {
+             SVGAnimatedPreserveAspectRatio aPAR, BridgeContext ctx) {
 
         // 'preserveAspectRatio' attribute
         try {
@@ -266,7 +274,7 @@ public abstract class ViewBox implements SVGConstants, ErrorConstants {
             return getPreserveAspectRatioTransform(vb, align, meet, w, h);
         } catch (LiveAttributeException ex) {
             throw new BridgeException
-                (ex.getElement(),
+                (ctx, ex.getElement(),
                  ex.isMissing() ? ERR_ATTRIBUTE_MISSING
                                 : ERR_ATTRIBUTE_VALUE_MALFORMED,
                  new Object[] { ex.getAttributeName(), ex.getValue() });
@@ -276,10 +284,13 @@ public abstract class ViewBox implements SVGConstants, ErrorConstants {
     /**
      * Parses a viewBox attribute.
      *
+     * @param e the element whose viewBox attribute value is being parsed
      * @param value the viewBox
+     * @param ctx the BridgeContext to use for error information
      * @return The 4 viewbox components or null.
      */
-    public static float[] parseViewBoxAttribute(Element e, String value) {
+    public static float[] parseViewBoxAttribute(Element e, String value,
+                                                BridgeContext ctx) {
         if (value.length() == 0) {
             return null;
         }
@@ -293,18 +304,18 @@ public abstract class ViewBox implements SVGConstants, ErrorConstants {
             }
         } catch (NumberFormatException ex) {
             throw new BridgeException
-                (e, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                (ctx, e, ERR_ATTRIBUTE_VALUE_MALFORMED,
                  new Object[] {SVG_VIEW_BOX_ATTRIBUTE, value, ex});
         }
         if (i != 4) {
             throw new BridgeException
-                (e, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                (ctx, e, ERR_ATTRIBUTE_VALUE_MALFORMED,
                  new Object[] {SVG_VIEW_BOX_ATTRIBUTE, value});
         }
         // A negative value for <width> or <height> is an error
         if (vb[2] < 0 || vb[3] < 0) {
             throw new BridgeException
-                (e, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                (ctx, e, ERR_ATTRIBUTE_VALUE_MALFORMED,
                  new Object[] {SVG_VIEW_BOX_ATTRIBUTE, value});
         }
         // A value of zero for width or height disables rendering of the element

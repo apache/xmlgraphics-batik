@@ -102,7 +102,7 @@ public class SVGMaskElementBridge extends AnimatableGenericSVGBridge
         s = maskElement.getAttributeNS(null, SVG_TRANSFORM_ATTRIBUTE);
         if (s.length() != 0) {
             Tx = SVGUtilities.convertTransform
-                (maskElement, SVG_TRANSFORM_ATTRIBUTE, s);
+                (maskElement, SVG_TRANSFORM_ATTRIBUTE, s, ctx);
         } else {
             Tx = new AffineTransform();
         }
@@ -114,7 +114,7 @@ public class SVGMaskElementBridge extends AnimatableGenericSVGBridge
             coordSystemType = SVGUtilities.USER_SPACE_ON_USE;
         } else {
             coordSystemType = SVGUtilities.parseCoordinateSystem
-                (maskElement, SVG_MASK_CONTENT_UNITS_ATTRIBUTE, s);
+                (maskElement, SVG_MASK_CONTENT_UNITS_ATTRIBUTE, s, ctx);
         }
 
         // additional transform to move to objectBoundingBox coordinate system

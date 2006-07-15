@@ -264,7 +264,7 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
             while (iter.hasNext()) {
                 if (purl.equals(iter.next())) 
                     throw new BridgeException
-                        (e, ERR_XLINK_HREF_CIRCULAR_DEPENDENCIES,
+                        (ctx, e, ERR_XLINK_HREF_CIRCULAR_DEPENDENCIES,
                          new Object[] {uriStr});
             }
 
@@ -274,10 +274,10 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
                 e = resolver.getElement(purl.toString(), e);
                 refs.add(purl);
             } catch(IOException ex) {
-                throw new BridgeException(e, ERR_URI_IO,
+                throw new BridgeException(ctx, e, ERR_URI_IO,
                                           new Object[] {uriStr});
             } catch(SecurityException ex) {
-                throw new BridgeException(e, ERR_URI_UNSECURE,
+                throw new BridgeException(ctx, e, ERR_URI_UNSECURE,
                                           new Object[] {uriStr});
             }
         }
@@ -394,7 +394,7 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
             unitsType = OBJECT_BOUNDING_BOX;
         } else {
             unitsType = parseCoordinateSystem
-                (maskElement, SVG_MASK_UNITS_ATTRIBUTE, units);
+                (maskElement, SVG_MASK_UNITS_ATTRIBUTE, units, ctx);
         }
 
         // resolve units in the (referenced) maskedElement's coordinate system
@@ -444,15 +444,17 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
         String wStr = getChainableAttributeNS
             (patternElement, null, SVG_WIDTH_ATTRIBUTE, ctx);
         if (wStr.length() == 0) {
-            throw new BridgeException(patternElement, ERR_ATTRIBUTE_MISSING,
-                                      new Object[] {SVG_WIDTH_ATTRIBUTE});
+            throw new BridgeException
+                (ctx, patternElement, ERR_ATTRIBUTE_MISSING,
+                 new Object[] {SVG_WIDTH_ATTRIBUTE});
         }
         // 'height' attribute - required
         String hStr = getChainableAttributeNS
             (patternElement, null, SVG_HEIGHT_ATTRIBUTE, ctx);
         if (hStr.length() == 0) {
-            throw new BridgeException(patternElement, ERR_ATTRIBUTE_MISSING,
-                                      new Object[] {SVG_HEIGHT_ATTRIBUTE});
+            throw new BridgeException
+                (ctx, patternElement, ERR_ATTRIBUTE_MISSING,
+                 new Object[] {SVG_HEIGHT_ATTRIBUTE});
         }
         // 'patternUnits' attribute - default is 'objectBoundingBox'
         short unitsType;
@@ -462,7 +464,7 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
             unitsType = OBJECT_BOUNDING_BOX;
         } else {
             unitsType = parseCoordinateSystem
-                (patternElement, SVG_PATTERN_UNITS_ATTRIBUTE, units);
+                (patternElement, SVG_PATTERN_UNITS_ATTRIBUTE, units, ctx);
         }
 
         // resolve units in the (referenced) paintedElement's coordinate system
@@ -496,11 +498,11 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
         String s = getChainableAttributeNS
             (filterElement, null, SVG_FILTER_RES_ATTRIBUTE, ctx);
         Float [] vals = convertSVGNumberOptionalNumber
-            (filterElement, SVG_FILTER_RES_ATTRIBUTE, s);
+            (filterElement, SVG_FILTER_RES_ATTRIBUTE, s, ctx);
 
         if (filterRes[0] < 0 || filterRes[1] < 0) {
             throw new BridgeException
-                (filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                (ctx, filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
                  new Object[] {SVG_FILTER_RES_ATTRIBUTE, s});
         }
         
@@ -510,7 +512,7 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
             filterRes[0] = vals[0].floatValue();
             if (filterRes[0] < 0)
                 throw new BridgeException
-                    (filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                    (ctx, filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
                      new Object[] {SVG_FILTER_RES_ATTRIBUTE, s});
         }
 
@@ -520,7 +522,7 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
             filterRes[1] = vals[1].floatValue();
             if (filterRes[1] < 0)
                 throw new BridgeException
-                    (filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                    (ctx, filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
                      new Object[] {SVG_FILTER_RES_ATTRIBUTE, s});
         }
         return filterRes;
@@ -531,12 +533,12 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
      * second Number. It always returns an array of two Floats.  If either
      * or both values are not provided the entries are set to null
      */
-    public static Float [] 
-        convertSVGNumberOptionalNumber(Element elem, 
-                                       String attrName,
-                                       String attrValue) {
+    public static Float[] convertSVGNumberOptionalNumber(Element elem, 
+                                                         String attrName,
+                                                         String attrValue,
+                                                         BridgeContext ctx) {
 
-        Float [] ret = new Float[2];
+        Float[] ret = new Float[2];
         if (attrValue.length() == 0)
             return ret;
 
@@ -549,12 +551,12 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
 
             if (tokens.hasMoreTokens()) {
                 throw new BridgeException
-                    (elem, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                    (ctx, elem, ERR_ATTRIBUTE_VALUE_MALFORMED,
                      new Object[] {attrName, attrValue});
             }
         } catch (NumberFormatException ex) {
             throw new BridgeException
-                (elem, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                (ctx, elem, ERR_ATTRIBUTE_VALUE_MALFORMED,
                  new Object[] {attrName, attrValue, ex});
         }
         return ret;
@@ -608,7 +610,7 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
            unitsType = OBJECT_BOUNDING_BOX;
        } else {
            unitsType = parseCoordinateSystem
-               (filterElement, SVG_FILTER_UNITS_ATTRIBUTE, units);
+               (filterElement, SVG_FILTER_UNITS_ATTRIBUTE, units, ctx);
        }
 
        // resolve units in the (referenced) filteredElement's
@@ -635,7 +637,7 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
        } else {
            unitsType = parseCoordinateSystem
                (filterElement, 
-                SVG12Constants.SVG_FILTER_MARGINS_UNITS_ATTRIBUTE, units);
+                SVG12Constants.SVG_FILTER_MARGINS_UNITS_ATTRIBUTE, units, ctx);
        }
 
        // 'batik:dx' attribute - default is 0
@@ -826,7 +828,8 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
             unitsType = USER_SPACE_ON_USE;
         } else {
             unitsType = parseCoordinateSystem
-                (filterPrimitiveElement, SVG_FILTER_UNITS_ATTRIBUTE, units);
+                (filterPrimitiveElement, SVG_FILTER_UNITS_ATTRIBUTE, units,
+                 ctx);
         }
 
         // 'x' attribute - default is defaultRegion.getX()
@@ -923,7 +926,8 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
         } else {
             unitsType = parseCoordinateSystem
                 (filterPrimitiveElement, 
-                 SVG12Constants.SVG_FILTER_PRIMITIVE_MARGINS_UNITS_ATTRIBUTE, units);
+                 SVG12Constants.SVG_FILTER_PRIMITIVE_MARGINS_UNITS_ATTRIBUTE,
+                 units, ctx);
         }
 
         // 'batik:dx' attribute - default is 0
@@ -988,17 +992,19 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
      * @param e the element that defines the coordinate system
      * @param attr the attribute which contains the coordinate system
      * @param coordinateSystem the coordinate system to parse
+     * @param ctx the BridgeContext to use for error information
      * @return OBJECT_BOUNDING_BOX | USER_SPACE_ON_USE
      */
     public static short parseCoordinateSystem(Element e,
                                               String attr,
-                                              String coordinateSystem) {
+                                              String coordinateSystem,
+                                              BridgeContext ctx) {
         if (SVG_USER_SPACE_ON_USE_VALUE.equals(coordinateSystem)) {
             return USER_SPACE_ON_USE;
         } else if (SVG_OBJECT_BOUNDING_BOX_VALUE.equals(coordinateSystem)) {
             return OBJECT_BOUNDING_BOX;
         } else {
-            throw new BridgeException(e, ERR_ATTRIBUTE_VALUE_MALFORMED,
+            throw new BridgeException(ctx, e, ERR_ATTRIBUTE_VALUE_MALFORMED,
                                       new Object[] {attr, coordinateSystem});
         }
     }
@@ -1010,17 +1016,19 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
      * @param e the element that defines the coordinate system
      * @param attr the attribute which contains the coordinate system
      * @param coordinateSystem the coordinate system to parse
+     * @param ctx the BridgeContext to use for error information
      * @return STROKE_WIDTH | USER_SPACE_ON_USE
      */
     public static short parseMarkerCoordinateSystem(Element e,
                                                     String attr,
-                                                    String coordinateSystem) {
+                                                    String coordinateSystem,
+                                                    BridgeContext ctx) {
         if (SVG_USER_SPACE_ON_USE_VALUE.equals(coordinateSystem)) {
             return USER_SPACE_ON_USE;
         } else if (SVG_STROKE_WIDTH_VALUE.equals(coordinateSystem)) {
             return STROKE_WIDTH;
         } else {
-            throw new BridgeException(e, ERR_ATTRIBUTE_VALUE_MALFORMED,
+            throw new BridgeException(ctx, e, ERR_ATTRIBUTE_VALUE_MALFORMED,
                                       new Object[] {attr, coordinateSystem});
         }
     }
@@ -1093,15 +1101,16 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
      * @param e the element that defines the transform
      * @param attr the name of the attribute that represents the transform
      * @param transform the transform to parse
-     *
+     * @param ctx the BridgeContext to use for error information
      */
     public static AffineTransform convertTransform(Element e,
                                                    String attr,
-                                                   String transform) {
+                                                   String transform,
+                                                   BridgeContext ctx) {
         try {
             return AWTTransformProducer.createAffineTransform(transform);
         } catch (ParseException ex) {
-            throw new BridgeException(e, ERR_ATTRIBUTE_VALUE_MALFORMED,
+            throw new BridgeException(ctx, e, ERR_ATTRIBUTE_VALUE_MALFORMED,
                                       new Object[] {attr, transform, ex});
         }
     }
@@ -1139,7 +1148,7 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
                                            GraphicsNode node) {
 
         Rectangle2D bounds = node.getGeometryBounds();
-        if(bounds != null){
+        if (bounds != null) {
             return new Rectangle2D.Double
                 (bounds.getX() + r.getX()*bounds.getWidth(),
                  bounds.getY() + r.getY()*bounds.getHeight(),

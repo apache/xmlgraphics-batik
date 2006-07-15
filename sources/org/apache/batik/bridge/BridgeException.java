@@ -52,26 +52,36 @@ public class BridgeException extends RuntimeException {
     /**
      * Constructs a new <tt>BridgeException</tt> with the specified parameters.
      *
-     * @param e the element on which the error occured
+     * @param ctx the bridge context to use for determining the element's
+     *            source position
+     * @param e the element on which the error occurred
      * @param code the error code
      * @param params the parameters to use for the error message
      */
-    public BridgeException(Element e, String code, Object [] params) {
+    public BridgeException(BridgeContext ctx, Element e, String code,
+                           Object[] params) {
         this.e = e;
         this.code = code;
         this.params = params;
+        if (e != null && ctx != null) {
+            this.line = ctx.getDocumentLoader().getLineNumber(e);
+        }
     }
 
     /**
      * Constructs a new <tt>BridgeException</tt> with the specified parameters.
      *
-     * @param e the element on which the error occured
-     * @param code the error code
-     * @param params the parameters to use for the error message
+     * @param ctx the bridge context to use for determining the element's
+     *            source position
+     * @param e the element on which the error occurred
+     * @param message the error message
      */
-    public BridgeException(Element e, String message) {
+    public BridgeException(BridgeContext ctx, Element e, String message) {
         this.e = e;
         this.message = message;
+        if (e != null && ctx != null) {
+            this.line = ctx.getDocumentLoader().getLineNumber(e);
+        }
     }
 
     /**
@@ -79,13 +89,6 @@ public class BridgeException extends RuntimeException {
      */
     public Element getElement() {
         return e;
-    }
-
-    /**
-     * Returns the line number on which the error occurred.
-     */
-    public void setLineNumber(int line) {
-        this.line = line;
     }
 
     /**

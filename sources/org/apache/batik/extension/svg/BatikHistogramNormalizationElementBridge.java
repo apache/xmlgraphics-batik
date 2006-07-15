@@ -131,7 +131,7 @@ public class BatikHistogramNormalizationElementBridge
                 trim = SVGUtilities.convertSVGNumber(s);
             } catch (NumberFormatException ex) {
                 throw new BridgeException
-                    (filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                    (ctx, filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
                      new Object[] {BATIK_EXT_TRIM_ATTRIBUTE, s});
             }
         }
@@ -162,10 +162,12 @@ public class BatikHistogramNormalizationElementBridge
      * @param filterElement the filter primitive element
      * @param attrName the name of the attribute
      * @param defaultValue the default value of the attribute
+     * @param ctx the BridgeContext to use for error information
      */
     protected static int convertSides(Element filterElement,
-                                        String attrName,
-                                        int defaultValue) {
+                                      String attrName,
+                                      int defaultValue,
+                                      BridgeContext ctx) {
         String s = filterElement.getAttributeNS(null, attrName);
         if (s.length() == 0) {
             return defaultValue;
@@ -175,13 +177,13 @@ public class BatikHistogramNormalizationElementBridge
                 ret = SVGUtilities.convertSVGInteger(s);
             } catch (NumberFormatException ex) {
                 throw new BridgeException
-                    (filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                    (ctx, filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
                      new Object[] {attrName, s});
             }
 
             if (ret <3) 
                 throw new BridgeException
-                    (filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                    (ctx, filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
                      new Object[] {attrName, s});
             return ret;
         }

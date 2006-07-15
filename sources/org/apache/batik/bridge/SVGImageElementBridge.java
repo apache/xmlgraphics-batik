@@ -117,7 +117,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         if (node == null) {
             SVGImageElement ie = (SVGImageElement) e;
             String uriStr = ie.getHref().getAnimVal();
-            throw new BridgeException(e, ERR_URI_IMAGE_INVALID,
+            throw new BridgeException(ctx, e, ERR_URI_IMAGE_INVALID,
                                       new Object[] {uriStr});
         }
 
@@ -153,11 +153,11 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         // 'xlink:href' attribute - required
         String uriStr = ie.getHref().getAnimVal();
         if (uriStr.length() == 0) {
-            throw new BridgeException(e, ERR_ATTRIBUTE_MISSING,
+            throw new BridgeException(ctx, e, ERR_ATTRIBUTE_MISSING,
                                       new Object[] {"xlink:href"});
         }
         if (uriStr.indexOf('#') != -1) {
-            throw new BridgeException(e, ERR_ATTRIBUTE_VALUE_MALFORMED,
+            throw new BridgeException(ctx, e, ERR_ATTRIBUTE_VALUE_MALFORMED,
                                       new Object[] {"xlink:href", uriStr});
         }
 
@@ -193,7 +193,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         try {
             userAgent.checkLoadExternalResource(purl, pDocURL);
         } catch (SecurityException ex) {
-            throw new BridgeException(e, ERR_URI_UNSECURE,
+            throw new BridgeException(ctx, e, ERR_URI_UNSECURE,
                                       new Object[] {purl});
         }
 
@@ -236,7 +236,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         try {
             reference = openStream(e, purl);
         } catch (SecurityException ex) {
-            throw new BridgeException(e, ERR_URI_UNSECURE,
+            throw new BridgeException(ctx, e, ERR_URI_UNSECURE,
                                       new Object[] {purl});
         } catch (IOException ioe) {
             return createBrokenImageNode(ctx, e, purl.toString(),
@@ -282,7 +282,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         } catch (BridgeException ex) {
             throw ex;
         } catch (SecurityException ex) {
-            throw new BridgeException(e, ERR_URI_UNSECURE,
+            throw new BridgeException(ctx, e, ERR_URI_UNSECURE,
                                       new Object[] {purl});
         } catch (Exception ex) {
             /* Nothing to do */
@@ -445,7 +445,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
             }
         } catch (LiveAttributeException ex) {
             throw new BridgeException
-                (ex.getElement(),
+                (ctx, ex.getElement(),
                  ex.isMissing() ? ERR_ATTRIBUTE_MISSING
                                 : ERR_ATTRIBUTE_VALUE_MALFORMED,
                  new Object[] { ex.getAttributeName(), ex.getValue() });
@@ -475,7 +475,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
                 Element svgElement = imgDocument.getRootElement();
                 String viewBox = svgElement.getAttributeNS
                     (null, SVG_VIEW_BOX_ATTRIBUTE);
-                vb = ViewBox.parseViewBoxAttribute(e, viewBox);
+                vb = ViewBox.parseViewBoxAttribute(e, viewBox, ctx);
             }
         }
         if (imageNode != null) {
@@ -539,7 +539,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         if (inode == null) {
             SVGImageElement ie = (SVGImageElement) e;
             String uriStr = ie.getHref().getAnimVal();
-            throw new BridgeException(e, ERR_URI_IMAGE_INVALID,
+            throw new BridgeException(ctx, e, ERR_URI_IMAGE_INVALID,
                                       new Object[] {uriStr});
         }
     }
@@ -666,7 +666,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         // SVG image is the viewBox of the outermost SVG element of the SVG file
         String viewBox =
             svgElement.getAttributeNS(null, SVG_VIEW_BOX_ATTRIBUTE);
-        float [] vb = ViewBox.parseViewBoxAttribute(e, viewBox);
+        float[] vb = ViewBox.parseViewBoxAttribute(e, viewBox, ctx);
 
         initializeViewport(ctx, e, result, vb, bounds);
 
@@ -862,8 +862,8 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
             SVGImageElement ie = (SVGImageElement) e;
             SVGAnimatedPreserveAspectRatio aPAR = ie.getPreserveAspectRatio();
 
-            AffineTransform at
-                = ViewBox.getPreserveAspectRatioTransform(e, vb, w, h, aPAR);
+            AffineTransform at = ViewBox.getPreserveAspectRatioTransform
+                (e, vb, w, h, aPAR, ctx);
             at.preConcatenate(AffineTransform.getTranslateInstance(x, y));
             node.setTransform(at);
 
@@ -895,7 +895,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
             }
         } catch (LiveAttributeException ex) {
             throw new BridgeException
-                (ex.getElement(),
+                (ctx, ex.getElement(),
                  ex.isMissing() ? ERR_ATTRIBUTE_MISSING
                                 : ERR_ATTRIBUTE_VALUE_MALFORMED,
                  new Object[] { ex.getAttributeName(), ex.getValue() });
@@ -965,7 +965,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
             return new Rectangle2D.Float(x, y, w, h);
         } catch (LiveAttributeException ex) {
             throw new BridgeException
-                (ex.getElement(),
+                (ctx, ex.getElement(),
                  ex.isMissing() ? ERR_ATTRIBUTE_MISSING
                                 : ERR_ATTRIBUTE_VALUE_MALFORMED,
                  new Object[] { ex.getAttributeName(), ex.getValue() });

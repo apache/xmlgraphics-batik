@@ -72,10 +72,12 @@ public class Main extends JComponent {
     public Main(File []files, Dimension size) { 
         setBackground(Color.black);
         this.files = files;
-        renderer = new StaticRenderer();
-        userAgent = new UserAgentAdapter();
+        UserAgentAdapter ua = new UserAgentAdapter();
+        renderer  = new StaticRenderer();
+        userAgent = ua;
         loader    = new DocumentLoader(userAgent);
         ctx       = new BridgeContext(userAgent, loader);
+        ua.setBridgeContext(ctx);
 
         if (size == null) {
             size = Toolkit.getDefaultToolkit().getScreenSize();
@@ -128,7 +130,8 @@ public class Main extends JComponent {
                     Element elt = ((SVGDocument)svgDoc).getRootElement();
                     renderer.setTransform
                         (ViewBox.getViewTransform
-                         (null, elt, display.getWidth(), display.getHeight()));
+                         (null, elt, display.getWidth(), display.getHeight(),
+                          ctx));
 
                     renderer.updateOffScreen(display.getWidth(), 
                                              display.getHeight());

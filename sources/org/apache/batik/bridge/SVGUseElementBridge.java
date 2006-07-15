@@ -106,12 +106,11 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
      *        before appending new content.
      */
     public CompositeGraphicsNode buildCompositeGraphicsNode
-        (BridgeContext ctx, Element e,
-         CompositeGraphicsNode gn) {
+            (BridgeContext ctx, Element e, CompositeGraphicsNode gn) {
         // get the referenced element
         String uri = XLinkSupport.getXLinkHref(e);
         if (uri.length() == 0) {
-            throw new BridgeException(e, ERR_ATTRIBUTE_MISSING,
+            throw new BridgeException(ctx, e, ERR_ATTRIBUTE_MISSING,
                                       new Object[] {"xlink:href"});
         }
 
@@ -345,7 +344,8 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
         // 'transform'
         if (s.length() != 0) {
             at.preConcatenate
-                (SVGUtilities.convertTransform(e, SVG_TRANSFORM_ATTRIBUTE, s));
+                (SVGUtilities.convertTransform(e, SVG_TRANSFORM_ATTRIBUTE, s,
+                                               ctx));
         }
 
         return at;

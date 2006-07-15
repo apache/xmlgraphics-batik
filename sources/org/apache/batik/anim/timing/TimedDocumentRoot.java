@@ -18,6 +18,8 @@
 package org.apache.batik.anim.timing;
 
 import java.util.Calendar;
+import java.util.Iterator;
+import java.util.LinkedList;
 
 import org.apache.batik.util.DoublyIndexedSet;
 
@@ -59,6 +61,12 @@ public abstract class TimedDocumentRoot extends TimeContainer {
     protected DoublyIndexedSet propagationFlags = new DoublyIndexedSet();
 
     /**
+     * List of {link TimegraphListener}s to be notified of changes to the
+     * timed elements in this document.
+     */
+    protected LinkedList listeners = new LinkedList();
+
+    /**
      * Creates a new TimedDocumentRoot.
      * @param useSVG11AccessKeys allows the use of accessKey() timing
      *                           specifiers with a single character
@@ -95,7 +103,7 @@ public abstract class TimedDocumentRoot extends TimeContainer {
      */
     public void seekTo(float time) {
         Trace.enter(this, "seekTo", new Object[] { new Float(time) } ); try {
-        root.clearPropagationFlags();
+        propagationFlags.clear();
         // No time containers in SVG, so we don't have to worry
         // about a partial ordering of timed elements to sample.
         TimedElement[] es = getChildren();
@@ -146,6 +154,45 @@ public abstract class TimedDocumentRoot extends TimeContainer {
     }
 
     /**
+     * Adds a {@link TimegraphListener} to the document.
+     */
+    public void addTimegraphListener(TimegraphListener l) {
+        listeners.add(l);
+    }
+
+    /**
+     * Removes a {@link TimegraphListener} from the document.
+     */
+    public void removeTimegraphListener(TimegraphListener l) {
+        listeners.remove(l);
+    }
+
+    /**
+     * Fires an {@link TimegraphListener#elementAdded} event on all
+     * timegraph listeners.
+     */
+    void fireElementAdded(TimedElement e) {
+        Iterator i = listeners.iterator();
+        while (i.hasNext()) {
+            ((TimegraphListener) i.next()).elementAdded(e);
+        }
+    }
+
+    /**
+     * Fires an {@link TimegraphListener#elementRemoved} event on all
+     * timegraph listeners.
+     */
+    void fireElementRemoved(TimedElement e) {
+        Iterator i = listeners.iterator();
+        while (i.hasNext()) {
+            ((TimegraphListener) i.next()).elementRemoved(e);
+        }
+    }
+
+    // XXX Add fire* methods for the other events in TimegraphListener, and make
+    //     TimedElement fire them.
+
+    /**
      * Returns whether the specified newly created {@link Interval} should 
      * propagate its times to the given {@link TimingSpecifier}.
      * @param i the Interval that has just been created
@@ -161,10 +208,6 @@ public abstract class TimedDocumentRoot extends TimeContainer {
         }
         propagationFlags.add(it, ts);
         return true;
-    }
-
-    void clearPropagationFlags() {
-        propagationFlags.clear();
     }
 
     /**

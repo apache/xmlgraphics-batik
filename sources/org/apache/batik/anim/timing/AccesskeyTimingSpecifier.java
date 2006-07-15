@@ -130,23 +130,24 @@ public class AccesskeyTimingSpecifier
      * Handles key events fired by the eventbase element.
      */
     public void handleEvent(Event e) {
-        boolean matched;
-        if (e.getType().charAt(4) == 'p') {
-            // DOM 2 key draft keypress
-            DOMKeyEvent evt = (DOMKeyEvent) e;
-            matched = evt.getCharCode() == accesskey;
-        } else {
-            // DOM 3 keydown
-            KeyboardEvent evt = (KeyboardEvent) e;
-            matched = evt.getKeyIdentifier().equals(keyName);
-        }
-        if (matched) {
-            // XXX Need to check for event sensitivity.
-            long time = e.getTimeStamp() -
-                owner.getRoot().getDocumentBeginTime().getTimeInMillis();
-            InstanceTime instance =
-                new InstanceTime(this, time / 1000f, null, true);
-            owner.addInstanceTime(instance, isBegin);
+        if (checkEventSensitivity()) {
+            boolean matched;
+            if (e.getType().charAt(4) == 'p') {
+                // DOM 2 key draft keypress
+                DOMKeyEvent evt = (DOMKeyEvent) e;
+                matched = evt.getCharCode() == accesskey;
+            } else {
+                // DOM 3 keydown
+                KeyboardEvent evt = (KeyboardEvent) e;
+                matched = evt.getKeyIdentifier().equals(keyName);
+            }
+            if (matched) {
+                long time = e.getTimeStamp() -
+                    owner.getRoot().getDocumentBeginTime().getTimeInMillis();
+                InstanceTime instance =
+                    new InstanceTime(this, time / 1000f, null, true);
+                owner.addInstanceTime(instance, isBegin);
+            }
         }
     }
 }

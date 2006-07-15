@@ -99,22 +99,22 @@ public class SVGFeColorMatrixElementBridge
                                                         filterRegion,
                                                         ctx);
 
-        int type = convertType(filterElement);
+        int type = convertType(filterElement, ctx);
         ColorMatrixRable colorMatrix;
         switch (type) {
         case ColorMatrixRable.TYPE_HUE_ROTATE:
-            float a = convertValuesToHueRotate(filterElement);
+            float a = convertValuesToHueRotate(filterElement, ctx);
             colorMatrix = ColorMatrixRable8Bit.buildHueRotate(a);
             break;
         case ColorMatrixRable.TYPE_LUMINANCE_TO_ALPHA:
             colorMatrix = ColorMatrixRable8Bit.buildLuminanceToAlpha();
             break;
         case ColorMatrixRable.TYPE_MATRIX:
-            float [][] matrix = convertValuesToMatrix(filterElement);
+            float [][] matrix = convertValuesToMatrix(filterElement, ctx);
             colorMatrix = ColorMatrixRable8Bit.buildMatrix(matrix);
             break;
         case ColorMatrixRable.TYPE_SATURATE:
-            float s = convertValuesToSaturate(filterElement);
+            float s = convertValuesToSaturate(filterElement, ctx);
             colorMatrix = ColorMatrixRable8Bit.buildSaturate(s);
             break;
         default:
@@ -139,8 +139,10 @@ public class SVGFeColorMatrixElementBridge
      * filter primitive element for the 'matrix' type.
      *
      * @param filterElement the filter element
+     * @param ctx the BridgeContext to use for error information
      */
-    protected static float[][] convertValuesToMatrix(Element filterElement) {
+    protected static float[][] convertValuesToMatrix(Element filterElement,
+                                                     BridgeContext ctx) {
         String s = filterElement.getAttributeNS(null, SVG_VALUES_ATTRIBUTE);
         float [][] matrix = new float[4][5];
         if (s.length() == 0) {
@@ -160,12 +162,12 @@ public class SVGFeColorMatrixElementBridge
             }
         } catch (NumberFormatException ex) {
             throw new BridgeException
-                (filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                (ctx, filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
                  new Object[] {SVG_VALUES_ATTRIBUTE, s, ex});
         }
         if (n != 20 || tokens.hasMoreTokens()) {
             throw new BridgeException
-                (filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                (ctx, filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
                  new Object[] {SVG_VALUES_ATTRIBUTE, s});
         }
 
@@ -180,8 +182,10 @@ public class SVGFeColorMatrixElementBridge
      * filter primitive element for the 'saturate' type.
      *
      * @param filterElement the filter element
+     * @param ctx the BridgeContext to use for error information
      */
-    protected static float convertValuesToSaturate(Element filterElement) {
+    protected static float convertValuesToSaturate(Element filterElement,
+                                                   BridgeContext ctx) {
         String s = filterElement.getAttributeNS(null, SVG_VALUES_ATTRIBUTE);
         if (s.length() == 0)
             return 1; // default is 1
@@ -189,8 +193,8 @@ public class SVGFeColorMatrixElementBridge
             return SVGUtilities.convertSVGNumber(s);
         } catch (NumberFormatException ex) {
             throw new BridgeException
-                (filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
-                 new Object [] {SVG_VALUES_ATTRIBUTE, s});
+                (ctx, filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                 new Object[] {SVG_VALUES_ATTRIBUTE, s});
         }
     }
 
@@ -199,8 +203,10 @@ public class SVGFeColorMatrixElementBridge
      * filter primitive element for the 'hueRotate' type.
      *
      * @param filterElement the filter element
+     * @param ctx the BridgeContext to use for error information
      */
-    protected static float convertValuesToHueRotate(Element filterElement) {
+    protected static float convertValuesToHueRotate(Element filterElement,
+                                                    BridgeContext ctx) {
         String s = filterElement.getAttributeNS(null, SVG_VALUES_ATTRIBUTE);
         if (s.length() == 0)
             return 0; // default is 0
@@ -208,7 +214,7 @@ public class SVGFeColorMatrixElementBridge
             return (float)(SVGUtilities.convertSVGNumber(s)*Math.PI)/180f;
         } catch (NumberFormatException ex) {
             throw new BridgeException
-                (filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                (ctx, filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
                  new Object [] {SVG_VALUES_ATTRIBUTE, s});
         }
     }
@@ -217,8 +223,9 @@ public class SVGFeColorMatrixElementBridge
      * Converts the type of the specified color matrix filter primitive.
      *
      * @param filterElement the filter element
+     * @param ctx the BridgeContext to use for error information
      */
-    protected static int convertType(Element filterElement) {
+    protected static int convertType(Element filterElement, BridgeContext ctx) {
         String s = filterElement.getAttributeNS(null, SVG_TYPE_ATTRIBUTE);
         if (s.length() == 0) {
             return ColorMatrixRable.TYPE_MATRIX;
@@ -235,7 +242,8 @@ public class SVGFeColorMatrixElementBridge
         if (SVG_SATURATE_VALUE.equals(s)) {
             return ColorMatrixRable.TYPE_SATURATE;
         }
-        throw new BridgeException(filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
-                                  new Object[] {SVG_TYPE_ATTRIBUTE, s});
+        throw new BridgeException
+            (ctx, filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+             new Object[] {SVG_TYPE_ATTRIBUTE, s});
     }
 }

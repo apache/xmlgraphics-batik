@@ -133,7 +133,7 @@ public class SVGSVGElementBridge
 
             // 'viewBox' and "preserveAspectRatio' attributes
             AffineTransform viewingTransform =
-                ViewBox.getPreserveAspectRatioTransform(e, w, h);
+                ViewBox.getPreserveAspectRatioTransform(e, w, h, ctx);
 
             float actualWidth = w;
             float actualHeight = h;
@@ -204,7 +204,7 @@ public class SVGSVGElementBridge
             return cgn;
         } catch (LiveAttributeException ex) {
             throw new BridgeException
-                (ex.getElement(),
+                (ctx, ex.getElement(),
                  ex.isMissing() ? ERR_ATTRIBUTE_MISSING
                                 : ERR_ATTRIBUTE_VALUE_MALFORMED,
                  new Object[] { ex.getAttributeName(), ex.getValue() });
@@ -293,7 +293,7 @@ public class SVGSVGElementBridge
             }
         } catch (LiveAttributeException ex) {
             throw new BridgeException
-                (ex.getElement(),
+                (ctx, ex.getElement(),
                  ex.isMissing() ? ERR_ATTRIBUTE_MISSING
                                 : ERR_ATTRIBUTE_VALUE_MALFORMED,
                  new Object[] { ex.getAttributeName(),
@@ -339,7 +339,7 @@ public class SVGSVGElementBridge
                 
                 // 'viewBox' and "preserveAspectRatio' attributes
                 AffineTransform newVT =
-                    ViewBox.getPreserveAspectRatioTransform(e, w, h);
+                    ViewBox.getPreserveAspectRatioTransform(e, w, h, ctx);
                 AffineTransform oldVT = cgn.getViewingTransform();
                 if ((newVT.getScaleX() != oldVT.getScaleX()) ||
                     (newVT.getScaleY() != oldVT.getScaleY()) ||
@@ -392,7 +392,7 @@ public class SVGSVGElementBridge
             }
         } catch (LiveAttributeException ex) {
             throw new BridgeException
-                (ex.getElement(),
+                (ctx, ex.getElement(),
                  ex.isMissing() ? ERR_ATTRIBUTE_MISSING
                                 : ERR_ATTRIBUTE_VALUE_MALFORMED,
                  new Object[] { ex.getAttributeName(),

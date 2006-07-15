@@ -116,7 +116,7 @@ public abstract class PaintServer
             Element markerElement = ctx.getReferencedElement(e, uri);
             Bridge bridge = ctx.getBridge(markerElement);
             if (bridge == null || !(bridge instanceof MarkerBridge)) {
-                throw new BridgeException(e, ERR_CSS_URI_BAD_TARGET,
+                throw new BridgeException(ctx, e, ERR_CSS_URI_BAD_TARGET,
                                           new Object[] {uri});
             }
             return ((MarkerBridge)bridge).createMarker(ctx, markerElement, e);
@@ -348,8 +348,9 @@ public abstract class PaintServer
 
         Bridge bridge = ctx.getBridge(paintElement);
         if (bridge == null || !(bridge instanceof PaintBridge)) {
-            throw new BridgeException(paintedElement, ERR_CSS_URI_BAD_TARGET,
-                                      new Object[] {uri});
+            throw new BridgeException
+                (ctx, paintedElement, ERR_CSS_URI_BAD_TARGET,
+                 new Object[] {uri});
         }
         return ((PaintBridge)bridge).createPaint(ctx,
                                                  paintElement,

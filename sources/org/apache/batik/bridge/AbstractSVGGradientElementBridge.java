@@ -91,7 +91,7 @@ public abstract class AbstractSVGGradientElementBridge
         s = SVGUtilities.getChainableAttributeNS
             (paintElement, null, SVG_SPREAD_METHOD_ATTRIBUTE, ctx);
         if (s.length() != 0) {
-            spreadMethod = convertSpreadMethod(paintElement, s);
+            spreadMethod = convertSpreadMethod(paintElement, s, ctx);
         }
 
         // 'color-interpolation' CSS property
@@ -104,7 +104,7 @@ public abstract class AbstractSVGGradientElementBridge
             (paintElement, null, SVG_GRADIENT_TRANSFORM_ATTRIBUTE, ctx);
         if (s.length() != 0) {
             transform = SVGUtilities.convertTransform
-                (paintElement, SVG_GRADIENT_TRANSFORM_ATTRIBUTE, s);
+                (paintElement, SVG_GRADIENT_TRANSFORM_ATTRIBUTE, s, ctx);
         } else {
             transform = new AffineTransform();
         }
@@ -152,9 +152,10 @@ public abstract class AbstractSVGGradientElementBridge
      *
      * @param paintElement the paint Element with a spreadMethod
      * @param s the spread method
+     * @param ctx the BridgeContext to use for error information
      */
     protected static MultipleGradientPaint.CycleMethodEnum convertSpreadMethod
-        (Element paintElement, String s) {
+        (Element paintElement, String s, BridgeContext ctx) {
         if (SVG_REPEAT_VALUE.equals(s)) {
             return MultipleGradientPaint.REPEAT;
         }
@@ -165,7 +166,7 @@ public abstract class AbstractSVGGradientElementBridge
             return MultipleGradientPaint.NO_CYCLE;
         }
         throw new BridgeException
-            (paintElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+            (ctx, paintElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
              new Object[] {SVG_SPREAD_METHOD_ATTRIBUTE, s});
     }
 
@@ -197,7 +198,7 @@ public abstract class AbstractSVGGradientElementBridge
             ParsedURL purl = new ParsedURL(baseURI, uri);
 
             if (contains(refs, purl)) {
-                throw new BridgeException(paintElement,
+                throw new BridgeException(ctx, paintElement,
                                           ERR_XLINK_HREF_CIRCULAR_DEPENDENCIES,
                                           new Object[] {uri});
             }
@@ -313,15 +314,16 @@ public abstract class AbstractSVGGradientElementBridge
 
             String s = stopElement.getAttributeNS(null, SVG_OFFSET_ATTRIBUTE);
             if (s.length() == 0) {
-                throw new BridgeException(stopElement, ERR_ATTRIBUTE_MISSING,
-                                          new Object[] {SVG_OFFSET_ATTRIBUTE});
+                throw new BridgeException
+                    (ctx, stopElement, ERR_ATTRIBUTE_MISSING,
+                     new Object[] {SVG_OFFSET_ATTRIBUTE});
             }
             float offset;
             try {
                 offset = SVGUtilities.convertRatio(s);
             } catch (NumberFormatException ex) {
                 throw new BridgeException
-                    (stopElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                    (ctx, stopElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
                      new Object[] {SVG_OFFSET_ATTRIBUTE, s, ex});
             }
             Color color

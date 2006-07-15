@@ -100,12 +100,12 @@ public class BatikRegularPolygonElementBridge
             r = UnitProcessor.svgOtherLengthToUserSpace
                 (s, SVG_R_ATTRIBUTE, uctx);
         } else {
-            throw new BridgeException(e, ERR_ATTRIBUTE_MISSING,
+            throw new BridgeException(ctx, e, ERR_ATTRIBUTE_MISSING,
                                       new Object[] {SVG_R_ATTRIBUTE, s});
         }
 
         // 'sides' attribute - default is 3
-        int sides = convertSides(e, BATIK_EXT_SIDES_ATTRIBUTE, 3);
+        int sides = convertSides(e, BATIK_EXT_SIDES_ATTRIBUTE, 3, ctx);
         
         GeneralPath gp = new GeneralPath();
         for (int i=0; i<sides; i++) {
@@ -131,10 +131,12 @@ public class BatikRegularPolygonElementBridge
      * @param filterElement the filter primitive element
      * @param attrName the name of the attribute
      * @param defaultValue the default value of the attribute
+     * @param ctx the BridgeContext to use for error information
      */
     protected static int convertSides(Element filterElement,
-                                        String attrName,
-                                        int defaultValue) {
+                                      String attrName,
+                                      int defaultValue,
+                                      BridgeContext ctx) {
         String s = filterElement.getAttributeNS(null, attrName);
         if (s.length() == 0) {
             return defaultValue;
@@ -144,13 +146,13 @@ public class BatikRegularPolygonElementBridge
                 ret = SVGUtilities.convertSVGInteger(s);
             } catch (NumberFormatException ex) {
                 throw new BridgeException
-                    (filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                    (ctx, filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
                      new Object[] {attrName, s});
             }
 
             if (ret <3) 
                 throw new BridgeException
-                    (filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                    (ctx, filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
                      new Object[] {attrName, s});
             return ret;
         }

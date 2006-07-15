@@ -76,11 +76,12 @@ public class SVGFeDiffuseLightingElementBridge
 
         // 'surfaceScale' attribute - default is 1
         float surfaceScale
-            = convertNumber(filterElement, SVG_SURFACE_SCALE_ATTRIBUTE, 1);
+            = convertNumber(filterElement, SVG_SURFACE_SCALE_ATTRIBUTE, 1, ctx);
 
         // 'diffuseConstant' attribute - default is 1
         float diffuseConstant
-            = convertNumber(filterElement, SVG_DIFFUSE_CONSTANT_ATTRIBUTE, 1);
+            = convertNumber(filterElement, SVG_DIFFUSE_CONSTANT_ATTRIBUTE, 1,
+                            ctx);
 
         // 'kernelUnitLength' attribute
         // <!> FIXME: Why is it ignored ???
@@ -89,7 +90,7 @@ public class SVGFeDiffuseLightingElementBridge
         Light light = extractLight(filterElement, ctx);
 
         // 'kernelUnitLength' attribute
-        double [] kernelUnitLength = convertKernelUnitLength(filterElement);
+        double[] kernelUnitLength = convertKernelUnitLength(filterElement, ctx);
 
         // 'in' attribute
         Filter in = getIn(filterElement,

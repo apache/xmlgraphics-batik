@@ -80,15 +80,17 @@ public class SVGFeDisplacementMapElementBridge
                                Map filterMap) {
 
         // 'scale' attribute - default is 0
-        float scale = convertNumber(filterElement, SVG_SCALE_ATTRIBUTE, 0);
+        float scale = convertNumber(filterElement, SVG_SCALE_ATTRIBUTE, 0, ctx);
 
         // 'xChannelSelector' attribute - default is 'A'
         ARGBChannel xChannelSelector = convertChannelSelector
-            (filterElement, SVG_X_CHANNEL_SELECTOR_ATTRIBUTE, ARGBChannel.A);
+            (filterElement, SVG_X_CHANNEL_SELECTOR_ATTRIBUTE, ARGBChannel.A,
+             ctx);
 
         // 'yChannelSelector' attribute - default is 'A'
         ARGBChannel yChannelSelector = convertChannelSelector
-            (filterElement, SVG_Y_CHANNEL_SELECTOR_ATTRIBUTE, ARGBChannel.A);
+            (filterElement, SVG_Y_CHANNEL_SELECTOR_ATTRIBUTE, ARGBChannel.A,
+             ctx);
 
         // 'in' attribute
         Filter in = getIn(filterElement,
@@ -152,11 +154,13 @@ public class SVGFeDisplacementMapElementBridge
      *
      * @param filterElement the feDisplacementMap filter primitive element
      * @param attrName the name of the channel attribute
+     * @param ctx the BridgeContext to use for error information
      */
     protected static
         ARGBChannel convertChannelSelector(Element filterElement,
                                            String attrName,
-                                           ARGBChannel defaultChannel) {
+                                           ARGBChannel defaultChannel,
+                                           BridgeContext ctx) {
 
         String s = filterElement.getAttributeNS(null, attrName);
         if (s.length() == 0) {
@@ -174,7 +178,8 @@ public class SVGFeDisplacementMapElementBridge
         if (SVG_B_VALUE.equals(s)) {
             return ARGBChannel.B;
         }
-        throw new BridgeException(filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
-                                  new Object[] {attrName, s});
+        throw new BridgeException
+            (ctx, filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+             new Object[] {attrName, s});
     }
 }

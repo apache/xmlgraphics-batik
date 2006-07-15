@@ -728,7 +728,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
             URIResolver ur = createURIResolver(document, documentLoader);
             Node ref = ur.getNode(uri, e);
             if (ref == null) {
-                throw new BridgeException(e, ERR_URI_BAD_TARGET,
+                throw new BridgeException(this, e, ERR_URI_BAD_TARGET,
                                           new Object[] {uri});
             } else {
                 SVGOMDocument refDoc =
@@ -748,16 +748,16 @@ public class BridgeContext implements ErrorConstants, CSSContext {
                 return ref;
             }
         } catch (MalformedURLException ex) {
-            throw new BridgeException(e, ERR_URI_MALFORMED,
+            throw new BridgeException(this, e, ERR_URI_MALFORMED,
                                       new Object[] {uri});
         } catch (InterruptedIOException ex) {
             throw new InterruptedBridgeException();
         } catch (IOException ex) {
             ex.printStackTrace();
-            throw new BridgeException(e, ERR_URI_IO,
+            throw new BridgeException(this, e, ERR_URI_IO,
                                       new Object[] {uri});
         } catch (SecurityException ex) {
-            throw new BridgeException(e, ERR_URI_UNSECURE,
+            throw new BridgeException(this, e, ERR_URI_UNSECURE,
                                       new Object[] {uri});
         }
     }
@@ -772,7 +772,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     public Element getReferencedElement(Element e, String uri) {
         Node ref = getReferencedNode(e, uri);
         if (ref != null && ref.getNodeType() != Node.ELEMENT_NODE) {
-            throw new BridgeException(e, ERR_URI_REFERENCE_A_DOCUMENT,
+            throw new BridgeException(this, e, ERR_URI_REFERENCE_A_DOCUMENT,
                                       new Object[] {uri});
         }
         return (Element) ref;

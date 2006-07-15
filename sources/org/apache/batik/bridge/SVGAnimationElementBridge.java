@@ -120,7 +120,7 @@ public abstract class SVGAnimationElementBridge extends AbstractSVGBridge
     public AnimatableValue getUnderlyingValue() {
         if (isCSS) {
             return eng.getUnderlyingCSSValue
-                (animationTarget, attributeLocalName);
+                (element, animationTarget, attributeLocalName);
         } else {
             // XXX
             return null;
@@ -165,8 +165,9 @@ public abstract class SVGAnimationElementBridge extends AbstractSVGBridge
         } else {
             t = ctx.getReferencedElement(element, uri);
             if (t.getOwnerDocument() != element.getOwnerDocument()) {
-                // XXX
-                throw new RuntimeException("Reference must be local");
+                throw new BridgeException
+                    (ctx, element, ErrorConstants.ERR_URI_BAD_TARGET,
+                     new Object[] { uri });
             }
         }
         animationTarget = null;
@@ -175,8 +176,9 @@ public abstract class SVGAnimationElementBridge extends AbstractSVGBridge
             animationTarget = targetElement;
         }
         if (animationTarget == null) {
-            // XXX
-            throw new RuntimeException("Element cannot be the target of an animation");
+            throw new BridgeException
+                (ctx, element, ErrorConstants.ERR_URI_BAD_TARGET,
+                 new Object[] { uri });
         }
 
         // Get the attribute/property name.
@@ -199,8 +201,9 @@ public abstract class SVGAnimationElementBridge extends AbstractSVGBridge
         if (isCSS && !targetElement.isPropertyAnimatable(attributeLocalName)
                 || !isCSS && !targetElement.isAttributeAnimatable
                     (attributeNamespaceURI, attributeLocalName)) {
-            // XXX
-            throw new RuntimeException("Attribute '" + an + "' cannot be animated");
+            throw new BridgeException
+                (ctx, element, "attribute.not.animatable",
+                 new Object[] { targetElement.getNodeName(), an });
         }
 
         // Add the animation.
@@ -239,8 +242,9 @@ public abstract class SVGAnimationElementBridge extends AbstractSVGBridge
             return null;
         }
         String s = element.getAttributeNS(null, an);
-        return eng.parseAnimatableValue(animationTarget, attributeNamespaceURI,
-                                        attributeLocalName, isCSS, s);
+        return eng.parseAnimatableValue
+            (element, animationTarget, attributeNamespaceURI,
+             attributeLocalName, isCSS, s);
     }
 
     /**
@@ -433,7 +437,7 @@ public abstract class SVGAnimationElementBridge extends AbstractSVGBridge
         /**
          * Returns the DOM element this timed element is for.
          */
-        protected Element getElement() {
+        public Element getElement() {
             return element;
         }
 

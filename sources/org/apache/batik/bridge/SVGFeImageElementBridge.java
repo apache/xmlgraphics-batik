@@ -82,7 +82,7 @@ public class SVGFeImageElementBridge
         // 'xlink:href' attribute
         String uriStr = XLinkSupport.getXLinkHref(filterElement);
         if (uriStr.length() == 0) {
-            throw new BridgeException(filterElement, ERR_ATTRIBUTE_MISSING,
+            throw new BridgeException(ctx, filterElement, ERR_ATTRIBUTE_MISSING,
                                       new Object[] {"xlink:href"});
         }
 
@@ -154,8 +154,8 @@ public class SVGFeImageElementBridge
         if (s.length() == 0) {
             coordSystemType = SVGUtilities.USER_SPACE_ON_USE;
         } else {
-                coordSystemType = SVGUtilities.parseCoordinateSystem
-                    (filterDefElement, SVG_PRIMITIVE_UNITS_ATTRIBUTE, s);
+            coordSystemType = SVGUtilities.parseCoordinateSystem
+                (filterDefElement, SVG_PRIMITIVE_UNITS_ATTRIBUTE, s, ctx);
         }
         
         // Compute the transform from object bounding box to user
@@ -227,7 +227,7 @@ public class SVGFeImageElementBridge
                 coordSystemType = SVGUtilities.USER_SPACE_ON_USE;
             } else {
                 coordSystemType = SVGUtilities.parseCoordinateSystem
-                    (filterDefElement, SVG_PRIMITIVE_UNITS_ATTRIBUTE, s);
+                    (filterDefElement, SVG_PRIMITIVE_UNITS_ATTRIBUTE, s, ctx);
             }
             
             if (coordSystemType == SVGUtilities.OBJECT_BOUNDING_BOX) {

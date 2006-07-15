@@ -24,7 +24,9 @@ import java.util.HashSet;
 import java.util.LinkedList;
 
 import org.apache.batik.anim.AnimationEngine;
+import org.apache.batik.anim.AnimationException;
 import org.apache.batik.anim.AnimationTarget;
+import org.apache.batik.anim.SMILConstants;
 import org.apache.batik.anim.timing.TimedDocumentRoot;
 import org.apache.batik.anim.timing.TimedElement;
 import org.apache.batik.anim.values.AnimatableAngleValue;
@@ -72,6 +74,7 @@ import org.apache.batik.util.RunnableQueue;
 import org.apache.batik.util.XMLConstants;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSValue;
@@ -287,7 +290,8 @@ public class SVGAnimationEngine extends AnimationEngine {
     /**
      * Parses an AnimatableValue.
      */
-    public AnimatableValue parseAnimatableValue(AnimationTarget target,
+    public AnimatableValue parseAnimatableValue(Element animElt,
+                                                AnimationTarget target,
                                                 String ns, String ln,
                                                 boolean isCSS,
                                                 String s) {
@@ -300,8 +304,10 @@ public class SVGAnimationEngine extends AnimationEngine {
         }
         Factory factory = factories[type];
         if (factory == null) {
-            // XXX Should disable animation instead of throwing.
-            throw new RuntimeException("Attribute type " + type + " is not animatable");
+            String an = ns == null ? ln : '{' + ns + '}' + ln;
+            throw new BridgeException
+                (ctx, animElt, "attribute.not.animatable",
+                 new Object[] { target.getElement().getNodeName(), an });
         }
         return factories[type].createValue(target, ns, ln, isCSS, s);
     }
@@ -309,7 +315,8 @@ public class SVGAnimationEngine extends AnimationEngine {
     /**
      * Returns an AnimatableValue for the underlying value of a CSS property.
      */
-    public AnimatableValue getUnderlyingCSSValue(AnimationTarget target,
+    public AnimatableValue getUnderlyingCSSValue(Element animElt,
+                                                 AnimationTarget target,
                                                  String pn) {
         ValueManager vms[] = cssEngine.getValueManagers();
         int idx = cssEngine.getPropertyIndex(pn);
@@ -317,8 +324,9 @@ public class SVGAnimationEngine extends AnimationEngine {
             int type = vms[idx].getPropertyType();
             Factory factory = factories[type];
             if (factory == null) {
-                // XXX Should disable animation instead of throwing.
-                throw new RuntimeException("Attribute type " + type + " is not animatable");
+                throw new BridgeException
+                    (ctx, animElt, "attribute.not.animatable",
+                     new Object[] { target.getElement().getNodeName(), pn });
             }
             SVGStylableElement e = (SVGStylableElement) target.getElement();
             CSSStyleDeclaration over = e.getOverrideStyle();
@@ -401,7 +409,7 @@ public class SVGAnimationEngine extends AnimationEngine {
          * @return "repeatEvent" for SVG
          */
         protected String getRepeatEventName() {
-            return "repeatEvent";
+            return SMILConstants.SMIL_REPEAT_EVENT_NAME;
         }
 
         /**
@@ -490,6 +498,14 @@ public class SVGAnimationEngine extends AnimationEngine {
         }
 
         /**
+         * Returns the DOM element that corresponds to this timed element, if
+         * such a DOM element exists.
+         */
+        public Element getElement() {
+            return null;
+        }
+
+        /**
          * Returns whether this timed element comes before the given timed
          * element in document order.
          */
@@ -510,27 +526,40 @@ public class SVGAnimationEngine extends AnimationEngine {
             if (evt.getTarget() != evt.getCurrentTarget()) {
                 return;
             }
-            Calendar cal = Calendar.getInstance();
-            cal.setTimeInMillis(evt.getTimeStamp());
-            timedDocumentRoot.resetDocument(cal);
-            Object[] bridges = initialBridges.toArray();
-            initialBridges = null;
-            for (int i = 0; i < bridges.length; i++) {
-                SVGAnimationElementBridge bridge =
-                    (SVGAnimationElementBridge) bridges[i];
-                bridge.initializeAnimation();
+            try {
+                try {
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTimeInMillis(evt.getTimeStamp());
+                    timedDocumentRoot.resetDocument(cal);
+                    Object[] bridges = initialBridges.toArray();
+                    initialBridges = null;
+                    for (int i = 0; i < bridges.length; i++) {
+                        SVGAnimationElementBridge bridge =
+                            (SVGAnimationElementBridge) bridges[i];
+                        bridge.initializeAnimation();
+                    }
+                    for (int i = 0; i < bridges.length; i++) {
+                        SVGAnimationElementBridge bridge =
+                            (SVGAnimationElementBridge) bridges[i];
+                        bridge.initializeTimedElement();
+                    }
+                    started = true;
+                    tick(0);
+                    // animationThread = new AnimationThread();
+                    // animationThread.start();
+                    ctx.getUpdateManager().getUpdateRunnableQueue().setIdleRunnable
+                        (new AnimationTickRunnable());
+                } catch (AnimationException ex) {
+                    throw new BridgeException(ctx, ex.getElement().getElement(),
+                                              ex.getMessage());
+                }
+            } catch (BridgeException ex) {
+                if (ctx.getUserAgent() == null) {
+                    ex.printStackTrace();
+                } else {
+                    ctx.getUserAgent().displayError(ex);
+                }
             }
-            for (int i = 0; i < bridges.length; i++) {
-                SVGAnimationElementBridge bridge =
-                    (SVGAnimationElementBridge) bridges[i];
-                bridge.initializeTimedElement();
-            }
-            started = true;
-            tick(0);
-            // animationThread = new AnimationThread();
-            // animationThread.start();
-            ctx.getUpdateManager().getUpdateRunnableQueue().setIdleRunnable
-                (new AnimationTickRunnable());
         }
     }
 
@@ -543,16 +572,28 @@ public class SVGAnimationEngine extends AnimationEngine {
         int idx = -1;
         int frames;
         public void run() {
-            time.setTimeInMillis(System.currentTimeMillis());
-            float t = timedDocumentRoot.convertWallclockTime(time);
-            if (Math.floor(t) > second) {
-                second = Math.floor(t);
-                System.err.println("fps: " + frames);
-                frames = 0;
-                // tick(t);
+            try {
+                try {
+                    time.setTimeInMillis(System.currentTimeMillis());
+                    float t = timedDocumentRoot.convertWallclockTime(time);
+                    if (Math.floor(t) > second) {
+                        second = Math.floor(t);
+                        System.err.println("fps: " + frames);
+                        frames = 0;
+                    }
+                    tick(t);
+                    frames++;
+                } catch (AnimationException ex) {
+                    throw new BridgeException(ctx, ex.getElement().getElement(),
+                                              ex.getMessage());
+                }
+            } catch (BridgeException ex) {
+                if (ctx.getUserAgent() == null) {
+                    ex.printStackTrace();
+                } else {
+                    ctx.getUserAgent().displayError(ex);
+                }
             }
-            tick(t);
-            frames++;
             //Thread.yield();
             try {
                 Thread.sleep(1);
@@ -627,7 +668,6 @@ public class SVGAnimationEngine extends AnimationEngine {
              * Ticks the animation over.
              */
             public void run() {
-                // System.err.println("TICK " + t);
                 tick(t);
             }
         }

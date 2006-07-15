@@ -19,10 +19,12 @@ package org.apache.batik.anim;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Map;
 
 import org.apache.batik.anim.timing.TimedDocumentRoot;
 import org.apache.batik.anim.timing.TimedElement;
+import org.apache.batik.anim.timing.TimegraphListener;
 import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.util.DoublyIndexedTable;
 
@@ -390,6 +392,20 @@ public abstract class AnimationEngine {
         if (sandwich.animation.isDirty) {
             sandwich.shouldUpdate = true;
         }
+    }
+
+    /**
+     * Adds a {@link TimegraphListener} to the document.
+     */
+    public void addTimegraphListener(TimegraphListener l) {
+        timedDocumentRoot.addTimegraphListener(l);
+    }
+
+    /**
+     * Removes a {@link TimegraphListener} from the document.
+     */
+    public void removeTimegraphListener(TimegraphListener l) {
+        timedDocumentRoot.removeTimegraphListener(l);
     }
 
     /**

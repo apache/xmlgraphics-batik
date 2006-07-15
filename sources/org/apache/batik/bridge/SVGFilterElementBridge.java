@@ -157,13 +157,13 @@ public class SVGFilterElementBridge extends AnimatableGenericSVGBridge
             try {
                 url = new URL(doc.getURLObject(), uri);
             } catch (MalformedURLException ex) {
-                throw new BridgeException(filterElement,
+                throw new BridgeException(ctx, filterElement,
                                           ERR_URI_MALFORMED,
                                           new Object[] {uri});
 
             }
             if (contains(refs, url)) {
-                throw new BridgeException(filterElement,
+                throw new BridgeException(ctx, filterElement,
                                           ERR_XLINK_HREF_CIRCULAR_DEPENDENCIES,
                                           new Object[] {uri});
             }

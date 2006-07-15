@@ -330,7 +330,7 @@ public class CursorManager implements SVGConstants, ErrorConstants {
         // Try to handle its image.
         String uriStr = XLinkSupport.getXLinkHref(cursorElement);
         if (uriStr.length() == 0) {
-            throw new BridgeException(cursorElement, ERR_ATTRIBUTE_MISSING,
+            throw new BridgeException(ctx, cursorElement, ERR_ATTRIBUTE_MISSING,
                                       new Object[] {"xlink:href"});
         }
 
@@ -446,7 +446,7 @@ public class CursorManager implements SVGConstants, ErrorConstants {
                 rootElement = doc.getRootElement();
             } else {
                 throw new BridgeException 
-                    (cursorElement, ERR_URI_IMAGE_INVALID,
+                    (ctx, cursorElement, ERR_URI_IMAGE_INVALID,
                      new Object[] {uriStr});
             }
             GraphicsNode node = ctx.getGVTBuilder().build(ctx, rootElement);
@@ -478,16 +478,14 @@ public class CursorManager implements SVGConstants, ErrorConstants {
                 (Math.round(width), Math.round(height));
             
             // Handle the viewBox transform
-            AffineTransform at 
-                = ViewBox.getPreserveAspectRatioTransform(rootElement,
-                                                          cursorSize.width,
-                                                          cursorSize.height);
+            AffineTransform at = ViewBox.getPreserveAspectRatioTransform
+                (rootElement, cursorSize.width, cursorSize.height, ctx);
             Filter filter = node.getGraphicsNodeRable(true);
             f = new AffineRable8Bit(filter, at);
         } catch (BridgeException ex) {
             throw ex;
         } catch (SecurityException ex) {
-            throw new BridgeException(cursorElement, ERR_URI_UNSECURE,
+            throw new BridgeException(ctx, cursorElement, ERR_URI_UNSECURE,
                                       new Object[] {uriStr});
         } catch (Exception ex) {
             /* Nothing to do */ 
