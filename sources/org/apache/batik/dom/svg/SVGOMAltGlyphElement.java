@@ -17,7 +17,6 @@
  */
 package org.apache.batik.dom.svg;
 
-import org.apache.batik.anim.AnimationTarget;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.util.XMLSupport;
@@ -128,10 +127,10 @@ public class SVGOMAltGlyphElement
     protected short getAttributePercentageInterpretation(String ns, String ln) {
         if (ns == null) {
             if (ln.equals(SVG_X_ATTRIBUTE) || ln.equals(SVG_DX_ATTRIBUTE)) {
-                return AnimationTarget.PERCENTAGE_VIEWPORT_WIDTH;
+                return PERCENTAGE_VIEWPORT_WIDTH;
             }
             if (ln.equals(SVG_Y_ATTRIBUTE) || ln.equals(SVG_DY_ATTRIBUTE)) {
-                return AnimationTarget.PERCENTAGE_VIEWPORT_HEIGHT;
+                return PERCENTAGE_VIEWPORT_HEIGHT;
             }
         }
         return super.getAttributePercentageInterpretation(ns, ln);

@@ -52,6 +52,11 @@ public interface AnimationTarget {
     void updateAttributeValue(String ns, String ln, AnimatableValue val);
 
     /**
+     * Returns the underlying value of an animatable XML attribute.
+     */
+    AnimatableValue getUnderlyingValue(String ns, String ln);
+
+    /**
      * Gets how percentage values are interpreted by the given attribute
      * or property.
      */

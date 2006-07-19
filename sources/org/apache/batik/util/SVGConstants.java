@@ -453,8 +453,6 @@ public interface SVGConstants extends CSSConstants, XMLConstants {
     String SVG_K4_ATTRIBUTE = "k4";
     String SVG_KERNEL_MATRIX_ATTRIBUTE = "kernelMatrix";
     String SVG_KERNEL_UNIT_LENGTH_ATTRIBUTE = "kernelUnitLength";
-    String SVG_KERNEL_UNIT_LENGTH_X_ATTRIBUTE = "kernelUnitLengthX";
-    String SVG_KERNEL_UNIT_LENGTH_Y_ATTRIBUTE = "kernelUnitLengthY";
     String SVG_KERNING_ATTRIBUTE = CSS_KERNING_PROPERTY;
     String SVG_KEY_SPLINES_ATTRIBUTE = "keySplines";
     String SVG_KEY_TIMES_ATTRIBUTE = "keyTimes";

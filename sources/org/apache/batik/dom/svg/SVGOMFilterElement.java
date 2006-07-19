@@ -17,7 +17,6 @@
  */
 package org.apache.batik.dom.svg;
 
-import org.apache.batik.anim.AnimationTarget;
 import org.apache.batik.anim.values.AnimatableNumberOptionalNumberValue;
 import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.AbstractDocument;
@@ -280,10 +279,10 @@ public class SVGOMFilterElement
     protected short getAttributePercentageInterpretation(String ns, String ln) {
         if (ns == null) {
             if (ln.equals(SVG_X_ATTRIBUTE) || ln.equals(SVG_WIDTH_ATTRIBUTE)) {
-                return AnimationTarget.PERCENTAGE_VIEWPORT_WIDTH;
+                return PERCENTAGE_VIEWPORT_WIDTH;
             }
             if (ln.equals(SVG_Y_ATTRIBUTE) || ln.equals(SVG_HEIGHT_ATTRIBUTE)) {
-                return AnimationTarget.PERCENTAGE_VIEWPORT_HEIGHT;
+                return PERCENTAGE_VIEWPORT_HEIGHT;
             }
         }
         return super.getAttributePercentageInterpretation(ns, ln);
@@ -340,5 +339,35 @@ public class SVGOMFilterElement
             }
         }
         super.updateAttributeValue(ns, ln, val);
+    }
+
+    /**
+     * Returns the underlying value of an animatable XML attribute.
+     */
+    public AnimatableValue getUnderlyingValue(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE)) {
+                return getBaseValue(getExternalResourcesRequired());
+            } else if (ln.equals(SVG_FILTER_UNITS_ATTRIBUTE)) {
+                return getBaseValue(getFilterUnits());
+            } else if (ln.equals(SVG_PRIMITIVE_UNITS_ATTRIBUTE)) {
+                return getBaseValue(getPrimitiveUnits());
+            } else if (ln.equals(SVG_X_ATTRIBUTE)) {
+                return getBaseValue
+                    (getX(), PERCENTAGE_VIEWPORT_WIDTH);
+            } else if (ln.equals(SVG_Y_ATTRIBUTE)) {
+                return getBaseValue
+                    (getY(), PERCENTAGE_VIEWPORT_HEIGHT);
+            } else if (ln.equals(SVG_WIDTH_ATTRIBUTE)) {
+                return getBaseValue
+                    (getWidth(), PERCENTAGE_VIEWPORT_WIDTH);
+            } else if (ln.equals(SVG_HEIGHT_ATTRIBUTE)) {
+                return getBaseValue
+                    (getHeight(), PERCENTAGE_VIEWPORT_HEIGHT);
+            } else if (ln.equals(SVG_FILTER_RES_ATTRIBUTE)) {
+                return getBaseValue(getFilterResX(), getFilterResY());
+            }
+        }
+        return super.getUnderlyingValue(ns, ln);
     }
 }

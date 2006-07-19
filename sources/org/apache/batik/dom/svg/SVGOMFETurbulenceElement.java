@@ -212,4 +212,24 @@ public class SVGOMFETurbulenceElement
         }
         super.updateAttributeValue(ns, ln, val);
     }
+
+    /**
+     * Returns the underlying value of an animatable XML attribute.
+     */
+    public AnimatableValue getUnderlyingValue(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_TYPE_ATTRIBUTE)) {
+                return getBaseValue(getType());
+            } else if (ln.equals(SVG_NUM_OCTAVES_ATTRIBUTE)) {
+                return getBaseValue(getNumOctaves());
+            } else if (ln.equals(SVG_SEED_ATTRIBUTE)) {
+                return getBaseValue(getSeed());
+            } else if (ln.equals(SVG_STITCH_TILES_ATTRIBUTE)) {
+                return getBaseValue(getStitchTiles());
+            } else if (ln.equals(SVG_BASE_FREQUENCY_ATTRIBUTE)) {
+                return getBaseValue(getBaseFrequencyX(), getBaseFrequencyY());
+            }
+        }
+        return super.getUnderlyingValue(ns, ln);
+    }
 }

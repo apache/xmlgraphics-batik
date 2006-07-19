@@ -301,4 +301,33 @@ public class SVGOMFEConvolveMatrixElement
         }
         super.updateAttributeValue(ns, ln, val);
     }
+
+    /**
+     * Returns the underlying value of an animatable XML attribute.
+     */
+    public AnimatableValue getUnderlyingValue(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_KERNEL_MATRIX_ATTRIBUTE)) {
+                return getBaseValue(getKernelMatrix());
+            } else if (ln.equals(SVG_DIVISOR_ATTRIBUTE)) {
+                return getBaseValue(getDivisor());
+            } else if (ln.equals(SVG_BIAS_ATTRIBUTE)) {
+                return getBaseValue(getBias());
+            } else if (ln.equals(SVG_TARGET_X_ATTRIBUTE)) {
+                return getBaseValue(getTargetX());
+            } else if (ln.equals(SVG_TARGET_Y_ATTRIBUTE)) {
+                return getBaseValue(getTargetY());
+            } else if (ln.equals(SVG_EDGE_MODE_ATTRIBUTE)) {
+                return getBaseValue(getEdgeMode());
+            } else if (ln.equals(SVG_PRESERVE_ALPHA_ATTRIBUTE)) {
+                return getBaseValue(getPreserveAlpha());
+            } else if (ln.equals(SVG_ORDER_ATTRIBUTE)) {
+                return getBaseValue(getOrderX(), getOrderY());
+            } else if (ln.equals(SVG_KERNEL_UNIT_LENGTH_ATTRIBUTE)) {
+                return getBaseValue(getKernelUnitLengthX(),
+                                    getKernelUnitLengthY());
+            }
+        }
+        return super.getUnderlyingValue(ns, ln);
+    }
 }

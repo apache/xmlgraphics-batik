@@ -200,4 +200,22 @@ public class SVGOMTextPathElement
         }
         super.updateAttributeValue(ns, ln, val);
     }
+
+    /**
+     * Returns the underlying value of an animatable XML attribute.
+     */
+    public AnimatableValue getUnderlyingValue(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_START_OFFSET_ATTRIBUTE)) {
+                return getBaseValue
+                    (getStartOffset(),
+                     PERCENTAGE_VIEWPORT_SIZE);
+            } else if (ln.equals(SVG_METHOD_ATTRIBUTE)) {
+                return getBaseValue(getMethod());
+            } else if (ln.equals(SVG_SPACING_ATTRIBUTE)) {
+                return getBaseValue(getSpacing());
+            }
+        }
+        return super.getUnderlyingValue(ns, ln);
+    }
 }

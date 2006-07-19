@@ -17,7 +17,6 @@
  */
 package org.apache.batik.dom.svg;
 
-import org.apache.batik.anim.AnimationTarget;
 import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.util.SVGTypes;
@@ -98,10 +97,10 @@ public class SVGOMFEOffsetElement
     protected short getAttributePercentageInterpretation(String ns, String ln) {
         if (ns == null) {
             if (ln.equals(SVG_DX_ATTRIBUTE)) {
-                return AnimationTarget.PERCENTAGE_VIEWPORT_WIDTH;
+                return PERCENTAGE_VIEWPORT_WIDTH;
             }
             if (ln.equals(SVG_DY_ATTRIBUTE)) {
-                return AnimationTarget.PERCENTAGE_VIEWPORT_HEIGHT;
+                return PERCENTAGE_VIEWPORT_HEIGHT;
             }
         }
         return super.getAttributePercentageInterpretation(ns, ln);
@@ -158,5 +157,21 @@ public class SVGOMFEOffsetElement
             }
         }
         super.updateAttributeValue(ns, ln, val);
+    }
+
+    /**
+     * Returns the underlying value of an animatable XML attribute.
+     */
+    public AnimatableValue getUnderlyingValue(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_IN_ATTRIBUTE)) {
+                return getBaseValue(getIn1());
+            } else if (ln.equals(SVG_DX_ATTRIBUTE)) {
+                return getBaseValue(getDx());
+            } else if (ln.equals(SVG_DY_ATTRIBUTE)) {
+                return getBaseValue(getDy());
+            }
+        }
+        return super.getUnderlyingValue(ns, ln);
     }
 }

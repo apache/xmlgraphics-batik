@@ -21,8 +21,10 @@ import java.util.Iterator;
 import java.util.Vector;
 
 import org.apache.batik.anim.AnimationTarget;
+import org.apache.batik.dom.svg.AbstractSVGTransform;
 import org.apache.batik.dom.svg.SVGOMTransform;
 
+import org.w3c.dom.svg.SVGMatrix;
 import org.w3c.dom.svg.SVGTransform;
 
 /**
@@ -49,7 +51,7 @@ public class AnimatableTransformListValue extends AnimatableValue {
      * Creates a new AnimatableTransformListValue with a single transform.
      */
     public AnimatableTransformListValue(AnimationTarget target,
-                                        Transform t) {
+                                        AbstractSVGTransform t) {
         super(target);
         this.transforms = new Vector();
         this.transforms.add(t);
@@ -108,37 +110,35 @@ public class AnimatableTransformListValue extends AnimatableValue {
         }
 
         if (to != null) {
-            Transform ft = (Transform) transforms.lastElement();
+            AbstractSVGTransform ft = (AbstractSVGTransform) transforms.lastElement();
             int type = ft.getType();
-            Transform tt = (Transform) toTransformList.transforms.lastElement();
+            AbstractSVGTransform tt = (AbstractSVGTransform) toTransformList.transforms.lastElement();
             if (type == tt.getType()) {
-                Transform t =
-                    (Transform) res.transforms.elementAt(newSize - 1);
+                AbstractSVGTransform t =
+                    (AbstractSVGTransform) res.transforms.elementAt(newSize - 1);
                 if (t == null) {
-                    t = new Transform();
+                    t = new SVGOMTransform();
                     res.transforms.setElementAt(t, newSize - 1);
                 }
                 float x, y, r = 0;
                 switch (type) {
-                    case SVGTransform.SVG_TRANSFORM_ROTATE:
                     case SVGTransform.SVG_TRANSFORM_SKEWX:
                     case SVGTransform.SVG_TRANSFORM_SKEWY:
                         r = ft.getAngle();
                         r += interpolation * (tt.getAngle() - r);
                         if (type == SVGTransform.SVG_TRANSFORM_SKEWX) {
                             t.setSkewX(r);
-                            break;
                         } else if (type == SVGTransform.SVG_TRANSFORM_SKEWY) {
                             t.setSkewY(r);
-                            break;
                         }
-                        // fall through
-                    case SVGTransform.SVG_TRANSFORM_TRANSLATE:
-                    case SVGTransform.SVG_TRANSFORM_SCALE:
-                        x = ft.getX();
-                        y = ft.getY();
-                        x += interpolation * (tt.getX() - x);
-                        y += interpolation * (tt.getY() - y);
+                        break;
+                    case SVGTransform.SVG_TRANSFORM_SCALE: {
+                        SVGMatrix fm = ft.getMatrix();
+                        SVGMatrix tm = tt.getMatrix();
+                        x = fm.getA();
+                        y = fm.getD();
+                        x += interpolation * (tm.getA() - x);
+                        y += interpolation * (tm.getD() - y);
                         if (type == SVGTransform.SVG_TRANSFORM_TRANSLATE) {
                             t.setTranslate(x, y);
                         } else if (type == SVGTransform.SVG_TRANSFORM_SCALE) {
@@ -147,13 +147,42 @@ public class AnimatableTransformListValue extends AnimatableValue {
                             t.setRotate(r, x, y);
                         }
                         break;
+                    }
+                    case SVGTransform.SVG_TRANSFORM_ROTATE: {
+                        x = ft.getX();
+                        y = ft.getY();
+                        x += interpolation * (tt.getX() - x);
+                        y += interpolation * (tt.getY() - y);
+                        r = ft.getAngle();
+                        r += interpolation * (tt.getAngle() - r);
+                        t.setRotate(r, x, y);
+                        break;
+                    }
+                    case SVGTransform.SVG_TRANSFORM_TRANSLATE: {
+                        SVGMatrix fm = ft.getMatrix();
+                        SVGMatrix tm = tt.getMatrix();
+                        x = fm.getE();
+                        y = fm.getF();
+                        x += interpolation * (tm.getE() - x);
+                        y += interpolation * (tm.getF() - y);
+                        if (type == SVGTransform.SVG_TRANSFORM_TRANSLATE) {
+                            t.setTranslate(x, y);
+                        } else if (type == SVGTransform.SVG_TRANSFORM_SCALE) {
+                            t.setScale(x, y);
+                        } else {
+                            t.setRotate(r, x, y);
+                        }
+                        break;
+                    }
                 }
             }
         } else {
-            Transform ft = (Transform) transforms.lastElement();
-            Transform t = (Transform) res.transforms.elementAt(newSize - 1);
+            AbstractSVGTransform ft =
+                (AbstractSVGTransform) transforms.lastElement();
+            AbstractSVGTransform t =
+                (AbstractSVGTransform) res.transforms.elementAt(newSize - 1);
             if (t == null) {
-                t = new Transform();
+                t = new SVGOMTransform();
                 res.transforms.setElementAt(t, newSize - 1);
             }
             t.assign(ft);
@@ -185,49 +214,5 @@ public class AnimatableTransformListValue extends AnimatableValue {
      */
     public String getCssText() {
         return null;
-    }
-
-    /**
-     * An SVGTransform class that exposes transform components.
-     */
-    public static class Transform extends SVGOMTransform {
-
-        public float getX() {
-            return x;
-        }
-
-        public float getY() {
-            return y;
-        }
-
-        public void setTranslate(float tx, float ty) {
-            super.setTranslate(tx, ty);
-            this.x = tx;
-            this.y = ty;
-        }
-
-        public void setScale(float sx, float sy) {
-            super.setScale(sx, sy);
-            this.x = sx;
-            this.y = sy;
-        }
-
-        public void setSkewX(float angle) {
-            super.setSkewX(angle);
-            this.angle = angle;
-        }
-
-        public void setSkewY(float angle) {
-            super.setSkewY(angle);
-            this.angle = angle;
-        }
-
-        protected void assign(Transform t) {
-            type = t.type;
-            affineTransform = t.affineTransform;
-            angle = t.angle;
-            x = t.x;
-            y = t.y;
-        }
     }
 }

@@ -17,6 +17,8 @@
  */
 package org.apache.batik.dom.svg;
 
+import java.util.Vector;
+
 import org.apache.batik.anim.AnimationTarget;
 import org.apache.batik.anim.AnimationTargetListener;
 import org.apache.batik.anim.values.AnimatableBooleanValue;
@@ -25,6 +27,7 @@ import org.apache.batik.anim.values.AnimatableLengthValue;
 import org.apache.batik.anim.values.AnimatableLengthListValue;
 import org.apache.batik.anim.values.AnimatableNumberValue;
 import org.apache.batik.anim.values.AnimatableNumberListValue;
+import org.apache.batik.anim.values.AnimatableNumberOptionalNumberValue;
 import org.apache.batik.anim.values.AnimatablePathDataValue;
 import org.apache.batik.anim.values.AnimatablePreserveAspectRatioValue;
 import org.apache.batik.anim.values.AnimatablePointListValue;
@@ -39,6 +42,7 @@ import org.apache.batik.css.engine.value.ValueManager;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.AbstractStylableDocument;
 import org.apache.batik.dom.util.DOMUtilities;
+import org.apache.batik.parser.PathArrayProducer;
 import org.apache.batik.util.CSSConstants;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.SVGConstants;
@@ -65,7 +69,15 @@ import org.w3c.dom.svg.SVGElement;
 import org.w3c.dom.svg.SVGException;
 import org.w3c.dom.svg.SVGFitToViewBox;
 import org.w3c.dom.svg.SVGLength;
+import org.w3c.dom.svg.SVGLengthList;
+import org.w3c.dom.svg.SVGNumberList;
+import org.w3c.dom.svg.SVGPathSegList;
+import org.w3c.dom.svg.SVGPoint;
+import org.w3c.dom.svg.SVGPointList;
+import org.w3c.dom.svg.SVGPreserveAspectRatio;
+import org.w3c.dom.svg.SVGRect;
 import org.w3c.dom.svg.SVGSVGElement;
+import org.w3c.dom.svg.SVGTransformList;
 
 /**
  * This class implements the {@link SVGElement} interface.
@@ -568,6 +580,180 @@ public abstract class SVGOMElement
     }
 
     /**
+     * Returns the underlying value of an animatable XML attribute.
+     */
+    public AnimatableValue getUnderlyingValue(String ns, String ln) {
+        return null;
+    }
+
+    /**
+     * Returns an AnimatableNumberOptionalNumberValue for the base value of
+     * the given two SVGAnimatedIntegers.
+     */
+    protected AnimatableValue getBaseValue(SVGAnimatedInteger n,
+                                           SVGAnimatedInteger on) {
+        return new AnimatableNumberOptionalNumberValue
+            (this, n.getBaseVal(), on.getBaseVal());
+    }
+
+    /**
+     * Returns an AnimatableNumberOptionalNumberValue for the base value of
+     * the given two SVGAnimatedNumbers.
+     */
+    protected AnimatableValue getBaseValue(SVGAnimatedNumber n,
+                                           SVGAnimatedNumber on) {
+        return new AnimatableNumberOptionalNumberValue
+            (this, n.getBaseVal(), on.getBaseVal());
+    }
+
+    /**
+     * Returns an AnimatableValue for the base value of the given
+     * SVGAnimatedBoolean.
+     */
+    protected AnimatableValue getBaseValue(SVGAnimatedBoolean a) {
+        return new AnimatableBooleanValue(this, a.getBaseVal());
+    }
+
+    /**
+     * Returns an AnimatableValue for the base value of the given
+     * SVGAnimatedBoolean.
+     */
+    protected AnimatableValue getBaseValue(SVGAnimatedString a) {
+        return new AnimatableStringValue(this, a.getBaseVal());
+    }
+
+    /**
+     * Returns an AnimatableValue for the base value of the given
+     * SVGAnimatedBoolean.
+     */
+    protected AnimatableValue getBaseValue(SVGAnimatedNumber a) {
+        return new AnimatableNumberValue(this, a.getBaseVal());
+    }
+
+    /**
+     * Returns an AnimatableValue for the base value of the given
+     * SVGAnimatedInteger.
+     */
+    protected AnimatableValue getBaseValue(SVGAnimatedInteger a) {
+        return new AnimatableIntegerValue(this, a.getBaseVal());
+    }
+
+    /**
+     * Returns an AnimatableValue for the base value of the given
+     * SVGAnimatedEnumeration.
+     */
+    protected AnimatableValue getBaseValue(SVGAnimatedEnumeration a) {
+        SVGOMAnimatedEnumeration ae = (SVGOMAnimatedEnumeration) a;
+        return new AnimatableStringValue(this, ae.getBaseValAsString());
+    }
+
+    /**
+     * Returns an AnimatableValue for the base value of the given
+     * SVGAnimatedLength.
+     */
+    protected AnimatableValue getBaseValue(SVGAnimatedLength a,
+                                           short pcInterp) {
+        SVGLength l = a.getBaseVal();
+        return new AnimatableLengthValue(this, l.getUnitType(),
+                                         l.getValueInSpecifiedUnits(),
+                                         pcInterp);
+    }
+
+    /**
+     * Returns an AnimatableValue for the base value of the given
+     * SVGAnimatedLengthList.
+     */
+    protected AnimatableValue getBaseValue(SVGAnimatedLengthList a,
+                                           short pcInterp) {
+        SVGLengthList ll = a.getBaseVal();
+        int n = ll.getNumberOfItems();
+        short[] types = new short[n];
+        float[] values = new float[n];
+        for (int i = 0; i < n; i++) {
+            SVGLength l = ll.getItem(i);
+            types[i] = l.getUnitType();
+            values[i] = l.getValueInSpecifiedUnits();
+        }
+        return new AnimatableLengthListValue(this, types, values, pcInterp);
+    }
+
+    /**
+     * Returns an AnimatableValue for the base value of the given
+     * SVGAnimatedTransformList.
+     */
+    protected AnimatableValue getBaseValue(SVGAnimatedTransformList a) {
+        SVGTransformList tl = a.getBaseVal();
+        int n = tl.getNumberOfItems();
+        Vector v = new Vector();
+        for (int i = 0; i < n; i++) {
+            v.add((AbstractSVGTransform) tl.getItem(i));
+        }
+        return new AnimatableTransformListValue(this, v);
+    }
+
+    /**
+     * Returns an AnimatableValue for the base value of the given
+     * SVGAnimatedPreserveAspectRatio.
+     */
+    protected AnimatableValue getBaseValue(SVGAnimatedPreserveAspectRatio a) {
+        SVGPreserveAspectRatio par = a.getBaseVal();
+        return new AnimatablePreserveAspectRatioValue(this, par.getAlign(),
+                                                      par.getMeetOrSlice());
+    }
+
+    /**
+     * Returns an AnimatableValue for the base value of the given
+     * SVGAnimatedNumberList.
+     */
+    protected AnimatableValue getBaseValue(SVGAnimatedNumberList a) {
+        SVGNumberList nl = a.getBaseVal();
+        int n = nl.getNumberOfItems();
+        float[] numbers = new float[n];
+        for (int i = 0; i < n; i++) {
+            numbers[i] = nl.getItem(n).getValue();
+        }
+        return new AnimatableNumberListValue(this, numbers);
+    }
+
+    /**
+     * Returns an AnimatableValue for the base value of the given
+     * SVGAnimatedPoints.
+     */
+    protected AnimatableValue getBaseValue(SVGAnimatedPoints a) {
+        SVGPointList pl = a.getPoints();
+        int n = pl.getNumberOfItems();
+        float[] points = new float[n * 2];
+        for (int i = 0; i < n; i++) {
+            SVGPoint p = pl.getItem(i);
+            points[i * 2] = p.getX();
+            points[i * 2 + 1] = p.getY();
+        }
+        return new AnimatablePointListValue(this, points);
+    }
+
+    /**
+     * Returns an AnimatableValue for the base value of the given
+     * SVGAnimatedPathData.
+     */
+    protected AnimatableValue getBaseValue(SVGAnimatedPathData a) {
+        SVGPathSegList psl = a.getPathSegList();
+        PathArrayProducer pp = new PathArrayProducer();
+        SVGAnimatedPathDataSupport.handlePathSegList(psl, pp);
+        return new AnimatablePathDataValue(this, pp.getPathCommands(),
+                                           pp.getPathParameters());
+    }
+
+    /**
+     * Returns an AnimatableValue for the base value of the given
+     * SVGAnimatedRect.
+     */
+    protected AnimatableValue getBaseValue(SVGAnimatedRect a) {
+        SVGRect r = a.getBaseVal();
+        return new AnimatableRectValue(this, r.getX(), r.getY(), r.getWidth(),
+                                       r.getHeight());
+    }
+
+    /**
      * Updates an {@link SVGOMAnimatedBoolean} with the given
      * {@link AnimatableValue}.
      */
@@ -783,21 +969,21 @@ public abstract class SVGOMElement
         if (isCSS || ns == null) {
             if (an.equals(CSSConstants.CSS_BASELINE_SHIFT_PROPERTY)
                     || an.equals(CSSConstants.CSS_FONT_SIZE_PROPERTY)) {
-                return AnimationTarget.PERCENTAGE_FONT_SIZE;
+                return PERCENTAGE_FONT_SIZE;
             }
         }
         if (!isCSS) {
             return getAttributePercentageInterpretation(ns, an);
         }
         // Default for properties.
-        return AnimationTarget.PERCENTAGE_VIEWPORT_SIZE;
+        return PERCENTAGE_VIEWPORT_SIZE;
     }
 
     /**
      * Gets how percentage values are interpreted by the given attribute.
      */
     protected short getAttributePercentageInterpretation(String ns, String ln) {
-        return AnimationTarget.PERCENTAGE_VIEWPORT_SIZE;
+        return PERCENTAGE_VIEWPORT_SIZE;
     }
 
     /**

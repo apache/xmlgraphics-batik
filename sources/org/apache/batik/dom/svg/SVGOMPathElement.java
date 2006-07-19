@@ -971,4 +971,22 @@ public class SVGOMPathElement
         }
         super.updateAttributeValue(ns, ln, val);
     }
+
+    /**
+     * Returns the underlying value of an animatable XML attribute.
+     */
+    public AnimatableValue getUnderlyingValue(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE)) {
+                return getBaseValue(getExternalResourcesRequired());
+            } else if (ln.equals(SVG_PATH_LENGTH_ATTRIBUTE)) {
+                return getBaseValue(getPathLength());
+            } else if (ln.equals(SVG_D_ATTRIBUTE)) {
+                SVGOMAnimatedPathData apd =
+                    SVGAnimatedPathDataSupport.getAnimatedPathData(this);
+                return getBaseValue(apd);
+            }
+        }
+        return super.getUnderlyingValue(ns, ln);
+    }
 }

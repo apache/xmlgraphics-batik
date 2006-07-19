@@ -185,4 +185,24 @@ public class SVGOMFEDisplacementMapElement
         }
         super.updateAttributeValue(ns, ln, val);
     }
+
+    /**
+     * Returns the underlying value of an animatable XML attribute.
+     */
+    public AnimatableValue getUnderlyingValue(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_IN_ATTRIBUTE)) {
+                return getBaseValue(getIn1());
+            } else if (ln.equals(SVG_IN2_ATTRIBUTE)) {
+                return getBaseValue(getIn2());
+            } else if (ln.equals(SVG_SCALE_ATTRIBUTE)) {
+                return getBaseValue(getScale());
+            } else if (ln.equals(SVG_X_CHANNEL_SELECTOR_ATTRIBUTE)) {
+                return getBaseValue(getXChannelSelector());
+            } else if (ln.equals(SVG_Y_CHANNEL_SELECTOR_ATTRIBUTE)) {
+                return getBaseValue(getYChannelSelector());
+            }
+        }
+        return super.getUnderlyingValue(ns, ln);
+    }
 }

@@ -125,4 +125,18 @@ public class SVGOMFEDistantLightElement
         }
         super.updateAttributeValue(ns, ln, val);
     }
+
+    /**
+     * Returns the underlying value of an animatable XML attribute.
+     */
+    public AnimatableValue getUnderlyingValue(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_AZIMUTH_ATTRIBUTE)) {
+                return getBaseValue(getAzimuth());
+            } else if (ln.equals(SVG_ELEVATION_ATTRIBUTE)) {
+                return getBaseValue(getElevation());
+            }
+        }
+        return super.getUnderlyingValue(ns, ln);
+    }
 }

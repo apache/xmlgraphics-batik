@@ -162,4 +162,16 @@ public class SVGOMScriptElement
         }
         super.updateAttributeValue(ns, ln, val);
     }
+
+    /**
+     * Returns the underlying value of an animatable XML attribute.
+     */
+    public AnimatableValue getUnderlyingValue(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE)) {
+                return getBaseValue(getExternalResourcesRequired());
+            }
+        }
+        return super.getUnderlyingValue(ns, ln);
+    }
 }

@@ -161,4 +161,18 @@ public class SVGOMFEGaussianBlurElement
         }
         super.updateAttributeValue(ns, ln, val);
     }
+
+    /**
+     * Returns the underlying value of an animatable XML attribute.
+     */
+    public AnimatableValue getUnderlyingValue(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_IN_ATTRIBUTE)) {
+                return getBaseValue(getIn1());
+            } else if (ln.equals(SVG_STD_DEVIATION_ATTRIBUTE)) {
+                return getBaseValue(getStdDeviationX(), getStdDeviationY());
+            }
+        }
+        return super.getUnderlyingValue(ns, ln);
+    }
 }

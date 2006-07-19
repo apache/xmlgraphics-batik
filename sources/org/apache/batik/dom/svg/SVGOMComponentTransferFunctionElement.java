@@ -194,4 +194,28 @@ public abstract class SVGOMComponentTransferFunctionElement
         }
         super.updateAttributeValue(ns, ln, val);
     }
+
+    /**
+     * Returns the underlying value of an animatable XML attribute.
+     */
+    public AnimatableValue getUnderlyingValue(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_TYPE_ATTRIBUTE)) {
+                return getBaseValue(getType());
+            } else if (ln.equals(SVG_TABLE_VALUES_ATTRIBUTE)) {
+                return getBaseValue(getTableValues());
+            } else if (ln.equals(SVG_SLOPE_ATTRIBUTE)) {
+                return getBaseValue(getSlope());
+            } else if (ln.equals(SVG_INTERCEPT_ATTRIBUTE)) {
+                return getBaseValue(getIntercept());
+            } else if (ln.equals(SVG_AMPLITUDE_ATTRIBUTE)) {
+                return getBaseValue(getAmplitude());
+            } else if (ln.equals(SVG_EXPONENT_ATTRIBUTE)) {
+                return getBaseValue(getExponent());
+            } else if (ln.equals(SVG_OFFSET_ATTRIBUTE)) {
+                return getBaseValue(getOffset());
+            }
+        }
+        return super.getUnderlyingValue(ns, ln);
+    }
 }

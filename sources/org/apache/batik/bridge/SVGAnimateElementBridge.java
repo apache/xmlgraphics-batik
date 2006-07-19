@@ -24,7 +24,6 @@ import org.apache.batik.anim.AnimationTarget;
 import org.apache.batik.anim.SMILConstants;
 import org.apache.batik.anim.SimpleAnimation;
 import org.apache.batik.anim.values.AnimatableValue;
-import org.apache.batik.util.SVGConstants;
 
 /**
  * Bridge class for the 'animate' animation element.
@@ -52,12 +51,9 @@ public class SVGAnimateElementBridge extends SVGAnimationElementBridge {
      * Creates the animation object for the animation element.
      */
     protected AbstractAnimation createAnimation(AnimationTarget target) {
-        AnimatableValue from =
-            parseAnimatableValue(SVGConstants.SVG_FROM_ATTRIBUTE);
-        AnimatableValue to =
-            parseAnimatableValue(SVGConstants.SVG_TO_ATTRIBUTE);
-        AnimatableValue by =
-            parseAnimatableValue(SVGConstants.SVG_BY_ATTRIBUTE);
+        AnimatableValue from = parseAnimatableValue(SVG_FROM_ATTRIBUTE);
+        AnimatableValue to = parseAnimatableValue(SVG_TO_ATTRIBUTE);
+        AnimatableValue by = parseAnimatableValue(SVG_BY_ATTRIBUTE);
         return new SimpleAnimation(timedElement,
                                    this,
                                    parseCalcMode(),
@@ -75,8 +71,8 @@ public class SVGAnimateElementBridge extends SVGAnimationElementBridge {
      * Returns the parsed 'calcMode' attribute from the animation element.
      */
     protected int parseCalcMode() {
-        String calcModeString =
-            element.getAttributeNS(null, SVGConstants.SVG_CALC_MODE_ATTRIBUTE);
+        String calcModeString = element.getAttributeNS(null,
+                                                       SVG_CALC_MODE_ATTRIBUTE);
         if (calcModeString.length() == 0) {
             return getDefaultCalcMode();
         } else if (calcModeString.equals(SMILConstants.SMIL_LINEAR_VALUE)) {
@@ -91,26 +87,24 @@ public class SVGAnimateElementBridge extends SVGAnimationElementBridge {
         }
         throw new BridgeException
             (ctx, element, ErrorConstants.ERR_ATTRIBUTE_VALUE_MALFORMED,
-             new Object[] { SVGConstants.SVG_CALC_MODE_ATTRIBUTE,
-                            calcModeString });
+             new Object[] { SVG_CALC_MODE_ATTRIBUTE, calcModeString });
     }
 
     /**
      * Returns the parsed 'additive' attribute from the animation element.
      */
     protected boolean parseAdditive() {
-        String additiveString =
-            element.getAttributeNS(null, SVGConstants.SVG_ADDITIVE_ATTRIBUTE);
-        if (additiveString.length() == 0 ||
-                additiveString.equals(SMILConstants.SMIL_REPLACE_VALUE)) {
+        String additiveString = element.getAttributeNS(null,
+                                                       SVG_ADDITIVE_ATTRIBUTE);
+        if (additiveString.length() == 0
+                || additiveString.equals(SMILConstants.SMIL_REPLACE_VALUE)) {
             return false;
         } else if (additiveString.equals(SMILConstants.SMIL_SUM_VALUE)) {
             return true;
         }
         throw new BridgeException
             (ctx, element, ErrorConstants.ERR_ATTRIBUTE_VALUE_MALFORMED,
-             new Object[] { SVGConstants.SVG_ADDITIVE_ATTRIBUTE,
-                            additiveString });
+             new Object[] { SVG_ADDITIVE_ATTRIBUTE, additiveString });
     }
     
     /**
@@ -118,7 +112,7 @@ public class SVGAnimateElementBridge extends SVGAnimationElementBridge {
      */
     protected boolean parseAccumulate() {
         String accumulateString =
-            element.getAttributeNS(null, SVGConstants.SVG_ACCUMULATE_ATTRIBUTE);
+            element.getAttributeNS(null, SVG_ACCUMULATE_ATTRIBUTE);
         if (accumulateString.length() == 0 ||
                 accumulateString.equals(SMILConstants.SMIL_NONE_VALUE)) {
             return false;
@@ -127,16 +121,15 @@ public class SVGAnimateElementBridge extends SVGAnimationElementBridge {
         }
         throw new BridgeException
             (ctx, element, ErrorConstants.ERR_ATTRIBUTE_VALUE_MALFORMED,
-             new Object[] { SVGConstants.SVG_ACCUMULATE_ATTRIBUTE,
-                            accumulateString });
+             new Object[] { SVG_ACCUMULATE_ATTRIBUTE, accumulateString });
     }
 
     /**
      * Returns the parsed 'values' attribute from the animation element.
      */
     protected AnimatableValue[] parseValues() {
-        String valuesString =
-            element.getAttributeNS(null, SVGConstants.SVG_VALUES_ATTRIBUTE);
+        String valuesString = element.getAttributeNS(null,
+                                                     SVG_VALUES_ATTRIBUTE);
         int len = valuesString.length();
         if (len == 0) {
             return null;
@@ -175,7 +168,7 @@ outer:  while (i < len) {
      */
     protected float[] parseKeyTimes() {
         String keyTimesString =
-            element.getAttributeNS(null, SVGConstants.SVG_KEY_TIMES_ATTRIBUTE);
+            element.getAttributeNS(null, SVG_KEY_TIMES_ATTRIBUTE);
         int len = keyTimesString.length();
         if (len == 0) {
             return null;
@@ -209,8 +202,7 @@ outer:  while (i < len) {
             } catch (NumberFormatException nfe) {
                 throw new BridgeException
                     (ctx, element, ErrorConstants.ERR_ATTRIBUTE_VALUE_MALFORMED,
-                     new Object[] { SVGConstants.SVG_KEY_TIMES_ATTRIBUTE,
-                                    keyTimesString });
+                     new Object[] { SVG_KEY_TIMES_ATTRIBUTE, keyTimesString });
             }
         }
         len = keyTimes.size();

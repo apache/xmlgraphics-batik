@@ -25,7 +25,6 @@ import org.apache.batik.anim.TransformAnimation;
 import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.anim.values.AnimatableTransformListValue;
 import org.apache.batik.dom.svg.SVGOMTransform;
-import org.apache.batik.util.SVGConstants;
 
 import org.w3c.dom.svg.SVGTransform;
 
@@ -57,20 +56,17 @@ public class SVGAnimateTransformElementBridge extends SVGAnimateElementBridge {
     protected AbstractAnimation createAnimation(AnimationTarget target) {
         short type = parseType();
         AnimatableValue from = null, to = null, by = null;
-        if (element.hasAttributeNS(null, SVGConstants.SVG_FROM_ATTRIBUTE)) {
-            from = parseValue
-                (element.getAttributeNS(null, SVGConstants.SVG_FROM_ATTRIBUTE),
-                 type, target);
+        if (element.hasAttributeNS(null, SVG_FROM_ATTRIBUTE)) {
+            from = parseValue(element.getAttributeNS(null, SVG_FROM_ATTRIBUTE),
+                              type, target);
         }
-        if (element.hasAttributeNS(null, SVGConstants.SVG_TO_ATTRIBUTE)) {
-            to = parseValue
-                (element.getAttributeNS(null, SVGConstants.SVG_TO_ATTRIBUTE),
-                 type, target);
+        if (element.hasAttributeNS(null, SVG_TO_ATTRIBUTE)) {
+            to = parseValue(element.getAttributeNS(null, SVG_TO_ATTRIBUTE),
+                            type, target);
         }
-        if (element.hasAttributeNS(null, SVGConstants.SVG_BY_ATTRIBUTE)) {
-            by = parseValue
-                (element.getAttributeNS(null, SVGConstants.SVG_BY_ATTRIBUTE),
-                 type, target);
+        if (element.hasAttributeNS(null, SVG_BY_ATTRIBUTE)) {
+            by = parseValue(element.getAttributeNS(null, SVG_BY_ATTRIBUTE),
+                            type, target);
         }
         return new TransformAnimation(timedElement,
                                       this,
@@ -90,8 +86,7 @@ public class SVGAnimateTransformElementBridge extends SVGAnimateElementBridge {
      * Returns the parsed 'type' attribute from the animation element.
      */
     protected short parseType() {
-        String typeString =
-            element.getAttributeNS(null, SVGConstants.SVG_TYPE_ATTRIBUTE);
+        String typeString = element.getAttributeNS(null, SVG_TYPE_ATTRIBUTE);
         if (typeString.equals("translate")) {
             return SVGTransform.SVG_TRANSFORM_TRANSLATE;
         } else if (typeString.equals("scale")) {
@@ -103,8 +98,9 @@ public class SVGAnimateTransformElementBridge extends SVGAnimateElementBridge {
         } else if (typeString.equals("skewY")) {
             return SVGTransform.SVG_TRANSFORM_SKEWY;
         }
-        // XXX
-        throw new RuntimeException("Invalid value for 'type' attribute: \"" + typeString + "\"");
+        throw new BridgeException
+            (ctx, element, ErrorConstants.ERR_ATTRIBUTE_VALUE_MALFORMED,
+             new Object[] { SVG_TYPE_ATTRIBUTE, typeString });
     }
 
     /**
@@ -199,12 +195,10 @@ public class SVGAnimateTransformElementBridge extends SVGAnimateElementBridge {
         }
 
         if (i != len) {
-            // XXX
-            throw new RuntimeException("Invalid transform value: \"" + s + "\"");
+            return null;
         }
 
-        AnimatableTransformListValue.Transform t =
-            new AnimatableTransformListValue.Transform();
+        SVGOMTransform t = new SVGOMTransform();
         switch (type) {
             case SVGTransform.SVG_TRANSFORM_TRANSLATE:
                 if (count == 2) {
@@ -240,9 +234,10 @@ public class SVGAnimateTransformElementBridge extends SVGAnimateElementBridge {
     /**
      * Returns the parsed 'values' attribute from the animation element.
      */
-    protected AnimatableValue[] parseValues(short type, AnimationTarget target) {
-        String valuesString =
-            element.getAttributeNS(null, SVGConstants.SVG_VALUES_ATTRIBUTE);
+    protected AnimatableValue[] parseValues(short type,
+                                            AnimationTarget target) {
+        String valuesString = element.getAttributeNS(null,
+                                                     SVG_VALUES_ATTRIBUTE);
         int len = valuesString.length();
         if (len == 0) {
             return null;
@@ -269,8 +264,14 @@ outer:  while (i < len) {
                 }
             }
             end = i++;
-            String value = valuesString.substring(start, end);
-            values.add(parseValue(value, type, target));
+            String valueString = valuesString.substring(start, end);
+            AnimatableValue value = parseValue(valueString, type, target);
+            if (value == null) {
+                throw new BridgeException
+                    (ctx, element, ErrorConstants.ERR_ATTRIBUTE_VALUE_MALFORMED,
+                     new Object[] { SVG_VALUES_ATTRIBUTE, valuesString });
+            }
+            values.add(value);
         }
         AnimatableValue[] ret = new AnimatableValue[values.size()];
         return (AnimatableValue[]) values.toArray(ret);

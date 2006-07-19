@@ -17,7 +17,6 @@
  */
 package org.apache.batik.dom.svg;
 
-import org.apache.batik.anim.AnimationTarget;
 import org.apache.batik.anim.values.AnimatableAngleOrIdentValue;
 import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.AbstractDocument;
@@ -290,11 +289,11 @@ public class SVGOMMarkerElement
         if (ns == null) {
             if (ln.equals(SVG_REF_X_ATTRIBUTE)
                     || ln.equals(SVG_MARKER_WIDTH_ATTRIBUTE)) {
-                return AnimationTarget.PERCENTAGE_VIEWPORT_WIDTH;
+                return PERCENTAGE_VIEWPORT_WIDTH;
             }
             if (ln.equals(SVG_REF_Y_ATTRIBUTE)
                     || ln.equals(SVG_MARKER_HEIGHT_ATTRIBUTE)) {
-                return AnimationTarget.PERCENTAGE_VIEWPORT_HEIGHT;
+                return PERCENTAGE_VIEWPORT_HEIGHT;
             }
         }
         return super.getAttributePercentageInterpretation(ns, ln);
@@ -379,5 +378,48 @@ public class SVGOMMarkerElement
             }
         }
         super.updateAttributeValue(ns, ln, val);
+    }
+
+    /**
+     * Returns the underlying value of an animatable XML attribute.
+     */
+    public AnimatableValue getUnderlyingValue(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE)) {
+                return getBaseValue(getExternalResourcesRequired());
+            } else if (ln.equals(SVG_REF_X_ATTRIBUTE)) {
+                return getBaseValue
+                    (getRefX(), PERCENTAGE_VIEWPORT_WIDTH);
+            } else if (ln.equals(SVG_REF_Y_ATTRIBUTE)) {
+                return getBaseValue
+                    (getRefY(), PERCENTAGE_VIEWPORT_HEIGHT);
+            } else if (ln.equals(SVG_MARKER_UNITS_ATTRIBUTE)) {
+                return getBaseValue(getMarkerUnits());
+            } else if (ln.equals(SVG_MARKER_WIDTH_ATTRIBUTE)) {
+                return getBaseValue
+                    (getMarkerWidth(),
+                     PERCENTAGE_VIEWPORT_WIDTH);
+            } else if (ln.equals(SVG_MARKER_HEIGHT_ATTRIBUTE)) {
+                return getBaseValue
+                    (getMarkerHeight(),
+                     PERCENTAGE_VIEWPORT_HEIGHT);
+            } else if (ln.equals(SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE)) {
+                return getBaseValue(getPreserveAspectRatio());
+            } else if (ln.equals(SVG_ORIENT_ATTRIBUTE)) {
+                SVGOMAnimatedMarkerOrientValue orient =
+                    (SVGOMAnimatedMarkerOrientValue)
+                    getLiveAttributeValue(null, ln);
+                if (orient.getAnimatedEnumeration().getBaseVal() ==
+                        SVGMarkerElement.SVG_MARKER_ORIENT_ANGLE) {
+                    SVGAngle a = orient.getAnimatedAngle().getBaseVal();
+                    return new AnimatableAngleOrIdentValue(this, a.getValue(),
+                                                           a.getUnitType());
+                } else {
+                    return new AnimatableAngleOrIdentValue(this,
+                                                           SVG_AUTO_VALUE);
+                }
+            }
+        }
+        return super.getUnderlyingValue(ns, ln);
     }
 }

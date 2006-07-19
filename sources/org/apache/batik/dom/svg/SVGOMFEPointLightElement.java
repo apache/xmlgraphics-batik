@@ -137,4 +137,20 @@ public class SVGOMFEPointLightElement
         }
         super.updateAttributeValue(ns, ln, val);
     }
+
+    /**
+     * Returns the underlying value of an animatable XML attribute.
+     */
+    public AnimatableValue getUnderlyingValue(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_X_ATTRIBUTE)) {
+                return getBaseValue(getX());
+            } else if (ln.equals(SVG_Y_ATTRIBUTE)) {
+                return getBaseValue(getY());
+            } else if (ln.equals(SVG_Z_ATTRIBUTE)) {
+                return getBaseValue(getZ());
+            }
+        }
+        return super.getUnderlyingValue(ns, ln);
+    }
 }

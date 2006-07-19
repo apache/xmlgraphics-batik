@@ -56,7 +56,7 @@ public class AnimatableLengthListValue extends AnimatableValue {
     /**
      * Creates a new AnimatableLengthListValue.
      */
-    public AnimatableLengthListValue(AnimationTarget target, short types[],
+    public AnimatableLengthListValue(AnimationTarget target, short[] types,
                                      float[] values, short pcInterp) {
         super(target);
         this.lengthTypes = types;

@@ -73,10 +73,19 @@ public abstract class SVGURIReferenceGraphicsElement
                                      AnimatableValue val) {
         if (XLINK_NAMESPACE_URI.equals(ns)
                 && ln.equals(XLINK_HREF_ATTRIBUTE)) {
-            SVGOMAnimatedString href = (SVGOMAnimatedString) getHref();
-            updateStringAttributeValue(href, val);
+            updateStringAttributeValue(getHref(), val);
         } else {
             super.updateAttributeValue(ns, ln, val);
         }
+    }
+
+    /**
+     * Returns the underlying value of an animatable XML attribute.
+     */
+    public AnimatableValue getUnderlyingValue(String ns, String ln) {
+        if (XLINK_NAMESPACE_URI.equals(ns)) {
+            return getBaseValue(getHref());
+        }
+        return super.getUnderlyingValue(ns, ln);
     }
 }

@@ -90,6 +90,16 @@ public class SVGOMAnimatedEnumeration extends AbstractSVGAnimatedValue
     }
 
     /**
+     * Returns the base value as a string.
+     */
+    public String getBaseValAsString() {
+        if (!valid) {
+            update();
+        }
+        return values[baseVal];
+    }
+
+    /**
      * Updates the base value from the attribute.
      */
     protected void update() {

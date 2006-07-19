@@ -19,7 +19,6 @@ package org.apache.batik.anim;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.Map;
 
 import org.apache.batik.anim.timing.TimedDocumentRoot;

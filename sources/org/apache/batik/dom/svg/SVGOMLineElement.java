@@ -17,7 +17,6 @@
  */
 package org.apache.batik.dom.svg;
 
-import org.apache.batik.anim.AnimationTarget;
 import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.util.SVGTypes;
@@ -141,10 +140,10 @@ public class SVGOMLineElement
     protected short getAttributePercentageInterpretation(String ns, String ln) {
         if (ns == null) {
             if (ln.equals(SVG_X1_ATTRIBUTE) || ln.equals(SVG_X2_ATTRIBUTE)) {
-                return AnimationTarget.PERCENTAGE_VIEWPORT_WIDTH;
+                return PERCENTAGE_VIEWPORT_WIDTH;
             }
             if (ln.equals(SVG_Y1_ATTRIBUTE) || ln.equals(SVG_Y2_ATTRIBUTE)) {
-                return AnimationTarget.PERCENTAGE_VIEWPORT_HEIGHT;
+                return PERCENTAGE_VIEWPORT_HEIGHT;
             }
         }
         return super.getAttributePercentageInterpretation(ns, ln);
@@ -171,5 +170,27 @@ public class SVGOMLineElement
             }
         }
         super.updateAttributeValue(ns, ln, val);
+    }
+
+    /**
+     * Returns the underlying value of an animatable XML attribute.
+     */
+    public AnimatableValue getUnderlyingValue(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_X1_ATTRIBUTE)) {
+                return getBaseValue
+                    (getX1(), PERCENTAGE_VIEWPORT_WIDTH);
+            } else if (ln.equals(SVG_Y1_ATTRIBUTE)) {
+                return getBaseValue
+                    (getY1(), PERCENTAGE_VIEWPORT_HEIGHT);
+            } else if (ln.equals(SVG_X2_ATTRIBUTE)) {
+                return getBaseValue
+                    (getX2(), PERCENTAGE_VIEWPORT_WIDTH);
+            } else if (ln.equals(SVG_Y2_ATTRIBUTE)) {
+                return getBaseValue
+                    (getY2(), PERCENTAGE_VIEWPORT_HEIGHT);
+            }
+        }
+        return super.getUnderlyingValue(ns, ln);
     }
 }

@@ -27,7 +27,7 @@ import org.apache.batik.anim.values.AnimatableValue;
  * @version $Id$
  */
 public interface AnimatableElement {
-    
+
     /**
      * Returns the underlying value of the animated attribute.  Used for
      * composition of additive animations.

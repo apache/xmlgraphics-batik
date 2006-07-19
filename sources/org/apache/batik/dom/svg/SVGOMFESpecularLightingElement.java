@@ -160,4 +160,22 @@ public class SVGOMFESpecularLightingElement
         }
         super.updateAttributeValue(ns, ln, val);
     }
+
+    /**
+     * Returns the underlying value of an animatable XML attribute.
+     */
+    public AnimatableValue getUnderlyingValue(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_IN_ATTRIBUTE)) {
+                return getBaseValue(getIn1());
+            } else if (ln.equals(SVG_SURFACE_SCALE_ATTRIBUTE)) {
+                return getBaseValue(getSurfaceScale());
+            } else if (ln.equals(SVG_SPECULAR_CONSTANT_ATTRIBUTE)) {
+                return getBaseValue(getSpecularConstant());
+            } else if (ln.equals(SVG_SPECULAR_EXPONENT_ATTRIBUTE)) {
+                return getBaseValue(getSpecularExponent());
+            }
+        }
+        return super.getUnderlyingValue(ns, ln);
+    }
 }

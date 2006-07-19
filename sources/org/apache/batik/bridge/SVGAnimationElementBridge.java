@@ -119,11 +119,12 @@ public abstract class SVGAnimationElementBridge extends AbstractSVGBridge
      */
     public AnimatableValue getUnderlyingValue() {
         if (isCSS) {
-            return eng.getUnderlyingCSSValue
-                (element, animationTarget, attributeLocalName);
+            return eng.getUnderlyingCSSValue(element,
+                                             animationTarget,
+                                             attributeLocalName);
         } else {
-            // XXX
-            return null;
+            return animationTarget.getUnderlyingValue(attributeNamespaceURI,
+                                                      attributeLocalName);
         }
     }
 

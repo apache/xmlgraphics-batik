@@ -41,7 +41,6 @@ import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.ShapeNode;
 import org.apache.batik.gvt.TextNode;
-import org.apache.batik.util.SVGConstants;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -478,10 +477,10 @@ public class SVGSVGElementBridge
             String nsURI = curr.getNamespaceURI();
             String tag = curr.getLocalName();
             boolean isGroup;
-            isGroup = (SVGConstants.SVG_NAMESPACE_URI.equals(nsURI) &&
-                       ((SVGConstants.SVG_G_TAG.equals(tag)) ||
-                        (SVGConstants.SVG_SVG_TAG.equals(tag)) ||
-                        (SVGConstants.SVG_A_TAG.equals(tag))));
+            isGroup = SVG_NAMESPACE_URI.equals(nsURI)
+                && (SVG_G_TAG.equals(tag)
+                        || SVG_SVG_TAG.equals(tag)
+                        || SVG_A_TAG.equals(tag));
 
             GraphicsNode gn = ctx.getGraphicsNode(curr);
             if (gn == null) {
@@ -529,8 +528,8 @@ public class SVGSVGElementBridge
                 if (curr == end) break;
                 // Otherwise check this node for intersection more
                 // carefully and if it still intersects add it.
-                if (SVGConstants.SVG_NAMESPACE_URI.equals(nsURI) &&
-                    SVGConstants.SVG_USE_TAG.equals(tag)) {
+                if (SVG_NAMESPACE_URI.equals(nsURI)
+                        && SVG_USE_TAG.equals(tag)) {
                     // FIXX: This really isn't right we need to 
                     // Add the proxy children.
                     if (rect.contains(gnBounds))
@@ -614,10 +613,10 @@ public class SVGSVGElementBridge
             String nsURI = curr.getNamespaceURI();
             String tag = curr.getLocalName();
             boolean isGroup;
-            isGroup = (SVGConstants.SVG_NAMESPACE_URI.equals(nsURI) &&
-                       ((SVGConstants.SVG_G_TAG.equals(tag)) ||
-                        (SVGConstants.SVG_SVG_TAG.equals(tag)) ||
-                        (SVGConstants.SVG_A_TAG.equals(tag))));
+            isGroup = SVG_NAMESPACE_URI.equals(nsURI)
+                && (SVG_G_TAG.equals(tag)
+                        || SVG_SVG_TAG.equals(tag)
+                        || SVG_A_TAG.equals(tag));
 
             GraphicsNode gn = ctx.getGraphicsNode(curr);
             if (gn == null) {
@@ -662,8 +661,8 @@ public class SVGSVGElementBridge
                 }
             } else {
                 if (curr == end) break;
-                if (SVGConstants.SVG_NAMESPACE_URI.equals(nsURI) &&
-                    SVGConstants.SVG_USE_TAG.equals(tag)) {
+                if (SVG_NAMESPACE_URI.equals(nsURI)
+                        && SVG_USE_TAG.equals(tag)) {
                     // FIXX: This really isn't right we need to 
                     // Add the proxy children.
                     if (rect.contains(gnBounds))

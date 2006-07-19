@@ -115,8 +115,9 @@ public class SimpleAnimation extends AbstractAnimation {
                 }
             } else {
                 if (to != null) {
-                    values = new AnimatableValue[1];
-                    values[0] = to;
+                    values = new AnimatableValue[2];
+                    values[0] = animatableElement.getUnderlyingValue();
+                    values[1] = to;
                     toAnimation = true;
                     cumulative = false;
                 } else if (by != null) {

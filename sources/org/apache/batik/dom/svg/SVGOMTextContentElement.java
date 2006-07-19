@@ -329,4 +329,21 @@ public abstract class SVGOMTextContentElement
         }
         super.updateAttributeValue(ns, ln, val);
     }
+
+    /**
+     * Returns the underlying value of an animatable XML attribute.
+     */
+    public AnimatableValue getUnderlyingValue(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE)) {
+                return getBaseValue(getExternalResourcesRequired());
+            } else if (ln.equals(SVG_TEXT_LENGTH_ATTRIBUTE)) {
+                return getBaseValue
+                    (getTextLength(), PERCENTAGE_VIEWPORT_SIZE);
+            } else if (ln.equals(SVG_LENGTH_ADJUST_ATTRIBUTE)) {
+                return getBaseValue(getLengthAdjust());
+            }
+        }
+        return super.getUnderlyingValue(ns, ln);
+    }
 }
