@@ -2282,6 +2282,24 @@ public abstract class CSSEngine {
     }
 
     /**
+     * Returns whether the DOM subtree rooted at the specified node
+     * contains a {@link CSSStyleSheetNode}.
+     */
+    protected boolean hasStyleSheetNode(Node n) {
+        if (n instanceof CSSStyleSheetNode) {
+            return true;
+        }
+        n = getCSSFirstChild(n);
+        while (n != null) {
+            if (hasStyleSheetNode(n)) {
+                return true;
+            }
+            n = getCSSNextSibling(n);
+        }
+        return false;
+    }
+
+    /**
      * Handles an attribute change in the document.
      */
     protected void handleAttrModified(Element e,
@@ -2299,15 +2317,13 @@ public abstract class CSSEngine {
         }
 
         String attrNS = attr.getNamespaceURI();
-        String name   = ((attrNS == null) ?
-                         attr.getNodeName() :
-                         attr.getLocalName());
+        String name = attrNS == null ? attr.getNodeName() : attr.getLocalName();
 
-        CSSStylableElement elt = (CSSStylableElement)e;
+        CSSStylableElement elt = (CSSStylableElement) e;
         StyleMap style = elt.getComputedStyleMap(null);
         if (style != null) {
-            if ((attrNS == styleNamespaceURI) ||
-                ((attrNS != null) && attrNS.equals(styleNamespaceURI))) {
+            if (attrNS == styleNamespaceURI
+                    || attrNS != null && attrNS.equals(styleNamespaceURI)) {
                 if (name.equals(styleLocalName)) {
                     // The style declaration attribute has been modified.
                     inlineStyleAttributeUpdated
@@ -2317,9 +2333,9 @@ public abstract class CSSEngine {
             }
 
             if (nonCSSPresentationalHints != null) {
-                if ((attrNS == nonCSSPresentationalHintsNamespaceURI) ||
-                    ((attrNS != null) &&
-                     attrNS.equals(nonCSSPresentationalHintsNamespaceURI))) {
+                if (attrNS == nonCSSPresentationalHintsNamespaceURI ||
+                        attrNS != null &&
+                        attrNS.equals(nonCSSPresentationalHintsNamespaceURI)) {
                     if (nonCSSPresentationalHints.contains(name)) {
                         // The 'name' attribute which represents a non CSS
                         // presentational hint has been modified.
@@ -2345,6 +2361,78 @@ public abstract class CSSEngine {
     }
 
     /**
+     * Handles a node insertion in the document.
+     */
+    protected void handleNodeInserted(Node n) {
+        if (hasStyleSheetNode(n)) {
+            // Invalidate all the CSSStylableElements in the document.
+            styleSheetNodes = null;
+            invalidateProperties(document.getDocumentElement(),
+                                 null, null, true);
+        } else if (n instanceof CSSStylableElement) {
+            // Invalidate the CSSStylableElement siblings, to correctly
+            // match the adjacent selectors and first-child pseudo-class.
+            n = getCSSNextSibling(n);
+            while (n != null) {
+                invalidateProperties(n, null, null, true);
+                n = getCSSNextSibling(n);
+            }
+        }
+    }
+
+    /**
+     * Handles a node removal from the document.
+     */
+    protected void handleNodeRemoved(Node n) {
+        if (hasStyleSheetNode(n)) {
+            // Wait for the DOMSubtreeModified to do the invalidations
+            // because at this time the node is in the tree.
+            styleSheetRemoved = true;
+        } else if (n instanceof CSSStylableElement) {
+            // Wait for the DOMSubtreeModified to do the invalidations
+            // because at this time the node is in the tree.
+            removedStylableElementSibling = getCSSNextSibling(n);
+        }
+        // Clears the computed styles in the removed tree.
+        disposeStyleMaps(n);
+    }
+
+    /**
+     * Handles a subtree modification in the document.
+     */
+    protected void handleSubtreeModified(Node n) {
+        if (styleSheetRemoved) {
+            // Invalidate all the CSSStylableElements in the document.
+            styleSheetRemoved = false;
+            styleSheetNodes = null;
+            invalidateProperties(document.getDocumentElement(),
+                                 null, null, true);
+        } else if (removedStylableElementSibling != null) {
+            // Invalidate the CSSStylableElement siblings, to
+            // correctly match the adjacent selectors and
+            // first-child pseudo-class.
+            n = removedStylableElementSibling;
+            while (n != null) {
+                invalidateProperties(n, null, null, true);
+                n = getCSSNextSibling(n);
+            }
+            removedStylableElementSibling = null;
+        }
+    }
+
+    /**
+     * Handles a character data modification in the document.
+     */
+    protected void handleCharacterDataModified(Node n) {
+        if (getCSSParentNode(n) instanceof CSSStyleSheetNode) {
+            // Invalidate all the CSSStylableElements in the document.
+            styleSheetNodes = null;
+            invalidateProperties(document.getDocumentElement(),
+                                 null, null, true);
+        }
+    }
+
+    /**
      * To handle mutations of a CSSNavigableDocument.
      */
     protected class CSSNavigableDocumentHandler
@@ -2366,38 +2454,14 @@ public abstract class CSSEngine {
          * A node has been inserted into the CSSNavigableDocument tree.
          */
         public void nodeInserted(Node newNode) {
-            if (newNode instanceof CSSStyleSheetNode) {
-                styleSheetNodes = null;
-                // Invalidate all the CSSStylableElements in the document.
-                invalidateProperties(document.getDocumentElement(),
-                                     null, null, true);
-            } else if (newNode instanceof CSSStylableElement) {
-                // Invalidate the CSSStylableElement siblings, to
-                // correctly match the adjacent selectors and
-                // first-child pseudo-class.
-                for (Node n = getCSSNextSibling(newNode);
-                     n != null;
-                     n = getCSSNextSibling(n)) {
-                    invalidateProperties(n, null, null, true);
-                }
-            }
+            handleNodeInserted(newNode);
         }
 
         /**
          * A node is about to be removed from the CSSNavigableDocument tree.
          */
         public void nodeToBeRemoved(Node oldNode) {
-            if (oldNode instanceof CSSStyleSheetNode) {
-                // Wait for the DOMSubtreeModified to do the invalidations
-                // because at this time the node is in the tree.
-                styleSheetRemoved = true;
-            } else if (oldNode instanceof CSSStylableElement) {
-                // Wait for the DOMSubtreeModified to do the invalidations
-                // because at this time the node is in the tree.
-                removedStylableElementSibling = getCSSNextSibling(oldNode);
-            }
-            // Clears the computed styles in the removed tree.
-            disposeStyleMaps(oldNode);
+            handleNodeRemoved(oldNode);
         }
 
         /**
@@ -2405,36 +2469,14 @@ public abstract class CSSEngine {
          * in some way.
          */
         public void subtreeModified(Node rootOfModifications) {
-            if (styleSheetRemoved) {
-                styleSheetRemoved = false;
-                styleSheetNodes = null;
-
-                // Invalidate all the CSSStylableElements in the document.
-                invalidateProperties(document.getDocumentElement(),
-                                     null, null, true);
-            } else if (removedStylableElementSibling != null) {
-                // Invalidate the CSSStylableElement siblings, to
-                // correctly match the adjacent selectors and
-                // first-child pseudo-class.
-                for (Node n = removedStylableElementSibling;
-                     n != null;
-                     n = getCSSNextSibling(n)) {
-                    invalidateProperties(n, null, null, true);
-                }
-                removedStylableElementSibling = null;
-            }
+            handleSubtreeModified(rootOfModifications);
         }
 
         /**
          * Character data in the CSSNavigableDocument tree has been modified.
          */
         public void characterDataModified(Node text) {
-            if (getCSSParentNode(text) instanceof CSSStyleSheetNode) {
-                styleSheetNodes = null;
-                // Invalidate all the CSSStylableElements in the document.
-                invalidateProperties(document.getDocumentElement(),
-                                     null, null, true);
-            }
+            handleCharacterDataModified(text);
         }
 
         /**
@@ -2542,24 +2584,7 @@ public abstract class CSSEngine {
      */
     protected class DOMNodeInsertedListener implements EventListener {
         public void handleEvent(Event evt) {
-            EventTarget et = evt.getTarget();
-            if (et instanceof CSSStyleSheetNode) {
-                styleSheetNodes = null;
-                // Invalidate all the CSSStylableElements in the document.
-                invalidateProperties(document.getDocumentElement(),
-                                     null, null, true);
-                return;
-            }
-            if (et instanceof CSSStylableElement) {
-                // Invalidate the CSSStylableElement siblings, to
-                // correctly match the adjacent selectors and
-                // first-child pseudo-class.
-                for (Node n = ((Node)evt.getTarget()).getNextSibling();
-                     n != null;
-                     n = n.getNextSibling()) {
-                    invalidateProperties(n, null, null, true);
-                }
-            }
+            handleNodeInserted((Node) evt.getTarget());
         }
     }
 
@@ -2569,18 +2594,7 @@ public abstract class CSSEngine {
      */
     protected class DOMNodeRemovedListener implements EventListener {
         public void handleEvent(Event evt) {
-            EventTarget et = evt.getTarget();
-            if (et instanceof CSSStyleSheetNode) {
-                // Wait for the DOMSubtreeModified to do the invalidations
-                // because at this time the node is in the tree.
-                styleSheetRemoved = true;
-            } else if (et instanceof CSSStylableElement) {
-                // Wait for the DOMSubtreeModified to do the invalidations
-                // because at this time the node is in the tree.
-                removedStylableElementSibling = ((Node)et).getNextSibling();
-            }
-            // Clears the computed styles in the removed tree.
-            disposeStyleMaps((Node)et);
+            handleNodeRemoved((Node) evt.getTarget());
         }
     }
 
@@ -2590,24 +2604,7 @@ public abstract class CSSEngine {
      */
     protected class DOMSubtreeModifiedListener implements EventListener {
         public void handleEvent(Event evt) {
-            if (styleSheetRemoved) {
-                styleSheetRemoved = false;
-                styleSheetNodes = null;
-
-                // Invalidate all the CSSStylableElements in the document.
-                invalidateProperties(document.getDocumentElement(),
-                                     null, null, true);
-            } else if (removedStylableElementSibling != null) {
-                // Invalidate the CSSStylableElement siblings, to
-                // correctly match the adjacent selectors and
-                // first-child pseudo-class.
-                for (Node n = removedStylableElementSibling;
-                     n != null;
-                     n = n.getNextSibling()) {
-                    invalidateProperties(n, null, null, true);
-                }
-                removedStylableElementSibling = null;
-            }
+            handleSubtreeModified((Node) evt.getTarget());
         }
     }
 
@@ -2616,13 +2613,7 @@ public abstract class CSSEngine {
      */
     protected class DOMCharacterDataModifiedListener implements EventListener {
         public void handleEvent(Event evt) {
-            Node n = (Node)evt.getTarget();
-            if (n.getParentNode() instanceof CSSStyleSheetNode) {
-                styleSheetNodes = null;
-                // Invalidate all the CSSStylableElements in the document.
-                invalidateProperties(document.getDocumentElement(),
-                                     null, null, true);
-            }
+            handleCharacterDataModified((Node) evt.getTarget());
         }
     }
 
