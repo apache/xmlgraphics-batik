@@ -51,6 +51,14 @@ public abstract class TimingSpecifier {
     }
 
     /**
+     * Returns true if this timing specifier is in the owner's begin list,
+     * false if it is in the owner's end list.
+     */
+    public boolean isBegin() {
+        return isBegin;
+    }
+
+    /**
      * Initializes this timing specifier by adding the initial instance time
      * to the owner's instance time list or setting up any event listeners.
      * This should be overriden in descendant classes.
@@ -70,24 +78,6 @@ public abstract class TimingSpecifier {
      * an eventbase, accesskey or a repeat timing specifier).
      */
     public abstract boolean isEventCondition();
-
-    /**
-     * Returns whether this timing specifier should resolve to an instance
-     * time according to event sensitivity rules.  This returns true if:
-     * <ul>
-     *   <li>the element is inactive and this is a begin time</li>
-     *   <li>the element is active, restart="always" and this is a begin time,
-     *     or</li>
-     *   <li>the element is active, restart="never|whenNotActive" and this is
-     *     an end time.</li>
-     * </ul>
-     */
-    protected boolean checkEventSensitivity() {
-        return !owner.isActive && isBegin || owner.isActive &&
-            (owner.restartMode == TimedElement.RESTART_ALWAYS && isBegin
-                || owner.restartMode != TimedElement.RESTART_ALWAYS
-                    && !isBegin);
-    }
 
     /**
      * Called by the timebase element when it creates a new Interval.

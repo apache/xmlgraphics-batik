@@ -51,4 +51,13 @@ public class SVGSetElementBridge extends SVGAnimationElementBridge {
         AnimatableValue to = parseAnimatableValue(SVG_TO_ATTRIBUTE);
         return new SetAnimation(timedElement, this, to);
     }
+
+    /**
+     * Returns whether the animation element being handled by this bridge can
+     * animate attributes of the specified type.
+     * @param type one of the TYPE_ constants defined in {@link SVGTypes}.
+     */
+    protected boolean canAnimateType(int type) {
+        return true;
+    }
 }

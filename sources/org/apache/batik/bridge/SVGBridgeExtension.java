@@ -152,6 +152,7 @@ public class SVGBridgeExtension implements BridgeExtension {
         ctx.putBridge(new SVGVKernElementBridge());
         ctx.putBridge(new SVGSetElementBridge());
         ctx.putBridge(new SVGAnimateElementBridge());
+        ctx.putBridge(new SVGAnimateColorElementBridge());
         ctx.putBridge(new SVGAnimateTransformElementBridge());
     }
 

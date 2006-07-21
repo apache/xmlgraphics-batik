@@ -19,21 +19,24 @@ package org.apache.batik.anim.timing;
 
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Locale;
+import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.Vector;
 
 import org.apache.batik.anim.AnimationException;
 import org.apache.batik.anim.SMILConstants;
+import org.apache.batik.i18n.LocalizableSupport;
 import org.apache.batik.parser.ClockHandler;
 import org.apache.batik.parser.ClockParser;
 import org.apache.batik.parser.ParseException;
 
-import org.apache.batik.i18n.LocalizableSupport;
-
 import org.w3c.dom.Element;
+import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventTarget;
 
 /**
@@ -209,6 +212,12 @@ public abstract class TimedElement implements SMILConstants {
      * Whether this timed element has parsed its timing attributes yet.
      */
     protected boolean hasParsed;
+
+    /**
+     * Map of {@link Event} objects to {@link HashSet}s of {@link
+     * TimingSpecifier}s that caught them.
+     */
+    protected HashMap handledEvents = new HashMap();
 
     /**
      * Creates a new TimedElement.
@@ -528,6 +537,49 @@ public abstract class TimedElement implements SMILConstants {
     protected void sampleAt(float parentSimpleTime) {
         Trace.enter(this, "sampleAt", new Object[] { new Float(parentSimpleTime) } ); try {
         float time = parentSimpleTime; // No time containers in SVG.
+
+        // First, process any events that occurred since the last sampling,
+        // taking into account event sensitivity.
+        Iterator i = handledEvents.entrySet().iterator();
+        while (i.hasNext()) {
+            Map.Entry e = (Map.Entry) i.next();
+            Event evt = (Event) e.getKey();
+            HashSet ts = (HashSet) e.getValue();
+            Iterator j = ts.iterator();
+            boolean hasBegin = false, hasEnd = false;
+            while (j.hasNext() && !(hasBegin && hasEnd)) {
+                EventLikeTimingSpecifier t =
+                    (EventLikeTimingSpecifier) j.next();
+                if (t.isBegin()) {
+                    hasBegin = true;
+                } else {
+                    hasEnd = true;
+                }
+            }
+            boolean useBegin;
+            if (hasBegin && hasEnd) {
+                useBegin = !isActive || restartMode == RESTART_ALWAYS;
+            } else if (hasBegin && (!isActive ||
+                        restartMode == RESTART_ALWAYS)) {
+                useBegin = true;
+            } else if (hasEnd && isActive) {
+                useBegin = false;
+            } else {
+                continue;
+            }
+            j = ts.iterator();
+            while (j.hasNext()) {
+                EventLikeTimingSpecifier t =
+                    (EventLikeTimingSpecifier) j.next();
+                if (t.isBegin() == useBegin) {
+                    t.resolve(evt);
+                    break;
+                }
+            }
+        }
+        handledEvents.clear();
+
+        // Now process intervals.
         if (currentInterval != null) {
             float begin = currentInterval.getBegin();
             if (lastSampleTime < begin && time >= begin) {
@@ -699,13 +751,14 @@ public abstract class TimedElement implements SMILConstants {
             : null;
         boolean firstEnd = true;
         InstanceTime beginInstanceTime = null;
+        InstanceTime nextBeginInstanceTime = null;
         for (;;) {
             float tempBegin;
             if (fixedBegin) {
                 tempBegin = beginAfter;
                 while (beginIterator.hasNext()) {
-                    InstanceTime it = (InstanceTime) beginIterator.next();
-                    if (it.getTime() > tempBegin) {
+                    nextBeginInstanceTime = (InstanceTime) beginIterator.next();
+                    if (nextBeginInstanceTime.getTime() > tempBegin) {
                         break;
                     }
                 }
@@ -718,6 +771,10 @@ public abstract class TimedElement implements SMILConstants {
                     beginInstanceTime = (InstanceTime) beginIterator.next();
                     tempBegin = beginInstanceTime.getTime();
                     if (tempBegin >= beginAfter) {
+                        if (beginIterator.hasNext()) {
+                            nextBeginInstanceTime =
+                                (InstanceTime) beginIterator.next();
+                        }
                         break;
                     }
                 }
@@ -771,19 +828,20 @@ public abstract class TimedElement implements SMILConstants {
                     }
                 }
                 float ad = getActiveDur(tempBegin, tempEnd);
-                if (tempBegin + ad < tempEnd) {
+                if (tempBegin + ad < tempEnd || isUnresolved(tempEnd)) {
                     tempEnd = tempBegin + ad;
                 }
             }
             if (!first || tempEnd > 0 || tempBegin == 0 && tempEnd == 0
                     || isUnresolved(tempEnd)) {
-                if (restartMode == RESTART_ALWAYS && beginIterator.hasNext()) {
-                    InstanceTime nextBeginInstance =
-                        (InstanceTime) beginIterator.next();
-                    float nextBegin = nextBeginInstance.getTime();
+                Trace.print("considering restart semantics");
+                if (restartMode == RESTART_ALWAYS
+                        && nextBeginInstanceTime != null) {
+                    float nextBegin = nextBeginInstanceTime.getTime();
                     Trace.print("nextBegin == " + nextBegin);
-                    if (nextBegin < tempEnd) {
+                    if (nextBegin < tempEnd || isUnresolved(tempEnd)) {
                         tempEnd = nextBegin;
+                        endInstanceTime = nextBeginInstanceTime;
                     }
                 }
                 return new Interval(tempBegin, tempEnd,
@@ -1135,6 +1193,20 @@ public abstract class TimedElement implements SMILConstants {
         Calendar t = (Calendar) root.getDocumentBeginTime().clone();
         t.add(Calendar.MILLISECOND, (int) Math.round(time * 1e3));
         fireTimeEvent(eventType, t, detail);
+    }
+
+    /**
+     * Invoked by a {@link TimingSpecifier} to indicate that an event occurred
+     * that would create a new instance time for this timed element.  These
+     * will be processed at the beginning of the next tick.
+     */
+    void eventOccurred(TimingSpecifier t, Event e) {
+        HashSet ts = (HashSet) handledEvents.get(e);
+        if (ts == null) {
+            ts = new HashSet();
+            handledEvents.put(e, ts);
+        }
+        ts.add(t);
     }
 
     /**

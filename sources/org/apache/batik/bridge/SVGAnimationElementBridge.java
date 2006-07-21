@@ -33,6 +33,7 @@ import org.apache.batik.dom.svg.AnimatedLiveAttributeValue;
 import org.apache.batik.dom.svg.SVGAnimationContext;
 import org.apache.batik.dom.svg.SVGOMElement;
 import org.apache.batik.dom.util.XLinkSupport;
+import org.apache.batik.util.SVGTypes;
 
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
@@ -207,11 +208,42 @@ public abstract class SVGAnimationElementBridge extends AbstractSVGBridge
                  new Object[] { targetElement.getNodeName(), an });
         }
 
+        // Check that the attribute/property is animatable with this
+        // animation element.
+        int type;
+        if (isCSS) {
+            type = targetElement.getPropertyType(attributeLocalName);
+        } else {
+            type = targetElement.getAttributeType(attributeNamespaceURI,
+                                                  attributeLocalName);
+        }
+        if (!canAnimateType(type)) {
+            throw new BridgeException
+                (ctx, element, "type.not.animatable",
+                 new Object[] { targetElement.getNodeName(), an,
+                                element.getNodeName() });
+        }
+
         // Add the animation.
         timedElement = createTimedElement();
         animation = createAnimation(animationTarget);
         eng.addAnimation(animationTarget, attributeNamespaceURI, attributeLocalName,
                          isCSS, animation);
+    }
+
+    /**
+     * Returns whether the animation element being handled by this bridge can
+     * animate attributes of the specified type.
+     * @param type one of the TYPE_ constants defined in {@link SVGTypes}.
+     */
+    protected abstract boolean canAnimateType(int type);
+
+    /**
+     * Returns whether the specified {@link AnimatableValue} is of a type allowed
+     * by this animation.
+     */
+    protected boolean checkValueType(AnimatableValue v) {
+        return true;
     }
 
     /**
@@ -243,9 +275,15 @@ public abstract class SVGAnimationElementBridge extends AbstractSVGBridge
             return null;
         }
         String s = element.getAttributeNS(null, an);
-        return eng.parseAnimatableValue
+        AnimatableValue val = eng.parseAnimatableValue
             (element, animationTarget, attributeNamespaceURI,
              attributeLocalName, isCSS, s);
+        if (!checkValueType(val)) {
+            throw new BridgeException
+                (ctx, element, ErrorConstants.ERR_ATTRIBUTE_VALUE_MALFORMED,
+                 new Object[] { an, s });
+        }
+        return val;
     }
 
     /**

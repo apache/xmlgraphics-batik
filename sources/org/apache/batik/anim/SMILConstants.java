@@ -71,6 +71,7 @@ public interface SMILConstants {
     String SMIL_PACED_VALUE = "paced";
     String SMIL_REMOVE_VALUE = "remove";
     String SMIL_REPLACE_VALUE = "replace";
+    String SMIL_SPLINE_VALUE = "spline";
     String SMIL_SUM_VALUE = "sum";
     String SMIL_WHEN_NOT_ACTIVE_VALUE = "whenNotActive";
     String SMIL_XML_VALUE = "XML";

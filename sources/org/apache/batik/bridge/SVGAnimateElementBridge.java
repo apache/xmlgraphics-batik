@@ -58,7 +58,7 @@ public class SVGAnimateElementBridge extends SVGAnimationElementBridge {
                                    this,
                                    parseCalcMode(),
                                    parseKeyTimes(),
-                                   null,
+                                   parseKeySplines(),
                                    parseAdditive(),
                                    parseAccumulate(),
                                    parseValues(),
@@ -81,8 +81,7 @@ public class SVGAnimateElementBridge extends SVGAnimationElementBridge {
             return SimpleAnimation.CALC_MODE_DISCRETE;
         } else if (calcModeString.equals(SMILConstants.SMIL_PACED_VALUE)) {
             return SimpleAnimation.CALC_MODE_PACED;
-        } else if (calcModeString.equals
-                (SMILConstants.SMIL_CALC_MODE_ATTRIBUTE)) {
+        } else if (calcModeString.equals(SMILConstants.SMIL_SPLINE_VALUE)) {
             return SimpleAnimation.CALC_MODE_SPLINE;
         }
         throw new BridgeException
@@ -145,18 +144,25 @@ outer:  while (i < len) {
                 }
             }
             start = i++;
-            c = valuesString.charAt(i);
-            while (c != ';') {
-                i++;
-                if (i == len) {
-                    break;
-                }
+            if (i != len) {
                 c = valuesString.charAt(i);
+                while (c != ';') {
+                    i++;
+                    if (i == len) {
+                        break;
+                    }
+                    c = valuesString.charAt(i);
+                }
             }
             end = i++;
             AnimatableValue val = eng.parseAnimatableValue
                 (element, animationTarget, attributeNamespaceURI,
                  attributeLocalName, isCSS, valuesString.substring(start, end));
+            if (!checkValueType(val)) {
+                throw new BridgeException
+                    (ctx, element, ErrorConstants.ERR_ATTRIBUTE_VALUE_MALFORMED,
+                     new Object[] { SVG_VALUES_ATTRIBUTE, valuesString });
+            }
             values.add(val);
         }
         AnimatableValue[] ret = new AnimatableValue[values.size()];
@@ -214,9 +220,68 @@ outer:  while (i < len) {
     }
 
     /**
+     * Returns the parsed 'keySplines' attribute from the animation element.
+     */
+    protected float[] parseKeySplines() {
+        String keySplinesString =
+            element.getAttributeNS(null, SVG_KEY_SPLINES_ATTRIBUTE);
+        int len = keySplinesString.length();
+        if (len == 0) {
+            return null;
+        }
+        ArrayList keySplines = new ArrayList(7);
+        int i = 0, start = 0, end;
+        char c;
+outer:  while (i < len) {
+            while (keySplinesString.charAt(i) == ' ') {
+                i++;
+                if (i == len) {
+                    break outer;
+                }
+            }
+            start = i++;
+            if (i != len) {
+                c = keySplinesString.charAt(i);
+                while (c != ' ' && c != ';') {
+                    i++;
+                    if (i == len) {
+                        break;
+                    }
+                    c = keySplinesString.charAt(i);
+                }
+            }
+            end = i++;
+            try {
+                float keySplineValue =
+                    Float.parseFloat(keySplinesString.substring(start, end));
+                keySplines.add(new Float(keySplineValue));
+            } catch (NumberFormatException nfe) {
+                throw new BridgeException
+                    (ctx, element, ErrorConstants.ERR_ATTRIBUTE_VALUE_MALFORMED,
+                     new Object[] { SVG_KEY_SPLINES_ATTRIBUTE, keySplinesString });
+            }
+        }
+        len = keySplines.size();
+        float[] ret = new float[len];
+        for (int j = 0; j < len; j++) {
+            ret[j] = ((Float) keySplines.get(j)).floatValue();
+        }
+        return ret;
+    }
+
+    /**
      * Returns the calcMode that the animation defaults to if none is specified.
      */
     protected int getDefaultCalcMode() {
         return SimpleAnimation.CALC_MODE_LINEAR;
+    }
+
+    /**
+     * Returns whether the animation element being handled by this bridge can
+     * animate attributes of the specified type.
+     * @param type one of the TYPE_ constants defined in {@link SVGTypes}.
+     */
+    protected boolean canAnimateType(int type) {
+        return true;
     }
 }

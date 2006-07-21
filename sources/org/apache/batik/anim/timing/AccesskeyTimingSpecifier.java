@@ -116,38 +116,35 @@ public class AccesskeyTimingSpecifier
         }
     }
 
-    /**
-     * Returns whether this timing specifier is event-like (i.e., if it is
-     * an eventbase, accesskey or a repeat timing specifier).
-     */
-    public boolean isEventCondition() {
-        return true;
-    }
-
     // EventListener /////////////////////////////////////////////////////////
 
     /**
      * Handles key events fired by the eventbase element.
      */
     public void handleEvent(Event e) {
-        if (checkEventSensitivity()) {
-            boolean matched;
-            if (e.getType().charAt(4) == 'p') {
-                // DOM 2 key draft keypress
-                DOMKeyEvent evt = (DOMKeyEvent) e;
-                matched = evt.getCharCode() == accesskey;
-            } else {
-                // DOM 3 keydown
-                KeyboardEvent evt = (KeyboardEvent) e;
-                matched = evt.getKeyIdentifier().equals(keyName);
-            }
-            if (matched) {
-                long time = e.getTimeStamp() -
-                    owner.getRoot().getDocumentBeginTime().getTimeInMillis();
-                InstanceTime instance =
-                    new InstanceTime(this, time / 1000f, null, true);
-                owner.addInstanceTime(instance, isBegin);
-            }
+        boolean matched;
+        if (e.getType().charAt(4) == 'p') {
+            // DOM 2 key draft keypress
+            DOMKeyEvent evt = (DOMKeyEvent) e;
+            matched = evt.getCharCode() == accesskey;
+        } else {
+            // DOM 3 keydown
+            KeyboardEvent evt = (KeyboardEvent) e;
+            matched = evt.getKeyIdentifier().equals(keyName);
         }
+        if (matched) {
+            owner.eventOccurred(this, e);
+        }
+    }
+
+    /**
+     * Invoked to resolve an event-like timing specifier into an instance time.
+     */
+    public void resolve(Event e) {
+        long time = e.getTimeStamp() -
+            owner.getRoot().getDocumentBeginTime().getTimeInMillis();
+        InstanceTime instance =
+            new InstanceTime(this, time / 1000f, null, true);
+        owner.addInstanceTime(instance, isBegin);
     }
 }

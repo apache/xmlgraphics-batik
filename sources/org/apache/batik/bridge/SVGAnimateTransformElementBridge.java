@@ -25,6 +25,7 @@ import org.apache.batik.anim.TransformAnimation;
 import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.anim.values.AnimatableTransformListValue;
 import org.apache.batik.dom.svg.SVGOMTransform;
+import org.apache.batik.util.SVGTypes;
 
 import org.w3c.dom.svg.SVGTransform;
 
@@ -72,7 +73,7 @@ public class SVGAnimateTransformElementBridge extends SVGAnimateElementBridge {
                                       this,
                                       parseCalcMode(),
                                       parseKeyTimes(),
-                                      null,
+                                      parseKeySplines(),
                                       parseAdditive(),
                                       parseAccumulate(),
                                       parseValues(type, target),
@@ -275,5 +276,14 @@ outer:  while (i < len) {
         }
         AnimatableValue[] ret = new AnimatableValue[values.size()];
         return (AnimatableValue[]) values.toArray(ret);
+    }
+
+    /**
+     * Returns whether the animation element being handled by this bridge can
+     * animate attributes of the specified type.
+     * @param type one of the TYPE_ constants defined in {@link SVGTypes}.
+     */
+    protected boolean canAnimateType(int type) {
+        return type == SVGTypes.TYPE_TRANSFORM_LIST;
     }
 }

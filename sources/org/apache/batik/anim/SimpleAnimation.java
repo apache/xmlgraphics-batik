@@ -53,6 +53,11 @@ public class SimpleAnimation extends AbstractAnimation {
     protected float[] keySplines;
 
     /**
+     * Cubics built from the bezier control points in {@link #keySplines}.
+     */
+    protected Cubic[] keySplineCubics;
+
+    /**
      * Starting value of the animation.
      */
     protected AnimatableValue from;
@@ -174,13 +179,23 @@ public class SimpleAnimation extends AbstractAnimation {
             }
         }
 
-        if (calcMode == CALC_MODE_SPLINE
-                && (keySplines == null
-                    || keySplines.length != (keyTimes.length - 1) * 4)) {
-            throw timedElement.createException
-                ("attribute.malformed",
-                 new Object[] { null,
-                                SMILConstants.SMIL_KEY_SPLINES_ATTRIBUTE });
+        if (calcMode == CALC_MODE_SPLINE) {
+            if (keySplines == null
+                    || keySplines.length != (keyTimes.length - 1) * 4) {
+                throw timedElement.createException
+                    ("attribute.malformed",
+                     new Object[] { null,
+                                    SMILConstants.SMIL_KEY_SPLINES_ATTRIBUTE });
+            }
+            keySplineCubics = new Cubic[keyTimes.length - 1];
+            for (int i = 0; i < keyTimes.length - 1; i++) {
+                keySplineCubics[i] = new Cubic(0, 0,
+                                               keySplines[i * 4],
+                                               keySplines[i * 4 + 1],
+                                               keySplines[i * 4 + 2],
+                                               keySplines[i * 4 + 3],
+                                               1, 1);
+            }
         }
 
         this.calcMode = calcMode;
@@ -240,40 +255,32 @@ public class SimpleAnimation extends AbstractAnimation {
                 value = values[keyTimeIndex];
                 if (calcMode == CALC_MODE_LINEAR
                         || calcMode == CALC_MODE_SPLINE) {
-                    // XXX to-animation should be handled here.
                     nextValue = values[keyTimeIndex + 1];
-                    if (calcMode == CALC_MODE_SPLINE) {
-                        if (unitTime != 0) {
-                            // XXX This could be done better, e.g. with
-                            //     Newton-Raphson.
-                            Cubic c = new Cubic(0, 0,
-                                                keySplines[keyTimeIndex * 4],
-                                                keySplines[keyTimeIndex * 4 + 1],
-                                                keySplines[keyTimeIndex * 4 + 2],
-                                                keySplines[keyTimeIndex * 4 + 3],
-                                                1, 1);
-                            float tolerance = 0.01f;
-                            float min = 0;
-                            float max = 1;
-                            Point2D.Double p;
-                            for (;;) {
-                                float t = (min + max) / 2;
-                                p = c.eval(t);
-                                double x = p.getX();
-                                if (Math.abs(x - unitTime) < tolerance) {
-                                    break;
-                                }
-                                if (x < t) {
-                                    max = t;
-                                } else {
-                                    min = t;
-                                }
-                            }
-                            unitTime = (float) p.getY();
-                        }
-                    }
                     interpolation = (unitTime - keyTimes[keyTimeIndex])
                         / (keyTimes[keyTimeIndex + 1] - keyTimes[keyTimeIndex]);
+                    if (calcMode == CALC_MODE_SPLINE && unitTime != 0) {
+                        // XXX This could be done better, e.g. with
+                        //     Newton-Raphson.
+                        Cubic c = keySplineCubics[keyTimeIndex];
+                        float tolerance = 0.001f;
+                        float min = 0;
+                        float max = 1;
+                        Point2D.Double p;
+                        for (;;) {
+                            float t = (min + max) / 2;
+                            p = c.eval(t);
+                            double x = p.getX();
+                            if (Math.abs(x - interpolation) < tolerance) {
+                                break;
+                            }
+                            if (x < interpolation) {
+                                min = t;
+                            } else {
+                                max = t;
+                            }
+                        }
+                        interpolation = (float) p.getY();
+                    }
                 } else {
                     nextValue = null;
                 }

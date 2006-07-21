@@ -30,7 +30,7 @@ import org.w3c.dom.events.EventTarget;
  * @version $Id$
  */
 public class EventbaseTimingSpecifier
-        extends OffsetTimingSpecifier
+        extends EventLikeTimingSpecifier
         implements EventListener {
 
     /**
@@ -107,26 +107,23 @@ public class EventbaseTimingSpecifier
             (eventNamespaceURI, eventType, this, false);
     }
 
-    /**
-     * Returns whether this timing specifier is event-like (i.e., if it is
-     * an eventbase, accesskey or a repeat timing specifier).
-     */
-    public boolean isEventCondition() {
-        return true;
-    }
-
     // EventListener /////////////////////////////////////////////////////////
 
     /**
      * Handles an event fired on the eventbase element.
      */
     public void handleEvent(Event e) {
-        if (checkEventSensitivity()) {
-            long time = e.getTimeStamp() -
-                owner.getRoot().getDocumentBeginTime().getTimeInMillis();
-            InstanceTime instance =
-                new InstanceTime(this, time / 1000f, null, true);
-            owner.addInstanceTime(instance, isBegin);
-        }
+        owner.eventOccurred(this, e);
+    }
+
+    /**
+     * Invoked to resolve an event-like timing specifier into an instance time.
+     */
+    public void resolve(Event e) {
+        long time = e.getTimeStamp() -
+            owner.getRoot().getDocumentBeginTime().getTimeInMillis();
+        InstanceTime instance =
+            new InstanceTime(this, time / 1000f, null, true);
+        owner.addInstanceTime(instance, isBegin);
     }
 }
