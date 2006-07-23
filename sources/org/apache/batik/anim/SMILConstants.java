@@ -42,6 +42,7 @@ public interface SMILConstants {
     String SMIL_DUR_ATTRIBUTE = "dur";
     String SMIL_END_ATTRIBUTE = "end";
     String SMIL_FILL_ATTRIBUTE = "fill";
+    String SMIL_KEY_POINTS_ATTRIBUTE = "keyPoints";
     String SMIL_KEY_SPLINES_ATTRIBUTE = "keySplines";
     String SMIL_KEY_TIMES_ATTRIBUTE = "keyTimes";
     String SMIL_FROM_ATTRIBUTE = "from";

@@ -580,6 +580,12 @@ public abstract class SVGOMElement
     }
 
     /**
+     * Updates a 'other' animation value in this target.
+     */
+    public void updateOtherValue(String type, AnimatableValue val) {
+    }
+
+    /**
      * Returns the underlying value of an animatable XML attribute.
      */
     public AnimatableValue getUnderlyingValue(String ns, String ln) {

@@ -24,6 +24,7 @@ import java.util.Calendar;
 
 import org.apache.batik.anim.AbstractAnimation;
 import org.apache.batik.anim.AnimatableElement;
+import org.apache.batik.anim.AnimationEngine;
 import org.apache.batik.anim.AnimationTarget;
 import org.apache.batik.anim.timing.TimedElement;
 import org.apache.batik.anim.values.AnimatableValue;
@@ -91,9 +92,10 @@ public abstract class SVGAnimationElementBridge extends AbstractSVGBridge
     protected String attributeLocalName;
 
     /**
-     * Whether the animation targets a CSS property.
+     * The animation type.  Must be one of the <code>ANIM_TYPE_*</code>
+     * constants defined in {@link AnimationEngine}.
      */
-    protected boolean isCSS;
+    protected short animationType;
 
     /**
      * The target element of the animation.
@@ -116,16 +118,17 @@ public abstract class SVGAnimationElementBridge extends AbstractSVGBridge
 
     /**
      * Returns the underlying value of the animated attribute.  Used for
-     * composition of additive animations.
+     * composition of additive animations.  This should be overridden in
+     * descendant classes that are for 'other' animations.
      */
     public AnimatableValue getUnderlyingValue() {
-        if (isCSS) {
+        if (animationType == AnimationEngine.ANIM_TYPE_XML) {
+            return animationTarget.getUnderlyingValue(attributeNamespaceURI,
+                                                      attributeLocalName);
+        } else {
             return eng.getUnderlyingCSSValue(element,
                                              animationTarget,
                                              attributeLocalName);
-        } else {
-            return animationTarget.getUnderlyingValue(attributeNamespaceURI,
-                                                      attributeLocalName);
         }
     }
 
@@ -188,21 +191,23 @@ public abstract class SVGAnimationElementBridge extends AbstractSVGBridge
         int ci = an.indexOf(':');
         if (ci == -1) {
             if (element.hasProperty(an)) {
-                isCSS = true;
+                animationType = AnimationEngine.ANIM_TYPE_CSS;
                 attributeLocalName = an;
             } else {
-                isCSS = false;
+                animationType = AnimationEngine.ANIM_TYPE_XML;
                 attributeLocalName = an;
             }
         } else {
-            isCSS = false;
+            animationType = AnimationEngine.ANIM_TYPE_XML;
             String prefix = an.substring(0, ci);
             attributeNamespaceURI = element.lookupNamespaceURI(prefix);
             attributeLocalName = an.substring(ci + 1);
         }
-        if (isCSS && !targetElement.isPropertyAnimatable(attributeLocalName)
-                || !isCSS && !targetElement.isAttributeAnimatable
-                    (attributeNamespaceURI, attributeLocalName)) {
+        if (animationType == AnimationEngine.ANIM_TYPE_CSS
+                && !targetElement.isPropertyAnimatable(attributeLocalName)
+            || animationType == AnimationEngine.ANIM_TYPE_XML
+                && !targetElement.isAttributeAnimatable(attributeNamespaceURI,
+                                                        attributeLocalName)) {
             throw new BridgeException
                 (ctx, element, "attribute.not.animatable",
                  new Object[] { targetElement.getNodeName(), an });
@@ -211,7 +216,7 @@ public abstract class SVGAnimationElementBridge extends AbstractSVGBridge
         // Check that the attribute/property is animatable with this
         // animation element.
         int type;
-        if (isCSS) {
+        if (animationType == AnimationEngine.ANIM_TYPE_CSS) {
             type = targetElement.getPropertyType(attributeLocalName);
         } else {
             type = targetElement.getAttributeType(attributeNamespaceURI,
@@ -227,8 +232,8 @@ public abstract class SVGAnimationElementBridge extends AbstractSVGBridge
         // Add the animation.
         timedElement = createTimedElement();
         animation = createAnimation(animationTarget);
-        eng.addAnimation(animationTarget, attributeNamespaceURI, attributeLocalName,
-                         isCSS, animation);
+        eng.addAnimation(animationTarget, animationType, attributeNamespaceURI,
+                         attributeLocalName, animation);
     }
 
     /**
@@ -277,7 +282,8 @@ public abstract class SVGAnimationElementBridge extends AbstractSVGBridge
         String s = element.getAttributeNS(null, an);
         AnimatableValue val = eng.parseAnimatableValue
             (element, animationTarget, attributeNamespaceURI,
-             attributeLocalName, isCSS, s);
+             attributeLocalName, animationType == AnimationEngine.ANIM_TYPE_CSS,
+             s);
         if (!checkValueType(val)) {
             throw new BridgeException
                 (ctx, element, ErrorConstants.ERR_ATTRIBUTE_VALUE_MALFORMED,
@@ -342,6 +348,12 @@ public abstract class SVGAnimationElementBridge extends AbstractSVGBridge
      */
     public void handleAnimatedAttributeChanged
             (AnimatedLiveAttributeValue alav) {
+    }
+
+    /**
+     * Invoked when an 'other' animation value has changed.
+     */
+    public void handleOtherAnimationChanged(String type) {
     }
 
     /**

@@ -454,6 +454,7 @@ public interface SVGConstants extends CSSConstants, XMLConstants {
     String SVG_KERNEL_MATRIX_ATTRIBUTE = "kernelMatrix";
     String SVG_KERNEL_UNIT_LENGTH_ATTRIBUTE = "kernelUnitLength";
     String SVG_KERNING_ATTRIBUTE = CSS_KERNING_PROPERTY;
+    String SVG_KEY_POINTS_ATTRIBUTE = "keyPoints";
     String SVG_KEY_SPLINES_ATTRIBUTE = "keySplines";
     String SVG_KEY_TIMES_ATTRIBUTE = "keyTimes";
     String SVG_LANG_ATTRIBUTE = "lang";
@@ -488,6 +489,7 @@ public interface SVGConstants extends CSSConstants, XMLConstants {
     String SVG_OVERLINE_POSITION_ATTRIBUTE = "overline-position";
     String SVG_OVERLINE_THICKNESS_ATTRIBUTE = "overline-thickness";
     String SVG_PANOSE_1_ATTRIBUTE = "panose-1";
+    String SVG_PATH_ATTRIBUTE = "path";
     String SVG_PATH_LENGTH_ATTRIBUTE = "pathLength";
     String SVG_PATTERN_CONTENT_UNITS_ATTRIBUTE = "patternContentUnits";
     String SVG_PATTERN_TRANSFORM_ATTRIBUTE = "patternTransform";

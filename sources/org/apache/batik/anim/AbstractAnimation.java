@@ -31,10 +31,10 @@ import org.apache.batik.anim.timing.Trace;
 public abstract class AbstractAnimation {
 
     // Constants for calcMode.
-    public final static int CALC_MODE_DISCRETE = 0;
-    public final static int CALC_MODE_LINEAR   = 1;
-    public final static int CALC_MODE_PACED    = 2;
-    public final static int CALC_MODE_SPLINE   = 3;
+    public final static short CALC_MODE_DISCRETE = 0;
+    public final static short CALC_MODE_LINEAR   = 1;
+    public final static short CALC_MODE_PACED    = 2;
+    public final static short CALC_MODE_SPLINE   = 3;
 
     /**
      * The TimedElement that controls the timing of this animation.

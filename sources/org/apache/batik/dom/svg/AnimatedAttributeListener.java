@@ -35,4 +35,12 @@ public interface AnimatedAttributeListener {
      * @param alav the AnimatedLiveAttributeValue that changed
      */
     void animatedAttributeChanged(Element e, AnimatedLiveAttributeValue alav);
+
+    /**
+     * Called to notify an object of a change to the value of an 'other'
+     * animation.
+     * @param e the element being animated
+     * @param type the type of animation whose value changed
+     */
+    void otherAnimationChanged(Element e, String type);
 }

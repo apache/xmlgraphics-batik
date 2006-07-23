@@ -2058,6 +2058,12 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         }
 
         /**
+         * Invoked when an 'other' animation value has changed.
+         */
+        public void handleOtherAnimationChanged(String type) {
+        }
+
+        /**
          * Disposes this BridgeUpdateHandler and releases all resources.
          */
         public void dispose(){

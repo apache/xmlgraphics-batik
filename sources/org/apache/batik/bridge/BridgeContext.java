@@ -1701,6 +1701,23 @@ public class BridgeContext implements ErrorConstants, CSSContext {
                 }
             }
         }
+
+        /**
+         * Called to notify an object of a change to the value of an 'other'
+         * animation.
+         * @param e the element being animated
+         * @param type the type of animation whose value changed
+         */
+        public void otherAnimationChanged(Element e, String type) {
+            BridgeUpdateHandler h = getBridgeUpdateHandler(e);
+            if (h != null) {
+                try {
+                    h.handleOtherAnimationChanged(type);
+                } catch (Exception ex) {
+                    userAgent.displayError(ex);
+                }
+            }
+        }
     }
 
     // CSS context ////////////////////////////////////////////////////////////

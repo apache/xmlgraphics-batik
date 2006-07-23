@@ -20,6 +20,7 @@ package org.apache.batik.bridge;
 import java.util.ArrayList;
 
 import org.apache.batik.anim.AbstractAnimation;
+import org.apache.batik.anim.AnimationEngine;
 import org.apache.batik.anim.AnimationTarget;
 import org.apache.batik.anim.SMILConstants;
 import org.apache.batik.anim.SimpleAnimation;
@@ -127,6 +128,7 @@ public class SVGAnimateElementBridge extends SVGAnimationElementBridge {
      * Returns the parsed 'values' attribute from the animation element.
      */
     protected AnimatableValue[] parseValues() {
+        boolean isCSS = animationType == AnimationEngine.ANIM_TYPE_CSS;
         String valuesString = element.getAttributeNS(null,
                                                      SVG_VALUES_ATTRIBUTE);
         int len = valuesString.length();

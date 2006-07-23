@@ -29,33 +29,12 @@ import org.apache.batik.ext.awt.geom.Cubic;
  * @author <a href="mailto:cam%40mcc%2eid%2eau">Cameron McCormack</a>
  * @version $Id$
  */
-public class SimpleAnimation extends AbstractAnimation {
-
-    /**
-     * The interpolation mode of this animator.  This should take one
-     * of the CALC_MODE_* constants defined in {@link AbstractAnimation}.
-     */
-    protected int calcMode;
+public class SimpleAnimation extends InterpolatingAnimation {
 
     /**
      * Values between which to interpolate.
      */
     protected AnimatableValue[] values;
-
-    /**
-     * Time values to control the pacing of the animation.
-     */
-    protected float[] keyTimes;
-
-    /**
-     * Bezier control points that control the pacing of the animation.
-     */
-    protected float[] keySplines;
-
-    /**
-     * Cubics built from the bezier control points in {@link #keySplines}.
-     */
-    protected Cubic[] keySplineCubics;
 
     /**
      * Starting value of the animation.
@@ -71,23 +50,6 @@ public class SimpleAnimation extends AbstractAnimation {
      * Relative offset value for the animation.
      */
     protected AnimatableValue by;
-    
-    /**
-     * Whether this animation adds to ones below it in the animation sandwich
-     * or replaces them.
-     */
-    protected boolean additive;
-
-    /**
-     * Whether this animation accumulates from previous iterations.
-     */
-    protected boolean cumulative;
-
-    /**
-     * Whether this is a 'to animation' (i.e., one specified by a "to"
-     * but not a "from" value).
-     */
-    protected boolean toAnimation;
 
     /**
      * Creates a new SimpleAnimation.
@@ -103,9 +65,12 @@ public class SimpleAnimation extends AbstractAnimation {
                            AnimatableValue from,
                            AnimatableValue to,
                            AnimatableValue by) {
-        super(timedElement, animatableElement);
+        super(timedElement, animatableElement, calcMode, keyTimes, keySplines,
+              additive, cumulative);
+        this.from = from;
+        this.to = to;
+        this.by = by;
 
-        toAnimation = false;
         if (values == null) {
             if (from != null) {
                 values = new AnimatableValue[2];
@@ -123,10 +88,9 @@ public class SimpleAnimation extends AbstractAnimation {
                     values = new AnimatableValue[2];
                     values[0] = animatableElement.getUnderlyingValue();
                     values[1] = to;
-                    toAnimation = true;
-                    cumulative = false;
+                    this.cumulative = false;
                 } else if (by != null) {
-                    additive = true;
+                    this.additive = true;
                     values = new AnimatableValue[2];
                     values[0] = by.getZeroValue();
                     values[1] = by;
@@ -136,28 +100,10 @@ public class SimpleAnimation extends AbstractAnimation {
                 }
             }
         }
+        this.values = values;
 
-        if (keyTimes != null) {
-            boolean invalidKeyTimes = false;
-            if ((calcMode == CALC_MODE_LINEAR || calcMode == CALC_MODE_SPLINE)
-                    && (keyTimes.length < 2
-                        || keyTimes[0] != 0
-                        || keyTimes[keyTimes.length - 1] != 1)
-                    || calcMode == CALC_MODE_DISCRETE
-                        && (keyTimes.length == 0 || keyTimes[0] != 0)
-                    || keyTimes.length != values.length) {
-                invalidKeyTimes = true;
-            }
-            if (!invalidKeyTimes) {
-                for (int i = 1; i < keyTimes.length; i++) {
-                    if (keyTimes[i] < 0 || keyTimes[1] > 1
-                            || keyTimes[i] < keyTimes[i - 1]) {
-                        invalidKeyTimes = true;
-                        break;
-                    }
-                }
-            }
-            if (invalidKeyTimes) {
+        if (this.keyTimes != null) {
+            if (this.keyTimes.length != values.length) {
                 throw timedElement.createException
                     ("attribute.malformed",
                      new Object[] { null,
@@ -166,76 +112,26 @@ public class SimpleAnimation extends AbstractAnimation {
         } else {
             if (calcMode == CALC_MODE_LINEAR || calcMode == CALC_MODE_SPLINE) {
                 int count = values.length == 1 ? 2 : values.length;
-                keyTimes = new float[count];
+                this.keyTimes = new float[count];
                 for (int i = 0; i < count; i++) {
-                    keyTimes[i] = (float) i / (count - 1);
+                    this.keyTimes[i] = (float) i / (count - 1);
                 }
             } else if (calcMode == CALC_MODE_DISCRETE) {
                 int count = values.length;
-                keyTimes = new float[count];
+                this.keyTimes = new float[count];
                 for (int i = 0; i < count; i++) {
-                    keyTimes[i] = (float) i / count;
+                    this.keyTimes[i] = (float) i / count;
                 }
             }
         }
 
-        if (calcMode == CALC_MODE_SPLINE) {
-            if (keySplines == null
-                    || keySplines.length != (keyTimes.length - 1) * 4) {
-                throw timedElement.createException
-                    ("attribute.malformed",
-                     new Object[] { null,
-                                    SMILConstants.SMIL_KEY_SPLINES_ATTRIBUTE });
-            }
-            keySplineCubics = new Cubic[keyTimes.length - 1];
-            for (int i = 0; i < keyTimes.length - 1; i++) {
-                keySplineCubics[i] = new Cubic(0, 0,
-                                               keySplines[i * 4],
-                                               keySplines[i * 4 + 1],
-                                               keySplines[i * 4 + 2],
-                                               keySplines[i * 4 + 3],
-                                               1, 1);
-            }
+        if (calcMode == CALC_MODE_SPLINE
+                && keySplines.length != (this.keyTimes.length - 1) * 4) {
+            throw timedElement.createException
+                ("attribute.malformed",
+                 new Object[] { null,
+                                SMILConstants.SMIL_KEY_SPLINES_ATTRIBUTE });
         }
-
-        this.calcMode = calcMode;
-        this.keyTimes = keyTimes;
-        this.keySplines = keySplines;
-        this.additive = additive;
-        this.cumulative = cumulative;
-        this.values = values;
-        this.from = from;
-        this.to = to;
-        this.by = by;
-    }
-
-    /**
-     * Returns whether this animation will replace values on animations
-     * lower in the sandwich.
-     */
-    protected boolean willReplace() {
-        return !additive;
-    }
-
-    /**
-     * Called when the element is sampled for its "last" value.
-     */
-    protected void sampledLastValue(int repeatIteration) {
-        sampledAtUnitTime(1f, repeatIteration);
-    }
-
-    /**
-     * Called when the element is sampled at the given time.
-     */
-    protected void sampledAt(float simpleTime, float simpleDur,
-                             int repeatIteration) {
-        float unitTime;
-        if (simpleDur == TimedElement.INDEFINITE) {
-            unitTime = 0;
-        } else {
-            unitTime = simpleTime / simpleDur;
-        }
-        sampledAtUnitTime(unitTime, repeatIteration);
     }
 
     /**

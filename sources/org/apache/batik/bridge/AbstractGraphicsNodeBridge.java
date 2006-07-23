@@ -28,6 +28,7 @@ import org.apache.batik.dom.events.AbstractEvent;
 import org.apache.batik.dom.svg.AnimatedLiveAttributeValue;
 import org.apache.batik.dom.svg.LiveAttributeException;
 import org.apache.batik.dom.svg.SVGContext;
+import org.apache.batik.dom.svg.SVGMotionAnimatableElement;
 import org.apache.batik.dom.svg.SVGOMElement;
 import org.apache.batik.ext.awt.geom.SegmentList;
 import org.apache.batik.gvt.CanvasGraphicsNode;
@@ -175,6 +176,13 @@ public abstract class AbstractGraphicsNodeBridge extends AnimatableSVGBridge
                                                    m.getE(), m.getF()));
                                                  
             }
+            if (e instanceof SVGMotionAnimatableElement) {
+                SVGMotionAnimatableElement mae = (SVGMotionAnimatableElement) e;
+                AffineTransform motion = mae.getMotionTransform();
+                if (motion != null) {
+                    at.concatenate(motion);
+                }
+            }
             n.setTransform(at);
         } catch (LiveAttributeException ex) {
             throw new BridgeException
@@ -261,7 +269,7 @@ public abstract class AbstractGraphicsNodeBridge extends AnimatableSVGBridge
      * Invoked when an MutationEvent of type 'DOMNodeInserted' is fired.
      */
     public void handleDOMNodeInsertedEvent(MutationEvent evt) {
-        if ( evt.getTarget() instanceof Element ){
+        if (evt.getTarget() instanceof Element) {
             // Handle "generic" bridges.
             Element e2 = (Element)evt.getTarget();
             Bridge b = ctx.getBridge(e2);
@@ -378,6 +386,16 @@ public abstract class AbstractGraphicsNodeBridge extends AnimatableSVGBridge
             (AnimatedLiveAttributeValue alav) {
         if (alav.getNamespaceURI() == null
                 && alav.getLocalName().equals(SVG_TRANSFORM_ATTRIBUTE)) {
+            setTransform(node, e);
+            handleGeometryChanged();
+        }
+    }
+
+    /**
+     * Invoked when an 'other' animation value has changed.
+     */
+    public void handleOtherAnimationChanged(String type) {
+        if (type.equals("motion")) {
             setTransform(node, e);
             handleGeometryChanged();
         }

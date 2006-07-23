@@ -666,6 +666,21 @@ public class SVGOMDocument
                 aal.animatedAttributeChanged(e, alav);
             }
         }
+
+        /**
+         * Called to notify an object of a change to the value of an 'other'
+         * animation.
+         * @param e the element being animated
+         * @param type the type of animation whose value changed
+         */
+        public void otherAnimationChanged(Element e, String type) {
+            Iterator i = animatedAttributeListeners.iterator();
+            while (i.hasNext()) {
+                AnimatedAttributeListener aal =
+                    (AnimatedAttributeListener) i.next();
+                aal.otherAnimationChanged(e, type);
+            }
+        }
     }
 
     // DocumentCSS ////////////////////////////////////////////////////////////

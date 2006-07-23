@@ -38,9 +38,9 @@ public abstract class TimedDocumentRoot extends TimeContainer {
     protected Calendar documentBeginTime;
 
     /**
-     * Time offset that has accumulated while the document is paused.
+     * The wallclock time that the document was paused.
      */
-    protected float accumulatedOffset;
+    protected Calendar pauseTime;
 
     /**
      * Allows the use of accessKey() timing specifiers with a single

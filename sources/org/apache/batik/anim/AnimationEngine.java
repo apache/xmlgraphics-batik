@@ -6,7 +6,7 @@
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
   
-   http://www.apache.org/licenses/LICENSE-2.0
+       http://www.apache.org/licenses/LICENSE-2.0
   
    Unless required by applicable law or agreed to in writing, software
    distributed under the License is distributed on an "AS IS" BASIS,
@@ -36,6 +36,11 @@ import org.w3c.dom.Document;
  * @version $Id$
  */
 public abstract class AnimationEngine {
+
+    // Constants to identify the type of animation.
+    public static final short ANIM_TYPE_XML   = 0;
+    public static final short ANIM_TYPE_CSS   = 1;
+    public static final short ANIM_TYPE_OTHER = 2;
 
     /**
      * The document this AnimationEngine is managing animation for.
@@ -67,25 +72,29 @@ public abstract class AnimationEngine {
 
     /**
      * Adds an animation to the document.
+     * @param target the target element of the animation
+     * @param type the type of animation (must be one of the
+     *             <code>ANIM_TYPE_*</code> constants defined in this class
+     * @param ns the namespace URI of the attribute being animated, if
+     *           <code>type == </code>{@link #ANIM_TYPE_XML}
+     * @param an the attribute name if <code>type == </code>{@link
+     *           #ANIM_TYPE_XML}, the property name if <code>type == </code>
+     *           {@link #ANIM_TYPE_CSS}, and the animation type otherwise
+     * @param anim the animation
      */
-    public void addAnimation(AnimationTarget target, String ns, String an,
-                             boolean isCSS, AbstractAnimation anim) {
-        org.apache.batik.anim.timing.Trace.enter(this, "addAnimation", new Object[] { target, ns, an, new Boolean(isCSS), anim } ); try {
+    public void addAnimation(AnimationTarget target, short type, String ns,
+                             String an, AbstractAnimation anim) {
+        org.apache.batik.anim.timing.Trace.enter(this, "addAnimation", new Object[] { target, new Short[type], ns, an, anim } ); try {
         timedDocumentRoot.addChild(anim.getTimedElement());
 
         AnimationInfo animInfo = getAnimationInfo(anim);
-        animInfo.isCSS = isCSS;
+        animInfo.type = type;
         animInfo.attributeNamespaceURI = ns;
         animInfo.attributeLocalName = an;
         animInfo.target = target;
         animations.put(anim, animInfo);
 
-        Sandwich sandwich;
-        if (isCSS) {
-            sandwich = getSandwich(target, an);
-        } else {
-            sandwich = getSandwich(target, ns, an);
-        }
+        Sandwich sandwich = getSandwich(target, type, ns, an);
         if (sandwich.animation == null) {
             anim.lowerAnimation = null;
             anim.higherAnimation = null;
@@ -104,7 +113,6 @@ public abstract class AnimationEngine {
     public void removeAnimation(AbstractAnimation anim) {
         org.apache.batik.anim.timing.Trace.enter(this, "removeAnimation", new Object[] { anim } ); try {
         timedDocumentRoot.removeChild(anim.getTimedElement());
-        AnimationInfo animInfo = getAnimationInfo(anim);
         AbstractAnimation nextHigher = anim.higherAnimation;
         if (nextHigher != null) {
             nextHigher.markDirty();
@@ -113,15 +121,10 @@ public abstract class AnimationEngine {
         if (anim.higherAnimation != null) {
             anim.higherAnimation.lowerAnimation = null;
         }
-        Sandwich sandwich;
-        if (animInfo.isCSS) {
-            sandwich = getSandwich(animInfo.target,
-                                   animInfo.attributeLocalName);
-        } else {
-            sandwich = getSandwich(animInfo.target,
-                                   animInfo.attributeNamespaceURI,
-                                   animInfo.attributeLocalName);
-        }
+        AnimationInfo animInfo = getAnimationInfo(anim);
+        Sandwich sandwich = getSandwich(animInfo.target, animInfo.type,
+                                        animInfo.attributeNamespaceURI,
+                                        animInfo.attributeLocalName);;
         if (sandwich.animation == anim) {
             sandwich.animation = null;
             sandwich.shouldUpdate = true;
@@ -130,27 +133,30 @@ public abstract class AnimationEngine {
     }
 
     /**
-     * Returns the Sandwich for the given CSS property and animation target.
+     * Returns the Sandwich for the given animation type/attribute.
      */
-    protected Sandwich getSandwich(AnimationTarget target, String pn) {
+    protected Sandwich getSandwich(AnimationTarget target, short type,
+                                   String ns, String an) {
         TargetInfo info = getTargetInfo(target);
-        Sandwich sandwich = (Sandwich) info.cssAnimations.get(pn);
-        if (sandwich == null) {
-            sandwich = new Sandwich();
-            info.cssAnimations.put(pn, sandwich);
-        }
-        return sandwich;
-    }
-
-    /**
-     * Returns the Sandwich for the given XML attribute and animation target.
-     */
-    protected Sandwich getSandwich(AnimationTarget target, String ns, String ln) {
-        TargetInfo info = getTargetInfo(target);
-        Sandwich sandwich = (Sandwich) info.xmlAnimations.get(ns, ln);
-        if (sandwich == null) {
-            sandwich = new Sandwich();
-            info.xmlAnimations.put(ns, ln, sandwich);
+        Sandwich sandwich;
+        if (type == ANIM_TYPE_XML) {
+            sandwich = (Sandwich) info.xmlAnimations.get(ns, an);
+            if (sandwich == null) {
+                sandwich = new Sandwich();
+                info.xmlAnimations.put(ns, an, sandwich);
+            }
+        } else if (type == ANIM_TYPE_CSS) {
+            sandwich = (Sandwich) info.cssAnimations.get(an);
+            if (sandwich == null) {
+                sandwich = new Sandwich();
+                info.cssAnimations.put(an, sandwich);
+            }
+        } else {
+            sandwich = (Sandwich) info.otherAnimations.get(an);
+            if (sandwich == null) {
+                sandwich = new Sandwich();
+                info.otherAnimations.put(an, sandwich);
+            }
         }
         return sandwich;
     }
@@ -228,6 +234,20 @@ public abstract class AnimationEngine {
                     sandwich.animation.isDirty = false;
                 }
             }
+
+            // Update the other animations.
+            j = info.otherAnimations.entrySet().iterator();
+            while (j.hasNext()) {
+                Map.Entry e2 = (Map.Entry) j.next();
+                String type = (String) e2.getKey();
+                Sandwich sandwich = (Sandwich) e2.getValue();
+                if (sandwich.shouldUpdate || sandwich.animation.isDirty) {
+                    AnimatableValue av = sandwich.animation.getComposedValue();
+                    target.updateOtherValue(type, av);
+                    sandwich.shouldUpdate = false;
+                    sandwich.animation.isDirty = false;
+                }
+            }
         }
     }
 
@@ -282,15 +302,9 @@ public abstract class AnimationEngine {
         }
         if (moved) {
             AnimationInfo animInfo = getAnimationInfo(anim);
-            Sandwich sandwich;
-            if (animInfo.isCSS) {
-                sandwich = getSandwich(animInfo.target,
-                                       animInfo.attributeLocalName);
-            } else {
-                sandwich = getSandwich(animInfo.target,
-                                       animInfo.attributeNamespaceURI,
-                                       animInfo.attributeLocalName);
-            }
+            Sandwich sandwich = getSandwich(animInfo.target, animInfo.type,
+                                            animInfo.attributeNamespaceURI,
+                                            animInfo.attributeLocalName);
             if (sandwich.animation == anim) {
                 sandwich.animation = top;
             }
@@ -331,14 +345,9 @@ public abstract class AnimationEngine {
      */
     protected void moveToTop(AbstractAnimation anim) {
         AnimationInfo animInfo = getAnimationInfo(anim);
-        Sandwich sandwich;
-        if (animInfo.isCSS) {
-            sandwich = getSandwich(animInfo.target, animInfo.attributeLocalName);
-        } else {
-            sandwich = getSandwich(animInfo.target,
-                                   animInfo.attributeNamespaceURI,
-                                   animInfo.attributeLocalName);
-        }
+        Sandwich sandwich = getSandwich(animInfo.target, animInfo.type,
+                                        animInfo.attributeNamespaceURI,
+                                        animInfo.attributeLocalName);
         sandwich.shouldUpdate = true;
         if (anim.higherAnimation == null) {
             return;
@@ -363,15 +372,9 @@ public abstract class AnimationEngine {
             return;
         }
         AnimationInfo animInfo = getAnimationInfo(anim);
-        Sandwich sandwich;
-        if (animInfo.isCSS) {
-            sandwich = getSandwich(animInfo.target,
-                                   animInfo.attributeLocalName);
-        } else {
-            sandwich = getSandwich(animInfo.target,
-                                   animInfo.attributeNamespaceURI,
-                                   animInfo.attributeLocalName);
-        }
+        Sandwich sandwich = getSandwich(animInfo.target, animInfo.type,
+                                        animInfo.attributeNamespaceURI,
+                                        animInfo.attributeLocalName);
         AbstractAnimation nextLower = anim.lowerAnimation;
         nextLower.markDirty();
         anim.lowerAnimation.higherAnimation = anim.higherAnimation;
@@ -443,16 +446,22 @@ public abstract class AnimationEngine {
     protected static class TargetInfo {
 
         /**
-         * Map of XML attribute names to AbstractAnimation at the top of the
+         * Map of XML attribute names to the AbstractAnimation at the top of the
          * sandwich.
          */
         public DoublyIndexedTable xmlAnimations = new DoublyIndexedTable();
 
         /**
-         * Map of CSS attribute names to AbstractAnimation at the top of the
+         * Map of CSS attribute names to the AbstractAnimation at the top of the
          * sandwich.
          */
         public HashMap cssAnimations = new HashMap();
+
+        /**
+         * Map of animation types to the AbstractAnimation at the top of the
+         * sandwich.
+         */
+        public HashMap otherAnimations = new HashMap();
     }
 
     /**
@@ -483,9 +492,10 @@ public abstract class AnimationEngine {
         public AnimationTarget target;
 
         /**
-         * Whether the animation is for a CSS property or an XML attribute.
+         * The type of animation.  Must be one of the <code>ANIM_TYPE_*</code>
+         * constants defined in {@link AnimationEngine}.
          */
-        public boolean isCSS;
+        public short type;
 
         /**
          * The namespace URI of the attribute to animate, if this is an XML

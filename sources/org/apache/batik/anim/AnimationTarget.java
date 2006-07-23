@@ -52,6 +52,11 @@ public interface AnimationTarget {
     void updateAttributeValue(String ns, String ln, AnimatableValue val);
 
     /**
+     * Updates a 'other' animation value in this target.
+     */
+    void updateOtherValue(String type, AnimatableValue val);
+
+    /**
      * Returns the underlying value of an animatable XML attribute.
      */
     AnimatableValue getUnderlyingValue(String ns, String ln);

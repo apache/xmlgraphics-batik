@@ -95,6 +95,7 @@ public abstract class SVGDescriptiveElementBridge extends AbstractSVGBridge
     public void handleCSSEngineEvent(CSSEngineEvent evt) { }
     public void handleAnimatedAttributeChanged
         (AnimatedLiveAttributeValue alav) { }
+    public void handleOtherAnimationChanged(String type) { }
 
 
     // SVGContext implementation ///////////////////////////////////////////

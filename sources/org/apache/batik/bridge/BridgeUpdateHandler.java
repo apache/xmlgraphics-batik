@@ -63,6 +63,11 @@ public interface BridgeUpdateHandler {
     void handleAnimatedAttributeChanged(AnimatedLiveAttributeValue alav);
 
     /**
+     * Invoked when an 'other' animation value has changed.
+     */
+    void handleOtherAnimationChanged(String type);
+
+    /**
      * Disposes this BridgeUpdateHandler and releases all resources.
      */
     void dispose();
