@@ -51,5 +51,6 @@ public class TransformAnimation extends SimpleAnimation {
                               short type) {
         super(timedElement, animatableElement, calcMode, keyTimes, keySplines,
               additive, cumulative, values, from, to, by);
+        this.type = type;
     }
 }

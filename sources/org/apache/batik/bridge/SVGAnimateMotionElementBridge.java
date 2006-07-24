@@ -24,10 +24,12 @@ import org.apache.batik.anim.AbstractAnimation;
 import org.apache.batik.anim.AnimationEngine;
 import org.apache.batik.anim.AnimationTarget;
 import org.apache.batik.anim.MotionAnimation;
-import org.apache.batik.anim.values.AnimatablePointValue;
+import org.apache.batik.anim.values.AnimatableMotionPointValue;
 import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.ext.awt.geom.ExtendedGeneralPath;
+import org.apache.batik.dom.svg.SVGAnimatedPathDataSupport;
 import org.apache.batik.dom.svg.SVGOMElement;
+import org.apache.batik.dom.svg.SVGOMPathElement;
 import org.apache.batik.dom.svg.SVGOMTransform;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.parser.AWTPathProducer;
@@ -39,6 +41,7 @@ import org.apache.batik.parser.PathParser;
 import org.apache.batik.parser.ParseException;
 import org.apache.batik.util.SVGTypes;
 
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAngle;
 
@@ -84,6 +87,7 @@ public class SVGAnimateMotionElementBridge extends SVGAnimateElementBridge {
             if (rotateString.equals("auto")) {
                 rotateAuto = true;
             } else if (rotateString.equals("auto-reverse")) {
+                rotateAuto = true;
                 rotateAutoReverse = true;
             } else {
                 class Handler implements AngleHandler {
@@ -109,6 +113,14 @@ public class SVGAnimateMotionElementBridge extends SVGAnimateElementBridge {
                 AngleParser ap = new AngleParser();
                 Handler h = new Handler();
                 ap.setAngleHandler(h);
+                try {
+                    ap.parse(rotateString);
+                } catch (ParseException ex) {
+                    throw new BridgeException
+                        (ctx, element,
+                         ErrorConstants.ERR_ATTRIBUTE_VALUE_MALFORMED,
+                         new Object[] { SVG_ROTATE_ATTRIBUTE, rotateString });
+                }
                 rotateAngle = h.theAngle;
                 rotateAngleUnit = h.theUnit;
             }
@@ -125,7 +137,7 @@ public class SVGAnimateMotionElementBridge extends SVGAnimateElementBridge {
                                    to,
                                    by,
                                    parsePath(),
-                                   null,//parseKeyPoints(),
+                                   parseKeyPoints(),
                                    rotateAuto,
                                    rotateAutoReverse,
                                    rotateAngle,
@@ -133,9 +145,31 @@ public class SVGAnimateMotionElementBridge extends SVGAnimateElementBridge {
     }
 
     /**
-     * Returns the parsed 'type' attribute from the animation element.
+     * Returns the parsed 'type' attribute (or the path from a referencing
+     * 'mpath') from the animation element.
      */
     protected ExtendedGeneralPath parsePath() {
+        Node n = element.getFirstChild();
+        while (n != null) {
+            if (n.getNodeType() == Node.ELEMENT_NODE
+                    && SVG_NAMESPACE_URI.equals(n.getNamespaceURI())
+                    && SVG_MPATH_TAG.equals(n.getLocalName())) {
+                String uri = XLinkSupport.getXLinkHref((Element) n);
+                Element path = ctx.getReferencedElement(element, uri);
+                if (!SVG_NAMESPACE_URI.equals(path.getNamespaceURI())
+                        || !SVG_PATH_TAG.equals(path.getLocalName())) {
+                    throw new BridgeException
+                        (ctx, element, ErrorConstants.ERR_URI_BAD_TARGET,
+                         new Object[] { uri });
+                }
+                SVGOMPathElement pathElt = (SVGOMPathElement) path;
+                AWTPathProducer app = new AWTPathProducer();
+                SVGAnimatedPathDataSupport.handlePathSegList
+                    (pathElt.getPathSegList(), app);
+                return (ExtendedGeneralPath) app.getShape();
+            }
+            n = n.getNextSibling();
+        }
         String pathString = element.getAttributeNS(null, SVG_PATH_ATTRIBUTE);
         if (pathString.length() == 0) {
             return null;
@@ -237,7 +271,7 @@ outer:  while (i < len) {
                     (values[i], types[i], AnimationTarget.PERCENTAGE_VIEWPORT_WIDTH);
                 float y = animationTarget.svgToUserSpace
                     (values[i + 1], types[i + 1], AnimationTarget.PERCENTAGE_VIEWPORT_HEIGHT);
-                ret[i / 2] = new AnimatablePointValue(animationTarget, x, y);
+                ret[i / 2] = new AnimatableMotionPointValue(animationTarget, x, y, 0);
             }
             return ret;
         } catch (ParseException ex) {
@@ -265,7 +299,7 @@ outer:  while (i < len) {
      * composition of additive animations.
      */
     public AnimatableValue getUnderlyingValue() {
-        return new AnimatablePointValue(animationTarget, 0f, 0f);
+        return new AnimatableMotionPointValue(animationTarget, 0f, 0f, 0f);
     }
 
     /**

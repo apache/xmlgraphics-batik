@@ -110,7 +110,8 @@ public class SimpleAnimation extends InterpolatingAnimation {
                                     SMILConstants.SMIL_KEY_TIMES_ATTRIBUTE });
             }
         } else {
-            if (calcMode == CALC_MODE_LINEAR || calcMode == CALC_MODE_SPLINE) {
+            if (calcMode == CALC_MODE_LINEAR || calcMode == CALC_MODE_SPLINE
+                    || calcMode == CALC_MODE_PACED && !values[0].canPace()) {
                 int count = values.length == 1 ? 2 : values.length;
                 this.keyTimes = new float[count];
                 for (int i = 0; i < count; i++) {
@@ -122,6 +123,24 @@ public class SimpleAnimation extends InterpolatingAnimation {
                 for (int i = 0; i < count; i++) {
                     this.keyTimes[i] = (float) i / count;
                 }
+            } else { // CALC_MODE_PACED
+                // This corrects the keyTimes to be paced, so from now on
+                // it can be considered the same as CALC_MODE_LINEAR.
+                int count = values.length;
+                float[] cumulativeDistances = new float[count];
+                cumulativeDistances[0] = 0;
+                for (int i = 1; i < count; i++) {
+                    cumulativeDistances[i] = cumulativeDistances[i - 1]
+                        + values[i - 1].distanceTo(values[i]);
+                }
+                float totalLength = cumulativeDistances[count - 1];
+                this.keyTimes = new float[count];
+                this.keyTimes[0] = 0;
+                for (int i = 1; i < count - 1; i++) {
+                    this.keyTimes[i] =
+                        cumulativeDistances[i] / totalLength;
+                }
+                this.keyTimes[count - 1] = 1;
             }
         }
 
@@ -141,58 +160,52 @@ public class SimpleAnimation extends InterpolatingAnimation {
     protected void sampledAtUnitTime(float unitTime, int repeatIteration) {
         AnimatableValue value, accumulation, nextValue;
         float interpolation = 0;
-        if (calcMode != CALC_MODE_PACED) {
-            if (unitTime != 1) {
-                int keyTimeIndex = 0;
-                while (keyTimeIndex < keyTimes.length - 1
-                        && unitTime >= keyTimes[keyTimeIndex + 1]) {
-                    keyTimeIndex++;
-                }
-                value = values[keyTimeIndex];
-                if (calcMode == CALC_MODE_LINEAR
-                        || calcMode == CALC_MODE_SPLINE) {
-                    nextValue = values[keyTimeIndex + 1];
-                    interpolation = (unitTime - keyTimes[keyTimeIndex])
-                        / (keyTimes[keyTimeIndex + 1] - keyTimes[keyTimeIndex]);
-                    if (calcMode == CALC_MODE_SPLINE && unitTime != 0) {
-                        // XXX This could be done better, e.g. with
-                        //     Newton-Raphson.
-                        Cubic c = keySplineCubics[keyTimeIndex];
-                        float tolerance = 0.001f;
-                        float min = 0;
-                        float max = 1;
-                        Point2D.Double p;
-                        for (;;) {
-                            float t = (min + max) / 2;
-                            p = c.eval(t);
-                            double x = p.getX();
-                            if (Math.abs(x - interpolation) < tolerance) {
-                                break;
-                            }
-                            if (x < interpolation) {
-                                min = t;
-                            } else {
-                                max = t;
-                            }
+        if (unitTime != 1) {
+            int keyTimeIndex = 0;
+            while (keyTimeIndex < keyTimes.length - 1
+                    && unitTime >= keyTimes[keyTimeIndex + 1]) {
+                keyTimeIndex++;
+            }
+            value = values[keyTimeIndex];
+            if (calcMode == CALC_MODE_LINEAR
+                    || calcMode == CALC_MODE_PACED
+                    || calcMode == CALC_MODE_SPLINE) {
+                nextValue = values[keyTimeIndex + 1];
+                interpolation = (unitTime - keyTimes[keyTimeIndex])
+                    / (keyTimes[keyTimeIndex + 1] - keyTimes[keyTimeIndex]);
+                if (calcMode == CALC_MODE_SPLINE && unitTime != 0) {
+                    // XXX This could be done better, e.g. with
+                    //     Newton-Raphson.
+                    Cubic c = keySplineCubics[keyTimeIndex];
+                    float tolerance = 0.001f;
+                    float min = 0;
+                    float max = 1;
+                    Point2D.Double p;
+                    for (;;) {
+                        float t = (min + max) / 2;
+                        p = c.eval(t);
+                        double x = p.getX();
+                        if (Math.abs(x - interpolation) < tolerance) {
+                            break;
                         }
-                        interpolation = (float) p.getY();
+                        if (x < interpolation) {
+                            min = t;
+                        } else {
+                            max = t;
+                        }
                     }
-                } else {
-                    nextValue = null;
+                    interpolation = (float) p.getY();
                 }
             } else {
-                value = values[values.length - 1];
                 nextValue = null;
             }
-            if (cumulative) {
-                accumulation = values[values.length - 1];
-            } else {
-                accumulation = null;
-            }
         } else {
-            // XXX Handle paced animation.
-            value = null;
+            value = values[values.length - 1];
             nextValue = null;
+        }
+        if (cumulative) {
+            accumulation = values[values.length - 1];
+        } else {
             accumulation = null;
         }
 

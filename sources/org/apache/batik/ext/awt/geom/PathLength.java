@@ -276,6 +276,32 @@ public class PathLength {
 
     /**
      * Returns the slope of the path at the specified length.
+     * @param index The segment number
+     * @param proportion The proportion along the given segment
+     * @return the angle in radians, in the range [-{@link Math#PI},
+     *         {@link Math#PI}].
+     */
+    public float angleAtLength(int index, float proportion) {
+        if (!initialised) {
+            initialise();
+        }
+        if (index < 0 || index >= segmentIndexes.length) {
+            return 0f;
+        }
+        PathSegment seg = (PathSegment) segments.get(segmentIndexes[index]);
+        float start = seg.getLength();
+        float end;
+        if (index == segmentIndexes.length - 1) {
+            end = pathLength;
+        } else {
+            seg = (PathSegment) segments.get(segmentIndexes[index + 1]);
+            end = seg.getLength();
+        }
+        return angleAtLength(start + (end - start) * proportion);
+    }
+
+    /**
+     * Returns the slope of the path at the specified length.
      * @param length The length along the path
      * @return the angle in radians, in the range [-{@link Math#PI},
      *         {@link Math#PI}].

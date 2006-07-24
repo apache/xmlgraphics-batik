@@ -20,7 +20,8 @@ package org.apache.batik.anim;
 import java.awt.geom.Point2D;
 
 import org.apache.batik.anim.timing.TimedElement;
-import org.apache.batik.anim.values.AnimatablePointValue;
+import org.apache.batik.anim.values.AnimatableAngleValue;
+import org.apache.batik.anim.values.AnimatableMotionPointValue;
 import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.ext.awt.geom.Cubic;
 import org.apache.batik.ext.awt.geom.ExtendedGeneralPath;
@@ -52,12 +53,6 @@ public class MotionAnimation extends InterpolatingAnimation {
     protected float[] keyPoints;
 
     /**
-     * Indexes to relevant segments of the path (i.e., all except
-     * moveto commands).
-     */
-    protected int[] segmentIndexes;
-
-    /**
      * Whether automatic rotation should be performed.
      */
     protected boolean rotateAuto;
@@ -68,16 +63,10 @@ public class MotionAnimation extends InterpolatingAnimation {
     protected boolean rotateAutoReverse;
 
     /**
-     * The angle value of rotation to use when automatic rotation is
+     * The angle of rotation (in radians) to use when automatic rotation is
      * not being used.
      */
     protected float rotateAngle;
-
-    /**
-     * The unit type of {@link #rotateAngle}.  Must be one of the
-     * <code>SVG_ANGLETYPE_*</code> constants defined in {@link SVGAngle}.
-     */
-    protected short rotateAngleUnit;
 
     /**
      * Creates a new MotionAnimation.
@@ -101,26 +90,23 @@ public class MotionAnimation extends InterpolatingAnimation {
                            short rotateAngleUnit) {
         super(timedElement, animatableElement, calcMode, keyTimes, keySplines,
               additive, cumulative);
-        this.keyPoints = keyPoints;
         this.rotateAuto = rotateAuto;
         this.rotateAutoReverse = rotateAutoReverse;
-        this.rotateAngle = rotateAngle;
-        this.rotateAngleUnit = rotateAngleUnit;
+        this.rotateAngle = AnimatableAngleValue.rad(rotateAngle, rotateAngleUnit);
 
-        int segments;
         if (path == null) {
             path = new ExtendedGeneralPath();
             if (values == null || values.length == 0) {
                 if (from != null) {
-                    AnimatablePointValue fromPt = (AnimatablePointValue) from;
+                    AnimatableMotionPointValue fromPt = (AnimatableMotionPointValue) from;
                     float x = fromPt.getX();
                     float y = fromPt.getY();
                     path.moveTo(x, y);
                     if (to != null) {
-                        AnimatablePointValue toPt = (AnimatablePointValue) to;
+                        AnimatableMotionPointValue toPt = (AnimatableMotionPointValue) to;
                         path.lineTo(toPt.getX(), toPt.getY());
                     } else if (by != null) {
-                        AnimatablePointValue byPt = (AnimatablePointValue) by;
+                        AnimatableMotionPointValue byPt = (AnimatableMotionPointValue) by;
                         path.lineTo(x + byPt.getX(), y + byPt.getY());
                     } else {
                         throw timedElement.createException
@@ -129,14 +115,14 @@ public class MotionAnimation extends InterpolatingAnimation {
                     }
                 } else {
                     if (to != null) {
-                        AnimatablePointValue unPt = (AnimatablePointValue)
+                        AnimatableMotionPointValue unPt = (AnimatableMotionPointValue)
                             animatableElement.getUnderlyingValue();
-                        AnimatablePointValue toPt = (AnimatablePointValue) to;
+                        AnimatableMotionPointValue toPt = (AnimatableMotionPointValue) to;
                         path.moveTo(unPt.getX(), unPt.getY());
                         path.lineTo(toPt.getX(), toPt.getY());
                         this.cumulative = false;
                     } else if (by != null) {
-                        AnimatablePointValue byPt = (AnimatablePointValue) by;
+                        AnimatableMotionPointValue byPt = (AnimatableMotionPointValue) by;
                         path.moveTo(0, 0);
                         path.lineTo(byPt.getX(), byPt.getY());
                         this.additive = true;
@@ -146,53 +132,37 @@ public class MotionAnimation extends InterpolatingAnimation {
                              new Object[] { null });
                     }
                 }
-                segments = 1;
-                segmentIndexes = new int[] { 1 };
             } else {
-                segmentIndexes = new int[values.length - 1];
-                AnimatablePointValue pt = (AnimatablePointValue) values[0];
+                AnimatableMotionPointValue pt = (AnimatableMotionPointValue) values[0];
                 path.moveTo(pt.getX(), pt.getY());
                 for (int i = 1; i < values.length; i++) {
-                    pt = (AnimatablePointValue) values[i];
+                    pt = (AnimatableMotionPointValue) values[i];
                     path.lineTo(pt.getX(), pt.getY());
-                    segmentIndexes[i - 1] = i;
                 }
-                segments = values.length - 1;
-            }
-            pathLength = new PathLength(path);
-        } else {
-            pathLength = new PathLength(path);
-            int totalSegments = pathLength.getNumberOfSegments();
-            int[] indexes = new int[totalSegments];
-            segments = 0;
-            ExtendedPathIterator epi = path.getExtendedPathIterator();
-            int idx = 0;
-            while (!epi.isDone()) {
-                int type = epi.currentSegment();
-                if (type != ExtendedPathIterator.SEG_MOVETO) {
-                    indexes[segments++] = idx;
-                }
-                idx++;
-                epi.next();
-            }
-            if (segments == indexes.length) {
-                segmentIndexes = indexes;
-            } else {
-                segmentIndexes = new int[segments];
-                System.arraycopy(indexes, 0, segmentIndexes, 0, segments);
             }
         }
         this.path = path;
+        pathLength = new PathLength(path);
+        int segments = 0;
+        ExtendedPathIterator epi = path.getExtendedPathIterator();
+        while (!epi.isDone()) {
+            int type = epi.currentSegment();
+            if (type != ExtendedPathIterator.SEG_MOVETO) {
+                segments++;
+            }
+            epi.next();
+        }
 
-        if (this.keyTimes != null) {
-            if (this.keyTimes.length != segments + 1) {
+        int count = keyPoints == null ? segments + 1 : keyPoints.length;
+        float totalLength = pathLength.lengthOfPath();
+        if (this.keyTimes != null && calcMode != CALC_MODE_PACED) {
+            if (this.keyTimes.length != count) {
                 throw timedElement.createException
                     ("attribute.malformed",
                      new Object[] { null,
                                     SMILConstants.SMIL_KEY_TIMES_ATTRIBUTE });
             }
         } else {
-            int count = segments + 1;
             if (calcMode == CALC_MODE_LINEAR || calcMode == CALC_MODE_SPLINE) {
                 this.keyTimes = new float[count];
                 for (int i = 0; i < count; i++) {
@@ -206,7 +176,6 @@ public class MotionAnimation extends InterpolatingAnimation {
             } else { // CALC_MODE_PACED
                 // This corrects the keyTimes to be paced, so from now on
                 // it can be considered the same as CALC_MODE_LINEAR.
-                float totalLength = pathLength.lengthOfPath();
                 this.keyTimes = new float[count];
                 this.keyTimes[0] = 0;
                 for (int i = 1; i < count - 1; i++) {
@@ -217,13 +186,21 @@ public class MotionAnimation extends InterpolatingAnimation {
             }
         }
 
-        if (this.keyPoints != null &&
-                keyPoints.length != this.keyTimes.length) {
-            throw timedElement.createException
-                ("attribute.malformed",
-                 new Object[] { null,
-                                SMILConstants.SMIL_KEY_POINTS_ATTRIBUTE });
+        if (keyPoints != null) {
+            if (keyPoints.length != this.keyTimes.length) {
+                throw timedElement.createException
+                    ("attribute.malformed",
+                     new Object[] { null,
+                                    SMILConstants.SMIL_KEY_POINTS_ATTRIBUTE });
+            }
+        } else {
+            keyPoints = new float[count];
+            for (int i = 0; i < count - 1; i++) {
+                keyPoints[i] = pathLength.getLengthAtSegment(i + 1);
+            }
+            keyPoints[count - 1] = totalLength;
         }
+        this.keyPoints = keyPoints;
     }
 
     /**
@@ -272,16 +249,50 @@ public class MotionAnimation extends InterpolatingAnimation {
                     }
                 }
             }
-            int seg = segmentIndexes[keyTimeIndex];
-            Point2D p = pathLength.pointAtLength(seg, interpolation);
-            value = new AnimatablePointValue(null, (float) p.getX(), (float) p.getY());
+            float point = keyPoints[keyTimeIndex];
+            if (interpolation != 0) {
+                point += interpolation *
+                    (keyPoints[keyTimeIndex + 1] - keyPoints[keyTimeIndex]);
+            }
+            Point2D p = pathLength.pointAtLength(point);
+            float ang;
+            if (rotateAuto) {
+                ang = pathLength.angleAtLength(point);
+                if (rotateAutoReverse) {
+                    ang += Math.PI;
+                }
+            } else {
+                ang = rotateAngle;
+            }
+            value = new AnimatableMotionPointValue(null, (float) p.getX(),
+                                                   (float) p.getY(), ang);
         } else {
             Point2D p = pathLength.pointAtLength(pathLength.lengthOfPath());
-            value = new AnimatablePointValue(null, (float) p.getX(), (float) p.getY());
+            float ang;
+            if (rotateAuto) {
+                ang = pathLength.angleAtLength(pathLength.lengthOfPath());
+                if (rotateAutoReverse) {
+                    ang += Math.PI;
+                }
+            } else {
+                ang = rotateAngle;
+            }
+            value = new AnimatableMotionPointValue(null, (float) p.getX(),
+                                                   (float) p.getY(), ang);
         }
         if (cumulative) {
             Point2D p = pathLength.pointAtLength(pathLength.lengthOfPath());
-            accumulation = new AnimatablePointValue(null, (float) p.getX(), (float) p.getY());
+            float ang;
+            if (rotateAuto) {
+                ang = pathLength.angleAtLength(pathLength.lengthOfPath());
+                if (rotateAutoReverse) {
+                    ang += Math.PI;
+                }
+            } else {
+                ang = rotateAngle;
+            }
+            accumulation = new AnimatableMotionPointValue(null, (float) p.getX(),
+                                                          (float) p.getY(), ang);
         } else {
             accumulation = null;
         }

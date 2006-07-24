@@ -151,7 +151,7 @@ public abstract class AbstractSVGTransform implements SVGTransform {
     /**
      * <b>DOM</b>: Implements {@link SVGTransform#setRotate(float,float,float)}.
      */
-    public void setRotate ( float angle, float cx, float cy ){
+    public void setRotate(float angle, float cx, float cy) {
         type = SVG_TRANSFORM_ROTATE;
         affineTransform =
             AffineTransform.getRotateInstance(Math.toRadians(angle), cx, cy);

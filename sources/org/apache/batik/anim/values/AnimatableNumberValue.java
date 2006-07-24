@@ -87,6 +87,23 @@ public class AnimatableNumberValue extends AnimatableValue {
     }
 
     /**
+     * Returns whether two values of this type can have their distance
+     * computed, as needed by paced animation.
+     */
+    public boolean canPace() {
+        return true;
+    }
+
+    /**
+     * Returns the absolute distance between this value and the specified other
+     * value.
+     */
+    public float distanceTo(AnimatableValue other) {
+        AnimatableNumberValue o = (AnimatableNumberValue) other;
+        return Math.abs(value - o.value);
+    }
+
+    /**
      * Returns a zero value of this AnimatableValue's type.
      */
     public AnimatableValue getZeroValue() {

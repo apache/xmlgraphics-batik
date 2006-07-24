@@ -102,6 +102,15 @@ public class AnimatableAngleValue extends AnimatableNumberValue {
     }
 
     /**
+     * Returns the absolute distance between this value and the specified other
+     * value.
+     */
+    public float distanceTo(AnimatableValue other) {
+        AnimatableAngleValue o = (AnimatableAngleValue) other;
+        return Math.abs(rad(value, unit) - rad(o.value, o.unit));
+    }
+
+    /**
      * Returns a zero value of this AnimatableValue's type.
      */
     public AnimatableValue getZeroValue() {
@@ -112,7 +121,7 @@ public class AnimatableAngleValue extends AnimatableNumberValue {
     /**
      * Converts an angle value to radians.
      */
-    protected float rad(float v, short unit) {
+    public static float rad(float v, short unit) {
         switch (unit) {
             case SVGAngle.SVG_ANGLETYPE_RAD:
                 return v;

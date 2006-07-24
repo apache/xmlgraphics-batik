@@ -202,6 +202,56 @@ public class AnimatableTransformListValue extends AnimatableValue {
     }
 
     /**
+     * Returns whether two values of this type can have their distance
+     * computed, as needed by paced animation.
+     */
+    public boolean canPace() {
+        return true;
+    }
+
+    /**
+     * Returns the absolute distance between this value and the specified other
+     * value.
+     */
+    public float distanceTo(AnimatableValue other) {
+        AnimatableTransformListValue o = (AnimatableTransformListValue) other;
+        if (transforms.size() != 1 || o.transforms.size() != 1) {
+            return 0f;
+        }
+        AbstractSVGTransform t1 = (AbstractSVGTransform) transforms.get(0);
+        AbstractSVGTransform t2 = (AbstractSVGTransform) o.transforms.get(0);
+        short type1 = t1.getType();
+        if (type1 != t2.getType()) {
+            return 0f;
+        }
+        SVGMatrix m1 = t1.getMatrix();
+        SVGMatrix m2 = t2.getMatrix();
+        float dx, dy = 0;
+        switch (type1) {
+            case SVGTransform.SVG_TRANSFORM_TRANSLATE:
+                dx = m1.getC() - m2.getC();
+                dy = m1.getF() - m2.getF();
+                break;
+            case SVGTransform.SVG_TRANSFORM_ROTATE:
+                dx = t1.getAngle() - t2.getAngle();
+                break;
+            case SVGTransform.SVG_TRANSFORM_SCALE:
+                dx = m1.getA() - m2.getA();
+                dy = m1.getE() - m2.getE();
+                break;
+            case SVGTransform.SVG_TRANSFORM_SKEWX:
+                dx = m1.getB() - m2.getB();
+                break;
+            case SVGTransform.SVG_TRANSFORM_SKEWY:
+                dx = m1.getD() - m2.getD();
+                break;
+            default:
+                return 0f;
+        }
+        return (float) Math.sqrt(dx * dx + dy * dy);
+    }
+
+    /**
      * Returns a zero value of this AnimatableValue's type.  This returns an
      * empty transform list.
      */

@@ -173,6 +173,27 @@ public class AnimatableLengthValue extends AnimatableValue {
     }
 
     /**
+     * Returns whether two values of this type can have their distance
+     * computed, as needed by paced animation.
+     */
+    public boolean canPace() {
+        return true;
+    }
+
+    /**
+     * Returns the absolute distance between this value and the specified other
+     * value.
+     */
+    public float distanceTo(AnimatableValue other) {
+        AnimatableLengthValue o = (AnimatableLengthValue) other;
+        float v1 = target.svgToUserSpace(lengthValue, lengthType,
+                                         percentageInterpretation);
+        float v2 = target.svgToUserSpace(o.lengthValue, o.lengthType,
+                                         o.percentageInterpretation);
+        return Math.abs(v1 - v2);
+    }
+
+    /**
      * Returns a zero value of this AnimatableValue's type.
      */
     public AnimatableValue getZeroValue() {

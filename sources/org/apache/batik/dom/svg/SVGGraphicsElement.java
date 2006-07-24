@@ -19,7 +19,7 @@ package org.apache.batik.dom.svg;
 
 import java.awt.geom.AffineTransform;
 
-import org.apache.batik.anim.values.AnimatablePointValue;
+import org.apache.batik.anim.values.AnimatableMotionPointValue;
 import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.XMLSupport;
@@ -274,8 +274,9 @@ public abstract class SVGGraphicsElement
             if (val == null) {
                 motionTransform.setToIdentity();
             } else {
-                AnimatablePointValue p = (AnimatablePointValue) val;
+                AnimatableMotionPointValue p = (AnimatableMotionPointValue) val;
                 motionTransform.setToTranslation(p.getX(), p.getY());
+                motionTransform.rotate(p.getAngle());
             }
             SVGOMDocument d = (SVGOMDocument) ownerDocument;
             d.getAnimatedAttributeListener().otherAnimationChanged(this, type);
