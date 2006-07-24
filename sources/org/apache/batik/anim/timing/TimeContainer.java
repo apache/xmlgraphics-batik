@@ -102,7 +102,7 @@ public abstract class TimeContainer extends TimedElement {
         Iterator i = children.iterator();
         while (i.hasNext()) {
             TimedElement e = (TimedElement) i.next();
-            e.reset(clearCurrentBegin); // XXX Param correct?
+            e.reset(clearCurrentBegin);
         }
     }
 

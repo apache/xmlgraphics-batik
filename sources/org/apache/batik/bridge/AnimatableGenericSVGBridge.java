@@ -32,7 +32,8 @@ import org.w3c.dom.Element;
  * @author <a href="mailto:cam%40mcc%2eid%2eau">Cameron McCormack</a>
  * @version $Id$
  */
-public abstract class AnimatableGenericSVGBridge extends AnimatableSVGBridge
+public abstract class AnimatableGenericSVGBridge
+        extends AnimatableSVGBridge
         implements GenericBridge, SVGContext {
 
     /**

@@ -63,6 +63,11 @@ public abstract class AnimationEngine {
     protected HashMap animations = new HashMap();
 
     /**
+     * The listener object for animation target base value changes.
+     */
+    protected Listener targetListener = new Listener();
+
+    /**
      * Creates a new AnimationEngine for the given document.
      */
     public AnimationEngine(Document doc) {
@@ -104,6 +109,9 @@ public abstract class AnimationEngine {
             anim.higherAnimation = null;
         }
         sandwich.animation = anim;
+        if (anim.lowerAnimation == null) {
+            sandwich.lowestAnimation = anim;
+        }
         } finally { org.apache.batik.anim.timing.Trace.exit(); }
     }
 
@@ -127,6 +135,7 @@ public abstract class AnimationEngine {
                                         animInfo.attributeLocalName);;
         if (sandwich.animation == anim) {
             sandwich.animation = null;
+            sandwich.lowestAnimation = null;
             sandwich.shouldUpdate = true;
         }
         } finally { org.apache.batik.anim.timing.Trace.exit(); }
@@ -206,6 +215,17 @@ public abstract class AnimationEngine {
                 Sandwich sandwich = (Sandwich) e2.getValue();
                 if (sandwich.shouldUpdate || sandwich.animation.isDirty) {
                     AnimatableValue av = sandwich.animation.getComposedValue();
+                    boolean usesUnderlying =
+                        sandwich.lowestAnimation.usesUnderlyingValue();
+                    if (usesUnderlying && !sandwich.listenerRegistered) {
+                        target.addTargetListener(namespaceURI, localName, false,
+                                                 targetListener);
+                        sandwich.listenerRegistered = true;
+                    } else if (!usesUnderlying && sandwich.listenerRegistered) {
+                        target.removeTargetListener(namespaceURI, localName,
+                                                    false, targetListener);
+                        sandwich.listenerRegistered = false;
+                    }
                     target.updateAttributeValue(namespaceURI, localName, av);
                     sandwich.shouldUpdate = false;
                     sandwich.animation.isDirty = false;
@@ -219,15 +239,22 @@ public abstract class AnimationEngine {
                 String propertyName = (String) e2.getKey();
                 Sandwich sandwich = (Sandwich) e2.getValue();
                 if (sandwich.shouldUpdate || sandwich.animation.isDirty) {
-                    // XXX Must keep a track of whether the underlying value is
-                    //     needed, to avoid clearing the property value before
-                    //     getting the composed value.
                     AnimatableValue av = sandwich.animation.getComposedValue();
-                    boolean hasAdditive = true;
-                    if (hasAdditive) {
+                    boolean usesUnderlying =
+                        sandwich.lowestAnimation.usesUnderlyingValue();
+                    if (usesUnderlying && !sandwich.listenerRegistered) {
+                        target.addTargetListener(null, propertyName, true,
+                                                 targetListener);
+                        sandwich.listenerRegistered = true;
+                    } else if (!usesUnderlying && sandwich.listenerRegistered) {
+                        target.removeTargetListener(null, propertyName, true,
+                                                    targetListener);
+                        sandwich.listenerRegistered = false;
+                    }
+                    if (usesUnderlying) {
                         target.updatePropertyValue(propertyName, null);
                     }
-                    if (!(hasAdditive && av == null)) {
+                    if (!(usesUnderlying && av == null)) {
                         target.updatePropertyValue(propertyName, av);
                     }
                     sandwich.shouldUpdate = false;
@@ -308,6 +335,9 @@ public abstract class AnimationEngine {
             if (sandwich.animation == anim) {
                 sandwich.animation = top;
             }
+            if (anim.lowerAnimation == null) {
+                sandwich.lowestAnimation = anim;
+            }
         }
     }
 
@@ -352,7 +382,9 @@ public abstract class AnimationEngine {
         if (anim.higherAnimation == null) {
             return;
         }
-        if (anim.lowerAnimation != null) {
+        if (anim.lowerAnimation == null) {
+            sandwich.lowestAnimation = anim.higherAnimation;
+        } else {
             anim.lowerAnimation.higherAnimation = anim.higherAnimation;
         }
         anim.higherAnimation.lowerAnimation = anim.lowerAnimation;
@@ -384,13 +416,10 @@ public abstract class AnimationEngine {
             sandwich.animation = nextLower;
             sandwich.shouldUpdate = true;
         }
-        AbstractAnimation last = nextLower;
-        while (last.lowerAnimation != null) {
-            last = last.lowerAnimation;
-        }
-        last.lowerAnimation = anim;
-        anim.higherAnimation = last;
+        sandwich.lowestAnimation.lowerAnimation = anim;
+        anim.higherAnimation = sandwich.lowestAnimation;
         anim.lowerAnimation = null;
+        sandwich.lowestAnimation = anim;
         if (sandwich.animation.isDirty) {
             sandwich.shouldUpdate = true;
         }
@@ -441,25 +470,47 @@ public abstract class AnimationEngine {
     protected abstract TimedDocumentRoot createDocumentRoot();
 
     /**
+     * Listener class for changes to base values on a target element.
+     */
+    protected class Listener implements AnimationTargetListener {
+
+        /**
+         * Invoked to indicate that base value of the specified attribute
+         * or property has changed.
+         */
+        public void baseValueChanged(AnimationTarget t, String ns, String ln,
+                                     boolean isCSS) {
+            short type = isCSS ? ANIM_TYPE_CSS : ANIM_TYPE_XML;
+            Sandwich sandwich = getSandwich(t, type, ns, ln);
+            sandwich.shouldUpdate = true;
+            AbstractAnimation anim = sandwich.animation;
+            while (anim.lowerAnimation != null) {
+                anim = anim.lowerAnimation;
+            }
+            anim.markDirty();
+        }
+    }
+
+    /**
      * Class to hold XML and CSS animations for a target element.
      */
     protected static class TargetInfo {
 
         /**
-         * Map of XML attribute names to the AbstractAnimation at the top of the
-         * sandwich.
+         * Map of XML attribute names to the corresponding {@link Sandwich}
+         * objects.
          */
         public DoublyIndexedTable xmlAnimations = new DoublyIndexedTable();
 
         /**
-         * Map of CSS attribute names to the AbstractAnimation at the top of the
-         * sandwich.
+         * Map of CSS attribute names to the corresponding {@link Sandwich}
+         * objects.
          */
         public HashMap cssAnimations = new HashMap();
 
         /**
-         * Map of animation types to the AbstractAnimation at the top of the
-         * sandwich.
+         * Map of other animation types to the corresponding {@link Sandwich}
+         * objects.
          */
         public HashMap otherAnimations = new HashMap();
     }
@@ -475,10 +526,21 @@ public abstract class AnimationEngine {
         public AbstractAnimation animation;
 
         /**
+         * The bottom-most animation in the sandwich.
+         */
+        public AbstractAnimation lowestAnimation;
+
+        /**
          * Whether the animation needs to have its value copied into the
          * document.
          */
         public boolean shouldUpdate;
+
+        /**
+         * Whether an {@link AnimationEngineListener} has been registered to
+         * listen for changes to the base value.
+         */
+        public boolean listenerRegistered;
     }
 
     /**

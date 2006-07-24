@@ -20,6 +20,8 @@ package org.apache.batik.dom.svg;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 
+import org.apache.batik.anim.AnimationTargetListener;
+
 /**
  * This interface is the placeholder for SVG application informations.
  *
@@ -104,4 +106,14 @@ public interface SVGContext {
      * @return the SVG value in user units
      */
     float svgToUserSpace(float v, int type, int pcInterp);
+
+    /**
+     * Adds a listener for changes to the given CSS property.
+     */
+    void addTargetListener(String pn, AnimationTargetListener l);
+
+    /**
+     * Removes a listener for changes to the given attribute value.
+     */
+    void removeTargetListener(String pn, AnimationTargetListener l);
 }

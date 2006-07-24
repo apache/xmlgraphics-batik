@@ -89,6 +89,7 @@ public class SimpleAnimation extends InterpolatingAnimation {
                     values[0] = animatableElement.getUnderlyingValue();
                     values[1] = to;
                     this.cumulative = false;
+                    toAnimation = true;
                 } else if (by != null) {
                     this.additive = true;
                     values = new AnimatableValue[2];

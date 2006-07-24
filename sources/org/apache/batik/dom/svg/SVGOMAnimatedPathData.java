@@ -180,6 +180,7 @@ public class SVGOMAnimatedPathData
                 normalizedPathSegs.invalidate();
             }
         }
+        fireBaseAttributeListeners();
         if (!hasAnimVal) {
             fireAnimatedAttributeListeners();
         }
@@ -197,6 +198,7 @@ public class SVGOMAnimatedPathData
                 normalizedPathSegs.invalidate();
             }
         }
+        fireBaseAttributeListeners();
         if (!hasAnimVal) {
             fireAnimatedAttributeListeners();
         }
@@ -214,6 +216,7 @@ public class SVGOMAnimatedPathData
                 normalizedPathSegs.invalidate();
             }
         }
+        fireBaseAttributeListeners();
         if (!hasAnimVal) {
             fireAnimatedAttributeListeners();
         }

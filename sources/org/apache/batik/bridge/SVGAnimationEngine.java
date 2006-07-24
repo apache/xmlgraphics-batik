@@ -335,7 +335,7 @@ public class SVGAnimationEngine extends AnimationEngine {
                 over.removeProperty(pn);
             }
             Value v = cssEngine.getComputedStyle(e, null, idx);
-            if (oldValue != null) {
+            if (oldValue != null && !oldValue.equals("")) {
                 over.setProperty(pn, oldValue, null);
             }
             return factories[type].createValue(target, pn, v);

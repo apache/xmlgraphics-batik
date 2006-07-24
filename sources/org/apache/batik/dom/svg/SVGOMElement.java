@@ -17,6 +17,8 @@
  */
 package org.apache.batik.dom.svg;
 
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Vector;
 
 import org.apache.batik.anim.AnimationTarget;
@@ -41,6 +43,7 @@ import org.apache.batik.css.engine.value.ShorthandManager;
 import org.apache.batik.css.engine.value.ValueManager;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.AbstractStylableDocument;
+import org.apache.batik.dom.util.DoublyIndexedTable;
 import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.parser.PathArrayProducer;
 import org.apache.batik.util.CSSConstants;
@@ -106,6 +109,12 @@ public abstract class SVGOMElement
      * The SVG context to get SVG specific informations.
      */
     protected transient SVGContext svgContext;
+
+    /**
+     * Table mapping namespaceURI/local name pairs to {@link LinkedList}s
+     * of {@link AnimationTargetListener}s.
+     */
+    protected DoublyIndexedTable targetListeners;
 
     /**
      * Creates a new Element object.
@@ -1017,17 +1026,45 @@ public abstract class SVGOMElement
     /**
      * Adds a listener for changes to the given attribute value.
      */
-    public void addTargetListener(String attributeName, boolean isCSS,
+    public void addTargetListener(String ns, String an, boolean isCSS,
                                   AnimationTargetListener l) {
-        // XXX
+        if (!isCSS) {
+            if (targetListeners == null) {
+                targetListeners = new DoublyIndexedTable();
+            }
+            LinkedList ll = (LinkedList) targetListeners.get(ns, an);
+            if (ll == null) {
+                ll = new LinkedList();
+                targetListeners.put(ns, an, ll);
+            }
+            ll.add(l);
+        }
     }
 
     /**
      * Removes a listener for changes to the given attribute value.
      */
-    public void removeTargetListener(String attributeName, boolean isCSS,
+    public void removeTargetListener(String ns, String an, boolean isCSS,
                                      AnimationTargetListener l) {
-        // XXX
+        if (!isCSS) {
+            LinkedList ll = (LinkedList) targetListeners.get(ns, an);
+            ll.remove(l);
+        }
+    }
+
+    /**
+     * Fires the listeners registered for changes to the base value of the
+     * given attribute.
+     */
+    void fireBaseAttributeListeners(String ns, String ln) {
+        if (targetListeners != null) {
+            LinkedList ll = (LinkedList) targetListeners.get(ns, ln);
+            Iterator it = ll.iterator();
+            while (it.hasNext()) {
+                AnimationTargetListener l = (AnimationTargetListener) it.next();
+                l.baseValueChanged(this, ns, ln, false);
+            }
+        }
     }
 
     // Importation/Cloning ///////////////////////////////////////////

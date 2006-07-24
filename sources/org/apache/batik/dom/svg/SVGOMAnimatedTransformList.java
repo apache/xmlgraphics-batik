@@ -134,7 +134,7 @@ public class SVGOMAnimatedTransformList
         if (!changing && baseVal != null) {
             baseVal.invalidate();
         }
-        // XXX Notify baseVal listeners (if we need them).
+        fireBaseAttributeListeners();
         if (!hasAnimVal) {
             fireAnimatedAttributeListeners();
         }
@@ -147,7 +147,7 @@ public class SVGOMAnimatedTransformList
         if (!changing && baseVal != null) {
             baseVal.invalidate();
         }
-        // XXX Notify baseVal listeners (if we need them).
+        fireBaseAttributeListeners();
         if (!hasAnimVal) {
             fireAnimatedAttributeListeners();
         }
@@ -160,7 +160,7 @@ public class SVGOMAnimatedTransformList
         if (!changing && baseVal != null) {
             baseVal.invalidate();
         }
-        // XXX Notify baseVal listeners (if we need them).
+        fireBaseAttributeListeners();
         if (!hasAnimVal) {
             fireAnimatedAttributeListeners();
         }

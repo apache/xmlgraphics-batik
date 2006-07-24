@@ -27,5 +27,10 @@ package org.apache.batik.anim;
  */
 public interface AnimationTargetListener {
 
-    // XXX TBD
+    /**
+     * Invoked to indicate that base value of the specified attribute
+     * or property has changed.
+     */
+    void baseValueChanged(AnimationTarget t, String ns, String ln,
+                          boolean isCSS);
 }

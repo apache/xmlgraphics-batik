@@ -90,6 +90,16 @@ public abstract class AbstractAnimation {
     protected AnimatableValue composedValue;
 
     /**
+     * Whether this animation depends on the underlying value.
+     */
+    protected boolean usesUnderlyingValue;
+
+    /**
+     * Whether this animation is a 'to-animation'.
+     */
+    protected boolean toAnimation;
+
+    /**
      * Creates a new Animation.
      */
     protected AbstractAnimation(TimedElement timedElement,
@@ -132,8 +142,10 @@ public abstract class AbstractAnimation {
                 Trace.print("lowerAnimation == " + lowerAnimation);
                 if (lowerAnimation == null) {
                     lowerValue = animatableElement.getUnderlyingValue();
+                    usesUnderlyingValue = true;
                 } else {
                     lowerValue = lowerAnimation.getComposedValue();
+                    usesUnderlyingValue = false;
                 }
                 Trace.print("lowerValue == " + lowerValue);
             }
@@ -151,6 +163,13 @@ public abstract class AbstractAnimation {
      */
     public String toString() {
         return timedElement.toString();
+    }
+
+    /**
+     * Returns whether this animation depends on the underlying value.
+     */
+    public boolean usesUnderlyingValue() {
+        return usesUnderlyingValue || toAnimation;
     }
 
     /**

@@ -149,7 +149,7 @@ public abstract class AbstractSVGAnimatedLength
         if (!changing && baseVal != null) {
             baseVal.invalidate();
         }
-        // XXX Notify baseVal listeners (if we need them).
+        fireBaseAttributeListeners();
         if (!hasAnimVal) {
             fireAnimatedAttributeListeners();
         }
@@ -162,7 +162,7 @@ public abstract class AbstractSVGAnimatedLength
         if (!changing && baseVal != null) {
             baseVal.invalidate();
         }
-        // XXX Notify baseVal listeners (if we need them).
+        fireBaseAttributeListeners();
         if (!hasAnimVal) {
             fireAnimatedAttributeListeners();
         }
@@ -175,7 +175,7 @@ public abstract class AbstractSVGAnimatedLength
         if (!changing && baseVal != null) {
             baseVal.invalidate();
         }
-        // XXX Notify baseVal listeners (if we need them).
+        fireBaseAttributeListeners();
         if (!hasAnimVal) {
             fireAnimatedAttributeListeners();
         }

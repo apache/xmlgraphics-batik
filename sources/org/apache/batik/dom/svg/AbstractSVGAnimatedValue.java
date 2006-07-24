@@ -104,6 +104,16 @@ public abstract class AbstractSVGAnimatedValue
     }
 
     /**
+     * Fires the listeners for the base value.
+     */
+    protected void fireBaseAttributeListeners() {
+        if (element instanceof SVGOMElement) {
+            ((SVGOMElement) element).fireBaseAttributeListeners(namespaceURI,
+                                                                localName);
+        }
+    }
+
+    /**
      * Fires the listeners for the animated value.
      */
     protected void fireAnimatedAttributeListeners() {

@@ -89,12 +89,12 @@ public interface AnimationTarget {
     /**
      * Adds a listener for changes to the given attribute value.
      */
-    void addTargetListener(String attributeName, boolean isCSS,
+    void addTargetListener(String ns, String an, boolean isCSS,
                            AnimationTargetListener l);
 
     /**
      * Removes a listener for changes to the given attribute value.
      */
-    void removeTargetListener(String attributeName, boolean isCSS,
+    void removeTargetListener(String ns, String an, boolean isCSS,
                               AnimationTargetListener l);
 }

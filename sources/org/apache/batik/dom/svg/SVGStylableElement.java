@@ -20,6 +20,7 @@ package org.apache.batik.dom.svg;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.apache.batik.anim.AnimationTargetListener;
 import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.css.dom.CSSOMSVGColor;
 import org.apache.batik.css.dom.CSSOMSVGPaint;
@@ -189,6 +190,30 @@ public abstract class SVGStylableElement
         Value v = eng.getComputedStyle(this, null,
                                        SVGCSSEngine.COLOR_INTERPOLATION_INDEX);
         return v.getStringValue().charAt(0) == 'l';
+    }
+
+    /**
+     * Adds a listener for changes to the given attribute value.
+     */
+    public void addTargetListener(String ns, String an, boolean isCSS,
+                                  AnimationTargetListener l) {
+        if (isCSS && svgContext != null) {
+            svgContext.addTargetListener(an, l);
+        } else {
+            super.addTargetListener(ns, an, isCSS, l);
+        }
+    }
+
+    /**
+     * Removes a listener for changes to the given attribute value.
+     */
+    public void removeTargetListener(String ns, String an, boolean isCSS,
+                                     AnimationTargetListener l) {
+        if (isCSS) {
+            svgContext.removeTargetListener(an, l);
+        } else {
+            super.removeTargetListener(ns, an, isCSS, l);
+        }
     }
 
     // SVGStylable support ///////////////////////////////////////////////////

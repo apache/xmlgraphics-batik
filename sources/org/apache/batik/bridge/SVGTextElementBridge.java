@@ -1859,16 +1859,10 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
      * the children of &lt;text&gt;
      */
     public abstract class AbstractTextChildSVGContext
-        implements SVGContext {
-
-        /** Bridge Context */
-        protected BridgeContext ctx;
+            extends AnimatableSVGBridge {
 
         /** Text bridge parent */
         protected SVGTextElementBridge textBridge;
-
-        /** Element */
-        protected Element e;
 
         /**
          * Initialize the <code>SVGContext</code> implementation
@@ -1881,6 +1875,29 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             this.ctx = ctx;
             this.textBridge = parent;
             this.e = e;
+        }
+
+        /**
+         * Returns the namespace URI of the element this <tt>Bridge</tt> is
+         * dedicated to.
+         */
+        public String getNamespaceURI() {
+            return null;
+        }
+
+        /**
+         * Returns the local name of the element this <tt>Bridge</tt> is dedicated
+         * to.
+         */
+        public String getLocalName() {
+            return null;
+        }
+
+        /**
+         * Returns a new instance of this bridge.
+         */
+        public Bridge getInstance() {
+            return null;
         }
 
         public SVGTextElementBridge getTextBridge() { return textBridge; }

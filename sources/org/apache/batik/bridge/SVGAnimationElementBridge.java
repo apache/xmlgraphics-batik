@@ -26,6 +26,7 @@ import org.apache.batik.anim.AbstractAnimation;
 import org.apache.batik.anim.AnimatableElement;
 import org.apache.batik.anim.AnimationEngine;
 import org.apache.batik.anim.AnimationTarget;
+import org.apache.batik.anim.AnimationTargetListener;
 import org.apache.batik.anim.timing.TimedElement;
 import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.css.engine.CSSEngineEvent;
@@ -404,6 +405,18 @@ public abstract class SVGAnimationElementBridge extends AbstractSVGBridge
     public float getFontSize() { return 0; }
     public float svgToUserSpace(float v, int type, int pcInterp) {
         return 0;
+    }
+
+    /**
+     * Adds a listener for changes to the given attribute value.
+     */
+    public void addTargetListener(String pn, AnimationTargetListener l) {
+    }
+
+    /**
+     * Removes a listener for changes to the given attribute value.
+     */
+    public void removeTargetListener(String pn, AnimationTargetListener l) {
     }
 
     // SVGAnimationContext ///////////////////////////////////////////////////

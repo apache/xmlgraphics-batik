@@ -21,6 +21,9 @@ import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.lang.ref.SoftReference;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
 
 import org.apache.batik.css.engine.CSSEngineEvent;
 import org.apache.batik.css.engine.SVGCSSEngine;
@@ -336,9 +339,13 @@ public abstract class AbstractGraphicsNodeBridge extends AnimatableSVGBridge
      */
     public void handleCSSEngineEvent(CSSEngineEvent evt) {
         try {
-            int [] properties = evt.getProperties();
-            for (int i=0; i < properties.length; ++i) {
-                handleCSSPropertyChanged(properties[i]);
+            SVGCSSEngine eng = (SVGCSSEngine) evt.getSource();
+            int[] properties = evt.getProperties();
+            for (int i = 0; i < properties.length; i++) {
+                int idx = properties[i];
+                handleCSSPropertyChanged(idx);
+                String pn = eng.getPropertyName(idx);
+                fireBaseAttributeListeners(pn);
             }
         } catch (Exception ex) {
             ctx.getUserAgent().displayError(ex);

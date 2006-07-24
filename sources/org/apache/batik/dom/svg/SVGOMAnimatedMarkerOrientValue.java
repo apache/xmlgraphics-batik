@@ -96,7 +96,7 @@ public class SVGOMAnimatedMarkerOrientValue extends AbstractSVGAnimatedValue {
         if (!changing) {
             valid = false;
         }
-        // XXX Notify baseVal listeners (if we need them).
+        fireBaseAttributeListeners();
         if (!hasAnimVal) {
             fireAnimatedAttributeListeners();
         }
@@ -109,7 +109,7 @@ public class SVGOMAnimatedMarkerOrientValue extends AbstractSVGAnimatedValue {
         if (!changing) {
             valid = false;
         }
-        // XXX Notify baseVal listeners (if we need them).
+        fireBaseAttributeListeners();
         if (!hasAnimVal) {
             fireAnimatedAttributeListeners();
         }
@@ -122,7 +122,7 @@ public class SVGOMAnimatedMarkerOrientValue extends AbstractSVGAnimatedValue {
         if (!changing) {
             valid = false;
         }
-        // XXX Notify baseVal listeners (if we need them).
+        fireBaseAttributeListeners();
         if (!hasAnimVal) {
             fireAnimatedAttributeListeners();
         }

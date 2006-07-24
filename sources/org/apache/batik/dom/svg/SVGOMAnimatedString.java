@@ -92,6 +92,7 @@ public class SVGOMAnimatedString extends AbstractSVGAnimatedValue
      * Called when an Attr node has been added.
      */
     public void attrAdded(Attr node, String newv) {
+        fireBaseAttributeListeners();
         if (!hasAnimVal) {
             fireAnimatedAttributeListeners();
         }
@@ -101,6 +102,7 @@ public class SVGOMAnimatedString extends AbstractSVGAnimatedValue
      * Called when an Attr node has been modified.
      */
     public void attrModified(Attr node, String oldv, String newv) {
+        fireBaseAttributeListeners();
         if (!hasAnimVal) {
             fireAnimatedAttributeListeners();
         }
@@ -110,6 +112,7 @@ public class SVGOMAnimatedString extends AbstractSVGAnimatedValue
      * Called when an Attr node has been removed.
      */
     public void attrRemoved(Attr node, String oldv) {
+        fireBaseAttributeListeners();
         if (!hasAnimVal) {
             fireAnimatedAttributeListeners();
         }
