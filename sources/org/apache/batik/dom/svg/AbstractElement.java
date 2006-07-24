@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001-2003,2005  The Apache Software Foundation 
+   Copyright 2001-2003,2005-2006  The Apache Software Foundation
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import org.apache.batik.dom.AbstractAttr;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.events.NodeEventTarget;
 import org.apache.batik.util.SoftDoublyIndexedTable;
+
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.NamedNodeMap;
@@ -38,7 +39,7 @@ import org.w3c.dom.events.MutationEvent;
 public abstract class AbstractElement
         extends org.apache.batik.dom.AbstractElement
         implements NodeEventTarget, CSSNavigableNode {
-    
+
     /**
      * The live attribute values.
      */
@@ -58,7 +59,7 @@ public abstract class AbstractElement
     protected AbstractElement(String prefix, AbstractDocument owner) {
         ownerDocument = owner;
         setPrefix(prefix);
-	initializeAttributes();
+      	initializeAttributes();
     }
 
     // CSSNavigableNode ///////////////////////////////////////////////////
@@ -169,7 +170,7 @@ public abstract class AbstractElement
      * Creates the attribute list.
      */
     protected NamedNodeMap createAttributes() {
-	return new ExtendedNamedNodeHashMap();
+      	return new ExtendedNamedNodeHashMap();
     }
 
     /**
@@ -180,9 +181,9 @@ public abstract class AbstractElement
     */
     public void setUnspecifiedAttribute(String nsURI, String name,
                                         String value) {
-	if (attributes == null) {
-	    attributes = createAttributes();
-	}
+        if (attributes == null) {
+            attributes = createAttributes();
+        }
         ((ExtendedNamedNodeHashMap)attributes).
             setUnspecifiedAttribute(nsURI, name, value);
     }
@@ -234,22 +235,22 @@ public abstract class AbstractElement
      * Exports this node to the given document.
      */
     protected Node export(Node n, AbstractDocument d) {
-	super.export(n, d);
-        ((AbstractElement)n).initializeAttributes();
+        super.export(n, d);
+              ((AbstractElement)n).initializeAttributes();
 
-	super.export(n, d);
-	return n;
+        super.export(n, d);
+        return n;
     }
 
     /**
      * Deeply exports this node to the given document.
      */
     protected Node deepExport(Node n, AbstractDocument d) {
-	super.export(n, d);
-        ((AbstractElement)n).initializeAttributes();
+        super.export(n, d);
+              ((AbstractElement)n).initializeAttributes();
 
-	super.deepExport(n, d);
-	return n;
+        super.deepExport(n, d);
+        return n;
     }
 
     /**
@@ -263,54 +264,55 @@ public abstract class AbstractElement
         public ExtendedNamedNodeHashMap() {
         }
 
-	/**
-	 * Adds an unspecified attribute to the map.
+        /**
+         * Adds an unspecified attribute to the map.
+         *
          * @param nsURI The attribute namespace URI.
          * @param name The attribute's qualified name.
          * @param value The attribute's default value.
-	 */
-	public void setUnspecifiedAttribute(String nsURI, String name,
-                                            String value) {
-	    Attr attr = getOwnerDocument().createAttributeNS(nsURI, name);
-	    attr.setValue(value);
-	    ((AbstractAttr)attr).setSpecified(false);
-            setNamedItemNS(attr);
-	}
+         */
+        public void setUnspecifiedAttribute( String nsURI, String name,
+                                             String value ) {
+            Attr attr = getOwnerDocument().createAttributeNS( nsURI, name );
+            attr.setValue( value );
+            ( (AbstractAttr)attr ).setSpecified( false );
+            setNamedItemNS( attr );
+        }
 
- 	/**
-	 * <b>DOM</b>: Implements {@link
-         * NamedNodeMap#removeNamedItemNS(String,String)}.
-	 */
-	public Node removeNamedItemNS(String namespaceURI, String localName)
-	    throws DOMException {
-	    if (isReadonly()) {
-		throw createDOMException
-                    (DOMException.NO_MODIFICATION_ALLOWED_ERR,
-                     "readonly.node.map",
-                     new Object[] {});
-	    }
-	    if (localName == null) {
-		throw createDOMException(DOMException.NOT_FOUND_ERR,
-					 "attribute.missing",
-					 new Object[] { "" });
-	    }
-	    AbstractAttr n = (AbstractAttr)remove(namespaceURI, localName);
-	    if (n == null) {
-		throw createDOMException(DOMException.NOT_FOUND_ERR,
-					 "attribute.missing",
-					 new Object[] { localName });
-	    }
-	    n.setOwnerElement(null);
+        /**
+         * <b>DOM</b>: Implements {@link NamedNodeMap#removeNamedItemNS(String,String)}.
+         */
+        public Node removeNamedItemNS( String namespaceURI, String localName )
+                throws DOMException {
+            if ( isReadonly() ) {
+                throw createDOMException
+                        ( DOMException.NO_MODIFICATION_ALLOWED_ERR,
+                                "readonly.node.map",
+                                new Object[]{} );
+            }
+            if ( localName == null ) {
+                throw createDOMException( DOMException.NOT_FOUND_ERR,
+                        "attribute.missing",
+                        new Object[]{""} );
+            }
+            AbstractAttr n = (AbstractAttr)remove( namespaceURI, localName );
+            if ( n == null ) {
+                throw createDOMException( DOMException.NOT_FOUND_ERR,
+                        "attribute.missing",
+                        new Object[]{localName} );
+            }
+            n.setOwnerElement( null );
             String prefix = n.getPrefix();
-	    
+
             // Reset the attribute to its default value
-            if (!resetAttribute(namespaceURI, prefix, localName)) {
+            if ( !resetAttribute( namespaceURI, prefix, localName ) ) {
                 // Mutation event
-                fireDOMAttrModifiedEvent(n.getNodeName(), n,
-                                         n.getNodeValue(), "",
-                                         MutationEvent.REMOVAL);
+                fireDOMAttrModifiedEvent( n.getNodeName(), n,
+                        n.getNodeValue(), "",
+                        MutationEvent.REMOVAL );
             }
             return n;
-	}
+        }
     }
+
 }

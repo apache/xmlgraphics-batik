@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001  The Apache Software Foundation 
+   Copyright 2001,2006  The Apache Software Foundation
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -84,7 +84,8 @@ public class DoublyIndexedTable {
 
         // The key is not in the hash table
         int len = table.length;
-        if (count++ >= (len * 3) >>> 2) {
+        if (count++ >= (len - (len >> 2))) {
+            // more than 75% loaded: grow
             rehash();
             index = hash % table.length;
         }
@@ -191,7 +192,7 @@ public class DoublyIndexedTable {
     }
 
     /**
-     * Computes a hash code corresponding to the given objects. 
+     * Computes a hash code corresponding to the given objects.
      */
     protected int hashCode(Object o1, Object o2) {
         int result = (o1 == null) ? 0 : o1.hashCode();
@@ -201,7 +202,7 @@ public class DoublyIndexedTable {
     /**
      * An entry in the {@link DoublyIndexedTable}.
      */
-    public static class Entry {
+    protected static class Entry {
 
         /**
          * The hash code.
