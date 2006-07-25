@@ -202,7 +202,7 @@ public class DoublyIndexedTable {
     /**
      * An entry in the {@link DoublyIndexedTable}.
      */
-    protected static class Entry {
+    public static class Entry {
 
         /**
          * The hash code.
