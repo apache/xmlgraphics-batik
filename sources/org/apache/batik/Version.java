@@ -39,20 +39,20 @@ public final class Version {
      *   <tr>
      *     <th>Source</th>
      *     <th>Version string</th>
-     *   <tr>
      *   </tr>
+     *   <tr>
      *     <td>Release version</td>
      *     <td><em>version</em></td>
-     *   <tr>
      *   </tr>
+     *   <tr>
      *     <td>Trunk</td>
      *     <td>SVN+<em>yyyymmdd</em></td>
-     *   <tr>
      *   </tr>
+     *   <tr>
      *     <td>Branch</td>
      *     <td><em>branch-name</em> branch; SVN+<em>yyyymmdd</em></td>
      *   </tr>
-     *   </tr>
+     *   <tr>
      *     <td>Unknown</td>
      *     <td>development version</td>
      *   </tr>
