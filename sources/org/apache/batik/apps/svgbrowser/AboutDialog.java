@@ -144,9 +144,9 @@ public class AboutDialog extends JWindow {
         //
         // Add exact revision information
         //
-        String tagName = Version.getVersion();
+        String version = "Batik " + Version.getVersion();
 
-        panel.add(BorderLayout.SOUTH, new JLabel(tagName, SwingConstants.RIGHT));
+        panel.add(BorderLayout.SOUTH, new JLabel(version, SwingConstants.RIGHT));
 
         setBackground(Color.white);
         getContentPane().setBackground(Color.white);
