@@ -299,6 +299,12 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
         if (doc.isSVG12()) {
             return new SVG12BridgeContext(userAgent);
         }
+        // For SVG 1.1/1.0 docs call old signature createBridgeContext
+        // method (this allows FOP to register it's bridges).
+        return createBridgeContext();
+    }
+
+    protected BridgeContext createBridgeContext() {
         return new BridgeContext(userAgent);
     }
 

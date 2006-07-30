@@ -825,18 +825,13 @@ public abstract class CSSEngine {
                         parser.parseStyleDeclaration(style);
                         styleDeclarationDocumentHandler.styleMap = null;
                     } catch (Exception e) {
-                      System.err.println("\n***** CSSEngine: exception style.syntax.error:" + e );  // ---
-                      System.err.println("\nException:" + e.getClass().getName() );
-                      e.printStackTrace( System.err );                           // ---
-                      System.err.println("\n***** CSSEngine: exception...." );   // ---
-
                         String m = e.getMessage();
                         if (m == null) m = "";
                         String u = ((documentURI == null)?"<unknown>":
                                     documentURI.toString());
                         String s = Messages.formatMessage
                             ("style.syntax.error.at",
-                             new Object[] { u, styleLocalName, style, m});
+                             new Object[] { u, styleLocalName, style, m });
                         DOMException de = new DOMException(DOMException.SYNTAX_ERR, s);
                         if (userAgent == null) throw de;
                         userAgent.displayError(de);
