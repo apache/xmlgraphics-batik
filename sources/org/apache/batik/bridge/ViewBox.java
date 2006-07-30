@@ -273,11 +273,7 @@ public abstract class ViewBox implements SVGConstants, ErrorConstants {
                 SVGPreserveAspectRatio.SVG_MEETORSLICE_MEET;
             return getPreserveAspectRatioTransform(vb, align, meet, w, h);
         } catch (LiveAttributeException ex) {
-            throw new BridgeException
-                (ctx, ex.getElement(),
-                 ex.isMissing() ? ERR_ATTRIBUTE_MISSING
-                                : ERR_ATTRIBUTE_VALUE_MALFORMED,
-                 new Object[] { ex.getAttributeName(), ex.getValue() });
+            throw new BridgeException(ctx, ex);
         }
     }
 

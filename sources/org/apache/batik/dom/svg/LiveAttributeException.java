@@ -27,6 +27,11 @@ import org.w3c.dom.Element;
  */
 public class LiveAttributeException extends RuntimeException {
 
+    // Constants for the error code.
+    public static final short ERR_ATTRIBUTE_MISSING   = 0;
+    public static final short ERR_ATTRIBUTE_MALFORMED = 1;
+    public static final short ERR_ATTRIBUTE_NEGATIVE  = 2;
+
     /**
      * The element on which the error occured.
      */
@@ -38,9 +43,10 @@ public class LiveAttributeException extends RuntimeException {
     protected String attributeName;
 
     /**
-     * Whether the attribute was missing (true) or malformed (false).
+     * The reason for the exception.  This must be one of the ERR_* constants
+     * defined in this class.
      */
-    protected boolean missing;
+    protected short code;
 
     /**
      * The malformed attribute value.
@@ -54,13 +60,14 @@ public class LiveAttributeException extends RuntimeException {
      * @param e the element on which the error occured
      * @param an the attribute name
      * @param missing whether the attribute was missing or malformed
+     * @param code the error code
      * @param val the malformed attribute value
      */
-    public LiveAttributeException(Element e, String an, boolean missing,
+    public LiveAttributeException(Element e, String an, short code,
                                   String val) {
         this.e = e;
         this.attributeName = an;
-        this.missing = missing;
+        this.code = code;
         this.value = val;
     }
 
@@ -79,14 +86,14 @@ public class LiveAttributeException extends RuntimeException {
     }
 
     /**
-     * Returns whether the attribute was missing (true) or malformed (false).
+     * Returns the error code.
      */
-    public boolean isMissing() {
-        return missing;
+    public short getCode() {
+        return code;
     }
 
     /**
-     * Returns the malformed attribute value.
+     * Returns the problematic attribute value.
      */
     public String getValue() {
         return value;

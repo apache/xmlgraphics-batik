@@ -202,11 +202,7 @@ public class SVGSVGElementBridge
                                               actualHeight));
             return cgn;
         } catch (LiveAttributeException ex) {
-            throw new BridgeException
-                (ctx, ex.getElement(),
-                 ex.isMissing() ? ERR_ATTRIBUTE_MISSING
-                                : ERR_ATTRIBUTE_VALUE_MALFORMED,
-                 new Object[] { ex.getAttributeName(), ex.getValue() });
+            throw new BridgeException(ctx, ex);
         }
     }
 
@@ -291,12 +287,7 @@ public class SVGSVGElementBridge
                 }
             }
         } catch (LiveAttributeException ex) {
-            throw new BridgeException
-                (ctx, ex.getElement(),
-                 ex.isMissing() ? ERR_ATTRIBUTE_MISSING
-                                : ERR_ATTRIBUTE_VALUE_MALFORMED,
-                 new Object[] { ex.getAttributeName(),
-                                ex.getValue() });
+            throw new BridgeException(ctx, ex);
         }
         super.handleAnimatedAttributeChanged(alav);
     }
@@ -390,12 +381,7 @@ public class SVGSVGElementBridge
                 handleElementAdded(gn, e.getParentNode(), e);
             }
         } catch (LiveAttributeException ex) {
-            throw new BridgeException
-                (ctx, ex.getElement(),
-                 ex.isMissing() ? ERR_ATTRIBUTE_MISSING
-                                : ERR_ATTRIBUTE_VALUE_MALFORMED,
-                 new Object[] { ex.getAttributeName(),
-                                ex.getValue() });
+            throw new BridgeException(ctx, ex);
         }
     }
 

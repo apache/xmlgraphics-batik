@@ -166,8 +166,8 @@ public abstract class AbstractSVGTransform implements SVGTransform {
     public void setSkewX(float angle) {
         type = SVG_TRANSFORM_SKEWX;
         affineTransform =
-            new AffineTransform(1.0, Math.tan(Math.toRadians(angle)), 0.0,
-                                1.0, 0.0, 0.0);
+            AffineTransform.getShearInstance(Math.tan(Math.toRadians(angle)),
+                                             0.0);
         this.angle = angle;
     }
 
@@ -176,9 +176,9 @@ public abstract class AbstractSVGTransform implements SVGTransform {
      */
     public void setSkewY(float angle) {
         type = SVG_TRANSFORM_SKEWY;
-        this.angle = angle;
         affineTransform =
-            new AffineTransform(1.0, 0.0, Math.tan(Math.toRadians(angle)),
-                                1.0, 0.0, 0.0);
+            AffineTransform.getShearInstance(0.0,
+                                             Math.tan(Math.toRadians(angle)));
+        this.angle = angle;
     }
 }

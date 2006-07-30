@@ -164,10 +164,11 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         // Build the URL.
         String baseURI = AbstractNode.getBaseURI(e);
         ParsedURL purl;
-        if (baseURI == null)
+        if (baseURI == null) {
             purl = new ParsedURL(uriStr);
-        else
+        } else {
             purl = new ParsedURL(baseURI, uriStr);
+        }
 
         return createImageGraphicsNode(ctx, e, purl);
     }
@@ -437,6 +438,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
                     return;
                 } else if (ln.equals(SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE)) {
                     updateImageBounds();
+                    return;
                 }
             } else if (ns.equals(XLINK_NAMESPACE_URI)
                     && ln.equals(XLINK_HREF_ATTRIBUTE)) {
@@ -444,11 +446,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
                 return;
             }
         } catch (LiveAttributeException ex) {
-            throw new BridgeException
-                (ctx, ex.getElement(),
-                 ex.isMissing() ? ERR_ATTRIBUTE_MISSING
-                                : ERR_ATTRIBUTE_VALUE_MALFORMED,
-                 new Object[] { ex.getAttributeName(), ex.getValue() });
+            throw new BridgeException(ctx, ex);
         }
         super.handleAnimatedAttributeChanged(alav);
     }
@@ -457,7 +455,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         //retrieve the new bounds of the image tag
         Rectangle2D bounds = getImageBounds(ctx, e);
         GraphicsNode imageNode = ((ImageNode)node).getImage();
-        float [] vb = null;
+        float[] vb = null;
         if (imageNode instanceof RasterImageNode) {
             //Raster image
             Rectangle2D imgBounds = 
@@ -894,11 +892,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
                 } catch (java.awt.geom.NoninvertibleTransformException ex) {}
             }
         } catch (LiveAttributeException ex) {
-            throw new BridgeException
-                (ctx, ex.getElement(),
-                 ex.isMissing() ? ERR_ATTRIBUTE_MISSING
-                                : ERR_ATTRIBUTE_VALUE_MALFORMED,
-                 new Object[] { ex.getAttributeName(), ex.getValue() });
+            throw new BridgeException(ctx, ex);
         }
     }
 
@@ -964,11 +958,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
 
             return new Rectangle2D.Float(x, y, w, h);
         } catch (LiveAttributeException ex) {
-            throw new BridgeException
-                (ctx, ex.getElement(),
-                 ex.isMissing() ? ERR_ATTRIBUTE_MISSING
-                                : ERR_ATTRIBUTE_VALUE_MALFORMED,
-                 new Object[] { ex.getAttributeName(), ex.getValue() });
+            throw new BridgeException(ctx, ex);
         }
     }
 

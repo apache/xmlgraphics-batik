@@ -226,8 +226,9 @@ public class SVGOMAnimatedNumberList
             String s = getValueAsString();
             boolean isEmpty = s != null && s.length() == 0;
             if (s == null || isEmpty && !emptyAllowed) {
-                throw new LiveAttributeException(element, localName, true,
-                                                 null);
+                throw new LiveAttributeException
+                    (element, localName,
+                     LiveAttributeException.ERR_ATTRIBUTE_MISSING, null);
             }
             if (isEmpty) {
                 itemList = new ArrayList(1);
@@ -244,8 +245,9 @@ public class SVGOMAnimatedNumberList
                 } catch (ParseException e) {
                     itemList = new ArrayList(1);
                     valid = true;
-                    throw new LiveAttributeException(element, localName, false,
-                                                     s);
+                    throw new LiveAttributeException
+                        (element, localName,
+                         LiveAttributeException.ERR_ATTRIBUTE_MALFORMED, s);
                 }
             }
             valid = true;

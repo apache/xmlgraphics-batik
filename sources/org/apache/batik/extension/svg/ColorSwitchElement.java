@@ -22,7 +22,7 @@ import org.apache.batik.extension.PrefixableStylableExtensionElement;
 import org.w3c.dom.Node;
 
 /**
- * This class implements a regular polygon extension to SVG
+ * This class implements a "color switch" extension to SVG.
  *
  * @author <a href="mailto:thomas.deweese@kodak.com">Thomas DeWeese</a>
  * @version $Id$

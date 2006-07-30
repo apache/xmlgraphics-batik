@@ -337,7 +337,7 @@ To display the available targets type:
     <echo message="debug ${debug}, optimize ${optimize}, deprecation ${deprecation}"/>
 
     <javac srcdir="${testsrc}" destdir="${dest}"  deprecation="${deprecation}" 
-           debug="${debug}" optimize="${optimize}" >
+           debug="${debug}" optimize="${optimize}" encoding="UTF-8">
       <classpath>
         <pathelement location="${dest}" />
         <path refid="libs-classpath"/>
@@ -362,7 +362,7 @@ To display the available targets type:
     <echo message="debug ${debug}, optimize ${optimize}, deprecation ${deprecation}"/>
 
     <javac srcdir="${samples}/tests/resources/java/sources" destdir="${samples}/tests/resources/java/classes"  deprecation="${deprecation}" 
-           debug="${debug}" optimize="${optimize}" >
+           debug="${debug}" optimize="${optimize}" encoding="UTF-8">
       <classpath>
         <pathelement location="${dest}" />
         <pathelement location="${samples}/tests/resources/java/classes" />
@@ -372,7 +372,7 @@ To display the available targets type:
     </javac>
 
     <javac srcdir="${testresources}" destdir="${testresources}/classes"  deprecation="${deprecation}" 
-           debug="${debug}" optimize="${optimize}" >
+           debug="${debug}" optimize="${optimize}" encoding="UTF-8">
       <classpath>
         <pathelement location="${dest}" />
         <pathelement location="${testresources}/classes" />
@@ -449,7 +449,7 @@ To display the available targets type:
   <target name       ="compile"
           depends    ="init, compile-prepare">
     <javac destdir="${dest}" deprecation="${deprecation}" 
-           debug="${debug}" optimize="${optimize}">
+           debug="${debug}" optimize="${optimize}" encoding="UTF-8">
       <src path="${src}"/>
       <src path="${src-jdk}"/>
       <classpath refid="libs-classpath"/>

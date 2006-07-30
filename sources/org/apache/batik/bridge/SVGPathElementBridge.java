@@ -87,11 +87,7 @@ public class SVGPathElementBridge extends SVGDecoratedShapeElementBridge
             app.setWindingRule(CSSUtilities.convertFillRule(e));
             SVGAnimatedPathDataSupport.handlePathSegList(p, app);
         } catch (LiveAttributeException ex) {
-            throw new BridgeException
-                (ctx, ex.getElement(),
-                 ex.isMissing() ? ERR_ATTRIBUTE_MISSING
-                                : ERR_ATTRIBUTE_VALUE_MALFORMED,
-                 new Object[] { ex.getAttributeName(), ex.getValue() });
+            throw new BridgeException(ctx, ex);
         } finally {
             shapeNode.setShape(app.getShape());
         }

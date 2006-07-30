@@ -262,7 +262,8 @@ public abstract class PaintServer
                                        ctx);
 
             default:
-                throw new Error(); // can't be reached
+                throw new IllegalArgumentException
+                    ("Paint argument is not an appropriate CSS value");
             }
         } else { // List
             Value v = paintDef.item(0);
@@ -292,12 +293,14 @@ public abstract class PaintServer
                                                   opacity, ctx);
                     }
                 default:
-                    throw new Error(); // can't be reached
+                    throw new IllegalArgumentException
+                        ("Paint argument is not an appropriate CSS value");
                 }
             }
             default:
                 // can't be reached
-                throw new Error("Unallowed Value: " + v.getPrimitiveType()); 
+                throw new IllegalArgumentException
+                    ("Paint argument is not an appropriate CSS value");
             }
         }
     }
@@ -562,7 +565,8 @@ public abstract class PaintServer
         case 's':
             return BasicStroke.CAP_SQUARE;
         default:
-            throw new Error(); // can't be reached
+            throw new IllegalArgumentException
+                ("Linecap argument is not an appropriate CSS value");
         }
     }
 
@@ -581,7 +585,8 @@ public abstract class PaintServer
         case 'b':
             return BasicStroke.JOIN_BEVEL;
         default:
-            throw new Error(); // can't be reached
+            throw new IllegalArgumentException
+                ("Linejoin argument is not an appropriate CSS value");
         }
     }
 
@@ -605,7 +610,8 @@ public abstract class PaintServer
             f = (f > 255f) ? 255f : (f < 0f) ? 0f : f;
             return Math.round(f);
         default:
-            throw new Error(); // can't be reached
+            throw new IllegalArgumentException
+                ("Color component argument is not an appropriate CSS value");
         }
     }
 

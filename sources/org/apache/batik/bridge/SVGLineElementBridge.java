@@ -107,11 +107,7 @@ public class SVGLineElementBridge extends SVGDecoratedShapeElementBridge {
 
             shapeNode.setShape(new Line2D.Float(x1, y1, x2, y2));
         } catch (LiveAttributeException ex) {
-            throw new BridgeException
-                (ctx, ex.getElement(),
-                 ex.isMissing() ? ERR_ATTRIBUTE_MISSING
-                                : ERR_ATTRIBUTE_VALUE_MALFORMED,
-                 new Object[] { ex.getAttributeName(), ex.getValue() });
+            throw new BridgeException(ctx, ex);
         }
     }
 

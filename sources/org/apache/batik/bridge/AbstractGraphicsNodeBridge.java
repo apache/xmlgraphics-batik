@@ -188,11 +188,7 @@ public abstract class AbstractGraphicsNodeBridge extends AnimatableSVGBridge
             }
             n.setTransform(at);
         } catch (LiveAttributeException ex) {
-            throw new BridgeException
-                (ctx, ex.getElement(),
-                 ex.isMissing() ? ERR_ATTRIBUTE_MISSING
-                                : ERR_ATTRIBUTE_VALUE_MALFORMED,
-                 new Object[] { ex.getAttributeName(), ex.getValue() });
+            throw new BridgeException(ctx, ex);
         }
     }
 
@@ -321,8 +317,9 @@ public abstract class AbstractGraphicsNodeBridge extends AnimatableSVGBridge
     protected void disposeTree(Node node, boolean removeContext) {
         if (node instanceof SVGOMElement) {
             SVGOMElement elt = (SVGOMElement)node;
-            BridgeUpdateHandler h = (BridgeUpdateHandler)elt.getSVGContext();
-            if (h != null) {
+            SVGContext ctx = elt.getSVGContext();
+            if (ctx instanceof BridgeUpdateHandler) {
+                BridgeUpdateHandler h = (BridgeUpdateHandler) ctx;
                 if (removeContext) {
                     elt.setSVGContext(null);
                 }

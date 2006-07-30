@@ -106,7 +106,7 @@ public abstract class UnitProcessor {
             // in the objectBoundingBox coordinate system
             return svgToUserSpace(value, type, d, ctx);
         default:
-            throw new Error(); // can't be reached
+            throw new IllegalArgumentException("Length has unknown type");
         }
     }
 
@@ -169,7 +169,7 @@ public abstract class UnitProcessor {
         case SVGLength.SVG_LENGTHTYPE_PERCENTAGE:
             return percentagesToPixels(v, d, ctx);
         default:
-            throw new Error(); // can't be reached
+            throw new IllegalArgumentException("Length has unknown type");
         }
     }
 
@@ -207,7 +207,7 @@ public abstract class UnitProcessor {
         case SVGLength.SVG_LENGTHTYPE_PERCENTAGE:
             return pixelsToPercentages(v, d, ctx);
         default:
-            throw new Error(); // can't be reached
+            throw new IllegalArgumentException("Length has unknown type");
         }
     }
 

@@ -319,7 +319,7 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
                 (yStr, yAttr, uctx);
             break;
         default:
-            throw new Error(); // can't be reached
+            throw new IllegalArgumentException("Invalid unit type");
         }
         return new Point2D.Float(x, y);
     }
@@ -339,12 +339,12 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
                                       UnitProcessor.Context uctx) {
         switch (unitsType) {
         case OBJECT_BOUNDING_BOX:
-            return  UnitProcessor.svgOtherLengthToObjectBoundingBox
+            return UnitProcessor.svgOtherLengthToObjectBoundingBox
                 (length, attr, uctx);
         case USER_SPACE_ON_USE:
             return UnitProcessor.svgOtherLengthToUserSpace(length, attr, uctx);
         default:
-            throw new Error(); // can't be reached
+            throw new IllegalArgumentException("Invalid unit type");
         }
     }
 
@@ -729,7 +729,7 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
             }
             break;
         default:
-            throw new Error(); // can't be reached
+            throw new IllegalArgumentException("Invalid unit type");
         }
         
         region.setRect(region.getX() + dx,

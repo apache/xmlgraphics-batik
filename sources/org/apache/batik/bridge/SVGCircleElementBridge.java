@@ -82,11 +82,7 @@ public class SVGCircleElementBridge extends SVGShapeElementBridge {
             float w = r * 2;
             shapeNode.setShape(new Ellipse2D.Float(x, y, w, w));
         } catch (LiveAttributeException ex) {
-            throw new BridgeException
-                (ctx, ex.getElement(),
-                 ex.isMissing() ? ERR_ATTRIBUTE_MISSING
-                                : ERR_ATTRIBUTE_VALUE_MALFORMED,
-                 new Object[] { ex.getAttributeName(), ex.getValue() });
+            throw new BridgeException(ctx, ex);
         }
     }
 

@@ -91,6 +91,7 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
             return null;
 
         CompositeGraphicsNode gn = buildCompositeGraphicsNode(ctx, e, null);
+        associateSVGContext(ctx, e, gn);
 
         return gn;
     }

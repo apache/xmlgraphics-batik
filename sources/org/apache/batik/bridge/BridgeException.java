@@ -17,7 +17,9 @@
  */
 package org.apache.batik.bridge;
 
+import org.apache.batik.dom.svg.LiveAttributeException;
 import org.apache.batik.gvt.GraphicsNode;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGDocument;
 
@@ -48,6 +50,37 @@ public class BridgeException extends RuntimeException {
 
     /** The graphics node that represents the current state of the GVT tree. */
     protected GraphicsNode node;
+
+    /**
+     * Constructs a new <tt>BridgeException</tt> based on the specified
+     * <tt>LiveAttributeException</tt>.
+     *
+     * @param ctx the bridge context to use for determining the element's
+     *            source position
+     * @param ex the {@link LiveAttributeException}
+     */
+    public BridgeException(BridgeContext ctx, LiveAttributeException ex) {
+        switch (ex.getCode()) {
+            case LiveAttributeException.ERR_ATTRIBUTE_MISSING:
+                this.code = ErrorConstants.ERR_ATTRIBUTE_MISSING;
+                break;
+            case LiveAttributeException.ERR_ATTRIBUTE_MALFORMED:
+                this.code = ErrorConstants.ERR_ATTRIBUTE_VALUE_MALFORMED;
+                break;
+            case LiveAttributeException.ERR_ATTRIBUTE_NEGATIVE:
+                this.code = ErrorConstants.ERR_LENGTH_NEGATIVE;
+                break;
+            default:
+                throw new IllegalStateException
+                    ("Unknown LiveAttributeException error code "
+                     + ex.getCode());
+        }
+        this.e = ex.getElement();
+        this.params = new Object[] { ex.getAttributeName(), ex.getValue() };
+        if (e != null && ctx != null) {
+            this.line = ctx.getDocumentLoader().getLineNumber(e);
+        }
+    }
 
     /**
      * Constructs a new <tt>BridgeException</tt> with the specified parameters.

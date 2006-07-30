@@ -239,11 +239,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
 
             return new Point2D.Float(x, y);
         } catch (LiveAttributeException ex) {
-            throw new BridgeException
-                (ctx, ex.getElement(),
-                 ex.isMissing() ? ERR_ATTRIBUTE_MISSING
-                                : ERR_ATTRIBUTE_VALUE_MALFORMED,
-                 new Object[] { ex.getAttributeName(), ex.getValue() });
+            throw new BridgeException(ctx, ex);
         }
     }
 
@@ -1239,8 +1235,15 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
 
         int lastChar = getElementEndIndex(element);
 
+        // 'a' elements aren't SVGTextPositioningElements, so don't process
+        // their positioning attributes on them.
+        if (!(element instanceof SVGOMTextPositioningElement)) {
+            addChildGlyphPositionAttributes(as, element, ctx);
+            return;
+        }
+
         // get all of the glyph position attribute values
-        SVGOMTextPositioningElement te = (SVGOMTextPositioningElement) e;
+        SVGOMTextPositioningElement te = (SVGOMTextPositioningElement) element;
 
         try {
             SVGLengthList xs  = te.getX().getAnimVal();
@@ -1296,7 +1299,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                     (GVTAttributedCharacterIterator.TextAttribute.ROTATION,
                      rad, firstChar, lastChar + 1);
 
-            } else if (len > 1) {  // its a list
+            } else if (len > 1) {  // it's a list
                 // set each rotate value from the list
                 for (int i = 0; i < len && firstChar + i <= lastChar; i++) {
                     Float rad = new Float(Math.toRadians(rs.getItem(i).getValue()));
@@ -1308,11 +1311,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
 
             addChildGlyphPositionAttributes(as, element, ctx);
         } catch (LiveAttributeException ex) {
-            throw new BridgeException
-                (ctx, ex.getElement(),
-                 ex.isMissing() ? ERR_ATTRIBUTE_MISSING
-                                : ERR_ATTRIBUTE_VALUE_MALFORMED,
-                 new Object[] { ex.getAttributeName(), ex.getValue() });
+            throw new BridgeException(ctx, ex);
         }
     }
 
@@ -1463,7 +1462,12 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                                   Element element,
                                   TextPath textPath,
                                   Integer bidiLevel) {
-        SVGTextContentElement tce = (SVGTextContentElement) element;
+        SVGTextContentElement tce = null;
+        if (element instanceof SVGTextContentElement) {
+            // 'a' elements aren't SVGTextContentElements, so they shouldn't
+            // be checked for 'textLength' or 'lengthAdjust' attributes.
+            tce = (SVGTextContentElement) element;
+        }
 
         Map result = new HashMap();
         String s;
@@ -1685,6 +1689,10 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                        Boolean.TRUE);
         }
 
+        if (tce == null) {
+            return result;
+        }
+
         try {
             // textLength
             AbstractSVGAnimatedLength textLength =
@@ -1712,11 +1720,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                 }
             }
         } catch (LiveAttributeException ex) {
-            throw new BridgeException
-                (ctx, ex.getElement(),
-                 ex.isMissing() ? ERR_ATTRIBUTE_MISSING
-                                : ERR_ATTRIBUTE_VALUE_MALFORMED,
-                 new Object[] { ex.getAttributeName(), ex.getValue() });
+            throw new BridgeException(ctx, ex);
         }
 
         return result;

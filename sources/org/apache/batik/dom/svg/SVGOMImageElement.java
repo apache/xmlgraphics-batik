@@ -103,7 +103,7 @@ public class SVGOMImageElement
      */
     public SVGAnimatedLength getWidth() {
         return getAnimatedLengthAttribute
-            (null, SVG_WIDTH_ATTRIBUTE, "",
+            (null, SVG_WIDTH_ATTRIBUTE, null,
              SVGOMAnimatedLength.HORIZONTAL_LENGTH, true);
     }
 
@@ -112,7 +112,7 @@ public class SVGOMImageElement
      */
     public SVGAnimatedLength getHeight() {
         return getAnimatedLengthAttribute
-            (null, SVG_HEIGHT_ATTRIBUTE, "",
+            (null, SVG_HEIGHT_ATTRIBUTE, null,
              SVGOMAnimatedLength.VERTICAL_LENGTH, true);
     }
 
@@ -213,6 +213,9 @@ public class SVGOMImageElement
                 updateLengthAttributeValue(getHeight(), val);
                 return;
             }
+        } else if (ns.equals(XLINK_NAMESPACE_URI)
+                && ln.equals(XLINK_HREF_ATTRIBUTE)) {
+            updateStringAttributeValue(getHref(), val);
         }
         super.updateAttributeValue(ns, ln, val);
     }
@@ -237,6 +240,9 @@ public class SVGOMImageElement
                 return getBaseValue
                     (getHeight(), PERCENTAGE_VIEWPORT_HEIGHT);
             }
+        } else if (ns.equals(XLINK_NAMESPACE_URI)
+                && ln.equals(XLINK_HREF_ATTRIBUTE)) {
+            return getBaseValue(getHref());
         }
         return super.getUnderlyingValue(ns, ln);
     }

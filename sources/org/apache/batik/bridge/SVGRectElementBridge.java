@@ -88,7 +88,7 @@ public class SVGRectElementBridge extends SVGShapeElementBridge {
                 rx = w / 2;
             }
 
-            // 'ry' attribute - default is ry
+            // 'ry' attribute - default is rx
             float ry = re.getRy().getAnimVal().getValue();
             if (ry > h / 2) {
                 ry = h / 2;
@@ -102,11 +102,7 @@ public class SVGRectElementBridge extends SVGShapeElementBridge {
             }
             shapeNode.setShape(shape);
         } catch (LiveAttributeException ex) {
-            throw new BridgeException
-                (ctx, ex.getElement(),
-                 ex.isMissing() ? ERR_ATTRIBUTE_MISSING
-                                : ERR_ATTRIBUTE_VALUE_MALFORMED,
-                 new Object[] { ex.getAttributeName(), ex.getValue() });
+            throw new BridgeException(ctx, ex);
         }
     }
 

@@ -195,8 +195,10 @@ public class SVGOMAnimatedRect
                     protected int count;
                     public void endNumberList() {
                         if (count != 4) {
-                            throw new LiveAttributeException(element, localName,
-                                                             false, s);
+                            throw new LiveAttributeException
+                                (element, localName,
+                                 LiveAttributeException.ERR_ATTRIBUTE_MALFORMED,
+                                 s);
                         }
                     }
                     public void numberValue(float v) throws ParseException {
@@ -204,8 +206,10 @@ public class SVGOMAnimatedRect
                             numbers[count] = v;
                         }
                         if (v < 0 && (count == 2 || count == 3)) {
-                            throw new LiveAttributeException(element, localName,
-                                                             false, s);
+                            throw new LiveAttributeException
+                                (element, localName,
+                                 LiveAttributeException.ERR_ATTRIBUTE_MALFORMED,
+                                 s);
                         }
                         count++;
                     }

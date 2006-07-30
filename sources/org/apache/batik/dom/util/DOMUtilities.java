@@ -129,10 +129,10 @@ public class DOMUtilities extends XMLUtilities {
                 if (sysID != null) 
                     w.write (" SYSTEM \"" + sysID + "\">");
             }
-        }
             break;
+        }
         default:
-            throw new Error("Internal error (" + n.getNodeType() + ")");
+            throw new IOException("Unknown DOM node type " + n.getNodeType());
         }
     }
 

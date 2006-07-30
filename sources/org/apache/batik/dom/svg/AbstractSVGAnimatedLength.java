@@ -146,32 +146,27 @@ public abstract class AbstractSVGAnimatedLength
      * Called when an Attr node has been added.
      */
     public void attrAdded(Attr node, String newv) {
-        if (!changing && baseVal != null) {
-            baseVal.invalidate();
-        }
-        fireBaseAttributeListeners();
-        if (!hasAnimVal) {
-            fireAnimatedAttributeListeners();
-        }
+        attrChanged();
     }
 
     /**
      * Called when an Attr node has been modified.
      */
     public void attrModified(Attr node, String oldv, String newv) {
-        if (!changing && baseVal != null) {
-            baseVal.invalidate();
-        }
-        fireBaseAttributeListeners();
-        if (!hasAnimVal) {
-            fireAnimatedAttributeListeners();
-        }
+        attrChanged();
     }
 
     /**
      * Called when an Attr node has been removed.
      */
     public void attrRemoved(Attr node, String oldv) {
+        attrChanged();
+    }
+
+    /**
+     * Called when the attribute has changed in some way.
+     */
+    protected void attrChanged() {
         if (!changing && baseVal != null) {
             baseVal.invalidate();
         }
@@ -234,8 +229,9 @@ public abstract class AbstractSVGAnimatedLength
             if (attr == null) {
                 s = getDefaultValue();
                 if (s == null) {
-                    throw new LiveAttributeException(element, localName, true,
-                                                     null);
+                    throw new LiveAttributeException
+                        (element, localName,
+                         LiveAttributeException.ERR_ATTRIBUTE_MISSING, null);
                 }
             } else {
                 s = attr.getValue();
@@ -244,7 +240,9 @@ public abstract class AbstractSVGAnimatedLength
             parse(s);
 
             if (nonNegative && value < 0) {
-                throw new LiveAttributeException(element, localName, false, s);
+                throw new LiveAttributeException
+                    (element, localName,
+                     LiveAttributeException.ERR_ATTRIBUTE_NEGATIVE, s);
             }
 
             valid = true;

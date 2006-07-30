@@ -208,8 +208,9 @@ public class SVGOMAnimatedPoints
 
             String s = getValueAsString();
             if (s == null) {
-                throw new LiveAttributeException(element, localName, true,
-                                                 null);
+                throw new LiveAttributeException
+                    (element, localName,
+                     LiveAttributeException.ERR_ATTRIBUTE_MISSING, null);
             }
             try {
                 ListBuilder builder = new ListBuilder();
@@ -223,7 +224,9 @@ public class SVGOMAnimatedPoints
             } catch (ParseException e) {
                 itemList = new ArrayList(1);
                 valid = true;
-                throw new LiveAttributeException(element, localName, false, s);
+                throw new LiveAttributeException
+                    (element, localName,
+                     LiveAttributeException.ERR_ATTRIBUTE_MALFORMED, s);
             }
             valid = true;
         }

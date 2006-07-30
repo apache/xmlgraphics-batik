@@ -34,6 +34,7 @@ import org.apache.batik.bridge.BridgeException;
 import org.apache.batik.bridge.CSSUtilities;
 import org.apache.batik.bridge.SVGImageElementBridge;
 import org.apache.batik.bridge.SVGUtilities;
+import org.apache.batik.bridge.UnitProcessor;
 import org.apache.batik.bridge.Viewport;
 import org.apache.batik.dom.AbstractNode;
 import org.apache.batik.dom.util.XLinkSupport;
@@ -247,6 +248,58 @@ public class SVGMultiImageElementBridge extends SVGImageElementBridge {
     public void dispose() {
         ctx.removeViewport(e);
         super.dispose();
+    }
+
+    /**
+     * Returns the bounds of the specified image element.
+     *
+     * @param ctx the bridge context
+     * @param element the image element
+     */
+    protected static
+        Rectangle2D getImageBounds(BridgeContext ctx, Element element) {
+
+        UnitProcessor.Context uctx = UnitProcessor.createContext(ctx, element);
+
+        // 'x' attribute - default is 0
+        String s = element.getAttributeNS(null, SVG_X_ATTRIBUTE);
+        float x = 0;
+        if (s.length() != 0) {
+            x = UnitProcessor.svgHorizontalCoordinateToUserSpace
+                (s, SVG_X_ATTRIBUTE, uctx);
+        }
+
+        // 'y' attribute - default is 0
+        s = element.getAttributeNS(null, SVG_Y_ATTRIBUTE);
+        float y = 0;
+        if (s.length() != 0) {
+            y = UnitProcessor.svgVerticalCoordinateToUserSpace
+                (s, SVG_Y_ATTRIBUTE, uctx);
+        }
+
+        // 'width' attribute - required
+        s = element.getAttributeNS(null, SVG_WIDTH_ATTRIBUTE);
+        float w;
+        if (s.length() == 0) {
+            throw new BridgeException(ctx, element, ERR_ATTRIBUTE_MISSING,
+                                      new Object[] {SVG_WIDTH_ATTRIBUTE});
+        } else {
+            w = UnitProcessor.svgHorizontalLengthToUserSpace
+                (s, SVG_WIDTH_ATTRIBUTE, uctx);
+        }
+
+        // 'height' attribute - required
+        s = element.getAttributeNS(null, SVG_HEIGHT_ATTRIBUTE);
+        float h;
+        if (s.length() == 0) {
+            throw new BridgeException(ctx, element, ERR_ATTRIBUTE_MISSING,
+                                      new Object[] {SVG_HEIGHT_ATTRIBUTE});
+        } else {
+            h = UnitProcessor.svgVerticalLengthToUserSpace
+                (s, SVG_HEIGHT_ATTRIBUTE, uctx);
+        }
+
+        return new Rectangle2D.Float(x, y, w, h);
     }
 
     protected void addInfo(Element e, Collection elems, 

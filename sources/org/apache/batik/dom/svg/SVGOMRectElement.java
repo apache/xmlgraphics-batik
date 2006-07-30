@@ -98,9 +98,10 @@ public class SVGOMRectElement
      * <b>DOM</b>: Implements {@link SVGRectElement#getRx()}.
      */
     public SVGAnimatedLength getRx() {
-        SVGAnimatedLength result =
-            (SVGAnimatedLength)getLiveAttributeValue(null, SVG_RX_ATTRIBUTE);
+        AbstractSVGAnimatedLength result = (AbstractSVGAnimatedLength)
+            getLiveAttributeValue(null, SVG_RX_ATTRIBUTE);
         if (result == null) {
+            SVGOMDocument doc = (SVGOMDocument) ownerDocument;
             result = new AbstractSVGAnimatedLength
                 (this, null, SVG_RX_ATTRIBUTE,
                  SVGOMAnimatedLength.HORIZONTAL_LENGTH, true) {
@@ -111,7 +112,17 @@ public class SVGOMRectElement
                         }
                         return attr.getValue();
                     }
+                    protected void attrChanged() {
+                        super.attrChanged();
+                        AbstractSVGAnimatedLength ry =
+                            (AbstractSVGAnimatedLength) getRy();
+                        if (isSpecified() && !ry.isSpecified()) {
+                            ry.attrChanged();
+                        }
+                    }
                 };
+            result.addAnimatedAttributeListener
+                (doc.getAnimatedAttributeListener());
             putLiveAttributeValue(null, SVG_RX_ATTRIBUTE,
                                   (LiveAttributeValue)result);
         }
@@ -122,9 +133,10 @@ public class SVGOMRectElement
      * <b>DOM</b>: Implements {@link SVGRectElement#getRy()}.
      */
     public SVGAnimatedLength getRy() {
-        SVGAnimatedLength result =
-            (SVGAnimatedLength)getLiveAttributeValue(null, SVG_RY_ATTRIBUTE);
+        AbstractSVGAnimatedLength result = (AbstractSVGAnimatedLength)
+            getLiveAttributeValue(null, SVG_RY_ATTRIBUTE);
         if (result == null) {
+            SVGOMDocument doc = (SVGOMDocument) ownerDocument;
             result = new AbstractSVGAnimatedLength
                 (this, null, SVG_RY_ATTRIBUTE,
                  SVGOMAnimatedLength.HORIZONTAL_LENGTH, true) {
@@ -135,7 +147,17 @@ public class SVGOMRectElement
                         }
                         return attr.getValue();
                     }
+                    protected void attrChanged() {
+                        super.attrChanged();
+                        AbstractSVGAnimatedLength rx =
+                            (AbstractSVGAnimatedLength) getRx();
+                        if (isSpecified() && !rx.isSpecified()) {
+                            rx.attrChanged();
+                        }
+                    }
                 };
+            result.addAnimatedAttributeListener
+                (doc.getAnimatedAttributeListener());
             putLiveAttributeValue(null, SVG_RY_ATTRIBUTE,
                                   (LiveAttributeValue)result);
         }
@@ -216,9 +238,19 @@ public class SVGOMRectElement
                 return;
             } else if (ln.equals(SVG_RX_ATTRIBUTE)) {
                 updateLengthAttributeValue(getRx(), val);
+                AbstractSVGAnimatedLength ry =
+                    (AbstractSVGAnimatedLength) getRy();
+                if (!ry.isSpecified()) {
+                    updateLengthAttributeValue(getRy(), val);
+                }
                 return;
             } else if (ln.equals(SVG_RY_ATTRIBUTE)) {
                 updateLengthAttributeValue(getRy(), val);
+                AbstractSVGAnimatedLength rx =
+                    (AbstractSVGAnimatedLength) getRx();
+                if (!rx.isSpecified()) {
+                    updateLengthAttributeValue(getRx(), val);
+                }
                 return;
             } else if (ln.equals(SVG_WIDTH_ATTRIBUTE)) {
                 updateLengthAttributeValue(getWidth(), val);

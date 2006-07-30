@@ -847,17 +847,19 @@ public abstract class CSSEngine {
             // Apply the override rules to the result.
             StyleDeclarationProvider p =
                 elt.getOverrideStyleDeclarationProvider();
-            StyleDeclaration over = p.getStyleDeclaration();
-            if (over != null) {
-                int ol = over.size();
-                for (int i = 0; i < ol; i++) {
-                    int idx = over.getIndex(i);
-                    Value value = over.getValue(i);
-                    boolean important = over.getPriority(i);
-                    if (!result.isImportant(idx) || important) {
-                        result.putValue(idx, value);
-                        result.putImportant(idx, important);
-                        result.putOrigin(idx, StyleMap.OVERRIDE_ORIGIN);
+            if (p != null) {
+                StyleDeclaration over = p.getStyleDeclaration();
+                if (over != null) {
+                    int ol = over.size();
+                    for (int i = 0; i < ol; i++) {
+                        int idx = over.getIndex(i);
+                        Value value = over.getValue(i);
+                        boolean important = over.getPriority(i);
+                        if (!result.isImportant(idx) || important) {
+                            result.putValue(idx, value);
+                            result.putImportant(idx, important);
+                            result.putOrigin(idx, StyleMap.OVERRIDE_ORIGIN);
+                        }
                     }
                 }
             }

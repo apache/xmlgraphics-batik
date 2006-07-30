@@ -141,7 +141,14 @@ public class SVGOMAnimatedPreserveAspectRatio
      * #getBaseVal()}.
      */
     public class BaseSVGPARValue extends AbstractSVGPreserveAspectRatio {
-        
+
+        /**
+         * Creates a new BaseSVGPARValue.
+         */
+        public BaseSVGPARValue() {
+            invalidate();
+        }
+
         /**
          * Create a DOMException.
          */

@@ -120,8 +120,14 @@ public abstract class AbstractSVGLength
      */
     public float getValue() {
         revalidate();
-        return UnitProcessor.svgToUserSpace(value, unitType,
-                                            direction, context);
+        try {
+            return UnitProcessor.svgToUserSpace(value, unitType,
+                                                direction, context);
+        } catch (IllegalArgumentException ex) {
+            // XXX Should we throw an exception here when the length
+            //     type is unknown?
+            return 0f;
+        }
     }
 
     /**

@@ -93,11 +93,7 @@ public class SVGPolylineElementBridge extends SVGDecoratedShapeElementBridge {
                 shapeNode.setShape(app.getShape());
             }
         } catch (LiveAttributeException ex) {
-            throw new BridgeException
-                (ctx, ex.getElement(),
-                 ex.isMissing() ? ERR_ATTRIBUTE_MISSING
-                                : ERR_ATTRIBUTE_VALUE_MALFORMED,
-                 new Object[] { ex.getAttributeName(), ex.getValue() });
+            throw new BridgeException(ctx, ex);
         }
     }
 
