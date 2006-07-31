@@ -578,7 +578,7 @@ public class SVGAnimationEngine extends AnimationEngine {
                     float t = timedDocumentRoot.convertWallclockTime(time);
                     if (Math.floor(t) > second) {
                         second = Math.floor(t);
-                        System.err.println("fps: " + frames);
+                        // System.err.println("fps: " + frames);
                         frames = 0;
                     }
                     tick(t);

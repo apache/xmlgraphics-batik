@@ -71,12 +71,12 @@ public class Interval {
      */
     public Interval(float begin, float end, InstanceTime beginInstanceTime,
                     InstanceTime endInstanceTime) {
-        Trace.enter(this, null, new Object[] { new Float(begin), new Float(end), beginInstanceTime, endInstanceTime } ); try {
+        // Trace.enter(this, null, new Object[] { new Float(begin), new Float(end), beginInstanceTime, endInstanceTime } ); try {
         this.begin = begin;
         this.end = end;
         this.beginInstanceTime = beginInstanceTime;
         this.endInstanceTime = endInstanceTime;
-        } finally { Trace.exit(); }
+        // } finally { Trace.exit(); }
     }
 
     /**
@@ -120,53 +120,53 @@ public class Interval {
      * Adds a dependent InstanceTime for this Interval.
      */
     void addDependent(InstanceTime dependent, boolean forBegin) {
-        Trace.enter(this, "addDependent", new Object[] { dependent, new Boolean(forBegin) } ); try {
+        // Trace.enter(this, "addDependent", new Object[] { dependent, new Boolean(forBegin) } ); try {
         if (forBegin) {
             beginDependents.add(dependent);
         } else {
             endDependents.add(dependent);
         }
-        } finally { Trace.exit(); }
+        // } finally { Trace.exit(); }
     }
 
     /**
      * Removes a dependent InstanceTime for this Interval.
      */
     void removeDependent(InstanceTime dependent, boolean forBegin) {
-        Trace.enter(this, "removeDependent", new Object[] { dependent, new Boolean(forBegin) } ); try {
+        // Trace.enter(this, "removeDependent", new Object[] { dependent, new Boolean(forBegin) } ); try {
         if (forBegin) {
             beginDependents.remove(dependent);
         } else {
             endDependents.remove(dependent);
         }
-        } finally { Trace.exit(); }
+        // } finally { Trace.exit(); }
     }
 
     /**
      * Updates the begin time for this interval.
      */
     void setBegin(float begin) {
-        Trace.enter(this, "setBegin", new Object[] { new Float(begin) } ); try {
+        // Trace.enter(this, "setBegin", new Object[] { new Float(begin) } ); try {
         this.begin = begin;
         Iterator i = beginDependents.iterator();
         while (i.hasNext()) {
             InstanceTime it = (InstanceTime) i.next();
             it.dependentUpdate(begin);
         }
-        } finally { Trace.exit(); }
+        // } finally { Trace.exit(); }
     }
 
     /**
      * Updates the end time for this interval.
      */
     void setEnd(float end) {
-        Trace.enter(this, "setEnd", new Object[] { new Float(end) } ); try {
+        // Trace.enter(this, "setEnd", new Object[] { new Float(end) } ); try {
         this.end = end;
         Iterator i = endDependents.iterator();
         while (i.hasNext()) {
             InstanceTime it = (InstanceTime) i.next();
             it.dependentUpdate(end);
         }
-        } finally { Trace.exit(); }
+        // } finally { Trace.exit(); }
     }
 }
