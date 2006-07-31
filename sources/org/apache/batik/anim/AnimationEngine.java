@@ -89,7 +89,7 @@ public abstract class AnimationEngine {
      */
     public void addAnimation(AnimationTarget target, short type, String ns,
                              String an, AbstractAnimation anim) {
-        org.apache.batik.anim.timing.Trace.enter(this, "addAnimation", new Object[] { target, new Short[type], ns, an, anim } ); try {
+        // org.apache.batik.anim.timing.Trace.enter(this, "addAnimation", new Object[] { target, new Short[type], ns, an, anim } ); try {
         timedDocumentRoot.addChild(anim.getTimedElement());
 
         AnimationInfo animInfo = getAnimationInfo(anim);
@@ -112,14 +112,14 @@ public abstract class AnimationEngine {
         if (anim.lowerAnimation == null) {
             sandwich.lowestAnimation = anim;
         }
-        } finally { org.apache.batik.anim.timing.Trace.exit(); }
+        // } finally { org.apache.batik.anim.timing.Trace.exit(); }
     }
 
     /**
      * Removes an animation from the document.
      */
     public void removeAnimation(AbstractAnimation anim) {
-        org.apache.batik.anim.timing.Trace.enter(this, "removeAnimation", new Object[] { anim } ); try {
+        // org.apache.batik.anim.timing.Trace.enter(this, "removeAnimation", new Object[] { anim } ); try {
         timedDocumentRoot.removeChild(anim.getTimedElement());
         AbstractAnimation nextHigher = anim.higherAnimation;
         if (nextHigher != null) {
@@ -138,7 +138,7 @@ public abstract class AnimationEngine {
             sandwich.lowestAnimation = null;
             sandwich.shouldUpdate = true;
         }
-        } finally { org.apache.batik.anim.timing.Trace.exit(); }
+        // } finally { org.apache.batik.anim.timing.Trace.exit(); }
     }
 
     /**

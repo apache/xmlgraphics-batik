@@ -57,12 +57,12 @@ public class SyncbaseTimingSpecifier extends OffsetTimingSpecifier {
                                    float offset, String syncbaseID,
                                    boolean syncBegin) {
         super(owner, isBegin, offset);
-        Trace.enter(this, null, new Object[] { owner, new Boolean(isBegin), new Float(offset), syncbaseID, new Boolean(syncBegin) } ); try {
+        // Trace.enter(this, null, new Object[] { owner, new Boolean(isBegin), new Float(offset), syncbaseID, new Boolean(syncBegin) } ); try {
         this.syncbaseID = syncbaseID;
         this.syncBegin = syncBegin;
         this.syncbaseElement = owner.getTimedElementById(syncbaseID);
         syncbaseElement.addDependent(this, syncBegin);
-        } finally { Trace.exit(); }
+        // } finally { Trace.exit(); }
     }
 
     /**
@@ -92,7 +92,7 @@ public class SyncbaseTimingSpecifier extends OffsetTimingSpecifier {
      * Called by the timebase element when it creates a new Interval.
      */
     void newInterval(Interval interval) {
-        Trace.enter(this, "newInterval", new Object[] { interval } ); try {
+        // Trace.enter(this, "newInterval", new Object[] { interval } ); try {
         InstanceTime instance =
             new InstanceTime(this, (syncBegin ? interval.getBegin()
                                               : interval.getEnd()) + offset,
@@ -100,18 +100,18 @@ public class SyncbaseTimingSpecifier extends OffsetTimingSpecifier {
         instances.put(interval, instance);
         interval.addDependent(instance, syncBegin);
         owner.addInstanceTime(instance, isBegin);
-        } finally { Trace.exit(); }
+        // } finally { Trace.exit(); }
     }
 
     /**
      * Called by the timebase element when it deletes an Interval.
      */
     void removeInterval(Interval interval) {
-        Trace.enter(this, "removeInterval", new Object[] { interval } ); try {
+        // Trace.enter(this, "removeInterval", new Object[] { interval } ); try {
         InstanceTime instance = (InstanceTime) instances.get(interval);
         interval.removeDependent(instance, syncBegin);
         owner.removeInstanceTime(instance, isBegin);
-        } finally { Trace.exit(); }
+        // } finally { Trace.exit(); }
     }
 
     /**
@@ -119,8 +119,8 @@ public class SyncbaseTimingSpecifier extends OffsetTimingSpecifier {
      * to indicate that its value has changed.
      */
     void handleTimebaseUpdate(InstanceTime instanceTime, float newTime) {
-        Trace.enter(this, "handleTimebaseUpdate", new Object[] { instanceTime, new Float(newTime) } ); try {
+        // Trace.enter(this, "handleTimebaseUpdate", new Object[] { instanceTime, new Float(newTime) } ); try {
         owner.instanceTimeChanged(instanceTime, isBegin);
-        } finally { Trace.exit(); }
+        // } finally { Trace.exit(); }
     }
 }

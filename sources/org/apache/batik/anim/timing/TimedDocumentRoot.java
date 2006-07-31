@@ -102,7 +102,7 @@ public abstract class TimedDocumentRoot extends TimeContainer {
      * Samples the entire timegraph at the given time.
      */
     public void seekTo(float time) {
-        Trace.enter(this, "seekTo", new Object[] { new Float(time) } ); try {
+        // Trace.enter(this, "seekTo", new Object[] { new Float(time) } ); try {
         propagationFlags.clear();
         // No time containers in SVG, so we don't have to worry
         // about a partial ordering of timed elements to sample.
@@ -122,7 +122,7 @@ public abstract class TimedDocumentRoot extends TimeContainer {
                 }
             }
         } while (needsUpdates);
-        } finally { Trace.exit(); }
+        // } finally { Trace.exit(); }
     }
 
     /**
