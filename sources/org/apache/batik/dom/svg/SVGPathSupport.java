@@ -25,9 +25,9 @@ import org.w3c.dom.svg.SVGMatrix;
 import org.w3c.dom.DOMException;
 
 /**
- * The clas provides support for the SVGPath interface.
+ * The class provides support for the SVGPath interface.
  *
- * @author <a href="mailto:deweese@apache.org">deweese</a>
+ * @author <a href="mailto:deweese@apache.org">Thomas DeWeese</a>
  * @version $Id$
  */
 public class SVGPathSupport {

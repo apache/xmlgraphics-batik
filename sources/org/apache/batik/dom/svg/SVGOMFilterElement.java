@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2000-2004  The Apache Software Foundation 
+   Copyright 2000-2004,2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -17,9 +17,13 @@
  */
 package org.apache.batik.dom.svg;
 
+import org.apache.batik.anim.values.AnimatableNumberOptionalNumberValue;
+import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.util.XMLSupport;
+import org.apache.batik.util.SVGTypes;
+
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedBoolean;
 import org.w3c.dom.svg.SVGAnimatedEnumeration;
@@ -110,7 +114,7 @@ public class SVGOMFilterElement
     public SVGAnimatedLength getX() {
         return getAnimatedLengthAttribute
             (null, SVG_X_ATTRIBUTE, SVG_FILTER_X_DEFAULT_VALUE,
-             SVGOMAnimatedLength.HORIZONTAL_LENGTH);
+             SVGOMAnimatedLength.HORIZONTAL_LENGTH, false);
     }
 
     /**
@@ -119,7 +123,7 @@ public class SVGOMFilterElement
     public SVGAnimatedLength getY() {
         return getAnimatedLengthAttribute
             (null, SVG_Y_ATTRIBUTE, SVG_FILTER_Y_DEFAULT_VALUE,
-             SVGOMAnimatedLength.VERTICAL_LENGTH);
+             SVGOMAnimatedLength.VERTICAL_LENGTH, false);
     }
 
     /**
@@ -128,7 +132,7 @@ public class SVGOMFilterElement
     public SVGAnimatedLength getWidth() {
         return getAnimatedLengthAttribute
             (null, SVG_WIDTH_ATTRIBUTE, SVG_FILTER_WIDTH_DEFAULT_VALUE,
-             SVGOMAnimatedLength.HORIZONTAL_LENGTH);
+             SVGOMAnimatedLength.HORIZONTAL_LENGTH, true);
     }
 
     /**
@@ -137,7 +141,7 @@ public class SVGOMFilterElement
     public SVGAnimatedLength getHeight() {
         return getAnimatedLengthAttribute
             (null, SVG_HEIGHT_ATTRIBUTE, SVG_FILTER_HEIGHT_DEFAULT_VALUE,
-             SVGOMAnimatedLength.VERTICAL_LENGTH);
+             SVGOMAnimatedLength.VERTICAL_LENGTH, true);
     }
 
     /**
@@ -194,9 +198,7 @@ public class SVGOMFilterElement
      * <b>DOM</b>: Sets the xml:lang attribute value.
      */
     public void setXMLlang(String lang) {
-        setAttributeNS(XMLSupport.XML_NAMESPACE_URI,
-                       XMLSupport.XML_LANG_ATTRIBUTE,
-                       lang);
+        setAttributeNS(XML_NAMESPACE_URI, XML_LANG_QNAME, lang);
     }
 
     /**
@@ -210,9 +212,7 @@ public class SVGOMFilterElement
      * <b>DOM</b>: Sets the xml:space attribute value.
      */
     public void setXMLspace(String space) {
-        setAttributeNS(XMLSupport.XML_NAMESPACE_URI,
-                       XMLSupport.XML_SPACE_ATTRIBUTE,
-                       space);
+        setAttributeNS(XML_NAMESPACE_URI, XML_SPACE_QNAME, space);
     }
 
     /**
@@ -228,5 +228,146 @@ public class SVGOMFilterElement
      */
     protected Node newNode() {
         return new SVGOMFilterElement();
+    }
+
+    // ExtendedTraitAccess ///////////////////////////////////////////////////
+
+    /**
+     * Returns whether the given XML attribute is animatable.
+     */
+    public boolean isAttributeAnimatable(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE)
+                    || ln.equals(SVG_FILTER_UNITS_ATTRIBUTE)
+                    || ln.equals(SVG_PRIMITIVE_UNITS_ATTRIBUTE)
+                    || ln.equals(SVG_X_ATTRIBUTE)
+                    || ln.equals(SVG_Y_ATTRIBUTE)
+                    || ln.equals(SVG_WIDTH_ATTRIBUTE)
+                    || ln.equals(SVG_HEIGHT_ATTRIBUTE)
+                    || ln.equals(SVG_FILTER_RES_ATTRIBUTE)) {
+                return true;
+            }
+        }
+        return super.isAttributeAnimatable(ns, ln);
+    }
+
+    /**
+     * Returns the type of the given attribute.
+     */
+    public int getAttributeType(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_FILTER_UNITS_ATTRIBUTE)
+                    || ln.equals(SVG_PRIMITIVE_UNITS_ATTRIBUTE)) {
+                return SVGTypes.TYPE_IDENT;
+            } else if (ln.equals(SVG_X_ATTRIBUTE)
+                    || ln.equals(SVG_Y_ATTRIBUTE)
+                    || ln.equals(SVG_WIDTH_ATTRIBUTE)
+                    || ln.equals(SVG_HEIGHT_ATTRIBUTE)) {
+                return SVGTypes.TYPE_LENGTH;
+            } else if (ln.equals(SVG_FILTER_RES_ATTRIBUTE)) {
+                return SVGTypes.TYPE_NUMBER_OPTIONAL_NUMBER;
+            }
+        }
+        return super.getAttributeType(ns, ln);
+    }
+
+    // AnimationTarget ///////////////////////////////////////////////////////
+
+    /**
+     * Gets how percentage values are interpreted by the given attribute.
+     */
+    protected short getAttributePercentageInterpretation(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_X_ATTRIBUTE) || ln.equals(SVG_WIDTH_ATTRIBUTE)) {
+                return PERCENTAGE_VIEWPORT_WIDTH;
+            }
+            if (ln.equals(SVG_Y_ATTRIBUTE) || ln.equals(SVG_HEIGHT_ATTRIBUTE)) {
+                return PERCENTAGE_VIEWPORT_HEIGHT;
+            }
+        }
+        return super.getAttributePercentageInterpretation(ns, ln);
+    }
+
+    /**
+     * Updates an attribute value in this target.
+     */
+    public void updateAttributeValue(String ns, String ln,
+                                     AnimatableValue val) {
+        if (ns == null) {
+            if (ln.equals(SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE)) {
+                updateBooleanAttributeValue(getExternalResourcesRequired(),
+                                            val);
+                return;
+            } else if (ln.equals(SVG_FILTER_UNITS_ATTRIBUTE)) {
+                updateEnumerationAttributeValue(getFilterUnits(), val);
+                return;
+            } else if (ln.equals(SVG_PRIMITIVE_UNITS_ATTRIBUTE)) {
+                updateEnumerationAttributeValue(getPrimitiveUnits(), val);
+                return;
+            } else if (ln.equals(SVG_X_ATTRIBUTE)) {
+                updateLengthAttributeValue(getX(), val);
+                return;
+            } else if (ln.equals(SVG_Y_ATTRIBUTE)) {
+                updateLengthAttributeValue(getY(), val);
+                return;
+            } else if (ln.equals(SVG_WIDTH_ATTRIBUTE)) {
+                updateLengthAttributeValue(getWidth(), val);
+                return;
+            } else if (ln.equals(SVG_HEIGHT_ATTRIBUTE)) {
+                updateLengthAttributeValue(getHeight(), val);
+                return;
+            } else if (ln.equals(SVG_FILTER_RES_ATTRIBUTE)) {
+                // XXX Needs testing.
+                if (val == null) {
+                    updateIntegerAttributeValue(getFilterResX(), null);
+                    updateIntegerAttributeValue(getFilterResY(), null);
+                } else {
+                    AnimatableNumberOptionalNumberValue anonv =
+                        (AnimatableNumberOptionalNumberValue) val;
+                    SVGOMAnimatedInteger ai =
+                        (SVGOMAnimatedInteger) getFilterResX();
+                    ai.setAnimatedValue(Math.round(anonv.getNumber()));
+                    ai = (SVGOMAnimatedInteger) getFilterResY();
+                    if (anonv.hasOptionalNumber()) {
+                        ai.setAnimatedValue
+                            (Math.round(anonv.getOptionalNumber()));
+                    } else {
+                        ai.setAnimatedValue(Math.round(anonv.getNumber()));
+                    }
+                }
+                return;
+            }
+        }
+        super.updateAttributeValue(ns, ln, val);
+    }
+
+    /**
+     * Returns the underlying value of an animatable XML attribute.
+     */
+    public AnimatableValue getUnderlyingValue(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE)) {
+                return getBaseValue(getExternalResourcesRequired());
+            } else if (ln.equals(SVG_FILTER_UNITS_ATTRIBUTE)) {
+                return getBaseValue(getFilterUnits());
+            } else if (ln.equals(SVG_PRIMITIVE_UNITS_ATTRIBUTE)) {
+                return getBaseValue(getPrimitiveUnits());
+            } else if (ln.equals(SVG_X_ATTRIBUTE)) {
+                return getBaseValue
+                    (getX(), PERCENTAGE_VIEWPORT_WIDTH);
+            } else if (ln.equals(SVG_Y_ATTRIBUTE)) {
+                return getBaseValue
+                    (getY(), PERCENTAGE_VIEWPORT_HEIGHT);
+            } else if (ln.equals(SVG_WIDTH_ATTRIBUTE)) {
+                return getBaseValue
+                    (getWidth(), PERCENTAGE_VIEWPORT_WIDTH);
+            } else if (ln.equals(SVG_HEIGHT_ATTRIBUTE)) {
+                return getBaseValue
+                    (getHeight(), PERCENTAGE_VIEWPORT_HEIGHT);
+            } else if (ln.equals(SVG_FILTER_RES_ATTRIBUTE)) {
+                return getBaseValue(getFilterResX(), getFilterResY());
+            }
+        }
+        return super.getUnderlyingValue(ns, ln);
     }
 }

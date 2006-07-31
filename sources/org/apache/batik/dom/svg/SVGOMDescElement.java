@@ -44,7 +44,6 @@ public class SVGOMDescElement
      */
     public SVGOMDescElement(String prefix, AbstractDocument owner) {
         super(prefix, owner);
-
     }
 
     /**

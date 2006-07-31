@@ -20,6 +20,8 @@ package org.apache.batik.dom.svg;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.util.XMLSupport;
+import org.apache.batik.util.SVGTypes;
+
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
@@ -188,5 +190,22 @@ public class SVGOMColorProfileElement
      */
     protected Node newNode() {
         return new SVGOMColorProfileElement();
+    }
+
+    // ExtendedTraitAccess ///////////////////////////////////////////////////
+
+    /**
+     * Returns the type of the given attribute.
+     */
+    public int getAttributeType(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_LOCAL_ATTRIBUTE)
+                    || ln.equals(SVG_NAME_ATTRIBUTE)) {
+                return SVGTypes.TYPE_CDATA;
+            } else if (ln.equals(SVG_RENDERING_INTENT_ATTRIBUTE)) {
+                return SVGTypes.TYPE_IDENT;
+            }
+        }
+        return super.getAttributeType(ns, ln);
     }
 }

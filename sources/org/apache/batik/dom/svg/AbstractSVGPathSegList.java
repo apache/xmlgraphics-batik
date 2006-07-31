@@ -61,6 +61,7 @@ public abstract class AbstractSVGPathSegList
      */
     public final static String SVG_PATHSEG_LIST_SEPARATOR
         =" ";
+
     /**
      * Creates a new SVGPathSegList.
      */

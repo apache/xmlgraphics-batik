@@ -39,8 +39,8 @@ import org.w3c.dom.Element;
  * @version $Id$
  */
 public abstract class AbstractSVGFilterPrimitiveElementBridge
-    extends AbstractSVGBridge
-    implements FilterPrimitiveBridge, ErrorConstants {
+        extends AnimatableGenericSVGBridge
+        implements FilterPrimitiveBridge, ErrorConstants {
 
     /**
      * Constructs a new bridge for a filter primitive element.
@@ -99,7 +99,7 @@ public abstract class AbstractSVGFilterPrimitiveElementBridge
 
         String s = filterElement.getAttributeNS(null, SVG_IN2_ATTRIBUTE);
         if (s.length() == 0) {
-            throw new BridgeException(filterElement, ERR_ATTRIBUTE_MISSING,
+            throw new BridgeException(ctx, filterElement, ERR_ATTRIBUTE_MISSING,
                                       new Object [] {SVG_IN2_ATTRIBUTE});
         }
         return getFilterSource(filterElement,
@@ -244,10 +244,12 @@ public abstract class AbstractSVGFilterPrimitiveElementBridge
      * @param filterElement the filter primitive element
      * @param attrName the name of the attribute
      * @param defaultValue the default value of the attribute
+     * @param ctx the BridgeContext to use for error information
      */
     protected static int convertInteger(Element filterElement,
                                         String attrName,
-                                        int defaultValue) {
+                                        int defaultValue,
+                                        BridgeContext ctx) {
         String s = filterElement.getAttributeNS(null, attrName);
         if (s.length() == 0) {
             return defaultValue;
@@ -256,7 +258,7 @@ public abstract class AbstractSVGFilterPrimitiveElementBridge
                 return SVGUtilities.convertSVGInteger(s);
             } catch (NumberFormatException ex) {
                 throw new BridgeException
-                    (filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                    (ctx, filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
                      new Object[] {attrName, s});
             }
         }
@@ -270,10 +272,12 @@ public abstract class AbstractSVGFilterPrimitiveElementBridge
      * @param filterElement the filter primitive element
      * @param attrName the name of the attribute
      * @param defaultValue the default value of the attribute
+     * @param ctx the BridgeContext to use for error information
      */
     protected static float convertNumber(Element filterElement,
                                          String attrName,
-                                         float defaultValue) {
+                                         float defaultValue,
+                                         BridgeContext ctx) {
 
         String s = filterElement.getAttributeNS(null, attrName);
         if (s.length() == 0) {
@@ -283,7 +287,7 @@ public abstract class AbstractSVGFilterPrimitiveElementBridge
                 return SVGUtilities.convertSVGNumber(s);
             } catch (NumberFormatException ex) {
                 throw new BridgeException
-                    (filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                    (ctx, filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
                      new Object[] {attrName, s, ex});
             }
         }

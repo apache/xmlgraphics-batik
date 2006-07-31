@@ -76,21 +76,21 @@ public class SVGFeSpecularLightingElementBridge
 
 
         // 'surfaceScale' attribute - default is 1
-        float surfaceScale
-            = convertNumber(filterElement, SVG_SURFACE_SCALE_ATTRIBUTE, 1);
+        float surfaceScale = convertNumber(filterElement,
+                                           SVG_SURFACE_SCALE_ATTRIBUTE, 1, ctx);
 
         // 'specularConstant' attribute - default is 1
-        float specularConstant
-            = convertNumber(filterElement, SVG_SPECULAR_CONSTANT_ATTRIBUTE, 1);
+        float specularConstant = convertNumber
+            (filterElement, SVG_SPECULAR_CONSTANT_ATTRIBUTE, 1, ctx);
 
         // 'specularExponent' attribute - default is 1
-        float specularExponent = convertSpecularExponent(filterElement);
+        float specularExponent = convertSpecularExponent(filterElement, ctx);
 
         // extract the light definition from the filterElement's children list
         Light light = extractLight(filterElement, ctx);
 
         // 'kernelUnitLength' attribute
-        double [] kernelUnitLength = convertKernelUnitLength(filterElement);
+        double[] kernelUnitLength = convertKernelUnitLength(filterElement, ctx);
 
         // 'in' attribute
         Filter in = getIn(filterElement,
@@ -138,8 +138,10 @@ public class SVGFeSpecularLightingElementBridge
      * filter primitive element.
      *
      * @param filterElement the feSpecularLighting filter primitive element
+     * @param ctx the BridgeContext to use for error information
      */
-    protected static float convertSpecularExponent(Element filterElement) {
+    protected static float convertSpecularExponent(Element filterElement,
+                                                   BridgeContext ctx) {
         String s = filterElement.getAttributeNS
             (null, SVG_SPECULAR_EXPONENT_ATTRIBUTE);
         if (s.length() == 0) {
@@ -149,13 +151,13 @@ public class SVGFeSpecularLightingElementBridge
                 float v = SVGUtilities.convertSVGNumber(s);
                 if (v < 1 || v > 128) {
                     throw new BridgeException
-                        (filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                        (ctx, filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
                          new Object[] {SVG_SPECULAR_CONSTANT_ATTRIBUTE, s});
                 }
                 return v;
             } catch (NumberFormatException ex) {
                 throw new BridgeException
-                    (filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                    (ctx, filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
                      new Object[] {SVG_SPECULAR_CONSTANT_ATTRIBUTE, s, ex});
             }
         }

@@ -26,6 +26,7 @@ package org.apache.batik.parser;
  * @version $Id$
  */
 public interface PointsHandler {
+
     /**
      * Invoked when the points attribute starts.
      * @exception ParseException if an error occured while processing the

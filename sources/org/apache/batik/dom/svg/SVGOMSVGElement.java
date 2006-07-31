@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2000-2004  The Apache Software Foundation 
+   Copyright 2000-2004,2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -20,10 +20,12 @@ package org.apache.batik.dom.svg;
 import java.awt.geom.AffineTransform;
 import java.util.List;
 
+import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.dom.util.ListNodeList;
+import org.apache.batik.util.SVGTypes;
 
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
@@ -129,7 +131,7 @@ public class SVGOMSVGElement
     public SVGAnimatedLength getX() {
         return getAnimatedLengthAttribute
             (null, SVG_X_ATTRIBUTE, SVG_RECT_X_DEFAULT_VALUE,
-             SVGOMAnimatedLength.HORIZONTAL_LENGTH);
+             SVGOMAnimatedLength.HORIZONTAL_LENGTH, false);
     }
 
     /**
@@ -138,7 +140,7 @@ public class SVGOMSVGElement
     public SVGAnimatedLength getY() {
         return getAnimatedLengthAttribute
             (null, SVG_Y_ATTRIBUTE, SVG_SVG_Y_DEFAULT_VALUE,
-             SVGOMAnimatedLength.VERTICAL_LENGTH);
+             SVGOMAnimatedLength.VERTICAL_LENGTH, false);
     }
 
     /**
@@ -147,7 +149,7 @@ public class SVGOMSVGElement
     public SVGAnimatedLength getWidth() {
         return getAnimatedLengthAttribute
             (null, SVG_WIDTH_ATTRIBUTE, SVG_SVG_WIDTH_DEFAULT_VALUE,
-             SVGOMAnimatedLength.HORIZONTAL_LENGTH);
+             SVGOMAnimatedLength.HORIZONTAL_LENGTH, true);
     }
 
     /**
@@ -156,7 +158,7 @@ public class SVGOMSVGElement
     public SVGAnimatedLength getHeight() {
         return getAnimatedLengthAttribute
             (null, SVG_HEIGHT_ATTRIBUTE, SVG_SVG_HEIGHT_DEFAULT_VALUE,
-             SVGOMAnimatedLength.VERTICAL_LENGTH);
+             SVGOMAnimatedLength.VERTICAL_LENGTH, true);
     }
 
     /**
@@ -196,40 +198,78 @@ public class SVGOMSVGElement
                              ctx.getViewportHeight());
     } 
 
-    public float getPixelUnitToMillimeterX( ) {
+    /**
+     * <b>DOM</b>: Implements {@link SVGSVGElement#getPixelUnitToMillimeterX()}.
+     */
+    public float getPixelUnitToMillimeterX() {
         return getSVGContext().getPixelUnitToMillimeter();
     }
-    public float getPixelUnitToMillimeterY( ) {
+
+    /**
+     * <b>DOM</b>: Implements {@link SVGSVGElement#getPixelUnitToMillimeterY()}.
+     */
+    public float getPixelUnitToMillimeterY() {
         return getSVGContext().getPixelUnitToMillimeter();
     }
-    public float getScreenPixelToMillimeterX( ) {
+
+    /**
+     * <b>DOM</b>: Implements {@link
+     * SVGSVGElement#getScreenPixelToMillimeterX()}.
+     */
+    public float getScreenPixelToMillimeterX() {
         return getSVGContext().getPixelUnitToMillimeter();
     }
-    public float getScreenPixelToMillimeterY( ) {
+
+    /**
+     * <b>DOM</b>: Implements {@link
+     * SVGSVGElement#getScreenPixelToMillimeterY()}.
+     */
+    public float getScreenPixelToMillimeterY() {
         return getSVGContext().getPixelUnitToMillimeter();
     }
-    public boolean getUseCurrentView( ) {
+
+    /**
+     * <b>DOM</b>: Implements {@link SVGSVGElement#getUseCurrentView()}.
+     */
+    public boolean getUseCurrentView() {
         throw new UnsupportedOperationException("!!! Not implemented.");
     }
-    public void      setUseCurrentView( boolean useCurrentView )
-        throws DOMException {
+
+    /**
+     * <b>DOM</b>: Implements {@link SVGSVGElement#setUseCurrentView(boolean)}.
+     */
+    public void setUseCurrentView(boolean useCurrentView) throws DOMException {
         throw new UnsupportedOperationException("!!! Not implemented.");
     }
-    public SVGViewSpec getCurrentView( ) {
+
+    /**
+     * <b>DOM</b>: Implements {@link SVGSVGElement#getCurrentView()}.
+     */
+    public SVGViewSpec getCurrentView() {
         throw new UnsupportedOperationException("!!! Not implemented.");
     }
-    public float getCurrentScale( ) {
+
+    /**
+     * <b>DOM</b>: Implements {@link SVGSVGElement#getCurrentView()}.
+     */
+    public float getCurrentScale() {
         AffineTransform scrnTrans = getSVGContext().getScreenTransform();
-        if (scrnTrans != null)
+        if (scrnTrans != null) {
             return (float)Math.sqrt(scrnTrans.getDeterminant());
+        }
         return 1;
     }
-    public void setCurrentScale( float currentScale ) throws DOMException {
+
+    /**
+     * <b>DOM</b>: Implements {@link SVGSVGElement#setCurrentScale()}.
+     */
+    public void setCurrentScale(float currentScale) throws DOMException {
         SVGContext context = getSVGContext();
         AffineTransform scrnTrans = context.getScreenTransform();
         float scale = 1;
-        if (scrnTrans != null)
+        if (scrnTrans != null) {
             scale = (float)Math.sqrt(scrnTrans.getDeterminant());
+        }
         float delta = currentScale/scale;
         // The way currentScale, currentTranslate are defined
         // changing scale has no effect on translate.
@@ -240,49 +280,50 @@ public class SVGOMSVGElement
         context.setScreenTransform(scrnTrans);
     }
 
-    public SVGPoint getCurrentTranslate( ) {
-        final SVGOMElement svgelt  = this;
+    /**
+     * <b>DOM</b>: Implements {@link SVGSVGElement#getCurrentTranslate()}.
+     */
+    public SVGPoint getCurrentTranslate() {
         return new SVGPoint() {
-                AffineTransform getScreenTransform() {
-                    SVGContext context = svgelt.getSVGContext();
-                    return context.getScreenTransform();
-                }
-                    
-                public float getX() {
-                    AffineTransform scrnTrans = getScreenTransform();
-                    return (float)scrnTrans.getTranslateX();
-                }
-                public float getY() {
-                    AffineTransform scrnTrans = getScreenTransform();
-                    return (float)scrnTrans.getTranslateY();
-                }
-                public void setX(float newX) {
-                    SVGContext context = svgelt.getSVGContext();
-                    AffineTransform scrnTrans = context.getScreenTransform();
-                    scrnTrans = new AffineTransform
-                        (scrnTrans.getScaleX(), scrnTrans.getShearY(),
-                         scrnTrans.getShearX(), scrnTrans.getScaleY(),
-                         newX, scrnTrans.getTranslateY());
-                    context.setScreenTransform(scrnTrans);
-                }
-                public void setY(float newY) {
-                    SVGContext context = svgelt.getSVGContext();
-                    AffineTransform scrnTrans = context.getScreenTransform();
-                    scrnTrans = new AffineTransform
-                        (scrnTrans.getScaleX(), scrnTrans.getShearY(),
-                         scrnTrans.getShearX(), scrnTrans.getScaleY(),
-                         scrnTrans.getTranslateX(), newY);
-                    context.setScreenTransform(scrnTrans);
-                }
-                public SVGPoint matrixTransform ( SVGMatrix mat ) {
-                    AffineTransform scrnTrans = getScreenTransform();
-                    float x = (float)scrnTrans.getTranslateX();
-                    float y = (float)scrnTrans.getTranslateY();
-                    float newX = mat.getA()*x + mat.getC()*y + mat.getE();
-                    float newY = mat.getB()*x + mat.getD()*y + mat.getF();
-                    return new SVGOMPoint(newX, newY);
-                }
-            };
+            protected AffineTransform getScreenTransform() {
+                SVGContext context = getSVGContext();
+                return context.getScreenTransform();
+            }
+            public float getX() {
+                AffineTransform scrnTrans = getScreenTransform();
+                return (float)scrnTrans.getTranslateX();
+            }
+            public float getY() {
+                AffineTransform scrnTrans = getScreenTransform();
+                return (float)scrnTrans.getTranslateY();
+            }
+            public void setX(float newX) {
+                SVGContext context = getSVGContext();
+                AffineTransform scrnTrans = context.getScreenTransform();
+                scrnTrans = new AffineTransform
+                    (scrnTrans.getScaleX(), scrnTrans.getShearY(),
+                     scrnTrans.getShearX(), scrnTrans.getScaleY(),
+                     newX, scrnTrans.getTranslateY());
+                context.setScreenTransform(scrnTrans);
+            }
+            public void setY(float newY) {
+                SVGContext context = getSVGContext();
+                AffineTransform scrnTrans = context.getScreenTransform();
+                scrnTrans = new AffineTransform
+                    (scrnTrans.getScaleX(), scrnTrans.getShearY(),
+                     scrnTrans.getShearX(), scrnTrans.getScaleY(),
+                     scrnTrans.getTranslateX(), newY);
+                context.setScreenTransform(scrnTrans);
+            }
+            public SVGPoint matrixTransform(SVGMatrix mat) {
+                AffineTransform scrnTrans = getScreenTransform();
+                float x = (float)scrnTrans.getTranslateX();
+                float y = (float)scrnTrans.getTranslateY();
+                float newX = mat.getA() * x + mat.getC() * y + mat.getE();
+                float newY = mat.getB() * x + mat.getD() * y + mat.getF();
+                return new SVGOMPoint(newX, newY);
+            }
+        };
     }
 
     public int          suspendRedraw ( int max_wait_milliseconds ) {
@@ -358,14 +399,14 @@ public class SVGOMSVGElement
      */
     public SVGNumber createSVGNumber() {
         return new SVGNumber() {
-                float value;
-                public float getValue() {
-                    return value;
-                }
-                public void setValue(float f) {
-                    value = f;
-                }
-            };
+            protected float value;
+            public float getValue() {
+                return value;
+            }
+            public void setValue(float f) {
+                value = f;
+            }
+        };
     }
 
     /**
@@ -375,8 +416,11 @@ public class SVGOMSVGElement
         return new SVGOMLength(this);
     }
 
-    public SVGAngle               createSVGAngle (  ) {
-        throw new UnsupportedOperationException("!!! Not implemented");
+    /**
+     * <b>DOM</b>: Implements {@link SVGSVGElement#createSVGAngle()}.
+     */
+    public SVGAngle createSVGAngle() {
+        return new SVGOMAngle();
     }
 
     /**
@@ -386,26 +430,48 @@ public class SVGOMSVGElement
         return new SVGOMPoint(0, 0);
     }
 
-    public SVGMatrix              createSVGMatrix (  ) {
+    /**
+     * <b>DOM</b>: Implements {@link SVGSVGElement#createSVGMatrix()}.
+     */
+    public SVGMatrix createSVGMatrix() {
         return new AbstractSVGMatrix() {
-                AffineTransform at = new AffineTransform();
-                protected AffineTransform getAffineTransform() { return at; }
-            };
+            protected AffineTransform at = new AffineTransform();
+            protected AffineTransform getAffineTransform() {
+                return at;
+            }
+        };
     }
-    public SVGRect                createSVGRect (  ) {
-        return new SVGOMRect(0,0,0,0);
+
+    /**
+     * <b>DOM</b>: Implements {@link SVGSVGElement#createSVGRect()}.
+     */
+    public SVGRect createSVGRect() {
+        return new SVGOMRect(0, 0, 0, 0);
     }
-    public SVGTransform createSVGTransform () {
+
+    /**
+     * <b>DOM</b>: Implements {@link SVGSVGElement#createSVGTransform()}.
+     */
+    public SVGTransform createSVGTransform() {
         SVGOMTransform ret = new SVGOMTransform();
         ret.setType(SVGTransform.SVG_TRANSFORM_MATRIX);
         return ret;
     }
-    public SVGTransform createSVGTransformFromMatrix ( SVGMatrix matrix ) {
+
+    /**
+     * <b>DOM</b>: Implements {@link
+     * SVGSVGElement#createSVGTransformFromMatrix(SVGMatrix)}.
+     */
+    public SVGTransform createSVGTransformFromMatrix(SVGMatrix matrix) {
         SVGOMTransform tr = new SVGOMTransform();
         tr.setMatrix(matrix);
         return tr;
     }
-    public Element         getElementById ( String elementId ) {
+
+    /**
+     * <b>DOM</b>: Implements {@link SVGSVGElement#getElementById(String)}.
+     */
+    public Element getElementById(String elementId) {
         return ownerDocument.getChildElementById(this, elementId);
     }
 
@@ -533,9 +599,7 @@ public class SVGOMSVGElement
      * <b>DOM</b>: Sets the xml:lang attribute value.
      */
     public void setXMLlang(String lang) {
-        setAttributeNS(XMLSupport.XML_NAMESPACE_URI,
-                       XMLSupport.XML_LANG_ATTRIBUTE,
-                       lang);
+        setAttributeNS(XML_NAMESPACE_URI, XML_LANG_QNAME, lang);
     }
 
     /**
@@ -549,9 +613,7 @@ public class SVGOMSVGElement
      * <b>DOM</b>: Sets the xml:space attribute value.
      */
     public void setXMLspace(String space) {
-        setAttributeNS(XMLSupport.XML_NAMESPACE_URI,
-                       XMLSupport.XML_SPACE_ATTRIBUTE,
-                       space);
+        setAttributeNS(XML_NAMESPACE_URI, XML_SPACE_QNAME, space);
     }
 
     // SVGZoomAndPan support ///////////////////////////////////////////////
@@ -648,5 +710,117 @@ public class SVGOMSVGElement
      */
     protected Node newNode() {
         return new SVGOMSVGElement();
+    }
+
+    // ExtendedTraitAccess ///////////////////////////////////////////////////
+
+    /**
+     * Returns whether the given XML attribute is animatable.
+     */
+    public boolean isAttributeAnimatable(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE)
+                    || ln.equals(SVG_X_ATTRIBUTE)
+                    || ln.equals(SVG_Y_ATTRIBUTE)
+                    || ln.equals(SVG_WIDTH_ATTRIBUTE)
+                    || ln.equals(SVG_HEIGHT_ATTRIBUTE)) {
+                return true;
+            }
+        }
+        return super.isAttributeAnimatable(ns, ln);
+    }
+
+    /**
+     * Returns the type of the given attribute.
+     */
+    public int getAttributeType(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_BASE_PROFILE_ATTRIBUTE)
+                    || ln.equals(SVG_CONTENT_SCRIPT_TYPE_ATTRIBUTE)
+                    || ln.equals(SVG_CONTENT_STYLE_TYPE_ATTRIBUTE)
+                    || ln.equals(SVG_VERSION_ATTRIBUTE)) {
+                return SVGTypes.TYPE_CDATA;
+            } else if (ln.equals(SVG_X_ATTRIBUTE)
+                    || ln.equals(SVG_Y_ATTRIBUTE)
+                    || ln.equals(SVG_WIDTH_ATTRIBUTE)
+                    || ln.equals(SVG_HEIGHT_ATTRIBUTE)) {
+                return SVGTypes.TYPE_LENGTH;
+            } else if (ln.equals(SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE)) {
+                return SVGTypes.TYPE_PRESERVE_ASPECT_RATIO_VALUE;
+            } else if (ln.equals(SVG_VIEW_BOX_ATTRIBUTE)) {
+                return SVGTypes.TYPE_NUMBER_LIST;
+            } else if (ln.equals(SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE)) {
+                return SVGTypes.TYPE_BOOLEAN;
+            }
+        }
+        return super.getAttributeType(ns, ln);
+    }
+
+    // AnimationTarget ///////////////////////////////////////////////////////
+
+    /**
+     * Gets how percentage values are interpreted by the given attribute.
+     */
+    protected short getAttributePercentageInterpretation(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_X_ATTRIBUTE) || ln.equals(SVG_WIDTH_ATTRIBUTE)) {
+                return PERCENTAGE_VIEWPORT_WIDTH;
+            }
+            if (ln.equals(SVG_Y_ATTRIBUTE) || ln.equals(SVG_HEIGHT_ATTRIBUTE)) {
+                return PERCENTAGE_VIEWPORT_HEIGHT;
+            }
+        }
+        return super.getAttributePercentageInterpretation(ns, ln);
+    }
+
+    /**
+     * Updates an attribute value in this target.
+     */
+    public void updateAttributeValue(String ns, String ln,
+                                     AnimatableValue val) {
+        if (ns == null) {
+            if (ln.equals(SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE)) {
+                updateBooleanAttributeValue(getExternalResourcesRequired(),
+                                            val);
+                return;
+            } else if (ln.equals(SVG_X_ATTRIBUTE)) {
+                updateLengthAttributeValue(getX(), val);
+                return;
+            } else if (ln.equals(SVG_Y_ATTRIBUTE)) {
+                updateLengthAttributeValue(getY(), val);
+                return;
+            } else if (ln.equals(SVG_WIDTH_ATTRIBUTE)) {
+                updateLengthAttributeValue(getWidth(), val);
+                return;
+            } else if (ln.equals(SVG_HEIGHT_ATTRIBUTE)) {
+                updateLengthAttributeValue(getHeight(), val);
+                return;
+            }
+        }
+        super.updateAttributeValue(ns, ln, val);
+    }
+
+    /**
+     * Returns the underlying value of an animatable XML attribute.
+     */
+    public AnimatableValue getUnderlyingValue(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE)) {
+                return getBaseValue(getExternalResourcesRequired());
+            } else if (ln.equals(SVG_X_ATTRIBUTE)) {
+                return getBaseValue
+                    (getX(), PERCENTAGE_VIEWPORT_WIDTH);
+            } else if (ln.equals(SVG_Y_ATTRIBUTE)) {
+                return getBaseValue
+                    (getY(), PERCENTAGE_VIEWPORT_HEIGHT);
+            } else if (ln.equals(SVG_WIDTH_ATTRIBUTE)) {
+                return getBaseValue
+                    (getWidth(), PERCENTAGE_VIEWPORT_WIDTH);
+            } else if (ln.equals(SVG_HEIGHT_ATTRIBUTE)) {
+                return getBaseValue
+                    (getHeight(), PERCENTAGE_VIEWPORT_HEIGHT);
+            }
+        }
+        return super.getUnderlyingValue(ns, ln);
     }
 }

@@ -77,7 +77,11 @@ public class XBLShadowTreeElementBridge extends AbstractGraphicsNodeBridge {
             return null;
         }
 
-        return new CompositeGraphicsNode();
+        CompositeGraphicsNode cgn = new CompositeGraphicsNode();
+
+        associateSVGContext(ctx, e, cgn);
+
+        return cgn;
     }
 
     /**

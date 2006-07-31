@@ -29,6 +29,9 @@ import org.apache.batik.gvt.filter.GraphicsNodeRable8Bit;
  * This interface is to be used to provide alternate ways of 
  * generating a placeholder image when the ImageTagRegistry
  * fails to handle a given reference.
+ *
+ * @author <a href="mailto:thomas.deweese@kodak.com">Thomas DeWeese</a>
+ * @version $Id$
  */
 public class SVGBrokenLinkProvider 
     extends    DefaultBrokenLinkProvider 

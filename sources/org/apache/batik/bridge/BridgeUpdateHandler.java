@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2002  The Apache Software Foundation 
+   Copyright 2002,2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -18,6 +18,8 @@
 package org.apache.batik.bridge;
 
 import org.apache.batik.css.engine.CSSEngineEvent;
+import org.apache.batik.dom.svg.AnimatedLiveAttributeValue;
+
 import org.w3c.dom.events.MutationEvent;
 
 /**
@@ -54,6 +56,16 @@ public interface BridgeUpdateHandler {
      * Invoked when an CSSEngineEvent is fired.
      */
     void handleCSSEngineEvent(CSSEngineEvent evt);
+
+    /**
+     * Invoked when the animated value of an animated attribute has changed.
+     */
+    void handleAnimatedAttributeChanged(AnimatedLiveAttributeValue alav);
+
+    /**
+     * Invoked when an 'other' animation value has changed.
+     */
+    void handleOtherAnimationChanged(String type);
 
     /**
      * Disposes this BridgeUpdateHandler and releases all resources.

@@ -46,6 +46,7 @@ import org.w3c.dom.events.MutationEvent;
  * @version $Id$
  */
 public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
+
     /**
      * Used to handle mutation of the referenced content. This is
      * only used in dynamic context and only for reference to local
@@ -53,7 +54,10 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
      */
     protected ReferencedElementMutationListener l;
 
-    protected BridgeContext subCtx=null;
+    /**
+     * The bridge context for the referenced document.
+     */
+    protected BridgeContext subCtx;
 
     /**
      * Constructs a new bridge for the &lt;use> element.
@@ -87,6 +91,7 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
             return null;
 
         CompositeGraphicsNode gn = buildCompositeGraphicsNode(ctx, e, null);
+        associateSVGContext(ctx, e, gn);
 
         return gn;
     }
@@ -102,12 +107,11 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
      *        before appending new content.
      */
     public CompositeGraphicsNode buildCompositeGraphicsNode
-        (BridgeContext ctx, Element e,
-         CompositeGraphicsNode gn) {
+            (BridgeContext ctx, Element e, CompositeGraphicsNode gn) {
         // get the referenced element
         String uri = XLinkSupport.getXLinkHref(e);
         if (uri.length() == 0) {
-            throw new BridgeException(e, ERR_ATTRIBUTE_MISSING,
+            throw new BridgeException(ctx, e, ERR_ATTRIBUTE_MISSING,
                                       new Object[] {"xlink:href"});
         }
 
@@ -178,6 +182,7 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
 
         if (gn == null) {
             gn = new CompositeGraphicsNode();
+            associateSVGContext(ctx, e, node);
         } else {
             int s = gn.size();
             for (int i=0; i<s; i++)
@@ -340,7 +345,8 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
         // 'transform'
         if (s.length() != 0) {
             at.preConcatenate
-                (SVGUtilities.convertTransform(e, SVG_TRANSFORM_ATTRIBUTE, s));
+                (SVGUtilities.convertTransform(e, SVG_TRANSFORM_ATTRIBUTE, s,
+                                               ctx));
         }
 
         return at;
@@ -439,18 +445,17 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
         String attrName = evt.getAttrName();
         Node evtNode = evt.getRelatedNode();
 
-        if ((evtNode.getNamespaceURI() == null) &&
-            (attrName.equals(SVG_X_ATTRIBUTE) ||
-             attrName.equals(SVG_Y_ATTRIBUTE) ||
-             attrName.equals(SVG_TRANSFORM_ATTRIBUTE))) {
+        if (evtNode.getNamespaceURI() == null
+                && (attrName.equals(SVG_X_ATTRIBUTE)
+                    || attrName.equals(SVG_Y_ATTRIBUTE)
+                    || attrName.equals(SVG_TRANSFORM_ATTRIBUTE))) {
             node.setTransform(computeTransform(e, ctx));
             handleGeometryChanged();
-        } else if (((evtNode.getNamespaceURI() == null) && 
-                   (attrName.equals(SVG_WIDTH_ATTRIBUTE) ||
-                    attrName.equals(SVG_HEIGHT_ATTRIBUTE))) ||
-                   (( XLinkSupport.XLINK_NAMESPACE_URI.equals
-                     (evtNode.getNamespaceURI()) ) &&  
-                    SVG_HREF_ATTRIBUTE.equals(evtNode.getLocalName()))) {
+        } else if (evtNode.getNamespaceURI() == null
+                && (attrName.equals(SVG_WIDTH_ATTRIBUTE)
+                    || attrName.equals(SVG_HEIGHT_ATTRIBUTE))
+                || XLINK_NAMESPACE_URI.equals(evtNode.getNamespaceURI())
+                    && XLINK_HREF_ATTRIBUTE.equals(evtNode.getLocalName())) {
             buildCompositeGraphicsNode(ctx, e, (CompositeGraphicsNode)node);
         }
     }

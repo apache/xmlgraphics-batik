@@ -18,7 +18,7 @@
 package org.apache.batik.extension.svg;
 
 import org.apache.batik.dom.AbstractDocument;
-import org.apache.batik.extension.PrefixableStylableExtensionElement;
+import org.apache.batik.extension.GraphicsExtensionElement;
 import org.w3c.dom.Node;
 
 /**
@@ -28,7 +28,7 @@ import org.w3c.dom.Node;
  * @version $Id$
  */
 public class BatikStarElement
-    extends    PrefixableStylableExtensionElement 
+    extends    GraphicsExtensionElement 
     implements BatikExtConstants {
 
     /**

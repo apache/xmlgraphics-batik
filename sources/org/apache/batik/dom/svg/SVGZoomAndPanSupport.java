@@ -54,7 +54,7 @@ public class SVGZoomAndPanSupport implements SVGConstants {
 	default:
 	    throw ((AbstractNode)elt).createDOMException
 		(DOMException.INVALID_MODIFICATION_ERR,
-		 "zoom.and.pane",
+		 "zoom.and.pan",
 		 new Object[] { new Integer(val) });
 	}
     }

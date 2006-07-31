@@ -24,7 +24,6 @@ import java.security.PrivilegedExceptionAction;
 import org.mozilla.javascript.Callable;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.GeneratedClassLoader;
-import org.mozilla.javascript.Script;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.SecurityController;
 import org.mozilla.javascript.WrappedException;

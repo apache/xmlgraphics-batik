@@ -1,6 +1,6 @@
 /*
 
-   Copyright 1999-2003,2005  The Apache Software Foundation 
+   Copyright 1999-2003,2005-2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -45,7 +45,6 @@ import org.apache.batik.bridge.SVGUtilities;
 import org.apache.batik.bridge.TextUtilities;
 import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.bridge.SVGAElementBridge;
-
 import org.apache.batik.css.engine.CSSEngine;
 import org.apache.batik.css.engine.SVGCSSEngine;
 import org.apache.batik.css.engine.value.ComputedValue;
@@ -53,7 +52,6 @@ import org.apache.batik.css.engine.value.svg12.SVG12ValueConstants;
 import org.apache.batik.css.engine.value.svg12.LineHeightValue;
 import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.css.engine.value.ValueConstants;
-
 import org.apache.batik.dom.AbstractNode;
 import org.apache.batik.dom.events.NodeEventTarget;
 import org.apache.batik.dom.svg.SVGOMElement;
@@ -61,19 +59,15 @@ import org.apache.batik.dom.svg12.SVGOMFlowRegionElement;
 import org.apache.batik.dom.svg12.XBLEventSupport;
 import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.dom.util.XLinkSupport;
-
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.flow.BlockInfo;
 import org.apache.batik.gvt.flow.FlowTextNode;
 import org.apache.batik.gvt.flow.RegionInfo;
 import org.apache.batik.gvt.flow.TextLineBreaks;
-
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
 import org.apache.batik.gvt.text.TextPaintInfo;
 import org.apache.batik.gvt.text.TextPath;
-
-import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.SVG12Constants;
 import org.apache.batik.util.SVG12CSSConstants;
 import org.apache.batik.util.XMLConstants;
@@ -191,7 +185,8 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
         String s = e.getAttributeNS(null, SVG_TRANSFORM_ATTRIBUTE);
         if (s.length() != 0) {
             cgn.setTransform
-                (SVGUtilities.convertTransform(e, SVG_TRANSFORM_ATTRIBUTE, s));
+                (SVGUtilities.convertTransform(e, SVG_TRANSFORM_ATTRIBUTE, s,
+                                               ctx));
         }
         // 'visibility'
         cgn.setVisible(CSSUtilities.convertVisibility(e));
@@ -218,6 +213,8 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
         }
 
         cgn.add(tn);
+
+        associateSVGContext(ctx, e, cgn);
 
         return cgn;
     }
@@ -307,9 +304,8 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
                     XBLEventSupport es =
                         (XBLEventSupport) an.initializeEventSupport();
                     es.addImplementationEventListenerNS
-                        (SVGConstants.SVG_NAMESPACE_URI,
-                         "shapechange",
-                         regionChangeListener, false);
+                        (SVG_NAMESPACE_URI, "shapechange", regionChangeListener,
+                         false);
                 }
             }
         }

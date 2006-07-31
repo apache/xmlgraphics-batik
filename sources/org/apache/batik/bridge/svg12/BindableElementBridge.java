@@ -115,6 +115,7 @@ public class BindableElementBridge
 
         if (gn == null) {
             gn = new CompositeGraphicsNode();
+            associateSVGContext(ctx, e, gn);
         } else {
             int s = gn.size();
             for (int i = 0; i < s; i++) {

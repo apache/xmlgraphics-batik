@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2000-2003  The Apache Software Foundation 
+   Copyright 2000-2003,2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -17,7 +17,10 @@
  */
 package org.apache.batik.dom.svg;
 
+import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.util.SVGTypes;
+
 import org.w3c.dom.svg.SVGAnimatedEnumeration;
 import org.w3c.dom.svg.SVGAnimatedNumber;
 import org.w3c.dom.svg.SVGAnimatedNumberList;
@@ -116,5 +119,103 @@ public abstract class SVGOMComponentTransferFunctionElement
      */
     public SVGAnimatedNumber getOffset() {
         return getAnimatedNumberAttribute(null, SVG_OFFSET_ATTRIBUTE, 0f);
+    }
+
+    // ExtendedTraitAccess ///////////////////////////////////////////////////
+
+    /**
+     * Returns whether the given XML attribute is animatable.
+     */
+    public boolean isAttributeAnimatable(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_TYPE_ATTRIBUTE)
+                    || ln.equals(SVG_TABLE_VALUES_ATTRIBUTE)
+                    || ln.equals(SVG_SLOPE_ATTRIBUTE)
+                    || ln.equals(SVG_INTERCEPT_ATTRIBUTE)
+                    || ln.equals(SVG_AMPLITUDE_ATTRIBUTE)
+                    || ln.equals(SVG_EXPONENT_ATTRIBUTE)
+                    || ln.equals(SVG_OFFSET_ATTRIBUTE)) {
+                return true;
+            }
+        }
+        return super.isAttributeAnimatable(ns, ln);
+    }
+
+    /**
+     * Returns the type of the given attribute.
+     */
+    public int getAttributeType(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_TYPE_ATTRIBUTE)) {
+                return SVGTypes.TYPE_IDENT;
+            } else if (ln.equals(SVG_TABLE_VALUES_ATTRIBUTE)) {
+                return SVGTypes.TYPE_NUMBER_LIST;
+            } else if (ln.equals(SVG_SLOPE_ATTRIBUTE)
+                    || ln.equals(SVG_INTERCEPT_ATTRIBUTE)
+                    || ln.equals(SVG_AMPLITUDE_ATTRIBUTE)
+                    || ln.equals(SVG_EXPONENT_ATTRIBUTE)
+                    || ln.equals(SVG_OFFSET_ATTRIBUTE)) {
+                return SVGTypes.TYPE_NUMBER;
+            }
+        }
+        return super.getAttributeType(ns, ln);
+    }
+
+    // AnimationTarget ///////////////////////////////////////////////////////
+
+    /**
+     * Updates an attribute value in this target.
+     */
+    public void updateAttributeValue(String ns, String ln,
+                                     AnimatableValue val) {
+        if (ns == null) {
+            if (ln.equals(SVG_TYPE_ATTRIBUTE)) {
+                updateEnumerationAttributeValue(getType(), val);
+                return;
+            } else if (ln.equals(SVG_TABLE_VALUES_ATTRIBUTE)) {
+                updateNumberListAttributeValue(getTableValues(), val);
+                return;
+            } else if (ln.equals(SVG_SLOPE_ATTRIBUTE)) {
+                updateNumberAttributeValue(getSlope(), val);
+                return;
+            } else if (ln.equals(SVG_INTERCEPT_ATTRIBUTE)) {
+                updateNumberAttributeValue(getIntercept(), val);
+                return;
+            } else if (ln.equals(SVG_AMPLITUDE_ATTRIBUTE)) {
+                updateNumberAttributeValue(getAmplitude(), val);
+                return;
+            } else if (ln.equals(SVG_EXPONENT_ATTRIBUTE)) {
+                updateNumberAttributeValue(getExponent(), val);
+                return;
+            } else if (ln.equals(SVG_OFFSET_ATTRIBUTE)) {
+                updateNumberAttributeValue(getOffset(), val);
+                return;
+            }
+        }
+        super.updateAttributeValue(ns, ln, val);
+    }
+
+    /**
+     * Returns the underlying value of an animatable XML attribute.
+     */
+    public AnimatableValue getUnderlyingValue(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_TYPE_ATTRIBUTE)) {
+                return getBaseValue(getType());
+            } else if (ln.equals(SVG_TABLE_VALUES_ATTRIBUTE)) {
+                return getBaseValue(getTableValues());
+            } else if (ln.equals(SVG_SLOPE_ATTRIBUTE)) {
+                return getBaseValue(getSlope());
+            } else if (ln.equals(SVG_INTERCEPT_ATTRIBUTE)) {
+                return getBaseValue(getIntercept());
+            } else if (ln.equals(SVG_AMPLITUDE_ATTRIBUTE)) {
+                return getBaseValue(getAmplitude());
+            } else if (ln.equals(SVG_EXPONENT_ATTRIBUTE)) {
+                return getBaseValue(getExponent());
+            } else if (ln.equals(SVG_OFFSET_ATTRIBUTE)) {
+                return getBaseValue(getOffset());
+            }
+        }
+        return super.getUnderlyingValue(ns, ln);
     }
 }

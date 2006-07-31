@@ -18,7 +18,7 @@ public interface SVGFEConvolveMatrixElement extends
   public SVGAnimatedInteger     getTargetX( );
   public SVGAnimatedInteger     getTargetY( );
   public SVGAnimatedEnumeration getEdgeMode( );
-  public SVGAnimatedLength      getKernelUnitLengthX( );
-  public SVGAnimatedLength      getKernelUnitLengthY( );
+  public SVGAnimatedNumber      getKernelUnitLengthX( );
+  public SVGAnimatedNumber      getKernelUnitLengthY( );
   public SVGAnimatedBoolean     getPreserveAlpha( );
 }

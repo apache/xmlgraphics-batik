@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001-2003  The Apache Software Foundation 
+   Copyright 2001-2003,2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -584,6 +584,10 @@ public class ExtendedGeneralPath implements ExtendedShape, Cloneable {
     class EPI implements ExtendedPathIterator {
         int segNum = 0;
         int valsIdx = 0;
+
+        public int currentSegment() {
+            return types[segNum];
+        }
 
         public int currentSegment(double[] coords) {
             int ret = types[segNum];

@@ -21,7 +21,7 @@ import java.awt.geom.Rectangle2D;
 
 /**
  * This class holds the neccessary information to render a
- * <batik:regin> that is defined within the <batik:flowRegion>
+ * &lt;batik:flowRegion> that is defined within the &lt;batik:flowRoot>
  * element.  Namely it holds the bounds of the region and the desired
  * vertical alignment.
  */

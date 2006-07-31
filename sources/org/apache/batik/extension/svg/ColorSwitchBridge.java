@@ -30,16 +30,17 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /**
- * Bridge class for a regular polygon element.
+ * Bridge class for the "color switch" extension element.
  *
  * @author <a href="mailto:thomas.deweese@kodak.com">Thomas Deweese</a>
+ * @version $Id$
  */
 public class ColorSwitchBridge 
     extends AbstractSVGBridge
     implements PaintBridge, BatikExtConstants {
 
     /**
-     * Constructs a new bridge for the &lt;rect> element.
+     * Constructs a new bridge for the &lt;batik:colorSwitch> element.
      */
     public ColorSwitchBridge() { /* nothing */ }
 
@@ -51,7 +52,7 @@ public class ColorSwitchBridge
     }
 
     /**
-     * Returns 'rect'.
+     * Returns 'colorSwitch'.
      */
     public String getLocalName() {
         return BATIK_EXT_COLOR_SWITCH_TAG;

@@ -97,7 +97,6 @@ public abstract class AbstractSVGLength
      */
     protected abstract SVGOMElement getAssociatedElement();
 
-
     /**
      * Creates a new AbstractSVGLength.
      */
@@ -121,8 +120,14 @@ public abstract class AbstractSVGLength
      */
     public float getValue() {
         revalidate();
-        return UnitProcessor.svgToUserSpace(value, unitType,
-                                            direction, context);
+        try {
+            return UnitProcessor.svgToUserSpace(value, unitType,
+                                                direction, context);
+        } catch (IllegalArgumentException ex) {
+            // XXX Should we throw an exception here when the length
+            //     type is unknown?
+            return 0f;
+        }
     }
 
     /**
@@ -214,7 +219,7 @@ public abstract class AbstractSVGLength
      * of the parsing of this value.
      * @param s String representation of a SVGlength.
      */
-    protected void parse(String s){
+    protected void parse(String s) {
         try {
             LengthParser lengthParser = new LengthParser();
             UnitProcessor.UnitResolver ur =
@@ -245,8 +250,8 @@ public abstract class AbstractSVGLength
          * Returns the size of a px CSS unit in millimeters.
          */
         public float getPixelUnitToMillimeter() {
-            SVGContext ctx = getAssociatedElement().getSVGContext();
-            return ctx.getPixelUnitToMillimeter();
+            return getAssociatedElement().getSVGContext()
+                .getPixelUnitToMillimeter();
         }
         
         /**
@@ -276,16 +281,14 @@ public abstract class AbstractSVGLength
          * Returns the viewport width used to compute units.
          */
         public float getViewportWidth() {
-            return getAssociatedElement().getSVGContext().
-                getViewportWidth();
+            return getAssociatedElement().getSVGContext().getViewportWidth();
         }
         
         /**
          * Returns the viewport height used to compute units.
          */
         public float getViewportHeight() {
-            return getAssociatedElement().getSVGContext().
-                getViewportHeight();
+            return getAssociatedElement().getSVGContext().getViewportHeight();
         }
     }   
 }

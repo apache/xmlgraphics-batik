@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2000-2004  The Apache Software Foundation 
+   Copyright 2000-2004,2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -17,9 +17,12 @@
  */
 package org.apache.batik.dom.svg;
 
+import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.util.XMLSupport;
+import org.apache.batik.util.SVGTypes;
+
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAElement;
 import org.w3c.dom.svg.SVGAnimatedString;
@@ -93,5 +96,59 @@ public class SVGOMAElement
      */
     protected Node newNode() {
         return new SVGOMAElement();
+    }
+
+    // ExtendedTraitAccess ///////////////////////////////////////////////////
+
+    /**
+     * Returns whether the given XML attribute is animatable.
+     */
+    public boolean isAttributeAnimatable(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_TARGET_ATTRIBUTE)) {
+                return true;
+            }
+        }
+        return super.isAttributeAnimatable(ns, ln);
+    }
+
+    /**
+     * Returns the type of the given attribute.
+     */
+    public int getAttributeType(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_TARGET_ATTRIBUTE)) {
+                return SVGTypes.TYPE_CDATA;
+            }
+        }
+        return super.getAttributeType(ns, ln);
+    }
+
+    // AnimationTarget ///////////////////////////////////////////////////////
+
+    /**
+     * Updates an attribute value in this target.
+     */
+    public void updateAttributeValue(String ns, String ln,
+                                     AnimatableValue val) {
+        if (ns == null) {
+            if (ln.equals(SVG_TARGET_ATTRIBUTE)) {
+                updateStringAttributeValue(getTarget(), val);
+                return;
+            }
+        }
+        super.updateAttributeValue(ns, ln, val);
+    }
+
+    /**
+     * Returns the underlying value of an animatable XML attribute.
+     */
+    public AnimatableValue getUnderlyingValue(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_TARGET_ATTRIBUTE)) {
+                return getBaseValue(getTarget());
+            }
+        }
+        return super.getUnderlyingValue(ns, ln);
     }
 }

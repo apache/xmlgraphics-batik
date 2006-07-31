@@ -7,4 +7,7 @@ public interface SVGFEImageElement extends
                SVGLangSpace,
                SVGExternalResourcesRequired,
                SVGFilterPrimitiveStandardAttributes {
+
+  public SVGAnimatedPreserveAspectRatio getPreserveAspectRatio( );
+
 }

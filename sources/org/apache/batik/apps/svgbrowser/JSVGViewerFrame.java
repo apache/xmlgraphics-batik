@@ -901,16 +901,17 @@ public class JSVGViewerFrame
                 debuggerConstructor =
                     dc.getConstructor(new Class[] { String.class });
                 debuggerMethods = new Method[] {
-                    dc.getMethod("clearAllBreakpoints", null),
-                    dc.getMethod("go", null),
+                    dc.getMethod("clearAllBreakpoints", (Class[]) null),
+                    dc.getMethod("go", (Class[]) null),
                     dc.getMethod("setExitAction", new Class[] {Runnable.class}),
                     dc.getMethod("attachTo", new Class[] { cfc }),
-                    dc.getMethod("detach", null),
-                    dc.getMethod("dispose", null),
-                    dc.getMethod("getDebugFrame", null)
+                    dc.getMethod("detach", (Class[]) null),
+                    dc.getMethod("dispose", (Class[]) null),
+                    dc.getMethod("getDebugFrame", (Class[]) null)
                 };
                 getContextFactoryMethod =
-                    rhinoInterpreterClass.getMethod("getContextFactory", null);
+                    rhinoInterpreterClass.getMethod("getContextFactory",
+                                                    (Class[]) null);
                 debuggerClass = dc;
                 isPresent = true;
             } catch (ClassNotFoundException cnfe) {
@@ -1001,7 +1002,7 @@ public class JSVGViewerFrame
         protected JFrame getDebugFrame() {
             try {
                 return (JFrame) debuggerMethods[GET_DEBUG_FRAME_METHOD].invoke
-                    (debuggerInstance, null);
+                    (debuggerInstance, (Object[]) null);
             } catch (InvocationTargetException ite) {
                 throw new RuntimeException(ite);
             } catch (IllegalAccessException iae) {
@@ -1042,7 +1043,8 @@ public class JSVGViewerFrame
          */
         public void detach() {
             try {
-                debuggerMethods[DETACH_METHOD].invoke(debuggerInstance, null);
+                debuggerMethods[DETACH_METHOD].invoke(debuggerInstance,
+                                                      (Object[]) null);
             } catch (InvocationTargetException ite) {
                 throw new RuntimeException(ite);
             } catch (IllegalAccessException iae) {
@@ -1055,7 +1057,8 @@ public class JSVGViewerFrame
          */
         public void go() {
             try {
-                debuggerMethods[GO_METHOD].invoke(debuggerInstance, null);
+                debuggerMethods[GO_METHOD].invoke(debuggerInstance,
+                                                  (Object[]) null);
             } catch (InvocationTargetException ite) {
                 throw new RuntimeException(ite);
             } catch (IllegalAccessException iae) {
@@ -1069,7 +1072,7 @@ public class JSVGViewerFrame
         public void clearAllBreakpoints() {
             try {
                 debuggerMethods[CLEAR_ALL_BREAKPOINTS_METHOD].invoke
-                    (debuggerInstance, null);
+                    (debuggerInstance, (Object[]) null);
             } catch (InvocationTargetException ite) {
                 throw new RuntimeException(ite);
             } catch (IllegalAccessException iae) {
@@ -1082,7 +1085,8 @@ public class JSVGViewerFrame
          */
         public void dispose() {
             try {
-                debuggerMethods[DISPOSE_METHOD].invoke(debuggerInstance, null);
+                debuggerMethods[DISPOSE_METHOD].invoke(debuggerInstance,
+                                                       (Object[]) null);
             } catch (InvocationTargetException ite) {
                 throw new RuntimeException(ite);
             } catch (IllegalAccessException iae) {
@@ -1096,7 +1100,8 @@ public class JSVGViewerFrame
          */
         protected Object getContextFactory(Object rhinoInterpreter) {
             try {
-                return getContextFactoryMethod.invoke(rhinoInterpreter, null);
+                return getContextFactoryMethod.invoke(rhinoInterpreter,
+                                                      (Object[]) null);
             } catch (InvocationTargetException ite) {
                 throw new RuntimeException(ite);
             } catch (IllegalAccessException iae) {

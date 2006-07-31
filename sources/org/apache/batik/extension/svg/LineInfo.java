@@ -25,6 +25,9 @@ import org.apache.batik.gvt.font.GVTGlyphVector;
 /**
  * This class encapsulates the layout information about a single line
  * in a multi-line flow.
+ *
+ * @author <a href="mailto:thomas.deweese@kodak.com">Thomas DeWeese</a>
+ * @version $Id$
  */
 public class LineInfo {
 

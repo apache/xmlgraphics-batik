@@ -29,7 +29,6 @@ import org.w3c.dom.Node;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-
 public class XMLSupport implements XMLConstants {
 
     /**

@@ -100,8 +100,8 @@ public class SVGFeOffsetElementBridge
                                                         filterRegion,
                                                         ctx);
 
-        float dx = convertNumber(filterElement, SVG_DX_ATTRIBUTE, 0);
-        float dy = convertNumber(filterElement, SVG_DY_ATTRIBUTE, 0);
+        float dx = convertNumber(filterElement, SVG_DX_ATTRIBUTE, 0, ctx);
+        float dy = convertNumber(filterElement, SVG_DY_ATTRIBUTE, 0, ctx);
         AffineTransform at = AffineTransform.getTranslateInstance(dx, dy);
 
         // feOffset is a point operation. Therefore, to take the

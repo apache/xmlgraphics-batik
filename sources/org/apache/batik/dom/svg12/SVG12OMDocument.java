@@ -30,6 +30,9 @@ import org.w3c.dom.svg.SVGDocument;
 /**
  * This class implements {@link SVGDocument} and provides support for
  * SVG 1.2 specifics.
+ *
+ * @author <a href="mailto:cam%40mcc%2eid%2eau">Cameron McCormack</a>
+ * @version $Id$
  */
 public class SVG12OMDocument extends SVGOMDocument {
 

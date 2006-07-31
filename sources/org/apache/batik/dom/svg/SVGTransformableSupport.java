@@ -26,13 +26,8 @@ import org.w3c.dom.svg.SVGAnimatedTransformList;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class SVGTransformableSupport {
-    /**
-     * Creates a new SVGTransformableSupport.
-     */
-    public SVGTransformableSupport() {
-    }
-    
+public abstract class SVGTransformableSupport {
+
     /**
      * Default value for the 'transform' attribute.
      */
@@ -44,17 +39,19 @@ public class SVGTransformableSupport {
      * org.w3c.dom.svg.SVGTransformable#getTransform()}.
      */
     public static SVGAnimatedTransformList getTransform(AbstractElement elt) {
-        SVGOMAnimatedTransformList result =(SVGOMAnimatedTransformList)
+        SVGOMAnimatedTransformList result = (SVGOMAnimatedTransformList)
             elt.getLiveAttributeValue(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE);
         if (result == null) {
             result = new SVGOMAnimatedTransformList(elt, null,
                                                     SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
                                                     TRANSFORM_DEFAULT_VALUE);
+            SVGOMDocument doc = (SVGOMDocument) elt.getOwnerDocument();
+            result.addAnimatedAttributeListener
+                (doc.getAnimatedAttributeListener());
             elt.putLiveAttributeValue(null,
                                       SVGConstants.SVG_TRANSFORM_ATTRIBUTE, 
                                       result);
         }
         return result;
-
     }
 }

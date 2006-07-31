@@ -298,7 +298,7 @@ public abstract class DefaultCachedImageHandler
               
     protected void handleEmptyImage(Element imageElement) {
         imageElement.setAttributeNS(XLINK_NAMESPACE_URI,
-                                    ATTR_XLINK_HREF, "");
+                                    XLINK_HREF_QNAME, "");
         imageElement.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE, "0");
         imageElement.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE, "0");
     }
@@ -421,7 +421,7 @@ public abstract class DefaultCachedImageHandler
         
         // set the URL
         imageElement.setAttributeNS(XLINK_NAMESPACE_URI,
-                                    ATTR_XLINK_HREF,
+                                    XLINK_HREF_QNAME,
                                     getRefPrefix() + ref);
     }                
  

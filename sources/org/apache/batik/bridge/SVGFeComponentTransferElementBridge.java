@@ -227,7 +227,7 @@ public class SVGFeComponentTransferElementBridge
      * The base bridge class for component transfer function.
      */
     protected static abstract class SVGFeFuncElementBridge
-        extends AbstractSVGBridge {
+            extends AnimatableGenericSVGBridge {
 
         /**
          * Constructs a new bridge for component transfer function.
@@ -244,10 +244,10 @@ public class SVGFeComponentTransferElementBridge
         public ComponentTransferFunction createComponentTransferFunction
             (Element filterElement, Element funcElement) {
 
-            int type = convertType(funcElement);
+            int type = convertType(funcElement, ctx);
             switch (type) {
             case ComponentTransferFunction.DISCRETE: {
-                float [] v = convertTableValues(funcElement);
+                float [] v = convertTableValues(funcElement, ctx);
                 if (v == null) {
                     return ConcreteComponentTransferFunction.getIdentityTransfer();
                 } else {
@@ -260,13 +260,13 @@ public class SVGFeComponentTransferElementBridge
             case ComponentTransferFunction.GAMMA: {
                 // 'amplitude' attribute - default is 1
                 float amplitude
-                    = convertNumber(funcElement, SVG_AMPLITUDE_ATTRIBUTE, 1);
+                    = convertNumber(funcElement, SVG_AMPLITUDE_ATTRIBUTE, 1, ctx);
                 // 'exponent' attribute - default is 1
                 float exponent
-                    = convertNumber(funcElement, SVG_EXPONENT_ATTRIBUTE, 1);
+                    = convertNumber(funcElement, SVG_EXPONENT_ATTRIBUTE, 1, ctx);
                 // 'offset' attribute - default is 0
                 float offset
-                    = convertNumber(funcElement, SVG_OFFSET_ATTRIBUTE, 0);
+                    = convertNumber(funcElement, SVG_OFFSET_ATTRIBUTE, 0, ctx);
 
                 return ConcreteComponentTransferFunction.getGammaTransfer
                     (amplitude, exponent, offset);
@@ -274,16 +274,16 @@ public class SVGFeComponentTransferElementBridge
             case ComponentTransferFunction.LINEAR: {
                 // 'slope' attribute - default is 1
                 float slope
-                    = convertNumber(funcElement, SVG_SLOPE_ATTRIBUTE, 1);
+                    = convertNumber(funcElement, SVG_SLOPE_ATTRIBUTE, 1, ctx);
                 // 'intercept' attribute - default is 0
                 float intercept
-                    = convertNumber(funcElement, SVG_INTERCEPT_ATTRIBUTE, 0);
+                    = convertNumber(funcElement, SVG_INTERCEPT_ATTRIBUTE, 0, ctx);
 
                 return ConcreteComponentTransferFunction.getLinearTransfer
                     (slope, intercept);
             }
             case ComponentTransferFunction.TABLE: {
-                float [] v = convertTableValues(funcElement);
+                float [] v = convertTableValues(funcElement, ctx);
                 if (v == null) {
                     return ConcreteComponentTransferFunction.getIdentityTransfer();
                 } else {
@@ -301,8 +301,9 @@ public class SVGFeComponentTransferElementBridge
          * transfer function element.
          *
          * @param e the element that represents a component transfer function
+         * @param ctx the BridgeContext to use for error information
          */
-        protected static float [] convertTableValues(Element e) {
+        protected static float [] convertTableValues(Element e, BridgeContext ctx) {
             String s = e.getAttributeNS(null, SVG_TABLE_VALUES_ATTRIBUTE);
             if (s.length() == 0) {
                 return null;
@@ -315,7 +316,7 @@ public class SVGFeComponentTransferElementBridge
                 }
             } catch (NumberFormatException ex) {
                 throw new BridgeException
-                    (e, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                    (ctx, e, ERR_ATTRIBUTE_VALUE_MALFORMED,
                      new Object[] {SVG_TABLE_VALUES_ATTRIBUTE, s});
         }
             return v;
@@ -326,11 +327,12 @@ public class SVGFeComponentTransferElementBridge
          * function element.
          *
          * @param e the element that represents a component transfer function
+         * @param ctx the BridgeContext to use for error information
          */
-        protected static int convertType(Element e) {
+        protected static int convertType(Element e, BridgeContext ctx) {
             String s = e.getAttributeNS(null, SVG_TYPE_ATTRIBUTE);
             if (s.length() == 0) {
-                throw new BridgeException(e, ERR_ATTRIBUTE_MISSING,
+                throw new BridgeException(ctx, e, ERR_ATTRIBUTE_MISSING,
                                           new Object[] {SVG_TYPE_ATTRIBUTE});
             }
             if (SVG_DISCRETE_VALUE.equals(s)) {
@@ -348,7 +350,7 @@ public class SVGFeComponentTransferElementBridge
             if (SVG_TABLE_VALUE.equals(s)) {
                 return ComponentTransferFunction.TABLE;
             }
-            throw new BridgeException(e, ERR_ATTRIBUTE_VALUE_MALFORMED,
+            throw new BridgeException(ctx, e, ERR_ATTRIBUTE_VALUE_MALFORMED,
                                       new Object[] {SVG_TYPE_ATTRIBUTE, s});
         }
     }

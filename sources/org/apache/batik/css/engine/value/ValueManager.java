@@ -44,6 +44,23 @@ public interface ValueManager {
     boolean isInheritedProperty();
 
     /**
+     * Whether the handled property can be animated.
+     */
+    boolean isAnimatableProperty();
+
+    /**
+     * Whether the handled property can be additively animated.
+     */
+    boolean isAdditiveProperty();
+
+    /**
+     * Returns the type of value this manager handles.  This should be
+     * one of the TYPE_* constants defined in
+     * {@link org.apache.batik.util.SVGTypes}.
+     */
+    int getPropertyType();
+
+    /**
      * Returns the default value for the handled property.
      */
     Value getDefaultValue();

@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2000-2005  The Apache Software Foundation 
+   Copyright 2000-2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -47,6 +47,8 @@ import org.apache.batik.css.engine.SystemColorSupport;
 import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.dom.AbstractNode;
 import org.apache.batik.dom.events.NodeEventTarget;
+import org.apache.batik.dom.svg.AnimatedAttributeListener;
+import org.apache.batik.dom.svg.AnimatedLiveAttributeValue;
 import org.apache.batik.dom.svg.SVGContext;
 import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.dom.svg.SVGOMDocument;
@@ -255,14 +257,19 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     protected HashSet childContexts = new HashSet();
 
     /**
-     * Constructs a new empty bridge context.
+     * The animation engine for the document.
      */
-    protected BridgeContext() {}
+    protected SVGAnimationEngine animationEngine;
 
     /**
      * By default we share a unique instance of InterpreterPool.
      */
     private static InterpreterPool sharedPool = new InterpreterPool();
+
+    /**
+     * Constructs a new empty bridge context.
+     */
+    protected BridgeContext() {}
 
     /**
      * Constructs a new bridge context.
@@ -688,6 +695,17 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         return res;
     }
 
+    /**
+     * Returns the AnimationEngine for the document.  Creates one if
+     * it doesn't exist.
+     */
+    public SVGAnimationEngine getAnimationEngine() {
+        if (animationEngine == null) {
+            animationEngine = new SVGAnimationEngine(document, this);
+        }
+        return animationEngine;
+    }
+
     // reference management //////////////////////////////////////////////////
 
     /**
@@ -710,7 +728,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
             URIResolver ur = createURIResolver(document, documentLoader);
             Node ref = ur.getNode(uri, e);
             if (ref == null) {
-                throw new BridgeException(e, ERR_URI_BAD_TARGET,
+                throw new BridgeException(this, e, ERR_URI_BAD_TARGET,
                                           new Object[] {uri});
             } else {
                 SVGOMDocument refDoc =
@@ -730,16 +748,16 @@ public class BridgeContext implements ErrorConstants, CSSContext {
                 return ref;
             }
         } catch (MalformedURLException ex) {
-            throw new BridgeException(e, ERR_URI_MALFORMED,
+            throw new BridgeException(this, e, ERR_URI_MALFORMED,
                                       new Object[] {uri});
         } catch (InterruptedIOException ex) {
             throw new InterruptedBridgeException();
         } catch (IOException ex) {
             ex.printStackTrace();
-            throw new BridgeException(e, ERR_URI_IO,
+            throw new BridgeException(this, e, ERR_URI_IO,
                                       new Object[] {uri});
         } catch (SecurityException ex) {
-            throw new BridgeException(e, ERR_URI_UNSECURE,
+            throw new BridgeException(this, e, ERR_URI_UNSECURE,
                                       new Object[] {uri});
         }
     }
@@ -754,7 +772,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     public Element getReferencedElement(Element e, String uri) {
         Node ref = getReferencedNode(e, uri);
         if (ref != null && ref.getNodeType() != Node.ELEMENT_NODE) {
-            throw new BridgeException(e, ERR_URI_REFERENCE_A_DOCUMENT,
+            throw new BridgeException(this, e, ERR_URI_REFERENCE_A_DOCUMENT,
                                       new Object[] {uri});
         }
         return (Element) ref;
@@ -1087,6 +1105,11 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     protected CSSEngineListener cssPropertiesChangedListener;
 
     /**
+     * The listener to receive notification of animated attribute changes.
+     */
+    protected AnimatedAttributeListener animatedAttributeListener;
+
+    /**
      * The EventListener that is responsible of managing DOM focus event.
      */
     protected FocusManager focusManager;
@@ -1169,37 +1192,39 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      * properties and update the GVT tree in response.
      */
     public void addDOMListeners() {
-        NodeEventTarget evtTarget = (NodeEventTarget)document;
+        SVGOMDocument doc = (SVGOMDocument)document;
 
         domAttrModifiedEventListener = new DOMAttrModifiedEventListener();
-        evtTarget.addEventListenerNS
+        doc.addEventListenerNS
             (XMLConstants.XML_EVENTS_NAMESPACE_URI,
              "DOMAttrModified",
              domAttrModifiedEventListener, true, null);
 
         domNodeInsertedEventListener = new DOMNodeInsertedEventListener();
-        evtTarget.addEventListenerNS
+        doc.addEventListenerNS
             (XMLConstants.XML_EVENTS_NAMESPACE_URI,
              "DOMNodeInserted",
              domNodeInsertedEventListener, true, null);
 
         domNodeRemovedEventListener = new DOMNodeRemovedEventListener();
-        evtTarget.addEventListenerNS
+        doc.addEventListenerNS
             (XMLConstants.XML_EVENTS_NAMESPACE_URI,
              "DOMNodeRemoved",
              domNodeRemovedEventListener, true, null);
 
         domCharacterDataModifiedEventListener = 
             new DOMCharacterDataModifiedEventListener();
-        evtTarget.addEventListenerNS
+        doc.addEventListenerNS
             (XMLConstants.XML_EVENTS_NAMESPACE_URI,
              "DOMCharacterDataModified",
              domCharacterDataModifiedEventListener, true, null);
 
+        animatedAttributeListener = new AnimatedAttrListener();
+        doc.addAnimatedAttributeListener(animatedAttributeListener);
+        
         focusManager = new FocusManager(document);
 
-        SVGOMDocument svgDocument = (SVGOMDocument)document;
-        CSSEngine cssEngine = svgDocument.getCSSEngine();
+        CSSEngine cssEngine = doc.getCSSEngine();
         cssPropertiesChangedListener = new CSSPropertiesChangedListener();
         cssEngine.addCSSEngineListener(cssPropertiesChangedListener);
     }
@@ -1208,28 +1233,29 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      * Removes event listeners from the DOM and CSS engine.
      */
     protected void removeDOMListeners() {
-        NodeEventTarget evtTarget = (NodeEventTarget)document;
+        SVGOMDocument doc = (SVGOMDocument)document;
 
-        evtTarget.removeEventListenerNS
+        doc.removeEventListenerNS
             (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMAttrModified",
              domAttrModifiedEventListener, true);
-        evtTarget.removeEventListenerNS
+        doc.removeEventListenerNS
             (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMNodeInserted",
              domNodeInsertedEventListener, true);
-        evtTarget.removeEventListenerNS
+        doc.removeEventListenerNS
             (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMNodeRemoved",
              domNodeRemovedEventListener, true);
-        evtTarget.removeEventListenerNS
+        doc.removeEventListenerNS
             (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMCharacterDataModified",
              domCharacterDataModifiedEventListener, true);
         
-        SVGOMDocument svgDocument = (SVGOMDocument)document;
-        CSSEngine cssEngine = svgDocument.getCSSEngine();
+        doc.removeAnimatedAttributeListener(animatedAttributeListener);
+
+        CSSEngine cssEngine = doc.getCSSEngine();
         if (cssEngine != null) {
             cssEngine.removeCSSEngineListener
                 (cssPropertiesChangedListener);
             cssEngine.dispose();
-            svgDocument.setCSSEngine(null);
+            doc.setCSSEngine(null);
         }
     }
 
@@ -1388,7 +1414,8 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     }
 
     /**
-     * Returns the SVGContext associated to the specified Node or null if any.
+     * Returns the SVGContext associated to the specified Node or null if
+     * there is none.
      */
     protected static SVGContext getSVGContext(Node node) {
         if (node instanceof SVGOMElement) {
@@ -1399,7 +1426,8 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     }
 
     /**
-     * Returns the SVGContext associated to the specified Node or null if any.
+     * Returns the BridgeUpdateHandler associated to the specified Node
+     * or null if there is none.
      */
     protected static BridgeUpdateHandler getBridgeUpdateHandler(Node node) {
         SVGContext ctx = getSVGContext(node);
@@ -1646,6 +1674,48 @@ public class BridgeContext implements ErrorConstants, CSSContext {
                 }
             } if (ctx != null && (ctx instanceof BridgeUpdateHandler)) {
                 ((BridgeUpdateHandler)ctx).handleCSSEngineEvent(evt);
+            }
+        }
+    }
+
+    /**
+     * A listener class for changes to animated attributes in the document.
+     */
+    protected class AnimatedAttrListener
+        implements AnimatedAttributeListener {
+
+        /**
+         * Called to notify an object of a change to the animated value of
+         * an animated XML attribute.
+         * @param e the owner element of the changed animated attribute
+         * @param alav the AnimatedLiveAttributeValue that changed
+         */
+        public void animatedAttributeChanged(Element e,
+                                             AnimatedLiveAttributeValue alav) {
+            BridgeUpdateHandler h = getBridgeUpdateHandler(e);
+            if (h != null) {
+                try {
+                    h.handleAnimatedAttributeChanged(alav);
+                } catch (Exception ex) {
+                    userAgent.displayError(ex);
+                }
+            }
+        }
+
+        /**
+         * Called to notify an object of a change to the value of an 'other'
+         * animation.
+         * @param e the element being animated
+         * @param type the type of animation whose value changed
+         */
+        public void otherAnimationChanged(Element e, String type) {
+            BridgeUpdateHandler h = getBridgeUpdateHandler(e);
+            if (h != null) {
+                try {
+                    h.handleOtherAnimationChanged(type);
+                } catch (Exception ex) {
+                    userAgent.displayError(ex);
+                }
             }
         }
     }

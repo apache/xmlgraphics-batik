@@ -956,7 +956,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
         if (d.width  < 1) d.width  = 1;
         if (d.height < 1) d.height = 1;
         return ViewBox.getViewTransform
-            (fragIdent, svgElt, d.width, d.height);
+            (fragIdent, svgElt, d.width, d.height, bridgeContext);
     }
 
     /**
@@ -3547,7 +3547,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
             URL blURL = cls.getResource("resources/BrokenLink.svg");
             if (blURL == null) 
                 throw new BridgeException
-                    (e, ErrorConstants.ERR_URI_IMAGE_BROKEN,
+                    (bridgeContext, e, ErrorConstants.ERR_URI_IMAGE_BROKEN,
                      new Object[] { url, message });
 
             DocumentLoader loader  = bridgeContext.getDocumentLoader();
@@ -3579,7 +3579,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
                 infoE.insertBefore(titleE, descE);
             } catch (Exception ex) {
                 throw new BridgeException
-                    (e, ErrorConstants.ERR_URI_IMAGE_BROKEN,
+                    (bridgeContext, e, ErrorConstants.ERR_URI_IMAGE_BROKEN,
                      new Object[] {url, message });
             }
             return doc;

@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2000-2004  The Apache Software Foundation 
+   Copyright 2000-2004,2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -18,8 +18,11 @@
 package org.apache.batik.dom.svg;
 
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.util.XMLSupport;
+import org.apache.batik.util.SVGTypes;
+
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedEnumeration;
 import org.w3c.dom.svg.SVGAnimatedLength;
@@ -100,7 +103,7 @@ public class SVGOMTextPathElement
         return getAnimatedLengthAttribute
             (null, SVG_START_OFFSET_ATTRIBUTE,
              SVG_TEXT_PATH_START_OFFSET_DEFAULT_VALUE,
-             SVGOMAnimatedLength.OTHER_LENGTH);
+             SVGOMAnimatedLength.OTHER_LENGTH, true);
     }
 
     /**
@@ -143,5 +146,76 @@ public class SVGOMTextPathElement
      */
     protected Node newNode() {
         return new SVGOMTextPathElement();
+    }
+
+    // ExtendedTraitAccess ///////////////////////////////////////////////////
+
+    /**
+     * Returns whether the given XML attribute is animatable.
+     */
+    public boolean isAttributeAnimatable(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_START_OFFSET_ATTRIBUTE)
+                    || ln.equals(SVG_METHOD_ATTRIBUTE)
+                    || ln.equals(SVG_SPACING_ATTRIBUTE)) {
+                return true;
+            }
+        }
+        return super.isAttributeAnimatable(ns, ln);
+    }
+
+    /**
+     * Returns the type of the given attribute.
+     */
+    public int getAttributeType(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_METHOD_ATTRIBUTE)
+                    || ln.equals(SVG_SPACING_ATTRIBUTE)) {
+                return SVGTypes.TYPE_IDENT;
+            } else if (ln.equals(SVG_START_OFFSET_ATTRIBUTE)) {
+                return SVGTypes.TYPE_LENGTH;
+            }
+        }
+        return super.getAttributeType(ns, ln);
+    }
+
+    // AnimationTarget ///////////////////////////////////////////////////////
+
+    /**
+     * Updates an attribute value in this target.
+     */
+    public void updateAttributeValue(String ns, String ln,
+                                     AnimatableValue val) {
+        if (ns == null) {
+            if (ln.equals(SVG_START_OFFSET_ATTRIBUTE)) {
+                updateLengthAttributeValue(getStartOffset(), val);
+                return;
+            } else if (ln.equals(SVG_METHOD_ATTRIBUTE)) {
+                updateEnumerationAttributeValue(getMethod(), val);
+                return;
+            } else if (ln.equals(SVG_SPACING_ATTRIBUTE)) {
+                updateEnumerationAttributeValue(getSpacing(), val);
+                return;
+            }
+        }
+        super.updateAttributeValue(ns, ln, val);
+    }
+
+    /**
+     * Returns the underlying value of an animatable XML attribute.
+     */
+    public AnimatableValue getUnderlyingValue(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_START_OFFSET_ATTRIBUTE)) {
+                return getBaseValue
+                    (getStartOffset(),
+                     PERCENTAGE_VIEWPORT_SIZE);
+            } else if (ln.equals(SVG_METHOD_ATTRIBUTE)) {
+                return getBaseValue(getMethod());
+            } else if (ln.equals(SVG_SPACING_ATTRIBUTE)) {
+                return getBaseValue(getSpacing());
+            }
+        }
+        return super.getUnderlyingValue(ns, ln);
     }
 }

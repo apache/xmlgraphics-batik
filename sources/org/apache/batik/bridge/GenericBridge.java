@@ -34,8 +34,7 @@ public interface GenericBridge extends Bridge {
      * For example, see the <tt>SVGTitleElementBridge</tt>.
      *
      * @param ctx the bridge context to use
-     * @param e the element that describes the graphics node to build
+     * @param e the element being handled
      */
     void handleElement(BridgeContext ctx, Element e);
-
 }

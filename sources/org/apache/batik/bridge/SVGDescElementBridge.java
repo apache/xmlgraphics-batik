@@ -37,10 +37,8 @@ public class SVGDescElementBridge extends SVGDescriptiveElementBridge {
         return SVG_DESC_TAG;
     }
 
-
     /**
      * Returns a new instance of this bridge.
      */
     public Bridge getInstance() { return new SVGDescElementBridge(); }
 }
-

@@ -594,26 +594,23 @@ public class JSVGScrollPane extends JPanel
         String viewBoxStr = el.getAttributeNS
             (null, SVGConstants.SVG_VIEW_BOX_ATTRIBUTE);
         if (viewBoxStr.length() != 0) {
-            float[] rect = ViewBox.parseViewBoxAttribute(el, viewBoxStr);
+            float[] rect = ViewBox.parseViewBoxAttribute(el, viewBoxStr, null);
             return new Rectangle2D.Float(rect[0], rect[1], 
-                                            rect[2], rect[3]);
+                                         rect[2], rect[3]);
         }
         GraphicsNode gn = canvas.getGraphicsNode();
         if (gn == null) return null;
 
         return (Rectangle2D)gn.getBounds().clone();
     }
-	
+
     /** 
      *	Called when the scale size changes. The scale factor
      *	(1.0 == original size). By default, this method does
      *	nothing, but may be overidden to display a scale
      *	(zoom) factor in a status bar, for example.
      */
-    public void scaleChange(float scale)
-    {
+    public void scaleChange(float scale) {
         // do nothing
     }
 }// class JSVGScrollPane
-
-

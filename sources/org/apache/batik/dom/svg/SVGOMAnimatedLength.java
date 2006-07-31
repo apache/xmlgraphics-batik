@@ -32,19 +32,21 @@ public class SVGOMAnimatedLength extends AbstractSVGAnimatedLength {
     protected String defaultValue;
 
     /**
-     * Creates a new SVGAnimatedLength.
+     * Creates a new SVGOMAnimatedLength.
      * @param elt The associated element.
      * @param ns The attribute's namespace URI.
      * @param ln The attribute's local name.
      * @param def The default value if the attribute is not specified.
      * @param dir The length's direction.
+     * @param nonneg Whether the length must be non-negative.
      */
     public SVGOMAnimatedLength(AbstractElement elt,
                                String ns,
                                String ln,
                                String def,
-                               short dir) {
-        super(elt, ns, ln, dir);
+                               short dir,
+                               boolean nonneg) {
+        super(elt, ns, ln, dir, nonneg);
         defaultValue = def;
     }
 
@@ -55,5 +57,4 @@ public class SVGOMAnimatedLength extends AbstractSVGAnimatedLength {
     protected String getDefaultValue() {
         return defaultValue;
     }
-
 }

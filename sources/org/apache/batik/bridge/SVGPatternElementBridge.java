@@ -45,8 +45,8 @@ import org.w3c.dom.Node;
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
-public class SVGPatternElementBridge extends AbstractSVGBridge
-    implements PaintBridge, ErrorConstants {
+public class SVGPatternElementBridge extends AnimatableGenericSVGBridge
+        implements PaintBridge, ErrorConstants {
 
     /**
      * Constructs a new SVGPatternElementBridge.
@@ -102,7 +102,7 @@ public class SVGPatternElementBridge extends AbstractSVGBridge
             (patternElement, null, SVG_PATTERN_TRANSFORM_ATTRIBUTE, ctx);
         if (s.length() != 0) {
             patternTransform = SVGUtilities.convertTransform
-                (patternElement, SVG_PATTERN_TRANSFORM_ATTRIBUTE, s);
+                (patternElement, SVG_PATTERN_TRANSFORM_ATTRIBUTE, s, ctx);
         } else {
             patternTransform = new AffineTransform();
         }
@@ -118,7 +118,7 @@ public class SVGPatternElementBridge extends AbstractSVGBridge
             contentCoordSystem = SVGUtilities.USER_SPACE_ON_USE;
         } else {
             contentCoordSystem = SVGUtilities.parseCoordinateSystem
-                (patternElement, SVG_PATTERN_CONTENT_UNITS_ATTRIBUTE, s);
+                (patternElement, SVG_PATTERN_CONTENT_UNITS_ATTRIBUTE, s, ctx);
         }
 
         // Compute a transform according to viewBox,  preserveAspectRatio
@@ -171,7 +171,7 @@ public class SVGPatternElementBridge extends AbstractSVGBridge
             float h = (float)patternRegion.getHeight();
             AffineTransform preserveAspectRatioTransform
                 = ViewBox.getPreserveAspectRatioTransform
-                (patternElement, viewBoxStr, aspectRatioStr, w, h);
+                (patternElement, viewBoxStr, aspectRatioStr, w, h, ctx);
 
             patternContentTransform.concatenate(preserveAspectRatioTransform);
         } else {
@@ -238,7 +238,7 @@ public class SVGPatternElementBridge extends AbstractSVGBridge
      */
     protected static
         RootGraphicsNode extractPatternContent(Element patternElement,
-                                                    BridgeContext ctx) {
+                                               BridgeContext ctx) {
 
         List refs = new LinkedList();
         for (;;) {
@@ -256,12 +256,12 @@ public class SVGPatternElementBridge extends AbstractSVGBridge
                 (SVGOMDocument)patternElement.getOwnerDocument();
             ParsedURL purl = new ParsedURL(doc.getURL(), uri);
             if (!purl.complete())
-                throw new BridgeException(patternElement,
+                throw new BridgeException(ctx, patternElement,
                                           ERR_URI_MALFORMED,
                                           new Object[] {uri});
 
             if (contains(refs, purl)) {
-                throw new BridgeException(patternElement,
+                throw new BridgeException(ctx, patternElement,
                                           ERR_XLINK_HREF_CIRCULAR_DEPENDENCIES,
                                           new Object[] {uri});
             }
@@ -360,6 +360,4 @@ public class SVGPatternElementBridge extends AbstractSVGBridge
         }
 
     }
-
 }
-

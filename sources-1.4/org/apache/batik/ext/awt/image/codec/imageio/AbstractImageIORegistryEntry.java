@@ -124,7 +124,7 @@ public abstract class AbstractImageIORegistryEntry
                                       reader.getWidth(imageIndex), 
                                       reader.getHeight(imageIndex)));
                         CachableRed cr;
-                        //Naïve approach probably wasting lots of memory
+                        //NaÃ¯ve approach probably wasting lots of memory
                         //and ignoring the gamma correction done by PNGRed :-(
                         BufferedImage bi = reader.read(imageIndex);
                         cr = GraphicsUtil.wrap(bi);

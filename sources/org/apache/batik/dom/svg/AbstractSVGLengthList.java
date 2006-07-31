@@ -26,7 +26,6 @@ import org.w3c.dom.svg.SVGException;
 import org.w3c.dom.svg.SVGLength;
 import org.w3c.dom.svg.SVGLengthList;
 
-
 /**
  * This class is the implementation of
  * <code>SVGLengthList</code>.
@@ -67,7 +66,7 @@ public abstract class AbstractSVGLengthList
                                                        Object[] args);
 
     /**
-     * return the element owning this SVGLengthList.
+     * Returns the element owning this SVGLengthList.
      */
     protected abstract Element getElement();
 
@@ -151,7 +150,6 @@ public abstract class AbstractSVGLengthList
         
         lengthListParser.setLengthListHandler(builder);
         lengthListParser.parse(value);
-        
     }
 
     /**

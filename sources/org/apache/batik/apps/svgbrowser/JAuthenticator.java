@@ -43,6 +43,9 @@ import javax.swing.SwingConstants;
  * This class is resposible for providing authentication information
  * when needed by network protocols.  It does this by poping up a small
  * window that asks for User ID and password for the system.
+ *
+ * @author <a href="mailto:thomas.deweese@kodak.com">Thomas DeWeese</a>
+ * @version $Id$
  */
 public class JAuthenticator extends Authenticator {
 

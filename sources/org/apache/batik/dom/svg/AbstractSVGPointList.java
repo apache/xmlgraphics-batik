@@ -26,11 +26,8 @@ import org.w3c.dom.svg.SVGMatrix;
 import org.w3c.dom.svg.SVGPoint;
 import org.w3c.dom.svg.SVGPointList;
 
-
-
 /**
- * This class is the implementation of
- * <code>SVGPointList</code>.
+ * Abstract implementation of {@link SVGPointList}.
  *
  * @author <a href="mailto:nicolas.socheleau@bitflash.com">Nicolas Socheleau</a>
  * @version $Id$
@@ -43,18 +40,17 @@ public abstract class AbstractSVGPointList
      * Separator for a point list.
      */
     public final static String SVG_POINT_LIST_SEPARATOR
-        =" ";
+        = " ";
 
     /**
      * Return the separator between points in the list.
      */
-    protected String getItemSeparator(){
+    protected String getItemSeparator() {
         return SVG_POINT_LIST_SEPARATOR;
     }
 
     /**
      * Create an SVGException when the checkItemType fails.
-     *
      * @return SVGException
      */
     protected abstract SVGException createSVGException(short type,
@@ -65,63 +61,61 @@ public abstract class AbstractSVGPointList
      * Creates a new SVGPointList.
      */
     protected AbstractSVGPointList() {
-        super();
     }
 
     /**
+     * <b>DOM</b>: Implements {@link SVGPointList#initialize(int)}.
      */
-    public SVGPoint initialize ( SVGPoint newItem )
-        throws DOMException, SVGException {
-
-        return (SVGPoint)initializeImpl(newItem);
+    public SVGPoint initialize(SVGPoint newItem)
+            throws DOMException, SVGException {
+        return (SVGPoint) initializeImpl(newItem);
     }
 
     /**
+     * <b>DOM</b>: Implements {@link SVGPointList#getItem(int)}.
      */
-    public SVGPoint getItem ( int index )
-        throws DOMException {
-
-        return (SVGPoint)getItemImpl(index);
+    public SVGPoint getItem(int index) throws DOMException {
+        return (SVGPoint) getItemImpl(index);
     }
 
     /**
+     * <b>DOM</b>: Implements {@link
+     * SVGPointList#insertItemBefore(SVGPoint,int)}.
      */
-    public SVGPoint insertItemBefore ( SVGPoint newItem, int index )
-        throws DOMException, SVGException {
-
-        return (SVGPoint)insertItemBeforeImpl(newItem,index);
+    public SVGPoint insertItemBefore(SVGPoint newItem, int index)
+            throws DOMException, SVGException {
+        return (SVGPoint) insertItemBeforeImpl(newItem,index);
     }
 
     /**
+     * <b>DOM</b>: Implements {@link
+     * SVGPointList#replaceItem(SVGPoint,int)}.
      */
-    public SVGPoint replaceItem ( SVGPoint newItem, int index )
-        throws DOMException, SVGException {
-
-        return (SVGPoint)replaceItemImpl(newItem,index);
+    public SVGPoint replaceItem(SVGPoint newItem, int index)
+            throws DOMException, SVGException {
+        return (SVGPoint) replaceItemImpl(newItem,index);
     }
 
     /**
+     * <b>DOM</b>: Implements {@link SVGPointList#removeItem(int)}.
      */
-    public SVGPoint removeItem ( int index )
-        throws DOMException {
-
-        return (SVGPoint)removeItemImpl(index);
+    public SVGPoint removeItem(int index) throws DOMException {
+        return (SVGPoint) removeItemImpl(index);
     }
 
     /**
+     * <b>DOM</b>: Implements {@link SVGPointList#appendItem(SVGPoint)}.
      */
-    public SVGPoint appendItem ( SVGPoint newItem )
-        throws DOMException, SVGException {
-
+    public SVGPoint appendItem(SVGPoint newItem)
+            throws DOMException, SVGException {
         return (SVGPoint) appendItemImpl(newItem);
     }
 
     /**
+     * Creates a new {@link SVGItem} object from the given {@link SVGpoint}.
      */
-    protected SVGItem createSVGItem(Object newItem){
-        
-        SVGPoint point= (SVGPoint)newItem;
-
+    protected SVGItem createSVGItem(Object newItem) {
+        SVGPoint point = (SVGPoint) newItem;
         return new SVGPointItem(point.getX(), point.getY());
     }
     
@@ -129,26 +123,21 @@ public abstract class AbstractSVGPointList
      * Parse the 'points' attribute.
      *
      * @param value 'points' attribute value
-     * @param handler : list handler
+     * @param handler list handler
      */
     protected void doParse(String value, ListHandler handler)
-        throws ParseException{
-
+            throws ParseException {
         PointsParser pointsParser = new PointsParser();
-        
         PointsListBuilder builder = new PointsListBuilder(handler);
-        
         pointsParser.setPointsHandler(builder);
         pointsParser.parse(value);
-        
     }
 
     /**
-     * Check if the item is an SVGPoint.
+     * Asserts that the given item is an {@link SVGPoint}.
      */
-    protected void checkItemType(Object newItem)
-        throws SVGException {
-        if ( !( newItem instanceof SVGPoint ) ){
+    protected void checkItemType(Object newItem) throws SVGException {
+        if (!(newItem instanceof SVGPoint)) {
             createSVGException(SVGException.SVG_WRONG_TYPE_ERR,
                                "expected SVGPoint",
                                null);
@@ -158,104 +147,106 @@ public abstract class AbstractSVGPointList
     /**
      * Representation of the item SVGPoint.
      */
-    protected class SVGPointItem 
-        extends AbstractSVGItem 
-        implements SVGPoint {
+    protected class SVGPointItem extends AbstractSVGItem implements SVGPoint {
 
-        ///x-axis value
+        /**
+         * The x value.
+         */
         protected float x;
-        ///yaxis value
+
+        /**
+         * The y value.
+         */
         protected float y;
 
         /**
-         * Default contructor.
-         * @param x x-axis value
-         * @param y y-axis value
+         * Creates a new SVGPointItem.
          */
-        public SVGPointItem(float x, float y){
+        public SVGPointItem(float x, float y) {
             this.x = x;
             this.y = y;
         }
 
         /**
-         * Return a String representation of
-         * on SVGPoint in a SVGPointList.
-         *
-         * @return String representation of the item
+         * Return a String representation of this SVGPoint.
          */
-        protected String getStringValue(){
+        protected String getStringValue() {
             StringBuffer value = new StringBuffer();
             value.append(x);
             value.append(',');
             value.append(y);
-
             return value.toString();
         }
 
         /**
+         * <b>DOM</b>: Implements {@link SVGPoint#getX()}.
          */
-        public float getX(){
+        public float getX() {
             return x;
         }
+
         /**
+         * <b>DOM</b>: Implements {@link SVGPoint#getY()}.
          */
-        public float getY(){
+        public float getY() {
             return y;
         }
+
         /**
+         * <b>DOM</b>: Implements {@link SVGPoint#setX(float)}.
          */
-        public void setX(float x){
+        public void setX(float x) {
             this.x = x;
             resetAttribute();
         }
+
         /**
+         * <b>DOM</b>: Implements {@link SVGPoint#setY(float)}.
          */
-        public void setY(float y){
+        public void setY(float y) {
             this.y = y;
             resetAttribute();
         }
+
         /**
+         * <b>DOM</b>: Implements {@link SVGPoint#matrixTransform(SVGMatrix)}.
          */
-        public SVGPoint matrixTransform ( SVGMatrix matrix ){
-            throw new RuntimeException(" !!! TODO: matrixTransform ( SVGMatrix matrix )");
+        public SVGPoint matrixTransform(SVGMatrix matrix) {
+            return SVGOMPoint.matrixTransform(this, matrix);
         }
     }
 
     /**
-     * Helper class to interface the <code>PointsParser</code>
-     * and the <code>ListHandler</code>
+     * Helper class to interface the {@link PointsParser} and the
+     * {@link ListHandler}.
      */
-    protected class PointsListBuilder
-        implements PointsHandler {
+    protected class PointsListBuilder implements PointsHandler {
 
         /**
-         * list handler.
+         * The ListHandler pass newly created {@link SVGPointItem} objects to.
          */
         protected ListHandler listHandler;
         
-        public PointsListBuilder(ListHandler listHandler){
+        /**
+         * Creates a new PointsListBuilder.
+         */
+        public PointsListBuilder(ListHandler listHandler) {
             this.listHandler = listHandler;
         }
 
-        public void startPoints() 
-            throws ParseException{
-
+        public void startPoints() throws ParseException {
             listHandler.startList();
         }
-        /**
-         * Create SVGPoint item and motifies
-         * the list handler is new item was created.
-         */
-        public void point(float x, float y) 
-            throws ParseException {
 
-            listHandler.item(new SVGPointItem(x,y));
+        /**
+         * Creates a new {@link SVGPointItem} and passes it to the list handler.
+         */
+        public void point(float x, float y) throws ParseException {
+            listHandler.item(new SVGPointItem(x, y));
         }
 
-        public void endPoints() 
-            throws ParseException {
+        public void endPoints() throws ParseException {
             listHandler.endList();
         }
     }
-   
 }

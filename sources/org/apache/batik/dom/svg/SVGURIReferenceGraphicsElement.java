@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2000-2001,2003  The Apache Software Foundation 
+   Copyright 2000-2001,2003,2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -17,7 +17,9 @@
  */
 package org.apache.batik.dom.svg;
 
+import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.AbstractDocument;
+
 import org.w3c.dom.svg.SVGAnimatedString;
 
 /**
@@ -50,5 +52,40 @@ public abstract class SVGURIReferenceGraphicsElement
      */
     public SVGAnimatedString getHref() {
         return SVGURIReferenceSupport.getHref(this);
+    }
+
+    // ExtendedTraitAccess ///////////////////////////////////////////////////
+
+    /**
+     * Returns whether the given XML attribute is animatable.
+     */
+    public boolean isAttributeAnimatable(String ns, String ln) {
+        return XLINK_NAMESPACE_URI.equals(ns) && XLINK_HREF_ATTRIBUTE.equals(ln)
+            || super.isAttributeAnimatable(ns, ln);
+    }
+
+    // AnimationTarget ///////////////////////////////////////////////////////
+
+    /**
+     * Updates an attribute value in this target.
+     */
+    public void updateAttributeValue(String ns, String ln,
+                                     AnimatableValue val) {
+        if (XLINK_NAMESPACE_URI.equals(ns)
+                && ln.equals(XLINK_HREF_ATTRIBUTE)) {
+            updateStringAttributeValue(getHref(), val);
+        } else {
+            super.updateAttributeValue(ns, ln, val);
+        }
+    }
+
+    /**
+     * Returns the underlying value of an animatable XML attribute.
+     */
+    public AnimatableValue getUnderlyingValue(String ns, String ln) {
+        if (XLINK_NAMESPACE_URI.equals(ns)) {
+            return getBaseValue(getHref());
+        }
+        return super.getUnderlyingValue(ns, ln);
     }
 }

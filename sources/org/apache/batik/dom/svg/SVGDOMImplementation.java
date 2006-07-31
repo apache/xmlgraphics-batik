@@ -30,6 +30,7 @@ import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.AbstractStylableDocument;
 import org.apache.batik.dom.ExtensibleDOMImplementation;
 import org.apache.batik.dom.GenericDocumentType;
+import org.apache.batik.dom.events.DOMTimeEvent;
 import org.apache.batik.dom.events.DocumentEventSupport;
 import org.apache.batik.dom.util.CSSStyleDeclarationFactory;
 import org.apache.batik.dom.util.DOMUtilities;
@@ -219,6 +220,12 @@ public class SVGDOMImplementation
                                     new DocumentEventSupport.EventFactory() {
                                             public Event createEvent() {
                                                 return new SVGOMEvent();
+                                            }
+                                        });
+        result.registerEventFactory("TimeEvent",
+                                    new DocumentEventSupport.EventFactory() {
+                                            public Event createEvent() {
+                                                return new DOMTimeEvent();
                                             }
                                         });
         return result;

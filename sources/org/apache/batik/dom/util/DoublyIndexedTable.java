@@ -17,6 +17,9 @@
  */
 package org.apache.batik.dom.util;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 /**
  * This class represents a doubly indexed hash table.
  *
@@ -60,7 +63,7 @@ public class DoublyIndexedTable {
      * Returns the size of this table.
      */
     public int size() {
-      	return count;
+        return count;
     }
 
     /**
@@ -162,6 +165,13 @@ public class DoublyIndexedTable {
     }
 
     /**
+     * Returns an iterator on the entries of the table.
+     */
+    public Iterator iterator() {
+        return new TableIterator();
+    }
+
+    /**
      * Rehash the table
      */
     protected void rehash() {
@@ -190,49 +200,71 @@ public class DoublyIndexedTable {
     }
 
     /**
-     * To manage collisions
+     * An entry in the {@link DoublyIndexedTable}.
      */
-    protected static class Entry {
-	/**
-	 * The hash code
-	 */
-	public int hash;
+    public static class Entry {
 
-	/**
-	 * The first key
-	 */
-	public Object key1;
+        /**
+         * The hash code.
+         */
+        protected int hash;
 
-	/**
-	 * The second key
-	 */
-	public Object key2;
+        /**
+         * The first key.
+         */
+        protected Object key1;
 
-	/**
-	 * The value
-	 */
-	public Object value;
+        /**
+         * The second key.
+         */
+        protected Object key2;
 
-	/**
-	 * The next entry
-	 */
-	public Entry next;
+        /**
+         * The value.
+         */
+        protected Object value;
 
-	/**
-	 * Creates a new entry
-	 */
-	public Entry(int hash, Object key1, Object key2,  Object value, Entry next) {
-	    this.hash  = hash;
-	    this.key1  = key1;
-	    this.key2  = key2;
-	    this.value = value;
-	    this.next  = next;
-	}
+        /**
+         * The next entry.
+         */
+        protected Entry next;
+
+        /**
+         * Creates a new entry.
+         */
+        public Entry(int hash, Object key1, Object key2,  Object value, Entry next) {
+            this.hash  = hash;
+            this.key1  = key1;
+            this.key2  = key2;
+            this.value = value;
+            this.next  = next;
+        }
+
+        /**
+         * Returns this entry's first key.
+         */
+        public Object getKey1() {
+            return key1;
+        }
+
+        /**
+         * Returns this entry's second key.
+         */
+        public Object getKey2() {
+            return key2;
+        }
+
+        /**
+         * Returns this entry's value.
+         */
+        public Object getValue() {
+            return value;
+        }
 
         /**
          * Whether this entry match the given keys.
          */
-        public boolean match(Object o1, Object o2) {
+        protected boolean match(Object o1, Object o2) {
             if (key1 != null) {
                 if (!key1.equals(o1)) {
                     return false;
@@ -244,6 +276,76 @@ public class DoublyIndexedTable {
                 return key2.equals(o2);
             }
             return o2 == null;
+        }
+    }
+
+    /**
+     * An Iterator class for a {@link DoublyIndexedTable}.
+     */
+    protected class TableIterator implements Iterator {
+
+        /**
+         * The index of the next entry to return.
+         */
+        private int nextIndex;
+
+        /**
+         * The next Entry to return.
+         */
+        private Entry nextEntry;
+
+        /**
+         * Whether the Iterator has run out of elements.
+         */
+        private boolean finished;
+
+        /**
+         * Creates a new TableIterator.
+         */
+        public TableIterator() {
+            while (nextIndex < table.length) {
+                nextEntry = table[nextIndex];
+                if (nextEntry != null) {
+                    break;
+                }
+                nextIndex++;
+            }
+            finished = nextEntry == null;
+        }
+
+        public boolean hasNext() {
+            return !finished;
+        }
+
+        public Object next() {
+            if (finished) {
+                throw new NoSuchElementException();
+            }
+            Entry ret = nextEntry;
+            findNext();
+            return ret;
+        }
+
+        /**
+         * Searches for the next Entry in the table.
+         */
+        protected void findNext() {
+            nextEntry = nextEntry.next;
+            if (nextEntry == null) {
+                nextIndex++;
+                while (nextIndex < table.length) {
+                    nextEntry = table[nextIndex];
+                    if (nextEntry != null) {
+                        break;
+                    }
+                    nextIndex++;
+                }
+            }
+            finished = nextEntry == null;
+        }
+
+        public void remove() {
+            throw new UnsupportedOperationException();
         }
     }
 }

@@ -80,7 +80,7 @@ public class SVGFeBlendElementBridge
 
 
         // 'mode' attribute - default is 'normal'
-        CompositeRule rule = convertMode(filterElement);
+        CompositeRule rule = convertMode(filterElement, ctx);
 
         // 'in' attribute
         Filter in = getIn(filterElement,
@@ -140,7 +140,8 @@ public class SVGFeBlendElementBridge
      *
      * @param filterElement the filter feBlend element
      */
-    protected static CompositeRule convertMode(Element filterElement) {
+    protected static CompositeRule convertMode(Element filterElement,
+                                               BridgeContext ctx) {
         String rule = filterElement.getAttributeNS(null, SVG_MODE_ATTRIBUTE);
         if (rule.length() == 0) {
             return CompositeRule.OVER;
@@ -160,7 +161,8 @@ public class SVGFeBlendElementBridge
         if (SVG_LIGHTEN_VALUE.equals(rule)) {
             return CompositeRule.LIGHTEN;
         }
-        throw new BridgeException(filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
-                                  new Object[] {SVG_MODE_ATTRIBUTE, rule});
+        throw new BridgeException
+            (ctx, filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+             new Object[] {SVG_MODE_ATTRIBUTE, rule});
     }
 }

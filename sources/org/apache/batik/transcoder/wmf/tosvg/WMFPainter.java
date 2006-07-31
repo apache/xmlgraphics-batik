@@ -19,41 +19,39 @@
 package org.apache.batik.transcoder.wmf.tosvg;
 
 import java.awt.BasicStroke;
-import java.awt.Stroke;
 import java.awt.Color;
-import java.awt.Font;
-import java.awt.Paint;
-import java.awt.Image;
 import java.awt.Dimension;
-import java.awt.TexturePaint;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Polygon;
+import java.awt.Image;
+import java.awt.Paint;
 import java.awt.Shape;
+import java.awt.Stroke;
+import java.awt.TexturePaint;
 import java.awt.Toolkit;
-import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
-import java.awt.font.TextAttribute;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.GeneralPath;
-import java.awt.geom.Point2D;
 import java.awt.geom.Arc2D;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
-import java.awt.geom.Ellipse2D;
-import java.text.AttributedString;
-import java.text.AttributedCharacterIterator;
+import java.awt.image.BufferedImage;
+import java.awt.image.ImageObserver;
 import java.io.BufferedInputStream;
+import java.text.AttributedCharacterIterator;
+import java.util.Iterator;
 import java.util.Stack;
 import java.util.Vector;
-import java.util.Iterator;
 
-import org.apache.batik.transcoder.wmf.WMFConstants;
 import org.apache.batik.ext.awt.geom.Polygon2D;
 import org.apache.batik.ext.awt.geom.Polyline2D;
+import org.apache.batik.transcoder.wmf.WMFConstants;
+
 /**
   * Core class for rendering the WMF image. It is able to render a
   * WMF file in a <tt>Graphics</tt> object.

@@ -676,7 +676,7 @@ public abstract class CSSUtilities
             Element filter = ctx.getReferencedElement(filteredElement, uri);
             Bridge bridge = ctx.getBridge(filter);
             if (bridge == null || !(bridge instanceof FilterBridge)) {
-                throw new BridgeException(filteredElement,
+                throw new BridgeException(ctx, filteredElement,
                                           ERR_CSS_URI_BAD_TARGET,
                                           new Object[] {uri});
             }
@@ -718,7 +718,7 @@ public abstract class CSSUtilities
             Element cp = ctx.getReferencedElement(clippedElement, uri);
             Bridge bridge = ctx.getBridge(cp);
             if (bridge == null || !(bridge instanceof ClipBridge)) {
-                throw new BridgeException(clippedElement,
+                throw new BridgeException(ctx, clippedElement,
                                           ERR_CSS_URI_BAD_TARGET,
                                           new Object[] {uri});
             }
@@ -771,7 +771,7 @@ public abstract class CSSUtilities
             Element m = ctx.getReferencedElement(maskedElement, uri);
             Bridge bridge = ctx.getBridge(m);
             if (bridge == null || !(bridge instanceof MaskBridge)) {
-                throw new BridgeException(maskedElement,
+                throw new BridgeException(ctx, maskedElement,
                                           ERR_CSS_URI_BAD_TARGET,
                                           new Object[] {uri});
             }

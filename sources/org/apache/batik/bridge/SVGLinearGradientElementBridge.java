@@ -108,7 +108,7 @@ public class SVGLinearGradientElementBridge
             coordSystemType = SVGUtilities.OBJECT_BOUNDING_BOX;
         } else {
             coordSystemType = SVGUtilities.parseCoordinateSystem
-                (paintElement, SVG_GRADIENT_UNITS_ATTRIBUTE, s);
+                (paintElement, SVG_GRADIENT_UNITS_ATTRIBUTE, s, ctx);
         }
 
         // additional transform to move to objectBoundingBox coordinate system
