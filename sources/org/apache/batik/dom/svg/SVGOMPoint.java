@@ -22,28 +22,82 @@ import org.w3c.dom.svg.SVGMatrix;
 import org.w3c.dom.svg.SVGPoint;
 
 /**
- * This class provides an abstract implementation of the {@link SVGMatrix}
- * interface.
+ * An implementation of {@link SVGPoint} that is not associated with any
+ * attribute.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
 public class SVGOMPoint implements SVGPoint {
-    float x, y;
-    public SVGOMPoint() { x=0; y=0; }
+
+    /**
+     * The x coordinate.
+     */
+    protected float x;
+    
+    /**
+     * The y coordinate.
+     */
+    protected float y;
+
+    /**
+     * Creates a new SVGOMPoint with coordinates set to <code>0</code>.
+     */
+    public SVGOMPoint() {
+    }
+
+    /**
+     * Creates a new SVGOMPoint with coordinates set to the specified values.
+     */
     public SVGOMPoint(float x, float y) {
         this.x = x;
         this.y = y;
     }
 
-    public float getX( )                             { return x; }
-    public void  setX( float x ) throws DOMException { this.x = x; }
-    public float getY( )                             { return y; }
-    public void  setY( float y ) throws DOMException { this.y = y; }
+    /**
+     * <b>DOM</b>: Implements {@link SVGPoint#getX()}.
+     */
+    public float getX() {
+        return x;
+    }
 
-    public SVGPoint matrixTransform ( SVGMatrix matrix ) {
-        float newX = matrix.getA()*getX() + matrix.getC()*getY() + matrix.getE();
-        float newY = matrix.getB()*getX() + matrix.getD()*getY() + matrix.getF();
+    /**
+     * <b>DOM</b>: Implements {@link SVGPoint#setX(float)}.
+     */
+    public void setX(float x) throws DOMException {
+        this.x = x;
+    }
+
+    /**
+     * <b>DOM</b>: Implements {@link SVGPoint#getY()}.
+     */
+    public float getY() {
+        return y;
+    }
+
+    /**
+     * <b>DOM</b>: Implements {@link SVGPoint#setY(float)}.
+     */
+    public void setY(float y) throws DOMException {
+        this.y = y;
+    }
+
+    /**
+     * <b>DOM</b>: Implements {@link SVGPoint#matrixTransform(SVGMatrix)}.
+     */
+    public SVGPoint matrixTransform(SVGMatrix matrix) {
+        return matrixTransform(this, matrix);
+    }
+
+    /**
+     * Transforms an {@link SVGPoint} by an {@link SVGMatrix} and returns
+     * the new point.
+     */
+    public static SVGPoint matrixTransform(SVGPoint point, SVGMatrix matrix) {
+        float newX = matrix.getA() * point.getX() + matrix.getC() * point.getY()
+            + matrix.getE();
+        float newY = matrix.getB() * point.getX() + matrix.getD() * point.getY()
+            + matrix.getF();
         return new SVGOMPoint(newX, newY);
     }
 }

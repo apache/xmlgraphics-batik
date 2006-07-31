@@ -17,7 +17,9 @@
  */
 package org.apache.batik.bridge;
 
+import org.apache.batik.dom.svg.LiveAttributeException;
 import org.apache.batik.gvt.GraphicsNode;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGDocument;
 
@@ -35,6 +37,11 @@ public class BridgeException extends RuntimeException {
     /** The error code. */
     protected String code;
 
+    /**
+     * The message.
+     */
+    protected String message;
+
     /** The paramters to use for the error message. */
     protected Object [] params;
 
@@ -45,16 +52,69 @@ public class BridgeException extends RuntimeException {
     protected GraphicsNode node;
 
     /**
+     * Constructs a new <tt>BridgeException</tt> based on the specified
+     * <tt>LiveAttributeException</tt>.
+     *
+     * @param ctx the bridge context to use for determining the element's
+     *            source position
+     * @param ex the {@link LiveAttributeException}
+     */
+    public BridgeException(BridgeContext ctx, LiveAttributeException ex) {
+        switch (ex.getCode()) {
+            case LiveAttributeException.ERR_ATTRIBUTE_MISSING:
+                this.code = ErrorConstants.ERR_ATTRIBUTE_MISSING;
+                break;
+            case LiveAttributeException.ERR_ATTRIBUTE_MALFORMED:
+                this.code = ErrorConstants.ERR_ATTRIBUTE_VALUE_MALFORMED;
+                break;
+            case LiveAttributeException.ERR_ATTRIBUTE_NEGATIVE:
+                this.code = ErrorConstants.ERR_LENGTH_NEGATIVE;
+                break;
+            default:
+                throw new IllegalStateException
+                    ("Unknown LiveAttributeException error code "
+                     + ex.getCode());
+        }
+        this.e = ex.getElement();
+        this.params = new Object[] { ex.getAttributeName(), ex.getValue() };
+        if (e != null && ctx != null) {
+            this.line = ctx.getDocumentLoader().getLineNumber(e);
+        }
+    }
+
+    /**
      * Constructs a new <tt>BridgeException</tt> with the specified parameters.
      *
-     * @param e the element on which the error occured
+     * @param ctx the bridge context to use for determining the element's
+     *            source position
+     * @param e the element on which the error occurred
      * @param code the error code
      * @param params the parameters to use for the error message
      */
-    public BridgeException(Element e, String code, Object [] params) {
+    public BridgeException(BridgeContext ctx, Element e, String code,
+                           Object[] params) {
         this.e = e;
         this.code = code;
         this.params = params;
+        if (e != null && ctx != null) {
+            this.line = ctx.getDocumentLoader().getLineNumber(e);
+        }
+    }
+
+    /**
+     * Constructs a new <tt>BridgeException</tt> with the specified parameters.
+     *
+     * @param ctx the bridge context to use for determining the element's
+     *            source position
+     * @param e the element on which the error occurred
+     * @param message the error message
+     */
+    public BridgeException(BridgeContext ctx, Element e, String message) {
+        this.e = e;
+        this.message = message;
+        if (e != null && ctx != null) {
+            this.line = ctx.getDocumentLoader().getLineNumber(e);
+        }
     }
 
     /**
@@ -62,13 +122,6 @@ public class BridgeException extends RuntimeException {
      */
     public Element getElement() {
         return e;
-    }
-
-    /**
-     * Returns the line number on which the error occurred.
-     */
-    public void setLineNumber(int line) {
-        this.line = line;
     }
 
     /**
@@ -91,6 +144,10 @@ public class BridgeException extends RuntimeException {
      * Returns the error message according to the error code and parameters.
      */
     public String getMessage() {
+        if (message != null) {
+            return message;
+        }
+
         String uri;
         String lname = "<Unknown Element>";
         SVGDocument doc = null;

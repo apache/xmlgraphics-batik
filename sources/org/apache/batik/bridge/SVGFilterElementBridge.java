@@ -43,8 +43,8 @@ import org.w3c.dom.Node;
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
-public class SVGFilterElementBridge extends AbstractSVGBridge
-    implements FilterBridge, ErrorConstants {
+public class SVGFilterElementBridge extends AnimatableGenericSVGBridge
+        implements FilterBridge, ErrorConstants {
 
     /**
      * Constructs a new bridge for the &lt;filter> element.
@@ -157,13 +157,13 @@ public class SVGFilterElementBridge extends AbstractSVGBridge
             try {
                 url = new URL(doc.getURLObject(), uri);
             } catch (MalformedURLException ex) {
-                throw new BridgeException(filterElement,
+                throw new BridgeException(ctx, filterElement,
                                           ERR_URI_MALFORMED,
                                           new Object[] {uri});
 
             }
             if (contains(refs, url)) {
-                throw new BridgeException(filterElement,
+                throw new BridgeException(ctx, filterElement,
                                           ERR_XLINK_HREF_CIRCULAR_DEPENDENCIES,
                                           new Object[] {uri});
             }

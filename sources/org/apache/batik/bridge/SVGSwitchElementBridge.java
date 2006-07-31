@@ -77,7 +77,8 @@ public class SVGSwitchElementBridge extends AbstractSVGBridge
         String s = e.getAttributeNS(null, SVG_TRANSFORM_ATTRIBUTE);
         if (s.length() != 0) {
             group.setTransform
-                (SVGUtilities.convertTransform(e, SVG_TRANSFORM_ATTRIBUTE, s));
+                (SVGUtilities.convertTransform(e, SVG_TRANSFORM_ATTRIBUTE, s,
+                                               ctx));
         }
         return group;
     }

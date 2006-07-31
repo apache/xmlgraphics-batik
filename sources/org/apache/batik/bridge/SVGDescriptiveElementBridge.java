@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2005 The Apache Software Foundation 
+   Copyright 2005-2006 The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -24,7 +24,9 @@ import java.awt.geom.Rectangle2D;
 import org.w3c.dom.Element;
 import org.w3c.dom.events.MutationEvent;
 
+import org.apache.batik.anim.AnimationTargetListener;
 import org.apache.batik.css.engine.CSSEngineEvent;
+import org.apache.batik.dom.svg.AnimatedLiveAttributeValue;
 import org.apache.batik.dom.svg.SVGContext;
 import org.apache.batik.dom.svg.SVGOMElement;
 
@@ -51,7 +53,7 @@ public abstract class SVGDescriptiveElementBridge extends AbstractSVGBridge
      * <tt>SVGDescElementBridge</tt>.
      *
      * @param ctx the bridge context to use
-     * @param e the element that describes the graphics node to build
+     * @param e the element to be handled
      */
     public void handleElement(BridgeContext ctx, Element e){
         UserAgent ua = ctx.getUserAgent();
@@ -92,6 +94,10 @@ public abstract class SVGDescriptiveElementBridge extends AbstractSVGBridge
 
     public void handleDOMAttrModifiedEvent(MutationEvent evt) { }
     public void handleCSSEngineEvent(CSSEngineEvent evt) { }
+    public void handleAnimatedAttributeChanged
+        (AnimatedLiveAttributeValue alav) { }
+    public void handleOtherAnimationChanged(String type) { }
+
 
     // SVGContext implementation ///////////////////////////////////////////
 
@@ -128,4 +134,9 @@ public abstract class SVGDescriptiveElementBridge extends AbstractSVGBridge
         return theCtx.getBlockHeight(theElt);
     }
     public float getFontSize() { return 0; }
+    public float svgToUserSpace(float v, int type, int pcInterp) {
+        return 0;
+    }
+    public void addTargetListener(String pn, AnimationTargetListener l) { }
+    public void removeTargetListener(String pn, AnimationTargetListener l) { }
 };

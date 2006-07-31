@@ -116,7 +116,7 @@ public class SVGRadialGradientElementBridge
             coordSystemType = SVGUtilities.OBJECT_BOUNDING_BOX;
         } else {
             coordSystemType = SVGUtilities.parseCoordinateSystem
-                (paintElement, SVG_GRADIENT_UNITS_ATTRIBUTE, s);
+                (paintElement, SVG_GRADIENT_UNITS_ATTRIBUTE, s, ctx);
         }
 
         // additional transform to move to objectBoundingBox coordinate system
@@ -131,8 +131,8 @@ public class SVGRadialGradientElementBridge
                                              SVG_R_ATTRIBUTE,
                                              coordSystemType,
                                              uctx);
-	// A value of zero will cause the area to be painted as a single color
-	// using the color and opacity of the last gradient stop.
+        // A value of zero will cause the area to be painted as a single color
+        // using the color and opacity of the last gradient stop.
         if (r == 0) {
             return colors[colors.length-1];
         } else {

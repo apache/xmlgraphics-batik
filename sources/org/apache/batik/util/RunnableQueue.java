@@ -31,7 +31,7 @@ public class RunnableQueue implements Runnable {
     /**
      * Type-safe enumeration of queue states.
      */
-    public static class RunnableQueueState extends Object {
+    public static class RunnableQueueState {
         final String value;
         private RunnableQueueState(String value) {
             this.value = value.intern(); }
@@ -41,7 +41,7 @@ public class RunnableQueue implements Runnable {
     }
 
     /**
-     * The queue is in the processes of running tasks.
+     * The queue is in the process of running tasks.
      */
     public static final RunnableQueueState RUNNING 
         = new RunnableQueueState("Running");
@@ -100,8 +100,13 @@ public class RunnableQueue implements Runnable {
     protected HaltingThread runnableQueueThread;
 
     /**
+     * The Runnable to run if the queue is empty. 
+     */
+    protected Runnable idleRunnable;
+
+    /**
      * Creates a new RunnableQueue started in a new thread.
-     * @return a RunnableQueue which is garanteed to have entered its
+     * @return a RunnableQueue which is guaranteed to have entered its
      *         <tt>run()</tt> method.
      */
     public static RunnableQueue createRunnableQueue() {
@@ -139,7 +144,7 @@ public class RunnableQueue implements Runnable {
             while (!HaltingThread.hasBeenHalted()) {
                 boolean callSuspended = false;
                 boolean callResumed   = false;
-                // Mutex for suspention work.
+                // Mutex for suspension work.
                 synchronized (stateLock) {
                     if (state != RUNNING) {
                         state = SUSPENDED;
@@ -185,16 +190,22 @@ public class RunnableQueue implements Runnable {
                     l = (Link)list.pop();
                     if (preemptCount != 0) preemptCount--;
                     if (l == null) {
-                        // No item to run, wait till there is one.
-                        try {
-                            list.wait();
-                        } catch (InterruptedException ie) {
-                            // just loop again.
+                        // No item to run, see if there is an idle runnable
+                        // to run instead.
+                        if (idleRunnable != null) {
+                            rable = idleRunnable;
+                        } else {
+                            // Wait for a runnable.
+                            try {
+                                list.wait();
+                            } catch (InterruptedException ie) {
+                                // just loop again.
+                            }
+                            continue; // start loop over again...
                         }
-                        continue; // start loop over again...
+                    } else {
+                        rable = l.runnable;
                     }
-
-                    rable = l.runnable;
                 }
 
                 runnableStart(rable);
@@ -209,7 +220,11 @@ public class RunnableQueue implements Runnable {
                     // But this is more or less what Swing does.
                     t.printStackTrace();
                 }
-                l.unlock();
+                // Notify something waiting on the runnable just completed,
+                // if we just ran one from the queue.
+                if (l != null) {
+                    l.unlock();
+                }
                 runnableInvoked(rable);
             }
         } finally {
@@ -450,6 +465,13 @@ public class RunnableQueue implements Runnable {
         return runHandler;
     }
 
+    /**
+     * Sets a Runnable to be run whenever the queue is empty.
+     */
+    public synchronized void setIdleRunnable(Runnable r) {
+        idleRunnable = r;
+    }
+    
     /**
      * Called when execution is being suspended.
      * Currently just notifies runHandler

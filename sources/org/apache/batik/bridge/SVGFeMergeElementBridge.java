@@ -179,7 +179,8 @@ public class SVGFeMergeElementBridge
     /**
      * Bridge class for the &lt;feMergeNode> element.
      */
-    public static class SVGFeMergeNodeElementBridge extends AbstractSVGBridge {
+    public static class SVGFeMergeNodeElementBridge
+            extends AnimatableGenericSVGBridge {
 
         /**
          * Constructs a new bridge for the &lt;feMergeNode> element.

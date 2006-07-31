@@ -32,8 +32,9 @@ import org.apache.batik.ext.awt.geom.Polygon2D;
 import org.apache.batik.ext.awt.geom.Polyline2D;
 import org.apache.batik.transcoder.wmf.WMFConstants;
 
-/** This class holds simple properties about a WMF Metafile. It can be used whenever general 
- * informations must be retrieved about this file.
+/** 
+ * This class holds simple properties about a WMF Metafile. It can be used
+ * whenever general information must be retrieved about this file.
  */
 public class WMFHeaderProperties extends AbstractWMFReader {
     protected DataInputStream stream;

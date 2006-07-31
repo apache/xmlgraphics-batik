@@ -1,6 +1,6 @@
 /*
 
-   Copyright 1999-2003  The Apache Software Foundation 
+   Copyright 1999-2003,2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -85,6 +85,11 @@ public class ShapeExtender implements ExtendedShape {
         PathIterator pi = null;
         public EPIWrap(PathIterator pi) {
             this.pi = pi;
+        }
+
+        public int currentSegment() {
+            float[] coords = new float[6];
+            return pi.currentSegment(coords);
         }
 
         public int currentSegment(double[] coords) { 

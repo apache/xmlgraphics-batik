@@ -30,6 +30,7 @@ package org.apache.batik.parser;
  * @version $Id$
  */
 public class ParseException extends RuntimeException {
+
     /**
      * @serial The embedded exception if tunnelling, or null.
      */    

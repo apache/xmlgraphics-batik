@@ -23,7 +23,7 @@ import org.w3c.dom.Node;
 /**
  * This is a development only class. It is used temporarily in the
  * SVG DOM implementation for SVG elements whose DOM support has not
- * been put in
+ * been put in.
  *
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$

@@ -185,7 +185,7 @@ public class SVGLookupOp extends AbstractSVGFilterConverter {
             filterDef.appendChild(feComponentTransferDef);
 
             filterDef.
-                setAttributeNS(null, ATTR_ID,
+                setAttributeNS(null, SVG_ID_ATTRIBUTE,
                                generatorContext.idGenerator.
                                generateID(ID_PREFIX_FE_COMPONENT_TRANSFER));
             //
@@ -195,7 +195,7 @@ public class SVGLookupOp extends AbstractSVGFilterConverter {
             // Process filter attribute
             StringBuffer filterAttrBuf = new StringBuffer(URL_PREFIX);
             filterAttrBuf.append(SIGN_POUND);
-            filterAttrBuf.append(filterDef.getAttributeNS(null, ATTR_ID));
+            filterAttrBuf.append(filterDef.getAttributeNS(null, SVG_ID_ATTRIBUTE));
             filterAttrBuf.append(URL_SUFFIX);
 
             filterDesc = new SVGFilterDescriptor(filterAttrBuf.toString(),

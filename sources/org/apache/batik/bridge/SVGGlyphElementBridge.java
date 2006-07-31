@@ -80,8 +80,6 @@ public class SVGGlyphElementBridge extends AbstractSVGBridge
                              GVTFontFace fontFace,
                              TextPaintInfo tpi) {
 
-
-
         float fontHeight = fontFace.getUnitsPerEm();
         float scale = fontSize/fontHeight;
         AffineTransform scaleTransform
@@ -99,7 +97,7 @@ public class SVGGlyphElementBridge extends AbstractSVGBridge
                 pathParser.setPathHandler(app);
                 pathParser.parse(d);
             } catch (ParseException ex) {
-                throw new BridgeException(glyphElement,
+                throw new BridgeException(ctx, glyphElement,
                                           ERR_ATTRIBUTE_VALUE_MALFORMED,
                                           new Object [] {SVG_D_ATTRIBUTE});
             } finally {
@@ -211,8 +209,9 @@ public class SVGGlyphElementBridge extends AbstractSVGBridge
             s = parentFontElement.getAttributeNS(null, SVG_HORIZ_ADV_X_ATTRIBUTE);
             if (s.length() == 0) {
                 // throw an exception since this attribute is required on the font element
-                throw new BridgeException (parentFontElement, ERR_ATTRIBUTE_MISSING,
-                                           new Object[] {SVG_HORIZ_ADV_X_ATTRIBUTE});
+                throw new BridgeException
+                    (ctx, parentFontElement, ERR_ATTRIBUTE_MISSING,
+                     new Object[] {SVG_HORIZ_ADV_X_ATTRIBUTE});
             }
         }
         float horizAdvX;
@@ -220,8 +219,8 @@ public class SVGGlyphElementBridge extends AbstractSVGBridge
             horizAdvX = SVGUtilities.convertSVGNumber(s) * scale;
         } catch (NumberFormatException ex) {
             throw new BridgeException
-                (glyphElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
-                new Object [] {SVG_HORIZ_ADV_X_ATTRIBUTE, s});
+                (ctx, glyphElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                 new Object [] {SVG_HORIZ_ADV_X_ATTRIBUTE, s});
         }
 
         // vert-adv-y
@@ -239,8 +238,8 @@ public class SVGGlyphElementBridge extends AbstractSVGBridge
             vertAdvY = SVGUtilities.convertSVGNumber(s) * scale;
         } catch (NumberFormatException ex) {
             throw new BridgeException
-                (glyphElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
-                new Object [] {SVG_VERT_ADV_Y_ATTRIBUTE, s});
+                (ctx, glyphElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                 new Object [] {SVG_VERT_ADV_Y_ATTRIBUTE, s});
         }
 
         // vert-origin-x
@@ -258,8 +257,8 @@ public class SVGGlyphElementBridge extends AbstractSVGBridge
             vertOriginX = SVGUtilities.convertSVGNumber(s) * scale;
         } catch (NumberFormatException ex) {
             throw new BridgeException
-                (glyphElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
-                new Object [] {SVG_VERT_ORIGIN_X_ATTRIBUTE, s});
+                (ctx, glyphElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                 new Object [] {SVG_VERT_ORIGIN_X_ATTRIBUTE, s});
         }
 
         // vert-origin-y
@@ -277,8 +276,8 @@ public class SVGGlyphElementBridge extends AbstractSVGBridge
             vertOriginY = SVGUtilities.convertSVGNumber(s) * -scale;
         } catch (NumberFormatException ex) {
             throw new BridgeException
-                (glyphElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
-                new Object [] {SVG_VERT_ORIGIN_Y_ATTRIBUTE, s});
+                (ctx, glyphElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                 new Object [] {SVG_VERT_ORIGIN_Y_ATTRIBUTE, s});
         }
 
         Point2D vertOrigin = new Point2D.Float(vertOriginX, vertOriginY);
@@ -297,8 +296,8 @@ public class SVGGlyphElementBridge extends AbstractSVGBridge
             horizOriginX = SVGUtilities.convertSVGNumber(s) * scale;
         } catch (NumberFormatException ex) {
             throw new BridgeException
-                (parentFontElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
-                new Object [] {SVG_HORIZ_ORIGIN_X_ATTRIBUTE, s});
+                (ctx, parentFontElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                 new Object [] {SVG_HORIZ_ORIGIN_X_ATTRIBUTE, s});
         }
 
         // horiz-origin-y
@@ -312,8 +311,8 @@ public class SVGGlyphElementBridge extends AbstractSVGBridge
             horizOriginY = SVGUtilities.convertSVGNumber(s) * -scale;
         } catch (NumberFormatException ex) {
             throw new BridgeException
-                (glyphElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
-                new Object [] {SVG_HORIZ_ORIGIN_Y_ATTRIBUTE, s});
+                (ctx, glyphElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                 new Object [] {SVG_HORIZ_ORIGIN_Y_ATTRIBUTE, s});
         }
 
         Point2D horizOrigin = new Point2D.Float(horizOriginX, horizOriginY);

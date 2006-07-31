@@ -60,6 +60,7 @@ import org.w3c.dom.NodeList;
  * @version $Id$
  */
 public class DOMTreeManager implements SVGSyntax, ErrorConstants {
+
     /**
      * Maximum of Graphic Context attributes overrides
      * in children of the current group.
@@ -286,7 +287,7 @@ public class DOMTreeManager implements SVGSyntax, ErrorConstants {
             genericDefs.appendChild((Element)iter.next());
         }
 
-        genericDefs.setAttributeNS(null, ATTR_ID, ID_PREFIX_GENERIC_DEFS);
+        genericDefs.setAttributeNS(null, SVG_ID_ATTRIBUTE, ID_PREFIX_GENERIC_DEFS);
         return genericDefs;
     }
 
@@ -387,7 +388,7 @@ public class DOMTreeManager implements SVGSyntax, ErrorConstants {
                         createElementNS(SVG_NAMESPACE_URI,
                                         SVG_DEFS_TAG);
                     defElement.
-                        setAttributeNS(null, ATTR_ID,
+                        setAttributeNS(null, SVG_ID_ATTRIBUTE,
                                        generatorContext.idGenerator.
                                        generateID(ID_PREFIX_DEFS));
                     topLevelGroup.insertBefore(defElement,

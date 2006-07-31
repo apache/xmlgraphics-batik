@@ -19,6 +19,7 @@ package org.apache.batik.dom.svg;
 
 import org.apache.batik.parser.UnitProcessor;
 import org.w3c.dom.Attr;
+import org.w3c.dom.DOMException;
 import org.w3c.dom.svg.SVGAnimatedLength;
 import org.w3c.dom.svg.SVGLength;
 
@@ -30,6 +31,7 @@ import org.w3c.dom.svg.SVGLength;
  * @version $Id$
  */
 public abstract class AbstractSVGAnimatedLength
+    extends    AbstractSVGAnimatedValue
     implements SVGAnimatedLength,
                LiveAttributeValue {
 
@@ -52,21 +54,6 @@ public abstract class AbstractSVGAnimatedLength
         UnitProcessor.OTHER_LENGTH;
 
     /**
-     * The associated element.
-     */
-    protected AbstractElement element;
-
-    /**
-     * The attribute's namespace URI.
-     */
-    protected String namespaceURI;
-
-    /**
-     * The attribute's local name.
-     */
-    protected String localName;
-
-    /**
      * This length's direction.
      */
     protected short direction;
@@ -77,9 +64,19 @@ public abstract class AbstractSVGAnimatedLength
     protected BaseSVGLength baseVal;
 
     /**
+     * The current animated value.
+     */
+    protected AnimSVGLength animVal;
+
+    /**
      * Whether the value is changing.
      */
     protected boolean changing;
+    
+    /**
+     * Whether the value must be non-negative.
+     */
+    protected boolean nonNegative;
 
     /**
      * Creates a new SVGAnimatedLength.
@@ -87,15 +84,16 @@ public abstract class AbstractSVGAnimatedLength
      * @param ns The attribute's namespace URI.
      * @param ln The attribute's local name.
      * @param dir The length's direction.
+     * @param nonneg Whether the length must be non-negative.
      */
     protected AbstractSVGAnimatedLength(AbstractElement elt,
                                         String ns,
                                         String ln,
-                                        short dir) {
-        element = elt;
-        namespaceURI = ns;
-        localName = ln;
+                                        short dir,
+                                        boolean nonneg) {
+        super(elt, ns, ln);
         direction = dir;
+        nonNegative = nonneg;
     }
 
     /**
@@ -118,38 +116,68 @@ public abstract class AbstractSVGAnimatedLength
      * <b>DOM</b>: Implements {@link SVGAnimatedLength#getAnimVal()}.
      */
     public SVGLength getAnimVal() {
-        throw new RuntimeException("!!! TODO: getAnimVal()");
+        if (animVal == null) {
+            animVal = new AnimSVGLength(direction);
+        }
+        return animVal;
+    }
+
+    /**
+     * Sets the animated value.
+     */
+    public void setAnimatedValue(int type, float val) {
+        if (animVal == null) {
+            animVal = new AnimSVGLength(direction);
+        }
+        hasAnimVal = true;
+        animVal.setAnimatedValue(type, val);
+        fireAnimatedAttributeListeners();
+    }
+
+    /**
+     * Resets the animated value.
+     */
+    public void resetAnimatedValue() {
+        hasAnimVal = false;
+        fireAnimatedAttributeListeners();
     }
 
     /**
      * Called when an Attr node has been added.
      */
     public void attrAdded(Attr node, String newv) {
-        if (!changing && baseVal != null) {
-            baseVal.invalidate();
-        }
+        attrChanged();
     }
 
     /**
      * Called when an Attr node has been modified.
      */
     public void attrModified(Attr node, String oldv, String newv) {
-        if (!changing && baseVal != null) {
-            baseVal.invalidate();
-        }
+        attrChanged();
     }
 
     /**
      * Called when an Attr node has been removed.
      */
     public void attrRemoved(Attr node, String oldv) {
+        attrChanged();
+    }
+
+    /**
+     * Called when the attribute has changed in some way.
+     */
+    protected void attrChanged() {
         if (!changing && baseVal != null) {
             baseVal.invalidate();
+        }
+        fireBaseAttributeListeners();
+        if (!hasAnimVal) {
+            fireAnimatedAttributeListeners();
         }
     }
 
     /**
-     * This class represents the SVGLength returned by getBaseVal().
+     * This class represents the SVGLength returned by {@link #getBaseVal()}.
      */
     protected class BaseSVGLength extends AbstractSVGLength {
 
@@ -193,26 +221,153 @@ public abstract class AbstractSVGAnimatedLength
                 return;
             }
 
-            String s = null;
+            unitType = SVG_LENGTHTYPE_UNKNOWN;
+            value = 0;
 
             Attr attr = element.getAttributeNodeNS(namespaceURI, localName);
-
+            String s;
             if (attr == null) {
                 s = getDefaultValue();
-            }
-            else{
+                if (s == null) {
+                    throw new LiveAttributeException
+                        (element, localName,
+                         LiveAttributeException.ERR_ATTRIBUTE_MISSING, null);
+                }
+            } else {
                 s = attr.getValue();
             }
 
             parse(s);
 
+            if (nonNegative && value < 0) {
+                throw new LiveAttributeException
+                    (element, localName,
+                     LiveAttributeException.ERR_ATTRIBUTE_NEGATIVE, s);
+            }
+
             valid = true;
         }
 
         /**
+         * Returns the element this length is associated with.
          */
-        protected SVGOMElement getAssociatedElement(){
+        protected SVGOMElement getAssociatedElement() {
             return (SVGOMElement)element;
+        }
+    }
+
+    /**
+     * This class represents the SVGLength returned by {@link #getAnimVal()}.
+     */
+    protected class AnimSVGLength extends AbstractSVGLength {
+
+        /**
+         * Creates a new AnimSVGLength.
+         */
+        public AnimSVGLength(short direction) {
+            super(direction);
+        }
+
+        /**
+         * <b>DOM</b>: Implements {@link SVGLength#getUnitType()}.
+         */
+        public short getUnitType() {
+            if (hasAnimVal) {
+                return super.getUnitType();
+            }
+            return getBaseVal().getUnitType();
+        }
+
+        /**
+         * <b>DOM</b>: Implements {@link SVGLength#getValue()}.
+         */
+        public float getValue() {
+            if (hasAnimVal) {
+                return super.getValue();
+            }
+            return getBaseVal().getValue();
+        }
+
+        /**
+         * <b>DOM</b>: Implements {@link SVGLength#getValueInSpecifiedUnits()}.
+         */
+        public float getValueInSpecifiedUnits() {
+            if (hasAnimVal) {
+                return super.getValueInSpecifiedUnits();
+            }
+            return getBaseVal().getValueInSpecifiedUnits();
+        }
+
+        /**
+         * <b>DOM</b>: Implements {@link SVGLength#getValueAsString()}.
+         */
+        public String getValueAsString() {
+            if (hasAnimVal) {
+                return super.getValueAsString();
+            }
+            return getBaseVal().getValueAsString();
+        }
+
+        /**
+         * <b>DOM</b>: Implements {@link SVGLength#setValue(float)}.
+         */
+        public void setValue(float value) throws DOMException {
+            throw element.createDOMException
+                (DOMException.NO_MODIFICATION_ALLOWED_ERR, "readonly.length",
+                 null);
+        }
+
+        /**
+         * <b>DOM</b>: Implements {@link
+         * SVGLength#setValueInSpecifiedUnits(float)}.
+         */
+        public void setValueInSpecifiedUnits(float value) throws DOMException {
+            throw element.createDOMException
+                (DOMException.NO_MODIFICATION_ALLOWED_ERR, "readonly.length",
+                 null);
+        }
+
+        /**
+         * <b>DOM</b>: Implements {@link SVGLength#setValueAsString(String)}.
+         */
+        public void setValueAsString(String value) throws DOMException {
+            throw element.createDOMException
+                (DOMException.NO_MODIFICATION_ALLOWED_ERR, "readonly.length",
+                 null);
+        }
+
+        /**
+         * <b>DOM</b>: Implements {@link
+         * SVGLength#newValueSpecifiedUnits(short,float)}.
+         */
+        public void newValueSpecifiedUnits(short unit, float value) {
+            throw element.createDOMException
+                (DOMException.NO_MODIFICATION_ALLOWED_ERR, "readonly.length",
+                 null);
+        }
+
+        /**
+         * <b>DOM</b>: Implements {@link
+         * SVGLength#convertToSpecifiedUnits(short)}.
+         */
+        public void convertToSpecifiedUnits(short unit) {
+            throw element.createDOMException
+                (DOMException.NO_MODIFICATION_ALLOWED_ERR, "readonly.length",
+                 null);
+        }
+
+        /**
+         * Returns the element this length is associated with.
+         */
+        protected SVGOMElement getAssociatedElement() {
+            return (SVGOMElement) element;
+        }
+
+        /**
+         * Sets the animated value.
+         */
+        protected void setAnimatedValue(int type, float val) {
+            super.newValueSpecifiedUnits((short) type, val);
         }
     }
 }

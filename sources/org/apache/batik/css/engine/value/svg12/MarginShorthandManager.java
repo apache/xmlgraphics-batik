@@ -46,6 +46,20 @@ public class MarginShorthandManager
     }
     
     /**
+     * Implements {@link ShorthandManager#isAnimatableProperty()}.
+     */
+    public boolean isAnimatableProperty() {
+        return true;
+    }
+
+    /**
+     * Implements {@link ShorthandManager#isAdditiveProperty()}.
+     */
+    public boolean isAdditiveProperty() {
+        return false;
+    }
+
+    /**
      * Implements {@link ShorthandManager#setValues(CSSEngine,ShorthandManager.PropertyHandler,LexicalUnit,boolean)}.
      */
     public void setValues(CSSEngine eng,

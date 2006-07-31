@@ -105,7 +105,7 @@ public class ImageHandlerBase64Encoder extends DefaultImageHandler {
 
     protected void handleEmptyImage(Element imageElement) {
         imageElement.setAttributeNS(XLINK_NAMESPACE_URI,
-                                    ATTR_XLINK_HREF, DATA_PROTOCOL_PNG_PREFIX);
+                                    XLINK_HREF_QNAME, DATA_PROTOCOL_PNG_PREFIX);
         imageElement.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE, "0");
         imageElement.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE, "0");
     }
@@ -142,7 +142,7 @@ public class ImageHandlerBase64Encoder extends DefaultImageHandler {
         // Finally, write out url
         //
         imageElement.setAttributeNS(XLINK_NAMESPACE_URI,
-                                    ATTR_XLINK_HREF,
+                                    XLINK_HREF_QNAME,
                                     DATA_PROTOCOL_PNG_PREFIX +
                                     os.toString());
 

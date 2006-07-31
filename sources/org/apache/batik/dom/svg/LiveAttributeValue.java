@@ -27,6 +27,7 @@ import org.w3c.dom.Attr;
  * @version $Id$
  */
 public interface LiveAttributeValue {
+
     /**
      * Called when an Attr node has been added.
      */

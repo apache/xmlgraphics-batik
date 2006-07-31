@@ -272,7 +272,7 @@ public abstract class ImageCacher implements SVGSyntax, ErrorConstants {
             imageElement.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE,
                                               Integer.toString(height));
             imageElement.setAttributeNS(DefaultImageHandler.XLINK_NAMESPACE_URI,
-                                              ATTR_XLINK_HREF,
+                                              XLINK_HREF_QNAME,
                                               href);
             // imageDefs.appendChild(imageElement);
             domTreeManager.addOtherDef(imageElement);

@@ -43,4 +43,3 @@ public class SVGTitleElementBridge extends SVGDescriptiveElementBridge {
      */
     public Bridge getInstance() { return new SVGTitleElementBridge(); }
 }
-

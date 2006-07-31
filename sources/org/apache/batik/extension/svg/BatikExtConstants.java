@@ -17,7 +17,12 @@
  */
 package org.apache.batik.extension.svg;
 
-
+/**
+ * Batik extension constants.
+ *
+ * @author <a href="mailto:thomas.deweese@kodak.com">Thomas DeWeese</a>
+ * @version $Id$
+ */
 public interface BatikExtConstants {
 
     /** Namespace for batik extentions. */

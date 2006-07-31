@@ -66,6 +66,8 @@ public class SVGGElementBridge extends AbstractGraphicsNodeBridge {
 	if (gn == null)
 	    return null;
 
+        associateSVGContext(ctx, e, gn);
+
         // 'color-rendering'
         RenderingHints hints = null;
         hints = CSSUtilities.convertColorRendering(e, hints);

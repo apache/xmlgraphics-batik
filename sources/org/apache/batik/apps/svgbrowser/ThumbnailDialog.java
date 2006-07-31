@@ -188,8 +188,8 @@ public class ThumbnailDialog extends JDialog {
                 String aspectRatio = elt.getAttributeNS
                     (null, SVGConstants.SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE);
                 Tx = ViewBox.getPreserveAspectRatioTransform
-                    (elt, viewBox, aspectRatio, dim.width, dim.height);
-            }else {
+                    (elt, viewBox, aspectRatio, dim.width, dim.height, null);
+            } else {
                 // no viewBox has been specified, create a scale transform
                 Dimension2D docSize = svgCanvas.getSVGDocumentSize();
                 double sx = dim.width / docSize.getWidth();

@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2004 The Apache Software Foundation 
+   Copyright 2004,2006 The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
    limitations under the License.
 
 */
-
 package org.apache.batik.dom.svg;
 
 import java.util.List;
@@ -30,7 +29,7 @@ import org.w3c.dom.Element;
  * methods but for now it will have methods to do intersection
  * and enclosure checking.
  *
- * @author <a href="mailto:deweese@apache.org">deweese</a>
+ * @author <a href="mailto:deweese@apache.org">Thomas DeWeese</a>
  * @version $Id$
  */
 public interface SVGSVGContext extends SVGContext {
@@ -40,37 +39,50 @@ public interface SVGSVGContext extends SVGContext {
      * <tt>svgRect</tt> that are below <tt>end</tt> in the
      * rendering order.
      */
-    public List getIntersectionList(SVGRect svgRect, Element end);
+    List getIntersectionList(SVGRect svgRect, Element end);
 
     /**
      * Returns a List of all the DOM elements that are encosed in
      * <tt>svgRect</tt> that are below <tt>end</tt> in the
      * rendering order.
      */
-    public List getEnclosureList   (SVGRect rect, Element end );
+    List getEnclosureList(SVGRect rect, Element end);
 
     /**
      * Returns true if the given DOM element intersects
      * <tt>svgRect</tt>.
      */
-    public boolean       checkIntersection (Element element, SVGRect rect );
+    boolean checkIntersection(Element element, SVGRect rect);
 
     /**
      * Returns true if the given DOM element is enclosed in the
      * <tt>svgRect</tt>.
      */
-    public boolean       checkEnclosure (Element element, SVGRect rect );
+    boolean checkEnclosure(Element element, SVGRect rect);
 
     /**
      * Used to inform the user agent that the text selection should be
      * cleared.
      */
-    public void deselectAll();
+    void deselectAll();
 
+    /**
+     * Suspends redrawing of the canvas for the given number of milliseconds.
+     */
+    int suspendRedraw(int max_wait_milliseconds);
 
-    public int     suspendRedraw ( int max_wait_milliseconds );
-    public boolean unsuspendRedraw ( int suspend_handle_id );
-    public void    unsuspendRedrawAll (  );
-    public void    forceRedraw (  );
+    /**
+     * Unsuspends redrawing of the canvas.
+     */
+    boolean unsuspendRedraw(int suspend_handle_id);
 
+    /**
+     * Unsuspends redrawing of the canvas.
+     */
+    void unsuspendRedrawAll();
+
+    /**
+     * Forces an immediate redraw of the canvas.
+     */
+    void forceRedraw();
 };

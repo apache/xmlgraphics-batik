@@ -32,6 +32,7 @@ import org.apache.batik.ext.awt.geom.ExtendedGeneralPath;
  * @version $Id$
  */
 public class AWTPathProducer implements PathHandler, ShapeProducer {
+
     /**
      * The temporary value of extendedGeneralPath.
      */

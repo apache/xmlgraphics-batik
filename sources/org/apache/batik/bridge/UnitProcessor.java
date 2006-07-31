@@ -33,11 +33,6 @@ public abstract class UnitProcessor
     extends org.apache.batik.parser.UnitProcessor {
 
     /**
-     * No instance of this class is required.
-     */
-    protected UnitProcessor() { }
-
-    /**
      * Creates a context for the specified element.
      *
      * @param ctx the bridge context that contains the user agent and
@@ -157,7 +152,7 @@ public abstract class UnitProcessor
                                                      Context ctx) {
         float v = svgToObjectBoundingBox(s, attr, d, ctx);
         if (v < 0) {
-            throw new BridgeException(ctx.getElement(),
+            throw new BridgeException(getBridgeContext(ctx), ctx.getElement(),
                                       ErrorConstants.ERR_LENGTH_NEGATIVE,
                                       new Object[] {attr, s});
         }
@@ -181,9 +176,10 @@ public abstract class UnitProcessor
             return org.apache.batik.parser.UnitProcessor.
                 svgToObjectBoundingBox(s, attr, d, ctx);
         } catch (ParseException ex) {
-            throw new BridgeException(ctx.getElement(),
-                                  ErrorConstants.ERR_ATTRIBUTE_VALUE_MALFORMED,
-                                      new Object[] {attr, s, ex});
+            throw new BridgeException
+                (getBridgeContext(ctx), ctx.getElement(),
+                 ErrorConstants.ERR_ATTRIBUTE_VALUE_MALFORMED,
+                 new Object[] {attr, s, ex});
         }
     }
 
@@ -288,7 +284,7 @@ public abstract class UnitProcessor
                                              Context ctx) {
         float v = svgToUserSpace(s, attr, d, ctx);
         if (v < 0) {
-            throw new BridgeException(ctx.getElement(),
+            throw new BridgeException(getBridgeContext(ctx), ctx.getElement(),
                                       ErrorConstants.ERR_LENGTH_NEGATIVE,
                                       new Object[] {attr, s});
         } else {
@@ -313,24 +309,44 @@ public abstract class UnitProcessor
             return org.apache.batik.parser.UnitProcessor.
                 svgToUserSpace(s, attr, d, ctx);
         } catch (ParseException ex) {
-            throw new BridgeException(ctx.getElement(),
-                                 ErrorConstants.ERR_ATTRIBUTE_VALUE_MALFORMED,
-                                      new Object[] {attr, s, ex});
+            throw new BridgeException
+                (getBridgeContext(ctx), ctx.getElement(),
+                 ErrorConstants.ERR_ATTRIBUTE_VALUE_MALFORMED,
+                 new Object[] {attr, s, ex});
         }
     }
 
     /**
-     * This class is the default context for a particular
-     * element. Informations not available on the element are get from
-     * the bridge context (such as the viewport or the pixel to
-     * millimeter factor.
+     * Returns the {@link BridgeContext} from the given {@link Context}
+     * if it is a {@link DefaultContext}, or null otherwise.
+     */
+    protected static BridgeContext getBridgeContext(Context ctx) {
+        if (ctx instanceof DefaultContext) {
+            return ((DefaultContext) ctx).ctx;
+        }
+        return null;
+    }
+
+    /**
+     * This class is the default context for a particular element. Information
+     * not available on the element are obtained from the bridge context (such
+     * as the viewport or the pixel to millimeter factor).
      */
     public static class DefaultContext implements Context {
 
-        /** The element. */
+        /**
+         * The element.
+         */
         protected Element e;
+
+        /**
+         * The bridge context.
+         */
         protected BridgeContext ctx;
 
+        /**
+         * Creates a new DefaultContext.
+         */
         public DefaultContext(BridgeContext ctx, Element e) {
             this.ctx = ctx;
             this.e = e;

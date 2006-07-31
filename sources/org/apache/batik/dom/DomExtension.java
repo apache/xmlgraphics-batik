@@ -21,6 +21,9 @@ package org.apache.batik.dom;
  * This is a Service interface for classes that want to extend the
  * functionality of the AbstractDocument, to support new tags in the
  * DOM tree.  
+ *
+ * @author <a href="mailto:thomas.deweese@kodak.com">Thomas DeWeese</a>
+ * @version $Id$
  */
 public interface DomExtension {
 

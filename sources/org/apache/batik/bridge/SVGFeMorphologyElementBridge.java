@@ -78,13 +78,13 @@ public class SVGFeMorphologyElementBridge
                                Map filterMap) {
 
         // 'radius' attribute - default is [0, 0]
-        float [] radii = convertRadius(filterElement);
+        float[] radii = convertRadius(filterElement, ctx);
         if (radii[0] == 0 || radii[1] == 0) {
             return null; // disable the filter
         }
 
         // 'operator' attribute - default is 'erode'
-        boolean isDilate = convertOperator(filterElement);
+        boolean isDilate = convertOperator(filterElement, ctx);
 
         // 'in' attribute
         Filter in = getIn(filterElement,
@@ -134,8 +134,10 @@ public class SVGFeMorphologyElementBridge
      * filter primitive.
      *
      * @param filterElement the feMorphology filter primitive
+     * @param ctx the BridgeContext to use for error information
      */
-    protected static float [] convertRadius(Element filterElement) {
+    protected static float[] convertRadius(Element filterElement,
+                                           BridgeContext ctx) {
         String s = filterElement.getAttributeNS(null, SVG_RADIUS_ATTRIBUTE);
         if (s.length() == 0) {
             return new float[] {0, 0};
@@ -151,12 +153,12 @@ public class SVGFeMorphologyElementBridge
             }
         } catch (NumberFormatException ex) {
             throw new BridgeException
-                (filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                (ctx, filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
                  new Object[] {SVG_RADIUS_ATTRIBUTE, s, ex});
         }
         if (tokens.hasMoreTokens() || radii[0] < 0 || radii[1] < 0) {
             throw new BridgeException
-                (filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                (ctx, filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
                  new Object[] {SVG_RADIUS_ATTRIBUTE, s});
         }
         return radii;
@@ -167,8 +169,10 @@ public class SVGFeMorphologyElementBridge
      * primitive.
      *
      * @param filterElement the feMorphology filter primitive
+     * @param ctx the BridgeContext to use for error information
      */
-    protected static boolean convertOperator(Element filterElement) {
+    protected static boolean convertOperator(Element filterElement,
+                                             BridgeContext ctx) {
         String s = filterElement.getAttributeNS(null, SVG_OPERATOR_ATTRIBUTE);
         if (s.length() == 0) {
             return false;
@@ -179,8 +183,8 @@ public class SVGFeMorphologyElementBridge
         if (SVG_DILATE_VALUE.equals(s)) {
             return true;
         }
-        throw new BridgeException(filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
-                                  new Object[] {SVG_OPERATOR_ATTRIBUTE, s});
+        throw new BridgeException
+            (ctx, filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+             new Object[] {SVG_OPERATOR_ATTRIBUTE, s});
     }
-
 }

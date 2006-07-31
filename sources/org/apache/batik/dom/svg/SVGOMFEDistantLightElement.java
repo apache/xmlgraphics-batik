@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2000-2002  The Apache Software Foundation 
+   Copyright 2000-2002,2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -17,7 +17,10 @@
  */
 package org.apache.batik.dom.svg;
 
+import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.util.SVGTypes;
+
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedNumber;
 import org.w3c.dom.svg.SVGFEDistantLightElement;
@@ -74,5 +77,66 @@ public class SVGOMFEDistantLightElement
      */
     protected Node newNode() {
         return new SVGOMFEDistantLightElement();
+    }
+
+    // ExtendedTraitAccess ///////////////////////////////////////////////////
+
+    /**
+     * Returns whether the given XML attribute is animatable.
+     */
+    public boolean isAttributeAnimatable(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_AZIMUTH_ATTRIBUTE)
+                    || ln.equals(SVG_ELEVATION_ATTRIBUTE)) {
+                return true;
+            }
+        }
+        return super.isAttributeAnimatable(ns, ln);
+    }
+
+    /**
+     * Returns the type of the given attribute.
+     */
+    public int getAttributeType(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_AZIMUTH_ATTRIBUTE)
+                    || ln.equals(SVG_ELEVATION_ATTRIBUTE)) {
+                return SVGTypes.TYPE_NUMBER;
+            }
+        }
+        return super.getAttributeType(ns, ln);
+    }
+
+    // AnimationTarget ///////////////////////////////////////////////////////
+
+    /**
+     * Updates an attribute value in this target.
+     */
+    public void updateAttributeValue(String ns, String ln,
+                                     AnimatableValue val) {
+        if (ns == null) {
+            if (ln.equals(SVG_AZIMUTH_ATTRIBUTE)) {
+                updateNumberAttributeValue(getAzimuth(), val);
+                return;
+            } else if (ln.equals(SVG_ELEVATION_ATTRIBUTE)) {
+                updateNumberAttributeValue(getElevation(), val);
+                return;
+            }
+        }
+        super.updateAttributeValue(ns, ln, val);
+    }
+
+    /**
+     * Returns the underlying value of an animatable XML attribute.
+     */
+    public AnimatableValue getUnderlyingValue(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_AZIMUTH_ATTRIBUTE)) {
+                return getBaseValue(getAzimuth());
+            } else if (ln.equals(SVG_ELEVATION_ATTRIBUTE)) {
+                return getBaseValue(getElevation());
+            }
+        }
+        return super.getUnderlyingValue(ns, ln);
     }
 }

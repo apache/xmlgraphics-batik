@@ -21,8 +21,7 @@ import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.svg.SVGPointList;
 
 /**
- * This class provide support for the SVGAnimatedPoints 
- * interface.
+ * This class provide support for the SVGAnimatedPoints interface.
  *
  * @author <a href="mailto:nicolas.socheleau@bitflash.com">Nicolas Socheleau</a>
  * @version $Id$
@@ -36,39 +35,39 @@ public class SVGAnimatedPointsSupport {
         = "";
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGAnimatedPoints#getPoints()}.
+     * Returns an {@link SVGOMAnimatedPoints} object for the 'points'
+     * attribute of the given element.
      */
-    public static SVGPointList getPoints(AbstractElement e){
-        SVGOMAnimatedPoints result =(SVGOMAnimatedPoints)
+    public static SVGOMAnimatedPoints
+            getSVGOMAnimatedPoints(AbstractElement e) {
+        SVGOMAnimatedPoints result = (SVGOMAnimatedPoints)
             e.getLiveAttributeValue(null, SVGConstants.SVG_POINTS_ATTRIBUTE);
         if (result == null) {
             result = new SVGOMAnimatedPoints(e, null,
                                              SVGConstants.SVG_POINTS_ATTRIBUTE,
                                              POINTS_DEFAULT_VALUE);
+            SVGOMDocument doc = (SVGOMDocument) e.getOwnerDocument();
+            result.addAnimatedAttributeListener
+                (doc.getAnimatedAttributeListener());
             e.putLiveAttributeValue(null,
                                     SVGConstants.SVG_POINTS_ATTRIBUTE, result);
         }
-        return result.getPoints();
+        return result;
     }
 
+    /**
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.svg.SVGAnimatedPoints#getPoints()}.
+     */
+    public static SVGPointList getPoints(AbstractElement e) {
+        return getSVGOMAnimatedPoints(e).getPoints();
+    }
 
     /**
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGAnimatedPoints#getAnimatedPoints()}.
      */
-    public static SVGPointList getAnimatedPoints(AbstractElement e){
-
-        SVGOMAnimatedPoints result =(SVGOMAnimatedPoints)
-            e.getLiveAttributeValue(null, SVGConstants.SVG_POINTS_ATTRIBUTE);
-        if (result == null) {
-            result = new SVGOMAnimatedPoints(e, null,
-                                             SVGConstants.SVG_POINTS_ATTRIBUTE,
-                                             POINTS_DEFAULT_VALUE);
-            e.putLiveAttributeValue(null,
-                                    SVGConstants.SVG_POINTS_ATTRIBUTE, result);
-        }
-        return result.getAnimatedPoints();
+    public static SVGPointList getAnimatedPoints(AbstractElement e) {
+        return getSVGOMAnimatedPoints(e).getAnimatedPoints();
     }
-
 }

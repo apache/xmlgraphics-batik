@@ -20,6 +20,9 @@ package org.apache.batik.util;
 /**
  * A simple Doubly Linked list class, designed to avoid
  * O(n) behaviour on insert and delete.
+ *
+ * @author <a href="mailto:thomas.deweese@kodak.com">Thomas DeWeese</a>
+ * @version $Id$
  */
 public class DoublyLinkedList {
 

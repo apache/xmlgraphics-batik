@@ -20,21 +20,29 @@ package org.apache.batik.dom.svg;
 import org.w3c.dom.svg.SVGNumber;
 
 /**
+ * Implementation of {@link SVGNumber}.
  *
- * @author  tonny@kiyut.com
+ * @author <a href="mailto:tonny@kiyut.com">Tonny Kohar</a>
+ * @version $Id$
  */
 public abstract class AbstractSVGNumber implements SVGNumber {
-    float value;
+
+    /**
+     * The number.
+     */
+    protected float value;
     
-    /** Creates a new instance of SVGOMNumber */
-    public AbstractSVGNumber() {
-    }
-    
+    /**
+     * <b>DOM</b>: Implements {@link SVGNumber#getValue()}.
+     */
     public float getValue() {
         return value;
     }
+
+    /**
+     * <b>DOM</b>: Implements {@link SVGNumber#setValue(float)}.
+     */
     public void setValue(float f) {
         value = f;
     }
-    
 }

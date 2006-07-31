@@ -213,7 +213,7 @@ public abstract class AbstractImageHandlerEncoder extends DefaultImageHandler {
 
         // Update HREF
         imageElement.setAttributeNS(XLINK_NAMESPACE_URI,
-                                    ATTR_XLINK_HREF, urlRoot + "/" +
+                                    XLINK_HREF_QNAME, urlRoot + "/" +
                                     imageFile.getName());
     }
 

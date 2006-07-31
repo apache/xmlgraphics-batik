@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001-2003  The Apache Software Foundation 
+   Copyright 2001-2003,2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -75,7 +75,7 @@ public abstract class AbstractParser implements Parser {
     /**
      * Implements {@link org.apache.batik.i18n.Localizable#setLocale(Locale)}.
      */
-    public  void setLocale(Locale l) {
+    public void setLocale(Locale l) {
 	localizableSupport.setLocale(l);
     }
 
@@ -101,7 +101,7 @@ public abstract class AbstractParser implements Parser {
      * <p>If the application does not register an error event handler,
      * all error events reported by the parser will cause an exception
      * to be thrown.
-`     *
+     *
      * <p>Applications may register a new or different handler in the
      * middle of a parse, and the parser must begin using the new
      * handler immediately.</p>

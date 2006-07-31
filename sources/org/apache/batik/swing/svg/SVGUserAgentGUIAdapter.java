@@ -102,4 +102,4 @@ public class SVGUserAgentGUIAdapter extends SVGUserAgentAdapter{
             (parentComponent, str, 
              "Confirm", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION;
     }
-};
+}

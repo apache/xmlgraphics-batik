@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2004  The Apache Software Foundation 
+   Copyright 2004,2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -33,8 +33,57 @@ import org.w3c.dom.svg.SVGPreserveAspectRatio;
  * @author  Tonny Kohar
  */
 public abstract class AbstractSVGPreserveAspectRatio 
-    implements SVGPreserveAspectRatio {
+        implements SVGPreserveAspectRatio,
+                   SVGConstants {
     
+    /**
+     * Strings for the 'align' values.
+     */
+    protected static final String[] ALIGN_VALUES = {
+        null,
+        SVG_NONE_VALUE,
+        SVG_XMINYMIN_VALUE,
+        SVG_XMIDYMIN_VALUE,
+        SVG_XMAXYMIN_VALUE,
+        SVG_XMINYMID_VALUE,
+        SVG_XMIDYMID_VALUE,
+        SVG_XMAXYMID_VALUE,
+        SVG_XMINYMAX_VALUE,
+        SVG_XMIDYMAX_VALUE,
+        SVG_XMAXYMAX_VALUE
+    };
+
+    /**
+     * Strings for the 'meet-or-slice' values.
+     */
+    protected static final String[] MEET_OR_SLICE_VALUES = {
+        null,
+        SVG_MEET_VALUE,
+        SVG_SLICE_VALUE
+    };
+
+    /**
+     * Returns a string representation of a preserve aspect ratio value
+     * specified numerically.
+     * @param align the align value, one of the
+     *              SVGPreserveAspectRatio.SVG_PRESERVEASPECTRATIO_* constants
+     * @param meetOrSlice the meet-or-slice value, one of the
+     *              SVGPreserveAspectRatio.SVG_MEETORSLICE_* constants
+     */
+    public static String getValueAsString(short align, short meetOrSlice) {
+        if (align < 1 || align > 10) {
+            return null;
+        }
+        String value = ALIGN_VALUES[align];
+        if (align == SVG_PRESERVEASPECTRATIO_NONE) {
+            return value;
+        }
+        if (meetOrSlice < 1 || meetOrSlice > 2) {
+            return null;
+        }
+        return value + ' ' + MEET_OR_SLICE_VALUES[meetOrSlice];
+    }
+
     /**
      * align property by default the value is
      * SVGPreserveAspectRatio.SVG_PRESERVEASPECTRATIO_XMIDYMID
@@ -92,72 +141,34 @@ public abstract class AbstractSVGPreserveAspectRatio
             align = ph.getAlign();
             meetOrSlice = ph.getMeetOrSlice();
         } catch (ParseException ex) {
-            throw createDOMException(SVG_PRESERVEASPECTRATIO_UNKNOWN,
-                                     "invalid value for preserveAspectRatio",
-                                     null);
+            throw createDOMException
+                (DOMException.INVALID_MODIFICATION_ERR, "preserve.aspect.ratio",
+                 new Object[] { value });
         }
     }
-    
-    /** Return the value of String to be used on setAttributeNS, in
-     * other word the mapping of align meetOrSlice to representation
-     * string use by SVG
+
+    /**
+     * Returns the string representation of the preserve aspect ratio value.
      */
     protected String getValueAsString() {
-        String value = null;
-        
-        switch (align) {
-        case SVG_PRESERVEASPECTRATIO_NONE:
-            value = SVGConstants.SVG_NONE_VALUE;
-            return value; // if none ignore the rest
-        case SVG_PRESERVEASPECTRATIO_XMINYMIN:
-            value = SVGConstants.SVG_XMINYMIN_VALUE;
-            break;
-        case SVG_PRESERVEASPECTRATIO_XMIDYMIN:
-            value = SVGConstants.SVG_XMIDYMIN_VALUE;
-            break;
-        case SVG_PRESERVEASPECTRATIO_XMAXYMIN:
-            value = SVGConstants.SVG_XMAXYMIN_VALUE;
-            break;
-        case SVG_PRESERVEASPECTRATIO_XMINYMID:
-            value = SVGConstants.SVG_XMINYMID_VALUE;
-            break;
-        case SVG_PRESERVEASPECTRATIO_XMIDYMID:
-            value = SVGConstants.SVG_XMIDYMID_VALUE;
-            break;
-        case SVG_PRESERVEASPECTRATIO_XMAXYMID:
-            value = SVGConstants.SVG_XMAXYMID_VALUE;
-            break;
-        case SVG_PRESERVEASPECTRATIO_XMINYMAX:
-            value = SVGConstants.SVG_XMINYMAX_VALUE;
-            break;
-        case SVG_PRESERVEASPECTRATIO_XMIDYMAX:
-            value = SVGConstants.SVG_XMIDYMAX_VALUE;
-            break;
-        case SVG_PRESERVEASPECTRATIO_XMAXYMAX:
-            value = SVGConstants.SVG_XMAXYMAX_VALUE;
-            break;
-        default:
+        if (align < 1 || align > 10) {
             throw createDOMException
-                (SVG_PRESERVEASPECTRATIO_UNKNOWN,
-                 "invalid value for preserveAspectRatio",null);
-            //break;
+                (DOMException.INVALID_MODIFICATION_ERR,
+                 "preserve.aspect.ratio.align",
+                 new Object[] { new Integer(align) });
         }
-        
-        switch (meetOrSlice) {
-        case SVG_MEETORSLICE_MEET:
-            value = value + " " + SVGConstants.SVG_MEET_VALUE;
-            break;
-        case SVG_MEETORSLICE_SLICE:
-            value = value + " " + SVGConstants.SVG_SLICE_VALUE;
-            break;
-        default:
-            throw createDOMException(SVG_MEETORSLICE_UNKNOWN,
-                                     "invalid value for preserveAspectRatio",
-                                     null);
-            //break;
+        String value = ALIGN_VALUES[align];
+        if (align == SVG_PRESERVEASPECTRATIO_NONE) {
+            return value;
         }
-        
-        return value;
+
+        if (meetOrSlice < 1 || meetOrSlice > 2) {
+            throw createDOMException
+                (DOMException.INVALID_MODIFICATION_ERR,
+                 "preserve.aspect.ratio.meet.or.slice",
+                 new Object[] { new Integer(meetOrSlice) });
+        }
+        return value + ' ' + MEET_OR_SLICE_VALUES[meetOrSlice];
     }
     
     protected class PreserveAspectRatioParserHandler 

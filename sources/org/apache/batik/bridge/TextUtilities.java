@@ -127,7 +127,7 @@ public abstract class TextUtilities implements CSSConstants, ErrorConstants {
                                (SVGUtilities.convertSVGNumber(s))));
             } catch (NumberFormatException ex) {
                 throw new BridgeException
-                    (element, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                    (ctx, element, ERR_ATTRIBUTE_VALUE_MALFORMED,
                      new Object [] {attrName, valueStr});
             }
         }

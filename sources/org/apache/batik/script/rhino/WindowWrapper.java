@@ -29,7 +29,6 @@ import org.mozilla.javascript.ImporterTopLevel;
 import org.mozilla.javascript.NativeObject;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
-import org.mozilla.javascript.WrappedException;
 import org.w3c.dom.Document;
 
 /**

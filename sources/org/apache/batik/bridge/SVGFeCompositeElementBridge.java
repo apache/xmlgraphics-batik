@@ -79,7 +79,7 @@ public class SVGFeCompositeElementBridge
                                Map filterMap) {
 
         // 'operator' attribute - default is 'over'
-        CompositeRule rule = convertOperator(filterElement);
+        CompositeRule rule = convertOperator(filterElement, ctx);
 
         // 'in' attribute
         Filter in = getIn(filterElement,
@@ -137,8 +137,10 @@ public class SVGFeCompositeElementBridge
      * filter primitive element.
      *
      * @param filterElement the feComposite filter element
+     * @param ctx the BridgeContext to use for error information
      */
-    protected static CompositeRule convertOperator(Element filterElement) {
+    protected static CompositeRule convertOperator(Element filterElement,
+                                                   BridgeContext ctx) {
         String s = filterElement.getAttributeNS(null, SVG_OPERATOR_ATTRIBUTE);
         if (s.length() == 0) {
             return CompositeRule.OVER; // default is over
@@ -159,13 +161,14 @@ public class SVGFeCompositeElementBridge
             return CompositeRule.XOR;
         }
         if (SVG_ARITHMETIC_VALUE.equals(s)) {
-            float k1 = convertNumber(filterElement, SVG_K1_ATTRIBUTE, 0);
-            float k2 = convertNumber(filterElement, SVG_K2_ATTRIBUTE, 0);
-            float k3 = convertNumber(filterElement, SVG_K3_ATTRIBUTE, 0);
-            float k4 = convertNumber(filterElement, SVG_K4_ATTRIBUTE, 0);
+            float k1 = convertNumber(filterElement, SVG_K1_ATTRIBUTE, 0, ctx);
+            float k2 = convertNumber(filterElement, SVG_K2_ATTRIBUTE, 0, ctx);
+            float k3 = convertNumber(filterElement, SVG_K3_ATTRIBUTE, 0, ctx);
+            float k4 = convertNumber(filterElement, SVG_K4_ATTRIBUTE, 0, ctx);
             return CompositeRule.ARITHMETIC(k1, k2, k3, k4);
         }
-        throw new BridgeException(filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
-                                  new Object[] {SVG_OPERATOR_ATTRIBUTE, s});
+        throw new BridgeException
+            (ctx, filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+             new Object[] {SVG_OPERATOR_ATTRIBUTE, s});
     }
 }

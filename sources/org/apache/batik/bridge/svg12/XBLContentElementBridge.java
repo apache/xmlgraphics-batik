@@ -109,6 +109,7 @@ public class XBLContentElementBridge extends AbstractGraphicsNodeBridge {
 
         if (cgn == null) {
             cgn = new CompositeGraphicsNode();
+            associateSVGContext(ctx, e, cgn);
         } else {
             int s = cgn.size();
             for (int i = 0; i < s; i++) {

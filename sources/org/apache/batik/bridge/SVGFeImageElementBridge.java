@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001-2003  The Apache Software Foundation 
+   Copyright 2001-2003,2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import java.awt.geom.Rectangle2D;
 import java.util.Map;
 
 import org.apache.batik.dom.util.XLinkSupport;
-import org.apache.batik.util.XMLConstants;
 import org.apache.batik.ext.awt.image.PadMode;
 import org.apache.batik.ext.awt.image.renderable.AffineRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.Filter;
@@ -83,7 +82,7 @@ public class SVGFeImageElementBridge
         // 'xlink:href' attribute
         String uriStr = XLinkSupport.getXLinkHref(filterElement);
         if (uriStr.length() == 0) {
-            throw new BridgeException(filterElement, ERR_ATTRIBUTE_MISSING,
+            throw new BridgeException(ctx, filterElement, ERR_ATTRIBUTE_MISSING,
                                       new Object[] {"xlink:href"});
         }
 
@@ -103,20 +102,19 @@ public class SVGFeImageElementBridge
         //
         
         Document document = filterElement.getOwnerDocument();
-        boolean isUse = (uriStr.indexOf("#") != -1);
+        boolean isUse = uriStr.indexOf("#") != -1;
         Element contentElement = null;
         if (isUse) {
             contentElement = document.createElementNS(SVG_NAMESPACE_URI,
-                                                    SVG_USE_TAG);
+                                                      SVG_USE_TAG);
         } else {
             contentElement = document.createElementNS(SVG_NAMESPACE_URI,
-                                                    SVG_IMAGE_TAG);
+                                                      SVG_IMAGE_TAG);
         }
 
         
-        contentElement.setAttributeNS(XLinkSupport.XLINK_NAMESPACE_URI, 
-                                      XMLConstants.XLINK_PREFIX + 
-                                      ":" + SVG_HREF_ATTRIBUTE,
+        contentElement.setAttributeNS(XLINK_NAMESPACE_URI, 
+                                      XLINK_HREF_QNAME,
                                       uriStr);
 
         Element proxyElement = document.createElementNS(SVG_NAMESPACE_URI,
@@ -156,8 +154,8 @@ public class SVGFeImageElementBridge
         if (s.length() == 0) {
             coordSystemType = SVGUtilities.USER_SPACE_ON_USE;
         } else {
-                coordSystemType = SVGUtilities.parseCoordinateSystem
-                    (filterDefElement, SVG_PRIMITIVE_UNITS_ATTRIBUTE, s);
+            coordSystemType = SVGUtilities.parseCoordinateSystem
+                (filterDefElement, SVG_PRIMITIVE_UNITS_ATTRIBUTE, s, ctx);
         }
         
         // Compute the transform from object bounding box to user
@@ -229,7 +227,7 @@ public class SVGFeImageElementBridge
                 coordSystemType = SVGUtilities.USER_SPACE_ON_USE;
             } else {
                 coordSystemType = SVGUtilities.parseCoordinateSystem
-                    (filterDefElement, SVG_PRIMITIVE_UNITS_ATTRIBUTE, s);
+                    (filterDefElement, SVG_PRIMITIVE_UNITS_ATTRIBUTE, s, ctx);
             }
             
             if (coordSystemType == SVGUtilities.OBJECT_BOUNDING_BOX) {

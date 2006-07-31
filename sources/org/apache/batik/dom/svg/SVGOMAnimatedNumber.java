@@ -28,28 +28,33 @@ import org.w3c.dom.svg.SVGAnimatedNumber;
  * @version $Id$
  */
 public class SVGOMAnimatedNumber
-    implements SVGAnimatedNumber,
-               LiveAttributeValue {
-
-    /**
-     * The associated element.
-     */
-    protected AbstractElement element;
-
-    /**
-     * The attribute's namespace URI.
-     */
-    protected String namespaceURI;
-
-    /**
-     * The attribute's local name.
-     */
-    protected String localName;
+        extends AbstractSVGAnimatedValue
+        implements SVGAnimatedNumber {
 
     /**
      * The default value.
      */
     protected float defaultValue;
+
+    /**
+     * Whether the base value is valid.
+     */
+    protected boolean valid;
+
+    /**
+     * The current base value.
+     */
+    protected float baseVal;
+
+    /**
+     * The current animated value.
+     */
+    protected float animVal;
+
+    /**
+     * Whether the value is changing.
+     */
+    protected boolean changing;
 
     /**
      * Creates a new SVGOMAnimatedNumber.
@@ -62,9 +67,7 @@ public class SVGOMAnimatedNumber
                                String ns,
                                String ln,
                                float  val) {
-        element = elt;
-        namespaceURI = ns;
-        localName = ln;
+        super(elt, ns, ln);
         defaultValue = val;
     }
 
@@ -72,43 +75,106 @@ public class SVGOMAnimatedNumber
      * <b>DOM</b>: Implements {@link SVGAnimatedNumber#getBaseVal()}.
      */
     public float getBaseVal() {
+        if (!valid) {
+            update();
+        }
+        return baseVal;
+    }
+
+    /**
+     * Updates the base value from the attribute.
+     */
+    protected void update() {
         Attr attr = element.getAttributeNodeNS(namespaceURI, localName);
         if (attr == null) {
-            return defaultValue;
+            baseVal = defaultValue;
+        } else {
+            baseVal = Float.parseFloat(attr.getValue());
         }
-        return Float.parseFloat(attr.getValue());
+        valid = true;
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGAnimatedNumber#setBaseVal(float)}.
      */
     public void setBaseVal(float baseVal) throws DOMException {
-        element.setAttributeNS(namespaceURI, localName,
-                               String.valueOf(baseVal));
+        try {
+            this.baseVal = baseVal;
+            valid = true;
+            changing = true;
+            element.setAttributeNS(namespaceURI, localName,
+                                   String.valueOf(baseVal));
+        } finally {
+            changing = false;
+        }
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGAnimatedNumber#getAnimVal()}.
      */
     public float getAnimVal() {
-        throw new RuntimeException("!!! TODO: getAnimVal()");
+        if (hasAnimVal) {
+            return animVal;
+        }
+        if (!valid) {
+            update();
+        }
+        return baseVal;
+    }
+
+    /**
+     * Sets the animated value.
+     */
+    public void setAnimatedValue(float animVal) {
+        hasAnimVal = true;
+        this.animVal = animVal;
+        fireAnimatedAttributeListeners();
+    }
+
+    /**
+     * Removes the animated value.
+     */
+    public void resetAnimatedValue() {
+        hasAnimVal = false;
+        fireAnimatedAttributeListeners();
     }
 
     /**
      * Called when an Attr node has been added.
      */
     public void attrAdded(Attr node, String newv) {
+        if (!changing) {
+            valid = false;
+        }
+        fireBaseAttributeListeners();
+        if (!hasAnimVal) {
+            fireAnimatedAttributeListeners();
+        }
     }
 
     /**
      * Called when an Attr node has been modified.
      */
     public void attrModified(Attr node, String oldv, String newv) {
+        if (!changing) {
+            valid = false;
+        }
+        fireBaseAttributeListeners();
+        if (!hasAnimVal) {
+            fireAnimatedAttributeListeners();
+        }
     }
 
     /**
      * Called when an Attr node has been removed.
      */
     public void attrRemoved(Attr node, String oldv) {
+        if (!changing) {
+            valid = false;
+        }
+        fireBaseAttributeListeners();
+        if (!hasAnimVal) {
+            fireAnimatedAttributeListeners();
+        }
     }
 }

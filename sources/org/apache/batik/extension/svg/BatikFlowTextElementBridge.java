@@ -451,13 +451,13 @@ public class BatikFlowTextElementBridge extends SVGTextElementBridge
                 (s, BATIK_EXT_WIDTH_ATTRIBUTE, uctx);
         } else {
             throw new BridgeException
-                (e, ERR_ATTRIBUTE_MISSING,
+                (ctx, e, ERR_ATTRIBUTE_MISSING,
                  new Object[] {BATIK_EXT_WIDTH_ATTRIBUTE, s});
         }
-	// A value of zero disables rendering of the element
-	if (w == 0) {
-	    return null;
-	}
+        // A value of zero disables rendering of the element
+        if (w == 0) {
+            return null;
+        }
 
         // 'height' attribute - required
         s = e.getAttribute(BATIK_EXT_HEIGHT_ATTRIBUTE);
@@ -467,13 +467,13 @@ public class BatikFlowTextElementBridge extends SVGTextElementBridge
                 (s, BATIK_EXT_HEIGHT_ATTRIBUTE, uctx);
         } else {
             throw new BridgeException
-                (e, ERR_ATTRIBUTE_MISSING,
+                (ctx, e, ERR_ATTRIBUTE_MISSING,
                  new Object[] {BATIK_EXT_HEIGHT_ATTRIBUTE, s});
         }
-	// A value of zero disables rendering of the element
-	if (h == 0) {
-	    return null;
-	}
+        // A value of zero disables rendering of the element
+        if (h == 0) {
+            return null;
+        }
 
         return new RegionInfo(x,y,w,h,verticalAlignment);
     }

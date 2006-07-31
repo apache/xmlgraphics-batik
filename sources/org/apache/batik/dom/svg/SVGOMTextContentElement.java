@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2000-2003  The Apache Software Foundation 
+   Copyright 2000-2003,2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -17,8 +17,11 @@
  */
 package org.apache.batik.dom.svg;
 
+import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.XMLSupport;
+import org.apache.batik.util.SVGTypes;
+
 import org.w3c.dom.DOMException;
 import org.w3c.dom.svg.SVGAnimatedBoolean;
 import org.w3c.dom.svg.SVGAnimatedEnumeration;
@@ -67,13 +70,14 @@ public abstract class SVGOMTextContentElement
      * org.w3c.dom.svg.SVGTextContentElement#getTextLength()}.
      */
     public SVGAnimatedLength getTextLength() {
-        SVGAnimatedLength result =
-            (SVGAnimatedLength)getLiveAttributeValue
+        AbstractSVGAnimatedLength result =
+            (AbstractSVGAnimatedLength)getLiveAttributeValue
             (null, SVG_TEXT_LENGTH_ATTRIBUTE);
         if (result == null) {
+            SVGOMDocument doc = (SVGOMDocument) ownerDocument;
             result = new AbstractSVGAnimatedLength
                 (this, null, SVG_TEXT_LENGTH_ATTRIBUTE,
-                 SVGOMAnimatedLength.HORIZONTAL_LENGTH) {
+                 SVGOMAnimatedLength.HORIZONTAL_LENGTH, true) {
                     boolean usedDefault;
 
                     protected String getDefaultValue() {
@@ -103,6 +107,8 @@ public abstract class SVGOMTextContentElement
                         }
                     }
                 };
+            result.addAnimatedAttributeListener
+                (doc.getAnimatedAttributeListener());
             putLiveAttributeValue(null, SVG_TEXT_LENGTH_ATTRIBUTE,
                                   (LiveAttributeValue)result);
         }
@@ -125,7 +131,6 @@ public abstract class SVGOMTextContentElement
      */
     public int getNumberOfChars() {
         return SVGTextContentSupport.getNumberOfChars(this);
-        //throw new RuntimeException(" !!! SVGOMTextContentElement.getNumberOfChars()");
     }
 
     /**
@@ -134,7 +139,6 @@ public abstract class SVGOMTextContentElement
      */
     public float getComputedTextLength() {
         return SVGTextContentSupport.getComputedTextLength(this);
-        //throw new RuntimeException(" !!! SVGOMTextContentElement.getComputedTextLength()");
     }
 
     /**
@@ -143,8 +147,7 @@ public abstract class SVGOMTextContentElement
      */
     public float getSubStringLength(int charnum, int nchars)
         throws DOMException {
-        return SVGTextContentSupport.getSubStringLength(this,charnum,nchars);
-        //throw new RuntimeException(" !!! SVGOMTextContentElement.getSubStringLength()");
+        return SVGTextContentSupport.getSubStringLength(this, charnum, nchars);
     }
 
     /**
@@ -152,8 +155,7 @@ public abstract class SVGOMTextContentElement
      * org.w3c.dom.svg.SVGTextContentElement#getStartPositionOfChar(int)}.
      */
     public SVGPoint getStartPositionOfChar(int charnum) throws DOMException {
-        //throw new RuntimeException(" !!! SVGOMTextContentElement.getStartPositionOfChar()");
-        return SVGTextContentSupport.getStartPositionOfChar(this,charnum);
+        return SVGTextContentSupport.getStartPositionOfChar(this, charnum);
     }
 
     /**
@@ -161,8 +163,7 @@ public abstract class SVGOMTextContentElement
      * org.w3c.dom.svg.SVGTextContentElement#getEndPositionOfChar(int)}.
      */
     public SVGPoint getEndPositionOfChar(int charnum) throws DOMException {
-        //throw new RuntimeException(" !!! SVGOMTextContentElement.getEndPositionOfChar()");
-        return SVGTextContentSupport.getEndPositionOfChar(this,charnum);
+        return SVGTextContentSupport.getEndPositionOfChar(this, charnum);
     }
 
     /**
@@ -170,8 +171,7 @@ public abstract class SVGOMTextContentElement
      * org.w3c.dom.svg.SVGTextContentElement#getExtentOfChar(int)}.
      */
     public SVGRect getExtentOfChar(int charnum) throws DOMException {
-        //throw new RuntimeException(" !!! SVGOMTextContentElement.getExtentOfChar()");
-        return SVGTextContentSupport.getExtentOfChar(this,charnum);
+        return SVGTextContentSupport.getExtentOfChar(this, charnum);
     }
 
     /**
@@ -179,8 +179,7 @@ public abstract class SVGOMTextContentElement
      * org.w3c.dom.svg.SVGTextContentElement#getRotationOfChar(int)}.
      */
     public float getRotationOfChar(int charnum) throws DOMException {
-        //throw new RuntimeException(" !!! SVGOMTextContentElement.getRotationOfChar()");
-        return SVGTextContentSupport.getRotationOfChar(this,charnum);
+        return SVGTextContentSupport.getRotationOfChar(this, charnum);
     }
 
     /**
@@ -188,8 +187,8 @@ public abstract class SVGOMTextContentElement
      * org.w3c.dom.svg.SVGTextContentElement#getCharNumAtPosition(SVGPoint)}.
      */
     public int getCharNumAtPosition(SVGPoint point) {
-        //throw new RuntimeException(" !!! SVGOMTextContentElement.getCharNumAtPosition()");
-        return SVGTextContentSupport.getCharNumAtPosition(this,point.getX(),point.getY());
+        return SVGTextContentSupport.getCharNumAtPosition
+            (this, point.getX(), point.getY());
     }
 
     /**
@@ -198,8 +197,7 @@ public abstract class SVGOMTextContentElement
      */
     public void selectSubString(int charnum, int nchars)
         throws DOMException {
-        SVGTextContentSupport.selectSubString(this,charnum, nchars);
-        //throw new RuntimeException(" !!! SVGOMTextContentElement.getSubStringLength()");
+        SVGTextContentSupport.selectSubString(this, charnum, nchars);
     }
 
     // SVGExternalResourcesRequired support /////////////////////////////
@@ -209,7 +207,7 @@ public abstract class SVGOMTextContentElement
      * org.w3c.dom.svg.SVGExternalResourcesRequired#getExternalResourcesRequired()}.
      */
     public SVGAnimatedBoolean getExternalResourcesRequired() {
-	return SVGExternalResourcesRequiredSupport.
+        return SVGExternalResourcesRequiredSupport.
             getExternalResourcesRequired(this);
     }
 
@@ -226,9 +224,7 @@ public abstract class SVGOMTextContentElement
      * <b>DOM</b>: Sets the xml:lang attribute value.
      */
     public void setXMLlang(String lang) {
-        setAttributeNS(XMLSupport.XML_NAMESPACE_URI,
-                       XMLSupport.XML_LANG_ATTRIBUTE,
-                       lang);
+        setAttributeNS(XML_NAMESPACE_URI, XML_LANG_QNAME, lang);
     }
     
     /**
@@ -242,9 +238,7 @@ public abstract class SVGOMTextContentElement
      * <b>DOM</b>: Sets the xml:space attribute value.
      */
     public void setXMLspace(String space) {
-        setAttributeNS(XMLSupport.XML_NAMESPACE_URI,
-                       XMLSupport.XML_SPACE_ATTRIBUTE,
-                       space);
+        setAttributeNS(XML_NAMESPACE_URI, XML_SPACE_QNAME, space);
     }
 
     // SVGTests support ///////////////////////////////////////////////////
@@ -254,7 +248,7 @@ public abstract class SVGOMTextContentElement
      * org.w3c.dom.svg.SVGTests#getRequiredFeatures()}.
      */
     public SVGStringList getRequiredFeatures() {
-	return SVGTestsSupport.getRequiredFeatures(this);
+        return SVGTestsSupport.getRequiredFeatures(this);
     }
 
     /**
@@ -262,7 +256,7 @@ public abstract class SVGOMTextContentElement
      * org.w3c.dom.svg.SVGTests#getRequiredExtensions()}.
      */
     public SVGStringList getRequiredExtensions() {
-	return SVGTestsSupport.getRequiredExtensions(this);
+        return SVGTestsSupport.getRequiredExtensions(this);
     }
 
     /**
@@ -270,7 +264,7 @@ public abstract class SVGOMTextContentElement
      * org.w3c.dom.svg.SVGTests#getSystemLanguage()}.
      */
     public SVGStringList getSystemLanguage() {
-	return SVGTestsSupport.getSystemLanguage(this);
+        return SVGTestsSupport.getSystemLanguage(this);
     }
 
     /**
@@ -278,6 +272,78 @@ public abstract class SVGOMTextContentElement
      * org.w3c.dom.svg.SVGTests#hasExtension(String)}.
      */
     public boolean hasExtension(String extension) {
-	return SVGTestsSupport.hasExtension(this, extension);
+        return SVGTestsSupport.hasExtension(this, extension);
+    }
+
+    // ExtendedTraitAccess ///////////////////////////////////////////////////
+
+    /**
+     * Returns whether the given XML attribute is animatable.
+     */
+    public boolean isAttributeAnimatable(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE)
+                    || ln.equals(SVG_TEXT_LENGTH_ATTRIBUTE)
+                    || ln.equals(SVG_LENGTH_ADJUST_ATTRIBUTE)) {
+                return true;
+            }
+        }
+        return super.isAttributeAnimatable(ns, ln);
+    }
+
+    /**
+     * Returns the type of the given attribute.
+     */
+    public int getAttributeType(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_TEXT_LENGTH_ATTRIBUTE)) {
+                return SVGTypes.TYPE_LENGTH;
+            } else if (ln.equals(SVG_LENGTH_ADJUST_ATTRIBUTE)) {
+                return SVGTypes.TYPE_IDENT;
+            } else if (ln.equals(SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE)) {
+                return SVGTypes.TYPE_BOOLEAN;
+            }
+        }
+        return super.getAttributeType(ns, ln);
+    }
+
+    // AnimationTarget ///////////////////////////////////////////////////////
+
+    /**
+     * Updates an attribute value in this target.
+     */
+    public void updateAttributeValue(String ns, String ln,
+                                     AnimatableValue val) {
+        if (ns == null) {
+            if (ln.equals(SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE)) {
+                updateBooleanAttributeValue(getExternalResourcesRequired(),
+                                            val);
+                return;
+            } else if (ln.equals(SVG_TEXT_LENGTH_ATTRIBUTE)) {
+                updateLengthAttributeValue(getTextLength(), val);
+                return;
+            } else if (ln.equals(SVG_LENGTH_ADJUST_ATTRIBUTE)) {
+                updateEnumerationAttributeValue(getLengthAdjust(), val);
+                return;
+            }
+        }
+        super.updateAttributeValue(ns, ln, val);
+    }
+
+    /**
+     * Returns the underlying value of an animatable XML attribute.
+     */
+    public AnimatableValue getUnderlyingValue(String ns, String ln) {
+        if (ns == null) {
+            if (ln.equals(SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE)) {
+                return getBaseValue(getExternalResourcesRequired());
+            } else if (ln.equals(SVG_TEXT_LENGTH_ATTRIBUTE)) {
+                return getBaseValue
+                    (getTextLength(), PERCENTAGE_VIEWPORT_SIZE);
+            } else if (ln.equals(SVG_LENGTH_ADJUST_ATTRIBUTE)) {
+                return getBaseValue(getLengthAdjust());
+            }
+        }
+        return super.getUnderlyingValue(ns, ln);
     }
 }

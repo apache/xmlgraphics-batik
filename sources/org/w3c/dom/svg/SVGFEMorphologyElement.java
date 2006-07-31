@@ -11,6 +11,6 @@ public interface SVGFEMorphologyElement extends
 
   public SVGAnimatedString      getIn1( );
   public SVGAnimatedEnumeration getOperator( );
-  public SVGAnimatedLength      getRadiusX( );
-  public SVGAnimatedLength      getRadiusY( );
+  public SVGAnimatedNumber      getRadiusX( );
+  public SVGAnimatedNumber      getRadiusY( );
 }

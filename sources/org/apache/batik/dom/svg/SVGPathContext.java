@@ -15,7 +15,6 @@
    limitations under the License.
 
 */
-
 package org.apache.batik.dom.svg;
 
 import java.awt.geom.Point2D;
@@ -24,12 +23,18 @@ import java.awt.geom.Point2D;
  * Context class for the SVG path element to support extra
  * methods.
  *
- * @author <a href="mailto:deweese@apache.org">deweese</a>
+ * @author <a href="mailto:deweese@apache.org">Thomas DeWeese</a>
  * @version $Id$
  */
 public interface SVGPathContext extends SVGContext {
 
-    public float getTotalLength();
+    /**
+     * Returns the total length of the path.
+     */
+    float getTotalLength();
 
-    public Point2D getPointAtLength(float distance);
-};
+    /**
+     * Returns the point at the given distance along the path.
+     */
+    Point2D getPointAtLength(float distance);
+}

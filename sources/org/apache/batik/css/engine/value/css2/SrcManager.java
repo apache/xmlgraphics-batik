@@ -27,6 +27,7 @@ import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.css.engine.value.ValueConstants;
 import org.apache.batik.css.engine.value.ValueManager;
 import org.apache.batik.util.CSSConstants;
+import org.apache.batik.util.SVGTypes;
 
 import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.DOMException;
@@ -60,6 +61,27 @@ public class SrcManager extends IdentifierManager {
      */
     public boolean isInheritedProperty() {
 	return false;
+    }
+
+    /**
+     * Implements {@link ValueManager#isAnimatableProperty()}.
+     */
+    public boolean isAnimatableProperty() {
+        return false;
+    }
+
+    /**
+     * Implements {@link ValueManager#isAdditiveProperty()}.
+     */
+    public boolean isAdditiveProperty() {
+        return false;
+    }
+
+    /**
+     * Implements {@link ValueManager#getPropertyType()}.
+     */
+    public int getPropertyType() {
+        return SVGTypes.TYPE_FONT_DESCRIPTOR_SRC_VALUE;
     }
 
     /**

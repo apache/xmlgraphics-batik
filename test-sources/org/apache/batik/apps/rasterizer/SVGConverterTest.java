@@ -377,7 +377,7 @@ public class SVGConverterTest extends DefaultTestSuite {
                    
         t = new ConfigErrorTest(SVGConverter.ERROR_UNABLE_TO_CREATE_OUTPUT_DIR){
                 protected void configure(SVGConverter c){
-                    c.setDst(new File("ZYZ::/cannotCreate"));
+                    c.setDst(new File("ZYZ::/cannotCreate\000"));
                 }
             };
         addTest(t);
