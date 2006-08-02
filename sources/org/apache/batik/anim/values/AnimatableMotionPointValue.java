@@ -153,30 +153,16 @@ public class AnimatableMotionPointValue extends AnimatableValue {
     }
 
     /**
-     * Returns the CSS text representation of the value.
+     * Returns a string representation of this object.
      */
-    public String getCssText() {
+    public String toStringRep() {
         StringBuffer sb = new StringBuffer();
-        String s = Float.toString(x);
-        if (s.endsWith(".0")) {
-            sb.append(s.substring(0, s.length() - 2));
-        } else {
-            sb.append(s);
-        }
+        sb.append(formatNumber(x));
         sb.append(',');
-        s = Float.toString(y);
-        if (s.endsWith(".0")) {
-            sb.append(s.substring(0, s.length() - 2));
-        } else {
-            sb.append(s);
-        }
+        sb.append(formatNumber(y));
         sb.append(',');
-        s = Float.toString(angle);
-        if (s.endsWith(".0")) {
-            sb.append(s.substring(0, s.length() - 2));
-        } else {
-            sb.append(s);
-        }
+        sb.append(formatNumber(angle));
+        sb.append("rad");
         return sb.toString();
     }
 }

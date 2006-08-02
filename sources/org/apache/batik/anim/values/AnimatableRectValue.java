@@ -158,9 +158,17 @@ public class AnimatableRectValue extends AnimatableValue {
     }
 
     /**
-     * Returns the CSS text representation of the value.
+     * Returns a string representation of this object.
      */
-    public String getCssText() {
-        return null;
+    public String toStringRep() {
+        StringBuffer sb = new StringBuffer();
+        sb.append(x);
+        sb.append(',');
+        sb.append(y);
+        sb.append(',');
+        sb.append(width);
+        sb.append(',');
+        sb.append(height);
+        return sb.toString();
     }
 }

@@ -165,9 +165,33 @@ public class AnimatablePathDataValue extends AnimatableValue {
     }
 
     /**
-     * Returns the CSS text representation of the value.
+     * The path data commands.
      */
-    public String getCssText() {
-        return null;
+    protected static final char[] PATH_COMMANDS = {
+        ' ', 'z', 'M', 'm', 'L', 'l', 'C', 'c', 'Q', 'q', 'A', 'a', 'H', 'h',
+        'V', 'v', 'S', 's', 'T', 't'
+    };
+
+    /**
+     * The number of parameters for each path command.
+     */
+    protected static final int[] PATH_PARAMS = {
+        0, 0, 2, 2, 2, 2, 6, 6, 4, 4, 7, 7, 1, 1, 1, 1, 4, 4, 2, 2
+    };
+
+    /**
+     * Returns a string representation of this object.
+     */
+    public String toStringRep() {
+        StringBuffer sb = new StringBuffer();
+        int k = 0;
+        for (int i = 0; i < commands.length; i++) {
+            sb.append(PATH_COMMANDS[commands[i]]);
+            for (int j = 0; j < PATH_PARAMS[commands[i]]; j++) {
+                sb.append(' ');
+                sb.append(parameters[k++]);
+            }
+        }
+        return sb.toString();
     }
 }

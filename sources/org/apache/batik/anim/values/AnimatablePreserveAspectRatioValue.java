@@ -18,7 +18,7 @@
 package org.apache.batik.anim.values;
 
 import org.apache.batik.anim.AnimationTarget;
-import org.apache.batik.dom.svg.AbstractSVGPreserveAspectRatio;
+import org.apache.batik.util.SVGConstants;
 
 import org.w3c.dom.svg.SVGPreserveAspectRatio;
 
@@ -29,6 +29,32 @@ import org.w3c.dom.svg.SVGPreserveAspectRatio;
  * @version $Id$
  */
 public class AnimatablePreserveAspectRatioValue extends AnimatableValue {
+    
+    /**
+     * Strings for the 'align' values.
+     */
+    protected static final String[] ALIGN_VALUES = {
+        null,
+        SVGConstants.SVG_NONE_VALUE,
+        SVGConstants.SVG_XMINYMIN_VALUE,
+        SVGConstants.SVG_XMIDYMIN_VALUE,
+        SVGConstants.SVG_XMAXYMIN_VALUE,
+        SVGConstants.SVG_XMINYMID_VALUE,
+        SVGConstants.SVG_XMIDYMID_VALUE,
+        SVGConstants.SVG_XMAXYMID_VALUE,
+        SVGConstants.SVG_XMINYMAX_VALUE,
+        SVGConstants.SVG_XMIDYMAX_VALUE,
+        SVGConstants.SVG_XMAXYMAX_VALUE
+    };
+
+    /**
+     * Strings for the 'meet-or-slice' values.
+     */
+    protected static final String[] MEET_OR_SLICE_VALUES = {
+        null,
+        SVGConstants.SVG_MEET_VALUE,
+        SVGConstants.SVG_SLICE_VALUE
+    };
 
     /**
      * The align value.
@@ -131,10 +157,19 @@ public class AnimatablePreserveAspectRatioValue extends AnimatableValue {
     }
 
     /**
-     * Returns the CSS text representation of the value.
+     * Returns a string representation of this object.
      */
-    public String getCssText() {
-        return AbstractSVGPreserveAspectRatio.getValueAsString
-            (align, meetOrSlice);
+    public String toStringRep() {
+        if (align < 1 || align > 10) {
+            return null;
+        }
+        String value = ALIGN_VALUES[align];
+        if (align == SVGPreserveAspectRatio.SVG_PRESERVEASPECTRATIO_NONE) {
+            return value;
+        }
+        if (meetOrSlice < 1 || meetOrSlice > 2) {
+            return null;
+        }
+        return value + ' ' + MEET_OR_SLICE_VALUES[meetOrSlice];
     }
 }

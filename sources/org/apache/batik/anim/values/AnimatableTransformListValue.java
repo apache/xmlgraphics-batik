@@ -261,8 +261,9 @@ public class AnimatableTransformListValue extends AnimatableValue {
 
     /**
      * Returns the CSS text representation of the value.
+     * XXX To be done; not so important, just for debugging.
      */
-    public String getCssText() {
+    public String toStringRep() {
         return null;
     }
 }
