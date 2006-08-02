@@ -114,10 +114,6 @@ public class AnimatableNumberValue extends AnimatableValue {
      * Returns the CSS text representation of the value.
      */
     public String getCssText() {
-        String s = Float.toString(value);
-        if (s.endsWith(".0")) {
-            return s.substring(0, s.length() - 2);
-        }
-        return s;
+        return formatNumber(value);
     }
 }

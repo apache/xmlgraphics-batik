@@ -208,10 +208,6 @@ public class AnimatableLengthValue extends AnimatableValue {
      * want a dependency on the CSS package.
      */
     public String getCssText() {
-        String s = String.valueOf(lengthValue);
-        if (s.endsWith(".0")) {
-            s = s.substring(0, s.length() - 2);
-        }
-        return s + UNITS[lengthType - 1];
+        return formatNumber(lengthValue) + UNITS[lengthType - 1];
     }
 }

@@ -163,20 +163,10 @@ public class AnimatableNumberOptionalNumberValue extends AnimatableValue {
      */
     public String getCssText() {
         StringBuffer sb = new StringBuffer();
-        String s = Float.toString(number);
-        if (s.endsWith(".0")) {
-            sb.append(s.substring(0, s.length() - 2));
-        } else {
-            sb.append(s);
-        }
+        sb.append(formatNumber(number));
         if (hasOptionalNumber) {
             sb.append(' ');
-            s = Float.toString(optionalNumber);
-            if (s.endsWith(".0")) {
-                sb.append(s.substring(0, s.length() - 2));
-            } else {
-                sb.append(s);
-            }
+            sb.append(formatNumber(optionalNumber));
         }
         return sb.toString();
     }

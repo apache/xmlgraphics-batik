@@ -30,6 +30,13 @@ import org.w3c.dom.svg.SVGAngle;
 public class AnimatableAngleValue extends AnimatableNumberValue {
 
     /**
+     * The unit string representations.
+     */
+    protected final static String[] UNITS = {
+        "", "", "deg", "rad", "grad"
+    };
+
+    /**
      * The angle unit.
      */
     protected short unit;
@@ -116,6 +123,13 @@ public class AnimatableAngleValue extends AnimatableNumberValue {
     public AnimatableValue getZeroValue() {
         return new AnimatableAngleValue
             (target, 0, SVGAngle.SVG_ANGLETYPE_UNSPECIFIED);
+    }
+
+    /**
+     * Returns the CSS text representation of the value.
+     */
+    public String getCssText() {
+        return super.getCssText() + UNITS[unit];
     }
 
     /**

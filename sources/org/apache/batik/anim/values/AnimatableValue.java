@@ -17,6 +17,8 @@
  */
 package org.apache.batik.anim.values;
 
+import java.text.DecimalFormat;
+
 import org.apache.batik.anim.AnimationTarget;
 
 /**
@@ -26,6 +28,12 @@ import org.apache.batik.anim.AnimationTarget;
  * @version $Id$
  */
 public abstract class AnimatableValue {
+
+    /**
+     * A formatting object to get CSS compatible float strings.
+     */
+    protected static DecimalFormat decimalFormat = new DecimalFormat
+        ("0.0###########################################################");
 
     /**
      * The target of the animation.
@@ -44,6 +52,13 @@ public abstract class AnimatableValue {
      */
     protected AnimatableValue(AnimationTarget target) {
         this.target = target;
+    }
+
+    /**
+     * Returns a CSS compatible string version of the specified float.
+     */
+    public static String formatNumber(float f) {
+        return decimalFormat.format(f);
     }
 
     /**
@@ -84,7 +99,9 @@ public abstract class AnimatableValue {
     /**
      * Returns the CSS text representation of the value.
      */
-    public abstract String getCssText();
+    public String getCssText() {
+        return null;
+    }
     
     /**
      * Returns whether the value in this AnimatableValue has been modified.
@@ -96,9 +113,18 @@ public abstract class AnimatableValue {
     }
 
     /**
-     * Returns a string representation of this object.
+     * Returns a string representation of this object.  This should be
+     * overridden in classes that do not have a CSS representation.
+     */
+    public String toStringRep() {
+        return getCssText();
+    }
+
+    /**
+     * Returns a string representation of this object prefixed with its
+     * class name.
      */
     public String toString() {
-        return getClass().getName() + "[" + getCssText() + "]";
+        return getClass().getName() + "[" + toStringRep() + "]";
     }
 }

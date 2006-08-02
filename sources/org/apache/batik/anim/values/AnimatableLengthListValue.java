@@ -210,20 +210,12 @@ public class AnimatableLengthListValue extends AnimatableValue {
     public String getCssText() {
         StringBuffer sb = new StringBuffer();
         if (lengthValues.length > 0) {
-            String s = String.valueOf(lengthValues[0]);
-            if (s.endsWith(".0")) {
-                s = s.substring(0, s.length() - 2);
-            }
-            sb.append(s);
+            sb.append(formatNumber(lengthValues[0]));
             sb.append(AnimatableLengthValue.UNITS[lengthTypes[0] - 1]);
         }
         for (int i = 1; i < lengthValues.length; i++) {
             sb.append(',');
-            String s = String.valueOf(lengthValues[i]);
-            if (s.endsWith(".0")) {
-                s = s.substring(0, s.length() - 2);
-            }
-            sb.append(s);
+            sb.append(formatNumber(lengthValues[i]));
             sb.append(AnimatableLengthValue.UNITS[lengthTypes[i] - 1]);
         }
         return sb.toString();
