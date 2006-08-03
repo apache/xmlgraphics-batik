@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2003  The Apache Software Foundation 
+   Copyright 2003, 2006  The Apache Software Foundation
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -33,16 +33,18 @@ import java.lang.ref.PhantomReference;
  */
 public class CleanerThread extends Thread {
 
-    static ReferenceQueue queue = null;
+    static volatile ReferenceQueue queue = null;
     static CleanerThread  thread = null;
 
-    public static ReferenceQueue getReferenceQueue() { 
-        if (queue != null) 
-            return queue;
-        
-        queue = new ReferenceQueue();
-        thread = new CleanerThread();
-        return queue; 
+    public static ReferenceQueue getReferenceQueue() {
+
+        if ( queue == null ) {
+            synchronized (CleanerThread.class) {
+                queue = new ReferenceQueue();
+                thread = new CleanerThread();
+            }
+        }
+        return queue;
     }
 
     /**
@@ -52,14 +54,14 @@ public class CleanerThread extends Thread {
      */
     public static interface ReferenceCleared {
         /* Called when the reference is cleared */
-        public void cleared();
+        void cleared();
     }
 
     /**
-     * A SoftReference subclass that automatically registers with 
+     * A SoftReference subclass that automatically registers with
      * the cleaner ReferenceQueue.
      */
-    public static abstract class SoftReferenceCleared extends SoftReference 
+    public static abstract class SoftReferenceCleared extends SoftReference
       implements ReferenceCleared {
         public SoftReferenceCleared(Object o) {
             super (o, CleanerThread.getReferenceQueue());
@@ -67,10 +69,10 @@ public class CleanerThread extends Thread {
     }
 
     /**
-     * A WeakReference subclass that automatically registers with 
+     * A WeakReference subclass that automatically registers with
      * the cleaner ReferenceQueue.
      */
-    public static abstract class WeakReferenceCleared extends WeakReference 
+    public static abstract class WeakReferenceCleared extends WeakReference
       implements ReferenceCleared {
         public WeakReferenceCleared(Object o) {
             super (o, CleanerThread.getReferenceQueue());
@@ -78,17 +80,17 @@ public class CleanerThread extends Thread {
     }
 
     /**
-     * A PhantomReference subclass that automatically registers with 
+     * A PhantomReference subclass that automatically registers with
      * the cleaner ReferenceQueue.
      */
-    public static abstract class PhantomReferenceCleared 
-        extends PhantomReference 
+    public static abstract class PhantomReferenceCleared
+        extends PhantomReference
         implements ReferenceCleared {
         public PhantomReferenceCleared(Object o) {
             super (o, CleanerThread.getReferenceQueue());
         }
     }
-            
+
     protected CleanerThread() {
         setDaemon(true);
         start();
