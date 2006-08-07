@@ -37,7 +37,6 @@ public abstract class AbstractSVGLengthList
     extends AbstractSVGList
     implements SVGLengthList {
 
-
     /**
      * This length list's direction.
      */
@@ -47,18 +46,17 @@ public abstract class AbstractSVGLengthList
      * Separator for a length list.
      */
     public final static String SVG_LENGTH_LIST_SEPARATOR
-        =" ";
+        = " ";
 
     /**
      * Return the separator between values in the list.
      */
-    protected String getItemSeparator(){
+    protected String getItemSeparator() {
         return SVG_LENGTH_LIST_SEPARATOR;
     }
 
     /**
      * Create an SVGException when the checkItemType fails.
-     *
      * @return SVGException
      */
     protected abstract SVGException createSVGException(short type,
@@ -74,72 +72,71 @@ public abstract class AbstractSVGLengthList
      * Creates a new SVGLengthList.
      */
     protected AbstractSVGLengthList(short direction) {
-        super();
         this.direction = direction;
     }
 
     /**
+     * <b>DOM</b>: Implements {@link SVGLengthList#initialize(SVGLength)}.
      */
-    public SVGLength initialize ( SVGLength newItem )
-        throws DOMException, SVGException {
-
-        return (SVGLength)initializeImpl(newItem);
+    public SVGLength initialize(SVGLength newItem)
+            throws DOMException, SVGException {
+        return (SVGLength) initializeImpl(newItem);
     }
 
     /**
+     * <b>DOM</b>: Implements {@link SVGLengthList#getItem(int)}.
      */
-    public SVGLength getItem ( int index )
-        throws DOMException {
-
-        return (SVGLength)getItemImpl(index);
+    public SVGLength getItem(int index) throws DOMException {
+        return (SVGLength) getItemImpl(index);
     }
 
     /**
+     * <b>DOM</b>: Implements {@link
+     * SVGLengthList#insertItemBefore(SVGLength,int)}.
      */
-    public SVGLength insertItemBefore ( SVGLength newItem, int index )
-        throws DOMException, SVGException {
-
-        return (SVGLength)insertItemBeforeImpl(newItem,index);
+    public SVGLength insertItemBefore(SVGLength newItem, int index)
+            throws DOMException, SVGException {
+        return (SVGLength) insertItemBeforeImpl(newItem, index);
     }
 
     /**
+     * <b>DOM</b>: Implements {@link
+     * SVGLengthList#replaceItem(SVGLength,int)}.
      */
-    public SVGLength replaceItem ( SVGLength newItem, int index )
-        throws DOMException, SVGException {
-
-        return (SVGLength)replaceItemImpl(newItem,index);
+    public SVGLength replaceItem(SVGLength newItem, int index)
+            throws DOMException, SVGException {
+        return (SVGLength) replaceItemImpl(newItem,index);
     }
 
     /**
+     * <b>DOM</b>: Implements {@link SVGLengthList#removeItem(int)}.
      */
-    public SVGLength removeItem ( int index )
-        throws DOMException {
-
-        return (SVGLength)removeItemImpl(index);
+    public SVGLength removeItem(int index) throws DOMException {
+        return (SVGLength) removeItemImpl(index);
     }
 
     /**
+     * <b>DOM</b>: Implements {@link SVGLengthList#appendItem(SVGLength)}.
      */
-    public SVGLength appendItem ( SVGLength newItem )
-        throws DOMException, SVGException {
-
+    public SVGLength appendItem(SVGLength newItem)
+            throws DOMException, SVGException {
         return (SVGLength) appendItemImpl(newItem);
     }
 
     /**
+     * Creates a new {@link SVGItem} object from the given {@link SVGLength}.
      */
-    protected SVGItem createSVGItem(Object newItem){
-        
-        SVGLength l = (SVGLength)newItem;
-
-        return new SVGLengthItem(l.getUnitType(), l.getValueInSpecifiedUnits(),direction);
+    protected SVGItem createSVGItem(Object newItem) {
+        SVGLength l = (SVGLength) newItem;
+        return new SVGLengthItem(l.getUnitType(), l.getValueInSpecifiedUnits(),
+                                 direction);
     }
     
     /**
-     * Parse the attribute associated with this SVGLengthList.
+     * Parses the attribute associated with this SVGLengthList.
      *
      * @param value attribute value
-     * @param handler list handler
+     * @param handler length list handler
      */
     protected void doParse(String value, ListHandler handler)
         throws ParseException{
@@ -153,107 +150,104 @@ public abstract class AbstractSVGLengthList
     }
 
     /**
-     * Check if the item is an SVGLength.
+     * Asserts that the given item is an {@link SVGLengthList}.
      */
-    protected void checkItemType(Object newItem)
-        throws SVGException {
-        if ( !( newItem instanceof SVGLength ) ){
+    protected void checkItemType(Object newItem) throws SVGException {
+        if (!(newItem instanceof SVGLength)) {
             createSVGException(SVGException.SVG_WRONG_TYPE_ERR,
-                               "expected SVGLength",
-                               null);
+                               "expected.length", null);
         }
     }
 
     /**
-     * Representation of the item SVGLength.
+     * An {@link SVGLength} in the list.
      */
-    protected class SVGLengthItem 
-        extends AbstractSVGLength 
-        implements SVGItem {
+    protected class SVGLengthItem extends AbstractSVGLength implements SVGItem {
 
         /**
-         * Default Constructor.
+         * Creates a new SVGLengthItem.
          */
-        public SVGLengthItem(short type, float value,short direction){
+        public SVGLengthItem(short type, float value, short direction) {
             super(direction);
             this.unitType = type;
             this.value = value;
         }
 
         /**
+         * Returns the element this length is associated with.
          */
-        protected SVGOMElement getAssociatedElement(){
-            return (SVGOMElement)AbstractSVGLengthList.this.getElement();
+        protected SVGOMElement getAssociatedElement() {
+            return (SVGOMElement) AbstractSVGLengthList.this.getElement();
         }
 
         /**
-         * SVGLengthList this item belongs to.
+         * List the item belongs to.
          */
         protected AbstractSVGList parentList;
 
         /**
-         * Associates an item to an SVGXXXList
-         *
-         * @param list list the item belongs to.
+         * Assigns a parent list to this item.
+         * @param list The list the item belongs.
          */
-        public void setParent(AbstractSVGList list){
+        public void setParent(AbstractSVGList list) {
             parentList = list;
         }
 
         /**
-         * Return the list the item belongs to.
-         *
-         * @return list the item belongs to. This
-         *   could be if the item belongs to no list.
+         * Returns the parent list of this item.
          */
-        public AbstractSVGList getParent(){
+        public AbstractSVGList getParent() {
             return parentList;
         }
 
         /**
-         * When the SVGLength changes, notify
-         * its parent.
+         * Notifies the parent list that this item has changed.
          */
-        protected void reset(){
-            if ( parentList != null ){
+        protected void reset() {
+            if (parentList != null) {
                 parentList.itemChanged();
             }
         }
-        
     }
 
     /**
-     * Helper class to interface the <code>LengthListParser</code>
-     * and the <code>ListHandler</code>
+     * Helper class to interface the {@link LengthListParser} and the
+     * {@link ListHandler}.
      */
-    protected class LengthListBuilder
-        implements LengthListHandler {
+    protected class LengthListBuilder implements LengthListHandler {
 
         /**
-         * list handler.
+         * The ListHandler to pass newly created {@link SVGLengthItem} objects
+         * to.
          */
         protected ListHandler listHandler;
 
-        //current value being parsed
+        /**
+         * The the length value just parsed.
+         */
         protected float currentValue;
-        //current type being parsed
+
+        /**
+         * The length unit just parsed.
+         */
         protected short currentType;
         
         /**
+         * Creates a new LengthListBuilder.
          */
-        public LengthListBuilder(ListHandler listHandler){
+        public LengthListBuilder(ListHandler listHandler) {
             this.listHandler = listHandler;
         }
 
         /**
+         * Implements {@link LengthListHandler#startLengthList()}.
          */
-        public void startLengthList() 
-            throws ParseException{
-
+        public void startLengthList() throws ParseException {
             listHandler.startList();
         }
+
         /**
-         * Implements {@link org.apache.batik.parser.LengthHandler#startLength()}.
+         * Implements {@link LengthListHandler#startLength()}.
          */
         public void startLength() throws ParseException {
             currentType = SVGLength.SVG_LENGTHTYPE_NUMBER;
@@ -261,88 +255,87 @@ public abstract class AbstractSVGLengthList
         }
 
         /**
-         * Implements {@link org.apache.batik.parser.LengthHandler#lengthValue(float)}.
+         * Implements {@link LengthListHandler#lengthValue(float)}.
          */
         public void lengthValue(float v) throws ParseException {
             currentValue = v;
         }
         
         /**
-         * Implements {@link org.apache.batik.parser.LengthHandler#em()}.
+         * Implements {@link LengthListHandler#em()}.
          */
         public void em() throws ParseException {
             currentType = SVGLength.SVG_LENGTHTYPE_EMS;
         }
 
         /**
-         * Implements {@link org.apache.batik.parser.LengthHandler#ex()}.
+         * Implements {@link LengthListHandler#ex()}.
          */
         public void ex() throws ParseException {
             currentType = SVGLength.SVG_LENGTHTYPE_EXS;
         }
 
         /**
-         * Implements {@link org.apache.batik.parser.LengthHandler#in()}.
+         * Implements {@link LengthListHandler#in()}.
          */
         public void in() throws ParseException {
             currentType = SVGLength.SVG_LENGTHTYPE_IN;
         }
         
         /**
-         * Implements {@link org.apache.batik.parser.LengthHandler#cm()}.
+         * Implements {@link LengthListHandler#cm()}.
          */
         public void cm() throws ParseException {
             currentType = SVGLength.SVG_LENGTHTYPE_CM;
         }
         
         /**
-         * Implements {@link org.apache.batik.parser.LengthHandler#mm()}.
+         * Implements {@link LengthListHandler#mm()}.
          */
         public void mm() throws ParseException {
             currentType = SVGLength.SVG_LENGTHTYPE_MM;
         }
         
         /**
-         * Implements {@link org.apache.batik.parser.LengthHandler#pc()}.
+         * Implements {@link LengthListHandler#pc()}.
          */
         public void pc() throws ParseException {
             currentType = SVGLength.SVG_LENGTHTYPE_PC;
         }
 
         /**
-         * Implements {@link org.apache.batik.parser.LengthHandler#pt()}.
+         * Implements {@link LengthListHandler#pt()}.
          */
         public void pt() throws ParseException {
             currentType = SVGLength.SVG_LENGTHTYPE_EMS;
         }
 
         /**
-         * Implements {@link org.apache.batik.parser.LengthHandler#px()}.
+         * Implements {@link LengthListHandler#px()}.
          */
         public void px() throws ParseException {
             currentType = SVGLength.SVG_LENGTHTYPE_PX;
         }
 
         /**
-         * Implements {@link org.apache.batik.parser.LengthHandler#percentage()}.
+         * Implements {@link LengthListHandler#percentage()}.
          */
         public void percentage() throws ParseException {
             currentType = SVGLength.SVG_LENGTHTYPE_PERCENTAGE;
         }
 
         /**
-         * Implements {@link org.apache.batik.parser.LengthHandler#endLength()}.
+         * Implements {@link LengthListHandler#endLength()}.
          */
         public void endLength() throws ParseException {
             listHandler.item(new SVGLengthItem(currentType,currentValue,direction));
         }
         
         /**
+         * Implements {@link LengthListHandler#endLengthList()}.
          */
-        public void endLengthList() 
-            throws ParseException {
+        public void endLengthList() throws ParseException {
             listHandler.endList();
         }
     }
-   
 }
