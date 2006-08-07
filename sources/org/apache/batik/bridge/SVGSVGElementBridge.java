@@ -863,4 +863,38 @@ public class SVGSVGElementBridge
             um.forceRepaint();
     }
     
+    /**
+     * Pauses animations in the document.
+     */
+    public void pauseAnimations() {
+        ctx.getAnimationEngine().pause();
+    }
+
+    /**
+     * Unpauses animations in the document.
+     */
+    public void unpauseAnimations() {
+        ctx.getAnimationEngine().unpause();
+    }
+
+    /**
+     * Returns whether animations are currently paused.
+     */
+    public boolean animationsPaused() {
+        return ctx.getAnimationEngine().isPaused();
+    }
+
+    /**
+     * Returns the current document time.
+     */
+    public float getCurrentTime() {
+        return ctx.getAnimationEngine().getCurrentTime();
+    }
+
+    /**
+     * Sets the current document time.
+     */
+    public void setCurrentTime(float t) {
+        ctx.getAnimationEngine().setCurrentTime(t);
+    }
 }

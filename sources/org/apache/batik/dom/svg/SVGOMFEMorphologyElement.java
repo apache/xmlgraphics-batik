@@ -88,14 +88,16 @@ public class SVGOMFEMorphologyElement
      * <b>DOM</b>: Implements {@link SVGFEMorphologyElement#getRadiusX()}.
      */
     public SVGAnimatedNumber getRadiusX() {
-        throw new RuntimeException(" !!! TODO getRadiusX()");
+        throw new UnsupportedOperationException
+            ("SVGFEMorphologyElement.getRadiusX is not implemented"); // XXX
     } 
 
     /**
      * <b>DOM</b>: Implements {@link SVGFEMorphologyElement#getRadiusY()}.
      */
     public SVGAnimatedNumber getRadiusY() {
-        throw new RuntimeException(" !!! TODO getRadiusY()");
+        throw new UnsupportedOperationException
+            ("SVGFEMorphologyElement.getRadiusY is not implemented"); // XXX
     } 
 
     /**

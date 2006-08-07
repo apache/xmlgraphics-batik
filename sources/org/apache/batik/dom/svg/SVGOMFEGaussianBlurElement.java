@@ -71,7 +71,8 @@ public class SVGOMFEGaussianBlurElement
      * SVGFEGaussianBlurElement#getStdDeviationX()}.
      */
     public SVGAnimatedNumber getStdDeviationX() {
-        throw new RuntimeException("!!! TODO: getStdDeviationX");
+        throw new UnsupportedOperationException
+            ("SVGFEGaussianBlurElement.getStdDeviationX is not implemented"); // XXX
     }
 
     /**
@@ -79,7 +80,8 @@ public class SVGOMFEGaussianBlurElement
      * SVGFEGaussianBlurElement#getStdDeviationY()}.
      */
     public SVGAnimatedNumber getStdDeviationY() {
-        throw new RuntimeException("!!! TODO: getStdDeviationY");
+        throw new UnsupportedOperationException
+            ("SVGFEGaussianBlurElement.getStdDeviationY is not implemented"); // XXX
     }
 
     /**

@@ -110,7 +110,7 @@ public class SVGOMSymbolElement
      * org.w3c.dom.svg.SVGZoomAndPan#getZoomAndPan()}.
      */
     public short getZoomAndPan() {
-	return SVGZoomAndPanSupport.getZoomAndPan(this);
+        return SVGZoomAndPanSupport.getZoomAndPan(this);
     }
 
     /**
@@ -118,7 +118,7 @@ public class SVGOMSymbolElement
      * org.w3c.dom.svg.SVGZoomAndPan#getZoomAndPan()}.
      */
     public void setZoomAndPan(short val) {
-	SVGZoomAndPanSupport.setZoomAndPan(this, val);
+        SVGZoomAndPanSupport.setZoomAndPan(this, val);
     }
 
     // SVGFitToViewBox support ////////////////////////////////////////////
@@ -127,7 +127,8 @@ public class SVGOMSymbolElement
      * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGFitToViewBox#getViewBox()}.
      */
     public SVGAnimatedRect getViewBox() {
-	throw new RuntimeException(" !!! TODO: getViewBox()");
+        throw new UnsupportedOperationException
+            ("SVGFitToViewBox.getViewBox is not implemented"); // XXX
     }
 
     /**
@@ -145,7 +146,7 @@ public class SVGOMSymbolElement
      * org.w3c.dom.svg.SVGExternalResourcesRequired}.
      */
     public SVGAnimatedBoolean getExternalResourcesRequired() {
-	return SVGExternalResourcesRequiredSupport.
+        return SVGExternalResourcesRequiredSupport.
             getExternalResourcesRequired(this);
     }
 

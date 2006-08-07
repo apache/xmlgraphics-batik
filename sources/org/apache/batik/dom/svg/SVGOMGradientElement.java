@@ -96,7 +96,8 @@ public abstract class SVGOMGradientElement
      * org.w3c.dom.svg.SVGGradientElement#getGradientTransform()}.
      */
     public SVGAnimatedTransformList getGradientTransform() {
-	throw new RuntimeException(" !!! TODO: getGradientTransform()");
+        throw new UnsupportedOperationException
+            ("SVGGradientElement.getGradientTransform is not implemented"); // XXX
     }
 
     /**

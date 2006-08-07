@@ -148,21 +148,24 @@ public class SVGOMFilterElement
      * <b>DOM</b>: Implements {@link SVGFilterElement#getFilterResX()}.
      */
     public SVGAnimatedInteger getFilterResX() {
-        throw new RuntimeException(" !!! TODO: getFilterResX()");
+        throw new UnsupportedOperationException
+            ("SVGFilterElement.getFilterResX is not implemented"); // XXX
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGFilterElement#getFilterResY()}.
      */
     public SVGAnimatedInteger getFilterResY() {
-        throw new RuntimeException(" !!! TODO: getFilterResY()");
+        throw new UnsupportedOperationException
+            ("SVGFilterElement.getFilterResY is not implemented"); // XXX
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGFilterElement#setFilterRes(int,int)}.
      */
     public void setFilterRes(int filterResX, int filterResY) {
-        throw new RuntimeException(" !!! TODO: setFilterRes()");
+        throw new UnsupportedOperationException
+            ("SVGFilterElement.setFilterRes is not implemented"); // XXX
     }
 
     // SVGURIReference support /////////////////////////////////////////////

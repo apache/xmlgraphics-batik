@@ -92,7 +92,8 @@ public class SVGOMFEDiffuseLightingElement
      * org.w3c.dom.svg.SVGFEDiffuseLightingElement#getKernelUnitLengthX()}.
      */
     public SVGAnimatedNumber getKernelUnitLengthX() {
-        throw new RuntimeException("!!! TODO: getKernelUnitLengthX()");
+        throw new UnsupportedOperationException
+            ("SVGFEDiffuseLightingElement.getKernelUnitLengthX is not implemented"); // XXX
     }
 
     /**
@@ -100,7 +101,8 @@ public class SVGOMFEDiffuseLightingElement
      * org.w3c.dom.svg.SVGFEDiffuseLightingElement#getKernelUnitLengthY()}.
      */
     public SVGAnimatedNumber getKernelUnitLengthY() {
-        throw new RuntimeException("!!! TODO: getKernelUnitLengthY()");
+        throw new UnsupportedOperationException
+            ("SVGFEDiffuseLightingElement.getKernelUnitLengthY is not implemented"); // XXX
     }
 
     /**

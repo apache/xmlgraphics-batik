@@ -122,14 +122,16 @@ public class SVGOMUseElement
      * <b>DOM</b>: Implements {@link SVGUseElement#getInstanceRoot()}.
      */
     public SVGElementInstance getInstanceRoot() {
-	throw new RuntimeException(" !!! TODO: getInstanceRoot()");
+        throw new UnsupportedOperationException
+            ("SVGUseElement.getInstanceRoot is not implemented"); // XXX
     }
  
     /**
      * <b>DOM</b>: Implements {@link SVGUseElement#getAnimatedInstanceRoot()}.
      */
     public SVGElementInstance getAnimatedInstanceRoot() {
-	throw new RuntimeException(" !!! TODO: getAnimatedInstanceRoot()");
+        throw new UnsupportedOperationException
+            ("SVGUseElement.getAnimatedInstanceRoot is not implemented"); // XXX
     }
 
     // CSSNavigableNode ///////////////////////////////////////////////

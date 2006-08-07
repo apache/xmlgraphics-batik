@@ -38,11 +38,6 @@ public abstract class TimedDocumentRoot extends TimeContainer {
     protected Calendar documentBeginTime;
 
     /**
-     * The wallclock time that the document was paused.
-     */
-    protected Calendar pauseTime;
-
-    /**
      * Allows the use of accessKey() timing specifiers with a single
      * character, as specified in SVG 1.1.
      */
@@ -99,9 +94,17 @@ public abstract class TimedDocumentRoot extends TimeContainer {
     }
 
     /**
+     * Returns the last sampled document time.
+     */
+    public float getCurrentTime() {
+        return lastSampleTime;
+    }
+
+    /**
      * Samples the entire timegraph at the given time.
      */
-    public void seekTo(float time) {
+    public void seekTo(float time, boolean hyperlinking) {
+        lastSampleTime = time;
         // Trace.enter(this, "seekTo", new Object[] { new Float(time) } ); try {
         propagationFlags.clear();
         // No time containers in SVG, so we don't have to worry
@@ -109,7 +112,7 @@ public abstract class TimedDocumentRoot extends TimeContainer {
         TimedElement[] es = getChildren();
         for (int i = 0; i < es.length; i++) {
             // System.err.print("[" + ((Test.AnimateElement) es[i]).id + "] ");
-            es[i].sampleAt(time);
+            es[i].sampleAt(time, hyperlinking);
         }
         boolean needsUpdates;
         do {
@@ -118,7 +121,7 @@ public abstract class TimedDocumentRoot extends TimeContainer {
                 if (es[i].shouldUpdateCurrentInterval) {
                     needsUpdates = true;
                     // System.err.print("{" + ((Test.AnimateElement) es[i]).id + "} ");
-                    es[i].sampleAt(time);
+                    es[i].sampleAt(time, hyperlinking);
                 }
             }
         } while (needsUpdates);
@@ -142,6 +145,14 @@ public abstract class TimedDocumentRoot extends TimeContainer {
      */
     public Calendar getDocumentBeginTime() {
         return documentBeginTime;
+    }
+
+    /**
+     * Converts an epoch time to document time.
+     */
+    public float convertEpochTime(long t) {
+        long begin = documentBeginTime.getTimeInMillis();
+        return (t - begin) / 1000f;
     }
 
     /**

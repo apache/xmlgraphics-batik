@@ -84,7 +84,8 @@ public class SVGOMFETurbulenceElement
      * SVGFETurbulenceElement#getBaseFrequencyX()}.
      */
     public SVGAnimatedNumber getBaseFrequencyX() {
-        throw new RuntimeException("!!! TODO getBaseFrequencyX()");
+        throw new UnsupportedOperationException
+            ("SVGFETurbulenceElement.getBaseFrequencyX is not implemented"); // XXX
     }
 
     /**
@@ -92,7 +93,8 @@ public class SVGOMFETurbulenceElement
      * SVGFETurbulenceElement#getBaseFrequencyY()}.
      */
     public SVGAnimatedNumber getBaseFrequencyY() {
-        throw new RuntimeException("!!! TODO getBaseFrequencyY()");
+        throw new UnsupportedOperationException
+            ("SVGFETurbulenceElement.getBaseFrequencyY is not implemented"); // XXX
     }
 
     /**

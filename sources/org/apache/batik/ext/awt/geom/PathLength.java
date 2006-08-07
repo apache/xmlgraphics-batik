@@ -20,7 +20,6 @@ package org.apache.batik.ext.awt.geom;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.FlatteningPathIterator;
-import java.awt.geom.GeneralPath;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
 import java.util.Vector;
@@ -119,6 +118,7 @@ public class PathLength {
         segments = new Vector(20);
         Vector indexes = new Vector(20);
         int index = 0;
+        int origIndex = -1;
         float lastMoveX = 0f;
         float lastMoveY = 0f;
         float currentX = 0f;
@@ -126,15 +126,17 @@ public class PathLength {
         float[] seg = new float[6];
         int segType;
 
-        segments.add(new PathSegment(PathIterator.SEG_MOVETO, 0f, 0f, 0f));
+        segments.add(new PathSegment(PathIterator.SEG_MOVETO, 0f, 0f, 0f,
+                                     origIndex));
 
         while (!pi.isDone()) {
+            origIndex++;
             indexes.add(new Integer(index));
             segType = pi.currentSegment(seg);
             switch (segType) {
                 case PathIterator.SEG_MOVETO:
                     segments.add(new PathSegment(segType, seg[0], seg[1],
-                                                 pathLength));
+                                                 pathLength, origIndex));
                     currentX = seg[0];
                     currentY = seg[1];
                     lastMoveX = currentX;
@@ -146,7 +148,7 @@ public class PathLength {
                     pathLength += Point2D.distance(currentX, currentY, seg[0],
                                                    seg[1]);
                     segments.add(new PathSegment(segType, seg[0], seg[1],
-                                                 pathLength));
+                                                 pathLength, origIndex));
                     currentX = seg[0];
                     currentY = seg[1];
                     index++;
@@ -157,7 +159,7 @@ public class PathLength {
                                                    lastMoveX, lastMoveY);
                     segments.add(new PathSegment(PathIterator.SEG_LINETO,
                                                  lastMoveX, lastMoveY,
-                                                 pathLength));
+                                                 pathLength, origIndex));
                     currentX = lastMoveX;
                     currentY = lastMoveY;
                     index++;
@@ -173,7 +175,8 @@ public class PathLength {
                             pathLength += Point2D.distance(currentX, currentY,
                                                            seg[0], seg[1]);
                             segments.add(new PathSegment(segType, seg[0],
-                                                         seg[1], pathLength));
+                                                         seg[1], pathLength,
+                                                         origIndex));
                             currentX = seg[0];
                             currentY = seg[1];
                             index++;
@@ -215,6 +218,26 @@ public class PathLength {
         }
         PathSegment seg = (PathSegment) segments.get(segmentIndexes[index]);
         return seg.getLength();
+    }
+
+    /**
+     * Returns the index of the segment at the given distance along the path.
+     */
+    public int segmentAtLength(float length) {
+        int upperIndex = findUpperIndex(length);
+        if (upperIndex == -1) {
+            // Length is off the end of the path.
+            return -1;
+        }
+
+        if (upperIndex == 0) {
+            // Length was probably zero, so return the upper segment.
+            PathSegment upper = (PathSegment) segments.elementAt(upperIndex);
+            return upper.getIndex();
+        }
+
+        PathSegment lower = (PathSegment) segments.elementAt(upperIndex - 1);
+        return lower.getIndex();
     }
 
     /**
@@ -488,17 +511,26 @@ public class PathLength {
         protected float length;
 
         /**
+         * The index of the original path segment this flattened segment is a
+         * part of.
+         */
+        protected int index;
+
+        /**
          * Creates a new PathSegment with the specified parameters.
          * @param segType The segment type
          * @param x The x coordinate
          * @param y The y coordinate
          * @param len The segment length
+         * @param idx The index of the original path segment this flattened
+         *            segment is a part of
          */
-        public PathSegment(int segType, float x, float y, float len) {
+        public PathSegment(int segType, float x, float y, float len, int idx) {
             this.segType = segType;
             this.x = x;
             this.y = y;
             this.length = len;
+            this.index = idx;
         }
 
         /**
@@ -555,6 +587,20 @@ public class PathLength {
          */
         public void setLength(float v) {
             this.length = v;
+        }
+
+        /**
+         * Returns the segment index.
+         */
+        public int getIndex() {
+            return index;
+        }
+
+        /**
+         * Sets the segment index.
+         */
+        public void setIndex(int v) {
+            this.index = v;
         }
     }
 }

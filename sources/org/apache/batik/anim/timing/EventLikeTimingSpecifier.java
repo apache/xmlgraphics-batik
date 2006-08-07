@@ -18,7 +18,6 @@
 package org.apache.batik.anim.timing;
 
 import org.w3c.dom.events.Event;
-import org.w3c.dom.smil.TimeEvent;
 
 /**
  * Abstract class from which all event-like timing specifier classes derive.

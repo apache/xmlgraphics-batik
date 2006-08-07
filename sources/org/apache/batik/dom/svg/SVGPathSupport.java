@@ -40,6 +40,14 @@ public class SVGPathSupport {
         return pathCtx.getTotalLength();
     }
 
+    /**
+     * To implement {@link
+     * org.w3c.dom.svg.SVGPathElement#getPathSegAtLength(float)}.
+     */
+    public static int getPathSegAtLength(SVGOMPathElement path, float x) {
+        SVGPathContext pathCtx = (SVGPathContext)path.getSVGContext();
+        return pathCtx.getPathSegAtLength(x);
+    }
 
     /**
      * To implement {@link org.w3c.dom.svg.SVGPathElement#getPointAtLength(float)}.

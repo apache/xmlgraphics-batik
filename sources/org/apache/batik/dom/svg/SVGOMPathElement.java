@@ -77,14 +77,15 @@ public class SVGOMPathElement
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
      */
     public String getLocalName() {
-        return "path";
+        return SVG_PATH_TAG;
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGPathElement#getPathLength()}.
      */
     public SVGAnimatedNumber getPathLength() {
-        throw new RuntimeException(" !!! getPathLength() Not Yet Implemented");
+        throw new UnsupportedOperationException
+            ("SVGPathElement.getPathLength is not implemented"); // XXX
     }
 
     /**
@@ -105,8 +106,7 @@ public class SVGOMPathElement
      * <b>DOM</b>: Implements {@link SVGPathElement#getPathSegAtLength(float)}.
      */
     public int getPathSegAtLength(float distance) {
-        throw new RuntimeException
-            (" !!! getPathSegAtLength() Not Yet Implemented");
+        return SVGPathSupport.getPathSegAtLength(this, distance);
     }
 
     /**
@@ -160,7 +160,6 @@ public class SVGOMPathElement
      * SVGPathElement#createSVGPathSegMovetoAbs(float,float)}.
      */
     public SVGPathSegMovetoAbs createSVGPathSegMovetoAbs(final float x_value, final float y_value) {
-        //throw new RuntimeException(" !!! createSVGPathSegMovetoAbs()");
         return new SVGPathSegMovetoAbs(){
                 protected float x = x_value;
                 protected float y = y_value;
@@ -191,7 +190,6 @@ public class SVGOMPathElement
      * SVGPathElement#createSVGPathSegMovetoRel(float,float)}.
      */
     public SVGPathSegMovetoRel createSVGPathSegMovetoRel(final float x_value, final float y_value) {
-        //throw new RuntimeException(" !!! createSVGPathSegMovetoRel()");
         return new SVGPathSegMovetoRel(){
                 protected float x = x_value;
                 protected float y = y_value;
@@ -215,7 +213,6 @@ public class SVGOMPathElement
                     this.y = y;
                 }
             };
-
     }
 
     /**
@@ -223,7 +220,6 @@ public class SVGOMPathElement
      * SVGPathElement#createSVGPathSegLinetoAbs(float,float)}.
      */
     public SVGPathSegLinetoAbs createSVGPathSegLinetoAbs(final float x_value, final float y_value) {
-        //throw new RuntimeException(" !!! createSVGPathSegLinetoAbs()");
         return new SVGPathSegLinetoAbs(){
                 protected float x = x_value;
                 protected float y = y_value;
@@ -254,7 +250,6 @@ public class SVGOMPathElement
      * SVGPathElement#createSVGPathSegLinetoRel(float,float)}.
      */
     public SVGPathSegLinetoRel createSVGPathSegLinetoRel(final float x_value, final float y_value) {
-        //throw new RuntimeException(" !!! createSVGPathSegLinetoRel()");
         return new SVGPathSegLinetoRel(){
                 protected float x = x_value;
                 protected float y = y_value;
@@ -285,7 +280,6 @@ public class SVGOMPathElement
      * SVGPathElement#createSVGPathSegLinetoHorizontalAbs(float)}.
      */
     public SVGPathSegLinetoHorizontalAbs createSVGPathSegLinetoHorizontalAbs(final float x_value) {
-        //throw new RuntimeException(" !!! createSVGPathSegLinetoHorizontalAbs()");
         return new SVGPathSegLinetoHorizontalAbs(){
                 protected float x = x_value;
 
@@ -302,7 +296,6 @@ public class SVGOMPathElement
                     this.x = x;
                 }
             };
-
     }
 
     /**
@@ -310,7 +303,6 @@ public class SVGOMPathElement
      * SVGPathElement#createSVGPathSegLinetoHorizontalRel(float)}.
      */
     public SVGPathSegLinetoHorizontalRel createSVGPathSegLinetoHorizontalRel(final float x_value) {
-        //throw new RuntimeException(" !!! createSVGPathSegLinetoHorizontalRel()");
         return new SVGPathSegLinetoHorizontalRel(){
                 protected float x = x_value;
 
@@ -327,7 +319,6 @@ public class SVGOMPathElement
                     this.x = x;
                 }
             };
-
     }
 
     /**
@@ -335,7 +326,6 @@ public class SVGOMPathElement
      * SVGPathElement#createSVGPathSegLinetoVerticalAbs(float)}.
      */
     public SVGPathSegLinetoVerticalAbs createSVGPathSegLinetoVerticalAbs(final float y_value) {
-        //throw new RuntimeException(" !!! createSVGPathSegLinetoVerticalAbs()");
         return new SVGPathSegLinetoVerticalAbs(){
                 protected float y = y_value;
 
@@ -352,7 +342,6 @@ public class SVGOMPathElement
                     this.y = y;
                 }
             };
-
     }
 
     /**
@@ -360,7 +349,6 @@ public class SVGOMPathElement
      * SVGPathElement#createSVGPathSegLinetoVerticalRel(float)}.
      */
     public SVGPathSegLinetoVerticalRel createSVGPathSegLinetoVerticalRel(final float y_value) {
-        //throw new RuntimeException(" !!! createSVGPathSegLinetoVerticalRel()");
         return new SVGPathSegLinetoVerticalRel(){
                 protected float y = y_value;
 
@@ -377,7 +365,6 @@ public class SVGOMPathElement
                     this.y = y;
                 }
             };
-
     }
 
     /**
@@ -388,7 +375,6 @@ public class SVGOMPathElement
         (final float x_value, final float y_value, 
          final float x1_value, final float y1_value, 
          final float x2_value, final float y2_value) {
-        //throw new RuntimeException(" !!! createSVGPathSegCurvetoCubicAbs()");
         return new SVGPathSegCurvetoCubicAbs(){
                 protected float x = x_value;
                 protected float y = y_value;
@@ -440,7 +426,6 @@ public class SVGOMPathElement
                     this.y2 = y2;
                 }
             };
-
     }
 
     /**
@@ -451,7 +436,6 @@ public class SVGOMPathElement
         (final float x_value, final float y_value, 
          final float x1_value, final float y1_value, 
          final float x2_value, final float y2_value) {
-        //throw new RuntimeException(" !!! createSVGPathSegCurvetoCubicAbs()");
         return new SVGPathSegCurvetoCubicRel(){
                 protected float x = x_value;
                 protected float y = y_value;
@@ -512,7 +496,6 @@ public class SVGOMPathElement
     public SVGPathSegCurvetoQuadraticAbs createSVGPathSegCurvetoQuadraticAbs
         (final float x_value, final float y_value, 
          final float x1_value, final float y1_value) {
-        //throw new RuntimeException(" !!! createSVGPathSegCurvetoCubicAbs()");
         return new SVGPathSegCurvetoQuadraticAbs(){
                 protected float x = x_value;
                 protected float y = y_value;
@@ -559,7 +542,6 @@ public class SVGOMPathElement
     public SVGPathSegCurvetoQuadraticRel createSVGPathSegCurvetoQuadraticRel
         (final float x_value, final float y_value, 
          final float x1_value, final float y1_value) {
-        //throw new RuntimeException(" !!! createSVGPathSegCurvetoCubicAbs()");
         return new SVGPathSegCurvetoQuadraticRel(){
                 protected float x = x_value;
                 protected float y = y_value;
@@ -607,7 +589,6 @@ public class SVGOMPathElement
             createSVGPathSegCurvetoCubicSmoothAbs
         (final float x_value, final float y_value, 
          final float x2_value, final float y2_value) {
-        //throw new RuntimeException(" !!! createSVGPathSegCurvetoCubicAbs()");
         return new SVGPathSegCurvetoCubicSmoothAbs(){
                 protected float x = x_value;
                 protected float y = y_value;
@@ -655,7 +636,6 @@ public class SVGOMPathElement
             createSVGPathSegCurvetoCubicSmoothRel
         (final float x_value, final float y_value, 
          final float x2_value, final float y2_value) {
-        //throw new RuntimeException(" !!! createSVGPathSegCurvetoCubicAbs()");
         return new SVGPathSegCurvetoCubicSmoothRel(){
                 protected float x = x_value;
                 protected float y = y_value;
@@ -702,7 +682,6 @@ public class SVGOMPathElement
     public SVGPathSegCurvetoQuadraticSmoothAbs
             createSVGPathSegCurvetoQuadraticSmoothAbs
         (final float x_value, final float y_value) {
-        //throw new RuntimeException(" !!! createSVGPathSegLinetoAbs()");
         return new SVGPathSegCurvetoQuadraticSmoothAbs(){
                 protected float x = x_value;
                 protected float y = y_value;
@@ -736,7 +715,6 @@ public class SVGOMPathElement
     public SVGPathSegCurvetoQuadraticSmoothRel
             createSVGPathSegCurvetoQuadraticSmoothRel
         (final float x_value, final float y_value) {
-        //throw new RuntimeException(" !!! createSVGPathSegLinetoAbs()");
         return new SVGPathSegCurvetoQuadraticSmoothRel(){
                 protected float x = x_value;
                 protected float y = y_value;
@@ -772,7 +750,6 @@ public class SVGOMPathElement
          final float angle_value,
          final boolean largeArcFlag_value, 
          final boolean sweepFlag_value) {
-        //throw new RuntimeException(" !!! createSVGPathSegArcAbs()");
         return new SVGPathSegArcAbs(){
                 protected float x = x_value;
                 protected float y = y_value;
@@ -845,7 +822,6 @@ public class SVGOMPathElement
          final float angle_value,
          final boolean largeArcFlag_value, 
          final boolean sweepFlag_value) {
-        //throw new RuntimeException(" !!! createSVGPathSegArcAbs()");
         return new SVGPathSegArcRel(){
                 protected float x = x_value;
                 protected float y = y_value;

@@ -89,7 +89,8 @@ public class SVGOMFEColorMatrixElement
      * <b>DOM</b>: Implements {@link SVGFEColorMatrixElement#getValues()}.
      */
     public SVGAnimatedNumberList getValues() {
-        throw new RuntimeException("!!! TODO: getValues()");
+        throw new UnsupportedOperationException
+            ("SVGFEColorMatrixElement.getValues is not implemented"); // XXX
     }
 
     /**

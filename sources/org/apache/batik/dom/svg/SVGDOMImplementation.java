@@ -158,8 +158,8 @@ public class SVGDOMImplementation
      * DOMImplementationCSS#createCSSStyleSheet(String,String)}.
      */
     public CSSStyleSheet createCSSStyleSheet(String title, String media) {
-
-        throw new UnsupportedOperationException("Not implemented");
+        throw new UnsupportedOperationException
+            ("DOMImplementationCSS.createCSSStyleSheet is not implemented"); // XXX
     }
 
     // CSSStyleDeclarationFactory ///////////////////////////////////////////
@@ -169,7 +169,8 @@ public class SVGDOMImplementation
      * @return a CSSOMStyleDeclaration instance.
      */
     public CSSStyleDeclaration createCSSStyleDeclaration() {
-        throw new UnsupportedOperationException("Not implemented");
+        throw new UnsupportedOperationException
+            ("CSSStyleDeclarationFactory.createCSSStyleDeclaration is not implemented"); // XXX
     }
 
     // StyleSheetFactory /////////////////////////////////////////////
@@ -179,14 +180,16 @@ public class SVGDOMImplementation
      * processing instruction or return null.
      */
     public StyleSheet createStyleSheet(Node n, HashTable attrs) {
-        throw new UnsupportedOperationException("Not implemented");
+        throw new UnsupportedOperationException
+            ("StyleSheetFactory.createStyleSheet is not implemented"); // XXX
     }
 
     /**
      * Returns the user-agent stylesheet.
      */
     public CSSStyleSheet getUserAgentStyleSheet() {
-        throw new UnsupportedOperationException("Not implemented");
+        throw new UnsupportedOperationException
+            ("StyleSheetFactory.getUserAgentStyleSheet is not implemented"); // XXX
     }
 
     /**

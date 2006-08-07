@@ -78,19 +78,19 @@ public abstract class TimeContainer extends TimedElement {
     /**
      * Calculates the local simple time.
      */
-    protected void sampleAt(float parentSimpleTime) {
-        super.sampleAt(parentSimpleTime);
-        sampleChildren(parentSimpleTime);
+    protected void sampleAt(float parentSimpleTime, boolean hyperlinking) {
+        super.sampleAt(parentSimpleTime, hyperlinking);
+        sampleChildren(parentSimpleTime, hyperlinking);
     }
 
     /**
      * Samples all the child timed elements.
      */
-    protected void sampleChildren(float parentSimpleTime) {
+    protected void sampleChildren(float parentSimpleTime, boolean hyperlinking) {
         Iterator i = children.iterator();
         while (i.hasNext()) {
             TimedElement e = (TimedElement) i.next();
-            e.sampleAt(parentSimpleTime);
+            e.sampleAt(parentSimpleTime, hyperlinking);
         }
     }
 

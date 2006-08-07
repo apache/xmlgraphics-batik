@@ -92,7 +92,7 @@ public class RunnableQueue implements Runnable {
      * Count of preempt entries in queue, so preempt entries
      * can be kept properly ordered.
      */
-    protected int preemptCount = 0;
+    protected int preemptCount;
 
     /**
      * The object which handle run events.
@@ -161,7 +161,7 @@ public class RunnableQueue implements Runnable {
                     executionSuspended();
 
                 synchronized (stateLock) {
-                    while (state != RUNNING ) {
+                    while (state != RUNNING) {
                         state = SUSPENDED;
 
                         // notify suspendExecution in case it is
@@ -270,7 +270,7 @@ public class RunnableQueue implements Runnable {
      * Waits until the given Runnable's <tt>run()</tt> has returned.
      * <em>Note: <tt>invokeAndWait()</tt> must not be called from the
      * current thread (for example from the <tt>run()</tt> method of the
-     * argument).
+     * argument).</em>
      * @throws IllegalStateException if getThread() is null or if the
      *         thread returned by getThread() is the current one.
      */
@@ -476,7 +476,10 @@ public class RunnableQueue implements Runnable {
      * Sets a Runnable to be run whenever the queue is empty.
      */
     public synchronized void setIdleRunnable(Runnable r) {
-        idleRunnable = r;
+        synchronized (list) {
+            idleRunnable = r;
+            list.notify();
+        }
     }
 
     /**

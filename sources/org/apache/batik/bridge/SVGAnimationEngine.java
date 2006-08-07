@@ -111,6 +111,11 @@ public class SVGAnimationEngine extends AnimationEngine {
     protected boolean started;
 
     /**
+     * The Runnable that ticks the document.
+     */
+    protected AnimationTickRunnable animationTickRunnable;
+
+    /**
      * The factory for unparsed string values.
      */
     protected UncomputedAnimatableStringValueFactory 
@@ -345,6 +350,23 @@ public class SVGAnimationEngine extends AnimationEngine {
     }
 
     /**
+     * Pauses the animations.
+     */
+    public void pause() {
+        super.pause();
+        ctx.getUpdateManager().getUpdateRunnableQueue().setIdleRunnable(null);
+    }
+
+    /**
+     * Pauses the animations.
+     */
+    public void unpause() {
+        super.unpause();
+        ctx.getUpdateManager().getUpdateRunnableQueue().setIdleRunnable
+            (animationTickRunnable);
+    }
+
+    /**
      * Creates a new returns a new TimedDocumentRoot object for the document.
      */
     protected TimedDocumentRoot createDocumentRoot() {
@@ -544,11 +566,12 @@ public class SVGAnimationEngine extends AnimationEngine {
                         bridge.initializeTimedElement();
                     }
                     started = true;
-                    tick(0);
+                    tick(0, false);
                     // animationThread = new AnimationThread();
                     // animationThread.start();
+                    animationTickRunnable = new AnimationTickRunnable();
                     ctx.getUpdateManager().getUpdateRunnableQueue().setIdleRunnable
-                        (new AnimationTickRunnable());
+                        (animationTickRunnable);
                 } catch (AnimationException ex) {
                     throw new BridgeException(ctx, ex.getElement().getElement(),
                                               ex.getMessage());
@@ -581,7 +604,7 @@ public class SVGAnimationEngine extends AnimationEngine {
                         // System.err.println("fps: " + frames);
                         frames = 0;
                     }
-                    tick(t);
+                    tick(t, false);
                     frames++;
                 } catch (AnimationException ex) {
                     throw new BridgeException(ctx, ex.getElement().getElement(),
@@ -668,7 +691,7 @@ public class SVGAnimationEngine extends AnimationEngine {
              * Ticks the animation over.
              */
             public void run() {
-                tick(t);
+                tick(t, false);
             }
         }
     }

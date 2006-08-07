@@ -78,7 +78,8 @@ public abstract class SVGOMComponentTransferFunctionElement
      * SVGComponentTransferFunctionElement#getTableValues()}.
      */
     public SVGAnimatedNumberList getTableValues() {
-        throw new RuntimeException("!!! TODO: getTableValues");
+        throw new UnsupportedOperationException
+            ("SVGComponentTransferFunctionElement.getTableValues is not implemented"); // XXX
     }
 
     /**

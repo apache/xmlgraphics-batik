@@ -93,21 +93,24 @@ public class SVGOMFEConvolveMatrixElement
      * <b>DOM</b>: Implements {@link SVGFEConvolveMatrixElement#getKernelMatrix()}.
      */
     public SVGAnimatedNumberList getKernelMatrix() {
-        throw new RuntimeException("!!! TODO: getKernelMatrix()");
+        throw new UnsupportedOperationException
+            ("SVGFEConvolveMatrixElement.getKernelMatrix is not implemented"); // XXX
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGFEConvolveMatrixElement#getOrderX()}.
      */
     public SVGAnimatedInteger getOrderX() {
-        throw new RuntimeException("!!! TODO: getOrderX()");
+        throw new UnsupportedOperationException
+            ("SVGFEConvolveMatrixElement.getOrderX is not implemented"); // XXX
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGFEConvolveMatrixElement#getOrderY()}.
      */
     public SVGAnimatedInteger getOrderY() {
-        throw new RuntimeException("!!! TODO: getOrderY()");
+        throw new UnsupportedOperationException
+            ("SVGFEConvolveMatrixElement.getOrderY is not implemented"); // XXX
     }
 
     /**
@@ -115,7 +118,8 @@ public class SVGOMFEConvolveMatrixElement
      */
     public SVGAnimatedInteger getTargetX() {
         // Default value relative to orderX...
-        throw new RuntimeException("!!! TODO: getTargetX()");
+        throw new UnsupportedOperationException
+            ("SVGFEConvolveMatrixElement.getTargetX is not implemented"); // XXX
     }
 
     /**
@@ -123,7 +127,8 @@ public class SVGOMFEConvolveMatrixElement
      */
     public SVGAnimatedInteger getTargetY() {
         // Default value relative to orderY...
-        throw new RuntimeException("!!! TODO: getTargetY()");
+        throw new UnsupportedOperationException
+            ("SVGFEConvolveMatrixElement.getTargetY is not implemented"); // XXX
     }
 
     /**
@@ -131,7 +136,8 @@ public class SVGOMFEConvolveMatrixElement
      */
     public SVGAnimatedNumber getDivisor() {
         // Default value relative to kernel matrix...
-        throw new RuntimeException("!!! TODO: getDivisor()");
+        throw new UnsupportedOperationException
+            ("SVGFEConvolveMatrixElement.getDivisor is not implemented"); // XXX
     }
 
     /**
@@ -147,7 +153,8 @@ public class SVGOMFEConvolveMatrixElement
      * org.w3c.dom.svg.SVGFEConvolveMatrixElement#getKernelUnitLengthX()}.
      */
     public SVGAnimatedNumber getKernelUnitLengthX() {
-        throw new RuntimeException("!!! TODO: getKernelUnitLengthX()");
+        throw new UnsupportedOperationException
+            ("SVGFEConvolveMatrixElement.getKernelUnitLengthX is not implemented"); // XXX
     }
 
     /**
@@ -155,7 +162,8 @@ public class SVGOMFEConvolveMatrixElement
      * org.w3c.dom.svg.SVGFEConvolveMatrixElement#getKernelUnitLengthY()}.
      */
     public SVGAnimatedNumber getKernelUnitLengthY() {
-        throw new RuntimeException("!!! TODO: getKernelUnitLengthY()");
+        throw new UnsupportedOperationException
+            ("SVGFEConvolveMatrixElement.getKernelUnitLengthY is not implemented"); // XXX
     }
 
     /**

@@ -91,7 +91,8 @@ public class SVGOMAnimatedPathData
      * SVGAnimatedPathData#getAnimatedNormalizedPathSegList()}.
      */
     public SVGPathSegList getAnimatedNormalizedPathSegList() {
-        throw new RuntimeException("TODO :  getAnimatedNormalizedPathSegList() !!");
+        throw new UnsupportedOperationException
+            ("SVGAnimatedPathData.getAnimatedNormalizedPathSegList is not implemented"); // XXX
     }
 
     /**
