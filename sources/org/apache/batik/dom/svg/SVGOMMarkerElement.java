@@ -194,7 +194,8 @@ public class SVGOMMarkerElement
      * org.w3c.dom.svg.SVGFitToViewBox#getViewBox()}.
      */
     public SVGAnimatedRect getViewBox() {
-	throw new RuntimeException(" !!! TODO: getViewBox()");
+        throw new UnsupportedOperationException
+            ("SVGMarkerElement.getViewBox is not implemented"); // XXX
     }
 
     /**

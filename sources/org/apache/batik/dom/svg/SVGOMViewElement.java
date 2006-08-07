@@ -80,7 +80,8 @@ public class SVGOMViewElement
      * <b>DOM</b>: Implements {@link SVGViewElement#getViewTarget()}.
      */
     public SVGStringList getViewTarget() {
-        throw new RuntimeException("!!! TODO: getViewTarget()");
+        throw new UnsupportedOperationException
+            ("SVGViewElement.getViewTarget is not implemented"); // XXX
     }
 
     // SVGZoomAndPan support ///////////////////////////////////////////////
@@ -108,7 +109,8 @@ public class SVGOMViewElement
      * org.w3c.dom.svg.SVGFitToViewBox#getViewBox()}.
      */
     public SVGAnimatedRect getViewBox() {
-        throw new RuntimeException(" !!! TODO: getViewBox()");
+        throw new UnsupportedOperationException
+            ("SVGFitToViewBox.getViewBox is not implemented"); // XXX
     }
 
     /**

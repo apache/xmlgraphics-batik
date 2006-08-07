@@ -85,4 +85,29 @@ public interface SVGSVGContext extends SVGContext {
      * Forces an immediate redraw of the canvas.
      */
     void forceRedraw();
-};
+
+    /**
+     * Pauses animations in the document.
+     */
+    void pauseAnimations();
+
+    /**
+     * Unpauses animations in the document.
+     */
+    void unpauseAnimations();
+
+    /**
+     * Returns whether animations are currently paused.
+     */
+    boolean animationsPaused();
+
+    /**
+     * Returns the current document time.
+     */
+    float getCurrentTime();
+
+    /**
+     * Sets the current document time.
+     */
+    void setCurrentTime(float t);
+}

@@ -17,6 +17,7 @@
  */
 package org.apache.batik.anim;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -53,6 +54,12 @@ public abstract class AnimationEngine {
     protected TimedDocumentRoot timedDocumentRoot;
 
     /**
+     * The time at which the document was paused, or 0 if the document is not
+     * paused.
+     */
+    protected long pauseTime;
+
+    /**
      * Map of AnimationTargets to TargetInfo objects.
      */
     protected HashMap targets = new HashMap();
@@ -73,6 +80,57 @@ public abstract class AnimationEngine {
     public AnimationEngine(Document doc) {
         this.document = doc;
         timedDocumentRoot = createDocumentRoot();
+    }
+
+    /**
+     * Pauses the animations.
+     */
+    public void pause() {
+        if (pauseTime == 0) {
+            pauseTime = System.currentTimeMillis();
+        }
+    }
+
+    /**
+     * Unpauses the animations.
+     */
+    public void unpause() {
+        if (pauseTime != 0) {
+            Calendar begin = timedDocumentRoot.getDocumentBeginTime();
+            int dt = (int) (System.currentTimeMillis() - pauseTime);
+            begin.add(Calendar.MILLISECOND, dt);
+            pauseTime = 0;
+        }
+    }
+
+    /**
+     * Returns whether animations are currently paused.
+     */
+    public boolean isPaused() {
+        return pauseTime != 0;
+    }
+
+    /**
+     * Returns the current document time.
+     */
+    public float getCurrentTime() {
+        return timedDocumentRoot.getCurrentTime();
+    }
+
+    /**
+     * Sets the current document time.
+     */
+    public void setCurrentTime(float t) {
+        boolean p = pauseTime != 0;
+        unpause();
+        Calendar begin = timedDocumentRoot.getDocumentBeginTime();
+        float now =
+            timedDocumentRoot.convertEpochTime(System.currentTimeMillis());
+        begin.add(Calendar.MILLISECOND, (int) ((now - t) * 1000));
+        if (p) {
+            pause();
+        }
+        tick(t, true);
     }
 
     /**
@@ -196,9 +254,12 @@ public abstract class AnimationEngine {
 
     /**
      * Updates the animations in the document to the given document time.
+     * @param time the document time to sample at
+     * @param hyperlinking whether the document should be seeked to the given
+     *                     time, as with hyperlinking
      */
-    protected void tick(float time) {
-        timedDocumentRoot.seekTo(time);
+    protected void tick(float time, boolean hyperlinking) {
+        timedDocumentRoot.seekTo(time, hyperlinking);
         Iterator i = targets.entrySet().iterator();
         while (i.hasNext()) {
             Map.Entry e = (Map.Entry) i.next();

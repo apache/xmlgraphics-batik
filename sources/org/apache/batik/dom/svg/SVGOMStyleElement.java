@@ -143,7 +143,8 @@ public class SVGOMStyleElement
      * org.w3c.dom.stylesheets.LinkStyle#getSheet()}.
      */
     public org.w3c.dom.stylesheets.StyleSheet getSheet() {
-        throw new RuntimeException(" !!! Not implemented.");
+        throw new UnsupportedOperationException
+            ("LinkStyle.getSheet() is not implemented"); // XXX
     }
 
     /**

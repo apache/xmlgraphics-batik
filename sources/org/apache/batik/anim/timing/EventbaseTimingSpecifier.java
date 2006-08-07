@@ -120,10 +120,8 @@ public class EventbaseTimingSpecifier
      * Invoked to resolve an event-like timing specifier into an instance time.
      */
     public void resolve(Event e) {
-        long time = e.getTimeStamp() -
-            owner.getRoot().getDocumentBeginTime().getTimeInMillis();
-        InstanceTime instance =
-            new InstanceTime(this, time / 1000f, null, true);
+        float time = owner.getRoot().convertEpochTime(e.getTimeStamp());
+        InstanceTime instance = new InstanceTime(this, time, null, true);
         owner.addInstanceTime(instance, isBegin);
     }
 }

@@ -232,21 +232,24 @@ public class SVGOMSVGElement
      * <b>DOM</b>: Implements {@link SVGSVGElement#getUseCurrentView()}.
      */
     public boolean getUseCurrentView() {
-        throw new UnsupportedOperationException("!!! Not implemented.");
+        throw new UnsupportedOperationException
+            ("SVGSVGElement.getUseCurrentView is not implemented"); // XXX
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGSVGElement#setUseCurrentView(boolean)}.
      */
     public void setUseCurrentView(boolean useCurrentView) throws DOMException {
-        throw new UnsupportedOperationException("!!! Not implemented.");
+        throw new UnsupportedOperationException
+            ("SVGSVGElement.setUseCurrentView is not implemented"); // XXX
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGSVGElement#getCurrentView()}.
      */
     public SVGViewSpec getCurrentView() {
-        throw new UnsupportedOperationException("!!! Not implemented.");
+        throw new UnsupportedOperationException
+            ("SVGSVGElement.getCurrentView is not implemented"); // XXX
     }
 
     /**
@@ -326,71 +329,131 @@ public class SVGOMSVGElement
         };
     }
 
-    public int          suspendRedraw ( int max_wait_milliseconds ) {
-        if (max_wait_milliseconds > 60000) 
+    /**
+     * <b>DOM</b>: Implements {@link SVGSVGElement#suspendRedraw(int)}.
+     */
+    public int suspendRedraw(int max_wait_milliseconds) {
+        if (max_wait_milliseconds > 60000) {
             max_wait_milliseconds = 60000;
-        else if (max_wait_milliseconds < 0) max_wait_milliseconds = 0;
-
+        } else if (max_wait_milliseconds < 0) {
+            max_wait_milliseconds = 0;
+        }
         SVGSVGContext ctx = (SVGSVGContext)getSVGContext();
         return ctx.suspendRedraw(max_wait_milliseconds);
     }
-    public void          unsuspendRedraw ( int suspend_handle_id )
-        throws DOMException {
+
+    /**
+     * <b>DOM</b>: Implements {@link SVGSVGElement#unsuspendRedraw(int)}.
+     */
+    public void unsuspendRedraw(int suspend_handle_id) throws DOMException {
         SVGSVGContext ctx = (SVGSVGContext)getSVGContext();
-        boolean ok = ctx.unsuspendRedraw(suspend_handle_id);
-        if (!ok) {
-            throw new DOMException(DOMException.NOT_FOUND_ERR,
-                                   "Bad suspend_handle_id: " + 
-                                   suspend_handle_id);
+        if (!ctx.unsuspendRedraw(suspend_handle_id)) {
+            throw createDOMException
+                (DOMException.NOT_FOUND_ERR, "invalid.suspend.handle",
+                 new Object[] { new Integer(suspend_handle_id) });
         }
     }
-    public void          unsuspendRedrawAll (  ) {
+
+    /**
+     * <b>DOM</b>: Implements {@link SVGSVGElement#unsuspendRedrawAll()}.
+     */
+    public void unsuspendRedrawAll() {
         SVGSVGContext ctx = (SVGSVGContext)getSVGContext();
         ctx.unsuspendRedrawAll();
     }
-    public void          forceRedraw (  ) {
+
+    /**
+     * <b>DOM</b>: Implements {@link SVGSVGElement#forceRedraw()}.
+     */
+    public void forceRedraw() {
         SVGSVGContext ctx = (SVGSVGContext)getSVGContext();
         ctx.forceRedraw();
     }
-    public void          pauseAnimations (  ) {
-        throw new UnsupportedOperationException("!!! Not implemented.");
-    }
-    public void          unpauseAnimations (  ) {
-        throw new UnsupportedOperationException("!!! Not implemented.");
-    }
-    public boolean       animationsPaused (  ) {
-        throw new UnsupportedOperationException("!!! Not implemented.");
-    }
-    public float         getCurrentTime (  ) {
-        throw new UnsupportedOperationException("!!! Not implemented.");
-    }
-    public void          setCurrentTime ( float seconds ) {
-        throw new UnsupportedOperationException("!!! Not implemented.");
+
+    /**
+     * <b>DOM</b>: Implements {@link SVGSVGElement#pauseAnimations()}.
+     */
+    public void pauseAnimations() {
+        SVGSVGContext ctx = (SVGSVGContext)getSVGContext();
+        ctx.pauseAnimations();
     }
 
-    public NodeList      getIntersectionList ( SVGRect rect,
-                                               SVGElement referenceElement ) {
+    /**
+     * <b>DOM</b>: Implements {@link SVGSVGElement#unpauseAnimations()}.
+     */
+    public void unpauseAnimations() {
+        SVGSVGContext ctx = (SVGSVGContext)getSVGContext();
+        ctx.unpauseAnimations();
+    }
+
+    /**
+     * <b>DOM</b>: Implements {@link SVGSVGElement#animationsPaused()}.
+     */
+    public boolean animationsPaused() {
+        SVGSVGContext ctx = (SVGSVGContext)getSVGContext();
+        return ctx.animationsPaused();
+    }
+
+    /**
+     * <b>DOM</b>: Implements {@link SVGSVGElement#getCurrentTime()}.
+     */
+    public float getCurrentTime() {
+        SVGSVGContext ctx = (SVGSVGContext)getSVGContext();
+        return ctx.getCurrentTime();
+    }
+
+    /**
+     * <b>DOM</b>: Implements {@link SVGSVGElement#setCurrentTime(float)}.
+     */
+    public void setCurrentTime(float seconds) {
+        SVGSVGContext ctx = (SVGSVGContext)getSVGContext();
+        ctx.setCurrentTime(seconds);
+    }
+
+    /**
+     * <b>DOM</b>: Implements {@link
+     * SVGSVGElement#getIntersectionList(SVGRect,SVGElement)}.
+     */
+    public NodeList getIntersectionList(SVGRect rect,
+                                        SVGElement referenceElement) {
         SVGSVGContext ctx = (SVGSVGContext)getSVGContext();
         List list = ctx.getIntersectionList(rect, referenceElement);
         return new ListNodeList(list);
     }
 
-    public NodeList      getEnclosureList ( SVGRect rect,
-                                            SVGElement referenceElement ) {
+    /**
+     * <b>DOM</b>: Implements {@link
+     * SVGSVGElement#getEnclosureList(SVGRect,SVGElement)}.
+     */
+    public NodeList getEnclosureList(SVGRect rect,
+                                     SVGElement referenceElement) {
         SVGSVGContext ctx = (SVGSVGContext)getSVGContext();
         List list = ctx.getEnclosureList(rect, referenceElement);
         return new ListNodeList(list);
     }
+
+    /**
+     * <b>DOM</b>: Implements {@link
+     * SVGSVGElement#checkIntersection(SVGElement,SVGRect)}.
+     */
     public boolean checkIntersection(SVGElement element, SVGRect rect) {
         SVGSVGContext ctx = (SVGSVGContext)getSVGContext();
         return ctx.checkIntersection(element, rect);
     }
+
+    /**
+     * <b>DOM</b>: Implements {@link
+     * SVGSVGElement#checkEnclosure(SVGElement,SVGRect)}.
+     */
     public boolean checkEnclosure(SVGElement element, SVGRect rect) {
         SVGSVGContext ctx = (SVGSVGContext)getSVGContext();
         return ctx.checkEnclosure(element, rect);
     }
 
-    public void          deselectAll (  ) {
+    /**
+     * <b>DOM</b>: Implements {@link SVGSVGElement#deselectAll()}.
+     */
+    public void deselectAll() {
         ((SVGSVGContext)getSVGContext()).deselectAll();
     }
 
@@ -482,7 +545,7 @@ public class SVGOMSVGElement
      * org.w3c.dom.svg.SVGLocatable#getNearestViewportElement()}.
      */
     public SVGElement getNearestViewportElement() {
-	return SVGLocatableSupport.getNearestViewportElement(this);
+        return SVGLocatableSupport.getNearestViewportElement(this);
     }
 
     /**
@@ -490,7 +553,7 @@ public class SVGOMSVGElement
      * org.w3c.dom.svg.SVGLocatable#getFarthestViewportElement()}.
      */
     public SVGElement getFarthestViewportElement() {
-	return SVGLocatableSupport.getFarthestViewportElement(this);
+        return SVGLocatableSupport.getFarthestViewportElement(this);
     }
 
     /**
@@ -498,7 +561,7 @@ public class SVGOMSVGElement
      * org.w3c.dom.svg.SVGLocatable#getBBox()}.
      */
     public SVGRect getBBox() {
-	return SVGLocatableSupport.getBBox(this);
+        return SVGLocatableSupport.getBBox(this);
     }
 
     /**
@@ -506,7 +569,7 @@ public class SVGOMSVGElement
      * org.w3c.dom.svg.SVGLocatable#getCTM()}.
      */
     public SVGMatrix getCTM() {
-	return SVGLocatableSupport.getCTM(this);
+        return SVGLocatableSupport.getCTM(this);
     }
 
     /**
@@ -514,7 +577,7 @@ public class SVGOMSVGElement
      * org.w3c.dom.svg.SVGLocatable#getScreenCTM()}.
      */
     public SVGMatrix getScreenCTM() {
-	return SVGLocatableSupport.getScreenCTM(this);
+        return SVGLocatableSupport.getScreenCTM(this);
     }
 
     /**
@@ -522,8 +585,8 @@ public class SVGOMSVGElement
      * org.w3c.dom.svg.SVGLocatable#getTransformToElement(SVGElement)}.
      */
     public SVGMatrix getTransformToElement(SVGElement element)
-	throws SVGException {
-	return SVGLocatableSupport.getTransformToElement(this, element);
+        throws SVGException {
+        return SVGLocatableSupport.getTransformToElement(this, element);
     }
 
     // ViewCSS ////////////////////////////////////////////////////////////////
@@ -641,7 +704,8 @@ public class SVGOMSVGElement
      * org.w3c.dom.svg.SVGFitToViewBox#getViewBox()}.
      */
     public SVGAnimatedRect getViewBox() {
-        throw new RuntimeException(" !!! TODO: getViewBox()");
+        throw new UnsupportedOperationException
+            ("SVGFitToViewBox.getViewBox is not implemented"); // XXX
     }
 
     /**

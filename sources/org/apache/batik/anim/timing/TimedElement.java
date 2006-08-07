@@ -532,9 +532,12 @@ public abstract class TimedElement implements SMILConstants {
     }
 
     /**
-     * Calculates the local simple time.
+     * Calculates the local simple time.  Currently the hyperlinking parameter
+     * is ignored, so DOM timing events are fired during hyperlinking seeks.
+     * If we were following SMIL 2.1 rather than SMIL Animation, then these
+     * events would have to be surpressed.
      */
-    protected void sampleAt(float parentSimpleTime) {
+    protected void sampleAt(float parentSimpleTime, boolean hyperlinking) {
         // Trace.enter(this, "sampleAt", new Object[] { new Float(parentSimpleTime) } ); try {
         float time = parentSimpleTime; // No time containers in SVG.
 
@@ -588,14 +591,17 @@ public abstract class TimedElement implements SMILConstants {
                 }
                 isActive = true;
                 lastRepeatTime = begin;
-                fireTimeEvent(SMIL_BEGIN_EVENT_NAME, currentInterval.getBegin(), 0);
+                fireTimeEvent
+                    (SMIL_BEGIN_EVENT_NAME, currentInterval.getBegin(), 0);
             }
         }
         boolean wasActive = isActive;
         // For each sample, we might need to update the current interval's
         // begin and end times, or end the current interval and compute
         // a new one.
-        boolean hasEnded = currentInterval != null && time >= currentInterval.getEnd();
+        boolean hasEnded = currentInterval != null
+            && (time < currentInterval.getBegin()
+                    || time >= currentInterval.getEnd());
         // Fire any repeat events that should have been fired since the
         // last sample.
         if (currentInterval != null) {
@@ -609,6 +615,9 @@ public abstract class TimedElement implements SMILConstants {
             }
         }
         // Trace.print("begin loop");
+        if (hyperlinking) {
+            shouldUpdateCurrentInterval = true;
+        }
         while (shouldUpdateCurrentInterval || hasEnded) {
             if (hasEnded) {
                 previousIntervals.add(currentInterval);
@@ -619,9 +628,9 @@ public abstract class TimedElement implements SMILConstants {
             boolean first =
                 currentInterval == null && previousIntervals.isEmpty();
             if (currentInterval == null || hasEnded) {
-                if (first || restartMode != RESTART_NEVER) {
+                if (first || hyperlinking || restartMode != RESTART_NEVER) {
                     float beginAfter;
-                    if (first) {
+                    if (first || hyperlinking) {
                         beginAfter = Float.NEGATIVE_INFINITY;
                     } else {
                         beginAfter = ((Interval) previousIntervals.getLast()).getEnd();

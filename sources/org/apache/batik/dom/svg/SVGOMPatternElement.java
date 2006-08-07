@@ -100,7 +100,8 @@ public class SVGOMPatternElement
      * To implement {@link SVGPatternElement#getPatternTransform()}.
      */
     public SVGAnimatedTransformList getPatternTransform() {
-        throw new RuntimeException(" !!! TODO: getPatternTransform()");
+        throw new UnsupportedOperationException
+            ("SVGPatternElement.getPatternTransform is not implemented"); // XXX
     }
 
     /**
@@ -176,7 +177,8 @@ public class SVGOMPatternElement
      * org.w3c.dom.svg.SVGFitToViewBox#getViewBox()}.
      */
     public SVGAnimatedRect getViewBox() {
-        throw new RuntimeException(" !!! TODO: getViewBox()");
+        throw new UnsupportedOperationException
+            ("SVGFitToViewBox.getViewBox is not implemented"); // XXX
     }
 
     /**

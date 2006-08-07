@@ -31,7 +31,6 @@ import org.apache.batik.dom.svg.SVGOMAnimatedTransformList;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.svg.SVGOMUseElement;
 import org.apache.batik.dom.svg.SVGOMUseShadowRoot;
-import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.util.XMLConstants;
@@ -42,7 +41,6 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
-import org.w3c.dom.events.MutationEvent;
 import org.w3c.dom.svg.SVGUseElement;
 
 /**

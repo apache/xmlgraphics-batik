@@ -17,7 +17,6 @@
  */
 package org.apache.batik.bridge;
 
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 import org.apache.batik.anim.AbstractAnimation;
@@ -30,7 +29,6 @@ import org.apache.batik.ext.awt.geom.ExtendedGeneralPath;
 import org.apache.batik.dom.svg.SVGAnimatedPathDataSupport;
 import org.apache.batik.dom.svg.SVGOMElement;
 import org.apache.batik.dom.svg.SVGOMPathElement;
-import org.apache.batik.dom.svg.SVGOMTransform;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.parser.AWTPathProducer;
 import org.apache.batik.parser.AngleHandler;
@@ -39,7 +37,6 @@ import org.apache.batik.parser.LengthArrayProducer;
 import org.apache.batik.parser.LengthPairListParser;
 import org.apache.batik.parser.PathParser;
 import org.apache.batik.parser.ParseException;
-import org.apache.batik.util.SVGTypes;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

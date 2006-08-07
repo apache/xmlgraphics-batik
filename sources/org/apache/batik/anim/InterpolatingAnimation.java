@@ -18,7 +18,6 @@
 package org.apache.batik.anim;
 
 import org.apache.batik.anim.timing.TimedElement;
-import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.ext.awt.geom.Cubic;
 
 /**
