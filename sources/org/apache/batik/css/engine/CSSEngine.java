@@ -57,7 +57,6 @@ import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.events.MutationEvent;
 
-
 /**
  * This is the base class for all the CSS engines.
  *
@@ -2532,7 +2531,8 @@ public abstract class CSSEngine {
                 if (idx == declaration.getIndex(i)) {
                     declaration.remove(i);
                     StyleMap style = elt.getComputedStyleMap(null);
-                    if (style.getOrigin(idx) == StyleMap.OVERRIDE_ORIGIN
+                    if (style != null
+                            && style.getOrigin(idx) == StyleMap.OVERRIDE_ORIGIN
                             && style.isComputed(idx)) {
                         invalidateProperties
                             (elt, new int[] { idx }, null, true);

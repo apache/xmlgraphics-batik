@@ -923,12 +923,18 @@ public abstract class TimedElement implements SMILConstants {
      * Parses a new 'begin' attribute.
      */
     protected void parseBegin(String begin) {
-        if (begin.length() == 0) {
-            begin = SMIL_BEGIN_DEFAULT_VALUE;
+        try {
+            if (begin.length() == 0) {
+                begin = SMIL_BEGIN_DEFAULT_VALUE;
+            }
+            beginTimes = TimingSpecifierListProducer.parseTimingSpecifierList
+                (TimedElement.this, true, begin,
+                 root.useSVG11AccessKeys, root.useSVG12AccessKeys);
+        } catch (ParseException ex) {
+            throw createException
+                ("attribute.malformed",
+                 new Object[] { null, SMIL_BEGIN_ATTRIBUTE });
         }
-        beginTimes = TimingSpecifierListProducer.parseTimingSpecifierList
-            (TimedElement.this, true, begin,
-             root.useSVG11AccessKeys, root.useSVG12AccessKeys);
     }
 
     /**
@@ -978,9 +984,15 @@ public abstract class TimedElement implements SMILConstants {
      * Parses a new 'end' attribute.
      */
     protected void parseEnd(String end) {
-        endTimes = TimingSpecifierListProducer.parseTimingSpecifierList
-            (TimedElement.this, false, end,
-             root.useSVG11AccessKeys, root.useSVG12AccessKeys);
+        try {
+            endTimes = TimingSpecifierListProducer.parseTimingSpecifierList
+                (TimedElement.this, false, end,
+                 root.useSVG11AccessKeys, root.useSVG12AccessKeys);
+        } catch (ParseException ex) {
+            throw createException
+                ("attribute.malformed",
+                 new Object[] { null, SMIL_END_ATTRIBUTE });
+        }
     }
 
     /**
@@ -994,7 +1006,13 @@ public abstract class TimedElement implements SMILConstants {
             if (min.length() == 0) {
                 this.min = 0;
             } else {
-                this.min = parseClockValue(min);
+                try {
+                    this.min = parseClockValue(min);
+                } catch (ParseException ex) {
+                    throw createException
+                        ("attribute.malformed",
+                         new Object[] { null, SMIL_MIN_ATTRIBUTE });
+                }
                 if (this.min < 0) {
                     this.min = 0;
                 }
@@ -1013,7 +1031,13 @@ public abstract class TimedElement implements SMILConstants {
             if (max.length() == 0 || max.equals(SMIL_INDEFINITE_VALUE)) {
                 this.max = INDEFINITE;
             } else {
-                this.max = parseClockValue(max);
+                try {
+                    this.max = parseClockValue(max);
+                } catch (ParseException ex) {
+                    throw createException
+                        ("attribute.malformed",
+                         new Object[] { null, SMIL_MAX_ATTRIBUTE });
+                }
                 if (this.max < 0) {
                     this.max = 0;
                 }

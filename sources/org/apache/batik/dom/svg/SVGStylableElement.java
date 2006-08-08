@@ -173,7 +173,6 @@ public abstract class SVGStylableElement
      */
     public void updatePropertyValue(String pn, AnimatableValue val) {
         CSSStyleDeclaration over = getOverrideStyle();
-        //System.err.println(e.getAttributeNS(null, "id") + "." + pn + " val is " + val);
         if (val == null) {
             over.removeProperty(pn);
         } else {
