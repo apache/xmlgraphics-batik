@@ -20,8 +20,6 @@ package org.apache.batik.dom.svg;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 
-import org.apache.batik.anim.AnimationTargetListener;
-
 /**
  * This interface is the placeholder for SVG application informations.
  *
@@ -95,25 +93,4 @@ public interface SVGContext {
      * Returns the font-size on the associated element.
      */
     float getFontSize();
-
-    /**
-     * Converts the given SVG length into user units.
-     * @param v the SVG length value
-     * @param type the SVG length units (one of the
-     *             {@link SVGLength}.SVG_LENGTH_* constants)
-     * @param pcInterp how to interpretet percentage values (one of the
-     *             {@link SVGContext}.PERCENTAGE_* constants) 
-     * @return the SVG value in user units
-     */
-    float svgToUserSpace(float v, int type, int pcInterp);
-
-    /**
-     * Adds a listener for changes to the given CSS property.
-     */
-    void addTargetListener(String pn, AnimationTargetListener l);
-
-    /**
-     * Removes a listener for changes to the given attribute value.
-     */
-    void removeTargetListener(String pn, AnimationTargetListener l);
 }

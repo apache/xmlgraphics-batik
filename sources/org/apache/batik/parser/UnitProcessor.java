@@ -15,7 +15,6 @@
    limitations under the License.
 
 */
-
 package org.apache.batik.parser;
 
 import org.w3c.dom.Element;

@@ -132,17 +132,4 @@ public abstract class AnimatableGenericSVGBridge
     public float getFontSize() {
         return 0f;
     }
-
-    /**
-     * Converts the given SVG length into user units.
-     * @param v the SVG length value
-     * @param type the SVG length units (one of the
-     *             {@link SVGLength}.SVG_LENGTH_* constants)
-     * @param pcInterp how to interpretet percentage values (one of the
-     *             {@link SVGContext}.PERCENTAGE_* constants) 
-     * @return the SVG value in user units
-     */
-    public float svgToUserSpace(float v, int type, int pcInterp) {
-        return 0f;
-    }
 }

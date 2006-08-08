@@ -134,9 +134,4 @@ public abstract class SVGDescriptiveElementBridge extends AbstractSVGBridge
         return theCtx.getBlockHeight(theElt);
     }
     public float getFontSize() { return 0; }
-    public float svgToUserSpace(float v, int type, int pcInterp) {
-        return 0;
-    }
-    public void addTargetListener(String pn, AnimationTargetListener l) { }
-    public void removeTargetListener(String pn, AnimationTargetListener l) { }
 };

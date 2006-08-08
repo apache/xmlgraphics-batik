@@ -79,7 +79,6 @@ import org.w3c.dom.css.CSSValue;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.MutationEvent;
-import org.w3c.dom.svg.SVGLength;
 import org.w3c.dom.svg.SVGLengthList;
 import org.w3c.dom.svg.SVGNumberList;
 import org.w3c.dom.svg.SVGTextContentElement;
@@ -1994,18 +1993,6 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         public float getFontSize() {
             return CSSUtilities.getComputedStyle
                 (e, SVGCSSEngine.FONT_SIZE_INDEX).getFloatValue();
-        }
-        
-        public float svgToUserSpace(float v, int type, int pcInterp) {
-            if (pcInterp == PERCENTAGE_FONT_SIZE
-                    && type == SVGLength.SVG_LENGTHTYPE_PERCENTAGE) {
-                // XXX
-                return 0f;
-            } else {
-                return UnitProcessor.svgToUserSpace(v, (short) type,
-                                                    (short) (3 - pcInterp),
-                                                    unitContext);
-            }
         }
     }
 
