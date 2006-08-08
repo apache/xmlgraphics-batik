@@ -23,7 +23,7 @@ import java.util.LinkedList;
 
 import org.apache.batik.anim.AnimationTarget;
 import org.apache.batik.anim.AnimationTargetListener;
-import org.apache.batik.dom.svg.SVGContext;
+import org.apache.batik.dom.svg.SVGAnimationTargetContext;
 
 import org.w3c.dom.Element;
 
@@ -35,7 +35,7 @@ import org.w3c.dom.Element;
  */
 public abstract class AnimatableSVGBridge
         extends AbstractSVGBridge
-        implements SVGContext {
+        implements SVGAnimationTargetContext {
 
     /**
      * The element that has been handled by this bridge.
@@ -53,7 +53,7 @@ public abstract class AnimatableSVGBridge
      */
     protected HashMap targetListeners;
 
-    // SVGContext ////////////////////////////////////////////////////////////
+    // SVGAnimationTargetContext /////////////////////////////////////////////
 
     /**
      * Adds a listener for changes to the given attribute value.

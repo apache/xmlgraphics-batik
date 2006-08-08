@@ -46,6 +46,7 @@ import org.apache.batik.dom.AbstractStylableDocument;
 import org.apache.batik.dom.util.DoublyIndexedTable;
 import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.parser.PathArrayProducer;
+import org.apache.batik.parser.UnitProcessor;
 import org.apache.batik.util.CSSConstants;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.SVGConstants;
@@ -115,6 +116,11 @@ public abstract class SVGOMElement
      * of {@link AnimationTargetListener}s.
      */
     protected DoublyIndexedTable targetListeners;
+
+    /**
+     * The context used to resolve the units.
+     */
+    protected UnitProcessor.Context unitContext;
 
     /**
      * Creates a new Element object.
@@ -1020,7 +1026,17 @@ public abstract class SVGOMElement
      * @return the SVG value in user units
      */
     public float svgToUserSpace(float v, short type, short pcInterp) {
-        return svgContext.svgToUserSpace(v, type, pcInterp);
+        if (unitContext == null) {
+            unitContext = new UnitContext();
+        }
+        if (pcInterp == PERCENTAGE_FONT_SIZE
+                && type == SVGLength.SVG_LENGTHTYPE_PERCENTAGE) {
+            // XXX
+            return 0f;
+        } else {
+            return UnitProcessor.svgToUserSpace(v, type, (short) (3 - pcInterp),
+                                                unitContext);
+        }
     }
 
     /**
@@ -1110,4 +1126,61 @@ public abstract class SVGOMElement
 	e.prefix = prefix;
 	return n;
     }
+
+    /**
+     * To resolve the units.
+     */
+    protected class UnitContext implements UnitProcessor.Context {
+        
+        /**
+         * Returns the element.
+         */
+        public Element getElement() {
+            return SVGOMElement.this;
+        }
+        
+        /**
+         * Returns the size of a px CSS unit in millimeters.
+         */
+        public float getPixelUnitToMillimeter() {
+            return getSVGContext().getPixelUnitToMillimeter();
+        }
+        
+        /**
+         * Returns the size of a px CSS unit in millimeters.
+         * This will be removed after next release.
+         * @see #getPixelUnitToMillimeter()
+         */
+        public float getPixelToMM() {
+            return getPixelUnitToMillimeter();
+        }
+        
+        /**
+         * Returns the font-size value.
+         */
+        public float getFontSize() {
+            return getSVGContext().getFontSize();
+        }
+        
+        /**
+         * Returns the x-height value.
+         */
+        public float getXHeight() {
+            return 0.5f;
+        }
+        
+        /**
+         * Returns the viewport width used to compute units.
+         */
+        public float getViewportWidth() {
+            return getSVGContext().getViewportWidth();
+        }
+        
+        /**
+         * Returns the viewport height used to compute units.
+         */
+        public float getViewportHeight() {
+            return getSVGContext().getViewportHeight();
+        }
+    }   
 }

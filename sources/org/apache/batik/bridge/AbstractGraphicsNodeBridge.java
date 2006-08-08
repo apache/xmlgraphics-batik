@@ -41,7 +41,6 @@ import org.w3c.dom.events.DocumentEvent;
 import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.events.MutationEvent;
 import org.w3c.dom.svg.SVGFitToViewBox;
-import org.w3c.dom.svg.SVGLength;
 import org.w3c.dom.svg.SVGMatrix;
 import org.w3c.dom.svg.SVGTransformList;
 import org.w3c.dom.svg.SVGTransformable;
@@ -560,26 +559,5 @@ public abstract class AbstractGraphicsNodeBridge extends AnimatableSVGBridge
     public float getFontSize() {
         return CSSUtilities.getComputedStyle
             (e, SVGCSSEngine.FONT_SIZE_INDEX).getFloatValue();
-    }
-
-    /**
-     * Converts the given SVG length into user units.
-     * @param v the SVG length value
-     * @param type the SVG length units (one of the
-     *             {@link SVGLength}.SVG_LENGTH_* constants)
-     * @param pcInterp how to interpretet percentage values (one of the
-     *             {@link SVGContext}.PERCENTAGE_* constants) 
-     * @return the SVG value in user units
-     */
-    public float svgToUserSpace(float v, int type, int pcInterp) {
-        if (pcInterp == PERCENTAGE_FONT_SIZE
-                && type == SVGLength.SVG_LENGTHTYPE_PERCENTAGE) {
-            // XXX
-            return 0f;
-        } else {
-            return UnitProcessor.svgToUserSpace(v, (short) type,
-                                                (short) (3 - pcInterp),
-                                                unitContext);
-        }
     }
 }
