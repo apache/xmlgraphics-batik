@@ -26,7 +26,6 @@ import java.util.LinkedList;
 import org.apache.batik.anim.AnimationEngine;
 import org.apache.batik.anim.AnimationException;
 import org.apache.batik.anim.AnimationTarget;
-import org.apache.batik.anim.SMILConstants;
 import org.apache.batik.anim.timing.TimedDocumentRoot;
 import org.apache.batik.anim.timing.TimedElement;
 import org.apache.batik.anim.values.AnimatableAngleValue;
@@ -71,6 +70,7 @@ import org.apache.batik.parser.PointsParser;
 import org.apache.batik.parser.ParseException;
 import org.apache.batik.parser.PreserveAspectRatioParser;
 import org.apache.batik.util.RunnableQueue;
+import org.apache.batik.util.SMILConstants;
 import org.apache.batik.util.XMLConstants;
 
 import org.w3c.dom.Document;
