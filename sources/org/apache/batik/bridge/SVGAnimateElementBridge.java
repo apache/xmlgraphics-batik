@@ -22,9 +22,9 @@ import java.util.ArrayList;
 import org.apache.batik.anim.AbstractAnimation;
 import org.apache.batik.anim.AnimationEngine;
 import org.apache.batik.anim.AnimationTarget;
-import org.apache.batik.anim.SMILConstants;
 import org.apache.batik.anim.SimpleAnimation;
 import org.apache.batik.anim.values.AnimatableValue;
+import org.apache.batik.util.SMILConstants;
 
 /**
  * Bridge class for the 'animate' animation element.

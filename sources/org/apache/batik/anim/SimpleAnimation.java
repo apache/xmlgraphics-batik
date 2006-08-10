@@ -22,6 +22,7 @@ import java.awt.geom.Point2D;
 import org.apache.batik.anim.timing.TimedElement;
 import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.ext.awt.geom.Cubic;
+import org.apache.batik.util.SMILConstants;
 
 /**
  * An animation class for 'animate' animations.

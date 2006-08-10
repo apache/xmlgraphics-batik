@@ -29,11 +29,11 @@ import java.util.MissingResourceException;
 import java.util.Vector;
 
 import org.apache.batik.anim.AnimationException;
-import org.apache.batik.anim.SMILConstants;
 import org.apache.batik.i18n.LocalizableSupport;
 import org.apache.batik.parser.ClockHandler;
 import org.apache.batik.parser.ClockParser;
 import org.apache.batik.parser.ParseException;
+import org.apache.batik.util.SMILConstants;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.events.Event;
