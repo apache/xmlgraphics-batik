@@ -19,6 +19,7 @@ package org.apache.batik.anim;
 
 import org.apache.batik.anim.timing.TimedElement;
 import org.apache.batik.ext.awt.geom.Cubic;
+import org.apache.batik.util.SMILConstants;
 
 /**
  * An abstract animation class for those animations that interpolate

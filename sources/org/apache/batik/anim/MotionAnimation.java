@@ -27,6 +27,7 @@ import org.apache.batik.ext.awt.geom.Cubic;
 import org.apache.batik.ext.awt.geom.ExtendedGeneralPath;
 import org.apache.batik.ext.awt.geom.ExtendedPathIterator;
 import org.apache.batik.ext.awt.geom.PathLength;
+import org.apache.batik.util.SMILConstants;
 
 /**
  * An animation class for 'animateMotion' animations.

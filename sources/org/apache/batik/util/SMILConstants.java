@@ -15,7 +15,7 @@
    limitations under the License.
 
  */
-package org.apache.batik.anim;
+package org.apache.batik.util;
 
 /**
  * Constants for SMIL animation element and attribute names and values.
