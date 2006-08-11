@@ -21,8 +21,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Vector;
 
-import org.apache.batik.anim.AnimationTarget;
-import org.apache.batik.anim.AnimationTargetListener;
+import org.apache.batik.dom.anim.AnimationTarget;
+import org.apache.batik.dom.anim.AnimationTargetListener;
 import org.apache.batik.anim.values.AnimatableBooleanValue;
 import org.apache.batik.anim.values.AnimatableIntegerValue;
 import org.apache.batik.anim.values.AnimatableLengthValue;

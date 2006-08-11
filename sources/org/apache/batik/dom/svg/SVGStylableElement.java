@@ -20,7 +20,7 @@ package org.apache.batik.dom.svg;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.apache.batik.anim.AnimationTargetListener;
+import org.apache.batik.dom.anim.AnimationTargetListener;
 import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.css.dom.CSSOMSVGColor;
 import org.apache.batik.css.dom.CSSOMSVGPaint;

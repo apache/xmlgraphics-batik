@@ -23,14 +23,14 @@ import java.awt.geom.Rectangle2D;
 import java.util.Calendar;
 
 import org.apache.batik.anim.AbstractAnimation;
-import org.apache.batik.anim.AnimatableElement;
 import org.apache.batik.anim.AnimationEngine;
-import org.apache.batik.anim.AnimationTarget;
-import org.apache.batik.anim.AnimationTargetListener;
 import org.apache.batik.anim.timing.TimedElement;
 import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.css.engine.CSSEngineEvent;
 import org.apache.batik.dom.AbstractNode;
+import org.apache.batik.dom.anim.AnimatableElement;
+import org.apache.batik.dom.anim.AnimationTarget;
+import org.apache.batik.dom.anim.AnimationTargetListener;
 import org.apache.batik.dom.svg.AnimatedLiveAttributeValue;
 import org.apache.batik.dom.svg.SVGAnimationContext;
 import org.apache.batik.dom.svg.SVGOMElement;

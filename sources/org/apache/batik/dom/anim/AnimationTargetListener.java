@@ -15,22 +15,22 @@
    limitations under the License.
 
  */
-package org.apache.batik.anim;
-
-import org.apache.batik.anim.values.AnimatableValue;
+package org.apache.batik.dom.anim;
 
 /**
- * An interface for animatable elements to expose their underlying values
- * to the compositing functions in {@link AbstractAnimation}.
- * 
+ * A listener class for animation targets.  This will be for the animation
+ * engine to be notified of updates to dependencies such as font size
+ * changes and viewport sizes.
+ *
  * @author <a href="mailto:cam%40mcc%2eid%2eau">Cameron McCormack</a>
  * @version $Id$
  */
-public interface AnimatableElement {
+public interface AnimationTargetListener {
 
     /**
-     * Returns the underlying value of the animated attribute.  Used for
-     * composition of additive animations.
+     * Invoked to indicate that base value of the specified attribute
+     * or property has changed.
      */
-    AnimatableValue getUnderlyingValue();
+    void baseValueChanged(AnimationTarget t, String ns, String ln,
+                          boolean isCSS);
 }
