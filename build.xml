@@ -505,7 +505,6 @@ To display the available targets type:
                                transcoder-jar,
                                bridge-jar,
                                swing-jar,
-			       anim-jar,
                                codec-jar,
                                extension-jar,
                                xml-jar,
@@ -760,8 +759,12 @@ To display the available targets type:
       <fileset dir="${dest}">
         <include name="${package-prefix}/dom/svg/*.class"/>
         <include name="${package-prefix}/dom/svg12/*.class"/>
+        <include name="${package-prefix}/anim/*.class"/>
+        <include name="${package-prefix}/anim/timing/*.class"/>
+        <include name="${package-prefix}/anim/values/*.class"/>
       </fileset>
       <fileset dir="${resources}" excludes="**/.svn/">
+        <include name="${package-prefix}/anim/resources/**"/>
         <include name="${package-prefix}/dom/svg/resources/**"/>
         <include name="${package-prefix}/dom/svg12/resources/**"/>
       </fileset>
@@ -854,18 +857,6 @@ To display the available targets type:
       </fileset>
       <fileset dir="${resources}" excludes="**/.svn/">
         <include name="${package-prefix}/swing/**/resources/*"/>
-      </fileset>
-    </jar>
-  </target>
-
-  <!-- Animation (dependencies: dom, util, xml, parser) -->
-  <target name="anim-jar" depends="compile, prepare-build">
-    <jar jarfile="${build}/lib/${project}-anim.jar">
-      <fileset dir="${dest}">
-        <include name="${package-prefix}/anim/**/*.class"/>
-      </fileset>
-      <fileset dir="${resources}" excludes="**/.svn/">
-        <include name="${package-prefix}/anim/**/resources/*"/>
       </fileset>
     </jar>
   </target>
