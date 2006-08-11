@@ -17,7 +17,6 @@ Class-Path: lib/batik-ext.jar \
             lib/batik-root.jar \
             lib/batik-svggen.jar \
             lib/batik-xml.jar \
-            lib/batik-anim.jar \
             batik-squiggle.jar \
             batik-rasterizer.jar \
             batik-pp.jar \
