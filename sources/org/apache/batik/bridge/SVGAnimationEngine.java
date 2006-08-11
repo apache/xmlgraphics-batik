@@ -25,7 +25,7 @@ import java.util.LinkedList;
 
 import org.apache.batik.anim.AnimationEngine;
 import org.apache.batik.anim.AnimationException;
-import org.apache.batik.anim.AnimationTarget;
+import org.apache.batik.dom.anim.AnimationTarget;
 import org.apache.batik.anim.timing.TimedDocumentRoot;
 import org.apache.batik.anim.timing.TimedElement;
 import org.apache.batik.anim.values.AnimatableAngleValue;

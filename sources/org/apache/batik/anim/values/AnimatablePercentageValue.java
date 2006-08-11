@@ -17,7 +17,7 @@
  */
 package org.apache.batik.anim.values;
 
-import org.apache.batik.anim.AnimationTarget;
+import org.apache.batik.dom.anim.AnimationTarget;
 
 /**
  * A percentage value in the animation system.

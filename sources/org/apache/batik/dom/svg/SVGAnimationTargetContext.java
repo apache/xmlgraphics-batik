@@ -17,7 +17,7 @@
 */
 package org.apache.batik.dom.svg;
 
-import org.apache.batik.anim.AnimationTargetListener;
+import org.apache.batik.dom.anim.AnimationTargetListener;
 
 /**
  * Context interface for elements that can be the target of animations.

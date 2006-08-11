@@ -20,7 +20,7 @@ package org.apache.batik.anim.values;
 import java.util.Iterator;
 import java.util.Vector;
 
-import org.apache.batik.anim.AnimationTarget;
+import org.apache.batik.dom.anim.AnimationTarget;
 import org.apache.batik.dom.svg.AbstractSVGTransform;
 import org.apache.batik.dom.svg.SVGOMTransform;
 

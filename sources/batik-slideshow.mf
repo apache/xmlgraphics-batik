@@ -8,6 +8,7 @@ Class-Path: lib/batik-ext.jar \
             lib/batik-script.jar \
             lib/batik-bridge.jar \
             lib/batik-swing.jar \
+            lib/batik-anim.jar \
             lib/batik-transcoder.jar \
             lib/batik-gui-util.jar \
             lib/batik-awt-util.jar \

@@ -21,7 +21,7 @@ import java.util.ArrayList;
 
 import org.apache.batik.anim.AbstractAnimation;
 import org.apache.batik.anim.AnimationEngine;
-import org.apache.batik.anim.AnimationTarget;
+import org.apache.batik.dom.anim.AnimationTarget;
 import org.apache.batik.anim.MotionAnimation;
 import org.apache.batik.anim.values.AnimatableMotionPointValue;
 import org.apache.batik.anim.values.AnimatableValue;

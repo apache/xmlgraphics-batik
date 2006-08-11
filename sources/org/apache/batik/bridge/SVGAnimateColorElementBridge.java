@@ -18,7 +18,7 @@
 package org.apache.batik.bridge;
 
 import org.apache.batik.anim.AbstractAnimation;
-import org.apache.batik.anim.AnimationTarget;
+import org.apache.batik.dom.anim.AnimationTarget;
 import org.apache.batik.anim.ColorAnimation;
 import org.apache.batik.anim.values.AnimatableColorValue;
 import org.apache.batik.anim.values.AnimatablePaintValue;
