@@ -122,7 +122,7 @@ public abstract class AnimationEngine {
     /**
      * Sets the current document time.
      */
-    public void setCurrentTime(float t) {
+    public float setCurrentTime(float t) {
         boolean p = pauseTime != 0;
         unpause();
         Calendar begin = timedDocumentRoot.getDocumentBeginTime();
@@ -132,7 +132,7 @@ public abstract class AnimationEngine {
         if (p) {
             pause();
         }
-        tick(t, true);
+        return tick(t, true);
     }
 
     /**
@@ -260,8 +260,8 @@ public abstract class AnimationEngine {
      * @param hyperlinking whether the document should be seeked to the given
      *                     time, as with hyperlinking
      */
-    protected void tick(float time, boolean hyperlinking) {
-        timedDocumentRoot.seekTo(time, hyperlinking);
+    protected float tick(float time, boolean hyperlinking) {
+        float waitTime = timedDocumentRoot.seekTo(time, hyperlinking);
         Iterator i = targets.entrySet().iterator();
         while (i.hasNext()) {
             Map.Entry e = (Map.Entry) i.next();
@@ -339,6 +339,7 @@ public abstract class AnimationEngine {
                 }
             }
         }
+        return waitTime;
     }
 
     /**

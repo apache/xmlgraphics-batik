@@ -60,4 +60,11 @@ public class SVGSetElementBridge extends SVGAnimationElementBridge {
     protected boolean canAnimateType(int type) {
         return true;
     }
+
+    /**
+     * Returns whether this is a constant animation (i.e., a 'set' animation).
+     */
+    protected boolean isConstantAnimation() {
+        return true;
+    }
 }

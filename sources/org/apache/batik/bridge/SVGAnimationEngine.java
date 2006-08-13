@@ -367,6 +367,28 @@ public class SVGAnimationEngine extends AnimationEngine {
     }
 
     /**
+     * Returns the current document time.
+     */
+    public float getCurrentTime() {
+        boolean p = pauseTime != 0;
+        unpause();
+        float t = timedDocumentRoot.getCurrentTime();
+        if (p) {
+            pause();
+        }
+        return t;
+    }
+
+    /**
+     * Sets the current document time.
+     */
+    public float setCurrentTime(float t) {
+        float ret = super.setCurrentTime(t);
+        animationTickRunnable.resume();
+        return ret;
+    }
+
+    /**
      * Creates a new returns a new TimedDocumentRoot object for the document.
      */
     protected TimedDocumentRoot createDocumentRoot() {
@@ -534,6 +556,16 @@ public class SVGAnimationEngine extends AnimationEngine {
         public boolean isBefore(TimedElement other) {
             return false;
         }
+
+        /**
+         * Invoked by timed elements in this document to indicate that the
+         * current interval will be re-evaluated at the next sample.
+         */
+        protected void currentIntervalWillUpdate() {
+            if (animationTickRunnable != null) {
+                animationTickRunnable.resume();
+            }
+        }
     }
 
     /**
@@ -569,9 +601,10 @@ public class SVGAnimationEngine extends AnimationEngine {
                     tick(0, false);
                     // animationThread = new AnimationThread();
                     // animationThread.start();
-                    animationTickRunnable = new AnimationTickRunnable();
-                    ctx.getUpdateManager().getUpdateRunnableQueue().setIdleRunnable
-                        (animationTickRunnable);
+                    RunnableQueue q =
+                        ctx.getUpdateManager().getUpdateRunnableQueue();
+                    animationTickRunnable = new AnimationTickRunnable(q);
+                    q.setIdleRunnable(animationTickRunnable);
                 } catch (AnimationException ex) {
                     throw new BridgeException(ctx, ex.getElement().getElement(),
                                               ex.getMessage());
@@ -589,22 +622,44 @@ public class SVGAnimationEngine extends AnimationEngine {
     /**
      * Idle runnable to tick the animation.
      */
-    protected class AnimationTickRunnable implements Runnable {
+    protected class AnimationTickRunnable
+            implements RunnableQueue.IdleRunnable {
+
         protected Calendar time = Calendar.getInstance();
         double second = -1.;
         int idx = -1;
         int frames;
+        long waitTime;
+        RunnableQueue q;
+        public AnimationTickRunnable(RunnableQueue q) {
+            this.q = q;
+        }
+        public void resume() {
+            Object lock = q.getIteratorLock();
+            synchronized (lock) {
+                lock.notify();
+            }
+        }
+        public long getWaitTime() {
+            return waitTime;
+        }
         public void run() {
             try {
                 try {
-                    time.setTimeInMillis(System.currentTimeMillis());
+                    long now = System.currentTimeMillis();
+                    time.setTimeInMillis(now);
                     float t = timedDocumentRoot.convertWallclockTime(time);
                     if (Math.floor(t) > second) {
                         second = Math.floor(t);
                         // System.err.println("fps: " + frames);
                         frames = 0;
                     }
-                    tick(t, false);
+                    float t2 = tick(t, false);
+                    if (t2 == Float.POSITIVE_INFINITY) {
+                        waitTime = Long.MAX_VALUE;
+                    } else {
+                        waitTime = now + (long) (t2 * 1000) - 2000;;
+                    }
                     frames++;
                 } catch (AnimationException ex) {
                     throw new BridgeException(ctx, ex.getElement().getElement(),

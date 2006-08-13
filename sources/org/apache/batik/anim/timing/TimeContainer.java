@@ -76,22 +76,39 @@ public abstract class TimeContainer extends TimedElement {
     }
 
     /**
-     * Calculates the local simple time.
+     * Calculates the local simple time.  Currently the hyperlinking parameter
+     * is ignored, so DOM timing events are fired during hyperlinking seeks.
+     * If we were following SMIL 2.1 rather than SMIL Animation, then these
+     * events would have to be surpressed.
+     *
+     * @return the number of seconds until this element becomes active again
+     *         if it currently is not, {@link Float.POSITIVE_INFINITY} if this
+     *         element will become active at some undetermined point in the
+     *         future (because of unresolved begin times, for example) or
+     *         will never become active again, or <code>0f</code> if the
+     *         element is currently active.
      */
-    protected void sampleAt(float parentSimpleTime, boolean hyperlinking) {
+    protected float sampleAt(float parentSimpleTime, boolean hyperlinking) {
         super.sampleAt(parentSimpleTime, hyperlinking);
-        sampleChildren(parentSimpleTime, hyperlinking);
+        // Maybe check the return value of the previous statement.
+        return sampleChildren(parentSimpleTime, hyperlinking);
     }
 
     /**
      * Samples all the child timed elements.
      */
-    protected void sampleChildren(float parentSimpleTime, boolean hyperlinking) {
+    protected float sampleChildren(float parentSimpleTime,
+                                   boolean hyperlinking) {
+        float mint = Float.POSITIVE_INFINITY;
         Iterator i = children.iterator();
         while (i.hasNext()) {
             TimedElement e = (TimedElement) i.next();
-            e.sampleAt(parentSimpleTime, hyperlinking);
+            float t = e.sampleAt(parentSimpleTime, hyperlinking);
+            if (t < mint) {
+                mint = t;
+            }
         }
+        return mint;
     }
 
     /**
@@ -104,6 +121,14 @@ public abstract class TimeContainer extends TimedElement {
             TimedElement e = (TimedElement) i.next();
             e.reset(clearCurrentBegin);
         }
+    }
+
+    /**
+     * Returns whether this timed element is for a constant animation (i.e., a
+     * 'set' animation.
+     */
+    protected boolean isConstantAnimation() {
+        return false;
     }
 
     /**
