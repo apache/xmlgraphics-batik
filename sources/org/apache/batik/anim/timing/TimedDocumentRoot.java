@@ -103,16 +103,19 @@ public abstract class TimedDocumentRoot extends TimeContainer {
     /**
      * Samples the entire timegraph at the given time.
      */
-    public void seekTo(float time, boolean hyperlinking) {
+    public float seekTo(float time, boolean hyperlinking) {
         lastSampleTime = time;
         // Trace.enter(this, "seekTo", new Object[] { new Float(time) } ); try {
         propagationFlags.clear();
         // No time containers in SVG, so we don't have to worry
         // about a partial ordering of timed elements to sample.
+        float mint = Float.POSITIVE_INFINITY;
         TimedElement[] es = getChildren();
         for (int i = 0; i < es.length; i++) {
-            // System.err.print("[" + ((Test.AnimateElement) es[i]).id + "] ");
-            es[i].sampleAt(time, hyperlinking);
+            float t = es[i].sampleAt(time, hyperlinking);
+            if (t < mint) {
+                mint = t;
+            }
         }
         boolean needsUpdates;
         do {
@@ -121,10 +124,14 @@ public abstract class TimedDocumentRoot extends TimeContainer {
                 if (es[i].shouldUpdateCurrentInterval) {
                     needsUpdates = true;
                     // System.err.print("{" + ((Test.AnimateElement) es[i]).id + "} ");
-                    es[i].sampleAt(time, hyperlinking);
+                    float t = es[i].sampleAt(time, hyperlinking);
+                    if (t < mint) {
+                        mint = t;
+                    }
                 }
             }
         } while (needsUpdates);
+        return mint;
         // } finally { Trace.exit(); }
     }
 
@@ -219,6 +226,15 @@ public abstract class TimedDocumentRoot extends TimeContainer {
         }
         propagationFlags.add(it, ts);
         return true;
+    }
+
+    /**
+     * Invoked by timed elements in this document to indicate that the current
+     * interval will be re-evaluated at the next sample.  This should be
+     * overridden in a concrete class so that ticks can be scheduled immediately
+     * if they are currently paused due to no animations being active.
+     */
+    protected void currentIntervalWillUpdate() {
     }
 
     /**

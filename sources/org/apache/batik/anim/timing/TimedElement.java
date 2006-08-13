@@ -536,8 +536,15 @@ public abstract class TimedElement implements SMILConstants {
      * is ignored, so DOM timing events are fired during hyperlinking seeks.
      * If we were following SMIL 2.1 rather than SMIL Animation, then these
      * events would have to be surpressed.
+     *
+     * @return the number of seconds until this element becomes active again
+     *         if it currently is not, {@link Float.POSITIVE_INFINITY} if this
+     *         element will become active at some undetermined point in the
+     *         future (because of unresolved begin times, for example) or
+     *         will never become active again, or <code>0f</code> if the
+     *         element is currently active.
      */
-    protected void sampleAt(float parentSimpleTime, boolean hyperlinking) {
+    protected float sampleAt(float parentSimpleTime, boolean hyperlinking) {
         // Trace.enter(this, "sampleAt", new Object[] { new Float(parentSimpleTime) } ); try {
         float time = parentSimpleTime; // No time containers in SVG.
 
@@ -600,8 +607,7 @@ public abstract class TimedElement implements SMILConstants {
         // begin and end times, or end the current interval and compute
         // a new one.
         boolean hasEnded = currentInterval != null
-            && (time < currentInterval.getBegin()
-                    || time >= currentInterval.getEnd());
+            && time > currentInterval.getEnd();
         // Fire any repeat events that should have been fired since the
         // last sample.
         if (currentInterval != null) {
@@ -723,6 +729,14 @@ public abstract class TimedElement implements SMILConstants {
         }
 
         lastSampleTime = time;
+        if (currentInterval != null) {
+            float t = currentInterval.getBegin() - time;
+            if (t > 0) {
+                return t;
+            }
+            return isConstantAnimation() ? currentInterval.getEnd() - time : 0;
+        }
+        return Float.POSITIVE_INFINITY;
         // } finally { Trace.exit(); }
     }
 
@@ -1240,6 +1254,7 @@ public abstract class TimedElement implements SMILConstants {
             handledEvents.put(e, ts);
         }
         ts.add(t);
+        root.currentIntervalWillUpdate();
     }
 
     /**
@@ -1322,6 +1337,12 @@ public abstract class TimedElement implements SMILConstants {
      * in document order.
      */
     public abstract boolean isBefore(TimedElement other);
+
+    /**
+     * Returns whether this timed element is for a constant animation (i.e., a
+     * 'set' animation.
+     */
+    protected abstract boolean isConstantAnimation();
 
     /**
      * Creates and returns a new {@link AnimationException}.

@@ -105,9 +105,14 @@ public class RunnableQueue implements Runnable {
     protected volatile HaltingThread runnableQueueThread;
 
     /**
-     * The Runnable to run if the queue is empty.
+     * The {@link IdleRunnable} to run if the queue is empty.
      */
-    protected Runnable idleRunnable;
+    protected IdleRunnable idleRunnable;
+
+    /**
+     * The time (in milliseconds) that the idle runnable should be run next.
+     */
+    protected long idleRunnableWaitTime;
 
     /**
      * Creates a new RunnableQueue started in a new thread.
@@ -190,6 +195,7 @@ public class RunnableQueue implements Runnable {
                 //     Thread.sleep(1);
                 // } catch (InterruptedException ie) { }
 
+                boolean usedIdleRunnable = false;
                 synchronized (list) {
                     if (state == SUSPENDING)
                         continue;
@@ -198,15 +204,25 @@ public class RunnableQueue implements Runnable {
                     if (l == null) {
                         // No item to run, see if there is an idle runnable
                         // to run instead.
-                        if (idleRunnable != null) {
+                        if (idleRunnable != null && idleRunnableWaitTime
+                                < System.currentTimeMillis()) {
                             rable = idleRunnable;
+                            usedIdleRunnable = true;
                         } else {
                             // Wait for a runnable.
                             try {
-                                list.wait();
+                                if (idleRunnable != null && idleRunnableWaitTime
+                                        != Long.MAX_VALUE) {
+                                    long t = idleRunnableWaitTime
+                                        - System.currentTimeMillis();
+                                    list.wait(t);
+                                } else {
+                                    list.wait();
+                                }
                             } catch (InterruptedException ie) {
                                 // just loop again.
                             }
+                            idleRunnableWaitTime = 0;
                             continue; // start loop over again...
                         }
                     } else {
@@ -232,6 +248,10 @@ public class RunnableQueue implements Runnable {
                     l.unlock();
                 }
                 runnableInvoked(rable);
+
+                if (usedIdleRunnable) {
+                    idleRunnableWaitTime = idleRunnable.getWaitTime();
+                }
             }
         } finally {
             synchronized (this) {
@@ -475,9 +495,10 @@ public class RunnableQueue implements Runnable {
     /**
      * Sets a Runnable to be run whenever the queue is empty.
      */
-    public synchronized void setIdleRunnable(Runnable r) {
+    public synchronized void setIdleRunnable(IdleRunnable r) {
         synchronized (list) {
             idleRunnable = r;
+            idleRunnableWaitTime = 0;
             list.notify();
         }
     }
@@ -524,6 +545,23 @@ public class RunnableQueue implements Runnable {
         if (runHandler != null) {
             runHandler.runnableInvoked(this, rable);
         }
+    }
+
+    /**
+     * A {@link Runnable} that can also inform the caller how long it should
+     * be until it is run again.
+     */
+    public interface IdleRunnable extends Runnable {
+
+        /**
+         * Returns the system time that can be safely waited until before this
+         * {@link Runnable} is run again.
+         *
+         * @return time to wait until, <code>0</code> if no waiting can
+         *         be done, or {@link Long.MAX_VALUE} if the {@link Runnable}
+         *         should not be run again at this time
+         */
+        long getWaitTime();
     }
 
     /**

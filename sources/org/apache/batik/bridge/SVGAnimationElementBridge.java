@@ -494,6 +494,13 @@ public abstract class SVGAnimationElementBridge extends AbstractSVGBridge
     }
 
     /**
+     * Returns whether this is a constant animation (i.e., a 'set' animation).
+     */
+    protected boolean isConstantAnimation() {
+        return false;
+    }
+
+    /**
      * A TimedElement class for SVG animation elements.
      */
     protected class SVGTimedElement extends TimedElement {
@@ -616,6 +623,14 @@ public abstract class SVGAnimationElementBridge extends AbstractSVGBridge
                 }
             }
             return super.toString();
+        }
+
+        /**
+         * Returns whether this timed element is for a constant animation (i.e.,
+         * a 'set' animation.
+         */
+        protected boolean isConstantAnimation() {
+            return SVGAnimationElementBridge.this.isConstantAnimation();
         }
     }
 }
