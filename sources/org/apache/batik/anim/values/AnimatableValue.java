@@ -18,6 +18,8 @@
 package org.apache.batik.anim.values;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
 
 import org.apache.batik.dom.anim.AnimationTarget;
 
@@ -33,7 +35,8 @@ public abstract class AnimatableValue {
      * A formatting object to get CSS compatible float strings.
      */
     protected static DecimalFormat decimalFormat = new DecimalFormat
-        ("0.0###########################################################");
+        ("0.0###########################################################",
+         new DecimalFormatSymbols(Locale.ENGLISH));
 
     /**
      * The target of the animation.
