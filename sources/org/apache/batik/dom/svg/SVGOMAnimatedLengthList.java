@@ -419,14 +419,14 @@ public class SVGOMAnimatedLengthList
             int i = 0;
             while (i < size && i < types.length) {
                 SVGLengthItem l = (SVGLengthItem) itemList.get(i);
-                l.unitType = types[i];
-                l.value = values[i];
-                l.direction = direction;
+                l.unitType  = types[i];
+                l.value     = values[i];
+                l.direction = this.direction;
                 i++;
             }
             while (i < types.length) {
                 appendItemImpl(new SVGLengthItem(types[i], values[i],
-                                                 direction));
+                                                 this.direction));
                 i++;
             }
             while (size > types.length) {

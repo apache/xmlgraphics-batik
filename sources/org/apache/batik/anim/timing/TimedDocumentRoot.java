@@ -158,7 +158,7 @@ public abstract class TimedDocumentRoot extends TimeContainer {
      * Converts an epoch time to document time.
      */
     public float convertEpochTime(long t) {
-        long begin = documentBeginTime.getTimeInMillis();
+        long begin = documentBeginTime.getTime().getTime();
         return (t - begin) / 1000f;
     }
 
@@ -166,8 +166,8 @@ public abstract class TimedDocumentRoot extends TimeContainer {
      * Converts a wallclock time to document time.
      */
     public float convertWallclockTime(Calendar time) {
-        long begin = documentBeginTime.getTimeInMillis();
-        long t = time.getTimeInMillis();
+        long begin = documentBeginTime.getTime().getTime();
+        long t = time.getTime().getTime();
         return (t - begin) / 1000f;
     }
 

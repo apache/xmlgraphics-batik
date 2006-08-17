@@ -49,7 +49,7 @@ public abstract class AnimationSupport {
         evt.initTimeEventNS(XMLConstants.XML_EVENTS_NAMESPACE_URI, eventType,
                             null,
                             detail);
-        evt.setTimestamp(time.getTimeInMillis());
+        evt.setTimestamp(time.getTime().getTime());
         target.dispatchEvent(evt);
     }
 
