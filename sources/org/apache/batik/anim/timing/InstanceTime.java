@@ -116,6 +116,9 @@ public class InstanceTime implements Comparable {
      * Compares this InstanceTime with another.
      */
     public int compareTo(Object o) {
-        return Float.compare(time, ((InstanceTime) o).time);
+        InstanceTime it = (InstanceTime)o;
+        if (time == it.time) return 0;
+        if (time >  it.time) return 1;
+        return -1;
     }
 }

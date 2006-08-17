@@ -939,11 +939,11 @@ public class JSVGViewerFrame
                 debuggerInstance = debuggerConstructor.newInstance
                     (new Object[] { "JavaScript Debugger - " + url });
             } catch (IllegalAccessException iae) {
-                throw new RuntimeException(iae);
+                throw new RuntimeException(iae.getMessage());
             } catch (InvocationTargetException ite) {
-                throw new RuntimeException(ite);
+                throw new RuntimeException(ite.getMessage());
             } catch (InstantiationException ie) {
-                throw new RuntimeException(ie);
+                throw new RuntimeException(ie.getMessage());
             }
         }
 
@@ -1004,9 +1004,9 @@ public class JSVGViewerFrame
                 return (JFrame) debuggerMethods[GET_DEBUG_FRAME_METHOD].invoke
                     (debuggerInstance, (Object[]) null);
             } catch (InvocationTargetException ite) {
-                throw new RuntimeException(ite);
+                throw new RuntimeException(ite.getMessage());
             } catch (IllegalAccessException iae) {
-                throw new RuntimeException(iae);
+                throw new RuntimeException(iae.getMessage());
             }
         }
 
@@ -1018,9 +1018,9 @@ public class JSVGViewerFrame
                 debuggerMethods[SET_EXIT_ACTION_METHOD].invoke
                     (debuggerInstance, new Object[] { r });
             } catch (InvocationTargetException ite) {
-                throw new RuntimeException(ite);
+                throw new RuntimeException(ite.getMessage());
             } catch (IllegalAccessException iae) {
-                throw new RuntimeException(iae);
+                throw new RuntimeException(iae.getMessage());
             }
         }
 
@@ -1032,9 +1032,9 @@ public class JSVGViewerFrame
                 debuggerMethods[ATTACH_TO_METHOD].invoke
                     (debuggerInstance, new Object[] { contextFactory });
             } catch (InvocationTargetException ite) {
-                throw new RuntimeException(ite);
+                throw new RuntimeException(ite.getMessage());
             } catch (IllegalAccessException iae) {
-                throw new RuntimeException(iae);
+                throw new RuntimeException(iae.getMessage());
             }
         }
 
@@ -1046,9 +1046,9 @@ public class JSVGViewerFrame
                 debuggerMethods[DETACH_METHOD].invoke(debuggerInstance,
                                                       (Object[]) null);
             } catch (InvocationTargetException ite) {
-                throw new RuntimeException(ite);
+                throw new RuntimeException(ite.getMessage());
             } catch (IllegalAccessException iae) {
-                throw new RuntimeException(iae);
+                throw new RuntimeException(iae.getMessage());
             }
         }
 
@@ -1060,9 +1060,9 @@ public class JSVGViewerFrame
                 debuggerMethods[GO_METHOD].invoke(debuggerInstance,
                                                   (Object[]) null);
             } catch (InvocationTargetException ite) {
-                throw new RuntimeException(ite);
+                throw new RuntimeException(ite.getMessage());
             } catch (IllegalAccessException iae) {
-                throw new RuntimeException(iae);
+                throw new RuntimeException(iae.getMessage());
             }
         }
 
@@ -1074,9 +1074,9 @@ public class JSVGViewerFrame
                 debuggerMethods[CLEAR_ALL_BREAKPOINTS_METHOD].invoke
                     (debuggerInstance, (Object[]) null);
             } catch (InvocationTargetException ite) {
-                throw new RuntimeException(ite);
+                throw new RuntimeException(ite.getMessage());
             } catch (IllegalAccessException iae) {
-                throw new RuntimeException(iae);
+                throw new RuntimeException(iae.getMessage());
             }
         }
 
@@ -1088,9 +1088,9 @@ public class JSVGViewerFrame
                 debuggerMethods[DISPOSE_METHOD].invoke(debuggerInstance,
                                                        (Object[]) null);
             } catch (InvocationTargetException ite) {
-                throw new RuntimeException(ite);
+                throw new RuntimeException(ite.getMessage());
             } catch (IllegalAccessException iae) {
-                throw new RuntimeException(iae);
+                throw new RuntimeException(iae.getMessage());
             }
         }
 
@@ -1103,9 +1103,9 @@ public class JSVGViewerFrame
                 return getContextFactoryMethod.invoke(rhinoInterpreter,
                                                       (Object[]) null);
             } catch (InvocationTargetException ite) {
-                throw new RuntimeException(ite);
+                throw new RuntimeException(ite.getMessage());
             } catch (IllegalAccessException iae) {
-                throw new RuntimeException(iae);
+                throw new RuntimeException(iae.getMessage());
             }
         }
     }

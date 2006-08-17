@@ -20,6 +20,7 @@ package org.apache.batik.bridge;
 import java.awt.Color;
 import java.awt.Paint;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
 
@@ -583,7 +584,7 @@ public class SVGAnimationEngine extends AnimationEngine {
             try {
                 try {
                     Calendar cal = Calendar.getInstance();
-                    cal.setTimeInMillis(evt.getTimeStamp());
+                    cal.setTime(new Date(evt.getTimeStamp()));
                     timedDocumentRoot.resetDocument(cal);
                     Object[] bridges = initialBridges.toArray();
                     initialBridges = null;
@@ -647,7 +648,7 @@ public class SVGAnimationEngine extends AnimationEngine {
             try {
                 try {
                     long now = System.currentTimeMillis();
-                    time.setTimeInMillis(now);
+                    time.setTime(new Date(now));
                     float t = timedDocumentRoot.convertWallclockTime(time);
                     if (Math.floor(t) > second) {
                         second = Math.floor(t);
@@ -707,7 +708,7 @@ public class SVGAnimationEngine extends AnimationEngine {
         public void run() {
             if (true) {
                 for (;;) {
-                    time.setTimeInMillis(System.currentTimeMillis());
+                    time.setTime(new Date());
                     ticker.t = timedDocumentRoot.convertWallclockTime(time);
                     try {
                         runnableQueue.invokeAndWait(ticker);

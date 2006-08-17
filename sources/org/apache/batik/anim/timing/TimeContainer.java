@@ -18,7 +18,7 @@
 package org.apache.batik.anim.timing;
 
 import java.util.Iterator;
-import java.util.LinkedHashSet;
+import java.util.LinkedList;
 
 /**
  * An abstract base class for time container elements.
@@ -31,7 +31,7 @@ public abstract class TimeContainer extends TimedElement {
     /**
      * The child {@link TimedElement}s of this time container.
      */
-    protected LinkedHashSet children = new LinkedHashSet();
+    protected LinkedList children = new LinkedList();
 
     /**
      * Adds a {@link TimedElement} to this container.

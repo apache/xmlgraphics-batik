@@ -111,6 +111,6 @@ public class AnimatableBooleanValue extends AnimatableValue {
      * Returns the CSS text representation of the value.
      */
     public String getCssText() {
-        return Boolean.toString(value);
+        return (value)?"true":"false";
     }
 }
