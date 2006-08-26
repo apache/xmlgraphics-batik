@@ -173,6 +173,8 @@ public class SoftReferenceCache {
             SoftReferenceCache cache = SoftReferenceCache.this;
             if (cache == null) return; // Can't really happen.
             synchronized (cache) {
+                if (!cache.map.containsKey(key))
+                    return;
                 Object o = cache.map.remove(key);
                 if (this == o) {
                     // Notify other threads that they may have
