@@ -715,8 +715,18 @@ public class Main implements Application {
      * @return null if no user style sheet was specified.
      */
     public String getUserStyleSheetURI() {
-        return preferenceManager.getString
+        String ssPath = preferenceManager.getString
             (PreferenceDialog.PREFERENCE_KEY_USER_STYLESHEET);
+        if (ssPath.length() == 0) return null;
+        try {
+            File f = new File(ssPath);
+            if (f.exists()) {
+                return f.toURL().toString();
+            }
+        } catch (IOException ioe) {
+            // Nothing...
+        }
+        return ssPath;
     }
 
     /**
