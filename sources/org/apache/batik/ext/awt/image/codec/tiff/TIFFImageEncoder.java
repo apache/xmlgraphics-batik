@@ -675,8 +675,8 @@ public class TIFFImageEncoder extends ImageEncoderImpl {
             // YCbCr positioning.
             fields.add(new TIFFField(TIFF_YCBCR_POSITIONING,
                                      TIFFField.TIFF_SHORT, 1, 
-                                     new int[] {compression == COMP_JPEG_TTN2 ?
-                                                1 : 2}));
+                                     new char[] 
+                {(char)((compression == COMP_JPEG_TTN2)? 1 : 2)}));
 
             // Reference black/white.
             long[][] refbw;
