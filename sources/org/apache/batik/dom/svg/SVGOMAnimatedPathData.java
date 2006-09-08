@@ -292,10 +292,11 @@ public class SVGOMAnimatedPathData
                 itemList = builder.getList();
             } catch (ParseException e) {
                 itemList = new ArrayList(1);
-                valid = true;
                 throw new LiveAttributeException
                     (element, localName,
                      LiveAttributeException.ERR_ATTRIBUTE_MALFORMED, s);
+            } finally {
+                valid = true;
             }
         }
     }
@@ -371,12 +372,12 @@ public class SVGOMAnimatedPathData
                 itemList = builder.getList();
             } catch (ParseException e) {
                 itemList = new ArrayList(1);
-                valid = true;
                 throw new LiveAttributeException
                     (element, localName,
                      LiveAttributeException.ERR_ATTRIBUTE_MALFORMED, s);
+            } finally {
+                valid = true;
             }
-            valid = true;
         }
     }
 
