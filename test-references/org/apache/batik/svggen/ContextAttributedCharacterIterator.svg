@@ -61,7 +61,7 @@
           /></font
         ></defs
         ><g class="testC1"
-        ><text x="10" y="100" class="testC2"
+        ><text xml:space="preserve" x="10" y="100" class="testC2"
           ><tspan class="testC3"
             >Attributed</tspan
             ><tspan class="testC4"

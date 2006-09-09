@@ -37,7 +37,8 @@ public class AbstractWMFPainter {
     
     public static final String WMF_FILE_EXTENSION = ".wmf";
     protected WMFFont wmfFont = null;
-    protected int currentAlign = 0;
+    protected int currentHorizAlign = 0;
+    protected int currentVertAlign = 0;    
     
     public static final int PEN = 1;
     public static final int BRUSH = 2;
@@ -60,9 +61,7 @@ public class AbstractWMFPainter {
      *  @return the Image associated with the bitmap (null if the dimensions detected in the
      *     header are not consistent with the assumed dimensions)
      */ 
-    protected BufferedImage getImage(byte[] bit, int width, int height) {       
-        BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-        WritableRaster raster = img.getRaster();                  
+    protected BufferedImage getImage(byte[] bit, int width, int height) {
         // get the header of the bitmap, first the width and height
         int _width = (((int)bit[7] & 0x00ff) << 24) | (((int)bit[6] & 0x00ff) << 16)
                     | (((int)bit[5] & 0x00ff) << 8) | (int)bit[4] & 0x00ff;
@@ -232,32 +231,6 @@ public class AbstractWMFPainter {
         
         return ats;
     }    
-    
-    /** Decode a byte array in a String, considering the last selected charset.
-     */
-    protected String decodeString(byte[] bstr) {
-        // manage the charset encoding
-        String str;
-        try {
-            if (wmfFont.charset == WMFConstants.META_CHARSET_ANSI) {
-                str = new String(bstr);
-            } else if (wmfFont.charset == WMFConstants.META_CHARSET_DEFAULT) {
-                str = new String(bstr, WMFConstants.CHARSET_DEFAULT);
-            } else if (wmfFont.charset == WMFConstants.META_CHARSET_GREEK) {
-                str = new String(bstr, WMFConstants.CHARSET_GREEK);
-            } else if (wmfFont.charset == WMFConstants.META_CHARSET_RUSSIAN) {
-                str = new String(bstr, WMFConstants.CHARSET_CYRILLIC);
-            } else if (wmfFont.charset == WMFConstants.META_CHARSET_HEBREW) {
-                str = new String(bstr, WMFConstants.CHARSET_HEBREW);
-            } else if (wmfFont.charset == WMFConstants.META_CHARSET_ARABIC) {
-                str = new String(bstr, WMFConstants.CHARSET_ARABIC);
-            } else str = new String(bstr);
-        } catch (UnsupportedEncodingException e) {
-            str = new String(bstr);
-        }
-        
-        return str;
-    }
     
     /**
      * Sets the WMFRecordStore this WMFPainter should use to render

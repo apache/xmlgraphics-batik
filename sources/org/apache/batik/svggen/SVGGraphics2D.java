@@ -1206,14 +1206,15 @@ public class SVGGraphics2D extends AbstractGraphics2D
         AffineTransform savTxf = getTransform();
         AffineTransform txtTxf = transformText(x, y);            
 
-        Element text =
-            getDOMFactory().createElementNS(SVG_NAMESPACE_URI, SVG_TEXT_TAG);
-        text.setAttributeNS(null, SVG_X_ATTRIBUTE, generatorCtx.doubleString(x));
-        text.setAttributeNS(null, SVG_Y_ATTRIBUTE, generatorCtx.doubleString(y));
-            
-        text.setAttributeNS(XML_NAMESPACE_URI,
-                            XML_SPACE_ATTRIBUTE,
+        Element text = getDOMFactory().createElementNS(SVG_NAMESPACE_URI, 
+                                                       SVG_TEXT_TAG);
+        text.setAttributeNS(null, SVG_X_ATTRIBUTE, 
+                            generatorCtx.doubleString(x));
+        text.setAttributeNS(null, SVG_Y_ATTRIBUTE, 
+                            generatorCtx.doubleString(y));
+        text.setAttributeNS(XML_NAMESPACE_URI, XML_SPACE_ATTRIBUTE,
                             XML_PRESERVE_VALUE);
+            
         text.appendChild(getDOMFactory().createTextNode(s));
         domGroupManager.addElement(text, DOMGroupManager.FILL);
             
@@ -1288,6 +1289,8 @@ public class SVGGraphics2D extends AbstractGraphics2D
                             generatorCtx.doubleString(x));
         text.setAttributeNS(null, SVG_Y_ATTRIBUTE, 
                             generatorCtx.doubleString(y));
+        text.setAttributeNS(XML_NAMESPACE_URI, XML_SPACE_ATTRIBUTE,
+                            XML_PRESERVE_VALUE);
         
         Font  baseFont  = getFont();
         Paint basePaint = getPaint();
