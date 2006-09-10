@@ -47,7 +47,7 @@
             /><stop stop-opacity="1" stop-color="yellow" offset="100%"
           /></linearGradient
           ><font horiz-adv-x="75.0" id="testfont1"
-          ><font-face ascent="92.163086" descent="19.555664" units-per-em="100" font-family="Arial" font-style="normal" font-weight="normal"
+          ><font-face ascent="92.163086" font-style="normal" descent="19.555664" units-per-em="100" font-family="Arial" font-weight="normal"
             /><missing-glyph horiz-adv-x="75.0" d="M12.5 0 L12.5 62.5 L62.5 62.5 L62.5 0 L12.5 0 ZM14.0625 1.5625 L60.9375 1.5625 L60.9375 60.9375 L14.0625 60.9375 L14.0625 1.5625 Z"
             /><glyph unicode="n" horiz-adv-x="55.615234" d="M6.5938 0 L6.5938 51.8594 L14.5 51.8594 L14.5 44.4844 Q20.2188 53.0312 31 53.0312 Q35.6875 53.0312 39.625 51.3438 Q43.5625 49.6562 45.5156 46.9219 Q47.4688 44.1875 48.25 40.4375 Q48.7344 37.9844 48.7344 31.8906 L48.7344 0 L39.9375 0 L39.9375 31.5469 Q39.9375 36.9219 38.9141 39.5781 Q37.8906 42.2344 35.2812 43.8203 Q32.6719 45.4062 29.1562 45.4062 Q23.5312 45.4062 19.4531 41.8438 Q15.375 38.2812 15.375 28.3281 L15.375 0 L6.5938 0 Z"
             /><glyph unicode="d" horiz-adv-x="55.615234" d="M40.2344 0 L40.2344 6.5469 Q35.2969 -1.1562 25.7344 -1.1562 Q19.5312 -1.1562 14.3281 2.2578 Q9.125 5.6719 6.2734 11.7969 Q3.4219 17.9219 3.4219 25.875 Q3.4219 33.6406 6.0078 39.9688 Q8.5938 46.2969 13.7734 49.6641 Q18.9531 53.0312 25.3438 53.0312 Q30.0312 53.0312 33.6953 51.0547 Q37.3594 49.0781 39.6562 45.9062 L39.6562 71.5781 L48.3906 71.5781 L48.3906 0 L40.2344 0 ZM12.4531 25.875 Q12.4531 15.9219 16.6484 10.9922 Q20.8438 6.0625 26.5625 6.0625 Q32.3281 6.0625 36.3516 10.7734 Q40.375 15.4844 40.375 25.1406 Q40.375 35.7969 36.2734 40.7734 Q32.1719 45.75 26.1719 45.75 Q20.3125 45.75 16.3828 40.9688 Q12.4531 36.1875 12.4531 25.875 Z"
@@ -77,30 +77,30 @@
           /></font
         ></defs
         ><g class="testC1"
-        ><text xml:space="preserve" x="10" y="20" class="testC2"
+        ><text x="10" xml:space="preserve" y="20" class="testC2"
           >Simple vertical gradient</text
-          ><rect width="100" x="10" height="100" y="30" class="testC3"
-          /><path d="M-5 0 L5 0 M0 -5 L0 5" class="testC4" transform="translate(30,40)"
+          ><rect x="10" width="100" height="100" y="30" class="testC3"
+          /><path class="testC4" d="M-5 0 L5 0 M0 -5 L0 5" transform="translate(30,40)"
         /></g
         ><g class="testC5" transform="translate(30,120)"
         ><path class="testC6" d="M-5 0 L5 0 M0 -5 L0 5"
         /></g
         ><g class="testC7" transform="translate(0,140)"
-        ><text xml:space="preserve" x="10" y="20" class="testC8"
+        ><text x="10" xml:space="preserve" y="20" class="testC8"
           >Non Cyclic / Cyclic Gradients</text
-          ><rect x="0" y="0" transform="translate(10,30)" width="100" class="testC9" height="30"
-          /><rect x="0" y="0" transform="translate(10,60)" width="100" class="testC10" height="30"
-          /><line transform="translate(10,60)" x1="0" x2="100" y1="0" y2="0" class="testC11"
+          ><rect x="0" width="100" height="30" y="0" class="testC9" transform="translate(10,30)"
+          /><rect x="0" width="100" height="30" y="0" class="testC10" transform="translate(10,60)"
+          /><line y2="0" x1="0" class="testC11" x2="100" transform="translate(10,60)" y1="0"
         /></g
         ><g class="testC12" transform="translate(0,240)"
-        ><text xml:space="preserve" x="10" y="20" class="testC13"
+        ><text x="10" xml:space="preserve" y="20" class="testC13"
           >Sheared GradientPaint</text
-          ><rect x="0" y="0" transform="translate(10,25) matrix(1,0,0.5,1,0,0)" width="100" class="testC14" height="40"
+          ><rect x="0" width="100" height="40" y="0" class="testC14" transform="translate(10,25) matrix(1,0,0.5,1,0,0)"
         /></g
         ><g class="testC15" transform="translate(0,320)"
-        ><text xml:space="preserve" x="10" y="20" class="testC16"
+        ><text x="10" xml:space="preserve" y="20" class="testC16"
           >Opacity in stop color</text
-          ><rect width="100" x="10" height="30" y="30" class="testC17"
+          ><rect x="10" width="100" height="30" y="30" class="testC17"
         /></g
       ></g
     ></g

@@ -25,7 +25,7 @@
       ><g
       ><defs id="testdefs1"
         ><font horiz-adv-x="75.0" id="testfont1"
-          ><font-face ascent="92.163086" descent="19.555664" units-per-em="100" font-family="Arial" font-style="normal" font-weight="normal"
+          ><font-face ascent="92.163086" font-style="normal" descent="19.555664" units-per-em="100" font-family="Arial" font-weight="normal"
             /><missing-glyph horiz-adv-x="75.0" d="M12.5 0 L12.5 62.5 L62.5 62.5 L62.5 0 L12.5 0 ZM14.0625 1.5625 L60.9375 1.5625 L60.9375 60.9375 L14.0625 60.9375 L14.0625 1.5625 Z"
             /><glyph unicode="m" horiz-adv-x="83.30078" d="M6.5938 0 L6.5938 51.8594 L14.4531 51.8594 L14.4531 44.5781 Q16.8906 48.3906 20.9453 50.7109 Q25 53.0312 30.1719 53.0312 Q35.9375 53.0312 39.625 50.6406 Q43.3125 48.25 44.8281 43.9531 Q50.9844 53.0312 60.8438 53.0312 Q68.5625 53.0312 72.7109 48.7578 Q76.8594 44.4844 76.8594 35.5938 L76.8594 0 L68.1094 0 L68.1094 32.6719 Q68.1094 37.9375 67.2578 40.2578 Q66.4062 42.5781 64.1641 43.9922 Q61.9219 45.4062 58.8906 45.4062 Q53.4219 45.4062 49.8047 41.7734 Q46.1875 38.1406 46.1875 30.125 L46.1875 0 L37.4062 0 L37.4062 33.6875 Q37.4062 39.5469 35.2578 42.4766 Q33.1094 45.4062 28.2188 45.4062 Q24.5156 45.4062 21.3672 43.4531 Q18.2188 41.5 16.7969 37.7422 Q15.375 33.9844 15.375 26.9062 L15.375 0 L6.5938 0 Z"
             /><glyph unicode="o" horiz-adv-x="55.615234" d="M3.3281 25.9219 Q3.3281 40.3281 11.3281 47.2656 Q18.0156 53.0312 27.6406 53.0312 Q38.3281 53.0312 45.1172 46.0234 Q51.9062 39.0156 51.9062 26.6562 Q51.9062 16.6562 48.9062 10.9141 Q45.9062 5.1719 40.1641 2.0078 Q34.4219 -1.1562 27.6406 -1.1562 Q16.75 -1.1562 10.0391 5.8203 Q3.3281 12.7969 3.3281 25.9219 ZM12.3594 25.9219 Q12.3594 15.9688 16.7031 11.0156 Q21.0469 6.0625 27.6406 6.0625 Q34.1875 6.0625 38.5312 11.0391 Q42.875 16.0156 42.875 26.2188 Q42.875 35.8438 38.5 40.7969 Q34.125 45.75 27.6406 45.75 Q21.0469 45.75 16.7031 40.8203 Q12.3594 35.8906 12.3594 25.9219 Z"
@@ -60,28 +60,28 @@
           /></font
         ></defs
         ><g class="testC1" transform="translate(0,30)"
-        ><text xml:space="preserve" x="10" y="12" class="testC2"
+        ><text x="10" xml:space="preserve" y="12" class="testC2"
           >Default transform</text
-          ><rect width="50" x="10" height="30" y="20" class="testC3"
-          /><text xml:space="preserve" x="10" y="12" class="testC4" transform="translate(0,90)"
+          ><rect x="10" width="50" height="30" y="20" class="testC3"
+          /><text x="10" xml:space="preserve" y="12" class="testC4" transform="translate(0,90)"
           >Translate applied</text
-          ><rect x="10" y="20" transform="translate(0,90)" width="50" class="testC5" height="30"
-          /><text xml:space="preserve" x="10" y="12" class="testC6" transform="translate(35,215) rotate(90) translate(-35,-35)"
+          ><rect x="10" width="50" height="30" y="20" class="testC5" transform="translate(0,90)"
+          /><text x="10" xml:space="preserve" y="12" class="testC6" transform="translate(35,215) rotate(90) translate(-35,-35)"
           >Rotate about center</text
-          ><rect x="10" y="20" transform="translate(35,215) rotate(90) translate(-35,-35)" width="50" class="testC7" height="30"
+          ><rect x="10" width="50" height="30" y="20" class="testC7" transform="translate(35,215) rotate(90) translate(-35,-35)"
         /></g
         ><g class="testC8" transform="matrix(1,0,0,1,0,30) translate(150,0)"
-        ><text xml:space="preserve" x="10" y="12" class="testC9"
+        ><text x="10" xml:space="preserve" y="12" class="testC9"
           >Scale (sx=2, sy=1)</text
-          ><rect x="10" y="20" transform="scale(2,1)" width="50" class="testC10" height="30"
+          ><rect x="10" width="50" height="30" y="20" class="testC10" transform="scale(2,1)"
         /></g
         ><g class="testC11" transform="matrix(1,0,0,1,0,30) translate(150,90)"
-        ><text xml:space="preserve" x="10" y="12" class="testC12"
+        ><text x="10" xml:space="preserve" y="12" class="testC12"
           >Shear</text
-          ><rect x="10" y="20" transform="matrix(1,1,0.2,1,0,0)" width="50" class="testC13" height="30"
+          ><rect x="10" width="50" height="30" y="20" class="testC13" transform="matrix(1,1,0.2,1,0,0)"
         /></g
         ><g class="testC14"
-        ><rect width="56" x="164" height="80" y="150" class="testC15"
+        ><rect x="164" width="56" height="80" y="150" class="testC15"
         /></g
       ></g
     ></g

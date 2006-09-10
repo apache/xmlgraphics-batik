@@ -27,30 +27,30 @@
       /></linearGradient
     ></defs
     ><g text-rendering="optimizeLegibility"
-    ><text xml:space="preserve" x="10" y="20" stroke="none"
+    ><text x="10" xml:space="preserve" y="20" stroke="none"
       >Simple vertical gradient</text
-      ><rect x="10" y="30" fill="url(#linearGradient1)" width="100" height="100" stroke="none"
+      ><rect fill="url(#linearGradient1)" x="10" width="100" height="100" y="30" stroke="none"
       /><path fill="none" d="M-5 0 L5 0 M0 -5 L0 5" transform="translate(30,40)"
     /></g
     ><g text-rendering="optimizeLegibility" transform="translate(30,120)"
     ><path fill="none" d="M-5 0 L5 0 M0 -5 L0 5"
     /></g
     ><g text-rendering="optimizeLegibility" transform="translate(0,140)"
-    ><text xml:space="preserve" x="10" y="20" stroke="none"
+    ><text x="10" xml:space="preserve" y="20" stroke="none"
       >Non Cyclic / Cyclic Gradients</text
       ><rect x="0" y="0" transform="translate(10,30)" fill="url(#linearGradient2)" width="100" height="30" stroke="none"
       /><rect x="0" y="0" transform="translate(10,60)" fill="url(#linearGradient3)" width="100" height="30" stroke="none"
-      /><line transform="translate(10,60)" fill="none" x1="0" x2="100" y1="0" y2="0"
+      /><line y2="0" fill="none" x1="0" x2="100" transform="translate(10,60)" y1="0"
     /></g
     ><g text-rendering="optimizeLegibility" transform="translate(0,240)"
-    ><text xml:space="preserve" x="10" y="20" stroke="none"
+    ><text x="10" xml:space="preserve" y="20" stroke="none"
       >Sheared GradientPaint</text
       ><rect x="0" y="0" transform="translate(10,25) matrix(1,0,0.5,1,0,0)" fill="url(#linearGradient4)" width="100" height="40" stroke="none"
     /></g
     ><g text-rendering="optimizeLegibility" transform="translate(0,320)"
-    ><text xml:space="preserve" x="10" y="20" stroke="none"
+    ><text x="10" xml:space="preserve" y="20" stroke="none"
       >Opacity in stop color</text
-      ><rect x="10" y="30" fill="url(#linearGradient5)" width="100" height="30" stroke="none"
+      ><rect fill="url(#linearGradient5)" x="10" width="100" height="30" y="30" stroke="none"
     /></g
   ></g
 ></svg

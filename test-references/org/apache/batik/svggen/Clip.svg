@@ -26,9 +26,9 @@
 MAgEwTOk/5ZNC3kKzlYgw/2sdCZWE486ESxYsGDBgiVYsGDBggVLsGDBggULlmDB
 ggUL1vZu+7JaFixYsGDBEixYsGDBgiVYsGDBggVLsGDBggULlr57aAcDZaydo60A
 AAAASUVORK5CYII=" height="50" preserveAspectRatio="none"
-      /><text xml:space="preserve" x="110" y="25" stroke="none"
+      /><text x="110" xml:space="preserve" y="25" stroke="none"
       >Clip set to device bounds</text
-      ><text xml:space="preserve" x="110" y="25" transform="translate(0,70)" stroke="none"
+      ><text x="110" xml:space="preserve" y="25" transform="translate(0,70)" stroke="none"
       >Clip set to upper right quarter</text
       ><image x="0" y="0" transform="translate(0,70)" clip-path="url(#clipPath2)" width="100" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAIAAAAlV+npAAAAYklEQVR42u3ZwQkA
 MAgEwTOk/5ZNC3kKzlYgw/2sdCZWE486ESxYsGDBgiVYsGDBggVLsGDBggULlmDB
@@ -36,9 +36,9 @@ ggUL1vZu+7JaFixYsGDBEixYsGDBgiVYsGDBggVLsGDBggULlr57aAcDZaydo60A
 AAAASUVORK5CYII=" height="50" preserveAspectRatio="none"
     /></g
     ><g text-rendering="optimizeLegibility" transform="translate(0,140)"
-    ><text xml:space="preserve" x="110" y="15" stroke="none"
+    ><text x="110" xml:space="preserve" y="15" stroke="none"
       >Clip set to upper right quarter</text
-      ><text xml:space="preserve" x="110" y="30" stroke="none"
+      ><text x="110" xml:space="preserve" y="30" stroke="none"
       >after .5 scale</text
       ><image x="0" y="0" transform="scale(0.5,0.5)" clip-path="url(#clipPath2)" width="100" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAIAAAAlV+npAAAAYklEQVR42u3ZwQkA
 MAgEwTOk/5ZNC3kKzlYgw/2sdCZWE486ESxYsGDBgiVYsGDBggVLsGDBggULlmDB
@@ -46,7 +46,7 @@ ggUL1vZu+7JaFixYsGDBEixYsGDBgiVYsGDBggVLsGDBggULlr57aAcDZaydo60A
 AAAASUVORK5CYII=" height="50" preserveAspectRatio="none"
     /></g
     ><g text-rendering="optimizeLegibility" transform="translate(0,210)"
-    ><text xml:space="preserve" x="110" y="25" stroke="none"
+    ><text x="110" xml:space="preserve" y="25" stroke="none"
       >Non-Rectagular clip</text
       ><image x="0" y="0" clip-path="url(#clipPath3)" width="100" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAIAAAAlV+npAAAAYklEQVR42u3ZwQkA
 MAgEwTOk/5ZNC3kKzlYgw/2sdCZWE486ESxYsGDBgiVYsGDBggVLsGDBggULlmDB
@@ -54,9 +54,9 @@ ggUL1vZu+7JaFixYsGDBEixYsGDBgiVYsGDBggVLsGDBggULlr57aAcDZaydo60A
 AAAASUVORK5CYII=" height="50" preserveAspectRatio="none"
     /></g
     ><g text-rendering="optimizeLegibility" transform="translate(0,280)"
-    ><text xml:space="preserve" x="110" y="15" stroke="none"
+    ><text x="110" xml:space="preserve" y="15" stroke="none"
       >Non-Rectagular clip after</text
-      ><text xml:space="preserve" x="110" y="30" stroke="none"
+      ><text x="110" xml:space="preserve" y="30" stroke="none"
       >.5 scale</text
       ><image x="0" y="0" transform="scale(0.5,0.5)" clip-path="url(#clipPath4)" width="100" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAIAAAAlV+npAAAAYklEQVR42u3ZwQkA
 MAgEwTOk/5ZNC3kKzlYgw/2sdCZWE486ESxYsGDBgiVYsGDBggVLsGDBggULlmDB
@@ -64,9 +64,9 @@ ggUL1vZu+7JaFixYsGDBEixYsGDBgiVYsGDBggVLsGDBggULlr57aAcDZaydo60A
 AAAASUVORK5CYII=" height="50" preserveAspectRatio="none"
     /></g
     ><g text-rendering="optimizeLegibility" transform="translate(0,350)"
-    ><text xml:space="preserve" x="110" y="15" stroke="none"
+    ><text x="110" xml:space="preserve" y="15" stroke="none"
       >Non-Rectagular clip before</text
-      ><text xml:space="preserve" x="110" y="30" stroke="none"
+      ><text x="110" xml:space="preserve" y="30" stroke="none"
       >.5 scale</text
       ><image x="0" y="0" transform="scale(0.5,0.5)" clip-path="url(#clipPath5)" width="100" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAIAAAAlV+npAAAAYklEQVR42u3ZwQkA
 MAgEwTOk/5ZNC3kKzlYgw/2sdCZWE486ESxYsGDBgiVYsGDBggVLsGDBggULlmDB

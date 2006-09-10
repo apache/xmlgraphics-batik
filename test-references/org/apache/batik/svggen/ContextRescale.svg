@@ -19,7 +19,7 @@
       ><g
       ><defs id="testdefs1"
         ><font horiz-adv-x="75.0" id="testfont1"
-          ><font-face ascent="92.163086" descent="19.555664" units-per-em="100" font-family="Arial" font-style="normal" font-weight="normal"
+          ><font-face ascent="92.163086" font-style="normal" descent="19.555664" units-per-em="100" font-family="Arial" font-weight="normal"
             /><missing-glyph horiz-adv-x="75.0" d="M12.5 0 L12.5 62.5 L62.5 62.5 L62.5 0 L12.5 0 ZM14.0625 1.5625 L60.9375 1.5625 L60.9375 60.9375 L14.0625 60.9375 L14.0625 1.5625 Z"
             /><glyph unicode="k" horiz-adv-x="50.0" d="M6.6406 0 L6.6406 71.5781 L15.4375 71.5781 L15.4375 30.7656 L36.2344 51.8594 L47.6094 51.8594 L27.7812 32.625 L49.6094 0 L38.7656 0 L21.625 26.5156 L15.4375 20.5625 L15.4375 0 L6.6406 0 Z"
             /><glyph unicode="D" horiz-adv-x="72.2168" d="M7.7188 0 L7.7188 71.5781 L32.375 71.5781 Q40.7188 71.5781 45.125 70.5625 Q51.2656 69.1406 55.6094 65.4375 Q61.2812 60.6406 64.0859 53.1953 Q66.8906 45.75 66.8906 36.1875 Q66.8906 28.0312 64.9922 21.7344 Q63.0938 15.4375 60.1094 11.3047 Q57.125 7.1719 53.5859 4.8047 Q50.0469 2.4375 45.0469 1.2188 Q40.0469 0 33.5469 0 L7.7188 0 ZM17.1875 8.4531 L32.4688 8.4531 Q39.5469 8.4531 43.5781 9.7656 Q47.6094 11.0781 50 13.4844 Q53.375 16.8438 55.25 22.5312 Q57.125 28.2188 57.125 36.3281 Q57.125 47.5625 53.4375 53.5938 Q49.75 59.625 44.4844 61.6719 Q40.6719 63.1406 32.2344 63.1406 L17.1875 63.1406 L17.1875 8.4531 Z"
@@ -938,16 +938,16 @@ nGoUKfPal7y3hnDcuOpbbPWSl9XkDtt4SdwOKWlO/w+897qli3RcmQAAAABJRU5E
 rkJggg==" xlink:type="simple" xlink:actuate="onLoad" height="63" id="testimage6" preserveAspectRatio="xMidYMid meet" xlink:show="embed"
         /></defs
         ><g class="testC1"
-        ><text xml:space="preserve" x="10" y="20" class="testC2"
+        ><text x="10" xml:space="preserve" y="20" class="testC2"
           >Brighter / Normal / Darker</text
-          ><use transform="matrix(1,0,0,1,10,30)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC3" xlink:actuate="onLoad" xlink:show="embed"
-          /><use transform="matrix(1,0,0,1,70,30)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage2" xlink:type="simple" class="testC4" xlink:actuate="onLoad" xlink:show="embed"
-          /><use transform="matrix(1,0,0,1,130,30)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage3" xlink:type="simple" class="testC5" xlink:actuate="onLoad" xlink:show="embed"
-          /><text xml:space="preserve" x="10" y="20" class="testC6" transform="translate(0,113)"
+          ><use transform="matrix(1,0,0,1,10,30)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" xlink:actuate="onLoad" class="testC3" xlink:show="embed"
+          /><use transform="matrix(1,0,0,1,70,30)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage2" xlink:type="simple" xlink:actuate="onLoad" class="testC4" xlink:show="embed"
+          /><use transform="matrix(1,0,0,1,130,30)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage3" xlink:type="simple" xlink:actuate="onLoad" class="testC5" xlink:show="embed"
+          /><text x="10" xml:space="preserve" y="20" class="testC6" transform="translate(0,113)"
           >Rescale Red / Green / Blue</text
-          ><use transform="translate(0,113) matrix(1,0,0,1,10,30)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage4" xlink:type="simple" class="testC7" xlink:actuate="onLoad" xlink:show="embed"
-          /><use transform="translate(0,113) matrix(1,0,0,1,70,30)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage5" xlink:type="simple" class="testC8" xlink:actuate="onLoad" xlink:show="embed"
-          /><use transform="translate(0,113) matrix(1,0,0,1,130,30)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage6" xlink:type="simple" class="testC9" xlink:actuate="onLoad" xlink:show="embed"
+          ><use transform="translate(0,113) matrix(1,0,0,1,10,30)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage4" xlink:type="simple" xlink:actuate="onLoad" class="testC7" xlink:show="embed"
+          /><use transform="translate(0,113) matrix(1,0,0,1,70,30)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage5" xlink:type="simple" xlink:actuate="onLoad" class="testC8" xlink:show="embed"
+          /><use transform="translate(0,113) matrix(1,0,0,1,130,30)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage6" xlink:type="simple" xlink:actuate="onLoad" class="testC9" xlink:show="embed"
         /></g
       ></g
     ></g

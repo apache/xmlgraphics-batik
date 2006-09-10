@@ -66,29 +66,29 @@ AxgwMjIyIAFGuASKKCMjEwMOQLoEdjvIMgoAOSQJC7g1m/AAAAAASUVORK5CYII=" xlink:type="si
       /><rect fill="none" width="451.9937" x="549.2787" height="156.6992" y="580.989"
       /><rect fill="none" width="454.3748" x="549.2787" height="154.3181" y="174.7654"
       /><rect fill="none" width="454.3748" x="47.2441" height="153.1086" y="178.3181"
-      /><text x="33.0315" font-size="63" y="84.1701" text-decoration="underline" stroke="none" font-weight="bold"
+      /><text font-size="63" x="33.0315" y="84.1701" text-decoration="underline" stroke="none" font-weight="bold" xml:space="preserve"
       >Metafile Companion Test Chart</text
     ></g
     ><g font-size="26" stroke-linecap="butt" transform="translate(70.1858,185.4992)" fill="white" stroke-linejoin="round" stroke="white" font-weight="bold" stroke-width="1.5118"
     ><rect width="100" x="0" height="25" y="-19" stroke="none"
     /></g
     ><g font-size="26" stroke-width="1.5118" font-weight="bold" stroke-linecap="butt" stroke-linejoin="round"
-    ><text x="70.1858" y="185.4992" stroke="none"
+    ><text xml:space="preserve" x="70.1858" y="185.4992" stroke="none"
       >Objects</text
       ><rect x="0" y="-19" transform="translate(573.4677,185.4992)" fill="white" width="86" height="20" stroke="none"
     /></g
     ><g font-size="26" stroke-width="1.5118" font-weight="bold" stroke-linecap="butt" stroke-linejoin="round"
-    ><text x="573.4677" y="185.4992" stroke="none"
+    ><text xml:space="preserve" x="573.4677" y="185.4992" stroke="none"
       >Colors</text
       ><rect x="-1" y="-19" transform="translate(573.4677,591.7606)" fill="white" width="130" height="20" stroke="none"
     /></g
     ><g font-size="26" stroke-width="1.5118" font-weight="bold" stroke-linecap="butt" stroke-linejoin="round"
-    ><text x="573.4677" y="591.7606" stroke="none"
+    ><text xml:space="preserve" x="573.4677" y="591.7606" stroke="none"
       >Advanced</text
       ><rect x="1" y="-19" transform="translate(72.7559,591.6094)" fill="white" width="54" height="20" stroke="none"
     /></g
     ><g font-size="26" stroke-width="1.5118" font-weight="bold" stroke-linecap="butt" stroke-linejoin="round"
-    ><text x="72.7559" y="591.6094" stroke="none"
+    ><text xml:space="preserve" x="72.7559" y="591.6094" stroke="none"
       >Fills</text
       ><line fill="none" x1="70.1102" x2="112.8945" y1="278.9291" y2="230.8535" stroke-width="0.7559"
       /><rect x="200.8063" y="235.011" fill="none" width="42.1417" height="39.7607" stroke-width="0.7559"
@@ -98,14 +98,14 @@ AxgwMjIyIAFGuASKKCMjEwMOQLoEdjvIMgoAOSQJC7g1m/AAAAAASUVORK5CYII=" xlink:type="si
     ><rect width="88" x="2" height="20" y="-19" stroke="none"
     /></g
     ><g font-size="26" transform="matrix(0.9397,-0.342,0.342,0.9397,-216.0685,358.3464)" stroke-linejoin="round" stroke-linecap="butt"
-    ><text x="945.7512" y="662.0977" stroke="none"
+    ><text xml:space="preserve" x="945.7512" y="662.0977" stroke="none"
       >Rotated</text
     ></g
     ><g font-size="26" stroke-linecap="butt" transform="translate(433.1717,263.3575)" fill="white" stroke-linejoin="round" stroke="white" stroke-width="0.7559"
     ><rect width="51" x="0" height="20" y="-19" stroke="none"
     /></g
     ><g font-size="26" stroke-width="0.7559" stroke-linecap="butt" stroke-linejoin="round"
-    ><text x="433.1717" y="263.3575" stroke="none"
+    ><text xml:space="preserve" x="433.1717" y="263.3575" stroke="none"
       >Text</text
       ><path fill="silver" stroke-width="0.0378" d="M792.6047 679.7858 L830.4 625.3607 L866.6835 679.7858 ZM806.3622 673.5874 L829.6441 638.9669 L852.6236 673.5874 ZM818.3055 665.5748 L828.8882 649.852 L839.3197 665.5748 Z" fill-rule="evenodd" stroke="none"
       /><path fill="none" d="M792.6047 679.7858 L830.4 625.3607 L866.6835 679.7858 Z" stroke-width="0.0378"
@@ -163,49 +163,49 @@ AxgwMjIyIAFGuASKKCMjEwMOQLoEdjvIMgoAOSQJC7g1m/AAAAAASUVORK5CYII=" xlink:type="si
     ><rect width="70" x="1" height="20" y="-19" stroke="none"
     /></g
     ><g font-size="26" stroke-width="1.5118" font-weight="bold" stroke-linecap="butt" stroke-linejoin="round"
-    ><text x="74.1165" y="386.5701" stroke="none"
+    ><text xml:space="preserve" x="74.1165" y="386.5701" stroke="none"
       >Lines</text
       ><rect fill="none" width="451.9937" x="549.2787" height="156.6614" y="376.7055"
       /><rect x="1" y="-19" transform="translate(574.8284,387.9307)" fill="white" width="73" height="20" stroke="none"
     /></g
     ><g font-size="26" stroke-width="1.5118" font-weight="bold" stroke-linecap="butt" stroke-linejoin="round"
-    ><text x="574.8284" y="387.9307" stroke="none"
+    ><text xml:space="preserve" x="574.8284" y="387.9307" stroke="none"
       >Fonts</text
       ><rect x="1" y="-19" transform="translate(820.0441,434.3433)" fill="white" width="59" height="20" stroke="none"
     /></g
     ><g font-size="26" stroke-width="1.5118" font-weight="bold" stroke-linecap="butt" stroke-linejoin="round"
-    ><text x="820.0441" y="434.3433" stroke="none"
+    ><text xml:space="preserve" x="820.0441" y="434.3433" stroke="none"
       >Bold</text
     ></g
     ><g font-size="26" stroke-linecap="butt" transform="translate(822.6142,499.3512)" fill="white" font-family="&apos;Courier New&apos;" stroke-linejoin="round" stroke="white" stroke-width="1.5118"
     ><rect width="138" x="1" height="18" y="-17" stroke="none"
     /></g
     ><g font-size="26" stroke-width="1.5118" font-family="&apos;Courier New&apos;" stroke-linecap="butt" stroke-linejoin="round"
-    ><text x="822.6142" y="499.3512" text-decoration="underline" stroke="none"
+    ><text xml:space="preserve" x="822.6142" y="499.3512" text-decoration="underline" stroke="none"
       >Underline</text
     ></g
     ><g font-size="26" stroke-linecap="butt" transform="translate(821.2535,465.4866)" fill="white" font-family="&apos;Times New Roman&apos;" stroke-linejoin="round" font-style="italic" stroke="white" stroke-width="1.5118"
     ><rect width="58" x="-1" height="20" y="-19" stroke="none"
     /></g
     ><g font-size="26" stroke-linecap="butt" font-family="&apos;Times New Roman&apos;" stroke-linejoin="round" font-style="italic" stroke-width="1.5118"
-    ><text x="821.2535" y="465.4866" stroke="none"
+    ><text xml:space="preserve" x="821.2535" y="465.4866" stroke="none"
       >Italic</text
     ></g
     ><g font-size="26" stroke-linecap="butt" transform="translate(574.6772,433.1339)" fill="white" stroke-linejoin="round" stroke="white" stroke-width="1.5118"
     ><rect width="52" x="-1" height="20" y="-19" stroke="none"
     /></g
     ><g font-size="26" stroke-width="1.5118" stroke-linecap="butt" stroke-linejoin="round"
-    ><text x="574.6772" y="433.1339" stroke="none"
+    ><text xml:space="preserve" x="574.6772" y="433.1339" stroke="none"
       >Arial</text
       ><rect x="0" y="-19" transform="translate(573.3165,465.4866)" fill="white" width="203" height="20" stroke="none"
     /></g
     ><g font-size="26" stroke-width="1.5118" font-family="&apos;Times New Roman&apos;" stroke-linecap="butt" stroke-linejoin="round"
-    ><text x="573.3165" y="465.4866" stroke="none"
+    ><text xml:space="preserve" x="573.3165" y="465.4866" stroke="none"
       >Times New Roman</text
       ><rect x="1" y="-17" transform="translate(574.6772,499.3512)" fill="white" width="170" height="18" stroke="none"
     /></g
     ><g font-size="26" stroke-width="1.5118" font-family="&apos;Courier New&apos;" stroke-linecap="butt" stroke-linejoin="round"
-    ><text x="574.6772" y="499.3512" stroke="none"
+    ><text xml:space="preserve" x="574.6772" y="499.3512" stroke="none"
       >Courier New</text
       ><rect x="579.9685" y="628.2331" fill="url(#pattern9)" width="45.6945" height="45.6567" stroke="none" stroke-width="0.0378"
       /><rect x="579.9685" y="628.2331" fill="none" width="45.6945" height="45.6567" stroke-width="0.0378"
@@ -215,27 +215,27 @@ AxgwMjIyIAFGuASKKCMjEwMOQLoEdjvIMgoAOSQJC7g1m/AAAAAASUVORK5CYII=" xlink:type="si
       /><rect x="656.7685" y="634.1292" fill="none" width="48.0378" height="45.6945" stroke-width="0.0378"
       /><rect x="714.6331" y="634.1292" fill="url(#pattern10)" width="44.485" height="45.6945" stroke="none" stroke-width="0.0378"
       /><rect x="714.6331" y="634.1292" fill="none" width="44.485" height="45.6945" stroke-width="0.0378"
-      /><text font-size="15" x="933.7166" y="721.9653" font-family="&apos;Times New Roman&apos;" stroke="none" stroke-width="0.0378"
+      /><text font-size="15" x="933.7166" y="721.9653" font-family="&apos;Times New Roman&apos;" stroke="none" stroke-width="0.0378" xml:space="preserve"
       >Text</text
-      ><text font-size="15" x="921.7976" y="705.1843" font-family="&apos;Times New Roman&apos;" stroke="none" stroke-width="0.0378"
+      ><text font-size="15" x="921.7976" y="705.1843" font-family="&apos;Times New Roman&apos;" stroke="none" stroke-width="0.0378" xml:space="preserve"
       >Rotated</text
-      ><text font-size="15" x="565.9843" y="705.9401" font-family="&apos;Times New Roman&apos;" stroke="none" stroke-width="0.0378"
+      ><text font-size="15" x="565.9843" y="705.9401" font-family="&apos;Times New Roman&apos;" stroke="none" stroke-width="0.0378" xml:space="preserve"
       >Background</text
-      ><text font-size="15" x="585.1843" y="722.7213" font-family="&apos;Times New Roman&apos;" stroke="none" stroke-width="0.0378"
+      ><text font-size="15" x="585.1843" y="722.7213" font-family="&apos;Times New Roman&apos;" stroke="none" stroke-width="0.0378" xml:space="preserve"
       >Color</text
-      ><text font-size="15" x="801.6756" y="706.3937" font-family="&apos;Times New Roman&apos;" stroke="none" stroke-width="0.0378"
+      ><text font-size="15" x="801.6756" y="706.3937" font-family="&apos;Times New Roman&apos;" stroke="none" stroke-width="0.0378" xml:space="preserve"
       >Complex</text
-      ><text font-size="15" x="807.1181" y="723.1748" font-family="&apos;Times New Roman&apos;" stroke="none" stroke-width="0.0378"
+      ><text font-size="15" x="807.1181" y="723.1748" font-family="&apos;Times New Roman&apos;" stroke="none" stroke-width="0.0378" xml:space="preserve"
       >Polygon</text
-      ><text font-size="15" x="664.8567" y="705.9401" font-family="&apos;Times New Roman&apos;" stroke="none" stroke-width="0.0378"
+      ><text font-size="15" x="664.8567" y="705.9401" font-family="&apos;Times New Roman&apos;" stroke="none" stroke-width="0.0378" xml:space="preserve"
       >Transparency</text
-      ><text font-size="15" x="98.4945" y="502.2236" font-family="&apos;Times New Roman&apos;" stroke="none" stroke-width="0.0378"
+      ><text font-size="15" x="98.4945" y="502.2236" font-family="&apos;Times New Roman&apos;" stroke="none" stroke-width="0.0378" xml:space="preserve"
       >Patterns</text
-      ><text font-size="15" x="248.2772" y="503.4331" font-family="&apos;Times New Roman&apos;" stroke="none" stroke-width="0.0378"
+      ><text font-size="15" x="248.2772" y="503.4331" font-family="&apos;Times New Roman&apos;" stroke="none" stroke-width="0.0378" xml:space="preserve"
       >Thickness</text
-      ><text font-size="15" x="345.9126" y="725.7071" font-family="&apos;Times New Roman&apos;" stroke="none" stroke-width="0.0378"
+      ><text font-size="15" x="345.9126" y="725.7071" font-family="&apos;Times New Roman&apos;" stroke="none" stroke-width="0.0378" xml:space="preserve"
       >Bitmap Fill Patterns</text
-      ><text font-size="15" x="130.6882" y="725.4047" font-family="&apos;Times New Roman&apos;" stroke="none" stroke-width="0.0378"
+      ><text font-size="15" x="130.6882" y="725.4047" font-family="&apos;Times New Roman&apos;" stroke="none" stroke-width="0.0378" xml:space="preserve"
       >Basic Fill Patterns</text
     ></g
     ><g font-size="15" stroke-linecap="butt" fill="url(#pattern11)" font-family="&apos;Times New Roman&apos;" stroke-linejoin="round" stroke="url(#pattern11)" stroke-width="0.0378"

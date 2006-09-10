@@ -22,17 +22,17 @@
 ]]></style
       ><g
       ><defs id="testdefs1"
-        ><pattern x="0" y="0" width="20" xmlns:xlink="http://www.w3.org/1999/xlink" patternUnits="userSpaceOnUse" xlink:type="simple" xlink:actuate="onLoad" id="testpattern1" height="20" preserveAspectRatio="xMidYMid meet" xlink:show="other"
-          ><use xlink:type="simple" xlink:actuate="onLoad" xlink:show="embed" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1"
+        ><pattern x="0" y="0" width="20" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" patternUnits="userSpaceOnUse" xlink:actuate="onLoad" id="testpattern1" height="20" preserveAspectRatio="xMidYMid meet" xlink:show="other"
+          ><use xlink:actuate="onLoad" xlink:type="simple" xlink:show="embed" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1"
           /></pattern
-          ><pattern x="10" y="10" width="20" xmlns:xlink="http://www.w3.org/1999/xlink" patternUnits="userSpaceOnUse" xlink:type="simple" xlink:actuate="onLoad" id="testpattern2" height="20" preserveAspectRatio="xMidYMid meet" xlink:show="other"
-          ><use xlink:type="simple" xlink:actuate="onLoad" xlink:show="embed" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1"
+          ><pattern x="10" y="10" width="20" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" patternUnits="userSpaceOnUse" xlink:actuate="onLoad" id="testpattern2" height="20" preserveAspectRatio="xMidYMid meet" xlink:show="other"
+          ><use xlink:actuate="onLoad" xlink:type="simple" xlink:show="embed" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1"
           /></pattern
-          ><pattern x="0" y="0" width="10" xmlns:xlink="http://www.w3.org/1999/xlink" patternUnits="userSpaceOnUse" xlink:type="simple" xlink:actuate="onLoad" id="testpattern3" height="10" preserveAspectRatio="xMidYMid meet" xlink:show="other"
-          ><use xlink:type="simple" xlink:actuate="onLoad" xlink:show="embed" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage2"
+          ><pattern x="0" y="0" width="10" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" patternUnits="userSpaceOnUse" xlink:actuate="onLoad" id="testpattern3" height="10" preserveAspectRatio="xMidYMid meet" xlink:show="other"
+          ><use xlink:actuate="onLoad" xlink:type="simple" xlink:show="embed" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage2"
           /></pattern
           ><font horiz-adv-x="75.0" id="testfont1"
-          ><font-face ascent="92.163086" descent="19.555664" units-per-em="100" font-family="Arial" font-style="normal" font-weight="normal"
+          ><font-face ascent="92.163086" font-style="normal" descent="19.555664" units-per-em="100" font-family="Arial" font-weight="normal"
             /><missing-glyph horiz-adv-x="75.0" d="M12.5 0 L12.5 62.5 L62.5 62.5 L62.5 0 L12.5 0 ZM14.0625 1.5625 L60.9375 1.5625 L60.9375 60.9375 L14.0625 60.9375 L14.0625 1.5625 Z"
             /><glyph unicode="g" horiz-adv-x="55.615234" d="M4.9844 -4.2812 L13.5312 -5.5469 Q14.0625 -9.5 16.5 -11.3125 Q19.7812 -13.75 25.4375 -13.75 Q31.5469 -13.75 34.8672 -11.3125 Q38.1875 -8.875 39.3594 -4.4844 Q40.0469 -1.7969 39.9844 6.7812 Q34.2344 0 25.6406 0 Q14.9375 0 9.0781 7.7188 Q3.2188 15.4375 3.2188 26.2188 Q3.2188 33.6406 5.9062 39.9141 Q8.5938 46.1875 13.6953 49.6094 Q18.7969 53.0312 25.6875 53.0312 Q34.8594 53.0312 40.8281 45.6094 L40.8281 51.8594 L48.9219 51.8594 L48.9219 7.0312 Q48.9219 -5.0625 46.4609 -10.1172 Q44 -15.1719 38.6484 -18.1016 Q33.2969 -21.0312 25.4844 -21.0312 Q16.2188 -21.0312 10.5 -16.8594 Q4.7812 -12.6875 4.9844 -4.2812 ZM12.25 26.8594 Q12.25 16.6562 16.3047 11.9688 Q20.3594 7.2812 26.4688 7.2812 Q32.5156 7.2812 36.6172 11.9453 Q40.7188 16.6094 40.7188 26.5625 Q40.7188 36.0781 36.5 40.9141 Q32.2812 45.75 26.3125 45.75 Q20.4531 45.75 16.3516 40.9922 Q12.25 36.2344 12.25 26.8594 Z"
             /><glyph unicode="i" horiz-adv-x="22.216797" d="M6.6406 61.4688 L6.6406 71.5781 L15.4375 71.5781 L15.4375 61.4688 L6.6406 61.4688 ZM6.6406 0 L6.6406 51.8594 L15.4375 51.8594 L15.4375 0 L6.6406 0 Z"
@@ -60,23 +60,23 @@ RIQBIwNxgImBymDUwFEDB4OBoAxAVE75/380DEcNHMEGAgA9ZQUjAKh+SgAAAABJRU5ErkJggg==" xl
 RKiAkQETMDEQCQZQIcjdGJ75/39oegYAdDoFDw5zppEAAAAASUVORK5CYII=" xlink:type="simple" xlink:actuate="onLoad" height="10" id="testimage2" preserveAspectRatio="xMidYMid meet" xlink:show="embed"
         /></defs
         ><g class="testC1" transform="translate(0,20)"
-        ><rect width="80" x="0" height="80" y="0" class="testC2"
-          /><rect x="0" y="0" transform="translate(150,0) matrix(1,0,0.5,1,0,0)" width="80" class="testC3" height="80"
+        ><rect x="0" width="80" height="80" y="0" class="testC2"
+          /><rect x="0" width="80" height="80" y="0" class="testC3" transform="translate(150,0) matrix(1,0,0.5,1,0,0)"
         /></g
         ><g class="testC4" transform="matrix(1,0,0,1,0,20)"
-        ><text xml:space="preserve" x="10" y="100" class="testC5"
+        ><text x="10" xml:space="preserve" y="100" class="testC5"
           >Anchor matches texture image</text
-          ><rect x="0" y="0" transform="translate(0,120)" width="80" class="testC6" height="80"
-          /><rect x="0" y="0" transform="translate(150,120) matrix(1,0,0.5,1,0,0)" width="80" class="testC7" height="80"
+          ><rect x="0" width="80" height="80" y="0" class="testC6" transform="translate(0,120)"
+          /><rect x="0" width="80" height="80" y="0" class="testC7" transform="translate(150,120) matrix(1,0,0.5,1,0,0)"
         /></g
         ><g class="testC8" transform="matrix(1,0,0,1,0,140)"
-        ><text xml:space="preserve" x="10" y="100" class="testC9"
+        ><text x="10" xml:space="preserve" y="100" class="testC9"
           >Anchor offset to texture image center</text
-          ><rect x="0" y="0" transform="translate(0,120)" width="80" class="testC10" height="80"
-          /><rect x="0" y="0" transform="translate(150,120) matrix(1,0,0.5,1,0,0)" width="80" class="testC11" height="80"
+          ><rect x="0" width="80" height="80" y="0" class="testC10" transform="translate(0,120)"
+          /><rect x="0" width="80" height="80" y="0" class="testC11" transform="translate(150,120) matrix(1,0,0.5,1,0,0)"
         /></g
         ><g class="testC12" transform="matrix(1,0,0,1,0,260)"
-        ><text xml:space="preserve" x="10" y="100" class="testC13"
+        ><text x="10" xml:space="preserve" y="100" class="testC13"
           >Anchor half the size of texture</text
         ></g
       ></g

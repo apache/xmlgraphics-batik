@@ -132,7 +132,7 @@
       ><g
       ><defs id="testdefs1"
         ><font horiz-adv-x="75.0" id="testfont1"
-          ><font-face ascent="92.163086" descent="19.555664" units-per-em="100" font-family="Arial" font-style="normal" font-weight="normal"
+          ><font-face ascent="92.163086" font-style="normal" descent="19.555664" units-per-em="100" font-family="Arial" font-weight="normal"
             /><missing-glyph horiz-adv-x="75.0" d="M12.5 0 L12.5 62.5 L62.5 62.5 L62.5 0 L12.5 0 ZM14.0625 1.5625 L60.9375 1.5625 L60.9375 60.9375 L14.0625 60.9375 L14.0625 1.5625 Z"
             /><glyph unicode="a" horiz-adv-x="55.615234" d="M40.4375 6.3906 Q35.5469 2.25 31.0312 0.5469 Q26.5156 -1.1562 21.3438 -1.1562 Q12.7969 -1.1562 8.2031 3.0078 Q3.6094 7.1719 3.6094 13.6719 Q3.6094 17.4844 5.3438 20.6328 Q7.0781 23.7812 9.8906 25.6875 Q12.7031 27.5938 16.2188 28.5625 Q18.7969 29.25 24.0312 29.8906 Q34.6719 31.1562 39.7031 32.9062 Q39.75 34.7188 39.75 35.2031 Q39.75 40.5781 37.25 42.7812 Q33.8906 45.75 27.25 45.75 Q21.0469 45.75 18.0938 43.5781 Q15.1406 41.4062 13.7188 35.8906 L5.125 37.0625 Q6.2969 42.5781 8.9844 45.9688 Q11.6719 49.3594 16.75 51.1953 Q21.8281 53.0312 28.5156 53.0312 Q35.1562 53.0312 39.3047 51.4688 Q43.4531 49.9062 45.4062 47.5391 Q47.3594 45.1719 48.1406 41.5469 Q48.5781 39.3125 48.5781 33.4531 L48.5781 21.7344 Q48.5781 9.4688 49.1406 6.2266 Q49.7031 2.9844 51.375 0 L42.1875 0 Q40.8281 2.7344 40.4375 6.3906 ZM39.7031 26.0312 Q34.9062 24.0781 25.3438 22.7031 Q19.9219 21.9219 17.6797 20.9453 Q15.4375 19.9688 14.2109 18.0938 Q12.9844 16.2188 12.9844 13.9219 Q12.9844 10.4062 15.6484 8.0625 Q18.3125 5.7188 23.4375 5.7188 Q28.5156 5.7188 32.4688 7.9375 Q36.4219 10.1562 38.2812 14.0156 Q39.7031 17 39.7031 22.7969 L39.7031 26.0312 Z"
             /><glyph unicode="t" horiz-adv-x="27.783203" d="M25.7812 7.8594 L27.0469 0.0938 Q23.3438 -0.6719 20.4062 -0.6719 Q15.625 -0.6719 12.9922 0.8359 Q10.3594 2.3438 9.2812 4.8125 Q8.2031 7.2812 8.2031 15.1875 L8.2031 45.0156 L1.7656 45.0156 L1.7656 51.8594 L8.2031 51.8594 L8.2031 64.7031 L16.9375 69.9688 L16.9375 51.8594 L25.7812 51.8594 L25.7812 45.0156 L16.9375 45.0156 L16.9375 14.7031 Q16.9375 10.9375 17.4062 9.8672 Q17.875 8.7969 18.9219 8.1562 Q19.9688 7.5156 21.9219 7.5156 Q23.3906 7.5156 25.7812 7.8594 Z"
@@ -171,200 +171,200 @@
           /></font
         ></defs
         ><g class="testC1" transform="translate(20,20)"
-        ><text xml:space="preserve" x="-5" y="0" class="testC2"
+        ><text x="-5" xml:space="preserve" y="0" class="testC2"
           >Color Constants</text
-          ><text xml:space="preserve" x="10" y="3" class="testC3" transform="translate(0,20)"
+          ><text x="10" xml:space="preserve" y="3" class="testC3" transform="translate(0,20)"
           >black</text
-          ><rect x="-5" y="-5" transform="translate(0,20)" width="10" class="testC4" height="10"
-          /><rect x="-5" y="-5" transform="translate(0,20)" width="10" class="testC5" height="10"
-          /><text xml:space="preserve" x="10" y="3" class="testC6" transform="translate(0,40)"
+          ><rect x="-5" width="10" height="10" y="-5" class="testC4" transform="translate(0,20)"
+          /><rect x="-5" width="10" height="10" y="-5" class="testC5" transform="translate(0,20)"
+          /><text x="10" xml:space="preserve" y="3" class="testC6" transform="translate(0,40)"
           >blue</text
-          ><rect x="-5" y="-5" transform="translate(0,40)" width="10" class="testC7" height="10"
-          /><rect x="-5" y="-5" transform="translate(0,40)" width="10" class="testC8" height="10"
-          /><text xml:space="preserve" x="10" y="3" class="testC9" transform="translate(0,60)"
+          ><rect x="-5" width="10" height="10" y="-5" class="testC7" transform="translate(0,40)"
+          /><rect x="-5" width="10" height="10" y="-5" class="testC8" transform="translate(0,40)"
+          /><text x="10" xml:space="preserve" y="3" class="testC9" transform="translate(0,60)"
           >cyan</text
-          ><rect x="-5" y="-5" transform="translate(0,60)" width="10" class="testC10" height="10"
-          /><rect x="-5" y="-5" transform="translate(0,60)" width="10" class="testC11" height="10"
-          /><text xml:space="preserve" x="10" y="3" class="testC12" transform="translate(0,80)"
+          ><rect x="-5" width="10" height="10" y="-5" class="testC10" transform="translate(0,60)"
+          /><rect x="-5" width="10" height="10" y="-5" class="testC11" transform="translate(0,60)"
+          /><text x="10" xml:space="preserve" y="3" class="testC12" transform="translate(0,80)"
           >darkGray</text
-          ><rect x="-5" y="-5" transform="translate(0,80)" width="10" class="testC13" height="10"
-          /><rect x="-5" y="-5" transform="translate(0,80)" width="10" class="testC14" height="10"
-          /><text xml:space="preserve" x="10" y="3" class="testC15" transform="translate(0,100)"
+          ><rect x="-5" width="10" height="10" y="-5" class="testC13" transform="translate(0,80)"
+          /><rect x="-5" width="10" height="10" y="-5" class="testC14" transform="translate(0,80)"
+          /><text x="10" xml:space="preserve" y="3" class="testC15" transform="translate(0,100)"
           >gray</text
-          ><rect x="-5" y="-5" transform="translate(0,100)" width="10" class="testC16" height="10"
-          /><rect x="-5" y="-5" transform="translate(0,100)" width="10" class="testC17" height="10"
-          /><text xml:space="preserve" x="10" y="3" class="testC18" transform="translate(0,120)"
+          ><rect x="-5" width="10" height="10" y="-5" class="testC16" transform="translate(0,100)"
+          /><rect x="-5" width="10" height="10" y="-5" class="testC17" transform="translate(0,100)"
+          /><text x="10" xml:space="preserve" y="3" class="testC18" transform="translate(0,120)"
           >green</text
-          ><rect x="-5" y="-5" transform="translate(0,120)" width="10" class="testC19" height="10"
-          /><rect x="-5" y="-5" transform="translate(0,120)" width="10" class="testC20" height="10"
-          /><text xml:space="preserve" x="10" y="3" class="testC21" transform="translate(0,140)"
+          ><rect x="-5" width="10" height="10" y="-5" class="testC19" transform="translate(0,120)"
+          /><rect x="-5" width="10" height="10" y="-5" class="testC20" transform="translate(0,120)"
+          /><text x="10" xml:space="preserve" y="3" class="testC21" transform="translate(0,140)"
           >lightGray</text
-          ><rect x="-5" y="-5" transform="translate(0,140)" width="10" class="testC22" height="10"
-          /><rect x="-5" y="-5" transform="translate(0,140)" width="10" class="testC23" height="10"
-          /><text xml:space="preserve" x="10" y="3" class="testC24" transform="translate(0,160)"
+          ><rect x="-5" width="10" height="10" y="-5" class="testC22" transform="translate(0,140)"
+          /><rect x="-5" width="10" height="10" y="-5" class="testC23" transform="translate(0,140)"
+          /><text x="10" xml:space="preserve" y="3" class="testC24" transform="translate(0,160)"
           >magenta</text
-          ><rect x="-5" y="-5" transform="translate(0,160)" width="10" class="testC25" height="10"
-          /><rect x="-5" y="-5" transform="translate(0,160)" width="10" class="testC26" height="10"
-          /><text xml:space="preserve" x="10" y="3" class="testC27" transform="translate(0,180)"
+          ><rect x="-5" width="10" height="10" y="-5" class="testC25" transform="translate(0,160)"
+          /><rect x="-5" width="10" height="10" y="-5" class="testC26" transform="translate(0,160)"
+          /><text x="10" xml:space="preserve" y="3" class="testC27" transform="translate(0,180)"
           >orange</text
-          ><rect x="-5" y="-5" transform="translate(0,180)" width="10" class="testC28" height="10"
-          /><rect x="-5" y="-5" transform="translate(0,180)" width="10" class="testC29" height="10"
-          /><text xml:space="preserve" x="10" y="3" class="testC30" transform="translate(0,200)"
+          ><rect x="-5" width="10" height="10" y="-5" class="testC28" transform="translate(0,180)"
+          /><rect x="-5" width="10" height="10" y="-5" class="testC29" transform="translate(0,180)"
+          /><text x="10" xml:space="preserve" y="3" class="testC30" transform="translate(0,200)"
           >pink</text
-          ><rect x="-5" y="-5" transform="translate(0,200)" width="10" class="testC31" height="10"
-          /><rect x="-5" y="-5" transform="translate(0,200)" width="10" class="testC32" height="10"
-          /><text xml:space="preserve" x="10" y="3" class="testC33" transform="translate(0,220)"
+          ><rect x="-5" width="10" height="10" y="-5" class="testC31" transform="translate(0,200)"
+          /><rect x="-5" width="10" height="10" y="-5" class="testC32" transform="translate(0,200)"
+          /><text x="10" xml:space="preserve" y="3" class="testC33" transform="translate(0,220)"
           >red</text
-          ><rect x="-5" y="-5" transform="translate(0,220)" width="10" class="testC34" height="10"
-          /><rect x="-5" y="-5" transform="translate(0,220)" width="10" class="testC35" height="10"
-          /><text xml:space="preserve" x="10" y="3" class="testC36" transform="translate(0,240)"
+          ><rect x="-5" width="10" height="10" y="-5" class="testC34" transform="translate(0,220)"
+          /><rect x="-5" width="10" height="10" y="-5" class="testC35" transform="translate(0,220)"
+          /><text x="10" xml:space="preserve" y="3" class="testC36" transform="translate(0,240)"
           >white</text
-          ><rect x="-5" y="-5" transform="translate(0,240)" width="10" class="testC37" height="10"
-          /><rect x="-5" y="-5" transform="translate(0,240)" width="10" class="testC38" height="10"
-          /><text xml:space="preserve" x="10" y="3" class="testC39" transform="translate(0,260)"
+          ><rect x="-5" width="10" height="10" y="-5" class="testC37" transform="translate(0,240)"
+          /><rect x="-5" width="10" height="10" y="-5" class="testC38" transform="translate(0,240)"
+          /><text x="10" xml:space="preserve" y="3" class="testC39" transform="translate(0,260)"
           >yellow</text
-          ><rect x="-5" y="-5" transform="translate(0,260)" width="10" class="testC40" height="10"
-          /><rect x="-5" y="-5" transform="translate(0,260)" width="10" class="testC41" height="10"
+          ><rect x="-5" width="10" height="10" y="-5" class="testC40" transform="translate(0,260)"
+          /><rect x="-5" width="10" height="10" y="-5" class="testC41" transform="translate(0,260)"
         /></g
         ><g class="testC42" transform="translate(150,20)"
-        ><text xml:space="preserve" x="0" y="0" class="testC43"
+        ><text x="0" xml:space="preserve" y="0" class="testC43"
           >Various opacities</text
-          ><rect x="0" y="0" transform="translate(0,10)" width="40" class="testC44" height="260"
+          ><rect x="0" width="40" height="260" y="0" class="testC44" transform="translate(0,10)"
         /></g
         ><g class="testC45" transform="translate(150,30)"
-        ><rect width="40" x="0" height="13" y="0" class="testC46"
+        ><rect x="0" width="40" height="13" y="0" class="testC46"
         /></g
         ><g class="testC47" transform="translate(150,30)"
-        ><text xml:space="preserve" x="50" y="6" class="testC48"
+        ><text x="50" xml:space="preserve" y="6" class="testC48"
           >12</text
         ></g
         ><g class="testC49" transform="translate(150,43)"
-        ><rect width="40" x="0" height="13" y="0" class="testC50"
+        ><rect x="0" width="40" height="13" y="0" class="testC50"
         /></g
         ><g class="testC51" transform="translate(150,43)"
-        ><text xml:space="preserve" x="50" y="6" class="testC52"
+        ><text x="50" xml:space="preserve" y="6" class="testC52"
           >25</text
         ></g
         ><g class="testC53" transform="translate(150,56)"
-        ><rect width="40" x="0" height="13" y="0" class="testC54"
+        ><rect x="0" width="40" height="13" y="0" class="testC54"
         /></g
         ><g class="testC55" transform="translate(150,56)"
-        ><text xml:space="preserve" x="50" y="6" class="testC56"
+        ><text x="50" xml:space="preserve" y="6" class="testC56"
           >38</text
         ></g
         ><g class="testC57" transform="translate(150,69)"
-        ><rect width="40" x="0" height="13" y="0" class="testC58"
+        ><rect x="0" width="40" height="13" y="0" class="testC58"
         /></g
         ><g class="testC59" transform="translate(150,69)"
-        ><text xml:space="preserve" x="50" y="6" class="testC60"
+        ><text x="50" xml:space="preserve" y="6" class="testC60"
           >51</text
         ></g
         ><g class="testC61" transform="translate(150,82)"
-        ><rect width="40" x="0" height="13" y="0" class="testC62"
+        ><rect x="0" width="40" height="13" y="0" class="testC62"
         /></g
         ><g class="testC63" transform="translate(150,82)"
-        ><text xml:space="preserve" x="50" y="6" class="testC64"
+        ><text x="50" xml:space="preserve" y="6" class="testC64"
           >63</text
         ></g
         ><g class="testC65" transform="translate(150,95)"
-        ><rect width="40" x="0" height="13" y="0" class="testC66"
+        ><rect x="0" width="40" height="13" y="0" class="testC66"
         /></g
         ><g class="testC67" transform="translate(150,95)"
-        ><text xml:space="preserve" x="50" y="6" class="testC68"
+        ><text x="50" xml:space="preserve" y="6" class="testC68"
           >76</text
         ></g
         ><g class="testC69" transform="translate(150,108)"
-        ><rect width="40" x="0" height="13" y="0" class="testC70"
+        ><rect x="0" width="40" height="13" y="0" class="testC70"
         /></g
         ><g class="testC71" transform="translate(150,108)"
-        ><text xml:space="preserve" x="50" y="6" class="testC72"
+        ><text x="50" xml:space="preserve" y="6" class="testC72"
           >89</text
         ></g
         ><g class="testC73" transform="translate(150,121)"
-        ><rect width="40" x="0" height="13" y="0" class="testC74"
+        ><rect x="0" width="40" height="13" y="0" class="testC74"
         /></g
         ><g class="testC75" transform="translate(150,121)"
-        ><text xml:space="preserve" x="50" y="6" class="testC76"
+        ><text x="50" xml:space="preserve" y="6" class="testC76"
           >102</text
         ></g
         ><g class="testC77" transform="translate(150,134)"
-        ><rect width="40" x="0" height="13" y="0" class="testC78"
+        ><rect x="0" width="40" height="13" y="0" class="testC78"
         /></g
         ><g class="testC79" transform="translate(150,134)"
-        ><text xml:space="preserve" x="50" y="6" class="testC80"
+        ><text x="50" xml:space="preserve" y="6" class="testC80"
           >114</text
         ></g
         ><g class="testC81" transform="translate(150,147)"
-        ><rect width="40" x="0" height="13" y="0" class="testC82"
+        ><rect x="0" width="40" height="13" y="0" class="testC82"
         /></g
         ><g class="testC83" transform="translate(150,147)"
-        ><text xml:space="preserve" x="50" y="6" class="testC84"
+        ><text x="50" xml:space="preserve" y="6" class="testC84"
           >127</text
         ></g
         ><g class="testC85" transform="translate(150,160)"
-        ><rect width="40" x="0" height="13" y="0" class="testC86"
+        ><rect x="0" width="40" height="13" y="0" class="testC86"
         /></g
         ><g class="testC87" transform="translate(150,160)"
-        ><text xml:space="preserve" x="50" y="6" class="testC88"
+        ><text x="50" xml:space="preserve" y="6" class="testC88"
           >140</text
         ></g
         ><g class="testC89" transform="translate(150,173)"
-        ><rect width="40" x="0" height="13" y="0" class="testC90"
+        ><rect x="0" width="40" height="13" y="0" class="testC90"
         /></g
         ><g class="testC91" transform="translate(150,173)"
-        ><text xml:space="preserve" x="50" y="6" class="testC92"
+        ><text x="50" xml:space="preserve" y="6" class="testC92"
           >153</text
         ></g
         ><g class="testC93" transform="translate(150,186)"
-        ><rect width="40" x="0" height="13" y="0" class="testC94"
+        ><rect x="0" width="40" height="13" y="0" class="testC94"
         /></g
         ><g class="testC95" transform="translate(150,186)"
-        ><text xml:space="preserve" x="50" y="6" class="testC96"
+        ><text x="50" xml:space="preserve" y="6" class="testC96"
           >165</text
         ></g
         ><g class="testC97" transform="translate(150,199)"
-        ><rect width="40" x="0" height="13" y="0" class="testC98"
+        ><rect x="0" width="40" height="13" y="0" class="testC98"
         /></g
         ><g class="testC99" transform="translate(150,199)"
-        ><text xml:space="preserve" x="50" y="6" class="testC100"
+        ><text x="50" xml:space="preserve" y="6" class="testC100"
           >178</text
         ></g
         ><g class="testC101" transform="translate(150,212)"
-        ><rect width="40" x="0" height="13" y="0" class="testC102"
+        ><rect x="0" width="40" height="13" y="0" class="testC102"
         /></g
         ><g class="testC103" transform="translate(150,212)"
-        ><text xml:space="preserve" x="50" y="6" class="testC104"
+        ><text x="50" xml:space="preserve" y="6" class="testC104"
           >191</text
         ></g
         ><g class="testC105" transform="translate(150,225)"
-        ><rect width="40" x="0" height="13" y="0" class="testC106"
+        ><rect x="0" width="40" height="13" y="0" class="testC106"
         /></g
         ><g class="testC107" transform="translate(150,225)"
-        ><text xml:space="preserve" x="50" y="6" class="testC108"
+        ><text x="50" xml:space="preserve" y="6" class="testC108"
           >204</text
         ></g
         ><g class="testC109" transform="translate(150,238)"
-        ><rect width="40" x="0" height="13" y="0" class="testC110"
+        ><rect x="0" width="40" height="13" y="0" class="testC110"
         /></g
         ><g class="testC111" transform="translate(150,238)"
-        ><text xml:space="preserve" x="50" y="6" class="testC112"
+        ><text x="50" xml:space="preserve" y="6" class="testC112"
           >216</text
         ></g
         ><g class="testC113" transform="translate(150,251)"
-        ><rect width="40" x="0" height="13" y="0" class="testC114"
+        ><rect x="0" width="40" height="13" y="0" class="testC114"
         /></g
         ><g class="testC115" transform="translate(150,251)"
-        ><text xml:space="preserve" x="50" y="6" class="testC116"
+        ><text x="50" xml:space="preserve" y="6" class="testC116"
           >229</text
         ></g
         ><g class="testC117" transform="translate(150,264)"
-        ><rect width="40" x="0" height="13" y="0" class="testC118"
+        ><rect x="0" width="40" height="13" y="0" class="testC118"
         /></g
         ><g class="testC119" transform="translate(150,264)"
-        ><text xml:space="preserve" x="50" y="6" class="testC120"
+        ><text x="50" xml:space="preserve" y="6" class="testC120"
           >242</text
-          ><rect x="0" y="0" transform="translate(0,13)" width="40" class="testC121" height="13"
-          /><text xml:space="preserve" x="50" y="6" class="testC122" transform="translate(0,13)"
+          ><rect x="0" width="40" height="13" y="0" class="testC121" transform="translate(0,13)"
+          /><text x="50" xml:space="preserve" y="6" class="testC122" transform="translate(0,13)"
           >255</text
         ></g
       ></g

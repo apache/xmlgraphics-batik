@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2005  The Apache Software Foundation 
+   Copyright 2005-2006  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -19,8 +19,12 @@
 package org.apache.batik.transcoder.wmf.tosvg;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.awt.font.FontRenderContext;
+import java.awt.font.TextLayout;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
@@ -41,6 +45,13 @@ public class WMFHeaderProperties extends AbstractWMFReader {
     private int _bleft, _bright, _btop, _bbottom, _bwidth, _bheight;
     private int _ileft, _iright, _itop, _ibottom;    
     private float scale = 1f;
+    private int startX = 0;
+    private int startY = 0;    
+    private int currentHorizAlign = 0;
+    private int currentVertAlign = 0;  
+    private WMFFont wf = null;
+    private static final FontRenderContext fontCtx = 
+            new FontRenderContext(new AffineTransform(), false, true);    
     private transient boolean firstEffectivePaint = true; 
     public static final int PEN = 1;
     public static final int BRUSH = 2;
@@ -106,6 +117,8 @@ public class WMFHeaderProperties extends AbstractWMFReader {
         vpH = -1;
         vpX = 0;
         vpY = 0;
+        startX = 0;
+        startY = 0;        
         firstEffectivePaint = true;
     }    
     
@@ -124,11 +137,6 @@ public class WMFHeaderProperties extends AbstractWMFReader {
         int penObject = -1; // the last pen
         int fontObject = -1; // the last font 
         GdiObject gdiObj;
-        /* TODO : it is assumed that the previous Font creation before a textout
-         * corresponds to the next, which can be false
-         */
-        int lfWidth = 0; // for Font width        
-        int lfHeight = 0; // for Font height
         
         while (functionId > 0) {            
             recSize = readInt( is );
@@ -190,55 +198,138 @@ public class WMFHeaderProperties extends AbstractWMFReader {
                     } else
                         objIndex = addObjectAt(BRUSH, color, objIndex );
                 }
-                break;            
+                break; 
+                
+            case WMFConstants.META_SETTEXTALIGN:
+                    int align = readShort( is );
+                    // need to do this, because sometimes there is more than one short
+                    if (recSize > 1) for (int i = 1; i < recSize; i++) readShort( is );
+                    currentHorizAlign = WMFUtilities.getHorizontalAlignment(align);
+                    currentVertAlign = WMFUtilities.getVerticalAlignment(align);                        
+                    break;                                
 
             case WMFConstants.META_EXTTEXTOUT: {
                     int y = readShort( is );
                     int x = readShort( is );
-                    int lenText = readInt( is );
-                    int len = 2*(recSize-4);
-                    for (int i = 0 ; i < len; i++ ) is.readByte();
+                    int lenText = readShort( is );
+                    int flag = readShort( is );
+                    int read = 4; // used to track the actual size really read                   
+                    boolean clipped = false;
+                    int x1 = 0, y1 = 0, x2 = 0, y2 = 0;
+                    int len;
+                    // determination of clipping property
+                    if ((flag & WMFConstants.ETO_CLIPPED) != 0) {
+                        x1 =  readShort( is );
+                        y1 =  readShort( is );
+                        x2 =  readShort( is );
+                        y2 =  readShort( is );
+                        read += 4;
+                        clipped = true;
+                    }
+                    byte bstr[] = new byte[ lenText ];
+                    int i = 0;
+                    for ( ; i < lenText; i++ ) {
+                        bstr[ i ] = is.readByte();
+                    }
+                    String sr = WMFUtilities.decodeString(wf, bstr);                    
+                    
+                    read += (lenText + 1)/2;                    
+                    /* must do this because WMF strings always have an even number of bytes, even
+                     * if there is an odd number of characters
+                     */
+                    if (lenText % 2 != 0) is.readByte();
+                    // if the record was not completely read, finish reading
+                    if (read < recSize) for (int j = read; j < recSize; j++) readShort( is );
+                    TextLayout layout = new TextLayout( sr, wf.font, fontCtx );
+                    
+                    int lfWidth = (int)layout.getBounds().getWidth();
+                    x = (int)layout.getBounds().getX();   
+                    int lfHeight = 
+                        (int)getVerticalAlignmentValue(layout, currentVertAlign);
+                                    
                     resizeBounds(x, y);
-                    resizeBounds(x+lfWidth*lenText, y+lfHeight);
+                    resizeBounds(x+lfWidth, y+lfHeight);
                     firstEffectivePaint = false;
                 }
                 break;
-
+                
+            case WMFConstants.META_DRAWTEXT:
             case WMFConstants.META_TEXTOUT: {
                     int len = readShort( is );
-                    for ( int i = 0; i < len; i++ ) is.readByte();
-                    if (len % 2 != 0) is.readByte();                     
+                    int read = 1; // used to track the actual size really read
+                    byte bstr[] = new byte[ len ];
+                    for ( int i = 0; i < len; i++ ) {
+                        bstr[ i ] = is.readByte();
+                    }
+                    String sr = WMFUtilities.decodeString(wf, bstr);
+                    
+                    /* must do this because WMF strings always have an even number of bytes, even
+                     * if there is an odd number of characters
+                     */
+                    if (len % 2 != 0) is.readByte(); 
+                    read += (len + 1) / 2;
+                    
                     int y = readShort( is );
                     int x = readShort( is );
+                    read += 2;
+                    // if the record was not completely read, finish reading                    
+                    if (read < recSize) for (int j = read; j < recSize; j++) readShort( is );
+                    TextLayout layout = new TextLayout( sr, wf.font, fontCtx );
+                    int lfWidth = (int)layout.getBounds().getWidth();
+                    x = (int)layout.getBounds().getX();                                      
+                    int lfHeight = 
+                        (int)getVerticalAlignmentValue(layout, currentVertAlign);                    
+                    
                     resizeBounds(x, y);
-                    resizeBounds(x+lfWidth*len, y+lfHeight);
+                    resizeBounds(x+lfWidth, y+lfHeight);
                 }
                 break;
 
-
             case WMFConstants.META_CREATEFONTINDIRECT: {
-                // TODO : handle object creation for fonts, because font use can
-                // be done in a different order than font creation
-                    int objIndex = 0;
-                    lfHeight = readShort( is );
-                    lfWidth = readShort( is );
-                    readShort( is );
-                    readShort( is );
-                    readShort( is );
+                    int lfHeight = readShort( is );
+                    float size = (int)(scaleY * lfHeight);
+                    int lfWidth = readShort( is );
+                    int escape = (int)readShort( is );
+                    int orient = (int)readShort( is );
+                    int weight = (int)readShort( is );
 
-                    is.readByte();
-                    is.readByte();
-                    is.readByte();
-                    is.readByte();
-                    is.readByte();
-                    is.readByte();
-                    is.readByte();
-                    is.readByte();
-
-                    int len = (2*(recSize-9));
-                    for ( int i = 0; i < len; i++ ) is.readByte();
+                    int italic = (int)is.readByte();
+                    int underline = (int)is.readByte();
+                    int strikeOut = (int)is.readByte();
+                    int charset = (int)(is.readByte() & 0x00ff);
+                    int lfOutPrecision = is.readByte();
+                    int lfClipPrecision = is.readByte();
+                    int lfQuality = is.readByte();
+                    int lfPitchAndFamily = is.readByte();
                     
-                    objIndex = addObjectAt( FONT, new Boolean(true) , objIndex );                    
+                    int style = italic > 0 ? Font.ITALIC : Font.PLAIN;
+                    style |= (weight > 400) ? Font.BOLD : Font.PLAIN;                    
+
+                    // don't need to read the end of the record, 
+                    // because it will always be completely used
+                    int len = (2*(recSize-9));
+                    byte lfFaceName[] = new byte[ len ];
+                    byte ch;
+                    for ( int i = 0; i < len; i++ ) lfFaceName[ i ] = is.readByte();
+                    String face = new String( lfFaceName );
+
+                    // FIXED : management of font names
+                    int d = 0;
+                    while   ((d < face.length()) &&
+                    ((Character.isLetterOrDigit(face.charAt(d))) ||
+                    (Character.isWhitespace(face.charAt(d))))) d++;
+                    if (d > 0) face = face.substring(0,d);
+                    else face = "System";
+
+                    if ( size < 0 ) size = -size /* * -1.3 */;
+                    int objIndex = 0;
+
+                    Font f = new Font(face, style, (int)size);
+                    f = f.deriveFont(size);
+                    WMFFont wf = new WMFFont(f, charset, underline,
+                        strikeOut, italic, weight, orient, escape);
+                        
+                    objIndex = addObjectAt( FONT, wf , objIndex );                                                            
                 }
                 break;
                 
@@ -272,6 +363,7 @@ public class WMFHeaderProperties extends AbstractWMFReader {
                         brushObject = gdiIndex;
                         break;
                     case FONT: {
+                        this.wf =  ((WMFFont)gdiObj.obj);
                         fontObject = gdiIndex;
                         }
                         break;
@@ -293,12 +385,21 @@ public class WMFHeaderProperties extends AbstractWMFReader {
                     gdiObj.clear();
                     break;                
                 
-            case WMFConstants.META_LINETO:
-            case WMFConstants.META_MOVETO: {
+            case WMFConstants.META_LINETO: {
                     int y = readShort( is );
                     int x = readShort( is );
-                    if (penObject >= 0) resizeBounds(x, y);
-                    firstEffectivePaint = false;
+                    if (penObject >= 0) {
+                        resizeBounds(startX, startY);
+                        resizeBounds(x, y);                        
+                        firstEffectivePaint = false;                        
+                    }                    
+                    startX = x;
+                    startY = y;
+                }
+                break;                
+            case WMFConstants.META_MOVETO: {
+                    startY = readShort( is );
+                    startX = readShort( is );
                 }
                 break;
                 
@@ -360,7 +461,7 @@ public class WMFHeaderProperties extends AbstractWMFReader {
                     int right = readShort( is );
                     int top = readShort( is );
                     int left = readShort( is );
-                    Rectangle2D.Float rec = new Rectangle2D.Float(left, top, right-left, bottom-top);
+                    Rectangle2D.Float rec = new Rectangle2D.Float(left, top, right-left, bot-top);
                     paint(brushObject, penObject, rec);
                 }
                 break;
@@ -372,7 +473,7 @@ public class WMFHeaderProperties extends AbstractWMFReader {
                     int right = readShort( is );
                     int top = readShort( is );
                     int left = readShort( is ); 
-                    Rectangle2D.Float rec = new Rectangle2D.Float(left, top, right-left, bottom-top);
+                    Rectangle2D.Float rec = new Rectangle2D.Float(left, top, right-left, bot-top);
                     paint(brushObject, penObject, rec);
                 }
                 break;
@@ -388,7 +489,7 @@ public class WMFHeaderProperties extends AbstractWMFReader {
                     int right = readShort( is );
                     int top = readShort( is );
                     int left = readShort( is );
-                    Rectangle2D.Float rec = new Rectangle2D.Float(left, top, right-left, bottom-top);
+                    Rectangle2D.Float rec = new Rectangle2D.Float(left, top, right-left, bot-top);
                     paint(brushObject, penObject, rec);
                 }
                 break;
@@ -509,38 +610,30 @@ public class WMFHeaderProperties extends AbstractWMFReader {
      * width and height of the Metafile are kept.
      */
     private void resizeBounds(int x, int y) {
-        if ((x < right) && (x > left)) {
-            if (_bleft == -1) _bleft = x;
-            else if (x < _bleft) _bleft = x;
-            if (_bright == -1) _bright = x;
-            else if (x > _bright) _bright = x; 
-        }
-        
-        if ((y < bottom) && (y > top)) {
-            if (_btop == -1) _btop = y;
-            else if (y < _btop) _btop = y;
-            if (_bbottom == -1) _bbottom = y;
-            else if (y > _bbottom) _bbottom = y;      
-        }
+        if (_bleft == -1) _bleft = x;
+        else if (x < _bleft) _bleft = x;
+        if (_bright == -1) _bright = x;
+        else if (x > _bright) _bright = x;        
+
+        if (_btop == -1) _btop = y;
+        else if (y < _btop) _btop = y;
+        if (_bbottom == -1) _bbottom = y;
+        else if (y > _bbottom) _bbottom = y;                  
     }
     
     /** resize Bounds for each image primitive encountered. Only elements that are in the overall
      * width and height of the Metafile are kept.
      */
     private void resizeImageBounds(int x, int y) {
-        if ((x < right) && (x > left)) {
-            if (_ileft == -1) _ileft = x;
-            else if (x < _ileft) _ileft = x;
-            if (_iright == -1) _iright = x;
-            else if (x > _iright) _iright = x; 
-        }
-        
-        if ((y < bottom) && (y > top)) {
-            if (_itop == -1) _itop = y;
-            else if (y < _itop) _itop = y;
-            if (_ibottom == -1) _ibottom = y;
-            else if (y > _ibottom) _ibottom = y;      
-        }
+        if (_ileft == -1) _ileft = x;
+        else if (x < _ileft) _ileft = x;
+        if (_iright == -1) _iright = x;
+        else if (x > _iright) _iright = x;        
+
+        if (_itop == -1) _itop = y;
+        else if (y < _itop) _itop = y;
+        if (_ibottom == -1) _ibottom = y;
+        else if (y > _ibottom) _ibottom = y;                  
     }
         
     /** get the Color corresponding with the Object (pen or brush object).
@@ -595,5 +688,13 @@ public class WMFHeaderProperties extends AbstractWMFReader {
                 firstEffectivePaint = false; 
             }
         }
+    }  
+    
+    /** get the vertical Alignment value for the text.
+     */
+    private float getVerticalAlignmentValue(TextLayout layout, int vertAlign) { 
+        if (vertAlign == WMFConstants.TA_BASELINE) return -layout.getAscent();       
+        else if (vertAlign == WMFConstants.TA_TOP) return (layout.getAscent() + layout.getDescent()); 
+        else return 0;                                
     }        
 }

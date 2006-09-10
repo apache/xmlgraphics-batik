@@ -1277,6 +1277,8 @@ public class SVGGraphics2D extends AbstractGraphics2D
                             generatorCtx.doubleString(x));
         text.setAttributeNS(null, SVG_Y_ATTRIBUTE, 
                             generatorCtx.doubleString(y));
+        text.setAttributeNS(XML_NAMESPACE_URI, XML_SPACE_QNAME,
+                            XML_PRESERVE_VALUE);
         
         Font  baseFont  = getFont();
         Paint basePaint = getPaint();
