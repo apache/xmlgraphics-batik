@@ -522,9 +522,11 @@ public class WMFPainter extends AbstractWMFPainter {
                     break;
                     
                 case WMFConstants.META_SETTEXTALIGN:
-                    currentAlign = 
-                        getHorizontalAlignement((int)mr.ElementAt( 0 ).intValue());
-                    break;                
+                    currentHorizAlign = 
+                            WMFUtilities.getHorizontalAlignment((int)mr.ElementAt( 0 ).intValue());
+                    currentVertAlign = 
+                            WMFUtilities.getVerticalAlignment((int)mr.ElementAt( 0 ).intValue());                        
+                    break;
                     
                 case WMFConstants.META_SETTEXTCOLOR:
                     frgdColor = new Color( (int)mr.ElementAt( 0 ).intValue(),
@@ -544,7 +546,7 @@ public class WMFPainter extends AbstractWMFPainter {
                     try {
                         float x, y;
                         byte[] bstr = ((MetaRecord.ByteRecord)mr).bstr;
-                        String sr = decodeString(bstr);
+                        String sr = WMFUtilities.decodeString(wmfFont, bstr);
 
                         x = scaleX * ( vpX + (float)(xOffset + mr.ElementAt( 0 ).intValue()));
                         y = scaleY * ( vpY + (float)(yOffset + mr.ElementAt( 1 ).intValue()));
@@ -556,7 +558,6 @@ public class WMFPainter extends AbstractWMFPainter {
                         Point2D.Double pen = new Point2D.Double( 0, 0 );
                         GeneralPath gp = new GeneralPath( GeneralPath.WIND_NON_ZERO );
                         TextLayout layout = new TextLayout( sr, g2d.getFont(), frc );
-                        pen.y += layout.getAscent();
                         
                         int flag = mr.ElementAt( 2 ).intValue();
                         int x1 = 0, y1 = 0, x2 = 0, y2 = 0;
@@ -574,9 +575,11 @@ public class WMFPainter extends AbstractWMFPainter {
                         }
                         
                         firstEffectivePaint = false; 
+                        y += getVerticalAlignmentValue(layout, currentVertAlign);                        
+                        
                         drawString(flag, g2d, 
-                            getCharacterIterator(g2d, sr, wmfFont, currentAlign), x, y, layout, 
-                            wmfFont, currentAlign);
+                            getCharacterIterator(g2d, sr, wmfFont, currentHorizAlign), 
+                            x, y, layout, wmfFont, currentHorizAlign);
                         if (clipped) g2d.setClip(clip);
                     } catch ( Exception e ) {
                     }          
@@ -587,7 +590,7 @@ public class WMFPainter extends AbstractWMFPainter {
                     try {
                         float x, y;
                         byte[] bstr = ((MetaRecord.ByteRecord)mr).bstr;
-                        String sr = decodeString(bstr);
+                        String sr = WMFUtilities.decodeString(wmfFont, bstr);
 
                         x = scaleX * ( vpX + (float)(xOffset + mr.ElementAt( 0 ).intValue()));
                         y = scaleY * ( vpY + (float)(yOffset + mr.ElementAt( 1 ).intValue()));
@@ -600,12 +603,12 @@ public class WMFPainter extends AbstractWMFPainter {
                         GeneralPath gp = new GeneralPath( GeneralPath.WIND_NON_ZERO );
                         TextLayout layout = new TextLayout( sr, g2d.getFont(), frc );
                         
-                        pen.y += layout.getAscent();
-                        firstEffectivePaint = false;                         
+                        firstEffectivePaint = false; 
+                        y += getVerticalAlignmentValue(layout, currentVertAlign);
                         
                         drawString(-1, g2d, 
                             getCharacterIterator(g2d, sr, wmfFont), 
-                            x, y, layout, wmfFont, currentAlign);
+                            x, y, layout, wmfFont, currentHorizAlign);
                     } catch ( Exception e ) {
                     }
                     break;
@@ -1091,6 +1094,12 @@ public class WMFPainter extends AbstractWMFPainter {
                 firstEffectivePaint = false;
             }
         } 
+    }  
+    
+    private float getVerticalAlignmentValue(TextLayout layout, int vertAlign) {
+        if (vertAlign == WMFConstants.TA_BOTTOM) return -layout.getDescent();       
+        else if (vertAlign == WMFConstants.TA_TOP) return layout.getAscent(); 
+        else return 0;                        
     }    
 
     /**

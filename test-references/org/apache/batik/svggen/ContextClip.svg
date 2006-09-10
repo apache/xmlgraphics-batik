@@ -42,7 +42,7 @@
           ><path d="M200 50 C200 77.6143 155.2285 100 100 100 C44.7715 100 0 77.6143 0 50 C0 22.3857 44.7715 0 100 0 C155.2285 0 200 22.3857 200 50 Z"
           /></clipPath
           ><font horiz-adv-x="75.0" id="testfont1"
-          ><font-face ascent="92.163086" descent="19.555664" units-per-em="100" font-family="Arial" font-style="normal" font-weight="normal"
+          ><font-face ascent="92.163086" font-style="normal" descent="19.555664" units-per-em="100" font-family="Arial" font-weight="normal"
             /><missing-glyph horiz-adv-x="75.0" d="M12.5 0 L12.5 62.5 L62.5 62.5 L62.5 0 L12.5 0 ZM14.0625 1.5625 L60.9375 1.5625 L60.9375 60.9375 L14.0625 60.9375 L14.0625 1.5625 Z"
             /><glyph unicode="n" horiz-adv-x="55.615234" d="M6.5938 0 L6.5938 51.8594 L14.5 51.8594 L14.5 44.4844 Q20.2188 53.0312 31 53.0312 Q35.6875 53.0312 39.625 51.3438 Q43.5625 49.6562 45.5156 46.9219 Q47.4688 44.1875 48.25 40.4375 Q48.7344 37.9844 48.7344 31.8906 L48.7344 0 L39.9375 0 L39.9375 31.5469 Q39.9375 36.9219 38.9141 39.5781 Q37.8906 42.2344 35.2812 43.8203 Q32.6719 45.4062 29.1562 45.4062 Q23.5312 45.4062 19.4531 41.8438 Q15.375 38.2812 15.375 28.3281 L15.375 0 L6.5938 0 Z"
             /><glyph unicode="u" horiz-adv-x="55.615234" d="M40.5781 0 L40.5781 7.625 Q34.5156 -1.1562 24.125 -1.1562 Q19.5312 -1.1562 15.5547 0.5938 Q11.5781 2.3438 9.6484 5.0078 Q7.7188 7.6719 6.9375 11.5312 Q6.3906 14.1094 6.3906 19.7344 L6.3906 51.8594 L15.1875 51.8594 L15.1875 23.0938 Q15.1875 16.2188 15.7188 13.8125 Q16.5469 10.3594 19.2344 8.375 Q21.9219 6.3906 25.875 6.3906 Q29.8281 6.3906 33.2969 8.4219 Q36.7656 10.4531 38.2109 13.9453 Q39.6562 17.4375 39.6562 24.0781 L39.6562 51.8594 L48.4375 51.8594 L48.4375 0 L40.5781 0 Z"
@@ -77,38 +77,38 @@ ASIgAgJEQIBos0n5k0v5lHMhQAQEiIAAERAgAgJEQAQEiIAAERAgAgJEQAQEiIAA
 0W4PbEgEZMeFA8QAAAAASUVORK5CYII=" xlink:type="simple" xlink:actuate="onLoad" height="50" id="testimage1" preserveAspectRatio="xMidYMid meet" xlink:show="embed"
         /></defs
         ><g class="testC1"
-        ><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC2" xlink:actuate="onLoad" xlink:show="embed"
-          /><text xml:space="preserve" x="110" y="25" class="testC3"
+        ><use xlink:actuate="onLoad" xlink:type="simple" xlink:show="embed" class="testC2" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1"
+          /><text x="110" xml:space="preserve" y="25" class="testC3"
           >Clip set to device bounds</text
-          ><text xml:space="preserve" x="110" y="25" class="testC4" transform="translate(0,70)"
+          ><text x="110" xml:space="preserve" y="25" class="testC4" transform="translate(0,70)"
           >Clip set to upper right quarter</text
-          ><use transform="translate(0,70)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC5" xlink:actuate="onLoad" xlink:show="embed"
+          ><use transform="translate(0,70)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" xlink:actuate="onLoad" class="testC5" xlink:show="embed"
         /></g
         ><g class="testC6" transform="translate(0,140)"
-        ><text xml:space="preserve" x="110" y="15" class="testC7"
+        ><text x="110" xml:space="preserve" y="15" class="testC7"
           >Clip set to upper right quarter</text
-          ><text xml:space="preserve" x="110" y="30" class="testC8"
+          ><text x="110" xml:space="preserve" y="30" class="testC8"
           >after .5 scale</text
-          ><use transform="scale(0.5,0.5)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC9" xlink:actuate="onLoad" xlink:show="embed"
+          ><use transform="scale(0.5,0.5)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" xlink:actuate="onLoad" class="testC9" xlink:show="embed"
         /></g
         ><g class="testC10" transform="translate(0,210)"
-        ><text xml:space="preserve" x="110" y="25" class="testC11"
+        ><text x="110" xml:space="preserve" y="25" class="testC11"
           >Non-Rectagular clip</text
-          ><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC12" xlink:actuate="onLoad" xlink:show="embed"
+          ><use xlink:actuate="onLoad" xlink:type="simple" xlink:show="embed" class="testC12" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1"
         /></g
         ><g class="testC13" transform="translate(0,280)"
-        ><text xml:space="preserve" x="110" y="15" class="testC14"
+        ><text x="110" xml:space="preserve" y="15" class="testC14"
           >Non-Rectagular clip after</text
-          ><text xml:space="preserve" x="110" y="30" class="testC15"
+          ><text x="110" xml:space="preserve" y="30" class="testC15"
           >.5 scale</text
-          ><use transform="scale(0.5,0.5)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC16" xlink:actuate="onLoad" xlink:show="embed"
+          ><use transform="scale(0.5,0.5)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" xlink:actuate="onLoad" class="testC16" xlink:show="embed"
         /></g
         ><g class="testC17" transform="translate(0,350)"
-        ><text xml:space="preserve" x="110" y="15" class="testC18"
+        ><text x="110" xml:space="preserve" y="15" class="testC18"
           >Non-Rectagular clip before</text
-          ><text xml:space="preserve" x="110" y="30" class="testC19"
+          ><text x="110" xml:space="preserve" y="30" class="testC19"
           >.5 scale</text
-          ><use transform="scale(0.5,0.5)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC20" xlink:actuate="onLoad" xlink:show="embed"
+          ><use transform="scale(0.5,0.5)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" xlink:actuate="onLoad" class="testC20" xlink:show="embed"
         /></g
       ></g
     ></g

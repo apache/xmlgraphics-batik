@@ -23,11 +23,11 @@
           ><stop stop-opacity="1" stop-color="red" offset="0%"
             /><stop stop-opacity="1" stop-color="yellow" offset="100%"
           /></linearGradient
-          ><pattern x="10" y="20" width="20" xmlns:xlink="http://www.w3.org/1999/xlink" patternUnits="userSpaceOnUse" xlink:type="simple" xlink:actuate="onLoad" id="testpattern1" height="20" preserveAspectRatio="xMidYMid meet" xlink:show="other"
-          ><use xlink:type="simple" xlink:actuate="onLoad" xlink:show="embed" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1"
+          ><pattern x="10" y="20" width="20" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" patternUnits="userSpaceOnUse" xlink:actuate="onLoad" id="testpattern1" height="20" preserveAspectRatio="xMidYMid meet" xlink:show="other"
+          ><use xlink:actuate="onLoad" xlink:type="simple" xlink:show="embed" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1"
           /></pattern
           ><font horiz-adv-x="75.0" id="testfont1"
-          ><font-face ascent="92.163086" descent="19.555664" units-per-em="100" font-family="Arial" font-style="normal" font-weight="normal"
+          ><font-face ascent="92.163086" font-style="normal" descent="19.555664" units-per-em="100" font-family="Arial" font-weight="normal"
             /><missing-glyph horiz-adv-x="75.0" d="M12.5 0 L12.5 62.5 L62.5 62.5 L62.5 0 L12.5 0 ZM14.0625 1.5625 L60.9375 1.5625 L60.9375 60.9375 L14.0625 60.9375 L14.0625 1.5625 Z"
             /><glyph unicode="k" horiz-adv-x="50.0" d="M6.6406 0 L6.6406 71.5781 L15.4375 71.5781 L15.4375 30.7656 L36.2344 51.8594 L47.6094 51.8594 L27.7812 32.625 L49.6094 0 L38.7656 0 L21.625 26.5156 L15.4375 20.5625 L15.4375 0 L6.6406 0 Z"
             /><glyph unicode="c" horiz-adv-x="50.0" d="M40.4375 19 L49.0781 17.875 Q47.6562 8.9375 41.8203 3.8906 Q35.9844 -1.1562 27.4844 -1.1562 Q16.8438 -1.1562 10.375 5.7969 Q3.9062 12.75 3.9062 25.7344 Q3.9062 34.125 6.6875 40.4297 Q9.4688 46.7344 15.1562 49.8828 Q20.8438 53.0312 27.5469 53.0312 Q35.9844 53.0312 41.3594 48.7578 Q46.7344 44.4844 48.25 36.625 L39.7031 35.2969 Q38.4844 40.5312 35.3828 43.1641 Q32.2812 45.7969 27.875 45.7969 Q21.2344 45.7969 17.0859 41.0391 Q12.9375 36.2812 12.9375 25.9844 Q12.9375 15.5312 16.9453 10.7969 Q20.9531 6.0625 27.3906 6.0625 Q32.5625 6.0625 36.0312 9.2344 Q39.5 12.4062 40.4375 19 Z"
@@ -61,21 +61,21 @@
 RIQBIwNxgImBymDUwFEDB4OBoAxAVE75/380DEcNHMEGAgA9ZQUjAKh+SgAAAABJRU5ErkJggg==" xlink:type="simple" xlink:actuate="onLoad" height="20" id="testimage1" preserveAspectRatio="xMidYMid meet" xlink:show="embed"
         /></defs
         ><g class="testC1" transform="translate(0,30)"
-        ><text xml:space="preserve" x="10" y="10" class="testC2"
+        ><text x="10" xml:space="preserve" y="10" class="testC2"
           >Semi transparent black</text
-          ><text xml:space="preserve" x="40" y="60" class="testC3"
+          ><text x="40" xml:space="preserve" y="60" class="testC3"
           >Behind Rectangle</text
         ></g
         ><g class="testC4" transform="translate(0,30)"
-        ><rect width="100" x="10" height="60" y="20" class="testC5"
+        ><rect x="10" width="100" height="60" y="20" class="testC5"
         /></g
         ><g class="testC6" transform="translate(0,120)"
-        ><text xml:space="preserve" x="10" y="10" class="testC7"
+        ><text x="10" xml:space="preserve" y="10" class="testC7"
           >Red to Yellow linear gradient</text
-          ><rect width="100" x="10" height="60" y="20" class="testC8"
-          /><text xml:space="preserve" x="10" y="10" class="testC9" transform="translate(0,90)"
+          ><rect x="10" width="100" height="60" y="20" class="testC8"
+          /><text x="10" xml:space="preserve" y="10" class="testC9" transform="translate(0,90)"
           >Texture Paint</text
-          ><rect x="10" y="20" transform="translate(0,90)" width="100" class="testC10" height="60"
+          ><rect x="10" width="100" height="60" y="20" class="testC10" transform="translate(0,90)"
         /></g
       ></g
     ></g

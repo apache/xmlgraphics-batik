@@ -38,7 +38,7 @@
       ><g
       ><defs id="testdefs1"
         ><font horiz-adv-x="75.0" id="testfont1"
-          ><font-face ascent="92.163086" descent="19.555664" units-per-em="100" font-family="Arial" font-style="normal" font-weight="normal"
+          ><font-face ascent="92.163086" font-style="normal" descent="19.555664" units-per-em="100" font-family="Arial" font-weight="normal"
             /><missing-glyph horiz-adv-x="75.0" d="M12.5 0 L12.5 62.5 L62.5 62.5 L62.5 0 L12.5 0 ZM14.0625 1.5625 L60.9375 1.5625 L60.9375 60.9375 L14.0625 60.9375 L14.0625 1.5625 Z"
             /><glyph unicode="h" horiz-adv-x="55.615234" d="M6.5938 0 L6.5938 71.5781 L15.375 71.5781 L15.375 45.9062 Q21.5312 53.0312 30.9062 53.0312 Q36.6719 53.0312 40.9219 50.7578 Q45.1719 48.4844 47 44.4844 Q48.8281 40.4844 48.8281 32.8594 L48.8281 0 L40.0469 0 L40.0469 32.8594 Q40.0469 39.4531 37.1875 42.4531 Q34.3281 45.4531 29.1094 45.4531 Q25.2031 45.4531 21.7578 43.4297 Q18.3125 41.4062 16.8438 37.9375 Q15.375 34.4688 15.375 28.375 L15.375 0 L6.5938 0 Z"
             /><glyph unicode="t" horiz-adv-x="27.783203" d="M25.7812 7.8594 L27.0469 0.0938 Q23.3438 -0.6719 20.4062 -0.6719 Q15.625 -0.6719 12.9922 0.8359 Q10.3594 2.3438 9.2812 4.8125 Q8.2031 7.2812 8.2031 15.1875 L8.2031 45.0156 L1.7656 45.0156 L1.7656 51.8594 L8.2031 51.8594 L8.2031 64.7031 L16.9375 69.9688 L16.9375 51.8594 L25.7812 51.8594 L25.7812 45.0156 L16.9375 45.0156 L16.9375 14.7031 Q16.9375 10.9375 17.4062 9.8672 Q17.875 8.7969 18.9219 8.1562 Q19.9688 7.5156 21.9219 7.5156 Q23.3906 7.5156 25.7812 7.8594 Z"
@@ -63,43 +63,43 @@
           /></font
         ></defs
         ><g class="testC1"
-        ><text xml:space="preserve" x="10" y="10" class="testC2"
+        ><text x="10" xml:space="preserve" y="10" class="testC2"
           >Varying width</text
           ><line y2="80" x1="10" class="testC3" x2="10" y1="30"
-          /><line transform="translate(20,0)" x1="10" x2="10" y1="30" y2="80" class="testC4"
-          /><line transform="translate(40,0)" x1="10" x2="10" y1="30" y2="80" class="testC5"
-          /><line transform="translate(60,0)" x1="10" x2="10" y1="30" y2="80" class="testC6"
+          /><line y2="80" x1="10" class="testC4" x2="10" transform="translate(20,0)" y1="30"
+          /><line y2="80" x1="10" class="testC5" x2="10" transform="translate(40,0)" y1="30"
+          /><line y2="80" x1="10" class="testC6" x2="10" transform="translate(60,0)" y1="30"
         /></g
         ><g class="testC7" transform="translate(0,120)"
-        ><text xml:space="preserve" x="10" y="10" class="testC8"
+        ><text x="10" xml:space="preserve" y="10" class="testC8"
           >Varying end caps</text
           ><line y2="80" x1="15" class="testC9" x2="15" y1="30"
-          /><line transform="translate(30,0)" x1="15" x2="15" y1="30" y2="80" class="testC10"
-          /><line transform="translate(60,0)" x1="15" x2="15" y1="30" y2="80" class="testC11"
+          /><line y2="80" x1="15" class="testC10" x2="15" transform="translate(30,0)" y1="30"
+          /><line y2="80" x1="15" class="testC11" x2="15" transform="translate(60,0)" y1="30"
         /></g
         ><g class="testC12" transform="translate(0,240)"
-        ><text xml:space="preserve" x="10" y="10" class="testC13"
+        ><text x="10" xml:space="preserve" y="10" class="testC13"
           >Varying line joins</text
-          ><path d="M0 60 L10 20 L20 60" class="testC14" transform="translate(20,20)"
-          /><path d="M0 60 L10 20 L20 60" class="testC15" transform="translate(55,20)"
-          /><path d="M0 60 L10 20 L20 60" class="testC16" transform="translate(90,20)"
+          ><path class="testC14" d="M0 60 L10 20 L20 60" transform="translate(20,20)"
+          /><path class="testC15" d="M0 60 L10 20 L20 60" transform="translate(55,20)"
+          /><path class="testC16" d="M0 60 L10 20 L20 60" transform="translate(90,20)"
         /></g
         ><g class="testC17" transform="translate(150,120)"
-        ><text xml:space="preserve" x="10" y="10" class="testC18"
+        ><text x="10" xml:space="preserve" y="10" class="testC18"
           >Varying miter limit</text
-          ><path d="M0 0 L30 0 L30 60 L0 30" class="testC19" transform="translate(10,30)"
-          /><path d="M0 0 L30 0 L30 60 L0 30" class="testC20" transform="translate(50,30)"
-          /><path d="M0 0 L30 0 L30 60 L0 30" class="testC21" transform="translate(90,30)"
+          ><path class="testC19" d="M0 0 L30 0 L30 60 L0 30" transform="translate(10,30)"
+          /><path class="testC20" d="M0 0 L30 0 L30 60 L0 30" transform="translate(50,30)"
+          /><path class="testC21" d="M0 0 L30 0 L30 60 L0 30" transform="translate(90,30)"
         /></g
         ><g class="testC22" transform="translate(150,0)"
-        ><text xml:space="preserve" x="10" y="10" class="testC23"
+        ><text x="10" xml:space="preserve" y="10" class="testC23"
           >Varying dash patterns</text
         ></g
         ><g class="testC24" transform="translate(170,0)"
         ><line y2="80" x1="10" class="testC25" x2="10" y1="20"
-          /><line transform="translate(20,0)" x1="10" x2="10" y1="20" y2="80" class="testC26"
-          /><line transform="translate(40,0)" x1="10" x2="10" y1="20" y2="80" class="testC27"
-          /><line transform="translate(60,0)" x1="10" x2="10" y1="20" y2="80" class="testC28"
+          /><line y2="80" x1="10" class="testC26" x2="10" transform="translate(20,0)" y1="20"
+          /><line y2="80" x1="10" class="testC27" x2="10" transform="translate(40,0)" y1="20"
+          /><line y2="80" x1="10" class="testC28" x2="10" transform="translate(60,0)" y1="20"
         /></g
       ></g
     ></g

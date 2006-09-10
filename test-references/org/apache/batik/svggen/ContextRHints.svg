@@ -22,7 +22,7 @@
       ><g
       ><defs id="testdefs1"
         ><font horiz-adv-x="75.0" id="testfont1"
-          ><font-face ascent="92.163086" descent="19.555664" units-per-em="100" font-family="Arial" font-style="normal" font-weight="normal"
+          ><font-face ascent="92.163086" font-style="normal" descent="19.555664" units-per-em="100" font-family="Arial" font-weight="normal"
             /><missing-glyph horiz-adv-x="75.0" d="M12.5 0 L12.5 62.5 L62.5 62.5 L62.5 0 L12.5 0 ZM14.0625 1.5625 L60.9375 1.5625 L60.9375 60.9375 L14.0625 60.9375 L14.0625 1.5625 Z"
             /><glyph unicode="g" horiz-adv-x="55.615234" d="M4.9844 -4.2812 L13.5312 -5.5469 Q14.0625 -9.5 16.5 -11.3125 Q19.7812 -13.75 25.4375 -13.75 Q31.5469 -13.75 34.8672 -11.3125 Q38.1875 -8.875 39.3594 -4.4844 Q40.0469 -1.7969 39.9844 6.7812 Q34.2344 0 25.6406 0 Q14.9375 0 9.0781 7.7188 Q3.2188 15.4375 3.2188 26.2188 Q3.2188 33.6406 5.9062 39.9141 Q8.5938 46.1875 13.6953 49.6094 Q18.7969 53.0312 25.6875 53.0312 Q34.8594 53.0312 40.8281 45.6094 L40.8281 51.8594 L48.9219 51.8594 L48.9219 7.0312 Q48.9219 -5.0625 46.4609 -10.1172 Q44 -15.1719 38.6484 -18.1016 Q33.2969 -21.0312 25.4844 -21.0312 Q16.2188 -21.0312 10.5 -16.8594 Q4.7812 -12.6875 4.9844 -4.2812 ZM12.25 26.8594 Q12.25 16.6562 16.3047 11.9688 Q20.3594 7.2812 26.4688 7.2812 Q32.5156 7.2812 36.6172 11.9453 Q40.7188 16.6094 40.7188 26.5625 Q40.7188 36.0781 36.5 40.9141 Q32.2812 45.75 26.3125 45.75 Q20.4531 45.75 16.3516 40.9922 Q12.25 36.2344 12.25 26.8594 Z"
             /><glyph unicode="s" horiz-adv-x="50.0" d="M3.0781 15.4844 L11.7656 16.8438 Q12.5 11.625 15.8438 8.8438 Q19.1875 6.0625 25.2031 6.0625 Q31.25 6.0625 34.1797 8.5234 Q37.1094 10.9844 37.1094 14.3125 Q37.1094 17.2812 34.5156 19 Q32.7188 20.1719 25.5312 21.9688 Q15.875 24.4219 12.1406 26.2031 Q8.4062 27.9844 6.4766 31.1328 Q4.5469 34.2812 4.5469 38.0938 Q4.5469 41.5469 6.1328 44.5078 Q7.7188 47.4688 10.4531 49.4219 Q12.5 50.9219 16.0391 51.9766 Q19.5781 53.0312 23.6406 53.0312 Q29.7344 53.0312 34.3516 51.2734 Q38.9688 49.5156 41.1641 46.5078 Q43.3594 43.5 44.1875 38.4844 L35.5938 37.3125 Q35.0156 41.3125 32.2031 43.5547 Q29.3906 45.7969 24.2656 45.7969 Q18.2188 45.7969 15.625 43.7969 Q13.0312 41.7969 13.0312 39.1094 Q13.0312 37.4062 14.1094 36.0312 Q15.1875 34.625 17.4844 33.6875 Q18.7969 33.2031 25.25 31.4531 Q34.5781 28.9531 38.2578 27.3672 Q41.9375 25.7812 44.0391 22.7578 Q46.1406 19.7344 46.1406 15.2344 Q46.1406 10.8438 43.5781 6.9609 Q41.0156 3.0781 36.1797 0.9609 Q31.3438 -1.1562 25.25 -1.1562 Q15.1406 -1.1562 9.8438 3.0391 Q4.5469 7.2344 3.0781 15.4844 Z"
@@ -49,7 +49,7 @@
             /><glyph unicode="I" horiz-adv-x="27.783203" d="M9.3281 0 L9.3281 71.5781 L18.7969 71.5781 L18.7969 0 L9.3281 0 Z"
           /></font
           ><font horiz-adv-x="75.0" id="testfont2"
-          ><font-face ascent="100.87891" descent="21.09375" units-per-em="100" font-family="Impact" font-style="normal" font-weight="normal"
+          ><font-face ascent="100.87891" font-style="normal" descent="21.09375" units-per-em="100" font-family="Impact" font-weight="normal"
             /><missing-glyph horiz-adv-x="75.0" d="M12.5 0 L12.5 62.5 L62.5 62.5 L62.5 0 L12.5 0 ZM14.0625 1.5625 L60.9375 1.5625 L60.9375 60.9375 L14.0625 60.9375 L14.0625 1.5625 Z"
             /><glyph unicode="d" horiz-adv-x="51.953125" d="M48.3906 79.0469 L48.3906 0 L28.6562 0 L28.6562 4.6875 Q25.8281 1.7656 22.7031 0.3047 Q19.5781 -1.1562 16.1562 -1.1562 Q11.5781 -1.1562 8.2031 1.25 Q4.8281 3.6562 3.8828 6.8359 Q2.9375 10.0156 2.9375 17.1875 L2.9375 47.5156 Q2.9375 54.9844 3.8828 58.1094 Q4.8281 61.2344 8.25 63.6016 Q11.6719 65.9688 16.4062 65.9688 Q20.0625 65.9688 23.1172 64.6484 Q26.1719 63.3281 28.6562 60.6875 L28.6562 79.0469 L48.3906 79.0469 ZM28.6562 48.4844 Q28.6562 52.0469 28.0469 53.2734 Q27.4375 54.5 25.6406 54.5 Q23.875 54.5 23.2656 53.3984 Q22.6562 52.2969 22.6562 48.4844 L22.6562 16.75 Q22.6562 12.7969 23.2422 11.5469 Q23.8281 10.2969 25.4844 10.2969 Q27.3906 10.2969 28.0234 11.6953 Q28.6562 13.0938 28.6562 18.5 L28.6562 48.4844 Z"
             /><glyph unicode="e" horiz-adv-x="51.123047" d="M48.1875 31.25 L22.6562 31.25 L22.6562 17.2344 Q22.6562 12.8438 23.2891 11.5703 Q23.9219 10.2969 25.7344 10.2969 Q27.9844 10.2969 28.7422 11.9844 Q29.5 13.6719 29.5 18.5 L29.5 27.0469 L48.1875 27.0469 L48.1875 22.2656 Q48.1875 16.2656 47.4375 13.0391 Q46.6875 9.8125 43.8984 6.1484 Q41.1094 2.4844 36.8359 0.6641 Q32.5625 -1.1562 26.125 -1.1562 Q19.875 -1.1562 15.0859 0.6406 Q10.2969 2.4375 7.6406 5.5859 Q4.9844 8.7344 3.9609 12.5234 Q2.9375 16.3125 2.9375 23.5312 L2.9375 42.4375 Q2.9375 50.9219 5.2266 55.8359 Q7.5156 60.75 12.7422 63.3594 Q17.9688 65.9688 24.75 65.9688 Q33.0625 65.9688 38.4531 62.8203 Q43.8438 59.6719 46.0156 54.4688 Q48.1875 49.2656 48.1875 39.8438 L48.1875 31.25 ZM28.4219 41.7969 L28.4219 46.5312 Q28.4219 51.5625 27.8828 53.0312 Q27.3438 54.5 25.6875 54.5 Q23.6406 54.5 23.1484 53.25 Q22.6562 52 22.6562 46.5312 L22.6562 41.7969 L28.4219 41.7969 Z"
@@ -69,24 +69,24 @@
 PwMjAwMTiAAyGQAyFwQCULgtXgAAAABJRU5ErkJggg==" xlink:type="simple" xlink:actuate="onLoad" height="2" id="testimage1" preserveAspectRatio="xMidYMid meet" xlink:show="embed"
         /></defs
         ><g class="testC1"
-        ><text xml:space="preserve" x="10" y="20" class="testC2"
+        ><text x="10" xml:space="preserve" y="20" class="testC2"
           >Text antialiasing</text
         ></g
         ><g class="testC3"
-        ><text xml:space="preserve" x="30" y="60" class="testC4"
+        ><text x="30" xml:space="preserve" y="60" class="testC4"
           >HELLO antialiased</text
-          ><text xml:space="preserve" x="30" y="90" class="testC5"
+          ><text x="30" xml:space="preserve" y="90" class="testC5"
           >HELLO aliased</text
-          ><text xml:space="preserve" x="10" y="20" class="testC6" transform="translate(0,100)"
+          ><text x="10" xml:space="preserve" y="20" class="testC6" transform="translate(0,100)"
           >Shape antialiasing</text
-          ><ellipse transform="translate(30,100)" rx="50" cx="60" class="testC7" ry="15" cy="45"
-          /><ellipse transform="translate(30,140)" rx="50" cx="60" class="testC8" ry="15" cy="45"
+          ><ellipse rx="50" ry="15" class="testC7" cx="60" transform="translate(30,100)" cy="45"
+          /><ellipse rx="50" ry="15" class="testC8" cx="60" transform="translate(30,140)" cy="45"
         /></g
         ><g class="testC9" transform="translate(0,200)"
-        ><text xml:space="preserve" x="10" y="30" class="testC10"
+        ><text x="10" xml:space="preserve" y="30" class="testC10"
           >Interpolation Nearest Neighbor / Bicubic</text
-          ><use transform="matrix(20,0,0,20,10,50)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC11" xlink:actuate="onLoad" xlink:show="embed"
-          /><use transform="matrix(20,0,0,20,60,50)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC12" xlink:actuate="onLoad" xlink:show="embed"
+          ><use transform="matrix(20,0,0,20,10,50)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" xlink:actuate="onLoad" class="testC11" xlink:show="embed"
+          /><use transform="matrix(20,0,0,20,60,50)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" xlink:actuate="onLoad" class="testC12" xlink:show="embed"
         /></g
       ></g
     ></g
