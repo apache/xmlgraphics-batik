@@ -163,6 +163,9 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         return new SVGTextElementBridge();
     }
 
+    protected TextNode getTextNode() { 
+        return (TextNode)node; 
+    }
     /**
      * Creates a <tt>GraphicsNode</tt> according to the specified parameters.
      *
@@ -647,7 +650,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                     || ln.equals(SVG_LENGTH_ADJUST_ATTRIBUTE)) {
                 char c = ln.charAt(0);
                 if (c == 'x' || c == 'y') {
-                    ((TextNode) node).setLocation(getLocation(ctx, e));
+                    getTextNode().setLocation(getLocation(ctx, e));
                 }
                 computeLaidoutText(ctx, e, node);
                 return;
@@ -748,8 +751,8 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         if (hasNewACI)
             return;
 
-        TextNode tn = (TextNode)node;
-        if (tn.getAttributedCharacterIterator() == null)
+        TextNode textNode = getTextNode();
+        if (textNode.getAttributedCharacterIterator() == null)
             return;
 
         TextPaintInfo pi, oldPI;
@@ -765,16 +768,16 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             //the child
             TextPaintInfo parentPI;
             parentPI = getParentTextPaintInfo(cssProceedElement);
-            pi = getTextPaintInfo(cssProceedElement, tn, parentPI, ctx);
+            pi = getTextPaintInfo(cssProceedElement, textNode, parentPI, ctx);
             oldPI = (TextPaintInfo)elemTPI.get(cssProceedElement);
         }
         if (oldPI == null) return;
 
-        tn.swapTextPaintInfo(pi, oldPI);
+        textNode.swapTextPaintInfo(pi, oldPI);
         if (usingComplexSVGFont)
             // Force Complex SVG fonts to be recreated
-            tn.setAttributedCharacterIterator
-                (tn.getAttributedCharacterIterator());
+            textNode.setAttributedCharacterIterator
+                (textNode.getAttributedCharacterIterator());
     }
 
     int getElementStartIndex(Element element) {
@@ -2265,7 +2268,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
     protected int getNumberOfChars(Element element){
 
         AttributedCharacterIterator aci;
-        aci = ((TextNode)node).getAttributedCharacterIterator();
+        aci = getTextNode().getAttributedCharacterIterator();
         if (aci == null)
             return 0;
 
@@ -2287,9 +2290,10 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
      * org.w3c.dom.svg.SVGTextContentElement#getExtentOfChar(int charnum)}.
      */
     protected Rectangle2D getExtentOfChar(Element element,int charnum ){
+        TextNode textNode = getTextNode();
 
         AttributedCharacterIterator aci;
-        aci = ((TextNode)node).getAttributedCharacterIterator();
+        aci = textNode.getAttributedCharacterIterator();
         if (aci == null) return null;
 
         int firstChar = getElementStartIndex(element);
@@ -2298,7 +2302,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             return null;
 
         //retrieve the text run for the text node
-        List list = getTextRuns((TextNode)node);
+        List list = getTextRuns(textNode);
 
         //find the character 'charnum' in the text run
         CharacterInformation info;
@@ -2346,9 +2350,10 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
      * org.w3c.dom.svg.SVGTextContentElement#getStartPositionOfChar(int charnum)}.
      */
     protected Point2D getStartPositionOfChar(Element element,int charnum){
+        TextNode textNode = getTextNode();
 
         AttributedCharacterIterator aci;
-        aci = ((TextNode)node).getAttributedCharacterIterator();
+        aci = textNode.getAttributedCharacterIterator();
         if (aci == null)
             return null;
 
@@ -2357,7 +2362,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             return null;
 
         //retrieve the text run for the text node
-        List list = getTextRuns((TextNode)node);
+        List list = getTextRuns(textNode);
 
         //find the character 'charnum' in the text run
         CharacterInformation info;
@@ -2397,9 +2402,10 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
      * org.w3c.dom.svg.SVGTextContentElement#getEndPositionOfChar(int charnum)}.
      */
     protected Point2D getEndPositionOfChar(Element element,int charnum ){
+        TextNode textNode = getTextNode();
 
         AttributedCharacterIterator aci;
-        aci = ((TextNode)node).getAttributedCharacterIterator();
+        aci = textNode.getAttributedCharacterIterator();
         if (aci == null)
             return null;
 
@@ -2408,7 +2414,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             return null;
 
         //retrieve the text run for the text node
-        List list = getTextRuns((TextNode)node);
+        List list = getTextRuns(textNode);
 
         //find the glyph information for the character 'charnum'
         CharacterInformation info;
@@ -2449,9 +2455,10 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
      * org.w3c.dom.svg.SVGTextContentElement#getRotationOfChar(int charnum)}.
      */
     protected float getRotationOfChar(Element element, int charnum){
+        TextNode textNode = getTextNode();
 
         AttributedCharacterIterator aci;
-        aci = ((TextNode)node).getAttributedCharacterIterator();
+        aci = textNode.getAttributedCharacterIterator();
         if (aci == null)
             return 0;
 
@@ -2461,7 +2468,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             return 0;
 
         //retrieve the text run for the text node
-        List list = getTextRuns((TextNode)node);
+        List list = getTextRuns(textNode);
 
         //find the glyph information for the character 'charnum'
         CharacterInformation info;
@@ -2531,12 +2538,13 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
 
         float length = 0;
 
+        TextNode textNode = getTextNode();
+
         AttributedCharacterIterator aci;
-        aci = ((TextNode)node).getAttributedCharacterIterator();
+        aci = textNode.getAttributedCharacterIterator();
         if (aci == null)
             return -1;
 
-        TextNode textNode = (TextNode)node;
         int firstChar = getElementStartIndex(element);
 
         if ( firstChar == -1 )
@@ -2667,12 +2675,13 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
      *  manager in JSVGComponent.
      */
     protected void selectSubString(Element element, int charnum, int nchars) {
+        TextNode textNode = getTextNode();
+
         AttributedCharacterIterator aci;
-        aci = ((TextNode)node).getAttributedCharacterIterator();
+        aci = textNode.getAttributedCharacterIterator();
         if (aci == null)
             return;
 
-        TextNode textNode = (TextNode)node;
         int firstChar = getElementStartIndex(element);
 
         if ( firstChar == -1 )
@@ -2700,8 +2709,8 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
     }
 
     protected int getCharNumAtPosition(Element e, float x, float y){
+        TextNode textNode = getTextNode();
 
-        TextNode textNode = (TextNode)node;
         AttributedCharacterIterator aci;
         aci = textNode.getAttributedCharacterIterator();
         if (aci == null)
@@ -2838,7 +2847,8 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                                        Rectangle2D rect) {
         Set elems = new HashSet();
 
-        TextNode tn  = (TextNode)node;
+        TextNode tn = getTextNode();
+
         List list = tn.getTextRuns();
         if (list == null)
             return elems;
@@ -2882,7 +2892,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
 
     public Set getTextEnclosureSet(AffineTransform at,
                                     Rectangle2D rect) {
-        TextNode tn = (TextNode)node;
+        TextNode tn = getTextNode();
 
         Set elems = new HashSet();
         List list = tn.getTextRuns();
@@ -2943,7 +2953,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         }
         if (txtBridge == null) return false;
 
-        TextNode tn      = (TextNode)txtBridge.node;
+        TextNode tn = txtBridge.getTextNode();
         List list = tn.getTextRuns();
         if (list == null)
             return false;
@@ -3015,7 +3025,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         }
         if (txtBridge == null) return null;
 
-        TextNode tn      = (TextNode)txtBridge.node;
+        TextNode tn = txtBridge.getTextNode();
         List list = tn.getTextRuns();
         if (list == null)
             return null;
