@@ -61,6 +61,7 @@ import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.TextNode;
 import org.apache.batik.gvt.flow.BlockInfo;
 import org.apache.batik.gvt.flow.FlowTextNode;
 import org.apache.batik.gvt.flow.RegionInfo;
@@ -127,6 +128,10 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
      * Map of flowRegion elements to their graphics nodes.
      */
     protected Map flowRegionNodes;
+
+    protected TextNode textNode;
+
+    protected TextNode getTextNode() { return textNode; }
 
     /**
      * Listener for flowRegion changes.
@@ -211,10 +216,19 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
         if (ctx.getTextPainter() != null) {
             tn.setTextPainter(ctx.getTextPainter());
         }
-
+        textNode = tn;
         cgn.add(tn);
 
         associateSVGContext(ctx, e, cgn);
+
+        // traverse the children to add SVGContext
+        Node child = getFirstChild(e);
+        while (child != null) {
+            if (child.getNodeType() == Node.ELEMENT_NODE) {
+                addContextToChild(ctx,(Element)child);
+            }
+            child = getNextSibling(child);
+        }
 
         return cgn;
     }
@@ -348,7 +362,14 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
             }
         }
 
-        super.addContextToChild(ctx, e);
+        // traverse the children to add SVGContext
+        Node child = getFirstChild(e);
+        while (child != null) {
+            if (child.getNodeType() == Node.ELEMENT_NODE) {
+                addContextToChild(ctx,(Element)child);
+            }
+            child = getNextSibling(child);
+        }
     }
 
     /**
