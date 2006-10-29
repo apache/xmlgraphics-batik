@@ -184,7 +184,7 @@ public abstract class AbstractSVGFilterPrimitiveElementBridge
             } else if (SVG_STROKE_PAINT_VALUE.equals(s)) {
                     // StrokePaint
                     Paint paint = PaintServer.convertStrokePaint
-                        (filteredElement,filteredNode, ctx);
+                        (filteredElement,filteredNode, null, ctx);
                     // <!> FIXME: Should we create a transparent flood ???
                     source = new FloodRable8Bit(filterRegion, paint);
             }
@@ -209,9 +209,9 @@ public abstract class AbstractSVGFilterPrimitiveElementBridge
             if (SVG_FILL_PAINT_VALUE.equals(s)) {
                 // FillPaint
                 Paint paint = PaintServer.convertFillPaint
-                    (filteredElement,filteredNode, ctx);
+                    (filteredElement,filteredNode, null, ctx);
                 if (paint == null) {
-                    paint = new Color(0, 0, 0, 0); // create a transparent flood
+                    paint = new Color(0, 0, 0, 0); // create transparent flood
                 }
                 source = new FloodRable8Bit(filterRegion, paint);
             }

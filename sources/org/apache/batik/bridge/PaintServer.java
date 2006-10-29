@@ -137,13 +137,15 @@ public abstract class PaintServer
      * @param node the shape node
      * @param ctx the bridge context
      */
-    public static ShapePainter convertFillAndStroke(Element e,
-                                                    ShapeNode node,
-                                                    BridgeContext ctx) {
+    public static ShapePainter convertFillAndStroke
+        (Element e, ShapeNode node,
+         AbstractGraphicsNodeBridge b,
+         BridgeContext ctx) {
+
         Shape shape = node.getShape();
         if (shape == null) return null;
 
-        Paint  fillPaint   = convertFillPaint  (e, node, ctx);
+        Paint  fillPaint   = convertFillPaint  (e, node, b, ctx);
         FillShapePainter fp = new FillShapePainter(shape);
         fp.setPaint(fillPaint);
 
@@ -151,7 +153,7 @@ public abstract class PaintServer
         if (stroke == null)
             return fp;
 
-        Paint  strokePaint = convertStrokePaint(e, node, ctx);
+        Paint  strokePaint = convertStrokePaint(e, node, b, ctx);
         StrokeShapePainter sp = new StrokeShapePainter(shape);
         sp.setStroke(stroke);
         sp.setPaint(strokePaint);
@@ -163,9 +165,12 @@ public abstract class PaintServer
     }
 
 
-    public static ShapePainter convertStrokePainter(Element e,
-                                                    ShapeNode node,
-                                                    BridgeContext ctx) {
+    public static ShapePainter convertStrokePainter
+        (Element e,
+         ShapeNode node,
+         AbstractGraphicsNodeBridge b,
+         BridgeContext ctx) {
+
         Shape shape = node.getShape();
         if (shape == null) return null;
 
@@ -173,7 +178,7 @@ public abstract class PaintServer
         if (stroke == null)
             return null;
 
-        Paint  strokePaint = convertStrokePaint(e, node, ctx);
+        Paint  strokePaint = convertStrokePaint(e, node, b, ctx);
         StrokeShapePainter sp = new StrokeShapePainter(shape);
         sp.setStroke(stroke);
         sp.setPaint(strokePaint);
@@ -194,6 +199,7 @@ public abstract class PaintServer
      */
     public static Paint convertStrokePaint(Element strokedElement,
                                            GraphicsNode strokedNode,
+                                           AbstractGraphicsNodeBridge b,
                                            BridgeContext ctx) {
         Value v = CSSUtilities.getComputedStyle
             (strokedElement, SVGCSSEngine.STROKE_OPACITY_INDEX);
@@ -205,6 +211,8 @@ public abstract class PaintServer
                             strokedNode,
                             v,
                             opacity,
+                            SVGCSSEngine.STROKE_INDEX,
+                            b,
                             ctx);
     }
 
@@ -218,6 +226,7 @@ public abstract class PaintServer
      */
     public static Paint convertFillPaint(Element filledElement,
                                          GraphicsNode filledNode,
+                                         AbstractGraphicsNodeBridge b,
                                          BridgeContext ctx) {
         Value v = CSSUtilities.getComputedStyle
             (filledElement, SVGCSSEngine.FILL_OPACITY_INDEX);
@@ -229,6 +238,8 @@ public abstract class PaintServer
                             filledNode,
                             v,
                             opacity,
+                            SVGCSSEngine.FILL_INDEX,
+                            b,
                             ctx);
     }
 
@@ -243,10 +254,12 @@ public abstract class PaintServer
      * @param ctx the bridge context
      */
     public static Paint convertPaint(Element paintedElement,
-                                        GraphicsNode paintedNode,
-                                        Value paintDef,
-                                        float opacity,
-                                        BridgeContext ctx) {
+                                     GraphicsNode paintedNode,
+                                     Value paintDef,
+                                     float opacity,
+                                     int cssPropIndex,
+                                     AbstractGraphicsNodeBridge b,
+                                     BridgeContext ctx) {
         if (paintDef.getCssValueType() == CSSValue.CSS_PRIMITIVE_VALUE) {
             switch (paintDef.getPrimitiveType()) {
             case CSSPrimitiveValue.CSS_IDENT:
@@ -260,6 +273,8 @@ public abstract class PaintServer
                                        paintedNode,
                                        paintDef,
                                        opacity,
+                                       cssPropIndex,
+                                       b,
                                        ctx);
 
             default:
@@ -276,7 +291,10 @@ public abstract class PaintServer
             case CSSPrimitiveValue.CSS_URI: {
                 Paint result = silentConvertURIPaint(paintedElement,
                                                      paintedNode,
-                                                     v, opacity, ctx);
+                                                     v, opacity, 
+                                                     cssPropIndex,
+                                                     b,
+                                                     ctx);
                 if (result != null) return result;
 
                 v = paintDef.item(1);
@@ -319,11 +337,13 @@ public abstract class PaintServer
                                               GraphicsNode paintedNode,
                                               Value paintDef,
                                               float opacity,
+                                     int cssPropIndex,
+                                     AbstractGraphicsNodeBridge b,
                                               BridgeContext ctx) {
         Paint paint = null;
         try {
             paint = convertURIPaint(paintedElement, paintedNode,
-                                    paintDef, opacity, ctx);
+                                    paintDef, opacity, cssPropIndex, b, ctx);
         } catch (BridgeException ex) {
         }
         return paint;
@@ -342,6 +362,8 @@ public abstract class PaintServer
                                         GraphicsNode paintedNode,
                                         Value paintDef,
                                         float opacity,
+                                     int cssPropIndex,
+                                     AbstractGraphicsNodeBridge b,
                                         BridgeContext ctx) {
 
         String uri = paintDef.getStringValue();
@@ -352,6 +374,12 @@ public abstract class PaintServer
             throw new BridgeException(paintedElement, ERR_CSS_URI_BAD_TARGET,
                                       new Object[] {uri});
         }
+
+        if (bridge instanceof AbstractSVGGradientElementBridge) {
+            ((AbstractSVGGradientElementBridge)bridge).setHostInfo
+                (b, cssPropIndex);
+        }
+
         return ((PaintBridge)bridge).createPaint(ctx,
                                                  paintElement,
                                                  paintedElement,

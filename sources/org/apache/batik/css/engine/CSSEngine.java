@@ -434,7 +434,7 @@ public abstract class CSSEngine {
             domAttrModifiedListener = new DOMAttrModifiedListener();
             et.addEventListener("DOMAttrModified",
                                 domAttrModifiedListener,
-                                false);
+                                true);
             domNodeInsertedListener = new DOMNodeInsertedListener();
             et.addEventListener("DOMNodeInserted",
                                 domNodeInsertedListener,

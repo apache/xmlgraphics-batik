@@ -49,6 +49,10 @@ public class SVGRadialGradientElementBridge
         return SVG_RADIAL_GRADIENT_TAG;
     }
 
+    public Bridge getInstance() {
+        return new SVGRadialGradientElementBridge();
+    }
+
     /**
      * Builds a radial gradient according to the specified parameters.
      *

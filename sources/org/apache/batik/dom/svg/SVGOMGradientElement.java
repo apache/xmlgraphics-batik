@@ -146,7 +146,5 @@ public abstract class SVGOMGradientElement
     /**
      * Returns a new uninitialized instance of this object's class.
      */
-    protected Node newNode() {
-        return new SVGOMAElement();
-    }
+    protected abstract Node newNode();
 }

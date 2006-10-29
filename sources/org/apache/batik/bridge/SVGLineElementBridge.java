@@ -73,7 +73,7 @@ public class SVGLineElementBridge extends SVGDecoratedShapeElementBridge {
         // 'stroke-miterlimit'
         // 'stroke-dasharray'
         // 'stroke-dashoffset'
-        return PaintServer.convertStrokePainter(e, shapeNode, ctx);
+        return PaintServer.convertStrokePainter(e, shapeNode, this, ctx);
     }
 
     /**

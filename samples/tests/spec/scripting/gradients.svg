@@ -1,0 +1,115 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"
+"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+
+<!--
+
+   Copyright 2000-2001,2003  The Apache Software Foundation 
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+<!-- ====================================================================== -->
+<!-- Test of modifying gradients.                                           -->
+<!--                                                                        -->
+<!-- @author Thomas.DeWeese@apache.org                                      -->
+<!-- @version $Id: anne.svg 201439 2005-04-01 02:28:17Z deweese $        -->
+<!-- ====================================================================== -->
+
+<?xml-stylesheet type="text/css" href="../../resources/style/test.css" ?>
+
+<svg width="450" height="500" viewBox="0 0 450 500"
+     xmlns="http://www.w3.org/2000/svg" 
+     xmlns:xlink="http://www.w3.org/1999/xlink" >
+    <!-- ============================================================= -->
+    <!-- Test content                                                  -->
+    <!-- ============================================================= -->
+  <title>Dynamic change of gradient</title>
+
+  <text x="50%" y="45" class="title">Dynamic change of gradient</text>
+
+  <script type="text/ecmascript">
+        var svgNS   = "http://www.w3.org/2000/svg";
+        var xlinkNS = "http://www.w3.org/1999/xlink";
+
+        function toggleAttr(id, ns, attr, v1, v2) {
+           var e = document.getElementById(id);
+           var a = e.getAttributeNS(ns, attr);
+           e.setAttributeNS(ns, attr, (a==v1)?v2:v1);
+        }
+  </script>
+
+  <defs>
+	<linearGradient id="baseLG1">
+		<stop id="stop10" style="stop-color:crimson" offset="0" />
+		<stop id="stop11" style="stop-color:gold"    offset="1" />
+	</linearGradient>
+
+	<linearGradient id="baseLG2">
+		<stop id="stop20" stop-color="crimson" offset="0" />
+		<stop id="stop21" stop-color="gold"    offset="1" />
+	</linearGradient>
+
+	<linearGradient id="baseLG3">
+		<stop id="stop30" stop-color="gold"    offset="0" />
+		<stop id="stop31" stop-color="crimson" offset="1" />
+	</linearGradient>
+
+    <linearGradient id="lg1" xlink:href="#baseLG1"
+                    x1="0" y1=".5" x2="1" y2=".5"/>
+
+    <linearGradient id="lg2" xlink:href="#baseLG2"
+                    x1=".5" y1="0" x2=".5" y2="1"/>
+
+    <linearGradient id="lg3-1" xlink:href="#baseLG1"
+                    x1="0" y1=".5" x2="1" y2=".5"/>
+    <linearGradient id="lg3" xlink:href="#lg3-1"/>
+  </defs>
+
+  <rect x="12.5" y="75" width="100" height="75" fill="url(#lg1)"
+        onclick="toggleAttr('stop10', null, 'style', 
+                            'stop-color:blue', 'stop-color:crimson')"/>
+
+  <rect x="137.5" y="75" width="100" height="75" fill="url(#lg1)"
+        onclick="toggleAttr('stop10', null, 'style', 
+                            'stop-color:blue', 'stop-color:crimson')"/>
+
+  <text x="260" y="100"  >Both Rects indirectly reference
+   <tspan x="260" y="115">same gradient where 'style' is</tspan>
+   <tspan x="260" y="130">modified 'onclick'</tspan></text>
+
+  <rect x="12.5" y="175" width="100" height="75" fill="url(#lg2)"
+        onclick="toggleAttr('stop20', null, 'stop-color', 
+                            'blue', 'crimson')"/>
+
+  <rect x="137.5" y="175" width="100" height="75" fill="url(#lg2)"
+        onclick="toggleAttr('stop20', null, 'stop-color', 
+                            'blue', 'crimson')"/>
+
+  <text x="260" y="200"  >Both Rects indirectly reference
+   <tspan x="260" y="215">same gradient where 'stop-color'</tspan>
+   <tspan x="260" y="230">is modified 'onclick'</tspan></text>
+
+  <rect x="12.5" y="275" width="100" height="75" fill="url(#lg3)"
+        onclick="toggleAttr('lg3-1', xlinkNS, 'href', 
+                            '#baseLG3', '#baseLG1')"/>
+
+  <rect x="137.5" y="275" width="100" height="75" fill="url(#lg3)"
+        onclick="toggleAttr('lg3-1', xlinkNS, 'href', 
+                            '#baseLG3', '#baseLG1')"/>
+
+  <text x="260" y="300"  >Both Rects indirectly reference
+   <tspan x="260" y="315">gradient where 'xlink:href'</tspan>
+   <tspan x="260" y="330">is modified 'onclick'</tspan></text>
+
+</svg>

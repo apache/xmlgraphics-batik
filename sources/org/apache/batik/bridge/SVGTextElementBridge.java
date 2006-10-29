@@ -1731,8 +1731,10 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             pi.composite    = AlphaComposite.SrcOver;
 
         pi.visible      = CSSUtilities.convertVisibility(element);
-        pi.fillPaint    = PaintServer.convertFillPaint  (element, node, ctx);
-        pi.strokePaint  = PaintServer.convertStrokePaint(element, node, ctx);
+        pi.fillPaint    = PaintServer.convertFillPaint  
+            (element, node, this, ctx);
+        pi.strokePaint  = PaintServer.convertStrokePaint
+            (element, node, this, ctx);
         pi.strokeStroke = PaintServer.convertStroke     (element);
     }
 

@@ -48,6 +48,10 @@ public class SVGLinearGradientElementBridge
         return SVG_LINEAR_GRADIENT_TAG;
     }
 
+    public Bridge getInstance() {
+        return new SVGLinearGradientElementBridge();
+    }
+
     /**
      * Builds a linear gradient according to the specified parameters.
      *

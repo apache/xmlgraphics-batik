@@ -83,6 +83,7 @@ public abstract class SVGStylableElement
      * Sets the computed style of this element/pseudo-element.
      */
     public void setComputedStyleMap(String pseudoElement, StyleMap sm) {
+        // new Exception("SetStyle: " + sm).printStackTrace();
         computedStyleMap = sm;
     }
 

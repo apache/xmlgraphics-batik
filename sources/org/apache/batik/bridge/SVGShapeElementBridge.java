@@ -110,7 +110,7 @@ public abstract class SVGShapeElementBridge extends AbstractGraphicsNodeBridge {
         // 'stroke-miterlimit'
         // 'stroke-dasharray'
         // 'stroke-dashoffset'
-        return PaintServer.convertFillAndStroke(e, shapeNode, ctx);
+        return PaintServer.convertFillAndStroke(e, shapeNode, this, ctx);
     }
 
     /**

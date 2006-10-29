@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.batik.css.engine.CSSEngineEvent;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.svg.XMLBaseSupport;
 import org.apache.batik.dom.util.XLinkSupport;
@@ -32,6 +33,13 @@ import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.util.ParsedURL;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.ArrayList;
+import org.w3c.dom.events.Event;
+import org.w3c.dom.events.EventTarget;
+import org.w3c.dom.events.EventListener;
 
 /**
  * Bridge class for vending gradients.
@@ -61,8 +69,10 @@ public abstract class AbstractSVGGradientElementBridge extends AbstractSVGBridge
                              Element paintedElement,
                              GraphicsNode paintedNode,
                              float opacity) {
-
         String s;
+        if (ctx.isDynamic()) {
+            if(wl == null) wl = new WatchList();
+        }
 
         // stop elements
         List stops = extractStop(paintElement, opacity, ctx);
@@ -117,6 +127,7 @@ public abstract class AbstractSVGGradientElementBridge extends AbstractSVGBridge
                                     colors,
                                     offsets,
                                     ctx);
+        if (wl != null) wl.addListener(ml, ctx);
         return paint;
     }
 
@@ -177,14 +188,20 @@ public abstract class AbstractSVGGradientElementBridge extends AbstractSVGBridge
      * @param opacity the opacity
      * @param ctx the bridge context to use
      */
-    protected static List extractStop(Element paintElement,
-                                      float opacity,
-                                      BridgeContext ctx) {
+    protected List extractStop(Element paintElement,
+                               float opacity,
+                               BridgeContext ctx) {
 
         List refs = new LinkedList();
         for (;;) {
             List stops = extractLocalStop(paintElement, opacity, ctx);
             if (stops != null) {
+                if (wl != null) { 
+                    EventTarget et = (EventTarget)paintElement;
+                    wl.addToWatchList(et, "DOMAttrModified");
+                    wl.addToWatchList(et, "DOMNodeInserted");
+                    wl.addToWatchList(et, "DOMNodeRemoved");
+                }
                 return stops; // stop elements found, exit
             }
             String uri = XLinkSupport.getXLinkHref(paintElement);
@@ -201,6 +218,12 @@ public abstract class AbstractSVGGradientElementBridge extends AbstractSVGBridge
                                           new Object[] {uri});
             }
             refs.add(purl);
+
+            if ((wl != null) && (hostBridge != null)) {
+                EventTarget et = (EventTarget)paintElement;
+                wl.addToWatchList(et, "DOMAttrModified");
+            }
+
             paintElement = ctx.getReferencedElement(paintElement, uri);
         }
     }
@@ -325,8 +348,38 @@ public abstract class AbstractSVGGradientElementBridge extends AbstractSVGBridge
             }
             Color color
                 = CSSUtilities.convertStopColor(stopElement, opacity, ctx);
-
+            // System.err.println("Stop Color: " + color);
             return new Stop(color, offset);
         }
     }
+
+    AbstractGraphicsNodeBridge hostBridge;
+    int cssProperty;
+    public WatchList wl;
+    public MutationListener ml = new MutationListener();
+
+    public void setHostInfo(AbstractGraphicsNodeBridge hostBridge,
+                            int cssProperty) {
+        this.hostBridge = hostBridge;
+        this.cssProperty = cssProperty;
+    }
+
+    /**
+     * Used to handle modifications to the referenced content
+     */
+    public class MutationListener implements EventListener {
+        public void handleEvent(Event evt) {
+            wl.dispose();
+            // System.err.println("Twiddleing: " + cssProperty + 
+            //                    " On: " + hostBridge);
+            BridgeContext ctx = hostBridge.ctx;
+            Element hostElem = hostBridge.e;
+            CSSEngineEvent cssEvt = new CSSEngineEvent
+                (ctx.getCSSEngineForElement(hostElem),
+                 hostElem, new int[] {cssProperty});
+            hostBridge.handleCSSEngineEvent(cssEvt);
+        }
+    }
+
+
 }
