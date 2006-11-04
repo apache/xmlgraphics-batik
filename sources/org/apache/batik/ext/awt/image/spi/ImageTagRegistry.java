@@ -65,9 +65,21 @@ public class ImageTagRegistry implements ErrorConstants {
         this.imgCache= imgCache;
     }
 
+    /** Removes all decoded raster images from the cache.
+     *  All Images will be reloaded from the original source
+     *  if decoded again.
+     */
     public void flushCache() {
         rawCache.flush();
         imgCache.flush();
+    }
+
+    /** Removes the given URL from the cache.  Only the Image
+     *  associated with that URL will be removed from the cache.
+     */
+    public void flushImage(ParsedURL purl) {
+        rawCache.clear(purl);
+        imgCache.clear(purl);
     }
 
     public Filter checkCache(ParsedURL purl, ICCColorSpaceExt colorSpace) {
@@ -162,7 +174,6 @@ public class ImageTagRegistry implements ErrorConstants {
                         try {
                             is = purl.openStream(mimeTypes.iterator());
                         } catch(IOException ioe) {
-                            ioe.printStackTrace();
                             // Couldn't open the stream, go to next entry.
                             openFailed = true;
                             continue;
