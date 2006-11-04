@@ -49,6 +49,10 @@ public class SVGTextPathElementBridge extends AnimatableGenericSVGBridge
         return SVG_TEXT_PATH_TAG;
     }
 
+    public void handleElement(BridgeContext ctx, Element e) {
+        // We don't want to take over from the text content element.
+    }
+
     /**
      * Creates a TextPath object that represents the path along which the text
      * is to be rendered.

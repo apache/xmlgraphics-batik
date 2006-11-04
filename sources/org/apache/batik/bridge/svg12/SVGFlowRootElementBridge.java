@@ -911,7 +911,7 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
         public void handleEvent(Event evt) {
             // the flowRegion geometry may have changed, so relayout text
             laidoutText = null;
-            computeLaidoutText(ctx, e, node);
+            computeLaidoutText(ctx, e, getTextNode());
         }
     }
 }

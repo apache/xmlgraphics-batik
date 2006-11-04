@@ -496,7 +496,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         default:
         }
         if (laidoutText == null) {
-            computeLaidoutText(ctx, e, node);
+            computeLaidoutText(ctx, e, getTextNode());
         }
     }
 
@@ -543,7 +543,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         //an operation occured onto the children of the
         //text element, check if the layout was discarded
         if (laidoutText == null) {
-            computeLaidoutText(ctx, e, node);
+            computeLaidoutText(ctx, e, getTextNode());
         }
     }
 
@@ -652,7 +652,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                 if (c == 'x' || c == 'y') {
                     getTextNode().setLocation(getLocation(ctx, e));
                 }
-                computeLaidoutText(ctx, e, node);
+                computeLaidoutText(ctx, e, getTextNode());
                 return;
             }
         }
@@ -688,7 +688,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             case SVGCSSEngine.WRITING_MODE_INDEX: {
                 if (!hasNewACI) {
                     hasNewACI = true;
-                    computeLaidoutText(ctx, e, node);
+                    computeLaidoutText(ctx, e, getTextNode());
                 }
                 break;
             }
@@ -2166,7 +2166,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                         || ln.equals(SVG_LENGTH_ADJUST_ATTRIBUTE)) {
                     // Recompute the layout of the text node.
                     textBridge.computeLaidoutText(ctx, textBridge.e,
-                                                  textBridge.node);
+                                                  textBridge.getTextNode());
                     return;
                 }
             }
@@ -2216,7 +2216,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                         || ln.equals(SVG_LENGTH_ADJUST_ATTRIBUTE)) {
                     // Recompute the layout of the text node.
                     textBridge.computeLaidoutText(ctx, textBridge.e,
-                                                  textBridge.node);
+                                                  textBridge.getTextNode());
                     return;
                 }
             }
