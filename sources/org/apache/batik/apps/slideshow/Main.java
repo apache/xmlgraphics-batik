@@ -1,6 +1,6 @@
 /*
 
-   Copyright 1999-2003  The Apache Software Foundation 
+   Copyright 1999-2003, 2006  The Apache Software Foundation
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -69,7 +69,7 @@ public class Main extends JComponent {
 
     boolean done = false;
 
-    public Main(File []files, Dimension size) { 
+    public Main(File []files, Dimension size) {
         setBackground(Color.black);
         this.files = files;
         UserAgentAdapter ua = new UserAgentAdapter();
@@ -96,7 +96,7 @@ public class Main extends JComponent {
 
         size.width += 2;
         size.height += 2;
-        display = new BufferedImage(size.width, size.height, 
+        display = new BufferedImage(size.width, size.height,
                                     BufferedImage.TYPE_INT_BGR);
 
         Thread t = new RenderThread();
@@ -133,11 +133,11 @@ public class Main extends JComponent {
                          (null, elt, display.getWidth(), display.getHeight(),
                           ctx));
 
-                    renderer.updateOffScreen(display.getWidth(), 
+                    renderer.updateOffScreen(display.getWidth(),
                                              display.getHeight());
 
                     Rectangle r = new Rectangle(0, 0,
-                                                display.getWidth(), 
+                                                display.getWidth(),
                                                 display.getHeight());
                     renderer.repaint(r);
                     System.out.println("Painting: " + files[i]);
@@ -157,7 +157,7 @@ public class Main extends JComponent {
         }
     }
 
-    Thread transitionThread = null;
+    volatile Thread transitionThread = null;
 
     public void setTransition(BufferedImage newImg) {
         synchronized (this) {
@@ -174,7 +174,7 @@ public class Main extends JComponent {
 
     long   startLastTransition=0;
 
-    boolean paused = false;
+    volatile boolean paused = false;
 
     public void togglePause() {
         synchronized(this) {
@@ -209,7 +209,7 @@ public class Main extends JComponent {
             int nblocks = xblocks*yblocks;
 
             int tblock = duration/nblocks;
-            
+
             Point [] rects = new Point[nblocks];
             for (int y=0; y<yblocks; y++)
                 for (int x=0; x<xblocks; x++)
@@ -241,7 +241,7 @@ public class Main extends JComponent {
             }
 
             long last = startLastTransition = System.currentTimeMillis();
-            
+
             for (int i=0; i<rects.length; i++) {
                 int idx = (int)(Math.random()*(rects.length-i));
                 Point pt = rects[idx];
@@ -322,7 +322,7 @@ public class Main extends JComponent {
         Vector fileVec = new Vector();
 
         Dimension d = null;
-        
+
         if (args.length == 0) {
             showUsage();
             return;
@@ -344,7 +344,7 @@ public class Main extends JComponent {
                      (args[i].equals("--file-list"))) {
                 if (i+1 == args.length) {
                     System.err.println
-                        ("Must provide name of file list file after " + 
+                        ("Must provide name of file list file after " +
                          args[i]);
                     break;
                 }
@@ -377,10 +377,10 @@ public class Main extends JComponent {
                 } catch (NumberFormatException nfe) {
                     System.err.println
                         ("Can't parse transition time: " + args[i+1]);
-                }                
+                }
             } else if ((args[i].equals("-ws"))||
                        (args[i].equals("--window-size"))) {
-                
+
                 if (i+1 == args.length) {
                     System.err.println
                         ("Must provide window size [w,h] after " + args[i]);
@@ -406,7 +406,7 @@ public class Main extends JComponent {
             } else
                 fileVec.add(args[i]);
         }
-            
+
         File [] files = new File[fileVec.size()];
 
 

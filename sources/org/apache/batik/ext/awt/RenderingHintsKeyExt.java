@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001-2002,2004  The Apache Software Foundation 
+   Copyright 2001-2002,2004  The Apache Software Foundation
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -20,13 +20,14 @@ package org.apache.batik.ext.awt;
 import java.awt.RenderingHints;
 
 /**
- * Contains additional RenderingHints Keys, such as 
+ * Contains additional RenderingHints Keys, such as
  * KEY_AREA_OF_INTEREST
  *
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
 public final class RenderingHintsKeyExt {
+
     public static final int KEY_BASE;
 
     /**
@@ -34,11 +35,9 @@ public final class RenderingHintsKeyExt {
      */
     public static final RenderingHints.Key KEY_TRANSCODING;
 
-    public static final String VALUE_TRANSCODING_PRINTING = 
-        new String("Printing");
+    public static final String VALUE_TRANSCODING_PRINTING = "Printing";
 
-    public static final String VALUE_TRANSCODING_VECTOR = 
-        new String("Vector");
+    public static final String VALUE_TRANSCODING_VECTOR = "Vector";
 
     /**
      * Key for the AOI hint. This hint is used to propagate the AOI to Paint
@@ -94,7 +93,7 @@ public final class RenderingHintsKeyExt {
                     ("You have loaded the Batik jar files more than once\n" +
                      "in the same JVM this is likely a problem with the\n" +
                      "way you are loading the Batik jar files.");
-                
+
                 base = (int)(Math.random()*2000000);
                 continue;
             }
