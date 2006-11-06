@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001,2003  The Apache Software Foundation 
+   Copyright 2001,2003  The Apache Software Foundation
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ import org.w3c.dom.NodeList;
  */
 public class SVGFontFamily implements GVTFontFamily {
 
-    public static final 
+    public static final
         AttributedCharacterIterator.Attribute TEXT_COMPOUND_ID =
         GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_ID;
 
@@ -47,7 +47,7 @@ public class SVGFontFamily implements GVTFontFamily {
     protected Element fontElement;
     protected BridgeContext ctx;
     protected Boolean complex = null;
-    
+
 
 
     /**
@@ -107,10 +107,10 @@ public class SVGFontFamily implements GVTFontFamily {
         fontBridge = (SVGFontElementBridge)ctx.getBridge(fontElement);
         SoftReference sr = (SoftReference)attrs.get(TEXT_COMPOUND_ID);
         Element textElement = (Element)sr.get();
-        return fontBridge.createFont(ctx, fontElement, textElement, 
+        return fontBridge.createFont(ctx, fontElement, textElement,
                                      size, fontFace);
     }
-     
+
     /**
      * This method looks at the SVG font and checks if any of
      * the glyphs use renderable child elements.  If so this
@@ -121,7 +121,7 @@ public class SVGFontFamily implements GVTFontFamily {
     public boolean isComplex() {
         if (complex != null) return complex.booleanValue();
         boolean ret = isComplex(fontElement, ctx);
-        complex = new Boolean(ret);
+        complex = ret ? Boolean.TRUE : Boolean.FALSE;
         return ret;
     }
 
