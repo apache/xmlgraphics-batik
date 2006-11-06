@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001-2003  The Apache Software Foundation 
+   Copyright 2001-2003  The Apache Software Foundation
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -24,6 +24,8 @@ import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import java.util.List;
+import java.util.ArrayList;
 
 import org.apache.batik.css.engine.SVGCSSEngine;
 import org.apache.batik.css.engine.value.Value;
@@ -183,7 +185,7 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
         }
         float ret;
         ret = hKerningTable.getKerningValue(glyphCode1, glyphCode2,
-                                            glyphUnicodes[glyphCode1], 
+                                            glyphUnicodes[glyphCode1],
                                             glyphUnicodes[glyphCode2]);
         return ret*scale;
     }
@@ -205,7 +207,7 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
         }
         float ret;
         ret = vKerningTable.getKerningValue(glyphCode1, glyphCode2,
-                                            glyphUnicodes[glyphCode1], 
+                                            glyphUnicodes[glyphCode1],
                                             glyphUnicodes[glyphCode2]);
         return ret*scale;
     }
@@ -487,8 +489,8 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
                 if (glyphUnicodes[i].indexOf(c) == 0
                     && languageMatches(glyphLangs[i])
                     && orientationMatches(glyphOrientations[i])
-                    && formMatches(glyphUnicodes[i], glyphForms[i], 
-                                   aci, currentIndex)) {  
+                    && formMatches(glyphUnicodes[i], glyphForms[i],
+                                   aci, currentIndex)) {
                     // found a possible match
 
                     if (glyphUnicodes[i].length() == 1)  { // not a ligature
@@ -574,7 +576,7 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
             aci = (AttributedCharacterIterator)ci;
         }
 
-        Vector glyphs = new Vector();
+        List glyphs = new ArrayList();
         char c = ci.first();
         while (c != CharacterIterator.DONE) {
             boolean foundMatchingGlyph = false;
@@ -594,7 +596,7 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
                             tpi = (TextPaintInfo)aci.getAttribute(PAINT_INFO);
                         }
                         Glyph glyph = glyphBridge.createGlyph
-                            (ctx, glyphElement, textElement, i, 
+                            (ctx, glyphElement, textElement, i,
                              fontSize, fontFace, tpi);
                         glyphs.add(glyph);
                         foundMatchingGlyph = true;
@@ -648,7 +650,7 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
                     tpi = (TextPaintInfo)aci.getAttribute(PAINT_INFO);
                 }
                 Glyph glyph = glyphBridge.createGlyph
-                    (ctx, missingGlyphElement, textElement, -1, 
+                    (ctx, missingGlyphElement, textElement, -1,
                      fontSize, fontFace, tpi);
                 glyphs.add(glyph);
             }
@@ -657,10 +659,9 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
 
         // turn the vector of glyphs into an array;
         int numGlyphs = glyphs.size();
-        Glyph[] glyphArray = new Glyph[numGlyphs];
-        for (int i =0; i < numGlyphs; i++) {
-            glyphArray[i] = (Glyph)glyphs.get(i);
-        }
+
+        Glyph[] glyphArray = (Glyph[])glyphs.toArray( new Glyph[numGlyphs] );
+
         // return a new SVGGVTGlyphVector
         return new SVGGVTGlyphVector(this, glyphArray, frc);
     }
@@ -678,12 +679,13 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
     public GVTGlyphVector createGlyphVector(FontRenderContext frc,
                                             int[] glyphCodes,
                                             CharacterIterator ci) {
-        // costruct a string from the glyphCodes
-        String str = "";
-        for (int i = 0; i < glyphCodes.length; i++) {
-            str += glyphUnicodes[glyphCodes[i]];
+        // construct a string from the glyphCodes
+        int nGlyphs = glyphCodes.length;
+        StringBuffer workBuff = new StringBuffer( nGlyphs );
+        for (int i = 0; i < nGlyphs; i++) {
+            workBuff.append( glyphUnicodes[glyphCodes[i]] );
         }
-        StringCharacterIterator sci = new StringCharacterIterator(str);
+        StringCharacterIterator sci = new StringCharacterIterator( workBuff.toString() );
         return createGlyphVector(frc, sci);
     }
 
@@ -721,7 +723,7 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
     }
 
     protected GVTLineMetrics getLineMetrics(int beginIndex, int limit) {
-        if (lineMetrics != null) 
+        if (lineMetrics != null)
             return lineMetrics;
 
         float fontHeight = fontFace.getUnitsPerEm();
@@ -744,10 +746,10 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
 
 
         lineMetrics = new GVTLineMetrics
-            (ascent, Font.ROMAN_BASELINE, baselineOffsets, descent, 
-             fontHeight, fontHeight, limit-beginIndex, 
-             stOffset, stThickness, 
-             ulOffset, ulThickness, 
+            (ascent, Font.ROMAN_BASELINE, baselineOffsets, descent,
+             fontHeight, fontHeight, limit-beginIndex,
+             stOffset, stThickness,
+             ulOffset, ulThickness,
              olOffset, olThickness);
         return lineMetrics;
     }
