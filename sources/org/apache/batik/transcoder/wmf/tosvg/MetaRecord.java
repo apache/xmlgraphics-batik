@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001-2004  The Apache Software Foundation 
+   Copyright 2001-2004  The Apache Software Foundation
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -41,24 +41,24 @@ public class MetaRecord /*implements Serializable*/ {
     public Integer ElementAt( int offset ) {
         return (Integer)ptVector.elementAt( offset );
     }
-    
+
     /** A record that contain byte arrays elements.
      */
     public static class ByteRecord extends MetaRecord {
         public byte[] bstr;
-        
+
         public ByteRecord(byte[] bstr) {
             this.bstr = bstr;
         }
     }
-    
+
     public static class StringRecord extends MetaRecord /*implements Serializable*/ {
         public String text;
-        
+
         public StringRecord( String newText ) {
-            text = new String( newText );
+            text = newText;
         }
-    }    
+    }
 }
-    
+
 
