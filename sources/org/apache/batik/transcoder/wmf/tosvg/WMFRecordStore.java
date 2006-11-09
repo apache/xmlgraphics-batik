@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001-2003  The Apache Software Foundation 
+   Copyright 2001-2003,2006  The Apache Software Foundation
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -20,7 +20,8 @@ package org.apache.batik.transcoder.wmf.tosvg;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.batik.transcoder.wmf.WMFConstants;
 
@@ -31,6 +32,15 @@ import org.apache.batik.transcoder.wmf.WMFConstants;
  * @version $Id$
  */
 public class WMFRecordStore extends AbstractWMFReader {
+
+    private URL url;
+
+    protected int numRecords;
+    protected float vpX, vpY;
+    protected List records;
+
+    private boolean _bext = true;
+
 
     public WMFRecordStore() {
       super();
@@ -47,9 +57,9 @@ public class WMFRecordStore extends AbstractWMFReader {
       vpW = 1000;
       vpH = 1000;
       scaleX = 1;
-      scaleY = 1;      
+      scaleY = 1;
       inch = 0;
-      records = new Vector( 20, 20 );
+      records = new ArrayList( 20 );
     }
 
     /**
@@ -87,7 +97,7 @@ public class WMFRecordStore extends AbstractWMFReader {
                     int xVal = readShort( is );
                     int lenText = readShort( is );
                     int flag = readShort( is );
-                    int read = 4; // used to track the actual size really read                   
+                    int read = 4; // used to track the actual size really read
                     boolean clipped = false;
                     int x1 = 0, y1 = 0, x2 = 0, y2 = 0;
                     int len;
@@ -105,17 +115,17 @@ public class WMFRecordStore extends AbstractWMFReader {
                     for ( ; i < lenText; i++ ) {
                         bstr[ i ] = is.readByte();
                     }
-                    read += (lenText + 1)/2;                    
+                    read += (lenText + 1)/2;
                     /* must do this because WMF strings always have an even number of bytes, even
                      * if there is an odd number of characters
                      */
                     if (lenText % 2 != 0) is.readByte();
                     // if the record was not completely read, finish reading
                     if (read < recSize) for (int j = read; j < recSize; j++) readShort( is );
-                    
+
                     /* get the StringRecord, having decoded the String, using the current
                      * charset (which was given by the last META_CREATEFONTINDIRECT)
-                     */                    
+                     */
                     mr = new MetaRecord.ByteRecord(bstr);
                     mr.numPoints = recSize;
                     mr.functionId = functionId;
@@ -125,11 +135,11 @@ public class WMFRecordStore extends AbstractWMFReader {
                     mr.AddElement( new Integer( flag ));
                     if (clipped) {
                         mr.AddElement( new Integer( x1 ));
-                        mr.AddElement( new Integer( y1 ));                        
-                        mr.AddElement( new Integer( x2 ));   
+                        mr.AddElement( new Integer( y1 ));
+                        mr.AddElement( new Integer( x2 ));
                         mr.AddElement( new Integer( y2 ));
                     }
-                    records.addElement( mr );
+                    records.add( mr );
                 }
                 break;
 
@@ -144,15 +154,15 @@ public class WMFRecordStore extends AbstractWMFReader {
                     /* must do this because WMF strings always have an even number of bytes, even
                      * if there is an odd number of characters
                      */
-                    if (len % 2 != 0) is.readByte(); 
+                    if (len % 2 != 0) is.readByte();
                     read += (len + 1) / 2;
-                    
+
                     int yVal = readShort( is );
                     int xVal = readShort( is );
                     read += 2;
-                    // if the record was not completely read, finish reading                    
+                    // if the record was not completely read, finish reading
                     if (read < recSize) for (int j = read; j < recSize; j++) readShort( is );
-                    
+
                     /* get the StringRecord, having decoded the String, using the current
                      * charset (which was givben by the last META_CREATEFONTINDIRECT)
                      */
@@ -162,7 +172,7 @@ public class WMFRecordStore extends AbstractWMFReader {
 
                     mr.AddElement( new Integer( xVal ));
                     mr.AddElement( new Integer( yVal ));
-                    records.addElement( mr );
+                    records.add( mr );
                 }
                 break;
 
@@ -185,7 +195,7 @@ public class WMFRecordStore extends AbstractWMFReader {
                     int lfQuality = is.readByte();
                     int lfPitchAndFamily = is.readByte();
 
-                    // don't need to read the end of the record, 
+                    // don't need to read the end of the record,
                     // because it will always be completely used
                     int len = (2*(recSize-9));
                     byte lfFaceName[] = new byte[ len ];
@@ -207,20 +217,20 @@ public class WMFRecordStore extends AbstractWMFReader {
                     mr.AddElement( new Integer( lfOrientation));
                     // escapement is the orientation of the text in tenth of degrees
                     mr.AddElement( new Integer( lfEscapement));
-                    records.addElement( mr );
+                    records.add( mr );
                 }
                 break;
-                
+
             case WMFConstants.META_SETMAPMODE: {
                     mr.numPoints = recSize;
                     mr.functionId = functionId;
 
-                    int mode = readShort( is );  
+                    int mode = readShort( is );
                     mr.AddElement( new Integer( mode));
-                    records.addElement( mr );
-            }
+                    records.add( mr );
+                }
                 break;
-                
+
             case WMFConstants.META_SETVIEWPORTORG:
             case WMFConstants.META_SETVIEWPORTEXT:
             case WMFConstants.META_SETWINDOWORG:
@@ -232,7 +242,7 @@ public class WMFRecordStore extends AbstractWMFReader {
                     int width = readShort( is );
                     mr.AddElement( new Integer( width ));
                     mr.AddElement( new Integer( height ));
-                    records.addElement( mr );
+                    records.add( mr );
 
                     if (_bext && functionId == WMFConstants.META_SETWINDOWEXT) {
                       vpW = width;
@@ -241,8 +251,8 @@ public class WMFRecordStore extends AbstractWMFReader {
                     }
                 }
                 break;
-                
-            case WMFConstants.META_OFFSETVIEWPORTORG:                
+
+            case WMFConstants.META_OFFSETVIEWPORTORG:
             case WMFConstants.META_OFFSETWINDOWORG: {
                     mr.numPoints = recSize;
                     mr.functionId = functionId;
@@ -250,12 +260,12 @@ public class WMFRecordStore extends AbstractWMFReader {
                     int y = readShort( is );
                     int x = readShort( is );
                     mr.AddElement( new Integer( x ));
-                    mr.AddElement( new Integer( y ));                
-                    records.addElement( mr );
-            }
+                    mr.AddElement( new Integer( y ));
+                    records.add( mr );
+                }
                 break;
-                
-            case WMFConstants.META_SCALEVIEWPORTEXT:                
+
+            case WMFConstants.META_SCALEVIEWPORTEXT:
             case WMFConstants.META_SCALEWINDOWEXT: {
                     mr.numPoints = recSize;
                     mr.functionId = functionId;
@@ -268,12 +278,12 @@ public class WMFRecordStore extends AbstractWMFReader {
                     mr.AddElement( new Integer( ydenom ));
                     mr.AddElement( new Integer( xnum ));
                     mr.AddElement( new Integer( ynum ));
-                    records.addElement( mr );
+                    records.add( mr );
                     scaleX = scaleX * (float)xdenom / (float)xnum;
-                    scaleY = scaleY * (float)ydenom / (float)ynum;                    
+                    scaleY = scaleY * (float)ydenom / (float)ynum;
                 }
                 break;
-                
+
             case WMFConstants.META_CREATEBRUSHINDIRECT:
                 {
                     mr.numPoints = recSize;
@@ -294,10 +304,10 @@ public class WMFRecordStore extends AbstractWMFReader {
                     // The hatch style
                     mr.AddElement( new Integer( readShort( is )));
 
-                    records.addElement( mr );
+                    records.add( mr );
                 }
                 break;
-                
+
             case WMFConstants.META_CREATEPENINDIRECT:
                 {
                     mr.numPoints = recSize;
@@ -307,14 +317,14 @@ public class WMFRecordStore extends AbstractWMFReader {
                     Integer style = new Integer( readShort( is ));
                     mr.AddElement( style );
 
-                    int width = readInt( is );                    
+                    int width = readInt( is );
                     int colorref =  readInt( is );
-                    
-                    /** 
+
+                    /**
                      * sometimes records generated by PPT have a
                      * recSize of 6 and not 5 => in this case only we have
                      * to read a last short element
-                     **/                    
+                     **/
                     //int height = readShort( is );
                     if (recSize == 6) readShort(is);
 
@@ -330,9 +340,9 @@ public class WMFRecordStore extends AbstractWMFReader {
                     // The pen width
                     mr.AddElement( new Integer( width ));
 
-                    records.addElement( mr );
+                    records.add( mr );
                 }
-                break; 
+                break;
 
             case WMFConstants.META_SETTEXTALIGN:
                 {
@@ -342,10 +352,10 @@ public class WMFRecordStore extends AbstractWMFReader {
                     // need to do this, because sometimes there is more than one short
                     if (recSize > 1) for (int i = 1; i < recSize; i++) readShort( is );
                     mr.AddElement( new Integer( align ));
-                    records.addElement( mr );
+                    records.add( mr );
                 }
                 break;
-                
+
             case WMFConstants.META_SETTEXTCOLOR:
             case WMFConstants.META_SETBKCOLOR:
                 {
@@ -360,7 +370,7 @@ public class WMFRecordStore extends AbstractWMFReader {
                     mr.AddElement( new Integer( red ));
                     mr.AddElement( new Integer( green ));
                     mr.AddElement( new Integer( blue ));
-                    records.addElement( mr );
+                    records.add( mr );
                 }
                 break;
 
@@ -374,10 +384,10 @@ public class WMFRecordStore extends AbstractWMFReader {
                     int x = readShort( is );
                     mr.AddElement( new Integer( x ));
                     mr.AddElement( new Integer( y ));
-                    records.addElement( mr );
+                    records.add( mr );
                 }
                 break;
-                
+
             case WMFConstants.META_SETPOLYFILLMODE :
                 {
                     mr.numPoints = recSize;
@@ -387,10 +397,10 @@ public class WMFRecordStore extends AbstractWMFReader {
                     // need to do this, because sometimes there is more than one short
                     if (recSize > 1) for (int i = 1; i < recSize; i++) readShort( is );
                     mr.AddElement( new Integer( mode ));
-                    records.addElement( mr );
+                    records.add( mr );
                 }
                 break;
-                
+
             case WMFConstants.META_POLYPOLYGON:
                 {
                     mr.numPoints = recSize;
@@ -415,11 +425,11 @@ public class WMFRecordStore extends AbstractWMFReader {
                             mr.AddElement( new Integer( readShort( is ))); // y position of the polygon
                         }
                     }
-                    records.addElement( mr );
+                    records.add( mr );
                 }
                 break;
 
-            case WMFConstants.META_POLYLINE:                
+            case WMFConstants.META_POLYLINE:
             case WMFConstants.META_POLYGON:
                 {
                     mr.numPoints = recSize;
@@ -431,10 +441,10 @@ public class WMFRecordStore extends AbstractWMFReader {
                         mr.AddElement( new Integer( readShort( is )));
                         mr.AddElement( new Integer( readShort( is )));
                     }
-                    records.addElement( mr );
+                    records.add( mr );
                 }
                 break;
-                
+
             case WMFConstants.META_ELLIPSE:
             case WMFConstants.META_INTERSECTCLIPRECT:
             case WMFConstants.META_RECTANGLE:
@@ -450,7 +460,7 @@ public class WMFRecordStore extends AbstractWMFReader {
                     mr.AddElement( new Integer( top ));
                     mr.AddElement( new Integer( right ));
                     mr.AddElement( new Integer( bottom ));
-                    records.addElement( mr );
+                    records.add( mr );
                 }
                 break;
 
@@ -465,7 +475,7 @@ public class WMFRecordStore extends AbstractWMFReader {
                     mr.AddElement( new Integer( top ));
                     mr.AddElement( new Integer( right ));
                     mr.AddElement( new Integer( bottom ));
-                    records.addElement( mr );
+                    records.add( mr );
             }
             break;
 
@@ -485,7 +495,7 @@ public class WMFRecordStore extends AbstractWMFReader {
                     mr.AddElement( new Integer( bottom ));
                     mr.AddElement( new Integer( el_width ));
                     mr.AddElement( new Integer( el_height ));
-                    records.addElement( mr );
+                    records.add( mr );
                 }
                 break;
 
@@ -511,7 +521,7 @@ public class WMFRecordStore extends AbstractWMFReader {
                     mr.AddElement( new Integer( ystart ));
                     mr.AddElement( new Integer( xend ));
                     mr.AddElement( new Integer( yend ));
-                    records.addElement( mr );
+                    records.add( mr );
                 }
                 break;
 
@@ -526,30 +536,30 @@ public class WMFRecordStore extends AbstractWMFReader {
                     int width = readShort( is );
                     int left = readShort( is );
                     int top = readShort( is );
-                    
+
                     mr.AddElement( new Integer( rop ));
                     mr.AddElement( new Integer( height ));
                     mr.AddElement( new Integer( width ));
                     mr.AddElement( new Integer( top ));
                     mr.AddElement( new Integer( left ));
-                    
-                    records.addElement( mr );                    
+
+                    records.add( mr );
                 }
-                break;                
-                
+                break;
+
             case WMFConstants.META_SETBKMODE:
                 {
                     mr.numPoints = recSize;
                     mr.functionId = functionId;
 
-                    int mode = readShort( is );                
+                    int mode = readShort( is );
                     mr.AddElement( new Integer( mode ));
                     //if (recSize > 1) readShort( is );
                     if (recSize > 1) for (int i = 1; i < recSize; i++) readShort( is );
-                    records.addElement( mr );                                        
+                    records.add( mr );
                 }
                 break;
-                
+
             // UPDATED : META_SETROP2 added
             case WMFConstants.META_SETROP2:
                 {
@@ -560,9 +570,9 @@ public class WMFRecordStore extends AbstractWMFReader {
                     int rop;
                     if (recSize == 1) rop = readShort( is );
                     else rop = readInt( is );
-                    
+
                     mr.AddElement( new Integer( rop ));
-                    records.addElement( mr );
+                    records.add( mr );
                 }
                 break;
             // UPDATED : META_DIBSTRETCHBLT added
@@ -574,44 +584,44 @@ public class WMFRecordStore extends AbstractWMFReader {
                     int sy = readShort( is );
                     int sx = readShort( is );
                     int heightDst = readShort( is );
-                    int widthDst = readShort( is );                    
-                    int dy = readShort( is );                                        
-                    int dx = readShort( is );  
-                    
+                    int widthDst = readShort( is );
+                    int dy = readShort( is );
+                    int dx = readShort( is );
+
                     int len = 2*recSize - 20;
-                    byte bitmap[] = new byte[len];                    
+                    byte[] bitmap = new byte[len];
                     for (int i = 0; i < len; i++) bitmap[i] = is.readByte();
-                    
+
                     mr = new MetaRecord.ByteRecord(bitmap);
                     mr.numPoints = recSize;
-                    mr.functionId = functionId;                    
+                    mr.functionId = functionId;
                     mr.AddElement( new Integer( mode ));
-                    mr.AddElement( new Integer( heightSrc ));                    
-                    mr.AddElement( new Integer( widthSrc ));                                        
+                    mr.AddElement( new Integer( heightSrc ));
+                    mr.AddElement( new Integer( widthSrc ));
                     mr.AddElement( new Integer( sy ));
                     mr.AddElement( new Integer( sx ));
-                    mr.AddElement( new Integer( heightDst )); 
-                    mr.AddElement( new Integer( widthDst )); 
+                    mr.AddElement( new Integer( heightDst ));
+                    mr.AddElement( new Integer( widthDst ));
                     mr.AddElement( new Integer( dy ));
-                    mr.AddElement( new Integer( dx ));                      
-                    records.addElement( mr );
+                    mr.AddElement( new Integer( dx ));
+                    records.add( mr );
                 }
-                break;                
-            // UPDATED : META_CREATEPATTERNBRUSH added                
+                break;
+            // UPDATED : META_CREATEPATTERNBRUSH added
             case WMFConstants.META_DIBCREATEPATTERNBRUSH:
-                {                    
+                {
                     int type = is.readInt() & 0xff;
                     int len = 2*recSize - 4;
-                    byte bitmap[] = new byte[len];                    
+                    byte[] bitmap = new byte[len];
                     for (int i = 0; i < len; i++) bitmap[i] = is.readByte();
-                    
+
                     mr = new MetaRecord.ByteRecord(bitmap);
                     mr.numPoints = recSize;
-                    mr.functionId = functionId;                    
+                    mr.functionId = functionId;
                     mr.AddElement(new Integer( type ));
-                    records.addElement( mr );
+                    records.add( mr );
                 }
-                break;                                                
+                break;
             default:
                 mr.numPoints = recSize;
                 mr.functionId = functionId;
@@ -619,7 +629,7 @@ public class WMFRecordStore extends AbstractWMFReader {
                 for ( int j = 0; j < recSize; j++ )
                     mr.AddElement( new Integer( readShort( is )));
 
-                records.addElement( mr );
+                records.add( mr );
                 break;
 
             }
@@ -649,7 +659,7 @@ public class WMFRecordStore extends AbstractWMFReader {
      * Returns a meta record.
      */
     public MetaRecord getRecord( int idx ) {
-      return (MetaRecord)records.elementAt( idx );
+      return (MetaRecord)records.get( idx );
     }
 
     /**
@@ -687,12 +697,4 @@ public class WMFRecordStore extends AbstractWMFReader {
       vpY = newValue;
     }
 
-    transient private URL url;
-
-    transient protected int numRecords;
-    transient protected float vpX, vpY;
-    transient protected Vector	records;
-
-    transient protected boolean bReading = false;
-    transient private boolean _bext = true;    
 }
