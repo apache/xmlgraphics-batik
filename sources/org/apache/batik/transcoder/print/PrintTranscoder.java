@@ -1,6 +1,6 @@
 /*
 
-   Copyright 1999-2003  The Apache Software Foundation 
+   Copyright 1999-2003  The Apache Software Foundation
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -282,7 +282,7 @@ public class PrintTranscoder extends SVGAbstractTranscoder
         //
         if(pageIndex >= printedInputs.size()){
             curIndex = -1;
-            if (theCtx != null) 
+            if (theCtx != null)
                 theCtx.dispose();
             userAgent.displayMessage("Done");
             return NO_SUCH_PAGE;
@@ -292,7 +292,7 @@ public class PrintTranscoder extends SVGAbstractTranscoder
         // Load a new document now if we are printing a new page
         //
         if(curIndex != pageIndex){
-            if (theCtx != null) 
+            if (theCtx != null)
                 theCtx.dispose();
 
             // The following call will invoke this class' transcode
@@ -782,7 +782,7 @@ public class PrintTranscoder extends SVGAbstractTranscoder
                                                 TranscodingHints.Key key){
         String str = System.getProperty(property);
         if(str != null){
-            Boolean value = new Boolean("true".equalsIgnoreCase(str));
+            Boolean value = "true".equalsIgnoreCase(str) ? Boolean.TRUE : Boolean.FALSE;
             transcoder.addTranscodingHint(key, value);
         }
     }
