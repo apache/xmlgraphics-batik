@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2006  The Apache Software Foundation 
+   Copyright 2006  The Apache Software Foundation
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.Vector;
+import java.util.Set;
 
 import org.apache.batik.anim.AnimationException;
 import org.apache.batik.i18n.LocalizableSupport;
@@ -282,8 +283,8 @@ public abstract class TimedElement implements SMILConstants {
         // Trace.enter(this, "removeInstanceTime", new Object[] { time, new Boolean(isBegin) } ); try {
         Vector instanceTimes = isBegin ? beginInstanceTimes : endInstanceTimes;
         int index = Collections.binarySearch(instanceTimes, time);
-        for (int i = index; index >= 0; index--) {
-            InstanceTime it = (InstanceTime) instanceTimes.get(i);
+        for (int i = index; index >= 0; index--) {                       // todo cam, please check this
+            InstanceTime it = (InstanceTime) instanceTimes.get(i);       // todo everything ok with i <-> index?? 
             if (it == time) {
                 instanceTimes.remove(i);
                 return;
@@ -293,7 +294,7 @@ public abstract class TimedElement implements SMILConstants {
             }
         }
         int len = instanceTimes.size();
-        for (int i = index + 1; index < len; i++) {
+        for (int i = index + 1; index < len; i++) {      // todo cam, please check this
             InstanceTime it = (InstanceTime) instanceTimes.get(i);
             if (it == time) {
                 instanceTimes.remove(i);
@@ -419,7 +420,7 @@ public abstract class TimedElement implements SMILConstants {
     }
 
     /**
-     * Subtracts one simple time from another.
+     * Multiplies one simple time by n.
      */
     protected float multiplyTime(float t, float n) {
         if (isUnresolved(t) || t == INDEFINITE) {
@@ -554,7 +555,7 @@ public abstract class TimedElement implements SMILConstants {
         while (i.hasNext()) {
             Map.Entry e = (Map.Entry) i.next();
             Event evt = (Event) e.getKey();
-            HashSet ts = (HashSet) e.getValue();
+            Set ts = (Set) e.getValue();
             Iterator j = ts.iterator();
             boolean hasBegin = false, hasEnd = false;
             while (j.hasNext() && !(hasBegin && hasEnd)) {
@@ -883,7 +884,7 @@ public abstract class TimedElement implements SMILConstants {
      */
     protected void reset(boolean clearCurrentBegin) {
         // System.err.println("reset");
-        Iterator i = beginInstanceTimes.iterator(); 
+        Iterator i = beginInstanceTimes.iterator();
         while (i.hasNext()) {
             InstanceTime it = (InstanceTime) i.next();
             if (it.getClearOnReset() &&
@@ -987,7 +988,8 @@ public abstract class TimedElement implements SMILConstants {
             public void clockValue(float newClockValue) {
                 v = newClockValue;
             }
-        };
+        }
+
         Handler h = new Handler();
         p.setClockHandler(h);
         p.parse(s);
@@ -1358,7 +1360,7 @@ public abstract class TimedElement implements SMILConstants {
     /**
      * The error messages bundle class name.
      */
-    protected final static String RESOURCES =
+    protected static final String RESOURCES =
         "org.apache.batik.anim.resources.Messages";
 
     /**
@@ -1394,9 +1396,9 @@ public abstract class TimedElement implements SMILConstants {
      * Returns a string representation of the given time value.
      */
     public static String toString(float time) {
-        if (time == Float.NaN) {
+        if (Float.isNaN( time )) {
             return "UNRESOLVED";
-        } else if (time == Float.POSITIVE_INFINITY) {
+        } else if (time == Float.POSITIVE_INFINITY) {  // should also test for NEGATIVE_INFINITY?
             return "INDEFINITE";
         } else {
             return Float.toString(time);
