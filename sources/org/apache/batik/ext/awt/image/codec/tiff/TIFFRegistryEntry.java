@@ -55,7 +55,8 @@ public class TIFFRegistryEntry
      *                purposes only.  This may be null.
      * @param needRawData If true the image returned should not have
      *                    any default color correction the file may 
-     *                    specify applied.  */
+     *                    specify applied.
+     */
     public Filter handleStream(InputStream inIS, 
                                ParsedURL   origURL,
                                boolean needRawData) {

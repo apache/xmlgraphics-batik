@@ -20,10 +20,13 @@ package org.apache.batik.bridge;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 
+import org.apache.batik.css.engine.CSSEngineEvent;
+import org.apache.batik.dom.svg.AnimatedLiveAttributeValue;
 import org.apache.batik.dom.svg.SVGContext;
 import org.apache.batik.dom.svg.SVGOMElement;
 
 import org.w3c.dom.Element;
+import org.w3c.dom.events.MutationEvent;
 
 /**
  * Abstract bridge class for animatable elements that do not produce
@@ -34,7 +37,7 @@ import org.w3c.dom.Element;
  */
 public abstract class AnimatableGenericSVGBridge
         extends AnimatableSVGBridge
-        implements GenericBridge, SVGContext {
+        implements GenericBridge, BridgeUpdateHandler, SVGContext {
 
     /**
      * Invoked to handle an <tt>Element</tt> for a given <tt>BridgeContext</tt>.
@@ -131,5 +134,34 @@ public abstract class AnimatableGenericSVGBridge
      */
     public float getFontSize() {
         return 0f;
+    }
+
+    // BridgeUpdateHandler ///////////////////////////////////////////////////
+
+    public void dispose() {
+        ((SVGOMElement) e).setSVGContext(null);
+    }
+
+    public void handleDOMNodeInsertedEvent(MutationEvent evt) { 
+    }
+
+    public void handleDOMCharacterDataModified(MutationEvent evt) { 
+    }
+
+    public void handleDOMNodeRemovedEvent(MutationEvent evt) { 
+        dispose();
+    }
+
+    public void handleDOMAttrModifiedEvent(MutationEvent evt) {
+    }
+
+    public void handleCSSEngineEvent(CSSEngineEvent evt) {
+    }
+
+    public void handleAnimatedAttributeChanged
+            (AnimatedLiveAttributeValue alav) {
+    }
+
+    public void handleOtherAnimationChanged(String type) {
     }
 }

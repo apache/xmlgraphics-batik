@@ -353,8 +353,10 @@ public abstract class TimingParser extends AbstractParser {
             reportError("character.unexpected",
                         new Object[] { new Integer(current) });
         }
+        float weight = 0.1f;
         do {
-            value = (value + (current - '0')) / 10;
+            value += weight * (current - '0');
+            weight *= 0.1f;
             current = reader.read();
         } while (current >= '0' && current <= '9');
         return value;

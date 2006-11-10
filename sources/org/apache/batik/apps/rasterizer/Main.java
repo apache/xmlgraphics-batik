@@ -27,6 +27,9 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 
 import org.apache.batik.transcoder.Transcoder;
+import org.apache.batik.parser.ClockHandler;
+import org.apache.batik.parser.ClockParser;
+import org.apache.batik.parser.ParseException;
 import org.apache.batik.util.ApplicationSecurityEnforcer;
 
 /**
@@ -142,6 +145,30 @@ public class Main implements SVGConverterController {
             try{
                 handleOption(Float.parseFloat(optionValue), c);
             } catch(NumberFormatException e){
+                throw new IllegalArgumentException();
+            }
+        }
+
+        public abstract void handleOption(float optionValue, SVGConverter c);
+    }
+
+    /**
+     * Base class for options which expect the single optionValue to 
+     * be a time value. Subclasses should implement the <tt>handleOption</tt>
+     * method which takes a float and an <tt>SVGConverter</tt> as
+     * parameters.
+     */
+    public static abstract class TimeOptionHandler extends FloatOptionHandler {
+        public void handleOption(String optionValue, final SVGConverter c) {
+            try {
+                ClockParser p = new ClockParser();
+                p.setClockHandler(new ClockHandler() {
+                    public void clockValue(float v) {
+                        handleOption(v, c);
+                    }
+                });
+                p.parse(optionValue);
+            } catch (ParseException e) {
                 throw new IllegalArgumentException();
             }
         }
@@ -397,6 +424,16 @@ public class Main implements SVGConverterController {
       
     public static String CL_OPTION_ONLOAD_DESCRIPTION
         = Messages.get("Main.cl.option.onload.description", "No description");
+
+    /**
+     * Option to specify that the document should be rasterized after
+     * seeking to the specified document time.
+     */
+    public static String CL_OPTION_SNAPSHOT_TIME
+        = Messages.get("Main.cl.option.snapshot.time", "-snapshotTime");
+
+    public static String CL_OPTION_SNAPSHOT_TIME_DESCRIPTION
+        = Messages.get("Main.cl.option.snapshot.time.description", "No description");
 
     /**
      * Option to specify the user language with which SVG
@@ -742,6 +779,19 @@ public class Main implements SVGConverterController {
 
                               public String getOptionDescription(){
                                   return CL_OPTION_ONLOAD_DESCRIPTION;
+                              }
+                          });
+
+        optionMap.put(CL_OPTION_SNAPSHOT_TIME,
+                      new TimeOptionHandler(){
+                              public void handleOption(float optionValue,
+                                                       SVGConverter c){
+                                  c.setExecuteOnload(true);
+                                  c.setSnapshotTime(optionValue);
+                              }
+
+                              public String getOptionDescription(){
+                                  return CL_OPTION_SNAPSHOT_TIME_DESCRIPTION;
                               }
                           });
 

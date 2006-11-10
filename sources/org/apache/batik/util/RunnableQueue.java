@@ -195,7 +195,6 @@ public class RunnableQueue implements Runnable {
                 //     Thread.sleep(1);
                 // } catch (InterruptedException ie) { }
 
-                boolean usedIdleRunnable = false;
                 synchronized (list) {
                     if (state == SUSPENDING)
                         continue;
@@ -204,10 +203,10 @@ public class RunnableQueue implements Runnable {
                     if (l == null) {
                         // No item to run, see if there is an idle runnable
                         // to run instead.
-                        if (idleRunnable != null && idleRunnableWaitTime
-                                < System.currentTimeMillis()) {
+                        if (idleRunnable != null &&
+                                (idleRunnableWaitTime = idleRunnable.getWaitTime())
+                                    < System.currentTimeMillis()) {
                             rable = idleRunnable;
-                            usedIdleRunnable = true;
                         } else {
                             // Wait for a runnable.
                             try {
@@ -222,7 +221,6 @@ public class RunnableQueue implements Runnable {
                             } catch (InterruptedException ie) {
                                 // just loop again.
                             }
-                            idleRunnableWaitTime = 0;
                             continue; // start loop over again...
                         }
                     } else {
@@ -248,10 +246,6 @@ public class RunnableQueue implements Runnable {
                     l.unlock();
                 }
                 runnableInvoked(rable);
-
-                if (usedIdleRunnable) {
-                    idleRunnableWaitTime = idleRunnable.getWaitTime();
-                }
             }
         } finally {
             synchronized (this) {

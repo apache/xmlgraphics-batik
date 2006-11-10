@@ -34,10 +34,9 @@ import org.apache.batik.ext.awt.image.renderable.ProfileRable;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.Service;
 
-
 /**
  * This class handles the registered Image tag handlers.  These are
- * instances of RegisteryEntry in this package.
+ * instances of RegistryEntry in this package.
  *
  * @author <a href="mailto:Thomas.DeWeeese@Kodak.com">Thomas DeWeese</a>
  * @version $Id$

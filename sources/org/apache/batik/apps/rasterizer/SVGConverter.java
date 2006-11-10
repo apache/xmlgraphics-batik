@@ -239,6 +239,9 @@ public class SVGConverter {
     /** Execute the 'onload' scripts flag */
     protected boolean executeOnload = false;
 
+    /** Document time to seek to. */
+    protected float snapshotTime = Float.NaN;
+
     /** Set of allowed script types. */
     protected String allowedScriptTypes = null;
 
@@ -579,6 +582,22 @@ public class SVGConverter {
     }
 
     /**
+     * Sets the document time to seek to before rasterizing.
+     *
+     * @param t the document time, in seconds
+     */
+    public void setSnapshotTime(float t) {
+        snapshotTime = t;
+    }
+
+    /**
+     * Returns the document to to seek to before rasterizing.
+     */
+    public float getSnapshotTime() {
+        return snapshotTime;
+    }
+
+    /**
      * Sets the set of allowed script types (i.e., the set of possible
      * values for the type attribute in the &lt;script&gt; element),
      * as a comma separated list of allowed values.
@@ -878,6 +897,11 @@ public class SVGConverter {
         // Set onload
         if (executeOnload) {
             map.put(ImageTranscoder.KEY_EXECUTE_ONLOAD, Boolean.TRUE );
+        }
+
+        // Set snapshot time
+        if (!Float.isNaN(snapshotTime)) {
+            map.put(ImageTranscoder.KEY_SNAPSHOT_TIME, new Float(snapshotTime));
         }
 
         // Set allowed scripts

@@ -520,6 +520,7 @@ public interface SVGConstants extends CSSConstants, XMLConstants {
     String SVG_SEED_ATTRIBUTE = "seed";
     String SVG_SHAPE_RENDERING_ATTRIBUTE = CSS_SHAPE_RENDERING_PROPERTY;
     String SVG_SLOPE_ATTRIBUTE = "slope";
+    String SVG_SNAPSHOT_TIME_ATTRIBUTE = "snapshotTime";
     String SVG_SPACE_ATTRIBUTE = "space";
     String SVG_SPACING_ATTRIBUTE = "spacing";
     String SVG_SPECULAR_CONSTANT_ATTRIBUTE = "specularConstant";

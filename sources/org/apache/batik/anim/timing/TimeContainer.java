@@ -41,6 +41,7 @@ public abstract class TimeContainer extends TimedElement {
         e.parent = this;
         setRoot(e, root);
         root.fireElementAdded(e);
+        root.currentIntervalWillUpdate();
     }
 
     /**
@@ -66,6 +67,7 @@ public abstract class TimeContainer extends TimedElement {
         e.parent = null;
         setRoot(e, null);
         root.fireElementRemoved(e);
+        root.currentIntervalWillUpdate();
     }
 
     /**
