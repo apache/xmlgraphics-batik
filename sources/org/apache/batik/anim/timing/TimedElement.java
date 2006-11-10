@@ -283,8 +283,8 @@ public abstract class TimedElement implements SMILConstants {
         // Trace.enter(this, "removeInstanceTime", new Object[] { time, new Boolean(isBegin) } ); try {
         Vector instanceTimes = isBegin ? beginInstanceTimes : endInstanceTimes;
         int index = Collections.binarySearch(instanceTimes, time);
-        for (int i = index; index >= 0; index--) {                       // todo cam, please check this
-            InstanceTime it = (InstanceTime) instanceTimes.get(i);       // todo everything ok with i <-> index?? 
+        for (int i = index; i >= 0; i--) {
+            InstanceTime it = (InstanceTime) instanceTimes.get(i);
             if (it == time) {
                 instanceTimes.remove(i);
                 return;
@@ -294,7 +294,7 @@ public abstract class TimedElement implements SMILConstants {
             }
         }
         int len = instanceTimes.size();
-        for (int i = index + 1; index < len; i++) {      // todo cam, please check this
+        for (int i = index + 1; i < len; i++) {      // todo cam, please check this
             InstanceTime it = (InstanceTime) instanceTimes.get(i);
             if (it == time) {
                 instanceTimes.remove(i);
@@ -611,7 +611,7 @@ public abstract class TimedElement implements SMILConstants {
             && time > currentInterval.getEnd();
         // Fire any repeat events that should have been fired since the
         // last sample.
-        if (currentInterval != null) {
+        if (currentInterval != null && time >= currentInterval.getBegin()) {
             float d = getSimpleDur();
             while (time - lastRepeatTime >= d
                     && lastRepeatTime + d < currentInterval.getEnd()) {
@@ -656,7 +656,9 @@ public abstract class TimedElement implements SMILConstants {
                             isFrozen = false;
                             fireTimeEvent(SMIL_BEGIN_EVENT_NAME, beginEventTime, 0);
                             float d = getSimpleDur();
-                            while (time - lastRepeatTime >= d) {
+                            float end = currentInterval.getEnd();
+                            while (time - lastRepeatTime >= d
+                                    && lastRepeatTime + d < end) {
                                 lastRepeatTime += d;
                                 currentRepeatIteration++;
                                 fireTimeEvent(root.getRepeatEventName(), lastRepeatTime,
@@ -699,6 +701,7 @@ public abstract class TimedElement implements SMILConstants {
                 }
             }
             shouldUpdateCurrentInterval = false;
+            hyperlinking = false;
             hasEnded = currentInterval != null && time >= currentInterval.getEnd();
         }
         // Trace.print("end loop");
@@ -713,20 +716,20 @@ public abstract class TimedElement implements SMILConstants {
 
         float d = getSimpleDur();
         if (isActive) {
-            // System.err.println("element sampling at simple time " + (time - lastRepeatTime));
+            // Trace.print("element active, sampling at simple time " + (time - lastRepeatTime));
             sampledAt(time - lastRepeatTime, d, currentRepeatIteration);
         } else if (isFrozen) {
             Interval previousInterval = (Interval) previousIntervals.getLast();
-            float end = previousInterval.getEnd();
-            if ((end - lastRepeatTime) % d == 0) {
+            float t = previousInterval.getEnd() - lastRepeatTime;
+            if (t % d == 0) {
+                // Trace.print("element frozen, sampling last value");
                 sampledLastValue(currentRepeatIteration);
-                // System.err.println("element sampling last value");
             } else {
-                sampledAt(end, d, currentRepeatIteration);
-                // System.err.println("element sampling at simple time " + end);
+                // Trace.print("element frozen, sampling at simple time " + (t % d));
+                sampledAt(t % d, d, currentRepeatIteration);
             }
         } else {
-            // System.err.println("element not sampling");
+            // Trace.print("element not sampling");
         }
 
         lastSampleTime = time;
@@ -883,7 +886,6 @@ public abstract class TimedElement implements SMILConstants {
      * Resets this element.
      */
     protected void reset(boolean clearCurrentBegin) {
-        // System.err.println("reset");
         Iterator i = beginInstanceTimes.iterator();
         while (i.hasNext()) {
             InstanceTime it = (InstanceTime) i.next();
@@ -1396,9 +1398,9 @@ public abstract class TimedElement implements SMILConstants {
      * Returns a string representation of the given time value.
      */
     public static String toString(float time) {
-        if (Float.isNaN( time )) {
+        if (Float.isNaN(time)) {
             return "UNRESOLVED";
-        } else if (time == Float.POSITIVE_INFINITY) {  // should also test for NEGATIVE_INFINITY?
+        } else if (time == Float.POSITIVE_INFINITY) {
             return "INDEFINITE";
         } else {
             return Float.toString(time);

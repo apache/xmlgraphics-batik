@@ -34,6 +34,7 @@ import org.apache.batik.bridge.DefaultScriptSecurity;
 import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.bridge.NoLoadScriptSecurity;
 import org.apache.batik.bridge.RelaxedScriptSecurity;
+import org.apache.batik.bridge.SVGUtilities;
 import org.apache.batik.bridge.ScriptSecurity;
 import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.bridge.UserAgentAdapter;
@@ -211,6 +212,14 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
                 se = new BaseScriptingEnvironment(ctx);
                 se.loadScripts();
                 se.dispatchSVGLoadEvent();
+                if (hints.containsKey(KEY_SNAPSHOT_TIME)) {
+                    float t =
+                        ((Float) hints.get(KEY_SNAPSHOT_TIME)).floatValue();
+                    ctx.getAnimationEngine().setCurrentTime(t);
+                } else if (ctx.isSVG12()) {
+                    float t = SVGUtilities.convertSnapshotTime(root, null);
+                    ctx.getAnimationEngine().setCurrentTime(t);
+                }
             }
         } catch (BridgeException ex) {
             ex.printStackTrace();
@@ -683,6 +692,31 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
      */
     public static final TranscodingHints.Key KEY_EXECUTE_ONLOAD
         = new BooleanKey();
+
+    /**
+     * The snapshot time key.
+     * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Key: </TH>
+     * <TD VALIGN="TOP">KEY_SNAPSHOT_TIME</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
+     * <TD VALIGN="TOP">Float</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
+     * <TD VALIGN="TOP">0</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Required: </TH>
+     * <TD VALIGN="TOP">No</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
+     * <TD VALIGN="TOP">Specifies the document time to seek to before
+     * rasterization.  Only applies if {@link #KEY_EXECUTE_ONLOAD} is
+     * set to <code>true</code>.</TD></TR>
+     * </TABLE> 
+     */
+    public static final TranscodingHints.Key KEY_SNAPSHOT_TIME
+        = new FloatKey();
 
     /**
      * The set of supported script languages (i.e., the set of possible

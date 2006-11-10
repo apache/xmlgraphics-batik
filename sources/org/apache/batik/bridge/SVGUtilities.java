@@ -32,6 +32,8 @@ import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.parser.AWTTransformProducer;
+import org.apache.batik.parser.ClockHandler;
+import org.apache.batik.parser.ClockParser;
 import org.apache.batik.parser.ParseException;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.SVG12Constants;
@@ -1157,5 +1159,41 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
         } else {
             return new Rectangle2D.Double();
         }
+    }
+
+    /**
+     * Returns the value of the 'snapshotTime' attribute on the specified
+     * element as a float, or <code>0f</code> if the attribute is missing
+     * or given as <code>"none"</code>.
+     *
+     * @param e the element from which to retrieve the 'snapshotTime' attribute
+     * @param ctx the BridgeContext to use for error information
+     */
+    public static float convertSnapshotTime(Element e, BridgeContext ctx) {
+        if (!e.hasAttributeNS(null, SVG_SNAPSHOT_TIME_ATTRIBUTE)) {
+            return 0f;
+        }
+        String t = e.getAttributeNS(null, SVG_SNAPSHOT_TIME_ATTRIBUTE);
+        if (t.equals(SVG_NONE_VALUE)) {
+            return 0f;
+        }
+
+        class Handler implements ClockHandler {
+            float time;
+            public void clockValue(float t) {
+                time = t;
+            }
+        }
+        ClockParser p = new ClockParser();
+        Handler h = new Handler();
+        p.setClockHandler(h);
+        try {
+            p.parse(t);
+        } catch (ParseException ex) {
+            throw new BridgeException
+                (null, e, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                 new Object[] { SVG_SNAPSHOT_TIME_ATTRIBUTE, t, ex });
+        }
+        return h.time;
     }
 }

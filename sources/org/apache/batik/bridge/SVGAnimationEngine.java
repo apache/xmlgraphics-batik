@@ -202,11 +202,6 @@ public class SVGAnimationEngine extends AnimationEngine {
     protected LinkedList initialBridges = new LinkedList();
 
     /**
-     * Event listener for the document 'load' event.
-     */
-    protected EventListener loadEventListener = new LoadListener();
-
-    /**
      * A StyleMap used by the {@link Factory}s when computing CSS values.
      */
     protected StyleMap dummyStyleMap;
@@ -263,17 +258,12 @@ public class SVGAnimationEngine extends AnimationEngine {
         cssEngine = d.getCSSEngine();
         dummyStyleMap = new StyleMap(cssEngine.getNumberOfProperties());
         isSVG12 = d.isSVG12();
-
-        SVGOMElement svg = (SVGOMElement) d.getDocumentElement();
-        svg.addEventListener("SVGLoad", loadEventListener, false);
     }
 
     /**
      * Disposes this animation engine.
      */
     public void dispose() {
-        SVGOMElement svg = (SVGOMElement) document.getDocumentElement();
-        svg.removeEventListener("SVGLoad", loadEventListener, false);
     }
 
     /**
@@ -355,7 +345,10 @@ public class SVGAnimationEngine extends AnimationEngine {
      */
     public void pause() {
         super.pause();
-        ctx.getUpdateManager().getUpdateRunnableQueue().setIdleRunnable(null);
+        UpdateManager um = ctx.getUpdateManager();
+        if (um != null) {
+            um.getUpdateRunnableQueue().setIdleRunnable(null);
+        }
     }
 
     /**
@@ -363,8 +356,10 @@ public class SVGAnimationEngine extends AnimationEngine {
      */
     public void unpause() {
         super.unpause();
-        ctx.getUpdateManager().getUpdateRunnableQueue().setIdleRunnable
-            (animationTickRunnable);
+        UpdateManager um = ctx.getUpdateManager();
+        if (um != null) {
+            um.getUpdateRunnableQueue().setIdleRunnable(animationTickRunnable);
+        }
     }
 
     /**
@@ -385,7 +380,9 @@ public class SVGAnimationEngine extends AnimationEngine {
      */
     public float setCurrentTime(float t) {
         float ret = super.setCurrentTime(t);
-        animationTickRunnable.resume();
+        if (animationTickRunnable != null) {
+            animationTickRunnable.resume();
+        }
         return ret;
     }
 
@@ -394,6 +391,53 @@ public class SVGAnimationEngine extends AnimationEngine {
      */
     protected TimedDocumentRoot createDocumentRoot() {
         return new AnimationRoot();
+    }
+
+    /**
+     * Starts the animation engine.
+     */
+    public void start(long documentStartTime) {
+        if (started) {
+            return;
+        }
+        started = true;
+        try {
+            try {
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(new Date(documentStartTime));
+                timedDocumentRoot.resetDocument(cal);
+                Object[] bridges = initialBridges.toArray();
+                initialBridges = null;
+                for (int i = 0; i < bridges.length; i++) {
+                    SVGAnimationElementBridge bridge =
+                        (SVGAnimationElementBridge) bridges[i];
+                    bridge.initializeAnimation();
+                }
+                for (int i = 0; i < bridges.length; i++) {
+                    SVGAnimationElementBridge bridge =
+                        (SVGAnimationElementBridge) bridges[i];
+                    bridge.initializeTimedElement();
+                }
+                // tick(0, false);
+                // animationThread = new AnimationThread();
+                // animationThread.start();
+                UpdateManager um = ctx.getUpdateManager();
+                if (um != null) {
+                    RunnableQueue q = um.getUpdateRunnableQueue();
+                    animationTickRunnable = new AnimationTickRunnable(q);
+                    q.setIdleRunnable(animationTickRunnable);
+                }
+            } catch (AnimationException ex) {
+                throw new BridgeException(ctx, ex.getElement().getElement(),
+                                          ex.getMessage());
+            }
+        } catch (BridgeException ex) {
+            if (ctx.getUserAgent() == null) {
+                ex.printStackTrace();
+            } else {
+                ctx.getUserAgent().displayError(ex);
+            }
+        }
     }
 
     /**
@@ -570,57 +614,6 @@ public class SVGAnimationEngine extends AnimationEngine {
     }
 
     /**
-     * Listener class for the document 'load' event.
-     */
-    protected class LoadListener implements EventListener {
-
-        /**
-         * Handles the event.
-         */
-        public void handleEvent(Event evt) {
-            if (evt.getTarget() != evt.getCurrentTarget()) {
-                return;
-            }
-            try {
-                try {
-                    Calendar cal = Calendar.getInstance();
-                    cal.setTime(new Date(evt.getTimeStamp()));
-                    timedDocumentRoot.resetDocument(cal);
-                    Object[] bridges = initialBridges.toArray();
-                    initialBridges = null;
-                    for (int i = 0; i < bridges.length; i++) {
-                        SVGAnimationElementBridge bridge =
-                            (SVGAnimationElementBridge) bridges[i];
-                        bridge.initializeAnimation();
-                    }
-                    for (int i = 0; i < bridges.length; i++) {
-                        SVGAnimationElementBridge bridge =
-                            (SVGAnimationElementBridge) bridges[i];
-                        bridge.initializeTimedElement();
-                    }
-                    started = true;
-                    tick(0, false);
-                    // animationThread = new AnimationThread();
-                    // animationThread.start();
-                    RunnableQueue q =
-                        ctx.getUpdateManager().getUpdateRunnableQueue();
-                    animationTickRunnable = new AnimationTickRunnable(q);
-                    q.setIdleRunnable(animationTickRunnable);
-                } catch (AnimationException ex) {
-                    throw new BridgeException(ctx, ex.getElement().getElement(),
-                                              ex.getMessage());
-                }
-            } catch (BridgeException ex) {
-                if (ctx.getUserAgent() == null) {
-                    ex.printStackTrace();
-                } else {
-                    ctx.getUserAgent().displayError(ex);
-                }
-            }
-        }
-    }
-
-    /**
      * Idle runnable to tick the animation.
      */
     protected class AnimationTickRunnable
@@ -636,6 +629,7 @@ public class SVGAnimationEngine extends AnimationEngine {
             this.q = q;
         }
         public void resume() {
+            waitTime = 0;
             Object lock = q.getIteratorLock();
             synchronized (lock) {
                 lock.notify();
@@ -659,7 +653,7 @@ public class SVGAnimationEngine extends AnimationEngine {
                     if (t2 == Float.POSITIVE_INFINITY) {
                         waitTime = Long.MAX_VALUE;
                     } else {
-                        waitTime = now + (long) (t2 * 1000) - 2000;;
+                        waitTime = now + (long) (t2 * 1000) - 2000;
                     }
                     frames++;
                 } catch (AnimationException ex) {

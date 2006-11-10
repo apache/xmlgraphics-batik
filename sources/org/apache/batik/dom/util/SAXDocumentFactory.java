@@ -74,7 +74,7 @@ public class SAXDocumentFactory
     /**
      * The SAX2 parser object.
      */
-    private XMLReader parser;
+    protected XMLReader parser;
 
     /**
      * The created document.

@@ -24,6 +24,14 @@ import java.util.List;
 public abstract class AbstractRegistryEntry 
     implements RegistryEntry, ErrorConstants {
 
+    /**
+     * Object that can be used as the <code>base</code> parameter of a call
+     * to {@link ImageTagRegistry#getBrokenLinkImage}.  This allows access
+     * to the error messages defined in the resource bundle in this package
+     * by <code>RegistryEntry</code> classes that live in a different package.
+     */
+    protected static Object SPI_OBJECT = new Object();
+
     String name;
     float  priority;
     List   exts;

@@ -173,7 +173,6 @@ public abstract class AbstractGraphicsNodeBridge extends AnimatableSVGBridge
                 at.concatenate(new AffineTransform(m.getA(), m.getB(),
                                                    m.getC(), m.getD(),
                                                    m.getE(), m.getF()));
-                                                 
             }
             if (e instanceof SVGMotionAnimatableElement) {
                 SVGMotionAnimatableElement mae = (SVGMotionAnimatableElement) e;

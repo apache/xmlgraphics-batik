@@ -86,11 +86,11 @@ public abstract class AbstractSVGAnimatedLength
      * @param dir The length's direction.
      * @param nonneg Whether the length must be non-negative.
      */
-    protected AbstractSVGAnimatedLength(AbstractElement elt,
-                                        String ns,
-                                        String ln,
-                                        short dir,
-                                        boolean nonneg) {
+    public AbstractSVGAnimatedLength(AbstractElement elt,
+                                     String ns,
+                                     String ln,
+                                     short dir,
+                                     boolean nonneg) {
         super(elt, ns, ln);
         direction = dir;
         nonNegative = nonneg;

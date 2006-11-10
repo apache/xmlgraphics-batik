@@ -212,9 +212,9 @@ public class SVG12BridgeContext extends BridgeContext {
      * shadow trees can be caught.
      */
     public void addDOMListeners() {
-        AbstractNode n = (AbstractNode) document;
+        SVGOMDocument doc = (SVGOMDocument)document;
         XBLEventSupport evtSupport
-            = (XBLEventSupport) n.initializeEventSupport();
+            = (XBLEventSupport) doc.initializeEventSupport();
 
         domAttrModifiedEventListener
             = new EventListenerWrapper(new DOMAttrModifiedEventListener());
@@ -244,10 +244,12 @@ public class SVG12BridgeContext extends BridgeContext {
              "DOMCharacterDataModified",
              domCharacterDataModifiedEventListener, true);
 
+        animatedAttributeListener = new AnimatedAttrListener();
+        doc.addAnimatedAttributeListener(animatedAttributeListener);
+        
         focusManager = new SVG12FocusManager(document);
 
-        SVGOMDocument svgDocument = (SVGOMDocument)document;
-        CSSEngine cssEngine = svgDocument.getCSSEngine();
+        CSSEngine cssEngine = doc.getCSSEngine();
         cssPropertiesChangedListener = new CSSPropertiesChangedListener();
         cssEngine.addCSSEngineListener(cssPropertiesChangedListener);
     }
@@ -331,32 +333,33 @@ public class SVG12BridgeContext extends BridgeContext {
      * Removes event listeners from the DOM and CSS engine.
      */
     protected void removeDOMListeners() {
-        NodeEventTarget evtTarget = (NodeEventTarget)document;
+        SVGOMDocument doc = (SVGOMDocument)document;
 
-        evtTarget.removeEventListenerNS
+        doc.removeEventListenerNS
             (XMLConstants.XML_EVENTS_NAMESPACE_URI,
              "DOMAttrModified",
              domAttrModifiedEventListener, true);
-        evtTarget.removeEventListenerNS
+        doc.removeEventListenerNS
             (XMLConstants.XML_EVENTS_NAMESPACE_URI,
              "DOMNodeInserted",
              domNodeInsertedEventListener, true);
-        evtTarget.removeEventListenerNS
+        doc.removeEventListenerNS
             (XMLConstants.XML_EVENTS_NAMESPACE_URI,
              "DOMNodeRemoved",
              domNodeRemovedEventListener, true);
-        evtTarget.removeEventListenerNS
+        doc.removeEventListenerNS
             (XMLConstants.XML_EVENTS_NAMESPACE_URI,
              "DOMCharacterDataModified",
              domCharacterDataModifiedEventListener, true);
         
-        SVGOMDocument svgDocument = (SVGOMDocument)document;
-        CSSEngine cssEngine = svgDocument.getCSSEngine();
+        doc.removeAnimatedAttributeListener(animatedAttributeListener);
+
+        CSSEngine cssEngine = doc.getCSSEngine();
         if (cssEngine != null) {
             cssEngine.removeCSSEngineListener
                 (cssPropertiesChangedListener);
             cssEngine.dispose();
-            svgDocument.setCSSEngine(null);
+            doc.setCSSEngine(null);
         }
     }
 

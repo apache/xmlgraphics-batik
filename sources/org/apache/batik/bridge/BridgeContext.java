@@ -1685,6 +1685,12 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         implements AnimatedAttributeListener {
 
         /**
+         * Creates a new AnimatedAttributeListener.
+         */
+        public AnimatedAttrListener() {
+        }
+
+        /**
          * Called to notify an object of a change to the animated value of
          * an animated XML attribute.
          * @param e the owner element of the changed animated attribute

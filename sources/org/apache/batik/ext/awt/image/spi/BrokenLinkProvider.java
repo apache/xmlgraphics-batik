@@ -51,7 +51,8 @@ public abstract class BrokenLinkProvider {
      * @param code This is the reason the image is unavailable should
      *             be taken from ErrorConstants.
      * @param params This is more detailed information about
-     *        the circumstances of the failure.  */
+     *        the circumstances of the failure.
+     */
     public abstract Filter getBrokenLinkImage(Object base,
                                               String code, Object[] params);
 

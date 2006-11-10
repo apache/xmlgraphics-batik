@@ -471,7 +471,9 @@ public class BaseScriptingEnvironment {
     public void dispatchSVGLoadEvent() {
         SVGSVGElement root = (SVGSVGElement)document.getDocumentElement();
         String lang = root.getContentScriptType();
+        long documentStartTime = System.currentTimeMillis();
         dispatchSVGLoad(root, true, lang);
+        bridgeContext.getAnimationEngine().start(documentStartTime);
     }
 
     /**
