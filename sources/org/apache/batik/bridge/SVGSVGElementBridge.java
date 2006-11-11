@@ -362,7 +362,8 @@ public class SVGSVGElementBridge
                         try {
                             AffineTransform at;
                             at = cgn.getPositionTransform();
-                            at = new AffineTransform(at);
+                            if (at == null) at = new AffineTransform();
+                            else            at = new AffineTransform(at);
                             at.concatenate(newVT);
                             at = at.createInverse(); // clip in user space
                             clip = at.createTransformedShape(clip);
