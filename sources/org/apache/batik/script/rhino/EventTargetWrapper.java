@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001-2003,2005-2006  The Apache Software Foundation 
+   Copyright 2001-2003,2005-2006  The Apache Software Foundation
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -192,7 +192,9 @@ class EventTargetWrapper extends NativeJavaObject {
         }
 
         public void initEvent(String t, boolean b, boolean c) {
-            call("initEvent", new Object[] { t, new Boolean(b), new Boolean(c) });
+            call("initEvent", new Object[] { t,
+                    b ? Boolean.TRUE : Boolean.FALSE,
+                    c ? Boolean.TRUE : Boolean.FALSE });
         }
 
         public String getNamespaceURI() {
@@ -217,8 +219,9 @@ class EventTargetWrapper extends NativeJavaObject {
         }
 
         public void initEventNS(String ns, String t, boolean b, boolean c) {
-            call("initEventNS", new Object[] { ns, t, new Boolean(b),
-                                               new Boolean(c) });
+            call("initEventNS", new Object[] { ns, t,
+                    b ? Boolean.TRUE : Boolean.FALSE,
+                    c ? Boolean.TRUE : Boolean.FALSE });
         }
 
         public void setDispatchState(EventTarget t, short phase) {
@@ -382,7 +385,7 @@ class EventTargetWrapper extends NativeJavaObject {
             if (args[1] instanceof Function) {
                 EventListener evtListener = null;
                 SoftReference sr = (SoftReference)listenerMap.get(args[1]);
-                if (sr != null) 
+                if (sr != null)
                     evtListener = (EventListener)sr.get();
                 if (evtListener == null) {
                     evtListener = new FunctionEventListener
@@ -402,7 +405,7 @@ class EventTargetWrapper extends NativeJavaObject {
             if (args[1] instanceof NativeObject) {
                 EventListener evtListener = null;
                 SoftReference sr = (SoftReference)listenerMap.get(args[1]);
-                if (sr != null) 
+                if (sr != null)
                     evtListener = (EventListener)sr.get();
                 if (evtListener == null) {
                     evtListener = new HandleEventListener((Scriptable)args[1],
@@ -616,11 +619,11 @@ class EventTargetWrapper extends NativeJavaObject {
     // not available anymore.
     protected static WeakHashMap mapOfListenerMap;
 
-    public final static String ADD_NAME      = "addEventListener";
-    public final static String ADDNS_NAME    = "addEventListenerNS";
-    public final static String REMOVE_NAME   = "removeEventListener";
-    public final static String REMOVENS_NAME = "removeEventListenerNS";
-    public final static String DISPATCH_NAME = "dispatchEvent";
+    public static final String ADD_NAME      = "addEventListener";
+    public static final String ADDNS_NAME    = "addEventListenerNS";
+    public static final String REMOVE_NAME   = "removeEventListener";
+    public static final String REMOVENS_NAME = "removeEventListenerNS";
+    public static final String DISPATCH_NAME = "dispatchEvent";
 
     protected RhinoInterpreter interpreter;
     EventTargetWrapper(Scriptable scope, EventTarget object,
@@ -637,7 +640,7 @@ class EventTargetWrapper extends NativeJavaObject {
         if (name.equals(ADD_NAME)) {
             // prevent creating a Map for all JavaScript objects
             // when we need it only from time to time...
-            method = new FunctionAddProxy(interpreter, 
+            method = new FunctionAddProxy(interpreter,
                                           (Function)method, initMap());
         } else if (name.equals(REMOVE_NAME)) {
             // prevent creating a Map for all JavaScript objects
