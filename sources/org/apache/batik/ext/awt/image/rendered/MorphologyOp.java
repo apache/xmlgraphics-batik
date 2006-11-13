@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001,2003  The Apache Software Foundation 
+   Copyright 2001,2003  The Apache Software Foundation
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -91,7 +91,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
      */
     public MorphologyOp (int radiusX, int radiusY, boolean doDilation){
         if (radiusX<=0 || radiusY<=0){
-            throw new IllegalArgumentException(new String("The radius of X-axis or Y-axis should not be Zero or Negatives."));
+            throw new IllegalArgumentException( "The radius of X-axis or Y-axis should not be Zero or Negatives." );
         }
         else {
             this.radiusX = radiusX;
@@ -181,7 +181,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
         // Check model is ok: should be SinglePixelPackedSampleModel
         if(!(model instanceof SinglePixelPackedSampleModel))
             throw new IllegalArgumentException
-                ("MorphologyOp only works with Rasters " + 
+                ("MorphologyOp only works with Rasters " +
                  "using SinglePixelPackedSampleModels");
         // Check number of bands
         int nBands = model.getNumBands();
@@ -213,7 +213,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
         return src.createCompatibleWritableRaster();
     }
 
-    public BufferedImage createCompatibleDestImage(BufferedImage src, 
+    public BufferedImage createCompatibleDestImage(BufferedImage src,
                                                    ColorModel destCM){
         BufferedImage dest = null;
         if(destCM==null)
@@ -224,7 +224,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
                                                    src.getHeight());
         checkCompatible(destCM, wr.getSampleModel());
 
-        dest = new BufferedImage(destCM, wr, 
+        dest = new BufferedImage(destCM, wr,
                                  destCM.isAlphaPremultiplied(), null);
         return dest;
     }
@@ -315,7 +315,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
                     r1 = currentPixel&0xff0000;
                     g1 = currentPixel&0xff00;
                     b1 = currentPixel&0xff;
-                    
+
                     if (isBetter(a1, a, doDilation)){
                         a = a1;
                     }
@@ -1551,7 +1551,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
 
             src = new BufferedImage(srcCMPre, src.getRaster(),
                                     true, null);
-            
+
             GraphicsUtil.copyData(origSrc, src);
         }
 
@@ -1614,7 +1614,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
             srcCMUnpre = GraphicsUtil.coerceColorModel(srcCM, false);
             src = new BufferedImage(srcCMUnpre, src.getRaster(),
                                     false, null);
-            
+
             GraphicsUtil.copyData(origSrc, src);
         }
 
@@ -1649,13 +1649,13 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
             (dest.isAlphaPremultiplied() != finalDest.isAlphaPremultiplied())){
             // Coerce our source back the way it was...
             System.out.println("Dest: " + dest.isAlphaPremultiplied() +
-                               " finalDest: " + 
+                               " finalDest: " +
                                finalDest.isAlphaPremultiplied());
-            
+
             GraphicsUtil.copyData(dest, finalDest);
         }
         return finalDest;
-    } 
+    }
       */
 }
 
