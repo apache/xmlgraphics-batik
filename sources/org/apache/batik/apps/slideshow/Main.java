@@ -216,7 +216,7 @@ public class Main extends JComponent {
                     rects[y*xblocks+x] = new Point(x, y);
 
             Graphics2D g2d = display.createGraphics();
-            g2d.setColor(new Color(0,0,0));
+            g2d.setColor( Color.black );
 
             long currTrans = System.currentTimeMillis();
             while ((currTrans-startLastTransition) < frameDelay) {
