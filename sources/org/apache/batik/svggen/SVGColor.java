@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001,2003  The Apache Software Foundation 
+   Copyright 2001,2003  The Apache Software Foundation
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@ public class SVGColor extends AbstractSVGConverter{
     public static final Color navy = new Color(0x00, 0x00, 0x80);
     public static final Color olive = new Color(0x80, 0x80, 00);
     public static final Color purple = new Color(0x80, 0x00, 0x80);
-    public static final Color red = new Color(0xff, 0x00, 0x00);
+    public static final Color red = Color.red;
     public static final Color silver = new Color(0xc0, 0xc0, 0xc0);
     public static final Color teal = new Color(0x00, 0x80, 0x80);
     public static final Color white = Color.white;
