@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001,2003  The Apache Software Foundation 
+   Copyright 2001,2003,2006  The Apache Software Foundation
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -17,7 +17,8 @@
  */
 package org.apache.batik.svggen;
 
-import java.util.Vector;
+import java.util.List;
+import java.util.ArrayList;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
@@ -27,23 +28,24 @@ import org.w3c.dom.NodeList;
 
 /**
  * This utility class converts a standard SVG document that uses
- * attribute into one that uses the CSS style attribute instead
+ * attribute into one that uses the CSS style attribute instead.
  *
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
 public class SVGCSSStyler implements SVGSyntax{
-    static private String CSS_PROPERTY_VALUE_SEPARATOR = ":";
-    static private String CSS_RULE_SEPARATOR = ";";
-    static private String SPACE = " ";
+
+    private static final char CSS_PROPERTY_VALUE_SEPARATOR = ':';
+    private static final char CSS_RULE_SEPARATOR = ';';
+    private static final char SPACE = ' ';
 
     /**
      * Invoking this method removes all the styling attributes
      * (such as 'fill' or 'fill-opacity') from the input element
      * and its descendant and replaces them with their CSS2
      * property counterparts.
-     * @param node SVG Node to be converted to use style
      *
+     * @param node SVG Node to be converted to use style
      */
     public static void style(Node node){
         NamedNodeMap attributes = node.getAttributes();
@@ -53,30 +55,32 @@ public class SVGCSSStyler implements SVGSyntax{
             Element element = (Element)node;
             StringBuffer styleAttrBuffer = new StringBuffer();
             int nAttr = attributes.getLength();
-            Vector toBeRemoved = new Vector();
+            List toBeRemoved = new ArrayList();
             for(int i=0; i<nAttr; i++){
                 Attr attr = (Attr)attributes.item(i);
-                if(SVGStylingAttributes.set.contains(attr.getName())){
+                String attrName = attr.getName();
+                if(SVGStylingAttributes.set.contains( attrName )){
                     // System.out.println("Found new style attribute");
-                    styleAttrBuffer.append(attr.getName());
+                    styleAttrBuffer.append( attrName );
                     styleAttrBuffer.append(CSS_PROPERTY_VALUE_SEPARATOR);
                     styleAttrBuffer.append(attr.getValue());
                     styleAttrBuffer.append(CSS_RULE_SEPARATOR);
                     styleAttrBuffer.append(SPACE);
-                    toBeRemoved.addElement(attr.getName());
+                    toBeRemoved.add( attrName );
                 }
             }
 
             if(styleAttrBuffer.length() > 0){
-                                // System.out.println("Setting style attribute on node: " + styleAttrBuffer.toString().trim());
-                                // There were some styling attributes
+                // There were some styling attributes
+                // System.out.println("Setting style attribute on node: " + styleAttrBuffer.toString().trim());
                 element.setAttributeNS(null,
                                        SVG_STYLE_ATTRIBUTE,
                                        styleAttrBuffer.toString().trim());
 
                 int n = toBeRemoved.size();
-                for(int i=0; i<n; i++)
-                    element.removeAttribute((String)toBeRemoved.elementAt(i));
+                for(int i=0; i<n; i++) {
+                    element.removeAttribute((String)toBeRemoved.get( i ));
+                }
             }
             // else
             // System.out.println("NO STYLE PROPERTIES");
