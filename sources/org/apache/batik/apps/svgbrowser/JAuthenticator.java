@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2002-2003  The Apache Software Foundation 
+   Copyright 2002-2003, 2006  The Apache Software Foundation
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -77,10 +77,10 @@ public class JAuthenticator extends Authenticator {
     protected JTextField     JUserID;
     protected JPasswordField JPassword;
 
-    Object lock = new Object();
+    final Object lock = new Object();
 
     private boolean result;
-    private boolean wasNotified;
+    private volatile boolean wasNotified;
     private String  userID;
     private char [] password;
 
@@ -101,7 +101,7 @@ public class JAuthenticator extends Authenticator {
         window.addWindowListener( new WindowAdapter() {
                 public void windowClosing(WindowEvent e) {
                     cancelListener.actionPerformed
-                        (new ActionEvent(e.getWindow(), 
+                        (new ActionEvent(e.getWindow(),
                                          ActionEvent.ACTION_PERFORMED,
                                          "Close"));
                 }
@@ -120,25 +120,25 @@ public class JAuthenticator extends Authenticator {
         labelS.setHorizontalAlignment(SwingConstants.LEFT);
         gridBag.setConstraints(labelS, c);
         proxyPanel.add(labelS);
-		
+
         c.gridwidth = GridBagConstraints.REMAINDER;
         label1 = new JLabel("");
         label1.setHorizontalAlignment(SwingConstants.LEFT);
         gridBag.setConstraints(label1, c);
         proxyPanel.add(label1);
-		
+
         c.gridwidth = 1;
         JLabel labelR = new JLabel(Resources.getString(LABEL_REQ));
         labelR.setHorizontalAlignment(SwingConstants.LEFT);
         gridBag.setConstraints(labelR, c);
         proxyPanel.add(labelR);
-		
+
         c.gridwidth = GridBagConstraints.REMAINDER;
         label2 = new JLabel("");
         label2.setHorizontalAlignment(SwingConstants.LEFT);
         gridBag.setConstraints(label2, c);
         proxyPanel.add(label2);
-		
+
         c.gridwidth = 1;
         JLabel labelUserID = new JLabel(Resources.getString(LABEL_USERID));
         labelUserID.setHorizontalAlignment(SwingConstants.LEFT);
@@ -166,7 +166,7 @@ public class JAuthenticator extends Authenticator {
         return proxyPanel;
     }
 
-    
+
 
     protected JComponent buildButtonPanel() {
         JPanel buttonPanel = new JPanel();
@@ -181,7 +181,7 @@ public class JAuthenticator extends Authenticator {
         return buttonPanel;
     }
 
-    /** 
+    /**
      * This is called by the protocol stack when authentication is
      * required.  We then show the dialog in the Swing event thread,
      * and block waiting for the user to select either cancel or ok,
@@ -229,7 +229,7 @@ public class JAuthenticator extends Authenticator {
                 synchronized (lock) {
                     window.setVisible(false);
 
-                    userID = null; 
+                    userID = null;
                     JUserID.setText("");
                     password = null;
                     JPassword.setText("");
