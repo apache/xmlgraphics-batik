@@ -38,7 +38,7 @@ public class CSSDescendantSelector extends AbstractDescendantSelector {
      * Creates a new CSSDescendantSelector object.
      */
     public CSSDescendantSelector(Selector ancestor, SimpleSelector simple) {
-	super(ancestor, simple);
+        super(ancestor, simple);
     }
 
     /**
@@ -46,23 +46,23 @@ public class CSSDescendantSelector extends AbstractDescendantSelector {
      * org.w3c.css.sac.Selector#getSelectorType()}.
      */
     public short getSelectorType() {
-	return SAC_DESCENDANT_SELECTOR;
+        return SAC_DESCENDANT_SELECTOR;
     }
 
     /**
      * Tests whether this selector matches the given element.
      */
     public boolean match(Element e, String pseudoE) {
-	ExtendedSelector p = (ExtendedSelector)getAncestorSelector();
+        ExtendedSelector p = (ExtendedSelector)getAncestorSelector();
         if (!((ExtendedSelector)getSimpleSelector()).match(e,pseudoE))
             return false;
-	for (Node n = e.getParentNode(); n != null; n = n.getParentNode()) {
+        for (Node n = e.getParentNode(); n != null; n = n.getParentNode()) {
             if (n.getNodeType() == Node.ELEMENT_NODE &&
                 p.match((Element)n, null)) {
                 return true;
             }
-	}
-	return false;
+        }
+        return false;
     }
 
     /**
@@ -76,6 +76,6 @@ public class CSSDescendantSelector extends AbstractDescendantSelector {
      * Returns a representation of the selector.
      */
     public String toString() {
-	return getAncestorSelector() + " " + getSimpleSelector();
+        return getAncestorSelector() + " " + getSimpleSelector();
     }
 }

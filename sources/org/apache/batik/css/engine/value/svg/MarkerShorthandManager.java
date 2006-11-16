@@ -41,7 +41,7 @@ public class MarkerShorthandManager
      * Implements {@link ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return CSSConstants.CSS_MARKER_PROPERTY;
+        return CSSConstants.CSS_MARKER_PROPERTY;
     }
     
     /**

@@ -61,21 +61,21 @@
   
   function setupCards(result) {
      if (!result.content) 
-	return;
+        return;
      var doc = parseXML(result.content, document);
      var fc;
      for (fc=doc.firstChild; fc; fc = fc.nextSibling) {
-	if (fc.nodeName == "svg") break;
+        if (fc.nodeName == "svg") break;
      }
      if (fc.nodeName != "svg") return;
      for (fc=fc.firstChild; fc; fc = fc.nextSibling) {
-	if (fc.nodeName == "defs") break;
+        if (fc.nodeName == "defs") break;
      }
      if (fc.nodeName != "defs") return;
      root.appendChild(fc);
      init();
   }
-	
+        
 
     function init() {
       var deck = new Deck(document, 1, "", 75, 105);

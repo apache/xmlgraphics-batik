@@ -97,8 +97,8 @@ public interface GVTGlyphVector {
      * Returns an array of glyph positions for the specified glyphs
      */
     float[] getGlyphPositions(int beginGlyphIndex, 
-			      int numEntries,
-			      float[] positionReturn);
+                              int numEntries,
+                              float[] positionReturn);
 
     /**
      * Gets the transform of the specified glyph within this GlyphVector.

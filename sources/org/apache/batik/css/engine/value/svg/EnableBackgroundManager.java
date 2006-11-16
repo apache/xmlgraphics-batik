@@ -50,7 +50,7 @@ public class EnableBackgroundManager extends LengthManager {
      * Implements {@link ValueManager#isInheritedProperty()}.
      */
     public boolean isInheritedProperty() {
-	return false;
+        return false;
     }
 
     /**
@@ -78,7 +78,7 @@ public class EnableBackgroundManager extends LengthManager {
      * Implements {@link ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return CSSConstants.CSS_ENABLE_BACKGROUND_PROPERTY;
+        return CSSConstants.CSS_ENABLE_BACKGROUND_PROPERTY;
     }
     
     /**
@@ -133,20 +133,20 @@ public class EnableBackgroundManager extends LengthManager {
      */
     public Value createStringValue(short type, String value,
                                    CSSEngine engine) {
-	if (type != CSSPrimitiveValue.CSS_IDENT) {
+        if (type != CSSPrimitiveValue.CSS_IDENT) {
             throw createInvalidStringTypeDOMException(type);
-	}
-	if (!value.equalsIgnoreCase(CSSConstants.CSS_ACCUMULATE_VALUE)) {
+        }
+        if (!value.equalsIgnoreCase(CSSConstants.CSS_ACCUMULATE_VALUE)) {
             throw createInvalidIdentifierDOMException(value);
         }
-	return SVGValueConstants.ACCUMULATE_VALUE;
+        return SVGValueConstants.ACCUMULATE_VALUE;
     }
 
     /**
      * Implements {@link ValueManager#createFloatValue(short,float)}.
      */
     public Value createFloatValue(short unitType, float floatValue)
-	throws DOMException {
+        throws DOMException {
         throw createDOMException();
     }
 

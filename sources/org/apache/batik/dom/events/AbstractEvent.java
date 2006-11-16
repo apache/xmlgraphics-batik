@@ -109,7 +109,7 @@ public abstract class AbstractEvent
      * as a string property. The string must be an XML name.  
      */
     public String getType() {
-	return type;
+        return type;
     }
 
     /**
@@ -118,7 +118,7 @@ public abstract class AbstractEvent
      * currently being processed.
      */
     public EventTarget getCurrentTarget() {
-	return currentTarget;
+        return currentTarget;
     }
 
     /**
@@ -127,7 +127,7 @@ public abstract class AbstractEvent
      * dispatched.  
      */
     public EventTarget getTarget() {
-	return target;
+        return target;
     }
 
     /**
@@ -135,7 +135,7 @@ public abstract class AbstractEvent
      * of event flow is currently being evaluated.  
      */
     public short getEventPhase() {
-	return eventPhase;
+        return eventPhase;
     }
 
     /**
@@ -144,7 +144,7 @@ public abstract class AbstractEvent
      * value is true, else the value is false. 
      */
     public boolean getBubbles() {
-	return isBubbling;
+        return isBubbling;
     }
 
     /**
@@ -154,7 +154,7 @@ public abstract class AbstractEvent
      * value is false. 
      */
     public boolean getCancelable() {
-	return cancelable;
+        return cancelable;
     }
 
     /**
@@ -166,7 +166,7 @@ public abstract class AbstractEvent
      * 0:0:0 UTC 1st January 1970. 
      */
     public long getTimeStamp() {
-	return timeStamp;
+        return timeStamp;
     }
 
     /**
@@ -193,7 +193,7 @@ public abstract class AbstractEvent
      * may be used during any stage of event flow.  
      */
     public void stopPropagation() {
-	this.stopPropagation = true;
+        this.stopPropagation = true;
     }
 
     /**
@@ -210,7 +210,7 @@ public abstract class AbstractEvent
      * of event flow.  
      */
     public void preventDefault() {
-	this.preventDefault = true;
+        this.preventDefault = true;
     }
 
     /**
@@ -258,11 +258,11 @@ public abstract class AbstractEvent
      *   action can be prevented.
      */
     public void initEvent(String eventTypeArg, 
-			  boolean canBubbleArg, 
-			  boolean cancelableArg) {
-	this.type = eventTypeArg;
-	this.isBubbling = canBubbleArg;
-	this.cancelable = cancelableArg;
+                          boolean canBubbleArg, 
+                          boolean cancelableArg) {
+        this.type = eventTypeArg;
+        this.isBubbling = canBubbleArg;
+        this.cancelable = cancelableArg;
     }
 
     /**
@@ -277,41 +277,41 @@ public abstract class AbstractEvent
             namespaceURI = null;
         }
         namespaceURI = namespaceURIArg;
-	type = eventTypeArg;
-	isBubbling = canBubbleArg;
-	cancelable = cancelableArg;
+        type = eventTypeArg;
+        isBubbling = canBubbleArg;
+        cancelable = cancelableArg;
     }
 
     boolean getStopPropagation() {
-	return stopPropagation;
+        return stopPropagation;
     }
 
     boolean getStopImmediatePropagation() {
-	return stopImmediatePropagation;
+        return stopImmediatePropagation;
     }
 
     void setEventPhase(short eventPhase) {
-	this.eventPhase = eventPhase;
+        this.eventPhase = eventPhase;
     }
 
     void stopPropagation(boolean state) {
-	this.stopPropagation = state;
+        this.stopPropagation = state;
     }
 
     void stopImmediatePropagation(boolean state) {
-	this.stopImmediatePropagation = state;
+        this.stopImmediatePropagation = state;
     }
 
     void preventDefault(boolean state) {
-	this.preventDefault = state;
+        this.preventDefault = state;
     }
 
     void setCurrentTarget(EventTarget currentTarget) {
-	this.currentTarget = currentTarget;
+        this.currentTarget = currentTarget;
     }
 
     void setTarget(EventTarget target) {
-	this.target = target;
+        this.target = target;
     }
 
     public static boolean getEventPreventDefault(Event evt) {

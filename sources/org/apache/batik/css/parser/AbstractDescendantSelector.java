@@ -47,21 +47,21 @@ public abstract class AbstractDescendantSelector
      */
     protected AbstractDescendantSelector(Selector ancestor,
                                          SimpleSelector simple) {
-	ancestorSelector = ancestor;
-	simpleSelector = simple;
+        ancestorSelector = ancestor;
+        simpleSelector = simple;
     }
 
     /**
      * <b>SAC</b>: Implements {@link DescendantSelector#getAncestorSelector()}.
      */    
     public Selector getAncestorSelector() {
-	return ancestorSelector;
+        return ancestorSelector;
     }
 
     /**
      * <b>SAC</b>: Implements {@link DescendantSelector#getSimpleSelector()}.
      */    
     public SimpleSelector getSimpleSelector() {
-	return simpleSelector;
+        return simpleSelector;
     }
 }

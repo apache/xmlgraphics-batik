@@ -47,15 +47,15 @@ public class FontWeightManager extends IdentifierManager {
      */
     protected final static StringMap values = new StringMap();
     static {
-	values.put(CSSConstants.CSS_ALL_VALUE,
+        values.put(CSSConstants.CSS_ALL_VALUE,
                    ValueConstants.ALL_VALUE);
-	values.put(CSSConstants.CSS_BOLD_VALUE,
+        values.put(CSSConstants.CSS_BOLD_VALUE,
                    ValueConstants.BOLD_VALUE);
-	values.put(CSSConstants.CSS_BOLDER_VALUE,
+        values.put(CSSConstants.CSS_BOLDER_VALUE,
                    ValueConstants.BOLDER_VALUE);
-	values.put(CSSConstants.CSS_LIGHTER_VALUE,
+        values.put(CSSConstants.CSS_LIGHTER_VALUE,
                    ValueConstants.LIGHTER_VALUE);
-	values.put(CSSConstants.CSS_NORMAL_VALUE,
+        values.put(CSSConstants.CSS_NORMAL_VALUE,
                    ValueConstants.NORMAL_VALUE);
     }
 
@@ -63,7 +63,7 @@ public class FontWeightManager extends IdentifierManager {
      * Implements {@link ValueManager#isInheritedProperty()}.
      */
     public boolean isInheritedProperty() {
-	return true;
+        return true;
     }
 
     /**
@@ -91,7 +91,7 @@ public class FontWeightManager extends IdentifierManager {
      * Implements {@link ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return CSSConstants.CSS_FONT_WEIGHT_PROPERTY;
+        return CSSConstants.CSS_FONT_WEIGHT_PROPERTY;
     }
     
     /**
@@ -106,28 +106,28 @@ public class FontWeightManager extends IdentifierManager {
      */
     public Value createValue(LexicalUnit lu, CSSEngine engine)
         throws DOMException {
-	if (lu.getLexicalUnitType() == LexicalUnit.SAC_INTEGER) {
-	    int i = lu.getIntegerValue();
-	    switch (i) {
-	    case 100:
-		return ValueConstants.NUMBER_100;
-	    case 200:
-		return ValueConstants.NUMBER_200;
-	    case 300:
-		return ValueConstants.NUMBER_300;
-	    case 400:
-		return ValueConstants.NUMBER_400;
-	    case 500:
-		return ValueConstants.NUMBER_500;
-	    case 600:
-		return ValueConstants.NUMBER_600;
-	    case 700:
-		return ValueConstants.NUMBER_700;
-	    case 800:
-		return ValueConstants.NUMBER_800;
-	    case 900:
-		return ValueConstants.NUMBER_900;
-	    }
+        if (lu.getLexicalUnitType() == LexicalUnit.SAC_INTEGER) {
+            int i = lu.getIntegerValue();
+            switch (i) {
+            case 100:
+                return ValueConstants.NUMBER_100;
+            case 200:
+                return ValueConstants.NUMBER_200;
+            case 300:
+                return ValueConstants.NUMBER_300;
+            case 400:
+                return ValueConstants.NUMBER_400;
+            case 500:
+                return ValueConstants.NUMBER_500;
+            case 600:
+                return ValueConstants.NUMBER_600;
+            case 700:
+                return ValueConstants.NUMBER_700;
+            case 800:
+                return ValueConstants.NUMBER_800;
+            case 900:
+                return ValueConstants.NUMBER_900;
+            }
             throw createInvalidFloatValueDOMException(i);
         }
         return super.createValue(lu, engine);
@@ -138,10 +138,10 @@ public class FontWeightManager extends IdentifierManager {
      */
     public Value createFloatValue(short type, float floatValue)
         throws DOMException {
-	if (type == CSSPrimitiveValue.CSS_NUMBER) {
-	    int i = (int)floatValue;
-	    if (floatValue == i) {
-		switch (i) {
+        if (type == CSSPrimitiveValue.CSS_NUMBER) {
+            int i = (int)floatValue;
+            if (floatValue == i) {
+                switch (i) {
                 case 100:
                     return ValueConstants.NUMBER_100;
                 case 200:
@@ -160,9 +160,9 @@ public class FontWeightManager extends IdentifierManager {
                     return ValueConstants.NUMBER_800;
                 case 900:
                     return ValueConstants.NUMBER_900;
-		}
-	    }
-	}
+                }
+            }
+        }
         throw createInvalidFloatValueDOMException(floatValue);
     }
 

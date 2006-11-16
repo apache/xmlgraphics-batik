@@ -42,32 +42,32 @@ public class SVGZoomAndPanSupport implements SVGConstants {
      * Sets the zoomAndPan attribute value.
      */
     public static void setZoomAndPan(Element elt, short val)
-	throws DOMException {
-	switch (val) {
-	case SVGZoomAndPan.SVG_ZOOMANDPAN_DISABLE:
-	    elt.setAttributeNS(null, SVG_ZOOM_AND_PAN_ATTRIBUTE,
+        throws DOMException {
+        switch (val) {
+        case SVGZoomAndPan.SVG_ZOOMANDPAN_DISABLE:
+            elt.setAttributeNS(null, SVG_ZOOM_AND_PAN_ATTRIBUTE,
                                SVG_DISABLE_VALUE);
-	    break;
-	case SVGZoomAndPan.SVG_ZOOMANDPAN_MAGNIFY:
-	    elt.setAttributeNS(null, SVG_ZOOM_AND_PAN_ATTRIBUTE,
+            break;
+        case SVGZoomAndPan.SVG_ZOOMANDPAN_MAGNIFY:
+            elt.setAttributeNS(null, SVG_ZOOM_AND_PAN_ATTRIBUTE,
                                SVG_MAGNIFY_VALUE);
-	    break;
-	default:
-	    throw ((AbstractNode)elt).createDOMException
-		(DOMException.INVALID_MODIFICATION_ERR,
-		 "zoom.and.pan",
-		 new Object[] { new Integer(val) });
-	}
+            break;
+        default:
+            throw ((AbstractNode)elt).createDOMException
+                (DOMException.INVALID_MODIFICATION_ERR,
+                 "zoom.and.pan",
+                 new Object[] { new Integer(val) });
+        }
     }
 
     /**
      * Returns the ZoomAndPan attribute value.
      */
     public static short getZoomAndPan(Element elt) {
-	String s = elt.getAttributeNS(null, SVG_ZOOM_AND_PAN_ATTRIBUTE);
-	if (s.equals(SVG_MAGNIFY_VALUE)) {
-	    return SVGZoomAndPan.SVG_ZOOMANDPAN_MAGNIFY;
-	}
-	return SVGZoomAndPan.SVG_ZOOMANDPAN_DISABLE;
+        String s = elt.getAttributeNS(null, SVG_ZOOM_AND_PAN_ATTRIBUTE);
+        if (s.equals(SVG_MAGNIFY_VALUE)) {
+            return SVGZoomAndPan.SVG_ZOOMANDPAN_MAGNIFY;
+        }
+        return SVGZoomAndPan.SVG_ZOOMANDPAN_DISABLE;
     }
 }

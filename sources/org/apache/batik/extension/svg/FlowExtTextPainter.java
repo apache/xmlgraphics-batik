@@ -47,7 +47,7 @@ public class FlowExtTextPainter extends StrokingTextPainter {
      * Returns a unique instance of this class.
      */
     public static TextPainter getInstance() {
-	return singleton;
+        return singleton;
     }
 
     public List getTextRuns(TextNode node, AttributedCharacterIterator aci) {

@@ -29,7 +29,7 @@ public class DefaultPseudoElementSelector extends AbstractElementSelector {
      * Creates a new ElementSelector object.
      */
     public DefaultPseudoElementSelector(String uri, String name) {
-	super(uri, name);
+        super(uri, name);
     }
 
     /**
@@ -37,13 +37,13 @@ public class DefaultPseudoElementSelector extends AbstractElementSelector {
      * org.w3c.css.sac.Selector#getSelectorType()}.
      */
     public short getSelectorType() {
-	return SAC_PSEUDO_ELEMENT_SELECTOR;
+        return SAC_PSEUDO_ELEMENT_SELECTOR;
     }
 
     /**
      * Returns a representation of the selector.
      */
     public String toString() {
-	return ":" + getLocalName();
+        return ":" + getLocalName();
     }
 }

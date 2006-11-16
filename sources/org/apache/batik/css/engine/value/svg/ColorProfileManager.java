@@ -42,14 +42,14 @@ public class ColorProfileManager extends AbstractValueManager {
      * Implements {@link ValueManager#isInheritedProperty()}.
      */
     public boolean isInheritedProperty() {
-	return true;
+        return true;
     }
 
     /**
      * Implements {@link ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return CSSConstants.CSS_COLOR_PROFILE_PROPERTY;
+        return CSSConstants.CSS_COLOR_PROFILE_PROPERTY;
     }
     
     /**
@@ -85,11 +85,11 @@ public class ColorProfileManager extends AbstractValueManager {
      */
     public Value createValue(LexicalUnit lu, CSSEngine engine)
         throws DOMException {
-	switch (lu.getLexicalUnitType()) {
-	case LexicalUnit.SAC_INHERIT:
-	    return SVGValueConstants.INHERIT_VALUE;
+        switch (lu.getLexicalUnitType()) {
+        case LexicalUnit.SAC_INHERIT:
+            return SVGValueConstants.INHERIT_VALUE;
 
-	case LexicalUnit.SAC_IDENT:
+        case LexicalUnit.SAC_IDENT:
             String s = lu.getStringValue().toLowerCase();
             if (s.equals(CSSConstants.CSS_AUTO_VALUE)) {
                 return SVGValueConstants.AUTO_VALUE;
@@ -112,7 +112,7 @@ public class ColorProfileManager extends AbstractValueManager {
      * ValueManager#createStringValue(short,String,CSSEngine)}.
      */
     public Value createStringValue(short type, String value, CSSEngine engine)
-	throws DOMException {
+        throws DOMException {
         switch (type) {
         case CSSPrimitiveValue.CSS_IDENT:
             String s = value.toLowerCase();

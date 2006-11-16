@@ -49,7 +49,7 @@ public class SrcManager extends IdentifierManager {
      */
     protected final static StringMap values = new StringMap();
     static {
-	values.put(CSSConstants.CSS_NONE_VALUE,
+        values.put(CSSConstants.CSS_NONE_VALUE,
                    ValueConstants.NONE_VALUE);
     }
 
@@ -61,7 +61,7 @@ public class SrcManager extends IdentifierManager {
      * org.apache.batik.css.engine.value.ValueManager#isInheritedProperty()}.
      */
     public boolean isInheritedProperty() {
-	return false;
+        return false;
     }
 
     /**
@@ -90,7 +90,7 @@ public class SrcManager extends IdentifierManager {
      * org.apache.batik.css.engine.value.ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return CSSConstants.CSS_SRC_PROPERTY;
+        return CSSConstants.CSS_SRC_PROPERTY;
     }
     
     /**

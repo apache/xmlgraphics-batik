@@ -53,15 +53,15 @@ public abstract class AbstractEntityReference
      *   illegal character.
      */
     protected AbstractEntityReference(String name, AbstractDocument owner)
-	throws DOMException {
-	ownerDocument = owner;
+        throws DOMException {
+        ownerDocument = owner;
 
-	if (owner.getStrictErrorChecking() && !DOMUtilities.isValidName(name)) {
-	    throw createDOMException(DOMException.INVALID_CHARACTER_ERR,
-				     "xml.name",
-				     new Object[] { name });
-	}
-	nodeName = name;
+        if (owner.getStrictErrorChecking() && !DOMUtilities.isValidName(name)) {
+            throw createDOMException(DOMException.INVALID_CHARACTER_ERR,
+                                     "xml.name",
+                                     new Object[] { name });
+        }
+        nodeName = name;
     }
 
     /**
@@ -69,14 +69,14 @@ public abstract class AbstractEntityReference
      * @return {@link org.w3c.dom.Node#ENTITY_REFERENCE_NODE}
      */
     public short getNodeType() {
-	return ENTITY_REFERENCE_NODE;
+        return ENTITY_REFERENCE_NODE;
     }
 
     /**
      * Sets the name of this node.
      */
     public void setNodeName(String v) {
-	nodeName = v;
+        nodeName = v;
     }
 
     /**
@@ -84,27 +84,27 @@ public abstract class AbstractEntityReference
      * @return {@link #nodeName}.
      */
     public String getNodeName() {
-	return nodeName;
+        return nodeName;
     }
 
     /**
      * Exports this node to the given document.
      */
     protected Node export(Node n, AbstractDocument d) {
-	super.export(n, d);
-	AbstractEntityReference ae = (AbstractEntityReference)n;
-	ae.nodeName = nodeName;
-	return n;
+        super.export(n, d);
+        AbstractEntityReference ae = (AbstractEntityReference)n;
+        ae.nodeName = nodeName;
+        return n;
     }
 
     /**
      * Deeply exports this node to the given document.
      */
     protected Node deepExport(Node n, AbstractDocument d) {
-	super.deepExport(n, d);
-	AbstractEntityReference ae = (AbstractEntityReference)n;
-	ae.nodeName = nodeName;
-	return n;
+        super.deepExport(n, d);
+        AbstractEntityReference ae = (AbstractEntityReference)n;
+        ae.nodeName = nodeName;
+        return n;
     }
 
     /**
@@ -112,10 +112,10 @@ public abstract class AbstractEntityReference
      * @param n a node of the type of this.
      */
     protected Node copyInto(Node n) {
-	super.copyInto(n);
-	AbstractEntityReference ae = (AbstractEntityReference)n;
-	ae.nodeName = nodeName;
-	return n;
+        super.copyInto(n);
+        AbstractEntityReference ae = (AbstractEntityReference)n;
+        ae.nodeName = nodeName;
+        return n;
     }
 
     /**
@@ -123,33 +123,33 @@ public abstract class AbstractEntityReference
      * @param n a node of the type of this.
      */
     protected Node deepCopyInto(Node n) {
-	super.deepCopyInto(n);
-	AbstractEntityReference ae = (AbstractEntityReference)n;
-	ae.nodeName = nodeName;
-	return n;
+        super.deepCopyInto(n);
+        AbstractEntityReference ae = (AbstractEntityReference)n;
+        ae.nodeName = nodeName;
+        return n;
     }
 
     /**
      * Checks the validity of a node to be inserted.
      */
     protected void checkChildType(Node n, boolean replace) {
-	switch (n.getNodeType()) {
-	case ELEMENT_NODE:
-	case PROCESSING_INSTRUCTION_NODE:
-	case COMMENT_NODE:
-	case TEXT_NODE:
-	case CDATA_SECTION_NODE:
-	case ENTITY_REFERENCE_NODE:
-	case DOCUMENT_FRAGMENT_NODE:
-	    break;
-	default:
-	    throw createDOMException
+        switch (n.getNodeType()) {
+        case ELEMENT_NODE:
+        case PROCESSING_INSTRUCTION_NODE:
+        case COMMENT_NODE:
+        case TEXT_NODE:
+        case CDATA_SECTION_NODE:
+        case ENTITY_REFERENCE_NODE:
+        case DOCUMENT_FRAGMENT_NODE:
+            break;
+        default:
+            throw createDOMException
                 (DOMException.HIERARCHY_REQUEST_ERR,
                  "child.type",
                  new Object[] { new Integer(getNodeType()),
                                 getNodeName(),
                                 new Integer(n.getNodeType()),
                                 n.getNodeName() });
-	}
+        }
     }
 }

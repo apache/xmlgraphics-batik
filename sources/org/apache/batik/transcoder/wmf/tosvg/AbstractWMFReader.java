@@ -31,8 +31,8 @@ import org.apache.batik.transcoder.wmf.WMFConstants;
 /** This class provides a general framework to read WMF Metafiles.
  */
 public abstract class AbstractWMFReader {
-    public static final float PIXEL_PER_INCH = Toolkit.getDefaultToolkit().getScreenResolution();  
-    public static final float MM_PER_PIXEL = 25.4f / Toolkit.getDefaultToolkit().getScreenResolution(); 
+    public static final float PIXEL_PER_INCH = Toolkit.getDefaultToolkit().getScreenResolution();
+    public static final float MM_PER_PIXEL = 25.4f / Toolkit.getDefaultToolkit().getScreenResolution();
     protected int left, right, top, bottom, width, height, inch;
     protected float scaleX, scaleY;
     protected int vpW, vpH, vpX, vpY;
@@ -41,9 +41,9 @@ public abstract class AbstractWMFReader {
     protected int mtMaxRecord, mtNoParameters;
     protected int windowWidth, windowHeight;
     transient protected int numObjects;
-    transient protected Vector	objectVector;
-    transient public int lastObjectIdx;    
-    
+    transient protected Vector objectVector;
+    transient public int lastObjectIdx;
+
     public AbstractWMFReader() {
         scaleX = 1;
         scaleY = 1;
@@ -54,15 +54,15 @@ public abstract class AbstractWMFReader {
         right = left + width;
         bottom = top + height;
         numObjects = 0;
-        objectVector = new Vector();        
+        objectVector = new Vector();
     }
-    
+
     public AbstractWMFReader(int width, int height) {
         this();
         this.width = width;
         this.height = height;
     }
-    
+
     /** read the next short ( 2 bytes) value in the DataInputStream.
      */
     protected short readShort(DataInputStream is ) throws IOException {
@@ -75,7 +75,7 @@ public abstract class AbstractWMFReader {
     }
 
     /** read the next int ( 4 bytes) value in the DataInputStream.
-     */    
+     */
     protected int readInt( DataInputStream is  ) throws IOException {
         byte js[] = new byte[ 4 ];
         is.read( js );
@@ -85,7 +85,7 @@ public abstract class AbstractWMFReader {
         i |= ((0xff) & js[ 0 ] );
         return i;
     }
-    
+
     /**
      * Returns the viewport width, in Metafile Units
      */
@@ -98,7 +98,7 @@ public abstract class AbstractWMFReader {
      */
     public float getViewportHeightUnits() {
         return vpH;
-    }    
+    }
 
     /**
      * Returns the viewport width, in inches.
@@ -112,8 +112,8 @@ public abstract class AbstractWMFReader {
      */
     public float getViewportHeightInch() {
       return PIXEL_PER_INCH * (float)vpH / (float)inch;
-    }        
-    
+    }
+
     /** Return the number of pixels per unit.
      */
     public float getPixelsPerUnit() {
@@ -132,59 +132,59 @@ public abstract class AbstractWMFReader {
      */
     public int getVpH() {
       return (int)(PIXEL_PER_INCH * (float)vpH / (float)inch);
-    }            
-    
+    }
+
     /** get the left units in the WMF Metafile. This value is given
      * in the Aldus Placable Metafile.
-     */        
+     */
     public int getLeftUnits() {
         return left;
     }
 
     /** get the right units in the WMF Metafile. This value is given
      * in the Aldus Placable Header.
-     */        
+     */
     public int getRightUnits() {
         return right;
     }
 
     /** get the top units in the WMF Metafile. This value is given
      * in the Aldus Placable Header.
-     */        
+     */
     public int getTopUnits() {
         return top;
     }
 
     /** get the width units in the WMF Metafile. This value is given
      * in the Aldus Placable Header.
-     */        
+     */
     public int getWidthUnits() {
         return width;
     }
 
     /** get the height units in the WMF Metafile. This value is given
      * in the Aldus Placable Header.
-     */        
+     */
     public int getHeightUnits() {
         return height;
     }
 
     /** get the bottom units in the WMF Metafile. This value is given
      * in the Aldus Placable Header.
-     */    
+     */
     public int getBottomUnits() {
         return bottom;
     }
-    
-    /** get the number of Metafile units per inch in the WMF Metafile. 
+
+    /** get the number of Metafile units per inch in the WMF Metafile.
      * This value is given in the Aldus Placable Header.
      */
     public int getMetaFileUnitsPerInch() {
         return inch;
     }
-    
-    /** get the Rectangle defining the viewport of the WMF Metafile, in Metafile units. 
-     * This viewport is defined in the Aldus Placable Header, by its left, top, bottom, right 
+
+    /** get the Rectangle defining the viewport of the WMF Metafile, in Metafile units.
+     * This viewport is defined in the Aldus Placable Header, by its left, top, bottom, right
      * components.
      * @see #getRightUnits()
      * @see #getLeftUnits()
@@ -195,7 +195,7 @@ public abstract class AbstractWMFReader {
         Rectangle rec = new Rectangle(left, top, width, height);
         return rec;
     }
-    
+
     /** get the Rectangle defining the viewport of the WMF Metafile, in pixels.
      */
     public Rectangle2D getRectanglePixel() {
@@ -203,9 +203,9 @@ public abstract class AbstractWMFReader {
         float _right = PIXEL_PER_INCH * (float)right / (float)inch;
         float _top = PIXEL_PER_INCH * (float)top / (float)inch;
         float _bottom = PIXEL_PER_INCH * (float)bottom / (float)inch;
-        
+
         Rectangle2D.Float rec = new Rectangle2D.Float(_left, _top, _right - _left, _bottom - _top);
-        
+
         return rec;
     }
 
@@ -216,42 +216,42 @@ public abstract class AbstractWMFReader {
         float _right = (float)right / (float)inch;
         float _top = (float)top / (float)inch;
         float _bottom = (float)bottom / (float)inch;
-        
+
         Rectangle2D.Float rec = new Rectangle2D.Float(_left, _top, _right - _left, _bottom - _top);
-        
+
         return rec;
-    }    
-    
+    }
+
     /** get the width of the WMF Metafile, in pixels.
-     */            
+     */
     public int getWidthPixels() {
         return (int)(PIXEL_PER_INCH * (float)width / (float)inch);
     }
-    
+
     /** get the factor to transform Metafile dimensions in pixels
-     */            
+     */
     public float getUnitsToPixels() {
         return (PIXEL_PER_INCH / (float)inch);
-    }        
+    }
 
     /** get the factor to transform logical units width in pixels
-     */            
+     */
     public float getVpWFactor() {
         return (PIXEL_PER_INCH * (float)width / (float)inch) / (float)vpW;
-    }    
+    }
 
     /** get the factor to transform logical units height in pixels
-     */            
+     */
     public float getVpHFactor() {
         return (PIXEL_PER_INCH * (float)height / (float)inch) / (float)vpH;
-    }            
-    
+    }
+
     /** get the height of the WMF Metafile, in pixels.
-     */                
+     */
     public int getHeightPixels() {
         return (int)(PIXEL_PER_INCH * (float)height / (float)inch);
     }
-        
+
     synchronized protected void setReading( boolean state ){
       bReading = state;
     }
@@ -260,12 +260,12 @@ public abstract class AbstractWMFReader {
      */
     synchronized public boolean isReading(){
       return bReading;
-    }    
-    
+    }
+
     /** resets this WMFReader.
      */
     public abstract void reset();
-    
+
     /** Read this InputStream records. The aldus placeable header have already been
      * read (see {@link #read(DataInputStream)}). The behavior of this method is left
      * to the subclass.
@@ -276,7 +276,7 @@ public abstract class AbstractWMFReader {
      * <li>the function parameters, according to the WMF Metafile specification.
      * the remaining size in short words (16 bits) for the parameters is equal to
      * the total size for the record minus 3 short words (= 16 + 32 bits)</li>
-     * </ul> 
+     * </ul>
      * </p>
      * <p>Example :</p>
      * <pre>while (functionId > 0) {
@@ -286,7 +286,7 @@ public abstract class AbstractWMFReader {
      *        functionId = readShort( is );
      *        if ( functionId <= 0 )
      *          break;
-     *        switch ( functionId ) {       
+     *        switch ( functionId ) {
      *          case WMFConstants.&lt;a WMF function ID&gt; {
      *            do something when this function is encountered
      *          }
@@ -300,22 +300,22 @@ public abstract class AbstractWMFReader {
      * @see WMFConstants
      */
     protected abstract boolean readRecords(DataInputStream is) throws IOException;
-    
-    /** Reads the WMF file from the specified Stream. This method read the 
+
+    /** Reads the WMF file from the specified Stream. This method read the
      * aldus placeable header and set the corresponding properties :
      * <ul>
-     * <li>{@link #mtType} : File type (0 : memory, 1 : disk)</li> 
-     * <li>{@link #mtHeaderSize} : Size of header in WORDS (always 9)</li> 
-     * <li>{@link #mtVersion} : Version of Microsoft Windows used</li> 
-     * <li>{@link #mtSize} : Total size of the metafile in WORDs</li> 
-     * <li>{@link #mtNoObjects} : Number of objects in the file</li> 
-     * <li>{@link #mtMaxRecord} : The size of largest record in WORDs</li> 
-     * <li>{@link #mtNoParameters} : Not Used (always 0)</li> 
-     * <li>{@link #left} : Left coordinate in metafile units</li> 
-     * <li>{@link #right} : Right coordinate in metafile units</li> 
-     * <li>{@link #top} : Top coordinate in metafile units</li> 
-     * <li>{@link #bottom} : Bottom coordinate in metafile units</li> 
-     * <li>{@link #inch} : Number of metafile units per inch</li> 
+     * <li>{@link #mtType} : File type (0 : memory, 1 : disk)</li>
+     * <li>{@link #mtHeaderSize} : Size of header in WORDS (always 9)</li>
+     * <li>{@link #mtVersion} : Version of Microsoft Windows used</li>
+     * <li>{@link #mtSize} : Total size of the metafile in WORDs</li>
+     * <li>{@link #mtNoObjects} : Number of objects in the file</li>
+     * <li>{@link #mtMaxRecord} : The size of largest record in WORDs</li>
+     * <li>{@link #mtNoParameters} : Not Used (always 0)</li>
+     * <li>{@link #left} : Left coordinate in metafile units</li>
+     * <li>{@link #right} : Right coordinate in metafile units</li>
+     * <li>{@link #top} : Top coordinate in metafile units</li>
+     * <li>{@link #bottom} : Bottom coordinate in metafile units</li>
+     * <li>{@link #inch} : Number of metafile units per inch</li>
      * </ul>
      * <p>Then it calls the {@link #readRecords(DataInputStream)} abstract method,
      * whose behavior is left to the subclass</p>.
@@ -337,9 +337,9 @@ public abstract class AbstractWMFReader {
             int   reserved = readInt( is );
             short checksum = readShort( is );
             width = right - left;
-            height = bottom - top;            
+            height = bottom - top;
         } else {
-            setReading( false );   
+            setReading( false );
             is.close();
             throw new IOException( "Unable to read file, it is not a Aldus Placable Metafile" );
         }
@@ -350,19 +350,19 @@ public abstract class AbstractWMFReader {
         mtSize = readInt( is );
         mtNoObjects = readShort( is );
         mtMaxRecord = readInt( is );
-        mtNoParameters = readShort( is ); 
-        
+        mtNoParameters = readShort( is );
+
         numObjects = mtNoObjects;
         objectVector.ensureCapacity( numObjects );
         for ( int i = 0; i < numObjects; i++ ) {
             objectVector.addElement( new GdiObject( i, false ));
-        }        
-        
+        }
+
         boolean ret = readRecords(is);
         is.close();
         if (!ret) throw new IOException("Unhandled exception while reading records");
     }
-    
+
     public int addObject( int type, Object obj ){
         int startIdx = 0;
         //     if ( type == Wmf.PEN ) {
@@ -376,7 +376,7 @@ public abstract class AbstractWMFReader {
                 break;
             }
         }
-        
+
         return lastObjectIdx;
     }
 
@@ -401,21 +401,21 @@ public abstract class AbstractWMFReader {
           break;
         }
       }
-      
+
       return idx;
     }
-    
+
     /**
      * Returns a GdiObject from the handle table
      */
     public GdiObject getObject( int idx ) {
         return (GdiObject)objectVector.elementAt( idx );
-    } 
-    
+    }
+
     /**
      * Returns the number of GdiObjects in the handle table
      */
     public int getNumObjects() {
       return numObjects;
-    }    
+    }
 }

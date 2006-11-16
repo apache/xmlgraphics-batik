@@ -40,7 +40,7 @@ public class StrokeDashoffsetManager extends LengthManager {
      * Implements {@link ValueManager#isInheritedProperty()}.
      */
     public boolean isInheritedProperty() {
-	return true;
+        return true;
     }
 
     /**
@@ -68,7 +68,7 @@ public class StrokeDashoffsetManager extends LengthManager {
      * Implements {@link ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return CSSConstants.CSS_STROKE_DASHOFFSET_PROPERTY;
+        return CSSConstants.CSS_STROKE_DASHOFFSET_PROPERTY;
     }
     
     /**

@@ -54,7 +54,7 @@ public class SpacingManager extends LengthManager {
      * Implements {@link ValueManager#isInheritedProperty()}.
      */
     public boolean isInheritedProperty() {
-	return true;
+        return true;
     }
 
     /**
@@ -82,7 +82,7 @@ public class SpacingManager extends LengthManager {
      * Implements {@link ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return property;
+        return property;
     }
     
     /**
@@ -97,8 +97,8 @@ public class SpacingManager extends LengthManager {
      */
     public Value createValue(LexicalUnit lu, CSSEngine engine)
         throws DOMException {
-	switch (lu.getLexicalUnitType()) {
-	case LexicalUnit.SAC_INHERIT:
+        switch (lu.getLexicalUnitType()) {
+        case LexicalUnit.SAC_INHERIT:
             return SVGValueConstants.INHERIT_VALUE;
 
         case LexicalUnit.SAC_IDENT:
@@ -116,11 +116,11 @@ public class SpacingManager extends LengthManager {
      * ValueManager#createStringValue(short,String,CSSEngine)}.
      */
     public Value createStringValue(short type, String value, CSSEngine engine)
-	throws DOMException {
-	if (type != CSSPrimitiveValue.CSS_IDENT) {
+        throws DOMException {
+        if (type != CSSPrimitiveValue.CSS_IDENT) {
             throw createInvalidStringTypeDOMException(type);
-	}
-	if (value.equalsIgnoreCase(CSSConstants.CSS_NORMAL_VALUE)) {
+        }
+        if (value.equalsIgnoreCase(CSSConstants.CSS_NORMAL_VALUE)) {
             return SVGValueConstants.NORMAL_VALUE;
         }
         throw createInvalidIdentifierDOMException(value);

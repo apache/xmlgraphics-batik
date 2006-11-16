@@ -62,7 +62,7 @@ public class SVGRenderingAccuracyTest extends AbstractRenderingAccuracyTest {
      * Validating parser class name
      */
     public static final String VALIDATING_PARSER
-	= configuration.getString("validating.parser");
+        = configuration.getString("validating.parser");
 
     /**
      * Controls whether or not the SVG file should be
@@ -95,9 +95,9 @@ public class SVGRenderingAccuracyTest extends AbstractRenderingAccuracyTest {
      * If true, this test will use validation
      */
     public void setValidating(Boolean validate){
-	if (validate == null){
-	    throw new IllegalArgumentException();
-	}
+        if (validate == null){
+            throw new IllegalArgumentException();
+        }
         this.validate = validate.booleanValue();
     }
 

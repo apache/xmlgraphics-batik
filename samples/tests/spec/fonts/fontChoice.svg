@@ -171,7 +171,7 @@
         <text x="50" y="150" font-family="SVGGeorgia, SansSerif" font-size="35">Georgia</text>
 
 
-	  <!-- The characters 'd', 'G', 'a', 'g' and 'r' should use the bold version of SVG Georgia -->
+        <!-- The characters 'd', 'G', 'a', 'g' and 'r' should use the bold version of SVG Georgia -->
 
         <text x="50" y="225" font-family="SVGGeorgia, SansSerif" font-size="35" 
               font-weight="bold">Bold Georgia</text>
@@ -185,12 +185,12 @@
               font-style="italic" font-weight="bold">Bold Italic SansSerif</text>
 
         <!-- description for each test -->
-	  <g font-size="10">
-	      <text x="50" y="170">font-family="SVGGeorgia, SansSerif"</text>
+        <g font-size="10">
+            <text x="50" y="170">font-family="SVGGeorgia, SansSerif"</text>
             <text x="50" y="245">font-family="SVGGeorgia, SansSerif" font-weight="bold"</text>
             <text x="50" y="320">font-family="SansSerif, SVGGeorgia"</text>
             <text x="50" y="395">font-family="SVGGeorgia, SansSerif" font-weight="bold" font-style="italic"</text>
-	  </g>
+        </g>
        
     </g>
 

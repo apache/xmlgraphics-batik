@@ -50,7 +50,7 @@
           t.setAttribute("x", "225");
           if (inRegard) 
                setTimeout('regardTestInstance.scriptDone()', 100);
-	}
+        }
        function regardStart() {
           inRegard = true;
           moveText();

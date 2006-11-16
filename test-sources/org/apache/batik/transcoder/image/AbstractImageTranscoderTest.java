@@ -65,19 +65,19 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
      * Error when the reference image and the generated image is different.
      */
     public static final String ERROR_IMAGE_DIFFER =
-	"AbstractImageTranscoderTest.error.image.differ";
+        "AbstractImageTranscoderTest.error.image.differ";
 
     /**
      * Tag for difference image URI.
      */
     public static final String DIFFERENCE_IMAGE =
-	"AbstractImageTranscoderTest.error.difference.image";
+        "AbstractImageTranscoderTest.error.difference.image";
 
     /**
      * Error when an exception occured while transcoding.
      */
     public static final String ERROR_TRANSCODING =
-	"AbstractImageTranscoderTest.error.transcoder.exception";
+        "AbstractImageTranscoderTest.error.transcoder.exception";
 
     /**
      * Constructs a new <tt>AbstractImageTranscoderTest</tt>.
@@ -118,27 +118,27 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
      * the test's internal operation fails.
      */
     public TestReport runImpl() throws Exception {
-	report = new DefaultTestReport(this);
+        report = new DefaultTestReport(this);
 
-	try {
-	    DiffImageTranscoder transcoder = 
-		new DiffImageTranscoder(getReferenceImageData());
+        try {
+            DiffImageTranscoder transcoder = 
+                new DiffImageTranscoder(getReferenceImageData());
 
-	    Map hints = createTranscodingHints();
-	    if (hints != null) {
-		transcoder.setTranscodingHints(hints);
-	    }
+            Map hints = createTranscodingHints();
+            if (hints != null) {
+                transcoder.setTranscodingHints(hints);
+            }
 
-	    TranscoderInput input = createTranscoderInput();
-	    transcoder.transcode(input, null);
-	} catch (Exception ex) {
-	    report.setErrorCode(ERROR_TRANSCODING);
-	    report.addDescriptionEntry(ERROR_TRANSCODING, toString(ex));
+            TranscoderInput input = createTranscoderInput();
+            transcoder.transcode(input, null);
+        } catch (Exception ex) {
+            report.setErrorCode(ERROR_TRANSCODING);
+            report.addDescriptionEntry(ERROR_TRANSCODING, toString(ex));
             ex.printStackTrace();
-	    report.setPassed(false);
-	}
-	
-	return report;
+            report.setPassed(false);
+        }
+        
+        return report;
     }
 
     /**
@@ -150,7 +150,7 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
      * Creates a Map that contains additional transcoding hints.
      */
     protected Map createTranscodingHints() {
-	return null;
+        return null;
     }
 
     /**
@@ -166,9 +166,9 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
      * Gives the specified exception as a string.
      */
     public static String toString(Exception ex) {
-	StringWriter trace = new StringWriter();
-	ex.printStackTrace(new PrintWriter(trace));
-	return trace.toString();
+        StringWriter trace = new StringWriter();
+        ex.printStackTrace(new PrintWriter(trace));
+        return trace.toString();
     }
 
     static String filename;
@@ -220,44 +220,44 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
      */
     protected class DiffImageTranscoder extends ImageTranscoder {
 
-	/** The result of the image comparaison. */
-	protected boolean state;
+        /** The result of the image comparaison. */
+        protected boolean state;
 
-	/** The reference image. */
-	protected byte [] refImgData;
+        /** The reference image. */
+        protected byte [] refImgData;
 
-	/**
-	 * Constructs a new <tt>DiffImageTranscoder</tt>.
-	 *
-	 * @param refImgData the reference image data
-	 */
-	public DiffImageTranscoder(byte [] refImgData) {
-	    this.refImgData = refImgData;
-	}
+        /**
+         * Constructs a new <tt>DiffImageTranscoder</tt>.
+         *
+         * @param refImgData the reference image data
+         */
+        public DiffImageTranscoder(byte [] refImgData) {
+            this.refImgData = refImgData;
+        }
 
-	/**
-	 * Creates a new image with the specified dimension.
-	 * @param w the image width in pixels
-	 * @param h the image height in pixels
-	 */
-	public BufferedImage createImage(int w, int h) {
-	    return new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-	}
+        /**
+         * Creates a new image with the specified dimension.
+         * @param w the image width in pixels
+         * @param h the image height in pixels
+         */
+        public BufferedImage createImage(int w, int h) {
+            return new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+        }
 
-	/**
-	 * Compares the specified image with the reference image and set the
-	 * state flag.
-	 *
-	 * @param img the image to write
-	 * @param output the output (ignored)
-	 * @throw TranscoderException if an error occured while storing the
-	 * image 
-	 */
-	public void writeImage(BufferedImage img, TranscoderOutput output)
-	    throws TranscoderException {
+        /**
+         * Compares the specified image with the reference image and set the
+         * state flag.
+         *
+         * @param img the image to write
+         * @param output the output (ignored)
+         * @throw TranscoderException if an error occured while storing the
+         * image 
+         */
+        public void writeImage(BufferedImage img, TranscoderOutput output)
+            throws TranscoderException {
 
-	    compareImage(img);
-	}
+            compareImage(img);
+        }
 
         protected void writeCandidateReference(byte [] imgData) {
             try {
@@ -295,13 +295,13 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
             } catch (Exception e) { }
         }
 
-	/**
-	 * Compares both source and result images and set the state flag.
-	 */
-	protected void compareImage(BufferedImage img) 
+        /**
+         * Compares both source and result images and set the state flag.
+         */
+        protected void compareImage(BufferedImage img) 
             throws TranscoderException {
-	    // compare the resulting image with the reference image
-	    // state = true if refImg is the same than img
+            // compare the resulting image with the reference image
+            // state = true if refImg is the same than img
 
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             TranscoderOutput output = new TranscoderOutput(out);
@@ -336,16 +336,16 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
                 }
             }
             
-	    state = true;
-	}
+            state = true;
+        }
 
-	/**
-	 * Returns true if the reference image is the same than the generated
-	 * image, false otherwise.  
-	 */
-	public boolean isIdentical() {
-	    return state;
-	}
+        /**
+         * Returns true if the reference image is the same than the generated
+         * image, false otherwise.  
+         */
+        public boolean isIdentical() {
+            return state;
+        }
     }
 
     protected BufferedImage getImage(InputStream is) 

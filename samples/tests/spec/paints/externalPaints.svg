@@ -42,31 +42,31 @@
 <!-- ############################### -->
 <g id="board" style="fill:none; stroke:black;">
 
-	<rect x="75" y="100" width="100" height="20" style="fill:#eee"/>
-	<rect x="175" y="100" width="100" height="20" style="fill:#eee"/>
-	<rect x="275" y="100" width="100" height="20" style="fill:#eee"/>
+  <rect x="75" y="100" width="100" height="20" style="fill:#eee"/>
+  <rect x="175" y="100" width="100" height="20" style="fill:#eee"/>
+  <rect x="275" y="100" width="100" height="20" style="fill:#eee"/>
 
-	<rect x="55" y="120" width="20" height="100" style="fill:#eee"/>
-	<rect x="55" y="220" width="20" height="100" style="fill:#eee"/>
-	<rect x="55" y="320" width="20" height="100" style="fill:#eee"/>
+  <rect x="55" y="120" width="20" height="100" style="fill:#eee"/>
+  <rect x="55" y="220" width="20" height="100" style="fill:#eee"/>
+  <rect x="55" y="320" width="20" height="100" style="fill:#eee"/>
 
-	<rect x="75" y="120" width="100" height="300"/>
-	<rect x="175" y="120" width="100" height="300"/>
-	<rect x="275" y="120" width="100" height="300"/>
+  <rect x="75" y="120" width="100" height="300"/>
+  <rect x="175" y="120" width="100" height="300"/>
+  <rect x="275" y="120" width="100" height="300"/>
 
-	<line x1="75" y1="220" x2="375" y2="220" />
-	<line x1="75" y1="320" x2="375" y2="320" />
+  <line x1="75" y1="220" x2="375" y2="220" />
+  <line x1="75" y1="320" x2="375" y2="320" />
 
-	<g style="font-size:12; text-anchor:middle; fill:black; stroke:none">
-		<text x="125" y="114">Linear Gradient</text>
-		<text x="225" y="114">Radial Gradient</text>
-		<text x="325" y="114">Pattern</text>
+  <g style="font-size:12; text-anchor:middle; fill:black; stroke:none">
+    <text x="125" y="114">Linear Gradient</text>
+    <text x="225" y="114">Radial Gradient</text>
+    <text x="325" y="114">Pattern</text>
 
-		<text x="0" y="0" transform="translate(70 170) rotate(-90)">Simple Reference</text>
-		<text x="0" y="0" transform="translate(70 270) rotate(-90)">Inheritance</text>
-		<text x="0" y="0" transform="translate(70 370) rotate(-90)">Ext. Inheritance</text>
+    <text x="0" y="0" transform="translate(70 170) rotate(-90)">Simple Reference</text>
+    <text x="0" y="0" transform="translate(70 270) rotate(-90)">Inheritance</text>
+    <text x="0" y="0" transform="translate(70 370) rotate(-90)">Ext. Inheritance</text>
 
-	</g>
+  </g>
 </g>
 
 

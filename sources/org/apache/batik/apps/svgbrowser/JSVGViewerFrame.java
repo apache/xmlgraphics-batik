@@ -1681,10 +1681,10 @@ public class JSVGViewerFrame
             int choice = fileChooser.showSaveDialog(JSVGViewerFrame.this);
             if (choice == JFileChooser.APPROVE_OPTION) {
 
-		// Start: By Jun Inamori (jun@oop-reserch.com)
+                // Start: By Jun Inamori (jun@oop-reserch.com)
                 boolean isIndexed =
                     PNGOptionPanel.showDialog(JSVGViewerFrame.this);
-		// End: By Jun Inamori (jun@oop-reserch.com)
+                // End: By Jun Inamori (jun@oop-reserch.com)
 
                 final File f = fileChooser.getSelectedFile();
                 BufferedImage buffer = svgCanvas.getOffScreen();
@@ -1704,12 +1704,12 @@ public class JSVGViewerFrame
                     trans.addTranscodingHint(PNGTranscoder.KEY_FORCE_TRANSPARENT_WHITE,
                                              new Boolean(true));
 
-		    // Start: By Jun Inamori
-		    if(isIndexed){
-			trans.addTranscodingHint
+                    // Start: By Jun Inamori
+                    if(isIndexed){
+                        trans.addTranscodingHint
                             (PNGTranscoder.KEY_INDEXED,new Integer(256));
-		    }
-		    // End: By Jun Inamori
+                    }
+                    // End: By Jun Inamori
 
                     final BufferedImage img = trans.createImage(w, h);
 

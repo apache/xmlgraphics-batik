@@ -884,12 +884,12 @@ public abstract class CSSUtilities
     public static void computeStyleAndURIs(Element refElement,
                                            Element localRefElement,
                                            String  uri) {
-	// Pull fragement id off first...
+        // Pull fragement id off first...
         int idx = uri.indexOf('#');
         if (idx != -1)
             uri = uri.substring(0,idx);
 
-	// Only set xml:base if we have a real URL.
+        // Only set xml:base if we have a real URL.
         if (uri.length() != 0)
             localRefElement.setAttributeNS(XML_NAMESPACE_URI,
                                            "base",

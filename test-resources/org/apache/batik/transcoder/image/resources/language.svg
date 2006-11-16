@@ -21,19 +21,18 @@
 -->
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="450" height="500">
  
-<switch>
+  <switch>
+    <g systemLanguage="en">
+      <rect x="25%" y="25%" width="50%" height="50%" fill="orange" />
+    </g>
 
-	<g systemLanguage="en">
- 		<rect x="25%" y="25%" width="50%" height="50%" fill="orange" />
-	</g>
+    <g systemLanguage="fr">
+      <rect x="25%" y="25%" width="50%" height="50%" fill="gold" />
+    </g>
 
-	<g systemLanguage="fr">
- 		<rect x="25%" y="25%" width="50%" height="50%" fill="gold" />
-	</g>
-
-	<g>
- 		<rect x="25%" y="25%" width="50%" height="50%" fill="crimson" />
-	</g>
-</switch>
+    <g>
+      <rect x="25%" y="25%" width="50%" height="50%" fill="crimson" />
+    </g>
+  </switch>
 
 </svg>

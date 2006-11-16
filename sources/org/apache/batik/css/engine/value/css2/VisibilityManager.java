@@ -40,11 +40,11 @@ public class VisibilityManager extends IdentifierManager {
      */
     protected final static StringMap values = new StringMap();
     static {
-	values.put(CSSConstants.CSS_VISIBLE_VALUE,
+        values.put(CSSConstants.CSS_VISIBLE_VALUE,
                    ValueConstants.VISIBLE_VALUE);
-	values.put(CSSConstants.CSS_HIDDEN_VALUE,
+        values.put(CSSConstants.CSS_HIDDEN_VALUE,
                    ValueConstants.HIDDEN_VALUE);
-	values.put(CSSConstants.CSS_COLLAPSE_VALUE,
+        values.put(CSSConstants.CSS_COLLAPSE_VALUE,
                    ValueConstants.COLLAPSE_VALUE);
     }
 
@@ -53,7 +53,7 @@ public class VisibilityManager extends IdentifierManager {
      * org.apache.batik.css.engine.value.ValueManager#isInheritedProperty()}.
      */
     public boolean isInheritedProperty() {
-	return true;
+        return true;
     }
 
     /**
@@ -82,7 +82,7 @@ public class VisibilityManager extends IdentifierManager {
      * org.apache.batik.css.engine.value.ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return CSSConstants.CSS_VISIBILITY_PROPERTY;
+        return CSSConstants.CSS_VISIBILITY_PROPERTY;
     }
     
     /**

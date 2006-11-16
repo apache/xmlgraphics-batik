@@ -842,8 +842,8 @@ public class PreferenceManager
         if (getDefault(key) != null &&
             ((Boolean)getDefault(key)).booleanValue() != value) {
             internal.setProperty(key, value?"true":"false");
-	} else {
+        } else {
             internal.remove(key);
-	}
+        }
     }
 }

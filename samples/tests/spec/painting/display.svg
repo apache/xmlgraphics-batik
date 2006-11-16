@@ -41,34 +41,34 @@
     Test 'display' property
   </text>
 
-	<g id="array">
-		<g style="stroke:black;fill:none;">
-			<rect x="45" y="60" width="360" height="20" fill="#eee"/>
-			<rect x="25" y="80" width="20" height="360" fill="#eee"/>
-			<rect x="45" y="80" width="360" height="360" />
+    <g id="array">
+        <g style="stroke:black;fill:none;">
+            <rect x="45" y="60" width="360" height="20" fill="#eee"/>
+            <rect x="25" y="80" width="20" height="360" fill="#eee"/>
+            <rect x="45" y="80" width="360" height="360" />
 
-			<line x1="165" y1="60" x2="165" y2="440" />
-			<line x1="285" y1="60" x2="285" y2="440" />
+            <line x1="165" y1="60" x2="165" y2="440" />
+            <line x1="285" y1="60" x2="285" y2="440" />
 
-			<line x1="25"  y1="170" x2="405" y2="170" />
-			<line x1="25"  y1="260" x2="405" y2="260" />
-			<line x1="25"  y1="350" x2="405" y2="350" />
-		</g>
-		<g style="text-anchor:middle; font-size:10pt; fill:black; stroke:none">
-			<text x="105" y="75">display:inherit</text>
-			<text x="225" y="75">display:inline</text>
-			<text x="345" y="75">display:none</text>
+            <line x1="25"  y1="170" x2="405" y2="170" />
+            <line x1="25"  y1="260" x2="405" y2="260" />
+            <line x1="25"  y1="350" x2="405" y2="350" />
+        </g>
+        <g style="text-anchor:middle; font-size:10pt; fill:black; stroke:none">
+            <text x="105" y="75">display:inherit</text>
+            <text x="225" y="75">display:inline</text>
+            <text x="345" y="75">display:none</text>
 
 
-			<text x="0" y="0" transform="translate(40, 125) rotate(-90)">&lt;rect></text>
+            <text x="0" y="0" transform="translate(40, 125) rotate(-90)">&lt;rect></text>
 
-			<text x="0" y="0" transform="translate(40, 215) rotate(-90)">&lt;g></text>
+            <text x="0" y="0" transform="translate(40, 215) rotate(-90)">&lt;g></text>
 
-			<text x="0" y="0" transform="translate(40, 305) rotate(-90)">&lt;clipPath></text>
+            <text x="0" y="0" transform="translate(40, 305) rotate(-90)">&lt;clipPath></text>
 
-			<text x="0" y="0" transform="translate(40, 395) rotate(-90)">&lt;mask></text>
-		</g>
-	</g>
+            <text x="0" y="0" transform="translate(40, 395) rotate(-90)">&lt;mask></text>
+        </g>
+    </g>
 
 <!-- #################################################### -->
 <!-- #################################################### -->
@@ -108,23 +108,23 @@
 <!-- #################################################### -->
 <!-- #################################################### -->
 <defs>
-	<!-- a clipPath with its children display properties set to 'inherit' -->
-	<clipPath id="clipInherit" clipPathUnits="objectBoundingBox">
-		<ellipse cx=".3" cy=".5" rx=".3" ry=".5" style="display:inherit"/>
-		<ellipse cx=".7" cy=".5" rx=".3" ry=".5" style="display:inherit"/>
-	</clipPath>
+    <!-- a clipPath with its children display properties set to 'inherit' -->
+    <clipPath id="clipInherit" clipPathUnits="objectBoundingBox">
+        <ellipse cx=".3" cy=".5" rx=".3" ry=".5" style="display:inherit"/>
+        <ellipse cx=".7" cy=".5" rx=".3" ry=".5" style="display:inherit"/>
+    </clipPath>
 
-	<!-- a clipPath with its children display properties set to 'inline' -->
-	<clipPath id="clipInline" clipPathUnits="objectBoundingBox">
-		<ellipse cx=".3" cy=".5" rx=".3" ry=".5" style="display:inline"/>
-		<ellipse cx=".7" cy=".5" rx=".3" ry=".5" style="display:inline"/>
-	</clipPath>
+    <!-- a clipPath with its children display properties set to 'inline' -->
+    <clipPath id="clipInline" clipPathUnits="objectBoundingBox">
+        <ellipse cx=".3" cy=".5" rx=".3" ry=".5" style="display:inline"/>
+        <ellipse cx=".7" cy=".5" rx=".3" ry=".5" style="display:inline"/>
+    </clipPath>
 
-	<!-- a clipPath with its children display properties set to 'none' -->
-	<clipPath id="clipNone" clipPathUnits="objectBoundingBox">
-		<ellipse cx=".3" cy=".5" rx=".3" ry=".5" style="display:none"/>
-		<ellipse cx=".7" cy=".5" rx=".3" ry=".5" style="display:none"/>
-	</clipPath>
+    <!-- a clipPath with its children display properties set to 'none' -->
+    <clipPath id="clipNone" clipPathUnits="objectBoundingBox">
+        <ellipse cx=".3" cy=".5" rx=".3" ry=".5" style="display:none"/>
+        <ellipse cx=".7" cy=".5" rx=".3" ry=".5" style="display:none"/>
+    </clipPath>
 </defs>
 
 <rect x="65" y="270" width="80" height="70" style="fill:crimson; clip-path:url(#clipInherit);" />
@@ -136,29 +136,29 @@
 <!-- #################################################### -->
 <!-- #################################################### -->
 <defs>
-	<mask id="maskInherit" maskContentUnits="objectBoundingBox"
-		x="0" y="0" width="100%" height="100%" style="fill:white">
-		<circle cx=".2" cy=".2" r=".2" style="display:inherit"/>
-		<circle cx=".8" cy=".2" r=".2" style="display:inherit"/>
-		<circle cx=".2" cy=".8" r=".2" style="display:inherit"/>
-		<circle cx=".8" cy=".8" r=".2" style="display:inherit"/>
-	</mask>
+    <mask id="maskInherit" maskContentUnits="objectBoundingBox"
+        x="0" y="0" width="100%" height="100%" style="fill:white">
+        <circle cx=".2" cy=".2" r=".2" style="display:inherit"/>
+        <circle cx=".8" cy=".2" r=".2" style="display:inherit"/>
+        <circle cx=".2" cy=".8" r=".2" style="display:inherit"/>
+        <circle cx=".8" cy=".8" r=".2" style="display:inherit"/>
+    </mask>
 
-	<mask id="maskInline" maskContentUnits="objectBoundingBox"
-		x="0" y="0" width="100%" height="100%" style="fill:white">
-		<circle cx=".2" cy=".2" r=".2" style="display:inline"/>
-		<circle cx=".8" cy=".2" r=".2" style="display:inline"/>
-		<circle cx=".2" cy=".8" r=".2" style="display:inline"/>
-		<circle cx=".8" cy=".8" r=".2" style="display:inline"/>
-	</mask>
+    <mask id="maskInline" maskContentUnits="objectBoundingBox"
+        x="0" y="0" width="100%" height="100%" style="fill:white">
+        <circle cx=".2" cy=".2" r=".2" style="display:inline"/>
+        <circle cx=".8" cy=".2" r=".2" style="display:inline"/>
+        <circle cx=".2" cy=".8" r=".2" style="display:inline"/>
+        <circle cx=".8" cy=".8" r=".2" style="display:inline"/>
+    </mask>
 
-	<mask id="maskNone" maskContentUnits="objectBoundingBox"
-		x="0" y="0" width="100%" height="100%" style="fill:white">
-		<circle cx=".2" cy=".2" r=".2" style="display:none"/>
-		<circle cx=".8" cy=".2" r=".2" style="display:none"/>
-		<circle cx=".2" cy=".8" r=".2" style="display:none"/>
-		<circle cx=".8" cy=".8" r=".2" style="display:none"/>
-	</mask>
+    <mask id="maskNone" maskContentUnits="objectBoundingBox"
+        x="0" y="0" width="100%" height="100%" style="fill:white">
+        <circle cx=".2" cy=".2" r=".2" style="display:none"/>
+        <circle cx=".8" cy=".2" r=".2" style="display:none"/>
+        <circle cx=".2" cy=".8" r=".2" style="display:none"/>
+        <circle cx=".8" cy=".8" r=".2" style="display:none"/>
+    </mask>
 </defs>
 
 <rect x="65" y="360" width="80" height="70" style="fill:crimson; mask:url(#maskInherit)" />

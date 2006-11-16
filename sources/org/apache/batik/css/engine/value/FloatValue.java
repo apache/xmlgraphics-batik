@@ -40,7 +40,7 @@ public class FloatValue extends AbstractValue {
         if (s.endsWith(".0")) {
             s = s.substring(0, s.length() - 2);
         }
-	return s + UNITS[unit - CSSPrimitiveValue.CSS_NUMBER];
+        return s + UNITS[unit - CSSPrimitiveValue.CSS_NUMBER];
     }
 
     /**
@@ -65,8 +65,8 @@ public class FloatValue extends AbstractValue {
      * Creates a new value.
      */
     public FloatValue(short unitType, float floatValue) {
-	this.unitType   = unitType;
-	this.floatValue = floatValue;
+        this.unitType   = unitType;
+        this.floatValue = floatValue;
     }
 
     /**
@@ -87,7 +87,7 @@ public class FloatValue extends AbstractValue {
      *  A string representation of the current value. 
      */
     public String getCssText() {
-	return getCssText(unitType, floatValue);
+        return getCssText(unitType, floatValue);
     }
 
     /**

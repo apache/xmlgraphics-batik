@@ -34,7 +34,7 @@ public class DefaultChildSelector extends AbstractDescendantSelector {
      * Creates a new DefaultChildSelector object.
      */
     public DefaultChildSelector(Selector ancestor, SimpleSelector simple) {
-	super(ancestor, simple);
+        super(ancestor, simple);
     }
 
     /**
@@ -42,17 +42,17 @@ public class DefaultChildSelector extends AbstractDescendantSelector {
      * org.w3c.css.sac.Selector#getSelectorType()}.
      */
     public short getSelectorType() {
-	return SAC_CHILD_SELECTOR;
+        return SAC_CHILD_SELECTOR;
     }
 
     /**
      * Returns a representation of the selector.
      */
     public String toString() {
-	SimpleSelector s = getSimpleSelector();
-	if (s.getSelectorType() == SAC_PSEUDO_ELEMENT_SELECTOR) {
-	    return "" + getAncestorSelector() + s;
-	}
-	return getAncestorSelector() + " > " + s;
+        SimpleSelector s = getSimpleSelector();
+        if (s.getSelectorType() == SAC_PSEUDO_ELEMENT_SELECTOR) {
+            return "" + getAncestorSelector() + s;
+        }
+        return getAncestorSelector() + " > " + s;
     }
 }

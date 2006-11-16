@@ -60,7 +60,7 @@ public class FontShorthandManager
      * Implements {@link ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return CSSConstants.CSS_FONT_PROPERTY;
+        return CSSConstants.CSS_FONT_PROPERTY;
     }
 
     /**
@@ -105,12 +105,12 @@ public class FontShorthandManager
 
     protected final static Set values = new HashSet();
     static {
-	values.add(CSSConstants.CSS_CAPTION_VALUE);
-	values.add(CSSConstants.CSS_ICON_VALUE);
-	values.add(CSSConstants.CSS_MENU_VALUE);
-	values.add(CSSConstants.CSS_MESSAGE_BOX_VALUE);
-	values.add(CSSConstants.CSS_SMALL_CAPTION_VALUE);
-	values.add(CSSConstants.CSS_STATUS_BAR_VALUE);
+        values.add(CSSConstants.CSS_CAPTION_VALUE);
+        values.add(CSSConstants.CSS_ICON_VALUE);
+        values.add(CSSConstants.CSS_MENU_VALUE);
+        values.add(CSSConstants.CSS_MESSAGE_BOX_VALUE);
+        values.add(CSSConstants.CSS_SMALL_CAPTION_VALUE);
+        values.add(CSSConstants.CSS_STATUS_BAR_VALUE);
     }
 
     public void handleSystemFont(CSSEngine eng,
@@ -258,17 +258,17 @@ public class FontShorthandManager
         }
             break;
 
-	case LexicalUnit.SAC_EM:
-	case LexicalUnit.SAC_EX:
-	case LexicalUnit.SAC_PIXEL:
-	case LexicalUnit.SAC_CENTIMETER:
-	case LexicalUnit.SAC_MILLIMETER:
-	case LexicalUnit.SAC_INCH:
-	case LexicalUnit.SAC_POINT:
-	case LexicalUnit.SAC_PICA:
-	case LexicalUnit.SAC_INTEGER:
-	case LexicalUnit.SAC_REAL:
-	case LexicalUnit.SAC_PERCENTAGE:
+        case LexicalUnit.SAC_EM:
+        case LexicalUnit.SAC_EX:
+        case LexicalUnit.SAC_PIXEL:
+        case LexicalUnit.SAC_CENTIMETER:
+        case LexicalUnit.SAC_MILLIMETER:
+        case LexicalUnit.SAC_INCH:
+        case LexicalUnit.SAC_POINT:
+        case LexicalUnit.SAC_PICA:
+        case LexicalUnit.SAC_INTEGER:
+        case LexicalUnit.SAC_REAL:
+        case LexicalUnit.SAC_PERCENTAGE:
             fontSize = lu;
             lu = lu.getNextLexicalUnit();
             break;

@@ -64,7 +64,7 @@ dt { font-weight: bold }
 tt, pre, code { font-family: monospace } /* navigator 4 requires this */
 
 ul.toc {
-  list-style: disc;		/* Mac NS has problem with 'none' */
+  list-style: disc; /* Mac NS has problem with 'none' */
   list-style: none;
 }
 

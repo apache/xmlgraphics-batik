@@ -390,14 +390,14 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      * @param textPainter the text painter for text nodes 
      */
     public void setTextPainter(TextPainter textPainter) {
-	this.textPainter = textPainter;
+        this.textPainter = textPainter;
     }
 
     /**
      * Returns the text painter that will be used be text nodes.
      */
     public TextPainter getTextPainter() {
-	return textPainter;
+        return textPainter;
     }
 
     /**

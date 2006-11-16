@@ -452,8 +452,8 @@ public abstract class BridgeEventSupport implements SVGConstants {
             // is a tspan or textPath
 
             if (target != null && node instanceof TextNode) {
-		TextNode textNode = (TextNode)node;
-		List list = textNode.getTextRuns();
+                TextNode textNode = (TextNode)node;
+                List list = textNode.getTextRuns();
                 Point2D pt = (Point2D)coords.clone();
                 // place coords in text node coordinate system
                 try {

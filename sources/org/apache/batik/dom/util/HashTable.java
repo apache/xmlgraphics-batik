@@ -88,7 +88,7 @@ public class HashTable implements Serializable {
     public int size() {
         return count;
     }
-    
+
     /**
      * Gets the value of a variable
      * @return the value or null
@@ -125,7 +125,7 @@ public class HashTable implements Serializable {
             }
         }
 
-      	// The key is not in the hash table
+        // The key is not in the hash table
         int len = table.length;
         if (count++ >= (len - ( len >> 2 ))) {
             // more than 75% loaded: grow

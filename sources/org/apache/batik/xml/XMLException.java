@@ -42,8 +42,8 @@ public class XMLException extends RuntimeException {
      * @param message The error or warning message.
      */
     public XMLException (String message) {
-	super(message);
-	exception = null;
+        super(message);
+        exception = null;
     }
     
     /**
@@ -55,7 +55,7 @@ public class XMLException extends RuntimeException {
      * @param e The exception to be wrapped in a XMLException.
      */
     public XMLException (Exception e) {
-	exception = e;
+        exception = e;
     }
     
     /**
@@ -67,8 +67,8 @@ public class XMLException extends RuntimeException {
      * @param e The exception to be wrapped in a SAXException.
      */
     public XMLException (String message, Exception e) {
-	super(message);
-	exception = e;
+        super(message);
+        exception = e;
     }
     
     /**
@@ -80,13 +80,13 @@ public class XMLException extends RuntimeException {
      * @return The error or warning message.
      */
     public String getMessage () {
-	String message = super.getMessage();
-	
-	if (message == null && exception != null) {
-	    return exception.getMessage();
-	} else {
-	    return message;
-	}
+        String message = super.getMessage();
+        
+        if (message == null && exception != null) {
+            return exception.getMessage();
+        } else {
+            return message;
+        }
     }
     
     /**
@@ -94,7 +94,7 @@ public class XMLException extends RuntimeException {
      * @return The embedded exception, or null if there is none.
      */
     public Exception getException () {
-	return exception;
+        return exception;
     }
 
     /**

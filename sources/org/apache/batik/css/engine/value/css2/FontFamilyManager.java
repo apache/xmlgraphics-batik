@@ -65,15 +65,15 @@ public class FontFamilyManager extends AbstractValueManager {
      */
     protected final static StringMap values = new StringMap();
     static {
-	values.put(CSSConstants.CSS_CURSIVE_VALUE,
+        values.put(CSSConstants.CSS_CURSIVE_VALUE,
                    ValueConstants.CURSIVE_VALUE);
-	values.put(CSSConstants.CSS_FANTASY_VALUE,
+        values.put(CSSConstants.CSS_FANTASY_VALUE,
                    ValueConstants.FANTASY_VALUE);
-	values.put(CSSConstants.CSS_MONOSPACE_VALUE,
+        values.put(CSSConstants.CSS_MONOSPACE_VALUE,
                    ValueConstants.MONOSPACE_VALUE);
-	values.put(CSSConstants.CSS_SERIF_VALUE,
+        values.put(CSSConstants.CSS_SERIF_VALUE,
                    ValueConstants.SERIF_VALUE);
-	values.put(CSSConstants.CSS_SANS_SERIF_VALUE,
+        values.put(CSSConstants.CSS_SANS_SERIF_VALUE,
                    ValueConstants.SANS_SERIF_VALUE);
     }
 
@@ -81,7 +81,7 @@ public class FontFamilyManager extends AbstractValueManager {
      * Implements {@link ValueManager#isInheritedProperty()}.
      */
     public boolean isInheritedProperty() {
-	return true;
+        return true;
     }
 
     /**
@@ -109,7 +109,7 @@ public class FontFamilyManager extends AbstractValueManager {
      * Implements {@link ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return CSSConstants.CSS_FONT_FAMILY_PROPERTY;
+        return CSSConstants.CSS_FONT_FAMILY_PROPERTY;
     }
     
     /**

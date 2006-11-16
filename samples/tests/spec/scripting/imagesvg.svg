@@ -46,101 +46,101 @@
         <text class="title" x="50%" y="40">&lt;image&gt;  tests <tspan font-size="12">(preserveAspectRatio)</tspan></text>
 
         <defs>
-		<rect id="Rect1" x="40" y="0" width="50" height="20" />
-		<rect id="Rect2" x="60" y="-10" width="20" height="50" />
+            <rect id="Rect1" x="40" y="0" width="50" height="20" />
+            <rect id="Rect2" x="60" y="-10" width="20" height="50" />
         </defs>
 
-	  <g transform="translate(0,70)">
+        <g transform="translate(0,70)">
             <use xlink:href="#Rect1" style="fill:none; stroke:blue; stroke-width:2"/>
-	    <image x="40" y="0" width="50" height="20" xlink:href="../../resources/images/svg.svg" 
-		onload="setPAR(evt,'xMinYMin meet')"/>
+            <image x="40" y="0" width="50" height="20" xlink:href="../../resources/images/svg.svg" 
+                onload="setPAR(evt,'xMinYMin meet')"/>
             <text font-size="10" x="35" y="60">xMin* meet</text>
-         </g>
+        </g>
 
 
-         <g transform="translate(150,70)">
+        <g transform="translate(150,70)">
             <use xlink:href="#Rect1" style="fill:none; stroke:blue; stroke-width:2"/>
-	    <image x="40" y="0" width="50" height="20" xlink:href="../../resources/images/svg.svg" 
-		onload="setPAR(evt,'xMidYMin meet')"/>
+            <image x="40" y="0" width="50" height="20" xlink:href="../../resources/images/svg.svg" 
+                onload="setPAR(evt,'xMidYMin meet')"/>
             <text font-size="10" x="35" y="60">xMid* meet</text>
-         </g>
+        </g>
 
-         <g transform="translate(300,70)">
+        <g transform="translate(300,70)">
             <use xlink:href="#Rect1" style="fill:none; stroke:blue; stroke-width:2"/>
-	    <image x="40" y="0" width="50" height="20" xlink:href="../../resources/images/svg.svg" 
-		onload="setPAR(evt,'xMaxYMin meet')"/>
-	    <text font-size="10" x="35" y="60">xMax* meet</text>
-         </g>
+            <image x="40" y="0" width="50" height="20" xlink:href="../../resources/images/svg.svg" 
+                onload="setPAR(evt,'xMaxYMin meet')"/>
+            <text font-size="10" x="35" y="60">xMax* meet</text>
+        </g>
 
 
-         <g transform="translate(0,170)">
+        <g transform="translate(0,170)">
             <use xlink:href="#Rect2" style="fill:none; stroke:blue; stroke-width:2"/>
-	    <image x="60" y="-10" width="20" height="50" xlink:href="../../resources/images/svg.svg" 
-		onload="setPAR(evt,'xMinYMin meet')"/>
+            <image x="60" y="-10" width="20" height="50" xlink:href="../../resources/images/svg.svg" 
+                onload="setPAR(evt,'xMinYMin meet')"/>
             <text font-size="10" x="35" y="60">*YMin meet</text>
-         </g>
+        </g>
 
 
-         <g transform="translate(150,170)">
+       <g transform="translate(150,170)">
             <use xlink:href="#Rect2" style="fill:none; stroke:blue; stroke-width:2"/>
-	    <image x="60" y="-10" width="20" height="50" xlink:href="../../resources/images/svg.svg" 
-		onload="setPAR(evt,'xMinYMid meet')"/>
+            <image x="60" y="-10" width="20" height="50" xlink:href="../../resources/images/svg.svg" 
+                   onload="setPAR(evt,'xMinYMid meet')"/>
             <text font-size="10" x="35" y="60">*YMid meet</text>
-         </g>
+       </g>
 
-         <g transform="translate(300,170)">
+       <g transform="translate(300,170)">
             <use xlink:href="#Rect2" style="fill:none; stroke:blue; stroke-width:2"/>
-	    <image x="60" y="-10" width="20" height="50" xlink:href="../../resources/images/svg.svg" 
-		onload="setPAR(evt,'xMinYMax meet')"/>
+            <image x="60" y="-10" width="20" height="50" xlink:href="../../resources/images/svg.svg" 
+                   onload="setPAR(evt,'xMinYMax meet')"/>
             <text font-size="10" x="35" y="60">*YMax meet</text>
-         </g>
+       </g>
 
 
-        <g transform="translate(0,270)">
+       <g transform="translate(0,270)">
             <use xlink:href="#Rect2" style="fill:none; stroke:blue; stroke-width:2"/>
-	    <image x="60" y="-10" width="20" height="50" xlink:href="../../resources/images/svg.svg" 
-		onload="setPAR(evt,'xMinYMin slice')"/>
+            <image x="60" y="-10" width="20" height="50" xlink:href="../../resources/images/svg.svg" 
+                   onload="setPAR(evt,'xMinYMin slice')"/>
             <text font-size="10" x="35" y="60">xMin* slice</text>
-         </g>
+       </g>
 
 
-         <g transform="translate(150,270)">
+       <g transform="translate(150,270)">
             <use xlink:href="#Rect2" style="fill:none; stroke:blue; stroke-width:2"/>
-	    <image x="60" y="-10" width="20" height="50" xlink:href="../../resources/images/svg.svg" 
-		onload="setPAR(evt,'xMidYMin slice')"/>
+            <image x="60" y="-10" width="20" height="50" xlink:href="../../resources/images/svg.svg" 
+                   onload="setPAR(evt,'xMidYMin slice')"/>
             <text font-size="10" x="35" y="60">xMid* slice</text>
-         </g>
+       </g>
 
-         <g transform="translate(300,270)">
+       <g transform="translate(300,270)">
             <use xlink:href="#Rect2" style="fill:none; stroke:blue; stroke-width:2"/>
-	    <image x="60" y="-10" width="20" height="50" xlink:href="../../resources/images/svg.svg" 
-		onload="setPAR(evt,'xMaxYMin slice')"/>
+            <image x="60" y="-10" width="20" height="50" xlink:href="../../resources/images/svg.svg" 
+                   onload="setPAR(evt,'xMaxYMin slice')"/>
             <text font-size="10" x="35" y="60">xMax* slice</text>
-         </g>
+       </g>
 
 
 
-        <g transform="translate(0,370)">
+       <g transform="translate(0,370)">
             <use xlink:href="#Rect1" style="fill:none; stroke:blue; stroke-width:2"/>
-	    <image x="40" y="0" width="50" height="20" xlink:href="../../resources/images/svg.svg" 
-		onload="setPAR(evt,'xMinYMin slice')"/>
+            <image x="40" y="0" width="50" height="20" xlink:href="../../resources/images/svg.svg" 
+                   onload="setPAR(evt,'xMinYMin slice')"/>
             <text font-size="10" x="35" y="60">*YMin slice</text>
-        </g>
+       </g>
 
 
-         <g transform="translate(150,370)">
+       <g transform="translate(150,370)">
             <use xlink:href="#Rect1" style="fill:none; stroke:blue; stroke-width:2"/>
-	    <image x="40" y="0" width="50" height="20" xlink:href="../../resources/images/svg.svg" 
-		onload="setPAR(evt,'xMinYMid slice')"/>
-	    <text font-size="10" x="35" y="60">*YMid slice</text>
-         </g>
+            <image x="40" y="0" width="50" height="20" xlink:href="../../resources/images/svg.svg" 
+                  onload="setPAR(evt,'xMinYMid slice')"/>
+            <text font-size="10" x="35" y="60">*YMid slice</text>
+       </g>
 
-        <g transform="translate(300,370)">
+       <g transform="translate(300,370)">
             <use xlink:href="#Rect1" style="fill:none; stroke:blue; stroke-width:2"/>
-	    <image x="40" y="0" width="50" height="20" xlink:href="../../resources/images/svg.svg" 
-		onload="setPAR(evt,'xMinYMax slice')"/>
-	    <text font-size="10" x="35" y="60">*YMax slice</text>
-        </g>
+            <image x="40" y="0" width="50" height="20" xlink:href="../../resources/images/svg.svg" 
+                   onload="setPAR(evt,'xMinYMax slice')"/>
+            <text font-size="10" x="35" y="60">*YMax slice</text>
+       </g>
        
     </g>
 

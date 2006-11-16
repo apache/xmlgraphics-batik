@@ -42,22 +42,22 @@ public class GenericComment extends AbstractComment {
      * Creates a new Comment object.
      */
     public GenericComment(String value, AbstractDocument owner) {
-	ownerDocument = owner;
-	setNodeValue(value);
+        ownerDocument = owner;
+        setNodeValue(value);
     }
 
     /**
      * Tests whether this node is readonly.
      */
     public boolean isReadonly() {
-	return readonly;
+        return readonly;
     }
 
     /**
      * Sets this node readonly attribute.
      */
     public void setReadonly(boolean v) {
-	readonly = v;
+        readonly = v;
     }
 
     /**

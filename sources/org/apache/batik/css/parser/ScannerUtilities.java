@@ -79,34 +79,34 @@ public class ScannerUtilities {
      * Tests whether the given character is a valid identifier start character.
      */
     public static boolean isCSSIdentifierStartCharacter(char c) {
-	return c >= 128 || ((IDENTIFIER_START[c>>5] & (1 << (c &0x1F))) != 0);
+        return c >= 128 || ((IDENTIFIER_START[c>>5] & (1 << (c &0x1F))) != 0);
     }
 
     /**
      * Tests whether the given character is a valid name character.
      */
     public static boolean isCSSNameCharacter(char c) {
-	return c >= 128 || ((NAME[c >>5] & (1 << (c &0x1F))) != 0);
+        return c >= 128 || ((NAME[c >>5] & (1 << (c &0x1F))) != 0);
     }
 
     /**
      * Tests whether the given character is a valid hexadecimal character.
      */
     public static boolean isCSSHexadecimalCharacter(char c) {
-	return c < 128 && ((HEXADECIMAL[c>>5] & (1 << (c&0x1F))) != 0);
+        return c < 128 && ((HEXADECIMAL[c>>5] & (1 << (c&0x1F))) != 0);
     }
 
     /**
      * Tests whether the given character is a valid string character.
      */
     public static boolean isCSSStringCharacter(char c) {
-	return c >= 128 || ((STRING[c>>5] & (1 << (c&0x1F))) != 0);
+        return c >= 128 || ((STRING[c>>5] & (1 << (c&0x1F))) != 0);
     }
 
     /**
      * Tests whether the given character is a valid URI character.
      */
     public static boolean isCSSURICharacter(char c) {
-	return c >= 128 || ((URI[c>>5] & (1 << (c&0x1F))) != 0);
+        return c >= 128 || ((URI[c>>5] & (1 << (c&0x1F))) != 0);
     }
 }

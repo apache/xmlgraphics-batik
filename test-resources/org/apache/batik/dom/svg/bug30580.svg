@@ -38,10 +38,10 @@
            return;
          }
 
-	 ///////////////////////////////////////////////
-	 // test using standard dom setValue interface
-	 attr1.value = "xMaxYMax slice";
-	 	 
+         ///////////////////////////////////////////////
+         // test using standard dom setValue interface
+         attr1.value = "xMaxYMax slice";
+                  
          if (img1.preserveAspectRatio.baseVal.align != 10 && img1.preserveAspectRatio.baseVal.meetOrSlice != 2) {
            result.setAttributeNS(null, "errorCode", "wrong.attribute");
            var entry = document.createElementNS(testNS, "errorDescriptionEntry");
@@ -51,11 +51,11 @@
            return;
          }
 
-	 /////////////////////////////////////////////////
-	 // test using new preserveAspectRatio interface
-	 img1.preserveAspectRatio.baseVal.align = 2;
-	 img1.preserveAspectRatio.baseVal.meetOrSlice = 1;
-	 	 
+         /////////////////////////////////////////////////
+         // test using new preserveAspectRatio interface
+         img1.preserveAspectRatio.baseVal.align = 2;
+         img1.preserveAspectRatio.baseVal.meetOrSlice = 1;
+                  
          if (img1.preserveAspectRatio.baseVal.align != 2 && img1.preserveAspectRatio.baseVal.meetOrSlice != 1) {
            result.setAttributeNS(null, "errorCode", "wrong.attribute");
            var entry = document.createElementNS(testNS, "errorDescriptionEntry");
@@ -64,8 +64,8 @@
            result.appendChild(entry);
            return;
          }
-	 
-	 if (attr1.value != "xMinYMin meet") {
+         
+         if (attr1.value != "xMinYMin meet") {
            result.setAttributeNS(null, "errorCode", "wrong.attribute");
            var entry = document.createElementNS(testNS, "errorDescriptionEntry");
            entry.setAttributeNS(null, "value", "invalid.value");
@@ -73,9 +73,9 @@
            result.appendChild(entry);
            return;
          }
-	 
+         
          result.setAttributeNS(null, "result", "passed");
-	 
+         
      }
   ]]></script>
 

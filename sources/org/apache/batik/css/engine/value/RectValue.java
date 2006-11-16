@@ -53,10 +53,10 @@ public class RectValue extends AbstractValue {
      * Creates a new Rect value.
      */
     public RectValue(Value t, Value r, Value b, Value l) {
-	top = t;
-	right = r;
-	bottom = b;
-	left = l;
+        top = t;
+        right = r;
+        bottom = b;
+        left = l;
     }
 
     /**
@@ -70,10 +70,10 @@ public class RectValue extends AbstractValue {
      *  A string representation of the current value. 
      */
     public String getCssText() {
-	return "rect(" + top.getCssText() + ", "
-	    +  right.getCssText() + ", "
-	    +  bottom.getCssText() + ", "
-	    +  left.getCssText() + ")";
+        return "rect(" + top.getCssText() + ", "
+            +  right.getCssText() + ", "
+            +  bottom.getCssText() + ", "
+            +  left.getCssText() + ")";
     }
 
     /**

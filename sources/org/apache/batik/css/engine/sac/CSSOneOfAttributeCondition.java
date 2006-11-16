@@ -35,7 +35,7 @@ public class CSSOneOfAttributeCondition extends CSSAttributeCondition {
                                       String namespaceURI,
                                       boolean specified,
                                       String value) {
-	super(localName, namespaceURI, specified, value);
+        super(localName, namespaceURI, specified, value);
     }
 
     /**
@@ -43,31 +43,31 @@ public class CSSOneOfAttributeCondition extends CSSAttributeCondition {
      * org.w3c.css.sac.Condition#getConditionType()}.
      */    
     public short getConditionType() {
-	return SAC_ONE_OF_ATTRIBUTE_CONDITION;
+        return SAC_ONE_OF_ATTRIBUTE_CONDITION;
     }
     
     /**
      * Tests whether this condition matches the given element.
      */
     public boolean match(Element e, String pseudoE) {
-	String attr = e.getAttribute(getLocalName());
-	String val = getValue();
-	int i = attr.indexOf(val);
-	if (i == -1) {
-	    return false;
-	}
-	if (i != 0 && !Character.isSpaceChar(attr.charAt(i - 1))) {
-	    return false;
-	}
-	int j = i + val.length();
-	return (j == attr.length() ||
-		(j < attr.length() && Character.isSpaceChar(attr.charAt(j))));
+        String attr = e.getAttribute(getLocalName());
+        String val = getValue();
+        int i = attr.indexOf(val);
+        if (i == -1) {
+            return false;
+        }
+        if (i != 0 && !Character.isSpaceChar(attr.charAt(i - 1))) {
+            return false;
+        }
+        int j = i + val.length();
+        return (j == attr.length() ||
+                (j < attr.length() && Character.isSpaceChar(attr.charAt(j))));
     }
 
     /**
      * Returns a text representation of this object.
      */
     public String toString() {
-	return "[" + getLocalName() + "~=\"" + getValue() + "\"]";
+        return "[" + getLocalName() + "~=\"" + getValue() + "\"]";
     }
 }

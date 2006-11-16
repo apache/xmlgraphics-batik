@@ -149,7 +149,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
     }
 
     private boolean isCompatible(ColorModel colorModel,
-				 SampleModel sampleModel){
+                                 SampleModel sampleModel){
         ColorSpace cs = colorModel.getColorSpace();
         // Check that model is sRGB or linear RGB
         if((cs != ColorSpace.getInstance(ColorSpace.CS_sRGB))

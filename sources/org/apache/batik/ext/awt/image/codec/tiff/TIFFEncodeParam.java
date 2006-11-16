@@ -120,7 +120,7 @@ public class TIFFEncodeParam implements ImageEncodeParam {
      * Returns the value of the compression parameter.
      */
     public int getCompression() {
-	return compression;
+        return compression;
     }
 
     /**
@@ -150,17 +150,17 @@ public class TIFFEncodeParam implements ImageEncodeParam {
             // Do nothing.
             break;
         default:
-	    throw new Error("TIFFEncodeParam0");
-	}
+            throw new Error("TIFFEncodeParam0");
+        }
 
-	this.compression = compression;
+        this.compression = compression;
     }
 
     /**
      * Returns the value of the writeTiled parameter. 
      */
     public boolean getWriteTiled() {
-	return writeTiled;
+        return writeTiled;
     }
 
     /**
@@ -171,7 +171,7 @@ public class TIFFEncodeParam implements ImageEncodeParam {
      *                       wriiten out in tiled format.
      */
     public void setWriteTiled(boolean writeTiled) {
-	this.writeTiled = writeTiled;
+        this.writeTiled = writeTiled;
     }
 
     /**
@@ -253,7 +253,7 @@ public class TIFFEncodeParam implements ImageEncodeParam {
     public void setDeflateLevel(int deflateLevel) {
         if(deflateLevel < 1 && deflateLevel > 9 &&
            deflateLevel != Deflater.DEFAULT_COMPRESSION) {
-	    throw new Error("TIFFEncodeParam1");
+            throw new Error("TIFFEncodeParam1");
         }
 
         this.deflateLevel = deflateLevel;

@@ -61,15 +61,15 @@ public class GenericElementNS extends AbstractElementNS {
      */
     public GenericElementNS(String nsURI, String name,
                             AbstractDocument owner) {
-	super(nsURI, name, owner);
-	nodeName = name;
+        super(nsURI, name, owner);
+        nodeName = name;
     }
 
     /**
      * Sets the name of this node.
      */
     public void setNodeName(String v) {
-	nodeName = v;
+        nodeName = v;
     }
 
     /**
@@ -77,7 +77,7 @@ public class GenericElementNS extends AbstractElementNS {
      * @return {@link #nodeName}
      */
     public String getNodeName() {
-	return nodeName;
+        return nodeName;
     }
 
     // ExtendedNode ///////////////////////////////////////////////////
@@ -86,32 +86,32 @@ public class GenericElementNS extends AbstractElementNS {
      * Tests whether this node is readonly.
      */
     public boolean isReadonly() {
-	return readonly;
+        return readonly;
     }
 
     /**
      * Sets this node readonly attribute.
      */
     public void setReadonly(boolean v) {
-	readonly = v;
+        readonly = v;
     }
 
     /**
      * Exports this node to the given document.
      */
     protected Node export(Node n, AbstractDocument d) {
-	GenericElementNS ge = (GenericElementNS)super.export(n, d);
-	ge.nodeName = nodeName;
-	return n;
+        GenericElementNS ge = (GenericElementNS)super.export(n, d);
+        ge.nodeName = nodeName;
+        return n;
     }
 
     /**
      * Deeply exports this node to the given document.
      */
     protected Node deepExport(Node n, AbstractDocument d) {
-	GenericElementNS ge = (GenericElementNS)super.deepExport(n, d);
-	ge.nodeName = nodeName;
-	return n;
+        GenericElementNS ge = (GenericElementNS)super.deepExport(n, d);
+        ge.nodeName = nodeName;
+        return n;
     }
 
     /**
@@ -119,9 +119,9 @@ public class GenericElementNS extends AbstractElementNS {
      * @param n a node of the type of this.
      */
     protected Node copyInto(Node n) {
-	GenericElementNS ge = (GenericElementNS)super.copyInto(n);
-	ge.nodeName = nodeName;
-	return n;
+        GenericElementNS ge = (GenericElementNS)super.copyInto(n);
+        ge.nodeName = nodeName;
+        return n;
     }
 
     /**
@@ -129,9 +129,9 @@ public class GenericElementNS extends AbstractElementNS {
      * @param n a node of the type of this.
      */
     protected Node deepCopyInto(Node n) {
-	GenericElementNS ge = (GenericElementNS)super.deepCopyInto(n);
-	ge.nodeName = nodeName;
-	return n;
+        GenericElementNS ge = (GenericElementNS)super.deepCopyInto(n);
+        ge.nodeName = nodeName;
+        return n;
     }
 
     /**

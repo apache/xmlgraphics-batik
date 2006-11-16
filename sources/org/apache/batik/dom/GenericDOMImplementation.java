@@ -58,7 +58,7 @@ public class GenericDOMImplementation extends AbstractDOMImplementation {
     public DocumentType createDocumentType(String qualifiedName, 
                                            String publicId, 
                                            String systemId) {
-	throw new DOMException(DOMException.NOT_SUPPORTED_ERR,
+        throw new DOMException(DOMException.NOT_SUPPORTED_ERR,
                                "Doctype not supported");
     }
 

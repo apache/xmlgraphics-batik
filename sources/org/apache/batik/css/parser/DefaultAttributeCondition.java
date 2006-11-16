@@ -50,10 +50,10 @@ public class DefaultAttributeCondition extends AbstractAttributeCondition {
                                      String namespaceURI,
                                      boolean specified,
                                      String value) {
-	super(value);
-	this.localName = localName;
-	this.namespaceURI = namespaceURI;
-	this.specified = specified;
+        super(value);
+        this.localName = localName;
+        this.namespaceURI = namespaceURI;
+        this.specified = specified;
     }
 
     /**
@@ -61,7 +61,7 @@ public class DefaultAttributeCondition extends AbstractAttributeCondition {
      * org.w3c.css.sac.Condition#getConditionType()}.
      */    
     public short getConditionType() {
-	return SAC_ATTRIBUTE_CONDITION;
+        return SAC_ATTRIBUTE_CONDITION;
     }
     
     /**
@@ -69,7 +69,7 @@ public class DefaultAttributeCondition extends AbstractAttributeCondition {
      * org.w3c.css.sac.AttributeCondition#getNamespaceURI()}.
      */    
     public String getNamespaceURI() {
-	return namespaceURI;
+        return namespaceURI;
     }
 
     /**
@@ -77,7 +77,7 @@ public class DefaultAttributeCondition extends AbstractAttributeCondition {
      * org.w3c.css.sac.AttributeCondition#getLocalName()}.
      */
     public String getLocalName() {
-	return localName;
+        return localName;
     }
 
     /**
@@ -85,16 +85,16 @@ public class DefaultAttributeCondition extends AbstractAttributeCondition {
      * org.w3c.css.sac.AttributeCondition#getSpecified()}.
      */
     public boolean getSpecified() {
-	return specified;
+        return specified;
     }
 
     /**
      * Returns a text representation of this object.
      */
     public String toString() {
-	if (value == null) {
-	    return "[" + localName + "]";
-	}
-	return "[" + localName + "=\"" + value + "\"]";
+        if (value == null) {
+            return "[" + localName + "]";
+        }
+        return "[" + localName + "=\"" + value + "\"]";
     }
 }

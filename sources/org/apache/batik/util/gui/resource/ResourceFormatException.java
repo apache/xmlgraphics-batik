@@ -68,6 +68,6 @@ public class ResourceFormatException extends RuntimeException {
      * Returns a printable representation of this object
      */
     public String toString() {
-	return super.toString()+" ("+getKey()+", bundle: "+getClassName()+")";
+        return super.toString()+" ("+getKey()+", bundle: "+getClassName()+")";
     }
 }

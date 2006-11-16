@@ -42,27 +42,27 @@ public class GenericEntity extends AbstractEntity {
      * Creates a new Entity object.
      */
     public GenericEntity(String           name,
-			 String           pubId,
-			 String           sysId,
-			 AbstractDocument owner) {
-	ownerDocument = owner;
-	setNodeName(name);
-	setPublicId(pubId);
-	setSystemId(sysId);
+                         String           pubId,
+                         String           sysId,
+                         AbstractDocument owner) {
+        ownerDocument = owner;
+        setNodeName(name);
+        setPublicId(pubId);
+        setSystemId(sysId);
     }
 
     /**
      * Tests whether this node is readonly.
      */
     public boolean isReadonly() {
-	return readonly;
+        return readonly;
     }
 
     /**
      * Sets this node readonly attribute.
      */
     public void setReadonly(boolean v) {
-	readonly = v;
+        readonly = v;
     }
 
     /**

@@ -84,7 +84,7 @@ public class TIFFDecodeParam implements ImageDecodeParam {
      * and no short to byte lookup will be applied to them.
      */
     public void setDecodePaletteAsShorts(boolean decodePaletteAsShorts) {
-	this.decodePaletteAsShorts = decodePaletteAsShorts;
+        this.decodePaletteAsShorts = decodePaletteAsShorts;
     }
     
     /**
@@ -92,7 +92,7 @@ public class TIFFDecodeParam implements ImageDecodeParam {
      * shorts, resulting in an output image with short datatype.
      */ 
     public boolean getDecodePaletteAsShorts() {
-	return decodePaletteAsShorts;
+        return decodePaletteAsShorts;
     }
 
     /** 
@@ -105,7 +105,7 @@ public class TIFFDecodeParam implements ImageDecodeParam {
      * deals correctly only with 16 bit unsigned values.
      */
     public byte decode16BitsTo8Bits(int s) {
-	return (byte)((s >> 8) & 0xffff);
+        return (byte)((s >> 8) & 0xffff);
     }
 
     /** 
@@ -114,7 +114,7 @@ public class TIFFDecodeParam implements ImageDecodeParam {
      * 16 bit signed range.
      */
     public byte decodeSigned16BitsTo8Bits(short s) {
-	return (byte)((s + Short.MIN_VALUE) >> 8);
+        return (byte)((s + Short.MIN_VALUE) >> 8);
     }
 
     /**

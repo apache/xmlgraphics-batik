@@ -45,8 +45,8 @@ public class DefaultConditionalSelector implements ConditionalSelector {
      * Creates a new ConditionalSelector object.
      */
     public DefaultConditionalSelector(SimpleSelector s, Condition c) {
-	simpleSelector = s;
-	condition      = c;
+        simpleSelector = s;
+        condition      = c;
     }
 
     /**
@@ -54,7 +54,7 @@ public class DefaultConditionalSelector implements ConditionalSelector {
      * org.w3c.css.sac.Selector#getSelectorType()}.
      */
     public short getSelectorType() {
-	return SAC_CONDITIONAL_SELECTOR;
+        return SAC_CONDITIONAL_SELECTOR;
     }
 
     /**
@@ -62,7 +62,7 @@ public class DefaultConditionalSelector implements ConditionalSelector {
      * org.w3c.css.sac.ConditionalSelector#getSimpleSelector()}.
      */    
     public SimpleSelector getSimpleSelector() {
-	return simpleSelector;
+        return simpleSelector;
     }
 
     /**
@@ -70,13 +70,13 @@ public class DefaultConditionalSelector implements ConditionalSelector {
      * org.w3c.css.sac.ConditionalSelector#getCondition()}.
      */    
     public Condition getCondition() {
-	return condition;
+        return condition;
     }
 
     /**
      * Returns a representation of the selector.
      */
     public String toString() {
-	return "" + simpleSelector + condition;
+        return "" + simpleSelector + condition;
     }
 }

@@ -36,7 +36,7 @@ public abstract class AbstractComment
      * @return "#comment".
      */
     public String getNodeName() {
-	return "#comment";
+        return "#comment";
     }
 
     /**
@@ -44,7 +44,7 @@ public abstract class AbstractComment
      * @return {@link org.w3c.dom.Node#COMMENT_NODE}
      */
     public short getNodeType() {
-	return COMMENT_NODE;
+        return COMMENT_NODE;
     }
 
     /**

@@ -95,7 +95,7 @@ public abstract class AbstractElement
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getAttributes()}.
      */
     public NamedNodeMap getAttributes() {
-      	return (attributes == null)
+        return (attributes == null)
             ? attributes = createAttributes()
             : attributes;
     }
@@ -195,7 +195,7 @@ public abstract class AbstractElement
                    new Object[] { oldAttr.getName() });
         }
         String nsURI = oldAttr.getNamespaceURI();
-      	return (Attr)attributes.removeNamedItemNS(nsURI,
+        return (Attr)attributes.removeNamedItemNS(nsURI,
                                                   (nsURI==null
                                                    ? oldAttr.getNodeName()
                                                    : oldAttr.getLocalName()));
@@ -246,8 +246,8 @@ public abstract class AbstractElement
      * org.w3c.dom.Element#setAttributeNS(String,String,String)}.
      */
     public void setAttributeNS(String namespaceURI,
-			       String qualifiedName,
-			       String value) throws DOMException {
+                               String qualifiedName,
+                               String value) throws DOMException {
 
         if (attributes == null) {
             attributes = createAttributes();
@@ -271,14 +271,14 @@ public abstract class AbstractElement
      * org.w3c.dom.Element#removeAttributeNS(String,String)}.
      */
     public void removeAttributeNS(String namespaceURI,
-				  String localName) throws DOMException {
+                                  String localName) throws DOMException {
         if (namespaceURI != null && namespaceURI.length() == 0) {
             namespaceURI = null;
         }
         if (!hasAttributeNS(namespaceURI, localName)) {
                   return;
         }
-      	attributes.removeNamedItemNS(namespaceURI, localName);
+        attributes.removeNamedItemNS(namespaceURI, localName);
     }
 
     /**
@@ -286,7 +286,7 @@ public abstract class AbstractElement
      * org.w3c.dom.Element#getAttributeNodeNS(String,String)}.
      */
     public Attr getAttributeNodeNS(String namespaceURI,
-				   String localName) {
+                                   String localName) {
         if (namespaceURI != null && namespaceURI.length() == 0) {
             namespaceURI = null;
         }
@@ -481,7 +481,7 @@ public abstract class AbstractElement
      * Creates the attribute list.
      */
     protected NamedNodeMap createAttributes() {
-      	return new NamedNodeHashMap();
+        return new NamedNodeHashMap();
     }
 
     /**

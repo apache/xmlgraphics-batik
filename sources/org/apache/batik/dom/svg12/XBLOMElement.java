@@ -81,19 +81,19 @@ public abstract class XBLOMElement extends SVGOMElement
      */
     public void setPrefix(String prefix) throws DOMException {
         if (isReadonly()) {
-	    throw createDOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR,
-				     "readonly.node",
-				     new Object[] { new Integer(getNodeType()),
-						    getNodeName() });
+            throw createDOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR,
+                                     "readonly.node",
+                                     new Object[] { new Integer(getNodeType()),
+                                                    getNodeName() });
         }
         if (prefix != null &&
             !prefix.equals("") &&
             !DOMUtilities.isValidName(prefix)) {
-	    throw createDOMException(DOMException.INVALID_CHARACTER_ERR,
-				     "prefix",
-				     new Object[] { new Integer(getNodeType()),
-						    getNodeName(),
-						    prefix });
+            throw createDOMException(DOMException.INVALID_CHARACTER_ERR,
+                                     "prefix",
+                                     new Object[] { new Integer(getNodeType()),
+                                                    getNodeName(),
+                                                    prefix });
         }
         this.prefix = prefix;
     }

@@ -42,7 +42,7 @@ public abstract class GlyphOrientationManager extends AbstractValueManager {
      * org.apache.batik.css.engine.value.ValueManager#isInheritedProperty()}.
      */
     public boolean isInheritedProperty() {
-	return true;
+        return true;
     }
 
     /**
@@ -108,12 +108,12 @@ public abstract class GlyphOrientationManager extends AbstractValueManager {
      */
     public Value createFloatValue(short type, float floatValue)
         throws DOMException {
-	switch (type) {
+        switch (type) {
         case CSSPrimitiveValue.CSS_DEG:
         case CSSPrimitiveValue.CSS_GRAD:
         case CSSPrimitiveValue.CSS_RAD:
             return new FloatValue(type, floatValue);
-	}
+        }
         throw createInvalidFloatValueDOMException(floatValue);
     }
 }

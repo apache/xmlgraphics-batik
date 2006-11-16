@@ -617,7 +617,7 @@ public class ColorManager extends AbstractColorManager {
      * org.apache.batik.css.engine.value.ValueManager#isInheritedProperty()}.
      */
     public boolean isInheritedProperty() {
-	return true;
+        return true;
     }
 
     /**
@@ -646,7 +646,7 @@ public class ColorManager extends AbstractColorManager {
      * org.apache.batik.css.engine.value.ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return CSSConstants.CSS_COLOR_PROPERTY;
+        return CSSConstants.CSS_COLOR_PROPERTY;
     }
     
     /**

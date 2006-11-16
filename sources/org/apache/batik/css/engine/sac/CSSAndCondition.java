@@ -35,7 +35,7 @@ public class CSSAndCondition extends AbstractCombinatorCondition {
      * Creates a new CombinatorCondition object.
      */
     public CSSAndCondition(Condition c1, Condition c2) {
-	super(c1, c2);
+        super(c1, c2);
     }
 
     /**
@@ -43,14 +43,14 @@ public class CSSAndCondition extends AbstractCombinatorCondition {
      * org.w3c.css.sac.Condition#getConditionType()}.
      */    
     public short getConditionType() {
-	return SAC_AND_CONDITION;
+        return SAC_AND_CONDITION;
     }
 
     /**
      * Tests whether this condition matches the given element.
      */
     public boolean match(Element e, String pseudoE) {
-	return ((ExtendedCondition)getFirstCondition()).match(e, pseudoE) &&
+        return ((ExtendedCondition)getFirstCondition()).match(e, pseudoE) &&
                ((ExtendedCondition)getSecondCondition()).match(e, pseudoE);
     }
 
@@ -58,7 +58,7 @@ public class CSSAndCondition extends AbstractCombinatorCondition {
      * Fills the given set with the attribute names found in this selector.
      */
     public void fillAttributeSet(Set attrSet) {
-	((ExtendedCondition)getFirstCondition()).fillAttributeSet(attrSet);
+        ((ExtendedCondition)getFirstCondition()).fillAttributeSet(attrSet);
         ((ExtendedCondition)getSecondCondition()).fillAttributeSet(attrSet);
     }
 
@@ -66,6 +66,6 @@ public class CSSAndCondition extends AbstractCombinatorCondition {
      * Returns a text representation of this object.
      */
     public String toString() {
-	return "" + getFirstCondition() + getSecondCondition();
+        return "" + getFirstCondition() + getSecondCondition();
     }
 }

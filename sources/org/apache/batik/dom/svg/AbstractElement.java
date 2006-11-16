@@ -60,7 +60,7 @@ public abstract class AbstractElement
     protected AbstractElement(String prefix, AbstractDocument owner) {
         ownerDocument = owner;
         setPrefix(prefix);
-      	initializeAttributes();
+              initializeAttributes();
     }
 
     // CSSNavigableNode ///////////////////////////////////////////////////
@@ -171,7 +171,7 @@ public abstract class AbstractElement
      * Creates the attribute list.
      */
     protected NamedNodeMap createAttributes() {
-      	return new ExtendedNamedNodeHashMap();
+              return new ExtendedNamedNodeHashMap();
     }
 
     /**

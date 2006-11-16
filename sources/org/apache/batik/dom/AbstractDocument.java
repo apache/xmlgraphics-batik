@@ -195,7 +195,7 @@ public abstract class AbstractDocument
      * Creates a new document.
      */
     public AbstractDocument(DocumentType dt, DOMImplementation impl) {
-	implementation = impl;
+        implementation = impl;
         if (dt != null) {
             if (dt instanceof GenericDocumentType) {
                 GenericDocumentType gdt = (GenericDocumentType)dt;
@@ -225,7 +225,7 @@ public abstract class AbstractDocument
      * Implements {@link org.apache.batik.i18n.Localizable#setLocale(Locale)}.
      */
     public void setLocale(Locale l) {
-	localizableSupport.setLocale(l);
+        localizableSupport.setLocale(l);
     }
 
     /**
@@ -248,14 +248,14 @@ public abstract class AbstractDocument
      * Tests whether the event dispatching must be done.
      */
     public boolean getEventsEnabled() {
-	return eventsEnabled;
+        return eventsEnabled;
     }
 
     /**
      * Sets the eventsEnabled property.
      */
     public void setEventsEnabled(boolean b) {
-	eventsEnabled = b;
+        eventsEnabled = b;
     }
 
     /**
@@ -263,7 +263,7 @@ public abstract class AbstractDocument
      * @return "#document".
      */
     public String getNodeName() {
-	return "#document";
+        return "#document";
     }
 
     /**
@@ -271,29 +271,29 @@ public abstract class AbstractDocument
      * @return {@link org.w3c.dom.Node#DOCUMENT_NODE}
      */
     public short getNodeType() {
-	return DOCUMENT_NODE;
+        return DOCUMENT_NODE;
     }
 
     /**
      * <b>DOM</b>: Implements {@link org.w3c.dom.Document#getDoctype()}.
      */
     public DocumentType getDoctype() {
-	for (Node n = getFirstChild(); n != null; n = n.getNextSibling()) {
-	    if (n.getNodeType() == DOCUMENT_TYPE_NODE) {
-		return (DocumentType)n;
-	    }
-	}
-	return null;
+        for (Node n = getFirstChild(); n != null; n = n.getNextSibling()) {
+            if (n.getNodeType() == DOCUMENT_TYPE_NODE) {
+                return (DocumentType)n;
+            }
+        }
+        return null;
     }
 
     /**
      * Sets the document type node.
      */
     public void setDoctype(DocumentType dt) {
-	if (dt != null) {
-	    appendChild(dt);
-	    ((ExtendedNode)dt).setReadonly(true);
-	}
+        if (dt != null) {
+            appendChild(dt);
+            ((ExtendedNode)dt).setReadonly(true);
+        }
     }
 
     /**
@@ -301,7 +301,7 @@ public abstract class AbstractDocument
      * @return {@link #implementation}
      */
     public DOMImplementation getImplementation() {
-	return implementation;
+        return implementation;
     }
 
     /**
@@ -309,12 +309,12 @@ public abstract class AbstractDocument
      * org.w3c.dom.Document#getDocumentElement()}.
      */
     public Element getDocumentElement() {
-	for (Node n = getFirstChild(); n != null; n = n.getNextSibling()) {
-	    if (n.getNodeType() == ELEMENT_NODE) {
-		return (Element)n;
-	    }
-	}
-	return null;
+        for (Node n = getFirstChild(); n != null; n = n.getNextSibling()) {
+            if (n.getNodeType() == ELEMENT_NODE) {
+                return (Element)n;
+            }
+        }
+        return null;
     }
 
     /**
@@ -769,7 +769,7 @@ public abstract class AbstractDocument
      * Returns the current document.
      */
     protected AbstractDocument getCurrentDocument() {
-	return this;
+        return this;
     }
 
     /**
@@ -778,9 +778,9 @@ public abstract class AbstractDocument
      * @param d The destination document.
      */
     protected Node export(Node n, Document d) {
-	throw createDOMException(DOMException.NOT_SUPPORTED_ERR,
-				 "import.document",
-				 new Object[] {});
+        throw createDOMException(DOMException.NOT_SUPPORTED_ERR,
+                                 "import.document",
+                                 new Object[] {});
     }
 
     /**
@@ -789,9 +789,9 @@ public abstract class AbstractDocument
      * @param d The destination document.
      */
     protected Node deepExport(Node n, Document d) {
-	throw createDOMException(DOMException.NOT_SUPPORTED_ERR,
-				 "import.document",
-				 new Object[] {});
+        throw createDOMException(DOMException.NOT_SUPPORTED_ERR,
+                                 "import.document",
+                                 new Object[] {});
     }
 
     /**
@@ -799,9 +799,9 @@ public abstract class AbstractDocument
      * @param n a node of the type of this.
      */
     protected Node copyInto(Node n) {
-	super.copyInto(n);
-	AbstractDocument ad = (AbstractDocument)n;
-	ad.implementation = implementation;
+        super.copyInto(n);
+        AbstractDocument ad = (AbstractDocument)n;
+        ad.implementation = implementation;
         ad.localizableSupport = new LocalizableSupport
             (RESOURCES, getClass().getClassLoader());
         ad.inputEncoding = inputEncoding;
@@ -811,7 +811,7 @@ public abstract class AbstractDocument
         ad.documentURI = documentURI;
         ad.strictErrorChecking = strictErrorChecking;
         // XXX clone DocumentConfiguration?
-	return n;
+        return n;
     }
 
     /**
@@ -819,42 +819,42 @@ public abstract class AbstractDocument
      * @param n a node of the type of this.
      */
     protected Node deepCopyInto(Node n) {
-	super.deepCopyInto(n);
-	AbstractDocument ad = (AbstractDocument)n;
-	ad.implementation = implementation;
+        super.deepCopyInto(n);
+        AbstractDocument ad = (AbstractDocument)n;
+        ad.implementation = implementation;
         ad.localizableSupport = new LocalizableSupport
             (RESOURCES, getClass().getClassLoader());
-	return n;
+        return n;
     }
 
     /**
      * Checks the validity of a node to be inserted.
      */
     protected void checkChildType(Node n, boolean replace) {
-	short t = n.getNodeType();
-	switch (t) {
-	case ELEMENT_NODE:
-	case PROCESSING_INSTRUCTION_NODE:
-	case COMMENT_NODE:
-	case DOCUMENT_TYPE_NODE:
-	case DOCUMENT_FRAGMENT_NODE:
-	    break;
-	default:
-	    throw createDOMException(DOMException.HIERARCHY_REQUEST_ERR,
-				     "child.type",
-				     new Object[] { new Integer(getNodeType()),
-						    getNodeName(),
-		                                    new Integer(t),
-						    n.getNodeName() });
-	}
-	if (!replace &&
+        short t = n.getNodeType();
+        switch (t) {
+        case ELEMENT_NODE:
+        case PROCESSING_INSTRUCTION_NODE:
+        case COMMENT_NODE:
+        case DOCUMENT_TYPE_NODE:
+        case DOCUMENT_FRAGMENT_NODE:
+            break;
+        default:
+            throw createDOMException(DOMException.HIERARCHY_REQUEST_ERR,
+                                     "child.type",
+                                     new Object[] { new Integer(getNodeType()),
+                                                    getNodeName(),
+                                                    new Integer(t),
+                                                    n.getNodeName() });
+        }
+        if (!replace &&
             (t == ELEMENT_NODE && getDocumentElement() != null) ||
-	    (t == DOCUMENT_TYPE_NODE && getDoctype() != null)) {
-	    throw createDOMException(DOMException.NOT_SUPPORTED_ERR,
-				     "document.child.already.exists",
-				     new Object[] { new Integer(t),
-						    n.getNodeName() });
-	}
+            (t == DOCUMENT_TYPE_NODE && getDoctype() != null)) {
+            throw createDOMException(DOMException.NOT_SUPPORTED_ERR,
+                                     "document.child.already.exists",
+                                     new Object[] { new Integer(t),
+                                                    n.getNodeName() });
+        }
     }
 
     /**

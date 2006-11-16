@@ -42,34 +42,34 @@ public abstract class AbstractText
      * <b>DOM</b>: Implements {@link org.w3c.dom.Text#splitText(int)}.
      */
     public Text splitText(int offset) throws DOMException {
-	if (isReadonly()) {
-	    throw createDOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR,
-				     "readonly.node",
-				     new Object[] { new Integer(getNodeType()),
-						    getNodeName() });
-	}
-	String v = getNodeValue();
-	if (offset < 0 || offset >= v.length()) {
-	    throw createDOMException(DOMException.INDEX_SIZE_ERR,
-				     "offset",
-				     new Object[] { new Integer(offset) });
-	}
-	Node n = getParentNode();
-	if (n == null) {
-	    throw createDOMException(DOMException.INDEX_SIZE_ERR,
-				     "need.parent",
-				     new Object[] {});
-	}
-	String t1 = v.substring(offset);
-	Text t = createTextNode(t1);
-	Node ns = getNextSibling();
-	if (ns != null) {
-	    n.insertBefore(t, ns);
-	} else {
-	    n.appendChild(t);
-	}
-	setNodeValue(v.substring(0, offset));
-	return t;
+        if (isReadonly()) {
+            throw createDOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR,
+                                     "readonly.node",
+                                     new Object[] { new Integer(getNodeType()),
+                                                    getNodeName() });
+        }
+        String v = getNodeValue();
+        if (offset < 0 || offset >= v.length()) {
+            throw createDOMException(DOMException.INDEX_SIZE_ERR,
+                                     "offset",
+                                     new Object[] { new Integer(offset) });
+        }
+        Node n = getParentNode();
+        if (n == null) {
+            throw createDOMException(DOMException.INDEX_SIZE_ERR,
+                                     "need.parent",
+                                     new Object[] {});
+        }
+        String t1 = v.substring(offset);
+        Text t = createTextNode(t1);
+        Node ns = getNextSibling();
+        if (ns != null) {
+            n.insertBefore(t, ns);
+        } else {
+            n.appendChild(t);
+        }
+        setNodeValue(v.substring(0, offset));
+        return t;
     }
 
     /**

@@ -59,7 +59,7 @@ public class SVGOMUseShadowRoot
     public SVGOMUseShadowRoot(AbstractDocument owner,
                                        Element parent,
                                        boolean isLocal) {
-	ownerDocument = owner;
+        ownerDocument = owner;
         cssParentElement = parent;
         this.isLocal = isLocal;
     }

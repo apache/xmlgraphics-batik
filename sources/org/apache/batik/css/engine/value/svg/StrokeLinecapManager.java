@@ -38,11 +38,11 @@ public class StrokeLinecapManager extends IdentifierManager {
      */
     protected final static StringMap values = new StringMap();
     static {
-	values.put(CSSConstants.CSS_BUTT_VALUE,
+        values.put(CSSConstants.CSS_BUTT_VALUE,
                    SVGValueConstants.BUTT_VALUE);
-	values.put(CSSConstants.CSS_ROUND_VALUE,
+        values.put(CSSConstants.CSS_ROUND_VALUE,
                    SVGValueConstants.ROUND_VALUE);
-	values.put(CSSConstants.CSS_SQUARE_VALUE,
+        values.put(CSSConstants.CSS_SQUARE_VALUE,
                    SVGValueConstants.SQUARE_VALUE);
     }
 
@@ -51,7 +51,7 @@ public class StrokeLinecapManager extends IdentifierManager {
      * org.apache.batik.css.engine.value.ValueManager#isInheritedProperty()}.
      */
     public boolean isInheritedProperty() {
-	return true;
+        return true;
     }
 
     /**
@@ -80,7 +80,7 @@ public class StrokeLinecapManager extends IdentifierManager {
      * org.apache.batik.css.engine.value.ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return CSSConstants.CSS_STROKE_LINECAP_PROPERTY;
+        return CSSConstants.CSS_STROKE_LINECAP_PROPERTY;
     }
     
     /**

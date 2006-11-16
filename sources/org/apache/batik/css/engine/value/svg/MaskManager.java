@@ -43,7 +43,7 @@ public class MaskManager extends AbstractValueManager {
      * Implements {@link ValueManager#isInheritedProperty()}.
      */
     public boolean isInheritedProperty() {
-	return false;
+        return false;
     }
 
     /**
@@ -71,7 +71,7 @@ public class MaskManager extends AbstractValueManager {
      * Implements {@link ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return CSSConstants.CSS_MASK_PROPERTY;
+        return CSSConstants.CSS_MASK_PROPERTY;
     }
     
     /**
@@ -86,17 +86,17 @@ public class MaskManager extends AbstractValueManager {
      */
     public Value createValue(LexicalUnit lu, CSSEngine engine)
         throws DOMException {
-	switch (lu.getLexicalUnitType()) {
-	case LexicalUnit.SAC_INHERIT:
-	    return ValueConstants.INHERIT_VALUE;
+        switch (lu.getLexicalUnitType()) {
+        case LexicalUnit.SAC_INHERIT:
+            return ValueConstants.INHERIT_VALUE;
 
-	case LexicalUnit.SAC_URI:
+        case LexicalUnit.SAC_URI:
             return new URIValue(lu.getStringValue(),
                                 resolveURI(engine.getCSSBaseURI(),
                                            lu.getStringValue()));
 
-	case LexicalUnit.SAC_IDENT:
-	    if (lu.getStringValue().equalsIgnoreCase
+        case LexicalUnit.SAC_IDENT:
+            if (lu.getStringValue().equalsIgnoreCase
                 (CSSConstants.CSS_NONE_VALUE)) {
                 return ValueConstants.NONE_VALUE;
             }
@@ -120,7 +120,7 @@ public class MaskManager extends AbstractValueManager {
         case CSSPrimitiveValue.CSS_URI:
             return new URIValue(value,
                                 resolveURI(engine.getCSSBaseURI(), value));
-	}
+        }
         throw createInvalidStringTypeDOMException(type);
     }
 }

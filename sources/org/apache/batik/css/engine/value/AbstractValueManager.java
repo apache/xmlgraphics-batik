@@ -40,7 +40,7 @@ public abstract class AbstractValueManager
      * Implements {@link ValueManager#createFloatValue(short,float)}.
      */
     public Value createFloatValue(short unitType, float floatValue)
-	throws DOMException {
+        throws DOMException {
         throw createDOMException();
     }
 

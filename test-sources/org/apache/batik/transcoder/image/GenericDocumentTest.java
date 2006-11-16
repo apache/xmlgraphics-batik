@@ -50,34 +50,34 @@ public class GenericDocumentTest extends AbstractImageTranscoderTest {
      * @param refImageURI the URI of the reference image
      */
     public GenericDocumentTest(String inputURI, String refImageURI) {
-	this.inputURI    = inputURI;
-	this.refImageURI = refImageURI;
+        this.inputURI    = inputURI;
+        this.refImageURI = refImageURI;
     }
 
     /**
      * Creates the <tt>TranscoderInput</tt>.
      */
     protected TranscoderInput createTranscoderInput() {
-	try {
-	    URL url = resolveURL(inputURI);
+        try {
+            URL url = resolveURL(inputURI);
             String parser = XMLResourceDescriptor.getXMLParserClassName();
             DOMImplementation impl = 
                 GenericDOMImplementation.getDOMImplementation();
             SAXDocumentFactory f = new SAXDocumentFactory(impl, parser);
             Document doc = f.createDocument(url.toString());
-	    TranscoderInput input = new TranscoderInput(doc);
-	    input.setURI(url.toString()); // Needed for external resources
-	    return input;
-	} catch (IOException ex) {
+            TranscoderInput input = new TranscoderInput(doc);
+            input.setURI(url.toString()); // Needed for external resources
+            return input;
+        } catch (IOException ex) {
             ex.printStackTrace();
             throw new IllegalArgumentException(inputURI);
-	}
+        }
     }
 
     /**
      * Returns the reference image for this test.
      */
     protected byte [] getReferenceImageData() {
-	return createBufferedImageData(resolveURL(refImageURI));
+        return createBufferedImageData(resolveURL(refImageURI));
     }
 }

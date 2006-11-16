@@ -43,7 +43,7 @@ public class ClipManager extends RectManager {
      * Implements {@link ValueManager#isInheritedProperty()}.
      */
     public boolean isInheritedProperty() {
-	return false;
+        return false;
     }
 
     /**
@@ -71,7 +71,7 @@ public class ClipManager extends RectManager {
      * Implements {@link ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return CSSConstants.CSS_CLIP_PROPERTY;
+        return CSSConstants.CSS_CLIP_PROPERTY;
     }
     
     /**
@@ -86,12 +86,12 @@ public class ClipManager extends RectManager {
      */
     public Value createValue(LexicalUnit lu, CSSEngine engine)
         throws DOMException {
-	switch (lu.getLexicalUnitType()) {
-	case LexicalUnit.SAC_INHERIT:
-	    return InheritValue.INSTANCE;
+        switch (lu.getLexicalUnitType()) {
+        case LexicalUnit.SAC_INHERIT:
+            return InheritValue.INSTANCE;
 
-	case LexicalUnit.SAC_IDENT:
-	    if (lu.getStringValue().equalsIgnoreCase
+        case LexicalUnit.SAC_IDENT:
+            if (lu.getStringValue().equalsIgnoreCase
                 (CSSConstants.CSS_AUTO_VALUE)) {
                 return ValueConstants.AUTO_VALUE;
             }
@@ -104,13 +104,13 @@ public class ClipManager extends RectManager {
      * ValueManager#createStringValue(short,String,CSSEngine)}.
      */
     public Value createStringValue(short type, String value, CSSEngine engine)
-	throws DOMException {
-	if (type != CSSPrimitiveValue.CSS_IDENT) {
+        throws DOMException {
+        if (type != CSSPrimitiveValue.CSS_IDENT) {
             throw createInvalidStringTypeDOMException(type);
-	}
-	if (!value.equalsIgnoreCase(CSSConstants.CSS_AUTO_VALUE)) {
+        }
+        if (!value.equalsIgnoreCase(CSSConstants.CSS_AUTO_VALUE)) {
             throw createInvalidIdentifierDOMException(value);
         }
-	return ValueConstants.AUTO_VALUE;
+        return ValueConstants.AUTO_VALUE;
     }
 }

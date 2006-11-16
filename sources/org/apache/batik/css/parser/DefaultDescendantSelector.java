@@ -35,7 +35,7 @@ public class DefaultDescendantSelector extends AbstractDescendantSelector {
      */
     public DefaultDescendantSelector(Selector ancestor,
                                      SimpleSelector simple) {
-	super(ancestor, simple);
+        super(ancestor, simple);
     }
 
     /**
@@ -43,13 +43,13 @@ public class DefaultDescendantSelector extends AbstractDescendantSelector {
      * org.w3c.css.sac.Selector#getSelectorType()}.
      */
     public short getSelectorType() {
-	return SAC_DESCENDANT_SELECTOR;
+        return SAC_DESCENDANT_SELECTOR;
     }
 
     /**
      * Returns a representation of the selector.
      */
     public String toString() {
-	return getAncestorSelector() + " " + getSimpleSelector();
+        return getAncestorSelector() + " " + getSimpleSelector();
     }
 }

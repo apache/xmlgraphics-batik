@@ -42,7 +42,7 @@ public class ResourceManager {
      * @param rb a resource bundle
      */
     public ResourceManager(ResourceBundle rb) {
-	bundle = rb;
+        bundle = rb;
     }
 
     /**
@@ -51,8 +51,8 @@ public class ResourceManager {
      * @throws MissingResourceException if key is not the name of a resource
      */
     public String getString(String key)
-	throws MissingResourceException {
-	return bundle.getString(key);
+        throws MissingResourceException {
+        return bundle.getString(key);
     }
 
     /**
@@ -62,7 +62,7 @@ public class ResourceManager {
      * @throws MissingResourceException if key is not the name of a resource
      */
     public List getStringList(String key)
-	throws MissingResourceException {
+        throws MissingResourceException {
         return getStringList(key, " \t\n\r\f", false);
     }
     /**
@@ -73,7 +73,7 @@ public class ResourceManager {
      * @throws MissingResourceException if key is not the name of a resource
      */
     public List getStringList(String key, String delim)
-	throws MissingResourceException {
+        throws MissingResourceException {
         return getStringList(key, delim, false);
     }
 
@@ -86,7 +86,7 @@ public class ResourceManager {
      * @throws MissingResourceException if key is not the name of a resource
      */
     public List getStringList(String key, String delim, boolean returnDelims) 
-	throws MissingResourceException {
+        throws MissingResourceException {
         List            result = new ArrayList();
         StringTokenizer st     = new StringTokenizer(getString(key),
                                                      delim,
@@ -104,18 +104,18 @@ public class ResourceManager {
      * @throws ResourceFormatException if the resource is malformed
      */
     public boolean getBoolean(String key)
-	throws MissingResourceException, ResourceFormatException {
-	String b = getString(key);
+        throws MissingResourceException, ResourceFormatException {
+        String b = getString(key);
 
-	if (b.equals("true")) {
-	    return true;
-	} else if (b.equals("false")) {
-	    return false;
-	} else {
-	    throw new ResourceFormatException("Malformed boolean",
+        if (b.equals("true")) {
+            return true;
+        } else if (b.equals("false")) {
+            return false;
+        } else {
+            throw new ResourceFormatException("Malformed boolean",
                                               bundle.getClass().getName(),
                                               key);
-	}
+        }
     }
 
     /**
@@ -125,16 +125,16 @@ public class ResourceManager {
      * @throws ResourceFormatException if the resource is malformed
      */
     public int getInteger(String key)
-	throws MissingResourceException, ResourceFormatException {
-	String i = getString(key);
-	
-	try {
-	    return Integer.parseInt(i);
-	} catch (NumberFormatException e) {
-	    throw new ResourceFormatException("Malformed integer",
+        throws MissingResourceException, ResourceFormatException {
+        String i = getString(key);
+        
+        try {
+            return Integer.parseInt(i);
+        } catch (NumberFormatException e) {
+            throw new ResourceFormatException("Malformed integer",
                                               bundle.getClass().getName(),
                                               key);
-	}
+        }
     }
 
     public int getCharacter(String key)

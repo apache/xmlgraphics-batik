@@ -42,40 +42,40 @@ public class XMLSupport implements XMLConstants {
      * Returns the xml:lang attribute value of the given element.
      */
     public static String getXMLLang(Element elt) {
-	Attr attr = elt.getAttributeNodeNS(XML_NAMESPACE_URI, "lang");
-	if (attr != null) {
-	    return attr.getNodeValue();
-	}
-	for (Node n = elt.getParentNode(); n != null; n = n.getParentNode()) {
-	    if (n.getNodeType() == Node.ELEMENT_NODE) {
-		attr = ((Element)n).getAttributeNodeNS(XML_NAMESPACE_URI,
+        Attr attr = elt.getAttributeNodeNS(XML_NAMESPACE_URI, "lang");
+        if (attr != null) {
+            return attr.getNodeValue();
+        }
+        for (Node n = elt.getParentNode(); n != null; n = n.getParentNode()) {
+            if (n.getNodeType() == Node.ELEMENT_NODE) {
+                attr = ((Element)n).getAttributeNodeNS(XML_NAMESPACE_URI,
                                                        "lang");
-		if (attr != null) {
-		    return attr.getNodeValue();
-		}
-	    }
-	}
-	return "en";
+                if (attr != null) {
+                    return attr.getNodeValue();
+                }
+            }
+        }
+        return "en";
     }
 
     /**
      * Returns the xml:space attribute value of the given element.
      */
     public static String getXMLSpace(Element elt) {
-	Attr attr = elt.getAttributeNodeNS(XML_NAMESPACE_URI, "space");
-	if (attr != null) {
-	    return attr.getNodeValue();
-	}
-	for (Node n = elt.getParentNode(); n != null; n = n.getParentNode()) {
-	    if (n.getNodeType() == Node.ELEMENT_NODE) {
-		attr = ((Element)n).getAttributeNodeNS(XML_NAMESPACE_URI,
+        Attr attr = elt.getAttributeNodeNS(XML_NAMESPACE_URI, "space");
+        if (attr != null) {
+            return attr.getNodeValue();
+        }
+        for (Node n = elt.getParentNode(); n != null; n = n.getParentNode()) {
+            if (n.getNodeType() == Node.ELEMENT_NODE) {
+                attr = ((Element)n).getAttributeNodeNS(XML_NAMESPACE_URI,
                                                        "space");
-		if (attr != null) {
-		    return attr.getNodeValue();
-		}
-	    }
-	}
-	return "default";
+                if (attr != null) {
+                    return attr.getNodeValue();
+                }
+            }
+        }
+        return "default";
     }
 
     /**
@@ -83,28 +83,28 @@ public class XMLSupport implements XMLConstants {
      * attribute recommended behaviour when it has the 'default' value.
      */
     public static String defaultXMLSpace(String data) {
-	StringBuffer result = new StringBuffer();
-	boolean space = false;
-	for (int i = 0; i < data.length(); i++) {
-	    char c = data.charAt(i);
-	    switch (c) {
-	    case 10:
-	    case 13:
-		space = false;
-		break;
-	    case ' ':
-	    case '\t':
-		if (!space) {
-		    result.append(' ');
-		    space = true;
-		}
-		break;
-	    default:
-		result.append(c);
-		space = false;
-	    }
-	}
-	return result.toString().trim();
+        StringBuffer result = new StringBuffer();
+        boolean space = false;
+        for (int i = 0; i < data.length(); i++) {
+            char c = data.charAt(i);
+            switch (c) {
+            case 10:
+            case 13:
+                space = false;
+                break;
+            case ' ':
+            case '\t':
+                if (!space) {
+                    result.append(' ');
+                    space = true;
+                }
+                break;
+            default:
+                result.append(c);
+                space = false;
+            }
+        }
+        return result.toString().trim();
     }
 
     /**
@@ -112,19 +112,19 @@ public class XMLSupport implements XMLConstants {
      * attribute recommended behaviour when it has the 'preserve' value.
      */
     public static String preserveXMLSpace(String data) {
-	StringBuffer result = new StringBuffer();
-	for (int i = 0; i < data.length(); i++) {
-	    char c = data.charAt(i);
-	    switch (c) {
-	    case 10:
-	    case 13:
-	    case '\t':
-		result.append(' ');
-		break;
-	    default:
-		result.append(c);
-	    }
-	}
-	return result.toString();
+        StringBuffer result = new StringBuffer();
+        for (int i = 0; i < data.length(); i++) {
+            char c = data.charAt(i);
+            switch (c) {
+            case 10:
+            case 13:
+            case '\t':
+                result.append(' ');
+                break;
+            default:
+                result.append(c);
+            }
+        }
+        return result.toString();
     }
 }

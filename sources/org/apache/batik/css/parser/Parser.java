@@ -256,14 +256,14 @@ public class Parser implements ExtendedParser, Localizable {
         throws CSSException, IOException {
 
         scanner = createScanner(source);
-	parseStyleDeclarationInternal();
+        parseStyleDeclarationInternal();
     }
 
     /**
      * Parses a style declaration using the current scanner.
      */
     protected void parseStyleDeclarationInternal() 
-	throws CSSException, IOException {
+        throws CSSException, IOException {
         nextIgnoreSpaces();
         try {
             parseStyleDeclaration(false);
@@ -279,9 +279,9 @@ public class Parser implements ExtendedParser, Localizable {
      * org.w3c.css.sac.Parser#parseRule(InputSource)}.
      */
     public void parseRule(InputSource source) 
-	throws CSSException, IOException {
+        throws CSSException, IOException {
         scanner = createScanner(source);
-	parseRuleInternal();
+        parseRuleInternal();
     }
 
     /**
@@ -300,14 +300,14 @@ public class Parser implements ExtendedParser, Localizable {
     public SelectorList parseSelectors(InputSource source)
         throws CSSException, IOException {
         scanner = createScanner(source);
-	return parseSelectorsInternal();
+        return parseSelectorsInternal();
     }
 
     /**
      * Parses selectors using the current scanner.
      */
     protected SelectorList parseSelectorsInternal() 
-	throws CSSException, IOException {
+        throws CSSException, IOException {
         nextIgnoreSpaces();
         SelectorList ret = parseSelectorList();
         scanner = null;
@@ -321,14 +321,14 @@ public class Parser implements ExtendedParser, Localizable {
     public LexicalUnit parsePropertyValue(InputSource source)
         throws CSSException, IOException {
         scanner = createScanner(source);
-	return parsePropertyValueInternal();
+        return parsePropertyValueInternal();
     }
 
     /**
      * Parses property value using the current scanner.
      */
     protected LexicalUnit parsePropertyValueInternal() 
-	throws CSSException, IOException {
+        throws CSSException, IOException {
         nextIgnoreSpaces();
         
         LexicalUnit exp = null;
@@ -359,7 +359,7 @@ public class Parser implements ExtendedParser, Localizable {
     public boolean parsePriority(InputSource source)
         throws CSSException, IOException {
         scanner = createScanner(source);
-	return parsePriorityInternal();
+        return parsePriorityInternal();
     }
 
     /**
@@ -1674,9 +1674,9 @@ public class Parser implements ExtendedParser, Localizable {
      * Implements {@link ExtendedParser#parseStyleDeclaration(String)}.
      */
     public void parseStyleDeclaration(String source) 
-	throws CSSException, IOException {
+        throws CSSException, IOException {
         scanner = new Scanner(source);
-	parseStyleDeclarationInternal();
+        parseStyleDeclarationInternal();
     }
 
     /**
@@ -1684,7 +1684,7 @@ public class Parser implements ExtendedParser, Localizable {
      */
     public void parseRule(String source) throws CSSException, IOException {
         scanner = new Scanner(source);
-	parseRuleInternal();
+        parseRuleInternal();
     }
     
     /**
@@ -1693,7 +1693,7 @@ public class Parser implements ExtendedParser, Localizable {
     public SelectorList parseSelectors(String source)
         throws CSSException, IOException {
         scanner = new Scanner(source);
-	return parseSelectorsInternal();
+        return parseSelectorsInternal();
     }
 
     /**
@@ -1702,7 +1702,7 @@ public class Parser implements ExtendedParser, Localizable {
     public LexicalUnit parsePropertyValue(String source)
         throws CSSException, IOException {
         scanner = new Scanner(source);
-	return parsePropertyValueInternal();
+        return parsePropertyValueInternal();
     }
 
     /**
@@ -1711,7 +1711,7 @@ public class Parser implements ExtendedParser, Localizable {
     public boolean parsePriority(String source)
         throws CSSException, IOException {
         scanner = new Scanner(source);
-	return parsePriorityInternal();
+        return parsePriorityInternal();
     }
 
     /**

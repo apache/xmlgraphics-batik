@@ -28,7 +28,7 @@ import org.apache.batik.util.HaltingThread;
 
 public class TileMap implements TileStore {
     private static final boolean DEBUG = false;
-    private static final boolean COUNT = false;		
+    private static final boolean COUNT = false;
 
     private HashMap rasters=new HashMap();
 
@@ -62,7 +62,7 @@ public class TileMap implements TileStore {
     private LRUCache      cache = null;
 
     public TileMap(TileGenerator source,
-		   LRUCache cache) {
+                   LRUCache cache) {
         this.cache    = cache;
         this.source   = source;
     }
@@ -73,7 +73,7 @@ public class TileMap implements TileStore {
         if (ras == null) {
             // Clearing entry...
             Object o = rasters.remove(pt);
-            if (o != null) 
+            if (o != null)
                 cache.remove((TileMapLRUMember)o);
             return;
         }
@@ -87,17 +87,17 @@ public class TileMap implements TileStore {
             item = (TileMapLRUMember)o;
             item.setRaster(ras);
         }
-		
+
         cache.add(item);
         if (DEBUG) System.out.println("Setting: (" + x + ", " + y + ")");
     }
 
-    // Returns Raster if the tile is _currently_ in the cache.  
+    // Returns Raster if the tile is _currently_ in the cache.
     // If it is not currently in the cache it returns null.
     public Raster getTileNoCompute(int x, int y) {
         Point pt = new Point(x, y);
         Object o = rasters.get(pt);
-        if (o == null) 
+        if (o == null)
             return null;
 
         TileMapLRUMember item = (TileMapLRUMember)o;
@@ -108,7 +108,7 @@ public class TileMap implements TileStore {
     }
 
     public Raster getTile(int x, int y) {
-        if (DEBUG) System.out.println("Fetching: (" + (x) + ", " + 
+        if (DEBUG) System.out.println("Fetching: (" + (x) + ", " +
                                       (y) + ")");
         if (COUNT) synchronized (TileMap.class) { requests++; }
 
@@ -120,7 +120,7 @@ public class TileMap implements TileStore {
             item = (TileMapLRUMember)o;
             ras = item.retrieveRaster();
         }
-		
+
         if (ras == null) {
             if (DEBUG) System.out.println("Generating: ("+(x)+", "+
                                           (y) + ")");

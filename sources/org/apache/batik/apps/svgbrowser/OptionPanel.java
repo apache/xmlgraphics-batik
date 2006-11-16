@@ -67,7 +67,7 @@ public class OptionPanel extends JPanel {
      * Creates a new panel.
      */
     public OptionPanel(LayoutManager layout) {
-	super(layout);
+        super(layout);
     }
 
     /**
@@ -75,44 +75,44 @@ public class OptionPanel extends JPanel {
      */
     public static class Dialog extends JDialog {
 
-	/**
-	 * The 'ok' button.
-	 */
-	protected JButton ok;
+        /**
+         * The 'ok' button.
+         */
+        protected JButton ok;
 
-	/**
-	 * The 'ok' button.
-	 */
-	protected JPanel panel;
+        /**
+         * The 'ok' button.
+         */
+        protected JPanel panel;
 
-	public Dialog(Component parent, String title, JPanel panel) {
-	    super(JOptionPane.getFrameForComponent(parent), title);
-	    setModal(true);
-	    this.panel = panel;
-	    getContentPane().add(panel, BorderLayout.CENTER);
-	    getContentPane().add(createButtonPanel(), BorderLayout.SOUTH);
-	}
+        public Dialog(Component parent, String title, JPanel panel) {
+            super(JOptionPane.getFrameForComponent(parent), title);
+            setModal(true);
+            this.panel = panel;
+            getContentPane().add(panel, BorderLayout.CENTER);
+            getContentPane().add(createButtonPanel(), BorderLayout.SOUTH);
+        }
 
-	/**
-	 * Creates the button panel.
-	 */
-	protected JPanel createButtonPanel() {
-	    JPanel panel = new JPanel(new FlowLayout());
-	    ok = new JButton(resources.getString("OKButton.text"));
-	    ok.addActionListener(new OKButtonAction());
-	    panel.add(ok);
-	    return panel;
-	}
+        /**
+         * Creates the button panel.
+         */
+        protected JPanel createButtonPanel() {
+            JPanel panel = new JPanel(new FlowLayout());
+            ok = new JButton(resources.getString("OKButton.text"));
+            ok.addActionListener(new OKButtonAction());
+            panel.add(ok);
+            return panel;
+        }
 
-	/**
-	 * The action associated to the 'ok' button.
-	 */
-	protected class OKButtonAction extends AbstractAction {
+        /**
+         * The action associated to the 'ok' button.
+         */
+        protected class OKButtonAction extends AbstractAction {
 
-	    public void actionPerformed(ActionEvent evt) {
-		dispose();
-	    }
-	}
+            public void actionPerformed(ActionEvent evt) {
+                dispose();
+            }
+        }
     }
 }
 

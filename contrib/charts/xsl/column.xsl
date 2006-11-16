@@ -27,7 +27,7 @@
 <!-- ====================================================================== -->
 
 <xsl:stylesheet version="1.0"
-	xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
 <xsl:variable name="height" select="graph/meta/column/height"/>
 <xsl:variable name="width"  select="graph/meta/column/width"/>
@@ -68,7 +68,7 @@
     width="{$width}"
     height="{$height}">
 
-	  <g transform="matrix(1 0 0 -1 {$margin + $labelWidthY} {$height - ($margin + $labelWidthX)})">
+    <g transform="matrix(1 0 0 -1 {$margin + $labelWidthY} {$height - ($margin + $labelWidthX)})">
       <xsl:call-template name="verticalGridlines">
         <xsl:with-param name="value">0</xsl:with-param>
         <xsl:with-param name="step">1</xsl:with-param>
@@ -80,7 +80,7 @@
       </xsl:call-template>
 
       <xsl:apply-templates select="data/*"/>
-	  </g>
+    </g>
   </svg>
 </xsl:template>
 
@@ -88,21 +88,21 @@
   <xsl:param name="value">0</xsl:param>
   <xsl:param name="step"/>
 
-	<line
-	  id="verticalGridline_{$value}"
-	  x1="{$value * $horizontalScale}"
-	  y1="-2"
-	  x2="{$value * $horizontalScale}"
-	  y2="{$verticalRangeMax * $verticalScale}"
-	  style="fill:none;stroke:black;stroke-width:1"/>
+  <line
+    id="verticalGridline_{$value}"
+    x1="{$value * $horizontalScale}"
+    y1="-2"
+    x2="{$value * $horizontalScale}"
+    y2="{$verticalRangeMax * $verticalScale}"
+    style="fill:none;stroke:black;stroke-width:1"/>
 
-	<text
-	  transform="matrix(1 0 0 -1 0 -{$labelWidthX})"
-	  x="{$value * $horizontalScale}"
-	  y="0"
-	  style="font-size:12;fill:black">
+  <text
+    transform="matrix(1 0 0 -1 0 -{$labelWidthX})"
+    x="{$value * $horizontalScale}"
+    y="0"
+    style="font-size:12;fill:black">
     <xsl:value-of select="//meta/axis/x/value[position() = $value + 1]"/>
-	</text>
+  </text>
 
   <xsl:if test="$value + $step &lt;= $horizontalRangeMax">
     <xsl:call-template name="verticalGridlines">
@@ -116,21 +116,21 @@
   <xsl:param name="value">0</xsl:param>
   <xsl:param name="step"/>
 
-	<line
-	  id="horizontalGridline_{$value}"
-	  x1="-2"
-	  y1="{$value * $verticalScale}"
-	  x2="{$horizontalRangeMax * $horizontalScale}"
-	  y2="{$value * $verticalScale}"
-	  style="fill:none;stroke:black;stroke-width:1"/>
+  <line
+    id="horizontalGridline_{$value}"
+    x1="-2"
+    y1="{$value * $verticalScale}"
+    x2="{$horizontalRangeMax * $horizontalScale}"
+    y2="{$value * $verticalScale}"
+    style="fill:none;stroke:black;stroke-width:1"/>
 
-	<text
-	  transform="matrix(1 0 0 -1 -{$margin} -5)"
-	  x="0"
-	  y="-{$value * $verticalScale}"
-	  style="text-anchor:end;font-size:12;fill:black">
+  <text
+    transform="matrix(1 0 0 -1 -{$margin} -5)"
+    x="0"
+    y="-{$value * $verticalScale}"
+    style="text-anchor:end;font-size:12;fill:black">
     <xsl:value-of select="$value"/>
-	</text>
+  </text>
 
   <xsl:if test="$value + $step &lt;= $verticalRangeMax">
     <xsl:call-template name="horizontalGridlines">

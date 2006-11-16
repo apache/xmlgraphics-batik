@@ -32,7 +32,7 @@ public class DefaultClassCondition extends DefaultAttributeCondition {
      */
     public DefaultClassCondition(String namespaceURI,
                                  String value) {
-	super("class", namespaceURI, true, value);
+        super("class", namespaceURI, true, value);
     }
     
     /**
@@ -40,13 +40,13 @@ public class DefaultClassCondition extends DefaultAttributeCondition {
      * org.w3c.css.sac.Condition#getConditionType()}.
      */    
     public short getConditionType() {
-	return SAC_CLASS_CONDITION;
+        return SAC_CLASS_CONDITION;
     }
     
     /**
      * Returns a text representation of this object.
      */
     public String toString() {
-	return "." + getValue();
+        return "." + getValue();
     }
 }

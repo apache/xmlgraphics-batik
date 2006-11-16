@@ -39,11 +39,11 @@ public class UnicodeBidiManager extends IdentifierManager {
      */
     protected final static StringMap values = new StringMap();
     static {
-	values.put(CSSConstants.CSS_BIDI_OVERRIDE_VALUE,
+        values.put(CSSConstants.CSS_BIDI_OVERRIDE_VALUE,
                    ValueConstants.BIDI_OVERRIDE_VALUE);
-	values.put(CSSConstants.CSS_EMBED_VALUE,
+        values.put(CSSConstants.CSS_EMBED_VALUE,
                    ValueConstants.EMBED_VALUE);
-	values.put(CSSConstants.CSS_NORMAL_VALUE,
+        values.put(CSSConstants.CSS_NORMAL_VALUE,
                    ValueConstants.NORMAL_VALUE);
     }
 
@@ -52,7 +52,7 @@ public class UnicodeBidiManager extends IdentifierManager {
      * org.apache.batik.css.engine.value.ValueManager#isInheritedProperty()}.
      */
     public boolean isInheritedProperty() {
-	return false;
+        return false;
     }
 
     /**
@@ -81,7 +81,7 @@ public class UnicodeBidiManager extends IdentifierManager {
      * org.apache.batik.css.engine.value.ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return CSSConstants.CSS_UNICODE_BIDI_PROPERTY;
+        return CSSConstants.CSS_UNICODE_BIDI_PROPERTY;
     }
     
     /**

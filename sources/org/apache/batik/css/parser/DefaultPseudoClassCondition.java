@@ -35,8 +35,8 @@ public class DefaultPseudoClassCondition extends AbstractAttributeCondition {
      * Creates a new DefaultAttributeCondition object.
      */
     public DefaultPseudoClassCondition(String namespaceURI, String value) {
-	super(value);
-	this.namespaceURI = namespaceURI;
+        super(value);
+        this.namespaceURI = namespaceURI;
     }
 
     /**
@@ -44,7 +44,7 @@ public class DefaultPseudoClassCondition extends AbstractAttributeCondition {
      * org.w3c.css.sac.Condition#getConditionType()}.
      */    
     public short getConditionType() {
-	return SAC_PSEUDO_CLASS_CONDITION;
+        return SAC_PSEUDO_CLASS_CONDITION;
     }
     
     /**
@@ -52,7 +52,7 @@ public class DefaultPseudoClassCondition extends AbstractAttributeCondition {
      * org.w3c.css.sac.AttributeCondition#getNamespaceURI()}.
      */    
     public String getNamespaceURI() {
-	return namespaceURI;
+        return namespaceURI;
     }
 
     /**
@@ -60,7 +60,7 @@ public class DefaultPseudoClassCondition extends AbstractAttributeCondition {
      * org.w3c.css.sac.AttributeCondition#getLocalName()}.
      */
     public String getLocalName() {
-	return null;
+        return null;
     }
 
     /**
@@ -68,13 +68,13 @@ public class DefaultPseudoClassCondition extends AbstractAttributeCondition {
      * org.w3c.css.sac.AttributeCondition#getSpecified()}.
      */
     public boolean getSpecified() {
-	return false;
+        return false;
     }
 
     /**
      * Returns a text representation of this object.
      */
     public String toString() {
-	return ":" + getValue();
+        return ":" + getValue();
     }
 }

@@ -46,21 +46,21 @@ public abstract class AbstractCombinatorCondition
      * Creates a new CombinatorCondition object.
      */
     protected AbstractCombinatorCondition(Condition c1, Condition c2) {
-	firstCondition = c1;
-	secondCondition = c2;
+        firstCondition = c1;
+        secondCondition = c2;
     }
 
     /**
      * <b>SAC</b>: Implements {@link CombinatorCondition#getFirstCondition()}.
      */    
     public Condition getFirstCondition() {
-	return firstCondition;
+        return firstCondition;
     }
 
     /**
      * <b>SAC</b>: Implements {@link CombinatorCondition#getSecondCondition()}.
      */
     public Condition getSecondCondition() {
-	return secondCondition;
+        return secondCondition;
     }
 }

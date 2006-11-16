@@ -63,7 +63,7 @@ function testTarget(securityTarget) {
         </g>
 
         <g id="textPath">
-	      <text font-size="20" style="text-anchor:start">
+            <text font-size="20" style="text-anchor:start">
                 <textPath xlink:href="../../../../../samples/tests/spec/text/textOnPath.svg#Path1" startOffset="0%">Text <tspan fill="red" dy="-10">on</tspan><tspan dy="10"> a Path</tspan></textPath>
             </text>
         </g>

@@ -31,7 +31,7 @@ import org.w3c.css.sac.SimpleSelector;
  */
 public abstract class AbstractSiblingSelector
     implements SiblingSelector,
-	       ExtendedSelector {
+               ExtendedSelector {
 
     /**
      * The node type.
@@ -55,8 +55,8 @@ public abstract class AbstractSiblingSelector
                                       Selector sel,
                                       SimpleSelector simple) {
         nodeType = type;
-	selector = sel;
-	simpleSelector = simple;
+        selector = sel;
+        simpleSelector = simple;
     }
 
     /**
@@ -82,23 +82,23 @@ public abstract class AbstractSiblingSelector
      * Returns the specificity of this selector.
      */
     public int getSpecificity() {
-	return ((ExtendedSelector)selector).getSpecificity() +
-       	       ((ExtendedSelector)simpleSelector).getSpecificity();
+        return ((ExtendedSelector)selector).getSpecificity() +
+               ((ExtendedSelector)simpleSelector).getSpecificity();
     }
 
     /**
      * <b>SAC</b>: Implements {@link
      * org.w3c.css.sac.SiblingSelector#getSelector()}.
-     */    
+     */
     public Selector getSelector() {
-	return selector;
+        return selector;
     }
 
     /**
      * <b>SAC</b>: Implements {@link
      * org.w3c.css.sac.SiblingSelector#getSiblingSelector()}.
-     */    
+     */
     public SimpleSelector getSiblingSelector() {
-	return simpleSelector;
+        return simpleSelector;
     }
 }

@@ -29,7 +29,7 @@ import org.w3c.css.sac.AttributeCondition;
  */
 public abstract class AbstractAttributeCondition
     implements AttributeCondition,
-	       ExtendedCondition {
+               ExtendedCondition {
 
     /**
      * The attribute value.
@@ -40,7 +40,7 @@ public abstract class AbstractAttributeCondition
      * Creates a new AbstractAttributeCondition object.
      */
     protected AbstractAttributeCondition(String value) {
-	this.value = value;
+        this.value = value;
     }
 
     /**
@@ -59,7 +59,7 @@ public abstract class AbstractAttributeCondition
      * Returns the specificity of this condition.
      */
     public int getSpecificity() {
-	return 1 << 8;
+        return 1 << 8;
     }
 
     /**
@@ -67,6 +67,6 @@ public abstract class AbstractAttributeCondition
      * org.w3c.css.sac.AttributeCondition#getValue()}.
      */
     public String getValue() {
-	return value;
+        return value;
     }
 }

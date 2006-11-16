@@ -126,8 +126,8 @@ public interface PathHandler {
      * @exception ParseException if an error occured while processing the path
      */
     void curvetoCubicRel(float x1, float y1, 
-			 float x2, float y2, 
-			 float x, float y) throws ParseException;
+                         float x2, float y2, 
+                         float x, float y) throws ParseException;
 
 
     /**
@@ -142,8 +142,8 @@ public interface PathHandler {
      * @exception ParseException if an error occured while processing the path
      */
     void curvetoCubicAbs(float x1, float y1, 
-			 float x2, float y2, 
-			 float x, float y) throws ParseException;
+                         float x2, float y2, 
+                         float x, float y) throws ParseException;
 
     /**
      * Invoked when a relative smooth cubic bezier curve command has
@@ -158,7 +158,7 @@ public interface PathHandler {
      * @exception ParseException if an error occured while processing the path
      */
     void curvetoCubicSmoothRel(float x2, float y2, 
-			       float x, float y) throws ParseException;
+                               float x, float y) throws ParseException;
 
     /**
      * Invoked when an absolute smooth cubic bezier curve command has
@@ -173,7 +173,7 @@ public interface PathHandler {
      * @exception ParseException if an error occured while processing the path
      */
     void curvetoCubicSmoothAbs(float x2, float y2, 
-			       float x, float y) throws ParseException;
+                               float x, float y) throws ParseException;
 
     /**
      * Invoked when a relative quadratic bezier curve command has been parsed.
@@ -185,7 +185,7 @@ public interface PathHandler {
      * @exception ParseException if an error occured while processing the path
      */
     void curvetoQuadraticRel(float x1, float y1, 
-			     float x, float y) throws ParseException;
+                             float x, float y) throws ParseException;
 
     /**
      * Invoked when an absolute quadratic bezier curve command has been parsed.
@@ -197,7 +197,7 @@ public interface PathHandler {
      * @exception ParseException if an error occured while processing the path
      */
     void curvetoQuadraticAbs(float x1, float y1, 
-			     float x, float y) throws ParseException;
+                             float x, float y) throws ParseException;
 
     /**
      * Invoked when a relative smooth quadratic bezier curve command
@@ -237,9 +237,9 @@ public interface PathHandler {
      * @exception ParseException if an error occured while processing the path
      */
     void arcRel(float rx, float ry, 
-		float xAxisRotation, 
-		boolean largeArcFlag, boolean sweepFlag, 
-		float x, float y) throws ParseException;
+                float xAxisRotation, 
+                boolean largeArcFlag, boolean sweepFlag, 
+                float x, float y) throws ParseException;
 
 
     /**
@@ -256,7 +256,7 @@ public interface PathHandler {
      * @exception ParseException if an error occured while processing the path
      */
     void arcAbs(float rx, float ry, 
-		float xAxisRotation, 
-		boolean largeArcFlag, boolean sweepFlag, 
-		float x, float y) throws ParseException;
+                float xAxisRotation, 
+                boolean largeArcFlag, boolean sweepFlag, 
+                float x, float y) throws ParseException;
 }

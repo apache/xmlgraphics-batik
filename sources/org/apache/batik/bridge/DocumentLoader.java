@@ -72,7 +72,7 @@ public class DocumentLoader {
         this.userAgent = userAgent;
         documentFactory = new SAXSVGDocumentFactory
             (userAgent.getXMLParserClassName(), true);
-	documentFactory.setValidating(userAgent.isXMLParserValidating());
+        documentFactory.setValidating(userAgent.isXMLParserValidating());
     }
 
     public Document checkCache(String uri) {

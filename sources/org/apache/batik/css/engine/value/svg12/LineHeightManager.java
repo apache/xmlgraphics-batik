@@ -49,7 +49,7 @@ public class LineHeightManager extends LengthManager {
      * Implements {@link ValueManager#isInheritedProperty()}.
      */
     public boolean isInheritedProperty() {
-	return true;
+        return true;
     }
 
     /**
@@ -77,7 +77,7 @@ public class LineHeightManager extends LengthManager {
      * Implements {@link ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return SVG12CSSConstants.CSS_LINE_HEIGHT_PROPERTY;
+        return SVG12CSSConstants.CSS_LINE_HEIGHT_PROPERTY;
     }
     
     /**

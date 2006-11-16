@@ -36,228 +36,228 @@
         //
         // Global declarations
         //
-	var mines0    =  8;
-	var mines1    = 40;
-	var mines2    = 99;
+        var mines0    =  8;
+        var mines1    = 40;
+        var mines2    = 99;
 
-	var boardSize =  1;
-	var numAcross = 16;
-	var numDown   = 16;
-	var numMines  = 40;
+        var boardSize =  1;
+        var numAcross = 16;
+        var numDown   = 16;
+        var numMines  = 40;
 
-	var correctFlags   = 0;
-	var incorrectFlags = 0;
-	var minesLeft;
+        var correctFlags   = 0;
+        var incorrectFlags = 0;
+        var minesLeft;
         var board      = document.getElementById("board")
         var cover      = document.getElementById("cover")
 
-	var boardArray = new Array(numAcross*numDown);
-	var shownArray = new Array(numAcross*numDown);
-	var flagArray  = new Array(numAcross*numDown);
-	var isGameOver = true;
-	var xlinkNS    = "http://www.w3.org/1999/xlink";
-	var svgNS      = "http://www.w3.org/2000/svg";
+        var boardArray = new Array(numAcross*numDown);
+        var shownArray = new Array(numAcross*numDown);
+        var flagArray  = new Array(numAcross*numDown);
+        var isGameOver = true;
+        var xlinkNS    = "http://www.w3.org/1999/xlink";
+        var svgNS      = "http://www.w3.org/2000/svg";
 
-	function initBoard(evt) {
-	  isGameOver = false;
-	  minesLeft = numMines;
+        function initBoard(evt) {
+          isGameOver = false;
+          minesLeft = numMines;
           correctFlags = 0;
 
-	  updateText("mines", "Mines Left: "+minesLeft);
-	  updateText("boardsz", "Board Size: "+numAcross+"x"+numDown);
-	  updateText("title", "");
-	  updateText("working", "Working");
+          updateText("mines", "Mines Left: "+minesLeft);
+          updateText("boardsz", "Board Size: "+numAcross+"x"+numDown);
+          updateText("title", "");
+          updateText("working", "Working");
 
-	  for(var y=0; y<numDown; y++) {
-	     for(var x=0; x<numAcross; x++) {
-	       boardArray[x+y*numAcross] = 0;
-	       shownArray[x+y*numAcross] = false;
-	       flagArray [x+y*numAcross] = false;
-	     }
+          for(var y=0; y<numDown; y++) {
+             for(var x=0; x<numAcross; x++) {
+               boardArray[x+y*numAcross] = 0;
+               shownArray[x+y*numAcross] = false;
+               flagArray [x+y*numAcross] = false;
+             }
           }
-	  while (cover.lastChild != null) {
+          while (cover.lastChild != null) {
              cover.removeChild(cover.lastChild);
-	  }
-	  while (board.lastChild != null) {
+          }
+          while (board.lastChild != null) {
              board.removeChild(board.lastChild);
-	  }
+          }
 
-	  for (var i=0; i<numMines; i++) {
-	    var index = Math.round(Math.random()*(numDown*numAcross));
-	    if ((index >= (numDown*numAcross)) ||
-	        (boardArray[index]!=0)) {
-	       i--;
-	    } else {
-	      boardArray[index] = -1;
+          for (var i=0; i<numMines; i++) {
+            var index = Math.round(Math.random()*(numDown*numAcross));
+            if ((index >= (numDown*numAcross)) ||
+                (boardArray[index]!=0)) {
+               i--;
+            } else {
+              boardArray[index] = -1;
             }
           }
 
-	  for(var y=0; y<numDown; y++) {
+          for(var y=0; y<numDown; y++) {
 
              var coverRow = document.createElementNS(svgNS, "g");
-	     var boardRow = document.createElementNS(svgNS, "g");
+             var boardRow = document.createElementNS(svgNS, "g");
 
-	     var sum=0;
-	     for (y1=y-1; y1<=y+1; y1++) {
-	       if ((y1 >= 0) &&
-	           (y1 < numDown) &&
-	           (boardArray[y1*numAcross] == -1))
-		   sum++;
-	     }
+             var sum=0;
+             for (y1=y-1; y1<=y+1; y1++) {
+               if ((y1 >= 0) &&
+                   (y1 < numDown) &&
+                   (boardArray[y1*numAcross] == -1))
+                   sum++;
+             }
 
-	     for(var x=0; x<numAcross; x++) {
-	     	if (x-2 >= 0) {
-	     	   for (y1=y-1; y1<=y+1; y1++) {
-	     	     if ((y1 >= 0) &&
-	     		 (y1 < numDown) &&
-	     		 (boardArray[x-2+y1*numAcross] == -1))
-	   		 sum--;
-	     	   }
-	     	}  
-	     	if (x+1 < numAcross) {
-	     	   for (y1=y-1; y1<=y+1; y1++) {
-	     	     if ((y1 >= 0) &&
-	     		 (y1 < numDown) &&
-	     		 (boardArray[x+1+y1*numAcross] == -1))
-	   		 sum++;
-	     	   }
-	     	}
+             for(var x=0; x<numAcross; x++) {
+                     if (x-2 >= 0) {
+                        for (y1=y-1; y1<=y+1; y1++) {
+                          if ((y1 >= 0) &&
+                              (y1 < numDown) &&
+                              (boardArray[x-2+y1*numAcross] == -1))
+                            sum--;
+                        }
+                     }  
+                     if (x+1 < numAcross) {
+                        for (y1=y-1; y1<=y+1; y1++) {
+                          if ((y1 >= 0) &&
+                              (y1 < numDown) &&
+                              (boardArray[x+1+y1*numAcross] == -1))
+                            sum++;
+                        }
+                     }
 
-	       if (boardArray[x+y*numAcross] == 0)
-	          boardArray[x+y*numAcross] = sum;
+               if (boardArray[x+y*numAcross] == 0)
+                  boardArray[x+y*numAcross] = sum;
 
-	       var square = document.createElementNS(svgNS, "use");
+               var square = document.createElementNS(svgNS, "use");
                square.setAttributeNS(null, "x", ""+(x*10));
                square.setAttributeNS(null, "y", ""+(y*10));
                square.setAttributeNS(null, "onclick", 
-	                             "handleClick(evt, "+x+","+y+")");
+                                     "handleClick(evt, "+x+","+y+")");
 
                var cov = square.cloneNode(true);
                cov.setAttributeNS(null, "id", "cover"+x+"-"+y);
-	       cov.setAttributeNS(xlinkNS, "href", "#blank");
-	       var g = document.createElementNS(svgNS, "g");
-	       g.appendChild(cov);
-	       coverRow.appendChild(g);
+               cov.setAttributeNS(xlinkNS, "href", "#blank");
+               var g = document.createElementNS(svgNS, "g");
+               g.appendChild(cov);
+               coverRow.appendChild(g);
 
                square.setAttributeNS(null, "id", "square"+x+"-"+y);
-	       if (boardArray[x+y*numAcross] == -1)
-	   	  square.setAttributeNS(xlinkNS, "href", "#bomb");
-	       else
-	   	  square.setAttributeNS(xlinkNS, "href", "#square"+sum);
-	       var g = document.createElementNS(svgNS, "g");
-	       g.appendChild(square);
-	       boardRow.appendChild(g);
-	     }
+               if (boardArray[x+y*numAcross] == -1)
+                     square.setAttributeNS(xlinkNS, "href", "#bomb");
+               else
+                     square.setAttributeNS(xlinkNS, "href", "#square"+sum);
+               var g = document.createElementNS(svgNS, "g");
+               g.appendChild(square);
+               boardRow.appendChild(g);
+             }
              cover.appendChild(coverRow);
              board.appendChild(boardRow);
-	  }
+          }
 
-	  updateText("working", "");
-	  updateText("title", "SVG Mines");
-	}
-
-	function handleClick(evt, x, y) {
-	   if (isGameOver) return;
-	   if ((evt.button == 1) ||
-	       (evt.shiftKey)) {
-	       placeFlag(x, y);
-	   }
-	   else if ((evt.button == 2) ||
-	            (evt.ctrlKey)) {
-	       showConnected(x, y);
-	   }
-	   else if (evt.button == 0) {
-	       showSpot(x, y)
-	   }
+          updateText("working", "");
+          updateText("title", "SVG Mines");
         }
 
-	function placeFlag(x ,y) {
-	   var idx = x + y*numAcross;
-	   if (shownArray[idx]) return;
-	   var elt = document.getElementById("cover"+x+"-"+y);
-	   var nelt = elt.cloneNode(true);
-	   if (flagArray[idx]) {
-	      nelt.setAttributeNS(xlinkNS, "href", "#blank");
-	      flagArray[idx] = false;
-	      if (boardArray[idx] == -1) correctFlags--;
-	      else                       incorrectFlags--;
-	      minesLeft++;
-	   } else {
-	      nelt.setAttributeNS(xlinkNS, "href", "#flag");
-	      flagArray[idx] = true;
-	      if (boardArray[idx] == -1) correctFlags++;
-	      else                       incorrectFlags++;
-	      minesLeft--;
+        function handleClick(evt, x, y) {
+           if (isGameOver) return;
+           if ((evt.button == 1) ||
+               (evt.shiftKey)) {
+               placeFlag(x, y);
+           }
+           else if ((evt.button == 2) ||
+                    (evt.ctrlKey)) {
+               showConnected(x, y);
+           }
+           else if (evt.button == 0) {
+               showSpot(x, y)
+           }
+        }
+
+        function placeFlag(x ,y) {
+           var idx = x + y*numAcross;
+           if (shownArray[idx]) return;
+           var elt = document.getElementById("cover"+x+"-"+y);
+           var nelt = elt.cloneNode(true);
+           if (flagArray[idx]) {
+              nelt.setAttributeNS(xlinkNS, "href", "#blank");
+              flagArray[idx] = false;
+              if (boardArray[idx] == -1) correctFlags--;
+              else                       incorrectFlags--;
+              minesLeft++;
+           } else {
+              nelt.setAttributeNS(xlinkNS, "href", "#flag");
+              flagArray[idx] = true;
+              if (boardArray[idx] == -1) correctFlags++;
+              else                       incorrectFlags++;
+              minesLeft--;
            }
 
-	   elt.parentNode.replaceChild(nelt, elt);
-	   updateText("mines", "Mines Left: "+minesLeft);
+           elt.parentNode.replaceChild(nelt, elt);
+           updateText("mines", "Mines Left: "+minesLeft);
 
-	   if ((correctFlags == numMines) && (incorrectFlags == 0)) {
-	      youWin();
-	   }
-	}
+           if ((correctFlags == numMines) && (incorrectFlags == 0)) {
+              youWin();
+           }
+        }
 
         function showSpot(x, y) {
-	   var idx = x + y*numAcross;
-	   if (shownArray[idx]) return;
+           var idx = x + y*numAcross;
+           if (shownArray[idx]) return;
 
-	   var elt = document.getElementById("cover"+x+"-"+y);
-	   elt.parentNode.parentNode.removeChild(elt.parentNode);
+           var elt = document.getElementById("cover"+x+"-"+y);
+           elt.parentNode.parentNode.removeChild(elt.parentNode);
            shownArray[idx] = true;
 
            var val = boardArray[idx];
-	   if (val == -1) {
-	      gameOver();
-	   } else if (val == 0) {
-	     showConnected(x, y);
-	   }
-	}	
+           if (val == -1) {
+              gameOver();
+           } else if (val == 0) {
+             showConnected(x, y);
+           }
+        }        
 
-	function showConnected(x, y) {
-	   for (var dy=-1; dy<=1; dy++) {
-	      if (y+dy <  0)        continue;
-	      if (y+dy >= numDown ) continue;
-	      for (var dx=-1; dx<=1; dx++) {
-	      	 if (x+dx <  0)        continue;
-	      	 if (x+dx >= numDown ) continue;
-		 var idx = x+dx + (y+dy)*numAcross;
-		 if (shownArray[idx]) continue;
-		 if (flagArray[idx]) continue;
+        function showConnected(x, y) {
+           for (var dy=-1; dy<=1; dy++) {
+              if (y+dy <  0)        continue;
+              if (y+dy >= numDown ) continue;
+              for (var dx=-1; dx<=1; dx++) {
+                       if (x+dx <  0)        continue;
+                       if (x+dx >= numDown ) continue;
+                 var idx = x+dx + (y+dy)*numAcross;
+                 if (shownArray[idx]) continue;
+                 if (flagArray[idx]) continue;
 
-	         var elt = document.getElementById("cover"+(x+dx)+"-"+(y+dy));
-	         elt.parentNode.parentNode.removeChild(elt.parentNode);
-		 shownArray[idx] = true;
+                 var elt = document.getElementById("cover"+(x+dx)+"-"+(y+dy));
+                 elt.parentNode.parentNode.removeChild(elt.parentNode);
+                 shownArray[idx] = true;
 
-           	 var val = boardArray[idx];
-	  	 if (val == -1) {
-	  	    gameOver();
-	  	 } else if (val == 0) {
-		    showConnected(x+dx, y+dy);
-		 }
-	      }
-	   }
-	}
+                    var val = boardArray[idx];
+                   if (val == -1) {
+                      gameOver();
+                   } else if (val == 0) {
+                    showConnected(x+dx, y+dy);
+                 }
+              }
+           }
+        }
 
-	function gameOver() {
-	  isGameOver=true;
-	  updateText("title", "Game Over");
-	  showBoard();
-	}
+        function gameOver() {
+          isGameOver=true;
+          updateText("title", "Game Over");
+          showBoard();
+        }
 
-	function showBoard() {
-	  while (cover.lastChild != null) {
+        function showBoard() {
+          while (cover.lastChild != null) {
              cover.removeChild(cover.lastChild);
-	  }
-	  var nc = numAcross*numDown;
-	  for (var i=0; i<nc; i++)
-	    shownArray[i] = true;
-	}
+          }
+          var nc = numAcross*numDown;
+          for (var i=0; i<nc; i++)
+            shownArray[i] = true;
+        }
 
-	function youWin() {
-	  isGameOver=true;
-	  updateText("title", "You Win");
-	}
+        function youWin() {
+          isGameOver=true;
+          updateText("title", "You Win");
+        }
 
         function updateText(id, lbl) {
             var elt = document.getElementById(id);
@@ -272,48 +272,48 @@
             grp.replaceChild(newelt, elt);
         }
 
-	function largerBoard(evt) {
-	   if (boardSize == 1) return;
-	   boardSize++;
-	   if (boardSize == 1) {
-	      numAcross = 16;
-	      numDown   = 16;
-	      numMines = mines1;
-	   }
-	   else if (boardSize == 2) {
-	      numAcross = 30;
-	      numDown   = 16;
-	      numMines = mines2;
-	   }
-	   updateText("boardsz", "Board Size: "+numAcross+"x"+numDown);
-	   updateText("title", "");
-	   updateText("working", "Working");
-	   setTimeout("initBoard()", 50);
-	}
+        function largerBoard(evt) {
+           if (boardSize == 1) return;
+           boardSize++;
+           if (boardSize == 1) {
+              numAcross = 16;
+              numDown   = 16;
+              numMines = mines1;
+           }
+           else if (boardSize == 2) {
+              numAcross = 30;
+              numDown   = 16;
+              numMines = mines2;
+           }
+           updateText("boardsz", "Board Size: "+numAcross+"x"+numDown);
+           updateText("title", "");
+           updateText("working", "Working");
+           setTimeout("initBoard()", 50);
+        }
 
-	function smallerBoard(evt) {
-	   if (boardSize == 0) return;
-	   boardSize--;
-	   if (boardSize == 0) {
-	      numAcross = 8;
-	      numDown   = 8;
-	      numMines = mines0;
-	   }
-	   else if (boardSize == 1) {
-	      numAcross = 16;
-	      numDown   = 16;
-	      numMines = mines1;
-	   }
-	   updateText("boardsz", "Board Size: "+numAcross+"x"+numDown);
-	   updateText("title", "");
-	   updateText("working", "Working");
-	   setTimeout("initBoard()", 50);
-	}
+        function smallerBoard(evt) {
+           if (boardSize == 0) return;
+           boardSize--;
+           if (boardSize == 0) {
+              numAcross = 8;
+              numDown   = 8;
+              numMines = mines0;
+           }
+           else if (boardSize == 1) {
+              numAcross = 16;
+              numDown   = 16;
+              numMines = mines1;
+           }
+           updateText("boardsz", "Board Size: "+numAcross+"x"+numDown);
+           updateText("title", "");
+           updateText("working", "Working");
+           setTimeout("initBoard()", 50);
+        }
 
         function newGame(evt) {
-	   updateText("title", "");
-	   updateText("working", "Working");
-	   setTimeout("initBoard()", 50);
+           updateText("title", "");
+           updateText("working", "Working");
+           setTimeout("initBoard()", 50);
         }
 
       ]]>
@@ -387,10 +387,10 @@
       <text id="boardsz" x="250" y="54" font-size="20"
        pointer-events="none">Board Size: </text>
       <g transform="translate(242, 38)" fill="black">
-      	 <path onclick="largerBoard(evt)" 
-      	       d="M2.5,0 l-2.5,7 h5 z"/>
-      	 <path onclick="smallerBoard(evt)" 
-      	       d="M0,9 h5 l-2.5,7 z"/>
+               <path onclick="largerBoard(evt)" 
+                     d="M2.5,0 l-2.5,7 h5 z"/>
+               <path onclick="smallerBoard(evt)" 
+                     d="M0,9 h5 l-2.5,7 z"/>
       </g>
 
       <g text-anchor="middle" >
@@ -415,12 +415,12 @@ Middle    or Control: show surround</desc>
       </g>
 
       <g id="field" transform="translate(25,75) scale(2)"
-   	  onload="initBoard(evt)">
-   	 <g id="board">
-   	 </g>
+             onload="initBoard(evt)">
+            <g id="board">
+            </g>
       
-   	 <g id="cover">
-   	 </g>
+            <g id="cover">
+            </g>
       </g>
       <text id="working" fill="green" x="25" y="60" font-size="40"
        pointer-events="none">Working</text>

@@ -31,7 +31,7 @@ public class DefaultIdCondition extends AbstractAttributeCondition {
      * Creates a new DefaultAttributeCondition object.
      */
     public DefaultIdCondition(String value) {
-	super(value);
+        super(value);
     }
 
     /**
@@ -39,7 +39,7 @@ public class DefaultIdCondition extends AbstractAttributeCondition {
      * org.w3c.css.sac.Condition#getConditionType()}.
      */    
     public short getConditionType() {
-	return SAC_ID_CONDITION;
+        return SAC_ID_CONDITION;
     }
     
     /**
@@ -47,7 +47,7 @@ public class DefaultIdCondition extends AbstractAttributeCondition {
      * org.w3c.css.sac.AttributeCondition#getNamespaceURI()}.
      */    
     public String getNamespaceURI() {
-	return null;
+        return null;
     }
 
     /**
@@ -55,7 +55,7 @@ public class DefaultIdCondition extends AbstractAttributeCondition {
      * org.w3c.css.sac.AttributeCondition#getLocalName()}.
      */
     public String getLocalName() {
-	return "id";
+        return "id";
     }
 
     /**
@@ -63,13 +63,13 @@ public class DefaultIdCondition extends AbstractAttributeCondition {
      * org.w3c.css.sac.AttributeCondition#getSpecified()}.
      */
     public boolean getSpecified() {
-	return true;
+        return true;
     }
 
     /**
      * Returns a text representation of this object.
      */
     public String toString() {
-	return "#" + getValue();
+        return "#" + getValue();
     }
 }

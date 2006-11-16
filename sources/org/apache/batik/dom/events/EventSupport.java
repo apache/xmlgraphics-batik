@@ -96,7 +96,7 @@ public class EventSupport {
      * capture.
      */
     public void addEventListener(String type, EventListener listener,
-				 boolean useCapture) {
+                                 boolean useCapture) {
         addEventListenerNS(null, type, listener, useCapture, null);
     }
 
@@ -109,23 +109,23 @@ public class EventSupport {
                                    EventListener listener,
                                    boolean useCapture,
                                    Object group) {
-	HashTable listeners;
-	if (useCapture) {
-	    if (capturingListeners == null) {
-		capturingListeners = new HashTable();
-	    }
-	    listeners = capturingListeners;
-	} else {
-	    if (bubblingListeners == null) {
-		bubblingListeners = new HashTable();
-	    }
-	    listeners = bubblingListeners;
-	}
-	EventListenerList list = (EventListenerList) listeners.get(type);
-	if (list == null) {
-	    list = new EventListenerList();
-	    listeners.put(type, list);
-	}
+        HashTable listeners;
+        if (useCapture) {
+            if (capturingListeners == null) {
+                capturingListeners = new HashTable();
+            }
+            listeners = capturingListeners;
+        } else {
+            if (bubblingListeners == null) {
+                bubblingListeners = new HashTable();
+            }
+            listeners = bubblingListeners;
+        }
+        EventListenerList list = (EventListenerList) listeners.get(type);
+        if (list == null) {
+            list = new EventListenerList();
+            listeners.put(type, list);
+        }
         list.addListener(namespaceURI, group, listener);
     }
 
@@ -157,7 +157,7 @@ public class EventSupport {
      * non-capturing version of the same listener, and vice versa.
      */
     public void removeEventListener(String type, EventListener listener,
-				    boolean useCapture) {
+                                    boolean useCapture) {
         removeEventListenerNS(null, type, listener, useCapture);
     }
 
@@ -168,22 +168,22 @@ public class EventSupport {
                                       String type,
                                       EventListener listener,
                                       boolean useCapture) {
-	HashTable listeners;
-	if (useCapture) {
-	    listeners = capturingListeners;
-	} else {
-	    listeners = bubblingListeners;
-	}
-	if (listeners == null) {
-	    return;
-	}
-	EventListenerList list = (EventListenerList) listeners.get(type);
-	if (list != null) {
-	    list.removeListener(namespaceURI, listener);
+        HashTable listeners;
+        if (useCapture) {
+            listeners = capturingListeners;
+        } else {
+            listeners = bubblingListeners;
+        }
+        if (listeners == null) {
+            return;
+        }
+        EventListenerList list = (EventListenerList) listeners.get(type);
+        if (list != null) {
+            list.removeListener(namespaceURI, listener);
             if (list.size() == 0) {
                 listeners.remove(type);
             }
-	}
+        }
     }
 
     /**
@@ -226,10 +226,10 @@ public class EventSupport {
      *   exception.
      */
     public boolean dispatchEvent(NodeEventTarget target, Event e)
-	    throws EventException {
-	if (e == null) {
-	    return false;
-	}
+            throws EventException {
+        if (e == null) {
+            return false;
+        }
         AbstractEvent aevt = null;
         CustomEvent ce = null;
         boolean isCustom;
@@ -248,14 +248,14 @@ public class EventSupport {
                  "unsupported.event",
                  new Object[] {});
         }
-	String type = e.getType();
-	if (type == null || type.length() == 0) {
+        String type = e.getType();
+        if (type == null || type.length() == 0) {
             throw createEventException
                 (EventException.UNSPECIFIED_EVENT_TYPE_ERR,
                  "unspecified.event",
                  new Object[] {});
-	}
-	// fix event status
+        }
+        // fix event status
         if (!isCustom) {
             aevt.setTarget(target);
             aevt.stopPropagation(false);
@@ -264,27 +264,27 @@ public class EventSupport {
         } else {
             ce.setTarget(target);
         }
-	// dump the tree hierarchy from top to the target
-	NodeEventTarget [] ancestors = getAncestors(target);
-	// CAPTURING_PHASE : fire event listeners from top to EventTarget
+        // dump the tree hierarchy from top to the target
+        NodeEventTarget [] ancestors = getAncestors(target);
+        // CAPTURING_PHASE : fire event listeners from top to EventTarget
         if (!isCustom) {
             aevt.setEventPhase(Event.CAPTURING_PHASE);
         }
         HashSet stoppedGroups = new HashSet();
         HashSet toBeStoppedGroups = new HashSet();
-	for (int i = 0; i < ancestors.length; i++) {
-	    NodeEventTarget node = ancestors[i];
+        for (int i = 0; i < ancestors.length; i++) {
+            NodeEventTarget node = ancestors[i];
             if (isCustom) {
                 ce.setDispatchState(node, Event.CAPTURING_PHASE);
             } else {
                 aevt.setCurrentTarget(node);
             }
-	    fireEventListeners(node, e, true,
+            fireEventListeners(node, e, true,
                                stoppedGroups, toBeStoppedGroups, isCustom);
             stoppedGroups.addAll(toBeStoppedGroups);
             toBeStoppedGroups.clear();
-	}
-	// AT_TARGET : fire local event listeners
+        }
+        // AT_TARGET : fire local event listeners
         if (isCustom) {
             ce.setDispatchState(target, Event.AT_TARGET);
         } else {
@@ -295,24 +295,24 @@ public class EventSupport {
                            stoppedGroups, toBeStoppedGroups, isCustom);
         stoppedGroups.addAll(toBeStoppedGroups);
         toBeStoppedGroups.clear();
-	// BUBBLING_PHASE : fire event listeners from target to top
-	if (e.getBubbles()) {
+        // BUBBLING_PHASE : fire event listeners from target to top
+        if (e.getBubbles()) {
             if (!isCustom) {
                 aevt.setEventPhase(Event.BUBBLING_PHASE);
             }
-	    for (int i = ancestors.length - 1; i >= 0; i--) {
-		NodeEventTarget node = ancestors[i];
+            for (int i = ancestors.length - 1; i >= 0; i--) {
+                NodeEventTarget node = ancestors[i];
                 if (isCustom) {
                     ce.setDispatchState(node, Event.BUBBLING_PHASE);
                 } else {
                     aevt.setCurrentTarget(node);
                 }
-		fireEventListeners(node, e, false,
+                fireEventListeners(node, e, false,
                                    stoppedGroups, toBeStoppedGroups, isCustom);
                 stoppedGroups.addAll(toBeStoppedGroups);
                 toBeStoppedGroups.clear();
-	    }
-	}
+            }
+        }
         return isCustom ? ce.isDefaultPrevented() : aevt.isDefaultPrevented();
     }
 
@@ -325,10 +325,10 @@ public class EventSupport {
                                       HashSet stoppedGroups,
                                       HashSet toBeStoppedGroups,
                                       boolean isCustom) {
-	if (listeners == null) {
-	    return;
-	}
-	// fire event listeners
+        if (listeners == null) {
+            return;
+        }
+        // fire event listeners
         CustomEvent ce = null;
         AbstractEvent aevt = null;
         String eventNS;
@@ -339,8 +339,8 @@ public class EventSupport {
             aevt = (AbstractEvent) e;
             eventNS = aevt.getNamespaceURI();
         }
-	for (int i = 0; i < listeners.length; i++) {
-	    try {
+        for (int i = 0; i < listeners.length; i++) {
+            try {
                 String listenerNS = listeners[i].getNamespaceURI();
                 if (listenerNS != null && eventNS != null
                         && !listenerNS.equals(eventNS)) {
@@ -377,10 +377,10 @@ public class EventSupport {
                 }
             } catch (ThreadDeath td) {
                 throw td;
-	    } catch (Throwable th) {
+            } catch (Throwable th) {
                 th.printStackTrace();
-	    }
-	}
+            }
+        }
     }
 
     /**
@@ -392,19 +392,19 @@ public class EventSupport {
                                       HashSet stoppedGroups,
                                       HashSet toBeStoppedGroups,
                                       boolean isCustom) {
-	String type = e.getType();
-	EventSupport support = node.getEventSupport();
-	// check if the event support has been instantiated
-	if (support == null) {
-	    return;
-	}
+        String type = e.getType();
+        EventSupport support = node.getEventSupport();
+        // check if the event support has been instantiated
+        if (support == null) {
+            return;
+        }
         EventListenerList list = support.getEventListeners(type, useCapture);
-	// check if the event listeners list is not empty
-	if (list == null) {
-	    return;
-	}
-	// dump event listeners, we get the registered listeners NOW
-	EventListenerList.Entry[] listeners = list.getEventListeners();
+        // check if the event listeners list is not empty
+        if (list == null) {
+            return;
+        }
+        // dump event listeners, we get the registered listeners NOW
+        EventListenerList.Entry[] listeners = list.getEventListeners();
         fireEventListeners(node, e, listeners, stoppedGroups,
                            toBeStoppedGroups, isCustom);
     }
@@ -413,18 +413,18 @@ public class EventSupport {
      * Returns all ancestors of the specified node.
      */
     protected NodeEventTarget [] getAncestors(NodeEventTarget node) {
-	node = node.getParentNodeEventTarget(); // skip current node
-	int nancestors = 0;
-	for (NodeEventTarget n = node;
+        node = node.getParentNodeEventTarget(); // skip current node
+        int nancestors = 0;
+        for (NodeEventTarget n = node;
              n != null;
              n = n.getParentNodeEventTarget(), nancestors++) {}
-	NodeEventTarget [] ancestors = new NodeEventTarget[nancestors];
-	for (int i=nancestors-1;
+        NodeEventTarget [] ancestors = new NodeEventTarget[nancestors];
+        for (int i=nancestors-1;
              i >= 0;
              --i, node = node.getParentNodeEventTarget()) {
-	    ancestors[i] = node;
-	}
-	return ancestors;
+            ancestors[i] = node;
+        }
+        return ancestors;
     }
 
     /**
@@ -458,12 +458,12 @@ public class EventSupport {
      * @param useCapture
      */
     public EventListenerList getEventListeners(String type,
-					       boolean useCapture) {
-	HashTable listeners
+                                               boolean useCapture) {
+        HashTable listeners
             = useCapture ? capturingListeners : bubblingListeners;
-	if (listeners == null) {
-	    return null;
-	}
+        if (listeners == null) {
+            return null;
+        }
         return (EventListenerList) listeners.get(type);
     }
 

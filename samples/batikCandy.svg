@@ -31,15 +31,15 @@
 
 <!-- ############################# -->
 <defs>
-	<radialGradient id="grad" r=".5">
-		<stop stop-color="white" offset="0" />
-		<stop stop-color="gold" offset="1" />
-	</radialGradient>
+  <radialGradient id="grad" r=".5">
+    <stop stop-color="white" offset="0" />
+    <stop stop-color="gold" offset="1" />
+  </radialGradient>
 </defs>
 
 
-	<rect x="0" y="0" width="100%" height="100%" style="fill:gold" />
-	<ellipse cx="0" cy="0" rx="40%" ry="20%" style="fill:url(#grad)" />
+  <rect x="0" y="0" width="100%" height="100%" style="fill:gold" />
+  <ellipse cx="0" cy="0" rx="40%" ry="20%" style="fill:url(#grad)" />
 
 <!-- ############################# -->
 
@@ -78,36 +78,36 @@
               </feComponentTransfer>
           </filter>
 
-	 <filter id="emboss" >
-	 	<feGaussianBlur in="SourceAlpha" stdDeviation="2" result="blur"/>
-	 	<feSpecularLighting in="blur" surfaceScale="-3" style="lighting-color:white"
-	 		            specularConstant="1" specularExponent="16" 
-        	                    result="spec" kernelUnitLength="1" >
- 			<feDistantLight azimuth="45" elevation="45" />
-	 	</feSpecularLighting>
-	 	<feComposite in="spec" in2="SourceGraphic" operator="in" result="specOut"/>
-	 </filter>
+   <filter id="emboss" >
+     <feGaussianBlur in="SourceAlpha" stdDeviation="2" result="blur"/>
+     <feSpecularLighting in="blur" surfaceScale="-3" style="lighting-color:white"
+                   specularConstant="1" specularExponent="16" 
+                              result="spec" kernelUnitLength="1" >
+       <feDistantLight azimuth="45" elevation="45" />
+     </feSpecularLighting>
+     <feComposite in="spec" in2="SourceGraphic" operator="in" result="specOut"/>
+   </filter>
 </defs>
 
 <g style="font-size:128; font-family:SVGImpact; text-anchor:middle;">
-	<text x="50%" y="35%" style="filter:url(#dropShadow)">Batik</text>
-	<text x="50%" y="35%" style="fill:rgb(172,20,20)">Batik</text>
-	<text x="50%" y="35%" style="filter:url(#emboss)">Batik</text>
+  <text x="50%" y="35%" style="filter:url(#dropShadow)">Batik</text>
+  <text x="50%" y="35%" style="fill:rgb(172,20,20)">Batik</text>
+  <text x="50%" y="35%" style="filter:url(#emboss)">Batik</text>
 </g>
 
 <!-- ############################# -->
 
 <defs>
-	<g id="eye" style="stroke-width:8">
-		<line x1="0" y1="-10" x2="0" y2="10"/>
-		<line x1="-10" y1="0" x2="10" y2="0"/>
-	</g>
+  <g id="eye" style="stroke-width:8">
+    <line x1="0" y1="-10" x2="0" y2="10"/>
+    <line x1="-10" y1="0" x2="10" y2="0"/>
+  </g>
 
-	<g id="face">
-		<circle cx="225" cy="320" r="90" />
-		<use xlink:href="#eye" x="195" y="305" />
-		<use xlink:href="#eye" x="255" y="305" />
-	</g>
+  <g id="face">
+    <circle cx="225" cy="320" r="90" />
+    <use xlink:href="#eye" x="195" y="305" />
+    <use xlink:href="#eye" x="255" y="305" />
+  </g>
 
           <filter id="dropShadow2"  filterUnits="objectBoundingBox" x="-1.2" y="-1.2" width="6" height="6">
               <feGaussianBlur in="SourceAlpha" stdDeviation="4" /> 
@@ -118,21 +118,21 @@
               <feComposite in2="shadow" in="SourceGraphic"/>
           </filter>
 
-	<path id="eyeUp" d="M240 277 A20 25 0 0 1 270 277" />
+  <path id="eyeUp" d="M240 277 A20 25 0 0 1 270 277" />
 
 </defs>
 
 
 <g style="stroke:black; fill:none; stroke-width:12;">
-	<use xlink:href="#face" style="filter:url(#dropShadow)" />
-	<use xlink:href="#face" />
-	<use xlink:href="#face" style="filter:url(#emboss)" />
+  <use xlink:href="#face" style="filter:url(#dropShadow)" />
+  <use xlink:href="#face" />
+  <use xlink:href="#face" style="filter:url(#emboss)" />
 </g>
 
 <g style="stroke:black; fill:none; stroke-width:8; stroke-linecap:round; ">
-	<use xlink:href="#eyeUp" style="filter:url(#dropShadow2)" />
-	<use xlink:href="#eyeUp" style="stroke:rgb(172,20,20)" />
-	<use xlink:href="#eyeUp" style="filter:url(#emboss)" />
+  <use xlink:href="#eyeUp" style="filter:url(#dropShadow2)" />
+  <use xlink:href="#eyeUp" style="stroke:rgb(172,20,20)" />
+  <use xlink:href="#eyeUp" style="filter:url(#emboss)" />
 </g>
 
     <!-- ============================================================= -->

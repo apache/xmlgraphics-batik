@@ -50,32 +50,32 @@ public class GenericProcessingInstruction
      * Creates a new ProcessingInstruction object.
      */
     public GenericProcessingInstruction(String           target,
-					String           data,
-					AbstractDocument owner) {
-	ownerDocument = owner;
-	setTarget(target);
-	setData(data);
+                                        String           data,
+                                        AbstractDocument owner) {
+        ownerDocument = owner;
+        setTarget(target);
+        setData(data);
     }
 
     /**
      * Sets the node name.
      */
     public void setNodeName(String v) {
-	setTarget(v);
+        setTarget(v);
     }
 
     /**
      * Tests whether this node is readonly.
      */
     public boolean isReadonly() {
-	return readonly;
+        return readonly;
     }
 
     /**
      * Sets this node readonly attribute.
      */
     public void setReadonly(boolean v) {
-	readonly = v;
+        readonly = v;
     }
 
     /**
@@ -84,34 +84,34 @@ public class GenericProcessingInstruction
      * @return {@link #target}.
      */
     public String getTarget() {
-	return target;
+        return target;
     }
 
     /**
      * Sets the target value.
      */
     public void setTarget(String v) {
-	target = v;
+        target = v;
     }
 
     /**
      * Exports this node to the given document.
      */
     protected Node export(Node n, AbstractDocument d) {
-	GenericProcessingInstruction p;
-	p = (GenericProcessingInstruction)super.export(n, d);
-	p.setTarget(getTarget());
-	return p;
+        GenericProcessingInstruction p;
+        p = (GenericProcessingInstruction)super.export(n, d);
+        p.setTarget(getTarget());
+        return p;
     }
 
     /**
      * Deeply exports this node to the given document.
      */
     protected Node deepExport(Node n, AbstractDocument d) {
-	GenericProcessingInstruction p;
-	p = (GenericProcessingInstruction)super.deepExport(n, d);
-	p.setTarget(getTarget());
-	return p;
+        GenericProcessingInstruction p;
+        p = (GenericProcessingInstruction)super.deepExport(n, d);
+        p.setTarget(getTarget());
+        return p;
     }
 
     /**
@@ -119,10 +119,10 @@ public class GenericProcessingInstruction
      * @param n a node of the type of this.
      */
     protected Node copyInto(Node n) {
-	GenericProcessingInstruction p;
-	p = (GenericProcessingInstruction)super.copyInto(n);
-	p.setTarget(getTarget());
-	return p;
+        GenericProcessingInstruction p;
+        p = (GenericProcessingInstruction)super.copyInto(n);
+        p.setTarget(getTarget());
+        return p;
     }
 
     /**
@@ -130,10 +130,10 @@ public class GenericProcessingInstruction
      * @param n a node of the type of this.
      */
     protected Node deepCopyInto(Node n) {
-	GenericProcessingInstruction p;
-	p = (GenericProcessingInstruction)super.deepCopyInto(n);
-	p.setTarget(getTarget());
-	return p;
+        GenericProcessingInstruction p;
+        p = (GenericProcessingInstruction)super.deepCopyInto(n);
+        p.setTarget(getTarget());
+        return p;
     }
 
     /**

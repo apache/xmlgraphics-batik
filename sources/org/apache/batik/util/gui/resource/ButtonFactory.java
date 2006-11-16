@@ -84,16 +84,16 @@ public class ButtonFactory extends ResourceManager {
      *         the action map
      */
     public JButton createJButton(String name)
-	throws MissingResourceException,
-	       ResourceFormatException,
-	       MissingListenerException {
+        throws MissingResourceException,
+               ResourceFormatException,
+               MissingListenerException {
         JButton result;
-	try {
-	    result = new JButton(getString(name+TEXT_SUFFIX));
-	} catch (MissingResourceException e) {
-	    result = new JButton();
-	}
-	initializeButton(result, name);
+        try {
+            result = new JButton(getString(name+TEXT_SUFFIX));
+        } catch (MissingResourceException e) {
+            result = new JButton();
+        }
+        initializeButton(result, name);
         return result;
     }
 
@@ -109,16 +109,16 @@ public class ButtonFactory extends ResourceManager {
      *         the action map
      */
     public JButton createJToolbarButton(String name)
-	throws MissingResourceException,
-	       ResourceFormatException,
-	       MissingListenerException {
+        throws MissingResourceException,
+               ResourceFormatException,
+               MissingListenerException {
         JButton result;
-	try {
-	    result = new JToolbarButton(getString(name+TEXT_SUFFIX));
-	} catch (MissingResourceException e) {
-	    result = new JToolbarButton();
-	}
-	initializeButton(result, name);
+        try {
+            result = new JToolbarButton(getString(name+TEXT_SUFFIX));
+        } catch (MissingResourceException e) {
+            result = new JToolbarButton();
+        }
+        initializeButton(result, name);
         return result;
     }
 
@@ -134,18 +134,18 @@ public class ButtonFactory extends ResourceManager {
      *         the action map.
      */
     public JRadioButton createJRadioButton(String name)
-	throws MissingResourceException,
-	       ResourceFormatException,
-	       MissingListenerException {
+        throws MissingResourceException,
+               ResourceFormatException,
+               MissingListenerException {
         JRadioButton result = new JRadioButton(getString(name+TEXT_SUFFIX));
-	initializeButton(result, name);
+        initializeButton(result, name);
 
         // is the button selected?
-	try {
-	    result.setSelected(getBoolean(name+SELECTED_SUFFIX));
-	} catch (MissingResourceException e) {
-	}
-	
+        try {
+            result.setSelected(getBoolean(name+SELECTED_SUFFIX));
+        } catch (MissingResourceException e) {
+        }
+        
         return result;
     }
 
@@ -160,18 +160,18 @@ public class ButtonFactory extends ResourceManager {
      *         the action map.
      */
     public JCheckBox createJCheckBox(String name)
-	throws MissingResourceException,
-	       ResourceFormatException,
-	       MissingListenerException {
+        throws MissingResourceException,
+               ResourceFormatException,
+               MissingListenerException {
         JCheckBox result = new JCheckBox(getString(name+TEXT_SUFFIX));
-	initializeButton(result, name);
+        initializeButton(result, name);
 
         // is the button selected?
-	try {
-	    result.setSelected(getBoolean(name+SELECTED_SUFFIX));
-	} catch (MissingResourceException e) {
-	}
-	
+        try {
+            result.setSelected(getBoolean(name+SELECTED_SUFFIX));
+        } catch (MissingResourceException e) {
+        }
+        
         return result;
     }
 
@@ -185,57 +185,57 @@ public class ButtonFactory extends ResourceManager {
      *         in the action map.
      */
     private void initializeButton(AbstractButton b, String name)
-	throws ResourceFormatException, MissingListenerException {
+        throws ResourceFormatException, MissingListenerException {
         // Action
-	try {
-	    Action a = actions.getAction(getString(name+ACTION_SUFFIX));
-	    if (a == null) {
-		throw new MissingListenerException("", "Action",
+        try {
+            Action a = actions.getAction(getString(name+ACTION_SUFFIX));
+            if (a == null) {
+                throw new MissingListenerException("", "Action",
                                                    name+ACTION_SUFFIX);
-	    }
-	    b.setAction(a);
+            }
+            b.setAction(a);
             try {
                 b.setText(getString(name+TEXT_SUFFIX));
             } catch (MissingResourceException mre) {
                 // not all buttons have text defined so just
                 // ignore this exception.
             }
-	    if (a instanceof JComponentModifier) {
-		((JComponentModifier)a).addJComponent(b);
-	    }
-	} catch (MissingResourceException e) {
-	}
+            if (a instanceof JComponentModifier) {
+                ((JComponentModifier)a).addJComponent(b);
+            }
+        } catch (MissingResourceException e) {
+        }
 
-	// Icon
-	try {
-	    String s = getString(name+ICON_SUFFIX);
-	    URL url  = actions.getClass().getResource(s);
-	    if (url != null) {
-		b.setIcon(new ImageIcon(url));
-	    }
-	} catch (MissingResourceException e) {
-	}
+        // Icon
+        try {
+            String s = getString(name+ICON_SUFFIX);
+            URL url  = actions.getClass().getResource(s);
+            if (url != null) {
+                b.setIcon(new ImageIcon(url));
+            }
+        } catch (MissingResourceException e) {
+        }
 
         // Mnemonic
-	try {
-	    String str = getString(name+MNEMONIC_SUFFIX);
-	    if (str.length() == 1) {
-		b.setMnemonic(str.charAt(0));
-	    } else {
-		throw new ResourceFormatException("Malformed mnemonic",
-						  bundle.getClass().getName(),
-						  name+MNEMONIC_SUFFIX);
-	    }
-	} catch (MissingResourceException e) {
-	}
+        try {
+            String str = getString(name+MNEMONIC_SUFFIX);
+            if (str.length() == 1) {
+                b.setMnemonic(str.charAt(0));
+            } else {
+                throw new ResourceFormatException("Malformed mnemonic",
+                                                  bundle.getClass().getName(),
+                                                  name+MNEMONIC_SUFFIX);
+            }
+        } catch (MissingResourceException e) {
+        }
 
-	// ToolTip
-	try {
-	    String s = getString(name+TOOLTIP_SUFFIX);
-	    if (s != null) {
-		b.setToolTipText(s);
-	    }
-	} catch (MissingResourceException e) {
-	}
+        // ToolTip
+        try {
+            String s = getString(name+TOOLTIP_SUFFIX);
+            if (s != null) {
+                b.setToolTipText(s);
+            }
+        } catch (MissingResourceException e) {
+        }
     }
 }

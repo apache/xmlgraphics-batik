@@ -133,19 +133,19 @@ public class SVGLinearGradientElementBridge
                                                coordSystemType,
                                                uctx);
 
-	// If x1 = x2 and y1 = y2, then the area to be painted will be painted
-	// as a single color using the color and opacity of the last gradient
-	// stop.
+        // If x1 = x2 and y1 = y2, then the area to be painted will be painted
+        // as a single color using the color and opacity of the last gradient
+        // stop.
         if (p1.getX() == p2.getX() && p1.getY() == p2.getY()) {
             return colors[colors.length-1];
-	} else {
-	    return new LinearGradientPaint(p1,
-					   p2,
-					   offsets,
-					   colors,
-					   spreadMethod,
-					   colorSpace,
-					   transform);
-	}
+        } else {
+            return new LinearGradientPaint(p1,
+                                           p2,
+                                           offsets,
+                                           colors,
+                                           spreadMethod,
+                                           colorSpace,
+                                           transform);
+        }
     }
 }

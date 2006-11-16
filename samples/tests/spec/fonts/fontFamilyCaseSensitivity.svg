@@ -34,10 +34,10 @@
 
     <style type="text/css"><![CDATA[
         .oddRow { fill: #cccccc; stroke: black; }
-	.evenRow { fill: white; stroke: black; }
-	.textLabel { text-anchor: middle; font-size: 12; }
-	.textSample { text-anchor: middle; font-size: 14; fill: crimson; }
-	.em { font-style:italic; }
+        .evenRow { fill: white; stroke: black; }
+        .textLabel { text-anchor: middle; font-size: 12; }
+        .textSample { text-anchor: middle; font-size: 14; fill: crimson; }
+        .em { font-style:italic; }
     ]]></style>
     
     <g id="content">
@@ -45,8 +45,8 @@
         <text class="title" x="50%" y="40">font-family case-sensitivity</text>
 
         <defs>
-	    <rect id="oddRow" width="300" height="30" class="oddRow"/>
-	    <rect id="evenRow" width="300" height="30" class="evenRow" />
+            <rect id="oddRow" width="300" height="30" class="oddRow"/>
+            <rect id="evenRow" width="300" height="30" class="evenRow" />
 
 
 
@@ -82,7 +82,7 @@
 </font>
         </defs>
 
-	<g transform="translate(75, 100)">
+        <g transform="translate(75, 100)">
 
         <use xlink:href="#oddRow" />
         <text class="textLabel" x="150" y="20">System Font with proper case sensitivity</text>
@@ -110,7 +110,7 @@
             <text class="textSample" x="150" y="50" font-family="larabieFont">larabieFont for Larabiefont</text>
         </g>
 
-	</g>
+        </g>
     </g>
 
 

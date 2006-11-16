@@ -42,7 +42,7 @@ public class StrokeMiterlimitManager extends AbstractValueManager {
      * Implements {@link ValueManager#isInheritedProperty()}.
      */
     public boolean isInheritedProperty() {
-	return true;
+        return true;
     }
 
     /**
@@ -70,7 +70,7 @@ public class StrokeMiterlimitManager extends AbstractValueManager {
      * Implements {@link ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return CSSConstants.CSS_STROKE_MITERLIMIT_PROPERTY;
+        return CSSConstants.CSS_STROKE_MITERLIMIT_PROPERTY;
     }
     
     /**
@@ -85,19 +85,19 @@ public class StrokeMiterlimitManager extends AbstractValueManager {
      */
     public Value createValue(LexicalUnit lu, CSSEngine engine)
         throws DOMException {
-	switch (lu.getLexicalUnitType()) {
-	case LexicalUnit.SAC_INHERIT:
-	    return SVGValueConstants.INHERIT_VALUE;
+        switch (lu.getLexicalUnitType()) {
+        case LexicalUnit.SAC_INHERIT:
+            return SVGValueConstants.INHERIT_VALUE;
 
-	case  LexicalUnit.SAC_INTEGER:
-	    return new FloatValue(CSSPrimitiveValue.CSS_NUMBER,
+        case  LexicalUnit.SAC_INTEGER:
+            return new FloatValue(CSSPrimitiveValue.CSS_NUMBER,
                                   lu.getIntegerValue());
 
-	case  LexicalUnit.SAC_REAL:
-	    return new FloatValue(CSSPrimitiveValue.CSS_NUMBER,
+        case  LexicalUnit.SAC_REAL:
+            return new FloatValue(CSSPrimitiveValue.CSS_NUMBER,
                                   lu.getFloatValue());
 
-	default:
+        default:
             throw createInvalidLexicalUnitDOMException
                 (lu.getLexicalUnitType());
         }
@@ -107,10 +107,10 @@ public class StrokeMiterlimitManager extends AbstractValueManager {
      * Implements {@link ValueManager#createFloatValue(short,float)}.
      */
     public Value createFloatValue(short unitType, float floatValue)
-	throws DOMException {
-	if (unitType == CSSPrimitiveValue.CSS_NUMBER) {
-	    return new FloatValue(unitType, floatValue);
-	}
+        throws DOMException {
+        if (unitType == CSSPrimitiveValue.CSS_NUMBER) {
+            return new FloatValue(unitType, floatValue);
+        }
         throw createInvalidFloatTypeDOMException(unitType);
     }
 }

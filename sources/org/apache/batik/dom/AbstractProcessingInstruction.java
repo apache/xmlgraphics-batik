@@ -43,7 +43,7 @@ public abstract class AbstractProcessingInstruction
      * @return {@link #getTarget()}.
      */
     public String getNodeName() {
-	return getTarget();
+        return getTarget();
     }
 
     /**
@@ -51,7 +51,7 @@ public abstract class AbstractProcessingInstruction
      * @return {@link org.w3c.dom.Node#PROCESSING_INSTRUCTION_NODE}
      */
     public short getNodeType() {
-	return PROCESSING_INSTRUCTION_NODE;
+        return PROCESSING_INSTRUCTION_NODE;
     }
 
     /**
@@ -59,14 +59,14 @@ public abstract class AbstractProcessingInstruction
      * @return {@link #getData()}.
      */
     public String getNodeValue() throws DOMException {
-	return getData();
+        return getData();
     }
 
     /**
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#setNodeValue(String)}.
      */
     public void setNodeValue(String nodeValue) throws DOMException {
-	setData(nodeValue);
+        setData(nodeValue);
     }
 
     /**
@@ -75,7 +75,7 @@ public abstract class AbstractProcessingInstruction
      * @return {@link #data}.
      */
     public String getData() {
-	return data;
+        return data;
     }
 
     /**
@@ -83,21 +83,21 @@ public abstract class AbstractProcessingInstruction
      * org.w3c.dom.ProcessingInstruction#setData(String)}.
      */
     public void setData(String data) throws DOMException {
-	if (isReadonly()) {
+        if (isReadonly()) {
             throw createDOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR,
                                      "readonly.node",
                                      new Object[] { new Integer(getNodeType()),
                                                     getNodeName() });
-	}
-	String val = this.data;
-	this.data = data;
+        }
+        String val = this.data;
+        this.data = data;
 
-	// Mutation event
-	fireDOMCharacterDataModifiedEvent(val, this.data);
-	if (getParentNode() != null) {
-	    ((AbstractParentNode)getParentNode()).
+        // Mutation event
+        fireDOMCharacterDataModifiedEvent(val, this.data);
+        if (getParentNode() != null) {
+            ((AbstractParentNode)getParentNode()).
                 fireDOMSubtreeModifiedEvent();
-	}
+        }
     }
 
     /**
@@ -111,20 +111,20 @@ public abstract class AbstractProcessingInstruction
      * Exports this node to the given document.
      */
     protected Node export(Node n, AbstractDocument d) {
-	AbstractProcessingInstruction p;
-	p = (AbstractProcessingInstruction)super.export(n, d);
-	p.data = data;
-	return p;
+        AbstractProcessingInstruction p;
+        p = (AbstractProcessingInstruction)super.export(n, d);
+        p.data = data;
+        return p;
     }
 
     /**
      * Deeply exports this node to the given document.
      */
     protected Node deepExport(Node n, AbstractDocument d) {
-	AbstractProcessingInstruction p;
-	p = (AbstractProcessingInstruction)super.deepExport(n, d);
-	p.data = data;
-	return p;
+        AbstractProcessingInstruction p;
+        p = (AbstractProcessingInstruction)super.deepExport(n, d);
+        p.data = data;
+        return p;
     }
 
     /**
@@ -132,10 +132,10 @@ public abstract class AbstractProcessingInstruction
      * @param n a node of the type of this.
      */
     protected Node copyInto(Node n) {
-	AbstractProcessingInstruction p;
-	p = (AbstractProcessingInstruction)super.copyInto(n);
-	p.data = data;
-	return p;
+        AbstractProcessingInstruction p;
+        p = (AbstractProcessingInstruction)super.copyInto(n);
+        p.data = data;
+        return p;
     }
 
     /**
@@ -143,9 +143,9 @@ public abstract class AbstractProcessingInstruction
      * @param n a node of the type of this.
      */
     protected Node deepCopyInto(Node n) {
-	AbstractProcessingInstruction p;
-	p = (AbstractProcessingInstruction)super.deepCopyInto(n);
-	p.data = data;
-	return p;
+        AbstractProcessingInstruction p;
+        p = (AbstractProcessingInstruction)super.deepCopyInto(n);
+        p.data = data;
+        return p;
     }
 }

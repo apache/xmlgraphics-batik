@@ -36,7 +36,7 @@ public class CSSClassCondition extends CSSAttributeCondition {
     public CSSClassCondition(String localName,
                              String namespaceURI,
                              String value) {
-	super(localName, namespaceURI, true, value);
+        super(localName, namespaceURI, true, value);
     }
     
     /**
@@ -44,7 +44,7 @@ public class CSSClassCondition extends CSSAttributeCondition {
      * org.w3c.css.sac.Condition#getConditionType()}.
      */    
     public short getConditionType() {
-	return SAC_CLASS_CONDITION;
+        return SAC_CLASS_CONDITION;
     }
     
     /**
@@ -53,24 +53,24 @@ public class CSSClassCondition extends CSSAttributeCondition {
     public boolean match(Element e, String pseudoE) {
         if (!(e instanceof CSSStylableElement))
             return false;  // Can't match an unstylable element.
-	String attr = ((CSSStylableElement)e).getCSSClass();
-	String val = getValue();
-	int i = attr.indexOf(val);
-	if (i == -1) {
-	    return false;
-	}
-	if (i != 0 && !Character.isSpaceChar(attr.charAt(i - 1))) {
-	    return false;
-	}
-	int j = i + val.length();
-	return (j == attr.length() ||
-		(j < attr.length() && Character.isSpaceChar(attr.charAt(j))));
+        String attr = ((CSSStylableElement)e).getCSSClass();
+        String val = getValue();
+        int i = attr.indexOf(val);
+        if (i == -1) {
+            return false;
+        }
+        if (i != 0 && !Character.isSpaceChar(attr.charAt(i - 1))) {
+            return false;
+        }
+        int j = i + val.length();
+        return (j == attr.length() ||
+                (j < attr.length() && Character.isSpaceChar(attr.charAt(j))));
     }
 
     /**
      * Returns a text representation of this object.
      */
     public String toString() {
-	return "." + getValue();
+        return "." + getValue();
     }
 }

@@ -43,7 +43,7 @@ public class FontSizeAdjustManager extends AbstractValueManager {
      * Implements {@link ValueManager#isInheritedProperty()}.
      */
     public boolean isInheritedProperty() {
-	return true;
+        return true;
     }
 
     /**
@@ -71,7 +71,7 @@ public class FontSizeAdjustManager extends AbstractValueManager {
      * Implements {@link ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return CSSConstants.CSS_FONT_SIZE_ADJUST_PROPERTY;
+        return CSSConstants.CSS_FONT_SIZE_ADJUST_PROPERTY;
     }
     
     /**
@@ -86,9 +86,9 @@ public class FontSizeAdjustManager extends AbstractValueManager {
      */
     public Value createValue(LexicalUnit lu, CSSEngine engine)
         throws DOMException {
-	switch (lu.getLexicalUnitType()) {
-	case LexicalUnit.SAC_INHERIT:
-	    return ValueConstants.INHERIT_VALUE;
+        switch (lu.getLexicalUnitType()) {
+        case LexicalUnit.SAC_INHERIT:
+            return ValueConstants.INHERIT_VALUE;
 
         case LexicalUnit.SAC_INTEGER:
             return new FloatValue(CSSPrimitiveValue.CSS_NUMBER,
@@ -99,10 +99,10 @@ public class FontSizeAdjustManager extends AbstractValueManager {
                                   lu.getFloatValue());
 
         case LexicalUnit.SAC_IDENT:
-	    if (lu.getStringValue().equalsIgnoreCase
+            if (lu.getStringValue().equalsIgnoreCase
                 (CSSConstants.CSS_NONE_VALUE)) {
-		return ValueConstants.NONE_VALUE;
-	    }
+                return ValueConstants.NONE_VALUE;
+            }
             throw createInvalidIdentifierDOMException(lu.getStringValue());
         }
         throw createInvalidLexicalUnitDOMException(lu.getLexicalUnitType());
@@ -128,9 +128,9 @@ public class FontSizeAdjustManager extends AbstractValueManager {
      */
     public Value createFloatValue(short type, float floatValue)
         throws DOMException {
-	if (type == CSSPrimitiveValue.CSS_NUMBER) {
-	    return new FloatValue(type, floatValue);
-	}
+        if (type == CSSPrimitiveValue.CSS_NUMBER) {
+            return new FloatValue(type, floatValue);
+        }
         throw createInvalidFloatTypeDOMException(type);
     }
 }

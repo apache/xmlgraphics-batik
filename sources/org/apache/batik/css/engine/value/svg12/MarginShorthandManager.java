@@ -43,7 +43,7 @@ public class MarginShorthandManager
      * Implements {@link ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return SVG12CSSConstants.CSS_MARGIN_PROPERTY;
+        return SVG12CSSConstants.CSS_MARGIN_PROPERTY;
     }
     
     /**

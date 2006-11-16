@@ -45,8 +45,8 @@ public class GenericText extends AbstractText {
      * Creates a new Text object.
      */
     public GenericText(String value, AbstractDocument owner) {
-	ownerDocument = owner;
-	setNodeValue(value);
+        ownerDocument = owner;
+        setNodeValue(value);
     }
 
     /**
@@ -54,7 +54,7 @@ public class GenericText extends AbstractText {
      * @return {@link #getNodeName()}.
      */
     public String getNodeName() {
-	return "#text";
+        return "#text";
     }
 
     /**
@@ -62,28 +62,28 @@ public class GenericText extends AbstractText {
      * @return {@link org.w3c.dom.Node#TEXT_NODE}
      */
     public short getNodeType() {
-	return TEXT_NODE;
+        return TEXT_NODE;
     }
 
     /**
      * Tests whether this node is readonly.
      */
     public boolean isReadonly() {
-	return readonly;
+        return readonly;
     }
 
     /**
      * Sets this node readonly attribute.
      */
     public void setReadonly(boolean v) {
-	readonly = v;
+        readonly = v;
     }
 
     /**
      * Creates a text node of the current type.
      */
     protected Text createTextNode(String text) {
-	return getOwnerDocument().createTextNode(text);
+        return getOwnerDocument().createTextNode(text);
     }
 
     /**

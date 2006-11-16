@@ -58,7 +58,7 @@ public abstract class SVGFontUtilities implements SVGConstants {
         ret = new LinkedList();
 
         NodeList fontFaceElements = doc.getElementsByTagNameNS
-	    (SVG_NAMESPACE_URI, SVG_FONT_FACE_TAG);
+            (SVG_NAMESPACE_URI, SVG_FONT_FACE_TAG);
 
         SVGFontFaceElementBridge fontFaceBridge;
         fontFaceBridge = (SVGFontFaceElementBridge)ctx.getBridge

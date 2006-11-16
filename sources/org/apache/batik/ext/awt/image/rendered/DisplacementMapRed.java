@@ -96,7 +96,7 @@ public class DisplacementMapRed extends AbstractRed {
                     int loc, int endLoc, int slop, int tile, int endTile) {
             this.tile = new int[len+1];
             this.off  = new int[len+1];
-            
+
             if (tile == endTile) endLoc -= slop;
 
             for (int i=0; i<len; i++) {
@@ -126,13 +126,13 @@ public class DisplacementMapRed extends AbstractRed {
      *               on the Y axis
      * @param rh the rendering hints
      */
-    public DisplacementMapRed(CachableRed image, 
+    public DisplacementMapRed(CachableRed image,
                               CachableRed offsets,
-                              ARGBChannel xChannel, 
-                              ARGBChannel yChannel, 
+                              ARGBChannel xChannel,
+                              ARGBChannel yChannel,
                               float scaleX, float scaleY,
                               RenderingHints rh) {
-        
+
         if(xChannel == null){
             throw new IllegalArgumentException("Must provide xChannel");
         }
@@ -162,7 +162,7 @@ public class DisplacementMapRed extends AbstractRed {
         ColorModel cm = image.getColorModel();
         if (!USE_NN)
             // For Bilinear we need alpha premult.
-            cm = GraphicsUtil.coerceColorModel(cm, true); 
+            cm = GraphicsUtil.coerceColorModel(cm, true);
 
         init(image, rect, cm, image.getSampleModel(),
              rect.x, rect.y, null);
@@ -190,15 +190,15 @@ public class DisplacementMapRed extends AbstractRed {
         TileOffsets yinfo = getYOffsets(tileY);
 
         if (USE_NN)
-            filterNN(mapRas, dest, 
+            filterNN(mapRas, dest,
                      xinfo.tile, xinfo.off,
                      yinfo.tile, yinfo.off);
         else if (image.getColorModel().isAlphaPremultiplied())
-            filterBL(mapRas, dest, 
+            filterBL(mapRas, dest,
                      xinfo.tile, xinfo.off,
                      yinfo.tile, yinfo.off);
         else
-            filterBLPre(mapRas, dest, 
+            filterBLPre(mapRas, dest,
                         xinfo.tile, xinfo.off,
                         yinfo.tile, yinfo.off);
 
@@ -219,10 +219,10 @@ public class DisplacementMapRed extends AbstractRed {
         int width = tw+2*maxOffX;
 
         // The start and end X in image's tile coordinate system...
-        int x0	  = (getTileGridXOffset() + (xTile*tw) - maxOffX
-                     -image.getTileGridXOffset());
-        int x1	  = x0+width-1;
-        
+        int x0      = getTileGridXOffset() + xTile * tw - maxOffX
+                          - image.getTileGridXOffset();
+        int x1      = x0 + width-1;
+
         int tile    = (int)Math.floor(x0/(double)tw);
         int endTile = (int)Math.floor(x1/(double)tw);
         int loc     = x0-(tile*tw);
@@ -230,7 +230,7 @@ public class DisplacementMapRed extends AbstractRed {
 
         // Amount not used from right edge tile
         int slop = ((endTile+1)*tw-1) - x1;
-        
+
         ret = new TileOffsets(width, base, 1,
                               loc, endLoc, slop, tile, endTile);
 
@@ -252,9 +252,9 @@ public class DisplacementMapRed extends AbstractRed {
         int height  = th+2*maxOffY;
 
         // The start and end Y in image's tile coordinate system...
-        int y0	    = (getTileGridYOffset() + (yTile*th) - maxOffY
-                       -image.getTileGridYOffset());
-        int y1	    = y0+height-1;
+        int y0      = getTileGridYOffset() + yTile * th - maxOffY
+                          - image.getTileGridYOffset();
+        int y1      = y0 + height - 1;
 
         int tile    = (int)Math.floor(y0/(double)th);
         int endTile = (int)Math.floor(y1/(double)th);
@@ -263,7 +263,7 @@ public class DisplacementMapRed extends AbstractRed {
 
         // Amount not used from bottom edge tile
         int slop = ((endTile+1)*th-1) - y1;
-        
+
         ret = new TileOffsets(height, 0, stride,
                               loc, endLoc, slop, tile, endTile);
 
@@ -338,10 +338,10 @@ public class DisplacementMapRed extends AbstractRed {
         for (y=yStart; y<yEnd; y++) {
             for (x=xStart; x<xEnd; x++, dp++, ip++) {
                 dPel = offPixels[ip];
-                
+
                 xDisplace = (fpScaleX*((dPel>>xShift)&0xff))+fpAdjX;
                 yDisplace = (fpScaleY*((dPel>>yShift)&0xff))+fpAdjY;
-                
+
                 x0 = x+(xDisplace>>15);
                 y0 = y+(yDisplace>>15);
 
@@ -392,7 +392,7 @@ public class DisplacementMapRed extends AbstractRed {
                         imgPix = ((DataBufferInt)image.getTile(xt1, yt1)
                                   .getDataBuffer()).getBankData()[0];
                         pel11  = imgPix[xOff[x0+1]+yOff[y0+1]];
-                        
+
                         imgPix = ((DataBufferInt)image.getTile(xt1, yt)
                                   .getDataBuffer()).getBankData()[0];
                         pel10  = imgPix[xOff[x0+1]+yOff[y0]];
@@ -525,15 +525,15 @@ public class DisplacementMapRed extends AbstractRed {
         for (y=yStart; y<yEnd; y++) {
             for (x=xStart; x<xEnd; x++, dp++, ip++) {
                 dPel = offPixels[ip];
-                
+
                 xDisplace = (fpScaleX*((dPel>>xShift)&0xff))+fpAdjX;
                 yDisplace = (fpScaleY*((dPel>>yShift)&0xff))+fpAdjY;
-                
+
                 x0 = x+(xDisplace>>15);
                 y0 = y+(yDisplace>>15);
 
                 if ((xt != xTile[x0]) || (yt != yTile[y0])) {
-                    xt = xTile[x0]; 
+                    xt = xTile[x0];
                     yt = yTile[y0];
                     imgPix = ((DataBufferInt)image.getTile(xt, yt)
                               .getDataBuffer()).getBankData()[0];
@@ -579,7 +579,7 @@ public class DisplacementMapRed extends AbstractRed {
                         imgPix = ((DataBufferInt)image.getTile(xt1, yt1)
                                   .getDataBuffer()).getBankData()[0];
                         pel11  = imgPix[xOff[x0+1]+yOff[y0+1]];
-                        
+
                         imgPix = ((DataBufferInt)image.getTile(xt1, yt)
                                   .getDataBuffer()).getBankData()[0];
                         pel10  = imgPix[xOff[x0+1]+yOff[y0]];
@@ -721,7 +721,7 @@ public class DisplacementMapRed extends AbstractRed {
             int x=xStart;
             while (x<xEnd) {
                 dPel = offPixels[ip];
-                
+
                 xDisplace = (fpScaleX*((dPel>>xShift)&0xff))+fpAdjX;
                 yDisplace = (fpScaleY*((dPel>>yShift)&0xff))+fpAdjY;
 

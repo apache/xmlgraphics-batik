@@ -39,13 +39,13 @@ public class FontStyleManager extends IdentifierManager {
      */
     protected final static StringMap values = new StringMap();
     static {
-	values.put(CSSConstants.CSS_ALL_VALUE,
+        values.put(CSSConstants.CSS_ALL_VALUE,
                    ValueConstants.ALL_VALUE);
-	values.put(CSSConstants.CSS_ITALIC_VALUE,
+        values.put(CSSConstants.CSS_ITALIC_VALUE,
                    ValueConstants.ITALIC_VALUE);
-	values.put(CSSConstants.CSS_NORMAL_VALUE,
+        values.put(CSSConstants.CSS_NORMAL_VALUE,
                    ValueConstants.NORMAL_VALUE);
-	values.put(CSSConstants.CSS_OBLIQUE_VALUE,
+        values.put(CSSConstants.CSS_OBLIQUE_VALUE,
                    ValueConstants.OBLIQUE_VALUE);
     }
 
@@ -54,7 +54,7 @@ public class FontStyleManager extends IdentifierManager {
      * org.apache.batik.css.engine.value.ValueManager#isInheritedProperty()}.
      */
     public boolean isInheritedProperty() {
-	return true;
+        return true;
     }
 
     /**
@@ -83,7 +83,7 @@ public class FontStyleManager extends IdentifierManager {
      * org.apache.batik.css.engine.value.ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return CSSConstants.CSS_FONT_STYLE_PROPERTY;
+        return CSSConstants.CSS_FONT_STYLE_PROPERTY;
     }
     
     /**

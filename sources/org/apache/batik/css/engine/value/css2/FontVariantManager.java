@@ -39,9 +39,9 @@ public class FontVariantManager extends IdentifierManager {
      */
     protected final static StringMap values = new StringMap();
     static {
-	values.put(CSSConstants.CSS_NORMAL_VALUE,
+        values.put(CSSConstants.CSS_NORMAL_VALUE,
                    ValueConstants.NORMAL_VALUE);
-	values.put(CSSConstants.CSS_SMALL_CAPS_VALUE,
+        values.put(CSSConstants.CSS_SMALL_CAPS_VALUE,
                    ValueConstants.SMALL_CAPS_VALUE);
     }
 
@@ -50,7 +50,7 @@ public class FontVariantManager extends IdentifierManager {
      * org.apache.batik.css.engine.value.ValueManager#isInheritedProperty()}.
      */
     public boolean isInheritedProperty() {
-	return true;
+        return true;
     }
 
     /**
@@ -79,7 +79,7 @@ public class FontVariantManager extends IdentifierManager {
      * org.apache.batik.css.engine.value.ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return CSSConstants.CSS_FONT_VARIANT_PROPERTY;
+        return CSSConstants.CSS_FONT_VARIANT_PROPERTY;
     }
     
     /**

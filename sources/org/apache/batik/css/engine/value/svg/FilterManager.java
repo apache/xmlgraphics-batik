@@ -42,14 +42,14 @@ public class FilterManager extends AbstractValueManager {
      * Implements {@link ValueManager#isInheritedProperty()}.
      */
     public boolean isInheritedProperty() {
-	return false;
+        return false;
     }
 
     /**
      * Implements {@link ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return CSSConstants.CSS_FILTER_PROPERTY;
+        return CSSConstants.CSS_FILTER_PROPERTY;
     }
     
     /**
@@ -85,9 +85,9 @@ public class FilterManager extends AbstractValueManager {
      */
     public Value createValue(LexicalUnit lu, CSSEngine engine)
         throws DOMException {
-	switch (lu.getLexicalUnitType()) {
-	case LexicalUnit.SAC_INHERIT:
-	    return SVGValueConstants.INHERIT_VALUE;
+        switch (lu.getLexicalUnitType()) {
+        case LexicalUnit.SAC_INHERIT:
+            return SVGValueConstants.INHERIT_VALUE;
 
         case LexicalUnit.SAC_URI:
             return new URIValue(lu.getStringValue(),
@@ -95,10 +95,10 @@ public class FilterManager extends AbstractValueManager {
                                            lu.getStringValue()));
 
         case LexicalUnit.SAC_IDENT:
-	    if (lu.getStringValue().equalsIgnoreCase
+            if (lu.getStringValue().equalsIgnoreCase
                 (CSSConstants.CSS_NONE_VALUE)) {
-		return SVGValueConstants.NONE_VALUE;
-	    }
+                return SVGValueConstants.NONE_VALUE;
+            }
             throw createInvalidIdentifierDOMException(lu.getStringValue());
         }
         throw createInvalidLexicalUnitDOMException(lu.getLexicalUnitType());
@@ -110,16 +110,16 @@ public class FilterManager extends AbstractValueManager {
      */
     public Value createStringValue(short type, String value, CSSEngine engine)
         throws DOMException {
-	if (type == CSSPrimitiveValue.CSS_IDENT) {
+        if (type == CSSPrimitiveValue.CSS_IDENT) {
             if (value.equalsIgnoreCase(CSSConstants.CSS_NONE_VALUE)) {
                 return SVGValueConstants.NONE_VALUE;
             }
             throw createInvalidIdentifierDOMException(value);
-	}
-	if (type == CSSPrimitiveValue.CSS_URI) {
-	    return new URIValue(value, 
+        }
+        if (type == CSSPrimitiveValue.CSS_URI) {
+            return new URIValue(value, 
                                 resolveURI(engine.getCSSBaseURI(), value));
-	}
+        }
         throw createInvalidStringTypeDOMException(type);
     }
 }

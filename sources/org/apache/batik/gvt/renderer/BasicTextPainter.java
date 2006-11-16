@@ -42,16 +42,16 @@ import org.apache.batik.gvt.text.TextLayoutFactory;
 public abstract class BasicTextPainter implements TextPainter {
 
     private static TextLayoutFactory textLayoutFactory =
-	new ConcreteTextLayoutFactory();
+        new ConcreteTextLayoutFactory();
 
     /**
      * The font render context to use.
      */
     protected FontRenderContext fontRenderContext =
-	new FontRenderContext(new AffineTransform(), true, true);
+        new FontRenderContext(new AffineTransform(), true, true);
 
     protected FontRenderContext aaOffFontRenderContext =
-	new FontRenderContext(new AffineTransform(), false, true);
+        new FontRenderContext(new AffineTransform(), false, true);
 
     protected TextLayoutFactory getTextLayoutFactory() {
         return textLayoutFactory;
@@ -74,11 +74,11 @@ public abstract class BasicTextPainter implements TextPainter {
      * selectAt(); [selectTo(),...], selectTo(); getSelection().
      */
     public Mark selectTo(double x, double y, Mark beginMark) {
-	if (beginMark == null) {
-	    return null;
-	} else {
-	    return hitTest(x, y, beginMark.getTextNode());
-	}
+        if (beginMark == null) {
+            return null;
+        } else {
+            return hitTest(x, y, beginMark.getTextNode());
+        }
     }
 
 
@@ -104,13 +104,13 @@ public abstract class BasicTextPainter implements TextPainter {
      * This TextPainter's implementation of the Mark interface.
      */
     protected static class BasicMark implements Mark {
-	
+        
         private TextNode       node;
         private TextHit        hit;
 
-	/**
-	 * Constructs a new Mark with the specified parameters.
-	 */
+        /**
+         * Constructs a new Mark with the specified parameters.
+         */
         protected BasicMark(TextNode node,
                             TextHit hit) {
             this.hit    = hit;

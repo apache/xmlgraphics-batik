@@ -49,21 +49,21 @@ Linking and transform test
 
 <g transform="translate(20 70)">
 
-	<a xlink:href="#svgView(transform(translate(0,-50))">
-	<use xlink:href="#arrow" transform="translate(205 120)"/>
-	</a>
+  <a xlink:href="#svgView(transform(translate(0,-50))">
+  <use xlink:href="#arrow" transform="translate(205 120)"/>
+  </a>
 
-	<a xlink:href="#svgView(transform(translate(50,0))">
-	<use xlink:href="#arrow" transform="translate(255 180)rotate(90)"/>
-	</a>
+  <a xlink:href="#svgView(transform(translate(50,0))">
+  <use xlink:href="#arrow" transform="translate(255 180)rotate(90)"/>
+  </a>
 
-	<a xlink:href="#svgView(transform(translate(-50,0))">
-	<use xlink:href="#arrow" transform="translate(155 180)rotate(-90)"/>
-	</a>
+  <a xlink:href="#svgView(transform(translate(-50,0))">
+  <use xlink:href="#arrow" transform="translate(155 180)rotate(-90)"/>
+  </a>
 
-	<a xlink:href="#svgView(transform(translate(0,50))">
-	<use xlink:href="#arrow" transform="translate(205 240)rotate(180)"/>
-	</a>
+  <a xlink:href="#svgView(transform(translate(0,50))">
+  <use xlink:href="#arrow" transform="translate(205 240)rotate(180)"/>
+  </a>
 
 </g>
 

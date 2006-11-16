@@ -30,7 +30,7 @@ import org.apache.batik.util.HaltingThread;
 
 public class TileGrid implements TileStore {
     private static final boolean DEBUG = false;
-    private static final boolean COUNT = false;		
+    private static final boolean COUNT = false;
 
     private int xSz, ySz;
     private int minTileX, minTileY;
@@ -39,7 +39,7 @@ public class TileGrid implements TileStore {
     private LRUCache      cache = null;
 
     public TileGrid(int minTileX, int minTileY,
-                    int xSz, int ySz, 
+                    int xSz, int ySz,
                     TileGenerator source,
                     LRUCache cache) {
         this.cache    = cache;
@@ -70,7 +70,7 @@ public class TileGrid implements TileStore {
             cache.remove(item);
             return;
         }
-		
+
         if (row != null) {
             item = row[x];
             if (item == null) {
@@ -82,16 +82,16 @@ public class TileGrid implements TileStore {
             item = new TileLRUMember();
             row[x] = item;
             rasters[y] = row;
-        } 
+        }
         item.setRaster(ras);
-		
+
         cache.add(item);
 
-        if (DEBUG) System.out.println("Setting: (" + (x+minTileX) + ", " + 
+        if (DEBUG) System.out.println("Setting: (" + (x+minTileX) + ", " +
                                       (y+minTileY) + ")");
     }
 
-    // Returns Raster if the tile is _currently_ in the cache.  
+    // Returns Raster if the tile is _currently_ in the cache.
     // If it is not currently in the cache it returns null.
     public Raster getTileNoCompute(int x, int y) {
         x-=minTileX;
@@ -117,7 +117,7 @@ public class TileGrid implements TileStore {
         if ((x<0) || (x>=xSz)) return null;
         if ((y<0) || (y>=ySz)) return null;
 
-        if (DEBUG) System.out.println("Fetching: (" + (x+minTileX) + ", " + 
+        if (DEBUG) System.out.println("Fetching: (" + (x+minTileX) + ", " +
                                       (y+minTileY) + ")");
         if (COUNT) synchronized (TileGrid.class) { requests++; }
 

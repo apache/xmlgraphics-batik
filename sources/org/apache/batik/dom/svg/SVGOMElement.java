@@ -224,19 +224,19 @@ public abstract class SVGOMElement
      */
     public void setPrefix(String prefix) throws DOMException {
         if (isReadonly()) {
-	    throw createDOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR,
-				     "readonly.node",
-				     new Object[] { new Integer(getNodeType()),
-						    getNodeName() });
+            throw createDOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR,
+                                     "readonly.node",
+                                     new Object[] { new Integer(getNodeType()),
+                                                    getNodeName() });
         }
         if (prefix != null &&
             !prefix.equals("") &&
             !DOMUtilities.isValidName(prefix)) {
-	    throw createDOMException(DOMException.INVALID_CHARACTER_ERR,
-				     "prefix",
-				     new Object[] { new Integer(getNodeType()),
-						    getNodeName(),
-						    prefix });
+            throw createDOMException(DOMException.INVALID_CHARACTER_ERR,
+                                     "prefix",
+                                     new Object[] { new Integer(getNodeType()),
+                                                    getNodeName(),
+                                                    prefix });
         }
         this.prefix = prefix;
     }
@@ -1090,20 +1090,20 @@ public abstract class SVGOMElement
      * Exports this node to the given document.
      */
     protected Node export(Node n, AbstractDocument d) {
-	super.export(n, d);
-	SVGOMElement e = (SVGOMElement)n;
-	e.prefix = prefix;
-	return n;
+        super.export(n, d);
+        SVGOMElement e = (SVGOMElement)n;
+        e.prefix = prefix;
+        return n;
     }
 
     /**
      * Deeply exports this node to the given document.
      */
     protected Node deepExport(Node n, AbstractDocument d) {
-	super.deepExport(n, d);
-	SVGOMElement e = (SVGOMElement)n;
-	e.prefix = prefix;
-	return n;
+        super.deepExport(n, d);
+        SVGOMElement e = (SVGOMElement)n;
+        e.prefix = prefix;
+        return n;
     }
 
     /**
@@ -1111,10 +1111,10 @@ public abstract class SVGOMElement
      * @param n a node of the type of this.
      */
     protected Node copyInto(Node n) {
-	super.copyInto(n);
-	SVGOMElement e = (SVGOMElement)n;
-	e.prefix = prefix;
-	return n;
+        super.copyInto(n);
+        SVGOMElement e = (SVGOMElement)n;
+        e.prefix = prefix;
+        return n;
     }
 
     /**
@@ -1122,10 +1122,10 @@ public abstract class SVGOMElement
      * @param n a node of the type of this.
      */
     protected Node deepCopyInto(Node n) {
-	super.deepCopyInto(n);
-	SVGOMElement e = (SVGOMElement)n;
-	e.prefix = prefix;
-	return n;
+        super.deepCopyInto(n);
+        SVGOMElement e = (SVGOMElement)n;
+        e.prefix = prefix;
+        return n;
     }
 
     /**

@@ -35,7 +35,7 @@ public class DefaultBeginHyphenAttributeCondition
                                                 String namespaceURI,
                                                 boolean specified,
                                                 String value) {
-	super(localName, namespaceURI, specified, value);
+        super(localName, namespaceURI, specified, value);
     }
 
     /**
@@ -43,13 +43,13 @@ public class DefaultBeginHyphenAttributeCondition
      * org.w3c.css.sac.Condition#getConditionType()}.
      */    
     public short getConditionType() {
-	return SAC_BEGIN_HYPHEN_ATTRIBUTE_CONDITION;
+        return SAC_BEGIN_HYPHEN_ATTRIBUTE_CONDITION;
     }
     
     /**
      * Returns a text representation of this object.
      */
     public String toString() {
-	return "[" + getLocalName() + "|=\"" + getValue() + "\"]";
+        return "[" + getLocalName() + "|=\"" + getValue() + "\"]";
     }
 }

@@ -55,15 +55,15 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
 
     static {
         String  temp;
-        try { 
-            temp = System.getProperty (PROPERTY_LINE_SEPARATOR, 
-                                       PROPERTY_LINE_SEPARATOR_DEFAULT); 
-        } catch (SecurityException e) { 
+        try {
+            temp = System.getProperty (PROPERTY_LINE_SEPARATOR,
+                                       PROPERTY_LINE_SEPARATOR_DEFAULT);
+        } catch (SecurityException e) {
             temp = PROPERTY_LINE_SEPARATOR_DEFAULT;
         }
         EOL = temp;
     }
-    
+
     static private String QUOT_EOL = XML_CHAR_QUOT + EOL;
 
     /**
@@ -77,21 +77,21 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
      * {0} SVG public ID
      * {1} SVG system ID
      */
-    static private String CONFIG_SVG_BEGIN = 
+    static private String CONFIG_SVG_BEGIN =
         "SVGFont.config.svg.begin";
 
     /**
      * Defines the SVG start fragment that exercise the generated
      * Font.
      */
-    static private String CONFIG_SVG_TEST_CARD_START = 
+    static private String CONFIG_SVG_TEST_CARD_START =
         "SVGFont.config.svg.test.card.start";
 
     /**
      * Defines the end of the SVG fragment that exercise the generated
      * Font.
      */
-    static private String CONFIG_SVG_TEST_CARD_END = 
+    static private String CONFIG_SVG_TEST_CARD_END =
         "SVGFont.config.svg.test.card.end";
 
     protected static String encodeEntities(String s) {
@@ -204,43 +204,43 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
         short descent = font.getHheaTable().getDescender();
         int baseline = 0; // bit 0 of head.flags will indicate if this is true
 
-	// 	<!ELEMENT font-face (%descTitleMetadata;,font-face-src?,definition-src?) >
-	//           <!ATTLIST font-face 
-	//             %stdAttrs;
-	//             font-family CDATA #IMPLIED
-	//             font-style CDATA #IMPLIED
-	//             font-variant CDATA #IMPLIED
-	//             font-weight CDATA #IMPLIED
-	//             font-stretch CDATA #IMPLIED
-	//             font-size CDATA #IMPLIED
-	//             unicode-range CDATA #IMPLIED
-	//             units-per-em %Number; #IMPLIED
-	//             panose-1 CDATA #IMPLIED
-	//             stemv %Number; #IMPLIED
-	//             stemh %Number; #IMPLIED
-	//             slope %Number; #IMPLIED
-	//             cap-height %Number; #IMPLIED
-	//             x-height %Number; #IMPLIED
-	//             accent-height %Number; #IMPLIED
-	//             ascent %Number; #IMPLIED
-	//             descent %Number; #IMPLIED
-	//             widths CDATA #IMPLIED
-	//             bbox CDATA #IMPLIED
-	//             ideographic %Number; #IMPLIED
-	//             alphabetic %Number; #IMPLIED
-	//             mathematical %Number; #IMPLIED
-	//             hanging %Number; #IMPLIED
-	//             v-ideographic %Number; #IMPLIED
-	//             v-alphabetic %Number; #IMPLIED
-	//             v-mathematical %Number; #IMPLIED
-	//             v-hanging %Number; #IMPLIED
-	//             underline-position %Number; #IMPLIED
-	//             underline-thickness %Number; #IMPLIED
-	//             strikethrough-position %Number; #IMPLIED
-	//             strikethrough-thickness %Number; #IMPLIED
-	//             overline-position %Number; #IMPLIED
-	//             overline-thickness %Number; #IMPLIED >
-	
+        //      <!ELEMENT font-face (%descTitleMetadata;,font-face-src?,definition-src?) >
+        //           <!ATTLIST font-face
+        //             %stdAttrs;
+        //             font-family CDATA #IMPLIED
+        //             font-style CDATA #IMPLIED
+        //             font-variant CDATA #IMPLIED
+        //             font-weight CDATA #IMPLIED
+        //             font-stretch CDATA #IMPLIED
+        //             font-size CDATA #IMPLIED
+        //             unicode-range CDATA #IMPLIED
+        //             units-per-em %Number; #IMPLIED
+        //             panose-1 CDATA #IMPLIED
+        //             stemv %Number; #IMPLIED
+        //             stemh %Number; #IMPLIED
+        //             slope %Number; #IMPLIED
+        //             cap-height %Number; #IMPLIED
+        //             x-height %Number; #IMPLIED
+        //             accent-height %Number; #IMPLIED
+        //             ascent %Number; #IMPLIED
+        //             descent %Number; #IMPLIED
+        //             widths CDATA #IMPLIED
+        //             bbox CDATA #IMPLIED
+        //             ideographic %Number; #IMPLIED
+        //             alphabetic %Number; #IMPLIED
+        //             mathematical %Number; #IMPLIED
+        //             hanging %Number; #IMPLIED
+        //             v-ideographic %Number; #IMPLIED
+        //             v-alphabetic %Number; #IMPLIED
+        //             v-mathematical %Number; #IMPLIED
+        //             v-hanging %Number; #IMPLIED
+        //             underline-position %Number; #IMPLIED
+        //             underline-thickness %Number; #IMPLIED
+        //             strikethrough-position %Number; #IMPLIED
+        //             strikethrough-thickness %Number; #IMPLIED
+        //             overline-position %Number; #IMPLIED
+        //             overline-thickness %Number; #IMPLIED >
+
         sb.append(XML_OPEN_TAG_START).append(SVG_FONT_FACE_TAG).append(EOL)
             .append(XML_TAB).append(SVG_FONT_FAMILY_ATTRIBUTE).append(XML_EQUAL_QUOT).append(fontFamily).append(QUOT_EOL)
             // .append("  font-family=\"").append(fontFamily).append("\"\r\n")
@@ -338,7 +338,7 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
                     Feature init = gsub.getFeatureList().findFeature(ls, FEATURE_TAG_INIT);
                     Feature medi = gsub.getFeatureList().findFeature(ls, FEATURE_TAG_MEDI);
                     Feature fina = gsub.getFeatureList().findFeature(ls, FEATURE_TAG_FINA);
-                    
+
                     initialSubst = (SingleSubst)
                         gsub.getLookupList().getLookup(init, 0).getSubtable(0);
                     medialSubst = (SingleSubst)
@@ -383,7 +383,7 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
                 }
 
             }
-            
+
             // Output kerning pairs from the requested range
             KernTable kern = (KernTable) font.getTable(Table.kern);
             if (kern != null) {
@@ -484,7 +484,7 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
 
         StringBuffer sb = new StringBuffer();
         boolean substituted = false;
-        
+
         // arabic = "initial | medial | terminal | isolated"
         int arabInitGlyphIndex = glyphIndex;
         int arabMediGlyphIndex = glyphIndex;
@@ -498,7 +498,7 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
         if (arabTermSubst != null) {
             arabTermGlyphIndex = arabTermSubst.substitute(glyphIndex);
         }
-        
+
         if (arabInitGlyphIndex != glyphIndex) {
             sb.append(getGlyphAsSVG(
                 font,
@@ -506,7 +506,7 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
                 arabInitGlyphIndex,
                 defaultHorizAdvanceX,
                 // " arabic-form=\"initial\"",
-                (XML_SPACE + SVG_ARABIC_FORM_ATTRIBUTE + XML_EQUAL_QUOT + 
+                (XML_SPACE + SVG_ARABIC_FORM_ATTRIBUTE + XML_EQUAL_QUOT +
                  SVG_INITIAL_VALUE + XML_CHAR_QUOT),
                 code));
             // sb.append("\r\n");
@@ -521,7 +521,7 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
                 arabMediGlyphIndex,
                 defaultHorizAdvanceX,
                 // " arabic-form=\"medial\"",
-                (XML_SPACE + SVG_ARABIC_FORM_ATTRIBUTE + XML_EQUAL_QUOT + 
+                (XML_SPACE + SVG_ARABIC_FORM_ATTRIBUTE + XML_EQUAL_QUOT +
                  SVG_MEDIAL_VALUE + XML_CHAR_QUOT),
                 code));
             // sb.append("\r\n");
@@ -536,7 +536,7 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
                 arabTermGlyphIndex,
                 defaultHorizAdvanceX,
                 // " arabic-form=\"terminal\"",
-                (XML_SPACE + SVG_ARABIC_FORM_ATTRIBUTE + XML_EQUAL_QUOT + 
+                (XML_SPACE + SVG_ARABIC_FORM_ATTRIBUTE + XML_EQUAL_QUOT +
                  SVG_TERMINAL_VALUE + XML_CHAR_QUOT),
                 code));
             // sb.append("\r\n");
@@ -551,7 +551,7 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
                 glyphIndex,
                 defaultHorizAdvanceX,
                 // " arabic-form=\"isolated\"",
-                (XML_SPACE + SVG_ARABIC_FORM_ATTRIBUTE + XML_EQUAL_QUOT + 
+                (XML_SPACE + SVG_ARABIC_FORM_ATTRIBUTE + XML_EQUAL_QUOT +
                  SVG_ISOLATED_VALUE + XML_CHAR_QUOT),
                 code));
         } else {
@@ -626,9 +626,9 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
         // ps.println("<svg width=\"100%\" height=\"100%\">");
         ps.println(Messages.formatMessage(CONFIG_SVG_BEGIN,
                                           new Object[]{SVG_PUBLIC_ID, SVG_SYSTEM_ID}));
-                   
+
     }
-        
+
     protected static void writeSvgDefsBegin(PrintStream ps) {
         // ps.println("<defs>");
         ps.println(XML_OPEN_TAG_START + SVG_DEFS_TAG + XML_OPEN_TAG_END_CHILDREN);

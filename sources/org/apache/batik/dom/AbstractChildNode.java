@@ -48,21 +48,21 @@ public abstract class AbstractChildNode extends AbstractNode {
      * @return {@link #parentNode}
      */
     public Node getParentNode() {
-	return parentNode;
+        return parentNode;
     }
 
     /**
      * Sets the parent node.
      */
     public void setParentNode(Node v) {
-	parentNode = v;
+        parentNode = v;
     }
 
     /**
      * Sets the node immediately preceding this node.
      */
     public void setPreviousSibling(Node v) {
-	previousSibling = v;
+        previousSibling = v;
     }
 
     /**
@@ -70,14 +70,14 @@ public abstract class AbstractChildNode extends AbstractNode {
      * @return {@link #previousSibling}.
      */
     public Node getPreviousSibling() {
-	return previousSibling;
+        return previousSibling;
     }
 
     /**
      * Sets the node immediately following this node.
      */
     public void setNextSibling(Node v) {
-	nextSibling = v;
+        nextSibling = v;
     }
 
     /**
@@ -85,6 +85,6 @@ public abstract class AbstractChildNode extends AbstractNode {
      * @return {@link #nextSibling}.
      */
     public Node getNextSibling() {
-	return nextSibling;
+        return nextSibling;
     }
 }

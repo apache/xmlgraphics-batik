@@ -88,7 +88,7 @@ public class XMLTestReportProcessor
      */
     public static final String ERROR_REPORT_DIRECTORY_UNUSABLE
         = "xml.XMLTestReportProcessor.error.report.directory.unusable";
-								 
+                                                                 
     /**
      * Error message if report resources directory does not exist.
      */

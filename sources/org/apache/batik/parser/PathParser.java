@@ -155,7 +155,7 @@ public class PathParser extends NumberParser {
      * Parses a 'l' command.
      */
     protected void parsel() throws ParseException, IOException {
-	    current = reader.read();
+            current = reader.read();
         skipSpaces();
         _parsel(true);
     }
@@ -185,7 +185,7 @@ public class PathParser extends NumberParser {
      * Parses a 'L' command.
      */
     protected void parseL() throws ParseException, IOException {
-	    current = reader.read();
+            current = reader.read();
         skipSpaces();
         _parseL(true);
     }

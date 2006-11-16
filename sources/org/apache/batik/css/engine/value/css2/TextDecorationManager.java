@@ -44,13 +44,13 @@ public class TextDecorationManager extends AbstractValueManager {
      */
     protected final static StringMap values = new StringMap();
     static {
-	values.put(CSSConstants.CSS_BLINK_VALUE,
+        values.put(CSSConstants.CSS_BLINK_VALUE,
                    ValueConstants.BLINK_VALUE);
-	values.put(CSSConstants.CSS_LINE_THROUGH_VALUE,
+        values.put(CSSConstants.CSS_LINE_THROUGH_VALUE,
                    ValueConstants.LINE_THROUGH_VALUE);
-	values.put(CSSConstants.CSS_OVERLINE_VALUE,
+        values.put(CSSConstants.CSS_OVERLINE_VALUE,
                    ValueConstants.OVERLINE_VALUE);
-	values.put(CSSConstants.CSS_UNDERLINE_VALUE,
+        values.put(CSSConstants.CSS_UNDERLINE_VALUE,
                    ValueConstants.UNDERLINE_VALUE);
     }
 
@@ -58,7 +58,7 @@ public class TextDecorationManager extends AbstractValueManager {
      * Implements {@link ValueManager#isInheritedProperty()}.
      */
     public boolean isInheritedProperty() {
-	return false;
+        return false;
     }
 
     /**
@@ -86,7 +86,7 @@ public class TextDecorationManager extends AbstractValueManager {
      * Implements {@link ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return CSSConstants.CSS_TEXT_DECORATION_PROPERTY;
+        return CSSConstants.CSS_TEXT_DECORATION_PROPERTY;
     }
     
     /**
@@ -101,15 +101,15 @@ public class TextDecorationManager extends AbstractValueManager {
      */
     public Value createValue(LexicalUnit lu, CSSEngine engine)
         throws DOMException {
-	switch (lu.getLexicalUnitType()) {
-	case LexicalUnit.SAC_INHERIT:
-	    return ValueConstants.INHERIT_VALUE;
+        switch (lu.getLexicalUnitType()) {
+        case LexicalUnit.SAC_INHERIT:
+            return ValueConstants.INHERIT_VALUE;
 
-	case LexicalUnit.SAC_IDENT:
+        case LexicalUnit.SAC_IDENT:
             if (lu.getStringValue().equalsIgnoreCase
                 (CSSConstants.CSS_NONE_VALUE)) {
                 return ValueConstants.NONE_VALUE;
-	    }
+            }
             ListValue lv = new ListValue(' ');
             do {
                 if (lu.getLexicalUnitType() == LexicalUnit.SAC_IDENT) {
@@ -138,14 +138,14 @@ public class TextDecorationManager extends AbstractValueManager {
      * ValueManager#createStringValue(short,String,CSSEngine)}.
      */
     public Value createStringValue(short type, String value, CSSEngine engine)
-	throws DOMException {
-	if (type != CSSPrimitiveValue.CSS_IDENT) {
+        throws DOMException {
+        if (type != CSSPrimitiveValue.CSS_IDENT) {
             throw createInvalidStringTypeDOMException(type);
-	}
+        }
         if (!value.equalsIgnoreCase(CSSConstants.CSS_NONE_VALUE)) {
             throw createInvalidIdentifierDOMException(value);
         }
-	return ValueConstants.NONE_VALUE;
+        return ValueConstants.NONE_VALUE;
     }
 
 }

@@ -37,22 +37,22 @@ public abstract class IdentifierManager extends AbstractValueManager {
      */
     public Value createValue(LexicalUnit lu, CSSEngine engine)
         throws DOMException {
-	switch (lu.getLexicalUnitType()) {
-	case LexicalUnit.SAC_INHERIT:
-	    return ValueConstants.INHERIT_VALUE;
+        switch (lu.getLexicalUnitType()) {
+        case LexicalUnit.SAC_INHERIT:
+            return ValueConstants.INHERIT_VALUE;
 
-	case LexicalUnit.SAC_IDENT:
+        case LexicalUnit.SAC_IDENT:
             String s = lu.getStringValue().toLowerCase().intern();
-	    Object v = getIdentifiers().get(s);
-	    if (v == null) {
-		throw createInvalidIdentifierDOMException(lu.getStringValue());
-	    }
-	    return (Value)v;
+            Object v = getIdentifiers().get(s);
+            if (v == null) {
+                throw createInvalidIdentifierDOMException(lu.getStringValue());
+            }
+            return (Value)v;
 
-	default:
-	    throw createInvalidLexicalUnitDOMException
+        default:
+            throw createInvalidLexicalUnitDOMException
                 (lu.getLexicalUnitType());
-	}
+        }
     }
 
     /**
@@ -60,15 +60,15 @@ public abstract class IdentifierManager extends AbstractValueManager {
      * ValueManager#createStringValue(short,String,CSSEngine)}.
      */
     public Value createStringValue(short type, String value, CSSEngine engine)
-	throws DOMException {
-	if (type != CSSPrimitiveValue.CSS_IDENT) {
+        throws DOMException {
+        if (type != CSSPrimitiveValue.CSS_IDENT) {
             throw createInvalidStringTypeDOMException(type);
-	}
-	Object v = getIdentifiers().get(value.toLowerCase().intern());
-	if (v == null) {
+        }
+        Object v = getIdentifiers().get(value.toLowerCase().intern());
+        if (v == null) {
             throw createInvalidIdentifierDOMException(value);
-	}
-	return (Value)v;
+        }
+        return (Value)v;
     }
 
     /**

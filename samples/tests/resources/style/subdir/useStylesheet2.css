@@ -1,9 +1,9 @@
 
 /* for the useStylesheet.svg part */
 .gradClass2 {
-	fill: url(../../../spec/structure/useStylesheet.svg#grad);
+  fill: url(../../../spec/structure/useStylesheet.svg#grad);
 }
 
 .colorClass2 {
-	fill: crimson;
+  fill: crimson;
 }

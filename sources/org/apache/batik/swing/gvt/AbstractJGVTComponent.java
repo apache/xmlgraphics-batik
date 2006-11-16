@@ -1068,7 +1068,7 @@ public abstract class AbstractJGVTComponent extends JComponent {
                         (e.getComponent(),
                          MouseEvent.MOUSE_CLICKED,
                          e.getWhen(),
-                         e.getModifiers(),		// modifiers
+                         e.getModifiers(),
                          e.getX(),
                          e.getY(),
                          e.getClickCount(),

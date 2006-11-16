@@ -112,15 +112,15 @@ public class SegmentList {
             Segment seg = (Segment)iter.next();
             Segment.SplitResults results = seg.split(y);
             if (results == null) {
-		Rectangle2D bounds = seg.getBounds2D();
+                Rectangle2D bounds = seg.getBounds2D();
                 if (bounds.getY() > y) {
-		    if (below == null) below = new SegmentList();
-		    below.add(seg);
-		} else if (bounds.getY() == y) {
-		    if (bounds.getHeight() != 0) {
-			if (below == null) below = new SegmentList();
-			below.add(seg);
-		    }
+                    if (below == null) below = new SegmentList();
+                    below.add(seg);
+                } else if (bounds.getY() == y) {
+                    if (bounds.getHeight() != 0) {
+                        if (below == null) below = new SegmentList();
+                        below.add(seg);
+                    }
                 } else {
                     if (above == null) above = new SegmentList();
                     above.add(seg);

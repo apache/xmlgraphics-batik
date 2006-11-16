@@ -38,33 +38,33 @@ public class DominantBaselineManager extends IdentifierManager {
      */
     protected final static StringMap values = new StringMap();
     static {
-	values.put(CSSConstants.CSS_AUTO_VALUE,
+        values.put(CSSConstants.CSS_AUTO_VALUE,
                    SVGValueConstants.AUTO_VALUE);
-	values.put(CSSConstants.CSS_ALPHABETIC_VALUE,
+        values.put(CSSConstants.CSS_ALPHABETIC_VALUE,
                    SVGValueConstants.ALPHABETIC_VALUE);
-	values.put(CSSConstants.CSS_CENTRAL_VALUE,
+        values.put(CSSConstants.CSS_CENTRAL_VALUE,
                    SVGValueConstants.CENTRAL_VALUE);
-	values.put(CSSConstants.CSS_HANGING_VALUE,
+        values.put(CSSConstants.CSS_HANGING_VALUE,
                    SVGValueConstants.HANGING_VALUE);
-	values.put(CSSConstants.CSS_IDEOGRAPHIC_VALUE,
+        values.put(CSSConstants.CSS_IDEOGRAPHIC_VALUE,
                    SVGValueConstants.IDEOGRAPHIC_VALUE);
-	values.put(CSSConstants.CSS_MATHEMATICAL_VALUE,
+        values.put(CSSConstants.CSS_MATHEMATICAL_VALUE,
                    SVGValueConstants.MATHEMATICAL_VALUE);
-	values.put(CSSConstants.CSS_MIDDLE_VALUE,
+        values.put(CSSConstants.CSS_MIDDLE_VALUE,
                    SVGValueConstants.MIDDLE_VALUE);
-	values.put(CSSConstants.CSS_NO_CHANGE_VALUE,
+        values.put(CSSConstants.CSS_NO_CHANGE_VALUE,
                    SVGValueConstants.NO_CHANGE_VALUE);
-	values.put(CSSConstants.CSS_RESET_SIZE_VALUE,
+        values.put(CSSConstants.CSS_RESET_SIZE_VALUE,
                    SVGValueConstants.RESET_SIZE_VALUE);
-	values.put(CSSConstants.CSS_TEXT_AFTER_EDGE_VALUE,
+        values.put(CSSConstants.CSS_TEXT_AFTER_EDGE_VALUE,
                    SVGValueConstants.TEXT_AFTER_EDGE_VALUE);
-	values.put(CSSConstants.CSS_TEXT_BEFORE_EDGE_VALUE,
+        values.put(CSSConstants.CSS_TEXT_BEFORE_EDGE_VALUE,
                    SVGValueConstants.TEXT_BEFORE_EDGE_VALUE);
-	values.put(CSSConstants.CSS_TEXT_BOTTOM_VALUE,
+        values.put(CSSConstants.CSS_TEXT_BOTTOM_VALUE,
                    SVGValueConstants.TEXT_BOTTOM_VALUE);
-	values.put(CSSConstants.CSS_TEXT_TOP_VALUE,
+        values.put(CSSConstants.CSS_TEXT_TOP_VALUE,
                    SVGValueConstants.TEXT_TOP_VALUE);
-	values.put(CSSConstants.CSS_USE_SCRIPT_VALUE,
+        values.put(CSSConstants.CSS_USE_SCRIPT_VALUE,
                    SVGValueConstants.USE_SCRIPT_VALUE);
     }
 
@@ -73,7 +73,7 @@ public class DominantBaselineManager extends IdentifierManager {
      * org.apache.batik.css.engine.value.ValueManager#isInheritedProperty()}.
      */
     public boolean isInheritedProperty() {
-	return false;
+        return false;
     }
 
     /**
@@ -102,7 +102,7 @@ public class DominantBaselineManager extends IdentifierManager {
      * org.apache.batik.css.engine.value.ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return CSSConstants.CSS_DOMINANT_BASELINE_PROPERTY;
+        return CSSConstants.CSS_DOMINANT_BASELINE_PROPERTY;
     }
     
     /**

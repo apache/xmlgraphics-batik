@@ -55,7 +55,7 @@ public abstract class AbstractRegistryEntry
             this.mimeTypes.add(mimeTypes[i]);
         this.mimeTypes = Collections.unmodifiableList(this.mimeTypes);
     }
-			    
+                            
     public AbstractRegistryEntry(String name,
                                  float  priority,
                                  String ext,
@@ -71,7 +71,7 @@ public abstract class AbstractRegistryEntry
         this.mimeTypes.add(mimeType);
         this.mimeTypes = Collections.unmodifiableList(mimeTypes);
     }
-			    
+                            
 
     public String getFormatName() {
         return name;

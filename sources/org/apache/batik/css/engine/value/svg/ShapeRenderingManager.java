@@ -38,13 +38,13 @@ public class ShapeRenderingManager extends IdentifierManager {
      */
     protected final static StringMap values = new StringMap();
     static {
-	values.put(CSSConstants.CSS_AUTO_VALUE,
+        values.put(CSSConstants.CSS_AUTO_VALUE,
                    SVGValueConstants.AUTO_VALUE);
-	values.put(CSSConstants.CSS_CRISPEDGES_VALUE,
+        values.put(CSSConstants.CSS_CRISPEDGES_VALUE,
                    SVGValueConstants.CRISPEDGES_VALUE);
-	values.put(CSSConstants.CSS_GEOMETRICPRECISION_VALUE,
+        values.put(CSSConstants.CSS_GEOMETRICPRECISION_VALUE,
                    SVGValueConstants.GEOMETRICPRECISION_VALUE);
-	values.put(CSSConstants.CSS_OPTIMIZESPEED_VALUE,
+        values.put(CSSConstants.CSS_OPTIMIZESPEED_VALUE,
                    SVGValueConstants.OPTIMIZESPEED_VALUE);
     }
 
@@ -53,7 +53,7 @@ public class ShapeRenderingManager extends IdentifierManager {
      * org.apache.batik.css.engine.value.ValueManager#isInheritedProperty()}.
      */
     public boolean isInheritedProperty() {
-	return true;
+        return true;
     }
 
     /**
@@ -82,7 +82,7 @@ public class ShapeRenderingManager extends IdentifierManager {
      * org.apache.batik.css.engine.value.ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return CSSConstants.CSS_SHAPE_RENDERING_PROPERTY;
+        return CSSConstants.CSS_SHAPE_RENDERING_PROPERTY;
     }
     
     /**

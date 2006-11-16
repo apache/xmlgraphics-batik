@@ -90,8 +90,8 @@ function dragScaleOff() {
 
 function dragScaleImgBg(evt) {
   if (actionNode == null) {
-	hideOverlay();
-	return;
+        hideOverlay();
+        return;
   }
   dragScaleImg(evt);
 }
@@ -180,9 +180,9 @@ function hideOverlay() {
          onmousemove="dragScaleImgBg(evt)"/>
 
    <g id="imgGroup" style="filter:url(#merge)" 
-	     onmousedown="dragOn(evt)"
-	     onmouseup="dragScaleOff()"
-	     onmousemove="dragScaleImg(evt)"
+             onmousedown="dragOn(evt)"
+             onmouseup="dragScaleOff()"
+             onmousemove="dragScaleImg(evt)"
              onmouseover="showOverlay(evt)">
 
       <image x="25" y="315" width="360" height="240"
@@ -200,7 +200,7 @@ function hideOverlay() {
       onmouseup="dragScaleOff()"
       onmousemove="dragScaleImg(evt)">
       <path fill="darkgrey" stroke="white"
-	    d="M0,0 h-20 l20,-20 z M-12,-3 l9-9 z M-6,-3 l3-3z"/>
+            d="M0,0 h-20 l20,-20 z M-12,-3 l9-9 z M-6,-3 l3-3z"/>
    </g>
 
 </svg>

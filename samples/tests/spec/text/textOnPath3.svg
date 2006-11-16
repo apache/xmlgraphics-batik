@@ -37,9 +37,9 @@
 
    <g transform="translate(40, 185)" >
       <rect fill="black" stroke="black" x="-10" y="-135" 
-	    width="390" height="20"/>
+            width="390" height="20"/>
       <rect fill="white" stroke="black" x="-10" y="-115" 
-	    width="390" height="120"/>
+            width="390" height="120"/>
       <text x="-10" y="-120" fill="white" font-size="14"
        >Text with one textPath child and x="10"</text>
 
@@ -47,14 +47,14 @@
       <text x="10" y="0" fill="black"><textPath 
           fill="crimson" xlink:href="#path" startOffset="50%"
           text-anchor="middle">Text on a path for text w/ 'x'.</textPath
-	></text>
+      ></text>
   </g>
 
    <g transform="translate(40, 330)" >
       <rect fill="black" stroke="black" x="-10" y="-135" 
-	    width="390" height="20"/>
+            width="390" height="20"/>
       <rect fill="white" stroke="black" x="-10" y="-115" 
-	    width="390" height="120"/>
+            width="390" height="120"/>
       <text x="-10" y="-120" fill="white" font-size="14"
        >Text with one textPath child and x="100"</text>
 
@@ -62,14 +62,14 @@
       <text x="100" y="0" fill="black"><textPath 
           fill="crimson" xlink:href="#path" startOffset="50%"
           text-anchor="middle">Text on a path for text w/ 'x'.</textPath
-	></text>
+      ></text>
   </g>
 
    <g transform="translate(40, 475)" >
       <rect fill="black" stroke="black" x="-10" y="-135" 
-	    width="390" height="20"/>
+            width="390" height="20"/>
       <rect fill="white" stroke="black" x="-10" y="-115" 
-	    width="390" height="120"/>
+            width="390" height="120"/>
       <text x="-10" y="-120" fill="white" font-size="14"
        >Text with one textPath child and x="-100" y="10"</text>
 
@@ -78,6 +78,6 @@
           fill="crimson" xlink:href="#path" startOffset="50%"
           text-anchor="middle">Text on a <tspan x="50"
           >path for text w/ 'x'.</tspan></textPath
-	></text>
+      ></text>
   </g>
 </svg>

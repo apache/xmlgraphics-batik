@@ -47,8 +47,8 @@ public class GenericCDATASection
      * Creates a new CDATASection object.
      */
     public GenericCDATASection(String value, AbstractDocument owner) {
-	ownerDocument = owner;
-	setNodeValue(value);
+        ownerDocument = owner;
+        setNodeValue(value);
     }
 
     /**
@@ -56,7 +56,7 @@ public class GenericCDATASection
      * @return "#cdata-section".
      */
     public String getNodeName() {
-	return "#cdata-section";
+        return "#cdata-section";
     }
 
     /**
@@ -64,28 +64,28 @@ public class GenericCDATASection
      * @return {@link org.w3c.dom.Node#CDATA_SECTION_NODE}
      */
     public short getNodeType() {
-	return CDATA_SECTION_NODE;
+        return CDATA_SECTION_NODE;
     }
 
     /**
      * Tests whether this node is readonly.
      */
     public boolean isReadonly() {
-	return readonly;
+        return readonly;
     }
 
     /**
      * Sets this node readonly attribute.
      */
     public void setReadonly(boolean v) {
-	readonly = v;
+        readonly = v;
     }
 
     /**
      * Creates a text node of the current type.
      */
     protected Text createTextNode(String text) {
-	return getOwnerDocument().createCDATASection(text);
+        return getOwnerDocument().createCDATASection(text);
     }
 
     /**

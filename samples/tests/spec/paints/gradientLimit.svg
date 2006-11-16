@@ -38,9 +38,9 @@
             <desc>The last two offsets of this linearGradient are 
                   very close (0.000001) to one-another</desc>
             <linearGradient id="closeOffsetsLinearGradient" gradientUnits="objectBoundingBox" y1="0" x1="0" x2="0" y2=".1">
-            	<stop  offset="0" style="stop-color:crimson"/>
-            	<stop  offset="0.999999" style="stop-color:gold"/>
-        	    <stop  offset="1" style="stop-color:crimson"/>
+              <stop  offset="0" style="stop-color:crimson"/>
+              <stop  offset="0.999999" style="stop-color:gold"/>
+              <stop  offset="1" style="stop-color:crimson"/>
             </linearGradient>
             <rect fill="url(#closeOffsetsLinearGradient)" x="35" y="80" width="80" height="40" />
             <text class="legend" x="75" y="135">Two close offsets</text>
@@ -54,9 +54,9 @@
                   difference below the single precision floating
                   point</desc>
             <linearGradient id="closeOffsetsLinearGradient2" gradientUnits="objectBoundingBox" y1="0" x1="0" x2="0" y2=".1">
-            	<stop  offset="0" style="stop-color:crimson"/>
-            	<stop  offset="0.99999999" style="stop-color:gold"/>
-        	    <stop  offset="1" style="stop-color:crimson"/>
+              <stop  offset="0" style="stop-color:crimson"/>
+              <stop  offset="0.99999999" style="stop-color:gold"/>
+              <stop  offset="1" style="stop-color:crimson"/>
             </linearGradient>
             <rect fill="url(#closeOffsetsLinearGradient2)" x="35" y="80" width="80" height="40" />
             <text class="legend" x="75" y="135">Two very close offsets</text>
@@ -68,9 +68,9 @@
             <desc>The last two offsets of this radialGradient are 
                   very close (0.000001) to one-another</desc>
             <radialGradient id="closeOffsetsRadialGradient" gradientUnits="objectBoundingBox" r=".1">
-            	<stop  offset="0" style="stop-color:crimson"/>
-            	<stop  offset="0.999999" style="stop-color:gold"/>
-        	    <stop  offset="1" style="stop-color:crimson"/>
+              <stop  offset="0" style="stop-color:crimson"/>
+              <stop  offset="0.999999" style="stop-color:gold"/>
+              <stop  offset="1" style="stop-color:crimson"/>
             </radialGradient>
             <rect fill="url(#closeOffsetsRadialGradient)" x="35" y="80" width="80" height="40" />
             <text class="legend" x="75" y="135">Two close offsets</text>
@@ -82,9 +82,9 @@
             <desc>The last two offsets of this radialGradient are 
                   very close (0.00000001) to one-another</desc>
             <radialGradient id="closeOffsetsRadialGradient2" gradientUnits="objectBoundingBox" r=".1">
-            	<stop  offset="0" style="stop-color:crimson"/>
-            	<stop  offset="0.99999999" style="stop-color:gold"/>
-        	    <stop  offset="1" style="stop-color:crimson"/>
+              <stop  offset="0" style="stop-color:crimson"/>
+              <stop  offset="0.99999999" style="stop-color:gold"/>
+              <stop  offset="1" style="stop-color:crimson"/>
             </radialGradient>
             <rect fill="url(#closeOffsetsRadialGradient2)" x="35" y="80" width="80" height="40" />
             <text class="legend" x="75" y="135">Two very close offsets</text>
@@ -96,8 +96,8 @@
             <desc>The y coordinates on the gradient are close
                   (0.00000001) to one-another</desc>
             <linearGradient id="closeControlsLinearGradient" gradientUnits="objectBoundingBox" x1="0" y1="0" x2="0" y2="0.00000001">
-            	<stop  offset="0" stop-color="gold"/>
-        	    <stop  offset="1" stop-color="crimson"/>
+              <stop  offset="0" stop-color="gold"/>
+              <stop  offset="1" stop-color="crimson"/>
             </linearGradient>
             <rect fill="url(#closeControlsLinearGradient)" x=".35" y=".8" width=".8" height=".4" transform="scale(100)"/>
             <text class="legend" x="75" y="135">Close control points</text>
@@ -109,8 +109,8 @@
             <desc>The radialGradient has a very small
                   (0.00000001) radius</desc>
             <radialGradient id="smallRadiusRadialGradient" gradientUnits="objectBoundingBox" r="0.00000001">
-            	<stop  offset="0" stop-color="gold"/>
-        	    <stop  offset="1" stop-color="crimson"/>
+              <stop  offset="0" stop-color="gold"/>
+              <stop  offset="1" stop-color="crimson"/>
             </radialGradient>
             <rect fill="url(#smallRadiusRadialGradient)" x=".35" y=".8" width=".8" height=".4" transform="scale(100)"/>
             <text class="legend" x="75" y="135">Small Radius</text>

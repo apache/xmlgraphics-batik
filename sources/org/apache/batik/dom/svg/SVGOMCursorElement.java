@@ -105,7 +105,7 @@ public class SVGOMCursorElement
      * org.w3c.dom.svg.SVGExternalResourcesRequired#getExternalResourcesRequired()}.
      */
     public SVGAnimatedBoolean getExternalResourcesRequired() {
-	return SVGExternalResourcesRequiredSupport.
+        return SVGExternalResourcesRequiredSupport.
             getExternalResourcesRequired(this);
     }
 
@@ -116,7 +116,7 @@ public class SVGOMCursorElement
      * org.w3c.dom.svg.SVGTests#getRequiredFeatures()}.
      */
     public SVGStringList getRequiredFeatures() {
-	return SVGTestsSupport.getRequiredFeatures(this);
+        return SVGTestsSupport.getRequiredFeatures(this);
     }
 
     /**
@@ -124,7 +124,7 @@ public class SVGOMCursorElement
      * org.w3c.dom.svg.SVGTests#getRequiredExtensions()}.
      */
     public SVGStringList getRequiredExtensions() {
-	return SVGTestsSupport.getRequiredExtensions(this);
+        return SVGTestsSupport.getRequiredExtensions(this);
     }
 
     /**
@@ -132,7 +132,7 @@ public class SVGOMCursorElement
      * org.w3c.dom.svg.SVGTests#getSystemLanguage()}.
      */
     public SVGStringList getSystemLanguage() {
-	return SVGTestsSupport.getSystemLanguage(this);
+        return SVGTestsSupport.getSystemLanguage(this);
     }
 
     /**
@@ -140,7 +140,7 @@ public class SVGOMCursorElement
      * org.w3c.dom.svg.SVGTests#hasExtension(String)}.
      */
     public boolean hasExtension(String extension) {
-	return SVGTestsSupport.hasExtension(this, extension);
+        return SVGTestsSupport.hasExtension(this, extension);
     }
 
     /**

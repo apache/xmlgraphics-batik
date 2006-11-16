@@ -224,17 +224,17 @@ public abstract class AbstractColorManager extends IdentifierManager {
      * Creates a color component from a lexical unit.
      */
     protected Value createColorComponent(LexicalUnit lu) throws DOMException {
-	switch (lu.getLexicalUnitType()) {
-	case LexicalUnit.SAC_INTEGER:
-	    return new FloatValue(CSSPrimitiveValue.CSS_NUMBER,
+        switch (lu.getLexicalUnitType()) {
+        case LexicalUnit.SAC_INTEGER:
+            return new FloatValue(CSSPrimitiveValue.CSS_NUMBER,
                                   lu.getIntegerValue());
 
-	case LexicalUnit.SAC_REAL:
-	    return new FloatValue(CSSPrimitiveValue.CSS_NUMBER,
+        case LexicalUnit.SAC_REAL:
+            return new FloatValue(CSSPrimitiveValue.CSS_NUMBER,
                                   lu.getFloatValue());
 
-	case LexicalUnit.SAC_PERCENTAGE:
-	    return new FloatValue(CSSPrimitiveValue.CSS_PERCENTAGE,
+        case LexicalUnit.SAC_PERCENTAGE:
+            return new FloatValue(CSSPrimitiveValue.CSS_PERCENTAGE,
                                   lu.getFloatValue());
         }
         throw createInvalidRGBComponentUnitDOMException

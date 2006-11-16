@@ -262,7 +262,7 @@ public class RasterizerTask extends MatchingTask {
         this.language = language;
     }
 
-	/**
+    /**
      * Sets classname of an XML parser.
      * The attribute is optional.
      *
@@ -347,7 +347,7 @@ public class RasterizerTask extends MatchingTask {
 
         String[] sources;        // Array of input files.
 
-		// Store default XML parser information and set user class.
+        // Store default XML parser information and set user class.
         String defaultParser = XMLResourceDescriptor.getXMLParserClassName();
         // Throws BuildException.
         XMLResourceDescriptor.setXMLParserClassName(getParserClassName(readerClassName));
@@ -541,7 +541,7 @@ public class RasterizerTask extends MatchingTask {
      *
      * @return Result image type as an object or <code>null</code> if the parameter doesn't have corresponding object.
      */
-	protected DestinationType getResultType(String type) {
+    protected DestinationType getResultType(String type) {
         if(type.equals(DestinationType.PNG_STR)) {
             return DestinationType.PNG;
         } else if(type.equals(DestinationType.JPEG_STR)) {
@@ -552,7 +552,7 @@ public class RasterizerTask extends MatchingTask {
             return DestinationType.PDF;
         }
         return null;
-	}
+    }
 
     /**
      * Checks if the quality value can be set. Only result image type

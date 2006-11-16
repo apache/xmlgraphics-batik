@@ -48,8 +48,8 @@ public class PixelToMMTest extends AbstractImageTranscoderTest {
      * @param px2mm the pixel to mm conversion factor
      */
     public PixelToMMTest(String inputURI, 
-			 String refImageURI, 
-			 Float px2mm) {
+                         String refImageURI, 
+                         Float px2mm) {
         this.inputURI = inputURI;
         this.refImageURI = refImageURI;
         this.px2mm = px2mm;

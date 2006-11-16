@@ -38,27 +38,27 @@ public class PointerEventsManager extends IdentifierManager {
      */
     protected final static StringMap values = new StringMap();
     static {
-	values.put(CSSConstants.CSS_ALL_VALUE,
+        values.put(CSSConstants.CSS_ALL_VALUE,
                    SVGValueConstants.ALL_VALUE);
-	values.put(CSSConstants.CSS_FILL_VALUE,
+        values.put(CSSConstants.CSS_FILL_VALUE,
                    SVGValueConstants.FILL_VALUE);
-	values.put(CSSConstants.CSS_FILLSTROKE_VALUE,
+        values.put(CSSConstants.CSS_FILLSTROKE_VALUE,
                    SVGValueConstants.FILLSTROKE_VALUE);
-	values.put(CSSConstants.CSS_NONE_VALUE,
+        values.put(CSSConstants.CSS_NONE_VALUE,
                    SVGValueConstants.NONE_VALUE);
-	values.put(CSSConstants.CSS_PAINTED_VALUE,
+        values.put(CSSConstants.CSS_PAINTED_VALUE,
                    SVGValueConstants.PAINTED_VALUE);
-	values.put(CSSConstants.CSS_STROKE_VALUE,
+        values.put(CSSConstants.CSS_STROKE_VALUE,
                    SVGValueConstants.STROKE_VALUE);
-	values.put(CSSConstants.CSS_VISIBLE_VALUE,
+        values.put(CSSConstants.CSS_VISIBLE_VALUE,
                    SVGValueConstants.VISIBLE_VALUE);
-	values.put(CSSConstants.CSS_VISIBLEFILL_VALUE,
+        values.put(CSSConstants.CSS_VISIBLEFILL_VALUE,
                    SVGValueConstants.VISIBLEFILL_VALUE);
-	values.put(CSSConstants.CSS_VISIBLEFILLSTROKE_VALUE,
+        values.put(CSSConstants.CSS_VISIBLEFILLSTROKE_VALUE,
                    SVGValueConstants.VISIBLEFILLSTROKE_VALUE);
-	values.put(CSSConstants.CSS_VISIBLEPAINTED_VALUE,
+        values.put(CSSConstants.CSS_VISIBLEPAINTED_VALUE,
                    SVGValueConstants.VISIBLEPAINTED_VALUE);
-	values.put(CSSConstants.CSS_VISIBLESTROKE_VALUE,
+        values.put(CSSConstants.CSS_VISIBLESTROKE_VALUE,
                    SVGValueConstants.VISIBLESTROKE_VALUE);
     }
 
@@ -67,7 +67,7 @@ public class PointerEventsManager extends IdentifierManager {
      * org.apache.batik.css.engine.value.ValueManager#isInheritedProperty()}.
      */
     public boolean isInheritedProperty() {
-	return true;
+        return true;
     }
 
     /**
@@ -96,7 +96,7 @@ public class PointerEventsManager extends IdentifierManager {
      * org.apache.batik.css.engine.value.ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return CSSConstants.CSS_POINTER_EVENTS_PROPERTY;
+        return CSSConstants.CSS_POINTER_EVENTS_PROPERTY;
     }
     
     /**

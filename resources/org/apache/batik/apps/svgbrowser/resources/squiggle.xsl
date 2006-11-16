@@ -30,10 +30,10 @@
                               xmlns:xalan="http://xml.apache.org/xalan" 
                               exclude-result-prefixes="xalan">
 
-        <xsl:param name="version" >currentVersion</xsl:param>
-        <xsl:param name="revisionType" >beta</xsl:param>
-        <xsl:param name="revisionNumber" >3</xsl:param>
-	<xsl:output method="xml" indent="yes" media-type="image/svg"/> 
+    <xsl:param name="version" >currentVersion</xsl:param>
+    <xsl:param name="revisionType" >beta</xsl:param>
+    <xsl:param name="revisionNumber" >3</xsl:param>
+    <xsl:output method="xml" indent="yes" media-type="image/svg"/> 
 
     <xsl:template match="/" >
 

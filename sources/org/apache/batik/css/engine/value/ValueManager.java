@@ -80,7 +80,7 @@ public interface ValueManager {
      * @param floatValue  The new float value. 
      */
     Value createFloatValue(short unitType, float floatValue)
-	throws DOMException;
+        throws DOMException;
 
     /**
      * Creates and returns a new string value.

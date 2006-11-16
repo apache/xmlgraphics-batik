@@ -38,27 +38,27 @@ public class AlignmentBaselineManager extends IdentifierManager {
      */
     protected final static StringMap values = new StringMap();
     static {
-	values.put(CSSConstants.CSS_AFTER_EDGE_VALUE,
+        values.put(CSSConstants.CSS_AFTER_EDGE_VALUE,
                    SVGValueConstants.AFTER_EDGE_VALUE);
-	values.put(CSSConstants.CSS_ALPHABETIC_VALUE,
+        values.put(CSSConstants.CSS_ALPHABETIC_VALUE,
                    SVGValueConstants.ALPHABETIC_VALUE);
-	values.put(CSSConstants.CSS_AUTO_VALUE,
+        values.put(CSSConstants.CSS_AUTO_VALUE,
                    SVGValueConstants.AUTO_VALUE);
-	values.put(CSSConstants.CSS_BASELINE_VALUE,
+        values.put(CSSConstants.CSS_BASELINE_VALUE,
                    SVGValueConstants.BASELINE_VALUE);
-	values.put(CSSConstants.CSS_BEFORE_EDGE_VALUE,
+        values.put(CSSConstants.CSS_BEFORE_EDGE_VALUE,
                    SVGValueConstants.BEFORE_EDGE_VALUE);
-	values.put(CSSConstants.CSS_HANGING_VALUE,
+        values.put(CSSConstants.CSS_HANGING_VALUE,
                    SVGValueConstants.HANGING_VALUE);
-	values.put(CSSConstants.CSS_IDEOGRAPHIC_VALUE,
+        values.put(CSSConstants.CSS_IDEOGRAPHIC_VALUE,
                    SVGValueConstants.IDEOGRAPHIC_VALUE);
-	values.put(CSSConstants.CSS_MATHEMATICAL_VALUE,
+        values.put(CSSConstants.CSS_MATHEMATICAL_VALUE,
                    SVGValueConstants.MATHEMATICAL_VALUE);
-	values.put(CSSConstants.CSS_MIDDLE_VALUE,
+        values.put(CSSConstants.CSS_MIDDLE_VALUE,
                    SVGValueConstants.MIDDLE_VALUE);
-	values.put(CSSConstants.CSS_TEXT_AFTER_EDGE_VALUE,
+        values.put(CSSConstants.CSS_TEXT_AFTER_EDGE_VALUE,
                    SVGValueConstants.TEXT_AFTER_EDGE_VALUE);
-	values.put(CSSConstants.CSS_TEXT_BEFORE_EDGE_VALUE,
+        values.put(CSSConstants.CSS_TEXT_BEFORE_EDGE_VALUE,
                    SVGValueConstants.TEXT_BEFORE_EDGE_VALUE);
     }
 
@@ -67,7 +67,7 @@ public class AlignmentBaselineManager extends IdentifierManager {
      * org.apache.batik.css.engine.value.ValueManager#isInheritedProperty()}.
      */
     public boolean isInheritedProperty() {
-	return false;
+        return false;
     }
 
     /**
@@ -96,7 +96,7 @@ public class AlignmentBaselineManager extends IdentifierManager {
      * org.apache.batik.css.engine.value.ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return CSSConstants.CSS_ALIGNMENT_BASELINE_PROPERTY;
+        return CSSConstants.CSS_ALIGNMENT_BASELINE_PROPERTY;
     }
     
     /**
