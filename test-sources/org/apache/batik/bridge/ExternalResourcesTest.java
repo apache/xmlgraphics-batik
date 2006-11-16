@@ -38,7 +38,7 @@ import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.XMLResourceDescriptor;
 
 /**
- * This test validates that SecurityExceptions are generated when 
+ * This test validates that SecurityExceptions are generated when
  * the user is trying the access external resources and the UserAgent
  * disallows that.
  *
@@ -49,11 +49,11 @@ import org.apache.batik.util.XMLResourceDescriptor;
  * and a set of unsecure elements of all kinds, such as &lt;image&gt;
  * &lt;use&gt; or &lt;feImage&gt;. All these elements are defined
  * in a defs section. The test tries to load the document and validates
- * that a SecurityException is thrown (because of the unsecure 
+ * that a SecurityException is thrown (because of the unsecure
  * stylesheet). Then, the test iterates over the various unsecure
  * elements, inserting them into the document outside the defs
  * section, which should result in a SecurityException in each case.
- * 
+ *
  * There is a property (secure) to have the test work the opposite
  * way and check that no SecurityException is thrown if access
  * to external resources is allowed.
@@ -62,7 +62,7 @@ import org.apache.batik.util.XMLResourceDescriptor;
  * @version $Id$
  */
 
-public class ExternalResourcesTest extends AbstractTest 
+public class ExternalResourcesTest extends AbstractTest
     implements ErrorConstants {
     /**
      * Error when the input file cannot be loaded into a
@@ -94,7 +94,7 @@ public class ExternalResourcesTest extends AbstractTest
         = "ExternalResourcesTest.error.thrown.security.exceptions";
 
     /**
-     * Error when the insertion point cannot be found in the 
+     * Error when the insertion point cannot be found in the
      * test document
      * {0} = insertion point id
      */
@@ -117,7 +117,7 @@ public class ExternalResourcesTest extends AbstractTest
     /**
      * Entry describing the error
      */
-    public static final String ENTRY_KEY_ERROR_DESCRIPTION 
+    public static final String ENTRY_KEY_ERROR_DESCRIPTION
         = "ExternalResourcesTest.entry.key.error.description";
 
     public static final String ENTRY_KEY_INSERTION_POINT_ID
@@ -135,7 +135,7 @@ public class ExternalResourcesTest extends AbstractTest
     /**
      * Pseudo id for the external stylesheet test
      */
-    public static final String EXTERNAL_STYLESHEET_ID 
+    public static final String EXTERNAL_STYLESHEET_ID
         = "external-stylesheet";
 
     /**
@@ -151,7 +151,7 @@ public class ExternalResourcesTest extends AbstractTest
     /**
      * Location of test files in filesystem.
      */
-    public static final String FILE_DIR = 
+    public static final String FILE_DIR =
         "test-resources/org/apache/batik/bridge/";
     /**
      * Controls whether the test works in secure mode or not
@@ -171,7 +171,7 @@ public class ExternalResourcesTest extends AbstractTest
     }
 
     public Boolean getSecure(){
-        return new Boolean(secure);
+        return secure ? Boolean.TRUE : Boolean.FALSE;
     }
 
     public void setSecure(Boolean secure) {
@@ -196,7 +196,7 @@ public class ExternalResourcesTest extends AbstractTest
                 throw new IllegalArgumentException();
             }
         }
-        
+
         // url is not a file. It must be a regular URL...
         try{
             return (new URL(url)).toString();
@@ -207,13 +207,13 @@ public class ExternalResourcesTest extends AbstractTest
 
     /**
      * This test uses a list of ids found in the test document. These ids reference
-     * elements found in a defs section. For each such element, the test will 
+     * elements found in a defs section. For each such element, the test will
      * attempt to insert the target id at a given insertion point. That insertion
      * should cause a SecurityException. If so, the test passes. Otherwise, the test
      * will fail
      */
     public TestReport runImpl() throws Exception{
-        DefaultTestReport report 
+        DefaultTestReport report
             = new DefaultTestReport(this);
 
         //
@@ -244,7 +244,7 @@ public class ExternalResourcesTest extends AbstractTest
         Vector failures = new Vector();
 
         //
-        // Do an initial processing to validate that the external 
+        // Do an initial processing to validate that the external
         // stylesheet causes a SecurityException
         //
         MyUserAgent userAgent = buildUserAgent();
@@ -252,7 +252,7 @@ public class ExternalResourcesTest extends AbstractTest
         BridgeContext ctx = new BridgeContext(userAgent);
         ctx.setDynamic(true);
 
-        // We expect either a SecurityException or a BridgeException 
+        // We expect either a SecurityException or a BridgeException
         // with ERR_URI_UNSECURE.
         Throwable th = null;
         try {
@@ -283,7 +283,7 @@ public class ExternalResourcesTest extends AbstractTest
                 return report;
             }
         }
-        
+
         //
         // Remove the stylesheet from the document
         //
@@ -323,10 +323,10 @@ public class ExternalResourcesTest extends AbstractTest
 
             Document cloneDoc = (Document)doc.cloneNode(true);
             Element insertionPoint = cloneDoc.getElementById(INSERTION_POINT_ID);
-            
+
             if (insertionPoint == null) {
                 report.setErrorCode(ERROR_NO_INSERTION_POINT_IN_DOCUMENT);
-                report.addDescriptionEntry(ENTRY_KEY_INSERTION_POINT_ID, 
+                report.addDescriptionEntry(ENTRY_KEY_INSERTION_POINT_ID,
                                            INSERTION_POINT_ID);
                 report.setPassed(false);
                 return report;
@@ -415,7 +415,7 @@ public class ExternalResourcesTest extends AbstractTest
             return new RelaxedUserAgent();
         }
     }
-    
+
     class MyUserAgentAdapter extends UserAgentAdapter implements MyUserAgent {
         Exception ex = null;
         public void displayError(Exception ex) {
@@ -425,23 +425,23 @@ public class ExternalResourcesTest extends AbstractTest
 
         public Exception getDisplayError() { return ex; }
     }
-    
+
     class SecureUserAgent extends MyUserAgentAdapter {
-        public ExternalResourceSecurity 
+        public ExternalResourceSecurity
             getExternalResourceSecurity(ParsedURL resourcePURL,
                                         ParsedURL docPURL){
             return new NoLoadExternalResourceSecurity();
-            
+
         }
     }
 
     class RelaxedUserAgent extends MyUserAgentAdapter {
-        public ExternalResourceSecurity 
+        public ExternalResourceSecurity
             getExternalResourceSecurity(ParsedURL resourcePURL,
                                         ParsedURL docPURL){
             return new RelaxedExternalResourceSecurity(resourcePURL,
                                                        docPURL);
-            
+
         }
     }
 
