@@ -57,8 +57,8 @@ public class CSSSelectorFactory implements SelectorFactory {
     public ConditionalSelector createConditionalSelector
         (SimpleSelector selector,
          Condition condition) 
-	throws CSSException {
-	return new CSSConditionalSelector(selector, condition);
+        throws CSSException {
+        return new CSSConditionalSelector(selector, condition);
     }
 
     /**
@@ -66,7 +66,7 @@ public class CSSSelectorFactory implements SelectorFactory {
      * org.w3c.css.sac.SelectorFactory#createAnyNodeSelector()}.
      */    
     public SimpleSelector createAnyNodeSelector() throws CSSException {
-	throw new CSSException("Not implemented in CSS2");
+        throw new CSSException("Not implemented in CSS2");
     }
 
     /**
@@ -74,7 +74,7 @@ public class CSSSelectorFactory implements SelectorFactory {
      * org.w3c.css.sac.SelectorFactory#createRootNodeSelector()}.
      */    
     public SimpleSelector createRootNodeSelector() throws CSSException {
-	throw new CSSException("Not implemented in CSS2");
+        throw new CSSException("Not implemented in CSS2");
     }
 
     /**
@@ -82,8 +82,8 @@ public class CSSSelectorFactory implements SelectorFactory {
      * org.w3c.css.sac.SelectorFactory#createNegativeSelector(SimpleSelector)}.
      */    
     public NegativeSelector createNegativeSelector(SimpleSelector selector) 
-	throws CSSException {
-	throw new CSSException("Not implemented in CSS2");
+        throws CSSException {
+        throw new CSSException("Not implemented in CSS2");
     }
 
     /**
@@ -92,8 +92,8 @@ public class CSSSelectorFactory implements SelectorFactory {
      */    
     public ElementSelector createElementSelector(String namespaceURI,
                                                  String tagName)
-	throws CSSException {
-	return new CSSElementSelector(namespaceURI, tagName);
+        throws CSSException {
+        return new CSSElementSelector(namespaceURI, tagName);
     }
 
     /**
@@ -101,8 +101,8 @@ public class CSSSelectorFactory implements SelectorFactory {
      * org.w3c.css.sac.SelectorFactory#createTextNodeSelector(String)}.
      */    
     public CharacterDataSelector createTextNodeSelector(String data)
-	throws CSSException {
-	throw new CSSException("Not implemented in CSS2");
+        throws CSSException {
+        throw new CSSException("Not implemented in CSS2");
     }
 
     /**
@@ -110,8 +110,8 @@ public class CSSSelectorFactory implements SelectorFactory {
      * org.w3c.css.sac.SelectorFactory#createCDataSectionSelector(String)}.
      */    
     public CharacterDataSelector createCDataSectionSelector(String data)
-	throws CSSException {
-	throw new CSSException("Not implemented in CSS2");
+        throws CSSException {
+        throw new CSSException("Not implemented in CSS2");
     }
 
     /**
@@ -119,9 +119,9 @@ public class CSSSelectorFactory implements SelectorFactory {
      * SelectorFactory#createProcessingInstructionSelector(String,String)}.
      */    
     public ProcessingInstructionSelector createProcessingInstructionSelector
-	(String target,
-	 String data) throws CSSException {
-	throw new CSSException("Not implemented in CSS2");
+        (String target,
+         String data) throws CSSException {
+        throw new CSSException("Not implemented in CSS2");
     }
 
     /**
@@ -129,8 +129,8 @@ public class CSSSelectorFactory implements SelectorFactory {
      * org.w3c.css.sac.SelectorFactory#createCommentSelector(String)}.
      */    
     public CharacterDataSelector createCommentSelector(String data)
-	throws CSSException {
-	throw new CSSException("Not implemented in CSS2");
+        throws CSSException {
+        throw new CSSException("Not implemented in CSS2");
     }
 
     /**
@@ -138,9 +138,9 @@ public class CSSSelectorFactory implements SelectorFactory {
      * SelectorFactory#createPseudoElementSelector(String,String)}.
      */    
     public ElementSelector createPseudoElementSelector(String namespaceURI, 
-						       String pseudoName) 
-	throws CSSException {
-	return new CSSPseudoElementSelector(namespaceURI, pseudoName);
+                                                       String pseudoName) 
+        throws CSSException {
+        return new CSSPseudoElementSelector(namespaceURI, pseudoName);
     }
 
     /**
@@ -150,8 +150,8 @@ public class CSSSelectorFactory implements SelectorFactory {
     public DescendantSelector createDescendantSelector
         (Selector parent,
          SimpleSelector descendant)
-	throws CSSException {
-	return new CSSDescendantSelector(parent, descendant);
+        throws CSSException {
+        return new CSSDescendantSelector(parent, descendant);
     }
 
     /**
@@ -159,9 +159,9 @@ public class CSSSelectorFactory implements SelectorFactory {
      * SelectorFactory#createChildSelector(Selector,SimpleSelector)}.
      */    
     public DescendantSelector createChildSelector(Selector parent,
-						  SimpleSelector child)
-	throws CSSException {
-	return new CSSChildSelector(parent, child);
+                                                  SimpleSelector child)
+        throws CSSException {
+        return new CSSChildSelector(parent, child);
     }
 
     /**
@@ -172,8 +172,8 @@ public class CSSSelectorFactory implements SelectorFactory {
         (short          nodeType,
          Selector       child,
          SimpleSelector directAdjacent)
-	throws CSSException {
-	return new CSSDirectAdjacentSelector(nodeType, child,
+        throws CSSException {
+        return new CSSDirectAdjacentSelector(nodeType, child,
                                                directAdjacent);
     }
 }

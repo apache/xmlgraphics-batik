@@ -49,37 +49,37 @@ public class CursorManager extends AbstractValueManager {
      */
     protected final static StringMap values = new StringMap();
     static {
-	values.put(CSSConstants.CSS_AUTO_VALUE,
+        values.put(CSSConstants.CSS_AUTO_VALUE,
                    ValueConstants.AUTO_VALUE);
-	values.put(CSSConstants.CSS_CROSSHAIR_VALUE,
+        values.put(CSSConstants.CSS_CROSSHAIR_VALUE,
                    ValueConstants.CROSSHAIR_VALUE);
-	values.put(CSSConstants.CSS_DEFAULT_VALUE,
+        values.put(CSSConstants.CSS_DEFAULT_VALUE,
                    ValueConstants.DEFAULT_VALUE);
-	values.put(CSSConstants.CSS_E_RESIZE_VALUE,
+        values.put(CSSConstants.CSS_E_RESIZE_VALUE,
                    ValueConstants.E_RESIZE_VALUE);
-	values.put(CSSConstants.CSS_HELP_VALUE,
+        values.put(CSSConstants.CSS_HELP_VALUE,
                    ValueConstants.HELP_VALUE);
-	values.put(CSSConstants.CSS_MOVE_VALUE,
+        values.put(CSSConstants.CSS_MOVE_VALUE,
                    ValueConstants.MOVE_VALUE);
-	values.put(CSSConstants.CSS_N_RESIZE_VALUE,
+        values.put(CSSConstants.CSS_N_RESIZE_VALUE,
                    ValueConstants.N_RESIZE_VALUE);
-	values.put(CSSConstants.CSS_NE_RESIZE_VALUE,
+        values.put(CSSConstants.CSS_NE_RESIZE_VALUE,
                    ValueConstants.NE_RESIZE_VALUE);
-	values.put(CSSConstants.CSS_NW_RESIZE_VALUE,
+        values.put(CSSConstants.CSS_NW_RESIZE_VALUE,
                    ValueConstants.NW_RESIZE_VALUE);
-	values.put(CSSConstants.CSS_POINTER_VALUE,
+        values.put(CSSConstants.CSS_POINTER_VALUE,
                    ValueConstants.POINTER_VALUE);
-	values.put(CSSConstants.CSS_S_RESIZE_VALUE,
+        values.put(CSSConstants.CSS_S_RESIZE_VALUE,
                    ValueConstants.S_RESIZE_VALUE);
-	values.put(CSSConstants.CSS_SE_RESIZE_VALUE,
+        values.put(CSSConstants.CSS_SE_RESIZE_VALUE,
                    ValueConstants.SE_RESIZE_VALUE);
-	values.put(CSSConstants.CSS_SW_RESIZE_VALUE,
+        values.put(CSSConstants.CSS_SW_RESIZE_VALUE,
                    ValueConstants.SW_RESIZE_VALUE);
-	values.put(CSSConstants.CSS_TEXT_VALUE,
+        values.put(CSSConstants.CSS_TEXT_VALUE,
                    ValueConstants.TEXT_VALUE);
-	values.put(CSSConstants.CSS_W_RESIZE_VALUE,
+        values.put(CSSConstants.CSS_W_RESIZE_VALUE,
                    ValueConstants.W_RESIZE_VALUE);
-	values.put(CSSConstants.CSS_WAIT_VALUE,
+        values.put(CSSConstants.CSS_WAIT_VALUE,
                    ValueConstants.WAIT_VALUE);
     }
 
@@ -87,7 +87,7 @@ public class CursorManager extends AbstractValueManager {
      * Implements {@link ValueManager#isInheritedProperty()}.
      */
     public boolean isInheritedProperty() {
-	return true;
+        return true;
     }
 
     /**
@@ -115,7 +115,7 @@ public class CursorManager extends AbstractValueManager {
      * Implements {@link ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return CSSConstants.CSS_CURSOR_PROPERTY;
+        return CSSConstants.CSS_CURSOR_PROPERTY;
     }
     
     /**
@@ -131,9 +131,9 @@ public class CursorManager extends AbstractValueManager {
     public Value createValue(LexicalUnit lu, CSSEngine engine)
         throws DOMException {
         ListValue result = new ListValue();
-	switch (lu.getLexicalUnitType()) {
-	case LexicalUnit.SAC_INHERIT:
-	    return ValueConstants.INHERIT_VALUE;
+        switch (lu.getLexicalUnitType()) {
+        case LexicalUnit.SAC_INHERIT:
+            return ValueConstants.INHERIT_VALUE;
 
         case LexicalUnit.SAC_URI:
             do {
@@ -162,10 +162,10 @@ public class CursorManager extends AbstractValueManager {
 
         case LexicalUnit.SAC_IDENT:
             String s = lu.getStringValue().toLowerCase().intern();
-	    Object v = values.get(s);
-	    if (v == null) {
-		throw createInvalidIdentifierDOMException(lu.getStringValue());
-	    }
+            Object v = values.get(s);
+            if (v == null) {
+                throw createInvalidIdentifierDOMException(lu.getStringValue());
+            }
             result.append((Value)v);
             lu = lu.getNextLexicalUnit();
         }

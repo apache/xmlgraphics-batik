@@ -1,17 +1,17 @@
 
 /* for the defs.svg part */
 .colorClassStylesheet {
-	fill: gold;
+  fill: gold;
 }
 
 .pattClassStylesheet {
-	fill: url(../../svg/defs.svg#patternExtReference);
+  fill: url(../../svg/defs.svg#patternExtReference);
 }
 
 .gradClassStylesheet {
-	fill: url(../../svg/defs.svg#extGrad3);
+  fill: url(../../svg/defs.svg#extGrad3);
 }
 
 .colorOrangeStylesheet {
-	fill: orange;
+  fill: orange;
 }

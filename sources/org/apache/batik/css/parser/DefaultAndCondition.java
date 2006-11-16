@@ -33,7 +33,7 @@ public class DefaultAndCondition extends AbstractCombinatorCondition {
      * Creates a new CombinatorCondition object.
      */
     public DefaultAndCondition(Condition c1, Condition c2) {
-	super(c1, c2);
+        super(c1, c2);
     }
 
     /**
@@ -41,13 +41,13 @@ public class DefaultAndCondition extends AbstractCombinatorCondition {
      * org.w3c.css.sac.Condition#getConditionType()}.
      */    
     public short getConditionType() {
-	return SAC_AND_CONDITION;
+        return SAC_AND_CONDITION;
     }
 
     /**
      * Returns a text representation of this object.
      */
     public String toString() {
-	return "" + getFirstCondition() + getSecondCondition();
+        return "" + getFirstCondition() + getSecondCondition();
     }
 }

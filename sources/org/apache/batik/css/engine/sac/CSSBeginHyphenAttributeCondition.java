@@ -34,10 +34,10 @@ public class CSSBeginHyphenAttributeCondition
      * Creates a new CSSAttributeCondition object.
      */
     public CSSBeginHyphenAttributeCondition(String localName,
-					      String namespaceURI,
-					      boolean specified,
-					      String value) {
-	super(localName, namespaceURI, specified, value);
+                                              String namespaceURI,
+                                              boolean specified,
+                                              String value) {
+        super(localName, namespaceURI, specified, value);
     }
 
     /**
@@ -45,20 +45,20 @@ public class CSSBeginHyphenAttributeCondition
      * org.w3c.css.sac.Condition#getConditionType()}.
      */    
     public short getConditionType() {
-	return SAC_BEGIN_HYPHEN_ATTRIBUTE_CONDITION;
+        return SAC_BEGIN_HYPHEN_ATTRIBUTE_CONDITION;
     }
     
     /**
      * Tests whether this condition matches the given element.
      */
     public boolean match(Element e, String pseudoE) {
-	return e.getAttribute(getLocalName()).startsWith(getValue());
+        return e.getAttribute(getLocalName()).startsWith(getValue());
     }
 
     /**
      * Returns a text representation of this object.
      */
     public String toString() {
-	return "[" + getLocalName() + "|=\"" + getValue() + "\"]";
+        return "[" + getLocalName() + "|=\"" + getValue() + "\"]";
     }
 }

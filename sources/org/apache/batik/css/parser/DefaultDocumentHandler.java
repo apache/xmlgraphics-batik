@@ -77,7 +77,7 @@ public class DefaultDocumentHandler implements DocumentHandler {
      * org.w3c.css.sac.DocumentHandler#namespaceDeclaration(String,String)}.
      */
     public void namespaceDeclaration(String prefix, String uri) 
-	throws CSSException {
+        throws CSSException {
     }
 
     /**
@@ -85,9 +85,9 @@ public class DefaultDocumentHandler implements DocumentHandler {
      * DocumentHandler#importStyle(String,SACMediaList,String)}.
      */
     public void importStyle(String       uri,
-			    SACMediaList media, 
-			    String       defaultNamespaceURI)
-	throws CSSException {
+                            SACMediaList media, 
+                            String       defaultNamespaceURI)
+        throws CSSException {
     }
 
     /**

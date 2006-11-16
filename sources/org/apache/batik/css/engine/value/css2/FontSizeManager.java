@@ -82,7 +82,7 @@ public class FontSizeManager extends LengthManager {
      * Implements {@link ValueManager#isInheritedProperty()}.
      */
     public boolean isInheritedProperty() {
-	return true;
+        return true;
     }
 
     /**
@@ -103,7 +103,7 @@ public class FontSizeManager extends LengthManager {
      * Implements {@link ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return CSSConstants.CSS_FONT_SIZE_PROPERTY;
+        return CSSConstants.CSS_FONT_SIZE_PROPERTY;
     }
     
     /**
@@ -125,11 +125,11 @@ public class FontSizeManager extends LengthManager {
      */
     public Value createValue(LexicalUnit lu, CSSEngine engine)
         throws DOMException {
-	switch (lu.getLexicalUnitType()) {
-	case LexicalUnit.SAC_INHERIT:
-	    return ValueConstants.INHERIT_VALUE;
+        switch (lu.getLexicalUnitType()) {
+        case LexicalUnit.SAC_INHERIT:
+            return ValueConstants.INHERIT_VALUE;
 
-	case LexicalUnit.SAC_IDENT:
+        case LexicalUnit.SAC_IDENT:
             String s = lu.getStringValue().toLowerCase().intern();
             Object v = values.get(s);
             if (v == null) {

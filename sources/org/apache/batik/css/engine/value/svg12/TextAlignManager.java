@@ -40,13 +40,13 @@ public class TextAlignManager extends IdentifierManager {
      */
     protected final static StringMap values = new StringMap();
     static {
-	values.put(SVG12CSSConstants.CSS_START_VALUE,
+        values.put(SVG12CSSConstants.CSS_START_VALUE,
                    SVG12ValueConstants.START_VALUE);
-	values.put(SVG12CSSConstants.CSS_MIDDLE_VALUE,
+        values.put(SVG12CSSConstants.CSS_MIDDLE_VALUE,
                    SVG12ValueConstants.MIDDLE_VALUE);
-	values.put(SVG12CSSConstants.CSS_END_VALUE,
+        values.put(SVG12CSSConstants.CSS_END_VALUE,
                    SVG12ValueConstants.END_VALUE);
-	values.put(SVG12CSSConstants.CSS_FULL_VALUE,
+        values.put(SVG12CSSConstants.CSS_FULL_VALUE,
                    SVG12ValueConstants.FULL_VALUE);
     }
 
@@ -55,7 +55,7 @@ public class TextAlignManager extends IdentifierManager {
      * org.apache.batik.css.engine.value.ValueManager#isInheritedProperty()}.
      */
     public boolean isInheritedProperty() {
-	return true;
+        return true;
     }
 
     /**
@@ -84,7 +84,7 @@ public class TextAlignManager extends IdentifierManager {
      * org.apache.batik.css.engine.value.ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return SVG12CSSConstants.CSS_TEXT_ALIGN_PROPERTY;
+        return SVG12CSSConstants.CSS_TEXT_ALIGN_PROPERTY;
     }
     
     /**

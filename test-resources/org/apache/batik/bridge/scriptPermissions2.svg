@@ -68,7 +68,7 @@ function testTarget(securityTarget) {
                   d="M 100 100 C100 0 400 00 400 100"/>
 
         <g id="textPath">
-	      <text font-size="20" style="text-anchor:start">
+            <text font-size="20" style="text-anchor:start">
                 <textPath xlink:href="#Path1" startOffset="0%">Text <tspan fill="red" dy="-10">on</tspan><tspan dy="10"> a Path</tspan></textPath>
             </text>
         </g>
@@ -87,17 +87,17 @@ function testTarget(securityTarget) {
 <altGlyph xlink:href="#purpleE1">e</altGlyph>fg</text>
         </g>
 
-	<linearGradient id="genericGrad">
-		<stop style="stop-color:crimson" offset="0" />
-		<stop style="stop-color:orange" offset=".5" />
-		<stop style="stop-color:gold" offset="1" />
-	</linearGradient>
+        <linearGradient id="genericGrad">
+            <stop style="stop-color:crimson" offset="0" />
+            <stop style="stop-color:orange" offset=".5" />
+            <stop style="stop-color:gold" offset="1" />
+        </linearGradient>
 
-	<radialGradient id="genericRadialGrad">
-		<stop style="stop-color:crimson" offset="0" />
-		<stop style="stop-color:orange" offset=".5" />
-		<stop style="stop-color:gold" offset="1" />
-	</radialGradient>
+        <radialGradient id="genericRadialGrad">
+            <stop style="stop-color:crimson" offset="0" />
+            <stop style="stop-color:orange" offset=".5" />
+            <stop style="stop-color:gold" offset="1" />
+        </radialGradient>
 
         <g id="linearGradientA">
             <rect x="0" y="0" width="100%" height="100%" fill="url(#genericGrad)" />
@@ -416,7 +416,7 @@ function testTarget(securityTarget) {
                        <use xlink:href="#Batik_Squiggle" width="54" height="57"
                             transform="translate(45,103)" />
                      </g>
-		    </glyph>
+                </glyph>
 
                 <glyph id="a" unicode="a" glyph-name="a" horiz-adv-x="105"> 
                     <path transform="scale(1,-1)translate(-125, -170)"
@@ -473,7 +473,6 @@ function testTarget(securityTarget) {
                   <glyphRef xlink:href="fontGlyphsBoth.svg#d"/>
                   <glyphRef xlink:href="fontGlyphsBoth.svg#e"/>
             </altGlyphDef>
-		
 
            <altGlyphDef id="bcItems">
                   <altGlyphItem>

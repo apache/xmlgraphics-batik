@@ -38,21 +38,21 @@
     computed.</desc>
     <script type="text/ecmascript"><![CDATA[
         var inRegard=false;
-	var time1 = 90;
-	function updateGroup1() {
+        var time1 = 90;
+        function updateGroup1() {
             var elt = document.getElementById("g1");
-	    var fs = Math.cos(time1*2*3.1415926/180)*12+24;
+            var fs = Math.cos(time1*2*3.1415926/180)*12+24;
             elt.setAttribute("font-size",fs);
 
-	    var x = Math.cos(time1*3.1415926/180)*100 + 225;
-	    var y = Math.sin(.5*(time1+90)*3.1415926/180)*150 + 250;
+            var x = Math.cos(time1*3.1415926/180)*100 + 225;
+            var y = Math.sin(.5*(time1+90)*3.1415926/180)*150 + 250;
             elt.setAttribute("transform", "translate("+x+","+y+")");
-	    time1 += 20;
+            time1 += 20;
             if (inRegard && (time1 >= 270))
                regardTestInstance.scriptDone();
             else
                setTimeout('updateGroup1()', 100);
-	}
+        }
        function regardStart() {
           inRegard = true;
        }

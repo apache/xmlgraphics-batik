@@ -82,7 +82,7 @@ public class DOMViewer extends JFrame implements ActionMap {
      * The resource file name
      */
     protected final static String RESOURCE =
-	"org.apache.batik.util.gui.resources.DOMViewerMessages";
+        "org.apache.batik.util.gui.resources.DOMViewerMessages";
 
     /**
      * The resource bundle
@@ -118,13 +118,13 @@ public class DOMViewer extends JFrame implements ActionMap {
      * Creates a new DOMViewer panel.
      */
     public DOMViewer() {
-	super(resources.getString("Frame.title"));
-	setSize(resources.getInteger("Frame.width"),
-		resources.getInteger("Frame.height"));
+        super(resources.getString("Frame.title"));
+        setSize(resources.getInteger("Frame.width"),
+                resources.getInteger("Frame.height"));
 
-	listeners.put("CloseButtonAction", new CloseButtonAction());
-	
-	getContentPane().add(panel);
+        listeners.put("CloseButtonAction", new CloseButtonAction());
+        
+        getContentPane().add(panel);
 
         JPanel p = new JPanel(new BorderLayout());
         
@@ -142,7 +142,7 @@ public class DOMViewer extends JFrame implements ActionMap {
 
         ButtonFactory bf = new ButtonFactory(bundle, this);
         p.add(bf.createJButton("CloseButton"), BorderLayout.EAST);
-	getContentPane().add("South", p);
+        getContentPane().add("South", p);
     }
 
     /**
@@ -159,14 +159,14 @@ public class DOMViewer extends JFrame implements ActionMap {
      * Sets the document to display.
      */
     public void setDocument(Document doc) {
-	panel.setDocument(doc);
+        panel.setDocument(doc);
     }
 
     /**
      * Sets the document to display and its ViewCSS.
      */
     public void setDocument(Document doc, ViewCSS view) {
-	panel.setDocument(doc, view);
+        panel.setDocument(doc, view);
     }
 
     /**
@@ -192,81 +192,81 @@ public class DOMViewer extends JFrame implements ActionMap {
      * The panel that contains the viewer.
      */
     public class Panel extends JPanel {
-	/**
-	 * The DOM document.
-	 */
-	protected Document document;
+        /**
+         * The DOM document.
+         */
+        protected Document document;
 
-	/**
-	 * The ViewCSS object associated with the document.
-	 */
-	protected ViewCSS viewCSS;
+        /**
+         * The ViewCSS object associated with the document.
+         */
+        protected ViewCSS viewCSS;
 
-	/**
-	 * The tree.
-	 */
-	protected JTree tree;
+        /**
+         * The tree.
+         */
+        protected JTree tree;
 
-	/**
-	 * The split pane.
-	 */
-	protected JSplitPane splitPane;
+        /**
+         * The split pane.
+         */
+        protected JSplitPane splitPane;
 
-	/**
-	 * The right panel.
-	 */
-	protected JPanel rightPanel = new JPanel(new BorderLayout());
+        /**
+         * The right panel.
+         */
+        protected JPanel rightPanel = new JPanel(new BorderLayout());
 
-	/**
-	 * The attributes table.
-	 */
-	protected JTable attributesTable = new JTable();
+        /**
+         * The attributes table.
+         */
+        protected JTable attributesTable = new JTable();
 
-	/**
-	 * The properties table.
-	 */
-	protected JTable propertiesTable = new JTable();
+        /**
+         * The properties table.
+         */
+        protected JTable propertiesTable = new JTable();
 
-	/**
-	 * The element panel.
-	 */
-	protected JPanel elementPanel = new JPanel(new GridLayout(2, 1));
-	{
-	    JScrollPane pane = new JScrollPane();
-	    pane.setBorder(BorderFactory.createCompoundBorder
-			   (BorderFactory.createEmptyBorder(2, 0, 2, 2),
-			    BorderFactory.createCompoundBorder
-			    (BorderFactory.createTitledBorder
-			     (BorderFactory.createEmptyBorder(),
-			      resources.getString("AttributesPanel.title")),
-			     BorderFactory.createLoweredBevelBorder())));
-	    pane.getViewport().add(attributesTable);
-			
-	    JScrollPane pane2 = new JScrollPane();
-	    pane2.setBorder(BorderFactory.createCompoundBorder
-			    (BorderFactory.createEmptyBorder(2, 0, 2, 2),
-			     BorderFactory.createCompoundBorder
-			     (BorderFactory.createTitledBorder
-			      (BorderFactory.createEmptyBorder(),
-			       resources.getString("CSSValuesPanel.title")),
-			      BorderFactory.createLoweredBevelBorder())));
-	    pane2.getViewport().add(propertiesTable);
-			
-	    elementPanel.add(pane);
-	    elementPanel.add(pane2);
-	}
+        /**
+         * The element panel.
+         */
+        protected JPanel elementPanel = new JPanel(new GridLayout(2, 1));
+        {
+            JScrollPane pane = new JScrollPane();
+            pane.setBorder(BorderFactory.createCompoundBorder
+                           (BorderFactory.createEmptyBorder(2, 0, 2, 2),
+                            BorderFactory.createCompoundBorder
+                            (BorderFactory.createTitledBorder
+                             (BorderFactory.createEmptyBorder(),
+                              resources.getString("AttributesPanel.title")),
+                             BorderFactory.createLoweredBevelBorder())));
+            pane.getViewport().add(attributesTable);
+                        
+            JScrollPane pane2 = new JScrollPane();
+            pane2.setBorder(BorderFactory.createCompoundBorder
+                            (BorderFactory.createEmptyBorder(2, 0, 2, 2),
+                             BorderFactory.createCompoundBorder
+                             (BorderFactory.createTitledBorder
+                              (BorderFactory.createEmptyBorder(),
+                               resources.getString("CSSValuesPanel.title")),
+                              BorderFactory.createLoweredBevelBorder())));
+            pane2.getViewport().add(propertiesTable);
+                        
+            elementPanel.add(pane);
+            elementPanel.add(pane2);
+        }
 
-	/**
-	 * The CharacterData panel text area.
-	 */
-	protected JTextArea characterData = new JTextArea();
+        /**
+         * The CharacterData panel text area.
+         */
+        protected JTextArea characterData = new JTextArea();
 
-	/**
-	 * The CharacterData node panel.
-	 */
-	protected JPanel characterDataPanel = new JPanel(new BorderLayout());
-	{
-	    characterDataPanel.setBorder
+        /**
+         * The CharacterData node panel.
+         */
+        protected JPanel characterDataPanel = new JPanel(new BorderLayout());
+        {
+            characterDataPanel.setBorder
                 (BorderFactory.createCompoundBorder
                  (BorderFactory.createEmptyBorder(2, 0, 2, 2),
                   BorderFactory.createCompoundBorder
@@ -274,23 +274,23 @@ public class DOMViewer extends JFrame implements ActionMap {
                    (BorderFactory.createEmptyBorder(),
                     resources.getString("CDataPanel.title")),
                    BorderFactory.createLoweredBevelBorder())));
-	    JScrollPane pane = new JScrollPane();
-	    pane.getViewport().add(characterData);
-	    characterDataPanel.add(pane);
-	    characterData.setEditable(false);
-	}
+            JScrollPane pane = new JScrollPane();
+            pane.getViewport().add(characterData);
+            characterDataPanel.add(pane);
+            characterData.setEditable(false);
+        }
 
-	/**
-	 * The documentInfo panel text area.
-	 */
-	protected JTextArea documentInfo = new JTextArea();
+        /**
+         * The documentInfo panel text area.
+         */
+        protected JTextArea documentInfo = new JTextArea();
 
-	/**
-	 * The documentInfo node panel.
-	 */
-	protected JPanel documentInfoPanel = new JPanel(new BorderLayout());
-	{
-	    documentInfoPanel.setBorder
+        /**
+         * The documentInfo node panel.
+         */
+        protected JPanel documentInfoPanel = new JPanel(new BorderLayout());
+        {
+            documentInfoPanel.setBorder
                 (BorderFactory.createCompoundBorder
                  (BorderFactory.createEmptyBorder(2, 0, 2, 2),
                   BorderFactory.createCompoundBorder
@@ -298,78 +298,78 @@ public class DOMViewer extends JFrame implements ActionMap {
                    (BorderFactory.createEmptyBorder(),
                     resources.getString("DocumentInfoPanel.title")),
                    BorderFactory.createLoweredBevelBorder())));
-	    JScrollPane pane = new JScrollPane();
-	    pane.getViewport().add(documentInfo);
-	    documentInfoPanel.add(pane);
-	    documentInfo.setEditable(false);
-	}
+            JScrollPane pane = new JScrollPane();
+            pane.getViewport().add(documentInfo);
+            documentInfoPanel.add(pane);
+            documentInfo.setEditable(false);
+        }
 
-	/**
-	 * Creates a new Panel object.
-	 */
-	public Panel() {
-	    super(new BorderLayout());
-	    setBorder(BorderFactory.createTitledBorder
-		      (BorderFactory.createEmptyBorder(),
-		       resources.getString("DOMViewerPanel.title")));
+        /**
+         * Creates a new Panel object.
+         */
+        public Panel() {
+            super(new BorderLayout());
+            setBorder(BorderFactory.createTitledBorder
+                      (BorderFactory.createEmptyBorder(),
+                       resources.getString("DOMViewerPanel.title")));
 
-	    TreeNode root;
-	    root = new DefaultMutableTreeNode
+            TreeNode root;
+            root = new DefaultMutableTreeNode
                 (resources.getString("EmptyDocument.text"));
-	    tree = new JTree(root);
-	    tree.setCellRenderer(new NodeRenderer());
-	    tree.putClientProperty("JTree.lineStyle", "Angled");
+            tree = new JTree(root);
+            tree.setCellRenderer(new NodeRenderer());
+            tree.putClientProperty("JTree.lineStyle", "Angled");
 
-	    JScrollPane treePane = new JScrollPane();
-	    treePane.setBorder(BorderFactory.createCompoundBorder
-			       (BorderFactory.createEmptyBorder(2, 2, 2, 0),
-				BorderFactory.createCompoundBorder
-				(BorderFactory.createTitledBorder
-				 (BorderFactory.createEmptyBorder(),
-				  resources.getString("DOMViewer.title")),
-				 BorderFactory.createLoweredBevelBorder())));
-	    treePane.getViewport().add(tree);
-	    splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-				       true, // Continuous layout
-				       treePane,
-				       rightPanel);
-	    int loc = resources.getInteger("SplitPane.dividerLocation");
-	    splitPane.setDividerLocation(loc);
-	    add(splitPane);
-	    
-	    tree.addTreeSelectionListener(new DOMTreeSelectionListener());
-	}
+            JScrollPane treePane = new JScrollPane();
+            treePane.setBorder(BorderFactory.createCompoundBorder
+                               (BorderFactory.createEmptyBorder(2, 2, 2, 0),
+                                BorderFactory.createCompoundBorder
+                                (BorderFactory.createTitledBorder
+                                 (BorderFactory.createEmptyBorder(),
+                                  resources.getString("DOMViewer.title")),
+                                 BorderFactory.createLoweredBevelBorder())));
+            treePane.getViewport().add(tree);
+            splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+                                       true, // Continuous layout
+                                       treePane,
+                                       rightPanel);
+            int loc = resources.getInteger("SplitPane.dividerLocation");
+            splitPane.setDividerLocation(loc);
+            add(splitPane);
+            
+            tree.addTreeSelectionListener(new DOMTreeSelectionListener());
+        }
 
-	/**
-	 * Sets the document to display.
-	 */
-	public void setDocument(Document doc) {
-	    setDocument(doc, null);
-	}
+        /**
+         * Sets the document to display.
+         */
+        public void setDocument(Document doc) {
+            setDocument(doc, null);
+        }
 
-	/**
-	 * Sets the document to display and its ViewCSS.
-	 */
-	public void setDocument(Document doc, ViewCSS view) {
-	    document = doc;
-	    viewCSS  = view;
-	    TreeNode root = createTree(doc, showWhitespace);
-	    ((DefaultTreeModel)tree.getModel()).setRoot(root);
-	    if (rightPanel.getComponentCount() != 0) {
-		rightPanel.remove(0);
-		splitPane.revalidate();
-		splitPane.repaint();
-	    }
-	}
+        /**
+         * Sets the document to display and its ViewCSS.
+         */
+        public void setDocument(Document doc, ViewCSS view) {
+            document = doc;
+            viewCSS  = view;
+            TreeNode root = createTree(doc, showWhitespace);
+            ((DefaultTreeModel)tree.getModel()).setRoot(root);
+            if (rightPanel.getComponentCount() != 0) {
+                rightPanel.remove(0);
+                splitPane.revalidate();
+                splitPane.repaint();
+            }
+        }
 
-	/**
-	 * Creates a swing tree from a DOM document.
-	 */
-	protected MutableTreeNode createTree(Node node, 
+        /**
+         * Creates a swing tree from a DOM document.
+         */
+        protected MutableTreeNode createTree(Node node, 
                                              boolean showWhitespace) {
-	    DefaultMutableTreeNode result;
-	    result = new DefaultMutableTreeNode(new NodeInfo(node));
-	    for (Node n = node.getFirstChild();
+            DefaultMutableTreeNode result;
+            result = new DefaultMutableTreeNode(new NodeInfo(node));
+            for (Node n = node.getFirstChild();
                  n != null;
                  n = n.getNextSibling()) {
                 if (!showWhitespace && (n instanceof org.w3c.dom.Text)) {
@@ -378,7 +378,7 @@ public class DOMViewer extends JFrame implements ActionMap {
                         continue;
                 }
                 result.add(createTree(n, showWhitespace));
-	    }
+            }
             if (node instanceof NodeXBL) {
                 Element shadowTree = ((NodeXBL) node).getXblShadowTree();
                 if (shadowTree != null) {
@@ -409,53 +409,53 @@ public class DOMViewer extends JFrame implements ActionMap {
                     }
                 }
             }
-	    return result;
-	}
+            return result;
+        }
 
-	/**
-	 * To listen to the tree selection.
-	 */
-	protected class DOMTreeSelectionListener
+        /**
+         * To listen to the tree selection.
+         */
+        protected class DOMTreeSelectionListener
             implements TreeSelectionListener {
-	    /**
-	     * Called when the selection changes.
-	     */
-	    public void valueChanged(TreeSelectionEvent ev) {
-		DefaultMutableTreeNode mtn;
-		mtn =
+            /**
+             * Called when the selection changes.
+             */
+            public void valueChanged(TreeSelectionEvent ev) {
+                DefaultMutableTreeNode mtn;
+                mtn =
                     (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
-		if (mtn == null) {
-		    return;
-		}
+                if (mtn == null) {
+                    return;
+                }
 
-		if (rightPanel.getComponentCount() != 0) {
-		    rightPanel.remove(0);
-		}
+                if (rightPanel.getComponentCount() != 0) {
+                    rightPanel.remove(0);
+                }
 
-		Object nodeInfo = mtn.getUserObject();
-		if (nodeInfo instanceof NodeInfo) {
-		    Node node = ((NodeInfo)nodeInfo).getNode();
-		    switch (node.getNodeType()) {
-		    case Node.DOCUMENT_NODE:
-			documentInfo.setText
+                Object nodeInfo = mtn.getUserObject();
+                if (nodeInfo instanceof NodeInfo) {
+                    Node node = ((NodeInfo)nodeInfo).getNode();
+                    switch (node.getNodeType()) {
+                    case Node.DOCUMENT_NODE:
+                        documentInfo.setText
                             (createDocumentText((Document)node));
-			rightPanel.add(documentInfoPanel);
+                        rightPanel.add(documentInfoPanel);
                         break;
-		    case Node.ELEMENT_NODE:
-			attributesTable.setModel(new NodeAttributesModel(node));
-			propertiesTable.setModel(new NodeCSSValuesModel(node));
-			rightPanel.add(elementPanel);
-			break;
-		    case Node.COMMENT_NODE:
-		    case Node.TEXT_NODE:
-		    case Node.CDATA_SECTION_NODE:
-			characterData.setText(node.getNodeValue());
-			rightPanel.add(characterDataPanel);
-		    }
-		}
-		splitPane.revalidate();
-		splitPane.repaint();
-	    }
+                    case Node.ELEMENT_NODE:
+                        attributesTable.setModel(new NodeAttributesModel(node));
+                        propertiesTable.setModel(new NodeCSSValuesModel(node));
+                        rightPanel.add(elementPanel);
+                        break;
+                    case Node.COMMENT_NODE:
+                    case Node.TEXT_NODE:
+                    case Node.CDATA_SECTION_NODE:
+                        characterData.setText(node.getNodeValue());
+                        rightPanel.add(characterDataPanel);
+                    }
+                }
+                splitPane.revalidate();
+                splitPane.repaint();
+            }
 
             protected String createDocumentText(Document doc) {
                 StringBuffer sb = new StringBuffer();
@@ -473,178 +473,178 @@ public class DOMViewer extends JFrame implements ActionMap {
                 }
                 return result;
             }
-	}
+        }
 
-	/**
-	 * To render the tree nodes.
-	 */
-	protected class NodeRenderer extends DefaultTreeCellRenderer {
-	    /**
-	     * The icon used to represent elements.
-	     */
-	    ImageIcon elementIcon;
+        /**
+         * To render the tree nodes.
+         */
+        protected class NodeRenderer extends DefaultTreeCellRenderer {
+            /**
+             * The icon used to represent elements.
+             */
+            ImageIcon elementIcon;
 
-	    /**
-	     * The icon used to represent comments.
-	     */
-	    ImageIcon commentIcon;
+            /**
+             * The icon used to represent comments.
+             */
+            ImageIcon commentIcon;
 
-	    /**
-	     * The icon used to represent processing instructions.
-	     */
-	    ImageIcon piIcon;
+            /**
+             * The icon used to represent processing instructions.
+             */
+            ImageIcon piIcon;
 
-	    /**
-	     * The icon used to represent text.
-	     */
-	    ImageIcon textIcon;
+            /**
+             * The icon used to represent text.
+             */
+            ImageIcon textIcon;
 
-	    /**
-	     * Creates a new NodeRenderer object.
-	     */
-	    public NodeRenderer() {
-		String s;
-		s = resources.getString("Element.icon");
-		elementIcon = new ImageIcon(getClass().getResource(s));
-		s = resources.getString("Comment.icon");
-		commentIcon = new ImageIcon(getClass().getResource(s));
-		s = resources.getString("PI.icon");
-		piIcon = new ImageIcon(getClass().getResource(s));
-		s = resources.getString("Text.icon");
-		textIcon = new ImageIcon(getClass().getResource(s));
-	    }
+            /**
+             * Creates a new NodeRenderer object.
+             */
+            public NodeRenderer() {
+                String s;
+                s = resources.getString("Element.icon");
+                elementIcon = new ImageIcon(getClass().getResource(s));
+                s = resources.getString("Comment.icon");
+                commentIcon = new ImageIcon(getClass().getResource(s));
+                s = resources.getString("PI.icon");
+                piIcon = new ImageIcon(getClass().getResource(s));
+                s = resources.getString("Text.icon");
+                textIcon = new ImageIcon(getClass().getResource(s));
+            }
 
-	    /**
-	     * Sets the value of the current tree cell.
-	     */
-	    public Component getTreeCellRendererComponent(JTree tree,
-							  Object value,
-							  boolean sel,
-							  boolean expanded,
-							  boolean leaf,
-							  int row,
-							  boolean hasFocus) {
-		super.getTreeCellRendererComponent(tree, value, sel, expanded,
-						   leaf, row, hasFocus);
-		switch (getNodeType(value)) {
-		case Node.ELEMENT_NODE:
-		    setIcon(elementIcon);
-		    break;
-		case Node.COMMENT_NODE:
-		    setIcon(commentIcon);
-		    break;
-		case Node.PROCESSING_INSTRUCTION_NODE:
-		    setIcon(piIcon);
-		    break;
-		case Node.TEXT_NODE:
-		case Node.CDATA_SECTION_NODE:
-		    setIcon(textIcon);
-		    break;
-		}
-		return this;
-	    }
+            /**
+             * Sets the value of the current tree cell.
+             */
+            public Component getTreeCellRendererComponent(JTree tree,
+                                                          Object value,
+                                                          boolean sel,
+                                                          boolean expanded,
+                                                          boolean leaf,
+                                                          int row,
+                                                          boolean hasFocus) {
+                super.getTreeCellRendererComponent(tree, value, sel, expanded,
+                                                   leaf, row, hasFocus);
+                switch (getNodeType(value)) {
+                case Node.ELEMENT_NODE:
+                    setIcon(elementIcon);
+                    break;
+                case Node.COMMENT_NODE:
+                    setIcon(commentIcon);
+                    break;
+                case Node.PROCESSING_INSTRUCTION_NODE:
+                    setIcon(piIcon);
+                    break;
+                case Node.TEXT_NODE:
+                case Node.CDATA_SECTION_NODE:
+                    setIcon(textIcon);
+                    break;
+                }
+                return this;
+            }
 
-	    /**
-	     * Returns the DOM type of the given object.
-	     * @return the type or -1.
-	     */
-	    protected short getNodeType(Object value) {
-		DefaultMutableTreeNode mtn = (DefaultMutableTreeNode)value;
-		Object obj = mtn.getUserObject();
-		if (obj instanceof NodeInfo) {
-		    Node node = ((NodeInfo)obj).getNode();
-		    return node.getNodeType();
-		}
-		return -1;
-	    }
-	}
+            /**
+             * Returns the DOM type of the given object.
+             * @return the type or -1.
+             */
+            protected short getNodeType(Object value) {
+                DefaultMutableTreeNode mtn = (DefaultMutableTreeNode)value;
+                Object obj = mtn.getUserObject();
+                if (obj instanceof NodeInfo) {
+                    Node node = ((NodeInfo)obj).getNode();
+                    return node.getNodeType();
+                }
+                return -1;
+            }
+        }
 
-	/**
-	 * To display the attributes of a DOM node attributes in a table.
-	 */
-	protected class NodeAttributesModel extends AbstractTableModel {
-	    /**
-	     * The node.
-	     */
+        /**
+         * To display the attributes of a DOM node attributes in a table.
+         */
+        protected class NodeAttributesModel extends AbstractTableModel {
+            /**
+             * The node.
+             */
             protected Node node;
-	    
-	    /**
-	     * Creates a new NodeAttributesModel object.
-	     */
-	    public NodeAttributesModel(Node n) {
-		node = n;
-	    }
+            
+            /**
+             * Creates a new NodeAttributesModel object.
+             */
+            public NodeAttributesModel(Node n) {
+                node = n;
+            }
 
-	    /**
-	     * Returns the name to give to a column.
-	     */
-	    public String getColumnName(int col) {
-		if (col == 0) {
-		    return resources.getString("AttributesTable.column1");
-		} else {
-		    return resources.getString("AttributesTable.column2");
-		}
-	    }
+            /**
+             * Returns the name to give to a column.
+             */
+            public String getColumnName(int col) {
+                if (col == 0) {
+                    return resources.getString("AttributesTable.column1");
+                } else {
+                    return resources.getString("AttributesTable.column2");
+                }
+            }
 
-	    /**
-	     * Returns the number of columns in the table.
-	     */
-	    public int getColumnCount() {
-		return 2;
-	    }
+            /**
+             * Returns the number of columns in the table.
+             */
+            public int getColumnCount() {
+                return 2;
+            }
 
-	    /**
-	     * Returns the number of rows in the table.
-	     */
-	    public int getRowCount() {
-		return node.getAttributes().getLength();
-	    }
+            /**
+             * Returns the number of rows in the table.
+             */
+            public int getRowCount() {
+                return node.getAttributes().getLength();
+            }
 
-	    /**
-	     * Whether the given cell is editable.
-	     */
-	    public boolean isCellEditable(int row, int col) {
-		return false;
-	    }
+            /**
+             * Whether the given cell is editable.
+             */
+            public boolean isCellEditable(int row, int col) {
+                return false;
+            }
 
-	    /**
-	     * Returns the value of the given cell.
-	     */
-	    public Object getValueAt(int row, int col) {
-		NamedNodeMap map = node.getAttributes();
-		Node n = map.item(row);
-		if (col == 0) {
-		    return n.getNodeName();
-		} else {
-		    return n.getNodeValue();
-		}
-	    }
-	}
+            /**
+             * Returns the value of the given cell.
+             */
+            public Object getValueAt(int row, int col) {
+                NamedNodeMap map = node.getAttributes();
+                Node n = map.item(row);
+                if (col == 0) {
+                    return n.getNodeName();
+                } else {
+                    return n.getNodeValue();
+                }
+            }
+        }
     
-	/**
-	 * To display the CSS properties of a DOM node in a table.
-	 */
-	protected class NodeCSSValuesModel extends AbstractTableModel {
-	    /**
-	     * The node.
-	     */
-	    protected Node node;
+        /**
+         * To display the CSS properties of a DOM node in a table.
+         */
+        protected class NodeCSSValuesModel extends AbstractTableModel {
+            /**
+             * The node.
+             */
+            protected Node node;
 
             /**
              * The computed style.
              */
             protected CSSStyleDeclaration style;
-	    
+            
             /**
              * The property names.
              */
             protected java.util.List propertyNames;
 
-	    /**
-	     * Creates a new NodeAttributesModel object.
-	     */
-	    public NodeCSSValuesModel(Node n) {
-		node = n;
+            /**
+             * Creates a new NodeAttributesModel object.
+             */
+            public NodeCSSValuesModel(Node n) {
+                node = n;
                 if (viewCSS != null) {
                     style = viewCSS.getComputedStyle((Element)n, null);
                     propertyNames = new ArrayList();
@@ -655,55 +655,55 @@ public class DOMViewer extends JFrame implements ActionMap {
                         Collections.sort(propertyNames);
                     }
                 }
-	    }
+            }
 
-	    /**
-	     * Returns the name to give to a column.
-	     */
-	    public String getColumnName(int col) {
-		if (col == 0) {
-		    return resources.getString("CSSValuesTable.column1");
-		} else {
-		    return resources.getString("CSSValuesTable.column2");
-		}
-	    }
+            /**
+             * Returns the name to give to a column.
+             */
+            public String getColumnName(int col) {
+                if (col == 0) {
+                    return resources.getString("CSSValuesTable.column1");
+                } else {
+                    return resources.getString("CSSValuesTable.column2");
+                }
+            }
 
-	    /**
-	     * Returns the number of columns in the table.
-	     */
-	    public int getColumnCount() {
-		return 2;
-	    }
+            /**
+             * Returns the number of columns in the table.
+             */
+            public int getColumnCount() {
+                return 2;
+            }
 
-	    /**
-	     * Returns the number of rows in the table.
-	     */
-	    public int getRowCount() {
-		if (style == null) {
-		    return 0;
-		}
-		return style.getLength();
-	    }
+            /**
+             * Returns the number of rows in the table.
+             */
+            public int getRowCount() {
+                if (style == null) {
+                    return 0;
+                }
+                return style.getLength();
+            }
 
-	    /**
-	     * Whether the given cell is editable.
-	     */
-	    public boolean isCellEditable(int row, int col) {
-		return false;
-	    }
+            /**
+             * Whether the given cell is editable.
+             */
+            public boolean isCellEditable(int row, int col) {
+                return false;
+            }
 
-	    /**
-	     * Returns the value of the given cell.
-	     */
-	    public Object getValueAt(int row, int col) {
-		String prop = (String)propertyNames.get(row);
-		if (col == 0) {
-		    return prop;
-		} else {
-		    return style.getPropertyValue(prop);
-		}
-	    }
-	}
+            /**
+             * Returns the value of the given cell.
+             */
+            public Object getValueAt(int row, int col) {
+                String prop = (String)propertyNames.get(row);
+                if (col == 0) {
+                    return prop;
+                } else {
+                    return style.getPropertyValue(prop);
+                }
+            }
+        }
     
     } // class Panel
 

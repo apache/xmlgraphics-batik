@@ -31,7 +31,7 @@ import org.w3c.css.sac.ElementSelector;
  */
 public abstract class AbstractElementSelector
     implements ElementSelector,
-	       ExtendedSelector {
+               ExtendedSelector {
 
     /**
      * The namespace URI.

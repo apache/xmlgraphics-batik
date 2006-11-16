@@ -51,33 +51,33 @@ public class LanguageTest extends AbstractImageTranscoderTest {
      * @param language the preferred language
      */
     public LanguageTest(String inputURI, 
-			String refImageURI, 
-			String language) {
-	this.inputURI = inputURI;
-	this.refImageURI = refImageURI;
-	this.language = language;
+                        String refImageURI, 
+                        String language) {
+        this.inputURI = inputURI;
+        this.refImageURI = refImageURI;
+        this.language = language;
     }
 
     /**
      * Creates the <tt>TranscoderInput</tt>.
      */
     protected TranscoderInput createTranscoderInput() {
-	return new TranscoderInput(resolveURL(inputURI).toString());
+        return new TranscoderInput(resolveURL(inputURI).toString());
     }
     
     /**
      * Creates a Map that contains additional transcoding hints.
      */
     protected Map createTranscodingHints() {
-	Map hints = new HashMap(7);
-	hints.put(ImageTranscoder.KEY_LANGUAGE, language);
-	return hints;
+        Map hints = new HashMap(7);
+        hints.put(ImageTranscoder.KEY_LANGUAGE, language);
+        return hints;
     }
 
     /**
      * Returns the reference image for this test.
      */
     protected byte [] getReferenceImageData() {
-	return createBufferedImageData(resolveURL(refImageURI));
+        return createBufferedImageData(resolveURL(refImageURI));
     }
 }

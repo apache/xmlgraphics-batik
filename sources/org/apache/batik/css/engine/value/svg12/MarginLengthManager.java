@@ -47,7 +47,7 @@ public class MarginLengthManager extends LengthManager {
      * Implements {@link ValueManager#isInheritedProperty()}.
      */
     public boolean isInheritedProperty() {
-	return true;
+        return true;
     }
 
     /**
@@ -75,7 +75,7 @@ public class MarginLengthManager extends LengthManager {
      * Implements {@link ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return prop;
+        return prop;
     }
     
     /**

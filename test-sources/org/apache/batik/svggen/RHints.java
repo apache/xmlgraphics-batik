@@ -65,7 +65,7 @@ public class RHints implements Painter {
         //
         g.translate(0, 100);
         g.setRenderingHint(antialiasKey, antialiasOn);
-				g.setRenderingHint(textAntialiasKey, textAntialiasOn);
+                                g.setRenderingHint(textAntialiasKey, textAntialiasOn);
         g.setFont(defaultFont);
         g.drawString("Shape antialiasing", 10, 20);
 

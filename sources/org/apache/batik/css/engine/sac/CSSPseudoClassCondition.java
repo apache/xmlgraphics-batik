@@ -40,8 +40,8 @@ public class CSSPseudoClassCondition extends AbstractAttributeCondition {
      * Creates a new CSSAttributeCondition object.
      */
     public CSSPseudoClassCondition(String namespaceURI, String value) {
-	super(value);
-	this.namespaceURI = namespaceURI;
+        super(value);
+        this.namespaceURI = namespaceURI;
     }
 
     /**
@@ -61,7 +61,7 @@ public class CSSPseudoClassCondition extends AbstractAttributeCondition {
      * org.w3c.css.sac.Condition#getConditionType()}.
      */    
     public short getConditionType() {
-	return SAC_PSEUDO_CLASS_CONDITION;
+        return SAC_PSEUDO_CLASS_CONDITION;
     }
     
     /**
@@ -69,7 +69,7 @@ public class CSSPseudoClassCondition extends AbstractAttributeCondition {
      * org.w3c.css.sac.AttributeCondition#getNamespaceURI()}.
      */    
     public String getNamespaceURI() {
-	return namespaceURI;
+        return namespaceURI;
     }
 
     /**
@@ -77,7 +77,7 @@ public class CSSPseudoClassCondition extends AbstractAttributeCondition {
      * org.w3c.css.sac.AttributeCondition#getLocalName()}.
      */
     public String getLocalName() {
-	return null;
+        return null;
     }
 
     /**
@@ -85,16 +85,16 @@ public class CSSPseudoClassCondition extends AbstractAttributeCondition {
      * org.w3c.css.sac.AttributeCondition#getSpecified()}.
      */
     public boolean getSpecified() {
-	return false;
+        return false;
     }
 
     /**
      * Tests whether this selector matches the given element.
      */
     public boolean match(Element e, String pseudoE) {
-	return (e instanceof CSSStylableElement)
-	    ? ((CSSStylableElement)e).isPseudoInstanceOf(getValue())
-	    : false;
+        return (e instanceof CSSStylableElement)
+            ? ((CSSStylableElement)e).isPseudoInstanceOf(getValue())
+            : false;
     }
 
     /**
@@ -107,6 +107,6 @@ public class CSSPseudoClassCondition extends AbstractAttributeCondition {
      * Returns a text representation of this object.
      */
     public String toString() {
-	return ":" + getValue();
+        return ":" + getValue();
     }
 }

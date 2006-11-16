@@ -141,34 +141,34 @@ public class StringMap {
      * To manage collisions
      */
     protected static class Entry {
-	/**
-	 * The hash code
-	 */
-	public int hash;
+        /**
+         * The hash code
+         */
+        public int hash;
 
-	/**
-	 * The key
-	 */
-	public String key;
+        /**
+         * The key
+         */
+        public String key;
 
-	/**
-	 * The value
-	 */
-	public Object value;
+        /**
+         * The value
+         */
+        public Object value;
 
-	/**
-	 * The next entry
-	 */
-	public Entry next;
+        /**
+         * The next entry
+         */
+        public Entry next;
 
-	/**
-	 * Creates a new entry
-	 */
-	public Entry(int hash, String key, Object value, Entry next) {
-	    this.hash  = hash;
-	    this.key   = key;
-	    this.value = value;
-	    this.next  = next;
-	}
+        /**
+         * Creates a new entry
+         */
+        public Entry(int hash, String key, Object value, Entry next) {
+            this.hash  = hash;
+            this.key   = key;
+            this.value = value;
+            this.next  = next;
+        }
     }
 }

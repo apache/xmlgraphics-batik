@@ -62,23 +62,23 @@ public class GenericAttrNS extends AbstractAttrNS {
      *   "http://www.w3.org/2000/xmlns/".
      */
     public GenericAttrNS(String nsURI, String qname, AbstractDocument owner)
-	throws DOMException {
-	super(nsURI, qname, owner);
-	setNodeName(qname);
+        throws DOMException {
+        super(nsURI, qname, owner);
+        setNodeName(qname);
     }
 
     /**
      * Tests whether this node is readonly.
      */
     public boolean isReadonly() {
-	return readonly;
+        return readonly;
     }
 
     /**
      * Sets this node readonly attribute.
      */
     public void setReadonly(boolean v) {
-	readonly = v;
+        readonly = v;
     }
 
     /**

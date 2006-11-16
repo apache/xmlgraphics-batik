@@ -22,8 +22,8 @@ package org.apache.batik.transcoder.wmf.tosvg;
 import java.util.Vector;
 
 public class MetaRecord /*implements Serializable*/ {
-    public int	functionId;
-    public int	numPoints;
+    public int functionId;
+    public int numPoints;
 
     private Vector ptVector;
 

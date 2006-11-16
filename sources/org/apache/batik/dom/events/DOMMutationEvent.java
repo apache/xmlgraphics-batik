@@ -46,7 +46,7 @@ public class DOMMutationEvent extends AbstractEvent implements MutationEvent {
      * changed node.  
      */
     public Node getRelatedNode() {
-	return relatedNode;
+        return relatedNode;
     }
 
     /**
@@ -55,7 +55,7 @@ public class DOMMutationEvent extends AbstractEvent implements MutationEvent {
      * <code>CharacterData</code> node in DOMCharDataModified events.  
      */
     public String getPrevValue() {
-	return prevValue;
+        return prevValue;
     }
 
     /**
@@ -64,7 +64,7 @@ public class DOMMutationEvent extends AbstractEvent implements MutationEvent {
      * <code>CharacterData</code> node in DOMCharDataModified events.  
      */
     public String getNewValue() {
-	return newValue;
+        return newValue;
     }
 
     /**
@@ -72,7 +72,7 @@ public class DOMMutationEvent extends AbstractEvent implements MutationEvent {
      * <code>Attr</code> node in a DOMAttrModified event.  
      */
     public String getAttrName() {
-	return attrName;
+        return attrName;
     }
 
     /**
@@ -105,18 +105,18 @@ public class DOMMutationEvent extends AbstractEvent implements MutationEvent {
      *   <code>attrName</code> property 
      */
     public void initMutationEvent(String typeArg, 
-				  boolean canBubbleArg, 
-				  boolean cancelableArg, 
-				  Node relatedNodeArg, 
-				  String prevValueArg, 
-				  String newValueArg, 
-				  String attrNameArg,
+                                  boolean canBubbleArg, 
+                                  boolean cancelableArg, 
+                                  Node relatedNodeArg, 
+                                  String prevValueArg, 
+                                  String newValueArg, 
+                                  String attrNameArg,
                                   short attrChangeArg) {
-	initEvent(typeArg, canBubbleArg, cancelableArg);
-	this.relatedNode = relatedNodeArg;
-	this.prevValue = prevValueArg;
-	this.newValue = newValueArg;
-	this.attrName = attrNameArg;
+        initEvent(typeArg, canBubbleArg, cancelableArg);
+        this.relatedNode = relatedNodeArg;
+        this.prevValue = prevValueArg;
+        this.newValue = newValueArg;
+        this.attrName = attrNameArg;
         this.attrChange = attrChangeArg;
     }
 

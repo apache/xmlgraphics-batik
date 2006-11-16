@@ -103,9 +103,9 @@ public class Linear implements Segment {
         if ((y <= p1.y) && (y <= p2.y)) return null;
         if ((y >= p1.y) && (y >= p2.y)) return null;
 
-	// This should be checked for numerical stability.  So you
-	// need to ensure that p2.y-p1.y retains enough bits to be
-	// useful.
+        // This should be checked for numerical stability.  So you
+        // need to ensure that p2.y-p1.y retains enough bits to be
+        // useful.
         double t = (y-p1.y)/(p2.y-p1.y);
 
         Segment [] t0 = {getSegment(0,t)};

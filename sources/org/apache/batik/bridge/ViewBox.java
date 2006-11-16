@@ -245,9 +245,9 @@ public abstract class ViewBox implements SVGConstants, ErrorConstants {
      */
     public static
         AffineTransform getPreserveAspectRatioTransform(Element e,
-							float[] vb,
-							float w,
-							float h,
+                                                        float[] vb,
+                                                        float w,
+                                                        float h,
                                                         BridgeContext ctx) {
 
         String aspectRatio

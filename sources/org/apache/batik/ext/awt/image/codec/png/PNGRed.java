@@ -55,74 +55,74 @@ import org.apache.batik.ext.awt.image.rendered.CachableRed;
 public class PNGRed extends AbstractRed {
 
     static class PNGChunk {
-	int length;
-	int type;
-	byte[] data;
-	int crc;
+        int length;
+        int type;
+        byte[] data;
+        int crc;
 
-	String typeString;
+        String typeString;
 
-	public PNGChunk(int length, int type, byte[] data, int crc) {
-	    this.length = length;
-	    this.type = type;
-	    this.data = data;
-	    this.crc = crc;
+        public PNGChunk(int length, int type, byte[] data, int crc) {
+            this.length = length;
+            this.type = type;
+            this.data = data;
+            this.crc = crc;
 
-	    typeString = new String();
-	    typeString += (char)(type >> 24);
-	    typeString += (char)((type >> 16) & 0xff);
-	    typeString += (char)((type >> 8) & 0xff);
-	    typeString += (char)(type & 0xff);
-	}
+            typeString = new String();
+            typeString += (char)(type >> 24);
+            typeString += (char)((type >> 16) & 0xff);
+            typeString += (char)((type >> 8) & 0xff);
+            typeString += (char)(type & 0xff);
+        }
 
-	public int getLength() {
-	    return length;
-	}
+        public int getLength() {
+            return length;
+        }
 
-	public int getType() {
-	    return type;
-	}
+        public int getType() {
+            return type;
+        }
 
-	public String getTypeString() {
-	    return typeString;
-	}
+        public String getTypeString() {
+            return typeString;
+        }
 
-	public byte[] getData() {
-	    return data;
-	}
+        public byte[] getData() {
+            return data;
+        }
 
-	public byte getByte(int offset) {
-	    return data[offset];
-	}
+        public byte getByte(int offset) {
+            return data[offset];
+        }
 
-	public int getInt1(int offset) {
-	    return data[offset] & 0xff;
-	}
+        public int getInt1(int offset) {
+            return data[offset] & 0xff;
+        }
 
-	public int getInt2(int offset) {
-	    return ((data[offset] & 0xff) << 8) |
-		(data[offset + 1] & 0xff);
-	}
+        public int getInt2(int offset) {
+            return ((data[offset] & 0xff) << 8) |
+                (data[offset + 1] & 0xff);
+        }
 
-	public int getInt4(int offset) {
-	    return ((data[offset] & 0xff) << 24) |
-		((data[offset + 1] & 0xff) << 16) |
-		((data[offset + 2] & 0xff) << 8) |
-		(data[offset + 3] & 0xff);
-	}
+        public int getInt4(int offset) {
+            return ((data[offset] & 0xff) << 24) |
+                ((data[offset + 1] & 0xff) << 16) |
+                ((data[offset + 2] & 0xff) << 8) |
+                (data[offset + 3] & 0xff);
+        }
 
-	public String getString4(int offset) {
-	    String s = new String();
-	    s += (char)data[offset];
-	    s += (char)data[offset + 1];
-	    s += (char)data[offset + 2];
-	    s += (char)data[offset + 3];
-	    return s;
-	}
+        public String getString4(int offset) {
+            String s = new String();
+            s += (char)data[offset];
+            s += (char)data[offset + 1];
+            s += (char)data[offset + 2];
+            s += (char)data[offset + 3];
+            return s;
+        }
 
-	public boolean isType(String typeName) {
-	    return typeString.equals(typeName);
-	}
+        public boolean isType(String typeName) {
+            return typeString.equals(typeName);
+        }
     }
 
     public static final int PNG_COLOR_GRAY = 0;
@@ -341,7 +341,7 @@ public class PNGRed extends AbstractRed {
     }
 
     public PNGRed(InputStream stream) throws IOException {
-	this(stream, null);
+        this(stream, null);
     }
 
     public PNGRed(InputStream stream, PNGDecodeParam decodeParam)
@@ -513,7 +513,7 @@ public class PNGRed extends AbstractRed {
         int width  = chunk.getInt4(0);
         int height = chunk.getInt4(4);
 
-	bounds = new Rectangle(0, 0, width, height);
+        bounds = new Rectangle(0, 0, width, height);
 
         bitDepth = chunk.getInt1(8);
         
@@ -756,8 +756,8 @@ public class PNGRed extends AbstractRed {
         if ((colorType == PNG_COLOR_PALETTE) && expandPalette) {
             depth = 8;
         }
-	int width  = bounds.width;
-	int height = bounds.height;
+        int width  = bounds.width;
+        int height = bounds.height;
 
         int bytesPerRow = (outputBands*width*depth + 7)/8;
         int scanlineStride =
@@ -778,7 +778,7 @@ public class PNGRed extends AbstractRed {
 
         decodeImage(interlaceMethod == 1);
         SampleModel sm = theTile.getSampleModel();
-	ColorModel  cm;
+        ColorModel  cm;
 
         if ((colorType == PNG_COLOR_PALETTE) && !expandPalette) {
             if (outputHasAlphaPalette) {
@@ -808,7 +808,7 @@ public class PNGRed extends AbstractRed {
                 createComponentColorModel(sm);
         }
 
-	init((CachableRed)null, bounds, cm, sm, 0, 0, properties);
+        init((CachableRed)null, bounds, cm, sm, 0, 0, properties);
     }
 
     private static final int[] GrayBits8 = { 8 };
@@ -1822,8 +1822,8 @@ public class PNGRed extends AbstractRed {
     }
 
     private void decodeImage(boolean useInterlacing) {
-	int width = bounds.width;
-	int height = bounds.height;
+        int width = bounds.width;
+        int height = bounds.height;
 
         if (!useInterlacing) {
             decodePass(theTile, 0, 0, 1, 1, width, height);

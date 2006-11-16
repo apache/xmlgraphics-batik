@@ -39,8 +39,8 @@ public class DirectionManager extends IdentifierManager {
      */
     protected final static StringMap values = new StringMap();
     static {
-	values.put(CSSConstants.CSS_LTR_VALUE, ValueConstants.LTR_VALUE);
-	values.put(CSSConstants.CSS_RTL_VALUE, ValueConstants.RTL_VALUE);
+        values.put(CSSConstants.CSS_LTR_VALUE, ValueConstants.LTR_VALUE);
+        values.put(CSSConstants.CSS_RTL_VALUE, ValueConstants.RTL_VALUE);
     }
 
     /**
@@ -48,7 +48,7 @@ public class DirectionManager extends IdentifierManager {
      * org.apache.batik.css.engine.value.ValueManager#isInheritedProperty()}.
      */
     public boolean isInheritedProperty() {
-	return true;
+        return true;
     }
 
     /**
@@ -77,7 +77,7 @@ public class DirectionManager extends IdentifierManager {
      * org.apache.batik.css.engine.value.ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return CSSConstants.CSS_DIRECTION_PROPERTY;
+        return CSSConstants.CSS_DIRECTION_PROPERTY;
     }
     
     /**

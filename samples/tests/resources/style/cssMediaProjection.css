@@ -1,21 +1,21 @@
 
 .fancyBackground {
-	visibility: visible;
+  visibility: visible;
 }
 
 .background {
-	fill: black;
-	stroke: none;
+  fill: black;
+  stroke: none;
 }
 
 .sectionTitle {
-	stroke: none;
-	fill: white;
-	font-size: 14;
-	font-weight: bold;
+  stroke: none;
+  fill: white;
+  font-size: 14;
+  font-weight: bold;
 }
 
 .sectionContent {
-	visibility: hidden;
+  visibility: hidden;
 }
 

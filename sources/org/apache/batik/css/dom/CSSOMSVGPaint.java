@@ -142,12 +142,12 @@ public class CSSOMSVGPaint extends CSSOMSVGColor implements SVGPaint {
      * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGPaint#setUri(String)}.
      */
     public void setUri(String uri) {
-	if (handler == null) {
+        if (handler == null) {
             throw new DOMException
                 (DOMException.NO_MODIFICATION_ALLOWED_ERR, "");
-	} else {
+        } else {
             ((PaintModificationHandler)handler).uriChanged(uri);
-	}
+        }
     }
 
     /**
@@ -156,13 +156,13 @@ public class CSSOMSVGPaint extends CSSOMSVGColor implements SVGPaint {
      */
     public void setPaint(short paintType, String uri,
                          String rgbColor, String iccColor) {
-	if (handler == null) {
+        if (handler == null) {
             throw new DOMException
                 (DOMException.NO_MODIFICATION_ALLOWED_ERR, "");
-	} else {
+        } else {
             ((PaintModificationHandler)handler).paintChanged
                 (paintType, uri, rgbColor, iccColor);
-	}
+        }
     }
 
     /**

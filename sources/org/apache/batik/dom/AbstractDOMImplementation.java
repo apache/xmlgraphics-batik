@@ -83,13 +83,13 @@ public abstract class AbstractDOMImplementation
             // All features are directly castable.
             feature = feature.substring(1);
         }
-	Object v = features.get(feature.toLowerCase());
-	if (v == null) {
-	    return false;
-	}
-	if (version == null || version.length() == 0) {
-	    return true;
-	}
+        Object v = features.get(feature.toLowerCase());
+        if (v == null) {
+            return false;
+        }
+        if (version == null || version.length() == 0) {
+            return true;
+        }
         if (v instanceof String) {
             return version.equals(v);
         } else {

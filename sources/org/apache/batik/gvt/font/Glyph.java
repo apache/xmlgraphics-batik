@@ -329,8 +329,8 @@ public class Glyph {
     public Shape getOutline() {
         if (outline == null) {
             AffineTransform tr = 
-		AffineTransform.getTranslateInstance(position.getX(), 
-						     position.getY());
+                AffineTransform.getTranslateInstance(position.getX(), 
+                                                     position.getY());
             if (transform != null) {
                 tr.concatenate(transform);
             }
@@ -362,8 +362,8 @@ public class Glyph {
      */
     public void draw(Graphics2D graphics2D) {
         AffineTransform tr = 
-	    AffineTransform.getTranslateInstance(position.getX(),
-						 position.getY());
+            AffineTransform.getTranslateInstance(position.getX(),
+                                                 position.getY());
         if (transform != null) {
             tr.concatenate(transform);
         }

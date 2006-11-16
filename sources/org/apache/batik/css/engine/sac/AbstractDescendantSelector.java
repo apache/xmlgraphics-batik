@@ -31,7 +31,7 @@ import org.w3c.css.sac.SimpleSelector;
  */
 public abstract class AbstractDescendantSelector
     implements DescendantSelector,
-	       ExtendedSelector {
+               ExtendedSelector {
 
     /**
      * The ancestor selector.
@@ -48,8 +48,8 @@ public abstract class AbstractDescendantSelector
      */
     protected AbstractDescendantSelector(Selector ancestor,
                                          SimpleSelector simple) {
-	ancestorSelector = ancestor;
-	simpleSelector = simple;
+        ancestorSelector = ancestor;
+        simpleSelector = simple;
     }
 
     /**
@@ -68,23 +68,23 @@ public abstract class AbstractDescendantSelector
      * Returns the specificity of this selector.
      */
     public int getSpecificity() {
-	return ((ExtendedSelector)ancestorSelector).getSpecificity() +
-       	       ((ExtendedSelector)simpleSelector).getSpecificity();
+        return ((ExtendedSelector)ancestorSelector).getSpecificity() +
+               ((ExtendedSelector)simpleSelector).getSpecificity();
     }
 
     /**
      * <b>SAC</b>: Implements {@link
      * org.w3c.css.sac.DescendantSelector#getAncestorSelector()}.
-     */    
+     */
     public Selector getAncestorSelector() {
-	return ancestorSelector;
+        return ancestorSelector;
     }
 
     /**
      * <b>SAC</b>: Implements {@link
      * org.w3c.css.sac.DescendantSelector#getSimpleSelector()}.
-     */    
+     */
     public SimpleSelector getSimpleSelector() {
-	return simpleSelector;
+        return simpleSelector;
     }
 }

@@ -59,19 +59,19 @@ public class AOITest extends AbstractImageTranscoderTest {
      * @param height the height of the area of interest
      */
     public AOITest(String inputURI, 
-		   String refImageURI, 
-		   Float x,
-		   Float y,
-		   Float width,
-		   Float height) {
-	this(inputURI, 
-	     refImageURI, 
-	     x, 
-	     y, 
-	     width, 
-	     height, 
-	     new Float(-1), 
-	     new Float(-1));
+                   String refImageURI, 
+                   Float x,
+                   Float y,
+                   Float width,
+                   Float height) {
+        this(inputURI, 
+             refImageURI, 
+             x, 
+             y, 
+             width, 
+             height, 
+             new Float(-1), 
+             new Float(-1));
     }
 
     /**
@@ -87,49 +87,49 @@ public class AOITest extends AbstractImageTranscoderTest {
      * @param imgHeight the height of the image to generate
      */
     public AOITest(String inputURI, 
-		   String refImageURI, 
-		   Float x,
-		   Float y,
-		   Float width,
-		   Float height,
-		   Float imgWidth,
-		   Float imgHeight) {
-	this.inputURI = inputURI;
-	this.refImageURI = refImageURI;
-	this.aoi = new Rectangle2D.Float(x.floatValue(),
-					 y.floatValue(),
-					 width.floatValue(),
-					 height.floatValue());
-	this.imgWidth = imgWidth;
-	this.imgHeight = imgHeight;
+                   String refImageURI, 
+                   Float x,
+                   Float y,
+                   Float width,
+                   Float height,
+                   Float imgWidth,
+                   Float imgHeight) {
+        this.inputURI = inputURI;
+        this.refImageURI = refImageURI;
+        this.aoi = new Rectangle2D.Float(x.floatValue(),
+                                         y.floatValue(),
+                                         width.floatValue(),
+                                         height.floatValue());
+        this.imgWidth = imgWidth;
+        this.imgHeight = imgHeight;
     }
 
     /**
      * Creates the <tt>TranscoderInput</tt>.
      */
     protected TranscoderInput createTranscoderInput() {
-	return new TranscoderInput(resolveURL(inputURI).toString());
+        return new TranscoderInput(resolveURL(inputURI).toString());
     }
     
     /**
      * Creates a Map that contains additional transcoding hints.
      */
     protected Map createTranscodingHints() {
-	Map hints = new HashMap(11);
-	hints.put(ImageTranscoder.KEY_AOI, aoi);
-	if (imgWidth.floatValue() > 0) {
-	    hints.put(ImageTranscoder.KEY_WIDTH, imgWidth);
-	}
-	if (imgHeight.floatValue() > 0) {
-	    hints.put(ImageTranscoder.KEY_HEIGHT, imgHeight);
-	}
-	return hints;
+        Map hints = new HashMap(11);
+        hints.put(ImageTranscoder.KEY_AOI, aoi);
+        if (imgWidth.floatValue() > 0) {
+            hints.put(ImageTranscoder.KEY_WIDTH, imgWidth);
+        }
+        if (imgHeight.floatValue() > 0) {
+            hints.put(ImageTranscoder.KEY_HEIGHT, imgHeight);
+        }
+        return hints;
     }
 
     /**
      * Returns the reference image for this test.
      */
     protected byte [] getReferenceImageData() {
-	return createBufferedImageData(resolveURL(refImageURI));
+        return createBufferedImageData(resolveURL(refImageURI));
     }
 }

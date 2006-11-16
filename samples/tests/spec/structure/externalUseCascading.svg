@@ -42,15 +42,15 @@
 <defs>
 
   <radialGradient id="grad">
- 	<stop style="stop-color:gold" offset="0" />
- 	<stop style="stop-color:crimson" offset="1" />
+    <stop style="stop-color:gold" offset="0" />
+    <stop style="stop-color:crimson" offset="1" />
   </radialGradient>
 
 </defs>
 
-	<use xlink:href="../../resources/svg/defs.svg#tree1" x="120" y="120" style="fill:crimson"/>
+    <use xlink:href="../../resources/svg/defs.svg#tree1" x="120" y="120" style="fill:crimson"/>
 
-	<use xlink:href="../../resources/svg/defs.svg#tree2" x="120" y="300" style="fill:url(#grad)"/>
+    <use xlink:href="../../resources/svg/defs.svg#tree2" x="120" y="300" style="fill:url(#grad)"/>
 
     </g>
 

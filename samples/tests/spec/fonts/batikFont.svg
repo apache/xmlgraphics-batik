@@ -92,7 +92,7 @@
                                  c0,6.539,1.789,10.953,5.371,13.242c3.578,2.293,11.16,3.438,22.746,3.438c14.172,0,24.82-3.031,31.945-9.094s10.688-15.156,10.688-27.281c0-13.031-4.234-23.188-12.695-30.461s-20.316-10.914-35.563-10.914H47.463c-3.578,0-5.84,0.477-6.793,1.426
                                  s-1.426,3.285-1.426,7.004v52.641z"/>
                      </g>
-		    </glyph>
+                </glyph>
 
                 <glyph id="a" unicode="a" glyph-name="a" horiz-adv-x="105"> 
                     <path transform="scale(1,-1)translate(-125, -170)"
@@ -149,7 +149,7 @@
                   <glyphRef xlink:href="fontGlyphsBoth.svg#d"/>
                   <glyphRef xlink:href="fontGlyphsBoth.svg#e"/>
             </altGlyphDef>
-		
+
 
            <altGlyphDef id="bcItems">
                   <altGlyphItem>

@@ -32,7 +32,7 @@ public class CSSElementSelector extends AbstractElementSelector {
      * Creates a new ElementSelector object.
      */
     public CSSElementSelector(String uri, String name) {
-	super(uri, name);
+        super(uri, name);
     }
 
     /**
@@ -40,17 +40,17 @@ public class CSSElementSelector extends AbstractElementSelector {
      * org.w3c.css.sac.Selector#getSelectorType()}.
      */
     public short getSelectorType() {
-	return SAC_ELEMENT_NODE_SELECTOR;
+        return SAC_ELEMENT_NODE_SELECTOR;
     }
 
     /**
      * Tests whether this selector matches the given element.
      */
     public boolean match(Element e, String pseudoE) {
-	String name = getLocalName();
-	if (name == null) {
-	    return true;
-	}
+        String name = getLocalName();
+        if (name == null) {
+            return true;
+        }
         String eName;
         if (e.getPrefix() == null) eName = e.getNodeName();
         else                       eName = e.getLocalName();
@@ -65,17 +65,17 @@ public class CSSElementSelector extends AbstractElementSelector {
      * Returns the specificity of this selector.
      */
     public int getSpecificity() {
-	return (getLocalName() == null) ? 0 : 1;
+        return (getLocalName() == null) ? 0 : 1;
     }
 
     /**
      * Returns a representation of the selector.
      */
     public String toString() {
-	String name = getLocalName();
-	if (name == null) {
-	    return "*";
-	}
-	return name;
+        String name = getLocalName();
+        if (name == null) {
+            return "*";
+        }
+        return name;
     }
 }

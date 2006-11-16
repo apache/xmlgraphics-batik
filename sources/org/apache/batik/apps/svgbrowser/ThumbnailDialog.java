@@ -294,18 +294,18 @@ public class ThumbnailDialog extends JDialog {
         }
 
         public void gvtRenderingCancelled(GVTTreeRendererEvent e) {
-	    if (documentChanged) {
-		svgThumbnailCanvas.setGraphicsNode(null);
-		svgThumbnailCanvas.setRenderingTransform(new AffineTransform());
-	    }
+            if (documentChanged) {
+                svgThumbnailCanvas.setGraphicsNode(null);
+                svgThumbnailCanvas.setRenderingTransform(new AffineTransform());
+            }
         }
 
         public void gvtRenderingFailed(GVTTreeRendererEvent e) {
-	    if (documentChanged) {
-		svgThumbnailCanvas.setGraphicsNode(null);
-		svgThumbnailCanvas.setRenderingTransform(new AffineTransform());
-	    }
-	}
+            if (documentChanged) {
+                svgThumbnailCanvas.setGraphicsNode(null);
+                svgThumbnailCanvas.setRenderingTransform(new AffineTransform());
+            }
+        }
     }
 
     /**
@@ -371,8 +371,8 @@ public class ThumbnailDialog extends JDialog {
             Dimension dim = svgCanvas.getSize();
             s = new Rectangle2D.Float(0, 0, dim.width, dim.height);
             try {
-		at = svgCanvas.getRenderingTransform().createInverse();
-		at.preConcatenate(svgThumbnailCanvas.getRenderingTransform());
+                at = svgCanvas.getRenderingTransform().createInverse();
+                at.preConcatenate(svgThumbnailCanvas.getRenderingTransform());
                 s = at.createTransformedShape(s);
             } catch (NoninvertibleTransformException ex) {
                 dim = svgThumbnailCanvas.getSize();

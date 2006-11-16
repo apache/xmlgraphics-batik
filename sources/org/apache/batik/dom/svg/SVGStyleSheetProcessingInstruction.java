@@ -115,7 +115,7 @@ public class SVGStyleSheetProcessingInstruction
      * org.w3c.dom.ProcessingInstruction#setData(String)}.
      */
     public void setData(String data) throws DOMException {
-	super.setData(data);
+        super.setData(data);
         styleSheet = null;
     }
 

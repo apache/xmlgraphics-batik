@@ -67,25 +67,25 @@ public class StyleSheetProcessingInstruction
      * Creates a new ProcessingInstruction object.
      */
     public StyleSheetProcessingInstruction(String            data,
-					   AbstractDocument  owner,
-					   StyleSheetFactory f) {
-	ownerDocument = owner;
-	setData(data);
-	factory = f;
+                                           AbstractDocument  owner,
+                                           StyleSheetFactory f) {
+        ownerDocument = owner;
+        setData(data);
+        factory = f;
     }
 
     /**
      * Tests whether this node is readonly.
      */
     public boolean isReadonly() {
-	return readonly;
+        return readonly;
     }
 
     /**
      * Sets this node readonly attribute.
      */
     public void setReadonly(boolean v) {
-	readonly = v;
+        readonly = v;
     }
 
     /**
@@ -100,17 +100,17 @@ public class StyleSheetProcessingInstruction
      * @return "xml-stylesheet".
      */
     public String getTarget() {
-	return "xml-stylesheet";
+        return "xml-stylesheet";
     }
 
     /**
      *  The style sheet. 
      */
     public StyleSheet getSheet() {
-	if (sheet == null) {
-	    sheet = factory.createStyleSheet(this, getPseudoAttributes());
-	}
-	return sheet;
+        if (sheet == null) {
+            sheet = factory.createStyleSheet(this, getPseudoAttributes());
+        }
+        return sheet;
     }
 
     /**
@@ -131,8 +131,8 @@ public class StyleSheetProcessingInstruction
      * org.w3c.dom.ProcessingInstruction#setData(String)}.
      */
     public void setData(String data) throws DOMException {
-	super.setData(data);
-	sheet = null;
+        super.setData(data);
+        sheet = null;
         pseudoAttributes = null;
     }
 

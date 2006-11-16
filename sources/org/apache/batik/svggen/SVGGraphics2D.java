@@ -216,7 +216,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
      * @param groupMgr the new DOM Group manager this SVGGraphics2D should use
      */
      protected final void setDOMGroupManager(DOMGroupManager groupMgr) {
-	this.domGroupManager = groupMgr;
+        this.domGroupManager = groupMgr;
     }
 
     /**

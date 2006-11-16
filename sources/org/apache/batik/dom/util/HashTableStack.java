@@ -61,7 +61,7 @@ public class HashTableStack {
             current = new Link(current);
         }
         if (s.length() == 0) current.defaultStr = v;
-	return (String)current.table.put(s, v);
+        return (String)current.table.put(s, v);
     }
     
     /**
@@ -70,28 +70,28 @@ public class HashTableStack {
     public String get(String s) {
         if (s.length() == 0) return current.defaultStr;
 
-	for (Link l = current; l != null; l = l.next) {
-	    String uri = (String)l.table.get(s);
-	    if (uri != null) {
-		return uri;
-	    }
-	}
-	return null;
+        for (Link l = current; l != null; l = l.next) {
+            String uri = (String)l.table.get(s);
+            if (uri != null) {
+                return uri;
+            }
+        }
+        return null;
     }
-	
+        
     /**
      * To store the hashtables.
      */
     protected static class Link {
-	/**
-	 * The table.
-	 */
-	public HashTable table;
-	
-	/**
-	 * The next link.
-	 */
-	public Link next;
+        /**
+         * The table.
+         */
+        public HashTable table;
+        
+        /**
+         * The next link.
+         */
+        public Link next;
 
         /**
          * The default namespace for this part of the stack.
@@ -103,15 +103,15 @@ public class HashTableStack {
          * added.
          */
         public int pushCount = 0;
-	
-	/**
-	 * Creates a new link.
-	 */
-	public Link(Link n) {
-	    table = new HashTable();
-	    next  = n;
+        
+        /**
+         * Creates a new link.
+         */
+        public Link(Link n) {
+            table = new HashTable();
+            next  = n;
             if (next != null) 
                 defaultStr = next.defaultStr;
-	}
+        }
     }
 }

@@ -39,17 +39,17 @@ public class WritingModeManager extends IdentifierManager {
      */
     protected final static StringMap values = new StringMap();
     static {
-	values.put(CSSConstants.CSS_LR_VALUE,
+        values.put(CSSConstants.CSS_LR_VALUE,
                    SVGValueConstants.LR_VALUE);
-	values.put(CSSConstants.CSS_LR_TB_VALUE,
+        values.put(CSSConstants.CSS_LR_TB_VALUE,
                    SVGValueConstants.LR_TB_VALUE);
-	values.put(CSSConstants.CSS_RL_VALUE,
+        values.put(CSSConstants.CSS_RL_VALUE,
                    SVGValueConstants.RL_VALUE);
-	values.put(CSSConstants.CSS_RL_TB_VALUE,
+        values.put(CSSConstants.CSS_RL_TB_VALUE,
                    SVGValueConstants.RL_TB_VALUE);
-	values.put(CSSConstants.CSS_TB_VALUE,
+        values.put(CSSConstants.CSS_TB_VALUE,
                    SVGValueConstants.TB_VALUE);
-	values.put(CSSConstants.CSS_TB_RL_VALUE,
+        values.put(CSSConstants.CSS_TB_RL_VALUE,
                    SVGValueConstants.TB_RL_VALUE);
     }
 
@@ -58,7 +58,7 @@ public class WritingModeManager extends IdentifierManager {
      * org.apache.batik.css.engine.value.ValueManager#isInheritedProperty()}.
      */
     public boolean isInheritedProperty() {
-	return true;
+        return true;
     }
 
     /**
@@ -87,7 +87,7 @@ public class WritingModeManager extends IdentifierManager {
      * org.apache.batik.css.engine.value.ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return CSSConstants.CSS_WRITING_MODE_PROPERTY;
+        return CSSConstants.CSS_WRITING_MODE_PROPERTY;
     }
     
     /**

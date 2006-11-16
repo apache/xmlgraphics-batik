@@ -102,7 +102,7 @@ public class MenuFactory extends ResourceManager {
     public MenuFactory(ResourceBundle rb, ActionMap am) {
         super(rb);
         actions = am;
-	buttonGroup = null;
+        buttonGroup = null;
     }
 
     /**
@@ -118,9 +118,9 @@ public class MenuFactory extends ResourceManager {
      *         action map
      */
     public JMenuBar createJMenuBar(String name)
-	throws MissingResourceException,
+        throws MissingResourceException,
                ResourceFormatException,
-	       MissingListenerException {
+               MissingListenerException {
         JMenuBar result = new JMenuBar();
         List     menus  = getStringList(name);
         Iterator it     = menus.iterator();
@@ -142,23 +142,23 @@ public class MenuFactory extends ResourceManager {
      *         action map
      */
     protected JComponent createJMenuComponent(String name)
-	throws MissingResourceException,
-	       ResourceFormatException,
-	       MissingListenerException {
-	if (name.equals(SEPARATOR)) {
-	    buttonGroup = null;
-	    return new JSeparator();
-	}
+        throws MissingResourceException,
+               ResourceFormatException,
+               MissingListenerException {
+        if (name.equals(SEPARATOR)) {
+            buttonGroup = null;
+            return new JSeparator();
+        }
         String     type = getString(name+TYPE_SUFFIX);
         JComponent item = null;
 
-	if (type.equals(TYPE_RADIO)) {
-	    if (buttonGroup == null) {
-		buttonGroup = new ButtonGroup();
-	    }
-	} else {
-	    buttonGroup = null;
-	}
+        if (type.equals(TYPE_RADIO)) {
+            if (buttonGroup == null) {
+                buttonGroup = new ButtonGroup();
+            }
+        } else {
+            buttonGroup = null;
+        }
 
         if (type.equals(TYPE_MENU)) {
             item = createJMenu(name);
@@ -166,15 +166,15 @@ public class MenuFactory extends ResourceManager {
             item = createJMenuItem(name);
         } else if (type.equals(TYPE_RADIO)) {
             item = createJRadioButtonMenuItem(name);
-	    buttonGroup.add((AbstractButton)item);
+            buttonGroup.add((AbstractButton)item);
         } else if (type.equals(TYPE_CHECK)) {
             item = createJCheckBoxMenuItem(name);
         } else {
-	    throw new ResourceFormatException("Malformed resource",
-					      bundle.getClass().getName(),
-					      name+TYPE_SUFFIX);
-	}
-	
+            throw new ResourceFormatException("Malformed resource",
+                                              bundle.getClass().getName(),
+                                              name+TYPE_SUFFIX);
+        }
+        
         return item;
     }
 
@@ -191,9 +191,9 @@ public class MenuFactory extends ResourceManager {
      *         action map.
      */
     public JMenu createJMenu(String name)
-	throws MissingResourceException,
-	       ResourceFormatException,
-	       MissingListenerException {
+        throws MissingResourceException,
+               ResourceFormatException,
+               MissingListenerException {
         JMenu result = new JMenu(getString(name+TEXT_SUFFIX));
         initializeJMenuItem(result, name);
 
@@ -219,9 +219,9 @@ public class MenuFactory extends ResourceManager {
      *         the action map.
      */
     public JMenuItem createJMenuItem(String name)
-	throws MissingResourceException,
-	       ResourceFormatException,
-	       MissingListenerException {
+        throws MissingResourceException,
+               ResourceFormatException,
+               MissingListenerException {
         JMenuItem result = new JMenuItem(getString(name+TEXT_SUFFIX));
         initializeJMenuItem(result, name);
         return result;
@@ -240,19 +240,19 @@ public class MenuFactory extends ResourceManager {
      *         the action map.
      */
     public JRadioButtonMenuItem createJRadioButtonMenuItem(String name)
-	throws MissingResourceException,
-	       ResourceFormatException,
-	       MissingListenerException {
+        throws MissingResourceException,
+               ResourceFormatException,
+               MissingListenerException {
         JRadioButtonMenuItem result;
-	result = new JRadioButtonMenuItem(getString(name+TEXT_SUFFIX));
+        result = new JRadioButtonMenuItem(getString(name+TEXT_SUFFIX));
         initializeJMenuItem(result, name);
 
         // is the item selected?
-	try {
-	    result.setSelected(getBoolean(name+SELECTED_SUFFIX));
-	} catch (MissingResourceException e) {
-	}
-	
+        try {
+            result.setSelected(getBoolean(name+SELECTED_SUFFIX));
+        } catch (MissingResourceException e) {
+        }
+        
         return result;
     }
 
@@ -269,19 +269,19 @@ public class MenuFactory extends ResourceManager {
      *         the action map.
      */
     public JCheckBoxMenuItem createJCheckBoxMenuItem(String name)
-	throws MissingResourceException,
-	       ResourceFormatException,
-	       MissingListenerException {
+        throws MissingResourceException,
+               ResourceFormatException,
+               MissingListenerException {
         JCheckBoxMenuItem result;
         result = new JCheckBoxMenuItem(getString(name+TEXT_SUFFIX));
         initializeJMenuItem(result, name);
 
         // is the item selected?
-	try {
-	    result.setSelected(getBoolean(name+SELECTED_SUFFIX));
-	} catch (MissingResourceException e) {
-	}
-	
+        try {
+            result.setSelected(getBoolean(name+SELECTED_SUFFIX));
+        } catch (MissingResourceException e) {
+        }
+        
         return result;
     }
 
@@ -295,67 +295,67 @@ public class MenuFactory extends ResourceManager {
      *         the action map.
      */
     protected void initializeJMenuItem(JMenuItem item, String name)
-	throws ResourceFormatException,
-	       MissingListenerException {
+        throws ResourceFormatException,
+               MissingListenerException {
         // Action
-	try {
-	    Action a = actions.getAction(getString(name+ACTION_SUFFIX));
-	    if (a == null) {
-		throw new MissingListenerException("", "Action",
+        try {
+            Action a = actions.getAction(getString(name+ACTION_SUFFIX));
+            if (a == null) {
+                throw new MissingListenerException("", "Action",
                                                    name+ACTION_SUFFIX);
-	    }
-	    item.setAction(a);
+            }
+            item.setAction(a);
             item.setText(getString(name+TEXT_SUFFIX));
-	    if (a instanceof JComponentModifier) {
-		((JComponentModifier)a).addJComponent(item);
-	    }
-	} catch (MissingResourceException e) {
-	}
+            if (a instanceof JComponentModifier) {
+                ((JComponentModifier)a).addJComponent(item);
+            }
+        } catch (MissingResourceException e) {
+        }
 
-	// Icon
-	try {
-	    String s = getString(name+ICON_SUFFIX);
-	    URL url  = actions.getClass().getResource(s);
-	    if (url != null) {
-		item.setIcon(new ImageIcon(url));
-	    }
-	} catch (MissingResourceException e) {
-	}
+        // Icon
+        try {
+            String s = getString(name+ICON_SUFFIX);
+            URL url  = actions.getClass().getResource(s);
+            if (url != null) {
+                item.setIcon(new ImageIcon(url));
+            }
+        } catch (MissingResourceException e) {
+        }
 
         // Mnemonic
-	try {
-	    String str = getString(name+MNEMONIC_SUFFIX);
-	    if (str.length() == 1) {
-		item.setMnemonic(str.charAt(0));
-	    } else {
-		throw new ResourceFormatException("Malformed mnemonic",
-						  bundle.getClass().getName(),
-						  name+MNEMONIC_SUFFIX);
-	    }
-	} catch (MissingResourceException e) {
-	}
+        try {
+            String str = getString(name+MNEMONIC_SUFFIX);
+            if (str.length() == 1) {
+                item.setMnemonic(str.charAt(0));
+            } else {
+                throw new ResourceFormatException("Malformed mnemonic",
+                                                  bundle.getClass().getName(),
+                                                  name+MNEMONIC_SUFFIX);
+            }
+        } catch (MissingResourceException e) {
+        }
 
         // Accelerator
-	try {
-	    if (!(item instanceof JMenu)) {
-		String str = getString(name+ACCELERATOR_SUFFIX);
-		KeyStroke ks = KeyStroke.getKeyStroke(str);
-		if (ks != null) {
-		    item.setAccelerator(ks);
-		} else {
-		    throw new ResourceFormatException
+        try {
+            if (!(item instanceof JMenu)) {
+                String str = getString(name+ACCELERATOR_SUFFIX);
+                KeyStroke ks = KeyStroke.getKeyStroke(str);
+                if (ks != null) {
+                    item.setAccelerator(ks);
+                } else {
+                    throw new ResourceFormatException
                         ("Malformed accelerator",
                          bundle.getClass().getName(),
                          name+ACCELERATOR_SUFFIX);
-		}
-	    }
-	} catch (MissingResourceException e) {
-	}
+                }
+            }
+        } catch (MissingResourceException e) {
+        }
 
         // is the item enabled?
-	try {
-	    item.setEnabled(getBoolean(name+ENABLED_SUFFIX));
-	} catch (MissingResourceException e) {
-	}
+        try {
+            item.setEnabled(getBoolean(name+ENABLED_SUFFIX));
+        } catch (MissingResourceException e) {
+        }
     }
 }

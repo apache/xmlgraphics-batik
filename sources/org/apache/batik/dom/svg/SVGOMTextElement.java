@@ -72,7 +72,7 @@ public class SVGOMTextElement
      * org.w3c.dom.svg.SVGLocatable#getNearestViewportElement()}.
      */
     public SVGElement getNearestViewportElement() {
-	return SVGLocatableSupport.getNearestViewportElement(this);
+        return SVGLocatableSupport.getNearestViewportElement(this);
     }
 
     /**
@@ -80,21 +80,21 @@ public class SVGOMTextElement
      * org.w3c.dom.svg.SVGLocatable#getFarthestViewportElement()}.
      */
     public SVGElement getFarthestViewportElement() {
-	return SVGLocatableSupport.getFarthestViewportElement(this);
+        return SVGLocatableSupport.getFarthestViewportElement(this);
     }
 
     /**
      * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGLocatable#getBBox()}.
      */
     public SVGRect getBBox() {
-	return SVGLocatableSupport.getBBox(this);
+        return SVGLocatableSupport.getBBox(this);
     }
 
     /**
      * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGLocatable#getCTM()}.
      */
     public SVGMatrix getCTM() {
-	return SVGLocatableSupport.getCTM(this);
+        return SVGLocatableSupport.getCTM(this);
     }
 
     /**
@@ -102,7 +102,7 @@ public class SVGOMTextElement
      * org.w3c.dom.svg.SVGLocatable#getScreenCTM()}.
      */
     public SVGMatrix getScreenCTM() {
-	return SVGLocatableSupport.getScreenCTM(this);
+        return SVGLocatableSupport.getScreenCTM(this);
     }
 
     /**
@@ -110,8 +110,8 @@ public class SVGOMTextElement
      * org.w3c.dom.svg.SVGLocatable#getTransformToElement(SVGElement)}.
      */
     public SVGMatrix getTransformToElement(SVGElement element)
-	throws SVGException {
-	return SVGLocatableSupport.getTransformToElement(this, element);
+        throws SVGException {
+        return SVGLocatableSupport.getTransformToElement(this, element);
     }
 
     // SVGTransformable support /////////////////////////////////////////////
@@ -121,7 +121,7 @@ public class SVGOMTextElement
      * org.w3c.dom.svg.SVGTransformable#getTransform()}.
      */
     public SVGAnimatedTransformList getTransform() {
-	return SVGTransformableSupport.getTransform(this);
+        return SVGTransformableSupport.getTransform(this);
     }
 
     /**

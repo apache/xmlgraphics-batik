@@ -121,12 +121,12 @@ public class CSSOMValue
      * org.w3c.dom.css.CSSValue#setCssText(String)}.
      */
     public void setCssText(String cssText) throws DOMException {
-	if (handler == null) {
+        if (handler == null) {
             throw new DOMException
                 (DOMException.NO_MODIFICATION_ALLOWED_ERR, "");
-	} else {
+        } else {
             handler.textChanged(cssText);
-	}
+        }
     }
 
     /**
@@ -151,12 +151,12 @@ public class CSSOMValue
      */
     public void setFloatValue(short unitType, float floatValue)
         throws DOMException {
-	if (handler == null) {
+        if (handler == null) {
             throw new DOMException
                 (DOMException.NO_MODIFICATION_ALLOWED_ERR, "");
-	} else {
+        } else {
             handler.floatValueChanged(unitType, floatValue);
-	}
+        }
     }
 
     /**
@@ -171,42 +171,42 @@ public class CSSOMValue
      * Converts the actual float value to the given unit type.
      */
     public static float convertFloatValue(short unitType, Value value) {
-	switch (unitType) {
-	case CSSPrimitiveValue.CSS_NUMBER:
-	case CSSPrimitiveValue.CSS_PERCENTAGE:
-	case CSSPrimitiveValue.CSS_EMS:
-	case CSSPrimitiveValue.CSS_EXS:
-	case CSSPrimitiveValue.CSS_DIMENSION:
-	case CSSPrimitiveValue.CSS_PX:
-	    if (value.getPrimitiveType() == unitType) {
-		return value.getFloatValue();
-	    }
-	    break;
-	case CSSPrimitiveValue.CSS_CM:
-	    return toCentimeters(value);
-	case CSSPrimitiveValue.CSS_MM:
-	    return toMillimeters(value);
-	case CSSPrimitiveValue.CSS_IN:
-	    return toInches(value);
-	case CSSPrimitiveValue.CSS_PT:
-	    return toPoints(value);
-	case CSSPrimitiveValue.CSS_PC:
-	    return toPicas(value);
-	case CSSPrimitiveValue.CSS_DEG:
-	    return toDegrees(value);
-	case CSSPrimitiveValue.CSS_RAD:
-	    return toRadians(value);
-	case CSSPrimitiveValue.CSS_GRAD:
-	    return toGradians(value);
-	case CSSPrimitiveValue.CSS_MS:
-	    return toMilliseconds(value);
-	case CSSPrimitiveValue.CSS_S:
-	    return toSeconds(value);
-	case CSSPrimitiveValue.CSS_HZ:
-	    return toHertz(value);
-	case CSSPrimitiveValue.CSS_KHZ:
-	    return tokHertz(value);
-	}
+        switch (unitType) {
+        case CSSPrimitiveValue.CSS_NUMBER:
+        case CSSPrimitiveValue.CSS_PERCENTAGE:
+        case CSSPrimitiveValue.CSS_EMS:
+        case CSSPrimitiveValue.CSS_EXS:
+        case CSSPrimitiveValue.CSS_DIMENSION:
+        case CSSPrimitiveValue.CSS_PX:
+            if (value.getPrimitiveType() == unitType) {
+                return value.getFloatValue();
+            }
+            break;
+        case CSSPrimitiveValue.CSS_CM:
+            return toCentimeters(value);
+        case CSSPrimitiveValue.CSS_MM:
+            return toMillimeters(value);
+        case CSSPrimitiveValue.CSS_IN:
+            return toInches(value);
+        case CSSPrimitiveValue.CSS_PT:
+            return toPoints(value);
+        case CSSPrimitiveValue.CSS_PC:
+            return toPicas(value);
+        case CSSPrimitiveValue.CSS_DEG:
+            return toDegrees(value);
+        case CSSPrimitiveValue.CSS_RAD:
+            return toRadians(value);
+        case CSSPrimitiveValue.CSS_GRAD:
+            return toGradians(value);
+        case CSSPrimitiveValue.CSS_MS:
+            return toMilliseconds(value);
+        case CSSPrimitiveValue.CSS_S:
+            return toSeconds(value);
+        case CSSPrimitiveValue.CSS_HZ:
+            return toHertz(value);
+        case CSSPrimitiveValue.CSS_KHZ:
+            return tokHertz(value);
+        }
         throw new DOMException(DOMException.INVALID_ACCESS_ERR, "");
     }
 
@@ -214,204 +214,204 @@ public class CSSOMValue
      * Converts the current value into centimeters.
      */
     protected static float toCentimeters(Value value) {
-	switch (value.getPrimitiveType()) {
-	case CSSPrimitiveValue.CSS_CM:
-	    return value.getFloatValue();
-	case CSSPrimitiveValue.CSS_MM:
-	    return (value.getFloatValue() / 10);
-	case CSSPrimitiveValue.CSS_IN:
-	    return (value.getFloatValue() * 2.54f);
-	case CSSPrimitiveValue.CSS_PT:
-	    return (value.getFloatValue() * 2.54f / 72);
-	case CSSPrimitiveValue.CSS_PC:
-	    return (value.getFloatValue() * 2.54f / 6);
-	default:
+        switch (value.getPrimitiveType()) {
+        case CSSPrimitiveValue.CSS_CM:
+            return value.getFloatValue();
+        case CSSPrimitiveValue.CSS_MM:
+            return (value.getFloatValue() / 10);
+        case CSSPrimitiveValue.CSS_IN:
+            return (value.getFloatValue() * 2.54f);
+        case CSSPrimitiveValue.CSS_PT:
+            return (value.getFloatValue() * 2.54f / 72);
+        case CSSPrimitiveValue.CSS_PC:
+            return (value.getFloatValue() * 2.54f / 6);
+        default:
             throw new DOMException(DOMException.INVALID_ACCESS_ERR, "");
-	}
+        }
     }
 
     /**
      * Converts the current value into inches.
      */
     protected static float toInches(Value value) {
-	switch (value.getPrimitiveType()) {
-	case CSSPrimitiveValue.CSS_CM:
-	    return (value.getFloatValue() / 2.54f);
-	case CSSPrimitiveValue.CSS_MM:
-	    return (value.getFloatValue() / 25.4f);
-	case CSSPrimitiveValue.CSS_IN:
-	    return value.getFloatValue();
-	case CSSPrimitiveValue.CSS_PT:
-	    return (value.getFloatValue() / 72);
-	case CSSPrimitiveValue.CSS_PC:
-	    return (value.getFloatValue() / 6);
-	default:
+        switch (value.getPrimitiveType()) {
+        case CSSPrimitiveValue.CSS_CM:
+            return (value.getFloatValue() / 2.54f);
+        case CSSPrimitiveValue.CSS_MM:
+            return (value.getFloatValue() / 25.4f);
+        case CSSPrimitiveValue.CSS_IN:
+            return value.getFloatValue();
+        case CSSPrimitiveValue.CSS_PT:
+            return (value.getFloatValue() / 72);
+        case CSSPrimitiveValue.CSS_PC:
+            return (value.getFloatValue() / 6);
+        default:
             throw new DOMException(DOMException.INVALID_ACCESS_ERR, "");
-	}
+        }
     }
 
     /**
      * Converts the current value into millimeters.
      */
     protected static float toMillimeters(Value value) {
-	switch (value.getPrimitiveType()) {
-	case CSSPrimitiveValue.CSS_CM:
-	    return (value.getFloatValue() * 10);
-	case CSSPrimitiveValue.CSS_MM:
-	    return value.getFloatValue();
-	case CSSPrimitiveValue.CSS_IN:
-	    return (value.getFloatValue() * 25.4f);
-	case CSSPrimitiveValue.CSS_PT:
-	    return (value.getFloatValue() * 25.4f / 72);
-	case CSSPrimitiveValue.CSS_PC:
-	    return (value.getFloatValue() * 25.4f / 6);
-	default:
+        switch (value.getPrimitiveType()) {
+        case CSSPrimitiveValue.CSS_CM:
+            return (value.getFloatValue() * 10);
+        case CSSPrimitiveValue.CSS_MM:
+            return value.getFloatValue();
+        case CSSPrimitiveValue.CSS_IN:
+            return (value.getFloatValue() * 25.4f);
+        case CSSPrimitiveValue.CSS_PT:
+            return (value.getFloatValue() * 25.4f / 72);
+        case CSSPrimitiveValue.CSS_PC:
+            return (value.getFloatValue() * 25.4f / 6);
+        default:
             throw new DOMException(DOMException.INVALID_ACCESS_ERR, "");
-	}
+        }
     }
 
     /**
      * Converts the current value into points.
      */
     protected static float toPoints(Value value) {
-	switch (value.getPrimitiveType()) {
-	case CSSPrimitiveValue.CSS_CM:
-	    return (value.getFloatValue() * 72 / 2.54f);
-	case CSSPrimitiveValue.CSS_MM:
-	    return (value.getFloatValue() * 72 / 25.4f);
-	case CSSPrimitiveValue.CSS_IN:
-	    return (value.getFloatValue() * 72);
-	case CSSPrimitiveValue.CSS_PT:
-	    return value.getFloatValue();
-	case CSSPrimitiveValue.CSS_PC:
-	    return (value.getFloatValue() * 12);
-	default:
+        switch (value.getPrimitiveType()) {
+        case CSSPrimitiveValue.CSS_CM:
+            return (value.getFloatValue() * 72 / 2.54f);
+        case CSSPrimitiveValue.CSS_MM:
+            return (value.getFloatValue() * 72 / 25.4f);
+        case CSSPrimitiveValue.CSS_IN:
+            return (value.getFloatValue() * 72);
+        case CSSPrimitiveValue.CSS_PT:
+            return value.getFloatValue();
+        case CSSPrimitiveValue.CSS_PC:
+            return (value.getFloatValue() * 12);
+        default:
             throw new DOMException(DOMException.INVALID_ACCESS_ERR, "");
-	}
+        }
     }
 
     /**
      * Converts the current value into picas.
      */
     protected static float toPicas(Value value) {
-	switch (value.getPrimitiveType()) {
-	case CSSPrimitiveValue.CSS_CM:
-	    return (value.getFloatValue() * 6 / 2.54f);
-	case CSSPrimitiveValue.CSS_MM:
-	    return (value.getFloatValue() * 6 / 25.4f);
-	case CSSPrimitiveValue.CSS_IN:
-	    return (value.getFloatValue() * 6);
-	case CSSPrimitiveValue.CSS_PT:
-	    return (value.getFloatValue() / 12);
-	case CSSPrimitiveValue.CSS_PC:
-	    return value.getFloatValue();
-	default:
+        switch (value.getPrimitiveType()) {
+        case CSSPrimitiveValue.CSS_CM:
+            return (value.getFloatValue() * 6 / 2.54f);
+        case CSSPrimitiveValue.CSS_MM:
+            return (value.getFloatValue() * 6 / 25.4f);
+        case CSSPrimitiveValue.CSS_IN:
+            return (value.getFloatValue() * 6);
+        case CSSPrimitiveValue.CSS_PT:
+            return (value.getFloatValue() / 12);
+        case CSSPrimitiveValue.CSS_PC:
+            return value.getFloatValue();
+        default:
             throw new DOMException(DOMException.INVALID_ACCESS_ERR, "");
-	}
+        }
     }
 
     /**
      * Converts the current value into degrees.
      */
     protected static float toDegrees(Value value) {
-	switch (value.getPrimitiveType()) {
-	case CSSPrimitiveValue.CSS_DEG:
-	    return value.getFloatValue();
-	case CSSPrimitiveValue.CSS_RAD:
-	    return (float)(value.getFloatValue() * 180 / Math.PI);
-	case CSSPrimitiveValue.CSS_GRAD:
-	    return (value.getFloatValue() * 9 / 5);
-	default:
+        switch (value.getPrimitiveType()) {
+        case CSSPrimitiveValue.CSS_DEG:
+            return value.getFloatValue();
+        case CSSPrimitiveValue.CSS_RAD:
+            return (float)(value.getFloatValue() * 180 / Math.PI);
+        case CSSPrimitiveValue.CSS_GRAD:
+            return (value.getFloatValue() * 9 / 5);
+        default:
             throw new DOMException(DOMException.INVALID_ACCESS_ERR, "");
-	}
+        }
     }
 
     /**
      * Converts the current value into radians.
      */
     protected static float toRadians(Value value) {
-	switch (value.getPrimitiveType()) {
-	case CSSPrimitiveValue.CSS_DEG:
-	    return (value.getFloatValue() * 5 / 9);
-	case CSSPrimitiveValue.CSS_RAD:
-	    return value.getFloatValue();
-	case CSSPrimitiveValue.CSS_GRAD:
-	    return (float)(value.getFloatValue() * 100 / Math.PI);
-	default:
+        switch (value.getPrimitiveType()) {
+        case CSSPrimitiveValue.CSS_DEG:
+            return (value.getFloatValue() * 5 / 9);
+        case CSSPrimitiveValue.CSS_RAD:
+            return value.getFloatValue();
+        case CSSPrimitiveValue.CSS_GRAD:
+            return (float)(value.getFloatValue() * 100 / Math.PI);
+        default:
             throw new DOMException(DOMException.INVALID_ACCESS_ERR, "");
-	}
+        }
     }
 
     /**
      * Converts the current value into gradians.
      */
     protected static float toGradians(Value value) {
-	switch (value.getPrimitiveType()) {
-	case CSSPrimitiveValue.CSS_DEG:
-	    return (float)(value.getFloatValue() * Math.PI / 180);
-	case CSSPrimitiveValue.CSS_RAD:
-	    return (float)(value.getFloatValue() * Math.PI / 100);
-	case CSSPrimitiveValue.CSS_GRAD:
-	    return value.getFloatValue();
-	default:
+        switch (value.getPrimitiveType()) {
+        case CSSPrimitiveValue.CSS_DEG:
+            return (float)(value.getFloatValue() * Math.PI / 180);
+        case CSSPrimitiveValue.CSS_RAD:
+            return (float)(value.getFloatValue() * Math.PI / 100);
+        case CSSPrimitiveValue.CSS_GRAD:
+            return value.getFloatValue();
+        default:
             throw new DOMException(DOMException.INVALID_ACCESS_ERR, "");
-	}
+        }
     }
 
     /**
      * Converts the current value into milliseconds.
      */
     protected static float toMilliseconds(Value value) {
-	switch (value.getPrimitiveType()) {
-	case CSSPrimitiveValue.CSS_MS:
-	    return value.getFloatValue();
-	case CSSPrimitiveValue.CSS_S:
-	    return (value.getFloatValue() * 1000);
-	default:
+        switch (value.getPrimitiveType()) {
+        case CSSPrimitiveValue.CSS_MS:
+            return value.getFloatValue();
+        case CSSPrimitiveValue.CSS_S:
+            return (value.getFloatValue() * 1000);
+        default:
             throw new DOMException(DOMException.INVALID_ACCESS_ERR, "");
-	}
+        }
     }
-	
+        
     /**
      * Converts the current value into seconds.
      */
     protected static float toSeconds(Value value) {
-	switch (value.getPrimitiveType()) {
-	case CSSPrimitiveValue.CSS_MS:
-	    return (value.getFloatValue() / 1000);
-	case CSSPrimitiveValue.CSS_S:
-	    return value.getFloatValue();
-	default:
+        switch (value.getPrimitiveType()) {
+        case CSSPrimitiveValue.CSS_MS:
+            return (value.getFloatValue() / 1000);
+        case CSSPrimitiveValue.CSS_S:
+            return value.getFloatValue();
+        default:
             throw new DOMException(DOMException.INVALID_ACCESS_ERR, "");
-	}
+        }
     }
-	
+        
     /**
      * Converts the current value into Hertz.
      */
     protected static float toHertz(Value value) {
-	switch (value.getPrimitiveType()) {
-	case CSSPrimitiveValue.CSS_HZ:
-	    return value.getFloatValue();
-	case CSSPrimitiveValue.CSS_KHZ:
-	    return (value.getFloatValue() / 1000);
-	default:
+        switch (value.getPrimitiveType()) {
+        case CSSPrimitiveValue.CSS_HZ:
+            return value.getFloatValue();
+        case CSSPrimitiveValue.CSS_KHZ:
+            return (value.getFloatValue() / 1000);
+        default:
             throw new DOMException(DOMException.INVALID_ACCESS_ERR, "");
-	}
+        }
     }
 
     /**
      * Converts the current value into kHertz.
      */
     protected static float tokHertz(Value value) {
-	switch (value.getPrimitiveType()) {
-	case CSSPrimitiveValue.CSS_HZ:
-	    return (value.getFloatValue() * 1000);
-	case CSSPrimitiveValue.CSS_KHZ:
-	    return value.getFloatValue();
-	default:
+        switch (value.getPrimitiveType()) {
+        case CSSPrimitiveValue.CSS_HZ:
+            return (value.getFloatValue() * 1000);
+        case CSSPrimitiveValue.CSS_KHZ:
+            return value.getFloatValue();
+        default:
             throw new DOMException(DOMException.INVALID_ACCESS_ERR, "");
-	}
+        }
     }
 
    /**
@@ -420,12 +420,12 @@ public class CSSOMValue
      */
     public void setStringValue(short stringType, String stringValue)
         throws DOMException {
-	if (handler == null) {
+        if (handler == null) {
             throw new DOMException
                 (DOMException.NO_MODIFICATION_ALLOWED_ERR, "");
-	} else {
+        } else {
             handler.stringValueChanged(stringType, stringValue);
-	}
+        }
     }
 
     /**

@@ -37,7 +37,7 @@ public class DefaultDirectAdjacentSelector extends AbstractSiblingSelector {
     public DefaultDirectAdjacentSelector(short type,
                                          Selector parent,
                                          SimpleSelector simple) {
-	super(type, parent, simple);
+        super(type, parent, simple);
     }
 
     /**
@@ -45,13 +45,13 @@ public class DefaultDirectAdjacentSelector extends AbstractSiblingSelector {
      * org.w3c.css.sac.Selector#getSelectorType()}.
      */
     public short getSelectorType() {
-	return SAC_DIRECT_ADJACENT_SELECTOR;
+        return SAC_DIRECT_ADJACENT_SELECTOR;
     }
 
     /**
      * Returns a representation of the selector.
      */
     public String toString() {
-	return getSelector() + " + " + getSiblingSelector();
+        return getSelector() + " + " + getSiblingSelector();
     }
 }

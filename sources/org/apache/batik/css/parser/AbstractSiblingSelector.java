@@ -54,8 +54,8 @@ public abstract class AbstractSiblingSelector
                                       Selector sel,
                                       SimpleSelector simple) {
         nodeType = type;
-	selector = sel;
-	simpleSelector = simple;
+        selector = sel;
+        simpleSelector = simple;
     }
 
     /**
@@ -70,7 +70,7 @@ public abstract class AbstractSiblingSelector
      * org.w3c.css.sac.SiblingSelector#getSelector()}.
      */    
     public Selector getSelector() {
-	return selector;
+        return selector;
     }
 
     /**
@@ -78,6 +78,6 @@ public abstract class AbstractSiblingSelector
      * org.w3c.css.sac.SiblingSelector#getSiblingSelector()}.
      */    
     public SimpleSelector getSiblingSelector() {
-	return simpleSelector;
+        return simpleSelector;
     }
 }

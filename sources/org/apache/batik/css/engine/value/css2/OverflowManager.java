@@ -39,13 +39,13 @@ public class OverflowManager extends IdentifierManager {
      */
     protected final static StringMap values = new StringMap();
     static {
-	values.put(CSSConstants.CSS_AUTO_VALUE,
+        values.put(CSSConstants.CSS_AUTO_VALUE,
                    ValueConstants.AUTO_VALUE);
-	values.put(CSSConstants.CSS_HIDDEN_VALUE,
+        values.put(CSSConstants.CSS_HIDDEN_VALUE,
                    ValueConstants.HIDDEN_VALUE);
-	values.put(CSSConstants.CSS_SCROLL_VALUE,
+        values.put(CSSConstants.CSS_SCROLL_VALUE,
                    ValueConstants.SCROLL_VALUE);
-	values.put(CSSConstants.CSS_VISIBLE_VALUE,
+        values.put(CSSConstants.CSS_VISIBLE_VALUE,
                    ValueConstants.VISIBLE_VALUE);
     }
 
@@ -54,7 +54,7 @@ public class OverflowManager extends IdentifierManager {
      * org.apache.batik.css.engine.value.ValueManager#isInheritedProperty()}.
      */
     public boolean isInheritedProperty() {
-	return false;
+        return false;
     }
 
     /**
@@ -83,7 +83,7 @@ public class OverflowManager extends IdentifierManager {
      * org.apache.batik.css.engine.value.ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return CSSConstants.CSS_OVERFLOW_PROPERTY;
+        return CSSConstants.CSS_OVERFLOW_PROPERTY;
     }
     
     /**

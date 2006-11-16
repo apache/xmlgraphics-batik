@@ -93,7 +93,7 @@ function clear() {
     <g id="originalGroup" transform="translate(225,250)">
         <g id="target" onmousedown="onMouseDown('target')" onmouseup="onMouseUp(evt)"  >
             <circle cx="0" cy="0" r="30" fill="crimson" />
-	</g>    
+        </g>    
     </g>
 
     <g id="insertionPointGroup" transform="translate(225,250) scale(2)">

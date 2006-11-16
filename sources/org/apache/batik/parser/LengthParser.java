@@ -38,7 +38,7 @@ public class LengthParser extends AbstractParser {
      * Creates a new LengthParser.
      */
     public LengthParser() {
-	lengthHandler = DefaultLengthHandler.INSTANCE;
+        lengthHandler = DefaultLengthHandler.INSTANCE;
     }
 
     /**
@@ -53,14 +53,14 @@ public class LengthParser extends AbstractParser {
      * @param handler The transform list handler.
      */
     public void setLengthHandler(LengthHandler handler) {
-	lengthHandler = handler;
+        lengthHandler = handler;
     }
 
     /**
      * Returns the length handler in use.
      */
     public LengthHandler getLengthHandler() {
-	return lengthHandler;
+        return lengthHandler;
     }
 
     protected void doParse() throws ParseException, IOException {
@@ -68,7 +68,7 @@ public class LengthParser extends AbstractParser {
 
         current = reader.read();
         skipSpaces();
-	
+        
         parseLength();
 
         skipSpaces();

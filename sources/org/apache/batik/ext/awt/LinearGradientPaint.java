@@ -224,10 +224,10 @@ public final class LinearGradientPaint extends MultipleGradientPaint {
                                Color[] colors, 
                                CycleMethodEnum cycleMethod, 
                                ColorSpaceEnum colorSpace) {
-	
+        
         this(start, end, fractions, colors, cycleMethod, colorSpace, 
              new AffineTransform());
-	
+        
     }
     
     /**<p>
@@ -266,7 +266,7 @@ public final class LinearGradientPaint extends MultipleGradientPaint {
 
         //
         // Check input parameters
-        //	
+        //
         if (start == null || end == null) {
             throw new NullPointerException("Start and end points must be" +
                                            "non-null");
@@ -281,7 +281,7 @@ public final class LinearGradientPaint extends MultipleGradientPaint {
         this.start = (Point2D)start.clone();
 
         this.end = (Point2D)end.clone();
-	
+        
     }
     
     /**
@@ -331,7 +331,7 @@ public final class LinearGradientPaint extends MultipleGradientPaint {
                                                   cycleMethod,
                                                   colorSpace);
         }
-	
+        
         catch(NoninvertibleTransformException e) {
             e.printStackTrace();
             throw new IllegalArgumentException("transform should be" + 

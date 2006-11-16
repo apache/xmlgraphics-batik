@@ -226,14 +226,14 @@ public abstract class AbstractSVGNormPathSegList extends AbstractSVGPathSegList 
          */
         public void curvetoQuadraticAbs(float x1, float y1, 
                 float x, float y) throws ParseException {
-			curvetoCubicAbs(lastAbs.getX() + 2 * (x1 - lastAbs.getX()) / 3,
-							lastAbs.getY() + 2 * (y1 - lastAbs.getY()) / 3,
-							x + 2 * (x1 - x) / 3,
-							y + 2 * (y1 - y) / 3,
-							x, y);
-			lastAbs.setX1(x1);
-			lastAbs.setY1(y1);
-			lastAbs.setPathSegType(SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_ABS);
+                        curvetoCubicAbs(lastAbs.getX() + 2 * (x1 - lastAbs.getX()) / 3,
+                                                        lastAbs.getY() + 2 * (y1 - lastAbs.getY()) / 3,
+                                                        x + 2 * (x1 - x) / 3,
+                                                        y + 2 * (y1 - y) / 3,
+                                                        x, y);
+                        lastAbs.setX1(x1);
+                        lastAbs.setY1(y1);
+                        lastAbs.setPathSegType(SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_ABS);
         }
         
         /**
@@ -278,45 +278,45 @@ public abstract class AbstractSVGNormPathSegList extends AbstractSVGPathSegList 
                 float xAxisRotation, 
                 boolean largeArcFlag, boolean sweepFlag, 
                 float x, float y) throws ParseException {
-			
-			//	 Ensure radii are valid
-			if (rx == 0 || ry == 0) {
-				linetoAbs((float) x, (float) y);
-				return;
-			}
-			
-			// Get the current (x, y) coordinates of the path
-			double x0 = lastAbs.getX();
-			double y0 = lastAbs.getY();
-			if (x0 == x && y0 == y) {
-				// If the endpoints (x, y) and (x0, y0) are identical, then this
-				// is equivalent to omitting the elliptical arc segment entirely.
-				return;
-			}
-			
-			Arc2D arc = ExtendedGeneralPath.computeArc(x0, y0, rx, ry, xAxisRotation, 
-					largeArcFlag, sweepFlag, x, y);
-			if (arc == null) return;
-			
-			AffineTransform t = AffineTransform.getRotateInstance
-			(Math.toRadians(xAxisRotation), arc.getCenterX(), arc.getCenterY());
-			Shape s = t.createTransformedShape(arc);
-			
-			PathIterator pi = s.getPathIterator(new AffineTransform());
-			float d[] = {0,0,0,0,0,0};
-			int i = -1;
-			
-			while (!pi.isDone()) {
-				i = pi.currentSegment(d);
-				
-				switch (i) {
-				case PathIterator.SEG_CUBICTO:
-					curvetoCubicAbs(d[0],d[1],d[2],d[3],d[4],d[5]);
-					break;
-				}
-				pi.next();
-			}
-			lastAbs.setPathSegType(SVGPathSeg.PATHSEG_ARC_ABS);
+                        
+                        //         Ensure radii are valid
+                        if (rx == 0 || ry == 0) {
+                                linetoAbs((float) x, (float) y);
+                                return;
+                        }
+                        
+                        // Get the current (x, y) coordinates of the path
+                        double x0 = lastAbs.getX();
+                        double y0 = lastAbs.getY();
+                        if (x0 == x && y0 == y) {
+                                // If the endpoints (x, y) and (x0, y0) are identical, then this
+                                // is equivalent to omitting the elliptical arc segment entirely.
+                                return;
+                        }
+                        
+                        Arc2D arc = ExtendedGeneralPath.computeArc(x0, y0, rx, ry, xAxisRotation, 
+                                        largeArcFlag, sweepFlag, x, y);
+                        if (arc == null) return;
+                        
+                        AffineTransform t = AffineTransform.getRotateInstance
+                        (Math.toRadians(xAxisRotation), arc.getCenterX(), arc.getCenterY());
+                        Shape s = t.createTransformedShape(arc);
+                        
+                        PathIterator pi = s.getPathIterator(new AffineTransform());
+                        float d[] = {0,0,0,0,0,0};
+                        int i = -1;
+                        
+                        while (!pi.isDone()) {
+                                i = pi.currentSegment(d);
+                                
+                                switch (i) {
+                                case PathIterator.SEG_CUBICTO:
+                                        curvetoCubicAbs(d[0],d[1],d[2],d[3],d[4],d[5]);
+                                        break;
+                                }
+                                pi.next();
+                        }
+                        lastAbs.setPathSegType(SVGPathSeg.PATHSEG_ARC_ABS);
         }
     }
     

@@ -30,62 +30,62 @@ public class DoublyLinkedList {
     /**
      * Basic doubly linked list node interface.
      */
-	public static class Node {
-		private Node next = null;
-		private Node prev = null;
-			
-		public final Node getNext() { return next; }
-		public final Node getPrev() { return prev; }
-						
-		protected final void setNext(Node newNext) { next = newNext; }
-		protected final void setPrev(Node newPrev) { prev = newPrev; }
+        public static class Node {
+                private Node next = null;
+                private Node prev = null;
+                        
+                public final Node getNext() { return next; }
+                public final Node getPrev() { return prev; }
+                                                
+                protected final void setNext(Node newNext) { next = newNext; }
+                protected final void setPrev(Node newPrev) { prev = newPrev; }
 
         /**
          * Unlink this node from it's current list...
          */
-		protected final void unlink() {
-			if (getNext() != null)
-				getNext().setPrev(getPrev());
-			if (getPrev() != null)
-				getPrev().setNext(getNext());
-			
-			setNext(null);
-			setPrev(null);
-		}
-						
+                protected final void unlink() {
+                        if (getNext() != null)
+                                getNext().setPrev(getPrev());
+                        if (getPrev() != null)
+                                getPrev().setNext(getNext());
+                        
+                        setNext(null);
+                        setPrev(null);
+                }
+                                                
         /**
          * Link this node in, infront of nde (unlinks it's self
          * before hand if needed).
          * @param nde the node to link in before.
          */
-		protected final void insertBefore(Node nde) {
-			// Already here...
-			if (this == nde) return;
+                protected final void insertBefore(Node nde) {
+                        // Already here...
+                        if (this == nde) return;
 
-			if (getPrev() != null)
+                        if (getPrev() != null)
                 unlink();
-			
-			// Actually insert this node...
-			if (nde == null) {
-				// empty lst...
-				setNext(this);
-				setPrev(this);
-			} else {
-				setNext(nde);
-				setPrev(nde.getPrev());
-				nde.setPrev(this);
+                        
+                        // Actually insert this node...
+                        if (nde == null) {
+                                // empty lst...
+                                setNext(this);
+                                setPrev(this);
+                        } else {
+                                setNext(nde);
+                                setPrev(nde.getPrev());
+                                nde.setPrev(this);
                 if (getPrev() != null)
                     getPrev().setNext(this);
-			}
-		}
-	}
+                        }
+                }
+        }
 
 
     private Node head = null;
     private int  size = 0;
-			
+                        
     public DoublyLinkedList() {}
-			
+                        
     /**
      * Returns the number of elements currently in the list.
      */
@@ -97,7 +97,7 @@ public class DoublyLinkedList {
     public synchronized void empty() {
         while(size > 0) pop();
     }
-			
+                        
     /**
      * Get the current head element
      * @return The current 'first' element in list.
@@ -152,8 +152,8 @@ public class DoublyLinkedList {
         head = nde;
         size++;
     }
-		
-	/**
+                
+        /**
      * Removes nde from the list it is part of (should be this
      * one, otherwise results are undefined).  If nde is the
      * current head element, then the next element becomes head,
@@ -178,7 +178,7 @@ public class DoublyLinkedList {
      */
     public Node pop() {
         if (head == null) return null;
-			
+                        
         Node nde = head;
         remove(nde);
         return nde;
@@ -190,7 +190,7 @@ public class DoublyLinkedList {
      */
     public Node unpush() {
         if (head == null) return null;
-			
+                        
         Node nde = getTail();
         remove(nde);
         return nde;

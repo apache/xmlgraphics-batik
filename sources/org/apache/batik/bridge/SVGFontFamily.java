@@ -128,7 +128,7 @@ public class SVGFontFamily implements GVTFontFamily {
 
     public static boolean isComplex(Element fontElement, BridgeContext ctx) {
         NodeList glyphElements = fontElement.getElementsByTagNameNS
-	    (SVGConstants.SVG_NAMESPACE_URI, SVGConstants.SVG_GLYPH_TAG);
+            (SVGConstants.SVG_NAMESPACE_URI, SVGConstants.SVG_GLYPH_TAG);
 
         int numGlyphs = glyphElements.getLength();
         for (int i = 0; i < numGlyphs; i++) {

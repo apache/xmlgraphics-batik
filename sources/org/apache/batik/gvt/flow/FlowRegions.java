@@ -50,7 +50,7 @@ public class FlowRegions {
         this.flowShape = s;
         sl = new SegmentList(s);
         currentY = startY-1;
-	gotoY(startY);
+        gotoY(startY);
     }
 
     public double getCurrentY() { return currentY; }
@@ -65,7 +65,7 @@ public class FlowRegions {
         sr = sl.split(y);
         sl = sr.getBelow();
         sr = null;
-	currentY = y;
+        currentY = y;
         if (sl == null) return true;
 
         newLineHeight(lineHeight);

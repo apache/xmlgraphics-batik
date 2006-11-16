@@ -69,7 +69,7 @@ public class SVGColorManager extends ColorManager {
      * Implements {@link ValueManager#isInheritedProperty()}.
      */
     public boolean isInheritedProperty() {
-	return false;
+        return false;
     }
 
     /**
@@ -97,7 +97,7 @@ public class SVGColorManager extends ColorManager {
      * Implements {@link ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return property;
+        return property;
     }
 
     
@@ -192,12 +192,12 @@ public class SVGColorManager extends ColorManager {
      * Creates a float value usable as a component of an RGBColor.
      */
     protected float getColorValue(LexicalUnit lu) {
-	switch (lu.getLexicalUnitType()) {
-	case LexicalUnit.SAC_INTEGER:
-	    return lu.getIntegerValue();
-	case LexicalUnit.SAC_REAL:
-	    return lu.getFloatValue();
-	}
+        switch (lu.getLexicalUnitType()) {
+        case LexicalUnit.SAC_INTEGER:
+            return lu.getIntegerValue();
+        case LexicalUnit.SAC_REAL:
+            return lu.getFloatValue();
+        }
         throw createInvalidLexicalUnitDOMException(lu.getLexicalUnitType());
     }
 }

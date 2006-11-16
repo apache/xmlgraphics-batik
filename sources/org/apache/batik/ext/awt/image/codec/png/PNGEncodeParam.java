@@ -154,12 +154,12 @@ public abstract class PNGEncodeParam implements ImageEncodeParam {
          */
         public void setPalette(int[] rgb) {
             if (rgb.length < 1*3 || rgb.length > 256*3) {
-		throw new 
-		  IllegalArgumentException(PropertyUtil.getString("PNGEncodeParam0"));
+                throw new
+                  IllegalArgumentException(PropertyUtil.getString("PNGEncodeParam0"));
             }
             if ((rgb.length % 3) != 0) {
-                throw new 
-         	  IllegalArgumentException(PropertyUtil.getString("PNGEncodeParam1"));
+                throw new
+                   IllegalArgumentException(PropertyUtil.getString("PNGEncodeParam1"));
             }
             
             palette = (int[])(rgb.clone());

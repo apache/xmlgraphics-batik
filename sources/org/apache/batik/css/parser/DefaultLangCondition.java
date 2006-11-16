@@ -38,7 +38,7 @@ public class DefaultLangCondition implements LangCondition {
      * Creates a new LangCondition object.
      */
     public DefaultLangCondition(String lang) {
-	this.lang = lang;
+        this.lang = lang;
     }
 
     /**
@@ -46,20 +46,20 @@ public class DefaultLangCondition implements LangCondition {
      * org.w3c.css.sac.Condition#getConditionType()}.
      */    
     public short getConditionType() {
-	return SAC_LANG_CONDITION;
+        return SAC_LANG_CONDITION;
     }
 
     /**
      * <b>SAC</b>: Implements {@link org.w3c.css.sac.LangCondition#getLang()}.
      */
     public String getLang() {
-	return lang;
+        return lang;
     }
 
     /**
      * Returns a text representation of this object.
      */
     public String toString() {
-	return ":lang(" + lang + ")";
+        return ":lang(" + lang + ")";
     }
 }

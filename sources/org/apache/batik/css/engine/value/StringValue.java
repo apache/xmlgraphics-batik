@@ -33,15 +33,15 @@ public class StringValue extends AbstractValue {
      * Returns the CSS text associated with the given type/value pair.
      */
     public static String getCssText(short type, String value) {
-	switch (type) {
-	case CSSPrimitiveValue.CSS_URI:
-	    return "url(" + value + ")";
+        switch (type) {
+        case CSSPrimitiveValue.CSS_URI:
+            return "url(" + value + ")";
 
-	case CSSPrimitiveValue.CSS_STRING:
-	    char q = (value.indexOf('"') != -1) ? '\'' : '"';
-	    return q + value + q;
-	}
-	return value;
+        case CSSPrimitiveValue.CSS_STRING:
+            char q = (value.indexOf('"') != -1) ? '\'' : '"';
+            return q + value + q;
+        }
+        return value;
     }
     
     /**
@@ -74,21 +74,21 @@ public class StringValue extends AbstractValue {
      * @param obj the reference object with which to compare.
      */
     public boolean equals(Object obj) {
-	if (obj == null || !(obj instanceof StringValue)) {
-	    return false;
-	}
-	StringValue v = (StringValue)obj;
-	if (unitType != v.unitType) {
-	    return false;
-	}
-	return value.equals(v.value);
+        if (obj == null || !(obj instanceof StringValue)) {
+            return false;
+        }
+        StringValue v = (StringValue)obj;
+        if (unitType != v.unitType) {
+            return false;
+        }
+        return value.equals(v.value);
     }
 
     /**
      * A string representation of the current value. 
      */
     public String getCssText() {
-	return getCssText(unitType, value);
+        return getCssText(unitType, value);
     }
 
     /**

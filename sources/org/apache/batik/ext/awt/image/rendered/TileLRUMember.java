@@ -31,49 +31,49 @@ import  java.lang.ref.SoftReference;
  */
 public class TileLRUMember implements LRUCache.LRUObj {
     private static final boolean DEBUG = false;
-			
-	protected LRUCache.LRUNode myNode  = null;
-	protected Reference        wRaster = null;
-	protected Raster           hRaster = null;
+                        
+        protected LRUCache.LRUNode myNode  = null;
+        protected Reference        wRaster = null;
+        protected Raster           hRaster = null;
 
-	public TileLRUMember() { }
+        public TileLRUMember() { }
 
-	public TileLRUMember(Raster ras) { 
-	    setRaster(ras);
-	}
+        public TileLRUMember(Raster ras) { 
+            setRaster(ras);
+        }
 
-	public void setRaster(Raster ras) {
-	    hRaster = ras;
-	    wRaster = new SoftReference(ras);
-	}
+        public void setRaster(Raster ras) {
+            hRaster = ras;
+            wRaster = new SoftReference(ras);
+        }
 
-	public boolean checkRaster() {
-	    if (hRaster != null) return true;
+        public boolean checkRaster() {
+            if (hRaster != null) return true;
 
-	    if ((wRaster       != null) && 
+            if ((wRaster       != null) && 
             (wRaster.get() != null)) return true;
-			
-	    return false;
-	}
+                        
+            return false;
+        }
 
-	public Raster retrieveRaster() {
-	    if (hRaster != null) return hRaster;
-	    if (wRaster == null) return null;
+        public Raster retrieveRaster() {
+            if (hRaster != null) return hRaster;
+            if (wRaster == null) return null;
 
-	    hRaster = (Raster)wRaster.get();
+            hRaster = (Raster)wRaster.get();
 
-	    if (hRaster == null)  // didn't manage to retrieve it...
+            if (hRaster == null)  // didn't manage to retrieve it...
             wRaster = null;
 
-	    return hRaster;
-	}
+            return hRaster;
+        }
 
-	public LRUCache.LRUNode lruGet()         { return myNode; }
-	public void lruSet(LRUCache.LRUNode nde) { myNode = nde; }
-	public void lruRemove()                  { 
-	    myNode  = null; 
-	    hRaster = null;
-	    if (DEBUG) System.out.println("Removing");
-	}
+        public LRUCache.LRUNode lruGet()         { return myNode; }
+        public void lruSet(LRUCache.LRUNode nde) { myNode = nde; }
+        public void lruRemove()                  { 
+            myNode  = null; 
+            hRaster = null;
+            if (DEBUG) System.out.println("Removing");
+        }
 }
 

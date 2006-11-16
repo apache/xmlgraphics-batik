@@ -38,11 +38,11 @@ public class ColorInterpolationManager extends IdentifierManager {
      */
     protected final static StringMap values = new StringMap();
     static {
-	values.put(CSSConstants.CSS_AUTO_VALUE,
+        values.put(CSSConstants.CSS_AUTO_VALUE,
                    SVGValueConstants.AUTO_VALUE);
-	values.put(CSSConstants.CSS_LINEARRGB_VALUE,
+        values.put(CSSConstants.CSS_LINEARRGB_VALUE,
                    SVGValueConstants.LINEARRGB_VALUE);
-	values.put(CSSConstants.CSS_SRGB_VALUE,
+        values.put(CSSConstants.CSS_SRGB_VALUE,
                    SVGValueConstants.SRGB_VALUE);
     }
 
@@ -51,7 +51,7 @@ public class ColorInterpolationManager extends IdentifierManager {
      * org.apache.batik.css.engine.value.ValueManager#isInheritedProperty()}.
      */
     public boolean isInheritedProperty() {
-	return true;
+        return true;
     }
 
     /**
@@ -80,7 +80,7 @@ public class ColorInterpolationManager extends IdentifierManager {
      * org.apache.batik.css.engine.value.ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return CSSConstants.CSS_COLOR_INTERPOLATION_PROPERTY;
+        return CSSConstants.CSS_COLOR_INTERPOLATION_PROPERTY;
     }
     
     /**

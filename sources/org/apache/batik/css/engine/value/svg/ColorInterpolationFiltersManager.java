@@ -34,7 +34,7 @@ public class ColorInterpolationFiltersManager extends ColorInterpolationManager 
      * org.apache.batik.css.engine.value.ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return CSSConstants.CSS_COLOR_INTERPOLATION_FILTERS_PROPERTY;
+        return CSSConstants.CSS_COLOR_INTERPOLATION_FILTERS_PROPERTY;
     }
     
     /**

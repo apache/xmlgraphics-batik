@@ -42,14 +42,14 @@ public class InheritValue extends AbstractValue {
      *  A string representation of the current value. 
      */
     public String getCssText() {
-	return "inherit";
+        return "inherit";
     }
 
     /**
      * A code defining the type of the value. 
      */
     public short getCssValueType() {
-	return CSSValue.CSS_INHERIT;
+        return CSSValue.CSS_INHERIT;
     }
 
     /**

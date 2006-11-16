@@ -51,7 +51,7 @@ public class Main {
      * The default resource bundle base name.
      */
     public final static String BUNDLE_CLASSNAME =
-	"org.apache.batik.apps.svgpp.resources.Messages";
+        "org.apache.batik.apps.svgpp.resources.Messages";
 
     /**
      * The localizable support.

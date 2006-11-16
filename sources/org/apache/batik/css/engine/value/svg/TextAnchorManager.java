@@ -38,11 +38,11 @@ public class TextAnchorManager extends IdentifierManager {
      */
     protected final static StringMap values = new StringMap();
     static {
-	values.put(CSSConstants.CSS_START_VALUE,
+        values.put(CSSConstants.CSS_START_VALUE,
                    SVGValueConstants.START_VALUE);
-	values.put(CSSConstants.CSS_MIDDLE_VALUE,
+        values.put(CSSConstants.CSS_MIDDLE_VALUE,
                    SVGValueConstants.MIDDLE_VALUE);
-	values.put(CSSConstants.CSS_END_VALUE,
+        values.put(CSSConstants.CSS_END_VALUE,
                    SVGValueConstants.END_VALUE);
     }
 
@@ -51,7 +51,7 @@ public class TextAnchorManager extends IdentifierManager {
      * org.apache.batik.css.engine.value.ValueManager#isInheritedProperty()}.
      */
     public boolean isInheritedProperty() {
-	return true;
+        return true;
     }
 
     /**
@@ -80,7 +80,7 @@ public class TextAnchorManager extends IdentifierManager {
      * org.apache.batik.css.engine.value.ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return CSSConstants.CSS_TEXT_ANCHOR_PROPERTY;
+        return CSSConstants.CSS_TEXT_ANCHOR_PROPERTY;
     }
     
     /**

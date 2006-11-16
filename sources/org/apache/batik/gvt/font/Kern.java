@@ -54,7 +54,7 @@ public class Kern {
      * between glyphs should decrease).  
      */
     public Kern(int[] firstGlyphCodes, 
-		int[] secondGlyphCodes,
+                int[] secondGlyphCodes,
                 UnicodeRange[] firstUnicodeRanges,
                 UnicodeRange[] secondUnicodeRanges,
                 float adjustValue) {

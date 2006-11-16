@@ -143,7 +143,7 @@ public class CSSOMComputedStyle implements CSSStyleDeclaration {
      * org.w3c.dom.css.CSSStyleDeclaration#setProperty(String,String,String)}.
      */
     public void setProperty(String propertyName, String value, String prio)
-	throws DOMException {
+        throws DOMException {
         throw new DOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR, "");
     }
 

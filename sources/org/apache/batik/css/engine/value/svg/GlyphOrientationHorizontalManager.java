@@ -36,7 +36,7 @@ public class GlyphOrientationHorizontalManager
      * org.apache.batik.css.engine.value.ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return CSSConstants.CSS_GLYPH_ORIENTATION_HORIZONTAL_PROPERTY;
+        return CSSConstants.CSS_GLYPH_ORIENTATION_HORIZONTAL_PROPERTY;
     }
     
     /**

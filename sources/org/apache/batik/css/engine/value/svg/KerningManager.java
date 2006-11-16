@@ -41,14 +41,14 @@ public class KerningManager extends LengthManager {
      * Implements {@link ValueManager#isInheritedProperty()}.
      */
     public boolean isInheritedProperty() {
-	return true;
+        return true;
     }
 
     /**
      * Implements {@link ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return CSSConstants.CSS_KERNING_PROPERTY;
+        return CSSConstants.CSS_KERNING_PROPERTY;
     }
     
     /**
@@ -84,8 +84,8 @@ public class KerningManager extends LengthManager {
      */
     public Value createValue(LexicalUnit lu, CSSEngine engine)
         throws DOMException {
-	switch (lu.getLexicalUnitType()) {
-	case LexicalUnit.SAC_INHERIT:
+        switch (lu.getLexicalUnitType()) {
+        case LexicalUnit.SAC_INHERIT:
             return SVGValueConstants.INHERIT_VALUE;
 
         case LexicalUnit.SAC_IDENT:
@@ -103,11 +103,11 @@ public class KerningManager extends LengthManager {
      * ValueManager#createStringValue(short,String,CSSEngine)}.
      */
     public Value createStringValue(short type, String value, CSSEngine engine)
-	throws DOMException {
-	if (type != CSSPrimitiveValue.CSS_IDENT) {
+        throws DOMException {
+        if (type != CSSPrimitiveValue.CSS_IDENT) {
             throw createInvalidStringTypeDOMException(type);
-	}
-	if (value.equalsIgnoreCase(CSSConstants.CSS_AUTO_VALUE)) {
+        }
+        if (value.equalsIgnoreCase(CSSConstants.CSS_AUTO_VALUE)) {
             return SVGValueConstants.AUTO_VALUE;
         }
         throw createInvalidIdentifierDOMException(value);

@@ -40,21 +40,21 @@ public class URITest extends AbstractImageTranscoderTest {
      * @param refImageURI the URI of the reference image
      */
     public URITest(String inputURI, String refImageURI) {
-	this.inputURI = inputURI;
-	this.refImageURI = refImageURI;
+        this.inputURI = inputURI;
+        this.refImageURI = refImageURI;
     }
 
     /**
      * Creates the <tt>TranscoderInput</tt>.
      */
     protected TranscoderInput createTranscoderInput() {
-	return new TranscoderInput(resolveURL(inputURI).toString());
+        return new TranscoderInput(resolveURL(inputURI).toString());
     }
 
     /**
      * Returns the reference image for this test.
      */
     protected byte [] getReferenceImageData() {
-	return createBufferedImageData(resolveURL(refImageURI));
+        return createBufferedImageData(resolveURL(refImageURI));
     }
 }

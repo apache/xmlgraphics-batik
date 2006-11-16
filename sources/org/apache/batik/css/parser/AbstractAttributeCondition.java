@@ -39,13 +39,13 @@ public abstract class AbstractAttributeCondition
      * Creates a new AbstractAttributeCondition object.
      */
     protected AbstractAttributeCondition(String value) {
-	this.value = value;
+        this.value = value;
     }
 
     /**
      * <b>SAC</b>: Implements {@link AttributeCondition#getValue()}.
      */
     public String getValue() {
-	return value;
+        return value;
     }
 }

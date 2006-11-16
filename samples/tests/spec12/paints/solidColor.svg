@@ -49,11 +49,11 @@
             Solid Color Paint Server
         </text>
 
-	<use x="25" y="135" xlink:href="#squiggle"/>
+        <use x="25" y="135" xlink:href="#squiggle"/>
   
-	<use x="25" y="275" xlink:href="#squiggle"/>
+        <use x="25" y="275" xlink:href="#squiggle"/>
 
-	<use x="25" y="415" xlink:href="#squiggle"/>
+        <use x="25" y="415" xlink:href="#squiggle"/>
   
         <g fill="#0D0" stroke="#88F" stroke-width="2">
 

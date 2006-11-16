@@ -42,21 +42,21 @@ public class GenericDocumentFragment extends AbstractDocumentFragment {
      * Creates a new DocumentFragment object.
      */
     public GenericDocumentFragment(AbstractDocument owner) {
-	ownerDocument = owner;
+        ownerDocument = owner;
     }
 
     /**
      * Tests whether this node is readonly.
      */
     public boolean isReadonly() {
-	return readonly;
+        return readonly;
     }
 
     /**
      * Sets this node readonly attribute.
      */
     public void setReadonly(boolean v) {
-	readonly = v;
+        readonly = v;
     }
 
     /**

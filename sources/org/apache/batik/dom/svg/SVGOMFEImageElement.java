@@ -132,7 +132,7 @@ public class SVGOMFEImageElement
      * org.w3c.dom.svg.SVGExternalResourcesRequired#getExternalResourcesRequired()}.
      */
     public SVGAnimatedBoolean getExternalResourcesRequired() {
-	return SVGExternalResourcesRequiredSupport.
+        return SVGExternalResourcesRequiredSupport.
             getExternalResourcesRequired(this);
     }
 

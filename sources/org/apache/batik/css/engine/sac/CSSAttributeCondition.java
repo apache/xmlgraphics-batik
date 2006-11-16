@@ -52,10 +52,10 @@ public class CSSAttributeCondition extends AbstractAttributeCondition {
                                  String namespaceURI,
                                  boolean specified,
                                  String value) {
-	super(value);
-	this.localName = localName;
-	this.namespaceURI = namespaceURI;
-	this.specified = specified;
+        super(value);
+        this.localName = localName;
+        this.namespaceURI = namespaceURI;
+        this.specified = specified;
     }
 
     /**
@@ -77,7 +77,7 @@ public class CSSAttributeCondition extends AbstractAttributeCondition {
      * org.w3c.css.sac.Condition#getConditionType()}.
      */    
     public short getConditionType() {
-	return SAC_ATTRIBUTE_CONDITION;
+        return SAC_ATTRIBUTE_CONDITION;
     }
     
     /**
@@ -85,7 +85,7 @@ public class CSSAttributeCondition extends AbstractAttributeCondition {
      * org.w3c.css.sac.AttributeCondition#getNamespaceURI()}.
      */    
     public String getNamespaceURI() {
-	return namespaceURI;
+        return namespaceURI;
     }
 
     /**
@@ -93,7 +93,7 @@ public class CSSAttributeCondition extends AbstractAttributeCondition {
      * org.w3c.css.sac.AttributeCondition#getLocalName()}.
      */
     public String getLocalName() {
-	return localName;
+        return localName;
     }
 
     /**
@@ -101,18 +101,18 @@ public class CSSAttributeCondition extends AbstractAttributeCondition {
      * org.w3c.css.sac.AttributeCondition#getSpecified()}.
      */
     public boolean getSpecified() {
-	return specified;
+        return specified;
     }
 
     /**
      * Tests whether this condition matches the given element.
      */
     public boolean match(Element e, String pseudoE) {
-	String val = getValue();
-	if (val == null) {
-	    return !e.getAttribute(getLocalName()).equals("");
-	}
-	return e.getAttribute(getLocalName()).equals(val);
+        String val = getValue();
+        if (val == null) {
+            return !e.getAttribute(getLocalName()).equals("");
+        }
+        return e.getAttribute(getLocalName()).equals(val);
     }
 
     /**
@@ -126,9 +126,9 @@ public class CSSAttributeCondition extends AbstractAttributeCondition {
      * Returns a text representation of this object.
      */
     public String toString() {
-	if (value == null) {
-	    return "[" + localName + "]";
-	}
-	return "[" + localName + "=\"" + value + "\"]";
+        if (value == null) {
+            return "[" + localName + "]";
+        }
+        return "[" + localName + "=\"" + value + "\"]";
     }
 }

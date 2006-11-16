@@ -2249,7 +2249,7 @@
             <path id="textPathLacLeman" style="visibility:hidden;" d="M -3200,8500 C -2700,8300 -2000,8200 -1300,8200" />
             <text class="fil17 fnt1" style="letter-spacing:110px;">
                 <textPath xlink:href="#textPathLacLeman" startOffset="5%">Lac Léman</textPath>
-	    </text>
+            </text>
 
             <text x="1270" y="8054" class="fil16 fnt0">Lausanne</text>
             <text x="2378" y="8285" class="fil16 fnt0">Vevey</text>
@@ -2267,19 +2267,19 @@
             <path id="textPathLeTalent" style="visibility:hidden;" d="M -1050,2650 C -960,2750 -800,2930 -700,3030" />
             <text class="fil17 fnt2" style="letter-spacing:0px;">
                 <textPath xlink:href="#textPathLeTalent" startOffset="0%">Le Talent</textPath>
-	    </text>
+            </text>
             <path id="textPathLeVenoge" style="visibility:hidden;" d="M -2600,4270 C -2480,4050 -2320,4000 -2170,3920" />
             <text class="fil17 fnt2" style="letter-spacing:0px;">
                 <textPath xlink:href="#textPathLeVenoge" startOffset="0%">Le Venoge</textPath>
-	    </text>
-	</g>
+            </text>
+        </g>
         <g id="text_legend">
 
             <switch>
             <text x="-3738" y="231" class="fil16 fnt3" systemLanguage="de">Beschäftigung Kanton Waadt</text>
             <text x="-3738" y="231" class="fil16 fnt3" systemLanguage="en">Employment canton of Vaud</text></switch>
 
-      	    <text x="3739" y="231" class="fil16 fnt3" style="text-anchor:end;">1985/95</text>
+            <text x="3739" y="231" class="fil16 fnt3" style="text-anchor:end;">1985/95</text>
             <text x="1993" y="231" class="fil16 fnt4"></text>
 
             <switch>

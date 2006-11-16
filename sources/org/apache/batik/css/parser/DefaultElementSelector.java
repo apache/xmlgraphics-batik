@@ -29,7 +29,7 @@ public class DefaultElementSelector extends AbstractElementSelector {
      * Creates a new ElementSelector object.
      */
     public DefaultElementSelector(String uri, String name) {
-	super(uri, name);
+        super(uri, name);
     }
 
     /**
@@ -37,17 +37,17 @@ public class DefaultElementSelector extends AbstractElementSelector {
      * org.w3c.css.sac.Selector#getSelectorType()}.
      */
     public short getSelectorType() {
-	return SAC_ELEMENT_NODE_SELECTOR;
+        return SAC_ELEMENT_NODE_SELECTOR;
     }
 
     /**
      * Returns a representation of the selector.
      */
     public String toString() {
-	String name = getLocalName();
-	if (name == null) {
-	    return "*";
-	}
-	return name;
+        String name = getLocalName();
+        if (name == null) {
+            return "*";
+        }
+        return name;
     }
 }

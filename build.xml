@@ -506,7 +506,7 @@ To display the available targets type:
                                transcoder-jar,
                                bridge-jar,
                                swing-jar,
-			       anim-jar,
+                               anim-jar,
                                codec-jar,
                                extension-jar,
                                xml-jar,

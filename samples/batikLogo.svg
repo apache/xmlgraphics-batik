@@ -85,7 +85,7 @@
                      <use xlink:href="#Batik_Squiggle" width="54" height="57"
                           transform="translate(45,103)" />
                    </g>
-	          </glyph>
+              </glyph>
           
               <glyph id="a" unicode="a" glyph-name="a" horiz-adv-x="105"> 
                   <path transform="scale(1,-1)translate(-125, -170)"

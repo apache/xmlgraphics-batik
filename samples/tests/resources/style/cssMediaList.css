@@ -1,61 +1,61 @@
 
 @media all {
-	.all {
-		visibility: visible;
-	}
+  .all {
+    visibility: visible;
+  }
 }
 
 @media aural {
-	.aural {
-		visibility: visible;
-	}
+  .aural {
+    visibility: visible;
+  }
 }
 
 @media braille {
-	.braille {
-		visibility: visible;
-	}
+  .braille {
+    visibility: visible;
+  }
 }
 
 @media embossed {
-	.embossed {
-		visibility: visible;
-	}
+  .embossed {
+    visibility: visible;
+  }
 }
 
 @media handheld {
-	.handheld {
-		visibility: visible;
-	}
+  .handheld {
+    visibility: visible;
+  }
 }
 
 @media print {
-	.print {
-		visibility: visible;
-	}
+  .print {
+    visibility: visible;
+  }
 }
 
 @media projection {
-	.projection {
-		visibility: visible;
-	}
+  .projection {
+    visibility: visible;
+  }
 }
 
 @media screen {
-	.screen {
-		visibility: visible;
-	}
+  .screen {
+    visibility: visible;
+  }
 }
 
 @media tty {
-	.tty {
-		visibility: visible;
-	}
+  .tty {
+    visibility: visible;
+  }
 }
 
 @media tv {
-	.tv {
-		visibility: visible;
-	}
+  .tv {
+    visibility: visible;
+  }
 }
 

@@ -676,7 +676,7 @@
 
 <g fill="blue" font-size="25">
 
-	<text x="30" y="100" fill="green" style="font-family: SVGArial">Arabic using SVG font:</text>	
+      <text x="30" y="100" fill="green" style="font-family: SVGArial">Arabic using SVG font:</text>
       <text x="30" y="140" xml:lang="ar-SA" style="font-family:  SVGArial; font-size:33">
           &#x644;&#x645;&#x627;&#x630;&#x627; 
           &#x644;&#x627;
@@ -685,14 +685,13 @@
           &#x627;&#x644;&#x639;&#x631;&#x628;&#x64a;&#x629;
           &#x641;&#x62d;&#x633;&#x628;&#x61f;
           </text>
-	
+
       <text fill="DarkRed" x="30" y="170" style="font-family: SVGArial; font-size:18">arabic: 
          &#x621;&#x623;&#x624;&#x625;&#x626;&#x627;&#x628;&#x629;&#x62a;
          &#x62b;&#x62c;&#x62d;&#x62e;&#x62f;&#x630;&#x631;&#x632;&#x633;
          &#x634;&#x635;&#x636;&#x637;&#x638;&#x639;&#x640;&#x641;&#x642;
          &#x643;&#x644;&#x645;&#x646;&#x647;&#x648;&#x649;&#x650;&#x1676;</text>
 
-				
       <text x="30" y="235" fill="green">Arabic using system font:</text> 
       <text x="30" y="275" xml:lang="ar-SA" style="font-family: Arial; font-size:33">
           &#x644;&#x645;&#x627;&#x630;&#x627; 

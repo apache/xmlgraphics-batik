@@ -41,9 +41,9 @@ public class SVGOptionPanel extends OptionPanel {
      * Creates a new panel.
      */
     public SVGOptionPanel() {
-	super(new BorderLayout());
-	add(new JLabel(resources.getString("SVGOptionPanel.label")), 
-	    BorderLayout.NORTH);
+        super(new BorderLayout());
+        add(new JLabel(resources.getString("SVGOptionPanel.label")), 
+            BorderLayout.NORTH);
 
         xmlbaseCB = new JCheckBox
             (resources.getString("SVGOptionPanel.UseXMLBase"));
@@ -62,14 +62,14 @@ public class SVGOptionPanel extends OptionPanel {
      * Returns true if the output should use xml:base.
      */
     public boolean getUseXMLBase() {
-	return xmlbaseCB.isSelected();
+        return xmlbaseCB.isSelected();
     }
 
     /**
      * Returns true if the output should use xml:base.
      */
     public boolean getPrettyPrint() {
-	return prettyPrintCB.isSelected();
+        return prettyPrintCB.isSelected();
     }
 
     /**
@@ -79,9 +79,9 @@ public class SVGOptionPanel extends OptionPanel {
     public static SVGOptionPanel showDialog(Component parent) {
         String title = resources.getString("SVGOptionPanel.dialog.title");
         SVGOptionPanel panel = new SVGOptionPanel();
-	Dialog dialog = new Dialog(parent, title, panel);
-	dialog.pack();
-	dialog.setVisible(true);
-	return panel;
+        Dialog dialog = new Dialog(parent, title, panel);
+        dialog.pack();
+        dialog.setVisible(true);
+        return panel;
     }
 }

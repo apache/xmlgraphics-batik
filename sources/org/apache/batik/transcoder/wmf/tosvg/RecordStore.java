@@ -269,8 +269,8 @@ public class RecordStore {
     transient protected int numObjects;
     transient public int lastObjectIdx;
     transient protected int vpX, vpY, vpW, vpH;
-    transient protected Vector	records;
-    transient protected Vector	objectVector;
+    transient protected Vector records;
+    transient protected Vector objectVector;
 
     transient protected boolean bReading = false;
 }

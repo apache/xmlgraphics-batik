@@ -60,7 +60,7 @@ public class EncodingUtilities {
         ENCODINGS.put("EBCDIC-CP-US",    "Cp037");
         ENCODINGS.put("EBCDIC-CP-CA",    "Cp037");
         ENCODINGS.put("EBCDIC-CP-NL",    "Cp037");
-	ENCODINGS.put("EBCDIC-CP-WT",    "Cp037");
+        ENCODINGS.put("EBCDIC-CP-WT",    "Cp037");
         ENCODINGS.put("EBCDIC-CP-DK",    "Cp277");
         ENCODINGS.put("EBCDIC-CP-NO",    "Cp277");
         ENCODINGS.put("EBCDIC-CP-FI",    "Cp278");

@@ -106,7 +106,7 @@ public abstract class ExtensibleDOMImplementation
      * Implements {@link Localizable#setLocale(Locale)}.
      */
     public void setLocale(Locale l) {
-	localizableSupport.setLocale(l);
+        localizableSupport.setLocale(l);
     }
 
     /**

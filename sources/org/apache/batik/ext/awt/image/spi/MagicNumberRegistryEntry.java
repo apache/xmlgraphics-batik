@@ -80,14 +80,14 @@ public abstract class MagicNumberRegistryEntry
                     if (rn == -1) return false;
                     idx += rn;
                 }
-		
+                
                 idx = 0;
                 while (idx < buffer.length) {
                     int rn = is.read(buffer, idx, buffer.length-idx);
                     if (rn == -1) return false;
                     idx += rn;
                 }
-		
+                
                 for (int i=0; i<magicNumber.length; i++) {
                     if (magicNumber[i] != buffer[i])
                         return false;

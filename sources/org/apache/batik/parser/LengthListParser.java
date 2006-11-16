@@ -33,7 +33,7 @@ public class LengthListParser extends LengthParser {
      * Creates a new LengthListParser.
      */
     public LengthListParser() {
-	lengthHandler = DefaultLengthListHandler.INSTANCE;
+        lengthHandler = DefaultLengthListHandler.INSTANCE;
     }
 
     /**
@@ -48,39 +48,39 @@ public class LengthListParser extends LengthParser {
      * @param handler The transform list handler.
      */
     public void setLengthListHandler(LengthListHandler handler) {
-	lengthHandler = handler;
+        lengthHandler = handler;
     }
 
     /**
      * Returns the length list handler in use.
      */
     public LengthListHandler getLengthListHandler() {
-	return (LengthListHandler)lengthHandler;
+        return (LengthListHandler)lengthHandler;
     }
 
     /**
      * Parses the given reader.
      */
     protected void doParse() throws ParseException, IOException {
-	((LengthListHandler)lengthHandler).startLengthList();
+        ((LengthListHandler)lengthHandler).startLengthList();
 
-	current = reader.read();
-	skipSpaces();
-	
-	try {
-	    for (;;) {
-		lengthHandler.startLength();
-		parseLength();
-		lengthHandler.endLength();
-		skipCommaSpaces();
-		if (current == -1) {
-		    break;
-		}
-	    }
-	} catch (NumberFormatException e) {
+        current = reader.read();
+        skipSpaces();
+        
+        try {
+            for (;;) {
+                lengthHandler.startLength();
+                parseLength();
+                lengthHandler.endLength();
+                skipCommaSpaces();
+                if (current == -1) {
+                    break;
+                }
+            }
+        } catch (NumberFormatException e) {
         reportError("character.unexpected",
                     new Object[] { new Integer(current) });
-	}
-	((LengthListHandler)lengthHandler).endLengthList();
+        }
+        ((LengthListHandler)lengthHandler).endLengthList();
     }
 }

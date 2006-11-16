@@ -145,7 +145,7 @@
                     </glyph>
 
 
-		        <!-- glyphs for i and j have both a d attribute and glyph chilren, -->
+                    <!-- glyphs for i and j have both a d attribute and glyph children, -->
                     <!-- the glyph children are styled -->
 
                     <glyph unicode="i" glyph-name="i" horiz-adv-x="455"

@@ -115,9 +115,9 @@ public class MarkerShapePainter implements ShapePainter {
      * @param g2d the Graphics2D to use
      */
      public void paint(Graphics2D g2d) {
-	 if (markerGroup == null) {
-	     buildMarkerGroup();
-	 }
+         if (markerGroup == null) {
+             buildMarkerGroup();
+         }
          if (markerGroup.getChildren().size() > 0) {
              markerGroup.paint(g2d);
          }
@@ -127,9 +127,9 @@ public class MarkerShapePainter implements ShapePainter {
      * Returns the area painted by this shape painter.
      */
     public Shape getPaintedArea(){
-	 if (markerGroup == null) {
-	     buildMarkerGroup();
-	 }
+         if (markerGroup == null) {
+             buildMarkerGroup();
+         }
         return markerGroup.getOutline();
     }
 
@@ -137,9 +137,9 @@ public class MarkerShapePainter implements ShapePainter {
      * Returns the bounds of the area painted by this shape painter
      */
     public Rectangle2D getPaintedBounds2D(){
-	 if (markerGroup == null) {
-	     buildMarkerGroup();
-	 }
+         if (markerGroup == null) {
+             buildMarkerGroup();
+         }
          return markerGroup.getPrimitiveBounds();
     }
 
@@ -147,9 +147,9 @@ public class MarkerShapePainter implements ShapePainter {
      * Returns true if pt is in the area painted by this shape painter
      */
     public boolean inPaintedArea(Point2D pt){
-	 if (markerGroup == null) {
-	     buildMarkerGroup();
-	 }
+         if (markerGroup == null) {
+             buildMarkerGroup();
+         }
          GraphicsNode gn = markerGroup.nodeHitAt(pt);
          return (gn != null);
     }
@@ -192,7 +192,7 @@ public class MarkerShapePainter implements ShapePainter {
         this.startMarkerProxy = null;
         this.middleMarkerProxies = null;
         this.endMarkerProxy = null;
-	this.markerGroup = null;
+        this.markerGroup = null;
     }
 
     /**
@@ -230,7 +230,7 @@ public class MarkerShapePainter implements ShapePainter {
     public void setStartMarker(Marker startMarker){
         this.startMarker = startMarker;
         this.startMarkerProxy = null;
-	this.markerGroup = null;
+        this.markerGroup = null;
     }
 
     /**
@@ -250,7 +250,7 @@ public class MarkerShapePainter implements ShapePainter {
     public void setMiddleMarker(Marker middleMarker){
         this.middleMarker = middleMarker;
         this.middleMarkerProxies = null;
-	this.markerGroup = null;
+        this.markerGroup = null;
     }
 
     /**
@@ -270,7 +270,7 @@ public class MarkerShapePainter implements ShapePainter {
     public void setEndMarker(Marker endMarker){
         this.endMarker = endMarker;
         this.endMarkerProxy = null;
-	this.markerGroup = null;
+        this.markerGroup = null;
     }
 
     // ---------------------------------------------------------------------
@@ -298,13 +298,13 @@ public class MarkerShapePainter implements ShapePainter {
         if (startMarkerProxy != null) {
             children.add(startMarkerProxy);
         }
-	
+        
         if (middleMarkerProxies != null) {
             for(int i=0; i<middleMarkerProxies.length; i++){
                 children.add(middleMarkerProxies[i]);
             }
         }
-	
+        
         if (endMarkerProxy != null) {
             children.add(endMarkerProxy);
         }
@@ -358,14 +358,14 @@ public class MarkerShapePainter implements ShapePainter {
         
         // Now, compute the marker's proxy transform
         AffineTransform markerTxf = computeMarkerTransform(startMarker,
-							   markerPosition,
-							   rotation);
+                                                           markerPosition,
+                                                           rotation);
                                    
         ProxyGraphicsNode gn = new ProxyGraphicsNode();
 
         gn.setSource(startMarker.getMarkerNode());
         gn.setTransform(markerTxf);
-	
+        
         return gn;
     }
 
@@ -384,7 +384,7 @@ public class MarkerShapePainter implements ShapePainter {
         if (iter.isDone()) {
             return null;
         }
-	
+        
         double coords[] = new double[7];
         double moveTo[] = new double[2];
         int segType = 0;
@@ -446,8 +446,8 @@ public class MarkerShapePainter implements ShapePainter {
 
         // Now, compute the marker's proxy transform
         AffineTransform markerTxf = computeMarkerTransform(endMarker,
-							   markerPosition,
-							   rotation);
+                                                           markerPosition,
+                                                           rotation);
                                    
         ProxyGraphicsNode gn = new ProxyGraphicsNode();
 
@@ -489,7 +489,7 @@ public class MarkerShapePainter implements ShapePainter {
         if (iter.isDone()) {
             return null;
         }
-	
+        
         currSegType = iter.currentSegment(curr);
 
         if (currSegType == PathIterator.SEG_MOVETO) {
@@ -515,7 +515,7 @@ public class MarkerShapePainter implements ShapePainter {
                 next[0] = moveTo[0];
                 next[1] = moveTo[1];
             }
-	    
+            
             proxies.addElement(createMiddleMarker(prev, prevSegType,
                                                   curr, currSegType,
                                                   next, nextSegType));
@@ -555,11 +555,11 @@ public class MarkerShapePainter implements ShapePainter {
                                        curr, currSegType,
                                        next, nextSegType);
         }
-	
+        
         // Now, compute the marker's proxy transform
         AffineTransform markerTxf = computeMarkerTransform(middleMarker,
-							   markerPosition,
-							   rotation);
+                                                           markerPosition,
+                                                           rotation);
                                    
         ProxyGraphicsNode gn = new ProxyGraphicsNode();
 
@@ -788,8 +788,8 @@ public class MarkerShapePainter implements ShapePainter {
      * the given position with the specified rotation 
      */
     private AffineTransform computeMarkerTransform(Marker marker,
-						   Point2D markerPosition,
-						   double rotation) {
+                                                   Point2D markerPosition,
+                                                   double rotation) {
         Point2D ref = marker.getRef();
         /*AffineTransform txf = 
             AffineTransform.getTranslateInstance(markerPosition.getX()

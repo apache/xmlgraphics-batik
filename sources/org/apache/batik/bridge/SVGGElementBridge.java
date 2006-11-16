@@ -64,8 +64,8 @@ public class SVGGElementBridge extends AbstractGraphicsNodeBridge {
     public GraphicsNode createGraphicsNode(BridgeContext ctx, Element e) {
         CompositeGraphicsNode gn =
             (CompositeGraphicsNode)super.createGraphicsNode(ctx, e);
-	if (gn == null)
-	    return null;
+        if (gn == null)
+            return null;
 
         associateSVGContext(ctx, e, gn);
 

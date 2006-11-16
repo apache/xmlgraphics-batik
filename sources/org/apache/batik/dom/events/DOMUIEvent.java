@@ -41,7 +41,7 @@ public class DOMUIEvent extends AbstractEvent implements UIEvent {
      * <code>AbstractView</code> from which the event was generated.  
      */
     public AbstractView getView() {
-	return view;
+        return view;
     }
 
     /**
@@ -49,7 +49,7 @@ public class DOMUIEvent extends AbstractEvent implements UIEvent {
      * <code>Event</code>, depending on the type of event.  
      */
     public int getDetail() {
-	return detail;
+        return detail;
     }
 
     /**
@@ -70,13 +70,13 @@ public class DOMUIEvent extends AbstractEvent implements UIEvent {
      * @param detailArg Specifies the <code>Event</code>'s detail.  
      */
     public void initUIEvent(String typeArg, 
-			    boolean canBubbleArg, 
-			    boolean cancelableArg, 
-			    AbstractView viewArg, 
-			    int detailArg) {
-	initEvent(typeArg, canBubbleArg, cancelableArg);
-	this.view = viewArg;
-	this.detail = detailArg;
+                            boolean canBubbleArg, 
+                            boolean cancelableArg, 
+                            AbstractView viewArg, 
+                            int detailArg) {
+        initEvent(typeArg, canBubbleArg, cancelableArg);
+        this.view = viewArg;
+        this.detail = detailArg;
     }
 
     /**
@@ -89,8 +89,8 @@ public class DOMUIEvent extends AbstractEvent implements UIEvent {
                               AbstractView viewArg, 
                               int detailArg) {
         initEventNS(namespaceURIArg, typeArg, canBubbleArg, cancelableArg);
-	this.view = viewArg;
-	this.detail = detailArg;
+        this.view = viewArg;
+        this.detail = detailArg;
     }
 
     /**

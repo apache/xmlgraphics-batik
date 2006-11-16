@@ -51,7 +51,7 @@ public class DOMMouseEvent extends DOMUIEvent implements MouseEvent {
      * screen coordinate system.  
      */
     public int getScreenX() {
-	return screenX;
+        return screenX;
     }
 
     /**
@@ -60,7 +60,7 @@ public class DOMMouseEvent extends DOMUIEvent implements MouseEvent {
      * coordinate system.  
      */
     public int getScreenY() {
-	return screenY;
+        return screenY;
     }
 
     /**
@@ -69,7 +69,7 @@ public class DOMMouseEvent extends DOMUIEvent implements MouseEvent {
      * implementation's client area.  
      */
     public int getClientX() {
-	return clientX;
+        return clientX;
     }
 
     /**
@@ -78,7 +78,7 @@ public class DOMMouseEvent extends DOMUIEvent implements MouseEvent {
      * client area.  
      */
     public int getClientY() {
-	return clientY;
+        return clientY;
     }
 
     /**
@@ -126,7 +126,7 @@ public class DOMMouseEvent extends DOMUIEvent implements MouseEvent {
      * read from right to left.  
      */
     public short getButton() {
-	return button;
+        return button;
     }
 
     /**
@@ -138,7 +138,7 @@ public class DOMMouseEvent extends DOMUIEvent implements MouseEvent {
      * which the pointing device entered.
      */
     public EventTarget getRelatedTarget() {
-	return relatedTarget;
+        return relatedTarget;
     }
 
     /**
@@ -200,26 +200,26 @@ public class DOMMouseEvent extends DOMUIEvent implements MouseEvent {
      *   <code>EventTarget</code>. 
      */
     public void initMouseEvent(String typeArg, 
-			       boolean canBubbleArg, 
-			       boolean cancelableArg, 
-			       AbstractView viewArg, 
-			       int detailArg, 
-			       int screenXArg, 
-			       int screenYArg, 
-			       int clientXArg, 
-			       int clientYArg, 
-			       boolean ctrlKeyArg, 
-			       boolean altKeyArg, 
-			       boolean shiftKeyArg, 
-			       boolean metaKeyArg, 
-			       short buttonArg, 
-			       EventTarget relatedTargetArg) {
-	initUIEvent(typeArg, canBubbleArg, cancelableArg, 
+                               boolean canBubbleArg, 
+                               boolean cancelableArg, 
+                               AbstractView viewArg, 
+                               int detailArg, 
+                               int screenXArg, 
+                               int screenYArg, 
+                               int clientXArg, 
+                               int clientYArg, 
+                               boolean ctrlKeyArg, 
+                               boolean altKeyArg, 
+                               boolean shiftKeyArg, 
+                               boolean metaKeyArg, 
+                               short buttonArg, 
+                               EventTarget relatedTargetArg) {
+        initUIEvent(typeArg, canBubbleArg, cancelableArg, 
                     viewArg, detailArg);
-	this.screenX = screenXArg;
-	this.screenY = screenYArg; 
-	this.clientX = clientXArg; 
-	this.clientY = clientYArg; 
+        this.screenX = screenXArg;
+        this.screenY = screenYArg; 
+        this.clientX = clientXArg; 
+        this.clientY = clientYArg; 
         if (ctrlKeyArg) {
             modifierKeys.add(DOMKeyboardEvent.KEY_CONTROL);
         }

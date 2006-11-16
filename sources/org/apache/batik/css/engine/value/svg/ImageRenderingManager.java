@@ -38,11 +38,11 @@ public class ImageRenderingManager extends IdentifierManager {
      */
     protected final static StringMap values = new StringMap();
     static {
-	values.put(CSSConstants.CSS_AUTO_VALUE,
+        values.put(CSSConstants.CSS_AUTO_VALUE,
                    SVGValueConstants.AUTO_VALUE);
-	values.put(CSSConstants.CSS_OPTIMIZEQUALITY_VALUE,
+        values.put(CSSConstants.CSS_OPTIMIZEQUALITY_VALUE,
                    SVGValueConstants.OPTIMIZEQUALITY_VALUE);
-	values.put(CSSConstants.CSS_OPTIMIZESPEED_VALUE,
+        values.put(CSSConstants.CSS_OPTIMIZESPEED_VALUE,
                    SVGValueConstants.OPTIMIZESPEED_VALUE);
     }
 
@@ -51,7 +51,7 @@ public class ImageRenderingManager extends IdentifierManager {
      * org.apache.batik.css.engine.value.ValueManager#isInheritedProperty()}.
      */
     public boolean isInheritedProperty() {
-	return true;
+        return true;
     }
 
     /**
@@ -80,7 +80,7 @@ public class ImageRenderingManager extends IdentifierManager {
      * org.apache.batik.css.engine.value.ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return CSSConstants.CSS_IMAGE_RENDERING_PROPERTY;
+        return CSSConstants.CSS_IMAGE_RENDERING_PROPERTY;
     }
     
     /**

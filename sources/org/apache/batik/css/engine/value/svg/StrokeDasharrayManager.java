@@ -45,7 +45,7 @@ public class StrokeDasharrayManager extends LengthManager {
      * Implements {@link ValueManager#isInheritedProperty()}.
      */
     public boolean isInheritedProperty() {
-	return true;
+        return true;
     }
 
     /**
@@ -73,7 +73,7 @@ public class StrokeDasharrayManager extends LengthManager {
      * Implements {@link ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return CSSConstants.CSS_STROKE_DASHARRAY_PROPERTY;
+        return CSSConstants.CSS_STROKE_DASHARRAY_PROPERTY;
     }
     
     /**
@@ -92,14 +92,14 @@ public class StrokeDasharrayManager extends LengthManager {
         case LexicalUnit.SAC_INHERIT:
             return SVGValueConstants.INHERIT_VALUE;
 
-	case LexicalUnit.SAC_IDENT:
-	    if (lu.getStringValue().equalsIgnoreCase
+        case LexicalUnit.SAC_IDENT:
+            if (lu.getStringValue().equalsIgnoreCase
                 (CSSConstants.CSS_NONE_VALUE)) {
-		return SVGValueConstants.NONE_VALUE;
-	    }
+                return SVGValueConstants.NONE_VALUE;
+            }
             throw createInvalidIdentifierDOMException(lu.getStringValue());
 
-	default:
+        default:
             ListValue lv = new ListValue(' ');
             do {
                 Value v = super.createValue(lu, engine);

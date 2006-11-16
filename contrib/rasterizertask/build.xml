@@ -40,7 +40,7 @@
     <property name="build" value="${root}/build" />
     <!-- build: Directory for build results. -->
     <property name="build.classes" value="${build}/classes" />
-	<!-- build.classes: Directory for compiled classes. -->
+    <!-- build.classes: Directory for compiled classes. -->
     <property name="doc" value="${root}/doc" />
     <!-- doc: Directory for documentation. -->
     <property name="doc.api" value="${doc}/javadoc" />
@@ -60,7 +60,7 @@
     </target>
 
     <target name="prepare">
-		<echo>Using ${ant.version}.</echo>
+        <echo>Using ${ant.version}.</echo>
         <tstamp/>
     </target>
 
@@ -74,7 +74,7 @@
     <target name="jar" depends="prepare, compile"
         description="Creates a JAR package.">
 
-		<mkdir dir="${build}/lib" />
+        <mkdir dir="${build}/lib" />
         <jar jarfile="${build}/lib/RasterizerTask.jar"
             basedir="${build.classes}"
             excludes="**/CVS"

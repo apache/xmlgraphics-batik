@@ -853,7 +853,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         Object o = map.get(TextAttribute.BIDI_EMBEDDING);
         Integer subBidiLevel = bidiLevel;
         if (o != null)
-	    subBidiLevel = ((Integer)o);
+            subBidiLevel = ((Integer)o);
 
         for (Node n = getFirstChild(element);
              n != null;
@@ -1531,35 +1531,35 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             val = CSSUtilities.getComputedStyle
                 (element, SVGCSSEngine.DIRECTION_INDEX);
             String rs = val.getStringValue();
-	    int cbidi = 0;
-	    if (bidiLevel != null) cbidi = bidiLevel.intValue();
+            int cbidi = 0;
+            if (bidiLevel != null) cbidi = bidiLevel.intValue();
 
-	    // We don't care if it was embed or override we just want
-	    // it's level here. So map override to positive value.
-	    if (cbidi < 0) cbidi = -cbidi;
+            // We don't care if it was embed or override we just want
+            // it's level here. So map override to positive value.
+            if (cbidi < 0) cbidi = -cbidi;
 
             switch (rs.charAt(0)) {
             case 'l':
                 result.put(TextAttribute.RUN_DIRECTION,
                            TextAttribute.RUN_DIRECTION_LTR);
-		if ((cbidi & 0x1) == 1) cbidi++; // was odd now even
-		else                    cbidi+=2; // next greater even number
+                if ((cbidi & 0x1) == 1) cbidi++; // was odd now even
+                else                    cbidi+=2; // next greater even number
                 break;
             case 'r':
                 result.put(TextAttribute.RUN_DIRECTION,
                            TextAttribute.RUN_DIRECTION_RTL);
-		if ((cbidi & 0x1) == 1) cbidi+=2; // next greater odd number
-		else                    cbidi++; // was even now odd
+                if ((cbidi & 0x1) == 1) cbidi+=2; // next greater odd number
+                else                    cbidi++; // was even now odd
                 break;
-	    }
+            }
 
-	    switch (s.charAt(0)) {
-	    case 'b': // bidi-override
-		cbidi = -cbidi; // For bidi-override we want a negative number.
-		break;
-	    }
+            switch (s.charAt(0)) {
+            case 'b': // bidi-override
+                cbidi = -cbidi; // For bidi-override we want a negative number.
+                break;
+            }
 
-	    result.put(TextAttribute.BIDI_EMBEDDING, new Integer(cbidi));
+            result.put(TextAttribute.BIDI_EMBEDDING, new Integer(cbidi));
         }
 
         // Writing mode

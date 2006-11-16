@@ -114,7 +114,7 @@
   <arg class="java.lang.Boolean" value="true" />
   <arg class="java.lang.String" value="auto" />
   <arg class="java.lang.String" value="auto | crosshair | default | pointer | move | e-resize | 
-	                               ne-resize | nw-resize | n-resize | se-resize | sw-resize | 
+                                       ne-resize | nw-resize | n-resize | se-resize | sw-resize | 
                                        s-resize | w-resize| text | wait | help " />
 </test>
 

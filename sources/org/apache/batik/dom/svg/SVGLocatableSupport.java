@@ -146,7 +146,7 @@ public class SVGLocatableSupport {
      */
     public static SVGMatrix getTransformToElement(Element elt,
                                                   SVGElement element)
-	throws SVGException {
+        throws SVGException {
         final SVGOMElement currentElt = (SVGOMElement)elt;
         final SVGOMElement targetElt = (SVGOMElement)element;
         return new AbstractSVGMatrix() {

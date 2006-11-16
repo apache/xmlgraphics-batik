@@ -45,15 +45,15 @@
          <rect x="0"  y="45" width="40" height="50" style="fill:#eee"/>
          <rect x="40" y="45" width="40" height="50" style="fill:#aaa"/>
          <rect x="80" y="45" width="40" height="50" style="fill:#444"/>
-	 <text x="60" y="120" style="text-anchor:middle">inherit | inherit | inherit</text>
-	 <text x="60" y="136" style="text-anchor:middle">&lt;g> inherit</text>
+         <text x="60" y="120" style="text-anchor:middle">inherit | inherit | inherit</text>
+         <text x="60" y="136" style="text-anchor:middle">&lt;g> inherit</text>
       </g>
       <g transform="translate(160, 0)">
          <rect x="0"  y="45" width="40" height="50" style="fill:#eee"/>
          <rect x="40" y="45" width="40" height="50" style="fill:#aaa"/>
          <rect x="80" y="45" width="40" height="50" style="fill:#444"/>
-	 <text x="60" y="120" style="text-anchor:middle">inherit | inherit | inherit</text>
-	 <text x="60" y="136" style="text-anchor:middle">&lt;g> hidden</text>
+         <text x="60" y="120" style="text-anchor:middle">inherit | inherit | inherit</text>
+         <text x="60" y="136" style="text-anchor:middle">&lt;g> hidden</text>
       </g>
       <g transform="translate(0 10)">
       <g style="visibility:inherit">
@@ -75,15 +75,15 @@
          <rect x="0"  y="45" width="40" height="50" style="fill:#eee"/>
          <rect x="40" y="45" width="40" height="50" style="fill:#aaa"/>
          <rect x="80" y="45" width="40" height="50" style="fill:#444"/>
-	 <text x="60" y="120" style="text-anchor:middle">inherit | hidden | visible</text>
-	 <text x="60" y="136" style="text-anchor:middle">&lt;g> inherit</text>
+         <text x="60" y="120" style="text-anchor:middle">inherit | hidden | visible</text>
+         <text x="60" y="136" style="text-anchor:middle">&lt;g> inherit</text>
       </g>
       <g transform="translate(160, 0)">
          <rect x="0"  y="45" width="40" height="50" style="fill:#eee"/>
          <rect x="40" y="45" width="40" height="50" style="fill:#aaa"/>
          <rect x="80" y="45" width="40" height="50" style="fill:#444"/>
-	 <text x="60" y="120" style="text-anchor:middle">inherit | hidden | visible</text>
-	 <text x="60" y="136" style="text-anchor:middle">&lt;g> visible</text>
+         <text x="60" y="120" style="text-anchor:middle">inherit | hidden | visible</text>
+         <text x="60" y="136" style="text-anchor:middle">&lt;g> visible</text>
       </g>
       <g transform="translate(0 10)">
       <g style="visibility:inherit">
@@ -104,15 +104,15 @@
          <rect x="0"  y="45" width="40" height="50" style="fill:#eee"/>
          <rect x="40" y="45" width="40" height="50" style="fill:#aaa"/>
          <rect x="80" y="45" width="40" height="50" style="fill:#444"/>
-	 <text x="60" y="120" style="text-anchor:middle">inherit | hidden | visible</text>
-	 <text x="60" y="136" style="text-anchor:middle">&lt;g> collapse</text>
+         <text x="60" y="120" style="text-anchor:middle">inherit | hidden | visible</text>
+         <text x="60" y="136" style="text-anchor:middle">&lt;g> collapse</text>
       </g>
       <g transform="translate(160, 0)">
          <rect x="0"  y="45" width="40" height="50" style="fill:#eee"/>
          <rect x="40" y="45" width="40" height="50" style="fill:#aaa"/>
          <rect x="80" y="45" width="40" height="50" style="fill:#444"/>
-	 <text x="60" y="120" style="text-anchor:middle">inherit | hidden | visible</text>
-	 <text x="60" y="136" style="text-anchor:middle">&lt;g> hidden</text>
+         <text x="60" y="120" style="text-anchor:middle">inherit | hidden | visible</text>
+         <text x="60" y="136" style="text-anchor:middle">&lt;g> hidden</text>
       </g>
       <g transform="translate(0 10)">
       <g style="visibility:collapse">

@@ -47,28 +47,28 @@ public class ParametrizedDOMTest extends AbstractImageTranscoderTest {
      * @param refImageURI the URI of the reference image
      */
     public ParametrizedDOMTest(String inputURI, String refImageURI) {
-	this.inputURI = inputURI;
-	this.refImageURI = refImageURI;
+        this.inputURI = inputURI;
+        this.refImageURI = refImageURI;
     }
 
     /**
      * Creates the <tt>TranscoderInput</tt>.
      */
     protected TranscoderInput createTranscoderInput() {
-	try {
-	    String parser = XMLResourceDescriptor.getXMLParserClassName();
-	    SAXSVGDocumentFactory f = new SAXSVGDocumentFactory(parser);
-	    Document doc = f.createDocument(resolveURL(inputURI).toString());
-	    return new TranscoderInput(doc);
-	} catch (IOException ex) {
+        try {
+            String parser = XMLResourceDescriptor.getXMLParserClassName();
+            SAXSVGDocumentFactory f = new SAXSVGDocumentFactory(parser);
+            Document doc = f.createDocument(resolveURL(inputURI).toString());
+            return new TranscoderInput(doc);
+        } catch (IOException ex) {
             throw new IllegalArgumentException(inputURI);
-	}
+        }
     }
 
     /**
      * Returns the reference image for this test.
      */
     protected byte [] getReferenceImageData() {
-	return createBufferedImageData(resolveURL(refImageURI));
+        return createBufferedImageData(resolveURL(refImageURI));
     }
 }

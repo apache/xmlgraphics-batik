@@ -61,7 +61,7 @@ public class SVGPaintManager extends SVGColorManager {
      * Implements {@link ValueManager#isInheritedProperty()}.
      */
     public boolean isInheritedProperty() {
-	return true;
+        return true;
     }
 
     /**
@@ -90,7 +90,7 @@ public class SVGPaintManager extends SVGColorManager {
      */
     public Value createValue(LexicalUnit lu, CSSEngine engine)
         throws DOMException {
-	switch (lu.getLexicalUnitType()) {
+        switch (lu.getLexicalUnitType()) {
         case LexicalUnit.SAC_IDENT:
             if (lu.getStringValue().equalsIgnoreCase
                 (CSSConstants.CSS_NONE_VALUE)) {
@@ -111,7 +111,7 @@ public class SVGPaintManager extends SVGColorManager {
         ListValue result = new ListValue(' ');
         result.append(new URIValue(value, uri));
 
-	if (lu.getLexicalUnitType() == LexicalUnit.SAC_IDENT) {
+        if (lu.getLexicalUnitType() == LexicalUnit.SAC_IDENT) {
             if (lu.getStringValue().equalsIgnoreCase
                 (CSSConstants.CSS_NONE_VALUE)) {
                 result.append(SVGValueConstants.NONE_VALUE);

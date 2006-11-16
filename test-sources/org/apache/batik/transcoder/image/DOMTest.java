@@ -50,32 +50,32 @@ public class DOMTest extends AbstractImageTranscoderTest {
      * Creates the <tt>TranscoderInput</tt>.
      */
     protected TranscoderInput createTranscoderInput() {
-	DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();
-	String svgNS = SVGDOMImplementation.SVG_NAMESPACE_URI;
-	Document doc = impl.createDocument(svgNS, "svg", null);
+        DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();
+        String svgNS = SVGDOMImplementation.SVG_NAMESPACE_URI;
+        Document doc = impl.createDocument(svgNS, "svg", null);
 
-	Element root = doc.getDocumentElement();
+        Element root = doc.getDocumentElement();
 
-	root.setAttributeNS(null, "width", "400");
-	root.setAttributeNS(null, "height", "400");
+        root.setAttributeNS(null, "width", "400");
+        root.setAttributeNS(null, "height", "400");
 
-	Element r = doc.createElementNS(svgNS, "rect");
-	r.setAttributeNS(null, "x", "0");
-	r.setAttributeNS(null, "y", "0");
-	r.setAttributeNS(null, "width", "400");
-	r.setAttributeNS(null, "height", "400");
-	r.setAttributeNS(null, "style", "fill:black");
-	root.appendChild(r);
+        Element r = doc.createElementNS(svgNS, "rect");
+        r.setAttributeNS(null, "x", "0");
+        r.setAttributeNS(null, "y", "0");
+        r.setAttributeNS(null, "width", "400");
+        r.setAttributeNS(null, "height", "400");
+        r.setAttributeNS(null, "style", "fill:black");
+        root.appendChild(r);
 
-	r = doc.createElementNS(svgNS, "rect");
-	r.setAttributeNS(null, "x", "100");
-	r.setAttributeNS(null, "y", "50");
-	r.setAttributeNS(null, "width", "100");
-	r.setAttributeNS(null, "height", "50");
-	r.setAttributeNS(null, "style", "stroke:red; fill:none");
-	root.appendChild(r);
+        r = doc.createElementNS(svgNS, "rect");
+        r.setAttributeNS(null, "x", "100");
+        r.setAttributeNS(null, "y", "50");
+        r.setAttributeNS(null, "width", "100");
+        r.setAttributeNS(null, "height", "50");
+        r.setAttributeNS(null, "style", "stroke:red; fill:none");
+        root.appendChild(r);
 
-	return new TranscoderInput(doc);
+        return new TranscoderInput(doc);
     }
 
     /**

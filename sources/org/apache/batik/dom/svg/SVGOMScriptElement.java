@@ -83,14 +83,14 @@ public class SVGOMScriptElement
      * <b>DOM</b>: Implements {@link SVGScriptElement#getType()}.
      */
     public String getType() {
-	return getAttributeNS(null, SVG_TYPE_ATTRIBUTE);
+        return getAttributeNS(null, SVG_TYPE_ATTRIBUTE);
     }
  
     /**
      * <b>DOM</b>: Implements {@link SVGScriptElement#setType(String)}.
      */
     public void setType(String type) throws DOMException {
-	setAttributeNS(null, SVG_TYPE_ATTRIBUTE, type);
+        setAttributeNS(null, SVG_TYPE_ATTRIBUTE, type);
     }
 
     // SVGExternalResourcesRequired support /////////////////////////////
@@ -100,7 +100,7 @@ public class SVGOMScriptElement
      * org.w3c.dom.svg.SVGExternalResourcesRequired}.
      */
     public SVGAnimatedBoolean getExternalResourcesRequired() {
-	return SVGExternalResourcesRequiredSupport.
+        return SVGExternalResourcesRequiredSupport.
             getExternalResourcesRequired(this);
     }
 

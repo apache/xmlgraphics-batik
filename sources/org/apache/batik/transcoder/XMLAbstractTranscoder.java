@@ -56,7 +56,7 @@ public abstract class XMLAbstractTranscoder extends AbstractTranscoder {
      * Constructs a new <tt>XMLAbstractTranscoder</tt>.
      */
     protected XMLAbstractTranscoder() {
-	hints.put(KEY_XML_PARSER_VALIDATING, Boolean.FALSE);
+        hints.put(KEY_XML_PARSER_VALIDATING, Boolean.FALSE);
     }
 
     /**
@@ -85,7 +85,7 @@ public abstract class XMLAbstractTranscoder extends AbstractTranscoder {
                 (String)hints.get(KEY_DOCUMENT_ELEMENT);
             DOMImplementation domImpl =
                 (DOMImplementation)hints.get(KEY_DOM_IMPLEMENTATION);
-	    
+            
             if (parserClassname == null) {
                 parserClassname = XMLResourceDescriptor.getXMLParserClassName();
             }
@@ -106,9 +106,9 @@ public abstract class XMLAbstractTranscoder extends AbstractTranscoder {
             }
             // parse the XML document
             DocumentFactory f = createDocumentFactory(domImpl, parserClassname);
-	    boolean b =
-		((Boolean)hints.get(KEY_XML_PARSER_VALIDATING)).booleanValue();
-	    f.setValidating(b);
+            boolean b =
+                ((Boolean)hints.get(KEY_XML_PARSER_VALIDATING)).booleanValue();
+            f.setValidating(b);
             try {
                 if (input.getInputStream() != null) {
                     document = f.createDocument(namespaceURI,
@@ -159,7 +159,7 @@ public abstract class XMLAbstractTranscoder extends AbstractTranscoder {
      */
     protected DocumentFactory createDocumentFactory(DOMImplementation domImpl,
                                                     String parserClassname) {
-	return new SAXDocumentFactory(domImpl, parserClassname);
+        return new SAXDocumentFactory(domImpl, parserClassname);
     }
 
     /**

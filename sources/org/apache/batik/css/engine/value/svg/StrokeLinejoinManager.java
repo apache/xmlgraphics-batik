@@ -38,11 +38,11 @@ public class StrokeLinejoinManager extends IdentifierManager {
      */
     protected final static StringMap values = new StringMap();
     static {
-	values.put(CSSConstants.CSS_MITER_VALUE,
+        values.put(CSSConstants.CSS_MITER_VALUE,
                    SVGValueConstants.MITER_VALUE);
-	values.put(CSSConstants.CSS_ROUND_VALUE,
+        values.put(CSSConstants.CSS_ROUND_VALUE,
                    SVGValueConstants.ROUND_VALUE);
-	values.put(CSSConstants.CSS_BEVEL_VALUE,
+        values.put(CSSConstants.CSS_BEVEL_VALUE,
                    SVGValueConstants.BEVEL_VALUE);
     }
 
@@ -51,7 +51,7 @@ public class StrokeLinejoinManager extends IdentifierManager {
      * org.apache.batik.css.engine.value.ValueManager#isInheritedProperty()}.
      */
     public boolean isInheritedProperty() {
-	return true;
+        return true;
     }
 
     /**
@@ -80,7 +80,7 @@ public class StrokeLinejoinManager extends IdentifierManager {
      * org.apache.batik.css.engine.value.ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return CSSConstants.CSS_STROKE_LINEJOIN_PROPERTY;
+        return CSSConstants.CSS_STROKE_LINEJOIN_PROPERTY;
     }
     
     /**

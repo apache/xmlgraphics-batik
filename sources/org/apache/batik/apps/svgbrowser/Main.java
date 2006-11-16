@@ -299,7 +299,7 @@ public class Main implements Application {
                      "");
         defaults.put(PREFERENCE_KEY_VISITED_URI_LIST_LENGTH,
                      new Integer(MAX_VISITED_URIS));
-	
+        
         securityEnforcer 
             = new ApplicationSecurityEnforcer(this.getClass(),
                                               SQUIGGLE_SECURITY_POLICY);
@@ -697,7 +697,7 @@ public class Main implements Application {
         vf.setAutoAdjust(aa);
         boolean dd = preferenceManager.getBoolean
             (PreferenceDialog.PREFERENCE_KEY_SELECTION_XOR_MODE);
-	vf.getJSVGCanvas().setSelectionOverlayXORMode(dd);
+        vf.getJSVGCanvas().setSelectionOverlayXORMode(dd);
     }
 
     /**

@@ -42,7 +42,7 @@ public abstract class AbstractParser implements Parser {
      * The default resource bundle base name.
      */
     public final static String BUNDLE_CLASSNAME =
-	"org.apache.batik.parser.resources.Messages";
+        "org.apache.batik.parser.resources.Messages";
 
     /**
      * The error handler.
@@ -70,14 +70,14 @@ public abstract class AbstractParser implements Parser {
      * Returns the current character value.
      */
     public int getCurrent() {
-	return current;
+        return current;
     }
 
     /**
      * Implements {@link org.apache.batik.i18n.Localizable#setLocale(Locale)}.
      */
     public void setLocale(Locale l) {
-	localizableSupport.setLocale(l);
+        localizableSupport.setLocale(l);
     }
 
     /**
@@ -109,7 +109,7 @@ public abstract class AbstractParser implements Parser {
      * @param handler The error handler.
      */
     public void setErrorHandler(ErrorHandler handler) {
-	errorHandler = handler;
+        errorHandler = handler;
     }
 
     /**
@@ -217,27 +217,27 @@ public abstract class AbstractParser implements Parser {
      */
     protected void skipCommaSpaces() throws IOException {
         wsp1: for (;;) {
-	    switch (current) {
-	    default:
-		break wsp1;
-	    case 0x20:
-	    case 0x9:
-	    case 0xD:
-	    case 0xA:
-	    }
-	    current = reader.read();
-	}
-	if (current == ',') {
+            switch (current) {
+            default:
+                break wsp1;
+            case 0x20:
+            case 0x9:
+            case 0xD:
+            case 0xA:
+            }
+            current = reader.read();
+        }
+        if (current == ',') {
             wsp2: for (;;) {
-		switch (current = reader.read()) {
-		default:
-		    break wsp2;
-		case 0x20:
-		case 0x9:
-		case 0xD:
-		case 0xA:
-		}
-	    }
-	}
+                switch (current = reader.read()) {
+                default:
+                    break wsp2;
+                case 0x20:
+                case 0x9:
+                case 0xD:
+                case 0xA:
+                }
+            }
+        }
     }
 }

@@ -52,11 +52,11 @@
             Solid Color Paint Server (Xlink)
         </text>
 
-	<use x="25" y="135" xlink:href="#squiggle"/>
+        <use x="25" y="135" xlink:href="#squiggle"/>
   
-	<use x="25" y="275" xlink:href="#squiggle"/>
+        <use x="25" y="275" xlink:href="#squiggle"/>
   
-	<use x="25" y="415" xlink:href="#squiggle"/>
+        <use x="25" y="415" xlink:href="#squiggle"/>
   
         <switch>
           <g requiredExtensions="http://xml.apache.org/batik/ext/solidColor/1.0"

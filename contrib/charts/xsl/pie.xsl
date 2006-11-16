@@ -26,7 +26,7 @@
 <!-- ====================================================================== -->
 
 <xsl:stylesheet version="1.0"
-	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:math="http://xml.apache.org/xslt/java">
 
 <xsl:variable name="height" select="graph/meta/pie/height"/>
@@ -51,9 +51,9 @@
     <xsl:comment>360 degrees = <xsl:value-of select="$360degrees"/></xsl:comment>
     <xsl:comment>1 degree    = <xsl:value-of select="$1degree"/></xsl:comment>
 
-	  <g transform="matrix(1 0 0 1 {$width div 2} {$height div 2})">
+    <g transform="matrix(1 0 0 1 {$width div 2} {$height div 2})">
       <xsl:apply-templates select="data/set"/>
-	  </g>
+    </g>
   </svg>
 </xsl:template>
 

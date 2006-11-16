@@ -69,23 +69,23 @@
                 <rect x="100" y="25" width="25" height="25" fill="rgb(255, 255, 255)" />
             </g>
 
-			<color-profile name="changeColorAuto" 
+            <color-profile name="changeColorAuto" 
                            rendering-intent="auto"
                            xlink:href="../../resources/icc/changeColor.icm"/>
 
-			<color-profile name="changeColorPerceptual" 
+            <color-profile name="changeColorPerceptual" 
                            rendering-intent="perceptual"
                            xlink:href="../../resources/icc/changeColor.icm"/>
 
-			<color-profile name="changeColorAbsoluteColorimetric" 
+            <color-profile name="changeColorAbsoluteColorimetric" 
                            rendering-intent="absolute-colorimetric"
                            xlink:href="../../resources/icc/changeColor.icm"/>
 
-			<color-profile name="changeColorRelativeColorimetric" 
+            <color-profile name="changeColorRelativeColorimetric" 
                            rendering-intent="relative-colorimetric"
                            xlink:href="../../resources/icc/changeColor.icm"/>
 
-			<color-profile name="changeColorSaturation" 
+            <color-profile name="changeColorSaturation" 
                            rendering-intent="saturation"
                            xlink:href="../../resources/icc/changeColor.icm"/>
 

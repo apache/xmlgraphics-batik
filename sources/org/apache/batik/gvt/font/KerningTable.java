@@ -54,9 +54,9 @@ public class KerningTable {
      * @return The amount of kerning to be added when laying out the glyphs 
      */
     public float getKerningValue(int glyphCode1, 
-				 int glyphCode2,
+                                 int glyphCode2,
                                  String glyphUnicode1, 
-				 String glyphUnicode2) {
+                                 String glyphUnicode2) {
         for (int i = 0; i < entries.length; i++) {
             if (entries[i].matchesFirstGlyph(glyphCode1, glyphUnicode1) &&
                 entries[i].matchesSecondGlyph(glyphCode2, glyphUnicode2)) {

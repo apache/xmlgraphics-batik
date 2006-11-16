@@ -32,6 +32,6 @@ public class DefaultErrorHandler implements ErrorHandler {
      * Throws the given exception.
      */
     public void error(ParseException e) throws ParseException {
-	throw e;
+        throw e;
     }
 }

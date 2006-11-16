@@ -33,7 +33,7 @@ import org.w3c.dom.Element;
 
 public class CSSLangCondition
     implements LangCondition,
-	       ExtendedCondition {
+               ExtendedCondition {
     /**
      * The language.
      */
@@ -43,7 +43,7 @@ public class CSSLangCondition
      * Creates a new LangCondition object.
      */
     public CSSLangCondition(String lang) {
-	this.lang = lang;
+        this.lang = lang;
     }
 
     /**
@@ -63,28 +63,28 @@ public class CSSLangCondition
      * org.w3c.css.sac.Condition#getConditionType()}.
      */    
     public short getConditionType() {
-	return SAC_LANG_CONDITION;
+        return SAC_LANG_CONDITION;
     }
 
     /**
      * <b>SAC</b>: Implements {@link org.w3c.css.sac.LangCondition#getLang()}.
      */
     public String getLang() {
-	return lang;
+        return lang;
     }
 
     /**
      * Returns the specificity of this condition.
      */
     public int getSpecificity() {
-	return 1 << 8;
+        return 1 << 8;
     }
 
     /**
      * Tests whether this condition matches the given element.
      */
     public boolean match(Element e, String pseudoE) {
-	return e.getAttribute("lang").startsWith(getLang());
+        return e.getAttribute("lang").startsWith(getLang());
     }
 
     /**
@@ -98,6 +98,6 @@ public class CSSLangCondition
      * Returns a text representation of this object.
      */
     public String toString() {
-	return ":lang(" + lang + ")";
+        return ":lang(" + lang + ")";
     }
 }

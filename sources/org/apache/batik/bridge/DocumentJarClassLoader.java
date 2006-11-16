@@ -78,12 +78,12 @@ public class DocumentJarClassLoader extends URLClassLoader {
     {
         // First, get the permissions which may be granted 
         // through the policy file(s)
-	Policy p = Policy.getPolicy();
+        Policy p = Policy.getPolicy();
 
-	PermissionCollection pc = null;
-	if (p != null) {
-	    pc = p.getPermissions(codesource);
-	}
+        PermissionCollection pc = null;
+        if (p != null) {
+            pc = p.getPermissions(codesource);
+        }
 
         // Now, add permissions if the documentCodeSource is not null
         if (documentCodeSource != null){
@@ -100,6 +100,6 @@ public class DocumentJarClassLoader extends URLClassLoader {
             }
         }
 
-	return pc;
+        return pc;
     }
 }

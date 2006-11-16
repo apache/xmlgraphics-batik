@@ -70,7 +70,7 @@ public class DefaultBrokenLinkProvider
                                    bi.isAlphaPremultiplied(),
                                    ht);
             Graphics2D g2d = bi.createGraphics();
-	
+        
             g2d.setColor(new Color(255,255,255,190));
             g2d.fillRect(0, 0, 100, 100);
             g2d.setColor(Color.black);

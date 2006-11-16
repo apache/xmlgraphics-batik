@@ -46,8 +46,8 @@ public abstract class AbstractCombinatorCondition
      * Creates a new CombinatorCondition object.
      */
     protected AbstractCombinatorCondition(Condition c1, Condition c2) {
-	firstCondition = c1;
-	secondCondition = c2;
+        firstCondition = c1;
+        secondCondition = c2;
     }
 
     /**
@@ -67,7 +67,7 @@ public abstract class AbstractCombinatorCondition
      * Returns the specificity of this condition.
      */
     public int getSpecificity() {
-	return ((ExtendedCondition)getFirstCondition()).getSpecificity() +
+        return ((ExtendedCondition)getFirstCondition()).getSpecificity() +
                ((ExtendedCondition)getSecondCondition()).getSpecificity();
     }
 
@@ -76,7 +76,7 @@ public abstract class AbstractCombinatorCondition
      * org.w3c.css.sac.CombinatorCondition#getFirstCondition()}.
      */    
     public Condition getFirstCondition() {
-	return firstCondition;
+        return firstCondition;
     }
 
     /**
@@ -84,6 +84,6 @@ public abstract class AbstractCombinatorCondition
      * org.w3c.css.sac.CombinatorCondition#getSecondCondition()}.
      */    
     public Condition getSecondCondition() {
-	return secondCondition;
+        return secondCondition;
     }
 }

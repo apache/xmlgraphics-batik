@@ -50,31 +50,31 @@ public class DefaultFontFamilyTest extends AbstractImageTranscoderTest {
     public DefaultFontFamilyTest(String inputURI, 
                                  String refImageURI, 
                                  String defaultFontFamily) {
-	this.inputURI = inputURI;
-	this.refImageURI = refImageURI;
-	this.defaultFontFamily = defaultFontFamily;
+        this.inputURI = inputURI;
+        this.refImageURI = refImageURI;
+        this.defaultFontFamily = defaultFontFamily;
     }
 
     /**
      * Creates the <tt>TranscoderInput</tt>.
      */
     protected TranscoderInput createTranscoderInput() {
-	return new TranscoderInput(resolveURL(inputURI).toString());
+        return new TranscoderInput(resolveURL(inputURI).toString());
     }
     
     /**
      * Creates a Map that contains additional transcoding hints.
      */
     protected Map createTranscodingHints() {
-	Map hints = new HashMap(3);
-	hints.put(ImageTranscoder.KEY_DEFAULT_FONT_FAMILY, defaultFontFamily);
-	return hints;
+        Map hints = new HashMap(3);
+        hints.put(ImageTranscoder.KEY_DEFAULT_FONT_FAMILY, defaultFontFamily);
+        return hints;
     }
 
     /**
      * Returns the reference image for this test.
      */
     protected byte [] getReferenceImageData() {
-	return createBufferedImageData(resolveURL(refImageURI));
+        return createBufferedImageData(resolveURL(refImageURI));
     }
 }

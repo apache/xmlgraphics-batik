@@ -73,20 +73,20 @@ public class SVGOMToBeImplementedElement
      * Exports this node to the given document.
      */
     protected Node export(Node n, AbstractDocument d) {
-	super.export(n, d);
-	SVGOMToBeImplementedElement ae = (SVGOMToBeImplementedElement)n;
-	ae.localName = localName;
-	return n;
+        super.export(n, d);
+        SVGOMToBeImplementedElement ae = (SVGOMToBeImplementedElement)n;
+        ae.localName = localName;
+        return n;
     }
 
     /**
      * Deeply exports this node to the given document.
      */
     protected Node deepExport(Node n, AbstractDocument d) {
-	super.deepExport(n, d);
-	SVGOMToBeImplementedElement ae = (SVGOMToBeImplementedElement)n;
-	ae.localName = localName;
-	return n;
+        super.deepExport(n, d);
+        SVGOMToBeImplementedElement ae = (SVGOMToBeImplementedElement)n;
+        ae.localName = localName;
+        return n;
     }
 
     /**
@@ -94,10 +94,10 @@ public class SVGOMToBeImplementedElement
      * @param n a node of the type of this.
      */
     protected Node copyInto(Node n) {
-	super.copyInto(n);
-	SVGOMToBeImplementedElement ae = (SVGOMToBeImplementedElement)n;
-	ae.localName = localName;
-	return n;
+        super.copyInto(n);
+        SVGOMToBeImplementedElement ae = (SVGOMToBeImplementedElement)n;
+        ae.localName = localName;
+        return n;
     }
 
     /**
@@ -105,9 +105,9 @@ public class SVGOMToBeImplementedElement
      * @param n a node of the type of this.
      */
     protected Node deepCopyInto(Node n) {
-	super.deepCopyInto(n);
-	SVGOMToBeImplementedElement ae = (SVGOMToBeImplementedElement)n;
-	ae.localName = localName;
+        super.deepCopyInto(n);
+        SVGOMToBeImplementedElement ae = (SVGOMToBeImplementedElement)n;
+        ae.localName = localName;
         return n;
     }
 

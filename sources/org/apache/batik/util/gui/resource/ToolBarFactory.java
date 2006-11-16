@@ -60,8 +60,8 @@ public class ToolBarFactory extends ResourceManager {
      * @param am the actions to add to menu items
      */
     public ToolBarFactory(ResourceBundle rb, ActionMap am) {
-	super(rb);
-	buttonFactory = new ButtonFactory(rb, am);
+        super(rb);
+        buttonFactory = new ButtonFactory(rb, am);
     }
 
     /**
@@ -75,22 +75,22 @@ public class ToolBarFactory extends ResourceManager {
      * action map.
      */
     public JToolBar createJToolBar(String name)
-	throws MissingResourceException,
+        throws MissingResourceException,
                ResourceFormatException,
-	       MissingListenerException {
-	JToolBar result  = new JToolBar();
+               MissingListenerException {
+        JToolBar result  = new JToolBar();
         List     buttons = getStringList(name);
         Iterator it      = buttons.iterator();
 
         while (it.hasNext()) {
-	    String s = (String)it.next();
-	    if (s.equals(SEPARATOR)) {
-		result.add(new JToolbarSeparator());
-	    } else {
-		result.add(createJButton(s));
-	    }
+            String s = (String)it.next();
+            if (s.equals(SEPARATOR)) {
+                result.add(new JToolbarSeparator());
+            } else {
+                result.add(createJButton(s));
+            }
         }
-	return result;
+        return result;
     }
 
     /**
@@ -104,9 +104,9 @@ public class ToolBarFactory extends ResourceManager {
      *         the action map.
      */
     public JButton createJButton(String name)
-	throws MissingResourceException,
-	       ResourceFormatException,
-	       MissingListenerException {
-	return buttonFactory.createJToolbarButton(name);
+        throws MissingResourceException,
+               ResourceFormatException,
+               MissingListenerException {
+        return buttonFactory.createJToolbarButton(name);
     }
 }

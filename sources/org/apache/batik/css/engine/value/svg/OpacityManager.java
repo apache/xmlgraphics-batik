@@ -59,7 +59,7 @@ public class OpacityManager extends AbstractValueManager {
      * Implements {@link ValueManager#isInheritedProperty()}.
      */
     public boolean isInheritedProperty() {
-	return inherited;
+        return inherited;
     }
 
     /**
@@ -87,7 +87,7 @@ public class OpacityManager extends AbstractValueManager {
      * Implements {@link ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return property;
+        return property;
     }
     
     /**
@@ -102,9 +102,9 @@ public class OpacityManager extends AbstractValueManager {
      */
     public Value createValue(LexicalUnit lu, CSSEngine engine)
         throws DOMException {
-	switch (lu.getLexicalUnitType()) {
-	case LexicalUnit.SAC_INHERIT:
-	    return SVGValueConstants.INHERIT_VALUE;
+        switch (lu.getLexicalUnitType()) {
+        case LexicalUnit.SAC_INHERIT:
+            return SVGValueConstants.INHERIT_VALUE;
 
         case LexicalUnit.SAC_INTEGER:
             return new FloatValue(CSSPrimitiveValue.CSS_NUMBER,
@@ -122,9 +122,9 @@ public class OpacityManager extends AbstractValueManager {
      */
     public Value createFloatValue(short type, float floatValue)
         throws DOMException {
-	if (type == CSSPrimitiveValue.CSS_NUMBER) {
-	    return new FloatValue(type, floatValue);
-	}
+        if (type == CSSPrimitiveValue.CSS_NUMBER) {
+            return new FloatValue(type, floatValue);
+        }
         throw createInvalidFloatTypeDOMException(type);
     }
 }

@@ -83,13 +83,13 @@ public class CSSOMStyleDeclaration implements CSSStyleDeclaration {
      * org.w3c.dom.css.CSSStyleDeclaration#setCssText(String)}.
      */
     public void setCssText(String cssText) throws DOMException {
-	if (handler == null) {
+        if (handler == null) {
             throw new DOMException
                 (DOMException.NO_MODIFICATION_ALLOWED_ERR, "");
-	} else {
+        } else {
             values = null;
             handler.textChanged(cssText);
-	}
+        }
     }
 
     /**
@@ -149,7 +149,7 @@ public class CSSOMStyleDeclaration implements CSSStyleDeclaration {
      * org.w3c.dom.css.CSSStyleDeclaration#setProperty(String,String,String)}.
      */
     public void setProperty(String propertyName, String value, String prio)
-	throws DOMException {
+        throws DOMException {
         if (handler == null) {
             throw new DOMException
                 (DOMException.NO_MODIFICATION_ALLOWED_ERR, "");

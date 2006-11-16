@@ -45,7 +45,7 @@ public interface ExtendedParser extends org.w3c.css.sac.Parser {
      *            supplied by the application.
      */
     void parseStyleDeclaration(String source) 
-	throws CSSException, IOException;
+        throws CSSException, IOException;
 
 
     /**

@@ -43,7 +43,7 @@ public class PointsParser extends NumberParser {
      * Creates a new PointsParser.
      */
     public PointsParser() {
-	pointsHandler = DefaultPointsHandler.INSTANCE;
+        pointsHandler = DefaultPointsHandler.INSTANCE;
     }
 
     /**
@@ -58,14 +58,14 @@ public class PointsParser extends NumberParser {
      * @param handler The transform list handler.
      */
     public void setPointsHandler(PointsHandler handler) {
-	pointsHandler = handler;
+        pointsHandler = handler;
     }
 
     /**
      * Returns the points handler in use.
      */
     public PointsHandler getPointsHandler() {
-	return pointsHandler;
+        return pointsHandler;
     }
 
     /**
@@ -84,7 +84,7 @@ public class PointsParser extends NumberParser {
             float x = parseFloat();
             skipCommaSpaces();
             float y = parseFloat();
-		    
+                    
             pointsHandler.point(x, y);
             skipCommaSpaces();
         }

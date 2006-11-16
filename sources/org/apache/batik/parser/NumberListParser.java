@@ -50,40 +50,40 @@ public class NumberListParser extends NumberParser {
      * @param handler The number list handler.
      */
     public void setNumberListHandler(NumberListHandler handler) {
-	numberListHandler = handler;
+        numberListHandler = handler;
     }
     
     /**
      * Returns the number list handler in use.
      */
     public NumberListHandler getNumberListHandler() {
-	return (NumberListHandler)numberListHandler;
+        return (NumberListHandler)numberListHandler;
     }
     
     /**
      * Parses the given reader.
      */
     protected void doParse() throws ParseException, IOException {
-	numberListHandler.startNumberList();
+        numberListHandler.startNumberList();
 
-	current = reader.read();
-	skipSpaces();
-	
-	try {
-	    for (;;) {
+        current = reader.read();
+        skipSpaces();
+        
+        try {
+            for (;;) {
                 numberListHandler.startNumber();
-		float f = parseFloat();
+                float f = parseFloat();
                 numberListHandler.numberValue(f);
                 numberListHandler.endNumber();
-		skipCommaSpaces();
-		if (current == -1) {
-		    break;
-		}
-	    }
-	} catch (NumberFormatException e) {
+                skipCommaSpaces();
+                if (current == -1) {
+                    break;
+                }
+            }
+        } catch (NumberFormatException e) {
         reportError("character.unexpected",
                     new Object[] { new Integer(current) });
-	}
-	numberListHandler.endNumberList();
+        }
+        numberListHandler.endNumberList();
     }
 }

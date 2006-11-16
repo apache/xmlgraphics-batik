@@ -44,21 +44,21 @@ public abstract class AbstractElementSelector
      * Creates a new ElementSelector object.
      */
     protected AbstractElementSelector(String uri, String name) {
-	namespaceURI = uri;
-	localName    = name;
+        namespaceURI = uri;
+        localName    = name;
     }
 
     /**
      * <b>SAC</b>: Implements {@link ElementSelector#getNamespaceURI()}.
      */
     public String getNamespaceURI() {
-	return namespaceURI;
+        return namespaceURI;
     }
 
     /**
      * <b>SAC</b>: Implements {@link ElementSelector#getLocalName()}.
      */
     public String getLocalName() {
-	return localName;
+        return localName;
     }
 }

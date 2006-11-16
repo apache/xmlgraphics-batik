@@ -38,7 +38,7 @@
     var t, start, end, inc, cont, frac=0;    
 
     function startAnim(evt, target, xStart, xEnd){
-	if (cont == 1) return;
+        if (cont == 1) return;
         t = document.getElementById(target);
         start = xStart
         end   = xEnd;

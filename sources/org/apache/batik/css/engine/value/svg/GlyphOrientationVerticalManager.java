@@ -40,7 +40,7 @@ public class GlyphOrientationVerticalManager
      * Implements {@link ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return CSSConstants.CSS_GLYPH_ORIENTATION_VERTICAL_PROPERTY;
+        return CSSConstants.CSS_GLYPH_ORIENTATION_VERTICAL_PROPERTY;
     }
     
     /**
@@ -70,11 +70,11 @@ public class GlyphOrientationVerticalManager
      * ValueManager#createStringValue(short,String,CSSEngine)}.
      */
     public Value createStringValue(short type, String value, CSSEngine engine)
-	throws DOMException {
-	if (type != CSSPrimitiveValue.CSS_IDENT) {
+        throws DOMException {
+        if (type != CSSPrimitiveValue.CSS_IDENT) {
             throw createInvalidStringTypeDOMException(type);
-	}
-	if (value.equalsIgnoreCase(CSSConstants.CSS_AUTO_VALUE)) {
+        }
+        if (value.equalsIgnoreCase(CSSConstants.CSS_AUTO_VALUE)) {
             return SVGValueConstants.AUTO_VALUE;
         }
         throw createInvalidIdentifierDOMException(value);

@@ -58,7 +58,7 @@ public class XMLUtilities extends XMLCharacters {
      * first character of an XML name.
      */
     public static boolean isXMLNameFirstCharacter(char c) {
-	return (NAME_FIRST_CHARACTER[c / 32] & (1 << (c % 32))) != 0;
+        return (NAME_FIRST_CHARACTER[c / 32] & (1 << (c % 32))) != 0;
     }
 
     /**
@@ -66,29 +66,29 @@ public class XMLUtilities extends XMLCharacters {
      * first character of an XML 1.1 name.
      */
     public static boolean isXML11NameFirstCharacter(char c) {
-	return (NAME11_FIRST_CHARACTER[c / 32] & (1 << (c % 32))) != 0;
+        return (NAME11_FIRST_CHARACTER[c / 32] & (1 << (c % 32))) != 0;
     }
 
     /**
      * Tests whether the given character is a valid XML name character.
      */
     public static boolean isXMLNameCharacter(char c) {
-	return (NAME_CHARACTER[c / 32] & (1 << (c % 32))) != 0;
+        return (NAME_CHARACTER[c / 32] & (1 << (c % 32))) != 0;
     }
 
     /**
      * Tests whether the given character is a valid XML 1.1 name character.
      */
     public static boolean isXML11NameCharacter(char c) {
-	return (NAME11_CHARACTER[c / 32] & (1 << (c % 32))) != 0;
+        return (NAME11_CHARACTER[c / 32] & (1 << (c % 32))) != 0;
     }
 
     /**
      * Tests whether the given 32 bits character is valid in XML documents.
      */
     public static boolean isXMLCharacter(int c) {
-	return (c >= 0x10000 && c <= 0x10ffff) ||
-	    (XML_CHARACTER[c / 32] & (1 << (c % 32))) != 0;
+        return (c >= 0x10000 && c <= 0x10ffff) ||
+            (XML_CHARACTER[c / 32] & (1 << (c % 32))) != 0;
     }
 
     /**
@@ -104,7 +104,7 @@ public class XMLUtilities extends XMLCharacters {
      * Tests whether the given character is a valid XML public ID character.
      */
     public static boolean isXMLPublicIdCharacter(char c) {
-	return (c < 128) &&
+        return (c < 128) &&
             (PUBLIC_ID_CHARACTER[c / 32] & (1 << (c % 32))) != 0;
     }
 
@@ -112,7 +112,7 @@ public class XMLUtilities extends XMLCharacters {
      * Tests whether the given character is a valid XML version character.
      */
     public static boolean isXMLVersionCharacter(char c) {
-	return (c < 128) &&
+        return (c < 128) &&
             (VERSION_CHARACTER[c / 32] & (1 << (c % 32))) != 0;
     }
 
@@ -120,7 +120,7 @@ public class XMLUtilities extends XMLCharacters {
      * Tests whether the given character is a valid aphabetic character.
      */
     public static boolean isXMLAlphabeticCharacter(char c) {
-	return (c < 128) &&
+        return (c < 128) &&
             (ALPHABETIC_CHARACTER[c / 32] & (1 << (c % 32))) != 0;
     }
 

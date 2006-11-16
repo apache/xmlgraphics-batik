@@ -40,7 +40,7 @@ public class LineHeightValue extends FloatValue {
     public LineHeightValue(short unitType, float floatValue, 
                            boolean fontSizeRelative) {
         super(unitType, floatValue);
-	this.fontSizeRelative   = fontSizeRelative;
+        this.fontSizeRelative   = fontSizeRelative;
     }
 
     /**

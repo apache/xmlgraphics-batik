@@ -160,7 +160,7 @@ public class DocumentEventSupport {
      *   type of <code>Event</code> interface requested
      */
     public Event createEvent(String eventType)
-	    throws DOMException {
+            throws DOMException {
         EventFactory ef = (EventFactory)eventFactories.get(eventType.toLowerCase());
         if (ef == null) {
             throw new DOMException(DOMException.NOT_SUPPORTED_ERR,
