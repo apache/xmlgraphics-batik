@@ -26,10 +26,11 @@ package org.apache.batik.test.svg;
  * @version $Id$
  */
 public class BERenderingTest extends PreconfiguredRenderingTest {
-    public static final String SVG_URL_PREFIX 
+
+    public static final String SVG_URL_PREFIX
         = "test-references/../../beSuite/";
 
-    public static final String REF_IMAGE_PREFIX 
+    public static final String REF_IMAGE_PREFIX
         = "test-references/svgbe/";
 
     public static final String REF_IMAGE_SUFFIX
@@ -91,6 +92,6 @@ public class BERenderingTest extends PreconfiguredRenderingTest {
     }
 
     public BERenderingTest(){
-	setValidating(new Boolean(true));
+        setValidating( Boolean.TRUE );
     }
 }

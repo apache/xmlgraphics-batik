@@ -25,10 +25,10 @@ package org.apache.batik.test.svg;
  * @version $Id$
  */
 public class SamplesRenderingTest extends PreconfiguredRenderingTest {
-    public static final String SVG_URL_PREFIX 
+    public static final String SVG_URL_PREFIX
         = "";
 
-    public static final String REF_IMAGE_PREFIX 
+    public static final String REF_IMAGE_PREFIX
         = "test-references/";
 
     public static final String REF_IMAGE_SUFFIX
@@ -53,7 +53,7 @@ public class SamplesRenderingTest extends PreconfiguredRenderingTest {
         = "candidate-reference/";
 
     public SamplesRenderingTest(){
-        setValidating(new Boolean(true));
+        setValidating( Boolean.TRUE );
     }
 
     protected String getSVGURLPrefix(){

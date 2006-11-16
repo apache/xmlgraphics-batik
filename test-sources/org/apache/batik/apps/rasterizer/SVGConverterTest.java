@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -72,16 +72,16 @@ public class SVGConverterTest extends DefaultTestSuite {
         //
         // Checks that the proper hints are used
         //
-        t = new HintsConfigTest(new Object[][]{ 
+        t = new HintsConfigTest(new Object[][]{
             {ImageTranscoder.KEY_AOI, new Rectangle(40, 50, 40, 80)}}){
                 protected void deltaConfigure(SVGConverter c){
                     c.setArea(new Rectangle(40, 50, 40, 80));
                 }
             };
-        
+
         addTest(t);
         t.setId("HintsConfigTest.KEY_AOI");
-        
+
         t = new HintsConfigTest(new Object[][]{
             {JPEGTranscoder.KEY_QUALITY, new Float(.5)}}){
                 protected void deltaConfigure(SVGConverter c){
@@ -206,7 +206,7 @@ public class SVGConverterTest extends DefaultTestSuite {
         t.setId("HintsConfigTest.KEY_PIXEL_UNIT_TO_MILLIMETER");
 
         t = new HintsConfigTest(new Object[][]{
-            {ImageTranscoder.KEY_XML_PARSER_VALIDATING, new Boolean(true)}}){
+            {ImageTranscoder.KEY_XML_PARSER_VALIDATING, Boolean.TRUE }}){
                 protected void deltaConfigure(SVGConverter c){
                     c.setValidate(true);
                 }
@@ -223,10 +223,10 @@ public class SVGConverterTest extends DefaultTestSuite {
                     c.setSources(new String[] {"samples/anne.svg", "samples/batikFX.svg", "samples/tests/spec/styling/smiley.svg"});
                 }
             };
-            
+
         addTest(t);
         t.setId("SourcesConfigTest.SimpleList");
-        
+
 
         //
         // Check destination
@@ -271,7 +271,7 @@ public class SVGConverterTest extends DefaultTestSuite {
             };
         addTest(t);
         t.setId("Operationtest.PDFTranscoding");
-        
+
         ///////////////////////////////////////////////////////////////////////
         // Add configuration error test. These tests check that the expected
         // error gets reported for a given mis-configuration
@@ -375,7 +375,7 @@ public class SVGConverterTest extends DefaultTestSuite {
             };
         addTest(t);
         t.setId("ConfigErrorTest.ERROR_OUTPUT_NOT_WRITEABLE");
-                   
+
         t = new ConfigErrorTest(SVGConverter.ERROR_UNABLE_TO_CREATE_OUTPUT_DIR){
                 protected void configure(SVGConverter c){
                     c.setDst(new File("ZYZ::/cannotCreate\000"));
@@ -391,9 +391,9 @@ public class SVGConverterTest extends DefaultTestSuite {
             };
         addTest(t);
         t.setId("ConfigErrorTest(SVGConverter.ERROR_WHILE_RASTERIZING_FILE");
-        
+
         //
-        // Test that files are created as expected and are producing the 
+        // Test that files are created as expected and are producing the
         // expected result.
         //
 
@@ -417,7 +417,7 @@ public class SVGConverterTest extends DefaultTestSuite {
 /**
  * A ConfigTest builds an SVGConverter, configures it,
  * sets itself as the SVGConverterController and checks that
- * the computed task is as expected (i.e., right set of 
+ * the computed task is as expected (i.e., right set of
  * hints).
  */
 abstract class AbstractConfigTest extends AbstractTest implements SVGConverterController {
@@ -526,7 +526,7 @@ abstract class AbstractConfigTest extends AbstractTest implements SVGConverterCo
         HashMap hints;
         Vector sources, dest;
     }
-            
+
     protected Config expectedConfig;
     protected Config computedConfig;
 
@@ -574,7 +574,7 @@ abstract class AbstractConfigTest extends AbstractTest implements SVGConverterCo
         c.execute();
 
         //
-        // Now, check that the expectedConfig and the 
+        // Now, check that the expectedConfig and the
         // computedConfig are identical
         //
         if (computedConfig == null){
@@ -595,7 +595,7 @@ abstract class AbstractConfigTest extends AbstractTest implements SVGConverterCo
         // Compare sources
         int en = expectedConfig.sources.size();
         int cn = computedConfig.sources.size();
-        
+
         if (en != cn){
             TestReport report = reportError(ERROR_UNEXPECTED_SOURCES_LIST);
             report.addDescriptionEntry(ENTRY_KEY_EXPECTED_NUMBER_OF_SOURCES,
@@ -624,7 +624,7 @@ abstract class AbstractConfigTest extends AbstractTest implements SVGConverterCo
                                 makeSourceList(expectedConfig.sources));
                 report.addDescriptionEntry(ENTRY_KEY_COMPUTED_SOURCES_LIST,
                                 makeSourceList(computedConfig.sources));
-                
+
                 return report;
             }
         }
@@ -661,7 +661,7 @@ abstract class AbstractConfigTest extends AbstractTest implements SVGConverterCo
                                 makeSourceList(expectedConfig.dest));
                 report.addDescriptionEntry(ENTRY_KEY_COMPUTED_DEST_LIST,
                                 makeSourceList(computedConfig.dest));
-                
+
                 return report;
             }
         }
@@ -671,7 +671,7 @@ abstract class AbstractConfigTest extends AbstractTest implements SVGConverterCo
         //
         en = expectedConfig.hints.size();
         cn = computedConfig.hints.size();
-        
+
         if (en != cn){
             TestReport report = reportError(ERROR_UNEXPECTED_NUMBER_OF_HINTS);
             report.addDescriptionEntry(ENTRY_KEY_EXPECTED_NUMBER_OF_HINTS,
@@ -683,7 +683,7 @@ abstract class AbstractConfigTest extends AbstractTest implements SVGConverterCo
                                        makeHintsString(expectedConfig.hints));
             report.addDescriptionEntry(ENTRY_KEY_COMPUTED_HINTS,
                                        makeHintsString(computedConfig.hints));
-            
+
             return report;
         }
 
@@ -691,9 +691,9 @@ abstract class AbstractConfigTest extends AbstractTest implements SVGConverterCo
         while (iter.hasNext()){
             Object hintKey = iter.next();
             Object expectedHintValue = expectedConfig.hints.get(hintKey);
-            
+
             Object computedHintValue = computedConfig.hints.get(hintKey);
-            
+
             if (!expectedHintValue.equals(computedHintValue)){
                 TestReport report = reportError(ERROR_UNEXPECTED_TRANSCODING_HINT);
                 report.addDescriptionEntry(ENTRY_KEY_EXPECTED_HINT_KEY,
@@ -710,9 +710,9 @@ abstract class AbstractConfigTest extends AbstractTest implements SVGConverterCo
                 return report;
             }
         }
-                                            
+
         return reportSuccess();
-    
+
     }
 
     public boolean proceedWithComputedTask(Transcoder transcoder,
@@ -732,7 +732,7 @@ abstract class AbstractConfigTest extends AbstractTest implements SVGConverterCo
                                                 File dest) {
         return true;
     }
-        
+
     public boolean proceedOnSourceTranscodingFailure(SVGConverterSource source,
                                                      File dest,
                                                      String errorCode){
@@ -741,7 +741,7 @@ abstract class AbstractConfigTest extends AbstractTest implements SVGConverterCo
 
     public void onSourceTranscodingSuccess(SVGConverterSource source,
                                            File dest){
-    }    
+    }
 }
 
 /**
@@ -761,8 +761,8 @@ class OperationTest extends AbstractTest{
 }
 
 /**
- * Provides a simple string constructor which allows the user to 
- * create a given test to check that a specific transcoder class is 
+ * Provides a simple string constructor which allows the user to
+ * create a given test to check that a specific transcoder class is
  * used for a given mime type.
  */
 class TranscoderConfigTest extends AbstractConfigTest {
@@ -781,7 +781,7 @@ class TranscoderConfigTest extends AbstractConfigTest {
 
         Config config = new Config();
         config.transcoderClass = expectedTranscoderClass;
-        
+
         Vector sources = new Vector();
         sources.addElement(new SVGConverterFileSource(new File(SOURCE_FILE)));
         config.sources = sources;
@@ -792,12 +792,12 @@ class TranscoderConfigTest extends AbstractConfigTest {
 
         HashMap hints = new HashMap();
         config.hints = hints;
-                  
+
         setExpectedConfig(config);
     }
 
     /**
-     * Configures the test with the given mime type 
+     * Configures the test with the given mime type
      */
     public void configure(SVGConverter c){
         c.setSources(new String[] { SOURCE_FILE });
@@ -808,7 +808,7 @@ class TranscoderConfigTest extends AbstractConfigTest {
 
 
 /**
- * Provides a simple string array constructor which allows the user to 
+ * Provides a simple string array constructor which allows the user to
  * create a test checking for a specific hint configuration.
  */
 class HintsConfigTest extends AbstractConfigTest {
@@ -822,7 +822,7 @@ class HintsConfigTest extends AbstractConfigTest {
     public HintsConfigTest(Object[][] hintsMap){
         Config config = new Config();
         config.transcoderClass = EXPECTED_TRANSCODER_CLASS;
-        
+
         Vector sources = new Vector();
         sources.addElement(new SVGConverterFileSource(new File(SOURCE_FILE)));
         config.sources = sources;
@@ -841,12 +841,12 @@ class HintsConfigTest extends AbstractConfigTest {
             hints.put(hintsMap[i][0], hintsMap[i][1]);
         }
         config.hints = hints;
-                  
+
         setExpectedConfig(config);
     }
 
     /**
-     * Configures the test with the given mime type 
+     * Configures the test with the given mime type
      */
     public void configure(SVGConverter c){
         c.setSources(new String[] { SOURCE_FILE });
@@ -860,11 +860,11 @@ class HintsConfigTest extends AbstractConfigTest {
 }
 
 /**
- * Provides a simple string array constructor which allows the user to 
+ * Provides a simple string array constructor which allows the user to
  * create a test checking for a specific source configuration.
- * The constructor argument takes the list of expected files and the 
- * deltaConfigure method should set the sources which is expected to 
- * produce that list of sources. The sources should be file names 
+ * The constructor argument takes the list of expected files and the
+ * deltaConfigure method should set the sources which is expected to
+ * produce that list of sources. The sources should be file names
  * which ommit the ".svg" extension.
  */
 class SourcesConfigTest extends AbstractConfigTest {
@@ -877,7 +877,7 @@ class SourcesConfigTest extends AbstractConfigTest {
     public SourcesConfigTest(Object[] expectedSources){
         Config config = new Config();
         config.transcoderClass = EXPECTED_TRANSCODER_CLASS;
-        
+
         Vector sources = new Vector();
         Vector dest = new Vector();
         for (int i=0; i<expectedSources.length; i++){
@@ -889,12 +889,12 @@ class SourcesConfigTest extends AbstractConfigTest {
 
         HashMap hints = new HashMap();
         config.hints = hints;
-                  
+
         setExpectedConfig(config);
     }
 
     /**
-     * Configures the test with the given mime type 
+     * Configures the test with the given mime type
      */
     public void configure(SVGConverter c){
         c.setDestinationType(DST_TYPE);
@@ -906,7 +906,7 @@ class SourcesConfigTest extends AbstractConfigTest {
 }
 
 /**
- * Provides a simple string array constructor which allows the user to 
+ * Provides a simple string array constructor which allows the user to
  * create a test checking for a specific destination configuration.
  * The constructor argument takes the list of sources and the list of
  * expected configuration which is influenced by the 'setDestination'
@@ -923,7 +923,7 @@ class DestConfigTest extends AbstractConfigTest {
         this.sourcesStrings = sourcesStrings;
         Config config = new Config();
         config.transcoderClass = EXPECTED_TRANSCODER_CLASS;
-        
+
         Vector sources = new Vector();
         Vector dest = new Vector();
         for (int i=0; i<sourcesStrings.length; i++){
@@ -939,12 +939,12 @@ class DestConfigTest extends AbstractConfigTest {
 
         HashMap hints = new HashMap();
         config.hints = hints;
-                  
+
         setExpectedConfig(config);
     }
 
     /**
-     * Configures the test with the given mime type 
+     * Configures the test with the given mime type
      */
     public void configure(SVGConverter c){
         c.setDestinationType(DST_TYPE);
@@ -1031,13 +1031,13 @@ class ConfigErrorTest extends AbstractTest implements SVGConverterController{
         System.out.println("==================> Starting to process Task <=========================");
         return true;
     }
-    
+
     public boolean proceedWithSourceTranscoding(SVGConverterSource source,
                                                 File dest) {
         System.out.print("Transcoding " + source + " to " + dest + " ... ");
         return true;
     }
-    
+
     public boolean proceedOnSourceTranscodingFailure(SVGConverterSource source,
                                                      File dest,
                                                      String errorCode){
@@ -1076,7 +1076,7 @@ class ConverterOutputTest extends AbstractTest {
         c.setDst(new File(pngDest));
 
         c.setDestinationType(DestinationType.PNG);
-        
+
         c.execute();
 
         ImageCompareTest t = new ImageCompareTest(pngDest,
