@@ -1,4 +1,3 @@
-The crimson-ant.jar file comes from the Apache Ant project:
+The crimson-1.1.3.jar file comes from the Apache XML project:
 
-http://jakarta.apache.org/ant/
-
+  http://xml.apache.org/crimson/

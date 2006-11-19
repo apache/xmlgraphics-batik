@@ -1,0 +1,2 @@
+The ant-1.6.5.jar and ant-launcher-1.6.5.jar files are under the Apache
+license found in the distribution root directory in the LICENSE file.

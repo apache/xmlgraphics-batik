@@ -28,7 +28,7 @@ Build Tools
 
 The Batik build system is based on Apache Ant, which is a Java building tool
 used in Apache projects.
-For more information refer to "http://jakarta.apache.org/ant/".
+For more information refer to <http://ant.apache.org/>.
 
 The distribution contains a precompiled version of Ant.
 
@@ -119,9 +119,9 @@ To display the available targets type:
     <property name="site-skin"          value="${skins}/xml.apache.org/"/>
     <property name="print-skin"         value="${skins}/printer/"/>
 
-    <property name="test-reports"       value="test-reports" />
-    <property name="test-references"    value="test-references" />
-    <property name="test-resources"     value="test-resources" />
+    <property name="test-reports"       value="test-reports"/>
+    <property name="test-references"    value="test-references"/>
+    <property name="test-resources"     value="test-resources"/>
 
     <available property="rhino.present" classname="org.mozilla.javascript.Context">
       <classpath refid="libs-classpath"/>
@@ -195,11 +195,11 @@ To display the available targets type:
   <path id="libs-build-classpath">
     <fileset dir="lib/build">
       <include name="stylebook*.jar"/>
-      <include name="xalan*.jar"/>
     </fileset>
     <fileset dir="lib">
       <include name="xerces*.jar"/>
       <include name="xml-apis-dom3.jar"/>
+      <include name="xalan*.jar"/>
     </fileset>
   </path>
 
@@ -221,7 +221,7 @@ To display the available targets type:
     <echo message="   svgbrowser    --> runs Squiggle the SVG browser"/>
     <echo message="   svgrasterizer --> runs the SVG rasterizer"/>
     <echo message="   svgpp         --> runs the SVG pretty-printer"/>
-    <echo message="   ttf2svg       --> converts selected glyphs from a True Type"/>
+    <echo message="   ttf2svg       --> converts selected glyphs from a TrueType"/>
     <echo message="                     Font file to the SVG Font format"/>
     <echo message="   regard        --> runs the regard regression utility"/>
     <echo message="   regard.manual --> runs regard tests that require user"/>
@@ -229,7 +229,7 @@ To display the available targets type:
     <echo message="   runtestsuite  --> runs a TestSuite, given an XML test suite"/>
     <echo message="                     document"/>
     <echo message="   runtest       --> runs a test whose class name is given at the command line"/>
-    <echo message="   showpainter   --> runs a Painter test instance to check its rendering."/>
+    <echo message="   showpainter   --> runs a Painter test instance to check its rendering"/>
     <echo message="   javadoc       --> generates the API documentation"/>
     <echo message="   site          --> generates the site documentation"/>
     <echo message="   sitedoc       --> generates the site documentation without"/>
@@ -242,7 +242,6 @@ To display the available targets type:
     <echo message="                     ${build}/docs/print"/>
     <echo message="   clean         --> cleans up the directory"/>
     <echo message="   splash        --> Updates documentation and browser splash screens"/>
-    <echo message="   jarDepend     --> Updates jar files dependency image"/>
     <echo message="   all-jar       --> Creates a combined JAR file of the Batik"/>
     <echo message="                     libraries in ${build}/lib"/>
     <echo message=""/>
@@ -252,8 +251,8 @@ To display the available targets type:
   </target>
 
   <!-- Build .............................................................. -->
-  <target name="dist-zip" depends="build"/>
-  <target name="build" depends="doc-zip, bin-zip, src-zip, jars, html" />
+  <target name="dist-zip" depends="build-zip"/>
+  <target name="build-zip" depends="doc-zip, bin-zip, src-zip"/>
 
   <target name="doc-zip" depends="init, html">
     <delete dir="${build}/docs/images/BE"/>
@@ -263,69 +262,102 @@ To display the available targets type:
   </target>
 
   <target name="bin-zip" depends="jars">
-    <copy file="README" todir="${build}"/>
-    <copy file="LICENSE" todir="${build}"/>
-    <copy file="NOTICE" todir="${build}"/>
-    <copy todir="${build}/lib">
-       <fileset dir="lib">
-           <include name="LICENSE.*.txt"/>
-           <include name="README.*.txt"/>
-       </fileset>
-    </copy>
-    <copy todir="${build}/samples">
-      <fileset dir="samples" excludes="**/.svn/"/>
-    </copy>
-    <zip zipfile="${project}-${version}.zip" basedir="." includes="${build}/**"/> 
+    <zip zipfile="${project}-${version}.zip" includes="${build}/**">
+      <zipfileset dir="." prefix="${project}-${version}">
+        <include name="LICENSE"/>
+        <include name="NOTICE"/>
+        <include name="README"/>
+      </zipfileset>
+      <zipfileset dir="lib" prefix="${project}-${version}/lib">
+        <include name="LICENSE.*.txt"/>
+        <include name="README.*.txt"/>
+      </zipfileset>
+      <zipfileset dir="${resources}/${package-prefix}/extensions"
+                  prefix="${project}-${version}/extensions">
+        <include name="README.txt"/>
+      </zipfileset>
+      <zipfileset dir="." includes="samples/**" prefix="${project}-${version}"/>
+    </zip>
   </target>
 
   <target name="src-zip" depends="init">
-    <echo message="xml-${project}"/>
-    <zip zipfile="${project}-src-${version}.zip" basedir=".." 
-         includes="xml-${project}/**" excludes="xml-${project}/test-references/**">
-        <exclude name="xml-${project}/${project}-src-${version}.zip" />
-        <exclude name="xml-${project}/${project}-${version}.zip" />
-        <exclude name="xml-${project}/${project}-docs-${version}.zip" />
-        <exclude name="xml-${project}/classes/**" />
-        <exclude name="xml-${project}/test-references/**" />
-        <exclude name="xml-${project}/${build}/**" />
+    <zip zipfile="${project}-src-${version}.zip">
+      <zipfileset dir="." prefix="${project}-${version}">
+        <include name="LICENSE"/>
+        <include name="KEYS"/>
+        <include name="MAINTAIN"/>
+        <include name="NOTICE"/>
+        <include name="README"/>
+        <include name="build.bat"/>
+        <include name="build.sh"/>
+        <include name="build.xml"/>
+        <include name="contrib/**"/>
+        <include name="lib/**"/>
+        <include name="resources/**"/>
+        <include name="samples/**"/>
+        <include name="sources/**"/>
+        <include name="sources-1.3/**"/>
+        <include name="sources-1.4/**"/>
+        <include name="test-resources/**"/>
+        <include name="test-sources/**"/>
+        <include name="xdocs/**"/>
+      </zipfileset>
     </zip>
   </target>
 
   <target name="dist-tgz" depends="build-tgz"/>
-  <target name="build-tgz" depends="jars, html">
+  <target name="build-tgz" depends="doc-tgz, bin-tgz, src-tgz"/>
+
+  <target name="doc-tgz" depends="init, html">
     <delete dir="${build}/docs/images/BE"/>
-    <tar tarfile="${project}-docs-${version}.tar" basedir="${build}"
-         includes="docs/javadoc/**"/>
-    <gzip zipfile="${project}-docs-${version}.tar.gz"
-          src="${project}-docs-${version}.tar"/>
-    <delete file="${project}-${version}.tar"/>
+    <tar tarfile="${project}-docs-${version}.tar.gz" compression="gzip"
+         basedir="${build}" includes="docs/javadoc/**"/>
     <delete dir="${build}/docs/javadoc"/>
+  </target>
 
-    <copy file="README" todir="${build}"/>
-    <copy file="LICENSE" todir="${build}"/>
-    <copy file="NOTICE" todir="${build}"/>
-    <copy todir="${build}/lib">
-       <fileset dir="lib">
-           <include name="LICENSE.*.txt"/>
-           <include name="README.*.txt"/>
-       </fileset>
-    </copy>
-    <copy file="${resources}/${package-prefix}/extensions/README.txt" 
-          todir="${build}/extensions"/>
-    <copy todir="${build}/samples">
-      <fileset dir="samples" excludes="**/.svn/"/>
-    </copy>
-    <tar tarfile="${project}-${version}.tar" basedir="." includes="${build}/**"/>
-    <gzip zipfile="${project}-${version}.tar.gz" src="${project}-${version}.tar"/>
-    <delete file="${project}-docs-${version}.tar"/>
+  <target name="bin-tgz" depends="jars">
+    <tar tarfile="${project}-${version}.tar.gz" compression="gzip"
+         includes="${build}/**">
+      <tarfileset dir="." prefix="${project}-${version}">
+        <include name="LICENSE"/>
+        <include name="NOTICE"/>
+        <include name="README"/>
+      </tarfileset>
+      <tarfileset dir="lib" prefix="${project}-${version}/lib">
+        <include name="LICENSE.*.txt"/>
+        <include name="README.*.txt"/>
+      </tarfileset>
+      <tarfileset dir="${resources}/${package-prefix}/extensions"
+                  prefix="${project}-${version}/extensions">
+        <include name="README.txt"/>
+      </tarfileset>
+      <tarfileset dir="." includes="samples/**" prefix="${project}-${version}"/>
+    </tar>
+  </target>
 
-    <cvs cvsRoot=":pserver:anoncvs@cvs.apache.org:/home/cvspublic"
-         package="xml-batik"
-         dest="xml-${project}"/>
-    <tar tarfile="${project}-src-${version}.tar" basedir="." includes="xml-${project}"/>
-    <gzip zipfile="${project}-src-${version}.tar.gz"
-          src="${project}-src-${version}.tar"/>
-    <delete file="${project}-src-${version}.tar"/>
+  <target name="src-tgz" depends="init">
+    <tar tarfile="${project}-src-${version}.tar.gz" compression="gzip">
+      <tarfileset dir="." prefix="${project}-${version}">
+        <include name="LICENSE"/>
+        <include name="KEYS"/>
+        <include name="MAINTAIN"/>
+        <include name="NOTICE"/>
+        <include name="README"/>
+        <include name="build.bat"/>
+        <include name="build.sh"/>
+        <include name="build.xml"/>
+        <include name="contrib/**"/>
+        <include name="lib/**"/>
+        <include name="resources/**"/>
+        <include name="samples/**"/>
+        <include name="sources/**"/>
+        <include name="sources-1.3/**"/>
+        <include name="sources-1.4/**"/>
+        <include name="test-resources/**"/>
+        <include name="test-sources/**"/>
+        <include name="xdocs/**"/>
+      </tarfileset>
+    </tar>
   </target>
 
 
@@ -340,7 +372,7 @@ To display the available targets type:
     <javac srcdir="${testsrc}" destdir="${dest}"  deprecation="${deprecation}" 
            debug="${debug}" optimize="${optimize}" encoding="UTF-8">
       <classpath>
-        <pathelement location="${dest}" />
+        <pathelement location="${dest}"/>
         <path refid="libs-classpath"/>
         <path refid="libs-build-classpath"/>
       </classpath>
@@ -352,7 +384,7 @@ To display the available targets type:
   <!-- Note that this is needed to avoid having the class files in the classes          -->
   <!-- subdirectory, which interferes with the tests, because classes in that directory -->
   <!-- are loaded first in the development version.                                     -->
-  <target name="testjars" depends="security2.jar, IWasLoaded.jar, IWasLoadedToo.jar, JarCheckPermissionsGranted.jar, JarCheckPermissionsDenied.jar, java-binding.jar" />
+  <target name="testjars" depends="security2.jar, IWasLoaded.jar, IWasLoadedToo.jar, JarCheckPermissionsGranted.jar, JarCheckPermissionsDenied.jar, java-binding.jar"/>
 
   <target name       ="compiletestjars"
           depends    ="compile"
@@ -365,8 +397,8 @@ To display the available targets type:
     <javac srcdir="${samples}/tests/resources/java/sources" destdir="${samples}/tests/resources/java/classes"  deprecation="${deprecation}" 
            debug="${debug}" optimize="${optimize}" encoding="UTF-8">
       <classpath>
-        <pathelement location="${dest}" />
-        <pathelement location="${samples}/tests/resources/java/classes" />
+        <pathelement location="${dest}"/>
+        <pathelement location="${samples}/tests/resources/java/classes"/>
         <path refid="libs-classpath"/>
         <path refid="libs-build-classpath"/>
       </classpath>
@@ -375,15 +407,15 @@ To display the available targets type:
     <javac srcdir="${testresources}" destdir="${testresources}/classes"  deprecation="${deprecation}" 
            debug="${debug}" optimize="${optimize}" encoding="UTF-8">
       <classpath>
-        <pathelement location="${dest}" />
-        <pathelement location="${testresources}/classes" />
+        <pathelement location="${dest}"/>
+        <pathelement location="${testresources}/classes"/>
         <path refid="libs-classpath"/>
         <path refid="libs-build-classpath"/>
       </classpath>
     </javac>
   </target>
 
-  <target name="security2.jar" depends="compiletestjars" >
+  <target name="security2.jar" depends="compiletestjars">
     <jar manifest="${samples}/tests/resources/java/resources/com/untrusted/script/security2.mf"
          jarfile="samples/tests/spec/scripting/security2.jar">
       <fileset dir="${samples}/tests/resources/java/classes">
@@ -414,7 +446,7 @@ To display the available targets type:
     </jar>
   </target>
 
-  <target name="JarCheckPermissionsDenied.jar" depends="compiletestjars" >
+  <target name="JarCheckPermissionsDenied.jar" depends="compiletestjars">
     <jar manifest="${testresources}/org/apache/batik/bridge/JarCheckPermissionsDenied.mf"
          jarfile="${testresources}/org/apache/batik/bridge/JarCheckPermissionsDenied.jar">
       <fileset dir="${testresources}/classes">
@@ -423,7 +455,7 @@ To display the available targets type:
     </jar>
   </target>
 
-  <target name="JarCheckPermissionsGranted.jar" depends="compiletestjars" >
+  <target name="JarCheckPermissionsGranted.jar" depends="compiletestjars">
     <jar manifest="${testresources}/org/apache/batik/bridge/JarCheckPermissionsGranted.mf"
          jarfile="${testresources}/org/apache/batik/bridge/JarCheckPermissionsGranted.jar">
       <fileset dir="${testresources}/classes">
@@ -432,7 +464,7 @@ To display the available targets type:
     </jar>
   </target>
 
-  <target name="java-binding.jar" depends="compiletestjars" >
+  <target name="java-binding.jar" depends="compiletestjars">
     <jar manifest="${samples}/tests/resources/java/resources/com/test/script/java-binding.mf"
          jarfile="${samples}/tests/spec/scripting/java-binding.jar">
       <fileset dir="${samples}/tests/resources/java/classes">
@@ -441,8 +473,59 @@ To display the available targets type:
     </jar>
   </target>
 
+  <!-- Runs 'svn status' to get the revision of the current working copy. -->
+  <target name="update-version-init">
+    <dirset id="dirs" dir="${src}/${package-prefix}">
+      <include name="**"/>
+    </dirset>
+    <pathconvert refid="dirs" pathsep=" " property="svn-info-dirs"/>
+    <exec executable="svn" output="svn-info.xml"
+          resultproperty="svn-info-result">
+      <arg line="info --xml . ${svn-info-dirs}"/>
+    </exec>
+    <condition property="should-transform-svn-info">
+      <equals arg1="${svn-info-result}" arg2="0"/>
+    </condition>
+  </target>
+
+  <!-- Transforms the output of 'svn status' into Version.java.new. -->
+  <target name="update-version-transform" if="should-transform-svn-info">
+    <java fork="yes" classname="org.apache.xalan.xslt.Process">
+      <classpath>
+        <path refid="libs-build-classpath"/>
+      </classpath>
+      <arg line="-in svn-info.xml -xsl ${src}/${package-prefix}/Version.java.xsl -out ${src}/${package-prefix}/Version.java.new"/>
+    </java>
+    <condition property="should-update-version-java">
+      <not>
+        <filesmatch file1="${src}/${package-prefix}/Version.java"
+                    file2="${src}/${package-prefix}/Version.java.new"/>
+      </not>
+    </condition>
+  </target>
+
+  <!-- Copies the generated Version.java.new to Version.java if the file
+       will actually change. -->
+  <target name="update-version-write"
+          if="should-update-version-java">
+    <copy file="${src}/${package-prefix}/Version.java.new"
+          tofile="${src}/${package-prefix}/Version.java"/>
+  </target>
+
+  <!-- Removes the generated Version.java.new. -->
+  <target name="update-version-clean">
+    <delete file="${src}/${package-prefix}/Version.java.new"/>
+    <delete file="svn-info.xml"/>
+  </target>
+
+  <!-- Writes sources/org/apache/batik/Version.java with the working copy's
+       revision number filled in. -->
+  <target name="update-version"
+          depends="update-version-init, update-version-transform,
+                   update-version-write, update-version-clean"/>
+
   <target name       ="compile-prepare"
-          depends    ="init">
+          depends    ="init, update-version">
     <mkdir dir="${dest}"/>
     <echo message="debug ${debug}, optimize ${optimize}, deprecation ${deprecation}"/>
   </target>
@@ -464,9 +547,10 @@ To display the available targets type:
   </target>
 
   <target name="clean-compile"
-          depends="init"
+          depends="init, update-version-clean"
           description="Cleans the files generated by compile">
     <delete dir="${dest}"/>
+    <delete file="${src}/${package-prefix}/Version.java"/>
   </target>
 
   <target name="clean-apache"
@@ -611,7 +695,6 @@ To display the available targets type:
     </jar>
   </target>
 
-
   <!-- Util, i18n (dependencies: none) -->
   <target name="util-jar" depends="compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-util.jar">
@@ -646,9 +729,9 @@ To display the available targets type:
 
 
   <!-- Codecs (dependencies: awt-util, transcoder) -->
-  <target name="codec-jar" depends="compile, prepare-build" >
+  <target name="codec-jar" depends="compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-codec.jar">
-      <fileset dir="${dest}" >
+      <fileset dir="${dest}">
         <include name="${package-prefix}/ext/awt/image/codec/util/*.class"/>
         <include name="${package-prefix}/ext/awt/image/codec/png/*.class"/>
         <include name="${package-prefix}/ext/awt/image/codec/tiff/*.class"/>
@@ -657,7 +740,7 @@ To display the available targets type:
         <include name="${package-prefix}/ext/awt/image/codec/imageio/*.class"
                  if="jdk14.present"/>
       </fileset>
-      <fileset dir="${resources}" excludes="**/.svn/" >
+      <fileset dir="${resources}" excludes="**/.svn/">
         <include name="${package-prefix}/ext/awt/image/codec/**/properties"/>
         <include name="META-INF/services/org.apache.batik.ext.awt.image.spi.ImageWriter"/>
         <include name="META-INF/services/org.apache.batik.ext.awt.image.spi.RegistryEntry"/>
@@ -930,9 +1013,9 @@ To display the available targets type:
   <!-- Squiggle (dependencies: all) -->
   <target name="squiggle-jar" depends="compile, prepare-build">
     <move file="${resources}/${package-prefix}/apps/svgbrowser/resources/svgbrowser.policy"
-          tofile="${resources}/${package-prefix}/apps/svgbrowser/resources/svgbrowser.classes.policy" />
+          tofile="${resources}/${package-prefix}/apps/svgbrowser/resources/svgbrowser.classes.policy"/>
     <move file="${resources}/${package-prefix}/apps/svgbrowser/resources/svgbrowser.bin.policy"
-          tofile="${resources}/${package-prefix}/apps/svgbrowser/resources/svgbrowser.policy" />
+          tofile="${resources}/${package-prefix}/apps/svgbrowser/resources/svgbrowser.policy"/>
     <jar manifest="${src}/${project}-browser.mf"
          jarfile="${build}/${project}-squiggle.jar">
       <manifest>
@@ -946,14 +1029,14 @@ To display the available targets type:
       </fileset>
       <fileset dir="${resources}" excludes="**/.svn/">
         <include name="${package-prefix}/apps/svgbrowser/**/resources/**"/>
-        <exclude name="${package-prefix}/apps/svgbrowser/resources/squiggle.xsl" />
-        <exclude name="${package-prefix}/apps/svgbrowser/resources/squiggle.svg" />
+        <exclude name="${package-prefix}/apps/svgbrowser/resources/squiggle.xsl"/>
+        <exclude name="${package-prefix}/apps/svgbrowser/resources/squiggle.svg"/>
       </fileset>
     </jar>
     <move file="${resources}/${package-prefix}/apps/svgbrowser/resources/svgbrowser.policy"
-          tofile="${resources}/${package-prefix}/apps/svgbrowser/resources/svgbrowser.bin.policy" />
+          tofile="${resources}/${package-prefix}/apps/svgbrowser/resources/svgbrowser.bin.policy"/>
     <move file="${resources}/${package-prefix}/apps/svgbrowser/resources/svgbrowser.classes.policy"
-          tofile="${resources}/${package-prefix}/apps/svgbrowser/resources/svgbrowser.policy" />
+          tofile="${resources}/${package-prefix}/apps/svgbrowser/resources/svgbrowser.policy"/>
   </target>
 
   <target name="squiggle-ext-jar" depends="squiggle-jar">
@@ -977,9 +1060,9 @@ To display the available targets type:
   <!-- Rasterizer (dependencies: all except GUI util) -->
   <target name="rasterizer-jar" depends="compile, prepare-build">
     <move file="${resources}/${package-prefix}/apps/rasterizer/resources/rasterizer.policy"
-          tofile="${resources}/${package-prefix}/apps/rasterizer/resources/rasterizer.classes.policy" />
+          tofile="${resources}/${package-prefix}/apps/rasterizer/resources/rasterizer.classes.policy"/>
     <move file="${resources}/${package-prefix}/apps/rasterizer/resources/rasterizer.bin.policy"
-          tofile="${resources}/${package-prefix}/apps/rasterizer/resources/rasterizer.policy" />
+          tofile="${resources}/${package-prefix}/apps/rasterizer/resources/rasterizer.policy"/>
     <jar manifest="${src}/${project}-rasterizer.mf"
          jarfile="${build}/${project}-rasterizer.jar">
       <manifest>
@@ -995,9 +1078,9 @@ To display the available targets type:
       </fileset>
     </jar>
     <move file="${resources}/${package-prefix}/apps/rasterizer/resources/rasterizer.policy"
-          tofile="${resources}/${package-prefix}/apps/rasterizer/resources/rasterizer.bin.policy" />
+          tofile="${resources}/${package-prefix}/apps/rasterizer/resources/rasterizer.bin.policy"/>
     <move file="${resources}/${package-prefix}/apps/rasterizer/resources/rasterizer.classes.policy"
-          tofile="${resources}/${package-prefix}/apps/rasterizer/resources/rasterizer.policy" />
+          tofile="${resources}/${package-prefix}/apps/rasterizer/resources/rasterizer.policy"/>
   </target>
 
   <target name="rasterizer-ext-jar" depends="rasterizer-jar">
@@ -1048,16 +1131,16 @@ To display the available targets type:
   <target name="regard-jar" depends="compiletest, prepare-build">
     <jar jarfile="regard.jar">
         <fileset dir="${dest}">
-          <include name="${package-prefix}/test/*.class" />
-          <include name="${package-prefix}/test/xml/*.class" />
-          <include name="${package-prefix}/i18n/Localizable.class" />
-          <include name="${package-prefix}/i18n/LocalizableSupport.class" />
-          <include name="${package-prefix}/i18n/LocaleGroup.class" />
-          <include name="${package-prefix}/util/XMLConstants.class" />
+          <include name="${package-prefix}/test/*.class"/>
+          <include name="${package-prefix}/test/xml/*.class"/>
+          <include name="${package-prefix}/i18n/Localizable.class"/>
+          <include name="${package-prefix}/i18n/LocalizableSupport.class"/>
+          <include name="${package-prefix}/i18n/LocaleGroup.class"/>
+          <include name="${package-prefix}/util/XMLConstants.class"/>
         </fileset>
         <fileset dir="${test-resources}">
-          <include name="${package-prefix}/test/resources/*.properties" />
-          <include name="${package-prefix}/test/xml/resources/*.properties" />
+          <include name="${package-prefix}/test/resources/*.properties"/>
+          <include name="${package-prefix}/test/xml/resources/*.properties"/>
         </fileset>
     </jar>
   </target>
@@ -1069,7 +1152,7 @@ To display the available targets type:
           <include name="${package-prefix}/ext/awt/image/codec/*.class"/>
         </fileset>
         <fileset dir="${test-resources}">
-          <include name="${package-prefix}/ext/awt/image/codec/resources/*.properties" />
+          <include name="${package-prefix}/ext/awt/image/codec/resources/*.properties"/>
         </fileset>
     </jar>
   </target>
@@ -1081,14 +1164,14 @@ To display the available targets type:
           classname="${class-prefix}.apps.svgbrowser.Main">
 <!--          jvm="C:\Documents and Settings\<user>\.netbeans\4.0\modules\profiler-ea-vm\jre\bin\java"> -->
       <classpath>
-        <pathelement location="${dest}" />
+        <pathelement location="${dest}"/>
         <path refid="libs-classpath"/>
-        <pathelement location="resources" />
+        <pathelement location="resources"/>
       </classpath>
       <arg line="${args}"/> 
       <!-- <jvmarg value="-Xmx512m"/>  <jvmarg value="-Xms64m"/> -->
       <!-- <jvmarg value="-Djava.security.debug=all"/>  
-           <jvmarg value="-verbose" /> -->
+           <jvmarg value="-verbose"/> -->
      <!-- 
       <jvmarg value="-Djava.security.debug=access failure"/> 
       <jvmarg value="-Djava.security.debug=policy"/> 
@@ -1107,9 +1190,9 @@ To display the available targets type:
     <java fork="yes"
           classname="${class-prefix}.apps.rasterizer.Main">
       <classpath>
-        <pathelement location="${dest}" />
+        <pathelement location="${dest}"/>
         <path refid="libs-classpath"/>
-        <pathelement location="resources" />
+        <pathelement location="resources"/>
       </classpath>
 <!--      <jvmarg value="-Xmx512m"/>  <jvmarg value="-Xms64m"/>  -->
 <!--      <jvmarg value="-Djava.awt.headless=true"/>  -->
@@ -1123,9 +1206,9 @@ To display the available targets type:
     <java fork="yes"
           classname="${class-prefix}.apps.svgpp.Main">
       <classpath>
-        <pathelement location="${dest}" />
+        <pathelement location="${dest}"/>
         <path refid="libs-classpath"/>
-        <pathelement location="resources" />
+        <pathelement location="resources"/>
       </classpath>
       <arg line="${args}"/>
     </java>
@@ -1147,66 +1230,66 @@ To display the available targets type:
     <mkdir dir="${test-references}/samples/accepted-variation"/>
     <mkdir dir="${test-references}/samples/candidate-variation"/>
     <mkdir dir="${test-references}/samples/candidate-reference"/>
-    <mkdir dir="${test-references}/samples/tests/spec/coordinates/candidate-variation" />
-    <mkdir dir="${test-references}/samples/tests/spec/coordinates/candidate-reference" />
-    <mkdir dir="${test-references}/samples/tests/spec/coordinates/accepted-variation" />
-    <mkdir dir="${test-references}/samples/tests/spec/fonts/candidate-variation" />
-    <mkdir dir="${test-references}/samples/tests/spec/fonts/candidate-reference" />
-    <mkdir dir="${test-references}/samples/tests/spec/fonts/accepted-variation" />
-    <mkdir dir="${test-references}/samples/tests/spec/masking/candidate-variation" />
-    <mkdir dir="${test-references}/samples/tests/spec/masking/candidate-reference" />
-    <mkdir dir="${test-references}/samples/tests/spec/masking/accepted-variation" />
-    <mkdir dir="${test-references}/samples/tests/spec/paints/candidate-variation" />
-    <mkdir dir="${test-references}/samples/tests/spec/paints/candidate-reference" />
-    <mkdir dir="${test-references}/samples/tests/spec/paints/accepted-variation" />
-    <mkdir dir="${test-references}/samples/tests/spec/shapes/candidate-variation" />
-    <mkdir dir="${test-references}/samples/tests/spec/shapes/candidate-reference" />
-    <mkdir dir="${test-references}/samples/tests/spec/shapes/accepted-variation" />
-    <mkdir dir="${test-references}/samples/tests/spec/styling/candidate-variation" />
-    <mkdir dir="${test-references}/samples/tests/spec/styling/candidate-reference" />
-    <mkdir dir="${test-references}/samples/tests/spec/styling/accepted-variation" />
-    <mkdir dir="${test-references}/samples/tests/spec/color/candidate-variation" />
-    <mkdir dir="${test-references}/samples/tests/spec/color/candidate-reference" />
-    <mkdir dir="${test-references}/samples/tests/spec/color/accepted-variation" />
-    <mkdir dir="${test-references}/samples/tests/spec/filters/candidate-variation" />
-    <mkdir dir="${test-references}/samples/tests/spec/filters/candidate-reference" />
-    <mkdir dir="${test-references}/samples/tests/spec/filters/accepted-variation" />
-    <mkdir dir="${test-references}/samples/tests/spec/linking/candidate-variation" />
-    <mkdir dir="${test-references}/samples/tests/spec/linking/candidate-reference" />
-    <mkdir dir="${test-references}/samples/tests/spec/linking/accepted-variation" />
-    <mkdir dir="${test-references}/samples/tests/spec/painting/candidate-variation" />
-    <mkdir dir="${test-references}/samples/tests/spec/painting/candidate-reference" />
-    <mkdir dir="${test-references}/samples/tests/spec/painting/accepted-variation" />
-    <mkdir dir="${test-references}/samples/tests/spec/rendering/candidate-variation" />
-    <mkdir dir="${test-references}/samples/tests/spec/rendering/candidate-reference" />
-    <mkdir dir="${test-references}/samples/tests/spec/rendering/accepted-variation" />
-    <mkdir dir="${test-references}/samples/tests/spec/structure/candidate-variation" />
-    <mkdir dir="${test-references}/samples/tests/spec/structure/candidate-reference" />
-    <mkdir dir="${test-references}/samples/tests/spec/structure/accepted-variation" />
-    <mkdir dir="${test-references}/samples/tests/spec/text/candidate-variation" />
-    <mkdir dir="${test-references}/samples/tests/spec/text/candidate-reference" />
-    <mkdir dir="${test-references}/samples/tests/spec/text/accepted-variation" />
-    <mkdir dir="${test-references}/samples/tests/spec/interactivity/candidate-variation" />
-    <mkdir dir="${test-references}/samples/tests/spec/interactivity/candidate-reference" />
-    <mkdir dir="${test-references}/samples/tests/spec/interactivity/accepted-variation" />
-    <mkdir dir="${test-references}/samples/tests/spec/scripting/candidate-variation" />
-    <mkdir dir="${test-references}/samples/tests/spec/scripting/candidate-reference" />
-    <mkdir dir="${test-references}/samples/tests/spec/scripting/accepted-variation" />
-    <mkdir dir="${test-references}/samples/tests/spec12/filters/candidate-variation" />
-    <mkdir dir="${test-references}/samples/tests/spec12/filters/candidate-reference" />
-    <mkdir dir="${test-references}/samples/tests/spec12/filters/accepted-variation" />
-    <mkdir dir="${test-references}/samples/tests/spec12/paints/candidate-variation" />
-    <mkdir dir="${test-references}/samples/tests/spec12/paints/candidate-reference" />
-    <mkdir dir="${test-references}/samples/tests/spec12/paints/accepted-variation" />
-    <mkdir dir="${test-references}/samples/tests/spec12/structure/candidate-variation" />
-    <mkdir dir="${test-references}/samples/tests/spec12/structure/candidate-reference" />
-    <mkdir dir="${test-references}/samples/tests/spec12/structure/accepted-variation" />
-    <mkdir dir="${test-references}/samples/tests/spec12/structure/opera/candidate-variation" />
-    <mkdir dir="${test-references}/samples/tests/spec12/structure/opera/candidate-reference" />
-    <mkdir dir="${test-references}/samples/tests/spec12/structure/opera/accepted-variation" />
-    <mkdir dir="${test-references}/samples/tests/spec12/text/candidate-variation" />
-    <mkdir dir="${test-references}/samples/tests/spec12/text/candidate-reference" />
-    <mkdir dir="${test-references}/samples/tests/spec12/text/accepted-variation" />
+    <mkdir dir="${test-references}/samples/tests/spec/coordinates/candidate-variation"/>
+    <mkdir dir="${test-references}/samples/tests/spec/coordinates/candidate-reference"/>
+    <mkdir dir="${test-references}/samples/tests/spec/coordinates/accepted-variation"/>
+    <mkdir dir="${test-references}/samples/tests/spec/fonts/candidate-variation"/>
+    <mkdir dir="${test-references}/samples/tests/spec/fonts/candidate-reference"/>
+    <mkdir dir="${test-references}/samples/tests/spec/fonts/accepted-variation"/>
+    <mkdir dir="${test-references}/samples/tests/spec/masking/candidate-variation"/>
+    <mkdir dir="${test-references}/samples/tests/spec/masking/candidate-reference"/>
+    <mkdir dir="${test-references}/samples/tests/spec/masking/accepted-variation"/>
+    <mkdir dir="${test-references}/samples/tests/spec/paints/candidate-variation"/>
+    <mkdir dir="${test-references}/samples/tests/spec/paints/candidate-reference"/>
+    <mkdir dir="${test-references}/samples/tests/spec/paints/accepted-variation"/>
+    <mkdir dir="${test-references}/samples/tests/spec/shapes/candidate-variation"/>
+    <mkdir dir="${test-references}/samples/tests/spec/shapes/candidate-reference"/>
+    <mkdir dir="${test-references}/samples/tests/spec/shapes/accepted-variation"/>
+    <mkdir dir="${test-references}/samples/tests/spec/styling/candidate-variation"/>
+    <mkdir dir="${test-references}/samples/tests/spec/styling/candidate-reference"/>
+    <mkdir dir="${test-references}/samples/tests/spec/styling/accepted-variation"/>
+    <mkdir dir="${test-references}/samples/tests/spec/color/candidate-variation"/>
+    <mkdir dir="${test-references}/samples/tests/spec/color/candidate-reference"/>
+    <mkdir dir="${test-references}/samples/tests/spec/color/accepted-variation"/>
+    <mkdir dir="${test-references}/samples/tests/spec/filters/candidate-variation"/>
+    <mkdir dir="${test-references}/samples/tests/spec/filters/candidate-reference"/>
+    <mkdir dir="${test-references}/samples/tests/spec/filters/accepted-variation"/>
+    <mkdir dir="${test-references}/samples/tests/spec/linking/candidate-variation"/>
+    <mkdir dir="${test-references}/samples/tests/spec/linking/candidate-reference"/>
+    <mkdir dir="${test-references}/samples/tests/spec/linking/accepted-variation"/>
+    <mkdir dir="${test-references}/samples/tests/spec/painting/candidate-variation"/>
+    <mkdir dir="${test-references}/samples/tests/spec/painting/candidate-reference"/>
+    <mkdir dir="${test-references}/samples/tests/spec/painting/accepted-variation"/>
+    <mkdir dir="${test-references}/samples/tests/spec/rendering/candidate-variation"/>
+    <mkdir dir="${test-references}/samples/tests/spec/rendering/candidate-reference"/>
+    <mkdir dir="${test-references}/samples/tests/spec/rendering/accepted-variation"/>
+    <mkdir dir="${test-references}/samples/tests/spec/structure/candidate-variation"/>
+    <mkdir dir="${test-references}/samples/tests/spec/structure/candidate-reference"/>
+    <mkdir dir="${test-references}/samples/tests/spec/structure/accepted-variation"/>
+    <mkdir dir="${test-references}/samples/tests/spec/text/candidate-variation"/>
+    <mkdir dir="${test-references}/samples/tests/spec/text/candidate-reference"/>
+    <mkdir dir="${test-references}/samples/tests/spec/text/accepted-variation"/>
+    <mkdir dir="${test-references}/samples/tests/spec/interactivity/candidate-variation"/>
+    <mkdir dir="${test-references}/samples/tests/spec/interactivity/candidate-reference"/>
+    <mkdir dir="${test-references}/samples/tests/spec/interactivity/accepted-variation"/>
+    <mkdir dir="${test-references}/samples/tests/spec/scripting/candidate-variation"/>
+    <mkdir dir="${test-references}/samples/tests/spec/scripting/candidate-reference"/>
+    <mkdir dir="${test-references}/samples/tests/spec/scripting/accepted-variation"/>
+    <mkdir dir="${test-references}/samples/tests/spec12/filters/candidate-variation"/>
+    <mkdir dir="${test-references}/samples/tests/spec12/filters/candidate-reference"/>
+    <mkdir dir="${test-references}/samples/tests/spec12/filters/accepted-variation"/>
+    <mkdir dir="${test-references}/samples/tests/spec12/paints/candidate-variation"/>
+    <mkdir dir="${test-references}/samples/tests/spec12/paints/candidate-reference"/>
+    <mkdir dir="${test-references}/samples/tests/spec12/paints/accepted-variation"/>
+    <mkdir dir="${test-references}/samples/tests/spec12/structure/candidate-variation"/>
+    <mkdir dir="${test-references}/samples/tests/spec12/structure/candidate-reference"/>
+    <mkdir dir="${test-references}/samples/tests/spec12/structure/accepted-variation"/>
+    <mkdir dir="${test-references}/samples/tests/spec12/structure/opera/candidate-variation"/>
+    <mkdir dir="${test-references}/samples/tests/spec12/structure/opera/candidate-reference"/>
+    <mkdir dir="${test-references}/samples/tests/spec12/structure/opera/accepted-variation"/>
+    <mkdir dir="${test-references}/samples/tests/spec12/text/candidate-variation"/>
+    <mkdir dir="${test-references}/samples/tests/spec12/text/candidate-reference"/>
+    <mkdir dir="${test-references}/samples/tests/spec12/text/accepted-variation"/>
     <mkdir dir="${test-references}/samples/extensions/accepted-variation"/>
     <mkdir dir="${test-references}/samples/extensions/candidate-variation"/>
     <mkdir dir="${test-references}/samples/extensions/candidate-reference"/>
@@ -1217,16 +1300,16 @@ To display the available targets type:
     <mkdir dir="${test-references}/svgbe/candidate-variation"/>
     <mkdir dir="${test-references}/svgbe/candidate-reference"/>
     <mkdir dir="${test-references}/org/apache/batik/transcoder/wmf/candidate"/>
-    <mkdir dir="${test-references}/org/apache/batik/svggen/candidate-ref" />
-    <mkdir dir="${test-references}/org/apache/batik/svggen/rendering/candidate-variation" />
-    <mkdir dir="${test-references}/org/apache/batik/svggen/rendering/candidate-reference" />
-    <mkdir dir="${test-references}/org/apache/batik/svggen/rendering/accepted-variation" />
-    <mkdir dir="${test-references}/org/apache/batik/gvt/candidate" />
-    <mkdir dir="${test-references}/org/apache/batik/gvt/variation" />
-    <mkdir dir="${test-references}/org/apache/batik/ext/awt/geom/candidate" />
-    <mkdir dir="${test-references}/org/apache/batik/ext/awt/geom/variation" />
-    <mkdir dir="${test-references}/org/apache/batik/transcoder/image/candidate-reference" />
-    <mkdir dir="${test-references}/org/apache/batik/transcoder/image/candidate-variation" />
+    <mkdir dir="${test-references}/org/apache/batik/svggen/candidate-ref"/>
+    <mkdir dir="${test-references}/org/apache/batik/svggen/rendering/candidate-variation"/>
+    <mkdir dir="${test-references}/org/apache/batik/svggen/rendering/candidate-reference"/>
+    <mkdir dir="${test-references}/org/apache/batik/svggen/rendering/accepted-variation"/>
+    <mkdir dir="${test-references}/org/apache/batik/gvt/candidate"/>
+    <mkdir dir="${test-references}/org/apache/batik/gvt/variation"/>
+    <mkdir dir="${test-references}/org/apache/batik/ext/awt/geom/candidate"/>
+    <mkdir dir="${test-references}/org/apache/batik/ext/awt/geom/variation"/>
+    <mkdir dir="${test-references}/org/apache/batik/transcoder/image/candidate-reference"/>
+    <mkdir dir="${test-references}/org/apache/batik/transcoder/image/candidate-variation"/>
     <mkdir dir="${test-references}/test-resources/org/apache/batik/test/svg/accepted-variation"/>
     <mkdir dir="${test-references}/test-resources/org/apache/batik/test/svg/candidate-variation"/>
     <mkdir dir="${test-references}/test-resources/org/apache/batik/test/svg/candidate-reference"/>
@@ -1235,13 +1318,13 @@ To display the available targets type:
 
   <target name="ttf2svg"
           depends="compile, testdirs"
-          description="converts selected glyphs from a True Type Font file to the SVG Font format" >
+          description="converts selected glyphs from a True Type Font file to the SVG Font format">
     <java fork="yes"
           classname="${class-prefix}.apps.ttf2svg.Main">
       <classpath>
-        <pathelement location="${dest}" />
+        <pathelement location="${dest}"/>
         <path refid="libs-classpath"/>
-        <pathelement location="resources" />
+        <pathelement location="resources"/>
       </classpath>
       <arg line="${args}"/>
     </java>
@@ -1256,16 +1339,16 @@ To display the available targets type:
      Also slows down the regard run by 3-4x,  In general I suggest running
      just the memory leak tests with -Xincgc, I might also experiment with
      a higher -Xms setting. -->
-<!--      <jvmarg value="-Xincgc" /> -->
-<!--      <jvmarg value="-Xrunhprof:format=b" /> -->
-<!--      <jvmarg value="-Xrunhprof:net=localhost:1234,format=b" /> -->
+<!--      <jvmarg value="-Xincgc"/> -->
+<!--      <jvmarg value="-Xrunhprof:format=b"/> -->
+<!--      <jvmarg value="-Xrunhprof:net=localhost:1234,format=b"/> -->
       <jvmarg value="-Xmx256m"/>  <jvmarg value="-Xms64m"/>
       <classpath>
-        <pathelement location="${dest}" />
+        <pathelement location="${dest}"/>
         <path refid="libs-classpath"/>
         <path refid="libs-build-classpath"/>
-        <pathelement location="resources" />
-        <pathelement location="test-resources" />
+        <pathelement location="resources"/>
+        <pathelement location="test-resources"/>
       </classpath>
       <arg line="test-resources/org/apache/batik/test/regard.xml ${args}"/>
     </java>
@@ -1277,11 +1360,11 @@ To display the available targets type:
     <java fork="yes"
           classname="${class-prefix}.test.xml.XMLTestSuiteRunner">
       <classpath>
-        <pathelement location="${dest}" />
+        <pathelement location="${dest}"/>
         <path refid="libs-classpath"/>
         <path refid="libs-build-classpath"/>
-        <pathelement location="resources" />
-        <pathelement location="test-resources" />
+        <pathelement location="resources"/>
+        <pathelement location="test-resources"/>
       </classpath>
       <arg line="test-resources/org/apache/batik/test/regardManual.xml ${args}"/>
     </java>
@@ -1293,11 +1376,11 @@ To display the available targets type:
     <java fork="yes"
           classname="${class-prefix}.svggen.JPainterCompare">
       <classpath>
-        <pathelement location="${dest}" />
+        <pathelement location="${dest}"/>
         <path refid="libs-classpath"/>
         <path refid="libs-build-classpath"/>
-        <pathelement location="resources" />
-        <pathelement location="test-resources" />
+        <pathelement location="resources"/>
+        <pathelement location="test-resources"/>
       </classpath>
       <arg line="${args}"/>
     </java>
@@ -1310,11 +1393,11 @@ To display the available targets type:
     <java fork="yes"
           classname="${class-prefix}.test.xml.XMLTestSuiteRunner">
       <classpath>
-        <pathelement location="${dest}" />
+        <pathelement location="${dest}"/>
         <path refid="libs-classpath"/>
         <path refid="libs-build-classpath"/>
-        <pathelement location="resources" />
-        <pathelement location="test-resources" />
+        <pathelement location="resources"/>
+        <pathelement location="test-resources"/>
       </classpath>
       <arg line="${args}"/>
     </java>
@@ -1326,11 +1409,11 @@ To display the available targets type:
     <java fork="yes"
           classname="${args}">
       <classpath>
-        <pathelement location="${dest}" />
+        <pathelement location="${dest}"/>
         <path refid="libs-classpath"/>
         <path refid="libs-build-classpath"/>
-        <pathelement location="resources" />
-        <pathelement location="test-resources" />
+        <pathelement location="resources"/>
+        <pathelement location="test-resources"/>
       </classpath>
     </java>
   </target>
@@ -1340,7 +1423,8 @@ To display the available targets type:
     <mkdir dir="${docs}"/>
   </target>
 
-  <target name="html" depends="javadoc, htmldoc" description="generates the site documentation in ${build}/docs/"/>
+  <target name="html" depends="javadoc, htmldoc"
+          description="generates the site documentation in ${build}/docs/"/>
   <target name="htmldoc" depends="prepare-docs">
     <copy file="${xdocs}/site-book.xml"
           tofile="${xdocs}/book.xml"
@@ -1419,27 +1503,27 @@ To display the available targets type:
   <target name="splash" depends="compile" 
           description="Updates documentation and browser splash screens">
     <java fork="yes"
-          classname="org.apache.xalan.xslt.Process" >
+          classname="org.apache.xalan.xslt.Process">
         <classpath>
             <path refid="libs-build-classpath"/>
         </classpath>
-        <arg line="-PARAM version ${version} -PARAM revisionType revisionType${revisionType} -PARAM revisionNumber revisionNumber${revisionNumber} -in ${xdocs}/images/splash.xsl -xsl ${xdocs}/images/splash.xsl -out ${xdocs}/images/splash.svg" />
+        <arg line="-PARAM version ${version} -PARAM revisionType revisionType${revisionType} -PARAM revisionNumber revisionNumber${revisionNumber} -in ${xdocs}/images/splash.xsl -xsl ${xdocs}/images/splash.xsl -out ${xdocs}/images/splash.svg"/>
     </java>
 
     <java fork="yes"
-          classname="org.apache.xalan.xslt.Process" >
+          classname="org.apache.xalan.xslt.Process">
         <classpath>
             <path refid="libs-build-classpath"/>
         </classpath>
-        <arg line="-PARAM version ${version} -PARAM revisionType revisionType${revisionType} -PARAM revisionNumber revisionNumber${revisionNumber} -in ${resources}/org/apache/batik/apps/svgbrowser/resources/squiggle.xsl -xsl ${resources}/org/apache/batik/apps/svgbrowser/resources/squiggle.xsl -out ${resources}/org/apache/batik/apps/svgbrowser/resources/squiggle.svg" />
+        <arg line="-PARAM version ${version} -PARAM revisionType revisionType${revisionType} -PARAM revisionNumber revisionNumber${revisionNumber} -in ${resources}/org/apache/batik/apps/svgbrowser/resources/squiggle.xsl -xsl ${resources}/org/apache/batik/apps/svgbrowser/resources/squiggle.xsl -out ${resources}/org/apache/batik/apps/svgbrowser/resources/squiggle.svg"/>
     </java>
 
     <java fork="yes"
           classname="${class-prefix}.apps.rasterizer.Main">
       <classpath>
-        <pathelement location="${dest}" />
+        <pathelement location="${dest}"/>
         <path refid="libs-classpath"/>
-        <pathelement location="resources" />
+        <pathelement location="resources"/>
       </classpath>
       <arg line="${xdocs}/images/splash.svg"/>
     </java>
@@ -1447,9 +1531,9 @@ To display the available targets type:
     <java fork="yes"
           classname="${class-prefix}.apps.rasterizer.Main">
       <classpath>
-        <pathelement location="${dest}" />
+        <pathelement location="${dest}"/>
         <path refid="libs-classpath"/>
-        <pathelement location="resources" />
+        <pathelement location="resources"/>
       </classpath>
       <arg line="${resources}/org/apache/batik/apps/svgbrowser/resources/squiggle.svg"/>
     </java>
@@ -1461,9 +1545,9 @@ To display the available targets type:
     <java fork="yes"
           classname="${class-prefix}.apps.rasterizer.Main">
       <classpath>
-        <pathelement location="${dest}" />
+        <pathelement location="${dest}"/>
         <path refid="libs-classpath"/>
-        <pathelement location="resources" />
+        <pathelement location="resources"/>
       </classpath>
       <arg line="${xdocs}/images/jarDependImg.svg"/>
     </java>
