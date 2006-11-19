@@ -66,6 +66,7 @@ public class AnimatableTransformListValue extends AnimatableValue {
         super(target);
         int size = transforms.size();
         this.transforms = new Vector(size);
+        this.transforms.setSize(size);
         for (int i = 0; i < size; i++) {
             this.transforms.setElementAt(transforms.elementAt(i), i);
         }
@@ -262,9 +263,52 @@ public class AnimatableTransformListValue extends AnimatableValue {
 
     /**
      * Returns the CSS text representation of the value.
-     * XXX To be done; not so important, just for debugging.
      */
     public String toStringRep() {
-        return null;
+        StringBuffer sb = new StringBuffer();
+        Iterator i = transforms.iterator();
+        while (i.hasNext()) {
+            AbstractSVGTransform t = (AbstractSVGTransform) i.next();
+            SVGMatrix m = t.getMatrix();
+            switch (t.getType()) {
+                case SVGTransform.SVG_TRANSFORM_TRANSLATE:
+                    sb.append("translate(");
+                    sb.append(m.getC());
+                    sb.append(',');
+                    sb.append(m.getF());
+                    sb.append(')');
+                    break;
+                case SVGTransform.SVG_TRANSFORM_SCALE:
+                    sb.append("scale(");
+                    sb.append(m.getA());
+                    sb.append(',');
+                    sb.append(m.getE());
+                    sb.append(')');
+                    break;
+                case SVGTransform.SVG_TRANSFORM_SKEWX:
+                    sb.append("skewX(");
+                    sb.append(m.getB());
+                    sb.append(')');
+                    break;
+                case SVGTransform.SVG_TRANSFORM_SKEWY:
+                    sb.append("skewY(");
+                    sb.append(m.getD());
+                    sb.append(')');
+                    break;
+                case SVGTransform.SVG_TRANSFORM_ROTATE:
+                    sb.append("rotate(");
+                    sb.append(t.getAngle());
+                    sb.append(',');
+                    sb.append(t.getX());
+                    sb.append(',');
+                    sb.append(t.getY());
+                    sb.append(')');
+                    break;
+            }
+            if (i.hasNext()) {
+                sb.append(' ');
+            }
+        }
+        return sb.toString();
     }
 }

@@ -15,7 +15,7 @@ Class-Path: lib/batik-ext.jar \
             lib/batik-util.jar \
             lib/batik-xml.jar \
             lib/xerces_2_5_0.jar \
-            lib/xalan-2_6_0.jar \
+            lib/xalan-2.6.0.jar \
             lib/xml-apis-dom3.jar \
             lib/pdf-transcoder.jar \
             lib/js.jar

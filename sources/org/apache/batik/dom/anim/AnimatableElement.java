@@ -22,7 +22,8 @@ import org.apache.batik.anim.values.AnimatableValue;
 
 /**
  * An interface for animatable elements to expose their underlying values
- * to the compositing functions in {@link AbstractAnimation}.
+ * to the compositing functions in
+ * {@link org.apache.batik.anim.AbstractAnimation}.
  * 
  * @author <a href="mailto:cam%40mcc%2eid%2eau">Cameron McCormack</a>
  * @version $Id$

@@ -51,7 +51,7 @@
   ------------------
 
   By default, Batik includes a scripting engine for ECMAScript. It is possible
-  to add support for additional scripting languages (Python and TCL)
+  to add support for additional scripting languages (Python and TCL).
   
   See http://xmlgraphics.apache.org/batik/install.html#optionalComponents for
   details.
