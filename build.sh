@@ -23,9 +23,7 @@
 
 # ----- Verify and Set Required Environment Variables -------------------------
    
-if [ "$ANT_HOME" = "" ] ; then
-  ANT_HOME=.
-fi
+ANT_HOME=.
 
 if [ "$JAVA_HOME" = "" ] ; then
   echo You must set JAVA_HOME to point at your Java Development Kit installation
@@ -46,7 +44,7 @@ fi
 
 # ----- Set Up The Runtime Classpath ------------------------------------------
 
-CP=$JAVA_HOME/lib/tools.jar:$ANT_HOME/lib/build/ant_1_4_1.jar:./lib/build/crimson-ant.jar:./lib/build/jaxp.jar
+CP=$JAVA_HOME/lib/tools.jar:lib/build/ant-1.6.5.jar:lib/build/ant-launcher-1.6.5.jar:lib/build/crimson-1.1.3.jar:lib/build/jaxp.jar
 
 if $cygwin; then
   JAVA_HOME=`cygpath --path --windows "$JAVA_HOME"`

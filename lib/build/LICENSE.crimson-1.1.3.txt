@@ -1,0 +1,2 @@
+The crimson-1.1.3.jar file is under Apache license found in the
+distribution root directory in the LICENSE file.
