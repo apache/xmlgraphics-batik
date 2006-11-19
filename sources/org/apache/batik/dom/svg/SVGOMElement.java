@@ -21,8 +21,6 @@ package org.apache.batik.dom.svg;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Vector;
-import java.util.List;
-import java.util.ArrayList;
 
 import org.apache.batik.dom.anim.AnimationTarget;
 import org.apache.batik.dom.anim.AnimationTargetListener;
@@ -706,7 +704,7 @@ public abstract class SVGOMElement
     protected AnimatableValue getBaseValue(SVGAnimatedTransformList a) {
         SVGTransformList tl = a.getBaseVal();
         int n = tl.getNumberOfItems();
-        List v = new ArrayList();
+        Vector v = new Vector(n);
         for (int i = 0; i < n; i++) {
             v.add((AbstractSVGTransform) tl.getItem(i));
         }
