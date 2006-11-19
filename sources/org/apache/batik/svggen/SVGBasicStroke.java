@@ -93,8 +93,8 @@ public class SVGBasicStroke extends AbstractSVGConverter{
     /**
      * @param dashArray float array to convert to a string
      */
-    private final String dashArrayToSVG(float dashArray[]){
-        StringBuffer dashArrayBuf = new StringBuffer();
+    private final String dashArrayToSVG(float[] dashArray){
+        StringBuffer dashArrayBuf = new StringBuffer( dashArray.length * 8 );
         if(dashArray.length > 0)
             dashArrayBuf.append(doubleString(dashArray[0]));
 

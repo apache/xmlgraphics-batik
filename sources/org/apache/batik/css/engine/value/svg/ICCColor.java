@@ -29,7 +29,7 @@ import org.w3c.dom.css.CSSValue;
  * @version $Id$
  */
 public class ICCColor extends AbstractValue {
-    
+
     /**
      * The color profile.
      */
@@ -82,17 +82,17 @@ public class ICCColor extends AbstractValue {
     }
 
     /**
-     *  A string representation of the current value. 
+     *  A string representation of the current value.
      */
     public String getCssText() {
-        StringBuffer sb = new StringBuffer();
+        StringBuffer sb = new StringBuffer( count * 8 );
         sb.append("icc-color(");
         sb.append(colorProfile);
         for (int i = 0; i < count; i++) {
             sb.append(", ");
             sb.append(colors[i]);
         }
-        sb.append(")");
+        sb.append( ')' );
         return sb.toString();
     }
 
@@ -102,9 +102,7 @@ public class ICCColor extends AbstractValue {
     public void append(float c) {
         if (count == colors.length) {
             float[] t = new float[count * 2];
-            for (int i = 0; i < count; i++) {
-                t[i] = colors[i];
-            }
+            System.arraycopy( colors, 0, t, 0, count );
             colors = t;
         }
         colors[count++] = c;

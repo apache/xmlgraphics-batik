@@ -19,6 +19,7 @@
 package org.apache.batik.dom.events;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.batik.xml.XMLUtilities;
 
@@ -38,7 +39,7 @@ public class DOMUIEvent extends AbstractEvent implements UIEvent {
 
     /**
      * DOM: The <code>view</code> attribute identifies the
-     * <code>AbstractView</code> from which the event was generated.  
+     * <code>AbstractView</code> from which the event was generated.
      */
     public AbstractView getView() {
         return view;
@@ -46,7 +47,7 @@ public class DOMUIEvent extends AbstractEvent implements UIEvent {
 
     /**
      * DOM: Specifies some detail information about the
-     * <code>Event</code>, depending on the type of event.  
+     * <code>Event</code>, depending on the type of event.
      */
     public int getDetail() {
         return detail;
@@ -63,16 +64,16 @@ public class DOMUIEvent extends AbstractEvent implements UIEvent {
      *
      * @param typeArg Specifies the event type.
      * @param canBubbleArg Specifies whether or not the event can bubble.
-     * @param cancelableArg Specifies whether or not the event's default  
+     * @param cancelableArg Specifies whether or not the event's default
      *   action can be prevented.
-     * @param viewArg Specifies the <code>Event</code>'s 
+     * @param viewArg Specifies the <code>Event</code>'s
      *   <code>AbstractView</code>.
-     * @param detailArg Specifies the <code>Event</code>'s detail.  
+     * @param detailArg Specifies the <code>Event</code>'s detail.
      */
-    public void initUIEvent(String typeArg, 
-                            boolean canBubbleArg, 
-                            boolean cancelableArg, 
-                            AbstractView viewArg, 
+    public void initUIEvent(String typeArg,
+                            boolean canBubbleArg,
+                            boolean cancelableArg,
+                            AbstractView viewArg,
                             int detailArg) {
         initEvent(typeArg, canBubbleArg, cancelableArg);
         this.view = viewArg;
@@ -84,9 +85,9 @@ public class DOMUIEvent extends AbstractEvent implements UIEvent {
      */
     public void initUIEventNS(String namespaceURIArg,
                               String typeArg,
-                              boolean canBubbleArg, 
-                              boolean cancelableArg, 
-                              AbstractView viewArg, 
+                              boolean canBubbleArg,
+                              boolean cancelableArg,
+                              AbstractView viewArg,
                               int detailArg) {
         initEventNS(namespaceURIArg, typeArg, canBubbleArg, cancelableArg);
         this.view = viewArg;
@@ -97,7 +98,7 @@ public class DOMUIEvent extends AbstractEvent implements UIEvent {
      * Splits a whitespace separated string into tokens.
      */
     protected String[] split(String s) {
-        ArrayList a = new ArrayList(8);
+        List a = new ArrayList(8);
         StringBuffer sb;
         int i = 0;
         int len = s.length();

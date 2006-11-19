@@ -154,7 +154,7 @@ public class SAXDocumentFactory
     protected ErrorHandler errorHandler;
 
     protected interface PreInfo {
-        public Node createNode(Document doc);
+        Node createNode(Document doc);
     }
 
     static class ProcessingInstructionInfo implements PreInfo {
@@ -685,7 +685,7 @@ public class SAXDocumentFactory
      * <b>SAX</b>: Implements {@link
      * org.xml.sax.ContentHandler#characters(char[],int,int)}.
      */
-    public void characters(char ch[], int start, int length)
+    public void characters(char[] ch, int start, int length)
         throws SAXException {
         stringBuffer.append(ch, start, length);
         stringContent = true;
@@ -778,7 +778,7 @@ public class SAXDocumentFactory
      * <b>SAX</b>: Implements
      * {@link org.xml.sax.ext.LexicalHandler#comment(char[],int,int)}.
      */
-    public void comment(char ch[], int start, int length) throws SAXException {
+    public void comment(char[] ch, int start, int length) throws SAXException {
         if (inDTD) return;
         appendStringData();
 

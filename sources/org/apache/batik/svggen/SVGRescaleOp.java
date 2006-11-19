@@ -100,8 +100,8 @@ public class SVGRescaleOp extends AbstractSVGFilterConverter {
             //   Red, Green and Blue components
             // + 4, in which case the scale factors apply to the
             //   Red, Green, Blue and Alpha components
-            float offsets[] = rescaleOp.getOffsets(null);
-            float scaleFactors[] = rescaleOp.getScaleFactors(null);
+            float[] offsets = rescaleOp.getOffsets(null);
+            float[] scaleFactors = rescaleOp.getScaleFactors(null);
             if(offsets.length != scaleFactors.length)
                 throw new SVGGraphics2DRuntimeException(ERR_SCALE_FACTORS_AND_OFFSETS_MISMATCH);
 
@@ -178,13 +178,14 @@ public class SVGRescaleOp extends AbstractSVGFilterConverter {
             //
 
             // Process filter attribute
-            StringBuffer filterAttrBuf = new StringBuffer(URL_PREFIX);
-            filterAttrBuf.append(SIGN_POUND);
-            filterAttrBuf.append(filterDef.getAttributeNS(null, SVG_ID_ATTRIBUTE));
-            filterAttrBuf.append(URL_SUFFIX);
+//            StringBuffer filterAttrBuf = new StringBuffer(URL_PREFIX);
+//            filterAttrBuf.append(SIGN_POUND);
+//            filterAttrBuf.append(filterDef.getAttributeNS(null, SVG_ID_ATTRIBUTE));
+//            filterAttrBuf.append(URL_SUFFIX);
 
-            filterDesc = new SVGFilterDescriptor(filterAttrBuf.toString(),
-                                                 filterDef);
+            String filterAttrBuf = URL_PREFIX + SIGN_POUND + filterDef.getAttributeNS(null, SVG_ID_ATTRIBUTE) + URL_SUFFIX;
+
+            filterDesc = new SVGFilterDescriptor(filterAttrBuf, filterDef);
 
             defSet.add(filterDef);
             descMap.put(rescaleOp, filterDesc);

@@ -44,7 +44,7 @@ public class CSSOMValue
                Counter,
                Rect,
                RGBColor {
-    
+
     /**
      * The associated value.
      */
@@ -371,7 +371,7 @@ public class CSSOMValue
             throw new DOMException(DOMException.INVALID_ACCESS_ERR, "");
         }
     }
-        
+
     /**
      * Converts the current value into seconds.
      */
@@ -385,7 +385,7 @@ public class CSSOMValue
             throw new DOMException(DOMException.INVALID_ACCESS_ERR, "");
         }
     }
-        
+
     /**
      * Converts the current value into Hertz.
      */
@@ -481,9 +481,7 @@ public class CSSOMValue
             items = new CSSValue[valueProvider.getValue().getLength()];
         } else if (items.length < len) {
             CSSValue[] nitems = new CSSValue[len];
-            for (int i = 0; i < items.length; i++) {
-                nitems[i] = items[i];
-            }
+            System.arraycopy( items, 0, nitems, 0, items.length );
             items = nitems;
         }
         CSSValue result = items[index];
@@ -532,7 +530,7 @@ public class CSSOMValue
     /**
      * <b>DOM</b>: Implements {@link org.w3c.dom.css.Rect#getRight()}.
      */
-    public CSSPrimitiveValue getRight() { 
+    public CSSPrimitiveValue getRight() {
         valueProvider.getValue().getRight();
         if (rightComponent == null) {
             rightComponent = new RightComponent();
@@ -760,7 +758,7 @@ public class CSSOMValue
                 getValue().getTop().getCssText() + ", " +
                 getValue().getRight().getCssText() + ", " +
                 getValue().getBottom().getCssText() + ", " +
-                text + ")";
+                text + ')';
             textChanged(text);
         }
 
@@ -773,7 +771,7 @@ public class CSSOMValue
                 getValue().getTop().getCssText() + ", " +
                 getValue().getRight().getCssText() + ", " +
                 getValue().getBottom().getCssText() + ", " +
-                FloatValue.getCssText(unit, value) + ")";
+                FloatValue.getCssText(unit, value) + ')';
             textChanged(text);
         }
 
@@ -785,7 +783,7 @@ public class CSSOMValue
                 text + ", " +
                 getValue().getRight().getCssText() + ", " +
                 getValue().getBottom().getCssText() + ", " +
-                getValue().getLeft().getCssText() + ")";
+                getValue().getLeft().getCssText() + ')';
             textChanged(text);
         }
 
@@ -798,7 +796,7 @@ public class CSSOMValue
                 FloatValue.getCssText(unit, value) + ", " +
                 getValue().getRight().getCssText() + ", " +
                 getValue().getBottom().getCssText() + ", " +
-                getValue().getLeft().getCssText() + ")";
+                getValue().getLeft().getCssText() + ')';
             textChanged(text);
         }
 
@@ -810,7 +808,7 @@ public class CSSOMValue
                 getValue().getTop().getCssText() + ", " +
                 text + ", " +
                 getValue().getBottom().getCssText() + ", " +
-                getValue().getLeft().getCssText() + ")";
+                getValue().getLeft().getCssText() + ')';
             textChanged(text);
         }
 
@@ -823,7 +821,7 @@ public class CSSOMValue
                 getValue().getTop().getCssText() + ", " +
                 FloatValue.getCssText(unit, value) + ", " +
                 getValue().getBottom().getCssText() + ", " +
-                getValue().getLeft().getCssText() + ")";
+                getValue().getLeft().getCssText() + ')';
             textChanged(text);
         }
 
@@ -835,7 +833,7 @@ public class CSSOMValue
                 getValue().getTop().getCssText() + ", " +
                 getValue().getRight().getCssText() + ", " +
                 text + ", " +
-                getValue().getLeft().getCssText() + ")";
+                getValue().getLeft().getCssText() + ')';
             textChanged(text);
         }
 
@@ -848,7 +846,7 @@ public class CSSOMValue
                 getValue().getTop().getCssText() + ", " +
                 getValue().getRight().getCssText() + ", " +
                 FloatValue.getCssText(unit, value) + ", " +
-                getValue().getLeft().getCssText() + ")";
+                getValue().getLeft().getCssText() + ')';
             textChanged(text);
         }
 
@@ -859,7 +857,7 @@ public class CSSOMValue
             text = "rgb(" +
                 text + ", " +
                 getValue().getGreen().getCssText() + ", " +
-                getValue().getBlue().getCssText() + ")";
+                getValue().getBlue().getCssText() + ')';
             textChanged(text);
         }
 
@@ -871,7 +869,7 @@ public class CSSOMValue
             String text = "rgb(" +
                 FloatValue.getCssText(unit, value) + ", " +
                 getValue().getGreen().getCssText() + ", " +
-                getValue().getBlue().getCssText() + ")";
+                getValue().getBlue().getCssText() + ')';
             textChanged(text);
         }
 
@@ -882,7 +880,7 @@ public class CSSOMValue
             text = "rgb(" +
                 getValue().getRed().getCssText() + ", " +
                 text + ", " +
-                getValue().getBlue().getCssText() + ")";
+                getValue().getBlue().getCssText() + ')';
             textChanged(text);
         }
 
@@ -894,7 +892,7 @@ public class CSSOMValue
             String text = "rgb(" +
                 getValue().getRed().getCssText() + ", " +
                 FloatValue.getCssText(unit, value) + ", " +
-                getValue().getBlue().getCssText() + ")";
+                getValue().getBlue().getCssText() + ')';
             textChanged(text);
         }
 
@@ -905,7 +903,7 @@ public class CSSOMValue
             text = "rgb(" +
                 getValue().getRed().getCssText() + ", " +
                 getValue().getGreen().getCssText() + ", " +
-                text + ")";
+                text + ')';
             textChanged(text);
         }
 
@@ -917,7 +915,7 @@ public class CSSOMValue
             String text = "rgb(" +
                 getValue().getRed().getCssText() + ", " +
                 getValue().getGreen().getCssText() + ", " +
-                FloatValue.getCssText(unit, value) + ")";
+                FloatValue.getCssText(unit, value) + ')';
             textChanged(text);
         }
 
@@ -926,13 +924,13 @@ public class CSSOMValue
          */
         public void listTextChanged(int idx, String text) throws DOMException {
             ListValue lv = (ListValue)getValue();
-            StringBuffer sb = new StringBuffer();
+            int len = lv.getLength();
+            StringBuffer sb = new StringBuffer( len * 8 );
             for (int i = 0; i < idx; i++) {
                 sb.append(lv.item(i).getCssText());
                 sb.append(lv.getSeparatorChar());
             }
             sb.append(text);
-            int len = lv.getLength();
             for (int i = idx + 1; i < len; i++) {
                 sb.append(lv.getSeparatorChar());
                 sb.append(lv.item(i).getCssText());
@@ -947,13 +945,13 @@ public class CSSOMValue
         public void listFloatValueChanged(int idx, short unit, float value)
             throws DOMException {
             ListValue lv = (ListValue)getValue();
-            StringBuffer sb = new StringBuffer();
+            int len = lv.getLength();
+            StringBuffer sb = new StringBuffer( len * 8 );
             for (int i = 0; i < idx; i++) {
                 sb.append(lv.item(i).getCssText());
                 sb.append(lv.getSeparatorChar());
             }
             sb.append(FloatValue.getCssText(unit, value));
-            int len = lv.getLength();
             for (int i = idx + 1; i < len; i++) {
                 sb.append(lv.getSeparatorChar());
                 sb.append(lv.item(i).getCssText());
@@ -967,13 +965,13 @@ public class CSSOMValue
         public void listStringValueChanged(int idx, short unit, String value)
             throws DOMException {
             ListValue lv = (ListValue)getValue();
-            StringBuffer sb = new StringBuffer();
+            int len = lv.getLength();
+            StringBuffer sb = new StringBuffer( len * 8 );
             for (int i = 0; i < idx; i++) {
                 sb.append(lv.item(i).getCssText());
                 sb.append(lv.getSeparatorChar());
             }
             sb.append(StringValue.getCssText(unit, value));
-            int len = lv.getLength();
             for (int i = idx + 1; i < len; i++) {
                 sb.append(lv.getSeparatorChar());
                 sb.append(lv.item(i).getCssText());
@@ -1031,7 +1029,7 @@ public class CSSOMValue
         public String getStringValue() throws DOMException {
             return valueProvider.getValue().getStringValue();
         }
-        
+
         /**
          * <b>DOM</b>: Implements {@link
          * org.w3c.dom.css.CSSPrimitiveValue#getCounterValue()}.
@@ -1039,7 +1037,7 @@ public class CSSOMValue
         public Counter getCounterValue() throws DOMException {
             throw new DOMException(DOMException.INVALID_ACCESS_ERR, "");
         }
-        
+
         /**
          * <b>DOM</b>: Implements {@link
          * org.w3c.dom.css.CSSPrimitiveValue#getRectValue()}.
@@ -1065,7 +1063,7 @@ public class CSSOMValue
         public int getLength() {
             throw new DOMException(DOMException.INVALID_ACCESS_ERR, "");
         }
-        
+
         /**
          * <b>DOM</b>: Implements {@link
          * org.w3c.dom.css.CSSValueList#item(int)}.
@@ -1094,7 +1092,7 @@ public class CSSOMValue
      * To represents a left component.
      */
     protected class LeftComponent extends FloatComponent {
-        
+
         /**
          * The returns the actual value of this component.
          */
@@ -1137,7 +1135,7 @@ public class CSSOMValue
      * To represents a top component.
      */
     protected class TopComponent extends FloatComponent {
-        
+
         /**
          * The returns the actual value of this component.
          */
@@ -1180,7 +1178,7 @@ public class CSSOMValue
      * To represents a right component.
      */
     protected class RightComponent extends FloatComponent {
-        
+
         /**
          * The returns the actual value of this component.
          */
@@ -1224,7 +1222,7 @@ public class CSSOMValue
      * To represents a bottom component.
      */
     protected class BottomComponent extends FloatComponent {
-        
+
         /**
          * The returns the actual value of this component.
          */
@@ -1268,7 +1266,7 @@ public class CSSOMValue
      * To represents a red component.
      */
     protected class RedComponent extends FloatComponent {
-        
+
         /**
          * The returns the actual value of this component.
          */
@@ -1312,7 +1310,7 @@ public class CSSOMValue
      * To represents a green component.
      */
     protected class GreenComponent extends FloatComponent {
-        
+
         /**
          * The returns the actual value of this component.
          */
@@ -1355,7 +1353,7 @@ public class CSSOMValue
      * To represents a blue component.
      */
     protected class BlueComponent extends FloatComponent {
-        
+
         /**
          * The returns the actual value of this component.
          */
@@ -1398,7 +1396,7 @@ public class CSSOMValue
      * To represents a List component.
      */
     protected class ListComponent extends AbstractComponent {
-        
+
         /**
          * The index of this component.
          */

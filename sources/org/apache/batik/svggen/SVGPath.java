@@ -83,9 +83,9 @@ public class SVGPath extends SVGGraphicObjectConverter {
      * @return the value of the corresponding d attribute
      */
      public static String toSVGPathData(Shape path, SVGGeneratorContext gc) {
-        StringBuffer d = new StringBuffer("");
+        StringBuffer d = new StringBuffer( 40 );
         PathIterator pi = path.getPathIterator(null);
-        float seg[] = new float[6];
+        float[] seg = new float[6];
         int segType = 0;
         while (!pi.isDone()) {
             segType = pi.currentSegment(seg);
@@ -122,7 +122,7 @@ public class SVGPath extends SVGGraphicObjectConverter {
             return d.toString().trim();
         else {
             // This is a degenerate case: there was no initial moveTo
-            // in the path and no data at all. However, this happens 
+            // in the path and no data at all. However, this happens
             // in the Java 2D API (e.g., when clipping to a rectangle
             // with negative height/width, the clip will be a GeneralPath
             // with no data, which causes everything to be clipped)

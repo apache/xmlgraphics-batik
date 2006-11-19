@@ -27,11 +27,11 @@ import org.w3c.css.sac.SelectorList;
  * @version $Id$
  */
 public class StyleRule implements Rule {
-    
+
     /**
      * The type constant.
      */
-    public final static short TYPE = (short)0;
+    public static final short TYPE = (short)0;
 
     /**
      * The selector list.

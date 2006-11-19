@@ -27,12 +27,12 @@ import org.w3c.css.sac.SACMediaList;
  * @version $Id$
  */
 public class StyleSheet {
-    
+
     /**
      * The rules.
      */
     protected Rule[] rules = new Rule[16];
-    
+
     /**
      * The number of rules.
      */
@@ -142,9 +142,7 @@ public class StyleSheet {
     public void append(Rule r) {
         if (size == rules.length) {
             Rule[] t = new Rule[size * 2];
-            for (int i = 0; i < size; i++) {
-                t[i] = rules[i];
-            }
+            System.arraycopy( rules, 0, t, 0, size );
             rules = t;
         }
         rules[size++] = r;
@@ -154,7 +152,7 @@ public class StyleSheet {
      * Returns a printable representation of this style-sheet.
      */
     public String toString(CSSEngine eng) {
-        StringBuffer sb = new StringBuffer();
+        StringBuffer sb = new StringBuffer( size * 8 );
         for (int i = 0; i < size; i++) {
             sb.append(rules[i].toString(eng));
         }

@@ -172,7 +172,7 @@ public class DefaultXBLManager implements XBLManager, XBLConstants {
         for (int i = 0; i < defs.length; i++) {
             defs[i] = (XBLOMDefinitionElement) nl.item(i);
         }
-        
+
         // Get list of all imports in the document.
         nl = document.getElementsByTagNameNS(XBL_NAMESPACE_URI,
                                              XBL_IMPORT_TAG);
@@ -244,7 +244,7 @@ public class DefaultXBLManager implements XBLManager, XBLConstants {
             (XMLConstants.XML_EVENTS_NAMESPACE_URI,
              "DOMSubtreeModified",
              docSubtreeListener, true);
-        
+
         // Remove all imports.
         Object[] irs = imports.values().toArray();
         for (int i = 0; i < irs.length; i++) {
@@ -1377,7 +1377,7 @@ public class DefaultXBLManager implements XBLManager, XBLConstants {
      * DOM node removed listener for imported XBL trees.
      */
     protected class ImportRemovedListener implements EventListener {
-        
+
         /**
          * List of definition elements to be removed from the document.
          */
@@ -1434,7 +1434,7 @@ public class DefaultXBLManager implements XBLManager, XBLConstants {
      * DOM node inserted listener for the document.
      */
     protected class DocInsertedListener implements EventListener {
-        
+
         /**
          * Handles the event.
          */
@@ -1442,7 +1442,7 @@ public class DefaultXBLManager implements XBLManager, XBLConstants {
             EventTarget target = evt.getTarget();
             if (target instanceof XBLOMDefinitionElement) {
                 // only handle definition elements in document-level scope
-                if (getXblBoundElement((Node) target) == null) {
+                if (getXblBoundElement((Node) target) == null) {       // ??? suspect cast ???
                     XBLOMDefinitionElement def
                         = (XBLOMDefinitionElement) target;
                     if (def.getAttributeNS(null, XBL_REF_ATTRIBUTE).length()
@@ -1457,7 +1457,7 @@ public class DefaultXBLManager implements XBLManager, XBLConstants {
                 }
             } else if (target instanceof XBLOMImportElement) {
                 // only handle import elements in document-level scope
-                if (getXblBoundElement((Node) target) == null) {
+                if (getXblBoundElement((Node) target) == null) {      // ??? suspect cast ???
                     addImport((Element) target);
                 }
             } else {
@@ -1490,7 +1490,7 @@ public class DefaultXBLManager implements XBLManager, XBLConstants {
      * DOM node removed listener for the document.
      */
     protected class DocRemovedListener implements EventListener {
-        
+
         /**
          * List of definition elements to be removed from the document.
          */
@@ -1534,7 +1534,7 @@ public class DefaultXBLManager implements XBLManager, XBLConstants {
      * DOM subtree mutation listener for the document.
      */
     protected class DocSubtreeListener implements EventListener {
-        
+
         /**
          * Handles the event.
          */

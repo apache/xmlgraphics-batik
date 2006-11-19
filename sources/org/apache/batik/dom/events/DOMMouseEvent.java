@@ -33,11 +33,11 @@ import org.w3c.dom.views.AbstractView;
  */
 public class DOMMouseEvent extends DOMUIEvent implements MouseEvent {
 
-    private int screenX; 
-    private int screenY; 
-    private int clientX; 
-    private int clientY; 
-    private short button; 
+    private int screenX;
+    private int screenY;
+    private int clientX;
+    private int clientY;
+    private short button;
     private EventTarget relatedTarget;
 
     /**
@@ -48,7 +48,7 @@ public class DOMMouseEvent extends DOMUIEvent implements MouseEvent {
     /**
      * DOM: <code>screenX</code> indicates the horizontal coordinate
      * at which the event occurred relative to the origin of the
-     * screen coordinate system.  
+     * screen coordinate system.
      */
     public int getScreenX() {
         return screenX;
@@ -57,7 +57,7 @@ public class DOMMouseEvent extends DOMUIEvent implements MouseEvent {
     /**
      * DOM: <code>screenY</code> indicates the vertical coordinate at
      * which the event occurred relative to the origin of the screen
-     * coordinate system.  
+     * coordinate system.
      */
     public int getScreenY() {
         return screenY;
@@ -66,7 +66,7 @@ public class DOMMouseEvent extends DOMUIEvent implements MouseEvent {
     /**
      * DOM: <code>clientX</code> indicates the horizontal coordinate
      * at which the event occurred relative to the DOM
-     * implementation's client area.  
+     * implementation's client area.
      */
     public int getClientX() {
         return clientX;
@@ -75,7 +75,7 @@ public class DOMMouseEvent extends DOMUIEvent implements MouseEvent {
     /**
      * DOM: <code>clientY</code> indicates the vertical coordinate at
      * which the event occurred relative to the DOM implementation's
-     * client area.  
+     * client area.
      */
     public int getClientY() {
         return clientY;
@@ -83,7 +83,7 @@ public class DOMMouseEvent extends DOMUIEvent implements MouseEvent {
 
     /**
      * DOM: <code>ctrlKey</code> indicates whether the 'ctrl' key was
-     * depressed during the firing of the event.  
+     * depressed during the firing of the event.
      */
     public boolean getCtrlKey() {
         return modifierKeys.contains(DOMKeyboardEvent.KEY_CONTROL);
@@ -91,7 +91,7 @@ public class DOMMouseEvent extends DOMUIEvent implements MouseEvent {
 
     /**
      * DOM: <code>shiftKey</code> indicates whether the 'shift' key
-     * was depressed during the firing of the event. 
+     * was depressed during the firing of the event.
      */
     public boolean getShiftKey() {
         return modifierKeys.contains(DOMKeyboardEvent.KEY_SHIFT);
@@ -100,7 +100,7 @@ public class DOMMouseEvent extends DOMUIEvent implements MouseEvent {
     /**
      * DOM: <code>altKey</code> indicates whether the 'alt' key was
      * depressed during the firing of the event.  On some platforms
-     * this key may map to an alternative key name.  
+     * this key may map to an alternative key name.
      */
     public boolean getAltKey() {
         return modifierKeys.contains(DOMKeyboardEvent.KEY_ALT);
@@ -109,7 +109,7 @@ public class DOMMouseEvent extends DOMUIEvent implements MouseEvent {
     /**
      * DOM: <code>metaKey</code> indicates whether the 'meta' key was
      * depressed during the firing of the event.  On some platforms
-     * this key may map to an alternative key name. 
+     * this key may map to an alternative key name.
      */
     public boolean getMetaKey() {
         return modifierKeys.contains(DOMKeyboardEvent.KEY_META);
@@ -123,7 +123,7 @@ public class DOMMouseEvent extends DOMUIEvent implements MouseEvent {
      * to indicate the middle button if present, and two to indicate
      * the right button.  For mice configured for left handed use in
      * which the button actions are reversed the values are instead
-     * read from right to left.  
+     * read from right to left.
      */
     public short getButton() {
         return button;
@@ -131,10 +131,10 @@ public class DOMMouseEvent extends DOMUIEvent implements MouseEvent {
 
     /**
      * DOM: Used to identify a secondary <code>EventTarget</code> related
-     * to a UI 
-     * event.  Currently this attribute is used with the mouseover event to 
-     * indicate the <code>EventTarget</code> which the pointing device exited 
-     * and with the mouseout event to indicate the  <code>EventTarget</code> 
+     * to a UI
+     * event.  Currently this attribute is used with the mouseover event to
+     * indicate the <code>EventTarget</code> which the pointing device exited
+     * and with the mouseout event to indicate the  <code>EventTarget</code>
      * which the pointing device entered.
      */
     public EventTarget getRelatedTarget() {
@@ -156,7 +156,7 @@ public class DOMMouseEvent extends DOMUIEvent implements MouseEvent {
         if (modifierKeys.isEmpty()) {
             return "";
         }
-        StringBuffer sb = new StringBuffer();
+        StringBuffer sb = new StringBuffer( modifierKeys.size() * 8 );
         Iterator i = modifierKeys.iterator();
         sb.append((String) i.next());
         while (i.hasNext()) {
@@ -178,48 +178,48 @@ public class DOMMouseEvent extends DOMUIEvent implements MouseEvent {
      *
      * @param typeArg Specifies the event type.
      * @param canBubbleArg Specifies whether or not the event can bubble.
-     * @param cancelableArg Specifies whether or not the event's default  
+     * @param cancelableArg Specifies whether or not the event's default
      *   action can be prevented.
-     * @param viewArg Specifies the <code>Event</code>'s 
+     * @param viewArg Specifies the <code>Event</code>'s
      *   <code>AbstractView</code>.
      * @param detailArg Specifies the <code>Event</code>'s mouse click count.
      * @param screenXArg Specifies the <code>Event</code>'s screen x coordinate
      * @param screenYArg Specifies the <code>Event</code>'s screen y coordinate
      * @param clientXArg Specifies the <code>Event</code>'s client x coordinate
      * @param clientYArg Specifies the <code>Event</code>'s client y coordinate
-     * @param ctrlKeyArg Specifies whether or not control key was depressed 
+     * @param ctrlKeyArg Specifies whether or not control key was depressed
      *   during the <code>Event</code>.
-     * @param altKeyArg Specifies whether or not alt key was depressed during 
+     * @param altKeyArg Specifies whether or not alt key was depressed during
      *   the  <code>Event</code>.
-     * @param shiftKeyArg Specifies whether or not shift key was depressed 
+     * @param shiftKeyArg Specifies whether or not shift key was depressed
      *   during the <code>Event</code>.
-     * @param metaKeyArg Specifies whether or not meta key was depressed 
+     * @param metaKeyArg Specifies whether or not meta key was depressed
      *   during the  <code>Event</code>.
      * @param buttonArg Specifies the <code>Event</code>'s mouse button.
      * @param relatedTargetArg Specifies the <code>Event</code>'s related
-     *   <code>EventTarget</code>. 
+     *   <code>EventTarget</code>.
      */
-    public void initMouseEvent(String typeArg, 
-                               boolean canBubbleArg, 
-                               boolean cancelableArg, 
-                               AbstractView viewArg, 
-                               int detailArg, 
-                               int screenXArg, 
-                               int screenYArg, 
-                               int clientXArg, 
-                               int clientYArg, 
-                               boolean ctrlKeyArg, 
-                               boolean altKeyArg, 
-                               boolean shiftKeyArg, 
-                               boolean metaKeyArg, 
-                               short buttonArg, 
+    public void initMouseEvent(String typeArg,
+                               boolean canBubbleArg,
+                               boolean cancelableArg,
+                               AbstractView viewArg,
+                               int detailArg,
+                               int screenXArg,
+                               int screenYArg,
+                               int clientXArg,
+                               int clientYArg,
+                               boolean ctrlKeyArg,
+                               boolean altKeyArg,
+                               boolean shiftKeyArg,
+                               boolean metaKeyArg,
+                               short buttonArg,
                                EventTarget relatedTargetArg) {
-        initUIEvent(typeArg, canBubbleArg, cancelableArg, 
+        initUIEvent(typeArg, canBubbleArg, cancelableArg,
                     viewArg, detailArg);
         this.screenX = screenXArg;
-        this.screenY = screenYArg; 
-        this.clientX = clientXArg; 
-        this.clientY = clientYArg; 
+        this.screenY = screenYArg;
+        this.clientX = clientXArg;
+        this.clientY = clientYArg;
         if (ctrlKeyArg) {
             modifierKeys.add(DOMKeyboardEvent.KEY_CONTROL);
         }
@@ -232,7 +232,7 @@ public class DOMMouseEvent extends DOMUIEvent implements MouseEvent {
         if (metaKeyArg) {
             modifierKeys.add(DOMKeyboardEvent.KEY_META);
         }
-        this.button = buttonArg;  
+        this.button = buttonArg;
         this.relatedTarget = relatedTargetArg;
     }
 
@@ -241,28 +241,28 @@ public class DOMMouseEvent extends DOMUIEvent implements MouseEvent {
      */
     public void initMouseEventNS(String namespaceURIArg,
                                  String typeArg,
-                                 boolean canBubbleArg, 
-                                 boolean cancelableArg, 
-                                 AbstractView viewArg, 
-                                 int detailArg, 
-                                 int screenXArg, 
-                                 int screenYArg, 
-                                 int clientXArg, 
-                                 int clientYArg, 
+                                 boolean canBubbleArg,
+                                 boolean cancelableArg,
+                                 AbstractView viewArg,
+                                 int detailArg,
+                                 int screenXArg,
+                                 int screenYArg,
+                                 int clientXArg,
+                                 int clientYArg,
                                  short buttonArg,
                                  EventTarget relatedTargetArg,
                                  String modifiersList) {
         initUIEventNS(namespaceURIArg,
                       typeArg,
                       canBubbleArg,
-                      cancelableArg, 
+                      cancelableArg,
                       viewArg,
                       detailArg);
         screenX = screenXArg;
-        screenY = screenYArg; 
-        clientX = clientXArg; 
-        clientY = clientYArg; 
-        button = buttonArg;  
+        screenY = screenYArg;
+        clientX = clientXArg;
+        clientY = clientYArg;
+        button = buttonArg;
         relatedTarget = relatedTargetArg;
         modifierKeys = new HashSet();
         String[] modifiers = split(modifiersList);

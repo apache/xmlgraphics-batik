@@ -30,12 +30,12 @@ import org.w3c.dom.Node;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class XMLSupport implements XMLConstants {
+public final class XMLSupport implements XMLConstants {
 
     /**
      * This class does not need to be instanciated.
      */
-    protected XMLSupport() {
+    private XMLSupport() {
     }
 
     /**
@@ -83,16 +83,17 @@ public class XMLSupport implements XMLConstants {
      * attribute recommended behaviour when it has the 'default' value.
      */
     public static String defaultXMLSpace(String data) {
-        StringBuffer result = new StringBuffer();
+        int nChars = data.length();
+        StringBuffer result = new StringBuffer( nChars );
         boolean space = false;
-        for (int i = 0; i < data.length(); i++) {
+        for (int i = 0; i < nChars; i++) {
             char c = data.charAt(i);
             switch (c) {
-            case 10:
+            case 10:               // fallthrough is intended
             case 13:
                 space = false;
                 break;
-            case ' ':
+            case ' ':              // fallthrough is intended
             case '\t':
                 if (!space) {
                     result.append(' ');
@@ -112,11 +113,12 @@ public class XMLSupport implements XMLConstants {
      * attribute recommended behaviour when it has the 'preserve' value.
      */
     public static String preserveXMLSpace(String data) {
-        StringBuffer result = new StringBuffer();
+        int nChars = data.length();
+        StringBuffer result = new StringBuffer( nChars );
         for (int i = 0; i < data.length(); i++) {
             char c = data.charAt(i);
             switch (c) {
-            case 10:
+            case 10:               // fallthrough is intended
             case 13:
             case '\t':
                 result.append(' ');

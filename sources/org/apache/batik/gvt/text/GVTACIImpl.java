@@ -365,7 +365,7 @@ public class GVTACIImpl
         mapList = new ArrayList(length);
         charInRun = new int[length];
         char  c = aci.first();
-        char chars[] = new char[length];
+        char[] chars = new char[length];
         for (int i = 0; i < length; ++i) {
             chars[i] = c;
             charInRun[i] = SINGLETON;

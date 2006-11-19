@@ -24,25 +24,35 @@ import java.awt.Toolkit;
 import java.awt.geom.Rectangle2D;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Vector;
+import java.util.List;
+import java.util.ArrayList;
 
 import org.apache.batik.transcoder.wmf.WMFConstants;
 
-/** This class provides a general framework to read WMF Metafiles.
+/**
+ * This class provides a general framework to read WMF Metafiles.
+ * @version $Id: AffineRed.java 201374 2004-08-18 07:17:26Z vhardy $
  */
 public abstract class AbstractWMFReader {
+
+    // todo should be able to run in headless environment - as is written, will throw exception during init
     public static final float PIXEL_PER_INCH = Toolkit.getDefaultToolkit().getScreenResolution();
     public static final float MM_PER_PIXEL = 25.4f / Toolkit.getDefaultToolkit().getScreenResolution();
     protected int left, right, top, bottom, width, height, inch;
     protected float scaleX, scaleY;
     protected int vpW, vpH, vpX, vpY;
-    transient protected boolean bReading = false;
+
+    protected volatile boolean bReading = false;
+
     protected int mtType, mtHeaderSize, mtVersion, mtSize, mtNoObjects;
     protected int mtMaxRecord, mtNoParameters;
     protected int windowWidth, windowHeight;
-    transient protected int numObjects;
-    transient protected Vector objectVector;
-    transient public int lastObjectIdx;
+    protected int numObjects;
+    protected List	objectVector;
+
+    public int lastObjectIdx;
 
     public AbstractWMFReader() {
         scaleX = 1;
@@ -54,7 +64,7 @@ public abstract class AbstractWMFReader {
         right = left + width;
         bottom = top + height;
         numObjects = 0;
-        objectVector = new Vector();
+        objectVector = new ArrayList();
     }
 
     public AbstractWMFReader(int width, int height) {
@@ -63,27 +73,45 @@ public abstract class AbstractWMFReader {
         this.height = height;
     }
 
-    /** read the next short ( 2 bytes) value in the DataInputStream.
+    /**
+     * ALWAYS expect to get less than the requested number of bytes from a read().
+     * @param buff is filled from is
+     * @param is inputStream
+     * @throws IOException from is.read()
      */
-    protected short readShort(DataInputStream is ) throws IOException {
-        byte js[] = new byte[ 2 ];
-        is.read( js );
-        int iTemp = ((0xff) & js[ 1 ] ) << 8;
-        short i = (short)(0xffff & iTemp);
-        i |= ((0xff) & js[ 0 ] );
-        return i;
+    private void fillBytes( byte[] buff, InputStream is ) throws IOException {
+        int expected = buff.length;
+        int nRead = 0;
+        do{
+            nRead += is.read( buff, nRead, expected - nRead );
+        } while ( nRead < expected );
     }
 
-    /** read the next int ( 4 bytes) value in the DataInputStream.
+    /**
+     * Read the next short ( 2 bytes) value in the DataInputStream.
+     * we cant use is.readShort() because of different byte-order.
+     */
+    protected short readShort( DataInputStream is ) throws IOException {
+
+        byte js[] = new byte[ 2 ];
+        fillBytes( js, is );
+
+        return (short) (((js[ 1 ] << 8)) & 0xff00 | (js[0] & 0x00ff));
+    }
+
+    /**
+     * Read the next int ( 4 bytes) value in the DataInputStream.
+     * we cant use is.readInt() because of different byte-order.
      */
     protected int readInt( DataInputStream is  ) throws IOException {
+
         byte js[] = new byte[ 4 ];
-        is.read( js );
-        int i = ((0xff) & js[ 3 ] ) << 24;
-        i |= ((0xff) & js[ 2 ] ) << 16;
-        i |= ((0xff) & js[ 1 ] ) << 8;
-        i |= ((0xff) & js[ 0 ] );
-        return i;
+        fillBytes( js, is );
+
+        return  ( 0xff & js[ 3 ] ) << 24
+              | ( 0xff & js[ 2 ] ) << 16
+              | ( 0xff & js[ 1 ] ) <<  8
+              | ( 0xff & js[ 0 ] );
     }
 
     /**
@@ -353,10 +381,11 @@ public abstract class AbstractWMFReader {
         mtNoParameters = readShort( is );
 
         numObjects = mtNoObjects;
-        objectVector.ensureCapacity( numObjects );
+        List tempList = new ArrayList( numObjects );
         for ( int i = 0; i < numObjects; i++ ) {
-            objectVector.addElement( new GdiObject( i, false ));
+            tempList.add( new GdiObject( i, false ));
         }
+        objectVector.addAll( tempList );
 
         boolean ret = readRecords(is);
         is.close();
@@ -369,8 +398,8 @@ public abstract class AbstractWMFReader {
         //       startIdx = 2;
         //     }
         for ( int i = startIdx; i < numObjects; i++ ) {
-            GdiObject gdi = (GdiObject)objectVector.elementAt( i );
-            if ( gdi.used == false ) {
+            GdiObject gdi = (GdiObject)objectVector.get( i );
+            if ( ! gdi.used ) {
                 gdi.Setup( type, obj );
                 lastObjectIdx = i;
                 break;
@@ -395,7 +424,7 @@ public abstract class AbstractWMFReader {
       }
       lastObjectIdx = idx;
       for ( int i = 0; i < numObjects; i++ ) {
-        GdiObject gdi = (GdiObject)objectVector.elementAt( i );
+        GdiObject gdi = (GdiObject)objectVector.get( i );
         if ( i == idx ) {
           gdi.Setup( type, obj );
           break;
@@ -409,7 +438,7 @@ public abstract class AbstractWMFReader {
      * Returns a GdiObject from the handle table
      */
     public GdiObject getObject( int idx ) {
-        return (GdiObject)objectVector.elementAt( idx );
+        return (GdiObject)objectVector.get( idx );
     }
 
     /**

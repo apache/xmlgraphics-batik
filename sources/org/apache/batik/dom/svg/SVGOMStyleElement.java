@@ -51,7 +51,8 @@ public class SVGOMStyleElement
     /**
      * The attribute initializer.
      */
-    protected final static AttributeInitializer attributeInitializer;
+    protected static final AttributeInitializer attributeInitializer;
+
     static {
         attributeInitializer = new AttributeInitializer(1);
         attributeInitializer.addAttribute(XMLSupport.XML_NAMESPACE_URI,

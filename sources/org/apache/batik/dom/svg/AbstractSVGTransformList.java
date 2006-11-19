@@ -37,14 +37,14 @@ import org.w3c.dom.svg.SVGTransformList;
  * @author <a href="mailto:nicolas.socheleau@bitflash.com">Nicolas Socheleau</a>
  * @version $Id$
  */
-public abstract class AbstractSVGTransformList 
-    extends AbstractSVGList 
+public abstract class AbstractSVGTransformList
+    extends AbstractSVGList
     implements SVGTransformList {
 
     /**
      * Separator for a point list.
      */
-    public final static String SVG_TRANSFORMATION_LIST_SEPARATOR
+    public static final String SVG_TRANSFORMATION_LIST_SEPARATOR
         = "";
 
     /**
@@ -192,7 +192,7 @@ public abstract class AbstractSVGTransformList
      * An {@link SVGTransform} in the list.
      */
     protected class SVGTransformItem
-            extends AbstractSVGTransform 
+            extends AbstractSVGTransform
             implements SVGItem {
 
         /**
@@ -209,7 +209,7 @@ public abstract class AbstractSVGTransformList
          * List the item belongs to.
          */
         protected AbstractSVGList parent;
-        
+
         /**
          * String representation of the item.
          *
@@ -249,7 +249,7 @@ public abstract class AbstractSVGTransformList
         public void setParent(AbstractSVGList list) {
             parent = list;
         }
-        
+
         /**
          * Returns the parent list of this item.
          */
@@ -491,7 +491,7 @@ public abstract class AbstractSVGTransformList
                         buf.append((float) matrix[i]);
                     }
                     buf.append(')');
-                    break;                    
+                    break;
             }
             return buf.toString();
         }
@@ -508,7 +508,7 @@ public abstract class AbstractSVGTransformList
          * to.
          */
         protected ListHandler listHandler;
-        
+
         /**
          * Creates a new TransformListBuilder.
          */

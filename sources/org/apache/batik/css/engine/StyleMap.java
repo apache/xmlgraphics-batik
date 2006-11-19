@@ -27,35 +27,35 @@ import org.apache.batik.css.engine.value.Value;
  * @version $Id$
  */
 public class StyleMap {
-    
+
     //
     // The masks, still have 2 free bits: 0x0800, & 0x1000, could also
     // go to int if needed.
-    // 
-    public final static short IMPORTANT_MASK             = 0x0001;
-    public final static short COMPUTED_MASK              = 0x0002;
-    public final static short NULL_CASCADED_MASK         = 0x0004;
-    public final static short INHERITED_MASK             = 0x0008;
+    //
+    public static final short IMPORTANT_MASK             = 0x0001;
+    public static final short COMPUTED_MASK              = 0x0002;
+    public static final short NULL_CASCADED_MASK         = 0x0004;
+    public static final short INHERITED_MASK             = 0x0008;
 
-    public final static short LINE_HEIGHT_RELATIVE_MASK  = 0x0010;
-    public final static short FONT_SIZE_RELATIVE_MASK    = 0x0020;
-    public final static short COLOR_RELATIVE_MASK        = 0x0040;
-    public final static short PARENT_RELATIVE_MASK       = 0x0080;
-    public final static short BLOCK_WIDTH_RELATIVE_MASK  = 0x0100;
-    public final static short BLOCK_HEIGHT_RELATIVE_MASK = 0x0200;
-    public final static short BOX_RELATIVE_MASK          = 0x0400;
-    
-    public final static short ORIGIN_MASK = (short)0xE000; // 3 last bits
+    public static final short LINE_HEIGHT_RELATIVE_MASK  = 0x0010;
+    public static final short FONT_SIZE_RELATIVE_MASK    = 0x0020;
+    public static final short COLOR_RELATIVE_MASK        = 0x0040;
+    public static final short PARENT_RELATIVE_MASK       = 0x0080;
+    public static final short BLOCK_WIDTH_RELATIVE_MASK  = 0x0100;
+    public static final short BLOCK_HEIGHT_RELATIVE_MASK = 0x0200;
+    public static final short BOX_RELATIVE_MASK          = 0x0400;
+
+    public static final short ORIGIN_MASK = (short)0xE000; // 3 last bits
 
     //
     // The origin values.
     //
-    public final static short USER_AGENT_ORIGIN    = 0;
-    public final static short USER_ORIGIN          = 0x2000; // 0010
-    public final static short NON_CSS_ORIGIN       = 0x4000; // 0100
-    public final static short AUTHOR_ORIGIN        = 0x6000; // 0110
-    public final static short INLINE_AUTHOR_ORIGIN = (short)0x8000; // 1000
-    public final static short OVERRIDE_ORIGIN      = (short)0xA000; // 1010
+    public static final short USER_AGENT_ORIGIN    = 0;
+    public static final short USER_ORIGIN          = 0x2000; // 0010
+    public static final short NON_CSS_ORIGIN       = 0x4000; // 0100
+    public static final short AUTHOR_ORIGIN        = 0x6000; // 0110
+    public static final short INLINE_AUTHOR_ORIGIN = (short)0x8000; // 1000
+    public static final short OVERRIDE_ORIGIN      = (short)0xA000; // 1010
 
     /**
      * The values.
@@ -300,8 +300,9 @@ public class StyleMap {
      * Returns a printable representation of this style map.
      */
     public String toString(CSSEngine eng) {
-        StringBuffer sb = new StringBuffer();
-        for (int i = 0; i < values.length; i++) {
+        int nSlots = values.length;
+        StringBuffer sb = new StringBuffer( nSlots * 8 );
+        for (int i = 0; i < nSlots; i++) {
             Value v = values[i];
             if (v == null) continue;
 

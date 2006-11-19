@@ -42,7 +42,7 @@ public class AttributeInitializer {
      * The attribute values table.
      */
     protected DoublyIndexedTable values = new DoublyIndexedTable();
-    
+
     /**
      * Creates a new AttributeInitializer.
      */
@@ -61,9 +61,7 @@ public class AttributeInitializer {
         int len = keys.length;
         if (length == len) {
             String[] t = new String[len * 2];
-            for (int i = len - 1; i >= 0; --i) {
-                t[i] = keys[i];
-            }
+            System.arraycopy( keys, 0, t, 0, len );
             keys = t;
         }
         keys[length++] = ns;
@@ -97,9 +95,7 @@ public class AttributeInitializer {
             return false;
         }
         if (prefix != null) {
-            StringBuffer sb = new StringBuffer(prefix.length() + ln.length() + 1);
-            sb.append(prefix).append(':').append(ln);
-            ln = sb.toString();
+            ln = prefix + ':' + ln;
         }
         elt.setUnspecifiedAttribute(ns, ln, val);
         return true;

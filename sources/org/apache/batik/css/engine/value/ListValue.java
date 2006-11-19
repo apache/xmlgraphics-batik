@@ -28,7 +28,7 @@ import org.w3c.dom.css.CSSValue;
  * @version $Id$
  */
 public class ListValue extends AbstractValue {
-    
+
     /**
      * The length of the list.
      */
@@ -72,10 +72,10 @@ public class ListValue extends AbstractValue {
     }
 
     /**
-     *  A string representation of the current value. 
+     *  A string representation of the current value.
      */
     public String getCssText() {
-        StringBuffer sb = new StringBuffer();
+        StringBuffer sb = new StringBuffer( length * 8 );
         if (length > 0) {
             sb.append(items[0].getCssText());
         }
@@ -113,9 +113,7 @@ public class ListValue extends AbstractValue {
     public void append(Value v) {
         if (length == items.length) {
             Value[] t = new Value[length * 2];
-            for (int i = 0; i < length; i++) {
-                t[i] = items[i];
-            }
+            System.arraycopy( items, 0, t, 0, length );
             items = t;
         }
         items[length++] = v;

@@ -129,14 +129,14 @@ public class SVGTexturePaint extends AbstractSVGConverter {
             // handleImage((RenderedImage)textureImage, imageElement,
             // generatorContext);
 
-            Element patternContent 
+            Element patternContent
                 = generatorContext.genericImageHandler.createElement
                 (generatorContext);
 
             generatorContext.genericImageHandler.handleImage
                 ((RenderedImage)textureImage,
                  patternContent,
-                 0, 
+                 0,
                  0,
                  textureImage.getWidth(),
                  textureImage.getHeight(),
@@ -148,14 +148,15 @@ public class SVGTexturePaint extends AbstractSVGConverter {
                                       generatorContext.idGenerator.
                                       generateID(ID_PREFIX_PATTERN));
 
-            StringBuffer patternAttrBuf = new StringBuffer(URL_PREFIX);
-            patternAttrBuf.append(SIGN_POUND);
-            patternAttrBuf.append(patternDef.getAttributeNS(null, SVG_ID_ATTRIBUTE));
-            patternAttrBuf.append(URL_SUFFIX);
-
-            patternDesc = new SVGPaintDescriptor(patternAttrBuf.toString(),
-                                                 SVG_OPAQUE_VALUE,
-                                                 patternDef);
+//            StringBuffer patternAttrBuf = new StringBuffer(URL_PREFIX);
+//            patternAttrBuf.append(SIGN_POUND);
+//            patternAttrBuf.append(patternDef.getAttributeNS(null, SVG_ID_ATTRIBUTE));
+//            patternAttrBuf.append(URL_SUFFIX);
+            String patternAttrBuf = URL_PREFIX
+                    + SIGN_POUND
+                    + patternDef.getAttributeNS(null, SVG_ID_ATTRIBUTE)
+                    + URL_SUFFIX;
+            patternDesc = new SVGPaintDescriptor(patternAttrBuf, SVG_OPAQUE_VALUE, patternDef);
 
             descMap.put(texture, patternDesc);
             defSet.add(patternDef);

@@ -38,7 +38,7 @@ import org.w3c.dom.svg.SVGPathSegList;
  * @author <a href="mailto:andrest@world-affair.com">Andres Toussaint</a>
  * @version $Id$
  */
-public class SVGOMAnimatedPathData 
+public class SVGOMAnimatedPathData
     extends AbstractSVGAnimatedValue
     implements SVGAnimatedPathData {
 
@@ -437,7 +437,7 @@ public class SVGOMAnimatedPathData
             if (itemList.size() == 0) {
                 return "";
             }
-            StringBuffer sb = new StringBuffer();
+            StringBuffer sb = new StringBuffer( itemList.size() * 8 );
             Iterator i = itemList.iterator();
             if (i.hasNext()) {
                 sb.append(((SVGItem) i.next()).getValueAsString());
