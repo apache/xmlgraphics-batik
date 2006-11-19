@@ -36,7 +36,7 @@ import org.w3c.dom.svg.SVGPointList;
  * @author <a href="mailto:nicolas.socheleau@bitflash.com">Nicolas Socheleau</a>
  * @version $Id$
  */
-public class SVGOMAnimatedPoints 
+public class SVGOMAnimatedPoints
         extends AbstractSVGAnimatedValue
         implements SVGAnimatedPoints {
 
@@ -289,7 +289,7 @@ public class SVGOMAnimatedPoints
             if (itemList.size() == 0) {
                 return "";
             }
-            StringBuffer sb = new StringBuffer();
+            StringBuffer sb = new StringBuffer( itemList.size() * 8 );
             Iterator i = itemList.iterator();
             if (i.hasNext()) {
                 sb.append(((SVGItem) i.next()).getValueAsString());

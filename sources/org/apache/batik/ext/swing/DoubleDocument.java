@@ -24,18 +24,18 @@ import javax.swing.text.PlainDocument;
 
 /**
  * Helper class. Only allows an Double value in the document.
- * 
+ *
  * @author <a href="mailto:vhardy@apache.org">Vincent Hardy</a>
  * @version $Id$
  */
 public class DoubleDocument extends PlainDocument {
 
-    /** 
+    /**
      * Strip all non digit characters.  The first character must be '-' or '+'.
      * Only one '.' is allowed.
      */
     public void insertString(int offs, String str, AttributeSet a)
-            throws BadLocationException { 
+            throws BadLocationException {
 
         if (str == null) {
             return;
@@ -67,10 +67,11 @@ public class DoubleDocument extends PlainDocument {
         try{
             StringBuffer val = new StringBuffer(curVal);
             val.insert(offs, added);
-            if(val.toString().equals(".") || val.toString().equals("-") || val.toString().equals("-."))
+            String valStr = val.toString();
+            if( valStr.equals(".") || valStr.equals("-") || valStr.equals("-."))
                 super.insertString(offs, added, a);
             else{
-                Double.valueOf(val.toString());
+                Double.valueOf( valStr );
                 super.insertString(offs, added, a);
             }
         }catch(NumberFormatException e){

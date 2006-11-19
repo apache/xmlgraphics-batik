@@ -119,7 +119,7 @@ public class DOMUtilities extends XMLUtilities {
             break;
         case Node.DOCUMENT_TYPE_NODE: {
             DocumentType dt = (DocumentType)n;
-            w.write ("<!DOCTYPE "); 
+            w.write ("<!DOCTYPE ");
             w.write (n.getOwnerDocument().getDocumentElement().getNodeName());
             String pubID = dt.getPublicId();
             if (pubID != null) {
@@ -127,7 +127,7 @@ public class DOMUtilities extends XMLUtilities {
                            pubID + "\">");
             } else {
                 String sysID = dt.getSystemId();
-                if (sysID != null) 
+                if (sysID != null)
                     w.write (" SYSTEM \"" + sysID + "\">");
             }
             break;
@@ -142,7 +142,7 @@ public class DOMUtilities extends XMLUtilities {
      * characters with entities.
      */
     public static String contentToString(String s) {
-        StringBuffer result = new StringBuffer();
+        StringBuffer result = new StringBuffer( s.length() );
 
         for (int i = 0; i < s.length(); i++) {
             char c = s.charAt(i);
@@ -167,7 +167,7 @@ public class DOMUtilities extends XMLUtilities {
                 result.append(c);
             }
         }
-        
+
         return result.toString();
     }
 
@@ -234,7 +234,7 @@ public class DOMUtilities extends XMLUtilities {
         }
         return true;
     }
-    
+
     /**
      * Tests whether the given string is a valid XML 1.1 name.
      */
@@ -259,7 +259,7 @@ public class DOMUtilities extends XMLUtilities {
         }
         return true;
     }
-    
+
     /**
      * Tests whether the given string is a valid prefix.
      * This method assume that isValidName(s) is true.
@@ -278,7 +278,7 @@ public class DOMUtilities extends XMLUtilities {
             ? null
             : s.substring(0, i);
     }
-    
+
     /**
      * Gets the local name from the given qualified name.
      * This method assume that isValidName(s) is true.

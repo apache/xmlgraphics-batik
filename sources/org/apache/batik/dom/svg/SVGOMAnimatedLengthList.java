@@ -38,7 +38,7 @@ import org.w3c.dom.svg.SVGLengthList;
  * @author <a href="mailto:nicolas.socheleau@bitflash.com">Nicolas Socheleau</a>
  * @version $Id$
  */
-public class SVGOMAnimatedLengthList 
+public class SVGOMAnimatedLengthList
     extends AbstractSVGAnimatedValue
     implements SVGAnimatedLengthList {
 
@@ -171,7 +171,7 @@ public class SVGOMAnimatedLengthList
             fireAnimatedAttributeListeners();
         }
     }
-    
+
     /**
      * {@link SVGLengthList} implementation for the base length list value.
      */
@@ -335,7 +335,7 @@ public class SVGOMAnimatedLengthList
             if (itemList.size() == 0) {
                 return "";
             }
-            StringBuffer sb = new StringBuffer();
+            StringBuffer sb = new StringBuffer( itemList.size() * 8 );
             Iterator i = itemList.iterator();
             if (i.hasNext()) {
                 sb.append(((SVGItem) i.next()).getValueAsString());

@@ -40,7 +40,7 @@ public abstract class AbstractSVGPointList
     /**
      * Separator for a point list.
      */
-    public final static String SVG_POINT_LIST_SEPARATOR
+    public static final String SVG_POINT_LIST_SEPARATOR
         = " ";
 
     /**
@@ -113,7 +113,7 @@ public abstract class AbstractSVGPointList
         SVGPoint point = (SVGPoint) newItem;
         return new SVGPointItem(point.getX(), point.getY());
     }
-    
+
     /**
      * Parses the 'points' attribute.
      *
@@ -165,11 +165,9 @@ public abstract class AbstractSVGPointList
          * Return a String representation of this SVGPoint.
          */
         protected String getStringValue() {
-            StringBuffer value = new StringBuffer();
-            value.append(x);
-            value.append(',');
-            value.append(y);
-            return value.toString();
+            return Float.toString( x )
+                    + ','
+                    + Float.toString( y );
         }
 
         /**
@@ -221,7 +219,7 @@ public abstract class AbstractSVGPointList
          * to.
          */
         protected ListHandler listHandler;
-        
+
         /**
          * Creates a new PointsListBuilder.
          */

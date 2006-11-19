@@ -164,8 +164,8 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         return new SVGTextElementBridge();
     }
 
-    protected TextNode getTextNode() { 
-        return (TextNode)node; 
+    protected TextNode getTextNode() {
+        return (TextNode)node;
     }
     /**
      * Creates a <tt>GraphicsNode</tt> according to the specified parameters.
@@ -181,7 +181,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
 
         associateSVGContext(ctx, e, node);
 
-        // traverse the children to add context on 
+        // traverse the children to add context on
         // <tspan>, <tref> and <textPath>
         Node child = getFirstChild(e);
         while (child != null) {
@@ -1151,7 +1151,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                                             (Map)attributes.get(0));
             }
 
-            StringBuffer sb = new StringBuffer();
+            StringBuffer sb = new StringBuffer( strings.size() * 5 );
             Iterator it = strings.iterator();
             while (it.hasNext()) {
                 sb.append((String)it.next());
@@ -1189,7 +1189,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                 return (String)strings.get(0);
             }
 
-            StringBuffer sb = new StringBuffer();
+            StringBuffer sb = new StringBuffer( strings.size() * 5 );
             Iterator it = strings.iterator();
             while (it.hasNext()) {
                 sb.append((String)it.next());

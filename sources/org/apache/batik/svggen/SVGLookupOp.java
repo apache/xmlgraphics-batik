@@ -23,6 +23,7 @@ import java.awt.image.BufferedImageOp;
 import java.awt.image.ByteLookupTable;
 import java.awt.image.LookupOp;
 import java.awt.image.LookupTable;
+import java.util.Arrays;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -39,17 +40,18 @@ import org.w3c.dom.Element;
  * @see                org.apache.batik.svggen.SVGBufferedImageOp
  */
 public class SVGLookupOp extends AbstractSVGFilterConverter {
+
     /**
      * Gamma for linear to sRGB convertion
      */
-    private static final double GAMMA = 1./2.4;
+    private static final double GAMMA = 1.0/2.4;
 
     /**
      * Lookup table for linear to sRGB value
      * forward and backward mapping
      */
-    private static final int linearToSRGBLut[] = new int[256];
-    private static final int sRGBToLinear[] = new int[256];
+    private static final int[] linearToSRGBLut = new int[256];
+    private static final int[] sRGBToLinear = new int[256];
 
     static {
         for(int i=0; i<256; i++) {
@@ -135,7 +137,7 @@ public class SVGLookupOp extends AbstractSVGFilterConverter {
             //   Red, Green and Blue components
             // + 4, in which case the lookup tables apply to the
             //   Red, Green, Blue and Alpha components
-            String lookupTables[] = convertLookupTables(lookupOp);
+            String[] lookupTables = convertLookupTables(lookupOp);
 
             Element feFuncR = domFactory.createElementNS(SVG_NAMESPACE_URI,
                                                          SVG_FE_FUNC_R_TAG);
@@ -194,13 +196,14 @@ public class SVGLookupOp extends AbstractSVGFilterConverter {
             //
 
             // Process filter attribute
-            StringBuffer filterAttrBuf = new StringBuffer(URL_PREFIX);
-            filterAttrBuf.append(SIGN_POUND);
-            filterAttrBuf.append(filterDef.getAttributeNS(null, SVG_ID_ATTRIBUTE));
-            filterAttrBuf.append(URL_SUFFIX);
+//            StringBuffer filterAttrBuf = new StringBuffer(URL_PREFIX);
+//            filterAttrBuf.append(SIGN_POUND);
+//            filterAttrBuf.append(filterDef.getAttributeNS(null, SVG_ID_ATTRIBUTE));
+//            filterAttrBuf.append(URL_SUFFIX);
 
-            filterDesc = new SVGFilterDescriptor(filterAttrBuf.toString(),
-                                                 filterDef);
+            String filterAttrBuf = URL_PREFIX + SIGN_POUND + filterDef.getAttributeNS(null, SVG_ID_ATTRIBUTE) + URL_SUFFIX;
+
+            filterDesc = new SVGFilterDescriptor(filterAttrBuf, filterDef);
 
             defSet.add(filterDef);
             descMap.put(lookupOp, filterDesc);
@@ -220,13 +223,13 @@ public class SVGLookupOp extends AbstractSVGFilterConverter {
         if((nComponents != 1) && (nComponents != 3) && (nComponents != 4))
             throw new SVGGraphics2DRuntimeException(ERR_ILLEGAL_BUFFERED_IMAGE_LOOKUP_OP);
 
-        StringBuffer lookupTableBuf[] = new StringBuffer[nComponents];
+        StringBuffer[] lookupTableBuf = new StringBuffer[nComponents];
         for(int i=0; i<nComponents; i++)
             lookupTableBuf[i] = new StringBuffer();
 
         if(!(lookupTable instanceof ByteLookupTable)){
-            int src[] = new int[nComponents];
-            int dest[] = new int[nComponents];
+            int[] src = new int[nComponents];
+            int[] dest= new int[nComponents];
             int offset = lookupTable.getOffset();
 
             // Offsets are used for constrained sources. Therefore,
@@ -244,7 +247,7 @@ public class SVGLookupOp extends AbstractSVGFilterConverter {
 
             for(int i=offset; i<=255; i++){
                 // Fill in source array
-                for(int j=0; j<nComponents; j++) src[j] = i;
+                Arrays.fill( src, i );
 
                 // Get destination values
                 lookupTable.lookupPixel(src, dest);
@@ -258,8 +261,8 @@ public class SVGLookupOp extends AbstractSVGFilterConverter {
             }
         }
         else{
-            byte src[] = new byte[nComponents];
-            byte dest[] = new byte[nComponents];
+            byte[] src = new byte[nComponents];
+            byte[] dest = new byte[nComponents];
 
             int offset = lookupTable.getOffset();
 
@@ -277,9 +280,7 @@ public class SVGLookupOp extends AbstractSVGFilterConverter {
             }
             for(int i=0; i<=255; i++){
                 // Fill in source array
-                for(int j=0; j<nComponents; j++) {
-                    src[j] = (byte)(0xff & i);
-                }
+                Arrays.fill( src, (byte)(0xff & i) );
 
                 // Get destination values
                 ((ByteLookupTable)lookupTable).lookupPixel(src, dest);
@@ -292,7 +293,7 @@ public class SVGLookupOp extends AbstractSVGFilterConverter {
             }
         }
 
-        String lookupTables[] = new String[nComponents];
+        String[] lookupTables = new String[nComponents];
         for(int i=0; i<nComponents; i++)
             lookupTables[i] = lookupTableBuf[i].toString().trim();
 

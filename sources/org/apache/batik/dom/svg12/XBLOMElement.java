@@ -34,7 +34,7 @@ import org.w3c.dom.Node;
  */
 public abstract class XBLOMElement extends SVGOMElement
                                    implements XBLConstants {
-    
+
     /**
      * The element prefix.
      */
@@ -63,10 +63,8 @@ public abstract class XBLOMElement extends SVGOMElement
         if (prefix == null || prefix.equals("")) {
             return getLocalName();
         }
-        String ln = getLocalName();
-        StringBuffer sb = new StringBuffer(prefix.length() + ln.length() + 1);
-        sb.append(prefix).append(':').append(ln);
-        return sb.toString();
+
+        return prefix + ':' + getLocalName();
     }
 
     /**

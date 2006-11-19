@@ -79,8 +79,8 @@ public class SVGTransform extends AbstractSVGConverter{
      * @param transformStack sequence of transform that should
      *        be converted to an SVG transform attribute equivalent
      */
-    public final String toSVGTransform(TransformStackElement transformStack[]){
-        StringBuffer transformStackBuffer = new StringBuffer();
+    public final String toSVGTransform(TransformStackElement[] transformStack){
+
         int nTransforms = transformStack.length;
         //
         // Append transforms in the presentation stack
@@ -103,7 +103,7 @@ public class SVGTransform extends AbstractSVGConverter{
                 }
                 return element;
             }
-            
+
             /**
              * Adapted pop implementation
              */
@@ -144,7 +144,7 @@ public class SVGTransform extends AbstractSVGConverter{
                 if(!canConcatenate)
                     break;
             }
-            // loop variable assertion: 
+            // loop variable assertion:
             // If "i" does not increment during this iteration, it is guaranteed
             // to do so in the next, since "i" can only keep the same value as a
             // result of "element" having a non-null value on starting this
@@ -154,7 +154,7 @@ public class SVGTransform extends AbstractSVGConverter{
             // unchanged and will be pushed onto the stack again. "element" will
             // then become null, so "i" will eventually increment.
             i = j;
- 
+
             // Get rid of identity transforms within the stack.
             // If an identity is pushed, it is immediately removed, and
             // the current top of stack will be returned to concatenate onto.
@@ -166,12 +166,13 @@ public class SVGTransform extends AbstractSVGConverter{
         if (element != null){
             presentation.push(element);
         }
- 
+
         //
         // Transform presentation stack to SVG
         //
         int nPresentations = presentation.size();
-        
+
+        StringBuffer transformStackBuffer = new StringBuffer( nPresentations * 8 );
         for(i = 0; i < nPresentations; i++) {
             transformStackBuffer.append(convertTransform((TransformStackElement) presentation.elementAt(i)));
             transformStackBuffer.append(SPACE);

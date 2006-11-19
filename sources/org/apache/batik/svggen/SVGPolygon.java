@@ -47,10 +47,9 @@ public class SVGPolygon extends SVGGraphicObjectConverter {
                                                         SVG_POLYGON_TAG);
         StringBuffer points = new StringBuffer(" ");
         PathIterator pi = polygon.getPathIterator(null);
-        float seg[] = new float[6];
-        int segType = 0;
+        float[] seg = new float[6];
         while(!pi.isDone()){
-            segType = pi.currentSegment(seg);
+            int segType = pi.currentSegment(seg);
             switch(segType){
             case PathIterator.SEG_MOVETO:
                 appendPoint(points, seg[0], seg[1]);

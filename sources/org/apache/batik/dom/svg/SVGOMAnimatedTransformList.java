@@ -36,7 +36,7 @@ import org.w3c.dom.svg.SVGTransformList;
  * @author <a href="mailto:nicolas.socheleau@bitflash.com">Nicolas Socheleau</a>
  * @version $Id$
  */
-public class SVGOMAnimatedTransformList 
+public class SVGOMAnimatedTransformList
         extends AbstractSVGAnimatedValue
         implements SVGAnimatedTransformList {
 
@@ -303,7 +303,7 @@ public class SVGOMAnimatedTransformList
             if (itemList.size() == 0) {
                 return "";
             }
-            StringBuffer sb = new StringBuffer();
+            StringBuffer sb = new StringBuffer( itemList.size() * 8 );
             Iterator i = itemList.iterator();
             if (i.hasNext()) {
                 sb.append(((SVGItem) i.next()).getValueAsString());

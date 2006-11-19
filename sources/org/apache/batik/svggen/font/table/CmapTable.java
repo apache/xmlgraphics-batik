@@ -70,16 +70,16 @@ public class CmapTable implements Table {
     }
 
     public String toString() {
-        StringBuffer sb = new StringBuffer().append("cmap\n");
+        StringBuffer sb = new StringBuffer( numTables * 8 ).append("cmap\n");
 
         // Get each of the index entries
         for (int i = 0; i < numTables; i++) {
-            sb.append("\t").append(entries[i].toString()).append("\n");
+            sb.append( '\t' ).append(entries[i].toString()).append( '\n' );
         }
 
         // Get each of the tables
         for (int i = 0; i < numTables; i++) {
-            sb.append("\t").append(formats[i].toString()).append("\n");
+            sb.append( '\t' ).append(formats[i].toString()).append( '\n' );
         }
         return sb.toString();
     }

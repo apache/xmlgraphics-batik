@@ -37,10 +37,10 @@ import org.w3c.dom.svg.SVGNumberList;
  *
  * @author <a href="mailto:tonny@kiyut.com">Tonny Kohar</a>
  */
-public class SVGOMAnimatedNumberList 
+public class SVGOMAnimatedNumberList
     extends AbstractSVGAnimatedValue
     implements SVGAnimatedNumberList {
-    
+
     /**
      * The base value.
      */
@@ -83,7 +83,7 @@ public class SVGOMAnimatedNumberList
         this.defaultValue = defaultValue;
         this.emptyAllowed = emptyAllowed;
     }
-    
+
     /**
      * <b>DOM</b>: Implements {@link SVGAnimatedNumberList#getBaseVal()}.
      */
@@ -318,7 +318,7 @@ public class SVGOMAnimatedNumberList
             if (itemList.size() == 0) {
                 return "";
             }
-            StringBuffer sb = new StringBuffer();
+            StringBuffer sb = new StringBuffer( itemList.size() * 8 );
             Iterator i = itemList.iterator();
             if (i.hasNext()) {
                 sb.append(((SVGItem) i.next()).getValueAsString());

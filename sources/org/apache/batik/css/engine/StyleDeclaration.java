@@ -28,8 +28,8 @@ import org.apache.batik.css.engine.value.Value;
  */
 public class StyleDeclaration {
 
-    protected final static int INITIAL_LENGTH = 8;
-    
+    protected static final int INITIAL_LENGTH = 8;
+
     /**
      * The values.
      */
@@ -107,18 +107,18 @@ public class StyleDeclaration {
             Value[]   newval  = new Value[count * 2];
             int[]     newidx  = new int[count * 2];
             boolean[] newprio = new boolean[count * 2];
-            for (int i = 0; i < count; i++) {
-                newval[i]  = values[i];
-                newidx[i]  = indexes[i];
-                newprio[i] = priorities[i];
-            }
+
+            System.arraycopy( values, 0, newval, 0, count );
+            System.arraycopy( indexes, 0, newidx, 0, count );
+            System.arraycopy( priorities, 0, newprio, 0, count );
+
             values     = newval;
             indexes    = newidx;
             priorities = newprio;
         }
         for (int i = 0; i < count; i++) {
             if (indexes[i] == idx) {
-                // Replace existing property values, 
+                // Replace existing property values,
                 // unless they are important!
                 if (prio || (priorities[i] == prio)) {
                     values    [i] = v;
@@ -137,7 +137,7 @@ public class StyleDeclaration {
      * Returns a printable representation of this style rule.
      */
     public String toString(CSSEngine eng) {
-        StringBuffer sb = new StringBuffer();
+        StringBuffer sb = new StringBuffer( count * 8 );
         for (int i = 0; i < count; i++) {
             sb.append(eng.getPropertyName(indexes[i]));
             sb.append(": ");

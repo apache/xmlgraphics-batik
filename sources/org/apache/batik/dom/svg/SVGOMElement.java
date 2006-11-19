@@ -21,6 +21,8 @@ package org.apache.batik.dom.svg;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Vector;
+import java.util.List;
+import java.util.ArrayList;
 
 import org.apache.batik.dom.anim.AnimationTarget;
 import org.apache.batik.dom.anim.AnimationTargetListener;
@@ -206,10 +208,8 @@ public abstract class SVGOMElement
         if (prefix == null || prefix.equals("")) {
             return getLocalName();
         }
-        String ln = getLocalName();
-        StringBuffer sb = new StringBuffer(prefix.length() + ln.length() + 1);
-        sb.append(prefix).append(':').append(ln);
-        return sb.toString();
+
+        return prefix + ':' + getLocalName();
     }
 
     /**
@@ -310,8 +310,8 @@ public abstract class SVGOMElement
     /**
      * Creates an SVGException with the appropriate error message.
      */
-    public SVGException createSVGException(short type, 
-                                           String key, 
+    public SVGException createSVGException(short type,
+                                           String key,
                                            Object [] args) {
         try {
             return new SVGOMException
@@ -572,7 +572,7 @@ public abstract class SVGOMElement
     }
 
     // AnimationTarget ///////////////////////////////////////////////////////
-    
+
     /**
      * Returns the element.
      */
@@ -706,7 +706,7 @@ public abstract class SVGOMElement
     protected AnimatableValue getBaseValue(SVGAnimatedTransformList a) {
         SVGTransformList tl = a.getBaseVal();
         int n = tl.getNumberOfItems();
-        Vector v = new Vector();
+        List v = new ArrayList();
         for (int i = 0; i < n; i++) {
             v.add((AbstractSVGTransform) tl.getItem(i));
         }
@@ -1023,7 +1023,7 @@ public abstract class SVGOMElement
      * @param type the SVG length units (one of the
      *             {@link SVGLength}.SVG_LENGTH_* constants)
      * @param pcInterp how to interpretet percentage values (one of the
-     *             {@link SVGContext}.PERCENTAGE_* constants) 
+     *             {@link SVGContext}.PERCENTAGE_* constants)
      * @return the SVG value in user units
      */
     public float svgToUserSpace(float v, short type, short pcInterp) {
@@ -1132,21 +1132,21 @@ public abstract class SVGOMElement
      * To resolve the units.
      */
     protected class UnitContext implements UnitProcessor.Context {
-        
+
         /**
          * Returns the element.
          */
         public Element getElement() {
             return SVGOMElement.this;
         }
-        
+
         /**
          * Returns the size of a px CSS unit in millimeters.
          */
         public float getPixelUnitToMillimeter() {
             return getSVGContext().getPixelUnitToMillimeter();
         }
-        
+
         /**
          * Returns the size of a px CSS unit in millimeters.
          * This will be removed after next release.
@@ -1155,33 +1155,33 @@ public abstract class SVGOMElement
         public float getPixelToMM() {
             return getPixelUnitToMillimeter();
         }
-        
+
         /**
          * Returns the font-size value.
          */
         public float getFontSize() {
             return getSVGContext().getFontSize();
         }
-        
+
         /**
          * Returns the x-height value.
          */
         public float getXHeight() {
             return 0.5f;
         }
-        
+
         /**
          * Returns the viewport width used to compute units.
          */
         public float getViewportWidth() {
             return getSVGContext().getViewportWidth();
         }
-        
+
         /**
          * Returns the viewport height used to compute units.
          */
         public float getViewportHeight() {
             return getSVGContext().getViewportHeight();
         }
-    }   
+    }
 }
