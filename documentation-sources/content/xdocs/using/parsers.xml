@@ -90,6 +90,7 @@
             <a class="class" href="../javadoc/org/apache/batik/parser/ClockHandler.html">ClockHandler</a>.
             This parser is used for parsing SMIL
             <a href="http://www.w3.org/TR/smil-animation/#Timing-ClockValueSyntax">clock values</a>.
+          </p>
         </dd>
         <dt>Fragment identifiers</dt>
         <dd>

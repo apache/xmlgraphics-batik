@@ -45,7 +45,7 @@
         directly from a Java program.
       </p>
       <note>
-        You don't have to worry about graphics updates; after each event
+        You don’t have to worry about graphics updates; after each event
         listener invocation the canvas is updated if needed.
       </note>
       <source>import java.awt.event.WindowAdapter;
@@ -198,7 +198,7 @@ canvas.getUpdateManager().getUpdateRunnableQueue().
         DOM calls may need to query the canvas for information
         (such as actual Swing component size, etc).  If this
         happens you will get a thread deadlock.  You should
-        only make invokeAndWait calls from 'third party' threads.
+        only make invokeAndWait calls from “third party” threads.
       </note>
     </section>
 
