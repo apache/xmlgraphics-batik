@@ -90,7 +90,7 @@
 
         <p>
           The Squiggle browser lets the user decide whether or not scripts
-          should be run securely (see the "Browser Options" in the 
+          should be run securely (see the “Browser Options” in the 
           preference dialog box). When scripts are run securely, Squiggle
           will enforce the security settings as follows:
         </p>
@@ -175,7 +175,7 @@
       </p>
       <p>
         In the Batik toolkit, this flexibility is provided by the 
-        <a class="class" href="../../javadoc/org/apache/batik/bridge/UserAgent.html">>org.apache.batik.bridge.UserAgent</a>
+        <a class="class" href="../../javadoc/org/apache/batik/bridge/UserAgent.html">org.apache.batik.bridge.UserAgent</a>
         interface which can define various strategies with regards to external
         resources.  By providing a new implementation of the
         <code>UserAgent</code> interface, it is possible to apply the desired

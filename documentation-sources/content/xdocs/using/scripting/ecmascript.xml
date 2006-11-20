@@ -33,7 +33,7 @@
   <body>
     <p>
       This page is a brief introduction to scripting SVG documents with
-      ECMAScript, and how Batik's ECMAScript environment can be extended.
+      ECMAScript, and how Batik’s ECMAScript environment can be extended.
     </p>
         
     <section id="scriptingBasics">
@@ -43,7 +43,7 @@
         is one of the most popular scripting languages, and as the SVG
         specification states that an SVG conforming implementation must
         support it, SVG documents processed by Batik support scripting
-        with ECMAScript using Mozilla's ECMAScript interpreter,
+        with ECMAScript using Mozilla’s ECMAScript interpreter,
         <a href="http://www.mozilla.org/rhino/">Rhino</a>.
       </p>
       <p>
@@ -135,7 +135,7 @@
       <source>var frame = new JFrame("My test frame");</source>
       <p>
         Note how an ECMAScript string value is passed as the parameter to
-        <code>JFrame</code>'s constructor.  Rhino will attempt to convert
+        <code>JFrame</code>’s constructor.  Rhino will attempt to convert
         ECMAScript values into appropriate Java primitive types or objects
         to make underlying constructor or method calls.  In this instance,
         the ECMAScript string value is converted into a
@@ -177,7 +177,7 @@
 
       <p>
         A useful example of customization of the Rhino interpreter comes from
-        the fact that the ECMAScript specification doesn't provide any
+        the fact that the ECMAScript specification doesn’t provide any
         predefined I/O facilities to interact with the console. However, it is
         very common for ECMAScript compatible languages to provide a function
         named <code>print</code> to output messages to the console. We will

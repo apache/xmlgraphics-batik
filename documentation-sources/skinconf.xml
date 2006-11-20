@@ -304,6 +304,18 @@ which will be used to configure the chosen Forrest skin.
       margin-top: 0.5em;
       margin-bottom: 0.5em;
     }
+    #menu .menuitem, #menu .menupagetitle, #menu .menutitle {
+      font-size: 8pt;
+    }
+    #tabs {
+      font-size: 80%;
+    }
+    #publishedStrip {
+      font-size: 80%;
+    }
+    #top .searchbox {
+      font-size: 80%;
+    }
 
     <!-- For status tables: -->
     table.elements {
