@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+
+<!--
+
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+
+<!-- ========================================================================= -->
+<!-- author vincent.hardy@eng.sun.com                                          -->
+<!-- version $Id: glossary.xml 201374 2004-08-18 07:17:26Z vhardy $ -->
+<!-- ========================================================================= -->
+
+<!DOCTYPE document PUBLIC "-//APACHE//DTD Documentation V2.0//EN" "http://forrest.apache.org/dtd/document-v20.dtd">
+<document>
+  <header>
+    <title>Batik Glossary</title>
+  </header>
+
+  <body>
+    <section id="Bridge">
+      <title>Bridge</title>
+      <p>
+        A bridge is a class that handles an element in an SVG document, either
+        by constructing a corresponding node in the GVT tree, or by informing
+        the user agent that it has encountered the element.
+      </p>
+    </section>
+
+    <section id="GVT">
+      <title>GVT (Graphic Vector Toolkit)</title>
+      <p>
+        GVT (Graphic Vector Toolkit) is an object oriented framework that 
+        describes complex 2D graphics in terms of a tree of Java objects. GVT 
+        is used in Batik to represent how SVG images are to be rendered.
+      </p>
+    </section>
+
+    <section id="SVGDOM">
+      <title>SVG DOM</title>
+      <p>
+        The SVG DOM (Document Object Model) defines the API that programming
+        languages use to interact with SVG documents. There are different “bindings”
+        of the DOM API for different languages. For example, there is an ECMAScript
+        binding that allows SVG scripts to access or modify SVG documents, for example
+        in reaction to events. There is also a Java binding which allows Java
+        programs to dynamically interact with SVG documents. The Java binding
+        and the ECMAScript binding are both available in Batik.
+      </p>
+    </section>
+
+    <section id="SVGGenerator">
+      <title>SVG Generator</title>
+      <p>
+        The SVG Generator is a module of Batik that allows Java applications 
+        to create SVG content without needing specific knowledge of SVG. Applications
+        doing graphics in Java use an API, embodied by the
+        <code>Graphics2D</code> class, to do all their rendering operations.
+        They use the same code, but different implementations of that API, to
+        render to various outputs such as a screen or a printer. The SVG
+        Generator is another implementation of that API that, instead of
+        drawing to a screen or a printer, generates SVG content. Because it
+        implements the same API as for printing or drawing to the screen, the
+        same code that does screen rendering and printing can be used with the 
+        generator to generate SVG content.
+      </p>
+    </section>
+  </body>
+</document>
