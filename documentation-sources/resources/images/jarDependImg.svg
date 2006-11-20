@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" 
+      "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd" >
+<svg width="600" height="400" viewBox="0 0 1180 800" 
+     overflow="visible" enable-background="new 0 0 1176.189 790.5"
+     xml:space="preserve">
+          <filter id="dropShadow"  filterUnits="objectBoundingBox" 
+                  width="1.4" height="1.4">
+              <feGaussianBlur in="SourceAlpha" stdDeviation="4" /> 
+              <feOffset dx="8" dy="8" />
+              <feComponentTransfer result="shadow">
+                 <feFuncA type="linear" slope=".5" intercept="0" />
+              </feComponentTransfer>
+              <feComposite in2="shadow" in="SourceGraphic"/>
+          </filter>
+    <g id="Layer_1" filter="url(#dropShadow)">
+        <g fill="none" stroke="#000" 
+               stroke-width="6" stroke-linecap="round">
+        <path d="M302.182,198.568C302.182,4,302.182,4,344.18,4c50.998,0,132.511,0,238.488,0c59.997,0,28.499,50.998,100,50.998"/>
+        <path d="M362.179,90.459c0,46.145-59.997,46.646-59.997,108.109"/>
+        <path d="M548.676,198.568c0-25.966,5.998-25.966-34.499-25.966c-25.196,0-89.593,0-113.792,0c-52.8,0-52.8-52.498,0-52.498"/>
+        <path d="M594.006,435.97c68.09,0,74.123-69.876,17.711-69.876"/>
+        <path d="M745.209,567.083h-62.08"/>
+        <path d="M753.209,765h-122.08"/>
+        <path d="M753.551,471.951c-50.957,0-83.643-35.98-159.545-35.98"/>
+        <path d="M783.662,198.568v-44.109"/>
+        <path d="M950,295C950,250 892,250 892,250"/>
+        </g>
+        <g fill="#000">
+        <path d="M597.234,366.094
+            c6.814-2.529,15.27-6.844,20.512-11.412l-4.127,11.412l4.127,11.412C612.504,372.938,604.049,368.622,597.234,366.094z"/>
+        <path d="M362.288,504.053
+            c-37.331-0.146-75.21-7.962-110.45-20.035c0.591,1.285,1.182,2.57,1.772,3.855c2.385-7.447,4.919-18.126-2.63-23.529
+            c-8.932-6.395-24.223,0.914-32.63,4.604c1.002,0.084,2.005,0.168,3.008,0.253c-16.466-9.723-31.855-21.359-44.572-35.708
+            c-4.234-4.777-8.131-9.913-11.273-15.478c-1.705-3.019-3.77-6.784-3.854-10.359c-0.09-3.826-6.066-4.424-5.975-0.566
+            c0.186,7.852,5.054,15.156,9.416,21.354c8.09,11.496,18.638,21.281,29.616,29.96c7.334,5.799,15.155,10.96,23.201,15.71
+            c2.709,1.6,6.597-1.304,9.134-2.298c3.464-1.359,7.017-2.437,10.664-3.168c3.387-0.682,9.146-1.458,11.308,2.116
+            c2.561,4.231,0.31,10.808-1.041,15.024c-0.489,1.526,0.176,3.309,1.772,3.854c35.692,12.228,74.16,20.232,111.967,20.382
+            C365.564,510.042,366.153,504.068,362.288,504.053z"/>
+        <path d="M377.375,504.113
+            c-7.11,2.605-15.937,7.065-21.414,11.803l4.346-11.87l-4.252-11.904C361.496,496.921,370.287,501.452,377.375,504.113z"/>
+        <path d="M204.131,519.101
+            c-0.076-11.01-1.802-21.755-6.528-31.768c-3.784-8.017-9.482-14.928-15.184-21.633c-6.042-7.106-11.923-14.235-16.178-22.593
+            c-6.124-12.027-8.047-25.633-8.124-38.992c-0.022-3.838-5.997-4.43-5.975-0.566c0.074,12.825,1.701,25.466,6.528,37.418
+            c3.563,8.822,9.149,16.617,15.184,23.898c5.641,6.807,11.689,13.313,16.178,20.979c5.829,9.953,8.045,21.252,8.124,32.69
+            C198.184,522.372,204.158,522.964,204.131,519.101z"/>
+        <path d="M204.234,534.189
+            c-2.683-7.082-7.238-15.859-12.034-21.285l11.917,4.218l11.857-4.382C211.254,518.232,206.819,527.071,204.234,534.189z"/>
+        <path d="M204.131,519.101
+            c0.313-30.017,36.919-42.074,59.295-52.729c26.327-12.535,55.505-29.36,55.792-62.254c0.034-3.846-5.941-4.432-5.975-0.566
+            c-0.293,33.576-33.08,48.347-59.295,60.66c-23.053,10.828-55.48,24.274-55.792,54.325
+            C198.116,522.381,204.091,522.967,204.131,519.101z"/>
+        <path d="M203.975,534.188
+            c-2.56-7.128-6.963-15.981-11.664-21.489l11.842,4.423l11.932-4.176C211.269,518.355,206.681,527.117,203.975,534.188z"/>
+        <path d="M391.216,319.33c0-12.063,0-24.127,0-36.19
+            c0-4.532-5.975-5.229-5.975-0.667c0,12.064,0,24.127,0,36.19C385.242,323.196,391.216,323.891,391.216,319.33z"/>
+        <path d="M391.216,337.136
+            c-2.634-8.379-7.129-18.773-11.887-25.216l11.887,5.073l11.887-5.073C398.345,318.363,393.849,328.757,391.216,337.136z"/>
+        <path d="M763.314,567.083
+            c-8.52,3.161-19.09,8.555-25.641,14.265l5.16-14.265l-5.16-14.265C744.225,558.529,754.795,563.923,763.314,567.083z"/>
+        <path d="M771.314,765
+            c-8.52,3.161-19.09,8.555-25.641,14.265l5.16-14.265l-5.16-14.265C752.225,756.446,762.795,761.84,771.314,765z"/>
+        <path d="M771.656,471.951
+            c-8.52,3.161-19.09,8.555-25.641,14.265l5.158-14.265l-5.158-14.266C752.568,463.396,763.137,468.791,771.656,471.951z"/>
+        <path d="M302.182,215.467c-2.95-7.952-7.984-17.817-13.313-23.931l13.313,4.815
+            l13.313-4.815C310.167,197.65,305.131,207.515,302.182,215.467z"/>
+        <path d="M302.182,215.467c-2.95-7.952-7.984-17.817-13.313-23.931l13.313,4.815
+                 l13.313-4.815C310.167,197.65,305.131,207.515,302.182,215.467z"/>
+
+        <path d="M548.676,215.467c-2.95-7.952-7.984-17.817-13.313-23.931l13.313,4.815
+                 l13.313-4.815C556.66,197.65,551.625,207.515,548.676,215.467z"/>
+        <path d="M783.662,215.467c-2.95-7.952-7.984-17.817-13.313-23.931l13.313,4.815
+            l13.313-4.815C791.646,197.65,786.611,207.515,783.662,215.467z"/>
+
+        <path transform="translate(166,90)" 
+              d="M783.662,215.467c-2.95-7.952-7.984-17.817-13.313-23.931l13.313,4.815
+            l13.313-4.815C791.646,197.65,786.611,207.515,783.662,215.467z"/>
+        </g>
+
+        <g id="Layer_2_2_" fill="#08B"
+	   stroke="#ADF" stroke-width="2">
+            <rect rx="12" ry="12" x="1"   y="272" width="212" height="66"/>
+            <rect rx="12" ry="12" x="11"  y="130" width="244" height="66"/>
+            <rect rx="12" ry="12" x="330" y="24"  width="270" height="66"/>
+            <rect rx="12" ry="12" x="400" y="90"  width="270" height="66"/>
+
+            <rect rx="12" ry="12" x="685" y="24" width="260" height="66"/>
+            <rect rx="12" ry="12" x="685" y="90" width="260" height="66"/>
+
+            <rect rx="12" ry="12" x="960" y="90" width="212" height="66"/>
+        </g>
+
+        <g id="Layer_2_1_" fill="#ADF"  
+	   stroke="#08B" stroke-width="2">
+            <rect rx="12" ry="12" x="260" y="218" width="210" height="64"/>
+            <rect rx="12" ry="12" x="490" y="218" width="165" height="64"/>
+            <rect rx="12" ry="12" x="675" y="218" width="230" height="64"/>
+
+            <rect rx="12" ry="12" x="260" y="338" width="335" height="65"/>
+            <rect rx="12" ry="12" x="40"  y="338" width="200" height="65"/>
+
+            <rect rx="12" ry="12" x="375" y="403" width="220" height="65"/>
+            <rect rx="12" ry="12" x="375" y="468" width="220" height="65"/>
+
+            <rect rx="12" ry="12" x="95"  y="533" width="145" height="66"/>
+            <rect rx="12" ry="12" x="260" y="533" width="175" height="66"/>
+            <rect rx="12" ry="12" x="520" y="533" width="165" height="66"/>
+
+            <rect rx="12" ry="12" x="175" y="599" width="210" height="64"/>
+            <rect rx="12" ry="12" x="455" y="599" width="140" height="64"/>
+            <rect rx="12" ry="12" x="615" y="599" width="140" height="64"/>
+
+            <rect rx="12" ry="12" x="260" y="663" width="425" height="42"/>
+            <rect rx="12" ry="12" x="260" y="705" width="425" height="42"/>
+            <rect rx="12" ry="12" x="260" y="747" width="425" height="42"/>
+        </g>
+
+        <g id="Layer_2_3_" fill="#FFFFFF"
+               stroke="#000" stroke-width="2" >
+            <rect rx="12" ry="12" x="770" y="307" width="250" height="64"/>
+            <rect rx="12" ry="12" x="770" y="451" width="250" height="64"/>
+            <rect rx="12" ry="12" x="770" y="535" width="250" height="64"/>
+            <rect rx="12" ry="12" x="770" y="725" width="250" height="64"/>
+        </g>
+
+        <g fill="none" stroke="#000" stroke-width="8" 
+               stroke-linecap="round">
+            <path d="M11.584,196.108h244"/>
+            <path d="M200,196c45,0 10,86 60,86Ll645,0"/>
+            <path d="M400.384,154.459h771.805"/>
+        </g>
+
+        <g font-size="22" font-family="Arial" font-weight="Bold" text-anchor="middle">
+	<g fill="#000">
+            <text transform="translate(895,334)">pdf-transcoder.jar <tspan x="0" dy="29">(Apache FOP)</tspan></text>
+             <text transform="translate(895,478)">js.jar <tspan x="0" dy="29">(Mozilla Rhino)</tspan></text>
+            <text transform="translate(895,562)">xerces.jar <tspan x="0" dy="29">(Apache Xerces)</tspan></text>
+            <text transform="translate(895,752)">xml-apis.jar<tspan x="0" dy="29">(org.w3c)</tspan></text>
+        </g>
+
+	<g fill="#000">
+            <text transform="translate(365 243)">batik-extension.jar <tspan x="0" dy="29">(batik.extensions)</tspan></text>
+            <text transform="translate(573 243)">batik-swing.jar <tspan x="0" dy="29">(batik.swing)</tspan></text>
+            <text transform="translate(790 243)">batik-transcoder.jar <tspan x="0" dy="29">(batik.transcoder)</tspan></text>
+
+            <text transform="translate(428 378)">batik-bridge.jar (batik.bridge)</text>
+
+            <text transform="translate(473 695)">batik-util.jar (batik.util, batik.i18n)</text>
+            <text transform="translate(473 737)">batik-gui-util.jar (batik.util.gui)</text>
+            <text transform="translate(473 779)">batik-ext.jar (org.w3c.dom.svg)</text>
+
+            <text transform="translate(603 560)">batik-dom.jar <tspan x="0" dy="29">(batik.dom)</tspan></text>
+
+            <text transform="translate(168 560)">batik-gvt.jar <tspan x="0" dy="29">(batik.gvt)</tspan></text>
+            <text transform="translate(348 560)">batik-parser.jar <tspan x="0" dy="29">(batik.parser)</tspan></text>
+
+            <text transform="translate(280 623)">batik-awt-util.jar <tspan x="0" dy="29">(batik.ext)</tspan></text>
+            <text transform="translate(525 623)">batik-xml.jar <tspan x="0" dy="29">(batik.xml)</tspan></text>
+            <text transform="translate(685 623)">batik-css.jar <tspan x="0" dy="29">(batik.css)</tspan></text>
+
+
+            <text transform="translate(485 496)">batik-svg-dom.jar <tspan x="0" dy="29">(batik.dom.svg)</tspan></text>
+            <text transform="translate(485 430)">batik-script.jar <tspan x="0" dy="29">(batik.script)</tspan></text>
+
+            <text transform="translate(140 364)">batik-svggen.jar <tspan x="0" dy="29">(batik.svggen)</tspan></text>
+        </g>
+
+	<g fill="#ADF">
+            <text transform="translate(107 297)">batik-ttf2svg.jar <tspan x="0" y="29">(batik.apps.ttf2svg)</tspan></text>
+            <text transform="translate(133 158)">batik-slideshow.jar <tspan x="0" dy="29">(batik.apps.slideshow)</tspan></text>
+            <text transform="translate(535 117)">batik-squiggle.jar<tspan x="0" dy="29">(batik.apps.svgbrowser)</tspan></text>
+            <text transform="translate(465 53)">batik-squiggle-ext.jar <tspan x="0" dy="29">(batik.apps.svgbrowser)</tspan></text>
+            <text transform="translate(815 117)">batik-rasterizer.jar <tspan x="0" dy="29">(batik.apps.rasterizer)</tspan></text>
+            <text transform="translate(815 53)">batik-rasterizer-ext.jar <tspan x="0" dy="29">(batik.apps.rasterizer)</tspan></text>
+
+            <text transform="translate(1066 114)">batik-svgpp.jar <tspan x="0" dy="29">(batik.apps.svgpp)</tspan></text>
+        </g>
+        </g>
+    </g>
+</svg>

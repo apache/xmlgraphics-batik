@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+
+<!-- ========================================================================= -->
+<!-- author cam@mcc.id.au                                                      -->
+<!-- version $Id$ -->
+<!-- ========================================================================= -->
+
+<!DOCTYPE document PUBLIC "-//APACHE//DTD Documentation V2.0//EN" "http://forrest.apache.org/dtd/document-v20.dtd">
+<document>
+  <header>
+    <title>About the tools</title>
+  </header>
+
+  <body>
+    <p>
+      The Batik distribution contains several pre-packaged demos:
+    </p>
+    <dl>
+      <dt>Squiggle SVG Browser</dt>
+      <dd>
+        <p>
+          The <a href="site:browser">Squiggle SVG Browser</a> lets you view SVG
+          file, zoom, pan and rotate in the content and select text items in the
+          image and much more.
+        </p>
+      </dd>
+      <dt>SVG Rasterizer</dt>
+      <dd>
+        <p>
+          The <a href="site:rasterizer">SVG Rasterizer</a> is a utility that can
+          convert SVG files to a raster format. The tool can convert individual
+          files or sets of files, making it easy to convert entire directories
+          of SVG files. The supported formats are JPEG,
+          <abbr title="Portable Network Graphics">PNG</abbr>, and
+          <abbr title="Tagged Image File Format">TIFF</abbr>, however the design
+          allows new formats to be added easily.  In addition (and despite the
+          name) the rasterizer tool can also convert SVG files into
+          <abbr title="Portable Document Format">PDF</abbr>.
+        </p>
+      </dd>
+      <dt>SVG Font Converter</dt>
+      <dd>
+        <p>
+          The <a href="site:font-converter">SVG Font Converter</a> lets
+          developers convert character ranges from the True Type Font format to
+          the SVG Font format to embed in SVG documents. This allows SVG
+          document to be fully self-contained and have their rendered
+          identically on all systems.
+        </p>
+      </dd>
+      <dt>SVG Pretty Printer</dt>
+      <dd>
+        <p>
+          The <a href="site:pretty-printer">SVG Pretty Printer</a> lets
+          developers “pretty-up” their SVG files and get their tabulations and
+          other cosmetic parameters in order. It can also be used to modify the
+          DOCTYPE declaration on SVG files.
+        </p>
+      </dd>
+    </dl>
+  </body>
+</document>

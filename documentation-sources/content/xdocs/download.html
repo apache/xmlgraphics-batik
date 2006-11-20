@@ -1,0 +1,156 @@
+<?xml version="1.0"?>
+
+<!--
+
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+ $Id$
+-->
+
+<!--
+  This file was adapted from Forrest's download page.
+
+  Note: To understand how this template is used, see the documentation
+  at http://forrest.apache.org/howto/howto-asf-mirror.html
+-->
+
+<html>
+  <head>
+    <title>Download Batik</title>
+  </head>
+  <body>
+    <h1>Download Batik</h1>
+    <p>
+      There are several ways you can obtain Batik's binary or sources:
+    </p>
+    <ul>
+      <li><a href="#distributon">Download a distribution</a></li>
+      <li><a href="#snapshot">Download a snapshot</a></li>
+      <li><a href="#svn">Get the source from the Subversion repository</a></li>
+      <li><a href="#nightly">Download an unofficial nightly build</a></li>
+    </ul>
+
+    <h2>Download a distribution</h2>
+    <p>
+      Every Batik release provides three distributions: a binary distribution
+      (named <tt>batik-<em>version</em>.zip</tt>), a source distribution (named
+      <tt>batik-src-<em>version</em>,zip</tt>) and a documentation distribution
+      (named <tt>batik-docs-<em>version</em>.zip</tt>).  These distributions
+      are provided as ZIP files on the Apache mirrors.  Note that it is
+      good practice to <a href="install.html#verify">verify the integrity</a>
+      of the distribution files.
+    </p>
+    <p>
+      After downloading the distribution, consult the
+      <a href="install.html">installation notes</a> for details on how to
+      install.
+    </p>
+    <h3>
+      <a name="closest"></a>Current official release (closest mirror site
+        selected automatically)
+    </h3>
+    <p>
+      You are currently using <b>[preferred]</b>. If you encounter a
+      problem with this mirror, then please select another.  If all
+      mirrors are failing, there are backup mirrors at the end of the list.
+      See <a href="http://www.apache.org/mirrors/">status</a> of mirrors.
+    </p>
+    <form action="[location]" method="get" id="SelectMirror">
+      Other mirrors: <select name="Preferred">
+      <!--[if-any http] [for http]-->
+      <option value="[http]">[http]</option>
+      <!--[end] [end]-->
+      <!--[if-any ftp] [for ftp]-->
+      <option value="[ftp]">[ftp]</option>
+      <!--[end] [end]-->
+      <!--[if-any backup] [for backup]-->
+      <option value="[backup]">[backup] (backup)</option>
+      <!--[end] [end]-->
+      </select>
+      <input type="submit" value="Change" />
+    </form>
+    <p>
+      The current release is Apache Batik 1.6 (see the
+      <a href="[preferred]/xml/batik/README.txt">release change log</a>).
+    </p>
+    <dl>
+      <dt>Binary distribution</dt>
+      <dd>
+        <a href="[preferred]/xml/batik/batik-1.6.zip">batik-1.6.zip</a>
+        [<a href="http://www.apache.org/dist/xml/batik/batik-1.6.zip.asc">PGP</a>]
+        [<a href="http://www.apache.org/dist/xml/batik/batik-1.6.zip.md5">MD5</a>]
+      </dd>
+    </dl>
+    <dl>
+      <dt>Source distribution</dt>
+      <dd>
+        <a href="[preferred]/xml/batik/batik-src-1.6.zip">batik-src-1.6.zip</a>
+        [<a href="http://www.apache.org/dist/xml/batik/batik-src-1.6.zip.asc">PGP</a>]
+        [<a href="http://www.apache.org/dist/xml/batik/batik-src-1.6.zip.md5">MD5</a>]
+      </dd>
+    </dl>
+    <dl>
+      <dt>Documentation distribution</dt>
+      <dd>
+        <a href="[preferred]/xml/batik/batik-docs-1.6.zip">batik-docs-1.6.zip</a>
+        [<a href="http://www.apache.org/dist/xml/batik/batik-docs-1.6.zip.asc">PGP</a>]
+        [<a href="http://www.apache.org/dist/xml/batik/batik-docs-1.6.zip.md5">MD5</a>]
+      </dd>
+    </dl>
+    <p>
+      Older releases are available from the
+      <a href="http://archive.apache.org/dist/xml/batik">Apache archives</a>.
+      However, we strongly recommend using the current release of Batik.
+    </p>
+
+    <h2><a name="snapshot"></a>Current development snapshot</h2>
+    <p>
+      Nightly snapshots of the source tree are available from the
+      <a href="http://svn.apache.org/builds/xml-batik">Apache build server</a>.
+      These snapshots represent the current state of development and may
+      or may not be as stable as releases.  There are two distributions
+      provided: a complete copy of the Subversion repository trunk
+      (named <tt>batik-svn-<em>date</em>.zip</tt>), including Batik's
+      <a href="dev/test.html">regression testing utility</a> and reference
+      images; and a snapshot of the aforementioned source code without
+      any of the testing facilities (named
+      <tt>batik-src-<em>date</em>.zip</tt>).
+    </p>
+
+    <h2><a name="svn"></a>Subversion repository</h2>
+    <p>
+      To fetch the latest Subversion repository trunk, just run the following
+      command:
+    </p>
+    <pre class="code">svn checkout http://svn.apache.org/repos/asf/xmlgraphics/batik/trunk/</pre>
+    <p>
+      You can also browse the Subversion repository using ViewCVS at
+      <a href="http://svn.apache.org/viewcvs.cgi/xmlgraphics/batik/">http://svn.apache.org/viewcvs.cgi/xmlgraphics/batik/</a>.
+    </p>
+
+    <h2><a name="nightly"></a>Unofficial nightly build</h2>
+    <p>
+      Unofficial nightly builds of the latest Subversion repository sources are
+      available for download from
+      <a href="http://arc.mcc.id.au/batik-nightly/">http://arc.mcc.id.au/batik-nightly/</a>.
+      On this page you can also find a
+      <a href="http://java.sun.com/products/javawebstart/">Java Web Start</a>able
+      version of <a href="tools/browser.html">Squiggle, the SVG browser</a>,
+      from the latest nightly build.  Note that the builds on this page are
+      not supported.
+    </p>
+  </body>
+</html>
