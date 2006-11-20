@@ -38,38 +38,38 @@
         <g id="GridAndLegend" style="stroke:none;">
             <g stroke="black">
 
-        <!-- "floor" and "wall" -->
-            <path fill="lightgray" stroke="darkgray" d="M 27,240 l   15,-15 v -224 l -15,15" />
-            <path fill="lightgray" stroke="darkgray" d="M 41,225 v -224     h  316 v 224" />
-            <path fill="darkgray" stroke="none"      d="M 27,240 l   15,-15 h  316 l -15,15" />
+                <!-- "floor" and "wall" -->
+                <path fill="lightgray" stroke="darkgray" d="M 27,240 l   15,-15 v -224 l -15,15" />
+                <path fill="lightgray" stroke="darkgray" d="M 41,225 v -224     h  316 v 224" />
+                <path fill="darkgray" stroke="none"      d="M 27,240 l   15,-15 h  316 l -15,15" />
 
-        <!-- axis lines -->
-            <path d="M 27,240 h  316"/>
-            <path d="M 27,240 v -224"/>
+                <!-- axis lines -->
+                <path d="M 27,240 h  316"/>
+                <path d="M 27,240 v -224"/>
 
-        <!-- value axis major gridlines -->
-            <g style="fill:none;">
-                <path d="M 27,202 l 15,-15 h 316" />
-                <path d="M 27,165 l 15,-15 h 316" />
-                <path d="M 27,127 l 15,-15 h 316" />
-                <path d="M 27, 90 l 15,-15 h 316" />
-                <path d="M 27, 53 l 15,-15 h 316" />
-            </g>
+                <!-- value axis major gridlines -->
+                <g style="fill:none;">
+                    <path d="M 27,202 l 15,-15 h 316" />
+                    <path d="M 27,165 l 15,-15 h 316" />
+                    <path d="M 27,127 l 15,-15 h 316" />
+                    <path d="M 27, 90 l 15,-15 h 316" />
+                    <path d="M 27, 53 l 15,-15 h 316" />
+                </g>
 
-        <!-- category axis major ticks -->
-            <path d="M  27,245 v -5"/>
-            <path d="M 106,245 v -5"/>
-            <path d="M 185,245 v -5"/>
-            <path d="M 264,245 v -5"/>
+                <!-- category axis major ticks -->
+                <path d="M  27,245 v -5"/>
+                <path d="M 106,245 v -5"/>
+                <path d="M 185,245 v -5"/>
+                <path d="M 264,245 v -5"/>
 
-        <!-- value axis minor ticks -->
-            <path d="M 22,240 h 5"/>
-            <path d="M 22,202 h 5"/>
-            <path d="M 22,165 h 5"/>
-            <path d="M 22,127 h 5"/>
-            <path d="M 22, 90 h 5"/>
-            <path d="M 22, 53 h 5"/>
-            <path d="M 22, 15 h 5"/>
+                <!-- value axis minor ticks -->
+                <path d="M 22,240 h 5"/>
+                <path d="M 22,202 h 5"/>
+                <path d="M 22,165 h 5"/>
+                <path d="M 22,127 h 5"/>
+                <path d="M 22, 90 h 5"/>
+                <path d="M 22, 53 h 5"/>
+                <path d="M 22, 15 h 5"/>
             </g>
 
             <text transform="matrix(1 0 0 1 54  256)">Shoe</text>
