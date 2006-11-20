@@ -280,7 +280,7 @@ To display the available targets type:
     </zip>
   </target>
 
-  <target name="src-zip" depends="init">
+  <target name="src-zip" depends="init, record-svn-revision">
     <zip zipfile="${project}-src-${version}.zip">
       <zipfileset dir="." prefix="${project}-${version}">
         <include name="LICENSE"/>
@@ -291,6 +291,7 @@ To display the available targets type:
         <include name="build.bat"/>
         <include name="build.sh"/>
         <include name="build.xml"/>
+        <include name="svn-revision"/>
         <include name="contrib/**"/>
         <include name="lib/**"/>
         <include name="resources/**"/>
@@ -303,6 +304,7 @@ To display the available targets type:
         <include name="xdocs/**"/>
       </zipfileset>
     </zip>
+    <delete file="svn-revision" failonerror="false"/>
   </target>
 
   <target name="dist-tgz" depends="build-tgz"/>
@@ -335,7 +337,7 @@ To display the available targets type:
     </tar>
   </target>
 
-  <target name="src-tgz" depends="init">
+  <target name="src-tgz" depends="init, record-svn-revision">
     <tar tarfile="${project}-src-${version}.tar.gz" compression="gzip">
       <tarfileset dir="." prefix="${project}-${version}">
         <include name="LICENSE"/>
@@ -346,6 +348,7 @@ To display the available targets type:
         <include name="build.bat"/>
         <include name="build.sh"/>
         <include name="build.xml"/>
+        <include name="svn-revision"/>
         <include name="contrib/**"/>
         <include name="lib/**"/>
         <include name="resources/**"/>
@@ -358,6 +361,7 @@ To display the available targets type:
         <include name="xdocs/**"/>
       </tarfileset>
     </tar>
+    <delete file="svn-revision" failonerror="false"/>
   </target>
 
 
@@ -473,8 +477,19 @@ To display the available targets type:
     </jar>
   </target>
 
-  <!-- Runs 'svn status' to get the revision of the current working copy. -->
-  <target name="update-version-init">
+
+  <target name="record-svn-revision" depends="determine-svn-revision"
+          if="svn-revision-determined">
+    <echo message="${svn-revision-number}" file="svn-revision"/>
+  </target>
+
+  <target name="determine-svn-revision"
+          depends="determine-svn-revision-svn-info,
+                   determine-svn-revision-transform,
+                   determine-svn-revision-from-file,
+                   determine-svn-revision-set"/>
+
+  <target name="determine-svn-revision-svn-info">
     <dirset id="dirs" dir="${src}/${package-prefix}">
       <include name="**"/>
     </dirset>
@@ -488,44 +503,42 @@ To display the available targets type:
     </condition>
   </target>
 
-  <!-- Transforms the output of 'svn status' into Version.java.new. -->
-  <target name="update-version-transform" if="should-transform-svn-info">
-    <java fork="yes" classname="org.apache.xalan.xslt.Process">
+  <target name="determine-svn-revision-transform"
+          if="should-transform-svn-info">
+    <java fork="yes" classname="org.apache.xalan.xslt.Process"
+          outputproperty="svn-revision-number"
+          errorproperty="svn-revision-transform-error"
+          resultproperty="svn-revision-transform-result">
       <classpath>
         <path refid="libs-build-classpath"/>
       </classpath>
-      <arg line="-in svn-info.xml -xsl ${src}/${package-prefix}/Version.java.xsl -out ${src}/${package-prefix}/Version.java.new"/>
+      <arg line="-in svn-info.xml -xsl ${lib}/build/svn-info-revision.xsl"/>
     </java>
-    <condition property="should-update-version-java">
+    <condition property="svn-revision-determined">
+      <equals arg1="${svn-revision-transform-result}" arg2="0"/>
+    </condition>
+  </target>
+
+  <target name="determine-svn-revision-from-file"
+          unless="svn-revision-determined">
+    <loadfile property="svn-revision-number" srcFile="svn-revision"
+              failonerror="false"/>
+    <condition property="svn-revision-determined">
       <not>
-        <filesmatch file1="${src}/${package-prefix}/Version.java"
-                    file2="${src}/${package-prefix}/Version.java.new"/>
+        <equals arg1="${svn-revision-suffix-string}" arg2=""/>
       </not>
     </condition>
   </target>
 
-  <!-- Copies the generated Version.java.new to Version.java if the file
-       will actually change. -->
-  <target name="update-version-write"
-          if="should-update-version-java">
-    <copy file="${src}/${package-prefix}/Version.java.new"
-          tofile="${src}/${package-prefix}/Version.java"/>
+  <target name="determine-svn-revision-set"
+          if="svn-revision-determined">
+    <property name="svn-revision-suffix" value="+r${svn-revision-number}"/>
+    <delete file="svn-info.xml" failonerror="false"/>
   </target>
 
-  <!-- Removes the generated Version.java.new. -->
-  <target name="update-version-clean">
-    <delete file="${src}/${package-prefix}/Version.java.new"/>
-    <delete file="svn-info.xml"/>
-  </target>
-
-  <!-- Writes sources/org/apache/batik/Version.java with the working copy's
-       revision number filled in. -->
-  <target name="update-version"
-          depends="update-version-init, update-version-transform,
-                   update-version-write, update-version-clean"/>
 
   <target name       ="compile-prepare"
-          depends    ="init, update-version">
+          depends    ="init">
     <mkdir dir="${dest}"/>
     <echo message="debug ${debug}, optimize ${optimize}, deprecation ${deprecation}"/>
   </target>
@@ -547,10 +560,9 @@ To display the available targets type:
   </target>
 
   <target name="clean-compile"
-          depends="init, update-version-clean"
+          depends="init"
           description="Cleans the files generated by compile">
     <delete dir="${dest}"/>
-    <delete file="${src}/${package-prefix}/Version.java"/>
   </target>
 
   <target name="clean-apache"
@@ -570,7 +582,7 @@ To display the available targets type:
 
 
   <!-- Jars ............................................................... -->
-  <target name="prepare-build">
+  <target name="prepare-build" depends="determine-svn-revision">
     <mkdir dir="${build}"/>
     <mkdir dir="${build}/docs"/>
     <mkdir dir="${build}/lib"/>
@@ -612,8 +624,15 @@ To display the available targets type:
 
 
   <!-- All batik in a single jar (dependencies: none) -->
-  <target name="all-jar" depends="compile, prepare-build" description="Creates a combined JAR file of the Batik libraries in ${build}/lib">
+  <target name="all-jar" depends="compile, prepare-build"
+          description="Creates a combined JAR file of the Batik libraries in ${build}/lib">
     <jar jarfile="${build}/lib/${project}-all.jar">
+      <manifest>
+        <attribute name="Implementation-Title" value="Batik all-in-one JAR"/>
+        <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}${svn-revision-suffix}"/>
+        <attribute name="Implementation-Vendor" value="Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
+        <attribute name="Implementation-URL" value="http://xmlgraphics.apache.org/batik/"/>
+      </manifest>
       <fileset dir="${dest}" excludes="**/.svn/">
         <include name="**"/>
       </fileset>
@@ -651,8 +670,9 @@ To display the available targets type:
          manifest="${src}/${project}-bean.mf">
       <manifest>
         <attribute name="Implementation-Title" value="Batik Java Bean"/>
-        <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}"/>
+        <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}${svn-revision-suffix}"/>
         <attribute name="Implementation-Vendor" value="Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
+        <attribute name="Implementation-URL" value="http://xmlgraphics.apache.org/batik/"/>
       </manifest>
       <fileset dir="${dest}">
         <include name="org/w3c/**"/>
@@ -698,6 +718,12 @@ To display the available targets type:
   <!-- Util, i18n (dependencies: none) -->
   <target name="util-jar" depends="compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-util.jar">
+      <manifest>
+        <attribute name="Implementation-Title" value="Batik utility jar"/>
+        <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}${svn-revision-suffix}"/>
+        <attribute name="Implementation-Vendor" value="Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
+        <attribute name="Implementation-URL" value="http://xmlgraphics.apache.org/batik/"/>
+      </manifest>
       <fileset dir="${dest}">
         <include name="${package-prefix}/i18n/*.class"/>
         <include name="${package-prefix}/util/*.class"/>
@@ -981,6 +1007,7 @@ To display the available targets type:
         <attribute name="Implementation-Title" value="Batik XML Pretty Printer"/>
         <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}"/>
         <attribute name="Implementation-Vendor" value="Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
+        <attribute name="Implementation-URL" value="http://xmlgraphics.apache.org/batik/"/>
       </manifest>
       <fileset dir="${dest}">
         <include name="${package-prefix}/apps/svgpp/**/*.class"/>
@@ -997,8 +1024,9 @@ To display the available targets type:
          jarfile="${build}/${project}-slideshow.jar">
       <manifest>
         <attribute name="Implementation-Title" value="Batik SVG Slide Show Tool"/>
-        <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}"/>
+        <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}${svn-revision-suffix}"/>
         <attribute name="Implementation-Vendor" value="Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
+        <attribute name="Implementation-URL" value="http://xmlgraphics.apache.org/batik/"/>
       </manifest>
       <fileset dir="${dest}">
         <include name="${package-prefix}/apps/slideshow/**/*.class"/>
@@ -1020,8 +1048,9 @@ To display the available targets type:
          jarfile="${build}/${project}-squiggle.jar">
       <manifest>
         <attribute name="Implementation-Title" value="Batik Squiggle Viewer"/>
-        <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}"/>
+        <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}${svn-revision-suffix}"/>
         <attribute name="Implementation-Vendor" value="Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
+        <attribute name="Implementation-URL" value="http://xmlgraphics.apache.org/batik/"/>
       </manifest>
       <fileset dir="${dest}">
         <include name="${package-prefix}/apps/svgbrowser/**/*.class"/>
@@ -1045,8 +1074,9 @@ To display the available targets type:
           jarfile="${build}/extensions/${project}-squiggle-ext.jar">
       <manifest>
         <attribute name="Implementation-Title" value="Batik Squiggle Viewer With Extensions"/>
-        <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}"/>
+        <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}${svn-revision-suffix}"/>
         <attribute name="Implementation-Vendor" value="Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
+        <attribute name="Implementation-URL" value="http://xmlgraphics.apache.org/batik/"/>
       </manifest>
         <fileset dir="${resources}" excludes="**/.svn/">
             <include name="META-INF/services/**"/>
@@ -1067,8 +1097,9 @@ To display the available targets type:
          jarfile="${build}/${project}-rasterizer.jar">
       <manifest>
         <attribute name="Implementation-Title" value="Batik SVG Rasterizer"/>
-        <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}"/>
+        <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}${svn-revision-suffix}"/>
         <attribute name="Implementation-Vendor" value="Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
+        <attribute name="Implementation-URL" value="http://xmlgraphics.apache.org/batik/"/>
       </manifest>
       <fileset dir="${dest}">
         <include name="${package-prefix}/apps/rasterizer/**/*.class"/>
@@ -1089,8 +1120,9 @@ To display the available targets type:
           jarfile="${build}/extensions/${project}-rasterizer-ext.jar">
       <manifest>
         <attribute name="Implementation-Title" value="Batik SVG Rasterizer With Extensions"/>
-        <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}"/>
+        <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}${svn-revision-suffix}"/>
         <attribute name="Implementation-Vendor" value="Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
+        <attribute name="Implementation-URL" value="http://xmlgraphics.apache.org/batik/"/>
       </manifest>
         <fileset dir="${resources}" excludes="**/.svn/">
             <include name="META-INF/services/**"/>
@@ -1104,8 +1136,9 @@ To display the available targets type:
          jarfile="${build}/${project}-ttf2svg.jar">
       <manifest>
         <attribute name="Implementation-Title" value="Batik TrueType to SVG Font Converter"/>
-        <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}"/>
+        <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}${svn-revision-suffix}"/>
         <attribute name="Implementation-Vendor" value="Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
+        <attribute name="Implementation-URL" value="http://xmlgraphics.apache.org/batik/"/>
       </manifest>
       <fileset dir="${dest}">
         <include name="${package-prefix}/apps/ttf2svg/**/*.class"/>
@@ -1115,12 +1148,12 @@ To display the available targets type:
 
   <!-- batik.jar (dependencies: all) -->
   <target name="root-jar" depends="compile, prepare-build">
-    <jar manifest="${src}/${project}.mf"
-         jarfile="${build}/${project}.jar">
+    <jar manifest="${src}/${project}.mf" jarfile="${build}/${project}.jar">
       <manifest>
-        <attribute name="Implementation-Title" value="Batik All Jar"/>
-        <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}"/>
+        <attribute name="Implementation-Title" value="Batik"/>
+        <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}${svn-revision-suffix}"/>
         <attribute name="Implementation-Vendor" value="Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
+        <attribute name="Implementation-URL" value="http://xmlgraphics.apache.org/batik/"/>
       </manifest>
     </jar>
   </target>
