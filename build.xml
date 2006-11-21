@@ -261,13 +261,14 @@ To display the available targets type:
     <delete dir="${build}/docs/javadoc"/>
   </target>
 
-  <target name="bin-zip" depends="jars">
+  <target name="bin-zip" depends="jars, htmldoc">
     <zip zipfile="${project}-${version}.zip" includes="${build}/**">
       <zipfileset dir="." prefix="${project}-${version}">
         <include name="LICENSE"/>
         <include name="NOTICE"/>
         <include name="README"/>
       </zipfileset>
+      <zipfileset dir="${build}" includes="**" prefix="${project}-${version}"/>
       <zipfileset dir="lib" prefix="${project}-${version}/lib">
         <include name="LICENSE.*.txt"/>
         <include name="README.*.txt"/>
@@ -317,14 +318,14 @@ To display the available targets type:
     <delete dir="${build}/docs/javadoc"/>
   </target>
 
-  <target name="bin-tgz" depends="jars">
-    <tar tarfile="${project}-${version}.tar.gz" compression="gzip"
-         includes="${build}/**">
+  <target name="bin-tgz" depends="jars, htmldoc">
+    <tar tarfile="${project}-${version}.tar.gz" compression="gzip">
       <tarfileset dir="." prefix="${project}-${version}">
         <include name="LICENSE"/>
         <include name="NOTICE"/>
         <include name="README"/>
       </tarfileset>
+      <tarfileset dir="${build}" includes="**" prefix="${project}-${version}"/>
       <tarfileset dir="lib" prefix="${project}-${version}/lib">
         <include name="LICENSE.*.txt"/>
         <include name="README.*.txt"/>
