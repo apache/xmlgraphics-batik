@@ -30,7 +30,7 @@ public class DefaultLengthListHandler
     /**
      * The only instance of this class.
      */
-    public final static LengthListHandler INSTANCE
+    public static final LengthListHandler INSTANCE
         = new DefaultLengthListHandler();
 
     /**

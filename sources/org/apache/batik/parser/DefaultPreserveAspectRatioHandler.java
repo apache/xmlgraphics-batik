@@ -29,7 +29,7 @@ public class DefaultPreserveAspectRatioHandler
     /**
      * The only instance of this class.
      */
-    public final static PreserveAspectRatioHandler INSTANCE
+    public static final PreserveAspectRatioHandler INSTANCE
         = new DefaultPreserveAspectRatioHandler();
 
     /**
@@ -44,7 +44,7 @@ public class DefaultPreserveAspectRatioHandler
      */
     public void startPreserveAspectRatio() throws ParseException {
     }
-    
+
     /**
      * Implements {@link PreserveAspectRatioHandler#none()}.
      */

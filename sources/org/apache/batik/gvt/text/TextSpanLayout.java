@@ -43,10 +43,10 @@ import org.apache.batik.gvt.font.GVTLineMetrics;
  */
 public interface TextSpanLayout {
 
-    public int DECORATION_UNDERLINE = 0x1;
-    public int DECORATION_STRIKETHROUGH = 0x2;
-    public int DECORATION_OVERLINE = 0x4;
-    public int DECORATION_ALL = DECORATION_UNDERLINE |
+    int DECORATION_UNDERLINE = 0x1;
+    int DECORATION_STRIKETHROUGH = 0x2;
+    int DECORATION_OVERLINE = 0x4;
+    int DECORATION_ALL = DECORATION_UNDERLINE |
                                 DECORATION_OVERLINE |
                                 DECORATION_STRIKETHROUGH;
 
@@ -55,7 +55,7 @@ public interface TextSpanLayout {
      * specified Graphics2D and rendering context.
      * @param g2d the Graphics2D to use
      */
-    public void draw(Graphics2D g2d);
+    void draw(Graphics2D g2d);
 
     /**
      * Returns the outline of the specified decorations on the glyphs,
@@ -65,26 +65,26 @@ public interface TextSpanLayout {
      *     values together:
      * e.g. <tt>DECORATION_UNDERLINE | DECORATION_STRIKETHROUGH</tt>
      */
-    public Shape getDecorationOutline(int decorationType);
+    Shape getDecorationOutline(int decorationType);
 
     /**
      * Returns the rectangular bounds of the completed glyph layout.
      * This includes stroking information, this does not include
      * deocrations.
      */
-    public Rectangle2D getBounds2D();
+    Rectangle2D getBounds2D();
 
     /**
      * Returns the bounds of the geometry (this is always the bounds
      * of the outline).
      */
-    public Rectangle2D getGeometricBounds();
+    Rectangle2D getGeometricBounds();
 
     /**
      * Returns the outline of the completed glyph layout, transformed
      * by an AffineTransform.
      */
-    public Shape getOutline();
+    Shape getOutline();
 
     /**
      * Returns the current text position at the completion
@@ -92,31 +92,31 @@ public interface TextSpanLayout {
      * (This is the position that should be used for positioning
      * adjacent layouts.)
      */
-    public Point2D getAdvance2D();
+    Point2D getAdvance2D();
 
     /**
      * Returns the advance between each glyph in text progression direction.
      */
-    public float [] getGlyphAdvances();
+    float [] getGlyphAdvances();
 
     /**
      * Returns the Metrics for a particular glyph.
      */
-    public GVTGlyphMetrics getGlyphMetrics(int glyphIndex);
+    GVTGlyphMetrics getGlyphMetrics(int glyphIndex);
 
     /**
      * Returns the Line metrics for this text span.
      */
-    public GVTLineMetrics getLineMetrics();
+    GVTLineMetrics getLineMetrics();
 
-    public Point2D getTextPathAdvance();
+    Point2D getTextPathAdvance();
 
     /**
      * Returns the current text position at the completion beginning
      * of glyph layout, before the application of explicit
      * glyph positioning attributes.
      */
-    public Point2D getOffset();
+    Point2D getOffset();
 
     /**
      * Sets the scaling factor to use for string.  if ajdSpacing is
@@ -127,7 +127,7 @@ public interface TextSpanLayout {
      * @param yScale Scale factor to apply in Y direction.
      * @param adjSpacing True if only spaces should be adjusted.
      */
-    public void setScale(float xScale, float yScale, boolean adjSpacing);
+    void setScale(float xScale, float yScale, boolean adjSpacing);
 
     /**
      * Sets the text position used for the implicit origin
@@ -135,7 +135,7 @@ public interface TextSpanLayout {
      * positioning attributes are present in ACI
      * (e.g. if the aci has multiple X or Y values).
      */
-    public void setOffset(Point2D offset);
+    void setOffset(Point2D offset);
 
     /**
      * Returns a Shape which encloses the currently selected glyphs
@@ -145,7 +145,7 @@ public interface TextSpanLayout {
      * @param endCharIndex the index of the last glyph in the contiguous
      *                     selection.
      */
-     public Shape getHighlightShape(int beginCharIndex, int endCharIndex);
+    Shape getHighlightShape(int beginCharIndex, int endCharIndex);
 
     /**
      * Perform hit testing for coordinate at x, y.
@@ -155,22 +155,22 @@ public interface TextSpanLayout {
      * @param x the x coordinate of the point to be tested.
      * @param y the y coordinate of the point to be tested.
      */
-    public TextHit hitTestChar(float x, float y);
+    TextHit hitTestChar(float x, float y);
 
     /**
      * Returns true if the advance direction of this text is vertical.
      */
-    public boolean isVertical();
+    boolean isVertical();
 
     /**
      * Returns true if this layout in on a text path.
      */
-    public boolean isOnATextPath();
+    boolean isOnATextPath();
 
     /**
      * Returns the number of glyphs in this layout.
      */
-    public int getGlyphCount();
+    int getGlyphCount();
 
     /**
      * Returns the number of chars represented by the glyphs within the
@@ -179,7 +179,7 @@ public interface TextSpanLayout {
      * @param endGlyphIndex The index of the last glyph in the range.
      * @return The number of chars.
      */
-    public int getCharacterCount(int startGlyphIndex, int endGlyphIndex);
+    int getCharacterCount(int startGlyphIndex, int endGlyphIndex);
 
     /**
      * Returns the glyph index of the glyph that has the specified char index.
@@ -189,21 +189,21 @@ public interface TextSpanLayout {
      * @return The index of the matching glyph in this layout's glyph vector,
      *         or -1 if a matching glyph could not be found.
      */
-    public int getGlyphIndex(int charIndex);
+    int getGlyphIndex(int charIndex);
 
     /**
      * Returns true if the text direction in this layout is from left to right.
      */
-    public boolean isLeftToRight();
+    boolean isLeftToRight();
 
     /**
-     * Return true is the character index is represented by glyphs 
+     * Return true is the character index is represented by glyphs
      * in this layout.
      *
      * @param index index of the character in the ACI.
      * @return true if the layout represents that character.
      */
-    public boolean hasCharacterIndex(int index);
+    boolean hasCharacterIndex(int index);
 
 
     /**
@@ -211,7 +211,7 @@ public interface TextSpanLayout {
      *
      * @return glyph vector
      */
-    public GVTGlyphVector getGlyphVector();
+    GVTGlyphVector getGlyphVector();
 
     /**
      * Return the rotation angle applied to the
@@ -220,11 +220,11 @@ public interface TextSpanLayout {
      * @param index index of the character in the ACI
      * @return rotation angle
      */
-    public double getComputedOrientationAngle(int index);
+    double getComputedOrientationAngle(int index);
 
     /**
      * Return true if this text run represents
      * an alt glyph.
      */
-    public boolean isAltGlyph();
+    boolean isAltGlyph();
 }

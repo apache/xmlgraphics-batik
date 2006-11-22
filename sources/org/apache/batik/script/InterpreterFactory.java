@@ -32,14 +32,14 @@ public interface InterpreterFactory {
     /**
      * Returns the mime-type to register this interpereter with.
      */
-    public String getMimeType();
+    String getMimeType();
 
     /**
      * This method should create an instance of <code>Interpreter</code>
      * interface implementation.
-     * 
+     *
      * @param documentURL the url for the document which will be scripted
      * @param svg12 whether the document is an SVG 1.2 document
      */
-    public Interpreter createInterpreter(URL documentURL, boolean svg12);
+    Interpreter createInterpreter(URL documentURL, boolean svg12);
 }

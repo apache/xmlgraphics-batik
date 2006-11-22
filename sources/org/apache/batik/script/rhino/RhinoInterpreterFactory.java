@@ -26,14 +26,14 @@ import org.apache.batik.script.rhino.svg12.SVG12RhinoInterpreter;
 
 /**
  * Allows to create instances of <code>RhinoInterpreter</code> class.
- * 
+ *
  * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>
  * @author <a href="mailto:vhardy@apache.org">Vincent Hardy</a>
  * @version $Id$
  */
 public class RhinoInterpreterFactory implements InterpreterFactory {
 
-    final static String TEXT_ECMASCRIPT = "text/ecmascript";
+    static final String TEXT_ECMASCRIPT = "text/ecmascript";
 
     /**
      * Builds a <code>RhinoInterpreterFactory</code>.
@@ -48,7 +48,7 @@ public class RhinoInterpreterFactory implements InterpreterFactory {
 
     /**
      * Creates an instance of <code>RhinoInterpreter</code> class.
-     * 
+     *
      * @param documentURL the url for the document which will be scripted
      * @param svg12 whether the document is an SVG 1.2 document
      */

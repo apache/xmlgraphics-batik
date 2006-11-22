@@ -73,7 +73,7 @@ class EventTargetWrapper extends NativeJavaObject {
     }
 
     static class HandleEventListener implements EventListener {
-        public final static String HANDLE_EVENT = "handleEvent";
+        public static final String HANDLE_EVENT = "handleEvent";
 
         public Scriptable scriptable;
         public Object[] array = new Object[1];
@@ -284,7 +284,7 @@ class EventTargetWrapper extends NativeJavaObject {
         }
     }
 
-    static abstract class FunctionProxy implements Function {
+    abstract static class FunctionProxy implements Function {
         protected Function delegate;
 
         public FunctionProxy(Function delegate) {

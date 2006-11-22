@@ -31,7 +31,7 @@ public class DefaultTimingSpecifierHandler implements TimingSpecifierHandler {
     /**
      * The default handler.
      */
-    public final static TimingSpecifierHandler INSTANCE
+    public static final TimingSpecifierHandler INSTANCE
         = new DefaultTimingSpecifierHandler();
 
     protected DefaultTimingSpecifierHandler() {

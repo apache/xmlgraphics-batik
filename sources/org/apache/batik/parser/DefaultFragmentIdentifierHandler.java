@@ -31,7 +31,7 @@ public class DefaultFragmentIdentifierHandler
     /**
      * The only instance of this class.
      */
-    public final static FragmentIdentifierHandler INSTANCE
+    public static final FragmentIdentifierHandler INSTANCE
         = new DefaultFragmentIdentifierHandler();
 
     /**

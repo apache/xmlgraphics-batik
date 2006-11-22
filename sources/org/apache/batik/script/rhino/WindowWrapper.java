@@ -42,13 +42,13 @@ import org.w3c.dom.Document;
  */
 public class WindowWrapper extends ImporterTopLevel {
 
-    private final static Object[] EMPTY_ARGUMENTS = new Object[0];
+    private static final Object[] EMPTY_ARGUMENTS = new Object[0];
 
     /**
      * The rhino interpreter.
      */
     protected RhinoInterpreter interpreter;
-    
+
     /**
      * The wrapped window.
      */
@@ -59,7 +59,7 @@ public class WindowWrapper extends ImporterTopLevel {
      */
     public WindowWrapper(Context context) {
         super(context);
-        String[] names = { "setInterval", "setTimeout", "clearInterval", 
+        String[] names = { "setInterval", "setTimeout", "clearInterval",
                            "clearTimeout", "parseXML", "getURL", "postURL",
                            "alert", "confirm", "prompt" };
         this.defineFunctionProperties(names, WindowWrapper.class,
@@ -449,8 +449,8 @@ public class WindowWrapper extends ImporterTopLevel {
                                final String mime,
                                final String content) {
             interpreter.callHandler
-                (function, 
-                 new GetURLDoneArgBuilder(success, mime, 
+                (function,
+                 new GetURLDoneArgBuilder(success, mime,
                                           content, windowWrapper));
         }
     }
@@ -500,17 +500,17 @@ public class WindowWrapper extends ImporterTopLevel {
                                final String content) {
             interpreter.callMethod
                 (object, COMPLETE,
-                 new GetURLDoneArgBuilder(success, mime, 
+                 new GetURLDoneArgBuilder(success, mime,
                                           content, windowWrapper));
         }
     }
 
-    static class GetURLDoneArgBuilder 
+    static class GetURLDoneArgBuilder
         implements RhinoInterpreter.ArgumentsBuilder {
         boolean success;
         String mime, content;
         WindowWrapper windowWrapper;
-        public GetURLDoneArgBuilder(boolean success, 
+        public GetURLDoneArgBuilder(boolean success,
                                     String mime, String content,
                                     WindowWrapper ww) {
             this.success = success;

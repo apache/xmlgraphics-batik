@@ -42,9 +42,9 @@ import org.apache.batik.util.HaltingThread;
  */
 public class MacRenderer implements ImageRenderer {
 
-    final static int COPY_OVERHEAD      = 1000;
-    final static int COPY_LINE_OVERHEAD = 10;
-    final static AffineTransform IDENTITY = new AffineTransform();
+    static final int COPY_OVERHEAD      = 1000;
+    static final int COPY_LINE_OVERHEAD = 10;
+    static final AffineTransform IDENTITY = new AffineTransform();
 
     protected RenderingHints renderingHints;
     protected AffineTransform usr2dev;
@@ -148,10 +148,10 @@ public class MacRenderer implements ImageRenderer {
         this.renderingHints.add(rh);
         damagedAreas = null;
     }
-        
+
     /**
      * @return the RenderingHints which the Renderer is using for its
-     *         rendering 
+     *         rendering
      */
     public RenderingHints getRenderingHints() {
         return renderingHints;
@@ -160,7 +160,7 @@ public class MacRenderer implements ImageRenderer {
     /**
      * Returns true if the Renderer is currently doubleBuffering is
      * rendering requests.  If it is then getOffscreen will only
-     * return completed renderings (or null if nothing is available).  
+     * return completed renderings (or null if nothing is available).
      */
     public boolean isDoubleBuffered(){
         return isDoubleBuffered;
@@ -192,7 +192,7 @@ public class MacRenderer implements ImageRenderer {
      * Note that this change will not be reflected by calls to
      * getOffscreen until either clearOffScreen has completed (when
      * isDoubleBuffered is false) or reapint has completed (when
-     * isDoubleBuffered is true).  
+     * isDoubleBuffered is true).
      *
      */
     public void updateOffScreen(int width, int height) {
@@ -202,7 +202,7 @@ public class MacRenderer implements ImageRenderer {
 
     /**
      * Returns the current offscreen image.
-     * 
+     *
      * The exact symantics of this vary base on the value of
      * isDoubleBuffered.  If isDoubleBuffered is false this will
      * return the image currently being worked on as soon as it is
@@ -227,12 +227,12 @@ public class MacRenderer implements ImageRenderer {
      *
      * When double buffering this call can effectively be skipped,
      * since getOffscreen will only refect the new rendering after
-     * repaint completes.  
+     * repaint completes.
      */
     public void clearOffScreen() {
         // No need to clear in double buffer case people will
         // only see it when it is done...
-        if (isDoubleBuffered) 
+        if (isDoubleBuffered)
             return;
 
         updateWorkingBuffers();
@@ -247,7 +247,7 @@ public class MacRenderer implements ImageRenderer {
         damagedAreas = null;
     }
 
-    public void flush() { 
+    public void flush() {
         // Since we don't cache we don't need to flush
     }
     public void flush(Rectangle r) {
@@ -291,7 +291,7 @@ public class MacRenderer implements ImageRenderer {
 
     /**
      * Repaints the associated GVT tree under the list of <tt>areas</tt>.
-     * 
+     *
      * If double buffered is true and this method completes cleanly it
      * will set the result of the repaint as the image returned by
      * getOffscreen otherwise the old image will still be returned.
@@ -300,7 +300,7 @@ public class MacRenderer implements ImageRenderer {
      * by getOffscreen.
      *
      * @param devRLM regions to be repainted, in the current
-     * user space coordinate system.  
+     * user space coordinate system.
      */
     // long lastFrame = -1;
     public void repaint(RectListManager devRLM) {
@@ -321,21 +321,21 @@ public class MacRenderer implements ImageRenderer {
             dr = new Rectangle(0, 0, offScreenWidth, offScreenHeight);
 
             if ((isDoubleBuffered) &&
-                (currImg != null) && 
+                (currImg != null) &&
                 (damagedAreas  != null)) {
 
-                damagedAreas.subtract(devRLM, COPY_OVERHEAD, 
+                damagedAreas.subtract(devRLM, COPY_OVERHEAD,
                                       COPY_LINE_OVERHEAD);
 
-                damagedAreas.mergeRects(COPY_OVERHEAD, 
-                                        COPY_LINE_OVERHEAD); 
+                damagedAreas.mergeRects(COPY_OVERHEAD,
+                                        COPY_LINE_OVERHEAD);
 
                 Iterator iter = damagedAreas.iterator();
                 g2d.setComposite(AlphaComposite.Src);
                 while (iter.hasNext()) {
                     Rectangle r = (Rectangle)iter.next();
                     if (!dr.intersects(r)) continue;
-                    r = dr.intersection(r); 
+                    r = dr.intersection(r);
                     g2d.setClip     (r.x, r.y, r.width, r.height);
                     g2d.setComposite(AlphaComposite.Clear);
                     g2d.fillRect    (r.x, r.y, r.width, r.height);
@@ -344,7 +344,7 @@ public class MacRenderer implements ImageRenderer {
                 }
             }
 
-                
+
             Iterator iter = devRLM.iterator();
             while (iter.hasNext()) {
                 Rectangle r = (Rectangle)iter.next();

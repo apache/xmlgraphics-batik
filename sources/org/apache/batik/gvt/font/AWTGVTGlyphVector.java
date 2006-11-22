@@ -47,7 +47,7 @@ import org.apache.batik.gvt.text.TextPaintInfo;
  */
 public class AWTGVTGlyphVector implements GVTGlyphVector {
 
-    public static final AttributedCharacterIterator.Attribute PAINT_INFO 
+    public static final AttributedCharacterIterator.Attribute PAINT_INFO
         = GVTAttributedCharacterIterator.TextAttribute.PAINT_INFO;
 
     private GlyphVector awtGlyphVector;
@@ -174,28 +174,28 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
 
         if (tpi == null)
             return null;
-        if (!tpi.visible) 
+        if (!tpi.visible)
             return null;
-            
+
         cacheTPI = new TextPaintInfo(tpi);
         Shape outline = null;
         if (tpi.fillPaint != null) {
             outline = getOutline();
             bounds2D = outline.getBounds2D();
         }
-        
-        // check if we need to include the 
+
+        // check if we need to include the
         // outline of this glyph
         Stroke stroke = tpi.strokeStroke;
         Paint  paint  = tpi.strokePaint;
         if ((stroke != null) && (paint != null)) {
             if (outline == null)
                 outline = getOutline();
-            Rectangle2D strokeBounds 
+            Rectangle2D strokeBounds
                 = stroke.createStrokedShape(outline).getBounds2D();
             if (bounds2D == null)
                 bounds2D = strokeBounds;
-            else 
+            else
                 bounds2D = bounds2D.createUnion(strokeBounds);
         }
         if (bounds2D == null)
@@ -397,9 +397,7 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
             }
         }
 
-        for (int i = 0; i < getNumGlyphs(); i++) {
-            glyphLogicalBounds[i] = tempLogicalBounds[i];
-        }
+        System.arraycopy( tempLogicalBounds, 0, glyphLogicalBounds, 0, getNumGlyphs() );
     }
 
     /**
@@ -407,7 +405,7 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
      * GVTGlyphVector.
      */
     public GVTGlyphMetrics getGlyphMetrics(int glyphIndex) {
-        if (glyphMetrics[glyphIndex] != null) 
+        if (glyphMetrics[glyphIndex] != null)
             return glyphMetrics[glyphIndex];
 
         // -- start glyph cache code --
@@ -612,9 +610,9 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
      * of this GlyphVector.
      */
     public Shape getOutline() {
-        if (outline != null) 
+        if (outline != null)
             return outline;
-        
+
         outline = new GeneralPath();
         for (int i = 0; i < getNumGlyphs(); i++) {
             if (glyphVisible[i]) {
@@ -767,7 +765,7 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
      * Tells the glyph vector whether or not to draw the specified glyph.
      */
     public void setGlyphVisible(int glyphIndex, boolean visible) {
-        if (visible == glyphVisible[glyphIndex]) 
+        if (visible == glyphVisible[glyphIndex])
             return;
         glyphVisible[glyphIndex] = visible;
         outline       = null;
@@ -840,7 +838,7 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
             // Can't stroke with drawGlyphVector.
             useHinting = false;
 
-        if (useHinting && 
+        if (useHinting &&
             (fillPaint != null) && !(fillPaint instanceof Color))
             // The coordinate system is different for drawGlyphVector.
             // So complex paints aren't positioned properly.
@@ -868,7 +866,7 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
             if (((type & typeGTrans) != 0) || ((type & typeGRot)  != 0))
                 useHinting = false;
         }
-            
+
         if (useHinting) {
             for (int i=0; i<numGlyphs; i++) {
                 if (!glyphVisible[i]) {

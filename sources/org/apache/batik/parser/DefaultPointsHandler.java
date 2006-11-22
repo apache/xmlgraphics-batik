@@ -28,7 +28,7 @@ public class DefaultPointsHandler implements PointsHandler {
     /**
      * The only instance of this class.
      */
-    public final static DefaultPointsHandler INSTANCE
+    public static final DefaultPointsHandler INSTANCE
         = new DefaultPointsHandler();
 
     /**

@@ -63,8 +63,8 @@ public abstract class NumberParser extends AbstractParser {
             l: for (;;) {
                 current = reader.read();
                 switch (current) {
-                case '1': case '2': case '3': case '4': 
-                case '5': case '6': case '7': case '8': case '9': 
+                case '1': case '2': case '3': case '4':
+                case '5': case '6': case '7': case '8': case '9':
                     break l;
                 case '.': case 'e': case 'E':
                     break m1;
@@ -74,8 +74,8 @@ public abstract class NumberParser extends AbstractParser {
                 }
             }
 
-        case '1': case '2': case '3': case '4': 
-        case '5': case '6': case '7': case '8': case '9': 
+        case '1': case '2': case '3': case '4':
+        case '5': case '6': case '7': case '8': case '9':
             mantRead = true;
             l: for (;;) {
                 if (mantDig < 9) {
@@ -88,12 +88,12 @@ public abstract class NumberParser extends AbstractParser {
                 switch (current) {
                 default:
                     break l;
-                case '0': case '1': case '2': case '3': case '4': 
-                case '5': case '6': case '7': case '8': case '9': 
-                }                
+                case '0': case '1': case '2': case '3': case '4':
+                case '5': case '6': case '7': case '8': case '9':
+                }
             }
         }
-        
+
         if (current == '.') {
             current = reader.read();
             m2: switch (current) {
@@ -112,8 +112,8 @@ public abstract class NumberParser extends AbstractParser {
                         current = reader.read();
                         expAdj--;
                         switch (current) {
-                        case '1': case '2': case '3': case '4': 
-                        case '5': case '6': case '7': case '8': case '9': 
+                        case '1': case '2': case '3': case '4':
+                        case '5': case '6': case '7': case '8': case '9':
                             break l;
                         default:
                             if (!mantRead) {
@@ -124,8 +124,8 @@ public abstract class NumberParser extends AbstractParser {
                         }
                     }
                 }
-            case '1': case '2': case '3': case '4': 
-            case '5': case '6': case '7': case '8': case '9': 
+            case '1': case '2': case '3': case '4':
+            case '5': case '6': case '7': case '8': case '9':
                 l: for (;;) {
                     if (mantDig < 9) {
                         mantDig++;
@@ -136,8 +136,8 @@ public abstract class NumberParser extends AbstractParser {
                     switch (current) {
                     default:
                         break l;
-                    case '0': case '1': case '2': case '3': case '4': 
-                    case '5': case '6': case '7': case '8': case '9': 
+                    case '0': case '1': case '2': case '3': case '4':
+                    case '5': case '6': case '7': case '8': case '9':
                     }
                 }
             }
@@ -160,20 +160,20 @@ public abstract class NumberParser extends AbstractParser {
                     reportError("character.unexpected",
                                 new Object[] { new Integer(current) });
                     return 0f;
-                case '0': case '1': case '2': case '3': case '4': 
-                case '5': case '6': case '7': case '8': case '9': 
+                case '0': case '1': case '2': case '3': case '4':
+                case '5': case '6': case '7': case '8': case '9':
                 }
-            case '0': case '1': case '2': case '3': case '4': 
-            case '5': case '6': case '7': case '8': case '9': 
+            case '0': case '1': case '2': case '3': case '4':
+            case '5': case '6': case '7': case '8': case '9':
             }
-            
+
             en: switch (current) {
             case '0':
                 l: for (;;) {
                     current = reader.read();
                     switch (current) {
-                    case '1': case '2': case '3': case '4': 
-                    case '5': case '6': case '7': case '8': case '9': 
+                    case '1': case '2': case '3': case '4':
+                    case '5': case '6': case '7': case '8': case '9':
                         break l;
                     default:
                         break en;
@@ -181,8 +181,8 @@ public abstract class NumberParser extends AbstractParser {
                     }
                 }
 
-            case '1': case '2': case '3': case '4': 
-            case '5': case '6': case '7': case '8': case '9': 
+            case '1': case '2': case '3': case '4':
+            case '5': case '6': case '7': case '8': case '9':
                 l: for (;;) {
                     if (expDig < 3) {
                         expDig++;
@@ -192,8 +192,8 @@ public abstract class NumberParser extends AbstractParser {
                     switch (current) {
                     default:
                         break l;
-                    case '0': case '1': case '2': case '3': case '4': 
-                    case '5': case '6': case '7': case '8': case '9': 
+                    case '0': case '1': case '2': case '3': case '4':
+                    case '5': case '6': case '7': case '8': case '9':
                     }
                 }
             }
@@ -228,7 +228,7 @@ public abstract class NumberParser extends AbstractParser {
         if (exp == 0) {
             return mant;
         }
-            
+
         if (mant >= (1 << 26)) {
             mant++;  // round up trailing bits if they will be dropped.
         }
@@ -239,7 +239,7 @@ public abstract class NumberParser extends AbstractParser {
     /**
      * Array of powers of ten.
      */
-    private static final float pow10[] = new float [128];
+    private static final float[] pow10 = new float [128];
     static {
         for (int i = 0; i < pow10.length; i++) {
             pow10[i] = (float)Math.pow(10, i);

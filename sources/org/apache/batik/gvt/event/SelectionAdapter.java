@@ -49,7 +49,5 @@ public class SelectionAdapter implements SelectionListener {
      * @param evt the selection change event
      */
     public void selectionStarted(SelectionEvent evt) { }
-};
-
-
+}
 

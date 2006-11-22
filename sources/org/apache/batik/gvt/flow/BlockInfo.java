@@ -28,10 +28,10 @@ import org.apache.batik.gvt.font.GVTFont;
 import org.apache.batik.gvt.font.GVTLineMetrics;
 
 public class BlockInfo {
-    public final static int ALIGN_START  = 0;
-    public final static int ALIGN_MIDDLE = 1;
-    public final static int ALIGN_END    = 2;
-    public final static int ALIGN_FULL   = 3;
+    public static final int ALIGN_START  = 0;
+    public static final int ALIGN_MIDDLE = 1;
+    public static final int ALIGN_END    = 2;
+    public static final int ALIGN_FULL   = 3;
 
     protected float   top;
     protected float   right;
@@ -53,7 +53,7 @@ public class BlockInfo {
 
     public BlockInfo(float top, float right, float bottom, float left,
                      float indent, int alignment, float lineHeight,
-                     List fontList, Map fontAttrs, 
+                     List fontList, Map fontAttrs,
                      boolean flowRegionBreak) {
         this.top    = top;
         this.right  = right;
@@ -88,7 +88,7 @@ public class BlockInfo {
     public void initLineInfo(FontRenderContext frc) {
         float fontSize = 12;
         Float fsFloat = (Float)fontAttrs.get(TextAttribute.SIZE);
-        if (fsFloat != null) 
+        if (fsFloat != null)
             fontSize = fsFloat.floatValue();
 
         Iterator i = fontList.iterator();

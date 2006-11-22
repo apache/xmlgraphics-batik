@@ -64,7 +64,7 @@ public abstract class AbstractScanner {
      * The previous lexical unit type that was scanned.
      */
     protected int previousType;
-    
+
     /**
      * The start offset of the last lexical unit.
      */
@@ -115,7 +115,7 @@ public abstract class AbstractScanner {
     public AbstractScanner(String s) throws ParseException {
         try {
             reader = new StringNormalizingReader(s);
-            current = nextChar(); 
+            current = nextChar();
         } catch (IOException e) {
             throw new ParseException(e);
         }
@@ -223,10 +223,8 @@ public abstract class AbstractScanner {
         }
 
         if (position == buffer.length) {
-            char[] t = new char[position * 3 / 2];
-            for (int i = 0; i < position; i++) {
-                t[i] = buffer[i];
-            }
+            char[] t = new char[ 1 + position + position / 2];
+            System.arraycopy( buffer, 0, t, 0, position );
             buffer = t;
         }
 

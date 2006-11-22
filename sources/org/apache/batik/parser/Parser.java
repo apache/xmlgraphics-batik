@@ -32,12 +32,12 @@ public interface Parser extends Localizable {
     /**
      * Parses the given reader
      */
-    public void parse(Reader r) throws ParseException;
+    void parse(Reader r) throws ParseException;
 
     /**
      * Parses the given string
      */
-    public void parse(String s) throws ParseException;
+    void parse(String s) throws ParseException;
 
     /**
      * Allows an application to register an error event handler.

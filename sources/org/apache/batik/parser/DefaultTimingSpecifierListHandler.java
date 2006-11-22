@@ -31,7 +31,7 @@ public class DefaultTimingSpecifierListHandler
     /**
      * The default handler.
      */
-    public final static TimingSpecifierListHandler INSTANCE
+    public static final TimingSpecifierListHandler INSTANCE
         = new DefaultTimingSpecifierListHandler();
 
     protected DefaultTimingSpecifierListHandler() {
