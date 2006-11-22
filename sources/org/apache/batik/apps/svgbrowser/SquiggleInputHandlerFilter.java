@@ -41,7 +41,7 @@ public class SquiggleInputHandlerFilter extends FileFilter {
 
     public String getDescription() {
         StringBuffer sb = new StringBuffer();
-        String extensions[] = handler.getHandledExtensions();
+        String[] extensions = handler.getHandledExtensions();
         int n = extensions != null ? extensions.length : 0;
         for (int i=0; i<n; i++) {
             if (i > 0) {
@@ -51,7 +51,7 @@ public class SquiggleInputHandlerFilter extends FileFilter {
         }
 
         if (n > 0) {
-            sb.append(" ");
+            sb.append( ' ' );
         }
 
         sb.append(handler.getDescription());

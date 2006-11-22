@@ -30,8 +30,8 @@ public class InheritValue extends AbstractValue {
     /**
      * The only instance of this class.
      */
-    public final static InheritValue INSTANCE = new InheritValue();
-    
+    public static final InheritValue INSTANCE = new InheritValue();
+
     /**
      * Creates a new InheritValue object.
      */
@@ -39,14 +39,14 @@ public class InheritValue extends AbstractValue {
     }
 
     /**
-     *  A string representation of the current value. 
+     *  A string representation of the current value.
      */
     public String getCssText() {
         return "inherit";
     }
 
     /**
-     * A code defining the type of the value. 
+     * A code defining the type of the value.
      */
     public short getCssValueType() {
         return CSSValue.CSS_INHERIT;

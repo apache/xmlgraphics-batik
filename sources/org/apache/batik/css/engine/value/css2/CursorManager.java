@@ -43,11 +43,11 @@ import org.w3c.dom.css.CSSValue;
  * @version $Id$
  */
 public class CursorManager extends AbstractValueManager {
-    
+
     /**
      * The identifier values.
      */
-    protected final static StringMap values = new StringMap();
+    protected static final StringMap values = new StringMap();
     static {
         values.put(CSSConstants.CSS_AUTO_VALUE,
                    ValueConstants.AUTO_VALUE);
@@ -117,7 +117,7 @@ public class CursorManager extends AbstractValueManager {
     public String getPropertyName() {
         return CSSConstants.CSS_CURSOR_PROPERTY;
     }
-    
+
     /**
      * Implements {@link ValueManager#getDefaultValue()}.
      */

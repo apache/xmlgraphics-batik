@@ -208,8 +208,8 @@ public class BaseScriptingEnvironment {
     }
 
 
-    protected final static String EVENT_NAME = "event";
-    protected final static String ALTERNATE_EVENT_NAME = "evt";
+    protected static final String EVENT_NAME = "event";
+    protected static final String ALTERNATE_EVENT_NAME = "evt";
 
     /**
      * The bridge context.
@@ -419,7 +419,7 @@ public class BaseScriptingEnvironment {
                     desc = Messages.formatMessage
                         (INLINE_SCRIPT_DESCRIPTION,
                          new Object [] {d.getURL(),
-                                        "<"+script.getNodeName()+">", 
+                                        "<"+script.getNodeName()+">",
                                         new Integer(line)});
                     // Inline script.
                     Node n = script.getFirstChild();
@@ -534,7 +534,7 @@ public class BaseScriptingEnvironment {
         final String desc = Messages.formatMessage
             (EVENT_SCRIPT_DESCRIPTION,
              new Object [] {d.getURL(),
-                            SVGConstants.SVG_ONLOAD_ATTRIBUTE, 
+                            SVGConstants.SVG_ONLOAD_ATTRIBUTE,
                             new Integer(line)});
 
         EventListener l = new EventListener() {
@@ -730,22 +730,22 @@ public class BaseScriptingEnvironment {
                            String enc) {
         }
 
-        public void postURL(String uri, String content, 
+        public void postURL(String uri, String content,
                             org.apache.batik.script.Window.URLResponseHandler h) {
             postURL(uri, content, h, "text/plain", null);
         }
 
-        public void postURL(String uri, String content, 
-                            org.apache.batik.script.Window.URLResponseHandler h, 
+        public void postURL(String uri, String content,
+                            org.apache.batik.script.Window.URLResponseHandler h,
                      String mimeType) {
             postURL(uri, content, h, mimeType, null);
         }
 
-        public void postURL(String uri, 
-                            String content, 
-                            org.apache.batik.script.Window.URLResponseHandler h, 
-                            String mimeType, 
-                            String fEnc) { 
+        public void postURL(String uri,
+                            String content,
+                            org.apache.batik.script.Window.URLResponseHandler h,
+                            String mimeType,
+                            String fEnc) {
         }
 
 

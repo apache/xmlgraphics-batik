@@ -584,7 +584,7 @@ public abstract class CSSUtilities
     // 'opacity'
     /////////////////////////////////////////////////////////////////////////
 
-    public final static Composite TRANSPARENT =
+    public static final Composite TRANSPARENT =
         AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0);
 
     /**

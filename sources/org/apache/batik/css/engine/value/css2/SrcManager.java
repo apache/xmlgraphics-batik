@@ -47,7 +47,7 @@ public class SrcManager extends IdentifierManager {
     /**
      * The identifier values.
      */
-    protected final static StringMap values = new StringMap();
+    protected static final StringMap values = new StringMap();
     static {
         values.put(CSSConstants.CSS_NONE_VALUE,
                    ValueConstants.NONE_VALUE);
@@ -92,7 +92,7 @@ public class SrcManager extends IdentifierManager {
     public String getPropertyName() {
         return CSSConstants.CSS_SRC_PROPERTY;
     }
-    
+
     /**
      * Implements {@link
      * org.apache.batik.css.engine.value.ValueManager#getDefaultValue()}.
@@ -107,7 +107,7 @@ public class SrcManager extends IdentifierManager {
      */
     public Value createValue(LexicalUnit lu, CSSEngine engine)
         throws DOMException {
-        
+
         switch (lu.getLexicalUnitType()) {
         case LexicalUnit.SAC_INHERIT:
             return ValueConstants.INHERIT_VALUE;
@@ -131,24 +131,24 @@ public class SrcManager extends IdentifierManager {
                 break;
 
             case LexicalUnit.SAC_URI:
-                String uri = resolveURI(engine.getCSSBaseURI(), 
+                String uri = resolveURI(engine.getCSSBaseURI(),
                                         lu.getStringValue());
-                
+
                 result.append(new URIValue(lu.getStringValue(), uri));
                 lu = lu.getNextLexicalUnit();
-                if ((lu != null) && 
+                if ((lu != null) &&
                     (lu.getLexicalUnitType() == LexicalUnit.SAC_FUNCTION)) {
                     if (!lu.getFunctionName().equalsIgnoreCase("format")) {
                         break;
                     }
                     // Format really does us no good so just ignore it.
 
-                    // TODO: Should probably turn this into a ListValue 
+                    // TODO: Should probably turn this into a ListValue
                     // and append the format function CSS Value.
                     lu = lu.getNextLexicalUnit();
                 }
                 break;
-                
+
             case LexicalUnit.SAC_IDENT:
                 StringBuffer sb = new StringBuffer(lu.getStringValue());
                 lu = lu.getNextLexicalUnit();

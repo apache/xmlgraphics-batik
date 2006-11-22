@@ -45,7 +45,7 @@ public class OptionPanel extends JPanel {
     /**
      * The gui resources file name
      */
-    public final static String RESOURCES =
+    public static final String RESOURCES =
         "org.apache.batik.apps.svgbrowser.resources.GUI";
 
     /**

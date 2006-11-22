@@ -235,7 +235,7 @@ public class SVGMarkerElementBridge extends AnimatableGenericSVGBridge
         // in viewport space (this  is what the following transform
         // does) and used when placing the marker.
         //
-        float ref[] = {refX, refY};
+        float[] ref = {refX, refY};
         markerTxf.transform(ref, 0, ref, 0, 1);
         Marker marker = new Marker(markerContentNode,
                                    new Point2D.Float(ref[0], ref[1]),

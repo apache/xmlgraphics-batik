@@ -70,15 +70,15 @@ public class FindDialog extends JDialog implements ActionMap {
     /**
      * The resource file name
      */
-    protected final static String RESOURCES =
+    protected static final String RESOURCES =
         "org.apache.batik.apps.svgbrowser.resources.FindDialog";
 
     // action names
-    public final static String FIND_ACTION = "FindButtonAction";
+    public static final String FIND_ACTION = "FindButtonAction";
 
-    public final static String CLEAR_ACTION = "ClearButtonAction";
+    public static final String CLEAR_ACTION = "ClearButtonAction";
 
-    public final static String CLOSE_ACTION = "CloseButtonAction";
+    public static final String CLOSE_ACTION = "CloseButtonAction";
 
     /**
      * The resource bundle
@@ -149,13 +149,13 @@ public class FindDialog extends JDialog implements ActionMap {
 
         buttonFactory = new ButtonFactory(bundle, this);
 
-        listeners.put(FIND_ACTION, 
+        listeners.put(FIND_ACTION,
                       new FindButtonAction());
 
-        listeners.put(CLEAR_ACTION, 
+        listeners.put(CLEAR_ACTION,
                       new ClearButtonAction());
 
-        listeners.put(CLOSE_ACTION, 
+        listeners.put(CLOSE_ACTION,
                       new CloseButtonAction());
 
         JPanel p = new JPanel(new BorderLayout());
@@ -223,13 +223,13 @@ public class FindDialog extends JDialog implements ActionMap {
         gbc.setGridBounds(0, 0, 1, 1);
         panel.add(highlightButton, gbc);
 
-        highlightCenterButton = 
+        highlightCenterButton =
             buttonFactory.createJRadioButton("HighlightAndCenter");
         grp.add(highlightCenterButton);
         gbc.setGridBounds(0, 1, 1, 1);
         panel.add(highlightCenterButton, gbc);
 
-        highlightCenterZoomButton = 
+        highlightCenterZoomButton =
             buttonFactory.createJRadioButton("HighlightCenterAndZoom");
         grp.add(highlightCenterZoomButton);
         gbc.setGridBounds(0, 2, 1, 1);
@@ -280,7 +280,7 @@ public class FindDialog extends JDialog implements ActionMap {
         } else {
             currentIndex = 0;
             gn = walker.nextGraphicsNode();
-            while (gn != null && 
+            while (gn != null &&
                    ((currentIndex = match(gn, text, currentIndex)) < 0)) {
                 currentIndex = 0;
                 gn = walker.nextGraphicsNode();
@@ -294,7 +294,7 @@ public class FindDialog extends JDialog implements ActionMap {
      * specified text, or -1 if not found.
      *
      * @param node the graphics node to check
-     * @param text the text use to match 
+     * @param text the text use to match
      * @param index the index from which to start */
     protected int match(GraphicsNode node, String text, int index) {
         if (!(node instanceof TextNode)
@@ -328,14 +328,14 @@ public class FindDialog extends JDialog implements ActionMap {
         }
         int end = text.indexOf(pattern, currentIndex);
 
-        AttributedCharacterIterator aci = 
+        AttributedCharacterIterator aci =
             textNode.getAttributedCharacterIterator();
         aci.first();
         for (int i=0; i < end; ++i) {
             aci.next();
         }
         Mark startMark = textNode.getMarkerForChar(aci.getIndex(), true);
-        
+
         for (int i = 0; i < pattern.length()-1; ++i) {
             aci.next();
         }
@@ -357,14 +357,14 @@ public class FindDialog extends JDialog implements ActionMap {
         }
         // get the bounds of the highlight shape in the canvas coordinate system
         Rectangle2D gnb = at.createTransformedShape(s).getBounds();
-            
+
         Dimension canvasSize = svgCanvas.getSize();
         // translate the highlight region to (0, 0) in the canvas coordinate
         // system
         AffineTransform Tx = AffineTransform.getTranslateInstance
             (-gnb.getX()-gnb.getWidth()/2,
              -gnb.getY()-gnb.getHeight()/2);
-        
+
         if (highlightCenterZoomButton.isSelected()) {
             // zoom on the highlight shape such as the shape takes x% of the
             // canvas size
@@ -421,8 +421,8 @@ public class FindDialog extends JDialog implements ActionMap {
             } else {
                 // end of document reached
                 walker = null;
-                JOptionPane.showMessageDialog(FindDialog.this, 
-                                              resources.getString("End.text"), 
+                JOptionPane.showMessageDialog(FindDialog.this,
+                                              resources.getString("End.text"),
                                               resources.getString("End.title"),
                                               JOptionPane.INFORMATION_MESSAGE);
             }

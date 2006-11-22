@@ -40,11 +40,11 @@ import org.w3c.dom.css.CSSPrimitiveValue;
  * @version $Id$
  */
 public class BaselineShiftManager extends LengthManager {
-    
+
     /**
      * The identifier values.
      */
-    protected final static StringMap values = new StringMap();
+    protected static final StringMap values = new StringMap();
     static {
         values.put(CSSConstants.CSS_BASELINE_VALUE,
                    SVGValueConstants.BASELINE_VALUE);
@@ -88,7 +88,7 @@ public class BaselineShiftManager extends LengthManager {
     public String getPropertyName() {
         return CSSConstants.CSS_BASELINE_SHIFT_PROPERTY;
     }
-    
+
     /**
      * Implements {@link ValueManager#getDefaultValue()}.
      */
@@ -147,7 +147,7 @@ public class BaselineShiftManager extends LengthManager {
             CSSStylableElement parent;
             parent = (CSSStylableElement)elt.getParentNode();
             if (parent == null) {
-                // Hmmm somthing pretty odd - can't happen accordint to spec, 
+                // Hmmm somthing pretty odd - can't happen accordint to spec,
                 // should always have text parent.
                 // http://www.w3.org/TR/SVG11/text.html#BaselineShiftProperty
                 parent = elt;

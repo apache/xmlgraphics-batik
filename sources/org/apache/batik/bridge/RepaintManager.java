@@ -39,8 +39,8 @@ import org.apache.batik.ext.awt.geom.RectListManager;
  * @version $Id$
  */
 public class RepaintManager {
-    final static int COPY_OVERHEAD      = 10000;
-    final static int COPY_LINE_OVERHEAD = 10;
+    static final int COPY_OVERHEAD      = 10000;
+    static final int COPY_LINE_OVERHEAD = 10;
 
     /**
      * The renderer used to repaint the buffer.
@@ -53,13 +53,13 @@ public class RepaintManager {
     public RepaintManager(ImageRenderer r) {
         renderer = r;
     }
-    
+
     /**
      * Updates the rendering buffer.
      * @param areas The areas of interest in renderer space units.
      * @return the list of the rectangles to repaint.
      */
-    public Collection updateRendering(Collection areas) 
+    public Collection updateRendering(Collection areas)
         throws InterruptedException {
         renderer.flush(areas);
         List rects = new ArrayList(areas.size());
@@ -77,7 +77,7 @@ public class RepaintManager {
             // This rectangle must be outset one pixel to ensure
             // it includes the effects of anti-aliasing on objects.
             Rectangle r = new Rectangle(x0-1, y0-1, x1-x0+3, y1-y0+3);
-                
+
             rects.add(r);
         }
         RectListManager devRLM =null;

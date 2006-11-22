@@ -36,11 +36,11 @@ import org.apache.batik.util.SVGTypes;
  * @version $Id$
  */
 public class FontStretchManager extends IdentifierManager {
-    
+
     /**
      * The identifier values.
      */
-    protected final static StringMap values = new StringMap();
+    protected static final StringMap values = new StringMap();
     static {
         values.put(CSSConstants.CSS_ALL_VALUE,
                    ValueConstants.ALL_VALUE);
@@ -104,7 +104,7 @@ public class FontStretchManager extends IdentifierManager {
     public String getPropertyName() {
         return CSSConstants.CSS_FONT_STRETCH_PROPERTY;
     }
-    
+
     /**
      * Implements {@link
      * org.apache.batik.css.engine.value.ValueManager#getDefaultValue()}.
@@ -122,7 +122,7 @@ public class FontStretchManager extends IdentifierManager {
                               CSSEngine engine,
                               int idx,
                               StyleMap sm,
-                              Value value) { 
+                              Value value) {
         if (value == ValueConstants.NARROWER_VALUE) {
             sm.putParentRelative(idx, true);
 

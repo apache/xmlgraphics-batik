@@ -28,7 +28,7 @@ import org.w3c.dom.css.CSSPrimitiveValue;
  * @version $Id$
  */
 public class RGBColorValue extends AbstractValue {
-    
+
     /**
      * The red component.
      */
@@ -61,13 +61,13 @@ public class RGBColorValue extends AbstractValue {
     }
 
     /**
-     * A string representation of the current value. 
+     * A string representation of the current value.
      */
     public String getCssText() {
         return "rgb(" +
             red.getCssText() + ", " +
             green.getCssText() + ", " +
-            blue.getCssText() + ")";
+            blue.getCssText() + ')';
     }
 
     /**

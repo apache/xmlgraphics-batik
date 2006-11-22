@@ -32,7 +32,7 @@ public interface ErrorConstants {
      * {0} = the name of the attribute
      * </pre>
      */
-    public static final String ERR_ATTRIBUTE_MISSING
+    String ERR_ATTRIBUTE_MISSING
         = "attribute.missing";
 
     /**
@@ -42,7 +42,7 @@ public interface ErrorConstants {
      * {1} = the wrong value
      * </pre>
      */
-    public static final String ERR_ATTRIBUTE_VALUE_MALFORMED
+    String ERR_ATTRIBUTE_VALUE_MALFORMED
         = "attribute.malformed";
 
     /**
@@ -51,7 +51,7 @@ public interface ErrorConstants {
      * {0} = the name of the attribute
      * </pre>
      */
-    public static final String ERR_LENGTH_NEGATIVE
+    String ERR_LENGTH_NEGATIVE
         = "length.negative";
 
     /**
@@ -60,7 +60,7 @@ public interface ErrorConstants {
      * {0} = property
      * </pre>
      */
-    public static final String ERR_CSS_LENGTH_NEGATIVE
+    String ERR_CSS_LENGTH_NEGATIVE
         = "css.length.negative";
 
     /**
@@ -70,7 +70,7 @@ public interface ErrorConstants {
      * {0} = the uri
      * </pre>
      */
-    public static final String ERR_CSS_URI_BAD_TARGET
+    String ERR_CSS_URI_BAD_TARGET
         = "css.uri.badTarget";
 
     /**
@@ -79,7 +79,7 @@ public interface ErrorConstants {
      * {0} = the uri
      * </pre>
      */
-    public static final String ERR_URI_BAD_TARGET
+    String ERR_URI_BAD_TARGET
         = "uri.badTarget";
 
     /**
@@ -89,14 +89,14 @@ public interface ErrorConstants {
      * {0} = the uri
      * </pre>
      */
-    public static final String ERR_XLINK_HREF_CIRCULAR_DEPENDENCIES
+    String ERR_XLINK_HREF_CIRCULAR_DEPENDENCIES
         = "xlink.href.circularDependencies";
 
     /**
      * The error code when the bridge try to load a URI
      * {0} = the uri
      */
-    public static final String ERR_URI_MALFORMED
+    String ERR_URI_MALFORMED
         = "uri.malformed";
 
     /**
@@ -106,7 +106,7 @@ public interface ErrorConstants {
      * {0} = the uri
      * </pre>
      */
-    public static final String ERR_URI_IO
+    String ERR_URI_IO
         = "uri.io";
 
     /**
@@ -114,7 +114,7 @@ public interface ErrorConstants {
      * while loading a URI
      * {0} = the uri
      */
-    public static final String ERR_URI_UNSECURE
+    String ERR_URI_UNSECURE
         = "uri.unsecure";
 
     /**
@@ -124,7 +124,7 @@ public interface ErrorConstants {
      * {0} = the uri
      * </pre>
      */
-    public static final String ERR_URI_REFERENCE_A_DOCUMENT
+    String ERR_URI_REFERENCE_A_DOCUMENT
         = "uri.referenceDocument";
 
     /**
@@ -134,7 +134,7 @@ public interface ErrorConstants {
      * {0} = the uri
      * </pre>
      */
-    public static final String ERR_URI_IMAGE_INVALID = "uri.image.invalid";
+    String ERR_URI_IMAGE_INVALID = "uri.image.invalid";
 
     /**
      * The error code when the bridge tries to read an image and the image
@@ -144,7 +144,7 @@ public interface ErrorConstants {
      * {1} = the reason it can't be opened.
      * </pre>
      */
-    public static final String ERR_URI_IMAGE_BROKEN = "uri.image.broken";
+    String ERR_URI_IMAGE_BROKEN = "uri.image.broken";
 
     /**
      * The error code when the bridge tries to read an image and the image
@@ -153,6 +153,6 @@ public interface ErrorConstants {
      * {0} = the reason it can't be opened.
      * </pre>
      */
-    public static final String URI_IMAGE_ERROR = "uri.image.error";
+    String URI_IMAGE_ERROR = "uri.image.error";
 
 }

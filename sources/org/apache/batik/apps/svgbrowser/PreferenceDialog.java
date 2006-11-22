@@ -72,12 +72,12 @@ public class PreferenceDialog extends JDialog
     /**
      * The return value if 'OK' is chosen.
      */
-    public final static int OK_OPTION = 0;
+    public static final int OK_OPTION = 0;
 
     /**
      * The return value if 'Cancel' is chosen.
      */
-    public final static int CANCEL_OPTION = 1;
+    public static final int CANCEL_OPTION = 1;
 
     //////////////////////////////////////////////////////////////
     // GUI Resources Keys
@@ -658,7 +658,7 @@ public class PreferenceDialog extends JDialog
 
         grantScriptFileAccess
             = new JCheckBox(Resources.getString(LABEL_GRANT_SCRIPT_FILE_ACCESS));
-        
+
         grantScriptNetworkAccess
             = new JCheckBox(Resources.getString(LABEL_GRANT_SCRIPT_NETWORK_ACCESS));
 
@@ -666,7 +666,7 @@ public class PreferenceDialog extends JDialog
         scriptSecurityPanel.add(enforceSecureScripting,    0, 0, 1, 1, WEST, HORIZONTAL, 1, 0);
         scriptSecurityPanel.add(grantScriptFileAccess,    1, 0, 1, 1, WEST, HORIZONTAL, 1, 0);
         scriptSecurityPanel.add(grantScriptNetworkAccess, 1, 1, 1, 1, WEST, HORIZONTAL, 1, 0);
-        
+
         enforceSecureScripting.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     grantScriptFileAccess.setEnabled(enforceSecureScripting.isSelected());
@@ -741,7 +741,7 @@ public class PreferenceDialog extends JDialog
         p.add(showDebugTrace,   0, 3, 2, 1, WEST, HORIZONTAL, 1, 0);
         p.add(selectionXorMode,   0, 4, 2, 1, WEST, HORIZONTAL, 1, 0);
         p.add(isXMLParserValidating,   0, 5, 2, 1, WEST, HORIZONTAL, 1, 0);
-        p.add(new JLabel(), 0, 11, 2, 1, WEST, BOTH, 1, 1); 
+        p.add(new JLabel(), 0, 11, 2, 1, WEST, BOTH, 1, 1);
 
         browserOptions.addTab(Resources.getString(TITLE_BEHAVIOR), p);
         p.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -754,8 +754,8 @@ public class PreferenceDialog extends JDialog
         p.add(new JLabel(Resources.getString(LABEL_SCRIPT_ORIGIN)), 0, 9, 1, 1, WEST, NONE, 0, 0);
         p.add(scriptOriginPanel, 1, 9, 1, 1, WEST, NONE, 1, 0);
         p.add(new JLabel(Resources.getString(LABEL_RESOURCE_ORIGIN)), 0, 10, 1, 1, WEST, NONE, 0, 0);
-        p.add(resourceOriginPanel, 1, 10, 1, 1, WEST, NONE, 1, 0); 
-        p.add(new JLabel(), 0, 11, 2, 1, WEST, BOTH, 1, 1); 
+        p.add(resourceOriginPanel, 1, 10, 1, 1, WEST, NONE, 1, 0);
+        p.add(new JLabel(), 0, 11, 2, 1, WEST, BOTH, 1, 1);
 
         browserOptions.addTab(Resources.getString(TITLE_SECURITY), p);
         p.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -767,7 +767,7 @@ public class PreferenceDialog extends JDialog
                                  (BorderFactory.createEtchedBorder(),
                                   Resources.getString(TITLE_BROWSER_OPTIONS)),
                                  BorderFactory.createEmptyBorder(10, 10, 10, 10)));
-        
+
         return borderedPanel;
     }
 

@@ -49,7 +49,7 @@ public class Main implements SVGConverterController {
      * URL for Squiggle's security policy file
      */
     public static final String RASTERIZER_SECURITY_POLICY
-        = "org/apache/batik/apps/rasterizer/resources/rasterizer.policy"; 
+        = "org/apache/batik/apps/rasterizer/resources/rasterizer.policy";
 
     /**
      * Interface for handling one command line option
@@ -58,15 +58,15 @@ public class Main implements SVGConverterController {
         /**
          * The <tt>OptionHandler</tt> should configure the <tt>SVGConverter</tt>
          * according to the value of the option.
-         * 
+         *
          * Should throw an IllegalArgumentException if optionValue
-         * is not an acceptable option. 
+         * is not an acceptable option.
          */
         void handleOption(String[] optionValues, SVGConverter c);
 
         /**
          * Returns the number of values which the option handler requires.
-         * This defines the length of the optionValues array passed to 
+         * This defines the length of the optionValues array passed to
          * the handler in the handleOption method
          */
         int getOptionValuesLength();
@@ -79,14 +79,14 @@ public class Main implements SVGConverterController {
 
     /**
      * This abstract implementation of the <tt>OptionHandler</tt> interface
-     * throws an exception if the number of arguments passed to the 
+     * throws an exception if the number of arguments passed to the
      * <tt>handleOption</tt> method does not match the number of expected
      * optionValues. If the size matches, the <tt>safeHandleOption</tt>
-     * method is invoked. 
-     * Subclasses can implement the <tt>safeHandleOption</tt> method 
+     * method is invoked.
+     * Subclasses can implement the <tt>safeHandleOption</tt> method
      * assuming that the input array size is correct.
      */
-    public static abstract class AbstractOptionHandler implements OptionHandler {
+    public abstract static class AbstractOptionHandler implements OptionHandler {
 
         public void handleOption(String[] optionValues, SVGConverter c){
             int nOptions = optionValues != null? optionValues.length: 0;
@@ -106,7 +106,7 @@ public class Main implements SVGConverterController {
      * the <tt>handleOption</tt> method which takes only an <tt>SVGConverter</tt>
      * as a parameter.
      */
-    public static abstract class NoValueOptionHandler extends AbstractOptionHandler {
+    public abstract static class NoValueOptionHandler extends AbstractOptionHandler {
         public void safeHandleOption(String[] optionValues, SVGConverter c){
             handleOption(c);
         }
@@ -123,7 +123,7 @@ public class Main implements SVGConverterController {
      * provide an implementation for the <tt>handleOption</tt> method which
      * takes a <tt>String</tt> and an <tt>SVGConverter</tt> as parameters.
      */
-    public static abstract class SingleValueOptionHandler extends AbstractOptionHandler {
+    public abstract static class SingleValueOptionHandler extends AbstractOptionHandler {
         public void safeHandleOption(String[] optionValues, SVGConverter c){
             handleOption(optionValues[0], c);
         }
@@ -136,12 +136,12 @@ public class Main implements SVGConverterController {
     }
 
     /**
-     * Base class for options which expect the single optionValue to 
+     * Base class for options which expect the single optionValue to
      * be a float. Subclasses should implement the <tt>handleOption</tt>
      * method which takes a float and an <tt>SVGConverter</tt> as
      * parameters.
      */
-    public static abstract class FloatOptionHandler extends SingleValueOptionHandler {
+    public abstract static class FloatOptionHandler extends SingleValueOptionHandler {
         public void handleOption(String optionValue, SVGConverter c){
             try{
                 handleOption(Float.parseFloat(optionValue), c);
@@ -154,12 +154,12 @@ public class Main implements SVGConverterController {
     }
 
     /**
-     * Base class for options which expect the single optionValue to 
+     * Base class for options which expect the single optionValue to
      * be a time value. Subclasses should implement the <tt>handleOption</tt>
      * method which takes a float and an <tt>SVGConverter</tt> as
      * parameters.
      */
-    public static abstract class TimeOptionHandler extends FloatOptionHandler {
+    public abstract static class TimeOptionHandler extends FloatOptionHandler {
         public void handleOption(String optionValue, final SVGConverter c) {
             try {
                 ClockParser p = new ClockParser();
@@ -182,7 +182,7 @@ public class Main implements SVGConverterController {
      * Subclasses should implement the <tt>handleOption</tt> method which
      * takes a <tt>Rectangle</tt> and an <tt>SVGConverter</tt> as parameters.
      */
-    public static abstract class RectangleOptionHandler extends SingleValueOptionHandler {
+    public abstract static class RectangleOptionHandler extends SingleValueOptionHandler {
         public void handleOption(String optionValue, SVGConverter c){
             Rectangle2D r = parseRect(optionValue);
             if (r==null){
@@ -216,7 +216,7 @@ public class Main implements SVGConverterController {
                         // If an error occured, the x, y, w, h
                         // values will not be valid
                     }
-                    
+
                     if( !Float.isNaN(x)
                         &&
                         !Float.isNaN(y)
@@ -237,7 +237,7 @@ public class Main implements SVGConverterController {
      * Subclasses should implement the <tt>handleOption</tt> method which
      * takes a <tt>Color</tt> and an <tt>SVGConverter</tt> as parameters.
      */
-    public static abstract class ColorOptionHandler extends SingleValueOptionHandler {
+    public abstract static class ColorOptionHandler extends SingleValueOptionHandler {
         public void handleOption(String optionValue, SVGConverter c){
             Color color = parseARGB(optionValue);
             if (color==null){
@@ -274,7 +274,7 @@ public class Main implements SVGConverterController {
                         // values will not be in the 0-255 range
                         // and the next if test will fail
                     }
-                    
+
                     if( a>=0 && a<=255
                         &&
                         r>=0 && r<=255
@@ -324,7 +324,7 @@ public class Main implements SVGConverterController {
     /**
      * Option to specify the output image's width
      */
-    public static String CL_OPTION_WIDTH 
+    public static String CL_OPTION_WIDTH
         = Messages.get("Main.cl.option.width", "-w");
 
     public static String CL_OPTION_WIDTH_DESCRIPTION
@@ -342,7 +342,7 @@ public class Main implements SVGConverterController {
     /**
      * Option to specify the output image's maximum width.
      */
-    public static String CL_OPTION_MAX_WIDTH 
+    public static String CL_OPTION_MAX_WIDTH
         = Messages.get("Main.cl.option.max.width", "-maxw");
 
     public static String CL_OPTION_MAX_WIDTH_DESCRIPTION
@@ -358,7 +358,7 @@ public class Main implements SVGConverterController {
         = Messages.get("Main.cl.option.max.height.description", "No description");
 
     /**
-     * Option to specify the area of interest in the output 
+     * Option to specify the area of interest in the output
      * image.
      */
     public static String CL_OPTION_AOI
@@ -412,7 +412,7 @@ public class Main implements SVGConverterController {
      */
     public static String CL_OPTION_VALIDATE
         = Messages.get("Main.cl.option.validate", "-validate");
-      
+
     public static String CL_OPTION_VALIDATE_DESCRIPTION
         = Messages.get("Main.cl.option.validate.description", "No description");
 
@@ -422,7 +422,7 @@ public class Main implements SVGConverterController {
      */
     public static String CL_OPTION_ONLOAD
         = Messages.get("Main.cl.option.onload", "-onload");
-      
+
     public static String CL_OPTION_ONLOAD_DESCRIPTION
         = Messages.get("Main.cl.option.onload.description", "No description");
 
@@ -492,7 +492,7 @@ public class Main implements SVGConverterController {
         = Messages.get("Main.cl.option.allowed.scripts.description", "No description");
 
     /**
-     * Option to determine whether scripts a constrained to the 
+     * Option to determine whether scripts a constrained to the
      * same origin as the document referencing them.
      */
     public static String CL_OPTION_CONSTRAIN_SCRIPT_ORIGIN
@@ -506,7 +506,7 @@ public class Main implements SVGConverterController {
      */
     public static String CL_OPTION_SECURITY_OFF
         = Messages.get("Main.cl.option.security.off", "-scriptSecurityOff");
-    
+
     public static String CL_OPTION_SECURITY_OFF_DESCRIPTION
         = Messages.get("Main.cl.option.security.off.description", "No description");
 
@@ -517,13 +517,13 @@ public class Main implements SVGConverterController {
     protected static Map optionMap = new Hashtable();
 
     /**
-     * Static map containing all the mime types understood by the 
+     * Static map containing all the mime types understood by the
      * rasterizer
      */
     protected static Map mimeTypeMap = new Hashtable();
 
     /**
-     * Static initializer: adds all the option handlers to the 
+     * Static initializer: adds all the option handlers to the
      * map of option handlers.
      */
     static {
@@ -536,7 +536,7 @@ public class Main implements SVGConverterController {
 
         optionMap.put(CL_OPTION_OUTPUT,
                       new SingleValueOptionHandler(){
-                              public void handleOption(String optionValue, 
+                              public void handleOption(String optionValue,
                                                        SVGConverter c){
                                   c.setDst(new File(optionValue));
                               }
@@ -549,7 +549,7 @@ public class Main implements SVGConverterController {
                       new SingleValueOptionHandler(){
                               public void handleOption(String optionValue,
                                                        SVGConverter c){
-                                  DestinationType dstType = 
+                                  DestinationType dstType =
                                       (DestinationType)mimeTypeMap.get(optionValue);
 
                                   if (dstType == null){
@@ -728,7 +728,7 @@ public class Main implements SVGConverterController {
                                   return CL_OPTION_DPI_DESCRIPTION;
                               }
                           });
-        
+
         optionMap.put(CL_OPTION_QUALITY,
                       new FloatOptionHandler(){
                               public void handleOption(float optionValue,
@@ -747,17 +747,17 @@ public class Main implements SVGConverterController {
 
         optionMap.put(CL_OPTION_INDEXED,
                       new FloatOptionHandler(){
-                              public void handleOption(float optionValue, 
+                              public void handleOption(float optionValue,
                                                        SVGConverter c){
                                   if ((optionValue != 1) &&
                                       (optionValue != 2) &&
                                       (optionValue != 4) &&
-                                      (optionValue != 8)) 
+                                      (optionValue != 8))
                                       throw new IllegalArgumentException();
 
                                   c.setIndexed((int)optionValue);
                               }
-                      
+
                               public String getOptionDescription(){
                                   return CL_OPTION_INDEXED_DESCRIPTION;
                               }
@@ -802,12 +802,12 @@ public class Main implements SVGConverterController {
                                                    SVGConverter c){
                               c.setAllowedScriptTypes(optionValue);
                           }
-                          
+
                           public String getOptionDescription(){
                               return CL_OPTION_ALLOWED_SCRIPTS_DESCRIPTION;
                           }
                       });
-        
+
         optionMap.put(CL_OPTION_CONSTRAIN_SCRIPT_ORIGIN,
                       new NoValueOptionHandler(){
                           public void handleOption(SVGConverter c){
@@ -818,7 +818,7 @@ public class Main implements SVGConverterController {
                               return CL_OPTION_CONSTRAIN_SCRIPT_ORIGIN_DESCRIPTION;
                           }
                       });
-                                                
+
         optionMap.put(CL_OPTION_SECURITY_OFF,
                       new NoValueOptionHandler() {
                           public void handleOption(SVGConverter c){
@@ -830,7 +830,7 @@ public class Main implements SVGConverterController {
                           }
                       });
     }
-      
+
     /**
      * Vector of arguments describing the conversion task to be
      * performed.
@@ -857,7 +857,7 @@ public class Main implements SVGConverterController {
     /**
      * Error when there are missing option values:
      * {0} Option
-     * {1} Option description  
+     * {1} Option description
      */
     public static final String ERROR_NOT_ENOUGH_OPTION_VALUES
         = "Main.error.not.enough.option.values";
@@ -865,7 +865,7 @@ public class Main implements SVGConverterController {
     /**
      * Error when an illegal option value was passed to the app
      * {0} Option
-     * {1} Option description  
+     * {1} Option description
      */
     public static final String ERROR_ILLEGAL_ARGUMENT
         = "Main.error.illegal.argument";
@@ -892,7 +892,7 @@ public class Main implements SVGConverterController {
                 if (i + nOptionArgs >= nArgs){
                     error(ERROR_NOT_ENOUGH_OPTION_VALUES, new Object[]{ v, optionHandler.getOptionDescription()});
                     return;
-                } 
+                }
 
                 String[] optionValues = new String[nOptionArgs];
                 for (int j=0; j<nOptionArgs; j++){
@@ -914,13 +914,13 @@ public class Main implements SVGConverterController {
         }
 
         // Apply script security option
-        ApplicationSecurityEnforcer securityEnforcer = 
+        ApplicationSecurityEnforcer securityEnforcer =
             new ApplicationSecurityEnforcer(this.getClass(),
                                             RASTERIZER_SECURITY_POLICY);
 
         securityEnforcer.enforceSecurity(!c.getSecurityOff());
 
-        String expandedSources[] = expandSources(sources);
+        String[] expandedSources = expandSources(sources);
 
         c.setSources(expandedSources);
 
@@ -948,7 +948,7 @@ public class Main implements SVGConverterController {
         StringBuffer sb = new StringBuffer();
         int n = v != null ? v.length:0;
         for (int i=0; i<n; i++){
-            sb.append(v[i] + " ");
+            sb.append(v[i] + ' ' );
         }
 
         return sb.toString();
@@ -1021,8 +1021,8 @@ public class Main implements SVGConverterController {
                                                 new Object[]{source.toString(),
                                                              dest.toString()}));
         return true;
-    }     
-        
+    }
+
     public boolean proceedOnSourceTranscodingFailure(SVGConverterSource source,
                                                      File dest,
                                                      String errorCode){

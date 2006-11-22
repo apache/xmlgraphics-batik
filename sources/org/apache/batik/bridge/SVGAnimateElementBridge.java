@@ -107,7 +107,7 @@ public class SVGAnimateElementBridge extends SVGAnimationElementBridge {
             (ctx, element, ErrorConstants.ERR_ATTRIBUTE_VALUE_MALFORMED,
              new Object[] { SVG_ADDITIVE_ATTRIBUTE, additiveString });
     }
-    
+
     /**
      * Returns the parsed 'accumulate' attribute from the animation element.
      */
@@ -282,7 +282,7 @@ outer:  while (i < len) {
     /**
      * Returns whether the animation element being handled by this bridge can
      * animate attributes of the specified type.
-     * @param type one of the TYPE_ constants defined in {@link SVGTypes}.
+     * @param type one of the TYPE_ constants defined in {@link org.apache.batik.util.SVGTypes}.
      */
     protected boolean canAnimateType(int type) {
         return true;

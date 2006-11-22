@@ -86,7 +86,7 @@ import org.w3c.dom.Document;
  * @version $Id$
  */
 public class SVGCSSEngine extends CSSEngine {
-    
+
     /**
      * Creates a new SVGCSSEngine.
      * @param doc The associated document.
@@ -191,7 +191,7 @@ public class SVGCSSEngine extends CSSEngine {
     /**
      * The value managers for SVG.
      */
-    public final static ValueManager[] SVG_VALUE_MANAGERS = {
+    public static final ValueManager[] SVG_VALUE_MANAGERS = {
         new AlignmentBaselineManager(),
         new BaselineShiftManager(),
         new ClipManager(),
@@ -266,11 +266,11 @@ public class SVGCSSEngine extends CSSEngine {
         new SpacingManager(CSSConstants.CSS_WORD_SPACING_PROPERTY),
         new WritingModeManager(),
     };
-    
+
     /**
      * The shorthand managers for SVG.
      */
-    public final static ShorthandManager[] SVG_SHORTHAND_MANAGERS = {
+    public static final ShorthandManager[] SVG_SHORTHAND_MANAGERS = {
         new FontShorthandManager(),
         new MarkerShorthandManager(),
     };
@@ -278,95 +278,95 @@ public class SVGCSSEngine extends CSSEngine {
     //
     // The property indexes.
     //
-    public final static int ALIGNMENT_BASELINE_INDEX = 0;
-    public final static int BASELINE_SHIFT_INDEX =
+    public static final int ALIGNMENT_BASELINE_INDEX = 0;
+    public static final int BASELINE_SHIFT_INDEX =
         ALIGNMENT_BASELINE_INDEX + 1;
-    public final static int CLIP_INDEX = BASELINE_SHIFT_INDEX + 1;
-    public final static int CLIP_PATH_INDEX = CLIP_INDEX +1;
-    public final static int CLIP_RULE_INDEX = CLIP_PATH_INDEX + 1;
+    public static final int CLIP_INDEX = BASELINE_SHIFT_INDEX + 1;
+    public static final int CLIP_PATH_INDEX = CLIP_INDEX +1;
+    public static final int CLIP_RULE_INDEX = CLIP_PATH_INDEX + 1;
 
 
-    public final static int COLOR_INDEX = CLIP_RULE_INDEX + 1;
-    public final static int COLOR_INTERPOLATION_INDEX = COLOR_INDEX + 1;
-    public final static int COLOR_INTERPOLATION_FILTERS_INDEX =
+    public static final int COLOR_INDEX = CLIP_RULE_INDEX + 1;
+    public static final int COLOR_INTERPOLATION_INDEX = COLOR_INDEX + 1;
+    public static final int COLOR_INTERPOLATION_FILTERS_INDEX =
         COLOR_INTERPOLATION_INDEX + 1;
-    public final static int COLOR_PROFILE_INDEX =
+    public static final int COLOR_PROFILE_INDEX =
         COLOR_INTERPOLATION_FILTERS_INDEX + 1;
-    public final static int COLOR_RENDERING_INDEX = COLOR_PROFILE_INDEX + 1;
+    public static final int COLOR_RENDERING_INDEX = COLOR_PROFILE_INDEX + 1;
 
 
-    public final static int CURSOR_INDEX = COLOR_RENDERING_INDEX + 1;
-    public final static int DIRECTION_INDEX = CURSOR_INDEX + 1;
-    public final static int DISPLAY_INDEX = DIRECTION_INDEX + 1;
-    public final static int DOMINANT_BASELINE_INDEX = DISPLAY_INDEX + 1;
-    public final static int ENABLE_BACKGROUND_INDEX =
+    public static final int CURSOR_INDEX = COLOR_RENDERING_INDEX + 1;
+    public static final int DIRECTION_INDEX = CURSOR_INDEX + 1;
+    public static final int DISPLAY_INDEX = DIRECTION_INDEX + 1;
+    public static final int DOMINANT_BASELINE_INDEX = DISPLAY_INDEX + 1;
+    public static final int ENABLE_BACKGROUND_INDEX =
         DOMINANT_BASELINE_INDEX + 1;
 
 
-    public final static int FILL_INDEX = ENABLE_BACKGROUND_INDEX + 1;
-    public final static int FILL_OPACITY_INDEX = FILL_INDEX + 1;
-    public final static int FILL_RULE_INDEX = FILL_OPACITY_INDEX + 1;
-    public final static int FILTER_INDEX = FILL_RULE_INDEX + 1;
-    public final static int FLOOD_COLOR_INDEX = FILTER_INDEX + 1;
+    public static final int FILL_INDEX = ENABLE_BACKGROUND_INDEX + 1;
+    public static final int FILL_OPACITY_INDEX = FILL_INDEX + 1;
+    public static final int FILL_RULE_INDEX = FILL_OPACITY_INDEX + 1;
+    public static final int FILTER_INDEX = FILL_RULE_INDEX + 1;
+    public static final int FLOOD_COLOR_INDEX = FILTER_INDEX + 1;
 
-    public final static int FLOOD_OPACITY_INDEX = FLOOD_COLOR_INDEX + 1;
-    public final static int FONT_FAMILY_INDEX = FLOOD_OPACITY_INDEX + 1;
-    public final static int FONT_SIZE_INDEX = FONT_FAMILY_INDEX + 1;
-    public final static int FONT_SIZE_ADJUST_INDEX = FONT_SIZE_INDEX + 1;
-    public final static int FONT_STRETCH_INDEX = FONT_SIZE_ADJUST_INDEX + 1;
+    public static final int FLOOD_OPACITY_INDEX = FLOOD_COLOR_INDEX + 1;
+    public static final int FONT_FAMILY_INDEX = FLOOD_OPACITY_INDEX + 1;
+    public static final int FONT_SIZE_INDEX = FONT_FAMILY_INDEX + 1;
+    public static final int FONT_SIZE_ADJUST_INDEX = FONT_SIZE_INDEX + 1;
+    public static final int FONT_STRETCH_INDEX = FONT_SIZE_ADJUST_INDEX + 1;
 
-    public final static int FONT_STYLE_INDEX = FONT_STRETCH_INDEX + 1;
-    public final static int FONT_VARIANT_INDEX = FONT_STYLE_INDEX + 1;
-    public final static int FONT_WEIGHT_INDEX = FONT_VARIANT_INDEX + 1;
-    public final static int GLYPH_ORIENTATION_HORIZONTAL_INDEX =
+    public static final int FONT_STYLE_INDEX = FONT_STRETCH_INDEX + 1;
+    public static final int FONT_VARIANT_INDEX = FONT_STYLE_INDEX + 1;
+    public static final int FONT_WEIGHT_INDEX = FONT_VARIANT_INDEX + 1;
+    public static final int GLYPH_ORIENTATION_HORIZONTAL_INDEX =
         FONT_WEIGHT_INDEX + 1;
-    public final static int GLYPH_ORIENTATION_VERTICAL_INDEX =
+    public static final int GLYPH_ORIENTATION_VERTICAL_INDEX =
         GLYPH_ORIENTATION_HORIZONTAL_INDEX + 1;
 
 
-    public final static int IMAGE_RENDERING_INDEX =
+    public static final int IMAGE_RENDERING_INDEX =
         GLYPH_ORIENTATION_VERTICAL_INDEX + 1;
-    public final static int KERNING_INDEX = IMAGE_RENDERING_INDEX + 1;
-    public final static int LETTER_SPACING_INDEX = KERNING_INDEX + 1;
-    public final static int LIGHTING_COLOR_INDEX = LETTER_SPACING_INDEX + 1;
-    public final static int MARKER_END_INDEX = LIGHTING_COLOR_INDEX + 1;
+    public static final int KERNING_INDEX = IMAGE_RENDERING_INDEX + 1;
+    public static final int LETTER_SPACING_INDEX = KERNING_INDEX + 1;
+    public static final int LIGHTING_COLOR_INDEX = LETTER_SPACING_INDEX + 1;
+    public static final int MARKER_END_INDEX = LIGHTING_COLOR_INDEX + 1;
 
 
-    public final static int MARKER_MID_INDEX = MARKER_END_INDEX + 1;
-    public final static int MARKER_START_INDEX = MARKER_MID_INDEX + 1;
-    public final static int MASK_INDEX = MARKER_START_INDEX + 1;
-    public final static int OPACITY_INDEX = MASK_INDEX + 1;
-    public final static int OVERFLOW_INDEX = OPACITY_INDEX + 1;
-    
-
-    public final static int POINTER_EVENTS_INDEX = OVERFLOW_INDEX + 1;
-    public final static int SRC_INDEX = POINTER_EVENTS_INDEX + 1;
-    public final static int SHAPE_RENDERING_INDEX = SRC_INDEX + 1;
-    public final static int STOP_COLOR_INDEX = SHAPE_RENDERING_INDEX + 1;
-    public final static int STOP_OPACITY_INDEX = STOP_COLOR_INDEX + 1;
-    public final static int STROKE_INDEX = STOP_OPACITY_INDEX + 1;
+    public static final int MARKER_MID_INDEX = MARKER_END_INDEX + 1;
+    public static final int MARKER_START_INDEX = MARKER_MID_INDEX + 1;
+    public static final int MASK_INDEX = MARKER_START_INDEX + 1;
+    public static final int OPACITY_INDEX = MASK_INDEX + 1;
+    public static final int OVERFLOW_INDEX = OPACITY_INDEX + 1;
 
 
-    public final static int STROKE_DASHARRAY_INDEX = STROKE_INDEX + 1;
-    public final static int STROKE_DASHOFFSET_INDEX =
+    public static final int POINTER_EVENTS_INDEX = OVERFLOW_INDEX + 1;
+    public static final int SRC_INDEX = POINTER_EVENTS_INDEX + 1;
+    public static final int SHAPE_RENDERING_INDEX = SRC_INDEX + 1;
+    public static final int STOP_COLOR_INDEX = SHAPE_RENDERING_INDEX + 1;
+    public static final int STOP_OPACITY_INDEX = STOP_COLOR_INDEX + 1;
+    public static final int STROKE_INDEX = STOP_OPACITY_INDEX + 1;
+
+
+    public static final int STROKE_DASHARRAY_INDEX = STROKE_INDEX + 1;
+    public static final int STROKE_DASHOFFSET_INDEX =
         STROKE_DASHARRAY_INDEX + 1;
-    public final static int STROKE_LINECAP_INDEX = STROKE_DASHOFFSET_INDEX + 1;
-    public final static int STROKE_LINEJOIN_INDEX = STROKE_LINECAP_INDEX + 1;
-    public final static int STROKE_MITERLIMIT_INDEX =
+    public static final int STROKE_LINECAP_INDEX = STROKE_DASHOFFSET_INDEX + 1;
+    public static final int STROKE_LINEJOIN_INDEX = STROKE_LINECAP_INDEX + 1;
+    public static final int STROKE_MITERLIMIT_INDEX =
         STROKE_LINEJOIN_INDEX + 1;
-    
-
-    public final static int STROKE_OPACITY_INDEX = STROKE_MITERLIMIT_INDEX + 1;
-    public final static int STROKE_WIDTH_INDEX = STROKE_OPACITY_INDEX + 1;
-    public final static int TEXT_ANCHOR_INDEX = STROKE_WIDTH_INDEX + 1;
-    public final static int TEXT_DECORATION_INDEX = TEXT_ANCHOR_INDEX + 1;
-    public final static int TEXT_RENDERING_INDEX = TEXT_DECORATION_INDEX + 1;
 
 
-    public final static int UNICODE_BIDI_INDEX = TEXT_RENDERING_INDEX + 1;
-    public final static int VISIBILITY_INDEX = UNICODE_BIDI_INDEX + 1;
-    public final static int WORD_SPACING_INDEX = VISIBILITY_INDEX + 1;
-    public final static int WRITING_MODE_INDEX = WORD_SPACING_INDEX + 1;
-    public final static int FINAL_INDEX = WRITING_MODE_INDEX;
+    public static final int STROKE_OPACITY_INDEX = STROKE_MITERLIMIT_INDEX + 1;
+    public static final int STROKE_WIDTH_INDEX = STROKE_OPACITY_INDEX + 1;
+    public static final int TEXT_ANCHOR_INDEX = STROKE_WIDTH_INDEX + 1;
+    public static final int TEXT_DECORATION_INDEX = TEXT_ANCHOR_INDEX + 1;
+    public static final int TEXT_RENDERING_INDEX = TEXT_DECORATION_INDEX + 1;
+
+
+    public static final int UNICODE_BIDI_INDEX = TEXT_RENDERING_INDEX + 1;
+    public static final int VISIBILITY_INDEX = UNICODE_BIDI_INDEX + 1;
+    public static final int WORD_SPACING_INDEX = VISIBILITY_INDEX + 1;
+    public static final int WRITING_MODE_INDEX = WORD_SPACING_INDEX + 1;
+    public static final int FINAL_INDEX = WRITING_MODE_INDEX;
 
 }

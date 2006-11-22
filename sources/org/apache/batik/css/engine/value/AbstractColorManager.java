@@ -38,7 +38,7 @@ public abstract class AbstractColorManager extends IdentifierManager {
     /**
      * The identifier values.
      */
-    protected final static StringMap values = new StringMap();
+    protected static final StringMap values = new StringMap();
     static {
         values.put(CSSConstants.CSS_AQUA_VALUE,
                    ValueConstants.AQUA_VALUE);
@@ -134,7 +134,7 @@ public abstract class AbstractColorManager extends IdentifierManager {
     /**
      * The computed identifier values.
      */
-    protected final static StringMap computedValues = new StringMap();
+    protected static final StringMap computedValues = new StringMap();
     static {
         computedValues.put(CSSConstants.CSS_BLACK_VALUE,
                            ValueConstants.BLACK_RGB_VALUE);

@@ -78,10 +78,10 @@ public class LocalHistory {
     protected int state;
 
     // States
-    protected final static int STABLE_STATE = 0;
-    protected final static int BACK_PENDING_STATE = 1;
-    protected final static int FORWARD_PENDING_STATE = 2;
-    protected final static int RELOAD_PENDING_STATE = 3;
+    protected static final int STABLE_STATE = 0;
+    protected static final int BACK_PENDING_STATE = 1;
+    protected static final int FORWARD_PENDING_STATE = 2;
+    protected static final int RELOAD_PENDING_STATE = 3;
 
     /**
      * Creates a new local history.
@@ -199,7 +199,7 @@ public class LocalHistory {
         if (i == -1) {
             i = uri.lastIndexOf('\\' );
         }
-         
+
         if (i != -1) {
             text = uri.substring(i + 1);
         }

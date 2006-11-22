@@ -1076,11 +1076,11 @@ public class SVGConverter {
         String parentDir = output.getParent();
         if (parentDir != null){
             outputDir = new File(output.getParent());
-            if (outputDir.exists() == false) {
+            if ( ! outputDir.exists() ) {
                 // Output directory doesn't exist, so create it.
                 success = outputDir.mkdirs();
             } else {
-                if (outputDir.isDirectory() == false) {
+                if ( ! outputDir.isDirectory() ) {
                     // File, which have a same name as the output directory, exists.
                     // Create output directory.
                     success = outputDir.mkdirs();

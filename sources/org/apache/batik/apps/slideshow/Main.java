@@ -246,8 +246,7 @@ public class Main extends JComponent {
             for (int i=0; i<rects.length; i++) {
                 int idx = (int)(Math.random()*(rects.length-i));
                 Point pt = rects[idx];
-                for (int j=idx+1; j<rects.length-i;j++)
-                    rects[j-1] = rects[j];
+                System.arraycopy( rects, idx + 1, rects, idx + 1 - 1, rects.length - i - idx + 1 );
                 int x=pt.x*blockw, y=pt.y*blockh;
                 int w=blockw, h = blockh;
                 if (x+w > src.getWidth())  w = src.getWidth()-x;

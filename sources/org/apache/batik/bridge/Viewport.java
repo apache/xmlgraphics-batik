@@ -30,11 +30,11 @@ public interface Viewport {
     /**
      * Returns the width of this viewport.
      */
-    public float getWidth();
+    float getWidth();
 
     /**
      * Returns the height of this viewport.
      */
-    public float getHeight();
+    float getHeight();
 
 }

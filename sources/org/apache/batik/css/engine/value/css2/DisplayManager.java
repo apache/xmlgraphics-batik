@@ -33,11 +33,11 @@ import org.apache.batik.util.SVGTypes;
  * @version $Id$
  */
 public class DisplayManager extends IdentifierManager {
-    
+
     /**
      * The identifier values.
      */
-    protected final static StringMap values = new StringMap();
+    protected static final StringMap values = new StringMap();
     static {
         values.put(CSSConstants.CSS_BLOCK_VALUE,
                    ValueConstants.BLOCK_VALUE);
@@ -111,7 +111,7 @@ public class DisplayManager extends IdentifierManager {
     public String getPropertyName() {
         return CSSConstants.CSS_DISPLAY_PROPERTY;
     }
-    
+
     /**
      * Implements {@link
      * org.apache.batik.css.engine.value.ValueManager#getDefaultValue()}.

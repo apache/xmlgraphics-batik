@@ -56,7 +56,7 @@ public class SVGSetElementBridge extends SVGAnimationElementBridge {
     /**
      * Returns whether the animation element being handled by this bridge can
      * animate attributes of the specified type.
-     * @param type one of the TYPE_ constants defined in {@link SVGTypes}.
+     * @param type one of the TYPE_ constants defined in {@link org.apache.batik.util.SVGTypes}.
      */
     protected boolean canAnimateType(int type) {
         return true;

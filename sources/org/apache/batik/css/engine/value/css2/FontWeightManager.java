@@ -41,11 +41,11 @@ import org.w3c.dom.css.CSSPrimitiveValue;
  * @version $Id$
  */
 public class FontWeightManager extends IdentifierManager {
-    
+
     /**
      * The identifier values.
      */
-    protected final static StringMap values = new StringMap();
+    protected static final StringMap values = new StringMap();
     static {
         values.put(CSSConstants.CSS_ALL_VALUE,
                    ValueConstants.ALL_VALUE);
@@ -93,7 +93,7 @@ public class FontWeightManager extends IdentifierManager {
     public String getPropertyName() {
         return CSSConstants.CSS_FONT_WEIGHT_PROPERTY;
     }
-    
+
     /**
      * Implements {@link ValueManager#getDefaultValue()}.
      */

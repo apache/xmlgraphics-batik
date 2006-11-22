@@ -31,11 +31,11 @@ import org.apache.batik.util.SVGTypes;
  * @version $Id$
  */
 public class ColorManager extends AbstractColorManager {
-    
+
     /**
      * The default color value.
      */
-    protected final static Value DEFAULT_VALUE =
+    protected static final Value DEFAULT_VALUE =
         SVGValueConstants.BLACK_RGB_VALUE;
 
     //
@@ -648,7 +648,7 @@ public class ColorManager extends AbstractColorManager {
     public String getPropertyName() {
         return CSSConstants.CSS_COLOR_PROPERTY;
     }
-    
+
     /**
      * Implements {@link
      * org.apache.batik.css.engine.value.ValueManager#getDefaultValue()}.

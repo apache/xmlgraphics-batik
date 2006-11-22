@@ -25,15 +25,15 @@ package org.apache.batik.css.engine;
  * @version $Id$
  */
 public interface Rule {
-    
+
     /**
      * Returns a constant identifying the rule type.
      */
-    public short getType();
-    
+    short getType();
+
 
     /**
      * Returns a printable representation of this rule.
      */
-    public String toString(CSSEngine eng);
+    String toString(CSSEngine eng);
 }

@@ -215,21 +215,21 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      * the DOM tree (in practice text holds references to the source
      * text elements for font resolution).
      */
-    public final static int STATIC      = 0;
+    public static final int STATIC      = 0;
 
     /**
      * Indicates that DOM listeners should be registered to support,
      * 'interactivity' this includes anchors and cursors, but does not
      * include support for DOM modifications.
      */
-    public final static int INTERACTIVE = 1;
+    public static final int INTERACTIVE = 1;
 
     /**
      * Indicates that all DOM listeners should be registered. This supports
      * 'interactivity' (anchors and cursors), as well as DOM modifications
      * listeners to update the GVT rendering tree.
      */
-    public final static int DYNAMIC     = 2;
+    public static final int DYNAMIC     = 2;
 
     /**
      * Whether the bridge should support dynamic, or interactive features.
@@ -307,7 +307,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         this.documentLoader = documentLoader;
     }
 
-    /** 
+    /**
      * This function creates a new 'sub' BridgeContext to associated
      * with 'newDoc' if one currently doesn't exist, otherwise it
      * returns the BridgeContext currently associated with the
@@ -333,9 +333,9 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         return subCtx;
     }
 
-    /** 
+    /**
      * This function creates a new BridgeContext, it mostly
-     * exists so subclasses can provide an instance of 
+     * exists so subclasses can provide an instance of
      * themselves when a sub BridgeContext is needed.
      */
     public BridgeContext createBridgeContext(SVGOMDocument doc) {
@@ -387,7 +387,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      * might be used by bridges (especially SVGTextElementBridge) to set the
      * text painter of each TextNode.
      *
-     * @param textPainter the text painter for text nodes 
+     * @param textPainter the text painter for text nodes
      */
     public void setTextPainter(TextPainter textPainter) {
         this.textPainter = textPainter;
@@ -605,8 +605,8 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     }
 
     /**
-     * Sets the document as a STATIC, INTERACTIVE or DYNAMIC document. 
-     * Call this method before the build phase 
+     * Sets the document as a STATIC, INTERACTIVE or DYNAMIC document.
+     * Call this method before the build phase
      * (ie. before <tt>gvtBuilder.build(...)</tt>)
      * otherwise, that will have no effect.
      *
@@ -737,7 +737,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
                                        ? ref
                                        : ref.getOwnerDocument());
                 // This is new rather than attaching this BridgeContext
-                // with the new document we now create a whole new 
+                // with the new document we now create a whole new
                 // BridgeContext to go with the new document.
                 // This means that the new document has it's own
                 // world of stuff and it should avoid memory leaks
@@ -886,7 +886,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     public GraphicsNode getGraphicsNode(Element element) {
         if (elementNodeMap != null) {
             SoftReference sr = (SoftReference)elementNodeMap.get(element);
-            if (sr != null) 
+            if (sr != null)
                 return (GraphicsNode)sr.get();
         }
         return null;
@@ -901,14 +901,14 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     public Element getElement(GraphicsNode node) {
         if (nodeElementMap != null) {
             SoftReference sr = (SoftReference)nodeElementMap.get(node);
-            if (sr != null) 
+            if (sr != null)
                 return (Element)sr.get();
         }
         return null;
     }
 
     // Bridge management /////////////////////////////////////////////////////
- 
+
     /**
      * Returns true if the specified element has a GraphicsNodeBridge
      * associated to it, false otherwise.
@@ -1001,7 +1001,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     }
 
     /**
-     * Associates the specified <tt>Bridge</tt> object with it's 
+     * Associates the specified <tt>Bridge</tt> object with it's
      * namespace URI and local name.
      *
      * @param bridge the bridge that manages the element
@@ -1121,14 +1121,14 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     protected CursorManager cursorManager = new CursorManager(this);
 
     /**
-     * Adds EventListeners to the input document to handle the cursor 
+     * Adds EventListeners to the input document to handle the cursor
      * property.
-     * This is not done in the addDOMListeners method because 
-     * addDOMListeners is only used for dynamic content whereas 
+     * This is not done in the addDOMListeners method because
+     * addDOMListeners is only used for dynamic content whereas
      * cursor support is provided for all content.
      * Also note that it is very important that the listeners be
      * registered for the capture phase as the 'default' behavior
-     * for cursors is handled by the BridgeContext during the 
+     * for cursors is handled by the BridgeContext during the
      * capture phase and the 'custom' behavior (handling of 'auto'
      * on anchors, for example), is handled during the bubbling phase.
      */
@@ -1139,12 +1139,12 @@ public class BridgeContext implements ErrorConstants, CSSContext {
             new DOMMouseOverEventListener();
         evtTarget.addEventListenerNS
             (XMLConstants.XML_EVENTS_NAMESPACE_URI,
-             SVGConstants.SVG_EVENT_MOUSEOVER, 
+             SVGConstants.SVG_EVENT_MOUSEOVER,
              domMouseOverListener, true, null);
         storeEventListenerNS
             (evtTarget,
              XMLConstants.XML_EVENTS_NAMESPACE_URI,
-             SVGConstants.SVG_EVENT_MOUSEOVER, 
+             SVGConstants.SVG_EVENT_MOUSEOVER,
              domMouseOverListener, true);
 
         DOMMouseOutEventListener domMouseOutListener =
@@ -1156,7 +1156,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         storeEventListenerNS
             (evtTarget,
              XMLConstants.XML_EVENTS_NAMESPACE_URI,
-             SVGConstants.SVG_EVENT_MOUSEOUT, 
+             SVGConstants.SVG_EVENT_MOUSEOUT,
              domMouseOutListener, true);
 
     }
@@ -1213,7 +1213,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
              "DOMNodeRemoved",
              domNodeRemovedEventListener, true, null);
 
-        domCharacterDataModifiedEventListener = 
+        domCharacterDataModifiedEventListener =
             new DOMCharacterDataModifiedEventListener();
         doc.addEventListenerNS
             (XMLConstants.XML_EVENTS_NAMESPACE_URI,
@@ -1222,7 +1222,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
 
         animatedAttributeListener = new AnimatedAttrListener();
         doc.addAnimatedAttributeListener(animatedAttributeListener);
-        
+
         focusManager = new FocusManager(document);
 
         CSSEngine cssEngine = doc.getCSSEngine();
@@ -1248,7 +1248,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         doc.removeEventListenerNS
             (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMCharacterDataModified",
              domCharacterDataModifiedEventListener, true);
-        
+
         doc.removeAnimatedAttributeListener(animatedAttributeListener);
 
         CSSEngine cssEngine = doc.getCSSEngine();
@@ -1287,7 +1287,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         }
     }
 
-    public static class SoftReferenceMememto 
+    public static class SoftReferenceMememto
         extends CleanerThread.SoftReferenceCleared {
         Object mememto;
         Set    set;
@@ -1315,15 +1315,15 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     protected static class EventListenerMememto {
 
         public SoftReference target; // Soft ref to EventTarget
-        public SoftReference listener; // Soft ref to EventListener 
+        public SoftReference listener; // Soft ref to EventListener
         public boolean useCapture;
         public String namespaceURI;
         public String eventType;
         public boolean namespaced;
 
-        public EventListenerMememto(EventTarget t, 
-                                    String s, 
-                                    EventListener l, 
+        public EventListenerMememto(EventTarget t,
+                                    String s,
+                                    EventListener l,
                                     boolean b,
                                     BridgeContext ctx) {
             Set set = ctx.eventListenerSet;
@@ -1333,10 +1333,10 @@ public class BridgeContext implements ErrorConstants, CSSContext {
             useCapture = b;
         }
 
-        public EventListenerMememto(EventTarget t, 
+        public EventListenerMememto(EventTarget t,
                                     String n,
-                                    String s, 
-                                    EventListener l, 
+                                    String s,
+                                    EventListener l,
                                     boolean b,
                                     BridgeContext ctx) {
             this(t, s, l, b, ctx);
@@ -1483,7 +1483,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
             if (newTarget != null)
                 cursor = CSSUtilities.convertCursor
                     (newTarget, BridgeContext.this);
-            if (cursor == null) 
+            if (cursor == null)
                 cursor = CursorManager.DEFAULT_CURSOR;
 
             userAgent.setSVGCursor(cursor);
@@ -1492,11 +1492,11 @@ public class BridgeContext implements ErrorConstants, CSSContext {
 
 
     /**
-     * The DOM EventListener invoked when the mouse mouves over a new 
+     * The DOM EventListener invoked when the mouse mouves over a new
      * element.
-     * 
+     *
      * Here is how cursors are handled:
-     * 
+     *
      */
     protected class DOMMouseOverEventListener implements EventListener {
 
@@ -1512,13 +1512,13 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         public void handleEvent(Event evt) {
             Element target = (Element)evt.getTarget();
             Cursor cursor = CSSUtilities.convertCursor(target, BridgeContext.this);
-            
+
             if (cursor != null) {
                 userAgent.setSVGCursor(cursor);
             }
         }
     }
-    
+
     /**
      * The DOM EventListener invoked when a node is added.
      */
@@ -1535,7 +1535,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
          */
         public void handleEvent(Event evt) {
             MutationEvent me = (MutationEvent)evt;
-            BridgeUpdateHandler h = 
+            BridgeUpdateHandler h =
                 getBridgeUpdateHandler(me.getRelatedNode());
             if (h != null) {
                 try {
@@ -1650,7 +1650,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
                             (BridgeContext.this, elem);
                         if (childNode == null) {
                             // the added element is not a graphic element?
-                            break; 
+                            break;
                         }
                         int idx = -1;
                         for(Node ps = elem.getPreviousSibling(); ps != null;
@@ -1668,7 +1668,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
                         }
                         // insert after prevSibling, if
                         // it was -1 this becomes 0 (first slot)
-                        idx++; 
+                        idx++;
                         parent.add(idx, childNode);
                         break;
                     }
@@ -1778,7 +1778,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      */
     public float getPixelToMillimeter() {
         return getPixelUnitToMillimeter();
-            
+
     }
 
     /**
@@ -1808,19 +1808,19 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      * This method throws a SecurityException if the resource
      * found at url and referenced from docURL
      * should not be loaded.
-     * 
+     *
      * This is a convenience method to call checkLoadExternalResource
-     * on the ExternalResourceSecurity strategy returned by 
+     * on the ExternalResourceSecurity strategy returned by
      * getExternalResourceSecurity.
      *
      * @param resourceURL url for the script, as defined in
      *        the resource's xlink:href attribute. If that
      *        attribute was empty, then this parameter should
      *        be null
-     * @param docURL url for the document into which the 
+     * @param docURL url for the document into which the
      *        resource was found.
      */
-    public void 
+    public void
         checkLoadExternalResource(ParsedURL resourceURL,
                                   ParsedURL docURL) throws SecurityException {
         userAgent.checkLoadExternalResource(resourceURL,
@@ -1834,14 +1834,14 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     public boolean isDynamicDocument(Document doc) {
         return BaseScriptingEnvironment.isDynamicDocument(this, doc);
     }
-    
+
     /**
      * Tells whether the given SVG document is Interactive.
      * We say it is, if it has any &lt;title>, &lt;desc>, or &lt;a> elements,
      * of if the 'cursor' property is anything but Auto on any element.
      */
     public boolean isInteractiveDocument(Document doc) {
-        
+
         Element root = ((SVGDocument)doc).getRootElement();
         if (!SVGConstants.SVG_NAMESPACE_URI.equals(root.getNamespaceURI()))
             return false;
@@ -1865,7 +1865,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     public boolean checkInteractiveElement(SVGDocument doc,
                                            Element e) {
         String tag = e.getLocalName();
-        
+
         // Check if it's one of our important element.
         if (SVGConstants.SVG_A_TAG.equals(tag))
             return true;
@@ -1889,7 +1889,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
 
         /* We would like to do this but the CSS Engine isn't setup when
            we want to do this.
-           
+
         // Check if cursor property is set to something other than 'auto'.
         Value cursorValue = CSSUtilities.getComputedStyle
             (e, SVGCSSEngine.CURSOR_INDEX);
@@ -1914,7 +1914,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         }
         return false;
     }
-    
+
 
     // bridge extensions support //////////////////////////////////////////////
 
@@ -1970,7 +1970,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      */
     protected static List globalExtensions = null;
 
-    public synchronized static List getGlobalBridgeExtensions() {
+    public static synchronized List getGlobalBridgeExtensions() {
         if (globalExtensions != null) {
             return globalExtensions;
         }
@@ -1996,7 +1996,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
             }
         }
         return globalExtensions;
-    }        
+    }
 
     public static class CSSEngineUserAgentWrapper implements CSSEngineUserAgent {
         UserAgent ua;

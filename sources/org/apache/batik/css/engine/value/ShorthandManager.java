@@ -30,12 +30,12 @@ import org.w3c.dom.DOMException;
  * @version $Id$
  */
 public interface ShorthandManager {
-    
+
     /**
      * Returns the name of the property handled.
      */
     String getPropertyName();
-    
+
     /**
      * Whether the handled property can be animated.
      */
@@ -63,8 +63,8 @@ public interface ShorthandManager {
     /**
      * To handle a property value created by a ShorthandManager.
      */
-    public interface PropertyHandler {
-        public void property(String name, LexicalUnit value,
+    interface PropertyHandler {
+        void property(String name, LexicalUnit value,
                              boolean important);
     }
 }

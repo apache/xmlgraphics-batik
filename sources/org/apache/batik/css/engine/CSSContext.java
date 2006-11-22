@@ -30,7 +30,7 @@ import org.w3c.dom.Element;
  * @version $Id$
  */
 public interface CSSContext {
-    
+
     /**
      * Returns the Value corresponding to the given system color.
      */
@@ -83,30 +83,30 @@ public interface CSSContext {
     /**
      * This method should throw a SecurityException if the resource
      * found at url and referenced from docURL should not be loaded.
-     * 
+     *
      * @param resourceURL url for the resource, as defined in
      *        the resource's xlink:href attribute. If that
      *        attribute was empty, then this parameter should
      *        be null
-     * @param docURL url for the document into which the 
+     * @param docURL url for the document into which the
      *        resource was found.
      */
-    public void 
+    void
         checkLoadExternalResource(ParsedURL resourceURL,
                                   ParsedURL docURL) throws SecurityException;
 
     /**
      * Returns true if the document is dynamic, false otherwise.
      */
-    public boolean isDynamic();
+    boolean isDynamic();
 
     /**
      * Returns true if the document is interactive, false otherwise.
      */
-    public boolean isInteractive();
+    boolean isInteractive();
 
     /**
      * Returns the CSS engine associated with given element.
      */
-    public CSSEngine getCSSEngineForElement(Element e);
+    CSSEngine getCSSEngineForElement(Element e);
 }
