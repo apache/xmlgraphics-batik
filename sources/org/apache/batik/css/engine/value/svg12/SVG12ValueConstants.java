@@ -51,4 +51,4 @@ public interface SVG12ValueConstants extends SVGValueConstants {
     Value NORMAL_VALUE = new StringValue(CSSPrimitiveValue.CSS_IDENT,
                                          SVG12CSSConstants.CSS_NORMAL_VALUE);
 
-};
+}

@@ -57,17 +57,17 @@ public abstract class SVGKernElementBridge extends AbstractSVGBridge {
         if (k.length() == 0) {
             k = SVG_KERN_K_DEFAULT_VALUE;
         }
-        
+
         // get the kern float value
         float kernValue = Float.parseFloat(k);
-        
+
         // set up the first and second glyph sets and unicode ranges
         int firstGlyphLen = 0, secondGlyphLen = 0;
         int [] firstGlyphSet = null;
         int [] secondGlyphSet = null;
         List firstUnicodeRanges = new ArrayList();
         List secondUnicodeRanges = new ArrayList();
-        
+
         // process the u1 attribute
         StringTokenizer st = new StringTokenizer(u1, ",");
         while (st.hasMoreTokens()) {
@@ -80,14 +80,13 @@ public abstract class SVGKernElementBridge extends AbstractSVGBridge {
                     firstGlyphSet = glyphCodes;
                     firstGlyphLen = glyphCodes.length;
                 }else {
-                    if ((firstGlyphLen + glyphCodes.length) > 
+                    if ((firstGlyphLen + glyphCodes.length) >
                         firstGlyphSet.length) {
                         int sz = firstGlyphSet.length*2;
                         if (sz <firstGlyphLen + glyphCodes.length)
                             sz = firstGlyphLen + glyphCodes.length;
                         int [] tmp = new int[sz];
-                        for (int i = 0; i < firstGlyphLen; i++)
-                            tmp[i] = firstGlyphSet[i];
+                        System.arraycopy( firstGlyphSet, 0, tmp, 0, firstGlyphLen );
                         firstGlyphSet = tmp;
                     }
                     for (int i = 0; i < glyphCodes.length; i++)
@@ -95,7 +94,7 @@ public abstract class SVGKernElementBridge extends AbstractSVGBridge {
                 }
             }
         }
-        
+
         // process the u2 attrbute
         st = new StringTokenizer(u2, ",");
         while (st.hasMoreTokens()) {
@@ -108,14 +107,13 @@ public abstract class SVGKernElementBridge extends AbstractSVGBridge {
                     secondGlyphSet = glyphCodes;
                     secondGlyphLen = glyphCodes.length;
                 } else {
-                    if ((secondGlyphLen + glyphCodes.length) > 
+                    if ((secondGlyphLen + glyphCodes.length) >
                         secondGlyphSet.length) {
                         int sz = secondGlyphSet.length*2;
                         if (sz <secondGlyphLen + glyphCodes.length)
                             sz = secondGlyphLen + glyphCodes.length;
                         int [] tmp = new int[sz];
-                        for (int i = 0; i < secondGlyphLen; i++)
-                            tmp[i] = secondGlyphSet[i];
+                        System.arraycopy( secondGlyphSet, 0, tmp, 0, secondGlyphLen );
                         secondGlyphSet = tmp;
                     }
                     for (int i = 0; i < glyphCodes.length; i++)
@@ -123,7 +121,7 @@ public abstract class SVGKernElementBridge extends AbstractSVGBridge {
                 }
             }
         }
-        
+
         // process the g1 attribute
         st = new StringTokenizer(g1, ",");
         while (st.hasMoreTokens()) {
@@ -133,21 +131,20 @@ public abstract class SVGKernElementBridge extends AbstractSVGBridge {
                 firstGlyphSet = glyphCodes;
                 firstGlyphLen = glyphCodes.length;
             }else {
-                if ((firstGlyphLen + glyphCodes.length) > 
+                if ((firstGlyphLen + glyphCodes.length) >
                     firstGlyphSet.length) {
                     int sz = firstGlyphSet.length*2;
                     if (sz <firstGlyphLen + glyphCodes.length)
                         sz = firstGlyphLen + glyphCodes.length;
                     int [] tmp = new int[sz];
-                    for (int i = 0; i < firstGlyphLen; i++)
-                        tmp[i] = firstGlyphSet[i];
+                    System.arraycopy( firstGlyphSet, 0, tmp, 0, firstGlyphLen );
                     firstGlyphSet = tmp;
                 }
                 for (int i = 0; i < glyphCodes.length; i++)
                     firstGlyphSet[firstGlyphLen++] = glyphCodes[i];
             }
         }
-        
+
         // process the g2 attribute
         st = new StringTokenizer(g2, ",");
         while (st.hasMoreTokens()) {
@@ -157,14 +154,13 @@ public abstract class SVGKernElementBridge extends AbstractSVGBridge {
                 secondGlyphSet = glyphCodes;
                 secondGlyphLen = glyphCodes.length;
             } else {
-                if ((secondGlyphLen + glyphCodes.length) > 
+                if ((secondGlyphLen + glyphCodes.length) >
                     secondGlyphSet.length) {
                     int sz = secondGlyphSet.length*2;
                     if (sz <secondGlyphLen + glyphCodes.length)
                         sz = secondGlyphLen + glyphCodes.length;
                     int [] tmp = new int[sz];
-                    for (int i = 0; i < secondGlyphLen; i++)
-                        tmp[i] = secondGlyphSet[i];
+                    System.arraycopy( secondGlyphSet, 0, tmp, 0, secondGlyphLen );
                     secondGlyphSet = tmp;
                 }
                 for (int i = 0; i < glyphCodes.length; i++)
@@ -174,7 +170,7 @@ public abstract class SVGKernElementBridge extends AbstractSVGBridge {
 
         // construct the arrays
         int[] firstGlyphs;
-        if ((firstGlyphLen == 0) || 
+        if ((firstGlyphLen == 0) ||
             (firstGlyphLen == firstGlyphSet.length)) {
             firstGlyphs = firstGlyphSet;
         } else {
@@ -182,12 +178,12 @@ public abstract class SVGKernElementBridge extends AbstractSVGBridge {
             System.arraycopy(firstGlyphSet, 0, firstGlyphs, 0, firstGlyphLen);
         }
         int[] secondGlyphs;
-        if ((secondGlyphLen == 0) || 
+        if ((secondGlyphLen == 0) ||
             (secondGlyphLen == secondGlyphSet.length)) {
             secondGlyphs = secondGlyphSet;
         } else {
             secondGlyphs = new int[secondGlyphLen];
-            System.arraycopy(secondGlyphSet, 0, secondGlyphs, 0, 
+            System.arraycopy(secondGlyphSet, 0, secondGlyphs, 0,
                              secondGlyphLen);
         }
 
@@ -200,7 +196,7 @@ public abstract class SVGKernElementBridge extends AbstractSVGBridge {
         secondUnicodeRanges.toArray(secondRanges);
 
         // return the new Kern object
-        return new Kern(firstGlyphs, secondGlyphs, 
+        return new Kern(firstGlyphs, secondGlyphs,
                         firstRanges, secondRanges, kernValue);
     }
 }

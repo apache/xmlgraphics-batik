@@ -162,9 +162,7 @@ public class BridgeException extends RuntimeException {
         fullparams[0] = uri;
         fullparams[1] = new Integer(line);
         fullparams[2] = lname;
-        for (int i=0; i < params.length; ++i) {
-            fullparams[i+3] = params[i];
-        }
+        System.arraycopy( params, 0, fullparams, 3, params.length );
         return Messages.formatMessage(code, fullparams);
     }
 

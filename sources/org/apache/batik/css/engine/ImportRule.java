@@ -27,11 +27,11 @@ import java.net.URL;
  * @version $Id$
  */
 public class ImportRule extends MediaRule {
-    
+
     /**
      * The type constant.
      */
-    public final static short TYPE = (short)2;
+    public static final short TYPE = (short)2;
 
     /**
      * The URI of the imported stylesheet.

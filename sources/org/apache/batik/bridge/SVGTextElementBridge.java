@@ -94,7 +94,7 @@ import org.w3c.dom.svg.SVGTextContentElement;
 public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
     implements SVGTextContent {
 
-    protected final static Integer ZERO = new Integer(0);
+    protected static final Integer ZERO = new Integer(0);
 
     public static final
         AttributedCharacterIterator.Attribute TEXT_COMPOUND_DELIMITER =

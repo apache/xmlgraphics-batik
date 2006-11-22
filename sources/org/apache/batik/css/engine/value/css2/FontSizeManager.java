@@ -43,11 +43,11 @@ import org.w3c.dom.css.CSSPrimitiveValue;
  * @version $Id$
  */
 public class FontSizeManager extends LengthManager {
-    
+
     /**
      * The identifier values.
      */
-    protected final static StringMap values = new StringMap();
+    protected static final StringMap values = new StringMap();
     static {
         values.put(CSSConstants.CSS_ALL_VALUE,
                    ValueConstants.ALL_VALUE);
@@ -105,7 +105,7 @@ public class FontSizeManager extends LengthManager {
     public String getPropertyName() {
         return CSSConstants.CSS_FONT_SIZE_PROPERTY;
     }
-    
+
     /**
      * Implements {@link ValueManager#getPropertyType()}.
      */
@@ -183,7 +183,7 @@ public class FontSizeManager extends LengthManager {
                                   v / ctx.getPixelUnitToMillimeter());
 
         case CSSPrimitiveValue.CSS_CM:
-            ctx = engine.getCSSContext(); 
+            ctx = engine.getCSSContext();
             v = value.getFloatValue();
             return new FloatValue(CSSPrimitiveValue.CSS_NUMBER,
                                   v * 10f / ctx.getPixelUnitToMillimeter());
@@ -245,7 +245,7 @@ public class FontSizeManager extends LengthManager {
             }
             return new FloatValue(CSSPrimitiveValue.CSS_NUMBER, fs * scale);
         }
-        
+
         // absolute identifiers
         CSSContext ctx = engine.getCSSContext();
         float fs = ctx.getMediumFontSize();

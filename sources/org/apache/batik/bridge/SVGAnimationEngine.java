@@ -120,10 +120,10 @@ public class SVGAnimationEngine extends AnimationEngine {
     /**
      * The factory for unparsed string values.
      */
-    protected UncomputedAnimatableStringValueFactory 
-        uncomputedAnimatableStringValueFactory = 
+    protected UncomputedAnimatableStringValueFactory
+        uncomputedAnimatableStringValueFactory =
             new UncomputedAnimatableStringValueFactory();
-    
+
     /**
      * The factory for length-or-ident values.
      */
@@ -211,7 +211,7 @@ public class SVGAnimationEngine extends AnimationEngine {
      * The thread that ticks the animation engine.
      */
     protected AnimationThread animationThread;
-    
+
     /**
      * Set of SMIL animation event names for SVG 1.1.
      */
@@ -315,7 +315,7 @@ public class SVGAnimationEngine extends AnimationEngine {
     public AnimatableValue getUnderlyingCSSValue(Element animElt,
                                                  AnimationTarget target,
                                                  String pn) {
-        ValueManager vms[] = cssEngine.getValueManagers();
+        ValueManager[] vms = cssEngine.getValueManagers();
         int idx = cssEngine.getPropertyIndex(pn);
         if (idx != -1) {
             int type = vms[idx].getPropertyType();
@@ -680,18 +680,18 @@ public class SVGAnimationEngine extends AnimationEngine {
      * The thread that ticks the animation.
      */
     protected class AnimationThread extends Thread {
-        
+
         /**
          * The current time.
          */
         protected Calendar time = Calendar.getInstance();
-        
+
         /**
          * The RunnableQueue to perform the animation in.
          */
         protected RunnableQueue runnableQueue =
             ctx.getUpdateManager().getUpdateRunnableQueue();
-        
+
         /**
          * The animation ticker Runnable.
          */
@@ -727,17 +727,17 @@ public class SVGAnimationEngine extends AnimationEngine {
                 }
             }
         }
-        
+
         /**
          * A runnable that ticks the animation engine.
          */
         protected class Ticker implements Runnable {
-            
+
             /**
              * The document time to tick at next.
              */
             protected float t;
-            
+
             /**
              * Ticks the animation over.
              */
@@ -968,7 +968,7 @@ public class SVGAnimationEngine extends AnimationEngine {
                 align = SVGPreserveAspectRatio.SVG_PRESERVEASPECTRATIO_UNKNOWN;
                 meetOrSlice = SVGPreserveAspectRatio.SVG_MEETORSLICE_UNKNOWN;
             }
-            
+
             /**
              * Implements {@link PreserveAspectRatioHandler#none()}.
              */
@@ -1422,7 +1422,7 @@ public class SVGAnimationEngine extends AnimationEngine {
             return new AnimatableNumberOrIdentValue(target, fv.getFloatValue());
         }
     }
-    
+
     /**
      * Factory class for {@link AnimatableAngleValue}s.
      */
@@ -1450,7 +1450,7 @@ public class SVGAnimationEngine extends AnimationEngine {
             return new AnimatableAngleValue(target, fv.getFloatValue(), unit);
         }
     }
-    
+
     /**
      * Factory class for {@link AnimatableAngleOrIdentValue}s.
      */
@@ -1483,7 +1483,7 @@ public class SVGAnimationEngine extends AnimationEngine {
                                                    unit);
         }
     }
-    
+
     /**
      * Factory class for {@link AnimatableColorValue}s.
      */
@@ -1563,7 +1563,7 @@ public class SVGAnimationEngine extends AnimationEngine {
             return null;
         }
     }
-    
+
     /**
      * Factory class for computed CSS {@link AnimatableStringValue}s.
      */

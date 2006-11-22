@@ -86,7 +86,7 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
         if (n == 0) {
             return null;
         }
-        float fl[] = new float[n];
+        float[] fl = new float[n];
         for (int i=0; i < n; i++) {
             fl[i] = l.getItem(i).getValue();
         }
@@ -265,7 +265,7 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
 
             Iterator iter = refs.iterator();
             while (iter.hasNext()) {
-                if (purl.equals(iter.next())) 
+                if (purl.equals(iter.next()))
                     throw new BridgeException
                         (ctx, e, ERR_XLINK_HREF_CIRCULAR_DEPENDENCIES,
                          new Object[] {uriStr});
@@ -508,7 +508,7 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
                 (ctx, filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
                  new Object[] {SVG_FILTER_RES_ATTRIBUTE, s});
         }
-        
+
         if (vals[0] == null)
             filterRes[0] = -1;
         else {
@@ -536,7 +536,7 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
      * second Number. It always returns an array of two Floats.  If either
      * or both values are not provided the entries are set to null
      */
-    public static Float[] convertSVGNumberOptionalNumber(Element elem, 
+    public static Float[] convertSVGNumberOptionalNumber(Element elem,
                                                          String attrName,
                                                          String attrValue,
                                                          BridgeContext ctx) {
@@ -632,19 +632,19 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
        // Account for region padding
        //
        units = getChainableAttributeNS
-           (filterElement, null, 
+           (filterElement, null,
             SVG12Constants.SVG_FILTER_MARGINS_UNITS_ATTRIBUTE, ctx);
        if (units.length() == 0) {
            // Default to user space on use for margins, not objectBoundingBox
            unitsType = USER_SPACE_ON_USE;
        } else {
            unitsType = parseCoordinateSystem
-               (filterElement, 
+               (filterElement,
                 SVG12Constants.SVG_FILTER_MARGINS_UNITS_ATTRIBUTE, units, ctx);
        }
 
        // 'batik:dx' attribute - default is 0
-       String dxStr = filterElement.getAttributeNS(null, 
+       String dxStr = filterElement.getAttributeNS(null,
                                                    SVG12Constants.SVG_MX_ATRIBUTE);
        if (dxStr.length() == 0) {
            dxStr = SVG12Constants.SVG_FILTER_MX_DEFAULT_VALUE;
@@ -664,7 +664,7 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
        if (dhStr.length() == 0) {
            dhStr = SVG12Constants.SVG_FILTER_MH_DEFAULT_VALUE;
        }
-       
+
        return extendRegion(dxStr,
                            dyStr,
                            dwStr,
@@ -674,10 +674,10 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
                            region,
                            uctx);
    }
-    
+
    /**
     * Returns a rectangle that represents the region extended by the
-    * specified differential coordinates. 
+    * specified differential coordinates.
     *
     * @param dxStr the differential x coordinate of the region
     * @param dyStr the differential y coordinate of the region
@@ -696,7 +696,7 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
                                               GraphicsNode filteredNode,
                                               Rectangle2D region,
                                               UnitProcessor.Context uctx) {
-        
+
         float dx,dy,dw,dh;
         switch (unitsType) {
         case USER_SPACE_ON_USE:
@@ -734,7 +734,7 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
         default:
             throw new IllegalArgumentException("Invalid unit type");
         }
-        
+
         region.setRect(region.getX() + dx,
                        region.getY() + dy,
                        region.getWidth() + dw,
@@ -744,7 +744,7 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
     }
 
 
-    public static Rectangle2D 
+    public static Rectangle2D
         getBaseFilterPrimitiveRegion(Element filterPrimitiveElement,
                                      Element filteredElement,
                                      GraphicsNode filteredNode,
@@ -789,7 +789,7 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
                 (s, SVG_HEIGHT_ATTRIBUTE, uctx);
         }
 
-        // NOTE: it may be that dx/dy/dw/dh should be applied here 
+        // NOTE: it may be that dx/dy/dw/dh should be applied here
         //       but since this is mostly aimed at feImage I am
         //       unsure that it is really needed.
         return new Rectangle2D.Double(x, y, w, h);
@@ -912,7 +912,7 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
 
         // Now, extend filter primitive region with dx/dy/dw/dh
         // settings (Batik extension). The dx/dy/dw/dh padding is
-        // *always* in userSpaceOnUse space. 
+        // *always* in userSpaceOnUse space.
 
         units = "";
         if ((parentNode != null) &&
@@ -928,7 +928,7 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
             unitsType = USER_SPACE_ON_USE;
         } else {
             unitsType = parseCoordinateSystem
-                (filterPrimitiveElement, 
+                (filterPrimitiveElement,
                  SVG12Constants.SVG_FILTER_PRIMITIVE_MARGINS_UNITS_ATTRIBUTE,
                  units, ctx);
         }
@@ -960,7 +960,7 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
         if (dhStr.length() == 0) {
             dhStr = SVG12Constants.SVG_FILTER_MH_DEFAULT_VALUE;
         }
-        
+
         region = extendRegion(dxStr,
                               dyStr,
                               dwStr,
@@ -969,7 +969,7 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
                               filteredNode,
                               region,
                               uctx);
-        
+
         Rectangle2D.intersect(region, filterRegion, region);
 
         return region;

@@ -27,7 +27,7 @@ package org.apache.batik.css.engine;
  * @version $Id$
  */
 public interface CSSEngineUserAgent {
-    
+
     /**
      * Displays an error resulting from the specified Exception.
      */
@@ -38,4 +38,4 @@ public interface CSSEngineUserAgent {
      */
     void displayMessage(String message);
 
-};
+}

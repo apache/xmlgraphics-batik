@@ -61,7 +61,7 @@ public class CSSLangCondition
     /**
      * <b>SAC</b>: Implements {@link
      * org.w3c.css.sac.Condition#getConditionType()}.
-     */    
+     */
     public short getConditionType() {
         return SAC_LANG_CONDITION;
     }
@@ -98,6 +98,6 @@ public class CSSLangCondition
      * Returns a text representation of this object.
      */
     public String toString() {
-        return ":lang(" + lang + ")";
+        return ":lang(" + lang + ')';
     }
 }

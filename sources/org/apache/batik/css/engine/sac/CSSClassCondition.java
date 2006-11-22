@@ -38,15 +38,15 @@ public class CSSClassCondition extends CSSAttributeCondition {
                              String value) {
         super(localName, namespaceURI, true, value);
     }
-    
+
     /**
      * <b>SAC</b>: Implements {@link
      * org.w3c.css.sac.Condition#getConditionType()}.
-     */    
+     */
     public short getConditionType() {
         return SAC_CLASS_CONDITION;
     }
-    
+
     /**
      * Tests whether this condition matches the given element.
      */
@@ -71,6 +71,6 @@ public class CSSClassCondition extends CSSAttributeCondition {
      * Returns a text representation of this object.
      */
     public String toString() {
-        return "." + getValue();
+        return '.' + getValue();
     }
 }

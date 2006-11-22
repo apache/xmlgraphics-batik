@@ -28,7 +28,7 @@ import org.w3c.dom.css.CSSPrimitiveValue;
  * @version $Id$
  */
 public class FloatValue extends AbstractValue {
-    
+
     /**
      * Returns the CSS text associated with the given type/value pair.
      */
@@ -46,7 +46,7 @@ public class FloatValue extends AbstractValue {
     /**
      * The unit types representations
      */
-    protected final static String[] UNITS = {
+    protected static final String[] UNITS = {
         "", "%", "em", "ex", "px", "cm", "mm", "in", "pt",
         "pc", "deg", "rad", "grad", "ms", "s", "Hz", "kHz", ""
     };
@@ -84,7 +84,7 @@ public class FloatValue extends AbstractValue {
     }
 
     /**
-     *  A string representation of the current value. 
+     *  A string representation of the current value.
      */
     public String getCssText() {
         return getCssText(unitType, floatValue);

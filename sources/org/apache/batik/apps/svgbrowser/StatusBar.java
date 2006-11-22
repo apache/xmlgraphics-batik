@@ -40,7 +40,7 @@ public class StatusBar extends JPanel {
     /**
      * The gui resources file name
      */
-    protected final static String RESOURCES =
+    protected static final String RESOURCES =
         "org.apache.batik.apps.svgbrowser.resources.StatusBarMessages";
 
     /**
@@ -52,6 +52,7 @@ public class StatusBar extends JPanel {
      * The resource manager
      */
     protected static ResourceManager rManager;
+
     static {
         bundle = ResourceBundle.getBundle(RESOURCES, Locale.getDefault());
         rManager = new ResourceManager(bundle);

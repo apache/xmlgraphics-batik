@@ -71,7 +71,7 @@ public class ThumbnailDialog extends JDialog {
     /**
      * The resource file name
      */
-    protected final static String RESOURCES =
+    protected static final String RESOURCES =
         "org.apache.batik.apps.svgbrowser.resources.ThumbnailDialog";
 
     /**
@@ -120,7 +120,7 @@ public class ThumbnailDialog extends JDialog {
         // register listeners to maintain consistency
         this.svgCanvas = svgCanvas;
         svgCanvas.addGVTTreeRendererListener(new ThumbnailGVTListener());
-        svgCanvas.addSVGDocumentLoaderListener(new ThumbnailDocumentListener());        
+        svgCanvas.addSVGDocumentLoaderListener(new ThumbnailDocumentListener());
         svgCanvas.addComponentListener(new ThumbnailCanvasComponentListener());
 
         // create the thumbnail
@@ -164,7 +164,7 @@ public class ThumbnailDialog extends JDialog {
             return null;
         CompositeGraphicsNode cgn = (CompositeGraphicsNode)gn;
         List children = cgn.getChildren();
-        if (children.size() == 0) 
+        if (children.size() == 0)
             return null;
         gn = (GraphicsNode)cgn.getChildren().get(0);
         if (!(gn instanceof CanvasGraphicsNode))

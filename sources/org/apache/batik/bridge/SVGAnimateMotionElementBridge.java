@@ -107,7 +107,7 @@ public class SVGAnimateMotionElementBridge extends SVGAnimateElementBridge {
                     }
                     public void endAngle() throws ParseException {
                     }
-                };
+                }
                 AngleParser ap = new AngleParser();
                 Handler h = new Handler();
                 ap.setAngleHandler(h);

@@ -29,20 +29,20 @@ public interface ResourceOrigin {
     /**
      * Any origin
      */
-    static final int ANY = 1;
+    int ANY = 1;
 
     /**
      * Same as document
      */
-    static final int DOCUMENT = 2;
+    int DOCUMENT = 2;
 
     /**
-     * Embeded into the document 
+     * Embeded into the document
      */
-    static final int EMBEDED = 4;
+    int EMBEDED = 4;
 
     /**
      * No origin is ok
      */
-    static final int NONE = 8;
+    int NONE = 8;
 }

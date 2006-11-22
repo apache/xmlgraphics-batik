@@ -28,7 +28,7 @@ import org.w3c.dom.css.CSSPrimitiveValue;
  * @version $Id$
  */
 public class RectValue extends AbstractValue {
-    
+
     /**
      * The top value.
      */
@@ -67,13 +67,13 @@ public class RectValue extends AbstractValue {
     }
 
     /**
-     *  A string representation of the current value. 
+     *  A string representation of the current value.
      */
     public String getCssText() {
         return "rect(" + top.getCssText() + ", "
             +  right.getCssText() + ", "
             +  bottom.getCssText() + ", "
-            +  left.getCssText() + ")";
+            +  left.getCssText() + ')';
     }
 
     /**

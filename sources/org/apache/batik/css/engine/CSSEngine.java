@@ -992,7 +992,7 @@ public abstract class CSSEngine {
         /**
          * Called with a non-shorthand property name and it's value.
          */
-        public void setMainProperty(String name, Value v, boolean important);
+        void setMainProperty(String name, Value v, boolean important);
     }
 
     public void setMainProperties
@@ -1815,7 +1815,7 @@ public abstract class CSSEngine {
 
     // CSS events /////////////////////////////////////////////////////////
 
-    protected final static CSSEngineListener[] LISTENER_ARRAY =
+    protected static final CSSEngineListener[] LISTENER_ARRAY =
         new CSSEngineListener[0];
 
     /**

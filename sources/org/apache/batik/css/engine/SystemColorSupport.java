@@ -36,7 +36,7 @@ import org.w3c.dom.css.CSSPrimitiveValue;
  * @version $Id$
  */
 public class SystemColorSupport implements CSSConstants {
-    
+
     /**
      * Returns the Value corresponding to the given system color.
      */
@@ -52,7 +52,7 @@ public class SystemColorSupport implements CSSConstants {
     /**
      * The color factories.
      */
-    protected final static Map factories = new HashMap();
+    protected static final Map factories = new HashMap();
     static {
         factories.put(CSS_ACTIVEBORDER_VALUE,
                       SystemColor.windowBorder);

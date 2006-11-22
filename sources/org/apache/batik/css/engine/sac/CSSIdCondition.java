@@ -55,15 +55,15 @@ public class CSSIdCondition extends AbstractAttributeCondition {
     /**
      * <b>SAC</b>: Implements {@link
      * org.w3c.css.sac.Condition#getConditionType()}.
-     */    
+     */
     public short getConditionType() {
         return SAC_ID_CONDITION;
     }
-    
+
     /**
      * <b>SAC</b>: Implements {@link
      * org.w3c.css.sac.AttributeCondition#getNamespaceURI()}.
-     */    
+     */
     public String getNamespaceURI() {
         return namespaceURI;
     }
@@ -111,6 +111,6 @@ public class CSSIdCondition extends AbstractAttributeCondition {
      * Returns a text representation of this object.
      */
     public String toString() {
-        return "#" + getValue();
+        return '#' + getValue();
     }
 }

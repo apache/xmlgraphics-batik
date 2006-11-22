@@ -74,29 +74,29 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
     /**
      * Used in 'parseXML()'.
      */
-    protected final static String FRAGMENT_PREFIX =
+    protected static final String FRAGMENT_PREFIX =
         "<svg xmlns='" +
         SVGConstants.SVG_NAMESPACE_URI +
         "' xmlns:xlink='" +
         XLinkSupport.XLINK_NAMESPACE_URI +
         "'>";
 
-    protected final static String FRAGMENT_SUFFIX =
+    protected static final String FRAGMENT_SUFFIX =
         "</svg>";
 
-    public final static String [] SVG_EVENT_ATTRS = {
+    public static final String [] SVG_EVENT_ATTRS = {
         "onabort",     // SVG element
         "onerror",     // SVG element
         "onresize",    // SVG element
         "onscroll",    // SVG element
         "onunload",    // SVG element
         "onzoom",      // SVG element
-        
+
         "onbegin",     // SMIL
         "onend",       // SMIL
         "onrepeat",    // SMIL
 
-        "onfocusin",   // UI Events 
+        "onfocusin",   // UI Events
         "onfocusout",  // UI Events
         "onactivate",  // UI Events
         "onclick",     // UI Events
@@ -109,22 +109,22 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
 
         "onkeypress",  // UI Events
         "onkeydown",   // UI Events
-        "onkeyup"      // UI Events 
+        "onkeyup"      // UI Events
     };
 
-    public final static String [] SVG_DOM_EVENT = {
+    public static final String [] SVG_DOM_EVENT = {
         "SVGAbort",    // SVG element
         "SVGError",    // SVG element
         "SVGResize",   // SVG element
         "SVGScroll",   // SVG element
         "SVGUnload",   // SVG element
         "SVGZoom",     // SVG element
-        
+
         "beginEvent",  // SMIL
         "endEvent",    // SMIL
         "repeatEvent", // SMIL
 
-        "DOMFocusIn",  // UI Events 
+        "DOMFocusIn",  // UI Events
         "DOMFocusOut", // UI Events
         "DOMActivate", // UI Events
         "click",       // UI Events
@@ -135,7 +135,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
         "mousemove",   // UI Events
         "keypress",    // UI Events
         "keydown",     // UI Events
-        "keyup"        // UI Events 
+        "keyup"        // UI Events
     };
 
     /**
@@ -294,7 +294,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
     protected EventListener keyupListener =
         new ScriptingEventListener("onkeyup");
 
-    
+
     protected EventListener [] listeners = {
         svgAbortListener,
         svgErrorListener,
@@ -340,7 +340,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
         super(ctx);
         updateManager = ctx.getUpdateManager();
         updateRunnableQueue = updateManager.getUpdateRunnableQueue();
-        
+
         // Add the scripting listeners.
         addScriptingListeners(document.getDocumentElement());
 
@@ -394,7 +394,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
     /**
      * Runs an event handler.
      */
-    public void runEventHandler(String script, Event evt, 
+    public void runEventHandler(String script, Event evt,
                                 String lang, String desc) {
         Interpreter interpreter = getInterpreter(lang);
         if (interpreter == null)
@@ -534,7 +534,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
             target.addEventListenerNS
                 (XMLConstants.XML_EVENTS_NAMESPACE_URI, "click",
                  clickListener, false, null);
-        } 
+        }
         if (elt.hasAttributeNS(null, "onmousedown")) {
             target.addEventListenerNS
                 (XMLConstants.XML_EVENTS_NAMESPACE_URI, "mousedown",
@@ -699,7 +699,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
                  listener, false);
         }
     }
-    
+
 
     /**
      * To interpret a script.
@@ -792,7 +792,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
                 } else {
                     e.printStackTrace(); // No UA so just output...
                 }
-                synchronized (this) { 
+                synchronized (this) {
                     error = true;
                 }
             }
@@ -875,7 +875,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
                         }
                     }
                 };
-            
+
             timer.schedule(tt, interval, interval);
             return tt;
         }
@@ -949,7 +949,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
             SAXSVGDocumentFactory df = new SAXSVGDocumentFactory
                 (XMLResourceDescriptor.getXMLParserClassName());
             URL urlObj = null;
-            if ((doc != null) && (doc instanceof SVGOMDocument)) 
+            if ((doc != null) && (doc instanceof SVGOMDocument))
                 urlObj = ((SVGOMDocument)doc).getURLObject();
             if (urlObj == null) {
                 urlObj = ((SVGOMDocument)bridgeContext.getDocument()).
@@ -968,7 +968,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
             } catch (Exception ex) {
                 /* nothing  */
             }
-            
+
             if ((doc != null) && (doc instanceof SVGOMDocument)) {
                 // Try and parse with an 'svg' element wrapper - for
                 // things like '<rect ../>' - ensure that rect ends up
@@ -1018,18 +1018,18 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
             }
             try {
                 Document d = sdf.createDocument(uri, new StringReader(text));
-                if (doc == null) 
+                if (doc == null)
                     return d;
 
                 Node result = doc.createDocumentFragment();
-                result.appendChild(doc.importNode(d.getDocumentElement(), 
+                result.appendChild(doc.importNode(d.getDocumentElement(),
                                                   true));
                 return result;
             } catch (Exception ext) {
                 if (userAgent != null)
                     userAgent.displayError(ext);
             }
-            
+
             return null;
         }
 
@@ -1041,9 +1041,9 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
             getURL(uri, h, null);
         }
 
-        final static String DEFLATE="deflate";
-        final static String GZIP   ="gzip";
-        final static String UTF_8  ="UTF-8";
+        static final String DEFLATE="deflate";
+        static final String GZIP   ="gzip";
+        static final String UTF_8  ="UTF-8";
         /**
          * Implements {@link
          * org.apache.batik.script.Window#getURL(String,org.apache.batik.script.Window.URLResponseHandler,String)}.
@@ -1122,21 +1122,21 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
         }
 
 
-        public void postURL(String uri, String content, 
+        public void postURL(String uri, String content,
                             org.apache.batik.script.Window.URLResponseHandler h) {
             postURL(uri, content, h, "text/plain", null);
         }
 
-        public void postURL(String uri, String content, 
-                            org.apache.batik.script.Window.URLResponseHandler h, 
+        public void postURL(String uri, String content,
+                            org.apache.batik.script.Window.URLResponseHandler h,
                      String mimeType) {
             postURL(uri, content, h, mimeType, null);
         }
 
-        public void postURL(final String uri, 
-                            final String content, 
-                            final org.apache.batik.script.Window.URLResponseHandler h, 
-                            final String mimeType, 
+        public void postURL(final String uri,
+                            final String content,
+                            final org.apache.batik.script.Window.URLResponseHandler h,
+                            final String mimeType,
                             final String fEnc) {
             Thread t = new Thread() {
                     public void run() {
@@ -1152,7 +1152,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
                             conn.setDoInput(true);
                             conn.setUseCaches(false);
                             conn.setRequestProperty("Content-Type", mimeType);
-                            
+
                             OutputStream os = conn.getOutputStream();
                             String e=null, enc = fEnc;
                             if (enc != null) {
@@ -1177,13 +1177,13 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
                                 }
                                 if (enc.length() != 0) {
                                     e = EncodingUtilities.javaEncoding(enc);
-                                    if (e == null) e = UTF_8; 
+                                    if (e == null) e = UTF_8;
                                 } else {
                                     e = UTF_8;
                                 }
                             }
                             Writer w;
-                            if (e == null) 
+                            if (e == null)
                                 w = new OutputStreamWriter(os);
                             else
                                 w = new OutputStreamWriter(os, e);
@@ -1195,7 +1195,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
                             InputStream is = conn.getInputStream();
                             Reader r;
                             e = UTF_8;
-                            if (e == null) 
+                            if (e == null)
                                 r = new InputStreamReader(is);
                             else
                                 r = new InputStreamReader(is, e);
@@ -1335,7 +1335,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
          * The script attribute.
          */
         protected String attribute;
-        
+
         /**
          * Creates a new ScriptingEventListener.
          */

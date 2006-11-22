@@ -38,11 +38,11 @@ import org.w3c.dom.css.CSSPrimitiveValue;
  * @version $Id$
  */
 public class TextDecorationManager extends AbstractValueManager {
-    
+
     /**
      * The identifier values.
      */
-    protected final static StringMap values = new StringMap();
+    protected static final StringMap values = new StringMap();
     static {
         values.put(CSSConstants.CSS_BLINK_VALUE,
                    ValueConstants.BLINK_VALUE);
@@ -88,7 +88,7 @@ public class TextDecorationManager extends AbstractValueManager {
     public String getPropertyName() {
         return CSSConstants.CSS_TEXT_DECORATION_PROPERTY;
     }
-    
+
     /**
      * Implements {@link ValueManager#getDefaultValue()}.
      */
@@ -125,7 +125,7 @@ public class TextDecorationManager extends AbstractValueManager {
                     throw createInvalidLexicalUnitDOMException
                         (lu.getLexicalUnitType());
                 }
-                
+
             } while (lu != null);
             return lv;
         }

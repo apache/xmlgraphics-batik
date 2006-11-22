@@ -46,7 +46,7 @@ public class SVGConverterFileSource implements SVGConverterSource {
     public String getName(){
         String name = file.getName();
         if (ref != null && !"".equals(ref)){
-            name += "#" + ref;
+            name += '#' + ref;
         }
         return name;
     }
@@ -63,7 +63,7 @@ public class SVGConverterFileSource implements SVGConverterSource {
         try{
             String uri = file.toURL().toString();
             if (ref != null && !"".equals(ref)){
-                uri += "#" + ref;
+                uri += '#' + ref;
             }
             return uri;
         } catch(MalformedURLException e){
@@ -75,7 +75,7 @@ public class SVGConverterFileSource implements SVGConverterSource {
         if (o == null || !(o instanceof SVGConverterFileSource)){
             return false;
         }
-        
+
         return file.equals(((SVGConverterFileSource)o).file);
     }
 
@@ -94,7 +94,7 @@ public class SVGConverterFileSource implements SVGConverterSource {
 
         return false;
     }
-        
+
     public boolean isReadable(){
         return file.canRead();
     }

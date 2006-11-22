@@ -36,7 +36,7 @@ import org.apache.batik.dom.svg.SVGOMElement;
  * @author <a href="mailto:deweese@apache.org">Thomas DeWeese</a>
  * @version $Id$
  */
-public abstract class SVGDescriptiveElementBridge extends AbstractSVGBridge 
+public abstract class SVGDescriptiveElementBridge extends AbstractSVGBridge
     implements GenericBridge,  BridgeUpdateHandler, SVGContext {
 
     Element theElt;
@@ -58,7 +58,7 @@ public abstract class SVGDescriptiveElementBridge extends AbstractSVGBridge
     public void handleElement(BridgeContext ctx, Element e){
         UserAgent ua = ctx.getUserAgent();
         ua.handleElement(e, Boolean.TRUE);
-        
+
         if (ctx.isDynamic()) {
             SVGDescriptiveElementBridge b;
             b = (SVGDescriptiveElementBridge)getInstance();
@@ -79,16 +79,16 @@ public abstract class SVGDescriptiveElementBridge extends AbstractSVGBridge
         theElt = null;
         parent = null;
     }
-    public void handleDOMNodeInsertedEvent(MutationEvent evt) { 
+    public void handleDOMNodeInsertedEvent(MutationEvent evt) {
         UserAgent ua = theCtx.getUserAgent();
         ua.handleElement(theElt, Boolean.TRUE);
     }
-    public void handleDOMCharacterDataModified(MutationEvent evt) { 
+    public void handleDOMCharacterDataModified(MutationEvent evt) {
         UserAgent ua = theCtx.getUserAgent();
         ua.handleElement(theElt, Boolean.TRUE);
     }
 
-    public void handleDOMNodeRemovedEvent (MutationEvent evt) { 
+    public void handleDOMNodeRemovedEvent (MutationEvent evt) {
         dispose();
     }
 
@@ -115,14 +115,14 @@ public abstract class SVGDescriptiveElementBridge extends AbstractSVGBridge
      */
     public float getPixelToMM() {
         return getPixelUnitToMillimeter();
-            
+
     }
 
     public Rectangle2D getBBox() { return null; }
-    public AffineTransform getScreenTransform() { 
+    public AffineTransform getScreenTransform() {
         return theCtx.getUserAgent().getTransform();
     }
-    public void setScreenTransform(AffineTransform at) { 
+    public void setScreenTransform(AffineTransform at) {
         theCtx.getUserAgent().setTransform(at);
     }
     public AffineTransform getCTM() { return null; }
@@ -134,4 +134,4 @@ public abstract class SVGDescriptiveElementBridge extends AbstractSVGBridge
         return theCtx.getBlockHeight(theElt);
     }
     public float getFontSize() { return 0; }
-};
+}

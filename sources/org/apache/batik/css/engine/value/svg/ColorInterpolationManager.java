@@ -32,11 +32,11 @@ import org.apache.batik.util.SVGTypes;
  * @version $Id$
  */
 public class ColorInterpolationManager extends IdentifierManager {
-    
+
     /**
      * The identifier values.
      */
-    protected final static StringMap values = new StringMap();
+    protected static final StringMap values = new StringMap();
     static {
         values.put(CSSConstants.CSS_AUTO_VALUE,
                    SVGValueConstants.AUTO_VALUE);
@@ -82,7 +82,7 @@ public class ColorInterpolationManager extends IdentifierManager {
     public String getPropertyName() {
         return CSSConstants.CSS_COLOR_INTERPOLATION_PROPERTY;
     }
-    
+
     /**
      * Implements {@link
      * org.apache.batik.css.engine.value.ValueManager#getDefaultValue()}.

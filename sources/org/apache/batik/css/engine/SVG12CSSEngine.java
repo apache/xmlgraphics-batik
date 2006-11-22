@@ -39,7 +39,7 @@ import org.w3c.dom.Document;
  * @version $Id$
  */
 public class SVG12CSSEngine extends SVGCSSEngine {
-    
+
     /**
      * Creates a new SVG12CSSEngine.
      * @param doc The associated document.
@@ -83,7 +83,7 @@ public class SVG12CSSEngine extends SVGCSSEngine {
     /**
      * The value managers for SVG.
      */
-    public final static ValueManager[] SVG_VALUE_MANAGERS = {
+    public static final ValueManager[] SVG_VALUE_MANAGERS = {
         new LineHeightManager  (),
         new MarginLengthManager(SVG12CSSConstants.CSS_INDENT_PROPERTY),
         new MarginLengthManager(SVG12CSSConstants.CSS_MARGIN_BOTTOM_PROPERTY),
@@ -91,29 +91,29 @@ public class SVG12CSSEngine extends SVGCSSEngine {
         new MarginLengthManager(SVG12CSSConstants.CSS_MARGIN_RIGHT_PROPERTY),
         new MarginLengthManager(SVG12CSSConstants.CSS_MARGIN_TOP_PROPERTY),
         new SVGColorManager    (SVG12CSSConstants.CSS_SOLID_COLOR_PROPERTY),
-        new OpacityManager     (SVG12CSSConstants.CSS_SOLID_OPACITY_PROPERTY, 
+        new OpacityManager     (SVG12CSSConstants.CSS_SOLID_OPACITY_PROPERTY,
                                 true),
         new TextAlignManager   (),
     };
-    
+
     /**
      * The shorthand managers for SVG.
      */
-    public final static ShorthandManager[] SVG_SHORTHAND_MANAGERS = {
+    public static final ShorthandManager[] SVG_SHORTHAND_MANAGERS = {
         new MarginShorthandManager(),
     };
 
     //
     // The property indexes.
     //
-    public final static int LINE_HEIGHT_INDEX   = SVGCSSEngine.FINAL_INDEX+1;
-    public final static int INDENT_INDEX        = LINE_HEIGHT_INDEX+1;
-    public final static int MARGIN_BOTTOM_INDEX = INDENT_INDEX+1;
-    public final static int MARGIN_LEFT_INDEX   = MARGIN_BOTTOM_INDEX+1;
-    public final static int MARGIN_RIGHT_INDEX  = MARGIN_LEFT_INDEX+1;
-    public final static int MARGIN_TOP_INDEX    = MARGIN_RIGHT_INDEX+1;
-    public final static int SOLID_COLOR_INDEX   = MARGIN_TOP_INDEX+1;
-    public final static int SOLID_OPACITY_INDEX = SOLID_COLOR_INDEX+1;
-    public final static int TEXT_ALIGN_INDEX    = SOLID_OPACITY_INDEX+1;
-    public final static int FINAL_INDEX         = TEXT_ALIGN_INDEX;
+    public static final int LINE_HEIGHT_INDEX   = SVGCSSEngine.FINAL_INDEX+1;
+    public static final int INDENT_INDEX        = LINE_HEIGHT_INDEX+1;
+    public static final int MARGIN_BOTTOM_INDEX = INDENT_INDEX+1;
+    public static final int MARGIN_LEFT_INDEX   = MARGIN_BOTTOM_INDEX+1;
+    public static final int MARGIN_RIGHT_INDEX  = MARGIN_LEFT_INDEX+1;
+    public static final int MARGIN_TOP_INDEX    = MARGIN_RIGHT_INDEX+1;
+    public static final int SOLID_COLOR_INDEX   = MARGIN_TOP_INDEX+1;
+    public static final int SOLID_OPACITY_INDEX = SOLID_COLOR_INDEX+1;
+    public static final int TEXT_ALIGN_INDEX    = SOLID_OPACITY_INDEX+1;
+    public static final int FINAL_INDEX         = TEXT_ALIGN_INDEX;
 }

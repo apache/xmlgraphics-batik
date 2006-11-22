@@ -74,7 +74,7 @@ public class Main implements Application {
      * to read from the PreferenceManager whether or not the
      * scriptType can be loaded.
      */
-    public static final String UNKNOWN_SCRIPT_TYPE_LOAD_KEY_EXTENSION 
+    public static final String UNKNOWN_SCRIPT_TYPE_LOAD_KEY_EXTENSION
         = ".load";
 
     /**
@@ -85,7 +85,7 @@ public class Main implements Application {
     /**
      * System property for specifying an additional policy file.
      */
-    public static final String PROPERTY_JAVA_SECURITY_POLICY 
+    public static final String PROPERTY_JAVA_SECURITY_POLICY
         = "java.security.policy";
 
     /**
@@ -134,9 +134,9 @@ public class Main implements Application {
     public static final String URI_SEPARATOR = " ";
 
     /**
-     * Default font-family value. 
+     * Default font-family value.
      */
-    public static final String DEFAULT_DEFAULT_FONT_FAMILY 
+    public static final String DEFAULT_DEFAULT_FONT_FAMILY
         = "Arial, Helvetica, sans-serif";
 
     /**
@@ -161,14 +161,14 @@ public class Main implements Application {
     /**
      * The gui resources file name
      */
-    public final static String RESOURCES =
+    public static final String RESOURCES =
         "org.apache.batik.apps.svgbrowser.resources.Main";
 
     /**
      * URL for Squiggle's security policy file
      */
     public static final String SQUIGGLE_SECURITY_POLICY
-        = "org/apache/batik/apps/svgbrowser/resources/svgbrowser.policy"; 
+        = "org/apache/batik/apps/svgbrowser/resources/svgbrowser.policy";
 
     /**
      * The resource bundle
@@ -216,7 +216,7 @@ public class Main implements Application {
     protected String[] arguments;
 
     /**
-     * Controls whether the application can override the 
+     * Controls whether the application can override the
      * system security policy property. This is done when there
      * was no initial security policy specified when the application
      * started, in which case Batik will use that property.
@@ -224,8 +224,8 @@ public class Main implements Application {
     protected boolean overrideSecurityPolicy = false;
 
     /**
-     * Script security enforcement is delegated to the 
-     * security utility 
+     * Script security enforcement is delegated to the
+     * security utility
      */
     protected ApplicationSecurityEnforcer securityEnforcer;
 
@@ -299,8 +299,8 @@ public class Main implements Application {
                      "");
         defaults.put(PREFERENCE_KEY_VISITED_URI_LIST_LENGTH,
                      new Integer(MAX_VISITED_URIS));
-        
-        securityEnforcer 
+
+        securityEnforcer
             = new ApplicationSecurityEnforcer(this.getClass(),
                                               SQUIGGLE_SECURITY_POLICY);
 
@@ -367,11 +367,11 @@ public class Main implements Application {
     }
 
     /**
-     * Installs a custom policy file in the '.batik' directory. This is initialized 
+     * Installs a custom policy file in the '.batik' directory. This is initialized
      * with the content of the policy file coming with the distribution
      */
     public void installCustomPolicyFile() throws IOException {
-        String securityPolicyProperty 
+        String securityPolicyProperty
             = System.getProperty(PROPERTY_JAVA_SECURITY_POLICY);
 
         if (overrideSecurityPolicy
@@ -381,50 +381,50 @@ public class Main implements Application {
             "".equals(securityPolicyProperty)) {
             // Access default policy file
             ParsedURL policyURL = new ParsedURL(securityEnforcer.getPolicyURL());
-            
-            // Override the user policy 
+
+            // Override the user policy
             String dir = System.getProperty(PROPERTY_USER_HOME);
             File batikConfigDir = new File(dir, BATIK_CONFIGURATION_SUBDIRECTORY);
             File policyFile = new File(batikConfigDir, SQUIGGLE_POLICY_FILE);
-            
+
             // Copy original policy file into local policy file
             Reader r = new BufferedReader(new InputStreamReader(policyURL.openStream()));
             Writer w = new FileWriter(policyFile);
-            
+
             char[] buf = new char[1024];
             int n = 0;
             while ( (n=r.read(buf, 0, buf.length)) != -1 ) {
                 w.write(buf, 0, n);
             }
-            
+
             r.close();
-            
+
             // Now, append additional grants depending on the security
             // settings
-            boolean grantScriptNetworkAccess 
+            boolean grantScriptNetworkAccess
                 = preferenceManager.getBoolean
                 (PreferenceDialog.PREFERENCE_KEY_GRANT_SCRIPT_NETWORK_ACCESS);
             boolean grantScriptFileAccess
                 = preferenceManager.getBoolean
                 (PreferenceDialog.PREFERENCE_KEY_GRANT_SCRIPT_FILE_ACCESS);
-            
+
             if (grantScriptNetworkAccess) {
                 w.write(POLICY_GRANT_SCRIPT_NETWORK_ACCESS);
             }
-            
+
             if (grantScriptFileAccess) {
                 w.write(POLICY_GRANT_SCRIPT_FILE_ACCESS);
             }
-            
+
             w.close();
-            
-            // We now use the JAVA_SECURITY_POLICY property, so 
+
+            // We now use the JAVA_SECURITY_POLICY property, so
             // we allow override on subsequent calls.
             overrideSecurityPolicy = true;
-            
+
             System.setProperty(PROPERTY_JAVA_SECURITY_POLICY,
                                policyFile.toURL().toString());
-            
+
         }
     }
 
@@ -458,9 +458,9 @@ public class Main implements Application {
                         uri = file.toURL().toString();
                     }
                 }catch(SecurityException se){
-                    // Cannot access files. 
+                    // Cannot access files.
                 }
-                
+
                 if(uri == null){
                     uri = arguments[i];
                     ParsedURL purl = null;
@@ -788,7 +788,7 @@ public class Main implements Application {
 
     /**
      * Returns the allowed origins for external
-     * resources. 
+     * resources.
      * @see ResourceOrigin
      */
     public int getAllowedExternalResourceOrigin() {
@@ -800,16 +800,16 @@ public class Main implements Application {
 
     /**
      * Notifies Application of recently visited URI
-     */ 
+     */
     public void addVisitedURI(String uri) {
         if(svgInitializationURI.equals(uri)) {
             return;
         }
-        
-        int maxVisitedURIs = 
+
+        int maxVisitedURIs =
             preferenceManager.getInteger
             (PREFERENCE_KEY_VISITED_URI_LIST_LENGTH);
-        
+
         if (maxVisitedURIs < 0) {
             maxVisitedURIs = 0;
         }
@@ -820,7 +820,7 @@ public class Main implements Application {
 
         while (lastVisited.size() > 0 && lastVisited.size() > (maxVisitedURIs-1)) {
             lastVisited.removeElementAt(0);
-        } 
+        }
 
         if (maxVisitedURIs > 0) {
             lastVisited.addElement(uri);
@@ -834,7 +834,7 @@ public class Main implements Application {
                 (URLEncoder.encode(lastVisited.elementAt(i).toString()));
             lastVisitedBuffer.append(URI_SEPARATOR);
         }
-        
+
         preferenceManager.setString
             (PREFERENCE_KEY_VISITED_URI_LIST,
              lastVisitedBuffer.toString());
@@ -859,16 +859,16 @@ public class Main implements Application {
      * Initializes the lastVisited array
      */
     protected void initializeLastVisited(){
-        String lastVisitedStr 
+        String lastVisitedStr
             = preferenceManager.getString(PREFERENCE_KEY_VISITED_URI_LIST);
 
-        StringTokenizer st 
+        StringTokenizer st
             = new StringTokenizer(lastVisitedStr,
                                   URI_SEPARATOR);
 
         int n = st.countTokens();
 
-        int maxVisitedURIs 
+        int maxVisitedURIs
             = preferenceManager.getInteger
             (PREFERENCE_KEY_VISITED_URI_LIST_LENGTH);
 

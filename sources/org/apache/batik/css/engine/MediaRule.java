@@ -27,11 +27,11 @@ import org.w3c.css.sac.SACMediaList;
  * @version $Id$
  */
 public class MediaRule extends StyleSheet implements Rule {
-    
+
     /**
      * The type constant.
      */
-    public final static short TYPE = (short)1;
+    public static final short TYPE = (short)1;
 
     /**
      * The media list.

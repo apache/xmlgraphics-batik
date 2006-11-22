@@ -35,7 +35,7 @@ public class StringValue extends AbstractValue {
     public static String getCssText(short type, String value) {
         switch (type) {
         case CSSPrimitiveValue.CSS_URI:
-            return "url(" + value + ")";
+            return "url(" + value + ')';
 
         case CSSPrimitiveValue.CSS_STRING:
             char q = (value.indexOf('"') != -1) ? '\'' : '"';
@@ -43,7 +43,7 @@ public class StringValue extends AbstractValue {
         }
         return value;
     }
-    
+
     /**
      * The value of the string
      */
@@ -85,7 +85,7 @@ public class StringValue extends AbstractValue {
     }
 
     /**
-     * A string representation of the current value. 
+     * A string representation of the current value.
      */
     public String getCssText() {
         return getCssText(unitType, value);
@@ -95,7 +95,7 @@ public class StringValue extends AbstractValue {
      *  This method is used to get the string value.
      * @exception DOMException
      *    INVALID_ACCESS_ERR: Raised if the value doesn't contain a string
-     *    value. 
+     *    value.
      */
     public String getStringValue() throws DOMException {
         return value;

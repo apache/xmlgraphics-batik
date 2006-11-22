@@ -43,11 +43,11 @@ import org.w3c.dom.css.CSSPrimitiveValue;
  * @version $Id$
  */
 public class FontFamilyManager extends AbstractValueManager {
-    
+
     /**
      * The default value.
      */
-    protected final static ListValue DEFAULT_VALUE = new ListValue();
+    protected static final ListValue DEFAULT_VALUE = new ListValue();
     static {
         DEFAULT_VALUE.append
             (new StringValue(CSSPrimitiveValue.CSS_STRING,
@@ -63,7 +63,7 @@ public class FontFamilyManager extends AbstractValueManager {
     /**
      * The identifier values.
      */
-    protected final static StringMap values = new StringMap();
+    protected static final StringMap values = new StringMap();
     static {
         values.put(CSSConstants.CSS_CURSIVE_VALUE,
                    ValueConstants.CURSIVE_VALUE);
@@ -111,7 +111,7 @@ public class FontFamilyManager extends AbstractValueManager {
     public String getPropertyName() {
         return CSSConstants.CSS_FONT_FAMILY_PROPERTY;
     }
-    
+
     /**
      * Implements {@link ValueManager#getDefaultValue()}.
      */

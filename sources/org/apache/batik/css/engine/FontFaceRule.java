@@ -23,7 +23,7 @@ import org.apache.batik.util.ParsedURL;
 /**
  * This class represents a @font-face CSS rule.
  *
- * This mostly exists to give us a place to store the 
+ * This mostly exists to give us a place to store the
  * URI to be used for 'src' URI resolution.
  *
  * @author <a href="mailto:deweese@apache.org">l449433</a>
@@ -33,7 +33,7 @@ public class FontFaceRule implements Rule {
     /**
      * The type constant.
      */
-    public final static short TYPE = (short)3;
+    public static final short TYPE = (short)3;
 
     StyleMap sm;
     ParsedURL purl;
@@ -41,7 +41,7 @@ public class FontFaceRule implements Rule {
         this.sm = sm;
         this.purl = purl;
     }
-    
+
     /**
      * Returns a constant identifying the rule type.
      */

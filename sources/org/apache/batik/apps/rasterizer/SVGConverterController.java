@@ -25,7 +25,7 @@ import java.util.Vector;
 import org.apache.batik.transcoder.Transcoder;
 
 /**
- * Interface for controlling some aspectes of the 
+ * Interface for controlling some aspectes of the
  * <tt>SVGConverter</tt> operation.
  *
  * @author <a href="mailto:vhardy@apache.org">Vincent Hardy</a>
@@ -33,17 +33,17 @@ import org.apache.batik.transcoder.Transcoder;
  */
 public interface SVGConverterController {
     /**
-     * Invoked when the rasterizer has computed the 
-     * exact description of what it should do. The controller 
-     * should return true if the transcoding process should 
+     * Invoked when the rasterizer has computed the
+     * exact description of what it should do. The controller
+     * should return true if the transcoding process should
      * proceed or false otherwise.
      *
-     * @param transcoder Transcoder which will be used 
+     * @param transcoder Transcoder which will be used
      * @param hints set of hints that were set on the transcoder
      * @param sources list of SVG sources it will convert.
      * @param dest list of destination file it will use
      */
-    public boolean proceedWithComputedTask(Transcoder transcoder,
+    boolean proceedWithComputedTask(Transcoder transcoder,
                                            Map hints,
                                            Vector sources,
                                            Vector dest);
@@ -54,19 +54,19 @@ public interface SVGConverterController {
      * The controller should return true if the source should be
      * transcoded and false otherwise.
      */
-    public boolean proceedWithSourceTranscoding(SVGConverterSource source,
+    boolean proceedWithSourceTranscoding(SVGConverterSource source,
                                                 File dest);
-        
+
     /**
      * Invoked when the rasterizer got an error while
-     * transcoding the input source. 
+     * transcoding the input source.
      * The controller should return true if the transcoding process
      * should continue on other sources and it should return false
      * if it should not.
      *
      * @param errorCode see the {@link SVGConverter} error code descriptions.
      */
-    public boolean proceedOnSourceTranscodingFailure(SVGConverterSource source,
+    boolean proceedOnSourceTranscodingFailure(SVGConverterSource source,
                                                      File dest,
                                                      String errorCode);
 
@@ -74,7 +74,7 @@ public interface SVGConverterController {
      * Invoked when the rasterizer successfully transcoded
      * the input source.
      */
-    public void onSourceTranscodingSuccess(SVGConverterSource source,
+    void onSourceTranscodingSuccess(SVGConverterSource source,
                                            File dest);
 
 }

@@ -136,7 +136,7 @@ public abstract class LengthManager extends AbstractValueManager {
                                   v / ctx.getPixelUnitToMillimeter());
 
         case CSSPrimitiveValue.CSS_CM:
-            ctx = engine.getCSSContext(); 
+            ctx = engine.getCSSContext();
             v = value.getFloatValue();
             return new FloatValue(CSSPrimitiveValue.CSS_NUMBER,
                                   v * 10f / ctx.getPixelUnitToMillimeter());
@@ -206,9 +206,9 @@ public abstract class LengthManager extends AbstractValueManager {
     //
     // Orientation enumeration
     //
-    protected final static int HORIZONTAL_ORIENTATION = 0;
-    protected final static int VERTICAL_ORIENTATION = 1;
-    protected final static int BOTH_ORIENTATION = 2;
+    protected static final int HORIZONTAL_ORIENTATION = 0;
+    protected static final int VERTICAL_ORIENTATION = 1;
+    protected static final int BOTH_ORIENTATION = 2;
 
     /**
      * Indicates the orientation of the property associated with

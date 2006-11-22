@@ -33,7 +33,7 @@ public class AnimatableLengthValue extends AnimatableValue {
     /**
      * Length units.
      */
-    protected final static String[] UNITS = {
+    protected static final String[] UNITS = {
         "", "%", "em", "ex", "px", "cm", "mm", "in", "pt", "pc"
     };
 
@@ -53,14 +53,14 @@ public class AnimatableLengthValue extends AnimatableValue {
      * {@link AnimationTarget}.PERCENTAGE_* constants.
      */
     protected short percentageInterpretation;
-    
+
     /**
      * Creates a new AnimatableLengthValue with no length.
      */
     protected AnimatableLengthValue(AnimationTarget target) {
         super(target);
     }
-    
+
     /**
      * Creates a new AnimatableLengthValue.
      */
@@ -133,7 +133,7 @@ public class AnimatableLengthValue extends AnimatableValue {
             }
             res.lengthValue += multiplier * accValue;
         }
-        
+
         if (oldPercentageInterpretation != res.percentageInterpretation
                 || oldLengthType != res.lengthType
                 || oldLengthValue != res.lengthValue) {

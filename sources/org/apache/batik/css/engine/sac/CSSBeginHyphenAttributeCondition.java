@@ -43,11 +43,11 @@ public class CSSBeginHyphenAttributeCondition
     /**
      * <b>SAC</b>: Implements {@link
      * org.w3c.css.sac.Condition#getConditionType()}.
-     */    
+     */
     public short getConditionType() {
         return SAC_BEGIN_HYPHEN_ATTRIBUTE_CONDITION;
     }
-    
+
     /**
      * Tests whether this condition matches the given element.
      */
@@ -59,6 +59,6 @@ public class CSSBeginHyphenAttributeCondition
      * Returns a text representation of this object.
      */
     public String toString() {
-        return "[" + getLocalName() + "|=\"" + getValue() + "\"]";
+        return '[' + getLocalName() + "|=\"" + getValue() + "\"]";
     }
 }
