@@ -78,20 +78,24 @@ public class PointLight extends AbstractLight {
      */
     public final void getLight(final double x, final double y, final double z,
                                final double[] L){
-        L[0] = lightX - x;
-        L[1] = lightY - y;
-        L[2] = lightZ - z;
 
-        final double norm = Math.sqrt(L[0]*L[0] +
-                                      L[1]*L[1] +
-                                      L[2]*L[2]);
+        double L0 = lightX - x;
+        double L1 = lightY - y;
+        double L2 = lightZ - z;
+
+        final double norm = Math.sqrt( L0*L0 + L1*L1 + L2*L2 );
 
         if(norm > 0){
             final double invNorm = 1.0/norm;
-            L[0] *= invNorm;
-            L[1] *= invNorm;
-            L[2] *= invNorm;
+            L0 *= invNorm;
+            L1 *= invNorm;
+            L2 *= invNorm;
         }
+
+        // copy the work-variables into return-array
+        L[ 0 ] = L0;
+        L[ 1 ] = L1;
+        L[ 2 ] = L2;
     }
 }
 

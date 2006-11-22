@@ -489,6 +489,7 @@ public class GraphicsUtil {
 
 
     public static final boolean WARN_DESTINATION;
+
     static {
         boolean warn = true;
         try {
@@ -1393,20 +1394,19 @@ public class GraphicsUtil {
             = (db.getOffset() +
                sppsm.getOffset(wr.getMinX()-wr.getSampleModelTranslateX(),
                                wr.getMinY()-wr.getSampleModelTranslateY()));
-        int pixel, a, aFP;
+
         // Access the pixel data array
         final int[] pixels = db.getBankData()[0];
         for (int y=0; y<wr.getHeight(); y++) {
             int sp = base + y*scanStride;
             final int end = sp + width;
             while (sp < end) {
-                pixel = pixels[sp];
-                a = pixel>>>24;
+                int pixel = pixels[sp];
+                int a = pixel>>>24;
                 if (a<=0) {
                     pixels[sp] = 0x00FFFFFF;
-                }
-                else if (a<255) {
-                    aFP = (0x00FF0000/a);
+                } else if (a<255) {
+                    int aFP = (0x00FF0000/a);
                     pixels[sp] =
                         ((a << 24) |
                          (((((pixel&0xFF0000)>>16)*aFP)&0xFF0000)    ) |
@@ -1439,8 +1439,8 @@ public class GraphicsUtil {
             final int end = sp + width;
             while (sp < end) {
                 int pixel = pixels[sp];
-                int a = pixel>>>24;        // todo ???? signed shift ???
-                if ((a>=0) && (a<255)) {   // todo does that make sense in the light of a signed shift ??
+                int a = pixel>>>24;
+                if ((a>=0) && (a<255)) {   // this does NOT include a == 255 (0xff) !
                     pixels[sp] = ((a << 24) |
                                   ((((pixel&0xFF0000)*a)>>8)&0xFF0000) |
                                   ((((pixel&0x00FF00)*a)>>8)&0x00FF00) |
@@ -1470,25 +1470,23 @@ public class GraphicsUtil {
                csm.getOffset(wr.getMinX()-wr.getSampleModelTranslateX(),
                              wr.getMinY()-wr.getSampleModelTranslateY()));
 
-
-        int a=0;
         int aOff = bandOff[bandOff.length-1];
         int bands = bandOff.length-1;
-        int b, i;
+
         // Access the pixel data array
         final byte[] pixels = db.getBankData()[0];
         for (int y=0; y<wr.getHeight(); y++) {
             int sp = base + y*scanStride;
             final int end = sp + width*pixStride;
             while (sp < end) {
-              a = pixels[sp+aOff]&0xFF;
+              int a = pixels[sp+aOff]&0xFF;
               if (a==0) {
-                for (b=0; b<bands; b++)
+                for ( int b=0; b<bands; b++)
                   pixels[sp+bandOff[b]] = (byte)0xFF;
-              } else if (a<255) {
+              } else if (a<255) {         // this does NOT include a == 255 (0xff) !
                 int aFP = (0x00FF0000/a);
-                for (b=0; b<bands; b++) {
-                  i = sp+bandOff[b];
+                for ( int b=0; b<bands; b++) {
+                  int i = sp+bandOff[b];
                   pixels[i] = (byte)(((pixels[i]&0xFF)*aFP)>>>16);
                 }
               }
@@ -1516,10 +1514,8 @@ public class GraphicsUtil {
                              wr.getMinY()-wr.getSampleModelTranslateY()));
 
 
-        int a=0;
         int aOff = bandOff[bandOff.length-1];
         int bands = bandOff.length-1;
-        int b, i;
 
         // Access the pixel data array
         final byte[] pixels = db.getBankData()[0];
@@ -1527,10 +1523,10 @@ public class GraphicsUtil {
             int sp = base + y*scanStride;
             final int end = sp + width*pixStride;
             while (sp < end) {
-              a = pixels[sp+aOff]&0xFF;
+              int a = pixels[sp+aOff]&0xFF;
               if (a!=0xFF)
-                for (b=0; b<bands; b++) {
-                  i = sp+bandOff[b];
+                for ( int b=0; b<bands; b++) {
+                  int i = sp+bandOff[b];
                   pixels[i] = (byte)(((pixels[i]&0xFF)*a)>>8);
                 }
               sp+=pixStride;

@@ -223,7 +223,7 @@ public class ConvolveMatrixRable8Bit
             final int end = sp + width;
             while (sp < end) {
                 int pixel = pixels[sp];
-                int a = pixel>>>24;          // todo check signed shift ??
+                int a = pixel>>>24;          
                 int v = (pixel>>16)&0xFF;
                 if (a < v) a = v;
                 v = (pixel>> 8)&0xFF;

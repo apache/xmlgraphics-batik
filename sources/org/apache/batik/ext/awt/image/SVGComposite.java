@@ -1049,22 +1049,18 @@ public class SVGComposite
              final int [] dstInPixels,  final int dstInAdjust,  int dstInSp,
              final int [] dstOutPixels, final int dstOutAdjust, int dstOutSp) {
 
+            byte[] workTbl = lut;   // local is cheaper
             int srcP, dstP;
-            int a, r, g, b;
             for (int y = 0; y<height; y++) {
                 final int end = dstOutSp+width;
                 while (dstOutSp<end) {
                     srcP = srcPixels  [srcSp++];
                     dstP = dstInPixels[dstInSp++];
 
-                    a = lut[(((srcP>> 16)&0xFF00)|((dstP>>>24)       ))];
-                    a &= 0xFF;
-                    r = lut[(((srcP>>  8)&0xFF00)|((dstP>> 16)&0x00FF))];
-                    r &= 0xFF;
-                    g = lut[(((srcP     )&0xFF00)|((dstP>>  8)&0x00FF))];
-                    g &= 0xFF;
-                    b = lut[(((srcP<<  8)&0xFF00)|((dstP     )&0x00FF))];
-                    b &= 0xFF;
+                    int a = 0xFF & workTbl[(((srcP>> 16)&0xFF00)|((dstP>>>24)       ))];
+                    int r = 0xFF & workTbl[(((srcP>>  8)&0xFF00)|((dstP>> 16)&0x00FF))];
+                    int g = 0xFF & workTbl[(((srcP     )&0xFF00)|((dstP>>  8)&0x00FF))];
+                    int b = 0xFF & workTbl[(((srcP<<  8)&0xFF00)|((dstP     )&0x00FF))];
                     if (r>a) a = r;
                     if (g>a) a = g;
                     if (b>a) a = b;
@@ -1213,17 +1209,27 @@ public class SVGComposite
                 int sp  = 0;
                 int end = w*4;
                 while(sp<end) {
-                    dstPix[sp] = (srcPix[sp] + dstPix[sp] -
-                                  ((dstPix[sp]*srcPix[sp]*norm + pt5)>>>24));
+
+                    int iSrcPix = srcPix[ sp ];
+                    int iDstPix = dstPix[ sp ];
+
+                    dstPix[sp] = ( iSrcPix + iDstPix -
+                                  ((iDstPix*iSrcPix*norm + pt5)>>>24));
                     ++sp;
-                    dstPix[sp] = (srcPix[sp] + dstPix[sp] -
-                                  ((dstPix[sp]*srcPix[sp]*norm + pt5)>>>24));
+                    iSrcPix = srcPix[ sp ];
+                    iDstPix = dstPix[ sp ];
+                    dstPix[sp] = ( iSrcPix + iDstPix -
+                                  ((iDstPix*iSrcPix*norm + pt5)>>>24));
                     ++sp;
-                    dstPix[sp] = (srcPix[sp] + dstPix[sp] -
-                                  ((dstPix[sp]*srcPix[sp]*norm + pt5)>>>24));
+                    iSrcPix = srcPix[ sp ];
+                    iDstPix = dstPix[ sp ];
+                    dstPix[sp] = ( iSrcPix + iDstPix -
+                                  ((iDstPix*iSrcPix*norm + pt5)>>>24));
                     ++sp;
-                    dstPix[sp] = (srcPix[sp] + dstPix[sp] -
-                                  ((dstPix[sp]*srcPix[sp]*norm + pt5)>>>24));
+                    iSrcPix = srcPix[ sp ];
+                    iDstPix = dstPix[ sp ];
+                    dstPix[sp] = ( iSrcPix + iDstPix -
+                                  ((iDstPix*iSrcPix*norm + pt5)>>>24));
                     ++sp;
                 }
                 dstOut.setPixels(x, y, w, 1, dstPix);
@@ -1387,6 +1393,11 @@ public class SVGComposite
                     tmp  = ((dstM*dstV + pt5)>>>24) + srcV;
                     if (dstB > tmp) dstB = tmp;
 
+                    dstA &= 0xFF; // trim to 8 bit
+                    dstR &= 0xFF;
+                    dstG &= 0xFF;
+                    dstB &= 0xFF;
+
                     dstOutPixels[dstOutSp++] =
                         ((dstA<<24) | (dstR<<16) | (dstG<< 8) | dstB);
                 }
@@ -1506,6 +1517,11 @@ public class SVGComposite
                     dstB = ((srcM*srcV + pt5)>>>24) + dstV;
                     tmp  = ((dstM*dstV + pt5)>>>24) + srcV;
                     if (dstB < tmp) dstB = tmp;
+
+                    dstA &= 0xFF; // trim to 8 bit
+                    dstR &= 0xFF;
+                    dstG &= 0xFF;
+                    dstB &= 0xFF;
 
                     dstOutPixels[dstOutSp++] =
                         ((dstA<<24) | (dstR<<16) | (dstG<< 8) | dstB);

@@ -22,7 +22,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class AbstractRegistryEntry 
+/**
+ *
+ * @version $Id$
+ */
+public abstract class AbstractRegistryEntry
     implements RegistryEntry, ErrorConstants {
 
     /**
@@ -37,7 +41,7 @@ public abstract class AbstractRegistryEntry
     float  priority;
     List   exts;
     List   mimeTypes;
-    
+
     public AbstractRegistryEntry(String    name,
                                  float     priority,
                                  String [] exts,
@@ -55,7 +59,7 @@ public abstract class AbstractRegistryEntry
             this.mimeTypes.add(mimeTypes[i]);
         this.mimeTypes = Collections.unmodifiableList(this.mimeTypes);
     }
-                            
+
     public AbstractRegistryEntry(String name,
                                  float  priority,
                                  String ext,
@@ -71,7 +75,7 @@ public abstract class AbstractRegistryEntry
         this.mimeTypes.add(mimeType);
         this.mimeTypes = Collections.unmodifiableList(mimeTypes);
     }
-                            
+
 
     public String getFormatName() {
         return name;

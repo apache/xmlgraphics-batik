@@ -35,8 +35,9 @@ import java.util.Vector;
  * This is actually a particular instance of a very general pattern
  * this is probably best represented using the Proxy class in the
  * Reflection APIs.
+ *
+ * @version $Id$
  */
-
 public class DeferRable implements Filter {
     Filter      src;
     Rectangle2D bounds;
@@ -44,7 +45,7 @@ public class DeferRable implements Filter {
     /**
      * Constructor takes nothing
      */
-    public DeferRable() { 
+    public DeferRable() {
     }
 
     /**
@@ -56,7 +57,7 @@ public class DeferRable implements Filter {
                 // Wait for someone to set src.
                 wait();
             }
-            catch(InterruptedException ie) { 
+            catch(InterruptedException ie) {
                 // Loop around again see if src is set now...
             }
         }
@@ -91,7 +92,7 @@ public class DeferRable implements Filter {
         notifyAll();
     }
 
-    public long getTimeStamp() { 
+    public long getTimeStamp() {
         return getSource().getTimeStamp();
     }
 
@@ -102,7 +103,7 @@ public class DeferRable implements Filter {
     /**
      * Forward the call (blocking until source is set if need be).
      */
-    public boolean isDynamic() { 
+    public boolean isDynamic() {
         return getSource().isDynamic();
     }
 
@@ -117,7 +118,7 @@ public class DeferRable implements Filter {
                     // Wait for someone to set bounds.
                     wait();
                 }
-                catch(InterruptedException ie) { 
+                catch(InterruptedException ie) {
                     // Loop around again see if src is set now...
                 }
             }
@@ -187,7 +188,7 @@ public class DeferRable implements Filter {
     /**
      * Forward the call (blocking until source is set if need be).
      */
-    public RenderedImage createScaledRendering(int w, int h, 
+    public RenderedImage createScaledRendering(int w, int h,
                                                RenderingHints hints) {
         return getSource().createScaledRendering(w, h, hints);
     }
@@ -202,7 +203,7 @@ public class DeferRable implements Filter {
     /**
      * Forward the call (blocking until source is set if need be).
      */
-    public Shape getDependencyRegion(int srcIndex, 
+    public Shape getDependencyRegion(int srcIndex,
                                      Rectangle2D outputRgn) {
         return getSource().getDependencyRegion(srcIndex, outputRgn);
     }
@@ -210,7 +211,7 @@ public class DeferRable implements Filter {
     /**
      * Forward the call (blocking until source is set if need be).
      */
-    public Shape getDirtyRegion(int srcIndex, 
+    public Shape getDirtyRegion(int srcIndex,
                                 Rectangle2D inputRgn) {
         return getSource().getDirtyRegion(srcIndex, inputRgn);
     }

@@ -24,8 +24,11 @@ import java.awt.Graphics2D;
  * Interface for Rable's that can more efficently represent there
  * action as a paint method instead of a RenderedImage when going to a
  * Graphics2D anyways.
+ *
+ * @version $Id$
  */
 public interface PaintRable {
+    
     /**
      * Should perform the equivilent action as
      * createRendering followed by drawing the RenderedImage.

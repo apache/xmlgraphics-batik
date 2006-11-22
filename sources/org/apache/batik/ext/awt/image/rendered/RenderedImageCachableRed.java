@@ -36,7 +36,8 @@ import java.util.Vector;
  * It essentially ignores the dependency and dirty region methods.
  *
  * @author <a href="mailto:Thomas.DeWeeese@Kodak.com">Thomas DeWeese</a>
- * @version $Id$ */
+ * @version $Id$
+ */
 public class RenderedImageCachableRed implements CachableRed {
 
     public static CachableRed wrap(RenderedImage ri) {
@@ -61,8 +62,8 @@ public class RenderedImageCachableRed implements CachableRed {
         return srcs; // should always be empty...
     }
 
-    public Rectangle getBounds() {
-        return new Rectangle(getMinX(),
+    public Rectangle getBounds() { 
+        return new Rectangle(getMinX(),    // could we cache the rectangle??
                              getMinY(),
                              getWidth(),
                              getHeight());
