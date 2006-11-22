@@ -29,7 +29,7 @@ import org.w3c.dom.svg.SVGAnimatedBoolean;
  */
 public class SVGExternalResourcesRequiredSupport implements SVGConstants {
 
-    private final static String ATTR_NAME =
+    private static final String ATTR_NAME =
         SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE;
 
     /**

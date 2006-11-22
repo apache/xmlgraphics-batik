@@ -33,7 +33,7 @@ public interface Light {
     /**
      * @return true if the light is constant over the whole surface
      */
-    public boolean isConstant();
+    boolean isConstant();
 
     /**
      * Computes the light vector in (x, y)
@@ -43,11 +43,11 @@ public interface Light {
      * @param z z-axis coordinate where the light should be computed
      * @param L array of length 3 where the result is stored
      */
-    public void getLight(final double x, final double y, final double z, final double L[]);
+    void getLight(final double x, final double y, final double z, final double[] L);
 
     /**
      * Returns a light map, starting in (x, y) with dx, dy increments, a given
-     * width and height, and z elevations stored in the fourth component on the 
+     * width and height, and z elevations stored in the fourth component on the
      * N array.
      *
      * @param x x-axis coordinate where the light should be computed
@@ -62,7 +62,7 @@ public interface Light {
      *         is an array of three components representing the x, y and z
      *         components of the light vector.
      */
-    public double[][][] getLightMap(double x, double y, 
+    double[][][] getLightMap(double x, double y,
                                   final double dx, final double dy,
                                   final int width, final int height,
                                   final double[][][] z);
@@ -83,7 +83,7 @@ public interface Light {
      * @return an array width columns where each element
      *         is an array of three components representing the x, y and z
      *         components of the light vector.  */
-    public double[][] getLightRow(double x, double y, 
+    double[][] getLightRow(double x, double y,
                                   final double dx, final int width,
                                   final double[][] z,
                                   final double[][] lightRow);
@@ -92,13 +92,13 @@ public interface Light {
      * @param  linear if true the color is returned in the Linear sRGB
      *                colorspace otherwise the color is in the gamma
      *                corrected sRGB color space.
-     * @return the light's color 
+     * @return the light's color
      */
-    public double[] getColor(boolean linear);
+    double[] getColor(boolean linear);
 
     /**
      * Sets the light color to a new value
      */
-    public void setColor(Color color);
+    void setColor(Color color);
 }
 

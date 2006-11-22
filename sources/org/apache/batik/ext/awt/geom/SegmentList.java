@@ -39,7 +39,7 @@ public class SegmentList {
 
     public SegmentList(Shape s) {
         PathIterator pi = s.getPathIterator(null);
-        float pts [] = new float[6];
+        float[] pts  = new float[6];
         int type;
         Point2D.Double loc = null;
         Point2D.Double openLoc = null;

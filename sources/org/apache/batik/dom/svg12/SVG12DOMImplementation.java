@@ -56,7 +56,7 @@ import org.w3c.dom.events.Event;
  */
 public class SVG12DOMImplementation
     extends    SVGDOMImplementation {
-    
+
     /**
      * Creates a new SVGDOMImplementation object.
      */
@@ -68,10 +68,10 @@ public class SVG12DOMImplementation
         registerFeature("SVGEvents",      new String[] {"1.0", "1.1", "1.2"});
     }
 
-    public CSSEngine createCSSEngine(AbstractStylableDocument doc, 
+    public CSSEngine createCSSEngine(AbstractStylableDocument doc,
                                      CSSContext               ctx,
                                      ExtendedParser      ep,
-                                     ValueManager     [] vms, 
+                                     ValueManager     [] vms,
                                      ShorthandManager [] sms) {
         URL durl = ((SVGOMDocument)doc).getURLObject();
         CSSEngine result = new SVG12CSSEngine(doc, durl, ep, vms, sms, ctx);
@@ -110,7 +110,7 @@ public class SVG12DOMImplementation
     public Element createElementNS(AbstractDocument document,
                                    String           namespaceURI,
                                    String           qualifiedName) {
-        if (namespaceURI == null) 
+        if (namespaceURI == null)
             return new GenericElement(qualifiedName.intern(), document);
 
         String name = DOMUtilities.getLocalName(qualifiedName);
@@ -218,7 +218,7 @@ public class SVG12DOMImplementation
     /**
      * To create a 'flowDiv' element.
      */
-    protected static class FlowDivElementFactory 
+    protected static class FlowDivElementFactory
         implements ElementFactory {
         public FlowDivElementFactory() {
         }
@@ -233,7 +233,7 @@ public class SVG12DOMImplementation
     /**
      * To create a 'flowLine' element.
      */
-    protected static class FlowLineElementFactory 
+    protected static class FlowLineElementFactory
         implements ElementFactory {
         public FlowLineElementFactory() {
         }
@@ -248,7 +248,7 @@ public class SVG12DOMImplementation
     /**
      * To create a 'flowPara' element.
      */
-    protected static class FlowParaElementFactory 
+    protected static class FlowParaElementFactory
         implements ElementFactory {
         public FlowParaElementFactory() {
         }
@@ -263,7 +263,7 @@ public class SVG12DOMImplementation
     /**
      * To create a 'flowRegionBreak' element.
      */
-    protected static class FlowRegionBreakElementFactory 
+    protected static class FlowRegionBreakElementFactory
         implements ElementFactory {
         public FlowRegionBreakElementFactory() {
         }
@@ -278,7 +278,7 @@ public class SVG12DOMImplementation
     /**
      * To create a 'flowRegion' element.
      */
-    protected static class FlowRegionElementFactory 
+    protected static class FlowRegionElementFactory
         implements ElementFactory {
         public FlowRegionElementFactory() {
         }
@@ -293,7 +293,7 @@ public class SVG12DOMImplementation
     /**
      * To create a 'flowRegion' element.
      */
-    protected static class FlowRegionExcludeElementFactory 
+    protected static class FlowRegionExcludeElementFactory
         implements ElementFactory {
         public FlowRegionExcludeElementFactory() {
         }
@@ -308,7 +308,7 @@ public class SVG12DOMImplementation
     /**
      * To create a 'flowRoot' element.
      */
-    protected static class FlowRootElementFactory 
+    protected static class FlowRootElementFactory
         implements ElementFactory {
         public FlowRootElementFactory() {
         }
@@ -323,7 +323,7 @@ public class SVG12DOMImplementation
     /**
      * To create a 'flowSpan' element.
      */
-    protected static class FlowSpanElementFactory 
+    protected static class FlowSpanElementFactory
         implements ElementFactory {
         public FlowSpanElementFactory() {
         }
@@ -338,7 +338,7 @@ public class SVG12DOMImplementation
     /**
      * To create a 'handler' element.
      */
-    protected static class HandlerElementFactory 
+    protected static class HandlerElementFactory
         implements ElementFactory {
         public HandlerElementFactory() {
         }
@@ -353,7 +353,7 @@ public class SVG12DOMImplementation
     /**
      * To create a 'multiImage' element.
      */
-    protected static class MultiImageElementFactory 
+    protected static class MultiImageElementFactory
         implements ElementFactory {
         public MultiImageElementFactory() {}
         /**
@@ -368,7 +368,7 @@ public class SVG12DOMImplementation
     /**
      * To create a 'solidColor' element.
      */
-    protected static class SolidColorElementFactory 
+    protected static class SolidColorElementFactory
         implements ElementFactory {
         public SolidColorElementFactory() {
         }
@@ -383,7 +383,7 @@ public class SVG12DOMImplementation
     /**
      * To create a 'subImage' element.
      */
-    protected static class SubImageElementFactory 
+    protected static class SubImageElementFactory
         implements ElementFactory {
         public SubImageElementFactory() {}
         /**
@@ -397,7 +397,7 @@ public class SVG12DOMImplementation
     /**
      * To create a 'SubImageRef' element.
      */
-    protected static class SubImageRefElementFactory 
+    protected static class SubImageRefElementFactory
         implements ElementFactory {
         public SubImageRefElementFactory() {}
         /**
@@ -536,7 +536,7 @@ public class SVG12DOMImplementation
     /**
      * The default instance of this class.
      */
-    protected final static DOMImplementation DOM_IMPLEMENTATION =
+    protected static final DOMImplementation DOM_IMPLEMENTATION =
         new SVG12DOMImplementation();
 
     /**

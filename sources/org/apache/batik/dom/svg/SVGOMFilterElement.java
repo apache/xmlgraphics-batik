@@ -46,7 +46,7 @@ public class SVGOMFilterElement
     /**
      * The attribute initializer.
      */
-    protected final static AttributeInitializer attributeInitializer;
+    protected static final AttributeInitializer attributeInitializer;
     static {
         attributeInitializer = new AttributeInitializer(4);
         attributeInitializer.addAttribute(XMLSupport.XMLNS_NAMESPACE_URI,
@@ -63,7 +63,7 @@ public class SVGOMFilterElement
     /**
      * The units values.
      */
-    protected final static String[] UNITS_VALUES = {
+    protected static final String[] UNITS_VALUES = {
         "",
         SVG_USER_SPACE_ON_USE_VALUE,
         SVG_OBJECT_BOUNDING_BOX_VALUE

@@ -42,7 +42,7 @@ public class SVGOMScriptElement
     /**
      * The attribute initializer.
      */
-    protected final static AttributeInitializer attributeInitializer;
+    protected static final AttributeInitializer attributeInitializer;
     static {
         attributeInitializer = new AttributeInitializer(1);
         attributeInitializer.addAttribute(XMLSupport.XMLNS_NAMESPACE_URI,
@@ -85,7 +85,7 @@ public class SVGOMScriptElement
     public String getType() {
         return getAttributeNS(null, SVG_TYPE_ATTRIBUTE);
     }
- 
+
     /**
      * <b>DOM</b>: Implements {@link SVGScriptElement#setType(String)}.
      */

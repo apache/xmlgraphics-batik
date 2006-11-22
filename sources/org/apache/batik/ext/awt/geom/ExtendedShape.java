@@ -31,6 +31,6 @@ public interface ExtendedShape extends Shape {
     /**
      * Get an extended Path iterator that may return SEG_ARCTO commands
      */
-    public ExtendedPathIterator getExtendedPathIterator();
+    ExtendedPathIterator getExtendedPathIterator();
 
 }

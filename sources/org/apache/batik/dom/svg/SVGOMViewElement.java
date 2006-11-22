@@ -38,11 +38,11 @@ import org.w3c.dom.svg.SVGViewElement;
 public class SVGOMViewElement
     extends SVGOMElement
     implements SVGViewElement {
-    
+
     /**
      * The attribute initializer.
      */
-    protected final static AttributeInitializer attributeInitializer;
+    protected static final AttributeInitializer attributeInitializer;
     static {
         attributeInitializer = new AttributeInitializer(2);
         attributeInitializer.addAttribute(null,

@@ -46,7 +46,7 @@ public abstract class AbstractSVGLengthList
     /**
      * Separator for a length list.
      */
-    public final static String SVG_LENGTH_LIST_SEPARATOR
+    public static final String SVG_LENGTH_LIST_SEPARATOR
         = " ";
 
     /**
@@ -132,7 +132,7 @@ public abstract class AbstractSVGLengthList
         return new SVGLengthItem(l.getUnitType(), l.getValueInSpecifiedUnits(),
                                  direction);
     }
-    
+
     /**
      * Parses the attribute associated with this SVGLengthList.
      *
@@ -143,9 +143,9 @@ public abstract class AbstractSVGLengthList
         throws ParseException{
 
         LengthListParser lengthListParser = new LengthListParser();
-        
+
         LengthListBuilder builder = new LengthListBuilder(handler);
-        
+
         lengthListParser.setLengthListHandler(builder);
         lengthListParser.parse(value);
     }
@@ -232,7 +232,7 @@ public abstract class AbstractSVGLengthList
          * The length unit just parsed.
          */
         protected short currentType;
-        
+
         /**
          * Creates a new LengthListBuilder.
          */
@@ -261,7 +261,7 @@ public abstract class AbstractSVGLengthList
         public void lengthValue(float v) throws ParseException {
             currentValue = v;
         }
-        
+
         /**
          * Implements {@link LengthListHandler#em()}.
          */
@@ -282,21 +282,21 @@ public abstract class AbstractSVGLengthList
         public void in() throws ParseException {
             currentType = SVGLength.SVG_LENGTHTYPE_IN;
         }
-        
+
         /**
          * Implements {@link LengthListHandler#cm()}.
          */
         public void cm() throws ParseException {
             currentType = SVGLength.SVG_LENGTHTYPE_CM;
         }
-        
+
         /**
          * Implements {@link LengthListHandler#mm()}.
          */
         public void mm() throws ParseException {
             currentType = SVGLength.SVG_LENGTHTYPE_MM;
         }
-        
+
         /**
          * Implements {@link LengthListHandler#pc()}.
          */
@@ -331,7 +331,7 @@ public abstract class AbstractSVGLengthList
         public void endLength() throws ParseException {
             listHandler.item(new SVGLengthItem(currentType,currentValue,direction));
         }
-        
+
         /**
          * Implements {@link LengthListHandler#endLengthList()}.
          */

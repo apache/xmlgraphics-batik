@@ -747,9 +747,9 @@ public class TIFFImage extends AbstractRed {
                     }
 
                     int bandLength = colormap.length/3;
-                    byte r[] = new byte[bandLength];
-                    byte g[] = new byte[bandLength];
-                    byte b[] = new byte[bandLength];
+                    byte[] r = new byte[bandLength];
+                    byte[] g = new byte[bandLength];
+                    byte[] b = new byte[bandLength];
 
                     int gIndex = bandLength;
                     int bIndex = bandLength * 2;
@@ -826,9 +826,9 @@ public class TIFFImage extends AbstractRed {
 
 
         // Get the data array out of the DataBuffer
-        byte bdata[] = null;
-        short sdata[] = null;
-        int idata[] = null;
+        byte[] bdata = null;
+        short[] sdata = null;
+        int[] idata = null;
 
         SampleModel sampleModel = getSampleModel();
         WritableRaster tile = makeTile(tileX,tileY);
@@ -874,7 +874,7 @@ public class TIFFImage extends AbstractRed {
         int unitsInThisTile = newRect.width * newRect.height * numBands;
 
         // Allocate read buffer if needed.
-        byte data[] = compression != COMP_NONE || imageType == TYPE_PALETTE ?
+        byte[] data = compression != COMP_NONE || imageType == TYPE_PALETTE ?
             new byte[byteCount] : null;
 
         // Read the data, uncompressing as needed. There are four cases:
@@ -924,7 +924,7 @@ public class TIFFImage extends AbstractRed {
 
                 if (decodePaletteAsShorts) {
 
-                    short tempData[]= null;
+                    short[] tempData= null;
 
                     // At this point the data is 1 banded and will
                     // become 3 banded only after we've done the palette
@@ -945,7 +945,7 @@ public class TIFFImage extends AbstractRed {
 
                             stream.readFully(data, 0, byteCount);
 
-                            byte byteArray[] = new byte[entries];
+                            byte[] byteArray = new byte[entries];
                             decodePackbits(data, entries, byteArray);
                             tempData = new short[unitsBeforeLookup];
                             interpretBytesAsShorts(byteArray, tempData,
@@ -956,7 +956,7 @@ public class TIFFImage extends AbstractRed {
                             // Read in all the compressed data for this tile
                             stream.readFully(data, 0, byteCount);
 
-                            byte byteArray[] = new byte[entries];
+                            byte[] byteArray = new byte[entries];
                             lzwDecoder.decode(data, byteArray, newRect.height);
                             tempData = new short[unitsBeforeLookup];
                             interpretBytesAsShorts(byteArray, tempData,
@@ -965,7 +965,7 @@ public class TIFFImage extends AbstractRed {
                         }  else if (compression == COMP_DEFLATE) {
 
                             stream.readFully(data, 0, byteCount);
-                            byte byteArray[] = new byte[entries];
+                            byte[] byteArray = new byte[entries];
                             inflate(data, byteArray);
                             tempData = new short[unitsBeforeLookup];
                             interpretBytesAsShorts(byteArray, tempData,
@@ -1048,7 +1048,7 @@ public class TIFFImage extends AbstractRed {
                             // decompression.
                             int bytesInThisTile = unitsInThisTile * 2;
 
-                            byte byteArray[] = new byte[bytesInThisTile];
+                            byte[] byteArray = new byte[bytesInThisTile];
                             decodePackbits(data, bytesInThisTile, byteArray);
                             interpretBytesAsShorts(byteArray, sdata,
                                                    unitsInThisTile);
@@ -1062,7 +1062,7 @@ public class TIFFImage extends AbstractRed {
                             // need to multiply unitsInThisTile by 2 in order to
                             // figure out how many bytes we'll get after
                             // decompression.
-                            byte byteArray[] = new byte[unitsInThisTile * 2];
+                            byte[] byteArray = new byte[unitsInThisTile * 2];
                             lzwDecoder.decode(data, byteArray, newRect.height);
                             interpretBytesAsShorts(byteArray, sdata,
                                                    unitsInThisTile);
@@ -1070,7 +1070,7 @@ public class TIFFImage extends AbstractRed {
                         }  else if (compression == COMP_DEFLATE) {
 
                             stream.readFully(data, 0, byteCount);
-                            byte byteArray[] = new byte[unitsInThisTile * 2];
+                            byte[] byteArray = new byte[unitsInThisTile * 2];
                             inflate(data, byteArray);
                             interpretBytesAsShorts(byteArray, sdata,
                                                    unitsInThisTile);
@@ -1091,7 +1091,7 @@ public class TIFFImage extends AbstractRed {
 
                 if (decodePaletteAsShorts) {
 
-                    byte tempData[]= null;
+                    byte[] tempData= null;
 
                     // At this point the data is 1 banded and will
                     // become 3 banded only after we've done the palette
@@ -1221,7 +1221,7 @@ public class TIFFImage extends AbstractRed {
                 // Output short images
                 if (decodePaletteAsShorts) {
 
-                    byte tempData[] = null;
+                    byte[] tempData = null;
 
                     try {
                         stream.readFully(data, 0, byteCount);
@@ -1401,7 +1401,7 @@ public class TIFFImage extends AbstractRed {
                         // need to multiply unitsInThisTile by 2 in order to
                         // figure out how many bytes we'll get after
                         // decompression.
-                        byte byteArray[] = new byte[unitsInThisTile * 2];
+                        byte[] byteArray = new byte[unitsInThisTile * 2];
                         lzwDecoder.decode(data, byteArray, newRect.height);
                         interpretBytesAsShorts(byteArray, sdata,
                                                unitsInThisTile);
@@ -1417,14 +1417,14 @@ public class TIFFImage extends AbstractRed {
                         // decompression.
                         int bytesInThisTile = unitsInThisTile * 2;
 
-                        byte byteArray[] = new byte[bytesInThisTile];
+                        byte[] byteArray = new byte[bytesInThisTile];
                         decodePackbits(data, bytesInThisTile, byteArray);
                         interpretBytesAsShorts(byteArray, sdata,
                                                unitsInThisTile);
                     } else if (compression == COMP_DEFLATE) {
 
                         stream.readFully(data, 0, byteCount);
-                        byte byteArray[] = new byte[unitsInThisTile * 2];
+                        byte[] byteArray = new byte[unitsInThisTile * 2];
                         inflate(data, byteArray);
                         interpretBytesAsShorts(byteArray, sdata,
                                                unitsInThisTile);
@@ -1445,7 +1445,7 @@ public class TIFFImage extends AbstractRed {
                         // need to multiply unitsInThisTile by 4 in order to
                         // figure out how many bytes we'll get after
                         // decompression.
-                        byte byteArray[] = new byte[unitsInThisTile * 4];
+                        byte[] byteArray = new byte[unitsInThisTile * 4];
                         lzwDecoder.decode(data, byteArray, newRect.height);
                         interpretBytesAsInts(byteArray, idata,
                                              unitsInThisTile);
@@ -1461,14 +1461,14 @@ public class TIFFImage extends AbstractRed {
                         // decompression.
                         int bytesInThisTile = unitsInThisTile * 4;
 
-                        byte byteArray[] = new byte[bytesInThisTile];
+                        byte[] byteArray = new byte[bytesInThisTile];
                         decodePackbits(data, bytesInThisTile, byteArray);
                         interpretBytesAsInts(byteArray, idata,
                                              unitsInThisTile);
                     } else if (compression == COMP_DEFLATE) {
 
                         stream.readFully(data, 0, byteCount);
-                        byte byteArray[] = new byte[unitsInThisTile * 4];
+                        byte[] byteArray = new byte[unitsInThisTile * 4];
                         inflate(data, byteArray);
                         interpretBytesAsInts(byteArray, idata,
                                              unitsInThisTile);
@@ -1629,12 +1629,12 @@ public class TIFFImage extends AbstractRed {
         return tile;
     }
 
-    private void readShorts(int shortCount, short shortArray[]) {
+    private void readShorts(int shortCount, short[] shortArray) {
 
         // Since each short consists of 2 bytes, we need a
         // byte array of double size
         int byteCount = 2 * shortCount;
-        byte byteArray[] = new byte[byteCount];
+        byte[] byteArray = new byte[byteCount];
 
         try {
             stream.readFully(byteArray, 0, byteCount);
@@ -1645,12 +1645,12 @@ public class TIFFImage extends AbstractRed {
         interpretBytesAsShorts(byteArray, shortArray, shortCount);
     }
 
-    private void readInts(int intCount, int intArray[]) {
+    private void readInts(int intCount, int[] intArray) {
 
         // Since each int consists of 4 bytes, we need a
         // byte array of quadruple size
         int byteCount = 4 * intCount;
-        byte byteArray[] = new byte[byteCount];
+        byte[] byteArray = new byte[byteCount];
 
         try {
             stream.readFully(byteArray, 0, byteCount);
@@ -1663,8 +1663,8 @@ public class TIFFImage extends AbstractRed {
 
     // Method to interpret a byte array to a short array, depending on
     // whether the bytes are stored in a big endian or little endian format.
-    private void interpretBytesAsShorts(byte byteArray[],
-                                        short shortArray[],
+    private void interpretBytesAsShorts(byte[] byteArray,
+                                        short[] shortArray,
                                         int shortCount) {
 
         int j = 0;
@@ -1690,8 +1690,8 @@ public class TIFFImage extends AbstractRed {
 
     // Method to interpret a byte array to a int array, depending on
     // whether the bytes are stored in a big endian or little endian format.
-    private void interpretBytesAsInts(byte byteArray[],
-                                      int intArray[],
+    private void interpretBytesAsInts(byte[] byteArray,
+                                      int[] intArray,
                                       int intCount) {
 
         int j = 0;
@@ -1717,7 +1717,7 @@ public class TIFFImage extends AbstractRed {
     }
 
     // Uncompress packbits compressed image data.
-    private byte[] decodePackbits(byte data[], int arraySize, byte[] dst) {
+    private byte[] decodePackbits(byte[] data, int arraySize, byte[] dst) {
 
         if (dst == null) {
             dst = new byte[arraySize];
@@ -1766,7 +1766,7 @@ public class TIFFImage extends AbstractRed {
      boolean isAlphaPremultiplied, int transparency) {
 
         ComponentColorModel ccm = null;
-        int RGBBits[] = null;
+        int[] RGBBits = null;
         ColorSpace cs = null;
         switch(numBands) {
             case 2: // gray+alpha

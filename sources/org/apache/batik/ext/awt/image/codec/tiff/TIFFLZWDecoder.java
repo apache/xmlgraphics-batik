@@ -26,8 +26,9 @@ package org.apache.batik.ext.awt.image.codec.tiff;
  */
 public class TIFFLZWDecoder {
 
-    byte stringTable[][];
-    byte data[] = null, uncompData[];
+    byte[][] stringTable;
+    byte[] data = null;
+    byte[] uncompData;
     int tableIndex, bitsToGet = 9;
     int bytePointer, bitPointer;
     int dstIndex;
@@ -36,13 +37,13 @@ public class TIFFLZWDecoder {
     int nextData = 0;
     int nextBits = 0;
 
-    int andTable[] = {
-        511, 
+    int[] andTable = {
+        511,
         1023,
         2047,
         4095
     };
-    
+
     public TIFFLZWDecoder(int w, int predictor, int samplesPerPixel) {
         this.w = w;
         this.predictor = predictor;
@@ -56,7 +57,7 @@ public class TIFFLZWDecoder {
      * @param uncompData      Array to return the uncompressed data in.
      * @param h               The number of rows the compressed data contains.
      */
-    public byte[] decode(byte data[], byte uncompData[], int h) {
+    public byte[] decode(byte[] data, byte[] uncompData, int h) {
 
         if(data[0] == (byte)0x00 && data[1] == (byte)0x01) {
             throw new UnsupportedOperationException("TIFFLZWDecoder0");
@@ -67,7 +68,7 @@ public class TIFFLZWDecoder {
         this.data = data;
         this.h = h;
         this.uncompData = uncompData;
-        
+
         // Initialize pointers
         bytePointer = 0;
         bitPointer = 0;
@@ -78,9 +79,9 @@ public class TIFFLZWDecoder {
         nextBits = 0;
 
         int code, oldCode = 0;
-        byte string[];
- 
-        while ( ((code = getNextCode()) != 257) && 
+        byte[] string;
+
+        while ( ((code = getNextCode()) != 257) &&
                 dstIndex != uncompData.length) {
 
             if (code == 256) {
@@ -102,7 +103,7 @@ public class TIFFLZWDecoder {
                     string = stringTable[code];
 
                     writeString(string);
-                    addStringToTable(stringTable[oldCode], string[0]); 
+                    addStringToTable(stringTable[oldCode], string[0]);
                     oldCode = code;
 
                 } else {
@@ -123,11 +124,11 @@ public class TIFFLZWDecoder {
 
             int count;
             for (int j = 0; j < h; j++) {
-                
+
                 count = samplesPerPixel * (j * w + 1);
-                
+
                 for (int i = samplesPerPixel; i < w * samplesPerPixel; i++) {
-                    
+
                     uncompData[count] += uncompData[count - samplesPerPixel];
                     count++;
                 }
@@ -144,12 +145,12 @@ public class TIFFLZWDecoder {
     public void initializeStringTable() {
 
         stringTable = new byte[4096][];
-        
+
         for (int i=0; i<256; i++) {
             stringTable[i] = new byte[1];
             stringTable[i][0] = (byte)i;
         }
-        
+
         tableIndex = 258;
         bitsToGet = 9;
     }
@@ -157,57 +158,57 @@ public class TIFFLZWDecoder {
     /**
      * Write out the string just uncompressed.
      */
-    public void writeString(byte string[]) {
-        
+    public void writeString(byte[] string) {
+
         for (int i=0; i<string.length; i++) {
             uncompData[dstIndex++] = string[i];
         }
-    }
-    
-    /**
-     * Add a new string to the string table.
-     */
-    public void addStringToTable(byte oldString[], byte newString) {
-        int length = oldString.length;
-        byte string[] = new byte[length + 1];
-        System.arraycopy(oldString, 0, string, 0, length);
-        string[length] = newString;
-        
-        // Add this new String to the table
-        stringTable[tableIndex++] = string;
-        
-        if (tableIndex == 511) {
-            bitsToGet = 10;
-        } else if (tableIndex == 1023) {
-            bitsToGet = 11;
-        } else if (tableIndex == 2047) {
-            bitsToGet = 12;
-        } 
     }
 
     /**
      * Add a new string to the string table.
      */
-    public void addStringToTable(byte string[]) {
-        
+    public void addStringToTable(byte[] oldString, byte newString) {
+        int length = oldString.length;
+        byte[] string = new byte[length + 1];
+        System.arraycopy(oldString, 0, string, 0, length);
+        string[length] = newString;
+
         // Add this new String to the table
         stringTable[tableIndex++] = string;
-        
+
         if (tableIndex == 511) {
             bitsToGet = 10;
         } else if (tableIndex == 1023) {
             bitsToGet = 11;
         } else if (tableIndex == 2047) {
             bitsToGet = 12;
-        } 
+        }
+    }
+
+    /**
+     * Add a new string to the string table.
+     */
+    public void addStringToTable(byte[] string) {
+
+        // Add this new String to the table
+        stringTable[tableIndex++] = string;
+
+        if (tableIndex == 511) {
+            bitsToGet = 10;
+        } else if (tableIndex == 1023) {
+            bitsToGet = 11;
+        } else if (tableIndex == 2047) {
+            bitsToGet = 12;
+        }
     }
 
     /**
      * Append <code>newString</code> to the end of <code>oldString</code>.
      */
-    public byte[] composeString(byte oldString[], byte newString) {
+    public byte[] composeString(byte[] oldString, byte newString) {
         int length = oldString.length;
-        byte string[] = new byte[length + 1];
+        byte[] string = new byte[length + 1];
         System.arraycopy(oldString, 0, string, 0, length);
         string[length] = newString;
 

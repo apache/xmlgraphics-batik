@@ -96,7 +96,7 @@ public abstract class AbstractDocument
     /**
      * The error messages bundle class name.
      */
-    protected final static String RESOURCES =
+    protected static final String RESOURCES =
         "org.apache.batik.dom.resources.Messages";
 
     /**
@@ -199,7 +199,7 @@ public abstract class AbstractDocument
         if (dt != null) {
             if (dt instanceof GenericDocumentType) {
                 GenericDocumentType gdt = (GenericDocumentType)dt;
-                if (gdt.getOwnerDocument() == null) 
+                if (gdt.getOwnerDocument() == null)
                     gdt.setOwnerDocument(this);
             }
             appendChild(dt);
@@ -335,7 +335,7 @@ public abstract class AbstractDocument
      */
     public Node importNode(Node importedNode, boolean deep, boolean trimId) {
         /*
-         * The trimming of id's is used by the 'use' element to keep 
+         * The trimming of id's is used by the 'use' element to keep
          * down the amount of 'bogus' id's in the hashtable.
          */
         Node result;
@@ -357,38 +357,38 @@ public abstract class AbstractDocument
                 }
             }
             break;
-            
+
         case ATTRIBUTE_NODE:
             result = createAttributeNS(importedNode.getNamespaceURI(),
                                        importedNode.getNodeName());
             break;
-            
+
         case TEXT_NODE:
             result = createTextNode(importedNode.getNodeValue());
             deep = false;
             break;
-            
+
         case CDATA_SECTION_NODE:
             result = createCDATASection(importedNode.getNodeValue());
             deep = false;
             break;
-            
+
         case ENTITY_REFERENCE_NODE:
             result = createEntityReference(importedNode.getNodeName());
             break;
-            
+
         case PROCESSING_INSTRUCTION_NODE:
             result = createProcessingInstruction
                 (importedNode.getNodeName(),
                  importedNode.getNodeValue());
             deep = false;
             break;
-            
+
         case COMMENT_NODE:
             result = createComment(importedNode.getNodeValue());
             deep = false;
             break;
-            
+
         case DOCUMENT_FRAGMENT_NODE:
             result = createDocumentFragment();
             break;
@@ -398,7 +398,7 @@ public abstract class AbstractDocument
                                      "import.node",
                                      new Object[] {});
         }
-        
+
         if (importedNode instanceof AbstractNode) {
             // Only fire the UserDataHandler if the imported node is from
             // Batik's DOM implementation.
@@ -470,7 +470,7 @@ public abstract class AbstractDocument
                 return e;
             return null;
         }
-        
+
         // Not a IdSoftRef so it must be a list.
         List l = (List)o;
         Iterator li = l.iterator();
@@ -500,9 +500,9 @@ public abstract class AbstractDocument
     protected class IdSoftRef extends CleanerThread.SoftReferenceCleared {
         String id;
         List   list;
-        IdSoftRef(Object o, String id) { 
+        IdSoftRef(Object o, String id) {
             super(o);
-            this.id = id; 
+            this.id = id;
         }
         IdSoftRef(Object o, String id, List list) {
             super(o);
@@ -515,7 +515,7 @@ public abstract class AbstractDocument
         public void cleared() {
             if (elementsById == null) return;
             synchronized (elementsById) {
-                if (list != null) 
+                if (list != null)
                     list.remove(this);
                 else {
                   Object o = elementsById.remove(id);
@@ -541,8 +541,8 @@ public abstract class AbstractDocument
             if (o instanceof IdSoftRef) {
                 elementsById.remove(id);
                 return;
-            } 
-            
+            }
+
             List l = (List)o;
             Iterator li = l.iterator();
             while (li.hasNext()) {
@@ -555,7 +555,7 @@ public abstract class AbstractDocument
                     break;
                 }
             }
-            
+
             if (l.size() == 0)
                 elementsById.remove(id);
         }
@@ -587,7 +587,7 @@ public abstract class AbstractDocument
                     elementsById.put(id, new IdSoftRef(e, id));
                     return;
                 }
-                
+
                 // Create new List for this id.
                 List l = new ArrayList(4);
                 ip.setList(l);
@@ -596,15 +596,15 @@ public abstract class AbstractDocument
                 elementsById.put(id, l);
                 return;
             }
-            
+
             List l = (List)o;
             l.add(new IdSoftRef(e, id, l));
         }
     }
 
     public void updateIdEntry(Element e, String oldId, String newId) {
-        if ((oldId == newId) || 
-            ((oldId != null) && (oldId.equals(newId)))) 
+        if ((oldId == newId) ||
+            ((oldId != null) && (oldId.equals(newId))))
             return;
 
         removeIdEntry(e, oldId);
@@ -723,8 +723,8 @@ public abstract class AbstractDocument
      * DocumentTraversal#createNodeIterator(Node,int,NodeFilter,boolean)}.
      */
     public NodeIterator createNodeIterator(Node root,
-                                           int whatToShow, 
-                                           NodeFilter filter, 
+                                           int whatToShow,
+                                           NodeFilter filter,
                                            boolean entityReferenceExpansion)
         throws DOMException {
         if (traversalSupport == null) {
@@ -739,9 +739,9 @@ public abstract class AbstractDocument
      * <b>DOM</b>: Implements {@link
      * DocumentTraversal#createTreeWalker(Node,int,NodeFilter,boolean)}.
      */
-    public TreeWalker createTreeWalker(Node root, 
-                                       int whatToShow, 
-                                       NodeFilter filter, 
+    public TreeWalker createTreeWalker(Node root,
+                                       int whatToShow,
+                                       NodeFilter filter,
                                        boolean entityReferenceExpansion)
         throws DOMException {
         return TraversalSupport.createTreeWalker(this, root, whatToShow,
@@ -1352,7 +1352,7 @@ public abstract class AbstractDocument
 
         NamedNodeMap nnm = e.getAttributes();
         LinkedList toRemove = new LinkedList();
-        HashMap names = new HashMap();
+        HashMap names = new HashMap();                    // todo names is not used ?
         for (int i = 0; i < nnm.getLength(); i++) {
             Attr a = (Attr) nnm.item(i);
             String prefix = a.getPrefix();
@@ -2707,7 +2707,7 @@ public abstract class AbstractDocument
         s.writeObject(implementation.getClass().getName());
     }
 
-    private void readObject(ObjectInputStream s) 
+    private void readObject(ObjectInputStream s)
         throws IOException, ClassNotFoundException {
         s.defaultReadObject();
 

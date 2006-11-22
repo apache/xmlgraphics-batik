@@ -42,7 +42,7 @@ public class SVGOMFETurbulenceElement
     /**
      * The 'stitchTiles' attribute values.
      */
-    protected final static String[] STITCH_TILES_VALUES = {
+    protected static final String[] STITCH_TILES_VALUES = {
         "",
         SVG_STITCH_VALUE,
         SVG_NO_STITCH_VALUE
@@ -51,7 +51,7 @@ public class SVGOMFETurbulenceElement
     /**
      * The 'type' attribute values.
      */
-    protected final static String[] TYPE_VALUES = {
+    protected static final String[] TYPE_VALUES = {
         "",
         SVG_FRACTAL_NOISE_VALUE,
         SVG_TURBULENCE_VALUE

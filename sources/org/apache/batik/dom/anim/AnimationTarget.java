@@ -32,10 +32,10 @@ import org.w3c.dom.svg.SVGLength;
 public interface AnimationTarget {
 
     // Constants for percentage interpretation.
-    static final short PERCENTAGE_FONT_SIZE       = 0;
-    static final short PERCENTAGE_VIEWPORT_WIDTH  = 1;
-    static final short PERCENTAGE_VIEWPORT_HEIGHT = 2;
-    static final short PERCENTAGE_VIEWPORT_SIZE   = 3;
+    short PERCENTAGE_FONT_SIZE       = 0;
+    short PERCENTAGE_VIEWPORT_WIDTH  = 1;
+    short PERCENTAGE_VIEWPORT_HEIGHT = 2;
+    short PERCENTAGE_VIEWPORT_SIZE   = 3;
 
     /**
      * Returns the element.
@@ -80,7 +80,7 @@ public interface AnimationTarget {
      * @param type the SVG length units (one of the
      *             {@link SVGLength}.SVG_LENGTH_* constants)
      * @param pcInterp how to interpretet percentage values (one of the
-     *             {@link AnimationTarget}.PERCENTAGE_* constants) 
+     *             {@link AnimationTarget}.PERCENTAGE_* constants)
      * @return the SVG value in user units
      */
     float svgToUserSpace(float v, short type, short pcInterp);

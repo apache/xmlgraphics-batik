@@ -27,26 +27,26 @@ import java.awt.geom.Rectangle2D;
  * @version $Id$
  */
 public interface Segment extends Cloneable {
-    public double minX();
-    public double maxX();
-    public double minY();
-    public double maxY();
-    public Rectangle2D getBounds2D();
+    double minX();
+    double maxX();
+    double minY();
+    double maxY();
+    Rectangle2D getBounds2D();
 
-    public Point2D.Double evalDt(double t);
-    public Point2D.Double eval(double t);
+    Point2D.Double evalDt(double t);
+    Point2D.Double eval(double t);
 
-    public Segment getSegment(double t0, double t1);
-    public Segment splitBefore(double t);
-    public Segment splitAfter(double t);
-    public void    subdivide(Segment s0, Segment s1);
-    public void    subdivide(double t, Segment s0, Segment s1);
-    public double  getLength();
-    public double  getLength(double maxErr);
+    Segment getSegment(double t0, double t1);
+    Segment splitBefore(double t);
+    Segment splitAfter(double t);
+    void    subdivide(Segment s0, Segment s1);
+    void    subdivide(double t, Segment s0, Segment s1);
+    double  getLength();
+    double  getLength(double maxErr);
 
-    public SplitResults split(double y);
+    SplitResults split(double y);
 
-    public static class SplitResults {
+    class SplitResults {
         Segment [] above;
         Segment [] below;
         SplitResults(Segment []below, Segment []above) {

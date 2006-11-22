@@ -84,8 +84,8 @@ public class DistantLight extends AbstractLight {
      * @param y y-axis coordinate where the light should be computed
      * @param L array of length 3 where the result is stored
      */
-    public void getLight(final double x, final double y, final double z, 
-                         final double L[]){
+    public void getLight(final double x, final double y, final double z,
+                         final double[] L){
         L[0] = Lx;
         L[1] = Ly;
         L[2] = Lz;
@@ -107,7 +107,7 @@ public class DistantLight extends AbstractLight {
      * @return an array width columns where each element
      *         is an array of three components representing the x, y and z
      *         components of the light vector.  */
-    public double[][] getLightRow(double x, double y, 
+    public double[][] getLightRow(double x, double y,
                                   final double dx, final int width,
                                   final double[][] z,
                                   final double[][] lightRow) {

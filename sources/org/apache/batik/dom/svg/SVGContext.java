@@ -30,10 +30,10 @@ import java.awt.geom.Rectangle2D;
 public interface SVGContext {
 
     // Constants for percentage interpretation.
-    static final int PERCENTAGE_FONT_SIZE       = 0;
-    static final int PERCENTAGE_VIEWPORT_WIDTH  = 1;
-    static final int PERCENTAGE_VIEWPORT_HEIGHT = 2;
-    static final int PERCENTAGE_VIEWPORT_SIZE   = 3;
+    int PERCENTAGE_FONT_SIZE       = 0;
+    int PERCENTAGE_VIEWPORT_WIDTH  = 1;
+    int PERCENTAGE_VIEWPORT_HEIGHT = 2;
+    int PERCENTAGE_VIEWPORT_SIZE   = 3;
 
     /**
      * Returns the size of a px CSS unit in millimeters.

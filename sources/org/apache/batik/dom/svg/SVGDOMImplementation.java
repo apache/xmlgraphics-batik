@@ -66,13 +66,13 @@ public class SVGDOMImplementation
     /**
      * The SVG namespace uri.
      */
-    public final static String SVG_NAMESPACE_URI =
+    public static final String SVG_NAMESPACE_URI =
         SVGConstants.SVG_NAMESPACE_URI;
 
     /**
      * The error messages bundle class name.
      */
-    protected final static String RESOURCES =
+    protected static final String RESOURCES =
         "org.apache.batik.dom.svg.resources.Messages";
 
     protected HashTable factories;
@@ -1591,7 +1591,7 @@ public class SVGDOMImplementation
     /**
      * The default instance of this class.
      */
-    protected final static DOMImplementation DOM_IMPLEMENTATION =
+    protected static final DOMImplementation DOM_IMPLEMENTATION =
         new SVGDOMImplementation();
 
 }

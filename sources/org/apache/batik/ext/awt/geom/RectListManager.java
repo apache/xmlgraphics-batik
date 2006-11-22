@@ -50,7 +50,7 @@ public class RectListManager implements Collection {
         for (int i=0; i<size; i++) {
             Rectangle r = rects[i];
             System.err.println("  [" + r.x + ", " + r.y + ", " +
-                               r.width + ", " + r.height + "]");
+                               r.width + ", " + r.height + ']' );
         }
     }
 
@@ -68,15 +68,16 @@ public class RectListManager implements Collection {
         this.rects = new Rectangle[rects.size()];
         Iterator i = rects.iterator();
         int j=0;
-        while (i.hasNext())
+        while (i.hasNext())          // todo can be replaced by rects.toArray()
             this.rects[j++] = (Rectangle)i.next();
         this.size  = this.rects.length;
+
 
         Arrays.sort(this.rects, comparator);
     }
 
     /**
-     * Construct a <tt>RectListManager</tt> from an Array of 
+     * Construct a <tt>RectListManager</tt> from an Array of
      * <tt>Rectangles</tt>
      * @param rects Array of <tt>Rectangles</tt>, must not contain
      *              any null entries.
@@ -86,7 +87,7 @@ public class RectListManager implements Collection {
     }
 
     /**
-     * Construct a <tt>RectListManager</tt> from an Array of 
+     * Construct a <tt>RectListManager</tt> from an Array of
      * <tt>Rectangles</tt>
      * @param rects Array of <tt>Rectangles</tt>, must not contain
      *              any null entries in the range [off, off+sz-1].
@@ -101,7 +102,7 @@ public class RectListManager implements Collection {
     }
 
     /**
-     * Construct a <tt>RectListManager</tt> from another 
+     * Construct a <tt>RectListManager</tt> from another
      * <tt>RectListManager</tt> (data is copied).
      * @param rlm RectListManager to copy.
      */
@@ -118,7 +119,7 @@ public class RectListManager implements Collection {
         add(rect);
     }
 
-    
+
     /**
      * Construct an initially empty <tt>RectListManager</tt>.
      */
@@ -138,7 +139,7 @@ public class RectListManager implements Collection {
     }
 
     public Rectangle getBounds() {
-        if (bounds != null ) 
+        if (bounds != null )
             return bounds;
         if (size == 0) return null;
         bounds = new Rectangle(rects[0]);
@@ -152,9 +153,9 @@ public class RectListManager implements Collection {
                 bounds.height = bounds.y+bounds.height-r.y;
                 bounds.y = r.y;
             }
-            if (r.x+r.width > bounds.x+bounds.width) 
+            if (r.x+r.width > bounds.x+bounds.width)
                 bounds.width = r.x+r.width-bounds.x;
-            if (r.y+r.height > bounds.y+bounds.height) 
+            if (r.y+r.height > bounds.y+bounds.height)
                 bounds.height = r.y+r.height-bounds.y;
         }
         return bounds;
@@ -184,10 +185,9 @@ public class RectListManager implements Collection {
      * Returns true if this collection contains no elements.
      */
     public boolean isEmpty() { return (size==0); }
-    
+
     public void clear() {
-        for (int i=0; i<size; i++) 
-            rects[i] = null;
+        Arrays.fill( rects, null );
         size=0;
         bounds = null;
     }
@@ -200,7 +200,7 @@ public class RectListManager implements Collection {
     }
 
     /**
-     * Returns a list iterator of the elements in this list 
+     * Returns a list iterator of the elements in this list
      * (in proper sequence).
      */
     public ListIterator listIterator() {
@@ -218,11 +218,10 @@ public class RectListManager implements Collection {
         if ((t != Object.class) &
             (t != Rectangle.class)) {
             // Nothing here for it...
-            for (int i=0; i<a.length; i++)
-                a[i] = null;
+            Arrays.fill( a, null );
             return a;
         }
-        
+
         if (a.length < size)
             a = new Rectangle[size];
         System.arraycopy(rects, 0, a, 0, size);
@@ -265,7 +264,7 @@ public class RectListManager implements Collection {
                 // All 'null' from center to r so skip them
                 r = (l+r)/2;
                 idx = (l+r)/2;
-                if (l>r) 
+                if (l>r)
                     idx=l;
                 while ((rects[idx] == null) && (idx > l)) idx--;
                 if (rects[idx] == null) {
@@ -276,19 +275,19 @@ public class RectListManager implements Collection {
             if (rect.x == rects[idx].x) break;
             if (rect.x <  rects[idx].x) {
                 if (idx == 0) break;
-                if ((rects[idx-1] != null) && 
+                if ((rects[idx-1] != null) &&
                     (rect.x >= rects[idx-1].x)) break;
                 r = idx-1;
             } else {
                 if (idx == size-1)  {idx++; break; }
-                if ((rects[idx+1] != null) && 
+                if ((rects[idx+1] != null) &&
                     (rect.x <= rects[idx+1].x)) { idx++; break;}
                 l = idx+1;
             }
         }
 
         if (idx < size) {
-            System.arraycopy(rects, idx, 
+            System.arraycopy(rects, idx,
                              rects, idx+1, size-idx);
         }
 
@@ -349,7 +348,7 @@ public class RectListManager implements Collection {
         return false;
     }
 
-    /** 
+    /**
      * Returns true if this collection contains all of the elements in
      * the specified collection.
      */
@@ -448,7 +447,7 @@ public class RectListManager implements Collection {
         boolean ret = false;
         for (int j=0, i=0; j<rlm.size; j++) {
             i=xChange;
-            while ((rects[i] == null) || 
+            while ((rects[i] == null) ||
                    (rects[i].x < rlm.rects[j].x)) {
                 i++;
                 if (i == size) break;
@@ -478,7 +477,7 @@ public class RectListManager implements Collection {
         if (ret) {
             int j=0, i=0;
             while (i<size) {
-                if (rects[i] != null) 
+                if (rects[i] != null)
                     rects[j++] = rects[i];
                 i++;
             }
@@ -532,7 +531,7 @@ public class RectListManager implements Collection {
         if (ret) {
             int j=0, i=0;
             while (i<size) {
-                if (rects[i] != null) 
+                if (rects[i] != null)
                     rects[j++] = rects[i];
                 i++;
             }
@@ -557,14 +556,14 @@ public class RectListManager implements Collection {
         if (rects.length < (size+rlm.size)) {
             dst = new Rectangle[size+rlm.size];
         }
-        
+
         if (size == 0) {
             System.arraycopy(rlm.rects, 0, dst, size, rlm.size);
             size = rlm.size;
             bounds = null;
             return;
         }
-        
+
         Rectangle [] src1   = rlm.rects;
         int          src1Sz = rlm.size;
         int          src1I  = src1Sz-1;
@@ -576,10 +575,10 @@ public class RectListManager implements Collection {
         int dstI = size+rlm.size-1;
         int x1 = src1[src1I].x;
         int x2 = src2[src2I].x;
-        
+
         while (dstI >= 0) {
             if (x1 <= x2) {
-                dst[dstI] = src2[src2I]; 
+                dst[dstI] = src2[src2I];
                 if (src2I == 0) {
                     System.arraycopy(src1, 0, dst, 0, src1I+1);
                     break;
@@ -587,7 +586,7 @@ public class RectListManager implements Collection {
                 src2I--;
                 x2 = src2[src2I].x;
             } else {
-                dst[dstI] = src1[src1I]; 
+                dst[dstI] = src1[src1I];
                 if (src1I == 0) {
                     System.arraycopy(src2, 0, dst, 0, src2I+1);
                     break;
@@ -611,7 +610,7 @@ public class RectListManager implements Collection {
         for (int j, i=0; i<size; i++) {
             r = rects[i];
             if (r == null) continue;
-            cost1 = (overhead                 + 
+            cost1 = (overhead                 +
                      (r.height*lineOverhead) +
                      (r.height*r.width));
             do {
@@ -624,12 +623,12 @@ public class RectListManager implements Collection {
                         j = size;
                         break;
                     }
-                    cost2 = (overhead                 + 
+                    cost2 = (overhead                 +
                              (cr.height*lineOverhead) +
                              (cr.height*cr.width));
 
                     mr = r.union(cr);
-                    cost3 = (overhead                 + 
+                    cost3 = (overhead                 +
                              (mr.height*lineOverhead) +
                              (mr.height*mr.width));
                     if (cost3 <= cost1+cost2) {
@@ -651,7 +650,7 @@ public class RectListManager implements Collection {
                             // Collapse null entries in first three
                             // (That share common 'x').
                             if (k<3) splits[l++] = sr;
-                            splitCost += (overhead                 + 
+                            splitCost += (overhead                 +
                                           (sr.height*lineOverhead) +
                                           (sr.height*sr.width));
                         }
@@ -710,14 +709,14 @@ public class RectListManager implements Collection {
 
         for(int i=0; i<size; i++) {
             r = rects[i]; // Canidate rect...
-            cost = (overhead                + 
+            cost = (overhead                +
                     (r.height*lineOverhead) +
                     (r.height*r.width));
             for (int j=jMin; j<rlm.size; j++) {
                 sr = rlm.rects[j]; // subtraction rect.
 
                 // Check if the canidate rect starts after
-                // the end of this rect in 'x' if so 
+                // the end of this rect in 'x' if so
                 // go to the next one.
                 if (sr.x+sr.width < r.x) {
                     // If this was jMin then increment jMin (no
@@ -745,8 +744,8 @@ public class RectListManager implements Collection {
                 Rectangle tmpR;
                 for (int k=0; k<4; k++) {
                     tmpR = splits[k];
-                    if (tmpR != null) 
-                        splitCost += (overhead                   + 
+                    if (tmpR != null)
+                        splitCost += (overhead                   +
                                       (tmpR.height*lineOverhead) +
                                       (tmpR.height*tmpR.width));
                 }
@@ -759,7 +758,7 @@ public class RectListManager implements Collection {
                     // subtract list has been merged as this will help
                     // reduce the instances where this will happen.
                     continue;
-                
+
                 // Collapse null entries in first three elements
                 // split 0, 1, 2 (entries that share a common 'x').
                 int l = 0;
@@ -783,9 +782,9 @@ public class RectListManager implements Collection {
                 // the split, since it only shrunk it didn't grow,
                 // we know that the previous subtract rects don't
                 // intersect it.
-                r        = splits[0]; 
+                r        = splits[0];
                 rects[i] = r;
-                cost = (overhead                + 
+                cost = (overhead                +
                         (r.height*lineOverhead) +
                         (r.height*r.width));
 
@@ -807,7 +806,7 @@ public class RectListManager implements Collection {
         while (i<size) {
             if (rects[i].width == 0)
                 rects[i] = null;
-            else 
+            else
                 rects[j++] = rects[i];
             i++;
         }
@@ -862,13 +861,13 @@ public class RectListManager implements Collection {
         } else {
             splits[1] = null;
         }
-                
+
         if ((rx0 < srx0) && (rx1 >= srx0)) {
             splits[2] = new Rectangle(rx0, ry0, srx0-rx0, ry1-ry0+1);
         } else {
             splits[2] = null;
         }
-                
+
         if ((rx0 <= srx1) && (rx1 > srx1)) {
             splits[3]= new Rectangle(srx1+1, ry0, rx1-srx1, ry1-ry0+1);
         } else {
@@ -876,7 +875,7 @@ public class RectListManager implements Collection {
         }
     }
 
-    protected void insertRects(Rectangle[] rects, int srcPos, 
+    protected void insertRects(Rectangle[] rects, int srcPos,
                                int dstPos, int len) {
         if (len == 0) return;
 
@@ -895,12 +894,12 @@ public class RectListManager implements Collection {
     }
 
     public void ensureCapacity(int sz) {
-        if (sz <= rects.length) 
+        if (sz <= rects.length)
             return;
         int nSz = rects.length + (rects.length>>1) + 1;
         while (nSz < sz)
             nSz+=(nSz>>1)+1;
-        
+
         Rectangle [] nRects = new Rectangle[nSz];
         System.arraycopy(rects, 0, nRects, 0, size);
 
@@ -932,7 +931,7 @@ public class RectListManager implements Collection {
         public boolean hasNext() { return idx < size; }
         public int nextIndex() { return idx; }
         public Object next() {
-            if (idx >= size) 
+            if (idx >= size)
                 throw new NoSuchElementException("No Next Element");
             forward = true;
             removeOk = true;
@@ -942,13 +941,13 @@ public class RectListManager implements Collection {
         public boolean hasPrevious() { return idx > 0; }
         public int previousIndex() { return idx-1; }
         public Object previous() {
-            if (idx <= 0) 
+            if (idx <= 0)
                 throw new NoSuchElementException("No Previous Element");
             forward = false;
             removeOk = true;
             return rects[--idx];
         }
-            
+
         public void remove() {
             if (!removeOk)
                 throw new IllegalStateException
@@ -1000,7 +999,7 @@ public class RectListManager implements Collection {
                         ("RectListManager entries must be sorted");
             }
             ensureCapacity(size+1);
-            if (idx != size) 
+            if (idx != size)
                 System.arraycopy(rects, idx, rects, idx+1, size-idx);
             rects[idx] = r;
             idx++;

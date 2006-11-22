@@ -45,7 +45,7 @@ public class SVGOMFEConvolveMatrixElement
     /**
      * The 'edgeMode' attribute values.
      */
-    protected final static String[] EDGE_MODE_VALUES = {
+    protected static final String[] EDGE_MODE_VALUES = {
         "",
         SVG_DUPLICATE_VALUE,
         SVG_WRAP_VALUE,

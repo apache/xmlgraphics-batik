@@ -47,16 +47,16 @@ public final class CompositeRule implements java.io.Serializable {
 
     /** SVG feBlend Multiply rule */
     public static final int RULE_MULTIPLY = 7;
-        
+
     /** SVG feBlend Screen rule */
     public static final int RULE_SCREEN = 8;
-        
+
     /** SVG feBlend Darken rule */
     public static final int RULE_DARKEN = 9;
-        
+
     /** SVG feBlend Lighten rule */
     public static final int RULE_LIGHTEN = 10;
-        
+
 
       /**
        * Porter-Duff Source Over Destination rule. The source is
@@ -135,7 +135,7 @@ public final class CompositeRule implements java.io.Serializable {
        *        Ad = 1 - (1-Ad)*(1-As)
        * </pre>
        */
-    public static final CompositeRule MULTIPLY = 
+    public static final CompositeRule MULTIPLY =
         new CompositeRule(RULE_MULTIPLY);
 
       /**
@@ -145,7 +145,7 @@ public final class CompositeRule implements java.io.Serializable {
        *        Ad = 1 - (1-Ad)*(1-As)
        * </pre>
        */
-    public static final CompositeRule SCREEN = 
+    public static final CompositeRule SCREEN =
         new CompositeRule(RULE_SCREEN);
 
       /**
@@ -156,7 +156,7 @@ public final class CompositeRule implements java.io.Serializable {
        *        Ad = 1 - (1-Ad)*(1-As)
        * </pre>
        */
-    public static final CompositeRule DARKEN = 
+    public static final CompositeRule DARKEN =
         new CompositeRule(RULE_DARKEN);
 
 
@@ -168,7 +168,7 @@ public final class CompositeRule implements java.io.Serializable {
        *        Ad = 1 - (1-Ad)*(1-As)
        * </pre>
        */
-    public static final CompositeRule LIGHTEN = 
+    public static final CompositeRule LIGHTEN =
         new CompositeRule(RULE_LIGHTEN);
 
 
@@ -261,7 +261,7 @@ public final class CompositeRule implements java.io.Serializable {
             return "[CompositeRule: XOR]";
         case RULE_ARITHMETIC:
             return ("[CompositeRule: ARITHMATIC k1:" +
-                    k1 + " k2: " + k2 + " k3: " + k3 + " k4: " + k4 + "]");
+                    k1 + " k2: " + k2 + " k3: " + k3 + " k4: " + k4 + ']' );
         case RULE_MULTIPLY:
             return "[CompositeRule: MULTIPLY]";
         case RULE_SCREEN:

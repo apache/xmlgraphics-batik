@@ -44,7 +44,7 @@ public abstract class SVGOMTextContentElement
     /**
      * The 'lengthAdjust' attribute values.
      */
-    protected final static String[] LENGTH_ADJUST_VALUES = {
+    protected static final String[] LENGTH_ADJUST_VALUES = {
         "",
         SVG_SPACING_ATTRIBUTE,
         SVG_SPACING_AND_GLYPHS_VALUE
@@ -92,7 +92,7 @@ public abstract class SVGOMTextContentElement
                         }
                         return baseVal;
                     }
-                    
+
                     class SVGTextLength extends BaseSVGLength {
                         public SVGTextLength(short direction) {
                             super(direction);
@@ -213,7 +213,7 @@ public abstract class SVGOMTextContentElement
     }
 
     // SVGLangSpace support //////////////////////////////////////////////////
-    
+
     /**
      * <b>DOM</b>: Returns the xml:lang attribute value.
      */
@@ -227,7 +227,7 @@ public abstract class SVGOMTextContentElement
     public void setXMLlang(String lang) {
         setAttributeNS(XML_NAMESPACE_URI, XML_LANG_QNAME, lang);
     }
-    
+
     /**
      * <b>DOM</b>: Returns the xml:space attribute value.
      */

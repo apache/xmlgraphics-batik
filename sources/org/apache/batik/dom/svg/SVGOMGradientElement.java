@@ -44,7 +44,7 @@ public abstract class SVGOMGradientElement
     /**
      * The attribute initializer.
      */
-    protected final static AttributeInitializer attributeInitializer;
+    protected static final AttributeInitializer attributeInitializer;
     static {
         attributeInitializer = new AttributeInitializer(4);
         attributeInitializer.addAttribute(XMLSupport.XMLNS_NAMESPACE_URI,
@@ -61,7 +61,7 @@ public abstract class SVGOMGradientElement
     /**
      * The units values.
      */
-    protected final static String[] UNITS_VALUES = {
+    protected static final String[] UNITS_VALUES = {
         "",
         SVG_USER_SPACE_ON_USE_VALUE,
         SVG_OBJECT_BOUNDING_BOX_VALUE
@@ -70,7 +70,7 @@ public abstract class SVGOMGradientElement
     /**
      * The 'spreadMethod' attribute values.
      */
-    protected final static String[] SPREAD_METHOD_VALUES = {
+    protected static final String[] SPREAD_METHOD_VALUES = {
         "",
         SVG_PAD_VALUE,
         SVG_REFLECT_VALUE,
@@ -110,7 +110,7 @@ public abstract class SVGOMGradientElement
             (null, SVG_GRADIENT_UNITS_ATTRIBUTE, UNITS_VALUES,
              (short)2);
     }
- 
+
     /**
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGGradientElement#getSpreadMethod()}.
@@ -120,7 +120,7 @@ public abstract class SVGOMGradientElement
             (null, SVG_SPREAD_METHOD_ATTRIBUTE, SPREAD_METHOD_VALUES,
              (short)1);
     }
- 
+
     /**
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGURIReference#getHref()}.

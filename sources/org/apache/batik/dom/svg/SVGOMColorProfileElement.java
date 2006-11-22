@@ -41,7 +41,7 @@ public class SVGOMColorProfileElement
     /**
      * The attribute initializer.
      */
-    protected final static AttributeInitializer attributeInitializer;
+    protected static final AttributeInitializer attributeInitializer;
     static {
         attributeInitializer = new AttributeInitializer(5);
         attributeInitializer.addAttribute(null, null,

@@ -83,11 +83,11 @@ public class SVGOMDocument
                SVGConstants,
                CSSNavigableDocument,
                IdContainer {
-    
+
     /**
      * The error messages bundle class name.
      */
-    protected final static String RESOURCES =
+    protected static final String RESOURCES =
         "org.apache.batik.dom.svg.resources.Messages";
 
     /**
@@ -365,7 +365,7 @@ public class SVGOMDocument
     }
 
     /**
-     * Returns true if the given Attr node represents an 'id' 
+     * Returns true if the given Attr node represents an 'id'
      * for this document.
      */
     public boolean isId(Attr node) {
@@ -754,11 +754,11 @@ public class SVGOMDocument
     /**
      * Reads the object from the given stream.
      */
-    private void readObject(ObjectInputStream s) 
+    private void readObject(ObjectInputStream s)
         throws IOException, ClassNotFoundException {
         s.defaultReadObject();
-        
+
         localizableSupport = new LocalizableSupport
             (RESOURCES, getClass().getClassLoader());
-    }        
+    }
 }

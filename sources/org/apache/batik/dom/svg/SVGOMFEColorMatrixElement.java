@@ -41,7 +41,7 @@ public class SVGOMFEColorMatrixElement
     /**
      * The 'type' attribute values.
      */
-    protected final static String[] TYPE_VALUES = {
+    protected static final String[] TYPE_VALUES = {
         "",
         SVG_MATRIX_VALUE,
         SVG_SATURATE_VALUE,

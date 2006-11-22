@@ -34,7 +34,7 @@ public class Linear implements Segment {
         p2 = new Point2D.Double();
     }
 
-    public Linear(double x1, double y1,  
+    public Linear(double x1, double y1,
                   double x2, double y2) {
         p1 = new Point2D.Double(x1, y1);
         p2 = new Point2D.Double(x2, y2);
@@ -46,28 +46,28 @@ public class Linear implements Segment {
     }
 
     public Object clone() {
-        return new Linear(new Point2D.Double(p1.x, p1.y), 
+        return new Linear(new Point2D.Double(p1.x, p1.y),
                           new Point2D.Double(p2.x, p2.y));
     }
 
     public Segment reverse() {
-        return new Linear(new Point2D.Double(p2.x, p2.y), 
+        return new Linear(new Point2D.Double(p2.x, p2.y),
                           new Point2D.Double(p1.x, p1.y));
     }
 
-    public double minX() { 
+    public double minX() {
         if (p1.x < p2.x) return p1.x;
         return p2.x;
     }
-    public double maxX() {  
+    public double maxX() {
         if (p1.x > p2.x) return p1.x;
         return p2.x;
     }
-    public double minY() { 
+    public double minY() {
         if (p1.y < p2.y) return p1.y;
         return p2.y;
     }
-    public double maxY() { 
+    public double maxY() {
         if (p1.y > p2.y) return p2.y;
         return p1.y;
     }
@@ -215,9 +215,9 @@ public class Linear implements Segment {
         return getLength();
     }
 
-    public String toString() { 
-        return ("M" + p1.x + "," + p1.y + 
-                "L" + p2.x + "," + p2.y);
+    public String toString() {
+        return "M" + p1.x + ',' + p1.y +
+                'L' + p2.x + ',' + p2.y;
     }
 
     /*
@@ -226,7 +226,7 @@ public class Linear implements Segment {
         return (((a + eps) > b) && ((a-eps) < b));
     }
 
-    public static void sub(Linear orig, Linear curr, 
+    public static void sub(Linear orig, Linear curr,
                            double t, double inc, int lev) {
         Linear left=new Linear();
         Linear right=new Linear();

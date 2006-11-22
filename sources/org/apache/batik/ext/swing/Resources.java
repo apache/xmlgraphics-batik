@@ -41,7 +41,7 @@ public class Resources {
     /**
      * The error messages bundle class name.
      */
-    protected final static String RESOURCES =
+    protected static final String RESOURCES =
         "org.apache.batik.ext.swing.resources.Messages";
 
     /**
@@ -85,7 +85,7 @@ public class Resources {
         return resourceManager.getString(key);
     }
 
-    public static int getInteger(String key) 
+    public static int getInteger(String key)
         throws MissingResourceException {
         return resourceManager.getInteger(key);
     }

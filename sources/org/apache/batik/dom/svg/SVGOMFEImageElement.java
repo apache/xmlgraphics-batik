@@ -43,7 +43,7 @@ public class SVGOMFEImageElement
     /**
      * The attribute initializer.
      */
-    protected final static AttributeInitializer attributeInitializer;
+    protected static final AttributeInitializer attributeInitializer;
     static {
         attributeInitializer = new AttributeInitializer(4);
         attributeInitializer.addAttribute(XMLSupport.XMLNS_NAMESPACE_URI,
@@ -96,7 +96,7 @@ public class SVGOMFEImageElement
     }
 
     // SVGLangSpace support //////////////////////////////////////////////////
-    
+
     /**
      * <b>DOM</b>: Returns the xml:lang attribute value.
      */
@@ -110,7 +110,7 @@ public class SVGOMFEImageElement
     public void setXMLlang(String lang) {
         setAttributeNS(XML_NAMESPACE_URI, XML_LANG_QNAME, lang);
     }
-    
+
     /**
      * <b>DOM</b>: Returns the xml:space attribute value.
      */

@@ -42,7 +42,7 @@ public class SVGOMSymbolElement
     /**
      * The attribute initializer.
      */
-    protected final static AttributeInitializer attributeInitializer;
+    protected static final AttributeInitializer attributeInitializer;
     static {
         attributeInitializer = new AttributeInitializer(1);
         attributeInitializer.addAttribute(null,
@@ -75,7 +75,7 @@ public class SVGOMSymbolElement
     }
 
     // SVGLangSpace support //////////////////////////////////////////////////
-    
+
     /**
      * <b>DOM</b>: Returns the xml:lang attribute value.
      */
@@ -89,7 +89,7 @@ public class SVGOMSymbolElement
     public void setXMLlang(String lang) {
         setAttributeNS(XML_NAMESPACE_URI, XML_LANG_QNAME, lang);
     }
-    
+
     /**
      * <b>DOM</b>: Returns the xml:space attribute value.
      */

@@ -49,24 +49,24 @@ public class TextPathLayout {
     /**
      * Align the text at the start of the path.
      */
-    static public final int ALIGN_START = 0;
+    public static final int ALIGN_START = 0;
     /**
      * Align the text at the middle of the path.
      */
-    static public final int ALIGN_MIDDLE = 1;
+    public static final int ALIGN_MIDDLE = 1;
     /**
      * Align the text at the end of the path.
      */
-    static public final int ALIGN_END = 2;
+    public static final int ALIGN_END = 2;
 
     /**
      * Use the spacing between the glyphs to adjust for textLength.
      */
-    static public final int ADJUST_SPACING = 0;
+    public static final int ADJUST_SPACING = 0;
     /**
      * Use the entire glyph to adjust for textLength.
      */
-    static public final int ADJUST_GLYPHS = 1;
+    public static final int ADJUST_GLYPHS = 1;
 
     /**
      * Wraps the GlyphVector around the given path. The results
@@ -74,7 +74,7 @@ public class TextPathLayout {
      * the size of the font that created the GlyphVector, as
      * well as the "curvyness" of the path (really dynamic curves
      * don't look so great, abrupt changes/vertices look worse).
-     * 
+     *
      * @param glyphs The GlyphVector to layout.
      * @param path The path (or shape) to wrap around
      * @param align The text alignment to use. Should be one
@@ -89,7 +89,7 @@ public class TextPathLayout {
      */
 
 
-    static public Shape layoutGlyphVector(GlyphVector glyphs, 
+    public static Shape layoutGlyphVector(GlyphVector glyphs,
                                           Shape path, int align,
                                           float startOffset,
                                           float textLength,
@@ -116,7 +116,7 @@ public class TextPathLayout {
         float currentPosition = startOffset;
 
         // if align is START then a currentPosition of 0f
-        // is correct. 
+        // is correct.
         // if align is END then the currentPosition should
         // be enough to place the last character on the end
         // of the path
@@ -132,7 +132,7 @@ public class TextPathLayout {
         // iterate through the GlyphVector placing each glyph
 
         for (int i = 0; i < glyphs.getNumGlyphs(); i++) {
-            
+
             GlyphMetrics gm = glyphs.getGlyphMetrics(i);
 
             float charAdvance = gm.getAdvance();
@@ -151,10 +151,10 @@ public class TextPathLayout {
             }
 
             float glyphWidth = (float) glyph.getBounds2D().getWidth();
-            
+
             // Use either of these to calculate the mid point
             // of the character along the path.
-            // If you change this, you must also change the 
+            // If you change this, you must also change the
             // transform on the glyph down below
             // In some case this gives better layout, but
             // the way it is at the moment is a closer match
@@ -182,7 +182,7 @@ public class TextPathLayout {
                 // rotate midline of glyph to be normal to path
                 glyphTrans.rotate(angle);
 
-                // translate glyph backwards so we rotate about the 
+                // translate glyph backwards so we rotate about the
                 // center of the glyph
                 // Choose one of these translations - see the comments
                 // in the charMidPos calculation above
@@ -193,7 +193,7 @@ public class TextPathLayout {
                 newPath.append(glyph, false);
 
             }
-            
+
             // move along by the advance value
             // if the lengthAdjustMode was SPACING then
             // we have to take this into account here
@@ -202,15 +202,15 @@ public class TextPathLayout {
             } else {
                 currentPosition += charAdvance;
             }
-            
+
         }
 
         return newPath;
     }
 
     /**
-     * Wraps the GlyphVector around the given path. 
-     * 
+     * Wraps the GlyphVector around the given path.
+     *
      * @param glyphs The GlyphVector to layout.
      * @param path The path (or shape) to wrap around
      * @param align The text alignment to use. Should be one
@@ -219,7 +219,7 @@ public class TextPathLayout {
      * wrapped along the path
      */
 
-    static public Shape layoutGlyphVector(GlyphVector glyphs, 
+    public static Shape layoutGlyphVector(GlyphVector glyphs,
                                           Shape path, int align) {
 
         return layoutGlyphVector(glyphs, path, align, 0f,
@@ -228,15 +228,15 @@ public class TextPathLayout {
     }
 
     /**
-     * Wraps the GlyphVector around the given path. 
-     * 
+     * Wraps the GlyphVector around the given path.
+     *
      * @param glyphs The GlyphVector to layout.
      * @param path The path (or shape) to wrap around
      * @return A shape that is the outline of the glyph vector
      * wrapped along the path
      */
 
-    static public Shape layoutGlyphVector(GlyphVector glyphs, 
+    public static Shape layoutGlyphVector(GlyphVector glyphs,
                                           Shape path) {
 
         return layoutGlyphVector(glyphs, path, ALIGN_START);

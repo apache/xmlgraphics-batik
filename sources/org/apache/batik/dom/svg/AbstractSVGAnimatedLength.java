@@ -39,19 +39,19 @@ public abstract class AbstractSVGAnimatedLength
     /**
      * This constant represents horizontal lengths.
      */
-    public final static short HORIZONTAL_LENGTH =
+    public static final short HORIZONTAL_LENGTH =
         UnitProcessor.HORIZONTAL_LENGTH;
 
     /**
      * This constant represents vertical lengths.
      */
-    public final static short VERTICAL_LENGTH =
+    public static final short VERTICAL_LENGTH =
         UnitProcessor.VERTICAL_LENGTH;
 
     /**
      * This constant represents other lengths.
      */
-    public final static short OTHER_LENGTH =
+    public static final short OTHER_LENGTH =
         UnitProcessor.OTHER_LENGTH;
 
     /**
@@ -73,7 +73,7 @@ public abstract class AbstractSVGAnimatedLength
      * Whether the value is changing.
      */
     protected boolean changing;
-    
+
     /**
      * Whether the value must be non-negative.
      */
@@ -186,7 +186,7 @@ public abstract class AbstractSVGAnimatedLength
          * Whether this length is valid.
          */
         protected boolean valid;
-        
+
         /**
          * Creates a new BaseSVGLength.
          */

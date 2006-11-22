@@ -54,12 +54,12 @@ import org.w3c.dom.css.ViewCSS;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public abstract class ExtensibleDOMImplementation 
+public abstract class ExtensibleDOMImplementation
     extends AbstractDOMImplementation
     implements DOMImplementationCSS,
                StyleSheetFactory,
                Localizable {
-    
+
     /**
      * The custom elements factories.
      */
@@ -78,7 +78,7 @@ public abstract class ExtensibleDOMImplementation
     /**
      * The error messages bundle class name.
      */
-    protected final static String RESOURCES =
+    protected static final String RESOURCES =
         "org.apache.batik.dom.resources.Messages";
 
     /**
@@ -164,7 +164,7 @@ public abstract class ExtensibleDOMImplementation
     /**
      * Creates new CSSEngine and attach it to the document.
      */
-    public CSSEngine createCSSEngine(AbstractStylableDocument doc, 
+    public CSSEngine createCSSEngine(AbstractStylableDocument doc,
                                      CSSContext ctx) {
         String pn = XMLResourceDescriptor.getCSSParserClassName();
         Parser p;
@@ -214,10 +214,10 @@ public abstract class ExtensibleDOMImplementation
         return result;
     }
 
-    public abstract CSSEngine createCSSEngine(AbstractStylableDocument doc,  
+    public abstract CSSEngine createCSSEngine(AbstractStylableDocument doc,
                                               CSSContext               ctx,
                                               ExtendedParser           ep,
-                                              ValueManager     []      vms, 
+                                              ValueManager     []      vms,
                                               ShorthandManager []      sms);
 
     /**
@@ -268,7 +268,7 @@ public abstract class ExtensibleDOMImplementation
 
     protected static List extensions = null;
 
-    protected synchronized static List getDomExtensions() {
+    protected static synchronized List getDomExtensions() {
         if (extensions != null)
             return extensions;
 

@@ -42,7 +42,7 @@ public class SVGOMFEMorphologyElement
     /**
      * The 'operator' attribute values.
      */
-    protected final static String[] OPERATOR_VALUES = {
+    protected static final String[] OPERATOR_VALUES = {
         "",
         SVG_ERODE_VALUE,
         SVG_DILATE_VALUE
@@ -91,7 +91,7 @@ public class SVGOMFEMorphologyElement
     public SVGAnimatedNumber getRadiusX() {
         throw new UnsupportedOperationException
             ("SVGFEMorphologyElement.getRadiusX is not implemented"); // XXX
-    } 
+    }
 
     /**
      * <b>DOM</b>: Implements {@link SVGFEMorphologyElement#getRadiusY()}.
@@ -99,7 +99,7 @@ public class SVGOMFEMorphologyElement
     public SVGAnimatedNumber getRadiusY() {
         throw new UnsupportedOperationException
             ("SVGFEMorphologyElement.getRadiusY is not implemented"); // XXX
-    } 
+    }
 
     /**
      * Returns a new uninitialized instance of this object's class.

@@ -21,7 +21,7 @@ package org.apache.batik.ext.awt.image;
 
 
 /**
- * This class implements the interface expected from a component 
+ * This class implements the interface expected from a component
  * transfer function.
  *
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
@@ -44,7 +44,7 @@ public class ConcreteComponentTransferFunction implements ComponentTransferFunct
     }
 
     /**
-     * Returns an instance initialized as an identity 
+     * Returns an instance initialized as an identity
      * transfer function
      */
     public static ComponentTransferFunction getIdentityTransfer(){
@@ -56,11 +56,11 @@ public class ConcreteComponentTransferFunction implements ComponentTransferFunct
     /**
      * Returns a table transfer function
      */
-    public static ComponentTransferFunction 
-        getTableTransfer(float tableValues[]){
+    public static ComponentTransferFunction
+        getTableTransfer(float[] tableValues){
         ConcreteComponentTransferFunction f = new ConcreteComponentTransferFunction();
         f.type = TABLE;
-        
+
         if(tableValues == null){
             throw new IllegalArgumentException();
         }
@@ -70,8 +70,8 @@ public class ConcreteComponentTransferFunction implements ComponentTransferFunct
         }
 
         f.tableValues = new float[tableValues.length];
-        System.arraycopy(tableValues, 0, 
-                         f.tableValues, 0, 
+        System.arraycopy(tableValues, 0,
+                         f.tableValues, 0,
                          tableValues.length);
 
         return f;
@@ -81,10 +81,10 @@ public class ConcreteComponentTransferFunction implements ComponentTransferFunct
      * Returns a discrete transfer function
      */
     public static ComponentTransferFunction
-        getDiscreteTransfer(float tableValues[]){
+        getDiscreteTransfer(float[] tableValues){
         ConcreteComponentTransferFunction f = new ConcreteComponentTransferFunction();
         f.type = DISCRETE;
-        
+
         if(tableValues == null){
             throw new IllegalArgumentException();
         }
@@ -94,8 +94,8 @@ public class ConcreteComponentTransferFunction implements ComponentTransferFunct
         }
 
         f.tableValues = new float[tableValues.length];
-        System.arraycopy(tableValues, 0, 
-                         f.tableValues, 0, 
+        System.arraycopy(tableValues, 0,
+                         f.tableValues, 0,
                          tableValues.length);
 
         return f;
@@ -129,7 +129,7 @@ public class ConcreteComponentTransferFunction implements ComponentTransferFunct
 
         return f;
     }
-        
+
     /**
      * Returns the type of this transfer function
      */

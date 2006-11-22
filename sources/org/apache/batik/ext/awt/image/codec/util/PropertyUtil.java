@@ -23,7 +23,7 @@ import java.util.MissingResourceException;
 import org.apache.batik.i18n.LocalizableSupport;
 
 public class PropertyUtil {
-    protected final static String RESOURCES =
+    protected static final String RESOURCES =
         "org.apache.batik.bridge.resources.properties";
 
 

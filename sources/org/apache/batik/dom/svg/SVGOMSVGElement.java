@@ -71,7 +71,7 @@ public class SVGOMSVGElement
     /**
      * The attribute initializer.
      */
-    protected final static AttributeInitializer attributeInitializer;
+    protected static final AttributeInitializer attributeInitializer;
     static {
         attributeInitializer = new AttributeInitializer(7);
         attributeInitializer.addAttribute(XMLSupport.XMLNS_NAMESPACE_URI,
@@ -195,9 +195,9 @@ public class SVGOMSVGElement
      */
     public SVGRect getViewport() {
         SVGContext ctx = getSVGContext();
-        return new SVGOMRect(0, 0, ctx.getViewportWidth(), 
+        return new SVGOMRect(0, 0, ctx.getViewportWidth(),
                              ctx.getViewportHeight());
-    } 
+    }
 
     /**
      * <b>DOM</b>: Implements {@link SVGSVGElement#getPixelUnitToMillimeterX()}.
