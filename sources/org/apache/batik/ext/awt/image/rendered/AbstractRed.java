@@ -445,21 +445,24 @@ public abstract class AbstractRed implements CachableRed {
 
     public String [] getPropertyNames() {
         Set keys = props.keySet();
-        Iterator iter = keys.iterator();
         String[] ret  = new String[keys.size()];
-        int i=0;
-        while (iter.hasNext()) {
-            ret[i++] = (String)iter.next();
-        }
+        keys.toArray( ret );
 
-        iter = srcs.iterator();
+//        Iterator iter = keys.iterator();
+//        int i=0;
+//        while (iter.hasNext()) {
+//            ret[i++] = (String)iter.next();
+//        }
+
+        Iterator iter = srcs.iterator();
         while (iter.hasNext()) {
             RenderedImage ri = (RenderedImage)iter.next();
             String [] srcProps = ri.getPropertyNames();
             if (srcProps.length != 0) {
                 String [] tmp = new String[ret.length+srcProps.length];
                 System.arraycopy(ret,0,tmp,0,ret.length);
-                System.arraycopy(tmp,ret.length,srcProps,0,srcProps.length);
+                /// ??? System.arraycopy((tmp,ret.length,srcProps,0,srcProps.length);
+                System.arraycopy( srcProps, 0, tmp, ret.length, srcProps.length);
                 ret = tmp;
             }
         }

@@ -25,10 +25,11 @@ import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
 import java.awt.image.SampleModel;
 import java.awt.image.WritableRaster;
-import java.util.Enumeration;
+
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.Vector;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * A simple class implemented the <code>RenderedImage</code>
@@ -39,6 +40,8 @@ import java.util.Vector;
  * <p> Normally in JAI <code>PlanarImage</code> is used for this
  * purpose, but in the interest of modularity the
  * use of <code>PlanarImage</code> has been avoided.
+ *
+ * @version $Id$
  */
 public abstract class SimpleRenderedImage implements RenderedImage {
 
@@ -241,14 +244,14 @@ public abstract class SimpleRenderedImage implements RenderedImage {
      */
     public String[] getPropertyNames() {
         String[] names = new String[properties.size()];
-        int index = 0;
-
-        Enumeration e = properties.keys();
-        while (e.hasMoreElements()) {
-            String name = (String)e.nextElement();
-            names[index++] = name;
-        }
-
+//        int index = 0;
+//
+//        Enumeration e = properties.keys();
+//        while (e.hasMoreElements()) {
+//            String name = (String)e.nextElement();
+//            names[index++] = name;
+//        }
+        properties.keySet().toArray( names );
         return names;
     }
 
@@ -273,10 +276,10 @@ public abstract class SimpleRenderedImage implements RenderedImage {
 
         prefix = prefix.toLowerCase();
 
-        Vector names = new Vector();
+        List names = new ArrayList();
         for (int i = 0; i < propertyNames.length; i++) {
             if (propertyNames[i].startsWith(prefix)) {
-                names.addElement(propertyNames[i]);
+                names.add(propertyNames[i]);
             }
         }
 
@@ -286,10 +289,12 @@ public abstract class SimpleRenderedImage implements RenderedImage {
 
         // Copy the strings from the Vector over to a String array.
         String[] prefixNames = new String[names.size()];
-        int count = 0;
-        for (Iterator it = names.iterator(); it.hasNext(); ) { // todo xx.toArray()
-            prefixNames[count++] = (String)it.next();
-        }
+
+//        int count = 0;
+//        for (Iterator it = names.iterator(); it.hasNext(); ) { // todo xx.toArray()
+//            prefixNames[count++] = (String)it.next();
+//        }
+        names.toArray( prefixNames );
 
         return prefixNames;
     }

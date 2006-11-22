@@ -122,7 +122,7 @@ public class SpotLight extends AbstractLight {
         this.pointAtZ = pointAtZ;
         this.specularExponent = specularExponent;
         this.limitingConeAngle = limitingConeAngle;
-        this.limitingCos = Math.cos(limitingConeAngle*Math.PI/180.);
+        this.limitingCos = Math.cos(limitingConeAngle*Math.PI/180.0);
 
         S[0] = pointAtX - lightX;
         S[1] = pointAtY - lightY;
@@ -155,19 +155,22 @@ public class SpotLight extends AbstractLight {
                                      final double z,
                                      final double[] L){
         // Light Vector, L
-        L[0] = lightX - x;
-        L[1] = lightY - y;
-        L[2] = lightZ - z;
+        double L0 = lightX - x;
+        double L1 = lightY - y;
+        double L2 = lightZ - z;
 
-        final double invNorm = 1/Math.sqrt(L[0]*L[0] +
-                                           L[1]*L[1] +
-                                           L[2]*L[2]);
+        final double invNorm = 1.0/Math.sqrt( L0*L0 + L1*L1 + L2*L2 );
 
-        L[0] *= invNorm;
-        L[1] *= invNorm;
-        L[2] *= invNorm;
+        L0 *= invNorm;
+        L1 *= invNorm;
+        L2 *= invNorm;
 
-        double LS = -(L[0]*S[0] + L[1]*S[1] + L[2]*S[2]);
+        double LS = -(L0*S[0] + L1*S[1] + L2*S[2]);
+
+        // copy the work-variables into return-array
+        L[0] = L0;
+        L[1] = L1;
+        L[2] = L2;
 
         if(LS <= limitingCos){
             return 0;
