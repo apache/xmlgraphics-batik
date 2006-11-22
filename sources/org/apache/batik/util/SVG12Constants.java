@@ -31,103 +31,103 @@ public interface SVG12Constants extends SVGConstants {
     // SVG 1.2 element tag names ////////////////////////////////////////////
 
     /** Tag name for Batik's flowRoot extension (SVG 1.2). */
-    public static final String SVG_FLOW_ROOT_TAG = 
+    String SVG_FLOW_ROOT_TAG =
         "flowRoot";
 
     /** Tag name for Batik's flowRoot extension Region element (SVG 1.2). */
-    public static final String SVG_FLOW_REGION_TAG = 
+    String SVG_FLOW_REGION_TAG =
         "flowRegion";
 
     /** Tag name for Batik's flowRoot extension Region element (SVG 1.2). */
-    public static final String SVG_FLOW_REGION_EXCLUDE_TAG = 
+    String SVG_FLOW_REGION_EXCLUDE_TAG =
         "flowRegionExclude";
 
     /** Tag name for Batik's flowRoot extension div element SVG 1.2). */
-    public static final String SVG_FLOW_DIV_TAG = 
+    String SVG_FLOW_DIV_TAG =
         "flowDiv";
 
     /** Tag name for Batik's flowRoot extension p element SVG 1.2). */
-    public static final String SVG_FLOW_PARA_TAG = 
+    String SVG_FLOW_PARA_TAG =
         "flowPara";
 
-    /** Tag name for Batik's flowRoot extension flow Region break 
+    /** Tag name for Batik's flowRoot extension flow Region break
      *  element SVG 1.2). */
-    public static final String SVG_FLOW_REGION_BREAK_TAG = 
+    String SVG_FLOW_REGION_BREAK_TAG =
         "flowRegionBreak";
 
     /** Tag name for Batik's flowRoot extension line element SVG 1.2). */
-    public static final String SVG_FLOW_LINE_TAG = 
+    String SVG_FLOW_LINE_TAG =
         "flowLine";
 
     /** Tag name for Batik's flowRoot extension span element SVG 1.2). */
-    public static final String SVG_FLOW_SPAN_TAG = 
+    String SVG_FLOW_SPAN_TAG =
         "flowSpan";
 
     /** SVG 1.2 'handler' element tag name. */
-    public static final String SVG_HANDLER_TAG =
+    String SVG_HANDLER_TAG =
         "handler";
 
     /** Tag name for Batik's multiImage extension. */
-    public static final String SVG_MULTI_IMAGE_TAG =
+    String SVG_MULTI_IMAGE_TAG =
         "multiImage";
 
     /** Tag name for Batik's solid color extension (SVG 1.2). */
-    public static final String SVG_SOLID_COLOR_TAG = 
+    String SVG_SOLID_COLOR_TAG =
         "solidColor";
 
     /** Tag name for Batik's subImage multiImage extension. */
-    public static final String SVG_SUB_IMAGE_TAG =
+    String SVG_SUB_IMAGE_TAG =
         "subImage";
 
     /** Tag name for Batik's subImageRef multiImage extension. */
-    public static final String SVG_SUB_IMAGE_REF_TAG =
+    String SVG_SUB_IMAGE_REF_TAG =
         "subImageRef";
 
     // SVG 1.2 attribute names ///////////////////////////////////////////////
 
     /** Attribute name for filterPrimitiveMarginsUnits */
-    public static final String SVG_FILTER_PRIMITIVE_MARGINS_UNITS_ATTRIBUTE =
+    String SVG_FILTER_PRIMITIVE_MARGINS_UNITS_ATTRIBUTE =
         "filterPrimitiveMarginsUnits";
 
     /** Attribute name for filterMarginsUnits */
-    public static final String SVG_FILTER_MARGINS_UNITS_ATTRIBUTE =
+    String SVG_FILTER_MARGINS_UNITS_ATTRIBUTE =
         "filterMarginsUnits";
 
     /** Attribute name for pixel-height attribute */
-    public static final String SVG_MAX_PIXEL_SIZE_ATTRIBUTE = 
+    String SVG_MAX_PIXEL_SIZE_ATTRIBUTE =
         "max-pixel-size";
 
     /** Attribute name for pixel-width attribute */
-    public static final String SVG_MIN_PIXEL_SIZE_ATTRIBUTE = 
+    String SVG_MIN_PIXEL_SIZE_ATTRIBUTE =
         "min-pixel-size";
 
     /** Attribute name for filter mx attribute */
-    public static final String SVG_MX_ATRIBUTE =
+    String SVG_MX_ATRIBUTE =
         "mx";
-    
+
     /** Attribute name for filter my attribute */
-    public static final String SVG_MY_ATRIBUTE =
+    String SVG_MY_ATRIBUTE =
         "my";
-    
+
     /** Attribute name for filter mw attribute */
-    public static final String SVG_MW_ATRIBUTE =
+    String SVG_MW_ATRIBUTE =
         "mw";
-    
+
     /** Attribute name for filter mh attribute */
-    public static final String SVG_MH_ATRIBUTE =
+    String SVG_MH_ATRIBUTE =
         "mh";
 
     // SVG 1.2 attribute default values //////////////////////////////////////
 
     /** Default value for filter mx */
-    public static final String SVG_FILTER_MX_DEFAULT_VALUE = "0";
+    String SVG_FILTER_MX_DEFAULT_VALUE = "0";
 
     /** Default value for filter my */
-    public static final String SVG_FILTER_MY_DEFAULT_VALUE = "0";
+    String SVG_FILTER_MY_DEFAULT_VALUE = "0";
 
     /** Default value for filter mw */
-    public static final String SVG_FILTER_MW_DEFAULT_VALUE = "0";
+    String SVG_FILTER_MW_DEFAULT_VALUE = "0";
 
     /** Default value for filter mh */
-    public static final String SVG_FILTER_MH_DEFAULT_VALUE = "0";
+    String SVG_FILTER_MH_DEFAULT_VALUE = "0";
 }

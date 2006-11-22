@@ -28,7 +28,7 @@ public interface MimeTypeConstants {
     //
     // Mime Type Constants
     //
-    public final String [] MIME_TYPES_SVG = {
+    String [] MIME_TYPES_SVG = {
         "image/svg+xml",
         "application/xml",
         "text/xml" };

@@ -32,13 +32,13 @@ public abstract class AbstractCharDecoder implements CharDecoder {
     /**
      * The buffer size.
      */
-    protected final static int BUFFER_SIZE = 8192;
+    protected static final int BUFFER_SIZE = 8192;
 
     /**
      * The input stream to read.
      */
     protected InputStream inputStream;
-    
+
     /**
      * The input buffer.
      */

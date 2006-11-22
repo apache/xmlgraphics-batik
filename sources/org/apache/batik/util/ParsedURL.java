@@ -38,7 +38,7 @@ import org.apache.batik.Version;
  *
  * Second it allows for extension of the protocols supported by the
  * URL parser.  Batik uses this to support the 'Data' protocol.
- * 
+ *
  * Third by default it checks the streams that it opens to see if they
  * are GZIP compressed, if so it automatically uncompresses them
  * (avoiding opening the stream twice in the processes).
@@ -51,11 +51,11 @@ import org.apache.batik.Version;
  * protocol specific instances of the ParsedURLData class.
  *
  * @author <a href="mailto:deweese@apache.org">Thomas DeWeese</a>
- * @version $Id$ 
+ * @version $Id$
  */
 public class ParsedURL {
 
-    /** 
+    /**
      * The data class we defer most things to.
      */
     ParsedURLData data;
@@ -68,22 +68,22 @@ public class ParsedURL {
     /**
      * This maps between protocol names and ParsedURLProtocolHandler instances.
      */
-    private static Map handlersMap = null; 
+    private static Map handlersMap = null;
 
     /**
      * The default protocol handler.  This handler is used when
      * other handlers fail or no match for a protocol can be
      * found.
      */
-    private static ParsedURLProtocolHandler defaultHandler 
+    private static ParsedURLProtocolHandler defaultHandler
         = new ParsedURLDefaultProtocolHandler();
 
     private static String globalUserAgent = "Batik/"+Version.getVersion();
 
     public static String getGlobalUserAgent() { return globalUserAgent; }
 
-    public static void setGlobalUserAgent(String userAgent) { 
-        globalUserAgent = userAgent; 
+    public static void setGlobalUserAgent(String userAgent) {
+        globalUserAgent = userAgent;
     }
 
     /**
@@ -92,7 +92,7 @@ public class ParsedURL {
      * the first time it has been requested since the class was
      * loaded.
      */
-    private static synchronized Map getHandlersMap() { 
+    private static synchronized Map getHandlersMap() {
         if (handlersMap != null) return handlersMap;
 
         handlersMap = new HashMap();
@@ -110,13 +110,13 @@ public class ParsedURL {
 
 
         return handlersMap;
-        
+
     }
 
     /**
      *  Returns the handler for a particular protocol.  If protocol is
      * <tt>null</tt> or no match is found in the handlers map it
-     * returns the default protocol handler.  
+     * returns the default protocol handler.
      * @param protocol The protocol to get a handler for.
      */
     public static synchronized ParsedURLProtocolHandler getHandler
@@ -137,7 +137,7 @@ public class ParsedURL {
      * If the given protocol handler returns <tt>null</tt> as it's
      * supported protocol then it is registered as the default
      * protocol handler.
-     * @param handler the new Protocol Handler to register 
+     * @param handler the new Protocol Handler to register
      */
     public static synchronized void registerHandler
         (ParsedURLProtocolHandler handler) {
@@ -157,18 +157,18 @@ public class ParsedURL {
      * buffered version of is) untouched.
      * @param is Stream that may potentially be a GZIP stream.
      */
-    public static InputStream checkGZIP(InputStream is) 
+    public static InputStream checkGZIP(InputStream is)
         throws IOException {
         return ParsedURLData.checkGZIP(is);
     }
 
     /**
      * Construct a ParsedURL from the given url string.
-     * @param urlStr The string to try and parse as a URL 
+     * @param urlStr The string to try and parse as a URL
      */
     public ParsedURL(String urlStr) {
-        this.userAgent = getGlobalUserAgent();
-        this.data      = parseURL(urlStr);
+        userAgent = getGlobalUserAgent();
+        data      = parseURL(urlStr);
     }
 
     /**
@@ -178,11 +178,11 @@ public class ParsedURL {
      * quicker and less prone to reinterpretation than converting the
      * URL to a string before construction.
      *
-     * @param url The URL to "mimic".  
+     * @param url The URL to "mimic".
      */
     public ParsedURL(URL url) {
-        this.userAgent = getGlobalUserAgent();
-        this.data      = new ParsedURLData(url);
+        userAgent = getGlobalUserAgent();
+        data      = new ParsedURLData(url);
     }
 
     /**
@@ -192,11 +192,11 @@ public class ParsedURL {
      *               the missing pieces will be taken from the baseStr.
      */
     public ParsedURL(String baseStr, String urlStr) {
-        this.userAgent = getGlobalUserAgent();
+        userAgent = getGlobalUserAgent();
         if (baseStr != null)
-            this.data = parseURL(baseStr, urlStr);
+            data = parseURL(baseStr, urlStr);
         else
-            this.data = parseURL(urlStr);
+            data = parseURL(urlStr);
     }
 
     /**
@@ -206,12 +206,12 @@ public class ParsedURL {
      *               the missing pieces will be taken from the baseURL.
      */
     public ParsedURL(URL baseURL, String urlStr) {
-        this.userAgent = getGlobalUserAgent();
-        
+        userAgent = getGlobalUserAgent();
+
         if (baseURL != null)
-            this.data = parseURL(new ParsedURL(baseURL), urlStr);
+            data = parseURL(new ParsedURL(baseURL), urlStr);
         else
-            this.data = parseURL(urlStr);
+            data = parseURL(urlStr);
     }
 
     /**
@@ -221,15 +221,15 @@ public class ParsedURL {
      *               the missing pieces will be taken from the baseURL.
      */
     public ParsedURL(ParsedURL baseURL, String urlStr) {
-        this.userAgent = baseURL.getUserAgent();
+        userAgent = baseURL.getUserAgent();
         if (baseURL != null)
-            this.data = parseURL(baseURL, urlStr);
+            data = parseURL(baseURL, urlStr);
         else
-            this.data = parseURL(urlStr);
+            data = parseURL(urlStr);
     }
 
     /**
-     * Return a string rep of the URL (can be passed back into the 
+     * Return a string rep of the URL (can be passed back into the
      * constructor if desired).
      */
     public String toString() {
@@ -243,7 +243,7 @@ public class ParsedURL {
      */
     public boolean equals(Object obj) {
         if (obj == null) return false;
-        if (! (obj instanceof ParsedURL)) 
+        if (! (obj instanceof ParsedURL))
             return false;
         ParsedURL purl = (ParsedURL)obj;
         return data.equals(purl.data);
@@ -257,7 +257,7 @@ public class ParsedURL {
     public int hashCode() {
         return data.hashCode();
     }
-        
+
     /**
      * Returns true if the URL looks well formed and complete.
      * This does not garuntee that the stream can be opened but
@@ -286,18 +286,18 @@ public class ParsedURL {
      * Returns the protocol for this URL.
      * The protocol is everything upto the first ':'.
      */
-    public String getProtocol() { 
+    public String getProtocol() {
         if (data.protocol == null) return null;
-        return new String(data.protocol); 
+        return data.protocol;
     }
-    
+
     /**
      * Returns the host for this URL, if any, <tt>null</tt> if there isn't
      * one or it doesn't make sense for the protocol.
      */
-    public String getHost()     { 
+    public String getHost() {
         if (data.host == null) return null;
-        return new String(data.host); 
+        return data.host;
     }
 
     /**
@@ -312,19 +312,19 @@ public class ParsedURL {
      * Note that getPath appears in JDK 1.3 as a synonym for getFile
      * from JDK 1.2.
      */
-    public String getPath()     { 
+    public String getPath() {
         if (data.path == null) return null;
-        return new String(data.path); 
+        return data.path;
     }
 
     /**
      * Returns the 'fragment' reference in the URL.
      */
-    public String getRef()      { 
+    public String getRef() {
         if (data.ref == null) return null;
-        return new String(data.ref); 
+        return data.ref;
     }
-    
+
 
     /**
      * Returns the URL up to and include the port number on
@@ -352,7 +352,7 @@ public class ParsedURL {
 
     /**
      * Attempt to open the stream checking for common compression
-     * types, and automatically decompressing them if found.  
+     * types, and automatically decompressing them if found.
      */
     public InputStream openStream() throws IOException {
         return data.openStream(userAgent, null);
@@ -360,8 +360,8 @@ public class ParsedURL {
 
     /**
      * Attempt to open the stream checking for common compression
-     * types, and automatically decompressing them if found.  
-     * @param mimeType The expected mime type of the content 
+     * types, and automatically decompressing them if found.
+     * @param mimeType The expected mime type of the content
      *        in the returned InputStream (mapped to Http accept
      *        header among other possabilities).
      */
@@ -374,7 +374,7 @@ public class ParsedURL {
     /**
      * Attempt to open the stream checking for common compression
      * types, and automatically decompressing them if found.
-     * @param mimeTypes The expected mime types of the content 
+     * @param mimeTypes The expected mime types of the content
      *        in the returned InputStream (mapped to Http accept
      *        header among other possabilities).
      */
@@ -388,7 +388,7 @@ public class ParsedURL {
     /**
      * Attempt to open the stream checking for common compression
      * types, and automatically decompressing them if found.
-     * @param mimeTypes The expected mime types of the content 
+     * @param mimeTypes The expected mime types of the content
      *        in the returned InputStream (mapped to Http accept
      *        header among other possabilities).  The elements of
      *        the iterator must be strings.
@@ -408,7 +408,7 @@ public class ParsedURL {
     /**
      * Attempt to open the stream, does no checking for compression
      * types.
-     * @param mimeType The expected mime type of the content 
+     * @param mimeType The expected mime type of the content
      *        in the returned InputStream (mapped to Http accept
      *        header among other possabilities).
      */
@@ -421,7 +421,7 @@ public class ParsedURL {
     /**
      * Attempt to open the stream, does no checking for comression
      * types.
-     * @param mimeTypes The expected mime types of the content 
+     * @param mimeTypes The expected mime types of the content
      *        in the returned InputStream (mapped to Http accept
      *        header among other possabilities).
      */
@@ -435,7 +435,7 @@ public class ParsedURL {
     /**
      * Attempt to open the stream, does no checking for comression
      * types.
-     * @param mimeTypes The expected mime types of the content 
+     * @param mimeTypes The expected mime types of the content
      *        in the returned InputStream (mapped to Http accept
      *        header among other possabilities).  The elements of
      *        the iterator must be strings.
@@ -465,9 +465,9 @@ public class ParsedURL {
         // are done (if it is a ':' then we have protocol otherwise
         // we don't.
         char ch = urlStr.charAt(idx);
-        while ((ch == '-') ||
-               (ch == '+') ||
-               (ch == '.') ||
+        while ((ch == '-') ||                      // todo this might be more efficient with a long mask
+               (ch == '+') ||                      // which has a bit set for each valid char.
+               (ch == '.') ||                      // check feasability
                ((ch >= 'a') && (ch <= 'z')) ||
                ((ch >= 'A') && (ch <= 'Z'))) {
             idx++;
@@ -483,14 +483,14 @@ public class ParsedURL {
         }
         return null;
     }
-    
+
     /**
      * Factory method to construct an appropriate subclass of  ParsedURLData
      * @param urlStr the string to parse.
      */
     public static ParsedURLData parseURL(String urlStr) {
         ParsedURLProtocolHandler handler = getHandler(getProtocol(urlStr));
-        return handler.parseURL(urlStr);        
+        return handler.parseURL(urlStr);
     }
 
     /**

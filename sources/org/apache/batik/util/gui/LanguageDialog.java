@@ -68,17 +68,17 @@ public class LanguageDialog extends JDialog implements ActionMap {
     /**
      * The return value if 'OK' is chosen.
      */
-    public final static int OK_OPTION = 0;
+    public static final int OK_OPTION = 0;
 
     /**
      * The return value if 'Cancel' is chosen.
      */
-    public final static int CANCEL_OPTION = 1;
+    public static final int CANCEL_OPTION = 1;
 
     /**
      * The resource file name
      */
-    protected final static String RESOURCES =
+    protected static final String RESOURCES =
         "org.apache.batik.util.gui.resources.LanguageDialogMessages";
 
     /**
@@ -353,7 +353,7 @@ public class LanguageDialog extends JDialog implements ActionMap {
          * event thread as it doesn't manipulate Swing <code>JComponent</code>
          * instances.
          */
-        public synchronized static void initCountryIcons()
+        public static synchronized void initCountryIcons()
         {
             // don't need to init several times...
             if (iconMap == null) {

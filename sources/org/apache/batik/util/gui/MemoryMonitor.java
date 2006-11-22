@@ -71,7 +71,7 @@ public class MemoryMonitor extends JFrame implements ActionMap {
     /**
      * The resource file name
      */
-    protected final static String RESOURCE =
+    protected static final String RESOURCE =
         "org.apache.batik.util.gui.resources.MemoryMonitorMessages";
 
     /**
@@ -115,7 +115,7 @@ public class MemoryMonitor extends JFrame implements ActionMap {
         super(resources.getString("Frame.title"));
         listeners.put("CollectButtonAction", new CollectButtonAction());
         listeners.put("CloseButtonAction", new CloseButtonAction());
-        
+
         panel = new Panel(time);
 
         getContentPane().add(panel);
@@ -128,7 +128,7 @@ public class MemoryMonitor extends JFrame implements ActionMap {
         p.add(bf.createJButton("CollectButton"));
         p.add(bf.createJButton("CloseButton"));
         getContentPane().add("South", p);
-                
+
         pack();
 
         addWindowListener(new WindowAdapter() {
@@ -213,7 +213,7 @@ public class MemoryMonitor extends JFrame implements ActionMap {
             ExtendedGridBagConstraints constraints
                 = new ExtendedGridBagConstraints();
             constraints.insets = new Insets(5, 5, 5, 5);
-        
+
             List l = new ArrayList();
             JPanel p = new JPanel(new BorderLayout());
             p.setBorder(BorderFactory.createLoweredBevelBorder());
@@ -225,7 +225,7 @@ public class MemoryMonitor extends JFrame implements ActionMap {
             constraints.setGridBounds(0, 0, 1, 1);
             add(p, constraints);
             l.add(c);
-            
+
             p = new JPanel(new BorderLayout());
             p.setBorder(BorderFactory.createLoweredBevelBorder());
             c = new MemoryMonitor.History();
@@ -253,68 +253,68 @@ public class MemoryMonitor extends JFrame implements ActionMap {
         /**
          * The preferred width.
          */
-        public final static int PREFERRED_WIDTH = 90;
+        public static final int PREFERRED_WIDTH = 90;
 
         /**
          * The preferred height.
          */
-        public final static int PREFERRED_HEIGHT = 100;
+        public static final int PREFERRED_HEIGHT = 100;
 
         /**
          * The units string.
          */
-        protected final static String UNITS
+        protected static final String UNITS
             = resources.getString("Usage.units");
 
         /**
          * The total string.
          */
-        protected final static String TOTAL
+        protected static final String TOTAL
             = resources.getString("Usage.total");
 
         /**
          * The used string.
          */
-        protected final static String USED
+        protected static final String USED
             = resources.getString("Usage.used");
 
         /**
          * The text position.
          */
-        protected final static boolean POSTFIX
+        protected static final boolean POSTFIX
             = resources.getBoolean("Usage.postfix");
 
         /**
          * The font size.
          */
-        protected final static int FONT_SIZE = 9;
+        protected static final int FONT_SIZE = 9;
 
         /**
          * The blocks margin.
          */
-        protected final static int BLOCK_MARGIN = 10;
+        protected static final int BLOCK_MARGIN = 10;
 
         /**
          * The number of blocks.
          */
-        protected final static int BLOCKS = 15;
+        protected static final int BLOCKS = 15;
 
         /**
          * The blocks width.
          */
-        protected final static double BLOCK_WIDTH =
+        protected static final double BLOCK_WIDTH =
             PREFERRED_WIDTH-BLOCK_MARGIN*2;
 
         /**
          * The blocks height.
          */
-        protected final static double BLOCK_HEIGHT =
+        protected static final double BLOCK_HEIGHT =
             ((double)PREFERRED_HEIGHT-(3*FONT_SIZE)-BLOCKS) / BLOCKS;
 
         /**
          * The blocks type.
          */
-        protected final static int[] BLOCK_TYPE =
+        protected static final int[] BLOCK_TYPE =
             { 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2 };
 
         /**
@@ -324,7 +324,7 @@ public class MemoryMonitor extends JFrame implements ActionMap {
             new Color(255, 0, 0),
             new Color(255, 165, 0),
             new Color(0, 255, 0)
-        }; 
+        };
 
         /**
          * The color of the free blocks for each block type.
@@ -333,7 +333,7 @@ public class MemoryMonitor extends JFrame implements ActionMap {
             new Color(130, 0, 0),
             new Color(130, 90, 0),
             new Color(0, 130, 0)
-        }; 
+        };
 
         /**
          * The font used to draw the strings.
@@ -386,42 +386,42 @@ public class MemoryMonitor extends JFrame implements ActionMap {
         public void setLowUsedMemoryColor(Color c) {
             usedColors[2] = c;
         }
-        
+
         /**
          * Sets the medium used memory block color.
          */
         public void setMediumUsedMemoryColor(Color c) {
             usedColors[1] = c;
         }
-        
+
         /**
          * Sets the high used memory block color.
          */
         public void setHighUsedMemoryColor(Color c) {
             usedColors[0] = c;
         }
-        
+
         /**
          * Sets the low free memory block color.
          */
         public void setLowFreeMemoryColor(Color c) {
             freeColors[2] = c;
         }
-        
+
         /**
          * Sets the medium free memory block color.
          */
         public void setMediumFreeMemoryColor(Color c) {
             freeColors[1] = c;
         }
-        
+
         /**
          * Sets the high free memory block color.
          */
         public void setHighFreeMemoryColor(Color c) {
             freeColors[0] = c;
         }
-        
+
         /**
          * To paint the component.
          */
@@ -434,11 +434,11 @@ public class MemoryMonitor extends JFrame implements ActionMap {
             double sx = ((double)dim.width) / PREFERRED_WIDTH;
             double sy = ((double)dim.height) / PREFERRED_HEIGHT;
             g2d.transform(AffineTransform.getScaleInstance(sx, sy));
-            
+
             // Turns the antialiasing on
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                                  RenderingHints.VALUE_ANTIALIAS_ON);
-            
+
             // Draw the memory blocks
             int nfree = (int)Math.round(((double)BLOCKS)
                                         * freeMemory / totalMemory);
@@ -464,7 +464,7 @@ public class MemoryMonitor extends JFrame implements ActionMap {
             // Draw the memory usage text
             g2d.setPaint(textColor);
             g2d.setFont(font);
-            
+
             long total = totalMemory / 1024;
             long used  = (totalMemory - freeMemory) / 1024;
             String totalText;
@@ -489,28 +489,28 @@ public class MemoryMonitor extends JFrame implements ActionMap {
         /**
          * The preferred width.
          */
-        public final static int PREFERRED_WIDTH = 200;
+        public static final int PREFERRED_WIDTH = 200;
 
         /**
          * The preferred height.
          */
-        public final static int PREFERRED_HEIGHT = 100;
+        public static final int PREFERRED_HEIGHT = 100;
 
         /**
          * The grid lines stroke.
          */
-        protected final static Stroke GRID_LINES_STROKE = new BasicStroke(1);
+        protected static final Stroke GRID_LINES_STROKE = new BasicStroke(1);
 
         /**
          * The curve stroke.
          */
-        protected final static Stroke CURVE_STROKE =
+        protected static final Stroke CURVE_STROKE =
             new BasicStroke(2, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
 
         /**
          * The border stroke.
          */
-        protected final static Stroke BORDER_STROKE = new BasicStroke(2);
+        protected static final Stroke BORDER_STROKE = new BasicStroke(2);
 
         /**
          * The grid lines color.
@@ -600,13 +600,13 @@ public class MemoryMonitor extends JFrame implements ActionMap {
             // Turns the antialiasing on
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                                  RenderingHints.VALUE_ANTIALIAS_ON);
-            
+
             // Sets the transform
             Dimension dim = getSize();
             double sx = ((double)dim.width) / PREFERRED_WIDTH;
             double sy = ((double)dim.height) / PREFERRED_HEIGHT;
             g2d.transform(AffineTransform.getScaleInstance(sx, sy));
-            
+
             // The vertical lines
             g2d.setPaint(gridLinesColor);
             g2d.setStroke(GRID_LINES_STROKE);
@@ -709,7 +709,7 @@ public class MemoryMonitor extends JFrame implements ActionMap {
                 } catch (InterruptedException e) {}
             }
         }
-        
+
         /**
          * Suspends the thread.
          */

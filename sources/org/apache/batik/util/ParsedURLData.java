@@ -36,15 +36,15 @@ import java.util.zip.ZipException;
  * Holds the data for more URLs.
  *
  * @author <a href="mailto:deweese@apache.org">Thomas DeWeese</a>
- * @version $Id$ 
+ * @version $Id$
  */
 public class ParsedURLData {
-    
-    protected final static String HTTP_USER_AGENT_HEADER      = "User-Agent";
 
-    protected final static String HTTP_ACCEPT_HEADER          = "Accept";
-    protected final static String HTTP_ACCEPT_LANGUAGE_HEADER = "Accept-Language";
-    protected final static String HTTP_ACCEPT_ENCODING_HEADER = "Accept-Encoding";
+    protected static final String HTTP_USER_AGENT_HEADER      = "User-Agent";
+
+    protected static final String HTTP_ACCEPT_HEADER          = "Accept";
+    protected static final String HTTP_ACCEPT_LANGUAGE_HEADER = "Accept-Language";
+    protected static final String HTTP_ACCEPT_ENCODING_HEADER = "Accept-Encoding";
 
     protected static List acceptedEncodings = new LinkedList();
     static {
@@ -55,7 +55,7 @@ public class ParsedURLData {
      * GZIP header magic number bytes, like found in a gzipped
      * files, which are encoded in Intel format (i&#x2e;e&#x2e; little indian).
      */
-    public final static byte GZIP_MAGIC[] = {(byte)0x1f, (byte)0x8b};
+    public static final byte GZIP_MAGIC[] = {(byte)0x1f, (byte)0x8b};
 
     /**
      * This is a utility function others can call that checks if
@@ -64,7 +64,7 @@ public class ParsedURLData {
      * buffered version of is) untouched.
      * @param is Stream that may potentially be a GZIP stream.
      */
-    public static InputStream checkGZIP(InputStream is) 
+    public static InputStream checkGZIP(InputStream is)
         throws IOException {
 
             if (!is.markSupported())
@@ -84,7 +84,7 @@ public class ParsedURLData {
 
         if (((data[0]&0x0F)  == 8) &&
             ((data[0]>>>4)   <= 7)) {
-            // Check for a zlib (deflate) stream 
+            // Check for a zlib (deflate) stream
             int chk = ((((int)data[0])&0xFF)*256+
                        (((int)data[1])&0xFF));
             if ((chk %31)  == 0) {
@@ -107,7 +107,7 @@ public class ParsedURLData {
                 }
             }
         }
-        
+
         return is;
     }
 
@@ -139,21 +139,21 @@ public class ParsedURLData {
      */
     public ParsedURLData(URL url) {
         protocol = url.getProtocol();
-        if ((protocol != null) && (protocol.length() == 0)) 
+        if ((protocol != null) && (protocol.length() == 0))
             protocol = null;
 
         host = url.getHost();
-        if ((host != null) && (host.length() == 0)) 
+        if ((host != null) && (host.length() == 0))
             host = null;
 
         port     = url.getPort();
 
         path     = url.getFile();
-        if ((path != null) && (path.length() == 0)) 
+        if ((path != null) && (path.length() == 0))
             path = null;
 
         ref      = url.getRef();
-        if ((ref != null) && (ref.length() == 0))  
+        if ((ref != null) && (ref.length() == 0))
             ref = null;
     }
 
@@ -166,12 +166,12 @@ public class ParsedURLData {
         // System.out.println("File: " + file);
         // if (ref != null)
         //     file += "#" + ref;
-        // System.err.println("Building: " + protocol + " - " + 
+        // System.err.println("Building: " + protocol + " - " +
         //                     host + " - " + path);
 
         if ((protocol != null) && (host != null)) {
             String file = "";
-            if (path != null) 
+            if (path != null)
                 file = path;
             if (port == -1)
                 return new URL(protocol, host, file);
@@ -187,7 +187,7 @@ public class ParsedURLData {
      */
     public int hashCode() {
         int hc = port;
-        if (protocol != null) 
+        if (protocol != null)
             hc ^= protocol.hashCode();
         if (host != null)
             hc ^= host.hashCode();
@@ -218,13 +218,13 @@ public class ParsedURLData {
      */
     public boolean equals(Object obj) {
         if (obj == null) return false;
-        if (! (obj instanceof ParsedURLData)) 
+        if (! (obj instanceof ParsedURLData))
             return false;
 
         ParsedURLData ud = (ParsedURLData)obj;
         if (ud.port != port)
             return false;
-            
+
         if (ud.protocol==null) {
             if (protocol != null)
                 return false;
@@ -313,19 +313,19 @@ public class ParsedURLData {
      * the stream is found to be compressed with a standard
      * compression type it is automatically decompressed.
      * @param userAgent The user agent opening the stream (may be null).
-     * @param mimeTypes The expected mime types of the content 
+     * @param mimeTypes The expected mime types of the content
      *        in the returned InputStream (mapped to Http accept
      *        header among other possability).  The elements of
      *        the iterator must be strings (may be null)
      */
-    public InputStream openStream(String userAgent, Iterator mimeTypes) 
+    public InputStream openStream(String userAgent, Iterator mimeTypes)
         throws IOException {
-        InputStream raw = openStreamInternal(userAgent, mimeTypes, 
+        InputStream raw = openStreamInternal(userAgent, mimeTypes,
                                              acceptedEncodings.iterator());
         if (raw == null)
             return null;
         stream = null;
-                
+
         return checkGZIP(raw);
     }
 
@@ -333,14 +333,14 @@ public class ParsedURLData {
      * Open the stream and returns it.  No checks are made to see
      * if the stream is compressed or encoded in any way.
      * @param userAgent The user agent opening the stream (may be null).
-     * @param mimeTypes The expected mime types of the content 
+     * @param mimeTypes The expected mime types of the content
      *        in the returned InputStream (mapped to Http accept
      *        header among other possability).  The elements of
      *        the iterator must be strings (may be null)
      */
-    public InputStream openStreamRaw(String userAgent, Iterator mimeTypes) 
+    public InputStream openStreamRaw(String userAgent, Iterator mimeTypes)
         throws IOException {
-        
+
         InputStream ret = openStreamInternal(userAgent, mimeTypes, null);
         stream = null;
         return ret;
@@ -348,11 +348,11 @@ public class ParsedURLData {
 
     protected InputStream openStreamInternal(String userAgent,
                                              Iterator mimeTypes,
-                                             Iterator encodingTypes) 
+                                             Iterator encodingTypes)
         throws IOException {
         if (stream != null)
             return stream;
-        
+
         hasBeenOpened = true;
 
         URL url = null;
@@ -388,7 +388,7 @@ public class ParsedURLData {
                     if (encodingTypes.hasNext())
                         encodingHeader += ",";
                 }
-                urlC.setRequestProperty(HTTP_ACCEPT_ENCODING_HEADER, 
+                urlC.setRequestProperty(HTTP_ACCEPT_ENCODING_HEADER,
                                         encodingHeader);
             }
 
@@ -423,11 +423,11 @@ public class ParsedURLData {
         // Check if the rest of the two PURLs matche other than
         // the 'ref'
         if ((port      == other.port) &&
-            ((path     == other.path) 
+            ((path     == other.path)
              || ((path!=null) && path.equals(other.path))) &&
-            ((host     == other.host) 
+            ((host     == other.host)
              || ((host!=null) && host.equals(other.host))) &&
-            ((protocol == other.protocol) 
+            ((protocol == other.protocol)
              || ((protocol!=null) && protocol.equals(other.protocol))))
             return true;
 
@@ -443,7 +443,7 @@ public class ParsedURLData {
         if (path != null)
             ret += path;
 
-        if (ref != null) 
+        if (ref != null)
             ret += "#" + ref;
 
         return ret;

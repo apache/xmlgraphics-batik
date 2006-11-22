@@ -62,7 +62,7 @@ public class CleanerThread extends Thread {
      * A SoftReference subclass that automatically registers with
      * the cleaner ReferenceQueue.
      */
-    public static abstract class SoftReferenceCleared extends SoftReference
+    public abstract static class SoftReferenceCleared extends SoftReference
       implements ReferenceCleared {
         public SoftReferenceCleared(Object o) {
             super (o, CleanerThread.getReferenceQueue());
@@ -73,7 +73,7 @@ public class CleanerThread extends Thread {
      * A WeakReference subclass that automatically registers with
      * the cleaner ReferenceQueue.
      */
-    public static abstract class WeakReferenceCleared extends WeakReference
+    public abstract static class WeakReferenceCleared extends WeakReference
       implements ReferenceCleared {
         public WeakReferenceCleared(Object o) {
             super (o, CleanerThread.getReferenceQueue());
@@ -84,7 +84,7 @@ public class CleanerThread extends Thread {
      * A PhantomReference subclass that automatically registers with
      * the cleaner ReferenceQueue.
      */
-    public static abstract class PhantomReferenceCleared
+    public abstract static class PhantomReferenceCleared
         extends PhantomReference
         implements ReferenceCleared {
         public PhantomReferenceCleared(Object o) {

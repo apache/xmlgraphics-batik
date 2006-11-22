@@ -62,17 +62,17 @@ public class UserStyleDialog extends JDialog implements ActionMap {
     /**
      * The return value if 'OK' is chosen.
      */
-    public final static int OK_OPTION = 0;
+    public static final int OK_OPTION = 0;
 
     /**
      * The return value if 'Cancel' is chosen.
      */
-    public final static int CANCEL_OPTION = 1;
+    public static final int CANCEL_OPTION = 1;
 
     /**
      * The resource file name
      */
-    protected final static String RESOURCES =
+    protected static final String RESOURCES =
         "org.apache.batik.util.gui.resources.UserStyleDialog";
 
     /**
@@ -253,7 +253,7 @@ public class UserStyleDialog extends JDialog implements ActionMap {
             ExtendedGridBagConstraints constraints =
                 new ExtendedGridBagConstraints();
             constraints.insets = new Insets(5, 5, 5, 5);
-            
+
             fileCheckBox =
                 new JCheckBox(resources.getString("PanelFileCheckBox.text"));
             fileCheckBox.addChangeListener(new FileCheckBoxChangeListener());
@@ -286,7 +286,7 @@ public class UserStyleDialog extends JDialog implements ActionMap {
             browseButton = bf.createJButton("PanelFileBrowseButton");
             this.add(browseButton, constraints);
             browseButton.addActionListener(new FileBrowseButtonAction());
-        
+
             fileLabel.setEnabled(false);
             fileTextField.setEnabled(false);
             browseButton.setEnabled(false);
@@ -303,7 +303,7 @@ public class UserStyleDialog extends JDialog implements ActionMap {
                 return null;
             }
         }
-        
+
         /**
          * Sets the current dialog path.
          */

@@ -75,7 +75,7 @@ public class HaltingThread extends Thread {
      * HaltingThread otherwise it does nothing.
      */
     public static void haltThread(Thread t) {
-        if (t instanceof HaltingThread) 
+        if (t instanceof HaltingThread)
             ((HaltingThread)t).halt();
     }
 
@@ -89,14 +89,14 @@ public class HaltingThread extends Thread {
     }
 
     /**
-     * Returns the result of calling hasBeenHalted on <tt>t</tt>, 
+     * Returns the result of calling hasBeenHalted on <tt>t</tt>,
      * if it is an instance of HaltingThread otherwise it returns false.
      */
     public static boolean hasBeenHalted(Thread t) {
-        if (t instanceof HaltingThread) 
+        if (t instanceof HaltingThread)
             return ((HaltingThread)t).isHalted();
         return false;
     }
 
 
-};
+}

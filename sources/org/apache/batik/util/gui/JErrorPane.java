@@ -61,7 +61,7 @@ public class JErrorPane extends JPanel implements ActionMap {
     /**
      * The resource file name
      */
-    protected final static String RESOURCES =
+    protected static final String RESOURCES =
         "org.apache.batik.util.gui.resources.JErrorPane";
 
     /**

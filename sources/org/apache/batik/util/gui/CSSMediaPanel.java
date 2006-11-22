@@ -69,7 +69,7 @@ public class CSSMediaPanel extends JPanel implements ActionMap {
     /**
      * The resource file name
      */
-    protected final static String RESOURCES =
+    protected static final String RESOURCES =
         "org.apache.batik.util.gui.resources.CSSMediaPanel";
 
     /**
@@ -125,7 +125,7 @@ public class CSSMediaPanel extends JPanel implements ActionMap {
         setBorder(BorderFactory.createTitledBorder
                   (BorderFactory.createEtchedBorder(),
                    resources.getString("Panel.title")));
-            
+
         ExtendedGridBagConstraints constraints =
             new ExtendedGridBagConstraints();
 
@@ -192,7 +192,7 @@ public class CSSMediaPanel extends JPanel implements ActionMap {
      * Sets the list of media to edit to the specified media list (separated by
      * space).
      *
-     * @param media the media separated by space 
+     * @param media the media separated by space
      */
     public void setMedia(String media) {
         listModel.removeAllElements();
@@ -201,7 +201,7 @@ public class CSSMediaPanel extends JPanel implements ActionMap {
             listModel.addElement(tokens.nextToken());
         }
     }
-    
+
     /**
      * Returns the list of media.
      */
@@ -244,8 +244,8 @@ public class CSSMediaPanel extends JPanel implements ActionMap {
      * @param title the title of this dialog
      * @param mediaList the list of media
      */
-    public static int showDialog(Component parent, 
-                                 String title, 
+    public static int showDialog(Component parent,
+                                 String title,
                                  List mediaList) {
         Dialog dialog = new Dialog(parent, title, mediaList);
         dialog.setModal(true);
@@ -261,8 +261,8 @@ public class CSSMediaPanel extends JPanel implements ActionMap {
      * @param title the title of this dialog
      * @param media the list of media
      */
-    public static int showDialog(Component parent, 
-                                 String title, 
+    public static int showDialog(Component parent,
+                                 String title,
                                  String media) {
         Dialog dialog = new Dialog(parent, title, media);
         dialog.setModal(true);
@@ -275,12 +275,12 @@ public class CSSMediaPanel extends JPanel implements ActionMap {
      * The map that contains the listeners
      */
     protected Map listeners = new HashMap();
-    
+
     /**
      * Returns the action associated with the given string or null on error
      *
      * @param key the key mapped with the action to get
-     * @throws MissingListenerException if the action is not found 
+     * @throws MissingListenerException if the action is not found
      */
     public Action getAction(String key) throws MissingListenerException {
         return (Action)listeners.get(key);
@@ -326,7 +326,7 @@ public class CSSMediaPanel extends JPanel implements ActionMap {
      */
     protected class RemoveButtonAction extends AbstractAction {
         public void actionPerformed(ActionEvent e) {
-            int index = mediaList.getSelectedIndex(); 
+            int index = mediaList.getSelectedIndex();
             mediaList.clearSelection();
             if (index >= 0) {
                 listModel.removeElementAt(index);
@@ -347,7 +347,7 @@ public class CSSMediaPanel extends JPanel implements ActionMap {
     /**
      * To manage selection modifications
      */
-    protected class MediaListSelectionListener 
+    protected class MediaListSelectionListener
         implements ListSelectionListener {
 
         public void valueChanged(ListSelectionEvent e) {
@@ -359,15 +359,15 @@ public class CSSMediaPanel extends JPanel implements ActionMap {
      * To manage data modifications in the media list.
      */
     protected class MediaListDataListener implements ListDataListener {
-        
+
         public void contentsChanged(ListDataEvent e) {
             updateButtons();
         }
-        
+
         public void intervalAdded(ListDataEvent e) {
             updateButtons();
         }
-        
+
         public void intervalRemoved(ListDataEvent e) {
             updateButtons();
         }
@@ -383,18 +383,18 @@ public class CSSMediaPanel extends JPanel implements ActionMap {
         /**
          * The return value if 'OK' is chosen.
          */
-        public final static int OK_OPTION = 0;
-        
+        public static final int OK_OPTION = 0;
+
         /**
          * The return value if 'Cancel' is chosen.
          */
-        public final static int CANCEL_OPTION = 1;
+        public static final int CANCEL_OPTION = 1;
 
         /**
          * The new medium.
          */
         protected JComboBox medium;
-        
+
         /**
          * The return code.
          */
@@ -467,12 +467,12 @@ public class CSSMediaPanel extends JPanel implements ActionMap {
          * The map that contains the listeners
          */
         protected Map listeners = new HashMap();
-        
+
         /**
          * Returns the action associated with the given string or null on error
          *
          * @param key the key mapped with the action to get
-         * @throws MissingListenerException if the action is not found 
+         * @throws MissingListenerException if the action is not found
          */
         public Action getAction(String key) throws MissingListenerException {
             return (Action)listeners.get(key);
@@ -487,7 +487,7 @@ public class CSSMediaPanel extends JPanel implements ActionMap {
                 dispose();
             }
         }
-        
+
         /**
          * The action associated with the 'Cancel' button
          */
@@ -505,17 +505,17 @@ public class CSSMediaPanel extends JPanel implements ActionMap {
      * A dialog to edit/add/remove CSS media.
      */
     public static class Dialog extends JDialog implements ActionMap {
-        
+
         /**
          * The return value if 'OK' is chosen.
          */
-        public final static int OK_OPTION = 0;
-        
+        public static final int OK_OPTION = 0;
+
         /**
          * The return value if 'Cancel' is chosen.
          */
-        public final static int CANCEL_OPTION = 1;
-        
+        public static final int CANCEL_OPTION = 1;
+
         /**
          * The return code.
          */
@@ -565,7 +565,7 @@ public class CSSMediaPanel extends JPanel implements ActionMap {
             getContentPane().add(panel, BorderLayout.CENTER);
             getContentPane().add(createButtonsPanel(), BorderLayout.SOUTH);
         }
-        
+
         /**
          * Returns the code that describes how the dialog has been closed (OK or
          * CANCEL).
@@ -573,7 +573,7 @@ public class CSSMediaPanel extends JPanel implements ActionMap {
         public int getReturnCode() {
             return returnCode;
         }
-        
+
         /**
          * Creates the OK/Cancel buttons panel
          */
@@ -589,12 +589,12 @@ public class CSSMediaPanel extends JPanel implements ActionMap {
          * The map that contains the listeners
          */
         protected Map listeners = new HashMap();
-        
+
         /**
          * Returns the action associated with the given string or null on error
          *
          * @param key the key mapped with the action to get
-         * @throws MissingListenerException if the action is not found 
+         * @throws MissingListenerException if the action is not found
          */
         public Action getAction(String key) throws MissingListenerException {
             return (Action)listeners.get(key);
@@ -609,7 +609,7 @@ public class CSSMediaPanel extends JPanel implements ActionMap {
                 dispose();
             }
         }
-        
+
         /**
          * The action associated with the 'Cancel' button
          */

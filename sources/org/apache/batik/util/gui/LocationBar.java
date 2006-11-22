@@ -43,7 +43,7 @@ public class LocationBar extends JPanel {
     /**
      * The gui resources file name
      */
-    protected final static String RESOURCES =
+    protected static final String RESOURCES =
         "org.apache.batik.util.gui.resources.LocationBar";
 
     /**
@@ -59,7 +59,7 @@ public class LocationBar extends JPanel {
         bundle = ResourceBundle.getBundle(RESOURCES, Locale.getDefault());
         rManager = new ResourceManager(bundle);
     }
-    
+
     /**
      * The combo box
      */
