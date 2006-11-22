@@ -33,7 +33,7 @@ public class AnimatableAngleValue extends AnimatableNumberValue {
     /**
      * The unit string representations.
      */
-    protected final static String[] UNITS = {
+    protected static final String[] UNITS = {
         "", "", "deg", "rad", "grad"
     };
 

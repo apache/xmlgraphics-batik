@@ -43,7 +43,7 @@ public class DefaultSelectorFactory implements SelectorFactory {
     /**
      * The instance of this class.
      */
-    public final static SelectorFactory INSTANCE =
+    public static final SelectorFactory INSTANCE =
         new DefaultSelectorFactory();
 
     /**
@@ -55,10 +55,10 @@ public class DefaultSelectorFactory implements SelectorFactory {
     /**
      * <b>SAC</b>: Implements {@link
      * SelectorFactory#createConditionalSelector(SimpleSelector,Condition)}.
-     */    
+     */
     public ConditionalSelector createConditionalSelector
         (SimpleSelector selector,
-         Condition condition) 
+         Condition condition)
         throws CSSException {
         return new DefaultConditionalSelector(selector, condition);
     }
@@ -66,7 +66,7 @@ public class DefaultSelectorFactory implements SelectorFactory {
     /**
      * <b>SAC</b>: Implements {@link
      * org.w3c.css.sac.SelectorFactory#createAnyNodeSelector()}.
-     */    
+     */
     public SimpleSelector createAnyNodeSelector() throws CSSException {
         throw new CSSException("Not implemented in CSS2");
     }
@@ -74,7 +74,7 @@ public class DefaultSelectorFactory implements SelectorFactory {
     /**
      * <b>SAC</b>: Implements {@link
      * org.w3c.css.sac.SelectorFactory#createRootNodeSelector()}.
-     */    
+     */
     public SimpleSelector createRootNodeSelector() throws CSSException {
         throw new CSSException("Not implemented in CSS2");
     }
@@ -82,8 +82,8 @@ public class DefaultSelectorFactory implements SelectorFactory {
     /**
      * <b>SAC</b>: Implements {@link
      * org.w3c.css.sac.SelectorFactory#createNegativeSelector(SimpleSelector)}.
-     */    
-    public NegativeSelector createNegativeSelector(SimpleSelector selector) 
+     */
+    public NegativeSelector createNegativeSelector(SimpleSelector selector)
         throws CSSException {
         throw new CSSException("Not implemented in CSS2");
     }
@@ -91,7 +91,7 @@ public class DefaultSelectorFactory implements SelectorFactory {
     /**
      * <b>SAC</b>: Implements {@link
      * org.w3c.css.sac.SelectorFactory#createElementSelector(String,String)}.
-     */    
+     */
     public ElementSelector createElementSelector(String namespaceURI,
                                                  String tagName)
         throws CSSException {
@@ -101,7 +101,7 @@ public class DefaultSelectorFactory implements SelectorFactory {
     /**
      * <b>SAC</b>: Implements {@link
      * org.w3c.css.sac.SelectorFactory#createTextNodeSelector(String)}.
-     */    
+     */
     public CharacterDataSelector createTextNodeSelector(String data)
         throws CSSException {
         throw new CSSException("Not implemented in CSS2");
@@ -110,7 +110,7 @@ public class DefaultSelectorFactory implements SelectorFactory {
     /**
      * <b>SAC</b>: Implements {@link
      * org.w3c.css.sac.SelectorFactory#createCDataSectionSelector(String)}.
-     */    
+     */
     public CharacterDataSelector createCDataSectionSelector(String data)
         throws CSSException {
         throw new CSSException("Not implemented in CSS2");
@@ -119,7 +119,7 @@ public class DefaultSelectorFactory implements SelectorFactory {
     /**
      * <b>SAC</b>: Implements {@link
      * SelectorFactory#createProcessingInstructionSelector(String,String)}.
-     */    
+     */
     public ProcessingInstructionSelector createProcessingInstructionSelector
         (String target,
          String data) throws CSSException {
@@ -129,7 +129,7 @@ public class DefaultSelectorFactory implements SelectorFactory {
     /**
      * <b>SAC</b>: Implements {@link
      * org.w3c.css.sac.SelectorFactory#createCommentSelector(String)}.
-     */    
+     */
     public CharacterDataSelector createCommentSelector(String data)
         throws CSSException {
         throw new CSSException("Not implemented in CSS2");
@@ -138,9 +138,9 @@ public class DefaultSelectorFactory implements SelectorFactory {
     /**
      * <b>SAC</b>: Implements {@link
      * SelectorFactory#createPseudoElementSelector(String,String)}.
-     */    
-    public ElementSelector createPseudoElementSelector(String namespaceURI, 
-                                                       String pseudoName) 
+     */
+    public ElementSelector createPseudoElementSelector(String namespaceURI,
+                                                       String pseudoName)
         throws CSSException {
         return new DefaultPseudoElementSelector(namespaceURI, pseudoName);
     }
@@ -148,7 +148,7 @@ public class DefaultSelectorFactory implements SelectorFactory {
     /**
      * <b>SAC</b>: Implements {@link
      * SelectorFactory#createDescendantSelector(Selector,SimpleSelector)}.
-     */    
+     */
     public DescendantSelector createDescendantSelector
         (Selector parent,
          SimpleSelector descendant)
@@ -159,7 +159,7 @@ public class DefaultSelectorFactory implements SelectorFactory {
     /**
      * <b>SAC</b>: Implements {@link
      * SelectorFactory#createChildSelector(Selector,SimpleSelector)}.
-     */    
+     */
     public DescendantSelector createChildSelector(Selector parent,
                                                   SimpleSelector child)
         throws CSSException {

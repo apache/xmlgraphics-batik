@@ -6,9 +6,9 @@
    The ASF licenses this file to You under the Apache License, Version 2.0
    (the "License"); you may not use this file except in compliance with
    the License.  You may obtain a copy of the License at
-  
+
        http://www.apache.org/licenses/LICENSE-2.0
-  
+
    Unless required by applicable law or agreed to in writing, software
    distributed under the License is distributed on an "AS IS" BASIS,
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -35,7 +35,7 @@ import org.w3c.dom.Document;
 
 /**
  * An abstract base class for managing animation in a document.
- * 
+ *
  * @author <a href="mailto:cam%40mcc%2eid%2eau">Cameron McCormack</a>
  * @version $Id$
  */
@@ -193,7 +193,7 @@ public abstract class AnimationEngine {
         AnimationInfo animInfo = getAnimationInfo(anim);
         Sandwich sandwich = getSandwich(animInfo.target, animInfo.type,
                                         animInfo.attributeNamespaceURI,
-                                        animInfo.attributeLocalName);;
+                                        animInfo.attributeLocalName);
         if (sandwich.animation == anim) {
             sandwich.animation = null;
             sandwich.lowestAnimation = null;
@@ -345,7 +345,7 @@ public abstract class AnimationEngine {
 
     /**
      * Invoked to indicate an animation became active at the specified time.
-     * 
+     *
      * @param anim the animation
      * @param begin the time the element became active, in document simple time
      */
@@ -408,7 +408,7 @@ public abstract class AnimationEngine {
 
     /**
      * Invoked to indicate that this timed element became inactive.
-     * 
+     *
      * @param anim the animation
      * @param isFrozen whether the element is frozen or not
      */
@@ -507,7 +507,7 @@ public abstract class AnimationEngine {
     /**
      * Invoked to indicate that this timed element has been sampled at the given
      * time.
-     * 
+     *
      * @param anim the animation
      * @param simpleTime the sample time in local simple time
      * @param simpleDur the simple duration of the element
