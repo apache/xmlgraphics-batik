@@ -41,7 +41,7 @@ public class SVGOMFEDisplacementMapElement
     /**
      * The 'xChannelSelector' and 'yChannelSelector' attributes values.
      */
-    protected final static String[] CHANNEL_SELECTOR_VALUES = {
+    protected static final String[] CHANNEL_SELECTOR_VALUES = {
         "",
         SVG_R_VALUE,
         SVG_G_VALUE,

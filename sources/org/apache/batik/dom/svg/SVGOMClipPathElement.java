@@ -38,7 +38,7 @@ public class SVGOMClipPathElement
     /**
      * The clipPathUnits values.
      */
-    protected final static String[] CLIP_PATH_UNITS_VALUES = {
+    protected static final String[] CLIP_PATH_UNITS_VALUES = {
         "",
         SVG_USER_SPACE_ON_USE_VALUE,
         SVG_OBJECT_BOUNDING_BOX_VALUE

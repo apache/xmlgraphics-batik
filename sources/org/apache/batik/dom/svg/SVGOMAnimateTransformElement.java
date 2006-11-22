@@ -37,7 +37,7 @@ public class SVGOMAnimateTransformElement
     /**
      * The attribute initializer.
      */
-    protected final static AttributeInitializer attributeInitializer;
+    protected static final AttributeInitializer attributeInitializer;
     static {
         attributeInitializer = new AttributeInitializer(1);
         attributeInitializer.addAttribute(null,

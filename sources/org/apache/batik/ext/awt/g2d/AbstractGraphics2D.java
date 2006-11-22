@@ -529,7 +529,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements Cloneable
      * @see         java.awt.Graphics#drawPolygon(int[], int[], int)
      * @since       JDK1.1
      */
-    public void drawPolyline(int xPoints[], int yPoints[],
+    public void drawPolyline(int[] xPoints, int[] yPoints,
                              int nPoints){
         if(nPoints > 0){
             GeneralPath path = new GeneralPath();
@@ -560,7 +560,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements Cloneable
      * @see          java.awt.Graphics#fillPolygon(int[],int[],int)
      * @see          java.awt.Graphics#drawPolyline
      */
-    public void drawPolygon(int xPoints[], int yPoints[],
+    public void drawPolygon(int[] xPoints, int[] yPoints,
                             int nPoints){
         Polygon polygon = new Polygon(xPoints, yPoints, nPoints);
         draw(polygon);
@@ -587,7 +587,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements Cloneable
      * @param        nPoints   a the total number of points.
      * @see          java.awt.Graphics#drawPolygon(int[], int[], int)
      */
-    public void fillPolygon(int xPoints[], int yPoints[],
+    public void fillPolygon(int[] xPoints, int[] yPoints,
                             int nPoints){
         Polygon polygon = new Polygon(xPoints, yPoints, nPoints);
         fill(polygon);
@@ -1420,7 +1420,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements Cloneable
 
     /**
      * @return the {@link GraphicContext} of this <code>Graphics2D</code>.
-     */    
+     */
     public GraphicContext getGraphicContext() {
         return gc;
     }

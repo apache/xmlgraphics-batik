@@ -43,11 +43,11 @@ import org.w3c.dom.svg.SVGMarkerElement;
 public class SVGOMMarkerElement
     extends    SVGStylableElement
     implements SVGMarkerElement {
-    
+
     /**
      * The attribute initializer.
      */
-    protected final static AttributeInitializer attributeInitializer;
+    protected static final AttributeInitializer attributeInitializer;
     static {
         attributeInitializer = new AttributeInitializer(1);
         attributeInitializer.addAttribute(null,
@@ -59,7 +59,7 @@ public class SVGOMMarkerElement
     /**
      * The units values.
      */
-    protected final static String[] UNITS_VALUES = {
+    protected static final String[] UNITS_VALUES = {
         "",
         SVG_USER_SPACE_ON_USE_VALUE,
         SVG_STROKE_WIDTH_ATTRIBUTE
@@ -68,7 +68,7 @@ public class SVGOMMarkerElement
     /**
      * The orient type values.
      */
-    protected final static String[] ORIENT_TYPE_VALUES = {
+    protected static final String[] ORIENT_TYPE_VALUES = {
         "",
         SVG_AUTO_VALUE,
         ""

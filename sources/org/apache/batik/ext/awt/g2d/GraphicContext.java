@@ -374,7 +374,7 @@ public class GraphicContext implements Cloneable{
      * there is a security manager, its <code>checkPermission</code>
      * method is called with an <code>AWTPermission("readDisplayPixels")</code>
      * permission.
-     * 
+     *
      * @param comp the <code>Composite</code> object to be used for rendering
      * @throws SecurityException
      *         if a custom <code>Composite</code> object is being
@@ -701,7 +701,7 @@ public class GraphicContext implements Cloneable{
      *         were concatenated with the original one.
      */
     public TransformStackElement[] getTransformStack(){
-        TransformStackElement stack[] = new TransformStackElement[transformStack.size()];
+        TransformStackElement[] stack = new TransformStackElement[transformStack.size()];
         transformStack.copyInto(stack);
         return stack;
     }

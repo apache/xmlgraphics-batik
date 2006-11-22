@@ -48,14 +48,14 @@ public class Polyline2D implements Shape, Cloneable, java.io.Serializable {
      * number of points in this <code>Polyline2D</code>.
      *
      */
-    public float xpoints[];
+    public float[] xpoints;
 
     /**
      * The array of <i>x</i> coordinates. The value of {@link #npoints npoints} is equal to the
      * number of points in this <code>Polyline2D</code>.
      *
      */
-    public float ypoints[];
+    public float[] ypoints;
 
     /**
      * Bounds of the Polyline2D.
@@ -115,7 +115,7 @@ public class Polyline2D implements Shape, Cloneable, java.io.Serializable {
      * @exception  NullPointerException if <code>xpoints</code> or
      *             <code>ypoints</code> is <code>null</code>.
      */
-    public Polyline2D(int xpoints[], int ypoints[], int npoints) {
+    public Polyline2D(int[] xpoints, int[] ypoints, int npoints) {
         if (npoints > xpoints.length || npoints > ypoints.length) {
             throw new IndexOutOfBoundsException("npoints > xpoints.length || npoints > ypoints.length");
         }
@@ -218,7 +218,7 @@ public class Polyline2D implements Shape, Cloneable, java.io.Serializable {
      */
     public void addPoint(float x, float y) {
         if (npoints == xpoints.length) {
-            float tmp[];
+            float[] tmp;
 
             tmp = new float[npoints * 2];
             System.arraycopy(xpoints, 0, tmp, 0, npoints);

@@ -75,7 +75,7 @@ public abstract class AbstractParentNode extends AbstractNode {
     public Node insertBefore(Node newChild, Node refChild)
         throws DOMException {
         if ((refChild != null) && ((childNodes == null) ||
-                                   (refChild.getParentNode() != this))) 
+                                   (refChild.getParentNode() != this)))
             throw createDOMException
                 (DOMException.NOT_FOUND_ERR,
                  "child.missing",
@@ -127,7 +127,7 @@ public abstract class AbstractParentNode extends AbstractNode {
 
         if (newChild.getNodeType() == DOCUMENT_FRAGMENT_NODE) {
             Node n  = newChild.getLastChild();
-            if (n == null) 
+            if (n == null)
                 return newChild;
 
             Node ps = n.getPreviousSibling();
@@ -146,18 +146,18 @@ public abstract class AbstractParentNode extends AbstractNode {
 
         // Mutation event
         fireDOMNodeRemovedEvent(oldChild);
-        
+
         getCurrentDocument().nodeToBeRemoved(oldChild);
         nodeToBeRemoved(oldChild);
-        
+
         // Node modification
         ExtendedNode n = (ExtendedNode)newChild;
         ExtendedNode o = childNodes.replace(n, (ExtendedNode)oldChild);
         n.setParentNode(this);
         o.setParentNode(null);
-        
+
         nodeAdded(n);
-        
+
         // Mutation event
         fireDOMNodeInsertedEvent(n);
         fireDOMSubtreeModifiedEvent();
@@ -557,9 +557,7 @@ public abstract class AbstractParentNode extends AbstractNode {
                 table = new Node[11];
             } else if (size == table.length - 1) {
                 Node[] t = new Node[table.length * 2 + 1];
-                for (int i = 0; i < size; i++) {
-                    t[i] = table[i];
-                }
+                System.arraycopy( table, 0, t, 0, size );
                 table = t;
             }
             table[size++] = n;
@@ -589,7 +587,7 @@ public abstract class AbstractParentNode extends AbstractNode {
                  n = n.getNextSibling()) {
                 initialize(n);
             }
-        } 
+        }
     }
 
     /**
@@ -664,9 +662,7 @@ public abstract class AbstractParentNode extends AbstractNode {
                 table = new Node[11];
             } else if (size == table.length - 1) {
                 Node[] t = new Node[table.length * 2 + 1];
-                for (int i = 0; i < size; i++) {
-                    t[i] = table[i];
-                }
+                System.arraycopy( table, 0, t, 0, size );
                 table = t;
             }
             table[size++] = n;
@@ -700,7 +696,7 @@ public abstract class AbstractParentNode extends AbstractNode {
                  n = n.getNextSibling()) {
                 initialize(n);
             }
-        } 
+        }
 
         private boolean nsMatch(String s1, String s2) {
             if (s1 == null && s2 == null) {

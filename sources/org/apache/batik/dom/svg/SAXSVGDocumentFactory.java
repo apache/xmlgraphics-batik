@@ -76,13 +76,13 @@ public class SAXSVGDocumentFactory
     /**
      * The dtd public IDs resource bundle class name.
      */
-    protected final static String DTDIDS =
+    protected static final String DTDIDS =
         "org.apache.batik.dom.svg.resources.dtdids";
 
     /**
      * Constant for HTTP content type header charset field.
      */
-    protected final static String HTTP_CHARSET = "charset";
+    protected static final String HTTP_CHARSET = "charset";
 
     /**
      * The accepted DTD public IDs.
@@ -131,7 +131,7 @@ public class SAXSVGDocumentFactory
      * @param inp The document input stream.
      * @exception IOException if an error occured while reading the document.
      */
-    public SVGDocument createSVGDocument(String uri, InputStream inp) 
+    public SVGDocument createSVGDocument(String uri, InputStream inp)
         throws IOException {
         return (SVGDocument)createDocument(uri, inp);
     }
@@ -159,7 +159,7 @@ public class SAXSVGDocumentFactory
         InputStream is = purl.openStream(MimeTypeConstants.MIME_TYPES_SVG);
 
         InputSource isrc = new InputSource(is);
-        
+
         // now looking for a charset encoding in the content type such
         // as "image/svg+xml; charset=iso8859-1" this is not official
         // for image/svg+xml yet! only for text/xml and maybe
@@ -170,7 +170,7 @@ public class SAXSVGDocumentFactory
             contentType = contentType.toLowerCase();
             cindex = contentType.indexOf(HTTP_CHARSET);
         }
- 
+
         String charset = null;
         if (cindex != -1) {
             int i                 = cindex + HTTP_CHARSET.length();
@@ -189,7 +189,7 @@ public class SAXSVGDocumentFactory
                     idx = semiIdx;
                 if (idx != -1)
                     charset = contentType.substring(eqIdx, idx);
-                else 
+                else
                     charset = contentType.substring(eqIdx);
                 charset = charset.trim();
                 isrc.setEncoding(charset);
@@ -356,12 +356,12 @@ public class SAXSVGDocumentFactory
                 // Bootstrap if needed - move to a static block???
                 if (dtdProps == null) {
                     dtdProps = new Properties();
-                    try { 
+                    try {
                         Class cls = SAXSVGDocumentFactory.class;
                         InputStream is = cls.getResourceAsStream
                             ("resources/dtdids.properties");
                         dtdProps.load(is);
-                    } catch (IOException ioe) { 
+                    } catch (IOException ioe) {
                         throw new SAXException(ioe);
                     }
                 }
@@ -370,7 +370,7 @@ public class SAXSVGDocumentFactory
                     dtdids = dtdProps.getProperty(KEY_PUBLIC_IDS);
 
                 if (skippable_dtdids == null)
-                    skippable_dtdids = 
+                    skippable_dtdids =
                         dtdProps.getProperty(KEY_SKIPPABLE_PUBLIC_IDS);
 
                 if (skip_dtd == null)
@@ -380,7 +380,7 @@ public class SAXSVGDocumentFactory
             if (publicId == null)
                 return null; // Let SAX Parser find it.
 
-            if (!isValidating && 
+            if (!isValidating &&
                 (skippable_dtdids.indexOf(publicId) != -1)) {
                 // We are not validating and this is a DTD we can
                 // safely skip so do it...  Here we provide just enough
@@ -388,12 +388,12 @@ public class SAXSVGDocumentFactory
                 // xlink namespaces).
                 return new InputSource(new StringReader(skip_dtd));
             }
-            
+
             if (dtdids.indexOf(publicId) != -1) {
-                String localSystemId = 
-                    dtdProps.getProperty(KEY_SYSTEM_ID + 
+                String localSystemId =
+                    dtdProps.getProperty(KEY_SYSTEM_ID +
                                          publicId.replace(' ', '_'));
-                
+
                 if (localSystemId != null && !"".equals(localSystemId)) {
                     return new InputSource
                         (getClass().getResource(localSystemId).toString());

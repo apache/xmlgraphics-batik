@@ -23,7 +23,7 @@ import org.w3c.dom.svg.SVGAnimatedLengthList;
 import org.w3c.dom.svg.SVGAnimatedNumberList;
 
 /**
- * This class provide support for the SVGTextPositionningElement 
+ * This class provide support for the SVGTextPositionningElement
  * interface.
  *
  * @author <a href="mailto:nicolas.socheleau@bitflash.com">Nicolas Socheleau</a>
@@ -31,15 +31,15 @@ import org.w3c.dom.svg.SVGAnimatedNumberList;
  */
 public class SVGTextPositioningElementSupport {
 
-    public final static String X_DEFAULT_VALUE
+    public static final String X_DEFAULT_VALUE
         = "";
-    public final static String Y_DEFAULT_VALUE
+    public static final String Y_DEFAULT_VALUE
         = "";
-    public final static String DX_DEFAULT_VALUE
+    public static final String DX_DEFAULT_VALUE
         = "";
-    public final static String DY_DEFAULT_VALUE
+    public static final String DY_DEFAULT_VALUE
         = "";
-    public final static String ROTATE_DEFAULT_VALUE
+    public static final String ROTATE_DEFAULT_VALUE
         = "";
 
     /**

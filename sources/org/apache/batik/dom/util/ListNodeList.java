@@ -53,4 +53,4 @@ public class ListNodeList implements NodeList {
     public int getLength() {
         return list.size();
     }
-};
+}

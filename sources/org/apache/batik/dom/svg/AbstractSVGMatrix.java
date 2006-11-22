@@ -37,20 +37,20 @@ public abstract class AbstractSVGMatrix implements SVGMatrix {
     /**
      * The transform used to implement flipX.
      */
-    protected final static AffineTransform FLIP_X_TRANSFORM =
+    protected static final AffineTransform FLIP_X_TRANSFORM =
         new AffineTransform(-1, 0, 0, 1, 0, 0);
 
     /**
      * The transform used to implement flipX.
      */
-    protected final static AffineTransform FLIP_Y_TRANSFORM =
+    protected static final AffineTransform FLIP_Y_TRANSFORM =
         new AffineTransform(1, 0, 0, -1, 0, 0);
 
     /**
      * Returns the associated AffineTransform.
      */
     protected abstract AffineTransform getAffineTransform();
-    
+
     /**
      * Implements {@link SVGMatrix#getA()}.
      */

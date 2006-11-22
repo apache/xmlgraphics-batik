@@ -40,7 +40,7 @@ public abstract class SVGOMComponentTransferFunctionElement
     /**
      * The 'type' attribute values.
      */
-    protected final static String[] TYPE_VALUES = {
+    protected static final String[] TYPE_VALUES = {
         "",
         SVG_IDENTITY_VALUE,
         SVG_TABLE_VALUE,

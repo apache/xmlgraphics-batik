@@ -19,7 +19,7 @@
 package org.apache.batik.ext.awt.image;
 
 /**
- * Defines the interface expected from a component 
+ * Defines the interface expected from a component
  * transfer function.
  *
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
@@ -29,45 +29,45 @@ public interface ComponentTransferFunction {
     /**
      * The various transfer types
      */
-    public static final int IDENTITY = 0;
-    public static final int TABLE    = 1;
-    public static final int DISCRETE = 2;
-    public static final int LINEAR   = 3;
-    public static final int GAMMA    = 4;
+    int IDENTITY = 0;
+    int TABLE    = 1;
+    int DISCRETE = 2;
+    int LINEAR   = 3;
+    int GAMMA    = 4;
 
     /**
      * Returns the type of this transfer function
      */
-    public int getType();
+    int getType();
 
     /**
      * Returns the slope value for this transfer function
      */
-    public float getSlope();
+    float getSlope();
 
     /**
      * Returns the table values for this transfer function
      */
-    public float[] getTableValues();
+    float[] getTableValues();
 
     /**
      * Returns the intercept value for this transfer function
      */
-    public float getIntercept();
+    float getIntercept();
 
     /**
      * Returns the amplitude value for this transfer function
      */
-    public float getAmplitude();
+    float getAmplitude();
 
     /**
      * Returns the exponent value for this transfer function
      */
-    public float getExponent();
+    float getExponent();
 
     /**
      * Returns the offset value for this transfer function
      */
-    public float getOffset();
+    float getOffset();
 }
 

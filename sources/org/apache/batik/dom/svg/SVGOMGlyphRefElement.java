@@ -35,11 +35,11 @@ import org.w3c.dom.svg.SVGGlyphRefElement;
 public class SVGOMGlyphRefElement
     extends    SVGStylableElement
     implements SVGGlyphRefElement {
-    
+
     /**
      * The attribute initializer.
      */
-    protected final static AttributeInitializer attributeInitializer;
+    protected static final AttributeInitializer attributeInitializer;
     static {
         attributeInitializer = new AttributeInitializer(4);
         attributeInitializer.addAttribute(XMLSupport.XMLNS_NAMESPACE_URI,
@@ -149,7 +149,7 @@ public class SVGOMGlyphRefElement
      * <b>DOM</b>: Implements {@link SVGGlyphRefElement#setDx(float)}.
      */
     public void setDx(float dx) throws DOMException {
-        setAttributeNS(null, SVG_DX_ATTRIBUTE, String.valueOf(dx)); 
+        setAttributeNS(null, SVG_DX_ATTRIBUTE, String.valueOf(dx));
     }
 
     /**
@@ -163,7 +163,7 @@ public class SVGOMGlyphRefElement
      * <b>DOM</b>: Implements {@link SVGGlyphRefElement#setDy(float)}.
      */
     public void setDy(float dy) throws DOMException {
-        setAttributeNS(null, SVG_DY_ATTRIBUTE, String.valueOf(dy)); 
+        setAttributeNS(null, SVG_DY_ATTRIBUTE, String.valueOf(dy));
     }
 
     /**

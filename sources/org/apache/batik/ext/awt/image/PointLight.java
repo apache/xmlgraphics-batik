@@ -77,7 +77,7 @@ public class PointLight extends AbstractLight {
      * @param L array of length 3 where the result is stored
      */
     public final void getLight(final double x, final double y, final double z,
-                               final double L[]){
+                               final double[] L){
         L[0] = lightX - x;
         L[1] = lightY - y;
         L[2] = lightZ - z;

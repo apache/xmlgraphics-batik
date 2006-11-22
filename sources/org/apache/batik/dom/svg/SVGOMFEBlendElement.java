@@ -40,7 +40,7 @@ public class SVGOMFEBlendElement
     /**
      * The 'mode' attribute values.
      */
-    protected final static String[] MODE_VALUES = {
+    protected static final String[] MODE_VALUES = {
         "",
         SVG_NORMAL_VALUE,
         SVG_MULTIPLY_VALUE,

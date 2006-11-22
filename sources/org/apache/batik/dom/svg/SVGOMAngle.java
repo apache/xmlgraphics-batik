@@ -46,7 +46,7 @@ public class SVGOMAngle implements SVGAngle {
     /**
      * The unit string representations.
      */
-    protected final static String[] UNITS = {
+    protected static final String[] UNITS = {
         "", "", "deg", "rad", "grad"
     };
 
@@ -57,7 +57,7 @@ public class SVGOMAngle implements SVGAngle {
         revalidate();
         return unitType;
     }
-    
+
     /**
      * <b>DOM</b>: Implements {@link SVGLength#getValue()}.
      */

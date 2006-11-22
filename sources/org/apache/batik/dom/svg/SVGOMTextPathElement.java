@@ -43,7 +43,7 @@ public class SVGOMTextPathElement
     /**
      * The attribute initializer.
      */
-    protected final static AttributeInitializer attributeInitializer;
+    protected static final AttributeInitializer attributeInitializer;
     static {
         attributeInitializer = new AttributeInitializer(4);
         attributeInitializer.addAttribute(XMLSupport.XMLNS_NAMESPACE_URI,
@@ -60,7 +60,7 @@ public class SVGOMTextPathElement
     /**
      * The 'method' attribute values.
      */
-    protected final static String[] METHOD_VALUES = {
+    protected static final String[] METHOD_VALUES = {
         "",
         SVG_ALIGN_VALUE,
         SVG_STRETCH_VALUE
@@ -69,7 +69,7 @@ public class SVGOMTextPathElement
     /**
      * The 'spacing' attribute values.
      */
-    protected final static String[] SPACING_VALUES = {
+    protected static final String[] SPACING_VALUES = {
         "",
         SVG_AUTO_VALUE,
         SVG_EXACT_VALUE

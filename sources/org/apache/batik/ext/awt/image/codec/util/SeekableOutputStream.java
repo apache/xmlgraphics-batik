@@ -25,6 +25,8 @@ import java.io.RandomAccessFile;
 
 /**
  * An <code>OutputStream</code> which can seek to an arbitrary offset.
+ *
+ * @version $Id$
  */
 public class SeekableOutputStream extends OutputStream {
 
@@ -52,11 +54,11 @@ public class SeekableOutputStream extends OutputStream {
         file.write(b);
     }
 
-    public void write(byte b[]) throws IOException {
+    public void write(byte[] b) throws IOException {
         file.write(b);
     }
 
-    public void write(byte b[], int off, int len) throws IOException {
+    public void write(byte[] b, int off, int len) throws IOException {
         file.write(b, off, len);
     }
 

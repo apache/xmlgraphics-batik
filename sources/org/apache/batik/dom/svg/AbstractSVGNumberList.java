@@ -37,11 +37,11 @@ import org.w3c.dom.svg.SVGNumberList;
 public abstract class AbstractSVGNumberList
         extends AbstractSVGList
         implements SVGNumberList {
-    
+
     /**
      * Separator for a length list.
      */
-    public final static String SVG_NUMBER_LIST_SEPARATOR
+    public static final String SVG_NUMBER_LIST_SEPARATOR
         = " ";
 
     /**
@@ -50,7 +50,7 @@ public abstract class AbstractSVGNumberList
     protected String getItemSeparator() {
         return SVG_NUMBER_LIST_SEPARATOR;
     }
-    
+
     /**
      * Create an SVGException when the {@link #checkItemType(Object)} fails.
      */
@@ -62,7 +62,7 @@ public abstract class AbstractSVGNumberList
      * Returns the element associated with this SVGNumberList.
      */
     protected abstract Element getElement();
-    
+
     /**
      * Creates a new SVGNumberList.
      */
@@ -85,7 +85,7 @@ public abstract class AbstractSVGNumberList
 
         return (SVGNumber)getItemImpl(index);
     }
-    
+
     /**
      * <b>DOM</b>: Implements {@link
      * SVGNumberList#insertItemBefore(SVGNumber,int)}.
@@ -128,7 +128,7 @@ public abstract class AbstractSVGNumberList
         SVGNumber l = (SVGNumber)newItem;
         return new SVGNumberItem(l.getValue());
     }
-    
+
     /**
      * Parse the attribute associated with this SVGNumberList.
      * @param value attribute value
@@ -139,11 +139,11 @@ public abstract class AbstractSVGNumberList
 
         NumberListParser NumberListParser = new NumberListParser();
         NumberListBuilder builder = new NumberListBuilder(handler);
-        
+
         NumberListParser.setNumberListHandler(builder);
         NumberListParser.parse(value);
     }
-    
+
     /**
      * Asserts that the given item object is an {@link SVGNumber}.
      */
@@ -155,7 +155,7 @@ public abstract class AbstractSVGNumberList
                                null);
         }
     }
-    
+
     /**
      * Representation of the item SVGNumber.
      */
@@ -172,7 +172,7 @@ public abstract class AbstractSVGNumberList
         public SVGNumberItem(float value) {
             this.value = value;
         }
-        
+
         /**
          * Returns a String representation of the number.
          */
@@ -204,7 +204,7 @@ public abstract class AbstractSVGNumberList
             }
         }
     }
-    
+
     /**
      * Helper class to interface the {@link NumberListParser} and the
      * {@link NumberHandler}.
@@ -220,7 +220,7 @@ public abstract class AbstractSVGNumberList
          * The number just parsed.
          */
         protected float currentValue;
-                
+
         /**
          * Creates a new NumberListBuilder.
          */

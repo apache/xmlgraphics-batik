@@ -46,7 +46,7 @@ public class GenericDocument
     /**
      * Local name for 'id' attributes.
      */
-    protected final static String ATTR_ID = XMLConstants.XML_ID_ATTRIBUTE;
+    protected static final String ATTR_ID = XMLConstants.XML_ID_ATTRIBUTE;
 
     /**
      * Is this document immutable?
@@ -81,7 +81,7 @@ public class GenericDocument
     }
 
     /**
-     * Returns true if the given Attr node represents an 'id' 
+     * Returns true if the given Attr node represents an 'id'
      * for this document.
      */
     public boolean isId(Attr node) {

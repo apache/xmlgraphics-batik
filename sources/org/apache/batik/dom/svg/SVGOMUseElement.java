@@ -42,7 +42,7 @@ public class SVGOMUseElement
     /**
      * The attribute initializer.
      */
-    protected final static AttributeInitializer attributeInitializer;
+    protected static final AttributeInitializer attributeInitializer;
     static {
         attributeInitializer = new AttributeInitializer(4);
         attributeInitializer.addAttribute(XMLSupport.XMLNS_NAMESPACE_URI,
@@ -108,7 +108,7 @@ public class SVGOMUseElement
         return getAnimatedLengthAttribute
             (null, SVG_WIDTH_ATTRIBUTE, SVG_USE_WIDTH_DEFAULT_VALUE,
              SVGOMAnimatedLength.HORIZONTAL_LENGTH, true);
-    } 
+    }
 
     /**
      * <b>DOM</b>: Implements {@link SVGUseElement#getHeight()}.
@@ -117,7 +117,7 @@ public class SVGOMUseElement
         return getAnimatedLengthAttribute
             (null, SVG_HEIGHT_ATTRIBUTE, SVG_USE_HEIGHT_DEFAULT_VALUE,
              SVGOMAnimatedLength.VERTICAL_LENGTH, true);
-    } 
+    }
 
     /**
      * <b>DOM</b>: Implements {@link SVGUseElement#getInstanceRoot()}.
@@ -126,7 +126,7 @@ public class SVGOMUseElement
         throw new UnsupportedOperationException
             ("SVGUseElement.getInstanceRoot is not implemented"); // XXX
     }
- 
+
     /**
      * <b>DOM</b>: Implements {@link SVGUseElement#getAnimatedInstanceRoot()}.
      */

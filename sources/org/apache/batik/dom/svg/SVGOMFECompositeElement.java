@@ -41,7 +41,7 @@ public class SVGOMFECompositeElement
     /**
      * The 'operator' attribute values.
      */
-    protected final static String[] OPERATOR_VALUES = {
+    protected static final String[] OPERATOR_VALUES = {
         "",
         SVG_OVER_VALUE,
         SVG_IN_VALUE,

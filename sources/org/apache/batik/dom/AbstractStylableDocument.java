@@ -57,7 +57,7 @@ public abstract class AbstractStylableDocument extends AbstractDocument
     /**
      * Creates a new document.
      */
-    protected AbstractStylableDocument(DocumentType dt, 
+    protected AbstractStylableDocument(DocumentType dt,
                                        DOMImplementation impl) {
         super(dt, impl);
     }
@@ -122,4 +122,4 @@ public abstract class AbstractStylableDocument extends AbstractDocument
                                                 String pseudoElt) {
         throw new RuntimeException(" !!! Not implemented");
     }
-};
+}

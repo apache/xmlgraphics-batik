@@ -36,22 +36,22 @@ public class DOMNodeIterator implements NodeIterator {
     /**
      * The initial state.
      */
-    protected final static short INITIAL = 0;
+    protected static final short INITIAL = 0;
 
     /**
      * The invalid state.
      */
-    protected final static short INVALID = 1;
+    protected static final short INVALID = 1;
 
     /**
      * The forward state.
      */
-    protected final static short FORWARD = 2;
+    protected static final short FORWARD = 2;
 
     /**
      * The backward state.
      */
-    protected final static short BACKWARD = 3;
+    protected static final short BACKWARD = 3;
 
     /**
      * The document which created the iterator.
@@ -166,7 +166,7 @@ public class DOMNodeIterator implements NodeIterator {
             }
         }
     }
-    
+
     /**
      * <b>DOM</b>: Implements {@link NodeIterator#previousNode()}.
      */
@@ -326,7 +326,7 @@ public class DOMNodeIterator implements NodeIterator {
             referenceNode = null;
             return;
         }
-        
+
         Node n = referenceNode.getPreviousSibling();
 
         // Go to the parent of a first child

@@ -64,7 +64,7 @@ public abstract class AbstractNode
     /**
      * An empty instance of NodeList.
      */
-    public final static NodeList EMPTY_NODE_LIST = new NodeList() {
+    public static final NodeList EMPTY_NODE_LIST = new NodeList() {
         public Node item(int i) { return null; }
         public int  getLength() { return 0; }
     };
@@ -383,7 +383,7 @@ public abstract class AbstractNode
                                                     getNodeName(),
                                                     uri });
         }
-        setNodeName(prefix + ":" + name);
+        setNodeName(prefix + ':' + name);
     }
 
     /**
@@ -599,36 +599,36 @@ public abstract class AbstractNode
         if (namespaceURI == null || namespaceURI.length() == 0) {
             return null;
         }
-        int type = getNodeType(); 
-        switch (type) { 
-            case Node.ELEMENT_NODE: 
-                return lookupNamespacePrefix(namespaceURI, (Element) this); 
+        int type = getNodeType();
+        switch (type) {
+            case Node.ELEMENT_NODE:
+                return lookupNamespacePrefix(namespaceURI, (Element) this);
             case Node.DOCUMENT_NODE:
                 AbstractNode de
                     = (AbstractNode) ((Document) this).getDocumentElement();
-                return de.lookupPrefix(namespaceURI); 
-            case Node.ENTITY_NODE : 
-            case Node.NOTATION_NODE: 
-            case Node.DOCUMENT_FRAGMENT_NODE: 
-            case Node.DOCUMENT_TYPE_NODE: 
+                return de.lookupPrefix(namespaceURI);
+            case Node.ENTITY_NODE :
+            case Node.NOTATION_NODE:
+            case Node.DOCUMENT_FRAGMENT_NODE:
+            case Node.DOCUMENT_TYPE_NODE:
                 return null;
             case Node.ATTRIBUTE_NODE:
                 AbstractNode ownerElement
                     = (AbstractNode) ((Attr) this).getOwnerElement();
                 if (ownerElement != null) {
-                    return ownerElement.lookupPrefix(namespaceURI); 
-                } 
-                return null; 
+                    return ownerElement.lookupPrefix(namespaceURI);
+                }
+                return null;
             default:
                 for (Node n = this.getParentNode();
                         n != null;
                         n = n.getParentNode()) {
                     if (n.getNodeType() == ELEMENT_NODE) {
-                        return ((AbstractNode) n).lookupPrefix(namespaceURI); 
-                    } 
-                } 
-                return null; 
-        } 
+                        return ((AbstractNode) n).lookupPrefix(namespaceURI);
+                    }
+                }
+                return null;
+        }
     }
 
     /**
@@ -661,14 +661,14 @@ public abstract class AbstractNode
                     }
                 }
             }
-        } 
+        }
         for (Node n = getParentNode(); n != null; n = n.getParentNode()) {
             if (n.getNodeType() == ELEMENT_NODE) {
                 return ((AbstractNode) n).lookupNamespacePrefix
                     (namespaceURI, originalElement);
             }
-        } 
-        return null; 
+        }
+        return null;
     }
 
     /**
@@ -693,7 +693,7 @@ public abstract class AbstractNode
                     return owner.isDefaultNamespace(namespaceURI);
                 }
                 return false;
-            case ELEMENT_NODE:  
+            case ELEMENT_NODE:
                 if (getPrefix() == null) {
                     String ns = getNamespaceURI();
                     return ns == null && namespaceURI == null
@@ -708,7 +708,7 @@ public abstract class AbstractNode
                             return attr.getNodeValue().equals(namespaceURI);
                         }
                     }
-                } 
+                }
                 // fall through
             default:
                 for (Node n = this; n != null; n = n.getParentNode()) {
@@ -726,24 +726,24 @@ public abstract class AbstractNode
      * {@link org.w3c.dom.Node#lookupNamespaceURI(String)}.
      */
     public String lookupNamespaceURI(String prefix) {
-        switch (getNodeType()) { 
-            case DOCUMENT_NODE: 
+        switch (getNodeType()) {
+            case DOCUMENT_NODE:
                 AbstractNode de =
                     (AbstractNode) ((Document) this).getDocumentElement();
                 return de.lookupNamespaceURI(prefix);
-            case ENTITY_NODE: 
-            case NOTATION_NODE: 
-            case DOCUMENT_TYPE_NODE: 
-            case DOCUMENT_FRAGMENT_NODE: 
+            case ENTITY_NODE:
+            case NOTATION_NODE:
+            case DOCUMENT_TYPE_NODE:
+            case DOCUMENT_FRAGMENT_NODE:
                 return null;
-            case ATTRIBUTE_NODE: 
+            case ATTRIBUTE_NODE:
                 AbstractNode owner
                     = (AbstractNode) ((Attr) this).getOwnerElement();
                 if (owner != null) {
-                    return owner.lookupNamespaceURI(prefix); 
+                    return owner.lookupNamespaceURI(prefix);
                 }
                 return null;
-            case ELEMENT_NODE: 
+            case ELEMENT_NODE:
                 /*String ns = getNamespaceURI();
                 if (ns != null && compareStrings(getPrefix(), prefix)) {
                     return getNamespaceURI();
@@ -768,17 +768,17 @@ public abstract class AbstractNode
                             return null;
                         }
                     }
-                } 
+                }
                 // fall through
-            default: 
+            default:
                 for (Node n = this.getParentNode(); n != null; n = n.getParentNode()) {
                     if (n.getNodeType() == ELEMENT_NODE) {
                         AbstractNode an = (AbstractNode) n;
                         return an.lookupNamespaceURI(prefix);
                     }
                 }
-                return null; 
-        } 
+                return null;
+        }
     }
 
     /**
