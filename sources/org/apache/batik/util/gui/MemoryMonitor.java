@@ -127,7 +127,7 @@ public class MemoryMonitor extends JFrame implements ActionMap {
         ButtonFactory bf = new ButtonFactory(bundle, this);
         p.add(bf.createJButton("CollectButton"));
         p.add(bf.createJButton("CloseButton"));
-        getContentPane().add("South", p);
+        getContentPane().add( p, BorderLayout.SOUTH );
 
         pack();
 
@@ -321,9 +321,9 @@ public class MemoryMonitor extends JFrame implements ActionMap {
          * The color of the used blocks for each block type.
          */
         protected Color[] usedColors = {
-            new Color(255, 0, 0),
+            Color.red,
             new Color(255, 165, 0),
-            new Color(0, 255, 0)
+            Color.green
         };
 
         /**

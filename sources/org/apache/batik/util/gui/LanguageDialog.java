@@ -18,12 +18,7 @@
  */
 package org.apache.batik.util.gui;
 
-import java.awt.Component;
-import java.awt.FlowLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.Insets;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.net.URL;
 import java.util.HashMap;
@@ -123,7 +118,7 @@ public class LanguageDialog extends JDialog implements ActionMap {
         listeners.put("CancelButtonAction",         new CancelButtonAction());
 
         getContentPane().add(panel);
-        getContentPane().add("South", createButtonsPanel());
+        getContentPane().add( createButtonsPanel(), BorderLayout.SOUTH );
 
         pack();
     }

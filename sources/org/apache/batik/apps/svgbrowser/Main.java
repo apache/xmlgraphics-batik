@@ -18,9 +18,8 @@
  */
 package org.apache.batik.apps.svgbrowser;
 
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
-import java.awt.Font;
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
@@ -325,7 +324,7 @@ public class Main implements Application {
         //
         final AboutDialog initDialog = new AboutDialog();
         final JProgressBar pb = new JProgressBar(0, 3);
-        initDialog.getContentPane().add("South", pb);
+        initDialog.getContentPane().add( pb, BorderLayout.SOUTH );
 
         // Work around pack() bug on some platforms
         Dimension ss = initDialog.getToolkit().getScreenSize();

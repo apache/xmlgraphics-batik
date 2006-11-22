@@ -18,10 +18,7 @@
  */
 package org.apache.batik.util.gui;
 
-import java.awt.FlowLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
@@ -183,8 +180,8 @@ public class URIChooser extends JDialog implements ActionMap {
         setTitle(resources.getString("Dialog.title"));
         buttonFactory = new ButtonFactory(bundle, this);
 
-        getContentPane().add("North",  createURISelectionPanel());
-        getContentPane().add("South",  createButtonsPanel());
+        getContentPane().add( createURISelectionPanel(), BorderLayout.NORTH );
+        getContentPane().add( createButtonsPanel(),      BorderLayout.SOUTH );
     }
 
     /**

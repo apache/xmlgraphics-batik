@@ -142,7 +142,7 @@ public class DOMViewer extends JFrame implements ActionMap {
 
         ButtonFactory bf = new ButtonFactory(bundle, this);
         p.add(bf.createJButton("CloseButton"), BorderLayout.EAST);
-        getContentPane().add("South", p);
+        getContentPane().add( p, BorderLayout.SOUTH );
     }
 
     /**
