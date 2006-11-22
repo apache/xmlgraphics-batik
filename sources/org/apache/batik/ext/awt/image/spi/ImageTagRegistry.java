@@ -83,7 +83,7 @@ public class ImageTagRegistry implements ErrorConstants {
     }
 
     public Filter checkCache(ParsedURL purl, ICCColorSpaceExt colorSpace) {
-        // I just realized that this whole thing could 
+        // I just realized that this whole thing could
         boolean needRawData = (colorSpace != null);
 
         Filter      ret        = null;
@@ -111,7 +111,7 @@ public class ImageTagRegistry implements ErrorConstants {
         return readURL(null, purl, colorSpace, true, true);
     }
 
-    public Filter readURL(InputStream is, ParsedURL purl, 
+    public Filter readURL(InputStream is, ParsedURL purl,
                           ICCColorSpaceExt colorSpace,
                           boolean allowOpenStream,
                           boolean returnBrokenLink) {
@@ -120,7 +120,7 @@ public class ImageTagRegistry implements ErrorConstants {
             // BufferedInputStream that does.
             is = new BufferedInputStream(is);
 
-        // I just realized that this whole thing could 
+        // I just realized that this whole thing could
         boolean needRawData = (colorSpace != null);
 
         Filter      ret     = null;
@@ -153,12 +153,12 @@ public class ImageTagRegistry implements ErrorConstants {
                 URLRegistryEntry ure = (URLRegistryEntry)re;
                 if (ure.isCompatibleURL(purl)) {
                     ret = ure.handleURL(purl, needRawData);
-                    
+
                     // Check if we got an image.
                     if (ret != null) break;
                 }
                 continue;
-            } 
+            }
 
             if (re instanceof StreamRegistryEntry) {
                 StreamRegistryEntry sre = (StreamRegistryEntry)re;
@@ -196,7 +196,7 @@ public class ImageTagRegistry implements ErrorConstants {
                 continue;
             }
         }
-        
+
         if (cache != null)
             cache.put(purl, ret);
 
@@ -224,7 +224,7 @@ public class ImageTagRegistry implements ErrorConstants {
 
         return ret;
     }
-    
+
     public Filter readStream(InputStream is) {
         return readStream(is, null);
     }
@@ -241,7 +241,7 @@ public class ImageTagRegistry implements ErrorConstants {
         Iterator i = entries.iterator();
         while (i.hasNext()) {
             RegistryEntry re = (RegistryEntry)i.next();
-            
+
             if (! (re instanceof StreamRegistryEntry))
                 continue;
             StreamRegistryEntry sre = (StreamRegistryEntry)re;
@@ -288,12 +288,12 @@ public class ImageTagRegistry implements ErrorConstants {
     /**
      * Returns a List that contains String of all the extensions that
      * can be handleded by the various registered image format
-     * handlers.  
+     * handlers.
      */
     public synchronized List getRegisteredExtensions() {
         if (extensions != null)
             return extensions;
-        
+
         extensions = new LinkedList();
         Iterator iter = entries.iterator();
         while(iter.hasNext()) {
@@ -307,10 +307,10 @@ public class ImageTagRegistry implements ErrorConstants {
     /**
      * Returns a List that contains String of all the mime types that
      * can be handleded by the various registered image format
-     * handlers.  
+     * handlers.
      */
     public synchronized List getRegisteredMimeTypes() {
-        if (mimeTypes != null) 
+        if (mimeTypes != null)
             return mimeTypes;
 
         mimeTypes = new LinkedList();
@@ -325,10 +325,10 @@ public class ImageTagRegistry implements ErrorConstants {
 
     static ImageTagRegistry registry = null;
 
-    public synchronized static ImageTagRegistry getRegistry() { 
-        if (registry != null) 
+    public static synchronized ImageTagRegistry getRegistry() {
+        if (registry != null)
             return registry;
-        
+
         registry = new ImageTagRegistry();
 
         //registry.register(new PNGRegistryEntry());
@@ -346,12 +346,12 @@ public class ImageTagRegistry implements ErrorConstants {
         return registry;
     }
 
-    static BrokenLinkProvider defaultProvider 
+    static BrokenLinkProvider defaultProvider
         = new DefaultBrokenLinkProvider();
 
     static BrokenLinkProvider brokenLinkProvider = null;
 
-    public synchronized static Filter 
+    public static synchronized Filter
         getBrokenLinkImage(Object base, String code, Object [] params) {
         Filter ret = null;
         if (brokenLinkProvider != null)
@@ -364,7 +364,7 @@ public class ImageTagRegistry implements ErrorConstants {
     }
 
 
-    public synchronized static void 
+    public static synchronized void
         setBrokenLinkProvider(BrokenLinkProvider provider) {
         brokenLinkProvider = provider;
     }

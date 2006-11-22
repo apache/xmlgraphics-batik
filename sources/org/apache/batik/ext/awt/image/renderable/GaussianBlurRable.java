@@ -30,33 +30,33 @@ public interface GaussianBlurRable extends FilterColorInterpolation {
     /**
      * Returns the source to be Blurred
      */
-    public Filter getSource();
+    Filter getSource();
 
     /**
      * Sets the source to be blurred.
      * @param src image to blurred.
      */
-    public void setSource(Filter src);
+    void setSource(Filter src);
 
     /**
      * The deviation along the x axis, in user space.
      * @param stdDeviationX should be greater than zero.
      */
-    public void setStdDeviationX(double stdDeviationX);
+    void setStdDeviationX(double stdDeviationX);
 
     /**
      * The deviation along the y axis, in user space.
      * @param stdDeviationY should be greater than zero
      */
-    public void setStdDeviationY(double stdDeviationY);
+    void setStdDeviationY(double stdDeviationY);
 
     /**
      * Returns the deviation along the x-axis, in user space.
      */
-    public double getStdDeviationX();
+    double getStdDeviationX();
 
     /**
      * Returns the deviation along the y-axis, in user space.
      */
-    public double getStdDeviationY();
+    double getStdDeviationY();
 }

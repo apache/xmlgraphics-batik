@@ -76,7 +76,7 @@ public class RedRable
 
         Shape aoi = rc.getAreaOfInterest();
         Rectangle aoiR;
-        if (aoi != null) 
+        if (aoi != null)
             aoiR = aoi.getBounds();
         else
             aoiR = getBounds2D().getBounds();
@@ -89,7 +89,7 @@ public class RedRable
         // helps to prevent aliasing in the result image.
         CachableRed cr = getSource();
 
-        if (aoiR.intersects(cr.getBounds()) == false)
+        if ( ! aoiR.intersects(cr.getBounds()) )
             return null;
 
         if (at.isIdentity()) {

@@ -30,25 +30,25 @@ public interface AffineRable extends Filter {
       /**
        * Returns the source to be offset.
        */
-    public Filter getSource();
+      Filter getSource();
 
       /**
        * Sets the source to be offset.
        * @param src image to offset.
        */
-    public void setSource(Filter src);
+      void setSource(Filter src);
 
       /**
        * Set the affine.
        * @param affine the new Affine transform for the filter.
        */
-    public void setAffine(AffineTransform affine);
+      void setAffine(AffineTransform affine);
 
       /**
        * Get the current affine.
        * @return The current affine transform for the filter.
        */
-    public AffineTransform getAffine();
+      AffineTransform getAffine();
 }
 
 

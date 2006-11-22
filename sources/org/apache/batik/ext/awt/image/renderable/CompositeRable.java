@@ -35,17 +35,17 @@ public interface CompositeRable extends FilterColorInterpolation {
      * The sources to be composited togeather.
      * @param srcs The list of images to be composited by the composite rule.
      */
-    public void setSources(List srcs);
+    void setSources(List srcs);
 
     /**
      * Set the composite rule to use for combining the sources.
      * @param cr Composite rule to use.
      */
-    public void setCompositeRule(CompositeRule cr);
+    void setCompositeRule(CompositeRule cr);
 
     /**
      * Get the composite rule in use for combining the sources.
      * @return Composite rule currently in use.
      */
-    public CompositeRule getCompositeRule();
+    CompositeRule getCompositeRule();
 }

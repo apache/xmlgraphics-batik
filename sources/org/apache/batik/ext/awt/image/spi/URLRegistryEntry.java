@@ -27,7 +27,7 @@ import org.apache.batik.util.ParsedURL;
  * Ussually this means that the URL uses a non-standard protocol.  In
  * these cases you should be aware that in order for the construction
  * of the URL object to succeed you must register a @see
- * URLStreamHandler using one of the methods listed in 
+ * URLStreamHandler using one of the methods listed in
  * @see java.net.URL#URL(java.lang.String, java.lang.String, int, java.lang.String)
  */
 public interface URLRegistryEntry extends RegistryEntry {
@@ -45,7 +45,7 @@ public interface URLRegistryEntry extends RegistryEntry {
      *
      * @param url The URL to inspect.
      */
-    public boolean isCompatibleURL(ParsedURL url);
+    boolean isCompatibleURL(ParsedURL url);
 
     /**
      * Decode the URL into a RenderableImage, here you should feel
@@ -60,8 +60,8 @@ public interface URLRegistryEntry extends RegistryEntry {
      *
      * @param url The url that reference the image.
      * @param needRawData If true the image returned should not have
-     *                    any default color correction the file may 
-     *                    specify applied.  
+     *                    any default color correction the file may
+     *                    specify applied.
      */
-    public Filter handleURL(ParsedURL url, boolean needRawData);
+    Filter handleURL(ParsedURL url, boolean needRawData);
 }

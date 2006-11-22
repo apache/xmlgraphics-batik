@@ -205,7 +205,7 @@ public class DisplacementMapRable8Bit
                                       aoiR.getHeight() + scale);
 
         Rectangle2D displacedRect = displaced.getBounds2D();
-        if (aoiR.intersects(displacedRect) == false)
+        if ( ! aoiR.intersects(displacedRect) )
             return null;
 
         aoiR = aoiR.createIntersection(displacedRect);

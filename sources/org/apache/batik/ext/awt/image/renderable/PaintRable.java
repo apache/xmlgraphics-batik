@@ -27,13 +27,13 @@ import java.awt.Graphics2D;
  */
 public interface PaintRable {
     /**
-     * Should perform the equivilent action as 
+     * Should perform the equivilent action as
      * createRendering followed by drawing the RenderedImage.
      *
      * @param g2d The Graphics2D to draw to.
      * @return true if the paint call succeeded, false if
-     *         for some reason the paint failed (in which 
+     *         for some reason the paint failed (in which
      *         case a createRendering should be used).
      */
-    public boolean paintRable(Graphics2D g2d);
+    boolean paintRable(Graphics2D g2d);
 }

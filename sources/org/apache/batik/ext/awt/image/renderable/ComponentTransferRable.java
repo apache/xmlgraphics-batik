@@ -32,51 +32,51 @@ public interface ComponentTransferRable extends FilterColorInterpolation {
     /**
      * Returns the source to be offset.
      */
-    public Filter getSource();
+    Filter getSource();
 
     /**
      * Sets the source to be offset.
      * @param src image to offset.
      */
-    public void setSource(Filter src);
+    void setSource(Filter src);
 
     /**
      * Returns the transfer function for the alpha channel
      */
-    public ComponentTransferFunction getAlphaFunction();
+    ComponentTransferFunction getAlphaFunction();
 
     /**
      * Sets the transfer function for the alpha channel
      */
-    public void setAlphaFunction(ComponentTransferFunction alphaFunction);
+    void setAlphaFunction(ComponentTransferFunction alphaFunction);
 
     /**
      * Returns the transfer function for the red channel
      */
-    public ComponentTransferFunction getRedFunction();
+    ComponentTransferFunction getRedFunction();
 
     /**
      * Sets the transfer function for the red channel
      */
-    public void setRedFunction(ComponentTransferFunction redFunction);
+    void setRedFunction(ComponentTransferFunction redFunction);
 
     /**
      * Returns the transfer function for the green channel
      */
-    public ComponentTransferFunction getGreenFunction();
+    ComponentTransferFunction getGreenFunction();
 
     /**
      * Sets the transfer function for the green channel
      */
-    public void setGreenFunction(ComponentTransferFunction greenFunction);
+    void setGreenFunction(ComponentTransferFunction greenFunction);
 
     /**
      * Returns the transfer function for the blue channel
      */
-    public ComponentTransferFunction getBlueFunction();
+    ComponentTransferFunction getBlueFunction();
 
     /**
      * Sets the transfer function for the blue channel
      */
-    public void setBlueFunction(ComponentTransferFunction blueFunction);
+    void setBlueFunction(ComponentTransferFunction blueFunction);
 }

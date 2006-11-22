@@ -33,24 +33,24 @@ public interface FloodRable extends Filter {
      * Set the flood paint.
      * @param paint the flood paint to use when filling
      */
-    public void setFloodPaint(Paint paint);
+    void setFloodPaint(Paint paint);
 
     /**
      * Get the flood paint.
      * @return The current flood paint for the filter
      */
-    public Paint getFloodPaint();
+    Paint getFloodPaint();
 
     /**
      * Sets the flood region
      * @param floodRegion region to flood with floodPaint
      */
-    public void setFloodRegion(Rectangle2D floodRegion);
-    
+    void setFloodRegion(Rectangle2D floodRegion);
+
     /**
      * Get the flood region
      */
-     public Rectangle2D getFloodRegion();
+    Rectangle2D getFloodRegion();
 }
 
 

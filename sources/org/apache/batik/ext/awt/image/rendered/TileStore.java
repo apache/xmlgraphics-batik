@@ -26,13 +26,13 @@ import  java.awt.image.Raster;
  * store and retrieve tiles from the cache.
  */
 public interface TileStore {
-    
-    public void setTile(int x, int y, Raster ras);
 
-    public Raster getTile(int x, int y);
+    void setTile(int x, int y, Raster ras);
+
+    Raster getTile(int x, int y);
 
     // This is return the tile if it is available otherwise
     // returns null.  It will not compute the tile if it is
     // not present.
-    public Raster getTileNoCompute(int x, int y);
+    Raster getTileNoCompute(int x, int y);
 }

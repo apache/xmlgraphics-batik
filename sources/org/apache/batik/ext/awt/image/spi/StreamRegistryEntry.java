@@ -38,7 +38,7 @@ public interface StreamRegistryEntry extends RegistryEntry {
      * supported by mark on the InputStream for this
      * to check the stream for compatibility.
      */
-    public int getReadlimit();
+    int getReadlimit();
 
     /**
      * Check if the Stream references an image that can be handled by
@@ -50,9 +50,9 @@ public interface StreamRegistryEntry extends RegistryEntry {
      *
      * This method should only throw a StreamCorruptedException if it
      * is unable to restore the state of the InputStream
-     * (i.e. mark/reset fails basically).  
+     * (i.e. mark/reset fails basically).
      */
-    public boolean isCompatibleStream(InputStream is) 
+    boolean isCompatibleStream(InputStream is)
         throws StreamCorruptedException;
 
     /**
@@ -67,10 +67,10 @@ public interface StreamRegistryEntry extends RegistryEntry {
      * @param origURL The original URL, if any, for documentation
      *                purposes only.  This may be null.
      * @param needRawData If true the image returned should not have
-     *                    any default color correction the file may 
-     *                    specify applied.  
+     *                    any default color correction the file may
+     *                    specify applied.
      */
-    public Filter handleStream(InputStream is, 
+    Filter handleStream(InputStream is,
                                ParsedURL   origURL,
                                boolean     needRawData);
 }

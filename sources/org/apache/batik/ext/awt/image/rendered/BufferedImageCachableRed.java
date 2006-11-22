@@ -41,19 +41,19 @@ public class BufferedImageCachableRed extends AbstractRed {
      * Construct an instance of CachableRed around a BufferedImage.
      */
     public BufferedImageCachableRed(BufferedImage bi) {
-        super((CachableRed)null, 
+        super((CachableRed)null,
               new Rectangle(bi.getMinX(),  bi.getMinY(),
                             bi.getWidth(), bi.getHeight()),
-              bi.getColorModel(), bi.getSampleModel(), 
+              bi.getColorModel(), bi.getSampleModel(),
               bi.getMinX(), bi.getMinY(), null);
 
         this.bi = bi;
     }
 
-    public BufferedImageCachableRed(BufferedImage bi, 
+    public BufferedImageCachableRed(BufferedImage bi,
                                             int xloc, int yloc) {
         super((CachableRed)null, new Rectangle(xloc,  yloc,
-                                               bi.getWidth(), 
+                                               bi.getWidth(),
                                                bi.getHeight()),
               bi.getColorModel(), bi.getSampleModel(), xloc, yloc, null);
 
@@ -94,13 +94,13 @@ public class BufferedImageCachableRed extends AbstractRed {
     public Raster getData(Rectangle rect) {
         Rectangle r = (Rectangle)rect.clone();
 
-        if (r.intersects(getBounds()) == false)
+        if ( ! r.intersects(getBounds()) )
             return null;
         r = r.intersection(getBounds());
         r.translate(-getMinX(), - getMinY());
 
         Raster ret = bi.getData(r);
-        return ret.createTranslatedChild(ret.getMinX()+getMinX(), 
+        return ret.createTranslatedChild(ret.getMinX()+getMinX(),
                                          ret.getMinY()+getMinY());
     }
 
@@ -121,14 +121,14 @@ public class BufferedImageCachableRed extends AbstractRed {
          */
         /*
           BufferedImage dest;
-         dest = new BufferedImage(bi.getColorModel(), 
-                                  wr.createWritableTranslatedChild(0,0), 
-                                  bi.getColorModel().isAlphaPremultiplied(), 
+         dest = new BufferedImage(bi.getColorModel(),
+                                  wr.createWritableTranslatedChild(0,0),
+                                  bi.getColorModel().isAlphaPremultiplied(),
                                   null);
          java.awt.Graphics2D g2d = dest.createGraphics();
-         g2d.drawImage(bi, null, getMinX()-wr.getMinX(), 
+         g2d.drawImage(bi, null, getMinX()-wr.getMinX(),
                        getMinY()-wr.getMinY());
-         g2d.dispose(); 
+         g2d.dispose();
          */
         return wr;
     }

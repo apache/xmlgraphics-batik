@@ -44,4 +44,4 @@ public class FlowExtTextNode extends TextNode{
             this.textPainter = textPainter;
     }
 
-};
+}

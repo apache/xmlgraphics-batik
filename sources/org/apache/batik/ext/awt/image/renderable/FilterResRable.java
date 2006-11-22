@@ -29,36 +29,36 @@ public interface FilterResRable extends Filter {
     /**
      * Returns the source to be cropped.
      */
-    public Filter getSource();
+    Filter getSource();
 
     /**
      * Sets the source to be cropped
      * @param src image to offset.
      */
-    public void setSource(Filter src);
+    void setSource(Filter src);
 
     /**
      * Returns the resolution along the X axis.
      */
-    public int getFilterResolutionX();
+    int getFilterResolutionX();
 
     /**
      * Sets the resolution along the X axis, i.e., the maximum
      * size for intermediate images along that axis.
      * The value should be greater than zero to have an effect.
      */
-    public void setFilterResolutionX(int filterResolutionX);
+    void setFilterResolutionX(int filterResolutionX);
 
     /**
      * Returns the resolution along the Y axis.
      */
-    public int getFilterResolutionY();
+    int getFilterResolutionY();
 
     /**
      * Sets the resolution along the Y axis, i.e., the maximum
      * size for intermediate images along that axis.
      * The value should be greater than zero to have an effect.
      */
-    public void setFilterResolutionY(int filterResolutionY);
+    void setFilterResolutionY(int filterResolutionY);
 
 }

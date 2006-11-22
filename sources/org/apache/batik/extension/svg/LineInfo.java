@@ -45,7 +45,7 @@ public class LineInfo {
     Point2D.Float               verticalAlignOffset;
 
     /**
-     * 
+     *
      */
     public LineInfo(Point2D.Float loc,
                     AttributedCharacterIterator aci,
@@ -82,14 +82,15 @@ public class LineInfo {
     public boolean        isPartialLine()       { return partial; }
     public Point2D.Float  getVerticalAlignOffset()    { return verticalAlignOffset; }
 
-    public String         toString() { 
-        return ("[LineInfo loc: " + loc + 
-                " [" + startIdx + "," + endIdx + "] " +
-                " LWidth: " + lineWidth +
-                " Adv: " + advance + " VAdv: " + visualAdvance +
-                " LCW: " + lastCharWidth +
-                " Partial: " + partial +
-                " verticalAlignOffset: " + verticalAlignOffset);
+    public String         toString() {
+        return "[LineInfo loc: " + loc
+                + " [" + startIdx + ',' + endIdx + "] "
+                + " LWidth: " + lineWidth
+                + " Adv: " + advance
+                + " VAdv: " + visualAdvance
+                + " LCW: " + lastCharWidth
+                + " Partial: " + partial
+                + " verticalAlignOffset: " + verticalAlignOffset;
     }
 
 }

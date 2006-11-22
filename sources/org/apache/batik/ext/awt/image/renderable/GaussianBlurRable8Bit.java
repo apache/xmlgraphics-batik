@@ -134,7 +134,8 @@ public class GaussianBlurRable8Bit
         return (Filter)getSources().get(0);
     }
 
-    public final static double eps = 0.0001;
+    public static final double eps = 0.0001;
+
     public static boolean eps_eq(double f1, double f2) {
         return ((f1 >= f2-eps) && (f1 <= f2+eps));
     }
@@ -306,7 +307,7 @@ public class GaussianBlurRable8Bit
                              (float)(outputRgn.getHeight()+2*radY));
 
             Rectangle2D bounds = getBounds2D();
-            if (outputRgn.intersects(bounds) == false)
+            if ( ! outputRgn.intersects(bounds) )
                 return new Rectangle2D.Float();
             // Intersect with output region
             outputRgn = outputRgn.createIntersection(bounds);
@@ -340,7 +341,7 @@ public class GaussianBlurRable8Bit
                              (float)(inputRgn.getHeight()+2*radY));
 
             Rectangle2D bounds = getBounds2D();
-            if (inputRgn.intersects(bounds) == false)
+            if ( ! inputRgn.intersects(bounds) )
                 return new Rectangle2D.Float();
             // Intersect with input region
             dirtyRegion = inputRgn.createIntersection(bounds);

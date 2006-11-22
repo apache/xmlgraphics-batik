@@ -45,7 +45,7 @@ import java.awt.image.WritableRaster;
  *
  * We do this for [x,y], [x+1,y], [x,y+1], and [x+1, y+1], this gives
  * us the four gradient vectors that surround the point (b00, b10, ...)
- * 
+ *
  * Next we construct the four vectors from the grid points (where the
  * gradient vectors are defined) [these are rx0, rx1, ry0, ry1].
  *
@@ -57,7 +57,7 @@ import java.awt.image.WritableRaster;
  * the 's' curve function to the fractional part of x and y (rx0, ry0).
  * The S curve function get's it's name because it looks a bit like as
  * 'S' from 0->1.
- *  
+ *
  * @author     <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @author     <a href="mailto:DeWeese@apache.org">Thomas DeWeese</a>
  * @version $Id$ */
@@ -169,7 +169,7 @@ public final class TurbulencePatternRed extends AbstractRed {
      * Defines the tile for the turbulence function, if non-null turns
      * on stitching, so frequencies are adjusted to avoid
      * discontinuities in case frequencies do not match tile
-     * boundaries.  
+     * boundaries.
      */
     private Rectangle2D tile;
 
@@ -186,13 +186,13 @@ public final class TurbulencePatternRed extends AbstractRed {
     /**
      * List of channels that the generator produces.
      */
-    private int channels[];
+    private int[] channels;
 
     // To avoid doing an inverse transform on each pixel, transform
     // the image space unit vectors and process how much of a delta
     // this is in filter space.
-    double tx[] = {1, 0};
-    double ty[] = {0, 1};
+    double[] tx = {1, 0};
+    double[] ty = {0, 1};
 
     /**
      * Produces results in the range [1, 2**31 - 2].
@@ -210,8 +210,8 @@ public final class TurbulencePatternRed extends AbstractRed {
     private static final int BSize = 0x100;
     private static final int BM = 0xff;
     private static final double PerlinN = 0x1000;
-    private final int latticeSelector[] = new int[BSize + 1];
-    private final double gradient[] = new double[(BSize+1)*8];
+    private final int[] latticeSelector = new int[BSize + 1];
+    private final double[] gradient = new double[(BSize+1)*8];
 
     public double getBaseFrequencyX(){
         return baseFrequencyX;
@@ -238,7 +238,7 @@ public final class TurbulencePatternRed extends AbstractRed {
     }
 
     public boolean[] getChannels(){
-        boolean channels[] = new boolean[4];
+        boolean[] channels = new boolean[4];
         for(int i=0; i<this.channels.length; i++)
             channels[this.channels[i]] = true;
 
@@ -266,7 +266,7 @@ public final class TurbulencePatternRed extends AbstractRed {
             for(i = 0; i < BSize; i++){
                 u = (((seed = random(seed)) % (BSize + BSize)) - BSize);
                 v = (((seed = random(seed)) % (BSize + BSize)) - BSize);
-                
+
                 s = 1/Math.sqrt(u*u + v*v);
                 gradient[i*8 + k*2    ] = u*s;
                 gradient[i*8 + k*2 + 1] = v*s;
@@ -281,7 +281,7 @@ public final class TurbulencePatternRed extends AbstractRed {
             j = (seed = random(seed)) % BSize;
             latticeSelector[i] = latticeSelector[j];
             latticeSelector[j] = k;
-            
+
             // Now we apply the lattice to the gradient array, this
             // lets us avoid one of the lattice lookups.
             s1 = i<<3;
@@ -309,12 +309,12 @@ public final class TurbulencePatternRed extends AbstractRed {
     /**
      * Generate a pixel of noise corresponding to the point vec0,vec1.
      * See class description for a high level discussion of method.
-     * This handles cases where channels <= 4.  
+     * This handles cases where channels <= 4.
      * @param noise The place to put the generated noise.
      * @param vec0  The X coordiate to generate noise for
      * @param vec1  The Y coordiate to generate noise for
      */
-    private final void noise2(final double noise[], double vec0, double vec1) {
+    private final void noise2(final double[] noise, double vec0, double vec1) {
         int b0, b1;
         final int i, j;
         final double rx0, rx1, ry0, ry1, sx, sy;
@@ -344,39 +344,39 @@ public final class TurbulencePatternRed extends AbstractRed {
         switch (channels.length) {
             // Intentionally use 'fall through' in switch statement.
         case 4:
-            noise[3] = 
-                lerp(sy, 
-                     lerp(sx, 
+            noise[3] =
+                lerp(sy,
+                     lerp(sx,
                           rx0*gradient[b0+6] + ry0*gradient[b0+7],
                           rx1*gradient[b1+6] + ry0*gradient[b1+7]),
-                     lerp(sx, 
+                     lerp(sx,
                           rx0*gradient[b0+8+6] + ry1*gradient[b0+8+7],
                           rx1*gradient[b1+8+6] + ry1*gradient[b1+8+7]));
         case 3:
-            noise[2] = 
-                lerp(sy, 
-                     lerp(sx, 
+            noise[2] =
+                lerp(sy,
+                     lerp(sx,
                           rx0*gradient[b0+4] + ry0*gradient[b0+5],
                           rx1*gradient[b1+4] + ry0*gradient[b1+5]),
-                     lerp(sx, 
+                     lerp(sx,
                           rx0*gradient[b0+8+4] + ry1*gradient[b0+8+5],
                           rx1*gradient[b1+8+4] + ry1*gradient[b1+8+5]));
         case 2:
-            noise[1] = 
-                lerp(sy, 
-                     lerp(sx, 
+            noise[1] =
+                lerp(sy,
+                     lerp(sx,
                           rx0*gradient[b0+2] + ry0*gradient[b0+3],
                           rx1*gradient[b1+2] + ry0*gradient[b1+3]),
-                     lerp(sx, 
+                     lerp(sx,
                           rx0*gradient[b0+8+2] + ry1*gradient[b0+8+3],
                           rx1*gradient[b1+8+2] + ry1*gradient[b1+8+3]));
         case 1:
-            noise[0] = 
-                lerp(sy, 
-                     lerp(sx, 
+            noise[0] =
+                lerp(sy,
+                     lerp(sx,
                           rx0*gradient[b0+0] + ry0*gradient[b0+1],
                           rx1*gradient[b1+0] + ry0*gradient[b1+1]),
-                     lerp(sx, 
+                     lerp(sx,
                           rx0*gradient[b0+8+0] + ry1*gradient[b0+8+1],
                           rx1*gradient[b1+8+0] + ry1*gradient[b1+8+1]));
         }
@@ -392,7 +392,7 @@ public final class TurbulencePatternRed extends AbstractRed {
      * @param vec1  The Y coordiate to generate noise for
      * @param stitchInfo The stitching information for the noise function.
      */
-    private final void noise2Stitch(final double noise[],
+    private final void noise2Stitch(final double[] noise,
                                     final double vec0, final double vec1,
                                     final StitchInfo stitchInfo){
         int b0, b1;
@@ -447,39 +447,39 @@ public final class TurbulencePatternRed extends AbstractRed {
         switch (channels.length) {
             // Intentionally use 'fall through' in switch statement.
         case 4:
-            noise[3] = 
-                lerp(sy, 
-                     lerp(sx, 
+            noise[3] =
+                lerp(sy,
+                     lerp(sx,
                           rx0*gradient[b00+6] + ry0*gradient[b00+7],
                           rx1*gradient[b10+6] + ry0*gradient[b10+7]),
-                     lerp(sx, 
+                     lerp(sx,
                           rx0*gradient[b01+6] + ry1*gradient[b01+7],
                           rx1*gradient[b11+6] + ry1*gradient[b11+7]));
         case 3:
-            noise[2] = 
-                lerp(sy, 
-                     lerp(sx, 
+            noise[2] =
+                lerp(sy,
+                     lerp(sx,
                           rx0*gradient[b00+4] + ry0*gradient[b00+5],
                           rx1*gradient[b10+4] + ry0*gradient[b10+5]),
-                     lerp(sx, 
+                     lerp(sx,
                           rx0*gradient[b01+4] + ry1*gradient[b01+5],
                           rx1*gradient[b11+4] + ry1*gradient[b11+5]));
         case 2:
-            noise[1] = 
-                lerp(sy, 
-                     lerp(sx, 
+            noise[1] =
+                lerp(sy,
+                     lerp(sx,
                           rx0*gradient[b00+2] + ry0*gradient[b00+3],
                           rx1*gradient[b10+2] + ry0*gradient[b10+3]),
-                     lerp(sx, 
+                     lerp(sx,
                           rx0*gradient[b01+2] + ry1*gradient[b01+3],
                           rx1*gradient[b11+2] + ry1*gradient[b11+3]));
         case 1:
-            noise[0] = 
-                lerp(sy, 
-                     lerp(sx, 
+            noise[0] =
+                lerp(sy,
+                     lerp(sx,
                           rx0*gradient[b00+0] + ry0*gradient[b00+1],
                           rx1*gradient[b10+0] + ry0*gradient[b10+1]),
-                     lerp(sx, 
+                     lerp(sx,
                           rx0*gradient[b01+0] + ry1*gradient[b01+1],
                           rx1*gradient[b11+0] + ry1*gradient[b11+1]));
         }
@@ -495,9 +495,9 @@ public final class TurbulencePatternRed extends AbstractRed {
      * @param fSum array used to avoid reallocating double array for each pixel
      * @return The ARGB pixel value.
      */
-    private final int turbulence_4(double pointX, 
+    private final int turbulence_4(double pointX,
                                    double pointY,
-                                   final double fSum[]) {
+                                   final double[] fSum) {
         double n, ratio = 255;
         int i, j, b0, b1, nOctave;
         double px, py, rx0, rx1, ry0, ry1, sx, sy;
@@ -528,44 +528,44 @@ public final class TurbulencePatternRed extends AbstractRed {
             ry1 = ry0 - 1.0;
             sy = s_curve(ry0);
 
-            n = lerp(sy, 
-                     lerp(sx, 
+            n = lerp(sy,
+                     lerp(sx,
                           rx0*gradient[b0+0] + ry0*gradient[b0+1],
                           rx1*gradient[b1+0] + ry0*gradient[b1+1]),
-                     lerp(sx, 
+                     lerp(sx,
                           rx0*gradient[b0+8+0] + ry1*gradient[b0+8+1],
                           rx1*gradient[b1+8+0] + ry1*gradient[b1+8+1]));
 
             if (n<0) fSum[0] -= (n * ratio);
             else     fSum[0] += (n * ratio);
 
-            n = lerp(sy, 
-                     lerp(sx, 
+            n = lerp(sy,
+                     lerp(sx,
                           rx0*gradient[b0+2] + ry0*gradient[b0+3],
                           rx1*gradient[b1+2] + ry0*gradient[b1+3]),
-                     lerp(sx, 
+                     lerp(sx,
                           rx0*gradient[b0+8+2] + ry1*gradient[b0+8+3],
                           rx1*gradient[b1+8+2] + ry1*gradient[b1+8+3]));
 
             if (n<0) fSum[1] -= (n * ratio);
             else     fSum[1] += (n * ratio);
 
-            n = lerp(sy, 
-                     lerp(sx, 
+            n = lerp(sy,
+                     lerp(sx,
                           rx0*gradient[b0+4] + ry0*gradient[b0+5],
                           rx1*gradient[b1+4] + ry0*gradient[b1+5]),
-                     lerp(sx, 
+                     lerp(sx,
                           rx0*gradient[b0+8+4] + ry1*gradient[b0+8+5],
                           rx1*gradient[b1+8+4] + ry1*gradient[b1+8+5]));
 
             if (n<0) fSum[2] -= (n * ratio);
             else     fSum[2] += (n * ratio);
 
-            n = lerp(sy, 
-                     lerp(sx, 
+            n = lerp(sy,
+                     lerp(sx,
                           rx0*gradient[b0+6] + ry0*gradient[b0+7],
                           rx1*gradient[b1+6] + ry0*gradient[b1+7]),
-                     lerp(sx, 
+                     lerp(sx,
                           rx0*gradient[b0+8+6] + ry1*gradient[b0+8+7],
                           rx1*gradient[b1+8+6] + ry1*gradient[b1+8+7]));
             if (n<0) fSum[3] -= (n * ratio);
@@ -605,11 +605,11 @@ public final class TurbulencePatternRed extends AbstractRed {
      * @param noise array used to avoid reallocating double array for
      *        each pixel
      */
-    private final void turbulence(final int rgb[], 
-                                  double pointX, 
+    private final void turbulence(final int[] rgb,
+                                  double pointX,
                                   double pointY,
-                                  final double fSum[],
-                                  final double noise[]) {
+                                  final double[] fSum,
+                                  final double[] noise) {
         fSum[0] = fSum[1] = fSum[2] = fSum[3] = 0;
         double ratio = 255;
         pointX *= baseFrequencyX;
@@ -718,10 +718,10 @@ public final class TurbulencePatternRed extends AbstractRed {
      * each pixel
      * @param stitchInfo The stitching information for the noise function
      */
-    private final void turbulenceStitch(final int rgb[], 
+    private final void turbulenceStitch(final int[] rgb,
                                         double pointX, double pointY,
-                                        final double fSum[],
-                                        final double noise[],
+                                        final double[] fSum,
+                                        final double[] noise,
                                         StitchInfo stitchInfo){
         double ratio = 1;
         pointX *= baseFrequencyX;
@@ -831,9 +831,9 @@ public final class TurbulencePatternRed extends AbstractRed {
      * @param fSum array used to avoid reallocating double array for each pixel
      * @return The ARGB pixel
      */
-    private final int turbulenceFractal_4( double pointX, 
+    private final int turbulenceFractal_4( double pointX,
                                            double pointY,
-                                           final double fSum[]) {
+                                           final double[] fSum) {
         int b0, b1, nOctave, i, j;
         double px, py, rx0, rx1, ry0, ry1, sx, sy, ratio = 127.5;
 
@@ -863,35 +863,35 @@ public final class TurbulencePatternRed extends AbstractRed {
             ry1 = ry0 - 1.0;
             sy = s_curve(ry0);
 
-            fSum[0] += lerp(sy, 
-                     lerp(sx, 
+            fSum[0] += lerp(sy,
+                     lerp(sx,
                           rx0*gradient[b0+0] + ry0*gradient[b0+1],
                           rx1*gradient[b1+0] + ry0*gradient[b1+1]),
-                     lerp(sx, 
+                     lerp(sx,
                           rx0*gradient[b0+8+0] + ry1*gradient[b0+8+1],
                           rx1*gradient[b1+8+0] + ry1*gradient[b1+8+1]))*ratio;
 
-            fSum[1] += lerp(sy, 
-                     lerp(sx, 
+            fSum[1] += lerp(sy,
+                     lerp(sx,
                           rx0*gradient[b0+2] + ry0*gradient[b0+3],
                           rx1*gradient[b1+2] + ry0*gradient[b1+3]),
-                     lerp(sx, 
+                     lerp(sx,
                           rx0*gradient[b0+8+2] + ry1*gradient[b0+8+3],
                           rx1*gradient[b1+8+2] + ry1*gradient[b1+8+3]))*ratio;
 
-            fSum[2] += lerp(sy, 
-                     lerp(sx, 
+            fSum[2] += lerp(sy,
+                     lerp(sx,
                           rx0*gradient[b0+4] + ry0*gradient[b0+5],
                           rx1*gradient[b1+4] + ry0*gradient[b1+5]),
-                     lerp(sx, 
+                     lerp(sx,
                           rx0*gradient[b0+8+4] + ry1*gradient[b0+8+5],
                           rx1*gradient[b1+8+4] + ry1*gradient[b1+8+5]))*ratio;
 
-            fSum[3] += lerp(sy, 
-                     lerp(sx, 
+            fSum[3] += lerp(sy,
+                     lerp(sx,
                           rx0*gradient[b0+6] + ry0*gradient[b0+7],
                           rx1*gradient[b1+6] + ry0*gradient[b1+7]),
-                     lerp(sx, 
+                     lerp(sx,
                           rx0*gradient[b0+8+6] + ry1*gradient[b0+8+7],
                           rx1*gradient[b1+8+6] + ry1*gradient[b1+8+7]))*ratio;
 
@@ -926,13 +926,13 @@ public final class TurbulencePatternRed extends AbstractRed {
      * @param pointY y coordinate of the point to process.
      * @param fSum array used to avoid reallocating double array for each pixel
      * @param noise array used to avoid reallocating double array for
-     * each pixel 
+     * each pixel
      */
-    private final void turbulenceFractal(final int rgb[], 
-                                         double pointX, 
+    private final void turbulenceFractal(final int[] rgb,
+                                         double pointX,
                                          double pointY,
-                                         final double fSum[],
-                                         final double noise[]){
+                                         final double[] fSum,
+                                         final double[] noise){
         double ratio = 127.5;
         int    nOctave;
         fSum[0] = fSum[1] = fSum[2] = fSum[3] = 127.5;
@@ -988,11 +988,11 @@ public final class TurbulencePatternRed extends AbstractRed {
      * each pixel
      * @param stitchInfo The stitching information for the noise function
      */
-    private final void turbulenceFractalStitch(final int rgb[], 
+    private final void turbulenceFractalStitch(final int[] rgb,
                                                double pointX,
                                                double pointY,
-                                               final double fSum[],
-                                               final double noise[],
+                                               final double[] fSum,
+                                               final double[] noise,
                                                StitchInfo stitchInfo){
         double ratio = 127.5;
         int    nOctave;
@@ -1065,14 +1065,14 @@ public final class TurbulencePatternRed extends AbstractRed {
             sppsm.getOffset(minX - dest.getSampleModelTranslateX(),
                             minY - dest.getSampleModelTranslateY());
 
-        final int destPixels[] = dstDB.getBankData()[0];
+        final int[] destPixels = dstDB.getBankData()[0];
         int dstAdjust = sppsm.getScanlineStride() - w;
 
         // Generate pixel pattern now
         int i, end, dp=dstOff;
-        final int rgb[] = new int[4];
-        final double fSum[] = {0, 0, 0, 0};
-        final double noise[] = {0, 0, 0, 0};
+        final int[] rgb = new int[4];
+        final double[] fSum = {0, 0, 0, 0};
+        final double[] noise = {0, 0, 0, 0};
 
         final double tx0, tx1, ty0, ty1;
         tx0 = tx[0];
@@ -1082,7 +1082,7 @@ public final class TurbulencePatternRed extends AbstractRed {
         ty0 = ty[0]-(w*tx0);
         ty1 = ty[1]-(w*tx1);
 
-        double p[] = {minX, minY};
+        double[] p = {minX, minY};
         txf.transform(p, 0, p, 0, 1);
         double point_0 = p[0];
         double point_1 = p[1];
@@ -1181,7 +1181,7 @@ public final class TurbulencePatternRed extends AbstractRed {
                 for(i=0; i<h; i++){
                     for(end=dp+w; dp<end; dp++){
                         si.assign(this.stitchInfo);
-                        turbulenceStitch(rgb, point_0, point_1, 
+                        turbulenceStitch(rgb, point_0, point_1,
                                          fSum, noise, si);
 
                         // Write RGB value.
@@ -1215,13 +1215,13 @@ public final class TurbulencePatternRed extends AbstractRed {
      * @param tile defines the tile size. May be null if stitchTiles
      *        is false. Otherwise, should not be null.
      * @param txf The affine transform from device to user space.
-     * @param cs The Colorspace to output. 
+     * @param cs The Colorspace to output.
      * @param alpha True if the data should have an alpha channel.
      */
-    public TurbulencePatternRed(double baseFrequencyX, 
-                                double baseFrequencyY, 
+    public TurbulencePatternRed(double baseFrequencyX,
+                                double baseFrequencyY,
                                 int     numOctaves,
-                                int     seed, 
+                                int     seed,
                                 boolean isFractalNoise,
                                 Rectangle2D tile,
                                 AffineTransform txf,
@@ -1247,8 +1247,8 @@ public final class TurbulencePatternRed extends AbstractRed {
         txf.deltaTransform(tx, 0, tx, 0, 1);
         txf.deltaTransform(ty, 0, ty, 0, 1);
 
-        double vecX[] = {.5, 0};
-        double vecY[] = {0, .5};
+        double[] vecX = {.5, 0};
+        double[] vecY = {0, .5};
         txf.deltaTransform(vecX, 0, vecX, 0, 1);
         txf.deltaTransform(vecY, 0, vecY, 0, 1);
 
@@ -1284,7 +1284,7 @@ public final class TurbulencePatternRed extends AbstractRed {
             // to the output pixel (contribution is halved for each
             // octave so after 8 we are contributing less than half a
             // code value _at_best_).
-            this.numOctaves = 8;  
+            this.numOctaves = 8;
 
         if (tile != null) {
             //
@@ -1311,9 +1311,9 @@ public final class TurbulencePatternRed extends AbstractRed {
             stitchInfo = new StitchInfo();
             stitchInfo.width = ((int)(tile.getWidth()*this.baseFrequencyX));
             stitchInfo.height = ((int)(tile.getHeight()*this.baseFrequencyY));
-            stitchInfo.wrapX = ((int)(tile.getX()*this.baseFrequencyX + 
+            stitchInfo.wrapX = ((int)(tile.getX()*this.baseFrequencyX +
                                       PerlinN + stitchInfo.width));
-            stitchInfo.wrapY = ((int)(tile.getY()*this.baseFrequencyY + 
+            stitchInfo.wrapY = ((int)(tile.getY()*this.baseFrequencyY +
                                       PerlinN + stitchInfo.height));
 
             // Protect agains zero frequencies.  Setting values to 1
@@ -1321,9 +1321,9 @@ public final class TurbulencePatternRed extends AbstractRed {
             if(stitchInfo.width == 0) stitchInfo.width = 1;
             if(stitchInfo.height == 0) stitchInfo.height = 1;
 
-            // System.out.println( "minLatticeX = " + minLatticeX + 
-            //                    " minLatticeY = " + minLatticeY + 
-            //                     " maxLatticeX = " + maxLatticeX + 
+            // System.out.println( "minLatticeX = " + minLatticeX +
+            //                    " minLatticeY = " + minLatticeY +
+            //                     " maxLatticeX = " + maxLatticeX +
             //                     " maxLatticeY = " + maxLatticeY);
         }
 
@@ -1340,7 +1340,7 @@ public final class TurbulencePatternRed extends AbstractRed {
                  false, DataBuffer.TYPE_INT);
 
         int tileSize = AbstractTiledRed.getDefaultTileSize();
-        init((CachableRed)null, devRect, cm, 
+        init((CachableRed)null, devRect, cm,
              cm.createCompatibleSampleModel(tileSize, tileSize),
              0, 0, null);
     }

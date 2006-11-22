@@ -57,7 +57,7 @@ public class FloodRable8Bit extends AbstractRable
      * @param floodRegion region to be filled with floodPaint
      * @param floodPaint paint to use to flood the floodRegion
      */
-    public FloodRable8Bit(Rectangle2D floodRegion, 
+    public FloodRable8Bit(Rectangle2D floodRegion,
                               Paint floodPaint) {
         setFloodPaint(floodPaint);
         setFloodRegion(floodRegion);
@@ -137,7 +137,7 @@ public class FloodRable8Bit extends AbstractRable
             userAOI = aoi.getBounds2D();
 
             // No intersection with the area of interest so return null..
-            if (imageRect.intersects(userAOI) == false) 
+            if ( ! imageRect.intersects(userAOI) )
                 return null;
 
             // intersect the filter area and the AOI in user space

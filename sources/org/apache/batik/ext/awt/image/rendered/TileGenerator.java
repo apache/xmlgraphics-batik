@@ -25,5 +25,5 @@ import  java.awt.image.Raster;
  * when the cache has a miss.
  */
 public interface TileGenerator {
-        public Raster genTile(int x, int y);
+        Raster genTile(int x, int y);
 }

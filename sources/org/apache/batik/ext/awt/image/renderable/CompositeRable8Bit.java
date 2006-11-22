@@ -141,7 +141,7 @@ public class CompositeRable8Bit
         else {
             aoiR = aoi.getBounds2D();
             Rectangle2D bounds2d = getBounds2D();
-            if (bounds2d.intersects(aoiR) == false)
+            if ( ! bounds2d.intersects(aoiR) )
                 return null;
 
             Rectangle2D.intersect(aoiR, bounds2d, aoiR);

@@ -195,7 +195,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
                 ("MorphologyOp only works with Rasters using DataBufferInt");
 
         // Check bit masks
-        int bitOffsets[]=((SinglePixelPackedSampleModel)model).getBitOffsets();
+        int[] bitOffsets=((SinglePixelPackedSampleModel)model).getBitOffsets();
         for(int i=0; i<bitOffsets.length; i++){
             if(bitOffsets[i]%8 != 0)
                 throw new IllegalArgumentException
@@ -274,8 +274,8 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
         final int dstScanStride = ((SinglePixelPackedSampleModel)dest.getSampleModel()).getScanlineStride();
 
         // Access the pixel value array
-        final int srcPixels[] = srcDB.getBankData()[0];
-        final int destPixels[] = dstDB.getBankData()[0];
+        final int[] srcPixels = srcDB.getBankData()[0];
+        final int[] destPixels = dstDB.getBankData()[0];
 
         // The pointer of src and dest indicating where the pixel values are
         int sp, dp;
@@ -552,7 +552,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
         final int dstScanStride = ((SinglePixelPackedSampleModel)dest.getSampleModel()).getScanlineStride();
 
         // Access the pixel value array
-        final int destPixels[] = dstDB.getBankData()[0];
+        final int[] destPixels = dstDB.getBankData()[0];
 
         // The pointer of src and dest indicating where the pixel values are
         int dp, cp;
@@ -863,8 +863,8 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
         final int dstScanStride = ((SinglePixelPackedSampleModel)dest.getSampleModel()).getScanlineStride();
 
         // Access the pixel value array
-        final int srcPixels[] = srcDB.getBankData()[0];
-        final int destPixels[] = dstDB.getBankData()[0];
+        final int[] srcPixels = srcDB.getBankData()[0];
+        final int[] destPixels = dstDB.getBankData()[0];
 
         // The pointer of src and dest indicating where the pixel values are
         int sp, dp, cp;

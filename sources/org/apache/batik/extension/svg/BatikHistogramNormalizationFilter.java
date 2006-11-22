@@ -21,28 +21,28 @@ package org.apache.batik.extension.svg;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.renderable.FilterColorInterpolation;
 
-public interface BatikHistogramNormalizationFilter 
+public interface BatikHistogramNormalizationFilter
     extends FilterColorInterpolation {
 
     /**
      * Returns the source to be offset.
      */
-    public Filter getSource();
+    Filter getSource();
 
     /**
      * Sets the source to be offset.
      * @param src image to offset.
      */
-    public void setSource(Filter src);
+    void setSource(Filter src);
 
     /**
      * Returns the trim percent for this normalization.
      */
-    public float getTrim();
+    float getTrim();
 
 
     /**
      * Sets the trim percent for this normalization.
      */
-    public void setTrim(float trim);
+    void setTrim(float trim);
 }
