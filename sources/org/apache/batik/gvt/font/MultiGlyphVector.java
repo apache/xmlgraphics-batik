@@ -203,7 +203,7 @@ public class MultiGlyphVector implements GVTGlyphVector {
     /**
      * Returns an array of glyphcodes for the specified glyphs.
      */
-    public int[] getGlyphCodes(int beginGlyphIndex, int numEntries, 
+    public int[] getGlyphCodes(int beginGlyphIndex, int numEntries,
                         int[] codeReturn) {
         int [] ret = codeReturn;
         if (ret == null)
@@ -220,14 +220,13 @@ public class MultiGlyphVector implements GVTGlyphVector {
                 len = nGlyphs[gvIdx]-gi;
             gv = gvs[gvIdx];
             if (i == 0) {
-                gv.getGlyphCodes(gi, len, ret);                
+                gv.getGlyphCodes(gi, len, ret);
             } else {
                 if ((tmp == null) || (tmp.length < len))
                     tmp = new int[len];
 
                 gv.getGlyphCodes(gi, len, tmp);
-                for (int j=0; j<len; j++)
-                    ret[i+j] = tmp[j];
+                System.arraycopy( tmp, 0, ret, i, len );
             }
             gi=0;
             gvIdx++;
@@ -241,7 +240,7 @@ public class MultiGlyphVector implements GVTGlyphVector {
     /**
      * Returns an array of glyph positions for the specified glyphs
      */
-    public float[] getGlyphPositions(int beginGlyphIndex, 
+    public float[] getGlyphPositions(int beginGlyphIndex,
                               int numEntries,
                               float[] positionReturn) {
         float [] ret = positionReturn;
@@ -395,5 +394,5 @@ public class MultiGlyphVector implements GVTGlyphVector {
         }
     }
 
-    
+
 }

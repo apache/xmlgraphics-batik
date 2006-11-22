@@ -21,23 +21,24 @@ package org.apache.batik.parser;
 import java.io.IOException;
 
 /**
- * This class implements an event-based parser for the SVG Number 
+ * This class implements an event-based parser for the SVG Number
  * list values.
  *
  * @author  tonny@kiyut.com
+ * @version $Id$
  */
 public class NumberListParser extends NumberParser {
     /**
      * The number list handler used to report parse events.
      */
     protected NumberListHandler numberListHandler;
-    
-    
+
+
     /** Creates a new instance of NumberListParser */
     public NumberListParser() {
         numberListHandler = DefaultNumberListHandler.INSTANCE;
     }
-    
+
     /**
      * Allows an application to register a number list handler.
      *
@@ -52,14 +53,14 @@ public class NumberListParser extends NumberParser {
     public void setNumberListHandler(NumberListHandler handler) {
         numberListHandler = handler;
     }
-    
+
     /**
      * Returns the number list handler in use.
      */
     public NumberListHandler getNumberListHandler() {
-        return (NumberListHandler)numberListHandler;
+        return numberListHandler;
     }
-    
+
     /**
      * Parses the given reader.
      */
@@ -68,7 +69,7 @@ public class NumberListParser extends NumberParser {
 
         current = reader.read();
         skipSpaces();
-        
+
         try {
             for (;;) {
                 numberListHandler.startNumber();

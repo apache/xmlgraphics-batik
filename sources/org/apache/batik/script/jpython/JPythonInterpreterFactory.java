@@ -30,7 +30,7 @@ import org.apache.batik.script.InterpreterFactory;
  */
 public class JPythonInterpreterFactory implements InterpreterFactory {
 
-    final static String TEXT_PYTHON = "text/python";
+    static final String TEXT_PYTHON = "text/python";
 
     /**
      * Builds a <code>JPythonInterpreterFactory</code>.
@@ -45,7 +45,7 @@ public class JPythonInterpreterFactory implements InterpreterFactory {
 
     /**
      * Creates an instance of <code>JPythonInterpreter</code> class.
-     * 
+     *
      * @param documentURL the url for the document which will be scripted
      * @param svg12 whether the document is an SVG 1.2 document
      */

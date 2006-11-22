@@ -41,7 +41,7 @@ public abstract class AbstractParser implements Parser {
     /**
      * The default resource bundle base name.
      */
-    public final static String BUNDLE_CLASSNAME =
+    public static final String BUNDLE_CLASSNAME =
         "org.apache.batik.parser.resources.Messages";
 
     /**
@@ -53,7 +53,7 @@ public abstract class AbstractParser implements Parser {
      * The localizable support.
      */
     protected LocalizableSupport localizableSupport =
-        new LocalizableSupport(BUNDLE_CLASSNAME, 
+        new LocalizableSupport(BUNDLE_CLASSNAME,
                                AbstractParser.class.getClassLoader());
 
     /**

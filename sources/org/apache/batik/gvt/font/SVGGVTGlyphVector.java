@@ -40,7 +40,7 @@ import org.apache.batik.gvt.text.TextPaintInfo;
  */
 public final class SVGGVTGlyphVector implements GVTGlyphVector {
 
-    public static final AttributedCharacterIterator.Attribute PAINT_INFO 
+    public static final AttributedCharacterIterator.Attribute PAINT_INFO
         = GVTAttributedCharacterIterator.TextAttribute.PAINT_INFO;
 
     private GVTFont           font;
@@ -62,7 +62,7 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
      * glyph vector.
      * @param frc The current font render context.
      */
-    public SVGGVTGlyphVector(GVTFont font, Glyph[] glyphs, 
+    public SVGGVTGlyphVector(GVTFont font, Glyph[] glyphs,
                              FontRenderContext frc) {
         this.font = font;
         this.glyphs = glyphs;
@@ -210,7 +210,7 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
             AffineTransform glyphTransform = getGlyphTransform(i);
             GVTGlyphMetrics glyphMetrics   = getGlyphMetrics(i);
             Rectangle2D glyphBounds = new Rectangle2D.Double
-                (0, -ascent, glyphMetrics.getHorizontalAdvance(), 
+                (0, -ascent, glyphMetrics.getHorizontalAdvance(),
                  ascent+descent);
 
             if (glyphBounds.isEmpty()) {
@@ -224,22 +224,22 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
             } else {
                 // get three corner points so we can determine
                 // whether the glyph is rotated
-                Point2D p1 = new Point2D.Double(glyphBounds.getMinX(), 
+                Point2D p1 = new Point2D.Double(glyphBounds.getMinX(),
                                                 glyphBounds.getMinY());
-                Point2D p2 = new Point2D.Double(glyphBounds.getMaxX(), 
+                Point2D p2 = new Point2D.Double(glyphBounds.getMaxX(),
                                                 glyphBounds.getMinY());
-                Point2D p3 = new Point2D.Double(glyphBounds.getMinX(), 
+                Point2D p3 = new Point2D.Double(glyphBounds.getMinX(),
                                                 glyphBounds.getMaxY());
                 Point2D gpos = getGlyphPosition(i);
                 AffineTransform tr = AffineTransform.getTranslateInstance
                     (gpos.getX(), gpos.getY());
-                    
+
                 if (glyphTransform != null)
                     tr.concatenate(glyphTransform);
 
-                tempLogicalBounds[i] = 
+                tempLogicalBounds[i] =
                     tr.createTransformedShape(glyphBounds);
-                    
+
                 Point2D tp1 = new Point2D.Double();
                 Point2D tp2 = new Point2D.Double();
                 Point2D tp3 = new Point2D.Double();
@@ -253,12 +253,12 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
 
                 if ((Math.abs(tdx12) < 0.001) &&
                     (Math.abs(tdy13) < 0.001)) {
-                    // If these are both zero then it is axially aligned 
+                    // If these are both zero then it is axially aligned
                     // on it's "side"...
                     rotated[i] = false;
                 } else if ((Math.abs(tdx13) < 0.001) &&
                            (Math.abs(tdy12) < 0.001)) {
-                    // If these are both zero then it is axially aligned 
+                    // If these are both zero then it is axially aligned
                     // vertically.
                     rotated[i] = false;
                 } else {
@@ -267,7 +267,7 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
 
                 Rectangle2D rectBounds;
                 rectBounds = tempLogicalBounds[i].getBounds2D();
-                if (rectBounds.getWidth() > maxWidth) 
+                if (rectBounds.getWidth() > maxWidth)
                     maxWidth = rectBounds.getWidth();
                 if (rectBounds.getHeight() > maxHeight)
                     maxHeight = rectBounds.getHeight();
@@ -296,7 +296,7 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
                 double x = glyphBounds.getMinX();
                 double width = glyphBounds.getWidth();
 
-                if ((i < getNumGlyphs()-1) && 
+                if ((i < getNumGlyphs()-1) &&
                     (tempLogicalBounds[i+1] != null)) {
                     // make this glyph extend to the start of the next one
                     Rectangle2D ngb = tempLogicalBounds[i+1].getBounds2D();
@@ -327,7 +327,7 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
                 double      y           = glyphBounds.getMinY();
                 double      height      = glyphBounds.getHeight();
 
-                if ((i < getNumGlyphs()-1) && 
+                if ((i < getNumGlyphs()-1) &&
                     (tempLogicalBounds[i+1] != null)) {
                     // make this glyph extend to the start of the next one
                     Rectangle2D ngb = tempLogicalBounds[i+1].getBounds2D();
@@ -347,9 +347,7 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
             }
         }
 
-        for (int i = 0; i < getNumGlyphs(); i++) {
-            glyphLogicalBounds[i] = tempLogicalBounds[i];
-        }
+        System.arraycopy( tempLogicalBounds, 0, glyphLogicalBounds, 0, getNumGlyphs() );
     }
 
     /**
@@ -361,7 +359,7 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
         if (idx < 0 || (idx > glyphs.length-1))
             throw new IndexOutOfBoundsException
                 ("idx: " + idx + ", is out of bounds. Should be between 0 and "
-                 + (glyphs.length-1) + ".");
+                 + (glyphs.length-1) + '.' );
 
         // check to see if we should kern this glyph
         // I return the kerning information in the glyph metrics
@@ -412,7 +410,7 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
 
         if (glyphIndex < 0 || (glyphIndex > glyphs.length-1)) {
             throw new IndexOutOfBoundsException("glyphIndex: " + glyphIndex
-            + ", is out of bounds. Should be between 0 and " + (glyphs.length-1) + ".");
+            + ", is out of bounds. Should be between 0 and " + (glyphs.length-1) + '.' );
         }
         return glyphs[glyphIndex].getPosition();
     }
@@ -434,7 +432,7 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
         }
         if ((beginGlyphIndex+numEntries) > glyphs.length+1) {
              throw new IndexOutOfBoundsException("beginGlyphIndex + numEntries ("
-                       + beginGlyphIndex + "+" + numEntries
+                       + beginGlyphIndex + '+' + numEntries
                        + ") exceeds the number of glpyhs in this GlyphVector");
         }
         if (positionReturn == null) {
@@ -460,7 +458,7 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
     public AffineTransform getGlyphTransform(int glyphIndex) {
         if (glyphIndex < 0 || (glyphIndex > glyphs.length-1)) {
             throw new IndexOutOfBoundsException("glyphIndex: " + glyphIndex
-            + ", is out of bounds. Should be between 0 and " + (glyphs.length-1) + ".");
+            + ", is out of bounds. Should be between 0 and " + (glyphs.length-1) + '.' );
         }
         return glyphs[glyphIndex].getTransform();
     }
@@ -471,7 +469,7 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
     public Shape getGlyphVisualBounds(int glyphIndex) {
         if (glyphIndex < 0 || (glyphIndex > glyphs.length-1)) {
             throw new IndexOutOfBoundsException("glyphIndex: " + glyphIndex
-            + ", is out of bounds. Should be between 0 and " + (glyphs.length-1) + ".");
+            + ", is out of bounds. Should be between 0 and " + (glyphs.length-1) + '.' );
         }
         return glyphs[glyphIndex].getOutline();
     }
@@ -635,7 +633,7 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
 
         if (glyphIndex < 0 || (glyphIndex > glyphs.length-1)) {
             throw new IndexOutOfBoundsException("glyphIndex: " + glyphIndex
-            + ", is out of bounds. Should be between 0 and " + (glyphs.length-1) + ".");
+            + ", is out of bounds. Should be between 0 and " + (glyphs.length-1) + '.' );
         }
         glyphs[glyphIndex].setPosition(newPos);
         glyphLogicalBounds[glyphIndex] = null;
@@ -650,7 +648,7 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
     public void setGlyphTransform(int glyphIndex, AffineTransform newTX) {
         if (glyphIndex < 0 || (glyphIndex > glyphs.length-1)) {
             throw new IndexOutOfBoundsException("glyphIndex: " + glyphIndex
-            + ", is out of bounds. Should be between 0 and " + (glyphs.length-1) + ".");
+            + ", is out of bounds. Should be between 0 and " + (glyphs.length-1) + '.' );
         }
         glyphs[glyphIndex].setTransform(newTX);
         glyphLogicalBounds[glyphIndex] = null;
@@ -663,7 +661,7 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
      * Tells the glyph vector whether or not to draw the specified glyph.
      */
     public void setGlyphVisible(int glyphIndex, boolean visible) {
-        if (visible == glyphVisible[glyphIndex]) 
+        if (visible == glyphVisible[glyphIndex])
             return;
 
         glyphVisible[glyphIndex] = visible;
@@ -711,7 +709,7 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
     /**
      * Draws this glyph vector.
      */
-    public void draw(Graphics2D graphics2D, 
+    public void draw(Graphics2D graphics2D,
                      AttributedCharacterIterator aci) {
         aci.first();
         TextPaintInfo tpi = (TextPaintInfo)aci.getAttribute(PAINT_INFO);

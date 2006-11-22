@@ -28,7 +28,7 @@ public class DefaultLengthHandler implements LengthHandler {
     /**
      * The only instance of this class.
      */
-    public final static LengthHandler INSTANCE = new DefaultLengthHandler();
+    public static final LengthHandler INSTANCE = new DefaultLengthHandler();
 
     /**
      * This class does not need to be instantiated.

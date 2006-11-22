@@ -28,7 +28,7 @@ public class DefaultAngleHandler implements AngleHandler {
     /**
      * The only instance of this class.
      */
-    public final static AngleHandler INSTANCE
+    public static final AngleHandler INSTANCE
         = new DefaultAngleHandler();
 
     /**

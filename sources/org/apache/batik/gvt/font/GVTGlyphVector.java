@@ -63,8 +63,8 @@ public interface GVTGlyphVector {
 
     /**
      *  Returns the logical bounds of the specified glyph within this
-     *  GlyphVector.  This is a good bound for hit detection and 
-     *  highlighting it is not tight in any sense, and in some (rare) 
+     *  GlyphVector.  This is a good bound for hit detection and
+     *  highlighting it is not tight in any sense, and in some (rare)
      * cases may exclude parts of the glyph.
      */
     Shape getGlyphLogicalBounds(int glyphIndex);
@@ -96,7 +96,7 @@ public interface GVTGlyphVector {
     /**
      * Returns an array of glyph positions for the specified glyphs
      */
-    float[] getGlyphPositions(int beginGlyphIndex, 
+    float[] getGlyphPositions(int beginGlyphIndex,
                               int numEntries,
                               float[] positionReturn);
 
@@ -171,7 +171,7 @@ public interface GVTGlyphVector {
     /**
      * Returns true if specified glyph will be drawn.
      */
-    public boolean isGlyphVisible(int glyphIndex);
+    boolean isGlyphVisible(int glyphIndex);
 
     /**
      * Returns the number of chars represented by the glyphs within the

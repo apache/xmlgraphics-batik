@@ -29,7 +29,7 @@ public class DefaultTransformListHandler implements TransformListHandler {
     /**
      * The only instance of this class.
      */
-    public final static TransformListHandler INSTANCE
+    public static final TransformListHandler INSTANCE
         = new DefaultTransformListHandler();
 
     /**

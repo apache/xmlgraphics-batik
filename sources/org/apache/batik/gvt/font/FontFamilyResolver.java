@@ -38,17 +38,17 @@ public class FontFamilyResolver {
      * The default font. This will be used when no font families can
      * be resolved for a particular text chunck/run.
      */
-    public final static AWTFontFamily defaultFont = 
+    public static final AWTFontFamily defaultFont =
         new AWTFontFamily("SansSerif");
 
     /**
      * List of all available fonts on the current system, plus a few common
      * alternatives.
      */
-    protected final static Map fonts = new HashMap();
+    protected static final Map fonts = new HashMap();
 
-    protected final static Vector awtFontFamilies = new Vector();
-    protected final static Vector awtFonts = new Vector();
+    protected static final Vector awtFontFamilies = new Vector();
+    protected static final Vector awtFonts = new Vector();
 
     /**
      * This sets up the list of available fonts.
@@ -70,7 +70,7 @@ public class FontFamilyResolver {
 
         GraphicsEnvironment env;
         env = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        String fontNames[] = env.getAvailableFontFamilyNames();
+        String[] fontNames = env.getAvailableFontFamilyNames();
 
         int nFonts = fontNames != null ? fontNames.length : 0;
         for(int i=0; i<nFonts; i++){
@@ -141,7 +141,7 @@ public class FontFamilyResolver {
         familyName = familyName.toLowerCase();
 
         // first see if this font family has already been resolved
-        GVTFontFamily resolvedFF = 
+        GVTFontFamily resolvedFF =
             (GVTFontFamily)resolvedFontFamilies.get(familyName);
 
         if (resolvedFF == null) { // hasn't been resolved yet
@@ -156,10 +156,10 @@ public class FontFamilyResolver {
         }
 
         //  if (resolvedFF != null) {
-        //      System.out.println("resolved " + fontFamily.getFamilyName() + 
+        //      System.out.println("resolved " + fontFamily.getFamilyName() +
         //                         " to " + resolvedFF.getFamilyName());
         //  } else {
-        //      System.out.println("could not resolve " + 
+        //      System.out.println("could not resolve " +
         //                         fontFamily.getFamilyName());
         //  }
         return resolvedFF;

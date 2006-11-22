@@ -34,17 +34,17 @@ public abstract class UnitProcessor {
     /**
      * This constant represents horizontal lengths.
      */
-    public final static short HORIZONTAL_LENGTH = 2;
+    public static final short HORIZONTAL_LENGTH = 2;
 
     /**
      * This constant represents vertical lengths.
      */
-    public final static short VERTICAL_LENGTH = 1;
+    public static final short VERTICAL_LENGTH = 1;
 
     /**
      * This constant represents other lengths.
      */
-    public final static short OTHER_LENGTH = 0;
+    public static final short OTHER_LENGTH = 0;
 
     /**
      * No instance of this class is required.

@@ -96,7 +96,7 @@ public abstract class AbstractAWTEventDispatcher
     /**
      * default max size of the event queue.
      */
-    final static int MAX_QUEUE_SIZE = 10;
+    static final int MAX_QUEUE_SIZE = 10;
 
     private int nodeIncrementEventID = KeyEvent.KEY_PRESSED;
     private int nodeIncrementEventCode = KeyEvent.VK_TAB;

@@ -103,7 +103,7 @@ public interface Window {
      * @param h A handler called when the data is available.
      */
     void postURL(String uri, String content, URLResponseHandler h);
-    
+
     /**
      * Posts data to the given URI.
      * @param uri The URI where the data is located.
@@ -111,7 +111,7 @@ public interface Window {
      * @param h A handler called when the data is available.
      * @param mimeType The mimeType to asscoiate with post.
      */
-    void postURL(String uri, String content, URLResponseHandler h, 
+    void postURL(String uri, String content, URLResponseHandler h,
                  String mimeType);
 
     /**
@@ -123,15 +123,15 @@ public interface Window {
      * @param enc      The encoding to apply to <tt>content</tt>
      *                 may be "gzip", "deflate", or <tt>null</tt>.
      */
-    void postURL(String uri, String content, URLResponseHandler h, 
+    void postURL(String uri, String content, URLResponseHandler h,
                  String mimeType, String enc);
 
 
     /**
      * To handle the completion of a 'getURL()' or 'postURL' call.
      */
-    public interface URLResponseHandler {
-        
+    interface URLResponseHandler {
+
         /**
          * Called when the response is recieved.
          * @param success Whether the data was successfully retreived.

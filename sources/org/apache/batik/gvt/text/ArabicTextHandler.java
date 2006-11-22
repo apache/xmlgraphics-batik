@@ -34,8 +34,8 @@ import java.util.Map;
  */
 public class ArabicTextHandler {
 
-    private final static int arabicStart = 0x0600;
-    private final static int arabicEnd = 0x06FF;
+    private static final int arabicStart = 0x0600;
+    private static final int arabicEnd = 0x06FF;
 
     private static final AttributedCharacterIterator.Attribute ARABIC_FORM =
         GVTAttributedCharacterIterator.TextAttribute.ARABIC_FORM;
@@ -79,13 +79,13 @@ public class ArabicTextHandler {
         // construct the reordered ACI
         AttributedCharacterIterator aci = as.getIterator();
         int numChars = aci.getEndIndex() - aci.getBeginIndex();
-        int charOrder[] = null;
+        int[] charOrder = null;
         if (numChars >= 3) {
             char prevChar = aci.first();
-            char c        = aci.next(); 
+            char c        = aci.next();
             int  i        = 1;
-            for (char nextChar = aci.next(); 
-                 nextChar != AttributedCharacterIterator.DONE; 
+            for (char nextChar = aci.next();
+                 nextChar != AttributedCharacterIterator.DONE;
                  prevChar = c, c = nextChar, nextChar = aci.next(), i++) {
                 if (arabicCharTransparent(c)) {
                     if (hasSubstitute(prevChar, nextChar)) {
@@ -155,7 +155,7 @@ public class ArabicTextHandler {
         aci = as.getIterator();
         int runStart = -1;
         int idx = aci.getBeginIndex();
-        for (int c = aci.first(); 
+        for (int c = aci.first();
              c != AttributedCharacterIterator.DONE;
              c = aci.next(), idx++) {
             if ((c >= arabicStart) && (c <= arabicEnd)) {
@@ -166,7 +166,7 @@ public class ArabicTextHandler {
                 runStart = -1;
             }
         }
-        if (runStart != -1) 
+        if (runStart != -1)
             as.addAttribute(ARABIC_FORM, ARABIC_NONE, runStart, idx);
 
         aci = as.getIterator();  // Make sure ACI tracks ARABIC_FORM
@@ -265,7 +265,7 @@ public class ArabicTextHandler {
      * @return True if at least one char is arabic, false otherwise.
      */
     public static boolean containsArabic(AttributedCharacterIterator aci) {
-        for (char c = aci.first(); 
+        for (char c = aci.first();
              c != AttributedCharacterIterator.DONE;
              c = aci.next()) {
             if (arabicChar(c)) {
@@ -413,7 +413,7 @@ public class ArabicTextHandler {
         if (form == 0) return -1;
         if ((ch < singleCharFirst) || (ch > singleCharLast)) return -1;
 
-        int chars[] = singleCharRemappings[ch-singleCharFirst];
+        int[] chars = singleCharRemappings[ch-singleCharFirst];
         if (chars == null) return -1;
 
         return chars[form-1];
@@ -556,7 +556,7 @@ public class ArabicTextHandler {
     // ligature to their various forms
     // NOTE: the unicode values for ligatures are stored here in
     // visual order (not logical order)
-    
+
     // Single char remappings:
     static int singleCharFirst=0x0621;
     static int singleCharLast =0x064A;

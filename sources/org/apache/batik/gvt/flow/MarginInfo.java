@@ -19,10 +19,10 @@
 package org.apache.batik.gvt.flow;
 
 public class MarginInfo {
-    public final static int ALIGN_START  = 0;
-    public final static int ALIGN_MIDDLE = 1;
-    public final static int ALIGN_END    = 2;
-    public final static int ALIGN_FULL   = 3;
+    public static final int ALIGN_START  = 0;
+    public static final int ALIGN_MIDDLE = 1;
+    public static final int ALIGN_END    = 2;
+    public static final int ALIGN_FULL   = 3;
 
     protected float   top;
     protected float   right;

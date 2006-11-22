@@ -30,7 +30,7 @@ import org.apache.batik.script.InterpreterFactory;
  */
 public class JaclInterpreterFactory implements InterpreterFactory {
 
-    final static String TEXT_TCL = "text/tcl";
+    static final String TEXT_TCL = "text/tcl";
 
     /**
      * Builds a <code>JaclInterpreterFactory</code>.
@@ -45,7 +45,7 @@ public class JaclInterpreterFactory implements InterpreterFactory {
 
     /**
      * Creates an instance of <code>JaclInterpreter</code> class.
-     * 
+     *
      * @param documentURL the url for the document which will be scripted
      * @param svg12 whether the document is an SVG 1.2 document
      */

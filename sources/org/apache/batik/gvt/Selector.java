@@ -36,24 +36,24 @@ public interface Selector extends GraphicsNodeMouseListener,
     /**
      * Get the contents of the current selection buffer.
      */
-    public Object getSelection();
+    Object getSelection();
 
     /**
      * Reports whether the current selection contains any objects.
      */
-    public boolean isEmpty();
+    boolean isEmpty();
 
     /**
      * Add a SelectionListener to this Selector's notification list.
      * @param l the SelectionListener to add.
      */
-    public void addSelectionListener(SelectionListener l);
+    void addSelectionListener(SelectionListener l);
 
 
     /**
      * Remove a SelectionListener from this Selector's notification list.
      * @param l the SelectionListener to be removed.
      */
-    public void removeSelectionListener(SelectionListener l);
- 
+    void removeSelectionListener(SelectionListener l);
+
 }

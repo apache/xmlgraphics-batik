@@ -40,7 +40,7 @@ public class Messages {
     /**
      * The error messages bundle class name.
      */
-    protected final static String RESOURCES =
+    protected static final String RESOURCES =
         "org.apache.batik.script.rhino.resources.messages";
 
     /**
@@ -84,7 +84,7 @@ public class Messages {
         return resourceManager.getString(key);
     }
 
-    public static int getInteger(String key) 
+    public static int getInteger(String key)
         throws MissingResourceException {
         return resourceManager.getInteger(key);
     }

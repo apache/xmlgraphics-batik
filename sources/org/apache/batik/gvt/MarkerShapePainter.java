@@ -41,7 +41,7 @@ import org.apache.batik.ext.awt.geom.ShapeExtender;
  */
 public class MarkerShapePainter implements ShapePainter {
 
-    /** 
+    /**
      * The Shape to be painted.
      */
     protected ExtendedShape extShape;
@@ -50,7 +50,7 @@ public class MarkerShapePainter implements ShapePainter {
      * Start Marker
      */
     protected Marker startMarker;
-    
+
     /**
      * Middle Marker
      */
@@ -69,7 +69,7 @@ public class MarkerShapePainter implements ShapePainter {
     /**
      * Middle marker proxy.
      */
-    private ProxyGraphicsNode middleMarkerProxies[];
+    private ProxyGraphicsNode[] middleMarkerProxies;
 
     /**
      * End marker proxy.
@@ -96,7 +96,7 @@ public class MarkerShapePainter implements ShapePainter {
      * on top of a shape.
      *
      * @param shape Shape to be painted by this painter.
-     * Should not be null 
+     * Should not be null
      */
     public MarkerShapePainter(Shape shape) {
         if (shape == null) {
@@ -225,7 +225,7 @@ public class MarkerShapePainter implements ShapePainter {
      * Sets the marker that shall be drawn at the first vertex of the given
      * shape.
      *
-     * @param startMarker the start marker 
+     * @param startMarker the start marker
      */
     public void setStartMarker(Marker startMarker){
         this.startMarker = startMarker;
@@ -265,7 +265,7 @@ public class MarkerShapePainter implements ShapePainter {
      * Sets the marker that shall be drawn at the last vertex of the given
      * shape.
      *
-     * @param endMarker the end marker 
+     * @param endMarker the end marker
      */
     public void setEndMarker(Marker endMarker){
         this.endMarker = endMarker;
@@ -298,13 +298,13 @@ public class MarkerShapePainter implements ShapePainter {
         if (startMarkerProxy != null) {
             children.add(startMarkerProxy);
         }
-        
+
         if (middleMarkerProxies != null) {
             for(int i=0; i<middleMarkerProxies.length; i++){
                 children.add(middleMarkerProxies[i]);
             }
         }
-        
+
         if (endMarkerProxy != null) {
             children.add(endMarkerProxy);
         }
@@ -314,14 +314,14 @@ public class MarkerShapePainter implements ShapePainter {
 
     /**
      * Builds a proxy <tt>GraphicsNode</tt> for the input <tt>Marker</tt> to be
-     * drawn at the start position 
+     * drawn at the start position
      */
     protected ProxyGraphicsNode buildStartMarkerProxy() {
 
         ExtendedPathIterator iter = getExtShape().getExtendedPathIterator();
 
         // Get initial point on the path
-        double coords[] = new double[7];
+        double[] coords = new double[7];
         int segType = 0;
 
         if (iter.isDone()) {
@@ -341,7 +341,7 @@ public class MarkerShapePainter implements ShapePainter {
         double rotation = startMarker.getOrient();
         if (Double.isNaN(rotation)) {
             if (!iter.isDone()) {
-                double next[] = new double[7];
+                double[] next = new double[7];
                 int nextSegType = 0;
                 nextSegType = iter.currentSegment(next);
                 if(nextSegType == PathIterator.SEG_CLOSE){
@@ -352,20 +352,20 @@ public class MarkerShapePainter implements ShapePainter {
                 rotation = computeRotation(null, 0,  // no previous seg.
                                            coords, segType,    // segment ending on start point
                                            next, nextSegType); // segment out of start point
-                
+
             }
         }
-        
+
         // Now, compute the marker's proxy transform
         AffineTransform markerTxf = computeMarkerTransform(startMarker,
                                                            markerPosition,
                                                            rotation);
-                                   
+
         ProxyGraphicsNode gn = new ProxyGraphicsNode();
 
         gn.setSource(startMarker.getMarkerNode());
         gn.setTransform(markerTxf);
-        
+
         return gn;
     }
 
@@ -384,9 +384,9 @@ public class MarkerShapePainter implements ShapePainter {
         if (iter.isDone()) {
             return null;
         }
-        
-        double coords[] = new double[7];
-        double moveTo[] = new double[2];
+
+        double[] coords = new double[7];
+        double[] moveTo = new double[2];
         int segType = 0;
         segType = iter.currentSegment(coords);
         if (segType != ExtendedPathIterator.SEG_MOVETO) {
@@ -397,7 +397,7 @@ public class MarkerShapePainter implements ShapePainter {
         moveTo[1] = coords[1];
 
         iter.next();
-        
+
         // Now, get the last two points on the path
         double[] lastButOne = new double[7];
         double[] last = {coords[0], coords[1], coords[2],
@@ -438,8 +438,8 @@ public class MarkerShapePainter implements ShapePainter {
         // the slope needs to be computed
         double rotation = endMarker.getOrient();
         if (Double.isNaN(rotation)) {
-            rotation = computeRotation(lastButOne, 
-                                       lastButOneSegType, 
+            rotation = computeRotation(lastButOne,
+                                       lastButOneSegType,
                                        last, lastSegType,
                                        null, 0);
         }
@@ -448,7 +448,7 @@ public class MarkerShapePainter implements ShapePainter {
         AffineTransform markerTxf = computeMarkerTransform(endMarker,
                                                            markerPosition,
                                                            rotation);
-                                   
+
         ProxyGraphicsNode gn = new ProxyGraphicsNode();
 
         gn.setSource(endMarker.getMarkerNode());
@@ -459,7 +459,7 @@ public class MarkerShapePainter implements ShapePainter {
 
     /**
      * Builds a proxy <tt>GraphicsNode</tt> for the input
-     * <tt>Marker</tt> to be drawn at the middle positions 
+     * <tt>Marker</tt> to be drawn at the middle positions
      */
     protected ProxyGraphicsNode[] buildMiddleMarkerProxies() {
 
@@ -489,7 +489,7 @@ public class MarkerShapePainter implements ShapePainter {
         if (iter.isDone()) {
             return null;
         }
-        
+
         currSegType = iter.currentSegment(curr);
 
         if (currSegType == PathIterator.SEG_MOVETO) {
@@ -515,18 +515,18 @@ public class MarkerShapePainter implements ShapePainter {
                 next[0] = moveTo[0];
                 next[1] = moveTo[1];
             }
-            
+
             proxies.addElement(createMiddleMarker(prev, prevSegType,
                                                   curr, currSegType,
                                                   next, nextSegType));
-            
+
             tmp = prev;
             prev = curr;
             prevSegType = currSegType;
             curr = next;
             currSegType = nextSegType;
             next = tmp;
-            
+
             iter.next();
         }
 
@@ -555,12 +555,12 @@ public class MarkerShapePainter implements ShapePainter {
                                        curr, currSegType,
                                        next, nextSegType);
         }
-        
+
         // Now, compute the marker's proxy transform
         AffineTransform markerTxf = computeMarkerTransform(middleMarker,
                                                            markerPosition,
                                                            rotation);
-                                   
+
         ProxyGraphicsNode gn = new ProxyGraphicsNode();
 
         gn.setSource(middleMarker.getMarkerNode());
@@ -578,12 +578,12 @@ public class MarkerShapePainter implements ShapePainter {
 
         // Compute in slope, i.e., the slope of the segment
         // going into the current point
-        double[] inSlope = computeInSlope(prev, prevSegType, 
+        double[] inSlope = computeInSlope(prev, prevSegType,
                                           curr, currSegType);
 
         // Compute out slope, i.e., the slope of the segment
         // going out of the current point
-        double[] outSlope = computeOutSlope(curr, currSegType, 
+        double[] outSlope = computeOutSlope(curr, currSegType,
                                             next, nextSegType);
 
         if (inSlope == null) {
@@ -602,7 +602,7 @@ public class MarkerShapePainter implements ShapePainter {
         double dy = inSlope[1] + outSlope[1];
 
         if (dx == 0 && dy == 0) {
-            // The two vectors are exact opposites. There is no way to 
+            // The two vectors are exact opposites. There is no way to
             // know which direction to go (+90 or -90). Choose +90
             return Math.atan2(inSlope[1], inSlope[0])*180./Math.PI + 90;
         } else {
@@ -626,7 +626,7 @@ public class MarkerShapePainter implements ShapePainter {
         case PathIterator.SEG_LINETO: {
             // This is equivalent to a line from the previous segment's
             // terminating point and the current end point.
-            Point2D prevEndPoint = 
+            Point2D prevEndPoint =
                 getSegmentTerminatingPoint(prev, prevSegType);
             dx = currEndPoint.getX() - prevEndPoint.getX();
             dy = currEndPoint.getY() - prevEndPoint.getY();
@@ -649,7 +649,7 @@ public class MarkerShapePainter implements ShapePainter {
         case ExtendedPathIterator.SEG_ARCTO: {
             // If the current segment is an ARCTO then we build the
             // arc and ask for it's end angle and get the tangent there.
-            Point2D prevEndPoint = 
+            Point2D prevEndPoint =
                 getSegmentTerminatingPoint(prev, prevSegType);
             boolean large   = (curr[3]!=0.);
             boolean goLeft = (curr[4]!=0.);
@@ -662,7 +662,7 @@ public class MarkerShapePainter implements ShapePainter {
             dx = -arc.getWidth()/2.0*Math.sin(theta);
             dy = arc.getHeight()/2.0*Math.cos(theta);
 
-            // System.out.println("In  Theta:  " + Math.toDegrees(theta) +  
+            // System.out.println("In  Theta:  " + Math.toDegrees(theta) +
             //                    " Dx/Dy: " + dx + "/" + dy);
             if (curr[2] != 0) {
                 double ang = Math.toRadians(-curr[2]);
@@ -673,14 +673,14 @@ public class MarkerShapePainter implements ShapePainter {
                 dx = tdx;
                 dy = tdy;
             }
-            // System.out.println("    Rotate: " + curr[2] + 
+            // System.out.println("    Rotate: " + curr[2] +
             //                    " Dx/Dy: " + dx + "/" + dy);
             if (goLeft) {
                 dx = -dx;
             } else {
                 dy = -dy;
             }
-            // System.out.println("    GoLeft? " + goLeft + 
+            // System.out.println("    GoLeft? " + goLeft +
             //                    " Dx/Dy: " + dx + "/" + dy);
         }
             break;
@@ -707,7 +707,7 @@ public class MarkerShapePainter implements ShapePainter {
                                      double[] next, int nextSegType){
 
         Point2D currEndPoint = getSegmentTerminatingPoint(curr, currSegType);
-        
+
         double dx = 0, dy = 0;
 
         switch(nextSegType){
@@ -737,7 +737,7 @@ public class MarkerShapePainter implements ShapePainter {
             theta = Math.toRadians(theta);
             dx = -arc.getWidth()/2.0*Math.sin(theta);
             dy = arc.getHeight()/2.0*Math.cos(theta);
-            // System.out.println("Out Theta:  " + Math.toDegrees(theta) +  
+            // System.out.println("Out Theta:  " + Math.toDegrees(theta) +
             //                    " Dx/Dy: " + dx + "/" + dy);
             if (next[2] != 0) {
                 double ang = Math.toRadians(-next[2]);
@@ -748,7 +748,7 @@ public class MarkerShapePainter implements ShapePainter {
                 dx = tdx;
                 dy = tdy;
             }
-            // System.out.println("    Rotate: " + next[2] + 
+            // System.out.println("    Rotate: " + next[2] +
             //                    " Dx/Dy: " + dx + "/" + dy);
 
             if (goLeft) {
@@ -756,7 +756,7 @@ public class MarkerShapePainter implements ShapePainter {
             } else {
                 dy = -dy;
             }
-            // System.out.println("    GoLeft? " + goLeft + 
+            // System.out.println("    GoLeft? " + goLeft +
             //                    " Dx/Dy: " + dx + "/" + dy);
         }
             break;
@@ -785,13 +785,13 @@ public class MarkerShapePainter implements ShapePainter {
 
     /**
      * Computes the transform for the input marker, so that it is positioned at
-     * the given position with the specified rotation 
+     * the given position with the specified rotation
      */
     private AffineTransform computeMarkerTransform(Marker marker,
                                                    Point2D markerPosition,
                                                    double rotation) {
         Point2D ref = marker.getRef();
-        /*AffineTransform txf = 
+        /*AffineTransform txf =
             AffineTransform.getTranslateInstance(markerPosition.getX()
                                                  - ref.getX(),
                                                  markerPosition.getY()
@@ -811,7 +811,7 @@ public class MarkerShapePainter implements ShapePainter {
     /**
      * Extracts the terminating point, depending on the segment type.
      */
-    protected Point2D getSegmentTerminatingPoint(double coords[], int segType) {
+    protected Point2D getSegmentTerminatingPoint(double[] coords, int segType) {
         switch(segType){
         case PathIterator.SEG_CUBICTO:
             return new Point2D.Double(coords[4], coords[5]);
@@ -825,7 +825,7 @@ public class MarkerShapePainter implements ShapePainter {
             return new Point2D.Double(coords[5], coords[6]);
         case PathIterator.SEG_CLOSE:
         default:
-            throw new Error(); 
+            throw new Error();
             // Should never happen: close segments are replaced with lineTo
         }
     }

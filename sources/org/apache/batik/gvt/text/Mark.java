@@ -24,18 +24,18 @@ import org.apache.batik.gvt.TextNode;
  * selection gesture.
  *
  * @author <a href="mailto:bill.haneman@ireland.sun.com">Bill Haneman</a>
- * @version $Id$ 
+ * @version $Id$
  */
 public interface Mark {
     /*
-     * Return the TextNode this Mark is associated with 
+     * Return the TextNode this Mark is associated with
      */
-    public TextNode getTextNode();
+    TextNode getTextNode();
 
     /**
      * Returns the index of the character that has been hit.
      *
      * @return The character index.
      */
-    public int getCharIndex();
+    int getCharIndex();
 }

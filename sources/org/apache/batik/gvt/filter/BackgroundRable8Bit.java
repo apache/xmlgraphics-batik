@@ -294,8 +294,8 @@ public class BackgroundRable8Bit
             Iterator i = children.iterator();
             while (i.hasNext()) {
                 GraphicsNode childGN = (GraphicsNode)i.next();
-                // System.out.println("Parent: "      + cgn + 
-                //                    "\n  Child: "   + child + 
+                // System.out.println("Parent: "      + cgn +
+                //                    "\n  Child: "   + child +
                 //                    "\n  ChildGN: " + childGN);
                 if (childGN == child)
                     break;
@@ -306,7 +306,7 @@ public class BackgroundRable8Bit
                 // System.out.println("      : " + aoi);
 
                 AffineTransform at = childGN.getTransform();
-                if (at != null) 
+                if (at != null)
                     cbounds = at.createTransformedShape(cbounds).getBounds2D();
 
 
@@ -383,7 +383,7 @@ public class BackgroundRable8Bit
             // System.out.println("R2d: " + r2d);
             // System.out.println("AOI: " + aoiR2d);
 
-            if (r2d.intersects(aoiR2d) == false)
+            if ( ! r2d.intersects(aoiR2d) )
                 return null;
 
             Rectangle2D.intersect(r2d, aoiR2d, r2d);
@@ -393,14 +393,14 @@ public class BackgroundRable8Bit
         // System.out.println("BG: " + background);
         if ( background == null)
             return null;
-        
+
         background = new PadRable8Bit(background, r2d, PadMode.ZERO_PAD);
 
-        
+
         RenderedImage ri = background.createRendering
-            (new RenderContext(renderContext.getTransform(), r2d, 
+            (new RenderContext(renderContext.getTransform(), r2d,
                                renderContext.getRenderingHints()));
-        // System.out.println("RI: [" + ri.getMinX() + ", " 
+        // System.out.println("RI: [" + ri.getMinX() + ", "
         //                    + ri.getMinY() + ", " +
         //                    + ri.getWidth() + ", " +
         //                    + ri.getHeight() + "]");
