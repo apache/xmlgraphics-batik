@@ -187,7 +187,7 @@ public class SVGTransform extends AbstractSVGConverter{
      */
     final String convertTransform(TransformStackElement transformElement){
         StringBuffer transformString = new StringBuffer();
-        double transformParameters[] = transformElement.getTransformParameters();
+        double[] transformParameters = transformElement.getTransformParameters();
         switch(transformElement.getType().toInt()){
         case TransformType.TRANSFORM_TRANSLATE:
             if(!transformElement.isIdentity()) {

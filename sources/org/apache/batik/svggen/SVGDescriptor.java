@@ -38,7 +38,7 @@ public interface SVGDescriptor{
      * @return a map containing the SVG attributes needed by the
      *         descriptor.
      */
-    public Map getAttributeMap(Map attrMap);
+    Map getAttributeMap(Map attrMap);
 
     /**
      * @param defSet if not null, definitions required to provide
@@ -49,5 +49,5 @@ public interface SVGDescriptor{
      * @return a set containing Elements that represent the definition
      *         of the descriptor's attribute values
      */
-    public List getDefinitionSet(List defSet);
+    List getDefinitionSet(List defSet);
 }

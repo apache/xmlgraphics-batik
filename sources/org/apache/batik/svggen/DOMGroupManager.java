@@ -59,8 +59,8 @@ import org.w3c.dom.Element;
  * @version $Id$
  */
 public class DOMGroupManager implements SVGSyntax, ErrorConstants {
-    public final static short DRAW = 0x01;
-    public final static short FILL = 0x10;
+    public static final short DRAW = 0x01;
+    public static final short FILL = 0x10;
 
     /**
      * Reference to the GraphicContext this manager will use to
@@ -249,7 +249,7 @@ public class DOMGroupManager implements SVGSyntax, ErrorConstants {
      * given transform stack
      */
     protected void setTransform(Element element,
-                              TransformStackElement transformStack[]) {
+                              TransformStackElement[] transformStack) {
         String transform = domTreeManager.gcConverter.
             toSVG(transformStack).trim();
         if (transform.length() > 0)
@@ -267,10 +267,10 @@ public class DOMGroupManager implements SVGSyntax, ErrorConstants {
                                          referenceGc.getGroupContext());
         Map graphicElementDelta = gc.getGraphicElementContext();
 
-        TransformStackElement gcTransformStack[] = gc.getTransformStack();
-        TransformStackElement referenceStack[] = referenceGc.getTransformStack();
+        TransformStackElement[] gcTransformStack = gc.getTransformStack();
+        TransformStackElement[] referenceStack = referenceGc.getTransformStack();
         int deltaStackLength = gcTransformStack.length - referenceStack.length;
-        TransformStackElement deltaTransformStack[] =
+        TransformStackElement[] deltaTransformStack =
             new TransformStackElement[deltaStackLength];
 
         System.arraycopy(gcTransformStack, referenceStack.length,

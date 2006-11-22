@@ -161,16 +161,14 @@ public abstract class SwingSVGPrettyPrint implements SVGSyntax {
 
     private static void paintChildren(JComponent cmp, SVGGraphics2D svgGen){
         int i = cmp.getComponentCount() - 1;
-        boolean isJComponent = false;
         Rectangle tmpRect = new Rectangle();
 
         for(; i>=0; i--){
             Component comp = cmp.getComponent(i);
 
-            if(comp != null && JComponent.isLightweightComponent(comp) &&
-               (comp.isVisible() == true)) {
+            if( comp != null && JComponent.isLightweightComponent(comp) && comp.isVisible() ) {
                 Rectangle cr = null;
-                isJComponent = (comp instanceof JComponent);
+                boolean isJComponent = (comp instanceof JComponent);
 
                 if(isJComponent) {
                     cr = tmpRect;

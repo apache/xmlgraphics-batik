@@ -631,7 +631,7 @@ public class PrintTranscoder extends SVGAbstractTranscoder
 
     public static final String USAGE = "java org.apache.batik.transcoder.print.PrintTranscoder <svgFileToPrint>";
 
-    public static void main(String args[]) throws Exception{
+    public static void main(String[] args) throws Exception{
         if(args.length < 1){
             System.err.println(USAGE);
             System.exit(0);

@@ -41,7 +41,7 @@ public interface SVGConverter extends SVGSyntax{
      *         with the related definitions
      * @see org.apache.batik.svggen.SVGDescriptor
      */
-    public SVGDescriptor toSVG(GraphicContext gc);
+    SVGDescriptor toSVG(GraphicContext gc);
 
     /**
      * @return set of definitions referenced by the attribute
@@ -50,5 +50,5 @@ public interface SVGConverter extends SVGSyntax{
      *         If no definition is needed, an empty set should be
      *         returned.
      */
-    public List getDefinitionSet();
+    List getDefinitionSet();
 }

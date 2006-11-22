@@ -1110,7 +1110,7 @@ public class WMFPainter extends AbstractWMFPainter {
         return currentStore;
     }
 
-    transient private BufferedInputStream bufStream = null;
+    private transient BufferedInputStream bufStream = null;
 
 }
 

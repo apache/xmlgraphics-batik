@@ -31,7 +31,7 @@ public interface CachedImageHandler extends GenericImageHandler {
      * Returns the image cache instance in use by this handler
      *
      * @return the image cache
-     */ 
-   public ImageCacher getImageCacher();
-    
+     */
+    ImageCacher getImageCacher();
+
 }

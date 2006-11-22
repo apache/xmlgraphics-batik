@@ -203,7 +203,7 @@ public class JSVGScrollPane extends JPanel
                      } // handleEvent()
                  }, false, null);
         }// documentLoadingCompleted()
-    };
+    }
 
 
     /**
@@ -211,8 +211,7 @@ public class JSVGScrollPane extends JPanel
      *        releasing any cached data and recomputing
      *        scroll extents.
      */
-    public void reset()
-    {
+    public void reset() {
         viewBox = null;
         updateScrollbarState(false, false);
         revalidate();

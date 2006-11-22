@@ -15,18 +15,18 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 
- */ 
+ */
 package org.apache.batik.svggen.font.table;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
-/** 
+/**
  *
  * @author <a href="mailto:david@steadystate.co.uk">David Schweinsberg</a>
  * @version $Id$
  */
 public interface LookupSubtableFactory {
-    public LookupSubtable read(int type, RandomAccessFile raf, int offset)
+    LookupSubtable read(int type, RandomAccessFile raf, int offset)
     throws IOException;
 }

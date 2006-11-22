@@ -65,7 +65,7 @@ import org.w3c.dom.Document;
  * millimeters in each pixel .
  *
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
- * @version $Id$ 
+ * @version $Id$
  */
 public abstract class ImageTranscoder extends SVGAbstractTranscoder {
 
@@ -152,7 +152,7 @@ public abstract class ImageTranscoder extends SVGAbstractTranscoder {
         DataBufferInt biDB=(DataBufferInt)img.getRaster().getDataBuffer();
         int scanStride = sppsm.getScanlineStride();
         int dbOffset = biDB.getOffset();
-        int pixels[] = biDB.getBankData()[0];
+        int[] pixels = biDB.getBankData()[0];
         int p = dbOffset;
         int adjust = scanStride - w;
         int a=0, r=0, g=0, b=0, pel=0;
@@ -254,8 +254,8 @@ public abstract class ImageTranscoder extends SVGAbstractTranscoder {
      * Not all Transcoders use this key (in particular some formats
      * can't preserve the alpha channel at all in which case this
      * is not used.
-     * </TD></TR> 
-     * </TABLE> 
+     * </TD></TR>
+     * </TABLE>
      */
     public static final TranscodingHints.Key KEY_FORCE_TRANSPARENT_WHITE
         = new BooleanKey();

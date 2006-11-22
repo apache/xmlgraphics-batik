@@ -46,7 +46,7 @@ public class SVGColor extends AbstractSVGConverter{
     public static final Color lime = new Color(0x00, 0xff, 0x00);
     public static final Color maroon = new Color(0x80, 0x00, 0x00);
     public static final Color navy = new Color(0x00, 0x00, 0x80);
-    public static final Color olive = new Color(0x80, 0x80, 00);
+    public static final Color olive = new Color(0x80, 0x80, 0x00);
     public static final Color purple = new Color(0x80, 0x00, 0x80);
     public static final Color red = Color.red;
     public static final Color silver = new Color(0xc0, 0xc0, 0xc0);

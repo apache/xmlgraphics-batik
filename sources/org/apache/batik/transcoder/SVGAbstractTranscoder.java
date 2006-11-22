@@ -79,7 +79,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
     /**
      * Value used as a default for the default font-family hint
      */
-    public static final String DEFAULT_DEFAULT_FONT_FAMILY 
+    public static final String DEFAULT_DEFAULT_FONT_FAMILY
         = "Arial, Helvetica, sans-serif";
 
     /**
@@ -129,7 +129,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
                   "screen");
         hints.put(KEY_DEFAULT_FONT_FAMILY,
                   DEFAULT_DEFAULT_FONT_FAMILY);
-        hints.put(KEY_EXECUTE_ONLOAD, 
+        hints.put(KEY_EXECUTE_ONLOAD,
                   Boolean.FALSE);
         hints.put(KEY_ALLOWED_SCRIPT_TYPES,
                   DEFAULT_ALLOWED_SCRIPT_TYPES);
@@ -155,10 +155,10 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
 
     public void transcode(TranscoderInput input, TranscoderOutput output)
             throws TranscoderException {
- 
+
         super.transcode(input, output);
 
-        if (ctx != null) 
+        if (ctx != null)
             ctx.dispose();
     }
     /**
@@ -181,7 +181,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
             // impl = SVGDOMImplementation.getDOMImplementation();
             document = DOMUtilities.deepCloneDocument(document, impl);
             if (uri != null) {
-                try { 
+                try {
                     URL url = new URL(uri);
                     ((SVGOMDocument)document).setURLObject(url);
                 } catch (MalformedURLException mue) {
@@ -196,7 +196,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
         // build the GVT tree
         builder = new GVTBuilder();
         // flag that indicates if the document is dynamic
-        boolean isDynamic = 
+        boolean isDynamic =
             hints.containsKey(KEY_EXECUTE_ONLOAD) &&
              ((Boolean)hints.get(KEY_EXECUTE_ONLOAD)).booleanValue();
 
@@ -246,7 +246,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
             double scale = Math.min(sx,sy);
             Px.scale(scale, scale);
             double tx = -aoi.getX() + (width/scale - aoi.getWidth())/2;
-            double ty = -aoi.getY() + (height/scale -aoi.getHeight())/2;;
+            double ty = -aoi.getY() + (height/scale -aoi.getHeight())/2;
             Px.translate(tx, ty);
             // take the AOI transformation matrix into account
             // we apply first the preserveAspectRatio matrix
@@ -292,7 +292,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
             return null;
         CompositeGraphicsNode cgn = (CompositeGraphicsNode)gn;
         List children = cgn.getChildren();
-        if (children.size() == 0) 
+        if (children.size() == 0)
             return null;
         gn = (GraphicsNode)children.get(0);
         if (!(gn instanceof CanvasGraphicsNode))
@@ -438,7 +438,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
      * <TR>
      * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
      * <TD VALIGN="TOP">Specify the maximum width of the image to create.
-     * The value will set the maximum width of the image even when 
+     * The value will set the maximum width of the image even when
      * bigger width is specified in a document or set with KEY_WIDTH.
      * </TD></TR>
      * </TABLE>
@@ -463,8 +463,8 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
      * <TD VALIGN="TOP">No</TD></TR>
      * <TR>
      * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
-     * <TD VALIGN="TOP">Specify the maximum height of the image to create. 
-     * The value will set the maximum height of the image even when 
+     * <TD VALIGN="TOP">Specify the maximum height of the image to create.
+     * The value will set the maximum height of the image even when
      * bigger height is specified in a document or set with KEY_HEIGHT.
      * </TD></TR>
      * </TABLE>
@@ -667,7 +667,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
      * </TD></TR>
      * </TABLE>
      */
-    public static final TranscodingHints.Key KEY_PIXEL_TO_MM 
+    public static final TranscodingHints.Key KEY_PIXEL_TO_MM
         = KEY_PIXEL_UNIT_TO_MILLIMETER;
 
     /**
@@ -687,9 +687,9 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
      * <TD VALIGN="TOP">No</TD></TR>
      * <TR>
      * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
-     * <TD VALIGN="TOP">Specify if scripts added on the 'onload' event 
+     * <TD VALIGN="TOP">Specify if scripts added on the 'onload' event
      * attribute must be invoked.</TD></TR>
-     * </TABLE> 
+     * </TABLE>
      */
     public static final TranscodingHints.Key KEY_EXECUTE_ONLOAD
         = new BooleanKey();
@@ -714,7 +714,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
      * <TD VALIGN="TOP">Specifies the document time to seek to before
      * rasterization.  Only applies if {@link #KEY_EXECUTE_ONLOAD} is
      * set to <code>true</code>.</TD></TR>
-     * </TABLE> 
+     * </TABLE>
      */
     public static final TranscodingHints.Key KEY_SNAPSHOT_TIME
         = new FloatKey();
@@ -751,11 +751,11 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
      * Default value for the KEY_ALLOWED_SCRIPT_TYPES key
      */
     public static final String DEFAULT_ALLOWED_SCRIPT_TYPES
-        = SVGConstants.SVG_SCRIPT_TYPE_ECMASCRIPT + ", " 
+        = SVGConstants.SVG_SCRIPT_TYPE_ECMASCRIPT + ", "
         + SVGConstants.SVG_SCRIPT_TYPE_JAVA;
 
     /**
-     * Controls whether or not scripts can only be loaded from the 
+     * Controls whether or not scripts can only be loaded from the
      * same location as the document which references them.
      *
      * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
@@ -815,7 +815,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
          * Returns the default size of this user agent (400x400).
          */
         public Dimension2D getViewportSize() {
-            return new Dimension((int)SVGAbstractTranscoder.this.width, 
+            return new Dimension((int)SVGAbstractTranscoder.this.width,
                                  (int)SVGAbstractTranscoder.this.height);
         }
 
@@ -879,7 +879,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
                 return (String)SVGAbstractTranscoder.this.hints.get
                     (KEY_LANGUAGE);
             }
-             
+
             return super.getLanguages();
         }
 
@@ -955,14 +955,14 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
         /**
          * Returns the security settings for the given script
          * type, script url and document url
-         * 
-         * @param scriptType type of script, as found in the 
+         *
+         * @param scriptType type of script, as found in the
          *        type attribute of the &lt;script&gt; element.
          * @param scriptPURL url for the script, as defined in
          *        the script's xlink:href attribute. If that
          *        attribute was empty, then this parameter should
          *        be null
-         * @param docPURL url for the document into which the 
+         * @param docPURL url for the document into which the
          *        script was found.
          */
         public ScriptSecurity getScriptSecurity(String scriptType,
@@ -984,7 +984,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
                 constrainOrigin =
                     ((Boolean)SVGAbstractTranscoder.this.hints.get
                      (KEY_CONSTRAIN_SCRIPT_ORIGIN)).booleanValue();
-            } 
+            }
 
             if (constrainOrigin) {
                 return new DefaultScriptSecurity
@@ -1006,10 +1006,10 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
                 return;
             }
 
-            String allowedScripts 
+            String allowedScripts
                 = (String)SVGAbstractTranscoder.this.hints.get
                 (KEY_ALLOWED_SCRIPT_TYPES);
-                
+
             StringTokenizer st = new StringTokenizer(allowedScripts, ",");
             while (st.hasMoreTokens()) {
                 scripts.add(st.nextToken());

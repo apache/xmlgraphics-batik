@@ -36,7 +36,7 @@ public abstract class AbstractPanInteractor extends InteractorAdapter {
     /**
      * The cursor for panning.
      */
-    public final static Cursor PAN_CURSOR = new Cursor(Cursor.MOVE_CURSOR);
+    public static final Cursor PAN_CURSOR = new Cursor(Cursor.MOVE_CURSOR);
 
     /**
      * Whether the interactor has finished.
@@ -76,7 +76,7 @@ public abstract class AbstractPanInteractor extends InteractorAdapter {
     }
 
     // MouseListener ///////////////////////////////////////////////////////
-        
+
     /**
      * Invoked when a mouse button has been pressed on a component.
      */
@@ -85,7 +85,7 @@ public abstract class AbstractPanInteractor extends InteractorAdapter {
             mouseExited(e);
             return;
         }
-        
+
         finished = false;
 
         xStart = e.getX();
@@ -129,7 +129,7 @@ public abstract class AbstractPanInteractor extends InteractorAdapter {
      */
     public void mouseExited(MouseEvent e) {
         finished = true;
-        
+
         JGVTComponent c = (JGVTComponent)e.getSource();
         c.setPaintingTransform(null);
         if (c.getCursor() == PAN_CURSOR) {
@@ -140,7 +140,7 @@ public abstract class AbstractPanInteractor extends InteractorAdapter {
     // MouseMotionListener /////////////////////////////////////////////////
 
     /**
-     * Invoked when a mouse button is pressed on a component and then 
+     * Invoked when a mouse button is pressed on a component and then
      * dragged.  Mouse drag events will continue to be delivered to
      * the component where the first originated until the mouse button is
      * released (regardless of whether the mouse position is within the

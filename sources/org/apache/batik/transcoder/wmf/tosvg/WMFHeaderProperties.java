@@ -37,23 +37,23 @@ import org.apache.batik.ext.awt.geom.Polygon2D;
 import org.apache.batik.ext.awt.geom.Polyline2D;
 import org.apache.batik.transcoder.wmf.WMFConstants;
 
-/** 
+/**
  * This class holds simple properties about a WMF Metafile. It can be used
  * whenever general information must be retrieved about this file.
  */
 public class WMFHeaderProperties extends AbstractWMFReader {
     protected DataInputStream stream;
     private int _bleft, _bright, _btop, _bbottom, _bwidth, _bheight;
-    private int _ileft, _iright, _itop, _ibottom;    
+    private int _ileft, _iright, _itop, _ibottom;
     private float scale = 1f;
     private int startX = 0;
-    private int startY = 0;    
+    private int startY = 0;
     private int currentHorizAlign = 0;
-    private int currentVertAlign = 0;  
+    private int currentVertAlign = 0;
     private WMFFont wf = null;
-    private static final FontRenderContext fontCtx = 
-            new FontRenderContext(new AffineTransform(), false, true);    
-    private transient boolean firstEffectivePaint = true; 
+    private static final FontRenderContext fontCtx =
+            new FontRenderContext(new AffineTransform(), false, true);
+    private transient boolean firstEffectivePaint = true;
     public static final int PEN = 1;
     public static final int BRUSH = 2;
     public static final int FONT = 3;
@@ -62,7 +62,7 @@ public class WMFHeaderProperties extends AbstractWMFReader {
     public static final int PALETTE = 6;
     public static final int OBJ_BITMAP = 7;
     public static final int OBJ_REGION = 8;
-    
+
     /** Creates a new WMFHeaderProperties, and sets the associated WMF File.
      * @param wmffile the WMF Metafile
      */
@@ -75,26 +75,26 @@ public class WMFHeaderProperties extends AbstractWMFReader {
     }
 
     /** Creates a new WMFHeaderProperties, with no associated file.
-     */    
+     */
     public WMFHeaderProperties() {
-        super();        
-    }  
-    
+        super();
+    }
+
     public void closeResource() {
         try {
             if (stream != null) stream.close();
             } catch (IOException e) {
         }
-    } 
+    }
 
     /** Creates the properties associated file.
-     */        
+     */
     public void setFile(File wmffile) throws IOException {
         stream = new DataInputStream(new BufferedInputStream(new FileInputStream(wmffile)));
         read(stream);
         stream.close();
     }
-    
+
     /**
      * Resets the internal storage and viewport coordinates.
      */
@@ -111,7 +111,7 @@ public class WMFHeaderProperties extends AbstractWMFReader {
         _ileft = -1;
         _iright = -1;
         _itop = -1;
-        _ibottom = -1;        
+        _ibottom = -1;
         _bwidth = -1;
         _bheight= -1;
         vpW = -1;
@@ -119,16 +119,16 @@ public class WMFHeaderProperties extends AbstractWMFReader {
         vpX = 0;
         vpY = 0;
         startX = 0;
-        startY = 0;        
+        startY = 0;
         firstEffectivePaint = true;
-    }    
-    
+    }
+
     /** Get the associated stream.
      */
     public DataInputStream getStream() {
         return stream;
     }
-        
+
     protected boolean readRecords(DataInputStream is) throws IOException {
         // effective reading of the rest of the file
         short functionId = 1;
@@ -136,10 +136,10 @@ public class WMFHeaderProperties extends AbstractWMFReader {
         int gdiIndex; // the last Object index
         int brushObject = -1; // the last brush
         int penObject = -1; // the last pen
-        int fontObject = -1; // the last font 
+        int fontObject = -1; // the last font
         GdiObject gdiObj;
-        
-        while (functionId > 0) {            
+
+        while (functionId > 0) {
             recSize = readInt( is );
             // Subtract size in 16-bit words of recSize and functionId;
             recSize -= 3;
@@ -148,32 +148,32 @@ public class WMFHeaderProperties extends AbstractWMFReader {
             if ( functionId <= 0 )
             break;
 
-            switch ( functionId ) {  
+            switch ( functionId ) {
             case WMFConstants.META_SETWINDOWORG: {
                 vpY = readShort( is );
                 vpX = readShort( is );
             }
-                break;                
-            case WMFConstants.META_SETWINDOWEXT: {                   
+                break;
+            case WMFConstants.META_SETWINDOWEXT: {
                 vpH = readShort( is );
                 vpW = readShort( is );
             }
             break;
-            
+
             case WMFConstants.META_CREATEPENINDIRECT:
                 {
                     int objIndex = 0;
                     int penStyle = readShort( is );
 
-                    readInt( is ); // width               
+                    readInt( is ); // width
                     // color definition
                     int colorref = readInt( is );
                     int red = colorref & 0xff;
                     int green = ( colorref & 0xff00 ) >> 8;
                     int blue = ( colorref & 0xff0000 ) >> 16;
                     Color color = new Color( red, green, blue);
-                    
-                    if (recSize == 6) readShort(is); // if size greater than 5                    
+
+                    if (recSize == 6) readShort(is); // if size greater than 5
                     if ( penStyle == WMFConstants.META_PS_NULL ) {
                         objIndex = addObjectAt( NULL_PEN, color, objIndex );
                     } else {
@@ -199,22 +199,22 @@ public class WMFHeaderProperties extends AbstractWMFReader {
                     } else
                         objIndex = addObjectAt(BRUSH, color, objIndex );
                 }
-                break; 
-                
+                break;
+
             case WMFConstants.META_SETTEXTALIGN:
                     int align = readShort( is );
                     // need to do this, because sometimes there is more than one short
                     if (recSize > 1) for (int i = 1; i < recSize; i++) readShort( is );
                     currentHorizAlign = WMFUtilities.getHorizontalAlignment(align);
-                    currentVertAlign = WMFUtilities.getVerticalAlignment(align);                        
-                    break;                                
+                    currentVertAlign = WMFUtilities.getVerticalAlignment(align);
+                    break;
 
             case WMFConstants.META_EXTTEXTOUT: {
                     int y = readShort( is );
                     int x = readShort( is );
                     int lenText = readShort( is );
                     int flag = readShort( is );
-                    int read = 4; // used to track the actual size really read                   
+                    int read = 4; // used to track the actual size really read
                     boolean clipped = false;
                     int x1 = 0, y1 = 0, x2 = 0, y2 = 0;
                     int len;
@@ -227,14 +227,14 @@ public class WMFHeaderProperties extends AbstractWMFReader {
                         read += 4;
                         clipped = true;
                     }
-                    byte bstr[] = new byte[ lenText ];
+                    byte[] bstr = new byte[ lenText ];
                     int i = 0;
                     for ( ; i < lenText; i++ ) {
                         bstr[ i ] = is.readByte();
                     }
-                    String sr = WMFUtilities.decodeString(wf, bstr);                    
-                    
-                    read += (lenText + 1)/2;                    
+                    String sr = WMFUtilities.decodeString(wf, bstr);
+
+                    read += (lenText + 1)/2;
                     /* must do this because WMF strings always have an even number of bytes, even
                      * if there is an odd number of characters
                      */
@@ -242,45 +242,45 @@ public class WMFHeaderProperties extends AbstractWMFReader {
                     // if the record was not completely read, finish reading
                     if (read < recSize) for (int j = read; j < recSize; j++) readShort( is );
                     TextLayout layout = new TextLayout( sr, wf.font, fontCtx );
-                    
+
                     int lfWidth = (int)layout.getBounds().getWidth();
-                    x = (int)layout.getBounds().getX();   
-                    int lfHeight = 
+                    x = (int)layout.getBounds().getX();
+                    int lfHeight =
                         (int)getVerticalAlignmentValue(layout, currentVertAlign);
-                                    
+
                     resizeBounds(x, y);
                     resizeBounds(x+lfWidth, y+lfHeight);
                     firstEffectivePaint = false;
                 }
                 break;
-                
+
             case WMFConstants.META_DRAWTEXT:
             case WMFConstants.META_TEXTOUT: {
                     int len = readShort( is );
                     int read = 1; // used to track the actual size really read
-                    byte bstr[] = new byte[ len ];
+                    byte[] bstr = new byte[ len ];
                     for ( int i = 0; i < len; i++ ) {
                         bstr[ i ] = is.readByte();
                     }
                     String sr = WMFUtilities.decodeString(wf, bstr);
-                    
+
                     /* must do this because WMF strings always have an even number of bytes, even
                      * if there is an odd number of characters
                      */
-                    if (len % 2 != 0) is.readByte(); 
+                    if (len % 2 != 0) is.readByte();
                     read += (len + 1) / 2;
-                    
+
                     int y = readShort( is );
                     int x = readShort( is );
                     read += 2;
-                    // if the record was not completely read, finish reading                    
+                    // if the record was not completely read, finish reading
                     if (read < recSize) for (int j = read; j < recSize; j++) readShort( is );
                     TextLayout layout = new TextLayout( sr, wf.font, fontCtx );
                     int lfWidth = (int)layout.getBounds().getWidth();
-                    x = (int)layout.getBounds().getX();                                      
-                    int lfHeight = 
-                        (int)getVerticalAlignmentValue(layout, currentVertAlign);                    
-                    
+                    x = (int)layout.getBounds().getX();
+                    int lfHeight =
+                        (int)getVerticalAlignmentValue(layout, currentVertAlign);
+
                     resizeBounds(x, y);
                     resizeBounds(x+lfWidth, y+lfHeight);
                 }
@@ -302,14 +302,14 @@ public class WMFHeaderProperties extends AbstractWMFReader {
                     int lfClipPrecision = is.readByte();
                     int lfQuality = is.readByte();
                     int lfPitchAndFamily = is.readByte();
-                    
-                    int style = italic > 0 ? Font.ITALIC : Font.PLAIN;
-                    style |= (weight > 400) ? Font.BOLD : Font.PLAIN;                    
 
-                    // don't need to read the end of the record, 
+                    int style = italic > 0 ? Font.ITALIC : Font.PLAIN;
+                    style |= (weight > 400) ? Font.BOLD : Font.PLAIN;
+
+                    // don't need to read the end of the record,
                     // because it will always be completely used
                     int len = (2*(recSize-9));
-                    byte lfFaceName[] = new byte[ len ];
+                    byte[] lfFaceName = new byte[ len ];
                     byte ch;
                     for ( int i = 0; i < len; i++ ) lfFaceName[ i ] = is.readByte();
                     String face = new String( lfFaceName );
@@ -329,11 +329,11 @@ public class WMFHeaderProperties extends AbstractWMFReader {
                     f = f.deriveFont(size);
                     WMFFont wf = new WMFFont(f, charset, underline,
                         strikeOut, italic, weight, orient, escape);
-                        
-                    objIndex = addObjectAt( FONT, wf , objIndex );                                                            
+
+                    objIndex = addObjectAt( FONT, wf , objIndex );
                 }
                 break;
-                
+
             case WMFConstants.META_CREATEREGION: {
                 int objIndex = 0;
                 for ( int j = 0; j < recSize; j++ ) readShort(is); // read all fields
@@ -352,7 +352,7 @@ public class WMFHeaderProperties extends AbstractWMFReader {
                     gdiIndex = readShort(is);
                     if (( gdiIndex & 0x80000000 ) != 0 ) // Stock Object
                         break;
-                    
+
                     gdiObj = getObject( gdiIndex );
                     if ( !gdiObj.used )
                         break;
@@ -384,29 +384,29 @@ public class WMFHeaderProperties extends AbstractWMFReader {
                     else if ( gdiIndex == penObject ) penObject = -1;
                     else if ( gdiIndex == fontObject ) fontObject = -1;
                     gdiObj.clear();
-                    break;                
-                
+                    break;
+
             case WMFConstants.META_LINETO: {
                     int y = readShort( is );
                     int x = readShort( is );
                     if (penObject >= 0) {
                         resizeBounds(startX, startY);
-                        resizeBounds(x, y);                        
-                        firstEffectivePaint = false;                        
-                    }                    
+                        resizeBounds(x, y);
+                        firstEffectivePaint = false;
+                    }
                     startX = x;
                     startY = y;
                 }
-                break;                
+                break;
             case WMFConstants.META_MOVETO: {
                     startY = readShort( is );
                     startX = readShort( is );
                 }
                 break;
-                
+
             case WMFConstants.META_POLYPOLYGON: {
                     int count = readShort( is );
-                    int pts[] = new int[ count ];
+                    int[] pts = new int[ count ];
                     int ptCount = 0;
                     for ( int i = 0; i < count; i++ ) {
                         pts[ i ] = readShort( is );
@@ -418,7 +418,7 @@ public class WMFHeaderProperties extends AbstractWMFReader {
                         for ( int j = 0; j < pts[ i ]; j++ ) {
                             // FIXED 115 : correction preliminary images dimensions
                             int x = readShort( is );
-                            int y = readShort( is );                            
+                            int y = readShort( is );
                             if ((brushObject >= 0) || (penObject >= 0)) resizeBounds(x, y);
                         }
                     }
@@ -429,9 +429,9 @@ public class WMFHeaderProperties extends AbstractWMFReader {
             case WMFConstants.META_POLYGON: {
                     int count = readShort( is );
                     float[] _xpts = new float[ count+1 ];
-                    float[] _ypts = new float[ count+1 ];                    
+                    float[] _ypts = new float[ count+1 ];
                     for ( int i = 0; i < count; i++ ) {
-                        _xpts[i] = readShort( is );                        
+                        _xpts[i] = readShort( is );
                         _ypts[i] = readShort( is );
                     }
                     _xpts[count] = _xpts[0];
@@ -445,16 +445,16 @@ public class WMFHeaderProperties extends AbstractWMFReader {
                     {
                         int count = readShort( is );
                         float[] _xpts = new float[ count ];
-                        float[] _ypts = new float[ count ];                    
+                        float[] _ypts = new float[ count ];
                         for ( int i = 0; i < count; i++ ) {
-                            _xpts[i] = readShort( is );                        
+                            _xpts[i] = readShort( is );
                             _ypts[i] = readShort( is );
                         }
                         Polyline2D pol = new Polyline2D(_xpts, _ypts, count);
-                        paintWithPen(penObject, pol);                        
+                        paintWithPen(penObject, pol);
                     }
-                    break;                
-                
+                    break;
+
             case WMFConstants.META_ELLIPSE:
             case WMFConstants.META_INTERSECTCLIPRECT:
             case WMFConstants.META_RECTANGLE: {
@@ -473,14 +473,14 @@ public class WMFHeaderProperties extends AbstractWMFReader {
                     int bot = readShort( is );
                     int right = readShort( is );
                     int top = readShort( is );
-                    int left = readShort( is ); 
+                    int left = readShort( is );
                     Rectangle2D.Float rec = new Rectangle2D.Float(left, top, right-left, bot-top);
                     paint(brushObject, penObject, rec);
                 }
                 break;
 
             case WMFConstants.META_ARC:
-            case WMFConstants.META_CHORD:                
+            case WMFConstants.META_CHORD:
             case WMFConstants.META_PIE: {
                     readShort( is );
                     readShort( is );
@@ -496,13 +496,13 @@ public class WMFHeaderProperties extends AbstractWMFReader {
                 break;
 
             case WMFConstants.META_PATBLT : {
-                    readInt( is ); // rop          
+                    readInt( is ); // rop
                     int height = readShort( is );
                     int width = readShort( is );
                     int left = readShort( is );
                     int top = readShort( is );
                     if (penObject >= 0) resizeBounds(left, top);
-                    if (penObject >= 0) resizeBounds(left+width, top+height);                    
+                    if (penObject >= 0) resizeBounds(left+width, top+height);
                 }
                 break;
             // UPDATED : META_DIBSTRETCHBLT added
@@ -514,18 +514,18 @@ public class WMFHeaderProperties extends AbstractWMFReader {
                     readShort( is ); // sy
                     readShort( is ); // sx
                     float heightDst = (float)readShort( is );
-                    float widthDst = (float)readShort( is );                         
-                    float dy = (float)readShort( is ) * getVpWFactor() * (float)inch / PIXEL_PER_INCH;                                        
-                    float dx = (float)readShort( is ) * getVpWFactor() * (float)inch / PIXEL_PER_INCH; 
+                    float widthDst = (float)readShort( is );
+                    float dy = (float)readShort( is ) * getVpWFactor() * (float)inch / PIXEL_PER_INCH;
+                    float dx = (float)readShort( is ) * getVpWFactor() * (float)inch / PIXEL_PER_INCH;
                     widthDst = widthDst * getVpWFactor() * (float)inch / PIXEL_PER_INCH;
-                    heightDst = heightDst * getVpHFactor() * (float)inch / PIXEL_PER_INCH;                                            
+                    heightDst = heightDst * getVpHFactor() * (float)inch / PIXEL_PER_INCH;
                     resizeImageBounds((int)dx, (int)dy);
                     resizeImageBounds((int)(dx + widthDst), (int)(dy + heightDst));
-                    
-                    int len = 2*recSize - 20;                
+
+                    int len = 2*recSize - 20;
                     for (int i = 0; i < len; i++) is.readByte();
                 }
-                break;                                
+                break;
             default:
                 for ( int j = 0; j < recSize; j++ )
                     readShort(is);
@@ -535,8 +535,8 @@ public class WMFHeaderProperties extends AbstractWMFReader {
         }
         resetBounds();
         return true;
-    }  
-    
+    }
+
     /** @return the width of the Rectangle bounding the figures enclosed in
      * the Metafile, in pixels
      */
@@ -546,10 +546,10 @@ public class WMFHeaderProperties extends AbstractWMFReader {
 
     /** @return the height of the Rectangle bounding the figures enclosed in
      * the Metafile, in pixels.
-     */    
+     */
     public int getHeightBoundsPixels() {
         return _bheight;
-    }   
+    }
 
     /** @return the width of the Rectangle bounding the figures enclosed in
      * the Metafile, in Metafile Units.
@@ -557,56 +557,56 @@ public class WMFHeaderProperties extends AbstractWMFReader {
     public int getWidthBoundsUnits() {
         return (int)((float)inch * (float)_bwidth / PIXEL_PER_INCH);
     }
-    
+
     /** @return the height of the Rectangle bounding the figures enclosed in
      * the Metafile in Metafile Units.
-     */    
+     */
     public int getHeightBoundsUnits() {
         return (int)((float)inch * (float)_bheight / PIXEL_PER_INCH);
     }
-        
+
     /** @return the X offset of the Rectangle bounding the figures enclosed in
      * the Metafile.
-     */    
+     */
     public int getXOffset() {
         return _bleft;
     }
 
     /** @return the Y offset of the Rectangle bounding the figures enclosed in
      * the Metafile.
-     */        
+     */
     public int getYOffset() {
         return _btop;
     }
-    
+
     private void resetBounds() {
         // calculate geometry size
         scale =  (float)getWidthPixels() / (float)vpW ;
         if (_bright != -1) {
             _bright = (int)(scale * (vpX +_bright));
-            _bleft = (int)(scale * (vpX +_bleft));        
+            _bleft = (int)(scale * (vpX +_bleft));
             _bbottom = (int)(scale * (vpY +_bbottom));
             _btop = (int)(scale * (vpY +_btop));
         }
-        
+
         // calculate image size
         if (_iright != -1) {
             _iright = (int)((float)_iright * (float)getWidthPixels() / (float)width);
-            _ileft = (int)((float)_ileft * (float)getWidthPixels() / (float)width);        
+            _ileft = (int)((float)_ileft * (float)getWidthPixels() / (float)width);
             _ibottom = (int)((float)_ibottom * (float)getWidthPixels() / (float)width);
-            _itop = (int)((float)_itop  * (float)getWidthPixels() / (float)width);                        
+            _itop = (int)((float)_itop  * (float)getWidthPixels() / (float)width);
 
             // merge image and geometry size
             if ((_bright == -1) || (_iright > _bright)) _bright = _iright;
-            if ((_bleft == -1) || (_ileft < _bleft)) _bleft = _ileft;                
+            if ((_bleft == -1) || (_ileft < _bleft)) _bleft = _ileft;
             if ((_btop == -1) || (_itop < _btop)) _btop = _itop;
             if ((_bbottom == -1) || (_ibottom > _bbottom)) _bbottom = _ibottom;
         }
-        
+
         if ((_bleft != -1) && (_bright != -1)) _bwidth = _bright - _bleft;
         if ((_btop != -1) && (_bbottom != -1)) _bheight = _bbottom - _btop;
     }
-    
+
     /** resize Bounds for each primitive encountered. Only elements that are in the overall
      * width and height of the Metafile are kept.
      */
@@ -614,14 +614,14 @@ public class WMFHeaderProperties extends AbstractWMFReader {
         if (_bleft == -1) _bleft = x;
         else if (x < _bleft) _bleft = x;
         if (_bright == -1) _bright = x;
-        else if (x > _bright) _bright = x;        
+        else if (x > _bright) _bright = x;
 
         if (_btop == -1) _btop = y;
         else if (y < _btop) _btop = y;
         if (_bbottom == -1) _bbottom = y;
-        else if (y > _bbottom) _bbottom = y;                  
+        else if (y > _bbottom) _bbottom = y;
     }
-    
+
     /** resize Bounds for each image primitive encountered. Only elements that are in the overall
      * width and height of the Metafile are kept.
      */
@@ -629,14 +629,14 @@ public class WMFHeaderProperties extends AbstractWMFReader {
         if (_ileft == -1) _ileft = x;
         else if (x < _ileft) _ileft = x;
         if (_iright == -1) _iright = x;
-        else if (x > _iright) _iright = x;        
+        else if (x > _iright) _iright = x;
 
         if (_itop == -1) _itop = y;
         else if (y < _itop) _itop = y;
         if (_ibottom == -1) _ibottom = y;
-        else if (y > _ibottom) _ibottom = y;                  
+        else if (y > _ibottom) _ibottom = y;
     }
-        
+
     /** get the Color corresponding with the Object (pen or brush object).
      */
     private Color getColorFromObject(int brushObject) {
@@ -644,9 +644,9 @@ public class WMFHeaderProperties extends AbstractWMFReader {
         if ( brushObject >= 0 ) {
             GdiObject gdiObj = getObject( brushObject );
             return  (Color)gdiObj.obj;
-        } else return null;                
+        } else return null;
     }
-    
+
     /** Resize the bounds of the WMF image according with the bounds of the geometric
      *  Shape.
      *  There will be no resizing if one of the following properties is true :
@@ -660,16 +660,16 @@ public class WMFHeaderProperties extends AbstractWMFReader {
             Color col;
             if (brushObject >= 0) col = getColorFromObject(brushObject);
             else col = getColorFromObject(penObject);
-            
+
             if (!(firstEffectivePaint && (col.equals(Color.white)))) {
                 Rectangle rec = shape.getBounds();
                 resizeBounds((int)rec.getMinX(), (int)rec.getMinY());
                 resizeBounds((int)rec.getMaxX(), (int)rec.getMaxY());
-                firstEffectivePaint = false; 
+                firstEffectivePaint = false;
             }
         }
-    }    
-    
+    }
+
     /** Resize the bounds of the WMF image according with the bounds of the geometric
      *  Shape.
      *  There will be no resizing if one of the following properties is true :
@@ -681,21 +681,21 @@ public class WMFHeaderProperties extends AbstractWMFReader {
     private void paintWithPen(int penObject, Shape shape) {
         if (penObject >= 0) {
             Color col = getColorFromObject(penObject);
-            
+
             if (!(firstEffectivePaint && (col.equals(Color.white)))) {
                 Rectangle rec = shape.getBounds();
                 resizeBounds((int)rec.getMinX(), (int)rec.getMinY());
                 resizeBounds((int)rec.getMaxX(), (int)rec.getMaxY());
-                firstEffectivePaint = false; 
+                firstEffectivePaint = false;
             }
         }
-    }  
-    
+    }
+
     /** get the vertical Alignment value for the text.
      */
-    private float getVerticalAlignmentValue(TextLayout layout, int vertAlign) { 
-        if (vertAlign == WMFConstants.TA_BASELINE) return -layout.getAscent();       
-        else if (vertAlign == WMFConstants.TA_TOP) return (layout.getAscent() + layout.getDescent()); 
-        else return 0;                                
-    }        
+    private float getVerticalAlignmentValue(TextLayout layout, int vertAlign) {
+        if (vertAlign == WMFConstants.TA_BASELINE) return -layout.getAscent();
+        else if (vertAlign == WMFConstants.TA_TOP) return (layout.getAscent() + layout.getDescent());
+        else return 0;
+    }
 }

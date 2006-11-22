@@ -35,12 +35,12 @@ import org.apache.batik.transcoder.wmf.WMFConstants;
 /** This class provides generic methods that must be used by a particular WMFPainter.
  */
 public class AbstractWMFPainter {
-    
+
     public static final String WMF_FILE_EXTENSION = ".wmf";
     protected WMFFont wmfFont = null;
     protected int currentHorizAlign = 0;
-    protected int currentVertAlign = 0;    
-    
+    protected int currentVertAlign = 0;
+
     public static final int PEN = 1;
     public static final int BRUSH = 2;
     public static final int FONT = 3;
@@ -49,11 +49,11 @@ public class AbstractWMFPainter {
     public static final int PALETTE = 6;
     public static final int OBJ_BITMAP = 7;
     public static final int OBJ_REGION = 8;
-    
+
     protected WMFRecordStore currentStore;
-    transient protected boolean bReadingWMF = true;
-    transient protected BufferedInputStream bufStream = null;
-    
+    protected transient boolean bReadingWMF = true;
+    protected transient BufferedInputStream bufStream = null;
+
     /** Return the image associated with a bitmap in a Metafile.
      *  24 bits and 8 bits bitmaps are handled.
      *  @param bit the bitmap byte array
@@ -61,19 +61,19 @@ public class AbstractWMFPainter {
      *  @param height the bitmap assumed height
      *  @return the Image associated with the bitmap (null if the dimensions detected in the
      *     header are not consistent with the assumed dimensions)
-     */ 
+     */
     protected BufferedImage getImage(byte[] bit, int width, int height) {
         // get the header of the bitmap, first the width and height
         int _width = (((int)bit[7] & 0x00ff) << 24) | (((int)bit[6] & 0x00ff) << 16)
                     | (((int)bit[5] & 0x00ff) << 8) | (int)bit[4] & 0x00ff;
         int _height = (((int)bit[11] & 0x00ff) << 24) | (((int)bit[10] & 0x00ff) << 16)
                     | (((int)bit[9] & 0x00ff) <<8) | (int)bit[8] & 0x00ff;
-        
+
         // if width and height of the bitmap are different from advertised, we abort
         if ((width != _width) || (height != _height)) return null;
         return getImage(bit);
     }
-    
+
     protected Dimension getImageDimension(byte[] bit) {
         // get the header of the bitmap, first the width and height
         int _width = (((int)bit[7] & 0x00ff) << 24) | (((int)bit[6] & 0x00ff) << 16)
@@ -82,29 +82,29 @@ public class AbstractWMFPainter {
                     | (((int)bit[9] & 0x00ff) << 8) | (int)bit[8] & 0x00ff;
         return new Dimension(_width, _height);
     }
-    
+
     /** Return the image associated with a bitmap in a Metafile.
      *  24 bits and 8 bits bitmaps are handled.
      *  @param bit the bitmap byte array
      *  @return the Image associated with the bitmap (null if the dimensions detected in the
      *     header are not consistent with the assumed dimensions)
-     */ 
-    protected BufferedImage getImage(byte[] bit) {       
+     */
+    protected BufferedImage getImage(byte[] bit) {
         // get the header of the bitmap, first the width and height
         int _width = (((int)bit[7] & 0x00ff) << 24) | (((int)bit[6] & 0x00ff) << 16)
                     | (((int)bit[5] & 0x00ff) << 8) | (int)bit[4] & 0x00ff;
         int _height = (((int)bit[11] & 0x00ff) << 24) | (((int)bit[10] & 0x00ff) << 16)
                     | (((int)bit[9] & 0x00ff) << 8) | (int)bit[8] & 0x00ff;
-                        
+
         // OK, we can safely create the data array now
         int[] bitI = new int[_width * _height];
         BufferedImage img = new BufferedImage(_width, _height, BufferedImage.TYPE_INT_RGB);
         WritableRaster raster = img.getRaster();
-        
+
         // retrieve useful informations in bitmap header
         // size of header
         int _headerSize = (((int)bit[3] & 0x00ff) << 24) | (((int)bit[2] & 0x00ff)<<16)
-                            | (((int)bit[1] & 0x00ff) << 8) | (int)bit[0] & 0x00ff;        
+                            | (((int)bit[1] & 0x00ff) << 8) | (int)bit[0] & 0x00ff;
         // number of planes
         int _planes = (((int)bit[13] & 0x00ff) << 8) | (int)bit[12] & 0x00ff;
         // number of bits per pixel
@@ -114,11 +114,11 @@ public class AbstractWMFPainter {
         int _size = (((int)bit[23] & 0x00ff) << 24) | (((int)bit[22] & 0x00ff) << 16)
                         | (((int)bit[21] & 0x00ff) << 8) | (int)bit[20] & 0x00ff;
         // infer the size of image if it is not given in the file
-        if (_size == 0) _size = ((((_width * _nbit) + 31) & ~31 ) >> 3) * _height;     
+        if (_size == 0) _size = ((((_width * _nbit) + 31) & ~31 ) >> 3) * _height;
 
         // number of used colors
         int _clrused = (((int)bit[35] & 0x00ff) << 24) | (((int)bit[34]&0x00ff) << 16)
-                        | (((int)bit[33] & 0x00ff) << 8) | (int)bit[32]&0x00ff;        
+                        | (((int)bit[33] & 0x00ff) << 8) | (int)bit[32]&0x00ff;
 
         // 24 bit image
         if (_nbit == 24) {
@@ -128,14 +128,14 @@ public class AbstractWMFPainter {
             // populate the int array
             for (int j = 0; j < _height; j++) {
                 for (int i = 0; i < _width; i++) {
-                    bitI[_width * (_height - j - 1) + i] = 
+                    bitI[_width * (_height - j - 1) + i] =
                         (255 & 0x00ff) << 24 | (((int)bit[offset+2] & 0x00ff) << 16)
                         | (((int)bit[offset+1] & 0x00ff) << 8) | (int)bit[offset] & 0x00ff;
                     offset += 3;
                 }
                 offset += pad;
             }
-        // 8 bit image            
+        // 8 bit image
         } else if (_nbit == 8) {
             // Determine the number of colors
             int nbColors = 0;
@@ -143,10 +143,10 @@ public class AbstractWMFPainter {
             else nbColors = (1 & 0x00ff) << 8;
             // Read the palette colors.
             int offset = _headerSize;
-            int  palette[] = new int[nbColors];
+            int[]  palette = new int[nbColors];
             for (int i = 0; i < nbColors; i++) {
                 palette[i] = (255 & 0x00ff) << 24 | (((int)bit[offset+2] & 0x00ff) << 16)
-                            | (((int)bit[offset+1] & 0x00ff) << 8) 
+                            | (((int)bit[offset+1] & 0x00ff) << 8)
                             | (int)bit[offset] & 0x00ff;
                 offset += 4;
             }
@@ -166,13 +166,13 @@ public class AbstractWMFPainter {
             int nbColors = 2;
             // Read the palette colors.
             int offset = _headerSize;
-            int  palette[] = new int[nbColors];
+            int[]  palette = new int[nbColors];
             for (int i = 0; i < nbColors; i++) {
                 palette[i] = (255 & 0x00ff) << 24 | (((int)bit[offset+2] & 0x00ff) << 16)
-                            | (((int)bit[offset+1] & 0x00ff) << 8) 
+                            | (((int)bit[offset+1] & 0x00ff) << 8)
                             | (int)bit[offset] & 0x00ff;
                 offset += 4;
-            }            
+            }
 
             // populate the int array : each pixel correspond to a bit in the byte array
             int pos = 7;
@@ -195,10 +195,10 @@ public class AbstractWMFPainter {
                 if (offset < bit.length) currentByte = bit[offset];
             }
         }
-        raster.setDataElements(0, 0, _width, _height, bitI);                    
+        raster.setDataElements(0, 0, _width, _height, bitI);
         return img;
-    } 
-    
+    }
+
     /** Create an AttributedCharacterIterator with the current definition of the WMF Font, and
      * the input String.
      */
@@ -209,30 +209,30 @@ public class AbstractWMFPainter {
     /** Create an AttributedCharacterIterator with the current definition of the WMF Font, and
      * the input String.
      */
-    protected AttributedCharacterIterator getCharacterIterator(Graphics2D g2d, String sr, 
+    protected AttributedCharacterIterator getCharacterIterator(Graphics2D g2d, String sr,
         WMFFont wmffont, int align) {
         AttributedString ats = getAttributedString(g2d, sr, wmffont);
-        
+
         return ats.getIterator();
-    }    
-    
-    protected AttributedString getAttributedString(Graphics2D g2d, String sr, WMFFont wmffont) { 
+    }
+
+    protected AttributedString getAttributedString(Graphics2D g2d, String sr, WMFFont wmffont) {
         AttributedString ats = new AttributedString(sr);
         Font font = g2d.getFont();
         ats.addAttribute(TextAttribute.SIZE, new Float(font.getSize2D()));
         ats.addAttribute(TextAttribute.FONT, font);
-        if (wmfFont.underline != 0) 
+        if (wmfFont.underline != 0)
             ats.addAttribute(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
-        if (wmfFont.italic != 0) 
+        if (wmfFont.italic != 0)
             ats.addAttribute(TextAttribute.POSTURE, TextAttribute.POSTURE_OBLIQUE);
         else ats.addAttribute(TextAttribute.POSTURE, TextAttribute.POSTURE_REGULAR);
         if (wmfFont.weight > 400)
             ats.addAttribute(TextAttribute.WEIGHT, TextAttribute.WEIGHT_BOLD);
         else ats.addAttribute(TextAttribute.WEIGHT, TextAttribute.WEIGHT_REGULAR);
-        
+
         return ats;
-    }    
-    
+    }
+
     /**
      * Sets the WMFRecordStore this WMFPainter should use to render
      */
@@ -240,21 +240,21 @@ public class AbstractWMFPainter {
         if (currentStore == null){
             throw new IllegalArgumentException();
         }
-        
+
         this.currentStore = currentStore;
     }
-    
+
     /**
      * Returns the WMFRecordStore this WMFPainter renders
      */
     public WMFRecordStore getRecordStore(){
         return currentStore;
     }
-    
+
     protected int addObject( WMFRecordStore store, int type, Object obj ) {
         return currentStore.addObject( type, obj );
     }
-    
+
     protected int addObjectAt( WMFRecordStore store, int type, Object obj, int idx ) {
         return currentStore.addObjectAt( type, obj, idx );
     }
