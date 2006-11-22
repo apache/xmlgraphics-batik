@@ -178,7 +178,7 @@ public class CompositeRed extends AbstractRed {
                 // Fill in initial image...
                 cr.copyData(wr);
 
-                if (cr.getColorModel().isAlphaPremultiplied() == false)
+                if ( ! cr.getColorModel().isAlphaPremultiplied() )
                     GraphicsUtil.coerceData(wr, cr.getColorModel(), true);
                 first = false;
             } else {

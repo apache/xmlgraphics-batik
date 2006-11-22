@@ -23,19 +23,19 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * Interface which allows image library independent image writing. 
+ * Interface which allows image library independent image writing.
  *
  * @version $Id$
  */
 public interface ImageWriter {
-    
-    public void writeImage(RenderedImage image, OutputStream out) 
+
+    void writeImage(RenderedImage image, OutputStream out)
             throws IOException;
 
-    public void writeImage(RenderedImage image, OutputStream out, 
-            ImageWriterParams params) 
+    void writeImage(RenderedImage image, OutputStream out,
+            ImageWriterParams params)
             throws IOException;
 
-    public String getMIMEType();
-    
+    String getMIMEType();
+
 }

@@ -34,79 +34,79 @@ public interface ConvolveMatrixRable extends FilterColorInterpolation {
     /**
      * Returns the source to be Convolved
      */
-    public Filter getSource();
+    Filter getSource();
 
     /**
      * Sets the source to be Convolved
      * @param src image to Convolved.
      */
-    public void setSource(Filter src);
+    void setSource(Filter src);
 
 
     /**
      * Returns the Convolution Kernel in use
      */
-    public Kernel getKernel();
+    Kernel getKernel();
 
     /**
      * Sets the Convolution Kernel to use.
      * @param k Kernel to use for convolution.
      */
-    public void setKernel(Kernel k);
+    void setKernel(Kernel k);
 
     /**
      * Returns the target point of the kernel (what pixel under the kernel
      * should be set to the result of convolution).
      */
-    public Point getTarget();
+    Point getTarget();
 
     /**
      * Sets the target point of the kernel (what pixel under the kernel
      * should be set to the result of the convolution).
      */
-    public void setTarget(Point pt);
+    void setTarget(Point pt);
 
     /**
      * Returns the shift value to apply to the result of convolution
      */
-    public double getBias();
+    double getBias();
 
     /**
      * Sets the shift value to apply to the result of convolution
      */
-    public void setBias(double bias);
+    void setBias(double bias);
 
     /**
      * Returns the current edge handling mode.
      */
-    public PadMode getEdgeMode();
+    PadMode getEdgeMode();
 
     /**
      * Sets the current edge handling mode.
      */
-    public void setEdgeMode(PadMode edgeMode);
+    void setEdgeMode(PadMode edgeMode);
 
     /**
      * Returns the [x,y] distance in user space between kernel values
      */
-    public double [] getKernelUnitLength();
+    double [] getKernelUnitLength();
 
     /**
      * Sets the [x,y] distance in user space between kernel values
      * If set to zero then one pixel in device space will be used.
      */
-    public void setKernelUnitLength(double [] kernelUnitLength);
+    void setKernelUnitLength(double [] kernelUnitLength);
 
     /**
      * Returns false if the convolution should affect the Alpha channel
      */
-    public boolean getPreserveAlpha();
+    boolean getPreserveAlpha();
 
     /**
      * Sets Alpha channel handling.
      * A value of False indicates that the convolution should apply to
      * the Alpha Channel
      */
-    public void setPreserveAlpha(boolean preserveAlpha);
+    void setPreserveAlpha(boolean preserveAlpha);
 }
 

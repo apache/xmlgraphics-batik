@@ -25,25 +25,25 @@ public class LRUCache {
     /**
      * Interface for object participating in the LRU Cache.  These
      * inform the object of key events in the status of the object in
-     * the LRU cache.  
+     * the LRU cache.
      */
         public interface LRUObj {
         /**
          * Called when the object first becomes active in the LRU cache.
          * @param nde The LRU cache node associated with this object.
          *            should be remembered so it can be returned by
-         *            <tt>lruGet</tt>.  
+         *            <tt>lruGet</tt>.
          */
-                public  void    lruSet(LRUNode nde);
+        void    lruSet(LRUNode nde);
         /**
          * Called to get the LRU node for this object.  Should return the
          * node passed in to lruSet.
          */
-                public  LRUNode lruGet();
+        LRUNode lruGet();
         /**
          * Called to inform the object that it is no longer in the cache.
          */
-                public  void    lruRemove();
+        void    lruRemove();
         }
 
     /**
@@ -53,7 +53,7 @@ public class LRUCache {
         public class LRUNode extends DoublyLinkedList.Node {
                 private   LRUObj  obj  = null;
                 public    LRUObj  getObj ()               { return obj; }
-                protected void    setObj (LRUObj  newObj) { 
+                protected void    setObj (LRUObj  newObj) {
                         if (obj != null) obj.lruRemove();
 
                         obj = newObj;
@@ -64,14 +64,14 @@ public class LRUCache {
         private DoublyLinkedList free    = null;
         private DoublyLinkedList used    = null;
         private int     maxSize = 0;
-                
+
         public LRUCache(int size) {
                 if (size <= 0) size=1;
                 maxSize = size;
-                
+
                 free = new DoublyLinkedList();
                 used = new DoublyLinkedList();
-                
+
                 while (size > 0) {
                         free.add(new LRUNode());
                         size--;

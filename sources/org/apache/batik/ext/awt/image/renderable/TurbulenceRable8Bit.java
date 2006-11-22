@@ -207,7 +207,7 @@ public class TurbulenceRable8Bit
         } else {
             Rectangle2D rect = getBounds2D();
             aoiRect          = aoi.getBounds2D();
-            if (aoiRect.intersects(rect) == false)
+            if ( ! aoiRect.intersects(rect) )
                 return null;
             Rectangle2D.intersect(aoiRect, rect, aoiRect);
         }
@@ -226,7 +226,7 @@ public class TurbulenceRable8Bit
             return null;
 
         ColorSpace cs = getOperationColorSpace();
-        
+
         Rectangle2D tile = null;
         if (stitched)
             tile = (Rectangle2D)region.clone();
@@ -238,7 +238,7 @@ public class TurbulenceRable8Bit
         }
 
         return new TurbulencePatternRed
-            (baseFreqX, baseFreqY, numOctaves, seed, fractalNoise, 
+            (baseFreqX, baseFreqY, numOctaves, seed, fractalNoise,
              tile, patternTxf, devRect, cs, true);
     }
 }

@@ -33,26 +33,26 @@ public interface ClipRable extends Filter {
      * Set the default behaviour of anti-aliased clipping.
      * for this clip object.
      */
-    public void setUseAntialiasedClip(boolean useAA);
+    void setUseAntialiasedClip(boolean useAA);
 
     /**
      * Resturns true if the default behaviour should be to use
      * anti-aliased clipping.
      */
-    public boolean getUseAntialiasedClip();
+    boolean getUseAntialiasedClip();
 
 
       /**
        * The source to be clipped by the outline of the clip node.
        * @param src The Image to be clipped.
        */
-    public void setSource(Filter src);
+      void setSource(Filter src);
 
       /**
        * This returns the current image being clipped by the clip node.
        * @return The image to clip
        */
-    public Filter getSource();
+      Filter getSource();
 
     /**
      * Set the clip path to use.
@@ -60,12 +60,12 @@ public interface ClipRable extends Filter {
      * the clipping mask.
      * @param clipPath The clip path to use
      */
-    public void setClipPath(Shape clipPath);
+    void setClipPath(Shape clipPath);
 
       /**
        * Returns the Shape that the Clip will use to
        * define the clip path.
        * @return The shape that defines the clip path.
        */
-    public Shape getClipPath();
+      Shape getClipPath();
 }

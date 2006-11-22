@@ -29,24 +29,24 @@ public interface ErrorConstants {
     /**
      * The error messages bundle class name.
      */
-    public final static String RESOURCES =
+    String RESOURCES =
         "org.apache.batik.ext.awt.image.spi.resources.Messages";
 
 
     /**
      * The error code when a stream is unreadable (corrupt or unsupported).
      */
-    public static final String ERR_STREAM_UNREADABLE
+    String ERR_STREAM_UNREADABLE
         = "stream.unreadable";
 
     /**
-     * The error code when a url of a particular format is unreadable 
+     * The error code when a url of a particular format is unreadable
      * (corrupt).
      * <pre>
      * {0} = the format that couldn't be read.
      * </pre>
      */
-    public static final String ERR_STREAM_FORMAT_UNREADABLE
+    String ERR_STREAM_FORMAT_UNREADABLE
         = "stream.format.unreadable";
 
     /**
@@ -56,7 +56,7 @@ public interface ErrorConstants {
      * {0} = the ParsedURL that couldn't be read.
      * </pre>
      */
-    public static final String ERR_URL_UNINTERPRETABLE
+    String ERR_URL_UNINTERPRETABLE
         = "url.uninterpretable";
 
     /**
@@ -66,19 +66,19 @@ public interface ErrorConstants {
      * {0} = the ParsedURL that couldn't be read.
      * </pre>
      */
-    public static final String ERR_URL_UNREACHABLE
+    String ERR_URL_UNREACHABLE
         = "url.unreachable";
 
 
     /**
-     * The error code when a url of a particular format is unreadable 
+     * The error code when a url of a particular format is unreadable
      * (corrupt).
      * <pre>
      * {0} = the format that couldn't be read.
      * {1} = the ParsedURL for file.
      * </pre>
      */
-    public static final String ERR_URL_FORMAT_UNREADABLE
+    String ERR_URL_FORMAT_UNREADABLE
         = "url.format.unreadable";
 
 }

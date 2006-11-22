@@ -47,7 +47,7 @@ public abstract class PrefixableStylableExtensionElement
      * @param prefix The namespace prefix.
      * @param owner The owner document.
      */
-    public PrefixableStylableExtensionElement(String prefix, 
+    public PrefixableStylableExtensionElement(String prefix,
                                               AbstractDocument owner) {
         super(prefix, owner);
         setPrefix(prefix);
@@ -58,7 +58,7 @@ public abstract class PrefixableStylableExtensionElement
      */
     public String getNodeName() {
         return (prefix == null || prefix.equals(""))
-            ? getLocalName() : prefix + ":" + getLocalName();
+            ? getLocalName() : prefix + ':' + getLocalName();
     }
 
     /**
@@ -76,7 +76,7 @@ public abstract class PrefixableStylableExtensionElement
             !DOMUtilities.isValidName(prefix)) {
             throw createDOMException
                 (DOMException.INVALID_CHARACTER_ERR, "prefix",
-                 new Object[] { new Integer(getNodeType()), 
+                 new Object[] { new Integer(getNodeType()),
                                 getNodeName(),
                                 prefix });
         }

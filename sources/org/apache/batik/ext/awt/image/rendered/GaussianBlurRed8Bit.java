@@ -182,7 +182,7 @@ public class GaussianBlurRed8Bit extends AbstractRed {
      * @param radius stdDeviationX or stdDeviationY.
      * @see #makeQualityKernels */
     private float [] computeQualityKernelData(int len, double stdDev){
-        final float kernelData[] = new float [len];
+        final float[] kernelData = new float [len];
 
         int mid = len/2;
         float sum = 0; // Used to normalise the kernel
@@ -343,8 +343,8 @@ public class GaussianBlurRed8Bit extends AbstractRed {
                 dest.getMinY()-dest.getSampleModelTranslateY()));
 
         // Access the pixel value array
-        final int srcPixels [] = srcDB.getBankData()[0];
-        final int destPixels[] = dstDB.getBankData()[0];
+        final int[] srcPixels  = srcDB.getBankData()[0];
+        final int[] destPixels = dstDB.getBankData()[0];
 
         final int [] buffer = new int [boxSz];
         int curr, prev;
@@ -462,8 +462,8 @@ public class GaussianBlurRed8Bit extends AbstractRed {
 
 
         // Access the pixel value array
-        final int srcPixels [] = srcDB.getBankData()[0];
-        final int destPixels[] = dstDB.getBankData()[0];
+        final int[] srcPixels  = srcDB.getBankData()[0];
+        final int[] destPixels = dstDB.getBankData()[0];
 
         final int [] buffer = new int [boxSz];
         int curr, prev;

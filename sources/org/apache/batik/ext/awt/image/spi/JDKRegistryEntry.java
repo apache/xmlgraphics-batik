@@ -37,9 +37,9 @@ import org.apache.batik.util.ParsedURL;
 
 /**
  * This Image tag registy entry is setup to wrap the core JDK
- * Image stream tools.  
+ * Image stream tools.
  */
-public class JDKRegistryEntry extends AbstractRegistryEntry 
+public class JDKRegistryEntry extends AbstractRegistryEntry
     implements URLRegistryEntry {
 
     /**
@@ -48,7 +48,7 @@ public class JDKRegistryEntry extends AbstractRegistryEntry
      * but if one wishes one could set a priority higher and be called
      * afterwords
      */
-    public final static float PRIORITY = 
+    public static final float PRIORITY =
         1000*MagicNumberRegistryEntry.PRIORITY;
 
     public JDKRegistryEntry() {
@@ -65,7 +65,7 @@ public class JDKRegistryEntry extends AbstractRegistryEntry
      *
      * This method should only throw a StreamCorruptedException if it
      * is unable to restore the state of the InputStream
-     * (i.e. mark/reset fails basically).  
+     * (i.e. mark/reset fails basically).
      */
     public boolean isCompatibleURL(ParsedURL purl) {
         try {
@@ -82,11 +82,11 @@ public class JDKRegistryEntry extends AbstractRegistryEntry
      *
      * @param purl URL of the image.
      * @param needRawData If true the image returned should not have
-     *                    any default color correction the file may 
-     *                    specify applied.  
+     *                    any default color correction the file may
+     *                    specify applied.
      */
     public Filter handleURL(ParsedURL purl, boolean needRawData) {
-        
+
         final URL url;
         try {
             url = new URL(purl.toString());
@@ -127,7 +127,7 @@ public class JDKRegistryEntry extends AbstractRegistryEntry
                     if (filt == null)
                         filt = ImageTagRegistry.getBrokenLinkImage
                             (this, errCode, errParam);
-                    
+
                     dr.setSource(filt);
                 }
             };
@@ -155,7 +155,7 @@ public class JDKRegistryEntry extends AbstractRegistryEntry
         BufferedImage bi = new BufferedImage
             (width, height, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = bi.createGraphics();
-        
+
         // Wait till the image is fully loaded.
         observer.waitTilImageDone();
         if (observer.imageError)
@@ -187,7 +187,7 @@ public class JDKRegistryEntry extends AbstractRegistryEntry
             imageDone       = false;
         }
 
-        public boolean imageUpdate(Image img, int infoflags, 
+        public boolean imageUpdate(Image img, int infoflags,
                                    int x, int y, int width, int height) {
             synchronized (this) {
                 boolean notify = false;
@@ -234,7 +234,7 @@ public class JDKRegistryEntry extends AbstractRegistryEntry
                     // Wait for someone to set xxxDone
                     wait();
                 }
-                catch(InterruptedException ie) { 
+                catch(InterruptedException ie) {
                     // Loop around again see if src is set now...
                 }
             }
@@ -245,7 +245,7 @@ public class JDKRegistryEntry extends AbstractRegistryEntry
                     // Wait for someone to set xxxDone
                     wait();
                 }
-                catch(InterruptedException ie) { 
+                catch(InterruptedException ie) {
                     // Loop around again see if src is set now...
                 }
             }
@@ -256,7 +256,7 @@ public class JDKRegistryEntry extends AbstractRegistryEntry
                     // Wait for someone to set xxxDone
                     wait();
                 }
-                catch(InterruptedException ie) { 
+                catch(InterruptedException ie) {
                     // Loop around again see if src is set now...
                 }
             }
@@ -268,7 +268,7 @@ public class JDKRegistryEntry extends AbstractRegistryEntry
                     // Wait for someone to set xxxDone
                     wait();
                 }
-                catch(InterruptedException ie) { 
+                catch(InterruptedException ie) {
                     // Loop around again see if src is set now...
                 }
             }

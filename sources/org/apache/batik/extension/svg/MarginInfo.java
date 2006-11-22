@@ -19,10 +19,10 @@
 package org.apache.batik.extension.svg;
 
 public class MarginInfo {
-    public final static int JUSTIFY_START  = 0;
-    public final static int JUSTIFY_MIDDLE = 1;
-    public final static int JUSTIFY_END    = 2;
-    public final static int JUSTIFY_FULL   = 3;
+    public static final int JUSTIFY_START  = 0;
+    public static final int JUSTIFY_MIDDLE = 1;
+    public static final int JUSTIFY_END    = 2;
+    public static final int JUSTIFY_FULL   = 3;
 
     protected float   top;
     protected float   right;
@@ -36,7 +36,7 @@ public class MarginInfo {
 
 
     public MarginInfo(float top, float right, float bottom, float left,
-                      float indent, int justification, 
+                      float indent, int justification,
                       boolean flowRegionBreak) {
         this.top    = top;
         this.right  = right;

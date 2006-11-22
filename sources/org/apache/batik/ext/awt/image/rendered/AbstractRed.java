@@ -599,7 +599,7 @@ public abstract class AbstractRed implements CachableRed {
         if ((tileX < minTileX) || (tileX >= minTileX+numXTiles) ||
             (tileY < minTileY) || (tileY >= minTileY+numYTiles))
             throw new IndexOutOfBoundsException
-                ("Requested Tile (" + tileX + "," + tileY +
+                ("Requested Tile (" + tileX + ',' + tileY +
                  ") lies outside the bounds of image");
 
         Point pt = new Point(tileGridXOff+tileX*tileWidth,

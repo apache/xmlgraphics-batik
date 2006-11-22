@@ -35,7 +35,7 @@ public interface FilterColorInterpolation extends Filter {
      * the linear sRGB colorspace, returns false if the
      * operation is performed in gamma corrected sRGB.
      */
-    public boolean isColorSpaceLinear();
+    boolean isColorSpaceLinear();
 
     /**
      * Sets the colorspace the operation will be performed in.
@@ -43,11 +43,11 @@ public interface FilterColorInterpolation extends Filter {
      * linear sRGB colorspace, if false the operation will be performed in
      * gamma corrected sRGB.
      */
-    public void setColorSpaceLinear(boolean csLinear);
+    void setColorSpaceLinear(boolean csLinear);
 
     /**
      * Returns the ColorSpace that the object will perform
      * it's work in.
      */
-    public ColorSpace getOperationColorSpace();
+    ColorSpace getOperationColorSpace();
 }

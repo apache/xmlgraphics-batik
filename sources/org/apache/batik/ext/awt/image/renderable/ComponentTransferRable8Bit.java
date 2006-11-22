@@ -50,15 +50,15 @@ public class ComponentTransferRable8Bit
      * Array of transfer functions. There are four
      * elements. Elements may be null.
      */
-    private ComponentTransferFunction
-        functions[] = new ComponentTransferFunction[4];
+    private ComponentTransferFunction[]
+        functions = new ComponentTransferFunction[4];
 
     /**
      * Array of transfer functions. Elements are computed
      * lazily.
      */
-    private TransferFunction
-        txfFunc[] = new TransferFunction[4];
+    private TransferFunction[]
+        txfFunc = new TransferFunction[4];
 
     public ComponentTransferRable8Bit(Filter src,
                                       ComponentTransferFunction alphaFunction,
@@ -173,10 +173,10 @@ public class ComponentTransferRable8Bit
         // Copy array to avoid multi-thread conflicts on
         // array access.
         //
-        TransferFunction txfFunc[] = new TransferFunction[4];
+        TransferFunction[] txfFunc = new TransferFunction[4];
         System.arraycopy(this.txfFunc, 0, txfFunc, 0, 4);
 
-        ComponentTransferFunction functions[];
+        ComponentTransferFunction[] functions;
         functions = new ComponentTransferFunction[4];
         System.arraycopy(this.functions, 0, functions, 0, 4);
 
@@ -236,8 +236,8 @@ public class ComponentTransferRable8Bit
     /**
      * Converts a intensity values (0-1) to code values (0-255)
      */
-    private static int[] tableFloatToInt(float tableValues[]){
-        int values[] = new int[tableValues.length];
+    private static int[] tableFloatToInt(float[] tableValues){
+        int[] values = new int[tableValues.length];
         for(int i=0; i<tableValues.length; i++){
             values[i] = (int)(tableValues[i]*255f);
         }

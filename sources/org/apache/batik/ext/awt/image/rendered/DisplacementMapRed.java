@@ -40,8 +40,8 @@ import org.apache.batik.ext.awt.image.PadMode;
  */
 public class DisplacementMapRed extends AbstractRed {
     // Use these to control timing and Nearest Neighbot vs. Bilinear Interp.
-    static private final boolean TIME   = false;
-    static private final boolean USE_NN = false;
+    private static final boolean TIME   = false;
+    private static final boolean USE_NN = false;
 
     /**
      * The displacement scale factor along the x axis
@@ -307,8 +307,8 @@ public class DisplacementMapRed extends AbstractRed {
         final int offAdjust = offScanStride - w;
 
         // Access the pixel value array
-        final int dstPixels[] = dstDB.getBankData()[0];
-        final int offPixels[] = offDB.getBankData()[0];
+        final int[] dstPixels = dstDB.getBankData()[0];
+        final int[] offPixels = offDB.getBankData()[0];
 
         // Below is the number of shifts for each axis
         // e.g when xChannel is ALPHA, the pixel needs
@@ -492,8 +492,8 @@ public class DisplacementMapRed extends AbstractRed {
         final int offAdjust = offScanStride - w;
 
         // Access the pixel value array
-        final int dstPixels[] = dstDB.getBankData()[0];
-        final int offPixels[] = offDB.getBankData()[0];
+        final int[] dstPixels = dstDB.getBankData()[0];
+        final int[] offPixels = offDB.getBankData()[0];
 
         // Below is the number of shifts for each axis
         // e.g when xChannel is ALPHA, the pixel needs
@@ -692,8 +692,8 @@ public class DisplacementMapRed extends AbstractRed {
         final int offAdjust = offScanStride - w;
 
         // Access the pixel value array
-        final int dstPixels[] = dstDB.getBankData()[0];
-        final int offPixels[] = offDB.getBankData()[0];
+        final int[] dstPixels = dstDB.getBankData()[0];
+        final int[] offPixels = offDB.getBankData()[0];
 
         // Below is the number of shifts for each axis
         // e.g when xChannel is ALPHA, the pixel needs
