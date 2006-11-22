@@ -35,7 +35,7 @@ public class DefaultDocumentHandler implements DocumentHandler {
     /**
      * The instance of this class.
      */
-    public final static DocumentHandler INSTANCE = new DefaultDocumentHandler();
+    public static final DocumentHandler INSTANCE = new DefaultDocumentHandler();
 
     /**
      * Creates a new DefaultDocumentHandler.
@@ -76,7 +76,7 @@ public class DefaultDocumentHandler implements DocumentHandler {
      * <b>SAC</b>: Implements {@link
      * org.w3c.css.sac.DocumentHandler#namespaceDeclaration(String,String)}.
      */
-    public void namespaceDeclaration(String prefix, String uri) 
+    public void namespaceDeclaration(String prefix, String uri)
         throws CSSException {
     }
 
@@ -85,7 +85,7 @@ public class DefaultDocumentHandler implements DocumentHandler {
      * DocumentHandler#importStyle(String,SACMediaList,String)}.
      */
     public void importStyle(String       uri,
-                            SACMediaList media, 
+                            SACMediaList media,
                             String       defaultNamespaceURI)
         throws CSSException {
     }
@@ -107,7 +107,7 @@ public class DefaultDocumentHandler implements DocumentHandler {
     /**
      * <b>SAC</b>: Implements {@link
      * org.w3c.css.sac.DocumentHandler#startPage(String,String)}.
-     */    
+     */
     public void startPage(String name, String pseudo_page)
         throws CSSException {
     }

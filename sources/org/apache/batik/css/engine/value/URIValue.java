@@ -39,9 +39,9 @@ public class URIValue extends StringValue {
     }
 
     /**
-     * A string representation of the current value. 
+     * A string representation of the current value.
      */
     public String getCssText() {
-        return "url(" + cssText + ")";
+        return "url(" + cssText + ')';
     }
 }

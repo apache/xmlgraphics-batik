@@ -33,7 +33,7 @@ public class DefaultErrorHandler implements ErrorHandler {
     /**
      * The instance of this class.
      */
-    public final static ErrorHandler INSTANCE = new DefaultErrorHandler();
+    public static final ErrorHandler INSTANCE = new DefaultErrorHandler();
 
     /**
      * This class does not need to be instantiated.

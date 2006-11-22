@@ -33,11 +33,11 @@ import org.apache.batik.util.SVGTypes;
  * @version $Id$
  */
 public class WritingModeManager extends IdentifierManager {
-    
+
     /**
      * The identifier values.
      */
-    protected final static StringMap values = new StringMap();
+    protected static final StringMap values = new StringMap();
     static {
         values.put(CSSConstants.CSS_LR_VALUE,
                    SVGValueConstants.LR_VALUE);
@@ -89,7 +89,7 @@ public class WritingModeManager extends IdentifierManager {
     public String getPropertyName() {
         return CSSConstants.CSS_WRITING_MODE_PROPERTY;
     }
-    
+
     /**
      * Implements {@link
      * org.apache.batik.css.engine.value.ValueManager#getDefaultValue()}.

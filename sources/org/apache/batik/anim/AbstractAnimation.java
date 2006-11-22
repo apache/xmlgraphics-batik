@@ -33,10 +33,10 @@ import org.apache.batik.dom.anim.AnimatableElement;
 public abstract class AbstractAnimation {
 
     // Constants for calcMode.
-    public final static short CALC_MODE_DISCRETE = 0;
-    public final static short CALC_MODE_LINEAR   = 1;
-    public final static short CALC_MODE_PACED    = 2;
-    public final static short CALC_MODE_SPLINE   = 3;
+    public static final short CALC_MODE_DISCRETE = 0;
+    public static final short CALC_MODE_LINEAR   = 1;
+    public static final short CALC_MODE_PACED    = 2;
+    public static final short CALC_MODE_SPLINE   = 3;
 
     /**
      * The TimedElement that controls the timing of this animation.
@@ -48,7 +48,7 @@ public abstract class AbstractAnimation {
      * document.
      */
     protected AnimatableElement animatableElement;
-    
+
     /**
      * The animation that is lower in the sandwich.
      */

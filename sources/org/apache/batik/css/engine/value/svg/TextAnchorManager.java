@@ -32,11 +32,11 @@ import org.apache.batik.util.SVGTypes;
  * @version $Id$
  */
 public class TextAnchorManager extends IdentifierManager {
-    
+
     /**
      * The identifier values.
      */
-    protected final static StringMap values = new StringMap();
+    protected static final StringMap values = new StringMap();
     static {
         values.put(CSSConstants.CSS_START_VALUE,
                    SVGValueConstants.START_VALUE);
@@ -82,7 +82,7 @@ public class TextAnchorManager extends IdentifierManager {
     public String getPropertyName() {
         return CSSConstants.CSS_TEXT_ANCHOR_PROPERTY;
     }
-    
+
     /**
      * Implements {@link
      * org.apache.batik.css.engine.value.ValueManager#getDefaultValue()}.

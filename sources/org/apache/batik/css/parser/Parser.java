@@ -54,14 +54,14 @@ public class Parser implements ExtendedParser, Localizable {
     /**
      * The default resource bundle base name.
      */
-    public final static String BUNDLE_CLASSNAME =
+    public static final String BUNDLE_CLASSNAME =
         "org.apache.batik.css.parser.resources.Messages";
 
     /**
      * The localizable support.
      */
     protected LocalizableSupport localizableSupport =
-        new LocalizableSupport(BUNDLE_CLASSNAME, 
+        new LocalizableSupport(BUNDLE_CLASSNAME,
                                Parser.class.getClassLoader());
 
     /**
@@ -115,14 +115,14 @@ public class Parser implements ExtendedParser, Localizable {
     public String getParserVersion() {
         return "http://www.w3.org/TR/REC-CSS2";
     }
-    
+
     /**
      * <b>SAC</b>: Implements {@link org.w3c.css.sac.Parser#setLocale(Locale)}.
      */
     public void setLocale(Locale locale) throws CSSException {
         localizableSupport.setLocale(locale);
     }
-    
+
     /**
      * Implements {@link org.apache.batik.i18n.Localizable#getLocale()}.
      */
@@ -162,7 +162,7 @@ public class Parser implements ExtendedParser, Localizable {
     public void setConditionFactory(ConditionFactory factory) {
         conditionFactory = factory;
     }
-    
+
     /**
      * <b>SAC</b>: Implements {@link
      * org.w3c.css.sac.Parser#setErrorHandler(ErrorHandler)}.
@@ -170,12 +170,12 @@ public class Parser implements ExtendedParser, Localizable {
     public void setErrorHandler(ErrorHandler handler) {
         errorHandler = handler;
     }
-    
+
     /**
      * <b>SAC</b>: Implements {@link
      * org.w3c.css.sac.Parser#parseStyleSheet(InputSource)}.
      */
-    public void parseStyleSheet(InputSource source) 
+    public void parseStyleSheet(InputSource source)
         throws CSSException, IOException {
         scanner = createScanner(source);
 
@@ -208,7 +208,7 @@ public class Parser implements ExtendedParser, Localizable {
                     break;
                 }
             }
-            
+
             loop: for (;;) {
                 switch (current) {
                 case LexicalUnits.PAGE_SYMBOL:
@@ -252,7 +252,7 @@ public class Parser implements ExtendedParser, Localizable {
      * <b>SAC</b>: Implements {@link
      * org.w3c.css.sac.Parser#parseStyleDeclaration(InputSource)}.
      */
-    public void parseStyleDeclaration(InputSource source) 
+    public void parseStyleDeclaration(InputSource source)
         throws CSSException, IOException {
 
         scanner = createScanner(source);
@@ -262,7 +262,7 @@ public class Parser implements ExtendedParser, Localizable {
     /**
      * Parses a style declaration using the current scanner.
      */
-    protected void parseStyleDeclarationInternal() 
+    protected void parseStyleDeclarationInternal()
         throws CSSException, IOException {
         nextIgnoreSpaces();
         try {
@@ -278,7 +278,7 @@ public class Parser implements ExtendedParser, Localizable {
      * <b>SAC</b>: Implements {@link
      * org.w3c.css.sac.Parser#parseRule(InputSource)}.
      */
-    public void parseRule(InputSource source) 
+    public void parseRule(InputSource source)
         throws CSSException, IOException {
         scanner = createScanner(source);
         parseRuleInternal();
@@ -296,7 +296,7 @@ public class Parser implements ExtendedParser, Localizable {
     /**
      * <b>SAC</b>: Implements {@link
      * org.w3c.css.sac.Parser#parseSelectors(InputSource)}.
-     */    
+     */
     public SelectorList parseSelectors(InputSource source)
         throws CSSException, IOException {
         scanner = createScanner(source);
@@ -306,7 +306,7 @@ public class Parser implements ExtendedParser, Localizable {
     /**
      * Parses selectors using the current scanner.
      */
-    protected SelectorList parseSelectorsInternal() 
+    protected SelectorList parseSelectorsInternal()
         throws CSSException, IOException {
         nextIgnoreSpaces();
         SelectorList ret = parseSelectorList();
@@ -317,7 +317,7 @@ public class Parser implements ExtendedParser, Localizable {
     /**
      * <b>SAC</b>: Implements
      * {@link org.w3c.css.sac.Parser#parsePropertyValue(InputSource)}.
-     */    
+     */
     public LexicalUnit parsePropertyValue(InputSource source)
         throws CSSException, IOException {
         scanner = createScanner(source);
@@ -327,10 +327,10 @@ public class Parser implements ExtendedParser, Localizable {
     /**
      * Parses property value using the current scanner.
      */
-    protected LexicalUnit parsePropertyValueInternal() 
+    protected LexicalUnit parsePropertyValueInternal()
         throws CSSException, IOException {
         nextIgnoreSpaces();
-        
+
         LexicalUnit exp = null;
 
         try {
@@ -351,11 +351,11 @@ public class Parser implements ExtendedParser, Localizable {
         }
         return exp;
     }
-    
+
     /**
      * <b>SAC</b>: Implements
      * {@link org.w3c.css.sac.Parser#parsePriority(InputSource)}.
-     */    
+     */
     public boolean parsePriority(InputSource source)
         throws CSSException, IOException {
         scanner = createScanner(source);
@@ -460,7 +460,7 @@ public class Parser implements ExtendedParser, Localizable {
         CSSSACMediaList result = new CSSSACMediaList();
         result.append(scanner.getStringValue());
         nextIgnoreSpaces();
-        
+
         while (current == LexicalUnits.COMMA) {
             nextIgnoreSpaces();
 
@@ -487,7 +487,7 @@ public class Parser implements ExtendedParser, Localizable {
                 reportError("left.curly.brace");
             } else {
                 nextIgnoreSpaces();
-        
+
                 try {
                     parseStyleDeclaration(true);
                 } catch (CSSParseException e) {
@@ -524,12 +524,12 @@ public class Parser implements ExtendedParser, Localizable {
 
         try {
             documentHandler.startPage(page, ppage);
-            
+
             if (current != LexicalUnits.LEFT_CURLY_BRACE) {
                 reportError("left.curly.brace");
             } else {
                 nextIgnoreSpaces();
-        
+
                 try {
                     parseStyleDeclaration(true);
                 } catch (CSSParseException e) {
@@ -540,7 +540,7 @@ public class Parser implements ExtendedParser, Localizable {
             documentHandler.endPage(page, ppage);
         }
     }
-    
+
     /**
      * Parses a media rule.
      */
@@ -558,7 +558,7 @@ public class Parser implements ExtendedParser, Localizable {
                 reportError("left.curly.brace");
             } else {
                 nextIgnoreSpaces();
-            
+
                 loop: for (;;) {
                     switch (current) {
                     case LexicalUnits.EOF:
@@ -599,7 +599,7 @@ public class Parser implements ExtendedParser, Localizable {
                 }
             } else {
                 nextIgnoreSpaces();
-        
+
                 try {
                     parseStyleDeclaration(true);
                 } catch (CSSParseException e) {
@@ -654,13 +654,13 @@ public class Parser implements ExtendedParser, Localizable {
                 nextIgnoreSpaces();
                 result = selectorFactory.createDirectAdjacentSelector
                     ((short)1,
-                     result, 
+                     result,
                      parseSimpleSelector());
                 break;
             case LexicalUnits.PRECEDE:
                 nextIgnoreSpaces();
                 result = selectorFactory.createChildSelector
-                    (result, 
+                    (result,
                      parseSimpleSelector());
              }
         }
@@ -855,14 +855,14 @@ public class Parser implements ExtendedParser, Localizable {
             }
 
             String name = scanner.getStringValue();
-        
+
             if (nextIgnoreSpaces() != LexicalUnits.COLON) {
                 throw createCSSParseException("colon");
             }
             nextIgnoreSpaces();
-        
+
             LexicalUnit exp = null;
-            
+
             try {
                 exp = parseExpression(false);
             } catch (CSSParseException e) {
@@ -1049,7 +1049,7 @@ public class Parser implements ExtendedParser, Localizable {
     protected LexicalUnit parseFunction(boolean positive, LexicalUnit prev) {
         String name = scanner.getStringValue();
         nextIgnoreSpaces();
-        
+
         LexicalUnit params = parseExpression(true);
 
         if (current != LexicalUnits.RIGHT_BRACE) {
@@ -1669,11 +1669,11 @@ public class Parser implements ExtendedParser, Localizable {
     // -----------------------------------------------------------------------
     // Extended methods
     // -----------------------------------------------------------------------
-    
+
     /**
      * Implements {@link ExtendedParser#parseStyleDeclaration(String)}.
      */
-    public void parseStyleDeclaration(String source) 
+    public void parseStyleDeclaration(String source)
         throws CSSException, IOException {
         scanner = new Scanner(source);
         parseStyleDeclarationInternal();
@@ -1686,7 +1686,7 @@ public class Parser implements ExtendedParser, Localizable {
         scanner = new Scanner(source);
         parseRuleInternal();
     }
-    
+
     /**
      * Implements {@link ExtendedParser#parseSelectors(String)}.
      */

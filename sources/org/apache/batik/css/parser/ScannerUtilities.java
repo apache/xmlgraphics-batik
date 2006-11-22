@@ -30,31 +30,31 @@ public class ScannerUtilities {
     /**
      * The set of the valid identifier start characters.
      */
-    protected final static int[] IDENTIFIER_START = 
+    protected static final int[] IDENTIFIER_START =
     { 0x0, 0x0, 0x87FFFFFE, 0x7FFFFFE };
 
     /**
      * The set of the valid name characters.
      */
-    protected final static int[] NAME = 
+    protected static final int[] NAME =
     { 0, 0x3FF2000, 0x87FFFFFE, 0x7FFFFFE };
 
     /**
      * The set of the valid hexadecimal characters.
      */
-    protected final static int[] HEXADECIMAL = 
+    protected static final int[] HEXADECIMAL =
     { 0, 0x3FF0000, 0x7E, 0x7E };
 
     /**
      * The set of the valid string characters.
      */
-    protected final static int[] STRING = 
+    protected static final int[] STRING =
     { 0x200, 0xFFFFFF7B, 0xFFFFFFFF, 0x7FFFFFFF };
 
     /**
      * The set of the valid uri characters.
      */
-    protected final static int[] URI = 
+    protected static final int[] URI =
     { 0x0, 0xFFFFFC7A, 0xFFFFFFFF, 0x7FFFFFFF };
 
     /**

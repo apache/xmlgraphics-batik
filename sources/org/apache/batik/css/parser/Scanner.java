@@ -110,7 +110,7 @@ public class Scanner {
     public Scanner(String s) throws ParseException {
         try {
             reader = new StringNormalizingReader(s);
-            current = nextChar(); 
+            current = nextChar();
         } catch (IOException e) {
             throw new ParseException(e);
         }
@@ -212,7 +212,7 @@ public class Scanner {
             throw new ParseException(e);
         }
     }
-    
+
     /**
      * Returns the next token.
      */
@@ -354,7 +354,7 @@ public class Scanner {
                                              reader.getColumn());
                 }
                 nextChar();
-                type = LexicalUnits.COMMENT; 
+                type = LexicalUnits.COMMENT;
                 return;
             case '\'': // String1
                 type = string1();
@@ -765,7 +765,7 @@ public class Scanner {
                                              reader.getColumn());
                 }
                 // Identifier
-                while ((current != -1) && 
+                while ((current != -1) &&
                        ScannerUtilities.isCSSNameCharacter((char)current)) {
                     nextChar();
                     while (current == '\\') {
@@ -880,7 +880,7 @@ public class Scanner {
             }
         }
         return numberUnit(true);
-    }        
+    }
 
     /**
      * Scans the decimal part of a number.
@@ -1181,7 +1181,7 @@ public class Scanner {
                     nextChar();
                 }
                 return LexicalUnits.DIMENSION;
-            }            
+            }
         case 'r':
         case 'R':
             switch(nextChar()) {
@@ -1296,10 +1296,9 @@ public class Scanner {
         }
 
         if (position == buffer.length) {
-            char[] t = new char[position * 3 / 2];
-            for (int i = 0; i < position; i++) {
-                t[i] = buffer[i];
-            }
+            // list is full, grow to 1.5 * size
+            char[] t = new char[ 1 + position + position / 2];
+            System.arraycopy( buffer, 0, t, 0, position );
             buffer = t;
         }
 
