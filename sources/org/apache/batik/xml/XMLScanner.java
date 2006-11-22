@@ -41,97 +41,97 @@ public class XMLScanner implements Localizable {
     /**
      * The document start context.
      */
-    public final static int DOCUMENT_START_CONTEXT = 0;
+    public static final int DOCUMENT_START_CONTEXT = 0;
 
     /**
      * The top level context.
      */
-    public final static int TOP_LEVEL_CONTEXT = 1;
+    public static final int TOP_LEVEL_CONTEXT = 1;
 
     /**
      * The processing instruction context.
      */
-    public final static int PI_CONTEXT = 2;
+    public static final int PI_CONTEXT = 2;
 
     /**
      * The XML declaration context.
      */
-    public final static int XML_DECL_CONTEXT = 3;
+    public static final int XML_DECL_CONTEXT = 3;
 
     /**
      * The doctype context.
      */
-    public final static int DOCTYPE_CONTEXT = 4;
+    public static final int DOCTYPE_CONTEXT = 4;
 
     /**
      * The start tag context.
      */
-    public final static int START_TAG_CONTEXT = 5;
+    public static final int START_TAG_CONTEXT = 5;
 
     /**
      * The content context.
      */
-    public final static int CONTENT_CONTEXT = 6;
+    public static final int CONTENT_CONTEXT = 6;
 
     /**
      * The DTD declarations context.
      */
-    public final static int DTD_DECLARATIONS_CONTEXT = 7;
+    public static final int DTD_DECLARATIONS_CONTEXT = 7;
 
     /**
      * The CDATA section context.
      */
-    public final static int CDATA_SECTION_CONTEXT = 8;
+    public static final int CDATA_SECTION_CONTEXT = 8;
 
     /**
      * The end tag context.
      */
-    public final static int END_TAG_CONTEXT = 9;
+    public static final int END_TAG_CONTEXT = 9;
 
     /**
      * The attribute value context.
      */
-    public final static int ATTRIBUTE_VALUE_CONTEXT = 10;
+    public static final int ATTRIBUTE_VALUE_CONTEXT = 10;
 
     /**
      * The ATTLIST context.
      */
-    public final static int ATTLIST_CONTEXT = 11;
+    public static final int ATTLIST_CONTEXT = 11;
 
     /**
      * The element declaration context.
      */
-    public final static int ELEMENT_DECLARATION_CONTEXT = 12;
+    public static final int ELEMENT_DECLARATION_CONTEXT = 12;
 
     /**
      * The entity context.
      */
-    public final static int ENTITY_CONTEXT = 13;
+    public static final int ENTITY_CONTEXT = 13;
 
     /**
      * The notation context.
      */
-    public final static int NOTATION_CONTEXT = 14;
+    public static final int NOTATION_CONTEXT = 14;
 
     /**
      * The notation type context.
      */
-    public final static int NOTATION_TYPE_CONTEXT = 15;
+    public static final int NOTATION_TYPE_CONTEXT = 15;
 
     /**
      * The enumeration context.
      */
-    public final static int ENUMERATION_CONTEXT = 16;
+    public static final int ENUMERATION_CONTEXT = 16;
 
     /**
      * The entity value context.
      */
-    public final static int ENTITY_VALUE_CONTEXT = 17;
+    public static final int ENTITY_VALUE_CONTEXT = 17;
 
     /**
      * The default resource bundle base name.
      */
-    protected final static String BUNDLE_CLASSNAME =
+    protected static final String BUNDLE_CLASSNAME =
         "org.apache.batik.xml.resources.Messages";
 
     /**
@@ -2057,10 +2057,8 @@ public class XMLScanner implements Localizable {
         }
 
         if (position == buffer.length) {
-            char[] t = new char[position * 3 / 2];
-            for (int i = 0; i < position; i++) {
-                t[i] = buffer[i];
-            }
+            char[] t = new char[ 1+ position + position / 2];
+            System.arraycopy( buffer, 0, t, 0, position );
             buffer = t;
         }
 

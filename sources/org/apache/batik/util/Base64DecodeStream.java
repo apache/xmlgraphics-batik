@@ -55,7 +55,7 @@ public class Base64DecodeStream extends InputStream {
         this.src = src;
     }
 
-    private final static byte pem_array[] = new byte[256];
+    private static final byte pem_array[] = new byte[256];
     static {
         for (int i=0; i<pem_array.length; i++)
             pem_array[i] = -1;
@@ -67,7 +67,7 @@ public class Base64DecodeStream extends InputStream {
         for (char c='a'; c<='z'; c++) {
             pem_array[c] = (byte)idx++;
         }
-        
+
         for (char c='0'; c<='9'; c++) {
             pem_array[c] = (byte)idx++;
         }
@@ -78,12 +78,12 @@ public class Base64DecodeStream extends InputStream {
 
     public boolean markSupported() { return false; }
 
-    public void close() 
+    public void close()
         throws IOException {
         EOF = true;
     }
 
-    public int available() 
+    public int available()
         throws IOException {
         return 3-out_offset;
     }
@@ -105,7 +105,7 @@ public class Base64DecodeStream extends InputStream {
         return ((int)out_buffer[out_offset++])&0xFF;
     }
 
-    public int read(byte []out, int offset, int len) 
+    public int read(byte []out, int offset, int len)
         throws IOException {
 
         int idx = 0;
@@ -136,7 +136,7 @@ public class Base64DecodeStream extends InputStream {
 
             int in=off, out=off;
             while(in < off+count) {
-                if ((decode_buffer[in] != '\n') && 
+                if ((decode_buffer[in] != '\n') &&
                     (decode_buffer[in] != '\r') &&
                     (decode_buffer[in] != ' '))
                     decode_buffer[out++] = decode_buffer[in];
@@ -150,7 +150,7 @@ public class Base64DecodeStream extends InputStream {
         b = pem_array[((int)decode_buffer[1])&0xFF];
         c = pem_array[((int)decode_buffer[2])&0xFF];
         d = pem_array[((int)decode_buffer[3])&0xFF];
-        
+
         out_buffer[0] = (byte)((a<<2) | (b>>>4));
         out_buffer[1] = (byte)((b<<4) | (c>>>2));
         out_buffer[2] = (byte)((c<<6) |  d     );
@@ -170,7 +170,7 @@ public class Base64DecodeStream extends InputStream {
             out_offset = 1;
             EOF=true;
         }
-            
+
         return false;
     }
 }

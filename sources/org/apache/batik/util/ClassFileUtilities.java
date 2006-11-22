@@ -36,17 +36,17 @@ import java.util.Set;
 public class ClassFileUtilities {
 
     // Constant pool info tags
-    public final static byte CONSTANT_UTF8_INFO                = 1;
-    public final static byte CONSTANT_INTEGER_INFO             = 3;
-    public final static byte CONSTANT_FLOAT_INFO               = 4;
-    public final static byte CONSTANT_LONG_INFO                = 5;
-    public final static byte CONSTANT_DOUBLE_INFO              = 6;
-    public final static byte CONSTANT_CLASS_INFO               = 7;
-    public final static byte CONSTANT_STRING_INFO              = 8;
-    public final static byte CONSTANT_FIELDREF_INFO            = 9;
-    public final static byte CONSTANT_METHODREF_INFO           = 10;
-    public final static byte CONSTANT_INTERFACEMETHODREF_INFO  = 11;
-    public final static byte CONSTANT_NAMEANDTYPE_INFO         = 12;
+    public static final byte CONSTANT_UTF8_INFO                = 1;
+    public static final byte CONSTANT_INTEGER_INFO             = 3;
+    public static final byte CONSTANT_FLOAT_INFO               = 4;
+    public static final byte CONSTANT_LONG_INFO                = 5;
+    public static final byte CONSTANT_DOUBLE_INFO              = 6;
+    public static final byte CONSTANT_CLASS_INFO               = 7;
+    public static final byte CONSTANT_STRING_INFO              = 8;
+    public static final byte CONSTANT_FIELDREF_INFO            = 9;
+    public static final byte CONSTANT_METHODREF_INFO           = 10;
+    public static final byte CONSTANT_INTERFACEMETHODREF_INFO  = 11;
+    public static final byte CONSTANT_NAMEANDTYPE_INFO         = 12;
 
     /**
      * This class does not need to be instantiated.
@@ -92,7 +92,7 @@ public class ClassFileUtilities {
                     File f = new File(path);
                     if (f.isFile()) {
                         result.add(path);
-                        
+
                         computeClassDependencies(new FileInputStream(f),
                                                  classpath,
                                                  done,
@@ -113,9 +113,9 @@ public class ClassFileUtilities {
         if (dis.readInt() != 0xcafebabe) {
             throw new IOException("Invalid classfile");
         }
-        
+
         dis.readInt();
-        
+
         int len = dis.readShort();
         String[] strs = new String[len];
         Set classes = new HashSet();
@@ -144,7 +144,7 @@ public class ClassFileUtilities {
             case CONSTANT_STRING_INFO:
                 dis.readShort();
                 break;
-                
+
             case CONSTANT_NAMEANDTYPE_INFO:
                 dis.readShort();
                 desc.add(new Integer(dis.readShort() & 0xffff));
@@ -153,7 +153,7 @@ public class ClassFileUtilities {
             case CONSTANT_UTF8_INFO:
                 strs[i] = dis.readUTF();
                 break;
-                
+
             default:
                 throw new RuntimeException();
             }
@@ -203,10 +203,10 @@ public class ClassFileUtilities {
                     }
                     result.add(sb.toString());
                     break;
-                    
+
                 default:
                     break;
-                    
+
                 case ')':
                     break loop;
                 }

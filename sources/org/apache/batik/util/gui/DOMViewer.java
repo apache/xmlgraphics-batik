@@ -81,7 +81,7 @@ public class DOMViewer extends JFrame implements ActionMap {
     /**
      * The resource file name
      */
-    protected final static String RESOURCE =
+    protected static final String RESOURCE =
         "org.apache.batik.util.gui.resources.DOMViewerMessages";
 
     /**
@@ -123,11 +123,11 @@ public class DOMViewer extends JFrame implements ActionMap {
                 resources.getInteger("Frame.height"));
 
         listeners.put("CloseButtonAction", new CloseButtonAction());
-        
+
         getContentPane().add(panel);
 
         JPanel p = new JPanel(new BorderLayout());
-        
+
         JCheckBox cb = new JCheckBox("Show Whitespace Text Nodes");
         cb.setSelected(showWhitespace);
         cb.addItemListener(new ItemListener() {
@@ -138,7 +138,7 @@ public class DOMViewer extends JFrame implements ActionMap {
             });
 
         p.add(cb, BorderLayout.WEST);
-        
+
 
         ButtonFactory bf = new ButtonFactory(bundle, this);
         p.add(bf.createJButton("CloseButton"), BorderLayout.EAST);
@@ -241,7 +241,7 @@ public class DOMViewer extends JFrame implements ActionMap {
                               resources.getString("AttributesPanel.title")),
                              BorderFactory.createLoweredBevelBorder())));
             pane.getViewport().add(attributesTable);
-                        
+
             JScrollPane pane2 = new JScrollPane();
             pane2.setBorder(BorderFactory.createCompoundBorder
                             (BorderFactory.createEmptyBorder(2, 0, 2, 2),
@@ -251,7 +251,7 @@ public class DOMViewer extends JFrame implements ActionMap {
                                resources.getString("CSSValuesPanel.title")),
                               BorderFactory.createLoweredBevelBorder())));
             pane2.getViewport().add(propertiesTable);
-                        
+
             elementPanel.add(pane);
             elementPanel.add(pane2);
         }
@@ -336,7 +336,7 @@ public class DOMViewer extends JFrame implements ActionMap {
             int loc = resources.getInteger("SplitPane.dividerLocation");
             splitPane.setDividerLocation(loc);
             add(splitPane);
-            
+
             tree.addTreeSelectionListener(new DOMTreeSelectionListener());
         }
 
@@ -365,7 +365,7 @@ public class DOMViewer extends JFrame implements ActionMap {
         /**
          * Creates a swing tree from a DOM document.
          */
-        protected MutableTreeNode createTree(Node node, 
+        protected MutableTreeNode createTree(Node node,
                                              boolean showWhitespace) {
             DefaultMutableTreeNode result;
             result = new DefaultMutableTreeNode(new NodeInfo(node));
@@ -567,7 +567,7 @@ public class DOMViewer extends JFrame implements ActionMap {
              * The node.
              */
             protected Node node;
-            
+
             /**
              * Creates a new NodeAttributesModel object.
              */
@@ -620,7 +620,7 @@ public class DOMViewer extends JFrame implements ActionMap {
                 }
             }
         }
-    
+
         /**
          * To display the CSS properties of a DOM node in a table.
          */
@@ -634,7 +634,7 @@ public class DOMViewer extends JFrame implements ActionMap {
              * The computed style.
              */
             protected CSSStyleDeclaration style;
-            
+
             /**
              * The property names.
              */
@@ -704,7 +704,7 @@ public class DOMViewer extends JFrame implements ActionMap {
                 }
             }
         }
-    
+
     } // class Panel
 
     /**

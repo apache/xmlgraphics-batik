@@ -36,25 +36,25 @@ public class XMLResourceDescriptor {
     /**
      * The XML parser class name key.
      */
-    public final static String XML_PARSER_CLASS_NAME_KEY =
+    public static final String XML_PARSER_CLASS_NAME_KEY =
         "org.xml.sax.driver";
 
     /**
      * The CSS parser class name key.
      */
-    public final static String CSS_PARSER_CLASS_NAME_KEY =
+    public static final String CSS_PARSER_CLASS_NAME_KEY =
         "org.w3c.css.sac.driver";
 
     /**
      * The resources file name
      */
-    public final static String RESOURCES =
+    public static final String RESOURCES =
         "resources/XMLResourceDescriptor.properties";
 
     /**
      * The resource bundle
      */
-    protected static Properties parserProps = null;;
+    protected static Properties parserProps = null;
 
     /**
      * The class name of the XML parser to use.
@@ -70,13 +70,13 @@ public class XMLResourceDescriptor {
         if (parserProps != null) return parserProps;
 
         parserProps = new Properties();
-        try { 
+        try {
             Class cls = XMLResourceDescriptor.class;
             InputStream is = cls.getResourceAsStream(RESOURCES);
             parserProps.load(is);
-        } catch (IOException ioe) { 
+        } catch (IOException ioe) {
             throw new MissingResourceException(ioe.getMessage(),
-                                               RESOURCES, null); 
+                                               RESOURCES, null);
         }
         return parserProps;
     }

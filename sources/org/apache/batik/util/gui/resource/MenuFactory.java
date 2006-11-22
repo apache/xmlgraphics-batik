@@ -47,9 +47,9 @@ import javax.swing.KeyStroke;
  *
  *   Menu1.type        = RADIO | CHECK | MENU | ITEM
  *   Menu1             = Item1 Item2 - Item3 ...
- *   Menu1.text        = text 
- *   Menu1.icon        = icon_name 
- *   Menu1.mnemonic    = mnemonic 
+ *   Menu1.text        = text
+ *   Menu1.icon        = icon_name
+ *   Menu1.mnemonic    = mnemonic
  *   Menu1.accelerator = accelerator
  *   Menu1.action      = action_name
  *   Menu1.selected    = true | false
@@ -68,20 +68,20 @@ import javax.swing.KeyStroke;
 public class MenuFactory extends ResourceManager {
     // Constants
     //
-    private final static String TYPE_MENU          = "MENU";
-    private final static String TYPE_ITEM          = "ITEM";
-    private final static String TYPE_RADIO         = "RADIO";
-    private final static String TYPE_CHECK         = "CHECK";
-    private final static String SEPARATOR          = "-";
+    private static final String TYPE_MENU          = "MENU";
+    private static final String TYPE_ITEM          = "ITEM";
+    private static final String TYPE_RADIO         = "RADIO";
+    private static final String TYPE_CHECK         = "CHECK";
+    private static final String SEPARATOR          = "-";
 
-    private final static String TYPE_SUFFIX        = ".type";
-    private final static String TEXT_SUFFIX        = ".text";
-    private final static String MNEMONIC_SUFFIX    = ".mnemonic";
-    private final static String ACCELERATOR_SUFFIX = ".accelerator";
-    private final static String ACTION_SUFFIX      = ".action";
-    private final static String SELECTED_SUFFIX    = ".selected";
-    private final static String ENABLED_SUFFIX     = ".enabled";
-    private final static String ICON_SUFFIX        = ".icon";
+    private static final String TYPE_SUFFIX        = ".type";
+    private static final String TEXT_SUFFIX        = ".text";
+    private static final String MNEMONIC_SUFFIX    = ".mnemonic";
+    private static final String ACCELERATOR_SUFFIX = ".accelerator";
+    private static final String ACTION_SUFFIX      = ".action";
+    private static final String SELECTED_SUFFIX    = ".selected";
+    private static final String ENABLED_SUFFIX     = ".enabled";
+    private static final String ICON_SUFFIX        = ".icon";
 
     /**
      * The table which contains the actions
@@ -174,7 +174,7 @@ public class MenuFactory extends ResourceManager {
                                               bundle.getClass().getName(),
                                               name+TYPE_SUFFIX);
         }
-        
+
         return item;
     }
 
@@ -252,7 +252,7 @@ public class MenuFactory extends ResourceManager {
             result.setSelected(getBoolean(name+SELECTED_SUFFIX));
         } catch (MissingResourceException e) {
         }
-        
+
         return result;
     }
 
@@ -281,7 +281,7 @@ public class MenuFactory extends ResourceManager {
             result.setSelected(getBoolean(name+SELECTED_SUFFIX));
         } catch (MissingResourceException e) {
         }
-        
+
         return result;
     }
 

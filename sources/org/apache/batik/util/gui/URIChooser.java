@@ -60,17 +60,17 @@ public class URIChooser extends JDialog implements ActionMap {
     /**
      * The return value if 'OK' is chosen.
      */
-    public final static int OK_OPTION = 0;
+    public static final int OK_OPTION = 0;
 
     /**
      * The return value if 'Cancel' is chosen.
      */
-    public final static int CANCEL_OPTION = 1;
+    public static final int CANCEL_OPTION = 1;
 
     /**
      * The resource file name
      */
-    protected final static String RESOURCES =
+    protected static final String RESOURCES =
         "org.apache.batik.util.gui.resources.URIChooserMessages";
 
     /**
@@ -86,7 +86,7 @@ public class URIChooser extends JDialog implements ActionMap {
         bundle = ResourceBundle.getBundle(RESOURCES, Locale.getDefault());
         resources = new ResourceManager(bundle);
     }
-    
+
     /**
      * The button factory
      */
@@ -101,7 +101,7 @@ public class URIChooser extends JDialog implements ActionMap {
      * The OK button
      */
     protected JButton okButton;
-    
+
     /**
      * The Clear button
      */
@@ -182,7 +182,7 @@ public class URIChooser extends JDialog implements ActionMap {
 
         setTitle(resources.getString("Dialog.title"));
         buttonFactory = new ButtonFactory(bundle, this);
-        
+
         getContentPane().add("North",  createURISelectionPanel());
         getContentPane().add("South",  createButtonsPanel());
     }
@@ -193,7 +193,7 @@ public class URIChooser extends JDialog implements ActionMap {
     protected JPanel createURISelectionPanel() {
         JPanel p = new JPanel(new GridBagLayout());
         p.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-            
+
         ExtendedGridBagConstraints constraints;
         constraints = new ExtendedGridBagConstraints();
 
@@ -211,13 +211,13 @@ public class URIChooser extends JDialog implements ActionMap {
         constraints.fill = GridBagConstraints.HORIZONTAL;
         constraints.setGridBounds(0, 1, 1, 1);
         p.add(textField, constraints);
-        
+
         constraints.weightx = 0;
         constraints.weighty = 0;
         constraints.fill = GridBagConstraints.NONE;
         constraints.setGridBounds(1, 1, 1, 1);
         p.add(buttonFactory.createJButton("BrowseButton"), constraints);
-        
+
         return p;
     }
 
@@ -230,10 +230,10 @@ public class URIChooser extends JDialog implements ActionMap {
         p.add(okButton = buttonFactory.createJButton("OKButton"));
         p.add(buttonFactory.createJButton("CancelButton"));
         p.add(clearButton = buttonFactory.createJButton("ClearButton"));
-            
+
         okButton.setEnabled(false);
         clearButton.setEnabled(false);
-        
+
         return p;
     }
 
@@ -259,7 +259,7 @@ public class URIChooser extends JDialog implements ActionMap {
             updateOKButtonAction();
             updateClearButtonAction();
         }
-            
+
         public void insertUpdate(DocumentEvent e) {
             updateOKButtonAction();
             updateClearButtonAction();
@@ -268,7 +268,7 @@ public class URIChooser extends JDialog implements ActionMap {
         public void removeUpdate(DocumentEvent e) {
             updateOKButtonAction();
             updateClearButtonAction();
-        }       
+        }
     }
 
     /**
@@ -283,7 +283,7 @@ public class URIChooser extends JDialog implements ActionMap {
             if (fileFilter != null) {
                 fileChooser.setFileFilter(fileFilter);
             }
-            
+
             int choice = fileChooser.showOpenDialog(URIChooser.this);
             if (choice == JFileChooser.APPROVE_OPTION) {
                 File f = fileChooser.getSelectedFile();

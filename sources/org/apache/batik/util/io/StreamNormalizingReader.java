@@ -120,7 +120,7 @@ public class StreamNormalizingReader extends NormalizingReader {
             }
             nextChar = c;
             return 10;
-                
+
         case 10:
             column = 0;
             line++;
@@ -170,7 +170,7 @@ public class StreamNormalizingReader extends NormalizingReader {
     /**
      * The CharDecoder factories map.
      */
-    protected final static Map charDecoderFactories = new HashMap(11);
+    protected static final Map charDecoderFactories = new HashMap(11);
     static {
         CharDecoderFactory cdf = new ASCIIDecoderFactory();
         charDecoderFactories.put("ASCII", cdf);

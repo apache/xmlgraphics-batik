@@ -36,8 +36,8 @@ import javax.swing.JRadioButton;
  * The resource entries format is (for a button named 'Button'):<br>
  * <pre>
  *   Button.text      = text
- *   Button.icon      = icon_name 
- *   Button.mnemonic  = mnemonic 
+ *   Button.icon      = icon_name
+ *   Button.mnemonic  = mnemonic
  *   Button.action    = action_name
  *   Button.selected  = true | false
  *   Button.tooltip   = tool tip text
@@ -52,12 +52,12 @@ import javax.swing.JRadioButton;
 public class ButtonFactory extends ResourceManager {
     // Constants
     //
-    private final static String ICON_SUFFIX        = ".icon";
-    private final static String TEXT_SUFFIX        = ".text";
-    private final static String MNEMONIC_SUFFIX    = ".mnemonic";
-    private final static String ACTION_SUFFIX      = ".action";
-    private final static String SELECTED_SUFFIX    = ".selected";
-    private final static String TOOLTIP_SUFFIX     = ".tooltip";
+    private static final String ICON_SUFFIX        = ".icon";
+    private static final String TEXT_SUFFIX        = ".text";
+    private static final String MNEMONIC_SUFFIX    = ".mnemonic";
+    private static final String ACTION_SUFFIX      = ".action";
+    private static final String SELECTED_SUFFIX    = ".selected";
+    private static final String TOOLTIP_SUFFIX     = ".tooltip";
 
     /** The table which contains the actions */
     private ActionMap actions;
@@ -145,7 +145,7 @@ public class ButtonFactory extends ResourceManager {
             result.setSelected(getBoolean(name+SELECTED_SUFFIX));
         } catch (MissingResourceException e) {
         }
-        
+
         return result;
     }
 
@@ -171,7 +171,7 @@ public class ButtonFactory extends ResourceManager {
             result.setSelected(getBoolean(name+SELECTED_SUFFIX));
         } catch (MissingResourceException e) {
         }
-        
+
         return result;
     }
 

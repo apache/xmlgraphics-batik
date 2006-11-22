@@ -46,7 +46,7 @@ import javax.swing.JToolBar;
 public class ToolBarFactory extends ResourceManager {
     // Constants
     //
-    private final static String SEPARATOR = "-";
+    private static final String SEPARATOR = "-";
 
     /**
      * The button factory

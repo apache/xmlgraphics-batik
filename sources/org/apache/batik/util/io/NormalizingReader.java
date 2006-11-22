@@ -39,7 +39,7 @@ public abstract class NormalizingReader extends Reader {
      * @return The number of characters read, or -1 if the end of the
      * stream has been reached
      */
-    public int read(char cbuf[], int off, int len) throws IOException {
+    public int read(char[] cbuf, int off, int len) throws IOException {
         if (len == 0) {
             return 0;
         }

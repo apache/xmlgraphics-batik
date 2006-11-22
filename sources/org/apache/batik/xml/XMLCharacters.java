@@ -30,7 +30,7 @@ public class XMLCharacters {
     /**
      * The bit array representing the first character of an XML name.
      */
-    public final static int[] NAME_FIRST_CHARACTER = {
+    public static final int[] NAME_FIRST_CHARACTER = {
         0,67108864,-2013265922,134217726,0,0,-8388609,-8388609,-1,2146697215,
         -514,2147483647,-1,-1,-8177,-63832065,16777215,0,-65536,-1,-1,
         -134217217,3,0,0,0,0,0,-10432,-5,1417641983,1048573,-8194,-1,
@@ -120,7 +120,7 @@ public class XMLCharacters {
     /**
      * The bit array representing the first character of an XML 1.1 name.
      */
-    public final static int[] NAME11_FIRST_CHARACTER = {
+    public static final int[] NAME11_FIRST_CHARACTER = {
         0,32,2147483617,2147483616,0,0,-257,-257,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
         -1,-1,-1,-1,-1,-1,0,0,0,65533,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
         -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
@@ -211,7 +211,7 @@ public class XMLCharacters {
     /**
      * The bit array representing a character compositing an XML name.
      */
-    public final static int[] NAME_CHARACTER = {
+    public static final int[] NAME_CHARACTER = {
         0,134176768,-2013265922,134217726,0,8388608,-8388609,-8388609,-1,
         2146697215,-514,2147483647,-1,-1,-8177,-63832065,16777215,0,-65536,
         -1,-1,-134217217,196611,0,-1,-1,63,3,-10304,-5,1417641983,1048573,
@@ -304,7 +304,7 @@ public class XMLCharacters {
     /**
      * The bit array representing a character compositing an XML 1.1 name.
      */
-    public final static int[] NAME11_CHARACTER = {
+    public static final int[] NAME11_CHARACTER = {
         0,458720,2147483617,2147483616,0,256,-257,-257,-1,-1,-1,-1,-1,-1,-1,-1,
         -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-3,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
         -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
@@ -395,7 +395,7 @@ public class XMLCharacters {
     /**
     * The bit array representing a valid XML character in the unicode range [0-FFFF].
     */
-    public final static int[] XML_CHARACTER = {
+    public static final int[] XML_CHARACTER = {
         9728,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
         -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
         -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
@@ -490,21 +490,21 @@ public class XMLCharacters {
     /**
     * The bit array representing the valid XML public ID characters.
     */
-    public final static int[] PUBLIC_ID_CHARACTER = {
+    public static final int[] PUBLIC_ID_CHARACTER = {
         9216,-1342177349,-2013265921,134217726,
         };
 
     /**
     * The bit array representing the valid XML version characters.
     */
-    public final static int[] VERSION_CHARACTER = {
+    public static final int[] VERSION_CHARACTER = {
         0,134176768,-2013265922,134217726,
         };
 
     /**
     * The bit array representing an alphabetic character.
     */
-    public final static int[] ALPHABETIC_CHARACTER = {
+    public static final int[] ALPHABETIC_CHARACTER = {
         0,0,134217726,134217726,
         };
 

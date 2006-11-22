@@ -28,11 +28,11 @@ import java.util.Map;
  * @version $Id$
  */
 public class EncodingUtilities {
-    
+
     /**
      * The standard to Java encoding table.
      */
-    protected final static Map ENCODINGS = new HashMap();
+    protected static final Map ENCODINGS = new HashMap();
     static {
         ENCODINGS.put("UTF-8",           "UTF8");
         ENCODINGS.put("UTF-16",          "Unicode");

@@ -30,14 +30,14 @@ public interface ParsedURLProtocolHandler {
      * The protocol must _always_ be the part of the URL before the
      * first ':'.
      */
-    public String getProtocolHandled();
+    String getProtocolHandled();
     /**
      * Parse an absolute url string.
      */
-    public ParsedURLData parseURL(String urlStr);
+    ParsedURLData parseURL(String urlStr);
     /**
      * Parse a relative url string of this protocol.
      */
-    public ParsedURLData parseURL(ParsedURL basepurl, String urlStr);
+    ParsedURLData parseURL(ParsedURL basepurl, String urlStr);
 }
 

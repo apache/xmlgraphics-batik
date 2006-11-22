@@ -31,7 +31,7 @@ import java.lang.reflect.InvocationTargetException;
 public class EventDispatcher {
 
     public interface Dispatcher {
-        public void dispatch(Object listener,
+        void dispatch(Object listener,
                              Object event);
     }
 
