@@ -24,17 +24,17 @@ package org.apache.batik.svggen.font.table;
  * @author <a href="mailto:david@steadystate.co.uk">David Schweinsberg</a>
  */
 public interface GlyphDescription {
-    public int getEndPtOfContours(int i);
-    public byte getFlags(int i);
-    public short getXCoordinate(int i);
-    public short getYCoordinate(int i);
-    public short getXMaximum();
-    public short getXMinimum();
-    public short getYMaximum();
-    public short getYMinimum();
-    public boolean isComposite();
-    public int getPointCount();
-    public int getContourCount();
+    int getEndPtOfContours(int i);
+    byte getFlags(int i);
+    short getXCoordinate(int i);
+    short getYCoordinate(int i);
+    short getXMaximum();
+    short getXMinimum();
+    short getYMaximum();
+    short getYMinimum();
+    boolean isComposite();
+    int getPointCount();
+    int getContourCount();
     //  public int getComponentIndex(int c);
     //  public int getComponentCount();
 }

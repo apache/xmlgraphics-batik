@@ -48,7 +48,7 @@ public class SVGTranscoder extends AbstractTranscoder {
     /**
      * The default error handler.
      */
-    public final static ErrorHandler DEFAULT_ERROR_HANDLER = new ErrorHandler() {
+    public static final ErrorHandler DEFAULT_ERROR_HANDLER = new ErrorHandler() {
         public void error(TranscoderException ex) throws TranscoderException {
             throw ex;
         }
@@ -63,90 +63,90 @@ public class SVGTranscoder extends AbstractTranscoder {
     /**
      * The key to specify the newline character sequence.
      */
-    public final static TranscodingHints.Key KEY_NEWLINE = new NewlineKey();
+    public static final TranscodingHints.Key KEY_NEWLINE = new NewlineKey();
 
     /**
      * The "\r" newline value.
      */
-    public final static NewlineValue VALUE_NEWLINE_CR = new NewlineValue("\r");
+    public static final NewlineValue VALUE_NEWLINE_CR = new NewlineValue("\r");
 
     /**
      * The "\r\n" newline value.
      */
-    public final static NewlineValue VALUE_NEWLINE_CR_LF = new NewlineValue("\r\n");
+    public static final NewlineValue VALUE_NEWLINE_CR_LF = new NewlineValue("\r\n");
 
     /**
      * The "\n" newline value.
      */
-    public final static NewlineValue VALUE_NEWLINE_LF = new NewlineValue("\n");
+    public static final NewlineValue VALUE_NEWLINE_LF = new NewlineValue("\n");
 
     /**
      * The key to specify whether to format the input.
      */
-    public final static TranscodingHints.Key KEY_FORMAT = new BooleanKey();
+    public static final TranscodingHints.Key KEY_FORMAT = new BooleanKey();
 
     /**
      * The value to turn on formatting.
      */
-    public final static Boolean VALUE_FORMAT_ON = Boolean.TRUE;
+    public static final Boolean VALUE_FORMAT_ON = Boolean.TRUE;
 
     /**
      * The value to turn off formatting.
      */
-    public final static Boolean VALUE_FORMAT_OFF = Boolean.FALSE;
+    public static final Boolean VALUE_FORMAT_OFF = Boolean.FALSE;
 
     /**
      * The key to specify the tabulation width.
      */
-    public final static TranscodingHints.Key KEY_TABULATION_WIDTH
+    public static final TranscodingHints.Key KEY_TABULATION_WIDTH
         = new IntegerKey();
 
     /**
      * The key to specify the document width.
      */
-    public final static TranscodingHints.Key KEY_DOCUMENT_WIDTH
+    public static final TranscodingHints.Key KEY_DOCUMENT_WIDTH
         = new IntegerKey();
 
     /**
      * The key to specify the doctype option.
      */
-    public final static TranscodingHints.Key KEY_DOCTYPE
+    public static final TranscodingHints.Key KEY_DOCTYPE
         = new DoctypeKey();
 
     /**
      * The doctype value to change the declaration.
      */
-    public final static DoctypeValue VALUE_DOCTYPE_CHANGE =
+    public static final DoctypeValue VALUE_DOCTYPE_CHANGE =
         new DoctypeValue(PrettyPrinter.DOCTYPE_CHANGE);
 
     /**
      * The doctype value to remove the declaration.
      */
-    public final static DoctypeValue VALUE_DOCTYPE_REMOVE =
+    public static final DoctypeValue VALUE_DOCTYPE_REMOVE =
         new DoctypeValue(PrettyPrinter.DOCTYPE_REMOVE);
 
     /**
      * The doctype value to keep unchanged the declaration.
      */
-    public final static DoctypeValue VALUE_DOCTYPE_KEEP_UNCHANGED =
+    public static final DoctypeValue VALUE_DOCTYPE_KEEP_UNCHANGED =
         new DoctypeValue(PrettyPrinter.DOCTYPE_KEEP_UNCHANGED);
 
     /**
      * The key to specify the public id.
      */
-    public final static TranscodingHints.Key KEY_PUBLIC_ID
+    public static final TranscodingHints.Key KEY_PUBLIC_ID
         = new StringKey();
 
     /**
      * The key to specify the system id.
      */
-    public final static TranscodingHints.Key KEY_SYSTEM_ID
+    public static final TranscodingHints.Key KEY_SYSTEM_ID
         = new StringKey();
 
     /**
      * The key to specify the XML declaration option.
      */
-    public final static TranscodingHints.Key KEY_XML_DECLARATION
+    public static final TranscodingHints.Key KEY_XML_DECLARATION
         = new StringKey();
 
     /**

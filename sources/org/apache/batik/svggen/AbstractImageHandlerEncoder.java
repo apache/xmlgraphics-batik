@@ -61,7 +61,7 @@ public abstract class AbstractImageHandlerEncoder extends DefaultImageHandler {
     // for createGraphics method.
     private static Method createGraphics = null;
     private static boolean initDone = false;
-    private final static Class[] paramc = new Class[] {BufferedImage.class};
+    private static final Class[] paramc = new Class[] {BufferedImage.class};
     private static Object[] paramo = null;
 
     /**

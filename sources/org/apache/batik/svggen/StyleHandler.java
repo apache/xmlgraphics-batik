@@ -37,6 +37,6 @@ public interface StyleHandler {
      * @param styleMap the <code>Map</code> containing pairs of style
      * property names, style values.
      */
-    public void setStyle(Element element, Map styleMap,
+    void setStyle(Element element, Map styleMap,
                          SVGGeneratorContext generatorContext);
 }

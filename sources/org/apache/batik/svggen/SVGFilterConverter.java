@@ -43,7 +43,7 @@ public interface SVGFilterConverter extends SVGSyntax {
      *         the input filter
      * @see org.apache.batik.svggen.SVGFilterDescriptor
      */
-    public SVGFilterDescriptor toSVG(BufferedImageOp filter, Rectangle filterRect);
+    SVGFilterDescriptor toSVG(BufferedImageOp filter, Rectangle filterRect);
 
     /**
      * @return set of definitions referenced by the attribute
@@ -52,5 +52,5 @@ public interface SVGFilterConverter extends SVGSyntax {
      *         If no definition is needed, an empty set should be
      *         returned.
      */
-    public List getDefinitionSet();
+    List getDefinitionSet();
 }

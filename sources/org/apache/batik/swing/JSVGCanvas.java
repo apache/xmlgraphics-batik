@@ -194,7 +194,7 @@ public class JSVGCanvas extends JSVGComponent {
      * This is used as the value in the toolTipDocs WeakHashMap.
      * This way we can tell if a document has already been added.
      */
-    protected final static Object MAP_TOKEN = new Object();
+    protected static final Object MAP_TOKEN = new Object();
     /**
      * The time of the last tool tip event.
      */
@@ -836,12 +836,12 @@ public class JSVGCanvas extends JSVGComponent {
 
             // Don't handle tool tips unless we are interactive.
             if (!isInteractive()) return;
-            
+
             if (!SVGConstants.SVG_NAMESPACE_URI.equals(elt.getNamespaceURI()))
                 return;
 
             // Don't handle tool tips for the root SVG element.
-            if (elt.getParentNode() == 
+            if (elt.getParentNode() ==
                 elt.getOwnerDocument().getDocumentElement()) {
                 return;
             }
@@ -855,13 +855,13 @@ public class JSVGCanvas extends JSVGComponent {
             Element descPeer = null;
             Element titlePeer = null;
             if (elt.getLocalName().equals(SVGConstants.SVG_TITLE_TAG)) {
-                if (data == Boolean.TRUE) 
+                if (data == Boolean.TRUE)
                     titlePeer = elt;
                 descPeer = getPeerWithTag(parent,
                                            SVGConstants.SVG_NAMESPACE_URI,
                                            SVGConstants.SVG_DESC_TAG);
             } else if (elt.getLocalName().equals(SVGConstants.SVG_DESC_TAG)) {
-                if (data == Boolean.TRUE) 
+                if (data == Boolean.TRUE)
                     descPeer = elt;
                 titlePeer = getPeerWithTag(parent,
                                            SVGConstants.SVG_NAMESPACE_URI,
@@ -977,7 +977,7 @@ public class JSVGCanvas extends JSVGComponent {
                                       String nameSpaceURI,
                                       String localName) {
 
-            Element p = (Element)parent;
+            Element p = parent;
             if (p == null) {
                 return null;
             }
@@ -1108,8 +1108,8 @@ public class JSVGCanvas extends JSVGComponent {
 
         protected int lastX, lastY;
 
-        public LocationListener () { 
-            lastX = 0; lastY = 0; 
+        public LocationListener () {
+            lastX = 0; lastY = 0;
         }
 
         public void mouseMoved(MouseEvent evt) {
@@ -1127,13 +1127,13 @@ public class JSVGCanvas extends JSVGComponent {
     }
 
     /**
-     * Sets a specific tooltip on the JSVGCanvas when a given event occurs. 
-     * This listener is used in the handleElement method to set, remove or 
+     * Sets a specific tooltip on the JSVGCanvas when a given event occurs.
+     * This listener is used in the handleElement method to set, remove or
      * modify the JSVGCanvas tooltip on mouseover and on mouseout.<br/>
      *
      * Because we are on a single <tt>JComponent</tt> we trigger an artificial
-     * <tt>MouseEvent</tt> when the toolTip is set to a non-null value, so as 
-     * to make sure it will show after the <tt>ToolTipManager</tt>'s default 
+     * <tt>MouseEvent</tt> when the toolTip is set to a non-null value, so as
+     * to make sure it will show after the <tt>ToolTipManager</tt>'s default
      * delay.
      */
     protected class ToolTipModifier implements EventListener {
@@ -1163,7 +1163,7 @@ public class JSVGCanvas extends JSVGComponent {
                 // related target is one it is entering or null.
                 org.w3c.dom.events.MouseEvent mouseEvt;
                 mouseEvt = ((org.w3c.dom.events.MouseEvent)evt);
-                lastTarget = mouseEvt.getRelatedTarget(); 
+                lastTarget = mouseEvt.getRelatedTarget();
             }
 
             if (toolTipMap != null) {

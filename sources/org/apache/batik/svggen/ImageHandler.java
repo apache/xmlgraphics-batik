@@ -41,20 +41,20 @@ public interface ImageHandler extends SVGSyntax {
      * The handler should set the xlink:href tag and the width and
      * height attributes.
      */
-    public void handleImage(Image image, Element imageElement,
+    void handleImage(Image image, Element imageElement,
                             SVGGeneratorContext generatorContext);
 
     /**
      * The handler should set the xlink:href tag and the width and
      * height attributes.
      */
-    public void handleImage(RenderedImage image, Element imageElement,
+    void handleImage(RenderedImage image, Element imageElement,
                             SVGGeneratorContext generatorContext);
 
     /**
      * The handler should set the xlink:href tag and the width and
      * height attributes.
      */
-    public void handleImage(RenderableImage image, Element imageElement,
+    void handleImage(RenderableImage image, Element imageElement,
                             SVGGeneratorContext generatorContext);
 }

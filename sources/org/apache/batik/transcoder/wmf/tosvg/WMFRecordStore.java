@@ -111,7 +111,7 @@ public class WMFRecordStore extends AbstractWMFReader {
                         read += 4;
                         clipped = true;
                     }
-                    byte bstr[] = new byte[ lenText ];
+                    byte[] bstr = new byte[ lenText ];
                     int i = 0;
                     for ( ; i < lenText; i++ ) {
                         bstr[ i ] = is.readByte();
@@ -148,7 +148,7 @@ public class WMFRecordStore extends AbstractWMFReader {
                 {
                     int len = readShort( is );
                     int read = 1; // used to track the actual size really read
-                    byte bstr[] = new byte[ len ];
+                    byte[] bstr = new byte[ len ];
                     for ( int i = 0; i < len; i++ ) {
                         bstr[ i ] = is.readByte();
                     }
@@ -199,7 +199,7 @@ public class WMFRecordStore extends AbstractWMFReader {
                     // don't need to read the end of the record,
                     // because it will always be completely used
                     int len = (2*(recSize-9));
-                    byte lfFaceName[] = new byte[ len ];
+                    byte[] lfFaceName = new byte[ len ];
                     byte ch;
                     for ( int i = 0; i < len; i++ ) lfFaceName[ i ] = is.readByte();
 
@@ -408,7 +408,7 @@ public class WMFRecordStore extends AbstractWMFReader {
                     mr.functionId = functionId;
 
                     int count = readShort( is ); // number of polygons
-                    int pts[] = new int[ count ];
+                    int[] pts = new int[ count ];
                     int ptCount = 0;
                     for ( int i = 0; i < count; i++ ) {
                         pts[ i ] = readShort( is ); // nomber of points for the polygon

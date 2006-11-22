@@ -64,12 +64,12 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
         EOL = temp;
     }
 
-    static private String QUOT_EOL = XML_CHAR_QUOT + EOL;
+    private static String QUOT_EOL = XML_CHAR_QUOT + EOL;
 
     /**
      * Defines the application arguments.
      */
-    static private String CONFIG_USAGE =
+    private static String CONFIG_USAGE =
         "SVGFont.config.usage";
 
     /**
@@ -77,21 +77,21 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
      * {0} SVG public ID
      * {1} SVG system ID
      */
-    static private String CONFIG_SVG_BEGIN =
+    private static String CONFIG_SVG_BEGIN =
         "SVGFont.config.svg.begin";
 
     /**
      * Defines the SVG start fragment that exercise the generated
      * Font.
      */
-    static private String CONFIG_SVG_TEST_CARD_START =
+    private static String CONFIG_SVG_TEST_CARD_START =
         "SVGFont.config.svg.test.card.start";
 
     /**
      * Defines the end of the SVG fragment that exercise the generated
      * Font.
      */
-    static private String CONFIG_SVG_TEST_CARD_END =
+    private static String CONFIG_SVG_TEST_CARD_END =
         "SVGFont.config.svg.test.card.end";
 
     protected static String encodeEntities(String s) {

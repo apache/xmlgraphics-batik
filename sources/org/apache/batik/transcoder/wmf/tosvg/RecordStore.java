@@ -135,7 +135,7 @@ public class RecordStore {
     {
         for ( int i = 0; i < numObjects; i++ ) {
             GdiObject gdi = (GdiObject)objectVector.elementAt( i );
-            if ( gdi.used == false ) {
+            if ( ! gdi.used ) {
                 gdi.Setup( type, obj );
                 lastObjectIdx = i;
                 break;
@@ -263,14 +263,17 @@ public class RecordStore {
         vpH = newValue;
     }
 
-    transient private URL url;
+    private transient URL url;
 
-    transient protected int numRecords;
-    transient protected int numObjects;
-    transient public int lastObjectIdx;
-    transient protected int vpX, vpY, vpW, vpH;
-    transient protected Vector records;
-    transient protected Vector objectVector;
+    protected transient int numRecords;
+    protected transient int numObjects;
+    public transient int lastObjectIdx;
+    protected transient int vpX;
+    protected transient int vpY;
+    protected transient int vpW;
+    protected transient int vpH;
+    protected transient Vector records;
+    protected transient Vector objectVector;
 
-    transient protected boolean bReading = false;
+    protected transient boolean bReading = false;
 }

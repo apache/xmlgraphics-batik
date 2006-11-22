@@ -27,12 +27,12 @@ import java.awt.event.ComponentEvent;
  * @version $Id$
  */
 public interface JGVTComponentListener {
-    public static int COMPONENT_TRANSFORM_CHANGED =
+    int COMPONENT_TRANSFORM_CHANGED =
         ComponentEvent.COMPONENT_LAST+1234;
     /**
      * Called when the rendering transform
      * changes on the JGVTComponentListener
      */
-    public void componentTransformChanged
+    void componentTransformChanged
         (ComponentEvent event);
 }

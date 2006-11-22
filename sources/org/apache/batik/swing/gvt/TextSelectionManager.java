@@ -47,7 +47,7 @@ public class TextSelectionManager {
     /**
      * The cursor indicating that a text selection operation is under way.
      */
-    public final static Cursor TEXT_CURSOR = new Cursor(Cursor.TEXT_CURSOR);
+    public static final Cursor TEXT_CURSOR = new Cursor(Cursor.TEXT_CURSOR);
 
     /**
      * The text selector.
@@ -95,7 +95,7 @@ public class TextSelectionManager {
     protected Color selectionOverlayStrokeColor = new Color(255, 255, 255, 255);
 
     /**
-     * A flag bit that indicates whether or not the selection overlay is 
+     * A flag bit that indicates whether or not the selection overlay is
      * painted in XOR mode.
      */
     protected boolean xorMode = false;
@@ -122,7 +122,7 @@ public class TextSelectionManager {
     }
 
     /**
-     * Add a selection listener to be notified when the 
+     * Add a selection listener to be notified when the
      * text selection changes in the document.
      */
     public void addSelectionListener(SelectionListener sl) {
@@ -130,7 +130,7 @@ public class TextSelectionManager {
     }
 
     /**
-     * Remove a selection listener to be notified when the 
+     * Remove a selection listener to be notified when the
      * text selection changes in the document.
      */
     public void removeSelectionListener(SelectionListener sl) {
@@ -157,7 +157,7 @@ public class TextSelectionManager {
      * Sets the color of the outline of the selection overlay to the specified
      * color.
      *
-     * @param color the new color of the outline of the selection overlay 
+     * @param color the new color of the outline of the selection overlay
      */
     public void setSelectionOverlayStrokeColor(Color color) {
         this.selectionOverlayStrokeColor = color;
@@ -174,7 +174,7 @@ public class TextSelectionManager {
      * Sets whether or not the selection overlay will be painted in XOR mode,
      * depending on the specified parameter.
      *
-     * @param state true implies the selection overlay will be in XOR mode 
+     * @param state true implies the selection overlay will be in XOR mode
      */
     public void setSelectionOverlayXORMode(boolean state) {
         this.xorMode = state;

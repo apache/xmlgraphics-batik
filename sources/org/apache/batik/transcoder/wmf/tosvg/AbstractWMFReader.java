@@ -93,7 +93,7 @@ public abstract class AbstractWMFReader {
      */
     protected short readShort( DataInputStream is ) throws IOException {
 
-        byte js[] = new byte[ 2 ];
+        byte[] js = new byte[ 2 ];
         fillBytes( js, is );
 
         return (short) (((js[ 1 ] << 8)) & 0xff00 | (js[0] & 0x00ff));
@@ -105,7 +105,7 @@ public abstract class AbstractWMFReader {
      */
     protected int readInt( DataInputStream is  ) throws IOException {
 
-        byte js[] = new byte[ 4 ];
+        byte[] js = new byte[ 4 ];
         fillBytes( js, is );
 
         return  ( 0xff & js[ 3 ] ) << 24
@@ -280,13 +280,13 @@ public abstract class AbstractWMFReader {
         return (int)(PIXEL_PER_INCH * (float)height / (float)inch);
     }
 
-    synchronized protected void setReading( boolean state ){
+    protected synchronized void setReading( boolean state ){
       bReading = state;
     }
 
     /** @return true if the reader is currently reading an InputStream.
      */
-    synchronized public boolean isReading(){
+    public synchronized boolean isReading(){
       return bReading;
     }
 

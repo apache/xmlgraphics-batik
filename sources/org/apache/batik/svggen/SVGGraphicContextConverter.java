@@ -45,7 +45,7 @@ public class SVGGraphicContextConverter {
     private SVGClip clipConverter;
     private SVGRenderingHints hintsConverter;
     private SVGFont fontConverter;
-    private SVGConverter converters[] =
+    private SVGConverter[] converters =
         new SVGConverter[GRAPHIC_CONTEXT_CONVERTER_COUNT];
 
     public SVGTransform getTransformConverter() { return transformConverter; }
@@ -85,7 +85,7 @@ public class SVGGraphicContextConverter {
      * @return a String containing the transform attribute value
      *         equivalent of the input transform stack.
      */
-    public String toSVG(TransformStackElement transformStack[]) {
+    public String toSVG(TransformStackElement[] transformStack) {
         return transformConverter.toSVGTransform(transformStack);
     }
 

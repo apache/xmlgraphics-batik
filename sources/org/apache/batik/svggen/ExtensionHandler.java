@@ -37,7 +37,7 @@ public interface ExtensionHandler {
      * @param generatorContext allows the handler to build DOM objects as needed.
      * @return an SVGPaintDescriptor
      */
-    public SVGPaintDescriptor handlePaint(Paint paint,
+    SVGPaintDescriptor handlePaint(Paint paint,
                                           SVGGeneratorContext generatorContext);
 
     /**
@@ -47,7 +47,7 @@ public interface ExtensionHandler {
      * or null if the composite cannot be handled
      *
      */
-    public SVGCompositeDescriptor handleComposite(Composite composite,
+    SVGCompositeDescriptor handleComposite(Composite composite,
                                                   SVGGeneratorContext generatorContext);
 
 /**
@@ -59,7 +59,7 @@ public interface ExtensionHandler {
      * @return an SVGFilterDescriptor which contains a valid SVG filter,
      * or null if the composite cannot be handled
      */
-    public SVGFilterDescriptor handleFilter(BufferedImageOp filter,
+SVGFilterDescriptor handleFilter(BufferedImageOp filter,
                                             Rectangle filterRect,
                                             SVGGeneratorContext generatorContext);
 }
