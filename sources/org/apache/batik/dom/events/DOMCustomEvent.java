@@ -18,24 +18,26 @@
  */
 package org.apache.batik.dom.events;
 
+import org.w3c.dom.events.CustomEvent;
+
 /**
  * A custom event object.
  *
  * @author <a href="mailto:cam%40mcc%2eid%2eau">Cameron McCormack</a>
  * @version $Id$
  */
-public class DOMCustomEvent extends DOMEvent {
+public class DOMCustomEvent extends DOMEvent implements CustomEvent {
 
     /**
-     * The custom details associated with this event.
+     * The custom detail associated with this event.
      */
-    protected Object details;
+    protected Object detail;
 
     /**
-     * Returns the custom details of this event.
+     * Returns the custom detail of this event.
      */
-    public Object getDetails() {
-        return details;
+    public Object getDetail() {
+        return detail;
     }
 
     /**
@@ -45,8 +47,8 @@ public class DOMCustomEvent extends DOMEvent {
                                   String typeArg,
                                   boolean canBubbleArg,
                                   boolean cancelableArg,
-                                  Object detailsArg) {
+                                  Object detailArg) {
         initEventNS(namespaceURIArg, typeArg, canBubbleArg, cancelableArg);
-        details = detailsArg;
+        detail = detailArg;
     }
 }

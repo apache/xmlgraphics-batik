@@ -147,8 +147,9 @@ public class SVGAElementBridge extends SVGGElementBridge {
         }
 
         public void handleEvent(Event evt) {
-            if (AbstractEvent.getEventPreventDefault(evt))
+            if (evt.getDefaultPrevented()) {
                 return;
+            }
             SVGAElement elt = (SVGAElement)evt.getCurrentTarget();
             Cursor cursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
             userAgent.setSVGCursor(cursor);
@@ -169,8 +170,9 @@ public class SVGAElementBridge extends SVGGElementBridge {
         }
 
         public void handleEvent(Event evt) {
-            if (AbstractEvent.getEventPreventDefault(evt))
+            if (evt.getDefaultPrevented()) {
                 return;
+            }
             //
             // Only modify the cursor if the target's cursor property is 
             // 'auto'. Note that we do not need to check the value of 
@@ -220,8 +222,9 @@ public class SVGAElementBridge extends SVGGElementBridge {
         }
 
         public void handleEvent(Event evt) {
-            if (AbstractEvent.getEventPreventDefault(evt))
+            if (evt.getDefaultPrevented()) {
                 return;
+            }
             // No need to set the cursor on out events: this is taken care of
             // by the BridgeContext
             

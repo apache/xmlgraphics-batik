@@ -18,7 +18,11 @@
 // $Id$
 // -----------------------------------------------------------------------------
 
-grant codeBase "${app.jar.base}/lib/xml-apis-dom3.jar" {
+grant codeBase "${app.jar.base}/lib/xml-apis.jar" {
+  permission java.security.AllPermission;
+};
+
+grant codeBase "${app.jar.base}/lib/xml-apis-ext.jar" {
   permission java.security.AllPermission;
 };
 

@@ -1,2 +1,0 @@
-The jaxp.jar file is under Apache license found in the distribution root
-root directory in the LICENSE file.

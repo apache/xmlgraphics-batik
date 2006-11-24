@@ -214,19 +214,10 @@ public abstract class AbstractEvent
     }
 
     /**
-     * <b>DOM</b>: Returns whether this Event implements the CustomEvent
-     * interface.
-     * @return false
-     */
-    public boolean isCustom() {
-        return false;
-    }
-
-    /**
      * <b>DOM</b>: Returns whether <code>preventDefault</code> has been
      * called on this object.
      */
-    public boolean isDefaultPrevented() {
+    public boolean getDefaultPrevented() {
         return preventDefault;
     }
 
@@ -312,11 +303,6 @@ public abstract class AbstractEvent
 
     void setTarget(EventTarget target) {
         this.target = target;
-    }
-
-    public static boolean getEventPreventDefault(Event evt) {
-        AbstractEvent ae = (AbstractEvent)evt;
-        return ae.isDefaultPrevented();
     }
 
     /**

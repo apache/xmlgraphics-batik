@@ -197,9 +197,10 @@ To display the available targets type:
       <include name="stylebook*.jar"/>
     </fileset>
     <fileset dir="lib">
-      <include name="xerces*.jar"/>
-      <include name="xml-apis-dom3.jar"/>
       <include name="xalan*.jar"/>
+      <include name="xerces*.jar"/>
+      <include name="xml-apis.jar"/>
+      <include name="xml-apis-ext.jar"/>
     </fileset>
   </path>
 
@@ -650,10 +651,7 @@ To display the available targets type:
     <jar jarfile="${build}/lib/${project}-libs.jar">
       <fileset dir="${dest}" excludes="**/.svn/">
         <include name="org/apache/batik/**"/>
-        <include name="org/w3c/css/sac/**"/>
-        <include name="org/w3c/dom/smil/**"/>
-        <include name="org/w3c/dom/svg/**"/>
-        <include name="org/w3c/dom/svg12/**"/>
+        <include name="org/w3c/dom/events/**"/>
       </fileset>
       <fileset dir="${resources}" excludes="**/.svn/">
         <include name="**"/>
@@ -707,7 +705,7 @@ To display the available targets type:
     <delete dir="${build}/tmp"/>
   </target>
 
-  <!-- External packages (dependencies: none) -->
+  <!-- External code (just DOM Level 3 Events) (dependencies: none) -->
   <target name="ext-jar" depends="compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-ext.jar">
       <fileset dir="${dest}">
