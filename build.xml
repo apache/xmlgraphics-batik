@@ -72,6 +72,15 @@ To display the available targets type:
 <project default="help" basedir=".">
   <!-- Configuring the build -->
   <property file="${basedir}/build-local.properties"/>
+  <property environment="env"/>
+
+  <!-- Info ............................................................... -->
+  <target name="info">
+    <echo message="------------------- ${Project} ${version} [${year}] -------------------"/>
+    <echo message="${ant.version}"/>
+    <echo message="VM: ${java.vm.version}, ${java.vm.vendor}"/>
+    <echo message="JAVA_HOME: ${env.JAVA_HOME}"/>
+  </target>
 
   <!-- Initializations .................................................... -->
   <target name="init-args" unless="args">
@@ -79,8 +88,10 @@ To display the available targets type:
   </target>
 
   <target name="init" depends="init-args">
-    <tstamp/>
-    <property name="Project"            value="Batik"/>
+    <tstamp>
+      <format property="ts" pattern="yyyyMMdd-HHmmss-z"/>
+    </tstamp>
+    <property name="Project"            value="Apache Batik"/>
     <property name="project"            value="batik"/>
     <property name="year"               value="2005"/>
     <property name="version"            value="1.6"/>
@@ -100,28 +111,29 @@ To display the available targets type:
     <property name="dest"               value="classes"/>
     <property name="dest-internal-codec" value="classes-internal-codec"/>
     <property name="build"              value="${project}-${version}"/>
+    <property name="build.id"           value="${ts} (${user.name} [${os.name} ${os.version} ${os.arch}, Java ${java.runtime.version}])"/>
     <property name="docs"               value="${build}/docs"/>
+    <property name="forrest-build"      value="${build}/forrest"/>
     <property name="lib"                value="lib"/>
     <property name="samples"            value="samples"/>
     <property name="package-prefix"     value="org/apache/${project}"/>
 
     <property name="class-prefix"       value="org.apache.${project}"/>
 
-    <property name="xdocs"              value="xdocs"/>
-    <property name="skins"              value="xdocs/skins"/>
-    <property name="stylebook-class"    value="org.apache.stylebook.StyleBook"/>
     <property name="javadoc-exclusions" value=""/>
     <property name="dom.javadoc"        value="http://www.w3.org/2003/01/dom2-javadoc/"/>
     <property name="jdk.javadoc"        value="http://java.sun.com/j2se/1.4/docs/api/"/>
     <property name="rhino.javadoc"      value="http://www.mozilla.org/rhino/apidocs/"/>
 
-    <property name="site"               value="../xml-site/targets/${project}"/>
-    <property name="site-skin"          value="${skins}/xml.apache.org/"/>
-    <property name="print-skin"         value="${skins}/printer/"/>
+    <property name="site"               value="site"/>
 
     <property name="test-reports"       value="test-reports"/>
     <property name="test-references"    value="test-references"/>
     <property name="test-resources"     value="test-resources"/>
+
+    <pathconvert property="cwd">
+      <path path="."/>
+    </pathconvert>
 
     <available property="rhino.present" classname="org.mozilla.javascript.Context">
       <classpath refid="libs-classpath"/>
@@ -184,6 +196,12 @@ To display the available targets type:
      <srcfiles dir="${testresources}//org/apache/batik/bridge"
                includes="IWasLoadedToo.java"/>
     </uptodate>
+
+    <condition property="forrest.call" value="forrest.bat" else="forrest">
+      <os family="windows"/>
+    </condition>
+
+    <antcall target="info"/>
   </target>
 
   <path id="libs-classpath">
@@ -263,13 +281,16 @@ To display the available targets type:
   </target>
 
   <target name="bin-zip" depends="jars, htmldoc">
-    <zip zipfile="${project}-${version}.zip" includes="${build}/**">
+    <zip zipfile="${project}-${version}.zip">
       <zipfileset dir="." prefix="${project}-${version}">
         <include name="LICENSE"/>
         <include name="NOTICE"/>
         <include name="README"/>
       </zipfileset>
-      <zipfileset dir="${build}" includes="**" prefix="${project}-${version}"/>
+      <zipfileset dir="${build}" prefix="${project}-${version}">
+        <include name="*.jar"/>
+        <include name="docs/**"/>
+      </zipfileset>
       <zipfileset dir="lib" prefix="${project}-${version}/lib">
         <include name="LICENSE.*.txt"/>
         <include name="README.*.txt"/>
@@ -296,6 +317,7 @@ To display the available targets type:
         <include name="svn-revision"/>
         <include name="contrib/**"/>
         <include name="lib/**"/>
+        <include name="documentation-sources/**"/>
         <include name="resources/**"/>
         <include name="samples/**"/>
         <include name="sources/**"/>
@@ -303,7 +325,6 @@ To display the available targets type:
         <include name="sources-1.4/**"/>
         <include name="test-resources/**"/>
         <include name="test-sources/**"/>
-        <include name="xdocs/**"/>
       </zipfileset>
     </zip>
     <delete file="svn-revision" failonerror="false"/>
@@ -326,7 +347,10 @@ To display the available targets type:
         <include name="NOTICE"/>
         <include name="README"/>
       </tarfileset>
-      <tarfileset dir="${build}" includes="**" prefix="${project}-${version}"/>
+      <tarfileset dir="${build}" prefix="${project}-${version}">
+        <include name="*.jar"/>
+        <include name="docs/**"/>
+      </tarfileset>
       <tarfileset dir="lib" prefix="${project}-${version}/lib">
         <include name="LICENSE.*.txt"/>
         <include name="README.*.txt"/>
@@ -352,6 +376,7 @@ To display the available targets type:
         <include name="build.xml"/>
         <include name="svn-revision"/>
         <include name="contrib/**"/>
+        <include name="documentation-sources/**"/>
         <include name="lib/**"/>
         <include name="resources/**"/>
         <include name="samples/**"/>
@@ -360,7 +385,6 @@ To display the available targets type:
         <include name="sources-1.4/**"/>
         <include name="test-resources/**"/>
         <include name="test-sources/**"/>
-        <include name="xdocs/**"/>
       </tarfileset>
     </tar>
     <delete file="svn-revision" failonerror="false"/>
@@ -632,9 +656,10 @@ To display the available targets type:
       <manifest>
         <attribute name="Implementation-Title" value="Batik all-in-one JAR"/>
         <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}${svn-revision-suffix}"/>
-        <attribute name="Implementation-Vendor" value="Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
-        <attribute name="Implementation-URL" value="http://xmlgraphics.apache.org/batik/"/>
+        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
+        <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
+      <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
       <fileset dir="${dest}" excludes="**/.svn/">
         <include name="**"/>
       </fileset>
@@ -649,6 +674,9 @@ To display the available targets type:
        (dependencies: batik-ext.jar) -->
   <target name="libs-jar" depends="compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-libs.jar">
+      <manifest>
+        <attribute name="Build-Id" value="${build.id}"/>
+      </manifest>
       <fileset dir="${dest}" excludes="**/.svn/">
         <include name="org/apache/batik/**"/>
         <include name="org/w3c/dom/events/**"/>
@@ -670,9 +698,10 @@ To display the available targets type:
       <manifest>
         <attribute name="Implementation-Title" value="Batik Java Bean"/>
         <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}${svn-revision-suffix}"/>
-        <attribute name="Implementation-Vendor" value="Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
-        <attribute name="Implementation-URL" value="http://xmlgraphics.apache.org/batik/"/>
+        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
+        <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
+      <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
       <fileset dir="${dest}">
         <include name="org/w3c/**"/>
         <include name="${package-prefix}/bridge/**/*.class"/>
@@ -708,6 +737,12 @@ To display the available targets type:
   <!-- External code (just DOM Level 3 Events) (dependencies: none) -->
   <target name="ext-jar" depends="compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-ext.jar">
+      <manifest>
+        <attribute name="Build-Id" value="${build.id}"/>
+      </manifest>
+      <metainf dir="${lib}">
+        <include name="LICENSE.dom-*.txt"/>
+      </metainf>
       <fileset dir="${dest}">
         <include name="org/w3c/**"/>
       </fileset>
@@ -720,9 +755,10 @@ To display the available targets type:
       <manifest>
         <attribute name="Implementation-Title" value="Batik utility jar"/>
         <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}${svn-revision-suffix}"/>
-        <attribute name="Implementation-Vendor" value="Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
-        <attribute name="Implementation-URL" value="http://xmlgraphics.apache.org/batik/"/>
+        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
+        <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
+      <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
       <fileset dir="${dest}">
         <include name="${package-prefix}/i18n/*.class"/>
         <include name="${package-prefix}/util/*.class"/>
@@ -741,6 +777,10 @@ To display the available targets type:
   <!-- AWT Util (dependencies: none) -->
   <target name="awt-util-jar" depends="compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-awt-util.jar">
+      <manifest>
+        <attribute name="Build-Id" value="${build.id}"/>
+      </manifest>
+      <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
       <fileset dir="${dest}">
         <include name="${package-prefix}/ext/awt/**/*.class"/>
         <include name="${package-prefix}/ext/swing/**/*.class"/>
@@ -756,6 +796,10 @@ To display the available targets type:
   <!-- Codecs (dependencies: awt-util, transcoder) -->
   <target name="codec-jar" depends="compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-codec.jar">
+      <manifest>
+        <attribute name="Build-Id" value="${build.id}"/>
+      </manifest>
+      <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
       <fileset dir="${dest}">
         <include name="${package-prefix}/ext/awt/image/codec/util/*.class"/>
         <include name="${package-prefix}/ext/awt/image/codec/png/*.class"/>
@@ -777,6 +821,10 @@ To display the available targets type:
   <!-- SVGGraphics2D (dependencies: util, awt-util) -->
   <target name="svggen-jar" depends="compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-svggen.jar">
+      <manifest>
+        <attribute name="Build-Id" value="${build.id}"/>
+      </manifest>
+      <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
       <fileset dir="${dest}">
         <include name="${package-prefix}/svggen/**/*.class"/>
       </fileset>
@@ -789,6 +837,10 @@ To display the available targets type:
   <!-- SVGGraphics2D (dependencies: util, awt-util) -->
   <target name="svggen-full-jar" depends="compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-svggenfull.jar">
+      <manifest>
+        <attribute name="Build-Id" value="${build.id}"/>
+      </manifest>
+      <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
       <fileset dir="${dest}">
         <include name="${package-prefix}/svggen/**/*.class"/>
         <include name="${package-prefix}/util/Base64*.class"/>
@@ -806,6 +858,10 @@ To display the available targets type:
   <!-- GUI Util (dependencies: none) -->
   <target name="gui-util-jar" depends="compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-gui-util.jar">
+      <manifest>
+        <attribute name="Build-Id" value="${build.id}"/>
+      </manifest>
+      <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
       <fileset dir="${dest}">
         <include name="${package-prefix}/util/gui/**/*.class"/>
       </fileset>
@@ -819,6 +875,10 @@ To display the available targets type:
   <!-- DOM Level 3 (dependencies: ext, util) -->
   <target name="dom-jar" depends="compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-dom.jar">
+      <manifest>
+        <attribute name="Build-Id" value="${build.id}"/>
+      </manifest>
+      <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
       <fileset dir="${dest}">
         <include name="${package-prefix}/dom/*.class"/>
         <include name="${package-prefix}/dom/events/*.class"/>
@@ -840,6 +900,10 @@ To display the available targets type:
   <!-- CSS Engine (dependencies: ext, util) -->
   <target name="css-jar" depends="compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-css.jar">
+      <manifest>
+        <attribute name="Build-Id" value="${build.id}"/>
+      </manifest>
+      <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
       <fileset dir="${dest}">
         <include name="${package-prefix}/css/dom/*.class"/>
         <include name="${package-prefix}/css/engine/*.class"/>
@@ -866,6 +930,10 @@ To display the available targets type:
   <!-- SVG DOM (dependencies: ext, DOM, CSS, util) -->
   <target name="svg-dom-jar" depends="compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-svg-dom.jar">
+      <manifest>
+        <attribute name="Build-Id" value="${build.id}"/>
+      </manifest>
+      <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
       <fileset dir="${dest}">
         <include name="${package-prefix}/dom/anim/*.class"/>
         <include name="${package-prefix}/dom/svg/*.class"/>
@@ -882,6 +950,10 @@ To display the available targets type:
   <!-- GVT (dependencies: util, awt-util) -->
   <target name="gvt-jar" depends="compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-gvt.jar">
+      <manifest>
+        <attribute name="Build-Id" value="${build.id}"/>
+      </manifest>
+      <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
       <fileset dir="${dest}">
         <include name="${package-prefix}/gvt/**/*.class"/>
       </fileset>
@@ -895,6 +967,10 @@ To display the available targets type:
   <!-- Parser (dependencies: util) -->
   <target name="parser-jar" depends="compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-parser.jar">
+      <manifest>
+        <attribute name="Build-Id" value="${build.id}"/>
+      </manifest>
+      <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
       <fileset dir="${dest}">
         <include name="${package-prefix}/parser/**/*.class"/>
       </fileset>
@@ -908,6 +984,10 @@ To display the available targets type:
   <!-- Script (dependencies: util) -->
   <target name="script-jar" depends="compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-script.jar">
+      <manifest>
+        <attribute name="Build-Id" value="${build.id}"/>
+      </manifest>
+      <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
       <fileset dir="${dest}">
         <include name="${package-prefix}/script/**/*.class"/>
       </fileset>
@@ -922,6 +1002,10 @@ To display the available targets type:
   <!-- Transcoder (dependencies: all) -->
   <target name="transcoder-jar" depends="compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-transcoder.jar">
+      <manifest>
+        <attribute name="Build-Id" value="${build.id}"/>
+      </manifest>
+      <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
       <fileset dir="${dest}">
         <include name="${package-prefix}/transcoder/**/*.class"/>
       </fileset>
@@ -934,6 +1018,10 @@ To display the available targets type:
   <!-- XML (dependencies: util) -->
   <target name="xml-jar" depends="compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-xml.jar">
+      <manifest>
+        <attribute name="Build-Id" value="${build.id}"/>
+      </manifest>
+      <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
       <fileset dir="${dest}">
         <include name="${package-prefix}/xml/**/*.class"/>
       </fileset>
@@ -946,6 +1034,10 @@ To display the available targets type:
   <!-- Bridge (dependencies: all) -->
   <target name="bridge-jar" depends="compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-bridge.jar">
+      <manifest>
+        <attribute name="Build-Id" value="${build.id}"/>
+      </manifest>
+      <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
       <fileset dir="${dest}">
         <include name="${package-prefix}/bridge/**/*.class"/>
       </fileset>
@@ -959,6 +1051,10 @@ To display the available targets type:
   <!-- Swing (dependencies: all) -->
   <target name="swing-jar" depends="compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-swing.jar">
+      <manifest>
+        <attribute name="Build-Id" value="${build.id}"/>
+      </manifest>
+      <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
       <fileset dir="${dest}">
         <include name="${package-prefix}/swing/**/*.class"/>
       </fileset>
@@ -971,6 +1067,10 @@ To display the available targets type:
   <!-- Animation (dependencies: dom, util, xml, parser) -->
   <target name="anim-jar" depends="compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-anim.jar">
+      <manifest>
+        <attribute name="Build-Id" value="${build.id}"/>
+      </manifest>
+      <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
       <fileset dir="${dest}">
         <include name="${package-prefix}/anim/*.class"/>
         <include name="${package-prefix}/anim/timing/*.class"/>
@@ -985,6 +1085,10 @@ To display the available targets type:
   <!-- Extensions (dependencies: all) -->
   <target name="extension-jar" depends="compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-extension.jar">
+      <manifest>
+        <attribute name="Build-Id" value="${build.id}"/>
+      </manifest>
+      <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
       <fileset dir="${resources}" excludes="**/.svn/">
         <include name="META-INF/services/*"/>
         <exclude name="META-INF/services/org.apache.batik.script.InterpreterFactory"/>
@@ -1004,10 +1108,11 @@ To display the available targets type:
          jarfile="${build}/${project}-svgpp.jar">
       <manifest>
         <attribute name="Implementation-Title" value="Batik XML Pretty Printer"/>
-        <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}"/>
-        <attribute name="Implementation-Vendor" value="Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
-        <attribute name="Implementation-URL" value="http://xmlgraphics.apache.org/batik/"/>
+        <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}${svn-revision-suffix}"/>
+        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
+        <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
+      <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
       <fileset dir="${dest}">
         <include name="${package-prefix}/apps/svgpp/**/*.class"/>
       </fileset>
@@ -1024,9 +1129,10 @@ To display the available targets type:
       <manifest>
         <attribute name="Implementation-Title" value="Batik SVG Slide Show Tool"/>
         <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}${svn-revision-suffix}"/>
-        <attribute name="Implementation-Vendor" value="Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
-        <attribute name="Implementation-URL" value="http://xmlgraphics.apache.org/batik/"/>
+        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
+        <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
+      <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
       <fileset dir="${dest}">
         <include name="${package-prefix}/apps/slideshow/**/*.class"/>
       </fileset>
@@ -1048,9 +1154,10 @@ To display the available targets type:
       <manifest>
         <attribute name="Implementation-Title" value="Batik Squiggle Viewer"/>
         <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}${svn-revision-suffix}"/>
-        <attribute name="Implementation-Vendor" value="Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
-        <attribute name="Implementation-URL" value="http://xmlgraphics.apache.org/batik/"/>
+        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
+        <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
+      <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
       <fileset dir="${dest}">
         <include name="${package-prefix}/apps/svgbrowser/**/*.class"/>
         <include name="${package-prefix}/experiment/**/*.class"/>
@@ -1074,12 +1181,13 @@ To display the available targets type:
       <manifest>
         <attribute name="Implementation-Title" value="Batik Squiggle Viewer With Extensions"/>
         <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}${svn-revision-suffix}"/>
-        <attribute name="Implementation-Vendor" value="Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
-        <attribute name="Implementation-URL" value="http://xmlgraphics.apache.org/batik/"/>
+        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
+        <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
-        <fileset dir="${resources}" excludes="**/.svn/">
-            <include name="META-INF/services/**"/>
-        </fileset>
+      <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
+      <fileset dir="${resources}" excludes="**/.svn/">
+        <include name="META-INF/services/**"/>
+      </fileset>
      </jar>
   </target>
 
@@ -1097,9 +1205,10 @@ To display the available targets type:
       <manifest>
         <attribute name="Implementation-Title" value="Batik SVG Rasterizer"/>
         <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}${svn-revision-suffix}"/>
-        <attribute name="Implementation-Vendor" value="Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
-        <attribute name="Implementation-URL" value="http://xmlgraphics.apache.org/batik/"/>
+        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
+        <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
+      <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
       <fileset dir="${dest}">
         <include name="${package-prefix}/apps/rasterizer/**/*.class"/>
       </fileset>
@@ -1120,12 +1229,13 @@ To display the available targets type:
       <manifest>
         <attribute name="Implementation-Title" value="Batik SVG Rasterizer With Extensions"/>
         <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}${svn-revision-suffix}"/>
-        <attribute name="Implementation-Vendor" value="Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
-        <attribute name="Implementation-URL" value="http://xmlgraphics.apache.org/batik/"/>
+        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
+        <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
-        <fileset dir="${resources}" excludes="**/.svn/">
-            <include name="META-INF/services/**"/>
-        </fileset>
+      <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
+      <fileset dir="${resources}" excludes="**/.svn/">
+        <include name="META-INF/services/**"/>
+      </fileset>
      </jar>
   </target>
 
@@ -1136,9 +1246,10 @@ To display the available targets type:
       <manifest>
         <attribute name="Implementation-Title" value="Batik TrueType to SVG Font Converter"/>
         <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}${svn-revision-suffix}"/>
-        <attribute name="Implementation-Vendor" value="Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
-        <attribute name="Implementation-URL" value="http://xmlgraphics.apache.org/batik/"/>
+        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
+        <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
+      <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
       <fileset dir="${dest}">
         <include name="${package-prefix}/apps/ttf2svg/**/*.class"/>
       </fileset>
@@ -1151,9 +1262,10 @@ To display the available targets type:
       <manifest>
         <attribute name="Implementation-Title" value="Batik"/>
         <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}${svn-revision-suffix}"/>
-        <attribute name="Implementation-Vendor" value="Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
-        <attribute name="Implementation-URL" value="http://xmlgraphics.apache.org/batik/"/>
+        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
+        <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
+      <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
     </jar>
   </target>
 
@@ -1180,12 +1292,16 @@ To display the available targets type:
   <!-- imageCodecs.jar : A jar containing the image codecs -->
   <target name="imageCodecs-jar" depends="compiletest, prepare-build">
     <jar jarfile="imageCodecs.jar">
-        <fileset dir="${dest}">
-          <include name="${package-prefix}/ext/awt/image/codec/*.class"/>
-        </fileset>
-        <fileset dir="${test-resources}">
-          <include name="${package-prefix}/ext/awt/image/codec/resources/*.properties"/>
-        </fileset>
+      <manifest>
+        <attribute name="Build-Id" value="${build.id}"/>
+      </manifest>
+      <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
+      <fileset dir="${dest}">
+        <include name="${package-prefix}/ext/awt/image/codec/*.class"/>
+      </fileset>
+      <fileset dir="${test-resources}">
+        <include name="${package-prefix}/ext/awt/image/codec/resources/*.properties"/>
+      </fileset>
     </jar>
   </target>
 
@@ -1451,54 +1567,47 @@ To display the available targets type:
   </target>
 
   <!-- Documentation ...................................................... -->
-  <target name="prepare-docs" depends="init">
-    <mkdir dir="${docs}"/>
-  </target>
-
   <target name="html" depends="javadoc, htmldoc"
-          description="generates the site documentation in ${build}/docs/"/>
-  <target name="htmldoc" depends="prepare-docs">
-    <copy file="${xdocs}/site-book.xml"
-          tofile="${xdocs}/book.xml"
-          filtering="on"/>
-    <java classname="${stylebook-class}" fork="yes">
-      <classpath refid="libs-build-classpath"/>
-      <arg line="targetDirectory=${docs} ${xdocs}/book.xml ${site-skin}"/>
-      <jvmarg value="-Djava.awt.headless=true"/>
-    </java>
-  </target>
-
-  <target name="printerdoc" depends="prepare-docs">
-    <mkdir dir="${docs}/print"/>
-    <copy file="${xdocs}/docs-book.xml"
-          tofile="${xdocs}/book.xml"
-          filtering="on"/>
-    <java classname="${stylebook-class}" fork="yes">
-      <classpath refid="libs-build-classpath"/>
-      <arg line="targetDirectory=${docs}/print ${xdocs}/book.xml ${print-skin}"/>
-    </java>
+          description="Generates the HTML documentation, including javadocs, in ${build}/docs/"/>
+  <target name="htmldoc" depends="init, forrest"
+          description="Generates HTML documentation">
+    <mkdir dir="${docs}"/>
+    <copy todir="${docs}">
+      <fileset dir="${forrest-build}/site" excludes="doap.rdf, download.cgi"/>
+    </copy>
   </target>
 
   <target name="site" depends="site-javadoc, sitedoc"/>
-  <target name="sitedoc" depends="init">
-    <copy file="${xdocs}/site-book.xml"
-          tofile="${xdocs}/book.xml"
-          filtering="on"/>
-    <java classname="${stylebook-class}" fork="yes">
-      <classpath refid="libs-build-classpath"/>
-      <arg line="targetDirectory=${site} ${xdocs}/book.xml ${site-skin}"/>
-    </java>
+  <target name="sitedoc" depends="init, forrest"
+          description="Generates the http://xmlgraphics.apache.org/batik/ site">
+    <mkdir dir="${site}"/>
+    <copy todir="${site}">
+      <fileset dir="${forrest-build}/site"/>
+    </copy>
   </target>
 
   <target name="site-javadoc" depends="javadoc">
-    <mkdir dir="${site}"/>
+    <mkdir dir="${site}/javadoc"/>
     <copy todir="${site}/javadoc">
       <fileset dir="${docs}/javadoc"/>
     </copy>
   </target>
 
+  <target name="forrest" depends="init">
+    <property name="forrest-build.dir" value="${cwd}${file.separator}${forrest-build}"/>
+    <exec executable="${forrest.call}">
+      <arg value="-Dproject.build-dir=${forrest-build.dir}"/>
+      <arg value="-Dproject.temp-dir=${forrest-build.dir}${file.separator}tmp"/>
+      <arg value="-Dproject.webapp=${forrest-build.dir}${file.separator}webapp"/>
+    </exec>
+    <delete dir="${forrest-build}/tmp"/>
+    <!-- Ideally Forrest would put its log files in ${forrest-build}, but it
+         insists on creating a directory called 'build' for these. -->
+    <delete dir="build"/>
+  </target>
+
   <target name="javadocs" depends="javadoc"/>
-  <target name="javadoc" depends="prepare-docs">
+  <target name="javadoc">
     <mkdir dir="${docs}/javadoc"/>
     <javadoc packagenames="${class-prefix}.*,
                            org.xml.*,
@@ -1524,7 +1633,10 @@ To display the available targets type:
   </target>
 
   <target name="clean-docs" depends="init">
+    <delete dir="${forrest-build}"/>
     <delete dir="${docs}"/>
+    <delete dir="${site}"/>
+    <delete dir="build"/>  <!-- In case it's left behind by Forrest. -->
   </target>
 
   <!-- Generates splash screens for the documentation and the browser ..... -->
