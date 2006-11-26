@@ -85,7 +85,7 @@ public abstract class TimeContainer extends TimedElement {
      * events would have to be surpressed.
      *
      * @return the number of seconds until this element becomes active again
-     *         if it currently is not, {@link Float.POSITIVE_INFINITY} if this
+     *         if it currently is not, {@link Float#POSITIVE_INFINITY} if this
      *         element will become active at some undetermined point in the
      *         future (because of unresolved begin times, for example) or
      *         will never become active again, or <code>0f</code> if the

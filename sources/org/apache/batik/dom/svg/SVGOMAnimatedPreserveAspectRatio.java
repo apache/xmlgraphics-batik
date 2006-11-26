@@ -204,7 +204,7 @@ public class SVGOMAnimatedPreserveAspectRatio
         }
 
         /**
-         * <b>DOM</b>: Implements {@link SVGPreservAspectRatio#getAlign()}.
+         * <b>DOM</b>: Implements {@link SVGPreserveAspectRatio#getAlign()}.
          */
         public short getAlign() {
             if (hasAnimVal) {
@@ -214,7 +214,7 @@ public class SVGOMAnimatedPreserveAspectRatio
         }
         
         /**
-         * <b>DOM</b>: Implements {@link SVGPreservAspectRatio#getMeetOrSlice()}.
+         * <b>DOM</b>: Implements {@link SVGPreserveAspectRatio#getMeetOrSlice()}.
          */
         public short getMeetOrSlice() {
             if (hasAnimVal) {
@@ -224,7 +224,7 @@ public class SVGOMAnimatedPreserveAspectRatio
         }
 
         /**
-         * <b>DOM</b>: Implements {@link SVGPreservAspectRatio#setAlign(short)}.
+         * <b>DOM</b>: Implements {@link SVGPreserveAspectRatio#setAlign(short)}.
          */
         public void setAlign(short align) {
             throw element.createDOMException
@@ -233,7 +233,7 @@ public class SVGOMAnimatedPreserveAspectRatio
         }
 
         /**
-         * <b>DOM</b>: Implements {@link SVGPreservAspectRatio#setMeetOrSlice(short)}.
+         * <b>DOM</b>: Implements {@link SVGPreserveAspectRatio#setMeetOrSlice(short)}.
          */
         public void setMeetOrSlice(short meetOrSlice) {
             throw element.createDOMException

@@ -423,30 +423,34 @@ public abstract class SVGAnimationElementBridge extends AbstractSVGBridge
     // SVGAnimationContext ///////////////////////////////////////////////////
 
     /**
-     * <b>DOM</b>: Implements {@link SVGAnimationElement#getTargetElement()}.
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.svg.SVGAnimationElement#getTargetElement()}.
      */
     public SVGElement getTargetElement() {
         return targetElement;
     }
 
     /**
-     * <b>DOM</b>: Implements {@link SVGAnimationElement#getStartTime()}.
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.svg.SVGAnimationElement#getStartTime()}.
      */
     public float getStartTime() {
         return timedElement.getCurrentBeginTime();
     }
 
     /**
-     * <b>DOM</b>: Implements {@link SVGAnimationElement#getCurrentTime()}.
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.svg.SVGAnimationElement#getCurrentTime()}.
      */
     public float getCurrentTime() {
         return timedElement.getLastSampleTime();
     }
 
     /**
-     * <b>DOM</b>: Implements {@link SVGAnimationElement#getSimpleDuration()}.
-     * With the difference that an indefinite simple duration is returned as
-     * {@link TimedElement.INDEFINITE}, rather than throwing an exception.
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.svg.SVGAnimationElement#getSimpleDuration()}.  With the
+     * difference that an indefinite simple duration is returned as
+     * {@link TimedElement#INDEFINITE}, rather than throwing an exception.
      */
     public float getSimpleDuration() {
         return timedElement.getSimpleDur();

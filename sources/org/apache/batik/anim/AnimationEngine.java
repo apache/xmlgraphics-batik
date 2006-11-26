@@ -602,7 +602,7 @@ public abstract class AnimationEngine {
         public boolean shouldUpdate;
 
         /**
-         * Whether an {@link AnimationEngineListener} has been registered to
+         * Whether an {@link AnimationTargetListener} has been registered to
          * listen for changes to the base value.
          */
         public boolean listenerRegistered;

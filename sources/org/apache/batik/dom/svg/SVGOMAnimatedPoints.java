@@ -76,7 +76,7 @@ public class SVGOMAnimatedPoints
     }
 
     /**
-     * <b>DOM</b>: Implements {@link SVGAnimatedPointList#getPoints()}.
+     * <b>DOM</b>: Implements {@link SVGAnimatedPoints#getPoints()}.
      */
     public SVGPointList getPoints() {
         if (baseVal == null) {
@@ -86,7 +86,7 @@ public class SVGOMAnimatedPoints
     }
 
     /**
-     * <b>DOM</b>: Implements {@link SVGAnimatedPointList#getAnimatedPoints()}.
+     * <b>DOM</b>: Implements {@link SVGAnimatedPoints#getAnimatedPoints()}.
      */
     public SVGPointList getAnimatedPoints() {
         if (animVal == null) {

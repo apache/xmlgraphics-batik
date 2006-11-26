@@ -224,7 +224,7 @@ public abstract class AbstractAttr extends AbstractParentNode implements Attr {
     }
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.Attr#getIsId()}.
+     * <b>DOM</b>: Implements {@link org.w3c.dom.Attr#isId()}.
      */
     public boolean isId() {
         return isIdAttr;

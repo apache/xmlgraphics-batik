@@ -120,7 +120,6 @@ To display the available targets type:
 
     <property name="class-prefix"       value="org.apache.${project}"/>
 
-    <property name="javadoc-exclusions" value=""/>
     <property name="dom.javadoc"        value="http://www.w3.org/2003/01/dom2-javadoc/"/>
     <property name="jdk.javadoc"        value="http://java.sun.com/j2se/1.4/docs/api/"/>
     <property name="rhino.javadoc"      value="http://www.mozilla.org/rhino/apidocs/"/>
@@ -166,24 +165,27 @@ To display the available targets type:
       </not>
     </condition>
 
-    <condition property="javadoc-exclusions"
+    <condition property="javadoc-exclusion-rhino"
                value="org.apache.batik.script.rhino">
       <not>
         <equals arg1="${rhino.present}" arg2="true"/>
       </not>
     </condition>
-    <condition property="javadoc-exclusions"
-               value="${javadoc-exclusions},org.apache.batik.script.jpython">
+    <condition property="javadoc-exclusion-jpython"
+               value="org.apache.batik.script.jpython">
       <not>
         <equals arg1="${jpython.present}" arg2="true"/>
       </not>
     </condition>
-    <condition property="javadoc-exclusions"
-               value="${javadoc-exclusions},org.apache.batik.script.jacl">
+    <condition property="javadoc-exclusion-jacl"
+               value="org.apache.batik.script.jacl">
       <not>
         <equals arg1="${jacl.present}" arg2="true"/>
       </not>
     </condition>
+
+    <property name="javadoc-exclusions"
+              value="${javadoc-exclusion-rhino},${javadoc-exclusion-jpython},${javadoc-exclusion-jacl}"/>
 
     <uptodate property="IWasLoadedUpToDate" 
      targetfile="${testresources}/org/apache/batik/bridge/IWasLoaded.jar">
@@ -280,7 +282,7 @@ To display the available targets type:
     <delete dir="${build}/docs/javadoc"/>
   </target>
 
-  <target name="bin-zip" depends="jars, htmldoc">
+  <target name="bin-zip" depends="init, jars, htmldoc">
     <zip zipfile="${project}-${version}.zip">
       <zipfileset dir="." prefix="${project}-${version}">
         <include name="LICENSE"/>
@@ -340,7 +342,7 @@ To display the available targets type:
     <delete dir="${build}/docs/javadoc"/>
   </target>
 
-  <target name="bin-tgz" depends="jars, htmldoc">
+  <target name="bin-tgz" depends="init, jars, htmldoc">
     <tar tarfile="${project}-${version}.tar.gz" compression="gzip">
       <tarfileset dir="." prefix="${project}-${version}">
         <include name="LICENSE"/>
@@ -393,7 +395,7 @@ To display the available targets type:
 
   <!-- Compilation ........................................................ -->
   <target name       ="compiletest"
-          depends    ="compile"
+          depends    ="init, compile"
           description="Compiles the tests infrastructure source files">
     <mkdir dir="${dest}"/>
 
@@ -417,7 +419,7 @@ To display the available targets type:
   <target name="testjars" depends="security2.jar, IWasLoaded.jar, IWasLoadedToo.jar, JarCheckPermissionsGranted.jar, JarCheckPermissionsDenied.jar, java-binding.jar"/>
 
   <target name       ="compiletestjars"
-          depends    ="compile"
+          depends    ="init, compile"
           description="Compiles the source files for the samples scripts and the test-resources">
     <mkdir dir="${testresources}/classes"/>
     <mkdir dir="${samples}/tests/resources/java/classes"/>
@@ -445,7 +447,7 @@ To display the available targets type:
     </javac>
   </target>
 
-  <target name="security2.jar" depends="compiletestjars">
+  <target name="security2.jar" depends="init, compiletestjars">
     <jar manifest="${samples}/tests/resources/java/resources/com/untrusted/script/security2.mf"
          jarfile="samples/tests/spec/scripting/security2.jar">
       <fileset dir="${samples}/tests/resources/java/classes">
@@ -454,7 +456,7 @@ To display the available targets type:
     </jar>
   </target>
 
-  <target name="IWasLoaded.jar" depends="compiletestjars" 
+  <target name="IWasLoaded.jar" depends="init, compiletestjars" 
           unless="IWasLoadedUpToDate">
     <jar manifest="${testresources}/org/apache/batik/bridge/IWasLoaded.mf"
          jarfile="${testresources}/org/apache/batik/bridge/IWasLoaded.jar">
@@ -465,7 +467,7 @@ To display the available targets type:
     </jar>
   </target>
 
-  <target name="IWasLoadedToo.jar" depends="compiletestjars" 
+  <target name="IWasLoadedToo.jar" depends="init, compiletestjars" 
           unless="IWasLoadedTooUpToDate">
     <jar manifest="${testresources}/org/apache/batik/bridge/IWasLoadedToo.mf"
          jarfile="${testresources}/org/apache/batik/bridge/IWasLoadedToo.jar">
@@ -476,7 +478,7 @@ To display the available targets type:
     </jar>
   </target>
 
-  <target name="JarCheckPermissionsDenied.jar" depends="compiletestjars">
+  <target name="JarCheckPermissionsDenied.jar" depends="init, compiletestjars">
     <jar manifest="${testresources}/org/apache/batik/bridge/JarCheckPermissionsDenied.mf"
          jarfile="${testresources}/org/apache/batik/bridge/JarCheckPermissionsDenied.jar">
       <fileset dir="${testresources}/classes">
@@ -485,7 +487,7 @@ To display the available targets type:
     </jar>
   </target>
 
-  <target name="JarCheckPermissionsGranted.jar" depends="compiletestjars">
+  <target name="JarCheckPermissionsGranted.jar" depends="init, compiletestjars">
     <jar manifest="${testresources}/org/apache/batik/bridge/JarCheckPermissionsGranted.mf"
          jarfile="${testresources}/org/apache/batik/bridge/JarCheckPermissionsGranted.jar">
       <fileset dir="${testresources}/classes">
@@ -494,7 +496,7 @@ To display the available targets type:
     </jar>
   </target>
 
-  <target name="java-binding.jar" depends="compiletestjars">
+  <target name="java-binding.jar" depends="init, compiletestjars">
     <jar manifest="${samples}/tests/resources/java/resources/com/test/script/java-binding.mf"
          jarfile="${samples}/tests/spec/scripting/java-binding.jar">
       <fileset dir="${samples}/tests/resources/java/classes">
@@ -515,7 +517,8 @@ To display the available targets type:
                    determine-svn-revision-from-file,
                    determine-svn-revision-set"/>
 
-  <target name="determine-svn-revision-svn-info">
+  <target name="determine-svn-revision-svn-info"
+          depends="init">
     <dirset id="dirs" dir="${src}/${package-prefix}">
       <include name="**"/>
     </dirset>
@@ -530,6 +533,7 @@ To display the available targets type:
   </target>
 
   <target name="determine-svn-revision-transform"
+          depends="init"
           if="should-transform-svn-info">
     <java fork="yes" classname="org.apache.xalan.xslt.Process"
           outputproperty="svn-revision-number"
@@ -608,7 +612,7 @@ To display the available targets type:
 
 
   <!-- Jars ............................................................... -->
-  <target name="prepare-build" depends="determine-svn-revision">
+  <target name="prepare-build" depends="init, determine-svn-revision">
     <mkdir dir="${build}"/>
     <mkdir dir="${build}/docs"/>
     <mkdir dir="${build}/lib"/>
@@ -1363,6 +1367,7 @@ To display the available targets type:
   </target>
 
   <target name="testdirs"
+          depends="init"
           description="Created directories needed for test suite">
 
     <mkdir dir="${test-reports}"/>
@@ -1607,7 +1612,7 @@ To display the available targets type:
   </target>
 
   <target name="javadocs" depends="javadoc"/>
-  <target name="javadoc">
+  <target name="javadoc" depends="init">
     <mkdir dir="${docs}/javadoc"/>
     <javadoc packagenames="${class-prefix}.*,
                            org.xml.*,

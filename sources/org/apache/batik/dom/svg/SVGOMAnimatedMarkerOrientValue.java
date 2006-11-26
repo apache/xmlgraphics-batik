@@ -172,7 +172,8 @@ public class SVGOMAnimatedMarkerOrientValue extends AbstractSVGAnimatedValue {
     }
 
     /**
-     * This class represents the SVGAngle returned by {@link #getBaseVal()}.
+     * This class represents the SVGAngle returned by
+     * {@link AnimatedAngle#getBaseVal()}.
      */
     protected class BaseSVGAngle extends SVGOMAngle {
 
@@ -242,7 +243,7 @@ public class SVGOMAnimatedMarkerOrientValue extends AbstractSVGAnimatedValue {
     }
 
     /**
-     * This class represents the SVGAngle returned by {@link #getAnimVal()}.
+     * This class represents the SVGAngle returned by {@link AnimatedAngle#getAnimVal()}.
      */
     protected class AnimSVGAngle extends SVGOMAngle {
 

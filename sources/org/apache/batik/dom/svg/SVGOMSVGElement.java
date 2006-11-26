@@ -265,7 +265,7 @@ public class SVGOMSVGElement
     }
 
     /**
-     * <b>DOM</b>: Implements {@link SVGSVGElement#setCurrentScale()}.
+     * <b>DOM</b>: Implements {@link SVGSVGElement#setCurrentScale(float)}.
      */
     public void setCurrentScale(float currentScale) throws DOMException {
         SVGContext context = getSVGContext();

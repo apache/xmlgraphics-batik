@@ -60,7 +60,6 @@ public class LiveAttributeException extends RuntimeException {
      *
      * @param e the element on which the error occured
      * @param an the attribute name
-     * @param missing whether the attribute was missing or malformed
      * @param code the error code
      * @param val the malformed attribute value
      */

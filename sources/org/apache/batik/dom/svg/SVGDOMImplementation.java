@@ -156,7 +156,7 @@ public class SVGDOMImplementation
 
     /**
      * <b>DOM</b>: Implements {@link
-     * DOMImplementationCSS#createCSSStyleSheet(String,String)}.
+     * org.w3c.dom.css.DOMImplementationCSS#createCSSStyleSheet(String,String)}.
      */
     public CSSStyleSheet createCSSStyleSheet(String title, String media) {
         throw new UnsupportedOperationException

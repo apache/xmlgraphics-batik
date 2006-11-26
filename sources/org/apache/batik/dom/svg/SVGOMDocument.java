@@ -655,8 +655,7 @@ public class SVGOMDocument
          * Called to notify an object of a change to the animated value of
          * an animatable XML attribute.
          * @param e the owner element of the changed animatable attribute
-         * @param ns the namespace URI of the animatable attribute that changed
-         * @param ln the local name of the animatable attribute that changed
+         * @param alav the AnimatedLiveAttributeValue that changed
          */
         public void animatedAttributeChanged(Element e,
                                              AnimatedLiveAttributeValue alav) {

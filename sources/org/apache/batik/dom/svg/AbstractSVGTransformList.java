@@ -111,7 +111,8 @@ public abstract class AbstractSVGTransformList
     }
 
     /**
-     * <b>DOM</b>: Implements {@link SVGLengthList#appendItem(SVGLength)}.
+     * <b>DOM</b>: Implements {@link
+     * SVGTransformList#createSVGTransformFromMatrix(SVGMatrix)}.
      */
     public SVGTransform createSVGTransformFromMatrix(SVGMatrix matrix) {
         SVGOMTransform transform = new SVGOMTransform();
@@ -504,8 +505,8 @@ public abstract class AbstractSVGTransformList
     protected class TransformListBuilder implements TransformListHandler {
 
         /**
-         * The ListHandler to pass newly created {@link SVGLengthItem} objects
-         * to.
+         * The {@link ListHandler} to pass newly created
+         * {@link SVGTransformItem} objects to.
          */
         protected ListHandler listHandler;
 

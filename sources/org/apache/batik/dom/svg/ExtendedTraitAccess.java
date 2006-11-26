@@ -69,13 +69,13 @@ public interface ExtendedTraitAccess extends TraitAccess {
 
     /**
      * Returns the SVG type of the given CSS property.  Must return one of
-     * the TYPE_* constants defined in {@link SVGTypes}.
+     * the TYPE_* constants defined in {@link org.apache.batik.util.SVGTypes}.
      */
     int getPropertyType(String pn);
 
     /**
      * Returns the SVG type of the given XML attribute.  Must return one of
-     * the TYPE_* constants defined in {@link SVGTypes}.
+     * the TYPE_* constants defined in {@link org.apache.batik.util.SVGTypes}.
      */
     int getAttributeType(String ns, String ln);
 }

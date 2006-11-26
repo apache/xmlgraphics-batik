@@ -553,7 +553,7 @@ public class RunnableQueue implements Runnable {
          * {@link Runnable} is run again.
          *
          * @return time to wait until, <code>0</code> if no waiting can
-         *         be done, or {@link Long.MAX_VALUE} if the {@link Runnable}
+         *         be done, or {@link Long#MAX_VALUE} if the {@link Runnable}
          *         should not be run again at this time
          */
         long getWaitTime();

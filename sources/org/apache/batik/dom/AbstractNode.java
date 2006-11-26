@@ -939,7 +939,7 @@ public abstract class AbstractNode
     /**
      * <b>DOM</b>: Implements
      * {@link
-     * EventTarget#addEventListenerNS(String,String,EventListener,boolean)}.
+     * EventTarget#addEventListenerNS(String,String,EventListener,boolean,Object)}.
      */
     public void addEventListenerNS(String namespaceURI,
                                    String type,
