@@ -886,8 +886,8 @@ public class JSVGViewerFrame
         protected static Class rhinoInterpreterClass;
 
         /**
-         * The {code getContextFactory} method on the {@link RhinoInterpreter}
-         * class.
+         * The {@code getContextFactory} method on the {@link
+         * org.apache.batik.script.rhino.RhinoInterpreter} class.
          */
         protected static Method getContextFactoryMethod;
 
@@ -957,7 +957,8 @@ public class JSVGViewerFrame
 
         /**
          * Initializes the debugger by massaging the GUI and attaching it
-         * to the Rhino interpreter's {@link ContextFactory}.
+         * to the Rhino interpreter's {@link
+         * org.mozilla.javascript.ContextFactory}.
          */
         public void initialize() {
             // Customize the menubar a bit, disable menu
@@ -998,7 +999,7 @@ public class JSVGViewerFrame
         }
 
         /**
-         * Calls {@code getDebugFrame} on {@link debuggerInstance}.
+         * Calls {@code getDebugFrame} on {@link #debuggerInstance}.
          */
         protected JFrame getDebugFrame() {
             try {
@@ -1012,7 +1013,7 @@ public class JSVGViewerFrame
         }
 
         /**
-         * Calls {@code setExitAction} on {@link debuggerInstance}.
+         * Calls {@code setExitAction} on {@link #debuggerInstance}.
          */
         protected void setExitAction(Runnable r) {
             try {
@@ -1026,7 +1027,7 @@ public class JSVGViewerFrame
         }
 
         /**
-         * Calls {@code attachTo} on {@link debuggerInstance}.
+         * Calls {@code attachTo} on {@link #debuggerInstance}.
          */
         public void attachTo(Object contextFactory) {
             try {
@@ -1040,7 +1041,7 @@ public class JSVGViewerFrame
         }
 
         /**
-         * Calls {@code detach} on {@link debuggerInstance}.
+         * Calls {@code detach} on {@link #debuggerInstance}.
          */
         public void detach() {
             try {
@@ -1054,7 +1055,7 @@ public class JSVGViewerFrame
         }
 
         /**
-         * Calls {@code go} on {@link debuggerInstance}.
+         * Calls {@code go} on {@link #debuggerInstance}.
          */
         public void go() {
             try {
@@ -1068,7 +1069,7 @@ public class JSVGViewerFrame
         }
 
         /**
-         * Calls {@code clearAllBreakpoints} on {@link debuggerInstance}.
+         * Calls {@code clearAllBreakpoints} on {@link #debuggerInstance}.
          */
         public void clearAllBreakpoints() {
             try {
@@ -1082,7 +1083,7 @@ public class JSVGViewerFrame
         }
 
         /**
-         * Calls {@code dispose} on {@link debuggerInstance}.
+         * Calls {@code dispose} on {@link #debuggerInstance}.
          */
         public void dispose() {
             try {
@@ -1097,7 +1098,7 @@ public class JSVGViewerFrame
 
         /**
          * Calls {@code getContextFactory} on the given instance of
-         * {@link RhinoInterpreter}.
+         * {@link org.apache.batik.script.rhino.RhinoInterpreter}.
          */
         protected Object getContextFactory(Object rhinoInterpreter) {
             try {

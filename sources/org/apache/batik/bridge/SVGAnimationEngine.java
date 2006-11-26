@@ -1232,7 +1232,7 @@ public class SVGAnimationEngine extends AnimationEngine {
     }
 
     /**
-     * Factory class for {@link AnimationNumberListValue}s.
+     * Factory class for {@link AnimatableNumberListValue}s.
      */
     protected class AnimatableNumberListValueFactory implements Factory {
 
@@ -1279,7 +1279,7 @@ public class SVGAnimationEngine extends AnimationEngine {
     }
 
     /**
-     * Factory class for {@link AnimationPointListValue}s.
+     * Factory class for {@link AnimatablePointListValue}s.
      */
     protected class AnimatablePointListValueFactory implements Factory {
 

@@ -210,13 +210,13 @@ public abstract class AbstractSVGPointList
 
     /**
      * Helper class to interface the {@link PointsParser} and the
-     * {@link ListHandler}.
+     * {@link PointsHandler}.
      */
     protected class PointsListBuilder implements PointsHandler {
 
         /**
-         * The ListHandler to pass newly created {@link SVGPointItem} objects
-         * to.
+         * The {@link ListHandler} to pass newly created {@link SVGPointItem}
+         * objects to.
          */
         protected ListHandler listHandler;
 
@@ -228,21 +228,21 @@ public abstract class AbstractSVGPointList
         }
 
         /**
-         * Implements {@link PointHandler#startsPoints()}.
+         * Implements {@link PointsHandler#startPoints()}.
          */
         public void startPoints() throws ParseException {
             listHandler.startList();
         }
 
         /**
-         * Implements {@link PointHandler#point(float,float)}.
+         * Implements {@link PointsHandler#point(float,float)}.
          */
         public void point(float x, float y) throws ParseException {
             listHandler.item(new SVGPointItem(x, y));
         }
 
         /**
-         * Implements {@link PointHandler#endPoints()}.
+         * Implements {@link PointsHandler#endPoints()}.
          */
         public void endPoints() throws ParseException {
             listHandler.endList();

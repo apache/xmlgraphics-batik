@@ -159,12 +159,11 @@ public abstract class ViewBox implements SVGConstants, ErrorConstants {
      * null if the specified viewBox disables the rendering of the element.
      *
      * @deprecated Replaced by {@link
-     *     #getPreserveAspectRatioTransform(Element,float,float,BridgeContext},
+     *     #getPreserveAspectRatioTransform(Element,float,float,BridgeContext)},
      *     which has more accurate error reporting.
      * @param e the element with a viewbox
      * @param w the width of the effective viewport
      * @param h The height of the effective viewport 
-     * @param ctx The BridgeContext to use for error information
      */
     public static AffineTransform getPreserveAspectRatioTransform(Element e,
                                                                   float w,

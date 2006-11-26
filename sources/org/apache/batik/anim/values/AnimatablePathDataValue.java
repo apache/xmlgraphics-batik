@@ -32,7 +32,7 @@ public class AnimatablePathDataValue extends AnimatableValue {
 
     /**
      * The path commands.  These must be one of the PATHSEG_*
-     * constants defined in {@link SVGPathSeg}.
+     * constants defined in {@link org.w3c.dom.svg.SVGPathSeg}.
      */
     protected short[] commands;
 

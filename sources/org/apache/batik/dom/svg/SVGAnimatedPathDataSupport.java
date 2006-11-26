@@ -58,7 +58,7 @@ public abstract class SVGAnimatedPathDataSupport {
 
     /**
      * Returns the {@link SVGOMAnimatedPathData} object that implements
-     * the {@link SVGAnimatedPathData} for the given element.
+     * the {@link org.w3c.dom.svg.SVGAnimatedPathData} for the given element.
      */
     public static SVGOMAnimatedPathData getAnimatedPathData(AbstractElement e) {
         SVGOMAnimatedPathData result = (SVGOMAnimatedPathData)

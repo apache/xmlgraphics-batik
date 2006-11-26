@@ -109,7 +109,7 @@ public class SVGOMAnimatedPathData
 
     /**
      * <b>DOM</b>: Implements {@link
-     * SVGAnimatedPathDataSupport#getNormalizedPathSegList()}.
+     * SVGAnimatedPathData#getNormalizedPathSegList()}.
      * <p>
      *   Returns the SVGPathSegList mapping the normalized static 'd' attribute
      *   of the element.
@@ -141,7 +141,7 @@ public class SVGOMAnimatedPathData
 
     /**
      * <b>DOM</b>: Implements {@link
-     * SVGAnimatedPathDataSupport#getPathSegList()}.
+     * SVGAnimatedPathData#getPathSegList()}.
      */
     public SVGPathSegList getPathSegList() {
         if (pathSegs == null) {

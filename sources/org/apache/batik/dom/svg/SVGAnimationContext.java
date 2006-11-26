@@ -30,24 +30,29 @@ import org.w3c.dom.svg.SVGElement;
 public interface SVGAnimationContext extends SVGContext, ElementTimeControl {
 
     /**
-     * <b>DOM</b>: Implements {@link SVGAnimationElement#getTargetElement()}.
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.svg.SVGAnimationElement#getTargetElement()}.
      */
     SVGElement getTargetElement();
 
     /**
-     * <b>DOM</b>: Implements {@link SVGAnimationElement#getStartTime()}.
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.svg.SVGAnimationElement#getStartTime()}.
      */
     float getStartTime();
 
     /**
-     * <b>DOM</b>: Implements {@link SVGAnimationElement#getCurrentTime()}.
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.svg.SVGAnimationElement#getCurrentTime()}.
      */
     float getCurrentTime();
 
     /**
-     * <b>DOM</b>: Implements {@link SVGAnimationElement#getSimpleDuration()}.
-     * With the difference that an indefinite simple duration is returned as
-     * {@link TimedElement.INDEFINITE}, rather than throwing an exception.
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.svg.SVGAnimationElement#getSimpleDuration()}.  With the
+     * difference that an indefinite simple duration is returned as
+     * {@link org.apache.batik.anim.timing.TimedElement#INDEFINITE}, rather than
+     * throwing an exception.
      */
     float getSimpleDuration();
 }

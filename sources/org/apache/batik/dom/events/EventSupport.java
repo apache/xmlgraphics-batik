@@ -190,7 +190,7 @@ public class EventSupport {
      * Moves all of the event listeners from this EventSupport object
      * to the given EventSupport object.
      * Used by {@link
-     * org.apache.batik.dom.AbstractDocument#renameNode(String,String,Node)}.
+     * org.apache.batik.dom.AbstractDocument#renameNode(Node,String,String)}.
      */
     public void moveEventListeners(EventSupport other) {
         other.capturingListeners = capturingListeners;
