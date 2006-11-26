@@ -292,6 +292,8 @@ To display the available targets type:
       <zipfileset dir="${build}" prefix="${project}-${version}">
         <include name="*.jar"/>
         <include name="docs/**"/>
+        <include name="extensions/**"/>
+        <include name="lib/**"/>
       </zipfileset>
       <zipfileset dir="lib" prefix="${project}-${version}/lib">
         <include name="LICENSE.*.txt"/>
@@ -352,6 +354,8 @@ To display the available targets type:
       <tarfileset dir="${build}" prefix="${project}-${version}">
         <include name="*.jar"/>
         <include name="docs/**"/>
+        <include name="extensions/**"/>
+        <include name="lib/**"/>
       </tarfileset>
       <tarfileset dir="lib" prefix="${project}-${version}/lib">
         <include name="LICENSE.*.txt"/>
