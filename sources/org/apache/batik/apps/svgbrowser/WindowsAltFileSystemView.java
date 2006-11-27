@@ -20,7 +20,8 @@ package org.apache.batik.apps.svgbrowser;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Vector;
+import java.util.List;
+import java.util.ArrayList;
 
 import javax.swing.filechooser.FileSystemView;
 
@@ -123,12 +124,12 @@ class WindowsAltFileSystemView extends FileSystemView {
      */
     public File[] getRoots() {
 
-        Vector rootsVector = new Vector();
+        List rootsVector = new ArrayList();
 
         // Create the A: drive whether it is mounted or not
         FileSystemRoot floppy = new FileSystemRoot(Resources.getString(FLOPPY_DRIVE)
                                                    + "\\");
-        rootsVector.addElement(floppy);
+        rootsVector.add(floppy);
 
         // Run through all possible mount points and check
         // for their existance.
@@ -137,11 +138,11 @@ class WindowsAltFileSystemView extends FileSystemView {
             String deviceName = new String(device);
             File deviceFile = new FileSystemRoot(deviceName);
             if (deviceFile != null && deviceFile.exists()) {
-                rootsVector.addElement(deviceFile);
+                rootsVector.add(deviceFile);
             }
         }
         File[] roots = new File[rootsVector.size()];
-        rootsVector.copyInto(roots);
+        rootsVector.toArray(roots);
         return roots;
     }
 
