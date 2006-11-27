@@ -26,6 +26,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedBoolean;
 import org.w3c.dom.svg.SVGFontElement;
 
+import java.util.Map;
+import java.util.HashMap;
+
 /**
  * This class implements {@link SVGFontElement}.
  *
@@ -35,7 +38,34 @@ import org.w3c.dom.svg.SVGFontElement;
 public class SVGOMFontElement
     extends    SVGStylableElement
     implements SVGFontElement {
-    
+
+
+
+    /**
+     * this map supports a fast lookup from svg-attribute-name string to
+     * svgType-integer. It is faster than doing string-equals in a
+     * lengthy if-else-statement.
+     * This map is used only by {@link #getAttributeType }
+     */
+    private static final Map typeMap = new HashMap();
+
+
+    static {
+
+        Map map = typeMap;
+
+        SVGOMAttributeInfo svgType = new SVGOMAttributeInfo( SVGTypes.TYPE_NUMBER, false );
+
+        map.put(  SVG_HORIZ_ORIGIN_X_ATTRIBUTE, svgType );
+        map.put(  SVG_HORIZ_ORIGIN_Y_ATTRIBUTE, svgType );
+        map.put(  SVG_HORIZ_ADV_X_ATTRIBUTE, svgType );
+        map.put(  SVG_VERT_ORIGIN_X_ATTRIBUTE, svgType );
+        map.put(  SVG_VERT_ORIGIN_Y_ATTRIBUTE, svgType );
+        map.put(  SVG_VERT_ADV_Y_ATTRIBUTE, svgType );
+
+    }
+
+
     /**
      * Creates a new SVGOMFontElement object.
      */
@@ -80,6 +110,8 @@ public class SVGOMFontElement
 
     /**
      * Returns whether the given XML attribute is animatable.
+     * Because in this class only one attribute is animatable,
+     * we dont use the lookup table for animatable.
      */
     public boolean isAttributeAnimatable(String ns, String ln) {
         if (ns == null) {
@@ -93,7 +125,7 @@ public class SVGOMFontElement
     /**
      * Returns the type of the given attribute.
      */
-    public int getAttributeType(String ns, String ln) {
+    public int OLDgetAttributeType(String ns, String ln) {
         if (ns == null) {
             if (ln.equals(SVG_HORIZ_ORIGIN_X_ATTRIBUTE)
                     || ln.equals(SVG_HORIZ_ORIGIN_Y_ATTRIBUTE)
@@ -102,6 +134,21 @@ public class SVGOMFontElement
                     || ln.equals(SVG_VERT_ORIGIN_Y_ATTRIBUTE)
                     || ln.equals(SVG_VERT_ADV_Y_ATTRIBUTE)) {
                 return SVGTypes.TYPE_NUMBER;
+            }
+        }
+        return super.getAttributeType(ns, ln);
+    }
+
+    /**
+     * Returns the type of the given attribute.
+     */
+    public int getAttributeType(String ns, String ln) {
+
+        if (ns == null) {
+            SVGOMAttributeInfo typeCode = (SVGOMAttributeInfo)typeMap.get( ln );
+            if ( typeCode != null ){
+                // it is one of 'my' mappings..
+                return typeCode.getSVGType();
             }
         }
         return super.getAttributeType(ns, ln);
