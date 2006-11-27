@@ -19,6 +19,8 @@
 package org.apache.batik.dom.svg;
 
 import java.awt.geom.AffineTransform;
+import java.util.Map;
+import java.util.HashMap;
 
 import org.apache.batik.anim.values.AnimatableMotionPointValue;
 import org.apache.batik.anim.values.AnimatableValue;
@@ -43,6 +45,38 @@ import org.w3c.dom.svg.SVGStringList;
 public abstract class SVGGraphicsElement
         extends SVGStylableElement
         implements SVGMotionAnimatableElement {
+
+
+
+    /**
+     * this map supports a fast lookup from svg-attribute-name string to
+     * svgType-integer. It is faster than doing string-equals in a
+     * lengthy if-else-statement.
+     * This map is used only by {@link #getAttributeType }
+     */
+    private static final Map typeMap = new HashMap();
+
+
+    static {
+
+        Map map = typeMap;
+
+        SVGOMAttributeInfo svgType = new SVGOMAttributeInfo( SVGTypes.TYPE_TRANSFORM_LIST, true );
+        map.put(  SVG_TRANSFORM_ATTRIBUTE, svgType );
+
+        svgType = new SVGOMAttributeInfo( SVGTypes.TYPE_IDENT, true );
+        map.put(  SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE, svgType );
+
+        svgType = new SVGOMAttributeInfo( SVGTypes.TYPE_URI_LIST, false );
+        map.put(  SVG_REQUIRED_EXTENSIONS_ATTRIBUTE, svgType );
+        map.put(  SVG_REQUIRED_FEATURES_ATTRIBUTE, svgType );
+
+        svgType = new SVGOMAttributeInfo( SVGTypes.TYPE_LANG_LIST, false );
+        map.put(  SVG_SYSTEM_LANGUAGE_ATTRIBUTE, svgType );
+
+    }
+
+
 
     /**
      * Supplemental transformation due to motion animation.
@@ -227,8 +261,9 @@ public abstract class SVGGraphicsElement
 
     /**
      * Returns the type of the given attribute.
+     * to be removed
      */
-    public int getAttributeType(String ns, String ln) {
+    public int OLDgetAttributeType(String ns, String ln) {
         if (ns == null) {
             if (ln.equals(SVG_TRANSFORM_ATTRIBUTE)) {
                 return SVGTypes.TYPE_TRANSFORM_LIST;
@@ -239,6 +274,21 @@ public abstract class SVGGraphicsElement
                 return SVGTypes.TYPE_URI_LIST;
             } else if (ln.equals(SVG_SYSTEM_LANGUAGE_ATTRIBUTE)) {
                 return SVGTypes.TYPE_LANG_LIST;
+            }
+        }
+        return super.getAttributeType(ns, ln);
+    }
+
+    /**
+     * Returns the type of the given attribute.
+     */
+    public int getAttributeType(String ns, String ln) {
+
+        if (ns == null) {
+            SVGOMAttributeInfo typeCode = (SVGOMAttributeInfo)typeMap.get( ln );
+            if ( typeCode != null ){
+                // it is one of 'my' mappings..
+                return typeCode.getSVGType();
             }
         }
         return super.getAttributeType(ns, ln);
