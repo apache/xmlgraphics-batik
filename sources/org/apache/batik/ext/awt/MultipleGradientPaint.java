@@ -30,9 +30,7 @@ import java.awt.geom.AffineTransform;
  * @author Nicholas Talian, Vincent Hardy, Jim Graham, Jerry Evans
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
- *
  */
-
 public abstract class MultipleGradientPaint implements Paint {
 
     /** Transparency. */
@@ -188,7 +186,7 @@ public abstract class MultipleGradientPaint implements Paint {
      *
      */
     public Color[] getColors() {
-        Color colors[] = new Color[this.colors.length];
+        Color[] colors = new Color[this.colors.length];
         System.arraycopy(this.colors, 0, colors, 0, this.colors.length);
         return colors;
     }
@@ -201,7 +199,7 @@ public abstract class MultipleGradientPaint implements Paint {
      *
      */
     public float[] getFractions() {
-        float fractions[] = new float[this.fractions.length];
+        float[] fractions = new float[this.fractions.length];
         System.arraycopy(this.fractions, 0, fractions, 0, this.fractions.length);
         return fractions;
     }
