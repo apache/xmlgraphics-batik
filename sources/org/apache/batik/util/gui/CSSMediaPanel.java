@@ -222,7 +222,7 @@ public class CSSMediaPanel extends JPanel implements ActionMap {
         Enumeration e = listModel.elements();
         while (e.hasMoreElements()) {
             buffer.append((String)e.nextElement());
-            buffer.append(" ");
+            buffer.append( ' ' );
         }
         return buffer.toString();
     }

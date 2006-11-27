@@ -388,9 +388,9 @@ public class PreferenceDialog extends JDialog
         loadJava.setSelected(model.getBoolean(PREFERENCE_KEY_LOAD_JAVA));
         loadEcmascript.setSelected(model.getBoolean(PREFERENCE_KEY_LOAD_ECMASCRIPT));
 
-        String allowedScriptOrigin = "" + model.getInteger(PREFERENCE_KEY_ALLOWED_SCRIPT_ORIGIN);
+        String allowedScriptOrigin = String.valueOf( model.getInteger( PREFERENCE_KEY_ALLOWED_SCRIPT_ORIGIN ) );
         if (allowedScriptOrigin == null || "".equals(allowedScriptOrigin)) {
-            allowedScriptOrigin = "" + ResourceOrigin.NONE;
+            allowedScriptOrigin = String.valueOf( ResourceOrigin.NONE );
         }
 
         Enumeration e = scriptOriginGroup.getElements();
@@ -402,9 +402,9 @@ public class PreferenceDialog extends JDialog
             }
         }
 
-        String allowedResourceOrigin = "" + model.getInteger(PREFERENCE_KEY_ALLOWED_EXTERNAL_RESOURCE_ORIGIN);
+        String allowedResourceOrigin = String.valueOf( model.getInteger( PREFERENCE_KEY_ALLOWED_EXTERNAL_RESOURCE_ORIGIN ) );
         if (allowedResourceOrigin == null || "".equals(allowedResourceOrigin)) {
-            allowedResourceOrigin = "" + ResourceOrigin.NONE;
+            allowedResourceOrigin = String.valueOf( ResourceOrigin.NONE );
         }
 
         e = resourceOriginGroup.getElements();
