@@ -850,7 +850,7 @@ public class Main implements Application {
      */
     public String[] getVisitedURIs() {
         String[] visitedURIs = new String[lastVisited.size()];
-        lastVisited.copyInto(visitedURIs);
+        lastVisited.toArray(visitedURIs);
         return visitedURIs;
     }
 
