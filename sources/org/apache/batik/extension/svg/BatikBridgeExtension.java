@@ -20,7 +20,8 @@ package org.apache.batik.extension.svg;
 
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.Vector;
+import java.util.List;
+import java.util.Arrays;
 
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeExtension;
@@ -39,7 +40,7 @@ public class BatikBridgeExtension implements BridgeExtension {
      * Return the priority of this Extension.  Extensions are
      * registered from lowest to highest priority.  So if for some
      * reason you need to come before/after another existing extension
-     * make sure your priority is lower/higher than theirs.  
+     * make sure your priority is lower/higher than theirs.
      */
     public float getPriority() { return 1f; }
 
@@ -57,10 +58,11 @@ public class BatikBridgeExtension implements BridgeExtension {
             "http://xml.apache.org/batik/ext/colorSwitch/1.0" ,
             "http://xml.apache.org/batik/ext/flowText/1.0" ,
         };
-        Vector v = new Vector(extensions.length);
-        for (int i=0; i<extensions.length; i++) {
-            v.add(extensions[i]);
-        }
+//        List v = new ArrayList(extensions.length);
+//        for (int i=0; i<extensions.length; i++) {
+//            v.add(extensions[i]);
+//        }
+        List v = Arrays.asList( extensions );
         return Collections.unmodifiableList(v).iterator();
     }
 
