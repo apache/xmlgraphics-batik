@@ -69,9 +69,9 @@ public class JSVG extends JFrame{
         windowCount++;
     }
 
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         for (int i=0; i<args.length; i++) {
             new JSVG(args[i]);
         }
     }
-};
+}
