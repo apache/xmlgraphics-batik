@@ -100,7 +100,6 @@ import java.awt.image.ColorModel;
  * @version $Id$
  *
  */
-
 public final class RadialGradientPaint extends MultipleGradientPaint {
 
     /** Focus point which defines the 0% gradient stop x coordinate. */
