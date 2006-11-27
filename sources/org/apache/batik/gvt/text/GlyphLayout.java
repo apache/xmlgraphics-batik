@@ -1008,7 +1008,7 @@ public class GlyphLayout implements TextSpanLayout {
     }
 
     /**
-     * Returns a shape describing the strikethrough line for a given ACI.
+     * Returns a shape describing the undeline decoration for a given ACI.
      */
     protected Shape getUnderlineShape() {
 
@@ -1141,7 +1141,7 @@ public class GlyphLayout implements TextSpanLayout {
                             verticalFirstOffset = 0f;
                         }
                     }
-                } else {
+                } else {  // not vertical
                     if ((glyphOrientationAngle == 270)) {
                         horizontalFirstOffset =
                             (float)gm.getBounds2D().getHeight();
@@ -1150,7 +1150,7 @@ public class GlyphLayout implements TextSpanLayout {
                         horizontalFirstOffset = 0;
                     }
                 }
-            } else {
+            } else {  // not the first char
                 if (glyphOrientationAuto        &&
                     (verticalFirstOffset == 0f) && !isLatinChar(ch)) {
                     float advY = gm.getVerticalAdvance();
@@ -1283,7 +1283,7 @@ public class GlyphLayout implements TextSpanLayout {
             pos.y = curr_y_pos+oy;
             gv.setGlyphPosition(i, pos);
 
-            // calculte the position of the next glyph
+            // calculate the position of the next glyph
             if (ArabicTextHandler.arabicCharTransparent(ch)) {
                 hasArabicTransparent = true;
             } else {
@@ -1697,12 +1697,10 @@ public class GlyphLayout implements TextSpanLayout {
 
         float initX   = gp[0];
         float initY   = gp[1];
-        float dx = 0f;
-        float dy = 0f;
         Point2D.Float pos = new Point2D.Float();
         for (int i = 0; i <= numGlyphs; i++) {
-            dx = gp[2*i]  -initX;
-            dy = gp[2*i+1]-initY;
+            float dx = gp[2*i]  -initX;
+            float dy = gp[2*i+1]-initY;
             pos.x = initX+dx*xScale;
             pos.y = initY+dy*yScale;
             gv.setGlyphPosition(i, pos);
@@ -1952,6 +1950,11 @@ public class GlyphLayout implements TextSpanLayout {
      * @return True if c is latin.
      */
     protected boolean isLatinChar(char c) {
+
+        if ( c < 255 & Character.isLetterOrDigit( c )){
+            // cheap quick check, should catch most lation-chars
+            return true;
+        }
 
         Character.UnicodeBlock block = Character.UnicodeBlock.of(c);
 

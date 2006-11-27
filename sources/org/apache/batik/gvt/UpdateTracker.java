@@ -49,7 +49,7 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
 
     public UpdateTracker(){
     }
-    
+
     /**
      * Tells whether the GVT tree has changed.
      */
@@ -61,7 +61,7 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
      * Returns the list of dirty areas on GVT.
      */
     public List getDirtyAreas() {
-        if (dirtyNodes == null) 
+        if (dirtyNodes == null)
             return null;
 
         List ret = new LinkedList();
@@ -83,7 +83,7 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
             if (oat != null){
                 oat = new AffineTransform(oat);
             }
-            
+
             Rectangle2D srcORgn = (Rectangle2D)fromBounds.remove(gnWRef);
 
             Rectangle2D srcNRgn = null;
@@ -127,7 +127,7 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
                 if (poat != null) {
                     if (oat != null)
                         oat.preConcatenate(poat);
-                    else 
+                    else
                         oat = new AffineTransform(poat);
                 }
 
@@ -153,7 +153,7 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
                     // System.err.println("Src: " + oRgn.getBounds2D());
                     ret.add(oRgn);
                 }
-                
+
                 if (srcNRgn != null) {
                     Shape nRgn = srcNRgn;
                     if (nat != null)
@@ -176,7 +176,7 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
      * @param at Affine transform to coordinate space to accumulate
      *           dirty regions in.
      */
-    public Rectangle2D getNodeDirtyRegion(GraphicsNode gn, 
+    public Rectangle2D getNodeDirtyRegion(GraphicsNode gn,
                                           AffineTransform at) {
         WeakReference gnWRef = gn.getWeakReference();
         AffineTransform nat = (AffineTransform)dirtyNodes.get(gnWRef);
@@ -204,7 +204,8 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
                         break;
                     }
                     if ((ret == null) || (ret == NULL_RECT)) ret = r2d;
-                    else ret = ret.createUnion(r2d);
+                    //else ret = ret.createUnion(r2d);
+                    else ret.add(r2d);
                 }
             }
         } else {
@@ -212,7 +213,7 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
             if (ret == null) {
                 if (f != null) ret = f.getBounds2D();
                 else           ret = gn.getBounds();
-            } else if (ret == NULL_RECT) 
+            } else if (ret == NULL_RECT)
                 ret = null;
             if (ret != null)
                 ret = at.createTransformedShape(ret).getBounds2D();
@@ -237,7 +238,7 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
         if (dirtyNodes == null) {
             dirtyNodes = new HashMap();
             doPut = true;
-        } else if (!dirtyNodes.containsKey(gnWRef)) 
+        } else if (!dirtyNodes.containsKey(gnWRef))
             doPut = true;
 
         if (doPut) {
@@ -266,13 +267,14 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
                 // System.err.println("GN: " + gn);
                 // System.err.println("R2d: " + r2d);
                 // System.err.println("Rgn: " + rgn);
-                r2d = r2d.createUnion(rgn);
+                //r2d = r2d.createUnion(rgn);
+                r2d.add(rgn);
                 // System.err.println("Union: " + r2d);
             }
             else             r2d = rgn;
         }
 
-        // if ((gn instanceof CompositeGraphicsNode) && 
+        // if ((gn instanceof CompositeGraphicsNode) &&
         //     (r2d.getWidth() > 200)) {
         //     new Exception("Adding Large: " + gn).printStackTrace();
         // }
@@ -285,7 +287,7 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
 
     class ChngSrcRect extends Rectangle2D.Float {
         ChngSrcRect(Rectangle2D r2d) {
-            super((float)r2d.getX(), (float)r2d.getY(), 
+            super((float)r2d.getX(), (float)r2d.getY(),
                   (float)r2d.getWidth(), (float)r2d.getHeight());
         }
     }

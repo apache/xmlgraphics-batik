@@ -24,7 +24,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.StringTokenizer;
-import java.util.Vector;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * The is a utility class that is used for resolving UnresolvedFontFamilies.
@@ -47,8 +48,8 @@ public class FontFamilyResolver {
      */
     protected static final Map fonts = new HashMap();
 
-    protected static final Vector awtFontFamilies = new Vector();
-    protected static final Vector awtFonts = new Vector();
+    protected static final List awtFontFamilies = new ArrayList();
+    protected static final List awtFonts = new ArrayList();
 
     /**
      * This sets up the list of available fonts.
@@ -111,7 +112,7 @@ public class FontFamilyResolver {
      * This keeps track of all the resolved font families. This is to hopefully
      * reduce the number of font family objects used.
      */
-    protected static Map resolvedFontFamilies;
+    protected static final Map resolvedFontFamilies = new HashMap();
 
     /**
      * Looks up a font family name and returns the platform name
@@ -135,9 +136,7 @@ public class FontFamilyResolver {
      * be resolved.
      */
     public static GVTFontFamily resolve(String familyName) {
-        if (resolvedFontFamilies == null) {
-            resolvedFontFamilies = new HashMap();
-        }
+
         familyName = familyName.toLowerCase();
 
         // first see if this font family has already been resolved

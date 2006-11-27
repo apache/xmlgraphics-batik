@@ -23,7 +23,8 @@ import org.apache.batik.util.SVGConstants;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.Vector;
+import java.util.Set;
+import java.util.HashSet;
 
 import org.w3c.dom.Element;
 
@@ -35,18 +36,23 @@ import org.w3c.dom.Element;
  * @version $Id$
  */
 public class DefaultStyleHandler implements StyleHandler, SVGConstants {
+    
     /**
      * Static initializer for which attributes should be ignored on
      * some elements.
+     * Map-key is a string like 'SVG_RECT_TAG' ,
+     * map-entry is a set of strings, which denote font-attributes to ignore.
+     * The set is shared by all map-entries.
      */
-    static HashMap ignoreAttributes = new HashMap();
+    static Map ignoreAttributes = new HashMap();
 
     static {
-        Vector textAttributes = new Vector();
-        textAttributes.addElement(SVG_FONT_SIZE_ATTRIBUTE);
-        textAttributes.addElement(SVG_FONT_FAMILY_ATTRIBUTE);
-        textAttributes.addElement(SVG_FONT_STYLE_ATTRIBUTE);
-        textAttributes.addElement(SVG_FONT_WEIGHT_ATTRIBUTE);
+        // this is just used for read-only 'contains'-tests
+        Set textAttributes = new HashSet( );
+        textAttributes.add(SVG_FONT_SIZE_ATTRIBUTE);
+        textAttributes.add(SVG_FONT_FAMILY_ATTRIBUTE);
+        textAttributes.add(SVG_FONT_STYLE_ATTRIBUTE);
+        textAttributes.add(SVG_FONT_WEIGHT_ATTRIBUTE);
 
         ignoreAttributes.put(SVG_RECT_TAG, textAttributes);
         ignoreAttributes.put(SVG_CIRCLE_TAG, textAttributes);
@@ -69,9 +75,8 @@ public class DefaultStyleHandler implements StyleHandler, SVGConstants {
                          SVGGeneratorContext generatorContext) {
         String tagName = element.getTagName();
         Iterator iter = styleMap.keySet().iterator();
-        String styleName = null;
         while (iter.hasNext()) {
-            styleName = (String)iter.next();
+            String styleName = (String)iter.next();
             if (element.getAttributeNS(null, styleName).length() == 0){
                 if (appliesTo(styleName, tagName)) {
                     element.setAttributeNS(null, styleName,
@@ -82,15 +87,15 @@ public class DefaultStyleHandler implements StyleHandler, SVGConstants {
     }
 
     /**
-     * Controls whether or not a given attribute applies to a particular 
+     * Controls whether or not a given attribute applies to a particular
      * element.
      */
     protected boolean appliesTo(String styleName, String tagName) {
-        Vector v = (Vector)ignoreAttributes.get(tagName);
-        if (v == null) {
+        Set s = (Set)ignoreAttributes.get(tagName);
+        if (s == null) {
             return true;
         } else {
-            return !v.contains(styleName);
+            return !s.contains(styleName);
         }
     }
 }

@@ -21,11 +21,12 @@ package org.apache.batik.apps.rasterizer;
 import java.io.File;
 import java.util.Map;
 import java.util.Vector;
+import java.util.List;
 
 import org.apache.batik.transcoder.Transcoder;
 
 /**
- * Default controller for the 
+ * Default controller for the
  * <tt>SVGConverter</tt> operation.
  *
  * @author <a href="mailto:vhardy@apache.org">Vincent Hardy</a>
@@ -33,9 +34,9 @@ import org.apache.batik.transcoder.Transcoder;
  */
 public class DefaultSVGConverterController implements SVGConverterController {
     /**
-     * Invoked when the rasterizer has computed the 
-     * exact description of what it should do. The controller 
-     * should return true if the transcoding process should 
+     * Invoked when the rasterizer has computed the
+     * exact description of what it should do. The controller
+     * should return true if the transcoding process should
      * proceed or false otherwise.
      *
      * @param transcoder Transcoder which will be used for the conversion
@@ -45,11 +46,11 @@ public class DefaultSVGConverterController implements SVGConverterController {
      */
     public boolean proceedWithComputedTask(Transcoder transcoder,
                                            Map hints,
-                                           Vector sources,
-                                           Vector dest){
+                                           List sources,
+                                           List dest){
         return true;
     }
-    
+
     /**
      * Invoked when the rasterizer is about to start transcoding
      * of a given source.
@@ -61,10 +62,10 @@ public class DefaultSVGConverterController implements SVGConverterController {
         System.out.println("About to transcoder source of type: " + source.getClass().getName());
         return true;
     }
-    
+
     /**
      * Invoked when the rasterizer got an error while
-     * transcoding the input source. 
+     * transcoding the input source.
      * The controller should return true if the transcoding process
      * should continue on other sources and it should return false
      * if it should not.

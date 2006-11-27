@@ -32,7 +32,8 @@ import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.io.File;
 import java.util.StringTokenizer;
-import java.util.Vector;
+import java.util.List;
+import java.util.ArrayList;
 
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.ext.awt.RenderingHintsKeyExt;
@@ -103,15 +104,17 @@ public class PrintTranscoder extends SVGAbstractTranscoder
 
     /**
      * Set of inputs this transcoder has been requested to
-     * transcode so far
+     * transcode so far.
+     * Purpose is not really clear: some data is added, and it is copied into
+     * printedInputs. But it is never read or cleared...
      */
-    private Vector inputs = new Vector();
+    private List inputs = new ArrayList();
 
     /**
      * Currently printing set of pages. This vector is
      * created as a clone of inputs when the first page is printed.
      */
-    private Vector printedInputs = null;
+    private List printedInputs = null;
 
     /**
      * Index of the page corresponding to root
@@ -138,7 +141,7 @@ public class PrintTranscoder extends SVGAbstractTranscoder
     public void transcode(TranscoderInput in,
                           TranscoderOutput out){
         if(in != null){
-            inputs.addElement(in);
+            inputs.add(in);
         }
     }
 
@@ -275,7 +278,7 @@ public class PrintTranscoder extends SVGAbstractTranscoder
         // TranscodeInputs.
         //
         if(printedInputs == null){
-            printedInputs = (Vector)inputs.clone();
+            printedInputs = new ArrayList( inputs );
         }
 
         //
@@ -303,7 +306,7 @@ public class PrintTranscoder extends SVGAbstractTranscoder
                 width  = (int)pageFormat.getImageableWidth();
                 height = (int)pageFormat.getImageableHeight();
                 super.transcode
-                    ((TranscoderInput)printedInputs.elementAt(pageIndex),null);
+                    ((TranscoderInput)printedInputs.get(pageIndex),null);
                 curIndex = pageIndex;
             }catch(TranscoderException e){
                 drawError(_g, e);

@@ -285,7 +285,8 @@ public class MultiGlyphVector implements GVTGlyphVector {
         for (int idx=0; idx<gvs.length; idx++) {
             Rectangle2D b = gvs[idx].getLogicalBounds();
             if (ret == null) ret = b;
-            else ret = ret.createUnion(b);
+            //else ret = ret.createUnion(b);
+            else ret.add( b );   //  same as union
         }
         return ret;
     }
@@ -328,7 +329,8 @@ public class MultiGlyphVector implements GVTGlyphVector {
             Rectangle2D b = gvs[idx].getBounds2D
                 (new AttributedCharacterSpanIterator(aci, begin, end));
             if (ret == null) ret = b;
-            else ret = ret.createUnion(b);
+            //else ret = ret.createUnion(b);
+            else ret.add(b);
             begin = end;
         }
         return ret;
@@ -344,7 +346,8 @@ public class MultiGlyphVector implements GVTGlyphVector {
         for (int idx=0; idx<gvs.length; idx++) {
             Rectangle2D b = gvs[idx].getGeometricBounds();
             if (ret == null) ret = b;
-            else ret = ret.createUnion(b);
+            //else ret = ret.createUnion(b);
+            else ret.add(b);
         }
         return ret;
     }

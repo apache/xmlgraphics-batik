@@ -826,11 +826,11 @@ public class Main implements Application {
         }
 
         // Now, save the list of visited URL into the preferences
-        StringBuffer lastVisitedBuffer = new StringBuffer();
+        StringBuffer lastVisitedBuffer = new StringBuffer( lastVisited.size() * 8 );
 
         for (int i=0; i<lastVisited.size(); i++) {
             lastVisitedBuffer.append
-                (URLEncoder.encode(lastVisited.elementAt(i).toString()));
+                (URLEncoder.encode( lastVisited.get(i).toString()));
             lastVisitedBuffer.append(URI_SEPARATOR);
         }
 

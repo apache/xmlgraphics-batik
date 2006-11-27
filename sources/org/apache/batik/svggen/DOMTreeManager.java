@@ -22,7 +22,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
+import java.util.ArrayList;
 
 import org.apache.batik.ext.awt.g2d.GraphicContext;
 import org.w3c.dom.Comment;
@@ -72,7 +72,7 @@ public class DOMTreeManager implements SVGSyntax, ErrorConstants {
      * Set of group managers that build groups for
      * this manager
      */
-    protected Vector groupManagers = new Vector();
+    protected List groupManagers = new ArrayList();
 
     /**
      * Set of definitions that are to be placed at the top of the
@@ -149,7 +149,7 @@ public class DOMTreeManager implements SVGSyntax, ErrorConstants {
      */
     public void addGroupManager(DOMGroupManager groupManager){
         if(groupManager != null)
-            groupManagers.addElement(groupManager);
+            groupManagers.add(groupManager);
     }
 
     /**
@@ -158,7 +158,7 @@ public class DOMTreeManager implements SVGSyntax, ErrorConstants {
      */
     public void removeGroupManager(DOMGroupManager groupManager){
         if(groupManager != null)
-            groupManagers.removeElement(groupManager);
+            groupManagers.remove( groupManager );
     }
 
     /**
@@ -173,7 +173,7 @@ public class DOMTreeManager implements SVGSyntax, ErrorConstants {
         topLevelGroup.appendChild(group);
         int nManagers = groupManagers.size();
         for(int i=0; i<nManagers; i++){
-            DOMGroupManager gm = (DOMGroupManager)groupManagers.elementAt(i);
+            DOMGroupManager gm = (DOMGroupManager)groupManagers.get(i);
             if( gm != groupManager )
                 gm.recycleCurrentGroup();
         }
@@ -194,7 +194,7 @@ public class DOMTreeManager implements SVGSyntax, ErrorConstants {
         // First, recycle group managers
         int nManagers = groupManagers.size();
         for(int i=0; i<nManagers; i++){
-            DOMGroupManager gm = (DOMGroupManager)groupManagers.elementAt(i);
+            DOMGroupManager gm = (DOMGroupManager)groupManagers.get(i);
             gm.recycleCurrentGroup();
         }
 
@@ -245,7 +245,7 @@ public class DOMTreeManager implements SVGSyntax, ErrorConstants {
         if (svg == null) {
             svg = generatorContext.domFactory.
                 createElementNS(SVG_NAMESPACE_URI, SVG_SVG_TAG);
-        } 
+        }
 
         // Enable background if required by AlphaComposite convertion
         if (gcConverter.getCompositeConverter().

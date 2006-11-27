@@ -26,6 +26,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import java.util.List;
+import java.util.ArrayList;
 
 import org.apache.batik.transcoder.Transcoder;
 import org.apache.batik.parser.ClockHandler;
@@ -835,12 +837,12 @@ public class Main implements SVGConverterController {
      * Vector of arguments describing the conversion task to be
      * performed.
      */
-    protected Vector args;
+    protected List args;
 
     public Main(String[] args){
-        this.args = new Vector();
+        this.args = new ArrayList();
         for (int i=0; i<args.length; i++){
-            this.args.addElement(args[i]);
+            this.args.add(args[i]);
         }
     }
 
@@ -880,7 +882,7 @@ public class Main implements SVGConverterController {
 
         int nArgs = args.size();
         for (int i=0; i<nArgs; i++){
-            String v = (String)args.elementAt(i);
+            String v = (String)args.get(i);
             OptionHandler optionHandler = (OptionHandler)optionMap.get(v);
             if (optionHandler == null){
                 // Assume v is a source.
@@ -896,7 +898,7 @@ public class Main implements SVGConverterController {
 
                 String[] optionValues = new String[nOptionArgs];
                 for (int j=0; j<nOptionArgs; j++){
-                    optionValues[j] = (String)args.elementAt(1+i+j);
+                    optionValues[j] = (String)args.get(1+i+j);
                 }
                 i += nOptionArgs;
 
@@ -944,11 +946,12 @@ public class Main implements SVGConverterController {
         }
     }
 
-    protected String toString(String[] v){
+    protected String toString( String[] v){
         StringBuffer sb = new StringBuffer();
         int n = v != null ? v.length:0;
         for (int i=0; i<n; i++){
-            sb.append(v[i] + ' ' );
+            sb.append(v[i] );
+            sb.append( ' ' );
         }
 
         return sb.toString();
@@ -965,8 +968,8 @@ public class Main implements SVGConverterController {
      * Scans the input vector and replaces directories with the list
      * of SVG files they contain
      */
-    protected String[] expandSources(Vector sources){
-        Vector expandedSources = new Vector();
+    protected String[] expandSources(List sources){
+        List expandedSources = new ArrayList();
         Iterator iter = sources.iterator();
         while (iter.hasNext()){
             String v = (String)iter.next();
@@ -974,15 +977,15 @@ public class Main implements SVGConverterController {
             if (f.exists() && f.isDirectory()){
                 File[] fl = f.listFiles(new SVGConverter.SVGFileFilter());
                 for (int i=0; i<fl.length; i++){
-                    expandedSources.addElement(fl[i].getPath());
+                    expandedSources.add(fl[i].getPath());
                 }
             } else {
-                expandedSources.addElement(v);
+                expandedSources.add(v);
             }
         }
 
         String[] s = new String[expandedSources.size()];
-        expandedSources.copyInto(s);
+        expandedSources.toArray( s );
         return s;
     }
 
@@ -1008,8 +1011,8 @@ public class Main implements SVGConverterController {
 
     public boolean proceedWithComputedTask(Transcoder transcoder,
                                            Map hints,
-                                           Vector sources,
-                                           Vector dest){
+                                           List sources,
+                                           List dest){
         System.out.println(Messages.formatMessage(MESSAGE_ABOUT_TO_TRANSCODE,
                                                   new Object[]{"" + sources.size()}));
         return true;

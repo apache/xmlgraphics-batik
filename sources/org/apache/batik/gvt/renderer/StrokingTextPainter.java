@@ -1095,7 +1095,8 @@ public class StrokingTextPainter extends BasicTextPainter {
                 if (bounds == null)
                     bounds = runBounds;
                 else
-                    bounds = bounds.createUnion(runBounds);
+                    //bounds = bounds.createUnion(runBounds);
+                    bounds.add( runBounds );
             }
         }
 
@@ -1108,7 +1109,8 @@ public class StrokingTextPainter extends BasicTextPainter {
             if (bounds == null)
                 bounds = underline.getBounds2D();
             else
-                bounds = bounds.createUnion(underline.getBounds2D());
+                //bounds = bounds.createUnion(underline.getBounds2D());
+                bounds.add( underline.getBounds2D() );
         }
 
         Shape strikeThrough = getDecorationStrokeOutline
@@ -1117,7 +1119,8 @@ public class StrokingTextPainter extends BasicTextPainter {
             if (bounds == null)
                 bounds = strikeThrough.getBounds2D();
             else
-                bounds = bounds.createUnion(strikeThrough.getBounds2D());
+                //bounds = bounds.createUnion(strikeThrough.getBounds2D());
+                bounds.add( strikeThrough.getBounds2D() );
         }
 
         Shape overline = getDecorationStrokeOutline
@@ -1126,7 +1129,8 @@ public class StrokingTextPainter extends BasicTextPainter {
             if (bounds == null)
                 bounds = overline.getBounds2D();
             else
-                bounds = bounds.createUnion(overline.getBounds2D());
+                //bounds = bounds.createUnion(overline.getBounds2D());
+                bounds.add( overline.getBounds2D() );
         }
         return bounds;
     }

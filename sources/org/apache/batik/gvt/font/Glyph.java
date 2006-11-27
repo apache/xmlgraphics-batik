@@ -247,7 +247,7 @@ public class Glyph {
     public GVTGlyphMetrics getGlyphMetrics() {
         if (metrics == null) {
             Rectangle2D gb = getGeometryBounds();
-            
+
             metrics = new GVTGlyphMetrics
                 (getHorizAdvX(), getVertAdvY(),
                  new Rectangle2D.Double(gb.getX()-position.getX(),
@@ -264,15 +264,15 @@ public class Glyph {
      * applied.
      *
      * @param hkern The horizontal kerning value to apply when calculating
-     *              the glyph metrics.  
+     *              the glyph metrics.
      * @param vkern The horizontal vertical value to apply when calculating
-     *              the glyph metrics.  
+     *              the glyph metrics.
      * @return The kerned glyph metics
      */
     public GVTGlyphMetrics getGlyphMetrics(float hkern, float vkern) {
         return new GVTGlyphMetrics(getHorizAdvX() - hkern,
                                    getVertAdvY() - vkern,
-                                   getGeometryBounds(), 
+                                   getGeometryBounds(),
                                    GlyphMetrics.COMPONENT);
 
     }
@@ -287,8 +287,8 @@ public class Glyph {
             TextPaintInfo.equivilent(tpi, cacheTPI))
             return bounds;
 
-        AffineTransform tr = 
-            AffineTransform.getTranslateInstance(position.getX(), 
+        AffineTransform tr =
+            AffineTransform.getTranslateInstance(position.getX(),
                                                  position.getY());
         if (transform != null) {
             tr.concatenate(transform);
@@ -296,23 +296,25 @@ public class Glyph {
 
         Rectangle2D bounds = null;
         if ((dShape != null) && (tpi != null)) {
-            if (tpi.fillPaint != null) 
+            if (tpi.fillPaint != null)
                 bounds = tr.createTransformedShape(dShape).getBounds2D();
 
             if ((tpi.strokeStroke != null) && (tpi.strokePaint != null)) {
                 Shape s = tpi.strokeStroke.createStrokedShape(dShape);
                 Rectangle2D r = tr.createTransformedShape(s).getBounds2D();
                 if (bounds == null) bounds = r;
-                else                bounds = r.createUnion(bounds);
+                //else                bounds = r.createUnion(bounds);
+                else                bounds.add( r );
             }
         }
 
         if (glyphChildrenNode != null) {
             Rectangle2D r = glyphChildrenNode.getTransformedBounds(tr);
             if (bounds == null) bounds = r;
-            else                bounds = r.createUnion(bounds);
+            // else                bounds = r.createUnion(bounds);
+            else                bounds.add( r );
         }
-        if (bounds == null) 
+        if (bounds == null)
             bounds = new Rectangle2D.Double
                 (position.getX(), position.getY(), 0, 0);
 
@@ -328,8 +330,8 @@ public class Glyph {
      */
     public Shape getOutline() {
         if (outline == null) {
-            AffineTransform tr = 
-                AffineTransform.getTranslateInstance(position.getX(), 
+            AffineTransform tr =
+                AffineTransform.getTranslateInstance(position.getX(),
                                                      position.getY());
             if (transform != null) {
                 tr.concatenate(transform);
@@ -361,7 +363,7 @@ public class Glyph {
      * @param graphics2D The Graphics2D object to draw to.
      */
     public void draw(Graphics2D graphics2D) {
-        AffineTransform tr = 
+        AffineTransform tr =
             AffineTransform.getTranslateInstance(position.getX(),
                                                  position.getY());
         if (transform != null) {

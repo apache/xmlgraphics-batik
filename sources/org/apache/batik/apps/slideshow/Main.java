@@ -37,7 +37,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Vector;
+import java.util.List;
+import java.util.ArrayList;
 
 import javax.swing.JComponent;
 import javax.swing.JWindow;
@@ -54,6 +55,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGDocument;
 
+/**
+ *
+ * @version $Id$
+ */
 public class Main extends JComponent {
 
     StaticRenderer renderer;
@@ -284,7 +289,7 @@ public class Main extends JComponent {
         g2d.drawImage(display, null, 0, 0);
     }
 
-    public static void readFileList(String file, Vector fileVec) {
+    public static void readFileList(String file, List fileVec) {
         BufferedReader br;
         try {
             br = new BufferedReader(new FileReader(file));
@@ -319,7 +324,7 @@ public class Main extends JComponent {
 
     public static void main(String []args) {
 
-        Vector fileVec = new Vector();
+        List fileVec = new ArrayList();
 
         Dimension d = null;
 
