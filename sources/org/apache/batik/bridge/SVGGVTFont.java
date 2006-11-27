@@ -24,7 +24,6 @@ import java.text.AttributedCharacterIterator;
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
 import java.util.StringTokenizer;
-import java.util.Vector;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -222,7 +221,7 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
      * @return An array of matching glyph codes. This may be empty.
      */
     public int[] getGlyphCodesForName(String name) {
-        Vector glyphCodes = new Vector();
+        List glyphCodes = new ArrayList();
         for (int i = 0; i < glyphNames.length; i++) {
             if (glyphNames[i] != null && glyphNames[i].equals(name)) {
                 glyphCodes.add(new Integer(i));
@@ -230,7 +229,7 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
         }
         int[] glyphCodeArray = new int[glyphCodes.size()];
         for (int i = 0; i < glyphCodes.size(); i++) {
-            glyphCodeArray[i] = ((Integer)glyphCodes.elementAt(i)).intValue();
+            glyphCodeArray[i] = ((Integer)glyphCodes.get(i)).intValue();
         }
         return glyphCodeArray;
     }
@@ -244,7 +243,7 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
      * @return An array of matching glyph codes. This may be empty.
      */
     public int[] getGlyphCodesForUnicode(String unicode) {
-        Vector glyphCodes = new Vector();
+        List glyphCodes = new ArrayList();
         for (int i = 0; i < glyphUnicodes.length; i++) {
             if (glyphUnicodes[i] != null && glyphUnicodes[i].equals(unicode)) {
                 glyphCodes.add(new Integer(i));
@@ -252,7 +251,7 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
         }
         int[] glyphCodeArray = new int[glyphCodes.size()];
         for (int i = 0; i < glyphCodes.size(); i++) {
-            glyphCodeArray[i] = ((Integer)glyphCodes.elementAt(i)).intValue();
+            glyphCodeArray[i] = ((Integer)glyphCodes.get(i)).intValue();
         }
         return glyphCodeArray;
     }

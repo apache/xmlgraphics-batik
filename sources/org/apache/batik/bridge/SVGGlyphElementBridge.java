@@ -23,6 +23,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import java.util.List;
 
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
@@ -321,7 +322,7 @@ public class SVGGlyphElementBridge extends AbstractSVGBridge
         // return a new Glyph
         return new Glyph(unicode, names, orientation,
                          arabicForm, lang, horizOrigin, vertOrigin,
-                         horizAdvX, vertAdvY, glyphCode, 
+                         horizAdvX, vertAdvY, glyphCode,
                          tpi, dShape, glyphContentNode);
     }
 }

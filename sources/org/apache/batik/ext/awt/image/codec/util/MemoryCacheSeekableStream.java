@@ -20,7 +20,8 @@ package org.apache.batik.ext.awt.image.codec.util;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Vector;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * A subclass of <code>SeekableStream</code> that may be used to wrap
@@ -53,7 +54,7 @@ public final class MemoryCacheSeekableStream extends SeekableStream {
     private static final int SECTOR_MASK = SECTOR_SIZE - 1;
 
     /** A Vector of source sectors. */
-    private Vector data = new Vector();
+    private List data = new ArrayList();
 
     /** Number of sectors stored. */
     int sectors = 0;
@@ -97,8 +98,8 @@ public final class MemoryCacheSeekableStream extends SeekableStream {
         // Read sectors until the desired sector
         for (int i = startSector; i <= sector; i++) {
             byte[] buf = new byte[SECTOR_SIZE];
-            data.addElement(buf);
-            
+            data.add(buf);
+
             // Read up to SECTOR_SIZE bytes
             int len = SECTOR_SIZE;
             int off = 0;
@@ -111,7 +112,7 @@ public final class MemoryCacheSeekableStream extends SeekableStream {
                 }
                 off += nbytes;
                 len -= nbytes;
-                
+
                 // Record new data length
                 length += nbytes;
             }
@@ -130,7 +131,7 @@ public final class MemoryCacheSeekableStream extends SeekableStream {
     }
 
     /**
-     * Returns the current offset in this file. 
+     * Returns the current offset in this file.
      *
      * @return     the offset from the beginning of the file, in bytes,
      *             at which the next read occurs.
@@ -140,13 +141,13 @@ public final class MemoryCacheSeekableStream extends SeekableStream {
     }
 
     /**
-     * Sets the file-pointer offset, measured from the beginning of this 
+     * Sets the file-pointer offset, measured from the beginning of this
      * file, at which the next read occurs.
      *
-     * @param      pos   the offset position, measured in bytes from the 
-     *                   beginning of the file, at which to set the file 
+     * @param      pos   the offset position, measured in bytes from the
+     *                   beginning of the file, at which to set the file
      *                   pointer.
-     * @exception  IOException  if <code>pos</code> is less than 
+     * @exception  IOException  if <code>pos</code> is less than
      *                          <code>0</code> or if an I/O error occurs.
      */
     public void seek(long pos) throws IOException {
@@ -172,7 +173,7 @@ public final class MemoryCacheSeekableStream extends SeekableStream {
         long pos = readUntil(next);
         if (pos >= next) {
             byte[] buf =
-                (byte[])data.elementAt((int)(pointer >> SECTOR_SHIFT));
+                (byte[])data.get((int)(pointer >> SECTOR_SHIFT));
             return buf[(int)(pointer++ & SECTOR_MASK)] & 0xff;
         } else {
             return -1;
@@ -243,7 +244,7 @@ public final class MemoryCacheSeekableStream extends SeekableStream {
             return -1;
         }
 
-        byte[] buf = (byte[])data.elementAt((int)(pointer >> SECTOR_SHIFT));
+        byte[] buf = (byte[])data.get((int)(pointer >> SECTOR_SHIFT));
         int nbytes = Math.min(len, SECTOR_SIZE - (int)(pointer & SECTOR_MASK));
         System.arraycopy(buf, (int)(pointer & SECTOR_MASK),
                          b, off, nbytes);

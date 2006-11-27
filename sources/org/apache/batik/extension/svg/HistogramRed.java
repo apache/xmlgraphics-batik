@@ -44,13 +44,13 @@ public class HistogramRed extends AbstractRed {
         int tiles = getNumXTiles()*getNumYTiles();
         computed = new boolean[tiles];
     }
-    
+
     public void tallyTile(Raster r) {
         final int minX = r.getMinX();
         final int minY = r.getMinY();
         final int w = r.getWidth();
         final int h = r.getHeight();
-        
+
         int [] samples = null;
         int val;
         for (int y=minY; y<minY+h; y++) {
@@ -70,12 +70,12 @@ public class HistogramRed extends AbstractRed {
         if (tallied == computed.length)
             return bins;
 
-        CachableRed src = (CachableRed)getSources().elementAt(0);
+        CachableRed src = (CachableRed)getSources().get( 0 );
         int yt0 = src.getMinTileY();
 
         int xtiles = src.getNumXTiles();
         int xt0 = src.getMinTileX();
-            
+
         for (int y=0; y<src.getNumYTiles(); y++) {
             for (int x=0; x<xtiles; x++) {
                 int idx = (x+xt0)+y*xtiles;
@@ -93,17 +93,17 @@ public class HistogramRed extends AbstractRed {
         copyToRaster(wr);
         return wr;
     }
-    
+
     public Raster getTile(int tileX, int tileY) {
         int yt = tileY-getMinTileY();
         int xt = tileX-getMinTileX();
 
-        CachableRed src = (CachableRed)getSources().elementAt(0);
+        CachableRed src = (CachableRed)getSources().get(0);
         Raster r = src.getTile(tileX, tileY);
-        
+
         int idx = xt+yt*getNumXTiles();
 
-        if (computed[idx]) 
+        if (computed[idx])
             return r;
 
         tallyTile(r);

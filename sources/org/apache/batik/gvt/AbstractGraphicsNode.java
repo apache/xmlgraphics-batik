@@ -331,7 +331,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
      */
     public void setRenderingHints(RenderingHints newHints) {
         fireGraphicsNodeChangeStarted();
-        this.hints = newHints;
+        hints = newHints;
         fireGraphicsNodeChangeCompleted();
     }
 
@@ -348,12 +348,12 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
      * @param newMask the new mask of this node
      */
     public void setMask(Mask newMask) {
-        if ((newMask == null) && (this.mask == null)) 
+        if ((newMask == null) && (mask == null))
             return; // No change still no mask.
 
         fireGraphicsNodeChangeStarted();
         invalidateGeometryCache();
-        this.mask = newMask;
+        mask = newMask;
         fireGraphicsNodeChangeCompleted();
     }
 
@@ -370,12 +370,12 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
      * @param newFilter the new filter of this node
      */
     public void setFilter(Filter newFilter) {
-        if ((newFilter == null) && (this.filter == null)) 
+        if ((newFilter == null) && (filter == null)) 
             return; // No change still no filter.
 
         fireGraphicsNodeChangeStarted();
         invalidateGeometryCache();
-        this.filter = newFilter;
+        filter = newFilter;
         fireGraphicsNodeChangeCompleted();
     }
 
@@ -389,7 +389,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     /**
      * Returns the GraphicsNodeRable for this node.  This
      * GraphicsNodeRable is the Renderable (Filter) before any of the
-     * filter operations have been applied.  
+     * filter operations have been applied.
      */
     public Filter getGraphicsNodeRable(boolean createIfNeeded) {
         GraphicsNodeRable ret = null;
@@ -407,7 +407,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     /**
      * Returns the GraphicsNodeRable for this node.  This
      * GraphicsNodeRable is the Renderable (Filter) after all of the
-     * filter operations have been applied.  
+     * filter operations have been applied.
      */
     public Filter getEnableBackgroundGraphicsNodeRable
         (boolean createIfNeeded) {
@@ -451,10 +451,10 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
         RenderingHints  defaultHints     = null;
         Graphics2D      baseG2d          = null;
 
-        if (clip != null)  { 
+        if (clip != null)  {
             baseG2d = g2d;
             g2d = (Graphics2D)g2d.create();
-            if (hints != null) 
+            if (hints != null)
                 g2d.addRenderingHints(hints);
             if (transform != null)
                 g2d.transform(transform);
@@ -475,9 +475,9 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
                 g2d.setComposite(composite);
             }
         }
-            
+
         Shape curClip = g2d.getClip();
-        g2d.setRenderingHint(RenderingHintsKeyExt.KEY_AREA_OF_INTEREST, 
+        g2d.setRenderingHint(RenderingHintsKeyExt.KEY_AREA_OF_INTEREST,
                              curClip);
 
         // Check if any painting is needed at all. Get the clip (in user space)
@@ -575,11 +575,11 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     private void traceFilter(Filter filter, String prefix){
         System.out.println(prefix + filter.getClass().getName());
         System.out.println(prefix + filter.getBounds2D());
-        java.util.Vector sources = filter.getSources();
+        List sources = filter.getSources();
         int nSources = sources != null ? sources.size() : 0;
         prefix += "\t";
         for(int i=0; i<nSources; i++){
-            Filter source = (Filter)sources.elementAt(i);
+            Filter source = (Filter)sources.get(i);
             traceFilter(source, prefix);
         }
 
@@ -788,7 +788,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
 
             // Check If we should halt early.
             if (HaltingThread.hasBeenHalted()) {
-                // The Thread has been 'halted'. 
+                // The Thread has been 'halted'.
                 // Invalidate any cached values and proceed.
                 invalidateGeometryCache();
             }
@@ -968,7 +968,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     /**
      * This method makes sure that neither the width nor height of the
      * rectangle is zero.  But it tries to make them very small
-     * relatively speaking.  
+     * relatively speaking.
      */
     protected Rectangle2D normalizeRectangle(Rectangle2D bounds) {
         if (bounds == null) return null;
@@ -984,7 +984,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
                 if (tmpW < bounds.getWidth())
                     tmpW = bounds.getWidth();
                 return new Rectangle2D.Double
-                    (bounds.getX(), bounds.getY(), 
+                    (bounds.getX(), bounds.getY(),
                      tmpW, bounds.getHeight());
             }
         } else if (bounds.getHeight() < EPSILON) {
@@ -992,7 +992,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
             if (tmpH < bounds.getHeight())
                 tmpH = bounds.getHeight();
             return new Rectangle2D.Double
-                (bounds.getX(), bounds.getY(), 
+                (bounds.getX(), bounds.getY(),
                  bounds.getWidth(), tmpH);
         }
         return bounds;

@@ -24,6 +24,8 @@ import java.awt.geom.FlatteningPathIterator;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
 import java.util.Vector;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Utilitiy class for length calculations of paths.
@@ -53,7 +55,7 @@ public class PathLength {
     /**
      * The list of flattened path segments.
      */
-    protected Vector segments;
+    protected List segments;
 
     /**
      * Array where the index is the index of the original path segment
@@ -116,8 +118,8 @@ public class PathLength {
 
         PathIterator pi = path.getPathIterator(new AffineTransform());
         SingleSegmentPathIterator sspi = new SingleSegmentPathIterator();
-        segments = new Vector(20);
-        Vector indexes = new Vector(20);
+        segments = new ArrayList(20);
+        List indexes = new ArrayList(20);
         int index = 0;
         int origIndex = -1;
         float lastMoveX = 0f;
@@ -233,11 +235,11 @@ public class PathLength {
 
         if (upperIndex == 0) {
             // Length was probably zero, so return the upper segment.
-            PathSegment upper = (PathSegment) segments.elementAt(upperIndex);
+            PathSegment upper = (PathSegment) segments.get(upperIndex);
             return upper.getIndex();
         }
 
-        PathSegment lower = (PathSegment) segments.elementAt(upperIndex - 1);
+        PathSegment lower = (PathSegment) segments.get(upperIndex - 1);
         return lower.getIndex();
     }
 
@@ -276,14 +278,14 @@ public class PathLength {
             return null;
         }
 
-        PathSegment upper = (PathSegment) segments.elementAt(upperIndex);
+        PathSegment upper = (PathSegment) segments.get(upperIndex);
 
         if (upperIndex == 0) {
             // Length was probably zero, so return the upper point.
             return new Point2D.Float(upper.getX(), upper.getY());
         }
 
-        PathSegment lower = (PathSegment) segments.elementAt(upperIndex - 1);
+        PathSegment lower = (PathSegment) segments.get(upperIndex - 1);
 
         // Now work out where along the line would be the length.
         float offset = length - lower.getLength();
@@ -337,7 +339,7 @@ public class PathLength {
             return 0f;
         }
 
-        PathSegment upper = (PathSegment) segments.elementAt(upperIndex);
+        PathSegment upper = (PathSegment) segments.get(upperIndex);
 
         if (upperIndex == 0) {
             // Length was probably zero, so return the angle between the first
@@ -345,7 +347,7 @@ public class PathLength {
             upperIndex = 1;
         }
 
-        PathSegment lower = (PathSegment) segments.elementAt(upperIndex - 1);
+        PathSegment lower = (PathSegment) segments.get(upperIndex - 1);
 
         // Compute the slope.
         return (float) Math.atan2(upper.getY() - lower.getY(),
@@ -373,7 +375,7 @@ public class PathLength {
         int ub = segments.size() - 1;
         while (lb != ub) {
             int curr = (lb + ub) >> 1;
-            PathSegment ps = (PathSegment) segments.elementAt(curr);
+            PathSegment ps = (PathSegment) segments.get(curr);
             if (ps.getLength() >= length) {
                 ub = curr;
             } else {
@@ -381,7 +383,7 @@ public class PathLength {
             }
         }
         for (;;) {
-            PathSegment ps = (PathSegment) segments.elementAt(ub);
+            PathSegment ps = (PathSegment) segments.get(ub);
             if (ps.getSegType() != PathIterator.SEG_MOVETO
                     || ub == segments.size() - 1) {
                 break;
@@ -393,7 +395,7 @@ public class PathLength {
         int currentIndex = 0;
         int numSegments = segments.size();
         while (upperIndex <= 0 && currentIndex < numSegments) {
-            PathSegment ps = (PathSegment) segments.elementAt(currentIndex);
+            PathSegment ps = (PathSegment) segments.get(currentIndex);
             if (ps.getLength() >= length
                     && ps.getSegType() != PathIterator.SEG_MOVETO) {
                 upperIndex = currentIndex;
@@ -488,13 +490,16 @@ public class PathLength {
 
     /**
      * A single path segment in the flattened version of the path.
+     * This is a local helper class. PathSegment-objects are stored in
+     * the {@link PathLength#segments} - list.
+     * This is used as an immutable value-object.
      */
-    protected class PathSegment {
+    protected static class PathSegment {
 
         /**
          * The path segment type.
          */
-        protected int segType;
+        protected final int segType;
 
         /**
          * The x coordinate of the path segment.
@@ -507,7 +512,7 @@ public class PathLength {
         protected float y;
 
         /**
-         * The length of the path segment.
+         * The length of the path segment, accumulated from the start.
          */
         protected float length;
 
@@ -526,7 +531,7 @@ public class PathLength {
          * @param idx The index of the original path segment this flattened
          *            segment is a part of
          */
-        public PathSegment(int segType, float x, float y, float len, int idx) {
+        PathSegment(int segType, float x, float y, float len, int idx) {
             this.segType = segType;
             this.x = x;
             this.y = y;
@@ -542,13 +547,6 @@ public class PathLength {
         }
 
         /**
-         * Sets the segment type.
-         */
-        public void setSegType(int v) {
-            this.segType = v;
-        }
-
-        /**
          * Returns the x coordinate of the path segment.
          */
         public float getX() {
@@ -559,7 +557,7 @@ public class PathLength {
          * Sets the x coordinate of the path segment.
          */
         public void setX(float v) {
-            this.x = v;
+            x = v;
         }
 
         /**
@@ -573,7 +571,7 @@ public class PathLength {
          * Sets the y coordinate of the path segment.
          */
         public void setY(float v) {
-            this.y = v;
+            y = v;
         }
 
         /**
@@ -587,7 +585,7 @@ public class PathLength {
          * Sets the length of the path segment.
          */
         public void setLength(float v) {
-            this.length = v;
+            length = v;
         }
 
         /**
@@ -601,7 +599,7 @@ public class PathLength {
          * Sets the segment index.
          */
         public void setIndex(int v) {
-            this.index = v;
+            index = v;
         }
     }
 }

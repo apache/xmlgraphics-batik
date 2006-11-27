@@ -23,7 +23,8 @@ import java.io.Serializable;
 import java.util.Iterator;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Vector;
+import java.util.List;
+import java.util.ArrayList;
 
 import org.apache.batik.ext.awt.image.codec.util.SeekableStream;
 
@@ -242,7 +243,7 @@ public class TIFFDirectory extends Object implements Serializable {
 
                     // Can be multiple strings
                     int index = 0, prevIndex = 0;
-                    Vector v = new Vector();
+                    List v = new ArrayList();
 
                     while (index < count) {
 
@@ -256,10 +257,7 @@ public class TIFFDirectory extends Object implements Serializable {
 
                     count = v.size();
                     String[] strings = new String[count];
-                    for (int c = 0 ; c < count; c++) {
-                        strings[c] = (String)v.elementAt(c);
-                    }
-
+                    v.toArray( strings );
                     obj = strings;
                 } else {
                     obj = bvalues;
