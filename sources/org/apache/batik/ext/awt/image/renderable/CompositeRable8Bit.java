@@ -31,6 +31,7 @@ import java.awt.image.renderable.RenderContext;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
+import java.util.ArrayList;
 
 import org.apache.batik.ext.awt.image.CompositeRule;
 import org.apache.batik.ext.awt.image.GraphicsUtil;
@@ -151,7 +152,8 @@ public class CompositeRable8Bit
 
         rc = new RenderContext(at, aoiR, rh);
 
-        Vector srcs = new Vector();
+        // note: this hides a member in a superclass!
+        List srcs = new ArrayList();
 
         Iterator i = getSources().iterator();
         while (i.hasNext()) {

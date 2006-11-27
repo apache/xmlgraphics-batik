@@ -71,7 +71,7 @@ public class DisplacementMapRable8Bit
     }
 
     public Rectangle2D getBounds2D(){
-        return ((Filter)(getSources().elementAt(0))).getBounds2D();
+        return ((Filter)(getSources().get(0))).getBounds2D();
     }
 
     /**
@@ -144,9 +144,9 @@ public class DisplacementMapRable8Bit
 
     public RenderedImage createRendering(RenderContext rc) {
         // The source image to be displaced.
-        Filter displaced = (Filter)getSources().elementAt(0);
+        Filter displaced = (Filter)getSources().get(0);
         // The map giving the displacement.
-        Filter map = (Filter)getSources().elementAt(1);
+        Filter map = (Filter)getSources().get(1);
 
         RenderingHints rh = rc.getRenderingHints();
         if (rh == null) rh = new RenderingHints(null);
@@ -238,8 +238,6 @@ public class DisplacementMapRable8Bit
             cr = new AffineRed(cr, resAt, rh);
 
         return cr;
-
-
     }
 
     /**

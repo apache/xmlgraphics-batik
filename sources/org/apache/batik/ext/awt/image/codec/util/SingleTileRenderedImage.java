@@ -25,6 +25,8 @@ import java.awt.image.Raster;
 /**
  * A simple class that provides RenderedImage functionality
  * given a Raster and a ColorModel.
+ *
+ * @version $Id$
  */
 public class SingleTileRenderedImage extends SimpleRenderedImage {
 

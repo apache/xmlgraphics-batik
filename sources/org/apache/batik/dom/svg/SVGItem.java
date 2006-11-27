@@ -15,19 +15,20 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 
- */package org.apache.batik.dom.svg;
+ */
+package org.apache.batik.dom.svg;
 
 /**
  * This interface represents an item in an SVGXXXList.
  *
- * The item is required to hold a reference to its parent 
+ * The item is required to hold a reference to its parent
  * list so that an item can be moved from one list to another.
  *
  * A string representation of the item is also required in order
- * to update the value of the attribute the list containing 
+ * to update the value of the attribute the list containing
  * the item represents.
  *
- * If the value of the item is changed, it is required 
+ * If the value of the item is changed, it is required
  * to notify the list it belongs to in order to synchronized
  * the list and the attribute the list represents.
  *
@@ -57,7 +58,7 @@ public interface SVGItem {
      * Return the String representation of the item.
      *
      * @return textual representation of the item
-     *  to be inserted in the attribute value 
+     *  to be inserted in the attribute value
      *  representing the list.
      */
     String getValueAsString();

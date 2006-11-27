@@ -76,7 +76,7 @@ public abstract class SimpleRenderedImage implements RenderedImage {
     protected ColorModel colorModel = null;
 
     /** The image's sources, stored in a Vector. */
-    protected Vector sources = new Vector();
+    protected List sources = new ArrayList();
 
     /** A Hashtable containing the image properties. */
     protected Hashtable properties = new Hashtable();
@@ -221,13 +221,12 @@ public abstract class SimpleRenderedImage implements RenderedImage {
 
     /**
      * Gets a property from the property set of this image.  If the
-     * property name is not recognized,
-     * <code>java.awt.Image.UndefinedProperty</code> will be returned.
+     * property name is not recognized, <code>null</code> will be returned.
      *
      * @param name the name of the property to get, as a
-     * <code>String</code>.  @return a reference to the property
-     * <code>Object</code>, or the value
-     * <code>java.awt.Image.UndefinedProperty.</code>
+     * <code>String</code>.
+     * @return a reference to the property
+     * <code>Object</code>, or the value <code>null</code>
      */
     public Object getProperty(String name) {
         name = name.toLowerCase();
@@ -236,8 +235,7 @@ public abstract class SimpleRenderedImage implements RenderedImage {
 
     /**
      * Returns a list of the properties recognized by this image.  If
-     * no properties are available, <code>null</code> will be
-     * returned.
+     * no properties are available, an empty String[] will be returned.
      *
      * @return an array of <code>String</code>s representing valid
      *         property names.

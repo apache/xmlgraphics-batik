@@ -288,7 +288,7 @@ public abstract class AbstractRable implements Filter {
         return srect;
     }
 
-    public Shape getDirtyRegion(int srcIndex, 
+    public Shape getDirtyRegion(int srcIndex,
                                 Rectangle2D inputRgn) {
         if ((srcIndex < 0) || (srcIndex > srcs.size()))
             throw new IndexOutOfBoundsException

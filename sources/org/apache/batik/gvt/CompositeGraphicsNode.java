@@ -584,10 +584,8 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
     }
 
     /**
-     * Returns an array containing all of the graphics node in the
-     * children list of this composite graphics node in the correct
-     * order. If the children list fits in the specified array, it is
-     * returned therein. Otherwise, a new array is allocated.
+     * Returns an array containing all of the graphics node in the children list
+     * of this composite graphics node in the correct order.
      */
     public Object [] toArray() {
         GraphicsNode [] result = new GraphicsNode[count];
@@ -598,8 +596,10 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
     }
 
     /**
-     * Returns an array containing all of the graphics node in the children list
-     * of this composite graphics node in the correct order.
+     * Returns an array containing all of the graphics node in the
+     * children list of this composite graphics node in the correct
+     * order. If the children list fits in the specified array, it is
+     * returned therein. Otherwise, a new array is allocated.
      *
      * @param a the array to fit if possible
      */
@@ -982,7 +982,7 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
         int oldCapacity = children.length;
         if (minCapacity > oldCapacity) {
             GraphicsNode [] oldData = children;
-            int newCapacity = (oldCapacity * 3)/2 + 1;
+            int newCapacity = oldCapacity + oldCapacity/2 + 1;
             if (newCapacity < minCapacity) {
                 newCapacity = minCapacity;
             }

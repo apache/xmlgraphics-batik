@@ -46,14 +46,14 @@ public class ComponentTransferRed extends AbstractRed {
     public ComponentTransferRed(CachableRed src,
                                 TransferFunction [] funcs,
                                 RenderingHints hints) {
-        super(src, src.getBounds(), 
+        super(src, src.getBounds(),
               GraphicsUtil.coerceColorModel(src.getColorModel(), false),
               src.getSampleModel(),
               null);
 
-        byte [][] tableData = {funcs[1].getLookupTable(), 
+        byte [][] tableData = {funcs[1].getLookupTable(),
                                funcs[2].getLookupTable(),
-                               funcs[3].getLookupTable(), 
+                               funcs[3].getLookupTable(),
                                funcs[0].getLookupTable()};
 
         // Note that we create an anonymous subclass here.
@@ -62,12 +62,12 @@ public class ComponentTransferRed extends AbstractRed {
         // up.  The downside is that I suspect that this means we are
         // falling into a more general, and hence slower case, but
         // at least it works....
-        operation  =  new LookupOp(new ByteLookupTable(0, tableData), hints) 
+        operation  =  new LookupOp(new ByteLookupTable(0, tableData), hints)
             { };
     }
-    
+
     public WritableRaster copyData(WritableRaster wr){
-        CachableRed src = (CachableRed)getSources().elementAt(0);
+        CachableRed src = (CachableRed)getSources().get(0);
 
         wr = src.copyData(wr);
         GraphicsUtil.coerceData(wr, src.getColorModel(), false);
