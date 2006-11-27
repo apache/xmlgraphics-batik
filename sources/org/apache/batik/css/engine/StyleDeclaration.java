@@ -83,11 +83,23 @@ public class StyleDeclaration {
      */
     public void remove(int idx) {
         count--;
-        for (int i = idx; i < count; i++) {
-            values[i] = values[i + 1];
-            indexes[i] = indexes[i + 1];
-            priorities[i] = priorities[i + 1];
-        }
+        int from  = idx+1;
+        int to    = idx;
+        int nCopy = count - idx;
+
+        System.arraycopy( values,     from, values,     to, nCopy );
+        System.arraycopy( indexes,    from, indexes,    to, nCopy );
+        System.arraycopy( priorities, from, priorities, to, nCopy );
+
+        values[ count ] = null;
+        indexes[ count ] = 0;
+        priorities[ count ] = false;
+
+//        for (int i = idx; i < count; i++) {
+//            values[i] = values[i + 1];
+//            indexes[i] = indexes[i + 1];
+//            priorities[i] = priorities[i + 1];
+//        }
     }
 
     /**
