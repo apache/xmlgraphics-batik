@@ -87,7 +87,7 @@ public class WMFRecordStore extends AbstractWMFReader {
             case WMFConstants.META_DRAWTEXT:
                 {
                     for ( int i = 0; i < recSize; i++ )
-                        recData = readShort( is );
+                        recData = readShort( is );      // todo shouldn't the read data be used for something??
                     numRecords--;
                 }
                 break;
@@ -329,7 +329,7 @@ public class WMFRecordStore extends AbstractWMFReader {
                     //int height = readShort( is );
                     if (recSize == 6) readShort(is);
 
-                    int red = colorref & 0xff;
+                    int red = colorref & 0xff;    // format: fff.bbbbbbbb.gggggggg.rrrrrrrr
                     int green = ( colorref & 0xff00 ) >> 8;
                     int blue = ( colorref & 0xff0000 ) >> 16;
                     int flags = ( colorref & 0x3000000 ) >> 24;
@@ -411,7 +411,7 @@ public class WMFRecordStore extends AbstractWMFReader {
                     int[] pts = new int[ count ];
                     int ptCount = 0;
                     for ( int i = 0; i < count; i++ ) {
-                        pts[ i ] = readShort( is ); // nomber of points for the polygon
+                        pts[ i ] = readShort( is ); // number of points for the polygon
                         ptCount += pts[ i ];
                     }
                     mr.AddElement( new Integer( count ));

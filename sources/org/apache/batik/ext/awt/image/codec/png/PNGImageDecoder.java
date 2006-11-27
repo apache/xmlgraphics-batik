@@ -41,7 +41,9 @@ import java.io.SequenceInputStream;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
-import java.util.Vector;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 
@@ -291,7 +293,7 @@ class PNGImage extends SimpleRenderedImage {
     private static final int POST_ADD_GRAY_TRANS_EXP =
         POST_ADD_GRAY_TRANS | POST_EXP_MASK;
 
-    private Vector streamVec = new Vector();
+    private List streamVec = new ArrayList();
     private DataInputStream dataStream;
 
     private int bytesPerPixel; // number of bytes per input pixel
@@ -301,11 +303,11 @@ class PNGImage extends SimpleRenderedImage {
     // Number of private chunks
     private int chunkIndex = 0;
 
-    private Vector textKeys = new Vector();
-    private Vector textStrings = new Vector();
+    private List textKeys = new ArrayList();
+    private List textStrings = new ArrayList();
 
-    private Vector ztextKeys = new Vector();
-    private Vector ztextStrings = new Vector();
+    private List ztextKeys = new ArrayList();
+    private List ztextStrings = new ArrayList();
 
     private WritableRaster theTile;
 
@@ -718,8 +720,8 @@ class PNGImage extends SimpleRenderedImage {
         int textLen = textKeys.size();
         String[] textArray = new String[2*textLen];
         for (int i = 0; i < textLen; i++) {
-            String key = (String)textKeys.elementAt(i);
-            String val = (String)textStrings.elementAt(i);
+            String key = (String)textKeys.get(i);
+            String val = (String)textStrings.get(i);
             textArray[2*i] = key;
             textArray[2*i + 1] = val;
             if (emitProperties) {
@@ -735,8 +737,8 @@ class PNGImage extends SimpleRenderedImage {
         int ztextLen = ztextKeys.size();
         String[] ztextArray = new String[2*ztextLen];
         for (int i = 0; i < ztextLen; i++) {
-            String key = (String)ztextKeys.elementAt(i);
-            String val = (String)ztextStrings.elementAt(i);
+            String key = (String)ztextKeys.get(i);
+            String val = (String)ztextStrings.get(i);
             ztextArray[2*i] = key;
             ztextArray[2*i + 1] = val;
             if (emitProperties) {
@@ -750,7 +752,7 @@ class PNGImage extends SimpleRenderedImage {
 
         // Parse prior IDAT chunks
         InputStream seqStream =
-            new SequenceInputStream(streamVec.elements());
+            new SequenceInputStream( Collections.enumeration( streamVec ) );
         InputStream infStream =
             new InflaterInputStream(seqStream, new Inflater());
         dataStream = new DataInputStream(infStream);
