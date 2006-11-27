@@ -196,7 +196,8 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
             if (bounds2D == null)
                 bounds2D = strokeBounds;
             else
-                bounds2D = bounds2D.createUnion(strokeBounds);
+                // bounds2D = bounds2D.createUnion(strokeBounds);
+                bounds2D.add(strokeBounds);
         }
         if (bounds2D == null)
             return null;

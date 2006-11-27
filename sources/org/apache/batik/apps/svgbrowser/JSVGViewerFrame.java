@@ -162,7 +162,7 @@ public class JSVGViewerFrame
                LinkActivationListener,
                UpdateManagerListener {
 
-    static private String EOL;
+    private static String EOL;
     static {
         try {
             EOL = System.getProperty("line.separator", "\n");
@@ -195,73 +195,73 @@ public class JSVGViewerFrame
     /**
      * The gui resources file name
      */
-    public final static String RESOURCES =
+    public static final String RESOURCES =
         "org.apache.batik.apps.svgbrowser.resources.GUI";
 
     // The actions names.
-    public final static String ABOUT_ACTION = "AboutAction";
-    public final static String OPEN_ACTION = "OpenAction";
-    public final static String OPEN_LOCATION_ACTION = "OpenLocationAction";
-    public final static String NEW_WINDOW_ACTION = "NewWindowAction";
-    public final static String RELOAD_ACTION = "ReloadAction";
-    public final static String SAVE_AS_ACTION = "SaveAsAction";
-    public final static String BACK_ACTION = "BackAction";
-    public final static String FORWARD_ACTION = "ForwardAction";
-    public final static String FULL_SCREEN_ACTION = "FullScreenAction";
-    public final static String PRINT_ACTION = "PrintAction";
-    public final static String EXPORT_AS_JPG_ACTION = "ExportAsJPGAction";
-    public final static String EXPORT_AS_PNG_ACTION = "ExportAsPNGAction";
-    public final static String EXPORT_AS_TIFF_ACTION = "ExportAsTIFFAction";
-    public final static String PREFERENCES_ACTION = "PreferencesAction";
-    public final static String CLOSE_ACTION = "CloseAction";
-    public final static String VIEW_SOURCE_ACTION = "ViewSourceAction";
-    public final static String EXIT_ACTION = "ExitAction";
-    public final static String RESET_TRANSFORM_ACTION = "ResetTransformAction";
-    public final static String ZOOM_IN_ACTION = "ZoomInAction";
-    public final static String ZOOM_OUT_ACTION = "ZoomOutAction";
-    public final static String PREVIOUS_TRANSFORM_ACTION = "PreviousTransformAction";
-    public final static String NEXT_TRANSFORM_ACTION = "NextTransformAction";
-    public final static String USE_STYLESHEET_ACTION = "UseStylesheetAction";
-    public final static String PLAY_ACTION = "PlayAction";
-    public final static String PAUSE_ACTION = "PauseAction";
-    public final static String STOP_ACTION = "StopAction";
-    public final static String MONITOR_ACTION = "MonitorAction";
-    public final static String DOM_VIEWER_ACTION = "DOMViewerAction";
-    public final static String SET_TRANSFORM_ACTION = "SetTransformAction";
-    public final static String FIND_DIALOG_ACTION = "FindDialogAction";
-    public final static String THUMBNAIL_DIALOG_ACTION = "ThumbnailDialogAction";
-    public final static String FLUSH_ACTION = "FlushAction";
-    public final static String TOGGLE_DEBUGGER_ACTION = "ToggleDebuggerAction";
+    public static final String ABOUT_ACTION = "AboutAction";
+    public static final String OPEN_ACTION = "OpenAction";
+    public static final String OPEN_LOCATION_ACTION = "OpenLocationAction";
+    public static final String NEW_WINDOW_ACTION = "NewWindowAction";
+    public static final String RELOAD_ACTION = "ReloadAction";
+    public static final String SAVE_AS_ACTION = "SaveAsAction";
+    public static final String BACK_ACTION = "BackAction";
+    public static final String FORWARD_ACTION = "ForwardAction";
+    public static final String FULL_SCREEN_ACTION = "FullScreenAction";
+    public static final String PRINT_ACTION = "PrintAction";
+    public static final String EXPORT_AS_JPG_ACTION = "ExportAsJPGAction";
+    public static final String EXPORT_AS_PNG_ACTION = "ExportAsPNGAction";
+    public static final String EXPORT_AS_TIFF_ACTION = "ExportAsTIFFAction";
+    public static final String PREFERENCES_ACTION = "PreferencesAction";
+    public static final String CLOSE_ACTION = "CloseAction";
+    public static final String VIEW_SOURCE_ACTION = "ViewSourceAction";
+    public static final String EXIT_ACTION = "ExitAction";
+    public static final String RESET_TRANSFORM_ACTION = "ResetTransformAction";
+    public static final String ZOOM_IN_ACTION = "ZoomInAction";
+    public static final String ZOOM_OUT_ACTION = "ZoomOutAction";
+    public static final String PREVIOUS_TRANSFORM_ACTION = "PreviousTransformAction";
+    public static final String NEXT_TRANSFORM_ACTION = "NextTransformAction";
+    public static final String USE_STYLESHEET_ACTION = "UseStylesheetAction";
+    public static final String PLAY_ACTION = "PlayAction";
+    public static final String PAUSE_ACTION = "PauseAction";
+    public static final String STOP_ACTION = "StopAction";
+    public static final String MONITOR_ACTION = "MonitorAction";
+    public static final String DOM_VIEWER_ACTION = "DOMViewerAction";
+    public static final String SET_TRANSFORM_ACTION = "SetTransformAction";
+    public static final String FIND_DIALOG_ACTION = "FindDialogAction";
+    public static final String THUMBNAIL_DIALOG_ACTION = "ThumbnailDialogAction";
+    public static final String FLUSH_ACTION = "FlushAction";
+    public static final String TOGGLE_DEBUGGER_ACTION = "ToggleDebuggerAction";
 
     /**
      * The cursor indicating that an operation is pending.
      */
-    public final static Cursor WAIT_CURSOR =
+    public static final Cursor WAIT_CURSOR =
         new Cursor(Cursor.WAIT_CURSOR);
 
     /**
      * The default cursor.
      */
-    public final static Cursor DEFAULT_CURSOR =
+    public static final Cursor DEFAULT_CURSOR =
         new Cursor(Cursor.DEFAULT_CURSOR);
 
     /**
      * Name for the os-name property
      */
-    public final static String PROPERTY_OS_NAME 
+    public static final String PROPERTY_OS_NAME
         = Resources.getString("JSVGViewerFrame.property.os.name");
 
     /**
      * Name for the os.name default
      */
-    public final static String PROPERTY_OS_NAME_DEFAULT 
+    public static final String PROPERTY_OS_NAME_DEFAULT
         = Resources.getString("JSVGViewerFrame.property.os.name.default");
 
     /**
      * Name for the os.name property prefix we are looking
      * for in OpenAction to work around JFileChooser bug
      */
-    public final static String PROPERTY_OS_WINDOWS_PREFIX 
+    public static final String PROPERTY_OS_WINDOWS_PREFIX
         = Resources.getString("JSVGViewerFrame.property.os.windows.prefix");
 
     /**
@@ -494,12 +494,12 @@ public class JSVGViewerFrame
         //
         svgCanvas = new Canvas(userAgent, true, true) {
                 Dimension screenSize;
-                
+
                 {
                     screenSize = Toolkit.getDefaultToolkit().getScreenSize();
                     setMaximumSize(screenSize);
                 }
-                
+
                 public Dimension getPreferredSize(){
                     Dimension s = super.getPreferredSize();
                     if (s.width > screenSize.width) s.width =screenSize.width;
@@ -507,7 +507,7 @@ public class JSVGViewerFrame
                     return s;
                 }
 
-                
+
                 /**
                  * This method is called when the component knows the desired
                  * size of the window (based on width/height of outermost SVG
@@ -533,7 +533,7 @@ public class JSVGViewerFrame
                         thumbnailDialog.setInteractionEnabled(!b);
                 }
             };
-        
+
         javax.swing.ActionMap map = svgCanvas.getActionMap();
         map.put(FULL_SCREEN_ACTION, new FullScreenAction());
         javax.swing.InputMap imap = svgCanvas.getInputMap(JComponent.WHEN_FOCUSED);
@@ -596,7 +596,7 @@ public class JSVGViewerFrame
 
             localHistory = new LocalHistory(mb, this);
 
-            String uri[] = application.getVisitedURIs();
+            String[] uri = application.getVisitedURIs();
             for (int i=0; i<uri.length; i++) {
                 if (uri[i] != null && !"".equals(uri[i])) {
                     localHistory.update(uri[i]);
@@ -731,7 +731,7 @@ public class JSVGViewerFrame
                     st = st.substring(0, i);
                 }
 
-                if (st.equals("")) 
+                if (st.equals(""))
                     return;
 
                 try{
@@ -761,7 +761,7 @@ public class JSVGViewerFrame
 
                 String fi = svgCanvas.getFragmentIdentifier();
                 if (svgDocument != null) {
-                    ParsedURL docPURL 
+                    ParsedURL docPURL
                         = new ParsedURL(svgDocument.getURL());
                     ParsedURL purl = new ParsedURL(docPURL, st);
                     fi = (fi == null) ? "" : fi;
@@ -770,7 +770,7 @@ public class JSVGViewerFrame
                     }
                 }
                 if (t.length() != 0) {
-                    st += "#" + t;
+                    st += '#' + t;
                 }
                 locationBar.setText(st);
                 locationBar.addToHistory(st);
@@ -878,7 +878,7 @@ public class JSVGViewerFrame
         /**
          * Rhino debugger class methods.
          */
-        protected static Method debuggerMethods[];
+        protected static Method[] debuggerMethods;
 
         /**
          * The RhinoInterpreter class.
@@ -1122,7 +1122,7 @@ public class JSVGViewerFrame
         public void actionPerformed(ActionEvent e){
             AboutDialog dlg = new AboutDialog(JSVGViewerFrame.this);
             // Work around pack() bug on some platforms
-            dlg.setSize(dlg.getPreferredSize()); 
+            dlg.setSize(dlg.getPreferredSize());
             dlg.setLocationRelativeTo(JSVGViewerFrame.this);
             dlg.setVisible(true);
             dlg.toFront();
@@ -1139,11 +1139,11 @@ public class JSVGViewerFrame
         public void actionPerformed(ActionEvent e) {
             JFileChooser fileChooser = null;
 
-            // Apply work around Windows problem when security is enabled, 
+            // Apply work around Windows problem when security is enabled,
             // and when prior to JDK 1.4.
             String os = System.getProperty(PROPERTY_OS_NAME, PROPERTY_OS_NAME_DEFAULT);
             SecurityManager sm = System.getSecurityManager();
-            
+
             if ( priorJDK1_4 && sm != null && os.indexOf(PROPERTY_OS_WINDOWS_PREFIX) != -1 ){
                 fileChooser = new JFileChooser(makeAbsolute(currentPath),
                                                new WindowsAltFileSystemView());
@@ -1160,18 +1160,18 @@ public class JSVGViewerFrame
             //
             Iterator iter = getHandlers().iterator();
             while (iter.hasNext()) {
-                SquiggleInputHandler handler 
+                SquiggleInputHandler handler
                     = (SquiggleInputHandler)iter.next();
                 fileChooser.addChoosableFileFilter
                     (new SquiggleInputHandlerFilter(handler));
             }
-            
+
             int choice = fileChooser.showOpenDialog(JSVGViewerFrame.this);
             if (choice == JFileChooser.APPROVE_OPTION) {
                 File f = fileChooser.getSelectedFile();
-                
+
                 currentPath = f;
-                try { 
+                try {
                     String furl = f.toURL().toString();
                     showSVGDocument(furl);
                 } catch (MalformedURLException ex) {
@@ -1189,9 +1189,9 @@ public class JSVGViewerFrame
     public void showSVGDocument(String uri){
         try {
             ParsedURL purl = new ParsedURL(uri);
-            SquiggleInputHandler 
+            SquiggleInputHandler
                 handler = getInputHandler(purl);
-            
+
             handler.handle(purl,
                            JSVGViewerFrame.this);
         } catch (Exception e) {
@@ -1210,7 +1210,7 @@ public class JSVGViewerFrame
         SquiggleInputHandler handler = null;
 
         while (iter.hasNext()) {
-            SquiggleInputHandler curHandler = 
+            SquiggleInputHandler curHandler =
                 (SquiggleInputHandler)iter.next();
             if (curHandler.accept(purl)) {
                 handler = curHandler;
@@ -1228,7 +1228,7 @@ public class JSVGViewerFrame
 
 
     /**
-     * Returns the list of input file handler. 
+     * Returns the list of input file handler.
      */
     protected static Vector getHandlers() {
         if (handlers != null) {
@@ -1237,10 +1237,10 @@ public class JSVGViewerFrame
 
         handlers = new Vector();
         registerHandler(new SVGInputHandler());
-        
+
         Iterator iter = Service.providers(SquiggleInputHandler.class);
         while (iter.hasNext()) {
-            SquiggleInputHandler handler 
+            SquiggleInputHandler handler
                 = (SquiggleInputHandler)iter.next();
 
             registerHandler(handler);
@@ -1253,7 +1253,7 @@ public class JSVGViewerFrame
      * Registers an input file handler by adding it to the handlers map.
      * @param handler the new input handler to register.
      */
-    public static synchronized 
+    public static synchronized
         void registerHandler(SquiggleInputHandler handler) {
         Vector handlers = getHandlers();
         handlers.addElement(handler);
@@ -1302,7 +1302,7 @@ public class JSVGViewerFrame
                     }
                     if (s != null) {
                         if (svgDocument != null) {
-                            ParsedURL docPURL 
+                            ParsedURL docPURL
                                 = new ParsedURL(svgDocument.getURL());
                             ParsedURL purl = new ParsedURL(docPURL, s);
                             String fi = svgCanvas.getFragmentIdentifier();
@@ -1311,7 +1311,7 @@ public class JSVGViewerFrame
                             }
                         }
                         if (t.length() != 0) {
-                            s += "#" + t;
+                            s += '#' + t;
                         }
 
                         showSVGDocument(s);
@@ -1440,7 +1440,7 @@ public class JSVGViewerFrame
                         String uri = doc.getURL();
                         String fragment = svgCanvas.getFragmentIdentifier();
                         if (fragment != null) {
-                            uri += "#"+fragment;
+                            uri += '#' +fragment;
                         }
 
                         //
@@ -1506,29 +1506,29 @@ public class JSVGViewerFrame
 
             SVGOptionPanel sop;
             sop = SVGOptionPanel.showDialog(JSVGViewerFrame.this);
-            
+
             final boolean useXMLBase  = sop.getUseXMLBase();
             final boolean prettyPrint = sop.getPrettyPrint();
             sop = null;
 
             final SVGDocument svgDoc = svgCanvas.getSVGDocument();
             if (svgDoc == null) return;
-            
+
             statusBar.setMessage(resources.getString("Message.saveAs"));
             currentSavePath = f;
             OutputStreamWriter w = null;
-            try { 
+            try {
                 OutputStream tos = null;
                 tos = new FileOutputStream(f);
                 tos = new BufferedOutputStream(tos);
                 w = new OutputStreamWriter(tos, "utf-8");
-            } catch (Exception ex) { 
-                userAgent.displayError(ex); 
+            } catch (Exception ex) {
+                userAgent.displayError(ex);
                 return;
             }
 
             final OutputStreamWriter writer  = w;
-            
+
             final Runnable doneRun = new Runnable() {
                     public void run() {
                         String doneStr = resources.getString("Message.done");
@@ -1539,13 +1539,13 @@ public class JSVGViewerFrame
                     public void run() {
                         try {
                             // Write standard XML header.
-                            writer.write 
+                            writer.write
                                 ("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
                                 writer.write (EOL);
 
                             Node fc = svgDoc.getFirstChild();
                             if (fc.getNodeType() != Node.DOCUMENT_TYPE_NODE) {
-                                // Not DT node in Document, so 
+                                // Not DT node in Document, so
                                 // provide Document Type dec.
                                 writer.write ("<!DOCTYPE svg PUBLIC '");
                                 writer.write (SVGConstants.SVG_PUBLIC_ID);
@@ -1563,14 +1563,14 @@ public class JSVGViewerFrame
 
                             if (doXMLBase) {
                                 root.setAttributeNS
-                                    (XMLConstants.XML_NAMESPACE_URI, 
+                                    (XMLConstants.XML_NAMESPACE_URI,
                                      "xml:base",
                                      svgDoc.getURL());
                             }
 
                             if (prettyPrint) {
                                 SVGTranscoder trans = new SVGTranscoder();
-                                trans.transcode(new TranscoderInput(svgDoc), 
+                                trans.transcode(new TranscoderInput(svgDoc),
                                                 new TranscoderOutput(writer));
                             } else {
                                 DOMUtilities.writeDocument(svgDoc, writer);
@@ -1580,7 +1580,7 @@ public class JSVGViewerFrame
 
                             if (doXMLBase)
                                 root.removeAttributeNS
-                                    (XMLConstants.XML_NAMESPACE_URI, 
+                                    (XMLConstants.XML_NAMESPACE_URI,
                                      "xml:base");
 
                             if (EventQueue.isDispatchThread()) {
@@ -1682,10 +1682,9 @@ public class JSVGViewerFrame
             int choice = fileChooser.showSaveDialog(JSVGViewerFrame.this);
             if (choice == JFileChooser.APPROVE_OPTION) {
 
-                // Start: By Jun Inamori (jun@oop-reserch.com)
-                boolean isIndexed =
-                    PNGOptionPanel.showDialog(JSVGViewerFrame.this);
-                // End: By Jun Inamori (jun@oop-reserch.com)
+            // Start: By Jun Inamori (jun@oop-reserch.com)
+            boolean isIndexed = PNGOptionPanel.showDialog(JSVGViewerFrame.this);
+            // End: By Jun Inamori (jun@oop-reserch.com)
 
                 final File f = fileChooser.getSelectedFile();
                 BufferedImage buffer = svgCanvas.getOffScreen();
@@ -1703,14 +1702,13 @@ public class JSVGViewerFrame
                                 application.getXMLParserClassName());
                     }
                     trans.addTranscodingHint(PNGTranscoder.KEY_FORCE_TRANSPARENT_WHITE,
-                                             new Boolean(true));
+                                             Boolean.TRUE );
 
-                    // Start: By Jun Inamori
-                    if(isIndexed){
-                        trans.addTranscodingHint
-                            (PNGTranscoder.KEY_INDEXED,new Integer(256));
-                    }
-                    // End: By Jun Inamori
+            // Start: By Jun Inamori
+            if(isIndexed){
+                trans.addTranscodingHint(PNGTranscoder.KEY_INDEXED,new Integer(256));
+            }
+            // End: By Jun Inamori
 
                     final BufferedImage img = trans.createImage(w, h);
 
@@ -1802,7 +1800,7 @@ public class JSVGViewerFrame
             }
 
             final ParsedURL u = new ParsedURL(svgDocument.getURL());
-            
+
             final JFrame fr = new JFrame(u.toString());
             fr.setSize(resources.getInteger("ViewSource.width"),
                        resources.getInteger("ViewSource.height"));
@@ -2179,10 +2177,10 @@ public class JSVGViewerFrame
                 svgCanvas.getParent().remove(svgCanvas);
                 svgCanvasPanel.add(svgCanvas, BorderLayout.CENTER);
                 window.setVisible(false);
-            } 
+            }
         }
     }
-    
+
     /**
      * To display the DOM viewer of the document
      */
@@ -2745,7 +2743,7 @@ public class JSVGViewerFrame
         public float getPixelUnitToMillimeter() {
             return 0.26458333333333333333333333333333f; // 96dpi
         }
-        
+
         /**
          * Returns the size of a px CSS unit in millimeters.
          * This will be removed after next release.
@@ -2753,18 +2751,18 @@ public class JSVGViewerFrame
          */
         public float getPixelToMM() {
             return getPixelUnitToMillimeter();
-            
+
         }
 
         /**
          * Returns the default font family.
          */
         public String getDefaultFontFamily() {
-            return application.getDefaultFontFamily(); 
+            return application.getDefaultFontFamily();
         }
 
-        /** 
-         * Returns the  medium font size. 
+        /**
+         * Returns the  medium font size.
          */
         public float getMediumFontSize() {
             // 9pt (72pt == 1in)
@@ -2885,14 +2883,14 @@ public class JSVGViewerFrame
         /**
          * Returns the security settings for the given script
          * type, script url and document url
-         * 
-         * @param scriptType type of script, as found in the 
+         *
+         * @param scriptType type of script, as found in the
          *        type attribute of the &lt;script&gt; element.
          * @param scriptURL url for the script, as defined in
          *        the script's xlink:href attribute. If that
          *        attribute was empty, then this parameter should
          *        be null
-         * @param docURL url for the document into which the 
+         * @param docURL url for the document into which the
          *        script was found.
          */
         public ScriptSecurity getScriptSecurity(String scriptType,
@@ -2924,18 +2922,18 @@ public class JSVGViewerFrame
          * This method throws a SecurityException if the script
          * of given type, found at url and referenced from docURL
          * should not be loaded.
-         * 
+         *
          * This is a convenience method to call checkLoadScript
-         * on the ScriptSecurity strategy returned by 
+         * on the ScriptSecurity strategy returned by
          * getScriptSecurity.
          *
-         * @param scriptType type of script, as found in the 
+         * @param scriptType type of script, as found in the
          *        type attribute of the &lt;script&gt; element.
          * @param scriptURL url for the script, as defined in
          *        the script's xlink:href attribute. If that
          *        attribute was empty, then this parameter should
          *        be null
-         * @param docURL url for the document into which the 
+         * @param docURL url for the document into which the
          *        script was found.
          */
         public void checkLoadScript(String scriptType,
@@ -2947,21 +2945,21 @@ public class JSVGViewerFrame
 
             if (s != null) {
                 s.checkLoadScript();
-            } 
+            }
         }
 
         /**
-         * Returns the security settings for the given 
+         * Returns the security settings for the given
          * resource url and document url
-         * 
+         *
          * @param resourceURL url for the resource, as defined in
          *        the resource's xlink:href attribute. If that
          *        attribute was empty, then this parameter should
          *        be null
-         * @param docURL url for the document into which the 
+         * @param docURL url for the document into which the
          *        resource was found.
          */
-        public ExternalResourceSecurity 
+        public ExternalResourceSecurity
             getExternalResourceSecurity(ParsedURL resourceURL,
                                         ParsedURL docURL){
             switch(application.getAllowedExternalResourceOrigin()) {
@@ -2982,24 +2980,24 @@ public class JSVGViewerFrame
          * This method throws a SecurityException if the resource
          * found at url and referenced from docURL
          * should not be loaded.
-         * 
+         *
          * This is a convenience method to call checkLoadExternalResource
-         * on the ExternalResourceSecurity strategy returned by 
+         * on the ExternalResourceSecurity strategy returned by
          * getExternalResourceSecurity.
          *
          * @param resourceURL url for the script, as defined in
          *        the resource's xlink:href attribute. If that
          *        attribute was empty, then this parameter should
          *        be null
-         * @param docURL url for the document into which the 
+         * @param docURL url for the document into which the
          *        resource was found.
          */
-        public void 
+        public void
             checkLoadExternalResource(ParsedURL resourceURL,
                                       ParsedURL docURL) throws SecurityException {
-            ExternalResourceSecurity s 
+            ExternalResourceSecurity s
                 =  getExternalResourceSecurity(resourceURL, docURL);
-            
+
             if (s != null) {
                 s.checkLoadExternalResource();
             }

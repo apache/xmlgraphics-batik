@@ -20,7 +20,7 @@ package org.apache.batik.apps.rasterizer;
 
 import java.io.File;
 import java.util.Map;
-import java.util.Vector;
+import java.util.List;
 
 import org.apache.batik.transcoder.Transcoder;
 
@@ -45,8 +45,8 @@ public interface SVGConverterController {
      */
     boolean proceedWithComputedTask(Transcoder transcoder,
                                            Map hints,
-                                           Vector sources,
-                                           Vector dest);
+                                           List sources,
+                                           List dest);
 
     /**
      * Invoked when the rasterizer is about to start transcoding

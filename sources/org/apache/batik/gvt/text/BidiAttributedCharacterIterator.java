@@ -459,8 +459,16 @@ public class BidiAttributedCharacterIterator implements AttributedCharacterItera
        return reorderedACI.setIndex(position);
     }
 
-
+    /**
+     * @param c the character to 'mirror'
+     * @return either the 'mirror'-character for c or c itself
+     */
     public static int mirrorChar(int c) {
+
+        // note: the switch-statement is compiled to a tableswitch,
+        // which is evaluated by doing a binary search through the sorted case-list.
+        // the ca 130 cases are searched with max 8 compares
+
         switch(c) {
             // set up the mirrored glyph case statement;
         case 0x0028: return 0x0029;  //LEFT PARENTHESIS

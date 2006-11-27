@@ -26,7 +26,7 @@ import java.awt.image.RenderedImage;
 import java.awt.image.renderable.RenderContext;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
+import java.util.ArrayList;
 
 import org.apache.batik.ext.awt.image.CompositeRule;
 import org.apache.batik.ext.awt.image.PadMode;
@@ -274,7 +274,7 @@ public class BackgroundRable8Bit
             r2d = cgn.getBackgroundEnable();
         }
 
-        Vector srcs = new Vector();
+        List srcs = new ArrayList();      // this hides a member in a super-class!!
         if (r2d == null) {
             Rectangle2D paoi = aoi;
             AffineTransform at = gn.getTransform();

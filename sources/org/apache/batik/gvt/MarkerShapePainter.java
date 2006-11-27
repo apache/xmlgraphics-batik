@@ -26,7 +26,7 @@ import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
-import java.util.Vector;
+import java.util.ArrayList;
 
 import org.apache.batik.ext.awt.geom.ExtendedGeneralPath;
 import org.apache.batik.ext.awt.geom.ExtendedPathIterator;
@@ -503,7 +503,7 @@ public class MarkerShapePainter implements ShapePainter {
 
         iter.next();
 
-        Vector proxies = new Vector();
+        List proxies = new ArrayList();
         while (!iter.isDone()) {
             nextSegType = iter.currentSegment(next);
 
@@ -516,7 +516,7 @@ public class MarkerShapePainter implements ShapePainter {
                 next[1] = moveTo[1];
             }
 
-            proxies.addElement(createMiddleMarker(prev, prevSegType,
+            proxies.add(createMiddleMarker(prev, prevSegType,
                                                   curr, currSegType,
                                                   next, nextSegType));
 
@@ -531,7 +531,7 @@ public class MarkerShapePainter implements ShapePainter {
         }
 
         ProxyGraphicsNode [] gn = new ProxyGraphicsNode[proxies.size()];
-        proxies.copyInto(gn);
+        proxies.toArray( gn );
 
         return gn;
     }

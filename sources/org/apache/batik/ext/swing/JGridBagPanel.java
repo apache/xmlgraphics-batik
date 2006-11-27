@@ -15,7 +15,8 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 
- */package org.apache.batik.ext.swing;
+ */
+package org.apache.batik.ext.swing;
 
 import java.awt.Component;
 import java.awt.GridBagConstraints;
@@ -31,7 +32,6 @@ import javax.swing.JPanel;
  * @author  <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-
 public class JGridBagPanel extends JPanel implements GridBagConstants{
     /**
      * Provides insets desired for a given grid cell

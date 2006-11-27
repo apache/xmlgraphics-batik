@@ -269,6 +269,7 @@ public class FlowTextPainter extends StrokingTextPainter {
                 sz = wordMap.length*2;
         }
 
+        // we have a problem when wordMap actually IS null....
         int [] ret = new int[sz];
         int ext=0;
         if (wordMap != null)

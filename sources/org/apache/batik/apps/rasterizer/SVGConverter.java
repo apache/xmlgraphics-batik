@@ -707,8 +707,8 @@ public class SVGConverter {
         for(int i = 0 ; i < sources.size() ; i++) {
             // Get the file from the vector.
             SVGConverterSource currentFile
-                = (SVGConverterSource)sources.elementAt(i);
-            File outputFile  = (File)dstFiles.elementAt(i);
+                = (SVGConverterSource)sources.get(i);
+            File outputFile  = (File)dstFiles.get(i);
 
             createOutputDir(outputFile);
             transcode(currentFile, outputFile, transcoder);
@@ -734,7 +734,7 @@ public class SVGConverter {
             //
             int n = sources.size();
             for(int i=0; i<n; i++){
-                SVGConverterSource src = (SVGConverterSource)sources.elementAt(i);
+                SVGConverterSource src = (SVGConverterSource)sources.get(i);
                 // Generate output filename from input filename.
                 File outputName = new File(dst.getPath(),
                                            getDestinationFile(src.getName()));
@@ -749,7 +749,7 @@ public class SVGConverter {
             //
             int n = sources.size();
             for(int i=0; i<n; i++){
-                SVGConverterSource src = (SVGConverterSource)sources.elementAt(i);
+                SVGConverterSource src = (SVGConverterSource)sources.get(i);
                 if (!(src instanceof SVGConverterFileSource)) {
                     throw new SVGConverterException(ERROR_CANNOT_COMPUTE_DESTINATION,
                                                      new Object[]{src});
@@ -782,7 +782,7 @@ public class SVGConverter {
 
         int n = this.sources.size();
         for (int i=0; i<n; i++){
-            String sourceString = (String)(this.sources.elementAt(i));
+            String sourceString = (String)(this.sources.get(i));
             File file = new File(sourceString);
             if (file.exists()) {
                 sources.addElement(new SVGConverterFileSource(file));

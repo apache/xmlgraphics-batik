@@ -494,7 +494,8 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
                 // System.out.println("GB["+i+"]: " + glyphBounds);
                 if (glyphBounds == null) continue;
                 if (b == null) b=glyphBounds;
-                else b = glyphBounds.createUnion(b);
+                //else b = glyphBounds.createUnion(b);
+                else b.add( glyphBounds );
             }
         }
 
