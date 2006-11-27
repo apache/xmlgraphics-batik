@@ -26,6 +26,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedLength;
 import org.w3c.dom.svg.SVGLineElement;
 
+import java.util.Map;
+import java.util.HashMap;
+
 /**
  * This class implements {@link SVGLineElement}.
  *
@@ -35,6 +38,29 @@ import org.w3c.dom.svg.SVGLineElement;
 public class SVGOMLineElement
     extends    SVGGraphicsElement
     implements SVGLineElement {
+
+
+    /**
+     * this map supports a fast lookup from svg-attribute-name string to
+     * svgType-integer. It is faster than doing string-equals in a
+     * lengthy if-else-statement.
+     * This map is used only by {@link #getAttributeType }
+     */
+    private static final Map typeMap = new HashMap();
+
+
+    static {
+
+        Map map = typeMap;
+
+        SVGOMAttributeInfo svgType = new SVGOMAttributeInfo( SVGTypes.TYPE_LENGTH, true );
+
+        map.put(  SVG_X1_ATTRIBUTE, svgType );
+        map.put(  SVG_Y1_ATTRIBUTE, svgType );
+        map.put(  SVG_X2_ATTRIBUTE, svgType );
+        map.put(  SVG_Y2_ATTRIBUTE, svgType );
+
+    }
 
     /**
      * Creates a new SVGOMLineElement object.
@@ -65,7 +91,7 @@ public class SVGOMLineElement
         return getAnimatedLengthAttribute
             (null, SVG_X1_ATTRIBUTE, SVG_LINE_X1_DEFAULT_VALUE,
              SVGOMAnimatedLength.HORIZONTAL_LENGTH, false);
-    } 
+    }
 
     /**
      * <b>DOM</b>: Implements {@link SVGLineElement#getY1()}.
@@ -83,7 +109,7 @@ public class SVGOMLineElement
         return getAnimatedLengthAttribute
             (null, SVG_X2_ATTRIBUTE, SVG_LINE_X2_DEFAULT_VALUE,
              SVGOMAnimatedLength.HORIZONTAL_LENGTH, false);
-    } 
+    }
 
     /**
      * <b>DOM</b>: Implements {@link SVGLineElement#getY2()}.
@@ -92,7 +118,7 @@ public class SVGOMLineElement
         return getAnimatedLengthAttribute
             (null, SVG_Y2_ATTRIBUTE, SVG_LINE_Y2_DEFAULT_VALUE,
              SVGOMAnimatedLength.VERTICAL_LENGTH, false);
-    } 
+    }
 
     /**
      * Returns a new uninitialized instance of this object's class.
@@ -106,7 +132,7 @@ public class SVGOMLineElement
     /**
      * Returns whether the given XML attribute is animatable.
      */
-    public boolean isAttributeAnimatable(String ns, String ln) {
+    public boolean OLDisAttributeAnimatable(String ns, String ln) {
         if (ns == null) {
             if (ln.equals(SVG_X1_ATTRIBUTE)
                     || ln.equals(SVG_Y1_ATTRIBUTE)
@@ -119,15 +145,30 @@ public class SVGOMLineElement
     }
 
     /**
+     * Returns whether the given XML attribute is animatable.
+     */
+    public boolean isAttributeAnimatable(String ns, String ln) {
+        if (ns == null) {
+            SVGOMAttributeInfo typeCode = (SVGOMAttributeInfo)typeMap.get( ln );
+            if ( typeCode != null ){
+                // it is one of 'my' mappings..
+                return typeCode.getIsAnimatable();
+            }
+        }
+        return super.isAttributeAnimatable(ns, ln);
+    }
+
+
+    /**
      * Returns the type of the given attribute.
      */
     public int getAttributeType(String ns, String ln) {
+
         if (ns == null) {
-            if (ln.equals(SVG_X1_ATTRIBUTE)
-                    || ln.equals(SVG_Y1_ATTRIBUTE)
-                    || ln.equals(SVG_X2_ATTRIBUTE)
-                    || ln.equals(SVG_Y2_ATTRIBUTE)) {
-                return SVGTypes.TYPE_LENGTH;
+            SVGOMAttributeInfo typeCode = (SVGOMAttributeInfo)typeMap.get( ln );
+            if ( typeCode != null ){
+                // it is one of 'my' mappings..
+                return typeCode.getSVGType();
             }
         }
         return super.getAttributeType(ns, ln);

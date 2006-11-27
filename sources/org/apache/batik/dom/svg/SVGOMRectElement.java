@@ -27,6 +27,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedLength;
 import org.w3c.dom.svg.SVGRectElement;
 
+import java.util.Map;
+import java.util.HashMap;
+
 /**
  * This class implements {@link SVGRectElement}.
  *
@@ -36,6 +39,32 @@ import org.w3c.dom.svg.SVGRectElement;
 public class SVGOMRectElement
     extends    SVGGraphicsElement
     implements SVGRectElement {
+
+
+    /**
+     * this map supports a fast lookup from svg-attribute-name string to
+     * svgType-integer. It is faster than doing string-equals in a
+     * lengthy if-else-statement.
+     * This map is used only by {@link #getAttributeType }
+     */
+    private static final Map typeMap = new HashMap();
+
+
+    static {
+
+        Map map = typeMap;
+
+        SVGOMAttributeInfo svgType = new SVGOMAttributeInfo( SVGTypes.TYPE_LENGTH, true );
+
+        map.put(  SVG_X_ATTRIBUTE, svgType );
+        map.put(  SVG_Y_ATTRIBUTE, svgType );
+        map.put(  SVG_RX_ATTRIBUTE, svgType );
+        map.put(  SVG_RY_ATTRIBUTE, svgType );
+        map.put(  SVG_WIDTH_ATTRIBUTE, svgType );
+        map.put(  SVG_HEIGHT_ATTRIBUTE, svgType );
+
+    }
+
 
     /**
      * Creates a new SVGOMRectElement object.
@@ -66,7 +95,7 @@ public class SVGOMRectElement
         return getAnimatedLengthAttribute
             (null, SVG_X_ATTRIBUTE, SVG_RECT_X_DEFAULT_VALUE,
              SVGOMAnimatedLength.HORIZONTAL_LENGTH, false);
-    } 
+    }
 
     /**
      * <b>DOM</b>: Implements {@link SVGRectElement#getY()}.
@@ -84,7 +113,7 @@ public class SVGOMRectElement
         return getAnimatedLengthAttribute
             (null, SVG_WIDTH_ATTRIBUTE, "",
              SVGOMAnimatedLength.HORIZONTAL_LENGTH, true);
-    } 
+    }
 
     /**
      * <b>DOM</b>: Implements {@link SVGRectElement#getHeight()}.
@@ -128,7 +157,7 @@ public class SVGOMRectElement
                                   (LiveAttributeValue)result);
         }
         return result;
-    } 
+    }
 
     /**
      * <b>DOM</b>: Implements {@link SVGRectElement#getRy()}.
@@ -163,7 +192,7 @@ public class SVGOMRectElement
                                   (LiveAttributeValue)result);
         }
         return result;
-    } 
+    }
 
     /**
      * Returns a new uninitialized instance of this object's class.
@@ -176,8 +205,9 @@ public class SVGOMRectElement
 
     /**
      * Returns whether the given XML attribute is animatable.
+     * to be removed
      */
-    public boolean isAttributeAnimatable(String ns, String ln) {
+    public boolean OLDisAttributeAnimatable(String ns, String ln) {
         if (ns == null) {
             if (ln.equals(SVG_X_ATTRIBUTE)
                     || ln.equals(SVG_Y_ATTRIBUTE)
@@ -193,8 +223,9 @@ public class SVGOMRectElement
 
     /**
      * Returns the type of the given attribute.
+     * to be removed
      */
-    public int getAttributeType(String ns, String ln) {
+    public int OLDgetAttributeType(String ns, String ln) {
         if (ns == null) {
             if (ln.equals(SVG_X_ATTRIBUTE)
                     || ln.equals(SVG_Y_ATTRIBUTE)
@@ -207,6 +238,37 @@ public class SVGOMRectElement
         }
         return super.getAttributeType(ns, ln);
     }
+
+    /**
+     * Returns whether the given XML attribute is animatable.
+     */
+    public boolean isAttributeAnimatable(String ns, String ln) {
+        if (ns == null) {
+            SVGOMAttributeInfo typeCode = (SVGOMAttributeInfo)typeMap.get( ln );
+            if ( typeCode != null ){
+                // it is one of 'my' mappings..
+                return typeCode.getIsAnimatable();
+            }
+        }
+        return super.isAttributeAnimatable(ns, ln);
+    }
+
+
+    /**
+     * Returns the type of the given attribute.
+     */
+    public int getAttributeType(String ns, String ln) {
+
+        if (ns == null) {
+            SVGOMAttributeInfo typeCode = (SVGOMAttributeInfo)typeMap.get( ln );
+            if ( typeCode != null ){
+                // it is one of 'my' mappings..
+                return typeCode.getSVGType();
+            }
+        }
+        return super.getAttributeType(ns, ln);
+    }
+
 
     // AnimationTarget ///////////////////////////////////////////////////////
 
