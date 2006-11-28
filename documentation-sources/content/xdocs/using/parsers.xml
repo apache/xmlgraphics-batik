@@ -99,7 +99,7 @@
             <a class="class" href="../javadoc/org/apache/batik/parser/FragmentIdentifierParser.html">FragmentIdentifierParser</a>,
             handled with
             <a class="class" href="../javadoc/org/apache/batik/parser/FragmentIdentifierHandler.html">FragmentIdentifierHandler</a>.
-            Tihs parser is used for parsing the various formats of
+            This parser is used for parsing the various formats of
             <a href="http://www.w3.org/TR/SVG11/linking.html#SVGFragmentIdentifiers">fragment
               identifier</a> that SVG allows.
           </p>
@@ -111,7 +111,7 @@
             <a class="class" href="../javadoc/org/apache/batik/parser/LengthParser.html">LengthParser</a>,
             handled with
             <a class="class" href="../javadoc/org/apache/batik/parser/LengthHandler.html">LengthHandler</a>.
-            Tihs parser is used for parsing SVG length values.
+            This parser is used for parsing SVG length values.
           </p>
         </dd>
         <dt>Length lists</dt>
@@ -121,7 +121,7 @@
             <a class="class" href="../javadoc/org/apache/batik/parser/LengthListParser.html">LengthListParser</a>,
             handled with
             <a class="class" href="../javadoc/org/apache/batik/parser/LengthListHandler.html">LengthListHandler</a>.
-            Tihs parser is used for parsing lists of comma or space separated
+            This parser is used for parsing lists of comma or space separated
             SVG lengths.
           </p>
         </dd>
@@ -132,7 +132,7 @@
             <a class="class" href="../javadoc/org/apache/batik/parser/NumberListParser.html">NumberListParser</a>,
             handled with
             <a class="class" href="../javadoc/org/apache/batik/parser/NumberListHandler.html">NumberListHandler</a>.
-            Tihs parser is used for parsing SVG number values.
+            This parser is used for parsing SVG number values.
           </p>
         </dd>
         <dt>Number lists</dt>
@@ -142,7 +142,7 @@
             <a class="class" href="../javadoc/org/apache/batik/parser/NumberListParser.html">NumberListParser</a>,
             handled with
             <a class="class" href="../javadoc/org/apache/batik/parser/NumberListHandler.html">NumberListHandler</a>.
-            Tihs parser is used for parsing lists of comma or space separated
+            This parser is used for parsing lists of comma or space separated
             SVG numbers.
           </p>
         </dd>
