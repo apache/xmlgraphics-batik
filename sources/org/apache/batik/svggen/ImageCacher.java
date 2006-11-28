@@ -185,7 +185,7 @@ public abstract class ImageCacher implements SVGSyntax, ErrorConstants {
      * set of images processed by the ImageHandler. Each entry
      * corresponds to one unique member of this set.
      */
-    private class ImageCacheEntry {
+    private static class ImageCacheEntry {
 
         /** A checksum calculated for the data cached */
         public int checksum;
@@ -199,7 +199,7 @@ public abstract class ImageCacher implements SVGSyntax, ErrorConstants {
         /**
          * Creates a new entry
          */
-        public ImageCacheEntry(int    checksum,
+        ImageCacheEntry(int    checksum,
                                Object src,
                                String href) {
             this.checksum = checksum;
