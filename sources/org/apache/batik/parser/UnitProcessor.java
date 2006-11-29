@@ -47,6 +47,11 @@ public abstract class UnitProcessor {
     public static final short OTHER_LENGTH = 0;
 
     /**
+     * precomputed square-root of 2.0
+     */
+    static final double SQRT2 = Math.sqrt( 2.0 );
+    
+    /**
      * No instance of this class is required.
      */
     protected UnitProcessor() { }
@@ -232,7 +237,7 @@ public abstract class UnitProcessor {
         } else {
             double w = ctx.getViewportWidth();
             double h = ctx.getViewportHeight();
-            double vpp = Math.sqrt(w * w + h * h) / Math.sqrt(2);
+            double vpp = Math.sqrt(w * w + h * h) / SQRT2;
             return (float)(vpp * v / 100d);
         }
     }
@@ -254,7 +259,7 @@ public abstract class UnitProcessor {
         } else {
             double w = ctx.getViewportWidth();
             double h = ctx.getViewportHeight();
-            double vpp = Math.sqrt(w * w + h * h) / Math.sqrt(2);
+            double vpp = Math.sqrt(w * w + h * h) / SQRT2;
             return (float)(v * 100d / vpp);
         }
     }
