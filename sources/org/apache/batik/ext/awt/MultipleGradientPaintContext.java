@@ -681,7 +681,7 @@ abstract class MultipleGradientPaintContext implements PaintContext {
                 (( g1 + ((((int) ( fI * tempG )) +1) >> 1 ) & 0xff ) <<  8) |
                 (( b1 + ((((int) ( fI * tempB )) +1) >> 1 ) & 0xff )      );
         }
-        Math.round( 2.6 );
+
     }
 
 

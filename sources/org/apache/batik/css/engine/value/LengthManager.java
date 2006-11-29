@@ -37,6 +37,11 @@ import org.w3c.dom.css.CSSValue;
 public abstract class LengthManager extends AbstractValueManager {
 
     /**
+     * precomputed square-root of 2.0
+     */
+    static final double SQRT2 = Math.sqrt( 2.0 );
+
+    /**
      * Implements {@link ValueManager#createValue(LexicalUnit,CSSEngine)}.
      */
     public Value createValue(LexicalUnit lu, CSSEngine engine)
@@ -196,7 +201,7 @@ public abstract class LengthManager extends AbstractValueManager {
                 double w = ctx.getBlockWidth(elt);
                 double h = ctx.getBlockHeight(elt);
                 fs = (float)(value.getFloatValue() *
-                        (Math.sqrt(w * w + h * h) / Math.sqrt(2)) / 100.0);
+                        (Math.sqrt(w * w + h * h) / SQRT2 ) / 100.0);
             }
             return new FloatValue(CSSPrimitiveValue.CSS_NUMBER, fs);
         }
