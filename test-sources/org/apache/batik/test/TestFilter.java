@@ -31,6 +31,6 @@ public interface TestFilter {
      * for example <tt>TestSuites</tt> may have some of their
      * children tests removed.
      */
-    public Test filter(Test t);
+    Test filter(Test t);
 }
 

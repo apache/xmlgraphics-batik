@@ -27,8 +27,8 @@ import org.apache.batik.test.*;
  * @version $Id$
  */
 public class ApplicationSecurityEnforcerTest extends DefaultTestSuite {
-    final static Class APP_MAIN_CLASS = org.apache.batik.apps.svgbrowser.Main.class;
-    final static String APP_SECURITY_POLICY = "org/apache/batik/apps/svgbrowser/resources/svgbrowser.policy";
+    static final Class APP_MAIN_CLASS = org.apache.batik.apps.svgbrowser.Main.class;
+    static final String APP_SECURITY_POLICY = "org/apache/batik/apps/svgbrowser/resources/svgbrowser.policy";
 
     /**
      * In the constructor, append atomic tests
@@ -67,10 +67,10 @@ public class ApplicationSecurityEnforcerTest extends DefaultTestSuite {
                 } catch (SecurityException se2){
                     passed = true;
                 }
-            } 
+            }
 
             aseA.enforceSecurity(false);
-            
+
             return passed;
         }
     }
@@ -114,7 +114,7 @@ public class ApplicationSecurityEnforcerTest extends DefaultTestSuite {
 
     static class CheckNoPolicyFile extends AbstractTest {
         public boolean runImplBasic() {
-            ApplicationSecurityEnforcer ase = 
+            ApplicationSecurityEnforcer ase =
                 new ApplicationSecurityEnforcer(APP_MAIN_CLASS,
                                                 "dont.exist.policy");
 
