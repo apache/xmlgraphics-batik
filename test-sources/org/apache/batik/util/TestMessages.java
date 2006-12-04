@@ -39,7 +39,7 @@ public class TestMessages {
     /**
      * The error messages bundle class name.
      */
-    protected final static String RESOURCES =
+    protected static final String RESOURCES =
         "org.apache.batik.util.resources.TestMessages";
 
     /**

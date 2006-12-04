@@ -15,7 +15,8 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 
- */package org.apache.batik.transcoder.image;
+ */
+package org.apache.batik.transcoder.image;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -23,11 +24,11 @@ import java.util.HashMap;
 import org.apache.batik.transcoder.TranscoderInput;
 
 /**
- * Test the ImageTranscoder with the KEY_MAX_WIDTH and/or the KEY_MAX_HEIGHT 
+ * Test the ImageTranscoder with the KEY_MAX_WIDTH and/or the KEY_MAX_HEIGHT
  * transcoding hint.
  *
  * @author <a href="mailto:ruini@iki.fi">Henri Ruini</a>
- * @version $Id$ 
+ * @version $Id$
  */
 public class MaxDimensionTest extends AbstractImageTranscoderTest {
 
@@ -89,7 +90,7 @@ public class MaxDimensionTest extends AbstractImageTranscoderTest {
     protected TranscoderInput createTranscoderInput() {
         return new TranscoderInput(resolveURL(inputURI).toString());
     }
-    
+
     /**
      * Creates a Map that contains additional transcoding hints.
      *

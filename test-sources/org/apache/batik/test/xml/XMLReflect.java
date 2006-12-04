@@ -20,7 +20,8 @@ package org.apache.batik.test.xml;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.util.Vector;
+import java.util.List;
+import java.util.ArrayList;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -48,7 +49,7 @@ public class XMLReflect implements XMLReflectConstants{
      */
     public static Object buildObject(Element element) throws Exception {
 
-        Element classDefiningElement = 
+        Element classDefiningElement =
             getClassDefiningElement(element);
 
         String className
@@ -61,7 +62,7 @@ public class XMLReflect implements XMLReflectConstants{
         NodeList children = element.getChildNodes();
         if(children != null && children.getLength() > 0){
             int n = children.getLength();
-            Vector args = new Vector();
+            List args = new ArrayList();
             for(int i=0; i<n; i++){
                 Node child = children.item(i);
                 if(child.getNodeType() == Node.ELEMENT_NODE){
@@ -69,14 +70,14 @@ public class XMLReflect implements XMLReflectConstants{
                     String tagName = childElement.getTagName().intern();
                     if(tagName == XR_ARG_TAG){
                         Object arg = buildArgument(childElement);
-                        args.addElement(arg);
+                        args.add(arg);
                     }
                 }
             }
 
             if(args.size() > 0){
                 argsArray = new Object[args.size()];
-                args.copyInto(argsArray);
+                args.toArray(argsArray);
 
                 argsClasses = new Class[args.size()];
 
@@ -112,19 +113,19 @@ public class XMLReflect implements XMLReflectConstants{
                                          Element element,
                                          Element classDefiningElement) throws Exception {
         // First, build a vector of elements from the child element
-        // to the classDefiningElement so that we can go from the 
+        // to the classDefiningElement so that we can go from the
         // top (classDefiningElement) to the child and apply properties
         // as we iterate
-        Vector v = new Vector();
-        v.addElement(element);
+        List v = new ArrayList();
+        v.add(element);
         while (element != classDefiningElement) {
             element = (Element) element.getParentNode();
-            v.addElement(element);
+            v.add(element);
         }
 
         int ne = v.size();
         for (int j=ne-1; j>=0; j--) {
-            element = (Element)v.elementAt(j);
+            element = (Element)v.get(j);
             NodeList children = element.getChildNodes();
             if(children != null && children.getLength() > 0){
                 int n = children.getLength();
@@ -141,7 +142,7 @@ public class XMLReflect implements XMLReflectConstants{
                         }
                     }
                 }
-                
+
             }
         }
 
@@ -160,7 +161,7 @@ public class XMLReflect implements XMLReflectConstants{
         try {
             m = cl.getMethod("set" + propertyName,
                              new Class[]{propertyValue.getClass()});
-            
+
         } catch (NoSuchMethodException e) {
             //
             // Check if the type was one of the primitive types, Double,
@@ -181,7 +182,7 @@ public class XMLReflect implements XMLReflectConstants{
                     m = cl.getMethod("set" + propertyName,
                                      new Class[] {java.lang.Boolean.TYPE});
                 } else {
-                    System.err.println("Could not find a set method for property : " + propertyName 
+                    System.err.println("Could not find a set method for property : " + propertyName
                                        + " with value " + propertyValue + " and class " + propertyValue.getClass().getName());
                     throw e;
                 }
@@ -234,7 +235,7 @@ public class XMLReflect implements XMLReflectConstants{
      */
     public static Object buildArgument(Element element) throws Exception {
         if(!element.hasChildNodes()){
-            Element classDefiningElement = 
+            Element classDefiningElement =
                 getClassDefiningElement(element);
 
             String classAttr = classDefiningElement.getAttribute(XR_CLASS_ATTRIBUTE);
@@ -277,7 +278,7 @@ public class XMLReflect implements XMLReflectConstants{
                     return null;
                 }
             }
-            
+
             return element;
 
         }

@@ -56,8 +56,8 @@ import org.apache.batik.test.TestReport;
 
 /**
  * Checks for regressions in rendering a specific SVG document.
- * The <tt>Test</tt> will rasterize and SVG document and 
- * compare it to a reference image. The test passes if the 
+ * The <tt>Test</tt> will rasterize and SVG document and
+ * compare it to a reference image. The test passes if the
  * rasterized SVG and the reference image match exactly (i.e.,
  * all pixel values are the same).
  *
@@ -69,7 +69,7 @@ public abstract class AbstractRenderingAccuracyTest extends AbstractTest {
      * Error when temp file cannot be created
      * {0} = IOException message
      */
-    public static final String ERROR_CANNOT_CREATE_TEMP_FILE        
+    public static final String ERROR_CANNOT_CREATE_TEMP_FILE
         = "SVGRenderingAccuracyTest.error.cannot.create.temp.file";
 
     /**
@@ -77,7 +77,7 @@ public abstract class AbstractRenderingAccuracyTest extends AbstractTest {
      * {0} = temp file's cannonical path
      * {1} = IOException message
      */
-    public static final String ERROR_CANNOT_CREATE_TEMP_FILE_STREAM 
+    public static final String ERROR_CANNOT_CREATE_TEMP_FILE_STREAM
         = "SVGRenderingAccuracyTest.error.cannot.create.temp.file.stream";
 
     /**
@@ -85,7 +85,7 @@ public abstract class AbstractRenderingAccuracyTest extends AbstractTest {
      * {0} = URI of the reference image
      * {1} = IOException message
      */
-    public static final String ERROR_CANNOT_OPEN_REFERENCE_IMAGE    
+    public static final String ERROR_CANNOT_OPEN_REFERENCE_IMAGE
         = "SVGRenderingAccuracyTest.error.cannot.open.reference.image";
 
     /**
@@ -93,31 +93,31 @@ public abstract class AbstractRenderingAccuracyTest extends AbstractTest {
      * {0} = Cannonical path of the temp generated image
      * {1} = IOException message
      */
-    public static final String ERROR_CANNOT_OPEN_GENERATED_IMAGE    
+    public static final String ERROR_CANNOT_OPEN_GENERATED_IMAGE
         = "SVGRenderingAccuracyTest.error.cannot.open.genereted.image";
 
     /**
-     * Error when there is an IOException while comparing the 
+     * Error when there is an IOException while comparing the
      * two reference raster image with the new raster image built
      * from the SVG.
      * {0} = URI of the reference image
      * {1} = Connical path for the temp generated image
      * {2} = IOException message.
      */
-    public static final String ERROR_ERROR_WHILE_COMPARING_FILES    
+    public static final String ERROR_ERROR_WHILE_COMPARING_FILES
         = "SVGRenderingAccuracyTest.error.while.comparing.files";
 
     /**
      * Error when the generated image from the SVG file differs from
      * the reference image.
      */
-    public static final String ERROR_SVG_RENDERING_NOT_ACCURATE     
+    public static final String ERROR_SVG_RENDERING_NOT_ACCURATE
         = "SVGRenderingAccuracyTest.error.svg.rendering.not.accurate";
 
     /**
      * Entry describing the error
      */
-    public static final String ENTRY_KEY_ERROR_DESCRIPTION 
+    public static final String ENTRY_KEY_ERROR_DESCRIPTION
         = "SVGRenderingAccuracyTest.entry.key.error.description";
 
     /**
@@ -158,38 +158,38 @@ public abstract class AbstractRenderingAccuracyTest extends AbstractTest {
 
     /**
      * Message expressing that the variation URL could not be open
-     * {0} : URL 
+     * {0} : URL
      */
-    public static final String COULD_NOT_OPEN_VARIATION_URL 
+    public static final String COULD_NOT_OPEN_VARIATION_URL
         = "SVGRenderingAccuracyTest.message.warning.could.not.open.variation.url";
 
     /**
      * The gui resources file name
      */
-    public final static String CONFIGURATION_RESOURCES =
+    public static final String CONFIGURATION_RESOURCES =
         "org.apache.batik.test.svg.resources.Configuration";
 
     /**
      * Suffix used for comparison images
      */
-    public final static String IMAGE_TYPE_COMPARISON = "_cmp";
+    public static final String IMAGE_TYPE_COMPARISON = "_cmp";
 
     /**
      * Suffix used for diff images
      */
-    public final static String IMAGE_TYPE_DIFF = "_diff";
+    public static final String IMAGE_TYPE_DIFF = "_diff";
 
     /**
      * Suffix used for saved images (e.g., comparison and diff images)
      */
-    public final static String IMAGE_FILE_EXTENSION = ".png";
+    public static final String IMAGE_FILE_EXTENSION = ".png";
 
     /**
      * The configuration resource bundle
      */
     protected static ResourceBundle configuration;
     static {
-        configuration = ResourceBundle.getBundle(CONFIGURATION_RESOURCES, 
+        configuration = ResourceBundle.getBundle(CONFIGURATION_RESOURCES,
                                                  Locale.getDefault());
     }
 
@@ -197,11 +197,11 @@ public abstract class AbstractRenderingAccuracyTest extends AbstractTest {
      * Prefix for the temporary files created by Tests
      * of this class
      */
-    public static final String TEMP_FILE_PREFIX 
+    public static final String TEMP_FILE_PREFIX
         = configuration.getString("temp.file.prefix");
 
     /**
-     * Suffix for the temporary files created by 
+     * Suffix for the temporary files created by
      * Tests of this class
      */
     public static final String TEMP_FILE_SUFFIX
@@ -218,20 +218,20 @@ public abstract class AbstractRenderingAccuracyTest extends AbstractTest {
     protected URL refImgURL;
 
     /**
-     * The URL of a file containing an 'accepted' 
+     * The URL of a file containing an 'accepted'
      * variation from the reference image.
      */
     protected URL variationURL;
 
     /**
-     * The File where the newly computed variation 
-     * should be saved if different from the 
+     * The File where the newly computed variation
+     * should be saved if different from the
      * variationURL
      */
     protected File saveVariation;
 
     /**
-     * The File where the candidate reference 
+     * The File where the candidate reference
      * should be saved if there is not candidate reference
      * or if it cannot be opened.
      */
@@ -292,7 +292,7 @@ public abstract class AbstractRenderingAccuracyTest extends AbstractTest {
         this.svgURL = resolveURL(svgURL);
         this.refImgURL = resolveURL(refImgURL);
     }
-    
+
     /**
      * Resolves the input string as follows.
      * + First, the string is interpreted as a file description.
@@ -311,7 +311,7 @@ public abstract class AbstractRenderingAccuracyTest extends AbstractTest {
                 throw new IllegalArgumentException();
             }
         }
-        
+
         // url is not a file. It must be a regular URL...
         try{
             return new URL(url);
@@ -337,7 +337,7 @@ public abstract class AbstractRenderingAccuracyTest extends AbstractTest {
     }
 
     /**
-     * Sets the URL where an acceptable variation fron the reference 
+     * Sets the URL where an acceptable variation fron the reference
      * image can be found.
      */
     public void setVariationURL(String variationURL){
@@ -356,7 +356,7 @@ public abstract class AbstractRenderingAccuracyTest extends AbstractTest {
     }
 
     /**
-     * Returns this <tt>Test</tt>'s name. The name is the 
+     * Returns this <tt>Test</tt>'s name. The name is the
      * URL of the SVG being rendered.
      */
     public String getName(){
@@ -367,7 +367,7 @@ public abstract class AbstractRenderingAccuracyTest extends AbstractTest {
     }
 
     /**
-     * Requests this <tt>Test</tt> to run and produce a 
+     * Requests this <tt>Test</tt> to run and produce a
      * report.
      *
      */
@@ -382,7 +382,7 @@ public abstract class AbstractRenderingAccuracyTest extends AbstractTest {
                 candidateReference.delete();
             }
         }
-                    
+
 
         //
         // Render the SVG image into a raster. We call an
@@ -399,10 +399,10 @@ public abstract class AbstractRenderingAccuracyTest extends AbstractTest {
                                               null);
         }catch(IOException e){
             report.setErrorCode(ERROR_CANNOT_CREATE_TEMP_FILE);
-            report.setDescription(new TestReport.Entry[] { 
+            report.setDescription(new TestReport.Entry[] {
                 new TestReport.Entry
                 (Messages.formatMessage(ENTRY_KEY_ERROR_DESCRIPTION, null),
-                 Messages.formatMessage(ERROR_CANNOT_CREATE_TEMP_FILE, 
+                 Messages.formatMessage(ERROR_CANNOT_CREATE_TEMP_FILE,
                                         new Object[]{e.getMessage()}))
             });
             report.setPassed(false);
@@ -432,8 +432,7 @@ public abstract class AbstractRenderingAccuracyTest extends AbstractTest {
         // encoding failed and we should return that report.
         {
             TestReport encodeTR = encode(svgURL, tmpFileOS);
-            if ((encodeTR != null) && 
-                (encodeTR.hasPassed() == false)) {
+            if ((encodeTR != null) && ! encodeTR.hasPassed() ) {
                 tmpFile.deleteOnExit();
                 return encodeTR;
             }
@@ -452,14 +451,14 @@ public abstract class AbstractRenderingAccuracyTest extends AbstractTest {
                 new TestReport.Entry
                 (Messages.formatMessage(ENTRY_KEY_ERROR_DESCRIPTION, null),
                  Messages.formatMessage(ERROR_CANNOT_OPEN_REFERENCE_IMAGE,
-                                        new Object[]{refImgURL.toString(), 
-                                                     e.getMessage()})) 
+                                        new Object[]{refImgURL.toString(),
+                                                     e.getMessage()}))
                 });
             report.setPassed(false);
             // Try and save tmp file as a candidate variation
             if (candidateReference == null){
                 tmpFile.delete();
-            } 
+            }
             return report;
         }
 
@@ -471,7 +470,7 @@ public abstract class AbstractRenderingAccuracyTest extends AbstractTest {
                 new TestReport.Entry
                 (Messages.formatMessage(ENTRY_KEY_ERROR_DESCRIPTION, null),
                  Messages.formatMessage(ERROR_CANNOT_OPEN_GENERATED_IMAGE,
-                                        new Object[]{tmpFile.getAbsolutePath(), 
+                                        new Object[]{tmpFile.getAbsolutePath(),
                                                      e.getMessage()}))});
             report.setPassed(false);
             tmpFile.delete();
@@ -487,7 +486,7 @@ public abstract class AbstractRenderingAccuracyTest extends AbstractTest {
                 new TestReport.Entry
                 (Messages.formatMessage(ENTRY_KEY_ERROR_DESCRIPTION, null),
                  Messages.formatMessage(ERROR_ERROR_WHILE_COMPARING_FILES,
-                                        new Object[]{refImgURL.toString(), 
+                                        new Object[]{refImgURL.toString(),
                                                      tmpFile.getAbsolutePath(),
                                                      e.getMessage()}))});
             report.setPassed(false);
@@ -523,7 +522,7 @@ public abstract class AbstractRenderingAccuracyTest extends AbstractTest {
             //
             if(variationURL != null) {
                 File tmpDiff = imageToFile(diff, IMAGE_TYPE_DIFF);
-                
+
                 InputStream variationURLStream = null;
                 try{
                     variationURLStream = variationURL.openStream();
@@ -532,21 +531,21 @@ public abstract class AbstractRenderingAccuracyTest extends AbstractTest {
                     System.err.println(Messages.formatMessage(COULD_NOT_OPEN_VARIATION_URL,
                                                               new Object[]{variationURL.toString()}));
                 }
-                
+
                 if(variationURLStream != null){
                     InputStream refDiffStream =
                         new BufferedInputStream(variationURLStream);
-                    
+
                     InputStream tmpDiffStream =
                         new BufferedInputStream(new FileInputStream(tmpDiff));
-                    
+
                     if(compare(refDiffStream, tmpDiffStream)){
                         // We accept the generated result.
                         accurate = true;
                     }
                 }
             }
-            
+
             if (accurate) {
                 //
                 // Yahooooooo! everything worked out well, at least
@@ -559,20 +558,20 @@ public abstract class AbstractRenderingAccuracyTest extends AbstractTest {
             System.err.println(">>>>>>>>>>>>>>>>>>>>>> "+
                                "Rendering is not accurate");
             if(saveVariation != null){
-                // There is a computed variation different from the 
-                // referenced variation and there is a place where the new 
+                // There is a computed variation different from the
+                // referenced variation and there is a place where the new
                 // variation should be saved.
                 saveImage(diff, saveVariation);
             }
-                
+
             // Build two images:
             // a. One with the reference image and the newly generated image
-            // b. One with the difference between the two images and the set 
+            // b. One with the difference between the two images and the set
             //    of different pixels.
             BufferedImage cmp = makeCompareImage(ref, gen);
             File cmpFile = imageToFile(cmp, IMAGE_TYPE_COMPARISON);
             File diffFile = imageToFile(diff, IMAGE_TYPE_DIFF);
-            
+
             report.setErrorCode(ERROR_SVG_RENDERING_NOT_ACCURATE);
             report.setDescription(new TestReport.Entry[]{
                 new TestReport.Entry
@@ -588,23 +587,23 @@ public abstract class AbstractRenderingAccuracyTest extends AbstractTest {
             report.setErrorCode(ERROR_SVG_RENDERING_NOT_ACCURATE);
             StringWriter trace = new StringWriter();
             e.printStackTrace(new PrintWriter(trace));
-            
+
             report.setDescription(new TestReport.Entry[]{
                 new TestReport.Entry
                 (Messages.formatMessage(ENTRY_KEY_ERROR_DESCRIPTION, null),
                  Messages.formatMessage(ERROR_SVG_RENDERING_NOT_ACCURATE, null)),
                 new TestReport.Entry
                 (Messages.formatMessage(ENTRY_KEY_INTERNAL_ERROR, null),
-                 Messages.formatMessage(COULD_NOT_GENERATE_COMPARISON_IMAGES, 
+                 Messages.formatMessage(COULD_NOT_GENERATE_COMPARISON_IMAGES,
                                         new Object[]{e.getClass().getName(),
                                                      e.getMessage(),
                                                      trace.toString()})) });
         }
-        
+
         if (candidateReference == null){
             tmpFile.delete();
         }
-            
+
         report.setPassed(false);
         return report;
     }
@@ -702,7 +701,7 @@ public abstract class AbstractRenderingAccuracyTest extends AbstractTest {
             ColorModel cm = gen.getColorModel();
             cm = GraphicsUtil.coerceData(genWR, cm, false);
         }
-        
+
         if (!refPre) {
             ColorModel cm = ref.getColorModel();
             cm = GraphicsUtil.coerceData(refWR, cm, false);
@@ -714,7 +713,7 @@ public abstract class AbstractRenderingAccuracyTest extends AbstractTest {
     /**
      * Loads an image from a File
      */
-    protected BufferedImage getImage(File file) 
+    protected BufferedImage getImage(File file)
         throws Exception {
         return getImage(file.toURL());
     }
@@ -722,7 +721,7 @@ public abstract class AbstractRenderingAccuracyTest extends AbstractTest {
     /**
      * Loads an image from a URL
      */
-    protected BufferedImage getImage(URL url) 
+    protected BufferedImage getImage(URL url)
         throws IOException {
         ImageTagRegistry reg = ImageTagRegistry.getRegistry();
         Filter filt = reg.readURL(new ParsedURL(url));
@@ -736,7 +735,7 @@ public abstract class AbstractRenderingAccuracyTest extends AbstractTest {
             throw new IOException(Messages.formatMessage
                                   (COULD_NOT_LOAD_IMAGE,
                                    new Object[]{url.toString()}));
-        
+
         BufferedImage img = new BufferedImage(red.getWidth(),
                                               red.getHeight(),
                                               BufferedImage.TYPE_INT_ARGB);
@@ -769,9 +768,9 @@ public abstract class AbstractRenderingAccuracyTest extends AbstractTest {
      * Creates a File into which the input image is
      * saved.
      * If there is a "file" component in the SVG url,
-     * then a temporary file is created with that 
-     * name and the imageType suffix in the temp 
-     * directory of the test-reports directory. 
+     * then a temporary file is created with that
+     * name and the imageType suffix in the temp
+     * directory of the test-reports directory.
      */
     protected File imageToFile(BufferedImage img,
                                String imageType)
@@ -785,11 +784,11 @@ public abstract class AbstractRenderingAccuracyTest extends AbstractTest {
         else{
             imageFile = makeRandomFileName(imageType);
         }
-        
+
         imageFile.deleteOnExit();
 
         saveImage(img, imageFile);
-        
+
         return imageFile;
     }
 
@@ -824,7 +823,7 @@ public abstract class AbstractRenderingAccuracyTest extends AbstractTest {
                  imageType + IMAGE_FILE_EXTENSION);
         }
     }
-    
+
     protected File getNextTempFileName(String fileName){
         File f = new File(getTempDirectory(), fileName);
         if(!f.exists()){
@@ -833,9 +832,9 @@ public abstract class AbstractRenderingAccuracyTest extends AbstractTest {
         else{
             return getNextTempFileName(fileName,
                                        1);
-        } 
+        }
     }
-    
+
     protected File getNextTempFileName(String fileName,
                                        int instance){
         // First, create a 'versioned' file name
@@ -845,7 +844,7 @@ public abstract class AbstractRenderingAccuracyTest extends AbstractTest {
             iFileName = fileName.substring(0, n) + instance
                 + fileName.substring(n, fileName.length());
         }
-        
+
         File r = new File(getTempDirectory(), iFileName);
         if(!r.exists()){
             return r;
@@ -855,14 +854,14 @@ public abstract class AbstractRenderingAccuracyTest extends AbstractTest {
                                        instance + 1);
         }
     }
-    
+
     /**
      * Creates a temporary File into which the input image is
      * saved.
      */
     protected File makeRandomFileName(String imageType)
         throws IOException {
-        
+
         return File.createTempFile(TEMP_FILE_PREFIX,
                                    TEMP_FILE_SUFFIX + imageType,
                                    null);
