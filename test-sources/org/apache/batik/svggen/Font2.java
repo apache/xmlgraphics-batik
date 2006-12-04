@@ -59,7 +59,7 @@ public class Font2 implements Painter {
         g.drawString("Font size", 10, 30);
         g.setPaint(fontColor);
         g.translate(0, 20);
-        int fontSizes[] = { 6, 8, 10, 12, 18, 36, 48 };
+        int[] fontSizes = { 6, 8, 10, 12, 18, 36, 48 };
         for(int i=0; i<fontSizes.length; i++){
             Font font = new Font(defaultFont.getFamily(),
                                  Font.PLAIN,
@@ -76,11 +76,11 @@ public class Font2 implements Painter {
         //
         // Font style
         //
-        int fontStyles[] = { Font.PLAIN,
+        int[] fontStyles = { Font.PLAIN,
                              Font.BOLD,
                              Font.ITALIC,
                              Font.BOLD | Font.ITALIC };
-        String fontStyleStrings[] = { "Plain", "Bold", "Italic", "Bold Italic" };
+        String[] fontStyleStrings = { "Plain", "Bold", "Italic", "Bold Italic" };
 
         g.setFont(defaultFont);
         g.setPaint(labelColor);
@@ -103,7 +103,7 @@ public class Font2 implements Painter {
         //
         // Font families
         //
-        String fontFamilies[] = { "Arial",
+        String[] fontFamilies = { "Arial",
                                   "Times New Roman",
                                   "Courier New",
                                   "Verdana" };
@@ -124,7 +124,7 @@ public class Font2 implements Painter {
         //
         // Logical fonts
         //
-          Font logicalFonts[] = { new Font("dialog", Font.PLAIN, 14),
+          Font[] logicalFonts = { new Font("dialog", Font.PLAIN, 14),
                                   new Font("dialoginput", Font.BOLD, 14),
                                   new Font("monospaced", Font.ITALIC, 14),
                                   new Font("serif", Font.PLAIN, 14),

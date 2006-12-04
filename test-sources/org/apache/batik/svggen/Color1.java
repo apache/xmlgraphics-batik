@@ -40,7 +40,7 @@ public class Color1 implements Painter {
         // Colors used for labels and test output
         java.awt.Color labelColor = java.awt.Color.black;
 
-        java.awt.Color colorConstants[] = { java.awt.Color.black,
+        java.awt.Color[] colorConstants = { java.awt.Color.black,
                                    java.awt.Color.blue,
                                    java.awt.Color.cyan,
                                    java.awt.Color.darkGray,
@@ -54,7 +54,7 @@ public class Color1 implements Painter {
                                    java.awt.Color.white,
                                    java.awt.Color.yellow };
 
-        String colorConstantStrings[] =  { "black",
+        String[] colorConstantStrings =  { "black",
                                            "blue",
                                            "cyan",
                                            "darkGray",

@@ -29,5 +29,5 @@ import java.awt.Graphics2D;
  * @version $Id$
  */
 public interface Painter {
-    public void paint(Graphics2D g);
+    void paint(Graphics2D g);
 }

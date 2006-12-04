@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,7 +36,7 @@ public class PNGEncoderTest extends AbstractTest {
      * Error when image cannot be encoded
      * {0} = trace for the exception which was reported
      */
-    public static final String ERROR_CANNOT_ENCODE_IMAGE 
+    public static final String ERROR_CANNOT_ENCODE_IMAGE
         = "PNGEncoderTest.error.cannot.encode.image";
 
     /**
@@ -71,7 +71,7 @@ public class PNGEncoderTest extends AbstractTest {
         ig.draw(new Rectangle2D.Double(0.5, 0.5, 199, 149));
         ig.dispose();
 
-        image = image.getSubimage(50, 0, 50, 25); 
+        image = image.getSubimage(50, 0, 50, 25);
 
         // Create an output stream where the PNG data
         // will be stored.
@@ -91,10 +91,10 @@ public class PNGEncoderTest extends AbstractTest {
         }
 
         // Now, try to decode image
-        InputStream is 
+        InputStream is
             = buildInputStream(bos);
 
-        PNGImageDecoder pngImageDecoder 
+        PNGImageDecoder pngImageDecoder
             = new PNGImageDecoder(is, new PNGDecodeParam());
 
         RenderedImage decodedRenderedImage = null;
@@ -114,13 +114,13 @@ public class PNGEncoderTest extends AbstractTest {
                                              decodedRenderedImage.getHeight(),
                                              BufferedImage.TYPE_INT_ARGB);
             ig = decodedImage.createGraphics();
-            ig.drawRenderedImage(decodedRenderedImage, 
+            ig.drawRenderedImage(decodedRenderedImage,
                                  new AffineTransform());
             ig.dispose();
         }
 
         // Compare images
-        if(checkIdentical(image, decodedImage) != true){
+        if( ! checkIdentical(image, decodedImage) ){
             return reportError(ERROR_DECODED_DOES_NOT_MATCH_ENCODED);
         }
 
@@ -151,7 +151,7 @@ public class PNGEncoderTest extends AbstractTest {
     public static boolean checkIdentical(BufferedImage imgA,
                                          BufferedImage imgB){
         boolean identical = true;
-        if(imgA.getWidth() == imgB.getWidth() 
+        if(imgA.getWidth() == imgB.getWidth()
            &&
            imgA.getHeight() == imgB.getHeight()){
             int w = imgA.getWidth();

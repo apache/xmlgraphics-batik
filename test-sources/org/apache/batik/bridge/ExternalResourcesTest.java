@@ -24,6 +24,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import java.util.List;
+import java.util.ArrayList;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -241,7 +243,7 @@ public class ExternalResourcesTest extends AbstractTest
             return report;
         }
 
-        Vector failures = new Vector();
+        List failures = new ArrayList();
 
         //
         // Do an initial processing to validate that the external
@@ -268,10 +270,10 @@ public class ExternalResourcesTest extends AbstractTest
         }
         if (th == null) {
             if (secure)
-                failures.addElement(EXTERNAL_STYLESHEET_ID);
+                failures.add(EXTERNAL_STYLESHEET_ID);
         } else if (th instanceof SecurityException) {
             if (!secure)
-                failures.addElement(EXTERNAL_STYLESHEET_ID);
+                failures.add(EXTERNAL_STYLESHEET_ID);
         } else if (th instanceof BridgeException) {
             BridgeException be = (BridgeException)th;
             if (!secure  ||
@@ -311,7 +313,7 @@ public class ExternalResourcesTest extends AbstractTest
         StringTokenizer st = new StringTokenizer(idList, ",");
         String[] ids = new String[st.countTokens()];
         for (int i=0; i<ids.length; i++) {
-            ids[i] = st.nextToken().toString().trim();
+            ids[i] = st.nextToken().trim();
         }
 
         for (int i=0; i<ids.length; i++) {
@@ -357,10 +359,10 @@ public class ExternalResourcesTest extends AbstractTest
             }
             if (th == null) {
                 if (secure)
-                    failures.addElement(id);
+                    failures.add(id);
             } else if (th instanceof SecurityException) {
                 if (!secure)
-                    failures.addElement(id);
+                    failures.add(id);
             } else if (th instanceof BridgeException) {
                 BridgeException be = (BridgeException)th;
                 if (!secure  ||
@@ -390,13 +392,13 @@ public class ExternalResourcesTest extends AbstractTest
             report.setErrorCode(ERROR_UNTHROWN_SECURITY_EXCEPTIONS);
             for (int i=0; i<failures.size(); i++) {
                 report.addDescriptionEntry(ENTRY_KEY_EXPECTED_EXCEPTION_ON,
-                                           failures.elementAt(i));
+                                           failures.get(i));
             }
         } else {
             report.setErrorCode(ERROR_THROWN_SECURITY_EXCEPTIONS);
             for (int i=0; i<failures.size(); i++) {
                 report.addDescriptionEntry(ENTRY_KEY_UNEXPECTED_EXCEPTION_ON,
-                                           failures.elementAt(i));
+                                           failures.get(i));
             }
         }
 
@@ -405,7 +407,7 @@ public class ExternalResourcesTest extends AbstractTest
     }
 
     protected interface MyUserAgent extends UserAgent {
-        public Exception getDisplayError();
+        Exception getDisplayError();
     }
 
     protected MyUserAgent buildUserAgent(){

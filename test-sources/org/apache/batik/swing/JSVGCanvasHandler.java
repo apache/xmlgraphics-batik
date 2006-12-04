@@ -56,46 +56,46 @@ import org.apache.batik.swing.svg.SVGDocumentLoaderEvent;
 public class JSVGCanvasHandler {
 
     public interface Delegate {
-        public String getName();
+        String getName();
         // Returns true if a load event was triggered.  In this case
         // the handler will wait for the load event to complete/fail.
-        public boolean canvasInit(JSVGCanvas canvas);
-        public void canvasLoaded(JSVGCanvas canvas);
-        public void canvasRendered(JSVGCanvas canvas);
-        public boolean canvasUpdated(JSVGCanvas canvas);
-        public void canvasDone(JSVGCanvas canvas);
-        public void failure(TestReport report);
+        boolean canvasInit(JSVGCanvas canvas);
+        void canvasLoaded(JSVGCanvas canvas);
+        void canvasRendered(JSVGCanvas canvas);
+        boolean canvasUpdated(JSVGCanvas canvas);
+        void canvasDone(JSVGCanvas canvas);
+        void failure(TestReport report);
     }
-    
+
     public static final String REGARD_TEST_INSTANCE = "regardTestInstance";
-    public static final String REGARD_START_SCRIPT = 
+    public static final String REGARD_START_SCRIPT =
         "try { regardStart(); } catch (er) {}";
 
     /**
      * Error when canvas can't load SVG file.
      * {0} The file/url that could not be loaded.
      */
-    public static final String ERROR_CANNOT_LOAD_SVG = 
+    public static final String ERROR_CANNOT_LOAD_SVG =
         "JSVGCanvasHandler.message.error.could.not.load.svg";
 
     /**
      * Error when canvas can't render SVG file.
      * {0} The file/url that could not be rendered.
      */
-    public static final String ERROR_SVG_RENDER_FAILED = 
+    public static final String ERROR_SVG_RENDER_FAILED =
         "JSVGCanvasHandler.message.error.svg.render.failed";
 
     /**
      * Error when canvas can't peform render update SVG file.
      * {0} The file/url that could not be updated..
      */
-    public static final String ERROR_SVG_UPDATE_FAILED = 
+    public static final String ERROR_SVG_UPDATE_FAILED =
         "JSVGCanvasHandler.message.error.svg.update.failed";
 
     /**
      * Entry describing the error
      */
-    public static final String ENTRY_KEY_ERROR_DESCRIPTION 
+    public static final String ENTRY_KEY_ERROR_DESCRIPTION
         = "JSVGCanvasHandler.entry.key.error.description";
 
     public static String fmt(String key, Object []args) {
@@ -109,13 +109,15 @@ public class JSVGCanvasHandler {
     InitialRenderListener irl = null;
     LoadListener ll = null;
     UpdateRenderListener url = null;
-    
+
     boolean failed;
     boolean abort = false;
     boolean done  = false;
-    Object loadMonitor = new Object();
-    Object renderMonitor = new Object();
-    
+
+    final Object loadMonitor = new Object();
+
+    final Object renderMonitor = new Object();
+
     Delegate delegate;
     Test host;
     String desc;
@@ -186,7 +188,7 @@ public class JSVGCanvasHandler {
         }
     }
 
-    public void setupCanvas() { 
+    public void setupCanvas() {
         try {
             EventQueue.invokeAndWait(new Runnable() {
                     public void run() {
@@ -215,7 +217,7 @@ public class JSVGCanvasHandler {
                         ll = new LoadListener();
                         canvas.addSVGDocumentLoaderListener(ll);
                     }});
-        } catch (Throwable t) { 
+        } catch (Throwable t) {
             t.printStackTrace();
         }
     }
@@ -240,7 +242,7 @@ public class JSVGCanvasHandler {
             updateManager.getUpdateRunnableQueue().invokeLater(r);
         }
     }
-    
+
     public void dispose() {
         if (frame != null) {
             frame.removeWindowListener(wl);
@@ -265,7 +267,7 @@ public class JSVGCanvasHandler {
             if (abort || failed) {
                 DefaultTestReport report = new DefaultTestReport(host);
                 report.setErrorCode(errorCode);
-                report.setDescription(new TestReport.Entry[] { 
+                report.setDescription(new TestReport.Entry[] {
                     new TestReport.Entry
                     (fmt(ENTRY_KEY_ERROR_DESCRIPTION, null),
                      fmt(errorCode, new Object[]{desc}))
@@ -304,7 +306,7 @@ public class JSVGCanvasHandler {
                     scriptEnv = um.getScriptingEnvironment();
                     Interpreter interp;
                     interp    = scriptEnv.getInterpreter();
-                    interp.bindObject(REGARD_TEST_INSTANCE, 
+                    interp.bindObject(REGARD_TEST_INSTANCE,
                                       host);
                     try {
                         interp.evaluate(REGARD_START_SCRIPT);

@@ -46,11 +46,11 @@ public class Texture implements Painter {
         bg.fillRect(10, 10, 10, 10);
         bg.dispose();
 
-        Rectangle anchors[] = { new Rectangle(0, 0, texture.getWidth(), texture.getHeight()),
+        Rectangle[] anchors = { new Rectangle(0, 0, texture.getWidth(), texture.getHeight()),
                                 new Rectangle(texture.getWidth()/2, texture.getHeight()/2, texture.getWidth(), texture.getHeight()),
                                 new Rectangle(0, 0, texture.getWidth()/2, texture.getHeight()/2) };
 
-        String anchorDesc[] = { "Anchor matches texture image",
+        String[] anchorDesc = { "Anchor matches texture image",
                                 "Anchor offset to texture image center",
                                 "Anchor half the size of texture" };
 

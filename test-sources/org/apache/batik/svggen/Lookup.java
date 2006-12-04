@@ -73,7 +73,7 @@ public class Lookup implements Painter {
         Graphics2D ig = bi.createGraphics();
         ig.drawImage(image, 0, 0, null);
 
-        byte lookup[] = new byte[256];
+        byte[] lookup = new byte[256];
         for(int i=0; i<256; i++)
             lookup[i] = (byte)(255 - i);
 
