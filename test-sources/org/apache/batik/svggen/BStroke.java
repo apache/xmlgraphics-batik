@@ -36,7 +36,7 @@ public class BStroke implements Painter {
         /*
          * Strokes of varying width
          */
-        java.awt.BasicStroke strokesWidth[] = {
+        java.awt.BasicStroke[] strokesWidth = {
             new java.awt.BasicStroke(2.f),
             new java.awt.BasicStroke(4.f),
             new java.awt.BasicStroke(8.f),
@@ -47,7 +47,7 @@ public class BStroke implements Painter {
         /*
          * Strokes of varying termination styles
          */
-        java.awt.BasicStroke strokesCap[] = {
+        java.awt.BasicStroke[] strokesCap = {
             new java.awt.BasicStroke(15.f, java.awt.BasicStroke.CAP_BUTT, java.awt.BasicStroke.JOIN_BEVEL), // No decoration
             new java.awt.BasicStroke(15.f, java.awt.BasicStroke.CAP_SQUARE, java.awt.BasicStroke.JOIN_BEVEL), // Square end
             new java.awt.BasicStroke(15.f, java.awt.BasicStroke.CAP_ROUND, java.awt.BasicStroke.JOIN_BEVEL), // Rounded end
@@ -56,7 +56,7 @@ public class BStroke implements Painter {
         /*
          * Strokes of varying segment connection styles
          */
-        java.awt.BasicStroke strokesJoin[] = {
+        java.awt.BasicStroke[] strokesJoin = {
             new java.awt.BasicStroke(10.f, java.awt.BasicStroke.CAP_SQUARE, java.awt.BasicStroke.JOIN_BEVEL), // Connected with a straight segment
             new java.awt.BasicStroke(10.f, java.awt.BasicStroke.CAP_SQUARE, java.awt.BasicStroke.JOIN_MITER), // Extend outlines until they meet
             new java.awt.BasicStroke(10.f, java.awt.BasicStroke.CAP_SQUARE, java.awt.BasicStroke.JOIN_ROUND), // Round of corner.
@@ -64,7 +64,7 @@ public class BStroke implements Painter {
         /*
          * Strokes of varying miterlimits
          */
-        java.awt.BasicStroke strokesMiter[] = {
+        java.awt.BasicStroke[] strokesMiter = {
             new java.awt.BasicStroke(6.f, java.awt.BasicStroke.CAP_SQUARE, java.awt.BasicStroke.JOIN_MITER, 1),   // Actually cuts of all angles
             new java.awt.BasicStroke(6.f, java.awt.BasicStroke.CAP_SQUARE, java.awt.BasicStroke.JOIN_MITER, 2f),  // Cuts off angles less than 60degrees
             new java.awt.BasicStroke(6.f, java.awt.BasicStroke.CAP_SQUARE, java.awt.BasicStroke.JOIN_MITER, 10f), // Cuts off angles less than 11 degrees
@@ -73,7 +73,7 @@ public class BStroke implements Painter {
         /*
          * Srokes with varying dash styles
          */
-        java.awt.BasicStroke strokesDash[] = {
+        java.awt.BasicStroke[] strokesDash = {
             new java.awt.BasicStroke(8.f,
                             java.awt.BasicStroke.CAP_BUTT,
                             java.awt.BasicStroke.JOIN_BEVEL,

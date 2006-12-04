@@ -20,6 +20,8 @@ package org.apache.batik.test;
 
 import java.util.Iterator;
 import java.util.Vector;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Simple implementation of the <tt>TestReport</tt> interface
@@ -32,7 +34,7 @@ public class DefaultTestSuiteReport implements TestSuiteReport {
     /**
      * Error code for a failed TestSuite
      */
-    public static final String ERROR_CHILD_TEST_FAILED 
+    public static final String ERROR_CHILD_TEST_FAILED
         = "DefaultTestSuiteReport.error.child.test.failed";
 
     /**
@@ -50,7 +52,7 @@ public class DefaultTestSuiteReport implements TestSuiteReport {
     /**
      * Set of <tt>TestReport</tt> coming from the <tt>TestSuite</tt>
      */
-    protected Vector reports = new Vector();
+    protected List reports = new ArrayList();
 
     /**
      * TestSuite that created this report
@@ -105,10 +107,10 @@ public class DefaultTestSuiteReport implements TestSuiteReport {
             TestReport childReport = (TestReport)iter.next();
             passed = passed && childReport.hasPassed();
         }
-        
+
         return passed;
     }
-    
+
     public void addDescriptionEntry(String key,
                                     Object value){
         addDescriptionEntry(new Entry(key, value));
@@ -130,33 +132,33 @@ public class DefaultTestSuiteReport implements TestSuiteReport {
 
     public Entry[] getDescription(){
         Iterator iter = reports.iterator();
-        Vector descs = new Vector();
+        List descs = new ArrayList();
 
         while(iter.hasNext()){
             TestReport childReport = (TestReport)iter.next();
             if(!childReport.hasPassed()){
-                TestReport.Entry entry 
+                TestReport.Entry entry
                     = new TestReport.Entry(Messages.formatMessage(ENTRY_KEY_FAILED_CHILD_TEST_REPORT, null),
                                            childReport);
-                descs.addElement(entry);
+                descs.add(entry);
             }
         }
-        
+
         iter = reports.iterator();
         while(iter.hasNext()){
             TestReport childReport = (TestReport)iter.next();
             if(childReport.hasPassed()){
-                TestReport.Entry entry 
+                TestReport.Entry entry
                     = new TestReport.Entry(Messages.formatMessage(ENTRY_KEY_PASSED_CHILD_TEST_REPORT, null),
                                            childReport);
-                descs.addElement(entry);
+                descs.add(entry);
             }
         }
-        
+
         TestReport.Entry[] entries = null;
         if(descs.size() > 0){
             entries = new TestReport.Entry[descs.size()];
-            descs.copyInto(entries);
+            descs.toArray(entries);
         }
 
         if(description != null){
@@ -175,14 +177,14 @@ public class DefaultTestSuiteReport implements TestSuiteReport {
         }
 
         report.setParentReport(this);
-        reports.addElement(report);
+        reports.add(report);
     }
-    
+
 
     public TestReport[] getChildrenReports(){
         int nReports = reports.size();
         TestReport[] r = new TestReport[nReports];
-        reports.copyInto(r);
+        reports.toArray(r);
         return r;
     }
 }

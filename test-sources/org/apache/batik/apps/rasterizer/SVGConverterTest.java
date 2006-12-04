@@ -27,6 +27,7 @@ import org.apache.batik.transcoder.image.PNGTranscoder;
 import java.awt.*;
 import java.io.*;
 import java.util.*;
+import java.util.List;
 
 /**
  * Validates the operation of the <tt>SVGRasterizer</tt>.
@@ -347,17 +348,17 @@ public class SVGConverterTest extends DefaultTestSuite {
 
                 public boolean proceedWithComputedTask(Transcoder transcoder,
                                                        Map hints,
-                                                       Vector sources,
-                                                       Vector dest){
+                                                       List sources,
+                                                       List dest){
                     System.out.println("==================> Hacked Starting to process Task <=========================");
-                    SVGConverterFileSource source = (SVGConverterFileSource)sources.elementAt(0);
+                    SVGConverterFileSource source = (SVGConverterFileSource)sources.get(0);
                     source = new SVGConverterFileSource(source.file){
                             public InputStream openStream() throws FileNotFoundException {
                                 throw new FileNotFoundException("Simulated FileNotFoundException");
                             }
                         };
 
-                    sources.setElementAt(source, 0);
+                    sources.set(0, source );
                     return true;
                 }
 
@@ -524,7 +525,8 @@ abstract class AbstractConfigTest extends AbstractTest implements SVGConverterCo
     static class Config {
         Class transcoderClass;
         HashMap hints;
-        Vector sources, dest;
+        List sources;
+        List dest;
     }
 
     protected Config expectedConfig;
@@ -539,23 +541,23 @@ abstract class AbstractConfigTest extends AbstractTest implements SVGConverterCo
 
     protected abstract void configure(SVGConverter c);
 
-    protected String makeSourceList(Vector v){
+    protected String makeSourceList(List v){
         int n = v.size();
-        StringBuffer sb = new StringBuffer();
+        StringBuffer sb = new StringBuffer( n * 8 );
         for (int i=0; i<n; i++){
-            sb.append(v.elementAt(i).toString());
+            sb.append( v.get(i).toString() );
         }
 
         return sb.toString();
     }
 
-    protected String makeHintsString(HashMap map){
+    protected String makeHintsString( Map map){
         Iterator iter = map.keySet().iterator();
         StringBuffer sb = new StringBuffer();
         while (iter.hasNext()){
             Object key = iter.next();
             sb.append(key.toString());
-            sb.append("(");
+            sb.append( '(' );
             sb.append(map.get(key).toString());
             sb.append(") -- ");
         }
@@ -612,8 +614,8 @@ abstract class AbstractConfigTest extends AbstractTest implements SVGConverterCo
         }
 
         for (int i=0; i<en; i++){
-            Object es = expectedConfig.sources.elementAt(i);
-            Object cs = computedConfig.sources.elementAt(i);
+            Object es = expectedConfig.sources.get(i);
+            Object cs = computedConfig.sources.get(i);
             if (!computedConfig.sources.contains(es)){
                 TestReport report = reportError(ERROR_UNEXPECTED_SOURCES_LIST);
                 report.addDescriptionEntry(ENTRY_KEY_EXPECTED_SOURCE_AT_INDEX,
@@ -649,8 +651,8 @@ abstract class AbstractConfigTest extends AbstractTest implements SVGConverterCo
         }
 
         for (int i=0; i<en; i++){
-            Object es = expectedConfig.dest.elementAt(i);
-            Object cs = computedConfig.dest.elementAt(i);
+            Object es = expectedConfig.dest.get(i);
+            Object cs = computedConfig.dest.get(i);
             if (!computedConfig.dest.contains(cs)){
                 TestReport report = reportError(ERROR_UNEXPECTED_DEST_LIST);
                 report.addDescriptionEntry(ENTRY_KEY_EXPECTED_DEST_AT_INDEX,
@@ -717,12 +719,12 @@ abstract class AbstractConfigTest extends AbstractTest implements SVGConverterCo
 
     public boolean proceedWithComputedTask(Transcoder transcoder,
                                            Map hints,
-                                           Vector sources,
-                                           Vector dest){
+                                           List sources,
+                                           List dest){
         computedConfig = new Config();
         computedConfig.transcoderClass = transcoder.getClass();
-        computedConfig.sources = (Vector)sources.clone();
-        computedConfig.dest = (Vector)dest.clone();
+        computedConfig.sources = new ArrayList( sources );
+        computedConfig.dest = new ArrayList( dest );
         computedConfig.hints = new HashMap(hints);
         return false; // Do not proceed with the convertion process,
         // we are only checking the config in this test.
@@ -782,12 +784,12 @@ class TranscoderConfigTest extends AbstractConfigTest {
         Config config = new Config();
         config.transcoderClass = expectedTranscoderClass;
 
-        Vector sources = new Vector();
-        sources.addElement(new SVGConverterFileSource(new File(SOURCE_FILE)));
+        List sources = new ArrayList();
+        sources.add(new SVGConverterFileSource(new File(SOURCE_FILE)));
         config.sources = sources;
 
-        Vector dest = new Vector();
-        dest.addElement(new File(DEST_FILE_NAME + dstType.getExtension()));
+        List dest = new ArrayList();
+        dest.add(new File(DEST_FILE_NAME + dstType.getExtension()));
         config.dest = dest;
 
         HashMap hints = new HashMap();
@@ -823,12 +825,12 @@ class HintsConfigTest extends AbstractConfigTest {
         Config config = new Config();
         config.transcoderClass = EXPECTED_TRANSCODER_CLASS;
 
-        Vector sources = new Vector();
-        sources.addElement(new SVGConverterFileSource(new File(SOURCE_FILE)));
+        List sources = new ArrayList();
+        sources.add(new SVGConverterFileSource(new File(SOURCE_FILE)));
         config.sources = sources;
 
-        Vector dest = new Vector();
-        dest.addElement(new File(DEST_FILE_NAME + DST_TYPE.getExtension()));
+        List dest = new ArrayList();
+        dest.add(new File(DEST_FILE_NAME + DST_TYPE.getExtension()));
         config.dest = dest;
 
         HashMap hints = new HashMap();
@@ -878,11 +880,11 @@ class SourcesConfigTest extends AbstractConfigTest {
         Config config = new Config();
         config.transcoderClass = EXPECTED_TRANSCODER_CLASS;
 
-        Vector sources = new Vector();
-        Vector dest = new Vector();
+        List sources = new ArrayList();
+        List dest = new ArrayList();
         for (int i=0; i<expectedSources.length; i++){
-            sources.addElement(new SVGConverterFileSource(new File(expectedSources[i] + SVG_EXTENSION)));
-            dest.addElement(new File(expectedSources[i] + DST_TYPE.getExtension()));
+            sources.add(new SVGConverterFileSource(new File(expectedSources[i] + SVG_EXTENSION)));
+            dest.add(new File(expectedSources[i] + DST_TYPE.getExtension()));
         }
         config.sources = sources;
         config.dest = dest;
@@ -924,14 +926,14 @@ class DestConfigTest extends AbstractConfigTest {
         Config config = new Config();
         config.transcoderClass = EXPECTED_TRANSCODER_CLASS;
 
-        Vector sources = new Vector();
-        Vector dest = new Vector();
+        List sources = new ArrayList();
+        List dest = new ArrayList();
         for (int i=0; i<sourcesStrings.length; i++){
-            sources.addElement(new SVGConverterFileSource(new File(sourcesStrings[i])));
+            sources.add(new SVGConverterFileSource(new File(sourcesStrings[i])));
         }
 
         for (int i=0; i<expectedDest.length; i++){
-            dest.addElement(new File(expectedDest[i]));
+            dest.add(new File(expectedDest[i]));
         }
 
         config.sources = sources;
@@ -1026,8 +1028,8 @@ class ConfigErrorTest extends AbstractTest implements SVGConverterController{
 
     public boolean proceedWithComputedTask(Transcoder transcoder,
                                            Map hints,
-                                           Vector sources,
-                                           Vector dest){
+                                           List sources,
+                                           List dest){
         System.out.println("==================> Starting to process Task <=========================");
         return true;
     }

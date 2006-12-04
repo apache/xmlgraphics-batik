@@ -56,7 +56,7 @@ public class Font1 implements Painter {
         g.drawString("Font size", 10, 30);
         g.setPaint(fontColor);
         g.translate(0, 20);
-        int fontSizes[] = { 6, 8, 10, 12, 18, 36, 48 };
+        int[] fontSizes = { 6, 8, 10, 12, 18, 36, 48 };
         for(int i=0; i<fontSizes.length; i++){
             java.awt.Font font = new java.awt.Font(defaultFont.getFamily(),
                                  java.awt.Font.PLAIN,
@@ -73,11 +73,11 @@ public class Font1 implements Painter {
         //
         // Font style
         //
-        int fontStyles[] = { java.awt.Font.PLAIN,
+        int[] fontStyles = { java.awt.Font.PLAIN,
                              java.awt.Font.BOLD,
                              java.awt.Font.ITALIC,
                              java.awt.Font.BOLD | java.awt.Font.ITALIC };
-        String fontStyleStrings[] = { "Plain", "Bold", "Italic", "Bold Italic" };
+        String[] fontStyleStrings = { "Plain", "Bold", "Italic", "Bold Italic" };
 
         g.setFont(defaultFont);
         g.setPaint(labelColor);
@@ -100,7 +100,7 @@ public class Font1 implements Painter {
         //
         // Font families
         //
-        String fontFamilies[] = { "Arial",
+        String[] fontFamilies = { "Arial",
                                   "Times New Roman",
                                   "Courier New",
                                   "Verdana" };
@@ -121,7 +121,7 @@ public class Font1 implements Painter {
         //
         // Logical fonts
         //
-        Font logicalFonts[] = { new java.awt.Font("dialog", java.awt.Font.PLAIN, 14),
+        Font[] logicalFonts = { new java.awt.Font("dialog", java.awt.Font.PLAIN, 14),
                                 new java.awt.Font("dialoginput", java.awt.Font.BOLD, 14),
                                 new java.awt.Font("monospaced", java.awt.Font.ITALIC, 14),
                                 new java.awt.Font("serif", java.awt.Font.PLAIN, 14),

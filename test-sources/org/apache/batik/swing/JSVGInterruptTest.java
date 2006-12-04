@@ -62,10 +62,10 @@ public class JSVGInterruptTest extends JSVGMemoryLeakTest {
     DelayRunnable stopper = null;
 
 
-    final static int COMPLETE  = 1;
-    final static int CANCELLED = 2;
-    final static int FAILED    = 4;
-    final static int MAX_WAIT  = 40000;
+    static final int COMPLETE  = 1;
+    static final int CANCELLED = 2;
+    static final int FAILED    = 4;
+    static final int MAX_WAIT  = 40000;
 
     public JSVGCanvasHandler createHandler() {
         return new JSVGCanvasHandler(this, this) {
@@ -78,7 +78,7 @@ public class JSVGInterruptTest extends JSVGMemoryLeakTest {
                         synchronized (renderMonitor) {
                             delegate.canvasInit(canvas);
                             if ( abort) return;
-                            
+
                             while (!done) {
                                 checkRender();
                                 if ( abort) return;
@@ -180,7 +180,7 @@ public class JSVGInterruptTest extends JSVGMemoryLeakTest {
                     state = doTweak(setTrans, renderListener);
                     canvas.removeGVTTreeRendererListener(renderListener);
                     System.err.println("Finished render Tweak: " + state);
-                    
+
                     handler.scriptDone();
                 }
             };
@@ -201,7 +201,7 @@ public class JSVGInterruptTest extends JSVGMemoryLeakTest {
                 System.err.println("Tweaking: " + delay);
                 delayable.setDelay(delay);
                 EventQueue.invokeLater(r);
-                
+
                 long start = System.currentTimeMillis();
                 long end   = start + MAX_WAIT;
                 long curr  = start;
@@ -226,7 +226,7 @@ public class JSVGInterruptTest extends JSVGMemoryLeakTest {
         }
     }
 
-    
+
     public void triggerStopProcessing(int delay) {
         stopper = new DelayRunnable(delay, stopRunnable);
         stopper.start();
@@ -236,7 +236,7 @@ public class JSVGInterruptTest extends JSVGMemoryLeakTest {
     }
 
     interface SetDelayable {
-        public void setDelay(int delay);
+        void setDelay(int delay);
     }
 
     class MyLoaderListener implements SVGDocumentLoaderListener, SetDelayable {
@@ -297,7 +297,7 @@ public class JSVGInterruptTest extends JSVGMemoryLeakTest {
         }
     }
 
-    class MyOnloadListener 
+    class MyOnloadListener
         implements SVGLoadEventDispatcherListener, SetDelayable {
         int delay = 0;
         public void setDelay(int delay) { this.delay = delay; }
