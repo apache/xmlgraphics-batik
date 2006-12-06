@@ -343,6 +343,22 @@ public class ParsedURL {
     }
 
     /**
+     * Returns the content type's type/subtype, if available.  This is
+     * only available for some protocols.
+     */
+    public String getContentTypeMediaType() {
+        return data.getContentTypeMediaType(userAgent);
+    }
+
+    /**
+     * Returns the content type's charset parameter, if available.  This is
+     * only available for some protocols.
+     */
+    public String getContentTypeCharset() {
+        return data.getContentTypeCharset(userAgent);
+    }
+
+    /**
      * Returns the content encoding if available.  This is only available
      * for some protocols.
      */

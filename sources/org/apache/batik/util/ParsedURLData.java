@@ -129,6 +129,16 @@ public class ParsedURLData {
     public boolean hasBeenOpened  = false;
 
     /**
+     * The extracted type/subtype from the Content-Type header.
+     */
+    protected String contentTypeMediaType;
+
+    /**
+     * The extracted charset parameter from the Content-Type header.
+     */
+    protected String contentTypeCharset;
+
+    /**
      * Void constructor
      */
     public ParsedURLData() {
@@ -275,6 +285,93 @@ public class ParsedURLData {
         }
 
         return contentType;
+    }
+
+    /**
+     * Returns the content type's type/subtype, if available.  This is
+     * only available for some protocols.
+     */
+    public String getContentTypeMediaType(String userAgent) {
+        if (contentTypeMediaType != null) {
+            return contentTypeMediaType;
+        }
+
+        extractContentTypeParts(userAgent);
+
+        return contentTypeMediaType;
+    }
+
+    /**
+     * Returns the content type's charset parameter, if available.  This is
+     * only available for some protocols.
+     */
+    public String getContentTypeCharset(String userAgent) {
+        if (contentTypeMediaType != null) {
+            return contentTypeCharset;
+        }
+
+        extractContentTypeParts(userAgent);
+
+        return contentTypeCharset;
+    }
+
+    /**
+     * Extracts the type/subtype and charset parameter from the Content-Type
+     * header.
+     */
+    protected void extractContentTypeParts(String userAgent) {
+        getContentType(userAgent);
+        int i = 0;
+        int len = contentType.length();
+loop1:  while (i < len) {
+            switch (contentType.charAt(i)) {
+                case ' ':
+                case ';':
+                    break loop1;
+            }
+            i++;
+        }
+        System.err.println("i == " + i);
+        if (i == len) {
+            contentTypeMediaType = contentType;
+        } else {
+            contentTypeMediaType = contentType.substring(0, i);
+        }
+        for (;;) {
+            while (i < len && contentType.charAt(i) != ';') {
+                i++;
+            }
+            if (i == len) {
+                return;
+            }
+            i++;
+            while (i < len && contentType.charAt(i) == ' ') {
+                i++;
+            }
+            if (i >= len - 8) {
+                return;
+            }
+            if (contentType.charAt(i++) == 'c') {
+                if (contentType.charAt(i++) != 'h') continue;
+                if (contentType.charAt(i++) != 'a') continue;
+                if (contentType.charAt(i++) != 'r') continue;
+                if (contentType.charAt(i++) != 's') continue;
+                if (contentType.charAt(i++) != 'e') continue;
+                if (contentType.charAt(i++) != 't') continue;
+                if (contentType.charAt(i++) != '=') continue;
+                int j = i;
+loop2:          while (i < len) {
+                    switch (contentType.charAt(i)) {
+                        case ' ':
+                        case ';':
+                            break loop2;
+                    }
+                    i++;
+                }
+                contentTypeCharset = contentType.substring(j, i);
+                return;
+            }
+        }
     }
 
     /**
