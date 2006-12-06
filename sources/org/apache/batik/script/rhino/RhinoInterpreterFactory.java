@@ -33,7 +33,15 @@ import org.apache.batik.script.rhino.svg12.SVG12RhinoInterpreter;
  */
 public class RhinoInterpreterFactory implements InterpreterFactory {
 
-    static final String TEXT_ECMASCRIPT = "text/ecmascript";
+    /**
+     * The MIME types that Rhino can handle.
+     */
+    private static final String[] RHINO_MIMETYPES = {
+        "application/ecmascript",
+        "application/javascript",
+        "text/ecmascript",
+        "text/javascript",
+    };
 
     /**
      * Builds a <code>RhinoInterpreterFactory</code>.
@@ -42,9 +50,11 @@ public class RhinoInterpreterFactory implements InterpreterFactory {
     }
 
     /**
-     * Returns the mime-type to register this interpereter with.
+     * Returns the mime-types to register this interpereter with.
      */
-    public String getMimeType() { return TEXT_ECMASCRIPT; }
+    public String[] getMimeTypes() {
+        return RHINO_MIMETYPES;
+    }
 
     /**
      * Creates an instance of <code>RhinoInterpreter</code> class.

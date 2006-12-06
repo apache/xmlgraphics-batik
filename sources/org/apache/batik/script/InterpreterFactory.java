@@ -21,18 +21,18 @@ package org.apache.batik.script;
 import java.net.URL;
 
 /**
- * An hight level interface that represents a factory allowing
- * to create instances of a particular <code>Interpreter</code> interface
- * implementation.
+ * An interface for factory objects than can create {@link Interpreter}
+ * instances for a particular script language.
+ *
  * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>
  * @version $Id$
  */
 public interface InterpreterFactory {
 
     /**
-     * Returns the mime-type to register this interpereter with.
+     * Returns the mime-types to register this interpereter with.
      */
-    String getMimeType();
+    String[] getMimeTypes();
 
     /**
      * This method should create an instance of <code>Interpreter</code>

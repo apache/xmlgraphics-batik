@@ -62,8 +62,10 @@ public class InterpreterPool {
         while (iter.hasNext()) {
             InterpreterFactory factory = null;
             factory = (InterpreterFactory)iter.next();
-            // System.err.println("Factory : " + factory);
-            defaultFactories.put(factory.getMimeType(), factory);
+            String[] mimeTypes = factory.getMimeTypes();
+            for (int i = 0; i < mimeTypes.length; i++) {
+                defaultFactories.put(mimeTypes[i], factory);
+            }
         }
     }
 

@@ -19,9 +19,12 @@
 package org.apache.batik.bridge;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PushbackInputStream;
 import java.io.Reader;
 import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashSet;
@@ -212,6 +215,12 @@ public class BaseScriptingEnvironment {
     protected static final String ALTERNATE_EVENT_NAME = "evt";
 
     /**
+     * The 'application/ecmascript' MIME type.
+     */
+    protected static final String APPLICATION_ECMASCRIPT =
+        "application/ecmascript";
+
+    /**
      * The bridge context.
      */
     protected BridgeContext bridgeContext;
@@ -400,7 +409,7 @@ public class BaseScriptingEnvironment {
             try {
                 String href = XLinkSupport.getXLinkHref(script);
                 String desc = null;
-                Reader reader;
+                Reader reader = null;
 
                 if (href.length() > 0) {
                     desc = href;
@@ -409,7 +418,62 @@ public class BaseScriptingEnvironment {
                     ParsedURL purl = new ParsedURL(script.getBaseURI(), href);
 
                     checkCompatibleScriptURL(type, purl);
-                    reader = new InputStreamReader(purl.openStream());
+                    InputStream is = purl.openStream();
+                    String mediaType = purl.getContentTypeMediaType();
+                    String enc = purl.getContentTypeCharset();
+                    if (enc != null) {
+                        try {
+                            reader = new InputStreamReader(is, enc);
+                        } catch (UnsupportedEncodingException uee) {
+                            enc = null;
+                        }
+                    }
+                    if (reader == null) {
+                        if (mediaType.equals(APPLICATION_ECMASCRIPT)) {
+                            // No encoding was specified in the MIME type, so
+                            // infer it according to RFC 4329.
+                            PushbackInputStream pbis =
+                                new PushbackInputStream(is, 8);
+                            byte[] buf = new byte[4];
+                            int read = pbis.read(buf);
+                            if (read > 0) {
+                                pbis.unread(buf, 0, read);
+                                if (read >= 2) {
+                                    if (buf[0] == (byte)0xff &&
+                                            buf[1] == (byte)0xfe) {
+                                        if (read >= 4 && buf[2] == 0 &&
+                                                buf[3] == 0) {
+                                            enc = "UTF32-LE";
+                                            pbis.skip(4);
+                                        } else {
+                                            enc = "UTF-16LE";
+                                            pbis.skip(2);
+                                        }
+                                    } else if (buf[0] == (byte)0xfe &&
+                                            buf[1] == (byte)0xff) {
+                                        enc = "UTF-16BE";
+                                        pbis.skip(2);
+                                    } else if (read >= 3 && buf[0] == 0xef &&
+                                            buf[1] == 0xbb && buf[2] == 0xbf) {
+                                        enc = "UTF-8";
+                                        pbis.skip(3);
+                                    } else if (read >= 4 && buf[0] == 0 &&
+                                            buf[1] == 0 &&
+                                            buf[2] == (byte)0xfe &&
+                                            buf[3] == (byte)0xff) {
+                                        enc = "UTF-32BE";
+                                        pbis.skip(4);
+                                    }
+                                }
+                                if (enc == null) {
+                                    enc = "UTF-8";
+                                }
+                            }
+                            reader = new InputStreamReader(pbis, enc);
+                        } else {
+                            reader = new InputStreamReader(is);
+                        }
+                    }
                 } else {
                     checkCompatibleScriptURL(type, docPURL);
                     DocumentLoader dl = bridgeContext.getDocumentLoader();
