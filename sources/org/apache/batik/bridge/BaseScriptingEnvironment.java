@@ -432,6 +432,13 @@ public class BaseScriptingEnvironment {
                         if (mediaType.equals(APPLICATION_ECMASCRIPT)) {
                             // No encoding was specified in the MIME type, so
                             // infer it according to RFC 4329.
+                            if (purl.hasContentTypeParameter("version")) {
+                                // Future versions of application/ecmascript are
+                                // not supported, so skip this script element if
+                                // the version parameter is present.
+                                continue;
+                            }
+
                             PushbackInputStream pbis =
                                 new PushbackInputStream(is, 8);
                             byte[] buf = new byte[4];
