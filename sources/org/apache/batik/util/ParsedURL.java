@@ -359,6 +359,13 @@ public class ParsedURL {
     }
 
     /**
+     * Returns whether the Content-Type header has the given parameter.
+     */
+    public boolean hasContentTypeParameter(String param) {
+        return data.hasContentTypeParameter(userAgent, param);
+    }
+
+    /**
      * Returns the content encoding if available.  This is only available
      * for some protocols.
      */

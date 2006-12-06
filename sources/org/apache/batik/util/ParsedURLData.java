@@ -316,6 +316,52 @@ public class ParsedURLData {
     }
 
     /**
+     * Returns whether the Content-Type header has the given parameter.
+     */
+    public boolean hasContentTypeParameter(String userAgent, String param) {
+        getContentType(userAgent);
+        int i = 0;
+        int len = contentType.length();
+        int plen = param.length();
+loop1:  while (i < len) {
+            switch (contentType.charAt(i)) {
+                case ' ':
+                case ';':
+                    break loop1;
+            }
+            i++;
+        }
+        if (i == len) {
+            contentTypeMediaType = contentType;
+        } else {
+            contentTypeMediaType = contentType.substring(0, i);
+        }
+loop2:  for (;;) {
+            while (i < len && contentType.charAt(i) != ';') {
+                i++;
+            }
+            if (i == len) {
+                return false;
+            }
+            i++;
+            while (i < len && contentType.charAt(i) == ' ') {
+                i++;
+            }
+            if (i >= len - plen - 1) {
+                return false;
+            }
+            for (int j = 0; j < plen; j++) {
+                if (!(contentType.charAt(i++) == param.charAt(j))) {
+                    continue loop2;
+                }
+            }
+            if (contentType.charAt(i) == '=') {
+                return true;
+            }
+        }
+    }
+
+    /**
      * Extracts the type/subtype and charset parameter from the Content-Type
      * header.
      */
@@ -331,7 +377,6 @@ loop1:  while (i < len) {
             }
             i++;
         }
-        System.err.println("i == " + i);
         if (i == len) {
             contentTypeMediaType = contentType;
         } else {
