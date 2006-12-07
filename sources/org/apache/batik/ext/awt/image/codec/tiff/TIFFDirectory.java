@@ -48,6 +48,7 @@ import org.apache.batik.ext.awt.image.codec.util.SeekableStream;
  * be removed or changed in future releases of JAI.</b>
  *
  * @see TIFFField
+ * @version $Id$
  */
 public class TIFFDirectory extends Object implements Serializable {
 
@@ -117,7 +118,7 @@ public class TIFFDirectory extends Object implements Serializable {
             }
 
             stream.seek(ifd_offset);
-            int entries = readUnsignedShort(stream);
+            long entries = readUnsignedShort(stream);
             stream.skip(12*entries);
 
             ifd_offset = readUnsignedInt(stream);
@@ -160,7 +161,7 @@ public class TIFFDirectory extends Object implements Serializable {
         int dirNum = 0;
         while(dirNum < directory) {
             // Get the number of fields in the current IFD.
-            int numEntries = readUnsignedShort(stream);
+            long numEntries = readUnsignedShort(stream);
 
             // Skip to the next IFD offset value field.
             stream.seek(ifd_offset + 12*numEntries);
@@ -592,7 +593,7 @@ public class TIFFDirectory extends Object implements Serializable {
             ++numDirectories;
 
             stream.seek(offset);
-            int entries = readUnsignedShort(stream, isBigEndian);
+            long entries = readUnsignedShort(stream, isBigEndian);
             stream.skip(12*entries);
             offset = readUnsignedInt(stream, isBigEndian);
         }

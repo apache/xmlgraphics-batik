@@ -460,8 +460,10 @@ public class BaseScriptingEnvironment {
                                             buf[1] == (byte)0xff) {
                                         enc = "UTF-16BE";
                                         pbis.skip(2);
-                                    } else if (read >= 3 && buf[0] == 0xef &&
-                                            buf[1] == 0xbb && buf[2] == 0xbf) {
+                                    } else if (read >= 3
+                                            && buf[0] == (byte)0xef 
+                                            && buf[1] == (byte)0xbb
+                                            && buf[2] == (byte)0xbf) {
                                         enc = "UTF-8";
                                         pbis.skip(3);
                                     } else if (read >= 4 && buf[0] == 0 &&
