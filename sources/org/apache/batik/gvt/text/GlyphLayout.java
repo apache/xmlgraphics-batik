@@ -1951,7 +1951,7 @@ public class GlyphLayout implements TextSpanLayout {
      */
     protected boolean isLatinChar(char c) {
 
-        if ( c < 255 & Character.isLetterOrDigit( c )){
+        if ( c < 255 && Character.isLetterOrDigit( c )){
             // cheap quick check, should catch most lation-chars
             return true;
         }

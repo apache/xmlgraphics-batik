@@ -36,8 +36,8 @@ import java.util.NoSuchElementException;
  * this reason it uses Rectangle not Rectangle2D).
  *
  * @author <a href="mailto:deweese@apache.org">Thomas DeWeese</a>
- * @version $Id$ */
-
+ * @version $Id$
+ */
 public class RectListManager implements Collection {
     Rectangle [] rects = null;
     int size = 0;
@@ -317,7 +317,7 @@ public class RectListManager implements Collection {
         Rectangle rect = (Rectangle)o;
         int l=0, r=size-1, idx=0;
         while (l <= r) {
-            idx = (l+r)/2;
+            idx = (l+r) >>> 1;
             if (rect.x == rects[idx].x) break;
             if (rect.x <  rects[idx].x) {
                 if (idx == 0) break;
@@ -395,7 +395,7 @@ public class RectListManager implements Collection {
     public boolean remove(Rectangle rect) {
         int l=0, r=size-1, idx=0;
         while (l <= r) {
-            idx = (l+r)/2;
+            idx = (l+r) >>> 1;
             if (rect.x == rects[idx].x) break;
             if (rect.x <  rects[idx].x) {
                 if (idx == 0) break;
