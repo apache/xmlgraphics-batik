@@ -1625,7 +1625,7 @@ To display the available targets type:
              excludepackagenames="${javadoc-exclusions}"
              maxmemory="128m"
              destdir="${docs}/javadoc"
-	     encoding="UTF-8"
+             encoding="UTF-8"
              author="false"
              version="false"
              use="true"
