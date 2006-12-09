@@ -33,11 +33,12 @@ if not "%ANT_HOME%" == "" goto gotAntHome
 :: ----- Set Up The Runtime Classpath -----------------------------------------
 
 
-set CP=%JAVA_HOME%\lib\tools.jar;lib\build\ant_1_4_1.jar;.\lib\build\crimson-ant.jar;.\lib\build\jaxp.jar
+set CP=%JAVA_HOME%\lib\tools.jar;.\lib\build\ant-1.6.5.jar;.\lib\build\ant-launcher-1.6.5.jar;.\lib\build\crimson-1.1.3.jar
  
 
 :: ----- Execute The Requested Build ------------------------------------------
 
+echo %JAVA_HOME%\bin\java.exe %ANT_OPTS% -classpath %CP% org.apache.tools.ant.Main -emacs -Dant.home=. %1 -Dargs="%2 %3 %4 %5 %6 %7 %8 %9"
 %JAVA_HOME%\bin\java.exe %ANT_OPTS% -classpath %CP% org.apache.tools.ant.Main -emacs -Dant.home=. %1 -Dargs="%2 %3 %4 %5 %6 %7 %8 %9"
 
 :: ----- Cleanup the environment ----------------------------------------------

@@ -43,6 +43,7 @@ import org.apache.batik.util.XMLConstants;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
@@ -131,8 +132,6 @@ public class SVG12BridgeContext extends BridgeContext {
      * Disposes this BridgeContext.
      */
     public void dispose() {
-        AbstractNode n = (AbstractNode) document;
-        XBLEventSupport es = (XBLEventSupport) n.initializeEventSupport();
 
         childContexts.clear();
         synchronized (eventListenerSet) {
@@ -150,7 +149,13 @@ public class SVG12BridgeContext extends BridgeContext {
                 }
                 if (m instanceof ImplementationEventListenerMememto) {
                     String ns = m.getNamespaceURI();
-                    es.removeImplementationEventListenerNS(ns, t, el, uc);
+                    Node nde = (Node)et;
+                    AbstractNode n = (AbstractNode)nde.getOwnerDocument();
+                    if (n != null) {
+                        XBLEventSupport es;
+                        es = (XBLEventSupport) n.initializeEventSupport();
+                        es.removeImplementationEventListenerNS(ns, t, el, uc);
+                    }
                 } else if (in) {
                     String ns = m.getNamespaceURI();
                     et.removeEventListenerNS(ns, t, el, uc);
