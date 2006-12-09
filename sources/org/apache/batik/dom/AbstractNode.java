@@ -1012,16 +1012,17 @@ public abstract class AbstractNode
     }
 
     /**
-     * <b>DOM</b>: Implements
-     * {@link org.w3c.dom.events.EventTarget#willTriggerNS(String,String)}.
+     * <b>DOM</b>: Implements {@code EventTarget.willTriggerNS(String,String)}
+     * from and old draft of DOM Level 3 Events.
      */
     public boolean willTriggerNS(String namespaceURI, String type) {
         return true;
     }
 
     /**
-     * <b>DOM</b>: Implements
-     * {@link org.w3c.dom.events.EventTarget#hasEventListenerNS(String,String)}.
+     * <b>DOM</b>: Implements {@code
+     * EventTarget.hasEventListenerNS(String,String)} from and old draft of DOM
+     * Level 3 Events.
      */
     public boolean hasEventListenerNS(String namespaceURI, String type) {
         if (eventSupport == null) {
