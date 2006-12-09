@@ -26,6 +26,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.io.BufferedInputStream;
 import java.io.InputStream;
+import java.io.InterruptedIOException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,8 +51,9 @@ import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.ImageNode;
 import org.apache.batik.gvt.RasterImageNode;
 import org.apache.batik.gvt.ShapeNode;
-import org.apache.batik.util.ParsedURL;
+import org.apache.batik.util.HaltingThread;
 import org.apache.batik.util.MimeTypeConstants;
+import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.XMLConstants;
 
 import org.w3c.dom.Document;
@@ -264,6 +266,8 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
             // Reset the stream for next try.
             reference.retry();
         } catch (IOException ioe) {
+            reference.release(); 
+            reference = null;
             try {
                 // Couldn't reset stream so reopen it.
                 reference = openStream(e, purl);
@@ -286,6 +290,12 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         } catch (SecurityException ex) {
             throw new BridgeException(ctx, e, ERR_URI_UNSECURE,
                                       new Object[] {purl});
+        } catch (InterruptedIOException iioe) {
+            if (HaltingThread.hasBeenHalted()) 
+                throw new InterruptedBridgeException();
+
+        } catch (InterruptedBridgeException ibe) {
+            throw ibe;
         } catch (Exception ex) {
             /* Nothing to do */
             // ex.printStackTrace();
@@ -294,6 +304,8 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         try {
             reference.retry();
         } catch (IOException ioe) {
+            reference.release();
+            reference = null;
             try {
                 // Couldn't reset stream so reopen it.
                 reference = openStream(e, purl);

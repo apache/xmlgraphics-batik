@@ -44,6 +44,9 @@ import org.apache.batik.swing.gvt.GVTTreeRendererEvent;
 import org.apache.batik.swing.JSVGCanvas;
 import org.apache.batik.swing.svg.SVGDocumentLoaderAdapter;
 import org.apache.batik.swing.svg.SVGDocumentLoaderEvent;
+import org.apache.batik.swing.svg.SVGLoadEventDispatcherAdapter;
+import org.apache.batik.swing.svg.SVGLoadEventDispatcherEvent;
+import org.apache.batik.swing.svg.SVGLoadEventDispatcher;
 
 /**
  * One line Class Desc
@@ -108,6 +111,7 @@ public class JSVGCanvasHandler {
     WindowListener wl = null;
     InitialRenderListener irl = null;
     LoadListener ll = null;
+    SVGLoadEventListener sll = null;
     UpdateRenderListener url = null;
 
     boolean failed;
@@ -152,28 +156,9 @@ public class JSVGCanvasHandler {
                 checkRender();
                 if ( abort) return;
 
-                try {
-                    EventQueue.invokeAndWait(new Runnable() {
-                            public void run() {
-                                updateManager = canvas.getUpdateManager();
-                                if (updateManager == null)
-                                    return;
-                                url = new UpdateRenderListener();
-                                updateManager.addUpdateManagerListener(url);
-                            }});
-                } catch (Throwable t) { t.printStackTrace(); }
-
-                if ( abort) return;
-
+                System.err.println("UM: " + updateManager);
                 if (updateManager == null)
                     return;
-
-                // Wait for Update Manager to Start.
-                while (!updateManager.isRunning());
-
-                bindHost();
-
-                if ( abort) return;
 
                 while (!done) {
                     checkUpdate();
@@ -216,6 +201,9 @@ public class JSVGCanvasHandler {
                         canvas.addGVTTreeRendererListener(irl);
                         ll = new LoadListener();
                         canvas.addSVGDocumentLoaderListener(ll);
+                        sll = new SVGLoadEventListener();
+                        canvas.addSVGLoadEventDispatcherListener(sll);
+                        
                     }});
         } catch (Throwable t) {
             t.printStackTrace();
@@ -226,6 +214,8 @@ public class JSVGCanvasHandler {
     public void scriptDone() {
         Runnable r = new Runnable() {
                 public void run() {
+                    if (updateManager != null)
+                        updateManager.forceRepaint();
                     synchronized(renderMonitor) {
                         done = true;
                         failed = false;
@@ -329,7 +319,10 @@ public class JSVGCanvasHandler {
                 renderMonitor.notifyAll();
             }
         }
-        public void managerStarted(UpdateManagerEvent e) { }
+        public void managerStarted(UpdateManagerEvent e) {
+            System.err.println("Binding Host: " + updateManager);
+          bindHost(); 
+        }
         public void managerSuspended(UpdateManagerEvent e) { }
         public void managerResumed(UpdateManagerEvent e) { }
         public void managerStopped(UpdateManagerEvent e) { }
@@ -378,4 +371,15 @@ public class JSVGCanvasHandler {
             }
         }
     }
+
+    class SVGLoadEventListener extends SVGLoadEventDispatcherAdapter {
+        public void svgLoadEventDispatchStarted(SVGLoadEventDispatcherEvent e){
+            SVGLoadEventDispatcher dispatcher;
+            dispatcher = (SVGLoadEventDispatcher)e.getSource();
+            updateManager = dispatcher.getUpdateManager();
+            url = new UpdateRenderListener();
+            updateManager.addUpdateManagerListener(url);
+        }
+    }
+    
 }
