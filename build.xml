@@ -528,7 +528,7 @@ To display the available targets type:
     </dirset>
     <pathconvert refid="dirs" pathsep=" " property="svn-info-dirs"/>
     <exec executable="svn" output="svn-info.xml"
-          resultproperty="svn-info-result">
+          resultproperty="svn-info-result" failifexecutionfails="false">
       <arg line="info --xml . ${svn-info-dirs}"/>
     </exec>
     <condition property="should-transform-svn-info">
