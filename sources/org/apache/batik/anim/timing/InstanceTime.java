@@ -92,15 +92,16 @@ public class InstanceTime implements Comparable {
      * has changed.
      * @param newTime the new time, in parent simple time
      */
-    void dependentUpdate(float newTime) {
+    float dependentUpdate(float newTime) {
         // Trace.enter(this, "dependentUpdate", new Object[] { new Float(newTime) } ); try {
         // XXX Convert time from the creator's syncbase's
         //     time system into this time system.  Not
         //     strictly necessary in SVG.
         time = newTime;
         if (creator != null) {
-            creator.handleTimebaseUpdate(this, time);
+            return creator.handleTimebaseUpdate(this, time);
         }
+        return Float.POSITIVE_INFINITY;
         // } finally { Trace.exit(); }
     }
 

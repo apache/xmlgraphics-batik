@@ -63,6 +63,16 @@ public abstract class TimedDocumentRoot extends TimeContainer {
     protected LinkedList listeners = new LinkedList();
 
     /**
+     * Whether the document is currently being sampled.
+     */
+    protected boolean isSampling;
+
+    /**
+     * Whether the document is currently being sampled for a hyperlink.
+     */
+    protected boolean isHyperlinking;
+
+    /**
      * Creates a new TimedDocumentRoot.
      * @param useSVG11AccessKeys allows the use of accessKey() timing
      *                           specifiers with a single character
@@ -102,11 +112,27 @@ public abstract class TimedDocumentRoot extends TimeContainer {
     }
 
     /**
+     * Returns whether the document is currently being sampled.
+     */
+    public boolean isSampling() {
+        return isSampling;
+    }
+
+    /**
+     * Returns whether the document is currently being sampled for a hyperlink.
+     */
+    public boolean isHyperlinking() {
+        return isHyperlinking;
+    }
+
+    /**
      * Samples the entire timegraph at the given time.
      */
     public float seekTo(float time, boolean hyperlinking) {
-        lastSampleTime = time;
         // Trace.enter(this, "seekTo", new Object[] { new Float(time) } ); try {
+        isSampling = true;
+        lastSampleTime = time;
+        isHyperlinking = hyperlinking;
         propagationFlags.clear();
         // No time containers in SVG, so we don't have to worry
         // about a partial ordering of timed elements to sample.
@@ -132,6 +158,7 @@ public abstract class TimedDocumentRoot extends TimeContainer {
                 }
             }
         } while (needsUpdates);
+        isSampling = false;
         return mint;
         // } finally { Trace.exit(); }
     }

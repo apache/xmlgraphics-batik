@@ -92,26 +92,32 @@ public class SyncbaseTimingSpecifier extends OffsetTimingSpecifier {
     /**
      * Called by the timebase element when it creates a new Interval.
      */
-    void newInterval(Interval interval) {
+    float newInterval(Interval interval) {
         // Trace.enter(this, "newInterval", new Object[] { interval } ); try {
+        if (owner.hasPropagated) {
+            return Float.POSITIVE_INFINITY;
+        }
         InstanceTime instance =
             new InstanceTime(this, (syncBegin ? interval.getBegin()
                                               : interval.getEnd()) + offset,
                              interval, true);
         instances.put(interval, instance);
         interval.addDependent(instance, syncBegin);
-        owner.addInstanceTime(instance, isBegin);
+        return owner.addInstanceTime(instance, isBegin);
         // } finally { Trace.exit(); }
     }
 
     /**
      * Called by the timebase element when it deletes an Interval.
      */
-    void removeInterval(Interval interval) {
+    float removeInterval(Interval interval) {
         // Trace.enter(this, "removeInterval", new Object[] { interval } ); try {
+        if (owner.hasPropagated) {
+            return Float.POSITIVE_INFINITY;
+        }
         InstanceTime instance = (InstanceTime) instances.get(interval);
         interval.removeDependent(instance, syncBegin);
-        owner.removeInstanceTime(instance, isBegin);
+        return owner.removeInstanceTime(instance, isBegin);
         // } finally { Trace.exit(); }
     }
 
@@ -119,9 +125,12 @@ public class SyncbaseTimingSpecifier extends OffsetTimingSpecifier {
      * Called by an {@link InstanceTime} created by this TimingSpecifier
      * to indicate that its value has changed.
      */
-    void handleTimebaseUpdate(InstanceTime instanceTime, float newTime) {
+    float handleTimebaseUpdate(InstanceTime instanceTime, float newTime) {
         // Trace.enter(this, "handleTimebaseUpdate", new Object[] { instanceTime, new Float(newTime) } ); try {
-        owner.instanceTimeChanged(instanceTime, isBegin);
+        if (owner.hasPropagated) {
+            return Float.POSITIVE_INFINITY;
+        }
+        return owner.instanceTimeChanged(instanceTime, isBegin);
         // } finally { Trace.exit(); }
     }
 }

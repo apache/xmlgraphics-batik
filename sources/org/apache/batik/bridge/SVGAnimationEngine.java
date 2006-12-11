@@ -615,6 +615,69 @@ public class SVGAnimationEngine extends AnimationEngine {
     }
 
     /**
+     * Idle runnable to tick the animation, that reads times from System.in.
+     */
+    protected class DebugAnimationTickRunnable extends AnimationTickRunnable {
+
+        float t = 0f;
+
+        public DebugAnimationTickRunnable(RunnableQueue q) {
+            super(q);
+            waitTime = Long.MAX_VALUE;
+            new Thread() {
+                public void run() {
+                    java.io.BufferedReader r = new java.io.BufferedReader(new java.io.InputStreamReader(System.in));
+                    System.out.println("Enter times.");
+                    for (;;) {
+                        String s;
+                        try {
+                            s = r.readLine();
+                        } catch (java.io.IOException e) {
+                            s = null;
+                        }
+                        if (s == null) {
+                            System.exit(0);
+                        }
+                        t = Float.parseFloat(s);
+                        DebugAnimationTickRunnable.this.resume();
+                    }
+                }
+            }.start();
+        }
+
+        public void resume() {
+            waitTime = 0;
+            Object lock = q.getIteratorLock();
+            synchronized (lock) {
+                lock.notify();
+            }
+        }
+
+        public long getWaitTime() {
+            long wt = waitTime;
+            waitTime = Long.MAX_VALUE;
+            return wt;
+        }
+
+        public void run() {
+            try {
+                try {
+                    tick(t, false);
+                } catch (AnimationException ex) {
+                    throw new BridgeException(ctx, ex.getElement().getElement(),
+                                              ex.getMessage());
+                }
+            } catch (BridgeException ex) {
+                if (ctx.getUserAgent() == null) {
+                    ex.printStackTrace();
+                } else {
+                    ctx.getUserAgent().displayError(ex);
+                }
+            }
+        }
+    }
+
+    /**
      * Idle runnable to tick the animation.
      */
     protected class AnimationTickRunnable
@@ -622,7 +685,6 @@ public class SVGAnimationEngine extends AnimationEngine {
 
         protected Calendar time = Calendar.getInstance();
         double second = -1.;
-        int idx = -1;
         int frames;
         long waitTime;
         RunnableQueue q;
