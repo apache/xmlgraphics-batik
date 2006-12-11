@@ -85,7 +85,8 @@ public abstract class TimingSpecifier {
      * This should be overridden in descendant classes that generate
      * time instances based on the interval of a timebase element.
      */
-    void newInterval(Interval interval) {
+    float newInterval(Interval interval) {
+        return Float.POSITIVE_INFINITY;
     }
 
     /**
@@ -93,7 +94,8 @@ public abstract class TimingSpecifier {
      * This should be overridden in descendant classes that generate
      * time instances based on the interval of a timebase element.
      */
-    void removeInterval(Interval interval) {
+    float removeInterval(Interval interval) {
+        return Float.POSITIVE_INFINITY;
     }
 
     /**
@@ -102,6 +104,7 @@ public abstract class TimingSpecifier {
      * in descendant classes that generate time instances based on the
      * interval of a timebase element.
      */
-    void handleTimebaseUpdate(InstanceTime instanceTime, float newTime) {
+    float handleTimebaseUpdate(InstanceTime instanceTime, float newTime) {
+        return Float.POSITIVE_INFINITY;
     }
 }

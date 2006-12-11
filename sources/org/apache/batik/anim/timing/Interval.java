@@ -146,28 +146,38 @@ public class Interval {
     /**
      * Updates the begin time for this interval.
      */
-    void setBegin(float begin) {
+    float setBegin(float begin) {
         // Trace.enter(this, "setBegin", new Object[] { new Float(begin) } ); try {
+        float minTime = Float.POSITIVE_INFINITY;
         this.begin = begin;
         Iterator i = beginDependents.iterator();
         while (i.hasNext()) {
             InstanceTime it = (InstanceTime) i.next();
-            it.dependentUpdate(begin);
+            float t = it.dependentUpdate(begin);
+            if (t < minTime) {
+                minTime = t;
+            }
         }
+        return minTime;
         // } finally { Trace.exit(); }
     }
 
     /**
      * Updates the end time for this interval.
      */
-    void setEnd(float end) {
+    float setEnd(float end) {
         // Trace.enter(this, "setEnd", new Object[] { new Float(end) } ); try {
+        float minTime = Float.POSITIVE_INFINITY;
         this.end = end;
         Iterator i = endDependents.iterator();
         while (i.hasNext()) {
             InstanceTime it = (InstanceTime) i.next();
-            it.dependentUpdate(end);
+            float t = it.dependentUpdate(end);
+            if (t < minTime) {
+                minTime = t;
+            }
         }
+        return minTime;
         // } finally { Trace.exit(); }
     }
 }
