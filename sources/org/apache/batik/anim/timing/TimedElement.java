@@ -534,27 +534,19 @@ public abstract class TimedElement implements SMILConstants {
         while (i.hasNext()) {
             TimingSpecifier ts = (TimingSpecifier) i.next();
             // Trace.print(ts.owner + "'s " + (ts.isBegin ? "begin" : "end" ) + ": " + ts);
-            // if (root.shouldPropagate(interval, ts, true)) {
-                float t = ts.newInterval(interval);
-                if (t < dependentMinTime) {
-                    dependentMinTime = t;
-                }
-            // } else {
-            //     // Trace.print("(but not propagating)");
-            // }
+            float t = ts.newInterval(interval);
+            if (t < dependentMinTime) {
+                dependentMinTime = t;
+            }
         }
         i = endDependents.iterator();
         while (i.hasNext()) {
             TimingSpecifier ts = (TimingSpecifier) i.next();
             // Trace.print(ts.owner + "'s " + (ts.isBegin ? "begin" : "end" ) + ": " + ts);
-            // if (root.shouldPropagate(interval, ts, false)) {
-            // } else {
-                float t = ts.newInterval(interval);
-                if (t < dependentMinTime) {
-                    dependentMinTime = t;
-                }
-            //     // Trace.print("(but not propagating)");
-            // }
+            float t = ts.newInterval(interval);
+            if (t < dependentMinTime) {
+                dependentMinTime = t;
+            }
         }
         return dependentMinTime;
         // } finally { Trace.exit(); }
@@ -663,7 +655,7 @@ public abstract class TimedElement implements SMILConstants {
         // begin and end times, or end the current interval and compute
         // a new one.
         boolean hasEnded = currentInterval != null
-            && time > currentInterval.getEnd();
+            && time >= currentInterval.getEnd();
         // Fire any repeat events that should have been fired since the
         // last sample.
         if (currentInterval != null && time >= currentInterval.getBegin()) {
