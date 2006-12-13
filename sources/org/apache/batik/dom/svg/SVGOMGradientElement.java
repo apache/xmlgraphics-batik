@@ -165,6 +165,7 @@ public abstract class SVGOMGradientElement
             if (ln.equals(SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE)) {
                 return true;
             }
+            // XXX gradientUnits, gradientTransform should be here too
         }
         return super.isAttributeAnimatable(ns, ln);
     }

@@ -198,10 +198,11 @@ public class MotionAnimation extends InterpolatingAnimation {
             }
         } else {
             keyPoints = new float[count];
-            for (int i = 0; i < count - 1; i++) {
-                keyPoints[i] = pathLength.getLengthAtSegment(i + 1);
+            keyPoints[0] = 0f;
+            for (int i = 1; i < count - 1; i++) {
+                keyPoints[i] = pathLength.getLengthAtSegment(i) / totalLength;
             }
-            keyPoints[count - 1] = totalLength;
+            keyPoints[count - 1] = 1f;
         }
         this.keyPoints = keyPoints;
     }
@@ -257,6 +258,7 @@ public class MotionAnimation extends InterpolatingAnimation {
                 point += interpolation *
                     (keyPoints[keyTimeIndex + 1] - keyPoints[keyTimeIndex]);
             }
+            point *= pathLength.lengthOfPath();
             Point2D p = pathLength.pointAtLength(point);
             float ang;
             if (rotateAuto) {
