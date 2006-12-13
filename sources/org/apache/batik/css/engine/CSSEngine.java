@@ -2534,7 +2534,7 @@ public abstract class CSSEngine {
                     StyleMap style = elt.getComputedStyleMap(null);
                     if (style != null
                             && style.getOrigin(idx) == StyleMap.OVERRIDE_ORIGIN
-                            && style.isComputed(idx)) {
+                            /* && style.isComputed(idx) */) {
                         invalidateProperties
                             (elt, new int[] { idx }, null, true);
                     }
