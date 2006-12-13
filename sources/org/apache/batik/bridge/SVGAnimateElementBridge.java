@@ -233,7 +233,7 @@ outer:  while (i < len) {
             return null;
         }
         ArrayList keySplines = new ArrayList(7);
-        int i = 0, start = 0, end;
+        int count = 0, i = 0, start = 0, end;
         char c;
 outer:  while (i < len) {
             while (keySplinesString.charAt(i) == ' ') {
@@ -245,15 +245,41 @@ outer:  while (i < len) {
             start = i++;
             if (i != len) {
                 c = keySplinesString.charAt(i);
-                while (c != ' ' && c != ';') {
+                while (c != ' ' && c != ',' && c != ';') {
                     i++;
                     if (i == len) {
                         break;
                     }
                     c = keySplinesString.charAt(i);
                 }
+                end = i++;
+                if (c == ' ') {
+                    do {
+                        if (i == len) {
+                            break;
+                        }
+                        c = keySplinesString.charAt(i++);
+                    } while (c == ' ');
+                    if (c != ';' && c != ',') {
+                        i--;
+                    }
+                }
+                if (c == ';') {
+                    if (count == 3) {
+                        count = 0;
+                    } else {
+                        throw new BridgeException
+                            (ctx, element,
+                             ErrorConstants.ERR_ATTRIBUTE_VALUE_MALFORMED,
+                             new Object[] { SVG_KEY_SPLINES_ATTRIBUTE,
+                                            keySplinesString });
+                    }
+                } else {
+                    count++;
+                }
+            } else {
+                end = i++;
             }
-            end = i++;
             try {
                 float keySplineValue =
                     Float.parseFloat(keySplinesString.substring(start, end));

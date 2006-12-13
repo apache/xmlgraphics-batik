@@ -143,7 +143,7 @@ public class SVGAnimateMotionElementBridge extends SVGAnimateElementBridge {
     }
 
     /**
-     * Returns the parsed 'type' attribute (or the path from a referencing
+     * Returns the parsed 'path' attribute (or the path from a referencing
      * 'mpath') from the animation element.
      */
     protected ExtendedGeneralPath parsePath() {
