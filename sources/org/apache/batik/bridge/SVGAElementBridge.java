@@ -147,7 +147,7 @@ public class SVGAElementBridge extends SVGGElementBridge {
         }
 
         public void handleEvent(Event evt) {
-            if (evt.getDefaultPrevented()) {
+            if (((AbstractEvent) evt).getDefaultPrevented()) {
                 return;
             }
             SVGAElement elt = (SVGAElement)evt.getCurrentTarget();
@@ -170,7 +170,7 @@ public class SVGAElementBridge extends SVGGElementBridge {
         }
 
         public void handleEvent(Event evt) {
-            if (evt.getDefaultPrevented()) {
+            if (((AbstractEvent) evt).getDefaultPrevented()) {
                 return;
             }
             //
@@ -222,7 +222,7 @@ public class SVGAElementBridge extends SVGGElementBridge {
         }
 
         public void handleEvent(Event evt) {
-            if (evt.getDefaultPrevented()) {
+            if (((AbstractEvent) evt).getDefaultPrevented()) {
                 return;
             }
             // No need to set the cursor on out events: this is taken care of
