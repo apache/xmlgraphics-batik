@@ -320,6 +320,9 @@ public class ParsedURLData {
      */
     public boolean hasContentTypeParameter(String userAgent, String param) {
         getContentType(userAgent);
+        if (contentType == null) {
+            return false;
+        }
         int i = 0;
         int len = contentType.length();
         int plen = param.length();
@@ -367,6 +370,9 @@ loop2:  for (;;) {
      */
     protected void extractContentTypeParts(String userAgent) {
         getContentType(userAgent);
+        if (contentType == null) {
+            return;
+        }
         int i = 0;
         int len = contentType.length();
 loop1:  while (i < len) {
