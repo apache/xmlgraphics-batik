@@ -429,7 +429,7 @@ public class BaseScriptingEnvironment {
                         }
                     }
                     if (reader == null) {
-                        if (mediaType.equals(APPLICATION_ECMASCRIPT)) {
+                        if (APPLICATION_ECMASCRIPT.equals(mediaType)) {
                             // No encoding was specified in the MIME type, so
                             // infer it according to RFC 4329.
                             if (purl.hasContentTypeParameter("version")) {
