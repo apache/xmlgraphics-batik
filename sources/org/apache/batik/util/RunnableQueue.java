@@ -108,12 +108,12 @@ public class RunnableQueue implements Runnable {
     /**
      * The {@link IdleRunnable} to run if the queue is empty.
      */
-    protected IdleRunnable idleRunnable;
+    private IdleRunnable idleRunnable;
 
     /**
      * The time (in milliseconds) that the idle runnable should be run next.
      */
-    protected long idleRunnableWaitTime;
+    private long idleRunnableWaitTime;
 
     /**
      * Creates a new RunnableQueue started in a new thread.
@@ -490,7 +490,7 @@ public class RunnableQueue implements Runnable {
     /**
      * Sets a Runnable to be run whenever the queue is empty.
      */
-    public synchronized void setIdleRunnable(IdleRunnable r) {
+    public void setIdleRunnable(IdleRunnable r) {
         synchronized (list) {
             idleRunnable = r;
             idleRunnableWaitTime = 0;
