@@ -25,6 +25,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.awt.BasicStroke;
 import java.awt.geom.AffineTransform;
 
 import org.apache.batik.gvt.Selectable;
@@ -92,7 +93,7 @@ public class TextSelectionManager {
     /**
      * The color of the outline of the selection overlay.
      */
-    protected Color selectionOverlayStrokeColor = new Color(255, 255, 255, 255);
+    protected Color selectionOverlayStrokeColor = Color.white;
 
     /**
      * A flag bit that indicates whether or not the selection overlay is
@@ -143,7 +144,7 @@ public class TextSelectionManager {
      * @param color the new color of the selection overlay
      */
     public void setSelectionOverlayColor(Color color) {
-        this.selectionOverlayColor = color;
+        selectionOverlayColor = color;
     }
 
     /**
@@ -160,7 +161,7 @@ public class TextSelectionManager {
      * @param color the new color of the outline of the selection overlay
      */
     public void setSelectionOverlayStrokeColor(Color color) {
-        this.selectionOverlayStrokeColor = color;
+        selectionOverlayStrokeColor = color;
     }
 
     /**
@@ -177,7 +178,7 @@ public class TextSelectionManager {
      * @param state true implies the selection overlay will be in XOR mode
      */
     public void setSelectionOverlayXORMode(boolean state) {
-        this.xorMode = state;
+        xorMode = state;
     }
 
     /**
@@ -297,7 +298,8 @@ public class TextSelectionManager {
             if (selectionHighlight != null) {
                 if (r != null) {
                     Rectangle r2 = getHighlightBounds();
-                    component.repaint(r.union(r2));
+                    r2.add( r );   // r2 = r2 union r
+                    component.repaint( r2 );
                 } else {
                     component.repaint(getHighlightBounds());
                 }
@@ -347,7 +349,7 @@ public class TextSelectionManager {
                     g2d.setColor(selectionOverlayColor);
                     g2d.fill(s);
                     if (selectionOverlayStrokeColor != null) {
-                        g2d.setStroke(new java.awt.BasicStroke(1.0f));
+                        g2d.setStroke(new BasicStroke(1.0f));
                         g2d.setColor(selectionOverlayStrokeColor);
                         g2d.draw(s);
                     }
