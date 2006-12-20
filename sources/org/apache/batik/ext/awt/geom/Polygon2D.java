@@ -28,12 +28,14 @@ import java.awt.geom.PathIterator;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.io.Serializable;
 
 /**
  * This class is a Polygon with float coordinates.
  *
+ * @version $Id: DisplacementMapRed.java 478276 2006-11-22 18:33:37Z dvholten $
  */
-public class Polygon2D implements Shape, Cloneable, java.io.Serializable {
+public class Polygon2D implements Shape, Cloneable, Serializable {
 
     /**
      * The total number of points.  The value of <code>npoints</code>
@@ -83,9 +85,9 @@ public class Polygon2D implements Shape, Cloneable, java.io.Serializable {
         if (rec == null) {
             throw new IndexOutOfBoundsException("null Rectangle");
         }
-        this.npoints = 4;
-        this.xpoints = new float[4];
-        this.ypoints = new float[4];
+        npoints = 4;
+        xpoints = new float[4];
+        ypoints = new float[4];
         xpoints[0] = (float)rec.getMinX();
         ypoints[0] = (float)rec.getMinY();
         xpoints[1] = (float)rec.getMaxX();
@@ -222,11 +224,10 @@ public class Polygon2D implements Shape, Cloneable, java.io.Serializable {
     /* get the associated {@link Polyline2D}.
      */
     public Polyline2D getPolyline2D() {
-        Polyline2D pol = new Polyline2D();
-        for (int i = 0; i < npoints; i++) {
-           pol.addPoint((float)xpoints[i], (float)ypoints[i]);
-        }
-        pol.addPoint((float)xpoints[0], (float)ypoints[0]);
+
+        Polyline2D pol = new Polyline2D( xpoints, ypoints, npoints );
+
+        pol.addPoint( xpoints[0], ypoints[0]);
 
         return pol;
     }

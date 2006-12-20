@@ -28,12 +28,16 @@ import java.awt.geom.Line2D;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.io.Serializable;
 
 /**
  * This class has the same behavior than {@link Polygon2D}, except that
  * the figure is not closed.
+ *
+ * @version $Id: DisplacementMapRed.java 478276 2006-11-22 18:33:37Z dvholten $
  */
-public class Polyline2D implements Shape, Cloneable, java.io.Serializable {
+public class Polyline2D implements Shape, Cloneable, Serializable {
+
     private static final float ASSUME_ZERO = 0.001f;
 
     /**
@@ -94,8 +98,8 @@ public class Polyline2D implements Shape, Cloneable, java.io.Serializable {
             throw new IndexOutOfBoundsException("npoints > xpoints.length || npoints > ypoints.length");
         }
         this.npoints = npoints;
-        this.xpoints = new float[npoints];
-        this.ypoints = new float[npoints];
+        this.xpoints = new float[npoints+1];   // make space for one more to close the polyline
+        this.ypoints = new float[npoints+1];   // make space for one more to close the polyline
         System.arraycopy(xpoints, 0, this.xpoints, 0, npoints);
         System.arraycopy(ypoints, 0, this.ypoints, 0, npoints);
         calculatePath();
@@ -130,9 +134,9 @@ public class Polyline2D implements Shape, Cloneable, java.io.Serializable {
     }
 
     public Polyline2D(Line2D line) {
-        this.npoints = 2;
-        this.xpoints = new float[2];
-        this.ypoints = new float[2];
+        npoints = 2;
+        xpoints = new float[2];
+        ypoints = new float[2];
         xpoints[0] = (float)line.getX1();
         xpoints[1] = (float)line.getX2();
         ypoints[0] = (float)line.getY1();
