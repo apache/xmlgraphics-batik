@@ -45,7 +45,6 @@ public class SVGOMFontFaceSrcElement
      */
     public SVGOMFontFaceSrcElement(String prefix, AbstractDocument owner) {
         super(prefix, owner);
-
     }
 
     /**

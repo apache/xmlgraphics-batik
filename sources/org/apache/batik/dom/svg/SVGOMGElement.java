@@ -44,7 +44,6 @@ public class SVGOMGElement
      */
     public SVGOMGElement(String prefix, AbstractDocument owner) {
         super(prefix, owner);
-
     }
 
     /**

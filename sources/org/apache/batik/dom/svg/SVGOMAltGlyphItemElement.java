@@ -45,7 +45,6 @@ public class SVGOMAltGlyphItemElement
      */
     public SVGOMAltGlyphItemElement(String prefix, AbstractDocument owner) {
         super(prefix, owner);
-
     }
 
     /**

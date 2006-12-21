@@ -38,6 +38,11 @@ public class SVGOMAnimatedNumber
     protected float defaultValue;
 
     /**
+     * Whether the parsed number can be a percentage.
+     */
+    protected boolean allowPercentage;
+
+    /**
      * Whether the base value is valid.
      */
     protected boolean valid;
@@ -68,8 +73,25 @@ public class SVGOMAnimatedNumber
                                String ns,
                                String ln,
                                float  val) {
+        this(elt, ns, ln, val, false);
+    }
+
+    /**
+     * Creates a new SVGOMAnimatedNumber possibly parsing it as a percentage.
+     * @param elt The associated element.
+     * @param ns The attribute's namespace URI.
+     * @param ln The attribute's local name.
+     * @param val The default value, if the attribute is not specified.
+     * @param allowPercentage Allows number specified as a percentage.
+     */
+    public SVGOMAnimatedNumber(AbstractElement elt,
+                               String  ns,
+                               String  ln,
+                               float   val,
+                               boolean allowPercentage) {
         super(elt, ns, ln);
         defaultValue = val;
+        this.allowPercentage = allowPercentage;
     }
 
     /**
@@ -90,7 +112,13 @@ public class SVGOMAnimatedNumber
         if (attr == null) {
             baseVal = defaultValue;
         } else {
-            baseVal = Float.parseFloat(attr.getValue());
+            String v = attr.getValue();
+            int len = v.length();
+            if (allowPercentage && len > 1 && v.charAt(len - 1) == '%') {
+                baseVal = .01f * Float.parseFloat(v.substring(0, len - 1));
+            } else {
+                baseVal = Float.parseFloat(v);
+            }
         }
         valid = true;
     }

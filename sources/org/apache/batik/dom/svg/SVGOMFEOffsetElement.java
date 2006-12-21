@@ -20,6 +20,7 @@ package org.apache.batik.dom.svg;
 
 import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.dom.util.DoublyIndexedTable;
 import org.apache.batik.util.SVGTypes;
 
 import org.w3c.dom.Node;
@@ -38,6 +39,37 @@ public class SVGOMFEOffsetElement
     implements SVGFEOffsetElement {
 
     /**
+     * Table mapping XML attribute names to TraitInformation objects.
+     */
+    protected static DoublyIndexedTable xmlTraitInformation;
+    static {
+        DoublyIndexedTable t =
+            new DoublyIndexedTable(SVGOMFilterPrimitiveStandardAttributes.xmlTraitInformation);
+        t.put(null, SVG_IN_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_CDATA));
+        t.put(null, SVG_DX_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_NUMBER));
+        t.put(null, SVG_DY_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_NUMBER));
+        xmlTraitInformation = t;
+    }
+
+    /**
+     * The 'in' attribute value.
+     */
+    protected SVGOMAnimatedString in;
+
+    /**
+     * The 'dx' attribute value.
+     */
+    protected SVGOMAnimatedNumber dx;
+
+    /**
+     * The 'dy' attribute value.
+     */
+    protected SVGOMAnimatedNumber dy;
+
+    /**
      * Creates a new SVGOMFEOffsetElement object.
      */
     protected SVGOMFEOffsetElement() {
@@ -50,6 +82,24 @@ public class SVGOMFEOffsetElement
      */
     public SVGOMFEOffsetElement(String prefix, AbstractDocument owner) {
         super(prefix, owner);
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes all live attributes for this element.
+     */
+    protected void initializeAllLiveAttributes() {
+        super.initializeAllLiveAttributes();
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes the live attribute values of this element.
+     */
+    private void initializeLiveAttributes() {
+        in = createLiveAnimatedString(null, SVG_IN_ATTRIBUTE);
+        dx = createLiveAnimatedNumber(null, SVG_DX_ATTRIBUTE, 0f);
+        dy = createLiveAnimatedNumber(null, SVG_DY_ATTRIBUTE, 0f);
     }
 
     /**
@@ -64,7 +114,7 @@ public class SVGOMFEOffsetElement
      * SVGFEOffsetElement#getIn1()}.
      */
     public SVGAnimatedString getIn1() {
-        return getAnimatedStringAttribute(null, SVG_IN_ATTRIBUTE);
+        return in;
     }
 
     /**
@@ -72,7 +122,7 @@ public class SVGOMFEOffsetElement
      * org.w3c.dom.svg.SVGFEOffsetElement#getDx()}.
      */
     public SVGAnimatedNumber getDx() {
-        return getAnimatedNumberAttribute(null, SVG_DX_ATTRIBUTE, 0f);
+        return dx;
     } 
 
     /**
@@ -80,7 +130,7 @@ public class SVGOMFEOffsetElement
      * org.w3c.dom.svg.SVGFEOffsetElement#getDy()}.
      */
     public SVGAnimatedNumber getDy() {
-        return getAnimatedNumberAttribute(null, SVG_DY_ATTRIBUTE, 0f);
+        return dy;
     }
 
     /**
@@ -90,52 +140,11 @@ public class SVGOMFEOffsetElement
         return new SVGOMFEOffsetElement();
     }
 
-    // AnimationTarget ///////////////////////////////////////////////////////
-
     /**
-     * Gets how percentage values are interpreted by the given attribute.
+     * Returns the table of TraitInformation objects for this element.
      */
-    protected short getAttributePercentageInterpretation(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_DX_ATTRIBUTE)) {
-                return PERCENTAGE_VIEWPORT_WIDTH;
-            }
-            if (ln.equals(SVG_DY_ATTRIBUTE)) {
-                return PERCENTAGE_VIEWPORT_HEIGHT;
-            }
-        }
-        return super.getAttributePercentageInterpretation(ns, ln);
-    }
-
-    // ExtendedTraitAccess ///////////////////////////////////////////////////
-
-    /**
-     * Returns whether the given XML attribute is animatable.
-     */
-    public boolean isAttributeAnimatable(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_IN_ATTRIBUTE)
-                    || ln.equals(SVG_DX_ATTRIBUTE)
-                    || ln.equals(SVG_DY_ATTRIBUTE)) {
-                return true;
-            }
-        }
-        return super.isAttributeAnimatable(ns, ln);
-    }
-
-    /**
-     * Returns the type of the given attribute.
-     */
-    public int getAttributeType(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_IN_ATTRIBUTE)) {
-                return SVGTypes.TYPE_CDATA;
-            } else if (ln.equals(SVG_DX_ATTRIBUTE)
-                    || ln.equals(SVG_DY_ATTRIBUTE)) {
-                return SVGTypes.TYPE_NUMBER;
-            }
-        }
-        return super.getAttributeType(ns, ln);
+    protected DoublyIndexedTable getTraitInformationTable() {
+        return xmlTraitInformation;
     }
 
     // AnimationTarget ///////////////////////////////////////////////////////

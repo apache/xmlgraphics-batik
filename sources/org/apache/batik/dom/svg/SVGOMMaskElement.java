@@ -20,6 +20,7 @@ package org.apache.batik.dom.svg;
 
 import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.dom.util.DoublyIndexedTable;
 import org.apache.batik.util.SVGTypes;
 
 import org.w3c.dom.Node;
@@ -38,6 +39,28 @@ public class SVGOMMaskElement
     implements SVGMaskElement {
 
     /**
+     * Table mapping XML attribute names to TraitInformation objects.
+     */
+    protected static DoublyIndexedTable xmlTraitInformation;
+    static {
+        DoublyIndexedTable t =
+            new DoublyIndexedTable(SVGGraphicsElement.xmlTraitInformation);
+        t.put(null, SVG_X_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_LENGTH, PERCENTAGE_VIEWPORT_WIDTH));
+        t.put(null, SVG_Y_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_LENGTH, PERCENTAGE_VIEWPORT_HEIGHT));
+        t.put(null, SVG_WIDTH_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_LENGTH, PERCENTAGE_VIEWPORT_WIDTH));
+        t.put(null, SVG_HEIGHT_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_LENGTH, PERCENTAGE_VIEWPORT_HEIGHT));
+        t.put(null, SVG_MASK_UNITS_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_IDENT));
+        t.put(null, SVG_MASK_CONTENT_UNITS_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_IDENT));
+        xmlTraitInformation = t;
+    }
+
+    /**
      * The units values.
      */
     protected static final String[] UNITS_VALUES = {
@@ -45,6 +68,36 @@ public class SVGOMMaskElement
         SVG_USER_SPACE_ON_USE_VALUE,
         SVG_OBJECT_BOUNDING_BOX_VALUE
     };
+
+    /**
+     * The 'x' attribute value.
+     */
+    protected SVGOMAnimatedLength x;
+
+    /**
+     * The 'y' attribute value.
+     */
+    protected SVGOMAnimatedLength y;
+
+    /**
+     * The 'width' attribute value.
+     */
+    protected SVGOMAnimatedLength width;
+
+    /**
+     * The 'height' attribute value.
+     */
+    protected SVGOMAnimatedLength height;
+
+    /**
+     * The 'maskUnits' attribute value.
+     */
+    protected SVGOMAnimatedEnumeration maskUnits;
+
+    /**
+     * The 'maskContentUnits' attribute value.
+     */
+    protected SVGOMAnimatedEnumeration maskContentUnits;
 
     /**
      * Creates a new SVGOMMaskElement object.
@@ -59,6 +112,42 @@ public class SVGOMMaskElement
      */
     public SVGOMMaskElement(String prefix, AbstractDocument owner) {
         super(prefix, owner);
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes all live attributes for this element.
+     */
+    protected void initializeAllLiveAttributes() {
+        super.initializeAllLiveAttributes();
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes the live attribute values of this element.
+     */
+    private void initializeLiveAttributes() {
+        x = createLiveAnimatedLength
+            (null, SVG_X_ATTRIBUTE, SVG_MASK_X_DEFAULT_VALUE,
+             SVGOMAnimatedLength.HORIZONTAL_LENGTH, false);
+        y = createLiveAnimatedLength
+            (null, SVG_Y_ATTRIBUTE, SVG_MASK_Y_DEFAULT_VALUE,
+             SVGOMAnimatedLength.VERTICAL_LENGTH, false);
+        width =
+            createLiveAnimatedLength
+                (null, SVG_WIDTH_ATTRIBUTE, SVG_MASK_WIDTH_DEFAULT_VALUE,
+                 SVGOMAnimatedLength.HORIZONTAL_LENGTH, true);
+        height =
+            createLiveAnimatedLength
+                (null, SVG_HEIGHT_ATTRIBUTE, SVG_MASK_WIDTH_DEFAULT_VALUE,
+                 SVGOMAnimatedLength.VERTICAL_LENGTH, true);
+        maskUnits =
+            createLiveAnimatedEnumeration
+                (null, SVG_MASK_UNITS_ATTRIBUTE, UNITS_VALUES, (short) 2);
+        maskContentUnits =
+            createLiveAnimatedEnumeration
+                (null, SVG_MASK_CONTENT_UNITS_ATTRIBUTE, UNITS_VALUES,
+                 (short) 1);
     }
 
     /**
@@ -72,54 +161,42 @@ public class SVGOMMaskElement
      * <b>DOM</b>: Implements {@link SVGMaskElement#getMaskUnits()}.
      */
     public SVGAnimatedEnumeration getMaskUnits() {
-        return getAnimatedEnumerationAttribute
-            (null, SVG_MASK_UNITS_ATTRIBUTE, UNITS_VALUES,
-             (short)2);
+        return maskUnits;
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGMaskElement#getMaskContentUnits()}.
      */
     public SVGAnimatedEnumeration getMaskContentUnits() {
-        return getAnimatedEnumerationAttribute
-            (null, SVG_MASK_CONTENT_UNITS_ATTRIBUTE, UNITS_VALUES,
-             (short)1);
+        return maskContentUnits;
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGMaskElement#getX()}.
      */
     public SVGAnimatedLength getX() {
-        return getAnimatedLengthAttribute
-            (null, SVG_X_ATTRIBUTE, SVG_MASK_X_DEFAULT_VALUE,
-             SVGOMAnimatedLength.HORIZONTAL_LENGTH, false);
+        return x;
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGMaskElement#getY()}.
      */
     public SVGAnimatedLength getY() {
-        return getAnimatedLengthAttribute
-            (null, SVG_Y_ATTRIBUTE, SVG_MASK_Y_DEFAULT_VALUE,
-             SVGOMAnimatedLength.VERTICAL_LENGTH, false);
+        return y;
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGMaskElement#getWidth()}.
      */
     public SVGAnimatedLength getWidth() {
-        return getAnimatedLengthAttribute
-            (null, SVG_WIDTH_ATTRIBUTE, SVG_MASK_WIDTH_DEFAULT_VALUE,
-             SVGOMAnimatedLength.HORIZONTAL_LENGTH, true);
+        return width;
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGMaskElement#getHeight()}.
      */
     public SVGAnimatedLength getHeight() {
-        return getAnimatedLengthAttribute
-            (null, SVG_HEIGHT_ATTRIBUTE, SVG_MASK_HEIGHT_DEFAULT_VALUE,
-             SVGOMAnimatedLength.VERTICAL_LENGTH, true);
+        return height;
     }
 
     /**
@@ -129,62 +206,14 @@ public class SVGOMMaskElement
         return new SVGOMMaskElement();
     }
 
-    // ExtendedTraitAccess ///////////////////////////////////////////////////
-
     /**
-     * Returns whether the given XML attribute is animatable.
+     * Returns the table of TraitInformation objects for this element.
      */
-    public boolean isAttributeAnimatable(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE)
-                    || ln.equals(SVG_X_ATTRIBUTE)
-                    || ln.equals(SVG_Y_ATTRIBUTE)
-                    || ln.equals(SVG_WIDTH_ATTRIBUTE)
-                    || ln.equals(SVG_HEIGHT_ATTRIBUTE)
-                    || ln.equals(SVG_MASK_UNITS_ATTRIBUTE)
-                    || ln.equals(SVG_MASK_CONTENT_UNITS_ATTRIBUTE)) {
-                return true;
-            }
-        }
-        return super.isAttributeAnimatable(ns, ln);
-    }
-
-    /**
-     * Returns the type of the given attribute.
-     */
-    public int getAttributeType(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_HEIGHT_ATTRIBUTE)
-                    || ln.equals(SVG_WIDTH_ATTRIBUTE)
-                    || ln.equals(SVG_X_ATTRIBUTE)
-                    || ln.equals(SVG_Y_ATTRIBUTE)) {
-                return SVGTypes.TYPE_LENGTH;
-            } else if (ln.equals(SVG_MASK_UNITS_ATTRIBUTE)
-                    || ln.equals(SVG_MASK_CONTENT_UNITS_ATTRIBUTE)) {
-                return SVGTypes.TYPE_IDENT;
-            }
-        }
-        return super.getAttributeType(ns, ln);
+    protected DoublyIndexedTable getTraitInformationTable() {
+        return xmlTraitInformation;
     }
 
     // AnimationTarget ///////////////////////////////////////////////////////
-
-    /**
-     * Gets how percentage values are interpreted by the given attribute.
-     */
-    protected short getAttributePercentageInterpretation(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_X_ATTRIBUTE)
-                    || ln.equals(SVG_WIDTH_ATTRIBUTE)) {
-                return PERCENTAGE_VIEWPORT_WIDTH;
-            }
-            if (ln.equals(SVG_Y_ATTRIBUTE)
-                    || ln.equals(SVG_HEIGHT_ATTRIBUTE)) {
-                return PERCENTAGE_VIEWPORT_HEIGHT;
-            }
-        }
-        return super.getAttributePercentageInterpretation(ns, ln);
-    }
 
     /**
      * Updates an attribute value in this target.

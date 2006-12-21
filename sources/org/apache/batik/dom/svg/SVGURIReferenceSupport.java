@@ -31,12 +31,12 @@ import org.w3c.dom.svg.SVGAnimatedString;
  */
 public class SVGURIReferenceSupport implements SVGConstants {
 
-    /**
-     * To implement {@link org.w3c.dom.svg.SVGURIReference#getHref()}.
-     */
-    public static SVGAnimatedString getHref(Element elt) {
-        return ((SVGOMElement)elt).
-            getAnimatedStringAttribute(XLinkSupport.XLINK_NAMESPACE_URI,
-                                       "href");
-    }
+//     /**
+//      * To implement {@link org.w3c.dom.svg.SVGURIReference#getHref()}.
+//      */
+//     public static SVGAnimatedString getHref(Element elt) {
+//         return ((SVGOMElement)elt).
+//             getAnimatedStringAttribute(XLinkSupport.XLINK_NAMESPACE_URI,
+//                                        "href");
+//     }
 }

@@ -1,11 +1,11 @@
 /*
 
    Licensed to the Apache Software Foundation (ASF) under one or more
-  contributor license agreements.  See the NOTICE file distributed with
-  this work for additional information regarding copyright ownership.
-  The ASF licenses this file to You under the Apache License, Version 2.0
-  (the "License"); you may not use this file except in compliance with
-  the License.  You may obtain a copy of the License at
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -22,7 +22,7 @@ import org.apache.batik.css.engine.CSSNavigableNode;
 import org.apache.batik.dom.AbstractAttr;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.events.NodeEventTarget;
-import org.apache.batik.util.SoftDoublyIndexedTable;
+import org.apache.batik.dom.util.DoublyIndexedTable;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
@@ -44,7 +44,7 @@ public abstract class AbstractElement
     /**
      * The live attribute values.
      */
-    protected transient SoftDoublyIndexedTable liveAttributeValues;
+    protected DoublyIndexedTable liveAttributeValues = new DoublyIndexedTable();
 
     /**
      * Creates a new Element object.
@@ -60,7 +60,7 @@ public abstract class AbstractElement
     protected AbstractElement(String prefix, AbstractDocument owner) {
         ownerDocument = owner;
         setPrefix(prefix);
-              initializeAttributes();
+        initializeAttributes();
     }
 
     // CSSNavigableNode ///////////////////////////////////////////////////
@@ -131,9 +131,9 @@ public abstract class AbstractElement
      */
     public void putLiveAttributeValue(String ns, String ln,
                                       LiveAttributeValue val) {
-        if (liveAttributeValues == null) {
-            liveAttributeValues = new SoftDoublyIndexedTable();
-        }
+//         if (liveAttributeValues == null) {
+//             liveAttributeValues = new SoftDoublyIndexedTable();
+//         }
         liveAttributeValues.put(ns, ln, val);
     }
 
@@ -171,7 +171,7 @@ public abstract class AbstractElement
      * Creates the attribute list.
      */
     protected NamedNodeMap createAttributes() {
-              return new ExtendedNamedNodeHashMap();
+        return new ExtendedNamedNodeHashMap();
     }
 
     /**
@@ -237,7 +237,7 @@ public abstract class AbstractElement
      */
     protected Node export(Node n, AbstractDocument d) {
         super.export(n, d);
-              ((AbstractElement)n).initializeAttributes();
+        ((AbstractElement)n).initializeAttributes();
 
         super.export(n, d);
         return n;
@@ -248,7 +248,7 @@ public abstract class AbstractElement
      */
     protected Node deepExport(Node n, AbstractDocument d) {
         super.export(n, d);
-              ((AbstractElement)n).initializeAttributes();
+        ((AbstractElement)n).initializeAttributes();
 
         super.deepExport(n, d);
         return n;

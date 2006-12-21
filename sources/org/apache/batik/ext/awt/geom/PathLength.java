@@ -23,7 +23,6 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.FlatteningPathIterator;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
-import java.util.Vector;
 import java.util.List;
 import java.util.ArrayList;
 

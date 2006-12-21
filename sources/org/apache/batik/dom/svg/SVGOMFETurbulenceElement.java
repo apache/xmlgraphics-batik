@@ -21,6 +21,7 @@ package org.apache.batik.dom.svg;
 import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.anim.values.AnimatableNumberOptionalNumberValue;
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.dom.util.DoublyIndexedTable;
 import org.apache.batik.util.SVGTypes;
 
 import org.w3c.dom.Node;
@@ -38,6 +39,26 @@ import org.w3c.dom.svg.SVGFETurbulenceElement;
 public class SVGOMFETurbulenceElement
     extends    SVGOMFilterPrimitiveStandardAttributes
     implements SVGFETurbulenceElement {
+
+    /**
+     * Table mapping XML attribute names to TraitInformation objects.
+     */
+    protected static DoublyIndexedTable xmlTraitInformation;
+    static {
+        DoublyIndexedTable t =
+            new DoublyIndexedTable(SVGOMFilterPrimitiveStandardAttributes.xmlTraitInformation);
+        t.put(null, SVG_BASE_FREQUENCY_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_NUMBER_OPTIONAL_NUMBER));
+        t.put(null, SVG_NUM_OCTAVES_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_INTEGER));
+        t.put(null, SVG_SEED_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_NUMBER));
+        t.put(null, SVG_STITCH_TILES_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_IDENT));
+        t.put(null, SVG_TYPE_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_IDENT));
+        xmlTraitInformation = t;
+    }
 
     /**
      * The 'stitchTiles' attribute values.
@@ -58,6 +79,26 @@ public class SVGOMFETurbulenceElement
     };
 
     /**
+     * The 'numOctaves' attribute value.
+     */
+    protected SVGOMAnimatedInteger numOctaves;
+
+    /**
+     * The 'seed' attribute value.
+     */
+    protected SVGOMAnimatedNumber seed;
+
+    /**
+     * The 'stitchTiles' attribute value.
+     */
+    protected SVGOMAnimatedEnumeration stitchTiles;
+
+    /**
+     * The 'type' attribute value.
+     */
+    protected SVGOMAnimatedEnumeration type;
+
+    /**
      * Creates a new SVGOMFETurbulence object.
      */
     protected SVGOMFETurbulenceElement() {
@@ -71,6 +112,31 @@ public class SVGOMFETurbulenceElement
     public SVGOMFETurbulenceElement(String prefix,
                                     AbstractDocument owner) {
         super(prefix, owner);
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes all live attributes for this element.
+     */
+    protected void initializeAllLiveAttributes() {
+        super.initializeAllLiveAttributes();
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes the live attribute values of this element.
+     */
+    private void initializeLiveAttributes() {
+        numOctaves =
+            createLiveAnimatedInteger(null, SVG_NUM_OCTAVES_ATTRIBUTE, 1);
+        seed = createLiveAnimatedNumber(null, SVG_SEED_ATTRIBUTE, 0f);
+        stitchTiles =
+            createLiveAnimatedEnumeration
+                (null, SVG_STITCH_TILES_ATTRIBUTE, STITCH_TILES_VALUES,
+                 (short) 2);
+        type =
+            createLiveAnimatedEnumeration
+                (null, SVG_TYPE_ATTRIBUTE, TYPE_VALUES, (short) 2);
     }
 
     /**
@@ -102,30 +168,28 @@ public class SVGOMFETurbulenceElement
      * <b>DOM</b>: Implements {@link SVGFETurbulenceElement#getNumOctaves()}.
      */
     public SVGAnimatedInteger getNumOctaves() {
-        return getAnimatedIntegerAttribute(null, SVG_NUM_OCTAVES_ATTRIBUTE, 1);
+        return numOctaves;
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGFETurbulenceElement#getSeed()}.
      */
     public SVGAnimatedNumber getSeed() {
-        return getAnimatedNumberAttribute(null, SVG_SEED_ATTRIBUTE, 0f);
+        return seed;
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGFETurbulenceElement#getStitchTiles()}.
      */
     public SVGAnimatedEnumeration getStitchTiles() {
-        return getAnimatedEnumerationAttribute
-            (null, SVG_STITCH_TILES_ATTRIBUTE, STITCH_TILES_VALUES, (short)2);
+        return stitchTiles;
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGFETurbulenceElement#getType()}.
      */
     public SVGAnimatedEnumeration getType() {
-        return getAnimatedEnumerationAttribute
-            (null, SVG_TYPE_ATTRIBUTE, TYPE_VALUES, (short)2);
+        return type;
     }
 
     /**
@@ -135,41 +199,11 @@ public class SVGOMFETurbulenceElement
         return new SVGOMFETurbulenceElement();
     }
 
-    // ExtendedTraitAccess ///////////////////////////////////////////////////
-
     /**
-     * Returns whether the given XML attribute is animatable.
+     * Returns the table of TraitInformation objects for this element.
      */
-    public boolean isAttributeAnimatable(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_BASE_FREQUENCY_ATTRIBUTE)
-                    || ln.equals(SVG_NUM_OCTAVES_ATTRIBUTE)
-                    || ln.equals(SVG_SEED_ATTRIBUTE)
-                    || ln.equals(SVG_STITCH_TILES_ATTRIBUTE)
-                    || ln.equals(SVG_TYPE_ATTRIBUTE)) {
-                return true;
-            }
-        }
-        return super.isAttributeAnimatable(ns, ln);
-    }
-
-    /**
-     * Returns the type of the given attribute.
-     */
-    public int getAttributeType(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_BASE_FREQUENCY_ATTRIBUTE)) {
-                return SVGTypes.TYPE_NUMBER_OPTIONAL_NUMBER;
-            } else if (ln.equals(SVG_NUM_OCTAVES_ATTRIBUTE)) {
-                return SVGTypes.TYPE_INTEGER;
-            } else if (ln.equals(SVG_SEED_ATTRIBUTE)) {
-                return SVGTypes.TYPE_NUMBER;
-            } else if (ln.equals(SVG_STITCH_TILES_ATTRIBUTE)
-                    || ln.equals(SVG_TYPE_ATTRIBUTE)) {
-                return SVGTypes.TYPE_IDENT;
-            }
-        }
-        return super.getAttributeType(ns, ln);
+    protected DoublyIndexedTable getTraitInformationTable() {
+        return xmlTraitInformation;
     }
 
     // AnimationTarget ///////////////////////////////////////////////////////

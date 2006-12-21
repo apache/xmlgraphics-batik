@@ -45,7 +45,6 @@ public class SVGOMTRefElement
      */
     public SVGOMTRefElement(String prefix, AbstractDocument owner) {
         super(prefix, owner);
-
     }
 
     /**

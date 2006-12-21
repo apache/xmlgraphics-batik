@@ -29,21 +29,21 @@ import org.w3c.dom.svg.SVGAnimatedBoolean;
  */
 public class SVGExternalResourcesRequiredSupport implements SVGConstants {
 
-    private static final String ATTR_NAME =
-        SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE;
-
-    /**
-     * To implement {@link
-     * org.w3c.dom.svg.SVGExternalResourcesRequired#getExternalResourcesRequired()}.
-     */
-    public static SVGAnimatedBoolean
-        getExternalResourcesRequired(AbstractElement elt) {
-        LiveAttributeValue lav;
-        lav = elt.getLiveAttributeValue(null, ATTR_NAME);
-        if (lav == null) {
-            lav = new SVGOMAnimatedBoolean(elt, null, ATTR_NAME, false);
-            elt.putLiveAttributeValue(null, ATTR_NAME, lav);
-        }
-        return (SVGAnimatedBoolean)lav;
-    }
+//     private static final String ATTR_NAME =
+//         SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE;
+// 
+//     /**
+//      * To implement {@link
+//      * org.w3c.dom.svg.SVGExternalResourcesRequired#getExternalResourcesRequired()}.
+//      */
+//     public static SVGAnimatedBoolean
+//         getExternalResourcesRequired(AbstractElement elt) {
+//         LiveAttributeValue lav;
+//         lav = elt.getLiveAttributeValue(null, ATTR_NAME);
+//         if (lav == null) {
+//             lav = new SVGOMAnimatedBoolean(elt, null, ATTR_NAME, false);
+//             elt.putLiveAttributeValue(null, ATTR_NAME, lav);
+//         }
+//         return (SVGAnimatedBoolean)lav;
+//     }
 }

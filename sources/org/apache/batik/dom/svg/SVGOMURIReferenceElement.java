@@ -19,11 +19,13 @@
 package org.apache.batik.dom.svg;
 
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.dom.util.DoublyIndexedTable;
+import org.apache.batik.util.SVGTypes;
 import org.w3c.dom.svg.SVGAnimatedString;
 import org.w3c.dom.svg.SVGURIReference;
 
 /**
- * This class implements {@link SVGURIReference}..
+ * This class implements {@link SVGURIReference}.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
@@ -31,6 +33,23 @@ import org.w3c.dom.svg.SVGURIReference;
 public abstract class SVGOMURIReferenceElement
     extends    SVGOMElement
     implements SVGURIReference {
+
+    /**
+     * Table mapping XML attribute names to TraitInformation objects.
+     */
+    protected static DoublyIndexedTable xmlTraitInformation;
+    static {
+        DoublyIndexedTable t =
+            new DoublyIndexedTable(SVGOMElement.xmlTraitInformation);
+        t.put(XLINK_NAMESPACE_URI, XLINK_HREF_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_URI));
+        xmlTraitInformation = t;
+    }
+
+    /**
+     * The 'xlink:href' attribute value.
+     */
+    protected SVGOMAnimatedString href;
 
     /**
      * Creates a new SVGOMURIReferenceElement object.
@@ -45,12 +64,36 @@ public abstract class SVGOMURIReferenceElement
      */
     protected SVGOMURIReferenceElement(String prefix, AbstractDocument owner) {
         super(prefix, owner);
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes all live attributes for this element.
+     */
+    protected void initializeAllLiveAttributes() {
+        super.initializeAllLiveAttributes();
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes the live attribute values of this element.
+     */
+    private void initializeLiveAttributes() {
+        href =
+            createLiveAnimatedString(XLINK_NAMESPACE_URI, XLINK_HREF_ATTRIBUTE);
     }
 
     /**
      * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGURIReference#getHref()}.
      */
     public SVGAnimatedString getHref() {
-        return SVGURIReferenceSupport.getHref(this);
+        return href;
+    }
+
+    /**
+     * Returns the table of TraitInformation objects for this element.
+     */
+    protected DoublyIndexedTable getTraitInformationTable() {
+        return xmlTraitInformation;
     }
 }

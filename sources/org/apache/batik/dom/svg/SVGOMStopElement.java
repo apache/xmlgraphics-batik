@@ -20,6 +20,7 @@ package org.apache.batik.dom.svg;
 
 import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.dom.util.DoublyIndexedTable;
 import org.apache.batik.util.SVGTypes;
 
 import org.w3c.dom.Node;
@@ -37,6 +38,23 @@ public class SVGOMStopElement
     implements SVGStopElement {
 
     /**
+     * Table mapping XML attribute names to TraitInformation objects.
+     */
+    protected static DoublyIndexedTable xmlTraitInformation;
+    static {
+        DoublyIndexedTable t =
+            new DoublyIndexedTable(SVGStylableElement.xmlTraitInformation);
+        t.put(null, SVG_OFFSET_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_NUMBER_OR_PERCENTAGE));
+        xmlTraitInformation = t;
+    }
+
+    /**
+     * The 'offset' attribute value.
+     */
+    protected SVGOMAnimatedNumber offset;
+
+    /**
      * Creates a new SVGOMStopElement object.
      */
     protected SVGOMStopElement() {
@@ -49,6 +67,22 @@ public class SVGOMStopElement
      */
     public SVGOMStopElement(String prefix, AbstractDocument owner) {
         super(prefix, owner);
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes all live attributes for this element.
+     */
+    protected void initializeAllLiveAttributes() {
+        super.initializeAllLiveAttributes();
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes the live attribute values of this element.
+     */
+    private void initializeLiveAttributes() {
+        offset = createLiveAnimatedNumber(null, SVG_OFFSET_ATTRIBUTE, 0f, true);
     }
 
     /**
@@ -63,7 +97,7 @@ public class SVGOMStopElement
      * org.w3c.dom.svg.SVGStopElement#getOffset()}.
      */
     public SVGAnimatedNumber getOffset() {
-        return getAnimatedNumberAttribute(null, SVG_OFFSET_ATTRIBUTE, 0f);
+        return offset;
     }
     
     /**
@@ -73,30 +107,11 @@ public class SVGOMStopElement
         return new SVGOMStopElement();
     }    
 
-    // ExtendedTraitAccess ///////////////////////////////////////////////////
-
     /**
-     * Returns whether the given XML attribute is animatable.
+     * Returns the table of TraitInformation objects for this element.
      */
-    public boolean isAttributeAnimatable(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_OFFSET_ATTRIBUTE)) {
-                return true;
-            }
-        }
-        return super.isAttributeAnimatable(ns, ln);
-    }
-
-    /**
-     * Returns the type of the given attribute.
-     */
-    public int getAttributeType(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_OFFSET_ATTRIBUTE)) {
-                return SVGTypes.TYPE_NUMBER_OR_PERCENTAGE;
-            }
-        }
-        return super.getAttributeType(ns, ln);
+    protected DoublyIndexedTable getTraitInformationTable() {
+        return xmlTraitInformation;
     }
 
     // AnimationTarget ///////////////////////////////////////////////////////

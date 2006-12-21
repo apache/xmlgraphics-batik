@@ -29,25 +29,25 @@ import org.w3c.dom.svg.SVGAnimatedPreserveAspectRatio;
  */
 public class SVGPreserveAspectRatioSupport {
 
-    /**
-     * To implement getPreserveAspectRatio.
-     * Returns the value of the 'preserveAspectRatio' attribute of the
-     * given element.
-     */
-    public static SVGAnimatedPreserveAspectRatio 
-        getPreserveAspectRatio(AbstractElement elt) {
-        SVGOMAnimatedPreserveAspectRatio ret;
-        ret = (SVGOMAnimatedPreserveAspectRatio)elt.getLiveAttributeValue
-            (null, SVGConstants.SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE);
-
-        if (ret == null) {
-            SVGOMDocument doc = (SVGOMDocument) elt.getOwnerDocument();
-            ret = new SVGOMAnimatedPreserveAspectRatio(elt);
-            ret.addAnimatedAttributeListener
-                (doc.getAnimatedAttributeListener());
-            elt.putLiveAttributeValue
-                (null, SVGConstants.SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE, ret);
-        }
-        return ret;
-    }
+//     /**
+//      * To implement getPreserveAspectRatio.
+//      * Returns the value of the 'preserveAspectRatio' attribute of the
+//      * given element.
+//      */
+//     public static SVGAnimatedPreserveAspectRatio 
+//         getPreserveAspectRatio(AbstractElement elt) {
+//         SVGOMAnimatedPreserveAspectRatio ret;
+//         ret = (SVGOMAnimatedPreserveAspectRatio)elt.getLiveAttributeValue
+//             (null, SVGConstants.SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE);
+// 
+//         if (ret == null) {
+//             SVGOMDocument doc = (SVGOMDocument) elt.getOwnerDocument();
+//             ret = new SVGOMAnimatedPreserveAspectRatio(elt);
+//             ret.addAnimatedAttributeListener
+//                 (doc.getAnimatedAttributeListener());
+//             elt.putLiveAttributeValue
+//                 (null, SVGConstants.SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE, ret);
+//         }
+//         return ret;
+//     }
 }

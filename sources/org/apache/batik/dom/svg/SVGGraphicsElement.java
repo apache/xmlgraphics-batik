@@ -1,11 +1,11 @@
 /*
 
    Licensed to the Apache Software Foundation (ASF) under one or more
-  contributor license agreements.  See the NOTICE file distributed with
-  this work for additional information regarding copyright ownership.
-  The ASF licenses this file to You under the Apache License, Version 2.0
-  (the "License"); you may not use this file except in compliance with
-  the License.  You may obtain a copy of the License at
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -19,12 +19,11 @@
 package org.apache.batik.dom.svg;
 
 import java.awt.geom.AffineTransform;
-import java.util.Map;
-import java.util.HashMap;
 
 import org.apache.batik.anim.values.AnimatableMotionPointValue;
 import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.dom.util.DoublyIndexedTable;
 import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.util.SVGTypes;
 
@@ -46,37 +45,35 @@ public abstract class SVGGraphicsElement
         extends SVGStylableElement
         implements SVGMotionAnimatableElement {
 
-
-
     /**
-     * this map supports a fast lookup from svg-attribute-name string to
-     * svgType-integer. It is faster than doing string-equals in a
-     * lengthy if-else-statement.
-     * This map is used only by {@link #getAttributeType }
+     * Table mapping XML attribute names to TraitInformation objects.
      */
-    private static final Map typeMap = new HashMap();
-
-
+    protected static DoublyIndexedTable xmlTraitInformation;
     static {
-
-        Map map = typeMap;
-
-        SVGOMAttributeInfo svgType = new SVGOMAttributeInfo( SVGTypes.TYPE_TRANSFORM_LIST, true );
-        map.put(  SVG_TRANSFORM_ATTRIBUTE, svgType );
-
-        svgType = new SVGOMAttributeInfo( SVGTypes.TYPE_IDENT, true );
-        map.put(  SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE, svgType );
-
-        svgType = new SVGOMAttributeInfo( SVGTypes.TYPE_URI_LIST, false );
-        map.put(  SVG_REQUIRED_EXTENSIONS_ATTRIBUTE, svgType );
-        map.put(  SVG_REQUIRED_FEATURES_ATTRIBUTE, svgType );
-
-        svgType = new SVGOMAttributeInfo( SVGTypes.TYPE_LANG_LIST, false );
-        map.put(  SVG_SYSTEM_LANGUAGE_ATTRIBUTE, svgType );
-
+        DoublyIndexedTable t =
+            new DoublyIndexedTable(SVGStylableElement.xmlTraitInformation);
+        t.put(null, SVG_TRANSFORM_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_TRANSFORM_LIST));
+        t.put(null, SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_BOOLEAN));
+//         t.put(null, SVG_REQUIRED_EXTENSIONS_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_URI_LIST));
+//         t.put(null, SVG_REQUIRED_FEATURES_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_URI_LIST));
+//         t.put(null, SVG_SYSTEM_LANGUAGE_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_LANG_LIST));
+        xmlTraitInformation = t;
     }
 
+    /**
+     * The 'transform' attribute value.
+     */
+    protected SVGOMAnimatedTransformList transform;
 
+    /**
+     * The 'externalResourcesRequired' attribute value.
+     */
+    protected SVGOMAnimatedBoolean externalResourcesRequired;
 
     /**
      * Supplemental transformation due to motion animation.
@@ -96,6 +93,33 @@ public abstract class SVGGraphicsElement
      */
     protected SVGGraphicsElement(String prefix, AbstractDocument owner) {
         super(prefix, owner);
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes all live attributes for this element.
+     */
+    protected void initializeAllLiveAttributes() {
+        super.initializeAllLiveAttributes();
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes the live attribute values of this element.
+     */
+    private void initializeLiveAttributes() {
+        transform =
+            createLiveAnimatedTransformList(null, SVG_TRANSFORM_ATTRIBUTE, "");
+        externalResourcesRequired =
+            createLiveAnimatedBoolean
+                (null, SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE, false);
+    }
+
+    /**
+     * Returns the table of TraitInformation objects for this element.
+     */
+    protected DoublyIndexedTable getTraitInformationTable() {
+        return xmlTraitInformation;
     }
 
     // SVGLocatable support /////////////////////////////////////////////
@@ -156,7 +180,7 @@ public abstract class SVGGraphicsElement
      * org.w3c.dom.svg.SVGTransformable#getTransform()}.
      */
     public SVGAnimatedTransformList getTransform() {
-        return SVGTransformableSupport.getTransform(this);
+        return transform;
     }
 
     // SVGExternalResourcesRequired support /////////////////////////////
@@ -166,8 +190,7 @@ public abstract class SVGGraphicsElement
      * org.w3c.dom.svg.SVGExternalResourcesRequired#getExternalResourcesRequired()}.
      */
     public SVGAnimatedBoolean getExternalResourcesRequired() {
-        return SVGExternalResourcesRequiredSupport.
-            getExternalResourcesRequired(this);
+        return externalResourcesRequired;
     }
 
     // SVGLangSpace support //////////////////////////////////////////////////
@@ -242,56 +265,6 @@ public abstract class SVGGraphicsElement
      */
     public AffineTransform getMotionTransform() {
         return motionTransform;
-    }
-
-    // ExtendedTraitAccess ///////////////////////////////////////////////////
-
-    /**
-     * Returns whether the given XML attribute is animatable.
-     */
-    public boolean isAttributeAnimatable(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE)
-                    || ln.equals(SVG_TRANSFORM_ATTRIBUTE)) {
-                return true;
-            }
-        }
-        return super.isAttributeAnimatable(ns, ln);
-    }
-
-    /**
-     * Returns the type of the given attribute.
-     * to be removed
-     */
-    public int OLDgetAttributeType(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_TRANSFORM_ATTRIBUTE)) {
-                return SVGTypes.TYPE_TRANSFORM_LIST;
-            } else if (ln.equals(SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE)) {
-                return SVGTypes.TYPE_IDENT;
-            } else if (ln.equals(SVG_REQUIRED_EXTENSIONS_ATTRIBUTE)
-                    || ln.equals(SVG_REQUIRED_FEATURES_ATTRIBUTE)) {
-                return SVGTypes.TYPE_URI_LIST;
-            } else if (ln.equals(SVG_SYSTEM_LANGUAGE_ATTRIBUTE)) {
-                return SVGTypes.TYPE_LANG_LIST;
-            }
-        }
-        return super.getAttributeType(ns, ln);
-    }
-
-    /**
-     * Returns the type of the given attribute.
-     */
-    public int getAttributeType(String ns, String ln) {
-
-        if (ns == null) {
-            SVGOMAttributeInfo typeCode = (SVGOMAttributeInfo)typeMap.get( ln );
-            if ( typeCode != null ){
-                // it is one of 'my' mappings..
-                return typeCode.getSVGType();
-            }
-        }
-        return super.getAttributeType(ns, ln);
     }
 
     // AnimationTarget ///////////////////////////////////////////////////////

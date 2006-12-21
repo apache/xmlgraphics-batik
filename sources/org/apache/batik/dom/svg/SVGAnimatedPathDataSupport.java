@@ -50,63 +50,63 @@ import org.w3c.dom.svg.SVGPathSegMovetoRel;
  */
 public abstract class SVGAnimatedPathDataSupport {
 
-    /**
-     * Default value for the 'd' attribute.
-     */
-    public static final String D_DEFAULT_VALUE
-        = "";
-
-    /**
-     * Returns the {@link SVGOMAnimatedPathData} object that implements
-     * the {@link org.w3c.dom.svg.SVGAnimatedPathData} for the given element.
-     */
-    public static SVGOMAnimatedPathData getAnimatedPathData(AbstractElement e) {
-        SVGOMAnimatedPathData result = (SVGOMAnimatedPathData)
-            e.getLiveAttributeValue(null, SVGConstants.SVG_D_ATTRIBUTE);
-        if (result == null) {
-            result = new SVGOMAnimatedPathData(e, null,
-                                               SVGConstants.SVG_D_ATTRIBUTE,
-                                               D_DEFAULT_VALUE);
-            SVGOMDocument doc = (SVGOMDocument) e.getOwnerDocument();
-            result.addAnimatedAttributeListener
-                (doc.getAnimatedAttributeListener());
-            e.putLiveAttributeValue(null, SVGConstants.SVG_D_ATTRIBUTE, result);
-        }
-        return result;
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGAnimatedPathData#getPathSegList()}.
-     */
-    public static SVGPathSegList getPathSegList(AbstractElement e) {
-        return getAnimatedPathData(e).getPathSegList();
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGAnimatedPathData#getNormalizedPathSegList()}.
-     */
-    public static SVGPathSegList getNormalizedPathSegList(AbstractElement e) {
-        return getAnimatedPathData(e).getNormalizedPathSegList();
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGAnimatedPathData#getAnimatedPathSegList()}.
-     */
-    public static SVGPathSegList getAnimatedPathSegList(AbstractElement e) {
-        return getAnimatedPathData(e).getAnimatedPathSegList();
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGAnimatedPathData#getNormalizedPathSegList()}.
-     */
-    public static SVGPathSegList getAnimatedNormalizedPathSegList
-            (AbstractElement e) {
-        return getAnimatedPathData(e).getAnimatedNormalizedPathSegList();
-    }
+//     /**
+//      * Default value for the 'd' attribute.
+//      */
+//     public static final String D_DEFAULT_VALUE
+//         = "";
+// 
+//     /**
+//      * Returns the {@link SVGOMAnimatedPathData} object that implements
+//      * the {@link org.w3c.dom.svg.SVGAnimatedPathData} for the given element.
+//      */
+//     public static SVGOMAnimatedPathData getAnimatedPathData(AbstractElement e) {
+//         SVGOMAnimatedPathData result = (SVGOMAnimatedPathData)
+//             e.getLiveAttributeValue(null, SVGConstants.SVG_D_ATTRIBUTE);
+//         if (result == null) {
+//             result = new SVGOMAnimatedPathData(e, null,
+//                                                SVGConstants.SVG_D_ATTRIBUTE,
+//                                                D_DEFAULT_VALUE);
+//             SVGOMDocument doc = (SVGOMDocument) e.getOwnerDocument();
+//             result.addAnimatedAttributeListener
+//                 (doc.getAnimatedAttributeListener());
+//             e.putLiveAttributeValue(null, SVGConstants.SVG_D_ATTRIBUTE, result);
+//         }
+//         return result;
+//     }
+// 
+//     /**
+//      * <b>DOM</b>: Implements {@link
+//      * org.w3c.dom.svg.SVGAnimatedPathData#getPathSegList()}.
+//      */
+//     public static SVGPathSegList getPathSegList(AbstractElement e) {
+//         return getAnimatedPathData(e).getPathSegList();
+//     }
+// 
+//     /**
+//      * <b>DOM</b>: Implements {@link
+//      * org.w3c.dom.svg.SVGAnimatedPathData#getNormalizedPathSegList()}.
+//      */
+//     public static SVGPathSegList getNormalizedPathSegList(AbstractElement e) {
+//         return getAnimatedPathData(e).getNormalizedPathSegList();
+//     }
+// 
+//     /**
+//      * <b>DOM</b>: Implements {@link
+//      * org.w3c.dom.svg.SVGAnimatedPathData#getAnimatedPathSegList()}.
+//      */
+//     public static SVGPathSegList getAnimatedPathSegList(AbstractElement e) {
+//         return getAnimatedPathData(e).getAnimatedPathSegList();
+//     }
+// 
+//     /**
+//      * <b>DOM</b>: Implements {@link
+//      * org.w3c.dom.svg.SVGAnimatedPathData#getNormalizedPathSegList()}.
+//      */
+//     public static SVGPathSegList getAnimatedNormalizedPathSegList
+//             (AbstractElement e) {
+//         return getAnimatedPathData(e).getAnimatedNormalizedPathSegList();
+//     }
 
     /**
      * Uses the given {@link PathHandler} to handle the path segments from the

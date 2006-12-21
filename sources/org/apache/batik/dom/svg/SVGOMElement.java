@@ -98,6 +98,25 @@ public abstract class SVGOMElement
                AnimationTarget {
 
     /**
+     * Table mapping XML attribute names to TraitInformation objects.
+     */
+    protected static DoublyIndexedTable xmlTraitInformation;
+    static {
+        DoublyIndexedTable t = new DoublyIndexedTable();
+        t.put(null, SVG_ID_ATTRIBUTE,
+                new TraitInformation(false, SVGTypes.TYPE_CDATA));
+        t.put(XML_NAMESPACE_URI, XML_BASE_ATTRIBUTE,
+                new TraitInformation(false, SVGTypes.TYPE_URI));
+        t.put(XML_NAMESPACE_URI, XML_SPACE_ATTRIBUTE,
+                new TraitInformation(false, SVGTypes.TYPE_IDENT));
+        t.put(XML_NAMESPACE_URI, XML_ID_ATTRIBUTE,
+                new TraitInformation(false, SVGTypes.TYPE_CDATA));
+        t.put(XML_NAMESPACE_URI, XML_LANG_ATTRIBUTE,
+                new TraitInformation(false, SVGTypes.TYPE_LANG));
+        xmlTraitInformation = t;
+    }
+
+    /**
      * Is this element immutable?
      */
     protected transient boolean readonly;
@@ -136,6 +155,23 @@ public abstract class SVGOMElement
      */
     protected SVGOMElement(String prefix, AbstractDocument owner) {
         super(prefix, owner);
+        // initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes all live attributes for this element.
+     */
+    protected void initializeAllLiveAttributes() {
+        // initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes the live attribute values of this element.
+     */
+    private void initializeLiveAttributes(boolean rec) {
+        // If live attributes are added here, make sure to uncomment the
+        // call to initializeLiveAttributes in the constructor and
+        // initializeAllLiveAttributes method above.
     }
 
     /**
@@ -334,111 +370,202 @@ public abstract class SVGOMElement
     }
 
     /**
-     * Manages the query of an SVGAnimatedString.
-     * @param ns The namespace of the attribute.
-     * @param ln The local name of the attribute.
+     * Returns the table of TraitInformation objects for this element.
      */
-    protected SVGAnimatedString getAnimatedStringAttribute(String ns,
-                                                           String ln) {
-        SVGOMAnimatedString result =
-            (SVGOMAnimatedString) getLiveAttributeValue(ns, ln);
-        if (result == null) {
-            SVGOMDocument doc = (SVGOMDocument) ownerDocument;
-            result = new SVGOMAnimatedString(this, ns, ln);
-            result.addAnimatedAttributeListener
-                (doc.getAnimatedAttributeListener());
-            putLiveAttributeValue(ns, ln, (LiveAttributeValue)result);
-        }
-        return result;
+    protected DoublyIndexedTable getTraitInformationTable() {
+        return xmlTraitInformation;
     }
 
     /**
-     * Manages the query of an SVGAnimatedNumber.
-     * @param ns The namespace of the attribute.
-     * @param ln The local name of the attribute.
-     * @param val The value if the attribute is not specified.
+     * Creates a new {@link SVGOMAnimatedTransformList} and stores it in
+     * this element's LiveAttributeValue table.
      */
-    protected SVGAnimatedNumber getAnimatedNumberAttribute(String ns,
-                                                           String ln,
-                                                           float  val) {
-        SVGOMAnimatedNumber result =
-            (SVGOMAnimatedNumber) getLiveAttributeValue(ns, ln);
-        if (result == null) {
-            SVGOMDocument doc = (SVGOMDocument) ownerDocument;
-            result = new SVGOMAnimatedNumber(this, ns, ln, val);
-            result.addAnimatedAttributeListener
-                (doc.getAnimatedAttributeListener());
-            putLiveAttributeValue(ns, ln, (LiveAttributeValue)result);
-        }
-        return result;
+    protected SVGOMAnimatedTransformList createLiveAnimatedTransformList
+            (String ns, String ln, String def) {
+        SVGOMAnimatedTransformList v =
+            new SVGOMAnimatedTransformList(this, ns, ln, def);
+        liveAttributeValues.put(ns, ln, v);
+        v.addAnimatedAttributeListener
+            (((SVGOMDocument) ownerDocument).getAnimatedAttributeListener());
+        return v;
     }
 
     /**
-     * Manages the query of an SVGAnimatedInteger.
-     * @param ns The namespace of the attribute.
-     * @param ln The local name of the attribute.
-     * @param val The value if the attribute is not specified.
+     * Creates a new {@link SVGOMAnimatedBoolean} and stores it in
+     * this element's LiveAttributeValue table.
      */
-    protected SVGAnimatedInteger getAnimatedIntegerAttribute(String ns,
-                                                             String ln,
-                                                             int    val) {
-        SVGOMAnimatedInteger result =
-            (SVGOMAnimatedInteger) getLiveAttributeValue(ns, ln);
-            SVGOMDocument doc = (SVGOMDocument) ownerDocument;
-        if (result == null) {
-            result = new SVGOMAnimatedInteger(this, ns, ln, val);
-            result.addAnimatedAttributeListener
-                (doc.getAnimatedAttributeListener());
-            putLiveAttributeValue(ns, ln, (LiveAttributeValue)result);
-        }
-        return result;
+    protected SVGOMAnimatedBoolean createLiveAnimatedBoolean
+            (String ns, String ln, boolean def) {
+        SVGOMAnimatedBoolean v =
+            new SVGOMAnimatedBoolean(this, ns, ln, def);
+        liveAttributeValues.put(ns, ln, v);
+        v.addAnimatedAttributeListener
+            (((SVGOMDocument) ownerDocument).getAnimatedAttributeListener());
+        return v;
     }
 
     /**
-     * Manages the query of an SVGAnimatedEnumeration.
-     * @param ns The namespace of the attribute.
-     * @param ln The local name of the attribute.
-     * @param val The values in the enumeration.
-     * @param def The value if the attribute is not specified.
+     * Creates a new {@link SVGOMAnimatedString} and stores it in
+     * this element's LiveAttributeValue table.
      */
-    protected SVGAnimatedEnumeration
-        getAnimatedEnumerationAttribute(String ns, String ln,
-                                        String[] val, short def) {
-        SVGOMAnimatedEnumeration result =
-            (SVGOMAnimatedEnumeration) getLiveAttributeValue(ns, ln);
-        if (result == null) {
-            SVGOMDocument doc = (SVGOMDocument) ownerDocument;
-            result = new SVGOMAnimatedEnumeration(this, ns, ln, val, def);
-            result.addAnimatedAttributeListener
-                (doc.getAnimatedAttributeListener());
-            putLiveAttributeValue(ns, ln, (LiveAttributeValue)result);
-        }
-        return result;
+    protected SVGOMAnimatedString createLiveAnimatedString
+            (String ns, String ln) {
+        SVGOMAnimatedString v =
+            new SVGOMAnimatedString(this, ns, ln);
+        liveAttributeValues.put(ns, ln, v);
+        v.addAnimatedAttributeListener
+            (((SVGOMDocument) ownerDocument).getAnimatedAttributeListener());
+        return v;
     }
 
     /**
-     * Manages the query of an SVGAnimatedNumber.
-     * @param ns The namespace of the attribute.
-     * @param ln The local name of the attribute.
-     * @param val The value if the attribute is not specified.
-     * @param dir The length direction.
-     * @param nonneg Whether the length must be non-negative.
+     * Creates a new {@link SVGOMAnimatedPreserveAspectRatio} and stores it in
+     * this element's LiveAttributeValue table.
      */
-    protected SVGAnimatedLength getAnimatedLengthAttribute(String ns,
-                                                           String ln,
-                                                           String val,
-                                                           short dir,
-                                                           boolean nonneg) {
-        SVGOMAnimatedLength result =
-            (SVGOMAnimatedLength) getLiveAttributeValue(ns, ln);
-        if (result == null) {
-            SVGOMDocument doc = (SVGOMDocument) ownerDocument;
-            result = new SVGOMAnimatedLength(this, ns, ln, val, dir, nonneg);
-            result.addAnimatedAttributeListener
-                (doc.getAnimatedAttributeListener());
-            putLiveAttributeValue(ns, ln, (LiveAttributeValue)result);
-        }
-        return result;
+    protected SVGOMAnimatedPreserveAspectRatio
+            createLiveAnimatedPreserveAspectRatio() {
+        SVGOMAnimatedPreserveAspectRatio v =
+            new SVGOMAnimatedPreserveAspectRatio(this);
+        liveAttributeValues.put(null, SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE, v);
+        v.addAnimatedAttributeListener
+            (((SVGOMDocument) ownerDocument).getAnimatedAttributeListener());
+        return v;
+    }
+
+    /**
+     * Creates a new {@link SVGOMAnimatedMarkerOrientValue} and stores it in
+     * this element's LiveAttributeValue table.
+     */
+    protected SVGOMAnimatedMarkerOrientValue
+            createLiveAnimatedMarkerOrientValue(String ns, String ln) {
+        SVGOMAnimatedMarkerOrientValue v =
+            new SVGOMAnimatedMarkerOrientValue(this, ns, ln);
+        liveAttributeValues.put(ns, ln, v);
+        v.addAnimatedAttributeListener
+            (((SVGOMDocument) ownerDocument).getAnimatedAttributeListener());
+        return v;
+    }
+
+    /**
+     * Creates a new {@link SVGOMAnimatedPathData} and stores it in
+     * this element's LiveAttributeValue table.
+     */
+    protected SVGOMAnimatedPathData
+            createLiveAnimatedPathData(String ns, String ln, String def) {
+        SVGOMAnimatedPathData v =
+            new SVGOMAnimatedPathData(this, ns, ln, def);
+        liveAttributeValues.put(ns, ln, v);
+        v.addAnimatedAttributeListener
+            (((SVGOMDocument) ownerDocument).getAnimatedAttributeListener());
+        return v;
+    }
+
+    /**
+     * Creates a new {@link SVGOMAnimatedNumber} and stores it in
+     * this element's LiveAttributeValue table.
+     */
+    protected SVGOMAnimatedNumber createLiveAnimatedNumber
+            (String ns, String ln, float def) {
+        return createLiveAnimatedNumber(ns, ln, def, false);
+    }
+
+    /**
+     * Creates a new {@link SVGOMAnimatedNumber} that can be parsed as a
+     * percentage and stores it in this element's LiveAttributeValue table.
+     */
+    protected SVGOMAnimatedNumber createLiveAnimatedNumber
+            (String ns, String ln, float def, boolean allowPercentage) {
+        SVGOMAnimatedNumber v =
+            new SVGOMAnimatedNumber(this, ns, ln, def, allowPercentage);
+        liveAttributeValues.put(ns, ln, v);
+        v.addAnimatedAttributeListener
+            (((SVGOMDocument) ownerDocument).getAnimatedAttributeListener());
+        return v;
+    }
+
+    /**
+     * Creates a new {@link SVGOMAnimatedNumberList} and stores it in
+     * this element's LiveAttributeValue table.
+     */
+    protected SVGOMAnimatedNumberList createLiveAnimatedNumberList
+            (String ns, String ln, String def, boolean canEmpty) {
+        SVGOMAnimatedNumberList v =
+            new SVGOMAnimatedNumberList(this, ns, ln, def, canEmpty);
+        liveAttributeValues.put(ns, ln, v);
+        v.addAnimatedAttributeListener
+            (((SVGOMDocument) ownerDocument).getAnimatedAttributeListener());
+        return v;
+    }
+
+    /**
+     * Creates a new {@link SVGOMAnimatedPoints} and stores it in
+     * this element's LiveAttributeValue table.
+     */
+    protected SVGOMAnimatedPoints createLiveAnimatedPoints
+            (String ns, String ln, String def) {
+        SVGOMAnimatedPoints v =
+            new SVGOMAnimatedPoints(this, ns, ln, def);
+        liveAttributeValues.put(ns, ln, v);
+        v.addAnimatedAttributeListener
+            (((SVGOMDocument) ownerDocument).getAnimatedAttributeListener());
+        return v;
+    }
+
+    /**
+     * Creates a new {@link SVGOMAnimatedLengthList} and stores it in
+     * this element's LiveAttributeValue table.
+     */
+    protected SVGOMAnimatedLengthList createLiveAnimatedLengthList
+            (String ns, String ln, String def, boolean emptyAllowed,
+             short dir) {
+        SVGOMAnimatedLengthList v =
+            new SVGOMAnimatedLengthList(this, ns, ln, def, emptyAllowed, dir);
+        liveAttributeValues.put(ns, ln, v);
+        v.addAnimatedAttributeListener
+            (((SVGOMDocument) ownerDocument).getAnimatedAttributeListener());
+        return v;
+    }
+
+    /**
+     * Creates a new {@link SVGOMAnimatedInteger} and stores it in
+     * this element's LiveAttributeValue table.
+     */
+    protected SVGOMAnimatedInteger createLiveAnimatedInteger
+            (String ns, String ln, int def) {
+        SVGOMAnimatedInteger v =
+            new SVGOMAnimatedInteger(this, ns, ln, def);
+        liveAttributeValues.put(ns, ln, v);
+        v.addAnimatedAttributeListener
+            (((SVGOMDocument) ownerDocument).getAnimatedAttributeListener());
+        return v;
+    }
+
+    /**
+     * Creates a new {@link SVGOMAnimatedEnumeration} and stores it in
+     * this element's LiveAttributeValue table.
+     */
+    protected SVGOMAnimatedEnumeration createLiveAnimatedEnumeration
+            (String ns, String ln, String[] val, short def) {
+        SVGOMAnimatedEnumeration v =
+            new SVGOMAnimatedEnumeration(this, ns, ln, val, def);
+        liveAttributeValues.put(ns, ln, v);
+        v.addAnimatedAttributeListener
+            (((SVGOMDocument) ownerDocument).getAnimatedAttributeListener());
+        return v;
+    }
+
+    /**
+     * Creates a new {@link SVGOMAnimatedLength} and stores it in
+     * this element's LiveAttributeValue table.
+     */
+    protected SVGOMAnimatedLength createLiveAnimatedLength
+            (String ns, String ln, String val, short dir, boolean nonneg) {
+        SVGOMAnimatedLength v =
+            new SVGOMAnimatedLength(this, ns, ln, val, dir, nonneg);
+        liveAttributeValues.put(ns, ln, v);
+        v.addAnimatedAttributeListener
+            (((SVGOMDocument) ownerDocument).getAnimatedAttributeListener());
+        return v;
     }
 
     // ExtendedTraitAccess ///////////////////////////////////////////////////
@@ -483,7 +610,12 @@ public abstract class SVGOMElement
     /**
      * Returns whether the given XML attribute is animatable.
      */
-    public boolean isAttributeAnimatable(String ns, String ln) {
+    public final boolean isAttributeAnimatable(String ns, String ln) {
+        DoublyIndexedTable t = getTraitInformationTable();
+        TraitInformation ti = (TraitInformation) t.get(ns, ln);
+        if (ti != null) {
+            return ti.isAnimatable();
+        }
         return false;
     }
 
@@ -547,24 +679,11 @@ public abstract class SVGOMElement
     /**
      * Returns the type of the given attribute.
      */
-    public int getAttributeType(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_ID_ATTRIBUTE)) {
-                return SVGTypes.TYPE_CDATA;
-            }
-        } else if (ns.equals(XML_NAMESPACE_URI)) {
-            if (ln.equals(XML_BASE_ATTRIBUTE)) {
-                return SVGTypes.TYPE_URI;
-            } else if (ln.equals(XML_SPACE_ATTRIBUTE)
-                    || ln.equals(XML_ID_ATTRIBUTE)) {
-                return SVGTypes.TYPE_IDENT;
-            } else if (ln.equals(XML_LANG_ATTRIBUTE)) {
-                return SVGTypes.TYPE_LANG;
-            }
-        } else if (ns.equals(XLINK_NAMESPACE_URI)) {
-            if (ln.equals(XLINK_HREF_ATTRIBUTE)) {
-                return SVGTypes.TYPE_URI;
-            }
+    public final int getAttributeType(String ns, String ln) {
+        DoublyIndexedTable t = getTraitInformationTable();
+        TraitInformation ti = (TraitInformation) t.get(ns, ln);
+        if (ti != null) {
+            return ti.getType();
         }
         return SVGTypes.TYPE_UNKNOWN;
     }
@@ -993,7 +1112,12 @@ public abstract class SVGOMElement
             }
         }
         if (!isCSS) {
-            return getAttributePercentageInterpretation(ns, an);
+            DoublyIndexedTable t = getTraitInformationTable();
+            TraitInformation ti = (TraitInformation) t.get(ns, an);
+            if (ti != null) {
+                return ti.getPercentageInterpretation();
+            }
+            return PERCENTAGE_VIEWPORT_SIZE;
         }
         // Default for properties.
         return PERCENTAGE_VIEWPORT_SIZE;
@@ -1002,7 +1126,7 @@ public abstract class SVGOMElement
     /**
      * Gets how percentage values are interpreted by the given attribute.
      */
-    protected short getAttributePercentageInterpretation(String ns, String ln) {
+    protected final short getAttributePercentageInterpretation(String ns, String ln) {
         return PERCENTAGE_VIEWPORT_SIZE;
     }
 
@@ -1091,6 +1215,7 @@ public abstract class SVGOMElement
         super.export(n, d);
         SVGOMElement e = (SVGOMElement)n;
         e.prefix = prefix;
+        e.initializeAllLiveAttributes();
         return n;
     }
 
@@ -1101,6 +1226,7 @@ public abstract class SVGOMElement
         super.deepExport(n, d);
         SVGOMElement e = (SVGOMElement)n;
         e.prefix = prefix;
+        e.initializeAllLiveAttributes();
         return n;
     }
 
@@ -1112,6 +1238,7 @@ public abstract class SVGOMElement
         super.copyInto(n);
         SVGOMElement e = (SVGOMElement)n;
         e.prefix = prefix;
+        e.initializeAllLiveAttributes();
         return n;
     }
 
@@ -1123,6 +1250,7 @@ public abstract class SVGOMElement
         super.deepCopyInto(n);
         SVGOMElement e = (SVGOMElement)n;
         e.prefix = prefix;
+        e.initializeAllLiveAttributes();
         return n;
     }
 

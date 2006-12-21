@@ -31,123 +31,123 @@ import org.w3c.dom.svg.SVGAnimatedNumberList;
  */
 public class SVGTextPositioningElementSupport {
 
-    public static final String X_DEFAULT_VALUE
-        = "";
-    public static final String Y_DEFAULT_VALUE
-        = "";
-    public static final String DX_DEFAULT_VALUE
-        = "";
-    public static final String DY_DEFAULT_VALUE
-        = "";
-    public static final String ROTATE_DEFAULT_VALUE
-        = "";
-
-    /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGTextPositioningElement#getX()}.
-     */
-    public static SVGAnimatedLengthList getX(AbstractElement e){
-
-        SVGOMAnimatedLengthList result =(SVGOMAnimatedLengthList)
-            e.getLiveAttributeValue(null, SVGConstants.SVG_X_ATTRIBUTE);
-        if (result == null) {
-            SVGOMDocument doc = (SVGOMDocument) e.getOwnerDocument();
-            result = new SVGOMAnimatedLengthList(e, null,
-                                                 SVGConstants.SVG_X_ATTRIBUTE,
-                                                 X_DEFAULT_VALUE, true,
-                                                 AbstractSVGLength.HORIZONTAL_LENGTH);
-            result.addAnimatedAttributeListener
-                (doc.getAnimatedAttributeListener());
-            e.putLiveAttributeValue(null,
-                                    SVGConstants.SVG_X_ATTRIBUTE, result);
-        }
-        return result;
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGTextPositioningElement#getY()}.
-     */
-    public static SVGAnimatedLengthList getY(AbstractElement e){
-
-        SVGOMAnimatedLengthList result =(SVGOMAnimatedLengthList)
-            e.getLiveAttributeValue(null, SVGConstants.SVG_Y_ATTRIBUTE);
-        if (result == null) {
-            SVGOMDocument doc = (SVGOMDocument) e.getOwnerDocument();
-            result = new SVGOMAnimatedLengthList(e, null,
-                                                 SVGConstants.SVG_Y_ATTRIBUTE,
-                                                 Y_DEFAULT_VALUE, true,
-                                                 AbstractSVGLength.VERTICAL_LENGTH);
-            result.addAnimatedAttributeListener
-                (doc.getAnimatedAttributeListener());
-            e.putLiveAttributeValue(null,
-                                    SVGConstants.SVG_Y_ATTRIBUTE, result);
-        }
-        return result;
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGTextPositioningElement#getDx()}.
-     */
-    public static SVGAnimatedLengthList getDx(AbstractElement e){
-
-        SVGOMAnimatedLengthList result =(SVGOMAnimatedLengthList)
-            e.getLiveAttributeValue(null, SVGConstants.SVG_DX_ATTRIBUTE);
-        if (result == null) {
-            SVGOMDocument doc = (SVGOMDocument) e.getOwnerDocument();
-            result = new SVGOMAnimatedLengthList(e, null,
-                                                 SVGConstants.SVG_DX_ATTRIBUTE,
-                                                 DX_DEFAULT_VALUE, true,
-                                                 AbstractSVGLength.HORIZONTAL_LENGTH);
-            result.addAnimatedAttributeListener
-                (doc.getAnimatedAttributeListener());
-            e.putLiveAttributeValue(null,
-                                    SVGConstants.SVG_DX_ATTRIBUTE, result);
-        }
-        return result;
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGTextPositioningElement#getDy()}.
-     */
-    public static SVGAnimatedLengthList getDy(AbstractElement e){
-
-        SVGOMAnimatedLengthList result =(SVGOMAnimatedLengthList)
-            e.getLiveAttributeValue(null, SVGConstants.SVG_DY_ATTRIBUTE);
-        if (result == null) {
-            SVGOMDocument doc = (SVGOMDocument) e.getOwnerDocument();
-            result = new SVGOMAnimatedLengthList(e, null,
-                                                 SVGConstants.SVG_DY_ATTRIBUTE,
-                                                 DY_DEFAULT_VALUE, true,
-                                                 AbstractSVGLength.VERTICAL_LENGTH);
-            result.addAnimatedAttributeListener
-                (doc.getAnimatedAttributeListener());
-            e.putLiveAttributeValue(null,
-                                    SVGConstants.SVG_DY_ATTRIBUTE, result);
-        }
-        return result;
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGTextPositioningElement#getRotate()}.
-     */
-    public static SVGAnimatedNumberList getRotate(AbstractElement e){
-
-        SVGOMAnimatedNumberList result =(SVGOMAnimatedNumberList)
-            e.getLiveAttributeValue(null, SVGConstants.SVG_ROTATE_ATTRIBUTE);
-        if (result == null) {
-            SVGOMDocument doc = (SVGOMDocument) e.getOwnerDocument();
-            result = new SVGOMAnimatedNumberList(e, null,
-                                                 SVGConstants.SVG_ROTATE_ATTRIBUTE,
-                                                 ROTATE_DEFAULT_VALUE, true);
-            result.addAnimatedAttributeListener
-                (doc.getAnimatedAttributeListener());
-            e.putLiveAttributeValue(null,
-                                    SVGConstants.SVG_ROTATE_ATTRIBUTE, result);
-        }
-        return result;
-    }
+//     public static final String X_DEFAULT_VALUE
+//         = "";
+//     public static final String Y_DEFAULT_VALUE
+//         = "";
+//     public static final String DX_DEFAULT_VALUE
+//         = "";
+//     public static final String DY_DEFAULT_VALUE
+//         = "";
+//     public static final String ROTATE_DEFAULT_VALUE
+//         = "";
+// 
+//     /**
+//      * <b>DOM</b>: Implements {@link
+//      * org.w3c.dom.svg.SVGTextPositioningElement#getX()}.
+//      */
+//     public static SVGAnimatedLengthList getX(AbstractElement e){
+// 
+//         SVGOMAnimatedLengthList result =(SVGOMAnimatedLengthList)
+//             e.getLiveAttributeValue(null, SVGConstants.SVG_X_ATTRIBUTE);
+//         if (result == null) {
+//             SVGOMDocument doc = (SVGOMDocument) e.getOwnerDocument();
+//             result = new SVGOMAnimatedLengthList(e, null,
+//                                                  SVGConstants.SVG_X_ATTRIBUTE,
+//                                                  X_DEFAULT_VALUE, true,
+//                                                  AbstractSVGLength.HORIZONTAL_LENGTH);
+//             result.addAnimatedAttributeListener
+//                 (doc.getAnimatedAttributeListener());
+//             e.putLiveAttributeValue(null,
+//                                     SVGConstants.SVG_X_ATTRIBUTE, result);
+//         }
+//         return result;
+//     }
+// 
+//     /**
+//      * <b>DOM</b>: Implements {@link
+//      * org.w3c.dom.svg.SVGTextPositioningElement#getY()}.
+//      */
+//     public static SVGAnimatedLengthList getY(AbstractElement e){
+// 
+//         SVGOMAnimatedLengthList result =(SVGOMAnimatedLengthList)
+//             e.getLiveAttributeValue(null, SVGConstants.SVG_Y_ATTRIBUTE);
+//         if (result == null) {
+//             SVGOMDocument doc = (SVGOMDocument) e.getOwnerDocument();
+//             result = new SVGOMAnimatedLengthList(e, null,
+//                                                  SVGConstants.SVG_Y_ATTRIBUTE,
+//                                                  Y_DEFAULT_VALUE, true,
+//                                                  AbstractSVGLength.VERTICAL_LENGTH);
+//             result.addAnimatedAttributeListener
+//                 (doc.getAnimatedAttributeListener());
+//             e.putLiveAttributeValue(null,
+//                                     SVGConstants.SVG_Y_ATTRIBUTE, result);
+//         }
+//         return result;
+//     }
+// 
+//     /**
+//      * <b>DOM</b>: Implements {@link
+//      * org.w3c.dom.svg.SVGTextPositioningElement#getDx()}.
+//      */
+//     public static SVGAnimatedLengthList getDx(AbstractElement e){
+// 
+//         SVGOMAnimatedLengthList result =(SVGOMAnimatedLengthList)
+//             e.getLiveAttributeValue(null, SVGConstants.SVG_DX_ATTRIBUTE);
+//         if (result == null) {
+//             SVGOMDocument doc = (SVGOMDocument) e.getOwnerDocument();
+//             result = new SVGOMAnimatedLengthList(e, null,
+//                                                  SVGConstants.SVG_DX_ATTRIBUTE,
+//                                                  DX_DEFAULT_VALUE, true,
+//                                                  AbstractSVGLength.HORIZONTAL_LENGTH);
+//             result.addAnimatedAttributeListener
+//                 (doc.getAnimatedAttributeListener());
+//             e.putLiveAttributeValue(null,
+//                                     SVGConstants.SVG_DX_ATTRIBUTE, result);
+//         }
+//         return result;
+//     }
+// 
+//     /**
+//      * <b>DOM</b>: Implements {@link
+//      * org.w3c.dom.svg.SVGTextPositioningElement#getDy()}.
+//      */
+//     public static SVGAnimatedLengthList getDy(AbstractElement e){
+// 
+//         SVGOMAnimatedLengthList result =(SVGOMAnimatedLengthList)
+//             e.getLiveAttributeValue(null, SVGConstants.SVG_DY_ATTRIBUTE);
+//         if (result == null) {
+//             SVGOMDocument doc = (SVGOMDocument) e.getOwnerDocument();
+//             result = new SVGOMAnimatedLengthList(e, null,
+//                                                  SVGConstants.SVG_DY_ATTRIBUTE,
+//                                                  DY_DEFAULT_VALUE, true,
+//                                                  AbstractSVGLength.VERTICAL_LENGTH);
+//             result.addAnimatedAttributeListener
+//                 (doc.getAnimatedAttributeListener());
+//             e.putLiveAttributeValue(null,
+//                                     SVGConstants.SVG_DY_ATTRIBUTE, result);
+//         }
+//         return result;
+//     }
+// 
+//     /**
+//      * <b>DOM</b>: Implements {@link
+//      * org.w3c.dom.svg.SVGTextPositioningElement#getRotate()}.
+//      */
+//     public static SVGAnimatedNumberList getRotate(AbstractElement e){
+// 
+//         SVGOMAnimatedNumberList result =(SVGOMAnimatedNumberList)
+//             e.getLiveAttributeValue(null, SVGConstants.SVG_ROTATE_ATTRIBUTE);
+//         if (result == null) {
+//             SVGOMDocument doc = (SVGOMDocument) e.getOwnerDocument();
+//             result = new SVGOMAnimatedNumberList(e, null,
+//                                                  SVGConstants.SVG_ROTATE_ATTRIBUTE,
+//                                                  ROTATE_DEFAULT_VALUE, true);
+//             result.addAnimatedAttributeListener
+//                 (doc.getAnimatedAttributeListener());
+//             e.putLiveAttributeValue(null,
+//                                     SVGConstants.SVG_ROTATE_ATTRIBUTE, result);
+//         }
+//         return result;
+//     }
 }

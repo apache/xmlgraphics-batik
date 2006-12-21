@@ -1,11 +1,11 @@
 /*
 
    Licensed to the Apache Software Foundation (ASF) under one or more
-  contributor license agreements.  See the NOTICE file distributed with
-  this work for additional information regarding copyright ownership.
-  The ASF licenses this file to You under the Apache License, Version 2.0
-  (the "License"); you may not use this file except in compliance with
-  the License.  You may obtain a copy of the License at
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -25,6 +25,7 @@ import org.apache.batik.css.engine.CSSEngine;
 import org.apache.batik.css.engine.CSSStyleSheetNode;
 import org.apache.batik.css.engine.StyleSheet;
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.dom.util.DoublyIndexedTable;
 import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.util.XMLConstants;
 import org.apache.batik.util.SVGTypes;
@@ -47,6 +48,22 @@ public class SVGOMStyleElement
     implements CSSStyleSheetNode,
                SVGStyleElement,
                LinkStyle {
+
+//     /**
+//      * Table mapping XML attribute names to TraitInformation objects.
+//      */
+//     protected static DoublyIndexedTable xmlTraitInformation;
+//     static {
+//         DoublyIndexedTable t =
+//             new DoublyIndexedTable(SVGOMElement.xmlTraitInformation);
+//         t.put(null, SVG_MEDIA_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_CDATA));
+//         t.put(null, SVG_TITLE_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_CDATA));
+//         t.put(null, SVG_TYPE_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_CDATA));
+//         xmlTraitInformation = t;
+//     }
 
     /**
      * The attribute initializer.
@@ -220,6 +237,13 @@ public class SVGOMStyleElement
         return new SVGOMStyleElement();
     }
 
+//     /**
+//      * Returns the table of TraitInformation objects for this element.
+//      */
+//     protected DoublyIndexedTable getTraitInformationTable() {
+//         return xmlTraitInformation;
+//     }
+
     /**
      * The DOMCharacterDataModified listener.
      */
@@ -228,21 +252,5 @@ public class SVGOMStyleElement
         public void handleEvent(Event evt) {
             styleSheet = null;
         }
-    }
-
-    // ExtendedTraitAccess ///////////////////////////////////////////////////
-
-    /**
-     * Returns the type of the given attribute.
-     */
-    public int getAttributeType(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_MEDIA_ATTRIBUTE)
-                    || ln.equals(SVG_TITLE_ATTRIBUTE)
-                    || ln.equals(SVG_TYPE_ATTRIBUTE)) {
-                return SVGTypes.TYPE_CDATA;
-            }
-        }
-        return super.getAttributeType(ns, ln);
     }
 }

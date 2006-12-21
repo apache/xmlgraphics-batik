@@ -45,7 +45,6 @@ public class SVGOMSwitchElement
      */
     public SVGOMSwitchElement(String prefix, AbstractDocument owner) {
         super(prefix, owner);
-
     }
 
     /**

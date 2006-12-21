@@ -19,13 +19,11 @@
 package org.apache.batik.dom.svg;
 
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.dom.util.DoublyIndexedTable;
 import org.apache.batik.util.SVGTypes;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimateElement;
-
-import java.util.Map;
-import java.util.HashMap;
 
 /**
  * This class implements {@link SVGAnimateElement}.
@@ -37,54 +35,55 @@ public class SVGOMAnimateElement
     extends    SVGOMAnimationElement
     implements SVGAnimateElement {
 
-    /**
-     * this map supports a fast lookup from svg-attribute-name string to
-     * svgType-integer. It is faster than doing string-equals in a
-     * lengthy if-else-statement.
-     * This map is used only by {@link #getAttributeType }
-     */
-    private static final Map typeMap = new HashMap();
-
-
-    static {
-
-        Map map = typeMap;
-
-        Integer svgType = new Integer( SVGTypes.TYPE_IDENT );
-        map.put(  SVG_ACCUMULATE_ATTRIBUTE, svgType );
-        map.put(  SVG_ADDITIVE_ATTRIBUTE, svgType );
-        map.put(  SVG_ATTRIBUTE_TYPE_ATTRIBUTE, svgType );
-        map.put(  SVG_CALC_MODE_ATTRIBUTE, svgType );
-        map.put(  SVG_FILL_ATTRIBUTE, svgType );
-        map.put(  SVG_RESTART_ATTRIBUTE, svgType );
-
-        svgType = new Integer( SVGTypes.TYPE_CDATA );
-        map.put(  SVG_ATTRIBUTE_NAME_ATTRIBUTE, svgType );
-        map.put(  SVG_BY_ATTRIBUTE, svgType );
-        map.put(  SVG_FROM_ATTRIBUTE, svgType );
-        map.put(  SVG_MAX_ATTRIBUTE, svgType );
-        map.put(  SVG_MIN_ATTRIBUTE, svgType );
-        map.put(  SVG_TO_ATTRIBUTE, svgType );
-        map.put(  SVG_VALUES_ATTRIBUTE, svgType );
-
-        svgType = new Integer( SVGTypes.TYPE_TIMING_SPECIFIER_LIST );
-        map.put(  SVG_BEGIN_ATTRIBUTE, svgType );
-        map.put(  SVG_END_ATTRIBUTE, svgType );
-
-        svgType = new Integer( SVGTypes.TYPE_TIME );
-        map.put(  SVG_DUR_ATTRIBUTE, svgType );
-        map.put(  SVG_REPEAT_DUR_ATTRIBUTE, svgType );
-
-        svgType = new Integer( SVGTypes.TYPE_NUMBER_LIST );
-        map.put(  SVG_KEY_SPLINES_ATTRIBUTE, svgType );
-        map.put(  SVG_KEY_TIMES_ATTRIBUTE, svgType );
-
-        svgType = new Integer( SVGTypes.TYPE_INTEGER );
-        map.put(  SVG_REPEAT_COUNT_ATTRIBUTE, svgType );
-
-    }
-
-
+//     /**
+//      * Table mapping XML attribute names to TraitInformation objects.
+//      */
+//     protected static DoublyIndexedTable xmlTraitInformation;
+//     static {
+//         DoublyIndexedTable t =
+//             new DoublyIndexedTable(SVGOMAnimationElement.xmlTraitInformation);
+//         t.put(null, SVG_ACCUMULATE_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_IDENT));
+//         t.put(null, SVG_ADDITIVE_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_IDENT));
+//         t.put(null, SVG_ATTRIBUTE_TYPE_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_IDENT));
+//         t.put(null, SVG_CALC_MODE_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_IDENT));
+//         t.put(null, SVG_FILL_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_IDENT));
+//         t.put(null, SVG_RESTART_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_IDENT));
+//         t.put(null, SVG_ATTRIBUTE_NAME_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_CDATA));
+//         t.put(null, SVG_BY_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_CDATA));
+//         t.put(null, SVG_FROM_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_CDATA));
+//         t.put(null, SVG_MAX_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_CDATA));
+//         t.put(null, SVG_MIN_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_CDATA));
+//         t.put(null, SVG_TO_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_CDATA));
+//         t.put(null, SVG_VALUES_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_CDATA));
+//         t.put(null, SVG_BEGIN_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_TIMING_SPECIFIER_LIST));
+//         t.put(null, SVG_END_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_TIMING_SPECIFIER_LIST));
+//         t.put(null, SVG_DUR_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_TIME));
+//         t.put(null, SVG_REPEAT_DUR_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_TIME));
+//         t.put(null, SVG_KEY_SPLINES_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_NUMBER_LIST));
+//         t.put(null, SVG_KEY_TIMES_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_NUMBER_LIST));
+//         t.put(null, SVG_REPEAT_COUNT_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_INTEGER));
+//         xmlTraitInformation = t;
+//     }
 
     /**
      * Creates a new SVGOMAnimateElement object.
@@ -99,7 +98,6 @@ public class SVGOMAnimateElement
      */
     public SVGOMAnimateElement(String prefix, AbstractDocument owner) {
         super(prefix, owner);
-
     }
 
     /**
@@ -116,20 +114,10 @@ public class SVGOMAnimateElement
         return new SVGOMAnimateElement();
     }
 
-    // ExtendedTraitAccess ///////////////////////////////////////////////////
-
-    /**
-     * Returns the type of the given attribute.
-     */
-    public int getAttributeType(String ns, String ln) {
-
-        if (ns == null) {
-            Integer typeCode = (Integer)typeMap.get( ln );
-            if ( typeCode != null ){
-                // it is one of 'my' mappings..
-                return typeCode.intValue();
-            }
-        }
-        return super.getAttributeType(ns, ln);
-    }
+//     /**
+//      * Returns the table of TraitInformation objects for this element.
+//      */
+//     protected DoublyIndexedTable getTraitInformationTable() {
+//         return xmlTraitInformation;
+//     }
 }

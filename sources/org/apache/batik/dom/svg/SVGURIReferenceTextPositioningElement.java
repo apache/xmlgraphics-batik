@@ -18,7 +18,10 @@
  */
 package org.apache.batik.dom.svg;
 
+import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.dom.util.DoublyIndexedTable;
+import org.apache.batik.util.SVGTypes;
 import org.w3c.dom.svg.SVGAnimatedString;
 import org.w3c.dom.svg.SVGURIReference;
 
@@ -34,6 +37,23 @@ public abstract class SVGURIReferenceTextPositioningElement
     implements SVGURIReference {
 
     /**
+     * Table mapping XML attribute names to TraitInformation objects.
+     */
+    protected static DoublyIndexedTable xmlTraitInformation;
+    static {
+        DoublyIndexedTable t =
+            new DoublyIndexedTable(SVGOMTextPositioningElement.xmlTraitInformation);
+        t.put(XLINK_NAMESPACE_URI, XLINK_HREF_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_URI));
+        xmlTraitInformation = t;
+    }
+
+    /**
+     * The 'xlink:href' attribute value.
+     */
+    protected SVGOMAnimatedString href;
+
+    /**
      * Creates a new SVGURIReferenceTextPositioningElement object.
      */
     protected SVGURIReferenceTextPositioningElement() {
@@ -47,12 +67,61 @@ public abstract class SVGURIReferenceTextPositioningElement
     protected SVGURIReferenceTextPositioningElement(String prefix,
                                                     AbstractDocument owner) {
         super(prefix, owner);
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes all live attributes for this element.
+     */
+    protected void initializeAllLiveAttributes() {
+        super.initializeAllLiveAttributes();
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes the live attribute values of this element.
+     */
+    private void initializeLiveAttributes() {
+        href =
+            createLiveAnimatedString(XLINK_NAMESPACE_URI, XLINK_HREF_ATTRIBUTE);
     }
 
     /**
      * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGURIReference#getHref()}.
      */
     public SVGAnimatedString getHref() {
-        return SVGURIReferenceSupport.getHref(this);
+        return href;
+    }
+
+    /**
+     * Returns the table of TraitInformation objects for this element.
+     */
+    protected DoublyIndexedTable getTraitInformationTable() {
+        return xmlTraitInformation;
+    }
+
+    // AnimationTarget ///////////////////////////////////////////////////////
+
+    /**
+     * Updates an attribute value in this target.
+     */
+    public void updateAttributeValue(String ns, String ln,
+                                     AnimatableValue val) {
+        if (XLINK_NAMESPACE_URI.equals(ns)
+                && ln.equals(XLINK_HREF_ATTRIBUTE)) {
+            updateStringAttributeValue(getHref(), val);
+        } else {
+            super.updateAttributeValue(ns, ln, val);
+        }
+    }
+
+    /**
+     * Returns the underlying value of an animatable XML attribute.
+     */
+    public AnimatableValue getUnderlyingValue(String ns, String ln) {
+        if (XLINK_NAMESPACE_URI.equals(ns)) {
+            return getBaseValue(getHref());
+        }
+        return super.getUnderlyingValue(ns, ln);
     }
 }

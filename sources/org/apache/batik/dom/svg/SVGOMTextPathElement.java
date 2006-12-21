@@ -20,6 +20,7 @@ package org.apache.batik.dom.svg;
 
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.anim.values.AnimatableValue;
+import org.apache.batik.dom.util.DoublyIndexedTable;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.util.SVGTypes;
@@ -39,6 +40,24 @@ import org.w3c.dom.svg.SVGTextPathElement;
 public class SVGOMTextPathElement
     extends    SVGOMTextContentElement
     implements SVGTextPathElement {
+
+    /**
+     * Table mapping XML attribute names to TraitInformation objects.
+     */
+    protected static DoublyIndexedTable xmlTraitInformation;
+    static {
+        DoublyIndexedTable t =
+            new DoublyIndexedTable(SVGOMTextContentElement.xmlTraitInformation);
+        t.put(null, SVG_METHOD_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_IDENT));
+        t.put(null, SVG_SPACING_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_IDENT));
+        t.put(null, SVG_START_OFFSET_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_LENGTH));
+        t.put(XLINK_NAMESPACE_URI, XLINK_HREF_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_URI));
+        xmlTraitInformation = t;
+    }
 
     /**
      * The attribute initializer.
@@ -76,6 +95,26 @@ public class SVGOMTextPathElement
     };
 
     /**
+     * The 'method' attribute value.
+     */
+    protected SVGOMAnimatedEnumeration method;
+
+    /**
+     * The 'spacing' attribute value.
+     */
+    protected SVGOMAnimatedEnumeration spacing;
+
+    /**
+     * The 'startOffset' attribute value.
+     */
+    protected SVGOMAnimatedLength startOffset;
+
+    /**
+     * The 'xlink:href' attribute value.
+     */
+    protected SVGOMAnimatedString href;
+
+    /**
      * Creates a new SVGOMTextPathElement object.
      */
     protected SVGOMTextPathElement() {
@@ -88,6 +127,34 @@ public class SVGOMTextPathElement
      */
     public SVGOMTextPathElement(String prefix, AbstractDocument owner) {
         super(prefix, owner);
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes all live attributes for this element.
+     */
+    protected void initializeAllLiveAttributes() {
+        super.initializeAllLiveAttributes();
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes the live attribute values of this element.
+     */
+    private void initializeLiveAttributes() {
+        method =
+            createLiveAnimatedEnumeration
+                (null, SVG_METHOD_ATTRIBUTE, METHOD_VALUES, (short) 1);
+        SVGOMAnimatedEnumeration spacing =
+            createLiveAnimatedEnumeration
+                (null, SVG_SPACING_ATTRIBUTE, SPACING_VALUES, (short) 2);
+        SVGOMAnimatedLength startOffset =
+            createLiveAnimatedLength
+                (null, SVG_START_OFFSET_ATTRIBUTE,
+                 SVG_TEXT_PATH_START_OFFSET_DEFAULT_VALUE,
+                 SVGOMAnimatedLength.OTHER_LENGTH, true);
+        href =
+            createLiveAnimatedString(XLINK_NAMESPACE_URI, XLINK_HREF_ATTRIBUTE);
     }
 
     /**
@@ -101,28 +168,22 @@ public class SVGOMTextPathElement
      * <b>DOM</b>: Implements {@link SVGTextPathElement#getStartOffset()}.
      */
     public SVGAnimatedLength getStartOffset() {
-        return getAnimatedLengthAttribute
-            (null, SVG_START_OFFSET_ATTRIBUTE,
-             SVG_TEXT_PATH_START_OFFSET_DEFAULT_VALUE,
-             SVGOMAnimatedLength.OTHER_LENGTH, true);
+        return startOffset;
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGTextPathElement#getMethod()}.
      */
     public SVGAnimatedEnumeration getMethod() {
-        return getAnimatedEnumerationAttribute
-            (null, SVG_METHOD_ATTRIBUTE, METHOD_VALUES, (short)1);
+        return method;
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGTextPathElement#getSpacing()}.
      */
     public SVGAnimatedEnumeration getSpacing() {
-        return getAnimatedEnumerationAttribute
-            (null, SVG_SPACING_ATTRIBUTE, SPACING_VALUES, (short)2);
+        return spacing;
     }
-
 
     // XLink support //////////////////////////////////////////////////////
 
@@ -131,7 +192,7 @@ public class SVGOMTextPathElement
      * org.w3c.dom.svg.SVGURIReference#getHref()}.
      */
     public SVGAnimatedString getHref() {
-        return SVGURIReferenceSupport.getHref(this);
+        return href;
     }
 
     /**
@@ -149,35 +210,11 @@ public class SVGOMTextPathElement
         return new SVGOMTextPathElement();
     }
 
-    // ExtendedTraitAccess ///////////////////////////////////////////////////
-
     /**
-     * Returns whether the given XML attribute is animatable.
+     * Returns the table of TraitInformation objects for this element.
      */
-    public boolean isAttributeAnimatable(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_START_OFFSET_ATTRIBUTE)
-                    || ln.equals(SVG_METHOD_ATTRIBUTE)
-                    || ln.equals(SVG_SPACING_ATTRIBUTE)) {
-                return true;
-            }
-        }
-        return super.isAttributeAnimatable(ns, ln);
-    }
-
-    /**
-     * Returns the type of the given attribute.
-     */
-    public int getAttributeType(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_METHOD_ATTRIBUTE)
-                    || ln.equals(SVG_SPACING_ATTRIBUTE)) {
-                return SVGTypes.TYPE_IDENT;
-            } else if (ln.equals(SVG_START_OFFSET_ATTRIBUTE)) {
-                return SVGTypes.TYPE_LENGTH;
-            }
-        }
-        return super.getAttributeType(ns, ln);
+    protected DoublyIndexedTable getTraitInformationTable() {
+        return xmlTraitInformation;
     }
 
     // AnimationTarget ///////////////////////////////////////////////////////

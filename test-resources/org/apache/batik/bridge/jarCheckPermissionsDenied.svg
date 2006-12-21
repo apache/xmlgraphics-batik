@@ -33,6 +33,6 @@
      width="450" height="500" viewBox="0 0 450 500">
 
     <test:testResult id="testResult" />
-    <script type="application/java-archive" xlink:href="jarCheckPermissionsDenied.jar" />
+    <script type="application/java-archive" xlink:href="JarCheckPermissionsDenied.jar" />
 
 </svg>
