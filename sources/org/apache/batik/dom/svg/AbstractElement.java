@@ -44,7 +44,8 @@ public abstract class AbstractElement
     /**
      * The live attribute values.
      */
-    protected DoublyIndexedTable liveAttributeValues = new DoublyIndexedTable();
+    protected transient DoublyIndexedTable liveAttributeValues =
+        new DoublyIndexedTable();
 
     /**
      * Creates a new Element object.
