@@ -20,6 +20,7 @@ package org.apache.batik.dom.svg;
 
 import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.dom.util.DoublyIndexedTable;
 import org.apache.batik.util.SVGTypes;
 
 import org.w3c.dom.Node;
@@ -38,6 +39,24 @@ public class SVGOMFEBlendElement
     implements SVGFEBlendElement {
 
     /**
+     * Table mapping XML attribute names to TraitInformation objects.
+     */
+    protected static DoublyIndexedTable xmlTraitInformation;
+    static {
+        DoublyIndexedTable t =
+            new DoublyIndexedTable(SVGOMFilterPrimitiveStandardAttributes.xmlTraitInformation);
+        t.put(null, SVG_IN_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_CDATA));
+        t.put(null, SVG_SURFACE_SCALE_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_NUMBER));
+        t.put(null, SVG_DIFFUSE_CONSTANT_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_NUMBER));
+        t.put(null, SVG_KERNEL_UNIT_LENGTH_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_NUMBER_OPTIONAL_NUMBER));
+        xmlTraitInformation = t;
+    }
+
+    /**
      * The 'mode' attribute values.
      */
     protected static final String[] MODE_VALUES = {
@@ -48,6 +67,21 @@ public class SVGOMFEBlendElement
         SVG_DARKEN_VALUE,
         SVG_LIGHTEN_VALUE
     };
+
+    /**
+     * The 'in' attribute value.
+     */
+    protected SVGOMAnimatedString in;
+
+    /**
+     * The 'in2' attribute value.
+     */
+    protected SVGOMAnimatedString in2;
+
+    /**
+     * The 'mode' attribute value.
+     */
+    protected SVGOMAnimatedEnumeration mode;
 
     /**
      * Creates a new SVGOMFEBlendElement object.
@@ -62,6 +96,26 @@ public class SVGOMFEBlendElement
      */
     public SVGOMFEBlendElement(String prefix, AbstractDocument owner) {
         super(prefix, owner);
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes all live attributes for this element.
+     */
+    protected void initializeAllLiveAttributes() {
+        super.initializeAllLiveAttributes();
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes the live attribute values of this element.
+     */
+    private void initializeLiveAttributes() {
+        in = createLiveAnimatedString(null, SVG_IN_ATTRIBUTE);
+        in2 = createLiveAnimatedString(null, SVG_IN2_ATTRIBUTE);
+        mode =
+            createLiveAnimatedEnumeration
+                (null, SVG_MODE_ATTRIBUTE, MODE_VALUES, (short) 1);
     }
 
     /**
@@ -75,22 +129,21 @@ public class SVGOMFEBlendElement
      * <b>DOM</b>: Implements {@link SVGFEBlendElement#getIn1()}.
      */
     public SVGAnimatedString getIn1() {
-        return getAnimatedStringAttribute(null, SVG_IN_ATTRIBUTE);
+        return in;
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGFEBlendElement#getIn2()}.
      */
     public SVGAnimatedString getIn2() {
-        return getAnimatedStringAttribute(null, SVG_IN2_ATTRIBUTE);
+        return in2;
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGFEBlendElement#getMode()}.
      */
     public SVGAnimatedEnumeration getMode() {
-        return getAnimatedEnumerationAttribute
-            (null, SVG_MODE_ATTRIBUTE, MODE_VALUES, (short)1);
+        return mode;
     }
 
     /**
@@ -100,35 +153,11 @@ public class SVGOMFEBlendElement
         return new SVGOMFEBlendElement();
     }
 
-    // ExtendedTraitAccess ///////////////////////////////////////////////////
-
     /**
-     * Returns whether the given XML attribute is animatable.
+     * Returns the table of TraitInformation objects for this element.
      */
-    public boolean isAttributeAnimatable(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_IN_ATTRIBUTE)
-                    || ln.equals(SVG_IN2_ATTRIBUTE)
-                    || ln.equals(SVG_MODE_ATTRIBUTE)) {
-                return true;
-            }
-        }
-        return super.isAttributeAnimatable(ns, ln);
-    }
-
-    /**
-     * Returns the type of the given attribute.
-     */
-    public int getAttributeType(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_MODE_ATTRIBUTE)) {
-                return SVGTypes.TYPE_IDENT;
-            } else if (ln.equals(SVG_IN_ATTRIBUTE)
-                    || ln.equals(SVG_IN2_ATTRIBUTE)) {
-                return SVGTypes.TYPE_CDATA;
-            }
-        }
-        return super.getAttributeType(ns, ln);
+    protected DoublyIndexedTable getTraitInformationTable() {
+        return xmlTraitInformation;
     }
 
     // AnimationTarget ///////////////////////////////////////////////////////

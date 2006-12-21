@@ -329,7 +329,8 @@ public abstract class AbstractSVGLengthList
          * Implements {@link LengthListHandler#endLength()}.
          */
         public void endLength() throws ParseException {
-            listHandler.item(new SVGLengthItem(currentType,currentValue,direction));
+            listHandler.item
+                (new SVGLengthItem(currentType,currentValue,direction));
         }
 
         /**

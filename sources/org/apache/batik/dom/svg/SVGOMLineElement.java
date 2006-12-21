@@ -20,14 +20,12 @@ package org.apache.batik.dom.svg;
 
 import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.dom.util.DoublyIndexedTable;
 import org.apache.batik.util.SVGTypes;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedLength;
 import org.w3c.dom.svg.SVGLineElement;
-
-import java.util.Map;
-import java.util.HashMap;
 
 /**
  * This class implements {@link SVGLineElement}.
@@ -39,28 +37,43 @@ public class SVGOMLineElement
     extends    SVGGraphicsElement
     implements SVGLineElement {
 
+    /**
+     * Table mapping XML attribute names to TraitInformation objects.
+     */
+    protected static DoublyIndexedTable xmlTraitInformation;
+    static {
+        DoublyIndexedTable t =
+            new DoublyIndexedTable(SVGGraphicsElement.xmlTraitInformation);
+        t.put(null, SVG_X_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_LENGTH, PERCENTAGE_VIEWPORT_WIDTH));
+        t.put(null, SVG_Y_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_LENGTH, PERCENTAGE_VIEWPORT_HEIGHT));
+        t.put(null, SVG_WIDTH_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_LENGTH, PERCENTAGE_VIEWPORT_WIDTH));
+        t.put(null, SVG_HEIGHT_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_LENGTH, PERCENTAGE_VIEWPORT_HEIGHT));
+        xmlTraitInformation = t;
+    }
 
     /**
-     * this map supports a fast lookup from svg-attribute-name string to
-     * svgType-integer. It is faster than doing string-equals in a
-     * lengthy if-else-statement.
-     * This map is used only by {@link #getAttributeType }
+     * The 'x1' attribute value.
      */
-    private static final Map typeMap = new HashMap();
+    protected SVGOMAnimatedLength x1;
 
+    /**
+     * The 'y1' attribute value.
+     */
+    protected SVGOMAnimatedLength y1;
 
-    static {
+    /**
+     * The 'x2' attribute value.
+     */
+    protected SVGOMAnimatedLength x2;
 
-        Map map = typeMap;
-
-        SVGOMAttributeInfo svgType = new SVGOMAttributeInfo( SVGTypes.TYPE_LENGTH, true );
-
-        map.put(  SVG_X1_ATTRIBUTE, svgType );
-        map.put(  SVG_Y1_ATTRIBUTE, svgType );
-        map.put(  SVG_X2_ATTRIBUTE, svgType );
-        map.put(  SVG_Y2_ATTRIBUTE, svgType );
-
-    }
+    /**
+     * The 'y2' attribute value.
+     */
+    protected SVGOMAnimatedLength y2;
 
     /**
      * Creates a new SVGOMLineElement object.
@@ -75,6 +88,33 @@ public class SVGOMLineElement
      */
     public SVGOMLineElement(String prefix, AbstractDocument owner) {
         super(prefix, owner);
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes all live attributes for this element.
+     */
+    protected void initializeAllLiveAttributes() {
+        super.initializeAllLiveAttributes();
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes the live attribute values of this element.
+     */
+    private void initializeLiveAttributes() {
+        x1 = createLiveAnimatedLength
+            (null, SVG_X1_ATTRIBUTE, SVG_LINE_X1_DEFAULT_VALUE,
+             SVGOMAnimatedLength.HORIZONTAL_LENGTH, false);
+        y1 = createLiveAnimatedLength
+            (null, SVG_Y1_ATTRIBUTE, SVG_LINE_Y1_DEFAULT_VALUE,
+             SVGOMAnimatedLength.VERTICAL_LENGTH, false);
+        x2 = createLiveAnimatedLength
+            (null, SVG_X2_ATTRIBUTE, SVG_LINE_X2_DEFAULT_VALUE,
+             SVGOMAnimatedLength.HORIZONTAL_LENGTH, false);
+        y2 = createLiveAnimatedLength
+            (null, SVG_Y2_ATTRIBUTE, SVG_LINE_Y2_DEFAULT_VALUE,
+             SVGOMAnimatedLength.VERTICAL_LENGTH, false);
     }
 
     /**
@@ -88,36 +128,28 @@ public class SVGOMLineElement
      * <b>DOM</b>: Implements {@link SVGLineElement#getX1()}.
      */
     public SVGAnimatedLength getX1() {
-        return getAnimatedLengthAttribute
-            (null, SVG_X1_ATTRIBUTE, SVG_LINE_X1_DEFAULT_VALUE,
-             SVGOMAnimatedLength.HORIZONTAL_LENGTH, false);
+        return x1;
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGLineElement#getY1()}.
      */
     public SVGAnimatedLength getY1() {
-        return getAnimatedLengthAttribute
-            (null, SVG_Y1_ATTRIBUTE, SVG_LINE_Y1_DEFAULT_VALUE,
-             SVGOMAnimatedLength.VERTICAL_LENGTH, false);
+        return y1;
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGLineElement#getX2()}.
      */
     public SVGAnimatedLength getX2() {
-        return getAnimatedLengthAttribute
-            (null, SVG_X2_ATTRIBUTE, SVG_LINE_X2_DEFAULT_VALUE,
-             SVGOMAnimatedLength.HORIZONTAL_LENGTH, false);
+        return x2;
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGLineElement#getY2()}.
      */
     public SVGAnimatedLength getY2() {
-        return getAnimatedLengthAttribute
-            (null, SVG_Y2_ATTRIBUTE, SVG_LINE_Y2_DEFAULT_VALUE,
-             SVGOMAnimatedLength.VERTICAL_LENGTH, false);
+        return y2;
     }
 
     /**
@@ -127,69 +159,14 @@ public class SVGOMLineElement
         return new SVGOMLineElement();
     }
 
-    // ExtendedTraitAccess ///////////////////////////////////////////////////
-
     /**
-     * Returns whether the given XML attribute is animatable.
+     * Returns the table of TraitInformation objects for this element.
      */
-    public boolean OLDisAttributeAnimatable(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_X1_ATTRIBUTE)
-                    || ln.equals(SVG_Y1_ATTRIBUTE)
-                    || ln.equals(SVG_X2_ATTRIBUTE)
-                    || ln.equals(SVG_Y2_ATTRIBUTE)) {
-                return true;
-            }
-        }
-        return super.isAttributeAnimatable(ns, ln);
-    }
-
-    /**
-     * Returns whether the given XML attribute is animatable.
-     */
-    public boolean isAttributeAnimatable(String ns, String ln) {
-        if (ns == null) {
-            SVGOMAttributeInfo typeCode = (SVGOMAttributeInfo)typeMap.get( ln );
-            if ( typeCode != null ){
-                // it is one of 'my' mappings..
-                return typeCode.getIsAnimatable();
-            }
-        }
-        return super.isAttributeAnimatable(ns, ln);
-    }
-
-
-    /**
-     * Returns the type of the given attribute.
-     */
-    public int getAttributeType(String ns, String ln) {
-
-        if (ns == null) {
-            SVGOMAttributeInfo typeCode = (SVGOMAttributeInfo)typeMap.get( ln );
-            if ( typeCode != null ){
-                // it is one of 'my' mappings..
-                return typeCode.getSVGType();
-            }
-        }
-        return super.getAttributeType(ns, ln);
+    protected DoublyIndexedTable getTraitInformationTable() {
+        return xmlTraitInformation;
     }
 
     // AnimationTarget ///////////////////////////////////////////////////////
-
-    /**
-     * Gets how percentage values are interpreted by the given attribute.
-     */
-    protected short getAttributePercentageInterpretation(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_X1_ATTRIBUTE) || ln.equals(SVG_X2_ATTRIBUTE)) {
-                return PERCENTAGE_VIEWPORT_WIDTH;
-            }
-            if (ln.equals(SVG_Y1_ATTRIBUTE) || ln.equals(SVG_Y2_ATTRIBUTE)) {
-                return PERCENTAGE_VIEWPORT_HEIGHT;
-            }
-        }
-        return super.getAttributePercentageInterpretation(ns, ln);
-    }
 
     /**
      * Updates an attribute value in this target.

@@ -19,6 +19,7 @@
 package org.apache.batik.dom.svg;
 
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.dom.util.DoublyIndexedTable;
 import org.apache.batik.util.SVGTypes;
 
 import org.w3c.dom.Node;
@@ -36,6 +37,18 @@ public class SVGOMClipPathElement
     implements SVGClipPathElement {
 
     /**
+     * Table mapping XML attribute names to TraitInformation objects.
+     */
+    protected static DoublyIndexedTable xmlTraitInformation;
+    static {
+        DoublyIndexedTable t =
+            new DoublyIndexedTable(SVGGraphicsElement.xmlTraitInformation);
+        t.put(null, SVG_CLIP_PATH_UNITS_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_IDENT));
+        xmlTraitInformation = t;
+    }
+
+    /**
      * The clipPathUnits values.
      */
     protected static final String[] CLIP_PATH_UNITS_VALUES = {
@@ -43,6 +56,11 @@ public class SVGOMClipPathElement
         SVG_USER_SPACE_ON_USE_VALUE,
         SVG_OBJECT_BOUNDING_BOX_VALUE
     };
+
+    /**
+     * The 'clipPathUnits' attribute value.
+     */
+    protected SVGOMAnimatedEnumeration clipPathUnits;
 
     /**
      * Creates a new SVGOMClipPathElement object.
@@ -57,6 +75,25 @@ public class SVGOMClipPathElement
      */
     public SVGOMClipPathElement(String prefix, AbstractDocument owner) {
         super(prefix, owner);
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes all live attributes for this element.
+     */
+    protected void initializeAllLiveAttributes() {
+        super.initializeAllLiveAttributes();
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes the live attribute values of this element.
+     */
+    private void initializeLiveAttributes() {
+        clipPathUnits =
+            createLiveAnimatedEnumeration
+                (null, SVG_CLIP_PATH_UNITS_ATTRIBUTE, CLIP_PATH_UNITS_VALUES,
+                 (short) 1);
     }
 
     /**
@@ -70,9 +107,7 @@ public class SVGOMClipPathElement
      * <b>DOM</b>: Implements {@link SVGClipPathElement#getClipPathUnits()}.
      */
     public SVGAnimatedEnumeration getClipPathUnits() {
-        return getAnimatedEnumerationAttribute
-            (null, SVG_CLIP_PATH_UNITS_ATTRIBUTE, CLIP_PATH_UNITS_VALUES,
-             (short)1);
+        return clipPathUnits;
     }
 
     /**
@@ -82,17 +117,10 @@ public class SVGOMClipPathElement
         return new SVGOMClipPathElement();
     }
 
-    // ExtendedTraitAccess ///////////////////////////////////////////////////
-
     /**
-     * Returns the type of the given attribute.
+     * Returns the table of TraitInformation objects for this element.
      */
-    public int getAttributeType(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_CLIP_PATH_UNITS_ATTRIBUTE)) {
-                return SVGTypes.TYPE_IDENT;
-            }
-        }
-        return super.getAttributeType(ns, ln);
+    protected DoublyIndexedTable getTraitInformationTable() {
+        return xmlTraitInformation;
     }
 }

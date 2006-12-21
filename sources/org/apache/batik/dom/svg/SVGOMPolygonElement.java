@@ -18,12 +18,9 @@
  */
 package org.apache.batik.dom.svg;
 
-import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.AbstractDocument;
-import org.apache.batik.util.SVGTypes;
 
 import org.w3c.dom.Node;
-import org.w3c.dom.svg.SVGPointList;
 import org.w3c.dom.svg.SVGPolygonElement;
 
 /**
@@ -33,7 +30,7 @@ import org.w3c.dom.svg.SVGPolygonElement;
  * @version $Id$
  */
 public class SVGOMPolygonElement
-    extends    SVGGraphicsElement
+    extends    SVGPointShapeElement
     implements SVGPolygonElement {
 
     /**
@@ -59,83 +56,9 @@ public class SVGOMPolygonElement
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGAnimatedPoints#getPoints()}.
-     */
-    public SVGPointList getPoints() {
-        return SVGAnimatedPointsSupport.getPoints(this);
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGAnimatedPoints#getAnimatedPoints()}.
-     */
-    public SVGPointList getAnimatedPoints() {
-        return SVGAnimatedPointsSupport.getAnimatedPoints(this);
-    }
-
-    /**
      * Returns a new uninitialized instance of this object's class.
      */
     protected Node newNode() {
         return new SVGOMPolygonElement();
-    }
-
-    // ExtendedTraitAccess ///////////////////////////////////////////////////
-
-    /**
-     * Returns whether the given XML attribute is animatable.
-     */
-    public boolean isAttributeAnimatable(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_POINTS_ATTRIBUTE)) {
-                return true;
-            }
-        }
-        return super.isAttributeAnimatable(ns, ln);
-    }
-
-    /**
-     * Returns the type of the given attribute.
-     */
-    public int getAttributeType(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_POINTS_ATTRIBUTE)) {
-                return SVGTypes.TYPE_POINTS_VALUE;
-            }
-        }
-        return super.getAttributeType(ns, ln);
-    }
-
-    // AnimationTarget ///////////////////////////////////////////////////////
-
-    /**
-     * Updates an attribute value in this target.
-     */
-    public void updateAttributeValue(String ns, String ln,
-                                     AnimatableValue val) {
-        if (ns == null) {
-            if (ln.equals(SVG_POINTS_ATTRIBUTE)) {
-                SVGOMAnimatedPoints p =
-                    SVGAnimatedPointsSupport.getSVGOMAnimatedPoints(this);
-                updatePointsAttributeValue(p, val);
-                return;
-            }
-        }
-        super.updateAttributeValue(ns, ln, val);
-    }
-
-    /**
-     * Returns the underlying value of an animatable XML attribute.
-     */
-    public AnimatableValue getUnderlyingValue(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_POINTS_ATTRIBUTE)) {
-                SVGOMAnimatedPoints p =
-                    SVGAnimatedPointsSupport.getSVGOMAnimatedPoints(this);
-                return getBaseValue(p);
-            }
-        }
-        return super.getUnderlyingValue(ns, ln);
     }
 }

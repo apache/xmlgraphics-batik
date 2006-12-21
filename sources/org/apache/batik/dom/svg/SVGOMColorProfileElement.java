@@ -19,6 +19,7 @@
 package org.apache.batik.dom.svg;
 
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.dom.util.DoublyIndexedTable;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.util.SVGTypes;
@@ -58,6 +59,24 @@ public class SVGOMColorProfileElement
                                           "xlink", "actuate", "onLoad");
     }
 
+//     /**
+//      * Table mapping XML attribute names to TraitInformation objects.
+//      */
+//     protected static DoublyIndexedTable xmlTraitInformation;
+//     static {
+//         DoublyIndexedTable t =
+//             new DoublyIndexedTable(SVGOMURIReferenceElement.xmlTraitInformation);
+//         t.put(XLINK_NAMESPACE_URI, XLINK_HREF_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_URI));
+//         t.put(null, SVG_NAME_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_CDATA));
+//         t.put(null, SVG_LOCAL_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_CDATA));
+//         t.put(null, SVG_RENDERING_INTENT_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_IDENT));
+//         xmlTraitInformation = t;
+//     }
+
     /**
      * Creates a new SVGOMColorProfileElement object.
      */
@@ -71,7 +90,6 @@ public class SVGOMColorProfileElement
      */
     public SVGOMColorProfileElement(String prefix, AbstractDocument owner) {
         super(prefix, owner);
-
     }
 
     /**
@@ -193,20 +211,10 @@ public class SVGOMColorProfileElement
         return new SVGOMColorProfileElement();
     }
 
-    // ExtendedTraitAccess ///////////////////////////////////////////////////
-
-    /**
-     * Returns the type of the given attribute.
-     */
-    public int getAttributeType(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_LOCAL_ATTRIBUTE)
-                    || ln.equals(SVG_NAME_ATTRIBUTE)) {
-                return SVGTypes.TYPE_CDATA;
-            } else if (ln.equals(SVG_RENDERING_INTENT_ATTRIBUTE)) {
-                return SVGTypes.TYPE_IDENT;
-            }
-        }
-        return super.getAttributeType(ns, ln);
-    }
+//     /**
+//      * Returns the table of TraitInformation objects for this element.
+//      */
+//     protected DoublyIndexedTable getTraitInformationTable() {
+//         return xmlTraitInformation;
+//     }
 }

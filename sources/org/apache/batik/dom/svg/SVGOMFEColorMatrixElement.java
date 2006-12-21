@@ -20,6 +20,7 @@ package org.apache.batik.dom.svg;
 
 import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.dom.util.DoublyIndexedTable;
 import org.apache.batik.util.SVGTypes;
 
 import org.w3c.dom.Node;
@@ -39,6 +40,22 @@ public class SVGOMFEColorMatrixElement
     implements SVGFEColorMatrixElement {
 
     /**
+     * Table mapping XML attribute names to TraitInformation objects.
+     */
+    protected static DoublyIndexedTable xmlTraitInformation;
+    static {
+        DoublyIndexedTable t =
+            new DoublyIndexedTable(SVGOMFilterPrimitiveStandardAttributes.xmlTraitInformation);
+        t.put(null, SVG_IN_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_CDATA));
+        t.put(null, SVG_TYPE_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_IDENT));
+        t.put(null, SVG_VALUES_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_NUMBER_LIST));
+        xmlTraitInformation = t;
+    }
+
+    /**
      * The 'type' attribute values.
      */
     protected static final String[] TYPE_VALUES = {
@@ -48,6 +65,21 @@ public class SVGOMFEColorMatrixElement
         SVG_HUE_ROTATE_VALUE,
         SVG_LUMINANCE_TO_ALPHA_VALUE
     };
+
+    /**
+     * The 'in' attribute value.
+     */
+    protected SVGOMAnimatedString in;
+
+    /**
+     * The 'type' attribute value.
+     */
+    protected SVGOMAnimatedEnumeration type;
+
+//     /**
+//      * The 'values' attribute value.
+//      */
+//     protected SVGOMAnimatedNumberList values;
 
     /**
      * Creates a new SVGOMFEColorMatrixElement object.
@@ -62,6 +94,25 @@ public class SVGOMFEColorMatrixElement
      */
     public SVGOMFEColorMatrixElement(String prefix, AbstractDocument owner) {
         super(prefix, owner);
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes all live attributes for this element.
+     */
+    protected void initializeAllLiveAttributes() {
+        super.initializeAllLiveAttributes();
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes the live attribute values of this element.
+     */
+    private void initializeLiveAttributes() {
+        in = createLiveAnimatedString(null, SVG_IN_ATTRIBUTE);
+        type =
+            createLiveAnimatedEnumeration
+                (null, SVG_TYPE_ATTRIBUTE, TYPE_VALUES, (short) 1);
     }
 
     /**
@@ -75,15 +126,14 @@ public class SVGOMFEColorMatrixElement
      * <b>DOM</b>: Implements {@link SVGFEColorMatrixElement#getIn1()}.
      */
     public SVGAnimatedString getIn1() {
-        return getAnimatedStringAttribute(null, SVG_IN_ATTRIBUTE);
+        return in;
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGFEColorMatrixElement#getType()}.
      */
     public SVGAnimatedEnumeration getType() {
-        return getAnimatedEnumerationAttribute
-            (null, SVG_TYPE_ATTRIBUTE, TYPE_VALUES, (short)1);
+        return type;
     }
 
     /**
@@ -92,6 +142,7 @@ public class SVGOMFEColorMatrixElement
     public SVGAnimatedNumberList getValues() {
         throw new UnsupportedOperationException
             ("SVGFEColorMatrixElement.getValues is not implemented"); // XXX
+        // return values;
     }
 
     /**
@@ -101,36 +152,11 @@ public class SVGOMFEColorMatrixElement
         return new SVGOMFEColorMatrixElement();
     }
 
-    // ExtendedTraitAccess ///////////////////////////////////////////////////
-
     /**
-     * Returns whether the given XML attribute is animatable.
+     * Returns the table of TraitInformation objects for this element.
      */
-    public boolean isAttributeAnimatable(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_IN_ATTRIBUTE)
-                    || ln.equals(SVG_TYPE_ATTRIBUTE)
-                    || ln.equals(SVG_VALUES_ATTRIBUTE)) {
-                return true;
-            }
-        }
-        return super.isAttributeAnimatable(ns, ln);
-    }
-
-    /**
-     * Returns the type of the given attribute.
-     */
-    public int getAttributeType(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_TYPE_ATTRIBUTE)) {
-                return SVGTypes.TYPE_IDENT;
-            } else if (ln.equals(SVG_IN_ATTRIBUTE)) {
-                return SVGTypes.TYPE_CDATA;
-            } else if (ln.equals(SVG_VALUES_ATTRIBUTE)) {
-                return SVGTypes.TYPE_NUMBER_LIST;
-            }
-        }
-        return super.getAttributeType(ns, ln);
+    protected DoublyIndexedTable getTraitInformationTable() {
+        return xmlTraitInformation;
     }
 
     // AnimationTarget ///////////////////////////////////////////////////////

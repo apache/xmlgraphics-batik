@@ -20,6 +20,7 @@ package org.apache.batik.dom.svg;
 
 import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.dom.util.DoublyIndexedTable;
 import org.apache.batik.util.SVGTypes;
 
 import org.w3c.dom.Node;
@@ -39,6 +40,30 @@ public class SVGOMFECompositeElement
     implements SVGFECompositeElement {
 
     /**
+     * Table mapping XML attribute names to TraitInformation objects.
+     */
+    protected static DoublyIndexedTable xmlTraitInformation;
+    static {
+        DoublyIndexedTable t =
+            new DoublyIndexedTable(SVGOMFilterPrimitiveStandardAttributes.xmlTraitInformation);
+        t.put(null, SVG_IN_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_CDATA));
+        t.put(null, SVG_IN2_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_CDATA));
+        t.put(null, SVG_OPERATOR_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_IDENT));
+        t.put(null, SVG_K1_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_NUMBER));
+        t.put(null, SVG_K2_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_NUMBER));
+        t.put(null, SVG_K3_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_NUMBER));
+        t.put(null, SVG_K4_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_NUMBER));
+        xmlTraitInformation = t;
+    }
+
+    /**
      * The 'operator' attribute values.
      */
     protected static final String[] OPERATOR_VALUES = {
@@ -50,6 +75,41 @@ public class SVGOMFECompositeElement
         SVG_XOR_VALUE,
         SVG_ARITHMETIC_VALUE
     };
+
+    /**
+     * The 'in' attribute value.
+     */
+    protected SVGOMAnimatedString in;
+
+    /**
+     * The 'in2' attribute value.
+     */
+    protected SVGOMAnimatedString in2;
+
+    /**
+     * The 'operator' attribute value.
+     */
+    protected SVGOMAnimatedEnumeration operator;
+
+    /**
+     * The 'k1' attribute value.
+     */
+    protected SVGOMAnimatedNumber k1;
+
+    /**
+     * The 'k2' attribute value.
+     */
+    protected SVGOMAnimatedNumber k2;
+
+    /**
+     * The 'k3' attribute value.
+     */
+    protected SVGOMAnimatedNumber k3;
+
+    /**
+     * The 'k4' attribute value.
+     */
+    protected SVGOMAnimatedNumber k4;
 
     /**
      * Creates a new SVGOMFECompositeElement object.
@@ -64,6 +124,30 @@ public class SVGOMFECompositeElement
      */
     public SVGOMFECompositeElement(String prefix, AbstractDocument owner) {
         super(prefix, owner);
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes all live attributes for this element.
+     */
+    protected void initializeAllLiveAttributes() {
+        super.initializeAllLiveAttributes();
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes the live attribute values of this element.
+     */
+    private void initializeLiveAttributes() {
+        in = createLiveAnimatedString(null, SVG_IN_ATTRIBUTE);
+        in2 = createLiveAnimatedString(null, SVG_IN2_ATTRIBUTE);
+        operator =
+            createLiveAnimatedEnumeration
+                (null, SVG_OPERATOR_ATTRIBUTE, OPERATOR_VALUES, (short) 1);
+        k1 = createLiveAnimatedNumber(null, SVG_K1_ATTRIBUTE, 0f);
+        k2 = createLiveAnimatedNumber(null, SVG_K2_ATTRIBUTE, 0f);
+        k3 = createLiveAnimatedNumber(null, SVG_K3_ATTRIBUTE, 0f);
+        k4 = createLiveAnimatedNumber(null, SVG_K4_ATTRIBUTE, 0f);
     }
 
     /**
@@ -77,50 +161,49 @@ public class SVGOMFECompositeElement
      * <b>DOM</b>: Implements {@link SVGFECompositeElement#getIn1()}.
      */
     public SVGAnimatedString getIn1() {
-        return getAnimatedStringAttribute(null, SVG_IN_ATTRIBUTE);
+        return in;
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGFECompositeElement#getIn2()}.
      */
     public SVGAnimatedString getIn2() {
-        return getAnimatedStringAttribute(null, SVG_IN2_ATTRIBUTE);
+        return in2;
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGFECompositeElement#getOperator()}.
      */
     public SVGAnimatedEnumeration getOperator() {
-        return getAnimatedEnumerationAttribute
-            (null, SVG_OPERATOR_ATTRIBUTE, OPERATOR_VALUES, (short)1);
+        return operator;
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGFECompositeElement#getK1()}.
      */
     public SVGAnimatedNumber getK1() {
-        return getAnimatedNumberAttribute(null, SVG_K1_ATTRIBUTE, 0f);
+        return k1;
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGFECompositeElement#getK2()}.
      */
     public SVGAnimatedNumber getK2() {
-        return getAnimatedNumberAttribute(null, SVG_K2_ATTRIBUTE, 0f);
+        return k2;
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGFECompositeElement#getK3()}.
      */
     public SVGAnimatedNumber getK3() {
-        return getAnimatedNumberAttribute(null, SVG_K3_ATTRIBUTE, 0f);
+        return k3;
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGFECompositeElement#getK4()}.
      */
     public SVGAnimatedNumber getK4() {
-        return getAnimatedNumberAttribute(null, SVG_K4_ATTRIBUTE, 0f);
+        return k4;
     }
 
     /**
@@ -130,44 +213,11 @@ public class SVGOMFECompositeElement
         return new SVGOMFECompositeElement();
     }
 
-    // ExtendedTraitAccess ///////////////////////////////////////////////////
-
     /**
-     * Returns whether the given XML attribute is animatable.
+     * Returns the table of TraitInformation objects for this element.
      */
-    public boolean isAttributeAnimatable(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_IN_ATTRIBUTE)
-                    || ln.equals(SVG_IN2_ATTRIBUTE)
-                    || ln.equals(SVG_OPERATOR_ATTRIBUTE)
-                    || ln.equals(SVG_K1_ATTRIBUTE)
-                    || ln.equals(SVG_K2_ATTRIBUTE)
-                    || ln.equals(SVG_K3_ATTRIBUTE)
-                    || ln.equals(SVG_K4_ATTRIBUTE)) {
-                return true;
-            }
-        }
-        return super.isAttributeAnimatable(ns, ln);
-    }
-
-    /**
-     * Returns the type of the given attribute.
-     */
-    public int getAttributeType(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_IN_ATTRIBUTE)
-                    || ln.equals(SVG_IN2_ATTRIBUTE)) {
-                return SVGTypes.TYPE_CDATA;
-            } else if (ln.equals(SVG_OPERATOR_ATTRIBUTE)) {
-                return SVGTypes.TYPE_IDENT;
-            } else if (ln.equals(SVG_K1_ATTRIBUTE)
-                    || ln.equals(SVG_K2_ATTRIBUTE)
-                    || ln.equals(SVG_K3_ATTRIBUTE)
-                    || ln.equals(SVG_K4_ATTRIBUTE)) {
-                return SVGTypes.TYPE_NUMBER;
-            }
-        }
-        return super.getAttributeType(ns, ln);
+    protected DoublyIndexedTable getTraitInformationTable() {
+        return xmlTraitInformation;
     }
 
     // AnimationTarget ///////////////////////////////////////////////////////

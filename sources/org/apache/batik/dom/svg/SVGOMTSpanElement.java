@@ -45,7 +45,6 @@ public class SVGOMTSpanElement
      */
     public SVGOMTSpanElement(String prefix, AbstractDocument owner) {
         super(prefix, owner);
-
     }
 
     /**

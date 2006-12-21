@@ -1,11 +1,11 @@
 /*
 
    Licensed to the Apache Software Foundation (ASF) under one or more
-  contributor license agreements.  See the NOTICE file distributed with
-  this work for additional information regarding copyright ownership.
-  The ASF licenses this file to You under the Apache License, Version 2.0
-  (the "License"); you may not use this file except in compliance with
-  the License.  You may obtain a copy of the License at
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -22,6 +22,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.apache.batik.dom.anim.AnimationTargetListener;
+import org.apache.batik.dom.util.DoublyIndexedTable;
 import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.css.dom.CSSOMSVGColor;
 import org.apache.batik.css.dom.CSSOMSVGPaint;
@@ -57,6 +58,18 @@ public abstract class SVGStylableElement
     implements CSSStylableElement {
 
     /**
+     * Table mapping XML attribute names to TraitInformation objects.
+     */
+    protected static DoublyIndexedTable xmlTraitInformation;
+    static {
+        DoublyIndexedTable t =
+            new DoublyIndexedTable(SVGOMElement.xmlTraitInformation);
+        t.put(null, SVG_CLASS_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_CDATA));
+        xmlTraitInformation = t;
+    }
+
+    /**
      * The computed style map.
      */
     protected StyleMap computedStyleMap;
@@ -65,6 +78,16 @@ public abstract class SVGStylableElement
      * The override style declaration for this element.
      */
     protected OverrideStyleDeclaration overrideStyleDeclaration;
+
+    /**
+     * The 'class' attribute value.
+     */
+    protected SVGOMAnimatedString className;
+
+    /**
+     * The 'style' attribute value.
+     */
+    protected StyleDeclaration style;
 
     /**
      * Creates a new SVGStylableElement object.
@@ -79,6 +102,22 @@ public abstract class SVGStylableElement
      */
     protected SVGStylableElement(String prefix, AbstractDocument owner) {
         super(prefix, owner);
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes all live attributes for this element.
+     */
+    protected void initializeAllLiveAttributes() {
+        super.initializeAllLiveAttributes();
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes the live attribute values of this element.
+     */
+    private void initializeLiveAttributes() {
+        className = createLiveAnimatedString(null, SVG_CLASS_ATTRIBUTE);
     }
 
     /**
@@ -182,6 +221,28 @@ public abstract class SVGStylableElement
     }
 
     /**
+     * Updates an attribute value in this target.
+     */
+    public void updateAttributeValue(String ns, String ln,
+                                     AnimatableValue val) {
+        if (ns == null && ln.equals(SVG_CLASS_ATTRIBUTE)) {
+            updateStringAttributeValue(getClassName(), val);
+            return;
+        }
+        super.updateAttributeValue(ns, ln, val);
+    }
+
+    /**
+     * Returns the underlying value of an animatable XML attribute.
+     */
+    public AnimatableValue getUnderlyingValue(String ns, String ln) {
+        if (ns == null &&  ln.equals(SVG_CLASS_ATTRIBUTE)) {
+            return getBaseValue(getClassName());
+        }
+        return super.getUnderlyingValue(ns, ln);
+    }
+
+    /**
      * Returns whether color interpolations should be done in linear RGB
      * color space rather than sRGB.
      */
@@ -222,14 +283,12 @@ public abstract class SVGStylableElement
      * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGStylable#getStyle()}.
      */
     public CSSStyleDeclaration getStyle() {
-        CSSStyleDeclaration result =
-            (CSSStyleDeclaration)getLiveAttributeValue(null,
-                                                       SVG_STYLE_ATTRIBUTE);
-        if (result == null) {
+        if (style == null) {
             CSSEngine eng = ((SVGOMDocument)getOwnerDocument()).getCSSEngine();
-            result = new StyleDeclaration(eng);
+            style = new StyleDeclaration(eng);
+            putLiveAttributeValue(null, SVG_STYLE_ATTRIBUTE, style);
         }
-        return result;
+        return style;
     }
 
     /**
@@ -279,7 +338,14 @@ public abstract class SVGStylableElement
      * org.w3c.dom.svg.SVGStylable#getClassName()}.
      */
     public SVGAnimatedString getClassName() {
-        return getAnimatedStringAttribute(null, SVG_CLASS_ATTRIBUTE);
+        return className;
+    }
+
+    /**
+     * Returns the table of TraitInformation objects for this element.
+     */
+    protected DoublyIndexedTable getTraitInformationTable() {
+        return xmlTraitInformation;
     }
 
     /**
@@ -750,20 +816,5 @@ public abstract class SVGStylableElement
             ((SVGOMDocument) ownerDocument).overrideStylePropertyChanged
                 (SVGStylableElement.this, name, value, prio);
         }
-    }
-
-    // ExtendedTraitAccess ///////////////////////////////////////////////////
-
-    /**
-     * Returns the type of the given attribute.
-     */
-    public int getAttributeType(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_CLASS_ATTRIBUTE)
-                    || ln.equals(SVG_STYLE_ATTRIBUTE)) {
-                return SVGTypes.TYPE_CDATA;
-            }
-        }
-        return super.getAttributeType(ns, ln);
     }
 }

@@ -20,6 +20,7 @@ package org.apache.batik.dom.svg;
 
 import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.dom.util.DoublyIndexedTable;
 import org.apache.batik.util.SVGTypes;
 
 import org.w3c.dom.Node;
@@ -37,6 +38,37 @@ public class SVGOMFEPointLightElement
     implements SVGFEPointLightElement {
 
     /**
+     * Table mapping XML attribute names to TraitInformation objects.
+     */
+    protected static DoublyIndexedTable xmlTraitInformation;
+    static {
+        DoublyIndexedTable t =
+            new DoublyIndexedTable(SVGOMElement.xmlTraitInformation);
+        t.put(null, SVG_X_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_NUMBER));
+        t.put(null, SVG_Y_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_NUMBER));
+        t.put(null, SVG_Z_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_NUMBER));
+        xmlTraitInformation = t;
+    }
+
+    /**
+     * The 'x' attribute value.
+     */
+    protected SVGOMAnimatedNumber x;
+
+    /**
+     * The 'y' attribute value.
+     */
+    protected SVGOMAnimatedNumber y;
+
+    /**
+     * The 'z' attribute value.
+     */
+    protected SVGOMAnimatedNumber z;
+
+    /**
      * Creates a new SVGOMFEPointLightElement object.
      */
     protected SVGOMFEPointLightElement() {
@@ -50,6 +82,24 @@ public class SVGOMFEPointLightElement
     public SVGOMFEPointLightElement(String prefix,
                                     AbstractDocument owner) {
         super(prefix, owner);
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes all live attributes for this element.
+     */
+    protected void initializeAllLiveAttributes() {
+        super.initializeAllLiveAttributes();
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes the live attribute values of this element.
+     */
+    private void initializeLiveAttributes() {
+        x = createLiveAnimatedNumber(null, SVG_X_ATTRIBUTE, 0f);
+        y = createLiveAnimatedNumber(null, SVG_Y_ATTRIBUTE, 0f);
+        z = createLiveAnimatedNumber(null, SVG_Z_ATTRIBUTE, 0f);
     }
 
     /**
@@ -63,21 +113,21 @@ public class SVGOMFEPointLightElement
      * <b>DOM</b>: Implements {@link SVGFEPointLightElement#getX()}.
      */
     public SVGAnimatedNumber getX() {
-        return getAnimatedNumberAttribute(null, SVG_X_ATTRIBUTE, 0f);
+        return x;
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGFEPointLightElement#getY()}.
      */
     public SVGAnimatedNumber getY() {
-        return getAnimatedNumberAttribute(null, SVG_Y_ATTRIBUTE, 0f);
+        return y;
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGFEPointLightElement#getZ()}.
      */
     public SVGAnimatedNumber getZ() {
-        return getAnimatedNumberAttribute(null, SVG_Z_ATTRIBUTE, 0f);
+        return z;
     }
 
     /**
@@ -87,34 +137,11 @@ public class SVGOMFEPointLightElement
         return new SVGOMFEPointLightElement();
     }
 
-    // ExtendedTraitAccess ///////////////////////////////////////////////////
-
     /**
-     * Returns whether the given XML attribute is animatable.
+     * Returns the table of TraitInformation objects for this element.
      */
-    public boolean isAttributeAnimatable(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_X_ATTRIBUTE)
-                    || ln.equals(SVG_Y_ATTRIBUTE)
-                    || ln.equals(SVG_Z_ATTRIBUTE)) {
-                return true;
-            }
-        }
-        return super.isAttributeAnimatable(ns, ln);
-    }
-
-    /**
-     * Returns the type of the given attribute.
-     */
-    public int getAttributeType(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_X_ATTRIBUTE)
-                    || ln.equals(SVG_Y_ATTRIBUTE)
-                    || ln.equals(SVG_Z_ATTRIBUTE)) {
-                return SVGTypes.TYPE_NUMBER;
-            }
-        }
-        return super.getAttributeType(ns, ln);
+    protected DoublyIndexedTable getTraitInformationTable() {
+        return xmlTraitInformation;
     }
 
     // AnimationTarget ///////////////////////////////////////////////////////

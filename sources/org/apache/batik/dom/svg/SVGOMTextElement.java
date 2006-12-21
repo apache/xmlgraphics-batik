@@ -19,9 +19,10 @@
 package org.apache.batik.dom.svg;
 
 import org.apache.batik.dom.AbstractDocument;
-import org.apache.batik.util.SVGConstants;
+import org.apache.batik.dom.util.DoublyIndexedTable;
+import org.apache.batik.util.SVGTypes;
+
 import org.w3c.dom.Node;
-import org.w3c.dom.svg.SVGAnimatedLengthList;
 import org.w3c.dom.svg.SVGAnimatedTransformList;
 import org.w3c.dom.svg.SVGElement;
 import org.w3c.dom.svg.SVGException;
@@ -40,8 +41,25 @@ public class SVGOMTextElement
     implements SVGTextElement {
 
     // Default values for attributes on a text element
-    public static final String X_DEFAULT_VALUE = "0";
-    public static final String Y_DEFAULT_VALUE = "0";
+    protected static final String X_DEFAULT_VALUE = "0";
+    protected static final String Y_DEFAULT_VALUE = "0";
+
+    /**
+     * Table mapping XML attribute names to TraitInformation objects.
+     */
+    protected static DoublyIndexedTable xmlTraitInformation;
+    static {
+        DoublyIndexedTable t =
+            new DoublyIndexedTable(SVGOMTextPositioningElement.xmlTraitInformation);
+        t.put(null, SVG_TRANSFORM_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_TRANSFORM_LIST));
+        xmlTraitInformation = t;
+    }
+
+    /**
+     * The 'transform' attribute value.
+     */
+    protected SVGOMAnimatedTransformList transform;
 
     /**
      * Creates a new SVGOMTextElement object.
@@ -56,6 +74,23 @@ public class SVGOMTextElement
      */
     public SVGOMTextElement(String prefix, AbstractDocument owner) {
         super(prefix, owner);
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes all live attributes for this element.
+     */
+    protected void initializeAllLiveAttributes() {
+        super.initializeAllLiveAttributes();
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes the live attribute values of this element.
+     */
+    private void initializeLiveAttributes() {
+        transform =
+            createLiveAnimatedTransformList(null, SVG_TRANSFORM_ATTRIBUTE, "");
     }
 
     /**
@@ -121,7 +156,21 @@ public class SVGOMTextElement
      * org.w3c.dom.svg.SVGTransformable#getTransform()}.
      */
     public SVGAnimatedTransformList getTransform() {
-        return SVGTransformableSupport.getTransform(this);
+        return transform;
+    }
+
+    /**
+     * Returns the default value of the 'x' attribute.
+     */
+    protected String getDefaultXValue() {
+        return X_DEFAULT_VALUE;
+    }
+
+    /**
+     * Returns the default value of the 'y' attribute.
+     */
+    protected String getDefaultYValue() {
+        return Y_DEFAULT_VALUE;
     }
 
     /**
@@ -131,47 +180,10 @@ public class SVGOMTextElement
         return new SVGOMTextElement();
     }
 
-    // SVGTextPositioningElement support ////////////////////////////////////
-
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGTextPositioningElement#getX()}.
+     * Returns the table of TraitInformation objects for this element.
      */
-    public SVGAnimatedLengthList getX() {
-        SVGOMAnimatedLengthList result = (SVGOMAnimatedLengthList)
-            getLiveAttributeValue(null, SVGConstants.SVG_X_ATTRIBUTE);
-        if (result == null) {
-            SVGOMDocument doc = (SVGOMDocument) ownerDocument;
-            result = new SVGOMAnimatedLengthList(this, null,
-                                                 SVGConstants.SVG_X_ATTRIBUTE,
-                                                 X_DEFAULT_VALUE, false,
-                                                 AbstractSVGLength.HORIZONTAL_LENGTH);
-            result.addAnimatedAttributeListener
-                (doc.getAnimatedAttributeListener());
-            putLiveAttributeValue(null,
-                                  SVGConstants.SVG_X_ATTRIBUTE, result);
-        }
-        return result;
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGTextPositioningElement#getY()}.
-     */
-    public SVGAnimatedLengthList getY() {
-        SVGOMAnimatedLengthList result = (SVGOMAnimatedLengthList)
-            getLiveAttributeValue(null, SVGConstants.SVG_Y_ATTRIBUTE);
-        if (result == null) {
-            SVGOMDocument doc = (SVGOMDocument) ownerDocument;
-            result = new SVGOMAnimatedLengthList(this, null,
-                                                 SVGConstants.SVG_Y_ATTRIBUTE,
-                                                 Y_DEFAULT_VALUE, false,
-                                                 AbstractSVGLength.VERTICAL_LENGTH);
-            result.addAnimatedAttributeListener
-                (doc.getAnimatedAttributeListener());
-            putLiveAttributeValue(null,
-                                  SVGConstants.SVG_Y_ATTRIBUTE, result);
-        }
-        return result;
+    protected DoublyIndexedTable getTraitInformationTable() {
+        return xmlTraitInformation;
     }
 }

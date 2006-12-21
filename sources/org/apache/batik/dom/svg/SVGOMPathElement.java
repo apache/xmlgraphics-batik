@@ -20,6 +20,7 @@ package org.apache.batik.dom.svg;
 
 import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.dom.util.DoublyIndexedTable;
 import org.apache.batik.util.SVGTypes;
 
 import org.w3c.dom.Node;
@@ -60,6 +61,25 @@ public class SVGOMPathElement
                SVGPathSegConstants {
 
     /**
+     * Table mapping XML attribute names to TraitInformation objects.
+     */
+    protected static DoublyIndexedTable xmlTraitInformation;
+    static {
+        DoublyIndexedTable t =
+            new DoublyIndexedTable(SVGGraphicsElement.xmlTraitInformation);
+        t.put(null, SVG_D_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_PATH_DATA));
+        t.put(null, SVG_PATH_LENGTH_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_NUMBER));
+        xmlTraitInformation = t;
+    }
+
+    /**
+     * The 'd' attribute value.
+     */
+    protected SVGOMAnimatedPathData d;
+
+    /**
      * Creates a new SVGOMPathElement object.
      */
     protected SVGOMPathElement() {
@@ -72,6 +92,22 @@ public class SVGOMPathElement
      */
     public SVGOMPathElement(String prefix, AbstractDocument owner) {
         super(prefix, owner);
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes all live attributes for this element.
+     */
+    protected void initializeAllLiveAttributes() {
+        super.initializeAllLiveAttributes();
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes the live attribute values of this element.
+     */
+    private void initializeLiveAttributes() {
+        d = createLiveAnimatedPathData(null, SVG_D_ATTRIBUTE, "");
     }
 
     /**
@@ -114,21 +150,21 @@ public class SVGOMPathElement
      * <b>DOM</b>: Implements {@link SVGPathElement#getPathSegList()}.
      */
     public SVGPathSegList getPathSegList() {
-        return SVGAnimatedPathDataSupport.getPathSegList(this);
+        return d.getPathSegList();
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGPathElement#getNormalizedPathSegList()}.
      */
     public SVGPathSegList getNormalizedPathSegList() {
-        return SVGAnimatedPathDataSupport.getNormalizedPathSegList(this);
+        return d.getNormalizedPathSegList();
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGPathElement#getAnimatedPathSegList()}.
      */
     public SVGPathSegList getAnimatedPathSegList() {
-        return SVGAnimatedPathDataSupport.getAnimatedPathSegList(this);
+        return d.getAnimatedPathSegList();
     }
 
     /**
@@ -136,8 +172,7 @@ public class SVGOMPathElement
      * SVGPathElement#getAnimatedNormalizedPathSegList()}.
      */
     public SVGPathSegList getAnimatedNormalizedPathSegList() {
-        return SVGAnimatedPathDataSupport.getAnimatedNormalizedPathSegList
-            (this);
+        return d.getAnimatedNormalizedPathSegList();
     }
 
     // Factory methods /////////////////////////////////////////////////////
@@ -892,36 +927,11 @@ public class SVGOMPathElement
         return new SVGOMPathElement();
     }
 
-    // ExtendedTraitAccess ///////////////////////////////////////////////////
-
     /**
-     * Returns whether the given XML attribute is animatable.
+     * Returns the table of TraitInformation objects for this element.
      */
-    public boolean isAttributeAnimatable(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE)
-                    || ln.equals(SVG_PATH_LENGTH_ATTRIBUTE)
-                    || ln.equals(SVG_D_ATTRIBUTE)) {
-                return true;
-            }
-        }
-        return super.isAttributeAnimatable(ns, ln);
-    }
-
-    /**
-     * Returns the type of the given attribute.
-     */
-    public int getAttributeType(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_D_ATTRIBUTE)) {
-                return SVGTypes.TYPE_PATH_DATA;
-            } else if (ln.equals(SVG_PATH_LENGTH_ATTRIBUTE)) {
-                return SVGTypes.TYPE_NUMBER;
-            } else if (ln.equals(SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE)) {
-                return SVGTypes.TYPE_BOOLEAN;
-            }
-        }
-        return super.getAttributeType(ns, ln);
+    protected DoublyIndexedTable getTraitInformationTable() {
+        return xmlTraitInformation;
     }
 
     // AnimationTarget ///////////////////////////////////////////////////////
@@ -940,9 +950,7 @@ public class SVGOMPathElement
                 updateNumberAttributeValue(getPathLength(), val);
                 return;
             } else if (ln.equals(SVG_D_ATTRIBUTE)) {
-                SVGOMAnimatedPathData apd =
-                    SVGAnimatedPathDataSupport.getAnimatedPathData(this);
-                updatePathDataAttributeValue(apd, val);
+                updatePathDataAttributeValue(d, val);
                 return;
             }
         }
@@ -959,9 +967,7 @@ public class SVGOMPathElement
             } else if (ln.equals(SVG_PATH_LENGTH_ATTRIBUTE)) {
                 return getBaseValue(getPathLength());
             } else if (ln.equals(SVG_D_ATTRIBUTE)) {
-                SVGOMAnimatedPathData apd =
-                    SVGAnimatedPathDataSupport.getAnimatedPathData(this);
-                return getBaseValue(apd);
+                return getBaseValue(d);
             }
         }
         return super.getUnderlyingValue(ns, ln);

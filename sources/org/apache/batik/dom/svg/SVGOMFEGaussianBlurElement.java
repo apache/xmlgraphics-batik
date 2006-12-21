@@ -19,6 +19,7 @@
 package org.apache.batik.dom.svg;
 
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.dom.util.DoublyIndexedTable;
 import org.apache.batik.anim.values.AnimatableNumberOptionalNumberValue;
 import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.util.SVGTypes;
@@ -39,6 +40,25 @@ public class SVGOMFEGaussianBlurElement
     implements SVGFEGaussianBlurElement {
 
     /**
+     * Table mapping XML attribute names to TraitInformation objects.
+     */
+    protected static DoublyIndexedTable xmlTraitInformation;
+    static {
+        DoublyIndexedTable t =
+            new DoublyIndexedTable(SVGOMFilterPrimitiveStandardAttributes.xmlTraitInformation);
+        t.put(null, SVG_IN_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_CDATA));
+        t.put(null, SVG_STD_DEVIATION_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_NUMBER_OPTIONAL_NUMBER));
+        xmlTraitInformation = t;
+    }
+
+    /**
+     * The 'in' attribute value.
+     */
+    protected SVGOMAnimatedString in;
+
+    /**
      * Creates a new SVGOMFEGaussianBlurElement object.
      */
     protected SVGOMFEGaussianBlurElement() {
@@ -51,6 +71,22 @@ public class SVGOMFEGaussianBlurElement
      */
     public SVGOMFEGaussianBlurElement(String prefix, AbstractDocument owner) {
         super(prefix, owner);
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes all live attributes for this element.
+     */
+    protected void initializeAllLiveAttributes() {
+        super.initializeAllLiveAttributes();
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes the live attribute values of this element.
+     */
+    private void initializeLiveAttributes() {
+        in = createLiveAnimatedString(null, SVG_IN_ATTRIBUTE);
     }
 
     /**
@@ -64,7 +100,7 @@ public class SVGOMFEGaussianBlurElement
      * <b>DOM</b>: Implements {@link SVGFEGaussianBlurElement#getIn1()}.
      */
     public SVGAnimatedString getIn1() {
-        return getAnimatedStringAttribute(null, SVG_IN_ATTRIBUTE);
+        return in;
     }
 
     /**
@@ -89,7 +125,7 @@ public class SVGOMFEGaussianBlurElement
      * <b>DOM</b>: Implements {@link
      * SVGFEGaussianBlurElement#setStdDeviation(float,float)}.
      */
-    public void setStdDeviation (float devX, float devY) {
+    public void setStdDeviation(float devX, float devY) {
         setAttributeNS(null, SVG_STD_DEVIATION_ATTRIBUTE,
                        Float.toString(devX) + " " + Float.toString(devY));
     }
@@ -101,33 +137,11 @@ public class SVGOMFEGaussianBlurElement
         return new SVGOMFEGaussianBlurElement();
     }
 
-    // ExtendedTraitAccess ///////////////////////////////////////////////////
-
     /**
-     * Returns whether the given XML attribute is animatable.
+     * Returns the table of TraitInformation objects for this element.
      */
-    public boolean isAttributeAnimatable(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_IN_ATTRIBUTE)
-                    || ln.equals(SVG_STD_DEVIATION_ATTRIBUTE)) {
-                return true;
-            }
-        }
-        return super.isAttributeAnimatable(ns, ln);
-    }
-
-    /**
-     * Returns the type of the given attribute.
-     */
-    public int getAttributeType(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_IN_ATTRIBUTE)) {
-                return SVGTypes.TYPE_CDATA;
-            } else if (ln.equals(SVG_STD_DEVIATION_ATTRIBUTE)) {
-                return SVGTypes.TYPE_NUMBER_OPTIONAL_NUMBER;
-            }
-        }
-        return super.getAttributeType(ns, ln);
+    protected DoublyIndexedTable getTraitInformationTable() {
+        return xmlTraitInformation;
     }
 
     // AnimationTarget ///////////////////////////////////////////////////////

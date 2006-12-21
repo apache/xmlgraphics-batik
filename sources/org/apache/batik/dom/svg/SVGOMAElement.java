@@ -20,6 +20,7 @@ package org.apache.batik.dom.svg;
 
 import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.dom.util.DoublyIndexedTable;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.util.SVGTypes;
@@ -56,6 +57,23 @@ public class SVGOMAElement
     }
 
     /**
+     * Table mapping XML attribute names to TraitInformation objects.
+     */
+    protected static DoublyIndexedTable xmlTraitInformation;
+    static {
+        DoublyIndexedTable t =
+            new DoublyIndexedTable(SVGURIReferenceGraphicsElement.xmlTraitInformation);
+        t.put(null, SVG_TARGET_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_CDATA));
+        xmlTraitInformation = t;
+    }
+
+    /**
+     * The 'target' attribute value.
+     */
+    protected SVGOMAnimatedString target;
+
+    /**
      * Creates a new SVGOMAElement object.
      */
     protected SVGOMAElement() {
@@ -68,6 +86,22 @@ public class SVGOMAElement
      */
     public SVGOMAElement(String prefix, AbstractDocument owner) {
         super(prefix, owner);
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes all live attributes for this element.
+     */
+    protected void initializeAllLiveAttributes() {
+        super.initializeAllLiveAttributes();
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes the live attribute values of this element.
+     */
+    private void initializeLiveAttributes() {
+        target = createLiveAnimatedString(null, SVG_TARGET_ATTRIBUTE);
     }
 
     /**
@@ -81,7 +115,7 @@ public class SVGOMAElement
      * <b>DOM</b>: Implements {@link SVGAElement#getTarget()}.
      */
     public SVGAnimatedString getTarget() {
-        return getAnimatedStringAttribute(null, SVG_TARGET_ATTRIBUTE);
+        return target;
     }
 
     /**
@@ -99,30 +133,11 @@ public class SVGOMAElement
         return new SVGOMAElement();
     }
 
-    // ExtendedTraitAccess ///////////////////////////////////////////////////
-
     /**
-     * Returns whether the given XML attribute is animatable.
+     * Returns the table of TraitInformation objects for this element.
      */
-    public boolean isAttributeAnimatable(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_TARGET_ATTRIBUTE)) {
-                return true;
-            }
-        }
-        return super.isAttributeAnimatable(ns, ln);
-    }
-
-    /**
-     * Returns the type of the given attribute.
-     */
-    public int getAttributeType(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_TARGET_ATTRIBUTE)) {
-                return SVGTypes.TYPE_CDATA;
-            }
-        }
-        return super.getAttributeType(ns, ln);
+    protected DoublyIndexedTable getTraitInformationTable() {
+        return xmlTraitInformation;
     }
 
     // AnimationTarget ///////////////////////////////////////////////////////

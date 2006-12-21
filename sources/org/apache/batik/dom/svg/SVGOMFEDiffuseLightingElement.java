@@ -21,6 +21,7 @@ package org.apache.batik.dom.svg;
 import org.apache.batik.anim.values.AnimatableNumberOptionalNumberValue;
 import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.dom.util.DoublyIndexedTable;
 import org.apache.batik.util.SVGTypes;
 
 import org.w3c.dom.Node;
@@ -39,6 +40,37 @@ public class SVGOMFEDiffuseLightingElement
     implements SVGFEDiffuseLightingElement {
 
     /**
+     * Table mapping XML attribute names to TraitInformation objects.
+     */
+    protected static DoublyIndexedTable xmlTraitInformation;
+    static {
+        DoublyIndexedTable t =
+            new DoublyIndexedTable(SVGOMFilterPrimitiveStandardAttributes.xmlTraitInformation);
+        t.put(null, SVG_IN_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_CDATA));
+        t.put(null, SVG_IN2_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_CDATA));
+        t.put(null, SVG_MODE_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_IDENT));
+        xmlTraitInformation = t;
+    }
+
+    /**
+     * The 'in' attribute value.
+     */
+    protected SVGOMAnimatedString in;
+
+    /**
+     * The 'surfaceScale' attribute value.
+     */
+    protected SVGOMAnimatedNumber surfaceScale;
+
+    /**
+     * The 'diffuseConstant' attribute value.
+     */
+    protected SVGOMAnimatedNumber diffuseConstant;
+
+    /**
      * Creates a new SVGOMFEDiffuseLightingElement object.
      */
     protected SVGOMFEDiffuseLightingElement() {
@@ -52,6 +84,26 @@ public class SVGOMFEDiffuseLightingElement
     public SVGOMFEDiffuseLightingElement(String prefix,
                                          AbstractDocument owner) {
         super(prefix, owner);
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes all live attributes for this element.
+     */
+    protected void initializeAllLiveAttributes() {
+        super.initializeAllLiveAttributes();
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes the live attribute values of this element.
+     */
+    private void initializeLiveAttributes() {
+        in = createLiveAnimatedString(null, SVG_IN_ATTRIBUTE);
+        surfaceScale =
+            createLiveAnimatedNumber(null, SVG_SURFACE_SCALE_ATTRIBUTE, 1f);
+        diffuseConstant =
+            createLiveAnimatedNumber(null, SVG_DIFFUSE_CONSTANT_ATTRIBUTE, 1f);
     }
 
     /**
@@ -65,7 +117,7 @@ public class SVGOMFEDiffuseLightingElement
      * <b>DOM</b>: Implements {@link SVGFEDiffuseLightingElement#getIn1()}.
      */
     public SVGAnimatedString getIn1() {
-        return getAnimatedStringAttribute(null, SVG_IN_ATTRIBUTE);
+        return in;
     }
 
     /**
@@ -73,9 +125,7 @@ public class SVGOMFEDiffuseLightingElement
      * SVGFEDiffuseLightingElement#getSurfaceScale()}.
      */
     public SVGAnimatedNumber getSurfaceScale() {
-        return getAnimatedNumberAttribute(null,
-                                          SVG_SURFACE_SCALE_ATTRIBUTE,
-                                          1f);
+        return surfaceScale;
     }
 
     /**
@@ -83,9 +133,7 @@ public class SVGOMFEDiffuseLightingElement
      * SVGFEDiffuseLightingElement#getDiffuseConstant()}.
      */
     public SVGAnimatedNumber getDiffuseConstant() {
-        return getAnimatedNumberAttribute(null,
-                                          SVG_DIFFUSE_CONSTANT_ATTRIBUTE,
-                                          1f);
+        return diffuseConstant;
     }
 
     /**
@@ -113,38 +161,11 @@ public class SVGOMFEDiffuseLightingElement
         return new SVGOMFEDiffuseLightingElement();
     }
 
-    // ExtendedTraitAccess ///////////////////////////////////////////////////
-
     /**
-     * Returns whether the given XML attribute is animatable.
+     * Returns the table of TraitInformation objects for this element.
      */
-    public boolean isAttributeAnimatable(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_IN_ATTRIBUTE)
-                    || ln.equals(SVG_SURFACE_SCALE_ATTRIBUTE)
-                    || ln.equals(SVG_DIFFUSE_CONSTANT_ATTRIBUTE)
-                    || ln.equals(SVG_KERNEL_UNIT_LENGTH_ATTRIBUTE)) {
-                return true;
-            }
-        }
-        return super.isAttributeAnimatable(ns, ln);
-    }
-
-    /**
-     * Returns the type of the given attribute.
-     */
-    public int getAttributeType(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_IN_ATTRIBUTE)) {
-                return SVGTypes.TYPE_CDATA;
-            } else if (ln.equals(SVG_SURFACE_SCALE_ATTRIBUTE)
-                    || ln.equals(SVG_DIFFUSE_CONSTANT_ATTRIBUTE)) {
-                return SVGTypes.TYPE_NUMBER;
-            } else if (ln.equals(SVG_KERNEL_UNIT_LENGTH_ATTRIBUTE)) {
-                return SVGTypes.TYPE_NUMBER_OPTIONAL_NUMBER;
-            }
-        }
-        return super.getAttributeType(ns, ln);
+    protected DoublyIndexedTable getTraitInformationTable() {
+        return xmlTraitInformation;
     }
 
     // AnimationTarget ///////////////////////////////////////////////////////

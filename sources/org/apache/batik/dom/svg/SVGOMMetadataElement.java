@@ -44,7 +44,6 @@ public class SVGOMMetadataElement
      */
     public SVGOMMetadataElement(String prefix, AbstractDocument owner) {
         super(prefix, owner);
-
     }
 
     /**

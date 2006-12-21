@@ -19,6 +19,7 @@
 package org.apache.batik.dom.svg;
 
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.dom.util.DoublyIndexedTable;
 import org.apache.batik.util.SVGTypes;
 
 import org.w3c.dom.Node;
@@ -34,6 +35,56 @@ public class SVGOMAnimateColorElement
     extends    SVGOMAnimationElement
     implements SVGAnimateColorElement {
 
+//     /**
+//      * Table mapping XML attribute names to TraitInformation objects.
+//      */
+//     protected static DoublyIndexedTable xmlTraitInformation;
+//     static {
+//         DoublyIndexedTable t =
+//             new DoublyIndexedTable(SVGOMAnimationElement.xmlTraitInformation);
+//         t.put(null, SVG_ACCUMULATE_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_IDENT));
+//         t.put(null, SVG_ADDITIVE_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_IDENT));
+//         t.put(null, SVG_ATTRIBUTE_TYPE_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_IDENT));
+//         t.put(null, SVG_CALC_MODE_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_IDENT));
+//         t.put(null, SVG_FILL_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_IDENT));
+//         t.put(null, SVG_RESTART_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_IDENT));
+//         t.put(null, SVG_ATTRIBUTE_NAME_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_CDATA));
+//         t.put(null, SVG_BY_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_CDATA));
+//         t.put(null, SVG_FROM_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_CDATA));
+//         t.put(null, SVG_MAX_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_CDATA));
+//         t.put(null, SVG_MIN_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_CDATA));
+//         t.put(null, SVG_TO_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_CDATA));
+//         t.put(null, SVG_VALUES_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_CDATA));
+//         t.put(null, SVG_BEGIN_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_TIMING_SPECIFIER_LIST));
+//         t.put(null, SVG_END_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_TIMING_SPECIFIER_LIST));
+//         t.put(null, SVG_DUR_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_TIME));
+//         t.put(null, SVG_REPEAT_DUR_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_TIME));
+//         t.put(null, SVG_KEY_SPLINES_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_NUMBER_LIST));
+//         t.put(null, SVG_KEY_TIMES_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_NUMBER_LIST));
+//         t.put(null, SVG_REPEAT_COUNT_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_INTEGER));
+//         xmlTraitInformation = t;
+//     }
+
     /**
      * Creates a new SVGOMAnimateColorElement object.
      */
@@ -47,7 +98,6 @@ public class SVGOMAnimateColorElement
      */
     public SVGOMAnimateColorElement(String prefix, AbstractDocument owner) {
         super(prefix, owner);
-
     }
 
     /**
@@ -64,39 +114,10 @@ public class SVGOMAnimateColorElement
         return new SVGOMAnimateColorElement();
     }
 
-    // ExtendedTraitAccess ///////////////////////////////////////////////////
-
-    /**
-     * Returns the type of the given attribute.
-     */
-    public int getAttributeType(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_ACCUMULATE_ATTRIBUTE)
-                    || ln.equals(SVG_ADDITIVE_ATTRIBUTE)
-                    || ln.equals(SVG_ATTRIBUTE_TYPE_ATTRIBUTE)
-                    || ln.equals(SVG_CALC_MODE_ATTRIBUTE)
-                    || ln.equals(SVG_FILL_ATTRIBUTE)
-                    || ln.equals(SVG_RESTART_ATTRIBUTE)) {
-                return SVGTypes.TYPE_IDENT;
-            } else if (ln.equals(SVG_ATTRIBUTE_NAME_ATTRIBUTE)
-                    || ln.equals(SVG_BY_ATTRIBUTE)
-                    || ln.equals(SVG_FROM_ATTRIBUTE)
-                    || ln.equals(SVG_MAX_ATTRIBUTE)
-                    || ln.equals(SVG_MIN_ATTRIBUTE)
-                    || ln.equals(SVG_TO_ATTRIBUTE)
-                    || ln.equals(SVG_VALUES_ATTRIBUTE)) {
-                return SVGTypes.TYPE_CDATA;
-            } else if (ln.equals(SVG_BEGIN_ATTRIBUTE)
-                    || ln.equals(SVG_END_ATTRIBUTE)) {
-                return SVGTypes.TYPE_TIMING_SPECIFIER_LIST;
-            } else if (ln.equals(SVG_DUR_ATTRIBUTE)
-                    || ln.equals(SVG_REPEAT_DUR_ATTRIBUTE)) {
-                return SVGTypes.TYPE_TIME;
-            } else if (ln.equals(SVG_KEY_SPLINES_ATTRIBUTE)
-                    || ln.equals(SVG_KEY_TIMES_ATTRIBUTE)) {
-                return SVGTypes.TYPE_NUMBER_LIST;
-            }
-        }
-        return super.getAttributeType(ns, ln);
-    }
+//     /**
+//      * Returns the table of TraitInformation objects for this element.
+//      */
+//     protected DoublyIndexedTable getTraitInformationTable() {
+//         return xmlTraitInformation;
+//     }
 }

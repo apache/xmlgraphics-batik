@@ -28,7 +28,6 @@ import java.awt.font.TextAttribute;
 import java.awt.geom.AffineTransform;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Arrays;
 
 import org.apache.batik.ext.awt.g2d.GraphicContext;
 import org.w3c.dom.Document;

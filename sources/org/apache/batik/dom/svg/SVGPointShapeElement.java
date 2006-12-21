@@ -23,19 +23,19 @@ import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.DoublyIndexedTable;
 import org.apache.batik.util.SVGTypes;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.svg.SVGAnimatedBoolean;
-import org.w3c.dom.svg.SVGFontElement;
+import org.w3c.dom.svg.SVGAnimatedPoints;
+import org.w3c.dom.svg.SVGPointList;
 
 /**
- * This class implements {@link SVGFontElement}.
+ * This class provides a common superclass for shape elements that are
+ * defined with a 'points' attribute (i.e., polygon and polyline).
  *
- * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
- * @version $Id$
+ * @author <a href="mailto:cam%40mcc%2eid%2eau">Cameron McCormack</a>
+ * @version $Id: SVGStylableElement.java 475477 2006-11-15 22:44:28Z cam $
  */
-public class SVGOMFontElement
-    extends    SVGStylableElement
-    implements SVGFontElement {
+public abstract class SVGPointShapeElement
+    extends    SVGGraphicsElement
+    implements SVGAnimatedPoints {
 
     /**
      * Table mapping XML attribute names to TraitInformation objects.
@@ -43,41 +43,29 @@ public class SVGOMFontElement
     protected static DoublyIndexedTable xmlTraitInformation;
     static {
         DoublyIndexedTable t =
-            new DoublyIndexedTable(SVGStylableElement.xmlTraitInformation);
-        t.put(null, SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE,
-                new TraitInformation(true, SVGTypes.TYPE_BOOLEAN));
-//         t.put(null, SVG_HORIZ_ORIGIN_X_ATTRIBUTE,
-//                 new TraitInformation(false, SVGTypes.TYPE_NUMBER));
-//         t.put(null, SVG_HORIZ_ORIGIN_Y_ATTRIBUTE,
-//                 new TraitInformation(false, SVGTypes.TYPE_NUMBER));
-//         t.put(null, SVG_HORIZ_ADV_X_ATTRIBUTE,
-//                 new TraitInformation(false, SVGTypes.TYPE_NUMBER));
-//         t.put(null, SVG_VERT_ORIGIN_X_ATTRIBUTE,
-//                 new TraitInformation(false, SVGTypes.TYPE_NUMBER));
-//         t.put(null, SVG_VERT_ORIGIN_Y_ATTRIBUTE,
-//                 new TraitInformation(false, SVGTypes.TYPE_NUMBER));
-//         t.put(null, SVG_VERT_ADV_Y_ATTRIBUTE,
-//                 new TraitInformation(false, SVGTypes.TYPE_NUMBER));
+            new DoublyIndexedTable(SVGGraphicsElement.xmlTraitInformation);
+        t.put(null, SVG_POINTS_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_POINTS_VALUE));
         xmlTraitInformation = t;
     }
 
     /**
-     * The 'externalResourcesRequired' attribute value.
+     * The 'points' attribute value.
      */
-    protected SVGOMAnimatedBoolean externalResourcesRequired;
+    protected SVGOMAnimatedPoints points;
 
     /**
-     * Creates a new SVGOMFontElement object.
+     * Creates a new SVGPointShapeElement object.
      */
-    protected SVGOMFontElement() {
+    protected SVGPointShapeElement() {
     }
 
     /**
-     * Creates a new SVGOMFontElement object.
+     * Creates a new SVGPointShapeElement object.
      * @param prefix The namespace prefix.
      * @param owner The owner document.
      */
-    public SVGOMFontElement(String prefix, AbstractDocument owner) {
+    public SVGPointShapeElement(String prefix, AbstractDocument owner) {
         super(prefix, owner);
         initializeLiveAttributes();
     }
@@ -94,33 +82,23 @@ public class SVGOMFontElement
      * Initializes the live attribute values of this element.
      */
     private void initializeLiveAttributes() {
-        externalResourcesRequired =
-            createLiveAnimatedBoolean
-                (null, SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE, false);
+        points = createLiveAnimatedPoints(null, SVG_POINTS_ATTRIBUTE, "");
     }
-
-    /**
-     * <b>DOM</b>: Implements {@link Node#getLocalName()}.
-     */
-    public String getLocalName() {
-        return SVG_FONT_TAG;
-    }
-
-    // SVGExternalResourcesRequired support /////////////////////////////
 
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGExternalResourcesRequired#getExternalResourcesRequired()}.
+     * org.w3c.dom.svg.SVGAnimatedPoints#getPoints()}.
      */
-    public SVGAnimatedBoolean getExternalResourcesRequired() {
-        return externalResourcesRequired;
+    public SVGPointList getPoints() {
+        return points.getPoints();
     }
 
     /**
-     * Returns a new uninitialized instance of this object's class.
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.svg.SVGAnimatedPoints#getAnimatedPoints()}.
      */
-    protected Node newNode() {
-        return new SVGOMFontElement();
+    public SVGPointList getAnimatedPoints() {
+        return points.getAnimatedPoints();
     }
 
     /**
@@ -138,9 +116,8 @@ public class SVGOMFontElement
     public void updateAttributeValue(String ns, String ln,
                                      AnimatableValue val) {
         if (ns == null) {
-            if (ln.equals(SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE)) {
-                updateBooleanAttributeValue(getExternalResourcesRequired(),
-                                            val);
+            if (ln.equals(SVG_POINTS_ATTRIBUTE)) {
+                updatePointsAttributeValue(points, val);
                 return;
             }
         }
@@ -152,8 +129,8 @@ public class SVGOMFontElement
      */
     public AnimatableValue getUnderlyingValue(String ns, String ln) {
         if (ns == null) {
-            if (ln.equals(SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE)) {
-                return getBaseValue(getExternalResourcesRequired());
+            if (ln.equals(SVG_POINTS_ATTRIBUTE)) {
+                return getBaseValue(points);
             }
         }
         return super.getUnderlyingValue(ns, ln);

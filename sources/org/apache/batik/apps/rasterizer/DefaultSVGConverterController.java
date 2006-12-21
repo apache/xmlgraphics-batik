@@ -20,7 +20,6 @@ package org.apache.batik.apps.rasterizer;
 
 import java.io.File;
 import java.util.Map;
-import java.util.Vector;
 import java.util.List;
 
 import org.apache.batik.transcoder.Transcoder;
@@ -86,4 +85,3 @@ public class DefaultSVGConverterController implements SVGConverterController {
                                            File dest){
     }
 }
-

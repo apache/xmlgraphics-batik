@@ -20,6 +20,7 @@ package org.apache.batik.dom.svg;
 
 import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.dom.util.DoublyIndexedTable;
 import org.apache.batik.util.SVGTypes;
 
 import org.w3c.dom.svg.SVGAnimatedEnumeration;
@@ -38,6 +39,30 @@ public abstract class SVGOMComponentTransferFunctionElement
     implements SVGComponentTransferFunctionElement {
 
     /**
+     * Table mapping XML attribute names to TraitInformation objects.
+     */
+    protected static DoublyIndexedTable xmlTraitInformation;
+    static {
+        DoublyIndexedTable t =
+            new DoublyIndexedTable(SVGOMElement.xmlTraitInformation);
+        t.put(null, SVG_TYPE_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_IDENT));
+        t.put(null, SVG_TABLE_VALUES_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_NUMBER_LIST));
+        t.put(null, SVG_SLOPE_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_NUMBER));
+        t.put(null, SVG_INTERCEPT_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_NUMBER));
+        t.put(null, SVG_AMPLITUDE_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_NUMBER));
+        t.put(null, SVG_EXPONENT_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_NUMBER));
+        t.put(null, SVG_OFFSET_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_NUMBER));
+        xmlTraitInformation = t;
+    }
+
+    /**
      * The 'type' attribute values.
      */
     protected static final String[] TYPE_VALUES = {
@@ -48,6 +73,41 @@ public abstract class SVGOMComponentTransferFunctionElement
         SVG_LINEAR_VALUE,
         SVG_GAMMA_VALUE
     };
+
+    /**
+     * The 'type' attribute value.
+     */
+    protected SVGOMAnimatedEnumeration type;
+
+    /**
+     * The 'tableValues' attribute value.
+     */
+    protected SVGOMAnimatedNumberList tableValues;
+
+    /**
+     * The 'slope' attribute value.
+     */
+    protected SVGOMAnimatedNumber slope;
+
+    /**
+     * The 'intercept' attribute value.
+     */
+    protected SVGOMAnimatedNumber intercept;
+
+    /**
+     * The 'amplitude' attribute value.
+     */
+    protected SVGOMAnimatedNumber amplitude;
+
+    /**
+     * The 'exponent' attribute value.
+     */
+    protected SVGOMAnimatedNumber exponent;
+
+    /**
+     * The 'offset' attribute value.
+     */
+    protected SVGOMAnimatedNumber offset;
 
     /**
      * Creates a new Element object.
@@ -63,6 +123,34 @@ public abstract class SVGOMComponentTransferFunctionElement
     protected SVGOMComponentTransferFunctionElement(String prefix,
                                                     AbstractDocument owner) {
         super(prefix, owner);
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes all live attributes for this element.
+     */
+    protected void initializeAllLiveAttributes() {
+        super.initializeAllLiveAttributes();
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes the live attribute values of this element.
+     */
+    private void initializeLiveAttributes() {
+        type =
+            createLiveAnimatedEnumeration
+                (null, SVG_TYPE_ATTRIBUTE, TYPE_VALUES, (short) 1);
+        tableValues =
+            createLiveAnimatedNumberList
+                (null, SVG_TABLE_VALUES_ATTRIBUTE,
+                 SVG_COMPONENT_TRANSFER_FUNCTION_TABLE_VALUES_DEFAULT_VALUE,
+                 false);
+        slope = createLiveAnimatedNumber(null, SVG_SLOPE_ATTRIBUTE, 1f);
+        intercept = createLiveAnimatedNumber(null, SVG_INTERCEPT_ATTRIBUTE, 0f);
+        amplitude = createLiveAnimatedNumber(null, SVG_AMPLITUDE_ATTRIBUTE, 1f);
+        exponent = createLiveAnimatedNumber(null, SVG_EXPONENT_ATTRIBUTE, 1f);
+        offset = createLiveAnimatedNumber(null, SVG_EXPONENT_ATTRIBUTE, 0f);
     }
 
     /**
@@ -70,8 +158,7 @@ public abstract class SVGOMComponentTransferFunctionElement
      * SVGComponentTransferFunctionElement#getType()}.
      */
     public SVGAnimatedEnumeration getType() {
-        return getAnimatedEnumerationAttribute
-            (null, SVG_TYPE_ATTRIBUTE, TYPE_VALUES, (short)1);
+        return type;
     }
 
     /**
@@ -79,8 +166,10 @@ public abstract class SVGOMComponentTransferFunctionElement
      * SVGComponentTransferFunctionElement#getTableValues()}.
      */
     public SVGAnimatedNumberList getTableValues() {
+        // XXX
         throw new UnsupportedOperationException
-            ("SVGComponentTransferFunctionElement.getTableValues is not implemented"); // XXX
+            ("SVGComponentTransferFunctionElement.getTableValues is not implemented");
+        // return tableValues;
     }
 
     /**
@@ -88,7 +177,7 @@ public abstract class SVGOMComponentTransferFunctionElement
      * SVGComponentTransferFunctionElement#getSlope()}.
      */
     public SVGAnimatedNumber getSlope() {
-        return getAnimatedNumberAttribute(null, SVG_SLOPE_ATTRIBUTE, 1f);
+        return slope;
     }
 
     /**
@@ -96,7 +185,7 @@ public abstract class SVGOMComponentTransferFunctionElement
      * SVGComponentTransferFunctionElement#getIntercept()}.
      */
     public SVGAnimatedNumber getIntercept() {
-        return getAnimatedNumberAttribute(null, SVG_INTERCEPT_ATTRIBUTE, 0f);
+        return intercept;
     }
 
     /**
@@ -104,7 +193,7 @@ public abstract class SVGOMComponentTransferFunctionElement
      * SVGComponentTransferFunctionElement#getAmplitude()}.
      */
     public SVGAnimatedNumber getAmplitude() {
-        return getAnimatedNumberAttribute(null, SVG_AMPLITUDE_ATTRIBUTE, 1f);
+        return amplitude;
     }
 
     /**
@@ -112,7 +201,7 @@ public abstract class SVGOMComponentTransferFunctionElement
      * SVGComponentTransferFunctionElement#getExponent()}.
      */
     public SVGAnimatedNumber getExponent() {
-        return getAnimatedNumberAttribute(null, SVG_EXPONENT_ATTRIBUTE, 1f);
+        return exponent;
     }
 
     /**
@@ -120,47 +209,14 @@ public abstract class SVGOMComponentTransferFunctionElement
      * SVGComponentTransferFunctionElement#getOffset()}.
      */
     public SVGAnimatedNumber getOffset() {
-        return getAnimatedNumberAttribute(null, SVG_OFFSET_ATTRIBUTE, 0f);
-    }
-
-    // ExtendedTraitAccess ///////////////////////////////////////////////////
-
-    /**
-     * Returns whether the given XML attribute is animatable.
-     */
-    public boolean isAttributeAnimatable(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_TYPE_ATTRIBUTE)
-                    || ln.equals(SVG_TABLE_VALUES_ATTRIBUTE)
-                    || ln.equals(SVG_SLOPE_ATTRIBUTE)
-                    || ln.equals(SVG_INTERCEPT_ATTRIBUTE)
-                    || ln.equals(SVG_AMPLITUDE_ATTRIBUTE)
-                    || ln.equals(SVG_EXPONENT_ATTRIBUTE)
-                    || ln.equals(SVG_OFFSET_ATTRIBUTE)) {
-                return true;
-            }
-        }
-        return super.isAttributeAnimatable(ns, ln);
+        return offset;
     }
 
     /**
-     * Returns the type of the given attribute.
+     * Returns the table of TraitInformation objects for this element.
      */
-    public int getAttributeType(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_TYPE_ATTRIBUTE)) {
-                return SVGTypes.TYPE_IDENT;
-            } else if (ln.equals(SVG_TABLE_VALUES_ATTRIBUTE)) {
-                return SVGTypes.TYPE_NUMBER_LIST;
-            } else if (ln.equals(SVG_SLOPE_ATTRIBUTE)
-                    || ln.equals(SVG_INTERCEPT_ATTRIBUTE)
-                    || ln.equals(SVG_AMPLITUDE_ATTRIBUTE)
-                    || ln.equals(SVG_EXPONENT_ATTRIBUTE)
-                    || ln.equals(SVG_OFFSET_ATTRIBUTE)) {
-                return SVGTypes.TYPE_NUMBER;
-            }
-        }
-        return super.getAttributeType(ns, ln);
+    protected DoublyIndexedTable getTraitInformationTable() {
+        return xmlTraitInformation;
     }
 
     // AnimationTarget ///////////////////////////////////////////////////////

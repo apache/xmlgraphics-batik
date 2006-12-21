@@ -61,6 +61,25 @@ public class DoublyIndexedTable {
     }
 
     /**
+     * Creates a new DoublyIndexedTable initialized to contain all of
+     * the entries of the specified other DoublyIndexedTable.
+     */
+    public DoublyIndexedTable(DoublyIndexedTable other) {
+        initialCapacity = other.initialCapacity;
+        table = new Entry[other.table.length];
+        for (int i = 0; i < other.table.length; i++) {
+            Entry newE = null;
+            Entry e = other.table[i];
+            while (e != null) {
+                newE = new Entry(e.hash, e.key1, e.key2, e.value, newE);
+                e = e.next;
+            }
+            table[i] = newE;
+        }
+        count = other.count;
+    }
+    
+    /**
      * Returns the size of this table.
      */
     public int size() {
@@ -233,7 +252,8 @@ public class DoublyIndexedTable {
         /**
          * Creates a new entry.
          */
-        public Entry(int hash, Object key1, Object key2,  Object value, Entry next) {
+        public Entry(int hash, Object key1, Object key2, Object value,
+                     Entry next) {
             this.hash  = hash;
             this.key1  = key1;
             this.key2  = key2;

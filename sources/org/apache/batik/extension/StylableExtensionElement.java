@@ -1,11 +1,11 @@
 /*
 
    Licensed to the Apache Software Foundation (ASF) under one or more
-  contributor license agreements.  See the NOTICE file distributed with
-  this work for additional information regarding copyright ownership.
-  The ASF licenses this file to You under the Apache License, Version 2.0
-  (the "License"); you may not use this file except in compliance with
-  the License.  You may obtain a copy of the License at
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -16,7 +16,6 @@
    limitations under the License.
 
 */
-
 package org.apache.batik.extension;
 
 import java.net.MalformedURLException;
@@ -104,10 +103,9 @@ public abstract class StylableExtensionElement
 
     /**
      * Returns the CSS base URL of this element.
-     * @throws IllegalArgumentException when {@link #getBaseURI } returns an invalid URL.
-     *         The information from the MalformedURLException
+     * @throws IllegalArgumentException when {@link #getBaseURI()} returns an
+     *         invalid URL. The information from the MalformedURLException
      *         is passed to the IllegalArgumentException
-     *
      */
     public URL getCSSBase() {
         String bu = "";

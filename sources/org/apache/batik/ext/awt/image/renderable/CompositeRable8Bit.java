@@ -30,7 +30,6 @@ import java.awt.image.RenderedImage;
 import java.awt.image.renderable.RenderContext;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
 import java.util.ArrayList;
 
 import org.apache.batik.ext.awt.image.CompositeRule;

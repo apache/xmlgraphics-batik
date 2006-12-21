@@ -53,8 +53,6 @@ import java.util.Set;
 
 import org.apache.batik.ext.awt.g2d.AbstractGraphics2D;
 import org.apache.batik.ext.awt.g2d.GraphicContext;
-import org.apache.batik.util.CSSConstants;
-import org.apache.batik.util.XMLConstants;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;

@@ -21,6 +21,7 @@ package org.apache.batik.dom.svg;
 import org.apache.batik.anim.values.AnimatableAngleOrIdentValue;
 import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.dom.util.DoublyIndexedTable;
 import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.util.SVGTypes;
 
@@ -43,6 +44,32 @@ import org.w3c.dom.svg.SVGMarkerElement;
 public class SVGOMMarkerElement
     extends    SVGStylableElement
     implements SVGMarkerElement {
+
+    /**
+     * Table mapping XML attribute names to TraitInformation objects.
+     */
+    protected static DoublyIndexedTable xmlTraitInformation;
+    static {
+        DoublyIndexedTable t =
+            new DoublyIndexedTable(SVGStylableElement.xmlTraitInformation);
+        t.put(null, SVG_REF_X_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_LENGTH, PERCENTAGE_VIEWPORT_WIDTH));
+        t.put(null, SVG_REF_Y_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_LENGTH, PERCENTAGE_VIEWPORT_HEIGHT));
+        t.put(null, SVG_MARKER_WIDTH_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_LENGTH, PERCENTAGE_VIEWPORT_WIDTH));
+        t.put(null, SVG_MARKER_HEIGHT_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_LENGTH, PERCENTAGE_VIEWPORT_HEIGHT));
+        t.put(null, SVG_MARKER_UNITS_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_IDENT));
+        t.put(null, SVG_ORIENT_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_IDENT));
+        t.put(null, SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_PRESERVE_ASPECT_RATIO_VALUE));
+        t.put(null, SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_BOOLEAN));
+        xmlTraitInformation = t;
+    }
 
     /**
      * The attribute initializer.
@@ -75,6 +102,46 @@ public class SVGOMMarkerElement
     };
 
     /**
+     * The 'refX' attribute value.
+     */
+    protected SVGOMAnimatedLength refX;
+
+    /**
+     * The 'refY' attribute value.
+     */
+    protected SVGOMAnimatedLength refY;
+
+    /**
+     * The 'markerWidth' attribute value.
+     */
+    protected SVGOMAnimatedLength markerWidth;
+
+    /**
+     * The 'markerHeight' attribute value.
+     */
+    protected SVGOMAnimatedLength markerHeight;
+
+    /**
+     * The 'orient' attribute value.
+     */
+    protected SVGOMAnimatedMarkerOrientValue orient;
+
+    /**
+     * The 'markerUnits' attribute value.
+     */
+    protected SVGOMAnimatedEnumeration markerUnits;
+
+    /**
+     * The 'preserveAspectRatio' attribute value.
+     */
+    protected SVGOMAnimatedPreserveAspectRatio preserveAspectRatio;
+
+    /**
+     * The 'externalResourcesRequired' attribute value.
+     */
+    protected SVGOMAnimatedBoolean externalResourcesRequired;
+
+    /**
      * Creates a new SVGOMMarkerElement object.
      */
     protected SVGOMMarkerElement() {
@@ -87,6 +154,49 @@ public class SVGOMMarkerElement
      */
     public SVGOMMarkerElement(String prefix, AbstractDocument owner) {
         super(prefix, owner);
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes all live attributes for this element.
+     */
+    protected void initializeAllLiveAttributes() {
+        super.initializeAllLiveAttributes();
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes the live attribute values of this element.
+     */
+    private void initializeLiveAttributes() {
+        refX =
+            createLiveAnimatedLength
+                (null, SVG_REF_X_ATTRIBUTE, SVG_MARKER_REF_X_DEFAULT_VALUE,
+                 SVGOMAnimatedLength.HORIZONTAL_LENGTH, false);
+        refY =
+            createLiveAnimatedLength
+                (null, SVG_REF_Y_ATTRIBUTE, SVG_MARKER_REF_Y_DEFAULT_VALUE,
+                 SVGOMAnimatedLength.VERTICAL_LENGTH, false);
+        markerWidth =
+            createLiveAnimatedLength
+                (null, SVG_MARKER_WIDTH_ATTRIBUTE,
+                 SVG_MARKER_MARKER_WIDTH_DEFAULT_VALUE,
+                 SVGOMAnimatedLength.HORIZONTAL_LENGTH, true);
+        markerHeight =
+            createLiveAnimatedLength
+                (null, SVG_MARKER_HEIGHT_ATTRIBUTE,
+                 SVG_MARKER_MARKER_WIDTH_DEFAULT_VALUE,
+                 SVGOMAnimatedLength.VERTICAL_LENGTH, true);
+        orient =
+            createLiveAnimatedMarkerOrientValue(null, SVG_ORIENT_ATTRIBUTE);
+        markerUnits =
+            createLiveAnimatedEnumeration
+                (null, SVG_MARKER_UNITS_ATTRIBUTE, UNITS_VALUES, (short) 2);
+        preserveAspectRatio =
+            createLiveAnimatedPreserveAspectRatio();
+        externalResourcesRequired =
+            createLiveAnimatedBoolean
+                (null, SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE, false);
     }
 
     /**
@@ -100,61 +210,41 @@ public class SVGOMMarkerElement
      * <b>DOM</b>: Implements {@link SVGMarkerElement#getRefX()}.
      */
     public SVGAnimatedLength getRefX() {
-        return getAnimatedLengthAttribute
-            (null, SVG_REF_X_ATTRIBUTE, SVG_MARKER_REF_X_DEFAULT_VALUE,
-             SVGOMAnimatedLength.HORIZONTAL_LENGTH, false);
+        return refX;
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGMarkerElement#getRefY()}.
      */
     public SVGAnimatedLength getRefY() {
-        return getAnimatedLengthAttribute
-            (null, SVG_REF_Y_ATTRIBUTE, SVG_MARKER_REF_Y_DEFAULT_VALUE,
-             SVGOMAnimatedLength.VERTICAL_LENGTH, false);
+        return refY;
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGMarkerElement#getMarkerUnits()}.
      */
     public SVGAnimatedEnumeration getMarkerUnits() {
-        return getAnimatedEnumerationAttribute
-            (null, SVG_MARKER_UNITS_ATTRIBUTE, UNITS_VALUES,
-             (short)2);
+        return markerUnits;
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGMarkerElement#getMarkerWidth()}.
      */
     public SVGAnimatedLength getMarkerWidth() {
-        return getAnimatedLengthAttribute
-            (null, SVG_MARKER_WIDTH_ATTRIBUTE,
-             SVG_MARKER_MARKER_WIDTH_DEFAULT_VALUE,
-             SVGOMAnimatedLength.HORIZONTAL_LENGTH, true);
+        return markerWidth;
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGMarkerElement#getMarkerHeight()}.
      */
     public SVGAnimatedLength getMarkerHeight() {
-        return getAnimatedLengthAttribute
-            (null, SVG_MARKER_HEIGHT_ATTRIBUTE,
-             SVG_MARKER_MARKER_HEIGHT_DEFAULT_VALUE,
-             SVGOMAnimatedLength.VERTICAL_LENGTH, true);
+        return markerHeight;
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGMarkerElement#getOrientType()}.
      */
     public SVGAnimatedEnumeration getOrientType() {
-        SVGOMAnimatedMarkerOrientValue orient =
-            (SVGOMAnimatedMarkerOrientValue)
-            getLiveAttributeValue(null, SVG_ORIENT_ATTRIBUTE);
-        if (orient == null) {
-            orient = new SVGOMAnimatedMarkerOrientValue(this, null,
-                                                        SVG_ORIENT_ATTRIBUTE);
-            putLiveAttributeValue(null, SVG_ORIENT_ATTRIBUTE, orient);
-        }
         return orient.getAnimatedEnumeration();
     }
 
@@ -162,14 +252,6 @@ public class SVGOMMarkerElement
      * <b>DOM</b>: Implements {@link SVGMarkerElement#getOrientAngle()}.
      */
     public SVGAnimatedAngle getOrientAngle() {
-        SVGOMAnimatedMarkerOrientValue orient =
-            (SVGOMAnimatedMarkerOrientValue)
-            getLiveAttributeValue(null, SVG_ORIENT_ATTRIBUTE);
-        if (orient == null) {
-            orient = new SVGOMAnimatedMarkerOrientValue(this, null,
-                                                        SVG_ORIENT_ATTRIBUTE);
-            putLiveAttributeValue(null, SVG_ORIENT_ATTRIBUTE, orient);
-        }
         return orient.getAnimatedAngle();
     }
 
@@ -204,7 +286,7 @@ public class SVGOMMarkerElement
      * org.w3c.dom.svg.SVGFitToViewBox#getPreserveAspectRatio()}.
      */
     public SVGAnimatedPreserveAspectRatio getPreserveAspectRatio() {
-        return SVGPreserveAspectRatioSupport.getPreserveAspectRatio(this);
+        return preserveAspectRatio;
     }
 
     // SVGExternalResourcesRequired support /////////////////////////////
@@ -214,8 +296,7 @@ public class SVGOMMarkerElement
      * org.w3c.dom.svg.SVGExternalResourcesRequired#getExternalResourcesRequired()}.
      */
     public SVGAnimatedBoolean getExternalResourcesRequired() {
-        return SVGExternalResourcesRequiredSupport.
-            getExternalResourcesRequired(this);
+        return externalResourcesRequired;
     }
 
     // SVGLangSpace support //////////////////////////////////////////////////
@@ -263,67 +344,11 @@ public class SVGOMMarkerElement
         return new SVGOMMarkerElement();
     }
 
-    // AnimationTarget ///////////////////////////////////////////////////////
-
     /**
-     * Returns whether the given XML attribute is animatable.
+     * Returns the table of TraitInformation objects for this element.
      */
-    public boolean isAttributeAnimatable(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE)
-                    || ln.equals(SVG_REF_X_ATTRIBUTE)
-                    || ln.equals(SVG_REF_Y_ATTRIBUTE)
-                    || ln.equals(SVG_MARKER_UNITS_ATTRIBUTE)
-                    || ln.equals(SVG_MARKER_WIDTH_ATTRIBUTE)
-                    || ln.equals(SVG_MARKER_HEIGHT_ATTRIBUTE)
-                    || ln.equals(SVG_ORIENT_ATTRIBUTE)
-                    || ln.equals(SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE)) {
-                return true;
-            }
-        }
-        return super.isAttributeAnimatable(ns, ln);
-    }
-
-    /**
-     * Gets how percentage values are interpreted by the given attribute.
-     */
-    protected short getAttributePercentageInterpretation(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_REF_X_ATTRIBUTE)
-                    || ln.equals(SVG_MARKER_WIDTH_ATTRIBUTE)) {
-                return PERCENTAGE_VIEWPORT_WIDTH;
-            }
-            if (ln.equals(SVG_REF_Y_ATTRIBUTE)
-                    || ln.equals(SVG_MARKER_HEIGHT_ATTRIBUTE)) {
-                return PERCENTAGE_VIEWPORT_HEIGHT;
-            }
-        }
-        return super.getAttributePercentageInterpretation(ns, ln);
-    }
-
-    // ExtendedTraitAccess ///////////////////////////////////////////////////
-
-    /**
-     * Returns the type of the given attribute.
-     */
-    public int getAttributeType(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_MARKER_HEIGHT_ATTRIBUTE)
-                    || ln.equals(SVG_MARKER_WIDTH_ATTRIBUTE)
-                    || ln.equals(SVG_REF_X_ATTRIBUTE)
-                    || ln.equals(SVG_REF_Y_ATTRIBUTE)) {
-                return SVGTypes.TYPE_LENGTH;
-            } else if (ln.equals(SVG_ORIENT_ATTRIBUTE)) {
-                return SVGTypes.TYPE_ANGLE_OR_IDENT;
-            } else if (ln.equals(SVG_MARKER_UNITS_ATTRIBUTE)) {
-                return SVGTypes.TYPE_IDENT;
-            } else if (ln.equals(SVG_VIEW_BOX_ATTRIBUTE)) {
-                return SVGTypes.TYPE_NUMBER_LIST;
-            } else if (ln.equals(SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE)) {
-                return SVGTypes.TYPE_PRESERVE_ASPECT_RATIO_VALUE;
-            }
-        }
-        return super.getAttributeType(ns, ln);
+    protected DoublyIndexedTable getTraitInformationTable() {
+        return xmlTraitInformation;
     }
 
     // AnimationTarget ///////////////////////////////////////////////////////

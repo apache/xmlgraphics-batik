@@ -21,6 +21,7 @@ package org.apache.batik.dom.svg;
 import org.apache.batik.anim.values.AnimatableNumberOptionalNumberValue;
 import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.dom.util.DoublyIndexedTable;
 import org.apache.batik.util.SVGTypes;
 
 import org.w3c.dom.Node;
@@ -40,6 +41,22 @@ public class SVGOMFEMorphologyElement
     implements SVGFEMorphologyElement {
 
     /**
+     * Table mapping XML attribute names to TraitInformation objects.
+     */
+    protected static DoublyIndexedTable xmlTraitInformation;
+    static {
+        DoublyIndexedTable t =
+            new DoublyIndexedTable(SVGOMFilterPrimitiveStandardAttributes.xmlTraitInformation);
+        t.put(null, SVG_IN_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_CDATA));
+        t.put(null, SVG_OPERATOR_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_IDENT));
+        t.put(null, SVG_RADIUS_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_NUMBER_OPTIONAL_NUMBER));
+        xmlTraitInformation = t;
+    }
+
+    /**
      * The 'operator' attribute values.
      */
     protected static final String[] OPERATOR_VALUES = {
@@ -47,6 +64,16 @@ public class SVGOMFEMorphologyElement
         SVG_ERODE_VALUE,
         SVG_DILATE_VALUE
     };
+
+    /**
+     * The 'in' attribute value.
+     */
+    protected SVGOMAnimatedString in;
+
+    /**
+     * The 'operator' attribute value.
+     */
+    protected SVGOMAnimatedEnumeration operator;
 
     /**
      * Creates a new SVGOMFEMorphologyElement object.
@@ -61,6 +88,25 @@ public class SVGOMFEMorphologyElement
      */
     public SVGOMFEMorphologyElement(String prefix, AbstractDocument owner) {
         super(prefix, owner);
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes all live attributes for this element.
+     */
+    protected void initializeAllLiveAttributes() {
+        super.initializeAllLiveAttributes();
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes the live attribute values of this element.
+     */
+    private void initializeLiveAttributes() {
+        in = createLiveAnimatedString(null, SVG_IN_ATTRIBUTE);
+        operator =
+            createLiveAnimatedEnumeration
+                (null, SVG_OPERATOR_ATTRIBUTE, OPERATOR_VALUES, (short) 1);
     }
 
     /**
@@ -74,15 +120,14 @@ public class SVGOMFEMorphologyElement
      * <b>DOM</b>: Implements {@link SVGFEMorphologyElement#getIn1()}.
      */
     public SVGAnimatedString getIn1() {
-        return getAnimatedStringAttribute(null, SVG_IN_ATTRIBUTE);
+        return in;
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGFEMorphologyElement#getOperator()}.
      */
     public SVGAnimatedEnumeration getOperator() {
-        return getAnimatedEnumerationAttribute
-            (null, SVG_OPERATOR_ATTRIBUTE, OPERATOR_VALUES, (short)1);
+        return operator;
     }
 
     /**
@@ -108,36 +153,11 @@ public class SVGOMFEMorphologyElement
         return new SVGOMFEMorphologyElement();
     }
 
-    // ExtendedTraitAccess ///////////////////////////////////////////////////
-
     /**
-     * Returns whether the given XML attribute is animatable.
+     * Returns the table of TraitInformation objects for this element.
      */
-    public boolean isAttributeAnimatable(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_IN_ATTRIBUTE)
-                    || ln.equals(SVG_OPERATOR_ATTRIBUTE)
-                    || ln.equals(SVG_RADIUS_ATTRIBUTE)) {
-                return true;
-            }
-        }
-        return super.isAttributeAnimatable(ns, ln);
-    }
-
-    /**
-     * Returns the type of the given attribute.
-     */
-    public int getAttributeType(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_IN_ATTRIBUTE)) {
-                return SVGTypes.TYPE_CDATA;
-            } else if (ln.equals(SVG_OPERATOR_ATTRIBUTE)) {
-                return SVGTypes.TYPE_IDENT;
-            } else if (ln.equals(SVG_RADIUS_ATTRIBUTE)) {
-                return SVGTypes.TYPE_NUMBER_OPTIONAL_NUMBER;
-            }
-        }
-        return super.getAttributeType(ns, ln);
+    protected DoublyIndexedTable getTraitInformationTable() {
+        return xmlTraitInformation;
     }
 
     // AnimationTarget ///////////////////////////////////////////////////////

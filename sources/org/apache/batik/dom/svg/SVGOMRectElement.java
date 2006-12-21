@@ -20,15 +20,13 @@ package org.apache.batik.dom.svg;
 
 import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.dom.util.DoublyIndexedTable;
 import org.apache.batik.util.SVGTypes;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedLength;
 import org.w3c.dom.svg.SVGRectElement;
-
-import java.util.Map;
-import java.util.HashMap;
 
 /**
  * This class implements {@link SVGRectElement}.
@@ -40,31 +38,57 @@ public class SVGOMRectElement
     extends    SVGGraphicsElement
     implements SVGRectElement {
 
-
     /**
-     * this map supports a fast lookup from svg-attribute-name string to
-     * svgType-integer. It is faster than doing string-equals in a
-     * lengthy if-else-statement.
-     * This map is used only by {@link #getAttributeType }
+     * Table mapping XML attribute names to TraitInformation objects.
      */
-    private static final Map typeMap = new HashMap();
-
-
+    protected static DoublyIndexedTable xmlTraitInformation;
     static {
-
-        Map map = typeMap;
-
-        SVGOMAttributeInfo svgType = new SVGOMAttributeInfo( SVGTypes.TYPE_LENGTH, true );
-
-        map.put(  SVG_X_ATTRIBUTE, svgType );
-        map.put(  SVG_Y_ATTRIBUTE, svgType );
-        map.put(  SVG_RX_ATTRIBUTE, svgType );
-        map.put(  SVG_RY_ATTRIBUTE, svgType );
-        map.put(  SVG_WIDTH_ATTRIBUTE, svgType );
-        map.put(  SVG_HEIGHT_ATTRIBUTE, svgType );
-
+        DoublyIndexedTable t =
+            new DoublyIndexedTable(SVGGraphicsElement.xmlTraitInformation);
+        t.put(null, SVG_X_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_LENGTH, PERCENTAGE_VIEWPORT_WIDTH));
+        t.put(null, SVG_Y_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_LENGTH, PERCENTAGE_VIEWPORT_HEIGHT));
+        t.put(null, SVG_RX_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_LENGTH, PERCENTAGE_VIEWPORT_WIDTH));
+        t.put(null, SVG_RY_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_LENGTH, PERCENTAGE_VIEWPORT_HEIGHT));
+        t.put(null, SVG_WIDTH_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_LENGTH, PERCENTAGE_VIEWPORT_WIDTH));
+        t.put(null, SVG_HEIGHT_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_LENGTH, PERCENTAGE_VIEWPORT_HEIGHT));
+        xmlTraitInformation = t;
     }
 
+    /**
+     * The 'x' attribute value.
+     */
+    protected SVGOMAnimatedLength x;
+
+    /**
+     * The 'y' attribute value.
+     */
+    protected SVGOMAnimatedLength y;
+
+    /**
+     * The 'rx' attribute value.
+     */
+    protected AbstractSVGAnimatedLength rx;
+
+    /**
+     * The 'ry' attribute value.
+     */
+    protected AbstractSVGAnimatedLength ry;
+
+    /**
+     * The 'width' attribute value.
+     */
+    protected SVGOMAnimatedLength width;
+
+    /**
+     * The 'height' attribute value.
+     */
+    protected SVGOMAnimatedLength height;
 
     /**
      * Creates a new SVGOMRectElement object.
@@ -79,6 +103,80 @@ public class SVGOMRectElement
      */
     public SVGOMRectElement(String prefix, AbstractDocument owner) {
         super(prefix, owner);
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes all live attributes for this element.
+     */
+    protected void initializeAllLiveAttributes() {
+        super.initializeAllLiveAttributes();
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes the live attribute values of this element.
+     */
+    private void initializeLiveAttributes() {
+        x = createLiveAnimatedLength
+            (null, SVG_X_ATTRIBUTE, SVG_RECT_X_DEFAULT_VALUE,
+             SVGOMAnimatedLength.HORIZONTAL_LENGTH, false);
+        y = createLiveAnimatedLength
+            (null, SVG_Y_ATTRIBUTE, SVG_RECT_Y_DEFAULT_VALUE,
+             SVGOMAnimatedLength.VERTICAL_LENGTH, false);
+        width =
+            createLiveAnimatedLength
+                (null, SVG_WIDTH_ATTRIBUTE, null,
+                 SVGOMAnimatedLength.HORIZONTAL_LENGTH, true);
+        height =
+            createLiveAnimatedLength
+                (null, SVG_HEIGHT_ATTRIBUTE, null,
+                 SVGOMAnimatedLength.VERTICAL_LENGTH, true);
+        rx = new AbstractSVGAnimatedLength
+            (this, null, SVG_RX_ATTRIBUTE,
+             SVGOMAnimatedLength.HORIZONTAL_LENGTH, true) {
+                protected String getDefaultValue() {
+                    Attr attr = getAttributeNodeNS(null, SVG_RY_ATTRIBUTE);
+                    if (attr == null) {
+                        return "0";
+                    }
+                    return attr.getValue();
+                }
+                protected void attrChanged() {
+                    super.attrChanged();
+                    AbstractSVGAnimatedLength ry =
+                        (AbstractSVGAnimatedLength) getRy();
+                    if (isSpecified() && !ry.isSpecified()) {
+                        ry.attrChanged();
+                    }
+                }
+            };
+        ry = new AbstractSVGAnimatedLength
+            (this, null, SVG_RY_ATTRIBUTE,
+             SVGOMAnimatedLength.VERTICAL_LENGTH, true) {
+                protected String getDefaultValue() {
+                    Attr attr = getAttributeNodeNS(null, SVG_RX_ATTRIBUTE);
+                    if (attr == null) {
+                        return "0";
+                    }
+                    return attr.getValue();
+                }
+                protected void attrChanged() {
+                    super.attrChanged();
+                    AbstractSVGAnimatedLength rx =
+                        (AbstractSVGAnimatedLength) getRx();
+                    if (isSpecified() && !rx.isSpecified()) {
+                        rx.attrChanged();
+                    }
+                }
+            };
+
+        liveAttributeValues.put(null, SVG_RX_ATTRIBUTE, rx);
+        liveAttributeValues.put(null, SVG_RY_ATTRIBUTE, ry);
+        AnimatedAttributeListener l =
+            ((SVGOMDocument) ownerDocument).getAnimatedAttributeListener();
+        rx.addAnimatedAttributeListener(l);
+        ry.addAnimatedAttributeListener(l);
     }
 
     /**
@@ -92,106 +190,42 @@ public class SVGOMRectElement
      * <b>DOM</b>: Implements {@link SVGRectElement#getX()}.
      */
     public SVGAnimatedLength getX() {
-        return getAnimatedLengthAttribute
-            (null, SVG_X_ATTRIBUTE, SVG_RECT_X_DEFAULT_VALUE,
-             SVGOMAnimatedLength.HORIZONTAL_LENGTH, false);
+        return x;
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGRectElement#getY()}.
      */
     public SVGAnimatedLength getY() {
-        return getAnimatedLengthAttribute
-            (null, SVG_Y_ATTRIBUTE, SVG_RECT_Y_DEFAULT_VALUE,
-             SVGOMAnimatedLength.VERTICAL_LENGTH, false);
+        return y;
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGRectElement#getWidth()}.
      */
     public SVGAnimatedLength getWidth() {
-        return getAnimatedLengthAttribute
-            (null, SVG_WIDTH_ATTRIBUTE, "",
-             SVGOMAnimatedLength.HORIZONTAL_LENGTH, true);
+        return width;
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGRectElement#getHeight()}.
      */
     public SVGAnimatedLength getHeight() {
-        return getAnimatedLengthAttribute
-            (null, SVG_HEIGHT_ATTRIBUTE, "",
-             SVGOMAnimatedLength.VERTICAL_LENGTH, true);
+        return height;
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGRectElement#getRx()}.
      */
     public SVGAnimatedLength getRx() {
-        AbstractSVGAnimatedLength result = (AbstractSVGAnimatedLength)
-            getLiveAttributeValue(null, SVG_RX_ATTRIBUTE);
-        if (result == null) {
-            SVGOMDocument doc = (SVGOMDocument) ownerDocument;
-            result = new AbstractSVGAnimatedLength
-                (this, null, SVG_RX_ATTRIBUTE,
-                 SVGOMAnimatedLength.HORIZONTAL_LENGTH, true) {
-                    protected String getDefaultValue() {
-                        Attr attr = getAttributeNodeNS(null, SVG_RY_ATTRIBUTE);
-                        if (attr == null) {
-                            return "0";
-                        }
-                        return attr.getValue();
-                    }
-                    protected void attrChanged() {
-                        super.attrChanged();
-                        AbstractSVGAnimatedLength ry =
-                            (AbstractSVGAnimatedLength) getRy();
-                        if (isSpecified() && !ry.isSpecified()) {
-                            ry.attrChanged();
-                        }
-                    }
-                };
-            result.addAnimatedAttributeListener
-                (doc.getAnimatedAttributeListener());
-            putLiveAttributeValue(null, SVG_RX_ATTRIBUTE,
-                                  (LiveAttributeValue)result);
-        }
-        return result;
+        return rx;
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGRectElement#getRy()}.
      */
     public SVGAnimatedLength getRy() {
-        AbstractSVGAnimatedLength result = (AbstractSVGAnimatedLength)
-            getLiveAttributeValue(null, SVG_RY_ATTRIBUTE);
-        if (result == null) {
-            SVGOMDocument doc = (SVGOMDocument) ownerDocument;
-            result = new AbstractSVGAnimatedLength
-                (this, null, SVG_RY_ATTRIBUTE,
-                 SVGOMAnimatedLength.HORIZONTAL_LENGTH, true) {
-                    protected String getDefaultValue() {
-                        Attr attr = getAttributeNodeNS(null, SVG_RX_ATTRIBUTE);
-                        if (attr == null) {
-                            return "0";
-                        }
-                        return attr.getValue();
-                    }
-                    protected void attrChanged() {
-                        super.attrChanged();
-                        AbstractSVGAnimatedLength rx =
-                            (AbstractSVGAnimatedLength) getRx();
-                        if (isSpecified() && !rx.isSpecified()) {
-                            rx.attrChanged();
-                        }
-                    }
-                };
-            result.addAnimatedAttributeListener
-                (doc.getAnimatedAttributeListener());
-            putLiveAttributeValue(null, SVG_RY_ATTRIBUTE,
-                                  (LiveAttributeValue)result);
-        }
-        return result;
+        return ry;
     }
 
     /**
@@ -201,91 +235,14 @@ public class SVGOMRectElement
         return new SVGOMRectElement();
     }
 
-    // ExtendedTraitAccess ///////////////////////////////////////////////////
-
     /**
-     * Returns whether the given XML attribute is animatable.
-     * to be removed
+     * Returns the table of TraitInformation objects for this element.
      */
-    public boolean OLDisAttributeAnimatable(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_X_ATTRIBUTE)
-                    || ln.equals(SVG_Y_ATTRIBUTE)
-                    || ln.equals(SVG_WIDTH_ATTRIBUTE)
-                    || ln.equals(SVG_HEIGHT_ATTRIBUTE)
-                    || ln.equals(SVG_RX_ATTRIBUTE)
-                    || ln.equals(SVG_RY_ATTRIBUTE)) {
-                return true;
-            }
-        }
-        return super.isAttributeAnimatable(ns, ln);
+    protected DoublyIndexedTable getTraitInformationTable() {
+        return xmlTraitInformation;
     }
-
-    /**
-     * Returns the type of the given attribute.
-     * to be removed
-     */
-    public int OLDgetAttributeType(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_X_ATTRIBUTE)
-                    || ln.equals(SVG_Y_ATTRIBUTE)
-                    || ln.equals(SVG_RX_ATTRIBUTE)
-                    || ln.equals(SVG_RY_ATTRIBUTE)
-                    || ln.equals(SVG_WIDTH_ATTRIBUTE)
-                    || ln.equals(SVG_HEIGHT_ATTRIBUTE)) {
-                return SVGTypes.TYPE_LENGTH;
-            }
-        }
-        return super.getAttributeType(ns, ln);
-    }
-
-    /**
-     * Returns whether the given XML attribute is animatable.
-     */
-    public boolean isAttributeAnimatable(String ns, String ln) {
-        if (ns == null) {
-            SVGOMAttributeInfo typeCode = (SVGOMAttributeInfo)typeMap.get( ln );
-            if ( typeCode != null ){
-                // it is one of 'my' mappings..
-                return typeCode.getIsAnimatable();
-            }
-        }
-        return super.isAttributeAnimatable(ns, ln);
-    }
-
-
-    /**
-     * Returns the type of the given attribute.
-     */
-    public int getAttributeType(String ns, String ln) {
-
-        if (ns == null) {
-            SVGOMAttributeInfo typeCode = (SVGOMAttributeInfo)typeMap.get( ln );
-            if ( typeCode != null ){
-                // it is one of 'my' mappings..
-                return typeCode.getSVGType();
-            }
-        }
-        return super.getAttributeType(ns, ln);
-    }
-
 
     // AnimationTarget ///////////////////////////////////////////////////////
-
-    /**
-     * Gets how percentage values are interpreted by the given attribute.
-     */
-    protected short getAttributePercentageInterpretation(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_X_ATTRIBUTE) || ln.equals(SVG_RX_ATTRIBUTE)) {
-                return PERCENTAGE_VIEWPORT_WIDTH;
-            }
-            if (ln.equals(SVG_Y_ATTRIBUTE) || ln.equals(SVG_RY_ATTRIBUTE)) {
-                return PERCENTAGE_VIEWPORT_HEIGHT;
-            }
-        }
-        return super.getAttributePercentageInterpretation(ns, ln);
-    }
 
     /**
      * Updates an attribute value in this target.

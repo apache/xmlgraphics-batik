@@ -19,7 +19,6 @@
 package org.apache.batik.test;
 
 import java.util.Iterator;
-import java.util.Vector;
 import java.util.List;
 import java.util.ArrayList;
 

@@ -20,6 +20,7 @@ package org.apache.batik.dom.svg;
 
 import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.dom.util.DoublyIndexedTable;
 import org.apache.batik.util.SVGTypes;
 
 import org.w3c.dom.Node;
@@ -37,6 +38,44 @@ public class SVGOMEllipseElement
     implements SVGEllipseElement {
 
     /**
+     * Table mapping XML attribute names to TraitInformation objects.
+     */
+    protected static DoublyIndexedTable xmlTraitInformation;
+    static {
+        DoublyIndexedTable t =
+            new DoublyIndexedTable(SVGGraphicsElement.xmlTraitInformation);
+        t.put(null, SVG_CX_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_LENGTH, PERCENTAGE_VIEWPORT_WIDTH));
+        t.put(null, SVG_CY_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_LENGTH, PERCENTAGE_VIEWPORT_HEIGHT));
+        t.put(null, SVG_RX_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_LENGTH, PERCENTAGE_VIEWPORT_WIDTH));
+        t.put(null, SVG_RY_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_LENGTH, PERCENTAGE_VIEWPORT_HEIGHT));
+        xmlTraitInformation = t;
+    }
+
+    /**
+     * The 'cx' attribute value.
+     */
+    protected SVGOMAnimatedLength cx;
+
+    /**
+     * The 'cy' attribute value.
+     */
+    protected SVGOMAnimatedLength cy;
+
+    /**
+     * The 'rx' attribute value.
+     */
+    protected SVGOMAnimatedLength rx;
+
+    /**
+     * The 'ry' attribute value.
+     */
+    protected SVGOMAnimatedLength ry;
+
+    /**
      * Creates a new SVGOMEllipseElement object.
      */
     protected SVGOMEllipseElement() {
@@ -49,6 +88,33 @@ public class SVGOMEllipseElement
      */
     public SVGOMEllipseElement(String prefix, AbstractDocument owner) {
         super(prefix, owner);
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes all live attributes for this element.
+     */
+    protected void initializeAllLiveAttributes() {
+        super.initializeAllLiveAttributes();
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes the live attribute values of this element.
+     */
+    private void initializeLiveAttributes() {
+        cx = createLiveAnimatedLength
+            (null, SVG_CX_ATTRIBUTE, SVG_ELLIPSE_CX_DEFAULT_VALUE,
+             SVGOMAnimatedLength.HORIZONTAL_LENGTH, false);
+        cy = createLiveAnimatedLength
+            (null, SVG_CY_ATTRIBUTE, SVG_ELLIPSE_CY_DEFAULT_VALUE,
+             SVGOMAnimatedLength.VERTICAL_LENGTH, false);
+        rx = createLiveAnimatedLength
+            (null, SVG_RX_ATTRIBUTE, null,
+             SVGOMAnimatedLength.HORIZONTAL_LENGTH, true);
+        ry = createLiveAnimatedLength
+            (null, SVG_RY_ATTRIBUTE, null, SVGOMAnimatedLength.VERTICAL_LENGTH,
+             true);
     }
 
     /**
@@ -62,36 +128,28 @@ public class SVGOMEllipseElement
      * <b>DOM</b>: Implements {@link SVGEllipseElement#getCx()}.
      */
     public SVGAnimatedLength getCx() {
-        return getAnimatedLengthAttribute
-            (null, SVG_CX_ATTRIBUTE, SVG_ELLIPSE_CX_DEFAULT_VALUE,
-             SVGOMAnimatedLength.HORIZONTAL_LENGTH, false);
+        return cx;
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGEllipseElement#getCy()}.
      */
     public SVGAnimatedLength getCy() {
-        return getAnimatedLengthAttribute
-            (null, SVG_CY_ATTRIBUTE, SVG_ELLIPSE_CY_DEFAULT_VALUE,
-             SVGOMAnimatedLength.VERTICAL_LENGTH, false);
+        return cy;
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGEllipseElement#getRx()}.
      */
     public SVGAnimatedLength getRx() {
-        return getAnimatedLengthAttribute
-            (null, SVG_RX_ATTRIBUTE, "",
-             SVGOMAnimatedLength.HORIZONTAL_LENGTH, true);
+        return rx;
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGEllipseElement#getRy()}.
      */
     public SVGAnimatedLength getRy() {
-        return getAnimatedLengthAttribute
-            (null, SVG_RY_ATTRIBUTE, "",
-             SVGOMAnimatedLength.VERTICAL_LENGTH, true);
+        return ry;
    }
 
     /**
@@ -101,54 +159,14 @@ public class SVGOMEllipseElement
         return new SVGOMEllipseElement();
     }
 
-    // ExtendedTraitAccess ///////////////////////////////////////////////////
-
     /**
-     * Returns whether the given XML attribute is animatable.
+     * Returns the table of TraitInformation objects for this element.
      */
-    public boolean isAttributeAnimatable(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_CX_ATTRIBUTE)
-                    || ln.equals(SVG_CY_ATTRIBUTE)
-                    || ln.equals(SVG_RX_ATTRIBUTE)
-                    || ln.equals(SVG_RY_ATTRIBUTE)) {
-                return true;
-            }
-        }
-        return super.isAttributeAnimatable(ns, ln);
-    }
-
-    /**
-     * Returns the type of the given attribute.
-     */
-    public int getAttributeType(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_CX_ATTRIBUTE)
-                    || ln.equals(SVG_CY_ATTRIBUTE)
-                    || ln.equals(SVG_RX_ATTRIBUTE)
-                    || ln.equals(SVG_RY_ATTRIBUTE)) {
-                return SVGTypes.TYPE_LENGTH;
-            }
-        }
-        return super.getAttributeType(ns, ln);
+    protected DoublyIndexedTable getTraitInformationTable() {
+        return xmlTraitInformation;
     }
 
     // AnimationTarget ///////////////////////////////////////////////////////
-
-    /**
-     * Gets how percentage values are interpreted by the given attribute.
-     */
-    protected short getAttributePercentageInterpretation(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_CX_ATTRIBUTE) || ln.equals(SVG_RX_ATTRIBUTE)) {
-                return PERCENTAGE_VIEWPORT_WIDTH;
-            }
-            if (ln.equals(SVG_CY_ATTRIBUTE) || ln.equals(SVG_RY_ATTRIBUTE)) {
-                return PERCENTAGE_VIEWPORT_HEIGHT;
-            }
-        }
-        return super.getAttributePercentageInterpretation(ns, ln);
-    }
 
     /**
      * Updates an attribute value in this target.
