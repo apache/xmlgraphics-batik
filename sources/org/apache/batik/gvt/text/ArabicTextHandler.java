@@ -92,8 +92,8 @@ public class ArabicTextHandler {
                         // found a ligature, separated by a transparent char
                         if (charOrder == null) {
                             charOrder = new int[numChars];
-                            for (int j = 0; j < numChars; i++) {
-                                charOrder[i] = j + aci.getBeginIndex();
+                            for (int j = 0; j < numChars; j++) {
+                                charOrder[j] = j + aci.getBeginIndex();
                             }
                         }
                         int temp = charOrder[i];
