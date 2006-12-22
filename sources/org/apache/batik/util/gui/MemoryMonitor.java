@@ -23,6 +23,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -676,6 +677,11 @@ public class MemoryMonitor extends JFrame implements ActionMap {
         protected boolean suspended;
 
         /**
+         * Runnable for updating components.
+         */
+        protected UpdateRunnable updateRunnable;
+
+        /**
          * Creates a new Thread.
          * @param timeout    The time between two repaint in ms.
          * @param components The components to repaint.
@@ -683,6 +689,7 @@ public class MemoryMonitor extends JFrame implements ActionMap {
         public RepaintThread(long timeout, List components) {
             this.timeout = timeout;
             this.components = components;
+            this.updateRunnable = createUpdateRunnable();
             setPriority(Thread.MIN_PRIORITY);
         }
 
@@ -691,6 +698,29 @@ public class MemoryMonitor extends JFrame implements ActionMap {
          */
         public void run() {
             for (;;) {
+                try {
+                    synchronized (updateRunnable) { 
+                        if (!updateRunnable.inEventQueue)
+                            EventQueue.invokeLater(updateRunnable);
+                        updateRunnable.inEventQueue = true; 
+                    }
+                    sleep(timeout);
+                    synchronized(this) {
+                        while (suspended) {
+                            wait();
+                        }
+                    }
+                } catch (InterruptedException e) {}
+            }
+        }
+
+        protected UpdateRunnable createUpdateRunnable() {
+            return new UpdateRunnable();
+        }
+
+        protected class UpdateRunnable implements Runnable {
+            public boolean inEventQueue = false;
+            public void run() {
                 long free  = runtime.freeMemory();
                 long total = runtime.totalMemory();
                 Iterator it = components.iterator();
@@ -699,14 +729,7 @@ public class MemoryMonitor extends JFrame implements ActionMap {
                     ((MemoryChangeListener)c).memoryStateChanged(total, free);
                     c.repaint();
                 }
-                try {
-                    sleep(timeout);
-                    synchronized(this) {
-                        while (suspended) {
-                            wait();
-                        }
-                    }
-                } catch (InterruptedException e) {}
+                synchronized (this) { inEventQueue = false; }
             }
         }
 
