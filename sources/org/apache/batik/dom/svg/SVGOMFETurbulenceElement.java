@@ -18,8 +18,6 @@
  */
 package org.apache.batik.dom.svg;
 
-import org.apache.batik.anim.values.AnimatableValue;
-import org.apache.batik.anim.values.AnimatableNumberOptionalNumberValue;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.DoublyIndexedTable;
 import org.apache.batik.util.SVGTypes;
@@ -208,65 +206,46 @@ public class SVGOMFETurbulenceElement
 
     // AnimationTarget ///////////////////////////////////////////////////////
 
-    /**
-     * Updates an attribute value in this target.
-     */
-    public void updateAttributeValue(String ns, String ln,
-                                     AnimatableValue val) {
-        if (ns == null) {
-            if (ln.equals(SVG_TYPE_ATTRIBUTE)) {
-                updateEnumerationAttributeValue(getType(), val);
-                return;
-            } else if (ln.equals(SVG_NUM_OCTAVES_ATTRIBUTE)) {
-                updateIntegerAttributeValue(getNumOctaves(), val);
-                return;
-            } else if (ln.equals(SVG_SEED_ATTRIBUTE)) {
-                updateNumberAttributeValue(getSeed(), val);
-                return;
-            } else if (ln.equals(SVG_STITCH_TILES_ATTRIBUTE)) {
-                updateEnumerationAttributeValue(getStitchTiles(), val);
-                return;
-            } else if (ln.equals(SVG_BASE_FREQUENCY_ATTRIBUTE)) {
-                // XXX Needs testing.
-                if (val == null) {
-                    updateNumberAttributeValue(getBaseFrequencyX(), null);
-                    updateNumberAttributeValue(getBaseFrequencyY(), null);
-                } else {
-                    AnimatableNumberOptionalNumberValue anonv =
-                        (AnimatableNumberOptionalNumberValue) val;
-                    SVGOMAnimatedNumber an =
-                        (SVGOMAnimatedNumber) getBaseFrequencyX();
-                    an.setAnimatedValue(anonv.getNumber());
-                    an = (SVGOMAnimatedNumber) getBaseFrequencyY();
-                    if (anonv.hasOptionalNumber()) {
-                        an.setAnimatedValue(anonv.getOptionalNumber());
-                    } else {
-                        an.setAnimatedValue(anonv.getNumber());
-                    }
-                }
-                return;
-            }
-        }
-        super.updateAttributeValue(ns, ln, val);
-    }
-
-    /**
-     * Returns the underlying value of an animatable XML attribute.
-     */
-    public AnimatableValue getUnderlyingValue(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_TYPE_ATTRIBUTE)) {
-                return getBaseValue(getType());
-            } else if (ln.equals(SVG_NUM_OCTAVES_ATTRIBUTE)) {
-                return getBaseValue(getNumOctaves());
-            } else if (ln.equals(SVG_SEED_ATTRIBUTE)) {
-                return getBaseValue(getSeed());
-            } else if (ln.equals(SVG_STITCH_TILES_ATTRIBUTE)) {
-                return getBaseValue(getStitchTiles());
-            } else if (ln.equals(SVG_BASE_FREQUENCY_ATTRIBUTE)) {
-                return getBaseValue(getBaseFrequencyX(), getBaseFrequencyY());
-            }
-        }
-        return super.getUnderlyingValue(ns, ln);
-    }
+// XXX TBD
+//     /**
+//      * Updates an attribute value in this target.
+//      */
+//     public void updateAttributeValue(String ns, String ln,
+//                                      AnimatableValue val) {
+//         if (ns == null) {
+//             if (ln.equals(SVG_BASE_FREQUENCY_ATTRIBUTE)) {
+//                 // XXX Needs testing.
+//                 if (val == null) {
+//                     updateNumberAttributeValue(getBaseFrequencyX(), null);
+//                     updateNumberAttributeValue(getBaseFrequencyY(), null);
+//                 } else {
+//                     AnimatableNumberOptionalNumberValue anonv =
+//                         (AnimatableNumberOptionalNumberValue) val;
+//                     SVGOMAnimatedNumber an =
+//                         (SVGOMAnimatedNumber) getBaseFrequencyX();
+//                     an.setAnimatedValue(anonv.getNumber());
+//                     an = (SVGOMAnimatedNumber) getBaseFrequencyY();
+//                     if (anonv.hasOptionalNumber()) {
+//                         an.setAnimatedValue(anonv.getOptionalNumber());
+//                     } else {
+//                         an.setAnimatedValue(anonv.getNumber());
+//                     }
+//                 }
+//                 return;
+//             }
+//         }
+//         super.updateAttributeValue(ns, ln, val);
+//     }
+// 
+//     /**
+//      * Returns the underlying value of an animatable XML attribute.
+//      */
+//     public AnimatableValue getUnderlyingValue(String ns, String ln) {
+//         if (ns == null) {
+//             if (ln.equals(SVG_BASE_FREQUENCY_ATTRIBUTE)) {
+//                 return getBaseValue(getBaseFrequencyX(), getBaseFrequencyY());
+//             }
+//         }
+//         return super.getUnderlyingValue(ns, ln);
+//     }
 }

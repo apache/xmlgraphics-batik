@@ -21,7 +21,12 @@ package org.apache.batik.dom.svg;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.apache.batik.anim.values.AnimatablePathDataValue;
+import org.apache.batik.anim.values.AnimatableValue;
+import org.apache.batik.dom.anim.AnimationTarget;
+
 import org.apache.batik.parser.ParseException;
+import org.apache.batik.parser.PathArrayProducer;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
@@ -151,22 +156,31 @@ public class SVGOMAnimatedPathData
     }
 
     /**
-     * Sets the animated value.
+     * Returns the base value of the attribute as an {@link AnimatableValue}.
      */
-    public void setAnimatedValue(short[] commands, float[] params) {
-        if (animPathSegs == null) {
-            animPathSegs = new AnimSVGPathSegList();
-        }
-        hasAnimVal = true;
-        animPathSegs.setAnimatedValue(commands, params);
-        fireAnimatedAttributeListeners();
+    public AnimatableValue getUnderlyingValue(AnimationTarget target) {
+        SVGPathSegList psl = getPathSegList();
+        PathArrayProducer pp = new PathArrayProducer();
+        SVGAnimatedPathDataSupport.handlePathSegList(psl, pp);
+        return new AnimatablePathDataValue(target, pp.getPathCommands(),
+                                           pp.getPathParameters());
     }
 
     /**
-     * Resets the animated value.
+     * Updates the animated value with the gien {@link AnimatableValue}.
      */
-    public void resetAnimatedValue() {
-        hasAnimVal = false;
+    protected void updateAnimatedValue(AnimatableValue val) {
+        if (val == null) {
+            hasAnimVal = false;
+        } else {
+            hasAnimVal = true;
+            AnimatablePathDataValue animPath = (AnimatablePathDataValue) val;
+            if (animPathSegs == null) {
+                animPathSegs = new AnimSVGPathSegList();
+            }
+            animPathSegs.setAnimatedValue(animPath.getCommands(),
+                                          animPath.getParameters());
+        }
         fireAnimatedAttributeListeners();
     }
 

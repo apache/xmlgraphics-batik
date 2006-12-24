@@ -18,6 +18,10 @@
  */
 package org.apache.batik.dom.svg;
 
+import org.apache.batik.anim.values.AnimatableNumberValue;
+import org.apache.batik.anim.values.AnimatableValue;
+import org.apache.batik.dom.anim.AnimationTarget;
+
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.svg.SVGAnimatedNumber;
@@ -152,19 +156,22 @@ public class SVGOMAnimatedNumber
     }
 
     /**
-     * Sets the animated value.
+     * Returns the base value of the attribute as an {@link AnimatableValue}.
      */
-    public void setAnimatedValue(float animVal) {
-        hasAnimVal = true;
-        this.animVal = animVal;
-        fireAnimatedAttributeListeners();
+    public AnimatableValue getUnderlyingValue(AnimationTarget target) {
+        return new AnimatableNumberValue(target, getBaseVal());
     }
 
     /**
-     * Removes the animated value.
+     * Updates the animated value with the gien {@link AnimatableValue}.
      */
-    public void resetAnimatedValue() {
-        hasAnimVal = false;
+    protected void updateAnimatedValue(AnimatableValue val) {
+        if (val == null) {
+            hasAnimVal = false;
+        } else {
+            hasAnimVal = true;
+            this.animVal = ((AnimatableNumberValue) val).getValue();
+        }
         fireAnimatedAttributeListeners();
     }
 

@@ -21,6 +21,8 @@ package org.apache.batik.dom.svg;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import org.apache.batik.anim.values.AnimatableValue;
+
 /**
  * An abstract base class for the <code>SVGAnimated*</code> classes, that
  * implements an {@link AnimatedAttributeListener} list.
@@ -87,6 +89,11 @@ public abstract class AbstractSVGAnimatedValue
     public boolean isSpecified() {
         return hasAnimVal || element.hasAttributeNS(namespaceURI, localName);
     }
+
+    /**
+     * Updates the animated value with the gien {@link AnimatableValue}.
+     */
+    protected abstract void updateAnimatedValue(AnimatableValue val);
 
     /**
      * Adds a listener for changes to the animated value.

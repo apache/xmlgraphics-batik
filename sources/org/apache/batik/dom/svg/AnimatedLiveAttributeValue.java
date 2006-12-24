@@ -18,6 +18,9 @@
  */
 package org.apache.batik.dom.svg;
 
+import org.apache.batik.anim.values.AnimatableValue;
+import org.apache.batik.dom.anim.AnimationTarget;
+
 /**
  * An interface for {@link LiveAttributeValue}s that have an animated value
  * component.
@@ -36,6 +39,11 @@ public interface AnimatedLiveAttributeValue extends LiveAttributeValue {
      * Returns the local name of this animated live attribute.
      */
     String getLocalName();
+
+    /**
+     * Returns the base value of the attribute as an {@link AnimatableValue}.
+     */
+    AnimatableValue getUnderlyingValue(AnimationTarget target);
 
     /**
      * Adds a listener for changes to the animated value.

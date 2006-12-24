@@ -37,6 +37,7 @@ import org.w3c.dom.svg.SVGRect;
  * @version $Id$
  */
 public class SVGLocatableSupport {
+
     /**
      * Creates a new SVGLocatable element.
      */

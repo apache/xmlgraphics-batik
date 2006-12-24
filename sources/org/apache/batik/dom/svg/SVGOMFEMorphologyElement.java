@@ -18,8 +18,6 @@
  */
 package org.apache.batik.dom.svg;
 
-import org.apache.batik.anim.values.AnimatableNumberOptionalNumberValue;
-import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.DoublyIndexedTable;
 import org.apache.batik.util.SVGTypes;
@@ -162,55 +160,46 @@ public class SVGOMFEMorphologyElement
 
     // AnimationTarget ///////////////////////////////////////////////////////
 
-    /**
-     * Updates an attribute value in this target.
-     */
-    public void updateAttributeValue(String ns, String ln,
-                                     AnimatableValue val) {
-        if (ns == null) {
-            if (ln.equals(SVG_IN_ATTRIBUTE)) {
-                updateStringAttributeValue(getIn1(), val);
-                return;
-            } else if (ln.equals(SVG_OPERATOR_ATTRIBUTE)) {
-                updateEnumerationAttributeValue(getOperator(), val);
-                return;
-            } else if (ln.equals(SVG_RADIUS_ATTRIBUTE)) {
-                // XXX Needs testing.
-                if (val == null) {
-                    updateNumberAttributeValue(getRadiusX(), null);
-                    updateNumberAttributeValue(getRadiusY(), null);
-                } else {
-                    AnimatableNumberOptionalNumberValue anonv =
-                        (AnimatableNumberOptionalNumberValue) val;
-                    SVGOMAnimatedNumber ai =
-                        (SVGOMAnimatedNumber) getRadiusX();
-                    ai.setAnimatedValue(anonv.getNumber());
-                    ai = (SVGOMAnimatedNumber) getRadiusY();
-                    if (anonv.hasOptionalNumber()) {
-                        ai.setAnimatedValue(anonv.getOptionalNumber());
-                    } else {
-                        ai.setAnimatedValue(anonv.getNumber());
-                    }
-                }
-                return;
-            }
-        }
-        super.updateAttributeValue(ns, ln, val);
-    }
-
-    /**
-     * Returns the underlying value of an animatable XML attribute.
-     */
-    public AnimatableValue getUnderlyingValue(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_IN_ATTRIBUTE)) {
-                return getBaseValue(getIn1());
-            } else if (ln.equals(SVG_OPERATOR_ATTRIBUTE)) {
-                return getBaseValue(getOperator());
-            } else if (ln.equals(SVG_RADIUS_ATTRIBUTE)) {
-                return getBaseValue(getRadiusX(), getRadiusY());
-            }
-        }
-        return super.getUnderlyingValue(ns, ln);
-    }
+// XXX TBD
+//     /**
+//      * Updates an attribute value in this target.
+//      */
+//     public void updateAttributeValue(String ns, String ln,
+//                                      AnimatableValue val) {
+//         if (ns == null) {
+//             if (ln.equals(SVG_RADIUS_ATTRIBUTE)) {
+//                 // XXX Needs testing.
+//                 if (val == null) {
+//                     updateNumberAttributeValue(getRadiusX(), null);
+//                     updateNumberAttributeValue(getRadiusY(), null);
+//                 } else {
+//                     AnimatableNumberOptionalNumberValue anonv =
+//                         (AnimatableNumberOptionalNumberValue) val;
+//                     SVGOMAnimatedNumber ai =
+//                         (SVGOMAnimatedNumber) getRadiusX();
+//                     ai.setAnimatedValue(anonv.getNumber());
+//                     ai = (SVGOMAnimatedNumber) getRadiusY();
+//                     if (anonv.hasOptionalNumber()) {
+//                         ai.setAnimatedValue(anonv.getOptionalNumber());
+//                     } else {
+//                         ai.setAnimatedValue(anonv.getNumber());
+//                     }
+//                 }
+//                 return;
+//             }
+//         }
+//         super.updateAttributeValue(ns, ln, val);
+//     }
+// 
+//     /**
+//      * Returns the underlying value of an animatable XML attribute.
+//      */
+//     public AnimatableValue getUnderlyingValue(String ns, String ln) {
+//         if (ns == null) {
+//             if (ln.equals(SVG_RADIUS_ATTRIBUTE)) {
+//                 return getBaseValue(getRadiusX(), getRadiusY());
+//             }
+//         }
+//         return super.getUnderlyingValue(ns, ln);
+//     }
 }

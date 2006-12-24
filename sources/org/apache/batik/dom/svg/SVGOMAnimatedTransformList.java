@@ -20,6 +20,11 @@ package org.apache.batik.dom.svg;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Vector;
+
+import org.apache.batik.anim.values.AnimatableTransformListValue;
+import org.apache.batik.anim.values.AnimatableValue;
+import org.apache.batik.dom.anim.AnimationTarget;
 
 import org.apache.batik.parser.ParseException;
 
@@ -96,35 +101,33 @@ public class SVGOMAnimatedTransformList
     }
 
     /**
-     * Sets the animated value to a single transform.
+     * Returns the base value of the attribute as an {@link AnimatableValue}.
      */
-    public void setAnimatedValue(SVGTransform t) {
-        if (animVal == null) {
-            animVal = new AnimSVGTransformList();
+    public AnimatableValue getUnderlyingValue(AnimationTarget target) {
+        SVGTransformList tl = getBaseVal();
+        int n = tl.getNumberOfItems();
+        Vector v = new Vector(n);
+        for (int i = 0; i < n; i++) {
+            v.add((AbstractSVGTransform) tl.getItem(i));
         }
-        hasAnimVal = true;
-        animVal.setAnimatedValue(t);
-        fireAnimatedAttributeListeners();
+        return new AnimatableTransformListValue(target, v);
     }
 
     /**
-     * Sets the animated value to a list of transforms.
-     * @param i an {@link Iterator} of {@link SVGTransform} objects.
+     * Updates the animated value with the gien {@link AnimatableValue}.
      */
-    public void setAnimatedValue(Iterator i) {
-        if (animVal == null) {
-            animVal = new AnimSVGTransformList();
+    protected void updateAnimatedValue(AnimatableValue val) {
+        if (val == null) {
+            hasAnimVal = false;
+        } else {
+            hasAnimVal = true;
+            AnimatableTransformListValue aval =
+                (AnimatableTransformListValue) val;
+            if (animVal == null) {
+                animVal = new AnimSVGTransformList();
+            }
+            animVal.setAnimatedValue(aval.getTransforms());
         }
-        hasAnimVal = true;
-        animVal.setAnimatedValue(i);
-        fireAnimatedAttributeListeners();
-    }
-
-    /**
-     * Resets the animated value.
-     */
-    public void resetAnimatedValue() {
-        hasAnimVal = false;
         fireAnimatedAttributeListeners();
     }
 

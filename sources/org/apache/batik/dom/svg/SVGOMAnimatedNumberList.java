@@ -21,6 +21,10 @@ package org.apache.batik.dom.svg;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.apache.batik.anim.values.AnimatableNumberListValue;
+import org.apache.batik.anim.values.AnimatableValue;
+import org.apache.batik.dom.anim.AnimationTarget;
+
 import org.apache.batik.parser.ParseException;
 
 import org.w3c.dom.Attr;
@@ -105,22 +109,33 @@ public class SVGOMAnimatedNumberList
     }
 
     /**
-     * Sets the animated value.
+     * Returns the base value of the attribute as an {@link AnimatableValue}.
      */
-    public void setAnimatedValue(float[] values) {
-        if (animVal == null) {
-            animVal = new AnimSVGNumberList();
+    public AnimatableValue getUnderlyingValue(AnimationTarget target) {
+        SVGNumberList nl = getBaseVal();
+        int n = nl.getNumberOfItems();
+        float[] numbers = new float[n];
+        for (int i = 0; i < n; i++) {
+            numbers[i] = nl.getItem(n).getValue();
         }
-        hasAnimVal = true;
-        animVal.setAnimatedValue(values);
-        fireAnimatedAttributeListeners();
+        return new AnimatableNumberListValue(target, numbers);
     }
 
     /**
-     * Resets the animated value.
+     * Updates the animated value with the gien {@link AnimatableValue}.
      */
-    public void resetAnimatedValue() {
-        hasAnimVal = false;
+    protected void updateAnimatedValue(AnimatableValue val) {
+        if (val == null) {
+            hasAnimVal = false;
+        } else {
+            hasAnimVal = true;
+            AnimatableNumberListValue animNumList =
+                (AnimatableNumberListValue) val;
+            if (animVal == null) {
+                animVal = new AnimSVGNumberList();
+            }
+            animVal.setAnimatedValue(animNumList.getNumbers());
+        }
         fireAnimatedAttributeListeners();
     }
 

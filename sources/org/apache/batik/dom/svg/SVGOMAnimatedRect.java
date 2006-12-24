@@ -18,6 +18,9 @@
  */
 package org.apache.batik.dom.svg;
 
+import org.apache.batik.anim.values.AnimatableRectValue;
+import org.apache.batik.anim.values.AnimatableValue;
+import org.apache.batik.dom.anim.AnimationTarget;
 import org.apache.batik.parser.DefaultNumberListHandler;
 import org.apache.batik.parser.NumberListParser;
 import org.apache.batik.parser.ParseException;
@@ -83,23 +86,30 @@ public class SVGOMAnimatedRect
     }
 
     /**
-     * Sets the animated value.
+     * Updates the animated value with the gien {@link AnimatableValue}.
      */
-    public void setAnimatedValue(float x, float y, float w, float h) {
-        if (animVal == null) {
-            animVal = new AnimSVGRect();
+    protected void updateAnimatedValue(AnimatableValue val) {
+        if (val == null) {
+            hasAnimVal = false;
+        } else {
+            hasAnimVal = true;
+            AnimatableRectValue animRect = (AnimatableRectValue) val;
+            if (animVal == null) {
+                animVal = new AnimSVGRect();
+            }
+            animVal.setAnimatedValue(animRect.getX(), animRect.getY(),
+                                     animRect.getWidth(), animRect.getHeight());
         }
-        hasAnimVal = true;
-        animVal.setAnimatedValue(x, y, w, h);
         fireAnimatedAttributeListeners();
     }
 
     /**
-     * Resets the animated value.
+     * Returns the base value of the attribute as an {@link AnimatableValue}.
      */
-    public void resetAnimatedValue() {
-        hasAnimVal = false;
-        fireAnimatedAttributeListeners();
+    public AnimatableValue getUnderlyingValue(AnimationTarget target) {
+        SVGRect r = getBaseVal();
+        return new AnimatableRectValue
+            (target, r.getX(), r.getY(), r.getWidth(), r.getHeight());
     }
 
     /**

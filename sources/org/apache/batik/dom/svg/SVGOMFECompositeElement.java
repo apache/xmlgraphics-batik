@@ -18,7 +18,6 @@
  */
 package org.apache.batik.dom.svg;
 
-import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.DoublyIndexedTable;
 import org.apache.batik.util.SVGTypes;
@@ -218,63 +217,5 @@ public class SVGOMFECompositeElement
      */
     protected DoublyIndexedTable getTraitInformationTable() {
         return xmlTraitInformation;
-    }
-
-    // AnimationTarget ///////////////////////////////////////////////////////
-
-    /**
-     * Updates an attribute value in this target.
-     */
-    public void updateAttributeValue(String ns, String ln,
-                                     AnimatableValue val) {
-        if (ns == null) {
-            if (ln.equals(SVG_IN_ATTRIBUTE)) {
-                updateStringAttributeValue(getIn1(), val);
-                return;
-            } else if (ln.equals(SVG_IN2_ATTRIBUTE)) {
-                updateStringAttributeValue(getIn2(), val);
-                return;
-            } else if (ln.equals(SVG_OPERATOR_ATTRIBUTE)) {
-                updateEnumerationAttributeValue(getOperator(), val);
-                return;
-            } else if (ln.equals(SVG_K1_ATTRIBUTE)) {
-                updateNumberAttributeValue(getK1(), val);
-                return;
-            } else if (ln.equals(SVG_K2_ATTRIBUTE)) {
-                updateNumberAttributeValue(getK2(), val);
-                return;
-            } else if (ln.equals(SVG_K3_ATTRIBUTE)) {
-                updateNumberAttributeValue(getK3(), val);
-                return;
-            } else if (ln.equals(SVG_K4_ATTRIBUTE)) {
-                updateNumberAttributeValue(getK4(), val);
-                return;
-            }
-        }
-        super.updateAttributeValue(ns, ln, val);
-    }
-
-    /**
-     * Returns the underlying value of an animatable XML attribute.
-     */
-    public AnimatableValue getUnderlyingValue(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_IN_ATTRIBUTE)) {
-                return getBaseValue(getIn1());
-            } else if (ln.equals(SVG_IN2_ATTRIBUTE)) {
-                return getBaseValue(getIn2());
-            } else if (ln.equals(SVG_OPERATOR_ATTRIBUTE)) {
-                return getBaseValue(getOperator());
-            } else if (ln.equals(SVG_K1_ATTRIBUTE)) {
-                return getBaseValue(getK1());
-            } else if (ln.equals(SVG_K2_ATTRIBUTE)) {
-                return getBaseValue(getK2());
-            } else if (ln.equals(SVG_K3_ATTRIBUTE)) {
-                return getBaseValue(getK3());
-            } else if (ln.equals(SVG_K4_ATTRIBUTE)) {
-                return getBaseValue(getK4());
-            }
-        }
-        return super.getUnderlyingValue(ns, ln);
     }
 }

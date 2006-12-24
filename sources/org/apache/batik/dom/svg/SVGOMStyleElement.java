@@ -25,10 +25,8 @@ import org.apache.batik.css.engine.CSSEngine;
 import org.apache.batik.css.engine.CSSStyleSheetNode;
 import org.apache.batik.css.engine.StyleSheet;
 import org.apache.batik.dom.AbstractDocument;
-import org.apache.batik.dom.util.DoublyIndexedTable;
 import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.util.XMLConstants;
-import org.apache.batik.util.SVGTypes;
 
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;

@@ -19,13 +19,10 @@
 package org.apache.batik.extension;
 
 import org.apache.batik.dom.AbstractDocument;
-import org.apache.batik.dom.svg.SVGExternalResourcesRequiredSupport;
 import org.apache.batik.dom.svg.SVGLocatableSupport;
 import org.apache.batik.dom.svg.SVGOMAnimatedBoolean;
 import org.apache.batik.dom.svg.SVGOMAnimatedTransformList;
-import org.apache.batik.dom.svg.SVGStylableElement;
 import org.apache.batik.dom.svg.SVGTestsSupport;
-import org.apache.batik.dom.svg.SVGTransformableSupport;
 import org.apache.batik.dom.svg.TraitInformation;
 import org.apache.batik.dom.util.DoublyIndexedTable;
 import org.apache.batik.dom.util.XMLSupport;

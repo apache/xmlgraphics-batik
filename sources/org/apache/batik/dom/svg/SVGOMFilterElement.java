@@ -18,8 +18,6 @@
  */
 package org.apache.batik.dom.svg;
 
-import org.apache.batik.anim.values.AnimatableNumberOptionalNumberValue;
-import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.DoublyIndexedTable;
 import org.apache.batik.dom.util.XLinkSupport;
@@ -335,86 +333,47 @@ public class SVGOMFilterElement
 
     // AnimationTarget ///////////////////////////////////////////////////////
 
-    /**
-     * Updates an attribute value in this target.
-     */
-    public void updateAttributeValue(String ns, String ln,
-                                     AnimatableValue val) {
-        if (ns == null) {
-            if (ln.equals(SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE)) {
-                updateBooleanAttributeValue(getExternalResourcesRequired(),
-                                            val);
-                return;
-            } else if (ln.equals(SVG_FILTER_UNITS_ATTRIBUTE)) {
-                updateEnumerationAttributeValue(getFilterUnits(), val);
-                return;
-            } else if (ln.equals(SVG_PRIMITIVE_UNITS_ATTRIBUTE)) {
-                updateEnumerationAttributeValue(getPrimitiveUnits(), val);
-                return;
-            } else if (ln.equals(SVG_X_ATTRIBUTE)) {
-                updateLengthAttributeValue(getX(), val);
-                return;
-            } else if (ln.equals(SVG_Y_ATTRIBUTE)) {
-                updateLengthAttributeValue(getY(), val);
-                return;
-            } else if (ln.equals(SVG_WIDTH_ATTRIBUTE)) {
-                updateLengthAttributeValue(getWidth(), val);
-                return;
-            } else if (ln.equals(SVG_HEIGHT_ATTRIBUTE)) {
-                updateLengthAttributeValue(getHeight(), val);
-                return;
-            } else if (ln.equals(SVG_FILTER_RES_ATTRIBUTE)) {
-                // XXX Needs testing.
-                if (val == null) {
-                    updateIntegerAttributeValue(getFilterResX(), null);
-                    updateIntegerAttributeValue(getFilterResY(), null);
-                } else {
-                    AnimatableNumberOptionalNumberValue anonv =
-                        (AnimatableNumberOptionalNumberValue) val;
-                    SVGOMAnimatedInteger ai =
-                        (SVGOMAnimatedInteger) getFilterResX();
-                    ai.setAnimatedValue(Math.round(anonv.getNumber()));
-                    ai = (SVGOMAnimatedInteger) getFilterResY();
-                    if (anonv.hasOptionalNumber()) {
-                        ai.setAnimatedValue
-                            (Math.round(anonv.getOptionalNumber()));
-                    } else {
-                        ai.setAnimatedValue(Math.round(anonv.getNumber()));
-                    }
-                }
-                return;
-            }
-        }
-        super.updateAttributeValue(ns, ln, val);
-    }
-
-    /**
-     * Returns the underlying value of an animatable XML attribute.
-     */
-    public AnimatableValue getUnderlyingValue(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE)) {
-                return getBaseValue(getExternalResourcesRequired());
-            } else if (ln.equals(SVG_FILTER_UNITS_ATTRIBUTE)) {
-                return getBaseValue(getFilterUnits());
-            } else if (ln.equals(SVG_PRIMITIVE_UNITS_ATTRIBUTE)) {
-                return getBaseValue(getPrimitiveUnits());
-            } else if (ln.equals(SVG_X_ATTRIBUTE)) {
-                return getBaseValue
-                    (getX(), PERCENTAGE_VIEWPORT_WIDTH);
-            } else if (ln.equals(SVG_Y_ATTRIBUTE)) {
-                return getBaseValue
-                    (getY(), PERCENTAGE_VIEWPORT_HEIGHT);
-            } else if (ln.equals(SVG_WIDTH_ATTRIBUTE)) {
-                return getBaseValue
-                    (getWidth(), PERCENTAGE_VIEWPORT_WIDTH);
-            } else if (ln.equals(SVG_HEIGHT_ATTRIBUTE)) {
-                return getBaseValue
-                    (getHeight(), PERCENTAGE_VIEWPORT_HEIGHT);
-            } else if (ln.equals(SVG_FILTER_RES_ATTRIBUTE)) {
-                return getBaseValue(getFilterResX(), getFilterResY());
-            }
-        }
-        return super.getUnderlyingValue(ns, ln);
-    }
+// XXX TBD
+//     /**
+//      * Updates an attribute value in this target.
+//      */
+//     public void updateAttributeValue(String ns, String ln,
+//                                      AnimatableValue val) {
+//         if (ns == null) {
+//             if (ln.equals(SVG_FILTER_RES_ATTRIBUTE)) {
+//                 // XXX Needs testing.
+//                 if (val == null) {
+//                     updateIntegerAttributeValue(getFilterResX(), null);
+//                     updateIntegerAttributeValue(getFilterResY(), null);
+//                 } else {
+//                     AnimatableNumberOptionalNumberValue anonv =
+//                         (AnimatableNumberOptionalNumberValue) val;
+//                     SVGOMAnimatedInteger ai =
+//                         (SVGOMAnimatedInteger) getFilterResX();
+//                     ai.setAnimatedValue(Math.round(anonv.getNumber()));
+//                     ai = (SVGOMAnimatedInteger) getFilterResY();
+//                     if (anonv.hasOptionalNumber()) {
+//                         ai.setAnimatedValue
+//                             (Math.round(anonv.getOptionalNumber()));
+//                     } else {
+//                         ai.setAnimatedValue(Math.round(anonv.getNumber()));
+//                     }
+//                 }
+//                 return;
+//             }
+//         }
+//         super.updateAttributeValue(ns, ln, val);
+//     }
+// 
+//     /**
+//      * Returns the underlying value of an animatable XML attribute.
+//      */
+//     public AnimatableValue getUnderlyingValue(String ns, String ln) {
+//         if (ns == null) {
+//             if (ln.equals(SVG_FILTER_RES_ATTRIBUTE)) {
+//                 return getBaseValue(getFilterResX(), getFilterResY());
+//             }
+//         }
+//         return super.getUnderlyingValue(ns, ln);
+//     }
 }

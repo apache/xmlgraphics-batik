@@ -18,7 +18,6 @@
  */
 package org.apache.batik.dom.svg;
 
-import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.DoublyIndexedTable;
 import org.apache.batik.dom.util.XLinkSupport;
@@ -208,40 +207,5 @@ public class SVGOMFEImageElement
      */
     protected DoublyIndexedTable getTraitInformationTable() {
         return xmlTraitInformation;
-    }
-
-    // AnimationTarget ///////////////////////////////////////////////////////
-
-    /**
-     * Updates an attribute value in this target.
-     */
-    public void updateAttributeValue(String ns, String ln,
-                                     AnimatableValue val) {
-        if (ns == null) {
-            if (ln.equals(SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE)) {
-                updateBooleanAttributeValue(getExternalResourcesRequired(),
-                                            val);
-                return;
-            } else if (ln.equals(SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE)) {
-                updatePreserveAspectRatioAttributeValue(getPreserveAspectRatio(),
-                                                        val);
-                return;
-            }
-        }
-        super.updateAttributeValue(ns, ln, val);
-    }
-
-    /**
-     * Returns the underlying value of an animatable XML attribute.
-     */
-    public AnimatableValue getUnderlyingValue(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE)) {
-                return getBaseValue(getExternalResourcesRequired());
-            } else if (ln.equals(SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE)) {
-                return getBaseValue(getPreserveAspectRatio());
-            }
-        }
-        return super.getUnderlyingValue(ns, ln);
     }
 }

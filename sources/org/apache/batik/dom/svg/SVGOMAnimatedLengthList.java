@@ -21,6 +21,10 @@ package org.apache.batik.dom.svg;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.apache.batik.anim.values.AnimatableLengthListValue;
+import org.apache.batik.anim.values.AnimatableValue;
+import org.apache.batik.dom.anim.AnimationTarget;
+
 import org.apache.batik.parser.ParseException;
 
 import org.w3c.dom.Attr;
@@ -114,22 +118,40 @@ public class SVGOMAnimatedLengthList
     }
 
     /**
-     * Sets the animated value.
+     * Returns the base value of the attribute as an {@link AnimatableValue}.
      */
-    public void setAnimatedValue(short[] types, float[] values) {
-        if (animVal == null) {
-            animVal = new AnimSVGLengthList();
+    public AnimatableValue getUnderlyingValue(AnimationTarget target) {
+        SVGLengthList ll = getBaseVal();
+        int n = ll.getNumberOfItems();
+        short[] types = new short[n];
+        float[] values = new float[n];
+        for (int i = 0; i < n; i++) {
+            SVGLength l = ll.getItem(i);
+            types[i] = l.getUnitType();
+            values[i] = l.getValueInSpecifiedUnits();
         }
-        hasAnimVal = true;
-        animVal.setAnimatedValue(types, values);
-        fireAnimatedAttributeListeners();
+        return new AnimatableLengthListValue
+            (target, types, values,
+             target.getPercentageInterpretation
+                 (getNamespaceURI(), getLocalName(), false));
     }
 
     /**
-     * Resets the animated value.
+     * Updates the animated value with the gien {@link AnimatableValue}.
      */
-    public void resetAnimatedValue() {
-        hasAnimVal = false;
+    protected void updateAnimatedValue(AnimatableValue val) {
+        if (val == null) {
+            hasAnimVal = false;
+        } else {
+            hasAnimVal = true;
+            AnimatableLengthListValue animLengths =
+                (AnimatableLengthListValue) val;
+            if (animVal == null) {
+                animVal = new AnimSVGLengthList();
+            }
+            animVal.setAnimatedValue(animLengths.getLengthTypes(),
+                                     animLengths.getLengthValues());
+        }
         fireAnimatedAttributeListeners();
     }
 

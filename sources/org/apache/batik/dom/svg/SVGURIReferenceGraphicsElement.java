@@ -18,7 +18,6 @@
  */
 package org.apache.batik.dom.svg;
 
-import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.DoublyIndexedTable;
 import org.apache.batik.util.SVGTypes;
@@ -96,30 +95,5 @@ public abstract class SVGURIReferenceGraphicsElement
      */
     protected DoublyIndexedTable getTraitInformationTable() {
         return xmlTraitInformation;
-    }
-
-    // AnimationTarget ///////////////////////////////////////////////////////
-
-    /**
-     * Updates an attribute value in this target.
-     */
-    public void updateAttributeValue(String ns, String ln,
-                                     AnimatableValue val) {
-        if (XLINK_NAMESPACE_URI.equals(ns)
-                && ln.equals(XLINK_HREF_ATTRIBUTE)) {
-            updateStringAttributeValue(getHref(), val);
-        } else {
-            super.updateAttributeValue(ns, ln, val);
-        }
-    }
-
-    /**
-     * Returns the underlying value of an animatable XML attribute.
-     */
-    public AnimatableValue getUnderlyingValue(String ns, String ln) {
-        if (XLINK_NAMESPACE_URI.equals(ns)) {
-            return getBaseValue(getHref());
-        }
-        return super.getUnderlyingValue(ns, ln);
     }
 }

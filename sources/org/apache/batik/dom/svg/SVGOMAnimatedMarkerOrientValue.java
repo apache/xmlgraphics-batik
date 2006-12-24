@@ -18,6 +18,8 @@
  */
 package org.apache.batik.dom.svg;
 
+import org.apache.batik.anim.values.AnimatableValue;
+import org.apache.batik.dom.anim.AnimationTarget;
 import org.apache.batik.util.SVGConstants;
 
 import org.w3c.dom.Attr;
@@ -90,6 +92,24 @@ public class SVGOMAnimatedMarkerOrientValue extends AbstractSVGAnimatedValue {
         super(elt, ns, ln);
     }
 
+    /**
+     * Updates the animated value with the gien {@link AnimatableValue}.
+     */
+   protected void updateAnimatedValue(AnimatableValue val) {
+        // XXX TODO
+        throw new UnsupportedOperationException
+            ("Animation of marker orient value is not implemented");
+    }
+
+    /**
+     * Returns the base value of the attribute as an {@link AnimatableValue}.
+     */
+    public AnimatableValue getUnderlyingValue(AnimationTarget target) {
+        // XXX TODO
+        throw new UnsupportedOperationException
+            ("Animation of marker orient value is not implemented");
+    }
+    
     /**
      * Called when an Attr node has been added.
      */
