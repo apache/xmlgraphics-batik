@@ -250,64 +250,24 @@ public class SVGOMRectElement
     public void updateAttributeValue(String ns, String ln,
                                      AnimatableValue val) {
         if (ns == null) {
-            if (ln.equals(SVG_X_ATTRIBUTE)) {
-                updateLengthAttributeValue(getX(), val);
-                return;
-            } else if (ln.equals(SVG_Y_ATTRIBUTE)) {
-                updateLengthAttributeValue(getY(), val);
-                return;
-            } else if (ln.equals(SVG_RX_ATTRIBUTE)) {
-                updateLengthAttributeValue(getRx(), val);
+            if (ln.equals(SVG_RX_ATTRIBUTE)) {
+                super.updateAttributeValue(ns, ln, val);
                 AbstractSVGAnimatedLength ry =
                     (AbstractSVGAnimatedLength) getRy();
                 if (!ry.isSpecified()) {
-                    updateLengthAttributeValue(getRy(), val);
+                    super.updateAttributeValue(ns, SVG_RY_ATTRIBUTE, val);
                 }
                 return;
             } else if (ln.equals(SVG_RY_ATTRIBUTE)) {
-                updateLengthAttributeValue(getRy(), val);
+                super.updateAttributeValue(ns, ln, val);
                 AbstractSVGAnimatedLength rx =
                     (AbstractSVGAnimatedLength) getRx();
                 if (!rx.isSpecified()) {
-                    updateLengthAttributeValue(getRx(), val);
+                    super.updateAttributeValue(ns, SVG_RX_ATTRIBUTE, val);
                 }
-                return;
-            } else if (ln.equals(SVG_WIDTH_ATTRIBUTE)) {
-                updateLengthAttributeValue(getWidth(), val);
-                return;
-            } else if (ln.equals(SVG_HEIGHT_ATTRIBUTE)) {
-                updateLengthAttributeValue(getHeight(), val);
                 return;
             }
         }
         super.updateAttributeValue(ns, ln, val);
-    }
-
-    /**
-     * Returns the underlying value of an animatable XML attribute.
-     */
-    public AnimatableValue getUnderlyingValue(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_X_ATTRIBUTE)) {
-                return getBaseValue
-                    (getX(), PERCENTAGE_VIEWPORT_WIDTH);
-            } else if (ln.equals(SVG_Y_ATTRIBUTE)) {
-                return getBaseValue
-                    (getY(), PERCENTAGE_VIEWPORT_HEIGHT);
-            } else if (ln.equals(SVG_RX_ATTRIBUTE)) {
-                return getBaseValue
-                    (getRx(), PERCENTAGE_VIEWPORT_WIDTH);
-            } else if (ln.equals(SVG_RY_ATTRIBUTE)) {
-                return getBaseValue
-                    (getRy(), PERCENTAGE_VIEWPORT_HEIGHT);
-            } else if (ln.equals(SVG_WIDTH_ATTRIBUTE)) {
-                return getBaseValue
-                    (getWidth(), PERCENTAGE_VIEWPORT_WIDTH);
-            } else if (ln.equals(SVG_HEIGHT_ATTRIBUTE)) {
-                return getBaseValue
-                    (getHeight(), PERCENTAGE_VIEWPORT_HEIGHT);
-            }
-        }
-        return super.getUnderlyingValue(ns, ln);
     }
 }

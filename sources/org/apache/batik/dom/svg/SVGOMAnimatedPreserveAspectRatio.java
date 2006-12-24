@@ -18,6 +18,10 @@
  */
 package org.apache.batik.dom.svg;
 
+import org.apache.batik.anim.values.AnimatablePreserveAspectRatioValue;
+import org.apache.batik.anim.values.AnimatableValue;
+import org.apache.batik.dom.anim.AnimationTarget;
+
 import org.apache.batik.util.SVGConstants;
 
 import org.w3c.dom.Attr;
@@ -79,22 +83,30 @@ public class SVGOMAnimatedPreserveAspectRatio
     }
 
     /**
-     * Sets the animated value.
+     * Returns the base value of the attribute as an {@link AnimatableValue}.
      */
-    public void setAnimatedValue(short align, short meetOrSlice) {
-        if (animVal == null) {
-            animVal = new AnimSVGPARValue();
-        }
-        hasAnimVal = true;
-        animVal.setAnimatedValue(align, meetOrSlice);
-        fireAnimatedAttributeListeners();
+    public AnimatableValue getUnderlyingValue(AnimationTarget target) {
+        SVGPreserveAspectRatio par = getBaseVal();
+        return new AnimatablePreserveAspectRatioValue(target, par.getAlign(),
+                                                      par.getMeetOrSlice());
     }
 
     /**
-     * Resets the animated value.
+     * Updates the animated value with the gien {@link AnimatableValue}.
      */
-    public void resetAnimatedValue() {
-        hasAnimVal = false;
+    protected void updateAnimatedValue(AnimatableValue val) {
+        if (val == null) {
+            hasAnimVal = false;
+        } else {
+            hasAnimVal = true;
+            if (animVal == null) {
+                animVal = new AnimSVGPARValue();
+            }
+            AnimatablePreserveAspectRatioValue animPAR =
+                (AnimatablePreserveAspectRatioValue) val;
+            animVal.setAnimatedValue(animPAR.getAlign(),
+                                     animPAR.getMeetOrSlice());
+        }
         fireAnimatedAttributeListeners();
     }
 

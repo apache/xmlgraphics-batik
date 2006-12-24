@@ -118,9 +118,9 @@ public abstract class AbstractElement
      * @param ln The attribute's local name.
      */
     public LiveAttributeValue getLiveAttributeValue(String ns, String ln) {
-        if (liveAttributeValues == null) {
-            return null;
-        }
+//         if (liveAttributeValues == null) {
+//             return null;
+//         }
         return (LiveAttributeValue)liveAttributeValues.get(ns, ln);
     }
 

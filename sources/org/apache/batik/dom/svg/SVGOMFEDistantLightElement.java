@@ -18,7 +18,6 @@
  */
 package org.apache.batik.dom.svg;
 
-import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.DoublyIndexedTable;
 import org.apache.batik.util.SVGTypes;
@@ -127,38 +126,5 @@ public class SVGOMFEDistantLightElement
      */
     protected DoublyIndexedTable getTraitInformationTable() {
         return xmlTraitInformation;
-    }
-
-    // AnimationTarget ///////////////////////////////////////////////////////
-
-    /**
-     * Updates an attribute value in this target.
-     */
-    public void updateAttributeValue(String ns, String ln,
-                                     AnimatableValue val) {
-        if (ns == null) {
-            if (ln.equals(SVG_AZIMUTH_ATTRIBUTE)) {
-                updateNumberAttributeValue(getAzimuth(), val);
-                return;
-            } else if (ln.equals(SVG_ELEVATION_ATTRIBUTE)) {
-                updateNumberAttributeValue(getElevation(), val);
-                return;
-            }
-        }
-        super.updateAttributeValue(ns, ln, val);
-    }
-
-    /**
-     * Returns the underlying value of an animatable XML attribute.
-     */
-    public AnimatableValue getUnderlyingValue(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_AZIMUTH_ATTRIBUTE)) {
-                return getBaseValue(getAzimuth());
-            } else if (ln.equals(SVG_ELEVATION_ATTRIBUTE)) {
-                return getBaseValue(getElevation());
-            }
-        }
-        return super.getUnderlyingValue(ns, ln);
     }
 }

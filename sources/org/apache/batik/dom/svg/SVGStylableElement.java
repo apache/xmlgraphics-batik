@@ -221,28 +221,6 @@ public abstract class SVGStylableElement
     }
 
     /**
-     * Updates an attribute value in this target.
-     */
-    public void updateAttributeValue(String ns, String ln,
-                                     AnimatableValue val) {
-        if (ns == null && ln.equals(SVG_CLASS_ATTRIBUTE)) {
-            updateStringAttributeValue(getClassName(), val);
-            return;
-        }
-        super.updateAttributeValue(ns, ln, val);
-    }
-
-    /**
-     * Returns the underlying value of an animatable XML attribute.
-     */
-    public AnimatableValue getUnderlyingValue(String ns, String ln) {
-        if (ns == null &&  ln.equals(SVG_CLASS_ATTRIBUTE)) {
-            return getBaseValue(getClassName());
-        }
-        return super.getUnderlyingValue(ns, ln);
-    }
-
-    /**
      * Returns whether color interpolations should be done in linear RGB
      * color space rather than sRGB.
      */

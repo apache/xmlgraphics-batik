@@ -18,7 +18,6 @@
  */
 package org.apache.batik.dom.svg;
 
-import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.DoublyIndexedTable;
 import org.apache.batik.util.SVGTypes;
@@ -164,48 +163,5 @@ public class SVGOMFESpecularLightingElement
      */
     protected DoublyIndexedTable getTraitInformationTable() {
         return xmlTraitInformation;
-    }
-
-    // AnimationTarget ///////////////////////////////////////////////////////
-
-    /**
-     * Updates an attribute value in this target.
-     */
-    public void updateAttributeValue(String ns, String ln,
-                                     AnimatableValue val) {
-        if (ns == null) {
-            if (ln.equals(SVG_IN_ATTRIBUTE)) {
-                updateStringAttributeValue(getIn1(), val);
-                return;
-            } else if (ln.equals(SVG_SURFACE_SCALE_ATTRIBUTE)) {
-                updateNumberAttributeValue(getSurfaceScale(), val);
-                return;
-            } else if (ln.equals(SVG_SPECULAR_CONSTANT_ATTRIBUTE)) {
-                updateNumberAttributeValue(getSpecularConstant(), val);
-                return;
-            } else if (ln.equals(SVG_SPECULAR_EXPONENT_ATTRIBUTE)) {
-                updateNumberAttributeValue(getSpecularExponent(), val);
-                return;
-            }
-        }
-        super.updateAttributeValue(ns, ln, val);
-    }
-
-    /**
-     * Returns the underlying value of an animatable XML attribute.
-     */
-    public AnimatableValue getUnderlyingValue(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_IN_ATTRIBUTE)) {
-                return getBaseValue(getIn1());
-            } else if (ln.equals(SVG_SURFACE_SCALE_ATTRIBUTE)) {
-                return getBaseValue(getSurfaceScale());
-            } else if (ln.equals(SVG_SPECULAR_CONSTANT_ATTRIBUTE)) {
-                return getBaseValue(getSpecularConstant());
-            } else if (ln.equals(SVG_SPECULAR_EXPONENT_ATTRIBUTE)) {
-                return getBaseValue(getSpecularExponent());
-            }
-        }
-        return super.getUnderlyingValue(ns, ln);
     }
 }

@@ -18,7 +18,6 @@
  */
 package org.apache.batik.dom.svg;
 
-import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.DoublyIndexedTable;
 import org.apache.batik.dom.util.XLinkSupport;
@@ -390,79 +389,5 @@ public class SVGOMPatternElement
      */
     protected Node newNode() {
         return new SVGOMPatternElement();
-    }
-
-    // AnimationTarget ///////////////////////////////////////////////////////
-
-    /**
-     * Updates an attribute value in this target.
-     */
-    public void updateAttributeValue(String ns, String ln,
-                                     AnimatableValue val) {
-        if (ns == null) {
-            if (ln.equals(SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE)) {
-                updateBooleanAttributeValue(getExternalResourcesRequired(),
-                                            val);
-                return;
-            } else if (ln.equals(SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE)) {
-                updatePreserveAspectRatioAttributeValue
-                    (getPreserveAspectRatio(), val);
-                return;
-            } else if (ln.equals(SVG_PATTERN_UNITS_ATTRIBUTE)) {
-                updateEnumerationAttributeValue(getPatternUnits(), val);
-                return;
-            } else if (ln.equals(SVG_PATTERN_CONTENT_UNITS_ATTRIBUTE)) {
-                updateEnumerationAttributeValue(getPatternContentUnits(), val);
-                return;
-            } else if (ln.equals(SVG_PATTERN_TRANSFORM_ATTRIBUTE)) {
-                updateTransformListAttributeValue(getPatternTransform(), val);
-                return;
-            } else if (ln.equals(SVG_X_ATTRIBUTE)) {
-                updateLengthAttributeValue(getX(), val);
-                return;
-            } else if (ln.equals(SVG_Y_ATTRIBUTE)) {
-                updateLengthAttributeValue(getY(), val);
-                return;
-            } else if (ln.equals(SVG_WIDTH_ATTRIBUTE)) {
-                updateLengthAttributeValue(getWidth(), val);
-                return;
-            } else if (ln.equals(SVG_HEIGHT_ATTRIBUTE)) {
-                updateLengthAttributeValue(getHeight(), val);
-                return;
-            }
-        }
-        super.updateAttributeValue(ns, ln, val);
-    }
-
-    /**
-     * Returns the underlying value of an animatable XML attribute.
-     */
-    public AnimatableValue getUnderlyingValue(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE)) {
-                return getBaseValue(getExternalResourcesRequired());
-            } else if (ln.equals(SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE)) {
-                return getBaseValue(getPreserveAspectRatio());
-            } else if (ln.equals(SVG_PATTERN_UNITS_ATTRIBUTE)) {
-                return getBaseValue(getPatternUnits());
-            } else if (ln.equals(SVG_PATTERN_CONTENT_UNITS_ATTRIBUTE)) {
-                return getBaseValue(getPatternContentUnits());
-            } else if (ln.equals(SVG_PATTERN_TRANSFORM_ATTRIBUTE)) {
-                return getBaseValue(getPatternTransform());
-            } else if (ln.equals(SVG_X_ATTRIBUTE)) {
-                return getBaseValue
-                    (getX(), PERCENTAGE_VIEWPORT_WIDTH);
-            } else if (ln.equals(SVG_Y_ATTRIBUTE)) {
-                return getBaseValue
-                    (getY(), PERCENTAGE_VIEWPORT_HEIGHT);
-            } else if (ln.equals(SVG_WIDTH_ATTRIBUTE)) {
-                return getBaseValue
-                    (getWidth(), PERCENTAGE_VIEWPORT_WIDTH);
-            } else if (ln.equals(SVG_HEIGHT_ATTRIBUTE)) {
-                return getBaseValue
-                    (getHeight(), PERCENTAGE_VIEWPORT_HEIGHT);
-            }
-        }
-        return super.getUnderlyingValue(ns, ln);
     }
 }

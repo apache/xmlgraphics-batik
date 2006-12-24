@@ -21,6 +21,10 @@ package org.apache.batik.dom.svg;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.apache.batik.anim.values.AnimatablePointListValue;
+import org.apache.batik.anim.values.AnimatableValue;
+import org.apache.batik.dom.anim.AnimationTarget;
+
 import org.apache.batik.parser.ParseException;
 
 import org.w3c.dom.Attr;
@@ -96,22 +100,35 @@ public class SVGOMAnimatedPoints
     }
 
     /**
-     * Sets the animated value.
+     * Returns the base value of the attribute as an {@link AnimatableValue}.
      */
-    public void setAnimatedValue(float[] pts) {
-        if (animVal == null) {
-            animVal = new AnimSVGPointList();
+    public AnimatableValue getUnderlyingValue(AnimationTarget target) {
+        SVGPointList pl = getPoints();
+        int n = pl.getNumberOfItems();
+        float[] points = new float[n * 2];
+        for (int i = 0; i < n; i++) {
+            SVGPoint p = pl.getItem(i);
+            points[i * 2] = p.getX();
+            points[i * 2 + 1] = p.getY();
         }
-        hasAnimVal = true;
-        animVal.setAnimatedValue(pts);
-        fireAnimatedAttributeListeners();
+        return new AnimatablePointListValue(target, points);
     }
 
     /**
-     * Resets the animated value.
+     * Updates the animated value with the gien {@link AnimatableValue}.
      */
-    public void resetAnimatedValue() {
-        hasAnimVal = false;
+    protected void updateAnimatedValue(AnimatableValue val) {
+        if (val == null) {
+            hasAnimVal = false;
+        } else {
+            hasAnimVal = true;
+            AnimatablePointListValue animPointList =
+                (AnimatablePointListValue) val;
+            if (animVal == null) {
+                animVal = new AnimSVGPointList();
+            }
+            animVal.setAnimatedValue(animPointList.getNumbers());
+        }
         fireAnimatedAttributeListeners();
     }
 

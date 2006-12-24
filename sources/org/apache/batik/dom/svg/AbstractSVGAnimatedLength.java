@@ -18,6 +18,9 @@
  */
 package org.apache.batik.dom.svg;
 
+import org.apache.batik.anim.values.AnimatableLengthValue;
+import org.apache.batik.anim.values.AnimatableValue;
+import org.apache.batik.dom.anim.AnimationTarget;
 import org.apache.batik.parser.UnitProcessor;
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
@@ -124,23 +127,32 @@ public abstract class AbstractSVGAnimatedLength
     }
 
     /**
-     * Sets the animated value.
+     * Updates the animated value with the gien {@link AnimatableValue}.
      */
-    public void setAnimatedValue(int type, float val) {
-        if (animVal == null) {
-            animVal = new AnimSVGLength(direction);
+    protected void updateAnimatedValue(AnimatableValue val) {
+        if (val == null) {
+            hasAnimVal = false;
+        } else {
+            hasAnimVal = true;
+            AnimatableLengthValue animLength = (AnimatableLengthValue) val;
+            if (animVal == null) {
+                animVal = new AnimSVGLength(direction);
+            }
+            animVal.setAnimatedValue(animLength.getLengthType(),
+                                     animLength.getLengthValue());
         }
-        hasAnimVal = true;
-        animVal.setAnimatedValue(type, val);
         fireAnimatedAttributeListeners();
     }
 
     /**
-     * Resets the animated value.
+     * Returns the base value of the attribute as an {@link AnimatableValue}.
      */
-    public void resetAnimatedValue() {
-        hasAnimVal = false;
-        fireAnimatedAttributeListeners();
+    public AnimatableValue getUnderlyingValue(AnimationTarget target) {
+        SVGLength base = getBaseVal();
+        return new AnimatableLengthValue
+            (target, base.getUnitType(), base.getValueInSpecifiedUnits(),
+             target.getPercentageInterpretation
+                 (getNamespaceURI(), getLocalName(), false));
     }
 
     /**

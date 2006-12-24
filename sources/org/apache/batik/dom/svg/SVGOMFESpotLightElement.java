@@ -18,7 +18,6 @@
  */
 package org.apache.batik.dom.svg;
 
-import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.DoublyIndexedTable;
 import org.apache.batik.util.SVGTypes;
@@ -225,68 +224,5 @@ public class SVGOMFESpotLightElement
      */
     protected DoublyIndexedTable getTraitInformationTable() {
         return xmlTraitInformation;
-    }
-
-    // AnimationTarget ///////////////////////////////////////////////////////
-
-    /**
-     * Updates an attribute value in this target.
-     */
-    public void updateAttributeValue(String ns, String ln,
-                                     AnimatableValue val) {
-        if (ns == null) {
-            if (ln.equals(SVG_X_ATTRIBUTE)) {
-                updateNumberAttributeValue(getX(), val);
-                return;
-            } else if (ln.equals(SVG_Y_ATTRIBUTE)) {
-                updateNumberAttributeValue(getY(), val);
-                return;
-            } else if (ln.equals(SVG_Z_ATTRIBUTE)) {
-                updateNumberAttributeValue(getZ(), val);
-                return;
-            } else if (ln.equals(SVG_POINTS_AT_X_ATTRIBUTE)) {
-                updateNumberAttributeValue(getPointsAtX(), val);
-                return;
-            } else if (ln.equals(SVG_POINTS_AT_Y_ATTRIBUTE)) {
-                updateNumberAttributeValue(getPointsAtY(), val);
-                return;
-            } else if (ln.equals(SVG_POINTS_AT_Z_ATTRIBUTE)) {
-                updateNumberAttributeValue(getPointsAtZ(), val);
-                return;
-            } else if (ln.equals(SVG_SPECULAR_EXPONENT_ATTRIBUTE)) {
-                updateNumberAttributeValue(getSpecularExponent(), val);
-                return;
-            } else if (ln.equals(SVG_LIMITING_CONE_ANGLE_ATTRIBUTE)) {
-                updateNumberAttributeValue(getLimitingConeAngle(), val);
-                return;
-            }
-        }
-        super.updateAttributeValue(ns, ln, val);
-    }
-
-    /**
-     * Returns the underlying value of an animatable XML attribute.
-     */
-    public AnimatableValue getUnderlyingValue(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_X_ATTRIBUTE)) {
-                return getBaseValue(getX());
-            } else if (ln.equals(SVG_Y_ATTRIBUTE)) {
-                return getBaseValue(getY());
-            } else if (ln.equals(SVG_Z_ATTRIBUTE)) {
-                return getBaseValue(getZ());
-            } else if (ln.equals(SVG_POINTS_AT_X_ATTRIBUTE)) {
-                return getBaseValue(getPointsAtX());
-            } else if (ln.equals(SVG_POINTS_AT_Y_ATTRIBUTE)) {
-                return getBaseValue(getPointsAtY());
-            } else if (ln.equals(SVG_POINTS_AT_Z_ATTRIBUTE)) {
-                return getBaseValue(getPointsAtZ());
-            } else if (ln.equals(SVG_SPECULAR_EXPONENT_ATTRIBUTE)) {
-                return getBaseValue(getSpecularExponent());
-            } else if (ln.equals(SVG_LIMITING_CONE_ANGLE_ATTRIBUTE)) {
-                return getBaseValue(getLimitingConeAngle());
-            }
-        }
-        return super.getUnderlyingValue(ns, ln);
     }
 }

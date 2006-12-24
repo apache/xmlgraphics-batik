@@ -18,6 +18,10 @@
  */
 package org.apache.batik.dom.svg;
 
+import org.apache.batik.anim.values.AnimatableBooleanValue;
+import org.apache.batik.anim.values.AnimatableValue;
+import org.apache.batik.dom.anim.AnimationTarget;
+
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.svg.SVGAnimatedBoolean;
@@ -133,10 +137,23 @@ public class SVGOMAnimatedBoolean
     }
 
     /**
-     * Removes the animated value.  */
-    public void resetAnimatedValue() {
-        hasAnimVal = false;
+     * Updates the animated value with the gien {@link AnimatableValue}.
+     */
+    protected void updateAnimatedValue(AnimatableValue val) {
+        if (val == null) {
+            hasAnimVal = false;
+        } else {
+            hasAnimVal = true;
+            this.animVal = ((AnimatableBooleanValue) val).getValue();
+        }
         fireAnimatedAttributeListeners();
+    }
+
+    /**
+     * Returns the base value of the attribute as an {@link AnimatableValue}.
+     */
+    public AnimatableValue getUnderlyingValue(AnimationTarget target) {
+        return new AnimatableBooleanValue(target, getBaseVal());
     }
 
     /**

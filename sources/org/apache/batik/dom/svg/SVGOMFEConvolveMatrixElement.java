@@ -18,8 +18,6 @@
  */
 package org.apache.batik.dom.svg;
 
-import org.apache.batik.anim.values.AnimatableValue;
-import org.apache.batik.anim.values.AnimatableNumberOptionalNumberValue;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.DoublyIndexedTable;
 import org.apache.batik.util.SVGTypes;
@@ -264,103 +262,70 @@ public class SVGOMFEConvolveMatrixElement
 
     // AnimationTarget ///////////////////////////////////////////////////////
 
-    /**
-     * Updates an attribute value in this target.
-     */
-    public void updateAttributeValue(String ns, String ln,
-                                     AnimatableValue val) {
-        if (ns == null) {
-            if (ln.equals(SVG_KERNEL_MATRIX_ATTRIBUTE)) {
-                updateNumberListAttributeValue(getKernelMatrix(), val);
-                return;
-            } else if (ln.equals(SVG_DIVISOR_ATTRIBUTE)) {
-                updateNumberAttributeValue(getDivisor(), val);
-                return;
-            } else if (ln.equals(SVG_BIAS_ATTRIBUTE)) {
-                updateNumberAttributeValue(getBias(), val);
-                return;
-            } else if (ln.equals(SVG_TARGET_X_ATTRIBUTE)) {
-                updateIntegerAttributeValue(getTargetX(), val);
-                return;
-            } else if (ln.equals(SVG_TARGET_Y_ATTRIBUTE)) {
-                updateIntegerAttributeValue(getTargetY(), val);
-                return;
-            } else if (ln.equals(SVG_EDGE_MODE_ATTRIBUTE)) {
-                updateEnumerationAttributeValue(getEdgeMode(), val);
-                return;
-            } else if (ln.equals(SVG_PRESERVE_ALPHA_ATTRIBUTE)) {
-                updateBooleanAttributeValue(getPreserveAlpha(), val);
-                return;
-            } else if (ln.equals(SVG_ORDER_ATTRIBUTE)) {
-                // XXX Needs testing.
-                if (val == null) {
-                    updateIntegerAttributeValue(getOrderX(), null);
-                    updateIntegerAttributeValue(getOrderY(), null);
-                } else {
-                    AnimatableNumberOptionalNumberValue anonv =
-                        (AnimatableNumberOptionalNumberValue) val;
-                    SVGOMAnimatedInteger ai =
-                        (SVGOMAnimatedInteger) getOrderX();
-                    ai.setAnimatedValue(Math.round(anonv.getNumber()));
-                    ai = (SVGOMAnimatedInteger) getOrderY();
-                    if (anonv.hasOptionalNumber()) {
-                        ai.setAnimatedValue
-                            (Math.round(anonv.getOptionalNumber()));
-                    } else {
-                        ai.setAnimatedValue(Math.round(anonv.getNumber()));
-                    }
-                }
-                return;
-            } else if (ln.equals(SVG_KERNEL_UNIT_LENGTH_ATTRIBUTE)) {
-                // XXX Needs testing.
-                if (val == null) {
-                    updateNumberAttributeValue(getKernelUnitLengthX(), null);
-                    updateNumberAttributeValue(getKernelUnitLengthY(), null);
-                } else {
-                    AnimatableNumberOptionalNumberValue anonv =
-                        (AnimatableNumberOptionalNumberValue) val;
-                    SVGOMAnimatedNumber an =
-                        (SVGOMAnimatedNumber) getKernelUnitLengthX();
-                    an.setAnimatedValue(anonv.getNumber());
-                    an = (SVGOMAnimatedNumber) getKernelUnitLengthY();
-                    if (anonv.hasOptionalNumber()) {
-                        an.setAnimatedValue(anonv.getOptionalNumber());
-                    } else {
-                        an.setAnimatedValue(anonv.getNumber());
-                    }
-                }
-                return;
-            }
-        }
-        super.updateAttributeValue(ns, ln, val);
-    }
-
-    /**
-     * Returns the underlying value of an animatable XML attribute.
-     */
-    public AnimatableValue getUnderlyingValue(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_KERNEL_MATRIX_ATTRIBUTE)) {
-                return getBaseValue(getKernelMatrix());
-            } else if (ln.equals(SVG_DIVISOR_ATTRIBUTE)) {
-                return getBaseValue(getDivisor());
-            } else if (ln.equals(SVG_BIAS_ATTRIBUTE)) {
-                return getBaseValue(getBias());
-            } else if (ln.equals(SVG_TARGET_X_ATTRIBUTE)) {
-                return getBaseValue(getTargetX());
-            } else if (ln.equals(SVG_TARGET_Y_ATTRIBUTE)) {
-                return getBaseValue(getTargetY());
-            } else if (ln.equals(SVG_EDGE_MODE_ATTRIBUTE)) {
-                return getBaseValue(getEdgeMode());
-            } else if (ln.equals(SVG_PRESERVE_ALPHA_ATTRIBUTE)) {
-                return getBaseValue(getPreserveAlpha());
-            } else if (ln.equals(SVG_ORDER_ATTRIBUTE)) {
-                return getBaseValue(getOrderX(), getOrderY());
-            } else if (ln.equals(SVG_KERNEL_UNIT_LENGTH_ATTRIBUTE)) {
-                return getBaseValue(getKernelUnitLengthX(),
-                                    getKernelUnitLengthY());
-            }
-        }
-        return super.getUnderlyingValue(ns, ln);
-    }
+// XXX TBD
+//
+//     /**
+//      * Updates an attribute value in this target.
+//      */
+//     public void updateAttributeValue(String ns, String ln,
+//                                      AnimatableValue val) {
+//         if (ns == null) {
+//             if (ln.equals(SVG_ORDER_ATTRIBUTE)) {
+//                 if (val == null) {
+//                 // XXX Needs testing.
+//                     updateIntegerAttributeValue(getOrderX(), null);
+//                     updateIntegerAttributeValue(getOrderY(), null);
+//                 } else {
+//                     AnimatableNumberOptionalNumberValue anonv =
+//                         (AnimatableNumberOptionalNumberValue) val;
+//                     SVGOMAnimatedInteger ai =
+//                         (SVGOMAnimatedInteger) getOrderX();
+//                     ai.setAnimatedValue(Math.round(anonv.getNumber()));
+//                     ai = (SVGOMAnimatedInteger) getOrderY();
+//                     if (anonv.hasOptionalNumber()) {
+//                         ai.setAnimatedValue
+//                             (Math.round(anonv.getOptionalNumber()));
+//                     } else {
+//                         ai.setAnimatedValue(Math.round(anonv.getNumber()));
+//                     }
+//                 }
+//                 return;
+//             } else if (ln.equals(SVG_KERNEL_UNIT_LENGTH_ATTRIBUTE)) {
+//                 // XXX Needs testing.
+//                 if (val == null) {
+//                     updateNumberAttributeValue(getKernelUnitLengthX(), null);
+//                     updateNumberAttributeValue(getKernelUnitLengthY(), null);
+//                 } else {
+//                     AnimatableNumberOptionalNumberValue anonv =
+//                         (AnimatableNumberOptionalNumberValue) val;
+//                     SVGOMAnimatedNumber an =
+//                         (SVGOMAnimatedNumber) getKernelUnitLengthX();
+//                     an.setAnimatedValue(anonv.getNumber());
+//                     an = (SVGOMAnimatedNumber) getKernelUnitLengthY();
+//                     if (anonv.hasOptionalNumber()) {
+//                         an.setAnimatedValue(anonv.getOptionalNumber());
+//                     } else {
+//                         an.setAnimatedValue(anonv.getNumber());
+//                     }
+//                 }
+//                 return;
+//             }
+//         }
+//         super.updateAttributeValue(ns, ln, val);
+//     }
+// 
+//     /**
+//      * Returns the underlying value of an animatable XML attribute.
+//      */
+//     public AnimatableValue getUnderlyingValue(String ns, String ln) {
+//         if (ns == null) {
+//             if (ln.equals(SVG_KERNEL_UNIT_LENGTH_ATTRIBUTE)) {
+//                 return getBaseValue(getKernelUnitLengthX(),
+//                                     getKernelUnitLengthY());
+//             } else if (ln.equals(SVG_ORDER_ATTRIBUTE)) {
+//                 return getBaseValue(getOrderX(), getOrderY());
+//             }
+//         }
+//         return super.getUnderlyingValue(ns, ln);
+//     }
 }

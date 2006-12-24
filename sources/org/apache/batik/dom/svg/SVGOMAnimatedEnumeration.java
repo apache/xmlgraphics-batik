@@ -18,6 +18,10 @@
  */
 package org.apache.batik.dom.svg;
 
+import org.apache.batik.anim.values.AnimatableStringValue;
+import org.apache.batik.anim.values.AnimatableValue;
+import org.apache.batik.dom.anim.AnimationTarget;
+
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.svg.SVGAnimatedEnumeration;
@@ -157,27 +161,10 @@ public class SVGOMAnimatedEnumeration extends AbstractSVGAnimatedValue
     }
 
     /**
-     * Sets the animated value.
+     * Returns the base value of the attribute as an {@link AnimatableValue}.
      */
-    public void setAnimatedValue(short animVal) {
-        hasAnimVal = true;
-        this.animVal = animVal;
-        fireAnimatedAttributeListeners();
-    }
-
-    /**
-     * Sets the animated value.
-     */
-    public void setAnimatedValue(String animValStr) {
-        setAnimatedValue(getEnumerationNumber(animValStr));
-    }
-
-    /**
-     * Removes the animated value.
-     */
-    public void resetAnimatedValue() {
-        hasAnimVal = false;
-        fireAnimatedAttributeListeners();
+    public AnimatableValue getUnderlyingValue(AnimationTarget target) {
+        return new AnimatableStringValue(target, getBaseValAsString());
     }
 
     /**
@@ -191,6 +178,21 @@ public class SVGOMAnimatedEnumeration extends AbstractSVGAnimatedValue
         if (!hasAnimVal) {
             fireAnimatedAttributeListeners();
         }
+    }
+
+    /**
+     * Updates the animated value with the gien {@link AnimatableValue}.
+     */
+    protected void updateAnimatedValue(AnimatableValue val) {
+        if (val == null) {
+            hasAnimVal = false;
+        } else {
+            hasAnimVal = true;
+            this.animVal =
+                getEnumerationNumber(((AnimatableStringValue) val).getString());
+            fireAnimatedAttributeListeners();
+        }
+        fireAnimatedAttributeListeners();
     }
 
     /**

@@ -18,8 +18,6 @@
  */
 package org.apache.batik.dom.svg;
 
-import org.apache.batik.anim.values.AnimatableAngleOrIdentValue;
-import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.DoublyIndexedTable;
 import org.apache.batik.dom.util.XMLSupport;
@@ -353,100 +351,58 @@ public class SVGOMMarkerElement
 
     // AnimationTarget ///////////////////////////////////////////////////////
 
-    /**
-     * Updates an attribute value in this target.
-     */
-    public void updateAttributeValue(String ns, String ln,
-                                     AnimatableValue val) {
-        if (ns == null) {
-            if (ln.equals(SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE)) {
-                updateBooleanAttributeValue(getExternalResourcesRequired(),
-                                            val);
-                return;
-            } else if (ln.equals(SVG_REF_X_ATTRIBUTE)) {
-                updateLengthAttributeValue(getRefX(), val);
-                return;
-            } else if (ln.equals(SVG_REF_Y_ATTRIBUTE)) {
-                updateLengthAttributeValue(getRefY(), val);
-                return;
-            } else if (ln.equals(SVG_MARKER_UNITS_ATTRIBUTE)) {
-                updateEnumerationAttributeValue(getMarkerUnits(), val);
-                return;
-            } else if (ln.equals(SVG_MARKER_WIDTH_ATTRIBUTE)) {
-                updateLengthAttributeValue(getMarkerWidth(), val);
-                return;
-            } else if (ln.equals(SVG_MARKER_HEIGHT_ATTRIBUTE)) {
-                updateLengthAttributeValue(getMarkerHeight(), val);
-                return;
-            } else if (ln.equals(SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE)) {
-                updatePreserveAspectRatioAttributeValue
-                    (getPreserveAspectRatio(), val);
-                return;
-            } else if (ln.equals(SVG_ORIENT_ATTRIBUTE)) {
-                // XXX Needs testing.  Esp with the LiveAttributeValues updating
-                //     the DOM attributes.
-                SVGOMAnimatedMarkerOrientValue orient =
-                    (SVGOMAnimatedMarkerOrientValue)
-                    getLiveAttributeValue(null, ln);
-                if (val == null) {
-                    orient.resetAnimatedValue();
-                } else {
-                    AnimatableAngleOrIdentValue aloiv =
-                        (AnimatableAngleOrIdentValue) val;
-                    if (aloiv.isIdent()
-                            && aloiv.getIdent().equals(SVG_AUTO_VALUE)) {
-                        orient.setAnimatedValueToAuto();
-                    } else {
-                        orient.setAnimatedValueToAngle(aloiv.getUnit(),
-                                                       aloiv.getValue());
-                    }
-                }
-                return;
-            }
-        }
-        super.updateAttributeValue(ns, ln, val);
-    }
-
-    /**
-     * Returns the underlying value of an animatable XML attribute.
-     */
-    public AnimatableValue getUnderlyingValue(String ns, String ln) {
-        if (ns == null) {
-            if (ln.equals(SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE)) {
-                return getBaseValue(getExternalResourcesRequired());
-            } else if (ln.equals(SVG_REF_X_ATTRIBUTE)) {
-                return getBaseValue
-                    (getRefX(), PERCENTAGE_VIEWPORT_WIDTH);
-            } else if (ln.equals(SVG_REF_Y_ATTRIBUTE)) {
-                return getBaseValue
-                    (getRefY(), PERCENTAGE_VIEWPORT_HEIGHT);
-            } else if (ln.equals(SVG_MARKER_UNITS_ATTRIBUTE)) {
-                return getBaseValue(getMarkerUnits());
-            } else if (ln.equals(SVG_MARKER_WIDTH_ATTRIBUTE)) {
-                return getBaseValue
-                    (getMarkerWidth(),
-                     PERCENTAGE_VIEWPORT_WIDTH);
-            } else if (ln.equals(SVG_MARKER_HEIGHT_ATTRIBUTE)) {
-                return getBaseValue
-                    (getMarkerHeight(),
-                     PERCENTAGE_VIEWPORT_HEIGHT);
-            } else if (ln.equals(SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE)) {
-                return getBaseValue(getPreserveAspectRatio());
-            } else if (ln.equals(SVG_ORIENT_ATTRIBUTE)) {
-                SVGOMAnimatedMarkerOrientValue orient =
-                    (SVGOMAnimatedMarkerOrientValue)
-                    getLiveAttributeValue(null, ln);
-                if (orient.getAnimatedEnumeration().getBaseVal() ==
-                        SVGMarkerElement.SVG_MARKER_ORIENT_ANGLE) {
-                    SVGAngle a = orient.getAnimatedAngle().getBaseVal();
-                    return new AnimatableAngleOrIdentValue(this, a.getValue(),
-                                                           a.getUnitType());
-                } else {
-                    return new AnimatableAngleOrIdentValue(this,
-                                                           SVG_AUTO_VALUE);
-                }
-            }
-        }
-        return super.getUnderlyingValue(ns, ln);
-    }
+// XXX TBD
+//     /**
+//      * Updates an attribute value in this target.
+//      */
+//     public void updateAttributeValue(String ns, String ln,
+//                                      AnimatableValue val) {
+//         if (ns == null) {
+//             if (ln.equals(SVG_ORIENT_ATTRIBUTE)) {
+//                 // XXX Needs testing.  Esp with the LiveAttributeValues updating
+//                 //     the DOM attributes.
+//                 SVGOMAnimatedMarkerOrientValue orient =
+//                     (SVGOMAnimatedMarkerOrientValue)
+//                     getLiveAttributeValue(null, ln);
+//                 if (val == null) {
+//                     orient.resetAnimatedValue();
+//                 } else {
+//                     AnimatableAngleOrIdentValue aloiv =
+//                         (AnimatableAngleOrIdentValue) val;
+//                     if (aloiv.isIdent()
+//                             && aloiv.getIdent().equals(SVG_AUTO_VALUE)) {
+//                         orient.setAnimatedValueToAuto();
+//                     } else {
+//                         orient.setAnimatedValueToAngle(aloiv.getUnit(),
+//                                                        aloiv.getValue());
+//                     }
+//                 }
+//                 return;
+//             }
+//         }
+//         super.updateAttributeValue(ns, ln, val);
+//     }
+// 
+//     /**
+//      * Returns the underlying value of an animatable XML attribute.
+//      */
+//     public AnimatableValue getUnderlyingValue(String ns, String ln) {
+//         if (ns == null) {
+//             if (ln.equals(SVG_ORIENT_ATTRIBUTE)) {
+//                 SVGOMAnimatedMarkerOrientValue orient =
+//                     (SVGOMAnimatedMarkerOrientValue)
+//                     getLiveAttributeValue(null, ln);
+//                 if (orient.getAnimatedEnumeration().getBaseVal() ==
+//                         SVGMarkerElement.SVG_MARKER_ORIENT_ANGLE) {
+//                     SVGAngle a = orient.getAnimatedAngle().getBaseVal();
+//                     return new AnimatableAngleOrIdentValue(this, a.getValue(),
+//                                                            a.getUnitType());
+//                 } else {
+//                     return new AnimatableAngleOrIdentValue(this,
+//                                                            SVG_AUTO_VALUE);
+//                 }
+//             }
+//         }
+//         return super.getUnderlyingValue(ns, ln);
+//     }
 }
