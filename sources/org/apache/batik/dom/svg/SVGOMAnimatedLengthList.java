@@ -137,7 +137,7 @@ public class SVGOMAnimatedLengthList
     }
 
     /**
-     * Updates the animated value with the gien {@link AnimatableValue}.
+     * Updates the animated value with the given {@link AnimatableValue}.
      */
     protected void updateAnimatedValue(AnimatableValue val) {
         if (val == null) {

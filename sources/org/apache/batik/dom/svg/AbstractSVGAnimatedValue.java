@@ -91,7 +91,7 @@ public abstract class AbstractSVGAnimatedValue
     }
 
     /**
-     * Updates the animated value with the gien {@link AnimatableValue}.
+     * Updates the animated value with the given {@link AnimatableValue}.
      */
     protected abstract void updateAnimatedValue(AnimatableValue val);
 

@@ -254,7 +254,7 @@
             <p>
               This handles the SVG <code>filter</code> element.  If you
               wanted to implement a new element that could be
-              referenced from the <code>filter</code>attribute on an SVG
+              referenced from the <code>filter</code> attribute on an SVG
               graphics node then you would need to subclass this
               bridge. However, adding new types of filters to the
               existing SVG <code>filter</code> element is accomplished via the
