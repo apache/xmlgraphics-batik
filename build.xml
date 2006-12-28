@@ -666,6 +666,7 @@ To display the available targets type:
         <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}${svn-revision-suffix}"/>
         <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
         <attribute name="Build-Id" value="${build.id}"/>
+        <attribute name="Main-Class" value="${class-prefix}.apps.svgbrowser.Main"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
       <fileset dir="${dest}" excludes="**/.svn/">

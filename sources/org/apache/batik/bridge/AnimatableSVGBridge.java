@@ -86,10 +86,13 @@ public abstract class AnimatableSVGBridge
     protected void fireBaseAttributeListeners(String pn) {
         if (targetListeners != null) {
             LinkedList ll = (LinkedList) targetListeners.get(pn);
-            Iterator it = ll.iterator();
-            while (it.hasNext()) {
-                AnimationTargetListener l = (AnimationTargetListener) it.next();
-                l.baseValueChanged((AnimationTarget) e, null, pn, true);
+            if (ll != null) {
+                Iterator it = ll.iterator();
+                while (it.hasNext()) {
+                    AnimationTargetListener l =
+                        (AnimationTargetListener) it.next();
+                    l.baseValueChanged((AnimationTarget) e, null, pn, true);
+                }
             }
         }
     }
