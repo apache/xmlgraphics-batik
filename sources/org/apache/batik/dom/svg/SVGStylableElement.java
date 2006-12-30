@@ -163,7 +163,7 @@ public abstract class SVGStylableElement
 
     /**
      * Returns the CSS base URL of this element.
-     * @throws IllegalArgumentException when the result of getBaseURI() 
+     * @throws IllegalArgumentException when the result of getBaseURI()
      *         cannot be used as an URL.
      */
     public URL getCSSBase() {
@@ -207,7 +207,7 @@ public abstract class SVGStylableElement
     }
 
     // AnimationTarget ///////////////////////////////////////////////////////
-    
+
     /**
      * Updates a property value in this target.
      */

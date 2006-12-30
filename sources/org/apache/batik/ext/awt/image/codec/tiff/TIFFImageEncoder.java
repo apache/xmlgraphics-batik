@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.List;
 import java.util.zip.Deflater;
 
 import org.apache.batik.ext.awt.image.codec.util.ImageEncodeParam;
@@ -168,8 +169,8 @@ public class TIFFImageEncoder extends ImageEncoderImpl {
         int dataType = sampleModel.getDataType();
         switch(dataType) {
         case DataBuffer.TYPE_BYTE:
-            if(sampleSize[0] != 1 && sampleSize[0] == 4 &&
-               sampleSize[0] != 8) {
+            if(sampleSize[0] != 1 && sampleSize[0] == 4 &&    // todo does this make sense??
+               sampleSize[0] != 8) {                          // we get error only for 4
                 throw new Error("TIFFImageEncoder2");
             }
             break;
@@ -355,9 +356,12 @@ public class TIFFImageEncoder extends ImageEncoderImpl {
             int blueIndex = 2 * sizeOfColormap;
             colormap = new char[sizeOfColormap * 3];
             for (int i=0; i<sizeOfColormap; i++) {
-                colormap[redIndex++]   = (char)(((r[i] << 8) | r[i]) & 0xffff);
-                colormap[greenIndex++] = (char)(((g[i] << 8) | g[i]) & 0xffff);
-                colormap[blueIndex++]  = (char)(((b[i] << 8) | b[i]) & 0xffff);
+                int tmp = 0xff & r[i];   // beware of sign extended bytes
+                colormap[redIndex++]   = (char)(( tmp << 8) | tmp );
+                tmp = 0xff & g[i];
+                colormap[greenIndex++] = (char)(( tmp << 8) | tmp );
+                tmp = 0xff & b[i];
+                colormap[blueIndex++]  = (char)(( tmp << 8) | tmp );
             }
 
             sizeOfColormap *= 3;
@@ -703,7 +707,7 @@ public class TIFFImageEncoder extends ImageEncoderImpl {
         // Add extra fields specified via the encoding parameters.
         TIFFField[] extraFields = encodeParam.getExtraFields();
         if(extraFields != null) {
-            ArrayList extantTags = new ArrayList(fields.size());
+            List extantTags = new ArrayList(fields.size());
             Iterator fieldIter = fields.iterator();
             while(fieldIter.hasNext()) {
                 TIFFField fld = (TIFFField)fieldIter.next();
@@ -795,7 +799,7 @@ public class TIFFImageEncoder extends ImageEncoderImpl {
             // If compressing, the cannot be written yet as the size of the
             // data segments is unknown.
 
-            if((output instanceof SeekableOutputStream)) {
+            if( output instanceof SeekableOutputStream ) {
                 // Simply seek to the first data segment position.
                 ((SeekableOutputStream)output).seek(tileOffsets[0]);
             } else {
@@ -1027,13 +1031,13 @@ public class TIFFImageEncoder extends ImageEncoderImpl {
 
                         // Write  the number of pixels that will fit into an
                         // even number of nibbles.
-                        for (int j=0; j<tileWidth/2; j++) {
+                        for (int j=0; j < tileWidth/2; j++) {
                             pixel = (pixels[index++] << 4) | pixels[index++];
                             bpixels[k++] = (byte)pixel;
                         }
 
                         // Last pixel for odd-length lines
-                        if ((tileWidth % 2) == 1) {
+                        if ((tileWidth & 1) == 1) {
                             pixel = pixels[index++] << 4;
                             bpixels[k++] = (byte)pixel;
                         }
@@ -1159,9 +1163,9 @@ public class TIFFImageEncoder extends ImageEncoderImpl {
 
                     int ls = 0;
                     for (int i = 0; i < size; i++) {
-                        short value = (short)pixels[i];
+                        int value = pixels[i];
                         bpixels[ls++] = (byte)((value & 0xff00) >> 8);
-                        bpixels[ls++] = (byte)(value & 0x00ff);
+                        bpixels[ls++] = (byte) (value & 0x00ff);
                     }
 
                     if(compression == COMP_NONE) {
@@ -1186,19 +1190,19 @@ public class TIFFImageEncoder extends ImageEncoderImpl {
                         int li = 0;
                         for (int i = 0; i < size; i++) {
                             int value = pixels[i];
-                            bpixels[li++] = (byte)((value & 0xff000000) >> 24);
-                            bpixels[li++] = (byte)((value & 0x00ff0000) >> 16);
-                            bpixels[li++] = (byte)((value & 0x0000ff00) >> 8);
-                            bpixels[li++] = (byte)(value & 0x000000ff);
+                            bpixels[li++] = (byte)((value & 0xff000000) >>> 24);
+                            bpixels[li++] = (byte)((value & 0x00ff0000) >>> 16);
+                            bpixels[li++] = (byte)((value & 0x0000ff00) >>> 8);
+                            bpixels[li++] = (byte)( value & 0x000000ff);
                         }
                     } else { // DataBuffer.TYPE_FLOAT
                         int lf = 0;
                         for (int i = 0; i < size; i++) {
                             int value = Float.floatToIntBits(fpixels[i]);
-                            bpixels[lf++] = (byte)((value & 0xff000000) >> 24);
-                            bpixels[lf++] = (byte)((value & 0x00ff0000) >> 16);
-                            bpixels[lf++] = (byte)((value & 0x0000ff00) >> 8);
-                            bpixels[lf++] = (byte)(value & 0x000000ff);
+                            bpixels[lf++] = (byte)((value & 0xff000000) >>> 24);
+                            bpixels[lf++] = (byte)((value & 0x00ff0000) >>> 16);
+                            bpixels[lf++] = (byte)((value & 0x0000ff00) >>> 8);
+                            bpixels[lf++] = (byte)( value & 0x000000ff);
                         }
                     }
                     if(compression == COMP_NONE) {
@@ -1239,7 +1243,7 @@ public class TIFFImageEncoder extends ImageEncoderImpl {
 
             nextIFDOffset = isLast ?
                 0 : ifdOffset + dirSize + totalBytes;
-            if ((nextIFDOffset&0x01) != 0) {
+            if ((nextIFDOffset & 0x01) != 0) {   // make it even
                 nextIFDOffset++;
                 skipByte = true;
             }
@@ -1380,7 +1384,7 @@ public class TIFFImageEncoder extends ImageEncoderImpl {
         int numEntries = fields.size();
 
         long offsetBeyondIFD = thisIFDOffset + 12 * numEntries + 4 + 2;
-        ArrayList tooBig = new ArrayList();
+        List tooBig = new ArrayList();
 
         // Write number of fields in the IFD
         writeUnsignedShort(numEntries);
@@ -1414,7 +1418,6 @@ public class TIFFImageEncoder extends ImageEncoderImpl {
                 tooBig.add(field);
 
             } else {
-
                 writeValuesAsFourBytes(field);
             }
 
@@ -1432,15 +1435,15 @@ public class TIFFImageEncoder extends ImageEncoderImpl {
     /**
      * Determine the number of bytes in the value portion of the field.
      */
-    private static final int getValueSize(TIFFField field) {
+    private static int getValueSize(TIFFField field) {
         int type = field.getType();
         int count = field.getCount();
         int valueSize = 0;
         if(type == TIFFField.TIFF_ASCII) {
             for(int i = 0; i < count; i++) {
-                byte[] stringBytes = field.getAsString(i).getBytes();
+                byte[] stringBytes = field.getAsString(i).getBytes();   // note: default encoding @work here!
                 valueSize += stringBytes.length;
-                if(stringBytes[stringBytes.length-1] != (byte)0) {
+                if( stringBytes[stringBytes.length-1] != 0 ) {
                     valueSize++;
                 }
             }
@@ -1487,11 +1490,11 @@ public class TIFFImageEncoder extends ImageEncoderImpl {
             // unsigned 16 bits
         case TIFFField.TIFF_SHORT:
             char[] chars = field.getAsChars();
-        if (count > 2) count=2;
-        for (int i=0; i<count; i++)
-            writeUnsignedShort(chars[i]);
-        for (int i = 0; i < (2 - count); i++)
-            writeUnsignedShort(0);
+            if (count > 2) count=2;
+            for (int i=0; i<count; i++)
+                writeUnsignedShort(chars[i]);
+            for (int i = 0; i < (2 - count); i++)
+                writeUnsignedShort(0);
 
             break;
 
@@ -1528,7 +1531,7 @@ public class TIFFImageEncoder extends ImageEncoderImpl {
         case TIFFField.TIFF_SHORT:
             char[] chars = field.getAsChars();
             for (int i=0; i<count; i++) {
-            writeUnsignedShort(chars[i]);
+                writeUnsignedShort(chars[i]);
             }
             break;
         case TIFFField.TIFF_SSHORT:
@@ -1559,8 +1562,8 @@ public class TIFFImageEncoder extends ImageEncoderImpl {
             double[] doubles = field.getAsDoubles();
             for (int i=0; i<count; i++) {
                 long longBits = Double.doubleToLongBits(doubles[i]);
-                writeLong(longBits >>> 32);
-                writeLong(longBits & 0xffffffff);            // todo looks very suspect !!
+                writeLong(longBits >>> 32);           // write upper 32 bits
+                writeLong(longBits & 0xffffffffL);    // write lower 32 bits
             }
             break;
 
@@ -1594,14 +1597,19 @@ public class TIFFImageEncoder extends ImageEncoderImpl {
     // stored in 2 bytes.
     private void writeUnsignedShort(int s) throws IOException {
         output.write((s & 0xff00) >>> 8);
-        output.write(s & 0x00ff);
+        output.write( s & 0x00ff);
     }
 
+    /**
+     * despite its name, this method writes only 4 bytes to output.
+     * @param l 32bits of this are written as 4 bytes
+     * @throws IOException
+     */
     private void writeLong(long l) throws IOException {
         output.write( (int)((l & 0xff000000) >>> 24));
         output.write( (int)((l & 0x00ff0000) >>> 16));
         output.write( (int)((l & 0x0000ff00) >>> 8));
-        output.write( ((int)l & 0x000000ff));
+        output.write( (int) (l & 0x000000ff) );
     }
 
     /**
