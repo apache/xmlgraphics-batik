@@ -63,6 +63,7 @@ public abstract class SVGGraphicsElement
 //         t.put(null, SVG_SYSTEM_LANGUAGE_ATTRIBUTE,
 //                 new TraitInformation(false, SVGTypes.TYPE_LANG_LIST));
         xmlTraitInformation = t;
+
     }
 
     /**

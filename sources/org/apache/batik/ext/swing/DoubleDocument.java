@@ -82,7 +82,7 @@ public class DoubleDocument extends PlainDocument {
     public void setValue(double d){
         try{
             remove(0, getLength());
-            insertString(0, (new Double(d)).toString(), null);
+            insertString(0, String.valueOf( d ), null);
         }catch(BadLocationException e){
             // Will not happen because we are sure
             // we use the proper range
