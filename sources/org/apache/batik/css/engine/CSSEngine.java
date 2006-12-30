@@ -2404,8 +2404,10 @@ public abstract class CSSEngine {
 
     /**
      * Handles a subtree modification in the document.
+     * todo the incoming Node is actually ignored (not used) here,
+     *     but it seems caller-sites assume that it is used - is this done right?? 
      */
-    protected void handleSubtreeModified(Node n) {
+    protected void handleSubtreeModified(Node ignored) {
         if (styleSheetRemoved) {
             // Invalidate all the CSSStylableElements in the document.
             styleSheetRemoved = false;
@@ -2416,7 +2418,7 @@ public abstract class CSSEngine {
             // Invalidate the CSSStylableElement siblings, to
             // correctly match the adjacent selectors and
             // first-child pseudo-class.
-            n = removedStylableElementSibling;
+            Node n = removedStylableElementSibling;
             while (n != null) {
                 invalidateProperties(n, null, null, true);
                 n = getCSSNextSibling(n);
