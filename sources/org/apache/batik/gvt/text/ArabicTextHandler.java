@@ -393,7 +393,7 @@ public class ArabicTextHandler {
      * @param form Indicates the required arabic form.
      * (isolated = 1, final = 2, initial = 3, medial = 4)
      *
-     * @return The unicode value of the substutute char, or -1 if no susbtitue
+     * @return The unicode value of the substutute char, or -1 if no substitute
      * exists.
      */
     public static int getSubstituteChar(char ch1, char ch2, int form) {
