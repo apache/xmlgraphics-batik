@@ -609,7 +609,7 @@ public abstract class SVGOMElement
      * Returns whether the given XML attribute is additive.
      */
     public boolean isAttributeAdditive(String ns, String ln) {
-        return false;
+        return true;
     }
 
     /**

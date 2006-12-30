@@ -106,7 +106,7 @@ public class SimpleAnimation extends InterpolatingAnimation {
         }
         this.values = values;
 
-        if (this.keyTimes != null) {
+        if (this.keyTimes != null && calcMode != CALC_MODE_PACED) {
             if (this.keyTimes.length != values.length) {
                 throw timedElement.createException
                     ("attribute.malformed",

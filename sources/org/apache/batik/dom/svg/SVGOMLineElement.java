@@ -43,13 +43,13 @@ public class SVGOMLineElement
     static {
         DoublyIndexedTable t =
             new DoublyIndexedTable(SVGGraphicsElement.xmlTraitInformation);
-        t.put(null, SVG_X_ATTRIBUTE,
+        t.put(null, SVG_X1_ATTRIBUTE,
                 new TraitInformation(true, SVGTypes.TYPE_LENGTH, PERCENTAGE_VIEWPORT_WIDTH));
-        t.put(null, SVG_Y_ATTRIBUTE,
+        t.put(null, SVG_Y1_ATTRIBUTE,
                 new TraitInformation(true, SVGTypes.TYPE_LENGTH, PERCENTAGE_VIEWPORT_HEIGHT));
-        t.put(null, SVG_WIDTH_ATTRIBUTE,
+        t.put(null, SVG_X2_ATTRIBUTE,
                 new TraitInformation(true, SVGTypes.TYPE_LENGTH, PERCENTAGE_VIEWPORT_WIDTH));
-        t.put(null, SVG_HEIGHT_ATTRIBUTE,
+        t.put(null, SVG_Y2_ATTRIBUTE,
                 new TraitInformation(true, SVGTypes.TYPE_LENGTH, PERCENTAGE_VIEWPORT_HEIGHT));
         xmlTraitInformation = t;
     }

@@ -179,13 +179,21 @@ public class MotionAnimation extends InterpolatingAnimation {
             } else { // CALC_MODE_PACED
                 // This corrects the keyTimes to be paced, so from now on
                 // it can be considered the same as CALC_MODE_LINEAR.
+                epi = path.getExtendedPathIterator();
                 this.keyTimes = new float[count];
-                this.keyTimes[0] = 0;
-                for (int i = 1; i < count - 1; i++) {
+                int j = 0;
+                for (int i = 0; i < count - 1; i++) {
+                    while (epi.currentSegment() ==
+                            ExtendedPathIterator.SEG_MOVETO) {
+                        j++;
+                        epi.next();
+                    }
                     this.keyTimes[i] =
-                        pathLength.getLengthAtSegment(i + 1) / totalLength;
+                        pathLength.getLengthAtSegment(j) / totalLength;
+                    j++;
+                    epi.next();
                 }
-                this.keyTimes[count - 1] = 1;
+                this.keyTimes[count - 1] = 1f;
             }
         }
 
@@ -197,10 +205,18 @@ public class MotionAnimation extends InterpolatingAnimation {
                                     SMILConstants.SMIL_KEY_POINTS_ATTRIBUTE });
             }
         } else {
+            epi = path.getExtendedPathIterator();
             keyPoints = new float[count];
-            keyPoints[0] = 0f;
-            for (int i = 1; i < count - 1; i++) {
-                keyPoints[i] = pathLength.getLengthAtSegment(i) / totalLength;
+            int j = 0;
+            for (int i = 0; i < count - 1; i++) {
+                while (epi.currentSegment() ==
+                        ExtendedPathIterator.SEG_MOVETO) {
+                    j++;
+                    epi.next();
+                }
+                keyPoints[i] = pathLength.getLengthAtSegment(j) / totalLength;
+                j++;
+                epi.next();
             }
             keyPoints[count - 1] = 1f;
         }

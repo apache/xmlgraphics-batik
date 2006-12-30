@@ -18,6 +18,10 @@
  */
 package org.apache.batik.dom.svg;
 
+import java.awt.geom.AffineTransform;
+
+import org.apache.batik.anim.values.AnimatableMotionPointValue;
+import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.DoublyIndexedTable;
 import org.apache.batik.util.SVGTypes;
@@ -38,7 +42,8 @@ import org.w3c.dom.svg.SVGTextElement;
  */
 public class SVGOMTextElement
     extends    SVGOMTextPositioningElement
-    implements SVGTextElement {
+    implements SVGTextElement,
+               SVGMotionAnimatableElement {
 
     // Default values for attributes on a text element
     protected static final String X_DEFAULT_VALUE = "0";
@@ -60,6 +65,11 @@ public class SVGOMTextElement
      * The 'transform' attribute value.
      */
     protected SVGOMAnimatedTransformList transform;
+
+    /**
+     * Supplemental transformation due to motion animation.
+     */
+    protected AffineTransform motionTransform;
 
     /**
      * Creates a new SVGOMTextElement object.
@@ -185,5 +195,39 @@ public class SVGOMTextElement
      */
     protected DoublyIndexedTable getTraitInformationTable() {
         return xmlTraitInformation;
+    }
+
+    // SVGMotionAnimatableElement ////////////////////////////////////////////
+
+    /**
+     * Returns the {@link AffineTransform} representing the current motion
+     * animation for this element.
+     */
+    public AffineTransform getMotionTransform() {
+        return motionTransform;
+    }
+
+    // AnimationTarget ///////////////////////////////////////////////////////
+
+    /**
+     * Updates a 'other' animation value in this target.
+     */
+    public void updateOtherValue(String type, AnimatableValue val) {
+        if (type.equals("motion")) {
+            if (motionTransform == null) {
+                motionTransform = new AffineTransform();
+            }
+            if (val == null) {
+                motionTransform.setToIdentity();
+            } else {
+                AnimatableMotionPointValue p = (AnimatableMotionPointValue) val;
+                motionTransform.setToTranslation(p.getX(), p.getY());
+                motionTransform.rotate(p.getAngle());
+            }
+            SVGOMDocument d = (SVGOMDocument) ownerDocument;
+            d.getAnimatedAttributeListener().otherAnimationChanged(this, type);
+        } else {
+            super.updateOtherValue(type, val);
+        }
     }
 }
