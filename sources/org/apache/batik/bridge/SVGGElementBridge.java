@@ -103,19 +103,21 @@ public class SVGGElementBridge extends AbstractGraphicsNodeBridge {
      * Invoked when an MutationEvent of type 'DOMNodeInserted' is fired.
      */
     public void handleDOMNodeInsertedEvent(MutationEvent evt) {
-        if ( evt.getTarget() instanceof Element ){
+        if (evt.getTarget() instanceof Element) {
             handleElementAdded((CompositeGraphicsNode)node, 
                                e, 
                                (Element)evt.getTarget());
+        } else {
+            super.handleDOMNodeInsertedEvent(evt);
         }
     }
 
     /**
      * Invoked when an MutationEvent of type 'DOMNodeInserted' is fired.
      */
-    public void handleElementAdded(CompositeGraphicsNode gn, 
-                                   Node parent, 
-                                   Element childElt) {
+    protected void handleElementAdded(CompositeGraphicsNode gn, 
+                                      Node parent, 
+                                      Element childElt) {
         // build the graphics node
         GVTBuilder builder = ctx.getGVTBuilder();
         GraphicsNode childNode = builder.build(ctx, childElt);

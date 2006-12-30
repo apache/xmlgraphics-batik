@@ -73,6 +73,16 @@ public class SVGAnimateElementBridge extends SVGAnimationElementBridge {
      * Returns the parsed 'calcMode' attribute from the animation element.
      */
     protected int parseCalcMode() {
+        // If the attribute being animated has only non-additive values, take
+        // the animation as having calcMode="discrete".
+        if (animationType == AnimationEngine.ANIM_TYPE_CSS
+                && !targetElement.isPropertyAdditive(attributeLocalName)
+            || animationType == AnimationEngine.ANIM_TYPE_XML
+                && !targetElement.isAttributeAdditive(attributeNamespaceURI,
+                                                      attributeLocalName)) {
+            return SimpleAnimation.CALC_MODE_DISCRETE;
+        }
+
         String calcModeString = element.getAttributeNS(null,
                                                        SVG_CALC_MODE_ATTRIBUTE);
         if (calcModeString.length() == 0) {

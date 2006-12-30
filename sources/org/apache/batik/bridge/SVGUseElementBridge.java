@@ -24,11 +24,9 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 
 import org.apache.batik.dom.events.NodeEventTarget;
-import org.apache.batik.dom.svg.AbstractSVGTransformList;
 import org.apache.batik.dom.svg.AnimatedLiveAttributeValue;
 import org.apache.batik.dom.svg.LiveAttributeException;
 import org.apache.batik.dom.svg.SVGOMAnimatedLength;
-import org.apache.batik.dom.svg.SVGOMAnimatedTransformList;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.svg.SVGOMUseElement;
 import org.apache.batik.dom.svg.SVGOMUseShadowRoot;
@@ -42,6 +40,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
+import org.w3c.dom.svg.SVGTransformable;
 import org.w3c.dom.svg.SVGUseElement;
 
 /**
@@ -219,7 +218,7 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
 
         gn.getChildren().add(refNode);
 
-        gn.setTransform(computeTransform(e, ctx));
+        gn.setTransform(computeTransform((SVGTransformable) e, ctx));
 
         // set an affine transform to take into account the (x, y)
         // coordinates of the <use> element
@@ -327,30 +326,23 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
     }
 
     /**
-     * Computes the AffineTransform for the node
+     * Returns an {@link AffineTransform} that is the transformation to
+     * be applied to the node.
      */
-    protected AffineTransform computeTransform(Element e, BridgeContext ctx) {
+    protected AffineTransform computeTransform(SVGTransformable e,
+                                               BridgeContext ctx) {
+        AffineTransform at = super.computeTransform(e, ctx);
+        SVGUseElement ue = (SVGUseElement) e;
         try {
-            SVGUseElement ue = (SVGUseElement) e;
-
             // 'x' attribute - default is 0
             float x = ue.getX().getAnimVal().getValue();
 
             // 'y' attribute - default is 0
             float y = ue.getY().getAnimVal().getValue();
 
-            AffineTransform at = AffineTransform.getTranslateInstance(x, y);
-
-            // 'transform'
-            SVGOMAnimatedTransformList atl =
-                (SVGOMAnimatedTransformList) ue.getTransform();
-            if (atl.isSpecified()) {
-                AbstractSVGTransformList tl =
-                    (AbstractSVGTransformList) atl.getAnimVal();
-                at.preConcatenate(tl.getAffineTransform());
-            }
-
-            return at;
+            AffineTransform xy = AffineTransform.getTranslateInstance(x, y);
+            xy.preConcatenate(at);
+            return xy;
         } catch (LiveAttributeException ex) {
             throw new BridgeException(ctx, ex);
         }
@@ -454,7 +446,7 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
                     && (ln.equals(SVG_X_ATTRIBUTE)
                         || ln.equals(SVG_Y_ATTRIBUTE)
                         || ln.equals(SVG_TRANSFORM_ATTRIBUTE))) {
-                node.setTransform(computeTransform(e, ctx));
+                node.setTransform(computeTransform((SVGTransformable) e, ctx));
                 handleGeometryChanged();
             } else if (ns == null
                     && (ln.equals(SVG_WIDTH_ATTRIBUTE)
