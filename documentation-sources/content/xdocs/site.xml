@@ -66,7 +66,7 @@
     </specs>
     <wiki label="Batik wiki" href="http://wiki.apache.org/xmlgraphics-batik/FrontPage"/>
     <svg-wiki label="SVG wiki" href="http://wiki.svg.org/"/>
-    <svg-dev label="SVG developers mailing list" href="http://groups.yahoo.com/group/svg-developers/"/>
+    <svg-dev label="SVG Developers mailing list" href="http://groups.yahoo.com/group/svg-developers/"/>
     <www-svg label="W3C SVG mailing list" href="http://lists.w3.org/Archives/Public/www-svg/"/>
     <svg-freenode label="#svg IRC channel" href="http://svg.jibbering.com/"/>
   </resources>
