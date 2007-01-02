@@ -26,8 +26,8 @@
 
     <map:pipeline>
       <map:match pattern="**status.xml">
-        <map:generate src="{project:content.xdocs}/{1}status.xml"/>
-        <map:transform src="{project:resources.stylesheets}/status2document.xsl"/>
+        <map:generate src="{properties:content.xdocs}/{1}status.xml"/>
+        <map:transform src="{properties:resources.stylesheets}/status2document.xsl"/>
         <map:serialize type="xml"/>
       </map:match>
     </map:pipeline>
