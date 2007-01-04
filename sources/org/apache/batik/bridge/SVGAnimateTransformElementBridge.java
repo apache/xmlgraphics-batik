@@ -113,12 +113,10 @@ public class SVGAnimateTransformElementBridge extends SVGAnimateElementBridge {
         float val1, val2 = 0, val3 = 0;
         int i = 0;
         char c = ',';
-        boolean canComma = type == SVGTransform.SVG_TRANSFORM_TRANSLATE
-            || type == SVGTransform.SVG_TRANSFORM_SCALE;
         int len = s.length();
         while (i < len) {
             c = s.charAt(i);
-            if (c == ' ' || canComma && c == ',') {
+            if (c == ' ' || c == ',') {
                 break;
             }
             i++;
@@ -128,7 +126,7 @@ public class SVGAnimateTransformElementBridge extends SVGAnimateElementBridge {
             i++;
         }
         int count = 1;
-        if (i < len && c == ' ' && canComma) {
+        if (i < len && c == ' ') {
             while (i < len) {
                 c = s.charAt(i);
                 if (c != ' ') {
@@ -149,7 +147,7 @@ public class SVGAnimateTransformElementBridge extends SVGAnimateElementBridge {
                 && type != SVGTransform.SVG_TRANSFORM_SKEWY) {
             while (i < len) {
                 c = s.charAt(i);
-                if (c == ' ' || canComma && c == ',') {
+                if (c == ' ' || c == ',') {
                     break;
                 }
                 i++;
@@ -159,7 +157,7 @@ public class SVGAnimateTransformElementBridge extends SVGAnimateElementBridge {
                 i++;
             }
             count++;
-            if (i < len && c == ' ' && canComma) {
+            if (i < len && c == ' ') {
                 i++;
                 while (i < len) {
                     c = s.charAt(i);
@@ -205,7 +203,7 @@ public class SVGAnimateTransformElementBridge extends SVGAnimateElementBridge {
                 if (count == 2) {
                     t.setTranslate(val1, val2);
                 } else {
-                    t.setTranslate(val1, val1);
+                    t.setTranslate(val1, 0f);
                 }
                 break;
             case SVGTransform.SVG_TRANSFORM_SCALE:

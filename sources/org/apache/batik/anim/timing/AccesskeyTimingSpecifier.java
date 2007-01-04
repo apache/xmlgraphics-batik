@@ -34,7 +34,7 @@ import org.w3c.dom.events.KeyboardEvent;
  * @version $Id$
  */
 public class AccesskeyTimingSpecifier
-        extends OffsetTimingSpecifier
+        extends EventLikeTimingSpecifier
         implements EventListener {
 
     /**
@@ -124,7 +124,7 @@ public class AccesskeyTimingSpecifier
      */
     public void handleEvent(Event e) {
         boolean matched;
-        if (e.getType().charAt(4) == 'p') {
+        if (e.getType().charAt(3) == 'p') {
             // DOM 2 key draft keypress
             DOMKeyEvent evt = (DOMKeyEvent) e;
             matched = evt.getCharCode() == accesskey;
@@ -143,7 +143,8 @@ public class AccesskeyTimingSpecifier
      */
     public void resolve(Event e) {
         float time = owner.getRoot().convertEpochTime(e.getTimeStamp());
-        InstanceTime instance = new InstanceTime(this, time, null, true);
+        InstanceTime instance = new InstanceTime(this, time + offset, null,
+                                                 true);
         owner.addInstanceTime(instance, isBegin);
     }
 }

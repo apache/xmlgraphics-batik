@@ -34,10 +34,16 @@ public class ClockParser extends TimingParser {
     protected ClockHandler clockHandler;
 
     /**
+     * Whether this parser should parse offsets rather than clock values.
+     */
+    protected boolean parseOffset;
+
+    /**
      * Creates a new ClockParser.
      */
-    public ClockParser() {
+    public ClockParser(boolean parseOffset) {
         super(false, false);
+        this.parseOffset = parseOffset;
     }
 
     /**
@@ -59,7 +65,7 @@ public class ClockParser extends TimingParser {
      */
     protected void doParse() throws ParseException, IOException {
         current = reader.read();
-        float clockValue = parseClockValue();
+        float clockValue = parseOffset ? parseOffset() : parseClockValue();
         if (current != -1) {
             reportError("end.of.stream.expected",
                         new Object[] { new Integer(current) });

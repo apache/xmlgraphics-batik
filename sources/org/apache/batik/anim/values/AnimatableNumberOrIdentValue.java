@@ -39,6 +39,12 @@ public class AnimatableNumberOrIdentValue extends AnimatableNumberValue {
     protected String ident;
     
     /**
+     * Whether numbers should be considered as numeric keywords, as with the
+     * font-weight property.
+     */
+    protected boolean numericIdent;
+
+    /**
      * Creates a new, uninitialized AnimatableNumberOrIdentValue.
      */
     protected AnimatableNumberOrIdentValue(AnimationTarget target) {
@@ -48,8 +54,10 @@ public class AnimatableNumberOrIdentValue extends AnimatableNumberValue {
     /**
      * Creates a new AnimatableNumberOrIdentValue for a Number value.
      */
-    public AnimatableNumberOrIdentValue(AnimationTarget target, float v) {
+    public AnimatableNumberOrIdentValue(AnimationTarget target, float v,
+                                        boolean numericIdent) {
         super(target, v);
+        this.numericIdent = numericIdent;
     }
 
     /**
@@ -81,7 +89,7 @@ public class AnimatableNumberOrIdentValue extends AnimatableNumberValue {
      * Returns a zero value of this AnimatableValue's type.
      */
     public AnimatableValue getZeroValue() {
-        return new AnimatableNumberOrIdentValue(target, 0f);
+        return new AnimatableNumberOrIdentValue(target, 0f, numericIdent);
     }
 
     /**
@@ -90,6 +98,9 @@ public class AnimatableNumberOrIdentValue extends AnimatableNumberValue {
     public String getCssText() {
         if (isIdent) {
             return ident;
+        }
+        if (numericIdent) {
+            return Integer.toString((int) value);
         }
         return super.getCssText();
     }
@@ -113,10 +124,17 @@ public class AnimatableNumberOrIdentValue extends AnimatableNumberValue {
                 res.hasChanged = !res.isIdent || !res.ident.equals(ident);
                 res.ident = ident;
                 res.isIdent = true;
+            } else if (numericIdent) {
+                res.hasChanged = res.value != value || res.isIdent;
+                res.value = value;
+                res.isIdent = false;
+                res.hasChanged = true;
+                res.numericIdent = true;
             } else {
                 float oldValue = res.value;
                 super.interpolate(res, to, interpolation, accumulation,
                                   multiplier);
+                res.numericIdent = false;
                 if (res.value != oldValue) {
                     res.hasChanged = true;
                 }
@@ -124,7 +142,7 @@ public class AnimatableNumberOrIdentValue extends AnimatableNumberValue {
         } else {
             AnimatableNumberOrIdentValue toValue
                 = (AnimatableNumberOrIdentValue) to;
-            if (isIdent || toValue.isIdent) {
+            if (isIdent || toValue.isIdent || numericIdent) {
                 if (interpolation >= 0.5) {
                     if (res.isIdent != toValue.isIdent
                             || res.value != toValue.value
@@ -133,6 +151,7 @@ public class AnimatableNumberOrIdentValue extends AnimatableNumberValue {
                         res.isIdent = toValue.isIdent;
                         res.ident = toValue.ident;
                         res.value = toValue.value;
+                        res.numericIdent = toValue.numericIdent;
                         res.hasChanged = true;
                     }
                 } else {
@@ -143,12 +162,14 @@ public class AnimatableNumberOrIdentValue extends AnimatableNumberValue {
                         res.isIdent = isIdent;
                         res.ident = ident;
                         res.value = value;
+                        res.numericIdent = numericIdent;
                         res.hasChanged = true;
                     }
                 }
             } else {
                 super.interpolate(res, to, interpolation, accumulation,
                                   multiplier);
+                res.numericIdent = false;
             }
         }
         return res;

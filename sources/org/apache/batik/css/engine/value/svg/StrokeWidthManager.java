@@ -54,7 +54,7 @@ public class StrokeWidthManager extends LengthManager {
      * Implements {@link ValueManager#isAdditiveProperty()}.
      */
     public boolean isAdditiveProperty() {
-        return false;
+        return true;
     }
 
     /**

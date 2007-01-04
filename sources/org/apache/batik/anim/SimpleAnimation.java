@@ -141,8 +141,7 @@ public class SimpleAnimation extends InterpolatingAnimation {
                 this.keyTimes = new float[count];
                 this.keyTimes[0] = 0;
                 for (int i = 1; i < count - 1; i++) {
-                    this.keyTimes[i] =
-                        cumulativeDistances[i] / totalLength;
+                    this.keyTimes[i] = cumulativeDistances[i] / totalLength;
                 }
                 this.keyTimes[count - 1] = 1;
             }

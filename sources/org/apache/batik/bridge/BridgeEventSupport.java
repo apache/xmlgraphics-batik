@@ -201,7 +201,7 @@ public abstract class BridgeEventSupport implements SVGConstants {
 
             Element targetElement = (Element)fmgr.getCurrentEventTarget();
             if (targetElement == null) {
-                return;
+                targetElement = context.getDocument().getDocumentElement();
             }
             DocumentEvent d = (DocumentEvent)targetElement.getOwnerDocument();
             DOMKeyEvent keyEvt = (DOMKeyEvent)d.createEvent("KeyEvents");

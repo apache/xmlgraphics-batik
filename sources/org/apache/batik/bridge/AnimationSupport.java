@@ -77,21 +77,6 @@ public abstract class AnimationSupport {
     }
 
     /**
-     * Returns the event target that is the parent of the given
-     * timed element.  Used for eventbase timing specifiers where
-     * the element ID is omitted.
-     */
-    public static EventTarget getParentEventTarget(TimedElement e) {
-        if (e instanceof SVGAnimationElementBridge.SVGTimedElement) {
-            SVGAnimationElementBridge.SVGTimedElement ste =
-                (SVGAnimationElementBridge.SVGTimedElement) e;
-            Element elt = SVGUtilities.getParentElement(ste.getElement());
-            return (EventTarget) elt;
-        }
-        return null;
-    }
-
-    /**
      * Returns the element with the given ID, using the given node
      * as the context for the lookup.
      */

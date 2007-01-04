@@ -77,7 +77,7 @@ public class EventbaseTimingSpecifier
         this.eventNamespaceURI = root.getEventNamespaceURI(eventName);
         this.eventType = root.getEventType(eventName);
         if (eventbaseID == null) {
-            this.eventTarget = root.getParentEventTarget(owner);
+            this.eventTarget = owner.getAnimationEventTarget();
         } else {
             this.eventTarget = owner.getEventTargetById(eventbaseID);
         }
@@ -122,7 +122,8 @@ public class EventbaseTimingSpecifier
      */
     public void resolve(Event e) {
         float time = owner.getRoot().convertEpochTime(e.getTimeStamp());
-        InstanceTime instance = new InstanceTime(this, time, null, true);
+        InstanceTime instance = new InstanceTime(this, time + offset, null,
+                                                 true);
         owner.addInstanceTime(instance, isBegin);
     }
 }

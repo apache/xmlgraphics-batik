@@ -50,7 +50,7 @@ public abstract class AbstractWMFReader {
     protected int mtMaxRecord, mtNoParameters;
     protected int windowWidth, windowHeight;
     protected int numObjects;
-    protected List	objectVector;
+    protected List objectVector;
 
     public int lastObjectIdx;
 

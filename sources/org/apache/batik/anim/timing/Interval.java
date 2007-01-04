@@ -165,10 +165,11 @@ public class Interval {
     /**
      * Updates the end time for this interval.
      */
-    float setEnd(float end) {
+    float setEnd(float end, InstanceTime endInstanceTime) {
         // Trace.enter(this, "setEnd", new Object[] { new Float(end) } ); try {
         float minTime = Float.POSITIVE_INFINITY;
         this.end = end;
+        this.endInstanceTime = endInstanceTime;
         Iterator i = endDependents.iterator();
         while (i.hasNext()) {
             InstanceTime it = (InstanceTime) i.next();
