@@ -21,8 +21,9 @@ package org.apache.batik.gvt.event;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-
 import java.util.EventObject;
+
+import org.apache.batik.gvt.GraphicsNode;
 
 /**
  * A concrete version of {@link org.apache.batik.gvt.event.AWTEventDispatcher}.
@@ -109,16 +110,16 @@ public class AWTEventDispatcher extends AbstractAWTEventDispatcher
      */
     protected void dispatchKeyEvent(KeyEvent evt) {
         currentKeyEventTarget = lastHit;
-        if (currentKeyEventTarget != null) {
-            processKeyEvent
-                (new GraphicsNodeKeyEvent(currentKeyEventTarget,
-                                          evt.getID(),
-                                          evt.getWhen(),
-                                          evt.getModifiers(),
-                                          getCurrentLockState(),
-                                          evt.getKeyCode(),
-                                          evt.getKeyChar(),
-                                          evt.getKeyLocation()));
-        }
+        GraphicsNode target =
+            currentKeyEventTarget == null ? root : currentKeyEventTarget;
+        processKeyEvent
+            (new GraphicsNodeKeyEvent(target,
+                                      evt.getID(),
+                                      evt.getWhen(),
+                                      evt.getModifiers(),
+                                      getCurrentLockState(),
+                                      evt.getKeyCode(),
+                                      evt.getKeyChar(),
+                                      evt.getKeyLocation()));
     }
 }

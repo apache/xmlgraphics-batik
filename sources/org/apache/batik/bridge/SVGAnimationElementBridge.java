@@ -540,9 +540,13 @@ public abstract class SVGAnimationElementBridge extends AbstractSVGBridge
 
         /**
          * Invoked to indicate that this timed element became inactive.
+         * @param stillActive if true, indicates that the element is still
+         *                    actually active, but between the end of the
+         *                    computed repeat duration and the end of the
+         *                    interval
          * @param isFrozen whether the element is frozen or not
          */
-        protected void toInactive(boolean isFrozen) {
+        protected void toInactive(boolean stillActive, boolean isFrozen) {
             eng.toInactive(animation, isFrozen);
         }
 
@@ -599,12 +603,11 @@ public abstract class SVGAnimationElementBridge extends AbstractSVGBridge
         }
 
         /**
-         * Returns the event target that is the parent of the given
-         * timed element.  Used for eventbase timing specifiers where
-         * the element ID is omitted.
+         * Returns the target of this animation as an {@link EventTarget}.  Used
+         * for eventbase timing specifiers where the element ID is omitted.
          */
-        protected EventTarget getParentEventTarget(TimedElement e) {
-            return AnimationSupport.getParentEventTarget(e);
+        protected EventTarget getAnimationEventTarget() {
+            return targetElement;
         }
 
         /**

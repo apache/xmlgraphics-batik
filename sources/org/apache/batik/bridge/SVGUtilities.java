@@ -1185,7 +1185,7 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
                 time = t;
             }
         }
-        ClockParser p = new ClockParser();
+        ClockParser p = new ClockParser(false);
         Handler h = new Handler();
         p.setClockHandler(h);
         try {

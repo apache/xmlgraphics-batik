@@ -164,7 +164,7 @@ public class Main implements SVGConverterController {
     public abstract static class TimeOptionHandler extends FloatOptionHandler {
         public void handleOption(String optionValue, final SVGConverter c) {
             try {
-                ClockParser p = new ClockParser();
+                ClockParser p = new ClockParser(false);
                 p.setClockHandler(new ClockHandler() {
                     public void clockValue(float v) {
                         handleOption(v, c);

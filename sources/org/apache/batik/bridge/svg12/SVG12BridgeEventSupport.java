@@ -155,7 +155,7 @@ public abstract class SVG12BridgeEventSupport extends BridgeEventSupport {
 
             Element targetElement = (Element) fmgr.getCurrentEventTarget();
             if (targetElement == null) {
-                return;
+                targetElement = context.getDocument().getDocumentElement();
             }
             DocumentEvent d = (DocumentEvent) targetElement.getOwnerDocument();
             DOMKeyboardEvent keyEvt
@@ -190,7 +190,7 @@ public abstract class SVG12BridgeEventSupport extends BridgeEventSupport {
 
             Element targetElement = (Element) fmgr.getCurrentEventTarget();
             if (targetElement == null) {
-                return;
+                targetElement = context.getDocument().getDocumentElement();
             }
             DocumentEvent d = (DocumentEvent) targetElement.getOwnerDocument();
             DOMTextEvent textEvt = (DOMTextEvent) d.createEvent("TextEvent");

@@ -133,7 +133,8 @@ public class SVGAnimationEngine extends AnimationEngine {
      * The factory for number-or-ident values.
      */
     protected AnimatableNumberOrIdentFactory
-        animatableNumberOrIdentFactory = new AnimatableNumberOrIdentFactory();
+        animatableNumberOrIdentFactory =
+            new AnimatableNumberOrIdentFactory(false);
 
     /**
      * Factories for {@link AnimatableValue} parsing.
@@ -167,7 +168,7 @@ public class SVGAnimationEngine extends AnimationEngine {
         animatableNumberOrIdentFactory, // TYPE_NUMBER_OR_INHERIT
         uncomputedAnimatableStringValueFactory, // TYPE_FONT_FAMILY_VALUE
         null, // TYPE_FONT_FACE_FONT_SIZE_VALUE
-        animatableNumberOrIdentFactory, // TYPE_FONT_WEIGHT_VALUE
+        new AnimatableNumberOrIdentFactory(true), // TYPE_FONT_WEIGHT_VALUE
         new AnimatableAngleOrIdentFactory(), // TYPE_ANGLE_OR_IDENT
         null, // TYPE_KEY_SPLINES_VALUE
         new AnimatablePointListValueFactory(), // TYPE_POINTS_VALUE
@@ -523,9 +524,13 @@ public class SVGAnimationEngine extends AnimationEngine {
 
         /**
          * Invoked to indicate that this timed element became inactive.
+         * @param stillActive if true, indicates that the element is still
+         *                    actually active, but between the end of the
+         *                    computed repeat duration and the end of the
+         *                    interval
          * @param isFrozen whether the element is frozen or not
          */
-        protected void toInactive(boolean isFrozen) {
+        protected void toInactive(boolean stillActive, boolean isFrozen) {
         }
 
         /**
@@ -570,12 +575,11 @@ public class SVGAnimationEngine extends AnimationEngine {
         }
 
         /**
-         * Returns the event target that is the parent of the given
-         * timed element.  Used for eventbase timing specifiers where
-         * the element ID is omitted.
+         * Returns the target of this animation as an {@link EventTarget}.  Used
+         * for eventbase timing specifiers where the element ID is omitted.
          */
-        protected EventTarget getParentEventTarget(TimedElement e) {
-            return AnimationSupport.getParentEventTarget(e);
+        protected EventTarget getAnimationEventTarget() {
+            return null;
         }
 
         /**
@@ -1473,6 +1477,16 @@ public class SVGAnimationEngine extends AnimationEngine {
      */
     protected class AnimatableNumberOrIdentFactory extends CSSValueFactory {
 
+        /**
+         * Whether numbers are actually numeric keywords, as with the
+         * font-weight property.
+         */
+        protected boolean numericIdents;
+
+        public AnimatableNumberOrIdentFactory(boolean numericIdents) {
+            this.numericIdents = numericIdents;
+        }
+
         protected AnimatableValue createAnimatableValue(AnimationTarget target,
                                                         String pn, Value v) {
             if (v instanceof StringValue) {
@@ -1480,7 +1494,8 @@ public class SVGAnimationEngine extends AnimationEngine {
                                                         v.getStringValue());
             }
             FloatValue fv = (FloatValue) v;
-            return new AnimatableNumberOrIdentValue(target, fv.getFloatValue());
+            return new AnimatableNumberOrIdentValue(target, fv.getFloatValue(),
+                                                    numericIdents);
         }
     }
 

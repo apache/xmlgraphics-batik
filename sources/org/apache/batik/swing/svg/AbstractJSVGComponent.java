@@ -3199,7 +3199,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
          */
         public void openLink(SVGAElement elt) {
             String show = XLinkSupport.getXLinkShow(elt);
-            String href = XLinkSupport.getXLinkHref(elt);
+            String href = elt.getHref().getAnimVal();
             if (show.equals("new")) {
                 fireLinkActivatedEvent(elt, href);
                 if (svgUserAgent != null) {

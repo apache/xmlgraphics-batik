@@ -128,6 +128,7 @@ public class SVGAElementBridge extends SVGGElementBridge {
         }
         super.dispose();
     }
+
     /**
      * Returns true as the &lt;a> element is a container.
      */
@@ -204,7 +205,7 @@ public class SVGAElementBridge extends SVGGElementBridge {
 
             SVGAElement elt = (SVGAElement)evt.getCurrentTarget();
             if (elt != null) {
-                String href = XLinkSupport.getXLinkHref(elt);
+                String href = elt.getHref().getAnimVal();
                 userAgent.displayMessage(href);
             }
         }

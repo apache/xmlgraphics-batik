@@ -20,6 +20,8 @@ package org.apache.batik.gvt.event;
 
 import java.awt.event.KeyEvent;
 
+import org.apache.batik.gvt.GraphicsNode;
+
 /**
  * A concrete version of {@link org.apache.batik.gvt.event.AWTEventDispatcher}.
  *
@@ -39,16 +41,16 @@ public class AWTEventDispatcher extends AbstractAWTEventDispatcher {
      */
     protected void dispatchKeyEvent(KeyEvent evt) {
         currentKeyEventTarget = lastHit;
-        if (currentKeyEventTarget != null) {
-            processKeyEvent
-                (new GraphicsNodeKeyEvent(currentKeyEventTarget,
-                                          evt.getID(),
-                                          evt.getWhen(),
-                                          evt.getModifiers(),
-                                          getCurrentLockState(),
-                                          evt.getKeyCode(),
-                                          evt.getKeyChar(),
-                                          0));
-        }
+        GraphicsNode target =
+            currentKeyEventTarget == null ? root : currentKeyEventTarget;
+        processKeyEvent
+            (new GraphicsNodeKeyEvent(currentKeyEventTarget,
+                                      evt.getID(),
+                                      evt.getWhen(),
+                                      evt.getModifiers(),
+                                      getCurrentLockState(),
+                                      evt.getKeyCode(),
+                                      evt.getKeyChar(),
+                                      0));
     }
 }
