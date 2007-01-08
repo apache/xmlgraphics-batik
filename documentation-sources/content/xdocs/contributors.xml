@@ -81,8 +81,8 @@
             Dieter is a freelance programmer living in Hamburg, Germany. He
             spends his time on projects in refineries and tankfarms, chasing
             bits from ERP to PLC and back. Although not specifically an expert
-            with graphics, he tries to help out maintaining and enhancing this
-            interesting, non-trivial piece of code.
+            with graphics, he tries to help out “maintaining and enhancing this
+            interesting, non-trivial piece of code”.
           </p>
         </dd>
       </dl>
@@ -237,6 +237,10 @@
           documentation and suggestions on how to improve it.
         </li>
         <li>
+          <a href="mailto:archie@dellroad.org">Archie
+            Cobbs</a>&#x2014;Contributed a thread deadlocking fix.
+        </li>
+        <li>
           <a href="mailto:Paul_Evenblij@nl.compuware.com">Paul
             Evenblij</a>&#x2014;Contributed an improvement to the way images are
           handled by the SVGGraphics2D component. Also contributed bug fixes on
@@ -245,7 +249,13 @@
         <li>
           <a href="mailto:pier.fumagalli@eng.sun.com">Pier
             Fumagalli</a>&#x2014;Helped with the Batik web site and mailing
-          lists.</li>
+          lists.
+        </li>
+        <li>
+          <a href="mailto:herve.girod@club-internet.fr">Hervé
+            Girod</a>&#x2014;Contributed many improvements to the WMF
+          transcoder.
+        </li>
         <li>
           <a href="mailto:Christophe.Held@sophia.inria.fr">Christophe
             Held</a>&#x2014;Contributed a math formula in SVG generated from
@@ -256,6 +266,11 @@
           <a href="http://xmlgraphics.apache.org/fop/">FOP</a> member who worked
           on an SVG to PDF transcoder that is a part of FOP but works in the
           Batik infrastructure.
+        </li>
+        <li>
+          <a href="mailto:jeremias@apache.org">Jeremias 
+            Märki</a>&#x2014;Another FOP member who Contributed code to improve
+          compatibility with GNU Classpath.
         </li>
         <li>
           <a href="mailto:john.morrison@uk.experian.com">John
@@ -270,7 +285,7 @@
         </li>
         <li>
           <a href="mailto:luano@asd.ie">Luan O’Carroll</a>&#x2014;Contributed
-          the WMF transcoder.
+          the original WMF transcoder.
         </li>
         <li>
           <a href="mailto:spei@cs.uiowa.edu">Sheng Pei</a>&#x2014;Contributed
@@ -291,8 +306,16 @@
           converter.
         </li>
         <li>
+          <a href="mailto:eric_suen_cn@hotmail.com">Eric Suen</a>&#x2014;Tracked
+          down some memory leaks.
+        </li>
+        <li>
           <a href="mailto:natalian@cs.brown.edu">Nicholas
             Talian</a>&#x2014;Contributed on gradients.
+        </li>
+        <li>
+          <a href="mailto:andres@onemileup.com">Andres
+            Toussaint</a>&#x2014;Contributed SVGAnimatedPathData functionality.
         </li>
       </ul>
     </section>

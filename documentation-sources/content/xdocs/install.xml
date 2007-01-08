@@ -46,8 +46,7 @@
           </p>
           <ul>
             <li>
-              SVG 1.2 <a href="dev/svg12/elements-events.html#mouseWheel">mouse
-                wheel events</a>
+              SVG 1.2 <a href="dev/svg12.html#other">mouse wheel events</a>
             </li>
           </ul>
         </dd>
@@ -272,7 +271,7 @@ jar xvf batik-1.6.zip</source>
         files share a common dependency, this however does not indicate any
         dependency between the jar files underlined.
       </p>
-      <div class="figure"><img src="images/jarDependImg.png"
+      <div class="figure"><img src="jarDependImg.png"
           alt="Batik jar file dependency graph"/></div>
       <note>
         Some jar file names are shortened for clarity.  All <code>batik</code>
