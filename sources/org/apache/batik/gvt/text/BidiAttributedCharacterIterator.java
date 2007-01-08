@@ -217,9 +217,6 @@ public class BidiAttributedCharacterIterator implements AttributedCharacterItera
         aci.first();
         Float x = (Float) aci.getAttribute
             (GVTAttributedCharacterIterator.TextAttribute.X);
-        Float y = (Float) aci.getAttribute
-            (GVTAttributedCharacterIterator.TextAttribute.Y);
-
         if (x != null && !x.isNaN()) {
             reorderedAS.addAttribute
                 (GVTAttributedCharacterIterator.TextAttribute.X,
@@ -227,12 +224,35 @@ public class BidiAttributedCharacterIterator implements AttributedCharacterItera
             reorderedAS.addAttribute
                 (GVTAttributedCharacterIterator.TextAttribute.X, x, 0, 1);
         }
+
+        Float y = (Float) aci.getAttribute
+            (GVTAttributedCharacterIterator.TextAttribute.Y);
         if (y != null && !y.isNaN()) {
             reorderedAS.addAttribute
                 (GVTAttributedCharacterIterator.TextAttribute.Y,
                  FLOAT_NAN, reorderedFirstChar, reorderedFirstChar+1);
             reorderedAS.addAttribute
                 (GVTAttributedCharacterIterator.TextAttribute.Y, y, 0, 1);
+        }
+
+
+        Float dx = (Float) aci.getAttribute
+            (GVTAttributedCharacterIterator.TextAttribute.DX);
+        if (dx != null && !dx.isNaN()) {
+            reorderedAS.addAttribute
+                (GVTAttributedCharacterIterator.TextAttribute.DX,
+                 FLOAT_NAN, reorderedFirstChar, reorderedFirstChar+1);
+            reorderedAS.addAttribute
+                (GVTAttributedCharacterIterator.TextAttribute.DX, dx, 0, 1);
+        }
+        Float dy = (Float) aci.getAttribute
+            (GVTAttributedCharacterIterator.TextAttribute.DY);
+        if (dy != null && !dy.isNaN()) {
+            reorderedAS.addAttribute
+                (GVTAttributedCharacterIterator.TextAttribute.DY,
+                 FLOAT_NAN, reorderedFirstChar, reorderedFirstChar+1);
+            reorderedAS.addAttribute
+                (GVTAttributedCharacterIterator.TextAttribute.DY, dy, 0, 1);
         }
 
         // assign arabic form attributes to any arabic chars in the string

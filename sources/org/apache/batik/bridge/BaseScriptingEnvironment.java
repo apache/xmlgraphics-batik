@@ -433,9 +433,9 @@ public class BaseScriptingEnvironment {
                             // No encoding was specified in the MIME type, so
                             // infer it according to RFC 4329.
                             if (purl.hasContentTypeParameter("version")) {
-                                // Future versions of application/ecmascript are
-                                // not supported, so skip this script element if
-                                // the version parameter is present.
+                                // Future versions of application/ecmascript 
+                                // are not supported, so skip this script 
+                                // element if the version parameter is present.
                                 continue;
                             }
 
