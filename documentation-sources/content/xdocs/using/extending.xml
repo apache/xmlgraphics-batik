@@ -669,7 +669,7 @@
       <title>New URL protocols</title>
       <p> 
         For a variety of reasons (not the least of which is the
-        heavy use of the <code>data:</code> URL protocol in SVG).  Several
+        heavy use of the <code>data:</code> URL protocol in SVG), several
         parts of Batik use a
         <a class="class" href="../javadoc/org/apache/batik/util/ParsedURL.html">ParsedURL</a>
         instead of the JDK’s

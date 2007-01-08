@@ -97,7 +97,7 @@
         <!--li>A <a href="site:css">CSS engine</a></li-->
         <li>An <a href="site:dom-api">SVG DOM implementation</a></li>
         <li>A set of <a href="site:parsers">SVG microsyntax parsers</a></li>
-        <li>A <a href="site:ecmascript">scripting module</a></li>
+        <li>A <a href="site:scripting-ecmascript">scripting module</a></li>
         <li>A <a href="site:generator">generator</a> that creates an SVG document from Java2D calls</li>
         <li>A <a href="site:swing">Swing SVG component</a></li>
         <li>A <a href="site:transcoder">transcoder module</a></li>
@@ -159,8 +159,7 @@
         of the SVG specification.  The Batik project does not currently support
         declarative
         <a href="http://www.w3.org/TR/SVG11/animate.html">animation</a>,
-        however <a href="site:animation">work is currently underway</a> to
-        add it.
+        however work is currently underway to add it.
       </p> 
 
       <p>
