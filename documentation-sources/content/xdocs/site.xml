@@ -62,6 +62,7 @@
         <svg12 label="SVG Full 1.2 (draft)" href="http://www.w3.org/TR/SVG12/"/>
         <dom3core label="DOM Level 3 Core" href="http://www.w3.org/TR/DOM-Level-3-Core/"/>
         <dom3ev label="DOM Level 3 Events (draft)" href="http://www.w3.org/TR/DOM-Level-3-Events/"/>
+        <dom3xpath label="DOM Level 3 XPath (note)" href="http://www.w3.org/TR/DOM-Level-3-XPath/"/>
       </for12>
     </specs>
     <wiki label="Batik wiki" href="http://wiki.apache.org/xmlgraphics-batik/FrontPage"/>
@@ -87,7 +88,7 @@
     <dom-api label="DOM API" href="dom-api.html"/>
     <parsers label="Parsers" href="parsers.html"/>
     <scripting label="Scripting" href="scripting/">
-      <ecmascript label="Scripting with ECMAScript" href="ecmascript.html"/>
+      <scripting-ecmascript label="Scripting with ECMAScript" href="ecmascript.html"/>
       <java label="Scripting with Java" href="java.html"/>
       <security label="Security" href="security.html"/>
     </scripting>
@@ -102,14 +103,11 @@
   <development label="Development" href="dev/" tab="dev">
     <current label="Index" href="index.html"/>
     <branches label="Branches" href="branches.html"/>
-    <animation label="SMIL animation" href="animation.html"/>
-    <svg12 label="SVG 1.2 support" href="svg12/">
-      <svg12status label="Status" href="index.html"/>
-      <flow-text label="Flowing text" href="flow-text.html"/>
+    <svg12support label="SVG 1.2 support" href="svg12.html"/>
+      <!--flow-text label="Flowing text" href="flow-text.html"/>
       <dom3 label="DOM Level 3" href="dom3.html"/>
       <sxbl label="sXBL" href="sxbl.html"/>
-      <xmlev label="XML Events" href="xmlevents.html"/>
-    </svg12>
+      <xmlev label="XML Events" href="xmlevents.html"/-->
     <test label="Test infrastructure" href="test.html"/>
   </development>
 </site>

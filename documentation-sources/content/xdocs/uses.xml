@@ -94,7 +94,7 @@
         <li>
           <a href="http://www.throneworld.com/lords/gms/dev.html">Lords Map</a>
           is a program to allow players and visitors to view the current map of
-          various campaigns. Lord Map uses Batik’s SVG DOM and SVG Generator.
+          various campaigns. Lords Map uses Batik’s SVG DOM and SVG Generator.
         </li>
         <li>
           <a href="http://luxor-xul.sourceforge.net/index.html">Luxor XUL</a>

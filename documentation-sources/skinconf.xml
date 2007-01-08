@@ -52,7 +52,7 @@ which will be used to configure the chosen Forrest skin.
   <disable-xml-link>true</disable-xml-link>
 
   <!-- Disable navigation icons on all external links? -->
-  <disable-external-link-image>true</disable-external-link-image>
+  <disable-external-link-image>false</disable-external-link-image>
 
   <!-- Disable w3c compliance links? 
     Use e.g. align="center" to move the compliance links logos to 
@@ -192,7 +192,7 @@ which will be used to configure the chosen Forrest skin.
       color: maroon;
     }
     #content a:hover {
-      background: #ffffdd;
+      background-color: #ffffdd;
       border-bottom: 1px solid #aaa;
     }
     body, table, p {
@@ -261,14 +261,18 @@ which will be used to configure the chosen Forrest skin.
       color: white;
       padding: 0.25em;
     }
-    h2 {
-      clear: right;
+    #content h1 {
+      font-size: 15pt;
     }
-    h3.boxed {
+    #content h2 {
+      clear: right;
+      font-size: 12pt;
+    }
+    #content h3.boxed {
       background: #9f7ae1;
     }
-    h3, h4 {
-      font-size: 100%;
+    #content h3, #content h4 {
+      font-size: 11pt;
     }
     a.broken {
       background: orange;

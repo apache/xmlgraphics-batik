@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+
+<!-- ========================================================================= -->
+<!-- author cam@mcc.id.au                                                      -->
+<!-- version $Id$ -->
+<!-- ========================================================================= -->
+
+<!DOCTYPE document PUBLIC "-//APACHE//DTD Documentation V2.0//EN" "http://forrest.apache.org/dtd/document-v20.dtd">
+<document>
+  <header>
+    <title>SVG 1.2 support</title>
+  </header>
+
+  <body>
+    <p>
+      This page details information atbout Batik’s implementation of
+      features from SVG 1.2, <a href="site:svg12t">Tiny</a> and
+      <a href="site:svg12">Full</a>.  Note that the information on
+      this page is based on the code in the Subversion repository
+      trunk.
+    </p>
+
+    <section id="dom3">
+      <title>DOM Level 3</title>
+      <p>
+        DOM Level 3 <a href="site:dom3core">Core</a>,
+        <a href="site:dom3ev">Events</a> and <a href="site:dom3xpath">XPath</a>
+        are all supported.  These features are available regardless of whether
+        the document has <code>version="1.1"</code> or
+        <code>version="1.2"</code> set on the root <code>svg</code> element.
+      </p>
+      <p>
+        There are a few issues with the DOM Level 3 Core implementation:
+      </p>
+      <ol>
+        <li>
+          The <code>Document.compareDocumentPosition</code> method does not give
+          the correct result when used on DTD notation or entity nodes in the
+          document.
+        </li>
+        <li>
+          <code>Node.renameNode</code> always creates a new node and replaces
+          the old node with it.  This is technically allowed, but sub-optimal.
+        </li>
+        <li>
+          XML Schema information is never used.  Batik does not implement XML
+          Schema, so any methods or attributes that would utilise or expose
+          schema information (such as the <code>schemaTypeInfo</code> attribute
+          on the <code>Attr</code> and <code>Element</code> interfaces) do not
+          do so.
+        </li>
+        <li>
+          <code>Document.normalizeDocument</code> ignores the
+          <code>"entities"</code> parameter in the document’s
+          <code>DOMConfiguration</code>.
+        </li>
+      </ol>
+
+      <section id="dom3java">
+        <title>Using DOM Level 3 functionality from Java</title>
+        <p>
+          JREs before 1.5 include the DOM Level 2 interfaces and this can cause
+          problems when trying to use the DOM Level 3 versions of these same interface
+          files (<code>org.w3c.dom.*</code>).  Though the concrete Batik DOM
+          classes implement the DOM Level 3 functionality, you won’t be able to access
+          those methods through the <code>org.w3c.dom</code> interfaces on these
+          earlier JREs.
+        </p>
+        <p>
+          There are two ways to overcome this problem. The first
+          is to install the DOM Level 3 interfaces using the
+          <a href="http://java.sun.com/j2se/1.4.2/docs/guide/standards/">Endorsed
+            Standards Override Mechanism</a>. Copy the file
+          <code>lib/xml-apis-ext.jar</code> into the endorsed standards override
+          directory and the DOM Level 3 interfaces will be visible. You can then write
+          code against them (for example, call <code>Document.renameNode</code>
+          directly).  However, this will mean that other people cannot run or
+          compile your code unless they have JRE 1.5 or later, or they have also
+          installed the <code>xml-apis-ext.jar</code> in the same way.
+        </p>
+        <p>
+          The second method, which requires less messing about with the JRE, is
+          to cast your DOM objects to the concrete Batik DOM objects and call
+          your DOM Level 3 methods directly on them. The Batik DOM classes are in the
+          <code>org.apache.batik.dom</code> package. The classes named
+          <code>Abstract*</code> implement the DOM interfaces, and also contain
+          the DOM Level 3 methods. The advantage of this method is that for your code
+          to compile and run in others’ environments, they need not install any
+          jars with the endorsed standards overrides.
+        </p>
+        <p>
+          Here is an example of using the second method to get access to DOM
+          Level 3 specific methods:
+        </p>
+        <source>import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.dom.svg.SVGDOMImplementation;
+
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+public class C {
+    public void f() {
+        // Create a new SVG document
+        DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();
+        Document doc = impl.createDocument("http://www.w3.org/2000/svg", "svg", null);
+
+        // Create a 'g' element and append it to the root 'svg' element
+        Element e = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+        doc.getDocumentElement().appendChild(e);
+
+        // Cast the document object to org.apache.batik.dom.AbstractDocument,
+        // so that DOM 3 methods will be guaranteed to be visible
+        <strong>AbstractDocument document = (AbstractDocument) doc;</strong>
+
+        // Now a DOM 3 method can be used
+        <strong>document.renameNode(e, "http://www.w3.org/2000/svg", "text");</strong>
+    }
+}</source>
+
+        <p>
+          For cases where the DOM Level 3 versions of these interfaces contain
+          constants that you wish to use, the constants have been copied into
+          the Batik DOM classes. For example:
+        </p>
+
+        <source>import org.apache.batik.dom.AbstractNode;
+import org.apache.batik.dom.svg.SVGDOMImplementation;
+
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+public class C {
+    public void f() {
+        // Create a new SVG document
+        DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();
+        Document doc = impl.createDocument("http://www.w3.org/2000/svg", "svg", null);
+
+        // Create a 'g' element and append it to the root 'svg' element
+        Element svg = doc.getDocumentElement();
+        Element e = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+        svg.appendChild(e);
+
+        AbstractNode n1 = (AbstractNode) svg;
+        AbstractNode n2 = (AbstractNode) e;
+        int position = n1.compareDocumentPosition(n2);
+        if (position == <strong>AbstractNode.DOCUMENT_POSITION_PRECEDING</strong>
+                      | <strong>AbstractNode.DOCUMENT_POSITION_CONTAINS</strong>) {
+            System.out.println("The svg element contains the g element.");
+        } else {
+            System.out.println("Something is wrong!");
+        }
+    }
+}</source>
+
+        <p>
+          Note that using these org.apache.batik.dom interfaces is only needed
+          for the DOM Level 3 Core and Events interfaces. There were no earlier
+          versions of the DOM XPath interfaces to conflict with, so these can be
+          used directly (<code>org.w3c.dom.xpath</code>).
+        </p>
+        <p>
+          Of course, none of this matters if you are just using the DOM 3
+          functionality in ECMAScript, as the matter of interfaces is hidden
+          from the scripting environment.
+        </p>
+      </section>
+    </section>
+
+    <section id="sxbl">
+      <title>XML Binding Language for SVG (sXBL)</title>
+      <p>
+        sXBL is supported in documents with <code>version="1.2"</code>.  However,
+        the following issues exist:
+      </p>
+      <ol>
+        <li>
+          sXBL cannot be used for
+          <a href="http://www.w3.org/TR/2004/WD-SVG12-20041027/binding.html#sXBL-bindings-for-svg">SVG
+            resources</a> or
+          <a href="http://www.w3.org/TR/2004/WD-SVG12-20041027/binding.html#sXBL-bindings-for-visual-effects">visual
+            effects</a>.
+        </li>
+        <li>
+          The <code>traitDef</code> element is not implemented.
+        </li>
+        <li>
+          The <a href="http://www.w3.org/TR/sXBL/#shadow0">handling of CSS</a>
+          is probably not quite correct.
+        </li>
+      </ol>
+      <p>
+        Two content selector languages are supported: XPath 1.0 Patterns and the
+        drastically reduced XPath subset. XPath Patterns is the default
+        language. To change the language used to the XPath subset, put an
+        attribute <code>batik:selectorLanguage="XPathSubset"</code> on the
+        <code>xbl:content</code> element or on the <code>svg</code> document
+        element. (The <code>batik</code> extension namespace prefix should be
+        declared with
+        <code>xmlns:batik="http://xml.apache.org/batik/ext"</code>.)
+      </p>
+      <p>
+        Note that sXBL is likely to be dropped in favor of
+        <a href="http://www.w3.org/TR/xbl2">XBL 2.0</a> in
+        <a href="site:svg12">SVG 1.2 Full</a>.
+      </p>
+    </section>
+
+    <section id="flowtext">
+      <title>Flowing text and graphics</title>
+      <p>
+        The <code>flowRoot</code>, <code>flowRegion</code>,
+        <code>flowDiv</code>, <code>flowPara</code>, <code>flowSpan</code>,
+        <code>flowRegionBreak</code> and <code>flowLine</code> elements
+        from <a href="site:svg12">SVG 1.2 Full</a>’s
+        <a href="http://www.w3.org/TR/2004/WD-SVG12-20041027/flow.html">Flowing
+          Text and Graphics</a> chapter are supported in documents with
+        <code>version="1.2"</code>.
+      </p>
+      <p>
+        The more recent <a href="site:svg12t">SVG 1.2 Tiny</a> draft specifies
+        a different syntax for (a more restricted version of) flowing text,
+        and the full flowing text syntax is therefore likely to change.
+      </p>
+    </section>
+
+    <section id="other">
+      <title>Other SVG 1.2 features</title>
+      <p>
+        The following other features from SVG 1.2 are supported:
+      </p>
+      <ul>
+        <li>
+          the <a href="http://www.w3.org/TR/SVGMobile12/painting.html#SolidColorElement"><code>solidColor</code>
+            paint server element,</a>
+        </li>
+        <li>
+          the <code>multiImage</code>, <code>subImageRef</code> and
+          <code>subImage</code> elements for
+          <a href="http://www.w3.org/TR/2004/WD-SVG12-20041027/media.html#multires">Alternate
+            content based on display resolutions</a>,
+        </li>
+        <li>
+          the XML Events
+          <a href="http://www.w3.org/TR/SVGMobile12/script.html#HandlerElement"><code>handler</code>
+            element</a>,
+        </li>
+        <li>
+          self-contained
+          <a href="http://www.w3.org/TR/2004/WD-SVG12-20041027/nonvisual.html#external-references">resource
+            documents</a>,
+        </li>
+        <li>
+          the mouse
+          <a href="http://www.w3.org/TR/2004/WD-SVG12-20041027/dom.html#wheelevent">wheel
+            event</a> (which is likely to be superseded by a similar event
+          developed by the W3C WebAPI WG),
+        </li>
+        <li>
+          the
+          <a href="http://www.w3.org/TR/2004/WD-SVG12-20041027/dom.html#shapemod">ShapeChange
+            and RenderedBBoxChange events</a> (though the
+          <code>boundingBox</code> attribute of the RenderedBBoxChange event is not
+          used), and
+        </li>
+        <li>
+          the <code>startMouseCapture</code> and <code>stopMouseCapture</code>
+          methods on the
+          <a href="http://www.w3.org/TR/2004/WD-SVG12-20041027/api.html#GlobalObject">global
+            object</a>.
+        </li>
+      </ul>
+    </section>
+  </body>
+</document>

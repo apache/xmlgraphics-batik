@@ -1,3 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+
+<!-- ========================================================================= -->
+<!-- author cam@mcc.id.au                                                      -->
+<!-- version $Id$ -->
+<!-- ========================================================================= -->
+
 <!DOCTYPE document PUBLIC "-//APACHE//DTD Documentation V2.0//EN" "http://forrest.apache.org/dtd/document-v20.dtd">
 <document>
   <header>
@@ -8,7 +34,7 @@
     <p>
       This section has information on the working on Batik, and on the
       features that are supported by the code in the Subversion repository
-      that hasn't yet made it to a release.
+      that haven’t yet made it to a release.
     </p>
     <dl>
       <dt>Branches</dt>
@@ -19,19 +45,12 @@
           purpose.
         </p>
       </dd>
-      <dt>SMIL animation</dt>
-      <dd>
-        <p>
-          The <a href="site:animation">SMIL animation</a> page lists the level
-          of support of animation in the <b>anim</b> branch.
-        </p>
-      </dd>
       <dt>SVG 1.2 support</dt>
       <dd>
         <p>
-          Some features of SVG 1.2 Mobile and Full are supported in the
-          trunk, and these are listed in the <a href="site:svg12">SVG 1.2
-            support</a> section.
+          Some features of SVG 1.2 Tiny and Full are supported in the
+          trunk, and these are listed on the <a href="site:svg12support">SVG 1.2
+            support</a> page.
         </p>
       </dd>
       <dt>Test infrastructure</dt>
