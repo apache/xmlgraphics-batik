@@ -100,9 +100,10 @@
             Bill Haneman works for Sun Microsystems’ Desktop Enabling Middleware
             group in Dublin, Ireland, and implemented much of the Batik’s text
             support (though not SVG Fonts, thanks Bella, Dean, and David!).  He is
-            also technical lead for the Gnome Accessibility Project
-            (http://developer.gnome.org/projects/gap), an open project to provide
-            an accessibility framework for Linux and Solaris(TM) desktops.  A
+            also technical lead for the
+            <a href="http://developer.gnome.org/projects/gap">GNOME
+              Accessibility Project</a>, an open project to provide an
+            accessibility framework for Linux and Solaris(TM) desktops.  A
             twenty-year veteran of scientific programming and application
             development, he is a US expatriate who plays traditional Irish music
             on the uilleann pipes. 
