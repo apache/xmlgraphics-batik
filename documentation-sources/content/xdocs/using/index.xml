@@ -76,7 +76,7 @@
       <dt>Scripting</dt>
       <dd>
         <p>
-          The scripting pages (<a href="site:ecmascript">Scriping with
+          The scripting pages (<a href="site:scripting-ecmascript">Scriping with
             ECMAScript</a>, <a href="site:java">Scripting with
             Java</a> and <a href="site:security">Security</a>)
           document how to programmatically manipulate SVG documents, and how

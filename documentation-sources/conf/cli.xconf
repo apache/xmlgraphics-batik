@@ -228,6 +228,12 @@
    <exclude pattern="[preferred]/**"/>
    <exclude pattern="[location]"/>
 
+   <!-- Exclude the download.cgi file -->
+   <exclude pattern="download.cgi"/>
+
+   <!-- Exclude the applet demo directory -->
+   <exclude pattern="demo/**"/>
+
    <!--   <include-links extension=".html"/>-->
 
    <!--+
