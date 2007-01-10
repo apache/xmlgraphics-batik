@@ -36,36 +36,6 @@
       <a href="site:swing">JSVGCanvas</a> swing component in a Java applet.
     </p>
 
-    <style type="text/css">
-      #layout #data {
-        border-collapse: collapse;
-        border: 1px solid #7099C5 ! important;
-        width: auto;
-      }
-      #layout #data td, #layout #data th {
-        padding: 4px;
-        vertical-align: middle ! important;
-        text-align: left ! important;
-      }
-      #layout {
-        text-align: center ! important;
-        width: inherit ! important;
-        border-collapse: collapse;
-        border: none ! important;
-        background: none ! important;
-      }
-      #layout td {
-        background: none ! important;
-        vertical-align: middle;
-      }
-      #layout #data td {
-        background: #f0f0ff ! important;
-      }
-      #layout td p {
-        text-align: center ! important;
-      }
-    </style>
-
     <table id="layout">
       <tr>
         <td>
@@ -120,8 +90,18 @@
     <script><![CDATA[
       var chart;
 
+      function get(id) {
+        var e = document.getElementById(id);
+        // This loop just gets around the problem of IE returning the 'a'
+        // element looked up by name, rather than the desired element by id.
+        while (e.nodeType != 1 || e.getAttribute("id") != id) {
+          e = e.nextSibling;
+        }
+        return e;
+      }
+
       function update() {
-        chart = document.getElementById("chart");
+        chart = get("chart");
         updateBar("ShoeBar");
         updateBar("CarBar");
         updateBar("TravelBar");
@@ -129,7 +109,8 @@
       }
 
       function updateBar(name) {
-        var value = Number(document.getElementById(name).value);
+        var input = get(name);
+        var value = Number(input.value);
         if (!isNaN(value) && value >= 0) {
           chart.updateBar(name, value);
         }

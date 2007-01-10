@@ -447,6 +447,42 @@ which will be used to configure the chosen Forrest skin.
       padding-left: 1em ! important;
       padding-right: 1em ! important;
     }
+
+    <!-- For license page -->
+    .license pre {
+      width: 85ex;
+    }
+
+    <!-- For demo page -->
+    #layout #data {
+      border-collapse: collapse;
+      width: auto;
+    }
+    #layout #data td, #layout #data th {
+      padding: 4px;
+      vertical-align: middle;
+      text-align: left ! important;
+    }
+    #layout {
+      text-align: center ! important;
+      width: inherit ! important;
+      border-collapse: collapse;
+      border: none ! important;
+      background: none ! important;
+    }
+    table#data tbody {
+      border: 1px solid #9f7ae1 ! important;
+    }
+    #layout td {
+      background: none ! important;
+      vertical-align: middle;
+    }
+    #layout #data td {
+      background: #f8f5ff ! important;
+    }
+    #layout td p {
+      text-align: center ! important;
+    }
   </extra-css>
 
   <colors>
