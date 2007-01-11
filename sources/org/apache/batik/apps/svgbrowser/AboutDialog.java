@@ -21,6 +21,7 @@ package org.apache.batik.apps.svgbrowser;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -34,6 +35,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JWindow;
@@ -55,24 +57,17 @@ public class AboutDialog extends JWindow {
     public static final String ICON_BATIK_SPLASH 
         = "AboutDialog.icon.batik.splash";
 
-    public static final String ICON_APACHE_LOGO
-        = "AboutDialog.icon.apache.logo";
-
-    public static final String LABEL_APACHE_BATIK_PROJECT
-        = "AboutDialog.label.apache.batik.project";
-
-    public static final String LABEL_CONTRIBUTORS
-        = "AboutDialog.label.contributors";
-
     /**
-     * Default constructor
+     * Creates a new AboutDialog.
      */
-    public AboutDialog(){
-        super();
+    public AboutDialog() {
         buildGUI();
     }
 
-    public AboutDialog(Frame owner){
+    /**
+     * Creates a new AboutDialog with a given owner.
+     */
+    public AboutDialog(Frame owner) {
         super(owner);
         buildGUI();
 
@@ -118,53 +113,34 @@ public class AboutDialog extends JWindow {
     }
 
     /**
-     * Populates this window
+     * Populates this window.
      */
-    protected void buildGUI(){
-        JPanel panel = new JPanel(new BorderLayout(5, 5));
-        panel.setBackground(Color.white);
-
-        ClassLoader cl = this.getClass().getClassLoader();
-
-        //
-        // Top is made of the Apache feather, the 
-        // name of the project and URL
-        //
-        URL url = cl.getResource(Resources.getString(ICON_APACHE_LOGO));
-        JLabel l = new JLabel(Resources.getString(LABEL_APACHE_BATIK_PROJECT),
-                              new ImageIcon(url),
-                              SwingConstants.LEFT);
-        panel.add(BorderLayout.NORTH, l);
-
-        //
-        // Add splash image
-        //
-        url = cl.getResource(Resources.getString(ICON_BATIK_SPLASH));
-        panel.add(BorderLayout.CENTER, new JLabel(new ImageIcon(url)));
-
-        //
-        // Add exact revision information
-        //
-        String version = "Batik " + Version.getVersion();
-
-        panel.add(BorderLayout.SOUTH, new JLabel(version, SwingConstants.RIGHT));
-
-        setBackground(Color.white);
+    protected void buildGUI() {
         getContentPane().setBackground(Color.white);
 
-        JPanel p = new JPanel(new BorderLayout());
-        p.setBackground(Color.white);
-        p.add(panel, BorderLayout.CENTER);
+        ClassLoader cl = this.getClass().getClassLoader();
+        URL url = cl.getResource(Resources.getString(ICON_BATIK_SPLASH));
+        ImageIcon icon = new ImageIcon(url);
+        int w = icon.getIconWidth();
+        int h = icon.getIconHeight();
 
-        JTextArea contributors 
-            = new JTextArea(Resources.getString(LABEL_CONTRIBUTORS)){ 
-                    {setLineWrap(true); setWrapStyleWord(true); setEnabled(false); setRows(11); }
-                };
+        JLayeredPane p = new JLayeredPane();
+        p.setSize(600, 425);
+        getContentPane().add(p);
 
-        contributors.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+        JLabel l = new JLabel(icon);
+        l.setBounds(0, 0, w, h);
+        p.add(l, new Integer(0));
 
-        p.add(contributors,
-              BorderLayout.SOUTH);
+        JLabel l2 = new JLabel("Batik " + Version.getVersion());
+        l2.setForeground(new Color(232, 232, 232, 255));
+        l2.setOpaque(false);
+        l2.setBackground(new Color(0, 0, 0, 0));
+        l2.setHorizontalAlignment(JLabel.RIGHT);
+        l2.setVerticalAlignment(JLabel.BOTTOM);
+        l2.setBounds(w - 320, h - 117, 300, 100);
+        p.add(l2, new Integer(2));
+
         ((JComponent)getContentPane()).setBorder
             (BorderFactory.createCompoundBorder
              (BorderFactory.createBevelBorder(BevelBorder.RAISED, Color.gray, Color.black),
@@ -173,8 +149,5 @@ public class AboutDialog extends JWindow {
               (BorderFactory.createEmptyBorder(3, 3, 3, 3),
                BorderFactory.createLineBorder(Color.black)),
               BorderFactory.createEmptyBorder(10, 10, 10, 10))));
-        
-        getContentPane().add(p);
-        pack();
     }
 }

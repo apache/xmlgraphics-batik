@@ -74,137 +74,57 @@ To display the available targets type:
   <property file="${basedir}/build-local.properties"/>
   <property environment="env"/>
 
-  <!-- Info ............................................................... -->
-  <target name="info">
-    <echo message="------------------- ${Project} ${version} [${year}] -------------------"/>
-    <echo message="${ant.version}"/>
-    <echo message="VM: ${java.vm.version}, ${java.vm.vendor}"/>
-    <echo message="JAVA_HOME: ${env.JAVA_HOME}"/>
-  </target>
-
   <!-- Initializations .................................................... -->
-  <target name="init-args" unless="args">
-    <property name="args" value=""/>
-  </target>
+  <tstamp>
+    <format property="ts" pattern="yyyyMMdd-HHmmss-z"/>
+  </tstamp>
+  <property name="Project"            value="Apache Batik"/>
+  <property name="project"            value="batik"/>
+  <property name="year"               value="2005"/>
+  <property name="version"            value="1.6"/>
+  <property name="revisionType"       value=""/>
+  <property name="revisionNumber"     value=""/>
 
-  <target name="init" depends="init-args">
-    <tstamp>
-      <format property="ts" pattern="yyyyMMdd-HHmmss-z"/>
-    </tstamp>
-    <property name="Project"            value="Apache Batik"/>
-    <property name="project"            value="batik"/>
-    <property name="year"               value="2005"/>
-    <property name="version"            value="1.6"/>
-    <property name="revisionType"       value=""/>
-    <property name="revisionNumber"     value=""/>
+  <property file="build.properties"/>
+  <property name="debug"              value="off"/>
+  <property name="optimize"           value="on"/>
+  <property name="deprecation"        value="on"/>
 
-    <property file="build.properties"/>
-    <property name="debug"              value="off"/>
-    <property name="optimize"           value="on"/>
-    <property name="deprecation"        value="on"/>
+  <property name="src"                value="sources"/>
+  <property name="src-internal-codec" value="sources-internal-codec"/>
+  <property name="resources"          value="resources"/>
+  <property name="testsrc"            value="test-sources"/>
+  <property name="testresources"      value="test-resources"/>
+  <property name="dest"               value="classes"/>
+  <property name="dest-internal-codec" value="classes-internal-codec"/>
+  <property name="build"              value="${project}-${version}"/>
+  <property name="build.id"           value="${ts} (${user.name} [${os.name} ${os.version} ${os.arch}, Java ${java.runtime.version}])"/>
+  <property name="docs"               value="${build}/docs"/>
+  <property name="forrest-build"      value="${build}/forrest"/>
+  <property name="lib"                value="lib"/>
+  <property name="samples"            value="samples"/>
+  <property name="package-prefix"     value="org/apache/${project}"/>
 
-    <property name="src"                value="sources"/>
-    <property name="src-internal-codec" value="sources-internal-codec"/>
-    <property name="resources"          value="resources"/>
-    <property name="testsrc"            value="test-sources"/>
-    <property name="testresources"      value="test-resources"/>
-    <property name="dest"               value="classes"/>
-    <property name="dest-internal-codec" value="classes-internal-codec"/>
-    <property name="build"              value="${project}-${version}"/>
-    <property name="build.id"           value="${ts} (${user.name} [${os.name} ${os.version} ${os.arch}, Java ${java.runtime.version}])"/>
-    <property name="docs"               value="${build}/docs"/>
-    <property name="forrest-build"      value="${build}/forrest"/>
-    <property name="lib"                value="lib"/>
-    <property name="samples"            value="samples"/>
-    <property name="package-prefix"     value="org/apache/${project}"/>
+  <property name="class-prefix"       value="org.apache.${project}"/>
 
-    <property name="class-prefix"       value="org.apache.${project}"/>
+  <property name="dom.javadoc"        value="http://www.w3.org/2003/01/dom2-javadoc/"/>
+  <property name="jdk.javadoc"        value="http://java.sun.com/j2se/1.4/docs/api/"/>
+  <property name="rhino.javadoc"      value="http://www.mozilla.org/rhino/apidocs/"/>
 
-    <property name="dom.javadoc"        value="http://www.w3.org/2003/01/dom2-javadoc/"/>
-    <property name="jdk.javadoc"        value="http://java.sun.com/j2se/1.4/docs/api/"/>
-    <property name="rhino.javadoc"      value="http://www.mozilla.org/rhino/apidocs/"/>
+  <property name="site"               value="site"/>
 
-    <property name="site"               value="site"/>
+  <property name="test-reports"       value="test-reports"/>
+  <property name="test-references"    value="test-references"/>
+  <property name="test-resources"     value="test-resources"/>
 
-    <property name="test-reports"       value="test-reports"/>
-    <property name="test-references"    value="test-references"/>
-    <property name="test-resources"     value="test-resources"/>
+  <!-- For ForrestBot site deployment -->
+  <property name="deploy.svn.url"     value="https://svn.apache.org/repos/asf/xmlgraphics/site/deploy/batik/"/>
+  <property name="deploy.svn.svn-dir" value="${forrest-build}/deploy"/>
+  <property name="build.site-dir"     value="${site}"/>
 
-    <pathconvert property="cwd">
-      <path path="."/>
-    </pathconvert>
-
-    <available property="rhino.present" classname="org.mozilla.javascript.Context">
-      <classpath refid="libs-classpath"/>
-    </available>
-    <available property="jpython.present" classname="org.python.util.PythonInterpreter">
-      <classpath refid="libs-classpath"/>
-    </available>
-    <available property="jacl.present" classname="tcl.lang.Interp">
-      <classpath refid="libs-classpath"/>
-    </available>
-    <available property="jdk14.present" classname="java.lang.CharSequence"/>
-    
-    <!-- When compiling Batik under GNU Classpath, the Sun codecs are not available. -->
-    <condition property="sun-codecs.present">
-      <and>
-        <available classname="com.sun.image.codec.jpeg.JPEGCodec" 
-                   classpathref="libs-classpath"/>
-        <not>
-          <equals arg1="${sun-codecs.disabled}" arg2="true"/>
-        </not>
-      </and>
-    </condition>
-    
-    <condition property="src-jdk" value="sources-1.4">
-      <equals arg1="${jdk14.present}" arg2="true"/>
-    </condition>
-    <condition property="src-jdk" value="sources-1.3">
-      <not>
-        <equals arg1="${jdk14.present}" arg2="true"/>
-      </not>
-    </condition>
-
-    <condition property="javadoc-exclusion-rhino"
-               value="org.apache.batik.script.rhino">
-      <not>
-        <equals arg1="${rhino.present}" arg2="true"/>
-      </not>
-    </condition>
-    <condition property="javadoc-exclusion-jpython"
-               value="org.apache.batik.script.jpython">
-      <not>
-        <equals arg1="${jpython.present}" arg2="true"/>
-      </not>
-    </condition>
-    <condition property="javadoc-exclusion-jacl"
-               value="org.apache.batik.script.jacl">
-      <not>
-        <equals arg1="${jacl.present}" arg2="true"/>
-      </not>
-    </condition>
-
-    <property name="javadoc-exclusions"
-              value="${javadoc-exclusion-rhino},${javadoc-exclusion-jpython},${javadoc-exclusion-jacl}"/>
-
-    <uptodate property="IWasLoadedUpToDate" 
-     targetfile="${testresources}/org/apache/batik/bridge/IWasLoaded.jar">
-     <srcfiles dir="${testresources}//org/apache/batik/bridge"
-               includes="IWasLoaded.java"/>
-    </uptodate>
-
-    <uptodate property="IWasLoadedTooUpToDate" 
-     targetfile="${testresources}/org/apache/batik/bridge/IWasLoadedToo.jar">
-     <srcfiles dir="${testresources}//org/apache/batik/bridge"
-               includes="IWasLoadedToo.java"/>
-    </uptodate>
-
-    <condition property="forrest.call" value="forrest.bat" else="forrest">
-      <os family="windows"/>
-    </condition>
-
-    <antcall target="info"/>
-  </target>
+  <pathconvert property="cwd">
+    <path path="."/>
+  </pathconvert>
 
   <path id="libs-classpath">
     <fileset dir="lib">
@@ -224,10 +144,83 @@ To display the available targets type:
     </fileset>
   </path>
 
+  <available property="rhino.present" classname="org.mozilla.javascript.Context">
+    <classpath refid="libs-classpath"/>
+  </available>
+  <available property="jpython.present" classname="org.python.util.PythonInterpreter">
+    <classpath refid="libs-classpath"/>
+  </available>
+  <available property="jacl.present" classname="tcl.lang.Interp">
+    <classpath refid="libs-classpath"/>
+  </available>
+  <available property="jdk14.present" classname="java.lang.CharSequence"/>
+  
+  <!-- When compiling Batik under GNU Classpath, the Sun codecs are not available. -->
+  <condition property="sun-codecs.present">
+    <and>
+      <available classname="com.sun.image.codec.jpeg.JPEGCodec" 
+                 classpathref="libs-classpath"/>
+      <not>
+        <equals arg1="${sun-codecs.disabled}" arg2="true"/>
+      </not>
+    </and>
+  </condition>
+  
+  <condition property="src-jdk" value="sources-1.4">
+    <equals arg1="${jdk14.present}" arg2="true"/>
+  </condition>
+  <condition property="src-jdk" value="sources-1.3">
+    <not>
+      <equals arg1="${jdk14.present}" arg2="true"/>
+    </not>
+  </condition>
+
+  <condition property="javadoc-exclusion-rhino"
+             value="org.apache.batik.script.rhino">
+    <not>
+      <equals arg1="${rhino.present}" arg2="true"/>
+    </not>
+  </condition>
+  <condition property="javadoc-exclusion-jpython"
+             value="org.apache.batik.script.jpython">
+    <not>
+      <equals arg1="${jpython.present}" arg2="true"/>
+    </not>
+  </condition>
+  <condition property="javadoc-exclusion-jacl"
+             value="org.apache.batik.script.jacl">
+    <not>
+      <equals arg1="${jacl.present}" arg2="true"/>
+    </not>
+  </condition>
+
+  <property name="javadoc-exclusions"
+            value="${javadoc-exclusion-rhino},${javadoc-exclusion-jpython},${javadoc-exclusion-jacl}"/>
+
+  <uptodate property="IWasLoadedUpToDate" 
+   targetfile="${testresources}/org/apache/batik/bridge/IWasLoaded.jar">
+   <srcfiles dir="${testresources}//org/apache/batik/bridge"
+             includes="IWasLoaded.java"/>
+  </uptodate>
+
+  <uptodate property="IWasLoadedTooUpToDate" 
+   targetfile="${testresources}/org/apache/batik/bridge/IWasLoadedToo.jar">
+   <srcfiles dir="${testresources}//org/apache/batik/bridge"
+             includes="IWasLoadedToo.java"/>
+  </uptodate>
+
+  <condition property="forrest.call" value="forrest.bat" else="forrest">
+    <os family="windows"/>
+  </condition>
+
+  <!-- Info ............................................................... -->
+  <echo message="------------------- ${Project} ${version} [${year}] -------------------"/>
+  <echo message="${ant.version}"/>
+  <echo message="VM: ${java.vm.version}, ${java.vm.vendor}"/>
+  <echo message="JAVA_HOME: ${env.JAVA_HOME}"/>
 
   <!-- Help ............................................................... -->
   <target name       ="help"
-          depends    ="init"
           description="Displays the usage">
     <echo message=""/>
     <echo message="${project} build file"/>
@@ -259,10 +252,10 @@ To display the available targets type:
     <echo message="                     ${build}/docs/"/>
     <echo message="   htmldoc       --> generates the site documentation in"/>
     <echo message="                     ${build}/docs/ without the Javadoc"/>
-    <echo message="   printerdoc    --> generates the printable documentation in"/>
-    <echo message="                     ${build}/docs/print"/>
+    <!--echo message="   printerdoc     -> generates the printable documentation in"/>
+    <echo message="                     ${build}/docs/print"/-->
     <echo message="   clean         --> cleans up the directory"/>
-    <echo message="   splash        --> Updates documentation and browser splash screens"/>
+    <echo message="   splash        --> Updates browser splash screen"/>
     <echo message="   all-jar       --> Creates a combined JAR file of the Batik"/>
     <echo message="                     libraries in ${build}/lib"/>
     <echo message=""/>
@@ -275,14 +268,14 @@ To display the available targets type:
   <target name="dist-zip" depends="build-zip"/>
   <target name="build-zip" depends="doc-zip, bin-zip, src-zip"/>
 
-  <target name="doc-zip" depends="init, html">
+  <target name="doc-zip" depends="html">
     <delete dir="${build}/docs/images/BE"/>
     <zip zipfile="${project}-docs-${version}.zip" basedir="${build}"
          includes="docs/javadoc/**"/>
     <delete dir="${build}/docs/javadoc"/>
   </target>
 
-  <target name="bin-zip" depends="init, jars, htmldoc">
+  <target name="bin-zip" depends="jars, htmldoc">
     <zip zipfile="${project}-${version}.zip">
       <zipfileset dir="." prefix="${project}-${version}">
         <include name="LICENSE"/>
@@ -307,7 +300,7 @@ To display the available targets type:
     </zip>
   </target>
 
-  <target name="src-zip" depends="init, record-svn-revision">
+  <target name="src-zip" depends="record-svn-revision">
     <zip zipfile="${project}-src-${version}.zip">
       <zipfileset dir="." prefix="${project}-${version}">
         <include name="LICENSE"/>
@@ -337,14 +330,14 @@ To display the available targets type:
   <target name="dist-tgz" depends="build-tgz"/>
   <target name="build-tgz" depends="doc-tgz, bin-tgz, src-tgz"/>
 
-  <target name="doc-tgz" depends="init, html">
+  <target name="doc-tgz" depends="html">
     <delete dir="${build}/docs/images/BE"/>
     <tar tarfile="${project}-docs-${version}.tar.gz" compression="gzip"
          basedir="${build}" includes="docs/javadoc/**"/>
     <delete dir="${build}/docs/javadoc"/>
   </target>
 
-  <target name="bin-tgz" depends="init, jars, htmldoc">
+  <target name="bin-tgz" depends="jars, htmldoc">
     <tar tarfile="${project}-${version}.tar.gz" compression="gzip">
       <tarfileset dir="." prefix="${project}-${version}">
         <include name="LICENSE"/>
@@ -369,7 +362,7 @@ To display the available targets type:
     </tar>
   </target>
 
-  <target name="src-tgz" depends="init, record-svn-revision">
+  <target name="src-tgz" depends="record-svn-revision">
     <tar tarfile="${project}-src-${version}.tar.gz" compression="gzip">
       <tarfileset dir="." prefix="${project}-${version}">
         <include name="LICENSE"/>
@@ -399,7 +392,7 @@ To display the available targets type:
 
   <!-- Compilation ........................................................ -->
   <target name       ="compiletest"
-          depends    ="init, compile"
+          depends    ="compile"
           description="Compiles the tests infrastructure source files">
     <mkdir dir="${dest}"/>
 
@@ -423,7 +416,7 @@ To display the available targets type:
   <target name="testjars" depends="security2.jar, IWasLoaded.jar, IWasLoadedToo.jar, JarCheckPermissionsGranted.jar, JarCheckPermissionsDenied.jar, java-binding.jar"/>
 
   <target name       ="compiletestjars"
-          depends    ="init, compile"
+          depends    ="compile"
           description="Compiles the source files for the samples scripts and the test-resources">
     <mkdir dir="${testresources}/classes"/>
     <mkdir dir="${samples}/tests/resources/java/classes"/>
@@ -451,7 +444,7 @@ To display the available targets type:
     </javac>
   </target>
 
-  <target name="security2.jar" depends="init, compiletestjars">
+  <target name="security2.jar" depends="compiletestjars">
     <jar manifest="${samples}/tests/resources/java/resources/com/untrusted/script/security2.mf"
          jarfile="samples/tests/spec/scripting/security2.jar">
       <fileset dir="${samples}/tests/resources/java/classes">
@@ -460,7 +453,7 @@ To display the available targets type:
     </jar>
   </target>
 
-  <target name="IWasLoaded.jar" depends="init, compiletestjars" 
+  <target name="IWasLoaded.jar" depends="compiletestjars" 
           unless="IWasLoadedUpToDate">
     <jar manifest="${testresources}/org/apache/batik/bridge/IWasLoaded.mf"
          jarfile="${testresources}/org/apache/batik/bridge/IWasLoaded.jar">
@@ -471,7 +464,7 @@ To display the available targets type:
     </jar>
   </target>
 
-  <target name="IWasLoadedToo.jar" depends="init, compiletestjars" 
+  <target name="IWasLoadedToo.jar" depends="compiletestjars" 
           unless="IWasLoadedTooUpToDate">
     <jar manifest="${testresources}/org/apache/batik/bridge/IWasLoadedToo.mf"
          jarfile="${testresources}/org/apache/batik/bridge/IWasLoadedToo.jar">
@@ -482,7 +475,7 @@ To display the available targets type:
     </jar>
   </target>
 
-  <target name="JarCheckPermissionsDenied.jar" depends="init, compiletestjars">
+  <target name="JarCheckPermissionsDenied.jar" depends="compiletestjars">
     <jar manifest="${testresources}/org/apache/batik/bridge/JarCheckPermissionsDenied.mf"
          jarfile="${testresources}/org/apache/batik/bridge/JarCheckPermissionsDenied.jar">
       <fileset dir="${testresources}/classes">
@@ -491,7 +484,7 @@ To display the available targets type:
     </jar>
   </target>
 
-  <target name="JarCheckPermissionsGranted.jar" depends="init, compiletestjars">
+  <target name="JarCheckPermissionsGranted.jar" depends="compiletestjars">
     <jar manifest="${testresources}/org/apache/batik/bridge/JarCheckPermissionsGranted.mf"
          jarfile="${testresources}/org/apache/batik/bridge/JarCheckPermissionsGranted.jar">
       <fileset dir="${testresources}/classes">
@@ -500,7 +493,7 @@ To display the available targets type:
     </jar>
   </target>
 
-  <target name="java-binding.jar" depends="init, compiletestjars">
+  <target name="java-binding.jar" depends="compiletestjars">
     <jar manifest="${samples}/tests/resources/java/resources/com/test/script/java-binding.mf"
          jarfile="${samples}/tests/spec/scripting/java-binding.jar">
       <fileset dir="${samples}/tests/resources/java/classes">
@@ -521,8 +514,7 @@ To display the available targets type:
                    determine-svn-revision-from-file,
                    determine-svn-revision-set"/>
 
-  <target name="determine-svn-revision-svn-info"
-          depends="init">
+  <target name="determine-svn-revision-svn-info">
     <dirset id="dirs" dir="${src}/${package-prefix}">
       <include name="**"/>
     </dirset>
@@ -537,7 +529,6 @@ To display the available targets type:
   </target>
 
   <target name="determine-svn-revision-transform"
-          depends="init"
           if="should-transform-svn-info">
     <java fork="yes" classname="org.apache.xalan.xslt.Process"
           outputproperty="svn-revision-number"
@@ -571,14 +562,13 @@ To display the available targets type:
   </target>
 
 
-  <target name       ="compile-prepare"
-          depends    ="init">
+  <target name       ="compile-prepare">
     <mkdir dir="${dest}"/>
     <echo message="debug ${debug}, optimize ${optimize}, deprecation ${deprecation}"/>
   </target>
 
   <target name       ="compile"
-          depends    ="init, compile-prepare">
+          depends    ="compile-prepare">
     <javac destdir="${dest}" deprecation="${deprecation}" 
            debug="${debug}" optimize="${optimize}" encoding="UTF-8">
       <src path="${src}"/>
@@ -594,19 +584,16 @@ To display the available targets type:
   </target>
 
   <target name="clean-compile"
-          depends="init"
           description="Cleans the files generated by compile">
     <delete dir="${dest}"/>
   </target>
 
   <target name="clean-apache"
-          depends="init"
           description="Cleans the Apache files generated by compile">
     <delete dir="${dest}/org/apache"/>
   </target>
 
   <target name="clean-test"
-          depends="init"
           description="Cleans files generated by running tests">
     <delete file="${samples}/tests/spec/scripting/security2.jar"/>
     <delete file="${samples}/tests/spec/scripting/java-binding.jar"/>
@@ -616,7 +603,7 @@ To display the available targets type:
 
 
   <!-- Jars ............................................................... -->
-  <target name="prepare-build" depends="init, determine-svn-revision">
+  <target name="prepare-build" depends="determine-svn-revision">
     <mkdir dir="${build}"/>
     <mkdir dir="${build}/docs"/>
     <mkdir dir="${build}/lib"/>
@@ -1371,7 +1358,6 @@ To display the available targets type:
   </target>
 
   <target name="testdirs"
-          depends="init"
           description="Created directories needed for test suite">
 
     <mkdir dir="${test-reports}"/>
@@ -1578,7 +1564,7 @@ To display the available targets type:
   <!-- Documentation ...................................................... -->
   <target name="html" depends="javadoc, htmldoc"
           description="Generates the HTML documentation, including javadocs, in ${build}/docs/"/>
-  <target name="htmldoc" depends="init, forrest"
+  <target name="htmldoc" depends="forrest"
           description="Generates HTML documentation">
     <mkdir dir="${docs}"/>
     <copy todir="${docs}">
@@ -1587,7 +1573,7 @@ To display the available targets type:
   </target>
 
   <target name="site" depends="site-javadoc, sitedoc"/>
-  <target name="sitedoc" depends="init, forrest"
+  <target name="sitedoc" depends="forrest"
           description="Generates the http://xmlgraphics.apache.org/batik/ site">
     <mkdir dir="${site}"/>
     <copy todir="${site}">
@@ -1602,7 +1588,7 @@ To display the available targets type:
     </copy>
   </target>
 
-  <target name="forrest" depends="init">
+  <target name="forrest">
     <property name="forrest-build.dir" value="${cwd}${file.separator}${forrest-build}"/>
     <exec executable="${forrest.call}">
       <arg value="-Dproject.build-dir=${forrest-build.dir}"/>
@@ -1616,7 +1602,7 @@ To display the available targets type:
   </target>
 
   <target name="javadocs" depends="javadoc"/>
-  <target name="javadoc" depends="init">
+  <target name="javadoc">
     <mkdir dir="${docs}/javadoc"/>
     <javadoc packagenames="${class-prefix}.*,
                            org.xml.*,
@@ -1642,46 +1628,20 @@ To display the available targets type:
     </javadoc>
   </target>
 
-  <target name="clean-docs" depends="init">
+  <target name="publish" depends="site, deploy.svn"
+          description="Generates the http://xmlgraphics.apache.org/batik/ site and commits it to SVN"/>
+
+  <target name="clean-docs">
     <delete dir="${forrest-build}"/>
     <delete dir="${docs}"/>
     <delete dir="${site}"/>
     <delete dir="build"/>  <!-- In case it's left behind by Forrest. -->
   </target>
 
-  <!-- Generates splash screens for the documentation and the browser ..... -->
-
-  <!-- Simply transform the splash.xsl stylesheet, rasterize the result and -->
-  <!-- copy to all destinations                                             -->
+  <!-- Generates splash screens for the browser ........................... -->
 
   <target name="splash" depends="compile" 
-          description="Updates documentation and browser splash screens">
-    <java fork="yes"
-          classname="org.apache.xalan.xslt.Process">
-        <classpath>
-            <path refid="libs-build-classpath"/>
-        </classpath>
-        <arg line="-PARAM version ${version} -PARAM revisionType revisionType${revisionType} -PARAM revisionNumber revisionNumber${revisionNumber} -in ${xdocs}/images/splash.xsl -xsl ${xdocs}/images/splash.xsl -out ${xdocs}/images/splash.svg"/>
-    </java>
-
-    <java fork="yes"
-          classname="org.apache.xalan.xslt.Process">
-        <classpath>
-            <path refid="libs-build-classpath"/>
-        </classpath>
-        <arg line="-PARAM version ${version} -PARAM revisionType revisionType${revisionType} -PARAM revisionNumber revisionNumber${revisionNumber} -in ${resources}/org/apache/batik/apps/svgbrowser/resources/squiggle.xsl -xsl ${resources}/org/apache/batik/apps/svgbrowser/resources/squiggle.xsl -out ${resources}/org/apache/batik/apps/svgbrowser/resources/squiggle.svg"/>
-    </java>
-
-    <java fork="yes"
-          classname="${class-prefix}.apps.rasterizer.Main">
-      <classpath>
-        <pathelement location="${dest}"/>
-        <path refid="libs-classpath"/>
-        <pathelement location="resources"/>
-      </classpath>
-      <arg line="${xdocs}/images/splash.svg"/>
-    </java>
-
+          description="Updates browser splash screen">
     <java fork="yes"
           classname="${class-prefix}.apps.rasterizer.Main">
       <classpath>
@@ -1691,7 +1651,6 @@ To display the available targets type:
       </classpath>
       <arg line="${resources}/org/apache/batik/apps/svgbrowser/resources/squiggle.svg"/>
     </java>
-
   </target>
 
   <target name="jarDependImg" depends="compile"
@@ -1720,4 +1679,7 @@ To display the available targets type:
     <delete file="${project}-src-${version}.tar.gz"/>
   </target>
 
+
+  <!-- Import ForrestBot for the "publish" target -->
+  <import file="${env.FORREST_HOME}/tools/forrestbot/core/deploy.xml"/>
 </project>

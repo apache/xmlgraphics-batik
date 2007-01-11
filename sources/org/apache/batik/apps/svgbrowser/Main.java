@@ -323,8 +323,9 @@ public class Main implements Application {
         // Initialization
         //
         final AboutDialog initDialog = new AboutDialog();
+        ((BorderLayout) initDialog.getContentPane().getLayout()).setVgap(8);
         final JProgressBar pb = new JProgressBar(0, 3);
-        initDialog.getContentPane().add( pb, BorderLayout.SOUTH );
+        initDialog.getContentPane().add(pb, BorderLayout.SOUTH);
 
         // Work around pack() bug on some platforms
         Dimension ss = initDialog.getToolkit().getScreenSize();
