@@ -69,7 +69,7 @@ To display the available targets type:
 
 -->
 
-<project default="help" basedir=".">
+<project default="help" name="batik" basedir=".">
   <!-- Configuring the build -->
   <property file="${basedir}/build-local.properties"/>
   <property environment="env"/>
@@ -119,8 +119,9 @@ To display the available targets type:
 
   <!-- For ForrestBot site deployment -->
   <property name="deploy.svn.url"     value="https://svn.apache.org/repos/asf/xmlgraphics/site/deploy/batik/"/>
-  <property name="deploy.svn.svn-dir" value="${forrest-build}/deploy"/>
   <property name="build.site-dir"     value="${site}"/>
+
+  <taskdef resource="taskdef.properties" onerror="ignore"/>
 
   <pathconvert property="cwd">
     <path path="."/>
@@ -1629,7 +1630,9 @@ To display the available targets type:
   </target>
 
   <target name="publish" depends="site, deploy.svn"
-          description="Generates the http://xmlgraphics.apache.org/batik/ site and commits it to SVN"/>
+          description="Generates the http://xmlgraphics.apache.org/batik/ site and commits it to SVN">
+    <delete dir="work"/>
+  </target>
 
   <target name="clean-docs">
     <delete dir="${forrest-build}"/>
