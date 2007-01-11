@@ -35,6 +35,11 @@ if not "%ANT_HOME%" == "" goto gotAntHome
 
 set CP=%JAVA_HOME%\lib\tools.jar;.\lib\build\ant-1.6.5.jar;.\lib\build\ant-launcher-1.6.5.jar;.\lib\build\crimson-1.1.3.jar
  
+:: If Forrest is present, add the ForrestBot dependency jars to the classpath.
+
+if "%FORREST_HOME%" == "" goto forrestNotPresent
+for %%f in (%FORREST_HOME%\tools\forrestbot\lib\*.jar) do set CP=%CP%;%%f
+:forrestNotPresent
 
 :: ----- Execute The Requested Build ------------------------------------------
 
