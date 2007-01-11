@@ -145,16 +145,17 @@ For creating the web site, the following steps must be done:
 [Note: due to JVM font-rendering problems, this is best done on a
        windows machine]
 
- 1) Make sure you checked out the SVN directory
-     https://svn.apache.org/repos/asf/xmlgraphics/site/deploy/batik
-    as "xml-site/targets/batik" in the same directory as your project module
- 2) run the build script with target "site"
- 3) commit the site/deploy/batik directory
- 4) connect to xml.apache.org with your account
- 5) execute "cd /www/xmlgraphics.apache.org/batik"
- 6) execute "svn update"
+ 1) run the build script with target "publish", which will generate the
+    site and use ForrestBot to commit it to the repository
+ 2) connect to people.apache.org with your account
+ 3) execute "cd /www/xmlgraphics.apache.org/batik"
+ 4) execute "svn update"
  
-[NOTE: you must have commit access on xml-site to be able to do this]
+Note that because of the way ForrestBot works, any files that are no
+longer part of the site will still remain in Subversion, and thus will
+still be deployed.  To delete files permanently, check out
+https://svn.apache.org/repos/asf/xmlgraphics/site/deploy/batik/ and make
+changes there directly.
 
 Nightly Builds
 --------------
