@@ -151,6 +151,9 @@ For creating the web site, the following steps must be done:
  3) execute "cd /www/xmlgraphics.apache.org/batik"
  4) execute "svn update"
  
+If the javadocs don't need to be regenerated, the "publishdoc" build
+target can be used instead of "publish".  This will be much quicker.
+
 Note that because of the way ForrestBot works, any files that are no
 longer part of the site will still remain in Subversion, and thus will
 still be deployed.  To delete files permanently, check out

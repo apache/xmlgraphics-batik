@@ -1629,8 +1629,13 @@ To display the available targets type:
     </javadoc>
   </target>
 
+  <target name="publishdoc" depends="sitedoc, deploy.svn"
+          description="Generates the http://xmlgraphics.apache.org/batik/ site without the javadocs and commits it to SVN">
+    <delete dir="work"/>
+  </target>
+
   <target name="publish" depends="site, deploy.svn"
-          description="Generates the http://xmlgraphics.apache.org/batik/ site and commits it to SVN">
+          description="Generates the http://xmlgraphics.apache.org/batik/ site including the javadocs and commits it to SVN">
     <delete dir="work"/>
   </target>
 
