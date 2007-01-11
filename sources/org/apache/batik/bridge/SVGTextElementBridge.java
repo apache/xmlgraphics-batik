@@ -83,6 +83,7 @@ import org.w3c.dom.events.MutationEvent;
 import org.w3c.dom.svg.SVGLengthList;
 import org.w3c.dom.svg.SVGNumberList;
 import org.w3c.dom.svg.SVGTextContentElement;
+import org.w3c.dom.svg.SVGTextPositioningElement;
 
 /**
  * Bridge class for the &lt;text> element.
@@ -1240,13 +1241,13 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
 
         // 'a' elements aren't SVGTextPositioningElements, so don't process
         // their positioning attributes on them.
-        if (!(element instanceof SVGOMTextPositioningElement)) {
+        if (!(element instanceof SVGTextPositioningElement)) {
             addChildGlyphPositionAttributes(as, element, ctx);
             return;
         }
 
         // get all of the glyph position attribute values
-        SVGOMTextPositioningElement te = (SVGOMTextPositioningElement) element;
+        SVGTextPositioningElement te = (SVGTextPositioningElement) element;
 
         try {
             SVGLengthList xs  = te.getX().getAnimVal();

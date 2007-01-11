@@ -19,7 +19,7 @@
 package org.apache.batik.extension.svg;
 
 import org.apache.batik.dom.AbstractDocument;
-import org.apache.batik.extension.PrefixableStylableExtensionElement;
+import org.apache.batik.dom.svg.SVGOMTextPositioningElement;
 import org.w3c.dom.Node;
 
 /**
@@ -29,17 +29,18 @@ import org.w3c.dom.Node;
  * @version $Id$
  */
 public class FlowSpanElement
-    extends    PrefixableStylableExtensionElement 
-    implements BatikExtConstants {
+    extends    SVGOMTextPositioningElement
+    implements BatikExtConstants
+ {
 
     /**
-     * Creates a new BatikRegularPolygonElement object.
+     * Creates a new Batik Flow Span element.
      */
     protected FlowSpanElement() {
     }
 
     /**
-     * Creates a new BatikRegularPolygonElement object.
+     * Creates a new Batik Flow Span Element.
      * @param prefix The namespace prefix.
      * @param owner The owner document.
      */

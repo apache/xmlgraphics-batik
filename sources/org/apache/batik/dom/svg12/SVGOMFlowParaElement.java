@@ -19,7 +19,7 @@
 package org.apache.batik.dom.svg12;
 
 import org.apache.batik.dom.AbstractDocument;
-import org.apache.batik.dom.svg.SVGOMTextContentElement;
+import org.apache.batik.dom.svg.SVGOMTextPositioningElement;
 import org.apache.batik.util.SVG12Constants;
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGTextContentElement;
@@ -31,8 +31,7 @@ import org.w3c.dom.svg.SVGTextContentElement;
  * @version $Id$
  */
 public class SVGOMFlowParaElement 
-    extends    SVGOMTextContentElement
-    implements SVGTextContentElement {
+    extends    SVGOMTextPositioningElement {
 
     /**
      * Creates a new BatikRegularPolygonElement object.

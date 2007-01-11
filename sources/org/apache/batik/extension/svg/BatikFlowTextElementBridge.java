@@ -43,6 +43,7 @@ import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.dom.events.NodeEventTarget;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.util.XMLSupport;
+import org.apache.batik.dom.svg.SVGOMElement;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.TextNode;
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
@@ -128,6 +129,29 @@ public class BatikFlowTextElementBridge extends SVGTextElementBridge
         return new Point2D.Float(0,0);
     }
 
+    protected void addContextToChild(BridgeContext ctx,Element e) {
+        if (getNamespaceURI().equals(e.getNamespaceURI())) {
+            String ln = e.getLocalName();
+            if (ln.equals(BATIK_EXT_FLOW_PARA_TAG) ||
+                ln.equals(BATIK_EXT_FLOW_REGION_BREAK_TAG) ||
+                ln.equals(BATIK_EXT_FLOW_LINE_TAG) ||
+                ln.equals(BATIK_EXT_FLOW_SPAN_TAG) ||
+                ln.equals(SVG_A_TAG) ||
+                ln.equals(SVG_TREF_TAG)) {
+                ((SVGOMElement) e).setSVGContext
+                    (new BatikFlowContentBridge(ctx, this, e));
+            }
+        }
+        
+        // traverse the children to add SVGContext
+        Node child = getFirstChild(e);
+        while (child != null) {
+            if (child.getNodeType() == Node.ELEMENT_NODE) {
+                addContextToChild(ctx,(Element)child);
+            }
+            child = getNextSibling(child);
+        }
+    }
     /**
      * Creates the attributed string which represents the given text
      * element children.
@@ -778,6 +802,22 @@ public class BatikFlowTextElementBridge extends SVGTextElementBridge
         boolean rgnBr = ln.equals(BATIK_EXT_FLOW_REGION_BREAK_TAG);
         return new MarginInfo(top, right, bottom, left,
                               indent, justification, rgnBr);
+    }
+
+    /**
+     * Bridge class for flow text children that contain text.
+     */
+    protected class BatikFlowContentBridge 
+        extends AbstractTextChildTextContent {
+
+        /**
+         * Creates a new FlowContentBridge.
+         */
+        public BatikFlowContentBridge(BridgeContext ctx,
+                                 SVGTextElementBridge parent,
+                                 Element e) {
+            super(ctx, parent, e);
+        }
     }
 
 
