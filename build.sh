@@ -46,6 +46,13 @@ fi
 
 CP=$JAVA_HOME/lib/tools.jar:lib/build/ant-1.6.5.jar:lib/build/ant-launcher-1.6.5.jar:lib/build/crimson-1.1.3.jar:lib/build/jaxp.jar
 
+# If Forrest is present, add the ForrestBot dependency jars to the classpath.
+if [ "$FORREST_HOME" != "" ]; then
+  for x in $FORREST_HOME/tools/forrestbot/lib/*.jar; do
+    CP=$CP:$x
+  done
+fi
+
 if $cygwin; then
   JAVA_HOME=`cygpath --path --windows "$JAVA_HOME"`
   CP=`cygpath --path --windows "$CP"`
