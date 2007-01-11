@@ -278,9 +278,15 @@ public abstract class AnimationEngine {
                 String localName = (String) e2.getKey2();
                 Sandwich sandwich = (Sandwich) e2.getValue();
                 if (sandwich.shouldUpdate || sandwich.animation.isDirty) {
-                    AnimatableValue av = sandwich.animation.getComposedValue();
-                    boolean usesUnderlying =
-                        sandwich.lowestAnimation.usesUnderlyingValue();
+                    AnimatableValue av = null;
+                    boolean usesUnderlying = false;
+                    AbstractAnimation anim = sandwich.animation;
+                    if (anim != null) {
+                        av = sandwich.animation.getComposedValue();
+                        usesUnderlying =
+                            sandwich.lowestAnimation.usesUnderlyingValue();
+                        anim.isDirty = false;
+                    }
                     if (usesUnderlying && !sandwich.listenerRegistered) {
                         target.addTargetListener(namespaceURI, localName, false,
                                                  targetListener);
@@ -292,7 +298,6 @@ public abstract class AnimationEngine {
                     }
                     target.updateAttributeValue(namespaceURI, localName, av);
                     sandwich.shouldUpdate = false;
-                    sandwich.animation.isDirty = false;
                 }
             }
 
