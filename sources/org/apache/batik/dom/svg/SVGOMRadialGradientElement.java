@@ -117,8 +117,8 @@ public class SVGOMRadialGradientElement
             (null, SVG_CY_ATTRIBUTE, SVG_RADIAL_GRADIENT_CY_DEFAULT_VALUE,
              SVGOMAnimatedLength.VERTICAL_LENGTH, false);
         r = createLiveAnimatedLength
-            (null, SVG_R_ATTRIBUTE, null, SVGOMAnimatedLength.OTHER_LENGTH,
-             false);
+            (null, SVG_R_ATTRIBUTE, SVG_RADIAL_GRADIENT_R_DEFAULT_VALUE,
+             SVGOMAnimatedLength.OTHER_LENGTH, false);
         fx = new AbstractSVGAnimatedLength
             (this, null, SVG_FX_ATTRIBUTE,
              SVGOMAnimatedLength.HORIZONTAL_LENGTH, false) {
