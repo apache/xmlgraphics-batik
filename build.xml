@@ -1629,13 +1629,15 @@ To display the available targets type:
     </javadoc>
   </target>
 
-  <target name="publishdoc" depends="sitedoc, deploy.svn"
+  <target name="publishdoc" depends="sitedoc"
           description="Generates the http://xmlgraphics.apache.org/batik/ site without the javadocs and commits it to SVN">
+    <antcall target="deploy.svn"/>
     <delete dir="work"/>
   </target>
 
-  <target name="publish" depends="site, deploy.svn"
+  <target name="publish" depends="site"
           description="Generates the http://xmlgraphics.apache.org/batik/ site including the javadocs and commits it to SVN">
+    <antcall target="deploy.svn"/>
     <delete dir="work"/>
   </target>
 
@@ -1644,6 +1646,7 @@ To display the available targets type:
     <delete dir="${docs}"/>
     <delete dir="${site}"/>
     <delete dir="build"/>  <!-- In case it's left behind by Forrest. -->
+    <delete dir="work"/>   <!-- In case it's left behind by ForrestBot. -->
   </target>
 
   <!-- Generates splash screens for the browser ........................... -->
@@ -1689,5 +1692,6 @@ To display the available targets type:
 
 
   <!-- Import ForrestBot for the "publish" target -->
-  <import file="${env.FORREST_HOME}/tools/forrestbot/core/deploy.xml"/>
+  <import file="${env.FORREST_HOME}/tools/forrestbot/core/deploy.xml"
+          optional="true"/>
 </project>
