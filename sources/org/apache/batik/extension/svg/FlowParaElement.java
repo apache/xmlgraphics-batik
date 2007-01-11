@@ -19,7 +19,7 @@
 package org.apache.batik.extension.svg;
 
 import org.apache.batik.dom.AbstractDocument;
-import org.apache.batik.extension.PrefixableStylableExtensionElement;
+import org.apache.batik.dom.svg.SVGOMTextPositioningElement;
 import org.w3c.dom.Node;
 
 /**
@@ -29,7 +29,7 @@ import org.w3c.dom.Node;
  * @version $Id$
  */
 public class FlowParaElement
-    extends    PrefixableStylableExtensionElement 
+    extends    SVGOMTextPositioningElement
     implements BatikExtConstants {
 
     /**
