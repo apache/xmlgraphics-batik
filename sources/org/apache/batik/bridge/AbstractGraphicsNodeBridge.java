@@ -166,15 +166,13 @@ public abstract class AbstractGraphicsNodeBridge extends AnimatableSVGBridge
                                                BridgeContext ctx) {
         try {
             // motion animation
-            AffineTransform at;
+            AffineTransform at = new AffineTransform();
             if (e instanceof SVGMotionAnimatableElement) {
                 SVGMotionAnimatableElement mae = (SVGMotionAnimatableElement) e;
-                at = mae.getMotionTransform();
-                if (at == null) {
-                    at = new AffineTransform();
+                AffineTransform mat = mae.getMotionTransform();
+                if (mat != null) {
+                    at.concatenate(mat);
                 }
-            } else {
-                at = new AffineTransform();
             }
 
             // 'transform'
