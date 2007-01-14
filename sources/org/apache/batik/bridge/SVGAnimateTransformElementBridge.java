@@ -158,7 +158,6 @@ public class SVGAnimateTransformElementBridge extends SVGAnimateElementBridge {
             }
             count++;
             if (i < len && c == ' ') {
-                i++;
                 while (i < len) {
                     c = s.charAt(i);
                     if (c != ' ') {
