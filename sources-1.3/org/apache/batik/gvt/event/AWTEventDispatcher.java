@@ -44,7 +44,7 @@ public class AWTEventDispatcher extends AbstractAWTEventDispatcher {
         GraphicsNode target =
             currentKeyEventTarget == null ? root : currentKeyEventTarget;
         processKeyEvent
-            (new GraphicsNodeKeyEvent(currentKeyEventTarget,
+            (new GraphicsNodeKeyEvent(target,
                                       evt.getID(),
                                       evt.getWhen(),
                                       evt.getModifiers(),

@@ -274,6 +274,15 @@ public class PreferenceDialog extends JDialog
     public static final String PREFERENCE_KEY_ALLOWED_EXTERNAL_RESOURCE_ORIGIN
         = "preference.key.allowed.external.resource.origin";
 
+    public static final String PREFERENCE_KEY_ANIMATION_RATE_LIMITING_MODE
+        = "preference.key.animation.rate.limiting.mode";
+
+    public static final String PREFERENCE_KEY_ANIMATION_RATE_LIMITING_CPU
+        = "preference.key.animation.rate.limiting.cpu";
+
+    public static final String PREFERENCE_KEY_ANIMATION_RATE_LIMITING_FPS
+        = "preference.key.animation.rate.limiting.fps";
+
     /**
      * <tt>PreferenceManager</tt> used to store and retrieve
      * preferences

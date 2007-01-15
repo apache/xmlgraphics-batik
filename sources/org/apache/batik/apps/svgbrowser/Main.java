@@ -298,6 +298,12 @@ public class Main implements Application {
                      "");
         defaults.put(PREFERENCE_KEY_VISITED_URI_LIST_LENGTH,
                      new Integer(MAX_VISITED_URIS));
+        defaults.put(PreferenceDialog.PREFERENCE_KEY_ANIMATION_RATE_LIMITING_MODE,
+                     new Integer(1));
+        defaults.put(PreferenceDialog.PREFERENCE_KEY_ANIMATION_RATE_LIMITING_CPU,
+                     new Float(0.75f));
+        defaults.put(PreferenceDialog.PREFERENCE_KEY_ANIMATION_RATE_LIMITING_FPS,
+                     new Float(10));
 
         securityEnforcer
             = new ApplicationSecurityEnforcer(this.getClass(),
@@ -698,6 +704,34 @@ public class Main implements Application {
         boolean dd = preferenceManager.getBoolean
             (PreferenceDialog.PREFERENCE_KEY_SELECTION_XOR_MODE);
         vf.getJSVGCanvas().setSelectionOverlayXORMode(dd);
+        int al = preferenceManager.getInteger
+            (PreferenceDialog.PREFERENCE_KEY_ANIMATION_RATE_LIMITING_MODE);
+        if (al < 0 || al > 2) {
+            al = 1;
+        }
+        switch (al) {
+            case 0: // none
+                vf.getJSVGCanvas().setAnimationLimitingNone();
+                break;
+            case 1: { // %cpu
+                float pc = preferenceManager.getFloat
+                    (PreferenceDialog.PREFERENCE_KEY_ANIMATION_RATE_LIMITING_CPU);
+                if (pc <= 0f || pc > 1f) {
+                    pc = 0.75f;
+                }
+                vf.getJSVGCanvas().setAnimationLimitingCPU(pc);
+                break;
+            }
+            case 2: { // fps
+                float fps = preferenceManager.getFloat
+                    (PreferenceDialog.PREFERENCE_KEY_ANIMATION_RATE_LIMITING_FPS);
+                if (fps <= 0f) {
+                    fps = 10f;
+                }
+                vf.getJSVGCanvas().setAnimationLimitingFPS(fps);
+                break;
+            }
+        }
     }
 
     /**

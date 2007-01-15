@@ -215,7 +215,9 @@ public class RunnableQueue implements Runnable {
                                         != Long.MAX_VALUE) {
                                     long t = idleRunnableWaitTime
                                         - System.currentTimeMillis();
-                                    list.wait(t);
+                                    if (t > 0) {
+                                        list.wait(t);
+                                    }
                                 } else {
                                     list.wait();
                                 }

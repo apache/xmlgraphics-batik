@@ -213,6 +213,16 @@ public class SVGAnimationEngine extends AnimationEngine {
     protected AnimationThread animationThread;
 
     /**
+     * The animation limiting mode.
+     */
+    protected int animationLimitingMode;
+
+    /**
+     * The amount of animation limiting.
+     */
+    protected float animationLimitingAmount;
+
+    /**
      * Set of SMIL animation event names for SVG 1.1.
      */
     protected static HashSet animationEventNames11 = new HashSet();
@@ -439,6 +449,31 @@ public class SVGAnimationEngine extends AnimationEngine {
                 ctx.getUserAgent().displayError(ex);
             }
         }
+    }
+
+    /**
+     * Sets the animation limiting mode to "none".
+     */
+    public void setAnimationLimitingNone() {
+        animationLimitingMode = 0;
+    }
+
+    /**
+     * Sets the animation limiting mode to a percentage of CPU.
+     * @param pc the maximum percentage of CPU to use (0 &lt; pc ≤ 1)
+     */
+    public void setAnimationLimitingCPU(float pc) {
+        animationLimitingMode = 1;
+        animationLimitingAmount = pc;
+    }
+
+    /**
+     * Sets the animation limiting mode to a number of frames per second.
+     * @param fps the maximum number of frames per second (fps &gt; 0)
+     */
+    public void setAnimationLimitingFPS(float fps) {
+        animationLimitingMode = 2;
+        animationLimitingAmount = fps;
     }
 
     /**
@@ -686,14 +721,71 @@ public class SVGAnimationEngine extends AnimationEngine {
     protected class AnimationTickRunnable
             implements RunnableQueue.IdleRunnable {
 
+        /**
+         * Calendar instance used for passing current time values to the
+         * animation timing system.
+         */
         protected Calendar time = Calendar.getInstance();
-        double second = -1.;
-        int frames;
-        long waitTime;
-        RunnableQueue q;
+
+//         /**
+//          * The current document time in seconds, truncated.
+//          */
+//         protected double second = -1.;
+
+//         /**
+//          * The number of frames that have been ticked so far this second.
+//          */
+//         protected int frames;
+
+        /**
+         * The number of milliseconds to wait until the next animation tick.
+         * This is returned by {@link #getWaitTime()}.
+         */
+        protected long waitTime;
+
+        /**
+         * The RunnableQueue in which this is the
+         * {@link RunnableQueue.IdleRunnable}.
+         */
+        protected RunnableQueue q;
+
+        /**
+         * The number of past tick times to keep, for computing the average
+         * time per tick.
+         */
+        private static final int NUM_TIMES = 8;
+
+        /**
+         * The past tick times.
+         */
+        protected long[] times = new long[NUM_TIMES];
+
+        /**
+         * The sum of the times in {@link #times}.
+         */
+        protected long sumTime;
+
+        /**
+         * The current index into {@link #times}.
+         */
+        protected int timeIndex;
+
+        /**
+         * Creates a new AnimationTickRunnable.
+         */
         public AnimationTickRunnable(RunnableQueue q) {
             this.q = q;
+            // Initialize the past times to 100ms.
+            for (int i = 0; i < NUM_TIMES; i++) {
+                times[i] = 100;
+            }
+            sumTime = 100 * NUM_TIMES;
         }
+
+        /**
+         * Forces an animation update, if the {@link RunnableQueue} is
+         * currently waiting.
+         */
         public void resume() {
             waitTime = 0;
             Object lock = q.getIteratorLock();
@@ -701,27 +793,68 @@ public class SVGAnimationEngine extends AnimationEngine {
                 lock.notify();
             }
         }
+
+        /**
+         * Returns the system time that can be safely waited until before this
+         * {@link Runnable} is run again.
+         *
+         * @return time to wait until, <code>0</code> if no waiting can
+         *         be done, or {@link Long#MAX_VALUE} if the {@link Runnable}
+         *         should not be run again at this time
+         */
         public long getWaitTime() {
             return waitTime;
         }
+
+        /**
+         * Performs one tick of the animation.
+         */
         public void run() {
             try {
                 try {
-                    long now = System.currentTimeMillis();
-                    time.setTime(new Date(now));
+                    long before = System.currentTimeMillis();
+                    time.setTime(new Date(before));
                     float t = timedDocumentRoot.convertWallclockTime(time);
-                    if (Math.floor(t) > second) {
-                        second = Math.floor(t);
-                        // System.err.println("fps: " + frames);
-                        frames = 0;
-                    }
+//                     if (Math.floor(t) > second) {
+//                         second = Math.floor(t);
+//                         System.err.println("fps: " + frames);
+//                         frames = 0;
+//                     }
                     float t2 = tick(t, false);
+                    long after = System.currentTimeMillis();
+                    long dur = after - before;
+                    if (dur == 0) {
+                        dur = 1;
+                    }
+                    sumTime -= times[timeIndex];
+                    sumTime += dur;
+                    times[timeIndex] = dur;
+                    timeIndex = (timeIndex + 1) % NUM_TIMES;
+
                     if (t2 == Float.POSITIVE_INFINITY) {
                         waitTime = Long.MAX_VALUE;
                     } else {
-                        waitTime = now + (long) (t2 * 1000) - 2000;
+                        waitTime = before + (long) (t2 * 1000) - 1000;
+                        if (waitTime < after) {
+                            waitTime = after;
+                        }
+                        if (animationLimitingMode != 0) {
+                            float ave = (float) sumTime / NUM_TIMES;
+                            float delay;
+                            if (animationLimitingMode == 1) {
+                                // %cpu
+                                delay = ave / animationLimitingAmount - ave;
+                            } else {
+                                // fps
+                                delay = 1000f / animationLimitingAmount - ave;
+                            }
+                            long newWaitTime = after + (long) delay;
+                            if (newWaitTime > waitTime) {
+                                waitTime = newWaitTime;
+                            }
+                        }
                     }
-                    frames++;
+//                     frames++;
                 } catch (AnimationException ex) {
                     throw new BridgeException(ctx, ex.getElement().getElement(),
                                               ex.getMessage());
@@ -733,10 +866,13 @@ public class SVGAnimationEngine extends AnimationEngine {
                     ctx.getUserAgent().displayError(ex);
                 }
             }
-            //Thread.yield();
-            try {
-                Thread.sleep(1);
-            } catch (InterruptedException ie) {
+
+            if (animationLimitingMode == 0) {
+                // so we don't steal too much time from the Swing thread
+                try {
+                    Thread.sleep(1);
+                } catch (InterruptedException ie) {
+                }
             }
         }
     }

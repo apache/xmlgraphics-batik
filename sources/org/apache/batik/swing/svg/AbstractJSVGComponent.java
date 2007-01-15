@@ -386,6 +386,16 @@ public class AbstractJSVGComponent extends JGVTComponent {
     protected AffineTransform viewingTransform = null;
 
     /**
+     * The animation limiting mode.
+     */
+    protected int animationLimitingMode;
+
+    /**
+     * The amount of animation limiting.
+     */
+    protected float animationLimitingAmount;
+
+    /**
      * Creates a new AbstractJSVGComponent.
      */
     public AbstractJSVGComponent() {
@@ -751,6 +761,8 @@ public class AbstractJSVGComponent extends JGVTComponent {
             else
                 bridgeContext.setDynamicState(BridgeContext.INTERACTIVE);
         }
+
+        setBridgeContextAnimationLimitingMode();
 
         updateZoomAndPanEnable(doc);
 
@@ -1271,6 +1283,57 @@ public class AbstractJSVGComponent extends JGVTComponent {
     public void setMySize(Dimension d) {
         setPreferredSize(d);
         invalidate();
+    }
+
+    /**
+     * Sets the animation limiting mode to "none".
+     */
+    public void setAnimationLimitingNone() {
+        animationLimitingMode = 0;
+        if (bridgeContext != null) {
+            setBridgeContextAnimationLimitingMode();
+        }
+    }
+
+    /**
+     * Sets the animation limiting mode to a percentage of CPU.
+     * @param pc the maximum percentage of CPU to use (0 &lt; pc ≤ 1)
+     */
+    public void setAnimationLimitingCPU(float pc) {
+        animationLimitingMode = 1;
+        animationLimitingAmount = pc;
+        if (bridgeContext != null) {
+            setBridgeContextAnimationLimitingMode();
+        }
+    }
+
+    /**
+     * Sets the animation limiting mode to a number of frames per second.
+     * @param fps the maximum number of frames per second (fps &gt; 0)
+     */
+    public void setAnimationLimitingFPS(float fps) {
+        animationLimitingMode = 2;
+        animationLimitingAmount = fps;
+        if (bridgeContext != null) {
+            setBridgeContextAnimationLimitingMode();
+        }
+    }
+
+    /**
+     * Sets the animation limiting mode on the current bridge context.
+     */
+    protected void setBridgeContextAnimationLimitingMode() {
+        switch (animationLimitingMode) {
+            case 0: // unlimited
+                bridgeContext.setAnimationLimitingNone();
+                break;
+            case 1: // %cpu
+                bridgeContext.setAnimationLimitingCPU(animationLimitingAmount);
+                break;
+            case 2: // fps
+                bridgeContext.setAnimationLimitingFPS(animationLimitingAmount);
+                break;
+        }
     }
 
     /**
