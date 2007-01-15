@@ -263,6 +263,16 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     protected SVGAnimationEngine animationEngine;
 
     /**
+     * The animation limiting mode.
+     */
+    protected int animationLimitingMode;
+
+    /**
+     * The amount of animation limiting.
+     */
+    protected float animationLimitingAmount;
+
+    /**
      * By default we share a unique instance of InterpreterPool.
      */
     private static InterpreterPool sharedPool = new InterpreterPool();
@@ -703,6 +713,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     public SVGAnimationEngine getAnimationEngine() {
         if (animationEngine == null) {
             animationEngine = new SVGAnimationEngine(document, this);
+            setAnimationLimitingMode();
         }
         return animationEngine;
     }
@@ -1915,6 +1926,58 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         return false;
     }
 
+    /**
+     * Sets the animation limiting mode to "none".
+     */
+    public void setAnimationLimitingNone() {
+        animationLimitingMode = 0;
+        if (animationEngine != null) {
+            setAnimationLimitingMode();
+        }
+    }
+
+    /**
+     * Sets the animation limiting mode to a percentage of CPU.
+     * @param pc the maximum percentage of CPU to use (0 &lt; pc ≤ 1)
+     */
+    public void setAnimationLimitingCPU(float pc) {
+        animationLimitingMode = 1;
+        animationLimitingAmount = pc;
+        if (animationEngine != null) {
+            setAnimationLimitingMode();
+        }
+    }
+
+    /**
+     * Sets the animation limiting mode to a number of frames per second.
+     * @param fps the maximum number of frames per second (fps &gt; 0)
+     */
+    public void setAnimationLimitingFPS(float fps) {
+        animationLimitingMode = 2;
+        animationLimitingAmount = fps;
+        if (animationEngine != null) {
+            setAnimationLimitingMode();
+        }
+    }
+
+    /**
+     * Set the animationg limiting mode on the animation engine.
+     */
+    protected void setAnimationLimitingMode() {
+        switch (animationLimitingMode) {
+            case 0: // unlimited
+                animationEngine.setAnimationLimitingNone();
+                break;
+            case 1: // %cpu
+                animationEngine.setAnimationLimitingCPU
+                    (animationLimitingAmount);
+                break;
+            case 2: // fps
+                animationEngine.setAnimationLimitingFPS
+                    (animationLimitingAmount);
+                break;
+        }
+    }
 
     // bridge extensions support //////////////////////////////////////////////
 
