@@ -210,7 +210,10 @@ To display the available targets type:
              includes="IWasLoadedToo.java"/>
   </uptodate>
 
-  <condition property="forrest.call" value="forrest.bat" else="forrest">
+  <condition property="forrest.call" value="cmd" else="${env.FORREST_HOME}/bin/forrest">
+    <os family="windows"/>
+  </condition>
+  <condition property="forrest.args" value="/c ${env.FORREST_HOME}\bin\forrest.bat" else="">
     <os family="windows"/>
   </condition>
 
@@ -1592,6 +1595,7 @@ To display the available targets type:
   <target name="forrest">
     <property name="forrest-build.dir" value="${cwd}${file.separator}${forrest-build}"/>
     <exec executable="${forrest.call}">
+      <arg line="${forrest.args}"/>
       <arg value="-Dproject.build-dir=${forrest-build.dir}"/>
       <arg value="-Dproject.temp-dir=${forrest-build.dir}${file.separator}tmp"/>
       <arg value="-Dproject.webapp=${forrest-build.dir}${file.separator}webapp"/>
