@@ -19,7 +19,6 @@
 
 package org.apache.batik.transcoder.wmf.tosvg;
 
-import java.awt.font.TextLayout;
 import java.io.UnsupportedEncodingException;
 import org.apache.batik.transcoder.wmf.WMFConstants;
 

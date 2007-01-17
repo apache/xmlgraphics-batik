@@ -18,10 +18,8 @@
  */
 package org.apache.batik.apps.svgbrowser;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -36,10 +34,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
 import javax.swing.JWindow;
-import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 
 import org.apache.batik.Version;
