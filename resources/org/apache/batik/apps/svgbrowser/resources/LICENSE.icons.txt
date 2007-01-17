@@ -24,13 +24,13 @@ HERE IN CONSIDERATION OF YOUR ACCEPTANCE OF SUCH TERMS AND CONDITIONS.
 
 1. Definitions
 
-   1. "Collective Work" means a work, such as a periodical issue, anthology or
+   a. "Collective Work" means a work, such as a periodical issue, anthology or
       encyclopedia, in which the Work in its entirety in unmodified form, along
       with a number of other contributions, constituting separate and
       independent works in themselves, are assembled into a collective whole. A
       work that constitutes a Collective Work will not be considered a
       Derivative Work (as defined below) for the purposes of this License.
-   2. "Derivative Work" means a work based upon the Work or upon the Work and
+   b. "Derivative Work" means a work based upon the Work or upon the Work and
       other pre-existing works, such as a translation, musical arrangement,
       dramatization, fictionalization, motion picture version, sound recording,
       art reproduction, abridgment, condensation, or any other form in which the
@@ -40,16 +40,16 @@ HERE IN CONSIDERATION OF YOUR ACCEPTANCE OF SUCH TERMS AND CONDITIONS.
       Work is a musical composition or sound recording, the synchronization of
       the Work in timed-relation with a moving image ("synching") will be
       considered a Derivative Work for the purpose of this License.
-   3. "Licensor" means the individual or entity that offers the Work under the
+   c. "Licensor" means the individual or entity that offers the Work under the
       terms of this License.
-   4. "Original Author" means the individual or entity who created the Work.
-   5. "Work" means the copyrightable work of authorship offered under the terms
+   d. "Original Author" means the individual or entity who created the Work.
+   e. "Work" means the copyrightable work of authorship offered under the terms
       of this License.
-   6. "You" means an individual or entity exercising rights under this License
+   f. "You" means an individual or entity exercising rights under this License
       who has not previously violated the terms of this License with respect to
       the Work, or who has received express permission from the Licensor to
       exercise rights under this License despite a previous violation.
-   7. "License Elements" means the following high-level license attributes as
+   g. "License Elements" means the following high-level license attributes as
       selected by Licensor and indicated in the title of this License:
       Attribution, ShareAlike.
 
@@ -66,29 +66,29 @@ You a worldwide, royalty-free, non-exclusive, perpetual (for the duration of
 the applicable copyright) license to exercise the rights in the Work as stated
 below:
 
-   1. to reproduce the Work, to incorporate the Work into one or more Collective
+   a. to reproduce the Work, to incorporate the Work into one or more Collective
       Works, and to reproduce the Work as incorporated in the Collective Works;
-   2. to create and reproduce Derivative Works;
-   3. to distribute copies or phonorecords of, display publicly, perform
+   b. to create and reproduce Derivative Works;
+   c. to distribute copies or phonorecords of, display publicly, perform
       publicly, and perform publicly by means of a digital audio transmission
       the Work including as incorporated in Collective Works;
-   4. to distribute copies or phonorecords of, display publicly, perform
+   d. to distribute copies or phonorecords of, display publicly, perform
       publicly, and perform publicly by means of a digital audio transmission
       Derivative Works.
-   5. For the avoidance of doubt, where the work is a musical composition:
-         1. Performance Royalties Under Blanket Licenses. Licensor waives the
-	    exclusive right to collect, whether individually or via a
-	    performance rights society (e.g. ASCAP, BMI, SESAC), royalties for
-	    the public performance or public digital performance (e.g. webcast)
-	    of the Work.
-         2. Mechanical Rights and Statutory Royalties. Licensor waives the
-	    exclusive right to collect, whether individually or via a music
-	    rights society or designated agent (e.g. Harry Fox Agency),
-	    royalties for any phonorecord You create from the Work ("cover
-	    version") and distribute, subject to the compulsory license created
-	    by 17 USC Section 115 of the US Copyright Act (or the equivalent in
-	    other jurisdictions).
-   6. Webcasting Rights and Statutory Royalties. For the avoidance of doubt,
+   e. For the avoidance of doubt, where the work is a musical composition:
+         i. Performance Royalties Under Blanket Licenses. Licensor waives the
+            exclusive right to collect, whether individually or via a
+            performance rights society (e.g. ASCAP, BMI, SESAC), royalties for
+            the public performance or public digital performance (e.g. webcast)
+            of the Work.
+        ii. Mechanical Rights and Statutory Royalties. Licensor waives the
+            exclusive right to collect, whether individually or via a music
+            rights society or designated agent (e.g. Harry Fox Agency),
+            royalties for any phonorecord You create from the Work ("cover
+            version") and distribute, subject to the compulsory license created
+            by 17 USC Section 115 of the US Copyright Act (or the equivalent in
+            other jurisdictions).
+   f. Webcasting Rights and Statutory Royalties. For the avoidance of doubt,
       where the Work is a sound recording, Licensor waives the exclusive right
       to collect, whether individually or via a performance-rights society (e.g.
       SoundExchange), royalties for the public digital performance (e.g.
@@ -106,7 +106,7 @@ All rights not expressly granted by Licensor are hereby reserved.
 The license granted in Section 3 above is expressly made subject to and limited
 by the following restrictions:
 
-   1. You may distribute, publicly display, publicly perform, or publicly
+   a. You may distribute, publicly display, publicly perform, or publicly
       digitally perform the Work only under the terms of this License, and You
       must include a copy of, or the Uniform Resource Identifier for, this
       License with every copy or phonorecord of the Work You distribute,
@@ -126,7 +126,7 @@ by the following restrictions:
       by clause 4(c), as requested. If You create a Derivative Work, upon notice
       from any Licensor You must, to the extent practicable, remove from the
       Derivative Work any credit as required by clause 4(c), as requested.
-   2. You may distribute, publicly display, publicly perform, or publicly
+   b. You may distribute, publicly display, publicly perform, or publicly
       digitally perform a Derivative Work only under the terms of this License,
       a later version of this License with the same License Elements as this
       License, or a Creative Commons iCommons license that contains the same
@@ -146,7 +146,7 @@ by the following restrictions:
       a Collective Work, but this does not require the Collective Work apart
       from the Derivative Work itself to be made subject to the terms of this
       License.
-   3. If you distribute, publicly display, publicly perform, or publicly
+   c. If you distribute, publicly display, publicly perform, or publicly
       digitally perform the Work or any Derivative Works or Collective Works,
       You must keep intact all copyright notices for the Work and provide,
       reasonable to the medium or means You are utilizing: (i) the name of the
@@ -187,14 +187,14 @@ WORK, EVEN IF LICENSOR HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
 
 7. Termination
 
-   1. This License and the rights granted hereunder will terminate automatically
+   a. This License and the rights granted hereunder will terminate automatically
       upon any breach by You of the terms of this License. Individuals or
       entities who have received Derivative Works or Collective Works from You
       under this License, however, will not have their licenses terminated
       provided such individuals or entities remain in full compliance
       with those licenses. Sections 1, 2, 5, 6, 7, and 8 will survive any
       termination of this License.
-   2. Subject to the above terms and conditions, the license granted here is
+   b. Subject to the above terms and conditions, the license granted here is
       perpetual (for the duration of the applicable copyright in the Work).
       Notwithstanding the above, Licensor reserves the right to release the
       Work under different license terms or to stop distributing the Work at
@@ -205,23 +205,23 @@ WORK, EVEN IF LICENSOR HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
 
 8. Miscellaneous
 
-   1. Each time You distribute or publicly digitally perform the Work or a
+   a. Each time You distribute or publicly digitally perform the Work or a
       Collective Work, the Licensor offers to the recipient a license to the
       Work on the same terms and conditions as the license granted to You under
       this License.
-   2. Each time You distribute or publicly digitally perform a Derivative Work,
+   b. Each time You distribute or publicly digitally perform a Derivative Work,
       Licensor offers to the recipient a license to the original Work on the
       same terms and conditions as the license granted to You under this
       License.
-   3. If any provision of this License is invalid or unenforceable under
+   c. If any provision of this License is invalid or unenforceable under
       applicable law, it shall not affect the validity or enforceability of the
       remainder of the terms of this License, and without further action by
       the parties to this agreement, such provision shall be reformed to the
       minimum extent necessary to make such provision valid and enforceable.
-   4. No term or provision of this License shall be deemed waived and no breach
+   d. No term or provision of this License shall be deemed waived and no breach
       consented to unless such waiver or consent shall be in writing and signed
       by the party to be charged with such waiver or consent.
-   5. This License constitutes the entire agreement between the parties with
+   e. This License constitutes the entire agreement between the parties with
       respect to the Work licensed here. There are no understandings,
       agreements or representations with respect to the Work not specified
       here. Licensor shall not be bound by any additional provisions that may
