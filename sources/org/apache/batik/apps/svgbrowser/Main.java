@@ -56,6 +56,7 @@ import org.apache.batik.swing.svg.GVTTreeBuilderEvent;
 import org.apache.batik.swing.svg.SVGDocumentLoaderAdapter;
 import org.apache.batik.swing.svg.SVGDocumentLoaderEvent;
 import org.apache.batik.util.ApplicationSecurityEnforcer;
+import org.apache.batik.util.Platform;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLResourceDescriptor;
@@ -304,6 +305,8 @@ public class Main implements Application {
                      new Float(0.75f));
         defaults.put(PreferenceDialog.PREFERENCE_KEY_ANIMATION_RATE_LIMITING_FPS,
                      new Float(10));
+        defaults.put(PreferenceDialog.PREFERENCE_KEY_USER_STYLESHEET_ENABLED,
+                     Boolean.TRUE);
 
         securityEnforcer
             = new ApplicationSecurityEnforcer(this.getClass(),
@@ -750,9 +753,13 @@ public class Main implements Application {
      * @return null if no user style sheet was specified.
      */
     public String getUserStyleSheetURI() {
+        boolean enabled = preferenceManager.getBoolean
+            (PreferenceDialog.PREFERENCE_KEY_USER_STYLESHEET_ENABLED);
         String ssPath = preferenceManager.getString
             (PreferenceDialog.PREFERENCE_KEY_USER_STYLESHEET);
-        if (ssPath.length() == 0) return null;
+        if (!enabled || ssPath.length() == 0) {
+            return null;
+        }
         try {
             File f = new File(ssPath);
             if (f.exists()) {
