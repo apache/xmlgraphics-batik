@@ -463,7 +463,7 @@
           There is certainly something wrong with your classpath. Clear your
           <code>CLASSPATH</code> environment variable and be sure to remove
           all the libraries which use the W3C’s DOM bindings from
-          <code>jre/lib/ext</code>before running any of the Batik’s
+          <code>jre/lib/ext</code> before running any of the Batik’s
           applications.
         </p>
       </answer>
