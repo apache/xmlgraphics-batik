@@ -664,7 +664,7 @@ public class Main implements Application {
      */
     public void showPreferenceDialog(JSVGViewerFrame f) {
         if (preferenceDialog == null) {
-            preferenceDialog = new PreferenceDialog(preferenceManager);
+            preferenceDialog = new PreferenceDialog(f, preferenceManager);
         }
         if (preferenceDialog.showDialog() == PreferenceDialog.OK_OPTION) {
             try {
