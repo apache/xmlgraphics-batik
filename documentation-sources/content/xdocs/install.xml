@@ -192,7 +192,7 @@
           </p>
           <source>jar xvf &lt;distribution&gt;</source>
           <p>
-            For example, if you have downloaded batik-1.5.zip into
+            For example, if you have downloaded batik-1.6.zip into
             /home/IamHere, type the following at the command prompt:
           </p>
           <source>cd /home/IamHere
@@ -204,7 +204,19 @@ jar xvf batik-1.6.zip</source>
           </p>
         </li>
         <li>
-          From there, following the instructions specific to the application you
+          <p>
+            If you are using Mac OS X, you can now generate an application
+            bundle for Squiggle, Batik's SVG browser:
+          </p>
+          <source>sh lib/make-squiggle-app.sh</source>
+          <p>
+            After running this script, a Finder window will be opened where
+            you can find the generated Squiggle application bundle.  Drag
+            this to your Applications folder to install it.
+          </p>
+        </li>
+        <li>
+          Now you can follow the instructions specific to the application you
           want to use.  For example, see the <a href="site:browser">SVG
             Browser</a> page or the <a href="site:rasterizer">SVG
             Rasterizer</a> page for an explanation on how to use these tools.

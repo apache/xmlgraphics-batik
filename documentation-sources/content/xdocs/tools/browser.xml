@@ -87,6 +87,13 @@ java -jar batik-squiggle.jar</source>
         <source>java -jar batik-squiggle.jar -font-size 10 samples/batikLogo.svg</source>
         <p>starts the browser with the <code>batikLogo.svg</code> file open and
           uses a small widget text font size.</p>
+        <p>
+          If you are using Mac OS X, and you have generated the Squiggle
+          application bundle, you can use its icon to start the browser.
+          This is the preferred way to start the browser under Mac OS X,
+          as it ensures better integration with the operating system
+          (a nicer looking menu and dock icon).
+        </p>
       </section>
 
       <section id="starting-source">

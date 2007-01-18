@@ -56,6 +56,7 @@ import org.apache.batik.swing.svg.GVTTreeBuilderEvent;
 import org.apache.batik.swing.svg.SVGDocumentLoaderAdapter;
 import org.apache.batik.swing.svg.SVGDocumentLoaderEvent;
 import org.apache.batik.util.ApplicationSecurityEnforcer;
+import org.apache.batik.util.Platform;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLResourceDescriptor;
@@ -252,6 +253,10 @@ public class Main implements Application {
      */
     public Main(String[] args) {
         arguments = args;
+
+        if (Platform.isOSX) {
+            System.setProperty("apple.laf.useScreenMenuBar", "true");
+        }
 
         //
         // Preferences

@@ -80,7 +80,7 @@ To display the available targets type:
   </tstamp>
   <property name="Project"            value="Apache Batik"/>
   <property name="project"            value="batik"/>
-  <property name="year"               value="2005"/>
+  <property name="year"               value="2007"/>
   <property name="version"            value="1.6"/>
   <property name="revisionType"       value=""/>
   <property name="revisionNumber"     value=""/>
@@ -279,7 +279,7 @@ To display the available targets type:
     <delete dir="${build}/docs/javadoc"/>
   </target>
 
-  <target name="bin-zip" depends="jars, htmldoc">
+  <target name="bin-zip" depends="jars, htmldoc, bundle-script">
     <zip zipfile="${project}-${version}.zip">
       <zipfileset dir="." prefix="${project}-${version}">
         <include name="LICENSE"/>
@@ -290,7 +290,8 @@ To display the available targets type:
         <include name="*.jar"/>
         <include name="docs/**"/>
         <include name="extensions/**"/>
-        <include name="lib/**"/>
+        <include name="lib/*.jar"/>
+        <include name="lib/make-squiggle-app.sh"/>
       </zipfileset>
       <zipfileset dir="lib" prefix="${project}-${version}/lib">
         <include name="LICENSE.*.txt"/>
@@ -299,6 +300,9 @@ To display the available targets type:
       <zipfileset dir="${resources}/${package-prefix}/extensions"
                   prefix="${project}-${version}/extensions">
         <include name="README.txt"/>
+      </zipfileset>
+      <zipfileset dir="${src}" prefix="${project}-${version}/lib">
+        <include name="Squiggle.icns"/>
       </zipfileset>
       <zipfileset dir="." includes="samples/**" prefix="${project}-${version}"/>
     </zip>
@@ -341,7 +345,7 @@ To display the available targets type:
     <delete dir="${build}/docs/javadoc"/>
   </target>
 
-  <target name="bin-tgz" depends="jars, htmldoc">
+  <target name="bin-tgz" depends="jars, htmldoc, bundle-script">
     <tar tarfile="${project}-${version}.tar.gz" compression="gzip">
       <tarfileset dir="." prefix="${project}-${version}">
         <include name="LICENSE"/>
@@ -352,7 +356,8 @@ To display the available targets type:
         <include name="*.jar"/>
         <include name="docs/**"/>
         <include name="extensions/**"/>
-        <include name="lib/**"/>
+        <include name="lib/*.jar"/>
+        <include name="lib/make-squiggle-app.sh"/>
       </tarfileset>
       <tarfileset dir="lib" prefix="${project}-${version}/lib">
         <include name="LICENSE.*.txt"/>
@@ -361,6 +366,9 @@ To display the available targets type:
       <tarfileset dir="${resources}/${package-prefix}/extensions"
                   prefix="${project}-${version}/extensions">
         <include name="README.txt"/>
+      </tarfileset>
+      <tarfileset dir="${src}" prefix="${project}-${version}/lib">
+        <include name="Squiggle.icns"/>
       </tarfileset>
       <tarfileset dir="." includes="samples/**" prefix="${project}-${version}"/>
     </tar>
@@ -391,6 +399,17 @@ To display the available targets type:
       </tarfileset>
     </tar>
     <delete file="svn-revision" failonerror="false"/>
+  </target>
+
+  <target name="bundle-script" depends="determine-svn-revision">
+    <copy file="${src}/make-squiggle-app.sh.template"
+          tofile="${build}/lib/make-squiggle-app.sh">
+      <filterset>
+        <filter token="VERSION" value="${version}${revisionType}${revisionNumber}${svn-revision-suffix}"/>
+        <filter token="YEAR" value="${year}"/>
+      </filterset>
+    </copy>
+    <chmod perm="a+x" file="${build}/lib/make-squiggle-app.sh"/>
   </target>
 
 
