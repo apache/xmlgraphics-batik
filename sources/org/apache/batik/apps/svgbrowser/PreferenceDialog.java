@@ -942,8 +942,7 @@ public class PreferenceDialog extends JDialog
             public void actionPerformed(ActionEvent e) {
                 File f = null;
                 if (Platform.isOSX) {
-                    FileDialog fileDialog =
-                    new FileDialog(PreferenceDialog.this);
+                    FileDialog fileDialog = new FileDialog();
                     fileDialog.setVisible(true);
                     String filename = fileDialog.getFile();
                     if (filename != null) {
