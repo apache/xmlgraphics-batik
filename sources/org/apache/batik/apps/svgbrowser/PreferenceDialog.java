@@ -368,8 +368,8 @@ public class PreferenceDialog extends JDialog
     /**
      * Creates a new PreferenceDialog with the given model.
      */
-    public PreferenceDialog(PreferenceManager model) {
-        super((Frame) null, true);
+    public PreferenceDialog(Frame owner, PreferenceManager model) {
+        super(owner, true);
 
         if (model == null) {
             throw new IllegalArgumentException();
@@ -942,7 +942,7 @@ public class PreferenceDialog extends JDialog
             public void actionPerformed(ActionEvent e) {
                 File f = null;
                 if (Platform.isOSX) {
-                    FileDialog fileDialog = new FileDialog();
+                    FileDialog fileDialog = new FileDialog((Frame) getOwner());
                     fileDialog.setVisible(true);
                     String filename = fileDialog.getFile();
                     if (filename != null) {
