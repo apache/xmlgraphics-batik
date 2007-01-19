@@ -134,7 +134,7 @@ java -jar batik-squiggle.jar</source>
             </p>
             <source>build squiggle</source>
             <p>
-              and for Unix:
+              and for Unix and Mac OS X:
             </p>
             <source>build.sh squiggle</source>
             <p>This will start the browser.</p>

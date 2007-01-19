@@ -51,6 +51,10 @@ public class JToolbarButton extends JButton {
      * Initializes the button.
      */
     protected void initialize() {
+        if (!System.getProperty("java.version").startsWith("1.3")) {
+            setOpaque(false);
+            setBackground(new java.awt.Color(0, 0, 0, 0));
+        }
         setBorderPainted(false);
         setMargin(new Insets(0, 1, 0, 1));
         addMouseListener(new MouseListener());
