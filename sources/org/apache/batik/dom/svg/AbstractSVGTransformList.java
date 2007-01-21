@@ -444,10 +444,10 @@ public abstract class AbstractSVGTransformList
             switch(type) {
                 case SVGTransform.SVG_TRANSFORM_TRANSLATE:
                     buf.append("translate(");
-                    buf.append(affineTransform.getTranslateX());
+                    buf.append((float) affineTransform.getTranslateX());
                     if (!xOnly) {
                         buf.append(' ');
-                        buf.append(affineTransform.getTranslateY());
+                        buf.append((float) affineTransform.getTranslateY());
                     }
                     buf.append(')');
                     break;
@@ -464,10 +464,10 @@ public abstract class AbstractSVGTransformList
                     break;
                 case SVGTransform.SVG_TRANSFORM_SCALE:
                     buf.append("scale(");
-                    buf.append(affineTransform.getScaleX());
+                    buf.append((float) affineTransform.getScaleX());
                     if (!xOnly) {
                         buf.append(' ');
-                        buf.append(affineTransform.getScaleY());
+                        buf.append((float) affineTransform.getScaleY());
                     }
                     buf.append(')');
                     break;
