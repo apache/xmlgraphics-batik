@@ -126,6 +126,7 @@ import org.apache.batik.transcoder.image.TIFFTranscoder;
 import org.apache.batik.transcoder.print.PrintTranscoder;
 import org.apache.batik.transcoder.svg2svg.SVGTranscoder;
 import org.apache.batik.util.ParsedURL;
+import org.apache.batik.util.Platform;
 import org.apache.batik.util.Service;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLConstants;
@@ -591,7 +592,8 @@ public class JSVGViewerFrame
         try {
             // Create the menu
             MenuFactory mf = new MenuFactory(bundle, this);
-            JMenuBar mb = mf.createJMenuBar("MenuBar");
+            JMenuBar mb =
+                mf.createJMenuBar("MenuBar", application.getUISpecialization());
             setJMenuBar(mb);
 
             localHistory = new LocalHistory(mb, this);
@@ -942,6 +944,7 @@ public class JSVGViewerFrame
             } catch (IllegalAccessException iae) {
                 throw new RuntimeException(iae.getMessage());
             } catch (InvocationTargetException ite) {
+                ite.printStackTrace();
                 throw new RuntimeException(ite.getMessage());
             } catch (InstantiationException ie) {
                 throw new RuntimeException(ie.getMessage());
