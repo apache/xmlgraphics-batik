@@ -121,19 +121,90 @@ public class MenuFactory extends ResourceManager {
         throws MissingResourceException,
                ResourceFormatException,
                MissingListenerException {
+        return createJMenuBar(name, null);
+    }
+
+    /**
+     * Creates and returns a swing menu bar
+     * @param name the name of the menu bar in the resource bundle
+     * @param specialization the name of the specialization to look for
+     * @throws MissingResourceException if one of the keys that compose the
+     *         menu is missing.
+     *         It is not thrown if the mnemonic, the accelerator and the
+     *         action keys are missing
+     * @throws ResourceFormatException if the mnemonic is not a single
+     *         character and if the accelerator is malformed
+     * @throws MissingListenerException if an item action is not found in the
+     *         action map
+     */
+    public JMenuBar createJMenuBar(String name, String specialization)
+        throws MissingResourceException,
+               ResourceFormatException,
+               MissingListenerException {
         JMenuBar result = new JMenuBar();
-        List     menus  = getStringList(name);
+        List     menus  = getSpecializedStringList(name, specialization);
         Iterator it     = menus.iterator();
 
         while (it.hasNext()) {
-            result.add(createJMenuComponent((String)it.next()));
+            result.add(createJMenuComponent((String)it.next(), specialization));
         }
         return result;
     }
 
     /**
+     * Gets a possibly specialized resource string.
+     * This will first look for
+     * <code>name + '.' + specialization</code>, and if that resource
+     * doesn't exist, <code>name</code>.
+     */
+    protected String getSpecializedString(String name, String specialization) {
+        String s;
+        try {
+            s = getString(name + '.' + specialization);
+        } catch (MissingResourceException mre) {
+            s = getString(name);
+        }
+        return s;
+    }
+
+    /**
+     * Gets a possibly specialized resource string list.
+     * This will first look for
+     * <code>name + '.' + specialization</code>, and if that resource
+     * doesn't exist, <code>name</code>.
+     */
+    protected List getSpecializedStringList(String name,
+                                            String specialization) {
+        List l;
+        try {
+            l = getStringList(name + '.' + specialization);
+        } catch (MissingResourceException mre) {
+            l = getStringList(name);
+        }
+        return l;
+    }
+
+    /**
+     * Gets a possibly specialized resource boolean.
+     * This will first look for
+     * <code>name + '.' + specialization</code>, and if that resource
+     * doesn't exist, <code>name</code>.
+     */
+    protected boolean getSpecializedBoolean(String name,
+                                            String specialization) {
+        boolean b;
+        try {
+            b = getBoolean(name + '.' + specialization);
+        } catch (MissingResourceException mre) {
+            b = getBoolean(name);
+        }
+        return b;
+    }
+
+    /**
      * Creates and returns a menu item or a separator
      * @param name the name of the menu item or "-" to create a separator
+     * @param specialization the name of the specialization to look for
      * @throws MissingResourceException if key is not the name of a menu item.
      *         It is not thrown if the mnemonic, the accelerator and the
      *         action keys are missing
@@ -141,7 +212,8 @@ public class MenuFactory extends ResourceManager {
      * @throws MissingListenerException if an item action is not found in the
      *         action map
      */
-    protected JComponent createJMenuComponent(String name)
+    protected JComponent createJMenuComponent(String name,
+                                              String specialization)
         throws MissingResourceException,
                ResourceFormatException,
                MissingListenerException {
@@ -149,7 +221,8 @@ public class MenuFactory extends ResourceManager {
             buttonGroup = null;
             return new JSeparator();
         }
-        String     type = getString(name+TYPE_SUFFIX);
+        String     type = getSpecializedString(name + TYPE_SUFFIX,
+                                               specialization);
         JComponent item = null;
 
         if (type.equals(TYPE_RADIO)) {
@@ -161,14 +234,14 @@ public class MenuFactory extends ResourceManager {
         }
 
         if (type.equals(TYPE_MENU)) {
-            item = createJMenu(name);
+            item = createJMenu(name, specialization);
         } else if (type.equals(TYPE_ITEM)) {
-            item = createJMenuItem(name);
+            item = createJMenuItem(name, specialization);
         } else if (type.equals(TYPE_RADIO)) {
-            item = createJRadioButtonMenuItem(name);
+            item = createJRadioButtonMenuItem(name, specialization);
             buttonGroup.add((AbstractButton)item);
         } else if (type.equals(TYPE_CHECK)) {
-            item = createJCheckBoxMenuItem(name);
+            item = createJCheckBoxMenuItem(name, specialization);
         } else {
             throw new ResourceFormatException("Malformed resource",
                                               bundle.getClass().getName(),
@@ -194,14 +267,35 @@ public class MenuFactory extends ResourceManager {
         throws MissingResourceException,
                ResourceFormatException,
                MissingListenerException {
-        JMenu result = new JMenu(getString(name+TEXT_SUFFIX));
-        initializeJMenuItem(result, name);
+        return createJMenu(name, null);
+    }
 
-        List     items = getStringList(name);
+    /**
+     * Creates and returns a new swing menu
+     * @param name the name of the menu bar in the resource bundle
+     * @param specialization the name of the specialization to look for
+     * @throws MissingResourceException if one of the keys that compose the
+     *         menu is missing.
+     *         It is not thrown if the mnemonic, the accelerator and the
+     *         action keys are missing
+     * @throws ResourceFormatException if the mnemonic is not a single
+     *         character.
+     * @throws MissingListenerException if a item action is not found in the
+     *         action map.
+     */
+    public JMenu createJMenu(String name, String specialization)
+        throws MissingResourceException,
+               ResourceFormatException,
+               MissingListenerException {
+        JMenu result = new JMenu(getSpecializedString(name + TEXT_SUFFIX,
+                                                      specialization));
+        initializeJMenuItem(result, name, specialization);
+
+        List     items = getSpecializedStringList(name, specialization);
         Iterator it    = items.iterator();
 
         while (it.hasNext()) {
-            result.add(createJMenuComponent((String)it.next()));
+            result.add(createJMenuComponent((String)it.next(), specialization));
         }
         return result;
     }
@@ -222,8 +316,29 @@ public class MenuFactory extends ResourceManager {
         throws MissingResourceException,
                ResourceFormatException,
                MissingListenerException {
-        JMenuItem result = new JMenuItem(getString(name+TEXT_SUFFIX));
-        initializeJMenuItem(result, name);
+        return createJMenuItem(name, null);
+    }
+
+    /**
+     * Creates and returns a new swing menu item
+     * @param name the name of the menu item
+     * @param specialization the name of the specialization to look for
+     * @throws MissingResourceException if one of the keys that compose the
+     *         menu item is missing.
+     *         It is not thrown if the mnemonic, the accelerator and the
+     *         action keys are missing
+     * @throws ResourceFormatException if the mnemonic is not a single
+     *         character.
+     * @throws MissingListenerException if then item action is not found in
+     *         the action map.
+     */
+    public JMenuItem createJMenuItem(String name, String specialization)
+        throws MissingResourceException,
+               ResourceFormatException,
+               MissingListenerException {
+        JMenuItem result = new JMenuItem(getSpecializedString(name + TEXT_SUFFIX,
+                                                              specialization));
+        initializeJMenuItem(result, name, specialization);
         return result;
     }
 
@@ -243,13 +358,36 @@ public class MenuFactory extends ResourceManager {
         throws MissingResourceException,
                ResourceFormatException,
                MissingListenerException {
+        return createJRadioButtonMenuItem(name, null);
+    }
+
+    /**
+     * Creates and returns a new swing radio button menu item
+     * @param name the name of the menu item
+     * @param specialization the name of the specialization to look for
+     * @throws MissingResourceException if one of the keys that compose the
+     *         menu item is missing.
+     *         It is not thrown if the mnemonic, the accelerator and the
+     *         action keys are missing
+     * @throws ResourceFormatException if the mnemonic is not a single
+     *         character.
+     * @throws MissingListenerException if then item action is not found in
+     *         the action map.
+     */
+    public JRadioButtonMenuItem createJRadioButtonMenuItem
+            (String name, String specialization)
+        throws MissingResourceException,
+               ResourceFormatException,
+               MissingListenerException {
         JRadioButtonMenuItem result;
-        result = new JRadioButtonMenuItem(getString(name+TEXT_SUFFIX));
-        initializeJMenuItem(result, name);
+        result = new JRadioButtonMenuItem
+            (getSpecializedString(name + TEXT_SUFFIX, specialization));
+        initializeJMenuItem(result, name, specialization);
 
         // is the item selected?
         try {
-            result.setSelected(getBoolean(name+SELECTED_SUFFIX));
+            result.setSelected(getSpecializedBoolean(name + SELECTED_SUFFIX,
+                                                     specialization));
         } catch (MissingResourceException e) {
         }
 
@@ -272,13 +410,36 @@ public class MenuFactory extends ResourceManager {
         throws MissingResourceException,
                ResourceFormatException,
                MissingListenerException {
+        return createJCheckBoxMenuItem(name, null);
+    }
+
+    /**
+     * Creates and returns a new swing check box menu item
+     * @param name the name of the menu item
+     * @param specialization the name of the specialization to look for
+     * @throws MissingResourceException if one of the keys that compose the
+     *         menu item is missing.
+     *         It is not thrown if the mnemonic, the accelerator and the
+     *         action keys are missing
+     * @throws ResourceFormatException if the mnemonic is not a single
+     *         character.
+     * @throws MissingListenerException if then item action is not found in
+     *         the action map.
+     */
+    public JCheckBoxMenuItem createJCheckBoxMenuItem(String name,
+                                                     String specialization)
+        throws MissingResourceException,
+               ResourceFormatException,
+               MissingListenerException {
         JCheckBoxMenuItem result;
-        result = new JCheckBoxMenuItem(getString(name+TEXT_SUFFIX));
-        initializeJMenuItem(result, name);
+        result = new JCheckBoxMenuItem(getSpecializedString(name + TEXT_SUFFIX,
+                                                            specialization));
+        initializeJMenuItem(result, name, specialization);
 
         // is the item selected?
         try {
-            result.setSelected(getBoolean(name+SELECTED_SUFFIX));
+            result.setSelected(getSpecializedBoolean(name + SELECTED_SUFFIX,
+                                                     specialization));
         } catch (MissingResourceException e) {
         }
 
@@ -289,23 +450,27 @@ public class MenuFactory extends ResourceManager {
      * Initializes a swing menu item
      * @param item the menu item to initialize
      * @param name the name of the menu item
+     * @param specialization the name of the specialization to look for
      * @throws ResourceFormatException if the mnemonic is not a single
      *         character.
      * @throws MissingListenerException if then item action is not found in
      *         the action map.
      */
-    protected void initializeJMenuItem(JMenuItem item, String name)
+    protected void initializeJMenuItem(JMenuItem item, String name,
+                                       String specialization)
         throws ResourceFormatException,
                MissingListenerException {
         // Action
         try {
-            Action a = actions.getAction(getString(name+ACTION_SUFFIX));
+            Action a = actions.getAction
+                (getSpecializedString(name + ACTION_SUFFIX, specialization));
             if (a == null) {
                 throw new MissingListenerException("", "Action",
                                                    name+ACTION_SUFFIX);
             }
             item.setAction(a);
-            item.setText(getString(name+TEXT_SUFFIX));
+            item.setText(getSpecializedString(name + TEXT_SUFFIX,
+                                              specialization));
             if (a instanceof JComponentModifier) {
                 ((JComponentModifier)a).addJComponent(item);
             }
@@ -314,7 +479,7 @@ public class MenuFactory extends ResourceManager {
 
         // Icon
         try {
-            String s = getString(name+ICON_SUFFIX);
+            String s = getSpecializedString(name + ICON_SUFFIX, specialization);
             URL url  = actions.getClass().getResource(s);
             if (url != null) {
                 item.setIcon(new ImageIcon(url));
@@ -324,7 +489,8 @@ public class MenuFactory extends ResourceManager {
 
         // Mnemonic
         try {
-            String str = getString(name+MNEMONIC_SUFFIX);
+            String str = getSpecializedString(name + MNEMONIC_SUFFIX,
+                                              specialization);
             if (str.length() == 1) {
                 item.setMnemonic(str.charAt(0));
             } else {
@@ -338,7 +504,8 @@ public class MenuFactory extends ResourceManager {
         // Accelerator
         try {
             if (!(item instanceof JMenu)) {
-                String str = getString(name+ACCELERATOR_SUFFIX);
+                String str = getSpecializedString(name + ACCELERATOR_SUFFIX,
+                                                  specialization);
                 KeyStroke ks = KeyStroke.getKeyStroke(str);
                 if (ks != null) {
                     item.setAccelerator(ks);
@@ -354,7 +521,8 @@ public class MenuFactory extends ResourceManager {
 
         // is the item enabled?
         try {
-            item.setEnabled(getBoolean(name+ENABLED_SUFFIX));
+            item.setEnabled(getSpecializedBoolean(name + ENABLED_SUFFIX,
+                                                  specialization));
         } catch (MissingResourceException e) {
         }
     }

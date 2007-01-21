@@ -70,12 +70,13 @@ To display the available targets type:
 -->
 
 <project default="help" name="batik" basedir=".">
+
   <!-- Configuring the build -->
   <property file="${basedir}/build-local.properties"/>
   <property environment="env"/>
 
   <!-- Initializations .................................................... -->
-  <target name="init">
+  <target name="init" unless="init.done">
     <tstamp>
       <format property="ts" pattern="yyyyMMdd-HHmmss-z"/>
     </tstamp>
@@ -220,21 +221,19 @@ To display the available targets type:
       <os family="windows"/>
     </condition>
   
-    <condition property="osx">
-      <os name="Mac OS X"/>
-    </condition>
-  
     <!-- Info ............................................................... -->
     <echo message="------------------- ${Project} ${version} [${year}] -------------------"/>
     <echo message="${ant.version}"/>
     <echo message="VM: ${java.vm.version}, ${java.vm.vendor}"/>
     <echo message="JAVA_HOME: ${env.JAVA_HOME}"/>
+
+    <property name="init.done" value="true"/>
   </target>
 
   <!-- Help ............................................................... -->
   <target name="help" depends="init" description="Displays the usage">
     <echo message=""/>
-    <echo message="${project} build file"/>
+    <echo message="${Project} build file"/>
     <echo message=""/>
     <echo message=" Available targets are:"/>
     <echo message=""/>
@@ -441,7 +440,8 @@ com/DTDs/PropertyList-1.0.dtd">
 </plist>]]></echo>
     <echo file="${app}/Contents/MacOS/Squiggle"><![CDATA[#!/bin/sh
 
-/usr/bin/java -Dcom.apple.mrj.application.apple.menu.about.name=Squiggle -jar "`dirname $0`/../Resources/batik-squiggle.jar]]></echo>
+/usr/bin/java -Dcom.apple.mrj.application.apple.menu.about.name=Squiggle -jar "`dirname $0`/../Resources/batik-squiggle.jar"
+]]></echo>
     <chmod perm="a+x" file="${app}/Contents/MacOS/Squiggle"/>
     <copy todir="${app}/Contents/Resources">
       <fileset dir=".">
@@ -653,12 +653,13 @@ com/DTDs/PropertyList-1.0.dtd">
   </target>
 
 
-  <target name="compile-prepare" depends="init">
+  <target name="compile-prepare" depends="init" unless="compile-prepare.done">
     <mkdir dir="${dest}"/>
     <echo message="debug ${debug}, optimize ${optimize}, deprecation ${deprecation}"/>
+    <property name="compile-prepare.done" value="true"/>
   </target>
 
-  <target name="compile" depends="init, compile-prepare">
+  <target name="compile" depends="init, compile-prepare" unless="compile.done">
     <javac destdir="${dest}" deprecation="${deprecation}" 
            debug="${debug}" optimize="${optimize}" encoding="UTF-8">
       <src path="${src}"/>
@@ -671,6 +672,7 @@ com/DTDs/PropertyList-1.0.dtd">
       <exclude name="${src}/${package-prefix}/ext/awt/image/codec/jpeg/*"
                unless="sun-codecs.present"/>
     </javac>
+    <property name="compile.done" value="true"/>
   </target>
 
   <target name="clean-compile" depends="init"
@@ -1394,19 +1396,19 @@ com/DTDs/PropertyList-1.0.dtd">
   <!-- Applications ....................................................... -->
   <target name="squiggle" depends="init, compile"
           description="Runs Squiggle - the SVG browser">
-    <condition name="squiggle-suffix" value="others" else="osx">
+    <condition property="squiggle-suffix" value="osx" else="others">
       <os name="Mac OS X"/>
     </condition>
     <antcall target="squiggle-${squiggle-suffix}"/>
   </target>
 
-  <target name="squiggle-osx" depends="init, appbundle">
+  <target name="squiggle-osx" depends="appbundle">
     <exec executable="open">
       <arg value="${app}"/>
     </exec>
   </target>
 
-  <target name="squiggle-others" depends="init">
+  <target name="squiggle-others">
     <java fork="yes" 
           classname="${class-prefix}.apps.svgbrowser.Main">
 <!--          jvm="C:\Documents and Settings\<user>\.netbeans\4.0\modules\profiler-ea-vm\jre\bin\java"> -->

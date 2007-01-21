@@ -123,4 +123,8 @@ public interface Application {
      */
     String[] getVisitedURIs();
 
+    /**
+     * Returns the UI resource specialization to use.
+     */
+    String getUISpecialization();
 }

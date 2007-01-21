@@ -39,6 +39,9 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -248,6 +251,11 @@ public class Main implements Application {
     protected PreferenceDialog preferenceDialog;
 
     /**
+     * The UI specialization to use in the JSVGViewerFrames.
+     */
+    protected String uiSpecialization;
+
+    /**
      * Creates a new application.
      * @param args The command-line arguments.
      */
@@ -255,7 +263,80 @@ public class Main implements Application {
         arguments = args;
 
         if (Platform.isOSX) {
+            uiSpecialization = "OSX";
+
+            // Move the menu bars to the top of the screen.
             System.setProperty("apple.laf.useScreenMenuBar", "true");
+
+            // Register listeners for the About and Preferences menu items
+            // in the application menu (using reflection).
+            try {
+                Class Application = Class.forName("com.apple.eawt.Application");
+                Class ApplicationListener =
+                    Class.forName("com.apple.eawt.ApplicationListener");
+                Class ApplicationEvent =
+                    Class.forName("com.apple.eawt.ApplicationEvent");
+
+                Method getApplication = Application.getMethod("getApplication",
+                                                              new Class[0]);
+                Method addApplicationListener =
+                    Application.getMethod("addApplicationListener",
+                                          new Class[] { ApplicationListener });
+                final Method setHandled =
+                    ApplicationEvent.getMethod("setHandled",
+                                               new Class[] { Boolean.TYPE });
+                Method setEnabledPreferencesMenu =
+                    Application.getMethod("setEnabledPreferencesMenu",
+                                          new Class[] { Boolean.TYPE });
+
+                InvocationHandler listenerHandler = new InvocationHandler() {
+                    public Object invoke(Object proxy, Method method,
+                                         Object[] args) {
+                        String name = method.getName();
+                        if (name.equals("handleAbout")) {
+                            JSVGViewerFrame relativeTo =
+                                viewerFrames.isEmpty()
+                                    ?  null
+                                    : (JSVGViewerFrame) viewerFrames.get(0);
+                            AboutDialog dlg = new AboutDialog(relativeTo);
+                            // Work around pack() bug on some platforms
+                            dlg.setSize(dlg.getPreferredSize());
+                            dlg.setLocationRelativeTo(relativeTo);
+                            dlg.setVisible(true);
+                            dlg.toFront();
+                        } else if (name.equals("handlePreferences")) {
+                            JSVGViewerFrame relativeTo =
+                                viewerFrames.isEmpty()
+                                    ?  null
+                                    : (JSVGViewerFrame) viewerFrames.get(0);
+                            showPreferenceDialog(relativeTo);
+                        } else if (name.equals("handleQuit")) {
+                            // Do nothing, let the OS quit the app.
+                        } else {
+                            return null;
+                        }   
+                        try {
+                            setHandled.invoke(args[0],
+                                              new Object[] { Boolean.TRUE });
+                        } catch (Exception e) {
+                        }
+                        return null;
+                    }
+                };
+
+                Object application = getApplication.invoke(null, (Object[]) null);
+                setEnabledPreferencesMenu.invoke(application,
+                                                 new Object[] { Boolean.TRUE });
+                Object listener =
+                    Proxy.newProxyInstance(Main.class.getClassLoader(),
+                                           new Class[] { ApplicationListener },
+                                           listenerHandler);
+                addApplicationListener.invoke(application,
+                                              new Object[] { listener });
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                uiSpecialization = null;
+            }
         }
 
         //
@@ -876,7 +957,7 @@ public class Main implements Application {
 
         for (int i=0; i<lastVisited.size(); i++) {
             lastVisitedBuffer.append
-                (URLEncoder.encode( lastVisited.get(i).toString()));
+                (URLEncoder.encode(lastVisited.get(i).toString()));
             lastVisitedBuffer.append(URI_SEPARATOR);
         }
 
@@ -898,6 +979,13 @@ public class Main implements Application {
         String[] visitedURIs = new String[lastVisited.size()];
         lastVisited.toArray(visitedURIs);
         return visitedURIs;
+    }
+
+    /**
+     * Returns the UI resource specialization to use.
+     */
+    public String getUISpecialization() {
+        return uiSpecialization;
     }
 
     /**
