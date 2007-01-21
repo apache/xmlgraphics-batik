@@ -764,6 +764,9 @@ com/DTDs/PropertyList-1.0.dtd">
   <target name="libs-jar" depends="init, compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-libs.jar">
       <manifest>
+        <attribute name="Implementation-Title" value="Batik all-in-one minus external dependencies"/>
+        <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}${svn-revision-suffix}"/>
+        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <fileset dir="${dest}" excludes="**/.svn/">
@@ -785,7 +788,7 @@ com/DTDs/PropertyList-1.0.dtd">
     <jar jarfile="${build}/lib/${project}-bean.jar"
          manifest="${src}/${project}-bean.mf">
       <manifest>
-        <attribute name="Implementation-Title" value="Batik Java Bean"/>
+        <attribute name="Implementation-Title" value="Batik JavaBean"/>
         <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}${svn-revision-suffix}"/>
         <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
         <attribute name="Build-Id" value="${build.id}"/>
@@ -827,6 +830,9 @@ com/DTDs/PropertyList-1.0.dtd">
   <target name="ext-jar" depends="init, compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-ext.jar">
       <manifest>
+        <attribute name="Implementation-Title" value="Batik external code"/>
+        <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}${svn-revision-suffix}"/>
+        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${lib}">
@@ -842,7 +848,7 @@ com/DTDs/PropertyList-1.0.dtd">
   <target name="util-jar" depends="init, compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-util.jar">
       <manifest>
-        <attribute name="Implementation-Title" value="Batik utility jar"/>
+        <attribute name="Implementation-Title" value="Batik utility library"/>
         <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}${svn-revision-suffix}"/>
         <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
         <attribute name="Build-Id" value="${build.id}"/>
@@ -867,6 +873,9 @@ com/DTDs/PropertyList-1.0.dtd">
   <target name="awt-util-jar" depends="init, compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-awt-util.jar">
       <manifest>
+        <attribute name="Implementation-Title" value="Batik AWT utility library"/>
+        <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}${svn-revision-suffix}"/>
+        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
@@ -886,6 +895,9 @@ com/DTDs/PropertyList-1.0.dtd">
   <target name="codec-jar" depends="init, compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-codec.jar">
       <manifest>
+        <attribute name="Implementation-Title" value="Batik image codecs"/>
+        <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}${svn-revision-suffix}"/>
+        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
@@ -911,6 +923,9 @@ com/DTDs/PropertyList-1.0.dtd">
   <target name="svggen-jar" depends="init, compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-svggen.jar">
       <manifest>
+        <attribute name="Implementation-Title" value="Batik SVG generator"/>
+        <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}${svn-revision-suffix}"/>
+        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
@@ -927,6 +942,9 @@ com/DTDs/PropertyList-1.0.dtd">
   <target name="svggen-full-jar" depends="init, compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-svggenfull.jar">
       <manifest>
+        <attribute name="Implementation-Title" value="Batik SVG generator plus dependencies"/>
+        <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}${svn-revision-suffix}"/>
+        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
@@ -948,6 +966,9 @@ com/DTDs/PropertyList-1.0.dtd">
   <target name="gui-util-jar" depends="init, compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-gui-util.jar">
       <manifest>
+        <attribute name="Implementation-Title" value="Batik GUI utility library"/>
+        <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}${svn-revision-suffix}"/>
+        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
@@ -965,6 +986,9 @@ com/DTDs/PropertyList-1.0.dtd">
   <target name="dom-jar" depends="init, compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-dom.jar">
       <manifest>
+        <attribute name="Implementation-Title" value="Batik DOM Level 3 implementation"/>
+        <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}${svn-revision-suffix}"/>
+        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
@@ -990,6 +1014,9 @@ com/DTDs/PropertyList-1.0.dtd">
   <target name="css-jar" depends="init, compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-css.jar">
       <manifest>
+        <attribute name="Implementation-Title" value="Batik CSS engine"/>
+        <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}${svn-revision-suffix}"/>
+        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
@@ -1020,6 +1047,9 @@ com/DTDs/PropertyList-1.0.dtd">
   <target name="svg-dom-jar" depends="init, compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-svg-dom.jar">
       <manifest>
+        <attribute name="Implementation-Title" value="Batik SVG DOM implementation"/>
+        <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}${svn-revision-suffix}"/>
+        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
@@ -1040,6 +1070,9 @@ com/DTDs/PropertyList-1.0.dtd">
   <target name="gvt-jar" depends="init, compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-gvt.jar">
       <manifest>
+        <attribute name="Implementation-Title" value="Batik GVT library"/>
+        <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}${svn-revision-suffix}"/>
+        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
@@ -1057,6 +1090,9 @@ com/DTDs/PropertyList-1.0.dtd">
   <target name="parser-jar" depends="init, compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-parser.jar">
       <manifest>
+        <attribute name="Implementation-Title" value="Batik parser library"/>
+        <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}${svn-revision-suffix}"/>
+        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
@@ -1074,6 +1110,9 @@ com/DTDs/PropertyList-1.0.dtd">
   <target name="script-jar" depends="init, compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-script.jar">
       <manifest>
+        <attribute name="Implementation-Title" value="Batik script library"/>
+        <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}${svn-revision-suffix}"/>
+        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
@@ -1092,6 +1131,9 @@ com/DTDs/PropertyList-1.0.dtd">
   <target name="transcoder-jar" depends="init, compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-transcoder.jar">
       <manifest>
+        <attribute name="Implementation-Title" value="Batik transcoder"/>
+        <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}${svn-revision-suffix}"/>
+        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
@@ -1108,6 +1150,9 @@ com/DTDs/PropertyList-1.0.dtd">
   <target name="xml-jar" depends="init, compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-xml.jar">
       <manifest>
+        <attribute name="Implementation-Title" value="Batik XML utility library"/>
+        <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}${svn-revision-suffix}"/>
+        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
@@ -1124,6 +1169,9 @@ com/DTDs/PropertyList-1.0.dtd">
   <target name="bridge-jar" depends="init, compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-bridge.jar">
       <manifest>
+        <attribute name="Implementation-Title" value="Batik bridge"/>
+        <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}${svn-revision-suffix}"/>
+        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
@@ -1141,6 +1189,9 @@ com/DTDs/PropertyList-1.0.dtd">
   <target name="swing-jar" depends="init, compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-swing.jar">
       <manifest>
+        <attribute name="Implementation-Title" value="Batik Swing components"/>
+        <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}${svn-revision-suffix}"/>
+        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
@@ -1157,6 +1208,9 @@ com/DTDs/PropertyList-1.0.dtd">
   <target name="anim-jar" depends="init, compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-anim.jar">
       <manifest>
+        <attribute name="Implementation-Title" value="Batik animation"/>
+        <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}${svn-revision-suffix}"/>
+        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
@@ -1175,6 +1229,9 @@ com/DTDs/PropertyList-1.0.dtd">
   <target name="extension-jar" depends="init, compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-extension.jar">
       <manifest>
+        <attribute name="Implementation-Title" value="Batik extensions"/>
+        <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}${svn-revision-suffix}"/>
+        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
@@ -1196,7 +1253,7 @@ com/DTDs/PropertyList-1.0.dtd">
     <jar manifest="${src}/${project}-pp.mf"
          jarfile="${build}/${project}-svgpp.jar">
       <manifest>
-        <attribute name="Implementation-Title" value="Batik XML Pretty Printer"/>
+        <attribute name="Implementation-Title" value="Batik XML pretty printer"/>
         <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}${svn-revision-suffix}"/>
         <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
         <attribute name="Build-Id" value="${build.id}"/>
@@ -1216,7 +1273,7 @@ com/DTDs/PropertyList-1.0.dtd">
     <jar manifest="${src}/${project}-slideshow.mf"
          jarfile="${build}/${project}-slideshow.jar">
       <manifest>
-        <attribute name="Implementation-Title" value="Batik SVG Slide Show Tool"/>
+        <attribute name="Implementation-Title" value="Batik SVG slide show tool"/>
         <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}${svn-revision-suffix}"/>
         <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
         <attribute name="Build-Id" value="${build.id}"/>
@@ -1241,7 +1298,7 @@ com/DTDs/PropertyList-1.0.dtd">
     <jar manifest="${src}/${project}-browser.mf"
          jarfile="${build}/${project}-squiggle.jar">
       <manifest>
-        <attribute name="Implementation-Title" value="Batik Squiggle Viewer"/>
+        <attribute name="Implementation-Title" value="Batik Squiggle SVG browser"/>
         <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}${svn-revision-suffix}"/>
         <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
         <attribute name="Build-Id" value="${build.id}"/>
@@ -1267,7 +1324,7 @@ com/DTDs/PropertyList-1.0.dtd">
      <jar manifest="${src}/${project}-browser-ext.mf"
           jarfile="${build}/extensions/${project}-squiggle-ext.jar">
       <manifest>
-        <attribute name="Implementation-Title" value="Batik Squiggle Viewer With Extensions"/>
+        <attribute name="Implementation-Title" value="Batik Squiggle SVG browser with extensions"/>
         <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}${svn-revision-suffix}"/>
         <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
         <attribute name="Build-Id" value="${build.id}"/>
@@ -1291,7 +1348,7 @@ com/DTDs/PropertyList-1.0.dtd">
     <jar manifest="${src}/${project}-rasterizer.mf"
          jarfile="${build}/${project}-rasterizer.jar">
       <manifest>
-        <attribute name="Implementation-Title" value="Batik SVG Rasterizer"/>
+        <attribute name="Implementation-Title" value="Batik SVG rasterizer"/>
         <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}${svn-revision-suffix}"/>
         <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
         <attribute name="Build-Id" value="${build.id}"/>
@@ -1315,7 +1372,7 @@ com/DTDs/PropertyList-1.0.dtd">
      <jar manifest="${src}/${project}-rasterizer-ext.mf"
           jarfile="${build}/extensions/${project}-rasterizer-ext.jar">
       <manifest>
-        <attribute name="Implementation-Title" value="Batik SVG Rasterizer With Extensions"/>
+        <attribute name="Implementation-Title" value="Batik SVG rasterizer with extensions"/>
         <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}${svn-revision-suffix}"/>
         <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
         <attribute name="Build-Id" value="${build.id}"/>
@@ -1332,7 +1389,7 @@ com/DTDs/PropertyList-1.0.dtd">
     <jar manifest="${src}/${project}-ttf2svg.mf"
          jarfile="${build}/${project}-ttf2svg.jar">
       <manifest>
-        <attribute name="Implementation-Title" value="Batik TrueType to SVG Font Converter"/>
+        <attribute name="Implementation-Title" value="Batik TrueType to SVG Font converter"/>
         <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}${svn-revision-suffix}"/>
         <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
         <attribute name="Build-Id" value="${build.id}"/>
@@ -1362,18 +1419,24 @@ com/DTDs/PropertyList-1.0.dtd">
   <!-- infrastructure.                                               -->
   <target name="regard-jar" depends="init, compiletest, prepare-build">
     <jar jarfile="regard.jar">
-        <fileset dir="${dest}">
-          <include name="${package-prefix}/test/*.class"/>
-          <include name="${package-prefix}/test/xml/*.class"/>
-          <include name="${package-prefix}/i18n/Localizable.class"/>
-          <include name="${package-prefix}/i18n/LocalizableSupport.class"/>
-          <include name="${package-prefix}/i18n/LocaleGroup.class"/>
-          <include name="${package-prefix}/util/XMLConstants.class"/>
-        </fileset>
-        <fileset dir="${test-resources}">
-          <include name="${package-prefix}/test/resources/*.properties"/>
-          <include name="${package-prefix}/test/xml/resources/*.properties"/>
-        </fileset>
+      <manifest>
+        <attribute name="Implementation-Title" value="Batik Regard regression testing tool"/>
+        <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}${svn-revision-suffix}"/>
+        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
+        <attribute name="Build-Id" value="${build.id}"/>
+      </manifest>
+      <fileset dir="${dest}">
+        <include name="${package-prefix}/test/*.class"/>
+        <include name="${package-prefix}/test/xml/*.class"/>
+        <include name="${package-prefix}/i18n/Localizable.class"/>
+        <include name="${package-prefix}/i18n/LocalizableSupport.class"/>
+        <include name="${package-prefix}/i18n/LocaleGroup.class"/>
+        <include name="${package-prefix}/util/XMLConstants.class"/>
+      </fileset>
+      <fileset dir="${test-resources}">
+        <include name="${package-prefix}/test/resources/*.properties"/>
+        <include name="${package-prefix}/test/xml/resources/*.properties"/>
+      </fileset>
     </jar>
   </target>
 
@@ -1381,6 +1444,9 @@ com/DTDs/PropertyList-1.0.dtd">
   <target name="imageCodecs-jar" depends="init, compiletest, prepare-build">
     <jar jarfile="imageCodecs.jar">
       <manifest>
+        <attribute name="Implementation-Title" value="Batik image codecs"/>
+        <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}${svn-revision-suffix}"/>
+        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
