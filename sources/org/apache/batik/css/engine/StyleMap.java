@@ -300,8 +300,11 @@ public class StyleMap {
      * Returns a printable representation of this style map.
      */
     public String toString(CSSEngine eng) {
+        // Note that values.length should always be equal to
+        // eng.getNumberOfProperties() for StyleMaps that were created
+        // by that CSSEngine.
         int nSlots = values.length;
-        StringBuffer sb = new StringBuffer( nSlots * 8 );
+        StringBuffer sb = new StringBuffer(nSlots * 8);
         for (int i = 0; i < nSlots; i++) {
             Value v = values[i];
             if (v == null) continue;
