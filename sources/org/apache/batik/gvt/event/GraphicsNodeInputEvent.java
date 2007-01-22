@@ -156,7 +156,7 @@ public abstract class GraphicsNodeInputEvent extends GraphicsNodeEvent {
      * Returns whether or not the Meta modifier is down on this event.
      */
     public boolean isMetaDown() {
-        return (modifiers & META_MASK) != 0;
+        return AWTEventDispatcher.isMetaDown(modifiers);
     }
 
     /**

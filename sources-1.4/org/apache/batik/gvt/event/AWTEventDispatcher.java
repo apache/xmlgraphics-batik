@@ -18,6 +18,7 @@
  */
 package org.apache.batik.gvt.event;
 
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
@@ -82,7 +83,7 @@ public class AWTEventDispatcher extends AbstractAWTEventDispatcher
                 (new GraphicsNodeMouseWheelEvent(lastHit,
                                                  evt.getID(),
                                                  evt.getWhen(),
-                                                 evt.getModifiers(),
+                                                 evt.getModifiersEx(),
                                                  getCurrentLockState(),
                                                  evt.getWheelRotation()));
         }
@@ -116,10 +117,26 @@ public class AWTEventDispatcher extends AbstractAWTEventDispatcher
             (new GraphicsNodeKeyEvent(target,
                                       evt.getID(),
                                       evt.getWhen(),
-                                      evt.getModifiers(),
+                                      evt.getModifiersEx(),
                                       getCurrentLockState(),
                                       evt.getKeyCode(),
                                       evt.getKeyChar(),
                                       evt.getKeyLocation()));
+    }
+
+    /** 
+     * Returns the modifiers mask for this event.  This just calls
+     * {@link InputEvent#getModifiersEx()} on <code>evt</code>.
+     */
+    protected int getModifiers(InputEvent evt) {
+        return evt.getModifiersEx();
+    }
+
+    /**
+     * Returns whether the meta key is down according to the given modifiers
+     * bitfield.
+     */
+    protected static boolean isMetaDown(int modifiers) {
+        return (modifiers & (1 << 8)) != 0; /* META_DOWN_MASK */
     }
 }

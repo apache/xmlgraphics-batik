@@ -31,4 +31,10 @@ public abstract class Platform {
      */
     public static boolean isOSX =
         System.getProperty("os.name").equals("Mac OS X");
+
+    /**
+     * Whether we are running on JRE 1.3.
+     */
+    public static boolean isJRE13 =
+        System.getProperty("java.version").startsWith("1.3");
 }

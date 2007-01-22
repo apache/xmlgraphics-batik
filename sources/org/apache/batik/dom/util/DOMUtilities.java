@@ -476,11 +476,6 @@ public class DOMUtilities extends XMLUtilities {
      * shift bitmasks.
      */
     public static String getModifiersList(int lockState, int modifiers) {
-        if ((modifiers & 0x20) != 0) {
-            modifiers = 0x10 | (modifiers & 0x0f);
-        } else {
-            modifiers = modifiers & 0x0f;
-        }
-        return LOCK_STRINGS[lockState & 0x0f] + MODIFIER_STRINGS[modifiers];
+        return DOMUtilitiesSupport.getModifiersList(lockState, modifiers);
     }
 }

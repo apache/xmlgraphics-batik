@@ -18,6 +18,7 @@
  */
 package org.apache.batik.gvt.event;
 
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 
 import org.apache.batik.gvt.GraphicsNode;
@@ -52,5 +53,21 @@ public class AWTEventDispatcher extends AbstractAWTEventDispatcher {
                                       evt.getKeyCode(),
                                       evt.getKeyChar(),
                                       0));
+    }
+
+    /** 
+     * Returns the modifiers mask for this event.  This just calls
+     * {@link InputEvent#getModifiers()} on <code>evt</code>.
+     */
+    protected int getModifiers(InputEvent evt) {
+        return evt.getModifiers();
+    }
+
+    /**
+     * Returns whether the meta key is down according to the given modifiers
+     * bitfield.
+     */
+    protected static boolean isMetaDown(int modifiers) {
+        return (modifiers & GraphicsNodeInputEvent.META_MASK) != 0;
     }
 }
