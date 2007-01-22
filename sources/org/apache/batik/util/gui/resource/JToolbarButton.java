@@ -56,7 +56,7 @@ public class JToolbarButton extends JButton {
             setBackground(new java.awt.Color(0, 0, 0, 0));
         }
         setBorderPainted(false);
-        setMargin(new Insets(0, 1, 0, 1));
+        setMargin(new Insets(2, 2, 2, 2));
         addMouseListener(new MouseListener());
     }
 
