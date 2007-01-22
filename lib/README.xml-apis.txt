@@ -24,7 +24,7 @@ All DOM code is licensed under the W3C Software License, and DOM documentation
 under the W3C Document License.  See LICENSE.dom-software.txt and
 LICENSE.dom-documentation.txt.
 
-The JAXP 1.3 code is licensed under the Apache Software License 2.0.  See
-LICENSE in the root directory of this distribution.
+The JAXP 1.3 code is licensed under the Apache Software License 2.0, which is
+in the LICENSE in the root directory of this distribution.
 
 SAX is public domain.  See LICENSE.sax.txt.
