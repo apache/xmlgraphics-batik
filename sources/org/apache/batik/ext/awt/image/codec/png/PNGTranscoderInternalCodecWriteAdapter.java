@@ -22,8 +22,8 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.apache.batik.ext.awt.image.codec.png.PNGEncodeParam;
-import org.apache.batik.ext.awt.image.codec.png.PNGImageEncoder;
+import org.apache.xmlgraphics.image.codec.png.PNGEncodeParam;
+import org.apache.xmlgraphics.image.codec.png.PNGImageEncoder;
 import org.apache.batik.ext.awt.image.rendered.IndexImage;
 import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderOutput;

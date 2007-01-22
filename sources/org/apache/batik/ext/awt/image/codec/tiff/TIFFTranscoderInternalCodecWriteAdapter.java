@@ -28,11 +28,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import org.apache.batik.ext.awt.image.GraphicsUtil;
-import org.apache.batik.ext.awt.image.codec.tiff.TIFFEncodeParam;
-import org.apache.batik.ext.awt.image.codec.tiff.TIFFField;
-import org.apache.batik.ext.awt.image.codec.tiff.TIFFImageDecoder;
-import org.apache.batik.ext.awt.image.codec.tiff.TIFFImageEncoder;
-import org.apache.batik.ext.awt.image.rendered.FormatRed;
+import org.apache.xmlgraphics.image.codec.tiff.TIFFEncodeParam;
+import org.apache.xmlgraphics.image.codec.tiff.TIFFField;
+import org.apache.xmlgraphics.image.codec.tiff.TIFFImageDecoder;
+import org.apache.xmlgraphics.image.codec.tiff.TIFFImageEncoder;
+import org.apache.xmlgraphics.image.rendered.FormatRed;
 import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.TranscodingHints;

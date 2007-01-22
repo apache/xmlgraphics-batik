@@ -23,7 +23,7 @@ import java.awt.Composite;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.batik.ext.awt.g2d.GraphicContext;
+import org.apache.xmlgraphics.java2d.GraphicContext;
 
 /**
  * Utility class that converts a Composite object into

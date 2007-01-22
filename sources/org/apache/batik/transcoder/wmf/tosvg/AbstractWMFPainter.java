@@ -20,7 +20,6 @@
 package org.apache.batik.transcoder.wmf.tosvg;
 
 import java.io.BufferedInputStream;
-import java.io.UnsupportedEncodingException;
 import java.awt.Font;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -29,8 +28,6 @@ import java.text.AttributedString;
 import java.text.AttributedCharacterIterator;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
-
-import org.apache.batik.transcoder.wmf.WMFConstants;
 
 /** This class provides generic methods that must be used by a particular WMFPainter.
  */

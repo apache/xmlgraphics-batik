@@ -96,7 +96,7 @@ public class JaclInterpreter implements org.apache.batik.script.Interpreter {
         // no implementation of a default output function in Jacl
     }
 
-    // org.apache.batik.i18n.Localizable implementation
+    // org.apache.xmlgraphics.util.i18n.Localizable implementation
 
     public Locale getLocale() {
         return Locale.getDefault();

@@ -33,7 +33,7 @@ import java.util.Iterator;
 import org.apache.batik.ext.awt.geom.RectListManager;
 import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.ext.awt.image.PadMode;
-import org.apache.batik.ext.awt.image.rendered.CachableRed;
+import org.apache.xmlgraphics.image.rendered.CachableRed;
 import org.apache.batik.ext.awt.image.rendered.PadRed;
 import org.apache.batik.util.HaltingThread;
 

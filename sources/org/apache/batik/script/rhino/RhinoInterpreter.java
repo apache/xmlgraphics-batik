@@ -493,7 +493,7 @@ public class RhinoInterpreter implements Interpreter {
         // no implementation of a default output function in Rhino
     }
 
-    // org.apache.batik.i18n.Localizable implementation
+    // org.apache.xmlgraphics.util.i18n.Localizable implementation
 
     /**
      * Returns the current locale or null if the locale currently used is

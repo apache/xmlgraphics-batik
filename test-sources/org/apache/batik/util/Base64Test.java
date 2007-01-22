@@ -21,6 +21,7 @@ package org.apache.batik.util;
 import org.apache.batik.test.AbstractTest;
 import org.apache.batik.test.DefaultTestReport;
 import org.apache.batik.test.TestReport;
+import org.apache.xmlgraphics.util.io.Base64DecodeStream;
 
 import java.io.PipedOutputStream;
 import java.io.PipedInputStream;

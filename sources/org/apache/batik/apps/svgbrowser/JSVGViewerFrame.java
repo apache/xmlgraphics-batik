@@ -127,7 +127,6 @@ import org.apache.batik.transcoder.print.PrintTranscoder;
 import org.apache.batik.transcoder.svg2svg.SVGTranscoder;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.Platform;
-import org.apache.batik.util.Service;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLConstants;
 import org.apache.batik.util.gui.DOMViewer;
@@ -142,6 +141,9 @@ import org.apache.batik.util.gui.resource.MissingListenerException;
 import org.apache.batik.util.gui.resource.ResourceManager;
 import org.apache.batik.util.gui.resource.ToolBarFactory;
 import org.apache.batik.xml.XMLUtilities;
+
+import org.apache.xmlgraphics.util.Service;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.css.ViewCSS;

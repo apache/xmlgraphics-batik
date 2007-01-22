@@ -23,7 +23,7 @@ import java.awt.Paint;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.batik.ext.awt.g2d.GraphicContext;
+import org.apache.xmlgraphics.java2d.GraphicContext;
 
 /**
  * Utility class that converts a Color object into a set of

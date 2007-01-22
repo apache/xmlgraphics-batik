@@ -8,3 +8,4 @@ Class-Path: lib/batik-ext.jar \
             lib/batik-xml.jar \
             lib/xml-apis.jar \
             lib/xml-apis-ext.jar
+            lib/xmlgraphics-commons-1.2svn.jar

@@ -79,7 +79,7 @@ public abstract class AbstractImageHandlerEncoder extends DefaultImageHandler {
             } catch (ThreadDeath td) {
                 throw td;
             } catch (Throwable t) {
-                // happen only if Batik extensions are not their
+                // happen only if Batik extensions are not there
             } finally {
                 initDone = true;
             }

@@ -29,7 +29,7 @@ import java.io.Writer;
  * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>
  * @version $Id$
  */
-public interface Interpreter extends org.apache.batik.i18n.Localizable {
+public interface Interpreter extends org.apache.xmlgraphics.util.i18n.Localizable {
 
     /**
      * This method should evaluate a piece of script associated to a given 

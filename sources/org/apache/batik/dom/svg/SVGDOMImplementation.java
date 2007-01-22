@@ -36,7 +36,7 @@ import org.apache.batik.dom.events.DocumentEventSupport;
 import org.apache.batik.dom.util.CSSStyleDeclarationFactory;
 import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.dom.util.HashTable;
-import org.apache.batik.i18n.LocalizableSupport;
+import org.apache.xmlgraphics.util.i18n.LocalizableSupport;
 import org.apache.batik.util.SVGConstants;
 
 import org.w3c.css.sac.InputSource;

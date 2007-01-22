@@ -29,6 +29,8 @@ import java.awt.image.WritableRaster;
 import org.apache.batik.ext.awt.image.ARGBChannel;
 import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.ext.awt.image.PadMode;
+import org.apache.xmlgraphics.image.rendered.AbstractRed;
+import org.apache.xmlgraphics.image.rendered.CachableRed;
 
 
 /**

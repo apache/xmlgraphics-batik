@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
 
+import org.apache.xmlgraphics.util.io.Base64DecodeStream;
+
 /**
  * Protocol Handler for the 'data' protocol.
  * RFC: 2397

@@ -25,9 +25,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.apache.batik.ext.awt.image.spi.ImageWriter;
-import org.apache.batik.ext.awt.image.spi.ImageWriterParams;
-import org.apache.batik.ext.awt.image.spi.ImageWriterRegistry;
+import org.apache.xmlgraphics.image.writer.ImageWriter;
+import org.apache.xmlgraphics.image.writer.ImageWriterParams;
+import org.apache.xmlgraphics.image.writer.ImageWriterRegistry;
 
 /**
  * This implementation of the abstract AbstractImageHandlerEncoder

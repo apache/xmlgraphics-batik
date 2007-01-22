@@ -33,7 +33,7 @@ import org.apache.batik.ext.awt.image.URLImageCache;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.renderable.ProfileRable;
 import org.apache.batik.util.ParsedURL;
-import org.apache.batik.util.Service;
+import org.apache.xmlgraphics.util.Service;
 
 /**
  * This class handles the registered Image tag handlers.  These are

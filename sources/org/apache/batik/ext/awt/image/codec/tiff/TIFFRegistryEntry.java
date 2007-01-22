@@ -21,12 +21,14 @@ package org.apache.batik.ext.awt.image.codec.tiff;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.batik.ext.awt.image.codec.util.SeekableStream;
+import org.apache.xmlgraphics.image.codec.tiff.TIFFDecodeParam;
+import org.apache.xmlgraphics.image.codec.tiff.TIFFImage;
+import org.apache.xmlgraphics.image.codec.util.SeekableStream;
 import org.apache.batik.ext.awt.image.renderable.DeferRable;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.renderable.RedRable;
-import org.apache.batik.ext.awt.image.rendered.Any2sRGBRed;
-import org.apache.batik.ext.awt.image.rendered.CachableRed;
+import org.apache.xmlgraphics.image.rendered.Any2sRGBRed;
+import org.apache.xmlgraphics.image.rendered.CachableRed;
 import org.apache.batik.ext.awt.image.spi.ImageTagRegistry;
 import org.apache.batik.ext.awt.image.spi.MagicNumberRegistryEntry;
 import org.apache.batik.util.ParsedURL;

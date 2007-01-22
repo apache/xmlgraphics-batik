@@ -31,7 +31,7 @@ import java.util.Vector;
 import java.util.Set;
 
 import org.apache.batik.anim.AnimationException;
-import org.apache.batik.i18n.LocalizableSupport;
+import org.apache.xmlgraphics.util.i18n.LocalizableSupport;
 import org.apache.batik.parser.ClockHandler;
 import org.apache.batik.parser.ClockParser;
 import org.apache.batik.parser.ParseException;
@@ -1492,14 +1492,14 @@ public abstract class TimedElement implements SMILConstants {
         new LocalizableSupport(RESOURCES, TimedElement.class.getClassLoader());
 
     /**
-     * Implements {@link org.apache.batik.i18n.Localizable#setLocale(Locale)}.
+     * Implements {@link org.apache.xmlgraphics.util.i18n.Localizable#setLocale(Locale)}.
      */
     public static void setLocale(Locale l) {
         localizableSupport.setLocale(l);
     }
 
     /**
-     * Implements {@link org.apache.batik.i18n.Localizable#getLocale()}.
+     * Implements {@link org.apache.xmlgraphics.util.i18n.Localizable#getLocale()}.
      */
     public static Locale getLocale() {
         return localizableSupport.getLocale();
@@ -1507,7 +1507,7 @@ public abstract class TimedElement implements SMILConstants {
 
     /**
      * Implements {@link
-     * org.apache.batik.i18n.Localizable#formatMessage(String,Object[])}.
+     * org.apache.xmlgraphics.util.i18n.Localizable#formatMessage(String,Object[])}.
      */
     public static String formatMessage(String key, Object[] args)
         throws MissingResourceException {

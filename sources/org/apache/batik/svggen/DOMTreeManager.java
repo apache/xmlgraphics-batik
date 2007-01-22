@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
 
-import org.apache.batik.ext.awt.g2d.GraphicContext;
+import org.apache.xmlgraphics.java2d.GraphicContext;
 import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

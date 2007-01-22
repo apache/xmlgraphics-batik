@@ -51,8 +51,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.batik.ext.awt.g2d.AbstractGraphics2D;
-import org.apache.batik.ext.awt.g2d.GraphicContext;
+import org.apache.xmlgraphics.java2d.AbstractGraphics2D;
+import org.apache.xmlgraphics.java2d.GraphicContext;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
@@ -81,7 +81,7 @@ import org.w3c.dom.Node;
  *
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
- * @see                org.apache.batik.ext.awt.g2d.GraphicContext
+ * @see                org.apache.xmlgraphics.java2d.GraphicContext
  * @see                org.apache.batik.svggen.DOMTreeManager
  * @see                org.apache.batik.svggen.DOMGroupManager
  * @see                org.apache.batik.svggen.ImageHandler

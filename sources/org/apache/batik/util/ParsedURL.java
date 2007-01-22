@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.batik.Version;
+import org.apache.xmlgraphics.util.Service;
 
 /**
  * This class is used as a replacement for java.net.URL.  This is done

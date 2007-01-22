@@ -22,7 +22,7 @@ import java.awt.Shape;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
 
-import org.apache.batik.ext.awt.g2d.GraphicContext;
+import org.apache.xmlgraphics.java2d.GraphicContext;
 import org.w3c.dom.Element;
 
 /**

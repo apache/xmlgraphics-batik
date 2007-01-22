@@ -20,7 +20,7 @@ package org.apache.batik.parser;
 
 import java.io.Reader;
 
-import org.apache.batik.i18n.Localizable;
+import org.apache.xmlgraphics.util.i18n.Localizable;
 
 /**
  * This interface represents a parser.

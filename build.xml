@@ -64,7 +64,7 @@ To display the available targets type:
   [unix]  ./build.sh  help
   [win32] .\build.bat help
 
- 
+
  $Id$
 
 -->
@@ -86,12 +86,12 @@ To display the available targets type:
     <property name="version"            value="1.6"/>
     <property name="revisionType"       value=""/>
     <property name="revisionNumber"     value=""/>
-  
+
     <property file="build.properties"/>
     <property name="debug"              value="off"/>
     <property name="optimize"           value="on"/>
     <property name="deprecation"        value="on"/>
-  
+
     <property name="src"                value="sources"/>
     <property name="src-internal-codec" value="sources-internal-codec"/>
     <property name="resources"          value="resources"/>
@@ -107,15 +107,15 @@ To display the available targets type:
     <property name="lib"                value="lib"/>
     <property name="samples"            value="samples"/>
     <property name="package-prefix"     value="org/apache/${project}"/>
-  
+
     <property name="class-prefix"       value="org.apache.${project}"/>
-  
+
     <property name="dom.javadoc"        value="http://www.w3.org/2003/01/dom2-javadoc/"/>
     <property name="jdk.javadoc"        value="http://java.sun.com/j2se/1.4/docs/api/"/>
     <property name="rhino.javadoc"      value="http://www.mozilla.org/rhino/apidocs/"/>
-  
+
     <property name="site"               value="site"/>
-  
+
     <property name="test-reports"       value="test-reports"/>
     <property name="test-references"    value="test-references"/>
     <property name="test-resources"     value="test-resources"/>
@@ -135,15 +135,7 @@ To display the available targets type:
     </path>
   
     <path id="libs-build-classpath">
-      <fileset dir="lib/build">
-        <include name="stylebook*.jar"/>
-      </fileset>
-      <fileset dir="lib">
-        <include name="xalan*.jar"/>
-        <include name="xerces*.jar"/>
-        <include name="xml-apis.jar"/>
-        <include name="xml-apis-ext.jar"/>
-      </fileset>
+      <!-- Currently no extra jars are needed for building. -->
     </path>
   
     <available property="rhino.present" classname="org.mozilla.javascript.Context">
@@ -624,6 +616,7 @@ com/DTDs/PropertyList-1.0.dtd">
           errorproperty="svn-revision-transform-error"
           resultproperty="svn-revision-transform-result">
       <classpath>
+        <path refid="libs-classpath"/>
         <path refid="libs-build-classpath"/>
       </classpath>
       <arg line="-in svn-info.xml -xsl ${lib}/build/svn-info-revision.xsl"/>

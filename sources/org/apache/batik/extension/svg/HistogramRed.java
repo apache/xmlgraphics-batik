@@ -21,8 +21,8 @@ package org.apache.batik.extension.svg;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 
-import org.apache.batik.ext.awt.image.rendered.AbstractRed;
-import org.apache.batik.ext.awt.image.rendered.CachableRed;
+import org.apache.xmlgraphics.image.rendered.AbstractRed;
+import org.apache.xmlgraphics.image.rendered.CachableRed;
 
 /**
  *

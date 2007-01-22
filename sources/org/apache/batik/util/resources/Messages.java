@@ -22,7 +22,7 @@ package org.apache.batik.util.resources;
 import java.util.Locale;
 import java.util.MissingResourceException;
 
-import org.apache.batik.i18n.LocalizableSupport;
+import org.apache.xmlgraphics.util.i18n.LocalizableSupport;
 
 /**
  * This class manages the message for the utilities classes.
@@ -51,14 +51,14 @@ public class Messages {
 
 
     /**
-     * Implements {@link org.apache.batik.i18n.Localizable#setLocale(Locale)}.
+     * Implements {@link org.apache.xmlgraphics.util.i18n.Localizable#setLocale(Locale)}.
      */
     public static void setLocale(Locale l) {
         localizableSupport.setLocale(l);
     }
 
     /**
-     * Implements {@link org.apache.batik.i18n.Localizable#getLocale()}.
+     * Implements {@link org.apache.xmlgraphics.util.i18n.Localizable#getLocale()}.
      */
     public static Locale getLocale() {
         return localizableSupport.getLocale();
@@ -66,7 +66,7 @@ public class Messages {
 
     /**
      * Implements {@link
-     * org.apache.batik.i18n.Localizable#formatMessage(String,Object[])}.
+     * org.apache.xmlgraphics.util.i18n.Localizable#formatMessage(String,Object[])}.
      */
     public static String formatMessage(String key, Object[] args)
         throws MissingResourceException {

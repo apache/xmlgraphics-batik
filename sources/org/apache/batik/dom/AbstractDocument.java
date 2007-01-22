@@ -38,8 +38,8 @@ import org.apache.batik.dom.traversal.TraversalSupport;
 import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.dom.xbl.GenericXBLManager;
 import org.apache.batik.dom.xbl.XBLManager;
-import org.apache.batik.i18n.Localizable;
-import org.apache.batik.i18n.LocalizableSupport;
+import org.apache.xmlgraphics.util.i18n.Localizable;
+import org.apache.xmlgraphics.util.i18n.LocalizableSupport;
 import org.apache.batik.util.CleanerThread;
 import org.apache.batik.util.DOMConstants;
 import org.apache.batik.util.SoftDoublyIndexedTable;
@@ -222,14 +222,14 @@ public abstract class AbstractDocument
     }
 
     /**
-     * Implements {@link org.apache.batik.i18n.Localizable#setLocale(Locale)}.
+     * Implements {@link org.apache.xmlgraphics.util.i18n.Localizable#setLocale(Locale)}.
      */
     public void setLocale(Locale l) {
         localizableSupport.setLocale(l);
     }
 
     /**
-     * Implements {@link org.apache.batik.i18n.Localizable#getLocale()}.
+     * Implements {@link org.apache.xmlgraphics.util.i18n.Localizable#getLocale()}.
      */
     public Locale getLocale() {
         return localizableSupport.getLocale();
@@ -237,7 +237,7 @@ public abstract class AbstractDocument
 
     /**
      * Implements {@link
-     * org.apache.batik.i18n.Localizable#formatMessage(String,Object[])}.
+     * org.apache.xmlgraphics.util.i18n.Localizable#formatMessage(String,Object[])}.
      */
     public String formatMessage(String key, Object[] args)
         throws MissingResourceException {

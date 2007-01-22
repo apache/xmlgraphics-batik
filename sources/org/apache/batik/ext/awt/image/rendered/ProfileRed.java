@@ -36,6 +36,8 @@ import java.awt.image.RenderedImage;
 import java.awt.image.WritableRaster;
 
 import org.apache.batik.ext.awt.color.ICCColorSpaceExt;
+import org.apache.xmlgraphics.image.rendered.AbstractRed;
+import org.apache.xmlgraphics.image.rendered.CachableRed;
 
 
 /**

@@ -32,7 +32,7 @@ import org.apache.batik.ext.awt.image.SVGComposite;
 import org.apache.batik.ext.awt.image.renderable.AbstractRable;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.renderable.PaintRable;
-import org.apache.batik.ext.awt.image.rendered.CachableRed;
+import org.apache.xmlgraphics.image.rendered.CachableRed;
 import org.apache.batik.ext.awt.image.rendered.TranslateRed;
 import org.apache.batik.gvt.GraphicsNode;
 

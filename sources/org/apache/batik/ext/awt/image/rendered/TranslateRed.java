@@ -23,6 +23,9 @@ import java.awt.Rectangle;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 
+import org.apache.xmlgraphics.image.rendered.AbstractRed;
+import org.apache.xmlgraphics.image.rendered.CachableRed;
+
 /**
  * This is a special case of an Affine that only contains integer
  * translations, this allows it to do it's work by simply changing

@@ -23,7 +23,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.apache.batik.util.Base64DecodeStream;
+import org.apache.xmlgraphics.util.io.Base64DecodeStream;
 import org.apache.batik.util.Base64EncoderStream;
 
 

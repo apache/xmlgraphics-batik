@@ -20,7 +20,7 @@ package org.apache.batik.svggen;
 
 import java.awt.RenderingHints;
 
-import org.apache.batik.ext.awt.g2d.GraphicContext;
+import org.apache.xmlgraphics.java2d.GraphicContext;
 
 /**
  * Utility class that converts a RenderingHints object into

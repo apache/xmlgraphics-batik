@@ -30,9 +30,9 @@ import java.awt.image.SampleModel;
 import java.awt.image.WritableRaster;
 
 import org.apache.batik.ext.awt.image.GraphicsUtil;
-import org.apache.batik.ext.awt.image.rendered.AbstractRed;
+import org.apache.xmlgraphics.image.rendered.AbstractRed;
 import org.apache.batik.ext.awt.image.rendered.AbstractTiledRed;
-import org.apache.batik.ext.awt.image.rendered.CachableRed;
+import org.apache.xmlgraphics.image.rendered.CachableRed;
 import org.apache.batik.gvt.GraphicsNode;
 
 /**

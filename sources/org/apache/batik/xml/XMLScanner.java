@@ -24,8 +24,8 @@ import java.io.Reader;
 import java.util.Locale;
 import java.util.MissingResourceException;
 
-import org.apache.batik.i18n.Localizable;
-import org.apache.batik.i18n.LocalizableSupport;
+import org.apache.xmlgraphics.util.i18n.Localizable;
+import org.apache.xmlgraphics.util.i18n.LocalizableSupport;
 import org.apache.batik.util.io.NormalizingReader;
 import org.apache.batik.util.io.StreamNormalizingReader;
 import org.apache.batik.util.io.StringNormalizingReader;
@@ -250,14 +250,14 @@ public class XMLScanner implements Localizable {
     }
 
     /**
-     * Implements {@link org.apache.batik.i18n.Localizable#setLocale(Locale)}.
+     * Implements {@link org.apache.xmlgraphics.util.i18n.Localizable#setLocale(Locale)}.
      */
     public  void setLocale(Locale l) {
         localizableSupport.setLocale(l);
     }
 
     /**
-     * Implements {@link org.apache.batik.i18n.Localizable#getLocale()}.
+     * Implements {@link org.apache.xmlgraphics.util.i18n.Localizable#getLocale()}.
      */
     public Locale getLocale() {
         return localizableSupport.getLocale();
@@ -265,7 +265,7 @@ public class XMLScanner implements Localizable {
 
     /**
      * Implements {@link
-     * org.apache.batik.i18n.Localizable#formatMessage(String,Object[])}.
+     * org.apache.xmlgraphics.util.i18n.Localizable#formatMessage(String,Object[])}.
      */
     public String formatMessage(String key, Object[] args)
         throws MissingResourceException {

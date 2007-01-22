@@ -44,8 +44,8 @@ import java.awt.image.ColorModel;
 import org.apache.batik.ext.awt.image.GraphicsUtil;
 
 import org.apache.batik.ext.awt.image.spi.ImageTagRegistry;
-import org.apache.batik.ext.awt.image.spi.ImageWriter;
-import org.apache.batik.ext.awt.image.spi.ImageWriterRegistry;
+import org.apache.xmlgraphics.image.writer.ImageWriter;
+import org.apache.xmlgraphics.image.writer.ImageWriterRegistry;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 
 import org.apache.batik.util.ParsedURL;

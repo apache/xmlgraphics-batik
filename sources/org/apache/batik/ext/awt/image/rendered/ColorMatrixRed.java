@@ -26,6 +26,8 @@ import java.awt.image.SinglePixelPackedSampleModel;
 import java.awt.image.WritableRaster;
 
 import org.apache.batik.ext.awt.image.GraphicsUtil;
+import org.apache.xmlgraphics.image.rendered.AbstractRed;
+import org.apache.xmlgraphics.image.rendered.CachableRed;
 
 /**
  *

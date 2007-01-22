@@ -26,7 +26,7 @@ import java.util.Hashtable;
 import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.renderable.RedRable;
-import org.apache.batik.i18n.LocalizableSupport;
+import org.apache.xmlgraphics.util.i18n.LocalizableSupport;
 
 public class DefaultBrokenLinkProvider 
     extends BrokenLinkProvider {

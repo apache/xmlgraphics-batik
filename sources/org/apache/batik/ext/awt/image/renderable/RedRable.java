@@ -27,7 +27,7 @@ import java.awt.image.RenderedImage;
 import java.awt.image.renderable.RenderContext;
 
 import org.apache.batik.ext.awt.image.rendered.AffineRed;
-import org.apache.batik.ext.awt.image.rendered.CachableRed;
+import org.apache.xmlgraphics.image.rendered.CachableRed;
 import org.apache.batik.ext.awt.image.rendered.TranslateRed;
 
 /**

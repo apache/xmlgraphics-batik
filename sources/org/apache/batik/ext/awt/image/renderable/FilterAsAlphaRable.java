@@ -27,9 +27,9 @@ import java.awt.image.renderable.RenderContext;
 
 import org.apache.batik.ext.awt.ColorSpaceHintKey;
 import org.apache.batik.ext.awt.RenderingHintsKeyExt;
-import org.apache.batik.ext.awt.image.rendered.CachableRed;
+import org.apache.xmlgraphics.image.rendered.CachableRed;
 import org.apache.batik.ext.awt.image.rendered.FilterAsAlphaRed;
-import org.apache.batik.ext.awt.image.rendered.RenderedImageCachableRed;
+import org.apache.xmlgraphics.image.rendered.RenderedImageCachableRed;
 
 /**
  * FilterAsAlphaRable implementation.

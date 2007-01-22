@@ -25,8 +25,8 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.StringTokenizer;
 
-import org.apache.batik.i18n.Localizable;
-import org.apache.batik.i18n.LocalizableSupport;
+import org.apache.xmlgraphics.util.i18n.Localizable;
+import org.apache.xmlgraphics.util.i18n.LocalizableSupport;
 import org.apache.batik.util.CSSConstants;
 import org.apache.batik.util.ParsedURL;
 import org.w3c.css.sac.CSSException;
@@ -124,7 +124,7 @@ public class Parser implements ExtendedParser, Localizable {
     }
 
     /**
-     * Implements {@link org.apache.batik.i18n.Localizable#getLocale()}.
+     * Implements {@link org.apache.xmlgraphics.util.i18n.Localizable#getLocale()}.
      */
     public Locale getLocale() {
         return localizableSupport.getLocale();
@@ -132,7 +132,7 @@ public class Parser implements ExtendedParser, Localizable {
 
     /**
      * Implements {@link
-     * org.apache.batik.i18n.Localizable#formatMessage(String,Object[])}.
+     * org.apache.xmlgraphics.util.i18n.Localizable#formatMessage(String,Object[])}.
      */
     public String formatMessage(String key, Object[] args)
         throws MissingResourceException {

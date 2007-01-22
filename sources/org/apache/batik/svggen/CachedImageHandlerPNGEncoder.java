@@ -22,8 +22,8 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.apache.batik.ext.awt.image.spi.ImageWriter;
-import org.apache.batik.ext.awt.image.spi.ImageWriterRegistry;
+import org.apache.xmlgraphics.image.writer.ImageWriter;
+import org.apache.xmlgraphics.image.writer.ImageWriterRegistry;
 
 /**
  * GenericImageHandler which caches PNG images.

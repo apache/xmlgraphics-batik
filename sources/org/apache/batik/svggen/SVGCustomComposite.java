@@ -20,7 +20,7 @@ package org.apache.batik.svggen;
 
 import java.awt.Composite;
 
-import org.apache.batik.ext.awt.g2d.GraphicContext;
+import org.apache.xmlgraphics.java2d.GraphicContext;
 import org.w3c.dom.Element;
 
 /**

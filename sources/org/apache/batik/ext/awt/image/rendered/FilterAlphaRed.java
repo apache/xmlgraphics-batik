@@ -23,6 +23,8 @@ import java.awt.image.SampleModel;
 import java.awt.image.WritableRaster;
 
 import org.apache.batik.ext.awt.ColorSpaceHintKey;
+import org.apache.xmlgraphics.image.rendered.AbstractRed;
+import org.apache.xmlgraphics.image.rendered.CachableRed;
 
 /**
  * This strips out the source alpha channel into a one band image.

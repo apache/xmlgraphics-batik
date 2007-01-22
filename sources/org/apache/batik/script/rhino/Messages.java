@@ -21,7 +21,7 @@ package org.apache.batik.script.rhino;
 import java.util.Locale;
 import java.util.MissingResourceException;
 
-import org.apache.batik.i18n.LocalizableSupport;
+import org.apache.xmlgraphics.util.i18n.LocalizableSupport;
 import org.apache.batik.util.gui.resource.ResourceManager;
 
 /**
@@ -56,7 +56,7 @@ public class Messages {
         new ResourceManager(localizableSupport.getResourceBundle());
 
     /**
-     * Implements {@link org.apache.batik.i18n.Localizable#setLocale(Locale)}.
+     * Implements {@link org.apache.xmlgraphics.util.i18n.Localizable#setLocale(Locale)}.
      */
     public static void setLocale(Locale l) {
         localizableSupport.setLocale(l);
@@ -64,7 +64,7 @@ public class Messages {
     }
 
     /**
-     * Implements {@link org.apache.batik.i18n.Localizable#getLocale()}.
+     * Implements {@link org.apache.xmlgraphics.util.i18n.Localizable#getLocale()}.
      */
     public static Locale getLocale() {
         return localizableSupport.getLocale();
@@ -72,7 +72,7 @@ public class Messages {
 
     /**
      * Implements {@link
-     * org.apache.batik.i18n.Localizable#formatMessage(String,Object[])}.
+     * org.apache.xmlgraphics.util.i18n.Localizable#formatMessage(String,Object[])}.
      */
     public static String formatMessage(String key, Object[] args)
         throws MissingResourceException {

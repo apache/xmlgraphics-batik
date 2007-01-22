@@ -35,6 +35,9 @@ import java.awt.image.WritableRaster;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.xmlgraphics.image.rendered.AbstractRed;
+import org.apache.xmlgraphics.image.rendered.CachableRed;
+
 
 /**
  * This implements a masking operation by multiply the alpha channel of

@@ -29,7 +29,7 @@ import java.util.List;
 import org.apache.batik.ext.awt.image.ARGBChannel;
 import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.ext.awt.image.rendered.AffineRed;
-import org.apache.batik.ext.awt.image.rendered.CachableRed;
+import org.apache.xmlgraphics.image.rendered.CachableRed;
 import org.apache.batik.ext.awt.image.rendered.DisplacementMapRed;
 
 /**

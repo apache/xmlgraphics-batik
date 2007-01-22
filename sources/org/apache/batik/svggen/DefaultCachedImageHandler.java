@@ -105,7 +105,7 @@ public abstract class DefaultCachedImageHandler
                 createGraphics = clazz.getMethod("createGraphics", paramc);
                 paramo = new Object[1];
             } catch (Throwable t) {
-                // happen only if Batik extensions are not their
+                // happen only if Batik extensions are not there
             } finally {
                 initDone = true;
             }

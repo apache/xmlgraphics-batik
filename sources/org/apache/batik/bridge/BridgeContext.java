@@ -65,7 +65,7 @@ import org.apache.batik.util.CSSConstants;
 import org.apache.batik.util.CleanerThread;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.SVGConstants;
-import org.apache.batik.util.Service;
+import org.apache.xmlgraphics.util.Service;
 import org.apache.batik.util.XMLConstants;
 
 import org.w3c.dom.Document;

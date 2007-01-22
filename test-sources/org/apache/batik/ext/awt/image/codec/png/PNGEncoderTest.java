@@ -18,6 +18,11 @@
 package org.apache.batik.ext.awt.image.codec.png;
 
 import org.apache.batik.test.*;
+import org.apache.xmlgraphics.image.codec.png.PNGDecodeParam;
+import org.apache.xmlgraphics.image.codec.png.PNGEncodeParam;
+import org.apache.xmlgraphics.image.codec.png.PNGImageDecoder;
+import org.apache.xmlgraphics.image.codec.png.PNGImageEncoder;
+
 import java.awt.*;
 import java.awt.geom.*;
 import java.awt.image.*;

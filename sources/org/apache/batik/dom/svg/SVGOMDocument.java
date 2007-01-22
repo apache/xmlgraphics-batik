@@ -44,8 +44,8 @@ import org.apache.batik.dom.GenericText;
 import org.apache.batik.dom.StyleSheetFactory;
 import org.apache.batik.dom.events.EventSupport;
 import org.apache.batik.dom.util.XMLSupport;
-import org.apache.batik.i18n.Localizable;
-import org.apache.batik.i18n.LocalizableSupport;
+import org.apache.xmlgraphics.util.i18n.Localizable;
+import org.apache.xmlgraphics.util.i18n.LocalizableSupport;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLConstants;
 

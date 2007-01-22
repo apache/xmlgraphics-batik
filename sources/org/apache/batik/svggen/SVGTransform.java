@@ -20,9 +20,9 @@ package org.apache.batik.svggen;
 
 import java.util.Stack;
 
-import org.apache.batik.ext.awt.g2d.GraphicContext;
-import org.apache.batik.ext.awt.g2d.TransformStackElement;
-import org.apache.batik.ext.awt.g2d.TransformType;
+import org.apache.xmlgraphics.java2d.GraphicContext;
+import org.apache.xmlgraphics.java2d.TransformStackElement;
+import org.apache.xmlgraphics.java2d.TransformType;
 
 /**
  * Utility class that converts a GraphicContext transform stack

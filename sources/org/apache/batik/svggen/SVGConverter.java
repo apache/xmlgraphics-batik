@@ -20,7 +20,7 @@ package org.apache.batik.svggen;
 
 import java.util.List;
 
-import org.apache.batik.ext.awt.g2d.GraphicContext;
+import org.apache.xmlgraphics.java2d.GraphicContext;
 
 /**
  * Defines the interface for classes that are able to convert
@@ -28,7 +28,7 @@ import org.apache.batik.ext.awt.g2d.GraphicContext;
  *
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
- * @see           org.apache.batik.ext.awt.g2d.GraphicContext
+ * @see           org.apache.xmlgraphics.java2d.GraphicContext
  */
 public interface SVGConverter extends SVGSyntax{
     /**

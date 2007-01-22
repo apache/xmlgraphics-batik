@@ -28,10 +28,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import org.apache.batik.ext.awt.image.GraphicsUtil;
-import org.apache.batik.ext.awt.image.rendered.FormatRed;
-import org.apache.batik.ext.awt.image.spi.ImageWriter;
-import org.apache.batik.ext.awt.image.spi.ImageWriterParams;
-import org.apache.batik.ext.awt.image.spi.ImageWriterRegistry;
+import org.apache.xmlgraphics.image.rendered.FormatRed;
+import org.apache.xmlgraphics.image.writer.ImageWriter;
+import org.apache.xmlgraphics.image.writer.ImageWriterParams;
+import org.apache.xmlgraphics.image.writer.ImageWriterRegistry;
 import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.TranscodingHints;

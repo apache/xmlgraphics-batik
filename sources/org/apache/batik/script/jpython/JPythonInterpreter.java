@@ -82,7 +82,7 @@ public class JPythonInterpreter implements org.apache.batik.script.Interpreter {
         interpreter.setOut(out);
     }
 
-    // org.apache.batik.i18n.Localizable implementation
+    // org.apache.xmlgraphics.util.i18n.Localizable implementation
 
     public Locale getLocale() {
         return null;

@@ -29,6 +29,9 @@ import java.awt.image.DataBufferInt;
 import java.awt.image.DirectColorModel;
 import java.awt.image.SinglePixelPackedSampleModel;
 import java.awt.image.WritableRaster;
+
+import org.apache.xmlgraphics.image.rendered.AbstractRed;
+import org.apache.xmlgraphics.image.rendered.CachableRed;
 /**
  * This class creates a RenderedImage in conformance to the one
  * defined for the feTurbulence filter of the SVG specification.  What

@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.batik.ext.awt.image.GraphicsUtil;
-import org.apache.batik.ext.awt.image.rendered.CachableRed;
+import org.apache.xmlgraphics.image.rendered.CachableRed;
 
 /**
  * This is an abstract base class that adds the ability to specify the
@@ -120,7 +120,7 @@ public abstract class AbstractColorInterpolationRable extends AbstractRable {
 
     protected CachableRed convertSourceCS(CachableRed cr) {
         if (csLinear)
-            return GraphicsUtil.convertToLsRGB(cr);
+            return GraphicsUtil.convertTosRGB(cr);
         else
             return GraphicsUtil.convertTosRGB(cr);
     }

@@ -31,6 +31,8 @@ import java.awt.image.SampleModel;
 import java.awt.image.WritableRaster;
 
 import org.apache.batik.ext.awt.ColorSpaceHintKey;
+import org.apache.xmlgraphics.image.rendered.AbstractRed;
+import org.apache.xmlgraphics.image.rendered.CachableRed;
 
 /**
  * This converts any source into a mask according to the SVG masking rules.

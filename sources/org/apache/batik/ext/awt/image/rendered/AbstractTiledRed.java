@@ -30,6 +30,8 @@ import java.util.Map;
 
 import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.util.HaltingThread;
+import org.apache.xmlgraphics.image.rendered.AbstractRed;
+import org.apache.xmlgraphics.image.rendered.CachableRed;
 
 /**
  * This is an abstract base class that takes care of most of the

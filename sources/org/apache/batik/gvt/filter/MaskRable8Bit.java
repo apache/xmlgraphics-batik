@@ -29,9 +29,9 @@ import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.renderable.FilterAsAlphaRable;
 import org.apache.batik.ext.awt.image.renderable.PadRable;
 import org.apache.batik.ext.awt.image.renderable.PadRable8Bit;
-import org.apache.batik.ext.awt.image.rendered.CachableRed;
+import org.apache.xmlgraphics.image.rendered.CachableRed;
 import org.apache.batik.ext.awt.image.rendered.MultiplyAlphaRed;
-import org.apache.batik.ext.awt.image.rendered.RenderedImageCachableRed;
+import org.apache.xmlgraphics.image.rendered.RenderedImageCachableRed;
 import org.apache.batik.gvt.GraphicsNode;
 
 /**
@@ -152,7 +152,7 @@ public class MaskRable8Bit
 
         CachableRed cr;
         cr = GraphicsUtil.wrap(ri);
-        cr = GraphicsUtil.convertToLsRGB(cr);
+        cr = GraphicsUtil.convertTosRGB(cr);
 
         // org.apache.batik.test.gvt.ImageDisplay.showImage("Src: ", cr);
         // org.apache.batik.test.gvt.ImageDisplay.showImage("Mask: ", maskCr);

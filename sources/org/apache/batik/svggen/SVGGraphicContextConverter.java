@@ -23,8 +23,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.batik.ext.awt.g2d.GraphicContext;
-import org.apache.batik.ext.awt.g2d.TransformStackElement;
+import org.apache.xmlgraphics.java2d.GraphicContext;
+import org.apache.xmlgraphics.java2d.TransformStackElement;
 
 /**
  * This class performs the task of converting the state of the

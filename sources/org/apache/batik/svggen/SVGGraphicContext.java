@@ -21,7 +21,7 @@ package org.apache.batik.svggen;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.batik.ext.awt.g2d.TransformStackElement;
+import org.apache.xmlgraphics.java2d.TransformStackElement;
 import org.apache.batik.util.SVGConstants;
 
 /**

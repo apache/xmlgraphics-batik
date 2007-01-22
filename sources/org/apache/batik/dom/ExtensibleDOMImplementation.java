@@ -33,9 +33,9 @@ import org.apache.batik.css.parser.ExtendedParser;
 import org.apache.batik.css.parser.ExtendedParserWrapper;
 import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.dom.util.DoublyIndexedTable;
-import org.apache.batik.i18n.Localizable;
-import org.apache.batik.i18n.LocalizableSupport;
-import org.apache.batik.util.Service;
+import org.apache.xmlgraphics.util.i18n.Localizable;
+import org.apache.xmlgraphics.util.i18n.LocalizableSupport;
+import org.apache.xmlgraphics.util.Service;
 import org.apache.batik.util.XMLResourceDescriptor;
 
 import org.w3c.css.sac.Parser;
@@ -49,7 +49,7 @@ import org.w3c.dom.css.ViewCSS;
  * This class implements the {@link org.w3c.dom.DOMImplementation} interface.
  * It allows the user to extend the set of elements supported by a
  * Document, directly or through the Service API (see
- * {@link org.apache.batik.util.Service}).
+ * {@link org.apache.xmlgraphics.util.Service}).
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$

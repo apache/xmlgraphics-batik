@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import org.apache.batik.ext.awt.image.CompositeRule;
 import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.ext.awt.image.SVGComposite;
-import org.apache.batik.ext.awt.image.rendered.CachableRed;
+import org.apache.xmlgraphics.image.rendered.CachableRed;
 import org.apache.batik.ext.awt.image.rendered.CompositeRed;
 import org.apache.batik.ext.awt.image.rendered.FloodRed;
 

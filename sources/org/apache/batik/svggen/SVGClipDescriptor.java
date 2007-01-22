@@ -30,7 +30,7 @@ import org.w3c.dom.Element;
  *
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
- * @see           org.apache.batik.ext.awt.g2d.GraphicContext
+ * @see           org.apache.xmlgraphics.java2d.GraphicContext
  * @see           org.apache.batik.svggen.SVGDescriptor
  */
 public class SVGClipDescriptor implements SVGDescriptor, SVGSyntax{
