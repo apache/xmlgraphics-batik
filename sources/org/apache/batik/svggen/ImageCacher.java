@@ -25,9 +25,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
-import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.ListIterator;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.zip.Adler32;
 import java.util.zip.Checksum;
 
@@ -44,14 +45,14 @@ import org.w3c.dom.Element;
 public abstract class ImageCacher implements SVGSyntax, ErrorConstants {
 
     DOMTreeManager  domTreeManager = null;
-    Hashtable       imageCache;
+    Map             imageCache;
     Checksum        checkSum;
 
     /**
      * Creates an ImageCacher.
      */
     public ImageCacher() {
-        imageCache = new Hashtable();
+        imageCache = new HashMap();
         checkSum = new Adler32();
     }
 
@@ -223,7 +224,7 @@ public abstract class ImageCacher implements SVGSyntax, ErrorConstants {
             // images in the SVG tree itself
             if(this.domTreeManager != domTreeManager) {
                 this.domTreeManager = domTreeManager;
-                this.imageCache     = new Hashtable();
+                this.imageCache     = new HashMap();
             }
         }
 
