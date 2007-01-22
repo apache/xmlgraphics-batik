@@ -25,7 +25,9 @@ import java.awt.Graphics2D;
 import java.awt.TexturePaint;
 import java.awt.image.BufferedImage;
 import java.awt.geom.*;
-import java.util.Hashtable;
+import java.util.Map;
+import java.util.HashMap;
+
 import org.apache.batik.transcoder.wmf.WMFConstants;
 
 /**
@@ -36,7 +38,7 @@ import org.apache.batik.transcoder.wmf.WMFConstants;
  */
 public class TextureFactory {
     private static TextureFactory fac = null;
-    private Hashtable textures = new Hashtable(1);
+    private Map textures = new HashMap(1);
     private static final int SIZE = 10;
     private float scale = 1.0f;
 
@@ -62,7 +64,7 @@ public class TextureFactory {
      * disposed of.
      */
     public void reset() {
-        textures = new Hashtable(1);
+        textures.clear();
     }
 
     /** Get a texture from a WMF hatch definition (in black Color). This
@@ -70,7 +72,7 @@ public class TextureFactory {
      */
     public Paint getTexture(int textureId) {
         Integer _itexture = new Integer(textureId);
-        if (textures.contains(_itexture)) {
+        if (textures.containsKey( _itexture)) {
             Paint paint = (Paint)(textures.get(_itexture));
             return paint;
         } else {
@@ -85,7 +87,7 @@ public class TextureFactory {
      */
     public Paint getTexture(int textureId, Color foreground) {
         ColoredTexture _ctexture = new ColoredTexture(textureId, foreground, null);
-        if (textures.contains(_ctexture)) {
+        if (textures.containsKey(_ctexture)) {
             Paint paint = (Paint)(textures.get(_ctexture));
             return paint;
         } else {
@@ -101,7 +103,7 @@ public class TextureFactory {
      */
     public Paint getTexture(int textureId, Color foreground, Color background) {
         ColoredTexture _ctexture = new ColoredTexture(textureId, foreground, background);
-        if (textures.contains(_ctexture)) {
+        if (textures.containsKey(_ctexture)) {
             Paint paint = (Paint)(textures.get(_ctexture));
             return paint;
         } else {

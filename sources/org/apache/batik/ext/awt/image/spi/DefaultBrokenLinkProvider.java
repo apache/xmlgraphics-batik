@@ -37,6 +37,8 @@ public class DefaultBrokenLinkProvider
 
     static Filter brokenLinkImg = null;
 
+    static final Color BROKEN_LINK_COLOR = new Color( 255,255,255,190 );
+
     public static String formatMessage(Object base,
                                        String code,
                                        Object [] params) {
@@ -75,7 +77,7 @@ public class DefaultBrokenLinkProvider
                                    ht);
             Graphics2D g2d = bi.createGraphics();
 
-            g2d.setColor(new Color(255,255,255,190));
+            g2d.setColor( BROKEN_LINK_COLOR );
             g2d.fillRect(0, 0, 100, 100);
             g2d.setColor(Color.black);
             g2d.drawRect(2, 2, 96, 96);

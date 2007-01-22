@@ -26,10 +26,11 @@ import java.awt.image.RenderedImage;
 import java.awt.image.SampleModel;
 import java.awt.image.WritableRaster;
 
-import java.util.Hashtable;
 import java.util.Vector;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  * A simple class implemented the <code>RenderedImage</code>
@@ -79,7 +80,7 @@ public abstract class SimpleRenderedImage implements RenderedImage {
     protected List sources = new ArrayList();
 
     /** A Hashtable containing the image properties. */
-    protected Hashtable properties = new Hashtable();
+    protected Map properties = new HashMap();
 
     public SimpleRenderedImage() {}
 

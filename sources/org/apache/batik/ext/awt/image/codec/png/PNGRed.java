@@ -42,11 +42,12 @@ import java.io.InputStream;
 import java.io.SequenceInputStream;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.Hashtable;
 import java.util.TimeZone;
 import java.util.Vector;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 
@@ -296,8 +297,9 @@ public class PNGRed extends AbstractRed {
 
     private WritableRaster theTile;
     private Rectangle bounds;
+
     /** A Hashtable containing the image properties. */
-    private Hashtable properties = new Hashtable();
+    private Map properties = new HashMap();
 
 
     private int[] gammaLut = null;
