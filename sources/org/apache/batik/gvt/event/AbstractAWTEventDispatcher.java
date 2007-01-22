@@ -442,6 +442,13 @@ public abstract class AbstractAWTEventDispatcher
     protected abstract void dispatchKeyEvent(KeyEvent evt);
 
     /**
+     * Returns the modifiers mask for this event.  Overridden in the descendent
+     * class to use {@link InputEvent#getModifiers()} in JRE 1.3 or
+     * {@link InputEvent#getModifiersEx()} in JREs &gt;= 1.4.
+     */
+    protected abstract int getModifiers(InputEvent evt);
+
+    /**
      * Dispatches the specified AWT mouse event.
      * @param evt the mouse event to dispatch
      */
@@ -475,7 +482,7 @@ public abstract class AbstractAWTEventDispatcher
                                                     MouseEvent.
                                                     MOUSE_EXITED,
                                                     evt.getWhen(),
-                                                    evt.getModifiers(),
+                                                    getModifiers(evt),
                                                     currentLockState,
                                                     (float)gnp.getX(),
                                                     (float)gnp.getY(),
@@ -494,7 +501,7 @@ public abstract class AbstractAWTEventDispatcher
                                                     MouseEvent.
                                                     MOUSE_ENTERED,
                                                     evt.getWhen(),
-                                                    evt.getModifiers(),
+                                                    getModifiers(evt),
                                                     currentLockState,
                                                     (float)gnp.getX(),
                                                     (float)gnp.getY(),
@@ -513,7 +520,7 @@ public abstract class AbstractAWTEventDispatcher
             gvtevt = new GraphicsNodeMouseEvent(node,
                                                 evt.getID(),
                                                 evt.getWhen(),
-                                                evt.getModifiers(),
+                                                getModifiers(evt),
                                                 currentLockState,
                                                 (float)gnp.getX(),
                                                 (float)gnp.getY(),
@@ -532,7 +539,7 @@ public abstract class AbstractAWTEventDispatcher
             gvtevt = new GraphicsNodeMouseEvent(root,
                                                 evt.getID(),
                                                 evt.getWhen(),
-                                                evt.getModifiers(),
+                                                getModifiers(evt),
                                                 currentLockState,
                                                 (float)gnp.getX(),
                                                 (float)gnp.getY(),

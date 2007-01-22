@@ -167,7 +167,7 @@ public class RhinoInterpreter implements Interpreter {
                 globalObject = createGlobalObject(cx);
                 ClassCache cache = ClassCache.get(globalObject);
                 cache.setCachingEnabled(rhinoClassLoader != null);
-                // import Java lang package & DOM Level 2 & SVG DOM packages
+                // import Java lang package & DOM Level 3 & SVG DOM packages
                 StringBuffer sb = new StringBuffer("importPackage(Packages.");
                 for (int i = 0; i < TO_BE_IMPORTED.length - 1; i++) {
                     sb.append(TO_BE_IMPORTED[i]);
