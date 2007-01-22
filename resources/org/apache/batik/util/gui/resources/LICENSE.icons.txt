@@ -1,36 +1,9 @@
-The following files are from the Tango Desktop Project
-(http://tango.freedesktop.org/):
+The text-html.png file is from the Tango Desktop Project
+(http://tango.freedesktop.org/).
 
-	document-open.png
-	document-open.png
-	document-print.png
-	edit-find.png
-	go-next.png
-	go-previous.png
-	icon-general.png	(originally preferences-desktop.png)
-	icon-language.png	(originally preferences-desktop-locale.png)
-	icon-network.png	(originally applications-internet.png)
-	icon-security.png	(originally dialog-warning.png)
-	icon-stylesheet.png	(originally applications-graphics.png)
-	media-playback-pause.png
-	media-playback-start.png
-	process-stop.png
-	system-search.png
-	utilities-system-monitor.png
-	view-refresh.png
-	window-new.png
-
-The following files are from the Pasodoble Icon Theme
-(http://www.jesusda.com/projects/pasodoble/):
-
-	File			Original filename
-	---------------------	------------------------------
-	zoom-in.png		viewmag+.png
-	zoom-out.png		viewmag-.png
-
-All of these image files are licensed under the Creative Commons Attribution
+It is licensed under the Creative Commons Attribution
 Share-Alike 2.5 License (http://creativecommons.org/licenses/by-sa/2.5/),
-which is in the LICENSE.icons.txt file.
+which is reproduced below.
 
 THE WORK (AS DEFINED BELOW) IS PROVIDED UNDER THE TERMS OF THIS CREATIVE COMMONS
 PUBLIC LICENSE ("CCPL" OR "LICENSE"). THE WORK IS PROTECTED BY COPYRIGHT AND/OR
@@ -246,4 +219,3 @@ WORK, EVEN IF LICENSOR HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
       here. Licensor shall not be bound by any additional provisions that may
       appear in any communication from You. This License may not be modified
       without the mutual written agreement of the Licensor and You.
-

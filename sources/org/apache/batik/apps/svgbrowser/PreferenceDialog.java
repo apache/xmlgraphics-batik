@@ -220,6 +220,9 @@ public class PreferenceDialog extends JDialog
     public static final String PREFERENCE_KEY_LABEL_COLON
         = "PreferenceDialog.label.colon";
 
+    public static final String PREFERENCE_KEY_BROWSE_TITLE
+        = "PreferenceDialog.BrowseWindow.title";
+
 
     //////////////////////////////////////////////////////////////
     // Following are the preference keys used in the
@@ -942,7 +945,10 @@ public class PreferenceDialog extends JDialog
             public void actionPerformed(ActionEvent e) {
                 File f = null;
                 if (Platform.isOSX) {
-                    FileDialog fileDialog = new FileDialog((Frame) getOwner());
+                    FileDialog fileDialog =
+                        new FileDialog
+                            ((Frame) getOwner(),
+                             Resources.getString(PREFERENCE_KEY_BROWSE_TITLE));
                     fileDialog.setVisible(true);
                     String filename = fileDialog.getFile();
                     if (filename != null) {
@@ -951,6 +957,8 @@ public class PreferenceDialog extends JDialog
                     }
                 } else {
                     JFileChooser fileChooser = new JFileChooser(new File("."));
+                    fileChooser.setDialogTitle
+                        (Resources.getString(PREFERENCE_KEY_BROWSE_TITLE));
                     fileChooser.setFileHidingEnabled(false);
 
                     int choice =

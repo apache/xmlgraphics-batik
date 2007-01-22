@@ -614,6 +614,7 @@ public class JSVGViewerFrame
             p.add(tb, BorderLayout.NORTH);
             p.add(new javax.swing.JSeparator(), BorderLayout.CENTER);
             p.add(locationBar = new LocationBar(), BorderLayout.SOUTH);
+            locationBar.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
 
         } catch (MissingResourceException e) {
             System.out.println(e.getMessage());
