@@ -1236,8 +1236,8 @@ com/DTDs/PropertyList-1.0.dtd">
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
       <fileset dir="${resources}" excludes="**/.svn/">
-        <include name="META-INF/services/*"/>
-        <exclude name="META-INF/services/org.apache.batik.script.InterpreterFactory"/>
+        <include name="META-INF/services/org.apache.batik.bridge.BridgeExtension"/>
+        <include name="META-INF/services/org.apache.batik.dom.DomExtension"/>
       </fileset>
       <fileset dir="${dest}">
         <include name="${package-prefix}/extension/**/*.class"/>
