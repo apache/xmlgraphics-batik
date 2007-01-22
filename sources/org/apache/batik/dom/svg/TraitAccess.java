@@ -22,6 +22,8 @@ package org.apache.batik.dom.svg;
  * Interface for accessing traits on an element.  This interface should move
  * to org.w3c.dom.svg (presumably) and become just a copy of the interface
  * file the SVG WG produce.
+ *
+ * @version $Id$
  */
 public interface TraitAccess {
 

@@ -14,7 +14,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
      See the License for the specific language governing permissions and
      limitations under the License.
-  
+
  */
 
 package org.apache.batik.transcoder.wmf.tosvg;
@@ -23,8 +23,10 @@ import java.io.UnsupportedEncodingException;
 import org.apache.batik.transcoder.wmf.WMFConstants;
 
 /** This class holds various utilies for importing WMF files that can be used either for
- *  {@link org.apache.batik.transcoder.wmf.tosvg.AbstractWMFReader}s and 
+ *  {@link org.apache.batik.transcoder.wmf.tosvg.AbstractWMFReader}s and
  *  {@link org.apache.batik.transcoder.wmf.tosvg.AbstractWMFPainter}s
+ *
+ * @version $Id: PreferenceDialog.java 498555 2007-01-22 08:09:33Z cam $
  */
 public class WMFUtilities {
     /** Decode a byte array in a String, considering the last selected charset.
@@ -49,10 +51,10 @@ public class WMFUtilities {
         } catch (UnsupportedEncodingException e) {
             str = new String(bstr);
         }
-        
+
         return str;
-    }          
-    
+    }
+
     /** Get the Horizontal Alignement for the Alignment property.
      */
     public static int getHorizontalAlignment(int align) {
@@ -63,15 +65,15 @@ public class WMFUtilities {
         else if (v >= 2) return WMFConstants.TA_RIGHT;
         else return WMFConstants.TA_LEFT;
     }
-    
+
     /** Get the Vertical Alignement for the Alignment property.
-     */    
+     */
     public static int getVerticalAlignment(int align) {
         int v = align;
         if ((v/WMFConstants.TA_BASELINE) != 0) return WMFConstants.TA_BASELINE;
         v = v % WMFConstants.TA_BASELINE; // skip baseline alignment (24)
         if ((v/WMFConstants.TA_BOTTOM) != 0) return WMFConstants.TA_BOTTOM;
         else return WMFConstants.TA_TOP;
-    }     
+    }
 }
 

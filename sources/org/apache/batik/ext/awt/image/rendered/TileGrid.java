@@ -26,8 +26,9 @@ import org.apache.batik.util.HaltingThread;
  * This is a Grid based implementation of the TileStore.
  * This makes it pretty quick, but it can use a fair amount of
  * memory for large tile grids.
+ *
+ * @version $Id$
  */
-
 public class TileGrid implements TileStore {
     private static final boolean DEBUG = false;
     private static final boolean COUNT = false;

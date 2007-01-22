@@ -40,12 +40,14 @@ import org.apache.batik.transcoder.wmf.WMFConstants;
 /**
  * This class holds simple properties about a WMF Metafile. It can be used
  * whenever general information must be retrieved about this file.
+ *
+ * @version $Id$
  */
 public class WMFHeaderProperties extends AbstractWMFReader {
     protected DataInputStream stream;
     private int _bleft, _bright, _btop, _bbottom, _bwidth, _bheight;
     private int _ileft, _iright, _itop, _ibottom;
-    private float scale = 1f;
+    private float scale = 1.0f;
     private int startX = 0;
     private int startY = 0;
     private int currentHorizAlign = 0;

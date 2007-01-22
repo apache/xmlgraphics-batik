@@ -85,6 +85,7 @@ import org.w3c.dom.Element;
  *  </li>
  *  </ul>
  *
+ * @version $Id$
  */
 public class WMFTranscoder extends ToSVGAbstractTranscoder {
 
@@ -121,7 +122,7 @@ public class WMFTranscoder extends ToSVGAbstractTranscoder {
         // determines the width and height of output image
         float wmfwidth; // width in pixels
         float wmfheight; // height in pixels
-        float conv = 1f; // conversion factor
+        float conv = 1.0f; // conversion factor
 
         if (hints.containsKey(KEY_INPUT_WIDTH)) {
             wmfwidth = ((Integer)hints.get(KEY_INPUT_WIDTH)).intValue();

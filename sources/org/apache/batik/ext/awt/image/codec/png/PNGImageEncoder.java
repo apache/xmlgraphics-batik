@@ -241,6 +241,7 @@ class IDATOutputStream extends FilterOutputStream {
  * An ImageEncoder for the PNG file format.
  *
  * @since EA4
+ * @version $Id$
  */
 public class PNGImageEncoder extends ImageEncoderImpl {
 
@@ -317,7 +318,7 @@ public class PNGImageEncoder extends ImageEncoderImpl {
 
     private void encodePass(OutputStream os, Raster ras,
                             int xOffset,     int yOffset,
-                            int xSkip,       int ySkip) 
+                            int xSkip,       int ySkip)
         throws IOException {
         int minX   = ras.getMinX();
         int minY   = ras.getMinY();
@@ -435,19 +436,19 @@ public class PNGImageEncoder extends ImageEncoderImpl {
         // you get back here appears larger than it should.
         // This solves that problem by bounding the raster to the
         // image's bounds...
-        Raster ras = image.getData(new Rectangle(image.getMinX(), 
+        Raster ras = image.getData(new Rectangle(image.getMinX(),
                                                  image.getMinY(),
                                                  image.getWidth(),
                                                  image.getHeight()));
-        // System.out.println("Image: [" + 
-        //                    image.getMinY()  + ", " + 
-        //                    image.getMinX()  + ", " + 
-        //                    image.getWidth()  + ", " + 
+        // System.out.println("Image: [" +
+        //                    image.getMinY()  + ", " +
+        //                    image.getMinX()  + ", " +
+        //                    image.getWidth()  + ", " +
         //                    image.getHeight() + "]");
-        // System.out.println("Ras: [" + 
-        //                    ras.getMinX()  + ", " + 
-        //                    ras.getMinY()  + ", " + 
-        //                    ras.getWidth()  + ", " + 
+        // System.out.println("Ras: [" +
+        //                    ras.getMinX()  + ", " +
+        //                    ras.getMinY()  + ", " +
+        //                    ras.getWidth()  + ", " +
         //                    ras.getHeight() + "]");
 
         if (skipAlpha) {

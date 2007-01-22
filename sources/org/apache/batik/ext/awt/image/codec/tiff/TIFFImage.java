@@ -49,6 +49,10 @@ import com.sun.image.codec.jpeg.JPEGCodec;
 import com.sun.image.codec.jpeg.JPEGDecodeParam;
 import com.sun.image.codec.jpeg.JPEGImageDecoder;
 
+/**
+ *
+ * @version $Id$
+ */
 public class TIFFImage extends AbstractRed {
 
     // Compression types
@@ -189,7 +193,7 @@ public class TIFFImage extends AbstractRed {
     /**
      * Return as a long[] the value of a TIFF_LONG or TIFF_SHORT field.
      */
-    private final long[] getFieldAsLongs(TIFFField field) {
+    private long[] getFieldAsLongs(TIFFField field) {
         long[] value = null;
 
         if(field.getType() == TIFFField.TIFF_SHORT) {

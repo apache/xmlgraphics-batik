@@ -23,6 +23,8 @@ import org.w3c.dom.events.EventTarget;
 /**
  * Interface for a global scripting object for an SVG document.
  * Eventually will move to org.w3c.dom.svg (or some such package).
+ *
+ * @version $Id$
  */
 public interface SVGGlobal extends Global {
 
@@ -30,42 +32,42 @@ public interface SVGGlobal extends Global {
 //      * Gets the document.
 //      */
 //     Document getDocument();
-// 
+//
 //     /**
 //      * Returns the parent global scripting object.
 //      */
 //     Global getParent();
-// 
+//
 //     /**
 //      * Returns the current location loaded by the user agent.
 //      */
 //     String getLocation();
-// 
+//
 //     /**
 //      * Move to a new document.
 //      */
 //     void gotoLocation(String newURL);
-// 
+//
 //     /**
 //      * Parses an XML fragment.
 //      */
 //     Node parseXML(String source, Document document);
-// 
+//
 //     /**
 //      * Serializes a DOM node.
 //      */
 //     String printNode(Node node);
-// 
+//
 //     /**
 //      * Timer method.
 //      */
 //     SVGTimer createTimer(long delay, long interval, boolean start);
-// 
+//
 //     /**
 //      * Creates a URLRequest object.
 //      */
 //     URLRequest createURLRequest();
-// 
+//
 //     /**
 //      * Creates a Connection object.
 //      */
@@ -86,17 +88,17 @@ public interface SVGGlobal extends Global {
 //      * Creates a FileDialog object.
 //      */
 //     FileDialog createFileDialog();
-// 
+//
 //     /**
 //      * Creates an SVGEventFilter object.
 //      */
 //     SVGEventFilter createEventFilter();
-// 
+//
 //     /**
 //      * Sets a client-side persistent value.
 //      */
 //     void setPersistentValue(String name, String value);
-// 
+//
 //     /**
 //      * Gets a client-side persistent value.
 //      */

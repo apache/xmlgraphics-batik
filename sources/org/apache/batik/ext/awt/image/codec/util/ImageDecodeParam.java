@@ -26,6 +26,8 @@ import java.io.Serializable;
  *
  * <p><b> This interface is not a committed part of the JAI API.  It may
  * be removed or changed in future releases of JAI.</b>
+ *
+ * @version $Id$
  */
 public interface ImageDecodeParam extends Cloneable, Serializable {
 }

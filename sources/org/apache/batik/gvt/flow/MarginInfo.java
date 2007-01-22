@@ -18,6 +18,10 @@
  */
 package org.apache.batik.gvt.flow;
 
+/**
+ *
+ * @version $Id$
+ */
 public class MarginInfo {
     public static final int ALIGN_START  = 0;
     public static final int ALIGN_MIDDLE = 1;

@@ -36,7 +36,11 @@ import org.apache.batik.ext.awt.image.spi.ImageTagRegistry;
 import org.apache.batik.ext.awt.image.spi.MagicNumberRegistryEntry;
 import org.apache.batik.util.ParsedURL;
 
-public class PNGRegistryEntry 
+/**
+ *
+ * @version $Id$
+ */
+public class PNGRegistryEntry
     extends MagicNumberRegistryEntry {
 
 
@@ -53,9 +57,9 @@ public class PNGRegistryEntry
      * @param origURL The original URL, if any, for documentation
      *                purposes only.  This may be null.
      * @param needRawData If true the image returned should not have
-     *                    any default color correction the file may 
+     *                    any default color correction the file may
      *                    specify applied.  */
-    public Filter handleStream(InputStream inIS, 
+    public Filter handleStream(InputStream inIS,
                                ParsedURL   origURL,
                                boolean needRawData) {
 
@@ -78,8 +82,8 @@ public class PNGRegistryEntry
                     try {
                         PNGDecodeParam param = new PNGDecodeParam();
                         param.setExpandPalette(true);
-                        
-                        if (raw) 
+
+                        if (raw)
                             param.setPerformGammaCorrection(false);
                         else {
                             param.setPerformGammaCorrection(true);

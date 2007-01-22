@@ -23,9 +23,11 @@ import java.awt.Image;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 
 /**
- * This interface is to be used to provide alternate ways of 
+ * This interface is to be used to provide alternate ways of
  * generating a placeholder image when the ImageTagRegistry
  * fails to handle a given reference.
+ *
+ * @version $Id$
  */
 public abstract class BrokenLinkProvider {
 
@@ -36,7 +38,7 @@ public abstract class BrokenLinkProvider {
      * image or the broken link image, which may be important for
      * the application of profiles etc.
      */
-    public static final String BROKEN_LINK_PROPERTY = 
+    public static final String BROKEN_LINK_PROPERTY =
         "org.apache.batik.BrokenLinkImage";
 
     /**

@@ -619,7 +619,7 @@ public class PreferenceDialog extends JDialog
         float f;
         try {
             f = Float.parseFloat(animationLimitCPUAmount.getText()) / 100;
-            if (f <= 0f || f >= 1f) {
+            if (f <= 0f || f >= 1.0f) {
                 f = 0.85f;
             }
         } catch (NumberFormatException e) {
@@ -1037,7 +1037,7 @@ public class PreferenceDialog extends JDialog
                 }
             }
         });
-                
+
         mediaListRemoveButton = new JButton(Resources.getString(PREFERENCE_KEY_LABEL_REMOVE));
         mediaListRemoveButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {

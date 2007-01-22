@@ -21,6 +21,10 @@ package org.apache.batik.extension.svg;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.renderable.FilterColorInterpolation;
 
+/**
+ *
+ * @version $Id$
+ */
 public interface BatikHistogramNormalizationFilter
     extends FilterColorInterpolation {
 

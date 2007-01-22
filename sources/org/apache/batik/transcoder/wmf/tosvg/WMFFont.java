@@ -21,7 +21,10 @@ package org.apache.batik.transcoder.wmf.tosvg;
 
 import java.awt.Font;
 
-/** Represent a WMF Font, encountered in a Metafile.
+/**
+ * Represent a WMF Font, encountered in a Metafile.
+ *
+ * @version $Id$
  */
 public class WMFFont {
     public Font font;
@@ -38,7 +41,7 @@ public class WMFFont {
         this.charset = charset;
     }
 
-    public WMFFont(Font font, int charset, int underline, int strikeOut, 
+    public WMFFont(Font font, int charset, int underline, int strikeOut,
         int italic, int weight, int orient, int escape) {
 
         this.font = font;
@@ -50,4 +53,4 @@ public class WMFFont {
         this.orientation = orient;
         this.escape = escape;
     }
-}        
+}

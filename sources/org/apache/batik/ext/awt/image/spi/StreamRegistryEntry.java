@@ -30,6 +30,8 @@ import org.apache.batik.util.ParsedURL;
  * to check if it is "compatible" if you return true then you will
  * likely be asked to provide the decoded image next.
  * @see MagicNumberRegistryEntry
+ *
+ * @version $Id$
  */
 public interface StreamRegistryEntry extends RegistryEntry {
 

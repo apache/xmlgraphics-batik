@@ -143,7 +143,7 @@ public class TextPathLayout {
             // by the lengthRatio in the X direction
             // FIXME: for vertical text this will be the Y direction
             if (lengthAdjustMode == ADJUST_GLYPHS) {
-                AffineTransform scale = AffineTransform.getScaleInstance(lengthRatio, 1f);
+                AffineTransform scale = AffineTransform.getScaleInstance(lengthRatio, 1.0f);
                 glyph = scale.createTransformedShape(glyph);
 
                 // charAdvance has to scale accordingly

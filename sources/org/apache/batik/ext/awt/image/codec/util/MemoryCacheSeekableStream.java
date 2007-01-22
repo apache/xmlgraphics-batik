@@ -35,6 +35,8 @@ import java.util.ArrayList;
  *
  * <p><b> This class is not a committed part of the JAI API.  It may
  * be removed or changed in future releases of JAI.</b>
+ *
+ * @version $Id$
  */
 public final class MemoryCacheSeekableStream extends SeekableStream {
 

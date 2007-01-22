@@ -32,6 +32,10 @@ import java.util.List;
 
 import org.apache.batik.gvt.text.AttributedCharacterSpanIterator;
 
+/**
+ *
+ * @version $Id$
+ */
 public class MultiGlyphVector implements GVTGlyphVector {
 
     GVTGlyphVector [] gvs;
@@ -41,9 +45,10 @@ public class MultiGlyphVector implements GVTGlyphVector {
     int nGlyph;
 
     public MultiGlyphVector(List gvs) {
-        this.gvs     = new GVTGlyphVector[gvs.size()];
-        this.nGlyphs = new int[gvs.size()];
-        this.off     = new int[gvs.size()];
+        int nSlots = gvs.size();
+        this.gvs     = new GVTGlyphVector[ nSlots ];
+        this.nGlyphs = new int[ nSlots ];
+        this.off     = new int[ nSlots ];
 
         Iterator iter = gvs.iterator();
         int i=0;

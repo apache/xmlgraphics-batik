@@ -40,6 +40,7 @@ import org.w3c.dom.svg.SVGNumberList;
  * interface.
  *
  * @author <a href="mailto:tonny@kiyut.com">Tonny Kohar</a>
+ * @version $Id$
  */
 public class SVGOMAnimatedNumberList
     extends AbstractSVGAnimatedValue

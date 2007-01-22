@@ -48,6 +48,7 @@ import org.w3c.dom.css.CSSValue;
  * Bridge class for a regular polygon element.
  *
  * @author <a href="mailto:thomas.deweese@kodak.com">Thomas Deweese</a>
+ * @version $Id$
  */
 public class SVGSolidColorElementBridge extends AnimatableGenericSVGBridge
         implements PaintBridge {
@@ -91,7 +92,7 @@ public class SVGSolidColorElementBridge extends AnimatableGenericSVGBridge
         return extractColor(paintElement, opacity, ctx);
     }
 
-    protected static float extractOpacity(Element paintElement, 
+    protected static float extractOpacity(Element paintElement,
                                           float opacity,
                                           BridgeContext ctx) {
         Map refs = new HashMap();
@@ -102,7 +103,7 @@ public class SVGSolidColorElementBridge extends AnimatableGenericSVGBridge
         for (;;) {
             Value opacityVal =
                 CSSUtilities.getComputedStyle(paintElement, pidx);
-        
+
             // Was solid-opacity explicity set on this element?
             StyleMap sm =
                 ((CSSStylableElement)paintElement).getComputedStyleMap(null);
@@ -132,7 +133,7 @@ public class SVGSolidColorElementBridge extends AnimatableGenericSVGBridge
         }
     }
 
-    protected static Color extractColor(Element paintElement, 
+    protected static Color extractColor(Element paintElement,
                                         float opacity,
                                         BridgeContext ctx) {
         Map refs = new HashMap();
@@ -143,7 +144,7 @@ public class SVGSolidColorElementBridge extends AnimatableGenericSVGBridge
         for (;;) {
             Value colorDef =
                 CSSUtilities.getComputedStyle(paintElement, pidx);
-        
+
             // Was solid-color explicity set on this element?
             StyleMap sm =
                 ((CSSStylableElement)paintElement).getComputedStyleMap(null);
@@ -163,8 +164,8 @@ public class SVGSolidColorElementBridge extends AnimatableGenericSVGBridge
 
             String uri = XLinkSupport.getXLinkHref(paintElement);
             if (uri.length() == 0) {
-                // no xlink:href found, exit    
-                return new Color(0, 0, 0, opacity); 
+                // no xlink:href found, exit
+                return new Color(0, 0, 0, opacity);
             }
 
             SVGOMDocument doc = (SVGOMDocument)paintElement.getOwnerDocument();

@@ -21,6 +21,7 @@ package org.apache.batik.parser;
 /**
  *
  * @author  tonny@kiyut.com
+ * @version $Id$
  */
 public class DefaultNumberListHandler implements NumberListHandler {
     /**
@@ -64,8 +65,5 @@ public class DefaultNumberListHandler implements NumberListHandler {
      */
     public void endNumber() throws ParseException {
     }
-
-
-
 
 }

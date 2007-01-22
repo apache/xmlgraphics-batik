@@ -28,7 +28,11 @@ import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.renderable.RedRable;
 import org.apache.batik.i18n.LocalizableSupport;
 
-public class DefaultBrokenLinkProvider 
+/**
+ *
+ * @version $Id$
+ */
+public class DefaultBrokenLinkProvider
     extends BrokenLinkProvider {
 
     static Filter brokenLinkImg = null;
@@ -36,15 +40,15 @@ public class DefaultBrokenLinkProvider
     public static String formatMessage(Object base,
                                        String code,
                                        Object [] params) {
-        String res = (base.getClass().getPackage().getName() + 
-                      ".resources.Messages");
+        String res = base.getClass().getPackage().getName() +
+                      ".resources.Messages";
         // Should probably cache these...
         ClassLoader cl = null;
         try {
             // Should work always
             cl = DefaultBrokenLinkProvider.class.getClassLoader();
             // may not work (depends on security and relationship
-            // of base's class loader to this class's class loader. 
+            // of base's class loader to this class's class loader.
             cl = base.getClass().getClassLoader();
         } catch (SecurityException se) {
         }
@@ -52,7 +56,7 @@ public class DefaultBrokenLinkProvider
         return ls.formatMessage(code, params);
     }
 
-    public Filter getBrokenLinkImage(Object base, 
+    public Filter getBrokenLinkImage(Object base,
                                      String code, Object [] params) {
         synchronized (DefaultBrokenLinkProvider.class) {
             if (brokenLinkImg != null)
@@ -64,13 +68,13 @@ public class DefaultBrokenLinkProvider
             // Put the broken link property in the image so people know
             // This isn't the "real" image.
             Hashtable ht = new Hashtable();
-            ht.put(BROKEN_LINK_PROPERTY, 
+            ht.put(BROKEN_LINK_PROPERTY,
                    formatMessage(base, code, params));
             bi = new BufferedImage(bi.getColorModel(), bi.getRaster(),
                                    bi.isAlphaPremultiplied(),
                                    ht);
             Graphics2D g2d = bi.createGraphics();
-        
+
             g2d.setColor(new Color(255,255,255,190));
             g2d.fillRect(0, 0, 100, 100);
             g2d.setColor(Color.black);

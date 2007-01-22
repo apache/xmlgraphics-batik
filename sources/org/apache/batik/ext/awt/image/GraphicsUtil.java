@@ -1048,7 +1048,7 @@ public class GraphicsUtil {
         else {
             int [] pixel = null;
             int    bands = wr.getNumBands();
-            float  norm = 1f/255f;
+            float  norm = 1.0f/255f;
             int x0, x1, y0, y1, a, b;
             float alpha;
             x0 = wr.getMinX();

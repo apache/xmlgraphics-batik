@@ -20,6 +20,10 @@ package org.apache.batik.ext.awt.image.rendered;
 
 import org.apache.batik.util.DoublyLinkedList;
 
+/**
+ *
+ * @version $Id$
+ */
 public class LRUCache {
 
     /**

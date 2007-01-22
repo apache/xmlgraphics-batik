@@ -31,7 +31,11 @@ import org.apache.batik.ext.awt.image.spi.ImageTagRegistry;
 import org.apache.batik.ext.awt.image.spi.MagicNumberRegistryEntry;
 import org.apache.batik.util.ParsedURL;
 
-public class TIFFRegistryEntry 
+/**
+ *
+ * @version $Id$
+ */
+public class TIFFRegistryEntry
     extends MagicNumberRegistryEntry {
 
     static final byte [] sig1 = {(byte)0x49, (byte)0x49, 42,  0};
@@ -55,10 +59,10 @@ public class TIFFRegistryEntry
      * @param origURL The original URL, if any, for documentation
      *                purposes only.  This may be null.
      * @param needRawData If true the image returned should not have
-     *                    any default color correction the file may 
+     *                    any default color correction the file may
      *                    specify applied.
      */
-    public Filter handleStream(InputStream inIS, 
+    public Filter handleStream(InputStream inIS,
                                ParsedURL   origURL,
                                boolean needRawData) {
 
@@ -79,7 +83,7 @@ public class TIFFRegistryEntry
                     Filter filt;
                     try {
                         TIFFDecodeParam param = new TIFFDecodeParam();
-                        SeekableStream ss = 
+                        SeekableStream ss =
                             SeekableStream.wrapInputStream(is, true);
                         CachableRed cr = new TIFFImage(ss, param, 0);
                         cr = new Any2sRGBRed(cr);

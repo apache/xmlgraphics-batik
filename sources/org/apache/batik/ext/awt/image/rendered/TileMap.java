@@ -26,6 +26,10 @@ import java.util.HashMap;
 import org.apache.batik.util.CleanerThread;
 import org.apache.batik.util.HaltingThread;
 
+/**
+ *
+ * @version $Id$
+ */
 public class TileMap implements TileStore {
     private static final boolean DEBUG = false;
     private static final boolean COUNT = false;
@@ -89,7 +93,7 @@ public class TileMap implements TileStore {
         }
 
         cache.add(item);
-        if (DEBUG) System.out.println("Setting: (" + x + ", " + y + ")");
+        if (DEBUG) System.out.println("Setting: (" + x + ", " + y + ')' );
     }
 
     // Returns Raster if the tile is _currently_ in the cache.
@@ -109,7 +113,7 @@ public class TileMap implements TileStore {
 
     public Raster getTile(int x, int y) {
         if (DEBUG) System.out.println("Fetching: (" + (x) + ", " +
-                                      (y) + ")");
+                                      (y) + ')' );
         if (COUNT) synchronized (TileMap.class) { requests++; }
 
         Raster       ras  = null;

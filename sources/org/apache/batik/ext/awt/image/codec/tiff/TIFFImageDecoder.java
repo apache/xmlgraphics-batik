@@ -26,19 +26,19 @@ import org.apache.batik.ext.awt.image.codec.util.ImageDecoderImpl;
 import org.apache.batik.ext.awt.image.codec.util.SeekableStream;
 
 /**
- * A baseline TIFF reader. The reader has some functionality in addition to 
+ * A baseline TIFF reader. The reader has some functionality in addition to
  * the baseline specifications for Bilevel images, for which the group 3 and
- * group 4 decompression schemes have been implemented. Support for LZW 
- * decompression has also been added. Support for Horizontal differencing 
- * predictor decoding is also included, when used with LZW compression. 
- * However, this support is limited to data with bitsPerSample value of 8. 
+ * group 4 decompression schemes have been implemented. Support for LZW
+ * decompression has also been added. Support for Horizontal differencing
+ * predictor decoding is also included, when used with LZW compression.
+ * However, this support is limited to data with bitsPerSample value of 8.
  * When reading in RGB images, support for alpha and extraSamples being
  * present has been added. Support for reading in images with 16 bit samples
  * has been added. Support for the SampleFormat tag (signed samples as well
  * as floating-point samples) has also been added. In all other cases, support
  * is limited to Baseline specifications.
  *
- *
+ * @version $Id$
  */
 public class TIFFImageDecoder extends ImageDecoderImpl {
 

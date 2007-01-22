@@ -22,6 +22,8 @@ import org.w3c.dom.events.Event;
 /**
  * Interface for shadow tree related events.
  * Eventually will move to org.w3c.dom.xbl (or some such package).
+ *
+ * @version $Id$
  */
 public interface ShadowTreeEvent extends Event {
     XBLShadowTreeElement getXblShadowTree();

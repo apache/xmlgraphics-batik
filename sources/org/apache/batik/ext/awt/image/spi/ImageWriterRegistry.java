@@ -24,23 +24,31 @@ import java.util.Map;
 
 import org.apache.batik.util.Service;
 
+/**
+ *
+ * @version $Id$
+ */
 public class ImageWriterRegistry {
 
     private static ImageWriterRegistry instance;
-    
-    private Map imageWriterMap = new HashMap();
-    
+
+    private volatile Map imageWriterMap = new HashMap();
+
     private ImageWriterRegistry() {
         setup();
     }
-    
+
     public static ImageWriterRegistry getInstance() {
         if (instance == null) {
-            instance = new ImageWriterRegistry();
+            synchronized( ImageWriterRegistry.class ){
+                if ( instance == null ){
+                    instance = new ImageWriterRegistry();
+                }
+            }
         }
         return instance;
     }
-    
+
     private void setup() {
         Iterator iter = Service.providers(ImageWriter.class);
         while (iter.hasNext()) {
@@ -49,13 +57,13 @@ public class ImageWriterRegistry {
             register(writer);
         }
     }
-    
+
     public void register(ImageWriter writer) {
         imageWriterMap.put(writer.getMIMEType(), writer);
     }
-    
+
     public ImageWriter getWriterFor(String mime) {
         return (ImageWriter)imageWriterMap.get(mime);
     }
-    
+
 }

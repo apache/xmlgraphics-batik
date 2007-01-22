@@ -23,7 +23,9 @@ import java.util.List;
 /**
  * The base interface for all image tag registry entries.  To be useful you
  * probably need to implement on of the flavors of registry entries (such as
- * StreamRegistryEntry or URLRegistryEntry).  
+ * StreamRegistryEntry or URLRegistryEntry).
+ *
+ * @version $Id$
  */
 public interface RegistryEntry {
 
@@ -48,7 +50,7 @@ public interface RegistryEntry {
     /**
      * Returns a search priority for this entry.  For most formats this is not
      * important, but in some cases it is important that some entries occure
-     * before or after others.  
+     * before or after others.
      */
     float  getPriority();
 }

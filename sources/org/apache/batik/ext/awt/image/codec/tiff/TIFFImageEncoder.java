@@ -55,6 +55,7 @@ import com.sun.image.codec.jpeg.JPEGQTable;
  * A baseline TIFF writer. The writer outputs TIFF images in either Bilevel,
  * Greyscale, Palette color or Full Color modes.
  *
+ * @version $Id$
  */
 public class TIFFImageEncoder extends ImageEncoderImpl {
 

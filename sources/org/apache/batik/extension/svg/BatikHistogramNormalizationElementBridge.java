@@ -36,9 +36,10 @@ import org.w3c.dom.Element;
  * Bridge class for a histogram normalization element.
  *
  * @author <a href="mailto:thomas.deweese@kodak.com">Thomas Deweese</a>
+ * @version $Id$
  */
-public class BatikHistogramNormalizationElementBridge 
-    extends AbstractSVGFilterPrimitiveElementBridge  
+public class BatikHistogramNormalizationElementBridge
+    extends AbstractSVGFilterPrimitiveElementBridge
     implements BatikExtConstants {
 
     /**
@@ -142,7 +143,7 @@ public class BatikHistogramNormalizationElementBridge
 
         Filter filter = in;
         filter = new BatikHistogramNormalizationFilter8Bit(filter, trim/100);
-        
+
         filter = new PadRable8Bit(filter, primitiveRegion, PadMode.ZERO_PAD);
 
         // update the filter Map
@@ -182,7 +183,7 @@ public class BatikHistogramNormalizationElementBridge
                      new Object[] {attrName, s});
             }
 
-            if (ret <3) 
+            if (ret <3)
                 throw new BridgeException
                     (ctx, filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
                      new Object[] {attrName, s});

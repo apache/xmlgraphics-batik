@@ -59,7 +59,7 @@ public class SVGUpdateOverlay implements Overlay {
         }
         counts[i] = updateCount;
         updateCount = 0;
-        
+
         int num = rects.size();
         for (i=counts.length-1; i>=0; i--) {
             if (counts[i] > num) {
@@ -75,19 +75,19 @@ public class SVGUpdateOverlay implements Overlay {
         int count = 0;
         int idx = 0;
         int group = 0;
-        while ((group < counts.length-1) && 
+        while ((group < counts.length-1) &&
                (idx == counts[group]))
             group++;
         int cmax = counts.length-1;
         while (i.hasNext()) {
             Rectangle r = (Rectangle)i.next();
             Color c;
-            c = new Color(1f, (cmax-group)/(float)cmax, 0,
-                          (count+1f)/rects.size());
+            c = new Color(1.0f, (cmax-group)/(float)cmax, 0,
+                          (count+1.0f)/rects.size());
             g.setColor(c);
             g.drawRect(r.x, r.y, r.width, r.height);
             count++; idx++;
-            while ((group < counts.length-1) && 
+            while ((group < counts.length-1) &&
                    (idx == counts[group])) {
                 group++;
                 idx = 0;

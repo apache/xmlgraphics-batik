@@ -249,7 +249,7 @@ public class SVGFeConvolveMatrixElementBridge
             for (int i=0; i < kernelMatrix.length; ++i) {
                 sum += kernelMatrix[i];
             }
-            return (sum == 0) ? 1f : sum;
+            return (sum == 0) ? 1.0f : sum;
         } else {
             try {
                 return SVGUtilities.convertSVGNumber(s);
