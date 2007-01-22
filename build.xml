@@ -124,8 +124,6 @@ To display the available targets type:
     <property name="deploy.svn.url"     value="https://svn.apache.org/repos/asf/xmlgraphics/site/deploy/batik"/>
     <property name="build.site-dir"     value="${site}"/>
   
-    <taskdef resource="taskdef.properties" onerror="ignore"/>
-  
     <pathconvert property="cwd">
       <path path="."/>
     </pathconvert>
