@@ -27,6 +27,10 @@ import java.util.Map;
 import org.apache.batik.gvt.font.GVTFont;
 import org.apache.batik.gvt.font.GVTLineMetrics;
 
+/**
+ *
+ * @version $Id$
+ */
 public class BlockInfo {
     public static final int ALIGN_START  = 0;
     public static final int ALIGN_MIDDLE = 1;
@@ -100,8 +104,8 @@ public class BlockInfo {
             break;
         }
         if (ascent == -1) {
-            ascent  = fontSize * .8f;
-            descent = fontSize * .2f;
+            ascent  = fontSize * 0.8f;
+            descent = fontSize * 0.2f;
         }
     }
 

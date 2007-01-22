@@ -42,7 +42,7 @@ public class BatikBridgeExtension implements BridgeExtension {
      * reason you need to come before/after another existing extension
      * make sure your priority is lower/higher than theirs.
      */
-    public float getPriority() { return 1f; }
+    public float getPriority() { return 1.0f; }
 
     /**
      * This should return the list of extensions implemented

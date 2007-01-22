@@ -20,9 +20,13 @@ package org.apache.batik.ext.awt.image.rendered;
 
 import java.awt.image.RenderedImage;
 
+/**
+ *
+ * @version $Id$
+ */
 public class TileCache {
         private static LRUCache cache = new LRUCache(50);
-                
+
         public static void setSize(int sz) { cache.setSize(sz); }
 
         public static TileStore getTileGrid(int minTileX, int minTileY,
@@ -30,10 +34,10 @@ public class TileCache {
                 return new TileGrid(minTileX, minTileY, xSz, ySz, src, cache);
         }
 
-        public static TileStore getTileGrid(RenderedImage img, 
+        public static TileStore getTileGrid(RenderedImage img,
                                             TileGenerator src) {
-                return new TileGrid(img.getMinTileX(),  img.getMinTileY(), 
-                            img.getNumXTiles(), img.getNumYTiles(), 
+                return new TileGrid(img.getMinTileX(),  img.getMinTileY(),
+                            img.getNumXTiles(), img.getNumYTiles(),
                             src, cache);
         }
         public static TileStore getTileMap(TileGenerator src) {

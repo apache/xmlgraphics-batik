@@ -30,9 +30,11 @@ import java.io.StreamCorruptedException;
  * This base class can handle the compatiblity check based on a list
  * of Magic Numbers that correspond to your format (Some formats have
  * multiple magic numbers associated with them).
+ *
+ * @version $Id$
  */
-public abstract class MagicNumberRegistryEntry 
-    extends AbstractRegistryEntry 
+public abstract class MagicNumberRegistryEntry
+    extends AbstractRegistryEntry
     implements StreamRegistryEntry {
 
     public static final float PRIORITY = 1000;
@@ -46,7 +48,7 @@ public abstract class MagicNumberRegistryEntry
         int offset;
         byte [] magicNumber;
         byte [] buffer;
-        
+
         /**
          *  Constructor.
          * @param offset the location of the magic number in file.
@@ -60,7 +62,7 @@ public abstract class MagicNumberRegistryEntry
 
         /**
          * Returns the maximum number of bytes that will be read for
-         * this magic number compairison.  
+         * this magic number compairison.
          */
         int getReadlimit() {
             return offset+magicNumber.length;
@@ -69,7 +71,7 @@ public abstract class MagicNumberRegistryEntry
         /**
          * Performs the check of is.
          */
-        boolean isMatch(InputStream is) 
+        boolean isMatch(InputStream is)
             throws StreamCorruptedException {
             int idx = 0;
             is.mark(getReadlimit());
@@ -80,14 +82,14 @@ public abstract class MagicNumberRegistryEntry
                     if (rn == -1) return false;
                     idx += rn;
                 }
-                
+
                 idx = 0;
                 while (idx < buffer.length) {
                     int rn = is.read(buffer, idx, buffer.length-idx);
                     if (rn == -1) return false;
                     idx += rn;
                 }
-                
+
                 for (int i=0; i<magicNumber.length; i++) {
                     if (magicNumber[i] != buffer[i])
                         return false;
@@ -130,7 +132,7 @@ public abstract class MagicNumberRegistryEntry
         magicNumbers    = new MagicNumber[1];
         magicNumbers[0] = new MagicNumber(offset, magicNumber);
     }
-    
+
     /**
      * Constructor, simplifies construction of entry when only
      * one extension and one magic number is required.
@@ -146,7 +148,7 @@ public abstract class MagicNumberRegistryEntry
                                     int offset, byte[] magicNumber) {
         this(name, PRIORITY, ext, mimeType, offset, magicNumber);
     }
-    
+
     /**
      * Constructor, simplifies construction of entry when only
      * one extension is required.
@@ -199,7 +201,7 @@ public abstract class MagicNumberRegistryEntry
         magicNumbers    = new MagicNumber[1];
         magicNumbers[0] = new MagicNumber(offset, magicNumber);
     }
-    
+
     /**
      * Constructor, simplifies construction of entry when only
      * one magic number is required.
@@ -215,7 +217,7 @@ public abstract class MagicNumberRegistryEntry
                                     int offset, byte[] magicNumbers) {
         this(name, PRIORITY, exts, mimeTypes, offset, magicNumbers);
     }
-    
+
     /**
      * Constructor
      * @param name Format Name
@@ -232,7 +234,7 @@ public abstract class MagicNumberRegistryEntry
         super(name, priority, exts, mimeTypes);
         this.magicNumbers = magicNumbers;
     }
-    
+
     /**
      * Constructor
      * @param name Format Name
@@ -246,7 +248,7 @@ public abstract class MagicNumberRegistryEntry
                                     MagicNumber [] magicNumbers) {
         this(name, PRIORITY, exts, mimeTypes, magicNumbers);
     }
-    
+
     /**
      * Constructor, allows for overriding the default priority of
      * magic number entries.  This should be needed very rarely since
@@ -277,15 +279,15 @@ public abstract class MagicNumberRegistryEntry
         }
         return maxbuf;
     }
-    
+
     /**
      * Check if the stream contains an image that can be
      * handled by this format handler
      */
-    public boolean isCompatibleStream(InputStream is) 
+    public boolean isCompatibleStream(InputStream is)
         throws StreamCorruptedException {
         for (int i=0; i<magicNumbers.length; i++) {
-            if (magicNumbers[i].isMatch(is)) 
+            if (magicNumbers[i].isMatch(is))
                 return true;
         }
 

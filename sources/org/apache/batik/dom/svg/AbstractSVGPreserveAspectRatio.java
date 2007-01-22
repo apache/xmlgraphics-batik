@@ -32,11 +32,12 @@ import org.w3c.dom.svg.SVGPreserveAspectRatio;
  * This is the base implementation for SVGPreservAspectRatio
  *
  * @author  Tonny Kohar
+ * @version $Id$
  */
-public abstract class AbstractSVGPreserveAspectRatio 
+public abstract class AbstractSVGPreserveAspectRatio
         implements SVGPreserveAspectRatio,
                    SVGConstants {
-    
+
     /**
      * Strings for the 'align' values.
      */
@@ -89,49 +90,49 @@ public abstract class AbstractSVGPreserveAspectRatio
      * align property by default the value is
      * SVGPreserveAspectRatio.SVG_PRESERVEASPECTRATIO_XMIDYMID
      */
-    protected short align = 
+    protected short align =
         SVGPreserveAspectRatio.SVG_PRESERVEASPECTRATIO_XMIDYMID;
-    
+
     /**
      * meetOrSlice property
      * by default the value is SVGPreserveAspectRatio.SVG_MEETORSLICE_MEET;
      */
     protected short meetOrSlice = SVGPreserveAspectRatio.SVG_MEETORSLICE_MEET;
-    
+
     /** Creates a new instance of AbstractSVGPreserveAspectRatio */
     public AbstractSVGPreserveAspectRatio() {
     }
-    
+
     public short getAlign() {
         return this.align;
     }
-    
+
     public short getMeetOrSlice() {
         return this.meetOrSlice;
     }
-    
+
     public void setAlign(short align)  {
         this.align = align;
         setAttributeValue(getValueAsString());
     }
-    
+
     public void setMeetOrSlice(short meetOrSlice) {
         this.meetOrSlice = meetOrSlice;
         setAttributeValue(getValueAsString());
     }
-    
+
     public void reset() {
         align = SVGPreserveAspectRatio.SVG_PRESERVEASPECTRATIO_XMIDYMID;
         meetOrSlice = SVGPreserveAspectRatio.SVG_MEETORSLICE_MEET;
         //setAttributeValue(getValueAsString());
     }
-    
-    protected abstract void setAttributeValue(String value) 
+
+    protected abstract void setAttributeValue(String value)
         throws DOMException;
 
-    protected abstract DOMException createDOMException(short type, String key, 
+    protected abstract DOMException createDOMException(short type, String key,
                                                        Object[] args);
-    
+
     protected void setValueAsString(String value) throws DOMException {
         PreserveAspectRatioParserHandler ph;
         ph = new PreserveAspectRatioParserHandler();
@@ -171,21 +172,21 @@ public abstract class AbstractSVGPreserveAspectRatio
         }
         return value + ' ' + MEET_OR_SLICE_VALUES[meetOrSlice];
     }
-    
-    protected class PreserveAspectRatioParserHandler 
+
+    protected class PreserveAspectRatioParserHandler
         extends DefaultPreserveAspectRatioHandler {
-        public short align = 
+        public short align =
             SVGPreserveAspectRatio.SVG_PRESERVEASPECTRATIO_XMIDYMID;
         public short meetOrSlice = SVGPreserveAspectRatio.SVG_MEETORSLICE_MEET;
-        
+
         public short getAlign() {
             return align;
         }
-        
+
         public short getMeetOrSlice() {
             return meetOrSlice;
         }
-        
+
         /**
          * Invoked when 'none' been parsed.
          * @exception ParseException if an error occured while processing

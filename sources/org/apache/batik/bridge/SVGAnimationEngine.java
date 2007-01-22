@@ -1704,7 +1704,7 @@ public class SVGAnimationEngine extends AnimationEngine {
         protected AnimatableValue createAnimatableValue(AnimationTarget target,
                                                         String pn, Value v) {
             Paint p = PaintServer.convertPaint
-                (target.getElement(), null, v, 1f, ctx);
+                (target.getElement(), null, v, 1.0f, ctx);
             if (p instanceof Color) {
                 Color c = (Color) p;
                 return new AnimatableColorValue(target,
@@ -1741,7 +1741,7 @@ public class SVGAnimationEngine extends AnimationEngine {
                         return AnimatablePaintValue.createNonePaintValue(target);
                     case CSSPrimitiveValue.CSS_RGBCOLOR: {
                         Paint p = PaintServer.convertPaint
-                            (target.getElement(), null, v, 1f, ctx);
+                            (target.getElement(), null, v, 1.0f, ctx);
                         return createColorPaintValue(target, (Color) p);
                     }
                     case CSSPrimitiveValue.CSS_URI:
@@ -1753,7 +1753,7 @@ public class SVGAnimationEngine extends AnimationEngine {
                 switch (v1.getPrimitiveType()) {
                     case CSSPrimitiveValue.CSS_RGBCOLOR: {
                         Paint p = PaintServer.convertPaint
-                            (target.getElement(), null, v, 1f, ctx);
+                            (target.getElement(), null, v, 1.0f, ctx);
                         return createColorPaintValue(target, (Color) p);
                     }
                     case CSSPrimitiveValue.CSS_URI: {
@@ -1764,7 +1764,7 @@ public class SVGAnimationEngine extends AnimationEngine {
                                     (target, v1.getStringValue());
                             case CSSPrimitiveValue.CSS_RGBCOLOR: {
                                 Paint p = PaintServer.convertPaint
-                                    (target.getElement(), null, v.item(1), 1f, ctx);
+                                    (target.getElement(), null, v.item(1), 1.0f, ctx);
                                 return createColorPaintValue(target, (Color) p);
                             }
                         }

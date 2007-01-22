@@ -33,9 +33,10 @@ import org.w3c.dom.Element;
  * Bridge class for a regular polygon element.
  *
  * @author <a href="mailto:thomas.deweese@kodak.com">Thomas Deweese</a>
+ * @version $Id$
  */
-public class BatikRegularPolygonElementBridge 
-    extends SVGDecoratedShapeElementBridge  
+public class BatikRegularPolygonElementBridge
+    extends SVGDecoratedShapeElementBridge
     implements BatikExtConstants {
 
     /**
@@ -107,7 +108,7 @@ public class BatikRegularPolygonElementBridge
 
         // 'sides' attribute - default is 3
         int sides = convertSides(e, BATIK_EXT_SIDES_ATTRIBUTE, 3, ctx);
-        
+
         GeneralPath gp = new GeneralPath();
         for (int i=0; i<sides; i++) {
             double angle    = (i+0.5)*(2*Math.PI/sides) - (Math.PI/2);
@@ -151,7 +152,7 @@ public class BatikRegularPolygonElementBridge
                      new Object[] {attrName, s});
             }
 
-            if (ret <3) 
+            if (ret <3)
                 throw new BridgeException
                     (ctx, filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
                      new Object[] {attrName, s});

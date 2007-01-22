@@ -22,7 +22,7 @@ package org.apache.batik.ext.awt.image.codec.tiff;
 /**
  * A class for performing LZW decoding.
  *
- *
+ * @version $Id$
  */
 public class TIFFLZWDecoder {
 

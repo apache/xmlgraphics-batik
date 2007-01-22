@@ -23,6 +23,8 @@ import  java.awt.image.Raster;
 /**
  * This the generic interface for a source of tiles.  This is used
  * when the cache has a miss.
+ *
+ * @version $Id$
  */
 public interface TileGenerator {
         Raster genTile(int x, int y);

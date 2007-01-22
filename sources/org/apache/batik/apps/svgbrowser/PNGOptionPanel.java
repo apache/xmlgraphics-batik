@@ -33,7 +33,7 @@ import org.apache.batik.util.gui.ExtendedGridBagConstraints;
  * of the PNG, i.e. RGB or INDEXED.
  *
  * @author <a href="mailto:jun@oop-reserch.com">Jun Inamori</a>
- *
+ * @version $Id$
  */
 public class PNGOptionPanel extends OptionPanel {
 
@@ -48,17 +48,17 @@ public class PNGOptionPanel extends OptionPanel {
     public PNGOptionPanel() {
         super(new GridBagLayout());
 
-        ExtendedGridBagConstraints constraints = 
+        ExtendedGridBagConstraints constraints =
             new ExtendedGridBagConstraints();
 
-        
+
         constraints.insets = new Insets(5, 5, 5, 5);
 
         constraints.weightx = 0;
         constraints.weighty = 0;
         constraints.fill = GridBagConstraints.NONE;
         constraints.setGridBounds(0, 0, 1, 1);
-        add(new JLabel(resources.getString("PNGOptionPanel.label")), 
+        add(new JLabel(resources.getString("PNGOptionPanel.label")),
             constraints);
 
         check=new JCheckBox();

@@ -314,7 +314,7 @@ public class Main implements Application {
                             // Do nothing, let the OS quit the app.
                         } else {
                             return null;
-                        }   
+                        }
                         try {
                             setHandled.invoke(args[0],
                                               new Object[] { Boolean.TRUE });
@@ -804,7 +804,7 @@ public class Main implements Application {
             case 1: { // %cpu
                 float pc = preferenceManager.getFloat
                     (PreferenceDialog.PREFERENCE_KEY_ANIMATION_RATE_LIMITING_CPU);
-                if (pc <= 0f || pc > 1f) {
+                if (pc <= 0f || pc > 1.0f) {
                     pc = 0.75f;
                 }
                 vf.getJSVGCanvas().setAnimationLimitingCPU(pc);

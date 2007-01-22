@@ -28,23 +28,25 @@ import java.awt.geom.*;
 import java.util.Hashtable;
 import org.apache.batik.transcoder.wmf.WMFConstants;
 
-/** This class generate Paints from WMF hatch definitions. All generated
- *  Paints are cached for future use.
+/**
+ * This class generate Paints from WMF hatch definitions. All generated
+ * Paints are cached for future use.
  *
- */ 
+ * @version $Id$
+ */
 public class TextureFactory {
     private static TextureFactory fac = null;
     private Hashtable textures = new Hashtable(1);
     private static final int SIZE = 10;
-    private float scale = 1f;
-    
-    private TextureFactory(float scale) {        
+    private float scale = 1.0f;
+
+    private TextureFactory(float scale) {
     }
-    
+
     /** Get the unique instance of the class.
      */
     public static TextureFactory getInstance() {
-        if (fac == null) fac = new TextureFactory(1f);
+        if (fac == null) fac = new TextureFactory(1.0f);
         return fac;
     }
 
@@ -54,15 +56,15 @@ public class TextureFactory {
     public static TextureFactory getInstance(float scale) {
         if (fac == null) fac = new TextureFactory(scale);
         return fac;
-    }    
-    
-    /** Rest the factory. It empties all the previouly cached Paints are 
+    }
+
+    /** Rest the factory. It empties all the previouly cached Paints are
      * disposed of.
      */
     public void reset() {
         textures = new Hashtable(1);
     }
-    
+
     /** Get a texture from a WMF hatch definition (in black Color). This
      *  texture will be cached, so the Paint will only be created once.
      */
@@ -80,7 +82,7 @@ public class TextureFactory {
 
     /** Get a texture from a WMF hatch definition, with a foreground color. This
      *  texture will be cached, so the Paint will only be created once.
-     */    
+     */
     public Paint getTexture(int textureId, Color foreground) {
         ColoredTexture _ctexture = new ColoredTexture(textureId, foreground, null);
         if (textures.contains(_ctexture)) {
@@ -91,12 +93,12 @@ public class TextureFactory {
             if (paint != null) textures.put(_ctexture, paint);
             return paint;
         }
-    }        
+    }
 
     /** Get a texture from a WMF hatch definition, with a foreground and a
-     *  background color. This texture will be cached, so the Paint will 
+     *  background color. This texture will be cached, so the Paint will
      * only be created once.
-     */        
+     */
     public Paint getTexture(int textureId, Color foreground, Color background) {
         ColoredTexture _ctexture = new ColoredTexture(textureId, foreground, background);
         if (textures.contains(_ctexture)) {
@@ -107,8 +109,8 @@ public class TextureFactory {
             if (paint != null) textures.put(_ctexture, paint);
             return paint;
         }
-    }    
-    
+    }
+
     /** Called internally if the Paint does not exist in the cache and must
      *  be created.
      */
@@ -124,53 +126,54 @@ public class TextureFactory {
         }
         if (foreground == null) g2d.setColor(Color.black);
         else g2d.setColor(foreground);
-        
+
         if (textureId == WMFConstants.HS_VERTICAL) {
             for (int i = 0; i < 5; i++) {
                 g2d.drawLine(i*10, 0, i*10, SIZE);
-            }            
+            }
             ok = true;
         } else if (textureId == WMFConstants.HS_HORIZONTAL) {
             for (int i = 0; i < 5; i++) {
                 g2d.drawLine(0, i*10, SIZE, i*10);
-            }            
-            ok = true;            
+            }
+            ok = true;
         } else if (textureId == WMFConstants.HS_BDIAGONAL) {
             for (int i = 0; i < 5; i++) {
                 g2d.drawLine(0, i*10, i*10, 0);
-            }            
-            ok = true;                        
+            }
+            ok = true;
         } else if (textureId == WMFConstants.HS_FDIAGONAL) {
             for (int i = 0; i < 5; i++) {
                 g2d.drawLine(0, i*10, SIZE - i*10, SIZE);
-            }            
-            ok = true;                                    
+            }
+            ok = true;
         } else if (textureId == WMFConstants.HS_DIAGCROSS) {
             for (int i = 0; i < 5; i++) {
-                g2d.drawLine(0, i*10, i*10, 0);                
-                g2d.drawLine(0, i*10, SIZE - i*10, SIZE);                
-            }         
-            ok = true;                                                
+                g2d.drawLine(0, i*10, i*10, 0);
+                g2d.drawLine(0, i*10, SIZE - i*10, SIZE);
+            }
+            ok = true;
         } else if (textureId == WMFConstants.HS_CROSS) {
             for (int i = 0; i < 5; i++) {
                 g2d.drawLine(i*10, 0, i*10, SIZE);
-                g2d.drawLine(0, i*10, SIZE, i*10);                
-            }            
-            ok = true;                        
+                g2d.drawLine(0, i*10, SIZE, i*10);
+            }
+            ok = true;
         }
         img.flush();
         if (ok) paint = new TexturePaint(img, rec);
         return paint;
     }
-    
+
     /** Contain a handle to a Colored texture, with optional foreground and
      * background colors.
      */
     private class ColoredTexture {
-        int textureId = 0;
-        Color foreground = null;
-        Color background = null;
-        
+
+        final int textureId;
+        final Color foreground;
+        final Color background;
+
         ColoredTexture(int textureId, Color foreground, Color background) {
             this.textureId = textureId;
             this.foreground = foreground;

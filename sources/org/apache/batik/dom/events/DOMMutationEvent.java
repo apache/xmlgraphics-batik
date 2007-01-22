@@ -27,6 +27,7 @@ import org.w3c.dom.events.MutationEvent;
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
+ * @version $Id$
  */
 public class DOMMutationEvent extends AbstractEvent implements MutationEvent {
 
@@ -43,7 +44,7 @@ public class DOMMutationEvent extends AbstractEvent implements MutationEvent {
      * changed, the <code>relatedNode</code> is the changed parent.
      * If an event is instead dispatch to a subtree indicating a node
      * was changed within it, the <code>relatedNode</code> is the
-     * changed node.  
+     * changed node.
      */
     public Node getRelatedNode() {
         return relatedNode;
@@ -52,7 +53,7 @@ public class DOMMutationEvent extends AbstractEvent implements MutationEvent {
     /**
      * DOM: <code>prevValue</code> indicates the previous value of the
      * <code>Attr</code> node in DOMAttrModified events, and of the
-     * <code>CharacterData</code> node in DOMCharDataModified events.  
+     * <code>CharacterData</code> node in DOMCharDataModified events.
      */
     public String getPrevValue() {
         return prevValue;
@@ -61,7 +62,7 @@ public class DOMMutationEvent extends AbstractEvent implements MutationEvent {
     /**
      * DOM: <code>newValue</code> indicates the new value of the
      * <code>Attr</code> node in DOMAttrModified events, and of the
-     * <code>CharacterData</code> node in DOMCharDataModified events.  
+     * <code>CharacterData</code> node in DOMCharDataModified events.
      */
     public String getNewValue() {
         return newValue;
@@ -69,7 +70,7 @@ public class DOMMutationEvent extends AbstractEvent implements MutationEvent {
 
     /**
      * DOM: <code>attrName</code> indicates the name of the changed
-     * <code>Attr</code> node in a DOMAttrModified event.  
+     * <code>Attr</code> node in a DOMAttrModified event.
      */
     public String getAttrName() {
         return attrName;
@@ -94,22 +95,22 @@ public class DOMMutationEvent extends AbstractEvent implements MutationEvent {
      *
      * @param typeArg Specifies the event type.
      * @param canBubbleArg Specifies whether or not the event can bubble.
-     * @param cancelableArg Specifies whether or not the event's default  
+     * @param cancelableArg Specifies whether or not the event's default
      *   action can be prevented.
      * @param relatedNodeArg Specifies the <code>Event</code>'s related Node
-     * @param prevValueArg Specifies the <code>Event</code>'s 
+     * @param prevValueArg Specifies the <code>Event</code>'s
      *   <code>prevValue</code> property
-     * @param newValueArg Specifies the <code>Event</code>'s 
+     * @param newValueArg Specifies the <code>Event</code>'s
      *   <code>newValue</code> property
-     * @param attrNameArg Specifies the <code>Event</code>'s 
-     *   <code>attrName</code> property 
+     * @param attrNameArg Specifies the <code>Event</code>'s
+     *   <code>attrName</code> property
      */
-    public void initMutationEvent(String typeArg, 
-                                  boolean canBubbleArg, 
-                                  boolean cancelableArg, 
-                                  Node relatedNodeArg, 
-                                  String prevValueArg, 
-                                  String newValueArg, 
+    public void initMutationEvent(String typeArg,
+                                  boolean canBubbleArg,
+                                  boolean cancelableArg,
+                                  Node relatedNodeArg,
+                                  String prevValueArg,
+                                  String newValueArg,
                                   String attrNameArg,
                                   short attrChangeArg) {
         initEvent(typeArg, canBubbleArg, cancelableArg);
@@ -124,12 +125,12 @@ public class DOMMutationEvent extends AbstractEvent implements MutationEvent {
      * <b>DOM</b>: Initializes this event object.
      */
     public void initMutationEventNS(String namespaceURIArg,
-                                    String typeArg, 
-                                    boolean canBubbleArg, 
-                                    boolean cancelableArg, 
-                                    Node relatedNodeArg, 
-                                    String prevValueArg, 
-                                    String newValueArg, 
+                                    String typeArg,
+                                    boolean canBubbleArg,
+                                    boolean cancelableArg,
+                                    Node relatedNodeArg,
+                                    String prevValueArg,
+                                    String newValueArg,
                                     String attrNameArg,
                                     short attrChangeArg) {
         initEventNS(namespaceURIArg, typeArg, canBubbleArg, cancelableArg);

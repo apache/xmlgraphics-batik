@@ -36,6 +36,8 @@ import java.io.RandomAccessFile;
  *
  * <p><b> This class is not a committed part of the JAI API.  It may
  * be removed or changed in future releases of JAI.</b>
+ *
+ * @version $Id$
  */
 public final class FileCacheSeekableStream extends SeekableStream {
 
@@ -71,7 +73,7 @@ public final class FileCacheSeekableStream extends SeekableStream {
      * <p> An <code>IOException</code> will be thrown if the
      * attempt to create the cache file fails for any reason.
      */
-    public FileCacheSeekableStream(InputStream stream) 
+    public FileCacheSeekableStream(InputStream stream)
         throws IOException {
         this.stream = stream;
         this.cacheFile = File.createTempFile("jai-FCSS-", ".tmp");
@@ -125,7 +127,7 @@ public final class FileCacheSeekableStream extends SeekableStream {
     }
 
     /**
-     * Returns the current offset in this file. 
+     * Returns the current offset in this file.
      *
      * @return     the offset from the beginning of the file, in bytes,
      *             at which the next read occurs.
@@ -135,13 +137,13 @@ public final class FileCacheSeekableStream extends SeekableStream {
     }
 
     /**
-     * Sets the file-pointer offset, measured from the beginning of this 
+     * Sets the file-pointer offset, measured from the beginning of this
      * file, at which the next read occurs.
      *
-     * @param      pos   the offset position, measured in bytes from the 
-     *                   beginning of the file, at which to set the file 
+     * @param      pos   the offset position, measured in bytes from the
+     *                   beginning of the file, at which to set the file
      *                   pointer.
-     * @exception  IOException  if <code>pos</code> is less than 
+     * @exception  IOException  if <code>pos</code> is less than
      *                          <code>0</code> or if an I/O error occurs.
      */
     public void seek(long pos) throws IOException {
@@ -246,7 +248,7 @@ public final class FileCacheSeekableStream extends SeekableStream {
             return -1;
         }
     }
-    
+
     /**
      * Closes this stream and releases any system resources
      * associated with the stream.

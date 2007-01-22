@@ -19,7 +19,10 @@
 
 package org.apache.batik.transcoder.wmf.tosvg;
 
-/** Represents GDI Objects encountred in WMF Files.
+/**
+ * Represents GDI Objects encountred in WMF Files.
+ *
+ * @version $Id$
  */
 public class GdiObject {
     GdiObject( int _id, boolean _used ) {
@@ -27,12 +30,12 @@ public class GdiObject {
         used = _used;
         type = 0;
     }
-    
+
     public void clear() {
         used = false;
         type = 0;
     }
-    
+
     /** Setup this Object, which means that it is used and associated with an Object.
      *  <p>The Object can be any Java <i>Object</i> that is useful for an implementation of
      *  {@link AbstractWMFPainter} that uses this GdiObject.</p>
@@ -51,31 +54,31 @@ public class GdiObject {
         type = _type;
         used = true;
     }
-    
+
     /** Return true if this GdiObject is used.
      */
     public boolean isUsed() {
         return used;
     }
-    
+
     /** Return the type of this GdiObject.
      */
     public int getType() {
         return type;
     }
-    
+
     /** Return the Object associated with this GdiObject.
-     */ 
+     */
     public Object getObject() {
         return obj;
     }
-    
+
     /** Return the identification of this GdiObject.
      */
     public int getID() {
         return id;
     }
-    
+
     int id;
     boolean used;
     Object obj;

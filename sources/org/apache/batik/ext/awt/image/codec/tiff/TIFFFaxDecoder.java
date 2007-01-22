@@ -18,7 +18,10 @@
  */
 package org.apache.batik.ext.awt.image.codec.tiff;
 
-
+/**
+ *
+ * @version $Id$
+ */
 class TIFFFaxDecoder {
 
     private int bitPointer, bytePointer;

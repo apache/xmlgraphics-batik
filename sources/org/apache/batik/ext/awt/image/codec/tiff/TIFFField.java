@@ -35,6 +35,7 @@ import java.io.Serializable;
  * be removed or changed in future releases of JAI.</b>
  *
  * @see TIFFDirectory
+ * @version $Id$
  */
 public class TIFFField extends Object implements Comparable, Serializable {
 
@@ -85,7 +86,7 @@ public class TIFFField extends Object implements Comparable, Serializable {
 
     /** The field data. */
     Object data;
-    
+
     /** The default constructor. */
     TIFFField() {}
 
@@ -218,7 +219,7 @@ public class TIFFField extends Object implements Comparable, Serializable {
     }
 
     /**
-     * Returns TIFF_FLOAT data as an array of floats. 
+     * Returns TIFF_FLOAT data as an array of floats.
      *
      * <p> A ClassCastException will be thrown if the field is not
      * of type TIFF_FLOAT.
@@ -228,7 +229,7 @@ public class TIFFField extends Object implements Comparable, Serializable {
     }
 
     /**
-     * Returns TIFF_DOUBLE data as an array of doubles. 
+     * Returns TIFF_DOUBLE data as an array of doubles.
      *
      * <p> A ClassCastException will be thrown if the field is not
      * of type TIFF_DOUBLE.
@@ -318,7 +319,7 @@ public class TIFFField extends Object implements Comparable, Serializable {
             throw new ClassCastException();
         }
     }
-    
+
     /**
      * Returns data in any numerical format as a float.  Data in
      * TIFF_SRATIONAL or TIFF_RATIONAL format are evaluated by

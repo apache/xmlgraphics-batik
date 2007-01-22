@@ -22,6 +22,8 @@ import org.apache.batik.dom.anim.AnimationTarget;
 
 /**
  * Stores information about a specific XML attribute or CSS property.
+ *
+ * @version $Id: PreferenceDialog.java 498555 2007-01-22 08:09:33Z cam $
  */
 public class TraitInformation {
 

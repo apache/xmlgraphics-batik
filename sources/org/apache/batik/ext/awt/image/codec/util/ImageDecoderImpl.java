@@ -27,6 +27,7 @@ import java.io.InputStream;
  * A partial implementation of the <code>ImageDecoder</code> interface
  * useful for subclassing.
  *
+ * @version $Id$
  */
 public abstract class ImageDecoderImpl implements ImageDecoder {
 
@@ -110,7 +111,7 @@ public abstract class ImageDecoderImpl implements ImageDecoder {
     public int getNumPages() throws IOException {
         return 1;
     }
-    
+
     /**
      * Returns a <code>Raster</code> that contains the decoded
      * contents of the <code>SeekableStream</code> associated

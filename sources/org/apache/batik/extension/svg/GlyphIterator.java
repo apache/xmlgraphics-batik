@@ -29,6 +29,10 @@ import org.apache.batik.gvt.font.GVTFont;
 import org.apache.batik.gvt.font.GVTGlyphVector;
 import org.apache.batik.gvt.font.GVTLineMetrics;
 
+/**
+ *
+ * @version $Id$
+ */
 public class GlyphIterator {
     public static final AttributedCharacterIterator.Attribute PREFORMATTED
         = GVTAttributedCharacterIterator.TextAttribute.PREFORMATTED;

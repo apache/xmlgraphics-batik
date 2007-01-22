@@ -284,7 +284,7 @@ public abstract class PaintServer
                 switch (v.getPrimitiveType()) {
                 case CSSPrimitiveValue.CSS_IDENT:
                     return null; // none
-                    
+
                 case CSSPrimitiveValue.CSS_RGBCOLOR:
                     if (paintDef.getLength() == 2) {
                         return convertColor(v, opacity);
@@ -549,7 +549,7 @@ public abstract class PaintServer
      */
     public static float convertStrokeMiterlimit(Value v) {
         float miterlimit = v.getFloatValue();
-        return (miterlimit < 1f) ? 1f : miterlimit;
+        return (miterlimit < 1.0f) ? 1.0f : miterlimit;
     }
 
     /**
@@ -623,6 +623,6 @@ public abstract class PaintServer
      */
     public static float convertOpacity(Value v) {
         float r = v.getFloatValue();
-        return (r < 0f) ? 0f : (r > 1f) ? 1f : r;
+        return (r < 0f) ? 0f : (r > 1.0f) ? 1.0f : r;
     }
 }

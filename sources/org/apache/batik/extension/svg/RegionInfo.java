@@ -25,13 +25,15 @@ import java.awt.geom.Rectangle2D;
  * &lt;batik:flowRegion> that is defined within the &lt;batik:flowRoot>
  * element.  Namely it holds the bounds of the region and the desired
  * vertical alignment.
+ *
+ * @version $Id$
  */
 public class RegionInfo
        extends Rectangle2D.Float
 {
     private float verticalAlignment = 0.0f;
 
-    public RegionInfo(float x, float y, float w, float h, 
+    public RegionInfo(float x, float y, float w, float h,
                       float verticalAlignment) {
         super(x, y, w, h);
         this.verticalAlignment = verticalAlignment;
@@ -39,7 +41,7 @@ public class RegionInfo
 
     /**
      * Gets the vertical alignment for this flow region.
-     * @return the vertical alignment for this flow region. 
+     * @return the vertical alignment for this flow region.
      *         It will be 0.0 for top, 0.5 for middle and 1.0 for bottom.
      */
     public float getVerticalAlignment() {
@@ -47,7 +49,7 @@ public class RegionInfo
     }
 
     /**
-     * Sets the alignment position of the text within this flow region.  
+     * Sets the alignment position of the text within this flow region.
      * The value must be 0.0 for top, 0.5 for middle and 1.0 for bottom.
      * @param verticalAlignment the vertical alignment of the text.
      */

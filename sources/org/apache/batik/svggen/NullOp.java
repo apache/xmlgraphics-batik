@@ -26,6 +26,10 @@ import java.awt.image.BufferedImage;
 import java.awt.image.BufferedImageOp;
 import java.awt.image.ColorModel;
 
+/**
+ *
+ * @version $Id$
+ */
 class NullOp implements BufferedImageOp {
     public BufferedImage filter(BufferedImage src, BufferedImage dest){
         java.awt.Graphics2D g = dest.createGraphics();

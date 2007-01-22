@@ -993,7 +993,7 @@ public class WMFPainter extends AbstractWMFPainter {
             stroke = new BasicStroke(_width, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND);
             g2d.setStroke(stroke);
         } else if (penStyle == WMFConstants.META_PS_DOT) {
-            float[] dash = {1f * _scale, 5f * _scale};
+            float[] dash = {1.0f * _scale, 5f * _scale};
             stroke = new BasicStroke(_width, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND, 10f * _scale, dash, 0f);
             g2d.setStroke(stroke);
         } else if (penStyle == WMFConstants.META_PS_DASH) {
@@ -1001,11 +1001,11 @@ public class WMFPainter extends AbstractWMFPainter {
             stroke = new BasicStroke(_width, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND, 10f * _scale, dash, 0f);
             g2d.setStroke(stroke);
         } else if (penStyle == WMFConstants.META_PS_DASHDOT) {
-            float[] dash = {5f * _scale, 2f * _scale, 1f * _scale, 2f * _scale};
+            float[] dash = {5f * _scale, 2f * _scale, 1.0f * _scale, 2f * _scale};
             stroke = new BasicStroke(_width, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND, 10f * _scale, dash, 0f);
             g2d.setStroke(stroke);
         } else if (penStyle == WMFConstants.META_PS_DASHDOTDOT) {
-            float[] dash = {5f * _scale, 2f * _scale, 1f * _scale, 2f * _scale, 1f * _scale, 2f * _scale};
+            float[] dash = {5f * _scale, 2f * _scale, 1.0f * _scale, 2f * _scale, 1f * _scale, 2f * _scale};
             stroke = new BasicStroke(_width, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND, 15f * _scale, dash, 0f);
             g2d.setStroke(stroke);
         } else {

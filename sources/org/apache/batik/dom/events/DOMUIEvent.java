@@ -31,6 +31,7 @@ import org.w3c.dom.views.AbstractView;
  * associated with User Interface events.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
+ * @version $Id$
  */
 public class DOMUIEvent extends AbstractEvent implements UIEvent {
 

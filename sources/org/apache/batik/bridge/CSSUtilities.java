@@ -598,7 +598,7 @@ public abstract class CSSUtilities
         float f = v.getFloatValue();
         if (f <= 0f) {
             return TRANSPARENT;
-        } else if (f >= 1f) {
+        } else if (f >= 1.0f) {
             return AlphaComposite.SrcOver;
         } else {
             return AlphaComposite.getInstance(AlphaComposite.SRC_OVER, f);

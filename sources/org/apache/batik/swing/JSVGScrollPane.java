@@ -80,6 +80,7 @@ import org.w3c.dom.events.EventListener;
  *   implementing the Scrollable interface.
  * </p>
  * @author Zach DelProposto
+ * @version $Id$
  */
 public class JSVGScrollPane extends JPanel
 {
@@ -100,9 +101,9 @@ public class JSVGScrollPane extends JPanel
     /**
      * Creates a JSVGScrollPane, which will scroll an JSVGCanvas.
      */
-    public JSVGScrollPane(JSVGCanvas canvas)
-    {
+    public JSVGScrollPane(JSVGCanvas canvas) {
         super();
+
         this.canvas = canvas;
         canvas.setRecenterOnResize(false);
 
@@ -141,7 +142,7 @@ public class JSVGScrollPane extends JPanel
 
         // canvas listeners
         ScrollListener xlistener = createScrollListener();
-        this.addComponentListener(xlistener);
+        addComponentListener(xlistener);
         canvas.addGVTTreeRendererListener(xlistener);
         canvas.addJGVTComponentListener  (xlistener);
         canvas.addGVTTreeBuilderListener (xlistener);

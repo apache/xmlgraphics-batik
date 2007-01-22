@@ -44,7 +44,7 @@ import org.w3c.dom.DOMException;
 public class LineHeightManager extends LengthManager {
 
     public LineHeightManager() { }
-    
+
     /**
      * Implements {@link ValueManager#isInheritedProperty()}.
      */
@@ -79,7 +79,7 @@ public class LineHeightManager extends LengthManager {
     public String getPropertyName() {
         return SVG12CSSConstants.CSS_LINE_HEIGHT_PROPERTY;
     }
-    
+
     /**
      * Implements {@link ValueManager#getDefaultValue()}.
      */
@@ -141,7 +141,7 @@ public class LineHeightManager extends LengthManager {
             int   fsidx = engine.getFontSizeIndex();
             float fs    = engine.getComputedStyle
                 (elt, pseudo, fsidx).getFloatValue();
-            return new FloatValue(CSSPrimitiveValue.CSS_NUMBER, v * fs*.01f);
+            return new FloatValue(CSSPrimitiveValue.CSS_NUMBER, v * fs * 0.01f);
         }
 
         default:

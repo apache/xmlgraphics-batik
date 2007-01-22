@@ -26,6 +26,7 @@ import java.io.IOException;
  * An interface describing objects that transform an InputStream into a
  * BufferedImage or Raster.
  *
+ * @version $Id$
  */
 public interface ImageDecoder {
 
@@ -39,7 +40,7 @@ public interface ImageDecoder {
     ImageDecodeParam getParam();
 
     /**
-     * Sets the current parameters to an instance of the 
+     * Sets the current parameters to an instance of the
      * ImageDecodeParam interface.  Concrete implementations
      * of ImageDecoder may throw a RuntimeException if the
      * param argument is not an instance of the appropriate

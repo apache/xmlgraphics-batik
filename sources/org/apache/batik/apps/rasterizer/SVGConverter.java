@@ -185,7 +185,7 @@ public class SVGConverter {
 
     /** Default quality value.  A value of -1 means disabled. */
     protected static final float DEFAULT_QUALITY
-        = -1f;
+        = -1.0f;
 
     /** Maximum quality value */
     protected static final float MAXIMUM_QUALITY
@@ -232,7 +232,7 @@ public class SVGConverter {
     protected String userStylesheet = null;
 
     /** Millimeters Per Pixel */
-    protected float pixelUnitToMillimeter = -1f;
+    protected float pixelUnitToMillimeter = -1.0f;
 
     /** Validation flag */
     protected boolean validate = false;

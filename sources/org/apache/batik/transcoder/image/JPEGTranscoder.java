@@ -83,7 +83,7 @@ public class JPEGTranscoder extends ImageTranscoder {
                 te = new TranscoderException
                     (Messages.formatMessage("jpeg.unspecifiedQuality", null));
                 handler.error(te);
-                quality = .75f;
+                quality = 0.75f;
             }
 
             ImageWriter writer = ImageWriterRegistry.getInstance()
@@ -134,7 +134,7 @@ public class JPEGTranscoder extends ImageTranscoder {
         public boolean isCompatibleValue(Object v) {
             if (v instanceof Float) {
                 float q = ((Float)v).floatValue();
-                return (q > 0 && q <= 1f);
+                return (q > 0 && q <= 1.0f);
             } else {
                 return false;
             }
@@ -156,8 +156,8 @@ public class JPEGTranscoder extends ImageTranscoder {
             this.os = os;
         }
 
-        public void close() throws IOException { 
-            if (os == null) return; 
+        public void close() throws IOException {
+            if (os == null) return;
             try {
                 os.close();
             } catch (IOException ioe) {
@@ -165,8 +165,8 @@ public class JPEGTranscoder extends ImageTranscoder {
             }
         }
 
-        public void flush() throws IOException { 
-            if (os == null) return; 
+        public void flush() throws IOException {
+            if (os == null) return;
             try {
                 os.flush();
             } catch (IOException ioe) {
@@ -174,26 +174,26 @@ public class JPEGTranscoder extends ImageTranscoder {
             }
         }
 
-        public void write(byte[] b) throws IOException { 
-            if (os == null) return; 
+        public void write(byte[] b) throws IOException {
+            if (os == null) return;
             try {
                 os.write(b);
             } catch (IOException ioe) {
                 os = null;
             }
         }
-        
-        public void write(byte[] b, int off, int len) throws IOException { 
-            if (os == null) return; 
+
+        public void write(byte[] b, int off, int len) throws IOException {
+            if (os == null) return;
             try {
                 os.write(b, off, len);
             } catch (IOException ioe) {
                 os = null;
             }
         }
-        
-        public void write(int b)  throws IOException { 
-            if (os == null) return; 
+
+        public void write(int b)  throws IOException {
+            if (os == null) return;
             try {
                 os.write(b);
             } catch (IOException ioe) {

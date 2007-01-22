@@ -30,6 +30,7 @@ import org.w3c.dom.views.AbstractView;
  * associated with Mouse events.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
+ * @version $Id$
  */
 public class DOMMouseEvent extends DOMUIEvent implements MouseEvent {
 

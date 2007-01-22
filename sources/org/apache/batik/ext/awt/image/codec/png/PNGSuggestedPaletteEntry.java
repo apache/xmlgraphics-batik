@@ -25,6 +25,8 @@ import java.io.Serializable;
  *
  * <p><b> This class is not a committed part of the JAI API.  It may
  * be removed or changed in future releases of JAI.</b>
+ *
+ * @version $Id$
  */
 public class PNGSuggestedPaletteEntry implements Serializable {
 
@@ -39,13 +41,13 @@ public class PNGSuggestedPaletteEntry implements Serializable {
 
     /** The green color value of the entry. */
     public int green;
-    
+
     /** The blue color value of the entry. */
     public int blue;
-    
+
     /** The alpha opacity value of the entry. */
     public int alpha;
-    
+
     /** The probable frequency of the color in the image. */
     public int frequency;
 }

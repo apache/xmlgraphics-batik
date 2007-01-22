@@ -23,6 +23,8 @@ import org.w3c.dom.events.Event;
  * Interface implemented by Event objects usable in an XBL processing
  * document.
  * Eventually will move to org.w3c.dom.xbl (or some such package).
+ *
+ * @version $Id$
  */
 public interface OriginalEvent {
 

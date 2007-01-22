@@ -26,6 +26,7 @@ import java.io.InputStream;
  * to wrap a regular <code>InputStream</code> efficiently.
  * Seeking backwards is not supported.
  *
+ * @version $Id$
  */
 public class ForwardSeekableStream extends SeekableStream {
 

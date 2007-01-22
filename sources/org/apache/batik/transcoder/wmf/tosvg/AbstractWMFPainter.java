@@ -30,9 +30,10 @@ import java.text.AttributedCharacterIterator;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 
-import org.apache.batik.transcoder.wmf.WMFConstants;
-
-/** This class provides generic methods that must be used by a particular WMFPainter.
+/**
+ *  This class provides generic methods that must be used by a particular WMFPainter.
+ *
+ * @version $Id$
  */
 public class AbstractWMFPainter {
 

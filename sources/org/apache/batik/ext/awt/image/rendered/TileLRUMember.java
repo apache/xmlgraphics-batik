@@ -28,17 +28,19 @@ import  java.lang.ref.SoftReference;
  * removes it's hard reference to the tile, but retains it's soft
  * reference allowing for the recovery of the tile when the JVM is
  * not under memory pressure
+ *
+ * @version $Id$
  */
 public class TileLRUMember implements LRUCache.LRUObj {
     private static final boolean DEBUG = false;
-                        
+
         protected LRUCache.LRUNode myNode  = null;
         protected Reference        wRaster = null;
         protected Raster           hRaster = null;
 
         public TileLRUMember() { }
 
-        public TileLRUMember(Raster ras) { 
+        public TileLRUMember(Raster ras) {
             setRaster(ras);
         }
 
@@ -50,9 +52,9 @@ public class TileLRUMember implements LRUCache.LRUObj {
         public boolean checkRaster() {
             if (hRaster != null) return true;
 
-            if ((wRaster       != null) && 
+            if ((wRaster       != null) &&
             (wRaster.get() != null)) return true;
-                        
+
             return false;
         }
 
@@ -70,8 +72,8 @@ public class TileLRUMember implements LRUCache.LRUObj {
 
         public LRUCache.LRUNode lruGet()         { return myNode; }
         public void lruSet(LRUCache.LRUNode nde) { myNode = nde; }
-        public void lruRemove()                  { 
-            myNode  = null; 
+        public void lruRemove()                  {
+            myNode  = null;
             hRaster = null;
             if (DEBUG) System.out.println("Removing");
         }

@@ -18,6 +18,10 @@
  */
 package org.apache.batik.extension.svg;
 
+/**
+ *
+ * @version $Id$
+ */
 public class MarginInfo {
     public static final int JUSTIFY_START  = 0;
     public static final int JUSTIFY_MIDDLE = 1;
