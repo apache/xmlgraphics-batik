@@ -98,6 +98,7 @@ grant codeBase "${app.jar.base}/lib/js.jar" {
   permission java.util.PropertyPermission "org.mozilla.javascript.JavaAdapterClassName", "read";
   permission java.util.PropertyPermission "user.home", "read";
   permission java.io.FilePermission "<<ALL FILES>>", "read";
+  permission java.awt.AWTPermission "showWindowWithoutWarningBanner";
 };
 
 grant {

@@ -163,7 +163,7 @@ java -jar batik-squiggle.jar</source>
             samples/batikFX.svg</code> options.
         </p>
 
-        <div class="figure"><img src="images/svgviewerDefaultRegular.jpg"
+        <div class="figure"><img src="images/svgviewerDefaultRegular.png"
                 alt="Screenshot of Squiggle showing the batikFX.svg sample"/>
         </div>
 
@@ -193,7 +193,7 @@ java -jar batik-squiggle.jar</source>
           chooser that lets you select the file you want to view.
         </p>
 
-        <div class="figure"><img src="images/svgviewerFileOpen.gif" 
+        <div class="figure"><img src="images/svgviewerFileOpen.png" 
                 alt="Screenshot of Squiggle showing the 'File&#x2192;Open' menu and file chooser"/>
         </div>
       </section>
@@ -209,7 +209,7 @@ java -jar batik-squiggle.jar</source>
           file you want to view.
         </p>
 
-        <div class="figure"><img src="images/svgviewerOpenPage.gif" 
+        <div class="figure"><img src="images/svgviewerOpenPage.png" 
                 alt="Screenshot of Squiggle showing the 'File&#x2192;Open Location' menu and window"/>
         </div>
       </section>
@@ -223,7 +223,7 @@ java -jar batik-squiggle.jar</source>
           in an HTML browser.
         </p>
 
-        <div class="figure"><img src="images/svgviewerLocationBar.gif" 
+        <div class="figure"><img src="images/svgviewerLocationBar.png" 
                 alt="Screenshot of Squiggle showing the location bar"/>
         </div>
       </section>
@@ -238,7 +238,7 @@ java -jar batik-squiggle.jar</source>
           <a href="#panning">pan</a> and <a href="#rotating">rotate</a>.
         </p>
 
-        <div class="figure"><img src="images/svgviewerBrowsing.gif" 
+        <div class="figure"><img src="images/svgviewerBrowsing.png" 
                 alt="Screnshot of Squiggle showing the 'Go' menu"/>
         </div>
 
@@ -283,14 +283,14 @@ java -jar batik-squiggle.jar</source>
       <section id="viewingMultiple">
         <title>Viewing multiple SVG files</title>
 
-        <div class="figure"><img src="images/svgviewerMultipleFiles.gif" 
+        <div class="figure"><img src="images/svgviewerMultipleFiles.png" 
                 alt="Screenshot of Squiggle with two windows open"/>
         </div>
 
         <p>
           Squiggle can display multiple files simultaneously in different
           windows. To view a new file in a separate window, simply select the
-          <strong>File&#x2192;Create New Window</strong> menu item or use the
+          <strong>File&#x2192;New Window</strong> menu item or use the
           <strong>Ctrl-N</strong> keyboard accelerator.
         </p>
       </section>
@@ -335,7 +335,7 @@ java -jar batik-squiggle.jar</source>
 
       <section id="viewingSource">
         <title>Viewing the source</title>
-        <div class="figure"><img src="images/svgviewerViewSource.gif" 
+        <div class="figure"><img src="images/svgviewerViewSource.png" 
                 alt="Screenshot of Squiggle showing the 'View&#x2192;View Source' menu item and the source window"/>
         </div>
 
@@ -348,7 +348,7 @@ java -jar batik-squiggle.jar</source>
 
       <section id="viewingTree">
         <title>Viewing the document tree</title>
-        <div class="figure"><img src="images/svgviewerViewTree.gif" 
+        <div class="figure"><img src="images/svgviewerViewTree.png" 
                 alt="Screenshot of Squiggle showing the 'View&#x2192;DOM Viewer...' menu item and the DOM viewer window"/>
         </div>
 
@@ -376,7 +376,7 @@ java -jar batik-squiggle.jar</source>
         figure.
       </p>
 
-      <div class="figure"><img src="images/svgviewerPreferences.gif" 
+      <div class="figure"><img src="images/svgviewerPreferences.png" 
               alt="Screenshot of Squiggle with the Preferences window open"/>
         </div>
 
@@ -386,14 +386,58 @@ java -jar batik-squiggle.jar</source>
         configure various browser parameters:
       </p>
       <dl>
-        <dt>Network Options panel</dt>
+        <dt>General panel</dt>
         <dd>
           <p>
-            This panel lets you configure the proxy server to use if you are
-            working from behind a firewall.
+            This panel lets you choose some optional behavior:
+          </p>
+          <dl>
+            <dt>Enable double buffering</dt>
+            <dd>
+              When on, the browser uses additional memory resources
+              which improves the quality of effects such as zooming and panning.
+            </dd>
+            <dt>Show Rendering</dt>
+            <dd>
+              When on, the browser will update the canvas while processing an
+              SVG document. This turns on progressive rendering.
+            </dd>
+            <dt>Automatically resize window to document size</dt>
+            <dd>
+              When on, the browser window is resized to fit any newly loaded
+              document.
+            </dd>
+            <dt>Animation rate limiting</dt>
+            <dd>
+              This set of radio buttons determines how often animation
+              updates are performed.  This can be set as a maximum percentage
+              of CPU time to use, a maximum number of frames per second, or
+              to perform as many updates as possible (unlimited).
+            </dd>
+            <dt>Print debugging information to console</dt>
+            <dd>
+              When on, some debug messages will be printed to the standard
+              output. This is will likely interest only developers.
+            </dd>
+            <dt>Use a validating XML parser</dt>
+            <dd>
+              When on, the XML parser used to load documents will be in
+              validating mode.  This means that the document will be validated
+              against the DTD when it is loaded, and external DTD subsets
+              will be fetched.
+            </dd>
+          </dl>
+        </dd>
+
+        <dt>Security panel</dt>
+        <dd>
+          <p>
+            This panel has options relating to the script and resource
+            access in documents.
           </p>
         </dd>
-        <dt>Languages panel</dt>
+
+        <dt>Language panel</dt>
         <dd>
           <p>
             This is the panel shown in the above figure. That panel lets you
@@ -402,37 +446,9 @@ java -jar batik-squiggle.jar</source>
             <code>samples/moonPhases.svg</code> example. Then, change the user
             language to French and <a href="#reloading">reload</a> the document
             (<strong>Ctrl-R</strong>).  You will see that the text is now
-            displayed in french. You can do the same with Japanese and the text
+            displayed in French. You can do the same with Japanese and the text
             will be shown in Japanese.
           </p>
-        </dd>
-        <dt>Browser Options panel</dt>
-        <dd>
-          <p>
-            This panel lets you choose some optional behavior:
-          </p>
-          <dl>
-            <dt>Show Rendering</dt>
-            <dd>
-              When on, the browser will update the canvas while processing an
-              SVG document. This turns on progressive rendering.
-            </dd>
-            <dt>Auto Adjust Window</dt>
-            <dd>
-              When on, the browser window is resized to fit any newly loaded
-              document.
-            </dd>
-            <dt>Enable Double Buffering</dt>
-            <dd>
-              When on, the browser uses additional memory resources
-              which improves the quality of effects such as zooming and panning.
-            </dd>
-            <dt>Show debug traces</dt>
-            <dd>
-              When on, some debug messages will be printed to the standard
-              output. This is will likely interest only developers.
-            </dd>
-          </dl>
         </dd>
 
         <dt>Stylesheet panel</dt>
@@ -441,6 +457,14 @@ java -jar batik-squiggle.jar</source>
           of the default settings in viewed SVG documents. This might be useful
           if you want, for example, to override the font size used in text
           elements.
+        </dd>
+
+        <dt>Network panel</dt>
+        <dd>
+          <p>
+            This panel lets you configure the proxy server to use if you are
+            working from behind a firewall.
+          </p>
         </dd>
       </dl>
     </section>
@@ -492,10 +516,10 @@ java -jar batik-squiggle.jar</source>
           </li>
         </ul>        
 
-        <div class="figure"><img src="images/svgviewerZoomin.gif" 
+        <div class="figure"><img src="images/svgviewerZoomin.png" 
                 alt="Screenshot of Squiggle showing the Zoom In and Zoom Out menu items and tool bar buttons"/>
         </div>
-        <div class="figure"><img src="images/svgviewerAOI.gif" 
+        <div class="figure"><img src="images/svgviewerAOI.png" 
                 alt="Screenshot of Squiggle zooming to an area of interest"/>
         </div>
       </section>
@@ -524,7 +548,7 @@ java -jar batik-squiggle.jar</source>
             to the desired location.
           </li>
         </ul>
-        <div class="figure"><img src="images/svgviewerPan.gif" 
+        <div class="figure"><img src="images/svgviewerPan.png" 
                 alt="Screenshot of Squiggle illustrating the panning gesture"/>
         </div>
       </section>
@@ -571,7 +595,7 @@ java -jar batik-squiggle.jar</source>
           interest which will then be shown in the main window.
         </p>
 
-        <div class="figure"><img src="images/svgviewerThumbnail.gif" 
+        <div class="figure"><img src="images/svgviewerThumbnail.png" 
           alt="Screenshot of Squiggle showing the Thumbnail window"/>
         </div>
       </section>
