@@ -139,7 +139,9 @@
           <dt><strong>-a</strong> <em>x</em><strong>,</strong><em>y</em><strong>,</strong><em>width</em><strong>,</strong><em>height</em></dt>
           <dd>
             <p>specifies the area of interest (as floating point values) of the
-              SVG file to rasterize,</p>
+              SVG file to rasterize (and if not specified, will be determined
+              by the <code>width</code>/<code>height</code>/<code>viewBox</code>
+              attributes if specified in the document, and be 0,0,400,400 otherwise),</p>
           </dd>
           <dt><strong>-bg</strong> <em>alpha</em><strong>.</strong><em>red</em><strong>.</strong><em>green</em><strong>.</strong><em>blue</em></dt>
           <dd>
