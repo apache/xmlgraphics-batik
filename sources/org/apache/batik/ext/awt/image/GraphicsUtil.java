@@ -171,7 +171,7 @@ public class GraphicsUtil extends org.apache.xmlgraphics.image.GraphicsUtil {
             if      (g2dCS == ColorSpace.getInstance(ColorSpace.CS_sRGB))
                 cr = convertTosRGB(cr);
             else if (g2dCS == ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB))
-                cr = convertTosRGB(cr);
+                cr = convertToLsRGB(cr);
         }
         srcCM = cr.getColorModel();
         if (!drawCM.equals(srcCM))
