@@ -518,6 +518,7 @@ public class JSVGViewerFrame
                     setPreferredSize(d);
                     invalidate();
                     if (JSVGViewerFrame.this.autoAdjust) {
+                        Platform.unmaximize(JSVGViewerFrame.this);
                         JSVGViewerFrame.this.pack();
                     }
                 }
