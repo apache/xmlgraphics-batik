@@ -104,15 +104,15 @@ public class PNGRegistryEntry
                         filt = new RedRable(cr);
                     } catch (IOException ioe) {
                         filt = ImageTagRegistry.getBrokenLinkImage
-                            (this, errCode, errParam);
+                            (PNGRegistryEntry.this, errCode, errParam);
                     } catch (ThreadDeath td) {
                         filt = ImageTagRegistry.getBrokenLinkImage
-                            (this, errCode, errParam);
+                            (PNGRegistryEntry.this, errCode, errParam);
                         dr.setSource(filt);
                         throw td;
                     } catch (Throwable t) {
                         filt = ImageTagRegistry.getBrokenLinkImage
-                            (this, errCode, errParam);
+                            (PNGRegistryEntry.this, errCode, errParam);
                     }
 
                     dr.setSource(filt);

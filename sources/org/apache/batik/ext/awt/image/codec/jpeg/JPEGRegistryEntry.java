@@ -117,15 +117,15 @@ public class JPEGRegistryEntry
                     } catch (IOException ioe) {
                         // Something bad happened here...
                         filt = ImageTagRegistry.getBrokenLinkImage
-                            (SPI_OBJECT, errCode, errParam);
+                            (JPEGRegistryEntry.this, errCode, errParam);
                     } catch (ThreadDeath td) {
                         filt = ImageTagRegistry.getBrokenLinkImage
-                            (SPI_OBJECT, errCode, errParam);
+                            (JPEGRegistryEntry.this, errCode, errParam);
                         dr.setSource(filt);
                         throw td;
                     } catch (Throwable t) {
                         filt = ImageTagRegistry.getBrokenLinkImage
-                            (SPI_OBJECT, errCode, errParam);
+                            (JPEGRegistryEntry.this, errCode, errParam);
                     }
 
                     dr.setSource(filt);

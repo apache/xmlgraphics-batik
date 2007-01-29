@@ -156,7 +156,6 @@ public class JSVGCanvasHandler {
                 checkRender();
                 if ( abort) return;
 
-                System.err.println("UM: " + updateManager);
                 if (updateManager == null)
                     return;
 
@@ -320,7 +319,6 @@ public class JSVGCanvasHandler {
             }
         }
         public void managerStarted(UpdateManagerEvent e) {
-            System.err.println("Binding Host: " + updateManager);
           bindHost(); 
         }
         public void managerSuspended(UpdateManagerEvent e) { }

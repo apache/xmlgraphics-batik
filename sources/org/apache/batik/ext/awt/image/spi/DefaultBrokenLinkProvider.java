@@ -36,14 +36,13 @@ public class DefaultBrokenLinkProvider
     extends BrokenLinkProvider {
 
     static Filter brokenLinkImg = null;
+    static final String MESSAGE_RSRC = "resources.Messages";
 
     static final Color BROKEN_LINK_COLOR = new Color( 255,255,255,190 );
 
     public static String formatMessage(Object base,
                                        String code,
                                        Object [] params) {
-        String res = base.getClass().getPackage().getName() +
-                      ".resources.Messages";
         // Should probably cache these...
         ClassLoader cl = null;
         try {
@@ -54,7 +53,8 @@ public class DefaultBrokenLinkProvider
             cl = base.getClass().getClassLoader();
         } catch (SecurityException se) {
         }
-        LocalizableSupport ls = new LocalizableSupport(res, cl);
+        LocalizableSupport ls;
+        ls = new LocalizableSupport(MESSAGE_RSRC, base.getClass(), cl);
         return ls.formatMessage(code, params);
     }
 

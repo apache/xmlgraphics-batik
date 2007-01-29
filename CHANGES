@@ -55,7 +55,7 @@ Bug fixing is an on-going task, so it is implied in all sub-releases.
         expressing them in PDF.
   * Transcoders with the KEY_EXECUTE_ONLOAD hint set force the document
     to be dynamic.
-  * Added JIIO codecs to Batik.
+  * Added JIIO codecs to Batik (not enabled by default)
   * Support for finding XML Parser through JAXP.
   * Enhancements to ArabicTextHandler.
   * Update Manager's MIN_REPAINT time is now adjustable.

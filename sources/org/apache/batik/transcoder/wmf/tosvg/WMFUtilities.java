@@ -29,30 +29,57 @@ import org.apache.batik.transcoder.wmf.WMFConstants;
  * @version $Id: PreferenceDialog.java 498555 2007-01-22 08:09:33Z cam $
  */
 public class WMFUtilities {
-    /** Decode a byte array in a String, considering the last selected charset.
+
+    /**
+     * Decode a byte array in a string, using the charset of the given font.
+     *
+     * @param wmfFont the font to use the charset of.
+     * @param bstr the encoded bytes of the string.
      */
     public static String decodeString(WMFFont wmfFont, byte[] bstr) {
         // manage the charset encoding
-        String str;
         try {
-            if (wmfFont.charset == WMFConstants.META_CHARSET_ANSI) {
-                str = new String(bstr);
-            } else if (wmfFont.charset == WMFConstants.META_CHARSET_DEFAULT) {
-                str = new String(bstr, WMFConstants.CHARSET_DEFAULT);
-            } else if (wmfFont.charset == WMFConstants.META_CHARSET_GREEK) {
-                str = new String(bstr, WMFConstants.CHARSET_GREEK);
-            } else if (wmfFont.charset == WMFConstants.META_CHARSET_RUSSIAN) {
-                str = new String(bstr, WMFConstants.CHARSET_CYRILLIC);
-            } else if (wmfFont.charset == WMFConstants.META_CHARSET_HEBREW) {
-                str = new String(bstr, WMFConstants.CHARSET_HEBREW);
-            } else if (wmfFont.charset == WMFConstants.META_CHARSET_ARABIC) {
-                str = new String(bstr, WMFConstants.CHARSET_ARABIC);
-            } else str = new String(bstr);
+            switch (wmfFont.charset) {
+            case WMFConstants.META_CHARSET_ANSI:
+                return new String(bstr, WMFConstants.CHARSET_ANSI);
+            case WMFConstants.META_CHARSET_DEFAULT:
+                return new String(bstr, WMFConstants.CHARSET_DEFAULT);
+            case WMFConstants.META_CHARSET_SHIFTJIS:
+                return new String(bstr, WMFConstants.CHARSET_SHIFTJIS);
+            case WMFConstants.META_CHARSET_HANGUL:
+                return new String(bstr, WMFConstants.CHARSET_HANGUL);
+            case WMFConstants.META_CHARSET_JOHAB:
+                return new String(bstr, WMFConstants.CHARSET_JOHAB);
+            case WMFConstants.META_CHARSET_GB2312:
+                return new String(bstr, WMFConstants.CHARSET_GB2312);
+            case WMFConstants.META_CHARSET_CHINESEBIG5:
+                return new String(bstr, WMFConstants.CHARSET_CHINESEBIG5);
+            case WMFConstants.META_CHARSET_GREEK:
+                return new String(bstr, WMFConstants.CHARSET_GREEK);
+            case WMFConstants.META_CHARSET_TURKISH:
+                return new String(bstr, WMFConstants.CHARSET_TURKISH);
+            case WMFConstants.META_CHARSET_VIETNAMESE:
+                return new String(bstr, WMFConstants.CHARSET_VIETNAMESE);
+            case WMFConstants.META_CHARSET_HEBREW:
+                return new String(bstr, WMFConstants.CHARSET_HEBREW);
+            case WMFConstants.META_CHARSET_ARABIC:
+                return new String(bstr, WMFConstants.CHARSET_ARABIC);
+            case WMFConstants.META_CHARSET_RUSSIAN:
+                return new String(bstr, WMFConstants.CHARSET_CYRILLIC);
+            case WMFConstants.META_CHARSET_THAI:
+                return new String(bstr, WMFConstants.CHARSET_THAI);
+            case WMFConstants.META_CHARSET_EASTEUROPE:
+                return new String(bstr, WMFConstants.CHARSET_EASTEUROPE);
+            case WMFConstants.META_CHARSET_OEM:
+                return new String(bstr, WMFConstants.CHARSET_OEM);
+            default:
+                // Fall through to use default.
+            }
         } catch (UnsupportedEncodingException e) {
-            str = new String(bstr);
+            // Fall through to use default.
         }
 
-        return str;
+        return new String(bstr);
     }
 
     /** Get the Horizontal Alignement for the Alignment property.
@@ -76,4 +103,3 @@ public class WMFUtilities {
         else return WMFConstants.TA_TOP;
     }
 }
-
