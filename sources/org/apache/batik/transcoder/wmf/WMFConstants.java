@@ -173,9 +173,37 @@ public interface WMFConstants
      */
     int META_CHARSET_SYMBOL = 2;
 
+    /** SHIFTJIS charset WMF ID.
+     */
+    int META_CHARSET_SHIFTJIS = 128;
+
+    /** HANGUL charset WMF ID.
+     */
+    int META_CHARSET_HANGUL = 129;
+
+    /** JOHAB charset WMF ID.
+     */
+    int META_CHARSET_JOHAB = 130;
+
+    /** GB2312 charset WMF ID.
+     */
+    int META_CHARSET_GB2312 = 134;
+
+    /** CHINESEBIG5 charset WMF ID.
+     */
+    int META_CHARSET_CHINESEBIG5 = 136;
+
     /** GREEK charset WMF ID.
      */
     int META_CHARSET_GREEK = 161;
+
+    /** TURKISH charset WMF ID.
+     */
+    int META_CHARSET_TURKISH = 162;
+
+    /** VIETNAMESE charset WMF ID.
+     */
+    int META_CHARSET_VIETNAMESE = 163;
 
     /** HEBREW charset WMF ID.
      */
@@ -189,6 +217,18 @@ public interface WMFConstants
      */
     int META_CHARSET_RUSSIAN = 204;
 
+    /** THAI charset WMF ID.
+     */
+    int META_CHARSET_THAI = 222;
+
+    /** EASTEUROPE charset WMF ID.
+     */
+    int META_CHARSET_EASTEUROPE = 238;
+
+    /** OEM charset WMF ID.
+     */
+    int META_CHARSET_OEM = 255;
+
     // new constants for charset names, useful for decoding and encoding text.
 
     /** ANSI charset Java name, ie "ISO-8859-1" charset.
@@ -199,9 +239,37 @@ public interface WMFConstants
      */
     String CHARSET_DEFAULT = "US-ASCII";
 
+    /** SHIFTJIS charset Java name, ie "Shift_JIS" charset.
+     */
+    String CHARSET_SHIFTJIS = "Shift_JIS";
+
+    /** HANGUL charset Java name, ie "cp949" charset.
+     */
+    String CHARSET_HANGUL = "cp949";
+
+    /** JOHAB charset Java name, ie "x-Johab" charset.
+     */
+    String CHARSET_JOHAB = "x-Johab";
+
+    /** GB2312 charset Java name, ie "GB2312" charset.
+     */
+    String CHARSET_GB2312 = "GB2312";
+
+    /** CHINESEBIG5 charset Java name, ie "Big5" charset.
+     */
+    String CHARSET_CHINESEBIG5 = "Big5";
+
     /** GREEK charset Java name, ie "windows-1253" charset.
      */
     String CHARSET_GREEK = "windows-1253";
+
+    /** TURKISH charset Java name, ie "cp1254" charset.
+     */
+    String CHARSET_TURKISH = "cp1254";
+
+    /** VIETNAMESE charset Java name, ie "windows-1253" charset.
+     */
+    String CHARSET_VIETNAMESE = "cp1258";
 
     /** CYRILLIC charset Java name, ie "windows-1251" charset.
      */
@@ -214,6 +282,18 @@ public interface WMFConstants
     /** ARABIC charset Java name, ie "windows-1256" charset.
      */
     String CHARSET_ARABIC = "windows-1256";
+
+    /** THAI charset Java name, ie "cp874" charset.
+     */
+    String CHARSET_THAI = "cp874";
+
+    /** EASTEUROPE charset Java name, ie "cp1250" charset.
+     */
+    String CHARSET_EASTEUROPE = "cp1250";
+
+    /** OEM charset Java name, ie "cp437" charset.
+     */
+    String CHARSET_OEM = "cp437";
 
     /** conversion from inches to Millimeters
      */

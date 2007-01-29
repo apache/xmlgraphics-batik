@@ -140,15 +140,18 @@ public abstract class AbstractImageIORegistryEntry
                     } catch (IOException ioe) {
                         // Something bad happened here...
                         filt = ImageTagRegistry.getBrokenLinkImage
-                            (this, errCode, errParam);
+                            (AbstractImageIORegistryEntry.this, 
+                             errCode, errParam);
                     } catch (ThreadDeath td) {
                         filt = ImageTagRegistry.getBrokenLinkImage
-                            (this, errCode, errParam);
+                            (AbstractImageIORegistryEntry.this, 
+                             errCode, errParam);
                         dr.setSource(filt);
                         throw td;
                     } catch (Throwable t) {
                         filt = ImageTagRegistry.getBrokenLinkImage
-                            (this, errCode, errParam);
+                            (AbstractImageIORegistryEntry.this, 
+                             errCode, errParam);
                     }
 
                     dr.setSource(filt);

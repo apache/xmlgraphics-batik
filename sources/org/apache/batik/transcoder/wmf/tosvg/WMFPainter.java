@@ -840,11 +840,64 @@ public class WMFPainter extends AbstractWMFPainter {
                         }
                     }
                     break;
+                case WMFConstants.META_DIBBITBLT: 
+                    {
+                        int rop = mr.ElementAt( 0 ).intValue();
+                        float height = (mr.ElementAt( 1 ).intValue() *
+                                        conv * currentStore.getVpWFactor());
+                        float width  = (mr.ElementAt( 2 ).intValue() *
+                                        conv * currentStore.getVpHFactor());
+                        int sy = mr.ElementAt( 3 ).intValue();
+                        int sx = mr.ElementAt( 4 ).intValue();
+                        float dy = (conv * currentStore.getVpWFactor() * 
+                                    (vpY + yOffset + 
+                                     (float)mr.ElementAt( 5 ).intValue()));
+                        float dx = (conv * currentStore.getVpHFactor() * 
+                                    (vpX + xOffset + 
+                                     (float)mr.ElementAt( 6 ).intValue()));
+                        if (mr instanceof MetaRecord.ByteRecord) {
+                            byte[] bitmap = ((MetaRecord.ByteRecord)mr).bstr;
+
+                            BufferedImage img = getImage(bitmap);
+                            if (img != null) {
+                                int withSrc = img.getWidth();
+                                int heightSrc = img.getHeight();
+                                if (opaque) {
+                                    g2d.drawImage(img, (int)dx, (int)dy, 
+                                                  (int)(dx + width),
+                                                  (int)(dy + height), 
+                                                  sx, sy, 
+                                                  sx + withSrc,
+                                                  sy + heightSrc, 
+                                                  bkgdColor, observer);
+                                } else {
+                                    //g2d.setComposite(AlphaComposite.SrcOver);
+                                    g2d.drawImage(img, (int)dx, (int)dy, 
+                                                  (int)(dx + width),
+                                                  (int)(dy + height), 
+                                                  sx, sy, 
+                                                  sx + withSrc,
+                                                  sy + heightSrc, observer);
+                                }
+                            }
+                        } else {
+                            if (opaque) {
+                                Color col = g2d.getColor();
+                                g2d.setColor(bkgdColor);
+                                g2d.fill(new Rectangle2D.Float(dx, dy, 
+                                                               width, height));
+                                g2d.setColor(col);
+                            }
+                            
+                        }
+                    }
+                 break;
             case WMFConstants.META_DIBCREATEPATTERNBRUSH:
                 {
                     int objIndex = 0;
                     byte[] bitmap = ((MetaRecord.ByteRecord)mr).bstr;
-                    objIndex = addObjectAt( currentStore, BRUSH, bitmap, objIndex );
+                    objIndex = addObjectAt( currentStore, BRUSH, 
+                                            bitmap, objIndex );
                 }
             break;
                 case WMFConstants.META_SETPIXEL:
@@ -857,7 +910,6 @@ public class WMFPainter extends AbstractWMFPainter {
                 case WMFConstants.META_PAINTREGION:
                 case WMFConstants.META_SETMAPPERFLAGS:
                 case WMFConstants.META_SETDIBTODEV:
-                case WMFConstants.META_DIBBITBLT:
                 case WMFConstants.META_STRETCHDIB:
                 default:
                     {

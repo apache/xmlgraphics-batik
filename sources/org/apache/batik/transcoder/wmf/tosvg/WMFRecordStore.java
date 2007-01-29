@@ -608,6 +608,41 @@ public class WMFRecordStore extends AbstractWMFReader {
                     records.add( mr );
                 }
                 break;
+            // UPDATED : META_DIBBITBLT added
+            case WMFConstants.META_DIBBITBLT:
+                {
+                    int mode = is.readInt() & 0xff;
+                    int sy = readShort( is );
+                    int sx = readShort( is );
+                    int hdc = readShort( is );
+                    int height = readShort( is );
+                    int width = readShort( is );
+                    int dy = readShort( is );
+                    int dx = readShort( is );
+                    
+                    int len = 2*recSize - 18;
+                    if (len > 0) {
+                        byte bitmap[] = new byte[len];
+                        for (int i = 0; i < len; i++) 
+                            bitmap[i] = is.readByte();
+                        mr = new MetaRecord.ByteRecord(bitmap);
+                        mr.numPoints = recSize;
+                        mr.functionId = functionId;
+                    } else {
+                        mr.numPoints = recSize;
+                        mr.functionId = functionId;
+                        for (int i = 0; i < len; i++) is.readByte();
+                    }
+
+                    mr.AddElement( new Integer( mode ));
+                    mr.AddElement( new Integer( height ));
+                    mr.AddElement( new Integer( width ));
+                    mr.AddElement( new Integer( sy ));
+                    mr.AddElement( new Integer( sx ));
+                    mr.AddElement( new Integer( dy ));
+                    mr.AddElement( new Integer( dx ));
+                    records.add( mr );
+                }
             // UPDATED : META_CREATEPATTERNBRUSH added
             case WMFConstants.META_DIBCREATEPATTERNBRUSH:
                 {

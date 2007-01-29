@@ -50,17 +50,10 @@ public class Messages {
         new LocalizableSupport(RESOURCES, Messages.class.getClassLoader());
 
     /**
-     * The resource manager to decode messages.
-     */
-    protected static ResourceManager resourceManager =
-        new ResourceManager(localizableSupport.getResourceBundle());
-
-    /**
      * Implements {@link org.apache.batik.i18n.Localizable#setLocale(Locale)}.
      */
     public static void setLocale(Locale l) {
         localizableSupport.setLocale(l);
-        resourceManager = new ResourceManager(localizableSupport.getResourceBundle());
     }
 
     /**
@@ -81,16 +74,16 @@ public class Messages {
 
     public static String getString(String key)
         throws MissingResourceException {
-        return resourceManager.getString(key);
+        return localizableSupport.getString(key);
     }
 
     public static int getInteger(String key)
         throws MissingResourceException {
-        return resourceManager.getInteger(key);
+        return localizableSupport.getInteger(key);
     }
 
     public static int getCharacter(String key)
         throws MissingResourceException {
-        return resourceManager.getCharacter(key);
+        return localizableSupport.getCharacter(key);
     }
 }

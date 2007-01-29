@@ -122,13 +122,13 @@ public class JDKRegistryEntry extends AbstractRegistryEntry
                         }
                     } catch (ThreadDeath td) {
                         filt = ImageTagRegistry.getBrokenLinkImage
-                            (this, errCode, errParam);
+                            (JDKRegistryEntry.this, errCode, errParam);
                         dr.setSource(filt);
                         throw td;
                     } catch (Throwable t) { }
                     if (filt == null)
                         filt = ImageTagRegistry.getBrokenLinkImage
-                            (this, errCode, errParam);
+                            (JDKRegistryEntry.this, errCode, errParam);
 
                     dr.setSource(filt);
                 }
