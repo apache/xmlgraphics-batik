@@ -60,7 +60,7 @@ public class DefaultConditionalSelector implements ConditionalSelector {
     /**
      * <b>SAC</b>: Implements {@link
      * org.w3c.css.sac.ConditionalSelector#getSimpleSelector()}.
-     */    
+     */
     public SimpleSelector getSimpleSelector() {
         return simpleSelector;
     }
@@ -68,7 +68,7 @@ public class DefaultConditionalSelector implements ConditionalSelector {
     /**
      * <b>SAC</b>: Implements {@link
      * org.w3c.css.sac.ConditionalSelector#getCondition()}.
-     */    
+     */
     public Condition getCondition() {
         return condition;
     }
@@ -77,6 +77,6 @@ public class DefaultConditionalSelector implements ConditionalSelector {
      * Returns a representation of the selector.
      */
     public String toString() {
-        return "" + simpleSelector + condition;
+        return String.valueOf( simpleSelector ) + condition;
     }
 }

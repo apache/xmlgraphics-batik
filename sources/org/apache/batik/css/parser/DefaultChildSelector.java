@@ -51,7 +51,7 @@ public class DefaultChildSelector extends AbstractDescendantSelector {
     public String toString() {
         SimpleSelector s = getSimpleSelector();
         if (s.getSelectorType() == SAC_PSEUDO_ELEMENT_SELECTOR) {
-            return "" + getAncestorSelector() + s;
+            return String.valueOf( getAncestorSelector() ) + s;
         }
         return getAncestorSelector() + " > " + s;
     }

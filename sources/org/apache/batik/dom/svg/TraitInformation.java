@@ -30,7 +30,7 @@ public class TraitInformation {
     // Constants for percentage interpretation.
     public static final short PERCENTAGE_FONT_SIZE       = AnimationTarget.PERCENTAGE_FONT_SIZE;
     public static final short PERCENTAGE_VIEWPORT_WIDTH  = AnimationTarget.PERCENTAGE_VIEWPORT_WIDTH;
-    public static final short PERCENTAGE_VIEWPORT_HEIGHT = AnimationTarget.PERCENTAGE_VIEWPORT_HEIGHT;;
+    public static final short PERCENTAGE_VIEWPORT_HEIGHT = AnimationTarget.PERCENTAGE_VIEWPORT_HEIGHT;
     public static final short PERCENTAGE_VIEWPORT_SIZE   = AnimationTarget.PERCENTAGE_VIEWPORT_SIZE;
 
     /**

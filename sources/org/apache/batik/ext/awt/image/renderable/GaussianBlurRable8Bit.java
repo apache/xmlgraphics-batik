@@ -109,7 +109,7 @@ public class GaussianBlurRable8Bit
     /**
      * Constant: 3*sqrt(2*PI)/4
      */
-    static final float DSQRT2PI = (float)(Math.sqrt(2*Math.PI)*3.0/4.0);
+    static final double DSQRT2PI = (Math.sqrt(2*Math.PI)*3.0/4.0);
 
     /**
      * Grow the source's bounds

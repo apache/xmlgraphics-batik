@@ -170,9 +170,7 @@ public class FragmentIdentifierParser extends NumberParser {
                 fragmentIdentifierHandler.idReference(id);
 
                 if (current != q) {
-                    reportError("character.expected",
-                                new Object[] { new Character(q),
-                                               new Integer(current) });
+                    reportCharacterExpectedError( q, current );
                     break ident;
                 }
                 current = reader.read();
@@ -1441,20 +1439,6 @@ public class FragmentIdentifierParser extends NumberParser {
                   break loop;
           }
       }
-    }
-
-    /**
-     * Convenience method to simplify error-reporting.
-     * We just wrap the data into a call to
-     * {@link #reportError(String,Object[])}.
-     *
-     * @param exp the expected character
-     * @param actual character from input
-     */
-    private void reportCharacterExpectedError( char exp, int actual ){
-        reportError("character.expected",
-                new Object[] { new Character( exp ),
-                               new Integer( actual ) });
     }
 
     /**

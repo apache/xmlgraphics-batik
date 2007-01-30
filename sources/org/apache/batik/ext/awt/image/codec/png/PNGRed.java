@@ -48,6 +48,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Collections;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 
@@ -279,7 +280,7 @@ public class PNGRed extends AbstractRed {
     private static final int POST_ADD_GRAY_TRANS_EXP =
         POST_ADD_GRAY_TRANS | POST_EXP_MASK;
 
-    private Vector streamVec = new Vector();
+    private List streamVec = new ArrayList();
     private DataInputStream dataStream;
 
     private int bytesPerPixel; // number of bytes per input pixel
@@ -749,7 +750,7 @@ public class PNGRed extends AbstractRed {
 
         // Parse prior IDAT chunks
         InputStream seqStream =
-            new SequenceInputStream(streamVec.elements());
+            new SequenceInputStream( Collections.enumeration( streamVec ));
         InputStream infStream =
             new InflaterInputStream(seqStream, new Inflater());
         dataStream = new DataInputStream(infStream);

@@ -316,25 +316,22 @@ public class SVGFont extends AbstractSVGConverter {
 
             missingGlyphElement.setAttributeNS(null, SVG_D_ATTRIBUTE,
                                     SVGPath.toSVGPathData(missingGlyphShape, generatorContext));
-            missingGlyphElement.setAttributeNS(null, SVG_HORIZ_ADV_X_ATTRIBUTE,
-                                               "" + gm.getAdvance());
+            missingGlyphElement.setAttributeNS(null, SVG_HORIZ_ADV_X_ATTRIBUTE, String.valueOf( gm.getAdvance() ) );
             fontDef.appendChild(missingGlyphElement);
 
             // set the font's default horizontal advance to be the same as
             // the missing glyph
-            fontDef.setAttributeNS(null, SVG_HORIZ_ADV_X_ATTRIBUTE,  "" + gm.getAdvance());
+            fontDef.setAttributeNS(null, SVG_HORIZ_ADV_X_ATTRIBUTE, String.valueOf( gm.getAdvance() ) );
 
             // set the ascent and descent attributes
             LineMetrics lm = commonSizeFont.getLineMetrics("By", localFRC);
-            fontFace.setAttributeNS(null, SVG_ASCENT_ATTRIBUTE, "" + lm.getAscent());
-            fontFace.setAttributeNS(null, SVG_DESCENT_ATTRIBUTE, "" + lm.getDescent());
+            fontFace.setAttributeNS(null, SVG_ASCENT_ATTRIBUTE,  String.valueOf( lm.getAscent() ) );
+            fontFace.setAttributeNS(null, SVG_DESCENT_ATTRIBUTE, String.valueOf( lm.getDescent() ) );
 
             //
             // Font ID
             //
-            fontDef.setAttributeNS(null, SVG_ID_ATTRIBUTE,
-                                   generatorContext.idGenerator.
-                                   generateID(ID_PREFIX_FONT));
+            fontDef.setAttributeNS(null, SVG_ID_ATTRIBUTE,  generatorContext.idGenerator.generateID(ID_PREFIX_FONT));
         }
 
         //
@@ -347,13 +344,13 @@ public class SVGFont extends AbstractSVGConverter {
         // are at the end, can stop when find a char that already has a glyph
         for (int i = textUsingFont.length()-1; i >= 0; i--) {
             char c = textUsingFont.charAt(i);
+            String searchStr = String.valueOf( c );
             boolean foundGlyph = false;
             NodeList fontChildren = fontDef.getChildNodes();
             for (int j = 0; j < fontChildren.getLength(); j++) {
                 if (fontChildren.item(j) instanceof Element) {
                     Element childElement = (Element)fontChildren.item(j);
-                    if (childElement.getAttributeNS(null,
-                            SVG_UNICODE_ATTRIBUTE).equals(""+c)) {
+                    if (childElement.getAttributeNS(null, SVG_UNICODE_ATTRIBUTE).equals( searchStr )) {
                         foundGlyph = true;
                         break;
                     }
@@ -377,10 +374,8 @@ public class SVGFont extends AbstractSVGConverter {
 
                 glyphElement.setAttributeNS(null, SVG_D_ATTRIBUTE,
                                             SVGPath.toSVGPathData(glyphShape, generatorContext));
-                glyphElement.setAttributeNS(null, SVG_HORIZ_ADV_X_ATTRIBUTE,
-                                            "" + gm.getAdvance());
-                glyphElement.setAttributeNS(null, SVG_UNICODE_ATTRIBUTE,
-                                            "" + c);
+                glyphElement.setAttributeNS(null, SVG_HORIZ_ADV_X_ATTRIBUTE, String.valueOf( gm.getAdvance() ) );
+                glyphElement.setAttributeNS(null, SVG_UNICODE_ATTRIBUTE,     String.valueOf( c ) );
 
                 fontDef.appendChild(glyphElement);
             } else {

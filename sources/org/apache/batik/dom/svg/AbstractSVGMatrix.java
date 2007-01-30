@@ -230,7 +230,7 @@ public abstract class AbstractSVGMatrix implements SVGMatrix {
      */
     public SVGMatrix rotate(float angle) {
         AffineTransform tr = (AffineTransform)getAffineTransform().clone();
-        tr.rotate(Math.PI * angle / 180);
+        tr.rotate( Math.toRadians( angle ) );
         return new SVGOMMatrix(tr);
     }
 
@@ -267,23 +267,20 @@ public abstract class AbstractSVGMatrix implements SVGMatrix {
     /**
      * Implements {@link SVGMatrix#skewX(float)}.
      */
-    public SVGMatrix skewX(float angle) {
+    public SVGMatrix skewX(float angleDeg) {
         AffineTransform tr = (AffineTransform)getAffineTransform().clone();
         tr.concatenate
-            (AffineTransform.getShearInstance(Math.tan(Math.PI * angle / 180),
-                                              0));
+            (AffineTransform.getShearInstance( Math.tan( Math.toRadians( angleDeg )), 0));
         return new SVGOMMatrix(tr);
     }
 
     /**
      * Implements {@link SVGMatrix#skewY(float)}.
      */
-    public SVGMatrix skewY(float angle) {
+    public SVGMatrix skewY(float angleDeg ) {
         AffineTransform tr = (AffineTransform)getAffineTransform().clone();
         tr.concatenate
-            (AffineTransform.getShearInstance(0,
-                                              Math.tan(Math.PI *
-                                                       angle / 180)));
+            (AffineTransform.getShearInstance(0,  Math.tan( Math.toRadians( angleDeg ) ) ));
         return new SVGOMMatrix(tr);
     }
 }

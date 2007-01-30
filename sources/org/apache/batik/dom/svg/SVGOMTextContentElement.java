@@ -123,7 +123,7 @@ public abstract class SVGOMTextContentElement
 
                 protected String getDefaultValue() {
                     usedDefault = true;
-                    return ""+getComputedTextLength();
+                    return String.valueOf( getComputedTextLength() );
                 }
 
                 public SVGLength getBaseVal() {

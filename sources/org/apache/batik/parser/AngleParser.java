@@ -27,7 +27,6 @@ import java.io.IOException;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-
 public class AngleParser extends NumberParser {
 
     /**
@@ -65,7 +64,7 @@ public class AngleParser extends NumberParser {
 
         current = reader.read();
         skipSpaces();
-        
+
         try {
             float f = parseFloat();
 
@@ -76,21 +75,17 @@ public class AngleParser extends NumberParser {
                 case 0xD: case 0xA: case 0x20: case 0x9:
                     break s;
                 }
-                
+
                 switch (current) {
                 case 'd':
                     current = reader.read();
                     if (current != 'e') {
-                        reportError("character.expected",
-                                    new Object[] { new Character('e'),
-                                                   new Integer(current) });
+                        reportCharacterExpectedError('e', current );
                         break;
                     }
                     current = reader.read();
                     if (current != 'g') {
-                        reportError("character.expected",
-                                    new Object[] { new Character('g'),
-                                                   new Integer(current) });
+                        reportCharacterExpectedError('g', current );
                         break;
                     }
                     angleHandler.deg();
@@ -99,23 +94,17 @@ public class AngleParser extends NumberParser {
                 case 'g':
                     current = reader.read();
                     if (current != 'r') {
-                        reportError("character.expected",
-                                    new Object[] { new Character('r'),
-                                                   new Integer(current) });
+                        reportCharacterExpectedError('r', current );
                         break;
                     }
                     current = reader.read();
                     if (current != 'a') {
-                        reportError("character.expected",
-                                    new Object[] { new Character('a'),
-                                                   new Integer(current) });
+                        reportCharacterExpectedError('a', current );
                         break;
                     }
                     current = reader.read();
                     if (current != 'd') {
-                        reportError("character.expected",
-                                    new Object[] { new Character('d'),
-                                                   new Integer(current) });
+                        reportCharacterExpectedError('d', current );
                         break;
                     }
                     angleHandler.grad();
@@ -124,16 +113,12 @@ public class AngleParser extends NumberParser {
                 case 'r':
                     current = reader.read();
                     if (current != 'a') {
-                        reportError("character.expected",
-                                    new Object[] { new Character('a'),
-                                                   new Integer(current) });
+                        reportCharacterExpectedError('a', current );
                         break;
                     }
                     current = reader.read();
                     if (current != 'd') {
-                        reportError("character.expected",
-                                    new Object[] { new Character('d'),
-                                                   new Integer(current) });
+                        reportCharacterExpectedError('d', current );
                         break;
                     }
                     angleHandler.rad();

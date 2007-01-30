@@ -573,10 +573,8 @@ public class SVGGraphics2D extends AbstractGraphics2D
     public Element getRoot(Element svgRoot) {
         svgRoot = domTreeManager.getRoot(svgRoot);
         if (svgCanvasSize != null){
-            svgRoot.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE,
-                                   "" + svgCanvasSize.width);
-            svgRoot.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE,
-                                   "" + svgCanvasSize.height);
+            svgRoot.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE,  String.valueOf( svgCanvasSize.width ) );
+            svgRoot.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE, String.valueOf( svgCanvasSize.height) );
         }
         return svgRoot;
     }

@@ -46,7 +46,6 @@ import java.io.InputStream;
  * @author      Chuck McManis
  * @version $Id$
  */
-
 public class Base64DecodeStream extends InputStream {
 
     InputStream src;
@@ -55,7 +54,8 @@ public class Base64DecodeStream extends InputStream {
         this.src = src;
     }
 
-    private static final byte pem_array[] = new byte[256];
+    private static final byte[] pem_array = new byte[256];
+
     static {
         for (int i=0; i<pem_array.length; i++)
             pem_array[i] = -1;
@@ -88,8 +88,8 @@ public class Base64DecodeStream extends InputStream {
         return 3-out_offset;
     }
 
-    byte decode_buffer[] = new byte[4];
-    byte out_buffer[] = new byte[3];
+    byte[] decode_buffer = new byte[4];
+    byte[] out_buffer = new byte[3];
     int  out_offset = 3;
     boolean EOF = false;
 

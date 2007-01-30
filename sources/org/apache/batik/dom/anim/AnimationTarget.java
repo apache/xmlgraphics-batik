@@ -32,10 +32,10 @@ import org.w3c.dom.svg.SVGLength;
 public interface AnimationTarget {
 
     // Constants for percentage interpretation.
-    public static final short PERCENTAGE_FONT_SIZE       = 0;
-    public static final short PERCENTAGE_VIEWPORT_WIDTH  = 1;
-    public static final short PERCENTAGE_VIEWPORT_HEIGHT = 2;
-    public static final short PERCENTAGE_VIEWPORT_SIZE   = 3;
+    short PERCENTAGE_FONT_SIZE       = 0;
+    short PERCENTAGE_VIEWPORT_WIDTH  = 1;
+    short PERCENTAGE_VIEWPORT_HEIGHT = 2;
+    short PERCENTAGE_VIEWPORT_SIZE   = 3;
 
     /**
      * Returns the element.

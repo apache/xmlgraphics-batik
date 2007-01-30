@@ -87,7 +87,7 @@ public class RunnableQueue implements Runnable {
      * The Runnable objects list, also used as synchronization point
      * for pushing/poping runables.
      */
-    protected final DoublyLinkedList list = new DoublyLinkedList();
+    private final DoublyLinkedList list = new DoublyLinkedList();
 
     /**
      * Count of preempt entries in queue, so preempt entries

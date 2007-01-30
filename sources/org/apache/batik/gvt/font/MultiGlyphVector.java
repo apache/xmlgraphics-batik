@@ -270,8 +270,7 @@ public class MultiGlyphVector implements GVTGlyphVector {
                     tmp = new float[len*2];
 
                 gv.getGlyphPositions(gi, len, tmp);
-                for (int j=0; j<len*2; j++)
-                    ret[i+j] = tmp[j];
+                System.arraycopy( tmp, 0, ret, i, len * 2 );
             }
             gi=0;
             gvIdx++;

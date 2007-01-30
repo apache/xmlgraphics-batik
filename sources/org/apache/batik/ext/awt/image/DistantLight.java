@@ -65,9 +65,9 @@ public class DistantLight extends AbstractLight {
         this.azimuth = azimuth;
         this.elevation = elevation;
 
-        Lx = Math.cos(Math.PI*azimuth/180.)*Math.cos(Math.PI*elevation/180.);
-        Ly = Math.sin(Math.PI*azimuth/180.)*Math.cos(Math.PI*elevation/180.);
-        Lz = Math.sin(Math.PI*elevation/180);
+        Lx = Math.cos( Math.toRadians( azimuth ) ) * Math.cos( Math.toRadians( elevation ) );
+        Ly = Math.sin( Math.toRadians( azimuth ) ) * Math.cos( Math.toRadians( elevation ) );
+        Lz = Math.sin( Math.toRadians( elevation ));
     }
 
     /**

@@ -24,6 +24,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Arrays;
 
 import org.apache.batik.anim.AnimationEngine;
 import org.apache.batik.anim.AnimationException;
@@ -776,9 +777,7 @@ public class SVGAnimationEngine extends AnimationEngine {
         public AnimationTickRunnable(RunnableQueue q) {
             this.q = q;
             // Initialize the past times to 100ms.
-            for (int i = 0; i < NUM_TIMES; i++) {
-                times[i] = 100;
-            }
+            Arrays.fill( times, 100 );
             sumTime = 100 * NUM_TIMES;
         }
 

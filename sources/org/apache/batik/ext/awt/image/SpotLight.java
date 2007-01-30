@@ -122,7 +122,7 @@ public class SpotLight extends AbstractLight {
         this.pointAtZ = pointAtZ;
         this.specularExponent = specularExponent;
         this.limitingConeAngle = limitingConeAngle;
-        this.limitingCos = Math.cos(limitingConeAngle*Math.PI/180.0);
+        this.limitingCos = Math.cos( Math.toRadians( limitingConeAngle ) );
 
         S[0] = pointAtX - lightX;
         S[1] = pointAtY - lightY;

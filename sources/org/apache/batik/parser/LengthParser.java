@@ -68,7 +68,7 @@ public class LengthParser extends AbstractParser {
 
         current = reader.read();
         skipSpaces();
-        
+
         parseLength();
 
         skipSpaces();
@@ -116,8 +116,8 @@ public class LengthParser extends AbstractParser {
             l: for (;;) {
                 current = reader.read();
                 switch (current) {
-                case '1': case '2': case '3': case '4': 
-                case '5': case '6': case '7': case '8': case '9': 
+                case '1': case '2': case '3': case '4':
+                case '5': case '6': case '7': case '8': case '9':
                     break l;
                 default:
                     break m1;
@@ -125,8 +125,8 @@ public class LengthParser extends AbstractParser {
                 }
             }
 
-        case '1': case '2': case '3': case '4': 
-        case '5': case '6': case '7': case '8': case '9': 
+        case '1': case '2': case '3': case '4':
+        case '5': case '6': case '7': case '8': case '9':
             mantRead = true;
             l: for (;;) {
                 if (mantDig < 9) {
@@ -139,12 +139,12 @@ public class LengthParser extends AbstractParser {
                 switch (current) {
                 default:
                     break l;
-                case '0': case '1': case '2': case '3': case '4': 
-                case '5': case '6': case '7': case '8': case '9': 
-                }                
+                case '0': case '1': case '2': case '3': case '4':
+                case '5': case '6': case '7': case '8': case '9':
+                }
             }
         }
-        
+
         if (current == '.') {
             current = reader.read();
             m2: switch (current) {
@@ -163,8 +163,8 @@ public class LengthParser extends AbstractParser {
                         current = reader.read();
                         expAdj--;
                         switch (current) {
-                        case '1': case '2': case '3': case '4': 
-                        case '5': case '6': case '7': case '8': case '9': 
+                        case '1': case '2': case '3': case '4':
+                        case '5': case '6': case '7': case '8': case '9':
                             break l;
                         default:
                             break m2;
@@ -172,8 +172,8 @@ public class LengthParser extends AbstractParser {
                         }
                     }
                 }
-            case '1': case '2': case '3': case '4': 
-            case '5': case '6': case '7': case '8': case '9': 
+            case '1': case '2': case '3': case '4':
+            case '5': case '6': case '7': case '8': case '9':
                 l: for (;;) {
                     if (mantDig < 9) {
                         mantDig++;
@@ -184,8 +184,8 @@ public class LengthParser extends AbstractParser {
                     switch (current) {
                     default:
                         break l;
-                    case '0': case '1': case '2': case '3': case '4': 
-                    case '5': case '6': case '7': case '8': case '9': 
+                    case '0': case '1': case '2': case '3': case '4':
+                    case '5': case '6': case '7': case '8': case '9':
                     }
                 }
             }
@@ -227,20 +227,20 @@ public class LengthParser extends AbstractParser {
                     reportError("character.unexpected",
                                 new Object[] { new Integer(current) });
                     return;
-                case '0': case '1': case '2': case '3': case '4': 
-                case '5': case '6': case '7': case '8': case '9': 
+                case '0': case '1': case '2': case '3': case '4':
+                case '5': case '6': case '7': case '8': case '9':
                 }
-            case '0': case '1': case '2': case '3': case '4': 
-            case '5': case '6': case '7': case '8': case '9': 
+            case '0': case '1': case '2': case '3': case '4':
+            case '5': case '6': case '7': case '8': case '9':
             }
-            
+
             en: switch (current) {
             case '0':
                 l: for (;;) {
                     current = reader.read();
                     switch (current) {
-                    case '1': case '2': case '3': case '4': 
-                    case '5': case '6': case '7': case '8': case '9': 
+                    case '1': case '2': case '3': case '4':
+                    case '5': case '6': case '7': case '8': case '9':
                         break l;
                     default:
                         break en;
@@ -248,8 +248,8 @@ public class LengthParser extends AbstractParser {
                     }
                 }
 
-            case '1': case '2': case '3': case '4': 
-            case '5': case '6': case '7': case '8': case '9': 
+            case '1': case '2': case '3': case '4':
+            case '5': case '6': case '7': case '8': case '9':
                 l: for (;;) {
                     if (expDig < 3) {
                         expDig++;
@@ -259,8 +259,8 @@ public class LengthParser extends AbstractParser {
                     switch (current) {
                     default:
                         break l;
-                    case '0': case '1': case '2': case '3': case '4': 
-                    case '5': case '6': case '7': case '8': case '9': 
+                    case '0': case '1': case '2': case '3': case '4':
+                    case '5': case '6': case '7': case '8': case '9':
                     }
                 }
             }
@@ -330,9 +330,7 @@ public class LengthParser extends AbstractParser {
         case 'i':
             current = reader.read();
             if (current != 'n') {
-                reportError("character.expected",
-                            new Object[] { new Character('n'),
-                                           new Integer(current) });
+                reportCharacterExpectedError( 'n',current );
                 break;
             }
             lengthHandler.in();
@@ -341,9 +339,7 @@ public class LengthParser extends AbstractParser {
         case 'c':
             current = reader.read();
             if (current != 'm') {
-                reportError("character.expected",
-                            new Object[] { new Character('m'),
-                                           new Integer(current) });
+                reportCharacterExpectedError( 'm',current );
                 break;
             }
             lengthHandler.cm();
@@ -352,9 +348,7 @@ public class LengthParser extends AbstractParser {
         case 'm':
             current = reader.read();
             if (current != 'm') {
-                reportError("character.expected",
-                            new Object[] { new Character('m'),
-                                           new Integer(current) });
+                reportCharacterExpectedError( 'm',current );
                 break;
             }
             lengthHandler.mm();

@@ -212,7 +212,7 @@ public class SVGFeColorMatrixElementBridge
         if (s.length() == 0)
             return 0; // default is 0
         try {
-            return (float)(SVGUtilities.convertSVGNumber(s)*Math.PI)/180f;
+            return (float) Math.toRadians( SVGUtilities.convertSVGNumber(s) );
         } catch (NumberFormatException ex) {
             throw new BridgeException
                 (ctx, filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,

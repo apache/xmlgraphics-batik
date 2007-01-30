@@ -93,15 +93,15 @@ public class SVGFeImageElementBridge
         // and it behaves like a <use> if it references a document
         // fragment.
         //
-        // To provide this behavior, depending on whether the uri 
-        // contains a fragment identifier, we create either an 
+        // To provide this behavior, depending on whether the uri
+        // contains a fragment identifier, we create either an
         // <image> or a <use> element and request the corresponding
         // bridges to build the corresponding GraphicsNode for us.
-        // 
-        // Then, we take care of the possible transformation needed 
+        //
+        // Then, we take care of the possible transformation needed
         // from objectBoundingBox space to user space.
         //
-        
+
         Document document = filterElement.getOwnerDocument();
         boolean isUse = uriStr.indexOf("#") != -1;
         Element contentElement = null;
@@ -113,8 +113,8 @@ public class SVGFeImageElementBridge
                                                       SVG_IMAGE_TAG);
         }
 
-        
-        contentElement.setAttributeNS(XLINK_NAMESPACE_URI, 
+
+        contentElement.setAttributeNS(XLINK_NAMESPACE_URI,
                                       XLINK_HREF_QNAME,
                                       uriStr);
 
@@ -132,22 +132,18 @@ public class SVGFeImageElementBridge
                                                       filteredNode,
                                                       defaultRegion,
                                                       ctx);
-        
+
         // System.err.println(">>>>>>>> primitiveRegion : " + primitiveRegion);
 
-        contentElement.setAttributeNS(null, SVG_X_ATTRIBUTE, 
-                                      "" + primitiveRegion.getX());
-        contentElement.setAttributeNS(null, SVG_Y_ATTRIBUTE, 
-                                      "" + primitiveRegion.getY());
-        contentElement.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE, 
-                                      "" + primitiveRegion.getWidth());
-        contentElement.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE, 
-                                      "" + primitiveRegion.getHeight());
-        
+        contentElement.setAttributeNS(null, SVG_X_ATTRIBUTE,      String.valueOf( primitiveRegion.getX() ) );
+        contentElement.setAttributeNS(null, SVG_Y_ATTRIBUTE,      String.valueOf( primitiveRegion.getY() ) );
+        contentElement.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE,  String.valueOf( primitiveRegion.getWidth() ) );
+        contentElement.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE, String.valueOf( primitiveRegion.getHeight() ) );
+
 
         GraphicsNode node = ctx.getGVTBuilder().build(ctx, proxyElement);
         Filter filter = node.getGraphicsNodeRable(true);
-        
+
         // 'primitiveUnits' attribute - default is userSpaceOnUse
         short coordSystemType;
         String s = SVGUtilities.getChainableAttributeNS
@@ -158,7 +154,7 @@ public class SVGFeImageElementBridge
             coordSystemType = SVGUtilities.parseCoordinateSystem
                 (filterDefElement, SVG_PRIMITIVE_UNITS_ATTRIBUTE, s, ctx);
         }
-        
+
         // Compute the transform from object bounding box to user
         // space if needed.
         AffineTransform at = new AffineTransform();
@@ -178,7 +174,7 @@ public class SVGFeImageElementBridge
                                                         defaultRegion,
                                                         filterRegion,
                                                         ctx);
-        filter = new PadRable8Bit(filter, primitiveRegionUserSpace, 
+        filter = new PadRable8Bit(filter, primitiveRegionUserSpace,
                                   PadMode.ZERO_PAD);
 
         // update the filter Map
@@ -230,18 +226,18 @@ public class SVGFeImageElementBridge
                 coordSystemType = SVGUtilities.parseCoordinateSystem
                     (filterDefElement, SVG_PRIMITIVE_UNITS_ATTRIBUTE, s, ctx);
             }
-            
+
             if (coordSystemType == SVGUtilities.OBJECT_BOUNDING_BOX) {
                 at = SVGUtilities.toObjectBBox(at, filteredNode);
             }
 
             Rectangle2D bounds = filteredNode.getGeometryBounds();
             at.preConcatenate(AffineTransform.getTranslateInstance
-                              (primitiveRegion.getX() - bounds.getX(), 
+                              (primitiveRegion.getX() - bounds.getX(),
                                primitiveRegion.getY() - bounds.getY()));
-            
+
         } else {
-            
+
             // Need to translate the image to the x, y coordinate to
             // have the same behavior as the <use> element
             at.translate(primitiveRegion.getX(), primitiveRegion.getY());

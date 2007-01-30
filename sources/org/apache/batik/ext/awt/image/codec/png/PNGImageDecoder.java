@@ -75,19 +75,19 @@ class PNGChunk {
     byte[] data;
     int crc;
 
-    String typeString;
+    final String typeString;
 
-    public PNGChunk(int length, int type, byte[] data, int crc) {
+    PNGChunk(int length, int type, byte[] data, int crc) {
         this.length = length;
         this.type = type;
         this.data = data;
         this.crc = crc;
 
-        typeString = "";
-        typeString += (char)(type >> 24);
-        typeString += (char)((type >> 16) & 0xff);
-        typeString += (char)((type >> 8) & 0xff);
-        typeString += (char)(type & 0xff);
+        typeString = ""
+                     + (char)((type >>> 24) & 0xff)
+                     + (char)((type >>> 16) & 0xff)
+                     + (char)((type >>>  8) & 0xff)
+                     + (char)((type       ) & 0xff);
     }
 
     public int getLength() {

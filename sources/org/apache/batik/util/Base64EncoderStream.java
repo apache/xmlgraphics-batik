@@ -38,7 +38,7 @@ import java.io.PrintStream;
 public class Base64EncoderStream extends OutputStream {
 
     /** This array maps the 6 bit values to their characters */
-    private static final byte pem_array[] = {
+    private static final byte[] pem_array = {
     //   0   1   2   3   4   5   6   7
         'A','B','C','D','E','F','G','H', // 0
         'I','J','K','L','M','N','O','P', // 1

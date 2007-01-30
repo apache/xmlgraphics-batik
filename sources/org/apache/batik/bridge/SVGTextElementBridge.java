@@ -1617,7 +1617,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                        TextAttribute.ORIENTATION_ANGLE);
             result.put(GVTAttributedCharacterIterator.
                        TextAttribute.VERTICAL_ORIENTATION_ANGLE,
-                       new Float(val.getFloatValue() * 180 / Math.PI));
+                       new Float( Math.toDegrees( val.getFloatValue() ) ));
             break;
         case CSSPrimitiveValue.CSS_GRAD:
             result.put(GVTAttributedCharacterIterator.
@@ -1647,7 +1647,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         case CSSPrimitiveValue.CSS_RAD:
             result.put(GVTAttributedCharacterIterator.
                        TextAttribute.HORIZONTAL_ORIENTATION_ANGLE,
-                       new Float(val.getFloatValue() * 180 / Math.PI));
+                       new Float( Math.toDegrees( val.getFloatValue() ) ));
             break;
         case CSSPrimitiveValue.CSS_GRAD:
             result.put(GVTAttributedCharacterIterator.
@@ -2502,7 +2502,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                     if ( sinTheta > 0 ) glyphAngle = Math.PI;
                     else                glyphAngle = -Math.PI;
                 } else {
-                    glyphAngle = Math.atan(sinTheta/cosTheta);
+                    glyphAngle = Math.atan(sinTheta/cosTheta);    // todo is this safe??
                     if ( cosTheta < 0 )
                         glyphAngle += Math.PI;
                 }

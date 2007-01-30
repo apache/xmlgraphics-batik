@@ -53,10 +53,8 @@ public class DefaultImageHandler
         //
         // First, set the image width and height
         //
-        imageElement.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE,
-                                    "" + image.getWidth(null));
-        imageElement.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE,
-                                    "" + image.getHeight(null));
+        imageElement.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE,  String.valueOf( image.getWidth( null ) ) );
+        imageElement.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE, String.valueOf( image.getHeight( null ) ) );
 
         //
         // Now, set the href
@@ -83,10 +81,8 @@ public class DefaultImageHandler
         //
         // First, set the image width and height
         //
-        imageElement.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE,
-                                    "" + image.getWidth());
-        imageElement.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE,
-                                    "" + image.getHeight());
+        imageElement.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE,  String.valueOf( image.getWidth() ) );
+        imageElement.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE, String.valueOf( image.getHeight() ) );
 
         //
         // Now, set the href
@@ -113,10 +109,8 @@ public class DefaultImageHandler
         //
         // First, set the image width and height
         //
-        imageElement.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE,
-                                    "" + image.getWidth());
-        imageElement.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE,
-                                    "" + image.getHeight());
+        imageElement.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE,  String.valueOf( image.getWidth() ) );
+        imageElement.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE, String.valueOf( image.getHeight() ) );
 
         //
         // Now, set the href

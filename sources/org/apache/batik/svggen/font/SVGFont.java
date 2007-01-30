@@ -378,7 +378,7 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
                         horiz_advance_x,
                         initialSubst, medialSubst, terminalSubst,
                         (32 <= i && i <= 127) ?
-                        encodeEntities("" + (char) i) :
+                        encodeEntities( String.valueOf( (char)i ) ) :
                         XML_CHAR_REF_PREFIX + Integer.toHexString(i) + XML_CHAR_REF_SUFFIX));
                 }
 
