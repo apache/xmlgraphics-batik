@@ -39,7 +39,7 @@ public class DefaultAndCondition extends AbstractCombinatorCondition {
     /**
      * <b>SAC</b>: Implements {@link
      * org.w3c.css.sac.Condition#getConditionType()}.
-     */    
+     */
     public short getConditionType() {
         return SAC_AND_CONDITION;
     }
@@ -48,6 +48,6 @@ public class DefaultAndCondition extends AbstractCombinatorCondition {
      * Returns a text representation of this object.
      */
     public String toString() {
-        return "" + getFirstCondition() + getSecondCondition();
+        return String.valueOf( getFirstCondition() ) + getSecondCondition();
     }
 }

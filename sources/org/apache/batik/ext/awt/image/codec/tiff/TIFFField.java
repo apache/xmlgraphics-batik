@@ -37,7 +37,7 @@ import java.io.Serializable;
  * @see TIFFDirectory
  * @version $Id$
  */
-public class TIFFField extends Object implements Comparable, Serializable {
+public class TIFFField implements Comparable, Serializable {
 
     /** Flag for 8 bit unsigned integers. */
     public static final int TIFF_BYTE      =  1;

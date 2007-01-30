@@ -318,7 +318,7 @@ public class CSSOMValue
         case CSSPrimitiveValue.CSS_DEG:
             return value.getFloatValue();
         case CSSPrimitiveValue.CSS_RAD:
-            return (float)(value.getFloatValue() * 180 / Math.PI);
+            return (float) Math.toDegrees( value.getFloatValue() );
         case CSSPrimitiveValue.CSS_GRAD:
             return (value.getFloatValue() * 9 / 5);
         default:
@@ -332,7 +332,7 @@ public class CSSOMValue
     protected static float toRadians(Value value) {
         switch (value.getPrimitiveType()) {
         case CSSPrimitiveValue.CSS_DEG:
-            return (value.getFloatValue() * 5 / 9);
+            return (value.getFloatValue() * 5 / 9);      // todo ??
         case CSSPrimitiveValue.CSS_RAD:
             return value.getFloatValue();
         case CSSPrimitiveValue.CSS_GRAD:
@@ -348,7 +348,7 @@ public class CSSOMValue
     protected static float toGradians(Value value) {
         switch (value.getPrimitiveType()) {
         case CSSPrimitiveValue.CSS_DEG:
-            return (float)(value.getFloatValue() * Math.PI / 180);
+            return (float)(value.getFloatValue() * Math.PI / 180);   // todo ????
         case CSSPrimitiveValue.CSS_RAD:
             return (float)(value.getFloatValue() * Math.PI / 100);
         case CSSPrimitiveValue.CSS_GRAD:

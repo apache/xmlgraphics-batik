@@ -408,7 +408,7 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
             chars  += ch + "  ";
             int w = ((Integer)aci.getAttribute(WORD_LIMIT)).intValue();
             if (w >=10)
-                brkStr += ""+w+" ";
+                brkStr += ""+w+" ";                            // todo tune stringhandling
             else
                 brkStr += ""+w+"  ";
         }

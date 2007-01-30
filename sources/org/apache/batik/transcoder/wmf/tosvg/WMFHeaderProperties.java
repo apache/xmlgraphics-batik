@@ -44,6 +44,9 @@ import org.apache.batik.transcoder.wmf.WMFConstants;
  * @version $Id$
  */
 public class WMFHeaderProperties extends AbstractWMFReader {
+
+    private static final Integer INTEGER_0 = new Integer( 0 );
+
     protected DataInputStream stream;
     private int _bleft, _bright, _btop, _bbottom, _bwidth, _bheight;
     private int _ileft, _iright, _itop, _ibottom;
@@ -339,14 +342,14 @@ public class WMFHeaderProperties extends AbstractWMFReader {
             case WMFConstants.META_CREATEREGION: {
                 int objIndex = 0;
                 for ( int j = 0; j < recSize; j++ ) readShort(is); // read all fields
-                objIndex = addObjectAt( PALETTE, new Integer( 0 ), 0 );
+                objIndex = addObjectAt( PALETTE, INTEGER_0, 0 );
                 }
                 break;
 
             case WMFConstants.META_CREATEPALETTE: {
                 int objIndex = 0;
                 for ( int j = 0; j < recSize; j++ ) readShort(is); // read all fields
-                objIndex = addObjectAt( OBJ_REGION, new Integer( 0 ), 0 );
+                objIndex = addObjectAt( OBJ_REGION, INTEGER_0, 0 );
                 }
                 break;
 

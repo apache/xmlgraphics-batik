@@ -887,8 +887,7 @@ public class RectListManager implements Collection {
             this.rects[i+len] = this.rects[i];
 
         // Put the new rects in.
-        for (int i=0; i<len; i++)
-            this.rects[i+dstPos] = rects[i+srcPos];
+        System.arraycopy( rects, srcPos, this.rects, dstPos, len );
 
         size += len;
     }

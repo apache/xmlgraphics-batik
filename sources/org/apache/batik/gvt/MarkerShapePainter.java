@@ -570,7 +570,7 @@ public class MarkerShapePainter implements ShapePainter {
     }
 
     /**
-     * Returns the rotation according to the specified parameters.
+     * Returns the rotation according to the specified parameters in degrees.
      */
     private double computeRotation(double[] prev, int prevSegType,
                                    double[] curr, int currSegType,
@@ -604,9 +604,9 @@ public class MarkerShapePainter implements ShapePainter {
         if (dx == 0 && dy == 0) {
             // The two vectors are exact opposites. There is no way to
             // know which direction to go (+90 or -90). Choose +90
-            return Math.atan2(inSlope[1], inSlope[0])*180./Math.PI + 90;
+            return Math.toDegrees( Math.atan2(inSlope[1], inSlope[0]) ) + 90;
         } else {
-            return Math.atan2(dy, dx)*180./Math.PI;
+            return Math.toDegrees( Math.atan2(dy, dx) );
         }
     }
 
@@ -802,7 +802,7 @@ public class MarkerShapePainter implements ShapePainter {
                       markerPosition.getY() - ref.getY());
 
         if (!Double.isNaN(rotation)) {
-            txf.rotate(rotation*Math.PI/180., ref.getX(), ref.getY());
+            txf.rotate( Math.toRadians( rotation ), ref.getX(), ref.getY());
         }
 
         return txf;

@@ -35,8 +35,8 @@ import org.w3c.dom.Element;
  * @author <a href="mailto:thomas.deweese@kodak.com">Thomas Deweese</a>
  * @version $Id$
  */
-public class BatikStarElementBridge 
-    extends SVGDecoratedShapeElementBridge  
+public class BatikStarElementBridge
+    extends SVGDecoratedShapeElementBridge
     implements BatikExtConstants {
 
     /**
@@ -117,11 +117,14 @@ public class BatikStarElementBridge
 
         // 'sides' attribute - default is 3
         int sides = convertSides(e, BATIK_EXT_SIDES_ATTRIBUTE, 3, ctx);
-        
+
         GeneralPath gp = new GeneralPath();
         double angle, x, y;
+        final double SECTOR = 2.0 * Math.PI/sides;
+        final double HALF_PI = Math.PI / 2.0;
+
         for (int i=0; i<sides; i++) {
-            angle    = (i)*(2*Math.PI/sides) - (Math.PI/2);
+            angle    = i * SECTOR - HALF_PI;
             x = cx + ir*Math.cos(angle);
             y = cy - ir*Math.sin(angle);
             if (i==0)
@@ -129,7 +132,7 @@ public class BatikStarElementBridge
             else
                 gp.lineTo((float)x, (float)y);
 
-            angle    = (i+0.5)*(2*Math.PI/sides) - (Math.PI/2);
+            angle    = (i+0.5) * SECTOR - HALF_PI;
             x = cx + r*Math.cos(angle);
             y = cy - r*Math.sin(angle);
             gp.lineTo((float)x, (float)y);
@@ -167,7 +170,7 @@ public class BatikStarElementBridge
                      new Object[] {attrName, s});
             }
 
-            if (ret <3) 
+            if (ret <3)
                 throw new BridgeException
                     (ctx, filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
                      new Object[] {attrName, s});

@@ -86,25 +86,19 @@ public class PreserveAspectRatioParser extends AbstractParser {
         case 'n':
             current = reader.read();
             if (current != 'o') {
-                reportError("character.expected",
-                            new Object[] { new Character('o'),
-                                           new Integer(current) });
+                reportCharacterExpectedError( 'o',current );
                 skipIdentifier();
                 break align;
             }
             current = reader.read();
             if (current != 'n') {
-                reportError("character.expected",
-                            new Object[] { new Character('n'),
-                                           new Integer(current) });
+                reportCharacterExpectedError( 'o',current );
                 skipIdentifier();
                 break align;
             }
             current = reader.read();
             if (current != 'e') {
-                reportError("character.expected",
-                            new Object[] { new Character('e'),
-                                           new Integer(current) });
+                reportCharacterExpectedError( 'e',current );
                 skipIdentifier();
                 break align;
             }
@@ -116,9 +110,7 @@ public class PreserveAspectRatioParser extends AbstractParser {
         case 'x':
             current = reader.read();
             if (current != 'M') {
-                reportError("character.expected",
-                            new Object[] { new Character('M'),
-                                           new Integer(current) });
+                reportCharacterExpectedError( 'M',current );
                 skipIdentifier();
                 break;
             }
@@ -127,25 +119,19 @@ public class PreserveAspectRatioParser extends AbstractParser {
             case 'a':
                 current = reader.read();
                 if (current != 'x') {
-                    reportError("character.expected",
-                                new Object[] { new Character('x'),
-                                               new Integer(current) });
+                    reportCharacterExpectedError( 'x',current );
                     skipIdentifier();
                     break align;
                 }
                 current = reader.read();
                 if (current != 'Y') {
-                    reportError("character.expected",
-                                new Object[] { new Character('Y'),
-                                               new Integer(current) });
+                    reportCharacterExpectedError( 'Y',current );
                     skipIdentifier();
                     break align;
                 }
                 current = reader.read();
                 if (current != 'M') {
-                    reportError("character.expected",
-                                new Object[] { new Character('M'),
-                                               new Integer(current) });
+                    reportCharacterExpectedError( 'M',current );
                     skipIdentifier();
                     break align;
                 }
@@ -154,9 +140,7 @@ public class PreserveAspectRatioParser extends AbstractParser {
                 case 'a':
                     current = reader.read();
                     if (current != 'x') {
-                        reportError("character.expected",
-                                    new Object[] { new Character('x'),
-                                                   new Integer(current) });
+                        reportCharacterExpectedError( 'x',current );
                         skipIdentifier();
                         break align;
                     }
@@ -188,17 +172,13 @@ public class PreserveAspectRatioParser extends AbstractParser {
                 case 'd':
                     current = reader.read();
                     if (current != 'Y') {
-                        reportError("character.expected",
-                                    new Object[] { new Character('Y'),
-                                                   new Integer(current) });
+                        reportCharacterExpectedError( 'Y',current );
                         skipIdentifier();
                         break align;
                     }
                     current = reader.read();
                     if (current != 'M') {
-                        reportError("character.expected",
-                                    new Object[] { new Character('M'),
-                                                   new Integer(current) });
+                        reportCharacterExpectedError( 'M',current );
                         skipIdentifier();
                         break align;
                     }
@@ -207,10 +187,7 @@ public class PreserveAspectRatioParser extends AbstractParser {
                     case 'a':
                         current = reader.read();
                         if (current != 'x') {
-                            reportError
-                                ("character.expected",
-                                 new Object[] { new Character('x'),
-                                                    new Integer(current) });
+                            reportCharacterExpectedError( 'x',current );
                             skipIdentifier();
                             break align;
                         }
@@ -239,17 +216,13 @@ public class PreserveAspectRatioParser extends AbstractParser {
                 case 'n':
                     current = reader.read();
                     if (current != 'Y') {
-                        reportError("character.expected",
-                                    new Object[] { new Character('Y'),
-                                                   new Integer(current) });
+                        reportCharacterExpectedError( 'Y',current );
                         skipIdentifier();
                         break align;
                     }
                     current = reader.read();
                     if (current != 'M') {
-                        reportError("character.expected",
-                                    new Object[] { new Character('M'),
-                                                   new Integer(current) });
+                        reportCharacterExpectedError( 'M',current );
                         skipIdentifier();
                         break align;
                     }
@@ -258,10 +231,7 @@ public class PreserveAspectRatioParser extends AbstractParser {
                     case 'a':
                         current = reader.read();
                         if (current != 'x') {
-                            reportError
-                                ("character.expected",
-                                 new Object[] { new Character('x'),
-                                                new Integer(current) });
+                            reportCharacterExpectedError( 'x',current );
                             skipIdentifier();
                             break align;
                         }
@@ -315,25 +285,19 @@ public class PreserveAspectRatioParser extends AbstractParser {
         case 'm':
             current = reader.read();
             if (current != 'e') {
-                reportError("character.expected",
-                            new Object[] { new Character('e'),
-                                           new Integer(current) });
+                reportCharacterExpectedError( 'e',current );
                 skipIdentifier();
                 break;
             }
             current = reader.read();
             if (current != 'e') {
-                reportError("character.expected",
-                            new Object[] { new Character('e'),
-                                           new Integer(current) });
+                reportCharacterExpectedError( 'e',current );
                 skipIdentifier();
                 break;
             }
             current = reader.read();
             if (current != 't') {
-                reportError("character.expected",
-                            new Object[] { new Character('t'),
-                                           new Integer(current) });
+                reportCharacterExpectedError( 't',current );
                 skipIdentifier();
                 break;
             }
@@ -343,33 +307,25 @@ public class PreserveAspectRatioParser extends AbstractParser {
         case 's':
             current = reader.read();
             if (current != 'l') {
-                reportError("character.expected",
-                            new Object[] { new Character('l'),
-                                           new Integer(current) });
+                reportCharacterExpectedError( 'l',current );
                 skipIdentifier();
                 break;
             }
             current = reader.read();
             if (current != 'i') {
-                reportError("character.expected",
-                            new Object[] { new Character('i'),
-                                           new Integer(current) });
+                reportCharacterExpectedError( 'i',current );
                 skipIdentifier();
                 break;
             }
             current = reader.read();
             if (current != 'c') {
-                reportError("character.expected",
-                            new Object[] { new Character('c'),
-                                           new Integer(current) });
+                reportCharacterExpectedError( 'c',current );
                 skipIdentifier();
                 break;
             }
             current = reader.read();
             if (current != 'e') {
-                reportError("character.expected",
-                            new Object[] { new Character('e'),
-                                           new Integer(current) });
+                reportCharacterExpectedError( 'e',current );
                 skipIdentifier();
                 break;
             }

@@ -1945,7 +1945,7 @@ public abstract class AbstractDocument
         /**
          * Map of parameter names to array indexes.
          */
-        protected HashMap booleanParamIndexes = new HashMap();
+        protected Map booleanParamIndexes = new HashMap();
         {
             for (int i = 0; i < booleanParamNames.length; i++) {
                 booleanParamIndexes.put(booleanParamNames[i], new Integer(i));

@@ -84,7 +84,7 @@ public class SVGFeGaussianBlurElementBridge
             throw new BridgeException(ctx, filterElement,
                                       ERR_ATTRIBUTE_VALUE_MALFORMED,
                                       new Object[] {SVG_STD_DEVIATION_ATTRIBUTE,
-                                                    "" + stdDeviationXY[0] + 
+                                                    String.valueOf( stdDeviationXY[ 0 ] ) + 
                                                     stdDeviationXY[1]});
         }
 

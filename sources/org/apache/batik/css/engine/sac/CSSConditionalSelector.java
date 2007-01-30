@@ -102,7 +102,7 @@ public class CSSConditionalSelector
     /**
      * <b>SAC</b>: Implements {@link
      * org.w3c.css.sac.ConditionalSelector#getSimpleSelector()}.
-     */    
+     */
     public SimpleSelector getSimpleSelector() {
         return simpleSelector;
     }
@@ -110,7 +110,7 @@ public class CSSConditionalSelector
     /**
      * <b>SAC</b>: Implements {@link
      * org.w3c.css.sac.ConditionalSelector#getCondition()}.
-     */    
+     */
     public Condition getCondition() {
         return condition;
     }
@@ -119,6 +119,6 @@ public class CSSConditionalSelector
      * Returns a representation of the selector.
      */
     public String toString() {
-        return "" + simpleSelector + condition;
+        return String.valueOf( simpleSelector ) + condition;
     }
 }

@@ -815,7 +815,7 @@ public abstract class AbstractNode
         }
         Node n = getFirstChild();
         Node m = other.getFirstChild();
-        while (n != null && m != null) {
+        if (n != null && m != null) {
             if (!((AbstractNode) n).isEqualNode(m)) {
                 return false;
             }

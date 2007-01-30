@@ -94,7 +94,7 @@ public class AWTTransformProducer implements TransformListHandler {
      */
     public void rotate(float theta) throws ParseException {
         affineTransform.concatenate
-            (AffineTransform.getRotateInstance(Math.PI * theta / 180));
+            (AffineTransform.getRotateInstance( Math.toRadians( theta ) ));
     }
 
     /**
@@ -102,7 +102,7 @@ public class AWTTransformProducer implements TransformListHandler {
      */
     public void rotate(float theta, float cx, float cy) throws ParseException {
         AffineTransform at
-            = AffineTransform.getRotateInstance(Math.PI * theta / 180, cx, cy);
+            = AffineTransform.getRotateInstance( Math.toRadians( theta ), cx, cy);
         affineTransform.concatenate(at);
     }
 
@@ -141,8 +141,7 @@ public class AWTTransformProducer implements TransformListHandler {
      */
     public void skewX(float skx) throws ParseException {
         affineTransform.concatenate
-            (AffineTransform.getShearInstance(Math.tan(Math.PI * skx / 180),
-                                              0));
+            (AffineTransform.getShearInstance(Math.tan( Math.toRadians( skx ) ), 0));
     }
 
     /**
@@ -150,8 +149,7 @@ public class AWTTransformProducer implements TransformListHandler {
      */
     public void skewY(float sky) throws ParseException {
         affineTransform.concatenate
-            (AffineTransform.getShearInstance(0,
-                                              Math.tan(Math.PI * sky / 180)));
+            (AffineTransform.getShearInstance(0, Math.tan( Math.toRadians( sky ) )));
     }
 
     /**

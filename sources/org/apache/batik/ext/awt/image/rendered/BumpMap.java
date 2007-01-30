@@ -66,7 +66,7 @@ public final class BumpMap {
     /**
      * @return surface scale used by this bump map.
      */
-    public final double getSurfaceScale(){
+    public double getSurfaceScale(){
         return surfaceScale;
     }
 
@@ -74,7 +74,7 @@ public final class BumpMap {
      * @param x x-axis coordinate for which the normal is computed
      * @param y y-axis coordinate for which the normal is computed
      */
-    public final double[][][] getNormalArray
+    public double[][][] getNormalArray
         (final int x, final int y,
          final int w, final int h)
     {

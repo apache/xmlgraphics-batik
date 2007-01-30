@@ -281,12 +281,15 @@ public class JAffineTransformChooser extends JGridBagPanel{
 
         double[] m = new double[6];
 
-        m[0] = sx*Math.cos(theta);
-        m[1] = sx*Math.sin(theta);
-        m[2] = -sy*Math.sin(theta);
-        m[3] = sy*Math.cos(theta);
-        m[4] = tx + rx - rx*Math.cos(theta) + ry*Math.sin(theta);
-        m[5] = ty + ry - rx*Math.sin(theta) - ry*Math.cos(theta);
+        final double SIN_THETA = Math.sin( theta );
+        final double COS_THETA = Math.cos( theta );
+
+        m[0] =  sx * COS_THETA;
+        m[1] =  sx * SIN_THETA;
+        m[2] = -sy * SIN_THETA;
+        m[3] =  sy * COS_THETA;
+        m[4] =  tx + rx - rx * COS_THETA + ry * SIN_THETA;
+        m[5] =  ty + ry - rx * SIN_THETA - ry * COS_THETA;
 
         txf = new AffineTransform(m);
 

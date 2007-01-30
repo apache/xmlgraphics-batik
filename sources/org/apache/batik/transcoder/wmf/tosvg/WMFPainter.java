@@ -66,6 +66,8 @@ public class WMFPainter extends AbstractWMFPainter {
      */
     private static final int INPUT_BUFFER_SIZE = 30720;
 
+    private static final Integer INTEGER_0 = new Integer( 0 );
+
     private float scale, scaleX, scaleY, conv;
     private float xOffset, yOffset;
     private float vpX, vpY, vpW, vpH;
@@ -302,12 +304,12 @@ public class WMFPainter extends AbstractWMFPainter {
                 case WMFConstants.META_CREATEBITMAPINDIRECT:
                 case WMFConstants.META_CREATEBITMAP:
                 case WMFConstants.META_CREATEREGION: {
-                    int objIndex = addObjectAt( currentStore, PALETTE, new Integer( 0 ), 0 );
+                    int objIndex = addObjectAt( currentStore, PALETTE, INTEGER_0, 0 );
                     }
                     break;
 
                 case WMFConstants.META_CREATEPALETTE: {
-                    int objIndex = addObjectAt( currentStore, OBJ_REGION, new Integer( 0 ), 0 );
+                    int objIndex = addObjectAt( currentStore, OBJ_REGION, INTEGER_0, 0 );
                     }
                     break;
 
@@ -624,8 +626,8 @@ public class WMFPainter extends AbstractWMFPainter {
 
                         double cx = left + (right - left)/2;
                         double cy = top + (bottom - top)/2;
-                        double startAngle = -(double)(180d/Math.PI * Math.atan2(ystart - cy, xstart - cx));
-                        double endAngle   = -(double)(180d/Math.PI * Math.atan2(yend - cy, xend - cx));
+                        double startAngle = - Math.toDegrees( Math.atan2(ystart - cy, xstart - cx) );
+                        double endAngle   = - Math.toDegrees( Math.atan2(yend - cy, xend - cx) );
 
                         double extentAngle = endAngle - startAngle;
                         if (extentAngle < 0) extentAngle += 360;
@@ -656,8 +658,8 @@ public class WMFPainter extends AbstractWMFPainter {
 
                         double cx = left + (right - left)/2;
                         double cy = top + (bottom - top)/2;
-                        double startAngle = -(double)(180d/Math.PI * Math.atan2(ystart - cy, xstart - cx));
-                        double endAngle   = -(double)(180d/Math.PI * Math.atan2(yend - cy, xend - cx));
+                        double startAngle = - Math.toDegrees( Math.atan2(ystart - cy, xstart - cx) );
+                        double endAngle   = - Math.toDegrees( Math.atan2(yend - cy, xend - cx) );
 
                         double extentAngle = endAngle - startAngle;
                         if (extentAngle < 0) extentAngle += 360;
@@ -840,7 +842,7 @@ public class WMFPainter extends AbstractWMFPainter {
                         }
                     }
                     break;
-                case WMFConstants.META_DIBBITBLT: 
+                case WMFConstants.META_DIBBITBLT:
                     {
                         int rop = mr.ElementAt( 0 ).intValue();
                         float height = (mr.ElementAt( 1 ).intValue() *
@@ -849,11 +851,11 @@ public class WMFPainter extends AbstractWMFPainter {
                                         conv * currentStore.getVpHFactor());
                         int sy = mr.ElementAt( 3 ).intValue();
                         int sx = mr.ElementAt( 4 ).intValue();
-                        float dy = (conv * currentStore.getVpWFactor() * 
-                                    (vpY + yOffset + 
+                        float dy = (conv * currentStore.getVpWFactor() *
+                                    (vpY + yOffset +
                                      (float)mr.ElementAt( 5 ).intValue()));
-                        float dx = (conv * currentStore.getVpHFactor() * 
-                                    (vpX + xOffset + 
+                        float dx = (conv * currentStore.getVpHFactor() *
+                                    (vpX + xOffset +
                                      (float)mr.ElementAt( 6 ).intValue()));
                         if (mr instanceof MetaRecord.ByteRecord) {
                             byte[] bitmap = ((MetaRecord.ByteRecord)mr).bstr;
@@ -863,19 +865,19 @@ public class WMFPainter extends AbstractWMFPainter {
                                 int withSrc = img.getWidth();
                                 int heightSrc = img.getHeight();
                                 if (opaque) {
-                                    g2d.drawImage(img, (int)dx, (int)dy, 
+                                    g2d.drawImage(img, (int)dx, (int)dy,
                                                   (int)(dx + width),
-                                                  (int)(dy + height), 
-                                                  sx, sy, 
+                                                  (int)(dy + height),
+                                                  sx, sy,
                                                   sx + withSrc,
-                                                  sy + heightSrc, 
+                                                  sy + heightSrc,
                                                   bkgdColor, observer);
                                 } else {
                                     //g2d.setComposite(AlphaComposite.SrcOver);
-                                    g2d.drawImage(img, (int)dx, (int)dy, 
+                                    g2d.drawImage(img, (int)dx, (int)dy,
                                                   (int)(dx + width),
-                                                  (int)(dy + height), 
-                                                  sx, sy, 
+                                                  (int)(dy + height),
+                                                  sx, sy,
                                                   sx + withSrc,
                                                   sy + heightSrc, observer);
                                 }
@@ -884,11 +886,11 @@ public class WMFPainter extends AbstractWMFPainter {
                             if (opaque) {
                                 Color col = g2d.getColor();
                                 g2d.setColor(bkgdColor);
-                                g2d.fill(new Rectangle2D.Float(dx, dy, 
+                                g2d.fill(new Rectangle2D.Float(dx, dy,
                                                                width, height));
                                 g2d.setColor(col);
                             }
-                            
+
                         }
                     }
                  break;
@@ -896,7 +898,7 @@ public class WMFPainter extends AbstractWMFPainter {
                 {
                     int objIndex = 0;
                     byte[] bitmap = ((MetaRecord.ByteRecord)mr).bstr;
-                    objIndex = addObjectAt( currentStore, BRUSH, 
+                    objIndex = addObjectAt( currentStore, BRUSH,
                                             bitmap, objIndex );
                 }
             break;

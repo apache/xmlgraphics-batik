@@ -30,6 +30,7 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.awt.geom.Line2D;
 import java.text.AttributedCharacterIterator;
 import java.text.CharacterIterator;
 import java.util.HashSet;
@@ -656,7 +657,8 @@ public class GlyphLayout implements TextSpanLayout {
         return shape;
     }
 
-    public static final float eps = 0.00001f;
+    public static final double eps = 0.00001;
+
     public static boolean epsEQ(double a, double b) {
         return ((a+eps > b) && (a-eps < b));
     }
@@ -1002,7 +1004,7 @@ public class GlyphLayout implements TextSpanLayout {
         Rectangle2D logicalBounds = gv.getLogicalBounds();
 
         return overlineStroke.createStrokedShape(
-                           new java.awt.geom.Line2D.Double(
+                           new Line2D.Double(
                            logicalBounds.getMinX() + overlineThickness/2.0, offset.getY()+y,
                            logicalBounds.getMaxX() - overlineThickness/2.0, offset.getY()+y));
     }
@@ -1031,7 +1033,7 @@ public class GlyphLayout implements TextSpanLayout {
         Rectangle2D logicalBounds = gv.getLogicalBounds();
 
         return underlineStroke.createStrokedShape(
-                           new java.awt.geom.Line2D.Double(
+                           new Line2D.Double(
                            logicalBounds.getMinX() + underlineThickness/2.0, offset.getY()+y,
                            logicalBounds.getMaxX() - underlineThickness/2.0, offset.getY()+y));
     }
@@ -1054,7 +1056,7 @@ public class GlyphLayout implements TextSpanLayout {
 
         Rectangle2D logicalBounds = gv.getLogicalBounds();
         return strikethroughStroke.createStrokedShape(
-                           new java.awt.geom.Line2D.Double(
+                           new Line2D.Double(
                            logicalBounds.getMinX() + strikethroughThickness/2.0, offset.getY()+y,
                            logicalBounds.getMaxX() - strikethroughThickness/2.0, offset.getY()+y));
     }

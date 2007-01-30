@@ -50,7 +50,7 @@ import org.apache.batik.ext.awt.image.codec.util.SeekableStream;
  * @see TIFFField
  * @version $Id$
  */
-public class TIFFDirectory extends Object implements Serializable {
+public class TIFFDirectory implements Serializable {
 
     /** A boolean storing the endianness of the stream. */
     boolean isBigEndian;

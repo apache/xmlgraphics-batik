@@ -189,8 +189,8 @@ public class WMFTranscoder extends ToSVGAbstractTranscoder {
         Element svgRoot = svgGenerator.getRoot();
 
         svgRoot.setAttributeNS(null, SVG_VIEW_BOX_ATTRIBUTE,
-                               "" + vpX + " " + vpY + " " +
-                               vpW + " " + vpH );
+                                String.valueOf( vpX ) + ' ' + vpY + ' ' +
+                               vpW + ' ' + vpH );
 
         // Now, write the SVG content to the output
         writeSVGToOutput(svgGenerator, svgRoot, output);
@@ -204,7 +204,7 @@ public class WMFTranscoder extends ToSVGAbstractTranscoder {
         throws TranscoderException {
         // Cannot deal with null input
         if (input == null){
-            handler.fatalError(new TranscoderException("" + ERROR_NULL_INPUT));
+            handler.fatalError(new TranscoderException( String.valueOf( ERROR_NULL_INPUT ) ));
         }
 
         // Can deal with InputStream
@@ -227,7 +227,7 @@ public class WMFTranscoder extends ToSVGAbstractTranscoder {
             }
         }
 
-        handler.fatalError(new TranscoderException("" + ERROR_INCOMPATIBLE_INPUT_TYPE));
+        handler.fatalError(new TranscoderException( String.valueOf( ERROR_INCOMPATIBLE_INPUT_TYPE ) ));
         return null;
     }
 

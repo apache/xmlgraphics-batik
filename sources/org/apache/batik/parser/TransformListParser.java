@@ -132,50 +132,38 @@ public class TransformListParser extends NumberParser {
 
         // Parse 'atrix wsp? ( wsp?'
         if (current != 'a') {
-            reportError("character.expected",
-                        new Object[] { new Character('a'),
-                                       new Integer(current) });
+            reportCharacterExpectedError('a', current );
             skipTransform();
             return;
         }
         current = reader.read();
         if (current != 't') {
-            reportError("character.expected",
-                        new Object[] { new Character('t'),
-                                       new Integer(current) });
+            reportCharacterExpectedError('t', current );
             skipTransform();
             return;
         }
         current = reader.read();
         if (current != 'r') {
-            reportError("character.expected",
-                        new Object[] { new Character('r'),
-                                       new Integer(current) });
+            reportCharacterExpectedError('r', current );
             skipTransform();
             return;
         }
         current = reader.read();
         if (current != 'i') {
-            reportError("character.expected",
-                        new Object[] { new Character('i'),
-                                       new Integer(current) });
+            reportCharacterExpectedError('i', current );
             skipTransform();
             return;
         }
         current = reader.read();
         if (current != 'x') {
-            reportError("character.expected",
-                        new Object[] { new Character('x'),
-                                       new Integer(current) });
+            reportCharacterExpectedError('x', current );
             skipTransform();
             return;
         }
         current = reader.read();
         skipSpaces();
         if (current != '(') {
-            reportError("character.expected",
-                        new Object[] { new Character('('),
-                                       new Integer(current) });
+            reportCharacterExpectedError('(', current );
             skipTransform();
             return;
         }
@@ -193,12 +181,10 @@ public class TransformListParser extends NumberParser {
         float e = parseFloat();
         skipCommaSpaces();
         float f = parseFloat();
-        
+
         skipSpaces();
         if (current != ')') {
-            reportError("character.expected",
-                        new Object[] { new Character(')'),
-                                       new Integer(current) });
+            reportCharacterExpectedError(')', current );
             skipTransform();
             return;
         }
@@ -214,41 +200,31 @@ public class TransformListParser extends NumberParser {
 
         // Parse 'otate wsp? ( wsp?'
         if (current != 'o') {
-            reportError("character.expected",
-                        new Object[] { new Character('o'),
-                                       new Integer(current) });
+            reportCharacterExpectedError('o', current );
             skipTransform();
             return;
         }
         current = reader.read();
         if (current != 't') {
-            reportError("character.expected",
-                        new Object[] { new Character('t'),
-                                       new Integer(current) });
+            reportCharacterExpectedError('t', current );
             skipTransform();
             return;
         }
         current = reader.read();
         if (current != 'a') {
-            reportError("character.expected",
-                        new Object[] { new Character('a'),
-                                       new Integer(current) });
+            reportCharacterExpectedError('a', current );
             skipTransform();
             return;
         }
         current = reader.read();
         if (current != 't') {
-            reportError("character.expected",
-                        new Object[] { new Character('t'),
-                                       new Integer(current) });
+            reportCharacterExpectedError('t', current );
             skipTransform();
             return;
         }
         current = reader.read();
         if (current != 'e') {
-            reportError("character.expected",
-                        new Object[] { new Character('e'),
-                                       new Integer(current) });
+            reportCharacterExpectedError('e', current );
             skipTransform();
             return;
         }
@@ -256,9 +232,7 @@ public class TransformListParser extends NumberParser {
         skipSpaces();
 
         if (current != '(') {
-            reportError("character.expected",
-                        new Object[] { new Character('('),
-                                       new Integer(current) });
+            reportCharacterExpectedError('(', current );
             skipTransform();
             return;
         }
@@ -267,7 +241,7 @@ public class TransformListParser extends NumberParser {
 
         float theta = parseFloat();
         skipSpaces();
-        
+
         switch (current) {
         case ')':
             transformListHandler.rotate(theta);
@@ -276,16 +250,14 @@ public class TransformListParser extends NumberParser {
             current = reader.read();
             skipSpaces();
         }
-        
+
         float cx = parseFloat();
         skipCommaSpaces();
         float cy = parseFloat();
-        
+
         skipSpaces();
         if (current != ')') {
-            reportError("character.expected",
-                        new Object[] { new Character(')'),
-                                       new Integer(current) });
+            reportCharacterExpectedError(')', current );
             skipTransform();
             return;
         }
@@ -302,74 +274,56 @@ public class TransformListParser extends NumberParser {
 
         // Parse 'ranslate wsp? ( wsp?'
         if (current != 'r') {
-            reportError("character.expected",
-                        new Object[] { new Character('r'),
-                                       new Integer(current) });
+            reportCharacterExpectedError('r', current );
             skipTransform();
             return;
         }
         current = reader.read();
         if (current != 'a') {
-            reportError("character.expected",
-                        new Object[] { new Character('a'),
-                                       new Integer(current) });
+            reportCharacterExpectedError('a', current );
             skipTransform();
             return;
         }
         current = reader.read();
         if (current != 'n') {
-            reportError("character.expected",
-                        new Object[] { new Character('n'),
-                                       new Integer(current) });
+            reportCharacterExpectedError('n', current );
             skipTransform();
             return;
         }
         current = reader.read();
         if (current != 's') {
-            reportError("character.expected",
-                        new Object[] { new Character('s'),
-                                       new Integer(current) });
+            reportCharacterExpectedError('s', current );
             skipTransform();
             return;
         }
         current = reader.read();
         if (current != 'l') {
-            reportError("character.expected",
-                        new Object[] { new Character('l'),
-                                       new Integer(current) });
+            reportCharacterExpectedError('l', current );
             skipTransform();
             return;
         }
         current = reader.read();
         if (current != 'a') {
-            reportError("character.expected",
-                        new Object[] { new Character('a'),
-                                       new Integer(current) });
+            reportCharacterExpectedError('a', current );
             skipTransform();
             return;
         }
         current = reader.read();
         if (current != 't') {
-            reportError("character.expected",
-                        new Object[] { new Character('t'),
-                                       new Integer(current) });
+            reportCharacterExpectedError('t', current );
             skipTransform();
             return;
         }
         current = reader.read();
         if (current != 'e') {
-            reportError("character.expected",
-                        new Object[] { new Character('e'),
-                                       new Integer(current) });
+            reportCharacterExpectedError('e', current );
             skipTransform();
             return;
         }
         current = reader.read();
         skipSpaces();
         if (current != '(') {
-            reportError("character.expected",
-                        new Object[] { new Character('('),
-                                       new Integer(current) });
+            reportCharacterExpectedError('(', current );
             skipTransform();
             return;
         }
@@ -392,9 +346,7 @@ public class TransformListParser extends NumberParser {
 
         skipSpaces();
         if (current != ')') {
-            reportError("character.expected",
-                        new Object[] { new Character(')'),
-                                       new Integer(current) });
+            reportCharacterExpectedError(')', current );
             skipTransform();
             return;
         }
@@ -410,34 +362,26 @@ public class TransformListParser extends NumberParser {
 
         // Parse 'ale wsp? ( wsp?'
         if (current != 'a') {
-            reportError("character.expected",
-                        new Object[] { new Character('a'),
-                                       new Integer(current) });
+            reportCharacterExpectedError('a', current );
             skipTransform();
             return;
         }
         current = reader.read();
         if (current != 'l') {
-            reportError("character.expected",
-                        new Object[] { new Character('l'),
-                                       new Integer(current) });
+            reportCharacterExpectedError('l', current );
             skipTransform();
             return;
         }
         current = reader.read();
         if (current != 'e') {
-            reportError("character.expected",
-                        new Object[] { new Character('e'),
-                                       new Integer(current) });
+            reportCharacterExpectedError('e', current );
             skipTransform();
             return;
         }
         current = reader.read();
         skipSpaces();
         if (current != '(') {
-            reportError("character.expected",
-                        new Object[] { new Character('('),
-                                       new Integer(current) });
+            reportCharacterExpectedError('(', current );
             skipTransform();
             return;
         }
@@ -460,13 +404,11 @@ public class TransformListParser extends NumberParser {
 
         skipSpaces();
         if (current != ')') {
-            reportError("character.expected",
-                        new Object[] { new Character(')'),
-                                       new Integer(current) });
+            reportCharacterExpectedError(')', current );
             skipTransform();
             return;
         }
-        
+
         transformListHandler.scale(sx, sy);
     }
 
@@ -478,17 +420,13 @@ public class TransformListParser extends NumberParser {
 
         // Parse 'ew[XY] wsp? ( wsp?'
         if (current != 'e') {
-            reportError("character.expected",
-                        new Object[] { new Character('e'),
-                                       new Integer(current) });
+            reportCharacterExpectedError('e', current );
             skipTransform();
             return;
         }
         current = reader.read();
         if (current != 'w') {
-            reportError("character.expected",
-                        new Object[] { new Character('w'),
-                                       new Integer(current) });
+            reportCharacterExpectedError('w', current );
             skipTransform();
             return;
         }
@@ -501,18 +439,14 @@ public class TransformListParser extends NumberParser {
         case 'Y':
             break;
         default:
-            reportError("character.expected",
-                        new Object[] { new Character('X'),
-                                       new Integer(current) });
+            reportCharacterExpectedError('X', current );
             skipTransform();
             return;
         }
         current = reader.read();
         skipSpaces();
         if (current != '(') {
-            reportError("character.expected",
-                        new Object[] { new Character('('),
-                                       new Integer(current) });
+            reportCharacterExpectedError('(', current );
             skipTransform();
             return;
         }
@@ -523,13 +457,11 @@ public class TransformListParser extends NumberParser {
 
         skipSpaces();
         if (current != ')') {
-            reportError("character.expected",
-                        new Object[] { new Character(')'),
-                                       new Integer(current) });
+            reportCharacterExpectedError(')', current );
             skipTransform();
             return;
         }
-        
+
         if (skewX) {
             transformListHandler.skewX(sk);
         } else {

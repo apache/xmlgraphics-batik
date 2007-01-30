@@ -55,7 +55,7 @@ public class ParsedURLData {
      * GZIP header magic number bytes, like found in a gzipped
      * files, which are encoded in Intel format (i&#x2e;e&#x2e; little indian).
      */
-    public static final byte GZIP_MAGIC[] = {(byte)0x1f, (byte)0x8b};
+    public static final byte[] GZIP_MAGIC = {(byte)0x1f, (byte)0x8b};
 
     /**
      * This is a utility function others can call that checks if
@@ -69,7 +69,7 @@ public class ParsedURLData {
 
             if (!is.markSupported())
                 is = new BufferedInputStream(is);
-            byte data[] = new byte[2];
+            byte[] data = new byte[2];
             try {
                 is.mark(2);
                 is.read(data);

@@ -30,9 +30,9 @@ import org.apache.batik.util.Service;
  */
 public class ImageWriterRegistry {
 
-    private static ImageWriterRegistry instance;
+    private static volatile ImageWriterRegistry instance;
 
-    private volatile Map imageWriterMap = new HashMap();
+    private final Map imageWriterMap = new HashMap();
 
     private ImageWriterRegistry() {
         setup();
@@ -62,6 +62,11 @@ public class ImageWriterRegistry {
         imageWriterMap.put(writer.getMIMEType(), writer);
     }
 
+    /**
+     * get the ImageWriter registered for mime, or null.
+     * @param mime used for lookup
+     * @return the registered ImageWriter (maybe null)
+     */
     public ImageWriter getWriterFor(String mime) {
         return (ImageWriter)imageWriterMap.get(mime);
     }

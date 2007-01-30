@@ -240,8 +240,7 @@ public class SVGLookupOp extends AbstractSVGFilterConverter {
                 // Fill in string buffers
                 for(int j=0; j<nComponents; j++){
                     // lookupTableBuf[j].append(Integer.toString(i));
-                    lookupTableBuf[j].append(doubleString(i/255.));
-                    lookupTableBuf[j].append(SPACE);
+                    lookupTableBuf[j].append(doubleString(i/255.0)).append(SPACE);
                 }
             }
 
@@ -254,9 +253,7 @@ public class SVGLookupOp extends AbstractSVGFilterConverter {
 
                 // Fill in string buffers
                 for(int j=0; j<nComponents; j++){
-                    lookupTableBuf[j].append(doubleString(dest[j]/255.));
-                    // lookupTableBuf[j].append(Integer.toString(dest[j]));
-                    lookupTableBuf[j].append(SPACE);
+                    lookupTableBuf[j].append(doubleString( dest[j]/255.0) ).append(SPACE);
                 }
             }
         }
@@ -274,8 +271,7 @@ public class SVGLookupOp extends AbstractSVGFilterConverter {
                 // Fill in string buffers
                 for(int j=0; j<nComponents; j++){
                     // lookupTableBuf[j].append(Integer.toString(i));
-                    lookupTableBuf[j].append(doubleString(i/255.));
-                    lookupTableBuf[j].append(SPACE);
+                    lookupTableBuf[j].append( doubleString(i/255.0) ).append(SPACE);
                 }
             }
             for(int i=0; i<=255; i++){
@@ -287,8 +283,7 @@ public class SVGLookupOp extends AbstractSVGFilterConverter {
 
                 // Fill in string buffers
                 for(int j=0; j<nComponents; j++){
-                    lookupTableBuf[j].append(doubleString((0xff & dest[j])/255.));
-                    lookupTableBuf[j].append(SPACE);
+                    lookupTableBuf[j].append( doubleString( (0xff & dest[j])/255.0) ).append(SPACE);
                 }
             }
         }
