@@ -562,9 +562,9 @@ public class WMFPainter extends AbstractWMFPainter {
                         if ((flag & WMFConstants.ETO_CLIPPED) != 0) {
                             clipped = true;
                             x1 = mr.elementAt( 3 );
-                            y1 = mr.elementAt( 3 );  // ???
-                            x2 = mr.elementAt( 4 );
-                            y2 = mr.elementAt( 5 );
+                            y1 = mr.elementAt( 4 );
+                            x2 = mr.elementAt( 5 );
+                            y2 = mr.elementAt( 6 );
                             clip = g2d.getClip();
                             g2d.setClip(x1, y1, x2, y2);
                         }

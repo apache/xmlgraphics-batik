@@ -33,7 +33,10 @@
               class="org.apache.batik.transcoder.wmf.WMFAccuracyTest">
       <test id="samples/tests/resources/wmf/black_shapes.wmf"/>
       <test id="samples/tests/resources/wmf/imageWMF.wmf"/>
+      <test id="samples/tests/resources/wmf/negApmText1.wmf"/>
+      <test id="samples/tests/resources/wmf/negApmText2.wmf"/>
       <test id="samples/tests/resources/wmf/testChart.wmf"/>
+      <test id="samples/tests/resources/wmf/textGreek.wmf"/>
       <test id="samples/tests/resources/wmf/textGreek.wmf"/>
    </testGroup>
 
