@@ -94,8 +94,8 @@ public class WMFRecordStore extends AbstractWMFReader {
 
             case WMFConstants.META_EXTTEXTOUT:
                 {
-                    int yVal = readShort( is );
-                    int xVal = readShort( is );
+                    int yVal = readShort( is ) * ySign;
+                    int xVal = readShort( is ) * xSign;
                     int lenText = readShort( is );
                     int flag = readShort( is );
                     int read = 4; // used to track the actual size really read
@@ -104,10 +104,10 @@ public class WMFRecordStore extends AbstractWMFReader {
                     int len;
                     // determination of clipping property
                     if ((flag & WMFConstants.ETO_CLIPPED) != 0) {
-                        x1 =  readShort( is );
-                        y1 =  readShort( is );
-                        x2 =  readShort( is );
-                        y2 =  readShort( is );
+                        x1 =  readShort( is ) * xSign;
+                        y1 =  readShort( is ) * ySign;
+                        x2 =  readShort( is ) * xSign;
+                        y2 =  readShort( is ) * ySign;
                         read += 4;
                         clipped = true;
                     }
@@ -158,8 +158,8 @@ public class WMFRecordStore extends AbstractWMFReader {
                     if (len % 2 != 0) is.readByte();
                     read += (len + 1) / 2;
 
-                    int yVal = readShort( is );
-                    int xVal = readShort( is );
+                    int yVal = readShort( is ) * ySign;
+                    int xVal = readShort( is ) * xSign;
                     read += 2;
                     // if the record was not completely read, finish reading
                     if (read < recSize) for (int j = read; j < recSize; j++) readShort( is );
@@ -241,6 +241,16 @@ public class WMFRecordStore extends AbstractWMFReader {
 
                     int height = readShort( is );
                     int width = readShort( is );
+                    // inverse the values signs if they are negative
+                    if (width < 0) {
+                        width = -width;
+                        xSign = -1;
+                    }
+                    if (height < 0) {
+                        height = -height;
+                        ySign = -1;
+                    }                       
+                    
                     mr.AddElement( new Integer( width ));
                     mr.AddElement( new Integer( height ));
                     records.add( mr );
@@ -258,8 +268,8 @@ public class WMFRecordStore extends AbstractWMFReader {
                     mr.numPoints = recSize;
                     mr.functionId = functionId;
 
-                    int y = readShort( is );
-                    int x = readShort( is );
+                    int y = readShort( is ) * ySign;
+                    int x = readShort( is ) * xSign;
                     mr.AddElement( new Integer( x ));
                     mr.AddElement( new Integer( y ));
                     records.add( mr );
@@ -381,8 +391,8 @@ public class WMFRecordStore extends AbstractWMFReader {
                     mr.numPoints = recSize;
                     mr.functionId = functionId;
 
-                    int y = readShort( is );
-                    int x = readShort( is );
+                    int y = readShort( is ) * ySign;
+                    int x = readShort( is ) * xSign;
                     mr.AddElement( new Integer( x ));
                     mr.AddElement( new Integer( y ));
                     records.add( mr );
@@ -422,8 +432,8 @@ public class WMFRecordStore extends AbstractWMFReader {
                     int offset = count+1;
                     for ( int i = 0; i < count; i++ ) {
                         for ( int j = 0; j < pts[ i ]; j++ ) {
-                            mr.AddElement( new Integer( readShort( is ))); // x position of the polygon
-                            mr.AddElement( new Integer( readShort( is ))); // y position of the polygon
+                            mr.AddElement( new Integer( readShort( is )  * xSign)); // x position of the polygon
+                            mr.AddElement( new Integer( readShort( is ) * ySign)); // y position of the polygon
                         }
                     }
                     records.add( mr );
@@ -439,8 +449,8 @@ public class WMFRecordStore extends AbstractWMFReader {
                     int count = readShort( is );
                     mr.AddElement( new Integer( count ));
                     for ( int i = 0; i < count; i++ ) {
-                        mr.AddElement( new Integer( readShort( is )));
-                        mr.AddElement( new Integer( readShort( is )));
+                        mr.AddElement( new Integer( readShort( is ) * xSign));
+                        mr.AddElement( new Integer( readShort( is ) * ySign));
                     }
                     records.add( mr );
                 }
@@ -453,10 +463,10 @@ public class WMFRecordStore extends AbstractWMFReader {
                     mr.numPoints = recSize;
                     mr.functionId = functionId;
 
-                    int bottom = readShort( is );
-                    int right = readShort( is );
-                    int top = readShort( is );
-                    int left = readShort( is );
+                    int bottom = readShort( is ) * ySign;
+                    int right = readShort( is ) * xSign;
+                    int top = readShort( is ) * ySign;
+                    int left = readShort( is ) * xSign;
                     mr.AddElement( new Integer( left ));
                     mr.AddElement( new Integer( top ));
                     mr.AddElement( new Integer( right ));
@@ -468,10 +478,10 @@ public class WMFRecordStore extends AbstractWMFReader {
             case WMFConstants.META_CREATEREGION: {
                     mr.numPoints = recSize;
                     mr.functionId = functionId;
-                    int left = readShort( is );
-                    int top = readShort( is );
-                    int right = readShort( is );
-                    int bottom = readShort( is );
+                    int left = readShort( is ) * xSign;
+                    int top = readShort( is ) * ySign;
+                    int right = readShort( is ) * xSign;
+                    int bottom = readShort( is ) * ySign;
                     mr.AddElement( new Integer( left ));
                     mr.AddElement( new Integer( top ));
                     mr.AddElement( new Integer( right ));
@@ -484,12 +494,12 @@ public class WMFRecordStore extends AbstractWMFReader {
                     mr.numPoints = recSize;
                     mr.functionId = functionId;
 
-                    int el_height = readShort( is );
-                    int el_width = readShort( is );
-                    int bottom = readShort( is );
-                    int right = readShort( is );
-                    int top = readShort( is );
-                    int left = readShort( is );
+                    int el_height = readShort( is ) * ySign;
+                    int el_width = readShort( is ) * xSign;
+                    int bottom = readShort( is ) * ySign;
+                    int right = readShort( is ) * xSign;
+                    int top = readShort( is ) * ySign;
+                    int left = readShort( is ) * xSign;
                     mr.AddElement( new Integer( left ));
                     mr.AddElement( new Integer( top ));
                     mr.AddElement( new Integer( right ));
@@ -506,14 +516,14 @@ public class WMFRecordStore extends AbstractWMFReader {
                     mr.numPoints = recSize;
                     mr.functionId = functionId;
 
-                    int yend = readShort( is );
-                    int xend = readShort( is );
-                    int ystart = readShort( is );
-                    int xstart = readShort( is );
-                    int bottom = readShort( is );
-                    int right = readShort( is );
-                    int top = readShort( is );
-                    int left = readShort( is );
+                    int yend = readShort( is ) * ySign;
+                    int xend = readShort( is ) * xSign;
+                    int ystart = readShort( is ) * ySign;
+                    int xstart = readShort( is ) * xSign;
+                    int bottom = readShort( is ) * ySign;
+                    int right = readShort( is ) * xSign;
+                    int top = readShort( is ) * ySign;
+                    int left = readShort( is ) * xSign;
                     mr.AddElement( new Integer( left ));
                     mr.AddElement( new Integer( top ));
                     mr.AddElement( new Integer( right ));
@@ -533,10 +543,10 @@ public class WMFRecordStore extends AbstractWMFReader {
                     mr.functionId = functionId;
 
                     int rop = readInt( is );
-                    int height = readShort( is );
-                    int width = readShort( is );
-                    int left = readShort( is );
-                    int top = readShort( is );
+                    int height = readShort( is ) * ySign;
+                    int width = readShort( is ) * xSign;
+                    int left = readShort( is ) * xSign;
+                    int top = readShort( is ) * ySign;
 
                     mr.AddElement( new Integer( rop ));
                     mr.AddElement( new Integer( height ));
@@ -580,14 +590,14 @@ public class WMFRecordStore extends AbstractWMFReader {
             case WMFConstants.META_DIBSTRETCHBLT:
                 {
                     int mode = is.readInt() & 0xff;
-                    int heightSrc = readShort( is );
-                    int widthSrc = readShort( is );
-                    int sy = readShort( is );
-                    int sx = readShort( is );
-                    int heightDst = readShort( is );
-                    int widthDst = readShort( is );
-                    int dy = readShort( is );
-                    int dx = readShort( is );
+                    int heightSrc = readShort( is ) * ySign;
+                    int widthSrc = readShort( is ) * xSign;
+                    int sy = readShort( is ) * ySign;
+                    int sx = readShort( is ) * xSign;
+                    int heightDst = readShort( is ) * ySign;
+                    int widthDst = readShort( is ) * xSign;                    
+                    int dy = readShort( is ) * ySign;                                        
+                    int dx = readShort( is ) * xSign;  
 
                     int len = 2*recSize - 20;
                     byte[] bitmap = new byte[len];

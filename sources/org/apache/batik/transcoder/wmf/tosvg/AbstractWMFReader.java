@@ -43,7 +43,10 @@ public abstract class AbstractWMFReader {
     protected int left, right, top, bottom, width, height, inch;
     protected float scaleX, scaleY;
     protected int vpW, vpH, vpX, vpY;
-
+    // the sign values for X and Y, will be modified depending on the VIEWPORT values
+    protected int xSign = 1;
+    protected int ySign = 1;
+    
     protected volatile boolean bReading = false;
 
     protected int mtType, mtHeaderSize, mtVersion, mtSize, mtNoObjects;
@@ -279,6 +282,20 @@ public abstract class AbstractWMFReader {
     public int getHeightPixels() {
         return (int)(PIXEL_PER_INCH * (float)height / (float)inch);
     }
+    
+    /** Return the sign of X coordinates. It is equal to 1 by default, but can be -1 if
+     * all X coordinates are inversed.
+     */
+    public int getXSign() {
+        return xSign;
+    }
+
+    /** Return the sign of Y coordinates. It is equal to 1 by default, but can be -1 if
+     * all Y coordinates are inversed.
+     */    
+    public int getYSign() {
+        return ySign;
+    }        
 
     protected synchronized void setReading( boolean state ){
       bReading = state;
@@ -364,6 +381,21 @@ public abstract class AbstractWMFReader {
             inch = readShort( is );
             int   reserved = readInt( is );
             short checksum = readShort( is );
+            
+            // inverse values if left > right or top > bottom
+            if (left > right) {
+                int _i = right;
+                right = left;
+                left = _i;
+                xSign = -1;
+            }
+            if (top > bottom) {
+                int _i = bottom;
+                bottom = top;
+                top = _i;
+                ySign = -1;                
+            }                        
+            
             width = right - left;
             height = bottom - top;
         } else {
