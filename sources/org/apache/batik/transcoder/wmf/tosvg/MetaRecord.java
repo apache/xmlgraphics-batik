@@ -43,8 +43,22 @@ public class MetaRecord /*implements Serializable*/ {
     public void EnsureCapacity( int cc ) {
     }
 
+    /**
+     * when you are storing Integer-objects, consider using addElement( int ) instead.
+     * @param obj
+     */
     public void AddElement( Object obj ) {
         ptVector.add( obj );
+    }
+
+    /**
+     * helper method to add int-values. This way we keep the call to new Integer()
+     * in one place, here.
+     *
+     * @param iValue  the value to add to ptVector, wrapped in an Integer
+     */
+    public final void addElement( int iValue ){
+        ptVector.add( new Integer( iValue ) );
     }
 
     /**
@@ -62,7 +76,7 @@ public class MetaRecord /*implements Serializable*/ {
      * @param offset of the element to get
      * @return the intValue of the element at offset
      */
-    public int elementAt( int offset ){
+    public final int elementAt( int offset ){
         return ((Integer)ptVector.get( offset )).intValue();
     }
 
