@@ -57,17 +57,26 @@ public class CSSPseudoClassCondition extends AbstractAttributeCondition {
     }
 
     /**
+     * equal objects should have equal hashCodes.
+     * @return hashCode of this CSSPseudoClassCondition
+     */
+    public int hashCode() {
+        return namespaceURI.hashCode();
+    }
+
+
+    /**
      * <b>SAC</b>: Implements {@link
      * org.w3c.css.sac.Condition#getConditionType()}.
-     */    
+     */
     public short getConditionType() {
         return SAC_PSEUDO_CLASS_CONDITION;
     }
-    
+
     /**
      * <b>SAC</b>: Implements {@link
      * org.w3c.css.sac.AttributeCondition#getNamespaceURI()}.
-     */    
+     */
     public String getNamespaceURI() {
         return namespaceURI;
     }

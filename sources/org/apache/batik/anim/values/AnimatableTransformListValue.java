@@ -20,6 +20,7 @@ package org.apache.batik.anim.values;
 
 import java.util.Iterator;
 import java.util.Vector;
+import java.util.List;
 
 import org.apache.batik.dom.anim.AnimationTarget;
 import org.apache.batik.dom.svg.AbstractSVGTransform;
@@ -62,14 +63,11 @@ public class AnimatableTransformListValue extends AnimatableValue {
      * Creates a new AnimatableTransformListValue with a transform list.
      */
     public AnimatableTransformListValue(AnimationTarget target,
-                                        Vector transforms) {
+                                        List transforms) {
         super(target);
-        int size = transforms.size();
-        this.transforms = new Vector(size);
-        this.transforms.setSize(size);
-        for (int i = 0; i < size; i++) {
-            this.transforms.setElementAt(transforms.elementAt(i), i);
-        }
+
+        this.transforms = new Vector( transforms );
+
     }
 
     /**

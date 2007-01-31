@@ -66,7 +66,7 @@ public class SVGColorProfileElementBridge extends AbstractSVGBridge
                                                    Element paintedElement,
                                                    String iccProfileName) {
         // Check if there is one if the cache.
-        ICCColorSpaceExt cs = cache.request(iccProfileName.toLowerCase());
+        ICCColorSpaceExt cs = cache.request(iccProfileName.toLowerCase()); // todo locale??
         if (cs != null){
             return cs;
         }
@@ -107,7 +107,7 @@ public class SVGColorProfileElementBridge extends AbstractSVGBridge
             }
 
             ParsedURL purl = new ParsedURL(pDocURL, href);
-            if (!purl.complete()) 
+            if (!purl.complete())
                 throw new BridgeException(ctx, paintedElement, ERR_URI_MALFORMED,
                                           new Object[] {href});
             try {

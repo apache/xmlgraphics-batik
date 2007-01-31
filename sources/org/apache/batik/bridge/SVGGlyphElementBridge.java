@@ -22,7 +22,8 @@ import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.util.StringTokenizer;
-import java.util.Vector;
+import java.util.List;
+import java.util.ArrayList;
 
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
@@ -183,7 +184,7 @@ public class SVGGlyphElementBridge extends AbstractSVGBridge
         // glyph-name
         String nameList
             = glyphElement.getAttributeNS(null, SVG_GLYPH_NAME_ATTRIBUTE);
-        Vector names = new Vector();
+        List names = new ArrayList();
         StringTokenizer st = new StringTokenizer(nameList, " ,");
         while (st.hasMoreTokens()) {
             names.add(st.nextToken());

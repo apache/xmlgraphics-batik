@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Arrays;
+import java.util.Set;
 
 import org.apache.batik.anim.AnimationEngine;
 import org.apache.batik.anim.AnimationException;
@@ -226,12 +227,12 @@ public class SVGAnimationEngine extends AnimationEngine {
     /**
      * Set of SMIL animation event names for SVG 1.1.
      */
-    protected static HashSet animationEventNames11 = new HashSet();
+    protected static final Set animationEventNames11 = new HashSet();
 
     /**
      * Set of SMIL animation event names for SVG 1.2.
      */
-    protected static HashSet animationEventNames12 = new HashSet();
+    protected static final Set animationEventNames12 = new HashSet();
 
     static {
         String[] eventNamesCommon = {

@@ -632,7 +632,7 @@ public class WMFRecordStore extends AbstractWMFReader {
 
                     int len = 2*recSize - 18;
                     if (len > 0) {
-                        byte bitmap[] = new byte[len];
+                        byte[] bitmap = new byte[len];
                         for (int i = 0; i < len; i++)
                             bitmap[i] = is.readByte();
                         mr = new MetaRecord.ByteRecord(bitmap);

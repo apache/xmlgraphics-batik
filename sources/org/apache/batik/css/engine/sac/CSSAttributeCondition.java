@@ -73,6 +73,16 @@ public class CSSAttributeCondition extends AbstractAttributeCondition {
     }
 
     /**
+     * equal objects should have equal hashCodes.
+     * @return hashCode of this CSSAttributeCondition
+     */
+    public int hashCode() {
+        return namespaceURI.hashCode()
+                ^ localName.hashCode()
+                ^ (specified ? -1 : 0);
+    }
+
+    /**
      * <b>SAC</b>: Implements {@link
      * org.w3c.css.sac.Condition#getConditionType()}.
      */
