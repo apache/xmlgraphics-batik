@@ -103,30 +103,24 @@ java -jar batik-squiggle.jar</source>
           If you downloaded the <a href="../install.html#distributions">source
             distribution</a> of Batik, you should have a zip file
           called <code>batik-src-1.6.zip</code> (or similar) that expanded into
-          a directory called <code>xml-batik</code>. In that directory, you can
-          find build scripts for the platform you are running on. For example, there is 
-          a <code>build.bat</code> script for users of the Windows platform and
-          there is a <code>build.sh</code> script for UNIX users.
+          a directory called <code>xml-batik</code> or
+          <code>batik-<em>version</em></code>.  In that directory, you can find
+          build scripts for the platform you are running on. For example, there
+          is a <code>build.bat</code> script for users of the Windows platform
+          and there is a <code>build.sh</code> script for UNIX users.
         </p>
         <p>
           To start the browser you should:
         </p>
         <ul>
           <li>
-            Make sure the <code>xml-batik</code> directory is in your
-            <code>PATH</code> environment variable
-          </li>
-          <li>
-            Make sure the <code>ANT_HOME</code> environment variable is set to
-            the <code>xml-batik</code> directory
-          </li>
-          <li>
             Make sure that your <code>JAVA_HOME</code> environment variable is
             set to your JDK installation directory
           </li>
           <li>
             Open a command line window and change to the <code>xml-batik</code>
-            directory where the Batik distribution was expanded
+            or <code>batik-<em>version</em></code> directory where the Batik
+            distribution was expanded
           </li>
           <li>
             <p>
@@ -136,14 +130,14 @@ java -jar batik-squiggle.jar</source>
             <p>
               and for Unix and Mac OS X:
             </p>
-            <source>build.sh squiggle</source>
+            <source>./build.sh squiggle</source>
             <p>This will start the browser.</p>
           </li>
         </ul>
         <p>You can pass options to the browser as follows, for Windows:</p>
         <source>build squiggle <em>[</em><strong>-font-size</strong> <em>font-size] [URIs]</em></source>
         <p>and for Unix:</p>
-        <source>build.sh squiggle <em>[</em><strong>-font-size</strong> <em>font-size] [URIs]</em></source>
+        <source>./build.sh squiggle <em>[</em><strong>-font-size</strong> <em>font-size] [URIs]</em></source>
         <p>
           Refer to <a href="#starting-binary">“Starting the browser for the
             binary distribution”</a> for an explanation of these options.

@@ -138,43 +138,37 @@
         <p>
           If you downloaded the source distribution of Batik, you will have a
           zip or tar file that expanded into a directory called
-          <code>xml-batik</code>. In that directory, you can find build scripts
-          for the platform you are running on. For example, there is a
-          <code>build.bat</code> script for users of the Windows platform and
-          there is a <code>build.sh</code> script for UNIX users.
+          <code>xml-batik</code> or <code>batik-<em>version</em></code>. In that
+          directory, you can find build scripts for the platform you are running
+          on. For example, there is a <code>build.bat</code> script for users of
+          the Windows platform and there is a <code>build.sh</code> script for
+          UNIX users.
         </p>
         <p>
           To start the pretty printer you should:
         </p>
         <ul>
           <li>
-            <p>Make sure the <code>xml-batik</code> directory is in your PATH
-              environment variable.</p>
-          </li>
-          <li>
-            <p>Make sure the <code>ANT_HOME</code> environment variable is set
-              to the xml-batik directory.</p>
-          </li>
-          <li>
             <p>Make sure that your <code>JAVA_HOME</code> environment
               variable is set to your JDK installation directory.</p>
           </li>
           <li>
             <p>Open a command line window and go to the <code>xml-batik</code>
-              directory where the Batik distribution was expanded.</p>
+              or <code>batik-<em>version</em></code> directory where the Batik
+              distribution was expanded.</p>
           </li>
           <li>
             <p>For windows, type the following at the command prompt:</p>
             <source>build svgpp</source>
             <p>and for Unix:</p>
-            <source>build.sh svgpp</source>
+            <source>./build.sh svgpp</source>
             <p>This will print out a help message for the pretty printer.</p>
           </li>
         </ul>
         <p>You can pass options to the rasterizer as follows, for Windows:</p>
         <source>build svgpp <em>[OPTIONS] FILES</em></source>
         <p>and for Unix:</p>
-        <source>build.sh svgpp <em>[OPTIONS] FILES</em></source>
+        <source>./build.sh svgpp <em>[OPTIONS] FILES</em></source>
         <p>Refer to <a href="#using-binary">“Using the binary distribution”</a>
           for an explanation of these options.</p>
       </section>

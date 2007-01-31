@@ -216,36 +216,29 @@
         <p>
           If you downloaded the source distribution of Batik, you got a zip or
           tar file that expanded into a directory called <code>xml-batik</code>
-          directory.  In that directory, you can find build scripts
-          for the platform you are running on.  For example, there is a
-          <code>build.bat</code> script for users of the Windows platform and
-          there is a <code>build.sh</code> script for UNIX users.
+          or <code>batik-<em>version</em></code>.  In that directory, you can
+          find build scripts for the platform you are running on.  For example,
+          there is a <code>build.bat</code> script for users of the Windows
+          platform and there is a <code>build.sh</code> script for UNIX users.
         </p>
         <p>
           To start the rasterizer you should:
         </p>
         <ul>
           <li>
-            Make sure the <code>xml-batik</code> directory is in your PATH
-            environment variable.
-          </li>
-          <li>
-            Make sure the <code>ANT_HOME</code> environment variable is set to
-            the <code>xml-batik</code> directory.
-          </li>
-          <li>
             Make sure that your <code>JAVA_HOME</code> environment variable is
             set to your JDK installation directory.
           </li>
           <li>
             Open a command line window and go to the <code>xml-batik</code>
-            directory where the Batik distribution was expanded.
+            or <code>batik-<em>version</em></code> directory where the Batik
+            distribution was expanded.
           </li>
           <li>
             <p>For windows, type the following at the command prompt:</p>
             <source>build svgrasterizer</source>
             <p>and for Unix:</p>
-            <source>build.sh svgrasterizer</source>
+            <source>./build.sh svgrasterizer</source>
             <p>This will print out a help message for the rasterizer.</p>
           </li>
         </ul>
@@ -256,7 +249,7 @@
         <p>
           and for Unix:
         </p>
-        <source>build.sh svgrasterizer <em>[OPTIONS] FILES</em></source>
+        <source>./build.sh svgrasterizer <em>[OPTIONS] FILES</em></source>
         <p>
           Refer to <a href="#using-binary">“Using the binary distribution”</a>
           for an explanation of the options.
@@ -289,7 +282,7 @@
           The first thing to do is to compile rasterizer task classes.
           Download the source distribution of Batik and see the
           <code>README</code> file in the
-          <code>xml-batik/contrib/rasterizertask</code> directory for more
+          <code>contrib/rasterizertask</code> directory for more
           instructions. The build procedure works the same way as when building 
           Batik itself.
         </p>
