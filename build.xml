@@ -1793,6 +1793,7 @@ com/DTDs/PropertyList-1.0.dtd">
 
   <target name="prepare-publish" depends="init">
     <mkdir dir="${site}"/>
+    <mkdir dir="${forrest-build}"/>
     <exec executable="svn" dir="${site}" output="${forrest-build}/publish.info"
           failonerror="false">
       <arg value="info"/>
