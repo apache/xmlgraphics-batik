@@ -52,7 +52,7 @@ public abstract class SVGFontUtilities implements SVGConstants {
         // FontFamily that matches
         Map fontFamilyMap = ctx.getFontFamilyMap();
         List ret = (List)fontFamilyMap.get(doc);
-        if (ret != null) 
+        if (ret != null)
             return ret;
 
         ret = new LinkedList();
@@ -79,7 +79,7 @@ public abstract class SVGFontUtilities implements SVGConstants {
         }
         return ret;
     }
-                                       
+
 
     /**
      * Given a font family name tries to find a matching SVG font
@@ -107,7 +107,7 @@ public abstract class SVGFontUtilities implements SVGConstants {
                                              String fontStyle) {
 
         // TODO: should match against font-variant as well
-        String fontKeyName = fontFamilyName.toLowerCase() + " " +
+        String fontKeyName = fontFamilyName.toLowerCase() + " " +              // todo locale??
             fontWeight + " " + fontStyle;
 
         // check fontFamilyMap to see if we have already created an
@@ -123,13 +123,13 @@ public abstract class SVGFontUtilities implements SVGConstants {
         Document doc = textElement.getOwnerDocument();
 
         List fontFaces = (List)fontFamilyMap.get(doc);
-        
+
         if (fontFaces == null) {
             fontFaces = getFontFaces(doc, ctx);
             fontFamilyMap.put(doc, fontFaces);
         }
 
-        
+
         Iterator iter = fontFaces.iterator();
         List svgFontFamilies = new LinkedList();
         while (iter.hasNext()) {
@@ -143,7 +143,7 @@ public abstract class SVGFontUtilities implements SVGConstants {
             if (fontFaceStyle.equals(SVG_ALL_VALUE) ||
                 fontFaceStyle.indexOf(fontStyle) != -1) {
                 GVTFontFamily ffam = fontFace.getFontFamily(ctx);
-                if (ffam != null) 
+                if (ffam != null)
                     svgFontFamilies.add(ffam);
             }
         }
@@ -152,7 +152,7 @@ public abstract class SVGFontUtilities implements SVGConstants {
             // only found one matching svg font family
             fontFamilyMap.put(fontKeyName, svgFontFamilies.get(0));
             return (GVTFontFamily)svgFontFamilies.get(0);
-            
+
         } else if (svgFontFamilies.size() > 1) {
             // need to find font face that matches the font-weight closest
             String fontWeightNumber = getFontWeightNumberString(fontWeight);
@@ -199,7 +199,7 @@ public abstract class SVGFontUtilities implements SVGConstants {
                     String newFontFamilyWeight =
                         newFontFamilyWeights.get(minDifferenceIndex) +
                         ", " + weightString;
-                    newFontFamilyWeights.set(minDifferenceIndex, 
+                    newFontFamilyWeights.set(minDifferenceIndex,
                                              newFontFamilyWeight);
                 }
             }

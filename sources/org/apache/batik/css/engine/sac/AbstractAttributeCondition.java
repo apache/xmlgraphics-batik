@@ -56,6 +56,14 @@ public abstract class AbstractAttributeCondition
     }
 
     /**
+     * equal objects should have equal hashCodes.
+     * @return hashCode of this AbstractAttributeCondition
+     */
+    public int hashCode() {
+        return value == null ? -1 : value.hashCode();
+    }
+
+    /**
      * Returns the specificity of this condition.
      */
     public int getSpecificity() {

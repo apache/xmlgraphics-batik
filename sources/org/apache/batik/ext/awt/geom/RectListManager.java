@@ -164,7 +164,7 @@ public class RectListManager implements Collection {
     /**
      * Standard <tt>Object</tt> clone method.
      */
-    public Object clone() {
+    public Object clone() throws CloneNotSupportedException {
         return copy();
     }
 
@@ -213,9 +213,18 @@ public class RectListManager implements Collection {
         return ret;
     }
 
-    public Object [] toArray(Object []a) {
+    /**
+     * fill the given array a with values from my internal <code>rects</code>.
+     * when a is not large enough, a new array is allocated, filled and returned.
+     * the method works only, when a is a Object[] or a Rectange[].
+     * When this is not the case, the a[] is just cleared.
+     *
+     * @param a array to fill (must not be null!)
+     * @return the content of rects, either in a[] or a fresh array.
+     */
+    public Object [] toArray(Object[] a) {
         Class t = a.getClass().getComponentType();
-        if ((t != Object.class) &
+        if ((t != Object.class) &&
             (t != Rectangle.class)) {
             // Nothing here for it...
             Arrays.fill( a, null );
@@ -225,8 +234,7 @@ public class RectListManager implements Collection {
         if (a.length < size)
             a = new Rectangle[size];
         System.arraycopy(rects, 0, a, 0, size);
-        for (int i=size; i<a.length; i++)
-            a[i] = null;
+        Arrays.fill( a, size, a.length, null );
 
         return a;
     }

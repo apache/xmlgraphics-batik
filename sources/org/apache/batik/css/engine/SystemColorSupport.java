@@ -22,6 +22,7 @@ package org.apache.batik.css.engine;
 import java.awt.SystemColor;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Locale;
 
 import org.apache.batik.css.engine.value.FloatValue;
 import org.apache.batik.css.engine.value.RGBColorValue;
@@ -41,7 +42,7 @@ public class SystemColorSupport implements CSSConstants {
      * Returns the Value corresponding to the given system color.
      */
     public static Value getSystemColor(String ident) {
-        ident = ident.toLowerCase();
+        ident = ident.toLowerCase( );                                 // todo locale??
         SystemColor sc = (SystemColor)factories.get(ident);
         return new RGBColorValue
             (new FloatValue(CSSPrimitiveValue.CSS_NUMBER, sc.getRed()),

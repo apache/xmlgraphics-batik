@@ -26,6 +26,7 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Vector;
+import java.util.List;
 
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.text.TextPaintInfo;
@@ -66,7 +67,7 @@ public class Glyph {
     /**
      * Constructs a Glyph with the specified parameters.
      */
-    public Glyph(String unicode, Vector names,
+    public Glyph(String unicode, List names,
                  String orientation, String arabicForm, String lang,
                  Point2D horizOrigin, Point2D vertOrigin, float horizAdvX,
                  float vertAdvY, int glyphCode,
@@ -84,7 +85,7 @@ public class Glyph {
         }
 
         this.unicode = unicode;
-        this.names = names;
+        this.names = new Vector( names );
         this.orientation = orientation;
         this.arabicForm = arabicForm;
         this.lang = lang;
