@@ -69,7 +69,7 @@ public class SVGTextPathElementBridge extends AnimatableGenericSVGBridge
         String uri = XLinkSupport.getXLinkHref(textPathElement);
         Element pathElement = ctx.getReferencedElement(textPathElement, uri);
 
-        if ((pathElement == null) || 
+        if ((pathElement == null) ||
             (!SVG_NAMESPACE_URI.equals(pathElement.getNamespaceURI())) ||
             (!pathElement.getLocalName().equals(SVG_PATH_TAG))) {
             // couldn't find the referenced element
@@ -88,9 +88,9 @@ public class SVGTextPathElementBridge extends AnimatableGenericSVGBridge
                 PathParser pathParser = new PathParser();
                 pathParser.setPathHandler(app);
                 pathParser.parse(s);
-            } catch (ParseException ex) {
+            } catch (ParseException pEx ) {
                throw new BridgeException
-                   (ctx, pathElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                   (ctx, pathElement, pEx, ERR_ATTRIBUTE_VALUE_MALFORMED,
                     new Object[] {SVG_D_ATTRIBUTE});
             } finally {
                 pathShape = app.getShape();
@@ -117,7 +117,7 @@ public class SVGTextPathElementBridge extends AnimatableGenericSVGBridge
         s = textPathElement.getAttributeNS(null, SVG_START_OFFSET_ATTRIBUTE);
         if (s.length() > 0) {
             float startOffset = 0;
-            int percentIndex = s.indexOf("%");
+            int percentIndex = s.indexOf('%');
             if (percentIndex != -1) {
                 // its a percentage of the length of the path
                 float pathLength = textPath.lengthOfPath();

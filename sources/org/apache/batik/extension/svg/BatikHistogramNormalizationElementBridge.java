@@ -131,9 +131,9 @@ public class BatikHistogramNormalizationElementBridge
         if (s.length() != 0) {
             try {
                 trim = SVGUtilities.convertSVGNumber(s);
-            } catch (NumberFormatException ex) {
+            } catch (NumberFormatException nfEx ) {
                 throw new BridgeException
-                    (ctx, filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                    (ctx, filterElement, nfEx, ERR_ATTRIBUTE_VALUE_MALFORMED,
                      new Object[] {BATIK_EXT_TRIM_ATTRIBUTE, s});
             }
         }
@@ -177,9 +177,9 @@ public class BatikHistogramNormalizationElementBridge
             int ret = 0;
             try {
                 ret = SVGUtilities.convertSVGInteger(s);
-            } catch (NumberFormatException ex) {
+            } catch (NumberFormatException nfEx ) {
                 throw new BridgeException
-                    (ctx, filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                    (ctx, filterElement, nfEx, ERR_ATTRIBUTE_VALUE_MALFORMED,
                      new Object[] {attrName, s});
             }
 

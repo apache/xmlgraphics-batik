@@ -130,9 +130,9 @@ public class SVGMarkerElementBridge extends AnimatableGenericSVGBridge
         } else {
             try {
                 orient = SVGUtilities.convertSVGNumber(s);
-            } catch (NumberFormatException ex) {
+            } catch (NumberFormatException nfEx ) {
                 throw new BridgeException
-                    (ctx, markerElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                    (ctx, markerElement, nfEx, ERR_ATTRIBUTE_VALUE_MALFORMED,
                      new Object [] {SVG_ORIENT_ATTRIBUTE, s});
             }
         }

@@ -98,9 +98,9 @@ public class SVGGlyphElementBridge extends AbstractSVGBridge
                 PathParser pathParser = new PathParser();
                 pathParser.setPathHandler(app);
                 pathParser.parse(d);
-            } catch (ParseException ex) {
+            } catch (ParseException pEx) {
                 throw new BridgeException(ctx, glyphElement,
-                                          ERR_ATTRIBUTE_VALUE_MALFORMED,
+                                          pEx, ERR_ATTRIBUTE_VALUE_MALFORMED,
                                           new Object [] {SVG_D_ATTRIBUTE});
             } finally {
                 // transform the shape into the correct coord system
@@ -219,9 +219,9 @@ public class SVGGlyphElementBridge extends AbstractSVGBridge
         float horizAdvX;
         try {
             horizAdvX = SVGUtilities.convertSVGNumber(s) * scale;
-        } catch (NumberFormatException ex) {
+        } catch (NumberFormatException nfEx ) {
             throw new BridgeException
-                (ctx, glyphElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                (ctx, glyphElement, nfEx, ERR_ATTRIBUTE_VALUE_MALFORMED,
                  new Object [] {SVG_HORIZ_ADV_X_ATTRIBUTE, s});
         }
 
@@ -238,9 +238,9 @@ public class SVGGlyphElementBridge extends AbstractSVGBridge
         float vertAdvY;
         try {
             vertAdvY = SVGUtilities.convertSVGNumber(s) * scale;
-        } catch (NumberFormatException ex) {
+        } catch (NumberFormatException nfEx ) {
             throw new BridgeException
-                (ctx, glyphElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                (ctx, glyphElement, nfEx, ERR_ATTRIBUTE_VALUE_MALFORMED,
                  new Object [] {SVG_VERT_ADV_Y_ATTRIBUTE, s});
         }
 
@@ -257,9 +257,9 @@ public class SVGGlyphElementBridge extends AbstractSVGBridge
         float vertOriginX;
         try {
             vertOriginX = SVGUtilities.convertSVGNumber(s) * scale;
-        } catch (NumberFormatException ex) {
+        } catch (NumberFormatException nfEx ) {
             throw new BridgeException
-                (ctx, glyphElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                (ctx, glyphElement, nfEx, ERR_ATTRIBUTE_VALUE_MALFORMED,
                  new Object [] {SVG_VERT_ORIGIN_X_ATTRIBUTE, s});
         }
 
@@ -276,9 +276,9 @@ public class SVGGlyphElementBridge extends AbstractSVGBridge
         float vertOriginY;
         try {
             vertOriginY = SVGUtilities.convertSVGNumber(s) * -scale;
-        } catch (NumberFormatException ex) {
+        } catch (NumberFormatException nfEx ) {
             throw new BridgeException
-                (ctx, glyphElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                (ctx, glyphElement, nfEx, ERR_ATTRIBUTE_VALUE_MALFORMED,
                  new Object [] {SVG_VERT_ORIGIN_Y_ATTRIBUTE, s});
         }
 
@@ -296,9 +296,9 @@ public class SVGGlyphElementBridge extends AbstractSVGBridge
         float horizOriginX;
         try {
             horizOriginX = SVGUtilities.convertSVGNumber(s) * scale;
-        } catch (NumberFormatException ex) {
+        } catch (NumberFormatException nfEx ) {
             throw new BridgeException
-                (ctx, parentFontElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                (ctx, parentFontElement, nfEx, ERR_ATTRIBUTE_VALUE_MALFORMED,
                  new Object [] {SVG_HORIZ_ORIGIN_X_ATTRIBUTE, s});
         }
 
@@ -311,9 +311,9 @@ public class SVGGlyphElementBridge extends AbstractSVGBridge
         float horizOriginY;
         try {
             horizOriginY = SVGUtilities.convertSVGNumber(s) * -scale;
-        } catch (NumberFormatException ex) {
+        } catch (NumberFormatException nfEx ) {
             throw new BridgeException
-                (ctx, glyphElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                (ctx, glyphElement, nfEx, ERR_ATTRIBUTE_VALUE_MALFORMED,
                  new Object [] {SVG_HORIZ_ORIGIN_Y_ATTRIBUTE, s});
         }
 

@@ -176,11 +176,11 @@ public abstract class UnitProcessor
         try {
             return org.apache.batik.parser.UnitProcessor.
                 svgToObjectBoundingBox(s, attr, d, ctx);
-        } catch (ParseException ex) {
+        } catch (ParseException pEx ) {
             throw new BridgeException
                 (getBridgeContext(ctx), ctx.getElement(),
-                 ErrorConstants.ERR_ATTRIBUTE_VALUE_MALFORMED,
-                 new Object[] {attr, s, ex});
+                 pEx, ErrorConstants.ERR_ATTRIBUTE_VALUE_MALFORMED,
+                 new Object[] {attr, s, pEx });
         }
     }
 
@@ -309,11 +309,11 @@ public abstract class UnitProcessor
         try {
             return org.apache.batik.parser.UnitProcessor.
                 svgToUserSpace(s, attr, d, ctx);
-        } catch (ParseException ex) {
+        } catch (ParseException pEx ) {
             throw new BridgeException
                 (getBridgeContext(ctx), ctx.getElement(),
-                 ErrorConstants.ERR_ATTRIBUTE_VALUE_MALFORMED,
-                 new Object[] {attr, s, ex});
+                 pEx, ErrorConstants.ERR_ATTRIBUTE_VALUE_MALFORMED,
+                 new Object[] {attr, s, pEx, });
         }
     }
 
@@ -374,7 +374,7 @@ public abstract class UnitProcessor
          */
         public float getPixelToMM() {
             return getPixelUnitToMillimeter();
-            
+
         }
 
         /**

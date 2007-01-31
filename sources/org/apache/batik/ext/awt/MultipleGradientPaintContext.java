@@ -218,7 +218,7 @@ abstract class MultipleGradientPaintContext implements PaintContext {
         }
 
         //if the last gradient stop is not equal to one, fix this condition
-        if (fractions[fractions.length - 1] != 1f) {
+        if (fractions[fractions.length - 1] != 1.0f) {
             fixLast = true;
             len++;
         }
@@ -950,7 +950,7 @@ abstract class MultipleGradientPaintContext implements PaintContext {
         // array.
         int intSz = (int)sz;
 
-        float weight = 1f;
+        float weight = 1.0f;
         if (intSz != 0) {
             // We need to make sure that sz is < 1.0 otherwise
             // p1 and p2 my pass each other which will cause no end of
@@ -1245,49 +1245,45 @@ abstract class MultipleGradientPaintContext implements PaintContext {
                 gch += (((pix>>> 4)&0xFF0) *norm)>>16;
                 bch += (((pix<<  4)&0xFF0) *norm)>>16;
 
+                // p1_up and p2_up are just used to set the loop-boundarys,
+                // then we loop from iStart to iEnd
+                int iStart;
+                int iEnd;
+
                 if (p1_up) {
-                    for (int i=i1+1; i<gradientsLength; i++) {
-                        norm = (int)(base*normalizedIntervals[i]);
-                        pix  = gradients[i][GRADIENT_SIZE>>1];
-
-                        ach += (((pix>>>20)&0xFF0) *norm)>>16;
-                        rch += (((pix>>>12)&0xFF0) *norm)>>16;
-                        gch += (((pix>>> 4)&0xFF0) *norm)>>16;
-                        bch += (((pix<<  4)&0xFF0) *norm)>>16;
-                    }
+                    iStart = i1+1;
+                    iEnd = gradientsLength;
                 } else {
-                    for (int i=0; i<i1; i++) {
-                        norm = (int)(base*normalizedIntervals[i]);
-                        pix  = gradients[i][GRADIENT_SIZE>>1];
+                    iStart = 0;
+                    iEnd = i1;
+                }
+                for (int i=iStart; i < iEnd ; i++) {
+                    norm = (int)(base*normalizedIntervals[i]);
+                    pix  = gradients[i][GRADIENT_SIZE>>1];
 
-                        ach += (((pix>>>20)&0xFF0) *norm)>>16;
-                        rch += (((pix>>>12)&0xFF0) *norm)>>16;
-                        gch += (((pix>>> 4)&0xFF0) *norm)>>16;
-                        bch += (((pix<<  4)&0xFF0) *norm)>>16;
-                    }
+                    ach += (((pix>>>20)&0xFF0) *norm)>>16;
+                    rch += (((pix>>>12)&0xFF0) *norm)>>16;
+                    gch += (((pix>>> 4)&0xFF0) *norm)>>16;
+                    bch += (((pix<<  4)&0xFF0) *norm)>>16;
                 }
 
                 if (p2_up) {
-                    for (int i=i2+1; i<gradientsLength; i++) {
-                        norm = (int)(base*normalizedIntervals[i]);
-                        pix  = gradients[i][GRADIENT_SIZE>>1];
-
-                        ach += (((pix>>>20)&0xFF0) *norm)>>16;
-                        rch += (((pix>>>12)&0xFF0) *norm)>>16;
-                        gch += (((pix>>> 4)&0xFF0) *norm)>>16;
-                        bch += (((pix<<  4)&0xFF0) *norm)>>16;
-                    }
+                    iStart = i2+1;
+                    iEnd = gradientsLength;
                 } else {
-                    for (int i=0; i<i2; i++) {
-                        norm = (int)(base*normalizedIntervals[i]);
-                        pix  = gradients[i][GRADIENT_SIZE>>1];
-
-                        ach += (((pix>>>20)&0xFF0) *norm)>>16;
-                        rch += (((pix>>>12)&0xFF0) *norm)>>16;
-                        gch += (((pix>>> 4)&0xFF0) *norm)>>16;
-                        bch += (((pix<<  4)&0xFF0) *norm)>>16;
-                    }
+                    iStart = 0;
+                    iEnd = i2;
                 }
+                for (int i=iStart; i < iEnd ; i++) {
+                    norm = (int)(base*normalizedIntervals[i]);
+                    pix  = gradients[i][GRADIENT_SIZE>>1];
+
+                    ach += (((pix>>>20)&0xFF0) *norm)>>16;
+                    rch += (((pix>>>12)&0xFF0) *norm)>>16;
+                    gch += (((pix>>> 4)&0xFF0) *norm)>>16;
+                    bch += (((pix<<  4)&0xFF0) *norm)>>16;
+                }
+
 
             }
             ach = (ach+0x08)>>4;
@@ -1317,14 +1313,16 @@ abstract class MultipleGradientPaintContext implements PaintContext {
     }
 
 
-    /** Helper function to convert a color component in sRGB space to linear
+    /**
+     * Helper function to convert a color component in sRGB space to linear
      * RGB space.  Used to build a static lookup table.
      */
     private static int convertSRGBtoLinearRGB(int color) {
 
-        float input, output;
+        // use of float and double arithmetic gives exactly same results
+        float output;
 
-        input = color/255.0f;
+        float input = color/255.0f;
         if (input <= 0.04045f) {
             output = input/12.92f;
         } else {
@@ -1340,15 +1338,15 @@ abstract class MultipleGradientPaintContext implements PaintContext {
       */
     private static int convertLinearRGBtoSRGB(int color) {
 
-        float input, output;
+         // use of float and double arithmetic gives exactly same results
+        float output;
 
-        input = color/255.0f;
+        float input = color/255.0f;
 
         if (input <= 0.0031308f) {
             output = input * 12.92f;
         } else {
-            output = (1.055f *
-                ((float) Math.pow(input, (1.0 / 2.4)))) - 0.055f;
+            output = (1.055f * ((float) Math.pow(input, (1.0 / 2.4)))) - 0.055f;
         }
 
         int o = Math.round(output * 255.0f);

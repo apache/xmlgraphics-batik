@@ -19,6 +19,7 @@
 package org.apache.batik.bridge;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.batik.anim.AbstractAnimation;
 import org.apache.batik.anim.AnimationEngine;
@@ -113,10 +114,10 @@ public class SVGAnimateMotionElementBridge extends SVGAnimateElementBridge {
                 ap.setAngleHandler(h);
                 try {
                     ap.parse(rotateString);
-                } catch (ParseException ex) {
+                } catch (ParseException pEx ) {
                     throw new BridgeException
                         (ctx, element,
-                         ErrorConstants.ERR_ATTRIBUTE_VALUE_MALFORMED,
+                         pEx, ErrorConstants.ERR_ATTRIBUTE_VALUE_MALFORMED,
                          new Object[] { SVG_ROTATE_ATTRIBUTE, rotateString });
                 }
                 rotateAngle = h.theAngle;
@@ -178,9 +179,9 @@ public class SVGAnimateMotionElementBridge extends SVGAnimateElementBridge {
             pp.setPathHandler(app);
             pp.parse(pathString);
             return (ExtendedGeneralPath) app.getShape();
-        } catch (ParseException ex) {
+        } catch (ParseException pEx ) {
             throw new BridgeException
-                (ctx, element, ErrorConstants.ERR_ATTRIBUTE_VALUE_MALFORMED,
+                (ctx, element, pEx, ErrorConstants.ERR_ATTRIBUTE_VALUE_MALFORMED,
                  new Object[] { SVG_PATH_ATTRIBUTE, pathString });
         }
     }
@@ -195,7 +196,7 @@ public class SVGAnimateMotionElementBridge extends SVGAnimateElementBridge {
         if (len == 0) {
             return null;
         }
-        ArrayList keyPoints = new ArrayList(7);
+        List keyPoints = new ArrayList(7);
         int i = 0, start = 0, end;
         char c;
 outer:  while (i < len) {
@@ -221,9 +222,9 @@ outer:  while (i < len) {
                 float keyPointCoord =
                     Float.parseFloat(keyPointsString.substring(start, end));
                 keyPoints.add(new Float(keyPointCoord));
-            } catch (NumberFormatException nfe) {
+            } catch (NumberFormatException nfEx ) {
                 throw new BridgeException
-                    (ctx, element, ErrorConstants.ERR_ATTRIBUTE_VALUE_MALFORMED,
+                    (ctx, element, nfEx, ErrorConstants.ERR_ATTRIBUTE_VALUE_MALFORMED,
                      new Object[] { SVG_KEY_POINTS_ATTRIBUTE, keyPointsString });
             }
         }
@@ -272,9 +273,9 @@ outer:  while (i < len) {
                 ret[i / 2] = new AnimatableMotionPointValue(animationTarget, x, y, 0);
             }
             return ret;
-        } catch (ParseException ex) {
+        } catch (ParseException pEx ) {
             throw new BridgeException
-                (ctx, element, ErrorConstants.ERR_ATTRIBUTE_VALUE_MALFORMED,
+                (ctx, element, pEx, ErrorConstants.ERR_ATTRIBUTE_VALUE_MALFORMED,
                  new Object[] { SVG_VALUES_ATTRIBUTE, s });
         }
     }

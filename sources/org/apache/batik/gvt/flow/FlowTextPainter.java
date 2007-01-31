@@ -28,6 +28,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.Arrays;
 
 import org.apache.batik.gvt.TextNode;
 import org.apache.batik.gvt.TextPainter;
@@ -275,13 +276,9 @@ public class FlowTextPainter extends StrokingTextPainter {
         if (wordMap != null)
             ext = wordMap.length;
         if (sz < ext) ext = sz;
-        int i=0;
-        for (; i<ext; i++) {
-            ret[i] = wordMap[i];
-        }
-        for (; i<sz; i++) {
-            ret[i] = -1;
-        }
+        System.arraycopy( wordMap, 0, ret, 0, ext );
+        Arrays.fill( ret, ext, sz, -1 );
+
         return ret;
     }
 
@@ -363,7 +360,7 @@ public class FlowTextPainter extends StrokingTextPainter {
 
         int aciWordStart = aciIdx;
         GVTFont gvtFont = (GVTFont)aci.getAttribute(GVT_FONT);
-        float lineHeight = 1.f;
+        float lineHeight = 1.0f;
         Float lineHeightFloat = (Float)aci.getAttribute(LINE_HEIGHT);
         if (lineHeightFloat != null)
             lineHeight = lineHeightFloat.floatValue();

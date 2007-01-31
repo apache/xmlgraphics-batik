@@ -79,7 +79,7 @@ public class SVGFilterElementBridge extends AnimatableGenericSVGBridge
         // make the initial source as a RenderableImage
         Filter sourceGraphic = filteredNode.getGraphicsNodeRable(true);
         // Pad out to filterRegion
-        sourceGraphic = new PadRable8Bit(sourceGraphic, filterRegion, 
+        sourceGraphic = new PadRable8Bit(sourceGraphic, filterRegion,
                                          PadMode.ZERO_PAD);
 
         // build a FilterChainRable8Bit
@@ -159,7 +159,7 @@ public class SVGFilterElementBridge extends AnimatableGenericSVGBridge
                 url = new URL(doc.getURLObject(), uri);
             } catch (MalformedURLException ex) {
                 throw new BridgeException(ctx, filterElement,
-                                          ERR_URI_MALFORMED,
+                                          ex, ERR_URI_MALFORMED,
                                           new Object[] {uri});
 
             }

@@ -97,9 +97,9 @@ public abstract class AbstractSVGLightingElementBridge
             } else {
                 units[1] = units[0];
             }
-        } catch (NumberFormatException ex) {
+        } catch (NumberFormatException nfEx ) {
             throw new BridgeException
-                (ctx, filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                (ctx, filterElement, nfEx, ERR_ATTRIBUTE_VALUE_MALFORMED,
                  new Object[] {SVG_KERNEL_UNIT_LENGTH_ATTRIBUTE, s});
 
         }

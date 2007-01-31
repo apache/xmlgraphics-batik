@@ -156,10 +156,10 @@ public class SVGFeSpecularLightingElementBridge
                          new Object[] {SVG_SPECULAR_CONSTANT_ATTRIBUTE, s});
                 }
                 return v;
-            } catch (NumberFormatException ex) {
+            } catch (NumberFormatException nfEx ) {
                 throw new BridgeException
-                    (ctx, filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
-                     new Object[] {SVG_SPECULAR_CONSTANT_ATTRIBUTE, s, ex});
+                    (ctx, filterElement, nfEx, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                     new Object[] {SVG_SPECULAR_CONSTANT_ATTRIBUTE, s, nfEx });
             }
         }
     }

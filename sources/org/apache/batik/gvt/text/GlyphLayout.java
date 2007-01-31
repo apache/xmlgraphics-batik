@@ -780,9 +780,8 @@ public class GlyphLayout implements TextSpanLayout {
             nTopPts--;
         }
 
-        int i=0;
-        for (; i<nTopPts; i++)
-            pts[i] = topList[i];
+        System.arraycopy( topList, 0, pts, 0, nTopPts );
+        int i= nTopPts;
 
         // We always include the 'last' point as it is always on convex hull.
         pts[i++] = pts[numPts-1];

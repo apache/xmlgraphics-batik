@@ -315,9 +315,9 @@ public class SVGFeComponentTransferElementBridge
                 for (int i = 0; tokens.hasMoreTokens(); ++i) {
                     v[i] = SVGUtilities.convertSVGNumber(tokens.nextToken());
                 }
-            } catch (NumberFormatException ex) {
+            } catch (NumberFormatException nfEx ) {
                 throw new BridgeException
-                    (ctx, e, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                    (ctx, e, nfEx, ERR_ATTRIBUTE_VALUE_MALFORMED,
                      new Object[] {SVG_TABLE_VALUES_ATTRIBUTE, s});
         }
             return v;

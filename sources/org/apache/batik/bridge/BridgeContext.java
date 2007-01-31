@@ -760,16 +760,16 @@ public class BridgeContext implements ErrorConstants, CSSContext {
                 return ref;
             }
         } catch (MalformedURLException ex) {
-            throw new BridgeException(this, e, ERR_URI_MALFORMED,
+            throw new BridgeException(this, e, ex, ERR_URI_MALFORMED,
                                       new Object[] {uri});
         } catch (InterruptedIOException ex) {
             throw new InterruptedBridgeException();
         } catch (IOException ex) {
             ex.printStackTrace();
-            throw new BridgeException(this, e, ERR_URI_IO,
+            throw new BridgeException(this, e, ex, ERR_URI_IO,
                                       new Object[] {uri});
         } catch (SecurityException ex) {
-            throw new BridgeException(this, e, ERR_URI_UNSECURE,
+            throw new BridgeException(this, e, ex, ERR_URI_UNSECURE,
                                       new Object[] {uri});
         }
     }
