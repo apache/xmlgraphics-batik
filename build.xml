@@ -438,7 +438,10 @@ com/DTDs/PropertyList-1.0.dtd">
 </plist>]]></echo>
     <echo file="${app}/Contents/MacOS/Squiggle"><![CDATA[#!/bin/sh
 
-/usr/bin/java -Dcom.apple.mrj.application.apple.menu.about.name=Squiggle -jar "`dirname $0`/../Resources/batik-squiggle.jar"
+JAVA=/usr/bin/java
+[ -e "$JAVA_HOME/bin/java" ] && JAVA="$JAVA_HOME/bin/java"
+
+"$JAVA" -Dcom.apple.mrj.application.apple.menu.about.name=Squiggle -jar "`dirname $0`/../Resources/batik-squiggle.jar"
 ]]></echo>
     <chmod perm="a+x" file="${app}/Contents/MacOS/Squiggle"/>
     <copy todir="${app}/Contents/Resources">
