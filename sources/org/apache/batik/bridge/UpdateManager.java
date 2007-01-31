@@ -379,27 +379,28 @@ public class UpdateManager  {
     /**
      * Interrupts the manager tasks.
      */
-    public synchronized void interrupt() {
-        synchronized (updateRunnableQueue) {
-            if (updateRunnableQueue.getThread() == null)
-                return;
-
-            // Preempt to cancel the pending tasks
-            updateRunnableQueue.preemptLater(new Runnable() {
-                    public void run() {
-                        synchronized (UpdateManager.this) {
-                            if (started) {
-                                dispatchSVGUnLoadEvent();
-                            } else {
-                                running = false;
-                                scriptingEnvironment.interrupt();
-                                updateRunnableQueue.getThread().halt();
-                            }
+    public void interrupt() {
+        Runnable r = new Runnable() {
+                public void run() {
+                    synchronized (UpdateManager.this) {
+                        if (started) {
+                            dispatchSVGUnLoadEvent();
+                        } else {
+                            running = false;
+                            scriptingEnvironment.interrupt();
+                            updateRunnableQueue.getThread().halt();
                         }
                     }
-                });
+                }
+            };
+        try {
+            // Preempt to cancel the pending tasks
+            updateRunnableQueue.preemptLater(r);
+            updateRunnableQueue.resumeExecution(); // ensure runnable runs...
+        } catch (IllegalStateException ise) {
+            // Not running, which is probably ok since that's what we
+            // wanted.  Might be an issue if SVGUnload wasn't issued...
         }
-        resume();
     }
 
     /**
