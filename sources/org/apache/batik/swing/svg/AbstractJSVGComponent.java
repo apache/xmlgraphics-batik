@@ -3643,7 +3643,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
                 infoE.insertBefore(titleE, descE);
             } catch (Exception ex) {
                 throw new BridgeException
-                    (bridgeContext, e, ErrorConstants.ERR_URI_IMAGE_BROKEN,
+                    (bridgeContext, e, ex, ErrorConstants.ERR_URI_IMAGE_BROKEN,
                      new Object[] {url, message });
             }
             return doc;

@@ -276,11 +276,11 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
                 URIResolver resolver = ctx.createURIResolver(svgDoc, loader);
                 e = resolver.getElement(purl.toString(), e);
                 refs.add(purl);
-            } catch(IOException ex) {
-                throw new BridgeException(ctx, e, ERR_URI_IO,
+            } catch(IOException ioEx ) {
+                throw new BridgeException(ctx, e, ioEx, ERR_URI_IO,
                                           new Object[] {uriStr});
-            } catch(SecurityException ex) {
-                throw new BridgeException(ctx, e, ERR_URI_UNSECURE,
+            } catch(SecurityException secEx ) {
+                throw new BridgeException(ctx, e, secEx, ERR_URI_UNSECURE,
                                           new Object[] {uriStr});
             }
         }
@@ -557,10 +557,10 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
                     (ctx, elem, ERR_ATTRIBUTE_VALUE_MALFORMED,
                      new Object[] {attrName, attrValue});
             }
-        } catch (NumberFormatException ex) {
+        } catch (NumberFormatException nfEx ) {
             throw new BridgeException
-                (ctx, elem, ERR_ATTRIBUTE_VALUE_MALFORMED,
-                 new Object[] {attrName, attrValue, ex});
+                (ctx, elem, nfEx, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                 new Object[] {attrName, attrValue, nfEx });
         }
         return ret;
     }
@@ -1112,9 +1112,9 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
                                                    BridgeContext ctx) {
         try {
             return AWTTransformProducer.createAffineTransform(transform);
-        } catch (ParseException ex) {
-            throw new BridgeException(ctx, e, ERR_ATTRIBUTE_VALUE_MALFORMED,
-                                      new Object[] {attr, transform, ex});
+        } catch (ParseException pEx) {
+            throw new BridgeException(ctx, e, pEx, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                                      new Object[] {attr, transform, pEx });
         }
     }
 
@@ -1190,10 +1190,10 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
         p.setClockHandler(h);
         try {
             p.parse(t);
-        } catch (ParseException ex) {
+        } catch (ParseException pEx ) {
             throw new BridgeException
-                (null, e, ERR_ATTRIBUTE_VALUE_MALFORMED,
-                 new Object[] { SVG_SNAPSHOT_TIME_ATTRIBUTE, t, ex });
+                (null, e, pEx, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                 new Object[] { SVG_SNAPSHOT_TIME_ATTRIBUTE, t, pEx });
         }
         return h.time;
     }

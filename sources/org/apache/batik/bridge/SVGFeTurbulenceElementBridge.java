@@ -163,9 +163,9 @@ public class SVGFeTurbulenceElementBridge
                     (ctx, e, ERR_ATTRIBUTE_VALUE_MALFORMED,
                      new Object[] {SVG_BASE_FREQUENCY_ATTRIBUTE, s});
             }
-        } catch (NumberFormatException ex) {
+        } catch (NumberFormatException nfEx ) {
             throw new BridgeException
-                (ctx, e, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                (ctx, e, nfEx, ERR_ATTRIBUTE_VALUE_MALFORMED,
                  new Object[] {SVG_BASE_FREQUENCY_ATTRIBUTE, s});
         }
         if (v[0] < 0 || v[1] < 0) {

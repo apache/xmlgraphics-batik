@@ -176,10 +176,10 @@ public class SVGFeConvolveMatrixElementBridge
             } else {
                 orderXY[1] = orderXY[0];
             }
-        } catch (NumberFormatException ex) {
+        } catch (NumberFormatException nfEx ) {
             throw new BridgeException
-                (ctx, filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
-                 new Object[] {SVG_ORDER_ATTRIBUTE, s, ex});
+                (ctx, filterElement, nfEx, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                 new Object[] {SVG_ORDER_ATTRIBUTE, s, nfEx });
         }
         if (tokens.hasMoreTokens() || orderXY[0] <= 0 || orderXY[1] <= 0) {
             throw new BridgeException
@@ -217,10 +217,10 @@ public class SVGFeConvolveMatrixElementBridge
                 kernelMatrix[i++]
                     = SVGUtilities.convertSVGNumber(tokens.nextToken());
             }
-        } catch (NumberFormatException ex) {
+        } catch (NumberFormatException nfEx ) {
             throw new BridgeException
-                (ctx, filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
-                 new Object[] {SVG_KERNEL_MATRIX_ATTRIBUTE, s, ex});
+                (ctx, filterElement, nfEx, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                 new Object[] {SVG_KERNEL_MATRIX_ATTRIBUTE, s, nfEx });
         }
         if (i != size) {
             throw new BridgeException
@@ -253,10 +253,10 @@ public class SVGFeConvolveMatrixElementBridge
         } else {
             try {
                 return SVGUtilities.convertSVGNumber(s);
-            } catch (NumberFormatException ex) {
+            } catch (NumberFormatException nfEx ) {
                 throw new BridgeException
-                    (ctx, filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
-                     new Object[] {SVG_DIVISOR_ATTRIBUTE, s, ex});
+                    (ctx, filterElement, nfEx, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                     new Object[] {SVG_DIVISOR_ATTRIBUTE, s, nfEx });
             }
         }
     }
@@ -286,10 +286,10 @@ public class SVGFeConvolveMatrixElementBridge
                          new Object[] {SVG_TARGET_X_ATTRIBUTE, s});
                 }
                 targetXY[0] = v;
-            } catch (NumberFormatException ex) {
+            } catch (NumberFormatException nfEx ) {
                 throw new BridgeException
-                    (ctx, filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
-                     new Object[] {SVG_TARGET_X_ATTRIBUTE, s, ex});
+                    (ctx, filterElement, nfEx, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                     new Object[] {SVG_TARGET_X_ATTRIBUTE, s, nfEx });
             }
         }
         // 'targetY' attribute - default is floor(orderY / 2)
@@ -305,10 +305,10 @@ public class SVGFeConvolveMatrixElementBridge
                          new Object[] {SVG_TARGET_Y_ATTRIBUTE, s});
                 }
                 targetXY[1] = v;
-            } catch (NumberFormatException ex) {
+            } catch (NumberFormatException nfEx ) {
                 throw new BridgeException
-                    (ctx, filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
-                     new Object[] {SVG_TARGET_Y_ATTRIBUTE, s, ex});
+                    (ctx, filterElement, nfEx, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                     new Object[] {SVG_TARGET_Y_ATTRIBUTE, s, nfEx });
             }
         }
         return targetXY;
@@ -337,9 +337,9 @@ public class SVGFeConvolveMatrixElementBridge
             } else {
                 units[1] = units[0];
             }
-        } catch (NumberFormatException ex) {
+        } catch (NumberFormatException nfEx ) {
             throw new BridgeException
-                (ctx, filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                (ctx, filterElement, nfEx, ERR_ATTRIBUTE_VALUE_MALFORMED,
                  new Object[] {SVG_KERNEL_UNIT_LENGTH_ATTRIBUTE, s});
 
         }

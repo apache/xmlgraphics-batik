@@ -152,10 +152,10 @@ public class SVGFeMorphologyElementBridge
             } else {
                 radii[1] = radii[0];
             }
-        } catch (NumberFormatException ex) {
+        } catch (NumberFormatException nfEx ) {
             throw new BridgeException
-                (ctx, filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
-                 new Object[] {SVG_RADIUS_ATTRIBUTE, s, ex});
+                (ctx, filterElement, nfEx, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                 new Object[] {SVG_RADIUS_ATTRIBUTE, s, nfEx });
         }
         if (tokens.hasMoreTokens() || radii[0] < 0 || radii[1] < 0) {
             throw new BridgeException

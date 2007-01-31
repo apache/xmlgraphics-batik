@@ -801,7 +801,7 @@ public class SVGConverter {
     }
 
     public String[] getFileNRef(String fileName){
-        int n = fileName.lastIndexOf("#");
+        int n = fileName.lastIndexOf('#');
         String[] result = {fileName, ""};
         if (n > -1){
             result[0] = fileName.substring(0, n);
@@ -1043,7 +1043,7 @@ public class SVGConverter {
 
         oldName = file;
         // Find the first char of the suffix.
-        suffixStart = oldName.lastIndexOf(".");
+        suffixStart = oldName.lastIndexOf( '.' );
         String dest = null;
         if (suffixStart != -1) {
             // Replace existing suffix.

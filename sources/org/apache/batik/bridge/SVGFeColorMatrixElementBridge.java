@@ -161,10 +161,10 @@ public class SVGFeColorMatrixElementBridge
                     = SVGUtilities.convertSVGNumber(tokens.nextToken());
                 n++;
             }
-        } catch (NumberFormatException ex) {
+        } catch (NumberFormatException nfEx ) {
             throw new BridgeException
-                (ctx, filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
-                 new Object[] {SVG_VALUES_ATTRIBUTE, s, ex});
+                (ctx, filterElement, nfEx, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                 new Object[] {SVG_VALUES_ATTRIBUTE, s, nfEx });
         }
         if (n != 20 || tokens.hasMoreTokens()) {
             throw new BridgeException
@@ -192,9 +192,9 @@ public class SVGFeColorMatrixElementBridge
             return 1; // default is 1
         try {
             return SVGUtilities.convertSVGNumber(s);
-        } catch (NumberFormatException ex) {
+        } catch (NumberFormatException nfEx ) {
             throw new BridgeException
-                (ctx, filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                (ctx, filterElement, nfEx, ERR_ATTRIBUTE_VALUE_MALFORMED,
                  new Object[] {SVG_VALUES_ATTRIBUTE, s});
         }
     }
@@ -213,9 +213,9 @@ public class SVGFeColorMatrixElementBridge
             return 0; // default is 0
         try {
             return (float) Math.toRadians( SVGUtilities.convertSVGNumber(s) );
-        } catch (NumberFormatException ex) {
+        } catch (NumberFormatException nfEx ) {
             throw new BridgeException
-                (ctx, filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                (ctx, filterElement, nfEx, ERR_ATTRIBUTE_VALUE_MALFORMED,
                  new Object [] {SVG_VALUES_ATTRIBUTE, s});
         }
     }

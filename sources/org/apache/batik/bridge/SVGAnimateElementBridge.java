@@ -19,6 +19,7 @@
 package org.apache.batik.bridge;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.batik.anim.AbstractAnimation;
 import org.apache.batik.anim.AnimationEngine;
@@ -218,9 +219,9 @@ outer:  while (i < len) {
                 float keyTime =
                     Float.parseFloat(keyTimesString.substring(start, end));
                 keyTimes.add(new Float(keyTime));
-            } catch (NumberFormatException nfe) {
+            } catch (NumberFormatException nfEx ) {
                 throw new BridgeException
-                    (ctx, element, ErrorConstants.ERR_ATTRIBUTE_VALUE_MALFORMED,
+                    (ctx, element, nfEx, ErrorConstants.ERR_ATTRIBUTE_VALUE_MALFORMED,
                      new Object[] { SVG_KEY_TIMES_ATTRIBUTE, keyTimesString });
             }
         }
@@ -242,7 +243,7 @@ outer:  while (i < len) {
         if (len == 0) {
             return null;
         }
-        ArrayList keySplines = new ArrayList(7);
+        List keySplines = new ArrayList(7);
         int count = 0, i = 0, start = 0, end;
         char c;
 outer:  while (i < len) {
@@ -294,9 +295,9 @@ outer:  while (i < len) {
                 float keySplineValue =
                     Float.parseFloat(keySplinesString.substring(start, end));
                 keySplines.add(new Float(keySplineValue));
-            } catch (NumberFormatException nfe) {
+            } catch (NumberFormatException nfEx ) {
                 throw new BridgeException
-                    (ctx, element, ErrorConstants.ERR_ATTRIBUTE_VALUE_MALFORMED,
+                    (ctx, element, nfEx, ErrorConstants.ERR_ATTRIBUTE_VALUE_MALFORMED,
                      new Object[] { SVG_KEY_SPLINES_ATTRIBUTE, keySplinesString });
             }
         }

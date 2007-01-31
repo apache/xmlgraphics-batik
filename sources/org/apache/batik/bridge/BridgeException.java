@@ -83,7 +83,7 @@ public class BridgeException extends RuntimeException {
         }
     }
 
-    /**
+     /**
      * Constructs a new <tt>BridgeException</tt> with the specified parameters.
      *
      * @param ctx the bridge context to use for determining the element's
@@ -94,7 +94,32 @@ public class BridgeException extends RuntimeException {
      */
     public BridgeException(BridgeContext ctx, Element e, String code,
                            Object[] params) {
+
         this.e = e;
+        this.code = code;
+        this.params = params;
+        if (e != null && ctx != null) {
+            this.line = ctx.getDocumentLoader().getLineNumber(e);
+        }
+    }
+
+    /**
+     * Constructs a new <tt>BridgeException</tt> with the specified parameters.
+     *
+     * @param ctx the bridge context to use for determining the element's
+     *            source position
+     * @param e the element on which the error occurred
+     * @param ex the exception which was the root-cause for this exception
+     * @param code the error code
+     * @param params the parameters to use for the error message
+     */
+    public BridgeException(BridgeContext ctx, Element e, Exception ex, String code,
+                           Object[] params) {
+
+        // todo ex can be chained in jdk >= 1.4
+        this.e = e;
+
+        message = ex.getMessage();
         this.code = code;
         this.params = params;
         if (e != null && ctx != null) {

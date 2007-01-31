@@ -43,7 +43,7 @@ public class DoubleDocument extends PlainDocument {
 
         // Get current value
         String curVal = getText(0, getLength());
-        boolean hasDot = curVal.indexOf(".")!=-1;
+        boolean hasDot = curVal.indexOf('.') != -1;
 
         // Strip non digit characters
         char[] buffer = str.toCharArray();

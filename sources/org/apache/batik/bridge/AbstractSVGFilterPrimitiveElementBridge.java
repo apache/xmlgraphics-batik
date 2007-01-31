@@ -195,14 +195,14 @@ public abstract class AbstractSVGFilterPrimitiveElementBridge
                 if (SVG_BACKGROUND_IMAGE_VALUE.equals(s)) {
                     // BackgroundImage
                     source = new BackgroundRable8Bit(filteredNode);
-                    source = new PadRable8Bit(source, filterRegion, 
+                    source = new PadRable8Bit(source, filterRegion,
                                               PadMode.ZERO_PAD);
                 }
             } else if (SVG_BACKGROUND_ALPHA_VALUE.equals(s)) {
                 // BackgroundAlpha
                 source = new BackgroundRable8Bit(filteredNode);
                 source = new FilterAlphaRable(source);
-                source = new PadRable8Bit(source, filterRegion, 
+                source = new PadRable8Bit(source, filterRegion,
                                           PadMode.ZERO_PAD);
             }
             break;
@@ -257,9 +257,9 @@ public abstract class AbstractSVGFilterPrimitiveElementBridge
         } else {
             try {
                 return SVGUtilities.convertSVGInteger(s);
-            } catch (NumberFormatException ex) {
+            } catch (NumberFormatException nfEx ) {
                 throw new BridgeException
-                    (ctx, filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                    (ctx, filterElement, nfEx, ERR_ATTRIBUTE_VALUE_MALFORMED,
                      new Object[] {attrName, s});
             }
         }
@@ -286,10 +286,10 @@ public abstract class AbstractSVGFilterPrimitiveElementBridge
         } else {
             try {
                 return SVGUtilities.convertSVGNumber(s);
-            } catch (NumberFormatException ex) {
+            } catch (NumberFormatException nfEx) {
                 throw new BridgeException
-                    (ctx, filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
-                     new Object[] {attrName, s, ex});
+                    (ctx, filterElement, nfEx, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                     new Object[] {attrName, s, nfEx});
             }
         }
     }

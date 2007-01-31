@@ -322,10 +322,10 @@ public abstract class AbstractSVGGradientElementBridge
             float offset;
             try {
                 offset = SVGUtilities.convertRatio(s);
-            } catch (NumberFormatException ex) {
+            } catch (NumberFormatException nfEx ) {
                 throw new BridgeException
-                    (ctx, stopElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
-                     new Object[] {SVG_OFFSET_ATTRIBUTE, s, ex});
+                    (ctx, stopElement, nfEx, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                     new Object[] {SVG_OFFSET_ATTRIBUTE, s, nfEx });
             }
             Color color
                 = CSSUtilities.convertStopColor(stopElement, opacity, ctx);

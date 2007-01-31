@@ -76,9 +76,9 @@ public class SVGFontFaceElementBridge extends AbstractSVGBridge
         float unitsPerEm;
         try {
             unitsPerEm = SVGUtilities.convertSVGNumber(unitsPerEmStr);
-        } catch (NumberFormatException ex) {
+        } catch (NumberFormatException nfEx ) {
             throw new BridgeException
-                (ctx, fontFaceElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                (ctx, fontFaceElement, nfEx, ERR_ATTRIBUTE_VALUE_MALFORMED,
                 new Object [] {SVG_UNITS_PER_EM_ATTRIBUTE, unitsPerEmStr});
         }
 
@@ -119,9 +119,9 @@ public class SVGFontFaceElementBridge extends AbstractSVGBridge
         float slope;
         try {
             slope = SVGUtilities.convertSVGNumber(slopeStr);
-        } catch (NumberFormatException ex) {
+        } catch (NumberFormatException nfEx ) {
             throw new BridgeException
-                (ctx, fontFaceElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                (ctx, fontFaceElement, nfEx, ERR_ATTRIBUTE_VALUE_MALFORMED,
                 new Object [] {SVG_FONT_FACE_SLOPE_DEFAULT_VALUE, slopeStr});
         }
 
@@ -137,14 +137,14 @@ public class SVGFontFaceElementBridge extends AbstractSVGBridge
             (null, SVG_ASCENT_ATTRIBUTE);
         if (ascentStr.length() == 0) {
             // set it to be unitsPerEm * .8
-            ascentStr = String.valueOf(unitsPerEm*.8);
+            ascentStr = String.valueOf( unitsPerEm * 0.8);
         }
         float ascent;
         try {
            ascent = SVGUtilities.convertSVGNumber(ascentStr);
-        } catch (NumberFormatException ex) {
+        } catch (NumberFormatException nfEx ) {
             throw new BridgeException
-                (ctx, fontFaceElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                (ctx, fontFaceElement, nfEx, ERR_ATTRIBUTE_VALUE_MALFORMED,
                  new Object [] {SVG_FONT_FACE_SLOPE_DEFAULT_VALUE, ascentStr});
         }
 
@@ -158,10 +158,10 @@ public class SVGFontFaceElementBridge extends AbstractSVGBridge
         float descent;
         try {
             descent = SVGUtilities.convertSVGNumber(descentStr);
-        } catch (NumberFormatException ex) {
+        } catch (NumberFormatException nfEx ) {
             throw new BridgeException
-                (ctx, fontFaceElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
-                 new Object [] {SVG_FONT_FACE_SLOPE_DEFAULT_VALUE, descentStr});
+                (ctx, fontFaceElement, nfEx, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                 new Object [] {SVG_FONT_FACE_SLOPE_DEFAULT_VALUE, descentStr });
         }
 
         // underline-position
@@ -173,9 +173,9 @@ public class SVGFontFaceElementBridge extends AbstractSVGBridge
         float underlinePos;
         try {
             underlinePos = SVGUtilities.convertSVGNumber(underlinePosStr);
-        } catch (NumberFormatException ex) {
+        } catch (NumberFormatException nfEx ) {
             throw new BridgeException
-                (ctx, fontFaceElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                (ctx, fontFaceElement, nfEx, ERR_ATTRIBUTE_VALUE_MALFORMED,
                 new Object [] {SVG_FONT_FACE_SLOPE_DEFAULT_VALUE,
                                underlinePosStr});
         }
@@ -191,9 +191,9 @@ public class SVGFontFaceElementBridge extends AbstractSVGBridge
         try {
             underlineThickness =
                 SVGUtilities.convertSVGNumber(underlineThicknessStr);
-        } catch (NumberFormatException ex) {
+        } catch (NumberFormatException nfEx ) {
             throw new BridgeException
-                (ctx, fontFaceElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                (ctx, fontFaceElement, nfEx, ERR_ATTRIBUTE_VALUE_MALFORMED,
                 new Object [] {SVG_FONT_FACE_SLOPE_DEFAULT_VALUE,
                                underlineThicknessStr});
         }
@@ -209,9 +209,9 @@ public class SVGFontFaceElementBridge extends AbstractSVGBridge
         try {
             strikethroughPos =
                 SVGUtilities.convertSVGNumber(strikethroughPosStr);
-        } catch (NumberFormatException ex) {
+        } catch (NumberFormatException nfEx ) {
             throw new BridgeException
-                (ctx, fontFaceElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                (ctx, fontFaceElement, nfEx, ERR_ATTRIBUTE_VALUE_MALFORMED,
                 new Object [] {SVG_FONT_FACE_SLOPE_DEFAULT_VALUE,
                                strikethroughPosStr});
         }
@@ -227,9 +227,9 @@ public class SVGFontFaceElementBridge extends AbstractSVGBridge
         try {
             strikethroughThickness =
                 SVGUtilities.convertSVGNumber(strikethroughThicknessStr);
-        } catch (NumberFormatException ex) {
+        } catch (NumberFormatException nfEx ) {
             throw new BridgeException
-                (ctx, fontFaceElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                (ctx, fontFaceElement, nfEx, ERR_ATTRIBUTE_VALUE_MALFORMED,
                 new Object [] {SVG_FONT_FACE_SLOPE_DEFAULT_VALUE,
                                strikethroughThicknessStr});
         }
@@ -243,9 +243,9 @@ public class SVGFontFaceElementBridge extends AbstractSVGBridge
         float overlinePos;
         try {
             overlinePos = SVGUtilities.convertSVGNumber(overlinePosStr);
-        } catch (NumberFormatException ex) {
+        } catch (NumberFormatException nfEx ) {
             throw new BridgeException
-                (ctx, fontFaceElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                (ctx, fontFaceElement, nfEx, ERR_ATTRIBUTE_VALUE_MALFORMED,
                 new Object [] {SVG_FONT_FACE_SLOPE_DEFAULT_VALUE,
                                overlinePosStr});
         }
@@ -261,9 +261,9 @@ public class SVGFontFaceElementBridge extends AbstractSVGBridge
         try {
             overlineThickness =
                 SVGUtilities.convertSVGNumber(overlineThicknessStr);
-        } catch (NumberFormatException ex) {
+        } catch (NumberFormatException nfEx ) {
             throw new BridgeException
-                (ctx, fontFaceElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                (ctx, fontFaceElement, nfEx, ERR_ATTRIBUTE_VALUE_MALFORMED,
                 new Object [] {SVG_FONT_FACE_SLOPE_DEFAULT_VALUE,
                                overlineThicknessStr});
         }
@@ -285,7 +285,9 @@ public class SVGFontFaceElementBridge extends AbstractSVGBridge
                                overlineThickness);
     }
 
-
+    /**
+     * the returned list may contains Strings or ParsedURLs
+     */
     public List getFontFaceSrcs(Element fontFaceElement) {
         // Search for a font-face-src element
         Element ffsrc = null;
@@ -319,12 +321,12 @@ public class SVGFontFaceElementBridge extends AbstractSVGBridge
                 ParsedURL purl;
                 if (base != null) purl = new ParsedURL(base, uri);
                 else              purl = new ParsedURL(uri);
-                ret.add(purl);
+                ret.add(purl);                                       // todo here we stuff a ParsedURL
                 continue;
             }
             if (n.getLocalName().equals(SVG_FONT_FACE_NAME_TAG)) {
                 Element ffname = (Element)n;
-                String s = ffname.getAttribute("name");
+                String s = ffname.getAttribute("name");             // todo here we stuff a String
                 if (s.length() != 0)
                     ret.add(s);
             }

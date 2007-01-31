@@ -196,8 +196,8 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
 
         try {
             userAgent.checkLoadExternalResource(purl, pDocURL);
-        } catch (SecurityException ex) {
-            throw new BridgeException(ctx, e, ERR_URI_UNSECURE,
+        } catch (SecurityException secEx ) {
+            throw new BridgeException(ctx, e, secEx, ERR_URI_UNSECURE,
                                       new Object[] {purl});
         }
 
@@ -239,8 +239,8 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         ProtectedStream reference = null;
         try {
             reference = openStream(e, purl);
-        } catch (SecurityException ex) {
-            throw new BridgeException(ctx, e, ERR_URI_UNSECURE,
+        } catch (SecurityException secEx ) {
+            throw new BridgeException(ctx, e, secEx, ERR_URI_UNSECURE,
                                       new Object[] {purl});
         } catch (IOException ioe) {
             return createBrokenImageNode(ctx, e, purl.toString(),
@@ -266,7 +266,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
             // Reset the stream for next try.
             reference.retry();
         } catch (IOException ioe) {
-            reference.release(); 
+            reference.release();
             reference = null;
             try {
                 // Couldn't reset stream so reopen it.
@@ -287,11 +287,11 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
             return createSVGImageNode(ctx, e, imgDocument);
         } catch (BridgeException ex) {
             throw ex;
-        } catch (SecurityException ex) {
-            throw new BridgeException(ctx, e, ERR_URI_UNSECURE,
+        } catch (SecurityException secEx ) {
+            throw new BridgeException(ctx, e, secEx, ERR_URI_UNSECURE,
                                       new Object[] {purl});
         } catch (InterruptedIOException iioe) {
-            if (HaltingThread.hasBeenHalted()) 
+            if (HaltingThread.hasBeenHalted())
                 throw new InterruptedBridgeException();
 
         } catch (InterruptedBridgeException ibe) {

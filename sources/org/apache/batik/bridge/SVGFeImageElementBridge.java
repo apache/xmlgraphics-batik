@@ -103,7 +103,7 @@ public class SVGFeImageElementBridge
         //
 
         Document document = filterElement.getOwnerDocument();
-        boolean isUse = uriStr.indexOf("#") != -1;
+        boolean isUse = uriStr.indexOf('#') != -1;
         Element contentElement = null;
         if (isUse) {
             contentElement = document.createElementNS(SVG_NAMESPACE_URI,
