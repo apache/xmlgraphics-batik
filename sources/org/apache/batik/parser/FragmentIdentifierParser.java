@@ -1441,16 +1441,4 @@ public class FragmentIdentifierParser extends NumberParser {
       }
     }
 
-    /**
-     * Convenience method to simplify error-reporting.
-     * We just wrap the data into a call to
-     * {@link #reportError(String,Object[])}.
-     *
-     * @param actual the actual current character
-     */
-    private void reportUnexpectedCharacterError( int actual ){
-        reportError("character.unexpected",
-                new Object[] { new Integer( actual ) });
-    }
-
 }

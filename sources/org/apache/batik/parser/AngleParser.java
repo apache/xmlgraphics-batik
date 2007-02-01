@@ -125,8 +125,7 @@ public class AngleParser extends NumberParser {
                     current = reader.read();
                     break;
                 default:
-                    reportError("character.unexpected",
-                                new Object[] { new Integer(current) });
+                    reportUnexptedCharacterError( current );
                 }
             }
 
@@ -136,8 +135,7 @@ public class AngleParser extends NumberParser {
                             new Object[] { new Integer(current) });
             }
         } catch (NumberFormatException e) {
-            reportError("character.unexpected",
-                        new Object[] { new Integer(current) });
+            reportUnexptedCharacterError( current );
         }
         angleHandler.endAngle();
     }

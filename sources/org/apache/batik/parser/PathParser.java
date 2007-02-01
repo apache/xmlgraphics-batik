@@ -205,7 +205,7 @@ public class PathParser extends NumberParser {
             float x = parseFloat();
             skipCommaSpaces();
             float y = parseFloat();
-            
+
             pathHandler.linetoAbs(x, y);
             expectNumber = skipCommaSpaces2();
         }
@@ -700,9 +700,9 @@ public class PathParser extends NumberParser {
         }
     }
 
-    protected void reportUnexpected(int ch) 
+    protected void reportUnexpected(int ch)
         throws ParseException, IOException {
-        reportError("character.unexpected", new Object[] { new Integer(ch) });
+        reportUnexpectedCharacterError( current );
         skipSubPath();
     }
 
@@ -719,7 +719,7 @@ public class PathParser extends NumberParser {
             current = reader.read();
         }
 
-        if (current != ',') 
+        if (current != ',')
             return false; // no comma.
 
         wsp2: for (;;) {

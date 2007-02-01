@@ -53,15 +53,13 @@ public class LengthPairListParser extends LengthListParser {
                     break;
                 }
                 if (current != ';') {
-                    reportError("character.unexpected",
-                            new Object[] { new Integer(current) });
+                    reportUnexpectedCharacterError( current );
                 }
                 current = reader.read();
                 skipSpaces();
             }
         } catch (NumberFormatException e) {
-            reportError("character.unexpected",
-                    new Object[] { new Integer(current) });
+            reportUnexpectedCharacterError( current );
         }
         ((LengthListHandler) lengthHandler).endLengthList();
     }
