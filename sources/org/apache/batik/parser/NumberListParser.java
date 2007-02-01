@@ -82,8 +82,7 @@ public class NumberListParser extends NumberParser {
                 }
             }
         } catch (NumberFormatException e) {
-        reportError("character.unexpected",
-                    new Object[] { new Integer(current) });
+            reportUnexpectedCharacterError( current );
         }
         numberListHandler.endNumberList();
     }

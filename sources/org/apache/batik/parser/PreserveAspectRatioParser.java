@@ -159,8 +159,7 @@ public class PreserveAspectRatioParser extends AbstractParser {
                         current = reader.read();
                         break;
                     default:
-                        reportError("character.unexpected",
-                                    new Object[] { new Integer(current) });
+                        reportUnexpectedCharacterError( current );
                         skipIdentifier();
                         break align;
                     }
@@ -206,8 +205,7 @@ public class PreserveAspectRatioParser extends AbstractParser {
                             current = reader.read();
                             break;
                         default:
-                            reportError("character.unexpected",
-                                        new Object[] { new Integer(current) });
+                            reportUnexpectedCharacterError( current );
                             skipIdentifier();
                             break align;
                         }
@@ -250,31 +248,26 @@ public class PreserveAspectRatioParser extends AbstractParser {
                             current = reader.read();
                             break;
                         default:
-                            reportError
-                                ("character.unexpected",
-                                 new Object[] { new Integer(current) });
+                            reportUnexpectedCharacterError( current );
                             skipIdentifier();
                             break align;
                         }
                     }
                     break;
                 default:
-                    reportError("character.unexpected",
-                                new Object[] { new Integer(current) });
+                    reportUnexpectedCharacterError( current );
                     skipIdentifier();
                     break align;
                 }
                 break;
             default:
-                reportError("character.unexpected",
-                            new Object[] { new Integer(current) });
+                reportUnexpectedCharacterError( current );
                 skipIdentifier();
             }
             break;
         default:
             if (current != -1) {
-                reportError("character.unexpected",
-                            new Object[] { new Integer(current) });
+                reportUnexpectedCharacterError( current );
                 skipIdentifier();
             }
         }
@@ -334,8 +327,7 @@ public class PreserveAspectRatioParser extends AbstractParser {
             break;
         default:
             if (current != -1) {
-                reportError("character.unexpected",
-                            new Object[] { new Integer(current) });
+                reportUnexpectedCharacterError( current );
                 skipIdentifier();
             }
         }

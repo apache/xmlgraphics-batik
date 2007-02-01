@@ -98,16 +98,14 @@ public class TransformListParser extends NumberParser {
                         parseSkew();
                         break;
                     default:
-                        reportError("character.unexpected",
-                                    new Object[] { new Integer(current) });
+                        reportUnexpectedCharacterError( current );
                         skipTransform();
                     }
                     break;
                 case -1:
                     break loop;
                 default:
-                    reportError("character.unexpected",
-                                new Object[] { new Integer(current) });
+                    reportUnexpectedCharacterError( current );
                     skipTransform();
                 }
             } catch (ParseException e) {
@@ -436,6 +434,7 @@ public class TransformListParser extends NumberParser {
         switch (current) {
         case 'X':
             skewX = true;
+            // fall through
         case 'Y':
             break;
         default:

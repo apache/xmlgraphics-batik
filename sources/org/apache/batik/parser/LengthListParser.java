@@ -66,7 +66,7 @@ public class LengthListParser extends LengthParser {
 
         current = reader.read();
         skipSpaces();
-        
+
         try {
             for (;;) {
                 lengthHandler.startLength();
@@ -78,8 +78,7 @@ public class LengthListParser extends LengthParser {
                 }
             }
         } catch (NumberFormatException e) {
-        reportError("character.unexpected",
-                    new Object[] { new Integer(current) });
+            reportUnexpectedCharacterError( current );
         }
         ((LengthListHandler)lengthHandler).endLengthList();
     }

@@ -98,8 +98,7 @@ public abstract class TimingParser extends AbstractParser {
         } else if (XMLUtilities.isXMLNameFirstCharacter((char) current)) {
             ret = parseIDValue(escaped);
         } else {
-            reportError("character.unexpected",
-                        new Object[] { new Integer(current) });
+            reportUnexpectedCharacterError( current );
         }
         return ret;
     }
@@ -134,8 +133,7 @@ public abstract class TimingParser extends AbstractParser {
                 || id.equals("accesskey"))
                 && !escaped) {
             if (current != '(') {
-                reportError("character.unexpected",
-                            new Object[] { new Integer(current) });
+                reportUnexpectedCharacterError( current );
             }
             current = reader.read();
             if (current == -1) {
@@ -144,8 +142,7 @@ public abstract class TimingParser extends AbstractParser {
             char key = (char) current;
             current = reader.read();
             if (current != ')') {
-                reportError("character.unexpected",
-                            new Object[] { new Integer(current) });
+                reportUnexpectedCharacterError( current );
             }
             current = reader.read();
             skipSpaces();
@@ -158,8 +155,7 @@ public abstract class TimingParser extends AbstractParser {
                                   new Character(key) };
         } else if (id.equals("accessKey") && useSVG12AccessKeys && !escaped) {
             if (current != '(') {
-                reportError("character.unexpected",
-                            new Object[] { new Integer(current) });
+                reportUnexpectedCharacterError( current );
             }
             current = reader.read();
             StringBuffer keyName = new StringBuffer();
@@ -171,8 +167,7 @@ public abstract class TimingParser extends AbstractParser {
                 current = reader.read();
             }
             if (current != ')') {
-                reportError("character.unexpected",
-                            new Object[] { new Integer(current) });
+                reportUnexpectedCharacterError( current );
             }
             current = reader.read();
             skipSpaces();
@@ -185,8 +180,7 @@ public abstract class TimingParser extends AbstractParser {
                                   keyName.toString() };
         } else if (id.equals("wallclock") && !escaped) {
             if (current != '(') {
-                reportError("character.unexpected",
-                            new Object[] { new Integer(current) });
+                reportUnexpectedCharacterError( current );
             }
             current = reader.read();
             skipSpaces();
@@ -208,8 +202,7 @@ public abstract class TimingParser extends AbstractParser {
                     current = reader.read();
                 }
                 if (!XMLUtilities.isXMLNameFirstCharacter((char) current)) {
-                    reportError("character.unexpected",
-                                new Object[] { new Integer(current) });
+                    reportUnexpectedCharacterError( current );
                 }
                 String id2 = parseName();
                 if ((id2.equals("begin") || id2.equals("end")) && !escaped) {
@@ -228,8 +221,7 @@ public abstract class TimingParser extends AbstractParser {
                         current = reader.read();
                         repeatIteration = new Integer(parseDigits());
                         if (current != ')') {
-                            reportError("character.unexpected",
-                                        new Object[] { new Integer(current) });
+                            reportUnexpectedCharacterError( current );
                         }
                         current = reader.read();
                     }
@@ -244,13 +236,11 @@ public abstract class TimingParser extends AbstractParser {
                                           repeatIteration };
                 } else if (id2.equals("marker") && !escaped) {
                     if (current != '(') {
-                        reportError("character.unexpected",
-                                    new Object[] { new Integer(current) });
+                        reportUnexpectedCharacterError( current );
                     }
                     String markerName = parseName();
                     if (current != ')') {
-                        reportError("character.unexpected",
-                                    new Object[] { new Integer(current) });
+                        reportUnexpectedCharacterError( current );
                     }
                     current = reader.read();
                     return new Object[] { new Integer(TIME_MEDIA_MARKER),
@@ -335,8 +325,7 @@ public abstract class TimingParser extends AbstractParser {
     protected int parseDigits() throws ParseException, IOException {
         int value = 0;
         if (current < '0' || current > '9') {
-            reportError("character.unexpected",
-                        new Object[] { new Integer(current) });
+            reportUnexpectedCharacterError( current );
         }
         do {
             value = value * 10 + (current - '0');
@@ -351,8 +340,7 @@ public abstract class TimingParser extends AbstractParser {
     protected float parseFraction() throws ParseException, IOException {
         float value = 0;
         if (current < '0' || current > '9') {
-            reportError("character.unexpected",
-                        new Object[] { new Integer(current) });
+            reportUnexpectedCharacterError( current );
         }
         float weight = 0.1f;
         do {
@@ -375,8 +363,7 @@ public abstract class TimingParser extends AbstractParser {
             if (current == 'i') {
                 current = reader.read();
                 if (current != 'n') {
-                    reportError("character.unexpected",
-                                new Object[] { new Integer(current) });
+                    reportUnexpectedCharacterError( current );
                 }
                 current = reader.read();
                 return 60;
@@ -384,8 +371,7 @@ public abstract class TimingParser extends AbstractParser {
                 current = reader.read();
                 return 0.001f;
             } else {
-                reportError("character.unexpected",
-                            new Object[] { new Integer(current) });
+                reportUnexpectedCharacterError( current );
             }
         } else if (current == 's') {
             current = reader.read();
@@ -414,8 +400,7 @@ public abstract class TimingParser extends AbstractParser {
                 current = reader.read();
                 M = parseDigits();
                 if (current != '-') {
-                    reportError("character.unexpected",
-                                new Object[] { new Integer(current) });
+                    reportUnexpectedCharacterError( current );
                 }
                 current = reader.read();
                 d = parseDigits();
@@ -425,8 +410,7 @@ public abstract class TimingParser extends AbstractParser {
                 current = reader.read();
                 digits1 = parseDigits();
                 if (current != ':') {
-                    reportError("character.unexpected",
-                                new Object[] { new Integer(current) });
+                    reportUnexpectedCharacterError( current );
                 }
             }
             if (current == ':') {
@@ -462,8 +446,7 @@ public abstract class TimingParser extends AbstractParser {
                     }
                     tznb.append(tzh);
                     if (current != ':') {
-                        reportError("character.unexpected",
-                                    new Object[] { new Integer(current) });
+                        reportUnexpectedCharacterError( current );
                     }
                     tznb.append(':');
                     current = reader.read();
@@ -477,8 +460,7 @@ public abstract class TimingParser extends AbstractParser {
             }
         } while (false);
         if (!dateSpecified && !timeSpecified) {
-            reportError("character.unexpected",
-                        new Object[] { new Integer(current) });
+            reportUnexpectedCharacterError( current );
         }
         Calendar wallclockTime;
         if (tzSpecified) {

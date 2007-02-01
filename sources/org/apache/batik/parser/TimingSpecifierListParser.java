@@ -80,16 +80,14 @@ public class TimingSpecifierListParser extends TimingSpecifierParser {
                     current = reader.read();
                     continue;
                 }
-                reportError("character.unexpected",
-                            new Object[] { new Integer(current) });
+                reportUnexpectedCharacterError( current );
             }
         }
 
         skipSpaces();
 
         if (current != -1) {
-            reportError("character.unexpected",
-                        new Object[] { new Integer(current) });
+            reportUnexpectedCharacterError( current );
         }
 
         ((TimingSpecifierListHandler) timingSpecifierHandler)

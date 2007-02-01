@@ -188,6 +188,17 @@ public abstract class AbstractParser implements Parser {
 
     }
 
+    /**
+     * simple api to call often reported error.
+     * Just a wrapper for reportError().
+     *
+     * @param currentChar what the caller found and didnt expect
+     */
+    protected void reportUnexpectedCharacterError( int currentChar ){
+        reportError("character.unexpected",
+                    new Object[] { new Integer( currentChar ) });
+
+    }
 
     /**
      * Returns a localized error message.

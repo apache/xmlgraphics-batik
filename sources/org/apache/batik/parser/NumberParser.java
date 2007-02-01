@@ -52,9 +52,8 @@ public abstract class NumberParser extends AbstractParser {
 
         m1: switch (current) {
         default:
-            reportError("character.unexpected",
-                        new Object[] { new Integer(current) });
-            return 0f;
+            reportUnexpectedCharacterError( current );
+            return 0.0f;
 
         case '.':
             break;
@@ -70,7 +69,7 @@ public abstract class NumberParser extends AbstractParser {
                 case '.': case 'e': case 'E':
                     break m1;
                 default:
-                    return 0f;
+                    return 0.0f;
                 case '0':
                 }
             }
@@ -101,9 +100,8 @@ public abstract class NumberParser extends AbstractParser {
             default:
             case 'e': case 'E':
                 if (!mantRead) {
-                    reportError("character.unexpected",
-                                new Object[] { new Integer(current) });
-                    return 0f;
+                    reportUnexpectedCharacterError( current );
+                    return 0.0f;
                 }
                 break;
 
@@ -118,7 +116,7 @@ public abstract class NumberParser extends AbstractParser {
                             break l;
                         default:
                             if (!mantRead) {
-                                return 0f;
+                                return 0.0f;
                             }
                             break m2;
                         case '0':
@@ -149,8 +147,7 @@ public abstract class NumberParser extends AbstractParser {
             current = reader.read();
             switch (current) {
             default:
-                reportError("character.unexpected",
-                            new Object[] { new Integer(current) });
+                reportUnexpectedCharacterError( current );
                 return 0f;
             case '-':
                 expPos = false;
@@ -158,8 +155,7 @@ public abstract class NumberParser extends AbstractParser {
                 current = reader.read();
                 switch (current) {
                 default:
-                    reportError("character.unexpected",
-                                new Object[] { new Integer(current) });
+                    reportUnexpectedCharacterError( current );
                     return 0f;
                 case '0': case '1': case '2': case '3': case '4':
                 case '5': case '6': case '7': case '8': case '9':
