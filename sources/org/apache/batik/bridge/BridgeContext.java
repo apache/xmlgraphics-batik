@@ -318,6 +318,15 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     }
 
     /**
+     * Calls dispose on this BridgeContext, if it is a child context.
+     */
+    protected void finalize() {
+        if (primaryContext != null) {
+            dispose();
+        }
+    }
+
+    /**
      * This function creates a new 'sub' BridgeContext to associated
      * with 'newDoc' if one currently doesn't exist, otherwise it
      * returns the BridgeContext currently associated with the
@@ -325,11 +334,14 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      * @param newDoc The document to get/create a BridgeContext for.
      */
     public BridgeContext createSubBridgeContext(SVGOMDocument newDoc) {
-        CSSEngine eng = newDoc.getCSSEngine();
-        if (eng != null)
-            return (BridgeContext)newDoc.getCSSEngine().getCSSContext();
-
         BridgeContext subCtx;
+
+        CSSEngine eng = newDoc.getCSSEngine();
+        if (eng != null) {
+            subCtx = (BridgeContext) newDoc.getCSSEngine().getCSSContext();
+            return subCtx;
+        }
+
         subCtx = createBridgeContext(newDoc);
         subCtx.primaryContext = primaryContext != null ? primaryContext : this;
         subCtx.primaryContext.childContexts.add(new WeakReference(subCtx));
@@ -1383,10 +1395,19 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     }
 
     /**
+     * Clears the list of child BridgeContexts and disposes them if there are
+     * no more references to them.
+     */
+    protected void clearChildContexts() {
+        childContexts.clear();
+    }
+
+    /**
      * Disposes this BridgeContext.
      */
     public void dispose() {
-        childContexts.clear();
+        clearChildContexts();
+
         synchronized (eventListenerSet) {
             // remove all listeners added by Bridges
             Iterator iter = eventListenerSet.iterator();
@@ -1412,6 +1433,12 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         if (document != null) {
             removeDOMListeners();
         }
+
+        if (animationEngine != null) {
+            animationEngine.dispose();
+            animationEngine = null;
+        }
+
         Iterator iter = interpreterMap.values().iterator();
         while (iter.hasNext()) {
             Interpreter interpreter = (Interpreter)iter.next();

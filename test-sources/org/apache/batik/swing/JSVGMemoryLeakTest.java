@@ -186,7 +186,6 @@ public class JSVGMemoryLeakTest extends MemoryLeakTest
             if (subCtxs[i] != null) {
                 SVGOMDocument doc = (SVGOMDocument) subCtxs[i].getDocument();
                 registerObjectDesc(subCtxs[i], "BridgeContext_" + doc.getURL());
-                System.err.println("found subctx for " + doc.getURL());
             }
         }
     }

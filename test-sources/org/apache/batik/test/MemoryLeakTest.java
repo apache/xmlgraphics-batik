@@ -147,8 +147,8 @@ public abstract class MemoryLeakTest  extends AbstractTest {
         if (objStr.length() > 40)
             objStr = objStr.substring(0,40) + "..." ;
         System.err.println(">>>>> Objects not cleared: " + objStr);
-        // System.err.println("Waiting for heap dump...");
-        // try { Thread.sleep(60000); } catch (InterruptedException ie) { }
+        // System.err.println("Waiting 5 second for heap dump...");
+        // try { Thread.sleep(5000); } catch (InterruptedException ie) { }
         return false;
     }
 
@@ -223,8 +223,8 @@ public abstract class MemoryLeakTest  extends AbstractTest {
         if (objStr.length() > 40)
             objStr = objStr.substring(0,40) + "..." ;
         System.err.println(">>>>> Objects not cleared: " + objStr);
-        // System.err.println("Waiting for heap dump...");
-        // try { Thread.sleep(60000); } catch (InterruptedException ie) { }
+        // System.err.println("Waiting for 5 seconds for heap dump...");
+        // try { Thread.sleep(5000); } catch (InterruptedException ie) { }
         return false;
     }
 

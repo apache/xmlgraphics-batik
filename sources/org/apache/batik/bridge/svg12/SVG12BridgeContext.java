@@ -132,8 +132,8 @@ public class SVG12BridgeContext extends BridgeContext {
      * Disposes this BridgeContext.
      */
     public void dispose() {
+        clearChildContexts();
 
-        childContexts.clear();
         synchronized (eventListenerSet) {
             // remove all listeners added by Bridges
             Iterator iter = eventListenerSet.iterator();
@@ -169,6 +169,12 @@ public class SVG12BridgeContext extends BridgeContext {
             removeDOMListeners();
             removeBindingListener();
         }
+
+        if (animationEngine != null) {
+            animationEngine.dispose();
+            animationEngine = null;
+        }
+
         Iterator iter = interpreterMap.values().iterator();
         while (iter.hasNext()) {
             Interpreter interpreter = (Interpreter)iter.next();

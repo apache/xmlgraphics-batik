@@ -20,6 +20,7 @@ package org.apache.batik.bridge;
 
 import java.awt.Color;
 import java.awt.Paint;
+import java.lang.ref.WeakReference;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
@@ -277,6 +278,10 @@ public class SVGAnimationEngine extends AnimationEngine {
      * Disposes this animation engine.
      */
     public void dispose() {
+        synchronized (this) {
+            pause();
+            super.dispose();
+        }
     }
 
     /**
@@ -437,7 +442,7 @@ public class SVGAnimationEngine extends AnimationEngine {
                 UpdateManager um = ctx.getUpdateManager();
                 if (um != null) {
                     RunnableQueue q = um.getUpdateRunnableQueue();
-                    animationTickRunnable = new AnimationTickRunnable(q);
+                    animationTickRunnable = new AnimationTickRunnable(q, this);
                     q.setIdleRunnable(animationTickRunnable);
                 }
             } catch (AnimationException ex) {
@@ -657,12 +662,12 @@ public class SVGAnimationEngine extends AnimationEngine {
     /**
      * Idle runnable to tick the animation, that reads times from System.in.
      */
-    protected class DebugAnimationTickRunnable extends AnimationTickRunnable {
+    protected static class DebugAnimationTickRunnable extends AnimationTickRunnable {
 
         float t = 0f;
 
-        public DebugAnimationTickRunnable(RunnableQueue q) {
-            super(q);
+        public DebugAnimationTickRunnable(RunnableQueue q, SVGAnimationEngine eng) {
+            super(q, eng);
             waitTime = Long.MAX_VALUE;
             new Thread() {
                 public void run() {
@@ -700,18 +705,22 @@ public class SVGAnimationEngine extends AnimationEngine {
         }
 
         public void run() {
-            try {
+            SVGAnimationEngine eng = getAnimationEngine();
+            synchronized (eng) {
                 try {
-                    tick(t, false);
-                } catch (AnimationException ex) {
-                    throw new BridgeException(ctx, ex.getElement().getElement(),
-                                              ex.getMessage());
-                }
-            } catch (BridgeException ex) {
-                if (ctx.getUserAgent() == null) {
-                    ex.printStackTrace();
-                } else {
-                    ctx.getUserAgent().displayError(ex);
+                    try {
+                        eng.tick(t, false);
+                    } catch (AnimationException ex) {
+                        throw new BridgeException
+                            (eng.ctx, ex.getElement().getElement(),
+                             ex.getMessage());
+                    }
+                } catch (BridgeException ex) {
+                    if (eng.ctx.getUserAgent() == null) {
+                        ex.printStackTrace();
+                    } else {
+                        eng.ctx.getUserAgent().displayError(ex);
+                    }
                 }
             }
         }
@@ -720,7 +729,7 @@ public class SVGAnimationEngine extends AnimationEngine {
     /**
      * Idle runnable to tick the animation.
      */
-    protected class AnimationTickRunnable
+    protected static class AnimationTickRunnable
             implements RunnableQueue.IdleRunnable {
 
         /**
@@ -773,12 +782,20 @@ public class SVGAnimationEngine extends AnimationEngine {
         protected int timeIndex;
 
         /**
+         * A weak reference to the SVGAnimationEngine this AnimationTickRunnable
+         * is for.  We makes this a WeakReference so that a ticking animation
+         * engine does not prevent from being GCed.
+         */
+        protected WeakReference engRef;
+
+        /**
          * Creates a new AnimationTickRunnable.
          */
-        public AnimationTickRunnable(RunnableQueue q) {
+        public AnimationTickRunnable(RunnableQueue q, SVGAnimationEngine eng) {
             this.q = q;
+            this.engRef = new WeakReference(eng);
             // Initialize the past times to 100ms.
-            Arrays.fill( times, 100 );
+            Arrays.fill(times, 100);
             sumTime = 100 * NUM_TIMES;
         }
 
@@ -810,70 +827,83 @@ public class SVGAnimationEngine extends AnimationEngine {
          * Performs one tick of the animation.
          */
         public void run() {
-            try {
+            SVGAnimationEngine eng = getAnimationEngine();
+            synchronized (eng) {
+                int animationLimitingMode = eng.animationLimitingMode;
+                float animationLimitingAmount = eng.animationLimitingAmount;
                 try {
-                    long before = System.currentTimeMillis();
-                    time.setTime(new Date(before));
-                    float t = timedDocumentRoot.convertWallclockTime(time);
-//                     if (Math.floor(t) > second) {
-//                         second = Math.floor(t);
-//                         System.err.println("fps: " + frames);
-//                         frames = 0;
-//                     }
-                    float t2 = tick(t, false);
-                    long after = System.currentTimeMillis();
-                    long dur = after - before;
-                    if (dur == 0) {
-                        dur = 1;
-                    }
-                    sumTime -= times[timeIndex];
-                    sumTime += dur;
-                    times[timeIndex] = dur;
-                    timeIndex = (timeIndex + 1) % NUM_TIMES;
+                    try {
+                        long before = System.currentTimeMillis();
+                        time.setTime(new Date(before));
+                        float t = eng.timedDocumentRoot.convertWallclockTime(time);
+//                         if (Math.floor(t) > second) {
+//                             second = Math.floor(t);
+//                             System.err.println("fps: " + frames);
+//                             frames = 0;
+//                         }
+                        float t2 = eng.tick(t, false);
+                        long after = System.currentTimeMillis();
+                        long dur = after - before;
+                        if (dur == 0) {
+                            dur = 1;
+                        }
+                        sumTime -= times[timeIndex];
+                        sumTime += dur;
+                        times[timeIndex] = dur;
+                        timeIndex = (timeIndex + 1) % NUM_TIMES;
 
-                    if (t2 == Float.POSITIVE_INFINITY) {
-                        waitTime = Long.MAX_VALUE;
+                        if (t2 == Float.POSITIVE_INFINITY) {
+                            waitTime = Long.MAX_VALUE;
+                        } else {
+                            waitTime = before + (long) (t2 * 1000) - 1000;
+                            if (waitTime < after) {
+                                waitTime = after;
+                            }
+                            if (animationLimitingMode != 0) {
+                                float ave = (float) sumTime / NUM_TIMES;
+                                float delay;
+                                if (animationLimitingMode == 1) {
+                                    // %cpu
+                                    delay = ave / animationLimitingAmount - ave;
+                                } else {
+                                    // fps
+                                    delay = 1000f / animationLimitingAmount - ave;
+                                }
+                                long newWaitTime = after + (long) delay;
+                                if (newWaitTime > waitTime) {
+                                    waitTime = newWaitTime;
+                                }
+                            }
+                        }
+//                         frames++;
+                    } catch (AnimationException ex) {
+                        throw new BridgeException
+                            (eng.ctx, ex.getElement().getElement(),
+                             ex.getMessage());
+                    }
+                } catch (BridgeException ex) {
+                    if (eng.ctx.getUserAgent() == null) {
+                        ex.printStackTrace();
                     } else {
-                        waitTime = before + (long) (t2 * 1000) - 1000;
-                        if (waitTime < after) {
-                            waitTime = after;
-                        }
-                        if (animationLimitingMode != 0) {
-                            float ave = (float) sumTime / NUM_TIMES;
-                            float delay;
-                            if (animationLimitingMode == 1) {
-                                // %cpu
-                                delay = ave / animationLimitingAmount - ave;
-                            } else {
-                                // fps
-                                delay = 1000f / animationLimitingAmount - ave;
-                            }
-                            long newWaitTime = after + (long) delay;
-                            if (newWaitTime > waitTime) {
-                                waitTime = newWaitTime;
-                            }
-                        }
+                        eng.ctx.getUserAgent().displayError(ex);
                     }
-//                     frames++;
-                } catch (AnimationException ex) {
-                    throw new BridgeException(ctx, ex.getElement().getElement(),
-                                              ex.getMessage());
                 }
-            } catch (BridgeException ex) {
-                if (ctx.getUserAgent() == null) {
-                    ex.printStackTrace();
-                } else {
-                    ctx.getUserAgent().displayError(ex);
-                }
-            }
 
-            if (animationLimitingMode == 0) {
-                // so we don't steal too much time from the Swing thread
-                try {
-                    Thread.sleep(1);
-                } catch (InterruptedException ie) {
+                if (animationLimitingMode == 0) {
+                    // so we don't steal too much time from the Swing thread
+                    try {
+                        Thread.sleep(1);
+                    } catch (InterruptedException ie) {
+                    }
                 }
             }
+        }
+
+        /**
+         * Returns the SVGAnimationEngine this AnimationTickRunnable is for.
+         */
+        protected SVGAnimationEngine getAnimationEngine() {
+            return (SVGAnimationEngine) engRef.get();
         }
     }
 
