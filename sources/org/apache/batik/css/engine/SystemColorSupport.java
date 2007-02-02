@@ -22,7 +22,6 @@ package org.apache.batik.css.engine;
 import java.awt.SystemColor;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Locale;
 
 import org.apache.batik.css.engine.value.FloatValue;
 import org.apache.batik.css.engine.value.RGBColorValue;

@@ -22,12 +22,11 @@ import java.awt.image.RenderedImage;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.apache.batik.ext.awt.image.codec.png.PNGImageEncoder;
 import org.apache.batik.ext.awt.image.spi.ImageWriter;
 import org.apache.batik.ext.awt.image.spi.ImageWriterParams;
 
 /**
- * ImageWriter implementation that uses Batik's PNG codec to 
+ * ImageWriter implementation that uses Batik's PNG codec to
  * write PNG files.
  *
  * @version $Id$

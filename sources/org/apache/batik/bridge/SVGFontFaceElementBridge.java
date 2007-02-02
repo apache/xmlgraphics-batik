@@ -153,7 +153,7 @@ public class SVGFontFaceElementBridge extends AbstractSVGBridge
             (null, SVG_DESCENT_ATTRIBUTE);
         if (descentStr.length() == 0) {
             // set it to be unitsPerEm *.2.
-            descentStr = String.valueOf(unitsPerEm*.2);
+            descentStr = String.valueOf(unitsPerEm*0.2);
         }
         float descent;
         try {
@@ -286,7 +286,7 @@ public class SVGFontFaceElementBridge extends AbstractSVGBridge
     }
 
     /**
-     * the returned list may contains Strings or ParsedURLs
+     * the returned list may contain Strings and ParsedURLs
      */
     public List getFontFaceSrcs(Element fontFaceElement) {
         // Search for a font-face-src element
@@ -321,14 +321,14 @@ public class SVGFontFaceElementBridge extends AbstractSVGBridge
                 ParsedURL purl;
                 if (base != null) purl = new ParsedURL(base, uri);
                 else              purl = new ParsedURL(uri);
-                ret.add(purl);                                       // todo here we stuff a ParsedURL
+                ret.add(purl);                                      // here we add a ParsedURL
                 continue;
             }
             if (n.getLocalName().equals(SVG_FONT_FACE_NAME_TAG)) {
                 Element ffname = (Element)n;
-                String s = ffname.getAttribute("name");             // todo here we stuff a String
+                String s = ffname.getAttribute("name");
                 if (s.length() != 0)
-                    ret.add(s);
+                    ret.add(s);                                     // here we add a String
             }
         }
         return ret;

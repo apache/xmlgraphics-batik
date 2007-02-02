@@ -43,7 +43,6 @@ import java.io.SequenceInputStream;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
-import java.util.Vector;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
@@ -60,7 +59,6 @@ import org.apache.batik.ext.awt.image.rendered.CachableRed;
  *
  * @version $Id$
  */
-
 public class PNGRed extends AbstractRed {
 
     static class PNGChunk {
