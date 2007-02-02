@@ -23,7 +23,6 @@ import org.apache.batik.bridge.DocumentLoader;
 import org.apache.batik.bridge.Messages;
 import org.apache.batik.bridge.ScriptingEnvironment;
 import org.apache.batik.bridge.SVGUtilities;
-import org.apache.batik.bridge.svg12.SVG12BridgeContext;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.AbstractElement;
 import org.apache.batik.dom.events.EventSupport;

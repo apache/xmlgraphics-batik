@@ -20,7 +20,6 @@
 package org.apache.batik.transcoder.wmf.tosvg;
 
 import java.io.BufferedInputStream;
-import java.io.UnsupportedEncodingException;
 import java.awt.Font;
 import java.awt.Dimension;
 import java.awt.Graphics2D;

@@ -28,10 +28,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import org.apache.batik.ext.awt.image.GraphicsUtil;
-import org.apache.batik.ext.awt.image.codec.tiff.TIFFEncodeParam;
-import org.apache.batik.ext.awt.image.codec.tiff.TIFFField;
-import org.apache.batik.ext.awt.image.codec.tiff.TIFFImageDecoder;
-import org.apache.batik.ext.awt.image.codec.tiff.TIFFImageEncoder;
 import org.apache.batik.ext.awt.image.rendered.FormatRed;
 import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderOutput;
@@ -39,7 +35,7 @@ import org.apache.batik.transcoder.TranscodingHints;
 import org.apache.batik.transcoder.image.TIFFTranscoder;
 
 /**
- * This class is a helper to <tt>TIFFTranscoder</tt> that writes TIFF images 
+ * This class is a helper to <tt>TIFFTranscoder</tt> that writes TIFF images
  * through the internal TIFF codec.
  *
  * @version $Id$
@@ -48,7 +44,7 @@ public class TIFFTranscoderInternalCodecWriteAdapter implements
         TIFFTranscoder.WriteAdapter {
 
     /**
-     * @throws TranscoderException 
+     * @throws TranscoderException
      * @see org.apache.batik.transcoder.image.PNGTranscoder.WriteAdapter#writeImage(org.apache.batik.transcoder.image.PNGTranscoder, java.awt.image.BufferedImage, org.apache.batik.transcoder.TranscoderOutput)
      */
     public void writeImage(TIFFTranscoder transcoder, BufferedImage img,
@@ -59,19 +55,19 @@ public class TIFFTranscoderInternalCodecWriteAdapter implements
 
         float PixSzMM = transcoder.getUserAgent().getPixelUnitToMillimeter();
         // num Pixs in 100 Meters
-        int numPix      = (int)(((1000 * 100) / PixSzMM) + 0.5); 
+        int numPix      = (int)(((1000 * 100) / PixSzMM) + 0.5);
         int denom       = 100 * 100;  // Centimeters per 100 Meters;
         long [] rational = {numPix, denom};
         TIFFField [] fields = {
-            new TIFFField(TIFFImageDecoder.TIFF_RESOLUTION_UNIT, 
-                          TIFFField.TIFF_SHORT, 1, 
+            new TIFFField(TIFFImageDecoder.TIFF_RESOLUTION_UNIT,
+                          TIFFField.TIFF_SHORT, 1,
                           new char [] { (char)3 }),
-            new TIFFField(TIFFImageDecoder.TIFF_X_RESOLUTION, 
-                          TIFFField.TIFF_RATIONAL, 1, 
+            new TIFFField(TIFFImageDecoder.TIFF_X_RESOLUTION,
+                          TIFFField.TIFF_RATIONAL, 1,
                           new long [][] { rational }),
-            new TIFFField(TIFFImageDecoder.TIFF_Y_RESOLUTION, 
-                          TIFFField.TIFF_RATIONAL, 1, 
-                          new long [][] { rational }) 
+            new TIFFField(TIFFImageDecoder.TIFF_Y_RESOLUTION,
+                          TIFFField.TIFF_RATIONAL, 1,
+                          new long [][] { rational })
                 };
 
         params.setExtraFields(fields);
@@ -98,7 +94,7 @@ public class TIFFTranscoderInternalCodecWriteAdapter implements
             SinglePixelPackedSampleModel sppsm;
             sppsm = (SinglePixelPackedSampleModel)img.getSampleModel();
             OutputStream ostream = output.getOutputStream();
-            TIFFImageEncoder tiffEncoder = 
+            TIFFImageEncoder tiffEncoder =
                 new TIFFImageEncoder(ostream, params);
             int bands = sppsm.getNumBands();
             int [] off = new int[bands];
@@ -106,7 +102,7 @@ public class TIFFTranscoderInternalCodecWriteAdapter implements
                 off[i] = i;
             SampleModel sm = new PixelInterleavedSampleModel
                 (DataBuffer.TYPE_BYTE, w, h, bands, w * bands, off);
-            
+
             RenderedImage rimg = new FormatRed(GraphicsUtil.wrap(img), sm);
             tiffEncoder.encode(rimg);
             ostream.flush();
