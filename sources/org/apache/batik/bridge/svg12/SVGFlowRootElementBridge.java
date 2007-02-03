@@ -40,6 +40,7 @@ import org.w3c.dom.Node;
 import org.apache.batik.bridge.Bridge;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.CSSUtilities;
+import org.apache.batik.bridge.CursorManager;
 import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.bridge.SVGTextElementBridge;
 import org.apache.batik.bridge.SVGUtilities;
@@ -666,22 +667,25 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
                     if (ctx.isInteractive()) {
                         NodeEventTarget target = (NodeEventTarget)nodeElement;
                         UserAgent ua = ctx.getUserAgent();
+                        SVGAElementBridge.CursorHolder ch;
+                        ch = new SVGAElementBridge.CursorHolder
+                            (CursorManager.DEFAULT_CURSOR);
                         target.addEventListenerNS
                             (XMLConstants.XML_EVENTS_NAMESPACE_URI,
                              SVG_EVENT_CLICK,
-                             new SVGAElementBridge.AnchorListener(ua),
+                             new SVGAElementBridge.AnchorListener(ua, ch),
                              false, null);
 
                         target.addEventListenerNS
                             (XMLConstants.XML_EVENTS_NAMESPACE_URI,
                              SVG_EVENT_MOUSEOVER,
-                             new SVGAElementBridge.CursorMouseOverListener(ua),
+                             new SVGAElementBridge.CursorMouseOverListener(ua,ch),
                              false, null);
 
                         target.addEventListenerNS
                             (XMLConstants.XML_EVENTS_NAMESPACE_URI,
                              SVG_EVENT_MOUSEOUT,
-                             new SVGAElementBridge.CursorMouseOutListener(ua),
+                             new SVGAElementBridge.CursorMouseOutListener(ua,ch),
                              false, null);
                     }
                     fillAttributedStringBuffer(ctx,

@@ -23,6 +23,9 @@ import org.apache.batik.dom.xbl.OriginalEvent;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventTarget;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * The abstract <code>Event</code> root class.
  *
@@ -93,6 +96,11 @@ public abstract class AbstractEvent
      * The event from which this event was cloned for sXBL event retargetting.
      */
     protected Event originalEvent;
+
+    /**
+     * List of default Actionables to run at the end of bubble phase.
+     */
+    protected List defaultActions;
 
     /**
      * The number of nodes in the document this event will visit
@@ -219,6 +227,19 @@ public abstract class AbstractEvent
      */
     public boolean getDefaultPrevented() {
         return preventDefault;
+    }
+
+    /**
+     * Returns the current list of default action runnables
+     */
+    public List getDefaultActions() { return defaultActions; }
+
+    /**
+     * Adds the runnable to the list of default action runnables
+     */
+    public void addDefaultAction(Runnable rable) { 
+        if (defaultActions == null) defaultActions = new ArrayList();
+        defaultActions.add(rable); 
     }
 
     /**
