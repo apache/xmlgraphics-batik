@@ -19,6 +19,8 @@
 package org.apache.batik.dom.events;
 
 import java.util.HashSet;
+import java.util.List;
+import java.util.Iterator;
 
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.AbstractNode;
@@ -275,6 +277,16 @@ public class EventSupport {
                                    toBeStoppedGroups);
                 stoppedGroups.addAll(toBeStoppedGroups);
                 toBeStoppedGroups.clear();
+            }
+        }
+        if (!e.getDefaultPrevented()) {
+            List runables = e.getDefaultActions();
+            if (runables != null) {
+                Iterator i = runables.iterator();
+                while (i.hasNext()) {
+                    Runnable r = (Runnable)i.next();
+                    r.run();
+                }
             }
         }
         return e.getDefaultPrevented();

@@ -918,10 +918,14 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                 } else if (ln.equals(SVG_A_TAG)) {
                     NodeEventTarget target = (NodeEventTarget)nodeElement;
                     UserAgent ua = ctx.getUserAgent();
-                    EventListener l = new SVGAElementBridge.AnchorListener(ua);
+                    SVGAElementBridge.CursorHolder ch;
+                    ch = new SVGAElementBridge.CursorHolder
+                        (CursorManager.DEFAULT_CURSOR);
+                    EventListener l;
+                    l = new SVGAElementBridge.AnchorListener(ua, ch);
                     target.addEventListenerNS
-                        (XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_CLICK,
-                         l, false, null);
+                        (XMLConstants.XML_EVENTS_NAMESPACE_URI, 
+                         SVG_EVENT_CLICK, l, false, null);
                     ctx.storeEventListenerNS
                         (target, XMLConstants.XML_EVENTS_NAMESPACE_URI,
                          SVG_EVENT_CLICK, l, false);
