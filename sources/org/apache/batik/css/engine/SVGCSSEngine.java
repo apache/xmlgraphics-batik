@@ -169,7 +169,7 @@ public class SVGCSSEngine extends CSSEngine {
      * Merges the given arrays.
      */
     protected static ValueManager[] mergeArrays(ValueManager[] a1,
-                                              ValueManager[] a2) {
+                                                ValueManager[] a2) {
         ValueManager[] result = new ValueManager[a1.length + a2.length];
         System.arraycopy(a1, 0, result, 0, a1.length);
         System.arraycopy(a2, 0, result, a1.length, a2.length);
@@ -180,7 +180,7 @@ public class SVGCSSEngine extends CSSEngine {
      * Merges the given arrays.
      */
     protected static ShorthandManager[] mergeArrays(ShorthandManager[] a1,
-                                                  ShorthandManager[] a2) {
+                                                    ShorthandManager[] a2) {
         ShorthandManager[] result =
             new ShorthandManager[a1.length + a2.length];
         System.arraycopy(a1, 0, result, 0, a1.length);
