@@ -262,22 +262,26 @@ public class FlowTextPainter extends StrokingTextPainter {
         return overflow;
     }
 
-    static int [] allocWordMap(int [] wordMap, int sz) {
+    static int[] allocWordMap(int[] wordMap, int sz) {
         if (wordMap != null) {
-            if (sz <= wordMap.length)
+            if (sz <= wordMap.length) {
                 return wordMap;
-            if (sz < wordMap.length*2)
-                sz = wordMap.length*2;
+            }
+            if (sz < wordMap.length * 2) {
+                sz = wordMap.length * 2;
+            }
         }
 
         // we have a problem when wordMap actually IS null....
-        int [] ret = new int[sz];
-        int ext=0;
-        if (wordMap != null)
-            ext = wordMap.length;
-        if (sz < ext) ext = sz;
-        System.arraycopy( wordMap, 0, ret, 0, ext );
-        Arrays.fill( ret, ext, sz, -1 );
+        int[] ret = new int[sz];
+        int ext = wordMap != null ? wordMap.length : 0;
+        if (sz < ext) {
+            ext = sz;
+        }
+        if (ext != 0) {
+            System.arraycopy(wordMap, 0, ret, 0, ext);
+        }
+        Arrays.fill(ret, ext, sz, -1);
 
         return ret;
     }

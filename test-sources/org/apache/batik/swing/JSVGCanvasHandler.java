@@ -23,6 +23,7 @@ import java.awt.EventQueue;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.lang.ref.WeakReference;
 
 import javax.swing.JFrame;
 
@@ -107,7 +108,7 @@ public class JSVGCanvasHandler {
 
     JFrame     frame = null;
     JSVGCanvas canvas = null;
-    UpdateManager updateManager = null;
+    WeakReference updateManager = null;
     WindowListener wl = null;
     InitialRenderListener irl = null;
     LoadListener ll = null;
@@ -156,7 +157,7 @@ public class JSVGCanvasHandler {
                 checkRender();
                 if ( abort) return;
 
-                if (updateManager == null)
+                if (updateManager == null || updateManager.get() == null)
                     return;
 
                 while (!done) {
@@ -213,8 +214,9 @@ public class JSVGCanvasHandler {
     public void scriptDone() {
         Runnable r = new Runnable() {
                 public void run() {
-                    if (updateManager != null)
-                        updateManager.forceRepaint();
+                    UpdateManager um = getUpdateManager();
+                    if (um != null)
+                        um.forceRepaint();
                     synchronized(renderMonitor) {
                         done = true;
                         failed = false;
@@ -222,13 +224,14 @@ public class JSVGCanvasHandler {
                     }
                 }
             };
-        if ((updateManager == null) ||
-            (!updateManager.isRunning())){
+        UpdateManager um = getUpdateManager();
+        if ((um == null) ||
+            (!um.isRunning())){
             // Don't run it in this thread or we deadlock the event queue.
             Thread t = new Thread(r);
             t.start();
         } else {
-            updateManager.getUpdateRunnableQueue().invokeLater(r);
+            um.getUpdateRunnableQueue().invokeLater(r);
         }
     }
 
@@ -286,10 +289,11 @@ public class JSVGCanvasHandler {
     }
 
     public void bindHost() {
+        UpdateManager um = getUpdateManager();
         RunnableQueue rq;
-        rq = updateManager.getUpdateRunnableQueue();
+        rq = um.getUpdateRunnableQueue();
         rq.invokeLater(new Runnable() {
-                UpdateManager um = updateManager;
+                UpdateManager um = getUpdateManager();
                 public void run() {
                     ScriptingEnvironment scriptEnv;
                     scriptEnv = um.getScriptingEnvironment();
@@ -304,6 +308,13 @@ public class JSVGCanvasHandler {
                     }
                 }
             });
+    }
+
+    protected UpdateManager getUpdateManager() {
+        if (updateManager != null) {
+            return (UpdateManager) updateManager.get();
+        }
+        return null;
     }
 
     class UpdateRenderListener implements UpdateManagerListener {
@@ -374,9 +385,10 @@ public class JSVGCanvasHandler {
         public void svgLoadEventDispatchStarted(SVGLoadEventDispatcherEvent e){
             SVGLoadEventDispatcher dispatcher;
             dispatcher = (SVGLoadEventDispatcher)e.getSource();
-            updateManager = dispatcher.getUpdateManager();
+            UpdateManager um = dispatcher.getUpdateManager();
+            updateManager = new WeakReference(um);
             url = new UpdateRenderListener();
-            updateManager.addUpdateManagerListener(url);
+            um.addUpdateManagerListener(url);
         }
     }
     

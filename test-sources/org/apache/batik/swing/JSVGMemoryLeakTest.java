@@ -20,6 +20,7 @@ package org.apache.batik.swing;
 
 import java.io.File;
 import java.net.MalformedURLException;
+import java.lang.ref.WeakReference;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -55,7 +56,19 @@ public class JSVGMemoryLeakTest extends MemoryLeakTest
     boolean done;
     JSVGCanvasHandler handler;
     JFrame theFrame;
-    JSVGCanvas theCanvas;
+
+    /**
+     * A WeakReference to the JSVGCanvas.
+     */
+    WeakReference theCanvas;
+
+    protected void setTheCanvas(JSVGCanvas c) {
+        theCanvas = new WeakReference(c);
+    }
+
+    protected JSVGCanvas getTheCanvas() {
+        return (JSVGCanvas) theCanvas.get();
+    }
 
     public static String fmt(String key, Object []args) {
         return TestMessages.formatMessage(key, args);
@@ -74,8 +87,8 @@ public class JSVGMemoryLeakTest extends MemoryLeakTest
         SwingUtilities.invokeAndWait( new Runnable() {
                 public void run() {
                     // System.out.println("In Invoke");
-                    theFrame.remove(theCanvas);
-                    theCanvas.dispose();
+                    theFrame.remove(getTheCanvas());
+                    getTheCanvas().dispose();
 
                     theFrame.dispose();
                     theFrame=null;
@@ -119,7 +132,7 @@ public class JSVGMemoryLeakTest extends MemoryLeakTest
 
     public void registerElement(Element e, String desc) {
         registerObjectDesc(e, desc);
-        UpdateManager um = theCanvas.getUpdateManager();
+        UpdateManager um = getTheCanvas().getUpdateManager();
         BridgeContext bc = um.getBridgeContext();
         GraphicsNode gn = bc.getGraphicsNode(e);
         if (gn != null)
@@ -134,7 +147,7 @@ public class JSVGMemoryLeakTest extends MemoryLeakTest
     }
 
     public void registerResourceContext(String uriSubstring, String desc) {
-        UpdateManager um = theCanvas.getUpdateManager();
+        UpdateManager um = getTheCanvas().getUpdateManager();
         BridgeContext bc = um.getBridgeContext();
         BridgeContext[] ctxs = bc.getChildContexts();
         for (int i = 0; i < ctxs.length; i++) {
@@ -152,7 +165,7 @@ public class JSVGMemoryLeakTest extends MemoryLeakTest
     /* JSVGCanvasHandler.Delegate Interface */
     public boolean canvasInit(JSVGCanvas canvas) {
         // System.err.println("In Init");
-        theCanvas = canvas;
+        setTheCanvas(canvas);
         theFrame  = handler.getFrame();
 
         File f = new File(getId());
