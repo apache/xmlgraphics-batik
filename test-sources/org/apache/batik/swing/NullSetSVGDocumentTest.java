@@ -84,7 +84,7 @@ public class NullSetSVGDocumentTest extends JSVGMemoryLeakTest {
 
     /* JSVGCanvasHandler.Delegate Interface */
     public boolean canvasInit(JSVGCanvas canvas) {
-        theCanvas = canvas;
+        setTheCanvas(canvas);
         theFrame  = handler.getFrame();
 
         canvas.setDocumentState(JSVGCanvas.ALWAYS_DYNAMIC);
