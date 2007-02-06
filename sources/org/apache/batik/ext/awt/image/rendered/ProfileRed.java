@@ -275,7 +275,7 @@ public class ProfileRed extends AbstractRed {
             return argbWR;
         }catch(Exception e){
             e.printStackTrace();
-            throw new Error();
+            throw new Error( e.getMessage() );
         }
     }
 

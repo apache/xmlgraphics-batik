@@ -67,7 +67,7 @@ public class SVGConverterFileSource implements SVGConverterSource {
             }
             return uri;
         } catch(MalformedURLException e){
-            throw new Error();
+            throw new Error( e.getMessage() );
         }
     }
 

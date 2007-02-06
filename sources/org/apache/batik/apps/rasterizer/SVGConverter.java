@@ -29,7 +29,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Vector;
+import java.util.List;
+import java.util.ArrayList;
 
 import org.apache.batik.transcoder.Transcoder;
 import org.apache.batik.transcoder.TranscoderInput;
@@ -254,7 +255,7 @@ public class SVGConverter {
     protected boolean securityOff = false;
 
     /** Sources files or URLs */
-    protected Vector sources = null;
+    protected List sources = null;
 
     /**
      * Destination image path. Can be a file (for single source) or
@@ -275,7 +276,7 @@ public class SVGConverter {
     protected String alternateStylesheet = null;
 
     /** Contents of <tt>fileset</tt> elements. */
-    protected Vector files = new Vector();
+    protected List files = new ArrayList();
 
     /**
      * Controls some aspects of the converter's operation,
@@ -466,10 +467,10 @@ public class SVGConverter {
             this.sources = null;
         }
         else{
-            this.sources = new Vector();
+            this.sources = new ArrayList();
             for (int i=0; i<sources.length; i++){
                 if (sources[i] != null){
-                    this.sources.addElement(sources[i]);
+                    this.sources.add(sources[i]);
                 }
             }
 
@@ -479,7 +480,7 @@ public class SVGConverter {
         }
     }
 
-    public Vector getSources(){
+    public List getSources(){
         return sources;
     }
 
@@ -671,13 +672,13 @@ public class SVGConverter {
         // Compute the set of SVGConverterSource from the source properties
         // (srcDir and srcFile);
         // This throws an exception if there is not at least one src file.
-        Vector sources = computeSources();
+        List sources = computeSources();
 
         // Compute the destination files from dest
-        Vector dstFiles = null;
+        List dstFiles = null;
         if(sources.size() == 1 && dst != null && isFile(dst)){
-            dstFiles = new Vector();
-            dstFiles.addElement(dst);
+            dstFiles = new ArrayList();
+            dstFiles.add(dst);
         }
         else{
             dstFiles = computeDstFiles(sources);
@@ -720,9 +721,9 @@ public class SVGConverter {
      * computed from the names of the files in the sources vector
      * and the value of the dst property
      */
-    protected Vector computeDstFiles(Vector sources)
+    protected List computeDstFiles(List sources)
     throws SVGConverterException {
-        Vector dstFiles = new Vector();
+        List dstFiles = new ArrayList();
         if (dst != null) {
             if (dst.exists() && dst.isFile()) {
                 throw new SVGConverterException(ERROR_CANNOT_USE_DST_FILE);
@@ -738,7 +739,7 @@ public class SVGConverter {
                 // Generate output filename from input filename.
                 File outputName = new File(dst.getPath(),
                                            getDestinationFile(src.getName()));
-                dstFiles.addElement(outputName);
+                dstFiles.add(outputName);
 
             }
         } else {
@@ -759,7 +760,7 @@ public class SVGConverter {
                 SVGConverterFileSource fs = (SVGConverterFileSource)src;
                 File outputName = new File(fs.getFile().getParent(),
                                            getDestinationFile(src.getName()));
-                dstFiles.addElement(outputName);
+                dstFiles.add(outputName);
             }
 
         }
@@ -772,8 +773,8 @@ public class SVGConverter {
      * srcDir if it is not null and with the sources (files or URLs)
      * if any.
      */
-    protected Vector computeSources() throws SVGConverterException{
-        Vector sources = new Vector();
+    protected List computeSources() throws SVGConverterException{
+        List sources = new ArrayList();
 
         // Check that at least one source has been specified.
         if (this.sources == null){
@@ -785,14 +786,14 @@ public class SVGConverter {
             String sourceString = (String)(this.sources.get(i));
             File file = new File(sourceString);
             if (file.exists()) {
-                sources.addElement(new SVGConverterFileSource(file));
+                sources.add(new SVGConverterFileSource(file));
             } else {
                 String[] fileNRef = getFileNRef(sourceString);
                 file = new File(fileNRef[0]);
                 if (file.exists()){
-                    sources.addElement(new SVGConverterFileSource(file, fileNRef[1]));
+                    sources.add(new SVGConverterFileSource(file, fileNRef[1]));
                 } else{
-                    sources.addElement(new SVGConverterURLSource(sourceString));
+                    sources.add(new SVGConverterURLSource(sourceString));
                 }
             }
         }
@@ -821,7 +822,7 @@ public class SVGConverter {
      * Computes the set of transcoding hints to use for the operation
      */
     protected Map computeTranscodingHints(){
-        HashMap map = new HashMap();
+        Map map = new HashMap();
 
         // Set AOI. ----------------------------------------------------------
         if (area != null) {

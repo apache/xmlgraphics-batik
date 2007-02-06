@@ -119,7 +119,7 @@ public class SVGFeColorMatrixElementBridge
             colorMatrix = ColorMatrixRable8Bit.buildSaturate(s);
             break;
         default:
-            throw new Error(); // can't be reached
+            throw new Error("invalid convertType:" + type ); // can't be reached
         }
         colorMatrix.setSource(in);
 

@@ -62,7 +62,7 @@ public class SVGPolygon extends SVGGraphicObjectConverter {
             case PathIterator.SEG_QUADTO:
             case PathIterator.SEG_CUBICTO:
             default:
-                throw new Error();
+                throw new Error("invalid segmentType:" + segType );
             }
             pi.next();
         } // while !isDone

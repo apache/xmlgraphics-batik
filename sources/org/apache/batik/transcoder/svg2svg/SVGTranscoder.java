@@ -172,11 +172,11 @@ public class SVGTranscoder extends AbstractTranscoder {
             if (d == null) {
                 throw new Error("Reader or Document expected");
             }
-            StringWriter sw = new StringWriter();
+            StringWriter sw = new StringWriter( 1024 );
             try {
                 DOMUtilities.writeDocument(d, sw);
-            } catch (IOException e) {
-                throw new Error("IO");
+            } catch ( IOException ioEx ) {
+                throw new Error("IO:" + ioEx.getMessage() );
             }
             r = new StringReader(sw.toString());
         }
@@ -247,8 +247,8 @@ public class SVGTranscoder extends AbstractTranscoder {
      * To represent a newline value.
      */
     protected static class NewlineValue {
-        protected String value;
-        public NewlineValue(String val) {
+        protected final String value;
+        protected NewlineValue(String val) {
             value = val;
         }
         public String getValue() {
@@ -269,8 +269,8 @@ public class SVGTranscoder extends AbstractTranscoder {
      * To represent a doctype value.
      */
     protected static class DoctypeValue {
-        int value;
-        public DoctypeValue(int value) {
+        final int value;
+        protected DoctypeValue(int value) {
             this.value = value;
         }
         public int getValue() {

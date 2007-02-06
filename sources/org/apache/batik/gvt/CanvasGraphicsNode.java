@@ -46,7 +46,7 @@ public class CanvasGraphicsNode extends CompositeGraphicsNode {
      */
     protected AffineTransform viewingTransform;
 
-    /** 
+    /**
      * The background of this canvas graphics node.
      */
     protected Paint backgroundPaint;
@@ -88,13 +88,13 @@ public class CanvasGraphicsNode extends CompositeGraphicsNode {
             transform = new AffineTransform(viewingTransform);
         else
             transform = new AffineTransform();
-        
+
         if (transform.getDeterminant() != 0){
             try{
                 inverseTransform = transform.createInverse();
             }catch(NoninvertibleTransformException e){
                 // Should never happen.
-                throw new Error();
+                throw new Error( e.getMessage() );
             }
         }
         else{
@@ -127,7 +127,7 @@ public class CanvasGraphicsNode extends CompositeGraphicsNode {
                 inverseTransform = transform.createInverse();
             }catch(NoninvertibleTransformException e){
                 // Should never happen.
-                throw new Error();
+                throw new Error( e.getMessage() );
             }
         }
         else{

@@ -113,7 +113,7 @@ public class SVGPath extends SVGGraphicObjectConverter {
                 appendPoint(d, seg[4], seg[5], gc);
                 break;
             default:
-                throw new Error();
+                throw new Error("invalid segmentType:" + segType );
             }
             pi.next();
         } // while !isDone
