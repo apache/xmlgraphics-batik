@@ -22,8 +22,8 @@ import java.awt.EventQueue;
 import java.awt.geom.AffineTransform;
 import java.io.File;
 import java.net.MalformedURLException;
+import java.lang.ref.WeakReference;
 
-import org.apache.batik.swing.JSVGCanvas;
 import org.apache.batik.swing.gvt.GVTTreeRendererListener;
 import org.apache.batik.swing.gvt.GVTTreeRendererEvent;
 import org.apache.batik.swing.svg.SVGDocumentLoaderListener;
@@ -103,7 +103,7 @@ public class JSVGInterruptTest extends JSVGMemoryLeakTest {
 
     public boolean canvasInit(final JSVGCanvas canvas) {
         // System.err.println("In Init");
-        theCanvas = canvas;
+        theCanvas = new WeakReference( canvas );
         theFrame  = handler.getFrame();
         registerObjectDesc(canvas, "JSVGCanvas");
         registerObjectDesc(handler.getFrame(), "JFrame");
@@ -383,12 +383,39 @@ public class JSVGInterruptTest extends JSVGMemoryLeakTest {
     }
 
 
+    /**
+     * a Runnable is run after the given delay has elapsed.
+     * A call to abort() can <i>prevent</i> the start of the Runable before it is
+     * started - it does not abort after it started.
+     */
     class DelayRunnable extends Thread {
-        int delay;
-        Runnable r;
-        boolean stop     = false;
-        boolean complete = false;
-        public DelayRunnable(int delay, Runnable r) {
+
+        /**
+         * delay in milliSeconds - must not change after creation.
+         */
+        private final int delay;
+
+        /**
+         * the Runnable to start - must not change after creation.
+         */
+        private final Runnable r;
+
+        volatile boolean stop     = false;
+        volatile boolean complete = false;
+
+        /**
+         * @param delay to wait before r is started in milliSeconds
+         * @param r a Runnable to start after delay
+         */
+        DelayRunnable(int delay, Runnable r) {
+
+            if ( delay < 0 ){
+                throw new IllegalArgumentException("delay must be >= 0 ! is:" + delay );
+            }
+            if ( r == null ){
+                throw new IllegalArgumentException("Runnable must not be null!");
+            }
+
             this.delay = delay;
             this.r = r;
             setDaemon(true);

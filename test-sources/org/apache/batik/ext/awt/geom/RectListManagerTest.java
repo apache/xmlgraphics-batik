@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -131,7 +131,7 @@ public class RectListManagerTest extends AbstractTest {
                 throw new IllegalArgumentException();
             }
         }
-        
+
         // url is not a file. It must be a regular URL...
         try{
             return new URL(url);
@@ -205,7 +205,7 @@ public class RectListManagerTest extends AbstractTest {
                     int w = Integer.parseInt(st.nextToken());
                     int h = Integer.parseInt(st.nextToken());
                     currRLM.add(new Rectangle(x, y, w, h));
-                } 
+                }
                 else if (RLM_PREF.equals(pref)) {
                     String id = st.nextToken();
                     Object o = rlms.get(id);
@@ -215,20 +215,20 @@ public class RectListManagerTest extends AbstractTest {
                     }
                     currRLM = (RectListManager)o;
                     currID  = id;
-                } 
+                }
                 else if (MERGE_PREF.equals(pref)) {
                     if (currRLM == null) continue;
                     int overhead     = Integer.parseInt(st.nextToken());
                     int lineOverhead = Integer.parseInt(st.nextToken());
                     currRLM.mergeRects(overhead, lineOverhead);
-                } 
+                }
                 else if (ADD_PREF.equals(pref)) {
                     if (currRLM == null) continue;
                     String id = st.nextToken();
                     Object o = rlms.get(id);
                     if (o == null) continue;
                     currRLM.add((RectListManager)o);
-                } 
+                }
                 else if (SUBTRACT_PREF.equals(pref)) {
                     if (currRLM == null) continue;
                     String id = st.nextToken();
@@ -236,7 +236,7 @@ public class RectListManagerTest extends AbstractTest {
                     if (o == null) continue;
                     int overhead = Integer.parseInt(st.nextToken());
                     int lineOverhead = Integer.parseInt(st.nextToken());
-                    currRLM.subtract((RectListManager)o, 
+                    currRLM.subtract((RectListManager)o,
                                      overhead, lineOverhead);
                 }
                 else if (CONTAINS_ALL_PREF.equals(pref)) {
@@ -246,30 +246,30 @@ public class RectListManagerTest extends AbstractTest {
                     if (o == null) continue;
                     RectListManager rlm = (RectListManager)o;
                     ps.println("ID: " + currID + " Sz: " + currRLM.size());
-                    
+
                     if (currRLM.containsAll(rlm)) {
-                        ps.println("  Contains all: " + id + 
+                        ps.println("  Contains all: " + id +
                                    " Sz: " + rlm.size());
                     } else {
-                        ps.println("  Does not contain all: " + id + 
+                        ps.println("  Does not contain all: " + id +
                                    " Sz: " + rlm.size());
                     }
                     ps.println();
-                }                
+                }
                 else if (REMOVE_ALL_PREF.equals(pref)) {
                     if (currRLM == null) continue;
                     String id = st.nextToken();
                     Object o = rlms.get(id);
                     if (o == null) continue;
                     currRLM.removeAll((RectListManager)o);
-                }                
+                }
                 else if (RETAIN_ALL_PREF.equals(pref)) {
                     if (currRLM == null) continue;
                     String id = st.nextToken();
                     Object o = rlms.get(id);
                     if (o == null) continue;
                     currRLM.retainAll((RectListManager)o);
-                }                
+                }
                 else if (PRINT_PREF.equals(pref)) {
                     if (currRLM == null) continue;
 
@@ -293,7 +293,7 @@ public class RectListManagerTest extends AbstractTest {
                     (Messages.formatMessage(ENTRY_KEY_ERROR_DESCRIPTION, null),
                      Messages.formatMessage
                      (ERROR_READING_RECTS,
-                      new String[]{""+lineNo, rects.toString(), 
+                      new String[]{ ""+lineNo, rects.toString(), 
                                    trace.toString()}))
                     });
             report.setPassed(false);
@@ -303,7 +303,7 @@ public class RectListManagerTest extends AbstractTest {
         InputStream refIS = null;
         try {
             refIS = var.openStream();
-        } catch(Exception e) { 
+        } catch(Exception e) {
             try {
                 refIS = ref.openStream();
             } catch(Exception ex) {
@@ -343,7 +343,7 @@ public class RectListManagerTest extends AbstractTest {
             report.setDescription(new TestReport.Entry[] {
                 new TestReport.Entry
                     (Messages.formatMessage(ENTRY_KEY_ERROR_DESCRIPTION, null),
-                     Messages.formatMessage(ERROR_NO_REFERENCE, 
+                     Messages.formatMessage(ERROR_NO_REFERENCE,
                                             new String[]{ref.toString()}))
                     });
         } else {
@@ -351,7 +351,7 @@ public class RectListManagerTest extends AbstractTest {
             report.setDescription(new TestReport.Entry[] {
                 new TestReport.Entry
                     (Messages.formatMessage(ENTRY_KEY_ERROR_DESCRIPTION, null),
-                     Messages.formatMessage(ERROR_WRONG_RESULT, 
+                     Messages.formatMessage(ERROR_WRONG_RESULT,
                                             new String[]{""+mismatch}))
                     });
         }

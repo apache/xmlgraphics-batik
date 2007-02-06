@@ -19,13 +19,15 @@
 package org.apache.batik.dom;
 
 import org.apache.batik.test.AbstractTest;
-import org.apache.batik.dom.GenericDocument;
-import org.apache.batik.dom.GenericDOMImplementation;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.svg.SVGDOMImplementation;
 
 import org.w3c.dom.Document;
 
+/**
+ *
+ * @version $Id$
+ */
 public class DOM3Test extends AbstractTest {
     static String SVG_NAMESPACE_URI = "http://www.w3.org/2000/svg";
     static String EX_NAMESPACE_URI = "http://www.example.org/";

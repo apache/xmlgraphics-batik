@@ -45,9 +45,6 @@ import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 
-import org.apache.batik.transcoder.image.ImageTranscoder;
-import org.apache.batik.transcoder.image.PNGTranscoder;
-
 import org.apache.batik.test.AbstractTest;
 import org.apache.batik.test.DefaultTestReport;
 import org.apache.batik.test.TestReport;
@@ -103,7 +100,7 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
                 throw new IllegalArgumentException();
             }
         }
-        
+
         // url is not a file. It must be a regular URL...
         try{
             return new URL(url);
@@ -121,7 +118,7 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
         report = new DefaultTestReport(this);
 
         try {
-            DiffImageTranscoder transcoder = 
+            DiffImageTranscoder transcoder =
                 new DiffImageTranscoder(getReferenceImageData());
 
             Map hints = createTranscodingHints();
@@ -137,7 +134,7 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
             ex.printStackTrace();
             report.setPassed(false);
         }
-        
+
         return report;
     }
 
@@ -251,7 +248,7 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
          * @param img the image to write
          * @param output the output (ignored)
          * @throw TranscoderException if an error occured while storing the
-         * image 
+         * image
          */
         public void writeImage(BufferedImage img, TranscoderOutput output)
             throws TranscoderException {
@@ -278,7 +275,7 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
             try {
                 BufferedImage ref = getImage(new ByteArrayInputStream(refData));
                 BufferedImage img = getImage(new ByteArrayInputStream(imgData));
-                BufferedImage diff = 
+                BufferedImage diff =
                     SVGRenderingAccuracyTest.buildDiffImage(ref, img);
                 String s = new File(filename).getName();
                 s = ("test-references/org/apache/batik/transcoder/image/"+
@@ -298,7 +295,7 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
         /**
          * Compares both source and result images and set the state flag.
          */
-        protected void compareImage(BufferedImage img) 
+        protected void compareImage(BufferedImage img)
             throws TranscoderException {
             // compare the resulting image with the reference image
             // state = true if refImg is the same than img
@@ -317,7 +314,7 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
                 state = false;
                 return;
             }
-            
+
             if (refImgData.length != imgData.length) {
                 report.setErrorCode(ERROR_IMAGE_DIFFER);
                 report.addDescriptionEntry(ERROR_IMAGE_DIFFER, "");
@@ -335,20 +332,20 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
                     return;
                 }
             }
-            
+
             state = true;
         }
 
         /**
          * Returns true if the reference image is the same than the generated
-         * image, false otherwise.  
+         * image, false otherwise.
          */
         public boolean isIdentical() {
             return state;
         }
     }
 
-    protected BufferedImage getImage(InputStream is) 
+    protected BufferedImage getImage(InputStream is)
         throws IOException {
         ImageTagRegistry reg = ImageTagRegistry.getRegistry();
         Filter filt = reg.readStream(is);
@@ -358,7 +355,7 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
         RenderedImage red = filt.createDefaultRendering();
         if(red == null)
             throw new IOException("Couldn't render Stream");
-        
+
         BufferedImage img = new BufferedImage(red.getWidth(),
                                               red.getHeight(),
                                               BufferedImage.TYPE_INT_ARGB);

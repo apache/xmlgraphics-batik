@@ -110,7 +110,7 @@ public class Color1 implements Painter {
             g.fillRect(0, 0, 40, stepHeight);
 
             g.setPaint(labelColor);
-            g.drawString("" + opacity, 50, stepHeight/2);
+            g.drawString( String.valueOf( opacity ), 50, stepHeight/2);
             g.translate(0, stepHeight);
         }
     }

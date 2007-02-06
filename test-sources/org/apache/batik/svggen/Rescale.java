@@ -83,11 +83,11 @@ public class Rescale implements Painter {
 
         g.translate(0, bi.getHeight() + 30 + 20);
         g.drawString("Rescale Red / Green / Blue", 10, 20);
-        java.awt.image.RescaleOp redStress = new java.awt.image.RescaleOp(new float[]{ 2f, 1f, 1f },
+        java.awt.image.RescaleOp redStress = new java.awt.image.RescaleOp(new float[]{ 2.0f, 1.0f, 1.0f },
                                             new float[]{ 0, 0, 0 }, null);
-        java.awt.image.RescaleOp greenStress = new java.awt.image.RescaleOp(new float[]{ 1f, 2f, 1f },
+        java.awt.image.RescaleOp greenStress = new java.awt.image.RescaleOp(new float[]{ 1.0f, 2.0f, 1.0f },
                                               new float[]{ 0, 0, 0 }, null);
-        java.awt.image.RescaleOp blueStress = new java.awt.image.RescaleOp(new float[]{ 1f, 1f, 2f },
+        java.awt.image.RescaleOp blueStress = new java.awt.image.RescaleOp(new float[]{ 1.0f, 1.0f, 2.0f },
                                              new float[]{ 0, 0, 0 }, null);
 
         g.drawImage(bi, redStress, 10, 30);

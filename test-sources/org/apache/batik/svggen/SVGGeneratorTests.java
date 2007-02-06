@@ -28,7 +28,7 @@ import org.apache.batik.test.util.ImageCompareTest;
 
 /**
  * This test validates that a given rendering sequence, modeled
- * by a <tt>Painter</tt> by doing several subtests for a 
+ * by a <tt>Painter</tt> by doing several subtests for a
  * single input class:
  * + SVGAccuracyTest with several configurations
  * + SVGRenderingAccuracyTest
@@ -39,13 +39,13 @@ import org.apache.batik.test.util.ImageCompareTest;
  * @version $Id$
  */
 public class SVGGeneratorTests extends DefaultTestSuite {
-    public static final String GENERATOR_REFERENCE_BASE 
+    public static final String GENERATOR_REFERENCE_BASE
         = "test-references/org/apache/batik/svggen/";
 
     public static final String RENDERING_DIR
         = "rendering";
 
-    public static final String ACCEPTED_VARIATION_DIR 
+    public static final String ACCEPTED_VARIATION_DIR
         = "accepted-variation";
 
     public static final String CANDIDATE_VARIATION_DIR
@@ -85,7 +85,7 @@ public class SVGGeneratorTests extends DefaultTestSuite {
         }catch(ClassNotFoundException e){
             throw new IllegalArgumentException(clName);
         }
-        
+
         Object o = null;
 
         try {
@@ -104,7 +104,7 @@ public class SVGGeneratorTests extends DefaultTestSuite {
         addTest(makeGeneratorContext(painter, id));
         addTest(makeSVGRenderingAccuracyTest(painter, id, PLAIN_GENERATION_PREFIX));
         addTest(makeSVGRenderingAccuracyTest(painter, id, CUSTOM_CONTEXT_GENERATION_PREFIX));
-        addTest(makeImageCompareTest(painter, id, PLAIN_GENERATION_PREFIX, 
+        addTest(makeImageCompareTest(painter, id, PLAIN_GENERATION_PREFIX,
                                      CUSTOM_CONTEXT_GENERATION_PREFIX));
     }
 
@@ -114,7 +114,7 @@ public class SVGGeneratorTests extends DefaultTestSuite {
     public String getName(){
         return "SVGGeneratorTest - " + getId();
     }
-        
+
     protected String getPackageName(){
         return "org.apache.batik.svggen";
     }
@@ -155,7 +155,7 @@ public class SVGGeneratorTests extends DefaultTestSuite {
     private Test makeGeneratorContext(Painter painter, String id){
         String cl = CUSTOM_CONTEXT_GENERATION_PREFIX + getNonQualifiedClassName(painter);
 
-        GeneratorContext test 
+        GeneratorContext test
             = new GeneratorContext(painter, makeURL(painter, CUSTOM_CONTEXT_GENERATION_PREFIX));
 
         test.setSaveSVG(new File(GENERATOR_REFERENCE_BASE + CANDIDATE_REF_DIR + "/" + cl + SVG_EXTENSION));
@@ -167,7 +167,7 @@ public class SVGGeneratorTests extends DefaultTestSuite {
     private Test makeSVGAccuracyTest(Painter painter, String id){
         String cl = PLAIN_GENERATION_PREFIX + getNonQualifiedClassName(painter);
 
-        SVGAccuracyTest test 
+        SVGAccuracyTest test
             = new SVGAccuracyTest(painter, makeURL(painter, PLAIN_GENERATION_PREFIX));
 
         test.setSaveSVG(new File(GENERATOR_REFERENCE_BASE + CANDIDATE_REF_DIR + "/" + cl + SVG_EXTENSION));
@@ -178,7 +178,7 @@ public class SVGGeneratorTests extends DefaultTestSuite {
 
     private String getNonQualifiedClassName(Painter painter){
         String cl = painter.getClass().getName();
-        int n = cl.lastIndexOf(".");
+        int n = cl.lastIndexOf('.');
         return cl.substring(n+1);
     }
 
@@ -189,7 +189,7 @@ public class SVGGeneratorTests extends DefaultTestSuite {
         try{
             url = new URL(urlString);
         }catch(Exception e){
-            throw new Error(); // Should not happen
+            throw new Error( e.getMessage() ); // Should not happen
         }
 
         return url;

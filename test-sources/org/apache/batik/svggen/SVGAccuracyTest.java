@@ -43,7 +43,6 @@ import org.apache.batik.test.AbstractTest;
 import org.apache.batik.test.DefaultTestReport;
 import org.apache.batik.test.TestReport;
 
-import org.apache.batik.svggen.SVGGraphics2D;
 import org.apache.batik.dom.GenericDOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.DOMImplementation;
@@ -289,7 +288,7 @@ public class SVGAccuracyTest extends AbstractTest
 
         return report;
     }
-    
+
     public int computeColumnNumber(String aStr, String bStr){
         if(aStr == null || bStr == null){
             return -1;
@@ -355,7 +354,7 @@ public class SVGAccuracyTest extends AbstractTest
         String namespaceURI = SVGConstants.SVG_NAMESPACE_URI;
         Document domFactory = impl.createDocument(namespaceURI, SVG_SVG_TAG, null);
         SVGGeneratorContext ctx = SVGGeneratorContext.createDefault(domFactory);
-        GraphicContextDefaults defaults 
+        GraphicContextDefaults defaults
             = new GraphicContextDefaults();
         defaults.font = new Font("Arial", Font.PLAIN, 12);
         ctx.setGraphicContextDefaults(defaults);
