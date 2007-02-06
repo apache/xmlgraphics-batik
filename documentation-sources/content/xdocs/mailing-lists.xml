@@ -55,7 +55,7 @@
 
       <p><strong>Archives:</strong></p>
       <ul>
-        <li><a href="http://mail-archives.eu.apache.org/mod_mbox/xmlgraphics-batik-users/">mod_mbox Archives</a></li>
+        <li><a href="http://mail-archives.apache.org/mod_mbox/xmlgraphics-batik-users/">mod_mbox Archives</a></li>
         <li><a href="http://xmlgraphics.apache.org/mail/batik-users/">gzipped mbox files</a></li>
         <!--li><a href="http://mail-archives.apache.org/eyebrowse/SummarizeList?listName=batik-users@xml.apache.org">Eyebrowse Archive</a> (currently broken)</li-->
       </ul>
@@ -91,7 +91,7 @@
 
       <p><strong>Archives:</strong></p>
       <ul>
-        <li><a href="http://mail-archives.eu.apache.org/mod_mbox/xmlgraphics-batik-dev/">mod_mbox Archives</a></li>
+        <li><a href="http://mail-archives.apache.org/mod_mbox/xmlgraphics-batik-dev/">mod_mbox Archives</a></li>
         <li><a href="http://xmlgraphics.apache.org/mail/batik-dev/">gzipped mbox files</a></li>
         <!--li><a href="http://mail-archives.apache.org/eyebrowse/SummarizeList?listName=batik-dev@xml.apache.org">Eyebrowse Archive</a> (currently broken)</li-->
       </ul>
