@@ -42,7 +42,6 @@ import org.apache.batik.util.RunnableQueue;
 
 import org.apache.batik.swing.gvt.GVTTreeRendererAdapter;
 import org.apache.batik.swing.gvt.GVTTreeRendererEvent;
-import org.apache.batik.swing.JSVGCanvas;
 import org.apache.batik.swing.svg.SVGDocumentLoaderAdapter;
 import org.apache.batik.swing.svg.SVGDocumentLoaderEvent;
 import org.apache.batik.swing.svg.SVGLoadEventDispatcherAdapter;
@@ -203,7 +202,7 @@ public class JSVGCanvasHandler {
                         canvas.addSVGDocumentLoaderListener(ll);
                         sll = new SVGLoadEventListener();
                         canvas.addSVGLoadEventDispatcherListener(sll);
-                        
+
                     }});
         } catch (Throwable t) {
             t.printStackTrace();
@@ -330,7 +329,7 @@ public class JSVGCanvasHandler {
             }
         }
         public void managerStarted(UpdateManagerEvent e) {
-          bindHost(); 
+          bindHost();
         }
         public void managerSuspended(UpdateManagerEvent e) { }
         public void managerResumed(UpdateManagerEvent e) { }
@@ -391,5 +390,5 @@ public class JSVGCanvasHandler {
             um.addUpdateManagerListener(url);
         }
     }
-    
+
 }

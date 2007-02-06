@@ -23,7 +23,7 @@ import java.awt.Color;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.util.StringTokenizer;
-import java.util.Vector;
+import java.util.List;
 
 import org.apache.batik.test.AbstractTest;
 import org.apache.batik.test.DefaultTestSuite;
@@ -37,7 +37,7 @@ import org.apache.batik.test.TestReport;
  * @version $Id$
  */
 public class MainTest extends DefaultTestSuite {
-    
+
     public MainTest(){
         Test t = new MainConfigTest("-d samples") {
                 public TestReport validate(SVGConverter c){
@@ -48,32 +48,32 @@ public class MainTest extends DefaultTestSuite {
                         return reportError("-d", "samples", "" + dst);
                     }
                 }
-                
+
             };
-        
+
         addTest(t);
         t.setId("MainConfigTest.output");
-        
+
         t = new MainConfigTest("samples/anne.svg") {
                 String ERROR_UNEXPECTED_SOURCES = "MainConfigTest.error.unexpected.sources";
-                
+
                 public TestReport validate(SVGConverter c){
-                    Vector sources = c.getSources();
+                    List sources = c.getSources();
                     if(sources.size() == 1){
-                        String src = (String)sources.elementAt(0);
+                        String src = (String)sources.get(0);
                         if ("samples/anne.svg".equals(src)){
                             return reportSuccess();
-                        } 
+                        }
                     }
-                    
+
                     return reportError(ERROR_UNEXPECTED_SOURCES);
                 }
-                
+
             };
-    
+
         addTest(t);
         t.setId("MainConfigTest.source");
-    
+
         t = new MainConfigTest("-m image/jpeg") {
                 public TestReport validate(SVGConverter c){
                     DestinationType type = c.getDestinationType();
@@ -83,9 +83,9 @@ public class MainTest extends DefaultTestSuite {
                         return reportError("-m", DestinationType.JPEG.toString(), "" + type);
                     }
                 }
-            
+
             };
-    
+
         addTest(t);
         t.setId("MainConfigTest.mimeType.jpegA");
 
@@ -98,9 +98,9 @@ public class MainTest extends DefaultTestSuite {
                         return reportError("-m", DestinationType.JPEG.toString(), "" + type);
                     }
                 }
-            
+
             };
-    
+
         addTest(t);
         t.setId("MainConfigTest.mimeType.jpegB");
 
@@ -113,9 +113,9 @@ public class MainTest extends DefaultTestSuite {
                         return reportError("-m", DestinationType.JPEG.toString(), "" + type);
                     }
                 }
-            
+
             };
-    
+
         addTest(t);
         t.setId("MainConfigTest.mimeType.jpegC");
 
@@ -128,9 +128,9 @@ public class MainTest extends DefaultTestSuite {
                         return reportError("-m", DestinationType.PNG.toString(), "" + type);
                     }
                 }
-            
+
             };
-    
+
         addTest(t);
         t.setId("MainConfigTest.mimeType.png");
 
@@ -143,9 +143,9 @@ public class MainTest extends DefaultTestSuite {
                         return reportError("-m", DestinationType.PDF.toString(), "" + type);
                     }
                 }
-            
+
             };
-    
+
         addTest(t);
         t.setId("MainConfigTest.mimeType.pdf");
 
@@ -158,9 +158,9 @@ public class MainTest extends DefaultTestSuite {
                         return reportError("-m", DestinationType.TIFF.toString(), "" + type);
                     }
                 }
-            
+
             };
-    
+
         addTest(t);
         t.setId("MainConfigTest.mimeType.tiff");
 
@@ -173,9 +173,9 @@ public class MainTest extends DefaultTestSuite {
                         return reportError("-w", "" + 467.69, "" + width);
                     }
                 }
-            
+
             };
-    
+
         addTest(t);
         t.setId("MainConfigTest.width");
 
@@ -188,9 +188,9 @@ public class MainTest extends DefaultTestSuite {
                         return reportError("-h", "" + 345.67, "" + height);
                     }
                 }
-            
+
             };
-    
+
         addTest(t);
         t.setId("MainConfigTest.height");
 
@@ -203,7 +203,7 @@ public class MainTest extends DefaultTestSuite {
                         return reportError("-maxw", "" + 467.69, "" + maxWidth);
                     }
                 }
-            
+
             };
         addTest(t);
         t.setId("MainConfigTest.maxWidth");
@@ -239,13 +239,13 @@ public class MainTest extends DefaultTestSuite {
                         return r.getX() + "," + r.getY() + "," + r.getWidth() + "," + r.getHeight();
                     }
                 }
-            
+
             };
-    
+
         addTest(t);
         t.setId("MainConfigTest.aoi");
 
-    
+
         t = new MainConfigTest("-bg 128.200.100.50") {
                 public TestReport validate(SVGConverter c){
                     Color bg = c.getBackgroundColor();
@@ -264,9 +264,9 @@ public class MainTest extends DefaultTestSuite {
                         return c.getAlpha() + "." + c.getRed() + "." + c.getGreen() + "." + c.getBlue();
                     }
                 }
-            
+
             };
-    
+
         addTest(t);
         t.setId("MainConfigTest.backgroundColor");
 
@@ -441,7 +441,7 @@ public class MainTest extends DefaultTestSuite {
                     if(c.getIndexed() == 8){
                         return reportSuccess();
                     } else {
-                        return reportError("-indexed", "8", 
+                        return reportError("-indexed", "8",
                                            "" + c.getIndexed());
                     }
                 }
@@ -582,7 +582,7 @@ class MainIllegalArgTest extends AbstractTest {
     public TestReport runImpl() throws Exception {
         String[] argsArray = makeArgsArray(args);
         Main main = new Main(argsArray) {
-                public void error(String errorCode, 
+                public void error(String errorCode,
                                   Object[] errorArgs){
                     if (Main.ERROR_ILLEGAL_ARGUMENT.equals(errorCode)){
                         report = reportSuccess();
@@ -594,8 +594,8 @@ class MainIllegalArgTest extends AbstractTest {
                                                    errorCode);
                     }
                 }
-                                  
-                
+
+
             };
 
         main.execute();
@@ -657,7 +657,7 @@ class MainConfigErrorTest extends AbstractTest {
     public TestReport runImpl() throws Exception {
         String[] argsArray = makeArgsArray(args);
         Main main = new Main(argsArray) {
-                public void error(String errorCode, 
+                public void error(String errorCode,
                                   Object[] errorArgs){
                     if (Main.ERROR_NOT_ENOUGH_OPTION_VALUES.equals(errorCode)){
                         if(errorArgs != null && errorArgs.length > 0 && badOption.equals(errorArgs[0])){
@@ -677,8 +677,8 @@ class MainConfigErrorTest extends AbstractTest {
                                                    errorCode);
                     }
                 }
-                                  
-                
+
+
             };
 
         main.execute();
@@ -705,7 +705,7 @@ abstract class MainConfigTest extends AbstractTest {
     String args;
     TestReport report;
 
-    static final String ERROR_UNEXPECTED_OPTION_VALUE 
+    static final String ERROR_UNEXPECTED_OPTION_VALUE
         = "MainConfigTest.error.unexpected.option.value";
 
     static final String ENTRY_KEY_OPTION
@@ -741,7 +741,7 @@ abstract class MainConfigTest extends AbstractTest {
                 public void validateConverterConfig(SVGConverter c){
                     report = validate(c);
                 }
-                
+
             };
 
         main.execute();
