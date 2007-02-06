@@ -754,10 +754,11 @@ public class CSSOMValue
          * Called when the left value text has changed.
          */
         public void leftTextChanged(String text) throws DOMException {
+            final Value val = getValue();
             text = "rect(" +
-                getValue().getTop().getCssText() + ", " +
-                getValue().getRight().getCssText() + ", " +
-                getValue().getBottom().getCssText() + ", " +
+                val.getTop().getCssText() + ", " +
+                val.getRight().getCssText() + ", " +
+                val.getBottom().getCssText() + ", " +
                 text + ')';
             textChanged(text);
         }
@@ -767,10 +768,11 @@ public class CSSOMValue
          */
         public void leftFloatValueChanged(short unit, float value)
             throws DOMException {
+            final Value val = getValue();
             String text = "rect(" +
-                getValue().getTop().getCssText() + ", " +
-                getValue().getRight().getCssText() + ", " +
-                getValue().getBottom().getCssText() + ", " +
+                val.getTop().getCssText() + ", " +
+                val.getRight().getCssText() + ", " +
+                val.getBottom().getCssText() + ", " +
                 FloatValue.getCssText(unit, value) + ')';
             textChanged(text);
         }
@@ -779,11 +781,12 @@ public class CSSOMValue
          * Called when the top value text has changed.
          */
         public void topTextChanged(String text) throws DOMException {
+            final Value val = getValue();
             text = "rect(" +
                 text + ", " +
-                getValue().getRight().getCssText() + ", " +
-                getValue().getBottom().getCssText() + ", " +
-                getValue().getLeft().getCssText() + ')';
+                val.getRight().getCssText() + ", " +
+                val.getBottom().getCssText() + ", " +
+                val.getLeft().getCssText() + ')';
             textChanged(text);
         }
 
@@ -792,11 +795,12 @@ public class CSSOMValue
          */
         public void topFloatValueChanged(short unit, float value)
             throws DOMException {
+            final Value val = getValue();
             String text = "rect(" +
                 FloatValue.getCssText(unit, value) + ", " +
-                getValue().getRight().getCssText() + ", " +
-                getValue().getBottom().getCssText() + ", " +
-                getValue().getLeft().getCssText() + ')';
+                val.getRight().getCssText() + ", " +
+                val.getBottom().getCssText() + ", " +
+                val.getLeft().getCssText() + ')';
             textChanged(text);
         }
 
@@ -804,11 +808,12 @@ public class CSSOMValue
          * Called when the right value text has changed.
          */
         public void rightTextChanged(String text) throws DOMException {
+            final Value val = getValue();
             text = "rect(" +
-                getValue().getTop().getCssText() + ", " +
+                val.getTop().getCssText() + ", " +
                 text + ", " +
-                getValue().getBottom().getCssText() + ", " +
-                getValue().getLeft().getCssText() + ')';
+                val.getBottom().getCssText() + ", " +
+                val.getLeft().getCssText() + ')';
             textChanged(text);
         }
 
@@ -817,11 +822,12 @@ public class CSSOMValue
          */
         public void rightFloatValueChanged(short unit, float value)
             throws DOMException {
+            final Value val = getValue();
             String text = "rect(" +
-                getValue().getTop().getCssText() + ", " +
+                val.getTop().getCssText() + ", " +
                 FloatValue.getCssText(unit, value) + ", " +
-                getValue().getBottom().getCssText() + ", " +
-                getValue().getLeft().getCssText() + ')';
+                val.getBottom().getCssText() + ", " +
+                val.getLeft().getCssText() + ')';
             textChanged(text);
         }
 
@@ -829,11 +835,12 @@ public class CSSOMValue
          * Called when the bottom value text has changed.
          */
         public void bottomTextChanged(String text) throws DOMException {
+            final Value val = getValue();
             text = "rect(" +
-                getValue().getTop().getCssText() + ", " +
-                getValue().getRight().getCssText() + ", " +
+                val.getTop().getCssText() + ", " +
+                val.getRight().getCssText() + ", " +
                 text + ", " +
-                getValue().getLeft().getCssText() + ')';
+                val.getLeft().getCssText() + ')';
             textChanged(text);
         }
 
@@ -842,11 +849,12 @@ public class CSSOMValue
          */
         public void bottomFloatValueChanged(short unit, float value)
             throws DOMException {
+            final Value val = getValue();
             String text = "rect(" +
-                getValue().getTop().getCssText() + ", " +
-                getValue().getRight().getCssText() + ", " +
+                val.getTop().getCssText() + ", " +
+                val.getRight().getCssText() + ", " +
                 FloatValue.getCssText(unit, value) + ", " +
-                getValue().getLeft().getCssText() + ')';
+                val.getLeft().getCssText() + ')';
             textChanged(text);
         }
 
@@ -854,10 +862,11 @@ public class CSSOMValue
          * Called when the red value text has changed.
          */
         public void redTextChanged(String text) throws DOMException {
+            final Value val = getValue();
             text = "rgb(" +
                 text + ", " +
-                getValue().getGreen().getCssText() + ", " +
-                getValue().getBlue().getCssText() + ')';
+                val.getGreen().getCssText() + ", " +
+                val.getBlue().getCssText() + ')';
             textChanged(text);
         }
 
@@ -866,10 +875,11 @@ public class CSSOMValue
          */
         public void redFloatValueChanged(short unit, float value)
             throws DOMException {
+            final Value val = getValue();
             String text = "rgb(" +
                 FloatValue.getCssText(unit, value) + ", " +
-                getValue().getGreen().getCssText() + ", " +
-                getValue().getBlue().getCssText() + ')';
+                val.getGreen().getCssText() + ", " +
+                val.getBlue().getCssText() + ')';
             textChanged(text);
         }
 
@@ -877,10 +887,11 @@ public class CSSOMValue
          * Called when the green value text has changed.
          */
         public void greenTextChanged(String text) throws DOMException {
+            final Value val = getValue();
             text = "rgb(" +
-                getValue().getRed().getCssText() + ", " +
+                val.getRed().getCssText() + ", " +
                 text + ", " +
-                getValue().getBlue().getCssText() + ')';
+                val.getBlue().getCssText() + ')';
             textChanged(text);
         }
 
@@ -889,10 +900,11 @@ public class CSSOMValue
          */
         public void greenFloatValueChanged(short unit, float value)
             throws DOMException {
+            final Value val = getValue();
             String text = "rgb(" +
-                getValue().getRed().getCssText() + ", " +
+                val.getRed().getCssText() + ", " +
                 FloatValue.getCssText(unit, value) + ", " +
-                getValue().getBlue().getCssText() + ')';
+                val.getBlue().getCssText() + ')';
             textChanged(text);
         }
 
@@ -900,9 +912,10 @@ public class CSSOMValue
          * Called when the blue value text has changed.
          */
         public void blueTextChanged(String text) throws DOMException {
+            final Value val = getValue();
             text = "rgb(" +
-                getValue().getRed().getCssText() + ", " +
-                getValue().getGreen().getCssText() + ", " +
+                val.getRed().getCssText() + ", " +
+                val.getGreen().getCssText() + ", " +
                 text + ')';
             textChanged(text);
         }
@@ -912,9 +925,10 @@ public class CSSOMValue
          */
         public void blueFloatValueChanged(short unit, float value)
             throws DOMException {
+            final Value val = getValue();
             String text = "rgb(" +
-                getValue().getRed().getCssText() + ", " +
-                getValue().getGreen().getCssText() + ", " +
+                val.getRed().getCssText() + ", " +
+                val.getGreen().getCssText() + ", " +
                 FloatValue.getCssText(unit, value) + ')';
             textChanged(text);
         }
