@@ -193,7 +193,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
                 inverseTransform = transform.createInverse();
             }catch(NoninvertibleTransformException e){
                 // Should never happen.
-                throw new Error();
+                throw new Error( e.getMessage() );
             }
         } else {
             // The transform is not invertible. Use the same
@@ -370,7 +370,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
      * @param newFilter the new filter of this node
      */
     public void setFilter(Filter newFilter) {
-        if ((newFilter == null) && (filter == null)) 
+        if ((newFilter == null) && (filter == null))
             return; // No change still no filter.
 
         fireGraphicsNodeChangeStarted();

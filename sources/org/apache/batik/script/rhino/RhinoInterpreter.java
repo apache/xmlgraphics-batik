@@ -154,7 +154,7 @@ public class RhinoInterpreter implements Interpreter {
      * @see org.apache.batik.script.InterpreterPool
      */
     public RhinoInterpreter(URL documentURL) {
-        try { 
+        try {
             rhinoClassLoader = new RhinoClassLoader
                 (documentURL, getClass().getClassLoader());
         } catch (SecurityException se) {
@@ -328,9 +328,9 @@ public class RhinoInterpreter implements Interpreter {
                                 return cx.compileReader
                                     (new StringReader(scriptStr),
                                      SOURCE_NAME_SVG, 1, rhinoClassLoader);
-                            } catch (IOException ie) {
+                            } catch (IOException ioEx ) {
                                 // Should never happen: using a string
-                                throw new Error();
+                                throw new Error( ioEx.getMessage() );
                             }
                         }
                     };

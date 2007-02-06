@@ -21,13 +21,12 @@ package org.apache.batik.apps.rasterizer;
 import java.awt.Color;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.StringTokenizer;
-import java.util.Vector;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.apache.batik.transcoder.Transcoder;
 import org.apache.batik.parser.ClockHandler;
@@ -516,13 +515,13 @@ public class Main implements SVGConverterController {
      * Static map containing all the option handlers able to analyze the
      * various options.
      */
-    protected static Map optionMap = new Hashtable();
+    protected static Map optionMap = new HashMap();
 
     /**
      * Static map containing all the mime types understood by the
      * rasterizer
      */
-    protected static Map mimeTypeMap = new Hashtable();
+    protected static Map mimeTypeMap = new HashMap();
 
     /**
      * Static initializer: adds all the option handlers to the
@@ -834,7 +833,7 @@ public class Main implements SVGConverterController {
     }
 
     /**
-     * Vector of arguments describing the conversion task to be
+     * List of arguments describing the conversion task to be
      * performed.
      */
     protected List args;
@@ -878,7 +877,7 @@ public class Main implements SVGConverterController {
     public void execute(){
         SVGConverter c = new SVGConverter(this);
 
-        Vector sources = new Vector();
+        List sources = new ArrayList();
 
         int nArgs = args.size();
         for (int i=0; i<nArgs; i++){
@@ -886,7 +885,7 @@ public class Main implements SVGConverterController {
             OptionHandler optionHandler = (OptionHandler)optionMap.get(v);
             if (optionHandler == null){
                 // Assume v is a source.
-                sources.addElement(v);
+                sources.add(v);
             } else {
                 // v is an option. Extract the optionValues required
                 // by the handler.

@@ -23,7 +23,7 @@ import java.awt.color.ICC_ColorSpace;
 import java.awt.color.ICC_Profile;
 
 /**
- * This class extends the ICCColorSpace class by providing 
+ * This class extends the ICCColorSpace class by providing
  * convenience methods to convert to sRGB using various
  * methods, forcing a givent intent, such as perceptual or
  * relative colorimetric.
@@ -40,7 +40,7 @@ public class ICCColorSpaceExt extends ICC_ColorSpace {
 
     static final ColorSpace sRGB = ColorSpace.getInstance(ColorSpace.CS_sRGB);
     int intent;
-    
+
     public ICCColorSpaceExt(ICC_Profile p, int intent){
         super(p);
 
@@ -66,8 +66,8 @@ public class ICCColorSpaceExt extends ICC_ColorSpace {
     }
 
     /**
-     * Returns the sRGB value obtained by forcing the 
-     * conversion method to the intent passed to the 
+     * Returns the sRGB value obtained by forcing the
+     * conversion method to the intent passed to the
      * constructor
      */
     public float[] intendedToRGB(float[] values){
@@ -82,7 +82,7 @@ public class ICCColorSpaceExt extends ICC_ColorSpace {
             case SATURATION:
             return saturationToRGB(values);
             default:
-            throw new Error();
+            throw new Error("invalid intent:" + intent );
         }
     }
 
