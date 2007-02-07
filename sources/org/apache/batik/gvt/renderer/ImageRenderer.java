@@ -19,6 +19,7 @@
 package org.apache.batik.gvt.renderer;
 
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.Collection;
 
@@ -29,6 +30,7 @@ import java.util.Collection;
  * @version $Id$
  */
 public interface ImageRenderer extends Renderer{
+
     /**
      * Update the required size of the offscreen buffer.
      */
@@ -60,4 +62,17 @@ public interface ImageRenderer extends Renderer{
      * transform before the flush(Rectangle) is called.
      */
     void flush(Collection areas);
+
+    /**
+     * Sets the specified rendering hints to be used for future renderings.
+     * @param rh the rendering hints to use
+     */
+    void setRenderingHints(RenderingHints rh);
+
+    /**
+     * Returns the rendering hints this ImageRenderer is using for its
+     * rendering.
+     * @return the rendering hints being used
+     */
+    RenderingHints getRenderingHints();
 }
