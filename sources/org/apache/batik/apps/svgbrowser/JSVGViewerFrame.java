@@ -24,6 +24,7 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Event;
 import java.awt.EventQueue;
+import java.awt.FileDialog;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -44,6 +45,7 @@ import java.awt.image.BufferedImage;
 import java.awt.print.PrinterException;
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -264,6 +266,11 @@ public class JSVGViewerFrame
      */
     public static final String PROPERTY_OS_WINDOWS_PREFIX
         = Resources.getString("JSVGViewerFrame.property.os.windows.prefix");
+
+    /**
+     * Resource string name for the Open dialog.
+     */
+    protected static final String OPEN_TITLE = "Open.title";
 
     /**
      * The input handlers
@@ -1142,40 +1149,68 @@ public class JSVGViewerFrame
         public OpenAction() {
         }
         public void actionPerformed(ActionEvent e) {
-            JFileChooser fileChooser = null;
-
-            // Apply work around Windows problem when security is enabled,
-            // and when prior to JDK 1.4.
-            String os = System.getProperty(PROPERTY_OS_NAME, PROPERTY_OS_NAME_DEFAULT);
-            SecurityManager sm = System.getSecurityManager();
-
-            if ( priorJDK1_4 && sm != null && os.indexOf(PROPERTY_OS_WINDOWS_PREFIX) != -1 ){
-                fileChooser = new JFileChooser(makeAbsolute(currentPath),
-                                               new WindowsAltFileSystemView());
+            File f = null;
+            if (Platform.isOSX) {
+                FileDialog fileDialog =
+                    new FileDialog(JSVGViewerFrame.this,
+                                   Resources.getString(OPEN_TITLE));
+                fileDialog.setFilenameFilter(new FilenameFilter() {
+                    public boolean accept(File dir, String name) {
+                        Iterator iter = getHandlers().iterator();
+                        while (iter.hasNext()) {
+                            SquiggleInputHandler handler
+                                = (SquiggleInputHandler)iter.next();
+                            if (handler.accept(new File(dir, name))) {
+                                return true;
+                            }
+                        }
+                        return false;
+                    }
+                });
+                fileDialog.setVisible(true);
+                String filename = fileDialog.getFile();
+                if (fileDialog != null) {
+                    String dirname = fileDialog.getDirectory();
+                    f = new File(dirname, filename);
+                }
             } else {
-                fileChooser = new JFileChooser(makeAbsolute(currentPath));
+                JFileChooser fileChooser = null;
+
+                // Apply work around Windows problem when security is enabled,
+                // and when prior to JDK 1.4.
+                String os = System.getProperty(PROPERTY_OS_NAME, PROPERTY_OS_NAME_DEFAULT);
+                SecurityManager sm = System.getSecurityManager();
+
+                if ( priorJDK1_4 && sm != null && os.indexOf(PROPERTY_OS_WINDOWS_PREFIX) != -1 ){
+                    fileChooser = new JFileChooser(makeAbsolute(currentPath),
+                                                   new WindowsAltFileSystemView());
+                } else {
+                    fileChooser = new JFileChooser(makeAbsolute(currentPath));
+                }
+
+                fileChooser.setFileHidingEnabled(false);
+                fileChooser.setFileSelectionMode
+                    (JFileChooser.FILES_ONLY);
+
+                //
+                // Add file filters from the handlers map
+                //
+                Iterator iter = getHandlers().iterator();
+                while (iter.hasNext()) {
+                    SquiggleInputHandler handler
+                        = (SquiggleInputHandler)iter.next();
+                    fileChooser.addChoosableFileFilter
+                        (new SquiggleInputHandlerFilter(handler));
+                }
+
+                int choice = fileChooser.showOpenDialog(JSVGViewerFrame.this);
+                if (choice == JFileChooser.APPROVE_OPTION) {
+                    f = fileChooser.getSelectedFile();
+                    currentPath = f;
+                }
             }
 
-            fileChooser.setFileHidingEnabled(false);
-            fileChooser.setFileSelectionMode
-                (JFileChooser.FILES_ONLY);
-
-            //
-            // Add file filters from the handlers map
-            //
-            Iterator iter = getHandlers().iterator();
-            while (iter.hasNext()) {
-                SquiggleInputHandler handler
-                    = (SquiggleInputHandler)iter.next();
-                fileChooser.addChoosableFileFilter
-                    (new SquiggleInputHandlerFilter(handler));
-            }
-
-            int choice = fileChooser.showOpenDialog(JSVGViewerFrame.this);
-            if (choice == JFileChooser.APPROVE_OPTION) {
-                File f = fileChooser.getSelectedFile();
-
-                currentPath = f;
+            if (f != null) {
                 try {
                     String furl = f.toURL().toString();
                     showSVGDocument(furl);
