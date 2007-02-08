@@ -211,9 +211,8 @@ public class StaticRenderer implements ImageRenderer {
     }
 
     /**
-     * Returns a copy of the transform from the current user space (as
-     * defined by the top node of the GVT tree) to the device space (1
-     * unit = 1/72nd of an inch / 1 pixel, roughly speaking
+     * Returns the transform from the current user space (as defined
+     * by the top node of the GVT tree) to the device space.
      */
     public AffineTransform getTransform(){
         return usr2dev;

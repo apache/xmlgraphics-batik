@@ -18,6 +18,7 @@
  */
 package org.apache.batik.gvt.renderer;
 
+import java.awt.geom.AffineTransform;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
@@ -32,9 +33,43 @@ import java.util.Collection;
 public interface ImageRenderer extends Renderer{
 
     /**
+     * release resources associated with this object.
+     */
+    void dispose();
+
+    /**
      * Update the required size of the offscreen buffer.
      */
     void updateOffScreen(int width, int height);
+
+    /**
+     * Sets the transform from the current user space (as defined by
+     * the top node of the GVT tree, to the associated device space.
+     *
+     * @param usr2dev the new user space to device space transform. If null,
+     *        the identity transform will be set.
+     */
+    void setTransform(AffineTransform usr2dev);
+
+    /**
+     * Returns the transform from the current user space (as defined
+     * by the top node of the GVT tree) to the device space.
+     */
+    public AffineTransform getTransform();
+
+    /**
+     * Sets the specified rendering hints to be used for future renderings.
+     * This replaces current set of rendering hints.
+     * @param rh the rendering hints to use
+     */
+    void setRenderingHints(RenderingHints rh);
+
+    /**
+     * Returns the rendering hints this ImageRenderer is using for its
+     * rendering.
+     * @return the rendering hints being used
+     */
+    RenderingHints getRenderingHints();
 
     /**
      * Get the Current offscreen buffer used for rendering
@@ -62,17 +97,4 @@ public interface ImageRenderer extends Renderer{
      * transform before the flush(Rectangle) is called.
      */
     void flush(Collection areas);
-
-    /**
-     * Sets the specified rendering hints to be used for future renderings.
-     * @param rh the rendering hints to use
-     */
-    void setRenderingHints(RenderingHints rh);
-
-    /**
-     * Returns the rendering hints this ImageRenderer is using for its
-     * rendering.
-     * @return the rendering hints being used
-     */
-    RenderingHints getRenderingHints();
 }
