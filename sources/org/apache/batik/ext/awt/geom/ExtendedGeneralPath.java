@@ -131,7 +131,7 @@ public class ExtendedGeneralPath implements ExtendedShape, Cloneable {
             return;
         }
 
-        Arc2D arc = computeArc(x0, y0, rx, ry, angle, 
+        Arc2D arc = computeArc(x0, y0, rx, ry, angle,
                                largeArcFlag, sweepFlag, x, y);
         if (arc == null) return;
 
@@ -152,11 +152,11 @@ public class ExtendedGeneralPath implements ExtendedShape, Cloneable {
     }
 
 
-    /** 
-     * This constructs an unrotated Arc2D from the SVG specification of an 
+    /**
+     * This constructs an unrotated Arc2D from the SVG specification of an
      * Elliptical arc.  To get the final arc you need to apply a rotation
      * transform such as:
-     * 
+     *
      * AffineTransform.getRotateInstance
      *     (angle, arc.getX()+arc.getWidth()/2, arc.getY()+arc.getHeight()/2);
      */
@@ -267,7 +267,7 @@ public class ExtendedGeneralPath implements ExtendedShape, Cloneable {
         types [numSeg++]  = PathIterator.SEG_MOVETO;
         cx = mx = values[numVals++] = x;
         cy = my = values[numVals++] = y;
-        
+
     }
 
     /**
@@ -354,7 +354,7 @@ public class ExtendedGeneralPath implements ExtendedShape, Cloneable {
                 path.moveTo(values[numVals-2], values[numVals-1]);
             break;
 
-        default: 
+        default:
             break;
         }
     }
@@ -370,7 +370,7 @@ public class ExtendedGeneralPath implements ExtendedShape, Cloneable {
      * Delegates to the enclosed <code>GeneralPath</code>.
      */
     public void append(PathIterator pi, boolean connect) {
-        
+
         while (!pi.isDone()) {
             double [] vals = new double[6];
             int type = pi.currentSegment(vals);
@@ -395,15 +395,15 @@ public class ExtendedGeneralPath implements ExtendedShape, Cloneable {
 
             switch(type) {
             case PathIterator.SEG_CLOSE:   closePath(); break;
-            case PathIterator.SEG_MOVETO:  
+            case PathIterator.SEG_MOVETO:
                 moveTo ((float)vals[0], (float)vals[1]); break;
-            case PathIterator.SEG_LINETO:  
+            case PathIterator.SEG_LINETO:
                 lineTo ((float)vals[0], (float)vals[1]); break;
-            case PathIterator.SEG_QUADTO:  
-                quadTo ((float)vals[0], (float)vals[1], 
+            case PathIterator.SEG_QUADTO:
+                quadTo ((float)vals[0], (float)vals[1],
                         (float)vals[2], (float)vals[3]); break;
-            case PathIterator.SEG_CUBICTO: 
-                curveTo((float)vals[0], (float)vals[1], 
+            case PathIterator.SEG_CUBICTO:
+                curveTo((float)vals[0], (float)vals[1],
                         (float)vals[2], (float)vals[3],
                         (float)vals[4], (float)vals[5]); break;
             }
@@ -438,20 +438,20 @@ public class ExtendedGeneralPath implements ExtendedShape, Cloneable {
 
             switch(type) {
             case PathIterator.SEG_CLOSE:   closePath(); break;
-            case PathIterator.SEG_MOVETO:  
+            case PathIterator.SEG_MOVETO:
                 moveTo ((float)vals[0], (float)vals[1]); break;
-            case PathIterator.SEG_LINETO:  
+            case PathIterator.SEG_LINETO:
                 lineTo ((float)vals[0], (float)vals[1]); break;
-            case PathIterator.SEG_QUADTO:  
-                quadTo ((float)vals[0], (float)vals[1], 
+            case PathIterator.SEG_QUADTO:
+                quadTo ((float)vals[0], (float)vals[1],
                         (float)vals[2], (float)vals[3]); break;
-            case PathIterator.SEG_CUBICTO: 
-                curveTo((float)vals[0], (float)vals[1], 
+            case PathIterator.SEG_CUBICTO:
+                curveTo((float)vals[0], (float)vals[1],
                         (float)vals[2], (float)vals[3],
                         (float)vals[4], (float)vals[5]); break;
-            case ExtendedPathIterator.SEG_ARCTO:   
-                arcTo  (vals[0], vals[1], vals[2], 
-                        (vals[3]!=0), (vals[4]!=0), 
+            case ExtendedPathIterator.SEG_ARCTO:
+                arcTo  (vals[0], vals[1], vals[2],
+                        (vals[3]!=0), (vals[4]!=0),
                         vals[5], vals[6]); break;
             }
         }
@@ -594,8 +594,8 @@ public class ExtendedGeneralPath implements ExtendedShape, Cloneable {
             int ret = types[segNum];
             switch (ret) {
             case SEG_CLOSE: break;
-            case SEG_MOVETO: 
-            case SEG_LINETO: 
+            case SEG_MOVETO:
+            case SEG_LINETO:
                 coords[0] = values[valsIdx];
                 coords[1] = values[valsIdx+1];
                 break;
@@ -623,7 +623,7 @@ public class ExtendedGeneralPath implements ExtendedShape, Cloneable {
                 coords[6] = values[valsIdx+6];
                 break;
             }
-            // System.out.println("Seg: [" + segNum + "] type: " + ret + 
+            // System.out.println("Seg: [" + segNum + "] type: " + ret +
             //                    " vals: [" + coords[0] + ", " + coords[1] +
             //                    "]");
             return ret;
@@ -633,33 +633,36 @@ public class ExtendedGeneralPath implements ExtendedShape, Cloneable {
             int ret = types[segNum];
             switch (ret) {
             case SEG_CLOSE: break;
-            case SEG_MOVETO: 
-            case SEG_LINETO: 
-                coords[0] = (float)values[valsIdx];
-                coords[1] = (float)values[valsIdx+1];
+            case SEG_MOVETO:
+            case SEG_LINETO:
+                coords[0] = values[valsIdx];
+                coords[1] = values[valsIdx+1];
                 break;
             case SEG_QUADTO:
-                coords[0] = (float)values[valsIdx];
-                coords[1] = (float)values[valsIdx+1];
-                coords[2] = (float)values[valsIdx+2];
-                coords[3] = (float)values[valsIdx+3];
+                // coords[0] = values[valsIdx];
+                // coords[1] = values[valsIdx+1];
+                // coords[2] = values[valsIdx+2];
+                // coords[3] = values[valsIdx+3];
+                System.arraycopy( values, 0, coords, 0, 4 );
                 break;
             case SEG_CUBICTO:
-                coords[0] = (float)values[valsIdx];
-                coords[1] = (float)values[valsIdx+1];
-                coords[2] = (float)values[valsIdx+2];
-                coords[3] = (float)values[valsIdx+3];
-                coords[4] = (float)values[valsIdx+4];
-                coords[5] = (float)values[valsIdx+5];
+                // coords[0] = values[valsIdx];
+                // coords[1] = values[valsIdx+1];
+                // coords[2] = values[valsIdx+2];
+                // coords[3] = values[valsIdx+3];
+                // coords[4] = values[valsIdx+4];
+                // coords[5] = values[valsIdx+5];
+                System.arraycopy( values, 0, coords, 0, 6 );
                 break;
             case SEG_ARCTO:
-                coords[0] = (float)values[valsIdx];
-                coords[1] = (float)values[valsIdx+1];
-                coords[2] = (float)values[valsIdx+2];
-                coords[3] = (float)values[valsIdx+3];
-                coords[4] = (float)values[valsIdx+4];
-                coords[5] = (float)values[valsIdx+5];
-                coords[6] = (float)values[valsIdx+6];
+                // coords[0] = values[valsIdx];
+                // coords[1] = values[valsIdx+1];
+                // coords[2] = values[valsIdx+2];
+                // coords[3] = values[valsIdx+3];
+                // coords[4] = values[valsIdx+4];
+                // coords[5] = values[valsIdx+5];
+                // coords[6] = values[valsIdx+6];
+                System.arraycopy( values, 0, coords, 0, 7 );
                 break;
             }
             return ret;
@@ -675,7 +678,7 @@ public class ExtendedGeneralPath implements ExtendedShape, Cloneable {
             int type = types[segNum++];
             switch (type) {
             case SEG_CLOSE: break;
-            case SEG_MOVETO: 
+            case SEG_MOVETO:
             case SEG_LINETO: valsIdx+=2; break;
             case SEG_QUADTO: valsIdx+=4; break;
             case SEG_CUBICTO:valsIdx+=6; break;
@@ -713,12 +716,13 @@ public class ExtendedGeneralPath implements ExtendedShape, Cloneable {
             numSeg  = 0;
             return;
         }
-        
-        if ((numVals + numValues) > values.length) {
+
+        int newSize = numVals + numValues;
+        if ( newSize > values.length) {
             int nlen = values.length*2;
-            if (nlen < (numVals + numValues))
-                nlen = numVals + numValues;
-        
+            if ( nlen < newSize )
+                nlen = newSize;
+
             float [] nvals = new float[nlen];
             System.arraycopy(values, 0, nvals, 0, numVals);
             values = nvals;

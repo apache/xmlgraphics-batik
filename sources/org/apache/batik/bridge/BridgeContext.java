@@ -1450,6 +1450,15 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         if (focusManager != null) {
             focusManager.dispose();
         }
+        if ( elementDataMap != null ){
+            elementDataMap.clear();
+        }
+        if ( nodeElementMap != null ){
+            nodeElementMap.clear();
+        }
+        if ( elementNodeMap != null ){
+            elementNodeMap.clear();
+        }        
     }
 
     /**

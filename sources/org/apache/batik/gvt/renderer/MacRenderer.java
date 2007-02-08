@@ -94,6 +94,9 @@ public class MacRenderer implements ImageRenderer {
         workImg = null;
         renderingHints = null;
         usr2dev = null;
+        if ( damagedAreas != null ){
+            damagedAreas.clear();
+        }
         damagedAreas = null;
     }
     /**
