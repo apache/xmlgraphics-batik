@@ -72,7 +72,7 @@ public class Main extends JComponent {
     static int duration = 3000;
     static int frameDelay = duration+7000;
 
-    boolean done = false;
+    volatile boolean done = false;
 
     public Main(File []files, Dimension size) {
         setBackground(Color.black);
@@ -117,6 +117,11 @@ public class Main extends JComponent {
     }
 
     class RenderThread extends Thread {
+        RenderThread(){
+            super("RenderThread");
+            setDaemon( true );
+        }
+
         public void run() {
             renderer.setDoubleBuffered(true);
             for (int i=0; i<files.length; i++) {
@@ -124,12 +129,12 @@ public class Main extends JComponent {
                 GVTBuilder builder = new GVTBuilder();
 
                 try {
-                    System.out.println("Reading: " + files[i]);
-                    Document svgDoc = loader.loadDocument
-                        (files[i].toURL().toString());
-                    System.out.println("Building: " + files[i]);
+                    String fileName = files[ i ].toURL().toString();
+                    System.out.println("Reading: " + fileName );
+                    Document svgDoc = loader.loadDocument( fileName );
+                    System.out.println("Building: " + fileName );
                     gvtRoot = builder.build(ctx, svgDoc);
-                    System.out.println("Rendering: " + files[i]);
+                    System.out.println("Rendering: " + fileName );
                     renderer.setTree(gvtRoot);
 
                     Element elt = ((SVGDocument)svgDoc).getRootElement();
@@ -145,9 +150,10 @@ public class Main extends JComponent {
                                                 display.getWidth(),
                                                 display.getHeight());
                     renderer.repaint(r);
-                    System.out.println("Painting: " + files[i]);
+                    System.out.println("Painting: " + fileName );
                     image = renderer.getOffScreen();
                     setTransition(image);
+
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -159,6 +165,7 @@ public class Main extends JComponent {
                 done = true;
                 setCursor(new Cursor(Cursor.WAIT_CURSOR));
             }
+
         }
     }
 
@@ -205,6 +212,8 @@ public class Main extends JComponent {
         int blockh = 75;
 
         public TransitionThread(BufferedImage bi) {
+            super( "TransitionThread");
+            setDaemon( true );
             src = bi;
         }
 
@@ -250,7 +259,7 @@ public class Main extends JComponent {
             for (int i=0; i<rects.length; i++) {
                 int idx = (int)(Math.random()*(rects.length-i));
                 Point pt = rects[idx];
-                System.arraycopy( rects, idx + 1, rects, idx + 1 - 1, rects.length - i - idx + 1 );
+                System.arraycopy( rects, idx + 1, rects, idx + 1 - 1, rects.length - i - idx -1 );  // +1??
                 int x=pt.x*blockw, y=pt.y*blockh;
                 int w=blockw, h = blockh;
                 if (x+w > src.getWidth())  w = src.getWidth()-x;
@@ -279,6 +288,7 @@ public class Main extends JComponent {
                 Main.this.notifyAll();
             }
         }
+
     }
 
     public void paint(Graphics g) {
