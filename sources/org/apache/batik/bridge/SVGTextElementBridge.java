@@ -924,7 +924,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                     EventListener l;
                     l = new SVGAElementBridge.AnchorListener(ua, ch);
                     target.addEventListenerNS
-                        (XMLConstants.XML_EVENTS_NAMESPACE_URI, 
+                        (XMLConstants.XML_EVENTS_NAMESPACE_URI,
                          SVG_EVENT_CLICK, l, false, null);
                     ctx.storeEventListenerNS
                         (target, XMLConstants.XML_EVENTS_NAMESPACE_URI,

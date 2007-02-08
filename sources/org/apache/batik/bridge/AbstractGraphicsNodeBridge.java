@@ -68,11 +68,11 @@ import org.w3c.dom.svg.SVGTransformable;
  * @version $Id$
  */
 public abstract class AbstractGraphicsNodeBridge extends AnimatableSVGBridge
-    implements SVGContext, 
-               BridgeUpdateHandler, 
-               GraphicsNodeBridge, 
+    implements SVGContext,
+               BridgeUpdateHandler,
+               GraphicsNodeBridge,
                ErrorConstants {
-    
+
     /**
      * The graphics node constructed by this bridge.
      */
@@ -87,7 +87,7 @@ public abstract class AbstractGraphicsNodeBridge extends AnimatableSVGBridge
      * The unit context for length conversions.
      */
     protected UnitProcessor.Context unitContext;
-    
+
     /**
      * Constructs a new abstract bridge.
      */
@@ -302,7 +302,7 @@ public abstract class AbstractGraphicsNodeBridge extends AnimatableSVGBridge
     }
 
     /**
-     * Invoked when an MutationEvent of type 'DOMCharacterDataModified' 
+     * Invoked when an MutationEvent of type 'DOMCharacterDataModified'
      * is fired.
      */
     public void handleDOMCharacterDataModified(MutationEvent evt) {
@@ -315,6 +315,8 @@ public abstract class AbstractGraphicsNodeBridge extends AnimatableSVGBridge
         SVGOMElement elt = (SVGOMElement)e;
         elt.setSVGContext(null);
         ctx.unbind(e);
+
+        bboxShape = null;
     }
 
     /**
@@ -488,7 +490,7 @@ public abstract class AbstractGraphicsNodeBridge extends AnimatableSVGBridge
             return null;
         }
         Shape s = node.getOutline();
-        
+
         if ((bboxShape != null) && (s == bboxShape.get())) return bbox;
         bboxShape = new SoftReference(s); // don't keep this live.
         bbox = null;

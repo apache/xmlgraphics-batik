@@ -20,10 +20,11 @@ package org.apache.batik.util;
 
 import java.lang.ref.SoftReference;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This class manages a cache of soft references to objects that may
- * take some time to load or create, such as images loaded from the 
+ * take some time to load or create, such as images loaded from the
  * network.
  *
  * <p>Adding an object is two fold:</p>
@@ -49,7 +50,7 @@ public class SoftReferenceCache {
     /**
      * The map of cached objects.
      */
-    protected HashMap map = new HashMap();
+    protected Map map = new HashMap();
 
     /**
      * Let people create their own caches.
@@ -59,7 +60,7 @@ public class SoftReferenceCache {
     /**
      * Let people flush the cache (remove any cached data).  Pending
      * requests will be treated as though clear() was called on the
-     * key, this should cause them to go and re-read the data.  
+     * key, this should cause them to go and re-read the data.
      */
     public synchronized void flush() {
         map.clear();
@@ -72,14 +73,14 @@ public class SoftReferenceCache {
      * that this will return true but between this call and the call
      * to request the soft-reference will be cleared.  So it
      * is still possible for request to return NULL, just much less
-     * likely (you can always call 'clear' in that case). 
+     * likely (you can always call 'clear' in that case).
      */
     protected final synchronized boolean isPresentImpl(Object key) {
         if (!map.containsKey(key))
             return false;
 
         Object o = map.get(key);
-        if (o == null)  
+        if (o == null)
             // It's been requested but hasn't been 'put' yet.
             return true;
 
@@ -192,13 +193,13 @@ public class SoftReferenceCache {
                 if (this == o) {
                     // Notify other threads that they may have
                     // to provide this resource now.
-                    cache.notifyAll(); 
+                    cache.notifyAll();
                 } else {
                     // Must not have been ours put it back...
                     // Can happen if a clear is done.
                     cache.map.put(key, o);
                 }
- 
+
             }
         }
     }
