@@ -359,6 +359,7 @@ which will be used to configure the chosen Forrest skin.
     }
     #publishedStrip {
       font-size: 80%;
+      height: 1.5em;
     }
     #top .searchbox {
       font-size: 80%;
