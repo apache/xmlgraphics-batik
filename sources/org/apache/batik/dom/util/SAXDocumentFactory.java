@@ -315,7 +315,7 @@ public class SAXDocumentFactory
             if (ex != null && ex instanceof InterruptedIOException) {
                 throw (InterruptedIOException) ex;
             }
-            throw new IOException(e.getMessage());
+            throw new SAXIOException(e);
         }
         currentNode = null;
         Document ret = document;
@@ -434,7 +434,7 @@ public class SAXDocumentFactory
             if (ex != null && ex instanceof InterruptedIOException) {
                 throw (InterruptedIOException)ex;
             }
-            throw new IOException(e.getMessage());
+            throw new SAXIOException(e);
         }
 
         currentNode  = null;

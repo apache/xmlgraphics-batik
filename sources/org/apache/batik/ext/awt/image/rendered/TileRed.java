@@ -60,7 +60,6 @@ public class TileRed extends AbstractRed implements TileGenerator {
     private RenderingHints  hints;
 
     final boolean is_INT_PACK;
-    final boolean alphaPremult;
 
     /**
      * Tile
@@ -103,12 +102,11 @@ public class TileRed extends AbstractRed implements TileGenerator {
         this.xStep        = xStep;
         this.yStep        = yStep;
         this.hints        = hints;
-        this.alphaPremult = false;
 
         SampleModel sm = fixSampleModel(tile, xStep, yStep, 
                                         tiledRegion.width,
                                         tiledRegion.height);
-        ColorModel cm  = fixColorModel(tile, alphaPremult);
+        ColorModel cm  = tile.getColorModel();
 
         double smSz   = AbstractTiledRed.getDefaultTileSize();
         smSz = smSz*smSz;
@@ -285,7 +283,10 @@ public class TileRed extends AbstractRed implements TileGenerator {
         count %= colors.length;
 
         g.fillRect(0, 0, maxX, maxY);*/
-        GraphicsUtil.coerceData(wr, src.getColorModel(), alphaPremult);
+
+        // Don't coerceData since it will be in the proper alpha state
+        // due to the drawing.
+        // GraphicsUtil.coerceData(wr, src.getColorModel(), alphaPremult);
         return wr;
     }
 
@@ -395,12 +396,6 @@ public class TileRed extends AbstractRed implements TileGenerator {
         }
     }
 
-    protected static ColorModel fixColorModel(RenderedImage src,
-                                              boolean alphaPremult) {
-        return GraphicsUtil.coerceColorModel(src.getColorModel(), 
-                                             alphaPremult);
-    }
-    
     /**
      * This function 'fixes' the source's sample model.
      * right now it just ensures that the sample model isn't
