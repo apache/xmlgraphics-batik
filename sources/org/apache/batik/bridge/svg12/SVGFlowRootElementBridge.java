@@ -397,8 +397,8 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
     protected void dumpACIWord(AttributedString as) {
         if (as == null) return;
 
-        String chars = "";
-        String brkStr = "";
+        StringBuffer chars = new StringBuffer();
+        StringBuffer brkStr = new StringBuffer();
         AttributedCharacterIterator aci = as.getIterator();
         AttributedCharacterIterator.Attribute WORD_LIMIT =
             TextLineBreaks.WORD_LIMIT;
@@ -406,15 +406,17 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
         for (char ch = aci.current();
              ch!=AttributedCharacterIterator.DONE;
              ch = aci.next()) {
-            chars  += ch + "  ";
-            int w = ((Integer)aci.getAttribute(WORD_LIMIT)).intValue();
-            if (w >=10)
-                brkStr += ""+w+" ";                            // todo tune stringhandling
-            else
-                brkStr += ""+w+"  ";
+
+                chars.append( ch ).append( ' ' ).append( ' ' );
+                int w = ((Integer)aci.getAttribute(WORD_LIMIT)).intValue();
+                brkStr.append( w ).append( ' ' );
+                if (w < 10) {
+                    // for small values append another ' '
+                    brkStr.append( ' ' );
+                }
         }
-        System.out.println(chars);
-        System.out.println(brkStr);
+        System.out.println( chars.toString() );
+        System.out.println( brkStr.toString() );
     }
 
     protected Element getFlowDivElement(Element elem) {

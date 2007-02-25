@@ -37,13 +37,13 @@ public class SVGColor extends AbstractSVGConverter{
     /**
      * Predefined CSS colors
      */
-    public static final Color aqua = new Color(0x00, 0xff, 0xff);
+    public static final Color aqua = Color.cyan;
     public static final Color black = Color.black;
     public static final Color blue = Color.blue;
-    public static final Color fuchsia = new Color(0xff, 0x00, 0xff);
-    public static final Color gray = new Color(0x80, 0x80, 0x80);
-    public static final Color green = new Color(0x00, 0x80, 0x00);
-    public static final Color lime = new Color(0x00, 0xff, 0x00);
+    public static final Color fuchsia = Color.magenta;
+    public static final Color gray = Color.gray;
+    public static final Color green = new Color(0x00, 0x80, 0x00); // NOT Color.green!
+    public static final Color lime = Color.green;
     public static final Color maroon = new Color(0x80, 0x00, 0x00);
     public static final Color navy = new Color(0x00, 0x00, 0x80);
     public static final Color olive = new Color(0x80, 0x80, 0x00);

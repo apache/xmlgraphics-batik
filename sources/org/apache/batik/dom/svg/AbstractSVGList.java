@@ -457,10 +457,8 @@ public abstract class AbstractSVGList {
      * the list.
      */
     protected void resetAttribute(SVGItem item) {
-        StringBuffer buf = new StringBuffer(getValueAsString());
-        buf.append(getItemSeparator());
-        buf.append(item.getValueAsString());
-        setAttributeValue(buf.toString());
+        String newValue = getValueAsString() + getItemSeparator() + item.getValueAsString();
+        setAttributeValue( newValue );
         valid = true;
     }
 
