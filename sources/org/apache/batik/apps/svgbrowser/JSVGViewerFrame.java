@@ -735,7 +735,7 @@ public class JSVGViewerFrame
         locationBar.addActionListener(new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 String st = locationBar.getText().trim();
-                int i = st.indexOf("#");
+                int i = st.indexOf( '#' );
                 String t = "";
                 if (i != -1) {
                     t = st.substring(i + 1);
@@ -1317,7 +1317,7 @@ public class JSVGViewerFrame
             if (uriChooser.showDialog() == URIChooser.OK_OPTION) {
                 String s = uriChooser.getText();
                 if (s == null) return;
-                int i = s.indexOf("#");
+                int i = s.indexOf( '#' );
                 String t = "";
                 if (i != -1) {
                     t = s.substring(i + 1);
@@ -2043,7 +2043,7 @@ public class JSVGViewerFrame
      */
     public class PlayAction extends   AbstractAction
                             implements JComponentModifier {
-        java.util.List components = new LinkedList();
+        List components = new LinkedList();
         public PlayAction() {}
         public void actionPerformed(ActionEvent e) {
             svgCanvas.resumeProcessing();
@@ -2067,7 +2067,7 @@ public class JSVGViewerFrame
      */
     public class PauseAction extends   AbstractAction
                             implements JComponentModifier {
-        java.util.List components = new LinkedList();
+        List components = new LinkedList();
         public PauseAction() {}
         public void actionPerformed(ActionEvent e) {
             svgCanvas.suspendProcessing();
@@ -2091,7 +2091,7 @@ public class JSVGViewerFrame
      */
     public class StopAction extends    AbstractAction
                             implements JComponentModifier {
-        java.util.List components = new LinkedList();
+        List components = new LinkedList();
         public StopAction() {}
         public void actionPerformed(ActionEvent e) {
             svgCanvas.stopProcessing();
@@ -2612,7 +2612,7 @@ public class JSVGViewerFrame
                 return;
             }
 
-            if (s.indexOf("#") != -1) {
+            if (s.indexOf( '#' ) != -1) {
                 localHistory.update(s);
                 locationBar.setText(s);
                 if (debugger != null) {

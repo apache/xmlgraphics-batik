@@ -152,7 +152,7 @@ public class LanguageDialog extends JDialog implements ActionMap {
      * Returns the action associated with the given string
      * or null on error
      * @param key the key mapped with the action to get
-     * @throws MissingListenerException if the action is not found
+     * @throws MissingListenerException if the action is not found   todo does it throw ?? seems to return null
      */
     public Action getAction(String key) throws MissingListenerException {
         return (Action)listeners.get(key);
@@ -372,7 +372,8 @@ public class LanguageDialog extends JDialog implements ActionMap {
                 result.append(userListModel.getElementAt(0));
 
                 for (int i = 1; i < userListModel.getSize(); i++) {
-                    result.append("," + userListModel.getElementAt(i));
+                    result.append( ',' );
+                    result.append( userListModel.getElementAt(i) );
                 }
             }
             return result.toString();

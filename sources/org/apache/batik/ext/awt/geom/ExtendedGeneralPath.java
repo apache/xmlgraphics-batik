@@ -19,12 +19,14 @@
 package org.apache.batik.ext.awt.geom;
 
 import java.awt.Shape;
+import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Arc2D;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.util.Arrays;
 
 /**
  * The <code>ExtendedGeneralPath</code> class represents a geometric
@@ -228,13 +230,13 @@ public class ExtendedGeneralPath implements ExtendedShape, Cloneable {
         // Compute the angle start
         n = Math.sqrt((ux * ux) + (uy * uy));
         p = ux; // (1 * ux) + (0 * uy)
-        sign = (uy < 0) ? -1d : 1d;
+        sign = (uy < 0) ? -1.0 : 1.0;
         double angleStart = Math.toDegrees(sign * Math.acos(p / n));
 
         // Compute the angle extent
         n = Math.sqrt((ux * ux + uy * uy) * (vx * vx + vy * vy));
         p = ux * vx + uy * vy;
-        sign = (ux * vy - uy * vx < 0) ? -1d : 1d;
+        sign = (ux * vy - uy * vx < 0) ? -1.0 : 1.0;
         double angleExtent = Math.toDegrees(sign * Math.acos(p / n));
         if(!sweepFlag && angleExtent > 0) {
             angleExtent -= 360f;
@@ -370,9 +372,10 @@ public class ExtendedGeneralPath implements ExtendedShape, Cloneable {
      * Delegates to the enclosed <code>GeneralPath</code>.
      */
     public void append(PathIterator pi, boolean connect) {
+        double [] vals = new double[6];
 
         while (!pi.isDone()) {
-            double [] vals = new double[6];
+            Arrays.fill( vals, 0 );
             int type = pi.currentSegment(vals);
             pi.next();
             if (connect && (numVals != 0)) {
@@ -414,8 +417,9 @@ public class ExtendedGeneralPath implements ExtendedShape, Cloneable {
      * Delegates to the enclosed <code>GeneralPath</code>.
      */
     public void append(ExtendedPathIterator epi, boolean connect) {
+        float[] vals = new float[ 7 ];
         while (!epi.isDone()) {
-            float [] vals = new float[7];
+            Arrays.fill( vals, 0 );
             int type = epi.currentSegment(vals);
             epi.next();
             if (connect && (numVals != 0)) {
@@ -427,7 +431,7 @@ public class ExtendedGeneralPath implements ExtendedShape, Cloneable {
                         // Change MOVETO to LINETO.
                         type = PathIterator.SEG_LINETO;
                     } else {
-                        // Redundent segment (move to current loc) drop it...
+                        // Redundant segment (move to current loc) drop it...
                         if (epi.isDone()) break; // Nothing interesting
                         type = epi.currentSegment(vals);
                         epi.next();
@@ -472,7 +476,7 @@ public class ExtendedGeneralPath implements ExtendedShape, Cloneable {
     }
 
     /**
-     * Delegates to the enclosed <code>GeneralPath</code>.
+     * get the current position or <code>null</code>.
      */
     public synchronized Point2D getCurrentPoint() {
         if (numVals == 0) return null;
@@ -487,6 +491,8 @@ public class ExtendedGeneralPath implements ExtendedShape, Cloneable {
 
         numSeg = 0;
         numVals = 0;
+        values = null;
+        types = null;
     }
 
     /**
@@ -508,7 +514,7 @@ public class ExtendedGeneralPath implements ExtendedShape, Cloneable {
     /**
      * Delegates to the enclosed <code>GeneralPath</code>.
      */
-    public java.awt.Rectangle getBounds() {
+    public synchronized Rectangle getBounds() {
         return path.getBounds();
     }
 
@@ -678,7 +684,7 @@ public class ExtendedGeneralPath implements ExtendedShape, Cloneable {
             int type = types[segNum++];
             switch (type) {
             case SEG_CLOSE: break;
-            case SEG_MOVETO:
+            case SEG_MOVETO:                   // fallthrough is intended
             case SEG_LINETO: valsIdx+=2; break;
             case SEG_QUADTO: valsIdx+=4; break;
             case SEG_CUBICTO:valsIdx+=6; break;
@@ -695,12 +701,16 @@ public class ExtendedGeneralPath implements ExtendedShape, Cloneable {
             ExtendedGeneralPath result = (ExtendedGeneralPath) super.clone();
             result.path = (GeneralPath) path.clone();
 
-            result.values = new float[values.length];
-            System.arraycopy(values, 0, result.values, 0, values.length);
+            if ( values != null ){
+                result.values = new float[values.length];
+                System.arraycopy(values, 0, result.values, 0, values.length);
+            }
             result.numVals = numVals;
 
-            result.types = new int[types.length];
-            System.arraycopy(types, 0, result.types, 0, types.length);
+            if ( types != null ){
+                result.types = new int[types.length];
+                System.arraycopy(types, 0, result.types, 0, types.length);
+            }
             result.numSeg = numSeg;
 
             return result;
@@ -708,6 +718,13 @@ public class ExtendedGeneralPath implements ExtendedShape, Cloneable {
         return null;
     }
 
+    /**
+     * Make sure, that the requested number of slots in vales[] are available.
+     * Must be called even for numValues = 0, because it is also
+     * used for initialization of those arrays.
+     *
+     * @param numValues number of requested coordinates
+     */
     private void makeRoom(int numValues) {
         if (values == null) {
             values = new float[2*numValues];
