@@ -319,7 +319,7 @@ public abstract class AnimationEngine {
                     boolean usesUnderlying = false;
                     AbstractAnimation anim = sandwich.animation;
                     if (anim != null) {
-                        av = sandwich.animation.getComposedValue();
+                        av = anim.getComposedValue();
                         usesUnderlying =
                             sandwich.lowestAnimation.usesUnderlyingValue();
                         anim.isDirty = false;
@@ -345,9 +345,15 @@ public abstract class AnimationEngine {
                 String propertyName = (String) e2.getKey();
                 Sandwich sandwich = (Sandwich) e2.getValue();
                 if (sandwich.shouldUpdate || sandwich.animation.isDirty) {
-                    AnimatableValue av = sandwich.animation.getComposedValue();
-                    boolean usesUnderlying =
-                        sandwich.lowestAnimation.usesUnderlyingValue();
+                    AnimatableValue av = null;
+                    boolean usesUnderlying = false;
+                    AbstractAnimation anim = sandwich.animation;
+                    if (anim != null) {
+                        av = anim.getComposedValue();
+                        usesUnderlying =
+                            sandwich.lowestAnimation.usesUnderlyingValue();
+                        anim.isDirty = false;
+                    }
                     if (usesUnderlying && !sandwich.listenerRegistered) {
                         target.addTargetListener(null, propertyName, true,
                                                  targetListener);
@@ -364,7 +370,6 @@ public abstract class AnimationEngine {
                         target.updatePropertyValue(propertyName, av);
                     }
                     sandwich.shouldUpdate = false;
-                    sandwich.animation.isDirty = false;
                 }
             }
 
@@ -375,10 +380,14 @@ public abstract class AnimationEngine {
                 String type = (String) e2.getKey();
                 Sandwich sandwich = (Sandwich) e2.getValue();
                 if (sandwich.shouldUpdate || sandwich.animation.isDirty) {
-                    AnimatableValue av = sandwich.animation.getComposedValue();
+                    AnimatableValue av = null;
+                    AbstractAnimation anim = sandwich.animation;
+                    if (anim != null) {
+                        av = sandwich.animation.getComposedValue();
+                        anim.isDirty = false;
+                    }
                     target.updateOtherValue(type, av);
                     sandwich.shouldUpdate = false;
-                    sandwich.animation.isDirty = false;
                 }
             }
         }
