@@ -189,6 +189,12 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
             }
         }
 
+        if (hints.containsKey(KEY_WIDTH))
+            width = ((Float)hints.get(KEY_WIDTH)).floatValue();
+        if (hints.containsKey(KEY_HEIGHT))
+            height = ((Float)hints.get(KEY_HEIGHT)).floatValue();
+        
+
         SVGOMDocument svgDoc = (SVGOMDocument)document;
         SVGSVGElement root = svgDoc.getRootElement();
         ctx = createBridgeContext(svgDoc);
