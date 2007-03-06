@@ -38,6 +38,39 @@ import org.w3c.dom.svg.SVGTransform;
 public class AnimatableTransformListValue extends AnimatableValue {
 
     /**
+     * Identity transform value of type 'skewX'.
+     */
+    protected static SVGOMTransform IDENTITY_SKEWX = new SVGOMTransform();
+
+    /**
+     * Identity transform value of type 'skewY'.
+     */
+    protected static SVGOMTransform IDENTITY_SKEWY = new SVGOMTransform();
+
+    /**
+     * Identity transform value of type 'scale'.
+     */
+    protected static SVGOMTransform IDENTITY_SCALE = new SVGOMTransform();
+
+    /**
+     * Identity transform value of type 'rotate'.
+     */
+    protected static SVGOMTransform IDENTITY_ROTATE = new SVGOMTransform();
+
+    /**
+     * Identity transform value of type 'translate'.
+     */
+    protected static SVGOMTransform IDENTITY_TRANSLATE = new SVGOMTransform();
+
+    static {
+        IDENTITY_SKEWX.setSkewX(0f);
+        IDENTITY_SKEWY.setSkewY(0f);
+        IDENTITY_SCALE.setScale(0f, 0f);
+        IDENTITY_ROTATE.setRotate(0f, 0f, 0f);
+        IDENTITY_TRANSLATE.setTranslate(0f, 0f);
+    }
+
+    /**
      * List of transforms.
      */
     protected Vector transforms;
@@ -114,15 +147,46 @@ public class AnimatableTransformListValue extends AnimatableValue {
         }
 
         if (to != null) {
-            AbstractSVGTransform ft = (AbstractSVGTransform) transforms.lastElement();
-            int type = ft.getType();
-            AbstractSVGTransform tt = (AbstractSVGTransform) toTransformList.transforms.lastElement();
+            AbstractSVGTransform tt =
+                (AbstractSVGTransform) toTransformList.transforms.lastElement();
+            AbstractSVGTransform ft = null;
+            int type;
+            if (transforms.isEmpty()) {
+                // For the case of an additive animation with an underlying
+                // transform list of zero elements.
+                type = tt.getType();
+                switch (type) {
+                    case SVGTransform.SVG_TRANSFORM_SKEWX:
+                        ft = IDENTITY_SKEWX;
+                        break;
+                    case SVGTransform.SVG_TRANSFORM_SKEWY:
+                        ft = IDENTITY_SKEWY;
+                        break;
+                    case SVGTransform.SVG_TRANSFORM_SCALE:
+                        ft = IDENTITY_SCALE;
+                        break;
+                    case SVGTransform.SVG_TRANSFORM_ROTATE:
+                        ft = IDENTITY_ROTATE;
+                        break;
+                    case SVGTransform.SVG_TRANSFORM_TRANSLATE:
+                        ft = IDENTITY_TRANSLATE;
+                        break;
+                }
+            } else {
+                ft = (AbstractSVGTransform) transforms.lastElement();
+                type = ft.getType();
+            }
             if (type == tt.getType()) {
-                AbstractSVGTransform t =
-                    (AbstractSVGTransform) res.transforms.elementAt(index);
-                if (t == null) {
+                AbstractSVGTransform t;
+                if (res.transforms.isEmpty()) {
                     t = new SVGOMTransform();
-                    res.transforms.setElementAt(t, index);
+                    res.transforms.add(t);
+                } else {
+                    t = (AbstractSVGTransform) res.transforms.elementAt(index);
+                    if (t == null) {
+                        t = new SVGOMTransform();
+                        res.transforms.setElementAt(t, index);
+                    }
                 }
                 float x, y, r = 0;
                 switch (type) {
