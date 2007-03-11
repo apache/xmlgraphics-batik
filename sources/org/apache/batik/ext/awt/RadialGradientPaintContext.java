@@ -356,8 +356,8 @@ final class RadialGradientPaintContext extends MultipleGradientPaintContext {
      */
     private void calculateFixedPointSqrtLookupTable() {
         float sqStepFloat;
-        sqStepFloat = (float)((fastGradientArraySize * fastGradientArraySize)
-                       / (MAX_PRECISION - 2.0));
+        sqStepFloat = (fastGradientArraySize * fastGradientArraySize)
+                       / (MAX_PRECISION - 2.0f);
 
         // The last two values are the same so that linear square root
         // interpolation can happen on the maximum reachable element in the
@@ -365,7 +365,7 @@ final class RadialGradientPaintContext extends MultipleGradientPaintContext {
         int[] workTbl = sqrtLutFixed;      // local is cheaper
         int i;
         for (i = 0; i < MAX_PRECISION - 1; i++) {
-            workTbl[i] = (int)(Math.sqrt(i*sqStepFloat));
+            workTbl[i] = (int)Math.sqrt(i*sqStepFloat);
         }
         workTbl[i] = workTbl[i-1];
         invSqStepFloat = 1.0f/sqStepFloat;
