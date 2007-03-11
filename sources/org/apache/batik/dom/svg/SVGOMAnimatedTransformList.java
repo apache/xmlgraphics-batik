@@ -20,7 +20,7 @@ package org.apache.batik.dom.svg;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Vector;
+import java.util.List;
 
 import org.apache.batik.anim.values.AnimatableTransformListValue;
 import org.apache.batik.anim.values.AnimatableValue;
@@ -106,7 +106,7 @@ public class SVGOMAnimatedTransformList
     public AnimatableValue getUnderlyingValue(AnimationTarget target) {
         SVGTransformList tl = getBaseVal();
         int n = tl.getNumberOfItems();
-        Vector v = new Vector(n);
+        List v = new ArrayList(n);
         for (int i = 0; i < n; i++) {
             v.add((AbstractSVGTransform) tl.getItem(i));
         }
