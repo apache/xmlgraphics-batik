@@ -70,7 +70,7 @@ final class RadialGradientPaintContext extends MultipleGradientPaintContext {
     private int fillMethod;
 
     /** Amount for offset when clamping focus. */
-    private static final float SCALEBACK = .999f;
+    private static final float SCALEBACK = 0.999f;
 
     /**
      * Constructor for RadialGradientPaintContext.
@@ -356,8 +356,8 @@ final class RadialGradientPaintContext extends MultipleGradientPaintContext {
      */
     private void calculateFixedPointSqrtLookupTable() {
         float sqStepFloat;
-        sqStepFloat = ((fastGradientArraySize  * fastGradientArraySize)
-                       / (MAX_PRECISION - 2));
+        sqStepFloat = (float)((fastGradientArraySize * fastGradientArraySize)
+                       / (MAX_PRECISION - 2.0));
 
         // The last two values are the same so that linear square root
         // interpolation can happen on the maximum reachable element in the
@@ -368,7 +368,7 @@ final class RadialGradientPaintContext extends MultipleGradientPaintContext {
             workTbl[i] = (int)(Math.sqrt(i*sqStepFloat));
         }
         workTbl[i] = workTbl[i-1];
-        invSqStepFloat = 1/sqStepFloat;
+        invSqStepFloat = 1.0f/sqStepFloat;
     }
 
     /** Fill the raster, cycling the gradient colors when a point falls outside
@@ -429,8 +429,8 @@ final class RadialGradientPaintContext extends MultipleGradientPaintContext {
             for (i = 0; i < w; i++) {
 
                 // special case to avoid divide by zero or very near zero
-                if (((X-focusX)>-0.000001) &&
-                    ((X-focusX)< 0.000001)) {
+                if (((X-focusX)>-0.000001f) &&
+                    ((X-focusX)< 0.000001f)) {
                     solutionX = focusX;
 
                     solutionY = centerY;
@@ -556,8 +556,8 @@ final class RadialGradientPaintContext extends MultipleGradientPaintContext {
             final float dx = X - focusX;
 
             // special case to avoid divide by zero or very near zero
-            if ( ( dx >-0.000001 ) &&
-                 ( dx < 0.000001 ))  {
+            if ( ( dx >-0.000001f ) &&
+                 ( dx < 0.000001f ))  {
                 solutionX = focusX;
                 solutionY = centerY;
                 solutionY += (Y > focusY)?trivial:-trivial;
@@ -634,8 +634,8 @@ final class RadialGradientPaintContext extends MultipleGradientPaintContext {
 
             float dx = X - focusX;
             // special case to avoid divide by zero or very near zero
-            if ( ( dx >-0.000001 ) &&
-                 ( dx < 0.000001 ))  {
+            if ( ( dx >-0.000001f ) &&
+                 ( dx < 0.000001f ))  {
                 solutionX = focusX;
                 solutionY = centerY;
                 solutionY += (Y > focusY)?trivial:-trivial;
@@ -707,8 +707,8 @@ final class RadialGradientPaintContext extends MultipleGradientPaintContext {
 
                 dx = X - focusX;
                 // special case to avoid divide by zero or very near zero
-                if ( ( dx >-0.000001 ) &&
-                     ( dx < 0.000001 ))  {
+                if ( ( dx >-0.000001f ) &&
+                     ( dx < 0.000001f ))  {
                     solutionX = focusX;
                     solutionY = centerY;
                     solutionY += (Y > focusY)?trivial:-trivial;
