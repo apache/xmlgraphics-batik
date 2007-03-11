@@ -2924,9 +2924,11 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             }
 
             Rectangle2D glBounds = layout.getBounds2D();
-            if (glBounds != null)
-                glBounds = at.createTransformedShape
-                    (glBounds).getBounds2D();
+            if ( glBounds == null ){
+                continue;
+            }
+
+            glBounds = at.createTransformedShape( glBounds ).getBounds2D();
 
             if (rect.contains(glBounds)) {
                 elems.add(elem);
