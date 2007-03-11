@@ -20,6 +20,7 @@ package org.apache.batik.anim.timing;
 
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * An abstract base class for time container elements.
@@ -32,12 +33,15 @@ public abstract class TimeContainer extends TimedElement {
     /**
      * The child {@link TimedElement}s of this time container.
      */
-    protected LinkedList children = new LinkedList();
+    protected List children = new LinkedList();
 
     /**
      * Adds a {@link TimedElement} to this container.
      */
     public void addChild(TimedElement e) {
+        if ( e == this ){
+            throw new IllegalArgumentException("recursive datastructure not allowed here!");
+        }
         children.add(e);
         e.parent = this;
         setRoot(e, root);
@@ -53,10 +57,10 @@ public abstract class TimeContainer extends TimedElement {
         e.root = root;
         if (e instanceof TimeContainer) {
             TimeContainer c = (TimeContainer) e;
-            TimedElement[] es = c.getChildren();
-            for (int i = 0; i < es.length; i++) {
-                setRoot(es[i], root);
-            }
+            TimedElement[] es = c.getChildren();       // cameron: is there specific need to
+            for (int i = 0; i < es.length; i++) {      // use c.getChildren() ?? I'd propose
+                setRoot(es[i], root);                  // to iterate over c.children directly,
+            }                                          // this avoids creating the array
         }
     }
 
