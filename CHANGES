@@ -84,6 +84,7 @@ Bug fixing is an on-going task, so it is implied in all sub-releases.
     name and functional About/Preferences/Quit menu items, and a Squiggle.app
     application bundle can now be created.
   * JAR files now have Implementation-* attributes.
+  * Added an interface for all ImageRenderers to get/set RenderingHints.
 
 3. Bug fixes
 
@@ -145,6 +146,7 @@ Bug fixing is an on-going task, so it is implied in all sub-releases.
     (thanks Nick).
   * Unmaximize Squiggle window if the "Automatically resize window when
     loading documents" option is turned on.
+  * Fixed improper rendering of the batik70.svg sample under OS X.
 
 4. Misc
 
