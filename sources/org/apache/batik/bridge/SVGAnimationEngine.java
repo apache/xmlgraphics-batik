@@ -449,7 +449,7 @@ public class SVGAnimationEngine extends AnimationEngine {
                 throw new BridgeException(ctx, ex.getElement().getElement(),
                                           ex.getMessage());
             }
-        } catch (BridgeException ex) {
+        } catch (Exception ex) {
             if (ctx.getUserAgent() == null) {
                 ex.printStackTrace();
             } else {
@@ -715,7 +715,7 @@ public class SVGAnimationEngine extends AnimationEngine {
                             (eng.ctx, ex.getElement().getElement(),
                              ex.getMessage());
                     }
-                } catch (BridgeException ex) {
+                } catch (Exception ex) {
                     if (eng.ctx.getUserAgent() == null) {
                         ex.printStackTrace();
                     } else {
@@ -787,6 +787,19 @@ public class SVGAnimationEngine extends AnimationEngine {
          * engine does not prevent from being GCed.
          */
         protected WeakReference engRef;
+
+        /**
+         * The maximum number of consecutive exceptions to allow before
+         * stopping the report of them.
+         */
+        protected static final int MAX_EXCEPTION_COUNT = 10;
+
+        /**
+         * The number of consecutive exceptions that have been thrown.  This is
+         * used to detect when exceptions are occurring every tick, and to stop
+         * reporting them when this happens.
+         */
+        protected int exceptionCount;
 
         /**
          * Creates a new AnimationTickRunnable.
@@ -881,11 +894,14 @@ public class SVGAnimationEngine extends AnimationEngine {
                             (eng.ctx, ex.getElement().getElement(),
                              ex.getMessage());
                     }
-                } catch (BridgeException ex) {
-                    if (eng.ctx.getUserAgent() == null) {
-                        ex.printStackTrace();
-                    } else {
-                        eng.ctx.getUserAgent().displayError(ex);
+                    exceptionCount = 0;
+                } catch (Exception ex) {
+                    if (++exceptionCount < MAX_EXCEPTION_COUNT) {
+                        if (eng.ctx.getUserAgent() == null) {
+                            ex.printStackTrace();
+                        } else {
+                            eng.ctx.getUserAgent().displayError(ex);
+                        }
                     }
                 }
 
