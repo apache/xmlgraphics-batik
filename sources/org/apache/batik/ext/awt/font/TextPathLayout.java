@@ -98,11 +98,14 @@ public class TextPathLayout {
         GeneralPath newPath = new GeneralPath();
         PathLength pl = new PathLength(path);
         float pathLength = pl.lengthOfPath();
+
+        if ( glyphs == null ){
+            return newPath;
+        }
         float glyphsLength = (float) glyphs.getVisualBounds().getWidth();
 
         // return from the ugly cases
         if (path == null ||
-            glyphs == null ||
             glyphs.getNumGlyphs() == 0 ||
             pl.lengthOfPath() == 0f ||
             glyphsLength == 0f) {

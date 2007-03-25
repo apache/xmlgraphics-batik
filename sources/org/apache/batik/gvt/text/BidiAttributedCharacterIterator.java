@@ -99,13 +99,14 @@ public class BidiAttributedCharacterIterator implements AttributedCharacterItera
                 Map attrMap = aci.getAttributes();
                 int extent  = aci.getRunLimit();
                 Map destMap = new HashMap(attrMap.size());
-                Iterator i  = attrMap.keySet().iterator();
-                while (i.hasNext()) {
+                Iterator it  = attrMap.entrySet().iterator();
+                while (it.hasNext()) {
                     // Font doesn't like getting attribute sets with
                     // null keys or values so we strip them here.
-                    Object key = i.next();
+                    Map.Entry e = (Map.Entry)it.next();
+                    Object key = e.getKey();
                     if (key == null) continue;
-                    Object value = attrMap.get(key);
+                    Object value = e.getValue();
                     if (value == null) continue;
                     destMap.put(key, value);
                 }

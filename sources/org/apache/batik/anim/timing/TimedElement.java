@@ -18,17 +18,7 @@
  */
 package org.apache.batik.anim.timing;
 
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Locale;
-import java.util.Map;
-import java.util.MissingResourceException;
-import java.util.Vector;
-import java.util.Set;
+import java.util.*;
 
 import org.apache.batik.anim.AnimationException;
 import org.apache.batik.i18n.LocalizableSupport;
@@ -176,12 +166,12 @@ public abstract class TimedElement implements SMILConstants {
     /**
      * List of begin InstanceTimes.
      */
-    protected Vector beginInstanceTimes = new Vector();
+    protected List beginInstanceTimes = new ArrayList();
 
     /**
      * List of end InstanceTimes.
      */
-    protected Vector endInstanceTimes = new Vector();
+    protected List endInstanceTimes = new ArrayList();
 
     /**
      * The current Interval.
@@ -226,7 +216,7 @@ public abstract class TimedElement implements SMILConstants {
      * Map of {@link Event} objects to {@link HashSet}s of {@link
      * TimingSpecifier}s that caught them.
      */
-    protected HashMap handledEvents = new HashMap();
+    protected Map handledEvents = new HashMap();
 
     /**
      * Whether this timed element is currently being sampled.
@@ -284,12 +274,12 @@ public abstract class TimedElement implements SMILConstants {
     protected float addInstanceTime(InstanceTime time, boolean isBegin) {
         // Trace.enter(this, "addInstanceTime", new Object[] { time, new Boolean(isBegin) } ); try {
         hasPropagated = true;
-        Vector instanceTimes = isBegin ? beginInstanceTimes : endInstanceTimes;
+        List instanceTimes = isBegin ? beginInstanceTimes : endInstanceTimes;
         int index = Collections.binarySearch(instanceTimes, time);
         if (index < 0) {
             index = -(index + 1);
         }
-        instanceTimes.insertElementAt(time, index);
+        instanceTimes.add( index, time );
         shouldUpdateCurrentInterval = true;
         float ret;
         if (root.isSampling() && !isSampling) {
@@ -310,7 +300,7 @@ public abstract class TimedElement implements SMILConstants {
     protected float removeInstanceTime(InstanceTime time, boolean isBegin) {
         // Trace.enter(this, "removeInstanceTime", new Object[] { time, new Boolean(isBegin) } ); try {
         hasPropagated = true;
-        Vector instanceTimes = isBegin ? beginInstanceTimes : endInstanceTimes;
+        List instanceTimes = isBegin ? beginInstanceTimes : endInstanceTimes;
         int index = Collections.binarySearch(instanceTimes, time);
         for (int i = index; i >= 0; i--) {
             InstanceTime it = (InstanceTime) instanceTimes.get(i);
@@ -1292,7 +1282,7 @@ public abstract class TimedElement implements SMILConstants {
      * semantics allow it).
      */
     public void beginElement(float offset) {
-        float t = root.convertWallclockTime(Calendar.getInstance());
+        float t = root.convertWallclockTime( Calendar.getInstance());
         InstanceTime it = new InstanceTime(null, t + offset, null, true);
         addInstanceTime(it, true);
     }
@@ -1370,7 +1360,7 @@ public abstract class TimedElement implements SMILConstants {
      * will be processed at the beginning of the next tick.
      */
     void eventOccurred(TimingSpecifier t, Event e) {
-        HashSet ts = (HashSet) handledEvents.get(e);
+        Set ts = (HashSet) handledEvents.get(e);
         if (ts == null) {
             ts = new HashSet();
             handledEvents.put(e, ts);
@@ -1492,9 +1482,9 @@ public abstract class TimedElement implements SMILConstants {
         new LocalizableSupport(RESOURCES, TimedElement.class.getClassLoader());
 
     /**
-     * Implements {@link org.apache.batik.i18n.Localizable#setLocale(Locale)}.
+     * Implements {@link org.apache.batik.i18n.Localizable#setLocale(java.util.Locale)}.
      */
-    public static void setLocale(Locale l) {
+    public static void setLocale( Locale l) {
         localizableSupport.setLocale(l);
     }
 

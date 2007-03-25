@@ -1219,21 +1219,21 @@ class PNGImage extends SimpleRenderedImage {
     }
 
     private void parse_tEXt_chunk(PNGChunk chunk) {
-        String key = "";   // todo simplify this
-        String value = ""; // todo simplify this
-        byte b;
 
+        byte b;
+        StringBuffer key = new StringBuffer();
         int textIndex = 0;
         while ((b = chunk.getByte(textIndex++)) != 0) {
-            key += (char)b;
+            key.append( (char)b );
         }
 
+        StringBuffer value= new StringBuffer();
         for (int i = textIndex; i < chunk.getLength(); i++) {
-            value += (char)chunk.getByte(i);
+            value.append( (char)chunk.getByte(i) );
         }
 
-        textKeys.add(key);
-        textStrings.add(value);
+        textKeys.add(key.toString() );
+        textStrings.add(value.toString() );
     }
 
     private void parse_tIME_chunk(PNGChunk chunk) {
@@ -1338,16 +1338,16 @@ class PNGImage extends SimpleRenderedImage {
     }
 
     private void parse_zTXt_chunk(PNGChunk chunk) {
-        String key = "";    // todo simplify this
-        String value = "";  // todo simplify this
-        byte b;
 
         int textIndex = 0;
+        StringBuffer key = new StringBuffer();
+        byte b;
         while ((b = chunk.getByte(textIndex++)) != 0) {
-            key += (char)b;
+            key.append( (char)b );
         }
         /* int method = */ chunk.getByte(textIndex++);
 
+        StringBuffer value = new StringBuffer();
         try {
             int length = chunk.getLength() - textIndex;
             byte[] data = chunk.getData();
@@ -1357,11 +1357,11 @@ class PNGImage extends SimpleRenderedImage {
 
             int c;
             while ((c = iis.read()) != -1) {
-                value += (char)c;
+                value.append( (char)c );
             }
 
-            ztextKeys.add(key);
-            ztextStrings.add(value);
+            ztextKeys.add(key.toString() );
+            ztextStrings.add(value.toString() );
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1444,21 +1444,6 @@ class PNGImage extends SimpleRenderedImage {
         }
     }
 
-    private static int paethPredictor(int a, int b, int c) {
-        int p = a + b - c;
-        int pa = Math.abs(p - a);
-        int pb = Math.abs(p - b);
-        int pc = Math.abs(p - c);
-
-        if ((pa <= pb) && (pa <= pc)) {
-            return a;
-        } else if (pb <= pc) {
-            return b;
-        } else {
-            return c;
-        }
-    }
-
     private static void decodePaethFilter(byte[] curr, byte[] prev,
                                           int count, int bpp) {
         int raw, priorPixel, priorRow, priorRowPixel;
@@ -1476,7 +1461,7 @@ class PNGImage extends SimpleRenderedImage {
             priorRow = prev[i] & 0xff;
             priorRowPixel = prev[i - bpp] & 0xff;
 
-            curr[i] = (byte)(raw + paethPredictor(priorPixel,
+            curr[i] = (byte)(raw + PNGEncodeParam.paethPredictor(priorPixel,
                                                   priorRow,
                                                   priorRowPixel));
         }

@@ -19,12 +19,12 @@
 package org.apache.batik.gvt.flow;
 
 import java.awt.Shape;
-import java.awt.geom.Point2D;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+
 import org.apache.batik.ext.awt.geom.SegmentList;
 import org.apache.batik.ext.awt.geom.Segment;
 
@@ -75,7 +75,7 @@ public class FlowRegions {
     public void newLineHeight(double lineHeight) {
         this.lineHeight = lineHeight;
         sr = sl.split(currentY+lineHeight);
-        
+
         if (sr.getAbove() != null) {
             sortRow(sr.getAbove());
         }
@@ -91,7 +91,7 @@ public class FlowRegions {
     }
 
     public double [] nextRange() {
-        if (currentRange >= validRanges.size()) 
+        if (currentRange >= validRanges.size())
             return null;
         return (double [])validRanges.get(currentRange++);
     }
@@ -156,7 +156,7 @@ public class FlowRegions {
                     double cx = (openStart + t.loc)/2;
                     double cy = currentY + lineHeight/2;
                     // System.err.println("PT: " + cx+", "+cy);
-                    if (flowShape.contains(new Point2D.Double(cx, cy))) {
+                    if (flowShape.contains( cx, cy )) {
                         validRanges.add(new double[]{openStart, t.loc});
                     }
                 }
