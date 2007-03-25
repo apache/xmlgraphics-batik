@@ -23,6 +23,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import org.apache.batik.ext.awt.g2d.GraphicContext;
 import org.w3c.dom.Comment;
@@ -70,9 +71,10 @@ public class DOMTreeManager implements SVGSyntax, ErrorConstants {
 
     /**
      * Set of group managers that build groups for
-     * this manager
+     * this manager.
+     * The synchronizedList is part of the fix for bug #40686
      */
-    protected List groupManagers = new ArrayList();
+    protected final List groupManagers = Collections.synchronizedList( new ArrayList() );
 
     /**
      * Set of definitions that are to be placed at the top of the
@@ -171,11 +173,16 @@ public class DOMTreeManager implements SVGSyntax, ErrorConstants {
      */
     public void appendGroup(Element group, DOMGroupManager groupManager){
         topLevelGroup.appendChild(group);
-        int nManagers = groupManagers.size();
-        for(int i=0; i<nManagers; i++){
-            DOMGroupManager gm = (DOMGroupManager)groupManagers.get(i);
-            if( gm != groupManager )
-                gm.recycleCurrentGroup();
+        synchronized( groupManagers ){
+            // we want to prevent that the groupManagers-list changes while
+            // we iterate over it. If that would happen, we might skip entries
+            // within the list or ignore new entries at the end. Fix #40686
+            int nManagers = groupManagers.size();
+            for(int i=0; i<nManagers; i++){
+                DOMGroupManager gm = (DOMGroupManager)groupManagers.get(i);
+                if( gm != groupManager )
+                    gm.recycleCurrentGroup();
+            }
         }
     }
 
@@ -192,10 +199,15 @@ public class DOMTreeManager implements SVGSyntax, ErrorConstants {
      */
     protected void recycleTopLevelGroup(boolean recycleConverters){
         // First, recycle group managers
-        int nManagers = groupManagers.size();
-        for(int i=0; i<nManagers; i++){
-            DOMGroupManager gm = (DOMGroupManager)groupManagers.get(i);
-            gm.recycleCurrentGroup();
+        synchronized( groupManagers ){
+            // we want to prevent that the groupManagers-list changes while
+            // we iterate over it. If that would happen, we might skip entries
+            // within the list or ignore new entries at the end. Fix #40686
+            int nManagers = groupManagers.size();
+            for(int i=0; i<nManagers; i++){
+                DOMGroupManager gm = (DOMGroupManager)groupManagers.get(i);
+                gm.recycleCurrentGroup();
+            }
         }
 
         // Create top level group node
