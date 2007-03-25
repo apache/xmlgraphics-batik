@@ -22,6 +22,7 @@ import org.apache.batik.anim.values.AnimatableLengthValue;
 import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.dom.anim.AnimationTarget;
 import org.apache.batik.parser.UnitProcessor;
+
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.svg.SVGAnimatedLength;
@@ -101,7 +102,7 @@ public abstract class AbstractSVGAnimatedLength
     }
 
     /**
-     * Returns the default value to use when the associated attribute
+     * @return the default value to use when the associated attribute
      * was not specified.
      */
     protected abstract String getDefaultValue();
@@ -190,7 +191,7 @@ public abstract class AbstractSVGAnimatedLength
     }
 
     /**
-     * This class represents the SVGLength returned by {@link #getBaseVal()}.
+     * This class represents the SVGLength returned by {@link AbstractSVGAnimatedLength#getBaseVal() }.
      */
     protected class BaseSVGLength extends AbstractSVGLength {
 
@@ -201,6 +202,7 @@ public abstract class AbstractSVGAnimatedLength
 
         /**
          * Creates a new BaseSVGLength.
+         * @param direction is one of HORIZONTAL_LENGTH, VERTICAL_LENGTH, or OTHER_LENGTH
          */
         public BaseSVGLength(short direction) {
             super(direction);
@@ -270,12 +272,13 @@ public abstract class AbstractSVGAnimatedLength
     }
 
     /**
-     * This class represents the SVGLength returned by {@link #getAnimVal()}.
+     * This class represents the SVGLength returned by {@link AbstractSVGAnimatedLength#getAnimVal()}.
      */
     protected class AnimSVGLength extends AbstractSVGLength {
 
         /**
          * Creates a new AnimSVGLength.
+         * @param direction is one of HORIZONTAL_LENGTH, VERTICAL_LENGTH, or OTHER_LENGTH
          */
         public AnimSVGLength(short direction) {
             super(direction);
@@ -378,6 +381,8 @@ public abstract class AbstractSVGAnimatedLength
 
         /**
          * Sets the animated value.
+         * @param type one of the values defines in org.w3c.dom.svg.SVGLength
+         * @param val the length
          */
         protected void setAnimatedValue(int type, float val) {
             super.newValueSpecifiedUnits((short) type, val);
