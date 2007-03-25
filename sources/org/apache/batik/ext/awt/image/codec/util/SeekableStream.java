@@ -192,7 +192,7 @@ public abstract class SeekableStream extends InputStream implements DataInput {
     // public int available) throws IOException
     // public void close() throws IOException;
 
-    /** Marked position */
+    /** Marked position, shared by {@link ForwardSeekableStream} */
     protected long markPos = -1L;
 
     /**

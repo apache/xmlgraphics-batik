@@ -90,13 +90,16 @@ public class Service {
         }
 
         while (e.hasMoreElements()) {
+            InputStream    is = null;
+            Reader         r  = null;
+            BufferedReader br = null;
             try {
                 URL u = (URL)e.nextElement();
                 // System.out.println("URL: " + u);
 
-                InputStream    is = u.openStream();
-                Reader         r  = new InputStreamReader(is, "UTF-8");
-                BufferedReader br = new BufferedReader(r);
+                is = u.openStream();
+                r  = new InputStreamReader(is, "UTF-8");
+                br = new BufferedReader(r);
 
                 String line = br.readLine();
                 while (line != null) {
@@ -116,7 +119,7 @@ public class Service {
                         }
                         // System.out.println("Line: " + line);
 
-                        // Try and load the class 
+                        // Try and load the class
                         Object obj = cl.loadClass(line).newInstance();
                         // stick it into our vector...
                         l.add(obj);
@@ -129,6 +132,26 @@ public class Service {
                 // Just try the next file...
             } catch (LinkageError le) {
                 // Just try the next file...
+            } finally {
+                // close and release all io-resources to avoid leaks
+                if ( is != null ){
+                    try {
+                        is.close();
+                    } catch ( IOException ignored ){}
+                    is = null;
+                }
+                if ( r != null ){
+                    try{
+                        r.close();
+                    } catch ( IOException ignored ){}
+                    r = null;
+                }
+                if ( br == null ){
+                    try{
+                        br.close();
+                    } catch ( IOException ignored ){}
+                    br = null;
+                }
             }
         }
         return l.iterator();

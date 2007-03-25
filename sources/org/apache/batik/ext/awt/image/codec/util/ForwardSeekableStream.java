@@ -36,9 +36,6 @@ public class ForwardSeekableStream extends SeekableStream {
     /** The current position. */
     long pointer = 0L;
 
-    /** The marked position. */
-    long markPos = -1L;
-
     /**
      * Constructs a <code>InputStreamForwardSeekableStream</code> from a
      * regular <code>InputStream</code>.
@@ -82,13 +79,19 @@ public class ForwardSeekableStream extends SeekableStream {
         src.close();
     }
 
-    /** Forwards the request to the real <code>InputStream</code>. */
+    /**
+     * Forwards the request to the real <code>InputStream</code>.
+     * We use {@link SeekableStream#markPos}
+     */
     public final synchronized void mark(int readLimit) {
         markPos = pointer;
         src.mark(readLimit);
     }
 
-    /** Forwards the request to the real <code>InputStream</code>. */
+    /**
+     * Forwards the request to the real <code>InputStream</code>.
+     * We use {@link SeekableStream#markPos}
+     */
     public final synchronized void reset() throws IOException {
         if (markPos != -1) {
             pointer = markPos;

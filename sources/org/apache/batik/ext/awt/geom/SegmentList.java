@@ -106,23 +106,20 @@ public class SegmentList {
 
     public SegmentList.SplitResults split(double y) {
         Iterator iter = segments.iterator();
-        SegmentList above = null;
-        SegmentList below = null;
+        SegmentList above = new SegmentList();
+        SegmentList below = new SegmentList();
         while (iter.hasNext()) {
             Segment seg = (Segment)iter.next();
             Segment.SplitResults results = seg.split(y);
             if (results == null) {
                 Rectangle2D bounds = seg.getBounds2D();
                 if (bounds.getY() > y) {
-                    if (below == null) below = new SegmentList();
                     below.add(seg);
                 } else if (bounds.getY() == y) {
                     if (bounds.getHeight() != 0) {
-                        if (below == null) below = new SegmentList();
                         below.add(seg);
                     }
                 } else {
-                    if (above == null) above = new SegmentList();
                     above.add(seg);
                 }
                 continue;
@@ -130,27 +127,51 @@ public class SegmentList {
 
             Segment [] resAbove = results.getAbove();
             for(int i=0; i<resAbove.length; i++) {
-                if (above == null) above = new SegmentList();
                 above.add(resAbove[i]);
             }
 
             Segment [] resBelow = results.getBelow();
             for(int i=0; i<resBelow.length; i++) {
-                if (below == null) below = new SegmentList();
                 below.add(resBelow[i]);
             }
         }
         return new SegmentList.SplitResults(above, below);
     }
 
+    /**
+     * read-only helper class to represent a split-result.
+     * So far, used only by FlowRegions.
+     */
     public static class SplitResults {
-        SegmentList above, below;
+
+        /**
+         * is <code>null</code>, when the list is empty.
+         */
+        final SegmentList above;
+        final SegmentList below;
+
         public SplitResults(SegmentList above, SegmentList below) {
-            this.above = above;
-            this.below = below;
+
+            if ( above != null && above.size() > 0 ){
+                this.above = above;
+            } else {
+                this.above = null;
+            }
+            if ( below != null && below.size() > 0 ){
+                this.below = below;
+            } else {
+                this.below = null;
+            }
         }
 
+        /**
+         * @return the list of segments above some split-point - can be null
+         */
         public SegmentList getAbove() { return above; }
+
+        /**
+         * @return the list of segments below some split-point - can be null
+         */
         public SegmentList getBelow() { return below; }
     }
 }

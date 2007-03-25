@@ -39,7 +39,7 @@ public abstract class TimeContainer extends TimedElement {
      * Adds a {@link TimedElement} to this container.
      */
     public void addChild(TimedElement e) {
-        if ( e == this ){
+        if ( e == this ) {
             throw new IllegalArgumentException("recursive datastructure not allowed here!");
         }
         children.add(e);
@@ -57,10 +57,10 @@ public abstract class TimeContainer extends TimedElement {
         e.root = root;
         if (e instanceof TimeContainer) {
             TimeContainer c = (TimeContainer) e;
-            TimedElement[] es = c.getChildren();       // cameron: is there specific need to
-            for (int i = 0; i < es.length; i++) {      // use c.getChildren() ?? I'd propose
-                setRoot(es[i], root);                  // to iterate over c.children directly,
-            }                                          // this avoids creating the array
+            for( Iterator it = c.children.iterator(); it.hasNext(); ) {
+                TimedElement te = (TimedElement)it.next();
+                setRoot( te, root);
+            }
         }
     }
 
