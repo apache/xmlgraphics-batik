@@ -314,7 +314,9 @@ public abstract class AnimationEngine {
                 String namespaceURI = (String) e2.getKey1();
                 String localName = (String) e2.getKey2();
                 Sandwich sandwich = (Sandwich) e2.getValue();
-                if (sandwich.shouldUpdate || sandwich.animation.isDirty) {
+                if (sandwich.shouldUpdate ||
+                        sandwich.animation != null
+                            && sandwich.animation.isDirty) {
                     AnimatableValue av = null;
                     boolean usesUnderlying = false;
                     AbstractAnimation anim = sandwich.animation;
@@ -344,7 +346,9 @@ public abstract class AnimationEngine {
                 Map.Entry e2 = (Map.Entry) j.next();
                 String propertyName = (String) e2.getKey();
                 Sandwich sandwich = (Sandwich) e2.getValue();
-                if (sandwich.shouldUpdate || sandwich.animation.isDirty) {
+                if (sandwich.shouldUpdate ||
+                        sandwich.animation != null
+                            && sandwich.animation.isDirty) {
                     AnimatableValue av = null;
                     boolean usesUnderlying = false;
                     AbstractAnimation anim = sandwich.animation;
