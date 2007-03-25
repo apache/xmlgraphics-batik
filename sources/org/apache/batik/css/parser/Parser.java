@@ -948,9 +948,17 @@ public class Parser implements ExtendedParser, Localizable {
             case LexicalUnits.INTEGER:
                 String sval = scanner.getStringValue();
                 if (!plus) sval = "-"+sval;
-                int val = Integer.parseInt(sval);
-                nextIgnoreSpaces();
-                return CSSLexicalUnit.createInteger(val, prev);
+
+                long lVal = Long.parseLong( sval );      // fix #41288
+                if ( lVal >= Integer.MIN_VALUE && lVal <= Integer.MAX_VALUE ){
+                    // we can safely convert to int
+                    int iVal = (int) lVal;
+                    nextIgnoreSpaces();
+                    return CSSLexicalUnit.createInteger( iVal, prev);
+                }
+
+                // we are too large for an int: convert to float
+                // we can just fall-through to the float-handling ...
             case LexicalUnits.REAL:
                 return CSSLexicalUnit.createFloat(LexicalUnit.SAC_REAL,
                                                   number(plus), prev);
