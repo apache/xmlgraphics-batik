@@ -28,42 +28,44 @@ For creating a distribution the following steps must be done:
     Batik if it isn't already there.  The following link has the
     details on what this means and how to do it.
 
-        http://wiki.apache.org/old/SigningReleases
+      http://wiki.apache.org/old/SigningReleases
 
- 3) Update the splash screens:
-    build splash
-
- 4) Commit these changes to SVN, in general only the following files
+ 3) Commit these changes to SVN, in general only the following files
     should be modified:
 
-    build.xml
-    KEYS
-    xdocs/images/splash.png  
-    xdocs/images/splash.svg
-    resources/org/apache/batik/apps/svgbrowser/resources/squiggle.png
+      build.xml
+      KEYS
 
- 5) tag the release on SVN:
+ 4) Tag the release on SVN:
+
       svn copy http://svn.apache.org/repos/asf/xmlgraphics/batik/trunk \
                http://svn.apache.org/repos/asf/xmlgraphics/batik/tags/<tag>
+
     where <tag> is the version name, e.g. "batik-1_1rc3".
 
     Note: sometimes, it is necessary to remove a tag because the 
     tests failed and a fix was required. To remove a tag, use
     the delete command:
-      svn delete http://svn.apache.org/repos/asfk/xmlgraphics/batik/tags/<tag>
 
- 6) checkout the tagged release to a new directory:
+      svn delete http://svn.apache.org/repos/asf/xmlgraphics/batik/tags/<tag>
+
+ 5) Check out the tagged release to a new directory:
+
       svn co http://svn.apache.org/repos/asfk/xmlgraphics/batik/tags/<tag>
 
- 7) run the build script with target "dist-zip"
+ 6) Run the build script with target "dist-zip":
+
       build dist-zip 
-    this will create the binary release zip, the source release zip and the
+
+    This will create the binary release zip, the source release zip and the
     javadoc zip.
 
- 8) test the distributions
+ 7) Test the distributions
+
       build regard
       build regard.manual
-    The build results are in xml-batik/test-reports. Check that there
+
+    The build results are in the test-reports directory. Check that there
     are no show-stoppers for the release. If there are fixes required,
     you need to remove the tag (as explained in step 2) and then fix
     any problem that requires attention. Then, you need to start at
@@ -75,30 +77,38 @@ For creating a distribution the following steps must be done:
     http://www.w3.org/Graphics/SVG for instructions on how to get
     the SVG test suite.
 
- 9) Update the README file describing the content of the release and
-    the modifications which have taken place:
-    http://www.apache.org/dist/xml/batik/README
+ 8) Update the README file describing the content of the release and
+    the modifications which have taken place,
+    http://www.apache.org/dist/xml/batik/README.  This file has a
+    small header followed by the contents of the CHANGES file from the
+    distribution.
 
-10) If you are creating a release candidate, rename the distribution files
+ 9) If you are creating a release candidate, rename the distribution files
     to an rc name. For example:
+
       mv batik-src-1.1.zip batik-src-1.1rc1.zip
 
-11) Sign and create md5 hashes for the releases. The following link
+10) Sign and create md5 hashes for the releases. The following link
     has full details on how to sign things (if you don't want to know
     anything the last section 'Using GPG' tells you what commands work).
 
         http://wiki.apache.org/old/SigningReleases
 
-    e.g. gpg --detach-sig --armor --output batik-1.5.zip.asc batik-1.5.zip
-         md5 batik-1.5.zip > batik-1.5.zip.md5
+    For example:
 
-11) Use 'scp' to copy  the distributions (with md5 hashes, and signature 
+      gpg --detach-sig --armor --output batik-1.5.zip.asc batik-1.5.zip
+      md5 batik-1.5.zip > batik-1.5.zip.md5
+
+11) Use 'scp' to copy the distributions (with md5 hashes, and signature 
     files), the README, and the KEYS file under 
+
         /www/www.apache.org/dist/xml/batik/
 
-     e.g., 'scp batik-1.1rc1.zip* vhardy@people.apache.org:/www/www.apache.org/dist/xml/batik/'
+    For example:
+    
+      scp batik-1.1rc1.zip* vhardy@people.apache.org:/www/www.apache.org/dist/xml/batik/
 
-11) Finish setting up the distribution directory in accordance with:
+12) Finish setting up the distribution directory in accordance with:
 
       http://www.apache.org/dev/mirrors.html
       http://people.apache.org/~bodewig/mirror.html
@@ -111,6 +121,7 @@ For creating a distribution the following steps must be done:
     First make sure file permissions are correct.  The
     new files should be owned by group 'xml' and be group writable.
     The following commands can do this (don't worry about links):
+
        chgrp xml batik-1.5.zip
        chmod 664 batik-1.5.zip
 
@@ -118,6 +129,7 @@ For creating a distribution the following steps must be done:
     'current' links and re-point them at the new release (do this
     for every file with a version number in it - including md5, and
     asc files):
+
        cd /www/www.apache.org/dist/xml/batik
        rm batik-current.zip
        ln -s batik-1.5.zip batik-current.zip
@@ -131,9 +143,10 @@ For creating a distribution the following steps must be done:
     to 'archives.apache.org/dist/xml/batik' from
     'www.apache.org/dist/xml/batik' so you can just remove an old
     release from www.apache.org:
+
        rm batik-1.5b4.zip
 
-10) Wait approximately 24hrs for the files to get to all the mirrors,
+13) Wait approximately 24hrs for the files to get to all the mirrors,
     then send an email to the batik-dev and batik-users mailing lists
     announcing the release.
 
