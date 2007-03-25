@@ -1,3 +1,13 @@
+This file contains the PGP keys of various developers.
+
+Users: pgp < KEYS
+       gpg --import KEYS
+Developers: 
+        pgp -kxa <your name> and append it to this file.
+        (pgpk -ll <your name> && pgpk -xa <your name>) >> this file.
+        (gpg --list-sigs <your name>
+             && gpg --armor --export <your name>) >> this file.
+
 pub  1024D/CC69CEED 2003-09-25 Thomas DeWeese <deweese@apache.org>
 sig 3       CC69CEED 2003-09-25   Thomas DeWeese <deweese@apache.org>
 sig 3       88C3A5A5 2003-11-18   [User id not found]
@@ -82,4 +92,75 @@ keko9ka4+v7H/hwqUK2gJU3iwepMvniWvhZTkG7Pi8Q4snYOBodRJje/Nbi3EEf1
 EC6L0IDMac7tdD4AoIS22fkfoO7BURrrj8Xjcr0ztM2eAJ9oJ7kL2LJXS+KxO499
 KABuEF1Abw==
 =w3cC
+
+-----END PGP PUBLIC KEY BLOCK-----
+
+pub   1024D/2983AB4B 2004-11-04
+uid                  Cameron McCormack <cam@mcc.id.au>
+sig 3        2983AB4B 2007-01-30  Cameron McCormack <cam@mcc.id.au>
+sig     P X  65D0FD58 2005-11-01  CA Cert Signing Authority (Root CA) <gpg@cacert.org>
+sig          1880283C 2006-01-13  Anibal Monsalve Salazar <anibal@debian.org>
+sig 3        2983AB4B 2004-11-04  Cameron McCormack <cam@mcc.id.au>
+sig          5653C9C4 2007-02-02  Helen Faulkner <helen@thousand-ships.com>
+sig        1 C2429EC4 2007-02-03  Tanat Tonguthaisri <Tanat@Tanat.Net>
+sig          B6D8A3F9 2007-02-06  James Healy <jimmy@deefa.com>
+sig          B6D8A3F9 2007-02-06  James Healy <jimmy@deefa.com>
+sig 3        6E63F4AA 2007-02-08  Julien Goodwin (Studio442) <jgoodwin@studio442.com.au>
+uid                  Cameron McCormack (ASF) <cam@apache.org>
+sig 3        2983AB4B 2007-01-30  Cameron McCormack <cam@mcc.id.au>
+sig          5653C9C4 2007-02-02  Helen Faulkner <helen@thousand-ships.com>
+sig          C2429EC4 2007-02-03  Tanat Tonguthaisri <Tanat@Tanat.Net>
+sig          B6D8A3F9 2007-02-06  James Healy <jimmy@deefa.com>
+sig          B6D8A3F9 2007-02-06  James Healy <jimmy@deefa.com>
+sig 3        6E63F4AA 2007-02-08  Julien Goodwin (Studio442) <jgoodwin@studio442.com.au>
+sub   1024g/8DBA9492 2004-11-04
+sig          2983AB4B 2004-11-04  Cameron McCormack <cam@mcc.id.au>
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+
+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
+=YT6v
 -----END PGP PUBLIC KEY BLOCK-----
