@@ -19,8 +19,9 @@ Bug fixing is an on-going task, so it is implied in all sub-releases.
     38782, 38785, 38831, 38872, 38930, 38932, 38933, 38990, 39032,
     39058, 39202, 39297, 39303, 39318, 39361, 39751, 39755, 39784,
     39831, 39838, 40098, 40167, 40336, 40368, 40392, 40393, 40397,
-    40403, 40405, 40594, 40605, 40631, 40681, 40857, 40898, 40927, 
-    40994, 41079, 41165, 41216, 41234, 41329, 41331, 41336, 41473
+    40403, 40405, 40594, 40605, 40631, 40681, 40686, 40857, 40898,
+    40927, 40994, 41079, 41165, 41216, 41234, 41288, 41329, 41331,
+    41336, 41473
 
 2. New features
 
@@ -147,6 +148,7 @@ Bug fixing is an on-going task, so it is implied in all sub-releases.
   * Unmaximize Squiggle window if the "Automatically resize window when
     loading documents" option is turned on.
   * Fixed improper rendering of the batik70.svg sample under OS X.
+  * Fixed synchronization bug in the SVG generator.
 
 4. Misc
 
