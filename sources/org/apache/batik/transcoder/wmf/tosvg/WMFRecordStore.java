@@ -654,6 +654,7 @@ public class WMFRecordStore extends AbstractWMFReader {
                     mr.addElement( dx );
                     records.add( mr );
                 }
+                break;
             // UPDATED : META_CREATEPATTERNBRUSH added
             case WMFConstants.META_DIBCREATEPATTERNBRUSH:
                 {
