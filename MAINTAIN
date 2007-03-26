@@ -51,7 +51,7 @@ For creating a distribution the following steps must be done:
 
  5) Check out the tagged release to a new directory:
 
-      svn co https://svn.apache.org/repos/asfk/xmlgraphics/batik/tags/<tag>
+      svn co https://svn.apache.org/repos/asf/xmlgraphics/batik/tags/<tag>
 
  6) Run the build script with target "dist-zip":
 
