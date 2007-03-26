@@ -38,8 +38,8 @@ For creating a distribution the following steps must be done:
 
  4) Tag the release on SVN:
 
-      svn copy http://svn.apache.org/repos/asf/xmlgraphics/batik/trunk \
-               http://svn.apache.org/repos/asf/xmlgraphics/batik/tags/<tag>
+      svn copy https://svn.apache.org/repos/asf/xmlgraphics/batik/trunk \
+               https://svn.apache.org/repos/asf/xmlgraphics/batik/tags/<tag>
 
     where <tag> is the version name, e.g. "batik-1_1rc3".
 
@@ -47,11 +47,11 @@ For creating a distribution the following steps must be done:
     tests failed and a fix was required. To remove a tag, use
     the delete command:
 
-      svn delete http://svn.apache.org/repos/asf/xmlgraphics/batik/tags/<tag>
+      svn delete https://svn.apache.org/repos/asf/xmlgraphics/batik/tags/<tag>
 
  5) Check out the tagged release to a new directory:
 
-      svn co http://svn.apache.org/repos/asfk/xmlgraphics/batik/tags/<tag>
+      svn co https://svn.apache.org/repos/asfk/xmlgraphics/batik/tags/<tag>
 
  6) Run the build script with target "dist-zip":
 
