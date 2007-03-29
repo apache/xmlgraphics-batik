@@ -152,7 +152,7 @@
 
       <p>
         Older releases are available from the
-        <a href="http://archive.apache.org/dist/xml/batik">Apache archives</a>.
+        <a href="http://archive.apache.org/dist/xmlgraphics/batik">Apache archives</a>.
         However, we strongly recommend using the current release of Batik.
       </p>
 
@@ -176,7 +176,7 @@
         <li>
           Download the associated PGP signature (.asc) and KEYS file
           (preferable) or MD5 hash (.md5).  This must be done directly from the
-          <a href="http://www.apache.org/dist/xml/batik">Apache
+          <a href="http://www.apache.org/dist/xmlgraphics/batik">Apache
             download</a> area to mean anything.
         </li>
         <li>
@@ -308,10 +308,10 @@ jar xvf batik-1.6.zip</source>
       </p>
       <p>
         The PGP signatures can be verified using PGP or GPG.  First download the
-        <a href="http://www.apache.org/dist/xml/batik/KEYS">KEYS</a> as well as
+        <a href="http://www.apache.org/dist/xmlgraphics/batik/KEYS">KEYS</a> as well as
         the <code>asc</code> signature file for the particular distribution you
         choose.  Make sure you get these files from the
-        <a href="http://www.apache.org/dist/xml/batik/">main distribution
+        <a href="http://www.apache.org/dist/xmlgraphics/batik/">main distribution
           directory</a>, rather than from a mirror. Then verify the signatures
         using:
       </p>
