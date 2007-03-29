@@ -150,7 +150,7 @@
     <section id="status">
       <title>Implementation status</title>
       <p>
-        The latest revision of Batik, release 1.6, is a conformant
+        The latest revision of Batik, release 1.7beta1, is a conformant
         <a href="http://www.w3.org/TR/SVG11/conform.html#ConformingSVGViewers">static
           SVG implementation</a> and supports
         <a href="http://www.w3.org/TR/SVG11/interact.html">interactivity</a>,
