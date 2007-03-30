@@ -420,6 +420,12 @@ which will be used to configure the chosen Forrest skin.
       font-weight: normal;
       background: #eef;
     }
+    table.elements .section-note td {
+      padding-left: 2em ! important;
+      text-align: left;
+      font-weight: normal;
+      background: #eef;
+    }
     table.elements .attribute th, div.object-property-header {
       padding-left: 4em ! important;
       padding-right: 2em ! important;

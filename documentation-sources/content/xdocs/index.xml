@@ -156,10 +156,9 @@
         <a href="http://www.w3.org/TR/SVG11/interact.html">interactivity</a>,
         <a href="http://www.w3.org/TR/SVG11/linking.html">linking</a> and 
         <a href="http://www.w3.org/TR/SVG11/script.html">scripting</a> features
-        of the SVG specification.  The Batik project does not currently support
-        declarative
-        <a href="http://www.w3.org/TR/SVG11/animate.html">animation</a>,
-        however work is currently underway to add it.
+        of the SVG specification.  This release supports a nearly complete
+        implementation of declarative
+        <a href="http://www.w3.org/TR/SVG11/animate.html">animation</a>, too.
       </p> 
 
       <p>

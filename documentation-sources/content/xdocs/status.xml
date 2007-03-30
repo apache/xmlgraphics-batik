@@ -1678,7 +1678,12 @@
           <attr name="lang" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
           <attr name="space" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
         </element>
-        <element name='style' ns='http://www.w3.org/2000/svg'>
+        <element name='style' ns='http://www.w3.org/2000/svg' status="partial">
+          <notes>
+            <p>
+              The <code>:hover</code> pseudo-class is not supported in selectors.
+            </p>
+          </notes>
           <attr name='id' ns=''><yes/></attr>
           <attr name='media' ns=''><yes/></attr>
           <attr name='title' ns=''><yes/></attr>
