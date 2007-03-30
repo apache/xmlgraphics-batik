@@ -69,10 +69,11 @@
 
   <xsl:template match="element | interface">
     <tr class="element-header">
-      <td rowspan="{count(attr | prop | op) + number(boolean(attr)) + number(boolean(prop)) + number(boolean(op)) + 1}">
+      <td rowspan="{count(attr | prop | op) + number(boolean(attr)) + number(boolean(prop)) + number(boolean(op)) + number(boolean(notes))+ 1}">
         <xsl:attribute name="class">
           <xsl:text>vertical-bar </xsl:text>
           <xsl:choose>
+            <xsl:when test="@status"><xsl:value-of select="@status"/></xsl:when>
             <xsl:when test="yes">yes</xsl:when>
             <xsl:when test="partial">partial</xsl:when>
             <xsl:when test="no">no</xsl:when>
@@ -96,6 +97,15 @@
       <th/>
       <th/>
     </tr>
+    <xsl:if test="notes">
+      <tr class="section-note">
+        <td></td>
+        <td></td>
+        <td>
+          <xsl:apply-templates select="notes"/>
+        </td>
+      </tr>
+    </xsl:if>
     <xsl:if test="attr">
       <tr class="section-header">
         <th colspan="3">Attributes</th>
