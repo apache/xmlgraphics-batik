@@ -70,7 +70,8 @@ public class RhinoInterpreter implements Interpreter {
         "org.w3c.dom.smil",
         "org.w3c.dom.stylesheets",
         "org.w3c.dom.svg",
-        "org.w3c.dom.views"
+        "org.w3c.dom.views",
+        "org.w3c.dom.xpath"
     };
 
     /**
