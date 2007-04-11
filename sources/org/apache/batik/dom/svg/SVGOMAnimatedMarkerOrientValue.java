@@ -210,6 +210,7 @@ public class SVGOMAnimatedMarkerOrientValue extends AbstractSVGAnimatedValue {
         protected void reset() {
             try {
                 changing = true;
+                valid = true;
                 String value;
                 if (baseEnumerationVal ==
                         SVGMarkerElement.SVG_MARKER_ORIENT_ANGLE) {

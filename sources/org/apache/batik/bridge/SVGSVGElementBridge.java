@@ -29,6 +29,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.batik.dom.svg.AbstractSVGAnimatedLength;
 import org.apache.batik.dom.svg.AnimatedLiveAttributeValue;
 import org.apache.batik.dom.svg.LiveAttributeException;
 import org.apache.batik.dom.svg.SVGContext;
@@ -116,17 +117,25 @@ public class SVGSVGElementBridge
             // x and y have no meaning on the outermost 'svg' element
             if (!isOutermost) {
                 // 'x' attribute - default is 0
-                x = se.getX().getAnimVal().getValue();
+                AbstractSVGAnimatedLength _x =
+                    (AbstractSVGAnimatedLength) se.getX();
+                x = _x.getCheckedValue();
 
                 // 'y' attribute - default is 0
-                y = se.getY().getAnimVal().getValue();
+                AbstractSVGAnimatedLength _y =
+                    (AbstractSVGAnimatedLength) se.getY();
+                y = _y.getCheckedValue();
             }
 
             // 'width' attribute - default is 100%
-            float w = se.getWidth().getAnimVal().getValue();
+            AbstractSVGAnimatedLength _width =
+                (AbstractSVGAnimatedLength) se.getWidth();
+            float w = _width.getCheckedValue();
 
             // 'height' attribute - default is 100%
-            float h = se.getHeight().getAnimVal().getValue();
+            AbstractSVGAnimatedLength _height =
+                (AbstractSVGAnimatedLength) se.getHeight();
+            float h = _height.getCheckedValue();
 
             // 'visibility'
             cgn.setVisible(CSSUtilities.convertVisibility(e));
@@ -263,10 +272,14 @@ public class SVGSVGElementBridge
                     boolean isOutermost = doc.getRootElement() == e;
                     if (!isOutermost) {
                         // 'x' attribute - default is 0
-                        float x = se.getX().getAnimVal().getValue();
+                        AbstractSVGAnimatedLength _x =
+                            (AbstractSVGAnimatedLength) se.getX();
+                        float x = _x.getCheckedValue();
 
                         // 'y' attribute - default is 0
-                        float y = se.getY().getAnimVal().getValue();
+                        AbstractSVGAnimatedLength _y =
+                            (AbstractSVGAnimatedLength) se.getY();
+                        float y = _y.getCheckedValue();
 
                         AffineTransform positionTransform =
                             AffineTransform.getTranslateInstance(x, y);
@@ -313,17 +326,25 @@ public class SVGSVGElementBridge
                 float y = 0;
                 if (!isOutermost) {
                     // 'x' attribute - default is 0
-                    x = se.getX().getAnimVal().getValue();
+                    AbstractSVGAnimatedLength _x =
+                        (AbstractSVGAnimatedLength) se.getX();
+                    x = _x.getCheckedValue();
 
                     // 'y' attribute - default is 0
-                    y = se.getY().getAnimVal().getValue();
+                    AbstractSVGAnimatedLength _y =
+                        (AbstractSVGAnimatedLength) se.getY();
+                    y = _y.getCheckedValue();
                 }
                 
                 // 'width' attribute - default is 100%
-                float w = se.getWidth().getAnimVal().getValue();
+                AbstractSVGAnimatedLength _width =
+                    (AbstractSVGAnimatedLength) se.getWidth();
+                float w = _width.getCheckedValue();
                 
                 // 'height' attribute - default is 100%
-                float h = se.getHeight().getAnimVal().getValue();
+                AbstractSVGAnimatedLength _height =
+                    (AbstractSVGAnimatedLength) se.getHeight();
+                float h = _height.getCheckedValue();
                 
                 CanvasGraphicsNode cgn;
                 cgn = (CanvasGraphicsNode)node;

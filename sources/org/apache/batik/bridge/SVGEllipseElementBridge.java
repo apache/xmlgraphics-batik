@@ -21,6 +21,7 @@ package org.apache.batik.bridge;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 
+import org.apache.batik.dom.svg.AbstractSVGAnimatedLength;
 import org.apache.batik.dom.svg.AnimatedLiveAttributeValue;
 import org.apache.batik.dom.svg.LiveAttributeException;
 import org.apache.batik.dom.svg.SVGOMEllipseElement;
@@ -70,16 +71,24 @@ public class SVGEllipseElementBridge extends SVGShapeElementBridge {
             SVGOMEllipseElement ee = (SVGOMEllipseElement) e;
 
             // 'cx' attribute - default is 0
-            float cx = ee.getCx().getAnimVal().getValue();
+            AbstractSVGAnimatedLength _cx =
+                (AbstractSVGAnimatedLength) ee.getCx();
+            float cx = _cx.getCheckedValue();
 
             // 'cy' attribute - default is 0
-            float cy = ee.getCy().getAnimVal().getValue();
+            AbstractSVGAnimatedLength _cy =
+                (AbstractSVGAnimatedLength) ee.getCy();
+            float cy = _cy.getCheckedValue();
 
             // 'rx' attribute - required
-            float rx = ee.getRx().getAnimVal().getValue();
+            AbstractSVGAnimatedLength _rx =
+                (AbstractSVGAnimatedLength) ee.getRx();
+            float rx = _rx.getCheckedValue();
 
             // 'ry' attribute - required
-            float ry = ee.getRy().getAnimVal().getValue();
+            AbstractSVGAnimatedLength _ry =
+                (AbstractSVGAnimatedLength) ee.getRy();
+            float ry = _ry.getCheckedValue();
 
             shapeNode.setShape(new Ellipse2D.Float(cx - rx, cy - ry,
                                                    rx * 2, ry * 2));

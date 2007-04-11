@@ -24,6 +24,7 @@ import java.awt.geom.GeneralPath;
 import org.apache.batik.css.engine.SVGCSSEngine;
 import org.apache.batik.dom.svg.AnimatedLiveAttributeValue;
 import org.apache.batik.dom.svg.LiveAttributeException;
+import org.apache.batik.dom.svg.SVGOMAnimatedPoints;
 import org.apache.batik.dom.svg.SVGOMPolygonElement;
 import org.apache.batik.gvt.ShapeNode;
 import org.apache.batik.parser.AWTPolygonProducer;
@@ -76,9 +77,12 @@ public class SVGPolygonElementBridge extends SVGDecoratedShapeElementBridge {
                               Element e,
                               ShapeNode shapeNode) {
 
+        SVGOMPolygonElement pe = (SVGOMPolygonElement) e;
         try {
-            SVGOMPolygonElement pe = (SVGOMPolygonElement) e;
-            SVGPointList pl = pe.getAnimatedPoints();
+            SVGOMAnimatedPoints _points =
+                (SVGOMAnimatedPoints) pe.getSVGOMAnimatedPoints();
+            _points.check();
+            SVGPointList pl = _points.getAnimatedPoints();
             int size = pl.getNumberOfItems();
             if (size == 0) {
                 shapeNode.setShape(DEFAULT_SHAPE);

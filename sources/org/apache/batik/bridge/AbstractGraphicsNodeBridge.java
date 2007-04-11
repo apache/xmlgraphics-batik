@@ -179,6 +179,7 @@ public abstract class AbstractGraphicsNodeBridge extends AnimatableSVGBridge
             SVGOMAnimatedTransformList atl =
                 (SVGOMAnimatedTransformList) te.getTransform();
             if (atl.isSpecified()) {
+                atl.check();
                 AbstractSVGTransformList tl =
                     (AbstractSVGTransformList) te.getTransform().getAnimVal();
                 at.concatenate(tl.getAffineTransform());

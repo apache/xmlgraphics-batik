@@ -82,6 +82,24 @@ public class SVGOMAnimatedPreserveAspectRatio
         return animVal;
     }
 
+
+    /**
+     * Throws an exception if the points list value is malformed.
+     */
+    public void check() {
+        if (!hasAnimVal) {
+            if (baseVal == null) {
+                baseVal = new BaseSVGPARValue();
+            }
+            if (baseVal.malformed) {
+                throw new LiveAttributeException
+                    (element, localName,
+                     LiveAttributeException.ERR_ATTRIBUTE_MALFORMED,
+                     baseVal.getValueAsString());
+            }
+        }
+    }
+
     /**
      * Returns the base value of the attribute as an {@link AnimatableValue}.
      */
@@ -156,6 +174,11 @@ public class SVGOMAnimatedPreserveAspectRatio
     public class BaseSVGPARValue extends AbstractSVGPreserveAspectRatio {
 
         /**
+         * Whether the attribute is malformed.
+         */
+        protected boolean malformed;
+
+        /**
          * Creates a new BaseSVGPARValue.
          */
         public BaseSVGPARValue() {
@@ -179,6 +202,7 @@ public class SVGOMAnimatedPreserveAspectRatio
                 element.setAttributeNS
                     (null, SVGConstants.SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE,
                      value);
+                malformed = false;
             } finally {
                 changing = false;
             }

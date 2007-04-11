@@ -135,7 +135,6 @@ public abstract class AbstractSVGLength
      * <b>DOM</b>: Implements {@link SVGLength#setValue(float)}.
      */
     public void setValue(float value) throws DOMException {
-        revalidate();
         this.value = UnitProcessor.userSpaceToSVG(value, unitType,
                                                   direction, context);
         reset();
@@ -164,7 +163,10 @@ public abstract class AbstractSVGLength
      */
     public String getValueAsString() {
         revalidate();
-        return Float.toString(value)+UNITS[unitType];
+        if (unitType == SVGLength.SVG_LENGTHTYPE_UNKNOWN) {
+            return "";
+        }
+        return Float.toString(value) + UNITS[unitType];
     }
 
     /**

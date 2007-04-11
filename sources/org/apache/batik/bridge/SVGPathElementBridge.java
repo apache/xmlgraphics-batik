@@ -26,6 +26,7 @@ import org.apache.batik.css.engine.SVGCSSEngine;
 import org.apache.batik.dom.svg.AnimatedLiveAttributeValue;
 import org.apache.batik.dom.svg.LiveAttributeException;
 import org.apache.batik.dom.svg.SVGAnimatedPathDataSupport;
+import org.apache.batik.dom.svg.SVGOMAnimatedPathData;
 import org.apache.batik.dom.svg.SVGOMPathElement;
 import org.apache.batik.dom.svg.SVGPathContext;
 import org.apache.batik.ext.awt.geom.PathLength;
@@ -84,7 +85,10 @@ public class SVGPathElementBridge extends SVGDecoratedShapeElementBridge
         AWTPathProducer app = new AWTPathProducer();
         try {
             // 'd' attribute - required
-            SVGPathSegList p = pe.getAnimatedPathSegList();
+            SVGOMAnimatedPathData _d =
+                (SVGOMAnimatedPathData) pe.getAnimatedPathData();
+            _d.check();
+            SVGPathSegList p = _d.getAnimatedPathSegList();
             app.setWindingRule(CSSUtilities.convertFillRule(e));
             SVGAnimatedPathDataSupport.handlePathSegList(p, app);
         } catch (LiveAttributeException ex) {

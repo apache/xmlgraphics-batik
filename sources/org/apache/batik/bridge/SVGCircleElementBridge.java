@@ -21,6 +21,7 @@ package org.apache.batik.bridge;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 
+import org.apache.batik.dom.svg.AbstractSVGAnimatedLength;
 import org.apache.batik.dom.svg.AnimatedLiveAttributeValue;
 import org.apache.batik.dom.svg.LiveAttributeException;
 import org.apache.batik.dom.svg.SVGOMCircleElement;
@@ -70,13 +71,19 @@ public class SVGCircleElementBridge extends SVGShapeElementBridge {
             SVGOMCircleElement ce = (SVGOMCircleElement) e;
 
             // 'cx' attribute - default is 0
-            float cx = ce.getCx().getAnimVal().getValue();
+            AbstractSVGAnimatedLength _cx =
+                (AbstractSVGAnimatedLength) ce.getCx();
+            float cx = _cx.getCheckedValue();
 
             // 'cy' attribute - default is 0
-            float cy = ce.getCy().getAnimVal().getValue();
+            AbstractSVGAnimatedLength _cy =
+                (AbstractSVGAnimatedLength) ce.getCy();
+            float cy = _cy.getCheckedValue();
 
             // 'r' attribute - required
-            float r = ce.getR().getAnimVal().getValue();
+            AbstractSVGAnimatedLength _r =
+                (AbstractSVGAnimatedLength) ce.getR();
+            float r = _r.getCheckedValue();
 
             float x = cx - r;
             float y = cy - r;

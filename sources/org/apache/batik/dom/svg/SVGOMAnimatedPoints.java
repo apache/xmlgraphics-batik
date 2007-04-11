@@ -100,6 +100,29 @@ public class SVGOMAnimatedPoints
     }
 
     /**
+     * Throws an exception if the points list value is malformed.
+     */
+    public void check() {
+        if (!hasAnimVal) {
+            if (baseVal == null) {
+                baseVal = new BaseSVGPointList();
+            }
+            baseVal.revalidate();
+            if (baseVal.missing) {
+                throw new LiveAttributeException
+                    (element, localName,
+                     LiveAttributeException.ERR_ATTRIBUTE_MISSING, null);
+            }
+            if (baseVal.malformed) {
+                throw new LiveAttributeException
+                    (element, localName,
+                     LiveAttributeException.ERR_ATTRIBUTE_MALFORMED,
+                     baseVal.getValueAsString());
+            }
+        }
+    }
+
+    /**
      * Returns the base value of the attribute as an {@link AnimatableValue}.
      */
     public AnimatableValue getUnderlyingValue(AnimationTarget target) {
@@ -177,6 +200,16 @@ public class SVGOMAnimatedPoints
     protected class BaseSVGPointList extends AbstractSVGPointList {
 
         /**
+         * Whether the attribute is missing.
+         */
+        protected boolean missing;
+
+        /**
+         * Whether the attribute is malformed.
+         */
+        protected boolean malformed;
+
+        /**
          * Create a DOMException.
          */
         protected DOMException createDOMException(short type, String key,
@@ -217,6 +250,26 @@ public class SVGOMAnimatedPoints
         }
 
         /**
+         * Resets the value of the associated attribute.
+         */
+        protected void resetAttribute() {
+            super.resetAttribute();
+            missing = false;
+            malformed = false;
+        }
+
+        /**
+         * Appends the string representation of the given {@link SVGItem} to
+         * the DOM attribute.  This is called in response to an append to
+         * the list.
+         */
+        protected void resetAttribute(SVGItem item) {
+            super.resetAttribute(item);
+            missing = false;
+            malformed = false;
+        }
+
+        /**
          * Initializes the list, if needed.
          */
         protected void revalidate() {
@@ -224,11 +277,14 @@ public class SVGOMAnimatedPoints
                 return;
             }
 
+            valid = true;
+            missing = false;
+            malformed = false;
+
             String s = getValueAsString();
             if (s == null) {
-                throw new LiveAttributeException
-                    (element, localName,
-                     LiveAttributeException.ERR_ATTRIBUTE_MISSING, null);
+                missing = true;
+                return;
             }
             try {
                 ListBuilder builder = new ListBuilder();
@@ -241,12 +297,8 @@ public class SVGOMAnimatedPoints
                 itemList = builder.getList();
             } catch (ParseException e) {
                 itemList = new ArrayList(1);
-                valid = true;
-                throw new LiveAttributeException
-                    (element, localName,
-                     LiveAttributeException.ERR_ATTRIBUTE_MALFORMED, s);
+                malformed = true;
             }
-            valid = true;
         }
     }
 
