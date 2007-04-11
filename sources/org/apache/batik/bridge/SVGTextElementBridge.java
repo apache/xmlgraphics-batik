@@ -51,6 +51,9 @@ import org.apache.batik.dom.svg.AbstractSVGAnimatedLength;
 import org.apache.batik.dom.svg.AnimatedLiveAttributeValue;
 import org.apache.batik.dom.svg.LiveAttributeException;
 import org.apache.batik.dom.svg.SVGContext;
+import org.apache.batik.dom.svg.SVGOMAnimatedEnumeration;
+import org.apache.batik.dom.svg.SVGOMAnimatedLengthList;
+import org.apache.batik.dom.svg.SVGOMAnimatedNumberList;
 import org.apache.batik.dom.svg.SVGOMElement;
 import org.apache.batik.dom.svg.SVGOMTextPositioningElement;
 import org.apache.batik.dom.svg.SVGTextContent;
@@ -228,14 +231,18 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             SVGOMTextPositioningElement te = (SVGOMTextPositioningElement) e;
 
             // 'x' attribute - default is 0
-            SVGLengthList xs = te.getX().getAnimVal();
+            SVGOMAnimatedLengthList _x = (SVGOMAnimatedLengthList) te.getX();
+            _x.check();
+            SVGLengthList xs = _x.getAnimVal();
             float x = 0;
             if (xs.getNumberOfItems() > 0) {
                 x = xs.getItem(0).getValue();
             }
 
             // 'y' attribute - default is 0
-            SVGLengthList ys = te.getY().getAnimVal();
+            SVGOMAnimatedLengthList _y = (SVGOMAnimatedLengthList) te.getY();
+            _y.check();
+            SVGLengthList ys = _y.getAnimVal();
             float y = 0;
             if (ys.getNumberOfItems() > 0) {
                 y = ys.getItem(0).getValue();
@@ -1254,11 +1261,27 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         SVGTextPositioningElement te = (SVGTextPositioningElement) element;
 
         try {
-            SVGLengthList xs  = te.getX().getAnimVal();
-            SVGLengthList ys  = te.getY().getAnimVal();
-            SVGLengthList dxs = te.getDx().getAnimVal();
-            SVGLengthList dys = te.getDy().getAnimVal();
-            SVGNumberList rs  = te.getRotate().getAnimVal();
+            SVGOMAnimatedLengthList _x =
+                (SVGOMAnimatedLengthList) te.getX();
+            _x.check();
+            SVGOMAnimatedLengthList _y =
+                (SVGOMAnimatedLengthList) te.getY();
+            _y.check();
+            SVGOMAnimatedLengthList _dx =
+                (SVGOMAnimatedLengthList) te.getDx();
+            _dx.check();
+            SVGOMAnimatedLengthList _dy =
+                (SVGOMAnimatedLengthList) te.getDy();
+            _dy.check();
+            SVGOMAnimatedNumberList _rotate =
+                (SVGOMAnimatedNumberList) te.getRotate();
+            _rotate.check();
+
+            SVGLengthList xs  = _x.getAnimVal();
+            SVGLengthList ys  = _y.getAnimVal();
+            SVGLengthList dxs = _dx.getAnimVal();
+            SVGLengthList dys = _dy.getAnimVal();
+            SVGNumberList rs  = _rotate.getAnimVal();
 
             int len;
 
@@ -1708,10 +1731,12 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             if (textLength.isSpecified()) {
                 result.put(GVTAttributedCharacterIterator.TextAttribute.
                                BBOX_WIDTH,
-                           new Float(textLength.getAnimVal().getValue()));
+                           new Float(textLength.getCheckedValue()));
 
                 // lengthAdjust
-                if (tce.getLengthAdjust().getAnimVal() ==
+                SVGOMAnimatedEnumeration _lengthAdjust =
+                    (SVGOMAnimatedEnumeration) tce.getLengthAdjust();
+                if (_lengthAdjust.getCheckedVal() ==
                         SVGTextContentElement.LENGTHADJUST_SPACINGANDGLYPHS) {
                     result.put(GVTAttributedCharacterIterator.
                                TextAttribute.LENGTH_ADJUST,

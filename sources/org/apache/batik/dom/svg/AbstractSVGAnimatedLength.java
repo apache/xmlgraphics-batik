@@ -128,6 +128,49 @@ public abstract class AbstractSVGAnimatedLength
     }
 
     /**
+     * Gets the current animated length value.  If the attribute is missing
+     * or malformed, an exception is thrown.
+     */
+    public float getCheckedValue() {
+        if (hasAnimVal) {
+            if (animVal == null) {
+                animVal = new AnimSVGLength(direction);
+            }
+            if (nonNegative && animVal.value < 0) {
+                throw new LiveAttributeException
+                    (element, localName,
+                     LiveAttributeException.ERR_ATTRIBUTE_NEGATIVE,
+                     animVal.getValueAsString());
+            }
+            return animVal.getValue();
+        } else {
+            if (baseVal == null) {
+                baseVal = new BaseSVGLength(direction);
+            }
+            baseVal.revalidate();
+            if (baseVal.unitType == SVGLength.SVG_LENGTHTYPE_UNKNOWN) {
+                if (baseVal.missing) {
+                    throw new LiveAttributeException
+                        (element, localName,
+                         LiveAttributeException.ERR_ATTRIBUTE_MISSING, null);
+                } else {
+                    throw new LiveAttributeException
+                        (element, localName,
+                         LiveAttributeException.ERR_ATTRIBUTE_MALFORMED,
+                         baseVal.getValueAsString());
+                }
+            }
+            if (nonNegative && baseVal.value < 0) {
+                throw new LiveAttributeException
+                    (element, localName,
+                     LiveAttributeException.ERR_ATTRIBUTE_NEGATIVE,
+                     baseVal.getValueAsString());
+            }
+            return baseVal.getValue();
+        }
+    }
+
+    /**
      * Updates the animated value with the given {@link AnimatableValue}.
      */
     protected void updateAnimatedValue(AnimatableValue val) {
@@ -201,6 +244,11 @@ public abstract class AbstractSVGAnimatedLength
         protected boolean valid;
 
         /**
+         * Whether the attribute is missing.
+         */
+        protected boolean missing;
+
+        /**
          * Creates a new BaseSVGLength.
          * @param direction is one of HORIZONTAL_LENGTH, VERTICAL_LENGTH, or OTHER_LENGTH
          */
@@ -221,6 +269,7 @@ public abstract class AbstractSVGAnimatedLength
         protected void reset() {
             try {
                 changing = true;
+                valid = true;
                 String value = getValueAsString();
                 element.setAttributeNS(namespaceURI, localName, value);
             } finally {
@@ -236,31 +285,22 @@ public abstract class AbstractSVGAnimatedLength
                 return;
             }
 
-            unitType = SVG_LENGTHTYPE_UNKNOWN;
-            value = 0;
+            missing = false;
+            valid = true;
 
             Attr attr = element.getAttributeNodeNS(namespaceURI, localName);
             String s;
             if (attr == null) {
                 s = getDefaultValue();
                 if (s == null) {
-                    throw new LiveAttributeException
-                        (element, localName,
-                         LiveAttributeException.ERR_ATTRIBUTE_MISSING, null);
+                    missing = true;
+                    return;
                 }
             } else {
                 s = attr.getValue();
             }
 
             parse(s);
-
-            if (nonNegative && value < 0) {
-                throw new LiveAttributeException
-                    (element, localName,
-                     LiveAttributeException.ERR_ATTRIBUTE_NEGATIVE, s);
-            }
-
-            valid = true;
         }
 
         /**

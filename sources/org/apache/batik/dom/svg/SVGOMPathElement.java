@@ -146,6 +146,14 @@ public class SVGOMPathElement
     }
 
     /**
+     * Returns the {@link SVGOMAnimatedPathData} object that manages the
+     * path data for this element.
+     */
+    public SVGOMAnimatedPathData getAnimatedPathData() {
+        return d;
+    }
+
+    /**
      * <b>DOM</b>: Implements {@link SVGPathElement#getPathSegList()}.
      */
     public SVGPathSegList getPathSegList() {

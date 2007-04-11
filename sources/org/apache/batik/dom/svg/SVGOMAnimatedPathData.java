@@ -156,6 +156,29 @@ public class SVGOMAnimatedPathData
     }
 
     /**
+     * Throws an exception if the path data is malformed.
+     */
+    public void check() {
+        if (!hasAnimVal) {
+            if (pathSegs == null) {
+                pathSegs = new BaseSVGPathSegList();
+            }
+            pathSegs.revalidate();
+            if (pathSegs.missing) {
+                throw new LiveAttributeException
+                    (element, localName,
+                     LiveAttributeException.ERR_ATTRIBUTE_MISSING, null);
+            }
+            if (pathSegs.malformed) {
+                throw new LiveAttributeException
+                    (element, localName,
+                     LiveAttributeException.ERR_ATTRIBUTE_MALFORMED,
+                     pathSegs.getValueAsString());
+            }
+        }
+    }
+
+    /**
      * Returns the base value of the attribute as an {@link AnimatableValue}.
      */
     public AnimatableValue getUnderlyingValue(AnimationTarget target) {
@@ -244,6 +267,16 @@ public class SVGOMAnimatedPathData
     public class BaseSVGPathSegList extends AbstractSVGPathSegList {
 
         /**
+         * Whether the attribute is missing.
+         */
+        protected boolean missing;
+
+        /**
+         * Whether the attribute is malformed.
+         */
+        protected boolean malformed;
+
+        /**
          * Create a DOMException.
          */
         protected DOMException createDOMException(short type, String key,
@@ -283,6 +316,26 @@ public class SVGOMAnimatedPathData
         }
 
         /**
+         * Resets the value of the associated attribute.
+         */
+        protected void resetAttribute() {
+            super.resetAttribute();
+            missing = false;
+            malformed = false;
+        }
+
+        /**
+         * Appends the string representation of the given {@link SVGItem} to
+         * the DOM attribute.  This is called in response to an append to
+         * the list.
+         */
+        protected void resetAttribute(SVGItem item) {
+            super.resetAttribute(item);
+            missing = false;
+            malformed = false;
+        }
+
+        /**
          * Initializes the list, if needed.
          */
         protected void revalidate() {
@@ -290,11 +343,14 @@ public class SVGOMAnimatedPathData
                 return;
             }
 
+            valid = true;
+            missing = false;
+            malformed = false;
+
             String s = getValueAsString();
             if (s == null) {
-                throw new LiveAttributeException
-                    (element, localName,
-                     LiveAttributeException.ERR_ATTRIBUTE_MISSING, null);
+                missing = true;
+                return;
             }
             try {
                 ListBuilder builder = new ListBuilder();
@@ -307,11 +363,7 @@ public class SVGOMAnimatedPathData
                 itemList = builder.getList();
             } catch (ParseException e) {
                 itemList = new ArrayList(1);
-                throw new LiveAttributeException
-                    (element, localName,
-                     LiveAttributeException.ERR_ATTRIBUTE_MALFORMED, s);
-            } finally {
-                valid = true;
+                malformed = true;
             }
         }
     }
@@ -322,6 +374,16 @@ public class SVGOMAnimatedPathData
      */
     public class NormalizedBaseSVGPathSegList
             extends AbstractSVGNormPathSegList {
+
+        /**
+         * Whether the attribute is missing.
+         */
+        protected boolean missing;
+
+        /**
+         * Whether the attribute is malformed.
+         */
+        protected boolean malformed;
 
         /**
          * Create a DOMException.
@@ -370,11 +432,14 @@ public class SVGOMAnimatedPathData
                 return;
             }
 
+            valid = true;
+            missing = false;
+            malformed = false;
+
             String s = getValueAsString();
             if (s == null) {
-                throw new LiveAttributeException
-                    (element, localName,
-                     LiveAttributeException.ERR_ATTRIBUTE_MISSING, null);
+                missing = true;
+                return;
             }
             try {
                 ListBuilder builder = new ListBuilder();
@@ -387,11 +452,7 @@ public class SVGOMAnimatedPathData
                 itemList = builder.getList();
             } catch (ParseException e) {
                 itemList = new ArrayList(1);
-                throw new LiveAttributeException
-                    (element, localName,
-                     LiveAttributeException.ERR_ATTRIBUTE_MALFORMED, s);
-            } finally {
-                valid = true;
+                malformed = true;
             }
         }
     }
@@ -605,7 +666,6 @@ public class SVGOMAnimatedPathData
                         (command, PATHSEG_LETTERS[command],
                          parameters[j[0]++]);
             }
-            System.err.println("command == " + command);
             return null;
         }
 

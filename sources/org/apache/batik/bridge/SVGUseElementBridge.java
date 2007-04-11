@@ -24,6 +24,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 
 import org.apache.batik.dom.events.NodeEventTarget;
+import org.apache.batik.dom.svg.AbstractSVGAnimatedLength;
 import org.apache.batik.dom.svg.AnimatedLiveAttributeValue;
 import org.apache.batik.dom.svg.LiveAttributeException;
 import org.apache.batik.dom.svg.SVGOMAnimatedLength;
@@ -335,10 +336,14 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
         SVGUseElement ue = (SVGUseElement) e;
         try {
             // 'x' attribute - default is 0
-            float x = ue.getX().getAnimVal().getValue();
+            AbstractSVGAnimatedLength _x =
+                (AbstractSVGAnimatedLength) ue.getX();
+            float x = _x.getCheckedValue();
 
             // 'y' attribute - default is 0
-            float y = ue.getY().getAnimVal().getValue();
+            AbstractSVGAnimatedLength _y =
+                (AbstractSVGAnimatedLength) ue.getY();
+            float y = _y.getCheckedValue();
 
             AffineTransform xy = AffineTransform.getTranslateInstance(x, y);
             xy.preConcatenate(at);

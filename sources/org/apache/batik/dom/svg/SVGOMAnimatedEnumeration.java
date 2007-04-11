@@ -161,6 +161,26 @@ public class SVGOMAnimatedEnumeration extends AbstractSVGAnimatedValue
     }
 
     /**
+     * Gets the current animated value, throwing an exception if the attribute
+     * is malformed.
+     */
+    public short getCheckedVal() {
+        if (hasAnimVal) {
+            return animVal;
+        }
+        if (!valid) {
+            update();
+        }
+        if (baseVal == 0) {
+            throw new LiveAttributeException
+                (element, localName,
+                 LiveAttributeException.ERR_ATTRIBUTE_MALFORMED,
+                 getBaseValAsString());
+        }
+        return baseVal;
+    }
+
+    /**
      * Returns the base value of the attribute as an {@link AnimatableValue}.
      */
     public AnimatableValue getUnderlyingValue(AnimationTarget target) {

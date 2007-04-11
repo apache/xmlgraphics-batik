@@ -36,8 +36,10 @@ import org.apache.batik.css.engine.SVGCSSEngine;
 import org.apache.batik.dom.AbstractNode;
 import org.apache.batik.dom.events.DOMMouseEvent;
 import org.apache.batik.dom.events.NodeEventTarget;
+import org.apache.batik.dom.svg.AbstractSVGAnimatedLength;
 import org.apache.batik.dom.svg.AnimatedLiveAttributeValue;
 import org.apache.batik.dom.svg.LiveAttributeException;
+import org.apache.batik.dom.svg.SVGOMAnimatedPreserveAspectRatio;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.svg.SVGOMElement;
 import org.apache.batik.ext.awt.color.ICCColorSpaceExt;
@@ -62,7 +64,6 @@ import org.w3c.dom.events.DocumentEvent;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
-import org.w3c.dom.svg.SVGAnimatedPreserveAspectRatio;
 import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGImageElement;
 import org.w3c.dom.svg.SVGSVGElement;
@@ -437,12 +438,13 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
                         || ln.equals(SVG_HEIGHT_ATTRIBUTE)) {
                     SVGImageElement ie = (SVGImageElement) e;
                     ImageNode imageNode = (ImageNode) node;
-                    float val;
+                    AbstractSVGAnimatedLength _attr;
                     if (ln.charAt(0) == 'w') {
-                        val = ie.getWidth().getAnimVal().getValue();
+                        _attr = (AbstractSVGAnimatedLength) ie.getWidth();
                     } else {
-                        val = ie.getHeight().getAnimVal().getValue();
+                        _attr = (AbstractSVGAnimatedLength) ie.getHeight();
                     }
+                    float val = _attr.getCheckedValue();
                     if (val == 0 || imageNode.getImage() instanceof ShapeNode) {
                         rebuildImageNode();
                     } else {
@@ -871,10 +873,12 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
 
         try {
             SVGImageElement ie = (SVGImageElement) e;
-            SVGAnimatedPreserveAspectRatio aPAR = ie.getPreserveAspectRatio();
+            SVGOMAnimatedPreserveAspectRatio _par =
+                (SVGOMAnimatedPreserveAspectRatio) ie.getPreserveAspectRatio();
+            _par.check();
 
             AffineTransform at = ViewBox.getPreserveAspectRatioTransform
-                (e, vb, w, h, aPAR, ctx);
+                (e, vb, w, h, _par, ctx);
             at.preConcatenate(AffineTransform.getTranslateInstance(x, y));
             node.setTransform(at);
 
@@ -958,16 +962,24 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
             SVGImageElement ie = (SVGImageElement) element;
 
             // 'x' attribute - default is 0
-            float x = ie.getX().getAnimVal().getValue();
+            AbstractSVGAnimatedLength _x =
+                (AbstractSVGAnimatedLength) ie.getX();
+            float x = _x.getCheckedValue();
 
             // 'y' attribute - default is 0
-            float y = ie.getY().getAnimVal().getValue();
+            AbstractSVGAnimatedLength _y =
+                (AbstractSVGAnimatedLength) ie.getY();
+            float y = _y.getCheckedValue();
 
             // 'width' attribute - required
-            float w = ie.getWidth().getAnimVal().getValue();
+            AbstractSVGAnimatedLength _width =
+                (AbstractSVGAnimatedLength) ie.getWidth();
+            float w = _width.getCheckedValue();
 
             // 'height' attribute - required
-            float h = ie.getHeight().getAnimVal().getValue();
+            AbstractSVGAnimatedLength _height =
+                (AbstractSVGAnimatedLength) ie.getHeight();
+            float h = _height.getCheckedValue();
 
             return new Rectangle2D.Float(x, y, w, h);
         } catch (LiveAttributeException ex) {

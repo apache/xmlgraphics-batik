@@ -118,6 +118,29 @@ public class SVGOMAnimatedLengthList
     }
 
     /**
+     * Throws an exception if the length list value is malformed.
+     */
+    public void check() {
+        if (!hasAnimVal) {
+            if (baseVal == null) {
+                baseVal = new BaseSVGLengthList();
+            }
+            baseVal.revalidate();
+            if (baseVal.missing) {
+                throw new LiveAttributeException
+                    (element, localName,
+                     LiveAttributeException.ERR_ATTRIBUTE_MISSING, null);
+            }
+            if (baseVal.malformed) {
+                throw new LiveAttributeException
+                    (element, localName,
+                     LiveAttributeException.ERR_ATTRIBUTE_MALFORMED,
+                     baseVal.getValueAsString());
+            }
+        }
+    }
+
+    /**
      * Returns the base value of the attribute as an {@link AnimatableValue}.
      */
     public AnimatableValue getUnderlyingValue(AnimationTarget target) {
@@ -200,6 +223,16 @@ public class SVGOMAnimatedLengthList
     public class BaseSVGLengthList extends AbstractSVGLengthList {
 
         /**
+         * Whether the value is missing.
+         */
+        protected boolean missing;
+
+        /**
+         * Whether the value is malformed.
+         */
+        protected boolean malformed;
+
+        /**
          * Creates a new BaseSVGLengthList.
          */
         public BaseSVGLengthList() {
@@ -255,6 +288,26 @@ public class SVGOMAnimatedLengthList
         }
 
         /**
+         * Resets the value of the associated attribute.
+         */
+        protected void resetAttribute() {
+            super.resetAttribute();
+            missing = false;
+            malformed = false;
+        }
+
+        /**
+         * Appends the string representation of the given {@link SVGItem} to
+         * the DOM attribute.  This is called in response to an append to
+         * the list.
+         */
+        protected void resetAttribute(SVGItem item) {
+            super.resetAttribute(item);
+            missing = false;
+            malformed = false;
+        }
+
+        /**
          * Initializes the list, if needed.
          */
         protected void revalidate() {
@@ -262,12 +315,15 @@ public class SVGOMAnimatedLengthList
                 return;
             }
 
+            valid = true;
+            missing = false;
+            malformed = false;
+
             String s = getValueAsString();
             boolean isEmpty = s != null && s.length() == 0;
             if (s == null || isEmpty && !emptyAllowed) {
-                throw new LiveAttributeException
-                    (element, localName,
-                     LiveAttributeException.ERR_ATTRIBUTE_MISSING, s);
+                missing = true;
+                return;
             }
             if (isEmpty) {
                 itemList = new ArrayList(1);
@@ -284,12 +340,9 @@ public class SVGOMAnimatedLengthList
                 } catch (ParseException e) {
                     itemList = new ArrayList(1);
                     valid = true;
-                    throw new LiveAttributeException
-                        (element, localName,
-                         LiveAttributeException.ERR_ATTRIBUTE_MALFORMED, s);
+                    malformed = true;
                 }
             }
-            valid = true;
         }
     }
 

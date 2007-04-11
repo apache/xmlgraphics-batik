@@ -85,6 +85,14 @@ public abstract class SVGPointShapeElement
     }
 
     /**
+     * Gets the {@link SVGOMAnimatedPoints} object that manages the
+     * point list for this element.
+     */
+    public SVGOMAnimatedPoints getSVGOMAnimatedPoints() {
+        return points;
+    }
+
+    /**
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGAnimatedPoints#getPoints()}.
      */
