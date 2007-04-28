@@ -29,7 +29,7 @@ import java.awt.BasicStroke;
 import java.awt.geom.AffineTransform;
 
 import org.apache.batik.gvt.Selectable;
-import org.apache.batik.gvt.event.AWTEventDispatcher;
+import org.apache.batik.gvt.event.EventDispatcher;
 import org.apache.batik.gvt.event.GraphicsNodeMouseEvent;
 import org.apache.batik.gvt.event.GraphicsNodeMouseListener;
 import org.apache.batik.gvt.event.SelectionEvent;
@@ -110,7 +110,7 @@ public class TextSelectionManager {
      * Creates a new TextSelectionManager.
      */
     public TextSelectionManager(AbstractJGVTComponent comp,
-                                AWTEventDispatcher ed) {
+                                EventDispatcher ed) {
         textSelector = new ConcreteTextSelector();
         textSelectionListener = new TextSelectionListener();
         textSelector.addSelectionListener(textSelectionListener);

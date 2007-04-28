@@ -97,9 +97,7 @@ public abstract class ImageTranscoder extends SVGAbstractTranscoder {
 
         // paint the SVG document using the bridge package
         // create the appropriate renderer
-        ImageRendererFactory rendFactory = new ConcreteImageRendererFactory();
-        // ImageRenderer renderer = rendFactory.createDynamicImageRenderer();
-        ImageRenderer renderer = rendFactory.createStaticImageRenderer();
+        ImageRenderer renderer = createRenderer();
         renderer.updateOffScreen(w, h);
         // curTxf.translate(0.5, 0.5);
         renderer.setTransform(curTxf);
@@ -136,8 +134,18 @@ public abstract class ImageTranscoder extends SVGAbstractTranscoder {
     }
 
     /**
-     * Converts an image so that viewers which do not support the alpha channel will
-     * see a white background (and not a black one).
+     * Method so subclasses can modify the Renderer used to render document.
+     */
+    protected ImageRenderer createRenderer() {
+        ImageRendererFactory rendFactory = new ConcreteImageRendererFactory();
+        // ImageRenderer renderer = rendFactory.createDynamicImageRenderer();
+        return rendFactory.createStaticImageRenderer();
+    }
+
+    /**
+     * Converts an image so that viewers which do not support the
+     * alpha channel will see a white background (and not a black
+     * one).
      * @param img the image to convert
      * @param sppsm
      */
