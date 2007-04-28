@@ -51,6 +51,7 @@ import javax.swing.JComponent;
 
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.event.AWTEventDispatcher;
+import org.apache.batik.gvt.event.EventDispatcher;
 import org.apache.batik.gvt.event.SelectionAdapter;
 import org.apache.batik.gvt.event.SelectionEvent;
 import org.apache.batik.gvt.renderer.ConcreteImageRendererFactory;
@@ -371,10 +372,10 @@ public abstract class AbstractJGVTComponent extends JComponent {
         if (eventsEnabled) {
             eventDispatcher = new AWTEventDispatcher();
             if (selectableText) {
-                textSelectionManager =
-                    new TextSelectionManager(this, eventDispatcher);
+                textSelectionManager = createTextSelectionManager
+                    (eventDispatcher);
                 textSelectionManager.addSelectionListener
-                    (new UnixTextSelectionListener());
+                     (new UnixTextSelectionListener());
             }
         }
     }
@@ -382,6 +383,11 @@ public abstract class AbstractJGVTComponent extends JComponent {
     ////////////////////////////////////////////////////////////////////////
     // Selection methods
     ////////////////////////////////////////////////////////////////////////
+
+    protected TextSelectionManager 
+        createTextSelectionManager(EventDispatcher ed) {
+        return new TextSelectionManager(this, ed);
+    }
 
     /**
      * Returns the current Text selection manager for the Component.
