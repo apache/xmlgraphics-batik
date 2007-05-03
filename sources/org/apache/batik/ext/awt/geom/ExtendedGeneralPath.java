@@ -645,30 +645,13 @@ public class ExtendedGeneralPath implements ExtendedShape, Cloneable {
                 coords[1] = values[valsIdx+1];
                 break;
             case SEG_QUADTO:
-                // coords[0] = values[valsIdx];
-                // coords[1] = values[valsIdx+1];
-                // coords[2] = values[valsIdx+2];
-                // coords[3] = values[valsIdx+3];
-                System.arraycopy( values, 0, coords, 0, 4 );
+                System.arraycopy( values, valsIdx, coords, 0, 4 );
                 break;
             case SEG_CUBICTO:
-                // coords[0] = values[valsIdx];
-                // coords[1] = values[valsIdx+1];
-                // coords[2] = values[valsIdx+2];
-                // coords[3] = values[valsIdx+3];
-                // coords[4] = values[valsIdx+4];
-                // coords[5] = values[valsIdx+5];
-                System.arraycopy( values, 0, coords, 0, 6 );
+                System.arraycopy( values, valsIdx, coords, 0, 6 );
                 break;
             case SEG_ARCTO:
-                // coords[0] = values[valsIdx];
-                // coords[1] = values[valsIdx+1];
-                // coords[2] = values[valsIdx+2];
-                // coords[3] = values[valsIdx+3];
-                // coords[4] = values[valsIdx+4];
-                // coords[5] = values[valsIdx+5];
-                // coords[6] = values[valsIdx+6];
-                System.arraycopy( values, 0, coords, 0, 7 );
+                System.arraycopy( values, valsIdx, coords, 0, 7 );
                 break;
             }
             return ret;
