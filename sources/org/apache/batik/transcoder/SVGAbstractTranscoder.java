@@ -758,6 +758,9 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
      */
     public static final String DEFAULT_ALLOWED_SCRIPT_TYPES
         = SVGConstants.SVG_SCRIPT_TYPE_ECMASCRIPT + ", "
+        + SVGConstants.SVG_SCRIPT_TYPE_APPLICATION_ECMASCRIPT + ", "
+        + SVGConstants.SVG_SCRIPT_TYPE_JAVASCRIPT + ", "
+        + SVGConstants.SVG_SCRIPT_TYPE_APPLICATION_JAVASCRIPT + ", "
         + SVGConstants.SVG_SCRIPT_TYPE_JAVA;
 
     /**

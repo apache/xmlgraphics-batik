@@ -889,10 +889,15 @@ public class Main implements Application {
      * this application.
      */
     public boolean canLoadScriptType(String scriptType){
-        if (SVGConstants.SVG_SCRIPT_TYPE_ECMASCRIPT.equals(scriptType)){
+        if (SVGConstants.SVG_SCRIPT_TYPE_ECMASCRIPT.equals(scriptType)
+                || SVGConstants.SVG_SCRIPT_TYPE_APPLICATION_ECMASCRIPT
+                    .equals(scriptType)
+                || SVGConstants.SVG_SCRIPT_TYPE_JAVASCRIPT.equals(scriptType)
+                || SVGConstants.SVG_SCRIPT_TYPE_APPLICATION_JAVASCRIPT
+                    .equals(scriptType)) {
             return preferenceManager.getBoolean
                 (PreferenceDialog.PREFERENCE_KEY_LOAD_ECMASCRIPT);
-        } else if (SVGConstants.SVG_SCRIPT_TYPE_JAVA.equals(scriptType)){
+        } else if (SVGConstants.SVG_SCRIPT_TYPE_JAVA.equals(scriptType)) {
             return preferenceManager.getBoolean
                 (PreferenceDialog.PREFERENCE_KEY_LOAD_JAVA);
         } else {
