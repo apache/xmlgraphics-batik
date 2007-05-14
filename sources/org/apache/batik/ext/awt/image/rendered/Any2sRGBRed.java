@@ -39,13 +39,14 @@ import org.apache.batik.ext.awt.image.GraphicsUtil;
  * new image.
  *
  * @author <a href="mailto:Thomas.DeWeeese@Kodak.com">Thomas DeWeese</a>
- * @version $Id$ */
+ * @version $Id$
+ */
 public class Any2sRGBRed extends AbstractRed {
 
     boolean srcIsLsRGB = false;
 
     /**
-     * Construct a luminace image from src.
+     * Construct a luminance image from src.
      *
      * @param src The image to convert to a luminance image
      */
@@ -96,6 +97,7 @@ public class Any2sRGBRed extends AbstractRed {
      * be on the sRGB scale to begin with.
      */
     private static final int[] linearToSRGBLut = new int[256];
+
     static {
         final double scale = 1.0/255;
         final double exp   = 1.0/GAMMA;
@@ -107,7 +109,7 @@ public class Any2sRGBRed extends AbstractRed {
             else
                 value = 1.055 * Math.pow(value, exp) - 0.055;
 
-            linearToSRGBLut[i] = (int)Math.round(value*255.);
+            linearToSRGBLut[i] = (int)Math.round(value*255.0);
             // System.out.print(linearToSRGBLut[i] + ",");
         }
         // System.out.println("");
@@ -184,7 +186,7 @@ public class Any2sRGBRed extends AbstractRed {
                 matrix = new float[4][2];
                 matrix[0][0] = 1; // Red
                 matrix[1][0] = 1; // Grn
-                matrix[3][0] = 1; // Blu
+                matrix[2][0] = 1; // Blu
                 matrix[3][1] = 1; // Alpha
                 break;
             case 3:
@@ -215,26 +217,26 @@ public class Any2sRGBRed extends AbstractRed {
             // many things use this when the data _really_
             // has sRGB gamma applied.
             try {
-            float [][] matrix = null;
-            switch (srcSM.getNumBands()) {
-            case 1:
-                matrix = new float[3][1];
-                matrix[0][0] = 1; // Red
-                matrix[1][0] = 1; // Grn
-                matrix[2][0] = 1; // Blu
-                break;
-            case 2:
-            default:
-                matrix = new float[4][2];
-                matrix[0][0] = 1; // Red
-                matrix[1][0] = 1; // Grn
-                matrix[3][0] = 1; // Blu
-                matrix[4][1] = 1; // Alpha
-                break;
-            }
-            Raster srcRas = src.getData(wr.getBounds());
-            BandCombineOp op = new BandCombineOp(matrix, null);
-            op.filter(srcRas, wr);
+                float [][] matrix = null;
+                switch (srcSM.getNumBands()) {
+                case 1:
+                    matrix = new float[3][1];
+                    matrix[0][0] = 1; // Red
+                    matrix[1][0] = 1; // Grn
+                    matrix[2][0] = 1; // Blu
+                    break;
+                case 2:
+                default:
+                    matrix = new float[4][2];
+                    matrix[0][0] = 1; // Red
+                    matrix[1][0] = 1; // Grn
+                    matrix[2][0] = 1; // Blu
+                    matrix[3][1] = 1; // Alpha
+                    break;
+                }
+                Raster srcRas = src.getData(wr.getBounds());
+                BandCombineOp op = new BandCombineOp(matrix, null);
+                op.filter(srcRas, wr);
             } catch (Throwable t) {
                 t.printStackTrace();
             }
@@ -289,11 +291,11 @@ public class Any2sRGBRed extends AbstractRed {
         return wr;
     }
 
-        /**
-         * This function 'fixes' the source's color model.  Right now
-         * it just selects if it should have one or two bands based on
-         * if the source had an alpha channel.
-         */
+    /**
+     * This function 'fixes' the source's color model.  Right now
+     * it just selects if it should have one or two bands based on
+     * if the source had an alpha channel.
+     */
     protected static ColorModel fixColorModel(CachableRed src) {
         ColorModel  cm = src.getColorModel();
         if (cm != null) {
