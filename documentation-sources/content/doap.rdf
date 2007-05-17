@@ -26,6 +26,7 @@
     <download-page rdf:resource="http://xmlgraphics.apache.org/download.cgi" />
     <programming-language>SVG</programming-language>
     <category rdf:resource="http://projects.apache.org/category/xml" />
+    <category rdf:resource="http://projects.apache.org/category/graphics" />
     <release>
       <Version>
         <name>Batik 1.6</name>
