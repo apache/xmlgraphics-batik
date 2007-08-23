@@ -67,7 +67,11 @@ public final class Version {
      * </p>
      */
     public static String getVersion() {
-        String version = Version.class.getPackage().getImplementationVersion();
+        Package pkg = Version.class.getPackage();
+        String version = null;
+        if (pkg != null) {
+            version = pkg.getImplementationVersion();
+        }
         String headURL = "$HeadURL$";
         String prefix = "$HeadURL: ";
         String suffix = "/sources/org/apache/batik/Version.java $";
