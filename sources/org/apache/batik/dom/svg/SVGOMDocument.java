@@ -369,8 +369,10 @@ public class SVGOMDocument
      * for this document.
      */
     public boolean isId(Attr node) {
-        if (node.getNamespaceURI() != null) return false;
-        return SVG_ID_ATTRIBUTE.equals(node.getNodeName());
+        if (node.getNamespaceURI() == null) {
+            return SVG_ID_ATTRIBUTE.equals(node.getNodeName());
+        }
+        return node.getNodeName().equals(XML_ID_QNAME);
     }
 
     // CSSNavigableDocument ///////////////////////////////////////////
