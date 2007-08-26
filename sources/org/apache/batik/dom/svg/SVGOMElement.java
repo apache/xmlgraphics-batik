@@ -60,7 +60,6 @@ import org.w3c.dom.svg.SVGSVGElement;
 public abstract class SVGOMElement
     extends    AbstractElement
     implements SVGElement,
-               SVGConstants,
                ExtendedTraitAccess,
                AnimationTarget {
 
@@ -145,18 +144,27 @@ public abstract class SVGOMElement
      * <b>DOM</b>: Implements {@link SVGElement#getId()}.
      */
     public String getId() {
-        return super.getId();
+        if (((SVGOMDocument) ownerDocument).isSVG12) {
+            Attr a = getAttributeNodeNS(XML_NAMESPACE_URI, SVG_ID_ATTRIBUTE);
+            if (a != null) {
+                return a.getNodeValue();
+            }
+        }
+        return getAttributeNS(null, SVG_ID_ATTRIBUTE);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGElement#setId(String)}.
      */
     public void setId(String id) {
-        Attr a = getIdAttribute();
-        if (a == null) {
-            setAttributeNS(null, "id", id);
+        if (((SVGOMDocument) ownerDocument).isSVG12) {
+            setAttributeNS(XML_NAMESPACE_URI, SVG_ID_ATTRIBUTE, id);
+            Attr a = getAttributeNodeNS(null, SVG_ID_ATTRIBUTE);
+            if (a != null) {
+                a.setNodeValue(id);
+            }
         } else {
-            a.setNodeValue(id);
+            setAttributeNS(null, SVG_ID_ATTRIBUTE, id);
         }
     }
 

@@ -386,9 +386,9 @@ public abstract class AbstractElement
             return null;
         }
         int len = nnm.getLength();
-        for ( int i = 0; i < len; i++ ) {
-            AbstractAttr a = (AbstractAttr)nnm.item( i );
-            if ( a.isId() ) {
+        for (int i = 0; i < len; i++) {
+            AbstractAttr a = (AbstractAttr)nnm.item(i);
+            if (a.isId()) {
                 return a;
             }
         }

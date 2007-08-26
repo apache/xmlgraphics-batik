@@ -23,6 +23,7 @@ import org.apache.batik.dom.AbstractAttr;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.events.NodeEventTarget;
 import org.apache.batik.dom.util.DoublyIndexedTable;
+import org.apache.batik.util.SVGConstants;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
@@ -39,7 +40,7 @@ import org.w3c.dom.events.MutationEvent;
  */
 public abstract class AbstractElement
         extends org.apache.batik.dom.AbstractElement
-        implements NodeEventTarget, CSSNavigableNode {
+        implements NodeEventTarget, CSSNavigableNode, SVGConstants {
 
     /**
      * The live attribute values.
@@ -110,6 +111,34 @@ public abstract class AbstractElement
     }
 
     // Attributes /////////////////////////////////////////////////////////
+
+    public void fireDOMAttrModifiedEvent(String name, Attr node, String oldv,
+                                         String newv, short change) {
+        super.fireDOMAttrModifiedEvent(name, node, oldv, newv, change);
+        // This handles the SVG 1.2 behaviour where setting the value of
+        // 'id' must also change 'xml:id', and vice versa.
+        if (((SVGOMDocument) ownerDocument).isSVG12
+                && (change == MutationEvent.ADDITION
+                    || change == MutationEvent.MODIFICATION)) {
+            if (node.getNamespaceURI() == null
+                    && node.getNodeName().equals(SVG_ID_ATTRIBUTE)) {
+                Attr a =
+                    getAttributeNodeNS(XML_NAMESPACE_URI, SVG_ID_ATTRIBUTE);
+                if (a == null) {
+                    setAttributeNS(XML_NAMESPACE_URI, SVG_ID_ATTRIBUTE, newv);
+                } else if (!a.getNodeValue().equals(newv)) {
+                    a.setNodeValue(newv);
+                }
+            } else if (node.getNodeName().equals(XML_ID_QNAME)) {
+                Attr a = getAttributeNodeNS(null, SVG_ID_ATTRIBUTE);
+                if (a == null) {
+                    setAttributeNS(null, SVG_ID_ATTRIBUTE, newv);
+                } else if (!a.getNodeValue().equals(newv)) {
+                    a.setNodeValue(newv);
+                }
+            }
+        }
+    }
 
     /**
      * Returns the live attribute value associated with given
@@ -316,5 +345,4 @@ public abstract class AbstractElement
             return n;
         }
     }
-
 }

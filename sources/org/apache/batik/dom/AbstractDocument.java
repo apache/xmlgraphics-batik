@@ -327,11 +327,15 @@ public abstract class AbstractDocument
     }
 
     /**
-     * Imports the given node 'importNode' to this document.
-     * It does so deeply if 'deep' is set to true.
-     * It will not mark id attributes as id's if 'trimId' is set false.
-     * this is used primarily for the clone trees of the 'use' element
-     * so they don't clutter the hashtable.
+     * Imports the given node into this document.
+     * It does so deeply if <code>deep</code> is set to true.
+     * It will not mark ID attributes as IDs if <code>trimId</code> is set to
+     * true.  This is used primarily for the shadow trees of the 'use' elements
+     * so they don't clutter the hash table.
+     *
+     * @param importedNode The node to import into this document.
+     * @param deep Whether to perform a deep importation.
+     * @param trimId Whether to make all cloned attributes not be ID attributes.
      */
     public Node importNode(Node importedNode, boolean deep, boolean trimId) {
         /*
