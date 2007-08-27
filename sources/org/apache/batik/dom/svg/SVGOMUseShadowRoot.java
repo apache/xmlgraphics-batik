@@ -34,7 +34,7 @@ import org.w3c.dom.Node;
  */
 public class SVGOMUseShadowRoot
         extends AbstractDocumentFragment
-        implements CSSNavigableNode {
+        implements CSSNavigableNode, IdContainer {
 
     /**
      * The parent CSS element.
@@ -75,6 +75,12 @@ public class SVGOMUseShadowRoot
      * Sets this node readonly attribute.
      */
     public void setReadonly(boolean v) {
+    }
+
+    // IdContainer ///////////////////////////////////////////////////////////
+
+    public Element getElementById(String id) {
+        return ownerDocument.getChildElementById(this, id);
     }
 
     // CSSNavigableNode //////////////////////////////////////////////////////
