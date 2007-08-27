@@ -631,10 +631,8 @@ public class Parser implements ExtendedParser, Localizable {
      * Parses a selector.
      */
     protected Selector parseSelector() {
-        SimpleSelector ss = parseSimpleSelector();
-        Selector result = ss;
-
         pseudoElement = null;
+        Selector result = parseSimpleSelector();
 
         loop: for (;;) {
             switch (current) {
@@ -646,11 +644,17 @@ public class Parser implements ExtendedParser, Localizable {
             case LexicalUnits.DOT:
             case LexicalUnits.LEFT_BRACKET:
             case LexicalUnits.COLON:
+                if (pseudoElement != null) {
+                    throw createCSSParseException("pseudo.element.position");
+                }
                 result = selectorFactory.createDescendantSelector
                     (result,
                      parseSimpleSelector());
                 break;
             case LexicalUnits.PLUS:
+                if (pseudoElement != null) {
+                    throw createCSSParseException("pseudo.element.position");
+                }
                 nextIgnoreSpaces();
                 result = selectorFactory.createDirectAdjacentSelector
                     ((short)1,
@@ -658,6 +662,9 @@ public class Parser implements ExtendedParser, Localizable {
                      parseSimpleSelector());
                 break;
             case LexicalUnits.PRECEDE:
+                if (pseudoElement != null) {
+                    throw createCSSParseException("pseudo.element.position");
+                }
                 nextIgnoreSpaces();
                 result = selectorFactory.createChildSelector
                     (result,
