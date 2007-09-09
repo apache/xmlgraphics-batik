@@ -1134,9 +1134,7 @@ public abstract class TimedElement implements SMILConstants {
                 try {
                     this.min = parseClockValue(min, false);
                 } catch (ParseException ex) {
-                    throw createException
-                        ("attribute.malformed",
-                         new Object[] { null, SMIL_MIN_ATTRIBUTE });
+                	this.min = 0;
                 }
                 if (this.min < 0) {
                     this.min = 0;
@@ -1160,9 +1158,7 @@ public abstract class TimedElement implements SMILConstants {
                 try {
                     this.max = parseClockValue(max, false);
                 } catch (ParseException ex) {
-                    throw createException
-                        ("attribute.malformed",
-                         new Object[] { null, SMIL_MAX_ATTRIBUTE });
+                	this.max = INDEFINITE;
                 }
                 if (this.max < 0) {
                     this.max = 0;
