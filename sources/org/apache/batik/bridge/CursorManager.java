@@ -47,6 +47,7 @@ import org.apache.batik.ext.awt.image.spi.BrokenLinkProvider;
 import org.apache.batik.ext.awt.image.spi.ImageTagRegistry;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.util.ParsedURL;
+import org.apache.batik.util.Platform;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.SoftReferenceCache;
 import org.w3c.dom.Element;
@@ -98,6 +99,7 @@ public class CursorManager implements SVGConstants, ErrorConstants {
      * Static initialization of the cursorMap
      */
     static {
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
         cursorMap = new Hashtable();
         cursorMap.put(SVG_CROSSHAIR_VALUE,
                       Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
@@ -105,8 +107,6 @@ public class CursorManager implements SVGConstants, ErrorConstants {
                       Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
         cursorMap.put(SVG_POINTER_VALUE,
                       Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        cursorMap.put(SVG_MOVE_VALUE,
-                      Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
         cursorMap.put(SVG_E_RESIZE_VALUE,
                       Cursor.getPredefinedCursor(Cursor.E_RESIZE_CURSOR));
         cursorMap.put(SVG_NE_RESIZE_VALUE,
@@ -127,9 +127,19 @@ public class CursorManager implements SVGConstants, ErrorConstants {
                       Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
         cursorMap.put(SVG_WAIT_VALUE,
                       Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        Cursor moveCursor = Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR);
+        if (Platform.isOSX) {
+            try {
+                Image img = toolkit.createImage
+                    (CursorManager.class.getResource("resources/move.gif"));
+                moveCursor = toolkit.createCustomCursor
+                    (img, new Point(11, 11), "move");
+            } catch (Exception ex) {
+            }
+        }
+        cursorMap.put(SVG_MOVE_VALUE, moveCursor);
         Cursor helpCursor;
         try {
-            Toolkit toolkit = Toolkit.getDefaultToolkit();
             Image img = toolkit.createImage
                 (CursorManager.class.getResource("resources/help.gif"));
             helpCursor = toolkit.createCustomCursor
