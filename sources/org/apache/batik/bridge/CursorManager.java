@@ -127,9 +127,17 @@ public class CursorManager implements SVGConstants, ErrorConstants {
                       Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
         cursorMap.put(SVG_WAIT_VALUE,
                       Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        cursorMap.put(SVG_HELP_VALUE,
-                      Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-
+        Cursor helpCursor;
+        try {
+            Toolkit toolkit = Toolkit.getDefaultToolkit();
+            Image img = toolkit.createImage
+                (CursorManager.class.getResource("resources/help.gif"));
+            helpCursor = toolkit.createCustomCursor
+                (img, new Point(1, 3), "help");
+        } catch (Exception ex) {
+            helpCursor = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR);
+        }
+        cursorMap.put(SVG_HELP_VALUE, helpCursor);
     }
 
     /**
