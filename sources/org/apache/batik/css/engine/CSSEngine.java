@@ -720,14 +720,14 @@ public abstract class CSSEngine {
 
         // Apply the user-agent style-sheet to the result.
         if (userAgentStyleSheet != null) {
-            List rules = new ArrayList();
+            ArrayList rules = new ArrayList();
             addMatchingRules(rules, userAgentStyleSheet, elt, pseudo);
             addRules(elt, pseudo, result, rules, StyleMap.USER_AGENT_ORIGIN);
         }
 
         // Apply the user properties style-sheet to the result.
         if (userStyleSheet != null) {
-            List rules = new ArrayList();
+            ArrayList rules = new ArrayList();
             addMatchingRules(rules, userStyleSheet, elt, pseudo);
             addRules(elt, pseudo, result, rules, StyleMap.USER_ORIGIN);
         }
@@ -796,7 +796,7 @@ public abstract class CSSEngine {
             List snodes = eng.getStyleSheetNodes();
             int slen = snodes.size();
             if (slen > 0) {
-                List rules = new ArrayList();
+                ArrayList rules = new ArrayList();
                 for (int i = 0; i < slen; i++) {
                     CSSStyleSheetNode ssn = (CSSStyleSheetNode)snodes.get(i);
                     StyleSheet ss = ssn.getCSSStyleSheet();
@@ -1353,7 +1353,7 @@ public abstract class CSSEngine {
     protected void addRules(Element elt,
                             String pseudo,
                             StyleMap sm,
-                            List rules,
+                            ArrayList rules,
                             short origin) {
         sortRules(rules, elt, pseudo);
         int rlen = rules.size();
@@ -1390,35 +1390,36 @@ public abstract class CSSEngine {
      * Sorts the rules matching the element/pseudo-element of given style
      * sheet to the list.
      */
-    protected void sortRules(List rules, Element elt, String pseudo) {
+    protected void sortRules(ArrayList rules, Element elt, String pseudo) {
         int len = rules.size();
-        for (int i = 0; i < len - 1; i++) {
-            int idx = i;
-            int min = Integer.MAX_VALUE;
-            for (int j = i; j < len; j++) {
-                StyleRule r = (StyleRule)rules.get(j);
-                SelectorList sl = r.getSelectorList();
-                int spec = 0;
-                int slen = sl.getLength();
-                for (int k = 0; k < slen; k++) {
-                    ExtendedSelector s = (ExtendedSelector)sl.item(k);
-                    if (s.match(elt, pseudo)) {
-                        int sp = s.getSpecificity();
-                        if (sp > spec) {
-                            spec = sp;
-                        }
+        int[] specificities = new int[len];
+        for (int i = 0; i < len; i++) {
+            StyleRule r = (StyleRule) rules.get(i);
+            SelectorList sl = r.getSelectorList();
+            int spec = 0;
+            int slen = sl.getLength();
+            for (int k = 0; k < slen; k++) {
+                ExtendedSelector s = (ExtendedSelector) sl.item(k);
+                if (s.match(elt, pseudo)) {
+                    int sp = s.getSpecificity();
+                    if (sp > spec) {
+                        spec = sp;
                     }
                 }
-                if (spec < min) {
-                    min = spec;
-                    idx = j;
-                }
             }
-            if (i != idx) {
-                Object tmp = rules.get(i);
-                rules.set(i, rules.get(idx));
-                rules.set(idx, tmp);
+            specificities[i] = spec;
+        }
+        for (int i = 1; i < len; i++) {
+            Object rule = rules.get(i);
+            int spec = specificities[i];
+            int j = i - 1;
+            while (j >= 0 && specificities[j] > spec) {
+                rules.set(j + 1, rules.get(j));
+                specificities[j + 1] = specificities[j];
+                j--;
             }
+            rules.set(j + 1, rule);
+            specificities[j + 1] = spec;
         }
     }
 
