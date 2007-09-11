@@ -20,6 +20,8 @@ package org.apache.batik.css.engine.sac;
 
 import java.util.Set;
 
+import org.apache.batik.util.XMLConstants;
+
 import org.w3c.css.sac.LangCondition;
 import org.w3c.dom.Element;
 
@@ -40,10 +42,16 @@ public class CSSLangCondition
     protected String lang;
 
     /**
+     * The language with a hyphen suffixed.
+     */
+    protected String langHyphen;
+
+    /**
      * Creates a new LangCondition object.
      */
     public CSSLangCondition(String lang) {
-        this.lang = lang;
+        this.lang = lang.toLowerCase();
+        this.langHyphen = lang + '-';
     }
 
     /**
@@ -84,7 +92,13 @@ public class CSSLangCondition
      * Tests whether this condition matches the given element.
      */
     public boolean match(Element e, String pseudoE) {
-        return e.getAttribute("lang").startsWith(getLang());
+        String s = e.getAttribute("lang").toLowerCase();
+        if (s.equals(lang) || s.startsWith(langHyphen)) {
+            return true;
+        }
+        s = e.getAttributeNS(XMLConstants.XML_NAMESPACE_URI,
+                             XMLConstants.XML_LANG_ATTRIBUTE).toLowerCase();
+        return s.equals(lang) || s.startsWith(langHyphen);
     }
 
     /**
