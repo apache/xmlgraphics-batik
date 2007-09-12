@@ -369,17 +369,17 @@ which will be used to configure the chosen Forrest skin.
     }
 
     <!-- For status tables: -->
-    table.elements {
+    table.elements, table.tests {
       border-collapse: collapse;
       font-size: 10pt;
       width: auto ! important;
       margin-left: 2em;
       margin-right: 2em;
     }
-    table.elements td, table.elements th {
+    table.elements td, table.elements th, table.tests td, table.tests th {
       padding: 4px;
     }
-    table.elements .attribute-name, table.elements .attribute-note, div.object {
+    table.elements .attribute-name, table.elements .attribute-note, table.tests .attribute-name, table.tests .attribute-note, div.object {
       background: #eef;
     }
     div.object {
@@ -398,7 +398,8 @@ which will be used to configure the chosen Forrest skin.
       background: navy;
       color: white;
     }
-    table.elements .supported, table.elements .yes, table.elements .partial, table.elements .no {
+    table.elements .supported, table.elements .yes, table.elements .partial, table.elements .no,
+    table.tests .supported, table.tests .yes, table.tests .partial, table.tests .no {
       text-align: center;
     }
     .yes {
@@ -426,7 +427,7 @@ which will be used to configure the chosen Forrest skin.
       font-weight: normal;
       background: #eef;
     }
-    table.elements .attribute th, div.object-property-header {
+    table.elements .attribute th, table.tests .attribute th, div.object-property-header {
       padding-left: 4em ! important;
       padding-right: 2em ! important;
       text-align: left;
@@ -438,19 +439,19 @@ which will be used to configure the chosen Forrest skin.
     div.object-property-desc {
       padding-left: 6em;
     }
-    table.elements .vertical-bar {
+    table.elements .vertical-bar, table.tests .vertical-bar {
       width: 4px;
     }
-    table.elements .element-header {
+    table.elements .element-header, table.tests .test-header {
       border-top: 3px solid white;
     }
-    table.elements .element-header th, div.object-header {
+    table.elements .element-header th, table.tests .tests-header th, div.object-header {
       background: #ccf;
       padding-right: 2em;
       text-align: left;
       font-weight: bold;
     }
-    table.elements .attribute-note {
+    table.elements .attribute-note, table.elements .test-note {
       padding-left: 1em ! important;
       padding-right: 1em ! important;
     }
