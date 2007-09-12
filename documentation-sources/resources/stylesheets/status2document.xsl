@@ -15,6 +15,44 @@
     </xsl:copy>
   </xsl:template>
 
+  <xsl:template match="tests">
+    <table class="tests">
+      <tr class="tests-header">
+        <td rowspan="{count(test) + 1}">
+          <xsl:attribute name="class">
+            <xsl:text>vertical-bar </xsl:text>
+            <xsl:choose>
+              <xsl:when test="@status"><xsl:value-of select="@status"/></xsl:when>
+              <xsl:when test="yes">yes</xsl:when>
+              <xsl:when test="partial">partial</xsl:when>
+              <xsl:when test="no">no</xsl:when>
+              <xsl:when test="not(*/yes) and not(*/partial) and */no">no</xsl:when>
+              <xsl:when test="*/partial or */partial and */no or */yes and */no">partial</xsl:when>
+              <xsl:otherwise>yes</xsl:otherwise>
+            </xsl:choose>
+          </xsl:attribute>
+        </td>
+        <th>
+          SVG 1.1 test suite
+        </th>
+        <th/>
+        <th/>
+      </tr>
+      <xsl:if test="notes">
+        <tr class="section-note">
+          <td></td>
+          <td></td>
+          <td>
+            <xsl:apply-templates select="notes"/>
+          </td>
+        </tr>
+      </xsl:if>
+      <xsl:apply-templates>
+        <xsl:sort select="@name"/>
+      </xsl:apply-templates>
+    </table>
+  </xsl:template>
+
   <xsl:template match="elements | interfaces">
     <table class="elements">
       <xsl:apply-templates>
@@ -129,7 +167,7 @@
     </xsl:if>
   </xsl:template>
 
-  <xsl:template match="attr | element/prop | op">
+  <xsl:template match="attr | element/prop | op | test">
     <tr class="attribute">
       <th class="attribute-name">
         <xsl:choose>
@@ -139,6 +177,9 @@
               <xsl:with-param name="ns" select="@ns"/>
               <xsl:with-param name="prefixes" select="../../prefixes"/>
             </xsl:call-template>
+          </xsl:when>
+          <xsl:when test='self::test'>
+            <a href='{../@uri}{@name}.svg'><xsl:value-of select='@name'/></a>
           </xsl:when>
           <xsl:otherwise>
             <xsl:value-of select="@name"/>

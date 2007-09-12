@@ -123,7 +123,7 @@
           <attr name="transform" ns=""><yes/></attr>
           <attr name="actuate" ns="http://www.w3.org/1999/xlink"><yes><a href="#noteXLink">[1]</a></yes></attr>
           <attr name="arcrole" ns="http://www.w3.org/1999/xlink"><yes><a href="#noteXLink">[1]</a></yes></attr>
-          <attr name="href" ns="http://www.w3.org/1999/xlink"><yes/></attr>
+          <attr name="href" ns="http://www.w3.org/1999/xlink"><partial>URI references to animation elements will not trigger the animation when the link is activated.</partial></attr>
           <attr name="role" ns="http://www.w3.org/1999/xlink"><yes><a href="#noteXLink">[1]</a></yes></attr>
           <attr name="show" ns="http://www.w3.org/1999/xlink"><yes/></attr>
           <attr name="title" ns="http://www.w3.org/1999/xlink"><yes><a href="#noteXLink">[1]</a></yes></attr>
@@ -971,6 +971,7 @@
           <attr name='font-family' ns=''><yes/></attr>
           <attr name='font-size' ns=''><no/></attr>
           <attr name='font-style' ns=''><yes/></attr>
+          <attr name='font-variant' ns=''><no/></attr>
           <attr name='font-weight' ns=''><yes/></attr>
           <attr name='hanging' ns=''><no/></attr>
           <attr name='id' ns=''><yes/></attr>
@@ -3146,6 +3147,295 @@
           </dl>
         </func>
       </object>
+    </section>
+
+    <section id="test">
+      <title>SVG 1.1 test suite</title>
+      <p>
+        The table below lists the test cases from the December 2006 release
+        of the <a href="http://www.w3.org/Graphics/SVG/Test/">SVG 1.1 test suite</a>
+        and whether the latest Batik code in the Subversion repository passes
+        each one.
+      </p>
+      <tests uri='http://www.w3.org/Graphics/SVG/Test/20061213/svg/'>
+        <test name='animate-elem-02-t'><yes/></test>
+        <test name='animate-elem-03-t'><yes/></test>
+        <test name='animate-elem-04-t'><yes/></test>
+        <test name='animate-elem-05-t'><yes/></test>
+        <test name='animate-elem-06-t'><yes/></test>
+        <test name='animate-elem-07-t'><yes/></test>
+        <test name='animate-elem-08-t'><yes/></test>
+        <test name='animate-elem-09-t'><yes/></test>
+        <test name='animate-elem-10-t'><yes/></test>
+        <test name='animate-elem-11-t'><yes/></test>
+        <test name='animate-elem-12-t'><yes/></test>
+        <test name='animate-elem-13-t'><yes/></test>
+        <test name='animate-elem-14-t'><yes/></test>
+        <test name='animate-elem-15-t'><yes/></test>
+        <test name='animate-elem-17-t'><yes/></test>
+        <test name='animate-elem-19-t'><yes/></test>
+        <test name='animate-elem-20-t'><no>Hyperlinking to an animation element is not supported.</no></test>
+        <test name='animate-elem-21-t'><yes/></test>
+        <test name='animate-elem-22-b'><yes/></test>
+        <test name='animate-elem-23-t'><yes/></test>
+        <test name='animate-elem-24-t'><yes/></test>
+        <test name='animate-elem-25-t'><yes/></test>
+        <test name='animate-elem-26-t'><yes/></test>
+        <test name='animate-elem-27-t'><yes/></test>
+        <test name='animate-elem-28-t'><yes/></test>
+        <test name='animate-elem-29-b'><no>Hyperlinking to an animation element is not supported.</no></test>
+        <test name='animate-elem-30-t'><yes/></test>
+        <test name='animate-elem-31-t'><yes/></test>
+        <test name='animate-elem-32-t'><yes/></test>
+        <test name='animate-elem-33-t'><yes/></test>
+        <test name='animate-elem-34-t'><yes/></test>
+        <test name='animate-elem-36-t'><yes/></test>
+        <test name='animate-elem-37-t'><yes/></test>
+        <test name='animate-elem-39-t'><yes/></test>
+        <test name='animate-elem-40-t'><yes/></test>
+        <test name='animate-elem-41-t'><yes/></test>
+        <test name='animate-elem-44-t'><yes/></test>
+        <test name='animate-elem-46-t'><yes/></test>
+        <test name='animate-elem-52-t'><yes/></test>
+        <test name='animate-elem-60-t'><yes/></test>
+        <test name='animate-elem-61-t'><yes/></test>
+        <test name='animate-elem-62-t'><yes/></test>
+        <test name='animate-elem-63-t'><yes/></test>
+        <test name='animate-elem-64-t'><yes/></test>
+        <test name='animate-elem-65-t'><yes/></test>
+        <test name='animate-elem-66-t'><yes/></test>
+        <test name='animate-elem-67-t'><yes/></test>
+        <test name='animate-elem-68-t'><yes/></test>
+        <test name='animate-elem-69-t'><yes/></test>
+        <test name='animate-elem-70-t'><yes/></test>
+        <test name='animate-elem-77-t'><yes/></test>
+        <test name='animate-elem-78-t'><yes/></test>
+        <test name='animate-elem-80-t'><yes/></test>
+        <test name='animate-elem-81-t'><yes/></test>
+        <test name='animate-elem-82-t'><yes/></test>
+        <test name='animate-elem-83-t'><partial>Performing interpolating animation of paths between an absolute and a corresponding relative path command (e.g. from <code>"M0,0 L10,10"</code> to <code>"M0,0 l10,20"</code>) is not supported.</partial></test>
+        <test name='animate-elem-84-t'><yes/></test>
+        <test name='animate-elem-85-t'><partial>Performing interpolating animation of colors to or from the <code>currentColor</code> keyword is not supported.</partial></test>
+        <test name='color-prof-01-f'><yes/></test>
+        <test name='color-prop-01-b'><yes/></test>
+        <test name='color-prop-02-f'><yes/></test>
+        <test name='color-prop-03-t'><yes/></test>
+        <test name='coords-coord-01-t'><yes/></test>
+        <test name='coords-coord-02-t'><yes/></test>
+        <test name='coords-trans-01-b'><yes/></test>
+        <test name='coords-trans-02-t'><yes/></test>
+        <test name='coords-trans-03-t'><yes/></test>
+        <test name='coords-trans-04-t'><yes/></test>
+        <test name='coords-trans-05-t'><yes/></test>
+        <test name='coords-trans-06-t'><yes/></test>
+        <test name='coords-units-01-b'><yes/></test>
+        <test name='coords-units-02-b'><yes/></test>
+        <test name='coords-units-03-b'><yes/></test>
+        <test name='coords-viewattr-01-b'><yes/></test>
+        <test name='coords-viewattr-02-b'><yes/></test>
+        <test name='coords-viewattr-03-b'><yes/></test>
+        <test name='extend-namespace-01-f'><yes/></test>
+        <test name='filters-blend-01-b'><yes/></test>
+        <test name='filters-color-01-b'><yes/></test>
+        <test name='filters-composite-02-b'><yes/></test>
+        <test name='filters-comptran-01-b'><yes/></test>
+        <test name='filters-conv-01-f'><partial/></test>
+        <test name='filters-diffuse-01-f'><yes/></test>
+        <test name='filters-displace-01-f'><yes/></test>
+        <test name='filters-example-01-b'><yes/></test>
+        <test name='filters-felem-01-b'><no/></test>
+        <test name='filters-gauss-01-b'><yes/></test>
+        <test name='filters-image-01-b'><yes/></test>
+        <test name='filters-light-01-f'><yes/></test>
+        <test name='filters-morph-01-f'><yes/></test>
+        <test name='filters-offset-01-b'><yes/></test>
+        <test name='filters-specular-01-f'><yes/></test>
+        <test name='filters-tile-01-b'><yes/></test>
+        <test name='filters-turb-01-f'><yes/></test>
+        <test name='fonts-desc-02-t'><partial>Font glyph selection based on certain properties is not supported.</partial></test>
+        <test name='fonts-elem-01-t'><yes/></test>
+        <test name='fonts-elem-02-t'><yes/></test>
+        <test name='fonts-elem-03-b'><yes/></test>
+        <test name='fonts-elem-04-b'><yes/></test>
+        <test name='fonts-elem-05-t'><yes/></test>
+        <test name='fonts-elem-06-t'><yes/></test>
+        <test name='fonts-elem-07-b'><yes/></test>
+        <test name='fonts-glyph-02-t'><yes/></test>
+        <test name='fonts-glyph-03-t'><yes/></test>
+        <test name='fonts-glyph-04-t'><yes/></test>
+        <test name='fonts-kern-01-t'><yes/></test>
+        <test name='interact-cursor-01-f'><yes/></test>
+        <test name='interact-dom-01-b'><yes/></test>
+        <test name='interact-events-01-b'><yes/></test>
+        <test name='interact-order-01-b'><yes/></test>
+        <test name='interact-order-02-b'><yes/></test>
+        <test name='interact-order-03-b'><yes/></test>
+        <test name='interact-zoom-01-t'><partial>Test is incorrect.</partial></test>
+        <test name='linking-a-01-b'><yes/></test>
+        <test name='linking-a-02-b'><yes/></test>
+        <test name='linking-a-03-b'><yes/></test>
+        <test name='linking-a-04-t'><yes/></test>
+        <test name='linking-a-05-t'><yes/></test>
+        <test name='linking-a-07-t'><no>The <code>target</code> attribute of the <code>a</code> element is ignored.</no></test>
+        <test name='linking-uri-01-b'><yes/></test>
+        <test name='linking-uri-02-b'><yes/></test>
+        <test name='linking-uri-03-t'><yes/></test>
+        <test name='masking-intro-01-f'><yes/></test>
+        <test name='masking-mask-01-b'><yes/></test>
+        <test name='masking-opacity-01-b'><yes/></test>
+        <test name='masking-path-01-b'><yes/></test>
+        <test name='masking-path-02-b'><yes/></test>
+        <test name='masking-path-03-b'><yes/></test>
+        <test name='masking-path-04-b'><yes/></test>
+        <test name='masking-path-05-f'><yes/></test>
+        <test name='metadata-example-01-b'><yes/></test>
+        <test name='painting-fill-01-t'><yes/></test>
+        <test name='painting-fill-02-t'><yes/></test>
+        <test name='painting-fill-03-t'><yes/></test>
+        <test name='painting-fill-04-t'><yes/></test>
+        <test name='painting-fill-05-b'><yes/></test>
+        <test name='painting-marker-01-f'><yes/></test>
+        <test name='painting-marker-02-f'><yes/></test>
+        <test name='painting-marker-03-f'><yes/></test>
+        <test name='painting-render-01-b'><yes/></test>
+        <test name='painting-stroke-01-t'><yes/></test>
+        <test name='painting-stroke-02-t'><yes/></test>
+        <test name='painting-stroke-03-t'><yes/></test>
+        <test name='painting-stroke-04-t'><yes/></test>
+        <test name='painting-stroke-07-t'><partial/></test>
+        <test name='paths-data-01-t'><yes/></test>
+        <test name='paths-data-02-t'><yes/></test>
+        <test name='paths-data-03-f'><yes/></test>
+        <test name='paths-data-04-t'><yes/></test>
+        <test name='paths-data-05-t'><yes/></test>
+        <test name='paths-data-06-t'><yes/></test>
+        <test name='paths-data-07-t'><yes/></test>
+        <test name='paths-data-08-t'><yes/></test>
+        <test name='paths-data-09-t'><yes/></test>
+        <test name='paths-data-10-t'><yes/></test>
+        <test name='paths-data-12-t'><yes/></test>
+        <test name='paths-data-13-t'><yes/></test>
+        <test name='paths-data-14-t'><yes/></test>
+        <test name='paths-data-15-t'><yes/></test>
+        <test name='pservers-grad-01-b'><yes/></test>
+        <test name='pservers-grad-02-b'><yes/></test>
+        <test name='pservers-grad-03-b'><yes/></test>
+        <test name='pservers-grad-04-b'><yes/></test>
+        <test name='pservers-grad-05-b'><yes/></test>
+        <test name='pservers-grad-06-b'><yes/></test>
+        <test name='pservers-grad-07-b'><yes/></test>
+        <test name='pservers-grad-08-b'><yes/></test>
+        <test name='pservers-grad-09-b'><yes/></test>
+        <test name='pservers-grad-10-b'><yes/></test>
+        <test name='pservers-grad-11-b'><yes/></test>
+        <test name='pservers-grad-12-b'><yes/></test>
+        <test name='pservers-grad-13-b'><yes/></test>
+        <test name='pservers-grad-14-b'><yes/></test>
+        <test name='pservers-grad-15-b'><yes/></test>
+        <test name='pservers-grad-16-b'><yes/></test>
+        <test name='pservers-grad-17-b'><yes/></test>
+        <test name='pservers-grad-18-b'><yes/></test>
+        <test name='pservers-grad-19-b'><no>Animation of gradients do not affect referencing elements.</no></test>
+        <test name='pservers-pattern-01-b'><yes/></test>
+        <test name='render-elems-01-t'><yes/></test>
+        <test name='render-elems-02-t'><yes/></test>
+        <test name='render-elems-03-t'><yes/></test>
+        <test name='render-elems-06-t'><yes/></test>
+        <test name='render-elems-07-t'><yes/></test>
+        <test name='render-elems-08-t'><yes/></test>
+        <test name='render-groups-01-b'><yes/></test>
+        <test name='render-groups-03-t'><yes/></test>
+        <test name='script-handle-01-b'><yes/></test>
+        <test name='script-handle-02-b'><yes/></test>
+        <test name='script-handle-03-b'><yes/></test>
+        <test name='script-handle-04-b'><yes/></test>
+        <test name='shapes-circle-01-t'><yes/></test>
+        <test name='shapes-circle-02-t'><yes/></test>
+        <test name='shapes-ellipse-01-t'><yes/></test>
+        <test name='shapes-ellipse-02-t'><yes/></test>
+        <test name='shapes-intro-01-t'><yes/></test>
+        <test name='shapes-line-01-t'><yes/></test>
+        <test name='shapes-polygon-01-t'><yes/></test>
+        <test name='shapes-polyline-01-t'><yes/></test>
+        <test name='shapes-rect-01-t'><yes/></test>
+        <test name='shapes-rect-02-t'><yes/></test>
+        <test name='struct-cond-01-t'><yes/></test>
+        <test name='struct-cond-02-t'><yes/></test>
+        <test name='struct-cond-03-t'><yes/></test>
+        <test name='struct-defs-01-t'><yes/></test>
+        <test name='struct-dom-01-b'><yes/></test>
+        <test name='struct-dom-02-b'><yes/></test>
+        <test name='struct-dom-03-b'><yes/></test>
+        <test name='struct-dom-04-b'><yes/></test>
+        <test name='struct-dom-05-b'><yes/></test>
+        <test name='struct-dom-06-b'><yes/></test>
+        <test name='struct-frag-01-t'><yes/></test>
+        <test name='struct-frag-02-t'><yes/></test>
+        <test name='struct-frag-03-t'><yes/></test>
+        <test name='struct-frag-04-t'><yes/></test>
+        <test name='struct-frag-05-t'><yes/></test>
+        <test name='struct-frag-06-t'><yes/></test>
+        <test name='struct-group-01-t'><yes/></test>
+        <test name='struct-group-02-b'><yes/></test>
+        <test name='struct-group-03-t'><yes/></test>
+        <test name='struct-image-01-t'><yes/></test>
+        <test name='struct-image-02-b'><yes/></test>
+        <test name='struct-image-03-t'><yes/></test>
+        <test name='struct-image-04-t'><yes/></test>
+        <test name='struct-image-05-b'><yes/></test>
+        <test name='struct-image-06-t'><yes/></test>
+        <test name='struct-image-07-t'><yes/></test>
+        <test name='struct-image-08-t'><yes/></test>
+        <test name='struct-image-09-t'><yes/></test>
+        <test name='struct-image-10-t'><no/></test>
+        <test name='struct-symbol-01-b'><yes/></test>
+        <test name='struct-use-01-t'><yes/></test>
+        <test name='struct-use-03-t'><yes/></test>
+        <test name='struct-use-05-b'><yes/></test>
+        <test name='styling-css-01-b'><yes/></test>
+        <test name='styling-css-02-b'><yes/></test>
+        <test name='styling-css-03-b'><yes/></test>
+        <test name='styling-css-04-f'><yes/></test>
+        <test name='styling-css-05-b'><yes/></test>
+        <test name='styling-css-06-b'><no>The <code>:hover</code>, <code>:link</code>, <code>:visited</code>,
+            <code>:active</code> and <code>:focus</code> pseudo-classes are not
+            supported in selectors.</no></test>
+        <test name='styling-inherit-01-b'><yes/></test>
+        <test name='styling-pres-01-t'><yes/></test>
+        <test name='text-align-01-b'><yes/></test>
+        <test name='text-align-02-b'><yes/></test>
+        <test name='text-align-03-b'><yes/></test>
+        <test name='text-align-04-b'><yes/></test>
+        <test name='text-align-05-b'><yes/></test>
+        <test name='text-align-06-b'><yes/></test>
+        <test name='text-align-08-b'><no/></test>
+        <test name='text-altglyph-01-b'><yes/></test>
+        <test name='text-deco-01-b'><yes/></test>
+        <test name='text-fonts-01-t'><yes/></test>
+        <test name='text-fonts-02-t'><yes/></test>
+        <test name='text-fonts-03-t'><yes/></test>
+        <test name='text-intro-01-t'><yes/></test>
+        <test name='text-intro-02-b'><yes/></test>
+        <test name='text-intro-03-b'><yes/></test>
+        <test name='text-intro-04-t'><yes/></test>
+        <test name='text-intro-05-t'><yes/></test>
+        <test name='text-path-01-b'><yes/></test>
+        <test name='text-spacing-01-b'><yes/></test>
+        <test name='text-text-01-b'><yes/></test>
+        <test name='text-text-03-b'><yes/></test>
+        <test name='text-text-04-t'><yes/></test>
+        <test name='text-text-05-t'><no/></test>
+        <test name='text-text-06-t'><yes/></test>
+        <test name='text-text-07-t'><yes/></test>
+        <test name='text-text-08-b'><yes/></test>
+        <test name='text-tref-01-b'><yes/></test>
+        <test name='text-tselect-01-b'><yes/></test>
+        <test name='text-tselect-02-f'><partial/></test>
+        <test name='text-tspan-01-b'><yes/></test>
+        <test name='text-ws-01-t'><yes/></test>
+        <test name='text-ws-02-t'><yes/></test>
+        <test name='types-basicDOM-01-b'><yes/></test>
+      </tests>
     </section>
   </body>
 </status>
