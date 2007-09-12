@@ -660,7 +660,4 @@ public class CursorManager implements SVGConstants, ErrorConstants {
             clearImpl(desc);
         }
     }
-
-
-
 }
