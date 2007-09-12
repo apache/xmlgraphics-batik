@@ -22,6 +22,7 @@ import java.awt.Color;
 import java.awt.Paint;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 
 import org.apache.batik.ext.awt.LinearGradientPaint;
 import org.apache.batik.ext.awt.MultipleGradientPaint;
@@ -110,6 +111,18 @@ public class SVGLinearGradientElementBridge
         } else {
             coordSystemType = SVGUtilities.parseCoordinateSystem
                 (paintElement, SVG_GRADIENT_UNITS_ATTRIBUTE, s, ctx);
+        }
+
+        // The last paragraph of section 7.11 in SVG 1.1 states that objects
+        // with zero width or height bounding boxes that use gradients with
+        // gradientUnits="objectBoundingBox" must not use the gradient.
+        AbstractGraphicsNodeBridge bridge =
+            (AbstractGraphicsNodeBridge) ctx.getSVGContext(paintedElement);
+        if (bridge != null) {
+            Rectangle2D bbox = bridge.getBBox();
+            if (bbox != null && bbox.getWidth() == 0 || bbox.getHeight() == 0) {
+                return null;
+            }
         }
 
         // additional transform to move to objectBoundingBox coordinate system

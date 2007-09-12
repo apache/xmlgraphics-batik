@@ -207,6 +207,11 @@ public class SVGSVGElementBridge
                 cgn.setBackgroundEnable(r);
             }
 
+            float[] vb = ViewBox.parseViewBoxAttribute(e, e.getAttributeNS(null, "viewBox"), ctx);
+            if (vb != null) {
+                actualWidth = vb[2];
+                actualHeight = vb[3];
+            }
             ctx.openViewport
                 (e, new SVGSVGElementViewport(actualWidth,
                                               actualHeight));
