@@ -1680,7 +1680,9 @@
         </element>
         <element name='style' ns='http://www.w3.org/2000/svg' status="partial">
           <notes>
-            The <code>:hover</code> pseudo-class is not supported in selectors.
+            The <code>:hover</code>, <code>:link</code>, <code>:visited</code>,
+            <code>:active</code> and <code>:focus</code> pseudo-classes are not
+            supported in selectors.
           </notes>
           <attr name='id' ns=''><yes/></attr>
           <attr name='media' ns=''><yes/></attr>
