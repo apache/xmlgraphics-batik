@@ -75,6 +75,9 @@ public class SVGFilterElementBridge extends AnimatableGenericSVGBridge
         // get filter chain region
         Rectangle2D filterRegion = SVGUtilities.convertFilterChainRegion
             (filterElement, filteredElement, filteredNode, ctx);
+        if (filterRegion == null) {
+            return null;
+        }
 
         // make the initial source as a RenderableImage
         Filter sourceGraphic = filteredNode.getGraphicsNodeRable(true);

@@ -616,6 +616,19 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
                (filterElement, SVG_FILTER_UNITS_ATTRIBUTE, units, ctx);
        }
 
+       // The last paragraph of section 7.11 in SVG 1.1 states that objects
+       // with zero width or height bounding boxes that use filters with
+       // filterUnits="objectBoundingBox" must not use the filter.
+       // TODO: Uncomment this after confirming this is the desired behaviour.
+       /*AbstractGraphicsNodeBridge bridge =
+           (AbstractGraphicsNodeBridge) ctx.getSVGContext(filteredElement);
+       if (bridge != null) {
+           Rectangle2D bbox = bridge.getBBox();
+           if (bbox != null && bbox.getWidth() == 0 || bbox.getHeight() == 0) {
+               return null;
+           }
+       }*/
+
        // resolve units in the (referenced) filteredElement's
        // coordinate system
        UnitProcessor.Context uctx
