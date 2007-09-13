@@ -29,7 +29,7 @@ package org.apache.batik.parser;
 public interface ClockHandler {
 
     /**
-     * Invoked when an clock value is parsed.
+     * Invoked when a clock value is parsed.
      */
     void clockValue(float clockValue);
 }
