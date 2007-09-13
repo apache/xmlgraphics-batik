@@ -242,8 +242,12 @@ public class MotionAnimation extends InterpolatingAnimation {
             } else {
                 if (calcMode == CALC_MODE_LINEAR || calcMode == CALC_MODE_PACED
                         || calcMode == CALC_MODE_SPLINE) {
-                    interpolation = (unitTime - keyTimes[keyTimeIndex])
-                        / (keyTimes[keyTimeIndex + 1] - keyTimes[keyTimeIndex]);
+                    if (unitTime == 0) {
+                        interpolation = 0;
+                    } else {
+                        interpolation = (unitTime - keyTimes[keyTimeIndex])
+                            / (keyTimes[keyTimeIndex + 1] - keyTimes[keyTimeIndex]);
+                    }
                     if (calcMode == CALC_MODE_SPLINE && unitTime != 0) {
                         // XXX This could be done better, e.g. with
                         //     Newton-Raphson.
