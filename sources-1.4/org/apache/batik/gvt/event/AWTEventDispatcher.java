@@ -20,6 +20,7 @@ package org.apache.batik.gvt.event;
 
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.util.EventObject;
@@ -130,6 +131,14 @@ public class AWTEventDispatcher extends AbstractAWTEventDispatcher
      */
     protected int getModifiers(InputEvent evt) {
         return evt.getModifiersEx();
+    }
+
+    /**
+     * Returns the button whose state changed for the given event.  This just
+     * calls {@link MouseEvent#getButton()}.
+     */
+    protected int getButton(MouseEvent evt) {
+        return evt.getButton();
     }
 
     /**

@@ -449,6 +449,13 @@ public abstract class AbstractAWTEventDispatcher
     protected abstract int getModifiers(InputEvent evt);
 
     /**
+     * Returns the button whose state changed for the given event.  Overridden
+     * in the descendant class to use {@link InputEvent#getModifiers()} in JRE
+     * 1.3 or {@link MouseEvent#getButton()} in JREs &gt;= 1.4.
+     */
+    protected abstract int getButton(MouseEvent evt);
+
+    /**
      * Dispatches the specified AWT mouse event.
      * @param evt the mouse event to dispatch
      */
@@ -484,6 +491,7 @@ public abstract class AbstractAWTEventDispatcher
                                                     evt.getWhen(),
                                                     getModifiers(evt),
                                                     currentLockState,
+                                                    getButton(evt),
                                                     (float)gnp.getX(),
                                                     (float)gnp.getY(),
                                                     (int)Math.floor(p.getX()),  // evt.getX() ??
@@ -503,6 +511,7 @@ public abstract class AbstractAWTEventDispatcher
                                                     evt.getWhen(),
                                                     getModifiers(evt),
                                                     currentLockState,
+                                                    getButton(evt),
                                                     (float)gnp.getX(),
                                                     (float)gnp.getY(),
                                                     (int)Math.floor(p.getX()),
@@ -522,6 +531,7 @@ public abstract class AbstractAWTEventDispatcher
                                                 evt.getWhen(),
                                                 getModifiers(evt),
                                                 currentLockState,
+                                                getButton(evt),
                                                 (float)gnp.getX(),
                                                 (float)gnp.getY(),
                                                 (int)Math.floor(p.getX()),
@@ -541,6 +551,7 @@ public abstract class AbstractAWTEventDispatcher
                                                 evt.getWhen(),
                                                 getModifiers(evt),
                                                 currentLockState,
+                                                getButton(evt),
                                                 (float)gnp.getX(),
                                                 (float)gnp.getY(),
                                                 (int)Math.floor(p.getX()),

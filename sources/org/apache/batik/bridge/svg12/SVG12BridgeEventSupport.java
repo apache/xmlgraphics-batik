@@ -789,7 +789,6 @@ public abstract class SVG12BridgeEventSupport extends BridgeEventSupport {
             }
 
             if (targetElement != null) {
-                short button = getButton(evt);
                 Point screenXY = evt.getScreenPoint();
                 // create the coresponding DOM MouseEvent
                 DocumentEvent d
@@ -809,8 +808,8 @@ public abstract class SVG12BridgeEventSupport extends BridgeEventSupport {
                                           screenXY.y,
                                           clientXY.x,
                                           clientXY.y,
-                                          button, 
-                                          (EventTarget)relatedElement,
+                                          (short) (evt.getButton() - 1), 
+                                          (EventTarget) relatedElement,
                                           modifiers);
 
                 ((AbstractEvent) mouseEvt).setBubbleLimit(bubbleLimit);
