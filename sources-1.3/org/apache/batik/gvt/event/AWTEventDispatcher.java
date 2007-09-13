@@ -20,6 +20,7 @@ package org.apache.batik.gvt.event;
 
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 
 import org.apache.batik.gvt.GraphicsNode;
 
@@ -61,6 +62,22 @@ public class AWTEventDispatcher extends AbstractAWTEventDispatcher {
      */
     protected int getModifiers(InputEvent evt) {
         return evt.getModifiers();
+    }
+
+    /**
+     * Returns the button whose state changed for the given event.  This calls
+     * {@link InputEvent#getModifiers()} to check which button caused the
+     * event.
+     */
+    protected int getButton(MouseEvent evt) {
+        if ((evt.getModifiers() & InputEvent.BUTTON1_MASK) != 0) {
+            return 1;
+        } else if ((evt.getModifiers() & InputEvent.BUTTON2_MASK) != 0) {
+            return 2;
+        } else if ((evt.getModifiers() & InputEvent.BUTTON3_MASK) != 0) {
+            return 3;
+        }
+        return 0;
     }
 
     /**

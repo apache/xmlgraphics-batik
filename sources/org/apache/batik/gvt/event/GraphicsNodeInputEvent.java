@@ -58,17 +58,17 @@ public abstract class GraphicsNodeInputEvent extends GraphicsNodeEvent {
     /**
      * The mouse button1 modifier constant.
      */
-    public static final int BUTTON1_MASK = InputEvent.BUTTON1_MASK;
+    public static final int BUTTON1_MASK = 1 << 10; // BUTTON1_DOWN_MASK
 
     /**
      * The mouse button2 modifier constant.
      */
-    public static final int BUTTON2_MASK = InputEvent.ALT_MASK;
+    public static final int BUTTON2_MASK = 1 << 11; // BUTTON2_DOWN_MASK
 
     /**
      * The mouse button3 modifier constant.
      */
-    public static final int BUTTON3_MASK = InputEvent.META_MASK;
+    public static final int BUTTON3_MASK = 1 << 12; // BUTTON3_DOWN_MASK
 
     /**
      * The caps lock constant.
@@ -98,7 +98,7 @@ public abstract class GraphicsNodeInputEvent extends GraphicsNodeEvent {
     long when;
 
     /**
-     * The state of the modifier key at the time the graphics node
+     * The state of the modifier keys at the time the graphics node
      * input event was fired.
      */
     int modifiers;
