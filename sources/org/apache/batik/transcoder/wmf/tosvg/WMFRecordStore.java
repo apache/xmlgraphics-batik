@@ -59,7 +59,8 @@ public class WMFRecordStore extends AbstractWMFReader {
       vpH = 1000;
       scaleX = 1;
       scaleY = 1;
-      inch = 0;
+      scaleXY = 1f;      
+      inch = 84;
       records = new ArrayList( 20 );
     }
 
@@ -84,6 +85,16 @@ public class WMFRecordStore extends AbstractWMFReader {
 
             MetaRecord mr = new MetaRecord();
             switch ( functionId ) {
+            case WMFConstants.META_SETMAPMODE: {
+                    mr.numPoints = recSize;
+                    mr.functionId = functionId;
+
+                    int mapmode = readShort( is ); 
+                    if (mapmode == WMFConstants.MM_ANISOTROPIC) isotropic = false;
+                    mr.addElement(mapmode);
+                    records.add( mr );
+            }
+                break;                
             case WMFConstants.META_DRAWTEXT:
                 {
                     for ( int i = 0; i < recSize; i++ )
@@ -222,16 +233,6 @@ public class WMFRecordStore extends AbstractWMFReader {
                 }
                 break;
 
-            case WMFConstants.META_SETMAPMODE: {
-                    mr.numPoints = recSize;
-                    mr.functionId = functionId;
-
-                    int mode = readShort( is );
-                    mr.addElement( mode );
-                    records.add( mr );
-                }
-                break;
-
             case WMFConstants.META_SETVIEWPORTORG:
             case WMFConstants.META_SETVIEWPORTEXT:
             case WMFConstants.META_SETWINDOWORG:
@@ -251,15 +252,23 @@ public class WMFRecordStore extends AbstractWMFReader {
                         ySign = -1;
                     }
 
-                    mr.addElement( width );
+                    mr.addElement((int)(width  * scaleXY));
                     mr.addElement( height );
                     records.add( mr );
 
                     if (_bext && functionId == WMFConstants.META_SETWINDOWEXT) {
                       vpW = width;
                       vpH = height;
+                      if (! isotropic) scaleXY = (float)vpW / (float)vpH;
+                      vpW = (int)(vpW * scaleXY);                      
                       _bext = false;
                     }
+                    // sets the width, height of the image if the file does not have an APM (in this case it is retrieved
+                    // from the viewport)
+                    if (! isAldus) {
+                        this.width = vpW;
+                        this.height = vpH;
+                    }                            
                 }
                 break;
 
@@ -269,7 +278,7 @@ public class WMFRecordStore extends AbstractWMFReader {
                     mr.functionId = functionId;
 
                     int y = readShort( is ) * ySign;
-                    int x = readShort( is ) * xSign;
+                    int x = (int)(readShort( is ) * xSign * scaleXY);
                     mr.addElement( x );
                     mr.addElement( y );
                     records.add( mr );
@@ -391,7 +400,7 @@ public class WMFRecordStore extends AbstractWMFReader {
                     mr.functionId = functionId;
 
                     int y = readShort( is ) * ySign;
-                    int x = readShort( is ) * xSign;
+                    int x = (int)(readShort( is ) * xSign * scaleXY);
                     mr.addElement( x );
                     mr.addElement( y );
                     records.add( mr );
@@ -432,7 +441,7 @@ public class WMFRecordStore extends AbstractWMFReader {
                     for ( int i = 0; i < count; i++ ) {
                         int nPoints = pts[ i ];
                         for ( int j = 0; j < nPoints; j++ ) {
-                            mr.addElement( readShort( is ) * xSign ); // x position of the polygon
+                            mr.addElement((int)(readShort( is )  * xSign * scaleXY)); // x position of the polygon
                             mr.addElement( readShort( is ) * ySign ); // y position of the polygon
                         }
                     }
@@ -449,7 +458,7 @@ public class WMFRecordStore extends AbstractWMFReader {
                     int count = readShort( is );
                     mr.addElement( count );
                     for ( int i = 0; i < count; i++ ) {
-                        mr.addElement( readShort( is ) * xSign );
+                        mr.addElement((int)(readShort( is ) * xSign * scaleXY));
                         mr.addElement( readShort( is ) * ySign );
                     }
                     records.add( mr );
@@ -464,9 +473,9 @@ public class WMFRecordStore extends AbstractWMFReader {
                     mr.functionId = functionId;
 
                     int bottom = readShort( is ) * ySign;
-                    int right = readShort( is ) * xSign;
+                    int right = (int)(readShort( is ) * xSign * scaleXY);
                     int top = readShort( is ) * ySign;
-                    int left = readShort( is ) * xSign;
+                    int left = (int)(readShort( is ) * xSign * scaleXY);
                     mr.addElement( left );
                     mr.addElement( top );
                     mr.addElement( right );
@@ -478,9 +487,9 @@ public class WMFRecordStore extends AbstractWMFReader {
             case WMFConstants.META_CREATEREGION: {
                     mr.numPoints = recSize;
                     mr.functionId = functionId;
-                    int left = readShort( is ) * xSign;
+                    int left = (int)(readShort( is ) * xSign * scaleXY);
                     int top = readShort( is ) * ySign;
-                    int right = readShort( is ) * xSign;
+                    int right = (int)(readShort( is ) * xSign * scaleXY);
                     int bottom = readShort( is ) * ySign;
                     mr.addElement( left );
                     mr.addElement( top );
@@ -495,11 +504,11 @@ public class WMFRecordStore extends AbstractWMFReader {
                     mr.functionId = functionId;
 
                     int el_height = readShort( is ) * ySign;
-                    int el_width = readShort( is ) * xSign;
+                    int el_width = (int)(readShort( is ) * xSign * scaleXY);
                     int bottom = readShort( is ) * ySign;
-                    int right = readShort( is ) * xSign;
+                    int right = (int)(readShort( is ) * xSign * scaleXY);
                     int top = readShort( is ) * ySign;
-                    int left = readShort( is ) * xSign;
+                    int left = (int)(readShort( is ) * xSign * scaleXY);
                     mr.addElement( left );
                     mr.addElement( top );
                     mr.addElement( right );
@@ -517,13 +526,13 @@ public class WMFRecordStore extends AbstractWMFReader {
                     mr.functionId = functionId;
 
                     int yend = readShort( is ) * ySign;
-                    int xend = readShort( is ) * xSign;
+                    int xend = (int)(readShort( is ) * xSign * scaleXY);
                     int ystart = readShort( is ) * ySign;
-                    int xstart = readShort( is ) * xSign;
+                    int xstart = (int)(readShort( is ) * xSign * scaleXY);
                     int bottom = readShort( is ) * ySign;
-                    int right = readShort( is ) * xSign;
+                    int right = (int)(readShort( is ) * xSign * scaleXY);
                     int top = readShort( is ) * ySign;
-                    int left = readShort( is ) * xSign;
+                    int left = (int)(readShort( is ) * xSign * scaleXY);
                     mr.addElement( left );
                     mr.addElement( top );
                     mr.addElement( right );
@@ -544,8 +553,8 @@ public class WMFRecordStore extends AbstractWMFReader {
 
                     int rop = readInt( is );
                     int height = readShort( is ) * ySign;
-                    int width = readShort( is ) * xSign;
-                    int left = readShort( is ) * xSign;
+                    int width = (int)(readShort( is ) * xSign * scaleXY);
+                    int left = (int)(readShort( is ) * xSign * scaleXY);
                     int top = readShort( is ) * ySign;
 
                     mr.addElement( rop );
@@ -595,9 +604,9 @@ public class WMFRecordStore extends AbstractWMFReader {
                     int sy = readShort( is ) * ySign;
                     int sx = readShort( is ) * xSign;
                     int heightDst = readShort( is ) * ySign;
-                    int widthDst = readShort( is ) * xSign;
+                    int widthDst = (int)(readShort( is ) * xSign * scaleXY);  
                     int dy = readShort( is ) * ySign;
-                    int dx = readShort( is ) * xSign;
+                    int dx = (int)(readShort( is ) * xSign * scaleXY);  
 
                     int len = 2*recSize - 20;
                     byte[] bitmap = new byte[len];
@@ -618,6 +627,37 @@ public class WMFRecordStore extends AbstractWMFReader {
                     records.add( mr );
                 }
                 break;
+            case WMFConstants.META_STRETCHDIB: {
+                    int mode = is.readInt() & 0xff;
+                    int usage = readShort( is );                    
+                    int heightSrc = readShort( is ) * ySign;
+                    int widthSrc = readShort( is ) * xSign;
+                    int sy = readShort( is ) * ySign;
+                    int sx = readShort( is ) * xSign;
+                    int heightDst = readShort( is ) * ySign;
+                    int widthDst = (int)(readShort( is ) * xSign * scaleXY);  
+                    int dy = readShort( is ) * ySign;                                        
+                    int dx = (int)(readShort( is ) * xSign * scaleXY);  
+                    
+                    int len = 2*recSize - 22;
+                    byte bitmap[] = new byte[len];                    
+                    for (int i = 0; i < len; i++) bitmap[i] = is.readByte();
+                    
+                    mr = new MetaRecord.ByteRecord(bitmap);
+                    mr.numPoints = recSize;
+                    mr.functionId = functionId;                    
+                    mr.addElement(mode);
+                    mr.addElement(heightSrc);                    
+                    mr.addElement(widthSrc);                                        
+                    mr.addElement(sy);
+                    mr.addElement(sx);
+                    mr.addElement(heightDst); 
+                    mr.addElement(widthDst); 
+                    mr.addElement(dy);
+                    mr.addElement(dx);                      
+                    records.add( mr );                
+            }
+            break;                                                                                
             // UPDATED : META_DIBBITBLT added
             case WMFConstants.META_DIBBITBLT:
                 {
@@ -626,9 +666,9 @@ public class WMFRecordStore extends AbstractWMFReader {
                     int sx = readShort( is );
                     int hdc = readShort( is );
                     int height = readShort( is );
-                    int width = readShort( is );
+                    int width = (int)(readShort( is ) * xSign * scaleXY); 
                     int dy = readShort( is );
-                    int dx = readShort( is );
+                    int dx = (int)(readShort( is ) * xSign * scaleXY);   
 
                     int len = 2*recSize - 18;
                     if (len > 0) {
@@ -685,6 +725,15 @@ public class WMFRecordStore extends AbstractWMFReader {
             numRecords++;
         }
 
+        // sets the characteristics of the image if the file does not have an APM (in this case it is retrieved
+        // from the viewport). This is only useful if one wants to retrieve informations about the file after
+        // decoding it.
+        if (! isAldus) {
+            right = (int)vpX;
+            left = (int)(vpX + vpW);
+            top = (int)vpY;
+            bottom = (int)(vpY + vpH);
+        }                
         setReading( false );
         return true;
     }
