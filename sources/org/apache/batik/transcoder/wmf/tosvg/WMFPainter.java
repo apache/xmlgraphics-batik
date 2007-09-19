@@ -842,6 +842,36 @@ public class WMFPainter extends AbstractWMFPainter {
                         }
                     }
                     break;
+                    case WMFConstants.META_STRETCHDIB:  {
+                        int height = mr.elementAt( 1 );
+                        int width = mr.elementAt( 2 );
+                        int sy = mr.elementAt( 3 );
+                        int sx = mr.elementAt( 4 );
+                        float dy = conv * currentStore.getVpWFactor() * 
+                            (vpY + yOffset + (float)mr.elementAt( 7 ));
+                        float dx = conv * currentStore.getVpHFactor() * 
+                            (vpX + xOffset + (float)mr.elementAt( 8 ));                        
+                        float heightDst = (float)(mr.elementAt( 5 ));
+                        float widthDst = (float)(mr.elementAt( 6 ));
+                        widthDst = widthDst * conv * currentStore.getVpWFactor();
+                        heightDst = heightDst * conv * currentStore.getVpHFactor();
+                        byte[] bitmap = ((MetaRecord.ByteRecord)mr).bstr;
+
+                        BufferedImage img = getImage(bitmap, width, height);
+                        if (img != null) {
+                            if (opaque) {
+                                g2d.drawImage(img, (int)dx, (int)dy, (int)(dx + widthDst),
+                                    (int)(dy + heightDst), sx, sy, sx + width,
+                                    sy + height, bkgdColor, observer);
+                            } else {
+                                //g2d.setComposite(AlphaComposite.SrcOver);
+                                g2d.drawImage(img, (int)dx, (int)dy, (int)(dx + widthDst),
+                                    (int)(dy + heightDst), sx, sy, sx + width,
+                                    sy + height, observer);                                
+                            }
+                        }                        
+                    }
+                    break;                                        
                 case WMFConstants.META_DIBBITBLT:
                     {
                         int rop = mr.ElementAt( 0 ).intValue();
@@ -912,7 +942,6 @@ public class WMFPainter extends AbstractWMFPainter {
                 case WMFConstants.META_PAINTREGION:
                 case WMFConstants.META_SETMAPPERFLAGS:
                 case WMFConstants.META_SETDIBTODEV:
-                case WMFConstants.META_STRETCHDIB:
                 default:
                     {
                     }

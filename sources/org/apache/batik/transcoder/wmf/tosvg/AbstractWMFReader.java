@@ -40,13 +40,15 @@ public abstract class AbstractWMFReader {
     public static final float PIXEL_PER_INCH = Toolkit.getDefaultToolkit().getScreenResolution();
     public static final float MM_PER_PIXEL = 25.4f / Toolkit.getDefaultToolkit().getScreenResolution();
     protected int left, right, top, bottom, width, height, inch;
-    protected float scaleX, scaleY;
+    protected float scaleX, scaleY, scaleXY;
     protected int vpW, vpH, vpX, vpY;
     // the sign values for X and Y, will be modified depending on the VIEWPORT values
     protected int xSign = 1;
     protected int ySign = 1;
 
     protected volatile boolean bReading = false;
+    protected boolean isAldus = false;
+    protected boolean isotropic = true;    
 
     protected int mtType, mtHeaderSize, mtVersion, mtSize, mtNoObjects;
     protected int mtMaxRecord, mtNoParameters;
@@ -59,10 +61,11 @@ public abstract class AbstractWMFReader {
     public AbstractWMFReader() {
         scaleX = 1;
         scaleY = 1;
-        left = 0;
-        top = 0;
-        width = 1;
-        height = 1;
+        scaleXY = 1f;        
+        left = -1;
+        top = -1;
+        width = -1;
+        height = -1;
         right = left + width;
         bottom = top + height;
         numObjects = 0;
@@ -75,45 +78,27 @@ public abstract class AbstractWMFReader {
         this.height = height;
     }
 
-    /**
-     * ALWAYS expect to get less than the requested number of bytes from a read().
-     * @param buff is filled from is
-     * @param is inputStream
-     * @throws IOException from is.read()
+    /** read the next short ( 2 bytes) value in the DataInputStream.
      */
-    private void fillBytes( byte[] buff, InputStream is ) throws IOException {
-        int expected = buff.length;
-        int nRead = 0;
-        do{
-            nRead += is.read( buff, nRead, expected - nRead );
-        } while ( nRead < expected );
+    protected short readShort(DataInputStream is ) throws IOException {
+        byte js[] = new byte[ 2 ];
+        is.read( js );
+        int iTemp = ((0xff) & js[ 1 ] ) << 8;
+        short i = (short)(0xffff & iTemp);
+        i |= ((0xff) & js[ 0 ] );
+        return i;
     }
 
-    /**
-     * Read the next short ( 2 bytes) value in the DataInputStream.
-     * we cant use is.readShort() because of different byte-order.
-     */
-    protected short readShort( DataInputStream is ) throws IOException {
-
-        byte[] js = new byte[ 2 ];
-        fillBytes( js, is );
-
-        return (short) (((js[ 1 ] << 8)) & 0xff00 | (js[0] & 0x00ff));
-    }
-
-    /**
-     * Read the next int ( 4 bytes) value in the DataInputStream.
-     * we cant use is.readInt() because of different byte-order.
-     */
+    /** read the next int ( 4 bytes) value in the DataInputStream.
+     */    
     protected int readInt( DataInputStream is  ) throws IOException {
-
-        byte[] js = new byte[ 4 ];
-        fillBytes( js, is );
-
-        return  ( 0xff & js[ 3 ] ) << 24
-              | ( 0xff & js[ 2 ] ) << 16
-              | ( 0xff & js[ 1 ] ) <<  8
-              | ( 0xff & js[ 0 ] );
+        byte js[] = new byte[ 4 ];
+        is.read( js );
+        int i = ((0xff) & js[ 3 ] ) << 24;
+        i |= ((0xff) & js[ 2 ] ) << 16;
+        i |= ((0xff) & js[ 1 ] ) << 8;
+        i |= ((0xff) & js[ 0 ] );
+        return i;
     }
 
     /**
@@ -345,8 +330,8 @@ public abstract class AbstractWMFReader {
      */
     protected abstract boolean readRecords(DataInputStream is) throws IOException;
 
-    /** Reads the WMF file from the specified Stream. This method read the
-     * aldus placeable header and set the corresponding properties :
+    /** Reads the WMF file from the specified Stream, read it and set the following
+     * properties:
      * <ul>
      * <li>{@link #mtType} : File type (0 : memory, 1 : disk)</li>
      * <li>{@link #mtHeaderSize} : Size of header in WORDS (always 9)</li>
@@ -355,6 +340,10 @@ public abstract class AbstractWMFReader {
      * <li>{@link #mtNoObjects} : Number of objects in the file</li>
      * <li>{@link #mtMaxRecord} : The size of largest record in WORDs</li>
      * <li>{@link #mtNoParameters} : Not Used (always 0)</li>
+     * </ul>
+     * If the file contains an APM
+     * (aldus placeable header), this method read these additionnal properties :
+     * <ul>
      * <li>{@link #left} : Left coordinate in metafile units</li>
      * <li>{@link #right} : Right coordinate in metafile units</li>
      * <li>{@link #top} : Top coordinate in metafile units</li>
@@ -372,6 +361,7 @@ public abstract class AbstractWMFReader {
         if ( dwIsAldus == WMFConstants.META_ALDUS_APM ) {
             // Read the aldus placeable header.
             int   key = dwIsAldus;
+            isAldus = true;            
             readShort( is ); // metafile handle, always zero
             left = readShort( is );
             top = readShort( is );
@@ -397,14 +387,16 @@ public abstract class AbstractWMFReader {
 
             width = right - left;
             height = bottom - top;
+            
+            // read the beginning of the header
+            mtType = readShort( is );
+            mtHeaderSize = readShort( is );                        
         } else {
-            setReading( false );
-            is.close();
-            throw new IOException( "Unable to read file, it is not a Aldus Placable Metafile" );
+            // read the beginning of the header, the first int corresponds to the first two parameters
+            mtType = ((dwIsAldus << 16) >> 16);                        
+            mtHeaderSize = dwIsAldus >> 16;            
         }
 
-        mtType = readShort( is );
-        mtHeaderSize = readShort( is );
         mtVersion = readShort( is );
         mtSize = readInt( is );
         mtNoObjects = readShort( is );
