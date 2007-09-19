@@ -152,7 +152,11 @@ public class AbstractWMFPainter {
             }
 
             // populate the int array
-            int pad = (_size / _height) - _width;
+            /* need to recalculate size because the offset used for palette must be substracted
+             * to overall size, else we will go after the end of the byte array...
+             */
+            _size = bit.length - offset;
+            int pad = (_size / _height) - _width;            
             for (int j = 0; j < _height; j++) {
                 for (int i = 0; i < _width; i++) {
                     bitI[_width*(_height-j-1)+i] = palette [((int)bit[offset] & 0x00ff)];
