@@ -59,7 +59,9 @@ import org.w3c.dom.Element;
  *    WMFTranscoder transcoder = new WMFTranscoder();
  *    try {
  *       TranscoderInput wmf = new TranscoderInput(wmffile.toURL().toString());
- *       TranscoderOutput svg = new TranscoderOutput(new FileOutputStream(svgFile));
+ *       FileOutputStream fos = new FileOutputStream(svgFile);
+ *       TranscoderOutput svg =
+ *           new TranscoderOutput(new OutputStreamWriter(fos, "UTF-8"));
  *       transcoder.transcode(wmf, svg);
  *    } catch (MalformedURLException e){
  *       throw new TranscoderException(e);
