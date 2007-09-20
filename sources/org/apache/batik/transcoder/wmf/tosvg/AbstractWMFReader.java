@@ -78,22 +78,24 @@ public abstract class AbstractWMFReader {
         this.height = height;
     }
 
-    /** read the next short ( 2 bytes) value in the DataInputStream.
+    /** 
+     * Read the next short (2 bytes) value in the DataInputStream.
      */
-    protected short readShort(DataInputStream is ) throws IOException {
+    protected short readShort(DataInputStream is) throws IOException {
         byte js[] = new byte[ 2 ];
-        is.read( js );
+        is.readFully(js);
         int iTemp = ((0xff) & js[ 1 ] ) << 8;
         short i = (short)(0xffff & iTemp);
         i |= ((0xff) & js[ 0 ] );
         return i;
     }
 
-    /** read the next int ( 4 bytes) value in the DataInputStream.
+    /** 
+     * Read the next int (4 bytes) value in the DataInputStream.
      */    
-    protected int readInt( DataInputStream is  ) throws IOException {
+    protected int readInt( DataInputStream is) throws IOException {
         byte js[] = new byte[ 4 ];
-        is.read( js );
+        is.readFully(js);
         int i = ((0xff) & js[ 3 ] ) << 24;
         i |= ((0xff) & js[ 2 ] ) << 16;
         i |= ((0xff) & js[ 1 ] ) << 8;
