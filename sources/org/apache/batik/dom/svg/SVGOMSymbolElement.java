@@ -58,8 +58,7 @@ public class SVGOMSymbolElement
     /**
      * The 'preserveAspectRatio' attribute value.
      */
-    protected SVGOMAnimatedPreserveAspectRatio preserveAspectRatio =
-        createLiveAnimatedPreserveAspectRatio();
+    protected SVGOMAnimatedPreserveAspectRatio preserveAspectRatio;
 
     /**
      * The attribute initializer.
