@@ -100,8 +100,7 @@ public class SVGOMImageElement
     /**
      * The 'preserveAspectRatio' attribute value.
      */
-    protected SVGOMAnimatedPreserveAspectRatio preserveAspectRatio =
-        createLiveAnimatedPreserveAspectRatio();
+    protected SVGOMAnimatedPreserveAspectRatio preserveAspectRatio;
 
     /**
      * Creates a new SVGOMImageElement object.
