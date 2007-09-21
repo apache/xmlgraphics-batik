@@ -378,7 +378,6 @@ public abstract class BridgeEventSupport implements SVGConstants {
 
             }
             */
-            short button = getButton(evt);
             Point screenXY = evt.getScreenPoint();
             // create the coresponding DOM MouseEvent
             DocumentEvent d = (DocumentEvent)targetElement.getOwnerDocument();
@@ -397,7 +396,7 @@ public abstract class BridgeEventSupport implements SVGConstants {
                                       screenXY.y,
                                       clientXY.x,
                                       clientXY.y,
-                                      button,
+                                      (short) (evt.getButton() - 1),
                                       (EventTarget)relatedElement,
                                       modifiers);
 
@@ -422,21 +421,6 @@ public abstract class BridgeEventSupport implements SVGConstants {
                 relatedElement = context.getElement(relatedNode);
             }
             return relatedElement;
-        }
-
-        /**
-         * Returns the mouse event button.
-         *
-         * @param evt the GVT GraphicsNodeMouseEvent
-         */
-        protected short getButton(GraphicsNodeMouseEvent evt) {
-            short button = 1;
-            if ((GraphicsNodeMouseEvent.BUTTON1_MASK & evt.getModifiers()) != 0) {
-                button = 0;
-            } else if ((GraphicsNodeMouseEvent.BUTTON3_MASK & evt.getModifiers()) != 0) {
-                button = 2;
-            }
-            return button;
         }
 
         /**
