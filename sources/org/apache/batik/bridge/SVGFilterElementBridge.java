@@ -18,6 +18,7 @@
  */
 package org.apache.batik.bridge;
 
+import java.awt.Color;
 import java.awt.geom.Rectangle2D;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -33,6 +34,7 @@ import org.apache.batik.ext.awt.image.PadMode;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.renderable.FilterChainRable;
 import org.apache.batik.ext.awt.image.renderable.FilterChainRable8Bit;
+import org.apache.batik.ext.awt.image.renderable.FloodRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.PadRable8Bit;
 import org.apache.batik.gvt.GraphicsNode;
 import org.w3c.dom.Element;
@@ -46,6 +48,11 @@ import org.w3c.dom.Node;
  */
 public class SVGFilterElementBridge extends AnimatableGenericSVGBridge
         implements FilterBridge, ErrorConstants {
+
+    /**
+     * Transparent black color.
+     */
+    protected static final Color TRANSPARENT_BLACK = new Color(0, true);
 
     /**
      * Constructs a new bridge for the &lt;filter> element.
@@ -107,12 +114,37 @@ public class SVGFilterElementBridge extends AnimatableGenericSVGBridge
                                           sourceGraphic,
                                           filterNodeMap,
                                           ctx);
-        if ((in == null) || (in == sourceGraphic)) {
-            return null; // no filter primitives found, disable the filter.
-        } else {
-            filterChain.setSource(in);
-            return filterChain;
+        if (in == null) {
+            // error in one of the primitives, disable the filter
+            return null;
+        } else if (in == sourceGraphic) {
+            // no filter primitive found, so output transparent black
+            in = createEmptyFilter(filterElement, filterRegion, filteredElement,
+                                   filteredNode, ctx);
         }
+        filterChain.setSource(in);
+        return filterChain;
+    }
+
+    /**
+     * Creates a new returns a new filter that fills its output with
+     * transparent black.  This is used when a &lt;filter&gt; element
+     * has no filter primitive children.
+     */
+    protected static Filter createEmptyFilter(Element filterElement,
+                                              Rectangle2D filterRegion,
+                                              Element filteredElement,
+                                              GraphicsNode filteredNode,
+                                              BridgeContext ctx) {
+        Rectangle2D primitiveRegion
+            = SVGUtilities.convertFilterPrimitiveRegion(null,
+                                                        filterElement,
+                                                        filteredElement,
+                                                        filteredNode,
+                                                        filterRegion,
+                                                        filterRegion,
+                                                        ctx);
+        return new FloodRable8Bit(primitiveRegion, TRANSPARENT_BLACK);
     }
 
     /**
