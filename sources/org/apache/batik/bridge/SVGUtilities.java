@@ -814,6 +814,7 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
      * element as the top one in the filter chain.
      *
      * @param filterPrimitiveElement the filter primitive element
+     * @param filterElement the filter element
      * @param filteredElement the element referencing the filter
      * @param filteredNode the graphics node to use (objectBoundingBox)
      * @param defaultRegion the default region to filter
@@ -822,6 +823,7 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
      */
     public static Rectangle2D
         convertFilterPrimitiveRegion(Element filterPrimitiveElement,
+                                     Element filterElement,
                                      Element filteredElement,
                                      GraphicsNode filteredNode,
                                      Rectangle2D defaultRegion,
@@ -829,12 +831,9 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
                                      BridgeContext ctx) {
 
         // 'primitiveUnits' - default is userSpaceOnUse
-        Node parentNode = filterPrimitiveElement.getParentNode();
         String units = "";
-        if ((parentNode != null) &&
-            (parentNode.getNodeType() == Node.ELEMENT_NODE)) {
-            Element parent = (Element)parentNode;
-            units = getChainableAttributeNS(parent,
+        if (filterElement != null) {
+            units = getChainableAttributeNS(filterElement,
                                             null,
                                             SVG_PRIMITIVE_UNITS_ATTRIBUTE,
                                             ctx);
@@ -844,25 +843,28 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
             unitsType = USER_SPACE_ON_USE;
         } else {
             unitsType = parseCoordinateSystem
-                (filterPrimitiveElement, SVG_FILTER_UNITS_ATTRIBUTE, units,
-                 ctx);
+                (filterElement, SVG_FILTER_UNITS_ATTRIBUTE, units, ctx);
         }
 
-        // 'x' attribute - default is defaultRegion.getX()
-        String xStr =
-            filterPrimitiveElement.getAttributeNS(null, SVG_X_ATTRIBUTE);
+        String xStr = "", yStr = "", wStr = "", hStr = "";
 
-        // 'y' attribute - default is defaultRegion.getY()
-        String yStr =
-            filterPrimitiveElement.getAttributeNS(null, SVG_Y_ATTRIBUTE);
+        if (filterPrimitiveElement != null) {
+            // 'x' attribute - default is defaultRegion.getX()
+            xStr = filterPrimitiveElement.getAttributeNS(null,
+                                                         SVG_X_ATTRIBUTE);
 
-        // 'width' attribute - default is defaultRegion.getWidth()
-        String wStr =
-            filterPrimitiveElement.getAttributeNS(null, SVG_WIDTH_ATTRIBUTE);
+            // 'y' attribute - default is defaultRegion.getY()
+            yStr = filterPrimitiveElement.getAttributeNS(null,
+                                                         SVG_Y_ATTRIBUTE);
 
-        // 'height' attribute - default is defaultRegion.getHeight()
-        String hStr =
-            filterPrimitiveElement.getAttributeNS(null, SVG_HEIGHT_ATTRIBUTE);
+            // 'width' attribute - default is defaultRegion.getWidth()
+            wStr = filterPrimitiveElement.getAttributeNS(null,
+                                                         SVG_WIDTH_ATTRIBUTE);
+
+            // 'height' attribute - default is defaultRegion.getHeight()
+            hStr = filterPrimitiveElement.getAttributeNS(null,
+                                                         SVG_HEIGHT_ATTRIBUTE);
+        }
 
         double x = defaultRegion.getX();
         double y = defaultRegion.getY();
@@ -918,7 +920,7 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
             }
             break;
         default:
-            throw new Error("invalid unitsType:" + unitsType ); // can't be reached
+            throw new Error("invalid unitsType:" + unitsType); // can't be reached
         }
 
         Rectangle2D region = new Rectangle2D.Double(x, y, w, h);
@@ -928,11 +930,9 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
         // *always* in userSpaceOnUse space.
 
         units = "";
-        if ((parentNode != null) &&
-            (parentNode.getNodeType() == Node.ELEMENT_NODE)) {
-            Element parent = (Element)parentNode;
+        if (filterElement != null) {
             units = getChainableAttributeNS
-                (parent, null,
+                (filterElement, null,
                  SVG12Constants.SVG_FILTER_PRIMITIVE_MARGINS_UNITS_ATTRIBUTE,
                  ctx);
         }
@@ -941,35 +941,39 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
             unitsType = USER_SPACE_ON_USE;
         } else {
             unitsType = parseCoordinateSystem
-                (filterPrimitiveElement,
+                (filterElement,
                  SVG12Constants.SVG_FILTER_PRIMITIVE_MARGINS_UNITS_ATTRIBUTE,
                  units, ctx);
         }
 
-        // 'batik:dx' attribute - default is 0
-        String dxStr = filterPrimitiveElement.getAttributeNS
-            (null, SVG12Constants.SVG_MX_ATRIBUTE);
+        String dxStr = "", dyStr = "", dwStr = "", dhStr = "";
+
+        if (filterPrimitiveElement != null) {
+            // 'batik:dx' attribute - default is 0
+            dxStr = filterPrimitiveElement.getAttributeNS
+                (null, SVG12Constants.SVG_MX_ATRIBUTE);
+
+            // 'batik:dy' attribute - default is 0
+            dyStr = filterPrimitiveElement.getAttributeNS
+                (null, SVG12Constants.SVG_MY_ATRIBUTE);
+
+            // 'batik:dw' attribute - default is 0
+            dwStr = filterPrimitiveElement.getAttributeNS
+                (null, SVG12Constants.SVG_MW_ATRIBUTE);
+
+            // 'batik:dh' attribute - default is 0
+            dhStr = filterPrimitiveElement.getAttributeNS
+                (null, SVG12Constants.SVG_MH_ATRIBUTE);
+        }
         if (dxStr.length() == 0) {
             dxStr = SVG12Constants.SVG_FILTER_MX_DEFAULT_VALUE;
         }
-
-        // 'batik:dy' attribute - default is 0
-        String dyStr = filterPrimitiveElement.getAttributeNS
-            (null, SVG12Constants.SVG_MY_ATRIBUTE);
         if (dyStr.length() == 0) {
             dyStr = SVG12Constants.SVG_FILTER_MY_DEFAULT_VALUE;
         }
-
-        // 'batik:dw' attribute - default is 0
-        String dwStr = filterPrimitiveElement.getAttributeNS
-            (null, SVG12Constants.SVG_MW_ATRIBUTE);
         if (dwStr.length() == 0) {
             dwStr = SVG12Constants.SVG_FILTER_MW_DEFAULT_VALUE;
         }
-
-        // 'batik:dh' attribute - default is 0
-        String dhStr = filterPrimitiveElement.getAttributeNS
-            (null, SVG12Constants.SVG_MH_ATRIBUTE);
         if (dhStr.length() == 0) {
             dhStr = SVG12Constants.SVG_FILTER_MH_DEFAULT_VALUE;
         }
@@ -986,6 +990,41 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
         Rectangle2D.intersect(region, filterRegion, region);
 
         return region;
+    }
+
+    /**
+     * Returns the filter primitive region according to the x, y,
+     * width, height, and filterUnits attributes. Processing the
+     * element as the top one in the filter chain.
+     *
+     * @param filterPrimitiveElement the filter primitive element
+     * @param filteredElement the element referencing the filter
+     * @param filteredNode the graphics node to use (objectBoundingBox)
+     * @param defaultRegion the default region to filter
+     * @param filterRegion the filter chain region
+     * @param ctx the bridge context
+     */
+    public static Rectangle2D
+        convertFilterPrimitiveRegion(Element filterPrimitiveElement,
+                                     Element filteredElement,
+                                     GraphicsNode filteredNode,
+                                     Rectangle2D defaultRegion,
+                                     Rectangle2D filterRegion,
+                                     BridgeContext ctx) {
+
+        Node parentNode = filterPrimitiveElement.getParentNode();
+        Element filterElement = null;
+        if (parentNode != null &&
+                parentNode.getNodeType() == Node.ELEMENT_NODE) {
+            filterElement = (Element) parentNode;
+        }
+        return convertFilterPrimitiveRegion(filterPrimitiveElement,
+                                            filterElement,
+                                            filteredElement,
+                                            filteredNode,
+                                            defaultRegion,
+                                            filterRegion,
+                                            ctx);
     }
 
     /////////////////////////////////////////////////////////////////////////
