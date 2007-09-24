@@ -18,6 +18,8 @@
  */
 package org.apache.batik.script;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -89,9 +91,13 @@ public class InterpreterPool {
         InterpreterFactory factory = (InterpreterFactory)factories.get(language);
         if (factory == null) return null;
 
+        Interpreter interpreter = null;
         SVGOMDocument svgDoc = (SVGOMDocument) document;
-        Interpreter interpreter = factory.createInterpreter
-            (svgDoc.getURLObject(), svgDoc.isSVG12());
+        try {
+            URL url = new URL(svgDoc.getDocumentURI());
+            interpreter = factory.createInterpreter(url, svgDoc.isSVG12());
+        } catch (MalformedURLException e) {
+        }
 
         if (interpreter == null) return null;
 
