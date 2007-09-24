@@ -107,7 +107,7 @@ public class SVGDOMImplementation
                                      ValueManager     []      vms,
                                      ShorthandManager []      sms) {
 
-        ParsedURL durl = ((SVGOMDocument)doc).getURLObject();
+        ParsedURL durl = ((SVGOMDocument)doc).getParsedURL();
         CSSEngine result = new SVGCSSEngine(doc, durl, ep, vms, sms, ctx);
 
         URL url = getClass().getResource("resources/UserAgentStyleSheet.css");

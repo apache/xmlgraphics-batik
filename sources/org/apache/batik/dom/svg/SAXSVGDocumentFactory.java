@@ -200,7 +200,7 @@ public class SAXSVGDocumentFactory
 
         SVGOMDocument doc = (SVGOMDocument) super.createDocument
             (SVGDOMImplementation.SVG_NAMESPACE_URI, "svg", uri, isrc);
-        doc.setURLObject(purl);
+        doc.setParsedURL(purl);
         doc.setDocumentInputEncoding(charset);
         doc.setXmlStandalone(isStandalone);
         doc.setXmlVersion(xmlVersion);
@@ -224,7 +224,7 @@ public class SAXSVGDocumentFactory
             doc = super.createDocument
                 (SVGDOMImplementation.SVG_NAMESPACE_URI, "svg", uri, is);
             if (uri != null) {
-                ((SVGOMDocument)doc).setURLObject(new ParsedURL(uri));
+                ((SVGOMDocument)doc).setParsedURL(new ParsedURL(uri));
             }
 
             AbstractDocument d = (AbstractDocument) doc;
@@ -253,7 +253,7 @@ public class SAXSVGDocumentFactory
             doc = super.createDocument
                 (SVGDOMImplementation.SVG_NAMESPACE_URI, "svg", uri, is);
             if (uri != null) {
-                ((SVGOMDocument)doc).setURLObject(new ParsedURL(uri));
+                ((SVGOMDocument)doc).setParsedURL(new ParsedURL(uri));
             }
 
             AbstractDocument d = (AbstractDocument) doc;
