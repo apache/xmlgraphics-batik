@@ -20,6 +20,7 @@ package org.apache.batik.css.engine;
 
 import java.net.URL;
 
+import org.apache.batik.util.ParsedURL;
 import org.w3c.dom.Element;
 
 /**
@@ -54,7 +55,7 @@ public interface CSSStylableElement extends Element {
     /**
      * Returns the CSS base URL of this element.
      */
-    URL getCSSBase();
+    ParsedURL getCSSBase();
 
     /**
      * Tells whether this element is an instance of the given pseudo

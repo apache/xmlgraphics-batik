@@ -383,10 +383,10 @@ public class BridgeContext implements ErrorConstants, CSSContext {
             String uri = userAgent.getUserStyleSheetURI();
             if (uri != null) {
                 try {
-                    URL url = new URL(uri);
+                    ParsedURL url = new ParsedURL(uri);
                     eng.setUserAgentStyleSheet
                         (eng.parseStyleSheet(url, "all"));
-                } catch (MalformedURLException e) {
+                } catch (Exception e) {
                     userAgent.displayError(e);
                 }
             }

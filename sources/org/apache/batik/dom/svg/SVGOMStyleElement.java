@@ -26,6 +26,7 @@ import org.apache.batik.css.engine.CSSStyleSheetNode;
 import org.apache.batik.css.engine.StyleSheet;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.XMLSupport;
+import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.XMLConstants;
 
 import org.w3c.dom.DOMException;
@@ -132,18 +133,12 @@ public class SVGOMStyleElement
                     }
                     text = sb.toString();
                 }
-                URL burl = null;
-                String bu= "";
-                try {
-                    bu = getBaseURI();
-                    if (bu != null) {
-                        burl = new URL(bu);
-                    }
-                } catch (MalformedURLException ex) {
-                    String msg = "MalformedURLException:" + ex.getMessage() + ':' + bu;
-                    throw new IllegalArgumentException( msg );
+                ParsedURL burl = null;
+                String bu = getBaseURI();
+                if (bu != null) {
+                    burl = new ParsedURL(bu);
                 }
-                String  media = getAttributeNS(null, SVG_MEDIA_ATTRIBUTE);
+                String media = getAttributeNS(null, SVG_MEDIA_ATTRIBUTE);
                 styleSheet = e.parseStyleSheet(text, burl, media);
                 addEventListenerNS(XMLConstants.XML_EVENTS_NAMESPACE_URI,
                                    "DOMCharacterDataModified",

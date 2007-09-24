@@ -18,7 +18,7 @@
  */
 package org.apache.batik.css.engine;
 
-import java.net.URL;
+import org.apache.batik.util.ParsedURL;
 
 /**
  * This class represents a @import CSS rule.
@@ -36,12 +36,7 @@ public class ImportRule extends MediaRule {
     /**
      * The URI of the imported stylesheet.
      */
-    protected URL uri;
-
-    /**
-     * Creates a new ImportRule.
-     * @param ss The imported style-sheet.
-     */
+    protected ParsedURL uri;
 
     /**
      * Returns a constant identifying the rule type.
@@ -53,14 +48,14 @@ public class ImportRule extends MediaRule {
     /**
      * Sets the URI of the imported stylesheet.
      */
-    public void setURI(URL u) {
+    public void setURI(ParsedURL u) {
         uri = u;
     }
 
     /**
      * Returns the URI of the imported stylesheet.
      */
-    public URL getURI() {
+    public ParsedURL getURI() {
         return uri;
     }
 

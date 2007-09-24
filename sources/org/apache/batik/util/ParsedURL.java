@@ -30,25 +30,33 @@ import java.util.Map;
 import org.apache.batik.Version;
 
 /**
- * This class is used as a replacement for java.net.URL.  This is done
- * for several reasons.  First unlike java.net.URL this class will
- * accept and parse as much of a URL as possible, without throwing a
- * MalformedURL exception.  This  makes it extreamly useful for simply
- * parsing a URL string (hence it's name).
- *
- * Second it allows for extension of the protocols supported by the
- * URL parser.  Batik uses this to support the 'Data' protocol.
- *
- * Third by default it checks the streams that it opens to see if they
- * are GZIP compressed, if so it automatically uncompresses them
- * (avoiding opening the stream twice in the processes).
- *
- * It is worth noting that most real work is defered to the
- * ParsedURLData class to which most methods are forwarded.  This is
- * done because it allows a constructor interface to ParsedURL (mostly
- * for compatability with core URL), in spite of the fact that the
- * real implemenation uses the protocol handlers as factories for
- * protocol specific instances of the ParsedURLData class.
+ * A {@link java.net.URL}-like class that supports custom URI schemes
+ * and GZIP encoding.
+ * <p>
+ *   This class is used as a replacement for {@link java.net.URL}.
+ *   This is done for several reasons.  First, unlike {@link java.net.URL}
+ *   this class will accept and parse as much of a URL as possible, without
+ *   throwing a {@link java.net.MalformedURLException}.  This makes it useful
+ *   for simply parsing a URL string (hence its name).
+ * </p>
+ * <p>
+ *   Second, it allows for extension of the URI schemes supported by the
+ *   parser.  Batik uses this to support the
+ *   <a href='http://www.ietf.org/rfc/rfc2397'><code>data:</code> URL scheme (RFC2397)</a>.
+ * </p>
+ * <p>
+ *   Third, by default it checks the streams that it opens to see if they
+ *   are GZIP compressed, and if so it automatically uncompresses them
+ *   (avoiding opening the stream twice in the process).
+ * </p>
+ * <p>
+ *   It is worth noting that most real work is defered to the
+ *   {@link ParsedURLData} class to which most methods are forwarded.
+ *   This is done because it allows a constructor interface to {@link ParsedURL}
+ *   (mostly for compatability with core {@link URL}), in spite of the fact that
+ *   the real implemenation uses the protocol handlers as factories for protocol
+ *   specific instances of the {@link ParsedURLData} class.
+ * </p>
  *
  * @author <a href="mailto:deweese@apache.org">Thomas DeWeese</a>
  * @version $Id$
@@ -114,7 +122,7 @@ public class ParsedURL {
     }
 
     /**
-     *  Returns the handler for a particular protocol.  If protocol is
+     * Returns the handler for a particular protocol.  If protocol is
      * <tt>null</tt> or no match is found in the handlers map it
      * returns the default protocol handler.
      * @param protocol The protocol to get a handler for.

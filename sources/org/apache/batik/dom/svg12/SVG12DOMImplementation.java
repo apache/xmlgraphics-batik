@@ -36,6 +36,7 @@ import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.HashTable;
 import org.apache.batik.dom.util.DOMUtilities;
+import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.SVG12Constants;
 import org.apache.batik.util.XBLConstants;
 
@@ -73,14 +74,15 @@ public class SVG12DOMImplementation
                                      ExtendedParser      ep,
                                      ValueManager     [] vms,
                                      ShorthandManager [] sms) {
-        URL durl = ((SVGOMDocument)doc).getURLObject();
+        ParsedURL durl = ((SVGOMDocument)doc).getURLObject();
         CSSEngine result = new SVG12CSSEngine(doc, durl, ep, vms, sms, ctx);
 
         URL url = getClass().getResource("resources/UserAgentStyleSheet.css");
         if (url != null) {
-            InputSource is = new InputSource(url.toString());
+            ParsedURL purl = new ParsedURL(url);
+            InputSource is = new InputSource(purl.toString());
             result.setUserAgentStyleSheet
-                (result.parseStyleSheet(is, url, "all"));
+                (result.parseStyleSheet(is, purl, "all"));
         }
 
         return result;

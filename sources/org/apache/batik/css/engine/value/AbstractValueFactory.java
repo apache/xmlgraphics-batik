@@ -18,8 +18,6 @@
  */
 package org.apache.batik.css.engine.value;
 
-import java.net.URL;
-
 import org.apache.batik.util.ParsedURL;
 import org.w3c.dom.DOMException;
 
@@ -39,7 +37,7 @@ public abstract class AbstractValueFactory {
     /**
      * Resolves an URI.
      */
-    protected static String resolveURI(URL base, String value) {
+    protected static String resolveURI(ParsedURL base, String value) {
         return new ParsedURL(base, value).toString();
     }
 

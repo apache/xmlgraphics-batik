@@ -20,8 +20,6 @@ package org.apache.batik.dom.svg;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -46,6 +44,7 @@ import org.apache.batik.dom.events.EventSupport;
 import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.i18n.Localizable;
 import org.apache.batik.i18n.LocalizableSupport;
+import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLConstants;
 
@@ -102,9 +101,9 @@ public class SVGOMDocument
     protected String referrer = "";
 
     /**
-     * The url of the document.
+     * The URL of the document.
      */
-    protected URL url;
+    protected ParsedURL url;
 
     /**
      * Is this document immutable?
@@ -237,14 +236,14 @@ public class SVGOMDocument
     /**
      * Returns the URI of the document.
      */
-    public URL getURLObject() {
+    public ParsedURL getURLObject() {
         return url;
     }
 
     /**
      * Sets the URI of the document.
      */
-    public void setURLObject(URL url) {
+    public void setURLObject(ParsedURL url) {
         this.url = url;
         documentURI = url == null ? null : url.toString();
     }
@@ -254,11 +253,7 @@ public class SVGOMDocument
      */
     public void setDocumentURI(String uri) {
         documentURI = uri;
-        try {
-            url = uri == null ? null : new URL(uri);
-        } catch (MalformedURLException ex) {
-            url = null;
-        }
+        url = uri == null ? null : new ParsedURL(uri);
     }
 
     /**

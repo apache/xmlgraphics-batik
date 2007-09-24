@@ -92,7 +92,7 @@ public class ParsedURLDefaultProtocolHandler
         int pidx=0, idx;
         int len = urlStr.length();
 
-        // Pull fragement id off first...
+        // Pull fragment id off first...
         idx = urlStr.indexOf('#');
         ret.ref = null;
         if (idx != -1) {
