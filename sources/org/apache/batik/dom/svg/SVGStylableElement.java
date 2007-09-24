@@ -18,9 +18,6 @@
  */
 package org.apache.batik.dom.svg;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import org.apache.batik.dom.anim.AnimationTargetListener;
 import org.apache.batik.dom.util.DoublyIndexedTable;
 import org.apache.batik.anim.values.AnimatableValue;
@@ -301,6 +298,9 @@ public abstract class SVGStylableElement
             }
         }
         putLiveAttributeValue(null, name, (LiveAttributeValue)result);
+        if (getAttributeNS(null, name).length() == 0) {
+            return null;
+        }
         return result;
     }
 
