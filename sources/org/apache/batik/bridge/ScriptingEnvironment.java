@@ -950,10 +950,10 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
                 (XMLResourceDescriptor.getXMLParserClassName());
             ParsedURL urlObj = null;
             if ((doc != null) && (doc instanceof SVGOMDocument))
-                urlObj = ((SVGOMDocument)doc).getURLObject();
+                urlObj = ((SVGOMDocument)doc).getParsedURL();
             if (urlObj == null) {
                 urlObj = ((SVGOMDocument)bridgeContext.getDocument()).
-                    getURLObject();
+                    getParsedURL();
             }
             String uri = (urlObj==null)?"":urlObj.toString();
             try {
@@ -1055,7 +1055,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
                     public void run() {
                         try {
                             ParsedURL burl;
-                            burl = ((SVGOMDocument)document).getURLObject();
+                            burl = ((SVGOMDocument)document).getParsedURL();
                             final ParsedURL purl = new ParsedURL(burl, uri);
                             String e = null;
                             if (enc != null) {
