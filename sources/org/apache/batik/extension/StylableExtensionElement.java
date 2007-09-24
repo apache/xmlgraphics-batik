@@ -25,6 +25,7 @@ import org.apache.batik.css.engine.CSSStylableElement;
 import org.apache.batik.css.engine.StyleDeclarationProvider;
 import org.apache.batik.css.engine.StyleMap;
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.util.ParsedURL;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSStyleDeclaration;
@@ -49,7 +50,7 @@ public abstract class StylableExtensionElement
     /**
      * The base URL.
      */
-    protected URL cssBase;
+    protected ParsedURL cssBase;
 
     /**
      * The computed style map.
@@ -103,23 +104,14 @@ public abstract class StylableExtensionElement
 
     /**
      * Returns the CSS base URL of this element.
-     * @throws IllegalArgumentException when {@link #getBaseURI()} returns an
-     *         invalid URL. The information from the MalformedURLException
-     *         is passed to the IllegalArgumentException
      */
-    public URL getCSSBase() {
-        String bu = "";
+    public ParsedURL getCSSBase() {
         if (cssBase == null) {
-            try {
-                bu = getBaseURI();
-                if (bu == null) {
-                    return null;
-                }
-                cssBase = new URL(bu);
-            } catch (MalformedURLException e) {
-                String msg = "MalformedURLException:" + e.getMessage() + ':' + bu;
-                throw new IllegalArgumentException( msg );
+            String bu = getBaseURI();
+            if (bu == null) {
+                return null;
             }
+            cssBase = new ParsedURL(bu);
         }
         return cssBase;
     }

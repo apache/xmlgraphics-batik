@@ -948,7 +948,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
             // Try and parse it as an SVGDocument
             SAXSVGDocumentFactory df = new SAXSVGDocumentFactory
                 (XMLResourceDescriptor.getXMLParserClassName());
-            URL urlObj = null;
+            ParsedURL urlObj = null;
             if ((doc != null) && (doc instanceof SVGOMDocument))
                 urlObj = ((SVGOMDocument)doc).getURLObject();
             if (urlObj == null) {
@@ -1054,7 +1054,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
             Thread t = new Thread() {
                     public void run() {
                         try {
-                            URL burl;
+                            ParsedURL burl;
                             burl = ((SVGOMDocument)document).getURLObject();
                             final ParsedURL purl = new ParsedURL(burl, uri);
                             String e = null;
@@ -1141,12 +1141,15 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
             Thread t = new Thread() {
                     public void run() {
                         try {
-                            URL burl;
-                            burl = ((SVGOMDocument)document).getURLObject();
+                            String base =
+                                ((SVGOMDocument)document).getDocumentURI();
                             URL url;
-                            if (burl != null)
-                                url = new URL(burl, uri);
-                            else url = new URL(uri);
+                            if (base == null) {
+                                url = new URL(uri);
+                            } else {
+                                url = new URL(new URL(base), uri);
+                            }
+                            // TODO: Change this to use ParsedURL for the POST?
                             final URLConnection conn = url.openConnection();
                             conn.setDoOutput(true);
                             conn.setDoInput(true);

@@ -18,8 +18,6 @@
  */
 package org.apache.batik.css.engine;
 
-import java.net.URL;
-
 import org.apache.batik.css.engine.value.ShorthandManager;
 import org.apache.batik.css.engine.value.ValueManager;
 import org.apache.batik.css.engine.value.svg.SVGColorManager;
@@ -29,7 +27,9 @@ import org.apache.batik.css.engine.value.svg12.MarginLengthManager;
 import org.apache.batik.css.engine.value.svg12.MarginShorthandManager;
 import org.apache.batik.css.engine.value.svg12.TextAlignManager;
 import org.apache.batik.css.parser.ExtendedParser;
+import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.SVG12CSSConstants;
+
 import org.w3c.dom.Document;
 
 /**
@@ -48,7 +48,7 @@ public class SVG12CSSEngine extends SVGCSSEngine {
      * @param ctx The CSS context.
      */
     public SVG12CSSEngine(Document doc,
-                          URL uri,
+                          ParsedURL uri,
                           ExtendedParser p,
                           CSSContext ctx) {
         super(doc, uri, p,
@@ -68,11 +68,11 @@ public class SVG12CSSEngine extends SVGCSSEngine {
      * @param ctx The CSS context.
      */
     public SVG12CSSEngine(Document doc,
-                        URL uri,
-                        ExtendedParser p,
-                        ValueManager[] vms,
-                        ShorthandManager[] sms,
-                        CSSContext ctx) {
+                          ParsedURL uri,
+                          ExtendedParser p,
+                          ValueManager[] vms,
+                          ShorthandManager[] sms,
+                          CSSContext ctx) {
         super(doc, uri, p,
               mergeArrays(SVG_VALUE_MANAGERS, vms),
               mergeArrays(SVG_SHORTHAND_MANAGERS, sms),

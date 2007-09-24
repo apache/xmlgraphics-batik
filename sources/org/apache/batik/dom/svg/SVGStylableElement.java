@@ -37,6 +37,7 @@ import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.css.engine.value.svg.SVGColorManager;
 import org.apache.batik.css.engine.value.svg.SVGPaintManager;
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.SVGTypes;
 
 import org.w3c.dom.Attr;
@@ -166,20 +167,12 @@ public abstract class SVGStylableElement
      * @throws IllegalArgumentException when the result of getBaseURI()
      *         cannot be used as an URL.
      */
-    public URL getCSSBase() {
+    public ParsedURL getCSSBase() {
         if (getXblBoundElement() != null) {
             return null;
         }
         String bu = getBaseURI();
-        if (bu == null) {
-            return null;
-        }
-        try {
-            return new URL(bu);
-        } catch (MalformedURLException e) {
-            String msg = "MalformedURLException:" + e.getMessage() + ':' + bu;
-            throw new IllegalArgumentException( msg );
-        }
+        return bu == null ? null : new ParsedURL(bu);
     }
 
     /**

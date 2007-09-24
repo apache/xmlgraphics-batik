@@ -28,6 +28,7 @@ import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.StyleSheetFactory;
 import org.apache.batik.dom.StyleSheetProcessingInstruction;
 import org.apache.batik.dom.util.HashTable;
+import org.apache.batik.util.ParsedURL;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
 
@@ -66,15 +67,11 @@ public class SVGStyleSheetProcessingInstruction
      * Returns the URI of the referenced stylesheet.
      */
     public String getStyleSheetURI() {
-        SVGOMDocument svgDoc;
-        svgDoc = (SVGOMDocument)getOwnerDocument();
-        URL url = svgDoc.getURLObject();
+        SVGOMDocument svgDoc = (SVGOMDocument) getOwnerDocument();
+        ParsedURL url = svgDoc.getURLObject();
         String href = (String)getPseudoAttributes().get("href");
         if (url != null) {
-            try {
-                return new URL(url, href).toString();
-            } catch (MalformedURLException e) {
-            }
+            return new ParsedURL(url, href).toString();
         }
         return href;
     }
@@ -93,16 +90,11 @@ public class SVGStyleSheetProcessingInstruction
                 String href      = (String)attrs.get("href");
                 String alternate = (String)attrs.get("alternate");
                 SVGOMDocument doc = (SVGOMDocument)getOwnerDocument();
-                URL durl = doc.getURLObject();
-                URL burl = durl;
-                try {
-                    burl = new URL(durl, href);
-                } catch (Exception ex) {
-                }
+                ParsedURL durl = doc.getURLObject();
+                ParsedURL burl = new ParsedURL(durl, href);
                 CSSEngine e = doc.getCSSEngine();
                 
-                styleSheet = e.parseStyleSheet
-                    (burl, media);
+                styleSheet = e.parseStyleSheet(burl, media);
                 styleSheet.setAlternate("yes".equals(alternate));
                 styleSheet.setTitle(title);
             }

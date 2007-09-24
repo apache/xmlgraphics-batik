@@ -37,6 +37,7 @@ import org.apache.batik.dom.util.CSSStyleDeclarationFactory;
 import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.dom.util.HashTable;
 import org.apache.batik.i18n.LocalizableSupport;
+import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.SVGConstants;
 
 import org.w3c.css.sac.InputSource;
@@ -106,14 +107,15 @@ public class SVGDOMImplementation
                                      ValueManager     []      vms,
                                      ShorthandManager []      sms) {
 
-        URL durl = ((SVGOMDocument)doc).getURLObject();
+        ParsedURL durl = ((SVGOMDocument)doc).getURLObject();
         CSSEngine result = new SVGCSSEngine(doc, durl, ep, vms, sms, ctx);
 
         URL url = getClass().getResource("resources/UserAgentStyleSheet.css");
         if (url != null) {
-            InputSource is = new InputSource(url.toString());
+            ParsedURL purl = new ParsedURL(url);
+            InputSource is = new InputSource(purl.toString());
             result.setUserAgentStyleSheet
-                (result.parseStyleSheet(is, url, "all"));
+                (result.parseStyleSheet(is, purl, "all"));
         }
 
         return result;

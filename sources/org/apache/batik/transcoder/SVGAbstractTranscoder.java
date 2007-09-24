@@ -181,11 +181,8 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
             // impl = SVGDOMImplementation.getDOMImplementation();
             document = DOMUtilities.deepCloneDocument(document, impl);
             if (uri != null) {
-                try {
-                    URL url = new URL(uri);
-                    ((SVGOMDocument)document).setURLObject(url);
-                } catch (MalformedURLException mue) {
-                }
+                ParsedURL url = new ParsedURL(uri);
+                ((SVGOMDocument)document).setURLObject(url);
             }
         }
 

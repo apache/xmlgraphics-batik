@@ -198,20 +198,12 @@ public class SAXSVGDocumentFactory
 
         isrc.setSystemId(uri);
 
-        Document doc = super.createDocument
+        SVGOMDocument doc = (SVGOMDocument) super.createDocument
             (SVGDOMImplementation.SVG_NAMESPACE_URI, "svg", uri, isrc);
-        try {
-            ((SVGOMDocument)doc).setURLObject(new URL(purl.toString()));
-
-            AbstractDocument d = (AbstractDocument) doc;
-            d.setDocumentURI(purl.toString());
-            d.setDocumentInputEncoding(charset);
-            d.setXmlStandalone(isStandalone);
-            d.setXmlVersion(xmlVersion);
-        } catch (MalformedURLException mue) {
-            // Not very likely to happen given we already opened the stream.
-            throw new IOException("Malformed URL: " + uri);
-        }
+        doc.setURLObject(purl);
+        doc.setDocumentInputEncoding(charset);
+        doc.setXmlStandalone(isStandalone);
+        doc.setXmlVersion(xmlVersion);
 
         return doc;
     }
@@ -232,7 +224,7 @@ public class SAXSVGDocumentFactory
             doc = super.createDocument
                 (SVGDOMImplementation.SVG_NAMESPACE_URI, "svg", uri, is);
             if (uri != null) {
-                ((SVGOMDocument)doc).setURLObject(new URL(uri));
+                ((SVGOMDocument)doc).setURLObject(new ParsedURL(uri));
             }
 
             AbstractDocument d = (AbstractDocument) doc;
@@ -261,7 +253,7 @@ public class SAXSVGDocumentFactory
             doc = super.createDocument
                 (SVGDOMImplementation.SVG_NAMESPACE_URI, "svg", uri, is);
             if (uri != null) {
-                ((SVGOMDocument)doc).setURLObject(new URL(uri));
+                ((SVGOMDocument)doc).setURLObject(new ParsedURL(uri));
             }
 
             AbstractDocument d = (AbstractDocument) doc;

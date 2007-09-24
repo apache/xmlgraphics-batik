@@ -37,6 +37,7 @@ import org.apache.batik.ext.awt.image.renderable.FilterChainRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.FloodRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.PadRable8Bit;
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.util.ParsedURL;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -189,16 +190,8 @@ public class SVGFilterElementBridge extends AnimatableGenericSVGBridge
             }
             // check if there is circular dependencies
             SVGOMDocument doc = (SVGOMDocument)filterElement.getOwnerDocument();
-            URL url;
-            try {
-                url = new URL(doc.getURLObject(), uri);
-            } catch (MalformedURLException ex) {
-                throw new BridgeException(ctx, filterElement,
-                                          ex, ERR_URI_MALFORMED,
-                                          new Object[] {uri});
-
-            }
-            if (contains(refs, url)) {
+            ParsedURL url = new ParsedURL(doc.getURLObject(), uri);
+            if (refs.contains(url)) {
                 throw new BridgeException(ctx, filterElement,
                                           ERR_XLINK_HREF_CIRCULAR_DEPENDENCIES,
                                           new Object[] {uri});
@@ -258,22 +251,5 @@ public class SVGFilterElementBridge extends AnimatableGenericSVGBridge
             }
         }
         return in;
-    }
-
-    /**
-     * Returns true if the specified list of URLs contains the specified url.
-     *
-     * @param urls the list of URLs
-     * @param key the url to search for
-     */
-    private static boolean contains(List urls, URL key) {
-        Iterator iter = urls.iterator();
-        while (iter.hasNext()) {
-            URL url = (URL)iter.next();
-            if (url.sameFile(key) && url.getRef().equals(key.getRef())) {
-                return true;
-            }
-        }
-        return false;
     }
 }

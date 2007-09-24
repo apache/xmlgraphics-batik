@@ -138,7 +138,7 @@ public abstract class CSSEngine {
     /**
      * The document URI.
      */
-    protected URL documentURI;
+    protected ParsedURL documentURI;
 
     /**
      * Whether the document is a CSSNavigableDocument.
@@ -278,7 +278,7 @@ public abstract class CSSEngine {
     /**
      * The current base URI.
      */
-    protected URL cssBaseURI;
+    protected ParsedURL cssBaseURI;
 
     /**
      * The alternate stylesheet title.
@@ -365,7 +365,7 @@ public abstract class CSSEngine {
      * @param ctx The CSS context.
      */
     protected CSSEngine(Document doc,
-                        URL uri,
+                        ParsedURL uri,
                         ExtendedParser p,
                         ValueManager[] vm,
                         ShorthandManager[] sm,
@@ -701,7 +701,7 @@ public abstract class CSSEngine {
     /**
      * Returns the current base-url.
      */
-    public URL getCSSBaseURI() {
+    public ParsedURL getCSSBaseURI() {
         if (cssBaseURI == null) {
             cssBaseURI = element.getCSSBase();
         }
@@ -1107,7 +1107,7 @@ public abstract class CSSEngine {
      * @param uri The style-sheet URI.
      * @param media The target media of the style-sheet.
      */
-    public StyleSheet parseStyleSheet(URL uri, String media)
+    public StyleSheet parseStyleSheet(ParsedURL uri, String media)
         throws DOMException {
         StyleSheet ss = new StyleSheet();
         try {
@@ -1134,7 +1134,8 @@ public abstract class CSSEngine {
      * @param uri The base URI.
      * @param media The target media of the style-sheet.
      */
-    public StyleSheet parseStyleSheet(InputSource is, URL uri, String media)
+    public StyleSheet parseStyleSheet(InputSource is, ParsedURL uri,
+                                      String media)
         throws DOMException {
         StyleSheet ss = new StyleSheet();
         try {
@@ -1159,7 +1160,8 @@ public abstract class CSSEngine {
      * @param ss The stylesheet to fill.
      * @param uri The base URI.
      */
-    public void parseStyleSheet(StyleSheet ss, URL uri) throws DOMException {
+    public void parseStyleSheet(StyleSheet ss, ParsedURL uri)
+            throws DOMException {
         if (uri == null) {
             String s = Messages.formatMessage
                 ("syntax.error.at",
@@ -1170,21 +1172,15 @@ public abstract class CSSEngine {
             return;
         }
 
-    try {
+        try {
             // Check that access to the uri is allowed
-             ParsedURL pDocURL = null;
-             if (documentURI != null) {
-                 pDocURL = new ParsedURL(documentURI);
-             }
-             ParsedURL pURL = new ParsedURL(uri);
-             cssContext.checkLoadExternalResource(pURL, pDocURL);
-
-             parseStyleSheet(ss, new InputSource(uri.toString()), uri);
-    } catch (SecurityException e) {
+            cssContext.checkLoadExternalResource(uri, documentURI);
+            parseStyleSheet(ss, new InputSource(uri.toString()), uri);
+        } catch (SecurityException e) {
             throw e;
         } catch (Exception e) {
             String m = e.getMessage();
-            if (m == null) m = "";
+            if (m == null) m = e.getClass().getName();
             String s = Messages.formatMessage
                 ("syntax.error.at", new Object[] { uri.toString(), m });
             DOMException de = new DOMException(DOMException.SYNTAX_ERR, s);
@@ -1199,8 +1195,8 @@ public abstract class CSSEngine {
      * @param uri The style-sheet URI.
      * @param media The target media of the style-sheet.
      */
-    public StyleSheet parseStyleSheet(String rules, URL uri, String media)
-        throws DOMException {
+    public StyleSheet parseStyleSheet(String rules, ParsedURL uri, String media)
+            throws DOMException {
         StyleSheet ss = new StyleSheet();
         try {
             ss.setMedia(parser.parseMedia(media));
@@ -1228,7 +1224,7 @@ public abstract class CSSEngine {
      */
     public void parseStyleSheet(StyleSheet ss,
                                 String rules,
-                                URL uri) throws DOMException {
+                                ParsedURL uri) throws DOMException {
         try {
             parseStyleSheet(ss, new InputSource(new StringReader(rules)), uri);
         } catch (Exception e) {
@@ -1249,7 +1245,7 @@ public abstract class CSSEngine {
      * @param ss The stylesheet to fill.
      * @param uri The base URI.
      */
-    protected void parseStyleSheet(StyleSheet ss, InputSource is, URL uri)
+    protected void parseStyleSheet(StyleSheet ss, InputSource is, ParsedURL uri)
         throws IOException {
         parser.setSelectorFactory(CSSSelectorFactory.INSTANCE);
         parser.setConditionFactory(cssConditionFactory);
@@ -1555,14 +1551,14 @@ public abstract class CSSEngine {
             ImportRule ir = new ImportRule();
             ir.setMediaList(media);
             ir.setParent(styleSheet);
-            try {
-                URL base = getCSSBaseURI();
-                URL url;
-                if (base == null) url = new URL(uri);
-                else              url = new URL(base, uri);
-                ir.setURI(url);
-            } catch (MalformedURLException e) {
+            ParsedURL base = getCSSBaseURI();
+            ParsedURL url;
+            if (base == null) {
+                url = new ParsedURL(uri);
+            } else {
+                url = new ParsedURL(base, uri);
             }
+            ir.setURI(url);
             styleSheet.append(ir);
         }
 
@@ -1630,10 +1626,8 @@ public abstract class CSSEngine {
             Value fontFamily = sm.getValue(pidx);
             if (fontFamily == null) return;
 
-            URL base = getCSSBaseURI();
-            ParsedURL purl = null;
-            if (base != null) purl = new ParsedURL(base);
-            fontFaces.add(new FontFaceRule(sm, purl));
+            ParsedURL base = getCSSBaseURI();
+            fontFaces.add(new FontFaceRule(sm, base));
         }
 
         /**

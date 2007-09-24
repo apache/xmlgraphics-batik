@@ -77,6 +77,7 @@ import org.apache.batik.css.engine.value.svg.TextRenderingManager;
 import org.apache.batik.css.engine.value.svg.WritingModeManager;
 import org.apache.batik.css.parser.ExtendedParser;
 import org.apache.batik.util.CSSConstants;
+import org.apache.batik.util.ParsedURL;
 import org.w3c.dom.Document;
 
 /**
@@ -95,7 +96,7 @@ public class SVGCSSEngine extends CSSEngine {
      * @param ctx The CSS context.
      */
     public SVGCSSEngine(Document doc,
-                        URL uri,
+                        ParsedURL uri,
                         ExtendedParser p,
                         CSSContext ctx) {
         super(doc, uri, p,
@@ -123,7 +124,7 @@ public class SVGCSSEngine extends CSSEngine {
      * @param ctx The CSS context.
      */
     public SVGCSSEngine(Document doc,
-                        URL uri,
+                        ParsedURL uri,
                         ExtendedParser p,
                         ValueManager[] vms,
                         ShorthandManager[] sms,
@@ -144,7 +145,7 @@ public class SVGCSSEngine extends CSSEngine {
     }
 
     protected SVGCSSEngine(Document doc,
-                           URL uri,
+                           ParsedURL uri,
                            ExtendedParser p,
                            ValueManager[] vms,
                            ShorthandManager[] sms,
