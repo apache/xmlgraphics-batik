@@ -68,7 +68,7 @@ public class SVGStyleSheetProcessingInstruction
      */
     public String getStyleSheetURI() {
         SVGOMDocument svgDoc = (SVGOMDocument) getOwnerDocument();
-        ParsedURL url = svgDoc.getURLObject();
+        ParsedURL url = svgDoc.getParsedURL();
         String href = (String)getPseudoAttributes().get("href");
         if (url != null) {
             return new ParsedURL(url, href).toString();
@@ -90,7 +90,7 @@ public class SVGStyleSheetProcessingInstruction
                 String href      = (String)attrs.get("href");
                 String alternate = (String)attrs.get("alternate");
                 SVGOMDocument doc = (SVGOMDocument)getOwnerDocument();
-                ParsedURL durl = doc.getURLObject();
+                ParsedURL durl = doc.getParsedURL();
                 ParsedURL burl = new ParsedURL(durl, href);
                 CSSEngine e = doc.getCSSEngine();
                 

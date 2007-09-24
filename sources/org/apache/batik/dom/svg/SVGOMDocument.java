@@ -20,6 +20,8 @@ package org.apache.batik.dom.svg;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -234,16 +236,36 @@ public class SVGOMDocument
     }
 
     /**
+     * Returns the URI of the document.  If the document URI cannot be
+     * represented as a {@link URL} (for example if it uses a <code>data:</code>
+     * URI scheme), then <code>null</code> will be returned.
+     */
+    public URL getURLObject() {
+        try {
+            return new URL(documentURI);
+        } catch (MalformedURLException e) {
+            return null;
+        }
+    }
+
+    /**
      * Returns the URI of the document.
      */
-    public ParsedURL getURLObject() {
+    public ParsedURL getParsedURL() {
         return url;
     }
 
     /**
      * Sets the URI of the document.
      */
-    public void setURLObject(ParsedURL url) {
+    public void setURLObject(URL url) {
+        setParsedURL(new ParsedURL(url));
+    }
+
+    /**
+     * Sets the URI of the document.
+     */
+    public void setParsedURL(ParsedURL url) {
         this.url = url;
         documentURI = url == null ? null : url.toString();
     }
