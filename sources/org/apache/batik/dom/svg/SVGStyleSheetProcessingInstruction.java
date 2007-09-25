@@ -18,9 +18,6 @@
  */
 package org.apache.batik.dom.svg;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import org.apache.batik.css.engine.CSSEngine;
 import org.apache.batik.css.engine.CSSStyleSheetNode;
 import org.apache.batik.css.engine.StyleSheet;

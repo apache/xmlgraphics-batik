@@ -18,9 +18,6 @@
 */
 package org.apache.batik.extension;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import org.apache.batik.css.engine.CSSStylableElement;
 import org.apache.batik.css.engine.StyleDeclarationProvider;
 import org.apache.batik.css.engine.StyleMap;

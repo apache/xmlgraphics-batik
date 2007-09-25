@@ -18,9 +18,8 @@
  */
 package org.apache.batik.css.engine;
 
-import java.net.URL;
-
 import org.apache.batik.util.ParsedURL;
+
 import org.w3c.dom.Element;
 
 /**

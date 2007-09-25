@@ -20,10 +20,7 @@ package org.apache.batik.bridge;
 
 import java.awt.Color;
 import java.awt.geom.Rectangle2D;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;

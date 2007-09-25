@@ -22,8 +22,6 @@ import java.awt.Dimension;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
-import java.net.URL;
-import java.net.MalformedURLException;
 import java.util.StringTokenizer;
 import java.util.LinkedList;
 import java.util.List;
@@ -59,7 +57,6 @@ import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.svg.SVGSVGElement;
-
 
 /**
  * This class may be the base class of all transcoders which take an
