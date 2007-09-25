@@ -585,10 +585,10 @@ public class StrokingTextPainter extends BasicTextPainter {
 
 
     protected TextChunk getTextChunk(TextNode node,
-                                   AttributedCharacterIterator aci,
-                                   int [] charMap,
-                                   List textRuns,
-                                   TextChunk prevChunk) {
+                                     AttributedCharacterIterator aci,
+                                     int [] charMap,
+                                     List textRuns,
+                                     TextChunk prevChunk) {
         int beginChunk = 0;
         if (prevChunk != null)
             beginChunk = prevChunk.end;
