@@ -124,8 +124,8 @@ public class SVGRadialGradientElementBridge
         // The last paragraph of section 7.11 in SVG 1.1 states that objects
         // with zero width or height bounding boxes that use gradients with
         // gradientUnits="objectBoundingBox" must not use the gradient.
-        AbstractGraphicsNodeBridge bridge =
-            (AbstractGraphicsNodeBridge) ctx.getSVGContext(paintedElement);
+        AbstractGraphicsNodeBridge bridge = (AbstractGraphicsNodeBridge)
+            BridgeContext.getSVGContext(paintedElement);
         if (bridge != null) {
             Rectangle2D bbox = bridge.getBBox();
             if (bbox != null && bbox.getWidth() == 0 || bbox.getHeight() == 0) {

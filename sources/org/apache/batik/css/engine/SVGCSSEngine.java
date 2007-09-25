@@ -18,8 +18,6 @@
  */
 package org.apache.batik.css.engine;
 
-import java.net.URL;
-
 import org.apache.batik.css.engine.value.ShorthandManager;
 import org.apache.batik.css.engine.value.ValueConstants;
 import org.apache.batik.css.engine.value.ValueManager;
@@ -78,6 +76,7 @@ import org.apache.batik.css.engine.value.svg.WritingModeManager;
 import org.apache.batik.css.parser.ExtendedParser;
 import org.apache.batik.util.CSSConstants;
 import org.apache.batik.util.ParsedURL;
+
 import org.w3c.dom.Document;
 
 /**

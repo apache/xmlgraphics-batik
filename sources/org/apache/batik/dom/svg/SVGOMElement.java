@@ -36,7 +36,6 @@ import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.parser.UnitProcessor;
 import org.apache.batik.util.CSSConstants;
 import org.apache.batik.util.ParsedURL;
-import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.SVGTypes;
 
 import org.w3c.dom.Attr;
