@@ -25,6 +25,7 @@ import java.awt.geom.Point2D;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -326,19 +327,25 @@ public class BatikFlowTextElementBridge extends SVGTextElementBridge
         List paraElems = new ArrayList();
         List lnLocs    = new ArrayList();
         for (Node n = div.getFirstChild();
-             n != null; n = n.getNextSibling()) {
-            if (n.getNodeType()     != Node.ELEMENT_NODE) continue;
-            if (!getNamespaceURI().equals(n.getNamespaceURI())) continue;
+             n != null;
+             n = n.getNextSibling()) {
+
+            if (n.getNodeType() != Node.ELEMENT_NODE
+                    || !getNamespaceURI().equals(n.getNamespaceURI())) {
+                continue;
+            }
             Element e = (Element)n;
 
             String ln = e.getLocalName();
             if (ln.equals(BATIK_EXT_FLOW_PARA_TAG)) {
-                fillAttributedStringBuffer(ctx, e, true, null, asb, lnLocs);
+                fillAttributedStringBuffer
+                    (ctx, e, true, null, null, asb, lnLocs);
 
                 paraElems.add(e);
                 paraEnds.add(new Integer(asb.length()));
             } else if (ln.equals(BATIK_EXT_FLOW_REGION_BREAK_TAG)) {
-                fillAttributedStringBuffer(ctx, e, true, null, asb, lnLocs);
+                fillAttributedStringBuffer
+                        (ctx, e, true, null, null, asb, lnLocs);
 
                 paraElems.add(e);
                 paraEnds.add(new Integer(asb.length()));
@@ -511,6 +518,7 @@ public class BatikFlowTextElementBridge extends SVGTextElementBridge
                                               Element element,
                                               boolean top,
                                               Integer bidiLevel,
+                                              Map initialAttributes,
                                               AttributedStringBuffer asb,
                                               List lnLocs) {
         // 'requiredFeatures', 'requiredExtensions', 'systemLanguage' &
@@ -531,11 +539,15 @@ public class BatikFlowTextElementBridge extends SVGTextElementBridge
         if (preserve)
             endLimit = asb.length();
 
-        Map map = getAttributeMap(ctx, element, null, bidiLevel);
+        Map map = initialAttributes == null
+                ? new HashMap()
+                : new HashMap(initialAttributes);
+        initialAttributes = getAttributeMap(ctx, element, null, bidiLevel, map);
         Object o = map.get(TextAttribute.BIDI_EMBEDDING);
         Integer subBidiLevel = bidiLevel;
-        if (o != null)
-            subBidiLevel = (Integer)o;
+        if (o != null) {
+            subBidiLevel = (Integer) o;
+        }
 
         for (Node n = element.getFirstChild();
              n != null;
@@ -544,10 +556,11 @@ public class BatikFlowTextElementBridge extends SVGTextElementBridge
             if (preserve) {
                 prevEndsWithSpace = false;
             } else {
-                if (asb.length() == 0)
+                if (asb.length() == 0) {
                     prevEndsWithSpace = true;
-                else
+                } else {
                     prevEndsWithSpace = (asb.getLastChar() == ' ');
+                }
             }
 
             switch (n.getNodeType()) {
@@ -562,17 +575,25 @@ public class BatikFlowTextElementBridge extends SVGTextElementBridge
                 String ln = n.getLocalName();
 
                 if (ln.equals(BATIK_EXT_FLOW_LINE_TAG)) {
-                    fillAttributedStringBuffer(ctx, nodeElement,
-                                               false, subBidiLevel,
+                    int before = asb.length();
+                    fillAttributedStringBuffer(ctx, nodeElement, false,
+                                               subBidiLevel, initialAttributes,
                                                asb, lnLocs);
                     // System.out.println("Line: " + asb.length() +
                     //                    " - '" +  asb + "'");
                     lnLocs.add(new Integer(asb.length()));
+                    if (asb.length() != before) {
+                        initialAttributes = null;
+                    }
                 } else if (ln.equals(BATIK_EXT_FLOW_SPAN_TAG) ||
                            ln.equals(SVG_ALT_GLYPH_TAG)) {
-                    fillAttributedStringBuffer(ctx, nodeElement,
-                                               false, subBidiLevel,
+                    int before = asb.length();
+                    fillAttributedStringBuffer(ctx, nodeElement, false,
+                                               subBidiLevel, initialAttributes,
                                                asb, lnLocs);
+                    if (asb.length() != before) {
+                        initialAttributes = null;
+                    }
                 } else if (ln.equals(SVG_A_TAG)) {
                     if (ctx.isInteractive()) {
                         NodeEventTarget target = (NodeEventTarget)nodeElement;
@@ -598,25 +619,31 @@ public class BatikFlowTextElementBridge extends SVGTextElementBridge
                              new SVGAElementBridge.CursorMouseOutListener(ua,ch),
                              false, null);
                     }
-                    fillAttributedStringBuffer(ctx,
-                                               nodeElement,
-                                               false, subBidiLevel,
+                    int before = asb.length();
+                    fillAttributedStringBuffer(ctx, nodeElement, false,
+                                               subBidiLevel, initialAttributes,
                                                asb, lnLocs);
+                    if (asb.length() != before) {
+                        initialAttributes = null;
+                    }
                 } else if (ln.equals(SVG_TREF_TAG)) {
                     String uriStr = XLinkSupport.getXLinkHref((Element)n);
                     Element ref = ctx.getReferencedElement((Element)n, uriStr);
                     s = TextUtilities.getElementContent(ref);
                     s = normalizeString(s, preserve, prevEndsWithSpace);
-                    if (s != null) {
+                    if (s.length() != 0) {
                         int trefStart = asb.length();
-                        Map m = getAttributeMap(ctx, nodeElement, null,
-                                                bidiLevel);
+                        HashMap m = initialAttributes == null
+                                ? new HashMap()
+                                : new HashMap(initialAttributes);
+                        getAttributeMap(ctx, nodeElement, null, bidiLevel, m);
                         asb.append(s, m);
                         int trefEnd = asb.length()-1;
                         TextPaintInfo tpi;
                         tpi = (TextPaintInfo)elemTPI.get(nodeElement);
                         tpi.startChar = trefStart;
                         tpi.endChar   = trefEnd;
+                        initialAttributes = null;
                     }
                 }
                 break;
@@ -625,9 +652,13 @@ public class BatikFlowTextElementBridge extends SVGTextElementBridge
             case Node.CDATA_SECTION_NODE:
                 s = n.getNodeValue();
                 s = normalizeString(s, preserve, prevEndsWithSpace);
-                asb.append(s, map);
-                if (preserve)
-                    endLimit = asb.length();
+                if (s.length() != 0) {
+                    asb.append(s, map);
+                    if (preserve) {
+                        endLimit = asb.length();
+                    }
+                    initialAttributes = null;
+                }
             }
         }
 
@@ -655,14 +686,13 @@ public class BatikFlowTextElementBridge extends SVGTextElementBridge
         tpi.endChar   = elementEndChar;
     }
 
-    /**
-     * Returns the map to pass to the current characters.
-     */
     protected Map getAttributeMap(BridgeContext ctx,
                                   Element element,
                                   TextPath textPath,
-                                  Integer bidiLevel) {
-        Map result = super.getAttributeMap(ctx, element, textPath, bidiLevel);
+                                  Integer bidiLevel,
+                                  Map result) {
+        Map initialMap =
+            super.getAttributeMap(ctx, element, textPath, bidiLevel, result);
         String s;
         s = element.getAttribute(BATIK_EXT_PREFORMATTED_ATTRIBUTE);
         if (s.length() != 0) {
@@ -670,7 +700,7 @@ public class BatikFlowTextElementBridge extends SVGTextElementBridge
                 result.put(PREFORMATTED, Boolean.TRUE);
             }
         }
-        return result;
+        return initialMap;
     }
 
 
