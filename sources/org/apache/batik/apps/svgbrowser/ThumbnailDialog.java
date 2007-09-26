@@ -181,6 +181,8 @@ public class ThumbnailDialog extends JDialog {
             SVGSVGElement elt = svgDocument.getRootElement();
             Dimension dim = svgThumbnailCanvas.getSize();
 
+            // XXX Update this to use the animated values of 'viewBox'
+            //     and 'preserveAspectRatio'.
             String viewBox = elt.getAttributeNS
                 (null, SVGConstants.SVG_VIEW_BOX_ATTRIBUTE);
 

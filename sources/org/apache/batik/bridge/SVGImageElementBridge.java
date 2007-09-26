@@ -677,6 +677,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
 
         // create the implicit viewBox for the SVG image. The viewBox for a
         // SVG image is the viewBox of the outermost SVG element of the SVG file
+        // XXX Use animated value of 'viewBox' here?
         String viewBox =
             svgElement.getAttributeNS(null, SVG_VIEW_BOX_ATTRIBUTE);
         float[] vb = ViewBox.parseViewBoxAttribute(e, viewBox, ctx);

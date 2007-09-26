@@ -94,7 +94,7 @@ public class SVGOMSVGElement
         t.put(null, SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE,
                 new TraitInformation(true, SVGTypes.TYPE_PRESERVE_ASPECT_RATIO_VALUE));
         t.put(null, SVG_VIEW_BOX_ATTRIBUTE,
-                new TraitInformation(true, SVGTypes.TYPE_NUMBER_LIST));
+                new TraitInformation(true, SVGTypes.TYPE_RECT));
         t.put(null, SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE,
                 new TraitInformation(true, SVGTypes.TYPE_BOOLEAN));
         xmlTraitInformation = t;
@@ -167,6 +167,11 @@ public class SVGOMSVGElement
     protected SVGOMAnimatedPreserveAspectRatio preserveAspectRatio;
 
     /**
+     * The 'viewBox' attribute value.
+     */
+    protected SVGOMAnimatedRect viewBox;
+
+    /**
      * Creates a new SVGOMSVGElement object.
      */
     protected SVGOMSVGElement() {
@@ -212,6 +217,7 @@ public class SVGOMSVGElement
             createLiveAnimatedBoolean
                 (null, SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE, false);
         preserveAspectRatio = createLiveAnimatedPreserveAspectRatio();
+        viewBox = createLiveAnimatedRect(null, SVG_VIEW_BOX_ATTRIBUTE, null);
     }
 
     /**
@@ -792,8 +798,7 @@ public class SVGOMSVGElement
      * org.w3c.dom.svg.SVGFitToViewBox#getViewBox()}.
      */
     public SVGAnimatedRect getViewBox() {
-        throw new UnsupportedOperationException
-            ("SVGFitToViewBox.getViewBox is not implemented"); // XXX
+        return viewBox;
     }
 
     /**

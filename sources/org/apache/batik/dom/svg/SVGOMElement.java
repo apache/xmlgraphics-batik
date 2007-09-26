@@ -542,6 +542,19 @@ public abstract class SVGOMElement
         return v;
     }
 
+    /**
+     * Creates a new {@link SVGOMAnimatedRect} and stores it in
+     * this element's LiveAttributeValue table.
+     */
+    protected SVGOMAnimatedRect createLiveAnimatedRect
+            (String ns, String ln, String value) {
+        SVGOMAnimatedRect v = new SVGOMAnimatedRect(this, ns, ln, value);
+        liveAttributeValues.put(ns, ln, v);
+        v.addAnimatedAttributeListener
+            (((SVGOMDocument) ownerDocument).getAnimatedAttributeListener());
+        return v;
+    }
+
     // ExtendedTraitAccess ///////////////////////////////////////////////////
 
     /**

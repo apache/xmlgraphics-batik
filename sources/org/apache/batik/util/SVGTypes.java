@@ -78,4 +78,5 @@ public abstract class SVGTypes {
     public static final int TYPE_NUMBER_OR_PERCENTAGE            = 47;
     public static final int TYPE_TIMING_SPECIFIER_LIST           = 48;
     public static final int TYPE_BOOLEAN                         = 49;
+    public static final int TYPE_RECT                            = 50;
 }
