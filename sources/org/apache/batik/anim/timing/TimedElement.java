@@ -1263,7 +1263,7 @@ public abstract class TimedElement implements SMILConstants {
             beginTimes[i].deinitialize();
         }
         for (int i = 0; i < endTimes.length; i++) {
-            beginTimes[i].deinitialize();
+            endTimes[i].deinitialize();
         }
     }
 

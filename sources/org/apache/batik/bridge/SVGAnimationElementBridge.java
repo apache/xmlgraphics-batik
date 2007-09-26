@@ -365,6 +365,8 @@ public abstract class SVGAnimationElementBridge extends AbstractSVGBridge
         if (element.getSVGContext() == null) {
             // Only remove the animation if this is not part of a rebuild.
             eng.removeAnimation(animation);
+            timedElement.deinitialize();
+            timedElement = null;
             element = null;
         }
     }
