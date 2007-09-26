@@ -135,6 +135,11 @@ public class SVGOMMarkerElement
     protected SVGOMAnimatedPreserveAspectRatio preserveAspectRatio;
 
     /**
+     * The 'viewBox' attribute value.
+     */
+    protected SVGOMAnimatedRect viewBox;
+
+    /**
      * The 'externalResourcesRequired' attribute value.
      */
     protected SVGOMAnimatedBoolean externalResourcesRequired;
@@ -192,6 +197,7 @@ public class SVGOMMarkerElement
                 (null, SVG_MARKER_UNITS_ATTRIBUTE, UNITS_VALUES, (short) 2);
         preserveAspectRatio =
             createLiveAnimatedPreserveAspectRatio();
+        viewBox = createLiveAnimatedRect(null, SVG_VIEW_BOX_ATTRIBUTE, null);
         externalResourcesRequired =
             createLiveAnimatedBoolean
                 (null, SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE, false);
@@ -275,8 +281,7 @@ public class SVGOMMarkerElement
      * org.w3c.dom.svg.SVGFitToViewBox#getViewBox()}.
      */
     public SVGAnimatedRect getViewBox() {
-        throw new UnsupportedOperationException
-            ("SVGMarkerElement.getViewBox is not implemented"); // XXX
+        return viewBox;
     }
 
     /**

@@ -254,6 +254,8 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
         } else {
             String ref = new ParsedURL(uri).getRef();
 
+            // XXX Update this to use the animated value of 'viewBox' and
+            //     'preserveAspectRatio'.
             String viewBox = root.getAttributeNS
                 (null, SVGConstants.SVG_VIEW_BOX_ATTRIBUTE);
 

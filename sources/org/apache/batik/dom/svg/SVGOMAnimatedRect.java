@@ -56,13 +56,21 @@ public class SVGOMAnimatedRect
     protected boolean changing;
 
     /**
+     * Default value.
+     */
+    protected String defaultValue;
+
+    /**
      * Creates a new SVGOMAnimatedRect.
      * @param elt The associated element.
      * @param ns The attribute's namespace URI.
      * @param ln The attribute's local name.
+     * @param def The default value for the attribute.
      */
-    public SVGOMAnimatedRect(AbstractElement elt, String ns, String ln) {
+    public SVGOMAnimatedRect(AbstractElement elt, String ns, String ln,
+                             String def) {
         super(elt, ns, ln);
+        defaultValue = def;
     }
 
     /**
@@ -192,47 +200,103 @@ public class SVGOMAnimatedRect
 
             Attr attr = element.getAttributeNodeNS(namespaceURI, localName);
 
-            if (attr == null) {
-                // XXX What defaults?
-                x = 0;
-                y = 0;
-                w = 100;
-                h = 100;
-            } else {
-                final String s = attr.getValue();
-                final float[] numbers = new float[4];
-                NumberListParser p = new NumberListParser();
-                p.setNumberListHandler(new DefaultNumberListHandler() {
-                    protected int count;
-                    public void endNumberList() {
-                        if (count != 4) {
-                            throw new LiveAttributeException
-                                (element, localName,
-                                 LiveAttributeException.ERR_ATTRIBUTE_MALFORMED,
-                                 s);
-                        }
+            final String s = attr == null ? defaultValue : attr.getValue();
+            final float[] numbers = new float[4];
+            NumberListParser p = new NumberListParser();
+            p.setNumberListHandler(new DefaultNumberListHandler() {
+                protected int count;
+                public void endNumberList() {
+                    if (count != 4) {
+                        throw new LiveAttributeException
+                            (element, localName,
+                             LiveAttributeException.ERR_ATTRIBUTE_MALFORMED,
+                             s);
                     }
-                    public void numberValue(float v) throws ParseException {
-                        if (count < 4) {
-                            numbers[count] = v;
-                        }
-                        if (v < 0 && (count == 2 || count == 3)) {
-                            throw new LiveAttributeException
-                                (element, localName,
-                                 LiveAttributeException.ERR_ATTRIBUTE_MALFORMED,
-                                 s);
-                        }
-                        count++;
+                }
+                public void numberValue(float v) throws ParseException {
+                    if (count < 4) {
+                        numbers[count] = v;
                     }
-                });
-                p.parse(s);
-                x = numbers[0];
-                y = numbers[1];
-                w = numbers[2];
-                h = numbers[3];
-            }
+                    if (v < 0 && (count == 2 || count == 3)) {
+                        throw new LiveAttributeException
+                            (element, localName,
+                             LiveAttributeException.ERR_ATTRIBUTE_MALFORMED,
+                             s);
+                    }
+                    count++;
+                }
+            });
+            p.parse(s);
+            x = numbers[0];
+            y = numbers[1];
+            w = numbers[2];
+            h = numbers[3];
 
             valid = true;
+        }
+
+        /**
+         * <b>DOM</b>: Implements {@link SVGRect#getX()}.
+         */
+        public float getX() {
+            revalidate();
+            return x;
+        }
+        
+        /**
+         * <b>DOM</b>: Implements {@link SVGRect#setX(float)}.
+         */
+        public void setX(float x) throws DOMException {
+            this.x = x;
+            reset();
+        }
+        
+        /**
+         * <b>DOM</b>: Implements {@link SVGRect#getY()}.
+         */
+        public float getY() {
+            revalidate();
+            return y;
+        }
+        
+        /**
+         * <b>DOM</b>: Implements {@link SVGRect#setY(float)}.
+         */
+        public void setY(float y) throws DOMException {
+            this.y = y;
+            reset();
+        }
+        
+        /**
+         * <b>DOM</b>: Implements {@link SVGRect#getWidth()}.
+         */
+        public float getWidth() {
+            revalidate();
+            return w;
+        }
+        
+        /**
+         * <b>DOM</b>: Implements {@link SVGRect#setWidth(float)}.
+         */
+        public void setWidth(float width) throws DOMException {
+            this.w = width;
+            reset();
+        }
+        
+        /**
+         * <b>DOM</b>: Implements {@link SVGRect#getHeight()}.
+         */
+        public float getHeight() {
+            revalidate();
+            return h;
+        }
+        
+        /**
+         * <b>DOM</b>: Implements {@link SVGRect#setHeight(float)}.
+         */
+        public void setHeight(float height) throws DOMException {
+            this.h = height;
+            reset();
         }
     }
 

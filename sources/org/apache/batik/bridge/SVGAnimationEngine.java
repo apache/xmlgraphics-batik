@@ -47,6 +47,7 @@ import org.apache.batik.anim.values.AnimatablePathDataValue;
 import org.apache.batik.anim.values.AnimatablePointListValue;
 import org.apache.batik.anim.values.AnimatablePreserveAspectRatioValue;
 import org.apache.batik.anim.values.AnimatableNumberOrIdentValue;
+import org.apache.batik.anim.values.AnimatableRectValue;
 import org.apache.batik.anim.values.AnimatableStringValue;
 import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.anim.values.AnimatableColorValue;
@@ -193,6 +194,7 @@ public class SVGAnimationEngine extends AnimationEngine {
         new AnimatableNumberOrPercentageValueFactory(), // TYPE_NUMBER_OR_PERCENTAGE
         null, // TYPE_TIMING_SPECIFIER_LIST
         new AnimatableBooleanValueFactory(), // TYPE_BOOLEAN
+        new AnimatableRectValueFactory() // TYPE_RECT
     };
 
     /**
@@ -1518,6 +1520,57 @@ public class SVGAnimationEngine extends AnimationEngine {
         /**
          * Creates a new AnimatableValue from a CSS {@link Value}.  Returns null
          * since number lists aren't used in CSS values.
+         */
+        public AnimatableValue createValue(AnimationTarget target, String pn,
+                                           Value v) {
+            return null;
+        }
+    }
+
+    /**
+     * Factory class for {@link AnimatableNumberListValue}s.
+     */
+    protected class AnimatableRectValueFactory implements Factory {
+
+        /**
+         * Parser for number lists.
+         */
+        protected NumberListParser parser = new NumberListParser();
+
+        /**
+         * The producer class that accumulates the numbers.
+         */
+        protected FloatArrayProducer producer = new FloatArrayProducer();
+
+        /**
+         * Creates a new AnimatableNumberListValueFactory.
+         */
+        public AnimatableRectValueFactory() {
+            parser.setNumberListHandler(producer);
+        }
+
+        /**
+         * Creates a new AnimatableValue from a string.
+         */
+        public AnimatableValue createValue(AnimationTarget target, String ns,
+                                           String ln, boolean isCSS, String s) {
+            try {
+                parser.parse(s);
+                float[] r = producer.getFloatArray();
+                if (r.length != 4) {
+                    // XXX Do something better than returning null.
+                    return null;
+                }
+                return new AnimatableRectValue(target, r[0], r[1], r[2], r[3]);
+            } catch (ParseException e) {
+                // XXX Do something better than returning null.
+                return null;
+            }
+        }
+
+        /**
+         * Creates a new AnimatableValue from a CSS {@link Value}.  Returns null
+         * since rects aren't used in CSS values.
          */
         public AnimatableValue createValue(AnimationTarget target, String pn,
                                            Value v) {

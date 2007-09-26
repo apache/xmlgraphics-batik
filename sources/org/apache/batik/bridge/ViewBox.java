@@ -22,6 +22,7 @@ import java.awt.geom.AffineTransform;
 import java.util.StringTokenizer;
 
 import org.apache.batik.dom.svg.LiveAttributeException;
+import org.apache.batik.dom.svg.SVGOMAnimatedRect;
 import org.apache.batik.parser.AWTTransformProducer;
 import org.apache.batik.parser.FragmentIdentifierHandler;
 import org.apache.batik.parser.FragmentIdentifierParser;
@@ -33,7 +34,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedPreserveAspectRatio;
+import org.w3c.dom.svg.SVGAnimatedRect;
 import org.w3c.dom.svg.SVGPreserveAspectRatio;
+import org.w3c.dom.svg.SVGRect;
 
 /**
  * This class provides convenient methods to handle viewport.
@@ -293,6 +296,33 @@ public abstract class ViewBox implements SVGConstants, ErrorConstants {
         } catch (LiveAttributeException ex) {
             throw new BridgeException(ctx, ex);
         }
+    }
+
+    /**
+     * Returns the transformation matrix to apply to initialize a viewport or
+     * null if the specified viewBox disables the rendering of the element.
+     *
+     * @param e the element with a viewbox
+     * @param aViewBox the viewBox definition
+     * @param aPAR the preserveAspectRatio definition
+     * @param w the width of the effective viewport
+     * @param h the height of the effective viewport
+     * @param ctx the BridgeContext to use for error information
+     */
+    public static AffineTransform getPreserveAspectRatioTransform
+            (Element e, SVGAnimatedRect aViewBox,
+             SVGAnimatedPreserveAspectRatio aPAR,
+             float w, float h, BridgeContext ctx) {
+
+        if (!((SVGOMAnimatedRect) aViewBox).isSpecified()) {
+            // no viewBox specified
+            return new AffineTransform();
+        }
+        SVGRect viewBox = aViewBox.getAnimVal();
+        float[] vb = new float[] { viewBox.getX(), viewBox.getY(),
+                                   viewBox.getWidth(), viewBox.getHeight() };
+
+        return getPreserveAspectRatioTransform(e, vb, w, h, aPAR, ctx);
     }
 
     /**
