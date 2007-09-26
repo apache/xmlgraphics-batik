@@ -769,13 +769,16 @@ public abstract class TimedElement implements SMILConstants {
         }
         if (isFrozen) {
             float t;
+            boolean atLast;
             if (isActive) {
                 t = currentInterval.getBegin() + repeatDuration - lastRepeatTime;
+                atLast = lastRepeatTime + d == currentInterval.getBegin() + repeatDuration;
             } else {
                 Interval previousInterval = (Interval) previousIntervals.getLast();
                 t = previousInterval.getEnd() - lastRepeatTime;
+                atLast = lastRepeatTime + d == previousInterval.getEnd();
             }
-            if (t % d == 0) {
+            if (atLast) {
                 // Trace.print("element frozen" + (isActive ? " (but still active)" : "") + ", sampling last value");
                 sampledLastValue(currentRepeatIteration);
             } else {
