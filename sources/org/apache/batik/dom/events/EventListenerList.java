@@ -91,8 +91,9 @@ public class EventListenerList {
                 && listener == head.listener) {
             head = head.next;
         } else {
+            Entry e;
             Entry prev = head;
-            for (Entry e = head.next; e != null; e = e.next) {
+            for (e = head.next; e != null; e = e.next) {
                 if ((namespaceURI != null && namespaceURI.equals(e.namespaceURI)
                             || namespaceURI == null && e.namespaceURI == null)
                         && e.listener == listener) {
@@ -101,8 +102,10 @@ public class EventListenerList {
                 }
                 prev = e;
             }
-            // Listener not present.
-            return;
+            if (e == null) {
+                // Listener not present.
+                return;
+            }
         }
         counts.dec(namespaceURI);
         n--;
