@@ -24,6 +24,7 @@ import org.apache.batik.anim.timing.TimedElement;
 import org.apache.batik.dom.events.DOMTimeEvent;
 import org.apache.batik.dom.svg.IdContainer;
 import org.apache.batik.dom.svg.SVGOMAnimationElement;
+import org.apache.batik.dom.svg.SVGOMUseShadowRoot;
 import org.apache.batik.util.XMLConstants;
 
 import org.w3c.dom.Element;
@@ -84,7 +85,11 @@ public abstract class AnimationSupport {
         Node p = n.getParentNode();
         while (p != null) {
             n = p;
-            p = n.getParentNode();
+            if (n instanceof SVGOMUseShadowRoot) {
+                p = ((SVGOMUseShadowRoot) n).getCSSParentNode();
+            } else {
+                p = n.getParentNode();
+            }
         }
         if (n instanceof IdContainer) {
             return ((IdContainer) n).getElementById(id);
