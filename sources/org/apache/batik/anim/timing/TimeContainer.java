@@ -39,7 +39,7 @@ public abstract class TimeContainer extends TimedElement {
      * Adds a {@link TimedElement} to this container.
      */
     public void addChild(TimedElement e) {
-        if ( e == this ) {
+        if (e == this) {
             throw new IllegalArgumentException("recursive datastructure not allowed here!");
         }
         children.add(e);
@@ -57,9 +57,10 @@ public abstract class TimeContainer extends TimedElement {
         e.root = root;
         if (e instanceof TimeContainer) {
             TimeContainer c = (TimeContainer) e;
-            for( Iterator it = c.children.iterator(); it.hasNext(); ) {
+            Iterator it = c.children.iterator();
+            while (it.hasNext()) {
                 TimedElement te = (TimedElement)it.next();
-                setRoot( te, root);
+                setRoot(te, root);
             }
         }
     }
