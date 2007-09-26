@@ -446,6 +446,15 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
     }
 
     /**
+     * Disposes this text element bridge by removing the text event listeners
+     * that were added in {@link #initializeDynamicSupport}.
+     */
+    public void dispose() {
+        removeTextEventListeners(ctx, (NodeEventTarget) e);
+        super.dispose();
+    }
+
+    /**
      * Add to the element children of the node, a
      * <code>SVGContext</code> to support dynamic update. This is
      * recursive, the children of the nodes are also traversed to add
@@ -507,14 +516,6 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         if (laidoutText == null) {
             computeLaidoutText(ctx, e, getTextNode());
         }
-    }
-
-    /**
-     * Invoked when an MutationEvent of type 'DOMNodeRemoved' is fired.
-     */
-    public void handleDOMNodeRemovedEvent(MutationEvent evt) {
-        removeTextEventListeners(ctx, (NodeEventTarget) evt.getTarget());
-        super.handleDOMNodeRemovedEvent(evt);
     }
 
     /**
@@ -2135,8 +2136,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
          * Invoked when an MutationEvent of type 'DOMNodeRemoved' is fired.
          */
         public void handleDOMNodeRemovedEvent(MutationEvent evt) {
-            //nothing to do
-            dispose();
+            textBridge.handleDOMNodeRemovedEvent(evt);
         }
 
         /**
