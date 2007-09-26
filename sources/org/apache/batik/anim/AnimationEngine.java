@@ -292,6 +292,8 @@ public abstract class AnimationEngine {
         return info;
     }
 
+    protected static final Map.Entry[] MAP_ENTRY_ARRAY = new Map.Entry[0];
+
     /**
      * Updates the animations in the document to the given document time.
      * @param time the document time to sample at
@@ -300,9 +302,10 @@ public abstract class AnimationEngine {
      */
     protected float tick(float time, boolean hyperlinking) {
         float waitTime = timedDocumentRoot.seekTo(time, hyperlinking);
-        Iterator i = targets.entrySet().iterator();
-        while (i.hasNext()) {
-            Map.Entry e = (Map.Entry) i.next();
+        Map.Entry[] targetEntries =
+            (Map.Entry[]) targets.entrySet().toArray(MAP_ENTRY_ARRAY);
+        for (int i = 0; i < targetEntries.length; i++) {
+            Map.Entry e = targetEntries[i];
             AnimationTarget target = (AnimationTarget) e.getKey();
             TargetInfo info = (TargetInfo) e.getValue();
 
