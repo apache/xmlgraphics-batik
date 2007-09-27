@@ -604,7 +604,10 @@ public class JSVGScrollPane extends JPanel
         GraphicsNode gn = canvas.getGraphicsNode();
         if (gn == null) return null;
 
-        return (Rectangle2D)gn.getBounds().clone();
+        Rectangle2D bounds = gn.getBounds();
+        if (bounds == null) return null;
+
+        return (Rectangle2D) bounds.clone();
     }
 
     /**
