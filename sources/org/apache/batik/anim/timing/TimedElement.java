@@ -279,7 +279,7 @@ public abstract class TimedElement implements SMILConstants {
         if (index < 0) {
             index = -(index + 1);
         }
-        instanceTimes.add( index, time );
+        instanceTimes.add(index, time);
         shouldUpdateCurrentInterval = true;
         float ret;
         if (root.isSampling() && !isSampling) {
@@ -288,6 +288,7 @@ public abstract class TimedElement implements SMILConstants {
             ret = Float.POSITIVE_INFINITY;
         }
         hasPropagated = false;
+        root.currentIntervalWillUpdate();
         return ret;
         // } finally { Trace.exit(); }
     }
@@ -331,6 +332,7 @@ public abstract class TimedElement implements SMILConstants {
             ret = Float.POSITIVE_INFINITY;
         }
         hasPropagated = false;
+        root.currentIntervalWillUpdate();
         return ret;
         // } finally { Trace.exit(); }
     }
