@@ -181,6 +181,7 @@ public abstract class BridgeEventSupport implements SVGConstants {
          */
         public void keyReleased(GraphicsNodeKeyEvent evt) {
             dispatchKeyEvent("keyup", evt);
+            isDown = false;
         }
 
         /**
