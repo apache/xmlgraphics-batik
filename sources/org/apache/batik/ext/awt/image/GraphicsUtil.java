@@ -511,6 +511,10 @@ public class GraphicsUtil {
 
         // Check if this is a BufferedImage G2d if so throw an error...
         GraphicsConfiguration gc = g2d.getDeviceConfiguration();
+        if (gc == null) {
+            return null;
+        }
+
         GraphicsDevice gd = gc.getDevice();
         if (WARN_DESTINATION &&
             (gd.getType() == GraphicsDevice.TYPE_IMAGE_BUFFER) &&
@@ -525,12 +529,14 @@ public class GraphicsUtil {
 
     public static ColorModel getDestinationColorModel(Graphics2D g2d) {
         BufferedImage bi = getDestination(g2d);
-        if (bi != null)
+        if (bi != null) {
             return bi.getColorModel();
+        }
 
         GraphicsConfiguration gc = g2d.getDeviceConfiguration();
-        if (gc == null)
+        if (gc == null) {
             return null; // Can't tell
+        }
 
         // We are going to a BufferedImage but no hint was provided
         // so we can't determine the destination Color Model.
@@ -556,15 +562,20 @@ public class GraphicsUtil {
 
     public static Rectangle getDestinationBounds(Graphics2D g2d) {
         BufferedImage bi = getDestination(g2d);
-        if (bi != null)
+        if (bi != null) {
             return new Rectangle(0, 0, bi.getWidth(), bi.getHeight());
+        }
 
         GraphicsConfiguration gc = g2d.getDeviceConfiguration();
+        if (gc == null) {
+            return null;
+        }
 
         // We are going to a BufferedImage but no hint was provided
         // so we can't determine the destination bounds.
-        if (gc.getDevice().getType() == GraphicsDevice.TYPE_IMAGE_BUFFER)
+        if (gc.getDevice().getType() == GraphicsDevice.TYPE_IMAGE_BUFFER) {
             return null;
+        }
 
         // This is a JDK 1.3ism, so we will just return null...
         // return gc.getBounds();
