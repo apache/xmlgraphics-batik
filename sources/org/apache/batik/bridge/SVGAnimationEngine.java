@@ -785,7 +785,7 @@ public class SVGAnimationEngine extends AnimationEngine {
 
         /**
          * A weak reference to the SVGAnimationEngine this AnimationTickRunnable
-         * is for.  We makes this a WeakReference so that a ticking animation
+         * is for.  We make this a WeakReference so that a ticking animation
          * engine does not prevent from being GCed.
          */
         protected WeakReference engRef;
