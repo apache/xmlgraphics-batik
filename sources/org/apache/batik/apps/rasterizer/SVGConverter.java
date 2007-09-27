@@ -27,6 +27,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
@@ -38,6 +39,7 @@ import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.image.ImageTranscoder;
 import org.apache.batik.transcoder.image.JPEGTranscoder;
 import org.apache.batik.transcoder.image.PNGTranscoder;
+import org.apache.batik.util.ParsedURL;
 
 /**
  * This application can be used to convert SVG images to raster images.
@@ -876,8 +878,15 @@ public class SVGConverter {
         }
 
         // Set user stylesheet
-        if (userStylesheet != null){
-            map.put(ImageTranscoder.KEY_USER_STYLESHEET_URI, userStylesheet);
+        if (userStylesheet != null) {
+            String userStylesheetURL;
+            try {
+                URL userDir = new File(System.getProperty("user.dir")).toURL();
+                userStylesheetURL = new ParsedURL(userDir, userStylesheet).toString();
+            } catch (Exception e) {
+                userStylesheetURL = userStylesheet;
+            }
+            map.put(ImageTranscoder.KEY_USER_STYLESHEET_URI, userStylesheetURL);
         }
 
         // Set the user language
@@ -893,12 +902,12 @@ public class SVGConverter {
 
         // Set validation
         if (validate){
-            map.put(ImageTranscoder.KEY_XML_PARSER_VALIDATING, Boolean.TRUE );
+            map.put(ImageTranscoder.KEY_XML_PARSER_VALIDATING, Boolean.TRUE);
         }
 
         // Set onload
         if (executeOnload) {
-            map.put(ImageTranscoder.KEY_EXECUTE_ONLOAD, Boolean.TRUE );
+            map.put(ImageTranscoder.KEY_EXECUTE_ONLOAD, Boolean.TRUE);
         }
 
         // Set snapshot time
@@ -913,7 +922,7 @@ public class SVGConverter {
 
         // Set constrain script origin
         if (!constrainScriptOrigin) {
-            map.put(ImageTranscoder.KEY_CONSTRAIN_SCRIPT_ORIGIN, Boolean.FALSE );
+            map.put(ImageTranscoder.KEY_CONSTRAIN_SCRIPT_ORIGIN, Boolean.FALSE);
         }
 
         return map;
