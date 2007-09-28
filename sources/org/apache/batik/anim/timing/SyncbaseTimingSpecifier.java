@@ -100,7 +100,7 @@ public class SyncbaseTimingSpecifier extends OffsetTimingSpecifier {
         InstanceTime instance =
             new InstanceTime(this, (syncBegin ? interval.getBegin()
                                               : interval.getEnd()) + offset,
-                             interval, true);
+                             true);
         instances.put(interval, instance);
         interval.addDependent(instance, syncBegin);
         return owner.addInstanceTime(instance, isBegin);

@@ -60,7 +60,7 @@ public class WallclockTimingSpecifier extends TimingSpecifier {
      */
     public void initialize() {
         float t = owner.getRoot().convertWallclockTime(time);
-        instance = new InstanceTime(this, t, null, false);
+        instance = new InstanceTime(this, t, false);
         owner.addInstanceTime(instance, isBegin);
     }
 

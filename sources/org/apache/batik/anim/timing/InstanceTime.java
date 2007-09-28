@@ -44,22 +44,14 @@ public class InstanceTime implements Comparable {
     protected boolean clearOnReset;
 
     /**
-     * The Interval on which this InstanceTime is dependent, or null
-     * if the InstanceTime was not created from a syncbase value.
-     */
-    protected Interval timebase;
-
-    /**
      * Creates a new InstanceTime.
      * @param creator the TimingSpecifier that created this InstanceTime
      * @param time the new time, in parent simple time
-     * @param timebase the interval from which this InstanceTime was created
      * @param clearOnReset whether this InstanceTime should be removed from
      *                     an instance time list upon element reset
      */
     public InstanceTime(TimingSpecifier creator,
                         float time,
-                        Interval timebase,
                         boolean clearOnReset) {
         // Trace.enter(this, null, new Object[] { creator, new Float(time), timebase, new Boolean(clearOnReset) } ); try {
         this.creator = creator;
@@ -67,7 +59,6 @@ public class InstanceTime implements Comparable {
         //     time system into this time system.  Not
         //     strictly necessary in SVG.
         this.time = time;
-        this.timebase = timebase;
         this.clearOnReset = clearOnReset;
         // } finally { Trace.exit(); }
     }
