@@ -912,6 +912,15 @@ public abstract class TimedElement implements SMILConstants {
                         if (beginIterator.hasNext()) {
                             nextBeginInstanceTime =
                                 (InstanceTime) beginIterator.next();
+                            if (beginInstanceTime.getTime()
+                                    == nextBeginInstanceTime.getTime()) {
+                                // XXX Not sure if this is exactly correct to
+                                //     skip past these identical times, but it
+                                //     avoids an infinite loop of 0s intervals
+                                //     being created.
+                                nextBeginInstanceTime = null;
+                                continue;
+                            }
                         }
                         break;
                     }
