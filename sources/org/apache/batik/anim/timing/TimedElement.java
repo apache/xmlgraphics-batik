@@ -187,7 +187,12 @@ public abstract class TimedElement implements SMILConstants {
     /**
      * List of previous intervals.
      */
-    protected LinkedList previousIntervals = new LinkedList();
+    // protected LinkedList previousIntervals = new LinkedList();
+
+    /**
+     * The previous interval.
+     */
+    protected Interval previousInterval;
 
     /**
      * List of TimingSpecifiers on other elements that depend on this
@@ -686,21 +691,24 @@ public abstract class TimedElement implements SMILConstants {
         }
         while (shouldUpdateCurrentInterval || hasEnded) {
             if (hasEnded) {
-                previousIntervals.add(currentInterval);
+                // previousIntervals.add(currentInterval);
+                previousInterval = currentInterval;
                 isActive = false;
                 isFrozen = fillMode == FILL_FREEZE;
                 toInactive(false, isFrozen);
                 fireTimeEvent(SMIL_END_EVENT_NAME, currentInterval.getEnd(), 0);
             }
             boolean first =
-                currentInterval == null && previousIntervals.isEmpty();
+                // currentInterval == null && previousIntervals.isEmpty();
+                currentInterval == null && previousInterval == null;
             if (currentInterval == null || hasEnded) {
                 if (first || hyperlinking || restartMode != RESTART_NEVER) {
                     float beginAfter;
                     if (first || hyperlinking) {
                         beginAfter = Float.NEGATIVE_INFINITY;
                     } else {
-                        beginAfter = ((Interval) previousIntervals.getLast()).getEnd();
+                        // beginAfter = ((Interval) previousIntervals.getLast()).getEnd();
+                        beginAfter = previousInterval.getEnd();
                     }
                     Interval interval =
                         computeInterval(first, false, beginAfter);
@@ -720,10 +728,12 @@ public abstract class TimedElement implements SMILConstants {
                 if (currentBegin > time) {
                     // Interval hasn't started yet.
                     float beginAfter;
-                    if (previousIntervals.isEmpty()) {
+                    // if (previousIntervals.isEmpty()) {
+                    if (previousInterval == null) {
                         beginAfter = Float.NEGATIVE_INFINITY;
                     } else {
-                        beginAfter = ((Interval) previousIntervals.getLast()).getEnd();
+                        // beginAfter = ((Interval) previousIntervals.getLast()).getEnd();
+                        beginAfter = previousInterval.getEnd();
                     }
                     Interval interval = computeInterval(false, false, beginAfter);
                     float dmt = notifyRemoveInterval(currentInterval);
@@ -776,7 +786,7 @@ public abstract class TimedElement implements SMILConstants {
                 t = currentInterval.getBegin() + repeatDuration - lastRepeatTime;
                 atLast = lastRepeatTime + d == currentInterval.getBegin() + repeatDuration;
             } else {
-                Interval previousInterval = (Interval) previousIntervals.getLast();
+                // Interval previousInterval = (Interval) previousIntervals.getLast();
                 t = previousInterval.getEnd() - lastRepeatTime;
                 atLast = lastRepeatTime + d == previousInterval.getEnd();
             }
@@ -1284,7 +1294,7 @@ public abstract class TimedElement implements SMILConstants {
      */
     public void beginElement(float offset) {
         float t = root.convertWallclockTime( Calendar.getInstance());
-        InstanceTime it = new InstanceTime(null, t + offset, null, true);
+        InstanceTime it = new InstanceTime(null, t + offset, true);
         addInstanceTime(it, true);
     }
 
@@ -1303,7 +1313,7 @@ public abstract class TimedElement implements SMILConstants {
      */
     public void endElement(float offset) {
         float t = root.convertWallclockTime(Calendar.getInstance());
-        InstanceTime it = new InstanceTime(null, t + offset, null, true);
+        InstanceTime it = new InstanceTime(null, t + offset, true);
         addInstanceTime(it, false);
     }
 

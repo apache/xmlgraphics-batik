@@ -52,7 +52,7 @@ public class OffsetTimingSpecifier extends TimingSpecifier {
      * to the owner's instance time list or setting up any event listeners.
      */
     public void initialize() {
-        InstanceTime instance = new InstanceTime(this, offset, null, false);
+        InstanceTime instance = new InstanceTime(this, offset, false);
         owner.addInstanceTime(instance, isBegin);
     }
 

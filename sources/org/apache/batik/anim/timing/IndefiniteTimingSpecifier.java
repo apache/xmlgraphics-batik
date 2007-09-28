@@ -49,7 +49,7 @@ public class IndefiniteTimingSpecifier extends TimingSpecifier {
             // Only end instance lists get an 'indefinite' instance time from
             // an indefinite timing specifier.
             InstanceTime instance =
-                new InstanceTime(this, TimedElement.INDEFINITE, null, false);
+                new InstanceTime(this, TimedElement.INDEFINITE, false);
             owner.addInstanceTime(instance, isBegin);
         }
     }

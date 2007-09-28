@@ -122,8 +122,7 @@ public class EventbaseTimingSpecifier
      */
     public void resolve(Event e) {
         float time = owner.getRoot().convertEpochTime(e.getTimeStamp());
-        InstanceTime instance = new InstanceTime(this, time + offset, null,
-                                                 true);
+        InstanceTime instance = new InstanceTime(this, time + offset, true);
         owner.addInstanceTime(instance, isBegin);
     }
 }
