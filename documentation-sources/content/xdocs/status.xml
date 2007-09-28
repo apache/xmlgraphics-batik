@@ -1733,7 +1733,7 @@
           <attr name="style" ns=""><yes/></attr>
           <attr name="systemLanguage" ns=""><yes/></attr>
           <attr name="version" ns=""><yes/></attr>
-          <attr name="viewBox" ns=""><yes/></attr>
+          <attr name="viewBox" ns=""><partial>Attribute not animatable.</partial></attr>
           <attr name="width" ns=""><yes/></attr>
           <attr name="x" ns=""><yes/></attr>
           <attr name="base" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
@@ -2329,7 +2329,7 @@
           <attr name='externalResourcesRequired'><yes/></attr>
         </interface>
         <interface name='SVGFitToViewBox'>
-          <attr name='viewBox'><no/></attr>
+          <attr name='viewBox'><partial>Implemented for <code>&lt;svg></code> elements.</partial></attr>
           <attr name='preserveAspectRatio'><yes/></attr>
         </interface>
         <interface name='SVGZoomAndPan'>
