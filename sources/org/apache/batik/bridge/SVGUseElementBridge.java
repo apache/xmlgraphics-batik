@@ -358,7 +358,7 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
      * implementation.
      */
     protected GraphicsNode instantiateGraphicsNode() {
-        return null; // nothing to do, createGraphicsNode is fully overriden
+        return null; // nothing to do, createGraphicsNode is fully overridden
     }
 
     /**

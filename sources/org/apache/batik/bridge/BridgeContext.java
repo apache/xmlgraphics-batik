@@ -865,49 +865,49 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     // Bindings //////////////////////////////////////////////////////////////
 
     /**
-     * Binds the specified GraphicsNode to the specified Element. This method
+     * Binds the specified GraphicsNode to the specified Node. This method
      * automatically bind the graphics node to the element and the element to
      * the graphics node.
      *
-     * @param element the element to bind to the specified graphics node
-     * @param node the graphics node to bind to the specified element
+     * @param node the DOM Node to bind to the specified graphics node
+     * @param gn the graphics node to bind to the specified element
      */
-    public void bind(Element element, GraphicsNode node) {
+    public void bind(Node node, GraphicsNode gn) {
         if (elementNodeMap == null) {
             elementNodeMap = new WeakHashMap();
             nodeElementMap = new WeakHashMap();
         }
-        elementNodeMap.put(element, new SoftReference(node));
-        nodeElementMap.put(node, new SoftReference(element));
+        elementNodeMap.put(node, new SoftReference(gn));
+        nodeElementMap.put(gn, new SoftReference(node));
     }
 
     /**
-     * Removes the binding of the specified Element.
+     * Removes the binding of the specified Node.
      *
-     * @param element the element to unbind
+     * @param node the DOM Node to unbind
      */
-    public void unbind(Element element) {
+    public void unbind(Node node) {
         if (elementNodeMap == null) {
             return;
         }
-        GraphicsNode node = null;
-        SoftReference sr = (SoftReference)elementNodeMap.get(element);
+        GraphicsNode gn = null;
+        SoftReference sr = (SoftReference)elementNodeMap.get(node);
         if (sr != null)
-            node = (GraphicsNode)sr.get();
-        elementNodeMap.remove(element);
-        if (node != null)
-            nodeElementMap.remove(node);
+            gn = (GraphicsNode)sr.get();
+        elementNodeMap.remove(node);
+        if (gn != null)
+            nodeElementMap.remove(gn);
     }
 
     /**
-     * Returns the GraphicsNode associated to the specified Element or
+     * Returns the GraphicsNode associated to the specified Node or
      * null if any.
      *
-     * @param element the element associated to the graphics node to return
+     * @param node the DOM Node associated to the graphics node to return
      */
-    public GraphicsNode getGraphicsNode(Element element) {
+    public GraphicsNode getGraphicsNode(Node node) {
         if (elementNodeMap != null) {
-            SoftReference sr = (SoftReference)elementNodeMap.get(element);
+            SoftReference sr = (SoftReference)elementNodeMap.get(node);
             if (sr != null)
                 return (GraphicsNode)sr.get();
         }
@@ -915,16 +915,20 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     }
 
     /**
-     * Returns the Element associated to the specified GraphicsNode or
+     * Returns the Node associated to the specified GraphicsNode or
      * null if any.
      *
-     * @param node the graphics node associated to the element to return
+     * @param gn the graphics node associated to the element to return
      */
-    public Element getElement(GraphicsNode node) {
+    public Element getElement(GraphicsNode gn) {
         if (nodeElementMap != null) {
-            SoftReference sr = (SoftReference)nodeElementMap.get(node);
-            if (sr != null)
-                return (Element)sr.get();
+            SoftReference sr = (SoftReference)nodeElementMap.get(gn);
+            if (sr != null) {
+                Node n = (Node) sr.get();
+                if (n.getNodeType() == Node.ELEMENT_NODE) {
+                    return (Element) n;
+                }
+            }
         }
         return null;
     }
@@ -949,6 +953,13 @@ public class BridgeContext implements ErrorConstants, CSSContext {
             return false;
         }
         return (localNameMap.get(localName) instanceof GraphicsNodeBridge);
+    }
+
+    /**
+     * Returns the bridge for the document node.
+     */
+    public DocumentBridge getDocumentBridge() {
+        return new SVGDocumentBridge();
     }
 
     /**
@@ -1449,13 +1460,13 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         if (focusManager != null) {
             focusManager.dispose();
         }
-        if ( elementDataMap != null ){
+        if (elementDataMap != null) {
             elementDataMap.clear();
         }
-        if ( nodeElementMap != null ){
+        if (nodeElementMap != null) {
             nodeElementMap.clear();
         }
-        if ( elementNodeMap != null ){
+        if (elementNodeMap != null) {
             elementNodeMap.clear();
         }        
     }
@@ -1466,7 +1477,9 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      */
     protected static SVGContext getSVGContext(Node node) {
         if (node instanceof SVGOMElement) {
-            return ((SVGOMElement)node).getSVGContext();
+            return ((SVGOMElement) node).getSVGContext();
+        } else if (node instanceof SVGOMDocument) {
+            return ((SVGOMDocument) node).getSVGContext();
         } else {
             return null;
         }

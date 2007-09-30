@@ -58,10 +58,14 @@ public class GVTBuilder implements SVGConstants {
         ctx.setGVTBuilder(this);
 
         // build the GVT tree
-        RootGraphicsNode rootNode = new RootGraphicsNode();
-        Element svgElement = document.getDocumentElement();
-        GraphicsNode topNode = null;
+        DocumentBridge dBridge = ctx.getDocumentBridge();
+        RootGraphicsNode rootNode = null;
         try {
+            // create the root node
+            rootNode = dBridge.createGraphicsNode(ctx, document);
+            Element svgElement = document.getDocumentElement();
+            GraphicsNode topNode = null;
+
             // get the appropriate bridge according to the specified element
             Bridge bridge = ctx.getBridge(svgElement);
             if (bridge == null || !(bridge instanceof GraphicsNodeBridge)) {
@@ -77,6 +81,9 @@ public class GVTBuilder implements SVGConstants {
 
             buildComposite(ctx, svgElement, (CompositeGraphicsNode)topNode);
             gnBridge.buildGraphicsNode(ctx, svgElement, topNode);
+
+            // finally, build the root node
+            dBridge.buildGraphicsNode(ctx, document, rootNode);
         } catch (BridgeException ex) {
             // update the exception with the missing parameters
             ex.setGraphicsNode(rootNode);
