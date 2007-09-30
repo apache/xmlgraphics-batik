@@ -25,7 +25,10 @@ import java.util.List;
 
 import org.apache.batik.dom.events.AbstractEvent;
 import org.apache.batik.dom.events.NodeEventTarget;
+import org.apache.batik.dom.svg.SVGOMAnimationElement;
+import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.XMLConstants;
 
 import org.w3c.dom.Element;
@@ -206,6 +209,27 @@ public class SVGAElementBridge extends SVGGElementBridge {
         
         public void run() {
             userAgent.setSVGCursor(holder.getCursor());
+            String href = elt.getHref().getAnimVal();
+            ParsedURL purl = new ParsedURL(elt.getBaseURI(), href);
+            SVGOMDocument doc = (SVGOMDocument) elt.getOwnerDocument();
+            ParsedURL durl = doc.getParsedURL();
+            if (purl.sameFile(durl)) {
+                String frag = purl.getRef();
+                if (frag != null && frag.length() != 0) {
+                    Element refElt = doc.getElementById(frag);
+                    if (refElt instanceof SVGOMAnimationElement) {
+                        SVGOMAnimationElement aelt =
+                            (SVGOMAnimationElement) refElt;
+                        float t = aelt.getHyperlinkBeginTime();
+                        if (Float.isNaN(t)) {
+                            aelt.beginElement();
+                        } else {
+                            doc.getRootElement().setCurrentTime(t);
+                        }
+                        return;
+                    }
+                }
+            }
             userAgent.openLink(elt);
         }
     }
