@@ -589,7 +589,7 @@ public abstract class TimedElement implements SMILConstants {
      * Calculates the local simple time.  Currently the hyperlinking parameter
      * is ignored, so DOM timing events are fired during hyperlinking seeks.
      * If we were following SMIL 2.1 rather than SMIL Animation, then these
-     * events would have to be surpressed.
+     * events would have to be suppressed.
      *
      * @return the number of seconds until this element becomes active again
      *         if it currently is not, {@link Float#POSITIVE_INFINITY} if this
@@ -701,6 +701,15 @@ public abstract class TimedElement implements SMILConstants {
             boolean first =
                 // currentInterval == null && previousIntervals.isEmpty();
                 currentInterval == null && previousInterval == null;
+            if (currentInterval != null && hyperlinking) {
+                // Hyperlinking, so remove the current interval and force a new
+                // one to be computed.
+                isActive = false;
+                isFrozen = false;
+                toInactive(false, false);
+                currentInterval = null;
+                // fireTimeEvent(SMIL_END_EVENT_NAME, currentInterval.getEnd(), 0);
+            }
             if (currentInterval == null || hasEnded) {
                 if (first || hyperlinking || restartMode != RESTART_NEVER) {
                     float beginAfter;
@@ -1359,6 +1368,21 @@ public abstract class TimedElement implements SMILConstants {
      */
     public boolean canEnd() {
         return isActive;
+    }
+
+    /**
+     * Returns the time that the document would seek to if this animation
+     * element were hyperlinked to, or <code>NaN</code> if there is no
+     * such begin time.
+     */
+    public float getHyperlinkBeginTime() {
+        if (isActive) {
+            return currentInterval.getBegin();
+        }
+        if (!beginInstanceTimes.isEmpty()) {
+            return ((InstanceTime) beginInstanceTimes.get(0)).getTime();
+        }
+        return Float.NaN;
     }
 
     /**

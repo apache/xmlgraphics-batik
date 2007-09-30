@@ -55,4 +55,11 @@ public interface SVGAnimationContext extends SVGContext, ElementTimeControl {
      * throwing an exception.
      */
     float getSimpleDuration();
+
+    /**
+     * Returns the time that the document would seek to if this animation
+     * element were hyperlinked to, or <code>NaN</code> if there is no
+     * such begin time.
+     */
+    float getHyperlinkBeginTime();
 }
