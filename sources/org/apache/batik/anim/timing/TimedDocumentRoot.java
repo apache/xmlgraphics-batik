@@ -159,6 +159,9 @@ public abstract class TimedDocumentRoot extends TimeContainer {
             }
         } while (needsUpdates);
         isSampling = false;
+        if (hyperlinking) {
+            root.currentIntervalWillUpdate();
+        }
         return mint;
         // } finally { Trace.exit(); }
     }

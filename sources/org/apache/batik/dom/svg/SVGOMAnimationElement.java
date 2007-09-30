@@ -123,6 +123,15 @@ public abstract class SVGOMAnimationElement
         return dur;
     }
 
+    /**
+     * Returns the time that the document would seek to if this animation
+     * element were hyperlinked to, or <code>NaN</code> if there is no
+     * such begin time.
+     */
+    public float getHyperlinkBeginTime() {
+        return ((SVGAnimationContext) getSVGContext()).getHyperlinkBeginTime();
+    }
+
     // ElementTimeControl ////////////////////////////////////////////////
 
     /**
