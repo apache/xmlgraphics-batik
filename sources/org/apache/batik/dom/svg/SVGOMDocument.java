@@ -136,6 +136,11 @@ public class SVGOMDocument
     protected LinkedList animatedAttributeListeners = new LinkedList();
 
     /**
+     * The SVG context.
+     */
+    protected transient SVGContext svgContext;
+
+    /**
      * Creates a new uninitialized document.
      */
     protected SVGOMDocument() {
@@ -390,6 +395,22 @@ public class SVGOMDocument
             return SVG_ID_ATTRIBUTE.equals(node.getNodeName());
         }
         return node.getNodeName().equals(XML_ID_QNAME);
+    }
+
+    /**
+     * Sets the SVG context to use to get SVG specific informations.
+     *
+     * @param ctx the SVG context
+     */
+    public void setSVGContext(SVGContext ctx) {
+        svgContext = ctx;
+    }
+
+    /**
+     * Returns the SVG context used to get SVG specific informations.
+     */
+    public SVGContext getSVGContext() {
+        return svgContext;
     }
 
     // CSSNavigableDocument ///////////////////////////////////////////
