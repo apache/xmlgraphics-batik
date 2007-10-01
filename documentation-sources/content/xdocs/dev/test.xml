@@ -404,7 +404,7 @@
   
         <p>
           The default behavior for the test is to render the SVG into a PNG
-          file and compare with the reference image. If there is not
+          file and compare with the reference image. If there is no
           difference, the test passes. Otherwise, it fails.
         </p>
 

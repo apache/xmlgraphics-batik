@@ -3174,7 +3174,7 @@
         <test name='animate-elem-15-t'><yes/></test>
         <test name='animate-elem-17-t'><yes/></test>
         <test name='animate-elem-19-t'><yes/></test>
-        <test name='animate-elem-20-t'><no>Hyperlinking to an animation element is not supported.</no></test>
+        <test name='animate-elem-20-t'><yes/></test>
         <test name='animate-elem-21-t'><yes/></test>
         <test name='animate-elem-22-b'><yes/></test>
         <test name='animate-elem-23-t'><yes/></test>
@@ -3183,7 +3183,7 @@
         <test name='animate-elem-26-t'><yes/></test>
         <test name='animate-elem-27-t'><yes/></test>
         <test name='animate-elem-28-t'><yes/></test>
-        <test name='animate-elem-29-b'><no>Hyperlinking to an animation element is not supported.</no></test>
+        <test name='animate-elem-29-b'><yes/></test>
         <test name='animate-elem-30-t'><yes/></test>
         <test name='animate-elem-31-t'><yes/></test>
         <test name='animate-elem-32-t'><yes/></test>
