@@ -76,6 +76,10 @@ public class SamplesRenderingTest extends PreconfiguredRenderingTest {
         return VARIATION_SUFFIX;
     }
 
+    protected String[] getVariationPlatforms() {
+        return DEFAULT_VARIATION_PLATFORMS;
+    }
+
     protected String getSaveVariationPrefix(){
         return SAVE_VARIATION_PREFIX;
     }
@@ -91,6 +95,4 @@ public class SamplesRenderingTest extends PreconfiguredRenderingTest {
     protected String getCandidateReferenceSuffix(){
         return SAVE_CANDIDATE_REFERENCE_SUFFIX;
     }
-
-
 }

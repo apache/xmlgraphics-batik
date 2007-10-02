@@ -75,6 +75,10 @@ public class BERenderingTest extends PreconfiguredRenderingTest {
         return VARIATION_SUFFIX;
     }
 
+    protected String[] getVariationPlatforms() {
+        return DEFAULT_VARIATION_PLATFORMS;
+    }
+
     protected String getSaveVariationPrefix(){
         return SAVE_VARIATION_PREFIX;
     }

@@ -31,6 +31,9 @@ import java.io.StringWriter;
 import java.net.URL;
 import java.net.MalformedURLException;
 
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -218,10 +221,10 @@ public abstract class AbstractRenderingAccuracyTest extends AbstractTest {
     protected URL refImgURL;
 
     /**
-     * The URL of a file containing an 'accepted'
+     * A list of {@link URL}s of files containing an 'accepted'
      * variation from the reference image.
      */
-    protected URL variationURL;
+    protected List variationURLs;
 
     /**
      * The File where the newly computed variation
@@ -332,16 +335,21 @@ public abstract class AbstractRenderingAccuracyTest extends AbstractTest {
         return saveVariation;
     }
 
-    public String getVariationURL(){
-        return variationURL.toString();
+    public String[] getVariationURLs() {
+        if (variationURLs != null) {
+            return (String[]) variationURLs.toArray(new String[0]);
+        }
+        return null;
     }
 
     /**
-     * Sets the URL where an acceptable variation fron the reference
-     * image can be found.
+     * Adds a URL for an acceptable variation from the reference image.
      */
-    public void setVariationURL(String variationURL){
-        this.variationURL = resolveURL(variationURL);
+    public void addVariationURL(String variationURL) {
+        if (this.variationURLs == null) {
+            this.variationURLs = new LinkedList();
+        }
+        this.variationURLs.add(resolveURL(variationURL));
     }
 
     /**
@@ -520,28 +528,35 @@ public abstract class AbstractRenderingAccuracyTest extends AbstractTest {
             // If there is an accepted variation, check if it equals the
             // computed difference.
             //
-            if(variationURL != null) {
-                File tmpDiff = imageToFile(diff, IMAGE_TYPE_DIFF);
+            if (variationURLs != null) {
+                Iterator it = variationURLs.iterator();
+                while (it.hasNext()) {
+                    URL variationURL = (URL) it.next();
+                    File tmpDiff = imageToFile(diff, IMAGE_TYPE_DIFF);
 
-                InputStream variationURLStream = null;
-                try{
-                    variationURLStream = variationURL.openStream();
-                }catch(IOException e){
-                    // Could not open variationURL stream. Just trace that
-                    System.err.println(Messages.formatMessage(COULD_NOT_OPEN_VARIATION_URL,
-                                                              new Object[]{variationURL.toString()}));
-                }
+                    InputStream variationURLStream = null;
+                    try {
+                        variationURLStream = variationURL.openStream();
+                    } catch (IOException e) {
+                        // Could not open variationURL stream. Just trace that
+                        System.err.println
+                            (Messages.formatMessage
+                                (COULD_NOT_OPEN_VARIATION_URL,
+                                 new Object[] { variationURL.toString() }));
+                    }
 
-                if(variationURLStream != null){
-                    InputStream refDiffStream =
-                        new BufferedInputStream(variationURLStream);
+                    if (variationURLStream != null) {
+                        InputStream refDiffStream =
+                            new BufferedInputStream(variationURLStream);
 
-                    InputStream tmpDiffStream =
-                        new BufferedInputStream(new FileInputStream(tmpDiff));
+                        InputStream tmpDiffStream =
+                            new BufferedInputStream
+                                (new FileInputStream(tmpDiff));
 
-                    if(compare(refDiffStream, tmpDiffStream)){
-                        // We accept the generated result.
-                        accurate = true;
+                        if (compare(refDiffStream, tmpDiffStream)) {
+                            // We accept the generated result.
+                            accurate = true;
+                        }
                     }
                 }
             }
