@@ -38,6 +38,11 @@ public abstract class PreconfiguredRenderingTest extends SVGRenderingAccuracyTes
 
     public static final char PATH_SEPARATOR = '/';
 
+    public static final String[] DEFAULT_VARIATION_PLATFORMS = {
+        "java6-linux",
+        "java5-osx"
+    };
+
     /**
      * For preconfigured tests, the configuration has to be 
      * derived from the test identifier. The identifier should
@@ -56,7 +61,10 @@ public abstract class PreconfiguredRenderingTest extends SVGRenderingAccuracyTes
         setConfig(buildSVGURL(dirNfile[0], dirNfile[1], dirNfile[2]),
                   buildRefImgURL(dirNfile[0], dirNfile[1]));
 
-        setVariationURL(buildVariationURL(dirNfile[0], dirNfile[1]));
+        String[] variationURLs = buildVariationURLs(dirNfile[0], dirNfile[1]);
+        for (int i = 0; i < variationURLs.length; i++) {
+            addVariationURL(variationURLs[i]);
+        }
         setSaveVariation(new File(buildSaveVariationFile(dirNfile[0], dirNfile[1])));
         setCandidateReference(new File(buildCandidateReferenceFile(dirNfile[0],dirNfile[1])));
     }
@@ -102,13 +110,23 @@ public abstract class PreconfiguredRenderingTest extends SVGRenderingAccuracyTes
      * of the variation URL, which is built as:
      * getVariationPrefix() + svgDir + getVariationSuffix() + svgFile + PNG_EXTENSION
      */
-    public String buildVariationURL(String svgDir, String svgFile){
-        return getVariationPrefix() + svgDir + getVariationSuffix() + svgFile + PNG_EXTENSION;
+    public String[] buildVariationURLs(String svgDir, String svgFile) {
+        String[] platforms = getVariationPlatforms();
+        String[] urls = new String[platforms.length + 1];
+        urls[0] = getVariationPrefix() + svgDir + getVariationSuffix() + svgFile
+                      + PNG_EXTENSION;
+        for (int i = 0; i < platforms.length; i++) {
+            urls[i + 1] = getVariationPrefix() + svgDir + getVariationSuffix()
+                              + svgFile + '_' + platforms[i] + PNG_EXTENSION;
+        }
+        return urls;
     }
 
     protected abstract String getVariationPrefix();
 
     protected abstract String getVariationSuffix();
+
+    protected abstract String[] getVariationPlatforms();
 
     /**
      * Gives a chance to the subclass to control the construction

@@ -196,10 +196,21 @@ public class SVGRenderingAccuracyTestValidator extends DefaultTestSuite {
                 return r;
             }
 
-            if(!t.variationURL.toString().endsWith(expectedVariationURL)){
+            if (t.variationURLs == null
+                    || t.variationURLs.size() != 1
+                    || !t.variationURLs.get(0).toString()
+                            .endsWith(expectedVariationURL)) {
                 TestReport r = reportError(ERROR_UNEXPECTED_VARIATION_URL);
                 r.addDescriptionEntry(ENTRY_KEY_EXPECTED_VALUE, expectedVariationURL);
-                r.addDescriptionEntry(ENTRY_KEY_FOUND_VALUE, "" + t.variationURL);
+                String found;
+                if (t.variationURLs == null) {
+                    found = "null";
+                } else if (t.variationURLs.size() != 1) {
+                    found = "<list of " + t.variationURLs.size() + " URLs>";
+                } else {
+                    found = t.variationURLs.get(0).toString();
+                }
+                r.addDescriptionEntry(ENTRY_KEY_FOUND_VALUE, found);
                 return r;
             }
 
@@ -411,12 +422,10 @@ public class SVGRenderingAccuracyTestValidator extends DefaultTestSuite {
 
             super.runImpl();            
 
-            t.setVariationURL(tmpVariationFile.toURL().toString());
+            t.addVariationURL(tmpVariationFile.toURL().toString());
             t.setSaveVariation(null);
 
-            setConfig(t,
-                      true,
-                      null);
+            setConfig(t, true, null);
 
             return super.runImpl();
         }
