@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.apache.batik.dom.events.AbstractEvent;
 import org.apache.batik.dom.events.NodeEventTarget;
+import org.apache.batik.dom.svg.SVGOMAElement;
 import org.apache.batik.dom.svg.SVGOMAnimationElement;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.gvt.GraphicsNode;
@@ -195,14 +196,14 @@ public class SVGAElementBridge extends SVGGElementBridge {
 
     public static class AnchorDefaultActionable implements Runnable {
 
-        protected SVGAElement   elt;
+        protected SVGOMAElement elt;
         protected UserAgent     userAgent;
         protected CursorHolder  holder;
 
         public AnchorDefaultActionable(SVGAElement   e, 
                                        UserAgent     ua, 
                                        CursorHolder  ch) {
-            elt       = e;
+            elt       = (SVGOMAElement) e;
             userAgent = ua;
             holder    = ch;
         }
