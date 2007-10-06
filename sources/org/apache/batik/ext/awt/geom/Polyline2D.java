@@ -34,7 +34,7 @@ import java.io.Serializable;
  * This class has the same behavior than {@link Polygon2D}, except that
  * the figure is not closed.
  *
- * @version $Id: DisplacementMapRed.java 478276 2006-11-22 18:33:37Z dvholten $
+ * @version $Id$
  */
 public class Polyline2D implements Shape, Cloneable, Serializable {
 

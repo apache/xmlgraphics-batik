@@ -37,7 +37,7 @@ public class FontFamilyResolver {
 
     /**
      * The default font. This will be used when no font families can
-     * be resolved for a particular text chunck/run.
+     * be resolved for a particular text chunk/run.
      */
     public static final AWTFontFamily defaultFont =
         new AWTFontFamily("SansSerif");
