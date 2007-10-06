@@ -26,7 +26,7 @@ import org.apache.batik.transcoder.wmf.WMFConstants;
  *  {@link org.apache.batik.transcoder.wmf.tosvg.AbstractWMFReader}s and
  *  {@link org.apache.batik.transcoder.wmf.tosvg.AbstractWMFPainter}s
  *
- * @version $Id: PreferenceDialog.java 498555 2007-01-22 08:09:33Z cam $
+ * @version $Id$
  */
 public class WMFUtilities {
 

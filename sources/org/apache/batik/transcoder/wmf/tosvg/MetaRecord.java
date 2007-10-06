@@ -28,7 +28,7 @@ import java.util.ArrayList;
  * It seems, it might be rewritten to keep just the plain int-data.
  *
  * @author <a href="mailto:bella.robinson@cmis.csiro.au">Bella Robinson</a>
- * @version $Id: FontFamilyResolver.java 478188 2006-11-22 15:19:17Z dvholten $
+ * @version $Id$
  */
 public class MetaRecord /*implements Serializable*/ {
 

@@ -31,7 +31,7 @@ import org.apache.batik.transcoder.wmf.WMFConstants;
 
 /**
  * This class provides a general framework to read WMF Metafiles.
- * @version $Id: AffineRed.java 201374 2004-08-18 07:17:26Z vhardy $
+ * @version $Id$
  */
 public abstract class AbstractWMFReader {
 
