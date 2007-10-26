@@ -48,9 +48,10 @@ import java.util.Map;
 public class SoftReferenceCache {
 
     /**
-     * The map of cached objects.
+     * The map of cached objects. Must not change after creation,
+     * so it's final.
      */
-    protected Map map = new HashMap();
+    protected final Map map = new HashMap();
 
     /**
      * Let people create their own caches.
@@ -118,7 +119,8 @@ public class SoftReferenceCache {
     /**
      * If this returns null then you are now 'on the hook'.
      * to put the Object associated with key into the
-     * cache.  */
+     * cache.
+     */
     protected final synchronized Object requestImpl(Object key) {
         if (map.containsKey(key)) {
 
@@ -154,7 +156,7 @@ public class SoftReferenceCache {
     /**
      * Clear the entry for key.
      * This is the easiest way to 'get off the hook'.
-     * if you didn't indend to get on it.
+     * if you didn't intend to get on it.
      */
     protected final synchronized void clearImpl(Object key) {
         map.remove(key);

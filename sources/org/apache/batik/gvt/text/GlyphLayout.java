@@ -1383,7 +1383,7 @@ public class GlyphLayout implements TextSpanLayout {
                     if (transparentStart != -1) {
                         Point2D         loc   = gv.getGlyphPosition(i);
                         GVTGlyphMetrics gm    = gv.getGlyphMetrics(i);
-                        int tyS=0, txS=0;
+                        int tyS=0, txS=0;      // these never changed ??     todo
                         float advX=0, advY=0;
                         if (vertical) {
                             if (glyphOrientationAuto ||
@@ -1437,8 +1437,8 @@ public class GlyphLayout implements TextSpanLayout {
 
                             locT = new Point2D.Double(locX, locY);
                             gv.setGlyphPosition(j, locT);
-                            if ((txS != 0) || (tyS != 0)) {
-                                AffineTransform at;
+                            if ((txS != 0) || (tyS != 0)) {        // because txS, tyS are set to 0 and not
+                                AffineTransform at;                // changed, this path is never used  todo
                                 at = AffineTransform.getTranslateInstance
                                     (tx,ty);
                                 at.concatenate(gv.getGlyphTransform(i));
@@ -2007,8 +2007,8 @@ public class GlyphLayout implements TextSpanLayout {
         }
 
         // if not one of 0, 90, 180 or 270, round to nearest value
-        if ((glyphOrientationAngle !=   0) || (glyphOrientationAngle !=  90) ||
-            (glyphOrientationAngle != 180) || (glyphOrientationAngle != 270)) {
+        if ((glyphOrientationAngle !=   0) || (glyphOrientationAngle !=  90) ||       // todo - this logic expression
+            (glyphOrientationAngle != 180) || (glyphOrientationAngle != 270)) {       // is true for all values.....
 
             while (glyphOrientationAngle < 0) {
                 glyphOrientationAngle += 360;

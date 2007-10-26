@@ -1895,7 +1895,7 @@ public abstract class CSSEngine {
                 for (int i = getNumberOfProperties() - 1; i >= 0; --i) {
                     if (style.isComputed(i) && !updated[i]) {
                         short origin = style.getOrigin(i);
-                        if (origin >= StyleMap.INLINE_AUTHOR_ORIGIN) {
+                        if (origin >= StyleMap.INLINE_AUTHOR_ORIGIN) {     // ToDo Jlint says: always same result ??
                             removed = true;
                             updated[i] = true;
                         }
@@ -2398,7 +2398,7 @@ public abstract class CSSEngine {
     /**
      * Handles a subtree modification in the document.
      * todo the incoming Node is actually ignored (not used) here,
-     *     but it seems caller-sites assume that it is used - is this done right?? 
+     *     but it seems caller-sites assume that it is used - is this done right??
      */
     protected void handleSubtreeModified(Node ignored) {
         if (styleSheetRemoved) {

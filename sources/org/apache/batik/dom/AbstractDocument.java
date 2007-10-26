@@ -570,10 +570,8 @@ public abstract class AbstractDocument
 
         if (elementsById == null) {
             Map tmp = new HashMap();
-            synchronized (tmp) {
-                elementsById = tmp;
-                elementsById.put(id, new IdSoftRef(e, id));
-            }
+            tmp.put(id, new IdSoftRef(e, id));
+            elementsById = tmp;
             return;
         }
 
@@ -1301,7 +1299,7 @@ public abstract class AbstractDocument
                 }
                 String s = sb.toString();
                 if (s.length() == 0) {
-                    Node next = n.getNextSibling();
+                    Node next = n.getNextSibling();       // todo: Jlint says: n can be NULL
                     e.removeChild(n);
                     n = next;
                     continue;
@@ -1359,7 +1357,7 @@ public abstract class AbstractDocument
         HashMap names = new HashMap();                    // todo names is not used ?
         for (int i = 0; i < nnm.getLength(); i++) {
             Attr a = (Attr) nnm.item(i);
-            String prefix = a.getPrefix();
+            String prefix = a.getPrefix();                // todo : this breaks when a is null
             if (a != null && XMLConstants.XMLNS_PREFIX.equals(prefix)
                     || a.getNodeName().equals(XMLConstants.XMLNS_PREFIX)) {
                 if (!namespaceDeclarations) {

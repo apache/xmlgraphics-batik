@@ -122,7 +122,8 @@ public class ClassFileUtilities {
         Set desc = new HashSet();
 
         for (int i = 1; i < len; i++) {
-            switch (dis.readByte() & 0xff) {
+            int constCode = dis.readByte() & 0xff;
+            switch ( constCode ) {
             case CONSTANT_LONG_INFO:
             case CONSTANT_DOUBLE_INFO:
                 dis.readLong();
@@ -155,7 +156,7 @@ public class ClassFileUtilities {
                 break;
 
             default:
-                throw new RuntimeException();
+                throw new RuntimeException("unexpected data in constant-pool:" + constCode );
             }
         }
 

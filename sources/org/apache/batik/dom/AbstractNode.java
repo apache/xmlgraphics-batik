@@ -357,8 +357,12 @@ public abstract class AbstractNode
 
         String name = getLocalName();
         if (prefix == null) {
+            // prefix null is explicitly allowed by org.w3c.dom.Node#setPrefix(String)
             setNodeName(name);
+            return;
         }
+
+        // prefix is guaranteed to be non-null here...
         if (!prefix.equals("") && !DOMUtilities.isValidName(prefix)) {
             throw createDOMException(DOMException.INVALID_CHARACTER_ERR,
                                      "prefix",
@@ -939,7 +943,7 @@ public abstract class AbstractNode
     /**
      * <b>DOM</b>: Implements
      * {@link
-     * EventTarget#addEventListenerNS(String,String,EventListener,boolean,Object)}.
+     * NodeEventTarget#addEventListenerNS(String,String,EventListener,boolean,Object)}.
      */
     public void addEventListenerNS(String namespaceURI,
                                    String type,
@@ -975,7 +979,7 @@ public abstract class AbstractNode
     /**
      * <b>DOM</b>: Implements
      * {@link
-     * EventTarget#removeEventListenerNS(String,String,EventListener,boolean)}.
+     * NodeEventTarget#removeEventListenerNS(String,String,EventListener,boolean)}.
      */
     public void removeEventListenerNS(String namespaceURI,
                                       String type,
