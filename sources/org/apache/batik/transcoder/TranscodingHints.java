@@ -144,7 +144,7 @@ public class TranscodingHints extends HashMap {
     public abstract static class Key {
 
         /**
-         * Construcst a key.
+         * Constructs a key.
          */
         protected Key() { }
 

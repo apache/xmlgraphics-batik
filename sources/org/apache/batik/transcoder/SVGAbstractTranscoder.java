@@ -187,7 +187,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
             width = ((Float)hints.get(KEY_WIDTH)).floatValue();
         if (hints.containsKey(KEY_HEIGHT))
             height = ((Float)hints.get(KEY_HEIGHT)).floatValue();
-        
+
 
         SVGOMDocument svgDoc = (SVGOMDocument)document;
         SVGSVGElement root = svgDoc.getRootElement();
@@ -832,7 +832,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
                 SVGAbstractTranscoder.this.handler.error
                     (new TranscoderException(message));
             } catch (TranscoderException ex) {
-                throw new RuntimeException();
+                throw new RuntimeException( ex.getMessage() );
             }
         }
 
@@ -845,7 +845,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
                 SVGAbstractTranscoder.this.handler.error
                     (new TranscoderException(e));
             } catch (TranscoderException ex) {
-                throw new RuntimeException();
+                throw new RuntimeException( ex.getMessage() );
             }
         }
 
@@ -857,7 +857,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
                 SVGAbstractTranscoder.this.handler.warning
                     (new TranscoderException(message));
             } catch (TranscoderException ex) {
-                throw new RuntimeException();
+                throw new RuntimeException( ex.getMessage() );
             }
         }
 

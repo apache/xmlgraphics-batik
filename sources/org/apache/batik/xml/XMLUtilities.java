@@ -85,10 +85,14 @@ public class XMLUtilities extends XMLCharacters {
 
     /**
      * Tests whether the given 32 bits character is valid in XML documents.
+     * Because the majority of code-points is covered by the table-lookup-test,
+     * we do it first.
+     * This method gives meaningful results only for c >= 0 .
      */
     public static boolean isXMLCharacter(int c) {
-        return (c >= 0x10000 && c <= 0x10ffff) ||
-            (XML_CHARACTER[c / 32] & (1 << (c % 32))) != 0;
+
+        return ( ( ( XML_CHARACTER[c >>> 5 ] & (1 << (c & 0x1F ))) != 0 )
+                || (c >= 0x10000 && c <= 0x10ffff) );
     }
 
     /**
@@ -233,7 +237,7 @@ public class XMLUtilities extends XMLCharacters {
         }
 
         while (isXMLSpace((char)(c = r.read())));
-            
+
         if (c != 'v') {
             return e;
         }
@@ -255,7 +259,7 @@ public class XMLUtilities extends XMLCharacters {
         if ((c = r.read()) != 'n') {
             return e;
         }
-             
+
         c = r.read();
         while (isXMLSpace((char)c)) {
             c = r.read();
@@ -266,7 +270,7 @@ public class XMLUtilities extends XMLCharacters {
         }
 
         while (isXMLSpace((char)(c = r.read())));
-            
+
         if (c != '"' && c != '\'') {
             return e;
         }
@@ -322,7 +326,7 @@ public class XMLUtilities extends XMLCharacters {
         }
 
         while (isXMLSpace((char)(c = r.read())));
-            
+
         if (c != '"' && c != '\'') {
             return e;
         }

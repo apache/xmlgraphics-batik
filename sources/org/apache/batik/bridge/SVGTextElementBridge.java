@@ -2962,22 +2962,25 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             if (!isTextSensitive(elem))   continue;
 
             Rectangle2D glBounds = layout.getBounds2D();
-            if (glBounds != null)
+            if (glBounds != null) {
                 glBounds = at.createTransformedShape(glBounds).getBounds2D();
 
-            if (!rect.intersects(glBounds))
-                continue;
-
+                if (!rect.intersects(glBounds)) {
+                    continue;
+                }
+            }
+            
             GVTGlyphVector gv = layout.getGlyphVector();
             for (int g = 0; g < gv.getNumGlyphs(); g++) {
                 Shape gBounds = gv.getGlyphLogicalBounds(g);
-                if (gBounds != null)
+                if (gBounds != null) {
                     gBounds = at.createTransformedShape
                         (gBounds).getBounds2D();
 
-                if (gBounds.intersects(rect)) {
-                    elems.add(elem);
-                    break;
+                    if (gBounds.intersects(rect)) {
+                        elems.add(elem);
+                        break;
+                    }
                 }
             }
         }
@@ -3093,12 +3096,14 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             GVTGlyphVector gv = layout.getGlyphVector();
             for (int g = 0; g < gv.getNumGlyphs(); g++) {
                 Shape gBounds = gv.getGlyphLogicalBounds(g);
-                if (gBounds != null)
+                if (gBounds != null) {
                     gBounds = at.createTransformedShape
                         (gBounds).getBounds2D();
 
-                if (gBounds.intersects(rect))
-                    return true;
+                    if (gBounds.intersects(rect)){
+                        return true;
+                    }
+                }
             }
         }
         return false;
