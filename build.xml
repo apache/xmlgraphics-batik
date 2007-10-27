@@ -671,6 +671,8 @@ JAVA=/usr/bin/java
       <exclude name="**/jacl/*"    unless="jacl.present"/>
       <exclude name="${src}/${package-prefix}/ext/awt/image/codec/jpeg/*"
                unless="sun-codecs.present"/>
+      <exclude name="${src}/${package-prefix}/ext/awt/image/codec/tiff/*"
+               unless="sun-codecs.present"/>
     </javac>
     <property name="compile.done" value="true"/>
   </target>
@@ -904,7 +906,8 @@ JAVA=/usr/bin/java
       <fileset dir="${dest}">
         <include name="${package-prefix}/ext/awt/image/codec/util/*.class"/>
         <include name="${package-prefix}/ext/awt/image/codec/png/*.class"/>
-        <include name="${package-prefix}/ext/awt/image/codec/tiff/*.class"/>
+        <include name="${package-prefix}/ext/awt/image/codec/tiff/*.class"
+                 if="sun-codecs.present"/>
         <include name="${package-prefix}/ext/awt/image/codec/jpeg/*.class"
                  if="sun-codecs.present"/>
         <include name="${package-prefix}/ext/awt/image/codec/imageio/*.class"
