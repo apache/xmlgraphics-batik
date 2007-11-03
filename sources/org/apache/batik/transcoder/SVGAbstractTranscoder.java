@@ -318,12 +318,12 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
      * customized bridges. This method is provided for historical reasons. New applications
      * should use {@link #createBridgeContext(String)} instead.
      * @return the newly instantiated BridgeContext
-     * @see createBridgeContext(String)
+     * @see #createBridgeContext(String)
      */
     protected BridgeContext createBridgeContext() {
         return createBridgeContext("1.x");
     }
-    
+
     /**
      * Creates the BridgeContext. Subclass this method to provide customized bridges. For example,
      * Apache FOP uses this method to register special bridges for optimized text painting.
