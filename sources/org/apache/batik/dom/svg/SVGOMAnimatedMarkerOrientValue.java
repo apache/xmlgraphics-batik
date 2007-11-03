@@ -399,6 +399,9 @@ public class SVGOMAnimatedMarkerOrientValue extends AbstractSVGAnimatedValue {
          * <b>DOM</b>: Implements {@link SVGAnimatedEnumeration#getBaseVal()}.
          */
         public short getBaseVal() {
+            if (baseAngleVal == null) {
+                baseAngleVal = new BaseSVGAngle();
+            }
             baseAngleVal.revalidate();
             return baseEnumerationVal;
         }
@@ -410,11 +413,17 @@ public class SVGOMAnimatedMarkerOrientValue extends AbstractSVGAnimatedValue {
         public void setBaseVal(short baseVal) throws DOMException {
             if (baseVal == SVGMarkerElement.SVG_MARKER_ORIENT_AUTO) {
                 baseEnumerationVal = baseVal;
+                if (baseAngleVal == null) {
+                    baseAngleVal = new BaseSVGAngle();
+                }
                 baseAngleVal.unitType = SVGAngle.SVG_ANGLETYPE_UNSPECIFIED;
                 baseAngleVal.value = 0;
                 baseAngleVal.reset();
             } else if (baseVal == SVGMarkerElement.SVG_MARKER_ORIENT_ANGLE) {
                 baseEnumerationVal = baseVal;
+                if (baseAngleVal == null) {
+                    baseAngleVal = new BaseSVGAngle();
+                }
                 baseAngleVal.reset();
             }
         }
@@ -425,6 +434,9 @@ public class SVGOMAnimatedMarkerOrientValue extends AbstractSVGAnimatedValue {
         public short getAnimVal() {
             if (hasAnimVal) {
                 return animEnumerationVal;
+            }
+            if (baseAngleVal == null) {
+                baseAngleVal = new BaseSVGAngle();
             }
             baseAngleVal.revalidate();
             return baseEnumerationVal;
