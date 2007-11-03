@@ -22,9 +22,9 @@ import java.awt.Dimension;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
-import java.util.StringTokenizer;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import org.apache.batik.bridge.BaseScriptingEnvironment;
 import org.apache.batik.bridge.BridgeContext;
@@ -42,8 +42,8 @@ import org.apache.batik.bridge.svg12.SVG12BridgeContext;
 import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
 import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.dom.svg.SVGOMDocument;
-import org.apache.batik.dom.util.DocumentFactory;
 import org.apache.batik.dom.util.DOMUtilities;
+import org.apache.batik.dom.util.DocumentFactory;
 import org.apache.batik.gvt.CanvasGraphicsNode;
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
@@ -306,18 +306,36 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
      * Factory method for constructing an configuring a
      * BridgeContext so subclasses can insert new/modified
      * bridges in the context.
+     * @param doc the SVG document to create the BridgeContext for
+     * @return the newly instantiated BridgeContext
      */
     protected BridgeContext createBridgeContext(SVGOMDocument doc) {
-        if (doc.isSVG12()) {
-            return new SVG12BridgeContext(userAgent);
-        }
-        // For SVG 1.1/1.0 docs call old signature createBridgeContext
-        // method (this allows FOP to register it's bridges).
-        return createBridgeContext();
+        return createBridgeContext(doc.isSVG12() ? "1.2" : "1.x");
     }
 
+    /**
+     * Creates the default SVG 1.0/1.1 BridgeContext. Subclass this method to provide
+     * customized bridges. This method is provided for historical reasons. New applications
+     * should use {@link #createBridgeContext(String)} instead.
+     * @return the newly instantiated BridgeContext
+     * @see createBridgeContext(String)
+     */
     protected BridgeContext createBridgeContext() {
-        return new BridgeContext(userAgent);
+        return createBridgeContext("1.x");
+    }
+    
+    /**
+     * Creates the BridgeContext. Subclass this method to provide customized bridges. For example,
+     * Apache FOP uses this method to register special bridges for optimized text painting.
+     * @param svgVersion the SVG version in use (ex. "1.0", "1.x" or "1.2")
+     * @return the newly instantiated BridgeContext
+     */
+    protected BridgeContext createBridgeContext(String svgVersion) {
+        if ("1.2".equals(svgVersion)) {
+            return new SVG12BridgeContext(userAgent);
+        } else {
+            return new BridgeContext(userAgent);
+        }
     }
 
     /**

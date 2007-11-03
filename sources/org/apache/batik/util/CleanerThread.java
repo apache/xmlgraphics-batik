@@ -93,6 +93,7 @@ public class CleanerThread extends Thread {
     }
 
     protected CleanerThread() {
+        super("Batik CleanerThread");
         setDaemon(true);
         start();
     }
