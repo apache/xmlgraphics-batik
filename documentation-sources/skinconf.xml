@@ -245,6 +245,9 @@ which will be used to configure the chosen Forrest skin.
 
 
 
+    #credit2 img {
+      margin-top: 1em;
+    }
     p.quote {
       margin-left: 2em;
       padding: .5em;
