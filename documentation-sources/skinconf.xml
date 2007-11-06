@@ -96,11 +96,8 @@ which will be used to configure the chosen Forrest skin.
   <!-- The following are used to construct a copyright statement -->
   <year>2000–2007</year>
   <vendor>The Apache Software Foundation.</vendor>
-  <!-- The optional copyright-link URL will be used as a link in the
-    copyright statement
   <copyright-link>http://www.apache.org/licenses/</copyright-link>
-  -->
-
+  
   <!-- Some skins use this to form a 'breadcrumb trail' of links.
     Use location="alt" to move the trail to an alternate location
     (if the skin supports it).
@@ -751,6 +748,27 @@ which will be used to configure the chosen Forrest skin.
       <image>images/built-with-forrest-button.png</image>
       <width>88</width>
       <height>31</height>
+    </credit>
+    <credit box-location="alt2">
+      <name>ApacheCon US 2007 (Atlanta)</name>
+      <url>http://apachecon.com/2007/US/</url>
+      <image>http://www.apache.org/ads/ApacheCon/2007-usa-125x125.png</image>
+      <width>125</width>
+      <height>125</height>
+    </credit>
+    <credit box-location="alt2">
+      <name>OS Summit Asia 2007</name>
+      <url>http://www.ossummit.com/</url>
+      <image>http://www.ossummit.com/ads/ossummit_button_3.jpg</image>
+      <width>125</width>
+      <height>125</height>
+    </credit>
+    <credit box-location="alt2">
+      <name>ApacheCon Europe 2008</name>
+      <url>http://eu.apachecon.com/</url>
+      <image>http://apache.org/ads/ApacheCon/2008-europe-125x125.png</image>
+      <width>125</width>
+      <height>125</height>
     </credit>
     <!-- A credit with @role="pdf" will be used to compose a footer
      for each page in the PDF, using either "name" or "url" or both.
