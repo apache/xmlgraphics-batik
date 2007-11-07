@@ -37,6 +37,9 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
 
+import org.apache.batik.util.resources.ResourceFormatException;
+import org.apache.batik.util.resources.ResourceManager;
+
 /**
  * This class represents a menu factory which builds
  * menubars and menus from the content of a resource file. <br>

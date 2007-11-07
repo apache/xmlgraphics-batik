@@ -16,7 +16,7 @@
    limitations under the License.
 
  */
-package org.apache.batik.util.gui.resource;
+package org.apache.batik.util.resources;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +32,7 @@ import java.util.StringTokenizer;
  * @version $Id$
  */
 public class ResourceManager {
+
     /**
      * The managed resource bundle
      */
@@ -65,6 +66,7 @@ public class ResourceManager {
         throws MissingResourceException {
         return getStringList(key, " \t\n\r\f", false);
     }
+
     /**
      * Returns the tokens that compose the string mapped
      * with the given key. Delimiters are not returned.

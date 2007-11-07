@@ -44,7 +44,7 @@ import javax.swing.filechooser.FileFilter;
 import org.apache.batik.util.gui.resource.ActionMap;
 import org.apache.batik.util.gui.resource.ButtonFactory;
 import org.apache.batik.util.gui.resource.MissingListenerException;
-import org.apache.batik.util.gui.resource.ResourceManager;
+import org.apache.batik.util.resources.ResourceManager;
 
 /**
  * This class is a dialog used to enter an URI or to choose a local file.

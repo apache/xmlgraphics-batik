@@ -22,7 +22,7 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 
 import org.apache.batik.i18n.LocalizableSupport;
-import org.apache.batik.util.gui.resource.ResourceManager;
+import org.apache.batik.util.resources.ResourceManager;
 
 /**
  * This class manages the message for the Swing extensions.

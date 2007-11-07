@@ -29,6 +29,9 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JRadioButton;
 
+import org.apache.batik.util.resources.ResourceFormatException;
+import org.apache.batik.util.resources.ResourceManager;
+
 /**
  * This class represents a button factory which builds
  * buttons from the content of a resource bundle. <br>

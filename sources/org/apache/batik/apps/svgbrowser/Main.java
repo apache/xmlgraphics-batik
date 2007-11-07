@@ -18,8 +18,10 @@
  */
 package org.apache.batik.apps.svgbrowser;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
-import java.awt.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
@@ -63,7 +65,7 @@ import org.apache.batik.util.Platform;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLResourceDescriptor;
-import org.apache.batik.util.gui.resource.ResourceManager;
+import org.apache.batik.util.resources.ResourceManager;
 
 /**
  * This class contains the main method of an SVG viewer.

@@ -52,11 +52,11 @@ import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.TextNode;
 import org.apache.batik.gvt.text.Mark;
 import org.apache.batik.swing.JSVGCanvas;
+import org.apache.batik.util.resources.ResourceManager;
 import org.apache.batik.util.gui.ExtendedGridBagConstraints;
 import org.apache.batik.util.gui.resource.ActionMap;
 import org.apache.batik.util.gui.resource.ButtonFactory;
 import org.apache.batik.util.gui.resource.MissingListenerException;
-import org.apache.batik.util.gui.resource.ResourceManager;
 
 /**
  * This class represents a Dialog that lets the user searching for text inside
