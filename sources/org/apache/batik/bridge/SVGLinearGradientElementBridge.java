@@ -24,9 +24,11 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
+import org.apache.batik.dom.svg.SVGContext;
 import org.apache.batik.ext.awt.LinearGradientPaint;
 import org.apache.batik.ext.awt.MultipleGradientPaint;
 import org.apache.batik.gvt.GraphicsNode;
+
 import org.w3c.dom.Element;
 
 /**
@@ -116,10 +118,11 @@ public class SVGLinearGradientElementBridge
         // The last paragraph of section 7.11 in SVG 1.1 states that objects
         // with zero width or height bounding boxes that use gradients with
         // gradientUnits="objectBoundingBox" must not use the gradient.
-        AbstractGraphicsNodeBridge bridge = (AbstractGraphicsNodeBridge)
-            BridgeContext.getSVGContext(paintedElement);
-        if (bridge != null) {
-            Rectangle2D bbox = bridge.getBBox();
+        SVGContext bridge = BridgeContext.getSVGContext(paintedElement);
+        if (bridge instanceof AbstractGraphicsNodeBridge) {
+            // XXX Make this work for non-AbstractGraphicsNodeBridges, like
+            // the various text child bridges.
+            Rectangle2D bbox = ((AbstractGraphicsNodeBridge) bridge).getBBox();
             if (bbox != null && bbox.getWidth() == 0 || bbox.getHeight() == 0) {
                 return null;
             }
