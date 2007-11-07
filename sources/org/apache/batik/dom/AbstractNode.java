@@ -33,6 +33,7 @@ import org.apache.batik.dom.xbl.NodeXBL;
 import org.apache.batik.dom.xbl.XBLManagerData;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.XMLConstants;
+
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
@@ -46,7 +47,6 @@ import org.w3c.dom.events.DocumentEvent;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventException;
 import org.w3c.dom.events.EventListener;
-import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.events.MutationEvent;
 
 /**
@@ -1016,17 +1016,18 @@ public abstract class AbstractNode
     }
 
     /**
-     * <b>DOM</b>: Implements {@code EventTarget.willTriggerNS(String,String)}
-     * from and old draft of DOM Level 3 Events.
+     * <b>DOM</b>: Implements
+     * <code>EventTarget#willTriggerNS(String,String)</code> from an old draft
+     * of DOM Level 3 Events.
      */
     public boolean willTriggerNS(String namespaceURI, String type) {
         return true;
     }
 
     /**
-     * <b>DOM</b>: Implements {@code
-     * EventTarget.hasEventListenerNS(String,String)} from and old draft of DOM
-     * Level 3 Events.
+     * <b>DOM</b>: Implements
+     * <code>EventTarget.hasEventListenerNS(String,String)</code> from an old
+     * draft of DOM Level 3 Events.
      */
     public boolean hasEventListenerNS(String namespaceURI, String type) {
         if (eventSupport == null) {
