@@ -19,7 +19,6 @@
 package org.apache.batik.dom.svg;
 
 import org.apache.batik.dom.anim.AnimationTargetListener;
-import org.apache.batik.dom.util.DoublyIndexedTable;
 import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.css.dom.CSSOMSVGColor;
 import org.apache.batik.css.dom.CSSOMSVGPaint;
@@ -34,6 +33,7 @@ import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.css.engine.value.svg.SVGColorManager;
 import org.apache.batik.css.engine.value.svg.SVGPaintManager;
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.util.DoublyIndexedTable;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.SVGTypes;
 

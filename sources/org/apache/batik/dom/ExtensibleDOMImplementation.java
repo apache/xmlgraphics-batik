@@ -32,9 +32,9 @@ import org.apache.batik.css.engine.value.ValueManager;
 import org.apache.batik.css.parser.ExtendedParser;
 import org.apache.batik.css.parser.ExtendedParserWrapper;
 import org.apache.batik.dom.util.DOMUtilities;
-import org.apache.batik.dom.util.DoublyIndexedTable;
 import org.apache.batik.i18n.Localizable;
 import org.apache.batik.i18n.LocalizableSupport;
+import org.apache.batik.util.DoublyIndexedTable;
 import org.apache.batik.util.Service;
 import org.apache.batik.util.XMLResourceDescriptor;
 

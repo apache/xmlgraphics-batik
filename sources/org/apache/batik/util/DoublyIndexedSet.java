@@ -18,7 +18,6 @@
  */
 package org.apache.batik.util;
 
-import org.apache.batik.dom.util.DoublyIndexedTable;
 
 /**
  * A set that uses two keys.

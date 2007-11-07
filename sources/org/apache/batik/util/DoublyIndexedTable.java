@@ -16,7 +16,7 @@
    limitations under the License.
 
  */
-package org.apache.batik.dom.util;
+package org.apache.batik.util;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;

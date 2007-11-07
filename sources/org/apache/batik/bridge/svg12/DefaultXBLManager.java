@@ -43,12 +43,12 @@ import org.apache.batik.dom.svg12.XBLOMDefinitionElement;
 import org.apache.batik.dom.svg12.XBLOMImportElement;
 import org.apache.batik.dom.svg12.XBLOMShadowTreeElement;
 import org.apache.batik.dom.svg12.XBLOMTemplateElement;
-import org.apache.batik.dom.util.DoublyIndexedTable;
 import org.apache.batik.dom.xbl.NodeXBL;
 import org.apache.batik.dom.xbl.ShadowTreeEvent;
 import org.apache.batik.dom.xbl.XBLManager;
 import org.apache.batik.dom.xbl.XBLManagerData;
 import org.apache.batik.dom.xbl.XBLShadowTreeElement;
+import org.apache.batik.util.DoublyIndexedTable;
 import org.apache.batik.util.XBLConstants;
 import org.apache.batik.util.XMLConstants;
 
