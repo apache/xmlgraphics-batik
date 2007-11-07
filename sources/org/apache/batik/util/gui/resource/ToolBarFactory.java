@@ -27,6 +27,9 @@ import java.util.ResourceBundle;
 import javax.swing.JButton;
 import javax.swing.JToolBar;
 
+import org.apache.batik.util.resources.ResourceFormatException;
+import org.apache.batik.util.resources.ResourceManager;
+
 /**
  * This class represents a tool bar factory which builds
  * tool bars from the content of a resource file. <br>

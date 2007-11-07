@@ -54,8 +54,9 @@ import org.apache.batik.swing.gvt.JGVTComponent;
 import org.apache.batik.swing.gvt.Overlay;
 import org.apache.batik.swing.svg.SVGDocumentLoaderAdapter;
 import org.apache.batik.swing.svg.SVGDocumentLoaderEvent;
-import org.apache.batik.util.gui.resource.ResourceManager;
+import org.apache.batik.util.resources.ResourceManager;
 import org.apache.batik.util.SVGConstants;
+
 import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGSVGElement;
 

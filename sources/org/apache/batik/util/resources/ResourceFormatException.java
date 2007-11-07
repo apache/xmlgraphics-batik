@@ -16,7 +16,7 @@
    limitations under the License.
 
  */
-package org.apache.batik.util.gui.resource;
+package org.apache.batik.util.resources;
 
 /**
  * Signals a format error in a resource bundle
@@ -25,6 +25,7 @@ package org.apache.batik.util.gui.resource;
  * @version $Id$
  */
 public class ResourceFormatException extends RuntimeException {
+
     /**
      * The class name of the resource bundle requested
      * @serial
