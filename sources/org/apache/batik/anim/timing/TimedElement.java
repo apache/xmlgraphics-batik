@@ -713,14 +713,16 @@ public abstract class TimedElement implements SMILConstants {
             if (currentInterval == null || hasEnded) {
                 if (first || hyperlinking || restartMode != RESTART_NEVER) {
                     float beginAfter;
+                    boolean incl = true;
                     if (first || hyperlinking) {
                         beginAfter = Float.NEGATIVE_INFINITY;
                     } else {
                         // beginAfter = ((Interval) previousIntervals.getLast()).getEnd();
                         beginAfter = previousInterval.getEnd();
+                        incl = beginAfter != previousInterval.getBegin();
                     }
                     Interval interval =
-                        computeInterval(first, false, beginAfter);
+                        computeInterval(first, false, beginAfter, incl);
                     if (interval == null) {
                         currentInterval = null;
                     } else {
@@ -737,14 +739,17 @@ public abstract class TimedElement implements SMILConstants {
                 if (currentBegin > time) {
                     // Interval hasn't started yet.
                     float beginAfter;
+                    boolean incl = true;
                     // if (previousIntervals.isEmpty()) {
                     if (previousInterval == null) {
                         beginAfter = Float.NEGATIVE_INFINITY;
                     } else {
                         // beginAfter = ((Interval) previousIntervals.getLast()).getEnd();
                         beginAfter = previousInterval.getEnd();
+                        incl = beginAfter != previousInterval.getBegin();
                     }
-                    Interval interval = computeInterval(false, false, beginAfter);
+                    Interval interval =
+                        computeInterval(false, false, beginAfter, incl);
                     float dmt = notifyRemoveInterval(currentInterval);
                     if (dmt < dependentMinTime) {
                         dependentMinTime = dmt;
@@ -759,7 +764,8 @@ public abstract class TimedElement implements SMILConstants {
                     }
                 } else {
                     // Interval has already started.
-                    Interval interval = computeInterval(false, true, currentBegin);
+                    Interval interval =
+                        computeInterval(false, true, currentBegin, true);
                     float newEnd = interval.getEnd();
                     if (currentInterval.getEnd() != newEnd) {
                         float dmt =
@@ -880,13 +886,17 @@ public abstract class TimedElement implements SMILConstants {
      * Computes an interval from the begin and end instance time lists.
      * @param first indicates whether this is the first interval to compute
      * @param fixedBegin if true, specifies that the value given for
-     *                   {@code beginAfter} is taken to be the actual begin
+     *                   <code>beginAfter</code> is taken to be the actual begin
      *                   time for the interval; only the end value is computed.
      * @param beginAfter the earliest possible begin time for the computed
      *                   interval.
+     * @param incl if true (and <code>!fixedBegin</code>), specifies that the
+     *             new interval's begin time must be greater than
+     *             <code>beginAfter</code>; otherwise, the begin time must be
+     *             greater than or equal to <code>beginAfter</code>.
      */
     protected Interval computeInterval(boolean first, boolean fixedBegin,
-                                       float beginAfter) {
+                                       float beginAfter, boolean incl) {
         // Trace.enter(this, "computeInterval", new Object[] { new Boolean(first), new Boolean(fixedBegin), new Float(beginAfter)} ); try {
         // Trace.print("computing interval from begins=" + beginInstanceTimes + ", ends=" + endInstanceTimes);
         Iterator beginIterator = beginInstanceTimes.iterator();
@@ -917,7 +927,8 @@ public abstract class TimedElement implements SMILConstants {
                     }
                     beginInstanceTime = (InstanceTime) beginIterator.next();
                     tempBegin = beginInstanceTime.getTime();
-                    if (tempBegin >= beginAfter) {
+                    if (incl && tempBegin >= beginAfter
+                            || !incl && tempBegin > beginAfter) {
                         if (beginIterator.hasNext()) {
                             nextBeginInstanceTime =
                                 (InstanceTime) beginIterator.next();
@@ -953,7 +964,8 @@ public abstract class TimedElement implements SMILConstants {
                     if (first && !firstEnd && tempEnd == tempBegin
                             || !first && currentInterval != null
                                 && tempEnd == currentInterval.getEnd()
-                                && beginAfter >= tempEnd) {
+                                && (incl && beginAfter >= tempEnd
+                                        || !incl && beginAfter > tempEnd)) {
                         for (;;) {
                             if (!endIterator.hasNext()) {
                                 if (endHasEventConditions()) {
