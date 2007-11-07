@@ -18,7 +18,7 @@
  */
 package org.apache.batik.dom.svg;
 
-import org.apache.batik.dom.util.DoublyIndexedTable;
+import org.apache.batik.util.DoublyIndexedTable;
 
 /**
  * This class is used by elements to initialize and reset their attributes.

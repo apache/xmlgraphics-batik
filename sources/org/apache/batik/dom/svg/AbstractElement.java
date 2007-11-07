@@ -22,7 +22,7 @@ import org.apache.batik.css.engine.CSSNavigableNode;
 import org.apache.batik.dom.AbstractAttr;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.events.NodeEventTarget;
-import org.apache.batik.dom.util.DoublyIndexedTable;
+import org.apache.batik.util.DoublyIndexedTable;
 import org.apache.batik.util.SVGConstants;
 
 import org.w3c.dom.Attr;

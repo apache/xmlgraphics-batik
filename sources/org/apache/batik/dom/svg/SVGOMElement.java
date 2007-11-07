@@ -31,10 +31,10 @@ import org.apache.batik.css.engine.value.ShorthandManager;
 import org.apache.batik.css.engine.value.ValueManager;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.AbstractStylableDocument;
-import org.apache.batik.dom.util.DoublyIndexedTable;
 import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.parser.UnitProcessor;
 import org.apache.batik.util.CSSConstants;
+import org.apache.batik.util.DoublyIndexedTable;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.SVGTypes;
 
