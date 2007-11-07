@@ -127,7 +127,7 @@ public abstract class AbstractWMFReader {
      * Returns the viewport height, in inches.
      */
     public float getViewportHeightInch() {
-      return PIXEL_PER_INCH * (float)vpH / (float)inch;
+      return (float)vpH / (float)inch;
     }
 
     /** Return the number of pixels per unit.
