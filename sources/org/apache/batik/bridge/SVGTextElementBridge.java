@@ -455,7 +455,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
     }
 
     /**
-     * Add to the element children of the node, a
+     * Add to the element children of the node, an
      * <code>SVGContext</code> to support dynamic update. This is
      * recursive, the children of the nodes are also traversed to add
      * to the support elements their context
@@ -466,7 +466,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
      * @see org.apache.batik.dom.svg.SVGContext
      * @see org.apache.batik.bridge.BridgeUpdateHandler
      */
-    protected void addContextToChild(BridgeContext ctx,Element e) {
+    protected void addContextToChild(BridgeContext ctx, Element e) {
         if (SVG_NAMESPACE_URI.equals(e.getNamespaceURI())) {
             if (e.getLocalName().equals(SVG_TSPAN_TAG)) {
                 ((SVGOMElement)e).setSVGContext
@@ -490,6 +490,39 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
     }
 
     /**
+     * From the <code>SVGContext</code> from the element children of the node.
+     *
+     * @param ctx the <code>BridgeContext</code> for the document
+     * @param e the <code>Element</code> whose subtree's elements will have
+     *   threir <code>SVGContext</code>s removed
+     *
+     * @see org.apache.batik.dom.svg.SVGContext
+     * @see org.apache.batik.bridge.BridgeUpdateHandler
+     */
+    protected void removeContextFromChild(BridgeContext ctx, Element e) {
+        if (SVG_NAMESPACE_URI.equals(e.getNamespaceURI())) {
+            if (e.getLocalName().equals(SVG_TSPAN_TAG)) {
+                ((AbstractTextChildBridgeUpdateHandler)
+                    ((SVGOMElement) e).getSVGContext()).dispose();
+            } else if (e.getLocalName().equals(SVG_TEXT_PATH_TAG)) {
+                ((AbstractTextChildBridgeUpdateHandler)
+                    ((SVGOMElement) e).getSVGContext()).dispose();
+            } else if (e.getLocalName().equals(SVG_TREF_TAG)) {
+                ((AbstractTextChildBridgeUpdateHandler)
+                    ((SVGOMElement) e).getSVGContext()).dispose();
+            }
+        }
+
+        Node child = getFirstChild(e);
+        while (child != null) {
+            if (child.getNodeType() == Node.ELEMENT_NODE) {
+                removeContextFromChild(ctx, (Element)child);
+            }
+            child = getNextSibling(child);
+        }
+    }
+
+    /**
      * Invoked when an MutationEvent of type 'DOMNodeInserted' is fired.
      */
     public void handleDOMNodeInsertedEvent(MutationEvent evt) {
@@ -498,20 +531,19 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         //check the type of the node inserted before discard the layout
         //in the case of <title> or <desc> or <metadata>, the layout
         //is unchanged
-        switch( childNode.getNodeType() ){
-        case Node.TEXT_NODE:        // fall-through is intended
-        case Node.CDATA_SECTION_NODE:
-            laidoutText = null;
-            break;
-        case Node.ELEMENT_NODE: {
-            Element childElement = (Element)childNode;
-            if (isTextChild(childElement)) {
-                addContextToChild( ctx, childElement);
+        switch(childNode.getNodeType()) {
+            case Node.TEXT_NODE:        // fall-through is intended
+            case Node.CDATA_SECTION_NODE:
                 laidoutText = null;
+                break;
+            case Node.ELEMENT_NODE: {
+                Element childElement = (Element)childNode;
+                if (isTextChild(childElement)) {
+                    addContextToChild(ctx, childElement);
+                    laidoutText = null;
+                }
+                break;
             }
-        }
-            break;
-        default:
         }
         if (laidoutText == null) {
             computeLaidoutText(ctx, e, getTextNode());
@@ -531,15 +563,18 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             case Node.TEXT_NODE:           // fall-through is intended
             case Node.CDATA_SECTION_NODE:
                 //the parent has to be a displayed node
-                if (isParentDisplayed( childNode)) {
+                if (isParentDisplayed(childNode)) {
                     laidoutText = null;
                 }
                 break;
-            case Node.ELEMENT_NODE:
-                if (isTextChild((Element)childNode)) {
+            case Node.ELEMENT_NODE: {
+                Element childElt = (Element) childNode;
+                if (isTextChild(childElt)) {
                     laidoutText = null;
+                    removeContextFromChild(ctx, childElt);
                 }
                 break;
+            }
             default:
         }
         //if the laidoutText was set to null,
@@ -2136,7 +2171,6 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
          * Invoked when an MutationEvent of type 'DOMNodeRemoved' is fired.
          */
         public void handleDOMNodeRemovedEvent(MutationEvent evt) {
-            textBridge.handleDOMNodeRemovedEvent(evt);
         }
 
         /**

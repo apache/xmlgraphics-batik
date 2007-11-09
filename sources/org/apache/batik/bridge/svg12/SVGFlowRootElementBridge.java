@@ -375,6 +375,37 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
     }
 
     /**
+     * From the <code>SVGContext</code> from the element children of the node.
+     *
+     * @param ctx the <code>BridgeContext</code> for the document
+     * @param e the <code>Element</code> whose subtree's elements will have
+     *   threir <code>SVGContext</code>s removed
+     *
+     * @see org.apache.batik.dom.svg.SVGContext
+     * @see org.apache.batik.bridge.BridgeUpdateHandler
+     */
+    protected void removeContextFromChild(BridgeContext ctx, Element e) {
+        if (SVG_NAMESPACE_URI.equals(e.getNamespaceURI())) {
+            String ln = e.getLocalName();
+            if (ln.equals(SVG12Constants.SVG_FLOW_DIV_TAG)
+                    || ln.equals(SVG12Constants.SVG_FLOW_LINE_TAG)
+                    || ln.equals(SVG12Constants.SVG_FLOW_PARA_TAG)
+                    || ln.equals(SVG12Constants.SVG_FLOW_SPAN_TAG)) {
+                ((AbstractTextChildBridgeUpdateHandler)
+                    ((SVGOMElement) e).getSVGContext()).dispose();
+            }
+        }
+
+        Node child = getFirstChild(e);
+        while (child != null) {
+            if (child.getNodeType() == Node.ELEMENT_NODE) {
+                removeContextFromChild(ctx, (Element)child);
+            }
+            child = getNextSibling(child);
+        }
+    }
+
+    /**
      * Creates the attributed string which represents the given text
      * element children.
      *
