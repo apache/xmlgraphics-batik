@@ -79,8 +79,7 @@ public class SVGPolylineElementBridge extends SVGDecoratedShapeElementBridge {
 
         SVGOMPolylineElement pe = (SVGOMPolylineElement) e;
         try {
-            SVGOMAnimatedPoints _points =
-                (SVGOMAnimatedPoints) pe.getSVGOMAnimatedPoints();
+            SVGOMAnimatedPoints _points = pe.getSVGOMAnimatedPoints();
             _points.check();
             SVGPointList pl = _points.getAnimatedPoints();
             int size = pl.getNumberOfItems();

@@ -118,7 +118,7 @@ public class ExtendedGeneralPath implements ExtendedShape, Cloneable {
 
         // Ensure radii are valid
         if (rx == 0 || ry == 0) {
-            lineTo((float) x, (float) y);
+            lineTo(x, y);
             return;
         }
 
@@ -443,16 +443,16 @@ public class ExtendedGeneralPath implements ExtendedShape, Cloneable {
             switch(type) {
             case PathIterator.SEG_CLOSE:   closePath(); break;
             case PathIterator.SEG_MOVETO:
-                moveTo ((float)vals[0], (float)vals[1]); break;
+                moveTo (vals[0], vals[1]); break;
             case PathIterator.SEG_LINETO:
-                lineTo ((float)vals[0], (float)vals[1]); break;
+                lineTo (vals[0], vals[1]); break;
             case PathIterator.SEG_QUADTO:
-                quadTo ((float)vals[0], (float)vals[1],
-                        (float)vals[2], (float)vals[3]); break;
+                quadTo (vals[0], vals[1],
+                        vals[2], vals[3]); break;
             case PathIterator.SEG_CUBICTO:
-                curveTo((float)vals[0], (float)vals[1],
-                        (float)vals[2], (float)vals[3],
-                        (float)vals[4], (float)vals[5]); break;
+                curveTo(vals[0], vals[1],
+                        vals[2], vals[3],
+                        vals[4], vals[5]); break;
             case ExtendedPathIterator.SEG_ARCTO:
                 arcTo  (vals[0], vals[1], vals[2],
                         (vals[3]!=0), (vals[4]!=0),

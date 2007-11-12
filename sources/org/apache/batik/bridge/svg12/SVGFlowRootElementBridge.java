@@ -604,7 +604,7 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
             }
 
             GraphicsNode gn = isStatic ? (GraphicsNode) flowRegionNodes.get(n)
-                                       : ctx.getGraphicsNode((Element) n);
+                                       : ctx.getGraphicsNode(n);
             Shape s = gn.getOutline();
             if (s == null) {
                 continue;

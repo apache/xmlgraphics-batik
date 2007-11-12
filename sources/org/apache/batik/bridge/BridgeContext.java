@@ -1686,8 +1686,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
             Element elem = evt.getElement();
             SVGContext ctx = getSVGContext(elem);
             if (ctx == null) {
-                GraphicsNode pgn = getGraphicsNode
-                    ((Element)elem.getParentNode());
+                GraphicsNode pgn = getGraphicsNode(elem.getParentNode());
                 if ((pgn == null) || !(pgn instanceof CompositeGraphicsNode)) {
                     // Something changed in this element but we really don't
                     // care since its parent isn't displayed either.
