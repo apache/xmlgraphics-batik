@@ -43,7 +43,6 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.UserDataHandler;
-import org.w3c.dom.events.DocumentEvent;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventException;
 import org.w3c.dom.events.EventListener;
@@ -422,7 +421,7 @@ public abstract class AbstractNode
         Node n = node.getParentNode();
         while (n != null) {
             if (n.getNodeType() == Node.ELEMENT_NODE) {
-                base = getCascadedXMLBase((Element) n);
+                base = getCascadedXMLBase(n);
                 break;
             }
             n = n.getParentNode();
@@ -1067,8 +1066,8 @@ public abstract class AbstractNode
     public void fireDOMNodeInsertedIntoDocumentEvent() {
         AbstractDocument doc = getCurrentDocument();
         if (doc.getEventsEnabled()) {
-            DocumentEvent de = (DocumentEvent)doc;
-            DOMMutationEvent ev = (DOMMutationEvent)de.createEvent("MutationEvents");
+            DOMMutationEvent ev =
+                (DOMMutationEvent)doc.createEvent("MutationEvents");
             ev.initMutationEventNS(XMLConstants.XML_EVENTS_NAMESPACE_URI,
                                    "DOMNodeInsertedIntoDocument",
                                    true,   // canBubbleArg
@@ -1088,9 +1087,8 @@ public abstract class AbstractNode
     public void fireDOMNodeRemovedFromDocumentEvent() {
         AbstractDocument doc = getCurrentDocument();
         if (doc.getEventsEnabled()) {
-            DocumentEvent de = (DocumentEvent)doc;
             DOMMutationEvent ev
-                = (DOMMutationEvent) de.createEvent("MutationEvents");
+                = (DOMMutationEvent) doc.createEvent("MutationEvents");
             ev.initMutationEventNS(XMLConstants.XML_EVENTS_NAMESPACE_URI,
                                    "DOMNodeRemovedFromDocument",
                                    true,   // canBubbleArg
@@ -1111,9 +1109,8 @@ public abstract class AbstractNode
                                                      String newv) {
         AbstractDocument doc = getCurrentDocument();
         if (doc.getEventsEnabled()) {
-            DocumentEvent de = (DocumentEvent)doc;
             DOMMutationEvent ev
-                = (DOMMutationEvent) de.createEvent("MutationEvents");
+                = (DOMMutationEvent) doc.createEvent("MutationEvents");
             ev.initMutationEventNS(XMLConstants.XML_EVENTS_NAMESPACE_URI,
                                    "DOMCharacterDataModified",
                                    true,  // canBubbleArg

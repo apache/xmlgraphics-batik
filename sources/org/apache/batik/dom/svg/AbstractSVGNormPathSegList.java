@@ -281,7 +281,7 @@ public abstract class AbstractSVGNormPathSegList extends AbstractSVGPathSegList 
 
                         //         Ensure radii are valid
                         if (rx == 0 || ry == 0) {
-                                linetoAbs((float) x, (float) y);
+                                linetoAbs(x, y);
                                 return;
                         }
 

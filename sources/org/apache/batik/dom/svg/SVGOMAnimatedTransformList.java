@@ -131,7 +131,7 @@ public class SVGOMAnimatedTransformList
         int n = tl.getNumberOfItems();
         List v = new ArrayList(n);
         for (int i = 0; i < n; i++) {
-            v.add((AbstractSVGTransform) tl.getItem(i));
+            v.add(tl.getItem(i));
         }
         return new AnimatableTransformListValue(target, v);
     }

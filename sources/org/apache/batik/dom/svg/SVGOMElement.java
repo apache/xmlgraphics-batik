@@ -259,7 +259,7 @@ public abstract class SVGOMElement
         Node n = node.getParentNode();
         while (n != null) {
             if (n.getNodeType() == Node.ELEMENT_NODE) {
-                base = getCascadedXMLBase((Element) n);
+                base = getCascadedXMLBase(n);
                 break;
             }
             if (n instanceof CSSNavigableNode) {

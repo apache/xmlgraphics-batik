@@ -127,8 +127,8 @@ public class Polyline2D implements Shape, Cloneable, Serializable {
         this.xpoints = new float[npoints];
         this.ypoints = new float[npoints];
         for (int i = 0; i < npoints; i++) {
-            this.xpoints[i] = (float)xpoints[i];
-            this.ypoints[i] = (float)ypoints[i];
+            this.xpoints[i] = xpoints[i];
+            this.ypoints[i] = ypoints[i];
         }
         calculatePath();
     }
@@ -390,7 +390,7 @@ public class Polyline2D implements Shape, Cloneable, Serializable {
     public Polygon2D getPolygon2D() {
         Polygon2D pol = new Polygon2D();
         for (int i = 0; i < npoints - 1; i++) {
-           pol.addPoint((float)xpoints[i], (float)ypoints[i]);
+           pol.addPoint(xpoints[i], ypoints[i]);
         }
         Point2D.Double p0 =
             new Point2D.Double(xpoints[0], ypoints[0]);
@@ -398,7 +398,7 @@ public class Polyline2D implements Shape, Cloneable, Serializable {
             new Point2D.Double(xpoints[npoints-1], ypoints[npoints-1]);
 
         if (p0.distance(p1) > ASSUME_ZERO)
-            pol.addPoint((float)xpoints[npoints-1], (float)ypoints[npoints-1]);
+            pol.addPoint(xpoints[npoints-1], ypoints[npoints-1]);
 
         return pol;
     }

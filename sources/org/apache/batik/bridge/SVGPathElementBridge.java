@@ -85,8 +85,7 @@ public class SVGPathElementBridge extends SVGDecoratedShapeElementBridge
         AWTPathProducer app = new AWTPathProducer();
         try {
             // 'd' attribute - required
-            SVGOMAnimatedPathData _d =
-                (SVGOMAnimatedPathData) pe.getAnimatedPathData();
+            SVGOMAnimatedPathData _d = pe.getAnimatedPathData();
             _d.check();
             SVGPathSegList p = _d.getAnimatedPathSegList();
             app.setWindingRule(CSSUtilities.convertFillRule(e));

@@ -113,8 +113,8 @@ public class Polygon2D implements Shape, Cloneable, Serializable {
         this.xpoints = new float[pol.npoints];
         this.ypoints = new float[pol.npoints];
         for (int i = 0; i < pol.npoints; i++) {
-            xpoints[i] = (float)pol.xpoints[i];
-            ypoints[i] = (float)pol.ypoints[i];
+            xpoints[i] = pol.xpoints[i];
+            ypoints[i] = pol.ypoints[i];
         }
         calculatePath();
     }
@@ -167,8 +167,8 @@ public class Polygon2D implements Shape, Cloneable, Serializable {
         this.xpoints = new float[npoints];
         this.ypoints = new float[npoints];
         for (int i = 0; i < npoints; i++) {
-            this.xpoints[i] = (float)xpoints[i];
-            this.ypoints[i] = (float)ypoints[i];
+            this.xpoints[i] = xpoints[i];
+            this.ypoints[i] = ypoints[i];
         }
         calculatePath();
     }

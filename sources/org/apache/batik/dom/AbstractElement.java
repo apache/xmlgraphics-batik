@@ -30,7 +30,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.TypeInfo;
-import org.w3c.dom.events.DocumentEvent;
 import org.w3c.dom.events.MutationEvent;
 
 /**
@@ -634,9 +633,8 @@ public abstract class AbstractElement
         }
         AbstractDocument doc = getCurrentDocument();
         if (doc.getEventsEnabled() && !oldv.equals(newv)) {
-            DocumentEvent de = (DocumentEvent)doc;
             DOMMutationEvent ev
-                      = (DOMMutationEvent) de.createEvent("MutationEvents");
+                      = (DOMMutationEvent) doc.createEvent("MutationEvents");
             ev.initMutationEventNS(XMLConstants.XML_EVENTS_NAMESPACE_URI,
                                          "DOMAttrModified",
                                          true,    // canBubbleArg

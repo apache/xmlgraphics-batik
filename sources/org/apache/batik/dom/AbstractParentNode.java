@@ -26,7 +26,6 @@ import org.apache.batik.util.XMLConstants;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.events.DocumentEvent;
 import org.w3c.dom.events.MutationEvent;
 
 /**
@@ -387,9 +386,8 @@ public abstract class AbstractParentNode extends AbstractNode {
     protected void fireDOMSubtreeModifiedEvent() {
         AbstractDocument doc = getCurrentDocument();
         if (doc.getEventsEnabled()) {
-            DocumentEvent de = (DocumentEvent)doc;
             DOMMutationEvent ev
-                = (DOMMutationEvent) de.createEvent("MutationEvents");
+                = (DOMMutationEvent) doc.createEvent("MutationEvents");
             ev.initMutationEventNS(XMLConstants.XML_EVENTS_NAMESPACE_URI,
                                    "DOMSubtreeModified",
                                    true,   // canBubbleArg
@@ -409,9 +407,8 @@ public abstract class AbstractParentNode extends AbstractNode {
     protected void fireDOMNodeInsertedEvent(Node node) {
         AbstractDocument doc = getCurrentDocument();
         if (doc.getEventsEnabled()) {
-            DocumentEvent de = (DocumentEvent)doc;
             DOMMutationEvent ev
-                = (DOMMutationEvent) de.createEvent("MutationEvents");
+                = (DOMMutationEvent) doc.createEvent("MutationEvents");
             ev.initMutationEventNS(XMLConstants.XML_EVENTS_NAMESPACE_URI,
                                    "DOMNodeInserted",
                                    true,   // canBubbleArg
@@ -433,9 +430,8 @@ public abstract class AbstractParentNode extends AbstractNode {
     protected void fireDOMNodeRemovedEvent(Node node) {
         AbstractDocument doc = getCurrentDocument();
         if (doc.getEventsEnabled()) {
-            DocumentEvent de = (DocumentEvent)doc;
             DOMMutationEvent ev
-                = (DOMMutationEvent) de.createEvent("MutationEvents");
+                = (DOMMutationEvent) doc.createEvent("MutationEvents");
             ev.initMutationEventNS(XMLConstants.XML_EVENTS_NAMESPACE_URI,
                                    "DOMNodeRemoved",
                                    true,   // canBubbleArg
