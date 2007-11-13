@@ -349,7 +349,7 @@ public class JSVGViewerFrame
             }
 
             public org.w3c.dom.Document getDocument() {
-                return svgDocument;
+                return Canvas.this.svgDocument;
             }
 
             public void performUpdate(Runnable r) {
