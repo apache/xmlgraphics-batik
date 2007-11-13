@@ -350,8 +350,10 @@ public class DOMViewer extends JFrame implements ActionMap {
      */
     protected class CloseButtonAction extends AbstractAction {
         public void actionPerformed(ActionEvent e) {
-            panel.tree.setSelectionRow(0);
-            dispose();
+            if (panel.attributePanel.panelHiding()) {
+                panel.tree.setSelectionRow(0);
+                DOMViewer.this.dispose();
+            }
         }
     }
 
@@ -1700,25 +1702,25 @@ public class DOMViewer extends JFrame implements ActionMap {
             }
 
             // Sort the value list and then iterate through node templates
-            Collection values = templates.getNodeTemplatesMap().values();
-            List valuesAsList = Collections.list(Collections.enumeration(values));
-            Collections.sort(valuesAsList, new Comparator() {
+            ArrayList values =
+                new ArrayList(templates.getNodeTemplatesMap().values());
+            Collections.sort(values, new Comparator() {
                 public int compare(Object o1, Object o2) {
                     NodeTemplateDescriptor n1 = (NodeTemplateDescriptor) o1;
                     NodeTemplateDescriptor n2 = (NodeTemplateDescriptor) o2;
                     return n1.getName().compareTo(n2.getName());
                 }
             });
-            Iterator iter = valuesAsList.iterator();
+            Iterator iter = values.iterator();
             while (iter.hasNext()) {
-                NodeTemplateDescriptor desc = (NodeTemplateDescriptor) iter
-                        .next();
+                NodeTemplateDescriptor desc =
+                    (NodeTemplateDescriptor) iter .next();
                 String toParse = desc.getXmlValue();
                 short nodeType = desc.getType();
                 String nodeCategory = desc.getCategory();
                 JMenuItem currentItem = new JMenuItem(desc.getName());
-                currentItem.addActionListener(new NodeTemplateParser(toParse,
-                        nodeType));
+                currentItem.addActionListener
+                    (new NodeTemplateParser(toParse, nodeType));
                 JMenu currentSubmenu = (JMenu)menuMap.get(nodeCategory);
                 currentSubmenu.add(currentItem);
             }

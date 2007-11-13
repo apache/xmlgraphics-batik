@@ -697,11 +697,25 @@ public class NodePickerPanel extends JPanel implements ActionMap {
      *            the element to set
      */
     public void setPreviewElement(Element elem) {
+        if (previewElement != elem && isDirty) {
+            if (!promptForChanges()) {
+                return;
+            }
+        }
+
         this.previewElement = elem;
         enterViewMode();
 
         updateNodeXmlArea(elem);
         updateAttributesTable(elem);
+    }
+
+    /**
+     * Invoked by the {@link DOMViewer} to inform the
+     * <code>NodePickerPanel</code> that it is being hidden.
+     */
+    boolean panelHiding() {
+        return !isDirty || promptForChanges();
     }
 
     /**
@@ -886,21 +900,24 @@ public class NodePickerPanel extends JPanel implements ActionMap {
     /**
      * Shows a dialog to save changes.
      */
-    public void promptForChanges() {
-        isDirty = false;
+    public boolean promptForChanges() {
         // If the xml is well formed
         if (getApplyButton().isEnabled() && isElementModified()) {
             String confirmString = resources.getString("ConfirmDialog.message");
             int option = JOptionPane.showConfirmDialog(getSvgInputPanel(),
-                    confirmString);
+                                                       confirmString);
             if (option == JOptionPane.YES_OPTION) {
                 getApplyButton().doClick();
+            } else if (option == JOptionPane.CANCEL_OPTION) {
+                return false;
             } else {
                 getResetButton().doClick();
             }
         } else {
             getResetButton().doClick();
         }
+        isDirty = false;
+        return true;
     }
 
     /**
@@ -932,14 +949,15 @@ public class NodePickerPanel extends JPanel implements ActionMap {
             isDirty = isElementModified();
         }
 
-        public void focusLost(FocusEvent e) {
+        // XXX Java 1.3 does not have getOppositeComponent()
+        /*public void focusLost(FocusEvent e) {
             // Prompts the user to save changes that he made for an element,
-            // when the NodePicker looses focus
+            // when the NodePicker loses focus
             if (!isANodePickerComponent(e.getOppositeComponent())
                     && !e.isTemporary() && isDirty) {
                 promptForChanges();
             }
-        }
+        }*/
     }
 
     /**
