@@ -21,7 +21,7 @@ For creating a distribution the following steps must be done:
  1) Modify build.xml with the distribution version. Only modify the version 
     for main releases (e.g. version value="1.1") but not for release 
     candidates or beta versions where only the revision type and
-    number should be updated(e.g. revisionType value="beta" and
+    number should be updated (e.g. revisionType value="beta" and
     revisionNumber value="3")
 
  2) Add your public key to the KEYS file in the root directory of
