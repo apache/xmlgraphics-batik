@@ -116,11 +116,11 @@ public class SVGBufferedImageOp extends AbstractSVGFilterConverter {
 
         if(filterDesc == null){
             if(op instanceof LookupOp)
-                filterDesc = svgLookupOp.toSVG((LookupOp)op, filterRect);
+                filterDesc = svgLookupOp.toSVG(op, filterRect);
             else if(op instanceof RescaleOp)
-                filterDesc = svgRescaleOp.toSVG((RescaleOp)op, filterRect);
+                filterDesc = svgRescaleOp.toSVG(op, filterRect);
             else if(op instanceof ConvolveOp)
-                filterDesc = svgConvolveOp.toSVG((ConvolveOp)op, filterRect);
+                filterDesc = svgConvolveOp.toSVG(op, filterRect);
         }
 
         return filterDesc;

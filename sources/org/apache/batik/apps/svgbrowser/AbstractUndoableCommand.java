@@ -47,7 +47,7 @@ public abstract class AbstractUndoableCommand implements UndoableCommand {
     /**
      * Sets the command name.
      *
-     * @param newName
+     * @param name
      *            Name to set
      */
     public void setName(String name) {

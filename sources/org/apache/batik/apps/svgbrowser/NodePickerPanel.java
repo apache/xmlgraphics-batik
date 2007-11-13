@@ -1206,7 +1206,7 @@ public class NodePickerPanel extends JPanel implements ActionMap {
     /**
      * Adds the listener to the listener list.
      *
-     * @param l
+     * @param listener
      *            The listener to add
      */
     public void addListener(NodePickerListener listener) {

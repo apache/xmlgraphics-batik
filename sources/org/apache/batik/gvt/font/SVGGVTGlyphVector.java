@@ -603,7 +603,7 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
                 }
                 if (j != glyphs.length) {
                     Glyph bg = glyphs[j];
-                    float rEdge = (float)(currentX + bg.getHorizAdvX());
+                    float rEdge = currentX + bg.getHorizAdvX();
                     for (int k=i; k<j; k++) {
                         g = glyphs[k];
                         g.setTransform(null);

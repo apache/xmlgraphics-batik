@@ -24,7 +24,7 @@ import java.util.*;
  * @author Slava Pestov
  * @version $Id: TokenMarker.java,v 1.32 1999/12/13 03:40:30 sp Exp $
  *
- * @see org.gjt.sp.jedit.syntax.Token
+ * @see org.gjt.sp.jedit.textarea.Token
  */
 public abstract class TokenMarker
 {

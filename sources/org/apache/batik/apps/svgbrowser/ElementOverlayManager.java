@@ -255,10 +255,9 @@ public class ElementOverlayManager {
     }
 
     /**
-     * Sets the elementOverlayColor.
+     * Sets the color to use for the element overlay.
      *
-     * @param elementOverlayColor
-     *            the elementOverlayColor to set
+     * @param selectionOverlayColor The new element overlay color.
      */
     public void setElementOverlayColor(Color selectionOverlayColor) {
         this.elementOverlayColor = selectionOverlayColor;
@@ -274,10 +273,10 @@ public class ElementOverlayManager {
     }
 
     /**
-     * Sets the elementOverlayStrokeColor.
+     * Sets the color to use for stroking the element overlay.
      *
-     * @param elementOverlayStrokeColor
-     *            the elementOverlayStrokeColor to set
+     * @param selectionOverlayStrokeColor
+     *   The new element overlay stroking color.
      */
     public void setElementOverlayStrokeColor
             (Color selectionOverlayStrokeColor) {

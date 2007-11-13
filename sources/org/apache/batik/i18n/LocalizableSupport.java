@@ -238,7 +238,7 @@ public class LocalizableSupport implements Localizable {
      * Here for backwards compatability
      */
     public ResourceBundle getResourceBundle() {
-        return (ResourceBundle)getResourceBundle(0);
+        return getResourceBundle(0);
     }
 
     protected boolean hasNextResourceBundle(int i) {

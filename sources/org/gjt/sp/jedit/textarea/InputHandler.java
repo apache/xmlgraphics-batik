@@ -179,7 +179,7 @@ public abstract class InputHandler extends KeyAdapter
 	/**
 	 * Grabs the next key typed event and invokes the specified
 	 * action with the key as a the action command.
-	 * @param action The action
+	 * @param listener The action
 	 */
 	public void grabNextKeyStroke(ActionListener listener)
 	{

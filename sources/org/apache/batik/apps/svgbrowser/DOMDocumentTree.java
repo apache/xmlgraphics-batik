@@ -705,7 +705,7 @@ public class DOMDocumentTree extends JTree implements Autoscroll {
                 return null;
             }
             if (flavor.equals(NODE_FLAVOR)) {
-                return (Object) data;
+                return data;
             } else if (flavor.equals(DataFlavor.stringFlavor)) {
                 return data.getNodesAsXML();
             } else {
@@ -727,7 +727,7 @@ public class DOMDocumentTree extends JTree implements Autoscroll {
         /**
          * Creates the TransferData.
          *
-         * @param nodes
+         * @param nodeList
          *            the nodeList
          */
         public TransferData(ArrayList nodeList) {
@@ -861,7 +861,7 @@ public class DOMDocumentTree extends JTree implements Autoscroll {
     /**
      * Adds the listener to the listener list.
      *
-     * @param l
+     * @param listener
      *            The listener to add
      */
     public void addListener(DOMDocumentTreeListener listener) {

@@ -20,7 +20,7 @@ package org.apache.batik.swing;
 
 import java.awt.Dimension;
 import java.awt.EventQueue;
-import java.awt.Rectangle;
+// import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
@@ -53,7 +53,7 @@ import org.apache.batik.swing.gvt.AbstractResetTransformInteractor;
 import org.apache.batik.swing.gvt.AbstractRotateInteractor;
 import org.apache.batik.swing.gvt.AbstractZoomInteractor;
 import org.apache.batik.swing.gvt.Interactor;
-import org.apache.batik.swing.gvt.Overlay;
+// import org.apache.batik.swing.gvt.Overlay;
 import org.apache.batik.swing.svg.JSVGComponent;
 import org.apache.batik.swing.svg.SVGDocumentLoaderEvent;
 import org.apache.batik.swing.svg.SVGUserAgent;
@@ -64,7 +64,7 @@ import org.apache.batik.util.XMLConstants;
 // import org.apache.batik.util.gui.ElementOverlayManager;
 import org.apache.batik.util.gui.JErrorPane;
 
-import org.w3c.dom.Document;
+// import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.events.Event;
