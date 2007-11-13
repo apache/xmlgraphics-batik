@@ -202,7 +202,7 @@ public class FilterChainRable8Bit extends AbstractRable
      * parameters.
      */
     public Filter getSource() {
-        return (Filter)crop;
+        return crop;
     }
     
     /**

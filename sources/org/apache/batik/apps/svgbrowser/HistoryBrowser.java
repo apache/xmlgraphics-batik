@@ -356,7 +356,7 @@ public class HistoryBrowser {
     /**
      * Adds the listener to the listener list.
      *
-     * @param l
+     * @param listener
      *            The listener to add
      */
     public void addListener(HistoryBrowserListener listener) {
