@@ -2277,7 +2277,7 @@ public class JSVGViewerFrame
         }
 
         public void openDOMViewer() {
-            if (domViewer == null) {
+            if (domViewer == null || domViewer.isDisplayable()) {
                 domViewer = new DOMViewer
                     (svgCanvas.new JSVGViewerDOMViewerController());
                 Rectangle fr = getBounds();
