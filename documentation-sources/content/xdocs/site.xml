@@ -44,8 +44,8 @@
     <contributors label="Contributors" href="contributors.html"/>
     <bugs label="Bug database" href="http://issues.apache.org/bugzilla/buglist.cgi?query_format=specific&amp;bug_status=__open__&amp;product=Batik"/>
     <uses label="Projects using Batik" href="uses.html"/>
-    <asf-sponsorship label="ASF Sponsorship Program" href="http://www.apache.org/foundation/sponsorship.html"/>"
-    <asf-thanks label="ASF Thanks" href="http://www.apache.org/foundation/thanks.html"/>"
+    <asf-sponsorship label="ASF sponsorship program" href="http://www.apache.org/foundation/sponsorship.html"/>"
+    <asf-thanks label="ASF thanks" href="http://www.apache.org/foundation/thanks.html"/>"
   </project>
 
   <resources label="Resources">
