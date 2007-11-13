@@ -15,7 +15,10 @@ The following files are from the Tango Desktop Project
 	media-playback-pause.png
 	media-playback-start.png
 	process-stop.png
+	redo.png		(modified version of edit-redo.png)
 	system-search.png
+	text-html.png
+	undo.png		(modified version of edit-undo.png)
 	utilities-system-monitor.png
 	view-refresh.png
 	window-new.png

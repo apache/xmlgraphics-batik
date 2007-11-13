@@ -28,6 +28,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JRadioButton;
+import javax.swing.JToggleButton;
 
 import org.apache.batik.util.resources.ResourceFormatException;
 import org.apache.batik.util.resources.ResourceManager;
@@ -120,6 +121,31 @@ public class ButtonFactory extends ResourceManager {
             result = new JToolbarButton(getString(name+TEXT_SUFFIX));
         } catch (MissingResourceException e) {
             result = new JToolbarButton();
+        }
+        initializeButton(result, name);
+        return result;
+    }
+    
+    /**
+     * Creates and returns a new swing button initialised
+     * to be used as a toolbar toggle button
+     * @param name the name of the button in the resource bundle
+     * @throws MissingResourceException if key is not the name of a button.
+     *         It is not thrown if the mnemonic and the action keys are missing
+     * @throws ResourceFormatException if the mnemonic is not a single
+     *         character
+     * @throws MissingListenerException if the button action is not found in
+     *         the action map
+     */
+    public JToggleButton createJToolbarToggleButton(String name)
+        throws MissingResourceException,
+               ResourceFormatException,
+               MissingListenerException {
+        JToggleButton result;
+        try {
+            result = new JToolbarToggleButton(getString(name+TEXT_SUFFIX));
+        } catch (MissingResourceException e) {
+            result = new JToolbarToggleButton();
         }
         initializeButton(result, name);
         return result;

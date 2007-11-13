@@ -109,6 +109,7 @@ import org.apache.batik.ext.swing.JAffineTransformChooser;
 import org.apache.batik.swing.JSVGCanvas;
 import org.apache.batik.swing.gvt.GVTTreeRendererEvent;
 import org.apache.batik.swing.gvt.GVTTreeRendererListener;
+import org.apache.batik.swing.gvt.Overlay;
 import org.apache.batik.swing.svg.GVTTreeBuilderEvent;
 import org.apache.batik.swing.svg.GVTTreeBuilderListener;
 import org.apache.batik.swing.svg.LinkActivationEvent;
@@ -132,7 +133,6 @@ import org.apache.batik.util.Platform;
 import org.apache.batik.util.Service;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLConstants;
-import org.apache.batik.util.gui.DOMViewer;
 import org.apache.batik.util.gui.JErrorPane;
 import org.apache.batik.util.gui.LocationBar;
 import org.apache.batik.util.gui.MemoryMonitor;
@@ -144,6 +144,7 @@ import org.apache.batik.util.gui.resource.MissingListenerException;
 import org.apache.batik.util.gui.resource.ToolBarFactory;
 import org.apache.batik.util.resources.ResourceManager;
 import org.apache.batik.xml.XMLUtilities;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.css.ViewCSS;
@@ -309,7 +310,7 @@ public class JSVGViewerFrame
     /**
      * An extension of JSVGCanvas that exposes the Rhino interpreter.
      */
-    protected static class Canvas extends JSVGCanvas {
+    protected class Canvas extends JSVGCanvas {
 
         /**
          * Creates a new Canvas.
@@ -327,6 +328,48 @@ public class JSVGViewerFrame
                 return null;
             }
             return bridgeContext.getInterpreter("text/ecmascript");
+        }
+
+        /**
+         * JSVGViewerFrame DOMViewerController implementation.
+         */
+        protected class JSVGViewerDOMViewerController
+                // extends CanvasDOMViewerController {
+                implements DOMViewerController {
+
+            public boolean canEdit() {
+                return getUpdateManager() != null;
+            }
+
+            public ElementOverlayManager createSelectionManager() {
+                if (canEdit()) {
+                    return new ElementOverlayManager(Canvas.this);
+                }
+                return null;
+            }
+
+            public org.w3c.dom.Document getDocument() {
+                return svgDocument;
+            }
+
+            public void performUpdate(Runnable r) {
+                if (canEdit()) {
+                    getUpdateManager().getUpdateRunnableQueue().invokeLater(r);
+                } else {
+                    r.run();
+                }
+            }
+
+            public void removeSelectionOverlay(Overlay selectionOverlay) {
+                getOverlays().remove(selectionOverlay);
+            }
+
+            public void selectNode(Node node) {
+                DOMViewerAction dViewerAction =
+                    (DOMViewerAction) getAction(DOM_VIEWER_ACTION);
+                dViewerAction.openDOMViewer();
+                domViewer.selectNode(node);
+            }
         }
     }
 
@@ -2225,20 +2268,28 @@ public class JSVGViewerFrame
      * To display the DOM viewer of the document
      */
     public class DOMViewerAction extends AbstractAction {
-        public DOMViewerAction() {}
+
+        public DOMViewerAction() {
+        }
+
         public void actionPerformed(ActionEvent e) {
+            openDOMViewer();
+        }
+
+        public void openDOMViewer() {
             if (domViewer == null) {
-                domViewer = new DOMViewer();
-                if (svgDocument != null) {
-                    domViewer.setDocument(svgDocument,
-                                          (ViewCSS)svgDocument.getDocumentElement());
-                }
+                domViewer = new DOMViewer
+                    (svgCanvas.new JSVGViewerDOMViewerController());
                 Rectangle fr = getBounds();
                 Dimension td = domViewer.getSize();
-                domViewer.setLocation(fr.x + (fr.width  - td.width) / 2,
+                domViewer.setLocation(fr.x + (fr.width - td.width) / 2,
                                       fr.y + (fr.height - td.height) / 2);
             }
             domViewer.setVisible(true);
+        }
+
+        public DOMViewer getDOMViewer() {
+            return domViewer;
         }
     }
 
