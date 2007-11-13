@@ -13,7 +13,7 @@ commands:
 
 The patch is available here:
 
-  https://bugzilla.mozilla.org/attachment.cgi?id=252418
+  https://bugzilla.mozilla.org/attachment.cgi?id=288467
 
 which is attached to this bug:
 
