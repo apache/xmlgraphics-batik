@@ -178,8 +178,6 @@ public class CursorManager implements SVGConstants, ErrorConstants {
         return (Cursor)cursorMap.get(cursorName);
     }
 
-
-
     /**
      * Returns the Cursor corresponding to the input element's cursor property
      *

@@ -1309,6 +1309,7 @@ JAVA=/usr/bin/java
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
       <fileset dir="${dest}">
         <include name="${package-prefix}/apps/svgbrowser/**/*.class"/>
+        <include name="org/gjt/sp/jedit/textarea/**/*.class"/>
       </fileset>
       <fileset dir="${resources}" excludes="**/.svn/">
         <include name="${package-prefix}/apps/svgbrowser/**/resources/**"/>

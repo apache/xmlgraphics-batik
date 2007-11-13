@@ -19,9 +19,16 @@
 package org.apache.batik.dom.util;
 
 import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.batik.xml.XMLUtilities;
+
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.DOMImplementation;
@@ -30,6 +37,7 @@ import org.w3c.dom.DocumentType;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * A collection of utility functions for the DOM.
@@ -138,6 +146,25 @@ public class DOMUtilities extends XMLUtilities {
     }
 
     /**
+     * Serializes the given DOM node using {@link #writeNode(Node,Writer)}
+     * and returns the XML as a String.
+     *
+     * @param n The Node to serialize.
+     * @return A String containing the XML serialization of the Node, or an
+     *   empty String if there was a problem during serialization.
+     */
+    public static String getXML(Node n) {
+        Writer writer = new StringWriter();
+        try {
+            DOMUtilities.writeNode(n, writer);
+            writer.close();
+        } catch (IOException ex) {
+            return "";
+        }
+        return writer.toString();
+    }
+
+    /**
      * Returns the given content value transformed to replace invalid
      * characters with entities.
      */
@@ -169,6 +196,260 @@ public class DOMUtilities extends XMLUtilities {
         }
 
         return result.toString();
+    }
+
+    /**
+     * Finds and returns the index of child node in the given parent's children
+     * array
+     *
+     * @param child
+     *            The child node
+     * @param parent
+     *            The parent node
+     * @return the index
+     */
+    public static int getChildIndex(Node child, Node parent) {
+        if (child == null || child.getParentNode() != parent
+                || child.getParentNode() == null) {
+            return -1;
+        }
+        return getChildIndex(child);
+    }
+
+    /**
+     * Finds and returns the index of child node in its parent's children array
+     *
+     * @param child
+     *            The child node
+     * @return the index in children array
+     */
+    public static int getChildIndex(Node child) {
+        NodeList children = child.getParentNode().getChildNodes();
+        for (int i = 0; i < children.getLength(); i++) {
+            Node currentChild = children.item(i);
+            if (currentChild == child) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * Checks if any of from the given list of nodes is an ancestor to another
+     * node
+     *
+     * @param ancestorNodes
+     *            The potential ancestor nodes
+     * @param node
+     *            The potential descendant node
+     * @return True if at least one node is ancestor of the given node
+     */
+    public static boolean isAnyNodeAncestorOf(ArrayList ancestorNodes, Node node) {
+        int n = ancestorNodes.size();
+        for (int i = 0; i < n; i++) {
+            Node ancestor = (Node) ancestorNodes.get(i);
+            if (isAncestorOf(ancestor, node)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Checks whether a node is ancestor of another node.
+     *
+     * @param node
+     *            The potential ancestor node
+     * @param descendant
+     *            The potential descendant node
+     * @return True if node is ancestor of the descendant node
+     */
+    public static boolean isAncestorOf(Node node, Node descendant) {
+        if (node == null || descendant == null) {
+            return false;
+        }
+        for (Node currentNode = descendant.getParentNode(); currentNode != null; currentNode = currentNode
+                .getParentNode()) {
+            if (currentNode == node) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Tests whether the given node is a child of the given parent node.
+     *
+     * @param node
+     *            The potential child node
+     * @param parentNode
+     *            Parent node
+     * @return True if a node is a child of the given parent node
+     */
+    public static boolean isParentOf(Node node, Node parentNode) {
+        if (node == null || parentNode == null
+                || node.getParentNode() != parentNode) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Checks if the node can be appended on the given parent node
+     *
+     * @param node
+     *            The given node
+     * @param parentNode
+     *            The given parent node
+     * @return True if the given node can be appended on the parent node
+     */
+    public static boolean canAppend(Node node, Node parentNode) {
+        if (node == null || parentNode == null || node == parentNode
+                || isAncestorOf(node, parentNode)) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Checks whether any of the nodes from the list can be appended to a given
+     * parentNode.
+     *
+     * @param children
+     *            The given node list
+     * @param parentNode
+     *            The potential parent node
+     * @return true if at least one node from a list can be appended
+     */
+    public static boolean canAppendAny(ArrayList children, Node parentNode) {
+        if (!canHaveChildren(parentNode)) {
+            return false;
+        }
+        int n = children.size();
+        for (int i = 0; i < n; i++) {
+            Node child = (Node) children.get(i);
+            if (canAppend(child, parentNode)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns whether the given Node can have children.
+     *
+     * @param parentNode The Node to test
+     * @return <code>true</code> if the node can have children,
+     *   <code>false</code> otherwise
+     */
+    public static boolean canHaveChildren(Node parentNode) {
+        if (parentNode == null) {
+            return false;
+        }
+        switch (parentNode.getNodeType()) {
+            case Node.DOCUMENT_NODE:
+            case Node.TEXT_NODE:
+            case Node.COMMENT_NODE:
+            case Node.CDATA_SECTION_NODE:
+            case Node.PROCESSING_INSTRUCTION_NODE:
+                return false;
+            default:
+                return true;
+        }
+    }
+
+    /**
+     * Parses the given XML string into a DocumentFragment of the given document
+     * or a new document if 'doc' is null.
+     *
+     * @param text
+     *            The given XML string
+     * @param doc
+     *            The given document
+     * @param uri
+     *            The document URI
+     * @param prefixes
+     *            The prefixes map with (prefix, namespaceURI) pairs
+     * @param wrapperElementName
+     *            null: Ignore the wrapper element and prefixes map and try to
+     *            parse the text as a whole document otherwise: Wrap the given
+     *            text with the wrapper element with prefixes specified from the
+     *            prefixes map
+     * @param documentFactory
+     *            What document factory to use when parsing the text
+     * @return The document fragment or null on error.
+     */
+    public static Node parseXML(String text, Document doc, String uri,
+            Map prefixes, String wrapperElementName,
+            SAXDocumentFactory documentFactory) {
+
+        // Create the wrapper element prefix and suffix, copying the (prefix,
+        // namespaceURI) pairs from the prefixes map
+        String wrapperElementPrefix = "";
+        String wrapperElementSuffix = "";
+        if (wrapperElementName != null) {
+            wrapperElementPrefix = "<" + wrapperElementName;
+            // Copy the prefixes from the prefixes map to the wrapper element
+            if (prefixes != null) {
+                wrapperElementPrefix += " ";
+                Set keySet = prefixes.keySet();
+                Iterator iter = keySet.iterator();
+                while (iter.hasNext()) {
+                    String currentKey = (String) iter.next();
+                    String currentValue = (String) prefixes.get(currentKey);
+                    wrapperElementPrefix += currentKey + "=\"" + currentValue
+                            + "\" ";
+                }
+            }
+            wrapperElementPrefix += ">";
+            wrapperElementSuffix += "</" + wrapperElementName + ">";
+        }
+
+        // Try and parse as a whole document, if no wrapper element is specified
+        if (wrapperElementPrefix.trim().length() == 0
+                && wrapperElementSuffix.trim().length() == 0) {
+            try {
+                Document d = documentFactory.createDocument(uri,
+                        new StringReader(text));
+                if (doc == null) {
+                    return d;
+                }
+                Node result = doc.createDocumentFragment();
+                result
+                        .appendChild(doc.importNode(d.getDocumentElement(),
+                                true));
+                return result;
+            } catch (Exception ex) {
+
+            }
+        }
+
+        // Try and parse as a document fragment
+        StringBuffer sb = new StringBuffer(wrapperElementPrefix.length()
+                + text.length() + wrapperElementSuffix.length());
+        sb.append(wrapperElementPrefix);
+        sb.append(text);
+        sb.append(wrapperElementSuffix);
+        String newText = sb.toString();
+        try {
+            Document d = documentFactory.createDocument(uri, new StringReader(
+                    newText));
+            if (doc == null) {
+                return d;
+            }
+            for (Node node = d.getDocumentElement().getFirstChild(); node != null;
+                    node = node.getNextSibling()) {
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    node = doc.importNode(node, true);
+                    Node result = doc.createDocumentFragment();
+                    result.appendChild(node);
+                    return result;
+                }
+            }
+        } catch (Exception exc) {
+
+        }
+        return null;
     }
 
     /**
