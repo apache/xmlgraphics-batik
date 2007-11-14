@@ -148,17 +148,16 @@ public abstract class AbstractSVGAnimatedLength
                 baseVal = new BaseSVGLength(direction);
             }
             baseVal.revalidate();
-            if (baseVal.unitType == SVGLength.SVG_LENGTHTYPE_UNKNOWN) {
-                if (baseVal.missing) {
-                    throw new LiveAttributeException
-                        (element, localName,
-                         LiveAttributeException.ERR_ATTRIBUTE_MISSING, null);
-                } else {
-                    throw new LiveAttributeException
-                        (element, localName,
-                         LiveAttributeException.ERR_ATTRIBUTE_MALFORMED,
-                         baseVal.getValueAsString());
-                }
+            if (baseVal.missing) {
+                throw new LiveAttributeException
+                    (element, localName,
+                     LiveAttributeException.ERR_ATTRIBUTE_MISSING, null);
+            } else if (baseVal.unitType ==
+                        SVGLength.SVG_LENGTHTYPE_UNKNOWN) {
+                throw new LiveAttributeException
+                    (element, localName,
+                     LiveAttributeException.ERR_ATTRIBUTE_MALFORMED,
+                     baseVal.getValueAsString());
             }
             if (nonNegative && baseVal.value < 0) {
                 throw new LiveAttributeException
