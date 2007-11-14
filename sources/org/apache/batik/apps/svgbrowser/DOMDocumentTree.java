@@ -316,7 +316,13 @@ public class DOMDocumentTree extends JTree implements Autoscroll {
             updateVisualTipLine(tree, null);
             // Set transferable
             try {
-                Transferable transferable = dtde.getTransferable();
+                // XXX Java 1.3 and 1.4 workaround for:
+                // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4378091
+                Transferable transferable =
+                    new DropTargetDropEvent(dtde.getDropTargetContext(),
+                                            dtde.getLocation(), 0, 0)
+                        .getTransferable();
+                // Transferable transferable = dtde.getTransferable();
                 DataFlavor[] flavors = transferable.getTransferDataFlavors();
                 for (int i = 0; i < flavors.length; i++) {
                     if (transferable.isDataFlavorSupported(flavors[i])) {
