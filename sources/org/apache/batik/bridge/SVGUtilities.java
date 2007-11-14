@@ -622,7 +622,7 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
        // TODO: Uncomment this after confirming this is the desired behaviour.
        /*AbstractGraphicsNodeBridge bridge =
            (AbstractGraphicsNodeBridge) ctx.getSVGContext(filteredElement);
-       if (bridge != null) {
+       if (unitsType == OBJECT_BOUNDING_BOX && bridge != null) {
            Rectangle2D bbox = bridge.getBBox();
            if (bbox != null && bbox.getWidth() == 0 || bbox.getHeight() == 0) {
                return null;
