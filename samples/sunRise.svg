@@ -425,8 +425,8 @@
 
             <circle r="50" fill="url(#halo)" />
             <g id="spikes">
-                <line x1="-120" y1="0" x2="120" y2="0" stroke="url(#novaSpike)" stroke-width="2" />
-                <line x1="-120" y1="0" x2="120" y2="0" stroke="url(#novaSpike)" transform="rotate(90)" stroke-width="2" />
+                <rect x="-120" y="-1" width="240" height="2" fill="url(#novaSpike)"/>
+                <rect x="-120" y="-1" width="240" height="2" fill="url(#novaSpike)" transform="rotate(90)"/>
             </g>
 
             <g id="spikesGroup">
