@@ -59,6 +59,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.batik.dom.AbstractNode;
 import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.gui.JEnhEditTextArea;
@@ -619,10 +620,13 @@ public class NodePickerPanel extends JPanel implements ActionMap {
             if (prefix.equals(SVGConstants.XMLNS_PREFIX)) {
                 namespaceURI = SVGConstants.XMLNS_NAMESPACE_URI;
             } else {
+                AbstractNode n;
                 if (mode == EDIT_MODE) {
-                    namespaceURI = previewElement.lookupNamespaceURI(prefix);
+                    n = (AbstractNode) previewElement;
+                    namespaceURI = n.lookupNamespaceURI(prefix);
                 } else if (mode == ADD_NEW_ELEMENT) {
-                    namespaceURI = parentElement.lookupNamespaceURI(prefix);
+                    n = (AbstractNode) parentElement;
+                    namespaceURI = n.lookupNamespaceURI(prefix);
                 }
 
             }
