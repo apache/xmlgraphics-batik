@@ -126,7 +126,10 @@ public class SVGRadialGradientElementBridge
         // gradientUnits="objectBoundingBox" must not use the gradient.
         AbstractGraphicsNodeBridge bridge = (AbstractGraphicsNodeBridge)
             BridgeContext.getSVGContext(paintedElement);
-        if (bridge != null) {
+        if (coordSystemType == SVGUtilities.OBJECT_BOUNDING_BOX
+                && bridge instanceof AbstractGraphicsNodeBridge) {
+            // XXX Make this work for non-AbstractGraphicsNodeBridges, like
+            // the various text child bridges.
             Rectangle2D bbox = bridge.getBBox();
             if (bbox != null && bbox.getWidth() == 0 || bbox.getHeight() == 0) {
                 return null;
