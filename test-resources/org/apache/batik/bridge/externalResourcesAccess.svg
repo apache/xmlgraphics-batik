@@ -48,10 +48,10 @@ function testTarget(securityTarget) {
 
 
     <defs>
-        <image id="image" x="0" y="0" width="100%" height="100%" xlink:href="../../../../../xdocs/images/splash.png" />
+        <image id="image" x="0" y="0" width="100%" height="100%" xlink:href="../../../../../resources/org/apache/batik/apps/svgbrowser/resources/squiggle.png" />
 
         <filter id="externalFeImage">
-            <feImage xlink:href="../../../../../xdocs/images/splash.png" />
+            <feImage xlink:href="../../../../../resources/org/apache/batik/apps/svgbrowser/resources/squiggle.png" />
         </filter>
 
         <rect id="feImage" x="0" y="0" width="100%" height="100%" filter="url(#externalFeImage)" />
