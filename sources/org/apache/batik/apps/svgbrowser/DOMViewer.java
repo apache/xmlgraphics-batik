@@ -842,7 +842,7 @@ public class DOMViewer extends JFrame implements ActionMap {
             tb.setFloatable(false);
 
             // Undo
-            JButton undoButton = getButtonFactory().createJButton("UndoButton");
+            JButton undoButton = getButtonFactory().createJToolbarButton("UndoButton");
             undoButton.setDisabledIcon
                 (new ImageIcon
                     (getClass().getResource(resources.getString("UndoButton.disabledIcon"))));
@@ -856,7 +856,7 @@ public class DOMViewer extends JFrame implements ActionMap {
             undoDD.getPopupMenu().setModel(undoModel);
 
             // Redo
-            JButton redoButton = getButtonFactory().createJButton("RedoButton");
+            JButton redoButton = getButtonFactory().createJToolbarButton("RedoButton");
             redoButton.setDisabledIcon
                 (new ImageIcon
                     (getClass().getResource(resources.getString("RedoButton.disabledIcon"))));
