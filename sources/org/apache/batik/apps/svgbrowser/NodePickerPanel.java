@@ -66,6 +66,7 @@ import org.apache.batik.util.gui.JEnhEditTextArea;
 import org.apache.batik.util.gui.resource.ActionMap;
 import org.apache.batik.util.gui.resource.ButtonFactory;
 import org.apache.batik.util.gui.resource.MissingListenerException;
+import org.apache.batik.util.XMLConstants;
 import org.apache.batik.util.resources.ResourceManager;
 
 import org.gjt.sp.jedit.textarea.TextAreaDefaults;
@@ -579,8 +580,13 @@ public class NodePickerPanel extends JPanel implements ActionMap {
             String newAttrName = (String) tableModel.getAttrNameAt(i);
             String newAttrValue = (String) tableModel.getAttrValueAt(i);
             if (newAttrName != null && newAttrName.length() > 0) {
-                String prefix = DOMUtilities.getPrefix(newAttrName);
-                String namespaceURI = getNamespaceURI(prefix);
+                String namespaceURI;
+                if (newAttrName.equals(XMLConstants.XMLNS_PREFIX)) {
+                    namespaceURI = XMLConstants.XMLNS_NAMESPACE_URI;
+                } else {
+                    String prefix = DOMUtilities.getPrefix(newAttrName);
+                    namespaceURI = getNamespaceURI(prefix);
+                }
                 if (newAttrValue != null) {
                     element.setAttributeNS
                         (namespaceURI, newAttrName, newAttrValue);
