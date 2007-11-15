@@ -108,6 +108,7 @@ public class DropDownComponent extends JPanel {
         enabledDownArrow = new SmallDownArrow();
         disabledDownArrow = new SmallDisabledDownArrow();
         dropDownButton = new JButton(disabledDownArrow);
+        dropDownButton.setBorderPainted(false);
         dropDownButton.setDisabledIcon(disabledDownArrow);
         dropDownButton.addMouseListener(new DropDownListener());
         dropDownButton.setMaximumSize(new Dimension(18, 24));
@@ -187,6 +188,12 @@ public class DropDownComponent extends JPanel {
                 popupMenu.showMenu
                     ((Component) e.getSource(), DropDownComponent.this);
             }
+        }
+        public void mouseEntered(MouseEvent ev) {
+            dropDownButton.setBorderPainted(true);
+        }
+        public void mouseExited(MouseEvent ev) {
+            dropDownButton.setBorderPainted(false);
         }
     }
 
