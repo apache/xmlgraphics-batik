@@ -183,7 +183,7 @@ public class DOMViewer extends JFrame implements ActionMap {
     /**
      * Whether painting the overlay on the canvas is enabled.
      */
-    protected boolean isElementOverlayEnabled = true;
+    protected boolean isElementOverlayEnabled;
 
     /**
      * The history browsing manager. Manages undo / redo.
@@ -435,8 +435,8 @@ public class DOMViewer extends JFrame implements ActionMap {
         }
 
         public boolean canEdit(Element el) {
-            if (panel == null || panel.document == null
-                    || panel.document.getDocumentElement() != el) {
+            if (panel == null || panel.document == null || true
+                    /*|| panel.document.getDocumentElement() != el*/) {
                 return true;
             }
             return false;
@@ -839,6 +839,7 @@ public class DOMViewer extends JFrame implements ActionMap {
 
             JToolBar tb =
                 new JToolBar(resources.getString("DOMViewerToolbar.name"));
+            tb.setFloatable(false);
 
             // Undo
             JButton undoButton = getButtonFactory().createJButton("UndoButton");
@@ -881,7 +882,6 @@ public class DOMViewer extends JFrame implements ActionMap {
             overlayButton.setEnabled(true);
             overlayButton.setPreferredSize(new Dimension(32, 25));
             tb.add(overlayButton);
-            overlayButton.doClick();
 
             // Add toolbar
             add(tb, BorderLayout.NORTH);
@@ -1220,10 +1220,11 @@ public class DOMViewer extends JFrame implements ActionMap {
          */
         protected void registerNodeInserted(MutationEvent mevt) {
             Node targetNode = (Node) mevt.getTarget();
-            historyBrowserInterface.addToCurrentCompoundCommand(
-                historyBrowserInterface.createNodeInsertedCommand(
-                        targetNode.getParentNode(),
-                            targetNode.getNextSibling(),targetNode));
+            historyBrowserInterface.addToCurrentCompoundCommand
+                (historyBrowserInterface.createNodeInsertedCommand
+                    (targetNode.getParentNode(),
+                     targetNode.getNextSibling(),
+                     targetNode));
         }
 
         /**
@@ -1250,7 +1251,6 @@ public class DOMViewer extends JFrame implements ActionMap {
          * @param mevt
          *            The Mutation Event
          */
-
         protected void registerAttributeAdded(MutationEvent mevt) {
             Element targetElement = (Element) mevt.getTarget();
             historyBrowserInterface.addToCurrentCompoundCommand
