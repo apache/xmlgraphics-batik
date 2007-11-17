@@ -67,9 +67,9 @@ public class ClassFileUtilities {
      * Program that computes the dependencies between the Batik jars.
      * <p>
      *   Run this from the main Batik distribution directory, after building
-     *   the jars.  For every class file in the classes/ directory, it will
-     *   determine which jar it lives in and then determine which jar files
-     *   directly depend on which others.  The output is lines of the form:
+     *   the jars.  For every jar file in the batik-xxx/ build directory,
+     *   it will determine which other jar files it directly depends on.
+     *   The output is lines of the form:
      * </p>
      * <pre>  <i>number</i>,<i>from</i>,<i>to</i></pre>
      * <p>
@@ -78,11 +78,16 @@ public class ClassFileUtilities {
      * </p>
      */
     public static void main(String[] args) {
-        File classesDir = new File("classes");
-        if (!classesDir.isDirectory()) {
-            System.out.println("Directory 'classes' not found in current directory!");
-            return;
+        boolean showFiles = false;
+        if (args.length == 1 && args[0].equals("-f")) {
+            showFiles = true;
+        } else if (args.length != 0) {
+            System.err.println("usage: org.apache.batik.util.ClassFileUtilities [-f]");
+            System.err.println();
+            System.err.println("  -f    list files that cause each jar file dependency");
+            System.exit(1);
         }
+
         File cwd = new File(".");
         File buildDir = null;
         String[] cwdFiles = cwd.list();
@@ -101,54 +106,28 @@ public class ClassFileUtilities {
             return;
         }
 
-        HashSet classes = new HashSet();
-        collectClassFiles(classesDir, classes);
-
-        Set classpath = new HashSet();
-        classpath.add(classesDir.getPath());
-
-        Map cs = new HashMap();
-        Map js = new HashMap();
-        collectJars(buildDir, js);
-
         try {
-            Iterator i = classes.iterator();
+            Map cs = new HashMap();
+            Map js = new HashMap();
+            collectJars(buildDir, js, cs);
+
+            Set classpath = new HashSet();
+            Iterator i = js.values().iterator();
             while (i.hasNext()) {
-                String from = (String) i.next();
-                ClassFile cf = (ClassFile) cs.get(from);
-                if (cf == null) {
-                    cf = new ClassFile();
-                    cf.name = from;
-                    cs.put(from, cf);
-                }
-                Set result = getClassDependencies(from, classpath, false);
-                Iterator j = result.iterator();
-                while (j.hasNext()) {
-                    String to = (String) j.next();
-                    if (!from.equals(to)) {
-                        ClassFile toFile = (ClassFile) cs.get(to);
-                        if (toFile == null) {
-                            toFile = new ClassFile();
-                            toFile.name = to;
-                            cs.put(to, toFile);
-                        }
-                        cf.deps.add(toFile);
-                    }
-                }
+                classpath.add(((Jar) i.next()).jarFile);
             }
 
-            i = js.values().iterator();
+            i = cs.values().iterator();
             while (i.hasNext()) {
-                Jar j = (Jar) i.next();
-                JarFile jf = new JarFile(j.file);
-                Enumeration entries = jf.entries();
-                while (entries.hasMoreElements()) {
-                    ZipEntry ze = (ZipEntry) entries.nextElement();
-                    String path = new File(classesDir, ze.getName()).getPath();
-                    ClassFile cf = (ClassFile) cs.get(path);
-                    if (cf != null) {
-                        cf.jar = j;
-                        j.files.add(cf);
+                ClassFile fromFile = (ClassFile) i.next();
+                // System.out.println(fromFile.name);
+                Set result = getClassDependencies(fromFile.getInputStream(),
+                                                  classpath, false);
+                Iterator j = result.iterator();
+                while (j.hasNext()) {
+                    ClassFile toFile = (ClassFile) cs.get(j.next());
+                    if (fromFile != toFile && toFile != null) {
+                        fromFile.deps.add(toFile);
                     }
                 }
             }
@@ -161,7 +140,9 @@ public class ClassFileUtilities {
                     ClassFile toFile = (ClassFile) j.next();
                     Jar fromJar = fromFile.jar;
                     Jar toJar = toFile.jar;
-                    if (toJar == fromJar) {
+                    if (fromFile.name.equals(toFile.name)
+                            || toJar == fromJar
+                            || fromJar.files.contains(toFile.name)) {
                         continue;
                     }
                     Integer n = (Integer) fromJar.deps.get(toJar);
@@ -194,18 +175,22 @@ public class ClassFileUtilities {
                 Triple t = (Triple) i.next();
                 System.out.println
                     (t.count + "," + t.from.name + "," + t.to.name);
-//                 Iterator j = t.from.files.iterator();
-//                 while (j.hasNext()) {
-//                     ClassFile fromFile = (ClassFile) j.next();
-//                     Iterator k = fromFile.deps.iterator();
-//                     while (k.hasNext()) {
-//                         ClassFile toFile = (ClassFile) k.next();
-//                         if (toFile.jar == t.to) {
-//                             System.out.println
-//                                 ("\t" + fromFile.name + " --> " + toFile.name);
-//                         }
-//                     }
-//                 }
+                if (showFiles) {
+                    Iterator j = t.from.files.iterator();
+                    while (j.hasNext()) {
+                        ClassFile fromFile = (ClassFile) j.next();
+                        Iterator k = fromFile.deps.iterator();
+                        while (k.hasNext()) {
+                            ClassFile toFile = (ClassFile) k.next();
+                            if (toFile.jar == t.to
+                                    && !t.from.files.contains(toFile.name)) {
+                                System.out.println
+                                    ("\t" + fromFile.name + " --> "
+                                          + toFile.name);
+                            }
+                        }
+                    }
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -216,11 +201,15 @@ public class ClassFileUtilities {
         public String name;
         public List deps = new ArrayList(10);
         public Jar jar;
+        public InputStream getInputStream() throws IOException {
+            return jar.jarFile.getInputStream(jar.jarFile.getEntry(name));
+        }
     }
 
     protected static class Jar {
         public String name;
         public File file;
+        public JarFile jarFile;
         public Map deps = new HashMap();
         public Set files = new HashSet();
     }
@@ -234,19 +223,7 @@ public class ClassFileUtilities {
         }
     }
 
-    private static void collectClassFiles(File dir, Collection classFiles) {
-        File[] files = dir.listFiles();
-        for (int i = 0; i < files.length; i++) {
-            String n = files[i].getName();
-            if (n.endsWith(".class") && files[i].isFile()) {
-                classFiles.add(files[i].getPath());
-            } else if (files[i].isDirectory()) {
-                collectClassFiles(files[i], classFiles);
-            }
-        }
-    }
-
-    private static void collectJars(File dir, Map jars) {
+    private static void collectJars(File dir, Map jars, Map classFiles) throws IOException {
         File[] files = dir.listFiles();
         for (int i = 0; i < files.length; i++) {
             String n = files[i].getName();
@@ -254,9 +231,23 @@ public class ClassFileUtilities {
                 Jar j = new Jar();
                 j.name = files[i].getPath();
                 j.file = files[i];
+                j.jarFile = new JarFile(files[i]);
                 jars.put(j.name, j);
+
+                Enumeration entries = j.jarFile.entries();
+                while (entries.hasMoreElements()) {
+                    ZipEntry ze = (ZipEntry) entries.nextElement();
+                    String name = ze.getName();
+                    if (name.endsWith(".class")) {
+                        ClassFile cf = new ClassFile();
+                        cf.name = name;
+                        cf.jar = j;
+                        classFiles.put(j.name + '!' + cf.name, cf);
+                        j.files.add(cf);
+                    }
+                }
             } else if (files[i].isDirectory()) {
-                collectJars(files[i], jars);
+                collectJars(files[i], jars, classFiles);
             }
         }
     }
@@ -273,7 +264,13 @@ public class ClassFileUtilities {
                                            boolean rec)
             throws IOException {
 
-        InputStream is = new FileInputStream(path);
+        return getClassDependencies(new FileInputStream(path), classpath, rec);
+    }
+
+    public static Set getClassDependencies(InputStream is,
+                                           Set classpath,
+                                           boolean rec)
+            throws IOException {
 
         Set result = new HashSet();
         Set done = new HashSet();
@@ -298,21 +295,31 @@ public class ClassFileUtilities {
 
                 Iterator cpit = classpath.iterator();
                 while (cpit.hasNext()) {
-                    String root = (String)cpit.next();
-                    StringBuffer sb = new StringBuffer(root);
-                    sb.append('/').append(s).append(".class");
-                    String path = sb.toString();
+                    InputStream depis = null;
+                    String path = null;
+                    Object cpEntry = cpit.next();
+                    if (cpEntry instanceof JarFile) {
+                        JarFile jarFile = (JarFile) cpEntry;
+                        String classFileName = s + ".class";
+                        ZipEntry ze = jarFile.getEntry(classFileName);
+                        if (ze != null) {
+                            path = jarFile.getName() + '!' + classFileName;
+                            depis = jarFile.getInputStream(ze);
+                        }
+                    } else {
+                        path = ((String) cpEntry) + '/' + s + ".class";
+                        File f = new File(path);
+                        if (f.isFile()) {
+                            depis = new FileInputStream(f);
+                        }
+                    }
 
-                    File f = new File(path);
-                    if (f.isFile()) {
+                    if (depis != null) {
                         result.add(path);
 
                         if (rec) {
-                            computeClassDependencies(new FileInputStream(f),
-                                                     classpath,
-                                                     done,
-                                                     result,
-                                                     rec);
+                            computeClassDependencies
+                                (depis, classpath, done, result, rec);
                         }
                     }
                 }
