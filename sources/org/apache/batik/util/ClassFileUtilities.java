@@ -192,7 +192,20 @@ public class ClassFileUtilities {
             i = triples.iterator();
             while (i.hasNext()) {
                 Triple t = (Triple) i.next();
-                System.out.println(t.count + "," + t.from.name + "," + t.to.name);
+                System.out.println
+                    (t.count + "," + t.from.name + "," + t.to.name);
+//                 Iterator j = t.from.files.iterator();
+//                 while (j.hasNext()) {
+//                     ClassFile fromFile = (ClassFile) j.next();
+//                     Iterator k = fromFile.deps.iterator();
+//                     while (k.hasNext()) {
+//                         ClassFile toFile = (ClassFile) k.next();
+//                         if (toFile.jar == t.to) {
+//                             System.out.println
+//                                 ("\t" + fromFile.name + " --> " + toFile.name);
+//                         }
+//                     }
+//                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -252,16 +265,20 @@ public class ClassFileUtilities {
      * Returns the dependencies of the given class.
      * @param path The root class path.
      * @param classpath The set of directories (Strings) to scan.
+     * @param rec Whether to follow dependencies recursively.
      * @return a list of paths representing the used classes.
      */
-    public static Set getClassDependencies(String path, Set classpath)
-        throws IOException {
+    public static Set getClassDependencies(String path,
+                                           Set classpath,
+                                           boolean rec)
+            throws IOException {
+
         InputStream is = new FileInputStream(path);
 
         Set result = new HashSet();
         Set done = new HashSet();
 
-        computeClassDependencies(is, classpath, done, result);
+        computeClassDependencies(is, classpath, done, result, rec);
 
         return result;
     }
@@ -269,7 +286,10 @@ public class ClassFileUtilities {
     private static void computeClassDependencies(InputStream is,
                                                  Set classpath,
                                                  Set done,
-                                                 Set result) throws IOException {
+                                                 Set result,
+                                                 boolean rec)
+            throws IOException {
+
         Iterator it = getClassDependencies(is).iterator();
         while (it.hasNext()) {
             String s = (String)it.next();
@@ -287,10 +307,13 @@ public class ClassFileUtilities {
                     if (f.isFile()) {
                         result.add(path);
 
-                        computeClassDependencies(new FileInputStream(f),
-                                                 classpath,
-                                                 done,
-                                                 result);
+                        if (rec) {
+                            computeClassDependencies(new FileInputStream(f),
+                                                     classpath,
+                                                     done,
+                                                     result,
+                                                     rec);
+                        }
                     }
                 }
             }
