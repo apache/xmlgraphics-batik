@@ -23,8 +23,17 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -52,6 +61,191 @@ public class ClassFileUtilities {
      * This class does not need to be instantiated.
      */
     protected ClassFileUtilities() {
+    }
+
+    /**
+     * Program that computes the dependencies between the Batik jars.
+     * <p>
+     *   Run this from the main Batik distribution directory, after building
+     *   the jars.  For every class file in the classes/ directory, it will
+     *   determine which jar it lives in and then determine which jar files
+     *   directly depend on which others.  The output is lines of the form:
+     * </p>
+     * <pre>  <i>number</i>,<i>from</i>,<i>to</i></pre>
+     * <p>
+     *   where mean that the <i>from</i> jar has <i>number</i> class files
+     *   that depend on class files in the <i>to</i> jar.
+     * </p>
+     */
+    public static void main(String[] args) {
+        File classesDir = new File("classes");
+        if (!classesDir.isDirectory()) {
+            System.out.println("Directory 'classes' not found in current directory!");
+            return;
+        }
+        File cwd = new File(".");
+        File buildDir = null;
+        String[] cwdFiles = cwd.list();
+        for (int i = 0; i < cwdFiles.length; i++) {
+            if (cwdFiles[i].startsWith("batik-")) {
+                buildDir = new File(cwdFiles[i]);
+                if (!buildDir.isDirectory()) {
+                    buildDir = null;
+                } else {
+                    break;
+                }
+            }
+        }
+        if (buildDir == null || !buildDir.isDirectory()) {
+            System.out.println("Directory 'batik-xxx' not found in current directory!");
+            return;
+        }
+
+        HashSet classes = new HashSet();
+        collectClassFiles(classesDir, classes);
+
+        Set classpath = new HashSet();
+        classpath.add(classesDir.getPath());
+
+        Map cs = new HashMap();
+        Map js = new HashMap();
+        collectJars(buildDir, js);
+
+        try {
+            Iterator i = classes.iterator();
+            while (i.hasNext()) {
+                String from = (String) i.next();
+                ClassFile cf = (ClassFile) cs.get(from);
+                if (cf == null) {
+                    cf = new ClassFile();
+                    cf.name = from;
+                    cs.put(from, cf);
+                }
+                Set result = getClassDependencies(from, classpath, false);
+                Iterator j = result.iterator();
+                while (j.hasNext()) {
+                    String to = (String) j.next();
+                    if (!from.equals(to)) {
+                        ClassFile toFile = (ClassFile) cs.get(to);
+                        if (toFile == null) {
+                            toFile = new ClassFile();
+                            toFile.name = to;
+                            cs.put(to, toFile);
+                        }
+                        cf.deps.add(toFile);
+                    }
+                }
+            }
+
+            i = js.values().iterator();
+            while (i.hasNext()) {
+                Jar j = (Jar) i.next();
+                JarFile jf = new JarFile(j.file);
+                Enumeration entries = jf.entries();
+                while (entries.hasMoreElements()) {
+                    ZipEntry ze = (ZipEntry) entries.nextElement();
+                    String path = new File(classesDir, ze.getName()).getPath();
+                    ClassFile cf = (ClassFile) cs.get(path);
+                    if (cf != null) {
+                        cf.jar = j;
+                        j.files.add(cf);
+                    }
+                }
+            }
+
+            i = cs.values().iterator();
+            while (i.hasNext()) {
+                ClassFile fromFile = (ClassFile) i.next();
+                Iterator j = fromFile.deps.iterator();
+                while (j.hasNext()) {
+                    ClassFile toFile = (ClassFile) j.next();
+                    Jar fromJar = fromFile.jar;
+                    Jar toJar = toFile.jar;
+                    if (toJar == fromJar) {
+                        continue;
+                    }
+                    Integer n = (Integer) fromJar.deps.get(toJar);
+                    if (n == null) {
+                        fromJar.deps.put(toJar, new Integer(1));
+                    } else {
+                        fromJar.deps.put(toJar, new Integer(n.intValue() + 1));
+                    }
+                }
+            }
+
+            List triples = new ArrayList(10);
+            i = js.values().iterator();
+            while (i.hasNext()) {
+                Jar fromJar = (Jar) i.next();
+                Iterator j = fromJar.deps.keySet().iterator();
+                while (j.hasNext()) {
+                    Jar toJar = (Jar) j.next();
+                    Triple t = new Triple();
+                    t.from = fromJar;
+                    t.to = toJar;
+                    t.count = ((Integer) fromJar.deps.get(toJar)).intValue();
+                    triples.add(t);
+                }
+            }
+            Collections.sort(triples);
+
+            i = triples.iterator();
+            while (i.hasNext()) {
+                Triple t = (Triple) i.next();
+                System.out.println(t.count + "," + t.from.name + "," + t.to.name);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected static class ClassFile {
+        public String name;
+        public List deps = new ArrayList(10);
+        public Jar jar;
+    }
+
+    protected static class Jar {
+        public String name;
+        public File file;
+        public Map deps = new HashMap();
+        public Set files = new HashSet();
+    }
+
+    protected static class Triple implements Comparable {
+        public Jar from;
+        public Jar to;
+        public int count;
+        public int compareTo(Object o) {
+            return ((Triple) o).count - count;
+        }
+    }
+
+    private static void collectClassFiles(File dir, Collection classFiles) {
+        File[] files = dir.listFiles();
+        for (int i = 0; i < files.length; i++) {
+            String n = files[i].getName();
+            if (n.endsWith(".class") && files[i].isFile()) {
+                classFiles.add(files[i].getPath());
+            } else if (files[i].isDirectory()) {
+                collectClassFiles(files[i], classFiles);
+            }
+        }
+    }
+
+    private static void collectJars(File dir, Map jars) {
+        File[] files = dir.listFiles();
+        for (int i = 0; i < files.length; i++) {
+            String n = files[i].getName();
+            if (n.endsWith(".jar") && files[i].isFile()) {
+                Jar j = new Jar();
+                j.name = files[i].getPath();
+                j.file = files[i];
+                jars.put(j.name, j);
+            } else if (files[i].isDirectory()) {
+                collectJars(files[i], jars);
+            }
+        }
     }
 
     /**
