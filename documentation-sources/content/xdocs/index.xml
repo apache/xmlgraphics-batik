@@ -84,9 +84,9 @@
         (<abbr title="Joint Photographic Expert Group">JPEG</abbr>,
         <abbr title="Portable Network Graphics">PNG</abbr> or
         <abbr title="Tagged Image File Format">TIFF</abbr>) or
-        other vector formats (<abbr title="Windows Metafile">WMF</abbr> or
+        other vector formats (<abbr title="Encapsulated PostScript">EPS</abbr> or
         <abbr title="Portable Document Format">PDF</abbr>, the latter two due
-        to the transcoder provided by
+        to the transcoders provided by
         <a href="http://xmlgraphics.apache.org/fop/">Apache FOP</a>).
       </p>
       <p>
