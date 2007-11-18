@@ -884,10 +884,12 @@ JAVA=/usr/bin/java
       <fileset dir="${dest}">
         <include name="${package-prefix}/ext/awt/**/*.class"/>
         <include name="${package-prefix}/ext/swing/**/*.class"/>
+        <exclude name="${package-prefix}/ext/awt/image/codec/**/*.class"/>
       </fileset>
       <fileset dir="${resources}" excludes="**/.svn/">
         <include name="${package-prefix}/ext/awt/image/**"/>
         <include name="${package-prefix}/ext/swing/**"/>
+        <exclude name="${package-prefix}/ext/awt/image/codec/**/properties"/>
       </fileset>
     </jar>
   </target>
