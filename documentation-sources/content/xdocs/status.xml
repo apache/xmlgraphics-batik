@@ -970,6 +970,7 @@
           <attr name='descent' ns=''><yes/></attr>
           <attr name='font-family' ns=''><yes/></attr>
           <attr name='font-size' ns=''><no/></attr>
+          <attr name='font-stretch' ns=''><no/></attr>
           <attr name='font-style' ns=''><yes/></attr>
           <attr name='font-variant' ns=''><no/></attr>
           <attr name='font-weight' ns=''><yes/></attr>
