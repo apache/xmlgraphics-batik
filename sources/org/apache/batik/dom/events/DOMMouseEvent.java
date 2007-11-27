@@ -44,7 +44,7 @@ public class DOMMouseEvent extends DOMUIEvent implements MouseEvent {
     /**
      * The modifier keys in effect at the time of the event.
      */
-    protected HashSet modifierKeys;
+    protected HashSet modifierKeys = new HashSet();
 
     /**
      * DOM: <code>screenX</code> indicates the horizontal coordinate
@@ -265,7 +265,7 @@ public class DOMMouseEvent extends DOMUIEvent implements MouseEvent {
         clientY = clientYArg;
         button = buttonArg;
         relatedTarget = relatedTargetArg;
-        modifierKeys = new HashSet();
+        modifierKeys.clear();
         String[] modifiers = split(modifiersList);
         for (int i = 0; i < modifiers.length; i++) {
             modifierKeys.add(modifiers[i]);
