@@ -234,7 +234,7 @@ public class DOMKeyboardEvent extends DOMUIEvent implements KeyboardEvent {
     /**
      * The modifier keys in effect at the time of the event.
      */
-    protected HashSet modifierKeys;
+    protected HashSet modifierKeys = new HashSet();
 
     /**
      * The identifier string for the key.
@@ -322,7 +322,7 @@ public class DOMKeyboardEvent extends DOMUIEvent implements KeyboardEvent {
         initUIEvent(typeArg, canBubbleArg, cancelableArg, viewArg, 0);
         keyIdentifier = keyIdentifierArg;
         keyLocation = keyLocationArg;
-        modifierKeys = new HashSet();
+        modifierKeys.clear();
         String[] modifiers = split(modifiersList);
         for (int i = 0; i < modifiers.length; i++) {
             modifierKeys.add(modifiers[i]);
@@ -361,7 +361,7 @@ public class DOMKeyboardEvent extends DOMUIEvent implements KeyboardEvent {
                                0);
         keyIdentifier = keyIdentifierArg;
         keyLocation = keyLocationArg;
-        modifierKeys = new HashSet();
+        modifierKeys.clear();
         String[] modifiers = split(modifiersList);
         for (int i = 0; i < modifiers.length; i++) {
             modifierKeys.add(modifiers[i]);
