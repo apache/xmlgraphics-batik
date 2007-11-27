@@ -278,11 +278,19 @@ public interface SVGConstants extends CSSConstants, XMLConstants {
     // SVG features
     /////////////////////////////////////////////////////////////////////////
 
+    // SVG 1.0 feature strings
     String SVG_ORG_W3C_SVG_FEATURE = "org.w3c.svg";
-    String SVG_ORG_W3C_SVG_LANG_FEATURE = "org.w3c.svg.lang";
     String SVG_ORG_W3C_SVG_STATIC_FEATURE = "org.w3c.svg.static";
-    // TODO More SVG 1.0 feature strings
+    String SVG_ORG_W3C_SVG_ANIMATION_FEATURE = "org.w3c.svg.animation";
+    String SVG_ORG_W3C_SVG_DYNAMIC_FEATURE = "org.w3c.svg.dynamic";
+    String SVG_ORG_W3C_SVG_ALL_FEATURE = "org.w3c.svg.all";
+    String SVG_ORG_W3C_DOM_SVG_FEATURE = "org.w3c.dom.svg";
+    String SVG_ORG_W3C_DOM_SVG_STATIC_FEATURE = "org.w3c.dom.svg.static";
+    String SVG_ORG_W3C_DOM_SVG_ANIMATION_FEATURE = "org.w3c.dom.svg.animation";
+    String SVG_ORG_W3C_DOM_SVG_DYNAMIC_FEATURE = "org.w3c.dom.svg.dynamic";
+    String SVG_ORG_W3C_DOM_SVG_ALL_FEATURE = "org.w3c.dom.svg.all";
 
+    // SVG 1.1 feature strings
     String SVG_SVG11_SVG_FEATURE = "http://www.w3.org/TR/SVG11/feature#SVG";
     String SVG_SVG11_SVG_DOM_FEATURE = "http://www.w3.org/TR/SVG11/feature#SVGDOM";
     String SVG_SVG11_SVG_STATIC_FEATURE = "http://www.w3.org/TR/SVG11/feature#SVG-static";
