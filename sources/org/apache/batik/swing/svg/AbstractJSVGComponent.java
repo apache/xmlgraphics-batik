@@ -75,7 +75,9 @@ import org.apache.batik.swing.gvt.JGVTComponentListener;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.RunnableQueue;
 import org.apache.batik.util.SVGConstants;
+import org.apache.batik.util.SVGFeatureStrings;
 import org.apache.batik.util.XMLResourceDescriptor;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Element;
@@ -3652,68 +3654,6 @@ public class AbstractJSVGComponent extends JGVTComponent {
 
     protected static final Set FEATURES = new HashSet();
     static {
-        // SVG 1.0 feature strings
-        FEATURES.add(SVGConstants.SVG_ORG_W3C_SVG_FEATURE);
-        FEATURES.add(SVGConstants.SVG_ORG_W3C_SVG_STATIC_FEATURE);
-        FEATURES.add(SVGConstants.SVG_ORG_W3C_SVG_ANIMATION_FEATURE);
-        FEATURES.add(SVGConstants.SVG_ORG_W3C_SVG_DYNAMIC_FEATURE);
-        FEATURES.add(SVGConstants.SVG_ORG_W3C_SVG_ALL_FEATURE);
-        FEATURES.add(SVGConstants.SVG_ORG_W3C_DOM_SVG_FEATURE);
-        FEATURES.add(SVGConstants.SVG_ORG_W3C_DOM_SVG_STATIC_FEATURE);
-        FEATURES.add(SVGConstants.SVG_ORG_W3C_DOM_SVG_ANIMATION_FEATURE);
-        FEATURES.add(SVGConstants.SVG_ORG_W3C_DOM_SVG_DYNAMIC_FEATURE);
-        FEATURES.add(SVGConstants.SVG_ORG_W3C_DOM_SVG_ALL_FEATURE);
-
-        // SVG 1.1 feature strings
-        // Due to SVG_SVG11_VIEWPORT_ATTRIBUTE_FEATURE not being supported
-        // FEATURES.add(SVGConstants.SVG_SVG11_SVG_FEATURE);
-        // FEATURES.add(SVGConstants.SVG_SVG11_SVG_STATIC_FEATURE);
-        // FEATURES.add(SVGConstants.SVG_SVG11_SVG_ANIMATION_FEATURE);
-        // FEATURES.add(SVGConstants.SVG_SVG11_SVG_DYNAMIC_FEATURE);
-        FEATURES.add(SVGConstants.SVG_SVG11_SVG_DOM_FEATURE);
-        FEATURES.add(SVGConstants.SVG_SVG11_SVG_DOM_STATIC_FEATURE);
-        FEATURES.add(SVGConstants.SVG_SVG11_SVG_DOM_ANIMATION_FEATURE);
-        FEATURES.add(SVGConstants.SVG_SVG11_SVG_DOM_DYNAMIC_FEATURE);
-
-        FEATURES.add(SVGConstants.SVG_SVG11_CORE_ATTRIBUTE_FEATURE);
-        FEATURES.add(SVGConstants.SVG_SVG11_STRUCTURE_FEATURE);
-        FEATURES.add(SVGConstants.SVG_SVG11_BASIC_STRUCTURE_FEATURE);
-        FEATURES.add(SVGConstants.SVG_SVG11_CONTAINER_ATTRIBUTE_FEATURE);
-        FEATURES.add(SVGConstants.SVG_SVG11_CONDITIONAL_PROCESSING_FEATURE);
-        FEATURES.add(SVGConstants.SVG_SVG11_IMAGE_FEATURE);
-        FEATURES.add(SVGConstants.SVG_SVG11_STYLE_FEATURE);
-        // 'clip' on various elements not supported
-        // FEATURES.add(SVGConstants.SVG_SVG11_VIEWPORT_ATTRIBUTE_FEATURE);
-        FEATURES.add(SVGConstants.SVG_SVG11_SHAPE_FEATURE);
-        FEATURES.add(SVGConstants.SVG_SVG11_TEXT_FEATURE);
-        FEATURES.add(SVGConstants.SVG_SVG11_BASIC_TEXT_FEATURE);
-        FEATURES.add(SVGConstants.SVG_SVG11_PAINT_ATTRIBUTE_FEATURE);
-        FEATURES.add(SVGConstants.SVG_SVG11_BASIC_PAINT_ATTRIBUTE_FEATURE);
-        FEATURES.add(SVGConstants.SVG_SVG11_OPACITY_ATTRIBUTE_FEATURE);
-        FEATURES.add(SVGConstants.SVG_SVG11_GRAPHICS_ATTRIBUTE_FEATURE);
-        FEATURES.add(SVGConstants.SVG_SVG11_BASIC_GRAPHICS_ATTRIBUTE_FEATURE);
-        FEATURES.add(SVGConstants.SVG_SVG11_MARKER_FEATURE);
-        FEATURES.add(SVGConstants.SVG_SVG11_COLOR_PROFILE_FEATURE);
-        FEATURES.add(SVGConstants.SVG_SVG11_GRADIENT_FEATURE);
-        FEATURES.add(SVGConstants.SVG_SVG11_PATTERN_FEATURE);
-        FEATURES.add(SVGConstants.SVG_SVG11_CLIP_FEATURE);
-        FEATURES.add(SVGConstants.SVG_SVG11_BASIC_CLIP_FEATURE);
-        FEATURES.add(SVGConstants.SVG_SVG11_MASK_FEATURE);
-        FEATURES.add(SVGConstants.SVG_SVG11_FILTER_FEATURE);
-        FEATURES.add(SVGConstants.SVG_SVG11_BASIC_FILTER_FEATURE);
-        FEATURES.add(SVGConstants.SVG_SVG11_DOCUMENT_EVENTS_ATTRIBUTE_FEATURE);
-        FEATURES.add(SVGConstants.SVG_SVG11_GRAPHICAL_EVENTS_ATTRIBUTE_FEATURE);
-        FEATURES.add(SVGConstants.SVG_SVG11_ANIMATION_EVENTS_ATTRIBUTE_FEATURE);
-        FEATURES.add(SVGConstants.SVG_SVG11_CURSOR_FEATURE);
-        FEATURES.add(SVGConstants.SVG_SVG11_HYPERLINKING_FEATURE);
-        FEATURES.add(SVGConstants.SVG_SVG11_XLINK_FEATURE);
-        // externalResourcesRequired="" not supported
-        // FEATURES.add(SVGConstants.SVG_SVG11_EXTERNAL_RESOURCES_REQUIRED_FEATURE);
-        FEATURES.add(SVGConstants.SVG_SVG11_VIEW_FEATURE);
-        FEATURES.add(SVGConstants.SVG_SVG11_SCRIPT_FEATURE);
-        FEATURES.add(SVGConstants.SVG_SVG11_ANIMATION_FEATURE);
-        FEATURES.add(SVGConstants.SVG_SVG11_FONT_FEATURE);
-        FEATURES.add(SVGConstants.SVG_SVG11_BASIC_FONT_FEATURE);
-        FEATURES.add(SVGConstants.SVG_SVG11_EXTENSIBILITY_FEATURE);
+        SVGFeatureStrings.addSupportedFeatureStrings(FEATURES);
     }
 }

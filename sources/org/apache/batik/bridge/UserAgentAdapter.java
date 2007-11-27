@@ -31,7 +31,9 @@ import org.apache.batik.gvt.event.EventDispatcher;
 import org.apache.batik.gvt.text.Mark;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.SVGConstants;
+import org.apache.batik.util.SVGFeatureStrings;
 import org.apache.batik.util.XMLResourceDescriptor;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGAElement;
 import org.w3c.dom.svg.SVGDocument;
@@ -64,9 +66,7 @@ public class UserAgentAdapter implements UserAgent {
      * by this user agent.
      */
     public void addStdFeatures() {
-        FEATURES.add(SVGConstants.SVG_ORG_W3C_SVG_FEATURE);
-        FEATURES.add(SVGConstants.SVG_ORG_W3C_SVG_LANG_FEATURE);
-        FEATURES.add(SVGConstants.SVG_ORG_W3C_SVG_STATIC_FEATURE);
+        SVGFeatureStrings.addSupportedFeatureStrings(FEATURES);
     }
 
     /**
