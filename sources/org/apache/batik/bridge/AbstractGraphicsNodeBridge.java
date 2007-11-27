@@ -165,15 +165,7 @@ public abstract class AbstractGraphicsNodeBridge extends AnimatableSVGBridge
     protected AffineTransform computeTransform(SVGTransformable te,
                                                BridgeContext ctx) {
         try {
-            // motion animation
             AffineTransform at = new AffineTransform();
-            if (e instanceof SVGMotionAnimatableElement) {
-                SVGMotionAnimatableElement mae = (SVGMotionAnimatableElement) e;
-                AffineTransform mat = mae.getMotionTransform();
-                if (mat != null) {
-                    at.concatenate(mat);
-                }
-            }
 
             // 'transform'
             SVGOMAnimatedTransformList atl =
@@ -183,6 +175,15 @@ public abstract class AbstractGraphicsNodeBridge extends AnimatableSVGBridge
                 AbstractSVGTransformList tl =
                     (AbstractSVGTransformList) te.getTransform().getAnimVal();
                 at.concatenate(tl.getAffineTransform());
+            }
+
+            // motion animation
+            if (e instanceof SVGMotionAnimatableElement) {
+                SVGMotionAnimatableElement mae = (SVGMotionAnimatableElement) e;
+                AffineTransform mat = mae.getMotionTransform();
+                if (mat != null) {
+                    at.concatenate(mat);
+                }
             }
 
             return at;
