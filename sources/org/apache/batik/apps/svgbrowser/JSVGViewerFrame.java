@@ -80,13 +80,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JToolBar;
 import javax.swing.JWindow;
 import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.text.Document;
-import javax.swing.text.PlainDocument;
 
 import org.apache.batik.bridge.DefaultExternalResourceSecurity;
 import org.apache.batik.bridge.DefaultScriptSecurity;
@@ -142,6 +140,8 @@ import org.apache.batik.util.gui.resource.JComponentModifier;
 import org.apache.batik.util.gui.resource.MenuFactory;
 import org.apache.batik.util.gui.resource.MissingListenerException;
 import org.apache.batik.util.gui.resource.ToolBarFactory;
+import org.apache.batik.util.gui.xmleditor.XMLDocument;
+import org.apache.batik.util.gui.xmleditor.XMLTextEditor;
 import org.apache.batik.util.resources.ResourceManager;
 import org.apache.batik.xml.XMLUtilities;
 
@@ -1887,8 +1887,8 @@ public class JSVGViewerFrame
             final JFrame fr = new JFrame(u.toString());
             fr.setSize(resources.getInteger("ViewSource.width"),
                        resources.getInteger("ViewSource.height"));
-            final JTextArea ta  = new JTextArea();
-            ta.setLineWrap(true);
+            final XMLTextEditor ta  = new XMLTextEditor();
+            // ta.setLineWrap(true);
             ta.setFont(new Font("monospaced", Font.PLAIN, 12));
 
             JScrollPane scroll = new JScrollPane();
@@ -1902,7 +1902,7 @@ public class JSVGViewerFrame
                     char [] buffer = new char[4096];
 
                     try {
-                        Document  doc = new PlainDocument();
+                        Document  doc = new XMLDocument();
 
                         ParsedURL purl = new ParsedURL(svgDocument.getURL());
                         InputStream is
@@ -1919,7 +1919,7 @@ public class JSVGViewerFrame
 
                         ta.setDocument(doc);
                         ta.setEditable(false);
-                        ta.setBackground(Color.white);
+                        // ta.setBackground(Color.white);
                         fr.setVisible(true);
                     } catch (Exception ex) {
                         userAgent.displayError(ex);
