@@ -498,7 +498,7 @@
         <rect x="50" y="210" width="520" height="55" visibility="hidden"/>
       </flowRegion>
       <flowDiv>
-        <flowPara font-size="13.5" line-height="125%">
+        <flowPara font-size="13" line-height="125%">
           Thomas&#xa0;DeWeese, Bill&#xa0;Haneman, Vincent&#xa0;Hardy, Stephane&#xa0;Hillion,
           Dieter&#xa0;von&#xa0;Holten, Dean&#xa0;Jackson,
           Christophe&#xa0;Jolif, Thierry&#xa0;Kormann, Cameron&#xa0;McCormack, Bella&#xa0;Robinson,
@@ -516,10 +516,10 @@
         <rect x="50" y="285" width="520" height="100" visibility="hidden"/>
       </flowRegion>
       <flowDiv>
-        <flowPara font-size="13.5" line-height="125%">
+        <flowPara font-size="13" line-height="125%">
           Ivan&#xa0;Andjelkovic, Curt&#xa0;Arnold, Bert&#xa0;Bos, James&#xa0;Davidson,
           Robert&#xa0;DiBlasi, Archie&#xa0;Cobbs, Paul&#xa0;Evenblij, Pier&#xa0;Fumagalli,
-          Hervé&#xa0;Girod, Christophe&#xa0;Held, Clay&#xa0;Leeds, Keiron&#xa0;Liddle,
+          Hervé&#xa0;Girod, Christophe&#xa0;Held, Tonny&#xa0;Kohar, Clay&#xa0;Leeds, Keiron&#xa0;Liddle,
           Jeremias&#xa0;Märki, Stefano&#xa0;Mazzochi, John&#xa0;Morisson, Andreas&#xa0;Neumann,
           Luan&#xa0;O’Carroll, Sheng&#xa0;Pei, Neeme&#xa0;Praks, Henri&#xa0;Ruini,
           David&#xa0;Schweinsberg, Eric&#xa0;Suen, Nicholas&#xa0;Talian, Andres&#xa0;Toussaint
