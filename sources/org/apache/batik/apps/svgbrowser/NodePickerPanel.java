@@ -62,10 +62,10 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.batik.dom.AbstractNode;
 import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.util.SVGConstants;
-import org.apache.batik.util.gui.JEnhEditTextArea;
 import org.apache.batik.util.gui.resource.ActionMap;
 import org.apache.batik.util.gui.resource.ButtonFactory;
 import org.apache.batik.util.gui.resource.MissingListenerException;
+import org.apache.batik.util.gui.xmleditor.XMLTextEditor;
 import org.apache.batik.util.XMLConstants;
 import org.apache.batik.util.resources.ResourceManager;
 
@@ -1350,7 +1350,7 @@ public class NodePickerPanel extends JPanel implements ActionMap {
         /**
          * The text area.
          */
-        protected JEnhEditTextArea nodeXmlArea;
+        protected XMLTextEditor nodeXmlArea;
 
         /**
          * Constructor.
@@ -1358,8 +1358,6 @@ public class NodePickerPanel extends JPanel implements ActionMap {
         public SVGInputPanel() {
             super(new BorderLayout());
             add(getNodeXmlArea());
-            // Workaround ont JEditTextArea's overridden getMinimumSize()
-            setMinimumSize(new Dimension(100, 80));
         }
 
         /**
@@ -1367,38 +1365,13 @@ public class NodePickerPanel extends JPanel implements ActionMap {
          *
          * @return    the nodeXmlArea
          */
-        protected JEnhEditTextArea getNodeXmlArea() {
+        protected XMLTextEditor getNodeXmlArea() {
             if (nodeXmlArea == null) {
                 // Create syntax-highlighted text area
-                nodeXmlArea = new JEnhEditTextArea(getTextAreaDefaults());
-                nodeXmlArea.setTokenMarker(new XMLTokenMarker());
-                TextAreaPainter painter = nodeXmlArea.getPainter();
-                painter.setFont(getDefaultTextAreaFont());
+                nodeXmlArea = new XMLTextEditor();
                 nodeXmlArea.setEditable(true);
             }
             return nodeXmlArea;
-        }
-
-        /**
-         * The defaults for the JEditTextArea.
-         *
-         * @return TextAreaDefaults
-         */
-        protected TextAreaDefaults getTextAreaDefaults() {
-            TextAreaDefaults defaults = TextAreaDefaults.getDefaults();
-            defaults.cols = 30;
-            defaults.rows = 10;
-            defaults.electricScroll = 2;
-            return defaults;
-        }
-
-        /**
-         * The default Font for the JEditTextArea.
-         *
-         * @return Font
-         */
-        protected Font getDefaultTextAreaFont() {
-            return new Font("Monospaced", Font.PLAIN, 12);
         }
     }
 
