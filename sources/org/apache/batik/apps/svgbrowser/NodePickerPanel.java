@@ -69,10 +69,6 @@ import org.apache.batik.util.gui.xmleditor.XMLTextEditor;
 import org.apache.batik.util.XMLConstants;
 import org.apache.batik.util.resources.ResourceManager;
 
-import org.gjt.sp.jedit.textarea.TextAreaDefaults;
-import org.gjt.sp.jedit.textarea.TextAreaPainter;
-import org.gjt.sp.jedit.textarea.XMLTokenMarker;
-
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -1357,7 +1353,7 @@ public class NodePickerPanel extends JPanel implements ActionMap {
          */
         public SVGInputPanel() {
             super(new BorderLayout());
-            add(getNodeXmlArea());
+            add(new JScrollPane(getNodeXmlArea()));
         }
 
         /**
