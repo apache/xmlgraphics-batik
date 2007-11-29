@@ -64,7 +64,7 @@ public class XMLContext extends StyleContext {
         
         syntaxName = XMLContext.DEFAULT_STYLE;
         font = defaultFont;
-        fontForeground = Color.BLACK;
+        fontForeground = Color.black;
         syntaxFontMap.put(syntaxName, font);
         syntaxForegroundMap.put(syntaxName, fontForeground);
         
@@ -94,7 +94,7 @@ public class XMLContext extends StyleContext {
 
         syntaxName = XMLContext.CHARACTER_DATA_STYLE;
         font = defaultFont;
-        fontForeground = Color.BLACK;
+        fontForeground = Color.black;
         syntaxFontMap.put(syntaxName, font);
         syntaxForegroundMap.put(syntaxName, fontForeground);
 
