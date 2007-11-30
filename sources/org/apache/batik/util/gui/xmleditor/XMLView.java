@@ -108,15 +108,19 @@ public class XMLView extends PlainView {
         
         return x;
     }
-    
-    /** Overriden to handle multi line node
-     * {@inheritDoc}
-     */
-    protected void updateDamage(javax.swing.event.DocumentEvent changes,
-                                Shape a,
-                                ViewFactory f) {
-        super.updateDamage(changes, a, f);
-        java.awt.Component host = getContainer();
-        host.repaint();
-    }
+
+//     XXX Reinstate this when Java 1.4 is required:
+//
+//     http://mail-archives.apache.org/mod_mbox/xmlgraphics-batik-dev/200711.mbox/%3cf75892d60711301037j5abc6760h37ee4491037f1b4a@mail.gmail.com%3e
+//
+//     /** Overriden to handle multi line node
+//      * {@inheritDoc}
+//      */
+//     protected void updateDamage(javax.swing.event.DocumentEvent changes,
+//                                 Shape a,
+//                                 ViewFactory f) {
+//         super.updateDamage(changes, a, f);
+//         java.awt.Component host = getContainer();
+//         host.repaint();
+//     }
 }
