@@ -87,7 +87,7 @@ public class GVTBuilder implements SVGConstants {
         } catch (BridgeException ex) {
             // update the exception with the missing parameters
             ex.setGraphicsNode(rootNode);
-            ex.printStackTrace();
+            //ex.printStackTrace();
             throw ex; // re-throw the udpated exception
         }
 
