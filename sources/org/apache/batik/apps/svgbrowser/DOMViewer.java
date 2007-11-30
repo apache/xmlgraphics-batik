@@ -34,7 +34,6 @@ import java.awt.event.MouseEvent;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
@@ -1960,7 +1959,7 @@ public class DOMViewer extends JFrame implements ActionMap {
             /**
              * The property names.
              */
-            protected java.util.List propertyNames;
+            protected List propertyNames;
 
             /**
              * Creates a new NodeAttributesModel object.
