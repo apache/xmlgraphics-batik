@@ -190,22 +190,25 @@
       </p>
       <source>import org.apache.batik.script.rhino.RhinoInterpreter;
 
+import java.net.URL;
+
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.PropertyException;
 
-public class ExtendedRhinoInterpreter extends RhinoIntepreter {
+public class ExtendedRhinoInterpreter extends RhinoInterpreter {
 
-    public ExtendedRhinoInterpreter() {
+    public ExtendedRhinoInterpreter(URL documentURL) {
+        super(documentURL);
 
         // Array of functions to put in the global object.
         final String[] names = { "print" }
         try {
             // Add the functions to the global object.
             getGlobalObject().defineFunctionProperties
-                (names, ExtendedRhinoIntepreter.class,
+                (names, ExtendedRhinoInterpreter.class,
                  ScriptableObject.DONTENUM);
         } catch (PropertyException e) {
             throw new Error(e);
@@ -232,12 +235,12 @@ public class ExtendedRhinoInterpreter extends RhinoIntepreter {
         instances of your interpreter.
       </p>
       <source>import org.apache.batik.script.Interpreter;
-import org.apache.batik.script.InterpreterFactory;
+import org.apache.batik.script.rhino.RhinoInterpreterFactory;
 
-public class ExtendedRhinoInterpreterFactory implements InterpreterFactory {
+public class ExtendedRhinoInterpreterFactory extends RhinoInterpreterFactory {
 
-    public Interpreter createInterpreter() {
-        return new ExtendedRhinoInterpreter();
+    public Interpreter createInterpreter(URL documentURL, boolean isSVG12) {
+        return new ExtendedRhinoInterpreter(documentURL);
     }
 }</source>
       <p>
@@ -250,8 +253,14 @@ public class ExtendedRhinoInterpreterFactory implements InterpreterFactory {
       <source>org.apache.batik.bridge.BridgeContext ctx = ...;
 org.apache.batik.script.InterpreterPool pool =
     new org.apache.batik.script.InterpreterPool();
-pool.putInterpreterFactory("text/ecmascript", 
-                           new ExtendedRhinoInterpreterFactory());
+InterpreterFactory f = new ExtendedRhinoInterpreterFactory();
+
+// Register the interpreter factory for all four MIME types that
+// Batik normally supports for ECMAScript.
+pool.putInterpreterFactory("text/ecmascript", f);
+pool.putInterpreterFactory("text/javascript", f);
+pool.putInterpreterFactory("application/ecmascript", f);
+pool.putInterpreterFactory("application/javascript", f);
 ctx.setIntepreterPool(pool);</source>
       <p>
         For example if you are using the Batik SVG browser application you
