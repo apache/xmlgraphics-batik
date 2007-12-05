@@ -333,6 +333,9 @@ public class XBLEventSupport extends EventSupport {
                     preventDefault || es[i].getDefaultPrevented();
             }
         }
+        if (!preventDefault) {
+            runDefaultActions(e);
+        }
         return preventDefault;
     }
 
