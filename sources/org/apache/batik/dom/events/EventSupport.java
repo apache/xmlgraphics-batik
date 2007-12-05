@@ -280,16 +280,23 @@ public class EventSupport {
             }
         }
         if (!e.getDefaultPrevented()) {
-            List runables = e.getDefaultActions();
-            if (runables != null) {
-                Iterator i = runables.iterator();
-                while (i.hasNext()) {
-                    Runnable r = (Runnable)i.next();
-                    r.run();
-                }
-            }
+            runDefaultActions(e);
         }
         return e.getDefaultPrevented();
+    }
+
+    /**
+     * Runs all of the registered default actions for the given event object.
+     */
+    protected void runDefaultActions(AbstractEvent e) {
+        List runables = e.getDefaultActions();
+        if (runables != null) {
+            Iterator i = runables.iterator();
+            while (i.hasNext()) {
+                Runnable r = (Runnable)i.next();
+                r.run();
+            }
+        }
     }
 
     /**
