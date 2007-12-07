@@ -171,4 +171,9 @@
     <test id="DOM3.Text.wholeText" class="org.apache.batik.dom.TextWholeTextTest"/>
     <test id="DOM3.Text.replaceWholeText" class="org.apache.batik.dom.TextReplaceWholeTextTest"/>
     <test id="DOM3.EventTarget.addEventListenerNS" class="org.apache.batik.dom.EventTargetAddEventListenerNSTest"/>
+
+    <!-- ========================================================================== -->
+    <!-- ElementTraversal test                                                      -->
+    <!-- ========================================================================== -->
+    <test id="ElementTraversal" class="org.apache.batik.dom.ElementTraversalTest"/>
 </testSuite>
