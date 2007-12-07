@@ -27,6 +27,7 @@ import org.apache.batik.util.XMLConstants;
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
+import org.w3c.dom.ElementTraversal;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.TypeInfo;
@@ -40,7 +41,7 @@ import org.w3c.dom.events.MutationEvent;
  */
 public abstract class AbstractElement
     extends    AbstractParentChildNode
-    implements Element {
+    implements Element, ElementTraversal {
 
     /**
      * The attributes of this element.
@@ -664,6 +665,72 @@ public abstract class AbstractElement
      * Called when an attribute has been removed.
      */
     protected void attrRemoved(Attr node, String oldv) {
+    }
+
+    // ElementTraversal //////////////////////////////////////////////////////
+
+    /**
+     * <b>DOM</b>: Implements {@link ElementTraversal#getFirstElementChild()}.
+     */
+    public Element getFirstElementChild() {
+        Node n = getFirstChild();
+        while (n != null) {
+            if (n.getNodeType() == Node.ELEMENT_NODE) {
+                return (Element) n;
+            }
+            n = n.getNextSibling();
+        }
+        return null;
+    }
+
+    /**
+     * <b>DOM</b>: Implements {@link ElementTraversal#getLastElementChild()}.
+     */
+    public Element getLastElementChild() {
+        Node n = getLastChild();
+        while (n != null) {
+            if (n.getNodeType() == Node.ELEMENT_NODE) {
+                return (Element) n;
+            }
+            n = n.getPreviousSibling();
+        }
+        return null;
+    }
+
+    /**
+     * <b>DOM</b>: Implements {@link ElementTraversal#getNextElementSibling()}.
+     */
+    public Element getNextElementSibling() {
+        Node n = getNextSibling();
+        while (n != null) {
+            if (n.getNodeType() == Node.ELEMENT_NODE) {
+                return (Element) n;
+            }
+            n = n.getNextSibling();
+        }
+        return null;
+    }
+
+    /**
+     * <b>DOM</b>: Implements {@link ElementTraversal#getPreviousElementSibling()}.
+     */
+    public Element getPreviousElementSibling() {
+        Node n = getPreviousSibling();
+        while (n != null) {
+            if (n.getNodeType() == Node.ELEMENT_NODE) {
+                return (Element) n;
+            }
+            n = n.getPreviousSibling();
+        }
+        return (Element) n;
+    }
+
+    /**
+     * <b>DOM</b>: Implements {@link ElementTraversal#getChildElementCount()}.
+     */
+    public int getChildElementCount() {
+        getChildNodes();
+        return childNodes.elementChildren;
     }
 
     /**

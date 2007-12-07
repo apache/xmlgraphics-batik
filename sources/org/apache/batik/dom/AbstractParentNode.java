@@ -728,6 +728,11 @@ public abstract class AbstractParentNode extends AbstractNode {
         protected int children;
 
         /**
+         * The number of Element children.
+         */
+        protected int elementChildren;
+
+        /**
          * Creates a new ChildNodes object.
          */
         public ChildNodes() {
@@ -776,6 +781,9 @@ public abstract class AbstractParentNode extends AbstractNode {
             }
             lastChild = n;
             children++;
+            if (n.getNodeType() == Node.ELEMENT_NODE) {
+                elementChildren++;
+            }
             return n;
         }
 
@@ -792,6 +800,9 @@ public abstract class AbstractParentNode extends AbstractNode {
                 n.setNextSibling(firstChild);
                 firstChild = n;
                 children++;
+                if (n.getNodeType() == Node.ELEMENT_NODE) {
+                    elementChildren++;
+                }
                 return n;
             }
             if (r == lastChild) {
@@ -801,6 +812,9 @@ public abstract class AbstractParentNode extends AbstractNode {
                 n.setNextSibling(r);
                 n.setPreviousSibling(ps);
                 children++;
+                if (n.getNodeType() == Node.ELEMENT_NODE) {
+                    elementChildren++;
+                }
                 return n;
             }
 
@@ -812,6 +826,9 @@ public abstract class AbstractParentNode extends AbstractNode {
                 n.setNextSibling(r);
                 r.setPreviousSibling(n);
                 children++;
+                if (n.getNodeType() == Node.ELEMENT_NODE) {
+                    elementChildren++;
+                }
                 return n;
             }
 
@@ -836,6 +853,12 @@ public abstract class AbstractParentNode extends AbstractNode {
                 }
                 firstChild.setNextSibling(null);
                 firstChild = n;
+                if (o.getNodeType() == Node.ELEMENT_NODE) {
+                    elementChildren--;
+                }
+                if (n.getNodeType() == Node.ELEMENT_NODE) {
+                    elementChildren++;
+                }
                 return o;
             }
 
@@ -845,6 +868,12 @@ public abstract class AbstractParentNode extends AbstractNode {
                 t.setNextSibling(n);
                 lastChild.setPreviousSibling(null);
                 lastChild = n;
+                if (o.getNodeType() == Node.ELEMENT_NODE) {
+                    elementChildren--;
+                }
+                if (n.getNodeType() == Node.ELEMENT_NODE) {
+                    elementChildren++;
+                }
                 return o;
             }
 
@@ -861,6 +890,12 @@ public abstract class AbstractParentNode extends AbstractNode {
                 ns.setPreviousSibling(n);
                 o.setPreviousSibling(null);
                 o.setNextSibling(null);
+                if (o.getNodeType() == Node.ELEMENT_NODE) {
+                    elementChildren--;
+                }
+                if (n.getNodeType() == Node.ELEMENT_NODE) {
+                    elementChildren++;
+                }
                 return o;
             }
             throw createDOMException
@@ -879,11 +914,17 @@ public abstract class AbstractParentNode extends AbstractNode {
                     firstChild = null;
                     lastChild  = null;
                     children--;
+                    if (n.getNodeType() == Node.ELEMENT_NODE) {
+                        elementChildren--;
+                    }
                     return n;
                 }
                 firstChild = (ExtendedNode)firstChild.getNextSibling();
                 firstChild.setPreviousSibling(null);
                 n.setNextSibling(null);
+                if (n.getNodeType() == Node.ELEMENT_NODE) {
+                    elementChildren--;
+                }
                 children--;
                 return n;
             }
@@ -893,6 +934,9 @@ public abstract class AbstractParentNode extends AbstractNode {
                 lastChild.setNextSibling(null);
                 n.setPreviousSibling(null);
                 children--;
+                if (n.getNodeType() == Node.ELEMENT_NODE) {
+                    elementChildren--;
+                }
                 return n;
             }
 
@@ -907,6 +951,9 @@ public abstract class AbstractParentNode extends AbstractNode {
                 n.setPreviousSibling(null);
                 n.setNextSibling(null);
                 children--;
+                if (n.getNodeType() == Node.ELEMENT_NODE) {
+                    elementChildren--;
+                }
                 return n;
             }
             throw createDOMException
