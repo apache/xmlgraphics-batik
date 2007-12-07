@@ -552,7 +552,8 @@ JAVA=/usr/bin/java
 
   <!-- Generates maven artifacts to be copied to
        http://people.apache.org/repo/m2-ibiblio-rsync-repository/org/apache/xmlgraphics/.
-       PGP signing of artifacts and POMs must be done manually.
+       Updating maven-metadata.xml files, and PGP signing of artifacts and POMs
+       must be done manually.
 
        Note that the rules to build the artifact jars here are mostly redundant
        with the relevant jar target (e.g. rasterizer-jar, squiggle-jar).  The
@@ -1099,7 +1100,7 @@ JAVA=/usr/bin/java
       </manifest>
       <fileset dir="${dest}" excludes="**/.svn/">
         <include name="org/apache/batik/**"/>
-        <include name="org/w3c/dom/events/**"/>
+        <include name="org/w3c/**"/>
       </fileset>
       <fileset dir="${resources}" excludes="**/.svn/">
         <include name="**"/>
