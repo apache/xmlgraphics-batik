@@ -53,7 +53,7 @@ public class EventTargetAddEventListenerNSTest extends DOM3Test {
             return c;
         }
     }
-    public boolean runImplBase() throws Exception {
+    public boolean runImplBasic() throws Exception {
         Listener1 l1 = new Listener1();
         Listener2 l2 = new Listener2();
 

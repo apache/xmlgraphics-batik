@@ -28,7 +28,7 @@ import org.w3c.dom.Element;
  * @version $Id$
  */
 public class ElementSetIdAttributeNSTest extends DOM3Test {
-    public boolean runImplBase() throws Exception {
+    public boolean runImplBasic() throws Exception {
         Document doc = newSVGDoc();
         doc.getDocumentElement().setAttributeNS(null, "blah", "abc");
         ((AbstractElement) doc.getDocumentElement()).setIdAttributeNS(null, "blah", true);

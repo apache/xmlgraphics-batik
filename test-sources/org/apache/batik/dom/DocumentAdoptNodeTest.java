@@ -28,7 +28,7 @@ import org.w3c.dom.Element;
  * @version $Id$
  */
 public class DocumentAdoptNodeTest extends DOM3Test {
-    public boolean runImplBase() throws Exception {
+    public boolean runImplBasic() throws Exception {
         Document doc1 = newSVGDoc();
         Document doc2 = newSVGDoc();
         Element e = doc2.getDocumentElement();

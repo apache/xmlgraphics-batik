@@ -28,7 +28,7 @@ import org.w3c.dom.Text;
  * @version $Id$
  */
 public class TextReplaceWholeTextTest extends DOM3Test {
-    public boolean runImplBase() throws Exception {
+    public boolean runImplBasic() throws Exception {
         Document doc = newSVGDoc();
         Text n1 = doc.createTextNode("abc");
         Text n2 = doc.createTextNode("def");

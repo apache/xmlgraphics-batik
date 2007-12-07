@@ -29,7 +29,7 @@ import org.w3c.dom.Element;
  * @version $Id$
  */
 public class AttrIsIdTest extends DOM3Test {
-    public boolean runImplBase() throws Exception {
+    public boolean runImplBasic() throws Exception {
         Document doc = newSVGDoc();
         Element g = doc.createElementNS(SVG_NAMESPACE_URI, "g");
         g.setAttributeNS(null, "id", "n1");

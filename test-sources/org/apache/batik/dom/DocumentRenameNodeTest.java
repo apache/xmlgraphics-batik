@@ -31,7 +31,7 @@ import org.w3c.dom.svg.SVGSVGElement;
  * @version $Id$
  */
 public class DocumentRenameNodeTest extends DOM3Test {
-    public boolean runImplBase() throws Exception {
+    public boolean runImplBasic() throws Exception {
         Document doc = newSVGDoc();
         Element e2 = doc.createElementNS(SVG_NAMESPACE_URI, "g");
         boolean pass = e2 instanceof SVGGElement;
