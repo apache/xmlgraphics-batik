@@ -20,7 +20,8 @@ Bug fixing is an on-going task, so it is implied in all sub-releases.
 
 2. New features
 
-  * xml:id support.
+  * xml:id support (http://www.w3.org/TR/xml-id/).
+  * ElementTraversal support (http://www.w3.org/TR/ElementTraversal/).
   * Enhanced DOM Viewer window, contributed from Ivan Andjelkovic,
     a Google Summer of Code student.
 
