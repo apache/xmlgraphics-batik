@@ -28,7 +28,7 @@ import org.w3c.dom.Element;
  * @version $Id$
  */
 public class NodeBaseURITest extends DOM3Test {
-    public boolean runImplBase() throws Exception {
+    public boolean runImplBasic() throws Exception {
         Document doc = newSVGDoc();
         ((AbstractDocument) doc).setDocumentURI("http://example.com/blah");
         Element e = doc.createElementNS(SVG_NAMESPACE_URI, "g");

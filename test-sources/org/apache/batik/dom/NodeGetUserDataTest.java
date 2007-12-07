@@ -42,7 +42,7 @@ public class NodeGetUserDataTest extends DOM3Test {
             return count;
         }
     }
-    public boolean runImplBase() throws Exception {
+    public boolean runImplBasic() throws Exception {
         UserHandler udh = new UserHandler();
         Document doc = newDoc();
         AbstractNode n = (AbstractNode) doc.createElementNS(null, "test");

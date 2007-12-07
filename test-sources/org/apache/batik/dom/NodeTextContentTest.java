@@ -29,7 +29,7 @@ import org.w3c.dom.Node;
  * @version $Id$
  */
 public class NodeTextContentTest extends DOM3Test {
-    public boolean runImplBase() throws Exception {
+    public boolean runImplBasic() throws Exception {
         Document doc = newSVGDoc();
         AbstractElement e = (AbstractElement) doc.getDocumentElement();
         e.appendChild(doc.createTextNode("abc"));

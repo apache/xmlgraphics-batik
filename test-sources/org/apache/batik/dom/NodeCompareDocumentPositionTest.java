@@ -27,7 +27,7 @@ import org.w3c.dom.Document;
  * @version $Id$
  */
 public class NodeCompareDocumentPositionTest extends DOM3Test {
-    public boolean runImplBase() throws Exception {
+    public boolean runImplBasic() throws Exception {
         Document doc = newSVGDoc();
         AbstractNode e = (AbstractNode) doc.createElementNS(null, "test");
         doc.getDocumentElement().appendChild(e);

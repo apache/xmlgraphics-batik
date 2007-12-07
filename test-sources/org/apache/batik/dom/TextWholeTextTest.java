@@ -27,7 +27,7 @@ import org.w3c.dom.Document;
  * @version $Id$
  */
 public class TextWholeTextTest extends DOM3Test {
-    public boolean runImplBase() throws Exception {
+    public boolean runImplBasic() throws Exception {
         Document doc = newSVGDoc();
         AbstractText n1 = (AbstractText) doc.createTextNode("abc");
         AbstractText n2 = (AbstractText) doc.createTextNode("def");
