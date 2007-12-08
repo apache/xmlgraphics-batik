@@ -55,16 +55,20 @@ public class CSSClassCondition extends CSSAttributeCondition {
             return false;  // Can't match an unstylable element.
         String attr = ((CSSStylableElement)e).getCSSClass();
         String val = getValue();
+        int attrLen = attr.length();
+        int valLen = val.length();
+
         int i = attr.indexOf(val);
-        if (i == -1) {
-            return false;
+        while (i != -1) {
+            if (i == 0 || Character.isSpaceChar(attr.charAt(i - 1))) {
+                if (i + valLen == attrLen ||
+                        Character.isSpaceChar(attr.charAt(i + valLen))) {
+                    return true;
+                }
+            }
+            i = attr.indexOf(val, i + valLen);
         }
-        if (i != 0 && !Character.isSpaceChar(attr.charAt(i - 1))) {
-            return false;
-        }
-        int j = i + val.length();
-        return (j == attr.length() ||
-                (j < attr.length() && Character.isSpaceChar(attr.charAt(j))));
+        return false;
     }
 
     /**
