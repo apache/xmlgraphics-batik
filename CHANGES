@@ -102,6 +102,9 @@ Bug fixing is an on-going task, so it is implied in all sub-releases.
   * Motion animation transforms are now applied after the transform=""
     attribute.
   * Fixed bug in DOM event default action invocation in SVG 1.2 documents.
+  * Fixed bug in CSS class name matching, which occured only when an
+    element was declared to be a member of multiple classes, where one
+    is a prefix of another.
 
 5. Misc
 
