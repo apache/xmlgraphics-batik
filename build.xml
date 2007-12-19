@@ -996,9 +996,9 @@ JAVA=/usr/bin/java
       <exclude name="**/rhino/*"   unless="rhino.present"/>      
       <exclude name="**/jpython/*" unless="jpython.present"/>
       <exclude name="**/jacl/*"    unless="jacl.present"/>
-      <exclude name="${src}/${package-prefix}/ext/awt/image/codec/jpeg/*"
+      <exclude name="${package-prefix}/ext/awt/image/codec/jpeg/*"
                unless="sun-codecs.present"/>
-      <exclude name="${src}/${package-prefix}/ext/awt/image/codec/tiff/*"
+      <exclude name="${package-prefix}/ext/awt/image/codec/tiff/*"
                unless="sun-codecs.present"/>
     </javac>
     <property name="compile.done" value="true"/>
