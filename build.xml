@@ -291,7 +291,7 @@ To display the available targets type:
     <echo message=""/>
     <echo message="    javadoc"/>
     <echo message="        Generates the API documentation."/>
-    <echo message="        (Creates ${doc}/javadoc/.)"/>
+    <echo message="        (Creates ${docs}/javadoc/.)"/>
     <echo message=""/>
     <echo message="    site"/>
     <echo message="        Generates the http://xmlgraphics.apache.org/batik/ site,"/>
