@@ -229,11 +229,12 @@ public class ParsedURL {
      *               the missing pieces will be taken from the baseURL.
      */
     public ParsedURL(ParsedURL baseURL, String urlStr) {
-        userAgent = baseURL.getUserAgent();
-        if (baseURL != null)
+        if (baseURL != null) {
+            userAgent = baseURL.getUserAgent();
             data = parseURL(baseURL, urlStr);
-        else
+        } else {
             data = parseURL(urlStr);
+        }
     }
 
     /**
