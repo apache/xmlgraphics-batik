@@ -117,18 +117,41 @@ public class XMLContext extends StyleContext {
         syntaxForegroundMap.put(syntaxName, fontForeground);
     }
     
+    public XMLContext(Map syntaxFontMap, Map syntaxForegroundMap) {
+        setSyntaxFont(syntaxFontMap);
+        setSyntaxForeground(syntaxForegroundMap);
+    }
     
+    public void setSyntaxForeground(Map syntaxForegroundMap) {
+        if (syntaxForegroundMap == null) {
+            throw new IllegalArgumentException("syntaxForegroundMap can not be null");
+        }
+        this.syntaxForegroundMap = syntaxForegroundMap;
+    }
+    
+    public void setSyntaxFont(Map syntaxFontMap) {
+        if (syntaxFontMap == null) {
+            throw new IllegalArgumentException("syntaxFontMap can not be null");
+        }
+        this.syntaxFontMap = syntaxFontMap;
+    }
     
     public Color getSyntaxForeground(int ctx) {
         String name = getSyntaxName(ctx);
-        Color color = (Color)syntaxForegroundMap.get(name);
-        return color;
+        return getSyntaxForeground(name);
+    }
+    
+    public Color getSyntaxForeground(String name) {
+        return (Color)syntaxForegroundMap.get(name);
     }
     
     public Font getSyntaxFont(int ctx) {
         String name = getSyntaxName(ctx);
-        Font font = (Font)syntaxFontMap.get(name);
-        return font;
+        return getSyntaxFont(name);
+    }
+    
+    public Font getSyntaxFont(String name) {
+        return (Font)syntaxFontMap.get(name);
     }
     
     public String getSyntaxName(int ctx) {

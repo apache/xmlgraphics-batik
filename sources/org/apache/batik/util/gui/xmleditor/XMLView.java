@@ -19,14 +19,12 @@
 package org.apache.batik.util.gui.xmleditor;
 
 import java.awt.Graphics;
-import java.awt.Shape;
 
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Element;
 import javax.swing.text.PlainView;
 import javax.swing.text.Segment;
 import javax.swing.text.Utilities;
-import javax.swing.text.ViewFactory;
 
 /**
  * View that uses the lexical information to determine the
@@ -44,7 +42,7 @@ public class XMLView extends PlainView {
     protected int tabSize = 4;
     
     /**
-     * Construct a simple colorized view of java
+     * Construct a simple colorized view of XML
      * text.
      */
     public XMLView(XMLContext context, Element elem) {

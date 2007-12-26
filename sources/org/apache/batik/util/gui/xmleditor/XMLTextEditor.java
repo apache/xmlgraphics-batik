@@ -53,7 +53,7 @@ public class XMLTextEditor extends JEditorPane {
         setEditorKitForContentType(XMLEditorKit.XML_MIME_TYPE, kit);
         setContentType(XMLEditorKit.XML_MIME_TYPE);
         setBackground(Color.white);
-        setFont(new Font("Monospaced", Font.PLAIN, 12));
+        //setFont(new Font("Monospaced", Font.PLAIN, 12));
                 
         // add undoable edit
         undoManager = new UndoManager();
@@ -64,6 +64,7 @@ public class XMLTextEditor extends JEditorPane {
         };
         getDocument().addUndoableEditListener(undoableEditHandler);
     }
+    
     
     /** {@inheritDoc} */
     public void setText(String t) {
