@@ -105,6 +105,7 @@ To display the available targets type:
     <property name="docs"               value="${build}/docs"/>
     <property name="forrest-build"      value="${build}/forrest"/>
     <property name="app"                value="${build}/Squiggle.app"/>
+    <property name="dmg"                value="${build}/Squiggle-${completeVersion}.dmg"/>
     <property name="maven"              value="${build}/maven"/>
     <property name="lib"                value="lib"/>
     <property name="samples"            value="samples"/>
@@ -266,6 +267,10 @@ To display the available targets type:
     <echo message="    appbundle"/>
     <echo message="        Builds the Mac OS X Squiggle application bundle."/>
     <echo message="        (Creates ${app}.)"/>
+    <echo message=""/>
+    <echo message="    dmg"/>
+    <echo message="        Builds the Mac OS X Squiggle application bundle disk image."/>
+    <echo message="        (Creates ${dmg}.)"/>
     <echo message=""/>
     <echo message="    compile"/>
     <echo message="        Compiles all of Batik except the test infrastructure."/>
@@ -472,6 +477,12 @@ To display the available targets type:
       </tarfileset>
     </tar>
     <delete file="svn-revision" failonerror="false"/>
+  </target>
+
+  <target name="dmg" depends="appbundle">
+    <exec executable="hdiutil">
+      <arg line="create -srcfolder ${app} ${dmg}"/>
+    </exec>
   </target>
 
   <target name="appbundle" depends="init, jars, determine-svn-revision">
