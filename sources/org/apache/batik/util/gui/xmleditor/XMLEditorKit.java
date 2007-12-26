@@ -18,6 +18,8 @@
  */
 package org.apache.batik.util.gui.xmleditor;
 
+import java.awt.Font;
+import javax.swing.JEditorPane;
 import javax.swing.text.DefaultEditorKit;
 import javax.swing.text.Document;
 import javax.swing.text.Element;
@@ -40,17 +42,39 @@ public class XMLEditorKit extends DefaultEditorKit {
     
     /** Creates a new instance of XMLEditorKit */
     public XMLEditorKit() {
-        super();
-        factory = new XMLViewFactory();
-        context = new XMLContext();
+        this(null);
     }
     
+    /** Creates a new instance of XMLEditorKit
+     * @param context XMLContext
+     */
+    public XMLEditorKit(XMLContext context) {
+        super();
+        factory = new XMLViewFactory();
+        if (context == null) {
+            this.context = new XMLContext();
+        } else {
+            this.context = context;
+        }
+    }
+    
+    /** 
+     * @return XMLContext
+     */
     public XMLContext getStylePreferences() {
         return context;
     }
     
-    public void setStylePreferences(XMLContext prefs) {
-        context = prefs;
+    /** Overriden to set the JEditorPane font to match with the XMLContext
+     * {@inheritDoc}
+     */
+    public void install(JEditorPane c) {
+        super.install(c);
+        
+        Object obj = context.getSyntaxFont(XMLContext.DEFAULT_STYLE);
+        if (obj != null) {
+            c.setFont((Font)obj);
+        }
     }
     
     
