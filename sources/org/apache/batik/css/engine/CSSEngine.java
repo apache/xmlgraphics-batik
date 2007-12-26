@@ -824,7 +824,7 @@ public abstract class CSSEngine {
                         styleDeclarationDocumentHandler.styleMap = null;
                     } catch (Exception e) {
                         String m = e.getMessage();
-                        if (m == null) m = "";
+                        if (m == null) m = e.getClass().getName();
                         String u = ((documentURI == null)?"<unknown>":
                                     documentURI.toString());
                         String s = Messages.formatMessage
