@@ -106,7 +106,7 @@ public class WMFRecordStore extends AbstractWMFReader {
             case WMFConstants.META_EXTTEXTOUT:
                 {
                     int yVal = readShort( is ) * ySign;
-                    int xVal = readShort( is ) * xSign;
+                    int xVal = (int) (readShort( is ) * xSign * scaleXY);
                     int lenText = readShort( is );
                     int flag = readShort( is );
                     int read = 4; // used to track the actual size really read
@@ -115,9 +115,9 @@ public class WMFRecordStore extends AbstractWMFReader {
                     int len;
                     // determination of clipping property
                     if ((flag & WMFConstants.ETO_CLIPPED) != 0) {
-                        x1 =  readShort( is ) * xSign;
+                        x1 =  (int) (readShort( is ) * xSign * scaleXY);
                         y1 =  readShort( is ) * ySign;
-                        x2 =  readShort( is ) * xSign;
+                        x2 =  (int) (readShort( is ) * xSign * scaleXY);
                         y2 =  readShort( is ) * ySign;
                         read += 4;
                         clipped = true;
@@ -170,7 +170,7 @@ public class WMFRecordStore extends AbstractWMFReader {
                     read += (len + 1) / 2;
 
                     int yVal = readShort( is ) * ySign;
-                    int xVal = readShort( is ) * xSign;
+                    int xVal = (int) (readShort( is ) * xSign * scaleXY);
                     read += 2;
                     // if the record was not completely read, finish reading
                     if (read < recSize) for (int j = read; j < recSize; j++) readShort( is );
