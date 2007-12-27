@@ -363,6 +363,7 @@ To display the available targets type:
         <include name="LICENSE"/>
         <include name="NOTICE"/>
         <include name="README"/>
+        <include name="CHANGES"/>
       </zipfileset>
       <zipfileset dir="${build}" prefix="${project}-${completeVersion}">
         <include name="*.jar"/>
@@ -394,6 +395,7 @@ To display the available targets type:
         <include name="MAINTAIN"/>
         <include name="NOTICE"/>
         <include name="README"/>
+        <include name="CHANGES"/>
         <include name="build.bat"/>
         <include name="build.sh"/>
         <include name="build.xml"/>
@@ -429,6 +431,7 @@ To display the available targets type:
         <include name="LICENSE"/>
         <include name="NOTICE"/>
         <include name="README"/>
+        <include name="CHANGES"/>
       </tarfileset>
       <tarfileset dir="${build}" prefix="${project}-${completeVersion}">
         <include name="*.jar"/>
@@ -460,6 +463,7 @@ To display the available targets type:
         <include name="MAINTAIN"/>
         <include name="NOTICE"/>
         <include name="README"/>
+        <include name="CHANGES"/>
         <include name="build.bat"/>
         <include name="build.sh"/>
         <include name="build.xml"/>
