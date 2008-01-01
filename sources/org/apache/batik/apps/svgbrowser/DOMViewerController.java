@@ -26,14 +26,15 @@ import org.w3c.dom.Node;
 /**
  * Provides the information needed for the DOMViewer to show and edit the
  * document.
+ *
+ * @version $Id$
  */
 public interface DOMViewerController {
 
     /**
      * Performs the document update.
      *
-     * @param runnable
-     *            The runnable that contains the update
+     * @param r The runnable that contains the update
      */
     void performUpdate(Runnable r);
 
