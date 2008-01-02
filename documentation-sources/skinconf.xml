@@ -94,7 +94,7 @@ which will be used to configure the chosen Forrest skin.
   <favicon-url></favicon-url>
 
   <!-- The following are used to construct a copyright statement -->
-  <year>2000–2007</year>
+  <year>2000–2008</year>
   <vendor>The Apache Software Foundation.</vendor>
   <copyright-link>http://www.apache.org/licenses/</copyright-link>
   
@@ -184,6 +184,9 @@ which will be used to configure the chosen Forrest skin.
     #content a:visited {
       text-decoration: none;
       border-bottom: 1px solid #ccc;
+    }
+    #footer a {
+      color: navy;
     }
     #content ul.minitoc a:visited {
       color: maroon;
