@@ -237,8 +237,10 @@
           the implementation of SVG DOM functions, bug fixes, performance
           improvements, and the beginning of some SVG 1.2 support.
           Declarative animation and some SVG 1.2 features were introduced
-          in Batik 1.7beta1.  Further SVG 1.2 functionality should be
-          supported in the 2.0 release.
+          in Batik 1.7beta1.  The 1.7 release brought mostly bug fixes.
+          Completion of remaining SVG 1.1 functionality and the addition
+          of Further SVG 1.2 functionality should be supported in the 2.0
+          release.
         </p>
         <p>
           The type of applications (e.g., transcoding applications)
