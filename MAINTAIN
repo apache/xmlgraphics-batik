@@ -79,7 +79,7 @@ For creating a distribution the following steps must be done:
 
  8) Update the README file describing the content of the release and
     the modifications which have taken place,
-    http://www.apache.org/dist/xml/batik/README.  This file has a
+    http://www.apache.org/dist/xmlgraphics/batik/README.  This file has a
     small header followed by the contents of the CHANGES file from the
     distribution.
 
@@ -102,7 +102,7 @@ For creating a distribution the following steps must be done:
 11) Use 'scp' to copy the distributions (with md5 hashes, and signature 
     files), the README, and the KEYS file under 
 
-        /www/www.apache.org/dist/xml/batik/
+        /www/www.apache.org/dist/xmlgraphics/batik/
 
     For example:
     
@@ -119,10 +119,10 @@ For creating a distribution the following steps must be done:
     Start by logging into svn.apache.org (e.g. 'ssh vhardy@svn.apache.org').
 
     First make sure file permissions are correct.  The
-    new files should be owned by group 'xml' and be group writable.
+    new files should be owned by group 'xmlgraphics' and be group writable.
     The following commands can do this (don't worry about links):
 
-       chgrp xml batik-1.5.zip
+       chgrp xmlgraphics batik-1.5.zip
        chmod 664 batik-1.5.zip
 
     If you are making a 'final' release you should delete the existing
@@ -130,7 +130,7 @@ For creating a distribution the following steps must be done:
     for every file with a version number in it - including md5, and
     asc files):
 
-       cd /www/www.apache.org/dist/xml/batik
+       cd /www/www.apache.org/dist/xmlgraphics/batik
        rm batik-current.zip
        ln -s batik-1.5.zip batik-current.zip
        rm batik-current.zip.md5
@@ -140,8 +140,8 @@ For creating a distribution the following steps must be done:
        <- lots more files ->
 
     Finally remove the old releases (every release is automatically copied 
-    to 'archives.apache.org/dist/xml/batik' from
-    'www.apache.org/dist/xml/batik' so you can just remove an old
+    to 'archive.apache.org/dist/xmlgraphics/batik' from
+    'www.apache.org/dist/xmlgraphics/batik' so you can just remove an old
     release from www.apache.org:
 
        rm batik-1.5b4.zip
