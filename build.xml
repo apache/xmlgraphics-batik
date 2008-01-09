@@ -83,8 +83,8 @@ To display the available targets type:
     <property name="Project"            value="Apache Batik"/>
     <property name="project"            value="batik"/>
     <property name="year"               value="2008"/>
-    <property name="version"            value="1.7"/>
-    <property name="revisionType"       value=""/>
+    <property name="version"            value="1.8"/>
+    <property name="revisionType"       value="pre"/>
     <property name="revisionNumber"     value=""/>
     <property name="completeVersion"    value="${version}${revisionType}${revisionNumber}"/>
   
