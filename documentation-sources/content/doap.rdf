@@ -8,7 +8,7 @@
 <!--
   =======================================================================
 
-   Copyright (c) 2006 The Apache Software Foundation.  
+   Copyright (c) 2006-2007 The Apache Software Foundation.  
    All rights reserved.
 
   =======================================================================
@@ -39,6 +39,13 @@
         <name>Batik 1.7beta1</name>
         <created>2007-03-29</created>
         <revision>1.7beta1</revision>
+      </Version>
+    </release>
+    <release>
+      <Version>
+        <name>Batik 1.7</name>
+        <created>2007-09-01</created>
+        <revision>1.7</revision>
       </Version>
     </release>
     <repository>
