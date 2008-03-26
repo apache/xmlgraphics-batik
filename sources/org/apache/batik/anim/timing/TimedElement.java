@@ -1398,6 +1398,26 @@ public abstract class TimedElement implements SMILConstants {
     }
 
     /**
+     * Returns an array of the begin timing specifiers on this timed element.
+     * XXX Note that this is an experimental public API and is subject to
+     * change, when somebody gets around to thinking of a better model for
+     * exposing animation information from the document.
+     */
+    public TimingSpecifier[] getBeginTimingSpecifiers() {
+        return (TimingSpecifier[]) beginTimes.clone();
+    }
+
+    /**
+     * Returns an array of the end timing specifiers on this timed element.
+     * XXX Note that this is an experimental public API and is subject to
+     * change, when somebody gets around to thinking of a better model for
+     * exposing animation information from the document.
+     */
+    public TimingSpecifier[] getEndTimingSpecifiers() {
+        return (TimingSpecifier[]) endTimes.clone();
+    }
+
+    /**
      * Fires a TimeEvent of the given type on this element.
      * @param eventType the type of TimeEvent ("beginEvent", "endEvent"
      *                  or "repeatEvent").
@@ -1540,7 +1560,7 @@ public abstract class TimedElement implements SMILConstants {
     /**
      * Implements {@link org.apache.batik.i18n.Localizable#setLocale(java.util.Locale)}.
      */
-    public static void setLocale( Locale l) {
+    public static void setLocale(Locale l) {
         localizableSupport.setLocale(l);
     }
 
