@@ -761,26 +761,18 @@ public abstract class CSSEngine {
                     Node attr = attrs.item(i);
                     String an = attr.getNodeName();
                     if (nonCSSPresentationalHints.contains(an)) {
-                      String attrValue = attr.getNodeValue();          // -- dvh
                         try {
                             LexicalUnit lu;
                             lu = parser.parsePropertyValue(attr.getNodeValue());
                             ph.property(an, lu, false);
                         } catch (Exception e) {
-
-                          System.err.println("\n***** CSSEngine: exception property.syntax.error:" + e );  // ---
-                          System.err.println("\nAttrValue:" + attrValue );
-                          System.err.println("\nException:" + e.getClass().getName() );
-                          e.printStackTrace( System.err );                           // ---
-                          System.err.println("\n***** CSSEngine: exception...." );   // ---
-
                             String m = e.getMessage();
                             if (m == null) m = "";
                             String u = ((documentURI == null)?"<unknown>":
                                         documentURI.toString());
                             String s = Messages.formatMessage
                                 ("property.syntax.error.at",
-                                 new Object[] { u, an, attr.getNodeValue(),m});
+                                 new Object[] { u, an, attr.getNodeValue(), m});
                             DOMException de = new DOMException(DOMException.SYNTAX_ERR, s);
                             if (userAgent == null) throw de;
                             userAgent.displayError(de);
