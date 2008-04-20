@@ -68,6 +68,12 @@ public class JPEGImageWriter implements ImageWriter {
                         params.getJPEGQuality().floatValue(),
                         params.getJPEGForceBaseline().booleanValue());
             }
+            if (params.getResolution() != null) {
+                int resDPI = params.getResolution().intValue();
+                param.setDensityUnit(JPEGEncodeParam.DENSITY_UNIT_DOTS_INCH);
+                param.setXDensity(resDPI);
+                param.setYDensity(resDPI);
+            }
             encoder.encode(bi, param);
         } else {
             encoder.encode(bi);
