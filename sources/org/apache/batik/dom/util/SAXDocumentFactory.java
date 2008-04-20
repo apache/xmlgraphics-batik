@@ -559,15 +559,17 @@ public class SAXDocumentFactory
 
         if (inProlog) {
             inProlog = false;
-            try {
-                isStandalone = parser.getFeature
-                    ("http://xml.org/sax/features/is-standalone");
-            } catch (SAXNotRecognizedException ex) {
-            }
-            try {
-                xmlVersion = (String) parser.getProperty
-                    ("http://xml.org/sax/properties/document-xml-version");
-            } catch (SAXNotRecognizedException ex) {
+            if (parser != null) {
+                try {
+                    isStandalone = parser.getFeature
+                        ("http://xml.org/sax/features/is-standalone");
+                } catch (SAXNotRecognizedException ex) {
+                }
+                try {
+                    xmlVersion = (String) parser.getProperty
+                        ("http://xml.org/sax/properties/document-xml-version");
+                } catch (SAXNotRecognizedException ex) {
+                }
             }
         }
 
