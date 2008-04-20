@@ -371,7 +371,7 @@ public abstract class AbstractJGVTComponent extends JComponent {
      */
     protected void initializeEventHandling() {
         if (eventsEnabled) {
-            eventDispatcher = new AWTEventDispatcher();
+            eventDispatcher = createEventDispatcher();
             if (selectableText) {
                 textSelectionManager = createTextSelectionManager
                     (eventDispatcher);
@@ -380,6 +380,11 @@ public abstract class AbstractJGVTComponent extends JComponent {
             }
         }
     }
+
+    protected AWTEventDispatcher createEventDispatcher() {
+        return new AWTEventDispatcher();
+    }
+
 
     ////////////////////////////////////////////////////////////////////////
     // Selection methods
