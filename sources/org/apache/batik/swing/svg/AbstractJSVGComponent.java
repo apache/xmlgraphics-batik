@@ -69,6 +69,7 @@ import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.event.EventDispatcher;
 import org.apache.batik.gvt.text.Mark;
 import org.apache.batik.gvt.renderer.ImageRenderer;
+import org.apache.batik.script.Interpreter;
 import org.apache.batik.swing.gvt.GVTTreeRendererEvent;
 import org.apache.batik.swing.gvt.JGVTComponent;
 import org.apache.batik.swing.gvt.JGVTComponentListener;
@@ -1319,6 +1320,19 @@ public class AbstractJSVGComponent extends JGVTComponent {
         if (bridgeContext != null) {
             setBridgeContextAnimationLimitingMode();
         }
+    }
+
+    /**
+     * Returns the {@link Interpreter} being used for script of the given
+     * MIME type.
+     *
+     * @param type The MIME type the returned <code>Interpreter</code> handles.
+     */
+    public Interpreter getInterpreter(String type) {
+        if (bridgeContext != null) {
+            return bridgeContext.getInterpreter(type);
+        }
+        return null;
     }
 
     /**
