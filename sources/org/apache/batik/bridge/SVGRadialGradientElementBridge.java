@@ -132,7 +132,7 @@ public class SVGRadialGradientElementBridge
             // XXX Make this work for non-AbstractGraphicsNodeBridges, like
             // the various text child bridges.
             Rectangle2D bbox = ((AbstractGraphicsNodeBridge) bridge).getBBox();
-            if (bbox != null && bbox.getWidth() == 0 || bbox.getHeight() == 0) {
+            if (bbox != null && (bbox.getWidth() == 0 || bbox.getHeight() == 0)) {
                 return null;
             }
         }
