@@ -392,17 +392,17 @@ public class DOMUtilities extends XMLUtilities {
             // Copy the prefixes from the prefixes map to the wrapper element
             if (prefixes != null) {
                 wrapperElementPrefix += " ";
-                Set keySet = prefixes.keySet();
-                Iterator iter = keySet.iterator();
+                Iterator iter = prefixes.entrySet().iterator();
                 while (iter.hasNext()) {
-                    String currentKey = (String) iter.next();
-                    String currentValue = (String) prefixes.get(currentKey);
+                    Map.Entry e = (Map.Entry) iter.next();
+                    String currentKey = (String) e.getKey();
+                    String currentValue = (String) e.getValue();
                     wrapperElementPrefix += currentKey + "=\"" + currentValue
                             + "\" ";
                 }
             }
             wrapperElementPrefix += ">";
-            wrapperElementSuffix += "</" + wrapperElementName + ">";
+            wrapperElementSuffix += "</" + wrapperElementName + '>';
         }
 
         // Try and parse as a whole document, if no wrapper element is specified
