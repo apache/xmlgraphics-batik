@@ -799,11 +799,11 @@ public abstract class TimedElement implements SMILConstants {
             boolean atLast;
             if (isActive) {
                 t = currentInterval.getBegin() + repeatDuration - lastRepeatTime;
-                atLast = lastRepeatTime + d == currentInterval.getBegin() + repeatDuration;
-            } else {
-                // Interval previousInterval = (Interval) previousIntervals.getLast();
-                t = previousInterval.getEnd() - lastRepeatTime;
-                atLast = lastRepeatTime + d == previousInterval.getEnd();
+                atLast = lastRepeatTime + d == currentInterval.getBegin() + repeatDuration;    // cam, given that d can
+            } else {                                                                           // be infinite, nan or value
+                // Interval previousInterval = (Interval) previousIntervals.getLast();         // does this always make sense?
+                t = previousInterval.getEnd() - lastRepeatTime;                                // at least i would use >=
+                atLast = lastRepeatTime + d == previousInterval.getEnd();                      // <- same here
             }
             if (atLast) {
                 // Trace.print("element frozen" + (isActive ? " (but still active)" : "") + ", sampling last value");
