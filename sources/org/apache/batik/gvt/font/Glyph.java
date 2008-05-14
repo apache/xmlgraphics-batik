@@ -261,7 +261,7 @@ public class Glyph {
 
 
     /**
-     * Returns the metics of this Glyph with the specified kerning value
+     * Returns the metrics of this Glyph with the specified kerning value
      * applied.
      *
      * @param hkern The horizontal kerning value to apply when calculating
