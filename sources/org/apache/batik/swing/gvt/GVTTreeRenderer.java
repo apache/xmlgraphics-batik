@@ -31,7 +31,7 @@ import org.apache.batik.util.EventDispatcher.Dispatcher;
 import org.apache.batik.util.HaltingThread;
 
 /**
- * This class represents an object which renders asynchroneaously
+ * This class represents an object which renders asynchronously
  * a GVT tree.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
@@ -170,7 +170,7 @@ public class GVTTreeRenderer extends HaltingThread {
                     ((GVTTreeRendererEvent)event);
             }
         };
-            
+
     static Dispatcher startedDispatcher = new Dispatcher() {
             public void dispatch(Object listener,
                                  Object event) {
@@ -178,7 +178,7 @@ public class GVTTreeRenderer extends HaltingThread {
                     ((GVTTreeRendererEvent)event);
             }
         };
-            
+
     static Dispatcher cancelledDispatcher = new Dispatcher() {
             public void dispatch(Object listener,
                                  Object event) {
@@ -186,7 +186,7 @@ public class GVTTreeRenderer extends HaltingThread {
                     ((GVTTreeRendererEvent)event);
             }
         };
-            
+
     static Dispatcher completedDispatcher = new Dispatcher() {
             public void dispatch(Object listener,
                                  Object event) {
@@ -194,7 +194,7 @@ public class GVTTreeRenderer extends HaltingThread {
                     ((GVTTreeRendererEvent)event);
             }
         };
-            
+
     static Dispatcher failedDispatcher = new Dispatcher() {
             public void dispatch(Object listener,
                                  Object event) {
@@ -202,6 +202,6 @@ public class GVTTreeRenderer extends HaltingThread {
                     ((GVTTreeRendererEvent)event);
             }
         };
-            
+
 
 }
