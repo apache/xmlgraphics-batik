@@ -261,6 +261,13 @@ jar xvf batik-1.6.zip</source>
     <section id="dependencyGraph">
       <title>Jar file dependency graph</title>
 
+      <warning label="Out of date">
+        <p>
+          Note that the dependency graph in this section is out of date,
+          and needs to be updated.
+        </p>
+      </warning>
+
       <p>
         The Batik distribution comes with many jar files.  Not all of them are
         needed in every case (although the provided applications tend to use
