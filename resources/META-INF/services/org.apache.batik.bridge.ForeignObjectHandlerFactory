@@ -18,7 +18,7 @@
 # This file registers factories for handlers of <foreignObject>
 # element content.
 #
-# $Id: org.apache.batik.dom.DomExtension 498556 2007-01-22 08:16:03Z cam $
+# $Id$
 # -----------------------------------------------------------------------------
 
 # XHTML content, using the Flying Saucer XHTML renderer
