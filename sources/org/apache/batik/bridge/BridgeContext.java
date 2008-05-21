@@ -193,6 +193,11 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     protected InterpreterPool interpreterPool;
 
     /**
+     * The pool of ForeignObjectHandler factories.
+     */
+    protected ForeignObjectHandlerPool foreignObjectHandlerPool;
+
+    /**
      * The document loader used to load/create Document.
      */
     protected DocumentLoader documentLoader;
@@ -277,6 +282,12 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     private static InterpreterPool sharedPool = new InterpreterPool();
 
     /**
+     * By default we share a unique instance of ForeignObjectHandlerPool.
+     */
+    private static ForeignObjectHandlerPool sharedFOHPool =
+        new ForeignObjectHandlerPool();
+
+    /**
      * Constructs a new empty bridge context.
      */
     protected BridgeContext() {}
@@ -298,21 +309,48 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      */
     public BridgeContext(UserAgent userAgent,
                          DocumentLoader loader) {
-        this(userAgent, sharedPool, loader);
+        this(userAgent, sharedPool, sharedFOHPool, loader);
     }
 
     /**
      * Constructs a new bridge context.
      * @param userAgent the user agent
      * @param interpreterPool the interpreter pool
+     * @param loader document loader
+     */
+    public BridgeContext(UserAgent userAgent,
+                         InterpreterPool interpreterPool,
+                         DocumentLoader loader) {
+        this(userAgent, interpreterPool, sharedFOHPool, loader);
+    }
+
+    /**
+     * Constructs a new bridge context.
+     * @param userAgent the user agent
+     * @param fohPool the pool of ForeignObjectHandler factories
+     * @param loader document loader
+     */
+    public BridgeContext(UserAgent userAgent,
+                         ForeignObjectHandlerPool fohPool,
+                         DocumentLoader loader) {
+        this(userAgent, sharedPool, fohPool, loader);
+    }
+
+    /**
+     * Constructs a new bridge context.
+     * @param userAgent the user agent
+     * @param interpreterPool the interpreter pool
+     * @param fohPool the pool of ForeignObjectHandler factories
      * @param documentLoader document loader
      */
     public BridgeContext(UserAgent userAgent,
                          InterpreterPool interpreterPool,
+                         ForeignObjectHandlerPool fohPool,
                          DocumentLoader documentLoader) {
         this.userAgent = userAgent;
         this.viewportMap.put(userAgent, new UserAgentViewport(userAgent));
         this.interpreterPool = interpreterPool;
+        this.foreignObjectHandlerPool = fohPool;
         this.documentLoader = documentLoader;
     }
 
@@ -526,6 +564,13 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     }
 
     /**
+     * Returns the ForeignObjectHandlerFactory pool.
+     */
+    public ForeignObjectHandlerPool getForeignObjectHandlerPool() {
+        return foreignObjectHandlerPool;
+    }
+
+    /**
      * Returns the focus manager.
      */
     public FocusManager getFocusManager() {
@@ -577,6 +622,22 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         }
 
         return interpreter;
+    }
+
+    /**
+     * Returns a ForeignObjectHandler for the given namespace URI.
+     * @param ns the namespace URI of the element to be handled as
+     *           foreign object content
+     */
+    public ForeignObjectHandler createForeignObjectHandler(String ns) {
+        try {
+            return foreignObjectHandlerPool.createForeignObjectHandler(ns);
+        } catch (Exception e) {
+            if (userAgent != null) {
+                userAgent.displayError(e);
+            }
+        }
+        return null;
     }
 
     /**

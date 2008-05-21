@@ -127,6 +127,7 @@ public class SVGBridgeExtension implements BridgeExtension {
         ctx.putBridge(new SVGFeTurbulenceElementBridge());
         ctx.putBridge(new SVGFontElementBridge());
         ctx.putBridge(new SVGFontFaceElementBridge());
+        ctx.putBridge(new SVGForeignObjectElementBridge());
         ctx.putBridge(new SVGFilterElementBridge());
         ctx.putBridge(new SVGGElementBridge());
         ctx.putBridge(new SVGGlyphElementBridge());

@@ -158,6 +158,9 @@ To display the available targets type:
     <available property="jacl.present" classname="tcl.lang.Interp">
       <classpath refid="libs-classpath"/>
     </available>
+    <available property="xhtmlrenderer.present" classname="org.xhtmlrenderer.Version">
+      <classpath refid="libs-classpath"/>
+    </available>
     <available property="jdk14.present" classname="java.lang.CharSequence"/>
     
     <!-- When compiling Batik under GNU Classpath, the Sun codecs are not available. -->
@@ -1017,6 +1020,8 @@ JAVA=/usr/bin/java
                unless="sun-codecs.present"/>
       <exclude name="${package-prefix}/ext/awt/image/codec/tiff/*"
                unless="sun-codecs.present"/>
+      <exclude name="${package-prefix}/bridge/XHTMLForeignObjectHandler.java"
+               unless="xhtmlrenderer.present"/>
     </javac>
     <property name="compile.done" value="true"/>
   </target>
@@ -1530,6 +1535,7 @@ JAVA=/usr/bin/java
       <fileset dir="${resources}" excludes="**/.svn/">
         <include name="${package-prefix}/bridge/BrokenLink.svg"/>
         <include name="${package-prefix}/bridge/**/resources/*"/>
+        <include name="META-INF/services/org.apache.batik.bridge.ForeignObjectHandlerFactory"/>
       </fileset>
     </jar>
   </target>

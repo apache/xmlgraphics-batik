@@ -27,8 +27,10 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsDevice;
 import java.awt.Image;
 import java.awt.Paint;
+import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.font.GlyphVector;
@@ -38,8 +40,10 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.image.BufferedImage;
 import java.awt.image.BufferedImageOp;
+import java.awt.image.ColorModel;
 import java.awt.image.ImageObserver;
 import java.awt.image.RenderedImage;
+import java.awt.image.VolatileImage;
 import java.awt.image.renderable.RenderableImage;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -141,6 +145,11 @@ public class SVGGraphics2D extends AbstractGraphics2D
      * SVG Canvas size
      */
     protected Dimension svgCanvasSize;
+
+    /**
+     * The GraphicsConfiguration that describes this Graphics2D.
+     */
+    protected GraphicsConfiguration config;
 
     /**
      * Used to create proper font metrics
@@ -1484,8 +1493,10 @@ public class SVGGraphics2D extends AbstractGraphics2D
      * <code>Graphics2D</code>.
      */
     public GraphicsConfiguration getDeviceConfiguration(){
-        // TO BE DONE.
-        return null;
+        if (config == null) {
+            config = new Config();
+        }
+        return config;
     }
 
     /* This is the list of attributes that can't currently be
@@ -1536,4 +1547,49 @@ public class SVGGraphics2D extends AbstractGraphics2D
         return false;
     }
 
+    /**
+     * Implementation of GraphicsConfiguration that describes this Graphics2D.
+     */
+    public class Config extends GraphicsConfiguration {
+
+        public BufferedImage createCompatibleImage(int w, int h) {
+            return new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+        }
+
+        public BufferedImage createCompatibleImage(int w, int h, int tr) {
+            return null;
+        }
+
+        public VolatileImage createCompatibleVolatileImage(int w, int h) {
+            return null;
+        }
+
+        public VolatileImage createCompatibleVolatileImage(int w, int h, int transparency) {
+            return null;
+        }
+
+        public Rectangle getBounds() {
+            return null;
+        }
+
+        public ColorModel getColorModel() {
+            return null;
+        }
+
+        public ColorModel getColorModel(int transparency) {
+            return null;
+        }
+
+        public AffineTransform getDefaultTransform() {
+            return new AffineTransform();
+        }
+
+        public GraphicsDevice getDevice() {
+            return null;
+        }
+
+        public AffineTransform getNormalizingTransform() {
+            return new AffineTransform();
+        }
+    }
 }
