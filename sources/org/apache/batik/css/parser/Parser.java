@@ -724,7 +724,7 @@ public class Parser implements ExtendedParser, Localizable {
                 default:
                     throw createCSSParseException("right.bracket");
                 case LexicalUnits.RIGHT_BRACKET:
-                    nextIgnoreSpaces();
+                    next();
                     c = conditionFactory.createAttributeCondition
                         (name, null, false, null);
                     break;
