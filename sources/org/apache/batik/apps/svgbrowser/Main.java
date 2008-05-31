@@ -297,9 +297,7 @@ public class Main implements Application {
                         String name = method.getName();
                         if (name.equals("handleAbout")) {
                             JSVGViewerFrame relativeTo =
-                                viewerFrames.isEmpty()
-                                    ?  null
-                                    : (JSVGViewerFrame) viewerFrames.get(0);
+                                (JSVGViewerFrame) viewerFrames.get(0);
                             AboutDialog dlg = new AboutDialog(relativeTo);
                             // Work around pack() bug on some platforms
                             dlg.setSize(dlg.getPreferredSize());
@@ -308,9 +306,7 @@ public class Main implements Application {
                             dlg.toFront();
                         } else if (name.equals("handlePreferences")) {
                             JSVGViewerFrame relativeTo =
-                                viewerFrames.isEmpty()
-                                    ?  null
-                                    : (JSVGViewerFrame) viewerFrames.get(0);
+                                (JSVGViewerFrame) viewerFrames.get(0);
                             showPreferenceDialog(relativeTo);
                         } else if (name.equals("handleQuit")) {
                             // Do nothing, let the OS quit the app.
