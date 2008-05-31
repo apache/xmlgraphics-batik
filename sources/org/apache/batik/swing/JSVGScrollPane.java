@@ -393,6 +393,8 @@ public class JSVGScrollPane extends JPanel
             }
 
             Rectangle2D newview = getViewBoxRect();
+            if (newview == null) return;
+
             if ((newview.getX() != viewBox.getX()) ||
                 (newview.getY() != viewBox.getY()) ||
                 (newview.getWidth() != viewBox.getWidth()) ||
@@ -409,6 +411,8 @@ public class JSVGScrollPane extends JPanel
             }
 
             Rectangle2D newview = getViewBoxRect();
+            if (newview == null) return;
+
             if ((newview.getX() != viewBox.getX()) ||
                 (newview.getY() != viewBox.getY()) ||
                 (newview.getWidth() != viewBox.getWidth()) ||
@@ -581,7 +585,11 @@ public class JSVGScrollPane extends JPanel
     protected void checkAndSetViewBoxRect() {
         if (viewBox != null) return;
 
-        viewBox = getViewBoxRect();
+        Rectangle2D newview = getViewBoxRect();
+        if (newview == null) return;
+
+        viewBox = newview;
+
         // System.out.println("  ** viewBox rect set: "+viewBox);
         // System.out.println("  ** doc size: "+
         //                    canvas.getSVGDocumentSize());
