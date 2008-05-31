@@ -46,10 +46,12 @@ public class SVGOMFEDiffuseLightingElement
             new DoublyIndexedTable(SVGOMFilterPrimitiveStandardAttributes.xmlTraitInformation);
         t.put(null, SVG_IN_ATTRIBUTE,
                 new TraitInformation(true, SVGTypes.TYPE_CDATA));
-        t.put(null, SVG_IN2_ATTRIBUTE,
-                new TraitInformation(true, SVGTypes.TYPE_CDATA));
-        t.put(null, SVG_MODE_ATTRIBUTE,
-                new TraitInformation(true, SVGTypes.TYPE_IDENT));
+        t.put(null, SVG_SURFACE_SCALE_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_NUMBER));
+        t.put(null, SVG_DIFFUSE_CONSTANT_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_NUMBER));
+        t.put(null, SVG_KERNEL_UNIT_LENGTH_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_NUMBER_OPTIONAL_NUMBER));
         xmlTraitInformation = t;
     }
 
