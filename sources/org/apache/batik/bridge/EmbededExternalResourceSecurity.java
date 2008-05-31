@@ -36,7 +36,7 @@ public class EmbededExternalResourceSecurity implements ExternalResourceSecurity
      * in the document.
      */
     public static final String ERROR_EXTERNAL_RESOURCE_NOT_EMBEDED
-        = "EmbededExternalResourceSecurity.error.external.esource.not.embeded";
+        = "EmbededExternalResourceSecurity.error.external.resource.not.embeded";
 
     /**
      * The exception is built in the constructor and thrown if 
