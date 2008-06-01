@@ -518,7 +518,6 @@ public interface SVGConstants extends CSSConstants, XMLConstants {
     String SVG_KEY_TIMES_ATTRIBUTE = "keyTimes";
     String SVG_LANG_ATTRIBUTE = "lang";
     String SVG_LENGTH_ADJUST_ATTRIBUTE = "lengthAdjust";
-    String SVG_LIGHT_COLOR_ATTRIBUTE = "lightColor";
     String SVG_LIGHTING_COLOR_ATTRIBUTE = "lighting-color";
     String SVG_LIMITING_CONE_ANGLE_ATTRIBUTE = "limitingConeAngle";
     String SVG_LOCAL_ATTRIBUTE = "local";
@@ -540,8 +539,6 @@ public interface SVGConstants extends CSSConstants, XMLConstants {
     String SVG_OPACITY_ATTRIBUTE = CSS_OPACITY_PROPERTY;
     String SVG_OPERATOR_ATTRIBUTE = "operator";
     String SVG_ORDER_ATTRIBUTE = "order";
-    String SVG_ORDER_X_ATTRIBUTE = "orderX";
-    String SVG_ORDER_Y_ATTRIBUTE = "orderY";
     String SVG_ORIENT_ATTRIBUTE = "orient";
     String SVG_ORIENTATION_ATTRIBUTE = "orientation";
     String SVG_ORIGIN_ATTRIBUTE = "origin";
@@ -569,7 +566,6 @@ public interface SVGConstants extends CSSConstants, XMLConstants {
     String SVG_REQUIRED_FEATURES_ATTRIBUTE = "requiredFeatures";
     String SVG_REQUIRED_EXTENSIONS_ATTRIBUTE = "requiredExtensions";
     String SVG_RESULT_ATTRIBUTE = "result";
-    String SVG_RESULT_SCALE_ATTRIBUTE = "resultScale";
     String SVG_RESTART_ATTRIBUTE = "restart";
     String SVG_RX_ATTRIBUTE = "rx";
     String SVG_RY_ATTRIBUTE = "ry";
@@ -606,7 +602,6 @@ public interface SVGConstants extends CSSConstants, XMLConstants {
     String SVG_STYLE_ATTRIBUTE = "style";
     String SVG_SURFACE_SCALE_ATTRIBUTE = "surfaceScale";
     String SVG_SYSTEM_LANGUAGE_ATTRIBUTE = "systemLanguage";
-    String SVG_TABLE_ATTRIBUTE = "table";
     String SVG_TABLE_VALUES_ATTRIBUTE = "tableValues";
     String SVG_TARGET_ATTRIBUTE = "target";
     String SVG_TARGET_X_ATTRIBUTE = "targetX";
