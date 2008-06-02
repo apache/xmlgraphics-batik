@@ -26,7 +26,7 @@ import java.io.IOException;
  * Wrapper for SAX Exceptions which would make it possible to
  * include line and column information with SAX parse errors.
  *
- * @author <a href="mailto:deweese@apache.org>deweese</a>
+ * @author <a href="mailto:deweese@apache.org">Thomas DeWeese</a>
  * @version $Id$
  */
 public class SAXIOException extends IOException {
