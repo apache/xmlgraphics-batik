@@ -46,7 +46,7 @@ import org.apache.batik.util.SVGConstants;
  * an SVG document by comparing the generated SVG document to a known,
  * valid SVG reference.
  *
- * @author <a href="mailto:deweese@apache.org>deweese</a>
+ * @author <a href="mailto:deweese@apache.org">Thomas DeWeese</a>
  * @version $Id$
  */
 public class WMFAccuracyTest extends AbstractTest
