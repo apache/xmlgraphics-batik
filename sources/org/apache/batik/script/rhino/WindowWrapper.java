@@ -30,7 +30,9 @@ import org.mozilla.javascript.ImporterTopLevel;
 import org.mozilla.javascript.NativeObject;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
+
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
 /**
  * This class wraps a Window object to expose it to the interpreter.
@@ -60,8 +62,8 @@ public class WindowWrapper extends ImporterTopLevel {
     public WindowWrapper(Context context) {
         super(context);
         String[] names = { "setInterval", "setTimeout", "clearInterval",
-                           "clearTimeout", "parseXML", "getURL", "postURL",
-                           "alert", "confirm", "prompt" };
+                           "clearTimeout", "parseXML", "printNode", "getURL",
+                           "postURL", "alert", "confirm", "prompt" };
         this.defineFunctionProperties(names, WindowWrapper.class,
                                       ScriptableObject.DONTENUM);
     }
@@ -184,6 +186,32 @@ public class WindowWrapper extends ImporterTopLevel {
                 }
             }, acc);
         return Context.toObject(ret, thisObj);
+    }
+
+    /**
+     * Wraps the 'printNode' method of the Window interface.
+     */
+    public static Object printNode(Context cx,
+                                   Scriptable thisObj,
+                                   final Object[] args,
+                                   Function funObj) {
+        if (args.length != 1) {
+            throw Context.reportRuntimeError("invalid argument count");
+        }
+
+        WindowWrapper ww = (WindowWrapper)thisObj;
+        final Window window = ww.window;
+
+        AccessControlContext acc =
+            ((RhinoInterpreter)window.getInterpreter()).getAccessControlContext();
+
+        Object ret = AccessController.doPrivileged(new PrivilegedAction() {
+                public Object run() {
+                    return window.printNode
+                        ((Node) Context.jsToJava(args[0], Node.class));
+                }
+            }, acc);
+        return Context.toString(ret);
     }
 
     /**
@@ -366,7 +394,7 @@ public class WindowWrapper extends ImporterTopLevel {
         if (result == null) {
             return null;
         }
-        return Context.toObject(result, thisObj);
+        return Context.toString(result);
     }
 
     /**

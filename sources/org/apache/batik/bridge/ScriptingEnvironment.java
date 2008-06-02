@@ -26,6 +26,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.URL;
@@ -976,6 +977,20 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
                         XMLResourceDescriptor.getXMLParserClassName());
             }
             return DOMUtilities.parseXML(text, doc, uri, null, null, sdf);
+        }
+
+        /**
+         * Serializes the given node.
+         */
+        public String printNode(Node n) {
+            try {
+                Writer writer = new StringWriter();
+                DOMUtilities.writeNode(n, writer);
+                writer.close();
+                return writer.toString();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         }
 
         /**

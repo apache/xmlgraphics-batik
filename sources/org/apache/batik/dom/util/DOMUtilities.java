@@ -23,10 +23,12 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.xml.XMLUtilities;
 
 import org.w3c.dom.Attr;
@@ -46,20 +48,251 @@ import org.w3c.dom.NodeList;
  * @version $Id$
  */
 public class DOMUtilities extends XMLUtilities {
+
     /**
-     * Do not need to be instantiated.
+     * Does not need to be instantiated.
      */
     protected DOMUtilities() {
     }
+ 
+    private static class NSMap {
+        private String prefix;
+        private String ns; // "" is used for no namespace
+        private NSMap next;
+        private int nextPrefixNumber;
+
+        public NSMap declare(String prefix, String ns) {
+            NSMap m = new NSMap();
+            m.prefix = prefix;
+            m.ns = ns;
+            m.next = this;
+            m.nextPrefixNumber = this.nextPrefixNumber;
+            return m;
+        }
+
+        public String getNewPrefix() {
+            String prefix;
+            do {
+                prefix = "a" + nextPrefixNumber++;
+            } while (getNamespace(prefix) != null);
+            return prefix;
+        }
+
+        public String getNamespace(String prefix) {
+            for (NSMap m = this; m.next != null; m = m.next) {
+                if (m.prefix.equals(prefix)) {
+                    return m.ns;
+                }
+            }
+            return null;
+        }
+
+        public String getPrefixForElement(String ns) {
+            for (NSMap m = this; m.next != null; m = m.next) {
+                if (ns.equals(m.ns)) {
+                    return m.prefix;
+                }
+            }
+            return null;
+        }
+
+        public String getPrefixForAttr(String ns) {
+            for (NSMap m = this; m.next != null; m = m.next) {
+                if (ns.equals(m.ns) && !m.prefix.equals("")) {
+                    return m.prefix;
+                }
+            }
+            return null;
+        }
+    }
 
     /**
-     * Writes the given document using the given writer.
+     * Serializes the specified <code>Document</code>, writing it to the given
+     * <code>Writer</code>.
      */
     public static void writeDocument(Document doc, Writer w) throws IOException {
+        AbstractDocument d = (AbstractDocument) doc;
+        if (doc.getDocumentElement() == null) {
+            throw new IOException("No document element");
+        }
+        NSMap m = new NSMap();
         for (Node n = doc.getFirstChild();
              n != null;
              n = n.getNextSibling()) {
-            writeNode(n, w);
+            writeNode(n, w, m, "1.1".equals(d.getXmlVersion()));
+        }
+    }
+
+    protected static void writeNode(Node n, Writer w, NSMap m, boolean isXML11)
+            throws IOException {
+        switch (n.getNodeType()) {
+        case Node.ELEMENT_NODE: {
+            if (n.hasAttributes()) {
+                NamedNodeMap attr = n.getAttributes();
+                int len = attr.getLength();
+                for (int i = 0; i < len; i++) {
+                    Attr a = (Attr)attr.item(i);
+                    String name = a.getNodeName();
+                    if (name.startsWith("xmlns")) {
+                        if (name.length() == 5) {
+                            m = m.declare("", a.getNodeValue());
+                        } else {
+                            String prefix = name.substring(6);
+                            m = m.declare(prefix, a.getNodeValue());
+                        }
+                    }
+                }
+            }
+
+            w.write('<');
+            String ns = n.getNamespaceURI();
+            String tagName;
+            if (ns == null) {
+                tagName = n.getNodeName();
+                w.write(tagName);
+                if (!"".equals(m.getNamespace(""))) {
+                    w.write(" xmlns=\"\"");
+                    m = m.declare("", "");
+                }
+            } else {
+                String prefix = n.getPrefix();
+                if (prefix == null) {
+                    prefix = "";
+                }
+                if (ns.equals(m.getNamespace(prefix))) {
+                    tagName = n.getNodeName();
+                    w.write(tagName);
+                } else {
+                    prefix = m.getPrefixForElement(ns);
+                    if (prefix == null) {
+                        prefix = m.getNewPrefix();
+                        tagName = prefix + ':' + n.getLocalName();
+                        w.write(tagName + " xmlns:" + prefix + "=\""
+                                 + contentToString(ns, isXML11) + '"');
+                        m = m.declare(prefix, ns);
+                    } else {
+                        if (prefix.equals("")) {
+                            tagName = n.getLocalName();
+                        } else {
+                            tagName = prefix + ':' + n.getLocalName();
+                        }
+                        w.write(tagName);
+                    }
+                }
+            }
+
+            if (n.hasAttributes()) {
+                NamedNodeMap attr = n.getAttributes();
+                int len = attr.getLength();
+                for (int i = 0; i < len; i++) {
+                    Attr a = (Attr)attr.item(i);
+                    String name = a.getNodeName();
+                    String prefix = a.getPrefix();
+                    String ans = a.getNamespaceURI();
+                    if (ans != null &&
+                            !("xmlns".equals(prefix) || name.equals("xmlns"))) {
+                        if (prefix != null
+                                && !ans.equals(m.getNamespace(prefix))
+                                || prefix == null) {
+                            prefix = m.getPrefixForAttr(ans);
+                            if (prefix == null) {
+                                prefix = m.getNewPrefix();
+                                m = m.declare(prefix, ans);
+                            }
+                            name = prefix + ':' + a.getLocalName();
+                        }
+                    }
+                    w.write(' ' + name + "=\""
+                             + contentToString(a.getNodeValue(), isXML11)
+                             + '"');
+                }
+            }
+
+            Node c = n.getFirstChild();
+            if (c != null) {
+                w.write('>');
+                do {
+                    writeNode(c, w, m, isXML11);
+                    c = c.getNextSibling();
+                } while (c != null);
+                w.write("</" + tagName + '>');
+            } else {
+                w.write("/>");
+            }
+            break;
+        }
+        case Node.TEXT_NODE:
+            w.write(contentToString(n.getNodeValue(), isXML11));
+            break;
+        case Node.CDATA_SECTION_NODE: {
+            String data = n.getNodeValue();
+            if (data.indexOf("]]>") != -1) {
+                throw new IOException("Unserializable CDATA section node");
+            }
+            w.write("<![CDATA["
+                     + assertValidCharacters(data, isXML11)
+                     + "]]>");
+            break;
+        }
+        case Node.ENTITY_REFERENCE_NODE:
+            w.write('&' + n.getNodeName() + ';');
+            break;
+        case Node.PROCESSING_INSTRUCTION_NODE: {
+            String target = n.getNodeName();
+            String data = n.getNodeValue();
+            if (target.equalsIgnoreCase("xml")
+                    || target.indexOf(':') != -1
+                    || data.indexOf("?>") != -1) {
+                throw new
+                    IOException("Unserializable processing instruction node");
+            }
+            w.write("<?" + target + ' ' + data + "?>");
+            break;
+        }
+        case Node.COMMENT_NODE: {
+            w.write("<!--");
+            String data = n.getNodeValue();
+            int len = data.length();
+            if (len != 0 && data.charAt(len - 1) == '-'
+                    || data.indexOf("--") != -1) {
+                throw new IOException("Unserializable comment node");
+            }
+            w.write(data);
+            w.write("-->");
+            break;
+        }
+        case Node.DOCUMENT_TYPE_NODE: {
+            DocumentType dt = (DocumentType)n;
+            w.write("<!DOCTYPE "
+                     + n.getOwnerDocument().getDocumentElement().getNodeName());
+            String pubID = dt.getPublicId();
+            if (pubID != null) {
+                char q = getUsableQuote(pubID);
+                if (q == 0) {
+                    throw new IOException("Unserializable DOCTYPE node");
+                }
+                w.write(" PUBLIC " + q + pubID + q);
+            }
+            String sysID = dt.getSystemId();
+            if (sysID != null) {
+                char q = getUsableQuote(sysID);
+                if (q == 0) {
+                    throw new IOException("Unserializable DOCTYPE node");
+                }
+                if (pubID == null) {
+                    w.write(" SYSTEM");
+                }
+                w.write(" " + q + sysID + q);
+            }
+            String subset = dt.getInternalSubset();
+            if (subset != null) {
+                w.write('[' + subset + ']');
+            }
+            w.write('>');
+            break;
+        }
+        default:
+            throw new IOException("Unknown DOM node type " + n.getNodeType());
         }
     }
 
@@ -67,82 +300,41 @@ public class DOMUtilities extends XMLUtilities {
      * Writes a node using the given writer.
      */
     public static void writeNode(Node n, Writer w) throws IOException {
-        switch (n.getNodeType()) {
-        case Node.ELEMENT_NODE:
-            w.write("<");
-            w.write(n.getNodeName());
+        if (n.getNodeType() == Node.DOCUMENT_NODE) {
+            writeDocument((Document) n, w);
+        } else {
+            AbstractDocument d = (AbstractDocument) n.getOwnerDocument();
+            writeNode(n, w, new NSMap(),
+                      d == null ? false : "1.1".equals(d.getXmlVersion()));
+        }
+    }
 
-            if (n.hasAttributes()) {
-                NamedNodeMap attr = n.getAttributes();
-                int len = attr.getLength();
-                for (int i = 0; i < len; i++) {
-                    Attr a = (Attr)attr.item(i);
-                    w.write(" ");
-                    w.write(a.getNodeName());
-                    w.write("=\"");
-                    w.write(contentToString(a.getNodeValue()));
-                    w.write("\"");
+    /**
+     * Returns the quote character to use when quoting the specified string.
+     * If the string contains both single and double quotes, then 0 will be
+     * returned.
+     */
+    private static char getUsableQuote(String s) {
+        char ret = 0;
+        int i = s.length() - 1;
+        while (i >= 0) {
+            char c = s.charAt(i);
+            if (c == '"') {
+                if (ret == 0) {
+                    ret = '\'';
+                } else {
+                    return 0;
+                }
+            } else if (c == '\'') {
+                if (ret == 0) {
+                    ret = '"';
+                } else {
+                    return 0;
                 }
             }
-
-            Node c = n.getFirstChild();
-            if (c != null) {
-                w.write(">");
-                for (; c != null;
-                     c = c.getNextSibling()) {
-                    writeNode(c, w);
-                }
-                w.write("</");
-                w.write(n.getNodeName());
-                w.write(">");
-            } else {
-                w.write("/>");
-            }
-            break;
-        case Node.TEXT_NODE:
-            w.write(contentToString(n.getNodeValue()));
-            break;
-        case Node.CDATA_SECTION_NODE:
-            w.write("<![CDATA[");
-            w.write(n.getNodeValue());
-            w.write("]]>");
-            break;
-        case Node.ENTITY_REFERENCE_NODE:
-            w.write("&");
-            w.write(n.getNodeName());
-            w.write(";");
-            break;
-        case Node.PROCESSING_INSTRUCTION_NODE:
-            w.write("<?");
-            w.write(n.getNodeName());
-            // TD: Bug #19392
-            w.write(" ");
-            w.write(n.getNodeValue());
-            w.write("?>");
-            break;
-        case Node.COMMENT_NODE:
-            w.write("<!--");
-            w.write(n.getNodeValue());
-            w.write("-->");
-            break;
-        case Node.DOCUMENT_TYPE_NODE: {
-            DocumentType dt = (DocumentType)n;
-            w.write ("<!DOCTYPE ");
-            w.write (n.getOwnerDocument().getDocumentElement().getNodeName());
-            String pubID = dt.getPublicId();
-            if (pubID != null) {
-                w.write (" PUBLIC \"" + dt.getNodeName() + "\" \"" +
-                           pubID + "\">");
-            } else {
-                String sysID = dt.getSystemId();
-                if (sysID != null)
-                    w.write (" SYSTEM \"" + sysID + "\">");
-            }
-            break;
+            i--;
         }
-        default:
-            throw new IOException("Unknown DOM node type " + n.getNodeType());
-        }
+        return ret == 0 ? '"' : ret;
     }
 
     /**
@@ -164,15 +356,36 @@ public class DOMUtilities extends XMLUtilities {
         return writer.toString();
     }
 
+    protected static String assertValidCharacters(String s, boolean isXML11)
+            throws IOException {
+
+        int len = s.length();
+        for (int i = 0; i < len; i++) {
+            char c = s.charAt(i);
+            if (!isXML11 && !isXMLCharacter(c)
+                    || isXML11 && !isXML11Character(c)) {
+                throw new IOException("Invalid character");
+            }
+        }
+        return s;
+    }
+
     /**
      * Returns the given content value transformed to replace invalid
      * characters with entities.
      */
-    public static String contentToString(String s) {
-        StringBuffer result = new StringBuffer( s.length() );
+    public static String contentToString(String s, boolean isXML11)
+            throws IOException {
 
-        for (int i = 0; i < s.length(); i++) {
+        StringBuffer result = new StringBuffer(s.length());
+
+        int len = s.length();
+        for (int i = 0; i < len; i++) {
             char c = s.charAt(i);
+            if (!isXML11 && !isXMLCharacter(c)
+                    || isXML11 && !isXML11Character(c)) {
+                throw new IOException("Invalid character");
+            }
 
             switch (c) {
             case '<':

@@ -169,7 +169,11 @@ public class XMLPreferenceManager extends PreferenceManager {
                 String v = (String)m.get(n);
                 
                 w.write("<property name=\"" + n + "\">");
-                w.write(DOMUtilities.contentToString(v));
+                try {
+                    w.write(DOMUtilities.contentToString(v, false));
+                } catch (IOException ex) {
+                    // unlikely to happen
+                }
                 w.write("</property>\n");
             }
 

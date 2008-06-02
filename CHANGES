@@ -11,6 +11,22 @@ Bug fixing is an on-going task, so it is implied in all sub-releases.
 
     44590, 44966
 
+2. New features
+
+  * Support for the printNode() script function.
+
+3. Improvements
+
+  * DocumentType nodes are now created for XML documents where one was
+    supplied in the markup (although only the name, publicId and systemId
+    properties of the DocumentType object are filled in).
+
+4. Bug fixes
+
+  * Better DOM serialization code.
+  * The prompt() script function now returns a proper ECMAScript String
+    value instead of an object.
+
 1.7beta1 -> 1.7
 ---------------
 
