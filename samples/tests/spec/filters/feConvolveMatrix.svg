@@ -4,11 +4,12 @@
 
 <!--
 
-   Copyright 2001  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -28,8 +29,11 @@
 
 <?xml-stylesheet type="text/css" href="../../resources/style/test.css" ?>
 
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="body" width="450" height="500" viewBox="0 0 450 500">
-<title>feMerge Test</title>
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     id="body" width="450" height="500" viewBox="0 0 450 500">
+
+  <title>feMerge Test</title>
 
   <!-- ============================================================= -->
   <!-- Test content                                                  -->
@@ -37,13 +41,13 @@
   <g id="testContent">
 
     <text x="225" y="40" class="title">
-  	feConvolveMatrix Text
+    feConvolveMatrix Text
     </text>
 
     <defs>
 
 
-  	<filter id="conv-rep-tr" x="0" y="0" width="1" height="1">
+    <filter id="conv-rep-tr" x="0" y="0" width="1" height="1">
         <feConvolveMatrix order="11 11"
          kernelMatrix="0 0 0 0 0 0 0 0 0 0 0
                        0 0 0 0 0 0 0 0 0 0 0
@@ -57,9 +61,9 @@
                        0 0 0 0 0 0 0 0 0 0 0
                        1 0 0 0 0 0 0 0 0 0 0"
          edgeMode="duplicate" />
-  	</filter>
+    </filter>
 
-  	<filter id="conv-centX" x="0" y="0" width="1" height="1">
+    <filter id="conv-centX" x="0" y="0" width="1" height="1">
         <feConvolveMatrix order="11 11"
          kernelMatrix="0 0 0 0 0 0 0 0 0 0 0
                        0 0 0 0 0 0 0 0 0 0 0
@@ -74,9 +78,9 @@
                       10 0 0 0 0 0 0 0 0 0 0"
          targetX="10"
          edgeMode="duplicate" />
-  	</filter>
+    </filter>
 
-  	<filter id="conv-centY" x="0" y="0" width="1" height="1">
+    <filter id="conv-centY" x="0" y="0" width="1" height="1">
         <feConvolveMatrix order="11 11"
          kernelMatrix="0 0 0 0 0 0 0 0 0 0 0
                        0 0 0 0 0 0 0 0 0 0 0
@@ -91,9 +95,9 @@
                       10 0 0 0 0 0 0 0 0 0 0"
          targetY="0"
          edgeMode="duplicate" />
-  	</filter>
+    </filter>
 
-  	<filter id="conv-rep-bl" x="0" y="0" width="1" height="1">
+    <filter id="conv-rep-bl" x="0" y="0" width="1" height="1">
         <feConvolveMatrix order="11 11"
          kernelMatrix="0 0 0 0 0 0 0 0 0 0 1
                        0 0 0 0 0 0 0 0 0 0 0
@@ -107,9 +111,9 @@
                        0 0 0 0 0 0 0 0 0 0 0
                        0 0 0 0 0 0 0 0 0 0 0"
          edgeMode="duplicate" />
-  	</filter>
+    </filter>
 
-  	<filter id="conv-rep-br" x="0" y="0" width="1" height="1">
+    <filter id="conv-rep-br" x="0" y="0" width="1" height="1">
         <feConvolveMatrix order="11 11"
          kernelMatrix="1 0 0 0 0 0 0 0 0 0 0
                        0 0 0 0 0 0 0 0 0 0 0
@@ -123,9 +127,9 @@
                        0 0 0 0 0 0 0 0 0 0 0
                        0 0 0 0 0 0 0 0 0 0 0"
          edgeMode="duplicate" />
-  	</filter>
+    </filter>
 
-  	<filter id="conv-rep-tl" x="0" y="0" width="1" height="1">
+    <filter id="conv-rep-tl" x="0" y="0" width="1" height="1">
         <feConvolveMatrix order="11 11"
          kernelMatrix="0 0 0 0 0 0 0 0 0 0 0
                        0 0 0 0 0 0 0 0 0 0 0
@@ -139,9 +143,9 @@
                        0 0 0 0 0 0 0 0 0 0 0
                        0 0 0 0 0 0 0 0 0 0 1"
          edgeMode="duplicate" />
-  	</filter>
+    </filter>
 
-  	<filter id="conv-none-tr" x="0" y="0" width="1" height="1">
+    <filter id="conv-none-tr" x="0" y="0" width="1" height="1">
         <feConvolveMatrix order="11 11"
          kernelMatrix="0 0 0 0 0 0 0 0 0 0 0
                        0 0 0 0 0 0 0 0 0 0 0
@@ -155,9 +159,9 @@
                        0 0 0 0 0 0 0 0 0 0 0
                        1 0 0 0 0 0 0 0 0 0 0"
          edgeMode="none" />
-  	</filter>
+    </filter>
 
-  	<filter id="conv-none-bl" x="0" y="0" width="1" height="1">
+    <filter id="conv-none-bl" x="0" y="0" width="1" height="1">
         <feConvolveMatrix order="11 11"
          kernelMatrix="0 0 0 0 0 0 0 0 0 0 1
                        0 0 0 0 0 0 0 0 0 0 0
@@ -172,9 +176,9 @@
                        0 0 0 0 0 0 0 0 0 0 0"
          kernelUnitLength="4"
          edgeMode="none" />
-  	</filter>
+    </filter>
 
-  	<filter id="conv-alpha" x="0" y="0" width="1" height="1">
+    <filter id="conv-alpha" x="0" y="0" width="1" height="1">
         <feConvolveMatrix order="11 11"
          kernelMatrix="0 0 0 0 0 0 0 0 0 0 1
                        0 0 0 0 0 0 0 0 0 0 0
@@ -189,7 +193,7 @@
                        0 0 0 0 0 0 0 0 0 0 0"
          edgeMode="none" 
          preserveAlpha="true"/>
-  	</filter>
+    </filter>
 
       <linearGradient id="grad" y2="100%">
         <stop offset="0%"   style="stop-color:#FF0" />

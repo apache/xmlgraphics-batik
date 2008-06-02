@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2000-2001,2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -18,6 +19,9 @@
 package org.apache.batik.dom.svg;
 
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.util.DoublyIndexedTable;
+import org.apache.batik.util.SVGTypes;
+
 import org.w3c.dom.svg.SVGAnimatedString;
 
 /**
@@ -28,6 +32,23 @@ import org.w3c.dom.svg.SVGAnimatedString;
  */
 public abstract class SVGURIReferenceGraphicsElement
     extends SVGGraphicsElement {
+
+    /**
+     * Table mapping XML attribute names to TraitInformation objects.
+     */
+    protected static DoublyIndexedTable xmlTraitInformation;
+    static {
+        DoublyIndexedTable t =
+            new DoublyIndexedTable(SVGGraphicsElement.xmlTraitInformation);
+        t.put(XLINK_NAMESPACE_URI, XLINK_HREF_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_URI));
+        xmlTraitInformation = t;
+    }
+
+    /**
+     * The 'xlink:href' attribute value.
+     */
+    protected SVGOMAnimatedString href;
 
     /**
      * Creates a new SVGURIReferenceGraphicsElement object.
@@ -43,12 +64,36 @@ public abstract class SVGURIReferenceGraphicsElement
     protected SVGURIReferenceGraphicsElement(String prefix,
                                              AbstractDocument owner) {
         super(prefix, owner);
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes all live attributes for this element.
+     */
+    protected void initializeAllLiveAttributes() {
+        super.initializeAllLiveAttributes();
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes the live attribute values of this element.
+     */
+    private void initializeLiveAttributes() {
+        href =
+            createLiveAnimatedString(XLINK_NAMESPACE_URI, XLINK_HREF_ATTRIBUTE);
     }
 
     /**
      * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGURIReference#getHref()}.
      */
     public SVGAnimatedString getHref() {
-        return SVGURIReferenceSupport.getHref(this);
+        return href;
+    }
+
+    /**
+     * Returns the table of TraitInformation objects for this element.
+     */
+    protected DoublyIndexedTable getTraitInformationTable() {
+        return xmlTraitInformation;
     }
 }

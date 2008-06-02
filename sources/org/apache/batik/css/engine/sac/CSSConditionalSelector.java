@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2002  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -33,7 +34,7 @@ import org.w3c.dom.Element;
  */
 public class CSSConditionalSelector
     implements ConditionalSelector,
-	       ExtendedSelector {
+               ExtendedSelector {
 
     /**
      * The simple selector.
@@ -49,8 +50,8 @@ public class CSSConditionalSelector
      * Creates a new ConditionalSelector object.
      */
     public CSSConditionalSelector(SimpleSelector s, Condition c) {
-	simpleSelector = s;
-	condition      = c;
+        simpleSelector = s;
+        condition      = c;
     }
 
     /**
@@ -71,22 +72,22 @@ public class CSSConditionalSelector
      * org.w3c.css.sac.Selector#getSelectorType()}.
      */
     public short getSelectorType() {
-	return SAC_CONDITIONAL_SELECTOR;
+        return SAC_CONDITIONAL_SELECTOR;
     }
 
     /**
      * Tests whether this selector matches the given element.
      */
     public boolean match(Element e, String pseudoE) {
-	return ((ExtendedSelector)getSimpleSelector()).match(e, pseudoE) &&
-	       ((ExtendedCondition)getCondition()).match(e, pseudoE);
+        return ((ExtendedSelector)getSimpleSelector()).match(e, pseudoE) &&
+               ((ExtendedCondition)getCondition()).match(e, pseudoE);
     }
 
     /**
      * Fills the given set with the attribute names found in this selector.
      */
     public void fillAttributeSet(Set attrSet) {
-	((ExtendedSelector)getSimpleSelector()).fillAttributeSet(attrSet);
+        ((ExtendedSelector)getSimpleSelector()).fillAttributeSet(attrSet);
         ((ExtendedCondition)getCondition()).fillAttributeSet(attrSet);
     }
 
@@ -94,30 +95,30 @@ public class CSSConditionalSelector
      * Returns the specificity of this selector.
      */
     public int getSpecificity() {
-	return ((ExtendedSelector)getSimpleSelector()).getSpecificity() +
-	       ((ExtendedCondition)getCondition()).getSpecificity();
+        return ((ExtendedSelector)getSimpleSelector()).getSpecificity() +
+               ((ExtendedCondition)getCondition()).getSpecificity();
     }
 
     /**
      * <b>SAC</b>: Implements {@link
      * org.w3c.css.sac.ConditionalSelector#getSimpleSelector()}.
-     */    
+     */
     public SimpleSelector getSimpleSelector() {
-	return simpleSelector;
+        return simpleSelector;
     }
 
     /**
      * <b>SAC</b>: Implements {@link
      * org.w3c.css.sac.ConditionalSelector#getCondition()}.
-     */    
+     */
     public Condition getCondition() {
-	return condition;
+        return condition;
     }
 
     /**
      * Returns a representation of the selector.
      */
     public String toString() {
-	return "" + simpleSelector + condition;
+        return String.valueOf( simpleSelector ) + condition;
     }
 }

@@ -1,0 +1,311 @@
+<?xml version="1.0"?>
+
+<!--
+
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+
+<!-- ========================================================================= -->
+<!-- author tkormann@apache.org                                                -->
+<!-- version $Id: jsvgcanvas.xml 201374 2004-08-18 07:17:26Z vhardy $ -->      
+<!-- ========================================================================= -->
+
+<!DOCTYPE document PUBLIC "-//APACHE//DTD Documentation V2.0//EN" "http://forrest.apache.org/dtd/document-v20.dtd">
+<document>
+  <header>
+    <title>Batik Swing components</title>
+  </header>
+
+  <body>
+    <p>
+      The goal of the Batik Swing component module is to provide a Swing
+      component that can used to display SVG documents.
+      With the
+      <a class="class" href="../javadoc/org/apache/batik/swing/JSVGCanvas.html">JSVGCanvas</a>
+      class, you can easily display an SVG document (from a URI or a DOM tree)
+      and allow the user to manipulate it, such as rotating, zooming, panning,
+      selecting text or activating hyperlinks. First this document explains how
+      to create a <code>JSVGCanvas</code> and integrate it in to a Swing
+      application. Then, it descibes some advanced features such as the listener
+      mechanism used to track all events that occurred while displaying or
+      manipulating an SVG document.
+    </p>
+
+    <section id="creatingJSVGCanvas">
+      <title>Creating a JSVGCanvas</title>
+      <p>
+        The following example illustrates how to create a
+        <code>JSVGCanvas</code>, which is a Swing component that follows the
+        Swing design rule. This means that the component is not thread safe and
+        all operations on the component or the document it is displaying must
+        be performed as described in
+        <a href="http://java.sun.com/docs/books/tutorial/uiswing/overview/threads.html">the
+          Swing tutorial</a>. The <code>JSVGCanvas</code> is also a
+        <a href="http://java.sun.com/products/javabeans/">JavaBean</a>, so it
+        can be used in visual application builders.
+      </p>
+      <note>
+        If you try this example, do not forget to set your
+        <code>CLASSPATH</code> so that it contains the Batik classes and
+        resources, as well as Xerces (<code>lib/xerces_2_5_0.jar</code>)
+        and the XML APIs jars (<code>lib/xml-apis.jar</code> and
+        <code>lib/xml-apis-ext.jar</code>).
+      </note>
+<source>import java.awt.*;
+import java.awt.event.*;
+import java.io.*;
+
+import javax.swing.*;
+
+import org.apache.batik.swing.JSVGCanvas;
+import org.apache.batik.swing.gvt.GVTTreeRendererAdapter;
+import org.apache.batik.swing.gvt.GVTTreeRendererEvent;
+import org.apache.batik.swing.svg.SVGDocumentLoaderAdapter;
+import org.apache.batik.swing.svg.SVGDocumentLoaderEvent;
+import org.apache.batik.swing.svg.GVTTreeBuilderAdapter;
+import org.apache.batik.swing.svg.GVTTreeBuilderEvent;
+
+public class SVGApplication {
+
+    public static void main(String[] args) {
+        // Create a new JFrame.
+        JFrame f = new JFrame("Batik");
+        SVGApplication app = new SVGApplication(f);
+
+        // Add components to the frame.
+        f.getContentPane().add(app.createComponents());
+
+        // Display the frame.
+        f.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                System.exit(0);
+            }
+        });
+        f.setSize(400, 400);
+        f.setVisible(true);
+    }
+    
+    // The frame.
+    protected JFrame frame;
+
+    // The "Load" button, which displays up a file chooser upon clicking.
+    protected JButton button = new JButton("Load...");
+
+    // The status label.
+    protected JLabel label = new JLabel();
+
+    // The SVG canvas.
+    protected JSVGCanvas svgCanvas = new JSVGCanvas();
+
+    public SVGApplication(JFrame f) {
+        frame = f;
+    }
+
+    public JComponent createComponents() {
+        // Create a panel and add the button, status label and the SVG canvas.
+        final JPanel panel = new JPanel(new BorderLayout());
+
+        JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        p.add(button);
+        p.add(label);
+
+        panel.add("North", p);
+        panel.add("Center", svgCanvas);
+
+        // Set the button action.
+        button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                JFileChooser fc = new JFileChooser(".");
+                int choice = fc.showOpenDialog(panel);
+                if (choice == JFileChooser.APPROVE_OPTION) {
+                    File f = fc.getSelectedFile();
+                    try {
+                        svgCanvas.setURI(f.toURL().toString());
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        });
+
+        // Set the JSVGCanvas listeners.
+        svgCanvas.addSVGDocumentLoaderListener(new SVGDocumentLoaderAdapter() {
+            public void documentLoadingStarted(SVGDocumentLoaderEvent e) {
+                label.setText("Document Loading...");
+            }
+            public void documentLoadingCompleted(SVGDocumentLoaderEvent e) {
+                label.setText("Document Loaded.");
+            }
+        });
+
+        svgCanvas.addGVTTreeBuilderListener(new GVTTreeBuilderAdapter() {
+            public void gvtBuildStarted(GVTTreeBuilderEvent e) {
+                label.setText("Build Started...");
+            }
+            public void gvtBuildCompleted(GVTTreeBuilderEvent e) {
+                label.setText("Build Done.");
+                frame.pack();
+            }
+        });
+
+        svgCanvas.addGVTTreeRendererListener(new GVTTreeRendererAdapter() {
+            public void gvtRenderingPrepare(GVTTreeRendererEvent e) {
+                label.setText("Rendering Started...");
+            }
+            public void gvtRenderingCompleted(GVTTreeRendererEvent e) {
+                label.setText("");
+            }
+        });
+
+        return panel;
+    }
+}</source>
+
+      <div class="figure"><img src="images/svgapplication.png" alt="Screenshot of the example SVGApplication program"/>
+      </div>
+    </section>
+
+    <section id="eventhandling">
+      <title>Handling events</title>
+      <p>
+        Each time you set a URI or an SVG DOM tree to be displayed in a
+        <code>JSVGCanvas</code> (using the <code>setURI</code> or
+        <code>setSVGDocument</code> method), the specified document is first
+        parsed (in case of a URI), built, rendered and optionally updated. The
+        proper way to be notified of these different phases is to implement a
+        listener and attach it to the component. There are five types
+        of listener:
+      </p>
+
+      <dl>
+        <dt><code>SVGDocumentLoaderListener</code></dt>
+        <dd>
+          <p>
+            The
+            <a class="class" href="../javadoc/org/apache/batik/swing/svg/SVGDocumentLoaderListener">SVGDocumentLoaderListener</a>
+            provides a set of methods that can be used to track
+            <a class="class" href="../javadoc/org/apache/batik/swing/svg/SVGDocumentLoaderEvent">SVGDocumentLoaderEvent</a>
+            events. It describes the loading phase: contructing an SVG
+            DOM tree using an SVG file.
+          </p>
+        </dd>
+        <dt><code>GVTTreeBuilderListener</code></dt>
+        <dd>
+          <p>
+            The
+            <a class="class" href="../javadoc/org/apache/batik/swing/svg/GVTTreeBuilderListener">GVTTreeBuilderListener</a>
+            provides a set of methods that can be used to track
+            <a class="class" href="../javadoc/org/apache/batik/swing/svg/GVTTreeBuilderEvent">GVTTreeBuilderEvent</a>
+            events. It describes the building phase: contructing a GVT
+            (Graphics Vector Toolkit) tree using an SVG DOM tree. The GVT tree
+            will then be used to render the document.
+          </p>
+        </dd>
+        <dt><code>SVGLoadEventDispatcherListener</code></dt>
+        <dd>
+          <p>
+            The
+            <a class="class" href="../javadoc/org/apache/batik/swing/svg/SVGLoadEventDispatcherListener">SVGLoadEventDispatcherListener</a>
+            provides a set of methods that can be used to track
+            <a class="class" href="../javadoc/org/apache/batik/swing/svg/SVGLoadEventDispatcherEvent">SVGLoadEventDispatcherEvent</a>
+            events. It describes the DOM <code>SVGLoad</code> event dispatch phase.
+          </p>
+          <p>
+            This event is triggered only in dynamic documents.
+          </p>
+        </dd>
+        <dt><code>GVTTreeRendererListener</code></dt>
+        <dd>
+          <p>
+            The
+            <a class="class" href="../javadoc/org/apache/batik/swing/gvt/GVTTreeRendererListener.html">GVTTreeRendererListener</a>
+            provides a set of methods that can be used to track
+            <a class="class" href="../javadoc/org/apache/batik/swing/gvt/GVTTreeRendererEvent.html">GVTTreeRendererEvent</a>
+            events. It describes the rendering phase: constructing an image using
+            a GVT tree.
+          </p>
+          <p>
+            In dynamic documents this event is fired only once for the initial rendering.
+          </p>
+        </dd>
+        <dt><code>UpdateManagerListener</code></dt>
+        <dd>
+          <p>
+            The
+            <a class="class" href="../javadoc/org/apache/batik/bridge/UpdateManagerListener">UpdateManagerListener</a>
+            provides a set of methods that can be used to track
+            <a class="class" href="../javadoc/org/apache/batik/bridge/UpdateManagerEvent">UpdateManagerEvent</a>
+            events. It describes the running phase: the update manager is
+            started and then it can be suspended, resumed or stopped, and
+            graphics updates can be tracked.
+          </p>
+          <p>
+            This event is triggered only in dynamic documents.
+          </p>
+        </dd>
+      </dl>
+
+      <p>
+        These listeners give a complete description of the different steps of
+        the five phases (including error states). Adapter classes are available
+        to ease the creation of new listener implementation&#x2014;<a class="class" href="../javadoc/org/apache/batik/swing/svg/SVGDocumentLoaderAdapter.html">SVGDocumentLoaderAdapter</a>,
+        <a class="class" href="../javadoc/org/apache/batik/swing/svg/GVTTreeBuilderListenerAdapter.html">GVTTreeBuilderListenerAdapter</a>,
+        <a class="class" href="../javadoc/org/apache/batik/swing/svg/SVGLoadEventDispatcherAdapter.html">SVGLoadEventDispatcherAdapter</a>,
+        <a class="class" href="../javadoc/org/apache/batik/swing/gvt/GVTTreeRendererAdapter.html">GVTTreeRendererAdapter</a>
+        and
+        <a class="class" href="../javadoc/org/apache/batik/bridge/UpdateManagerAdapter.html">UpdateManagerAdapter</a>,
+      </p>
+
+      <p>
+        For static documents, you can assume that the JSVGCanvas has completed
+        its job (parsing, building and rendering) when the
+        <code>gvtRenderingCompleted</code> method call is called, following a
+        <code>setURI</code> or a <code>setSVGDocument</code> method call.
+      </p>
+      <p>
+        In the case of dynamic documents, the end of the computation (parsing,
+        building, SVGLoad dispatch, initial rendering and updates) is marked
+        by a call to the <code>updateManagerStopped</code> method.
+      </p>
+    </section>
+
+    <section id="interactor">
+      <title>Adding an Interactor</title>
+      <p>
+        The <code>JSVGCanvas</code> provides a set of build-in interactors that
+        let the users manipulate the displayed document, including ones for
+        zooming, panning and rotating. Interactors catch user input to the
+        <code>JSVGCanvas</code> component and translate them into behaviour.
+        If you want to add new behaviors to the <code>JSVGCanvas</code>, you
+        can implement the
+        <a class="class" href="../javadoc/org/apache/batik/swing/gvt/Interactor.html">Interactor</a>
+        interface. Then, you can register this new interactor to the component
+        by adding an element to the <code>List</code> returned by the
+        <code>getInteractors()</code> method of the canvas.
+      </p>
+    </section>
+
+    <!--
+    <section id="jsvgscrollpane">
+      <title>Using the JSVGScrollPane component</title>
+      <p>
+
+      </p>
+    </section>
+    -->
+  </body>
+</document>

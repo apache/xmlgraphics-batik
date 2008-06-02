@@ -4,11 +4,12 @@
 
 <!--
 
-   Copyright 2001-2002  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -319,7 +320,7 @@
             <image transform="matrix(0.555102 0 0 0.555268 -5368.74 5205.7)" x="0" y="-8696" width="15792"
                    height="12444" xlink:href="tests/resources/images/spainRelief.png"/></g>
         
-	<g id="areas_density">
+        <g id="areas_density">
             <path class="fil0"
                   d="M-1948 1100l87 -3 57 -27 23 7 33 53 60 13 10 77 14 7 30 -17 3 20 -30 17 57 36 -10 20 -20 -13 -80 50 13 43 -17 47 24 50 -4 23 -33 7 -13 20 10 33 26 0 44 184 46 3 24 20 -17 17 7 26 46 0 7 10 -13 27 13 17 53 -17 -3 20 -43 23 -10 27 -50 17 -4 26 27 47 -30 -3 -17 -24 -60 -3 -36 27 -47 -14 -20 20 -23 0 -17 -13 10 -27 -13 -13 -37 13 -33 -46 -27 -4 -33 34 -30 -7 -40 -63 -60 10 -10 -20 53 -107 -13 -43 -50 -10 16 -90 20 -4 10 -23 0 -13 -16 3 3 -23 37 -14 -10 -33 16 -67 -13 -13 23 -117 -33 -26 23 -30 0 -57 20 -7 37 -83 33 -20z"/>
             <path class="fil0"
@@ -493,7 +494,7 @@
             <path class="fil6" d="M-2358 6320l-26 -53 53 10 3 13 -30 30z"/>
             <path class="fil6" d="M-928 6697l0 0 -10 36 30 4 -20 -40z"/></g>
         
-	<g id="borders">
+        <g id="borders">
             <g>
                 <path class="fil7 str0" d="M3001 367l-3 0"/>
                 <path class="fil7 str0" d="M-1830 821l-15 32 14 28 -8 26 -41 -18 -13 22 -47 6 -6 51 -54 3"/>
@@ -726,7 +727,7 @@
                 <path class="fil7 str1" d="M-906 6736l-31 -4 11 -36"/>
                 <path class="fil7 str1" d="M-489 6865l22 54 30 23 40 83 33 65 -33 57 2 44 56 96"/></g></g>
         
-	<g id="rivers_lakes">
+        <g id="rivers_lakes">
             <g>
                 <path class="fil7 str2" d="M-1532 1117l-6 2 -5 1 -6 2 -6 2 -5 1 -6 1 -6 1 -6 1 -9 2"/>
                 <path class="fil7 str2"
@@ -1093,7 +1094,7 @@
                 <path class="fil7 str7" d="M-3061 1834l-1 6 -2 6 -1 6 -1 5 -1 6 0 6 1 5"/>
                 <path class="fil7 str7" d="M-2935 1394l-5 3 -6 2 -5 3 -5 3 -5 3 -5 3 -4 4"/></g></g>
         
-	<g id="coastline">
+        <g id="coastline">
             <path class="fil7 str8"
                   d="M-3511 537l35 -6 9 37 12 6 19 -31 45 2 -4 15 51 19 39 63 33 24 103 11 -4 48"/>
             <path class="fil7 str8"
@@ -1155,7 +1156,7 @@
             <path class="fil7 str8"
                   d="M-2384 6265l-45 4 -69 61 -61 -7 -48 35 -70 -13 -25 11 -62 211 -168 436 -144 284"/>
             <path class="fil7 str8" d="M2383 3779l-21 -19 2 -4 22 -3 4 5 -7 21"/></g>
-	    
+            
         <g id="gridline_lettering">
             <path class="fil7 str9" d="M-5373 7287l0 -6920 8778 0 0 6920 -8778 0"/>
             <path class="fil7 str10" d="M-5472 7385l0 -7117 8975 0 0 7117 -8975 0"/>
@@ -1364,43 +1365,43 @@
                 <path class="fil9 str11" d="M-760 2722l0 -116 -117 0 0 116 117 0z"/></g></g>
         <g id="lettering">
             <path id="textPathAtlantic" style="visibility:hidden;" d="M -4900,5300 C -4950,4300 -4950,1800 -4900,800" />
-	    <switch>
+            <switch>
             <text systemLanguage="de" class="fil19 fnt1" style="letter-spacing:150px;">
                 <textPath xlink:href="#textPathAtlantic" startOffset="5%">Atlantischer Ozean</textPath>
-	    </text>
+            </text>
             <text systemLanguage="en" class="fil19 fnt1" style="letter-spacing:200px;">
                 <textPath xlink:href="#textPathAtlantic" startOffset="10%">Atlantic Ocean</textPath>
-	    </text>
-	    </switch>
+            </text>
+            </switch>
 
             <path id="textPathMiddle" style="visibility:hidden;" d="M -1900,6500 C -1400,6400 -600,6150 -100,6000" />
             <path id="textPathMiddleSea" style="visibility:hidden;" d="M 1200,5500 C 2200,5100 2400,4950 3400,4500" />
-	    <switch>
+            <switch>
             <text systemLanguage="de" class="fil19 fnt1" style="letter-spacing:70px;">
                 <textPath xlink:href="#textPathMiddle" startOffset="25%">Mittel-</textPath>
-	    </text>
+            </text>
             <text systemLanguage="en" class="fil19 fnt1" style="letter-spacing:130px;">
                 <textPath xlink:href="#textPathMiddle" startOffset="5%">Mediter-</textPath>
-	    </text>
-	    </switch>
-	    <switch>
+            </text>
+            </switch>
+            <switch>
             <text systemLanguage="de" class="fil19 fnt1" style="letter-spacing:70px;">
                 <textPath xlink:href="#textPathMiddleSea" startOffset="0%">ländisches Meer</textPath>
-	    </text>
+            </text>
             <text systemLanguage="en" class="fil19 fnt1" style="letter-spacing:130px;">
                 <textPath xlink:href="#textPathMiddleSea" startOffset="5%">ranean Sea</textPath>
-	    </text>
-	    </switch>
+            </text>
+            </switch>
 
             <path id="textPathBalearic" style="visibility:hidden;" d="M 1500,3600 C 2000,3200 2100,3150 2600,2900" />
-	    <switch>
+            <switch>
             <text systemLanguage="de" class="fil8 fnt2" style="letter-spacing:85px;">
                 <textPath xlink:href="#textPathBalearic" startOffset="5%">Balearen</textPath>
-	    </text>
+            </text>
             <text systemLanguage="en" class="fil8 fnt2" style="letter-spacing:80px;">
                 <textPath xlink:href="#textPathBalearic" startOffset="5%">Balearics</textPath>
-	    </text>
-	    </switch>
+            </text>
+            </switch>
 
             <text x="2488" y="3766" class="fil8 fnt3">Mallorca</text>
             <text x="2928" y="3006" class="fil8 fnt3">Menorca</text>
@@ -1409,26 +1410,26 @@
             <switch>
             <text systemLanguage="de" class="fil8 fnt4" style="letter-spacing:220px;">
                 <textPath xlink:href="#textPathMorocco" startOffset="5%">Marokko</textPath>
-	    </text>
+            </text>
             <text systemLanguage="en" class="fil8 fnt4" style="letter-spacing:220px;">
                 <textPath xlink:href="#textPathMorocco" startOffset="5%">Morocco</textPath>
-	    </text>
-	    </switch>
+            </text>
+            </switch>
 
             <path id="textPathPortugal" style="visibility:hidden;" d="M -3900,4600 C -3850,4000 -3700,2900 -3500,2300" />
             <text class="fil8 fnt4" style="letter-spacing:200px;">
                 <textPath xlink:href="#textPathPortugal" startOffset="5%">Portugal</textPath>
-	    </text>
+            </text>
 
             <path id="textPathFranceText" style="visibility:hidden;" d="M 50,650 C 500,850 1400,1020 1850,1050" />
-	    <switch>
+            <switch>
             <text systemLanguage="de" class="fil8 fnt4" style="letter-spacing:70px;">
                 <textPath xlink:href="#textPathFranceText" startOffset="10%">Frankreich</textPath>
-	    </text>
+            </text>
             <text systemLanguage="en" class="fil8 fnt4" style="letter-spacing:190px;">
                 <textPath xlink:href="#textPathFranceText" startOffset="5%">France</textPath>
-	    </text>
-	    </switch>
+            </text>
+            </switch>
 
             <text x="1998" y="2171" class="fil8 fnt5">Barcelona</text>
             <text x="619" y="3777" class="fil8 fnt5">Valencia</text>
@@ -1462,7 +1463,7 @@
             <path id="textPathEbro" style="visibility:hidden;" d="M 30,1960 C 50,1970 170,2050 200,2065" />
             <text class="fil19 fnt6" style="letter-spacing:5px;">
                 <textPath xlink:href="#textPathEbro" startOffset="0%">Ebro</textPath>
-	    </text>
+            </text>
             <g transform="matrix(0.999514 -0.0311582 0.0311582 0.999514 -774.816 -1079.23)">
                 <text x="0" y="3748" class="fil19 fnt6">Tajo</text></g>
             <g transform="matrix(0.788941 -0.614468 0.614468 0.788941 -6525.95 784.685)">
@@ -1473,14 +1474,14 @@
             <path id="textPathGuadalquivir" style="visibility:hidden;" d="M -2860,5500 C -2850,5350 -2800,5200 -2700,5000" />
             <text class="fil19 fnt6" style="letter-spacing:0px;">
                 <textPath xlink:href="#textPathGuadalquivir" startOffset="0%">Guadalquivir</textPath>
-	    </text>
+            </text>
             <path id="textPathGuadiana" style="visibility:hidden;" d="M -3725,4950 C -3710,4800 -3700,4720 -3670,4570" />
             <text class="fil19 fnt6" style="letter-spacing:0px;">
                 <textPath xlink:href="#textPathGuadiana" startOffset="0%">Guadiana</textPath>
-	    </text>
+            </text>
 
             <text x="1598" y="4068" class="fil8 fnt7">Ibiza</text>
-	</g>
+        </g>
         <g id="gridlines">
             <g>
                 <path class="fil7 str13"
@@ -1570,14 +1571,14 @@
                       d="M277 7053l7 -2 2 -2 -1 -3 1 -4 2 -3 1 -4 0 -8 0 -4 2 -4 2 -2 2 -3 2 -3 2 -2 4 -6 6 -4 6 -2 1 -3 1 -15 1 -3 4 -6 1 -5 0 -4 1 -4 2 -3 3 -3 3 -2 11 -9 1 -3 1 -9 -1 -3 -1 -3 -3 -3 -1 -4 -5 -10 -5 -4 -14 -1 -4 1 -2 3 -4 6 -4 1 -5 0 -4 1 -5 5 -3 2 -9 0 -4 1 -3 2 -2 4 4 1 1 3 0 5 -9 5 -4 2 -8 7 -5 11 -2 2 -4 2 -9 2 -4 1 -5 -1 -6 -4 -5 0 -9 1 -5 -1 -3 -1 -9 -7 -4 -1 -7 3 -9 5 -5 6 -2 8 0 4 1 4 4 10 3 8 2 2 4 2 14 1 8 3 8 2 10 0 7 3 5 0 10 0 3 1 3 2 2 3 12 19 2 2 2 3 9 7 3 2 8 0"/></g>
 
             <path id="textPathCanary" style="visibility:hidden;" d="M 700,6300 C 1200,6125 2100,6000 2600,6000" />
-	    <switch>
+            <switch>
             <text systemLanguage="de" class="fil8 fnt9" style="letter-spacing:40px;">
                 <textPath xlink:href="#textPathCanary" startOffset="5%">Kanarische Inseln</textPath>
-	    </text>
+            </text>
             <text systemLanguage="en" class="fil8 fnt9" style="letter-spacing:60px;">
                 <textPath xlink:href="#textPathCanary" startOffset="5%">Canary Islands</textPath>
-	    </text>
-	    </switch>
+            </text>
+            </switch>
 
             <text x="1221" y="6344" class="fil8 fnt7">Teneriffa</text>
             <text x="1893" y="7067" class="fil8 fnt7">Gran Canaria</text>

@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2005 The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -14,8 +15,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 
-*/
-
+ */
 package org.apache.batik.transcoder.wmf;
 
 import java.io.BufferedReader;
@@ -47,12 +47,12 @@ import org.apache.batik.util.SVGConstants;
  * valid SVG reference.
  *
  * @author <a href="mailto:deweese@apache.org>deweese</a>
- * @version $Id: skel.el,v 1.1 2003/05/13 21:04:46 deweese Exp $
+ * @version $Id$
  */
 public class WMFAccuracyTest extends AbstractTest
     implements SVGConstants {
 
-    public static final String GENERATOR_REFERENCE_BASE 
+    public static final String GENERATOR_REFERENCE_BASE
         = "test-references/org/apache/batik/transcoder/wmf";
     public static final String CANDIDATE_REF_DIR = "candidate";
 
@@ -115,7 +115,7 @@ public class WMFAccuracyTest extends AbstractTest
     public static final String ENTRY_KEY_NEW_LINE
         = "WMFAccuracyTest.entry.key.new.line";
 
-    public static final String REF_IMAGE_PREFIX 
+    public static final String REF_IMAGE_PREFIX
         = "test-references/";
 
     /**
@@ -207,7 +207,7 @@ public class WMFAccuracyTest extends AbstractTest
                 throw new IllegalArgumentException();
             }
         }
-        
+
         // url is not a file. It must be a regular URL...
         try{
             return new URL(url);
@@ -239,7 +239,7 @@ public class WMFAccuracyTest extends AbstractTest
             OutputStreamWriter    outW;
             outW = new OutputStreamWriter(out, "UTF-8");
             TranscoderOutput      output = new TranscoderOutput(outW);
-            
+
             wmft.transcode(input, output);
         } catch(Exception e) {
             StringWriter trace = new StringWriter();
@@ -291,7 +291,7 @@ public class WMFAccuracyTest extends AbstractTest
 
                 if (!refStr.equals(genStr))
                     break;
-                
+
                 refStr = refReader.readLine();
                 genStr = genReader.readLine();
                 line++;
@@ -315,15 +315,15 @@ public class WMFAccuracyTest extends AbstractTest
             if (foundChar.equals(" "))    foundChar    = "' '";
 
             report.setErrorCode(ERROR_GENERATED_SVG_INACCURATE);
-            report.addDescriptionEntry(fmtMsg(ENTRY_KEY_LINE_NUMBER), 
+            report.addDescriptionEntry(fmtMsg(ENTRY_KEY_LINE_NUMBER),
                                        new Integer(line));
-            report.addDescriptionEntry(fmtMsg(ENTRY_KEY_COLUMN_NUMBER), 
+            report.addDescriptionEntry(fmtMsg(ENTRY_KEY_COLUMN_NUMBER),
                                        new Integer(cn));
             report.addDescriptionEntry(fmtMsg(ENTRY_KEY_COLUMN_EXPECTED_VALUE),
                                        expectedChar);
-            report.addDescriptionEntry(fmtMsg(ENTRY_KEY_COLUMN_FOUND_VALUE), 
+            report.addDescriptionEntry(fmtMsg(ENTRY_KEY_COLUMN_FOUND_VALUE),
                                        foundChar);
-            report.addDescriptionEntry(fmtMsg(ENTRY_KEY_REFERENCE_LINE), 
+            report.addDescriptionEntry(fmtMsg(ENTRY_KEY_REFERENCE_LINE),
                                        refStr);
             report.addDescriptionEntry(fmtMsg(ENTRY_KEY_NEW_LINE), genStr);
             report.setPassed(false);
@@ -386,4 +386,4 @@ public class WMFAccuracyTest extends AbstractTest
         return Messages.formatMessage(str, null);
     }
 
-};
+}

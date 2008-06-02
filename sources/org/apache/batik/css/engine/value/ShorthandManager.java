@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2002-2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -29,12 +30,22 @@ import org.w3c.dom.DOMException;
  * @version $Id$
  */
 public interface ShorthandManager {
-    
+
     /**
      * Returns the name of the property handled.
      */
     String getPropertyName();
-    
+
+    /**
+     * Whether the handled property can be animated.
+     */
+    boolean isAnimatableProperty();
+
+    /**
+     * Whether the handled property can be additively animated.
+     */
+    boolean isAdditiveProperty();
+
     /**
      * Sets the properties which are affected by this shorthand
      * property.
@@ -52,8 +63,8 @@ public interface ShorthandManager {
     /**
      * To handle a property value created by a ShorthandManager.
      */
-    public interface PropertyHandler {
-        public void property(String name, LexicalUnit value,
+    interface PropertyHandler {
+        void property(String name, LexicalUnit value,
                              boolean important);
     }
 }

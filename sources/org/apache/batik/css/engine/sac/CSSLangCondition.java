@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2002  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -19,6 +20,8 @@ package org.apache.batik.css.engine.sac;
 
 import java.util.Set;
 
+import org.apache.batik.util.XMLConstants;
+
 import org.w3c.css.sac.LangCondition;
 import org.w3c.dom.Element;
 
@@ -32,17 +35,23 @@ import org.w3c.dom.Element;
 
 public class CSSLangCondition
     implements LangCondition,
-	       ExtendedCondition {
+               ExtendedCondition {
     /**
      * The language.
      */
     protected String lang;
 
     /**
+     * The language with a hyphen suffixed.
+     */
+    protected String langHyphen;
+
+    /**
      * Creates a new LangCondition object.
      */
     public CSSLangCondition(String lang) {
-	this.lang = lang;
+        this.lang = lang.toLowerCase();
+        this.langHyphen = lang + '-';
     }
 
     /**
@@ -60,30 +69,36 @@ public class CSSLangCondition
     /**
      * <b>SAC</b>: Implements {@link
      * org.w3c.css.sac.Condition#getConditionType()}.
-     */    
+     */
     public short getConditionType() {
-	return SAC_LANG_CONDITION;
+        return SAC_LANG_CONDITION;
     }
 
     /**
      * <b>SAC</b>: Implements {@link org.w3c.css.sac.LangCondition#getLang()}.
      */
     public String getLang() {
-	return lang;
+        return lang;
     }
 
     /**
      * Returns the specificity of this condition.
      */
     public int getSpecificity() {
-	return 1 << 8;
+        return 1 << 8;
     }
 
     /**
      * Tests whether this condition matches the given element.
      */
     public boolean match(Element e, String pseudoE) {
-	return e.getAttribute("lang").startsWith(getLang());
+        String s = e.getAttribute("lang").toLowerCase();
+        if (s.equals(lang) || s.startsWith(langHyphen)) {
+            return true;
+        }
+        s = e.getAttributeNS(XMLConstants.XML_NAMESPACE_URI,
+                             XMLConstants.XML_LANG_ATTRIBUTE).toLowerCase();
+        return s.equals(lang) || s.startsWith(langHyphen);
     }
 
     /**
@@ -97,6 +112,6 @@ public class CSSLangCondition
      * Returns a text representation of this object.
      */
     public String toString() {
-	return ":lang(" + lang + ")";
+        return ":lang(" + lang + ')';
     }
 }

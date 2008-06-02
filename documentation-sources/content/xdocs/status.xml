@@ -1,0 +1,3448 @@
+<?xml version="1.0"?>
+
+<!--
+
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+
+<!-- ====================================================================== -->
+<!-- author Thierry.Kormann@sophia.inria.fr                                 -->
+<!-- author vincent.hardy@eng.sun.com                                       -->
+<!-- version $Id: status.xml 201374 2004-08-18 07:17:26Z vhardy $ -->
+<!-- ====================================================================== -->
+
+<!--DOCTYPE status SYSTEM "-//Test//DTD Status Document V0.1//EN"-->
+<status>
+  <header>
+    <title>Batik implementation status</title>
+  </header>
+
+  <body>
+    <p>
+      This page details information about Batik’s implementation of the
+      <a href="site:svg11">SVG 1.1</a> and related specifications.  The features
+      of the implementation are annotated with their level of support, which
+      can be at one of three levels:
+    </p>
+
+    <dl>
+      <dt>Not supported</dt>
+      <dd>
+        <p>
+          If a feature is <no>not</no> supported, this means that Batik performs
+          no useful processing for it.  This feature could be silently ignored or
+          an exception might be thrown when trying to use it.
+        </p>
+      </dd>
+      <dt>Partially supported</dt>
+      <dd>
+        <p>
+          If a feature is <partial>partially</partial> suppored, this means that Batik performs
+          some processing for it, but there are known bugs with this processing.
+        </p>
+      </dd>
+      <dt>Fully supported</dt>
+      <dd>
+        <p>
+          If a feature is <yes>fully</yes> supported, this means that Batik performs
+          the correct processing for it, as detailed in the relevant specification.
+        </p>
+      </dd>
+
+      <p>
+        Note that the information on this page is based on the code in the
+        Subversion repository trunk.
+      </p>
+    </dl>
+
+    <section id="elements">
+      <title>Elements, attributes and properties</title>
+      <p>
+        The table below lists the SVG elements and the attributes and properties
+        on them that are supported by Batik.  For an element to be fully
+        supported, its attributes and the properties that apply to it must also
+        be fully supported.  If an attribute of the element or a property that
+        applies to the element is only partially supported or is not supported,
+        the element can be at most partially supported.  An element is not
+        supported if it is not processed by Batik, even if some of its
+        attributes are supported (such as the core attributes <code>id</code>
+        or <code>xml:base</code>).
+      </p>
+      <p>
+        Note that all presentation attributes are supported on all stylable
+        elements.  These attributes are not listed in the table.  Only those
+        properties that apply to a given element are listed.
+      </p>
+      <elements>
+        <prefixes>
+          <prefix prefix="xml" ns="http://www.w3.org/XML/1998/namespace"/>
+          <prefix prefix="svg" ns="http://www.w3.org/2000/svg"/>
+          <prefix prefix="xlink" ns="http://www.w3.org/1999/xlink"/>
+        </prefixes>
+        <element name="a" ns="http://www.w3.org/2000/svg">
+          <prop name="clip-path"><yes/></prop>
+          <prop name="color-interpolation"><yes/></prop>
+          <prop name="color-rendering"><yes/></prop>
+          <prop name="cursor"><yes/></prop>
+          <prop name="display"><yes/></prop>
+          <prop name="enable-background"><yes/></prop>
+          <prop name="filter"><yes/></prop>
+          <prop name="mask"><yes/></prop>
+          <prop name="opacity"><yes/></prop>
+          <attr name="class" ns=""><yes/></attr>
+          <attr name="externalResourcesRequired" ns=""><no/></attr>
+          <attr name="id" ns=""><yes/></attr>
+          <attr name="onclick" ns=""><yes/></attr>
+          <attr name="onfocusin" ns=""><yes/></attr>
+          <attr name="onfocusout" ns=""><yes/></attr>
+          <attr name="onload" ns=""><yes/></attr>
+          <attr name="onmousedown" ns=""><yes/></attr>
+          <attr name="onmousemove" ns=""><yes/></attr>
+          <attr name="onmouseout" ns=""><yes/></attr>
+          <attr name="onmouseover" ns=""><yes/></attr>
+          <attr name="onmouseup" ns=""><yes/></attr>
+          <attr name="requiredFeatures" ns=""><yes/></attr>
+          <attr name="requiredExtensions" ns=""><yes/></attr>
+          <attr name="style" ns=""><yes/></attr>
+          <attr name="systemLanguage" ns=""><yes/></attr>
+          <attr name="target" ns=""><no>While <code>target</code> is not supported, new windows can be opened with <code>xlink:show="new"</code>.</no></attr>
+          <attr name="transform" ns=""><yes/></attr>
+          <attr name="actuate" ns="http://www.w3.org/1999/xlink"><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name="arcrole" ns="http://www.w3.org/1999/xlink"><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name="href" ns="http://www.w3.org/1999/xlink"><partial>URI references to animation elements will not trigger the animation when the link is activated.</partial></attr>
+          <attr name="role" ns="http://www.w3.org/1999/xlink"><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name="show" ns="http://www.w3.org/1999/xlink"><yes/></attr>
+          <attr name="title" ns="http://www.w3.org/1999/xlink"><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name="type" ns="http://www.w3.org/1999/xlink"><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name="base" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="lang" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="space" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+        </element>
+        <element name="altGlyph" ns="http://www.w3.org/2000/svg">
+          <prop name="alignment-baseline"><no/></prop>
+          <prop name="baseline-shift"><yes/></prop>
+          <prop name="color"><yes/></prop>
+          <prop name="direction"><yes/></prop>
+          <prop name="display"><yes/></prop>
+          <prop name="dominant-baseline"><no/></prop>
+          <prop name="fill"><yes/></prop>
+          <prop name="fill-opacity"><yes/></prop>
+          <prop name="fill-rule"><yes/></prop>
+          <prop name="font"><yes/></prop>
+          <prop name="font-family"><yes/></prop>
+          <prop name="font-size"><yes/></prop>
+          <prop name="font-size-adjust"><no/></prop>
+          <prop name="font-stretch"><no/></prop>
+          <prop name="font-style"><yes/></prop>
+          <prop name="font-variant"><no/></prop>
+          <prop name="font-weight"><yes/></prop>
+          <prop name="glyph-orientation-horizontal"><yes/></prop>
+          <prop name="glyph-orientation-vertical"><yes/></prop>
+          <prop name="kerning"><yes/></prop>
+          <prop name="letter-spacing"><yes/></prop>
+          <prop name="stroke"><yes/></prop>
+          <prop name="stroke-dasharray"><yes/></prop>
+          <prop name="stroke-dashoffset"><yes/></prop>
+          <prop name="stroke-linecap"><yes/></prop>
+          <prop name="stroke-linejoin"><yes/></prop>
+          <prop name="stroke-miterlimit"><yes/></prop>
+          <prop name="stroke-opacity"><yes/></prop>
+          <prop name="stroke-width"><yes/></prop>
+          <prop name="text-anchor"><yes/></prop>
+          <prop name="text-decoration"><yes/></prop>
+          <prop name="unicode-bidi"><yes/></prop>
+          <prop name="visibility"><yes/></prop>
+          <prop name="word-spacing"><yes/></prop>
+          <attr name="class" ns=""><yes/></attr>
+          <attr name="dx" ns=""><yes/></attr>
+          <attr name="dy" ns=""><yes/></attr>
+          <attr name="externalResourcesRequired" ns=""><no/></attr>
+          <attr name="format" ns=""><no/></attr>
+          <attr name="glyphRef" ns=""><no/></attr>
+          <attr name="id" ns=""><yes/></attr>
+          <attr name="onclick" ns=""><yes/></attr>
+          <attr name="onfocusin" ns=""><yes/></attr>
+          <attr name="onfocusout" ns=""><yes/></attr>
+          <attr name="onload" ns=""><yes/></attr>
+          <attr name="onmousedown" ns=""><yes/></attr>
+          <attr name="onmousemove" ns=""><yes/></attr>
+          <attr name="onmouseout" ns=""><yes/></attr>
+          <attr name="onmouseover" ns=""><yes/></attr>
+          <attr name="onmouseup" ns=""><yes/></attr>
+          <attr name="requiredFeatures" ns=""><yes/></attr>
+          <attr name="requiredExtensions" ns=""><yes/></attr>
+          <attr name="rotate" ns=""><yes/></attr>
+          <attr name="style" ns=""><yes/></attr>
+          <attr name="systemLanguage" ns=""><yes/></attr>
+          <attr name="x" ns=""><yes/></attr>
+          <attr name="actuate" ns="http://www.w3.org/1999/xlink"><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name="arcrole" ns="http://www.w3.org/1999/xlink"><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name="href" ns="http://www.w3.org/1999/xlink"><yes/></attr>
+          <attr name="role" ns="http://www.w3.org/1999/xlink"><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name="show" ns="http://www.w3.org/1999/xlink"><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name="title" ns="http://www.w3.org/1999/xlink"><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name="type" ns="http://www.w3.org/1999/xlink"><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name="base" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="lang" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="space" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="y" ns=""><yes/></attr>
+        </element>
+        <element name="altGlyphDef" ns="http://www.w3.org/2000/svg">
+          <attr name="id" ns=""><yes/></attr>
+          <attr name="base" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="lang" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="space" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+        </element>
+        <element name="altGlyphItem" ns="http://www.w3.org/2000/svg">
+          <attr name="id" ns=""><yes/></attr>
+          <attr name="base" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="lang" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="space" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+        </element>
+        <element name="animate" ns="http://www.w3.org/2000/svg">
+          <attr name="accumulate" ns=""><yes/></attr>
+          <attr name="additive" ns=""><yes/></attr>
+          <attr name="attributeName" ns=""><yes/></attr>
+          <attr name="attributeType" ns=""><yes/></attr>
+          <attr name="begin" ns=""><yes/></attr>
+          <attr name="by" ns=""><yes/></attr>
+          <attr name="calcMode" ns=""><yes/></attr>
+          <attr name="dur" ns=""><yes/></attr>
+          <attr name="end" ns=""><yes/></attr>
+          <attr name="externalResourcesRequired" ns=""><no/></attr>
+          <attr name="fill" ns=""><yes/></attr>
+          <attr name="from" ns=""><yes/></attr>
+          <attr name="id" ns=""><yes/></attr>
+          <attr name="keySplines" ns=""><yes/></attr>
+          <attr name="keyTimes" ns=""><yes/></attr>
+          <attr name="max" ns=""><yes/></attr>
+          <attr name="min" ns=""><yes/></attr>
+          <attr name="onbegin" ns=""><yes/></attr>
+          <attr name="onend" ns=""><yes/></attr>
+          <attr name="onload" ns=""><yes/></attr>
+          <attr name="onrepeat" ns=""><yes/></attr>
+          <attr name="repeatCount" ns=""><yes/></attr>
+          <attr name="repeatDur" ns=""><yes/></attr>
+          <attr name="requiredExtensions" ns=""><no/></attr>
+          <attr name="requiredFeatures" ns=""><no/></attr>
+          <attr name="restart" ns=""><yes/></attr>
+          <attr name="systemLanguage" ns=""><no/></attr>
+          <attr name="to" ns=""><yes/></attr>
+          <attr name="values" ns=""><yes/></attr>
+        </element>
+        <element name="animateColor" ns="http://www.w3.org/2000/svg">
+          <prop name="color-interpolation"><yes/></prop>
+          <prop name="color-rendering"><yes/></prop>
+          <attr name="accumulate" ns=""><yes/></attr>
+          <attr name="additive" ns=""><yes/></attr>
+          <attr name="attributeName" ns=""><yes/></attr>
+          <attr name="attributeType" ns=""><yes/></attr>
+          <attr name="begin" ns=""><yes/></attr>
+          <attr name="by" ns=""><yes/></attr>
+          <attr name="calcMode" ns=""><yes/></attr>
+          <attr name="dur" ns=""><yes/></attr>
+          <attr name="end" ns=""><yes/></attr>
+          <attr name="externalResourcesRequired" ns=""><no/></attr>
+          <attr name="fill" ns=""><yes/></attr>
+          <attr name="from" ns=""><yes/></attr>
+          <attr name="id" ns=""><yes/></attr>
+          <attr name="keySplines" ns=""><yes/></attr>
+          <attr name="keyTimes" ns=""><yes/></attr>
+          <attr name="max" ns=""><yes/></attr>
+          <attr name="min" ns=""><yes/></attr>
+          <attr name="onbegin" ns=""><yes/></attr>
+          <attr name="onend" ns=""><yes/></attr>
+          <attr name="onload" ns=""><yes/></attr>
+          <attr name="onrepeat" ns=""><yes/></attr>
+          <attr name="repeatCount" ns=""><yes/></attr>
+          <attr name="repeatDur" ns=""><yes/></attr>
+          <attr name="requiredExtensions" ns=""><no/></attr>
+          <attr name="requiredFeatures" ns=""><no/></attr>
+          <attr name="restart" ns=""><yes/></attr>
+          <attr name="systemLanguage" ns=""><no/></attr>
+          <attr name="to" ns=""><yes/></attr>
+          <attr name="values" ns=""><yes/></attr>
+        </element>
+        <element name="animateMotion" ns="http://www.w3.org/2000/svg">
+          <attr name="accumulate" ns=""><yes/></attr>
+          <attr name="additive" ns=""><yes/></attr>
+          <attr name="attributeName" ns=""><yes/></attr>
+          <attr name="attributeType" ns=""><yes/></attr>
+          <attr name="begin" ns=""><yes/></attr>
+          <attr name="by" ns=""><yes/></attr>
+          <attr name="calcMode" ns=""><yes/></attr>
+          <attr name="dur" ns=""><yes/></attr>
+          <attr name="end" ns=""><yes/></attr>
+          <attr name="externalResourcesRequired" ns=""><no/></attr>
+          <attr name="fill" ns=""><yes/></attr>
+          <attr name="from" ns=""><yes/></attr>
+          <attr name="id" ns=""><yes/></attr>
+          <attr name="keyPoints" ns=""><yes/></attr>
+          <attr name="keySplines" ns=""><yes/></attr>
+          <attr name="keyTimes" ns=""><yes/></attr>
+          <attr name="max" ns=""><yes/></attr>
+          <attr name="min" ns=""><yes/></attr>
+          <attr name="onbegin" ns=""><yes/></attr>
+          <attr name="onend" ns=""><yes/></attr>
+          <attr name="onload" ns=""><yes/></attr>
+          <attr name="onrepeat" ns=""><yes/></attr>
+          <attr name="origin" ns=""><yes/></attr>
+          <attr name="path" ns=""><yes/></attr>
+          <attr name="repeatCount" ns=""><yes/></attr>
+          <attr name="repeatDur" ns=""><yes/></attr>
+          <attr name="requiredExtensions" ns=""><no/></attr>
+          <attr name="requiredFeatures" ns=""><no/></attr>
+          <attr name="restart" ns=""><yes/></attr>
+          <attr name="rotate" ns=""><yes/></attr>
+          <attr name="systemLanguage" ns=""><no/></attr>
+          <attr name="to" ns=""><yes/></attr>
+          <attr name="values" ns=""><yes/></attr>
+        </element>
+        <element name="animateTransform" ns="http://www.w3.org/2000/svg">
+          <attr name="accumulate" ns=""><yes/></attr>
+          <attr name="additive" ns=""><yes/></attr>
+          <attr name="attributeName" ns=""><yes/></attr>
+          <attr name="attributeType" ns=""><yes/></attr>
+          <attr name="begin" ns=""><yes/></attr>
+          <attr name="by" ns=""><yes/></attr>
+          <attr name="calcMode" ns=""><yes/></attr>
+          <attr name="dur" ns=""><yes/></attr>
+          <attr name="end" ns=""><yes/></attr>
+          <attr name="externalResourcesRequired" ns=""><no/></attr>
+          <attr name="fill" ns=""><yes/></attr>
+          <attr name="from" ns=""><yes/></attr>
+          <attr name="id" ns=""><yes/></attr>
+          <attr name="keySplines" ns=""><yes/></attr>
+          <attr name="keyTimes" ns=""><yes/></attr>
+          <attr name="max" ns=""><yes/></attr>
+          <attr name="min" ns=""><yes/></attr>
+          <attr name="onbegin" ns=""><yes/></attr>
+          <attr name="onend" ns=""><yes/></attr>
+          <attr name="onload" ns=""><yes/></attr>
+          <attr name="onrepeat" ns=""><yes/></attr>
+          <attr name="repeatCount" ns=""><yes/></attr>
+          <attr name="repeatDur" ns=""><yes/></attr>
+          <attr name="requiredExtensions" ns=""><no/></attr>
+          <attr name="requiredFeatures" ns=""><no/></attr>
+          <attr name="restart" ns=""><yes/></attr>
+          <attr name="systemLanguage" ns=""><no/></attr>
+          <attr name="to" ns=""><yes/></attr>
+          <attr name="type" ns=""><yes/></attr>
+          <attr name="values" ns=""><yes/></attr>
+        </element>
+        <element name="circle" ns="http://www.w3.org/2000/svg">
+          <prop name="clip-path"><yes/></prop>
+          <prop name="clip-rule"><yes/></prop>
+          <prop name="color"><yes/></prop>
+          <prop name="color-interpolation"><yes/></prop>
+          <prop name="color-rendering"><yes/></prop>
+          <prop name="cursor"><yes/></prop>
+          <prop name="fill"><yes/></prop>
+          <prop name="fill-opacity"><yes/></prop>
+          <prop name="fill-rule"><yes/></prop>
+          <prop name="filter"><yes/></prop>
+          <prop name="mask"><yes/></prop>
+          <prop name="opacity"><yes/></prop>
+          <prop name="pointer-events"><yes/></prop>
+          <prop name="shape-rendering"><yes/></prop>
+          <prop name="stroke"><yes/></prop>
+          <prop name="stroke-dasharray"><yes/></prop>
+          <prop name="stroke-dashoffset"><yes/></prop>
+          <prop name="stroke-linecap"><yes/></prop>
+          <prop name="stroke-linejoin"><yes/></prop>
+          <prop name="stroke-miterlimit"><yes/></prop>
+          <prop name="stroke-opacity"><yes/></prop>
+          <prop name="stroke-width"><yes/></prop>
+          <prop name="visibility"><yes/></prop>
+          <attr name="class" ns=""><yes/></attr>
+          <attr name="cx" ns=""><yes/></attr>
+          <attr name="cy" ns=""><yes/></attr>
+          <attr name="externalResourcesRequired" ns=""><no/></attr>
+          <attr name="id" ns=""><yes/></attr>
+          <attr name="onclick" ns=""><yes/></attr>
+          <attr name="onfocusin" ns=""><yes/></attr>
+          <attr name="onfocusout" ns=""><yes/></attr>
+          <attr name="onload" ns=""><yes/></attr>
+          <attr name="onmousedown" ns=""><yes/></attr>
+          <attr name="onmousemove" ns=""><yes/></attr>
+          <attr name="onmouseout" ns=""><yes/></attr>
+          <attr name="onmouseover" ns=""><yes/></attr>
+          <attr name="onmouseup" ns=""><yes/></attr>
+          <attr name="r" ns=""><yes/></attr>
+          <attr name="requiredExtensions" ns=""><yes/></attr>
+          <attr name="requiredFeatures" ns=""><yes/></attr>
+          <attr name="style" ns=""><yes/></attr>
+          <attr name="systemLanguage" ns=""><yes/></attr>
+          <attr name="transform" ns=""><yes/></attr>
+          <attr name="base" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="lang" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="space" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+        </element>
+        <element name="clipPath" ns="http://www.w3.org/2000/svg">
+          <prop name="clip-path"><yes/></prop>
+          <prop name="color-interpolation"><yes/></prop>
+          <prop name="color-rendering"><yes/></prop>
+          <prop name="cursor"><yes/></prop>
+          <prop name="enable-background"><no/></prop>
+          <prop name="filter"><yes/></prop>
+          <prop name="mask"><yes/></prop>
+          <prop name="opacity"><yes/></prop>
+          <attr name="class" ns=""><yes/></attr>
+          <attr name="clipPathUnits" ns=""><yes/></attr>
+          <attr name="externalResourcesRequired" ns=""><no/></attr>
+          <attr name="id" ns=""><yes/></attr>
+          <attr name="requiredExtensions" ns=""><yes/></attr>
+          <attr name="requiredFeatures" ns=""><yes/></attr>
+          <attr name="style" ns=""><yes/></attr>
+          <attr name="systemLanguage" ns=""><yes/></attr>
+          <attr name="transform" ns=""><yes/></attr>
+          <attr name="base" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="lang" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="space" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+        </element>
+        <element name="color-profile" ns="http://www.w3.org/2000/svg">
+          <attr name='id' ns=''><yes/></attr>
+          <attr name='local' ns=''><no/></attr>
+          <attr name='name' ns=''><yes/></attr>
+          <attr name='rendering-intent' ns=''><yes/></attr>
+          <attr name='actuate' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='arcrole' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='href' ns='http://www.w3.org/1999/xlink'><yes/></attr>
+          <attr name='role' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='show' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='title' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='type' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='base' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='lang' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='space' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+        </element>
+        <element name='cursor' ns='http://www.w3.org/2000/svg'>
+          <attr name='externalResourcesRequired' ns=''><no/></attr>
+          <attr name='id' ns=''><yes/></attr>
+          <attr name='requiredExtensions' ns=''><yes/></attr>
+          <attr name='requiredFeatures' ns=''><yes/></attr>
+          <attr name='systemLanguage' ns=''><yes/></attr>
+          <attr name='x' ns=''><yes/></attr>
+          <attr name='actuate' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='arcrole' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='href' ns='http://www.w3.org/1999/xlink'><yes/></attr>
+          <attr name='role' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='show' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='title' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='type' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='base' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='lang' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='space' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='y' ns=''><yes/></attr>
+        </element>
+        <element name="definition-src" ns="http://www.w3.org/2000/svg">
+          <no/>
+          <attr name='id' ns=''><yes/></attr>
+          <attr name='actuate' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='arcrole' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='href' ns='http://www.w3.org/1999/xlink'><no/></attr>
+          <attr name='role' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='show' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='title' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='type' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='base' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='lang' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='space' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+        </element>
+        <element name="defs" ns="http://www.w3.org/2000/svg">
+          <prop name="clip-path"><yes/></prop>
+          <prop name="color-interpolation"><yes/></prop>
+          <prop name="color-rendering"><yes/></prop>
+          <prop name="cursor"><yes/></prop>
+          <prop name="enable-background"><no/></prop>
+          <prop name="filter"><yes/></prop>
+          <prop name="mask"><yes/></prop>
+          <prop name="opacity"><yes/></prop>
+          <attr name="class" ns=""><yes/></attr>
+          <attr name="externalResourcesRequired" ns=""><no/></attr>
+          <attr name="id" ns=""><yes/></attr>
+          <attr name="onclick" ns=""><yes/></attr>
+          <attr name="onfocusin" ns=""><yes/></attr>
+          <attr name="onfocusout" ns=""><yes/></attr>
+          <attr name="onload" ns=""><yes/></attr>
+          <attr name="onmousedown" ns=""><yes/></attr>
+          <attr name="onmousemove" ns=""><yes/></attr>
+          <attr name="onmouseout" ns=""><yes/></attr>
+          <attr name="onmouseover" ns=""><yes/></attr>
+          <attr name="onmouseup" ns=""><yes/></attr>
+          <attr name="requiredExtensions" ns=""><yes/></attr>
+          <attr name="requiredFeatures" ns=""><yes/></attr>
+          <attr name="style" ns=""><yes/></attr>
+          <attr name="systemLanguage" ns=""><yes/></attr>
+          <attr name="transform" ns=""><yes/></attr>
+          <attr name="base" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="lang" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="space" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+        </element>
+        <element name='desc' ns='http://www.w3.org/2000/svg'>
+          <attr name='class' ns=''><yes/></attr>
+          <attr name='id' ns=''><yes/></attr>
+          <attr name='style' ns=''><yes/></attr>
+          <attr name='base' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='lang' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='space' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+        </element>
+        <element name="ellipse" ns="http://www.w3.org/2000/svg">
+          <prop name="clip-path"><yes/></prop>
+          <prop name="clip-rule"><yes/></prop>
+          <prop name="color"><yes/></prop>
+          <prop name="color-interpolation"><yes/></prop>
+          <prop name="color-rendering"><yes/></prop>
+          <prop name="cursor"><yes/></prop>
+          <prop name="fill"><yes/></prop>
+          <prop name="fill-opacity"><yes/></prop>
+          <prop name="fill-rule"><yes/></prop>
+          <prop name="filter"><yes/></prop>
+          <prop name="mask"><yes/></prop>
+          <prop name="opacity"><yes/></prop>
+          <prop name="pointer-events"><yes/></prop>
+          <prop name="shape-rendering"><yes/></prop>
+          <prop name="stroke"><yes/></prop>
+          <prop name="stroke-dasharray"><yes/></prop>
+          <prop name="stroke-dashoffset"><yes/></prop>
+          <prop name="stroke-linecap"><yes/></prop>
+          <prop name="stroke-linejoin"><yes/></prop>
+          <prop name="stroke-miterlimit"><yes/></prop>
+          <prop name="stroke-opacity"><yes/></prop>
+          <prop name="stroke-width"><yes/></prop>
+          <prop name="visibility"><yes/></prop>
+          <attr name="class" ns=""><yes/></attr>
+          <attr name="cx" ns=""><yes/></attr>
+          <attr name="cy" ns=""><yes/></attr>
+          <attr name="externalResourcesRequired" ns=""><no/></attr>
+          <attr name="id" ns=""><yes/></attr>
+          <attr name="onclick" ns=""><yes/></attr>
+          <attr name="onfocusin" ns=""><yes/></attr>
+          <attr name="onfocusout" ns=""><yes/></attr>
+          <attr name="onload" ns=""><yes/></attr>
+          <attr name="onmousedown" ns=""><yes/></attr>
+          <attr name="onmousemove" ns=""><yes/></attr>
+          <attr name="onmouseout" ns=""><yes/></attr>
+          <attr name="onmouseover" ns=""><yes/></attr>
+          <attr name="onmouseup" ns=""><yes/></attr>
+          <attr name="requiredExtensions" ns=""><yes/></attr>
+          <attr name="requiredFeatures" ns=""><yes/></attr>
+          <attr name="rx" ns=""><yes/></attr>
+          <attr name="ry" ns=""><yes/></attr>
+          <attr name="style" ns=""><yes/></attr>
+          <attr name="systemLanguage" ns=""><yes/></attr>
+          <attr name="transform" ns=""><yes/></attr>
+          <attr name="base" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="lang" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="space" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+        </element>
+        <element name="feBlend" ns="http://www.w3.org/2000/svg">
+          <prop name="color-interpolation-filters"><yes/></prop>
+          <attr name="height" ns=""><yes/></attr>
+          <attr name="id" ns=""><yes/></attr>
+          <attr name="in" ns=""><yes/></attr>
+          <attr name="in2" ns=""><yes/></attr>
+          <attr name="mode" ns=""><yes/></attr>
+          <attr name="result" ns=""><yes/></attr>
+          <attr name="width" ns=""><yes/></attr>
+          <attr name="x" ns=""><yes/></attr>
+          <attr name="base" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="lang" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="space" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="y" ns=""><yes/></attr>
+        </element>
+        <element name="feColorMatrix" ns="http://www.w3.org/2000/svg">
+          <prop name="color-interpolation-filters"><yes/></prop>
+          <attr name="height" ns=""><yes/></attr>
+          <attr name="id" ns=""><yes/></attr>
+          <attr name="in" ns=""><yes/></attr>
+          <attr name="result" ns=""><yes/></attr>
+          <attr name="type" ns=""><yes/></attr>
+          <attr name="values" ns=""><yes/></attr>
+          <attr name="width" ns=""><yes/></attr>
+          <attr name="x" ns=""><yes/></attr>
+          <attr name="base" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="lang" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="space" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="y" ns=""><yes/></attr>
+        </element>
+        <element name="feComponentTransfer" ns="http://www.w3.org/2000/svg">
+          <prop name="color-interpolation-filters"><yes/></prop>
+          <attr name="height" ns=""><yes/></attr>
+          <attr name="id" ns=""><yes/></attr>
+          <attr name="in" ns=""><yes/></attr>
+          <attr name="result" ns=""><yes/></attr>
+          <attr name="width" ns=""><yes/></attr>
+          <attr name="x" ns=""><yes/></attr>
+          <attr name="base" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="lang" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="space" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="y" ns=""><yes/></attr>
+        </element>
+        <element name="feComposite" ns="http://www.w3.org/2000/svg">
+          <prop name="color-interpolation-filters"><yes/></prop>
+          <attr name="height" ns=""><yes/></attr>
+          <attr name="id" ns=""><yes/></attr>
+          <attr name="in" ns=""><yes/></attr>
+          <attr name="in2" ns=""><yes/></attr>
+          <attr name="k1" ns=""><yes/></attr>
+          <attr name="k2" ns=""><yes/></attr>
+          <attr name="k3" ns=""><yes/></attr>
+          <attr name="k4" ns=""><yes/></attr>
+          <attr name="operator" ns=""><yes/></attr>
+          <attr name="result" ns=""><yes/></attr>
+          <attr name="width" ns=""><yes/></attr>
+          <attr name="x" ns=""><yes/></attr>
+          <attr name="base" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="lang" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="space" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="y" ns=""><yes/></attr>
+        </element>
+        <element name="feConvolveMatrix" ns="http://www.w3.org/2000/svg">
+          <prop name="color-interpolation-filters"><yes/></prop>
+          <attr name="bias" ns=""><yes/></attr>
+          <attr name="divisor" ns=""><yes/></attr>
+          <attr name="edgeMode" ns=""><yes/></attr>
+          <attr name="height" ns=""><yes/></attr>
+          <attr name="id" ns=""><yes/></attr>
+          <attr name="in" ns=""><yes/></attr>
+          <attr name="kernelMatrix" ns=""><yes/></attr>
+          <attr name="kernelUnitLength" ns=""><yes/></attr>
+          <attr name="order" ns=""><yes/></attr>
+          <attr name="preserveAlpha" ns=""><yes/></attr>
+          <attr name="result" ns=""><yes/></attr>
+          <attr name="targetX" ns=""><yes/></attr>
+          <attr name="targetY" ns=""><yes/></attr>
+          <attr name="width" ns=""><yes/></attr>
+          <attr name="x" ns=""><yes/></attr>
+          <attr name="base" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="lang" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="space" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="y" ns=""><yes/></attr>
+        </element>
+        <element name="feDiffuseLighting" ns="http://www.w3.org/2000/svg">
+          <prop name="color"><yes/></prop>
+          <prop name="color-interpolation-filters"><yes/></prop>
+          <prop name="lighting-color"><yes/></prop>
+          <attr name="class" ns=""><yes/></attr>
+          <attr name="diffuseConstant" ns=""><yes/></attr>
+          <attr name="height" ns=""><yes/></attr>
+          <attr name="id" ns=""><yes/></attr>
+          <attr name="in" ns=""><yes/></attr>
+          <attr name="kernelUnitLength" ns=""><no/></attr>
+          <attr name="result" ns=""><yes/></attr>
+          <attr name="style" ns=""><yes/></attr>
+          <attr name="surfaceScale" ns=""><yes/></attr>
+          <attr name="width" ns=""><yes/></attr>
+          <attr name="x" ns=""><yes/></attr>
+          <attr name="base" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="lang" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="space" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="y" ns=""><yes/></attr>
+        </element>
+        <element name="feDisplacementMap" ns="http://www.w3.org/2000/svg">
+          <prop name="color-interpolation-filters"><yes/></prop>
+          <attr name="height" ns=""><yes/></attr>
+          <attr name="id" ns=""><yes/></attr>
+          <attr name="in" ns=""><yes/></attr>
+          <attr name="in2" ns=""><yes/></attr>
+          <attr name="result" ns=""><yes/></attr>
+          <attr name="scale" ns=""><yes/></attr>
+          <attr name="width" ns=""><yes/></attr>
+          <attr name="x" ns=""><yes/></attr>
+          <attr name="xChannelSelector" ns=""><yes/></attr>
+          <attr name="base" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="lang" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="space" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="y" ns=""><yes/></attr>
+          <attr name="yChannelSelector" ns=""><yes/></attr>
+        </element>
+        <element name='feDistantLight' ns='http://www.w3.org/2000/svg'>
+          <attr name='azimuth' ns=''><yes/></attr>
+          <attr name='elevation' ns=''><yes/></attr>
+          <attr name='id' ns=''><yes/></attr>
+          <attr name='base' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='lang' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='space' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+        </element>
+        <element name="feFlood" ns="http://www.w3.org/2000/svg">
+          <prop name="color"><yes/></prop>
+          <prop name="color-interpolation-filters"><yes/></prop>
+          <prop name="flood-color"><yes/></prop>
+          <prop name="flood-opacity"><yes/></prop>
+          <attr name="class" ns=""><yes/></attr>
+          <attr name="height" ns=""><yes/></attr>
+          <attr name="id" ns=""><yes/></attr>
+          <attr name="in" ns=""><yes/></attr>
+          <attr name="result" ns=""><yes/></attr>
+          <attr name="style" ns=""><yes/></attr>
+          <attr name="width" ns=""><yes/></attr>
+          <attr name="x" ns=""><yes/></attr>
+          <attr name="base" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="lang" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="space" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="y" ns=""><yes/></attr>
+        </element>
+        <element name='feFuncA' ns='http://www.w3.org/2000/svg'>
+          <attr name='amplitude' ns=''><yes/></attr>
+          <attr name='exponent' ns=''><yes/></attr>
+          <attr name='id' ns=''><yes/></attr>
+          <attr name='intercept' ns=''><yes/></attr>
+          <attr name='offset' ns=''><yes/></attr>
+          <attr name='slope' ns=''><yes/></attr>
+          <attr name='tableValues' ns=''><yes/></attr>
+          <attr name='type' ns=''><yes/></attr>
+          <attr name='base' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='lang' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='space' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+        </element>
+        <element name='feFuncB' ns='http://www.w3.org/2000/svg'>
+          <attr name='amplitude' ns=''><yes/></attr>
+          <attr name='exponent' ns=''><yes/></attr>
+          <attr name='id' ns=''><yes/></attr>
+          <attr name='intercept' ns=''><yes/></attr>
+          <attr name='offset' ns=''><yes/></attr>
+          <attr name='slope' ns=''><yes/></attr>
+          <attr name='tableValues' ns=''><yes/></attr>
+          <attr name='type' ns=''><yes/></attr>
+          <attr name='base' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='lang' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='space' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+        </element>
+        <element name='feFuncG' ns='http://www.w3.org/2000/svg'>
+          <attr name='amplitude' ns=''><yes/></attr>
+          <attr name='exponent' ns=''><yes/></attr>
+          <attr name='id' ns=''><yes/></attr>
+          <attr name='intercept' ns=''><yes/></attr>
+          <attr name='offset' ns=''><yes/></attr>
+          <attr name='slope' ns=''><yes/></attr>
+          <attr name='tableValues' ns=''><yes/></attr>
+          <attr name='type' ns=''><yes/></attr>
+          <attr name='base' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='lang' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='space' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+        </element>
+        <element name='feFuncR' ns='http://www.w3.org/2000/svg'>
+          <attr name='amplitude' ns=''><yes/></attr>
+          <attr name='exponent' ns=''><yes/></attr>
+          <attr name='id' ns=''><yes/></attr>
+          <attr name='intercept' ns=''><yes/></attr>
+          <attr name='offset' ns=''><yes/></attr>
+          <attr name='slope' ns=''><yes/></attr>
+          <attr name='tableValues' ns=''><yes/></attr>
+          <attr name='type' ns=''><yes/></attr>
+          <attr name='base' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='lang' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='space' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+        </element>
+        <element name="feGaussianBlur" ns="http://www.w3.org/2000/svg">
+          <prop name="color-interpolation-filters"><yes/></prop>
+          <attr name="height" ns=""><yes/></attr>
+          <attr name="id" ns=""><yes/></attr>
+          <attr name="in" ns=""><yes/></attr>
+          <attr name="result" ns=""><yes/></attr>
+          <attr name="stdDeviation" ns=""><yes/></attr>
+          <attr name="width" ns=""><yes/></attr>
+          <attr name="x" ns=""><yes/></attr>
+          <attr name="base" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="lang" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="space" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="y" ns=""><yes/></attr>
+        </element>
+        <element name="feImage" ns="http://www.w3.org/2000/svg">
+          <prop name="clip"><no/></prop>
+          <prop name="clip-path"><yes/></prop>
+          <prop name="clip-rule"><yes/></prop>
+          <prop name="color-interpolation"><yes/></prop>
+          <prop name="color-interpolation-filters"><yes/></prop>
+          <prop name="color-profile"><yes/></prop>
+          <prop name="color-rendering"><yes/></prop>
+          <prop name="cursor"><yes/></prop>
+          <prop name="filter"><yes/></prop>
+          <prop name="image-rendering"><yes/></prop>
+          <prop name="mask"><yes/></prop>
+          <prop name="opacity"><yes/></prop>
+          <prop name="overflow"><yes/></prop>
+          <prop name="pointer-events"><yes/></prop>
+          <prop name="visibility"><yes/></prop>
+          <attr name="class" ns=""><yes/></attr>
+          <attr name="externalResourcesRequired" ns=""><no/></attr>
+          <attr name="height" ns=""><yes/></attr>
+          <attr name="id" ns=""><yes/></attr>
+          <attr name="preserveAspectRatio" ns=""><no/></attr>
+          <attr name="result" ns=""><yes/></attr>
+          <attr name="style" ns=""><yes/></attr>
+          <attr name="width" ns=""><yes/></attr>
+          <attr name="x" ns=""><yes/></attr>
+          <attr name="actuate" ns="http://www.w3.org/1999/xlink"><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name="arcrole" ns="http://www.w3.org/1999/xlink"><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name="href" ns="http://www.w3.org/1999/xlink"><yes/></attr>
+          <attr name="role" ns="http://www.w3.org/1999/xlink"><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name="show" ns="http://www.w3.org/1999/xlink"><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name="title" ns="http://www.w3.org/1999/xlink"><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name="type" ns="http://www.w3.org/1999/xlink"><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name="base" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="lang" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="space" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="y" ns=""><yes/></attr>
+        </element>
+        <element name="feMerge" ns="http://www.w3.org/2000/svg">
+          <prop name="color-interpolation-filters"><yes/></prop>
+          <attr name="height" ns=""><yes/></attr>
+          <attr name="id" ns=""><yes/></attr>
+          <attr name="result" ns=""><yes/></attr>
+          <attr name="width" ns=""><yes/></attr>
+          <attr name="x" ns=""><yes/></attr>
+          <attr name="base" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="lang" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="space" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="y" ns=""><yes/></attr>
+        </element>
+        <element name='feMergeNode' ns='http://www.w3.org/2000/svg'>
+          <attr name='id' ns=''><yes/></attr>
+          <attr name='in' ns=''><yes/></attr>
+          <attr name='base' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='lang' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='space' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+        </element>
+        <element name="feMorphology" ns="http://www.w3.org/2000/svg">
+          <prop name="color-interpolation-filters"><yes/></prop>
+          <attr name="height" ns=""><yes/></attr>
+          <attr name="id" ns=""><yes/></attr>
+          <attr name="in" ns=""><yes/></attr>
+          <attr name="operator" ns=""><yes/></attr>
+          <attr name="radius" ns=""><yes/></attr>
+          <attr name="result" ns=""><yes/></attr>
+          <attr name="width" ns=""><yes/></attr>
+          <attr name="x" ns=""><yes/></attr>
+          <attr name="base" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="lang" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="space" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="y" ns=""><yes/></attr>
+        </element>
+        <element name="feOffset" ns="http://www.w3.org/2000/svg">
+          <prop name="color-interpolation-filters"><yes/></prop>
+          <attr name="dx" ns=""><yes/></attr>
+          <attr name="dy" ns=""><yes/></attr>
+          <attr name="height" ns=""><yes/></attr>
+          <attr name="id" ns=""><yes/></attr>
+          <attr name="in" ns=""><yes/></attr>
+          <attr name="result" ns=""><yes/></attr>
+          <attr name="width" ns=""><yes/></attr>
+          <attr name="x" ns=""><yes/></attr>
+          <attr name="base" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="lang" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="space" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="y" ns=""><yes/></attr>
+        </element>
+        <element name='fePointLight' ns='http://www.w3.org/2000/svg'>
+          <attr name='id' ns=''><yes/></attr>
+          <attr name='x' ns=''><yes/></attr>
+          <attr name='base' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='lang' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='space' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='y' ns=''><yes/></attr>
+          <attr name='z' ns=''><yes/></attr>
+        </element>
+        <element name="feSpecularLighting" ns="http://www.w3.org/2000/svg">
+          <prop name="color"><yes/></prop>
+          <prop name="color-interpolation-filters"><yes/></prop>
+          <prop name="lighting-color"><yes/></prop>
+          <attr name="class" ns=""><yes/></attr>
+          <attr name="height" ns=""><yes/></attr>
+          <attr name="id" ns=""><yes/></attr>
+          <attr name="in" ns=""><yes/></attr>
+          <attr name="kernelUnitLength" ns=""><yes/></attr>
+          <attr name="result" ns=""><yes/></attr>
+          <attr name="specularConstant" ns=""><yes/></attr>
+          <attr name="specularExponent" ns=""><yes/></attr>
+          <attr name="style" ns=""><yes/></attr>
+          <attr name="surfaceScale" ns=""><yes/></attr>
+          <attr name="width" ns=""><yes/></attr>
+          <attr name="x" ns=""><yes/></attr>
+          <attr name="base" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="lang" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="space" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="y" ns=""><yes/></attr>
+        </element>
+        <element name='feSpotLight' ns='http://www.w3.org/2000/svg'>
+          <attr name='id' ns=''><yes/></attr>
+          <attr name='limitingConeAngle' ns=''><yes/></attr>
+          <attr name='pointsAtX' ns=''><yes/></attr>
+          <attr name='pointsAtY' ns=''><yes/></attr>
+          <attr name='pointsAtZ' ns=''><yes/></attr>
+          <attr name='specularExponent' ns=''><yes/></attr>
+          <attr name='x' ns=''><yes/></attr>
+          <attr name='base' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='lang' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='space' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='y' ns=''><yes/></attr>
+          <attr name='z' ns=''><yes/></attr>
+        </element>
+        <element name="feTile" ns="http://www.w3.org/2000/svg">
+          <prop name="color-interpolation-filters"><yes/></prop>
+          <attr name="height" ns=""><yes/></attr>
+          <attr name="id" ns=""><yes/></attr>
+          <attr name="in" ns=""><yes/></attr>
+          <attr name="result" ns=""><yes/></attr>
+          <attr name="width" ns=""><yes/></attr>
+          <attr name="x" ns=""><yes/></attr>
+          <attr name="base" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="lang" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="space" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="y" ns=""><yes/></attr>
+        </element>
+        <element name="feTurbulence" ns="http://www.w3.org/2000/svg">
+          <prop name="color-interpolation-filters"><yes/></prop>
+          <attr name="id" ns=""><yes/></attr>
+          <attr name="baseFrequency" ns=""><yes/></attr>
+          <attr name="height" ns=""><yes/></attr>
+          <attr name="numOctaves" ns=""><yes/></attr>
+          <attr name="result" ns=""><yes/></attr>
+          <attr name="seed" ns=""><yes/></attr>
+          <attr name="stitchTiles" ns=""><yes/></attr>
+          <attr name="type" ns=""><yes/></attr>
+          <attr name="width" ns=""><yes/></attr>
+          <attr name="x" ns=""><yes/></attr>
+          <attr name="base" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="lang" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="space" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="y" ns=""><yes/></attr>
+        </element>
+        <element name="filter" ns="http://www.w3.org/2000/svg">
+          <attr name="class" ns=""><yes/></attr>
+          <attr name='externalResourcesRequired' ns=''><no/></attr>
+          <attr name='filterRes' ns=''><yes/></attr>
+          <attr name="filterUnits" ns=""><yes/></attr>
+          <attr name='height' ns=''><yes/></attr>
+          <attr name='id' ns=''><yes/></attr>
+          <attr name='primitiveUnits' ns=''><yes/></attr>
+          <attr name="style" ns=""><yes/></attr>
+          <attr name='width' ns=''><yes/></attr>
+          <attr name='x' ns=''><yes/></attr>
+          <attr name='y' ns=''><yes/></attr>
+          <attr name='actuate' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='arcrole' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='href' ns='http://www.w3.org/1999/xlink'><yes/></attr>
+          <attr name='role' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='show' ns='http://www.w3.org/1999/xlink'><yes/></attr>
+          <attr name='title' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='type' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='base' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='lang' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='space' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+        </element>
+        <element name='font' ns='http://www.w3.org/2000/svg'>
+          <attr name='class' ns=''><yes/></attr>
+          <attr name='externalResourcesRequired' ns=''><no/></attr>
+          <attr name='horiz-adv-x' ns=''><yes/></attr>
+          <attr name='horiz-origin-x' ns=''><yes/></attr>
+          <attr name='horiz-origin-y' ns=''><yes/></attr>
+          <attr name='id' ns=''><yes/></attr>
+          <attr name='style' ns=''><yes/></attr>
+          <attr name='vert-adv-y' ns=''><yes/></attr>
+          <attr name='vert-origin-x' ns=''><yes/></attr>
+          <attr name='vert-origin-y' ns=''><yes/></attr>
+          <attr name='base' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='lang' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='space' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+        </element>
+        <element name='font-face' ns='http://www.w3.org/2000/svg'>
+          <attr name='accent-height' ns=''><no/></attr>
+          <attr name='alphabetic' ns=''><no/></attr>
+          <attr name='ascent' ns=''><yes/></attr>
+          <attr name='bbox' ns=''><no/></attr>
+          <attr name='cap-height' ns=''><no/></attr>
+          <attr name='descent' ns=''><yes/></attr>
+          <attr name='font-family' ns=''><yes/></attr>
+          <attr name='font-size' ns=''><no/></attr>
+          <attr name='font-stretch' ns=''><no/></attr>
+          <attr name='font-style' ns=''><yes/></attr>
+          <attr name='font-variant' ns=''><no/></attr>
+          <attr name='font-weight' ns=''><yes/></attr>
+          <attr name='hanging' ns=''><no/></attr>
+          <attr name='id' ns=''><yes/></attr>
+          <attr name='ideographic' ns=''><no/></attr>
+          <attr name='mathematical' ns=''><no/></attr>
+          <attr name='overline-position' ns=''><yes/></attr>
+          <attr name='overline-thickness' ns=''><yes/></attr>
+          <attr name='panose-1' ns=''><yes/></attr>
+          <attr name='slope' ns=''><yes/></attr>
+          <attr name='stemh' ns=''><no/></attr>
+          <attr name='stemv' ns=''><no/></attr>
+          <attr name='strikethrough-position' ns=''><yes/></attr>
+          <attr name='strikethrough-thickness' ns=''><yes/></attr>
+          <attr name='underline-position' ns=''><yes/></attr>
+          <attr name='underline-thickness' ns=''><yes/></attr>
+          <attr name='unicode-range' ns=''><no/></attr>
+          <attr name='units-per-em' ns=''><yes/></attr>
+          <attr name='v-alphabetic' ns=''><no/></attr>
+          <attr name='v-hanging' ns=''><no/></attr>
+          <attr name='v-ideographic' ns=''><no/></attr>
+          <attr name='v-mathematical' ns=''><no/></attr>
+          <attr name='widths' ns=''><no/></attr>
+          <attr name='x-height' ns=''><no/></attr>
+          <attr name='base' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='lang' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='space' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+        </element>
+        <element name="foreignObject" ns="http://www.w3.org/2000/svg">
+          <no/>
+          <prop name="clip"><no/></prop>
+          <prop name="display"><no/></prop>
+          <prop name="overflow"><no/></prop>
+          <attr name='id' ns=''><yes/></attr>
+          <attr name='class' ns=''><no/></attr>
+          <attr name='style' ns=''><no/></attr>
+          <attr name='x' ns=''><no/></attr>
+          <attr name='y' ns=''><no/></attr>
+          <attr name='width' ns=''><no/></attr>
+          <attr name='height' ns=''><no/></attr>
+          <attr name='transform' ns=''><no/></attr>
+          <attr name='base' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='lang' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='space' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name="requiredExtensions" ns=""><no/></attr>
+          <attr name="requiredFeatures" ns=""><no/></attr>
+          <attr name="systemLanguage" ns=""><no/></attr>
+          <attr name="onfocusin" ns=""><no/></attr>
+          <attr name="onfocusout" ns=""><no/></attr>
+          <attr name="onactivate" ns=""><no/></attr>
+          <attr name="onclick" ns=""><no/></attr>
+          <attr name="onmousedown" ns=""><no/></attr>
+          <attr name="onmouseup" ns=""><no/></attr>
+          <attr name="onmouseover" ns=""><no/></attr>
+          <attr name="onmousemove" ns=""><no/></attr>
+          <attr name="onmouseout" ns=""><no/></attr>
+          <attr name="onload" ns=""><no/></attr>
+        </element>
+        <element name='font-face-src' ns='http://www.w3.org/2000/svg'>
+          <attr name='id' ns=''><yes/></attr>
+          <attr name='base' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='lang' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='space' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+        </element>
+        <element name='font-face-uri' ns='http://www.w3.org/2000/svg'>
+          <attr name='id' ns=''><yes/></attr>
+          <attr name='actuate' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='arcrole' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='href' ns='http://www.w3.org/1999/xlink'><yes/></attr>
+          <attr name='role' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='show' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='title' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='type' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='base' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='lang' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='space' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+        </element>
+        <element name="font-face-format" ns="http://www.w3.org/2000/svg">
+          <no/>
+          <attr name='id' ns=''><yes/></attr>
+          <attr name='string' ns=''><no/></attr>
+          <attr name='base' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='lang' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='space' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+        </element>
+        <element name="font-face-name" ns="http://www.w3.org/2000/svg">
+          <attr name='id' ns=''><yes/></attr>
+          <attr name='name' ns=''><yes/></attr>
+          <attr name='base' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='lang' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='space' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+        </element>
+        <element name="g" ns="http://www.w3.org/2000/svg">
+          <prop name="clip-path"><yes/></prop>
+          <prop name="color-interpolation"><yes/></prop>
+          <prop name="color-rendering"><yes/></prop>
+          <prop name="cursor"><yes/></prop>
+          <prop name="display"><yes/></prop>
+          <prop name="enable-background"><yes/></prop>
+          <prop name="filter"><yes/></prop>
+          <prop name="mask"><yes/></prop>
+          <prop name="opacity"><yes/></prop>
+          <attr name="class" ns=""><yes/></attr>
+          <attr name="externalResourcesRequired" ns=""><no/></attr>
+          <attr name="id" ns=""><yes/></attr>
+          <attr name="onclick" ns=""><yes/></attr>
+          <attr name="onfocusin" ns=""><yes/></attr>
+          <attr name="onfocusout" ns=""><yes/></attr>
+          <attr name="onload" ns=""><yes/></attr>
+          <attr name="onmousedown" ns=""><yes/></attr>
+          <attr name="onmousemove" ns=""><yes/></attr>
+          <attr name="onmouseout" ns=""><yes/></attr>
+          <attr name="onmouseover" ns=""><yes/></attr>
+          <attr name="onmouseup" ns=""><yes/></attr>
+          <attr name="requiredExtensions" ns=""><yes/></attr>
+          <attr name="requiredFeatures" ns=""><yes/></attr>
+          <attr name="style" ns=""><yes/></attr>
+          <attr name="systemLanguage" ns=""><yes/></attr>
+          <attr name="transform" ns=""><yes/></attr>
+          <attr name="base" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="lang" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="space" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+        </element>
+        <element name='glyph' ns='http://www.w3.org/2000/svg'>
+          <attr name='arabic-form' ns=''><yes/></attr>
+          <attr name='class' ns=''><yes/></attr>
+          <attr name='d' ns=''><yes/></attr>
+          <attr name='glyph-name' ns=''><yes/></attr>
+          <attr name='horiz-adv-x' ns=''><yes/></attr>
+          <attr name='id' ns=''><yes/></attr>
+          <attr name='lang' ns=''><yes/></attr>
+          <attr name='orientation' ns=''><yes/></attr>
+          <attr name='style' ns=''><yes/></attr>
+          <attr name='unicode' ns=''><yes/></attr>
+          <attr name='vert-adv-y' ns=''><yes/></attr>
+          <attr name='vert-origin-x' ns=''><yes/></attr>
+          <attr name='vert-origin-y' ns=''><yes/></attr>
+          <attr name='base' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='lang' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='space' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+        </element>
+        <element name='glyphRef' ns='http://www.w3.org/2000/svg'>
+          <attr name='class' ns=''><yes/></attr>
+          <attr name='dx' ns=''><no/></attr>
+          <attr name='dy' ns=''><no/></attr>
+          <attr name='font-family' ns=''><no><a href="#noteGlyphRef">[2]</a></no></attr>
+          <attr name='font-size' ns=''><no><a href="#noteGlyphRef">[2]</a></no></attr>
+          <attr name='font-size-adjust' ns=''><no><a href="#noteGlyphRef">[2]</a></no></attr>
+          <attr name='font-stretch' ns=''><no><a href="#noteGlyphRef">[2]</a></no></attr>
+          <attr name='font-style' ns=''><no><a href="#noteGlyphRef">[2]</a></no></attr>
+          <attr name='font-variant' ns=''><no><a href="#noteGlyphRef">[2]</a></no></attr>
+          <attr name='font-weight' ns=''><no><a href="#noteGlyphRef">[2]</a></no></attr>
+          <attr name='format' ns=''><no/></attr>
+          <attr name='glyphRef' ns=''><no/></attr>
+          <attr name='id' ns=''><yes/></attr>
+          <attr name='style' ns=''><yes/></attr>
+          <attr name='x' ns=''><no/></attr>
+          <attr name='actuate' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='arcrole' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='href' ns='http://www.w3.org/1999/xlink'><yes/></attr>
+          <attr name='role' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='show' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='title' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='type' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='base' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='lang' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='space' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='y' ns=''><no/></attr>
+        </element>
+        <element name='hkern' ns='http://www.w3.org/2000/svg'>
+          <attr name='id' ns=''><yes/></attr>
+          <attr name='g1' ns=''><yes/></attr>
+          <attr name='g2' ns=''><yes/></attr>
+          <attr name='k' ns=''><yes/></attr>
+          <attr name='u1' ns=''><yes/></attr>
+          <attr name='u2' ns=''><yes/></attr>
+          <attr name='base' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='lang' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='space' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+        </element>
+        <element name="image" ns="http://www.w3.org/2000/svg">
+          <prop name="clip"><no/></prop>
+          <prop name="clip-path"><yes/></prop>
+          <prop name="clip-rule"><yes/></prop>
+          <prop name="color-interpolation"><yes/></prop>
+          <prop name="color-profile"><yes/></prop>
+          <prop name="color-rendering"><yes/></prop>
+          <prop name="cursor"><yes/></prop>
+          <prop name="filter"><yes/></prop>
+          <prop name="image-rendering"><yes/></prop>
+          <prop name="mask"><yes/></prop>
+          <prop name="opacity"><yes/></prop>
+          <prop name="overflow"><yes/></prop>
+          <prop name="pointer-events"><yes/></prop>
+          <prop name="visibility"><yes/></prop>
+          <attr name="class" ns=""><yes/></attr>
+          <attr name="externalResourcesRequired" ns=""><no/></attr>
+          <attr name="height" ns=""><yes/></attr>
+          <attr name="id" ns=""><yes/></attr>
+          <attr name="onclick" ns=""><yes/></attr>
+          <attr name="onfocusin" ns=""><yes/></attr>
+          <attr name="onfocusout" ns=""><yes/></attr>
+          <attr name="onload" ns=""><yes/></attr>
+          <attr name="onmousedown" ns=""><yes/></attr>
+          <attr name="onmousemove" ns=""><yes/></attr>
+          <attr name="onmouseout" ns=""><yes/></attr>
+          <attr name="onmouseover" ns=""><yes/></attr>
+          <attr name="onmouseup" ns=""><yes/></attr>
+          <attr name="preserveAspectRatio" ns=""><yes/></attr>
+          <attr name="requiredExtensions" ns=""><yes/></attr>
+          <attr name="requiredFeatures" ns=""><yes/></attr>
+          <attr name="style" ns=""><yes/></attr>
+          <attr name="systemLanguage" ns=""><yes/></attr>
+          <attr name="transform" ns=""><yes/></attr>
+          <attr name="width" ns=""><yes/></attr>
+          <attr name="x" ns=""><yes/></attr>
+          <attr name="actuate" ns="http://www.w3.org/1999/xlink"><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name="arcrole" ns="http://www.w3.org/1999/xlink"><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name="href" ns="http://www.w3.org/1999/xlink"><yes/></attr>
+          <attr name="role" ns="http://www.w3.org/1999/xlink"><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name="show" ns="http://www.w3.org/1999/xlink"><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name="title" ns="http://www.w3.org/1999/xlink"><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name="type" ns="http://www.w3.org/1999/xlink"><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name="base" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="lang" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="space" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="y" ns=""><yes/></attr>
+        </element>
+        <element name="line" ns="http://www.w3.org/2000/svg">
+          <prop name="clip-path"><yes/></prop>
+          <prop name="clip-rule"><yes/></prop>
+          <prop name="color"><yes/></prop>
+          <prop name="color-interpolation"><yes/></prop>
+          <prop name="color-rendering"><yes/></prop>
+          <prop name="cursor"><yes/></prop>
+          <prop name="fill"><yes/></prop>
+          <prop name="fill-opacity"><yes/></prop>
+          <prop name="fill-rule"><yes/></prop>
+          <prop name="filter"><yes/></prop>
+          <prop name="marker"><yes/></prop>
+          <prop name="marker-end"><yes/></prop>
+          <prop name="marker-mid"><yes/></prop>
+          <prop name="marker-start"><yes/></prop>
+          <prop name="mask"><yes/></prop>
+          <prop name="opacity"><yes/></prop>
+          <prop name="pointer-events"><yes/></prop>
+          <prop name="shape-rendering"><yes/></prop>
+          <prop name="stroke"><yes/></prop>
+          <prop name="stroke-dasharray"><yes/></prop>
+          <prop name="stroke-dashoffset"><yes/></prop>
+          <prop name="stroke-linecap"><yes/></prop>
+          <prop name="stroke-linejoin"><yes/></prop>
+          <prop name="stroke-miterlimit"><yes/></prop>
+          <prop name="stroke-opacity"><yes/></prop>
+          <prop name="stroke-width"><yes/></prop>
+          <prop name="visibility"><yes/></prop>
+          <attr name="class" ns=""><yes/></attr>
+          <attr name="externalResourcesRequired" ns=""><no/></attr>
+          <attr name="id" ns=""><yes/></attr>
+          <attr name="onclick" ns=""><yes/></attr>
+          <attr name="onfocusin" ns=""><yes/></attr>
+          <attr name="onfocusout" ns=""><yes/></attr>
+          <attr name="onload" ns=""><yes/></attr>
+          <attr name="onmousedown" ns=""><yes/></attr>
+          <attr name="onmousemove" ns=""><yes/></attr>
+          <attr name="onmouseout" ns=""><yes/></attr>
+          <attr name="onmouseover" ns=""><yes/></attr>
+          <attr name="onmouseup" ns=""><yes/></attr>
+          <attr name="requiredExtensions" ns=""><yes/></attr>
+          <attr name="requiredFeatures" ns=""><yes/></attr>
+          <attr name="style" ns=""><yes/></attr>
+          <attr name="systemLanguage" ns=""><yes/></attr>
+          <attr name="transform" ns=""><yes/></attr>
+          <attr name="x1" ns=""><yes/></attr>
+          <attr name="x2" ns=""><yes/></attr>
+          <attr name="base" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="lang" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="space" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="y1" ns=""><yes/></attr>
+          <attr name="y2" ns=""><yes/></attr>
+        </element>
+        <element name='linearGradient' ns='http://www.w3.org/2000/svg'>
+          <attr name='class' ns=''><yes/></attr>
+          <attr name='color' ns=''><yes/></attr>
+          <attr name='color-interpolation' ns=''><yes/></attr>
+          <attr name='color-rendering' ns=''><yes/></attr>
+          <attr name='externalResourcesRequired' ns=''><no/></attr>
+          <attr name='gradientTransform' ns=''><yes/></attr>
+          <attr name='gradientUnits' ns=''><yes/></attr>
+          <attr name='id' ns=''><yes/></attr>
+          <attr name='spreadMethod' ns=''><yes/></attr>
+          <attr name='stop-color' ns=''><yes/></attr>
+          <attr name='stop-opacity' ns=''><yes/></attr>
+          <attr name='style' ns=''><yes/></attr>
+          <attr name='x1' ns=''><yes/></attr>
+          <attr name='x2' ns=''><yes/></attr>
+          <attr name='actuate' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='arcrole' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='href' ns='http://www.w3.org/1999/xlink'><yes/></attr>
+          <attr name='role' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='show' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='title' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='type' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='base' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='lang' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='space' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='y1' ns=''><yes/></attr>
+          <attr name='y2' ns=''><yes/></attr>
+        </element>
+        <element name="marker" ns="http://www.w3.org/2000/svg">
+          <prop name="clip-path"><yes/></prop>
+          <prop name="color-interpolation"><yes/></prop>
+          <prop name="color-rendering"><yes/></prop>
+          <prop name="cursor"><yes/></prop>
+          <prop name="enable-background"><no/></prop>
+          <prop name="filter"><yes/></prop>
+          <prop name="mask"><yes/></prop>
+          <prop name="opacity"><yes/></prop>
+          <attr name="class" ns=""><yes/></attr>
+          <attr name="externalResourcesRequired" ns=""><no/></attr>
+          <attr name="id" ns=""><yes/></attr>
+          <attr name="markerHeight" ns=""><yes/></attr>
+          <attr name="markerUnits" ns=""><yes/></attr>
+          <attr name="markerWidth" ns=""><yes/></attr>
+          <attr name="orient" ns=""><yes/></attr>
+          <attr name="preserveAspectRatio" ns=""><yes/></attr>
+          <attr name="refX" ns=""><yes/></attr>
+          <attr name="refY" ns=""><yes/></attr>
+          <attr name="style" ns=""><yes/></attr>
+          <attr name="viewBox" ns=""><yes/></attr>
+          <attr name="base" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="lang" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="space" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+        </element>
+        <element name="mask" ns="http://www.w3.org/2000/svg">
+          <prop name="clip-path"><yes/></prop>
+          <prop name="color-interpolation"><yes/></prop>
+          <prop name="color-rendering"><yes/></prop>
+          <prop name="cursor"><yes/></prop>
+          <prop name="enable-background"><no/></prop>
+          <prop name="filter"><yes/></prop>
+          <prop name="mask"><yes/></prop>
+          <prop name="opacity"><yes/></prop>
+          <attr name="class" ns=""><yes/></attr>
+          <attr name="externalResourcesRequired" ns=""><no/></attr>
+          <attr name="height" ns=""><yes/></attr>
+          <attr name="id" ns=""><yes/></attr>
+          <attr name="maskContentUnits" ns=""><yes/></attr>
+          <attr name="maskUnits" ns=""><yes/></attr>
+          <attr name="requiredExtensions" ns=""><yes/></attr>
+          <attr name="requiredFeatures" ns=""><yes/></attr>
+          <attr name="style" ns=""><yes/></attr>
+          <attr name="systemLanguage" ns=""><yes/></attr>
+          <attr name="width" ns=""><yes/></attr>
+          <attr name="x" ns=""><yes/></attr>
+          <attr name="base" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="lang" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="space" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="y" ns=""><yes/></attr>
+        </element>
+        <element name='metadata' ns='http://www.w3.org/2000/svg'>
+          <attr name='id' ns=''><yes/></attr>
+          <attr name='base' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='lang' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='space' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+        </element>
+        <element name='missing-glyph' ns='http://www.w3.org/2000/svg'>
+          <attr name='class' ns=''><yes/></attr>
+          <attr name='d' ns=''><yes/></attr>
+          <attr name='horiz-adv-x' ns=''><yes/></attr>
+          <attr name='id' ns=''><yes/></attr>
+          <attr name='style' ns=''><yes/></attr>
+          <attr name='vert-adv-y' ns=''><yes/></attr>
+          <attr name='vert-origin-x' ns=''><yes/></attr>
+          <attr name='vert-origin-y' ns=''><yes/></attr>
+          <attr name='base' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='lang' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='space' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+        </element>
+        <element name="mpath" ns="http://www.w3.org/2000/svg">
+          <attr name="externalResourcesRequired" ns=""><no/></attr>
+          <attr name="id" ns=""><yes/></attr>
+          <attr name='actuate' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='arcrole' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='href' ns='http://www.w3.org/1999/xlink'><yes/></attr>
+          <attr name='role' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='show' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='title' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='type' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='base' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='lang' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='space' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+        </element>
+        <element name="path" ns="http://www.w3.org/2000/svg">
+          <prop name="clip-path"><yes/></prop>
+          <prop name="clip-rule"><yes/></prop>
+          <prop name="color"><yes/></prop>
+          <prop name="color-interpolation"><yes/></prop>
+          <prop name="color-rendering"><yes/></prop>
+          <prop name="cursor"><yes/></prop>
+          <prop name="fill"><yes/></prop>
+          <prop name="fill-opacity"><yes/></prop>
+          <prop name="fill-rule"><yes/></prop>
+          <prop name="filter"><yes/></prop>
+          <prop name="marker"><yes/></prop>
+          <prop name="marker-end"><yes/></prop>
+          <prop name="marker-mid"><yes/></prop>
+          <prop name="marker-start"><yes/></prop>
+          <prop name="mask"><yes/></prop>
+          <prop name="opacity"><yes/></prop>
+          <prop name="pointer-events"><yes/></prop>
+          <prop name="shape-rendering"><yes/></prop>
+          <prop name="stroke"><yes/></prop>
+          <prop name="stroke-dasharray"><yes/></prop>
+          <prop name="stroke-dashoffset"><yes/></prop>
+          <prop name="stroke-linecap"><yes/></prop>
+          <prop name="stroke-linejoin"><yes/></prop>
+          <prop name="stroke-miterlimit"><yes/></prop>
+          <prop name="stroke-opacity"><yes/></prop>
+          <prop name="stroke-width"><yes/></prop>
+          <prop name="visibility"><yes/></prop>
+          <attr name="class" ns=""><yes/></attr>
+          <attr name="d" ns=""><yes/></attr>
+          <attr name="externalResourcesRequired" ns=""><no/></attr>
+          <attr name="id" ns=""><yes/></attr>
+          <attr name="onclick" ns=""><yes/></attr>
+          <attr name="onfocusin" ns=""><yes/></attr>
+          <attr name="onfocusout" ns=""><yes/></attr>
+          <attr name="onload" ns=""><yes/></attr>
+          <attr name="onmousedown" ns=""><yes/></attr>
+          <attr name="onmousemove" ns=""><yes/></attr>
+          <attr name="onmouseout" ns=""><yes/></attr>
+          <attr name="onmouseover" ns=""><yes/></attr>
+          <attr name="onmouseup" ns=""><yes/></attr>
+          <attr name="pathLength" ns=""><no>Author specified path length is ignored.</no></attr>
+          <attr name="requiredExtensions" ns=""><yes/></attr>
+          <attr name="requiredFeatures" ns=""><yes/></attr>
+          <attr name="style" ns=""><yes/></attr>
+          <attr name="systemLanguage" ns=""><yes/></attr>
+          <attr name="transform" ns=""><yes/></attr>
+          <attr name="base" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="lang" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="space" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+        </element>
+        <element name="pattern" ns="http://www.w3.org/2000/svg">
+          <prop name="clip-path"><yes/></prop>
+          <prop name="color-interpolation"><yes/></prop>
+          <prop name="color-rendering"><yes/></prop>
+          <prop name="cursor"><yes/></prop>
+          <prop name="enable-background"><no/></prop>
+          <prop name="filter"><yes/></prop>
+          <prop name="mask"><yes/></prop>
+          <prop name="opacity"><yes/></prop>
+          <attr name="class" ns=""><yes/></attr>
+          <attr name="externalResourcesRequired" ns=""><no/></attr>
+          <attr name="id" ns=""><yes/></attr>
+          <attr name="height" ns=""><yes/></attr>
+          <attr name="patternContentUnits" ns=""><yes/></attr>
+          <attr name="patternTransform" ns=""><yes/></attr>
+          <attr name="patternUnits" ns=""><yes/></attr>
+          <attr name="preserveAspectRatio" ns=""><yes/></attr>
+          <attr name="requiredExtensions" ns=""><yes/></attr>
+          <attr name="requiredFeatures" ns=""><yes/></attr>
+          <attr name="style" ns=""><yes/></attr>
+          <attr name="systemLanguage" ns=""><yes/></attr>
+          <attr name="viewBox" ns=""><yes/></attr>
+          <attr name="width" ns=""><yes/></attr>
+          <attr name="x" ns=""><yes/></attr>
+          <attr name="actuate" ns="http://www.w3.org/1999/xlink"><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name="arcrole" ns="http://www.w3.org/1999/xlink"><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name="href" ns="http://www.w3.org/1999/xlink"><yes/></attr>
+          <attr name="role" ns="http://www.w3.org/1999/xlink"><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name="show" ns="http://www.w3.org/1999/xlink"><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name="title" ns="http://www.w3.org/1999/xlink"><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name="type" ns="http://www.w3.org/1999/xlink"><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name="base" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="lang" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="space" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="y" ns=""><yes/></attr>
+        </element>
+        <element name="polygon" ns="http://www.w3.org/2000/svg">
+          <prop name="clip-path"><yes/></prop>
+          <prop name="clip-rule"><yes/></prop>
+          <prop name="color"><yes/></prop>
+          <prop name="color-interpolation"><yes/></prop>
+          <prop name="color-rendering"><yes/></prop>
+          <prop name="cursor"><yes/></prop>
+          <prop name="fill"><yes/></prop>
+          <prop name="fill-opacity"><yes/></prop>
+          <prop name="fill-rule"><yes/></prop>
+          <prop name="filter"><yes/></prop>
+          <prop name="marker"><yes/></prop>
+          <prop name="marker-end"><yes/></prop>
+          <prop name="marker-mid"><yes/></prop>
+          <prop name="marker-start"><yes/></prop>
+          <prop name="mask"><yes/></prop>
+          <prop name="opacity"><yes/></prop>
+          <prop name="pointer-events"><yes/></prop>
+          <prop name="shape-rendering"><yes/></prop>
+          <prop name="stroke"><yes/></prop>
+          <prop name="stroke-dasharray"><yes/></prop>
+          <prop name="stroke-dashoffset"><yes/></prop>
+          <prop name="stroke-linecap"><yes/></prop>
+          <prop name="stroke-linejoin"><yes/></prop>
+          <prop name="stroke-miterlimit"><yes/></prop>
+          <prop name="stroke-opacity"><yes/></prop>
+          <prop name="stroke-width"><yes/></prop>
+          <prop name="visibility"><yes/></prop>
+          <attr name="class" ns=""><yes/></attr>
+          <attr name="externalResourcesRequired" ns=""><no/></attr>
+          <attr name="id" ns=""><yes/></attr>
+          <attr name="onclick" ns=""><yes/></attr>
+          <attr name="onfocusin" ns=""><yes/></attr>
+          <attr name="onfocusout" ns=""><yes/></attr>
+          <attr name="onload" ns=""><yes/></attr>
+          <attr name="onmousedown" ns=""><yes/></attr>
+          <attr name="onmousemove" ns=""><yes/></attr>
+          <attr name="onmouseout" ns=""><yes/></attr>
+          <attr name="onmouseover" ns=""><yes/></attr>
+          <attr name="onmouseup" ns=""><yes/></attr>
+          <attr name="points" ns=""><yes/></attr>
+          <attr name="requiredExtensions" ns=""><yes/></attr>
+          <attr name="requiredFeatures" ns=""><yes/></attr>
+          <attr name="style" ns=""><yes/></attr>
+          <attr name="systemLanguage" ns=""><yes/></attr>
+          <attr name="transform" ns=""><yes/></attr>
+          <attr name="base" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="lang" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="space" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+        </element>
+        <element name="polyline" ns="http://www.w3.org/2000/svg">
+          <prop name="clip-path"><yes/></prop>
+          <prop name="clip-rule"><yes/></prop>
+          <prop name="color"><yes/></prop>
+          <prop name="color-interpolation"><yes/></prop>
+          <prop name="color-rendering"><yes/></prop>
+          <prop name="cursor"><yes/></prop>
+          <prop name="fill"><yes/></prop>
+          <prop name="fill-opacity"><yes/></prop>
+          <prop name="fill-rule"><yes/></prop>
+          <prop name="filter"><yes/></prop>
+          <prop name="marker"><yes/></prop>
+          <prop name="marker-end"><yes/></prop>
+          <prop name="marker-mid"><yes/></prop>
+          <prop name="marker-start"><yes/></prop>
+          <prop name="mask"><yes/></prop>
+          <prop name="opacity"><yes/></prop>
+          <prop name="pointer-events"><yes/></prop>
+          <prop name="shape-rendering"><yes/></prop>
+          <prop name="stroke"><yes/></prop>
+          <prop name="stroke-dasharray"><yes/></prop>
+          <prop name="stroke-dashoffset"><yes/></prop>
+          <prop name="stroke-linecap"><yes/></prop>
+          <prop name="stroke-linejoin"><yes/></prop>
+          <prop name="stroke-miterlimit"><yes/></prop>
+          <prop name="stroke-opacity"><yes/></prop>
+          <prop name="stroke-width"><yes/></prop>
+          <prop name="visibility"><yes/></prop>
+          <attr name="class" ns=""><yes/></attr>
+          <attr name="externalResourcesRequired" ns=""><no/></attr>
+          <attr name="id" ns=""><yes/></attr>
+          <attr name="onclick" ns=""><yes/></attr>
+          <attr name="onfocusin" ns=""><yes/></attr>
+          <attr name="onfocusout" ns=""><yes/></attr>
+          <attr name="onload" ns=""><yes/></attr>
+          <attr name="onmousedown" ns=""><yes/></attr>
+          <attr name="onmousemove" ns=""><yes/></attr>
+          <attr name="onmouseout" ns=""><yes/></attr>
+          <attr name="onmouseover" ns=""><yes/></attr>
+          <attr name="onmouseup" ns=""><yes/></attr>
+          <attr name="points" ns=""><yes/></attr>
+          <attr name="requiredExtensions" ns=""><yes/></attr>
+          <attr name="requiredFeatures" ns=""><yes/></attr>
+          <attr name="style" ns=""><yes/></attr>
+          <attr name="systemLanguage" ns=""><yes/></attr>
+          <attr name="transform" ns=""><yes/></attr>
+          <attr name="base" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="lang" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="space" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+        </element>
+        <element name='radialGradient' ns='http://www.w3.org/2000/svg'>
+          <attr name='class' ns=''><yes/></attr>
+          <attr name='cx' ns=''><yes/></attr>
+          <attr name='cy' ns=''><yes/></attr>
+          <attr name='externalResourcesRequired' ns=''><no/></attr>
+          <attr name='id' ns=''><yes/></attr>
+          <attr name='fx' ns=''><yes/></attr>
+          <attr name='fy' ns=''><yes/></attr>
+          <attr name='gradientTransform' ns=''><yes/></attr>
+          <attr name='gradientUnits' ns=''><yes/></attr>
+          <attr name='r' ns=''><yes/></attr>
+          <attr name='spreadMethod' ns=''><yes/></attr>
+          <attr name='style' ns=''><yes/></attr>
+          <attr name='actuate' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='arcrole' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='href' ns='http://www.w3.org/1999/xlink'><yes/></attr>
+          <attr name='role' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='show' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='title' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='type' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='base' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='lang' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='space' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+        </element>
+        <element name="rect" ns="http://www.w3.org/2000/svg">
+          <prop name="clip-path"><yes/></prop>
+          <prop name="clip-rule"><yes/></prop>
+          <prop name="color"><yes/></prop>
+          <prop name="color-interpolation"><yes/></prop>
+          <prop name="color-rendering"><yes/></prop>
+          <prop name="cursor"><yes/></prop>
+          <prop name="fill"><yes/></prop>
+          <prop name="fill-opacity"><yes/></prop>
+          <prop name="fill-rule"><yes/></prop>
+          <prop name="filter"><yes/></prop>
+          <prop name="mask"><yes/></prop>
+          <prop name="opacity"><yes/></prop>
+          <prop name="pointer-events"><yes/></prop>
+          <prop name="shape-rendering"><yes/></prop>
+          <prop name="stroke"><yes/></prop>
+          <prop name="stroke-dasharray"><yes/></prop>
+          <prop name="stroke-dashoffset"><yes/></prop>
+          <prop name="stroke-linecap"><yes/></prop>
+          <prop name="stroke-linejoin"><yes/></prop>
+          <prop name="stroke-miterlimit"><yes/></prop>
+          <prop name="stroke-opacity"><yes/></prop>
+          <prop name="stroke-width"><yes/></prop>
+          <prop name="visibility"><yes/></prop>
+          <attr name="class" ns=""><yes/></attr>
+          <attr name="externalResourcesRequired" ns=""><no/></attr>
+          <attr name="height" ns=""><yes/></attr>
+          <attr name="id" ns=""><yes/></attr>
+          <attr name="onclick" ns=""><yes/></attr>
+          <attr name="onfocusin" ns=""><yes/></attr>
+          <attr name="onfocusout" ns=""><yes/></attr>
+          <attr name="onload" ns=""><yes/></attr>
+          <attr name="onmousedown" ns=""><yes/></attr>
+          <attr name="onmousemove" ns=""><yes/></attr>
+          <attr name="onmouseout" ns=""><yes/></attr>
+          <attr name="onmouseover" ns=""><yes/></attr>
+          <attr name="onmouseup" ns=""><yes/></attr>
+          <attr name="requiredExtensions" ns=""><yes/></attr>
+          <attr name="requiredFeatures" ns=""><yes/></attr>
+          <attr name="rx" ns=""><yes/></attr>
+          <attr name="ry" ns=""><yes/></attr>
+          <attr name="style" ns=""><yes/></attr>
+          <attr name="systemLanguage" ns=""><yes/></attr>
+          <attr name="transform" ns=""><yes/></attr>
+          <attr name="width" ns=""><yes/></attr>
+          <attr name="x" ns=""><yes/></attr>
+          <attr name="base" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="lang" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="space" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="y" ns=""><yes/></attr>
+        </element>
+        <element name='script' ns='http://www.w3.org/2000/svg'>
+          <attr name='externalResourcesRequired' ns=''><no/></attr>
+          <attr name='id' ns=''><yes/></attr>
+          <attr name='type' ns=''><yes/></attr>
+          <attr name='actuate' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='arcrole' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='href' ns='http://www.w3.org/1999/xlink'><yes/></attr>
+          <attr name='role' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='show' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='title' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='type' ns='http://www.w3.org/1999/xlink'><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name='base' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='lang' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='space' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+        </element>
+        <element name="set" ns="http://www.w3.org/2000/svg">
+          <attr name="attributeName" ns=""><yes/></attr>
+          <attr name="attributeType" ns=""><yes/></attr>
+          <attr name="begin" ns=""><yes/></attr>
+          <attr name="dur" ns=""><yes/></attr>
+          <attr name="end" ns=""><yes/></attr>
+          <attr name="externalResourcesRequired" ns=""><no/></attr>
+          <attr name="id" ns=""><yes/></attr>
+          <attr name="fill" ns=""><yes/></attr>
+          <attr name="from" ns=""><yes/></attr>
+          <attr name="max" ns=""><yes/></attr>
+          <attr name="min" ns=""><yes/></attr>
+          <attr name="onbegin" ns=""><yes/></attr>
+          <attr name="onend" ns=""><yes/></attr>
+          <attr name="onload" ns=""><yes/></attr>
+          <attr name="onrepeat" ns=""><yes/></attr>
+          <attr name="repeatCount" ns=""><yes/></attr>
+          <attr name="repeatDur" ns=""><yes/></attr>
+          <attr name="requiredExtensions" ns=""><no/></attr>
+          <attr name="requiredFeatures" ns=""><no/></attr>
+          <attr name="restart" ns=""><yes/></attr>
+          <attr name="systemLanguage" ns=""><no/></attr>
+          <attr name='base' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='lang' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='space' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+        </element>
+        <element name="stop" ns="http://www.w3.org/2000/svg">
+          <prop name="color"><yes/></prop>
+          <prop name="stop-color"><yes/></prop>
+          <prop name="stop-opacity"><yes/></prop>
+          <attr name="class" ns=""><yes/></attr>
+          <attr name="id" ns=""><yes/></attr>
+          <attr name="offset" ns=""><yes/></attr>
+          <attr name="style" ns=""><yes/></attr>
+          <attr name="base" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="lang" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="space" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+        </element>
+        <element name='style' ns='http://www.w3.org/2000/svg' status="partial">
+          <notes>
+            The <code>:hover</code>, <code>:link</code>, <code>:visited</code>,
+            <code>:active</code> and <code>:focus</code> pseudo-classes are not
+            supported in selectors.
+          </notes>
+          <attr name='id' ns=''><yes/></attr>
+          <attr name='media' ns=''><yes/></attr>
+          <attr name='title' ns=''><yes/></attr>
+          <attr name='type' ns=''><yes/></attr>
+          <attr name='base' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='lang' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='space' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+        </element>
+        <element name="svg" ns="http://www.w3.org/2000/svg">
+          <prop name="clip"><no/></prop>
+          <prop name="clip-path"><yes/></prop>
+          <prop name="color-interpolation"><yes/></prop>
+          <prop name="color-rendering"><yes/></prop>
+          <prop name="cursor"><yes/></prop>
+          <prop name="display"><yes/></prop>
+          <prop name="enable-background"><yes/></prop>
+          <prop name="filter"><yes/></prop>
+          <prop name="mask"><yes/></prop>
+          <prop name="opacity"><yes/></prop>
+          <prop name="overflow"><yes/></prop>
+          <attr name="baseProfile" ns=""><no/></attr>
+          <attr name="class" ns=""><yes/></attr>
+          <attr name="contentScriptType" ns=""><yes/></attr>
+          <attr name="contentStyleType" ns=""><no><code>text/css</code> is always the default style type.</no></attr>
+          <attr name="externalResourcesRequired" ns=""><no/></attr>
+          <attr name="height" ns=""><yes/></attr>
+          <attr name="id" ns=""><yes/></attr>
+          <attr name="onabort" ns=""><yes/></attr>
+          <attr name="onclick" ns=""><yes/></attr>
+          <attr name="onerror" ns=""><yes>The event listener is added, but the error event is never fired by the implementation.</yes></attr>
+          <attr name="onfocusin" ns=""><yes/></attr>
+          <attr name="onfocusout" ns=""><yes/></attr>
+          <attr name="onload" ns=""><yes/></attr>
+          <attr name="onmousedown" ns=""><yes/></attr>
+          <attr name="onmousemove" ns=""><yes/></attr>
+          <attr name="onmouseout" ns=""><yes/></attr>
+          <attr name="onmouseover" ns=""><yes/></attr>
+          <attr name="onmouseup" ns=""><yes/></attr>
+          <attr name="onresize" ns=""><yes/></attr>
+          <attr name="onscroll" ns=""><yes/></attr>
+          <attr name="onunload" ns=""><yes/></attr>
+          <attr name="onzoom" ns=""><yes/></attr>
+          <attr name="preserveAspectRatio" ns=""><yes/></attr>
+          <attr name="requiredExtensions" ns=""><yes/></attr>
+          <attr name="requiredFeatures" ns=""><yes/></attr>
+          <attr name="style" ns=""><yes/></attr>
+          <attr name="systemLanguage" ns=""><yes/></attr>
+          <attr name="version" ns=""><yes/></attr>
+          <attr name="viewBox" ns=""><partial>Attribute not animatable.</partial></attr>
+          <attr name="width" ns=""><yes/></attr>
+          <attr name="x" ns=""><yes/></attr>
+          <attr name="base" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="lang" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="space" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="y" ns=""><yes/></attr>
+          <attr name="zoomAndPan" ns=""><yes/></attr>
+        </element>
+        <element name="switch" ns="http://www.w3.org/2000/svg">
+          <prop name="clip-path"><yes/></prop>
+          <prop name="color-interpolation"><yes/></prop>
+          <prop name="color-rendering"><yes/></prop>
+          <prop name="cursor"><yes/></prop>
+          <prop name="display"><yes/></prop>
+          <prop name="enable-background"><no/></prop>
+          <prop name="filter"><yes/></prop>
+          <prop name="mask"><yes/></prop>
+          <prop name="opacity"><yes/></prop>
+          <attr name="class" ns=""><yes/></attr>
+          <attr name="externalResourcesRequired" ns=""><no/></attr>
+          <attr name="id" ns=""><yes/></attr>
+          <attr name="onclick" ns=""><yes/></attr>
+          <attr name="onfocusin" ns=""><yes/></attr>
+          <attr name="onfocusout" ns=""><yes/></attr>
+          <attr name="onload" ns=""><yes/></attr>
+          <attr name="onmousedown" ns=""><yes/></attr>
+          <attr name="onmousemove" ns=""><yes/></attr>
+          <attr name="onmouseout" ns=""><yes/></attr>
+          <attr name="onmouseover" ns=""><yes/></attr>
+          <attr name="onmouseup" ns=""><yes/></attr>
+          <attr name="requiredExtensions" ns=""><yes/></attr>
+          <attr name="requiredFeatures" ns=""><yes/></attr>
+          <attr name="style" ns=""><yes/></attr>
+          <attr name="systemLanguage" ns=""><yes/></attr>
+          <attr name="transform" ns=""><yes/></attr>
+          <attr name="base" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="lang" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="space" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+        </element>
+        <element name="symbol" ns="http://www.w3.org/2000/svg">
+          <prop name="clip"><no/></prop>
+          <prop name="clip-path"><yes/></prop>
+          <prop name="color-interpolation"><yes/></prop>
+          <prop name="color-rendering"><yes/></prop>
+          <prop name="cursor"><yes/></prop>
+          <prop name="enable-background"><no/></prop>
+          <prop name="filter"><yes/></prop>
+          <prop name="mask"><yes/></prop>
+          <prop name="opacity"><yes/></prop>
+          <prop name="overflow"><yes/></prop>
+          <attr name="class" ns=""><yes/></attr>
+          <attr name="externalResourcesRequired" ns=""><no/></attr>
+          <attr name="id" ns=""><yes/></attr>
+          <attr name="onclick" ns=""><yes/></attr>
+          <attr name="onfocusin" ns=""><yes/></attr>
+          <attr name="onfocusout" ns=""><yes/></attr>
+          <attr name="onload" ns=""><yes/></attr>
+          <attr name="onmousedown" ns=""><yes/></attr>
+          <attr name="onmousemove" ns=""><yes/></attr>
+          <attr name="onmouseout" ns=""><yes/></attr>
+          <attr name="onmouseover" ns=""><yes/></attr>
+          <attr name="onmouseup" ns=""><yes/></attr>
+          <attr name="preserveAspectRatio" ns=""><yes/></attr>
+          <attr name="style" ns=""><yes/></attr>
+          <attr name="viewBox" ns=""><yes/></attr>
+          <attr name="base" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="lang" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="space" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+        </element>
+        <element name="text" ns="http://www.w3.org/2000/svg">
+          <prop name="clip-path"><yes/></prop>
+          <prop name="clip-rule"><yes/></prop>
+          <prop name="color"><yes/></prop>
+          <prop name="color-interpolation"><yes/></prop>
+          <prop name="color-rendering"><yes/></prop>
+          <prop name="cursor"><yes/></prop>
+          <prop name="direction"><yes/></prop>
+          <prop name="display"><yes/></prop>
+          <prop name="dominant-baseline"><no/></prop>
+          <prop name="fill"><yes/></prop>
+          <prop name="fill-opacity"><yes/></prop>
+          <prop name="fill-rule"><yes/></prop>
+          <prop name="filter"><yes/></prop>
+          <prop name="font"><yes/></prop>
+          <prop name="font-family"><yes/></prop>
+          <prop name="font-size"><yes/></prop>
+          <prop name="font-size-adjust"><no/></prop>
+          <prop name="font-stretch"><no/></prop>
+          <prop name="font-style"><yes/></prop>
+          <prop name="font-variant"><no/></prop>
+          <prop name="font-weight"><yes/></prop>
+          <prop name="glyph-orientation-horizontal"><yes/></prop>
+          <prop name="glyph-orientation-vertical"><yes/></prop>
+          <attr name="id" ns=""><yes/></attr>
+          <prop name="kerning"><yes/></prop>
+          <prop name="letter-spacing"><yes/></prop>
+          <prop name="mask"><yes/></prop>
+          <prop name="opacity"><yes/></prop>
+          <prop name="pointer-events"><yes/></prop>
+          <prop name="stroke"><yes/></prop>
+          <prop name="stroke-dasharray"><yes/></prop>
+          <prop name="stroke-dashoffset"><yes/></prop>
+          <prop name="stroke-linecap"><yes/></prop>
+          <prop name="stroke-linejoin"><yes/></prop>
+          <prop name="stroke-miterlimit"><yes/></prop>
+          <prop name="stroke-opacity"><yes/></prop>
+          <prop name="stroke-width"><yes/></prop>
+          <prop name="text-anchor"><yes/></prop>
+          <prop name="text-decoration"><yes/></prop>
+          <prop name="text-rendering"><yes/></prop>
+          <prop name="unicode-bidi"><yes/></prop>
+          <prop name="visibility"><yes/></prop>
+          <prop name="word-spacing"><yes/></prop>
+          <prop name="writing-mode"><yes/></prop>
+          <attr name="class" ns=""><yes/></attr>
+          <attr name="dx" ns=""><yes/></attr>
+          <attr name="dy" ns=""><yes/></attr>
+          <attr name="externalResourcesRequired" ns=""><no/></attr>
+          <attr name="lengthAdjust" ns=""><yes/></attr>
+          <attr name="onclick" ns=""><yes/></attr>
+          <attr name="onfocusin" ns=""><yes/></attr>
+          <attr name="onfocusout" ns=""><yes/></attr>
+          <attr name="onload" ns=""><yes/></attr>
+          <attr name="onmousedown" ns=""><yes/></attr>
+          <attr name="onmousemove" ns=""><yes/></attr>
+          <attr name="onmouseout" ns=""><yes/></attr>
+          <attr name="onmouseover" ns=""><yes/></attr>
+          <attr name="onmouseup" ns=""><yes/></attr>
+          <attr name="requiredExtensions" ns=""><yes/></attr>
+          <attr name="requiredFeatures" ns=""><yes/></attr>
+          <attr name="rotate" ns=""><yes/></attr>
+          <attr name="style" ns=""><yes/></attr>
+          <attr name="systemLanguage" ns=""><yes/></attr>
+          <attr name="textLength" ns=""><yes/></attr>
+          <attr name="transform" ns=""><yes/></attr>
+          <attr name="x" ns=""><yes/></attr>
+          <attr name="base" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="lang" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="space" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="y" ns=""><yes/></attr>
+        </element>
+        <element name="textPath" ns="http://www.w3.org/2000/svg">
+          <prop name="alignment-baseline"><no/></prop>
+          <prop name="baseline-shift"><yes/></prop>
+          <prop name="color"><yes/></prop>
+          <prop name="direction"><yes/></prop>
+          <prop name="display"><yes/></prop>
+          <prop name="dominant-baseline"><no/></prop>
+          <prop name="fill"><yes/></prop>
+          <prop name="fill-opacity"><yes/></prop>
+          <prop name="fill-rule"><yes/></prop>
+          <prop name="font"><yes/></prop>
+          <prop name="font-family"><yes/></prop>
+          <prop name="font-size"><yes/></prop>
+          <prop name="font-size-adjust"><no/></prop>
+          <prop name="font-stretch"><no/></prop>
+          <prop name="font-style"><yes/></prop>
+          <prop name="font-variant"><no/></prop>
+          <prop name="font-weight"><yes/></prop>
+          <prop name="glyph-orientation-horizontal"><yes/></prop>
+          <prop name="glyph-orientation-vertical"><yes/></prop>
+          <prop name="kerning"><yes/></prop>
+          <prop name="letter-spacing"><yes/></prop>
+          <prop name="stroke"><yes/></prop>
+          <prop name="stroke-dasharray"><yes/></prop>
+          <prop name="stroke-dashoffset"><yes/></prop>
+          <prop name="stroke-linecap"><yes/></prop>
+          <prop name="stroke-linejoin"><yes/></prop>
+          <prop name="stroke-miterlimit"><yes/></prop>
+          <prop name="stroke-opacity"><yes/></prop>
+          <prop name="stroke-width"><yes/></prop>
+          <prop name="text-anchor"><yes/></prop>
+          <prop name="text-decoration"><yes/></prop>
+          <prop name="unicode-bidi"><yes/></prop>
+          <prop name="visibility"><yes/></prop>
+          <prop name="word-spacing"><yes/></prop>
+          <attr name="class" ns=""><yes/></attr>
+          <attr name="externalResourcesRequired" ns=""><no/></attr>
+          <attr name="id" ns=""><yes/></attr>
+          <attr name="lengthAdjust" ns=""><yes/></attr>
+          <attr name="method" ns=""><no><code>align</code> is always used.</no></attr>
+          <attr name="onclick" ns=""><yes/></attr>
+          <attr name="onfocusin" ns=""><yes/></attr>
+          <attr name="onfocusout" ns=""><yes/></attr>
+          <attr name="onload" ns=""><yes/></attr>
+          <attr name="onmousedown" ns=""><yes/></attr>
+          <attr name="onmousemove" ns=""><yes/></attr>
+          <attr name="onmouseout" ns=""><yes/></attr>
+          <attr name="onmouseover" ns=""><yes/></attr>
+          <attr name="onmouseup" ns=""><yes/></attr>
+          <attr name="requiredExtensions" ns=""><yes/></attr>
+          <attr name="requiredFeatures" ns=""><yes/></attr>
+          <attr name="spacing" ns=""><no><code>exact</code> is always used.</no></attr>
+          <attr name="startOffset" ns=""><yes/></attr>
+          <attr name="style" ns=""><yes/></attr>
+          <attr name="systemLanguage" ns=""><yes/></attr>
+          <attr name="textLength" ns=""><yes/></attr>
+          <attr name="actuate" ns="http://www.w3.org/1999/xlink"><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name="arcrole" ns="http://www.w3.org/1999/xlink"><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name="href" ns="http://www.w3.org/1999/xlink"><yes/></attr>
+          <attr name="role" ns="http://www.w3.org/1999/xlink"><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name="show" ns="http://www.w3.org/1999/xlink"><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name="title" ns="http://www.w3.org/1999/xlink"><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name="type" ns="http://www.w3.org/1999/xlink"><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name="base" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="lang" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="space" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+        </element>
+        <element name='title' ns='http://www.w3.org/2000/svg'>
+          <attr name='class' ns=''><yes/></attr>
+          <attr name='id' ns=''><yes/></attr>
+          <attr name='style' ns=''><yes/></attr>
+          <attr name='base' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='lang' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='space' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+        </element>
+        <element name="tref" ns="http://www.w3.org/2000/svg">
+          <prop name="alignment-baseline"><no/></prop>
+          <prop name="baseline-shift"><yes/></prop>
+          <prop name="color"><yes/></prop>
+          <prop name="direction"><yes/></prop>
+          <prop name="display"><yes/></prop>
+          <prop name="dominant-baseline"><no/></prop>
+          <prop name="fill"><yes/></prop>
+          <prop name="fill-opacity"><yes/></prop>
+          <prop name="fill-rule"><yes/></prop>
+          <prop name="font"><yes/></prop>
+          <prop name="font-family"><yes/></prop>
+          <prop name="font-size"><yes/></prop>
+          <prop name="font-size-adjust"><no/></prop>
+          <prop name="font-stretch"><no/></prop>
+          <prop name="font-style"><yes/></prop>
+          <prop name="font-variant"><no/></prop>
+          <prop name="font-weight"><yes/></prop>
+          <prop name="glyph-orientation-horizontal"><yes/></prop>
+          <prop name="glyph-orientation-vertical"><yes/></prop>
+          <prop name="kerning"><yes/></prop>
+          <prop name="letter-spacing"><yes/></prop>
+          <prop name="stroke"><yes/></prop>
+          <prop name="stroke-dasharray"><yes/></prop>
+          <prop name="stroke-dashoffset"><yes/></prop>
+          <prop name="stroke-linecap"><yes/></prop>
+          <prop name="stroke-linejoin"><yes/></prop>
+          <prop name="stroke-miterlimit"><yes/></prop>
+          <prop name="stroke-opacity"><yes/></prop>
+          <prop name="stroke-width"><yes/></prop>
+          <prop name="text-anchor"><yes/></prop>
+          <prop name="text-decoration"><yes/></prop>
+          <prop name="unicode-bidi"><yes/></prop>
+          <prop name="visibility"><yes/></prop>
+          <prop name="word-spacing"><yes/></prop>
+          <attr name="class" ns=""><yes/></attr>
+          <attr name="dx" ns=""><yes/></attr>
+          <attr name="dy" ns=""><yes/></attr>
+          <attr name="externalResourcesRequired" ns=""><no/></attr>
+          <attr name='id' ns=''><yes/></attr>
+          <attr name="lengthAdjust" ns=""><yes/></attr>
+          <attr name="onclick" ns=""><yes/></attr>
+          <attr name="onfocusin" ns=""><yes/></attr>
+          <attr name="onfocusout" ns=""><yes/></attr>
+          <attr name="onload" ns=""><yes/></attr>
+          <attr name="onmousedown" ns=""><yes/></attr>
+          <attr name="onmousemove" ns=""><yes/></attr>
+          <attr name="onmouseout" ns=""><yes/></attr>
+          <attr name="onmouseover" ns=""><yes/></attr>
+          <attr name="onmouseup" ns=""><yes/></attr>
+          <attr name="requiredExtensions" ns=""><yes/></attr>
+          <attr name="requiredFeatures" ns=""><yes/></attr>
+          <attr name="rotate" ns=""><yes/></attr>
+          <attr name="style" ns=""><yes/></attr>
+          <attr name="systemLanguage" ns=""><yes/></attr>
+          <attr name="textLength" ns=""><yes/></attr>
+          <attr name="x" ns=""><yes/></attr>
+          <attr name="actuate" ns="http://www.w3.org/1999/xlink"><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name="arcrole" ns="http://www.w3.org/1999/xlink"><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name="href" ns="http://www.w3.org/1999/xlink"><yes/></attr>
+          <attr name="role" ns="http://www.w3.org/1999/xlink"><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name="show" ns="http://www.w3.org/1999/xlink"><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name="title" ns="http://www.w3.org/1999/xlink"><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name="type" ns="http://www.w3.org/1999/xlink"><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name="base" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="lang" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="space" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="y" ns=""><yes/></attr>
+        </element>
+        <element name="tspan" ns="http://www.w3.org/2000/svg">
+          <prop name="alignment-baseline"><no/></prop>
+          <prop name="baseline-shift"><yes/></prop>
+          <prop name="color"><yes/></prop>
+          <prop name="direction"><yes/></prop>
+          <prop name="display"><yes/></prop>
+          <prop name="dominant-baseline"><no/></prop>
+          <prop name="fill"><yes/></prop>
+          <prop name="fill-opacity"><yes/></prop>
+          <prop name="fill-rule"><yes/></prop>
+          <prop name="font"><yes/></prop>
+          <prop name="font-family"><yes/></prop>
+          <prop name="font-size"><yes/></prop>
+          <prop name="font-size-adjust"><no/></prop>
+          <prop name="font-stretch"><no/></prop>
+          <prop name="font-style"><yes/></prop>
+          <prop name="font-variant"><no/></prop>
+          <prop name="font-weight"><yes/></prop>
+          <prop name="glyph-orientation-horizontal"><yes/></prop>
+          <prop name="glyph-orientation-vertical"><yes/></prop>
+          <prop name="kerning"><yes/></prop>
+          <prop name="letter-spacing"><yes/></prop>
+          <prop name="stroke"><yes/></prop>
+          <prop name="stroke-dasharray"><yes/></prop>
+          <prop name="stroke-dashoffset"><yes/></prop>
+          <prop name="stroke-linecap"><yes/></prop>
+          <prop name="stroke-linejoin"><yes/></prop>
+          <prop name="stroke-miterlimit"><yes/></prop>
+          <prop name="stroke-opacity"><yes/></prop>
+          <prop name="stroke-width"><yes/></prop>
+          <prop name="text-anchor"><yes/></prop>
+          <prop name="text-decoration"><yes/></prop>
+          <prop name="unicode-bidi"><yes/></prop>
+          <prop name="visibility"><yes/></prop>
+          <prop name="word-spacing"><yes/></prop>
+          <attr name="class" ns=""><yes/></attr>
+          <attr name="dx" ns=""><yes/></attr>
+          <attr name="dy" ns=""><yes/></attr>
+          <attr name="externalResourcesRequired" ns=""><no/></attr>
+          <attr name='id' ns=''><yes/></attr>
+          <attr name="lengthAdjust" ns=""><yes/></attr>
+          <attr name="onclick" ns=""><yes/></attr>
+          <attr name="onfocusin" ns=""><yes/></attr>
+          <attr name="onfocusout" ns=""><yes/></attr>
+          <attr name="onload" ns=""><yes/></attr>
+          <attr name="onmousedown" ns=""><yes/></attr>
+          <attr name="onmousemove" ns=""><yes/></attr>
+          <attr name="onmouseout" ns=""><yes/></attr>
+          <attr name="onmouseover" ns=""><yes/></attr>
+          <attr name="onmouseup" ns=""><yes/></attr>
+          <attr name="requiredExtensions" ns=""><yes/></attr>
+          <attr name="requiredFeatures" ns=""><yes/></attr>
+          <attr name="rotate" ns=""><yes/></attr>
+          <attr name="style" ns=""><yes/></attr>
+          <attr name="systemLanguage" ns=""><yes/></attr>
+          <attr name="textLength" ns=""><yes/></attr>
+          <attr name="x" ns=""><yes/></attr>
+          <attr name="base" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="lang" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="space" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="y" ns=""><yes/></attr>
+        </element>
+        <element name="use" ns="http://www.w3.org/2000/svg">
+          <prop name="clip-path"><yes/></prop>
+          <prop name="clip-rule"><yes/></prop>
+          <prop name="color-interpolation"><yes/></prop>
+          <prop name="color-rendering"><yes/></prop>
+          <prop name="cursor"><yes/></prop>
+          <prop name="filter"><yes/></prop>
+          <prop name="mask"><yes/></prop>
+          <prop name="opacity"><yes/></prop>
+          <prop name="pointer-events"><yes/></prop>
+          <prop name="visibility"><yes/></prop>
+          <attr name="class" ns=""><yes/></attr>
+          <attr name="externalResourcesRequired" ns=""><no/></attr>
+          <attr name="height" ns=""><yes/></attr>
+          <attr name='id' ns=''><yes/></attr>
+          <attr name="onclick" ns=""><yes/></attr>
+          <attr name="onfocusin" ns=""><yes/></attr>
+          <attr name="onfocusout" ns=""><yes/></attr>
+          <attr name="onload" ns=""><yes/></attr>
+          <attr name="onmousedown" ns=""><yes/></attr>
+          <attr name="onmousemove" ns=""><yes/></attr>
+          <attr name="onmouseout" ns=""><yes/></attr>
+          <attr name="onmouseover" ns=""><yes/></attr>
+          <attr name="onmouseup" ns=""><yes/></attr>
+          <attr name="requiredExtensions" ns=""><yes/></attr>
+          <attr name="requiredFeatures" ns=""><yes/></attr>
+          <attr name="style" ns=""><yes/></attr>
+          <attr name="systemLanguage" ns=""><yes/></attr>
+          <attr name="transform" ns=""><yes/></attr>
+          <attr name="width" ns=""><yes/></attr>
+          <attr name="x" ns=""><yes/></attr>
+          <attr name="actuate" ns="http://www.w3.org/1999/xlink"><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name="arcrole" ns="http://www.w3.org/1999/xlink"><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name="href" ns="http://www.w3.org/1999/xlink"><yes/></attr>
+          <attr name="role" ns="http://www.w3.org/1999/xlink"><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name="show" ns="http://www.w3.org/1999/xlink"><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name="title" ns="http://www.w3.org/1999/xlink"><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name="type" ns="http://www.w3.org/1999/xlink"><yes><a href="#noteXLink">[1]</a></yes></attr>
+          <attr name="base" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="lang" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="space" ns="http://www.w3.org/XML/1998/namespace"><yes/></attr>
+          <attr name="y" ns=""><yes/></attr>
+        </element>
+        <element name='view' ns='http://www.w3.org/2000/svg'>
+          <attr name='externalResourcesRequired' ns=''><no/></attr>
+          <attr name='id' ns=''><yes/></attr>
+          <attr name='preserveAspectRatio' ns=''><yes/></attr>
+          <attr name='viewBox' ns=''><yes/></attr>
+          <attr name='viewTarget' ns=''><no>No highlighting is performed.</no></attr>
+          <attr name='base' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='lang' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='space' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='zoomAndPan' ns=''><yes/></attr>
+        </element>
+        <element name='vkern' ns='http://www.w3.org/2000/svg'>
+          <attr name='g1' ns=''><yes/></attr>
+          <attr name='g2' ns=''><yes/></attr>
+          <attr name='id' ns=''><yes/></attr>
+          <attr name='k' ns=''><yes/></attr>
+          <attr name='u1' ns=''><yes/></attr>
+          <attr name='u2' ns=''><yes/></attr>
+          <attr name='base' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='lang' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+          <attr name='space' ns='http://www.w3.org/XML/1998/namespace'><yes/></attr>
+        </element>
+      </elements>
+      <p>
+        Notes:
+      </p>
+      <ol>
+        <li>
+          <a name="noteXLink"></a>
+          <p>
+            Values for the XLink attributes other than <code>xlink:href</code>
+            that are not those required by SVG are ignored.  For example,
+            setting <code>xlink:title="Something"</code> or
+            <code>xlink:actuate="other"</code> has no effect.
+          </p>
+        </li>
+        <li>
+          <a name="noteGlyphRef"></a>
+          <p>
+            <code>glyphRef</code> elements can reference glyphs only by
+            URI, not by font properties.
+          </p>
+        </li>
+      </ol>
+    </section>
+
+    <section id="dom">
+      <title>DOM interfaces</title>
+      <p>
+        The table below lists the SVG DOM interfaces that are supported
+        by Batik.  For each interface, the name of each IDL attribute and
+        operation introduced on the interface is given, along with its level
+        of support.  For cases where the implementation of an attribute or
+        operation introduced in a superinterface may differ depending on which
+        subinterface has inherited it, this is noted next to that attribute
+        or operation.  Both the ECMAScript and Java bindings have the same
+        implementation level as specified for the IDL interfaces in the table.
+      </p>
+
+      <interfaces>
+        <interface name='SVGElement'>
+          <attr name='id'><yes/></attr>
+          <attr name='xmlbase'><yes/></attr>
+          <attr name='ownerSVGElement'><yes/></attr>
+          <attr name='viewportElement'><yes/></attr>
+        </interface>
+        <interface name='SVGAnimatedBoolean'>
+          <attr name='baseVal'><yes/></attr>
+          <attr name='animVal'><yes/></attr>
+        </interface>
+        <interface name='SVGAnimatedString'>
+          <attr name='baseVal'><yes/></attr>
+          <attr name='animVal'><yes/></attr>
+        </interface>
+        <interface name='SVGStringList'>
+          <attr name='numberOfItems'><no/></attr>
+          <op name='clear'><no/></op>
+          <op name='initialize'><no/></op>
+          <op name='getItem'><no/></op>
+          <op name='insertItemBefore'><no/></op>
+          <op name='replaceItem'><no/></op>
+          <op name='removeItem'><no/></op>
+          <op name='appendItem'><no/></op>
+        </interface>
+        <interface name='SVGAnimatedEnumeration'>
+          <attr name='baseVal'><yes/></attr>
+          <attr name='animVal'><yes/></attr>
+        </interface>
+        <interface name='SVGAnimatedInteger'>
+          <attr name='baseVal'><yes/></attr>
+          <attr name='animVal'><yes/></attr>
+        </interface>
+        <interface name='SVGNumber'>
+          <attr name='value'><yes/></attr>
+        </interface>
+        <interface name='SVGAnimatedNumber'>
+          <attr name='baseVal'><yes/></attr>
+          <attr name='animVal'><yes/></attr>
+        </interface>
+        <interface name='SVGNumberList'>
+          <attr name='numberOfItems'><yes/></attr>
+          <op name='clear'><yes/></op>
+          <op name='initialize'><yes/></op>
+          <op name='getItem'><yes/></op>
+          <op name='insertItemBefore'><yes/></op>
+          <op name='replaceItem'><yes/></op>
+          <op name='removeItem'><yes/></op>
+          <op name='appendItem'><yes/></op>
+        </interface>
+        <interface name='SVGAnimatedNumberList'>
+          <attr name='baseVal'><yes/></attr>
+          <attr name='animVal'><yes/></attr>
+        </interface>
+        <interface name='SVGLength'>
+          <attr name='unitType'><yes/></attr>
+          <attr name='value'><yes/></attr>
+          <attr name='valueInSpecifiedUnits'><yes/></attr>
+          <attr name='valueAsString'><yes/></attr>
+          <op name='newValueSpecifiedUnits'><yes/></op>
+          <op name='convertToSpecifiedUnits'><yes/></op>
+        </interface>
+        <interface name='SVGAnimatedLength'>
+          <attr name='baseVal'><yes/></attr>
+          <attr name='animVal'><yes/></attr>
+        </interface>
+        <interface name='SVGLengthList'>
+          <attr name='numberOfItems'><yes/></attr>
+          <op name='clear'><yes/></op>
+          <op name='initialize'><yes/></op>
+          <op name='getItem'><yes/></op>
+          <op name='insertItemBefore'><yes/></op>
+          <op name='replaceItem'><yes/></op>
+          <op name='removeItem'><yes/></op>
+          <op name='appendItem'><yes/></op>
+        </interface>
+        <interface name='SVGAnimatedLengthList'>
+          <attr name='baseVal'><yes/></attr>
+          <attr name='animVal'><yes/></attr>
+        </interface>
+        <interface name='SVGAngle'>
+          <attr name='unitType'><yes/></attr>
+          <attr name='value'><yes/></attr>
+          <attr name='valueInSpecifiedUnits'><yes/></attr>
+          <attr name='valueAsString'><yes/></attr>
+          <op name='newValueSpecifiedUnits'><yes/></op>
+          <op name='convertToSpecifiedUnits'><yes/></op>
+        </interface>
+        <interface name='SVGAnimatedAngle'>
+          <attr name='baseVal'><yes/></attr>
+          <attr name='animVal'><yes/></attr>
+        </interface>
+        <interface name='SVGColor'>
+          <attr name='colorType'><yes/></attr>
+          <attr name='rgbColor'><yes/></attr>
+          <attr name='iccColor'><yes/></attr>
+          <op name='setRGBColor'><yes/></op>
+          <op name='setRGBColorICCColor'><yes/></op>
+          <op name='setColor'><yes/></op>
+        </interface>
+        <interface name='SVGICCColor'>
+          <attr name='colorProfile'><yes/></attr>
+          <attr name='colors'><yes/></attr>
+        </interface>
+        <interface name='SVGRect'>
+          <attr name='x'><yes/></attr>
+          <attr name='y'><yes/></attr>
+          <attr name='width'><yes/></attr>
+          <attr name='height'><yes/></attr>
+        </interface>
+        <interface name='SVGAnimatedRect'>
+          <attr name='baseVal'><yes/></attr>
+          <attr name='animVal'><yes/></attr>
+        </interface>
+        <interface name='SVGUnitTypes'>
+        </interface>
+        <interface name='SVGStylable'>
+          <attr name='className'><yes/></attr>
+          <attr name='style'><yes/></attr>
+          <op name='getPresentationAttribute'><yes/></op>
+        </interface>
+        <interface name='SVGLocatable'>
+          <attr name='nearestViewportElement'><yes/></attr>
+          <attr name='farthestViewportElement'><yes/></attr>
+          <op name='getBBox'><yes/></op>
+          <op name='getCTM'><yes/></op>
+          <op name='getScreenCTM'><yes/></op>
+          <op name='getTransformToElement'><yes/></op>
+        </interface>
+        <interface name='SVGTransformable'>
+          <attr name='transform'><yes/></attr>
+        </interface>
+        <interface name='SVGTests'>
+          <attr name='requiredFeatures'><no/></attr>
+          <attr name='requiredExtensions'><no/></attr>
+          <attr name='systemLanguage'><no/></attr>
+          <op name='hasExtension'><no/></op>
+        </interface>
+        <interface name='SVGLangSpace'>
+          <attr name='xmllang'><yes/></attr>
+          <attr name='xmlspace'><yes/></attr>
+        </interface>
+        <interface name='SVGExternalResourcesRequired'>
+          <attr name='externalResourcesRequired'><yes/></attr>
+        </interface>
+        <interface name='SVGFitToViewBox'>
+          <attr name='viewBox'><partial>Implemented for <code>&lt;svg></code> elements.</partial></attr>
+          <attr name='preserveAspectRatio'><yes/></attr>
+        </interface>
+        <interface name='SVGZoomAndPan'>
+          <attr name='zoomAndPan'><yes/></attr>
+        </interface>
+        <interface name='SVGViewSpec'>
+          <attr name='transform'><no/></attr>
+          <attr name='viewTarget'><no/></attr>
+          <attr name='viewBoxString'><no/></attr>
+          <attr name='preserveAspectRatioString'><no/></attr>
+          <attr name='transformString'><no/></attr>
+          <attr name='viewTargetString'><no/></attr>
+        </interface>
+        <interface name='SVGURIReference'>
+          <attr name='href'><yes/></attr>
+        </interface>
+        <interface name='SVGCSSRule'>
+          <no/>
+        </interface>
+        <interface name='SVGRenderingIntent'>
+        </interface>
+        <interface name='SVGDocument'>
+          <attr name='title'><yes/></attr>
+          <attr name='referrer'><yes/></attr>
+          <attr name='domain'><yes/></attr>
+          <attr name='URL'><yes/></attr>
+          <attr name='rootElement'><yes/></attr>
+        </interface>
+        <interface name='SVGSVGElement'>
+          <attr name='x'><yes/></attr>
+          <attr name='y'><yes/></attr>
+          <attr name='width'><yes/></attr>
+          <attr name='height'><yes/></attr>
+          <attr name='contentScriptType'><yes/></attr>
+          <attr name='contentStyleType'><yes/></attr>
+          <attr name='viewport'><yes/></attr>
+          <attr name='pixelUnitToMillimeterX'><yes/></attr>
+          <attr name='pixelUnitToMillimeterY'><yes/></attr>
+          <attr name='screenPixelToMillimeterX'><yes/></attr>
+          <attr name='screenPixelToMillimeterY'><yes/></attr>
+          <attr name='useCurrentView'><no/></attr>
+          <attr name='currentView'><no/></attr>
+          <attr name='currentScale'><yes/></attr>
+          <attr name='currentTranslate'><yes/></attr>
+          <op name='suspendRedraw'><yes/></op>
+          <op name='unsuspendRedraw'><yes/></op>
+          <op name='unsuspendRedrawAll'><yes/></op>
+          <op name='forceRedraw'><yes/></op>
+          <op name='pauseAnimations'><yes/></op>
+          <op name='unpauseAnimations'><yes/></op>
+          <op name='animationsPaused'><yes/></op>
+          <op name='getCurrentTime'><yes/></op>
+          <op name='setCurrentTime'><yes/></op>
+          <op name='getIntersectionList'><yes/></op>
+          <op name='getEnclosureList'><yes/></op>
+          <op name='checkIntersection'><yes/></op>
+          <op name='checkEnclosure'><yes/></op>
+          <op name='deselectAll'><yes/></op>
+          <op name='createSVGNumber'><yes/></op>
+          <op name='createSVGLength'><yes/></op>
+          <op name='createSVGAngle'><yes/></op>
+          <op name='createSVGPoint'><yes/></op>
+          <op name='createSVGMatrix'><yes/></op>
+          <op name='createSVGRect'><yes/></op>
+          <op name='createSVGTransform'><yes/></op>
+          <op name='createSVGTransformFromMatrix'><yes/></op>
+          <op name='getElementById'><yes/></op>
+        </interface>
+        <interface name='SVGGElement'>
+        </interface>
+        <interface name='SVGDefsElement'>
+        </interface>
+        <interface name='SVGDescElement'>
+        </interface>
+        <interface name='SVGTitleElement'>
+        </interface>
+        <interface name='SVGSymbolElement'>
+        </interface>
+        <interface name='SVGUseElement'>
+          <attr name='x'><yes/></attr>
+          <attr name='y'><yes/></attr>
+          <attr name='width'><yes/></attr>
+          <attr name='height'><yes/></attr>
+          <attr name='instanceRoot'><no/></attr>
+          <attr name='animatedInstanceRoot'><no/></attr>
+        </interface>
+        <interface name='SVGElementInstance'>
+          <attr name='correspondingElement'><no/></attr>
+          <attr name='correspondingUseElement'><no/></attr>
+          <attr name='parentNode'><no/></attr>
+          <attr name='childNodes'><no/></attr>
+          <attr name='firstChild'><no/></attr>
+          <attr name='lastChild'><no/></attr>
+          <attr name='previousSibling'><no/></attr>
+          <attr name='nextSibling'><no/></attr>
+        </interface>
+        <interface name='SVGElementInstanceList'>
+          <attr name='length'><no/></attr>
+          <op name='item'><no/></op>
+        </interface>
+        <interface name='SVGImageElement'>
+          <attr name='x'><yes/></attr>
+          <attr name='y'><yes/></attr>
+          <attr name='width'><yes/></attr>
+          <attr name='height'><yes/></attr>
+          <attr name='preserveAspectRatio'><yes/></attr>
+        </interface>
+        <interface name='SVGSwitchElement'>
+        </interface>
+        <interface name='GetSVGDocument'>
+          <op name='getSVGDocument'><no>No objects implement this interface.</no></op>
+        </interface>
+        <interface name='SVGStyleElement'>
+          <attr name='xmlspace'><yes/></attr>
+          <attr name='type'><yes/></attr>
+          <attr name='media'><yes/></attr>
+          <attr name='title'><yes/></attr>
+        </interface>
+        <interface name='SVGPoint'>
+          <attr name='x'><yes/></attr>
+          <attr name='y'><yes/></attr>
+          <op name='matrixTransform'><partial>Not implemented for any <code>SVGPoint</code> in an <code>SVGPointList</code>.</partial></op>
+        </interface>
+        <interface name='SVGPointList'>
+          <attr name='numberOfItems'><yes/></attr>
+          <op name='clear'><yes/></op>
+          <op name='initialize'><yes/></op>
+          <op name='getItem'><yes/></op>
+          <op name='insertItemBefore'><yes/></op>
+          <op name='replaceItem'><yes/></op>
+          <op name='removeItem'><yes/></op>
+          <op name='appendItem'><yes/></op>
+        </interface>
+        <interface name='SVGMatrix'>
+          <attr name='a'><yes/></attr>
+          <attr name='b'><yes/></attr>
+          <attr name='c'><yes/></attr>
+          <attr name='d'><yes/></attr>
+          <attr name='e'><yes/></attr>
+          <attr name='f'><yes/></attr>
+          <op name='multiply'><yes/></op>
+          <op name='inverse'><yes/></op>
+          <op name='translate'><yes/></op>
+          <op name='scale'><yes/></op>
+          <op name='scaleNonUniform'><yes/></op>
+          <op name='rotate'><yes/></op>
+          <op name='rotateFromVector'><yes/></op>
+          <op name='flipX'><yes/></op>
+          <op name='flipY'><yes/></op>
+          <op name='skewX'><yes/></op>
+          <op name='skewY'><yes/></op>
+        </interface>
+        <interface name='SVGTransform'>
+          <attr name='type'><yes/></attr>
+          <attr name='matrix'><yes/></attr>
+          <attr name='angle'><yes/></attr>
+          <op name='setMatrix'><yes/></op>
+          <op name='setTranslate'><yes/></op>
+          <op name='setScale'><yes/></op>
+          <op name='setRotate'><yes/></op>
+          <op name='setSkewX'><yes/></op>
+          <op name='setSkewY'><yes/></op>
+        </interface>
+        <interface name='SVGTransformList'>
+          <attr name='numberOfItems'><yes/></attr>
+          <op name='clear'><yes/></op>
+          <op name='initialize'><yes/></op>
+          <op name='getItem'><yes/></op>
+          <op name='insertItemBefore'><yes/></op>
+          <op name='replaceItem'><yes/></op>
+          <op name='removeItem'><yes/></op>
+          <op name='appendItem'><yes/></op>
+          <op name='createSVGTransformFromMatrix'><yes/></op>
+          <op name='consolidate'><yes/></op>
+        </interface>
+        <interface name='SVGAnimatedTransformList'>
+          <attr name='baseVal'><yes/></attr>
+          <attr name='animVal'><yes/></attr>
+        </interface>
+        <interface name='SVGPreserveAspectRatio'>
+          <attr name='align'><yes/></attr>
+          <attr name='meetOrSlice'><yes/></attr>
+        </interface>
+        <interface name='SVGAnimatedPreserveAspectRatio'>
+          <attr name='baseVal'><yes/></attr>
+          <attr name='animVal'><yes/></attr>
+        </interface>
+        <interface name='SVGPathSeg'>
+          <attr name='pathSegType'><yes/></attr>
+          <attr name='pathSegTypeAsLetter'><yes/></attr>
+        </interface>
+        <interface name='SVGPathSegClosePath'>
+        </interface>
+        <interface name='SVGPathSegMovetoAbs'>
+          <attr name='x'><yes/></attr>
+          <attr name='y'><yes/></attr>
+        </interface>
+        <interface name='SVGPathSegMovetoRel'>
+          <attr name='x'><yes/></attr>
+          <attr name='y'><yes/></attr>
+        </interface>
+        <interface name='SVGPathSegLinetoAbs'>
+          <attr name='x'><yes/></attr>
+          <attr name='y'><yes/></attr>
+        </interface>
+        <interface name='SVGPathSegLinetoRel'>
+          <attr name='x'><yes/></attr>
+          <attr name='y'><yes/></attr>
+        </interface>
+        <interface name='SVGPathSegCurvetoCubicAbs'>
+          <attr name='x'><yes/></attr>
+          <attr name='y'><yes/></attr>
+          <attr name='x1'><yes/></attr>
+          <attr name='y1'><yes/></attr>
+          <attr name='x2'><yes/></attr>
+          <attr name='y2'><yes/></attr>
+        </interface>
+        <interface name='SVGPathSegCurvetoCubicRel'>
+          <attr name='x'><yes/></attr>
+          <attr name='y'><yes/></attr>
+          <attr name='x1'><yes/></attr>
+          <attr name='y1'><yes/></attr>
+          <attr name='x2'><yes/></attr>
+          <attr name='y2'><yes/></attr>
+        </interface>
+        <interface name='SVGPathSegCurvetoQuadraticAbs'>
+          <attr name='x'><yes/></attr>
+          <attr name='y'><yes/></attr>
+          <attr name='x1'><yes/></attr>
+          <attr name='y1'><yes/></attr>
+        </interface>
+        <interface name='SVGPathSegCurvetoQuadraticRel'>
+          <attr name='x'><yes/></attr>
+          <attr name='y'><yes/></attr>
+          <attr name='x1'><yes/></attr>
+          <attr name='y1'><yes/></attr>
+        </interface>
+        <interface name='SVGPathSegArcAbs'>
+          <attr name='x'><yes/></attr>
+          <attr name='y'><yes/></attr>
+          <attr name='r1'><yes/></attr>
+          <attr name='r2'><yes/></attr>
+          <attr name='angle'><yes/></attr>
+          <attr name='largeArcFlag'><yes/></attr>
+          <attr name='sweepFlag'><yes/></attr>
+        </interface>
+        <interface name='SVGPathSegArcRel'>
+          <attr name='x'><yes/></attr>
+          <attr name='y'><yes/></attr>
+          <attr name='r1'><yes/></attr>
+          <attr name='r2'><yes/></attr>
+          <attr name='angle'><yes/></attr>
+          <attr name='largeArcFlag'><yes/></attr>
+          <attr name='sweepFlag'><yes/></attr>
+        </interface>
+        <interface name='SVGPathSegLinetoHorizontalAbs'>
+          <attr name='x'><yes/></attr>
+        </interface>
+        <interface name='SVGPathSegLinetoHorizontalRel'>
+          <attr name='x'><yes/></attr>
+        </interface>
+        <interface name='SVGPathSegLinetoVerticalAbs'>
+          <attr name='y'><yes/></attr>
+        </interface>
+        <interface name='SVGPathSegLinetoVerticalRel'>
+          <attr name='y'><yes/></attr>
+        </interface>
+        <interface name='SVGPathSegCurvetoCubicSmoothAbs'>
+          <attr name='x'><yes/></attr>
+          <attr name='y'><yes/></attr>
+          <attr name='x2'><yes/></attr>
+          <attr name='y2'><yes/></attr>
+        </interface>
+        <interface name='SVGPathSegCurvetoCubicSmoothRel'>
+          <attr name='x'><yes/></attr>
+          <attr name='y'><yes/></attr>
+          <attr name='x2'><yes/></attr>
+          <attr name='y2'><yes/></attr>
+        </interface>
+        <interface name='SVGPathSegCurvetoQuadraticSmoothAbs'>
+          <attr name='x'><yes/></attr>
+          <attr name='y'><yes/></attr>
+        </interface>
+        <interface name='SVGPathSegCurvetoQuadraticSmoothRel'>
+          <attr name='x'><yes/></attr>
+          <attr name='y'><yes/></attr>
+        </interface>
+        <interface name='SVGPathSegList'>
+          <attr name='numberOfItems'><yes/></attr>
+          <op name='clear'><yes/></op>
+          <op name='initialize'><yes/></op>
+          <op name='getItem'><yes/></op>
+          <op name='insertItemBefore'><yes/></op>
+          <op name='replaceItem'><yes/></op>
+          <op name='removeItem'><yes/></op>
+          <op name='appendItem'><yes/></op>
+        </interface>
+        <interface name='SVGAnimatedPathData'>
+          <attr name='pathSegList'><yes/></attr>
+          <attr name='normalizedPathSegList'><yes/></attr>
+          <attr name='animatedPathSegList'><yes/></attr>
+          <attr name='animatedNormalizedPathSegList'><no/></attr>
+        </interface>
+        <interface name='SVGPathElement'>
+          <attr name='pathLength'><no/></attr>
+          <op name='getTotalLength'><yes/></op>
+          <op name='getPointAtLength'><yes/></op>
+          <op name='getPathSegAtLength'><yes/></op>
+          <op name='createSVGPathSegClosePath'><yes/></op>
+          <op name='createSVGPathSegMovetoAbs'><yes/></op>
+          <op name='createSVGPathSegMovetoRel'><yes/></op>
+          <op name='createSVGPathSegLinetoAbs'><yes/></op>
+          <op name='createSVGPathSegLinetoRel'><yes/></op>
+          <op name='createSVGPathSegCurvetoCubicAbs'><yes/></op>
+          <op name='createSVGPathSegCurvetoCubicRel'><yes/></op>
+          <op name='createSVGPathSegCurvetoQuadraticAbs'><yes/></op>
+          <op name='createSVGPathSegCurvetoQuadraticRel'><yes/></op>
+          <op name='createSVGPathSegArcAbs'><yes/></op>
+          <op name='createSVGPathSegArcRel'><yes/></op>
+          <op name='createSVGPathSegLinetoHorizontalAbs'><yes/></op>
+          <op name='createSVGPathSegLinetoHorizontalRel'><yes/></op>
+          <op name='createSVGPathSegLinetoVerticalAbs'><yes/></op>
+          <op name='createSVGPathSegLinetoVerticalRel'><yes/></op>
+          <op name='createSVGPathSegCurvetoCubicSmoothAbs'><yes/></op>
+          <op name='createSVGPathSegCurvetoCubicSmoothRel'><yes/></op>
+          <op name='createSVGPathSegCurvetoQuadraticSmoothAbs'><yes/></op>
+          <op name='createSVGPathSegCurvetoQuadraticSmoothRel'><yes/></op>
+        </interface>
+        <interface name='SVGRectElement'>
+          <attr name='x'><yes/></attr>
+          <attr name='y'><yes/></attr>
+          <attr name='width'><yes/></attr>
+          <attr name='height'><yes/></attr>
+          <attr name='rx'><yes/></attr>
+          <attr name='ry'><yes/></attr>
+        </interface>
+        <interface name='SVGCircleElement'>
+          <attr name='cx'><yes/></attr>
+          <attr name='cy'><yes/></attr>
+          <attr name='r'><yes/></attr>
+        </interface>
+        <interface name='SVGEllipseElement'>
+          <attr name='cx'><yes/></attr>
+          <attr name='cy'><yes/></attr>
+          <attr name='rx'><yes/></attr>
+          <attr name='ry'><yes/></attr>
+        </interface>
+        <interface name='SVGLineElement'>
+          <attr name='x1'><yes/></attr>
+          <attr name='y1'><yes/></attr>
+          <attr name='x2'><yes/></attr>
+          <attr name='y2'><yes/></attr>
+        </interface>
+        <interface name='SVGAnimatedPoints'>
+          <attr name='points'><yes/></attr>
+          <attr name='animatedPoints'><yes/></attr>
+        </interface>
+        <interface name='SVGPolylineElement'>
+        </interface>
+        <interface name='SVGPolygonElement'>
+        </interface>
+        <interface name='SVGTextContentElement'>
+          <attr name='textLength'><yes/></attr>
+          <attr name='lengthAdjust'><yes/></attr>
+          <op name='getNumberOfChars'><yes/></op>
+          <op name='getComputedTextLength'><yes/></op>
+          <op name='getSubStringLength'><yes/></op>
+          <op name='getStartPositionOfChar'><yes/></op>
+          <op name='getEndPositionOfChar'><yes/></op>
+          <op name='getExtentOfChar'><yes/></op>
+          <op name='getRotationOfChar'><yes/></op>
+          <op name='getCharNumAtPosition'><yes/></op>
+          <op name='selectSubString'><yes/></op>
+        </interface>
+        <interface name='SVGTextPositioningElement'>
+          <attr name='x'><yes/></attr>
+          <attr name='y'><yes/></attr>
+          <attr name='dx'><yes/></attr>
+          <attr name='dy'><yes/></attr>
+          <attr name='rotate'><yes/></attr>
+        </interface>
+        <interface name='SVGTextElement'>
+        </interface>
+        <interface name='SVGTSpanElement'>
+        </interface>
+        <interface name='SVGTRefElement'>
+        </interface>
+        <interface name='SVGTextPathElement'>
+          <attr name='startOffset'><yes/></attr>
+          <attr name='method'><yes/></attr>
+          <attr name='spacing'><yes/></attr>
+        </interface>
+        <interface name='SVGAltGlyphElement'>
+          <attr name='glyphRef'><yes/></attr>
+          <attr name='format'><yes/></attr>
+        </interface>
+        <interface name='SVGAltGlyphDefElement'>
+        </interface>
+        <interface name='SVGAltGlyphItemElement'>
+        </interface>
+        <interface name='SVGGlyphRefElement'>
+          <attr name='glyphRef'><yes/></attr>
+          <attr name='format'><yes/></attr>
+          <attr name='x'><yes/></attr>
+          <attr name='y'><yes/></attr>
+          <attr name='dx'><yes/></attr>
+          <attr name='dy'><yes/></attr>
+        </interface>
+        <interface name='SVGPaint'>
+          <attr name='paintType'><yes/></attr>
+          <attr name='uri'><yes/></attr>
+          <op name='setUri'><yes/></op>
+          <op name='setPaint'><yes/></op>
+        </interface>
+        <interface name='SVGMarkerElement'>
+          <attr name='refX'><yes/></attr>
+          <attr name='refY'><yes/></attr>
+          <attr name='markerUnits'><yes/></attr>
+          <attr name='markerWidth'><yes/></attr>
+          <attr name='markerHeight'><yes/></attr>
+          <attr name='orientType'><yes/></attr>
+          <attr name='orientAngle'><yes/></attr>
+          <op name='setOrientToAuto'><yes/></op>
+          <op name='setOrientToAngle'><yes/></op>
+        </interface>
+        <interface name='SVGColorProfileElement'>
+          <attr name='local'><yes/></attr>
+          <attr name='name'><yes/></attr>
+          <attr name='renderingIntent'><yes/></attr>
+        </interface>
+        <interface name='SVGColorProfileRule'>
+          <attr name='src'><no/></attr>
+          <attr name='name'><no/></attr>
+          <attr name='renderingIntent'><no/></attr>
+        </interface>
+        <interface name='SVGGradientElement'>
+          <attr name='gradientUnits'><yes/></attr>
+          <attr name='gradientTransform'><yes/></attr>
+          <attr name='spreadMethod'><yes/></attr>
+        </interface>
+        <interface name='SVGLinearGradientElement'>
+          <attr name='x1'><yes/></attr>
+          <attr name='y1'><yes/></attr>
+          <attr name='x2'><yes/></attr>
+          <attr name='y2'><yes/></attr>
+        </interface>
+        <interface name='SVGRadialGradientElement'>
+          <attr name='cx'><yes/></attr>
+          <attr name='cy'><yes/></attr>
+          <attr name='r'><yes/></attr>
+          <attr name='fx'><yes/></attr>
+          <attr name='fy'><yes/></attr>
+        </interface>
+        <interface name='SVGStopElement'>
+          <attr name='offset'><yes/></attr>
+        </interface>
+        <interface name='SVGPatternElement'>
+          <attr name='patternUnits'><yes/></attr>
+          <attr name='patternContentUnits'><yes/></attr>
+          <attr name='patternTransform'><no/></attr>
+          <attr name='x'><yes/></attr>
+          <attr name='y'><yes/></attr>
+          <attr name='width'><yes/></attr>
+          <attr name='height'><yes/></attr>
+        </interface>
+        <interface name='SVGClipPathElement'>
+          <attr name='clipPathUnits'><yes/></attr>
+        </interface>
+        <interface name='SVGMaskElement'>
+          <attr name='maskUnits'><yes/></attr>
+          <attr name='maskContentUnits'><yes/></attr>
+          <attr name='x'><yes/></attr>
+          <attr name='y'><yes/></attr>
+          <attr name='width'><yes/></attr>
+          <attr name='height'><yes/></attr>
+        </interface>
+        <interface name='SVGFilterElement'>
+          <attr name='filterUnits'><yes/></attr>
+          <attr name='primitiveUnits'><yes/></attr>
+          <attr name='x'><yes/></attr>
+          <attr name='y'><yes/></attr>
+          <attr name='width'><yes/></attr>
+          <attr name='height'><yes/></attr>
+          <attr name='filterResX'><no/></attr>
+          <attr name='filterResY'><no/></attr>
+          <op name='setFilterRes'><no/></op>
+        </interface>
+        <interface name='SVGFilterPrimitiveStandardAttributes'>
+          <attr name='x'><yes/></attr>
+          <attr name='y'><yes/></attr>
+          <attr name='width'><yes/></attr>
+          <attr name='height'><yes/></attr>
+          <attr name='result'><yes/></attr>
+        </interface>
+        <interface name='SVGFEBlendElement'>
+          <attr name='in1'><yes/></attr>
+          <attr name='in2'><yes/></attr>
+          <attr name='mode'><yes/></attr>
+        </interface>
+        <interface name='SVGFEColorMatrixElement'>
+          <attr name='in1'><yes/></attr>
+          <attr name='type'><yes/></attr>
+          <attr name='values'><no/></attr>
+        </interface>
+        <interface name='SVGFEComponentTransferElement'>
+          <attr name='in1'><yes/></attr>
+        </interface>
+        <interface name='SVGComponentTransferFunctionElement'>
+          <attr name='type'><yes/></attr>
+          <attr name='tableValues'><no/></attr>
+          <attr name='slope'><yes/></attr>
+          <attr name='intercept'><yes/></attr>
+          <attr name='amplitude'><yes/></attr>
+          <attr name='exponent'><yes/></attr>
+          <attr name='offset'><yes/></attr>
+        </interface>
+        <interface name='SVGFEFuncRElement'>
+        </interface>
+        <interface name='SVGFEFuncGElement'>
+        </interface>
+        <interface name='SVGFEFuncBElement'>
+        </interface>
+        <interface name='SVGFEFuncAElement'>
+        </interface>
+        <interface name='SVGFECompositeElement'>
+          <attr name='in1'><yes/></attr>
+          <attr name='in2'><yes/></attr>
+          <attr name='operator'><yes/></attr>
+          <attr name='k1'><yes/></attr>
+          <attr name='k2'><yes/></attr>
+          <attr name='k3'><yes/></attr>
+          <attr name='k4'><yes/></attr>
+        </interface>
+        <interface name='SVGFEConvolveMatrixElement'>
+          <attr name='orderX'><no/></attr>
+          <attr name='orderY'><no/></attr>
+          <attr name='kernelMatrix'><no/></attr>
+          <attr name='divisor'><no/></attr>
+          <attr name='bias'><yes/></attr>
+          <attr name='targetX'><no/></attr>
+          <attr name='targetY'><no/></attr>
+          <attr name='edgeMode'><yes/></attr>
+          <attr name='kernelUnitLengthX'><no/></attr>
+          <attr name='kernelUnitLengthY'><no/></attr>
+          <attr name='preserveAlpha'><yes/></attr>
+        </interface>
+        <interface name='SVGFEDiffuseLightingElement'>
+          <attr name='in1'><yes/></attr>
+          <attr name='surfaceScale'><yes/></attr>
+          <attr name='diffuseConstant'><yes/></attr>
+          <attr name='kernelUnitLengthX'><yes/></attr>
+          <attr name='kernelUnitLengthY'><yes/></attr>
+        </interface>
+        <interface name='SVGFEDistantLightElement'>
+          <attr name='azimuth'><yes/></attr>
+          <attr name='elevation'><yes/></attr>
+        </interface>
+        <interface name='SVGFEPointLightElement'>
+          <attr name='x'><yes/></attr>
+          <attr name='y'><yes/></attr>
+          <attr name='z'><yes/></attr>
+        </interface>
+        <interface name='SVGFESpotLightElement'>
+          <attr name='x'><yes/></attr>
+          <attr name='y'><yes/></attr>
+          <attr name='z'><yes/></attr>
+          <attr name='pointsAtX'><yes/></attr>
+          <attr name='pointsAtY'><yes/></attr>
+          <attr name='pointsAtZ'><yes/></attr>
+          <attr name='specularExponent'><yes/></attr>
+          <attr name='limitingConeAngle'><yes/></attr>
+        </interface>
+        <interface name='SVGFEDisplacementMapElement'>
+          <attr name='in1'><yes/></attr>
+          <attr name='in2'><yes/></attr>
+          <attr name='scale'><yes/></attr>
+          <attr name='xChannelSelector'><yes/></attr>
+          <attr name='yChannelSelector'><yes/></attr>
+        </interface>
+        <interface name='SVGFEFloodElement'>
+          <attr name='in1'><yes/></attr>
+        </interface>
+        <interface name='SVGFEGaussianBlurElement'>
+          <attr name='in1'><yes/></attr>
+          <attr name='stdDeviationX'><no/></attr>
+          <attr name='stdDeviationY'><no/></attr>
+          <op name='setStdDeviation'><yes/></op>
+        </interface>
+        <interface name='SVGFEImageElement'>
+          <attr name='preserveAspectRatio'><no/></attr>
+        </interface>
+        <interface name='SVGFEMergeElement'>
+        </interface>
+        <interface name='SVGFEMergeNodeElement'>
+          <attr name='in1'><yes/></attr>
+        </interface>
+        <interface name='SVGFEMorphologyElement'>
+          <attr name='in1'><yes/></attr>
+          <attr name='operator'><yes/></attr>
+          <attr name='radiusX'><no/></attr>
+          <attr name='radiusY'><no/></attr>
+        </interface>
+        <interface name='SVGFEOffsetElement'>
+          <attr name='in1'><yes/></attr>
+          <attr name='dx'><yes/></attr>
+          <attr name='dy'><yes/></attr>
+        </interface>
+        <interface name='SVGFESpecularLightingElement'>
+          <attr name='in1'><yes/></attr>
+          <attr name='surfaceScale'><yes/></attr>
+          <attr name='specularConstant'><yes/></attr>
+          <attr name='specularExponent'><yes/></attr>
+        </interface>
+        <interface name='SVGFETileElement'>
+          <attr name='in1'><yes/></attr>
+        </interface>
+        <interface name='SVGFETurbulenceElement'>
+          <attr name='baseFrequencyX'><no/></attr>
+          <attr name='baseFrequencyY'><no/></attr>
+          <attr name='numOctaves'><yes/></attr>
+          <attr name='seed'><yes/></attr>
+          <attr name='stitchTiles'><yes/></attr>
+          <attr name='type'><yes/></attr>
+        </interface>
+        <interface name='SVGCursorElement'>
+          <attr name='x'><yes/></attr>
+          <attr name='y'><yes/></attr>
+        </interface>
+        <interface name='SVGDefinitionSrcElement'>
+        </interface>
+        <interface name='SVGAElement'>
+          <attr name='target'><yes/></attr>
+        </interface>
+        <interface name='SVGViewElement'>
+          <yes/>
+          <attr name='viewTarget'><no/></attr>
+        </interface>
+        <interface name='SVGScriptElement'>
+          <attr name='type'><yes/></attr>
+        </interface>
+        <interface name='SVGEvent'/>
+        <interface name='SVGZoomEvent'>
+          <attr name='zoomRectScreen'><no/></attr>
+          <attr name='previousScale'><no/></attr>
+          <attr name='previousTranslate'><no/></attr>
+          <attr name='newScale'><no/></attr>
+          <attr name='newTranslate'><no/></attr>
+        </interface>
+        <interface name='SVGAnimationElement'>
+          <attr name='targetElement'><yes/></attr>
+          <op name='getStartTime'><yes/></op>
+          <op name='getCurrentTime'><yes/></op>
+          <op name='getSimpleDuration'><yes/></op>
+        </interface>
+        <interface name='SVGAnimateElement'>
+        </interface>
+        <interface name='SVGSetElement'>
+        </interface>
+        <interface name='SVGAnimateMotionElement'>
+        </interface>
+        <interface name='SVGMPathElement'>
+        </interface>
+        <interface name='SVGAnimateColorElement'>
+        </interface>
+        <interface name='SVGAnimateTransformElement'>
+        </interface>
+        <interface name='SVGFontElement'>
+        </interface>
+        <interface name='SVGGlyphElement'>
+        </interface>
+        <interface name='SVGMissingGlyphElement'>
+        </interface>
+        <interface name='SVGHKernElement'>
+        </interface>
+        <interface name='SVGVKernElement'>
+        </interface>
+        <interface name='SVGFontFaceElement'>
+        </interface>
+        <interface name='SVGFontFaceSrcElement'>
+        </interface>
+        <interface name='SVGFontFaceUriElement'>
+        </interface>
+        <interface name='SVGFontFaceFormatElement'>
+        </interface>
+        <interface name='SVGFontFaceNameElement'>
+        </interface>
+        <interface name='SVGDefinitionSrcElement'>
+        </interface>
+        <interface name='SVGMetadataElement'>
+        </interface>
+        <interface name='SVGForeignObjectElement'>
+          <attr name='x'><yes/></attr>
+          <attr name='y'><yes/></attr>
+          <attr name='width'><yes/></attr>
+          <attr name='height'><yes/></attr>
+        </interface>
+      </interfaces>
+    </section>
+
+    <section id="ecmascript">
+      <title>ECMAScript objects</title>
+
+      <p>
+        In addition to the host objects exposed to ECMAScript that implement
+        the SVG DOM, the following objects are also available.
+      </p>
+
+      <object name="Global object">
+        <prop name="document">
+          <p>
+            The current SVG document.
+          </p>
+        </prop>
+        <prop name="event">
+          <p>
+            The most recently dispatched event object.
+          </p>
+        </prop>
+        <prop name="evt">
+          <p>
+            An alias for <code>event</code>.
+          </p>
+        </prop>
+        <prop name="window">
+          <p>
+            The global object (a self-reference).
+          </p>
+        </prop>
+        <func name="alert" params="message">
+          <p>
+            Displays an alert dialog with the specified <code>message</code>.
+          </p>
+        </func>
+        <func name="confirm" params="message">
+          <p>
+            Displays a confirmation dialog with the specified
+            <code>message</code>.  The window has an OK and a Cancel button.
+            The function returns <code>true</code> if the user clicks on the OK
+            button, and <code>false</code> otherwise.
+          </p>
+        </func>
+        <func name="prompt" params="message[, defaultValue]">
+          <p>
+            Displays an input dialog with the specified <code>message</code>.
+            The <code>defaultValue</code> parameter specifies the initial
+            contents of the text box in the window.  The function returns the
+            string entered by the user, or null if the window was cancelled.
+          </p>
+        </func>
+        <func name="setInterval" params="script, interval">
+          <p>
+            Evaluates the given <code>script</code> repeatedly after the
+            specified amount of time.  The value for <code>script</code> must
+            be either a string, which is evaluated by <code>eval</code>
+            every interval, or an ECMAScript function object, which is called
+            every interval.  This method does not stall the script: the
+            evaluation is scheduled and the script continues its execution.
+            The function returns an object that can be passed to the
+            <code>clearInterval</code> function.
+          </p>
+        </func>
+        <func name="clearInterval" params="intervalID">
+          <p>
+            Cancels an interval that was set by a call to
+            <code>setInterval</code>.  The <code>intervalID</code>
+            must be an object that has been returned by a previous
+            <code>setInterval</code> call.
+          </p>
+        </func>
+        <func name="setTimeout" params="script, timeout">
+          <p>
+            Evaluates the given <code>script</code> after the
+            specified amount of time.  The value for <code>script</code> must
+            be either a string, which is evaluated by <code>eval</code>
+            after the timeout, or an ECMAScript function object, which is called
+            after the timeout.  This method does not stall the script: the
+            evaluation is scheduled and the script continues its execution.
+            The function returns an object that can be passed to the
+            <code>clearInterval</code> function.  The function returns an object
+            that can be passed to the <code>clearTimeout</code> function.
+          </p>
+        </func>
+        <func name="clearTimeout" params="timeoutID">
+          <p>
+            Cancels a timeout that was set by a call to
+            <code>setTimeout</code>.  The <code>timeoutID</code> must be
+            an object that has been returned by a previous
+            <code>clearTimeout</code> call.
+          </p>
+        </func>
+        <func name="printNode" params="node">
+          <p>
+            Returns a string that is the serialization of the given DOM
+            node.
+          </p>
+        </func>
+        <func name="parseXML" params="text, document">
+          <p>
+            Parses and returns a <code>DocumentFragment</code> object.
+            <code>text</code> is the string that is to be parsed as XML
+            data, and <code>document</code> is a <code>Document</code>
+            that will be used for creating new DOM objects.
+          </p>
+        </func>
+        <func name="getURL" params="uri, function[, encoding]">
+          <p>
+            Gets data from the given <code>uri</code>. This method returns
+            immediately and the given <code>function</code> is called when the
+            data is fully downloaded.  The optional <code>encoding</code>
+            argument is the encoding to assume the data is in, defaulting to
+            UTF-8.  The argument passed to the function is an object with
+            three properties:
+          </p>
+          <dl>
+            <dt>success</dt>
+            <dd><code>true</code> if the data is available, <code>false</code> otherwise.</dd>
+            <dt>contentType</dt>
+            <dd>The content type of the data, if it is known by the implementation.</dd>
+            <dt>content</dt>
+            <dd>A string holding the data.</dd>
+          </dl>
+        </func>
+      </object>
+    </section>
+
+    <section id="test">
+      <title>SVG 1.1 test suite</title>
+      <p>
+        The table below lists the test cases from the December 2006 release
+        of the <a href="http://www.w3.org/Graphics/SVG/Test/">SVG 1.1 test suite</a>
+        and whether the latest Batik code in the Subversion repository passes
+        each one.
+      </p>
+      <tests uri='http://www.w3.org/Graphics/SVG/Test/20061213/svg/'>
+        <test name='animate-elem-02-t'><yes/></test>
+        <test name='animate-elem-03-t'><yes/></test>
+        <test name='animate-elem-04-t'><yes/></test>
+        <test name='animate-elem-05-t'><yes/></test>
+        <test name='animate-elem-06-t'><yes/></test>
+        <test name='animate-elem-07-t'><yes/></test>
+        <test name='animate-elem-08-t'><yes/></test>
+        <test name='animate-elem-09-t'><yes/></test>
+        <test name='animate-elem-10-t'><yes/></test>
+        <test name='animate-elem-11-t'><yes/></test>
+        <test name='animate-elem-12-t'><yes/></test>
+        <test name='animate-elem-13-t'><yes/></test>
+        <test name='animate-elem-14-t'><yes/></test>
+        <test name='animate-elem-15-t'><yes/></test>
+        <test name='animate-elem-17-t'><yes/></test>
+        <test name='animate-elem-19-t'><yes/></test>
+        <test name='animate-elem-20-t'><yes/></test>
+        <test name='animate-elem-21-t'><yes/></test>
+        <test name='animate-elem-22-b'><yes/></test>
+        <test name='animate-elem-23-t'><yes/></test>
+        <test name='animate-elem-24-t'><yes/></test>
+        <test name='animate-elem-25-t'><yes/></test>
+        <test name='animate-elem-26-t'><yes/></test>
+        <test name='animate-elem-27-t'><yes/></test>
+        <test name='animate-elem-28-t'><yes/></test>
+        <test name='animate-elem-29-b'><yes/></test>
+        <test name='animate-elem-30-t'><yes/></test>
+        <test name='animate-elem-31-t'><yes/></test>
+        <test name='animate-elem-32-t'><yes/></test>
+        <test name='animate-elem-33-t'><yes/></test>
+        <test name='animate-elem-34-t'><yes/></test>
+        <test name='animate-elem-36-t'><yes/></test>
+        <test name='animate-elem-37-t'><yes/></test>
+        <test name='animate-elem-39-t'><yes/></test>
+        <test name='animate-elem-40-t'><yes/></test>
+        <test name='animate-elem-41-t'><yes/></test>
+        <test name='animate-elem-44-t'><yes/></test>
+        <test name='animate-elem-46-t'><yes/></test>
+        <test name='animate-elem-52-t'><yes/></test>
+        <test name='animate-elem-60-t'><yes/></test>
+        <test name='animate-elem-61-t'><yes/></test>
+        <test name='animate-elem-62-t'><yes/></test>
+        <test name='animate-elem-63-t'><yes/></test>
+        <test name='animate-elem-64-t'><yes/></test>
+        <test name='animate-elem-65-t'><yes/></test>
+        <test name='animate-elem-66-t'><yes/></test>
+        <test name='animate-elem-67-t'><yes/></test>
+        <test name='animate-elem-68-t'><yes/></test>
+        <test name='animate-elem-69-t'><yes/></test>
+        <test name='animate-elem-70-t'><yes/></test>
+        <test name='animate-elem-77-t'><yes/></test>
+        <test name='animate-elem-78-t'><yes/></test>
+        <test name='animate-elem-80-t'><yes/></test>
+        <test name='animate-elem-81-t'><yes/></test>
+        <test name='animate-elem-82-t'><yes/></test>
+        <test name='animate-elem-83-t'><partial>Performing interpolating animation of paths between an absolute and a corresponding relative path command (e.g. from <code>"M0,0 L10,10"</code> to <code>"M0,0 l10,20"</code>) is not supported.</partial></test>
+        <test name='animate-elem-84-t'><yes/></test>
+        <test name='animate-elem-85-t'><partial>Performing interpolating animation of colors to or from the <code>currentColor</code> keyword is not supported.</partial></test>
+        <test name='color-prof-01-f'><yes/></test>
+        <test name='color-prop-01-b'><yes/></test>
+        <test name='color-prop-02-f'><yes/></test>
+        <test name='color-prop-03-t'><yes/></test>
+        <test name='coords-coord-01-t'><yes/></test>
+        <test name='coords-coord-02-t'><yes/></test>
+        <test name='coords-trans-01-b'><yes/></test>
+        <test name='coords-trans-02-t'><yes/></test>
+        <test name='coords-trans-03-t'><yes/></test>
+        <test name='coords-trans-04-t'><yes/></test>
+        <test name='coords-trans-05-t'><yes/></test>
+        <test name='coords-trans-06-t'><yes/></test>
+        <test name='coords-units-01-b'><yes/></test>
+        <test name='coords-units-02-b'><yes/></test>
+        <test name='coords-units-03-b'><yes/></test>
+        <test name='coords-viewattr-01-b'><yes/></test>
+        <test name='coords-viewattr-02-b'><yes/></test>
+        <test name='coords-viewattr-03-b'><yes/></test>
+        <test name='extend-namespace-01-f'><yes/></test>
+        <test name='filters-blend-01-b'><yes/></test>
+        <test name='filters-color-01-b'><yes/></test>
+        <test name='filters-composite-02-b'><yes/></test>
+        <test name='filters-comptran-01-b'><yes/></test>
+        <test name='filters-conv-01-f'><partial/></test>
+        <test name='filters-diffuse-01-f'><yes/></test>
+        <test name='filters-displace-01-f'><yes/></test>
+        <test name='filters-example-01-b'><yes/></test>
+        <test name='filters-felem-01-b'><no/></test>
+        <test name='filters-gauss-01-b'><yes/></test>
+        <test name='filters-image-01-b'><yes/></test>
+        <test name='filters-light-01-f'><yes/></test>
+        <test name='filters-morph-01-f'><yes/></test>
+        <test name='filters-offset-01-b'><yes/></test>
+        <test name='filters-specular-01-f'><yes/></test>
+        <test name='filters-tile-01-b'><yes/></test>
+        <test name='filters-turb-01-f'><yes/></test>
+        <test name='fonts-desc-02-t'><partial>Font glyph selection based on certain properties is not supported.</partial></test>
+        <test name='fonts-elem-01-t'><yes/></test>
+        <test name='fonts-elem-02-t'><yes/></test>
+        <test name='fonts-elem-03-b'><yes/></test>
+        <test name='fonts-elem-04-b'><yes/></test>
+        <test name='fonts-elem-05-t'><yes/></test>
+        <test name='fonts-elem-06-t'><yes/></test>
+        <test name='fonts-elem-07-b'><yes/></test>
+        <test name='fonts-glyph-02-t'><yes/></test>
+        <test name='fonts-glyph-03-t'><yes/></test>
+        <test name='fonts-glyph-04-t'><yes/></test>
+        <test name='fonts-kern-01-t'><yes/></test>
+        <test name='interact-cursor-01-f'><yes/></test>
+        <test name='interact-dom-01-b'><yes/></test>
+        <test name='interact-events-01-b'><yes/></test>
+        <test name='interact-order-01-b'><yes/></test>
+        <test name='interact-order-02-b'><yes/></test>
+        <test name='interact-order-03-b'><yes/></test>
+        <test name='interact-zoom-01-t'><partial>Test is incorrect.</partial></test>
+        <test name='linking-a-01-b'><yes/></test>
+        <test name='linking-a-02-b'><yes/></test>
+        <test name='linking-a-03-b'><yes/></test>
+        <test name='linking-a-04-t'><yes/></test>
+        <test name='linking-a-05-t'><yes/></test>
+        <test name='linking-a-07-t'><no>The <code>target</code> attribute of the <code>a</code> element is ignored.</no></test>
+        <test name='linking-uri-01-b'><yes/></test>
+        <test name='linking-uri-02-b'><yes/></test>
+        <test name='linking-uri-03-t'><yes/></test>
+        <test name='masking-intro-01-f'><yes/></test>
+        <test name='masking-mask-01-b'><yes/></test>
+        <test name='masking-opacity-01-b'><yes/></test>
+        <test name='masking-path-01-b'><yes/></test>
+        <test name='masking-path-02-b'><yes/></test>
+        <test name='masking-path-03-b'><yes/></test>
+        <test name='masking-path-04-b'><yes/></test>
+        <test name='masking-path-05-f'><yes/></test>
+        <test name='metadata-example-01-b'><yes/></test>
+        <test name='painting-fill-01-t'><yes/></test>
+        <test name='painting-fill-02-t'><yes/></test>
+        <test name='painting-fill-03-t'><yes/></test>
+        <test name='painting-fill-04-t'><yes/></test>
+        <test name='painting-fill-05-b'><yes/></test>
+        <test name='painting-marker-01-f'><yes/></test>
+        <test name='painting-marker-02-f'><yes/></test>
+        <test name='painting-marker-03-f'><yes/></test>
+        <test name='painting-render-01-b'><yes/></test>
+        <test name='painting-stroke-01-t'><yes/></test>
+        <test name='painting-stroke-02-t'><yes/></test>
+        <test name='painting-stroke-03-t'><yes/></test>
+        <test name='painting-stroke-04-t'><yes/></test>
+        <test name='painting-stroke-07-t'><partial/></test>
+        <test name='paths-data-01-t'><yes/></test>
+        <test name='paths-data-02-t'><yes/></test>
+        <test name='paths-data-03-f'><yes/></test>
+        <test name='paths-data-04-t'><yes/></test>
+        <test name='paths-data-05-t'><yes/></test>
+        <test name='paths-data-06-t'><yes/></test>
+        <test name='paths-data-07-t'><yes/></test>
+        <test name='paths-data-08-t'><yes/></test>
+        <test name='paths-data-09-t'><yes/></test>
+        <test name='paths-data-10-t'><yes/></test>
+        <test name='paths-data-12-t'><yes/></test>
+        <test name='paths-data-13-t'><yes/></test>
+        <test name='paths-data-14-t'><yes/></test>
+        <test name='paths-data-15-t'><yes/></test>
+        <test name='pservers-grad-01-b'><yes/></test>
+        <test name='pservers-grad-02-b'><yes/></test>
+        <test name='pservers-grad-03-b'><yes/></test>
+        <test name='pservers-grad-04-b'><yes/></test>
+        <test name='pservers-grad-05-b'><yes/></test>
+        <test name='pservers-grad-06-b'><yes/></test>
+        <test name='pservers-grad-07-b'><yes/></test>
+        <test name='pservers-grad-08-b'><yes/></test>
+        <test name='pservers-grad-09-b'><yes/></test>
+        <test name='pservers-grad-10-b'><yes/></test>
+        <test name='pservers-grad-11-b'><yes/></test>
+        <test name='pservers-grad-12-b'><yes/></test>
+        <test name='pservers-grad-13-b'><yes/></test>
+        <test name='pservers-grad-14-b'><yes/></test>
+        <test name='pservers-grad-15-b'><yes/></test>
+        <test name='pservers-grad-16-b'><yes/></test>
+        <test name='pservers-grad-17-b'><yes/></test>
+        <test name='pservers-grad-18-b'><yes/></test>
+        <test name='pservers-grad-19-b'><no>Animation of gradients do not affect referencing elements.</no></test>
+        <test name='pservers-pattern-01-b'><yes/></test>
+        <test name='render-elems-01-t'><yes/></test>
+        <test name='render-elems-02-t'><yes/></test>
+        <test name='render-elems-03-t'><yes/></test>
+        <test name='render-elems-06-t'><yes/></test>
+        <test name='render-elems-07-t'><yes/></test>
+        <test name='render-elems-08-t'><yes/></test>
+        <test name='render-groups-01-b'><yes/></test>
+        <test name='render-groups-03-t'><yes/></test>
+        <test name='script-handle-01-b'><yes/></test>
+        <test name='script-handle-02-b'><yes/></test>
+        <test name='script-handle-03-b'><yes/></test>
+        <test name='script-handle-04-b'><yes/></test>
+        <test name='shapes-circle-01-t'><yes/></test>
+        <test name='shapes-circle-02-t'><yes/></test>
+        <test name='shapes-ellipse-01-t'><yes/></test>
+        <test name='shapes-ellipse-02-t'><yes/></test>
+        <test name='shapes-intro-01-t'><yes/></test>
+        <test name='shapes-line-01-t'><yes/></test>
+        <test name='shapes-polygon-01-t'><yes/></test>
+        <test name='shapes-polyline-01-t'><yes/></test>
+        <test name='shapes-rect-01-t'><yes/></test>
+        <test name='shapes-rect-02-t'><yes/></test>
+        <test name='struct-cond-01-t'><yes/></test>
+        <test name='struct-cond-02-t'><yes/></test>
+        <test name='struct-cond-03-t'><yes/></test>
+        <test name='struct-defs-01-t'><yes/></test>
+        <test name='struct-dom-01-b'><yes/></test>
+        <test name='struct-dom-02-b'><yes/></test>
+        <test name='struct-dom-03-b'><yes/></test>
+        <test name='struct-dom-04-b'><yes/></test>
+        <test name='struct-dom-05-b'><yes/></test>
+        <test name='struct-dom-06-b'><yes/></test>
+        <test name='struct-frag-01-t'><yes/></test>
+        <test name='struct-frag-02-t'><yes/></test>
+        <test name='struct-frag-03-t'><yes/></test>
+        <test name='struct-frag-04-t'><yes/></test>
+        <test name='struct-frag-05-t'><yes/></test>
+        <test name='struct-frag-06-t'><yes/></test>
+        <test name='struct-group-01-t'><yes/></test>
+        <test name='struct-group-02-b'><yes/></test>
+        <test name='struct-group-03-t'><yes/></test>
+        <test name='struct-image-01-t'><yes/></test>
+        <test name='struct-image-02-b'><yes/></test>
+        <test name='struct-image-03-t'><yes/></test>
+        <test name='struct-image-04-t'><yes/></test>
+        <test name='struct-image-05-b'><yes/></test>
+        <test name='struct-image-06-t'><yes/></test>
+        <test name='struct-image-07-t'><yes/></test>
+        <test name='struct-image-08-t'><yes/></test>
+        <test name='struct-image-09-t'><yes/></test>
+        <test name='struct-image-10-t'><no/></test>
+        <test name='struct-symbol-01-b'><yes/></test>
+        <test name='struct-use-01-t'><yes/></test>
+        <test name='struct-use-03-t'><yes/></test>
+        <test name='struct-use-05-b'><yes/></test>
+        <test name='styling-css-01-b'><yes/></test>
+        <test name='styling-css-02-b'><yes/></test>
+        <test name='styling-css-03-b'><yes/></test>
+        <test name='styling-css-04-f'><yes/></test>
+        <test name='styling-css-05-b'><yes/></test>
+        <test name='styling-css-06-b'><no>The <code>:hover</code>, <code>:link</code>, <code>:visited</code>,
+            <code>:active</code> and <code>:focus</code> pseudo-classes are not
+            supported in selectors.</no></test>
+        <test name='styling-inherit-01-b'><yes/></test>
+        <test name='styling-pres-01-t'><yes/></test>
+        <test name='text-align-01-b'><yes/></test>
+        <test name='text-align-02-b'><yes/></test>
+        <test name='text-align-03-b'><yes/></test>
+        <test name='text-align-04-b'><yes/></test>
+        <test name='text-align-05-b'><yes/></test>
+        <test name='text-align-06-b'><yes/></test>
+        <test name='text-align-08-b'><no/></test>
+        <test name='text-altglyph-01-b'><yes/></test>
+        <test name='text-deco-01-b'><yes/></test>
+        <test name='text-fonts-01-t'><yes/></test>
+        <test name='text-fonts-02-t'><yes/></test>
+        <test name='text-fonts-03-t'><yes/></test>
+        <test name='text-intro-01-t'><yes/></test>
+        <test name='text-intro-02-b'><yes/></test>
+        <test name='text-intro-03-b'><yes/></test>
+        <test name='text-intro-04-t'><yes/></test>
+        <test name='text-intro-05-t'><yes/></test>
+        <test name='text-path-01-b'><yes/></test>
+        <test name='text-spacing-01-b'><yes/></test>
+        <test name='text-text-01-b'><yes/></test>
+        <test name='text-text-03-b'><yes/></test>
+        <test name='text-text-04-t'><yes/></test>
+        <test name='text-text-05-t'><no/></test>
+        <test name='text-text-06-t'><yes/></test>
+        <test name='text-text-07-t'><yes/></test>
+        <test name='text-text-08-b'><yes/></test>
+        <test name='text-tref-01-b'><yes/></test>
+        <test name='text-tselect-01-b'><yes/></test>
+        <test name='text-tselect-02-f'><partial/></test>
+        <test name='text-tspan-01-b'><yes/></test>
+        <test name='text-ws-01-t'><yes/></test>
+        <test name='text-ws-02-t'><yes/></test>
+        <test name='types-basicDOM-01-b'><yes/></test>
+      </tests>
+    </section>
+  </body>
+</status>

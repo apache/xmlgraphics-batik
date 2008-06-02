@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001,2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -25,6 +26,7 @@ import java.io.InputStream;
  * to wrap a regular <code>InputStream</code> efficiently.
  * Seeking backwards is not supported.
  *
+ * @version $Id$
  */
 public class ForwardSeekableStream extends SeekableStream {
 
@@ -34,10 +36,7 @@ public class ForwardSeekableStream extends SeekableStream {
     /** The current position. */
     long pointer = 0L;
 
-    /** The marked position. */
-    long markPos = -1L;
-
-    /** 
+    /**
      * Constructs a <code>InputStreamForwardSeekableStream</code> from a
      * regular <code>InputStream</code>.
      */
@@ -80,14 +79,20 @@ public class ForwardSeekableStream extends SeekableStream {
         src.close();
     }
 
-    /** Forwards the request to the real <code>InputStream</code>. */
-    public synchronized final void mark(int readLimit) {
+    /**
+     * Forwards the request to the real <code>InputStream</code>.
+     * We use {@link SeekableStream#markPos}
+     */
+    public final synchronized void mark(int readLimit) {
         markPos = pointer;
         src.mark(readLimit);
     }
 
-    /** Forwards the request to the real <code>InputStream</code>. */
-    public synchronized final void reset() throws IOException {
+    /**
+     * Forwards the request to the real <code>InputStream</code>.
+     * We use {@link SeekableStream#markPos}
+     */
+    public final synchronized void reset() throws IOException {
         if (markPos != -1) {
             pointer = markPos;
         }

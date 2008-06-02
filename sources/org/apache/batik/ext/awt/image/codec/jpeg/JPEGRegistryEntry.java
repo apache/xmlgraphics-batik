@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001-2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -39,10 +40,14 @@ import com.sun.image.codec.jpeg.JPEGCodec;
 import com.sun.image.codec.jpeg.JPEGImageDecoder;
 import com.sun.image.codec.jpeg.TruncatedFileException;
 
-public class JPEGRegistryEntry 
+/**
+ *
+ * @version $Id$
+ */
+public class JPEGRegistryEntry
     extends MagicNumberRegistryEntry {
 
-    static final byte [] sigJPEG   = {(byte)0xFF, (byte)0xd8, 
+    static final byte [] sigJPEG   = {(byte)0xFF, (byte)0xd8,
                                       (byte)0xFF};
     static final String [] exts      = {"jpeg", "jpg" };
     static final String [] mimeTypes = {"image/jpeg", "image/jpg" };
@@ -61,10 +66,10 @@ public class JPEGRegistryEntry
      * @param origURL The original URL, if any, for documentation
      *                purposes only.  This may be null.
      * @param needRawData If true the image returned should not have
-     *                    any default color correction the file may 
-     *                    specify applied.  
+     *                    any default color correction the file may
+     *                    specify applied.
      */
-    public Filter handleStream(InputStream inIS, 
+    public Filter handleStream(InputStream inIS,
                                ParsedURL   origURL,
                                boolean     needRawData) {
         final DeferRable  dr  = new DeferRable();
@@ -86,7 +91,7 @@ public class JPEGRegistryEntry
                         JPEGImageDecoder decoder;
                         decoder = JPEGCodec.createJPEGDecoder(is);
                         BufferedImage image;
-                        try { 
+                        try {
                             image   = decoder.decodeAsBufferedImage();
                         } catch (TruncatedFileException tfe) {
                             image = tfe.getBufferedImage();
@@ -97,7 +102,7 @@ public class JPEGRegistryEntry
                                     ("JPEG File was truncated");
                         }
                         dr.setBounds(new Rectangle2D.Double
-                                     (0, 0, image.getWidth(), 
+                                     (0, 0, image.getWidth(),
                                       image.getHeight()));
                         CachableRed cr;
                         cr = GraphicsUtil.wrap(image);
@@ -112,15 +117,15 @@ public class JPEGRegistryEntry
                     } catch (IOException ioe) {
                         // Something bad happened here...
                         filt = ImageTagRegistry.getBrokenLinkImage
-                            (this, errCode, errParam);
+                            (JPEGRegistryEntry.this, errCode, errParam);
                     } catch (ThreadDeath td) {
                         filt = ImageTagRegistry.getBrokenLinkImage
-                            (this, errCode, errParam);
+                            (JPEGRegistryEntry.this, errCode, errParam);
                         dr.setSource(filt);
                         throw td;
                     } catch (Throwable t) {
                         filt = ImageTagRegistry.getBrokenLinkImage
-                            (this, errCode, errParam);
+                            (JPEGRegistryEntry.this, errCode, errParam);
                     }
 
                     dr.setSource(filt);

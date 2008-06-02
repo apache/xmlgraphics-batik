@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001,2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -33,13 +34,13 @@ import org.apache.batik.util.SVGConstants;
 public class SVGGraphicContext implements SVGConstants, ErrorConstants {
     // this properties can only be set of leaf nodes =>
     // if they have default values they can be ignored
-    private static final String leafOnlyAttributes[] = {
+    private static final String[] leafOnlyAttributes = {
         SVG_OPACITY_ATTRIBUTE,
         SVG_FILTER_ATTRIBUTE,
         SVG_CLIP_PATH_ATTRIBUTE
     };
 
-    private static final String defaultValues[] = {
+    private static final String[] defaultValues = {
         "1",
         SVG_NONE_VALUE,
         SVG_NONE_VALUE
@@ -48,7 +49,7 @@ public class SVGGraphicContext implements SVGConstants, ErrorConstants {
     private Map context;
     private Map groupContext;
     private Map graphicElementContext;
-    private TransformStackElement transformStack[];
+    private TransformStackElement[] transformStack;
 
     /**
      * @param context Set of style attributes in this context.
@@ -56,7 +57,7 @@ public class SVGGraphicContext implements SVGConstants, ErrorConstants {
      *        applied to create the context's current transform.
      */
     public SVGGraphicContext(Map context,
-                             TransformStackElement transformStack[]) {
+                             TransformStackElement[] transformStack) {
         if (context == null)
             throw new SVGGraphics2DRuntimeException(ERR_MAP_NULL);
         if (transformStack == null)
@@ -74,7 +75,7 @@ public class SVGGraphicContext implements SVGConstants, ErrorConstants {
      *        applied to create the context's current transform.
      */
     public SVGGraphicContext(Map groupContext, Map graphicElementContext,
-                             TransformStackElement transformStack[]) {
+                             TransformStackElement[] transformStack) {
         if (groupContext == null || graphicElementContext == null)
             throw new SVGGraphics2DRuntimeException(ERR_MAP_NULL);
         if (transformStack == null)

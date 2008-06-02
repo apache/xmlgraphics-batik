@@ -4,11 +4,12 @@
 
 <!--
 
-   Copyright 2001,2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -40,7 +41,7 @@
 
         <defs>
 
-	      <!-- ============================= -->
+            <!-- ============================= -->
             <!-- SVG Font Definition           -->
             <!-- ============================= -->
      
@@ -285,12 +286,12 @@
 </defs>
 
  
-	 <g style="font-family:SVGComic; font-size:50">
-		<text x="50" y="120">ab<tspan style="fill:blue" dy="5 5 5 5 5 5">cde fgh</tspan><tspan dy="-30">ij</tspan></text>
-            <text x="50" y="220" style="text-decoration:underline; fill:red">UnderLine</text>
-            <text x="50" y="320" style="fill:green"><tspan style="text-decoration:overline">Over</tspan>Line</text>
-            <text x="50" y="420" style="fill:purple">Line<tspan style="text-decoration:line-through">Through</tspan></text>
-	</g>
+    <g style="font-family:SVGComic; font-size:50">
+        <text x="50" y="120">ab<tspan style="fill:blue" dy="5 5 5 5 5 5">cde fgh</tspan><tspan dy="-30">ij</tspan></text>
+        <text x="50" y="220" style="text-decoration:underline; fill:red">UnderLine</text>
+        <text x="50" y="320" style="fill:green"><tspan style="text-decoration:overline">Over</tspan>Line</text>
+        <text x="50" y="420" style="fill:purple">Line<tspan style="text-decoration:line-through">Through</tspan></text>
+    </g>
        
     </g>
 

@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2002  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -14,7 +15,8 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 
- */package org.apache.batik.transcoder.image;
+ */
+package org.apache.batik.transcoder.image;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -22,11 +24,11 @@ import java.util.HashMap;
 import org.apache.batik.transcoder.TranscoderInput;
 
 /**
- * Test the ImageTranscoder with the KEY_MAX_WIDTH and/or the KEY_MAX_HEIGHT 
+ * Test the ImageTranscoder with the KEY_MAX_WIDTH and/or the KEY_MAX_HEIGHT
  * transcoding hint.
  *
  * @author <a href="mailto:ruini@iki.fi">Henri Ruini</a>
- * @version $Id$ 
+ * @version $Id$
  */
 public class MaxDimensionTest extends AbstractImageTranscoderTest {
 
@@ -88,7 +90,7 @@ public class MaxDimensionTest extends AbstractImageTranscoderTest {
     protected TranscoderInput createTranscoderInput() {
         return new TranscoderInput(resolveURL(inputURI).toString());
     }
-    
+
     /**
      * Creates a Map that contains additional transcoding hints.
      *

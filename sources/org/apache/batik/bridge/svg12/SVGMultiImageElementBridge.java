@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2002-2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -34,9 +35,9 @@ import org.apache.batik.bridge.BridgeException;
 import org.apache.batik.bridge.CSSUtilities;
 import org.apache.batik.bridge.SVGImageElementBridge;
 import org.apache.batik.bridge.SVGUtilities;
+import org.apache.batik.bridge.UnitProcessor;
 import org.apache.batik.bridge.Viewport;
 import org.apache.batik.dom.AbstractNode;
-import org.apache.batik.dom.svg.SVGOMElement;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.ImageNode;
@@ -116,15 +117,19 @@ public class SVGMultiImageElementBridge extends SVGImageElementBridge {
             return null;
         }
 
+        associateSVGContext(ctx, e, imgNode);
+
         Rectangle2D b = getImageBounds(ctx, e);
 
         // 'transform'
         AffineTransform at = null;
         String s = e.getAttribute(SVG_TRANSFORM_ATTRIBUTE);
-        if (s.length() != 0)
-            at = SVGUtilities.convertTransform(e, SVG_TRANSFORM_ATTRIBUTE, s);
-        else
+        if (s.length() != 0) {
+            at = SVGUtilities.convertTransform(e, SVG_TRANSFORM_ATTRIBUTE, s,
+                                               ctx);
+        } else {
             at = new AffineTransform();
+        }
 
         at.translate(b.getX(), b.getY());
         imgNode.setTransform(at);
@@ -231,18 +236,10 @@ public class SVGMultiImageElementBridge extends SVGImageElementBridge {
     protected void initializeDynamicSupport(BridgeContext ctx,
                                             Element e,
                                             GraphicsNode node) {
-        if (!ctx.isInteractive())
-            return;
-
-        // HACK due to the way images are represented in GVT
-        ImageNode imgNode = (ImageNode)node;
-        ctx.bind(e, imgNode.getImage());
-
-        if (ctx.isDynamic()) {
-            this.e = e;
-            this.node = node;
-            this.ctx = ctx;
-            ((SVGOMElement)e).setSVGContext(this);
+        if (ctx.isInteractive()) {
+            // HACK due to the way images are represented in GVT
+            ImageNode imgNode = (ImageNode)node;
+            ctx.bind(e, imgNode.getImage());
         }
     }
 
@@ -252,6 +249,58 @@ public class SVGMultiImageElementBridge extends SVGImageElementBridge {
     public void dispose() {
         ctx.removeViewport(e);
         super.dispose();
+    }
+
+    /**
+     * Returns the bounds of the specified image element.
+     *
+     * @param ctx the bridge context
+     * @param element the image element
+     */
+    protected static
+        Rectangle2D getImageBounds(BridgeContext ctx, Element element) {
+
+        UnitProcessor.Context uctx = UnitProcessor.createContext(ctx, element);
+
+        // 'x' attribute - default is 0
+        String s = element.getAttributeNS(null, SVG_X_ATTRIBUTE);
+        float x = 0;
+        if (s.length() != 0) {
+            x = UnitProcessor.svgHorizontalCoordinateToUserSpace
+                (s, SVG_X_ATTRIBUTE, uctx);
+        }
+
+        // 'y' attribute - default is 0
+        s = element.getAttributeNS(null, SVG_Y_ATTRIBUTE);
+        float y = 0;
+        if (s.length() != 0) {
+            y = UnitProcessor.svgVerticalCoordinateToUserSpace
+                (s, SVG_Y_ATTRIBUTE, uctx);
+        }
+
+        // 'width' attribute - required
+        s = element.getAttributeNS(null, SVG_WIDTH_ATTRIBUTE);
+        float w;
+        if (s.length() == 0) {
+            throw new BridgeException(ctx, element, ERR_ATTRIBUTE_MISSING,
+                                      new Object[] {SVG_WIDTH_ATTRIBUTE});
+        } else {
+            w = UnitProcessor.svgHorizontalLengthToUserSpace
+                (s, SVG_WIDTH_ATTRIBUTE, uctx);
+        }
+
+        // 'height' attribute - required
+        s = element.getAttributeNS(null, SVG_HEIGHT_ATTRIBUTE);
+        float h;
+        if (s.length() == 0) {
+            throw new BridgeException(ctx, element, ERR_ATTRIBUTE_MISSING,
+                                      new Object[] {SVG_HEIGHT_ATTRIBUTE});
+        } else {
+            h = UnitProcessor.svgVerticalLengthToUserSpace
+                (s, SVG_HEIGHT_ATTRIBUTE, uctx);
+        }
+
+        return new Rectangle2D.Float(x, y, w, h);
     }
 
     protected void addInfo(Element e, Collection elems, 
@@ -285,7 +334,7 @@ public class SVGMultiImageElementBridge extends SVGImageElementBridge {
                               Rectangle2D bounds) {
         String uriStr = XLinkSupport.getXLinkHref(e);
         if (uriStr.length() == 0) {
-            throw new BridgeException(e, ERR_ATTRIBUTE_MISSING,
+            throw new BridgeException(ctx, e, ERR_ATTRIBUTE_MISSING,
                                       new Object[] {"xlink:href"});
         }
         String baseURI = AbstractNode.getBaseURI(e);
@@ -295,8 +344,8 @@ public class SVGMultiImageElementBridge extends SVGImageElementBridge {
         Document doc = e.getOwnerDocument();
         Element imgElem = doc.createElementNS(SVG_NAMESPACE_URI, 
                                               SVG_IMAGE_TAG);
-        imgElem.setAttributeNS(XLinkSupport.XLINK_NAMESPACE_URI, 
-                               "href", purl.toString());
+        imgElem.setAttributeNS(XLINK_NAMESPACE_URI, 
+                               XLINK_HREF_ATTRIBUTE, purl.toString());
         // move the attributes from <subImageRef> to the <image> element
         NamedNodeMap attrs = e.getAttributes();
         int len = attrs.getLength();
@@ -338,8 +387,8 @@ public class SVGMultiImageElementBridge extends SVGImageElementBridge {
         s = e.getAttribute(attr);
         if (s.length() == 0) return null;
 
-        Float [] vals = SVGUtilities.convertSVGNumberOptionalNumber
-            (e, attr, s);
+        Float[] vals = SVGUtilities.convertSVGNumberOptionalNumber
+            (e, attr, s, ctx);
 
         if (vals[0] == null) return null;
 

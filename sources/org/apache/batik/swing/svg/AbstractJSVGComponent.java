@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001-2005  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -68,13 +69,16 @@ import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.event.EventDispatcher;
 import org.apache.batik.gvt.text.Mark;
 import org.apache.batik.gvt.renderer.ImageRenderer;
+import org.apache.batik.script.Interpreter;
 import org.apache.batik.swing.gvt.GVTTreeRendererEvent;
 import org.apache.batik.swing.gvt.JGVTComponent;
 import org.apache.batik.swing.gvt.JGVTComponentListener;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.RunnableQueue;
 import org.apache.batik.util.SVGConstants;
+import org.apache.batik.util.SVGFeatureStrings;
 import org.apache.batik.util.XMLResourceDescriptor;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Element;
@@ -203,7 +207,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
      * Means that the component must auto detect whether
      * the current document is static or dynamic.
      */
-    public final static int AUTODETECT = 0;
+    public static final int AUTODETECT = 0;
 
     /**
      * Means that all document must be considered as dynamic.
@@ -212,7 +216,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
      * 'interactivity' (anchors and cursors), as well as DOM modifications
      * listeners to update the GVT rendering tree.
      */
-    public final static int ALWAYS_DYNAMIC = 1; 
+    public static final int ALWAYS_DYNAMIC = 1;
 
     /**
      * Means that all document must be considered as static.
@@ -222,7 +226,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
      * independent of the DOM tree (in practice text holds
      * references to the source text elements for font resolution).
      */
-    public final static int ALWAYS_STATIC = 2;
+    public static final int ALWAYS_STATIC = 2;
 
     /**
      * Means that all document must be considered as interactive.
@@ -231,32 +235,32 @@ public class AbstractJSVGComponent extends JGVTComponent {
      * 'interactivity' this includes anchors and cursors, but does not
      * include support for DOM modifications.
      */
-    public final static int ALWAYS_INTERACTIVE = 3;
+    public static final int ALWAYS_INTERACTIVE = 3;
 
     /**
      * String constant for the resource with the text for a script alert
      * dialog. Must have a substitution for one string.
      */
-    public final static String SCRIPT_ALERT = "script.alert";
+    public static final String SCRIPT_ALERT = "script.alert";
 
     /**
      * String constant for the resource with the text for a script
      * prompt dialog. Must have a substitution for one string.
      */
-    public final static String SCRIPT_PROMPT = "script.prompt";
+    public static final String SCRIPT_PROMPT = "script.prompt";
 
     /**
      * String constant for the resource with the text for a script
      * confim dialog. Must have a substitution for one string.
      */
-    public final static String SCRIPT_CONFIRM = "script.confirm";
+    public static final String SCRIPT_CONFIRM = "script.confirm";
 
     /**
      * String constant for the resource with the text for the title
      * of the info tooltip for brokin link images.
      * No string substitution.
      */
-    public final static String BROKEN_LINK_TITLE = "broken.link.title";
+    public static final String BROKEN_LINK_TITLE = "broken.link.title";
 
     /**
      * The document loader.
@@ -359,6 +363,17 @@ public class AbstractJSVGComponent extends JGVTComponent {
     protected boolean isInteractiveDocument;
 
     /**
+     * Set to true before component calls setDisableInteractors
+     * so it knows that the users isn't the one calling it.
+     */
+    protected boolean selfCallingDisableInteractions = false;
+
+    /**
+     * Set to true if the user ever calls setDisableInteractions
+     */
+    protected boolean userSetDisableInteractions = false;
+
+    /**
      * The document state.
      */
     protected int documentState;
@@ -372,6 +387,16 @@ public class AbstractJSVGComponent extends JGVTComponent {
     protected boolean recenterOnResize = true;
 
     protected AffineTransform viewingTransform = null;
+
+    /**
+     * The animation limiting mode.
+     */
+    protected int animationLimitingMode;
+
+    /**
+     * The amount of animation limiting.
+     */
+    protected float animationLimitingAmount;
 
     /**
      * Creates a new AbstractJSVGComponent.
@@ -398,12 +423,48 @@ public class AbstractJSVGComponent extends JGVTComponent {
         addSVGDocumentLoaderListener((SVGListener)listener);
         addGVTTreeBuilderListener((SVGListener)listener);
         addSVGLoadEventDispatcherListener((SVGListener)listener);
-        if (updateOverlay != null) 
+        if (updateOverlay != null)
             getOverlays().add(updateOverlay);
     }
 
     public void dispose() {
         setSVGDocument(null);
+    }
+
+    public void setDisableInteractions(boolean b) {
+        super.setDisableInteractions(b);
+        if (!selfCallingDisableInteractions)
+            userSetDisableInteractions = true;
+    }
+
+    /**
+     * Clears the boolean that indicates the 'user'
+     * has set disable interactions so that the canvas
+     * uses the value from documents.
+     */
+    public void clearUserSetDisableInteractions() {
+        userSetDisableInteractions = false;
+        updateZoomAndPanEnable(svgDocument);
+    }
+
+    /**
+     * Enables/Disables Zoom And Pan based on the zoom and
+     * pan attribute of the currently installed document,
+     * Unless the user has set the Interactions State.
+     */
+    public void updateZoomAndPanEnable(Document doc) {
+        if (userSetDisableInteractions) return;
+        if (doc == null) return;
+        try {
+            Element root = doc.getDocumentElement();
+            String znp = root.getAttributeNS
+                (null, SVGConstants.SVG_ZOOM_AND_PAN_ATTRIBUTE);
+            boolean enable = SVGConstants.SVG_MAGNIFY_VALUE.equals(znp);
+            selfCallingDisableInteractions = true;
+            setDisableInteractions(!enable);
+        } finally {
+            selfCallingDisableInteractions = false;
+        }
     }
 
     /**
@@ -412,13 +473,13 @@ public class AbstractJSVGComponent extends JGVTComponent {
      * point that was at the center at the center after resize.
      * Otherwise the upper left corner will be kept at the same point.
      */
-    public boolean getRecenterOnResize() { 
+    public boolean getRecenterOnResize() {
         return recenterOnResize;
     }
     /**
      * Returns sate of the recenter on resize flag.
      */
-    public void setRecenterOnResize(boolean recenterOnResize) { 
+    public void setRecenterOnResize(boolean recenterOnResize) {
         this.recenterOnResize = recenterOnResize;
     }
 
@@ -460,8 +521,8 @@ public class AbstractJSVGComponent extends JGVTComponent {
      * looking for script elements and/or event attributes in the
      * document, if it does not find these it assumes the document is
      * static.  Callers of this method will almost certainly want to
-     * call setDocumentState(ALWAYS_DYNAMIC) before loading the document 
-     * (with setURI, setDocument, setSVGDocument etc.) so that an 
+     * call setDocumentState(ALWAYS_DYNAMIC) before loading the document
+     * (with setURI, setDocument, setSVGDocument etc.) so that an
      * UpdateManager is always created (even for apparently static documents).
      */
     public UpdateManager getUpdateManager() {
@@ -504,17 +565,17 @@ public class AbstractJSVGComponent extends JGVTComponent {
         }
         if (gvtTreeBuilder != null) {
             gvtTreeBuilder.halt();
-        } 
+        }
         if (svgLoadEventDispatcher != null) {
             svgLoadEventDispatcher.halt();
-        } 
+        }
         if (nextUpdateManager != null) {
             nextUpdateManager.interrupt();
             nextUpdateManager = null;
-        } 
+        }
         if (updateManager != null) {
             updateManager.interrupt();
-        } 
+        }
         super.stopProcessing();
     }
 
@@ -566,8 +627,8 @@ public class AbstractJSVGComponent extends JGVTComponent {
      * implementation.  In this case you should use 'getSVGDocument()'
      * to get the actual DOM that is attached to the rendering interface.
      *
-     * Note that the prepartation for rendering and the rendering it's
-     * self occur asynchronously so you need to register event handlers
+     * Note that the prepartation for rendering and the rendering itself
+     * occur asynchronously so you need to register event handlers
      * if you want to know when the document is truely displayed.
      *
      * Notes for documents that you want to change in Java:
@@ -577,7 +638,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
      * as a dynamic document by calling setDocumentState(ALWAYS_DYNAMIC).
      */
     public void setDocument(Document doc) {
-        if ((doc != null) && 
+        if ((doc != null) &&
             !(doc.getImplementation() instanceof SVGDOMImplementation)) {
             DOMImplementation impl;
             impl = SVGDOMImplementation.getDOMImplementation();
@@ -594,8 +655,8 @@ public class AbstractJSVGComponent extends JGVTComponent {
      * to get the actual DOM that is attached to the rendering
      * interface.
      *
-     * Note that the prepartation for rendering and the rendering it's
-     * self occur asynchronously so you need to register event handlers
+     * Note that the prepartation for rendering and the rendering itself
+     * occur asynchronously so you need to register event handlers
      * if you want to know when the document is truely displayed.
      *
      * Notes for documents that you want to change in Java.
@@ -671,10 +732,10 @@ public class AbstractJSVGComponent extends JGVTComponent {
             initialTransform = new AffineTransform();
             setRenderingTransform(initialTransform, false);
             Rectangle vRect = getRenderRect();
-            repaint(vRect.x,     vRect.y, 
+            repaint(vRect.x,     vRect.y,
                     vRect.width, vRect.height);
             return;
-        } 
+        }
 
         bridgeContext = createBridgeContext((SVGOMDocument) doc);
 
@@ -693,11 +754,8 @@ public class AbstractJSVGComponent extends JGVTComponent {
             break;
         case AUTODETECT:
             isDynamicDocument = bridgeContext.isDynamicDocument(doc);
-            if (isDynamicDocument)
-                isInteractiveDocument = true;
-            else
-                isInteractiveDocument = 
-                    bridgeContext.isInteractiveDocument(doc);
+            isInteractiveDocument =
+                isDynamicDocument || bridgeContext.isInteractiveDocument(doc);
         }
 
         if (isInteractiveDocument) {
@@ -707,11 +765,9 @@ public class AbstractJSVGComponent extends JGVTComponent {
                 bridgeContext.setDynamicState(BridgeContext.INTERACTIVE);
         }
 
-        Element root = doc.getDocumentElement();
-        String znp = root.getAttributeNS
-            (null, SVGConstants.SVG_ZOOM_AND_PAN_ATTRIBUTE);
+        setBridgeContextAnimationLimitingMode();
 
-        setDisableInteractions(!znp.equals(SVGConstants.SVG_MAGNIFY_VALUE));
+        updateZoomAndPanEnable(doc);
 
         nextGVTTreeBuilder = new GVTTreeBuilder(doc, bridgeContext);
         nextGVTTreeBuilder.setPriority(Thread.MIN_PRIORITY);
@@ -850,7 +906,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
 
     public CanvasGraphicsNode getCanvasGraphicsNode() {
         return getCanvasGraphicsNode(gvtRoot);
-        
+
     }
 
     protected CanvasGraphicsNode getCanvasGraphicsNode(GraphicsNode gn) {
@@ -858,7 +914,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
             return null;
         CompositeGraphicsNode cgn = (CompositeGraphicsNode)gn;
         List children = cgn.getChildren();
-        if (children.size() == 0) 
+        if (children.size() == 0)
             return null;
         gn = (GraphicsNode)children.get(0);
         if (!(gn instanceof CanvasGraphicsNode))
@@ -916,7 +972,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
         if (d.width  < 1) d.width  = 1;
         if (d.height < 1) d.height = 1;
         return ViewBox.getViewTransform
-            (fragIdent, svgElt, d.width, d.height);
+            (fragIdent, svgElt, d.width, d.height, bridgeContext);
     }
 
     /**
@@ -944,7 +1000,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
                 return ((oldD.width != d.width) || (oldD.height != d.height));
             }
 
-            if (!recenterOnResize) 
+            if (!recenterOnResize)
                 return true;
 
             // Here we map the old center of the component down to
@@ -952,7 +1008,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
             // transform and then back to the screen with the
             // new viewing transform.  We then adjust the rendering
             // transform so it lands in the same place.
-            Point2D pt = new Point2D.Float(oldD.width/2.0f, 
+            Point2D pt = new Point2D.Float(oldD.width/2.0f,
                                            oldD.height/2.0f);
             AffineTransform rendAT = getRenderingTransform();
             if (rendAT != null) {
@@ -971,7 +1027,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
                 pt = at.transform(pt, null);
             if (rendAT != null)
                 pt = rendAT.transform(pt, null);
-            
+
             // Now figure out how far we need to shift things
             // to get the center point to line up again.
             float dx = (float)((d.width/2.0f) -pt.getX());
@@ -993,7 +1049,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
                     public void run() {
                         synchronized (AbstractJSVGComponent.this) {
                             myCGN.setViewingTransform(myAT);
-                            if (viewingTransform == myAT) 
+                            if (viewingTransform == myAT)
                                 viewingTransform = null;
                         }
                     }
@@ -1019,8 +1075,8 @@ public class AbstractJSVGComponent extends JGVTComponent {
         }
 
         final Rectangle visRect = getRenderRect();
-        if ((gvtRoot == null)    || 
-            (visRect.width <= 0) || 
+        if ((gvtRoot == null)    ||
+            (visRect.width <= 0) ||
             (visRect.height <= 0)) {
             return;
         }
@@ -1092,7 +1148,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
         }
 
         rq.invokeLater(new UpdateRenderingRunnable
-                       (renderingTransform, 
+                       (renderingTransform,
                         doubleBufferedRendering, true, s,
                         visRect.width, visRect.height));
     }
@@ -1224,7 +1280,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
      * element).
      * The default implementation simply calls setPreferredSize,
      * and invalidate.
-     * However it is often useful to pack the window containing 
+     * However it is often useful to pack the window containing
      * this component.
      */
     public void setMySize(Dimension d) {
@@ -1233,9 +1289,73 @@ public class AbstractJSVGComponent extends JGVTComponent {
     }
 
     /**
+     * Sets the animation limiting mode to "none".
+     */
+    public void setAnimationLimitingNone() {
+        animationLimitingMode = 0;
+        if (bridgeContext != null) {
+            setBridgeContextAnimationLimitingMode();
+        }
+    }
+
+    /**
+     * Sets the animation limiting mode to a percentage of CPU.
+     * @param pc the maximum percentage of CPU to use (0 &lt; pc ≤ 1)
+     */
+    public void setAnimationLimitingCPU(float pc) {
+        animationLimitingMode = 1;
+        animationLimitingAmount = pc;
+        if (bridgeContext != null) {
+            setBridgeContextAnimationLimitingMode();
+        }
+    }
+
+    /**
+     * Sets the animation limiting mode to a number of frames per second.
+     * @param fps the maximum number of frames per second (fps &gt; 0)
+     */
+    public void setAnimationLimitingFPS(float fps) {
+        animationLimitingMode = 2;
+        animationLimitingAmount = fps;
+        if (bridgeContext != null) {
+            setBridgeContextAnimationLimitingMode();
+        }
+    }
+
+    /**
+     * Returns the {@link Interpreter} being used for script of the given
+     * MIME type.
+     *
+     * @param type The MIME type the returned <code>Interpreter</code> handles.
+     */
+    public Interpreter getInterpreter(String type) {
+        if (bridgeContext != null) {
+            return bridgeContext.getInterpreter(type);
+        }
+        return null;
+    }
+
+    /**
+     * Sets the animation limiting mode on the current bridge context.
+     */
+    protected void setBridgeContextAnimationLimitingMode() {
+        switch (animationLimitingMode) {
+            case 0: // unlimited
+                bridgeContext.setAnimationLimitingNone();
+                break;
+            case 1: // %cpu
+                bridgeContext.setAnimationLimitingCPU(animationLimitingAmount);
+                break;
+            case 2: // fps
+                bridgeContext.setAnimationLimitingFPS(animationLimitingAmount);
+                break;
+        }
+    }
+
+    /**
      * The JGVTComponentListener.
      */
-    protected JSVGComponentListener jsvgComponentListener = 
+    protected JSVGComponentListener jsvgComponentListener =
         new JSVGComponentListener();
 
     protected class JSVGComponentListener extends ComponentAdapter
@@ -1274,7 +1394,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
                     (new Runnable() {
                         public void run() {
                             try {
-                                if (dispatchZoom) 
+                                if (dispatchZoom)
                                     updateManager.dispatchSVGZoomEvent();
                                 if (dispatchScroll)
                                     updateManager.dispatchSVGScrollEvent();
@@ -1341,7 +1461,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
                 afterStopRunnable = null;
                 return;
             }
-                
+
             setSVGDocument(e.getSVGDocument());
         }
 
@@ -1435,7 +1555,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
                                                           e.getGVTRoot(),
                                                           svgDocument);
                 }
-                    
+
                 AbstractJSVGComponent.this.setGraphicsNode
                     (e.getGVTRoot(), false);
                 scheduleGVTRendering();
@@ -1523,7 +1643,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
             if (afterStopRunnable != null) {
                 nextUpdateManager.interrupt();
                 nextUpdateManager = null;
-            
+
                 EventQueue.invokeLater(afterStopRunnable);
                 afterStopRunnable = null;
                 return;
@@ -1532,14 +1652,14 @@ public class AbstractJSVGComponent extends JGVTComponent {
             if (nextGVTTreeBuilder != null) {
                 nextUpdateManager.interrupt();
                 nextUpdateManager = null;
-            
+
                 startGVTTreeBuilder();
                 return;
             }
             if (nextDocumentLoader != null) {
                 nextUpdateManager.interrupt();
                 nextUpdateManager = null;
-            
+
                 startDocumentLoader();
                 return;
             }
@@ -1559,7 +1679,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
 
             nextUpdateManager.interrupt();
             nextUpdateManager = null;
-            
+
             if (afterStopRunnable != null) {
                 EventQueue.invokeLater(afterStopRunnable);
                 afterStopRunnable = null;
@@ -1648,7 +1768,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
                 startDocumentLoader();
                 return;
             }
-            
+
             if (nextUpdateManager != null) {
                 updateManager = nextUpdateManager;
                 nextUpdateManager = null;
@@ -1741,7 +1861,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
                         suspendInteractions = false;
 
                         Object[] dll = updateManagerListeners.toArray();
-                        
+
                         if (dll.length > 0) {
                             for (int i = 0; i < dll.length; i++) {
                                 ((UpdateManagerListener)dll[i]).
@@ -1759,7 +1879,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
             EventQueue.invokeLater(new Runnable() {
                     public void run() {
                         Object[] dll = updateManagerListeners.toArray();
-                        
+
                         if (dll.length > 0) {
                             for (int i = 0; i < dll.length; i++) {
                                 ((UpdateManagerListener)dll[i]).
@@ -1777,7 +1897,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
             EventQueue.invokeLater(new Runnable() {
                     public void run() {
                         Object[] dll = updateManagerListeners.toArray();
-                        
+
                         if (dll.length > 0) {
                             for (int i = 0; i < dll.length; i++) {
                                 ((UpdateManagerListener)dll[i]).
@@ -1795,10 +1915,10 @@ public class AbstractJSVGComponent extends JGVTComponent {
             EventQueue.invokeLater(new Runnable() {
                     public void run() {
                         updateManager = null;
-                        
+
 
                         Object[] dll = updateManagerListeners.toArray();
-                        
+
                         if (dll.length > 0) {
                             for (int i = 0; i < dll.length; i++) {
                                 ((UpdateManagerListener)dll[i]).
@@ -1835,7 +1955,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
                         }
 
                         Object[] dll = updateManagerListeners.toArray();
-                        
+
                         if (dll.length > 0) {
                             for (int i = 0; i < dll.length; i++) {
                                 ((UpdateManagerListener)dll[i]).
@@ -1891,12 +2011,12 @@ public class AbstractJSVGComponent extends JGVTComponent {
                     });
             } catch (Exception ex) {
             }
-            
+
 
             EventQueue.invokeLater(new Runnable() {
                     public void run() {
                         Object[] dll = updateManagerListeners.toArray();
-                        
+
                         if (dll.length > 0) {
                             for (int i = 0; i < dll.length; i++) {
                                 ((UpdateManagerListener)dll[i]).
@@ -1914,7 +2034,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
             EventQueue.invokeLater(new Runnable() {
                     public void run() {
                         Object[] dll = updateManagerListeners.toArray();
-                        
+
                         if (dll.length > 0) {
                             for (int i = 0; i < dll.length; i++) {
                                 ((UpdateManagerListener)dll[i]).
@@ -1999,7 +2119,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
                     (new Runnable() {
                         public void run() {
                             eventDispatcher.mouseClicked(e);
-                            
+
                         }
                     });
             }
@@ -2486,7 +2606,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
                     });
             }
         }
-        
+
         /**
          * Informs the user agent to change the cursor.
          * @param cursor the new cursor
@@ -2502,7 +2622,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
                     });
             }
         }
-        
+
         /**
          * Informs the user agent that the text selection should be changed.
          * @param start The Mark for the start of the selection.
@@ -2573,7 +2693,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
                 return q.result;
             }
         }
-        
+
         /**
          * Returns the <code>AffineTransform</code> currently
          * applied to the drawing by the UserAgent.
@@ -2631,7 +2751,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
                 return q.result;
             }
         }
-        
+
         /**
          * Returns this user agent's alternate style-sheet title.
          */
@@ -2690,7 +2810,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
                 return q.result;
             }
         }
-        
+
         /**
          * Tells whether the given extension is supported by this
          * user agent.
@@ -2726,9 +2846,9 @@ public class AbstractJSVGComponent extends JGVTComponent {
                     });
             }
         }
-        
+
         /**
-         * Notifies the UserAgent that the input element 
+         * Notifies the UserAgent that the input element
          * has been found in the document. This is sometimes
          * called, for example, to handle &lt;a&gt; or
          * &lt;title&gt; elements in a UserAgent-dependant
@@ -2749,14 +2869,14 @@ public class AbstractJSVGComponent extends JGVTComponent {
         /**
          * Returns the security settings for the given script
          * type, script url and document url
-         * 
-         * @param scriptType type of script, as found in the 
+         *
+         * @param scriptType type of script, as found in the
          *        type attribute of the &lt;script&gt; element.
          * @param scriptPURL url for the script, as defined in
          *        the script's xlink:href attribute. If that
          *        attribute was empty, then this parameter should
          *        be null
-         * @param docPURL url for the document into which the 
+         * @param docPURL url for the document into which the
          *        script was found.
          */
         public ScriptSecurity getScriptSecurity(String scriptType,
@@ -2781,23 +2901,23 @@ public class AbstractJSVGComponent extends JGVTComponent {
                 return q.result;
             }
         }
-    
+
         /**
          * This method throws a SecurityException if the script
          * of given type, found at url and referenced from docURL
          * should not be loaded.
-         * 
+         *
          * This is a convenience method to call checkLoadScript
-         * on the ScriptSecurity strategy returned by 
+         * on the ScriptSecurity strategy returned by
          * getScriptSecurity.
          *
-         * @param scriptType type of script, as found in the 
+         * @param scriptType type of script, as found in the
          *        type attribute of the &lt;script&gt; element.
          * @param scriptPURL url for the script, as defined in
          *        the script's xlink:href attribute. If that
          *        attribute was empty, then this parameter should
          *        be null
-         * @param docPURL url for the document into which the 
+         * @param docPURL url for the document into which the
          *        script was found.
          */
         public void checkLoadScript(String scriptType,
@@ -2829,20 +2949,20 @@ public class AbstractJSVGComponent extends JGVTComponent {
                 }
             }
         }
-        
+
 
         /**
          * Returns the security settings for the given resource
          * url and document url
-         * 
+         *
          * @param resourcePURL url for the resource, as defined in
          *        the resource's xlink:href attribute. If that
          *        attribute was empty, then this parameter should
          *        be null
-         * @param docPURL url for the document into which the 
+         * @param docPURL url for the document into which the
          *        resource was found.
          */
-        public ExternalResourceSecurity 
+        public ExternalResourceSecurity
             getExternalResourceSecurity(ParsedURL resourcePURL,
                                         ParsedURL docPURL){
             if (EventQueue.isDispatchThread()) {
@@ -2862,24 +2982,24 @@ public class AbstractJSVGComponent extends JGVTComponent {
                 return q.result;
             }
         }
-    
+
         /**
          * This method throws a SecurityException if the resource
          * found at url and referenced from docURL
          * should not be loaded.
-         * 
+         *
          * This is a convenience method to call checkLoadExternalResource
-         * on the ExternalResourceSecurity strategy returned by 
+         * on the ExternalResourceSecurity strategy returned by
          * getExternalResourceSecurity.
          *
          * @param resourceURL url for the resource, as defined in
          *        the resource's xlink:href attribute. If that
          *        attribute was empty, then this parameter should
          *        be null
-         * @param docURL url for the document into which the 
+         * @param docURL url for the document into which the
          *        resource was found.
          */
-        public void 
+        public void
             checkLoadExternalResource(ParsedURL resourceURL,
                                       ParsedURL docURL) throws SecurityException {
             if (EventQueue.isDispatchThread()) {
@@ -2906,7 +3026,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
                 }
             }
         }
-        
+
 
         /**
          * This Implementation simply forwards the request to the AWT thread.
@@ -2916,10 +3036,10 @@ public class AbstractJSVGComponent extends JGVTComponent {
          * @param msg As best as can be determined the reason it can't be
          *            loaded (not available, corrupt, unknown format,...).
          */
-        public SVGDocument getBrokenLinkDocument(final Element e, 
-                                                 final String url, 
+        public SVGDocument getBrokenLinkDocument(final Element e,
+                                                 final String url,
                                                  final String msg) {
-            if (EventQueue.isDispatchThread()) 
+            if (EventQueue.isDispatchThread())
                 return userAgent.getBrokenLinkDocument(e, url, msg);
 
             class Query implements Runnable {
@@ -2937,7 +3057,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
             return q.doc;
         }
 
-  
+
         /**
          * Invokes the given runnable from the event thread, and wait
          * for the run method to terminate.
@@ -3072,8 +3192,8 @@ public class AbstractJSVGComponent extends JGVTComponent {
             return "Arial, Helvetica, sans-serif";
         }
 
-        /** 
-         * Returns the  medium font size. 
+        /**
+         * Returns the  medium font size.
          */
         public float getMediumFontSize() {
             if (svgUserAgent != null) {
@@ -3158,7 +3278,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
          */
         public void openLink(SVGAElement elt) {
             String show = XLinkSupport.getXLinkShow(elt);
-            String href = XLinkSupport.getXLinkHref(elt);
+            String href = elt.getHref().getAnimVal();
             if (show.equals("new")) {
                 fireLinkActivatedEvent(elt, href);
                 if (svgUserAgent != null) {
@@ -3207,7 +3327,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
                     return;
                 }
             }
-                
+
             fireLinkActivatedEvent(elt, href);
             if (svgUserAgent != null) {
                 svgUserAgent.openLink(href, false);
@@ -3270,17 +3390,17 @@ public class AbstractJSVGComponent extends JGVTComponent {
             return XMLResourceDescriptor.getXMLParserClassName();
         }
 
-	/**
-	 * Returns true if the XML parser must be in validation mode, false
-	 * otherwise depending on the SVGUserAgent.
-	 */
-	public boolean isXMLParserValidating() {
+        /**
+         * Returns true if the XML parser must be in validation mode, false
+         * otherwise depending on the SVGUserAgent.
+         */
+        public boolean isXMLParserValidating() {
             if (svgUserAgent != null) {
                 return svgUserAgent.isXMLParserValidating();
             }
             return false;
-	}
-	
+        }
+
         /**
          * Returns the <code>AffineTransform</code> currently
          * applied to the drawing by the UserAgent.
@@ -3359,7 +3479,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
 
 
         /**
-         * Notifies the UserAgent that the input element 
+         * Notifies the UserAgent that the input element
          * has been found in the document. This is sometimes
          * called, for example, to handle &lt;a&gt; or
          * &lt;title&gt; elements in a UserAgent-dependant
@@ -3374,14 +3494,14 @@ public class AbstractJSVGComponent extends JGVTComponent {
         /**
          * Returns the security settings for the given script
          * type, script url and document url
-         * 
-         * @param scriptType type of script, as found in the 
+         *
+         * @param scriptType type of script, as found in the
          *        type attribute of the &lt;script&gt; element.
          * @param scriptURL url for the script, as defined in
          *        the script's xlink:href attribute. If that
          *        attribute was empty, then this parameter should
          *        be null
-         * @param docURL url for the document into which the 
+         * @param docURL url for the document into which the
          *        script was found.
          */
         public ScriptSecurity getScriptSecurity(String scriptType,
@@ -3392,28 +3512,28 @@ public class AbstractJSVGComponent extends JGVTComponent {
                                                       scriptURL,
                                                       docURL);
             } else {
-                return new DefaultScriptSecurity(scriptType, 
-                                                 scriptURL, 
+                return new DefaultScriptSecurity(scriptType,
+                                                 scriptURL,
                                                  docURL);
             }
         }
-    
+
         /**
          * This method throws a SecurityException if the script
          * of given type, found at url and referenced from docURL
          * should not be loaded.
-         * 
+         *
          * This is a convenience method to call checkLoadScript
-         * on the ScriptSecurity strategy returned by 
+         * on the ScriptSecurity strategy returned by
          * getScriptSecurity.
          *
-         * @param scriptType type of script, as found in the 
+         * @param scriptType type of script, as found in the
          *        type attribute of the &lt;script&gt; element.
          * @param scriptURL url for the script, as defined in
          *        the script's xlink:href attribute. If that
          *        attribute was empty, then this parameter should
          *        be null
-         * @param docURL url for the document into which the 
+         * @param docURL url for the document into which the
          *        script was found.
          */
         public void checkLoadScript(String scriptType,
@@ -3432,62 +3552,62 @@ public class AbstractJSVGComponent extends JGVTComponent {
                 }
             }
         }
-        
+
         /**
-         * Returns the security settings for the given 
+         * Returns the security settings for the given
          * resource url and document url
-         * 
+         *
          * @param resourceURL url for the script, as defined in
          *        the resource's xlink:href attribute. If that
          *        attribute was empty, then this parameter should
          *        be null
-         * @param docURL url for the document into which the 
+         * @param docURL url for the document into which the
          *        script was found.
          */
-        public ExternalResourceSecurity 
+        public ExternalResourceSecurity
             getExternalResourceSecurity(ParsedURL resourceURL,
                                         ParsedURL docURL){
             if (svgUserAgent != null){
                 return svgUserAgent.getExternalResourceSecurity(resourceURL,
                                                                 docURL);
             } else {
-                return new RelaxedExternalResourceSecurity(resourceURL, 
+                return new RelaxedExternalResourceSecurity(resourceURL,
                                                            docURL);
             }
         }
-    
+
         /**
          * This method throws a SecurityException if the resource
          * found at url and referenced from docURL
          * should not be loaded.
-         * 
+         *
          * This is a convenience method to call checkLoadExternalResource
-         * on the ExternalResourceSecurity strategy returned by 
+         * on the ExternalResourceSecurity strategy returned by
          * getExternalResourceSecurity.
          *
          * @param resourceURL url for the resource, as defined in
          *        the resource's xlink:href attribute. If that
          *        attribute was empty, then this parameter should
          *        be null
-         * @param docURL url for the document into which the 
+         * @param docURL url for the document into which the
          *        resource was found.
          */
-        public void 
+        public void
             checkLoadExternalResource(ParsedURL resourceURL,
                                       ParsedURL docURL) throws SecurityException {
             if (svgUserAgent != null) {
                 svgUserAgent.checkLoadExternalResource(resourceURL,
                                                        docURL);
             } else {
-                ExternalResourceSecurity s 
+                ExternalResourceSecurity s
                     =  getExternalResourceSecurity(resourceURL, docURL);
-                
+
                 if (s != null) {
                     s.checkLoadExternalResource();
                 }
             }
         }
-        
+
         /**
          * This implementation provides a true SVG Document that it
          * annotates with some information about why the real document
@@ -3500,14 +3620,14 @@ public class AbstractJSVGComponent extends JGVTComponent {
          * @param message As best as can be determined the reason it can't be
          *                loaded (not available, corrupt, unknown format,...).
          */
-        public SVGDocument getBrokenLinkDocument(Element e, 
-                                                 String url, 
+        public SVGDocument getBrokenLinkDocument(Element e,
+                                                 String url,
                                                  String message) {
             Class cls = AbstractJSVGComponent.class;
             URL blURL = cls.getResource("resources/BrokenLink.svg");
-            if (blURL == null) 
+            if (blURL == null)
                 throw new BridgeException
-                    (e, ErrorConstants.ERR_URI_IMAGE_BROKEN,
+                    (bridgeContext, e, ErrorConstants.ERR_URI_IMAGE_BROKEN,
                      new Object[] { url, message });
 
             DocumentLoader loader  = bridgeContext.getDocumentLoader();
@@ -3539,17 +3659,15 @@ public class AbstractJSVGComponent extends JGVTComponent {
                 infoE.insertBefore(titleE, descE);
             } catch (Exception ex) {
                 throw new BridgeException
-                    (e, ErrorConstants.ERR_URI_IMAGE_BROKEN,
+                    (bridgeContext, e, ex, ErrorConstants.ERR_URI_IMAGE_BROKEN,
                      new Object[] {url, message });
             }
             return doc;
         }
     }
 
-    protected final static Set FEATURES = new HashSet();
+    protected static final Set FEATURES = new HashSet();
     static {
-        FEATURES.add(SVGConstants.SVG_ORG_W3C_SVG_FEATURE);
-        FEATURES.add(SVGConstants.SVG_ORG_W3C_SVG_LANG_FEATURE);
-        FEATURES.add(SVGConstants.SVG_ORG_W3C_SVG_STATIC_FEATURE);
+        SVGFeatureStrings.addSupportedFeatureStrings(FEATURES);
     }
 }

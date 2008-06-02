@@ -2,11 +2,12 @@
 
 <!--
 
-   Copyright 2001-2002  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -39,7 +40,7 @@
     <property name="build" value="${root}/build" />
     <!-- build: Directory for build results. -->
     <property name="build.classes" value="${build}/classes" />
-	<!-- build.classes: Directory for compiled classes. -->
+    <!-- build.classes: Directory for compiled classes. -->
     <property name="doc" value="${root}/doc" />
     <!-- doc: Directory for documentation. -->
     <property name="doc.api" value="${doc}/javadoc" />
@@ -59,7 +60,7 @@
     </target>
 
     <target name="prepare">
-		<echo>Using ${ant.version}.</echo>
+        <echo>Using ${ant.version}.</echo>
         <tstamp/>
     </target>
 
@@ -73,7 +74,7 @@
     <target name="jar" depends="prepare, compile"
         description="Creates a JAR package.">
 
-		<mkdir dir="${build}/lib" />
+        <mkdir dir="${build}/lib" />
         <jar jarfile="${build}/lib/RasterizerTask.jar"
             basedir="${build.classes}"
             excludes="**/CVS"

@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2005  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -33,7 +34,7 @@ import org.w3c.dom.Node;
  */
 public class SVGOMUseShadowRoot
         extends AbstractDocumentFragment
-        implements CSSNavigableNode {
+        implements CSSNavigableNode, IdContainer {
 
     /**
      * The parent CSS element.
@@ -58,7 +59,7 @@ public class SVGOMUseShadowRoot
     public SVGOMUseShadowRoot(AbstractDocument owner,
                                        Element parent,
                                        boolean isLocal) {
-	ownerDocument = owner;
+        ownerDocument = owner;
         cssParentElement = parent;
         this.isLocal = isLocal;
     }
@@ -74,6 +75,12 @@ public class SVGOMUseShadowRoot
      * Sets this node readonly attribute.
      */
     public void setReadonly(boolean v) {
+    }
+
+    // IdContainer ///////////////////////////////////////////////////////////
+
+    public Element getElementById(String id) {
+        return ownerDocument.getChildElementById(this, id);
     }
 
     // CSSNavigableNode //////////////////////////////////////////////////////

@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2004 The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -52,8 +53,8 @@ public class LineInfo {
     boolean paraStart;
     boolean paraEnd;
 
-    protected final static int FULL_WORD   = 0;
-    protected final static int FULL_ADV    = 1;
+    protected static final int FULL_WORD   = 0;
+    protected static final int FULL_ADV    = 1;
 
 
     public LineInfo(FlowRegions fr, BlockInfo bi, boolean paraStart) {
@@ -67,7 +68,7 @@ public class LineInfo {
         this.paraStart  = paraStart;
         this.paraEnd    = false;
         if (lineHeight > 0) {
-            fr.newLineHeight(lineHeight);        
+            fr.newLineHeight(lineHeight);
             updateRangeInfo();
         }
 
@@ -79,7 +80,7 @@ public class LineInfo {
 
     public boolean addWord(WordInfo wi) {
         double nlh = wi.getLineHeight();
-        if (nlh <= lineHeight) 
+        if (nlh <= lineHeight)
             return insertWord(wi);
         fr.newLineHeight(nlh);
 
@@ -88,13 +89,13 @@ public class LineInfo {
                 fr.newLineHeight(lineHeight);
             return false;
         }
-            
+
         if (!insertWord(wi)) {
             if (lineHeight > 0) // Failure, restore old line Height.
                 setLineHeight(lineHeight);
             return false;
         }
-            
+
         // Success, word fits on line.
         lineHeight = nlh;
         if (wi.getAscent() > ascent)
@@ -111,10 +112,10 @@ public class LineInfo {
         // This puts them into newGGIS, so if it fails we can
         // retain to the old ggis array.
         mergeGlyphGroups(wi);
-        
+
         if (!assignGlyphGroupRanges(newSize, newGGIS))
             return false;
-        
+
         // Swap in to GG info.
         swapGlyphGroupInfo();
 
@@ -136,7 +137,7 @@ public class LineInfo {
                 adv = ggi.getAdvance();
                 double delta = range-(rangeAdvance + adv);
                 if (delta < 0) break;
-                
+
                 i++;
                 rangeAdvance += adv;
             }
@@ -184,7 +185,7 @@ public class LineInfo {
 
         // restore line height.
         if (lineHeight > 0)
-            fr.newLineHeight(lineHeight); 
+            fr.newLineHeight(lineHeight);
         return false;
     }
 
@@ -204,7 +205,7 @@ public class LineInfo {
     protected boolean updateRangeInfo() {
         fr.resetRange();
         int nr = fr.getNumRangeOnLine();
-        if (nr == 0) 
+        if (nr == 0)
             return false;
 
         numRanges = nr;
@@ -221,7 +222,7 @@ public class LineInfo {
 
         for (int r=0; r<numRanges; r++) {
             double [] rangeBounds = fr.nextRange();
-            // System.err.println("RG["+r+"]: [" + 
+            // System.err.println("RG["+r+"]: [" +
             //                    rangeBounds[0] + "," + rangeBounds[1] +"]");
             double r0 = rangeBounds[0];
             if (r == 0) {
@@ -236,7 +237,7 @@ public class LineInfo {
             }
 
             double r1 = rangeBounds[1];
-            if (r == numRanges-1) 
+            if (r == numRanges-1)
                 r1 -= bi.getRightMargin();
             ranges[2*r]   = r0;
             ranges[2*r+1] = r1;
@@ -351,7 +352,7 @@ public class LineInfo {
 
             GlyphGroupInfo pggi = ggis[i-1];
             int pr = pggi.getRange();
-            if (r != pr) 
+            if (r != pr)
                 rangeG[pr]+= pggi.getLastGlyphCount()-pggi.getGlyphCount();
         }
         rangeG[r]+= ggi.getLastGlyphCount()-ggi.getGlyphCount();
@@ -366,7 +367,7 @@ public class LineInfo {
 
             ggi       = ggis[i];
             currRange = ggi.getRange();
-            
+
             if (currRange != prevRange) {
                 locX   = ranges[2*currRange];
                 range  = ranges[2*currRange+1]-locX;
@@ -394,7 +395,7 @@ public class LineInfo {
                 }
             } else if ((pggi!= null) && pggi.getHideLast()) {
                 // Hide last glyph from prev glyph group (soft hyphen etc).
-                gv.setGlyphVisible(pggi.getEnd(), false); 
+                gv.setGlyphVisible(pggi.getEnd(), false);
            }
 
             int        start  = ggi.getStart();
@@ -417,7 +418,7 @@ public class LineInfo {
                 p2d = np2d;
                 advAdj -= gAdv;
             }
-            if (ggi.getHideLast()) 
+            if (ggi.getHideLast())
                 locX += ggi.getAdvance()-advAdj;
             else
                 locX += ggi.getAdvance()-advAdj+ggAdv;
@@ -430,11 +431,11 @@ public class LineInfo {
             if (sz < 10) sz = 10;
             return new GlyphGroupInfo[sz];
         }
-        if (sz <= ggis.length) 
+        if (sz <= ggis.length)
             return ggis;
 
         int nsz = ggis.length*2;
         if (nsz < sz) nsz = sz;
         return new GlyphGroupInfo[nsz];
     }
-};
+}

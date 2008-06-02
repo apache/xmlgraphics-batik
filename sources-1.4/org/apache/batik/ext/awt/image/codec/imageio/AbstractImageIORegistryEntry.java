@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2006  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -124,7 +125,7 @@ public abstract class AbstractImageIORegistryEntry
                                       reader.getWidth(imageIndex), 
                                       reader.getHeight(imageIndex)));
                         CachableRed cr;
-                        //Naïve approach probably wasting lots of memory
+                        //NaÃ¯ve approach probably wasting lots of memory
                         //and ignoring the gamma correction done by PNGRed :-(
                         BufferedImage bi = reader.read(imageIndex);
                         cr = GraphicsUtil.wrap(bi);
@@ -139,15 +140,18 @@ public abstract class AbstractImageIORegistryEntry
                     } catch (IOException ioe) {
                         // Something bad happened here...
                         filt = ImageTagRegistry.getBrokenLinkImage
-                            (this, errCode, errParam);
+                            (AbstractImageIORegistryEntry.this, 
+                             errCode, errParam);
                     } catch (ThreadDeath td) {
                         filt = ImageTagRegistry.getBrokenLinkImage
-                            (this, errCode, errParam);
+                            (AbstractImageIORegistryEntry.this, 
+                             errCode, errParam);
                         dr.setSource(filt);
                         throw td;
                     } catch (Throwable t) {
                         filt = ImageTagRegistry.getBrokenLinkImage
-                            (this, errCode, errParam);
+                            (AbstractImageIORegistryEntry.this, 
+                             errCode, errParam);
                     }
 
                     dr.setSource(filt);

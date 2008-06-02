@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2002-2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -41,7 +42,7 @@ public class DefaultConditionFactory implements ConditionFactory {
     /**
      * The instance of this class.
      */
-    public final static ConditionFactory INSTANCE =
+    public static final ConditionFactory INSTANCE =
         new DefaultConditionFactory();
 
     /**
@@ -53,142 +54,142 @@ public class DefaultConditionFactory implements ConditionFactory {
     /**
      * <b>SAC</b>: Implements {@link
      * ConditionFactory#createAndCondition(Condition,Condition)}.
-     */    
+     */
     public CombinatorCondition createAndCondition(Condition first,
                                                   Condition second)
-	throws CSSException {
-	return new DefaultAndCondition(first, second);
+        throws CSSException {
+        return new DefaultAndCondition(first, second);
     }
 
     /**
      * <b>SAC</b>: Implements {@link
      * ConditionFactory#createOrCondition(Condition,Condition)}.
-     */    
+     */
     public CombinatorCondition createOrCondition(Condition first,
                                                  Condition second)
-	throws CSSException {
-	throw new CSSException("Not implemented in CSS2");
+        throws CSSException {
+        throw new CSSException("Not implemented in CSS2");
     }
 
     /**
      * <b>SAC</b>: Implements {@link
      * org.w3c.css.sac.ConditionFactory#createNegativeCondition(Condition)}.
-     */    
+     */
     public NegativeCondition createNegativeCondition(Condition condition)
-	throws CSSException {
-	throw new CSSException("Not implemented in CSS2");
+        throws CSSException {
+        throw new CSSException("Not implemented in CSS2");
     }
 
     /**
      * <b>SAC</b>: Implements {@link
      * ConditionFactory#createPositionalCondition(int,boolean,boolean)}.
-     */    
-    public PositionalCondition createPositionalCondition(int position, 
-							 boolean typeNode, 
-							 boolean type)
-	throws CSSException {
-	throw new CSSException("Not implemented in CSS2");
+     */
+    public PositionalCondition createPositionalCondition(int position,
+                                                         boolean typeNode,
+                                                         boolean type)
+        throws CSSException {
+        throw new CSSException("Not implemented in CSS2");
     }
-    
+
     /**
      * <b>SAC</b>: Implements {@link
      *ConditionFactory#createAttributeCondition(String,String,boolean,String)}.
-     */    
+     */
     public AttributeCondition createAttributeCondition(String localName,
-						       String namespaceURI,
-						       boolean specified,
-						       String value)
-	throws CSSException {
-	return new DefaultAttributeCondition(localName, namespaceURI,
+                                                       String namespaceURI,
+                                                       boolean specified,
+                                                       String value)
+        throws CSSException {
+        return new DefaultAttributeCondition(localName, namespaceURI,
                                              specified, value);
     }
 
     /**
      * <b>SAC</b>: Implements {@link
      * org.w3c.css.sac.ConditionFactory#createIdCondition(String)}.
-     */    
+     */
     public AttributeCondition createIdCondition(String value)
         throws CSSException {
-	return new DefaultIdCondition(value);
+        return new DefaultIdCondition(value);
     }
 
     /**
      * <b>SAC</b>: Implements {@link
      * org.w3c.css.sac.ConditionFactory#createLangCondition(String)}.
-     */    
+     */
     public LangCondition createLangCondition(String lang) throws CSSException {
-	return new DefaultLangCondition(lang);
+        return new DefaultLangCondition(lang);
     }
 
     /**
      * <b>SAC</b>: Implements {@link
  ConditionFactory#createOneOfAttributeCondition(String,String,boolean,String)}.
-     */    
+     */
     public AttributeCondition createOneOfAttributeCondition(String localName,
-							    String nsURI,
-							    boolean specified,
-							    String value)
-	throws CSSException {
-	return new DefaultOneOfAttributeCondition(localName, nsURI, specified,
+                                                            String nsURI,
+                                                            boolean specified,
+                                                            String value)
+        throws CSSException {
+        return new DefaultOneOfAttributeCondition(localName, nsURI, specified,
                                                 value);
     }
 
     /**
      * <b>SAC</b>: Implements {@link
      * ConditionFactory#createBeginHyphenAttributeCondition(String,String,boolean,String)}.
-     */    
+     */
     public AttributeCondition createBeginHyphenAttributeCondition
         (String localName,
          String namespaceURI,
          boolean specified,
          String value)
-	throws CSSException {
-	return new DefaultBeginHyphenAttributeCondition
-	    (localName, namespaceURI, specified, value);
+        throws CSSException {
+        return new DefaultBeginHyphenAttributeCondition
+            (localName, namespaceURI, specified, value);
     }
 
     /**
      * <b>SAC</b>: Implements {@link
      * org.w3c.css.sac.ConditionFactory#createClassCondition(String,String)}.
-     */    
+     */
     public AttributeCondition createClassCondition(String namespaceURI,
-						   String value)
-	throws CSSException {
-	return new DefaultClassCondition(namespaceURI, value);
+                                                   String value)
+        throws CSSException {
+        return new DefaultClassCondition(namespaceURI, value);
     }
 
     /**
      * <b>SAC</b>: Implements {@link
      * ConditionFactory#createPseudoClassCondition(String,String)}.
-     */    
+     */
     public AttributeCondition createPseudoClassCondition(String namespaceURI,
-							 String value)
-	throws CSSException {
-	return new DefaultPseudoClassCondition(namespaceURI, value);
+                                                         String value)
+        throws CSSException {
+        return new DefaultPseudoClassCondition(namespaceURI, value);
     }
 
     /**
      * <b>SAC</b>: Implements {@link
      * org.w3c.css.sac.ConditionFactory#createOnlyChildCondition()}.
-     */    
+     */
     public Condition createOnlyChildCondition() throws CSSException {
-	throw new CSSException("Not implemented in CSS2");
+        throw new CSSException("Not implemented in CSS2");
     }
 
     /**
      * <b>SAC</b>: Implements {@link
      * org.w3c.css.sac.ConditionFactory#createOnlyTypeCondition()}.
-     */    
+     */
     public Condition createOnlyTypeCondition() throws CSSException {
-	throw new CSSException("Not implemented in CSS2");
+        throw new CSSException("Not implemented in CSS2");
     }
 
     /**
      * <b>SAC</b>: Implements {@link
      * org.w3c.css.sac.ConditionFactory#createContentCondition(String)}.
-     */    
+     */
     public ContentCondition createContentCondition(String data)
         throws CSSException {
-	throw new CSSException("Not implemented in CSS2");
+        throw new CSSException("Not implemented in CSS2");
     }
 }

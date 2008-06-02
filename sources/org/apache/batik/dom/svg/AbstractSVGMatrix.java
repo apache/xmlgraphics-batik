@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2002-2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -36,20 +37,20 @@ public abstract class AbstractSVGMatrix implements SVGMatrix {
     /**
      * The transform used to implement flipX.
      */
-    protected final static AffineTransform FLIP_X_TRANSFORM =
+    protected static final AffineTransform FLIP_X_TRANSFORM =
         new AffineTransform(-1, 0, 0, 1, 0, 0);
 
     /**
      * The transform used to implement flipX.
      */
-    protected final static AffineTransform FLIP_Y_TRANSFORM =
+    protected static final AffineTransform FLIP_Y_TRANSFORM =
         new AffineTransform(1, 0, 0, -1, 0, 0);
 
     /**
      * Returns the associated AffineTransform.
      */
     protected abstract AffineTransform getAffineTransform();
-    
+
     /**
      * Implements {@link SVGMatrix#getA()}.
      */
@@ -229,7 +230,7 @@ public abstract class AbstractSVGMatrix implements SVGMatrix {
      */
     public SVGMatrix rotate(float angle) {
         AffineTransform tr = (AffineTransform)getAffineTransform().clone();
-        tr.rotate(Math.PI * angle / 180);
+        tr.rotate( Math.toRadians( angle ) );
         return new SVGOMMatrix(tr);
     }
 
@@ -266,23 +267,20 @@ public abstract class AbstractSVGMatrix implements SVGMatrix {
     /**
      * Implements {@link SVGMatrix#skewX(float)}.
      */
-    public SVGMatrix skewX(float angle) {
+    public SVGMatrix skewX(float angleDeg) {
         AffineTransform tr = (AffineTransform)getAffineTransform().clone();
         tr.concatenate
-            (AffineTransform.getShearInstance(Math.tan(Math.PI * angle / 180),
-                                              0));
+            (AffineTransform.getShearInstance( Math.tan( Math.toRadians( angleDeg )), 0));
         return new SVGOMMatrix(tr);
     }
 
     /**
      * Implements {@link SVGMatrix#skewY(float)}.
      */
-    public SVGMatrix skewY(float angle) {
+    public SVGMatrix skewY(float angleDeg ) {
         AffineTransform tr = (AffineTransform)getAffineTransform().clone();
         tr.concatenate
-            (AffineTransform.getShearInstance(0,
-                                              Math.tan(Math.PI *
-                                                       angle / 180)));
+            (AffineTransform.getShearInstance(0,  Math.tan( Math.toRadians( angleDeg ) ) ));
         return new SVGOMMatrix(tr);
     }
 }

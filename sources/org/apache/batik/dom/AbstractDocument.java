@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2000-2003,2005-2006  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -51,6 +52,8 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
 
 import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.DocumentType;
 import org.w3c.dom.DOMConfiguration;
 import org.w3c.dom.DOMError;
 import org.w3c.dom.DOMErrorHandler;
@@ -58,20 +61,18 @@ import org.w3c.dom.DOMException;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.DOMLocator;
 import org.w3c.dom.DOMStringList;
-import org.w3c.dom.Document;
-import org.w3c.dom.DocumentType;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.UserDataHandler;
 import org.w3c.dom.events.DocumentEvent;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.MutationNameEvent;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.w3c.dom.traversal.DocumentTraversal;
 import org.w3c.dom.traversal.NodeFilter;
 import org.w3c.dom.traversal.NodeIterator;
 import org.w3c.dom.traversal.TreeWalker;
+import org.w3c.dom.UserDataHandler;
 import org.w3c.dom.xpath.XPathEvaluator;
 import org.w3c.dom.xpath.XPathException;
 import org.w3c.dom.xpath.XPathExpression;
@@ -95,7 +96,7 @@ public abstract class AbstractDocument
     /**
      * The error messages bundle class name.
      */
-    protected final static String RESOURCES =
+    protected static final String RESOURCES =
         "org.apache.batik.dom.resources.Messages";
 
     /**
@@ -194,11 +195,11 @@ public abstract class AbstractDocument
      * Creates a new document.
      */
     public AbstractDocument(DocumentType dt, DOMImplementation impl) {
-	implementation = impl;
+        implementation = impl;
         if (dt != null) {
             if (dt instanceof GenericDocumentType) {
                 GenericDocumentType gdt = (GenericDocumentType)dt;
-                if (gdt.getOwnerDocument() == null) 
+                if (gdt.getOwnerDocument() == null)
                     gdt.setOwnerDocument(this);
             }
             appendChild(dt);
@@ -224,7 +225,7 @@ public abstract class AbstractDocument
      * Implements {@link org.apache.batik.i18n.Localizable#setLocale(Locale)}.
      */
     public void setLocale(Locale l) {
-	localizableSupport.setLocale(l);
+        localizableSupport.setLocale(l);
     }
 
     /**
@@ -247,14 +248,14 @@ public abstract class AbstractDocument
      * Tests whether the event dispatching must be done.
      */
     public boolean getEventsEnabled() {
-	return eventsEnabled;
+        return eventsEnabled;
     }
 
     /**
      * Sets the eventsEnabled property.
      */
     public void setEventsEnabled(boolean b) {
-	eventsEnabled = b;
+        eventsEnabled = b;
     }
 
     /**
@@ -262,7 +263,7 @@ public abstract class AbstractDocument
      * @return "#document".
      */
     public String getNodeName() {
-	return "#document";
+        return "#document";
     }
 
     /**
@@ -270,29 +271,29 @@ public abstract class AbstractDocument
      * @return {@link org.w3c.dom.Node#DOCUMENT_NODE}
      */
     public short getNodeType() {
-	return DOCUMENT_NODE;
+        return DOCUMENT_NODE;
     }
 
     /**
      * <b>DOM</b>: Implements {@link org.w3c.dom.Document#getDoctype()}.
      */
     public DocumentType getDoctype() {
-	for (Node n = getFirstChild(); n != null; n = n.getNextSibling()) {
-	    if (n.getNodeType() == DOCUMENT_TYPE_NODE) {
-		return (DocumentType)n;
-	    }
-	}
-	return null;
+        for (Node n = getFirstChild(); n != null; n = n.getNextSibling()) {
+            if (n.getNodeType() == DOCUMENT_TYPE_NODE) {
+                return (DocumentType)n;
+            }
+        }
+        return null;
     }
 
     /**
      * Sets the document type node.
      */
     public void setDoctype(DocumentType dt) {
-	if (dt != null) {
-	    appendChild(dt);
-	    ((ExtendedNode)dt).setReadonly(true);
-	}
+        if (dt != null) {
+            appendChild(dt);
+            ((ExtendedNode)dt).setReadonly(true);
+        }
     }
 
     /**
@@ -300,7 +301,7 @@ public abstract class AbstractDocument
      * @return {@link #implementation}
      */
     public DOMImplementation getImplementation() {
-	return implementation;
+        return implementation;
     }
 
     /**
@@ -308,12 +309,12 @@ public abstract class AbstractDocument
      * org.w3c.dom.Document#getDocumentElement()}.
      */
     public Element getDocumentElement() {
-	for (Node n = getFirstChild(); n != null; n = n.getNextSibling()) {
-	    if (n.getNodeType() == ELEMENT_NODE) {
-		return (Element)n;
-	    }
-	}
-	return null;
+        for (Node n = getFirstChild(); n != null; n = n.getNextSibling()) {
+            if (n.getNodeType() == ELEMENT_NODE) {
+                return (Element)n;
+            }
+        }
+        return null;
     }
 
     /**
@@ -326,15 +327,19 @@ public abstract class AbstractDocument
     }
 
     /**
-     * Imports the given node 'importNode' to this document.
-     * It does so deeply if 'deep' is set to true.
-     * It will not mark id attributes as id's if 'trimId' is set false.
-     * this is used primarily for the clone trees of the 'use' element
-     * so they don't clutter the hashtable.
+     * Imports the given node into this document.
+     * It does so deeply if <code>deep</code> is set to true.
+     * It will not mark ID attributes as IDs if <code>trimId</code> is set to
+     * true.  This is used primarily for the shadow trees of the 'use' elements
+     * so they don't clutter the hash table.
+     *
+     * @param importedNode The node to import into this document.
+     * @param deep Whether to perform a deep importation.
+     * @param trimId Whether to make all cloned attributes not be ID attributes.
      */
     public Node importNode(Node importedNode, boolean deep, boolean trimId) {
         /*
-         * The trimming of id's is used by the 'use' element to keep 
+         * The trimming of id's is used by the 'use' element to keep
          * down the amount of 'bogus' id's in the hashtable.
          */
         Node result;
@@ -356,38 +361,38 @@ public abstract class AbstractDocument
                 }
             }
             break;
-            
+
         case ATTRIBUTE_NODE:
             result = createAttributeNS(importedNode.getNamespaceURI(),
                                        importedNode.getNodeName());
             break;
-            
+
         case TEXT_NODE:
             result = createTextNode(importedNode.getNodeValue());
             deep = false;
             break;
-            
+
         case CDATA_SECTION_NODE:
             result = createCDATASection(importedNode.getNodeValue());
             deep = false;
             break;
-            
+
         case ENTITY_REFERENCE_NODE:
             result = createEntityReference(importedNode.getNodeName());
             break;
-            
+
         case PROCESSING_INSTRUCTION_NODE:
             result = createProcessingInstruction
                 (importedNode.getNodeName(),
                  importedNode.getNodeValue());
             deep = false;
             break;
-            
+
         case COMMENT_NODE:
             result = createComment(importedNode.getNodeValue());
             deep = false;
             break;
-            
+
         case DOCUMENT_FRAGMENT_NODE:
             result = createDocumentFragment();
             break;
@@ -397,7 +402,7 @@ public abstract class AbstractDocument
                                      "import.node",
                                      new Object[] {});
         }
-        
+
         if (importedNode instanceof AbstractNode) {
             // Only fire the UserDataHandler if the imported node is from
             // Batik's DOM implementation.
@@ -469,7 +474,7 @@ public abstract class AbstractDocument
                 return e;
             return null;
         }
-        
+
         // Not a IdSoftRef so it must be a list.
         List l = (List)o;
         Iterator li = l.iterator();
@@ -499,9 +504,9 @@ public abstract class AbstractDocument
     protected class IdSoftRef extends CleanerThread.SoftReferenceCleared {
         String id;
         List   list;
-        IdSoftRef(Object o, String id) { 
+        IdSoftRef(Object o, String id) {
             super(o);
-            this.id = id; 
+            this.id = id;
         }
         IdSoftRef(Object o, String id, List list) {
             super(o);
@@ -514,7 +519,7 @@ public abstract class AbstractDocument
         public void cleared() {
             if (elementsById == null) return;
             synchronized (elementsById) {
-                if (list != null) 
+                if (list != null)
                     list.remove(this);
                 else {
                   Object o = elementsById.remove(id);
@@ -540,8 +545,8 @@ public abstract class AbstractDocument
             if (o instanceof IdSoftRef) {
                 elementsById.remove(id);
                 return;
-            } 
-            
+            }
+
             List l = (List)o;
             Iterator li = l.iterator();
             while (li.hasNext()) {
@@ -554,7 +559,7 @@ public abstract class AbstractDocument
                     break;
                 }
             }
-            
+
             if (l.size() == 0)
                 elementsById.remove(id);
         }
@@ -565,10 +570,8 @@ public abstract class AbstractDocument
 
         if (elementsById == null) {
             Map tmp = new HashMap();
-            synchronized (tmp) {
-                elementsById = tmp;
-                elementsById.put(id, new IdSoftRef(e, id));
-            }
+            tmp.put(id, new IdSoftRef(e, id));
+            elementsById = tmp;
             return;
         }
 
@@ -586,7 +589,7 @@ public abstract class AbstractDocument
                     elementsById.put(id, new IdSoftRef(e, id));
                     return;
                 }
-                
+
                 // Create new List for this id.
                 List l = new ArrayList(4);
                 ip.setList(l);
@@ -595,15 +598,15 @@ public abstract class AbstractDocument
                 elementsById.put(id, l);
                 return;
             }
-            
+
             List l = (List)o;
             l.add(new IdSoftRef(e, id, l));
         }
     }
 
     public void updateIdEntry(Element e, String oldId, String newId) {
-        if ((oldId == newId) || 
-            ((oldId != null) && (oldId.equals(newId)))) 
+        if ((oldId == newId) ||
+            ((oldId != null) && (oldId.equals(newId))))
             return;
 
         removeIdEntry(e, oldId);
@@ -722,8 +725,8 @@ public abstract class AbstractDocument
      * DocumentTraversal#createNodeIterator(Node,int,NodeFilter,boolean)}.
      */
     public NodeIterator createNodeIterator(Node root,
-                                           int whatToShow, 
-                                           NodeFilter filter, 
+                                           int whatToShow,
+                                           NodeFilter filter,
                                            boolean entityReferenceExpansion)
         throws DOMException {
         if (traversalSupport == null) {
@@ -738,9 +741,9 @@ public abstract class AbstractDocument
      * <b>DOM</b>: Implements {@link
      * DocumentTraversal#createTreeWalker(Node,int,NodeFilter,boolean)}.
      */
-    public TreeWalker createTreeWalker(Node root, 
-                                       int whatToShow, 
-                                       NodeFilter filter, 
+    public TreeWalker createTreeWalker(Node root,
+                                       int whatToShow,
+                                       NodeFilter filter,
                                        boolean entityReferenceExpansion)
         throws DOMException {
         return TraversalSupport.createTreeWalker(this, root, whatToShow,
@@ -768,7 +771,7 @@ public abstract class AbstractDocument
      * Returns the current document.
      */
     protected AbstractDocument getCurrentDocument() {
-	return this;
+        return this;
     }
 
     /**
@@ -777,9 +780,9 @@ public abstract class AbstractDocument
      * @param d The destination document.
      */
     protected Node export(Node n, Document d) {
-	throw createDOMException(DOMException.NOT_SUPPORTED_ERR,
-				 "import.document",
-				 new Object[] {});
+        throw createDOMException(DOMException.NOT_SUPPORTED_ERR,
+                                 "import.document",
+                                 new Object[] {});
     }
 
     /**
@@ -788,9 +791,9 @@ public abstract class AbstractDocument
      * @param d The destination document.
      */
     protected Node deepExport(Node n, Document d) {
-	throw createDOMException(DOMException.NOT_SUPPORTED_ERR,
-				 "import.document",
-				 new Object[] {});
+        throw createDOMException(DOMException.NOT_SUPPORTED_ERR,
+                                 "import.document",
+                                 new Object[] {});
     }
 
     /**
@@ -798,9 +801,9 @@ public abstract class AbstractDocument
      * @param n a node of the type of this.
      */
     protected Node copyInto(Node n) {
-	super.copyInto(n);
-	AbstractDocument ad = (AbstractDocument)n;
-	ad.implementation = implementation;
+        super.copyInto(n);
+        AbstractDocument ad = (AbstractDocument)n;
+        ad.implementation = implementation;
         ad.localizableSupport = new LocalizableSupport
             (RESOURCES, getClass().getClassLoader());
         ad.inputEncoding = inputEncoding;
@@ -810,7 +813,7 @@ public abstract class AbstractDocument
         ad.documentURI = documentURI;
         ad.strictErrorChecking = strictErrorChecking;
         // XXX clone DocumentConfiguration?
-	return n;
+        return n;
     }
 
     /**
@@ -818,42 +821,42 @@ public abstract class AbstractDocument
      * @param n a node of the type of this.
      */
     protected Node deepCopyInto(Node n) {
-	super.deepCopyInto(n);
-	AbstractDocument ad = (AbstractDocument)n;
-	ad.implementation = implementation;
+        super.deepCopyInto(n);
+        AbstractDocument ad = (AbstractDocument)n;
+        ad.implementation = implementation;
         ad.localizableSupport = new LocalizableSupport
             (RESOURCES, getClass().getClassLoader());
-	return n;
+        return n;
     }
 
     /**
      * Checks the validity of a node to be inserted.
      */
     protected void checkChildType(Node n, boolean replace) {
-	short t = n.getNodeType();
-	switch (t) {
-	case ELEMENT_NODE:
-	case PROCESSING_INSTRUCTION_NODE:
-	case COMMENT_NODE:
-	case DOCUMENT_TYPE_NODE:
-	case DOCUMENT_FRAGMENT_NODE:
-	    break;
-	default:
-	    throw createDOMException(DOMException.HIERARCHY_REQUEST_ERR,
-				     "child.type",
-				     new Object[] { new Integer(getNodeType()),
-						    getNodeName(),
-		                                    new Integer(t),
-						    n.getNodeName() });
-	}
-	if (!replace &&
+        short t = n.getNodeType();
+        switch (t) {
+        case ELEMENT_NODE:
+        case PROCESSING_INSTRUCTION_NODE:
+        case COMMENT_NODE:
+        case DOCUMENT_TYPE_NODE:
+        case DOCUMENT_FRAGMENT_NODE:
+            break;
+        default:
+            throw createDOMException(DOMException.HIERARCHY_REQUEST_ERR,
+                                     "child.type",
+                                     new Object[] { new Integer(getNodeType()),
+                                                    getNodeName(),
+                                                    new Integer(t),
+                                                    n.getNodeName() });
+        }
+        if (!replace &&
             (t == ELEMENT_NODE && getDocumentElement() != null) ||
-	    (t == DOCUMENT_TYPE_NODE && getDoctype() != null)) {
-	    throw createDOMException(DOMException.NOT_SUPPORTED_ERR,
-				     "document.child.already.exists",
-				     new Object[] { new Integer(t),
-						    n.getNodeName() });
-	}
+            (t == DOCUMENT_TYPE_NODE && getDoctype() != null)) {
+            throw createDOMException(DOMException.NOT_SUPPORTED_ERR,
+                                     "document.child.already.exists",
+                                     new Object[] { new Integer(t),
+                                                    n.getNodeName() });
+        }
     }
 
     /**
@@ -1296,7 +1299,7 @@ public abstract class AbstractDocument
                 }
                 String s = sb.toString();
                 if (s.length() == 0) {
-                    Node next = n.getNextSibling();
+                    Node next = n.getNextSibling();       // todo: Jlint says: n can be NULL
                     e.removeChild(n);
                     n = next;
                     continue;
@@ -1351,10 +1354,10 @@ public abstract class AbstractDocument
 
         NamedNodeMap nnm = e.getAttributes();
         LinkedList toRemove = new LinkedList();
-        HashMap names = new HashMap();
+        HashMap names = new HashMap();                    // todo names is not used ?
         for (int i = 0; i < nnm.getLength(); i++) {
             Attr a = (Attr) nnm.item(i);
-            String prefix = a.getPrefix();
+            String prefix = a.getPrefix();                // todo : this breaks when a is null
             if (a != null && XMLConstants.XMLNS_PREFIX.equals(prefix)
                     || a.getNodeName().equals(XMLConstants.XMLNS_PREFIX)) {
                 if (!namespaceDeclarations) {
@@ -1944,7 +1947,7 @@ public abstract class AbstractDocument
         /**
          * Map of parameter names to array indexes.
          */
-        protected HashMap booleanParamIndexes = new HashMap();
+        protected Map booleanParamIndexes = new HashMap();
         {
             for (int i = 0; i < booleanParamNames.length; i++) {
                 booleanParamIndexes.put(booleanParamNames[i], new Integer(i));
@@ -2706,7 +2709,7 @@ public abstract class AbstractDocument
         s.writeObject(implementation.getClass().getName());
     }
 
-    private void readObject(ObjectInputStream s) 
+    private void readObject(ObjectInputStream s)
         throws IOException, ClassNotFoundException {
         s.defaultReadObject();
 

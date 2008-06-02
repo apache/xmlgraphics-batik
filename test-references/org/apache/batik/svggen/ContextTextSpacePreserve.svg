@@ -15,7 +15,7 @@
       ><g
       ><defs id="testdefs1"
         ><font horiz-adv-x="75.0" id="testfont1"
-          ><font-face ascent="92.163086" descent="19.555664" units-per-em="100" font-family="Arial" font-style="normal" font-weight="normal"
+          ><font-face ascent="92.163086" font-style="normal" descent="19.555664" units-per-em="100" font-family="Arial" font-weight="normal"
             /><missing-glyph horiz-adv-x="75.0" d="M12.5 0 L12.5 62.5 L62.5 62.5 L62.5 0 L12.5 0 ZM14.0625 1.5625 L60.9375 1.5625 L60.9375 60.9375 L14.0625 60.9375 L14.0625 1.5625 Z"
             /><glyph unicode="." horiz-adv-x="27.783203" d="M9.0781 0 L9.0781 10.0156 L19.0938 10.0156 L19.0938 0 L9.0781 0 Z"
             /><glyph unicode="r" horiz-adv-x="33.30078" d="M6.5 0 L6.5 51.8594 L14.4062 51.8594 L14.4062 44 Q17.4375 49.5156 20 51.2734 Q22.5625 53.0312 25.6406 53.0312 Q30.0781 53.0312 34.6719 50.2031 L31.6406 42.0469 Q28.4219 43.9531 25.2031 43.9531 Q22.3125 43.9531 20.0156 42.2188 Q17.7188 40.4844 16.75 37.4062 Q15.2812 32.7188 15.2812 27.1562 L15.2812 0 L6.5 0 Z"
@@ -49,14 +49,14 @@
           /></font
         ></defs
         ><g class="testC1" transform="translate(0,30)"
-        ><text xml:space="preserve" x="10" y="12" class="testC2"
+        ><text x="10" xml:space="preserve" y="12" class="testC2"
           >     space before.</text
-          ><text xml:space="preserve" x="10" y="32" class="testC3"
+          ><text x="10" xml:space="preserve" y="32" class="testC3"
           >Multiple spaces between A and B: A    B</text
-          ><text xml:space="preserve" x="10" y="52" class="testC4"
+          ><text x="10" xml:space="preserve" y="52" class="testC4"
           >This is a first line
      and this is a second line starting with spaces</text
-          ><text xml:space="preserve" x="10" y="72" class="testC5"
+          ><text x="10" xml:space="preserve" y="72" class="testC5"
           >Should have no trailing spaces</text
         ></g
       ></g

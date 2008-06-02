@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2002  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -51,10 +52,10 @@ public class CSSAttributeCondition extends AbstractAttributeCondition {
                                  String namespaceURI,
                                  boolean specified,
                                  String value) {
-	super(value);
-	this.localName = localName;
-	this.namespaceURI = namespaceURI;
-	this.specified = specified;
+        super(value);
+        this.localName = localName;
+        this.namespaceURI = namespaceURI;
+        this.specified = specified;
     }
 
     /**
@@ -72,19 +73,29 @@ public class CSSAttributeCondition extends AbstractAttributeCondition {
     }
 
     /**
+     * equal objects should have equal hashCodes.
+     * @return hashCode of this CSSAttributeCondition
+     */
+    public int hashCode() {
+        return namespaceURI.hashCode()
+                ^ localName.hashCode()
+                ^ (specified ? -1 : 0);
+    }
+
+    /**
      * <b>SAC</b>: Implements {@link
      * org.w3c.css.sac.Condition#getConditionType()}.
-     */    
+     */
     public short getConditionType() {
-	return SAC_ATTRIBUTE_CONDITION;
+        return SAC_ATTRIBUTE_CONDITION;
     }
-    
+
     /**
      * <b>SAC</b>: Implements {@link
      * org.w3c.css.sac.AttributeCondition#getNamespaceURI()}.
-     */    
+     */
     public String getNamespaceURI() {
-	return namespaceURI;
+        return namespaceURI;
     }
 
     /**
@@ -92,7 +103,7 @@ public class CSSAttributeCondition extends AbstractAttributeCondition {
      * org.w3c.css.sac.AttributeCondition#getLocalName()}.
      */
     public String getLocalName() {
-	return localName;
+        return localName;
     }
 
     /**
@@ -100,18 +111,18 @@ public class CSSAttributeCondition extends AbstractAttributeCondition {
      * org.w3c.css.sac.AttributeCondition#getSpecified()}.
      */
     public boolean getSpecified() {
-	return specified;
+        return specified;
     }
 
     /**
      * Tests whether this condition matches the given element.
      */
     public boolean match(Element e, String pseudoE) {
-	String val = getValue();
-	if (val == null) {
-	    return !e.getAttribute(getLocalName()).equals("");
-	}
-	return e.getAttribute(getLocalName()).equals(val);
+        String val = getValue();
+        if (val == null) {
+            return !e.getAttribute(getLocalName()).equals("");
+        }
+        return e.getAttribute(getLocalName()).equals(val);
     }
 
     /**
@@ -125,9 +136,9 @@ public class CSSAttributeCondition extends AbstractAttributeCondition {
      * Returns a text representation of this object.
      */
     public String toString() {
-	if (value == null) {
-	    return "[" + localName + "]";
-	}
-	return "[" + localName + "=\"" + value + "\"]";
+        if (value == null) {
+            return '[' + localName + ']';
+        }
+        return '[' + localName + "=\"" + value + "\"]";
     }
 }

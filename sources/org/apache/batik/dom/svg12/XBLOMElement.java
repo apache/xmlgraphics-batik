@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2005  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -33,7 +34,7 @@ import org.w3c.dom.Node;
  */
 public abstract class XBLOMElement extends SVGOMElement
                                    implements XBLConstants {
-    
+
     /**
      * The element prefix.
      */
@@ -62,10 +63,8 @@ public abstract class XBLOMElement extends SVGOMElement
         if (prefix == null || prefix.equals("")) {
             return getLocalName();
         }
-        String ln = getLocalName();
-        StringBuffer sb = new StringBuffer(prefix.length() + ln.length() + 1);
-        sb.append(prefix).append(':').append(ln);
-        return sb.toString();
+
+        return prefix + ':' + getLocalName();
     }
 
     /**
@@ -80,19 +79,19 @@ public abstract class XBLOMElement extends SVGOMElement
      */
     public void setPrefix(String prefix) throws DOMException {
         if (isReadonly()) {
-	    throw createDOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR,
-				     "readonly.node",
-				     new Object[] { new Integer(getNodeType()),
-						    getNodeName() });
+            throw createDOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR,
+                                     "readonly.node",
+                                     new Object[] { new Integer(getNodeType()),
+                                                    getNodeName() });
         }
         if (prefix != null &&
             !prefix.equals("") &&
             !DOMUtilities.isValidName(prefix)) {
-	    throw createDOMException(DOMException.INVALID_CHARACTER_ERR,
-				     "prefix",
-				     new Object[] { new Integer(getNodeType()),
-						    getNodeName(),
-						    prefix });
+            throw createDOMException(DOMException.INVALID_CHARACTER_ERR,
+                                     "prefix",
+                                     new Object[] { new Integer(getNodeType()),
+                                                    getNodeName(),
+                                                    prefix });
         }
         this.prefix = prefix;
     }

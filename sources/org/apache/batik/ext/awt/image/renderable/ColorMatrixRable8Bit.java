@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001,2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -35,7 +36,7 @@ public class ColorMatrixRable8Bit
     /**
      * Predefined luminanceToAlpha matrix
      */
-    private static float MATRIX_LUMINANCE_TO_ALPHA[][]
+    private static float[][] MATRIX_LUMINANCE_TO_ALPHA
         = {
             {0,       0,       0,       0, 0},
             {0,       0,       0,       0, 0},
@@ -51,7 +52,7 @@ public class ColorMatrixRable8Bit
     /**
      * The matrix
      */
-    private float matrix[][];
+    private float[][] matrix;
 
     /**
      * Sets the source of the blur operation
@@ -94,7 +95,7 @@ public class ColorMatrixRable8Bit
     /**
      * Builds a TYPE_MATRIX instance
      */
-    public static ColorMatrixRable buildMatrix(float matrix[][]){
+    public static ColorMatrixRable buildMatrix(float[][] matrix){
         if(matrix == null){
             throw new IllegalArgumentException();
         }
@@ -103,10 +104,10 @@ public class ColorMatrixRable8Bit
             throw new IllegalArgumentException();
         }
 
-        float newMatrix[][] = new float[4][];
+        float[][] newMatrix = new float[4][];
 
         for(int i=0; i<4; i++){
-            float m[] = matrix[i];
+            float[] m = matrix[i];
             if(m == null){
                 throw new IllegalArgumentException();
             }

@@ -1,12 +1,13 @@
 /*
- * Copyright 1999-2004 The Apache Software Foundation.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -122,7 +123,7 @@ public class TextSelectionTest extends JSVGRenderingAccuracyTest {
      * @param end    The last character to select
      * @param file   The reference file.
      */
-    public TextSelectionTest(String file,   String textID, 
+    public TextSelectionTest(String file,   String textID,
                              Integer start, Integer end) {
         this.textID    = textID;
         this.start = start.intValue();
@@ -131,36 +132,36 @@ public class TextSelectionTest extends JSVGRenderingAccuracyTest {
     }
 
     protected String buildRefImgURL(String svgDir, String svgFile){
-        return getRefImagePrefix() + svgDir + getRefImageSuffix() + 
-            svgFile + "-" +textID+ "-" + start + "-" + end +PNG_EXTENSION;
+        return getRefImagePrefix() + svgDir + getRefImageSuffix() +
+            svgFile + '-' +textID+ '-' + start + '-' + end +PNG_EXTENSION;
     }
 
     public String buildVariationURL(String svgDir, String svgFile){
-        return getVariationPrefix() + svgDir + getVariationSuffix() + 
-            svgFile + "-" +textID+ "-" + start + "-" + end +PNG_EXTENSION;
+        return getVariationPrefix() + svgDir + getVariationSuffix() +
+            svgFile + '-' +textID+ '-' + start + '-' + end +PNG_EXTENSION;
 
     }
 
     public String  buildSaveVariationFile(String svgDir, String svgFile){
-        return getSaveVariationPrefix() + svgDir + getSaveVariationSuffix() + 
-            svgFile + "-" +textID+ "-" + start + "-" + end +PNG_EXTENSION;
+        return getSaveVariationPrefix() + svgDir + getSaveVariationSuffix() +
+            svgFile + '-' +textID+ '-' + start + '-' + end +PNG_EXTENSION;
     }
 
     public String  buildCandidateReferenceFile(String svgDir, String svgFile){
-        return getCandidateReferencePrefix() + svgDir + getCandidateReferenceSuffix() + 
-            svgFile + "-" +textID+ "-" + start + "-" + end +PNG_EXTENSION;
+        return getCandidateReferencePrefix() + svgDir + getCandidateReferenceSuffix() +
+            svgFile + '-' +textID+ '-' + start + '-' + end +PNG_EXTENSION;
     }
     /**
      * Returns this Test's name
      */
     public String getName() {
-        return super.getName() + "#" +textID+ "(" + start + "," + end + ")";
+        return super.getName() + '#' +textID+ '(' + start + ',' + end + ')';
     }
-    
+
     public JSVGCanvasHandler createCanvasHandler() {
         return new JSVGCanvasHandler(this, this) {
-                public JSVGCanvas createCanvas() { 
-                    JSVGCanvas ret = new JSVGCanvas(); 
+                public JSVGCanvas createCanvas() {
+                    JSVGCanvas ret = new JSVGCanvas();
                     ret.setDocumentState(JSVGCanvas.ALWAYS_DYNAMIC);
                     return ret;
                 }
@@ -208,7 +209,7 @@ public class TextSelectionTest extends JSVGRenderingAccuracyTest {
                     (Messages.formatMessage(ENTRY_KEY_ERROR_DESCRIPTION, null),
                      Messages.formatMessage
                      (ERROR_GETTING_SELECTION,
-                      new String[]{id, ""+start, ""+end, trace.toString()}))
+                      new String[]{id, String.valueOf( start ), String.valueOf( end ), trace.toString()}))
                     });
             report.setPassed(false);
             failReport = report;

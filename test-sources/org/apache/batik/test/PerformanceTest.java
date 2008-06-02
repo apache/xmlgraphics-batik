@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -23,11 +24,11 @@ import java.util.Vector;
  * This abstract <code>Test</code> implementation instruments performance
  * testing.
  *
- * Derived classes need only implement the <code>runOp</code> and, 
+ * Derived classes need only implement the <code>runOp</code> and,
  * optionally, the <code>runRef</code> methods.
  *
- * The <code>setReferenceScore</code> method is used to specify 
- * the last recorded score for the performance test and the 
+ * The <code>setReferenceScore</code> method is used to specify
+ * the last recorded score for the performance test and the
  * <code>setAllowedScoreDeviation</code> method is used to specify
  * the allowed deviation from the reference score.
  *
@@ -88,10 +89,10 @@ public abstract class PerformanceTest extends AbstractTest {
     }
 
     /**
-     * This implementation of runImpl runs the reference 
+     * This implementation of runImpl runs the reference
      * operation (with <code>runRef</code>), then runs
      * the operation (with <code>runOp</code>) and checks whether
-     * or not the score is within the allowed deviation of the 
+     * or not the score is within the allowed deviation of the
      * reference score.
      *
      * @see #runRef
@@ -183,7 +184,7 @@ public abstract class PerformanceTest extends AbstractTest {
         }
     }
 
-    protected void sort(double a[]) throws Exception {
+    protected void sort(double[] a) throws Exception {
         for (int i = a.length - 1; i>=0; i--) {
             boolean swapped = false;
             for (int j = 0; j<i; j++) {
@@ -201,7 +202,7 @@ public abstract class PerformanceTest extends AbstractTest {
 
     /**
      * Runs the reference operation.
-     * By default, this runs the same BufferedImage drawing 
+     * By default, this runs the same BufferedImage drawing
      * operation 10000 times
      */
     protected void runRef() {
@@ -209,7 +210,7 @@ public abstract class PerformanceTest extends AbstractTest {
         for (int i=0; i<10000; i++) {
             v.addElement("" + i);
         }
-        
+
         for (int i=0; i<10000; i++) {
             if (v.contains("" + i)) {
                 v.remove("" + i);

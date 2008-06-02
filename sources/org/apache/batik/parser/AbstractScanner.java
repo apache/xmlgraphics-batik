@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2005  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -63,7 +64,7 @@ public abstract class AbstractScanner {
      * The previous lexical unit type that was scanned.
      */
     protected int previousType;
-    
+
     /**
      * The start offset of the last lexical unit.
      */
@@ -114,7 +115,7 @@ public abstract class AbstractScanner {
     public AbstractScanner(String s) throws ParseException {
         try {
             reader = new StringNormalizingReader(s);
-            current = nextChar(); 
+            current = nextChar();
         } catch (IOException e) {
             throw new ParseException(e);
         }
@@ -222,10 +223,8 @@ public abstract class AbstractScanner {
         }
 
         if (position == buffer.length) {
-            char[] t = new char[position * 3 / 2];
-            for (int i = 0; i < position; i++) {
-                t[i] = buffer[i];
-            }
+            char[] t = new char[ 1 + position + position / 2];
+            System.arraycopy( buffer, 0, t, 0, position );
             buffer = t;
         }
 

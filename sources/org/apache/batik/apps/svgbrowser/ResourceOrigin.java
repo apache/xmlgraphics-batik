@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2002  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -28,20 +29,20 @@ public interface ResourceOrigin {
     /**
      * Any origin
      */
-    static final int ANY = 1;
+    int ANY = 1;
 
     /**
      * Same as document
      */
-    static final int DOCUMENT = 2;
+    int DOCUMENT = 2;
 
     /**
-     * Embeded into the document 
+     * Embeded into the document
      */
-    static final int EMBEDED = 4;
+    int EMBEDED = 4;
 
     /**
      * No origin is ok
      */
-    static final int NONE = 8;
+    int NONE = 8;
 }

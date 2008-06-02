@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2002-2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -27,8 +28,8 @@ import org.apache.batik.css.engine.value.Value;
  */
 public class StyleDeclaration {
 
-    protected final static int INITIAL_LENGTH = 8;
-    
+    protected static final int INITIAL_LENGTH = 8;
+
     /**
      * The values.
      */
@@ -82,11 +83,23 @@ public class StyleDeclaration {
      */
     public void remove(int idx) {
         count--;
-        for (int i = idx; i < count; i++) {
-            values[i] = values[i + 1];
-            indexes[i] = indexes[i + 1];
-            priorities[i] = priorities[i + 1];
-        }
+        int from  = idx+1;
+        int to    = idx;
+        int nCopy = count - idx;
+
+        System.arraycopy( values,     from, values,     to, nCopy );
+        System.arraycopy( indexes,    from, indexes,    to, nCopy );
+        System.arraycopy( priorities, from, priorities, to, nCopy );
+
+        values[ count ] = null;
+        indexes[ count ] = 0;
+        priorities[ count ] = false;
+
+//        for (int i = idx; i < count; i++) {
+//            values[i] = values[i + 1];
+//            indexes[i] = indexes[i + 1];
+//            priorities[i] = priorities[i + 1];
+//        }
     }
 
     /**
@@ -106,18 +119,18 @@ public class StyleDeclaration {
             Value[]   newval  = new Value[count * 2];
             int[]     newidx  = new int[count * 2];
             boolean[] newprio = new boolean[count * 2];
-            for (int i = 0; i < count; i++) {
-                newval[i]  = values[i];
-                newidx[i]  = indexes[i];
-                newprio[i] = priorities[i];
-            }
+
+            System.arraycopy( values, 0, newval, 0, count );
+            System.arraycopy( indexes, 0, newidx, 0, count );
+            System.arraycopy( priorities, 0, newprio, 0, count );
+
             values     = newval;
             indexes    = newidx;
             priorities = newprio;
         }
         for (int i = 0; i < count; i++) {
             if (indexes[i] == idx) {
-                // Replace existing property values, 
+                // Replace existing property values,
                 // unless they are important!
                 if (prio || (priorities[i] == prio)) {
                     values    [i] = v;
@@ -136,7 +149,7 @@ public class StyleDeclaration {
      * Returns a printable representation of this style rule.
      */
     public String toString(CSSEngine eng) {
-        StringBuffer sb = new StringBuffer();
+        StringBuffer sb = new StringBuffer( count * 8 );
         for (int i = 0; i < count; i++) {
             sb.append(eng.getPropertyName(indexes[i]));
             sb.append(": ");

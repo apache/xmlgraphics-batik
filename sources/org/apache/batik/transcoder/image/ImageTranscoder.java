@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001-2006  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -64,7 +65,7 @@ import org.w3c.dom.Document;
  * millimeters in each pixel .
  *
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
- * @version $Id$ 
+ * @version $Id$
  */
 public abstract class ImageTranscoder extends SVGAbstractTranscoder {
 
@@ -96,9 +97,7 @@ public abstract class ImageTranscoder extends SVGAbstractTranscoder {
 
         // paint the SVG document using the bridge package
         // create the appropriate renderer
-        ImageRendererFactory rendFactory = new ConcreteImageRendererFactory();
-        // ImageRenderer renderer = rendFactory.createDynamicImageRenderer();
-        ImageRenderer renderer = rendFactory.createStaticImageRenderer();
+        ImageRenderer renderer = createRenderer();
         renderer.updateOffScreen(w, h);
         // curTxf.translate(0.5, 0.5);
         renderer.setTransform(curTxf);
@@ -135,8 +134,18 @@ public abstract class ImageTranscoder extends SVGAbstractTranscoder {
     }
 
     /**
-     * Converts an image so that viewers which do not support the alpha channel will
-     * see a white background (and not a black one).
+     * Method so subclasses can modify the Renderer used to render document.
+     */
+    protected ImageRenderer createRenderer() {
+        ImageRendererFactory rendFactory = new ConcreteImageRendererFactory();
+        // ImageRenderer renderer = rendFactory.createDynamicImageRenderer();
+        return rendFactory.createStaticImageRenderer();
+    }
+
+    /**
+     * Converts an image so that viewers which do not support the
+     * alpha channel will see a white background (and not a black
+     * one).
      * @param img the image to convert
      * @param sppsm
      */
@@ -151,7 +160,7 @@ public abstract class ImageTranscoder extends SVGAbstractTranscoder {
         DataBufferInt biDB=(DataBufferInt)img.getRaster().getDataBuffer();
         int scanStride = sppsm.getScanlineStride();
         int dbOffset = biDB.getOffset();
-        int pixels[] = biDB.getBankData()[0];
+        int[] pixels = biDB.getBankData()[0];
         int p = dbOffset;
         int adjust = scanStride - w;
         int a=0, r=0, g=0, b=0, pel=0;
@@ -253,8 +262,8 @@ public abstract class ImageTranscoder extends SVGAbstractTranscoder {
      * Not all Transcoders use this key (in particular some formats
      * can't preserve the alpha channel at all in which case this
      * is not used.
-     * </TD></TR> 
-     * </TABLE> 
+     * </TD></TR>
+     * </TABLE>
      */
     public static final TranscodingHints.Key KEY_FORCE_TRANSPARENT_WHITE
         = new BooleanKey();

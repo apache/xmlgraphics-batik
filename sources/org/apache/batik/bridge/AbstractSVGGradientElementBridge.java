@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001-2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -39,8 +40,9 @@ import org.w3c.dom.Node;
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
-public abstract class AbstractSVGGradientElementBridge extends AbstractSVGBridge
-    implements PaintBridge, ErrorConstants {
+public abstract class AbstractSVGGradientElementBridge
+        extends AnimatableGenericSVGBridge
+        implements PaintBridge, ErrorConstants {
 
     /**
      * Constructs a new AbstractSVGGradientElementBridge.
@@ -90,7 +92,7 @@ public abstract class AbstractSVGGradientElementBridge extends AbstractSVGBridge
         s = SVGUtilities.getChainableAttributeNS
             (paintElement, null, SVG_SPREAD_METHOD_ATTRIBUTE, ctx);
         if (s.length() != 0) {
-            spreadMethod = convertSpreadMethod(paintElement, s);
+            spreadMethod = convertSpreadMethod(paintElement, s, ctx);
         }
 
         // 'color-interpolation' CSS property
@@ -103,7 +105,7 @@ public abstract class AbstractSVGGradientElementBridge extends AbstractSVGBridge
             (paintElement, null, SVG_GRADIENT_TRANSFORM_ATTRIBUTE, ctx);
         if (s.length() != 0) {
             transform = SVGUtilities.convertTransform
-                (paintElement, SVG_GRADIENT_TRANSFORM_ATTRIBUTE, s);
+                (paintElement, SVG_GRADIENT_TRANSFORM_ATTRIBUTE, s, ctx);
         } else {
             transform = new AffineTransform();
         }
@@ -151,9 +153,10 @@ public abstract class AbstractSVGGradientElementBridge extends AbstractSVGBridge
      *
      * @param paintElement the paint Element with a spreadMethod
      * @param s the spread method
+     * @param ctx the BridgeContext to use for error information
      */
     protected static MultipleGradientPaint.CycleMethodEnum convertSpreadMethod
-        (Element paintElement, String s) {
+        (Element paintElement, String s, BridgeContext ctx) {
         if (SVG_REPEAT_VALUE.equals(s)) {
             return MultipleGradientPaint.REPEAT;
         }
@@ -164,7 +167,7 @@ public abstract class AbstractSVGGradientElementBridge extends AbstractSVGBridge
             return MultipleGradientPaint.NO_CYCLE;
         }
         throw new BridgeException
-            (paintElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+            (ctx, paintElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
              new Object[] {SVG_SPREAD_METHOD_ATTRIBUTE, s});
     }
 
@@ -196,7 +199,7 @@ public abstract class AbstractSVGGradientElementBridge extends AbstractSVGBridge
             ParsedURL purl = new ParsedURL(baseURI, uri);
 
             if (contains(refs, purl)) {
-                throw new BridgeException(paintElement,
+                throw new BridgeException(ctx, paintElement,
                                           ERR_XLINK_HREF_CIRCULAR_DEPENDENCIES,
                                           new Object[] {uri});
             }
@@ -287,8 +290,8 @@ public abstract class AbstractSVGGradientElementBridge extends AbstractSVGBridge
     /**
      * Bridge class for the gradient &lt;stop> element.
      */
-    public static class SVGStopElementBridge extends AbstractSVGBridge
-        implements Bridge {
+    public static class SVGStopElementBridge extends AnimatableGenericSVGBridge
+            implements Bridge {
 
         /**
          * Returns 'stop'.
@@ -312,16 +315,17 @@ public abstract class AbstractSVGGradientElementBridge extends AbstractSVGBridge
 
             String s = stopElement.getAttributeNS(null, SVG_OFFSET_ATTRIBUTE);
             if (s.length() == 0) {
-                throw new BridgeException(stopElement, ERR_ATTRIBUTE_MISSING,
-                                          new Object[] {SVG_OFFSET_ATTRIBUTE});
+                throw new BridgeException
+                    (ctx, stopElement, ERR_ATTRIBUTE_MISSING,
+                     new Object[] {SVG_OFFSET_ATTRIBUTE});
             }
             float offset;
             try {
                 offset = SVGUtilities.convertRatio(s);
-            } catch (NumberFormatException ex) {
+            } catch (NumberFormatException nfEx ) {
                 throw new BridgeException
-                    (stopElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
-                     new Object[] {SVG_OFFSET_ATTRIBUTE, s, ex});
+                    (ctx, stopElement, nfEx, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                     new Object[] {SVG_OFFSET_ATTRIBUTE, s, nfEx });
             }
             Color color
                 = CSSUtilities.convertStopColor(stopElement, opacity, ctx);

@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2000-2003  The Apache Software Foundation
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -154,7 +155,7 @@ public class PathParser extends NumberParser {
      * Parses a 'l' command.
      */
     protected void parsel() throws ParseException, IOException {
-	    current = reader.read();
+            current = reader.read();
         skipSpaces();
         _parsel(true);
     }
@@ -184,7 +185,7 @@ public class PathParser extends NumberParser {
      * Parses a 'L' command.
      */
     protected void parseL() throws ParseException, IOException {
-	    current = reader.read();
+            current = reader.read();
         skipSpaces();
         _parseL(true);
     }
@@ -204,7 +205,7 @@ public class PathParser extends NumberParser {
             float x = parseFloat();
             skipCommaSpaces();
             float y = parseFloat();
-            
+
             pathHandler.linetoAbs(x, y);
             expectNumber = skipCommaSpaces2();
         }
@@ -699,9 +700,9 @@ public class PathParser extends NumberParser {
         }
     }
 
-    protected void reportUnexpected(int ch) 
+    protected void reportUnexpected(int ch)
         throws ParseException, IOException {
-        reportError("character.unexpected", new Object[] { new Integer(ch) });
+        reportUnexpectedCharacterError( current );
         skipSubPath();
     }
 
@@ -718,7 +719,7 @@ public class PathParser extends NumberParser {
             current = reader.read();
         }
 
-        if (current != ',') 
+        if (current != ',')
             return false; // no comma.
 
         wsp2: for (;;) {

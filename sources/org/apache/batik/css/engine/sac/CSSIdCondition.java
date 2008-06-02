@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2002  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -46,7 +47,7 @@ public class CSSIdCondition extends AbstractAttributeCondition {
      * Creates a new CSSAttributeCondition object.
      */
     public CSSIdCondition(String ns, String ln, String value) {
-	super(value);
+        super(value);
         namespaceURI = ns;
         localName = ln;
     }
@@ -54,17 +55,17 @@ public class CSSIdCondition extends AbstractAttributeCondition {
     /**
      * <b>SAC</b>: Implements {@link
      * org.w3c.css.sac.Condition#getConditionType()}.
-     */    
+     */
     public short getConditionType() {
-	return SAC_ID_CONDITION;
+        return SAC_ID_CONDITION;
     }
-    
+
     /**
      * <b>SAC</b>: Implements {@link
      * org.w3c.css.sac.AttributeCondition#getNamespaceURI()}.
-     */    
+     */
     public String getNamespaceURI() {
-	return namespaceURI;
+        return namespaceURI;
     }
 
     /**
@@ -72,7 +73,7 @@ public class CSSIdCondition extends AbstractAttributeCondition {
      * org.w3c.css.sac.AttributeCondition#getLocalName()}.
      */
     public String getLocalName() {
-	return localName;
+        return localName;
     }
 
     /**
@@ -80,16 +81,16 @@ public class CSSIdCondition extends AbstractAttributeCondition {
      * org.w3c.css.sac.AttributeCondition#getSpecified()}.
      */
     public boolean getSpecified() {
-	return true;
+        return true;
     }
 
     /**
      * Tests whether this condition matches the given element.
      */
     public boolean match(Element e, String pseudoE) {
-	return (e instanceof CSSStylableElement)
-	    ? ((CSSStylableElement)e).getXMLId().equals(getValue())
-	    : false;
+        return (e instanceof CSSStylableElement)
+            ? ((CSSStylableElement)e).getXMLId().equals(getValue())
+            : false;
     }
 
     /**
@@ -103,13 +104,13 @@ public class CSSIdCondition extends AbstractAttributeCondition {
      * Returns the specificity of this condition.
      */
     public int getSpecificity() {
-	return 1 << 16;
+        return 1 << 16;
     }
 
     /**
      * Returns a text representation of this object.
      */
     public String toString() {
-	return "#" + getValue();
+        return '#' + getValue();
     }
 }

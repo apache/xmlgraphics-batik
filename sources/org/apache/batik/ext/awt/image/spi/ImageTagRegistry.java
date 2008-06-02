@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001-2003,2006  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -34,10 +35,9 @@ import org.apache.batik.ext.awt.image.renderable.ProfileRable;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.Service;
 
-
 /**
  * This class handles the registered Image tag handlers.  These are
- * instances of RegisteryEntry in this package.
+ * instances of RegistryEntry in this package.
  *
  * @author <a href="mailto:Thomas.DeWeeese@Kodak.com">Thomas DeWeese</a>
  * @version $Id$
@@ -65,13 +65,25 @@ public class ImageTagRegistry implements ErrorConstants {
         this.imgCache= imgCache;
     }
 
+    /** Removes all decoded raster images from the cache.
+     *  All Images will be reloaded from the original source
+     *  if decoded again.
+     */
     public void flushCache() {
         rawCache.flush();
         imgCache.flush();
     }
 
+    /** Removes the given URL from the cache.  Only the Image
+     *  associated with that URL will be removed from the cache.
+     */
+    public void flushImage(ParsedURL purl) {
+        rawCache.clear(purl);
+        imgCache.clear(purl);
+    }
+
     public Filter checkCache(ParsedURL purl, ICCColorSpaceExt colorSpace) {
-        // I just realized that this whole thing could 
+        // I just realized that this whole thing could
         boolean needRawData = (colorSpace != null);
 
         Filter      ret        = null;
@@ -99,7 +111,7 @@ public class ImageTagRegistry implements ErrorConstants {
         return readURL(null, purl, colorSpace, true, true);
     }
 
-    public Filter readURL(InputStream is, ParsedURL purl, 
+    public Filter readURL(InputStream is, ParsedURL purl,
                           ICCColorSpaceExt colorSpace,
                           boolean allowOpenStream,
                           boolean returnBrokenLink) {
@@ -108,7 +120,7 @@ public class ImageTagRegistry implements ErrorConstants {
             // BufferedInputStream that does.
             is = new BufferedInputStream(is);
 
-        // I just realized that this whole thing could 
+        // I just realized that this whole thing could
         boolean needRawData = (colorSpace != null);
 
         Filter      ret     = null;
@@ -141,12 +153,12 @@ public class ImageTagRegistry implements ErrorConstants {
                 URLRegistryEntry ure = (URLRegistryEntry)re;
                 if (ure.isCompatibleURL(purl)) {
                     ret = ure.handleURL(purl, needRawData);
-                    
+
                     // Check if we got an image.
                     if (ret != null) break;
                 }
                 continue;
-            } 
+            }
 
             if (re instanceof StreamRegistryEntry) {
                 StreamRegistryEntry sre = (StreamRegistryEntry)re;
@@ -162,7 +174,6 @@ public class ImageTagRegistry implements ErrorConstants {
                         try {
                             is = purl.openStream(mimeTypes.iterator());
                         } catch(IOException ioe) {
-                            ioe.printStackTrace();
                             // Couldn't open the stream, go to next entry.
                             openFailed = true;
                             continue;
@@ -185,7 +196,7 @@ public class ImageTagRegistry implements ErrorConstants {
                 continue;
             }
         }
-        
+
         if (cache != null)
             cache.put(purl, ret);
 
@@ -213,7 +224,7 @@ public class ImageTagRegistry implements ErrorConstants {
 
         return ret;
     }
-    
+
     public Filter readStream(InputStream is) {
         return readStream(is, null);
     }
@@ -230,7 +241,7 @@ public class ImageTagRegistry implements ErrorConstants {
         Iterator i = entries.iterator();
         while (i.hasNext()) {
             RegistryEntry re = (RegistryEntry)i.next();
-            
+
             if (! (re instanceof StreamRegistryEntry))
                 continue;
             StreamRegistryEntry sre = (StreamRegistryEntry)re;
@@ -277,12 +288,12 @@ public class ImageTagRegistry implements ErrorConstants {
     /**
      * Returns a List that contains String of all the extensions that
      * can be handleded by the various registered image format
-     * handlers.  
+     * handlers.
      */
     public synchronized List getRegisteredExtensions() {
         if (extensions != null)
             return extensions;
-        
+
         extensions = new LinkedList();
         Iterator iter = entries.iterator();
         while(iter.hasNext()) {
@@ -296,10 +307,10 @@ public class ImageTagRegistry implements ErrorConstants {
     /**
      * Returns a List that contains String of all the mime types that
      * can be handleded by the various registered image format
-     * handlers.  
+     * handlers.
      */
     public synchronized List getRegisteredMimeTypes() {
-        if (mimeTypes != null) 
+        if (mimeTypes != null)
             return mimeTypes;
 
         mimeTypes = new LinkedList();
@@ -314,10 +325,10 @@ public class ImageTagRegistry implements ErrorConstants {
 
     static ImageTagRegistry registry = null;
 
-    public synchronized static ImageTagRegistry getRegistry() { 
-        if (registry != null) 
+    public static synchronized ImageTagRegistry getRegistry() {
+        if (registry != null)
             return registry;
-        
+
         registry = new ImageTagRegistry();
 
         //registry.register(new PNGRegistryEntry());
@@ -335,12 +346,12 @@ public class ImageTagRegistry implements ErrorConstants {
         return registry;
     }
 
-    static BrokenLinkProvider defaultProvider 
+    static BrokenLinkProvider defaultProvider
         = new DefaultBrokenLinkProvider();
 
     static BrokenLinkProvider brokenLinkProvider = null;
 
-    public synchronized static Filter 
+    public static synchronized Filter
         getBrokenLinkImage(Object base, String code, Object [] params) {
         Filter ret = null;
         if (brokenLinkProvider != null)
@@ -353,7 +364,7 @@ public class ImageTagRegistry implements ErrorConstants {
     }
 
 
-    public synchronized static void 
+    public static synchronized void
         setBrokenLinkProvider(BrokenLinkProvider provider) {
         brokenLinkProvider = provider;
     }

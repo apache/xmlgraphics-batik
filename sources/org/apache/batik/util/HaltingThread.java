@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2004 The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -74,7 +75,7 @@ public class HaltingThread extends Thread {
      * HaltingThread otherwise it does nothing.
      */
     public static void haltThread(Thread t) {
-        if (t instanceof HaltingThread) 
+        if (t instanceof HaltingThread)
             ((HaltingThread)t).halt();
     }
 
@@ -88,14 +89,14 @@ public class HaltingThread extends Thread {
     }
 
     /**
-     * Returns the result of calling hasBeenHalted on <tt>t</tt>, 
+     * Returns the result of calling hasBeenHalted on <tt>t</tt>,
      * if it is an instance of HaltingThread otherwise it returns false.
      */
     public static boolean hasBeenHalted(Thread t) {
-        if (t instanceof HaltingThread) 
+        if (t instanceof HaltingThread)
             return ((HaltingThread)t).isHalted();
         return false;
     }
 
 
-};
+}

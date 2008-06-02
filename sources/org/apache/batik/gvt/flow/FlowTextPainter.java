@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2004 The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -27,6 +28,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.Arrays;
 
 import org.apache.batik.gvt.TextNode;
 import org.apache.batik.gvt.TextPainter;
@@ -56,7 +58,7 @@ public class FlowTextPainter extends StrokingTextPainter {
      * Returns a unique instance of this class.
      */
     public static TextPainter getInstance() {
-	return singleton;
+        return singleton;
     }
 
     public List getTextRuns(TextNode node, AttributedCharacterIterator aci) {
@@ -89,7 +91,7 @@ public class FlowTextPainter extends StrokingTextPainter {
 
             textWrap(chunkACIs, chunkLayouts, rgns, fontRenderContext);
         }
-        
+
 
         node.setTextRuns(textRuns);
         return node.getTextRuns();
@@ -114,7 +116,7 @@ public class FlowTextPainter extends StrokingTextPainter {
     public static final AttributedCharacterIterator.Attribute GVT_FONT
         = GVTAttributedCharacterIterator.TextAttribute.GVT_FONT;
 
-    static protected Set szAtts = new HashSet();
+    protected static Set szAtts = new HashSet();
 
     static {
         szAtts.add(TextAttribute.SIZE);
@@ -127,7 +129,7 @@ public class FlowTextPainter extends StrokingTextPainter {
                                    List flowRects,
                                    FontRenderContext frc) {
 
-        // System.out.println("Len: " + acis.length + " Size: " + 
+        // System.out.println("Len: " + acis.length + " Size: " +
         //                     chunkLayouts.size());
 
         // Make a list of the GlyphVectors so we can construct a
@@ -196,7 +198,7 @@ public class FlowTextPainter extends StrokingTextPainter {
                 currWord++;
                 for (;currWord < chunkInfo.length;currWord++) {
                     wi = chunkInfo[currWord];
-                    if ((wi.getFlowLine() == flowLine) && (li.addWord(wi))) 
+                    if ((wi.getFlowLine() == flowLine) && (li.addWord(wi)))
                         continue;
 
                     // Word didn't fit or we hit end of flowLine elem,
@@ -212,7 +214,7 @@ public class FlowTextPainter extends StrokingTextPainter {
                     li = new LineInfo(fr, bi, false);
                     while (!li.addWord(wi)) {
                         newY =li.getCurrentY()+lh*.1;
-                        if (li.gotoY(newY)) break; 
+                        if (li.gotoY(newY)) break;
                     }
                     if (fr.done()) break;
                 }
@@ -226,7 +228,7 @@ public class FlowTextPainter extends StrokingTextPainter {
                 chunk++;
                 currWord = 0;
 
-                if (bi.isFlowRegionBreak()) 
+                if (bi.isFlowRegionBreak())
                     break;
 
                 if (!fr.newLine(lh)) // Region is done.
@@ -260,26 +262,27 @@ public class FlowTextPainter extends StrokingTextPainter {
         return overflow;
     }
 
-    static int [] allocWordMap(int [] wordMap, int sz) {
+    static int[] allocWordMap(int[] wordMap, int sz) {
         if (wordMap != null) {
-            if (sz <= wordMap.length)
+            if (sz <= wordMap.length) {
                 return wordMap;
-            if (sz < wordMap.length*2)
-                sz = wordMap.length*2;
+            }
+            if (sz < wordMap.length * 2) {
+                sz = wordMap.length * 2;
+            }
         }
 
-        int [] ret = new int[sz];
-        int ext=0;
-        if (wordMap != null)
-            ext = wordMap.length;
-        if (sz < ext) ext = sz;
-        int i=0;
-        for (; i<ext; i++) {
-            ret[i] = wordMap[i];
+        // we have a problem when wordMap actually IS null....
+        int[] ret = new int[sz];
+        int ext = wordMap != null ? wordMap.length : 0;
+        if (sz < ext) {
+            ext = sz;
         }
-        for (; i<sz; i++) {
-            ret[i] = -1;
+        if (ext != 0) {
+            System.arraycopy(wordMap, 0, ret, 0, ext);
         }
+        Arrays.fill(ret, ext, sz, -1);
+
         return ret;
     }
 
@@ -287,7 +290,7 @@ public class FlowTextPainter extends StrokingTextPainter {
      * This returns an array of glyphs numbers for each glyph
      * group in each word: ret[word][glyphGroup][glyphNum].
      */
-    static WordInfo[] doWordAnalysis(GVTGlyphVector gv, 
+    static WordInfo[] doWordAnalysis(GVTGlyphVector gv,
                                     AttributedCharacterIterator aci,
                                     int numWords,
                                     FontRenderContext frc) {
@@ -354,16 +357,16 @@ public class FlowTextPainter extends StrokingTextPainter {
             WordInfo wi = cWordMap[i];
             wordInfos[wi.getIndex()] = cWordMap[i];
         }
-        
+
         aciIdx = aci.getBeginIndex();
         int aciEnd = aci.getEndIndex();
         char ch = aci.setIndex(aciIdx);
-        
+
         int aciWordStart = aciIdx;
         GVTFont gvtFont = (GVTFont)aci.getAttribute(GVT_FONT);
-        float lineHeight = 1.f;
+        float lineHeight = 1.0f;
         Float lineHeightFloat = (Float)aci.getAttribute(LINE_HEIGHT);
-        if (lineHeightFloat != null) 
+        if (lineHeightFloat != null)
             lineHeight = lineHeightFloat.floatValue();
         int runLimit = aci.getRunLimit(szAtts);
         WordInfo prevWI = null;
@@ -390,7 +393,7 @@ public class FlowTextPainter extends StrokingTextPainter {
                 prevWI.addLineHeight(lineHeight);
                 aciWordStart = aciIdx;
                 prevWI = theWI;
-            } 
+            }
 
             int chCnt = gv.getCharacterCount(i,i);
             if (chCnt == 1) {
@@ -457,7 +460,7 @@ public class FlowTextPainter extends StrokingTextPainter {
             // System.err.println("CW: " + cWord);
             int [] wgs = wordGlyphs[cWord];
             if (wgs == null) {
-                wgs = wordGlyphs[cWord] 
+                wgs = wordGlyphs[cWord]
                     = new int[wordGlyphCounts[cWord]];
                 // We use this to track where the next
                 // glyph should go in wordGlyphs
@@ -485,18 +488,18 @@ public class FlowTextPainter extends StrokingTextPainter {
                 int start  = glyphs[0];
                 int end    = glyphs[glyphs.length-1];
                 wordGlyphGroups[0] = new GlyphGroupInfo
-                    (gv, start, end, hide, hideLast[end], 
+                    (gv, start, end, hide, hideLast[end],
                      glyphPos, advAdj, lastAdvAdj, space);
             } else {
                 int glyphGroup = 0;
-                int []glyphs = wordGlyphs[i]; 
+                int []glyphs = wordGlyphs[i];
                 int prev = glyphs[0];
                 int start = prev;
                 for (int j=1; j<glyphs.length; j++) {
                     if (prev+1 != glyphs[j]) {
                         int end = glyphs[j-1];
                         wordGlyphGroups[glyphGroup] = new GlyphGroupInfo
-                            (gv, start, end, hide, hideLast[end], 
+                            (gv, start, end, hide, hideLast[end],
                              glyphPos, advAdj, lastAdvAdj, space);
                         start = glyphs[j];
                         glyphGroup++;
@@ -505,7 +508,7 @@ public class FlowTextPainter extends StrokingTextPainter {
                 }
                 int end = glyphs[glyphs.length-1];
                 wordGlyphGroups[glyphGroup] = new GlyphGroupInfo
-                    (gv, start, end, hide, hideLast[end], 
+                    (gv, start, end, hide, hideLast[end],
                      glyphPos, advAdj, lastAdvAdj, space);
             }
             wordInfos[i].setGlyphGroups(wordGlyphGroups);
@@ -513,4 +516,4 @@ public class FlowTextPainter extends StrokingTextPainter {
         return wordInfos;
     }
 
-};
+}

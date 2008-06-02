@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001-2003,2006  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -31,9 +32,9 @@ import org.apache.batik.css.engine.value.ValueManager;
 import org.apache.batik.css.parser.ExtendedParser;
 import org.apache.batik.css.parser.ExtendedParserWrapper;
 import org.apache.batik.dom.util.DOMUtilities;
-import org.apache.batik.dom.util.DoublyIndexedTable;
 import org.apache.batik.i18n.Localizable;
 import org.apache.batik.i18n.LocalizableSupport;
+import org.apache.batik.util.DoublyIndexedTable;
 import org.apache.batik.util.Service;
 import org.apache.batik.util.XMLResourceDescriptor;
 
@@ -53,12 +54,12 @@ import org.w3c.dom.css.ViewCSS;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public abstract class ExtensibleDOMImplementation 
+public abstract class ExtensibleDOMImplementation
     extends AbstractDOMImplementation
     implements DOMImplementationCSS,
                StyleSheetFactory,
                Localizable {
-    
+
     /**
      * The custom elements factories.
      */
@@ -77,7 +78,7 @@ public abstract class ExtensibleDOMImplementation
     /**
      * The error messages bundle class name.
      */
-    protected final static String RESOURCES =
+    protected static final String RESOURCES =
         "org.apache.batik.dom.resources.Messages";
 
     /**
@@ -105,7 +106,7 @@ public abstract class ExtensibleDOMImplementation
      * Implements {@link Localizable#setLocale(Locale)}.
      */
     public void setLocale(Locale l) {
-	localizableSupport.setLocale(l);
+        localizableSupport.setLocale(l);
     }
 
     /**
@@ -163,7 +164,7 @@ public abstract class ExtensibleDOMImplementation
     /**
      * Creates new CSSEngine and attach it to the document.
      */
-    public CSSEngine createCSSEngine(AbstractStylableDocument doc, 
+    public CSSEngine createCSSEngine(AbstractStylableDocument doc,
                                      CSSContext ctx) {
         String pn = XMLResourceDescriptor.getCSSParserClassName();
         Parser p;
@@ -213,10 +214,10 @@ public abstract class ExtensibleDOMImplementation
         return result;
     }
 
-    public abstract CSSEngine createCSSEngine(AbstractStylableDocument doc,  
+    public abstract CSSEngine createCSSEngine(AbstractStylableDocument doc,
                                               CSSContext               ctx,
                                               ExtendedParser           ep,
-                                              ValueManager     []      vms, 
+                                              ValueManager     []      vms,
                                               ShorthandManager []      sms);
 
     /**
@@ -267,7 +268,7 @@ public abstract class ExtensibleDOMImplementation
 
     protected static List extensions = null;
 
-    protected synchronized static List getDomExtensions() {
+    protected static synchronized List getDomExtensions() {
         if (extensions != null)
             return extensions;
 

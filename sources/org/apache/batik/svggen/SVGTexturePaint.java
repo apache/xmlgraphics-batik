@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001,2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -128,14 +129,14 @@ public class SVGTexturePaint extends AbstractSVGConverter {
             // handleImage((RenderedImage)textureImage, imageElement,
             // generatorContext);
 
-            Element patternContent 
+            Element patternContent
                 = generatorContext.genericImageHandler.createElement
                 (generatorContext);
 
             generatorContext.genericImageHandler.handleImage
                 ((RenderedImage)textureImage,
                  patternContent,
-                 0, 
+                 0,
                  0,
                  textureImage.getWidth(),
                  textureImage.getHeight(),
@@ -143,18 +144,19 @@ public class SVGTexturePaint extends AbstractSVGConverter {
 
             patternDef.appendChild(patternContent);
 
-            patternDef.setAttributeNS(null, ATTR_ID,
+            patternDef.setAttributeNS(null, SVG_ID_ATTRIBUTE,
                                       generatorContext.idGenerator.
                                       generateID(ID_PREFIX_PATTERN));
 
-            StringBuffer patternAttrBuf = new StringBuffer(URL_PREFIX);
-            patternAttrBuf.append(SIGN_POUND);
-            patternAttrBuf.append(patternDef.getAttributeNS(null, ATTR_ID));
-            patternAttrBuf.append(URL_SUFFIX);
-
-            patternDesc = new SVGPaintDescriptor(patternAttrBuf.toString(),
-                                                 SVG_OPAQUE_VALUE,
-                                                 patternDef);
+//            StringBuffer patternAttrBuf = new StringBuffer(URL_PREFIX);
+//            patternAttrBuf.append(SIGN_POUND);
+//            patternAttrBuf.append(patternDef.getAttributeNS(null, SVG_ID_ATTRIBUTE));
+//            patternAttrBuf.append(URL_SUFFIX);
+            String patternAttrBuf = URL_PREFIX
+                    + SIGN_POUND
+                    + patternDef.getAttributeNS(null, SVG_ID_ATTRIBUTE)
+                    + URL_SUFFIX;
+            patternDesc = new SVGPaintDescriptor(patternAttrBuf, SVG_OPAQUE_VALUE, patternDef);
 
             descMap.put(texture, patternDesc);
             defSet.add(patternDef);

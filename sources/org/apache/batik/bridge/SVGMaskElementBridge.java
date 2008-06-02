@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001-2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -34,8 +35,8 @@ import org.w3c.dom.Node;
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
-public class SVGMaskElementBridge extends AbstractSVGBridge
-    implements MaskBridge {
+public class SVGMaskElementBridge extends AnimatableGenericSVGBridge
+        implements MaskBridge {
 
     /**
      * Constructs a new bridge for the &lt;mask> element.
@@ -102,7 +103,7 @@ public class SVGMaskElementBridge extends AbstractSVGBridge
         s = maskElement.getAttributeNS(null, SVG_TRANSFORM_ATTRIBUTE);
         if (s.length() != 0) {
             Tx = SVGUtilities.convertTransform
-                (maskElement, SVG_TRANSFORM_ATTRIBUTE, s);
+                (maskElement, SVG_TRANSFORM_ATTRIBUTE, s, ctx);
         } else {
             Tx = new AffineTransform();
         }
@@ -114,7 +115,7 @@ public class SVGMaskElementBridge extends AbstractSVGBridge
             coordSystemType = SVGUtilities.USER_SPACE_ON_USE;
         } else {
             coordSystemType = SVGUtilities.parseCoordinateSystem
-                (maskElement, SVG_MASK_CONTENT_UNITS_ATTRIBUTE, s);
+                (maskElement, SVG_MASK_CONTENT_UNITS_ATTRIBUTE, s, ctx);
         }
 
         // additional transform to move to objectBoundingBox coordinate system

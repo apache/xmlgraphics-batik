@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2002-2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -23,6 +24,7 @@ import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.css.engine.value.ValueConstants;
 import org.apache.batik.css.engine.value.ValueManager;
 import org.apache.batik.util.CSSConstants;
+import org.apache.batik.util.SVGTypes;
 
 /**
  * This class provides a manager for the 'font-variant' property values.
@@ -31,15 +33,15 @@ import org.apache.batik.util.CSSConstants;
  * @version $Id$
  */
 public class FontVariantManager extends IdentifierManager {
-    
+
     /**
      * The identifier values.
      */
-    protected final static StringMap values = new StringMap();
+    protected static final StringMap values = new StringMap();
     static {
-	values.put(CSSConstants.CSS_NORMAL_VALUE,
+        values.put(CSSConstants.CSS_NORMAL_VALUE,
                    ValueConstants.NORMAL_VALUE);
-	values.put(CSSConstants.CSS_SMALL_CAPS_VALUE,
+        values.put(CSSConstants.CSS_SMALL_CAPS_VALUE,
                    ValueConstants.SMALL_CAPS_VALUE);
     }
 
@@ -48,7 +50,28 @@ public class FontVariantManager extends IdentifierManager {
      * org.apache.batik.css.engine.value.ValueManager#isInheritedProperty()}.
      */
     public boolean isInheritedProperty() {
-	return true;
+        return true;
+    }
+
+    /**
+     * Implements {@link ValueManager#isAnimatableProperty()}.
+     */
+    public boolean isAnimatableProperty() {
+        return true;
+    }
+
+    /**
+     * Implements {@link ValueManager#isAdditiveProperty()}.
+     */
+    public boolean isAdditiveProperty() {
+        return false;
+    }
+
+    /**
+     * Implements {@link ValueManager#getPropertyType()}.
+     */
+    public int getPropertyType() {
+        return SVGTypes.TYPE_IDENT;
     }
 
     /**
@@ -56,9 +79,9 @@ public class FontVariantManager extends IdentifierManager {
      * org.apache.batik.css.engine.value.ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return CSSConstants.CSS_FONT_VARIANT_PROPERTY;
+        return CSSConstants.CSS_FONT_VARIANT_PROPERTY;
     }
-    
+
     /**
      * Implements {@link
      * org.apache.batik.css.engine.value.ValueManager#getDefaultValue()}.

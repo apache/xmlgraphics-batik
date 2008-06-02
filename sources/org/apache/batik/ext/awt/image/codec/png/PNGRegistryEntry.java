@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001,2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -35,7 +36,11 @@ import org.apache.batik.ext.awt.image.spi.ImageTagRegistry;
 import org.apache.batik.ext.awt.image.spi.MagicNumberRegistryEntry;
 import org.apache.batik.util.ParsedURL;
 
-public class PNGRegistryEntry 
+/**
+ *
+ * @version $Id$
+ */
+public class PNGRegistryEntry
     extends MagicNumberRegistryEntry {
 
 
@@ -52,9 +57,9 @@ public class PNGRegistryEntry
      * @param origURL The original URL, if any, for documentation
      *                purposes only.  This may be null.
      * @param needRawData If true the image returned should not have
-     *                    any default color correction the file may 
+     *                    any default color correction the file may
      *                    specify applied.  */
-    public Filter handleStream(InputStream inIS, 
+    public Filter handleStream(InputStream inIS,
                                ParsedURL   origURL,
                                boolean needRawData) {
 
@@ -77,8 +82,8 @@ public class PNGRegistryEntry
                     try {
                         PNGDecodeParam param = new PNGDecodeParam();
                         param.setExpandPalette(true);
-                        
-                        if (raw) 
+
+                        if (raw)
                             param.setPerformGammaCorrection(false);
                         else {
                             param.setPerformGammaCorrection(true);
@@ -99,15 +104,15 @@ public class PNGRegistryEntry
                         filt = new RedRable(cr);
                     } catch (IOException ioe) {
                         filt = ImageTagRegistry.getBrokenLinkImage
-                            (this, errCode, errParam);
+                            (PNGRegistryEntry.this, errCode, errParam);
                     } catch (ThreadDeath td) {
                         filt = ImageTagRegistry.getBrokenLinkImage
-                            (this, errCode, errParam);
+                            (PNGRegistryEntry.this, errCode, errParam);
                         dr.setSource(filt);
                         throw td;
                     } catch (Throwable t) {
                         filt = ImageTagRegistry.getBrokenLinkImage
-                            (this, errCode, errParam);
+                            (PNGRegistryEntry.this, errCode, errParam);
                     }
 
                     dr.setSource(filt);

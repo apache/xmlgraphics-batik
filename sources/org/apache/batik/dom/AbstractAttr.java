@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2000-2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -73,19 +74,19 @@ public abstract class AbstractAttr extends AbstractParentNode implements Attr {
      */
     protected AbstractAttr(String name, AbstractDocument owner)
         throws DOMException {
-	ownerDocument = owner;
-	if (owner.getStrictErrorChecking() && !DOMUtilities.isValidName(name)) {
-	    throw createDOMException(DOMException.INVALID_CHARACTER_ERR,
-				     "xml.name",
-				     new Object[] { name });
-	}
+        ownerDocument = owner;
+        if (owner.getStrictErrorChecking() && !DOMUtilities.isValidName(name)) {
+            throw createDOMException(DOMException.INVALID_CHARACTER_ERR,
+                                     "xml.name",
+                                     new Object[] { name });
+        }
     }
 
     /**
      * Sets the node name.
      */
     public void setNodeName(String v) {
-	nodeName = v;
+        nodeName = v;
         isIdAttr = ownerDocument.isId(this);
     }
 
@@ -94,7 +95,7 @@ public abstract class AbstractAttr extends AbstractParentNode implements Attr {
      * @return {@link #nodeName}.
      */
     public String getNodeName() {
-	return nodeName;
+        return nodeName;
     }
 
     /**
@@ -102,7 +103,7 @@ public abstract class AbstractAttr extends AbstractParentNode implements Attr {
      * @return {@link org.w3c.dom.Node#ATTRIBUTE_NODE}
      */
     public short getNodeType() {
-	return ATTRIBUTE_NODE;
+        return ATTRIBUTE_NODE;
     }
 
     /**
@@ -118,38 +119,38 @@ public abstract class AbstractAttr extends AbstractParentNode implements Attr {
         if (n == null) {
             return first.getNodeValue();
         }
-	StringBuffer result = new StringBuffer(first.getNodeValue());
-	do {
-	    result.append(n.getNodeValue());
+        StringBuffer result = new StringBuffer(first.getNodeValue());
+        do {
+            result.append(n.getNodeValue());
             n = n.getNextSibling();
-	} while (n != null);
-	return result.toString();
+        } while (n != null);
+        return result.toString();
     }
 
     /**
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#setNodeValue(String)}.
      */
     public void setNodeValue(String nodeValue) throws DOMException {
-	if (isReadonly()) {
-	    throw createDOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR,
-				     "readonly.node",
-				     new Object[] { new Integer(getNodeType()),
-						    getNodeName() });
-	}
+        if (isReadonly()) {
+            throw createDOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR,
+                                     "readonly.node",
+                                     new Object[] { new Integer(getNodeType()),
+                                                    getNodeName() });
+        }
 
         String s = getNodeValue();
 
-	// Remove all the children
-	Node n;
-	while ((n = getFirstChild()) != null) {
-	    removeChild(n);
-	}
+        // Remove all the children
+        Node n;
+        while ((n = getFirstChild()) != null) {
+            removeChild(n);
+        }
 
         String val = (nodeValue == null) ? "" : nodeValue;
 
-	// Create and append a new child.
-	n = getOwnerDocument().createTextNode(val);
-	appendChild(n);
+        // Create and append a new child.
+        n = getOwnerDocument().createTextNode(val);
+        appendChild(n);
 
         if (ownerElement != null) {
             ownerElement.fireDOMAttrModifiedEvent(nodeName,
@@ -165,7 +166,7 @@ public abstract class AbstractAttr extends AbstractParentNode implements Attr {
      * @return {@link #getNodeName()}.
      */
     public String getName() {
-	return getNodeName();
+        return getNodeName();
     }
 
     /**
@@ -173,14 +174,14 @@ public abstract class AbstractAttr extends AbstractParentNode implements Attr {
      * @return !{@link #unspecified}.
      */
     public boolean getSpecified() {
-	return !unspecified;
+        return !unspecified;
     }
 
     /**
      * Sets the specified attribute.
      */
     public void setSpecified(boolean v) {
-	unspecified = !v;
+        unspecified = !v;
     }
 
     /**
@@ -188,28 +189,28 @@ public abstract class AbstractAttr extends AbstractParentNode implements Attr {
      * @return {@link #getNodeValue()}.
      */
     public String getValue() {
-	return getNodeValue();
+        return getNodeValue();
     }
 
     /**
      * <b>DOM</b>: Implements {@link org.w3c.dom.Attr#setValue(String)}.
      */
     public void setValue(String value) throws DOMException {
-	setNodeValue(value);
+        setNodeValue(value);
     }
 
     /**
      * Sets the owner element.
      */
     public void setOwnerElement(AbstractElement v) {
-	ownerElement = v;
+        ownerElement = v;
     }
     
     /**
      * <b>DOM</b>: Implements {@link org.w3c.dom.Attr#getOwnerElement()}.
      */
     public Element getOwnerElement() {
-	return ownerElement;
+        return ownerElement;
     }
 
     /**
@@ -223,7 +224,7 @@ public abstract class AbstractAttr extends AbstractParentNode implements Attr {
     }
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.Attr#getIsId()}.
+     * <b>DOM</b>: Implements {@link org.w3c.dom.Attr#isId()}.
      */
     public boolean isId() {
         return isIdAttr;
@@ -254,24 +255,24 @@ public abstract class AbstractAttr extends AbstractParentNode implements Attr {
      * Exports this node to the given document.
      */
     protected Node export(Node n, AbstractDocument d) {
-	super.export(n, d);
-	AbstractAttr aa = (AbstractAttr)n;
-	aa.nodeName     = nodeName;
-	aa.unspecified  = false;
+        super.export(n, d);
+        AbstractAttr aa = (AbstractAttr)n;
+        aa.nodeName     = nodeName;
+        aa.unspecified  = false;
         aa.isIdAttr     = d.isId(aa);
-	return n;
+        return n;
     }
 
     /**
      * Deeply exports this node to the given document.
      */
     protected Node deepExport(Node n, AbstractDocument d) {
-	super.deepExport(n, d);
-	AbstractAttr aa = (AbstractAttr)n;
-	aa.nodeName     = nodeName;
-	aa.unspecified  = false;
+        super.deepExport(n, d);
+        AbstractAttr aa = (AbstractAttr)n;
+        aa.nodeName     = nodeName;
+        aa.unspecified  = false;
         aa.isIdAttr     = d.isId(aa);
-	return n;
+        return n;
     }
 
     /**
@@ -279,12 +280,12 @@ public abstract class AbstractAttr extends AbstractParentNode implements Attr {
      * @param n a node of the type of this.
      */
     protected Node copyInto(Node n) {
-	super.copyInto(n);
-	AbstractAttr aa = (AbstractAttr)n;
-	aa.nodeName     = nodeName;
-	aa.unspecified  = unspecified;
+        super.copyInto(n);
+        AbstractAttr aa = (AbstractAttr)n;
+        aa.nodeName     = nodeName;
+        aa.unspecified  = unspecified;
         aa.isIdAttr     = isIdAttr;
-	return n;
+        return n;
     }
 
     /**
@@ -292,46 +293,46 @@ public abstract class AbstractAttr extends AbstractParentNode implements Attr {
      * @param n a node of the type of this.
      */
     protected Node deepCopyInto(Node n) {
-	super.deepCopyInto(n);
-	AbstractAttr aa = (AbstractAttr)n;
-	aa.nodeName     = nodeName;
-	aa.unspecified  = unspecified;
+        super.deepCopyInto(n);
+        AbstractAttr aa = (AbstractAttr)n;
+        aa.nodeName     = nodeName;
+        aa.unspecified  = unspecified;
         aa.isIdAttr     = isIdAttr;
-	return n;
+        return n;
     }
 
     /**
      * Checks the validity of a node to be inserted.
      */
     protected void checkChildType(Node n, boolean replace) {
-	switch (n.getNodeType()) {
-	case TEXT_NODE:
-	case ENTITY_REFERENCE_NODE:
-	case DOCUMENT_FRAGMENT_NODE:
-	    break;
-	default:
-	    throw createDOMException
+        switch (n.getNodeType()) {
+        case TEXT_NODE:
+        case ENTITY_REFERENCE_NODE:
+        case DOCUMENT_FRAGMENT_NODE:
+            break;
+        default:
+            throw createDOMException
                 (DOMException.HIERARCHY_REQUEST_ERR,
                  "child.type",
                  new Object[] { new Integer(getNodeType()),
                                             getNodeName(),
                                 new Integer(n.getNodeType()),
                                             n.getNodeName() });
-	}
+        }
     }
 
     /**
      * Fires a DOMSubtreeModified event.
      */
     protected void fireDOMSubtreeModifiedEvent() {
-	AbstractDocument doc = getCurrentDocument();
-	if (doc.getEventsEnabled()) {
-	    super.fireDOMSubtreeModifiedEvent();
-	    if (getOwnerElement() != null) {
-		((AbstractElement)getOwnerElement()).
+        AbstractDocument doc = getCurrentDocument();
+        if (doc.getEventsEnabled()) {
+            super.fireDOMSubtreeModifiedEvent();
+            if (getOwnerElement() != null) {
+                ((AbstractElement)getOwnerElement()).
                     fireDOMSubtreeModifiedEvent();
-	    }
-	}
+            }
+        }
     }
 
     /**

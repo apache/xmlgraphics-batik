@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2002-2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -21,6 +22,7 @@ import org.apache.batik.css.engine.value.AbstractColorManager;
 import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.css.engine.value.ValueManager;
 import org.apache.batik.util.CSSConstants;
+import org.apache.batik.util.SVGTypes;
 
 /**
  * This class provides a manager for the 'color' property values.
@@ -29,11 +31,11 @@ import org.apache.batik.util.CSSConstants;
  * @version $Id$
  */
 public class ColorManager extends AbstractColorManager {
-    
+
     /**
      * The default color value.
      */
-    protected final static Value DEFAULT_VALUE =
+    protected static final Value DEFAULT_VALUE =
         SVGValueConstants.BLACK_RGB_VALUE;
 
     //
@@ -615,7 +617,28 @@ public class ColorManager extends AbstractColorManager {
      * org.apache.batik.css.engine.value.ValueManager#isInheritedProperty()}.
      */
     public boolean isInheritedProperty() {
-	return true;
+        return true;
+    }
+
+    /**
+     * Implements {@link ValueManager#isAnimatableProperty()}.
+     */
+    public boolean isAnimatableProperty() {
+        return true;
+    }
+
+    /**
+     * Implements {@link ValueManager#isAdditiveProperty()}.
+     */
+    public boolean isAdditiveProperty() {
+        return true;
+    }
+
+    /**
+     * Implements {@link ValueManager#getPropertyType()}.
+     */
+    public int getPropertyType() {
+        return SVGTypes.TYPE_COLOR;
     }
 
     /**
@@ -623,9 +646,9 @@ public class ColorManager extends AbstractColorManager {
      * org.apache.batik.css.engine.value.ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return CSSConstants.CSS_COLOR_PROPERTY;
+        return CSSConstants.CSS_COLOR_PROPERTY;
     }
-    
+
     /**
      * Implements {@link
      * org.apache.batik.css.engine.value.ValueManager#getDefaultValue()}.

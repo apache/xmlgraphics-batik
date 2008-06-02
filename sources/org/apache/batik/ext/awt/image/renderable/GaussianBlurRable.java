@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -29,33 +30,33 @@ public interface GaussianBlurRable extends FilterColorInterpolation {
     /**
      * Returns the source to be Blurred
      */
-    public Filter getSource();
+    Filter getSource();
 
     /**
      * Sets the source to be blurred.
      * @param src image to blurred.
      */
-    public void setSource(Filter src);
+    void setSource(Filter src);
 
     /**
      * The deviation along the x axis, in user space.
      * @param stdDeviationX should be greater than zero.
      */
-    public void setStdDeviationX(double stdDeviationX);
+    void setStdDeviationX(double stdDeviationX);
 
     /**
      * The deviation along the y axis, in user space.
      * @param stdDeviationY should be greater than zero
      */
-    public void setStdDeviationY(double stdDeviationY);
+    void setStdDeviationY(double stdDeviationY);
 
     /**
      * Returns the deviation along the x-axis, in user space.
      */
-    public double getStdDeviationX();
+    double getStdDeviationX();
 
     /**
      * Returns the deviation along the y-axis, in user space.
      */
-    public double getStdDeviationY();
+    double getStdDeviationY();
 }

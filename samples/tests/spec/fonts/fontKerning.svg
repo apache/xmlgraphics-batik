@@ -4,11 +4,12 @@
 
 <!--
 
-   Copyright 2001-2002  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -192,7 +193,7 @@
            <hkern u1="y" g2="z" k="-1000"/>
 
            <hkern u1="U+0061-0063" u2="U+0064-0066" k="500"/>
-	     <hkern u1="U+006?" u2="U+007?" k="-1000"/>
+           <hkern u1="U+006?" u2="U+007?" k="-1000"/>
 
            <vkern u1="u" u2="v" k="-200"/>
            <vkern u1="v" u2="w" k="-400"/>
@@ -201,7 +202,7 @@
            <vkern u1="y" u2="z" k="-1000"/>
 
            <vkern u1="U+0061-0063" u2="U+0064-0066" k="500"/>
-	     <vkern u1="U+006?" u2="U+007?" k="-1000"/>
+           <vkern u1="U+006?" u2="U+007?" k="-1000"/>
 
            </font>
 

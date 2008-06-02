@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -27,6 +28,9 @@ import org.apache.batik.transcoder.wmf.WMFConstants;
 
 /**
  * An object that stores the vector graphics records.
+ *
+ * @deprecated jan '07 : this class is not used anywhere in Batik, it might be removed in the future.
+ *  Probably WMFRecordStore is what you need.
  *
  * @author <a href="mailto:luano@asd.ie">Luan O'Carroll</a>
  * @version $Id$
@@ -77,7 +81,7 @@ public class RecordStore {
         numObjects = is.readShort();
         objectVector.ensureCapacity( numObjects );
         for ( int i = 0; i < numObjects; i++ ) {
-            objectVector.addElement( new GdiObject( i, false ));
+            objectVector.add( new GdiObject( i, false ));
         }
 
         while ( functionId != -1 ) {
@@ -115,7 +119,7 @@ public class RecordStore {
                 mr.AddElement( new Integer( is.readShort()));
             }
 
-            records.addElement( mr );
+            records.add( mr );
 
             numRecords++;
         }
@@ -130,11 +134,10 @@ public class RecordStore {
      *
      * This function should not normally be called by an application.
      */
-    public void addObject( int type, Object obj )
-    {
+    public void addObject( int type, Object obj ) {
         for ( int i = 0; i < numObjects; i++ ) {
-            GdiObject gdi = (GdiObject)objectVector.elementAt( i );
-            if ( gdi.used == false ) {
+            GdiObject gdi = (GdiObject)objectVector.get( i );
+            if ( ! gdi.used ) {
                 gdi.Setup( type, obj );
                 lastObjectIdx = i;
                 break;
@@ -156,7 +159,7 @@ public class RecordStore {
         }
         lastObjectIdx = idx;
         for ( int i = 0; i < numObjects; i++ ) {
-            GdiObject gdi = (GdiObject)objectVector.elementAt( i );
+            GdiObject gdi = (GdiObject)objectVector.get( i );
             if ( i == idx ) {
                 gdi.Setup( type, obj );
                 break;
@@ -182,14 +185,14 @@ public class RecordStore {
      * Returns a GdiObject from the handle table
      */
     public GdiObject getObject( int idx ) {
-        return (GdiObject)objectVector.elementAt( idx );
+        return (GdiObject)objectVector.get( idx );
     }
 
     /**
      * Returns a meta record.
      */
     public MetaRecord getRecord( int idx ) {
-        return (MetaRecord)records.elementAt( idx );
+        return (MetaRecord)records.get( idx );
     }
 
     /**
@@ -262,14 +265,18 @@ public class RecordStore {
         vpH = newValue;
     }
 
-    transient private URL url;
+    private transient URL url;
 
-    transient protected int numRecords;
-    transient protected int numObjects;
-    transient public int lastObjectIdx;
-    transient protected int vpX, vpY, vpW, vpH;
-    transient protected Vector	records;
-    transient protected Vector	objectVector;
+    protected transient int numRecords;
+    protected transient int numObjects;
+    public transient int lastObjectIdx;
+    protected transient int vpX;
+    protected transient int vpY;
+    protected transient int vpW;
+    protected transient int vpH;
 
-    transient protected boolean bReading = false;
+    protected transient Vector records;
+    protected transient Vector objectVector;
+
+    protected transient boolean bReading = false;
 }

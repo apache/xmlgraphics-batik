@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001-2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -17,11 +18,14 @@
  */
 package org.apache.batik.gvt.event;
 
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-
 import java.util.EventObject;
+
+import org.apache.batik.gvt.GraphicsNode;
 
 /**
  * A concrete version of {@link org.apache.batik.gvt.event.AWTEventDispatcher}.
@@ -80,7 +84,7 @@ public class AWTEventDispatcher extends AbstractAWTEventDispatcher
                 (new GraphicsNodeMouseWheelEvent(lastHit,
                                                  evt.getID(),
                                                  evt.getWhen(),
-                                                 evt.getModifiers(),
+                                                 evt.getModifiersEx(),
                                                  getCurrentLockState(),
                                                  evt.getWheelRotation()));
         }
@@ -108,16 +112,40 @@ public class AWTEventDispatcher extends AbstractAWTEventDispatcher
      */
     protected void dispatchKeyEvent(KeyEvent evt) {
         currentKeyEventTarget = lastHit;
-        if (currentKeyEventTarget != null) {
-            processKeyEvent
-                (new GraphicsNodeKeyEvent(currentKeyEventTarget,
-                                          evt.getID(),
-                                          evt.getWhen(),
-                                          evt.getModifiers(),
-                                          getCurrentLockState(),
-                                          evt.getKeyCode(),
-                                          evt.getKeyChar(),
-                                          evt.getKeyLocation()));
-        }
+        GraphicsNode target =
+            currentKeyEventTarget == null ? root : currentKeyEventTarget;
+        processKeyEvent
+            (new GraphicsNodeKeyEvent(target,
+                                      evt.getID(),
+                                      evt.getWhen(),
+                                      evt.getModifiersEx(),
+                                      getCurrentLockState(),
+                                      evt.getKeyCode(),
+                                      evt.getKeyChar(),
+                                      evt.getKeyLocation()));
+    }
+
+    /** 
+     * Returns the modifiers mask for this event.  This just calls
+     * {@link InputEvent#getModifiersEx()} on <code>evt</code>.
+     */
+    protected int getModifiers(InputEvent evt) {
+        return evt.getModifiersEx();
+    }
+
+    /**
+     * Returns the button whose state changed for the given event.  This just
+     * calls {@link MouseEvent#getButton()}.
+     */
+    protected int getButton(MouseEvent evt) {
+        return evt.getButton();
+    }
+
+    /**
+     * Returns whether the meta key is down according to the given modifiers
+     * bitfield.
+     */
+    protected static boolean isMetaDown(int modifiers) {
+        return (modifiers & (1 << 8)) != 0; /* META_DOWN_MASK */
     }
 }

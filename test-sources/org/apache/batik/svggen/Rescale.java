@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001,2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -82,11 +83,11 @@ public class Rescale implements Painter {
 
         g.translate(0, bi.getHeight() + 30 + 20);
         g.drawString("Rescale Red / Green / Blue", 10, 20);
-        java.awt.image.RescaleOp redStress = new java.awt.image.RescaleOp(new float[]{ 2f, 1f, 1f },
+        java.awt.image.RescaleOp redStress = new java.awt.image.RescaleOp(new float[]{ 2.0f, 1.0f, 1.0f },
                                             new float[]{ 0, 0, 0 }, null);
-        java.awt.image.RescaleOp greenStress = new java.awt.image.RescaleOp(new float[]{ 1f, 2f, 1f },
+        java.awt.image.RescaleOp greenStress = new java.awt.image.RescaleOp(new float[]{ 1.0f, 2.0f, 1.0f },
                                               new float[]{ 0, 0, 0 }, null);
-        java.awt.image.RescaleOp blueStress = new java.awt.image.RescaleOp(new float[]{ 1f, 1f, 2f },
+        java.awt.image.RescaleOp blueStress = new java.awt.image.RescaleOp(new float[]{ 1.0f, 1.0f, 2.0f },
                                              new float[]{ 0, 0, 0 }, null);
 
         g.drawImage(bi, redStress, 10, 30);

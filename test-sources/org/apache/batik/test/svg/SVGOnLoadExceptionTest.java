@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2002-2004  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -63,12 +64,12 @@ import org.w3c.dom.Element;
  * This test takes an SVG file as an input. It processes the input SVG
  * (meaning it turns it into a GVT tree) and then dispatches the 'onload'
  * event.
- * 
+ *
  * In that process, the test checks for the occurence of a specific
  * exception type and, for BridgeExceptions, for a given error code.
  *
  * If an exception of the given type (and, optionally, code) happens,
- * then the test passes. If an exception of an unexpected type 
+ * then the test passes. If an exception of an unexpected type
  * (or code, for BridgeExceptions) happens, or if no exception happens,
  * the test fails.
  *
@@ -165,7 +166,7 @@ public class SVGOnLoadExceptionTest extends AbstractTest {
      * The allowed script types
      */
     protected String scripts = "text/ecmascript, application/java-archive";
-    
+
     /**
      * Name of the expected exception class
      */
@@ -194,7 +195,7 @@ public class SVGOnLoadExceptionTest extends AbstractTest {
     /**
      * Controls whether or not the input SVG document should be validated
      */
-    protected Boolean validate = new Boolean(false);
+    protected Boolean validate = Boolean.FALSE;
 
     /**
      * The name of the test file
@@ -270,10 +271,10 @@ public class SVGOnLoadExceptionTest extends AbstractTest {
     public void setValidate(Boolean validate) {
         this.validate = validate;
         if (this.validate == null) {
-            this.validate = new Boolean(false);
+            this.validate = Boolean.FALSE;
         }
     }
-    
+
     /**
      * Default constructor
      */
@@ -311,7 +312,7 @@ public class SVGOnLoadExceptionTest extends AbstractTest {
                 throw new IllegalArgumentException();
             }
         }
-        
+
         // url is not a file. It must be a regular URL...
         try{
             return (new URL(url)).toString();
@@ -325,7 +326,7 @@ public class SVGOnLoadExceptionTest extends AbstractTest {
      * Run this test and produce a report.
      * The test goes through the following steps: <ul>
      * <li>load the input SVG into a Document</li>
-     * <li>build the GVT tree corresponding to the 
+     * <li>build the GVT tree corresponding to the
      *     Document and dispatch the 'onload' event</li>
      * </ul>
      *
@@ -343,7 +344,7 @@ public class SVGOnLoadExceptionTest extends AbstractTest {
             if (!restricted) {
                 return testImpl();
             } else {
-                // Emulate calling from restricted code. We create a 
+                // Emulate calling from restricted code. We create a
                 // calling context with only the permission to read
                 // the file.
                 Policy policy = Policy.getPolicy();
@@ -358,11 +359,11 @@ public class SVGOnLoadExceptionTest extends AbstractTest {
                     if (!(p instanceof RuntimePermission)) {
                         if (!(p instanceof java.security.AllPermission)) {
                             permissions.add(p);
-                        } 
+                        }
                     } else {
                         if (!"createClassLoader".equals(p.getName())) {
                             permissions.add(p);
-                        } 
+                        }
                     }
                 }
 
@@ -395,7 +396,7 @@ public class SVGOnLoadExceptionTest extends AbstractTest {
      */
     protected TestReport testImpl() {
         //
-        // First step: 
+        // First step:
         //
         // Load the input SVG into a Document object
         //
@@ -403,17 +404,17 @@ public class SVGOnLoadExceptionTest extends AbstractTest {
         SAXSVGDocumentFactory f = new SAXSVGDocumentFactory(parserClassName);
         f.setValidating(validate.booleanValue());
         Document doc = null;
-        
+
         try {
             doc = f.createDocument(svgURL);
         } catch(Exception e){
             e.printStackTrace();
             return handleException(e);
-        } 
-        
+        }
+
         //
         // Second step:
-        // 
+        //
         // Now that the SVG file has been loaded, build
         // a GVT Tree from it
         //
@@ -424,7 +425,7 @@ public class SVGOnLoadExceptionTest extends AbstractTest {
         Exception e = null;
         try {
             builder.build(ctx, doc);
-            BaseScriptingEnvironment scriptEnvironment 
+            BaseScriptingEnvironment scriptEnvironment
                 = new BaseScriptingEnvironment(ctx);
             scriptEnvironment.loadScripts();
             scriptEnvironment.dispatchSVGLoadEvent();
@@ -434,12 +435,12 @@ public class SVGOnLoadExceptionTest extends AbstractTest {
             if (e == null && userAgent.e != null) {
                 e = userAgent.e;
             }
-            
+
             if (e != null) {
                 return handleException(e);
             }
-        } 
-        
+        }
+
         //
         // If we got here, it means that an exception did not
         // happen. Check if this is expected.
@@ -464,7 +465,7 @@ public class SVGOnLoadExceptionTest extends AbstractTest {
         return report;
     }
 
-    /** 
+    /**
      * Compares the input exception with the expected exception
      * If they match, then the test passes. Otherwise, the test fails
      */
@@ -516,7 +517,7 @@ public class SVGOnLoadExceptionTest extends AbstractTest {
     class TestUserAgent extends UserAgentAdapter {
         Exception e;
 
-        public ExternalResourceSecurity 
+        public ExternalResourceSecurity
             getExternalResourceSecurity(ParsedURL resourceURL,
                                         ParsedURL docURL) {
             if ("ANY".equals(resourceOrigin)) {

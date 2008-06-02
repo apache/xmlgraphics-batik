@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2002-2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -80,45 +81,45 @@ public abstract class RectManager extends LengthManager {
     }
 
     private Value createRectComponent(LexicalUnit lu) throws DOMException {
-	switch (lu.getLexicalUnitType()) {
-	case LexicalUnit.SAC_IDENT:
-	    if (lu.getStringValue().equalsIgnoreCase
+        switch (lu.getLexicalUnitType()) {
+        case LexicalUnit.SAC_IDENT:
+            if (lu.getStringValue().equalsIgnoreCase
                 (CSSConstants.CSS_AUTO_VALUE)) {
-		return ValueConstants.AUTO_VALUE;
-	    }
+                return ValueConstants.AUTO_VALUE;
+            }
             break;
-	case LexicalUnit.SAC_EM:
-	    return new FloatValue(CSSPrimitiveValue.CSS_EMS,
+        case LexicalUnit.SAC_EM:
+            return new FloatValue(CSSPrimitiveValue.CSS_EMS,
                                   lu.getFloatValue());
-	case LexicalUnit.SAC_EX:
-	    return new FloatValue(CSSPrimitiveValue.CSS_EXS,
+        case LexicalUnit.SAC_EX:
+            return new FloatValue(CSSPrimitiveValue.CSS_EXS,
                                   lu.getFloatValue());
-	case LexicalUnit.SAC_PIXEL:
-	    return new FloatValue(CSSPrimitiveValue.CSS_PX,
+        case LexicalUnit.SAC_PIXEL:
+            return new FloatValue(CSSPrimitiveValue.CSS_PX,
                                   lu.getFloatValue());
-	case LexicalUnit.SAC_CENTIMETER:
-	    return new FloatValue(CSSPrimitiveValue.CSS_CM,
+        case LexicalUnit.SAC_CENTIMETER:
+            return new FloatValue(CSSPrimitiveValue.CSS_CM,
                                   lu.getFloatValue());
-	case LexicalUnit.SAC_MILLIMETER:
-	    return new FloatValue(CSSPrimitiveValue.CSS_MM,
+        case LexicalUnit.SAC_MILLIMETER:
+            return new FloatValue(CSSPrimitiveValue.CSS_MM,
                                   lu.getFloatValue());
-	case LexicalUnit.SAC_INCH:
-	    return new FloatValue(CSSPrimitiveValue.CSS_IN,
+        case LexicalUnit.SAC_INCH:
+            return new FloatValue(CSSPrimitiveValue.CSS_IN,
                                   lu.getFloatValue());
-	case LexicalUnit.SAC_POINT:
-	    return new FloatValue(CSSPrimitiveValue.CSS_PT,
+        case LexicalUnit.SAC_POINT:
+            return new FloatValue(CSSPrimitiveValue.CSS_PT,
                                   lu.getFloatValue());
-	case LexicalUnit.SAC_PICA:
-	    return new FloatValue(CSSPrimitiveValue.CSS_PC,
+        case LexicalUnit.SAC_PICA:
+            return new FloatValue(CSSPrimitiveValue.CSS_PC,
                                   lu.getFloatValue());
-	case LexicalUnit.SAC_INTEGER:
-	    return new FloatValue(CSSPrimitiveValue.CSS_NUMBER,
+        case LexicalUnit.SAC_INTEGER:
+            return new FloatValue(CSSPrimitiveValue.CSS_NUMBER,
                                   lu.getIntegerValue());
-	case LexicalUnit.SAC_REAL:
-	    return new FloatValue(CSSPrimitiveValue.CSS_NUMBER,
+        case LexicalUnit.SAC_REAL:
+            return new FloatValue(CSSPrimitiveValue.CSS_NUMBER,
                                   lu.getFloatValue());
-	case LexicalUnit.SAC_PERCENTAGE:
-	    return new FloatValue(CSSPrimitiveValue.CSS_PERCENTAGE,
+        case LexicalUnit.SAC_PERCENTAGE:
+            return new FloatValue(CSSPrimitiveValue.CSS_PERCENTAGE,
                                   lu.getFloatValue());
         }
         throw createMalformedRectDOMException();

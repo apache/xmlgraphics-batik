@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2000-2003,2005  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -35,6 +36,7 @@ import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.HashTable;
 import org.apache.batik.dom.util.DOMUtilities;
+import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.SVG12Constants;
 import org.apache.batik.util.XBLConstants;
 
@@ -55,7 +57,7 @@ import org.w3c.dom.events.Event;
  */
 public class SVG12DOMImplementation
     extends    SVGDOMImplementation {
-    
+
     /**
      * Creates a new SVGDOMImplementation object.
      */
@@ -67,19 +69,20 @@ public class SVG12DOMImplementation
         registerFeature("SVGEvents",      new String[] {"1.0", "1.1", "1.2"});
     }
 
-    public CSSEngine createCSSEngine(AbstractStylableDocument doc, 
+    public CSSEngine createCSSEngine(AbstractStylableDocument doc,
                                      CSSContext               ctx,
                                      ExtendedParser      ep,
-                                     ValueManager     [] vms, 
+                                     ValueManager     [] vms,
                                      ShorthandManager [] sms) {
-        URL durl = ((SVGOMDocument)doc).getURLObject();
+        ParsedURL durl = ((SVGOMDocument)doc).getParsedURL();
         CSSEngine result = new SVG12CSSEngine(doc, durl, ep, vms, sms, ctx);
 
         URL url = getClass().getResource("resources/UserAgentStyleSheet.css");
         if (url != null) {
-            InputSource is = new InputSource(url.toString());
+            ParsedURL purl = new ParsedURL(url);
+            InputSource is = new InputSource(purl.toString());
             result.setUserAgentStyleSheet
-                (result.parseStyleSheet(is, url, "all"));
+                (result.parseStyleSheet(is, purl, "all"));
         }
 
         return result;
@@ -109,23 +112,31 @@ public class SVG12DOMImplementation
     public Element createElementNS(AbstractDocument document,
                                    String           namespaceURI,
                                    String           qualifiedName) {
-        if (namespaceURI == null) 
+        if (namespaceURI == null)
             return new GenericElement(qualifiedName.intern(), document);
 
         String name = DOMUtilities.getLocalName(qualifiedName);
+        String prefix = DOMUtilities.getPrefix(qualifiedName);
         if (SVG12Constants.SVG_NAMESPACE_URI.equals(namespaceURI)) {
             ElementFactory ef = (ElementFactory)factories.get(name);
-            if (ef != null)
-                return ef.create(DOMUtilities.getPrefix(qualifiedName),
-                                 document);
+            if (ef != null) {
+                return ef.create(prefix, document);
+            }
         } else if (XBLConstants.XBL_NAMESPACE_URI.equals(namespaceURI)) {
             ElementFactory ef = (ElementFactory)xblFactories.get(name);
-            if (ef != null)
-                return ef.create(DOMUtilities.getPrefix(qualifiedName),
-                                 document);
+            if (ef != null) {
+                return ef.create(prefix, document);
+            }
         }
 
-        String prefix = DOMUtilities.getPrefix(qualifiedName);
+        if (customFactories != null) {
+            ElementFactory cef;
+            cef = (ElementFactory)customFactories.get(namespaceURI, name);
+            if (cef != null) {
+                return cef.create(prefix, document);
+            }
+        }
+
         return new BindableElement(prefix, document, namespaceURI, name);
     }
 
@@ -209,7 +220,7 @@ public class SVG12DOMImplementation
     /**
      * To create a 'flowDiv' element.
      */
-    protected static class FlowDivElementFactory 
+    protected static class FlowDivElementFactory
         implements ElementFactory {
         public FlowDivElementFactory() {
         }
@@ -224,7 +235,7 @@ public class SVG12DOMImplementation
     /**
      * To create a 'flowLine' element.
      */
-    protected static class FlowLineElementFactory 
+    protected static class FlowLineElementFactory
         implements ElementFactory {
         public FlowLineElementFactory() {
         }
@@ -239,7 +250,7 @@ public class SVG12DOMImplementation
     /**
      * To create a 'flowPara' element.
      */
-    protected static class FlowParaElementFactory 
+    protected static class FlowParaElementFactory
         implements ElementFactory {
         public FlowParaElementFactory() {
         }
@@ -254,7 +265,7 @@ public class SVG12DOMImplementation
     /**
      * To create a 'flowRegionBreak' element.
      */
-    protected static class FlowRegionBreakElementFactory 
+    protected static class FlowRegionBreakElementFactory
         implements ElementFactory {
         public FlowRegionBreakElementFactory() {
         }
@@ -269,7 +280,7 @@ public class SVG12DOMImplementation
     /**
      * To create a 'flowRegion' element.
      */
-    protected static class FlowRegionElementFactory 
+    protected static class FlowRegionElementFactory
         implements ElementFactory {
         public FlowRegionElementFactory() {
         }
@@ -284,7 +295,7 @@ public class SVG12DOMImplementation
     /**
      * To create a 'flowRegion' element.
      */
-    protected static class FlowRegionExcludeElementFactory 
+    protected static class FlowRegionExcludeElementFactory
         implements ElementFactory {
         public FlowRegionExcludeElementFactory() {
         }
@@ -299,7 +310,7 @@ public class SVG12DOMImplementation
     /**
      * To create a 'flowRoot' element.
      */
-    protected static class FlowRootElementFactory 
+    protected static class FlowRootElementFactory
         implements ElementFactory {
         public FlowRootElementFactory() {
         }
@@ -314,7 +325,7 @@ public class SVG12DOMImplementation
     /**
      * To create a 'flowSpan' element.
      */
-    protected static class FlowSpanElementFactory 
+    protected static class FlowSpanElementFactory
         implements ElementFactory {
         public FlowSpanElementFactory() {
         }
@@ -329,7 +340,7 @@ public class SVG12DOMImplementation
     /**
      * To create a 'handler' element.
      */
-    protected static class HandlerElementFactory 
+    protected static class HandlerElementFactory
         implements ElementFactory {
         public HandlerElementFactory() {
         }
@@ -344,7 +355,7 @@ public class SVG12DOMImplementation
     /**
      * To create a 'multiImage' element.
      */
-    protected static class MultiImageElementFactory 
+    protected static class MultiImageElementFactory
         implements ElementFactory {
         public MultiImageElementFactory() {}
         /**
@@ -359,7 +370,7 @@ public class SVG12DOMImplementation
     /**
      * To create a 'solidColor' element.
      */
-    protected static class SolidColorElementFactory 
+    protected static class SolidColorElementFactory
         implements ElementFactory {
         public SolidColorElementFactory() {
         }
@@ -374,7 +385,7 @@ public class SVG12DOMImplementation
     /**
      * To create a 'subImage' element.
      */
-    protected static class SubImageElementFactory 
+    protected static class SubImageElementFactory
         implements ElementFactory {
         public SubImageElementFactory() {}
         /**
@@ -388,7 +399,7 @@ public class SVG12DOMImplementation
     /**
      * To create a 'SubImageRef' element.
      */
-    protected static class SubImageRefElementFactory 
+    protected static class SubImageRefElementFactory
         implements ElementFactory {
         public SubImageRefElementFactory() {}
         /**
@@ -527,7 +538,7 @@ public class SVG12DOMImplementation
     /**
      * The default instance of this class.
      */
-    protected final static DOMImplementation DOM_IMPLEMENTATION =
+    protected static final DOMImplementation DOM_IMPLEMENTATION =
         new SVG12DOMImplementation();
 
     /**

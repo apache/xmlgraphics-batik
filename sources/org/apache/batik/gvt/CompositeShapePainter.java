@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2000-2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -65,14 +66,14 @@ public class CompositeShapePainter implements ShapePainter {
         if (shapePainter == null) {
             return;
         }
-        if (this.shape != shapePainter.getShape()) {
+        if (shape != shapePainter.getShape()) {
             shapePainter.setShape(shape);
         }
         if (painters == null) {
             painters = new ShapePainter[2];
         }
         if (count == painters.length) {
-            ShapePainter [] newPainters = new ShapePainter[(count*3)/2 + 1];
+            ShapePainter [] newPainters = new ShapePainter[ count + count/2 + 1];
             System.arraycopy(painters, 0, newPainters, 0, count);
             painters = newPainters;
         }
@@ -147,7 +148,7 @@ public class CompositeShapePainter implements ShapePainter {
      * Returns the bounds of the area painted by this shape painter
      */
     public Rectangle2D getPaintedBounds2D(){
-        if (painters == null) 
+        if (painters == null)
             return null;
 
         Rectangle2D bounds = null;
@@ -164,7 +165,7 @@ public class CompositeShapePainter implements ShapePainter {
      * Returns true if pt is in the area painted by this shape painter
      */
     public boolean inPaintedArea(Point2D pt){
-        if (painters == null) 
+        if (painters == null)
             return false;
         for (int i=0; i < count; ++i) {
             if (painters[i].inPaintedArea(pt))
@@ -194,7 +195,7 @@ public class CompositeShapePainter implements ShapePainter {
      * Returns the bounds of the area painted by this shape painter
      */
     public Rectangle2D getSensitiveBounds2D() {
-        if (painters == null) 
+        if (painters == null)
             return null;
 
         Rectangle2D bounds = null;
@@ -210,7 +211,7 @@ public class CompositeShapePainter implements ShapePainter {
      * Returns true if pt is in the area painted by this shape painter
      */
     public boolean inSensitiveArea(Point2D pt){
-        if (painters == null) 
+        if (painters == null)
             return false;
         for (int i=0; i < count; ++i) {
             if (painters[i].inSensitiveArea(pt))

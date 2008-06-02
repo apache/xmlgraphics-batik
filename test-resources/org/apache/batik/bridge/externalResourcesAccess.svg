@@ -4,11 +4,12 @@
 
 <!--
 
-   Copyright 2002-2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -47,10 +48,10 @@ function testTarget(securityTarget) {
 
 
     <defs>
-        <image id="image" x="0" y="0" width="100%" height="100%" xlink:href="../../../../../xdocs/images/splash.png" />
+        <image id="image" x="0" y="0" width="100%" height="100%" xlink:href="../../../../../resources/org/apache/batik/apps/svgbrowser/resources/squiggle.png" />
 
         <filter id="externalFeImage">
-            <feImage xlink:href="../../../../../xdocs/images/splash.png" />
+            <feImage xlink:href="../../../../../resources/org/apache/batik/apps/svgbrowser/resources/squiggle.png" />
         </filter>
 
         <rect id="feImage" x="0" y="0" width="100%" height="100%" filter="url(#externalFeImage)" />
@@ -62,7 +63,7 @@ function testTarget(securityTarget) {
         </g>
 
         <g id="textPath">
-	      <text font-size="20" style="text-anchor:start">
+            <text font-size="20" style="text-anchor:start">
                 <textPath xlink:href="../../../../../samples/tests/spec/text/textOnPath.svg#Path1" startOffset="0%">Text <tspan fill="red" dy="-10">on</tspan><tspan dy="10"> a Path</tspan></textPath>
             </text>
         </g>

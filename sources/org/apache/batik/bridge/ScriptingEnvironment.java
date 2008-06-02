@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2002-2003,2005  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -18,25 +19,24 @@
 package org.apache.batik.bridge;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
-
 import java.net.URL;
 import java.net.URLConnection;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.zip.GZIPOutputStream;
 import java.util.zip.DeflaterOutputStream;
+import java.util.zip.GZIPOutputStream;
 
 import org.apache.batik.dom.AbstractStylableDocument;
 import org.apache.batik.dom.ExtensibleDOMImplementation;
@@ -45,6 +45,7 @@ import org.apache.batik.dom.events.NodeEventTarget;
 import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.svg.ViewCSSProxy;
+import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.dom.util.SAXDocumentFactory;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.script.Interpreter;
@@ -76,32 +77,19 @@ import org.w3c.dom.views.DocumentView;
  */
 public class ScriptingEnvironment extends BaseScriptingEnvironment {
 
-    /**
-     * Used in 'parseXML()'.
-     */
-    protected final static String FRAGMENT_PREFIX =
-        "<svg xmlns='" +
-        SVGConstants.SVG_NAMESPACE_URI +
-        "' xmlns:xlink='" +
-        XLinkSupport.XLINK_NAMESPACE_URI +
-        "'>";
-
-    protected final static String FRAGMENT_SUFFIX =
-        "</svg>";
-
-    public final static String [] SVG_EVENT_ATTRS = {
+    public static final String [] SVG_EVENT_ATTRS = {
         "onabort",     // SVG element
         "onerror",     // SVG element
         "onresize",    // SVG element
         "onscroll",    // SVG element
         "onunload",    // SVG element
         "onzoom",      // SVG element
-        
+
         "onbegin",     // SMIL
         "onend",       // SMIL
         "onrepeat",    // SMIL
 
-        "onfocusin",   // UI Events 
+        "onfocusin",   // UI Events
         "onfocusout",  // UI Events
         "onactivate",  // UI Events
         "onclick",     // UI Events
@@ -114,22 +102,22 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
 
         "onkeypress",  // UI Events
         "onkeydown",   // UI Events
-        "onkeyup"      // UI Events 
+        "onkeyup"      // UI Events
     };
 
-    public final static String [] SVG_DOM_EVENT = {
+    public static final String [] SVG_DOM_EVENT = {
         "SVGAbort",    // SVG element
         "SVGError",    // SVG element
         "SVGResize",   // SVG element
         "SVGScroll",   // SVG element
         "SVGUnload",   // SVG element
         "SVGZoom",     // SVG element
-        
+
         "beginEvent",  // SMIL
         "endEvent",    // SMIL
         "repeatEvent", // SMIL
 
-        "DOMFocusIn",  // UI Events 
+        "DOMFocusIn",  // UI Events
         "DOMFocusOut", // UI Events
         "DOMActivate", // UI Events
         "click",       // UI Events
@@ -140,7 +128,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
         "mousemove",   // UI Events
         "keypress",    // UI Events
         "keydown",     // UI Events
-        "keyup"        // UI Events 
+        "keyup"        // UI Events
     };
 
     /**
@@ -299,7 +287,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
     protected EventListener keyupListener =
         new ScriptingEventListener("onkeyup");
 
-    
+
     protected EventListener [] listeners = {
         svgAbortListener,
         svgErrorListener,
@@ -345,7 +333,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
         super(ctx);
         updateManager = ctx.getUpdateManager();
         updateRunnableQueue = updateManager.getUpdateRunnableQueue();
-        
+
         // Add the scripting listeners.
         addScriptingListeners(document.getDocumentElement());
 
@@ -410,7 +398,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
     /**
      * Runs an event handler.
      */
-    public void runEventHandler(String script, Event evt, 
+    public void runEventHandler(String script, Event evt,
                                 String lang, String desc) {
         Interpreter interpreter = getInterpreter(lang);
         if (interpreter == null)
@@ -550,7 +538,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
             target.addEventListenerNS
                 (XMLConstants.XML_EVENTS_NAMESPACE_URI, "click",
                  clickListener, false, null);
-        } 
+        }
         if (elt.hasAttributeNS(null, "onmousedown")) {
             target.addEventListenerNS
                 (XMLConstants.XML_EVENTS_NAMESPACE_URI, "mousedown",
@@ -715,7 +703,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
                  listener, false);
         }
     }
-    
+
 
     /**
      * To interpret a script.
@@ -808,7 +796,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
                 } else {
                     e.printStackTrace(); // No UA so just output...
                 }
-                synchronized (this) { 
+                synchronized (this) {
                     error = true;
                 }
             }
@@ -899,7 +887,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
                         }
                     }
                 };
-            
+
             timer.schedule(tt, interval, interval);
             return tt;
         }
@@ -968,32 +956,23 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
          * org.apache.batik.script.Window#parseXML(String,Document)}.
          */
         public Node parseXML(String text, Document doc) {
-            // System.err.println("Text: " + text);
             // Try and parse it as an SVGDocument
             SAXSVGDocumentFactory df = new SAXSVGDocumentFactory
                 (XMLResourceDescriptor.getXMLParserClassName());
             URL urlObj = null;
-            if ((doc != null) && (doc instanceof SVGOMDocument)) 
-                urlObj = ((SVGOMDocument)doc).getURLObject();
+            if (doc instanceof SVGOMDocument) {
+                urlObj = ((SVGOMDocument) doc).getURLObject();
+            }
             if (urlObj == null) {
-                urlObj = ((SVGOMDocument)bridgeContext.getDocument()).
-                    getURLObject();
+                urlObj = ((SVGOMDocument) bridgeContext.getDocument())
+                        .getURLObject();
             }
-            String uri = (urlObj==null)?"":urlObj.toString();
-            try {
-                Document d = df.createDocument(uri, new StringReader(text));
-                if (doc == null)
-                    return d;
-
-                Node result = doc.createDocumentFragment();
-                result.appendChild(doc.importNode(d.getDocumentElement(),
-                                                  true));
-                return result;
-            } catch (Exception ex) {
-                /* nothing  */
+            String uri = (urlObj == null) ? "" : urlObj.toString();
+            Node res = DOMUtilities.parseXML(text, doc, uri, null, null, df);
+            if (res != null) {
+                return res;
             }
-            
-            if ((doc != null) && (doc instanceof SVGOMDocument)) {
+            if (doc instanceof SVGOMDocument) {
                 // Try and parse with an 'svg' element wrapper - for
                 // things like '<rect ../>' - ensure that rect ends up
                 // in SVG namespace - xlink namespace is declared etc...
@@ -1001,60 +980,42 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
                 // Only do this when generating a doc fragment, since
                 // a 'rect' element can not be root of SVG Document
                 // (only an svg element can be).
-                StringBuffer sb = new StringBuffer(FRAGMENT_PREFIX.length() +
-                                                   text.length() +
-                                                   FRAGMENT_SUFFIX.length());
-                sb.append(FRAGMENT_PREFIX);
-                sb.append(text);
-                sb.append(FRAGMENT_SUFFIX);
-                String newText = sb.toString();
-                try {
-                    Document d = df.createDocument
-                        (uri, new StringReader(newText));
-                    // No document given so make doc fragment from our
-                    // new Document.
-                    if (doc == null) doc = d;
-                    for (Node n = d.getDocumentElement().getFirstChild();
-                         n != null;
-                         n = n.getNextSibling()) {
-                        if (n.getNodeType() == Node.ELEMENT_NODE) {
-                            n = doc.importNode(n, true);
-                            Node result = doc.createDocumentFragment();
-                            result.appendChild(n);
-                            return result;
-                        }
-                    }
-                } catch (Exception exc) {
-                    /* nothing - try something else*/
+                Map prefixes = new HashMap();
+                prefixes.put(XMLConstants.XMLNS_PREFIX,
+                        XMLConstants.XMLNS_NAMESPACE_URI);
+                prefixes.put(XMLConstants.XMLNS_PREFIX + ':'
+                        + XMLConstants.XLINK_PREFIX,
+                        XLinkSupport.XLINK_NAMESPACE_URI);
+                res = DOMUtilities.parseXML(text, doc, uri, prefixes,
+                        SVGConstants.SVG_SVG_TAG, df);
+                if (res != null) {
+                    return res;
                 }
             }
-
             // Parse as a generic XML document.
             SAXDocumentFactory sdf;
             if (doc != null) {
-                sdf = new SAXDocumentFactory
-                    (doc.getImplementation(),
-                     XMLResourceDescriptor.getXMLParserClassName());
+                sdf = new SAXDocumentFactory(doc.getImplementation(),
+                        XMLResourceDescriptor.getXMLParserClassName());
             } else {
-                sdf = new SAXDocumentFactory
-                    (new GenericDOMImplementation(),
-                     XMLResourceDescriptor.getXMLParserClassName());
+                sdf = new SAXDocumentFactory(new GenericDOMImplementation(),
+                        XMLResourceDescriptor.getXMLParserClassName());
             }
-            try {
-                Document d = sdf.createDocument(uri, new StringReader(text));
-                if (doc == null) 
-                    return d;
+            return DOMUtilities.parseXML(text, doc, uri, null, null, sdf);
+        }
 
-                Node result = doc.createDocumentFragment();
-                result.appendChild(doc.importNode(d.getDocumentElement(), 
-                                                  true));
-                return result;
-            } catch (Exception ext) {
-                if (userAgent != null)
-                    userAgent.displayError(ext);
+        /**
+         * Serializes the given node.
+         */
+        public String printNode(Node n) {
+            try {
+                Writer writer = new StringWriter();
+                DOMUtilities.writeNode(n, writer);
+                writer.close();
+                return writer.toString();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
             }
-            
-            return null;
         }
 
         /**
@@ -1065,9 +1026,9 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
             getURL(uri, h, null);
         }
 
-        final static String DEFLATE="deflate";
-        final static String GZIP   ="gzip";
-        final static String UTF_8  ="UTF-8";
+        static final String DEFLATE="deflate";
+        static final String GZIP   ="gzip";
+        static final String UTF_8  ="UTF-8";
         /**
          * Implements {@link
          * org.apache.batik.script.Window#getURL(String,org.apache.batik.script.Window.URLResponseHandler,String)}.
@@ -1078,8 +1039,8 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
             Thread t = new Thread() {
                     public void run() {
                         try {
-                            URL burl;
-                            burl = ((SVGOMDocument)document).getURLObject();
+                            ParsedURL burl;
+                            burl = ((SVGOMDocument)document).getParsedURL();
                             final ParsedURL purl = new ParsedURL(burl, uri);
                             String e = null;
                             if (enc != null) {
@@ -1146,37 +1107,40 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
         }
 
 
-        public void postURL(String uri, String content, 
+        public void postURL(String uri, String content,
                             org.apache.batik.script.Window.URLResponseHandler h) {
             postURL(uri, content, h, "text/plain", null);
         }
 
-        public void postURL(String uri, String content, 
-                            org.apache.batik.script.Window.URLResponseHandler h, 
+        public void postURL(String uri, String content,
+                            org.apache.batik.script.Window.URLResponseHandler h,
                      String mimeType) {
             postURL(uri, content, h, mimeType, null);
         }
 
-        public void postURL(final String uri, 
-                            final String content, 
-                            final org.apache.batik.script.Window.URLResponseHandler h, 
-                            final String mimeType, 
+        public void postURL(final String uri,
+                            final String content,
+                            final org.apache.batik.script.Window.URLResponseHandler h,
+                            final String mimeType,
                             final String fEnc) {
             Thread t = new Thread() {
                     public void run() {
                         try {
-                            URL burl;
-                            burl = ((SVGOMDocument)document).getURLObject();
+                            String base =
+                                ((SVGOMDocument)document).getDocumentURI();
                             URL url;
-                            if (burl != null)
-                                url = new URL(burl, uri);
-                            else url = new URL(uri);
+                            if (base == null) {
+                                url = new URL(uri);
+                            } else {
+                                url = new URL(new URL(base), uri);
+                            }
+                            // TODO: Change this to use ParsedURL for the POST?
                             final URLConnection conn = url.openConnection();
                             conn.setDoOutput(true);
                             conn.setDoInput(true);
                             conn.setUseCaches(false);
                             conn.setRequestProperty("Content-Type", mimeType);
-                            
+
                             OutputStream os = conn.getOutputStream();
                             String e=null, enc = fEnc;
                             if (enc != null) {
@@ -1201,13 +1165,13 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
                                 }
                                 if (enc.length() != 0) {
                                     e = EncodingUtilities.javaEncoding(enc);
-                                    if (e == null) e = UTF_8; 
+                                    if (e == null) e = UTF_8;
                                 } else {
                                     e = UTF_8;
                                 }
                             }
                             Writer w;
-                            if (e == null) 
+                            if (e == null)
                                 w = new OutputStreamWriter(os);
                             else
                                 w = new OutputStreamWriter(os, e);
@@ -1219,7 +1183,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
                             InputStream is = conn.getInputStream();
                             Reader r;
                             e = UTF_8;
-                            if (e == null) 
+                            if (e == null)
                                 r = new InputStreamReader(is);
                             else
                                 r = new InputStreamReader(is, e);
@@ -1410,7 +1374,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
          * The script attribute.
          */
         protected String attribute;
-        
+
         /**
          * Creates a new ScriptingEventListener.
          */

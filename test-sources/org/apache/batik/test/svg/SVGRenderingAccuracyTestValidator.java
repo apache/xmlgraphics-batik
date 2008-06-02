@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001,2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -195,10 +196,21 @@ public class SVGRenderingAccuracyTestValidator extends DefaultTestSuite {
                 return r;
             }
 
-            if(!t.variationURL.toString().endsWith(expectedVariationURL)){
+            if (t.variationURLs == null
+                    || t.variationURLs.size() != 1
+                    || !t.variationURLs.get(0).toString()
+                            .endsWith(expectedVariationURL)) {
                 TestReport r = reportError(ERROR_UNEXPECTED_VARIATION_URL);
                 r.addDescriptionEntry(ENTRY_KEY_EXPECTED_VALUE, expectedVariationURL);
-                r.addDescriptionEntry(ENTRY_KEY_FOUND_VALUE, "" + t.variationURL);
+                String found;
+                if (t.variationURLs == null) {
+                    found = "null";
+                } else if (t.variationURLs.size() != 1) {
+                    found = "<list of " + t.variationURLs.size() + " URLs>";
+                } else {
+                    found = t.variationURLs.get(0).toString();
+                }
+                r.addDescriptionEntry(ENTRY_KEY_FOUND_VALUE, found);
                 return r;
             }
 
@@ -410,12 +422,10 @@ public class SVGRenderingAccuracyTestValidator extends DefaultTestSuite {
 
             super.runImpl();            
 
-            t.setVariationURL(tmpVariationFile.toURL().toString());
+            t.addVariationURL(tmpVariationFile.toURL().toString());
             t.setSaveVariation(null);
 
-            setConfig(t,
-                      true,
-                      null);
+            setConfig(t, true, null);
 
             return super.runImpl();
         }

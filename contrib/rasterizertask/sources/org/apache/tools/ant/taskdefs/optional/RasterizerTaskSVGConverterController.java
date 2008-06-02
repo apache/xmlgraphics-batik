@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001-2002  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -29,14 +30,14 @@ import org.apache.tools.ant.Task;
 
 // -- Java SDK classes -------------------------------------------------------
 import java.io.File;
-import java.util.Vector;
 import java.util.Map;
+import java.util.List;
 
 
 /**
  * Implements simple controller for the <code>SVGConverter</code> operation.
  *
- * <p>This is almost the same as the 
+ * <p>This is almost the same as the
  * {@link org.apache.batik.apps.rasterizer.DefaultSVGConverterController DefaultSVGConverterController}
  * except this produces error message when the conversion fails.</p>
  *
@@ -75,22 +76,22 @@ public class RasterizerTaskSVGConverterController implements SVGConverterControl
     // -- Public interface ---------------------------------------------------
     public boolean proceedWithComputedTask(Transcoder transcoder,
                                            Map hints,
-                                           Vector sources,
-                                           Vector dest){
+                                           List sources,
+                                           List dest){
         return true;
     }
-    
-    public boolean proceedWithSourceTranscoding(SVGConverterSource source, 
+
+    public boolean proceedWithSourceTranscoding(SVGConverterSource source,
                                                 File dest) {
         return true;
     }
-    
+
     public boolean proceedOnSourceTranscodingFailure(SVGConverterSource source,
                                                      File dest,
                                                      String errorCode){
         if(executingTask != null) {
-            executingTask.log("Unable to rasterize image '" 
-                + source.getName() + "' to '" 
+            executingTask.log("Unable to rasterize image '"
+                + source.getName() + "' to '"
                 + dest.getAbsolutePath() + "': " + errorCode);
         }
         return true;

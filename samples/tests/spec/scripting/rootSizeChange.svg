@@ -4,11 +4,12 @@
 
 <!--
 
-   Copyright 2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -38,32 +39,32 @@
     properly.</desc>
     <script type="text/ecmascript"><![CDATA[
         var inRegard = false;
-	var time1 = 70;
-	function updateGroup1() {
+        var time1 = 70;
+        function updateGroup1() {
             var elt = document.getElementById("g1");
-	    var x = Math.cos(time1*3.1415926/180)*150 + 225;
-	    var y = Math.sin(.5*(time1+90)*3.1415926/180)*150 + 250;
+            var x = Math.cos(time1*3.1415926/180)*150 + 225;
+            var y = Math.sin(.5*(time1+90)*3.1415926/180)*150 + 250;
             elt.setAttributeNS(null, "transform", 
-	                       "translate("+x+","+y+")");
-	    time1 += 15;
+                               "translate("+x+","+y+")");
+            time1 += 15;
             if (!inRegard || (time1 < 470))
-	       setTimeout('updateGroup1()', 100);
+               setTimeout('updateGroup1()', 100);
             if (inRegard && (time2 <= -290) && (time1 >= 470))
               regardTestInstance.scriptDone();
-	}
-	var time2 = 110;
-	function updateGroup2() {
+        }
+        var time2 = 110;
+        function updateGroup2() {
             var elt = document.getElementById("g2");
-	    var x = Math.cos(time2*3.1415926/180)*150 + 225;
-	    var y = Math.sin(.5*(time2+90)*3.1415926/180)*150 + 250;
+            var x = Math.cos(time2*3.1415926/180)*150 + 225;
+            var y = Math.sin(.5*(time2+90)*3.1415926/180)*150 + 250;
             elt.setAttributeNS(null, "transform", 
-	                       "translate("+x+","+y+")");
-	    time2 -= 15;
+                               "translate("+x+","+y+")");
+            time2 -= 15;
             if (!inRegard || (time2 > -290))
                setTimeout('updateGroup2()', 100);
             if (inRegard && (time2 <= -290) && (time1 >= 470))
               regardTestInstance.scriptDone();
-	}
+        }
        function regardStart() {
           inRegard = true;
        }

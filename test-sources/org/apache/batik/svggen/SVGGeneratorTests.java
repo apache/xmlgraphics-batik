@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -27,7 +28,7 @@ import org.apache.batik.test.util.ImageCompareTest;
 
 /**
  * This test validates that a given rendering sequence, modeled
- * by a <tt>Painter</tt> by doing several subtests for a 
+ * by a <tt>Painter</tt> by doing several subtests for a
  * single input class:
  * + SVGAccuracyTest with several configurations
  * + SVGRenderingAccuracyTest
@@ -38,14 +39,17 @@ import org.apache.batik.test.util.ImageCompareTest;
  * @version $Id$
  */
 public class SVGGeneratorTests extends DefaultTestSuite {
-    public static final String GENERATOR_REFERENCE_BASE 
+    public static final String GENERATOR_REFERENCE_BASE
         = "test-references/org/apache/batik/svggen/";
 
     public static final String RENDERING_DIR
         = "rendering";
 
-    public static final String ACCEPTED_VARIATION_DIR 
+    public static final String ACCEPTED_VARIATION_DIR
         = "accepted-variation";
+
+    public static final String[] VARIATION_PLATFORMS = 
+        org.apache.batik.test.svg.PreconfiguredRenderingTest.DEFAULT_VARIATION_PLATFORMS;
 
     public static final String CANDIDATE_VARIATION_DIR
         = "candidate-variation";
@@ -84,7 +88,7 @@ public class SVGGeneratorTests extends DefaultTestSuite {
         }catch(ClassNotFoundException e){
             throw new IllegalArgumentException(clName);
         }
-        
+
         Object o = null;
 
         try {
@@ -103,7 +107,7 @@ public class SVGGeneratorTests extends DefaultTestSuite {
         addTest(makeGeneratorContext(painter, id));
         addTest(makeSVGRenderingAccuracyTest(painter, id, PLAIN_GENERATION_PREFIX));
         addTest(makeSVGRenderingAccuracyTest(painter, id, CUSTOM_CONTEXT_GENERATION_PREFIX));
-        addTest(makeImageCompareTest(painter, id, PLAIN_GENERATION_PREFIX, 
+        addTest(makeImageCompareTest(painter, id, PLAIN_GENERATION_PREFIX,
                                      CUSTOM_CONTEXT_GENERATION_PREFIX));
     }
 
@@ -113,7 +117,7 @@ public class SVGGeneratorTests extends DefaultTestSuite {
     public String getName(){
         return "SVGGeneratorTest - " + getId();
     }
-        
+
     protected String getPackageName(){
         return "org.apache.batik.svggen";
     }
@@ -137,12 +141,18 @@ public class SVGGeneratorTests extends DefaultTestSuite {
         String cl = prefix + getNonQualifiedClassName(painter);
         String testSource = GENERATOR_REFERENCE_BASE + cl + SVG_EXTENSION;
         String testReference = GENERATOR_REFERENCE_BASE + RENDERING_DIR + "/" + cl + PNG_EXTENSION;
-        String variationURL = GENERATOR_REFERENCE_BASE + RENDERING_DIR + "/" + ACCEPTED_VARIATION_DIR + "/" + cl + PNG_EXTENSION;
+        String[] variationURLs = new String[VARIATION_PLATFORMS.length + 1];
+        variationURLs[0] = GENERATOR_REFERENCE_BASE + RENDERING_DIR + "/" + ACCEPTED_VARIATION_DIR + "/" + cl + PNG_EXTENSION;
+        for (int i = 0; i < VARIATION_PLATFORMS.length; i++) {
+            variationURLs[i + 1] = GENERATOR_REFERENCE_BASE + RENDERING_DIR + "/" + ACCEPTED_VARIATION_DIR + "/" + cl + '_' + VARIATION_PLATFORMS[i] + PNG_EXTENSION;
+        }
         String saveVariation = GENERATOR_REFERENCE_BASE + RENDERING_DIR + "/" + CANDIDATE_VARIATION_DIR + "/" + cl + PNG_EXTENSION;
         String candidateReference = GENERATOR_REFERENCE_BASE + RENDERING_DIR + "/" + RENDERING_CANDIDATE_REF_DIR + "/" + cl + PNG_EXTENSION;
 
         SVGRenderingAccuracyTest test = new SVGRenderingAccuracyTest(testSource, testReference);
-        test.setVariationURL(variationURL);
+        for (int i = 0; i < variationURLs.length; i++) {
+            test.addVariationURL(variationURLs[i]);
+        }
         test.setSaveVariation(new File(saveVariation));
         test.setCandidateReference(new File(candidateReference));
 
@@ -154,7 +164,7 @@ public class SVGGeneratorTests extends DefaultTestSuite {
     private Test makeGeneratorContext(Painter painter, String id){
         String cl = CUSTOM_CONTEXT_GENERATION_PREFIX + getNonQualifiedClassName(painter);
 
-        GeneratorContext test 
+        GeneratorContext test
             = new GeneratorContext(painter, makeURL(painter, CUSTOM_CONTEXT_GENERATION_PREFIX));
 
         test.setSaveSVG(new File(GENERATOR_REFERENCE_BASE + CANDIDATE_REF_DIR + "/" + cl + SVG_EXTENSION));
@@ -166,7 +176,7 @@ public class SVGGeneratorTests extends DefaultTestSuite {
     private Test makeSVGAccuracyTest(Painter painter, String id){
         String cl = PLAIN_GENERATION_PREFIX + getNonQualifiedClassName(painter);
 
-        SVGAccuracyTest test 
+        SVGAccuracyTest test
             = new SVGAccuracyTest(painter, makeURL(painter, PLAIN_GENERATION_PREFIX));
 
         test.setSaveSVG(new File(GENERATOR_REFERENCE_BASE + CANDIDATE_REF_DIR + "/" + cl + SVG_EXTENSION));
@@ -177,7 +187,7 @@ public class SVGGeneratorTests extends DefaultTestSuite {
 
     private String getNonQualifiedClassName(Painter painter){
         String cl = painter.getClass().getName();
-        int n = cl.lastIndexOf(".");
+        int n = cl.lastIndexOf('.');
         return cl.substring(n+1);
     }
 
@@ -188,7 +198,7 @@ public class SVGGeneratorTests extends DefaultTestSuite {
         try{
             url = new URL(urlString);
         }catch(Exception e){
-            throw new Error(); // Should not happen
+            throw new Error( e.getMessage() ); // Should not happen
         }
 
         return url;

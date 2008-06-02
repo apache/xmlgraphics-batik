@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2002-2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -14,7 +15,8 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 
- */package org.apache.batik.test.svg;
+ */
+package org.apache.batik.test.svg;
 
 import java.util.Vector;
 
@@ -25,9 +27,9 @@ import org.apache.batik.test.DefaultTestSuite;
 
 /**
  * This test validates the operation of SelfContainedSVGOnLoadTest.
- * It is a test agregation which points to several tests which 
- * correspond to expected error conditions. The test simply 
- * validates that the expected error conditions are properly 
+ * It is a test agregation which points to several tests which
+ * correspond to expected error conditions. The test simply
+ * validates that the expected error conditions are properly
  * detected and reported.
  *
  * @author <a href="mailto:vhardy@apache.org">Vincent Hardy</a>
@@ -52,46 +54,46 @@ public class SelfContainedSVGOnLoadTestValidator extends DefaultTestSuite {
     public static final String ERROR_UNEXPECTED_DESCRIPTION_ENTRY
         = "SelfContainedSVGOnLoadTestValidator.error.unexpected.description.entry";
 
-    public static final String ENTRY_ERROR_CODE = 
+    public static final String ENTRY_ERROR_CODE =
         "SelfContainedSVGOnLoadTestValidator.entry.error.code";
 
-    public static final String ENTRY_EXPECTED_ERROR_CODE = 
+    public static final String ENTRY_EXPECTED_ERROR_CODE =
         "SelfContainedSVGOnLoadTestValidator.entry.expected.error.code";
 
-    public static final String ENTRY_NUMBER_OF_DESCRIPTION = 
+    public static final String ENTRY_NUMBER_OF_DESCRIPTION =
         "SelfContainedSVGOnLoadTestValidator.entry.number.of.description";
 
-    public static final String ENTRY_EXPECTED_NUMBER_OF_DESCRIPTION = 
+    public static final String ENTRY_EXPECTED_NUMBER_OF_DESCRIPTION =
         "SelfContainedSVGOnLoadTestValidator.entry.expected.number.of.description";
 
-    public static final String ENTRY_KEY = 
+    public static final String ENTRY_KEY =
         "SelfContainedSVGOnLoadTestValidator.entry.key";
 
-    public static final String ENTRY_EXPECTED_KEY = 
+    public static final String ENTRY_EXPECTED_KEY =
         "SelfContainedSVGOnLoadTestValidator.entry.expected.key";
 
-    
+
     /**
      * URLs for children tests
      */
-    public static final String invalidURL 
+    public static final String invalidURL
         = "invalidURL";
-    public static final String processingErrorURL 
+    public static final String processingErrorURL
         = "test-resources/org/apache/batik/test/svg/processingError.svg";
-    public static final String invalidTestResultElementsNumberURL 
+    public static final String invalidTestResultElementsNumberURL
         = "test-resources/org/apache/batik/test/svg/invalidTestResultElementsNumber.svg";
-    public static final String unexpectedResultValueURL 
+    public static final String unexpectedResultValueURL
         = "test-resources/org/apache/batik/test/svg/unexpectedResultValue.svg";
     public static final String missingOrEmptyErrorCodeURL
         = "test-resources/org/apache/batik/test/svg/missingOrEmptyErrorCode.svg";
-    public static final String errorURL 
+    public static final String errorURL
         = "test-resources/org/apache/batik/test/svg/error.svg";
-    public static final String errorAndEntriesURL 
+    public static final String errorAndEntriesURL
         = "test-resources/org/apache/batik/test/svg/errorAndEntries.svg";
-    public static final String successURL 
+    public static final String successURL
         = "test-resources/org/apache/batik/test/svg/success.svg";
 
-    
+
     public SelfContainedSVGOnLoadTestValidator(){
         addTest(new CannotLoadSVGDocument());
         addTest(new ProcessingError());
@@ -132,7 +134,7 @@ public class SelfContainedSVGOnLoadTestValidator extends DefaultTestSuite {
             return reportSuccess();
         }
     }
-    
+
     static class MissingOrEmptyErrorCode extends DefaultErrorTest {
         public MissingOrEmptyErrorCode(){
             super(missingOrEmptyErrorCodeURL,
@@ -173,12 +175,12 @@ public class SelfContainedSVGOnLoadTestValidator extends DefaultTestSuite {
                   new String[] {SelfContainedSVGOnLoadTest.ENTRY_KEY_ERROR_DESCRIPTION});
         }
     }
-    
+
     static class DefaultErrorTest extends AbstractTest{
         String svgURL;
         String expectedErrorCode;
         String[] expectedEntryCodes;
-        
+
         public DefaultErrorTest(String svgURL,
                                 String expectedErrorCode,
                                 String[] expectedEntryCodes
@@ -187,24 +189,24 @@ public class SelfContainedSVGOnLoadTestValidator extends DefaultTestSuite {
             this.expectedErrorCode = expectedErrorCode;
             this.expectedEntryCodes = expectedEntryCodes;
         }
-        
+
         public TestReport runImpl() throws Exception {
-            SelfContainedSVGOnLoadTest t 
+            SelfContainedSVGOnLoadTest t
                 = new SelfContainedSVGOnLoadTest(svgURL);
             TestReport tr = t.run();
-            
+
             if(tr.hasPassed()){
                 return reportError(ERROR_UNEXPECTED_TEST_RESULT);
             }
-            
+
             if(tr.getErrorCode() != expectedErrorCode){
                 TestReport r = reportError(ERROR_UNEXPECTED_ERROR_CODE);
                 r.addDescriptionEntry(ENTRY_ERROR_CODE, tr.getErrorCode());
-                r.addDescriptionEntry(ENTRY_EXPECTED_ERROR_CODE, 
+                r.addDescriptionEntry(ENTRY_EXPECTED_ERROR_CODE,
                                        expectedErrorCode);
                 return r;
             }
-            
+
             // Check that there is a description entry
             TestReport.Entry[] desc = tr.getDescription();
             int nDesc = 0, enDesc = 0;
@@ -214,17 +216,17 @@ public class SelfContainedSVGOnLoadTestValidator extends DefaultTestSuite {
             if (expectedEntryCodes != null){
                 enDesc = expectedEntryCodes.length;
             }
-            
+
             if (nDesc != enDesc){
                 TestReport r = reportError(ERROR_UNEXPECTED_NUMBER_OF_DESCRIPTION_ENTRIES);
-                
+
                 r.addDescriptionEntry(ENTRY_NUMBER_OF_DESCRIPTION,
                                       "" + nDesc);
                 r.addDescriptionEntry(ENTRY_EXPECTED_NUMBER_OF_DESCRIPTION,
                                       "" + enDesc);
                 return r;
             }
-            
+
             if (nDesc > 0){
                 Vector veDesc = new Vector();
                 for(int i=0; i<nDesc; i++){
@@ -237,17 +239,16 @@ public class SelfContainedSVGOnLoadTestValidator extends DefaultTestSuite {
                         TestReport r = reportError(ERROR_UNEXPECTED_DESCRIPTION_ENTRY);
                         if (key != null){
                             r.addDescriptionEntry(ENTRY_KEY, key);
-                            r.addDescriptionEntry(ENTRY_EXPECTED_KEY, 
+                            r.addDescriptionEntry(ENTRY_EXPECTED_KEY,
                               SelfContainedSVGOnLoadTest.ENTRY_KEY_NUMBER_OF_TEST_RESULT_ELEMENTS);
                         }
                         return r;
                     }
                 }
             }
-            
+
             return reportSuccess();
         }
     }
-    
-}
 
+}

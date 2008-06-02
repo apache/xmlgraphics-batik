@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2002-2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -26,6 +27,7 @@ import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.css.engine.value.ValueConstants;
 import org.apache.batik.css.engine.value.ValueManager;
 import org.apache.batik.util.CSSConstants;
+import org.apache.batik.util.SVGTypes;
 
 /**
  * This class provides a manager for the 'font-stretch' property values.
@@ -34,35 +36,35 @@ import org.apache.batik.util.CSSConstants;
  * @version $Id$
  */
 public class FontStretchManager extends IdentifierManager {
-    
+
     /**
      * The identifier values.
      */
-    protected final static StringMap values = new StringMap();
+    protected static final StringMap values = new StringMap();
     static {
-	values.put(CSSConstants.CSS_ALL_VALUE,
+        values.put(CSSConstants.CSS_ALL_VALUE,
                    ValueConstants.ALL_VALUE);
-	values.put(CSSConstants.CSS_CONDENSED_VALUE,
+        values.put(CSSConstants.CSS_CONDENSED_VALUE,
                    ValueConstants.CONDENSED_VALUE);
-	values.put(CSSConstants.CSS_EXPANDED_VALUE,
+        values.put(CSSConstants.CSS_EXPANDED_VALUE,
                    ValueConstants.EXPANDED_VALUE);
-	values.put(CSSConstants.CSS_EXTRA_CONDENSED_VALUE,
+        values.put(CSSConstants.CSS_EXTRA_CONDENSED_VALUE,
                    ValueConstants.EXTRA_CONDENSED_VALUE);
-	values.put(CSSConstants.CSS_EXTRA_EXPANDED_VALUE,
+        values.put(CSSConstants.CSS_EXTRA_EXPANDED_VALUE,
                    ValueConstants.EXTRA_EXPANDED_VALUE);
-	values.put(CSSConstants.CSS_NARROWER_VALUE,
+        values.put(CSSConstants.CSS_NARROWER_VALUE,
                    ValueConstants.NARROWER_VALUE);
-	values.put(CSSConstants.CSS_NORMAL_VALUE,
+        values.put(CSSConstants.CSS_NORMAL_VALUE,
                    ValueConstants.NORMAL_VALUE);
-	values.put(CSSConstants.CSS_SEMI_CONDENSED_VALUE,
+        values.put(CSSConstants.CSS_SEMI_CONDENSED_VALUE,
                    ValueConstants.SEMI_CONDENSED_VALUE);
-	values.put(CSSConstants.CSS_SEMI_EXPANDED_VALUE,
+        values.put(CSSConstants.CSS_SEMI_EXPANDED_VALUE,
                    ValueConstants.SEMI_EXPANDED_VALUE);
-	values.put(CSSConstants.CSS_ULTRA_CONDENSED_VALUE,
+        values.put(CSSConstants.CSS_ULTRA_CONDENSED_VALUE,
                    ValueConstants.ULTRA_CONDENSED_VALUE);
-	values.put(CSSConstants.CSS_ULTRA_EXPANDED_VALUE,
+        values.put(CSSConstants.CSS_ULTRA_EXPANDED_VALUE,
                    ValueConstants.ULTRA_EXPANDED_VALUE);
-	values.put(CSSConstants.CSS_WIDER_VALUE,
+        values.put(CSSConstants.CSS_WIDER_VALUE,
                    ValueConstants.WIDER_VALUE);
     }
 
@@ -71,7 +73,28 @@ public class FontStretchManager extends IdentifierManager {
      * org.apache.batik.css.engine.value.ValueManager#isInheritedProperty()}.
      */
     public boolean isInheritedProperty() {
-	return true;
+        return true;
+    }
+
+    /**
+     * Implements {@link ValueManager#isAnimatableProperty()}.
+     */
+    public boolean isAnimatableProperty() {
+        return true;
+    }
+
+    /**
+     * Implements {@link ValueManager#isAdditiveProperty()}.
+     */
+    public boolean isAdditiveProperty() {
+        return false;
+    }
+
+    /**
+     * Implements {@link ValueManager#getPropertyType()}.
+     */
+    public int getPropertyType() {
+        return SVGTypes.TYPE_IDENT;
     }
 
     /**
@@ -79,9 +102,9 @@ public class FontStretchManager extends IdentifierManager {
      * org.apache.batik.css.engine.value.ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return CSSConstants.CSS_FONT_STRETCH_PROPERTY;
+        return CSSConstants.CSS_FONT_STRETCH_PROPERTY;
     }
-    
+
     /**
      * Implements {@link
      * org.apache.batik.css.engine.value.ValueManager#getDefaultValue()}.
@@ -99,7 +122,7 @@ public class FontStretchManager extends IdentifierManager {
                               CSSEngine engine,
                               int idx,
                               StyleMap sm,
-                              Value value) { 
+                              Value value) {
         if (value == ValueConstants.NARROWER_VALUE) {
             sm.putParentRelative(idx, true);
 

@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001-2004  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -20,6 +21,7 @@ package org.apache.batik.dom.svg;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.util.XMLSupport;
+
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedString;
@@ -34,11 +36,34 @@ import org.w3c.dom.svg.SVGGlyphRefElement;
 public class SVGOMGlyphRefElement
     extends    SVGStylableElement
     implements SVGGlyphRefElement {
-    
+
+//     /**
+//      * Table mapping XML attribute names to TraitInformation objects.
+//      */
+//     protected static DoublyIndexedTable xmlTraitInformation;
+//     static {
+//         DoublyIndexedTable t = new DoublyIndexedTable(SVGStylableElement.xmlTraitInformation);
+//         t.put(XLINK_NAMESPACE_URI, XLINK_HREF_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_URI));
+//         t.put(null, SVG_GLYPH_REF_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_CDATA));
+//         t.put(null, SVG_FORMAT_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_CDATA));
+//         t.put(null, SVG_X_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_NUMBER));
+//         t.put(null, SVG_Y_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_NUMBER));
+//         t.put(null, SVG_DX_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_NUMBER));
+//         t.put(null, SVG_DY_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_NUMBER));
+//         xmlTraitInformation = t;
+//     }
+
     /**
      * The attribute initializer.
      */
-    protected final static AttributeInitializer attributeInitializer;
+    protected static final AttributeInitializer attributeInitializer;
     static {
         attributeInitializer = new AttributeInitializer(4);
         attributeInitializer.addAttribute(XMLSupport.XMLNS_NAMESPACE_URI,
@@ -53,6 +78,12 @@ public class SVGOMGlyphRefElement
     }
 
     /**
+     * The 'xlink:href' attribute value.  Note that this attribute not
+     * actually animatable, according to SVG 1.1.
+     */
+    protected SVGOMAnimatedString href;
+
+    /**
      * Creates a new SVGOMGlyphRefElement object.
      */
     protected SVGOMGlyphRefElement() {
@@ -65,6 +96,23 @@ public class SVGOMGlyphRefElement
      */
     public SVGOMGlyphRefElement(String prefix, AbstractDocument owner) {
         super(prefix, owner);
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes all live attributes for this element.
+     */
+    protected void initializeAllLiveAttributes() {
+        super.initializeAllLiveAttributes();
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes the live attribute values of this element.
+     */
+    private void initializeLiveAttributes() {
+        href =
+            createLiveAnimatedString(XLINK_NAMESPACE_URI, XLINK_HREF_ATTRIBUTE);
     }
 
     /**
@@ -78,7 +126,7 @@ public class SVGOMGlyphRefElement
      * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGURIReference#getHref()}.
      */
     public SVGAnimatedString getHref() {
-        return SVGURIReferenceSupport.getHref(this);
+        return href;
     }
 
     /**
@@ -148,7 +196,7 @@ public class SVGOMGlyphRefElement
      * <b>DOM</b>: Implements {@link SVGGlyphRefElement#setDx(float)}.
      */
     public void setDx(float dx) throws DOMException {
-        setAttributeNS(null, SVG_DX_ATTRIBUTE, String.valueOf(dx)); 
+        setAttributeNS(null, SVG_DX_ATTRIBUTE, String.valueOf(dx));
     }
 
     /**
@@ -162,7 +210,7 @@ public class SVGOMGlyphRefElement
      * <b>DOM</b>: Implements {@link SVGGlyphRefElement#setDy(float)}.
      */
     public void setDy(float dy) throws DOMException {
-        setAttributeNS(null, SVG_DY_ATTRIBUTE, String.valueOf(dy)); 
+        setAttributeNS(null, SVG_DY_ATTRIBUTE, String.valueOf(dy));
     }
 
     /**
@@ -179,4 +227,11 @@ public class SVGOMGlyphRefElement
     protected Node newNode() {
         return new SVGOMGlyphRefElement();
     }
+
+//     /**
+//      * Returns the table of TraitInformation objects for this element.
+//      */
+//     protected DoublyIndexedTable getTraitInformationTable() {
+//         return xmlTraitInformation;
+//     }
 }

@@ -1,10 +1,11 @@
 /*
 
-   Copyright 1999-2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -29,12 +30,12 @@ import java.io.InputStream;
  * @version $Id$
  */
 public class UTF8Decoder extends AbstractCharDecoder {
-    
+
     /**
      * The number of bytes of a UTF-8 sequence indexed by the first
      * byte of the sequence.
      */
-    protected final static byte[] UTF8_BYTES = {
+    protected static final byte[] UTF8_BYTES = {
         1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
         1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
         1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
@@ -141,7 +142,7 @@ public class UTF8Decoder extends AbstractCharDecoder {
                 | ((b2 & 0x3f) << 12)
                 | ((b3 & 0x1f) << 6)
                 | (b4 & 0x1f);
-            nextChar = (c - 0x10000) % 0x400 + 0xdc00;            
+            nextChar = (c - 0x10000) % 0x400 + 0xdc00;
             return (c - 0x10000) / 0x400 + 0xd800;
         }
     }

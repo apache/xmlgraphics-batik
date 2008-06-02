@@ -1,10 +1,11 @@
 /*
 
-   Copyright 1999-2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -45,14 +46,14 @@ import org.w3c.dom.Text;
  */
 class XmlWriter implements SVGConstants {
 
-    static private String EOL;
-    static private final String TAG_END = "/>";
-    static private final String TAG_START = "</";
+    private static String EOL;
+    private static final String TAG_END = "/>";
+    private static final String TAG_START = "</";
 
-    static private final char[] SPACES = 
+    private static final char[] SPACES =
     { ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',
       ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ' };
-    static private final int    SPACES_LEN = SPACES.length;
+    private static final int    SPACES_LEN = SPACES.length;
 
     static {
         String  temp;
@@ -108,12 +109,12 @@ class XmlWriter implements SVGConstants {
             proxied.write(c);
         }
 
-        public void write(char cbuf[]) throws IOException {
+        public void write(char[] cbuf) throws IOException {
             column+=cbuf.length;
             proxied.write(cbuf);
         }
 
-        public void write(char cbuf[], int off, int len) throws IOException{
+        public void write(char[] cbuf, int off, int len) throws IOException{
             column+=len;
             proxied.write(cbuf, off, len);
         }
@@ -138,8 +139,8 @@ class XmlWriter implements SVGConstants {
         }
     }
 
-    private static void writeXml(Attr attr, IndentWriter out, 
-                                 boolean escaped) 
+    private static void writeXml(Attr attr, IndentWriter out,
+                                 boolean escaped)
         throws IOException{
         String name = attr.getName();
         out.write (name);
@@ -151,10 +152,10 @@ class XmlWriter implements SVGConstants {
     /**
      * Writes the attribute's value.
      */
-    private static void writeChildrenXml(Attr attr, IndentWriter out, 
+    private static void writeChildrenXml(Attr attr, IndentWriter out,
                                          boolean escaped)
         throws IOException {
-        char data[] = attr.getValue().toCharArray();
+        char[] data = attr.getValue().toCharArray();
         if (data == null) return;
 
         int         length = data.length;
@@ -165,31 +166,31 @@ class XmlWriter implements SVGConstants {
             case '<':
                 out.write (data, start, last - start);
                 start = last + 1;
-                out.write ("&lt;"); 
+                out.write ("&lt;");
                 break;
-            case '>':  
+            case '>':
                 out.write (data, start, last - start);
                 start = last + 1;
-                out.write ("&gt;"); 
+                out.write ("&gt;");
                 break;
-            case '&':  
+            case '&':
                 out.write (data, start, last - start);
                 start = last + 1;
-                out.write ("&amp;"); 
+                out.write ("&amp;");
                 break;
-            case '\'': 
+            case '\'':
                 out.write (data, start, last - start);
                 start = last + 1;
-                out.write ("&apos;"); 
+                out.write ("&apos;");
                 break;
-            case '"':  
+            case '"':
                 out.write (data, start, last - start);
                 start = last + 1;
-                out.write ("&quot;"); 
+                out.write ("&quot;");
                 break;
             default: // to be able to escape characters if allowed
                 if (escaped && (c > 0x007F)) {
-                    out.write (data, start, last - start);                    
+                    out.write (data, start, last - start);
                     String hex = "0000"+Integer.toHexString(c);
                     out.write("&#x"+hex.substring(hex.length()-4)+";");
                     start = last + 1;
@@ -206,11 +207,11 @@ class XmlWriter implements SVGConstants {
      * prevent illegal comments:  between consecutive dashes ("--")
      * or if the last character of the comment is a dash.
      */
-    private static void writeXml(Comment comment, IndentWriter out, 
+    private static void writeXml(Comment comment, IndentWriter out,
                                  boolean escaped)
         throws IOException {
 
-        char data[] = comment.getData().toCharArray();
+        char[] data = comment.getData().toCharArray();
 
         if (data == null) {
             out.write("<!---->");
@@ -221,7 +222,7 @@ class XmlWriter implements SVGConstants {
         boolean     sawDash = false;
         int         length = data.length;
         int         start=0, last=0;
-        
+
         // "--" illegal in comments, insert a space.
         while (last < length) {
             char c = data[last];
@@ -248,10 +249,10 @@ class XmlWriter implements SVGConstants {
         writeXml(text, out, false, escaped);
     }
 
-    private static void writeXml(Text text, IndentWriter out, boolean trimWS, 
+    private static void writeXml(Text text, IndentWriter out, boolean trimWS,
                                  boolean escaped)
         throws IOException {
-        char data[] = text.getData().toCharArray();
+        char[] data = text.getData().toCharArray();
 
         // XXX saw this once -- being paranoid
         if (data == null)
@@ -270,7 +271,7 @@ class XmlWriter implements SVGConstants {
             }
             start = last;
         }
-         
+
         while (last < length) {
             char c = data [last];
 
@@ -288,7 +289,7 @@ class XmlWriter implements SVGConstants {
                     int wsStart = last; last++;
                     while (last < length) {
                         switch(data[last]) {
-                        case ' ': case '\t': case '\n': case '\r': 
+                        case ' ': case '\t': case '\n': case '\r':
                             last++; continue;
                         default: break;
                         }
@@ -331,7 +332,7 @@ class XmlWriter implements SVGConstants {
         out.write (data, start, last - start);
     }
 
-    private static void writeXml(CDATASection cdataSection, IndentWriter out, 
+    private static void writeXml(CDATASection cdataSection, IndentWriter out,
                                  boolean escaped)
         throws IOException {
         char[] data = cdataSection.getData().toCharArray();
@@ -349,7 +350,7 @@ class XmlWriter implements SVGConstants {
             // embedded "]]>" needs to be split into adjacent
             // CDATA blocks ... can be split at either point
             if (c == ']') {
-                if (((last + 2) < data.length) && 
+                if (((last + 2) < data.length) &&
                     (data [last + 1] == ']')   &&
                     (data [last + 2] == '>')) {
                     out.write (data, start, last - start);
@@ -364,7 +365,7 @@ class XmlWriter implements SVGConstants {
         out.write ("]]>");
     }
 
-    private static void writeXml(Element element, IndentWriter out, 
+    private static void writeXml(Element element, IndentWriter out,
                                  boolean escaped)
         throws IOException, SVGGraphics2DIOException {
         out.write (TAG_START, 0, 1);    // "<"
@@ -388,12 +389,12 @@ class XmlWriter implements SVGConstants {
         // XML allows "<EMPTY/>" too, of course.
         //
         if (!element.hasChildNodes()) {
-            if (lastElem) 
+            if (lastElem)
                 out.setIndentLevel(out.getIndentLevel()-2);
             out.printIndent ();
             out.write(TAG_END, 0, 2);   // "/>"
             return;
-        } 
+        }
         Node child = element.getFirstChild();
         out.printIndent ();
         out.write(TAG_END, 1, 1);   // ">"
@@ -406,13 +407,13 @@ class XmlWriter implements SVGConstants {
 
         out.write (TAG_START, 0, 2);        // "</"
         out.write (element.getTagName());
-        if (lastElem) 
+        if (lastElem)
             out.setIndentLevel(out.getIndentLevel()-2);
         out.printIndent ();
         out.write (TAG_END, 1, 1);  // ">"
     }
 
-    private static void writeChildrenXml(Element element, IndentWriter out, 
+    private static void writeChildrenXml(Element element, IndentWriter out,
                                          boolean escaped)
         throws IOException, SVGGraphics2DIOException {
         Node child = element.getFirstChild();
@@ -443,14 +444,14 @@ class XmlWriter implements SVGConstants {
         // Write DOCTYPE declaration here. Skip until specification is released.
         out.write ("<!DOCTYPE svg PUBLIC '");
         out.write (SVG_PUBLIC_ID);
-        out.write ("'"); out.write (EOL); 
+        out.write ("'"); out.write (EOL);
 
         out.write ("          '");
         out.write (SVG_SYSTEM_ID);
         out.write ("'"); out.write (">"); out.write (EOL);
     }
 
-    private static void writeXml(Document document, IndentWriter out, 
+    private static void writeXml(Document document, IndentWriter out,
                                  boolean escaped)
         throws IOException, SVGGraphics2DIOException {
         writeDocumentHeader(out);
@@ -458,7 +459,7 @@ class XmlWriter implements SVGConstants {
         writeXml(childList, out, escaped);
     }
 
-    private static void writeXml(NodeList childList, IndentWriter out, 
+    private static void writeXml(NodeList childList, IndentWriter out,
                                  boolean escaped)
         throws IOException, SVGGraphics2DIOException {
         int     length = childList.getLength ();
@@ -511,7 +512,7 @@ class XmlWriter implements SVGConstants {
             return "ISO-2022-JP";
         if ("EUCJIS".equalsIgnoreCase (encodingName))
             return "EUC-JP";
-                
+
         // else we force UTF-8 encoding, better than nothing...
         return "UTF-8";
     }

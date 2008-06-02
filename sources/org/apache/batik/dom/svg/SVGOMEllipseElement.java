@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2000-2002  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -18,6 +19,9 @@
 package org.apache.batik.dom.svg;
 
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.util.DoublyIndexedTable;
+import org.apache.batik.util.SVGTypes;
+
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedLength;
 import org.w3c.dom.svg.SVGEllipseElement;
@@ -33,6 +37,44 @@ public class SVGOMEllipseElement
     implements SVGEllipseElement {
 
     /**
+     * Table mapping XML attribute names to TraitInformation objects.
+     */
+    protected static DoublyIndexedTable xmlTraitInformation;
+    static {
+        DoublyIndexedTable t =
+            new DoublyIndexedTable(SVGGraphicsElement.xmlTraitInformation);
+        t.put(null, SVG_CX_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_LENGTH, PERCENTAGE_VIEWPORT_WIDTH));
+        t.put(null, SVG_CY_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_LENGTH, PERCENTAGE_VIEWPORT_HEIGHT));
+        t.put(null, SVG_RX_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_LENGTH, PERCENTAGE_VIEWPORT_WIDTH));
+        t.put(null, SVG_RY_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_LENGTH, PERCENTAGE_VIEWPORT_HEIGHT));
+        xmlTraitInformation = t;
+    }
+
+    /**
+     * The 'cx' attribute value.
+     */
+    protected SVGOMAnimatedLength cx;
+
+    /**
+     * The 'cy' attribute value.
+     */
+    protected SVGOMAnimatedLength cy;
+
+    /**
+     * The 'rx' attribute value.
+     */
+    protected SVGOMAnimatedLength rx;
+
+    /**
+     * The 'ry' attribute value.
+     */
+    protected SVGOMAnimatedLength ry;
+
+    /**
      * Creates a new SVGOMEllipseElement object.
      */
     protected SVGOMEllipseElement() {
@@ -45,6 +87,33 @@ public class SVGOMEllipseElement
      */
     public SVGOMEllipseElement(String prefix, AbstractDocument owner) {
         super(prefix, owner);
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes all live attributes for this element.
+     */
+    protected void initializeAllLiveAttributes() {
+        super.initializeAllLiveAttributes();
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes the live attribute values of this element.
+     */
+    private void initializeLiveAttributes() {
+        cx = createLiveAnimatedLength
+            (null, SVG_CX_ATTRIBUTE, SVG_ELLIPSE_CX_DEFAULT_VALUE,
+             SVGOMAnimatedLength.HORIZONTAL_LENGTH, false);
+        cy = createLiveAnimatedLength
+            (null, SVG_CY_ATTRIBUTE, SVG_ELLIPSE_CY_DEFAULT_VALUE,
+             SVGOMAnimatedLength.VERTICAL_LENGTH, false);
+        rx = createLiveAnimatedLength
+            (null, SVG_RX_ATTRIBUTE, null,
+             SVGOMAnimatedLength.HORIZONTAL_LENGTH, true);
+        ry = createLiveAnimatedLength
+            (null, SVG_RY_ATTRIBUTE, null, SVGOMAnimatedLength.VERTICAL_LENGTH,
+             true);
     }
 
     /**
@@ -58,36 +127,28 @@ public class SVGOMEllipseElement
      * <b>DOM</b>: Implements {@link SVGEllipseElement#getCx()}.
      */
     public SVGAnimatedLength getCx() {
-        return getAnimatedLengthAttribute
-            (null, SVG_CX_ATTRIBUTE, SVG_ELLIPSE_CX_DEFAULT_VALUE,
-             SVGOMAnimatedLength.HORIZONTAL_LENGTH);
+        return cx;
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGEllipseElement#getCy()}.
      */
     public SVGAnimatedLength getCy() {
-        return getAnimatedLengthAttribute
-            (null, SVG_CY_ATTRIBUTE, SVG_ELLIPSE_CY_DEFAULT_VALUE,
-             SVGOMAnimatedLength.VERTICAL_LENGTH);
+        return cy;
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGEllipseElement#getRx()}.
      */
     public SVGAnimatedLength getRx() {
-        return getAnimatedLengthAttribute
-            (null, SVG_RX_ATTRIBUTE, "",
-             SVGOMAnimatedLength.HORIZONTAL_LENGTH);
+        return rx;
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGEllipseElement#getRy()}.
      */
     public SVGAnimatedLength getRy() {
-        return getAnimatedLengthAttribute
-            (null, SVG_RY_ATTRIBUTE, "",
-             SVGOMAnimatedLength.VERTICAL_LENGTH); 
+        return ry;
    }
 
     /**
@@ -95,5 +156,12 @@ public class SVGOMEllipseElement
      */
     protected Node newNode() {
         return new SVGOMEllipseElement();
+    }
+
+    /**
+     * Returns the table of TraitInformation objects for this element.
+     */
+    protected DoublyIndexedTable getTraitInformationTable() {
+        return xmlTraitInformation;
     }
 }

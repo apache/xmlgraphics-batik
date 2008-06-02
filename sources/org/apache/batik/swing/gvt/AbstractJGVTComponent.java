@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001-2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -50,6 +51,7 @@ import javax.swing.JComponent;
 
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.event.AWTEventDispatcher;
+import org.apache.batik.gvt.event.EventDispatcher;
 import org.apache.batik.gvt.event.SelectionAdapter;
 import org.apache.batik.gvt.event.SelectionEvent;
 import org.apache.batik.gvt.renderer.ConcreteImageRendererFactory;
@@ -57,6 +59,7 @@ import org.apache.batik.gvt.renderer.ImageRenderer;
 import org.apache.batik.gvt.renderer.ImageRendererFactory;
 import org.apache.batik.gvt.text.Mark;
 import org.apache.batik.util.HaltingThread;
+import org.apache.batik.util.Platform;
 
 /**
  * This class represents a component which can display a GVT tree.
@@ -256,7 +259,7 @@ public abstract class AbstractJGVTComponent extends JComponent {
     }
 
     /**
-     * Returns true if all 'interactor' objects 
+     * Returns true if all 'interactor' objects
      * (pan, zoom, etc) are disabled.
      */
     public boolean getDisableInteractions() {
@@ -368,19 +371,29 @@ public abstract class AbstractJGVTComponent extends JComponent {
      */
     protected void initializeEventHandling() {
         if (eventsEnabled) {
-            eventDispatcher = new AWTEventDispatcher();
+            eventDispatcher = createEventDispatcher();
             if (selectableText) {
-                textSelectionManager =
-                    new TextSelectionManager(this, eventDispatcher);
+                textSelectionManager = createTextSelectionManager
+                    (eventDispatcher);
                 textSelectionManager.addSelectionListener
-                    (new UnixTextSelectionListener());
+                     (new UnixTextSelectionListener());
             }
         }
     }
 
+    protected AWTEventDispatcher createEventDispatcher() {
+        return new AWTEventDispatcher();
+    }
+
+
     ////////////////////////////////////////////////////////////////////////
     // Selection methods
     ////////////////////////////////////////////////////////////////////////
+
+    protected TextSelectionManager 
+        createTextSelectionManager(EventDispatcher ed) {
+        return new TextSelectionManager(this, ed);
+    }
 
     /**
      * Returns the current Text selection manager for the Component.
@@ -514,10 +527,10 @@ public abstract class AbstractJGVTComponent extends JComponent {
         if (EventQueue.isDispatchThread()) {
             Rectangle visRect = getRenderRect();
             if (doubleBufferedRendering)
-                repaint(visRect.x,     visRect.y, 
+                repaint(visRect.x,     visRect.y,
                         visRect.width, visRect.height);
             else
-                paintImmediately(visRect.x,     visRect.y, 
+                paintImmediately(visRect.x,     visRect.y,
                                  visRect.width, visRect.height);
         } else {
             try {
@@ -525,10 +538,10 @@ public abstract class AbstractJGVTComponent extends JComponent {
                         public void run() {
                             Rectangle visRect = getRenderRect();
                             if (doubleBufferedRendering)
-                                repaint(visRect.x,     visRect.y, 
+                                repaint(visRect.x,     visRect.y,
                                         visRect.width, visRect.height);
                             else
-                                paintImmediately(visRect.x,    visRect.y, 
+                                paintImmediately(visRect.x,    visRect.y,
                                                  visRect.width,visRect.height);
                         }
                     });
@@ -548,7 +561,7 @@ public abstract class AbstractJGVTComponent extends JComponent {
         Rectangle visRect = getRenderRect();
         g2d.setComposite(AlphaComposite.SrcOver);
         g2d.setPaint(getBackground());
-        g2d.fillRect(visRect.x,     visRect.y, 
+        g2d.fillRect(visRect.x,     visRect.y,
                      visRect.width, visRect.height);
 
         if (image != null) {
@@ -590,7 +603,7 @@ public abstract class AbstractJGVTComponent extends JComponent {
         setRenderingTransform(at, true);
     }
 
-    public void setRenderingTransform(AffineTransform at, 
+    public void setRenderingTransform(AffineTransform at,
                                       boolean performRedraw) {
         renderingTransform = new AffineTransform(at);
         suspendInteractions = true;
@@ -704,7 +717,7 @@ public abstract class AbstractJGVTComponent extends JComponent {
         try {
             inv = renderingTransform.createInverse();
         } catch (NoninvertibleTransformException e) {
-            throw new InternalError(e.getMessage());
+            throw new IllegalStateException( "NoninvertibleTransformEx:" + e.getMessage() );
         }
         Shape s = inv.createTransformedShape(visRect);
 
@@ -809,7 +822,7 @@ public abstract class AbstractJGVTComponent extends JComponent {
         boolean checkClick = false;
         boolean hadDrag = false;
         int startX, startY;
-        long startTime;
+        long startTime, fakeClickTime;
         int MAX_DISP = 4*4;
         long CLICK_TIME = 200;
 
@@ -847,7 +860,7 @@ public abstract class AbstractJGVTComponent extends JComponent {
                                         if (progressivePaintThread ==
                                             thisThread) {
                                             Rectangle vRect = getRenderRect();
-                                            repaint(vRect.x,     vRect.y, 
+                                            repaint(vRect.x,     vRect.y,
                                                     vRect.width, vRect.height);
                                         }
                                     }
@@ -1002,6 +1015,13 @@ public abstract class AbstractJGVTComponent extends JComponent {
          * Invoked when the mouse has been clicked on a component.
          */
         public void mouseClicked(MouseEvent e) {
+            // Supress mouse click if we generated a
+            // fake click with the same time stamp.
+            if (fakeClickTime != e.getWhen())
+                handleMouseClicked(e);
+        }
+
+        public void handleMouseClicked(MouseEvent e) {
             selectInteractor(e);
             if (interactor != null) {
                 interactor.mouseClicked(e);
@@ -1024,7 +1044,8 @@ public abstract class AbstractJGVTComponent extends JComponent {
         public void mousePressed(MouseEvent e) {
             startX = e.getX();
             startY = e.getY();
-            startTime = System.currentTimeMillis();
+            startTime = e.getWhen();
+
             checkClick = true;
 
             selectInteractor(e);
@@ -1050,7 +1071,7 @@ public abstract class AbstractJGVTComponent extends JComponent {
             if ((checkClick) && hadDrag) {
                 int dx = startX-e.getX();
                 int dy = startY-e.getY();
-                long cTime = System.currentTimeMillis();
+                long cTime = e.getWhen();
                 if ((dx*dx+dy*dy < MAX_DISP) &&
                     (cTime-startTime) < CLICK_TIME) {
                     // our drag was short! dispatch a CLICK event.
@@ -1059,13 +1080,14 @@ public abstract class AbstractJGVTComponent extends JComponent {
                         (e.getComponent(),
                          MouseEvent.MOUSE_CLICKED,
                          e.getWhen(),
-                         e.getModifiers(),		// modifiers
+                         e.getModifiers(),
                          e.getX(),
                          e.getY(),
                          e.getClickCount(),
                          e.isPopupTrigger());
-							
-                    mouseClicked(click);
+
+                    fakeClickTime = click.getWhen();
+                    handleMouseClicked(click);
                 }
             }
             checkClick = false;
@@ -1167,7 +1189,12 @@ public abstract class AbstractJGVTComponent extends JComponent {
         public void mouseMoved(MouseEvent e) {
             selectInteractor(e);
             if (interactor != null) {
-                interactor.mouseMoved(e);
+            	// because the mouseDragged event doesn't seem to be generated on OSX when ctrl is held down
+            	if (Platform.isOSX &&
+            		interactor instanceof AbstractZoomInteractor)
+            		mouseDragged(e);
+            	else
+            		interactor.mouseMoved(e);
                 deselectInteractor();
             } else if (eventDispatcher != null) {
                 dispatchMouseMoved(e);
@@ -1210,9 +1237,9 @@ public abstract class AbstractJGVTComponent extends JComponent {
         }
     }
 
-    protected class UnixTextSelectionListener 
+    protected class UnixTextSelectionListener
         extends SelectionAdapter {
-        
+
         public void selectionDone(SelectionEvent evt) {
             if (!useUnixTextSelection) return;
 

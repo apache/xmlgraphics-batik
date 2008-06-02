@@ -1,10 +1,11 @@
 <!--
 
-   Copyright 2001-2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -56,52 +57,52 @@
     <testGroup id="tests.spec12" name="SVG Version 1.2 functionality tests">
         <test id="samples/tests/spec12/text/flowBidi.svg" >
             <property name="Validating" class="java.lang.Boolean" value="false" />
-	    </test>
+            </test>
         <test id="samples/tests/spec12/text/flowText.svg" >
             <property name="Validating" class="java.lang.Boolean" value="false" />
-	</test>
+        </test>
         <test id="samples/tests/spec12/text/flowText2.svg" >
             <property name="Validating" class="java.lang.Boolean" value="false" />
-	</test>
+        </test>
         <test id="samples/tests/spec12/text/flowText3.svg" >
             <property name="Validating" class="java.lang.Boolean" value="false" />
-	</test>
+        </test>
         <test id="samples/tests/spec12/text/flowText4.svg" >
             <property name="Validating" class="java.lang.Boolean" value="false" />
-	</test>
+        </test>
         <test id="samples/tests/spec12/text/flowText5.svg" >
             <property name="Validating" class="java.lang.Boolean" value="false" />
-	</test>
+        </test>
         <test id="samples/tests/spec12/text/flowRegionBreak.svg" >
             <property name="Validating" class="java.lang.Boolean" value="false" />
-	</test>
+        </test>
         <test id="samples/tests/spec12/text/lineHeightFontShorthand.svg" >
             <property name="Validating" class="java.lang.Boolean" value="false" />
-	</test>
+        </test>
         <test id="samples/tests/spec12/structure/multi.svg" >
             <property name="Validating" class="java.lang.Boolean" value="false" />
-	</test>
+        </test>
         <test id="samples/tests/spec12/structure/multi2.svg" >
             <property name="Validating" class="java.lang.Boolean" value="false" />
-	</test>
+        </test>
         <test id="samples/tests/spec12/structure/opera/opera-subImage.svg" >
             <property name="Validating" class="java.lang.Boolean" value="false" />
-	</test>
+        </test>
         <test id="samples/tests/spec12/structure/opera/opera-subImageRef.svg" >
             <property name="Validating" class="java.lang.Boolean" value="false" />
-	</test>
+        </test>
         <test id="samples/tests/spec12/paints/solidColor.svg" >
             <property name="Validating" class="java.lang.Boolean" value="false" />
-	</test>
+        </test>
         <test id="samples/tests/spec12/paints/solidColor2.svg" >
             <property name="Validating" class="java.lang.Boolean" value="false" />
-	</test>
+        </test>
         <test id="samples/tests/spec12/filters/filterRegion.svg" >
             <property name="Validating" class="java.lang.Boolean" value="false" />
-	</test>
+        </test>
         <test id="samples/tests/spec12/filters/filterRegionDetailed.svg" >
             <property name="Validating" class="java.lang.Boolean" value="false" />
-	</test>
+        </test>
     </testGroup>
 
     <!-- ================================================================== -->
@@ -110,22 +111,22 @@
     <testGroup id="extensions" name="extensions rendering">
         <test id="samples/extensions/colorSwitch.svg" >
             <property name="Validating" class="java.lang.Boolean" value="false" />
-	</test>
+        </test>
         <test id="samples/extensions/histogramNormalization.svg" >
             <property name="Validating" class="java.lang.Boolean" value="false" />
-	</test>
+        </test>
         <test id="samples/extensions/regularPolygon.svg" >
             <property name="Validating" class="java.lang.Boolean" value="false" />
-	</test>
+        </test>
         <test id="samples/extensions/star.svg" >
             <property name="Validating" class="java.lang.Boolean" value="false" />
-	</test>
+        </test>
         <test id="samples/extensions/flowText.svg" >
             <property name="Validating" class="java.lang.Boolean" value="false" />
-	</test>
+        </test>
         <test id="samples/extensions/flowTextAlign.svg" >
             <property name="Validating" class="java.lang.Boolean" value="false" />
-	</test>
+        </test>
 
     </testGroup>
 
@@ -362,6 +363,7 @@
         <test id="samples/tests/spec/scripting/bbox.svg" />
         <test id="samples/tests/spec/scripting/circle.svg" />
         <test id="samples/tests/spec/scripting/display.svg" />
+        <test id="samples/tests/spec/scripting/domSVGColor.svg" />
         <test id="samples/tests/spec/scripting/ellipse.svg" />
         <test id="samples/tests/spec/scripting/enclosureList.svg" />
         <test id="samples/tests/spec/scripting/enclosureList2.svg" />

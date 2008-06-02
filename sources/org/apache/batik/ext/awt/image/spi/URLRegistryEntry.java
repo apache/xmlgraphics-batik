@@ -1,10 +1,11 @@
 /*
 
-   Copyright 1999-2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -26,8 +27,10 @@ import org.apache.batik.util.ParsedURL;
  * Ussually this means that the URL uses a non-standard protocol.  In
  * these cases you should be aware that in order for the construction
  * of the URL object to succeed you must register a @see
- * URLStreamHandler using one of the methods listed in 
+ * URLStreamHandler using one of the methods listed in
  * @see java.net.URL#URL(java.lang.String, java.lang.String, int, java.lang.String)
+ *
+ * @version $Id$
  */
 public interface URLRegistryEntry extends RegistryEntry {
     /**
@@ -44,7 +47,7 @@ public interface URLRegistryEntry extends RegistryEntry {
      *
      * @param url The URL to inspect.
      */
-    public boolean isCompatibleURL(ParsedURL url);
+    boolean isCompatibleURL(ParsedURL url);
 
     /**
      * Decode the URL into a RenderableImage, here you should feel
@@ -59,8 +62,8 @@ public interface URLRegistryEntry extends RegistryEntry {
      *
      * @param url The url that reference the image.
      * @param needRawData If true the image returned should not have
-     *                    any default color correction the file may 
-     *                    specify applied.  
+     *                    any default color correction the file may
+     *                    specify applied.
      */
-    public Filter handleURL(ParsedURL url, boolean needRawData);
+    Filter handleURL(ParsedURL url, boolean needRawData);
 }

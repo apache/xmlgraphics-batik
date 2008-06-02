@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001-2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -30,7 +31,7 @@ import org.apache.batik.util.EventDispatcher.Dispatcher;
 import org.apache.batik.util.HaltingThread;
 
 /**
- * This class represents an object which renders asynchroneaously
+ * This class represents an object which renders asynchronously
  * a GVT tree.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
@@ -169,7 +170,7 @@ public class GVTTreeRenderer extends HaltingThread {
                     ((GVTTreeRendererEvent)event);
             }
         };
-            
+
     static Dispatcher startedDispatcher = new Dispatcher() {
             public void dispatch(Object listener,
                                  Object event) {
@@ -177,7 +178,7 @@ public class GVTTreeRenderer extends HaltingThread {
                     ((GVTTreeRendererEvent)event);
             }
         };
-            
+
     static Dispatcher cancelledDispatcher = new Dispatcher() {
             public void dispatch(Object listener,
                                  Object event) {
@@ -185,7 +186,7 @@ public class GVTTreeRenderer extends HaltingThread {
                     ((GVTTreeRendererEvent)event);
             }
         };
-            
+
     static Dispatcher completedDispatcher = new Dispatcher() {
             public void dispatch(Object listener,
                                  Object event) {
@@ -193,7 +194,7 @@ public class GVTTreeRenderer extends HaltingThread {
                     ((GVTTreeRendererEvent)event);
             }
         };
-            
+
     static Dispatcher failedDispatcher = new Dispatcher() {
             public void dispatch(Object listener,
                                  Object event) {
@@ -201,6 +202,6 @@ public class GVTTreeRenderer extends HaltingThread {
                     ((GVTTreeRendererEvent)event);
             }
         };
-            
+
 
 }

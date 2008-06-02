@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-    <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-    <classpathentry
-        excluding="org/apache/batik/script/jacl/**|org/apache/batik/script/jpython/**|**/.svn/"
-        kind="src" path="sources"/>
-    <classpathentry excluding="**/.svn/" kind="src" path="sources-1.4"/>
-    <classpathentry excluding="**/.svn/" kind="src" path="test-sources"/>
-    <classpathentry kind="lib" path="lib/js.jar"/>
-    <classpathentry kind="lib" path="lib/pdf-transcoder.jar"/>
-    <classpathentry kind="lib" path="lib/xerces_2_5_0.jar"/>
-    <classpathentry kind="lib" path="lib/xml-apis-dom3.jar"/>
-    <classpathentry excluding="**/.svn/" kind="src" path="resources"/>
-    <classpathentry excluding="**/.svn/" kind="src" path="test-resources"/>
-    <classpathentry kind="output" path="classes"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry excluding="org/apache/batik/script/jacl/**|org/apache/batik/script/jpython/**|**/.svn/" kind="src" path="sources"/>
+	<classpathentry excluding="**/.svn/" kind="src" path="sources-1.4"/>
+	<classpathentry excluding="**/.svn/" kind="src" path="test-sources"/>
+	<classpathentry kind="lib" path="lib/js.jar"/>
+	<classpathentry kind="lib" path="lib/pdf-transcoder.jar"/>
+	<classpathentry kind="lib" path="lib/xerces_2_5_0.jar"/>
+	<classpathentry kind="lib" path="lib/xml-apis.jar"/>
+	<classpathentry kind="lib" path="lib/xml-apis-ext.jar"/>
+	<classpathentry excluding="**/.svn/" kind="src" path="resources"/>
+	<classpathentry excluding="**/.svn/" kind="src" path="test-resources"/>
+	<classpathentry kind="lib" path="lib/xalan-2.6.0.jar"/>
+	<classpathentry kind="output" path="classes"/>
 </classpath>

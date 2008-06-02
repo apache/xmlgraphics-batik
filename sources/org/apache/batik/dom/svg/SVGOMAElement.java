@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2000-2004  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -20,6 +21,9 @@ package org.apache.batik.dom.svg;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.util.XMLSupport;
+import org.apache.batik.util.DoublyIndexedTable;
+import org.apache.batik.util.SVGTypes;
+
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAElement;
 import org.w3c.dom.svg.SVGAnimatedString;
@@ -37,7 +41,7 @@ public class SVGOMAElement
     /**
      * The attribute initializer.
      */
-    protected final static AttributeInitializer attributeInitializer;
+    protected static final AttributeInitializer attributeInitializer;
     static {
         attributeInitializer = new AttributeInitializer(4);
         attributeInitializer.addAttribute(XMLSupport.XMLNS_NAMESPACE_URI,
@@ -52,6 +56,23 @@ public class SVGOMAElement
     }
 
     /**
+     * Table mapping XML attribute names to TraitInformation objects.
+     */
+    protected static DoublyIndexedTable xmlTraitInformation;
+    static {
+        DoublyIndexedTable t =
+            new DoublyIndexedTable(SVGURIReferenceGraphicsElement.xmlTraitInformation);
+        t.put(null, SVG_TARGET_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_CDATA));
+        xmlTraitInformation = t;
+    }
+
+    /**
+     * The 'target' attribute value.
+     */
+    protected SVGOMAnimatedString target;
+
+    /**
      * Creates a new SVGOMAElement object.
      */
     protected SVGOMAElement() {
@@ -64,6 +85,22 @@ public class SVGOMAElement
      */
     public SVGOMAElement(String prefix, AbstractDocument owner) {
         super(prefix, owner);
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes all live attributes for this element.
+     */
+    protected void initializeAllLiveAttributes() {
+        super.initializeAllLiveAttributes();
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes the live attribute values of this element.
+     */
+    private void initializeLiveAttributes() {
+        target = createLiveAnimatedString(null, SVG_TARGET_ATTRIBUTE);
     }
 
     /**
@@ -77,7 +114,7 @@ public class SVGOMAElement
      * <b>DOM</b>: Implements {@link SVGAElement#getTarget()}.
      */
     public SVGAnimatedString getTarget() {
-        return getAnimatedStringAttribute(null, SVG_TARGET_ATTRIBUTE);
+        return target;
     }
 
     /**
@@ -93,5 +130,12 @@ public class SVGOMAElement
      */
     protected Node newNode() {
         return new SVGOMAElement();
+    }
+
+    /**
+     * Returns the table of TraitInformation objects for this element.
+     */
+    protected DoublyIndexedTable getTraitInformationTable() {
+        return xmlTraitInformation;
     }
 }

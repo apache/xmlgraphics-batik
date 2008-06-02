@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2000-2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -17,14 +18,12 @@
  */
 package org.apache.batik.dom.svg;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import org.apache.batik.css.engine.CSSEngine;
 import org.apache.batik.css.engine.CSSStyleSheetNode;
 import org.apache.batik.css.engine.StyleSheet;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.XMLSupport;
+import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.XMLConstants;
 
 import org.w3c.dom.DOMException;
@@ -46,10 +45,27 @@ public class SVGOMStyleElement
                SVGStyleElement,
                LinkStyle {
 
+//     /**
+//      * Table mapping XML attribute names to TraitInformation objects.
+//      */
+//     protected static DoublyIndexedTable xmlTraitInformation;
+//     static {
+//         DoublyIndexedTable t =
+//             new DoublyIndexedTable(SVGOMElement.xmlTraitInformation);
+//         t.put(null, SVG_MEDIA_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_CDATA));
+//         t.put(null, SVG_TITLE_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_CDATA));
+//         t.put(null, SVG_TYPE_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_CDATA));
+//         xmlTraitInformation = t;
+//     }
+
     /**
      * The attribute initializer.
      */
-    protected final static AttributeInitializer attributeInitializer;
+    protected static final AttributeInitializer attributeInitializer;
+
     static {
         attributeInitializer = new AttributeInitializer(1);
         attributeInitializer.addAttribute(XMLSupport.XML_NAMESPACE_URI,
@@ -114,18 +130,12 @@ public class SVGOMStyleElement
                     }
                     text = sb.toString();
                 }
-                URL burl = null;
-                try {
-                    String bu = getBaseURI();
-                    if (bu != null) {
-                        burl = new URL(bu);
-                    }
-                } catch (MalformedURLException ex) {
-                    // !!! TODO
-                    ex.printStackTrace();
-                    throw new InternalError();
+                ParsedURL burl = null;
+                String bu = getBaseURI();
+                if (bu != null) {
+                    burl = new ParsedURL(bu);
                 }
-                String  media = getAttributeNS(null, SVG_MEDIA_ATTRIBUTE);
+                String media = getAttributeNS(null, SVG_MEDIA_ATTRIBUTE);
                 styleSheet = e.parseStyleSheet(text, burl, media);
                 addEventListenerNS(XMLConstants.XML_EVENTS_NAMESPACE_URI,
                                    "DOMCharacterDataModified",
@@ -142,7 +152,8 @@ public class SVGOMStyleElement
      * org.w3c.dom.stylesheets.LinkStyle#getSheet()}.
      */
     public org.w3c.dom.stylesheets.StyleSheet getSheet() {
-        throw new RuntimeException(" !!! Not implemented.");
+        throw new UnsupportedOperationException
+            ("LinkStyle.getSheet() is not implemented"); // XXX
     }
 
     /**
@@ -156,9 +167,7 @@ public class SVGOMStyleElement
      * <b>DOM</b>: Implements {@link SVGStyleElement#setXMLspace(String)}.
      */
     public void setXMLspace(String space) throws DOMException {
-        setAttributeNS(XMLSupport.XML_NAMESPACE_URI,
-                       XMLSupport.XML_SPACE_ATTRIBUTE,
-                       space);
+        setAttributeNS(XML_NAMESPACE_URI, XML_SPACE_QNAME, space);
     }
 
     /**
@@ -217,6 +226,13 @@ public class SVGOMStyleElement
     protected Node newNode() {
         return new SVGOMStyleElement();
     }
+
+//     /**
+//      * Returns the table of TraitInformation objects for this element.
+//      */
+//     protected DoublyIndexedTable getTraitInformationTable() {
+//         return xmlTraitInformation;
+//     }
 
     /**
      * The DOMCharacterDataModified listener.

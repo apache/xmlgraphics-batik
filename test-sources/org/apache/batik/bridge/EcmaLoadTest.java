@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2004  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -39,17 +40,17 @@ public class EcmaLoadTest extends DefaultTestSuite {
                                    {"any", "document"},
                                    {"any", "document", "embeded"},
                                    {"any", "document", "embeded"},
-                                   };;
+                                   };
 
         //
         // <!> Need to make restricted {true/false}
-        // 
+        //
 
         //
         // An ecma script can be loaded if ECMA is listed
         // as an allowed script _and_ the loaded script
         // has an origin allowed by the scriptOrigin setting.
-        // All other security settings should not have an 
+        // All other security settings should not have an
         // influence on whether or not the script can be loaded.
         //
         for (int i=0; i<scriptSource.length; i++) {
@@ -66,11 +67,11 @@ public class EcmaLoadTest extends DefaultTestSuite {
 
     ScriptSelfTest buildTest(String scripts, String id, String origin, boolean secure) {
         ScriptSelfTest t = new ScriptSelfTest();
-        String desc = 
-            "(scripts=" + scripts + 
+        String desc =
+            "(scripts=" + scripts +
             ")(scriptOrigin=" + origin +
-            ")(secure=" + secure + ")";
-        
+            ")(secure=" + secure + ')';
+
         t.setId(id + desc);
         t.setScriptOrigin(origin);
         t.setSecure(secure);
@@ -78,5 +79,5 @@ public class EcmaLoadTest extends DefaultTestSuite {
 
         return t;
     }
-                             
+
 }

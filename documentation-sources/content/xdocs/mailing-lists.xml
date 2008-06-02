@@ -1,0 +1,106 @@
+<?xml version="1.0"?>
+
+<!--
+
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+
+<!-- ========================================================================= -->
+<!-- author cjolif@ilog.fr                                                     -->
+<!-- version $Id: mail-lists.xml 215909 2005-07-12 02:05:44Z cam $      -->
+<!-- ========================================================================= -->
+
+<!DOCTYPE document PUBLIC "-//APACHE//DTD Documentation V2.0//EN" "http://forrest.apache.org/dtd/document-v20.dtd">
+<document>
+  <header>
+    <title>Mailing Lists</title>
+  </header>
+
+  <body>
+    <note label="Important notice">
+      <p>
+        Before posting a question or problem to any mailing list, please first
+        look at the following resources in this order:
+      </p>
+      <ol>
+        <li><a href="site:faq">Batik FAQs</a></li>
+        <li>Batik users list archive (check links below)</li>
+        <li>Batik development list archive (check links below)</li>
+      </ol>
+    </note>
+
+    <section id="batik-users">
+      <title>Batik users list</title>
+      <p>
+        <code>batik-users@xmlgraphics.apache.org</code>
+      </p>
+      <p>
+        (<a href="mailto:batik-users-subscribe@xmlgraphics.apache.org">Subscribe</a>,
+        <a href="mailto:batik-users-unsubscribe@xmlgraphics.apache.org">Unsubscribe</a>)
+      </p>
+
+      <p><strong>Archives:</strong></p>
+      <ul>
+        <li><a href="http://mail-archives.apache.org/mod_mbox/xmlgraphics-batik-users/">mod_mbox Archives</a></li>
+        <li><a href="http://xmlgraphics.apache.org/mail/batik-users/">gzipped mbox files</a></li>
+        <!--li><a href="http://mail-archives.apache.org/eyebrowse/SummarizeList?listName=batik-users@xml.apache.org">Eyebrowse Archive</a> (currently broken)</li-->
+      </ul>
+
+      <p>
+        This is the general Batik list, for problems using Batik, bug reports,
+        etc.  This is not an appropriate list for general SVG questions. You
+        might try the <a href="mailto:www-svg@w3.org">public SVG mailing
+          list</a> for specification related questions, or the
+        <a href="mailto:svg-developers@yahoogroups.com">SVG Developers list</a>
+        for general help with SVG.
+      </p>
+
+      <p>
+        <strong>Important:</strong> If you are posting about a problem you are
+        having (as most people do), please provide details about the system
+        configuration (operating system, JDK version, window manager, etc.),
+        and detailed information about the problem such as any available stack
+        trace or, ideally, a test case that isolates the problem. This will help
+        get a quick resolution.
+      </p>
+    </section>
+
+    <section id="batik-dev">
+      <title>Batik development list</title>
+      <p>
+        <code>batik-dev@xmlgraphics.apache.org</code>
+      </p>
+      <p>
+        (<a href="mailto:batik-dev-subscribe@xmlgraphics.apache.org">Subscribe</a>,
+        <a href="mailto:batik-dev-unsubscribe@xmlgraphics.apache.org">Unsubscribe</a>)
+      </p>
+
+      <p><strong>Archives:</strong></p>
+      <ul>
+        <li><a href="http://mail-archives.apache.org/mod_mbox/xmlgraphics-batik-dev/">mod_mbox Archives</a></li>
+        <li><a href="http://xmlgraphics.apache.org/mail/batik-dev/">gzipped mbox files</a></li>
+        <!--li><a href="http://mail-archives.apache.org/eyebrowse/SummarizeList?listName=batik-dev@xml.apache.org">Eyebrowse Archive</a> (currently broken)</li-->
+      </ul>
+      <p>
+        This list is for developers <em>working on</em> or wanting to work on
+        Batik itself (not developers merely working <em>with</em> Batik), for
+        patches to Batik to be posted, etc.
+      </p>
+    </section>
+  </body>
+</document>
+

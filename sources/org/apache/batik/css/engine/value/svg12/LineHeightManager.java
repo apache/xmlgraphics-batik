@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2004 The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -23,10 +24,10 @@ import org.apache.batik.css.engine.CSSStylableElement;
 import org.apache.batik.css.engine.StyleMap;
 import org.apache.batik.css.engine.value.LengthManager;
 import org.apache.batik.css.engine.value.FloatValue;
-import org.apache.batik.css.engine.value.svg12.SVG12ValueConstants;
 import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.css.engine.value.ValueManager;
 import org.apache.batik.util.SVG12CSSConstants;
+import org.apache.batik.util.SVGTypes;
 
 import org.w3c.css.sac.LexicalUnit;
 import org.w3c.dom.css.CSSPrimitiveValue;
@@ -42,21 +43,42 @@ import org.w3c.dom.DOMException;
 public class LineHeightManager extends LengthManager {
 
     public LineHeightManager() { }
-    
+
     /**
      * Implements {@link ValueManager#isInheritedProperty()}.
      */
     public boolean isInheritedProperty() {
-	return true;
+        return true;
+    }
+
+    /**
+     * Implements {@link ValueManager#isAnimatableProperty()}.
+     */
+    public boolean isAnimatableProperty() {
+        return true;
+    }
+
+    /**
+     * Implements {@link ValueManager#isAdditiveProperty()}.
+     */
+    public boolean isAdditiveProperty() {
+        return true;
+    }
+
+    /**
+     * Implements {@link ValueManager#getPropertyType()}.
+     */
+    public int getPropertyType() {
+        return SVGTypes.TYPE_LINE_HEIGHT_VALUE;
     }
 
     /**
      * Implements {@link ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return SVG12CSSConstants.CSS_LINE_HEIGHT_PROPERTY;
+        return SVG12CSSConstants.CSS_LINE_HEIGHT_PROPERTY;
     }
-    
+
     /**
      * Implements {@link ValueManager#getDefaultValue()}.
      */
@@ -118,7 +140,7 @@ public class LineHeightManager extends LengthManager {
             int   fsidx = engine.getFontSizeIndex();
             float fs    = engine.getComputedStyle
                 (elt, pseudo, fsidx).getFloatValue();
-            return new FloatValue(CSSPrimitiveValue.CSS_NUMBER, v * fs*.01f);
+            return new FloatValue(CSSPrimitiveValue.CSS_NUMBER, v * fs * 0.01f);
         }
 
         default:

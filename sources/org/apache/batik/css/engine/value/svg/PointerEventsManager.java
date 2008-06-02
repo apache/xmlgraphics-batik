@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2002-2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -22,6 +23,7 @@ import org.apache.batik.css.engine.value.StringMap;
 import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.css.engine.value.ValueManager;
 import org.apache.batik.util.CSSConstants;
+import org.apache.batik.util.SVGTypes;
 
 /**
  * This class provides a manager for the 'pointer-events' property values.
@@ -30,33 +32,33 @@ import org.apache.batik.util.CSSConstants;
  * @version $Id$
  */
 public class PointerEventsManager extends IdentifierManager {
-    
+
     /**
      * The identifier values.
      */
-    protected final static StringMap values = new StringMap();
+    protected static final StringMap values = new StringMap();
     static {
-	values.put(CSSConstants.CSS_ALL_VALUE,
+        values.put(CSSConstants.CSS_ALL_VALUE,
                    SVGValueConstants.ALL_VALUE);
-	values.put(CSSConstants.CSS_FILL_VALUE,
+        values.put(CSSConstants.CSS_FILL_VALUE,
                    SVGValueConstants.FILL_VALUE);
-	values.put(CSSConstants.CSS_FILLSTROKE_VALUE,
+        values.put(CSSConstants.CSS_FILLSTROKE_VALUE,
                    SVGValueConstants.FILLSTROKE_VALUE);
-	values.put(CSSConstants.CSS_NONE_VALUE,
+        values.put(CSSConstants.CSS_NONE_VALUE,
                    SVGValueConstants.NONE_VALUE);
-	values.put(CSSConstants.CSS_PAINTED_VALUE,
+        values.put(CSSConstants.CSS_PAINTED_VALUE,
                    SVGValueConstants.PAINTED_VALUE);
-	values.put(CSSConstants.CSS_STROKE_VALUE,
+        values.put(CSSConstants.CSS_STROKE_VALUE,
                    SVGValueConstants.STROKE_VALUE);
-	values.put(CSSConstants.CSS_VISIBLE_VALUE,
+        values.put(CSSConstants.CSS_VISIBLE_VALUE,
                    SVGValueConstants.VISIBLE_VALUE);
-	values.put(CSSConstants.CSS_VISIBLEFILL_VALUE,
+        values.put(CSSConstants.CSS_VISIBLEFILL_VALUE,
                    SVGValueConstants.VISIBLEFILL_VALUE);
-	values.put(CSSConstants.CSS_VISIBLEFILLSTROKE_VALUE,
+        values.put(CSSConstants.CSS_VISIBLEFILLSTROKE_VALUE,
                    SVGValueConstants.VISIBLEFILLSTROKE_VALUE);
-	values.put(CSSConstants.CSS_VISIBLEPAINTED_VALUE,
+        values.put(CSSConstants.CSS_VISIBLEPAINTED_VALUE,
                    SVGValueConstants.VISIBLEPAINTED_VALUE);
-	values.put(CSSConstants.CSS_VISIBLESTROKE_VALUE,
+        values.put(CSSConstants.CSS_VISIBLESTROKE_VALUE,
                    SVGValueConstants.VISIBLESTROKE_VALUE);
     }
 
@@ -65,7 +67,28 @@ public class PointerEventsManager extends IdentifierManager {
      * org.apache.batik.css.engine.value.ValueManager#isInheritedProperty()}.
      */
     public boolean isInheritedProperty() {
-	return true;
+        return true;
+    }
+
+    /**
+     * Implements {@link ValueManager#isAnimatableProperty()}.
+     */
+    public boolean isAnimatableProperty() {
+        return true;
+    }
+
+    /**
+     * Implements {@link ValueManager#isAdditiveProperty()}.
+     */
+    public boolean isAdditiveProperty() {
+        return false;
+    }
+
+    /**
+     * Implements {@link ValueManager#getPropertyType()}.
+     */
+    public int getPropertyType() {
+        return SVGTypes.TYPE_IDENT;
     }
 
     /**
@@ -73,9 +96,9 @@ public class PointerEventsManager extends IdentifierManager {
      * org.apache.batik.css.engine.value.ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return CSSConstants.CSS_POINTER_EVENTS_PROPERTY;
+        return CSSConstants.CSS_POINTER_EVENTS_PROPERTY;
     }
-    
+
     /**
      * Implements {@link
      * org.apache.batik.css.engine.value.ValueManager#getDefaultValue()}.

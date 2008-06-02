@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2000-2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -106,6 +107,11 @@ public class GraphicsNodeMouseEvent extends GraphicsNodeInputEvent {
     int clickCount;
 
     /**
+     * The mouse button that changed state.
+     */
+    int button;
+    
+    /**
      * Additional information. For a MOUSE_EXITED, this will contain the
      * destination node, for a MOUSE_ENTERED the last node and for
      * a MOUSE_DRAGGED the node under the mouse pointer.
@@ -117,7 +123,9 @@ public class GraphicsNodeMouseEvent extends GraphicsNodeInputEvent {
      * @param source the graphics node where the event originated
      * @param id the id of this event
      * @param when the time the event occurred
-     * @param modifiers the modifier keys down while event occurred
+     * @param modifiers the modifier keys down when event occurred
+     * @param lockState the lock keys active when the event occurred
+     * @param button the mouse button that changed state
      * @param x the mouse x coordinate
      * @param y the mouse y coordinate
      * @param screenX the mouse x coordinate relative to the screen
@@ -128,12 +136,13 @@ public class GraphicsNodeMouseEvent extends GraphicsNodeInputEvent {
      */
     public GraphicsNodeMouseEvent(GraphicsNode source, int id,
                                   long when, int modifiers, int lockState,
-                                  float x, float y, 
+                                  int button, float x, float y, 
                                   int clientX, int clientY,
                                   int screenX, int screenY, 
                                   int clickCount,
                                   GraphicsNode relatedNode) {
         super(source, id, when, modifiers, lockState);
+        this.button = button;
         this.x = x;
         this.y = y;
         this.clientX = clientX;
@@ -152,11 +161,20 @@ public class GraphicsNodeMouseEvent extends GraphicsNodeInputEvent {
      */
     public GraphicsNodeMouseEvent(GraphicsNode source,
                                   MouseEvent evt,
+                                  int button,
                                   int lockState) {
         super(source, evt, lockState);
+        this.button = button;
         this.x = evt.getX();
         this.y = evt.getY();
         this.clickCount = evt.getClickCount();
+    }
+
+    /**
+     * Returns the mouse button that changed state.
+     */
+    public int getButton() {
+        return button;
     }
 
     /**

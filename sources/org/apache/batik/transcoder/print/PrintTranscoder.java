@@ -1,10 +1,11 @@
 /*
 
-   Copyright 1999-2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -15,7 +16,6 @@
    limitations under the License.
 
 */
-
 package org.apache.batik.transcoder.print;
 
 import java.awt.Graphics;
@@ -31,7 +31,8 @@ import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.io.File;
 import java.util.StringTokenizer;
-import java.util.Vector;
+import java.util.List;
+import java.util.ArrayList;
 
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.ext.awt.RenderingHintsKeyExt;
@@ -102,15 +103,17 @@ public class PrintTranscoder extends SVGAbstractTranscoder
 
     /**
      * Set of inputs this transcoder has been requested to
-     * transcode so far
+     * transcode so far.
+     * Purpose is not really clear: some data is added, and it is copied into
+     * printedInputs. But it is never read or cleared...
      */
-    private Vector inputs = new Vector();
+    private List inputs = new ArrayList();
 
     /**
      * Currently printing set of pages. This vector is
      * created as a clone of inputs when the first page is printed.
      */
-    private Vector printedInputs = null;
+    private List printedInputs = null;
 
     /**
      * Index of the page corresponding to root
@@ -137,7 +140,7 @@ public class PrintTranscoder extends SVGAbstractTranscoder
     public void transcode(TranscoderInput in,
                           TranscoderOutput out){
         if(in != null){
-            inputs.addElement(in);
+            inputs.add(in);
         }
     }
 
@@ -243,6 +246,10 @@ public class PrintTranscoder extends SVGAbstractTranscoder
             pageFormat = tmpPageFormat;
         }
 
+        // Set printable before showing printer dialog so
+        // it can update the pageFormat if it wishes...
+        printerJob.setPrintable(this, pageFormat);
+
         //
         // If required, pop up a dialog to select the printer
         //
@@ -257,7 +264,6 @@ public class PrintTranscoder extends SVGAbstractTranscoder
         }
 
         // Print now
-        printerJob.setPrintable(this, pageFormat);
         printerJob.print();
 
     }
@@ -271,7 +277,7 @@ public class PrintTranscoder extends SVGAbstractTranscoder
         // TranscodeInputs.
         //
         if(printedInputs == null){
-            printedInputs = (Vector)inputs.clone();
+            printedInputs = new ArrayList( inputs );
         }
 
         //
@@ -279,7 +285,7 @@ public class PrintTranscoder extends SVGAbstractTranscoder
         //
         if(pageIndex >= printedInputs.size()){
             curIndex = -1;
-            if (theCtx != null) 
+            if (theCtx != null)
                 theCtx.dispose();
             userAgent.displayMessage("Done");
             return NO_SUCH_PAGE;
@@ -289,7 +295,7 @@ public class PrintTranscoder extends SVGAbstractTranscoder
         // Load a new document now if we are printing a new page
         //
         if(curIndex != pageIndex){
-            if (theCtx != null) 
+            if (theCtx != null)
                 theCtx.dispose();
 
             // The following call will invoke this class' transcode
@@ -299,7 +305,7 @@ public class PrintTranscoder extends SVGAbstractTranscoder
                 width  = (int)pageFormat.getImageableWidth();
                 height = (int)pageFormat.getImageableHeight();
                 super.transcode
-                    ((TranscoderInput)printedInputs.elementAt(pageIndex),null);
+                    ((TranscoderInput)printedInputs.get(pageIndex),null);
                 curIndex = pageIndex;
             }catch(TranscoderException e){
                 drawError(_g, e);
@@ -627,7 +633,7 @@ public class PrintTranscoder extends SVGAbstractTranscoder
 
     public static final String USAGE = "java org.apache.batik.transcoder.print.PrintTranscoder <svgFileToPrint>";
 
-    public static void main(String args[]) throws Exception{
+    public static void main(String[] args) throws Exception{
         if(args.length < 1){
             System.err.println(USAGE);
             System.exit(0);
@@ -779,7 +785,7 @@ public class PrintTranscoder extends SVGAbstractTranscoder
                                                 TranscodingHints.Key key){
         String str = System.getProperty(property);
         if(str != null){
-            Boolean value = new Boolean("true".equalsIgnoreCase(str));
+            Boolean value = "true".equalsIgnoreCase(str) ? Boolean.TRUE : Boolean.FALSE;
             transcoder.addTranscodingHint(key, value);
         }
     }

@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2000-2004  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -17,6 +18,8 @@
  */
 package org.apache.batik.script;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -61,8 +64,10 @@ public class InterpreterPool {
         while (iter.hasNext()) {
             InterpreterFactory factory = null;
             factory = (InterpreterFactory)iter.next();
-            // System.err.println("Factory : " + factory);
-            defaultFactories.put(factory.getMimeType(), factory);
+            String[] mimeTypes = factory.getMimeTypes();
+            for (int i = 0; i < mimeTypes.length; i++) {
+                defaultFactories.put(mimeTypes[i], factory);
+            }
         }
     }
 
@@ -86,9 +91,13 @@ public class InterpreterPool {
         InterpreterFactory factory = (InterpreterFactory)factories.get(language);
         if (factory == null) return null;
 
+        Interpreter interpreter = null;
         SVGOMDocument svgDoc = (SVGOMDocument) document;
-        Interpreter interpreter = factory.createInterpreter
-            (svgDoc.getURLObject(), svgDoc.isSVG12());
+        try {
+            URL url = new URL(svgDoc.getDocumentURI());
+            interpreter = factory.createInterpreter(url, svgDoc.isSVG12());
+        } catch (MalformedURLException e) {
+        }
 
         if (interpreter == null) return null;
 

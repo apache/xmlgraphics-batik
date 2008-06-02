@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2005  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -23,7 +24,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.Vector;
+import java.util.List;
+import java.util.Map;
 
 import javax.swing.event.EventListenerList;
 
@@ -41,12 +43,12 @@ import org.apache.batik.dom.svg12.XBLOMDefinitionElement;
 import org.apache.batik.dom.svg12.XBLOMImportElement;
 import org.apache.batik.dom.svg12.XBLOMShadowTreeElement;
 import org.apache.batik.dom.svg12.XBLOMTemplateElement;
-import org.apache.batik.dom.util.DoublyIndexedTable;
 import org.apache.batik.dom.xbl.NodeXBL;
 import org.apache.batik.dom.xbl.ShadowTreeEvent;
 import org.apache.batik.dom.xbl.XBLManager;
 import org.apache.batik.dom.xbl.XBLManagerData;
 import org.apache.batik.dom.xbl.XBLShadowTreeElement;
+import org.apache.batik.util.DoublyIndexedTable;
 import org.apache.batik.util.XBLConstants;
 import org.apache.batik.util.XMLConstants;
 
@@ -99,12 +101,12 @@ public class DefaultXBLManager implements XBLManager, XBLConstants {
     /**
      * Map of shadow trees to content managers.
      */
-    protected HashMap contentManagers = new HashMap();
+    protected Map contentManagers = new HashMap();
 
     /**
      * Map of import elements to import records.
      */
-    protected HashMap imports = new HashMap();
+    protected Map imports = new HashMap();
 
     /**
      * DOM node inserted listener for the document.
@@ -171,7 +173,7 @@ public class DefaultXBLManager implements XBLManager, XBLConstants {
         for (int i = 0; i < defs.length; i++) {
             defs[i] = (XBLOMDefinitionElement) nl.item(i);
         }
-        
+
         // Get list of all imports in the document.
         nl = document.getElementsByTagNameNS(XBL_NAMESPACE_URI,
                                              XBL_IMPORT_TAG);
@@ -243,11 +245,13 @@ public class DefaultXBLManager implements XBLManager, XBLConstants {
             (XMLConstants.XML_EVENTS_NAMESPACE_URI,
              "DOMSubtreeModified",
              docSubtreeListener, true);
-        
+
         // Remove all imports.
-        Object[] irs = imports.values().toArray();
+        int nSlots = imports.values().size();
+        ImportRecord[] irs = new ImportRecord[ nSlots ];
+        imports.values().toArray( irs );
         for (int i = 0; i < irs.length; i++) {
-            ImportRecord ir = (ImportRecord) irs[i];
+            ImportRecord ir = irs[i];
             if (ir.importElement.getLocalName().equals(XBL_DEFINITION_TAG)) {
                 removeDefinitionRef(ir.importElement);
             } else {
@@ -291,8 +295,9 @@ public class DefaultXBLManager implements XBLManager, XBLConstants {
         Element e = ctx.getReferencedElement(defRef, ref);
         if (!XBL_NAMESPACE_URI.equals(e.getNamespaceURI())
                 || !XBL_DEFINITION_TAG.equals(e.getLocalName())) {
-            throw new BridgeException(defRef, ErrorConstants.ERR_URI_BAD_TARGET,
-                                      new Object[] { ref });
+            throw new BridgeException
+                (ctx, defRef, ErrorConstants.ERR_URI_BAD_TARGET,
+                 new Object[] { ref });
         }
         ImportRecord ir = new ImportRecord(defRef, e);
         imports.put(defRef, ir);
@@ -333,8 +338,9 @@ public class DefaultXBLManager implements XBLManager, XBLConstants {
         if (n.getNodeType() == Node.ELEMENT_NODE
                 && !(XBL_NAMESPACE_URI.equals(n.getNamespaceURI())
                         && XBL_XBL_TAG.equals(n.getLocalName()))) {
-            throw new BridgeException(imp, ErrorConstants.ERR_URI_BAD_TARGET,
-                                      new Object[] { n });
+            throw new BridgeException
+                (ctx, imp, ErrorConstants.ERR_URI_BAD_TARGET,
+                 new Object[] { n });
         }
         ImportRecord ir = new ImportRecord(imp, n);
         imports.put(imp, ir);
@@ -733,7 +739,7 @@ public class DefaultXBLManager implements XBLManager, XBLConstants {
         if (newShadow != null) {
             NodeList nl = getXblScopedChildNodes(elt);
             for (int i = 0; i < nl.getLength(); i++) {
-            	Node n = nl.item(i);
+                Node n = nl.item(i);
                 if (n.getNodeType() == Node.ELEMENT_NODE) {
                     bind((Element) n);
                 }
@@ -952,8 +958,7 @@ public class DefaultXBLManager implements XBLManager, XBLConstants {
         final String localName = n.getLocalName();
         return new NodeList() {
             public Node item(int i) {
-                TreeSet defs
-                    = (TreeSet) definitionLists.get(namespaceURI, localName);
+                TreeSet defs = (TreeSet) definitionLists.get(namespaceURI, localName);
                 if (defs != null && defs.size() != 0 && i == 0) {
                     DefinitionRecord defRec = (DefinitionRecord) defs.first();
                     return defRec.definition;
@@ -961,8 +966,7 @@ public class DefaultXBLManager implements XBLManager, XBLConstants {
                 return null;
             }
             public int getLength() {
-                TreeSet defs
-                    = (TreeSet) definitionLists.get(namespaceURI, localName);
+                Set defs = (TreeSet) definitionLists.get(namespaceURI, localName);
                 return defs != null && defs.size() != 0 ? 1 : 0;
             }
         };
@@ -1374,7 +1378,7 @@ public class DefaultXBLManager implements XBLManager, XBLConstants {
      * DOM node removed listener for imported XBL trees.
      */
     protected class ImportRemovedListener implements EventListener {
-        
+
         /**
          * List of definition elements to be removed from the document.
          */
@@ -1431,7 +1435,7 @@ public class DefaultXBLManager implements XBLManager, XBLConstants {
      * DOM node inserted listener for the document.
      */
     protected class DocInsertedListener implements EventListener {
-        
+
         /**
          * Handles the event.
          */
@@ -1439,7 +1443,7 @@ public class DefaultXBLManager implements XBLManager, XBLConstants {
             EventTarget target = evt.getTarget();
             if (target instanceof XBLOMDefinitionElement) {
                 // only handle definition elements in document-level scope
-                if (getXblBoundElement((Node) target) == null) {
+                if (getXblBoundElement((Node) target) == null) {       // ??? suspect cast ???
                     XBLOMDefinitionElement def
                         = (XBLOMDefinitionElement) target;
                     if (def.getAttributeNS(null, XBL_REF_ATTRIBUTE).length()
@@ -1454,7 +1458,7 @@ public class DefaultXBLManager implements XBLManager, XBLConstants {
                 }
             } else if (target instanceof XBLOMImportElement) {
                 // only handle import elements in document-level scope
-                if (getXblBoundElement((Node) target) == null) {
+                if (getXblBoundElement((Node) target) == null) {      // ??? suspect cast ???
                     addImport((Element) target);
                 }
             } else {
@@ -1487,7 +1491,7 @@ public class DefaultXBLManager implements XBLManager, XBLConstants {
      * DOM node removed listener for the document.
      */
     protected class DocRemovedListener implements EventListener {
-        
+
         /**
          * List of definition elements to be removed from the document.
          */
@@ -1531,7 +1535,7 @@ public class DefaultXBLManager implements XBLManager, XBLConstants {
      * DOM subtree mutation listener for the document.
      */
     protected class DocSubtreeListener implements EventListener {
-        
+
         /**
          * Handles the event.
          */
@@ -1895,7 +1899,7 @@ public class DefaultXBLManager implements XBLManager, XBLConstants {
         /**
          * The nodes.
          */
-        protected Vector nodes;
+        protected List nodes;
 
         /**
          * The number of nodes.
@@ -1907,7 +1911,7 @@ public class DefaultXBLManager implements XBLManager, XBLConstants {
          */
         public XblChildNodes(XBLRecord rec) {
             record = rec;
-            nodes = new Vector();
+            nodes = new ArrayList();
             size = -1;
         }
 
@@ -1992,7 +1996,7 @@ public class DefaultXBLManager implements XBLManager, XBLConstants {
             if (size == -1) {
                 update();
             }
-            return size == 0 ? null : (Node) nodes.firstElement();
+            return size == 0 ? null : (Node) nodes.get(0);
         }
 
         /**
@@ -2002,7 +2006,7 @@ public class DefaultXBLManager implements XBLManager, XBLConstants {
             if (size == -1) {
                 update();
             }
-            return size == 0 ? null : (Node) nodes.lastElement();
+            return size == 0 ? null : (Node) nodes.get( nodes.size() -1 );
         }
 
         /**

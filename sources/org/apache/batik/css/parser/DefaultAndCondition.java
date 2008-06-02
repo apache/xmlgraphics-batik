@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2002  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -32,21 +33,21 @@ public class DefaultAndCondition extends AbstractCombinatorCondition {
      * Creates a new CombinatorCondition object.
      */
     public DefaultAndCondition(Condition c1, Condition c2) {
-	super(c1, c2);
+        super(c1, c2);
     }
 
     /**
      * <b>SAC</b>: Implements {@link
      * org.w3c.css.sac.Condition#getConditionType()}.
-     */    
+     */
     public short getConditionType() {
-	return SAC_AND_CONDITION;
+        return SAC_AND_CONDITION;
     }
 
     /**
      * Returns a text representation of this object.
      */
     public String toString() {
-	return "" + getFirstCondition() + getSecondCondition();
+        return String.valueOf( getFirstCondition() ) + getSecondCondition();
     }
 }

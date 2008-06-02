@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001,2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -38,7 +39,7 @@ public class Messages {
     /**
      * The error messages bundle class name.
      */
-    protected final static String RESOURCES =
+    protected static final String RESOURCES =
         "org.apache.batik.apps.rasterizer.resources.Messages";
 
     /**
@@ -70,18 +71,18 @@ public class Messages {
         return localizableSupport.formatMessage(key, args);
     }
 
-    public static String get(String key) 
+    public static String get(String key)
         throws MissingResourceException {
         return formatMessage(key, null);
     }
-    
+
     public static String get(String key, String def){
         String value = def;
         try{
             value  = get(key);
         }catch(MissingResourceException e){
         }
-        
+
         return value;
     }
 }

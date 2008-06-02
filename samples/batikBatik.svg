@@ -4,11 +4,12 @@
 
 <!--
 
-   Copyright 2000-2001  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -126,7 +127,7 @@
             </feComponentTransfer>
         </filter>
 
-	<path transform="scale(0.9)" id="logoText" d="M64.994,178.963V77.831c0-6.188-0.57-10.773-1.707-13.754c-1.137-2.977-3.066-5.461-5.793-7.449c-1.137-0.766-2.367-1.395-3.695-1.891s-3.012-0.938-5.055-1.32c-2.125-0.371-3.488-0.781-4.094-1.23s-0.906-1.121-0.906-2.02c0-1.195,0.32-2.035,0.969-2.52
+        <path transform="scale(0.9)" id="logoText" d="M64.994,178.963V77.831c0-6.188-0.57-10.773-1.707-13.754c-1.137-2.977-3.066-5.461-5.793-7.449c-1.137-0.766-2.367-1.395-3.695-1.891s-3.012-0.938-5.055-1.32c-2.125-0.371-3.488-0.781-4.094-1.23s-0.906-1.121-0.906-2.02c0-1.195,0.32-2.035,0.969-2.52
 c0.645-0.484,1.953-0.73,3.93-0.73c0.758,0,3.816,0.211,9.176,0.625c5.355,0.418,10.387,0.625,15.098,0.625c2.961,0,7.883-0.207,14.758-0.625c6.875-0.414,12.324-0.625,16.352-0.625c16.711,0,29.762,3.461,39.145,10.379s14.074,16.574,14.074,28.965
 c0,7.148-1.793,13.418-5.375,18.816c-3.586,5.398-9,9.996-16.242,13.797v2.18c11.574,2.051,20.445,6.547,26.613,13.492s9.254,15.879,9.254,26.805c0,15.406-5.184,27.645-15.551,36.715s-24.473,13.602-42.316,13.602c-6.078,0-13.367-0.293-21.871-0.875
 c-8.508-0.586-13.898-0.875-16.172-0.875c-6.762,0-13.863,0.348-21.301,1.043c-1.824,0.137-2.965,0.207-3.418,0.207c-0.609,0-1.199-0.344-1.77-1.027s-0.852-1.406-0.852-2.172c0-1.598,1.355-2.93,4.074-3.996l0.113-0.055c1.809-0.836,3.223-1.574,4.242-2.223

@@ -1,10 +1,11 @@
 <!--
 
-   Copyright 2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -40,12 +41,14 @@
         <test id="samples/tests/spec/scripting/addDescOnClick.svg" />
         <test id="samples/tests/spec/scripting/bug12933.svg" />
         <test id="samples/tests/spec/scripting/filterPatternUpdate.svg" />
+        <test id="samples/tests/spec/scripting/forceRedraw.svg" />
         <test id="samples/tests/spec/scripting/gradientsUpdate.svg" />
         <test id="samples/tests/spec/scripting/imageUpdate.svg" />
         <test id="samples/tests/spec/scripting/javaBinding.svg" />
         <test id="samples/tests/spec/scripting/maskClipUpdate.svg" />
         <!-- <test id="samples/tests/spec/scripting/removeLast.svg" /> -->
         <test id="samples/tests/spec/scripting/security3.svg" />
+        <test id="samples/tests/spec/scripting/suspendRedraw.svg" />
         <test id="samples/tests/spec/scripting/svg.svg" />
         <test id="samples/tests/spec/scripting/svg2.svg" />
         <test id="samples/tests/spec/scripting/textSelection.svg" />

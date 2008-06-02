@@ -15,7 +15,7 @@
       ><g
       ><defs id="testdefs1"
         ><font horiz-adv-x="75.0" id="testfont1"
-          ><font-face ascent="92.163086" descent="19.555664" units-per-em="100" font-family="Arial" font-style="normal" font-weight="normal"
+          ><font-face ascent="92.163086" font-style="normal" descent="19.555664" units-per-em="100" font-family="Arial" font-weight="normal"
             /><missing-glyph horiz-adv-x="75.0" d="M12.5 0 L12.5 62.5 L62.5 62.5 L62.5 0 L12.5 0 ZM14.0625 1.5625 L60.9375 1.5625 L60.9375 60.9375 L14.0625 60.9375 L14.0625 1.5625 Z"
             /><glyph unicode="0" horiz-adv-x="55.615234" d="M4.1562 35.2969 Q4.1562 48 6.7656 55.7422 Q9.375 63.4844 14.5234 67.6797 Q19.6719 71.875 27.4844 71.875 Q33.25 71.875 37.5938 69.5547 Q41.9375 67.2344 44.7734 62.8672 Q47.6094 58.5 49.2188 52.2266 Q50.8281 45.9531 50.8281 35.2969 Q50.8281 22.7031 48.2422 14.9688 Q45.6562 7.2344 40.5078 3.0156 Q35.3594 -1.2031 27.4844 -1.2031 Q17.1406 -1.2031 11.2344 6.2031 Q4.1562 15.1406 4.1562 35.2969 ZM13.1875 35.2969 Q13.1875 17.6719 17.3125 11.8359 Q21.4375 6 27.4844 6 Q33.5469 6 37.6719 11.8594 Q41.7969 17.7188 41.7969 35.2969 Q41.7969 52.9844 37.6719 58.7891 Q33.5469 64.5938 27.3906 64.5938 Q21.3438 64.5938 17.7188 59.4688 Q13.1875 52.9375 13.1875 35.2969 Z"
             /><glyph unicode="1" horiz-adv-x="55.615234" d="M37.25 0 L28.4688 0 L28.4688 56 Q25.2969 52.9844 20.1406 49.9531 Q14.9844 46.9219 10.8906 45.4062 L10.8906 53.9062 Q18.2656 57.375 23.7812 62.3047 Q29.2969 67.2344 31.5938 71.875 L37.25 71.875 L37.25 0 Z"
@@ -32,13 +32,13 @@
           /></font
         ></defs
         ><g class="testC1" transform="scale(10,10)"
-        ><text xml:space="preserve" x="4" y="4" class="testC2"
+        ><text x="4" xml:space="preserve" y="4" class="testC2"
           >Hello, size 10</text
-          ><text xml:space="preserve" x="4" y="8" class="testC3"
+          ><text x="4" xml:space="preserve" y="8" class="testC3"
           >Hello, size 15</text
-          ><text xml:space="preserve" x="160" y="40" class="testC4" transform="scale(0.1,0.1)"
+          ><text x="160" xml:space="preserve" y="40" class="testC4" transform="scale(0.1,0.1)"
           >Hello, size 10</text
-          ><text xml:space="preserve" x="160" y="80" class="testC5" transform="scale(0.1,0.1)"
+          ><text x="160" xml:space="preserve" y="80" class="testC5" transform="scale(0.1,0.1)"
           >Hello, size 15</text
         ></g
       ></g

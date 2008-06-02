@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001,2003,2006  The Apache Software Foundation
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -33,8 +34,8 @@ import java.util.Map;
  */
 public class ArabicTextHandler {
 
-    private final static int arabicStart = 0x0600;
-    private final static int arabicEnd = 0x06FF;
+    private static final int arabicStart = 0x0600;
+    private static final int arabicEnd = 0x06FF;
 
     private static final AttributedCharacterIterator.Attribute ARABIC_FORM =
         GVTAttributedCharacterIterator.TextAttribute.ARABIC_FORM;
@@ -56,7 +57,7 @@ public class ArabicTextHandler {
 
     }
 
-    /*
+    /**
      * If the AttributedString contains any arabic chars, assigns an
      * arabic form attribute, i&#x2e;e&#x2e; initial|medial|terminal|isolated,
      * to each arabic char.
@@ -78,21 +79,21 @@ public class ArabicTextHandler {
         // construct the reordered ACI
         AttributedCharacterIterator aci = as.getIterator();
         int numChars = aci.getEndIndex() - aci.getBeginIndex();
-        int charOrder[] = null;
+        int[] charOrder = null;
         if (numChars >= 3) {
             char prevChar = aci.first();
-            char c        = aci.next(); 
+            char c        = aci.next();
             int  i        = 1;
-            for (char nextChar = aci.next(); 
-                 nextChar != AttributedCharacterIterator.DONE; 
+            for (char nextChar = aci.next();
+                 nextChar != AttributedCharacterIterator.DONE;
                  prevChar = c, c = nextChar, nextChar = aci.next(), i++) {
                 if (arabicCharTransparent(c)) {
                     if (hasSubstitute(prevChar, nextChar)) {
                         // found a ligature, separated by a transparent char
                         if (charOrder == null) {
                             charOrder = new int[numChars];
-                            for (int j = 0; j < numChars; i++) {
-                                charOrder[i] = j + aci.getBeginIndex();
+                            for (int j = 0; j < numChars; j++) {
+                                charOrder[j] = j + aci.getBeginIndex();
                             }
                         }
                         int temp = charOrder[i];
@@ -154,7 +155,7 @@ public class ArabicTextHandler {
         aci = as.getIterator();
         int runStart = -1;
         int idx = aci.getBeginIndex();
-        for (int c = aci.first(); 
+        for (int c = aci.first();
              c != AttributedCharacterIterator.DONE;
              c = aci.next(), idx++) {
             if ((c >= arabicStart) && (c <= arabicEnd)) {
@@ -165,7 +166,7 @@ public class ArabicTextHandler {
                 runStart = -1;
             }
         }
-        if (runStart != -1) 
+        if (runStart != -1)
             as.addAttribute(ARABIC_FORM, ARABIC_NONE, runStart, idx);
 
         aci = as.getIterator();  // Make sure ACI tracks ARABIC_FORM
@@ -264,7 +265,7 @@ public class ArabicTextHandler {
      * @return True if at least one char is arabic, false otherwise.
      */
     public static boolean containsArabic(AttributedCharacterIterator aci) {
-        for (char c = aci.first(); 
+        for (char c = aci.first();
              c != AttributedCharacterIterator.DONE;
              c = aci.next()) {
             if (arabicChar(c)) {
@@ -392,7 +393,7 @@ public class ArabicTextHandler {
      * @param form Indicates the required arabic form.
      * (isolated = 1, final = 2, initial = 3, medial = 4)
      *
-     * @return The unicode value of the substutute char, or -1 if no susbtitue
+     * @return The unicode value of the substutute char, or -1 if no substitute
      * exists.
      */
     public static int getSubstituteChar(char ch1, char ch2, int form) {
@@ -412,7 +413,7 @@ public class ArabicTextHandler {
         if (form == 0) return -1;
         if ((ch < singleCharFirst) || (ch > singleCharLast)) return -1;
 
-        int chars[] = singleCharRemappings[ch-singleCharFirst];
+        int[] chars = singleCharRemappings[ch-singleCharFirst];
         if (chars == null) return -1;
 
         return chars[form-1];
@@ -555,7 +556,7 @@ public class ArabicTextHandler {
     // ligature to their various forms
     // NOTE: the unicode values for ligatures are stored here in
     // visual order (not logical order)
-    
+
     // Single char remappings:
     static int singleCharFirst=0x0621;
     static int singleCharLast =0x064A;

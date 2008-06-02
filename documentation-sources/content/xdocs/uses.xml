@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+
+<!-- ========================================================================= -->
+<!-- author cam@mcc.id.au                                                      -->
+<!-- version $Id: index.xml 396260 2006-04-23 12:01:57Z deweese $ -->
+<!-- ========================================================================= -->
+
+<!DOCTYPE document PUBLIC "-//APACHE//DTD Documentation V2.0//EN" "http://forrest.apache.org/dtd/document-v20.dtd">
+<document>
+  <header>
+    <title>Projects using Batik</title>
+    <toc level="0"/>
+  </header>
+
+  <body>
+    <section>
+      <title>Examples of projects and products using Batik</title>
+      <p>
+        While it is hard to track projects and products which are using Batik,
+        here are a few that are known of:
+      </p>
+      <ul>
+        <li>
+          <a href="http://cocoon.apache.org/">The Apache Cocoon project</a> uses
+          Batik to rasterize SVG images.
+        </li>
+        <li>
+          <a href="http://xmlgraphics.apache.org/fop/">The Apache FOP
+            project</a> uses Batik to handle SVG images. It uses the SVG
+          rasterizer and extends the Batik transcoder architecture to offer
+          SVG to PDF conversion.
+        </li>
+        <!-- Not mentioned on Bitflash site any more
+        <li>
+          <a href="http://www.bitflash.com/products/brilliance.asp">BitFlash
+            Brilliance</a> delivers a robust set of graphic-design and
+          source-code editing tools for fast and flexible Mobile SVG
+          development. It uses Batik to display SVG Images.
+        </li>
+        -->
+        <li>
+          <a href="http://www.exurbi.com/">eDoc Studio</a>, a page layout
+          package, uses the Batik SVG generator to export pages to SVG.
+        </li>
+        <li>
+          <a href="http://www.elixirtech.com/ElixirReport">ElixirTech’s
+            ElixirReport</a> uses Batik for charting and for its SVG component.
+        </li>
+        <li>
+          <a href="http://glipssvgeditor.sourceforge.net/">GLIPS Graffiti</a> is
+          an Open Source Extensible Full Feature Native SVG Editor.
+        </li>
+        <li>
+          <a href="http://www2.ilog.com/preview/Discovery/">ILOG Discovery
+            Preview</a>, a free visual data analysis tool letting you visualize
+          and edit data sets in a very wide variety of views (2D graphs and
+          charts, various kinds of treemaps, parallel coordinates, parallel
+          histograms and much more), uses the Batik SVG export module.
+        </li>
+        <li>
+          <a href="http://www.ilog.com/products/jviews">ILOG JViews Component
+            Suite</a>, a product for advanced visualization, uses and extends
+          the Batik SVG export module.
+        </li>
+        <li>
+          <a href="http://www.object-refinery.com/jfreechart/index.html">The
+            JFreeChart Project</a> uses Batik to export charts in the SVG
+          format.
+        </li>
+        <li>
+          <a href="http://lagoon.sourceforge.net/">Lagoon</a>, an XML-based
+          framework for web site maintenance, uses the Batik SVG Rasterizer to
+          render SVG as bitmap graphics for web publishing.
+        </li>
+        <li>
+          <a href="http://www.throneworld.com/lords/gms/dev.html">Lords Map</a>
+          is a program to allow players and visitors to view the current map of
+          various campaigns. Lords Map uses Batik’s SVG DOM and SVG Generator.
+        </li>
+        <li>
+          <a href="http://luxor-xul.sourceforge.net/index.html">Luxor XUL</a>
+          is a free, open-source XML User Interface Language (XUL) toolkit in
+          Java released under the GNU GPL that supports hand-picked Mozilla XUL
+          goodies and also includes a ultra-lightweight, multi-threaded web
+          server, a portal engine, a scripting engine, a template engine and
+          much more. Gerard Bauer, the Luxor project lead, has written an
+          extensive
+          <a href="http://luxor-xul.sourceforge.net/talk/jug-nov-2002/slides.html">SVG
+            presentation</a>.
+        </li>
+        <li>
+          <a href="http://www.optimalj.com">OptimalJ</a>, a UML Class Diagram
+          Editor for NetBeans, uses Batik to export SVG.
+        </li>
+        <li>
+          <a href="http://otn.oracle.com/products/jdev/content.html">Oracle
+            Corp.’s JDeveloper10i</a> uses Batik to export class diagrams in
+          SVG.  It uses the SVG export module.
+        </li>
+        <li>
+          <a href="http://www.kiyut.com/">Sketsa</a> is a vector drawing
+          application based on Batik. With Sketsa, you can create vector
+          graphics that can be scaled and printed at any resolution, without
+          losing detail or clarity.
+        </li>
+        <li>
+          <a href="http://dannyayers.com/2005/10/18/svolgo-redux/">Svolgo</a>, a
+          Graph Visualisation/Transformation Framework for the Semantic Web
+          Cross-model transformation, node and arc diagrams, representation in
+          SVG. This project uses Batik’s SVG DOM implementation.
+        </li>
+        <!-- Waiting for verification (now Borland)
+        <li>
+          <a href="http://www.togethersoft.com/products/controlcenter/whats_new.jsp">Together
+            Control Center 5.5</a> uses Batik to export UML diagrams in SVG.
+        </li>
+        -->
+        <li>
+          <a href="http://volity.net/">Volity</a> is an open platform for
+          Internet-based multiplayer casual gaming. Its official client,
+          <a href="http://volity.org/projects/gamut/">Gamut</a>, uses Batik,
+          allowing developers to create game UI files that use
+          ECMAScript-driven SVG.
+        </li>
+        <li>
+          <a href="http://pear.php.net/package/XML_svg2image">XML_svg2image</a>
+          is a PHP class which translates SVG files to PNG or JPEG using Batik.
+        </li>
+        <li>
+          <a href="http://xweb.sf.net">XWeb</a>, a tool to create websites
+          automatically out of XML input. Uses the Batik SVG Rasterizer.
+        </li>
+      </ul>
+    </section>
+  </body>
+</document>

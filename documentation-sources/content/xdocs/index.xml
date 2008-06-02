@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+
+<!-- ========================================================================= -->
+<!-- author vincent.hardy@eng.sun.com                                          -->
+<!-- version $Id: index.xml 396260 2006-04-23 12:01:57Z deweese $ -->
+<!-- ========================================================================= -->
+
+<!DOCTYPE document PUBLIC "-//APACHE//DTD Documentation V2.0//EN" "http://forrest.apache.org/dtd/document-v20.dtd">
+<document>
+  <header>
+    <title>Batik SVG Toolkit</title>
+  </header>
+
+  <body>
+    <section id="overview">
+      <title>Overview</title>
+
+      <p>
+        Batik is a Java-based toolkit for applications or applets that want to
+        use images in the <a href="site:svg11">Scalable Vector
+          Graphics (SVG)</a> format for various purposes, such as display,
+        generation or manipulation.
+      </p>
+
+      <p>
+        The project’s ambition is to give developers a set of 
+        <a href="using/architecture.html#coreComponents">core modules</a> that can be
+        used together or individually to support specific SVG solutions.
+        Examples of <a href="site:modules">modules</a> are the
+        <a href="site:parsers">SVG Parser</a>, the
+        <a href="site:generator">SVG Generator</a> and the
+        <a href="site:dom-api">SVG DOM</a>. Another ambition for the Batik
+        project is to make it highly
+        <a href="site:extending">extensible</a>&#x2014;for example, Batik
+        allows the developer to handle custom SVG elements. Even though the goal
+        of the project is to provide a set of core modules, one of the
+        deliverables is a full fledged <a href="site:browser">SVG
+          browser</a> implementation which validates the various modules and
+        their inter-operability. 
+      </p>
+    </section>
+
+    <section id="uses">
+      <title>What Batik can be used for</title>
+      <p>
+        <img class="floating" src="images/batikUses.jpg" alt="Batik use cases"/>
+        With Batik, you can manipulate SVG documents anywhere Java is
+        available. You can also use the various
+        <a href="site:modules">Batik modules</a> to
+        <a href="site:generator">generate</a>, 
+        <a href="site:dom-api">manipulate</a> and
+        <a href="site:transcoder">transcode</a> SVG images in your
+        applications or applets.
+      </p>
+      <p>
+        Batik makes it easy for Java based applications or applets to 
+        deal with SVG content. For example, using Batik’s 
+        <a href="site:generator">SVG generator module</a>, 
+        a Java application or applet can very easily export its
+        graphics into the SVG format. Using Batik’s
+        <a href="site:swing">SVG viewing component</a>, an application or
+        applet can very easily integrate SVG viewing and interaction
+        capabilities.  Another possibility is to use Batik’s modules to convert
+        SVG to various formats, such as raster images
+        (<abbr title="Joint Photographic Expert Group">JPEG</abbr>,
+        <abbr title="Portable Network Graphics">PNG</abbr> or
+        <abbr title="Tagged Image File Format">TIFF</abbr>) or
+        other vector formats (<abbr title="Encapsulated PostScript">EPS</abbr> or
+        <abbr title="Portable Document Format">PDF</abbr>, the latter two due
+        to the transcoders provided by
+        <a href="http://xmlgraphics.apache.org/fop/">Apache FOP</a>).
+      </p>
+      <p>
+        The Batik toolkit includes the following:
+      </p>
+      <p><b>Modules</b></p>
+      <ul>
+        <!--li>A <a href="site:css">CSS engine</a></li-->
+        <li>An <a href="site:dom-api">SVG DOM implementation</a></li>
+        <li>A set of <a href="site:parsers">SVG microsyntax parsers</a></li>
+        <li>A <a href="site:scripting-ecmascript">scripting module</a></li>
+        <li>A <a href="site:generator">generator</a> that creates an SVG document from Java2D calls</li>
+        <li>A <a href="site:swing">Swing SVG component</a></li>
+        <li>A <a href="site:transcoder">transcoder module</a></li>
+      </ul>
+      <p><b>Tools and applications</b></p>
+      <ul>
+        <li>Squiggle, an <a href="site:browser">SVG browser</a></li>
+        <li>An <a href="site:rasterizer">SVG rasterizer</a></li>
+        <li>A <a href="site:font-converter">
+            <abbr title="TrueType Font">TTF</abbr> to SVG converter</a></li>
+        <li>A <a href="site:pretty-printer">pretty printer</a> for SVG
+            source files</li>
+      </ul>
+      <p>
+        See <a href="site:uses">examples of projects and products using
+          Batik</a> for real-life example of how Batik is already integrated in
+        projects and products.
+      </p>
+    </section>
+
+    <section id="spec">
+      <title>The SVG specification</title>
+      <p>
+        Scalable Vector Graphics, SVG, is a <a href="http://www.w3.org/">W3C</a>
+        Recommendation. It defines an XML grammar for rich 2D graphics
+        which includes features such as transparency, arbitrary geometry, filter
+        effects (shadows, lighting effects, etc.), scripting and animation.
+      </p>
+      <p>
+        The SVG specification states:
+      </p>
+      <p class="quote">
+        This specification defines the features and syntax for Scalable Vector
+        Graphics (SVG).  SVG is a language for describing two-dimensional
+        graphics in XML [<a href="http://www.w3.org/TR/REC-xml">XML10</a>]. SVG
+        allows for three types of graphic objects: vector graphic shapes (e.g.,
+        paths consisting of straight lines and curves), images and text.
+        Graphical objects can be grouped, styled, transformed and composited
+        into previously rendered objects. The feature set includes nested
+        transformations, clipping paths, alpha masks, filter effects and
+        template objects.
+      </p>
+      <p>
+        SVG documents can be interactive and dynamic. Animations can be defined
+        and triggered either declaratively (i.e., by embedding SVG animation
+        elements in SVG content) or via scripting.
+      </p>
+    </section>
+
+    <section id="status">
+      <title>Implementation status</title>
+      <p>
+        The latest revision of Batik, release 1.7, is a conformant
+        <a href="http://www.w3.org/TR/SVG11/conform.html#ConformingSVGViewers">static
+          SVG implementation</a> and supports
+        <a href="http://www.w3.org/TR/SVG11/interact.html">interactivity</a>,
+        <a href="http://www.w3.org/TR/SVG11/linking.html">linking</a> and 
+        <a href="http://www.w3.org/TR/SVG11/script.html">scripting</a> features
+        of the SVG specification.  This release supports a nearly complete
+        implementation of declarative
+        <a href="http://www.w3.org/TR/SVG11/animate.html">animation</a>, too.
+      </p> 
+
+      <p>
+        See the <a href="site:status">status</a> page for a detailed description
+        of the set of SVG features Batik supports.
+      </p>
+    </section>
+ 
+    <section id="download">
+      <title>Download Batik</title>
+      <p>
+        You can get the Batik distribution, source and binary, from the
+        <a href="site:download">download page</a>.
+      </p>
+
+      <note>
+        All other libraries needed by Batik are included in the distribution.
+        As a consequence the Batik archive is quite big, but after you have
+        downloaded it, you will not need anything else.
+      </note>
+
+      <warning id="SecurityWarning" label="Security warning">
+        <p>
+          This is a warning that a script security issue was reported in
+          the Batik Squiggle browser. Squiggle uses the Rhino scripting
+          engine and some features of that engine can be leveraged by
+          malicious scripts to gain access to otherwise protected
+          resources (like the file system).  This issue was fixed in the
+          1.5.1 release of Batik.  If you are using a version of Batik older than
+          1.5.1, you should upgrade.
+        </p>
+      </warning>
+    </section>
+
+  </body>
+</document>

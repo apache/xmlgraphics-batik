@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001-2003,2005  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -44,9 +45,6 @@ import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 
-import org.apache.batik.transcoder.image.ImageTranscoder;
-import org.apache.batik.transcoder.image.PNGTranscoder;
-
 import org.apache.batik.test.AbstractTest;
 import org.apache.batik.test.DefaultTestReport;
 import org.apache.batik.test.TestReport;
@@ -64,19 +62,19 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
      * Error when the reference image and the generated image is different.
      */
     public static final String ERROR_IMAGE_DIFFER =
-	"AbstractImageTranscoderTest.error.image.differ";
+        "AbstractImageTranscoderTest.error.image.differ";
 
     /**
      * Tag for difference image URI.
      */
     public static final String DIFFERENCE_IMAGE =
-	"AbstractImageTranscoderTest.error.difference.image";
+        "AbstractImageTranscoderTest.error.difference.image";
 
     /**
      * Error when an exception occured while transcoding.
      */
     public static final String ERROR_TRANSCODING =
-	"AbstractImageTranscoderTest.error.transcoder.exception";
+        "AbstractImageTranscoderTest.error.transcoder.exception";
 
     /**
      * Constructs a new <tt>AbstractImageTranscoderTest</tt>.
@@ -102,7 +100,7 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
                 throw new IllegalArgumentException();
             }
         }
-        
+
         // url is not a file. It must be a regular URL...
         try{
             return new URL(url);
@@ -117,27 +115,27 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
      * the test's internal operation fails.
      */
     public TestReport runImpl() throws Exception {
-	report = new DefaultTestReport(this);
+        report = new DefaultTestReport(this);
 
-	try {
-	    DiffImageTranscoder transcoder = 
-		new DiffImageTranscoder(getReferenceImageData());
+        try {
+            DiffImageTranscoder transcoder =
+                new DiffImageTranscoder(getReferenceImageData());
 
-	    Map hints = createTranscodingHints();
-	    if (hints != null) {
-		transcoder.setTranscodingHints(hints);
-	    }
+            Map hints = createTranscodingHints();
+            if (hints != null) {
+                transcoder.setTranscodingHints(hints);
+            }
 
-	    TranscoderInput input = createTranscoderInput();
-	    transcoder.transcode(input, null);
-	} catch (Exception ex) {
-	    report.setErrorCode(ERROR_TRANSCODING);
-	    report.addDescriptionEntry(ERROR_TRANSCODING, toString(ex));
+            TranscoderInput input = createTranscoderInput();
+            transcoder.transcode(input, null);
+        } catch (Exception ex) {
+            report.setErrorCode(ERROR_TRANSCODING);
+            report.addDescriptionEntry(ERROR_TRANSCODING, toString(ex));
             ex.printStackTrace();
-	    report.setPassed(false);
-	}
-	
-	return report;
+            report.setPassed(false);
+        }
+
+        return report;
     }
 
     /**
@@ -149,7 +147,7 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
      * Creates a Map that contains additional transcoding hints.
      */
     protected Map createTranscodingHints() {
-	return null;
+        return null;
     }
 
     /**
@@ -165,9 +163,9 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
      * Gives the specified exception as a string.
      */
     public static String toString(Exception ex) {
-	StringWriter trace = new StringWriter();
-	ex.printStackTrace(new PrintWriter(trace));
-	return trace.toString();
+        StringWriter trace = new StringWriter();
+        ex.printStackTrace(new PrintWriter(trace));
+        return trace.toString();
     }
 
     static String filename;
@@ -219,44 +217,44 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
      */
     protected class DiffImageTranscoder extends ImageTranscoder {
 
-	/** The result of the image comparaison. */
-	protected boolean state;
+        /** The result of the image comparaison. */
+        protected boolean state;
 
-	/** The reference image. */
-	protected byte [] refImgData;
+        /** The reference image. */
+        protected byte [] refImgData;
 
-	/**
-	 * Constructs a new <tt>DiffImageTranscoder</tt>.
-	 *
-	 * @param refImgData the reference image data
-	 */
-	public DiffImageTranscoder(byte [] refImgData) {
-	    this.refImgData = refImgData;
-	}
+        /**
+         * Constructs a new <tt>DiffImageTranscoder</tt>.
+         *
+         * @param refImgData the reference image data
+         */
+        public DiffImageTranscoder(byte [] refImgData) {
+            this.refImgData = refImgData;
+        }
 
-	/**
-	 * Creates a new image with the specified dimension.
-	 * @param w the image width in pixels
-	 * @param h the image height in pixels
-	 */
-	public BufferedImage createImage(int w, int h) {
-	    return new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-	}
+        /**
+         * Creates a new image with the specified dimension.
+         * @param w the image width in pixels
+         * @param h the image height in pixels
+         */
+        public BufferedImage createImage(int w, int h) {
+            return new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+        }
 
-	/**
-	 * Compares the specified image with the reference image and set the
-	 * state flag.
-	 *
-	 * @param img the image to write
-	 * @param output the output (ignored)
-	 * @throw TranscoderException if an error occured while storing the
-	 * image 
-	 */
-	public void writeImage(BufferedImage img, TranscoderOutput output)
-	    throws TranscoderException {
+        /**
+         * Compares the specified image with the reference image and set the
+         * state flag.
+         *
+         * @param img the image to write
+         * @param output the output (ignored)
+         * @throw TranscoderException if an error occured while storing the
+         * image
+         */
+        public void writeImage(BufferedImage img, TranscoderOutput output)
+            throws TranscoderException {
 
-	    compareImage(img);
-	}
+            compareImage(img);
+        }
 
         protected void writeCandidateReference(byte [] imgData) {
             try {
@@ -277,7 +275,7 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
             try {
                 BufferedImage ref = getImage(new ByteArrayInputStream(refData));
                 BufferedImage img = getImage(new ByteArrayInputStream(imgData));
-                BufferedImage diff = 
+                BufferedImage diff =
                     SVGRenderingAccuracyTest.buildDiffImage(ref, img);
                 String s = new File(filename).getName();
                 s = ("test-references/org/apache/batik/transcoder/image/"+
@@ -294,13 +292,13 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
             } catch (Exception e) { }
         }
 
-	/**
-	 * Compares both source and result images and set the state flag.
-	 */
-	protected void compareImage(BufferedImage img) 
+        /**
+         * Compares both source and result images and set the state flag.
+         */
+        protected void compareImage(BufferedImage img)
             throws TranscoderException {
-	    // compare the resulting image with the reference image
-	    // state = true if refImg is the same than img
+            // compare the resulting image with the reference image
+            // state = true if refImg is the same than img
 
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             TranscoderOutput output = new TranscoderOutput(out);
@@ -316,7 +314,7 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
                 state = false;
                 return;
             }
-            
+
             if (refImgData.length != imgData.length) {
                 report.setErrorCode(ERROR_IMAGE_DIFFER);
                 report.addDescriptionEntry(ERROR_IMAGE_DIFFER, "");
@@ -334,20 +332,20 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
                     return;
                 }
             }
-            
-	    state = true;
-	}
 
-	/**
-	 * Returns true if the reference image is the same than the generated
-	 * image, false otherwise.  
-	 */
-	public boolean isIdentical() {
-	    return state;
-	}
+            state = true;
+        }
+
+        /**
+         * Returns true if the reference image is the same than the generated
+         * image, false otherwise.
+         */
+        public boolean isIdentical() {
+            return state;
+        }
     }
 
-    protected BufferedImage getImage(InputStream is) 
+    protected BufferedImage getImage(InputStream is)
         throws IOException {
         ImageTagRegistry reg = ImageTagRegistry.getRegistry();
         Filter filt = reg.readStream(is);
@@ -357,7 +355,7 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
         RenderedImage red = filt.createDefaultRendering();
         if(red == null)
             throw new IOException("Couldn't render Stream");
-        
+
         BufferedImage img = new BufferedImage(red.getWidth(),
                                               red.getHeight(),
                                               BufferedImage.TYPE_INT_ARGB);

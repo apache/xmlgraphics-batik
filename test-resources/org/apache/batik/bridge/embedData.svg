@@ -4,11 +4,12 @@
 
 <!--
 
-   Copyright 2002  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -42,7 +43,7 @@
     <!-- ==================================== -->
     <text x="210" y="100">Initial JPEG, encoded as PNG, data protocol</text>
     <rect x="148" y="108" width="131" height="134" fill="rgb(200, 100, 0)" />
-	<image x="150" y="110" width="127" height="130" xlink:href="data:image/png;base64,/9j/4AAQSkZJRgABAgEASABIAAD//gAmRmlsZSB3cml0dGVuIGJ5IEFkb2JlIFBo
+    <image x="150" y="110" width="127" height="130" xlink:href="data:image/png;base64,/9j/4AAQSkZJRgABAgEASABIAAD//gAmRmlsZSB3cml0dGVuIGJ5IEFkb2JlIFBo
 b3Rvc2hvcKggNS4y/+4ADkFkb2JlAGRAAAAAAf/bAIQAAQEBAQEBAQEBAQEBAQEB
 AQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQICAgICAgICAgICAwMDAwMDAwMD
 AwEBAQEBAQEBAQEBAgIBAgIDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMD

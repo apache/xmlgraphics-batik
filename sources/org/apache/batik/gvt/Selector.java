@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2000,2002-2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -35,24 +36,24 @@ public interface Selector extends GraphicsNodeMouseListener,
     /**
      * Get the contents of the current selection buffer.
      */
-    public Object getSelection();
+    Object getSelection();
 
     /**
      * Reports whether the current selection contains any objects.
      */
-    public boolean isEmpty();
+    boolean isEmpty();
 
     /**
      * Add a SelectionListener to this Selector's notification list.
      * @param l the SelectionListener to add.
      */
-    public void addSelectionListener(SelectionListener l);
+    void addSelectionListener(SelectionListener l);
 
 
     /**
      * Remove a SelectionListener from this Selector's notification list.
      * @param l the SelectionListener to be removed.
      */
-    public void removeSelectionListener(SelectionListener l);
- 
+    void removeSelectionListener(SelectionListener l);
+
 }

@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2002  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -37,7 +38,7 @@ public class DefaultLangCondition implements LangCondition {
      * Creates a new LangCondition object.
      */
     public DefaultLangCondition(String lang) {
-	this.lang = lang;
+        this.lang = lang;
     }
 
     /**
@@ -45,20 +46,20 @@ public class DefaultLangCondition implements LangCondition {
      * org.w3c.css.sac.Condition#getConditionType()}.
      */    
     public short getConditionType() {
-	return SAC_LANG_CONDITION;
+        return SAC_LANG_CONDITION;
     }
 
     /**
      * <b>SAC</b>: Implements {@link org.w3c.css.sac.LangCondition#getLang()}.
      */
     public String getLang() {
-	return lang;
+        return lang;
     }
 
     /**
      * Returns a text representation of this object.
      */
     public String toString() {
-	return ":lang(" + lang + ")";
+        return ":lang(" + lang + ")";
     }
 }

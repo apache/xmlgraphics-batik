@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2002  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -39,8 +40,8 @@ public class CSSPseudoClassCondition extends AbstractAttributeCondition {
      * Creates a new CSSAttributeCondition object.
      */
     public CSSPseudoClassCondition(String namespaceURI, String value) {
-	super(value);
-	this.namespaceURI = namespaceURI;
+        super(value);
+        this.namespaceURI = namespaceURI;
     }
 
     /**
@@ -56,19 +57,28 @@ public class CSSPseudoClassCondition extends AbstractAttributeCondition {
     }
 
     /**
+     * equal objects should have equal hashCodes.
+     * @return hashCode of this CSSPseudoClassCondition
+     */
+    public int hashCode() {
+        return namespaceURI.hashCode();
+    }
+
+
+    /**
      * <b>SAC</b>: Implements {@link
      * org.w3c.css.sac.Condition#getConditionType()}.
-     */    
+     */
     public short getConditionType() {
-	return SAC_PSEUDO_CLASS_CONDITION;
+        return SAC_PSEUDO_CLASS_CONDITION;
     }
-    
+
     /**
      * <b>SAC</b>: Implements {@link
      * org.w3c.css.sac.AttributeCondition#getNamespaceURI()}.
-     */    
+     */
     public String getNamespaceURI() {
-	return namespaceURI;
+        return namespaceURI;
     }
 
     /**
@@ -76,7 +86,7 @@ public class CSSPseudoClassCondition extends AbstractAttributeCondition {
      * org.w3c.css.sac.AttributeCondition#getLocalName()}.
      */
     public String getLocalName() {
-	return null;
+        return null;
     }
 
     /**
@@ -84,16 +94,16 @@ public class CSSPseudoClassCondition extends AbstractAttributeCondition {
      * org.w3c.css.sac.AttributeCondition#getSpecified()}.
      */
     public boolean getSpecified() {
-	return false;
+        return false;
     }
 
     /**
      * Tests whether this selector matches the given element.
      */
     public boolean match(Element e, String pseudoE) {
-	return (e instanceof CSSStylableElement)
-	    ? ((CSSStylableElement)e).isPseudoInstanceOf(getValue())
-	    : false;
+        return (e instanceof CSSStylableElement)
+            ? ((CSSStylableElement)e).isPseudoInstanceOf(getValue())
+            : false;
     }
 
     /**
@@ -106,6 +116,6 @@ public class CSSPseudoClassCondition extends AbstractAttributeCondition {
      * Returns a text representation of this object.
      */
     public String toString() {
-	return ":" + getValue();
+        return ":" + getValue();
     }
 }

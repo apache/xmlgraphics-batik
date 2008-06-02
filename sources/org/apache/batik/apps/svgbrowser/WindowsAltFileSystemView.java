@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2002-2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -19,12 +20,13 @@ package org.apache.batik.apps.svgbrowser;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Vector;
+import java.util.List;
+import java.util.ArrayList;
 
 import javax.swing.filechooser.FileSystemView;
 
 /**
- * Work around FileSystemView implementation bug on the Windows 
+ * Work around FileSystemView implementation bug on the Windows
  * platform. See:
  *
  * <a href="http://forums.java.sun.com/thread.jsp?forum=38&thread=71491">
@@ -54,10 +56,10 @@ class WindowsAltFileSystemView extends FileSystemView {
     public static final String EXCEPTION_DIRECTORY_ALREADY_EXISTS
         = "AltFileSystemView.exception.directory.already.exists";
 
-    public static final String NEW_FOLDER_NAME = 
+    public static final String NEW_FOLDER_NAME =
         " AltFileSystemView.new.folder.name";
 
-    public static final String FLOPPY_DRIVE = 
+    public static final String FLOPPY_DRIVE =
         "AltFileSystemView.floppy.drive";
 
     /**
@@ -67,7 +69,7 @@ class WindowsAltFileSystemView extends FileSystemView {
         if(!f.isAbsolute()) {
             return false;
         }
-        
+
         String parentPath = f.getParent();
         if(parentPath == null) {
             return true;
@@ -76,7 +78,7 @@ class WindowsAltFileSystemView extends FileSystemView {
             return parent.equals(f);
         }
     }
-    
+
     /**
      * creates a new folder with a default folder name.
      */
@@ -87,15 +89,15 @@ class WindowsAltFileSystemView extends FileSystemView {
         }
         File newFolder = null;
         // Using NT's default folder name
-        newFolder = createFileObject(containingDir, 
+        newFolder = createFileObject(containingDir,
                                      Resources.getString(NEW_FOLDER_NAME));
         int i = 2;
         while (newFolder.exists() && (i < 100)) {
             newFolder = createFileObject
-                (containingDir, Resources.getString(NEW_FOLDER_NAME) + " (" + i + ")");
+                (containingDir, Resources.getString(NEW_FOLDER_NAME) + " (" + i + ')' );
             i++;
         }
-        
+
         if(newFolder.exists()) {
             throw new IOException
                 (Resources.formatMessage(EXCEPTION_DIRECTORY_ALREADY_EXISTS,
@@ -103,10 +105,10 @@ class WindowsAltFileSystemView extends FileSystemView {
         } else {
             newFolder.mkdirs();
         }
-        
+
         return newFolder;
     }
-    
+
     /**
      * Returns whether a file is hidden or not. On Windows
      * there is currently no way to get this information from
@@ -115,48 +117,48 @@ class WindowsAltFileSystemView extends FileSystemView {
     public boolean isHiddenFile(File f) {
         return false;
     }
-    
+
     /**
      * Returns all root partitians on this system. On Windows, this
      * will be the A: through Z: drives.
      */
     public File[] getRoots() {
-        
-        Vector rootsVector = new Vector();
-        
+
+        List rootsVector = new ArrayList();
+
         // Create the A: drive whether it is mounted or not
         FileSystemRoot floppy = new FileSystemRoot(Resources.getString(FLOPPY_DRIVE)
                                                    + "\\");
-        rootsVector.addElement(floppy);
-        
+        rootsVector.add(floppy);
+
         // Run through all possible mount points and check
         // for their existance.
         for (char c = 'C'; c <= 'Z'; c++) {
-            char device[] = {c, ':', '\\'};
+            char[] device = {c, ':', '\\'};
             String deviceName = new String(device);
             File deviceFile = new FileSystemRoot(deviceName);
             if (deviceFile != null && deviceFile.exists()) {
-                rootsVector.addElement(deviceFile);
+                rootsVector.add(deviceFile);
             }
         }
         File[] roots = new File[rootsVector.size()];
-        rootsVector.copyInto(roots);
+        rootsVector.toArray(roots);
         return roots;
     }
-    
+
     class FileSystemRoot extends File {
         public FileSystemRoot(File f) {
             super(f, "");
         }
-        
+
         public FileSystemRoot(String s) {
             super(s);
         }
-        
+
         public boolean isDirectory() {
             return true;
         }
     }
-    
+
 }
 

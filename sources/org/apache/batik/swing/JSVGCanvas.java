@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001-2004  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -19,6 +20,7 @@ package org.apache.batik.swing;
 
 import java.awt.Dimension;
 import java.awt.EventQueue;
+// import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
@@ -51,13 +53,18 @@ import org.apache.batik.swing.gvt.AbstractResetTransformInteractor;
 import org.apache.batik.swing.gvt.AbstractRotateInteractor;
 import org.apache.batik.swing.gvt.AbstractZoomInteractor;
 import org.apache.batik.swing.gvt.Interactor;
+// import org.apache.batik.swing.gvt.Overlay;
 import org.apache.batik.swing.svg.JSVGComponent;
 import org.apache.batik.swing.svg.SVGDocumentLoaderEvent;
 import org.apache.batik.swing.svg.SVGUserAgent;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLConstants;
+// import org.apache.batik.util.gui.DOMViewer;
+// import org.apache.batik.util.gui.DOMViewerController;
+// import org.apache.batik.util.gui.ElementOverlayManager;
 import org.apache.batik.util.gui.JErrorPane;
 
+// import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.events.Event;
@@ -193,7 +200,7 @@ public class JSVGCanvas extends JSVGComponent {
      * This is used as the value in the toolTipDocs WeakHashMap.
      * This way we can tell if a document has already been added.
      */
-    protected final static Object MAP_TOKEN = new Object();
+    protected static final Object MAP_TOKEN = new Object();
     /**
      * The time of the last tool tip event.
      */
@@ -584,6 +591,51 @@ public class JSVGCanvas extends JSVGComponent {
         super.installSVGDocument(doc);
     }
 
+//     // DOMViewerController
+// 
+//     /**
+//      * DOMViewerController implementation.
+//      */
+//     protected class CanvasDOMViewerController implements DOMViewerController {
+// 
+//         public boolean canEdit() {
+//             return getUpdateManager() != null;
+//         }
+// 
+//         public ElementOverlayManager createSelectionManager() {
+//             if (canEdit()) {
+//                 return new ElementOverlayManager(JSVGCanvas.this);
+//             }
+//             return null;
+//         }
+// 
+//         public Document getDocument() {
+//             return svgDocument;
+//         }
+// 
+//         public void performUpdate(Runnable r) {
+//             if (canEdit()) {
+//                 getUpdateManager().getUpdateRunnableQueue().invokeLater(r);
+//             } else {
+//                 r.run();
+//             }
+//         }
+// 
+//         public void removeSelectionOverlay(Overlay selectionOverlay) {
+//             getOverlays().remove(selectionOverlay);
+//         }
+// 
+//         public void selectNode(Node node) {
+//             DOMViewer domViewer = new DOMViewer(this);
+//             Rectangle fr = getBounds();
+//             Dimension td = domViewer.getSize();
+//             domViewer.setLocation(fr.x + (fr.width - td.width) / 2,
+//                                   fr.y + (fr.height - td.height) / 2);
+//             domViewer.setVisible(true);
+//             domViewer.selectNode(node);
+//         }
+//     }
+
     // ----------------------------------------------------------------------
     // Actions
     // ----------------------------------------------------------------------
@@ -835,12 +887,12 @@ public class JSVGCanvas extends JSVGComponent {
 
             // Don't handle tool tips unless we are interactive.
             if (!isInteractive()) return;
-            
+
             if (!SVGConstants.SVG_NAMESPACE_URI.equals(elt.getNamespaceURI()))
                 return;
 
             // Don't handle tool tips for the root SVG element.
-            if (elt.getParentNode() == 
+            if (elt.getParentNode() ==
                 elt.getOwnerDocument().getDocumentElement()) {
                 return;
             }
@@ -854,13 +906,13 @@ public class JSVGCanvas extends JSVGComponent {
             Element descPeer = null;
             Element titlePeer = null;
             if (elt.getLocalName().equals(SVGConstants.SVG_TITLE_TAG)) {
-                if (data == Boolean.TRUE) 
+                if (data == Boolean.TRUE)
                     titlePeer = elt;
                 descPeer = getPeerWithTag(parent,
                                            SVGConstants.SVG_NAMESPACE_URI,
                                            SVGConstants.SVG_DESC_TAG);
             } else if (elt.getLocalName().equals(SVGConstants.SVG_DESC_TAG)) {
-                if (data == Boolean.TRUE) 
+                if (data == Boolean.TRUE)
                     descPeer = elt;
                 titlePeer = getPeerWithTag(parent,
                                            SVGConstants.SVG_NAMESPACE_URI,
@@ -976,7 +1028,7 @@ public class JSVGCanvas extends JSVGComponent {
                                       String nameSpaceURI,
                                       String localName) {
 
-            Element p = (Element)parent;
+            Element p = parent;
             if (p == null) {
                 return null;
             }
@@ -1107,8 +1159,8 @@ public class JSVGCanvas extends JSVGComponent {
 
         protected int lastX, lastY;
 
-        public LocationListener () { 
-            lastX = 0; lastY = 0; 
+        public LocationListener () {
+            lastX = 0; lastY = 0;
         }
 
         public void mouseMoved(MouseEvent evt) {
@@ -1126,13 +1178,13 @@ public class JSVGCanvas extends JSVGComponent {
     }
 
     /**
-     * Sets a specific tooltip on the JSVGCanvas when a given event occurs. 
-     * This listener is used in the handleElement method to set, remove or 
+     * Sets a specific tooltip on the JSVGCanvas when a given event occurs.
+     * This listener is used in the handleElement method to set, remove or
      * modify the JSVGCanvas tooltip on mouseover and on mouseout.<br/>
      *
      * Because we are on a single <tt>JComponent</tt> we trigger an artificial
-     * <tt>MouseEvent</tt> when the toolTip is set to a non-null value, so as 
-     * to make sure it will show after the <tt>ToolTipManager</tt>'s default 
+     * <tt>MouseEvent</tt> when the toolTip is set to a non-null value, so as
+     * to make sure it will show after the <tt>ToolTipManager</tt>'s default
      * delay.
      */
     protected class ToolTipModifier implements EventListener {
@@ -1162,7 +1214,7 @@ public class JSVGCanvas extends JSVGComponent {
                 // related target is one it is entering or null.
                 org.w3c.dom.events.MouseEvent mouseEvt;
                 mouseEvt = ((org.w3c.dom.events.MouseEvent)evt);
-                lastTarget = mouseEvt.getRelatedTarget(); 
+                lastTarget = mouseEvt.getRelatedTarget();
             }
 
             if (toolTipMap != null) {

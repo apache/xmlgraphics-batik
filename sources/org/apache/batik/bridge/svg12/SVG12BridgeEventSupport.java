@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2005  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -56,6 +57,8 @@ import org.w3c.dom.events.EventTarget;
  * @version $Id$
  */
 public abstract class SVG12BridgeEventSupport extends BridgeEventSupport {
+
+    protected SVG12BridgeEventSupport() {}
 
     /**
      * Is called only for the root element in order to dispatch GVT
@@ -152,7 +155,7 @@ public abstract class SVG12BridgeEventSupport extends BridgeEventSupport {
 
             Element targetElement = (Element) fmgr.getCurrentEventTarget();
             if (targetElement == null) {
-                return;
+                targetElement = context.getDocument().getDocumentElement();
             }
             DocumentEvent d = (DocumentEvent) targetElement.getOwnerDocument();
             DOMKeyboardEvent keyEvt
@@ -187,7 +190,7 @@ public abstract class SVG12BridgeEventSupport extends BridgeEventSupport {
 
             Element targetElement = (Element) fmgr.getCurrentEventTarget();
             if (targetElement == null) {
-                return;
+                targetElement = context.getDocument().getDocumentElement();
             }
             DocumentEvent d = (DocumentEvent) targetElement.getOwnerDocument();
             DOMTextEvent textEvt = (DOMTextEvent) d.createEvent("TextEvent");
@@ -786,7 +789,6 @@ public abstract class SVG12BridgeEventSupport extends BridgeEventSupport {
             }
 
             if (targetElement != null) {
-                short button = getButton(evt);
                 Point screenXY = evt.getScreenPoint();
                 // create the coresponding DOM MouseEvent
                 DocumentEvent d
@@ -806,8 +808,8 @@ public abstract class SVG12BridgeEventSupport extends BridgeEventSupport {
                                           screenXY.y,
                                           clientXY.x,
                                           clientXY.y,
-                                          button, 
-                                          (EventTarget)relatedElement,
+                                          (short) (evt.getButton() - 1), 
+                                          (EventTarget) relatedElement,
                                           modifiers);
 
                 ((AbstractEvent) mouseEvt).setBubbleLimit(bubbleLimit);

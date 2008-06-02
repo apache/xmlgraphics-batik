@@ -1,10 +1,11 @@
 /*
 
-   Copyright 1999-2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -26,6 +27,9 @@ import java.util.ResourceBundle;
 import javax.swing.JButton;
 import javax.swing.JToolBar;
 
+import org.apache.batik.util.resources.ResourceFormatException;
+import org.apache.batik.util.resources.ResourceManager;
+
 /**
  * This class represents a tool bar factory which builds
  * tool bars from the content of a resource file. <br>
@@ -45,7 +49,7 @@ import javax.swing.JToolBar;
 public class ToolBarFactory extends ResourceManager {
     // Constants
     //
-    private final static String SEPARATOR = "-";
+    private static final String SEPARATOR = "-";
 
     /**
      * The button factory
@@ -59,8 +63,8 @@ public class ToolBarFactory extends ResourceManager {
      * @param am the actions to add to menu items
      */
     public ToolBarFactory(ResourceBundle rb, ActionMap am) {
-	super(rb);
-	buttonFactory = new ButtonFactory(rb, am);
+        super(rb);
+        buttonFactory = new ButtonFactory(rb, am);
     }
 
     /**
@@ -74,22 +78,22 @@ public class ToolBarFactory extends ResourceManager {
      * action map.
      */
     public JToolBar createJToolBar(String name)
-	throws MissingResourceException,
+        throws MissingResourceException,
                ResourceFormatException,
-	       MissingListenerException {
-	JToolBar result  = new JToolBar();
+               MissingListenerException {
+        JToolBar result  = new JToolBar();
         List     buttons = getStringList(name);
         Iterator it      = buttons.iterator();
 
         while (it.hasNext()) {
-	    String s = (String)it.next();
-	    if (s.equals(SEPARATOR)) {
-		result.add(new JToolbarSeparator());
-	    } else {
-		result.add(createJButton(s));
-	    }
+            String s = (String)it.next();
+            if (s.equals(SEPARATOR)) {
+                result.add(new JToolbarSeparator());
+            } else {
+                result.add(createJButton(s));
+            }
         }
-	return result;
+        return result;
     }
 
     /**
@@ -103,9 +107,9 @@ public class ToolBarFactory extends ResourceManager {
      *         the action map.
      */
     public JButton createJButton(String name)
-	throws MissingResourceException,
-	       ResourceFormatException,
-	       MissingListenerException {
-	return buttonFactory.createJToolbarButton(name);
+        throws MissingResourceException,
+               ResourceFormatException,
+               MissingListenerException {
+        return buttonFactory.createJToolbarButton(name);
     }
 }

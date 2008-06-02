@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2000-2004  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -20,6 +21,9 @@ package org.apache.batik.dom.svg;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.util.XMLSupport;
+import org.apache.batik.util.DoublyIndexedTable;
+import org.apache.batik.util.SVGTypes;
+
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedEnumeration;
 import org.w3c.dom.svg.SVGAnimatedLength;
@@ -37,9 +41,27 @@ public class SVGOMTextPathElement
     implements SVGTextPathElement {
 
     /**
+     * Table mapping XML attribute names to TraitInformation objects.
+     */
+    protected static DoublyIndexedTable xmlTraitInformation;
+    static {
+        DoublyIndexedTable t =
+            new DoublyIndexedTable(SVGOMTextContentElement.xmlTraitInformation);
+        t.put(null, SVG_METHOD_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_IDENT));
+        t.put(null, SVG_SPACING_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_IDENT));
+        t.put(null, SVG_START_OFFSET_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_LENGTH));
+        t.put(XLINK_NAMESPACE_URI, XLINK_HREF_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_URI));
+        xmlTraitInformation = t;
+    }
+
+    /**
      * The attribute initializer.
      */
-    protected final static AttributeInitializer attributeInitializer;
+    protected static final AttributeInitializer attributeInitializer;
     static {
         attributeInitializer = new AttributeInitializer(4);
         attributeInitializer.addAttribute(XMLSupport.XMLNS_NAMESPACE_URI,
@@ -56,7 +78,7 @@ public class SVGOMTextPathElement
     /**
      * The 'method' attribute values.
      */
-    protected final static String[] METHOD_VALUES = {
+    protected static final String[] METHOD_VALUES = {
         "",
         SVG_ALIGN_VALUE,
         SVG_STRETCH_VALUE
@@ -65,11 +87,31 @@ public class SVGOMTextPathElement
     /**
      * The 'spacing' attribute values.
      */
-    protected final static String[] SPACING_VALUES = {
+    protected static final String[] SPACING_VALUES = {
         "",
         SVG_AUTO_VALUE,
         SVG_EXACT_VALUE
     };
+
+    /**
+     * The 'method' attribute value.
+     */
+    protected SVGOMAnimatedEnumeration method;
+
+    /**
+     * The 'spacing' attribute value.
+     */
+    protected SVGOMAnimatedEnumeration spacing;
+
+    /**
+     * The 'startOffset' attribute value.
+     */
+    protected SVGOMAnimatedLength startOffset;
+
+    /**
+     * The 'xlink:href' attribute value.
+     */
+    protected SVGOMAnimatedString href;
 
     /**
      * Creates a new SVGOMTextPathElement object.
@@ -84,6 +126,34 @@ public class SVGOMTextPathElement
      */
     public SVGOMTextPathElement(String prefix, AbstractDocument owner) {
         super(prefix, owner);
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes all live attributes for this element.
+     */
+    protected void initializeAllLiveAttributes() {
+        super.initializeAllLiveAttributes();
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes the live attribute values of this element.
+     */
+    private void initializeLiveAttributes() {
+        method =
+            createLiveAnimatedEnumeration
+                (null, SVG_METHOD_ATTRIBUTE, METHOD_VALUES, (short) 1);
+        spacing =
+            createLiveAnimatedEnumeration
+                (null, SVG_SPACING_ATTRIBUTE, SPACING_VALUES, (short) 2);
+        startOffset =
+            createLiveAnimatedLength
+                (null, SVG_START_OFFSET_ATTRIBUTE,
+                 SVG_TEXT_PATH_START_OFFSET_DEFAULT_VALUE,
+                 SVGOMAnimatedLength.OTHER_LENGTH, true);
+        href =
+            createLiveAnimatedString(XLINK_NAMESPACE_URI, XLINK_HREF_ATTRIBUTE);
     }
 
     /**
@@ -97,28 +167,22 @@ public class SVGOMTextPathElement
      * <b>DOM</b>: Implements {@link SVGTextPathElement#getStartOffset()}.
      */
     public SVGAnimatedLength getStartOffset() {
-        return getAnimatedLengthAttribute
-            (null, SVG_START_OFFSET_ATTRIBUTE,
-             SVG_TEXT_PATH_START_OFFSET_DEFAULT_VALUE,
-             SVGOMAnimatedLength.OTHER_LENGTH);
+        return startOffset;
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGTextPathElement#getMethod()}.
      */
     public SVGAnimatedEnumeration getMethod() {
-        return getAnimatedEnumerationAttribute
-            (null, SVG_METHOD_ATTRIBUTE, METHOD_VALUES, (short)1);
+        return method;
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGTextPathElement#getSpacing()}.
      */
     public SVGAnimatedEnumeration getSpacing() {
-        return getAnimatedEnumerationAttribute
-            (null, SVG_SPACING_ATTRIBUTE, SPACING_VALUES, (short)2);
+        return spacing;
     }
-
 
     // XLink support //////////////////////////////////////////////////////
 
@@ -127,7 +191,7 @@ public class SVGOMTextPathElement
      * org.w3c.dom.svg.SVGURIReference#getHref()}.
      */
     public SVGAnimatedString getHref() {
-        return SVGURIReferenceSupport.getHref(this);
+        return href;
     }
 
     /**
@@ -143,5 +207,12 @@ public class SVGOMTextPathElement
      */
     protected Node newNode() {
         return new SVGOMTextPathElement();
+    }
+
+    /**
+     * Returns the table of TraitInformation objects for this element.
+     */
+    protected DoublyIndexedTable getTraitInformationTable() {
+        return xmlTraitInformation;
     }
 }

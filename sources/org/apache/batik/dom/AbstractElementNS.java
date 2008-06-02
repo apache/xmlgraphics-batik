@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2000,2006  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -58,25 +59,25 @@ public abstract class AbstractElementNS extends AbstractElement {
      */
     protected AbstractElementNS(String nsURI, String qname,
                                 AbstractDocument owner)
-	throws DOMException {
-	super(qname, owner);
+        throws DOMException {
+        super(qname, owner);
         if (nsURI != null && nsURI.length() == 0) {
             nsURI = null;
         }
-	namespaceURI = nsURI;
-	String prefix = DOMUtilities.getPrefix(qname);
-	if (prefix != null) {
-	    if (nsURI == null ||
-		("xml".equals(prefix) &&
-		 !XMLSupport.XML_NAMESPACE_URI.equals(nsURI))) {
-		throw createDOMException
+        namespaceURI = nsURI;
+        String prefix = DOMUtilities.getPrefix(qname);
+        if (prefix != null) {
+            if (nsURI == null ||
+                ("xml".equals(prefix) &&
+                 !XMLSupport.XML_NAMESPACE_URI.equals(nsURI))) {
+                throw createDOMException
                     (DOMException.NAMESPACE_ERR,
                      "namespace.uri",
                      new Object[] { new Integer(getNodeType()),
                                     getNodeName(),
                                     nsURI });
-	    }
-	}
+            }
+        }
     }
 
     /**
@@ -84,27 +85,27 @@ public abstract class AbstractElementNS extends AbstractElement {
      * @return {@link #namespaceURI}.
      */
     public String getNamespaceURI() {
-	return namespaceURI;
+        return namespaceURI;
     }
 
     /**
      * Exports this node to the given document.
      */
     protected Node export(Node n, AbstractDocument d) {
-	super.export(n, d);
-	AbstractElementNS ae = (AbstractElementNS)n;
-	ae.namespaceURI = namespaceURI;
-	return n;
+        super.export(n, d);
+        AbstractElementNS ae = (AbstractElementNS)n;
+        ae.namespaceURI = namespaceURI;
+        return n;
     }
 
     /**
      * Deeply exports this node to the given document.
      */
     protected Node deepExport(Node n, AbstractDocument d) {
-	super.deepExport(n, d);
-	AbstractElementNS ae = (AbstractElementNS)n;
-	ae.namespaceURI = namespaceURI;
-	return n;
+        super.deepExport(n, d);
+        AbstractElementNS ae = (AbstractElementNS)n;
+        ae.namespaceURI = namespaceURI;
+        return n;
     }
 
     /**
@@ -112,10 +113,10 @@ public abstract class AbstractElementNS extends AbstractElement {
      * @param n a node of the type of this.
      */
     protected Node copyInto(Node n) {
-	super.copyInto(n);
-	AbstractElementNS ae = (AbstractElementNS)n;
-	ae.namespaceURI = namespaceURI;
-	return n;
+        super.copyInto(n);
+        AbstractElementNS ae = (AbstractElementNS)n;
+        ae.namespaceURI = namespaceURI;
+        return n;
     }
 
     /**
@@ -123,9 +124,9 @@ public abstract class AbstractElementNS extends AbstractElement {
      * @param n a node of the type of this.
      */
     protected Node deepCopyInto(Node n) {
-	super.deepCopyInto(n);
-	AbstractElementNS ae = (AbstractElementNS)n;
-	ae.namespaceURI = namespaceURI;
-	return n;
+        super.deepCopyInto(n);
+        AbstractElementNS ae = (AbstractElementNS)n;
+        ae.namespaceURI = namespaceURI;
+        return n;
     }
 }

@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001,2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -42,7 +43,6 @@ import org.apache.batik.test.AbstractTest;
 import org.apache.batik.test.DefaultTestReport;
 import org.apache.batik.test.TestReport;
 
-import org.apache.batik.svggen.SVGGraphics2D;
 import org.apache.batik.dom.GenericDOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.DOMImplementation;
@@ -288,7 +288,7 @@ public class SVGAccuracyTest extends AbstractTest
 
         return report;
     }
-    
+
     public int computeColumnNumber(String aStr, String bStr){
         if(aStr == null || bStr == null){
             return -1;
@@ -354,7 +354,7 @@ public class SVGAccuracyTest extends AbstractTest
         String namespaceURI = SVGConstants.SVG_NAMESPACE_URI;
         Document domFactory = impl.createDocument(namespaceURI, SVG_SVG_TAG, null);
         SVGGeneratorContext ctx = SVGGeneratorContext.createDefault(domFactory);
-        GraphicContextDefaults defaults 
+        GraphicContextDefaults defaults
             = new GraphicContextDefaults();
         defaults.font = new Font("Arial", Font.PLAIN, 12);
         ctx.setGraphicContextDefaults(defaults);

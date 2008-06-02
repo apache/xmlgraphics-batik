@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001-2003,2005  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -25,6 +26,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.apache.batik.bridge.svg12.DefaultXBLManager;
 import org.apache.batik.bridge.svg12.SVG12BridgeContext;
@@ -69,7 +72,7 @@ public class UpdateManager  {
      * The bridge context.
      */
     protected BridgeContext bridgeContext;
-    
+
     /**
      * The document to manage.
      */
@@ -88,12 +91,12 @@ public class UpdateManager  {
     /**
      * Whether the update manager is running.
      */
-    protected boolean running;
+    protected volatile boolean running;
 
     /**
      * Whether the suspend() method was called.
      */
-    protected boolean suspendCalled;
+    protected volatile boolean suspendCalled;
 
     /**
      * The listeners.
@@ -273,7 +276,7 @@ public class UpdateManager  {
                 public void run() {
                     synchronized (UpdateManager.this) {
                         running = true;
-        
+
                         updateTracker = new UpdateTracker();
                         RootGraphicsNode root = graphicsNode.getRoot();
                         if (root != null){
@@ -365,7 +368,7 @@ public class UpdateManager  {
         //     UpdateManagerEvent ev = new UpdateManagerEvent
         //         (this, null, null);
         //     // FIXX: Must happen in a different thread!
-        //     fireEvent(suspendedDispatcher, ev); 
+        //     fireEvent(suspendedDispatcher, ev);
         //     fireEvent(resumedDispatcher, ev);
         // }
         if (updateRunnableQueue.getQueueState() != RunnableQueue.RUNNING) {
@@ -376,12 +379,8 @@ public class UpdateManager  {
     /**
      * Interrupts the manager tasks.
      */
-    public synchronized void interrupt() {
-        if (updateRunnableQueue.getThread() == null)
-            return;
-
-          // Preempt to cancel the pending tasks
-        updateRunnableQueue.preemptLater(new Runnable() {
+    public void interrupt() {
+        Runnable r = new Runnable() {
                 public void run() {
                     synchronized (UpdateManager.this) {
                         if (started) {
@@ -393,8 +392,15 @@ public class UpdateManager  {
                         }
                     }
                 }
-            });
-        resume();
+            };
+        try {
+            // Preempt to cancel the pending tasks
+            updateRunnableQueue.preemptLater(r);
+            updateRunnableQueue.resumeExecution(); // ensure runnable runs...
+        } catch (IllegalStateException ise) {
+            // Not running, which is probably ok since that's what we
+            // wanted.  Might be an issue if SVGUnload wasn't issued...
+        }
     }
 
     /**
@@ -428,7 +434,7 @@ public class UpdateManager  {
                         running = false;
 
                         // Now shut everything down and disconnect
-                        // everything before we send the 
+                        // everything before we send the
                         // UpdateMangerStopped event.
                         scriptingEnvironment.interrupt();
                         updateRunnableQueue.getThread().halt();
@@ -493,7 +499,7 @@ public class UpdateManager  {
      * @param clearPaintingTransform Indicates if the painting transform
      *        should be cleared as a result of this update.
      */
-    protected void updateRendering(List areas, 
+    protected void updateRendering(List areas,
                                    boolean clearPaintingTransform) {
         try {
             UpdateManagerEvent ev = new UpdateManagerEvent
@@ -504,7 +510,7 @@ public class UpdateManager  {
             List l = new ArrayList(c);
 
             ev = new UpdateManagerEvent
-                (this, repaintManager.getOffScreen(), 
+                (this, repaintManager.getOffScreen(),
                  l, clearPaintingTransform);
             fireEvent(updateCompletedDispatcher, ev);
         } catch (ThreadDeath td) {
@@ -529,24 +535,37 @@ public class UpdateManager  {
      * Repaints the dirty areas, if needed.
      */
     protected void repaint() {
-        if (!updateTracker.hasChanged()) 
+        if (!updateTracker.hasChanged()) {
+            // No changes, nothing to repaint.
+            outOfDateTime = 0;
             return;
+        }
+
         long ctime = System.currentTimeMillis();
+        if (ctime < allResumeTime) {
+            createRepaintTimer();
+            return;
+        }
+        if (allResumeTime > 0) {
+            // All suspendRedraw requests have expired.
+            releaseAllRedrawSuspension();
+        }
+
         if (ctime-outOfDateTime < minRepaintTime) {
-            // We very recently did a repaint check if other 
+            // We very recently did a repaint check if other
             // repaint runnables are pending.
             synchronized (updateRunnableQueue.getIteratorLock()) {
                 Iterator i = updateRunnableQueue.iterator();
                 while (i.hasNext())
                     if (!(i.next() instanceof NoRepaintRunnable))
                         // have a pending repaint runnable so we
-                        // will skip this repaint and we will let 
+                        // will skip this repaint and we will let
                         // the next one pick it up.
                         return;
-                
+
             }
         }
-        
+
         List dirtyAreas = updateTracker.getDirtyAreas();
         updateTracker.clear();
         if (dirtyAreas != null) {
@@ -555,6 +574,169 @@ public class UpdateManager  {
         outOfDateTime = 0;
     }
 
+    /**
+     * Users of Batik should essentially never call
+     * this directly from Java.  If the Canvas is not
+     * updating when you change the SVG Document it is almost
+     * certainly because you are not making your changes
+     * in the RunnableQueue (getUpdateRunnableQueue()).
+     * You will have problems if you are not making all
+     * changes to the document in the UpdateManager's
+     * RunnableQueue.
+     *
+     * This method exists to implement the
+     * 'SVGSVGElement.forceRedraw()' method.
+     */
+    public void forceRepaint() {
+        if (!updateTracker.hasChanged()) {
+            // No changes, nothing to repaint.
+            outOfDateTime = 0;
+            return;
+        }
+
+        List dirtyAreas = updateTracker.getDirtyAreas();
+        updateTracker.clear();
+        if (dirtyAreas != null) {
+            updateRendering(dirtyAreas, false);
+        }
+        outOfDateTime = 0;
+    }
+
+    protected class SuspensionInfo {
+        /**
+         * The index of this redraw suspension
+         */
+        int index;
+        /**
+         * The system time in millisec that this suspension
+         * will expire and redraws can resume (at least for
+         * this suspension.
+         */
+        long resumeMilli;
+        public SuspensionInfo(int index, long resumeMilli) {
+            this.index = index;
+            this.resumeMilli = resumeMilli;
+        }
+        public int getIndex() { return index; }
+        public long getResumeMilli() { return resumeMilli; }
+    }
+
+    protected class RepaintTimerTask extends TimerTask {
+        UpdateManager um;
+        RepaintTimerTask(UpdateManager um) {
+            this.um = um;
+        }
+        public void run() {
+            RunnableQueue rq = um.getUpdateRunnableQueue();
+            if (rq == null) return;
+            rq.invokeLater(new Runnable() {
+                    public void run() { }
+                });
+        }
+    }
+
+    List suspensionList = new ArrayList();
+    int nextSuspensionIndex = 1;
+    long allResumeTime = -1;
+    Timer repaintTriggerTimer = null;
+    TimerTask repaintTimerTask = null;
+
+    void createRepaintTimer() {
+        if (repaintTimerTask != null) return;
+        if (allResumeTime < 0)        return;
+        if (repaintTriggerTimer == null)
+            repaintTriggerTimer = new Timer(true);
+
+        long delay = allResumeTime - System.currentTimeMillis();
+        if (delay < 0) delay = 0;
+        repaintTimerTask = new RepaintTimerTask(this);
+        repaintTriggerTimer.schedule(repaintTimerTask, delay);
+        // System.err.println("CTimer delay: " + delay);
+    }
+    /**
+     * Sets up a timer that will trigger a repaint
+     * when it fires.
+     * If create is true it will construct a timer even
+     * if one
+     */
+    void resetRepaintTimer() {
+        if (repaintTimerTask == null) return;
+        if (allResumeTime < 0)        return;
+        if (repaintTriggerTimer == null)
+            repaintTriggerTimer = new Timer(true);
+
+        long delay = allResumeTime - System.currentTimeMillis();
+        if (delay < 0) delay = 0;
+        repaintTimerTask = new RepaintTimerTask(this);
+        repaintTriggerTimer.schedule(repaintTimerTask, delay);
+        // System.err.println("Timer delay: " + delay);
+    }
+
+    int addRedrawSuspension(int max_wait_milliseconds) {
+        long resumeTime = System.currentTimeMillis() + max_wait_milliseconds;
+        SuspensionInfo si = new SuspensionInfo(nextSuspensionIndex++,
+                                               resumeTime);
+        if (resumeTime > allResumeTime) {
+            allResumeTime = resumeTime;
+            // System.err.println("Added AllRes Time: " + allResumeTime);
+            resetRepaintTimer();
+        }
+        suspensionList.add(si);
+        return si.getIndex();
+    }
+
+    void releaseAllRedrawSuspension() {
+        suspensionList.clear();
+        allResumeTime = -1;
+        resetRepaintTimer();
+    }
+
+    boolean releaseRedrawSuspension(int index) {
+        if (index > nextSuspensionIndex) return false;
+        if (suspensionList.size() == 0) return true;
+
+        int lo = 0, hi=suspensionList.size()-1;
+        while (lo < hi) {
+            int mid = (lo+hi)>>1;
+            SuspensionInfo si = (SuspensionInfo)suspensionList.get(mid);
+            int idx = si.getIndex();
+            if      (idx == index) { lo = hi = mid; }
+            else if (idx <  index) { lo = mid+1; }
+            else                   { hi = mid-1; }
+        }
+
+        SuspensionInfo si = (SuspensionInfo)suspensionList.get(lo);
+        int idx = si.getIndex();
+        if (idx != index)
+            return true;  // currently not in list but was at some point...
+
+        suspensionList.remove(lo);
+        if (suspensionList.size() == 0) {
+            // No more active suspensions
+            allResumeTime = -1;
+            resetRepaintTimer();
+        } else {
+            // Check if we need to find a new 'bounding' suspension.
+            long resumeTime = si.getResumeMilli();
+            if (resumeTime == allResumeTime) {
+                allResumeTime = findNewAllResumeTime();
+                // System.err.println("New AllRes Time: " + allResumeTime);
+                resetRepaintTimer();
+            }
+        }
+        return true;
+    }
+
+    long findNewAllResumeTime() {
+        long ret = -1;
+        Iterator i = suspensionList.iterator();
+        while (i.hasNext()) {
+            SuspensionInfo si = (SuspensionInfo)i.next();
+            long t = si.getResumeMilli();
+            if (t > ret) ret = t;
+        }
+        return ret;
+    }
 
     /**
      * Adds a UpdateManagerListener to this UpdateManager.
@@ -666,10 +848,10 @@ public class UpdateManager  {
         return new UpdateManagerRunHander();
     }
 
-    protected class UpdateManagerRunHander 
+    protected class UpdateManagerRunHander
         extends RunnableQueue.RunHandlerAdapter {
 
-        public void runnableStart(RunnableQueue rq, Runnable r) { 
+        public void runnableStart(RunnableQueue rq, Runnable r) {
             if (running && !(r instanceof NoRepaintRunnable)) {
                 // Mark the document as updated when the
                 // runnable starts.
@@ -677,7 +859,7 @@ public class UpdateManager  {
                     outOfDateTime = System.currentTimeMillis();
             }
         }
-        
+
 
         /**
          * Called when the given Runnable has just been invoked and
@@ -688,7 +870,7 @@ public class UpdateManager  {
                 repaint();
             }
         }
-        
+
         /**
          * Called when the execution of the queue has been suspended.
          */
@@ -703,13 +885,13 @@ public class UpdateManager  {
                 }
             }
         }
-        
+
         /**
          * Called when the execution of the queue has been resumed.
          */
         public void executionResumed(RunnableQueue rq) {
             synchronized (UpdateManager.this) {
-                // System.err.println("Resumed: " + suspendCalled + 
+                // System.err.println("Resumed: " + suspendCalled +
                 //                    " : " + running);
                 if (suspendCalled && !running) {
                     running = true;

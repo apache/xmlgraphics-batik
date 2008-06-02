@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001,2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -24,10 +25,12 @@ import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
 import java.awt.image.SampleModel;
 import java.awt.image.WritableRaster;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Iterator;
+
 import java.util.Vector;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  * A simple class implemented the <code>RenderedImage</code>
@@ -38,44 +41,46 @@ import java.util.Vector;
  * <p> Normally in JAI <code>PlanarImage</code> is used for this
  * purpose, but in the interest of modularity the
  * use of <code>PlanarImage</code> has been avoided.
+ *
+ * @version $Id$
  */
 public abstract class SimpleRenderedImage implements RenderedImage {
 
     /** The X coordinate of the image's upper-left pixel. */
     protected int minX;
-    
+
     /** The Y coordinate of the image's upper-left pixel. */
     protected int minY;
-    
+
     /** The image's width in pixels. */
     protected int width;
-    
+
     /** The image's height in pixels. */
     protected int height;
-    
+
     /** The width of a tile. */
     protected int tileWidth;
-    
+
     /** The height of a tile. */
     protected int tileHeight;
 
     /** The X coordinate of the upper-left pixel of tile (0, 0). */
     protected int tileGridXOffset = 0;
-    
+
     /** The Y coordinate of the upper-left pixel of tile (0, 0). */
     protected int tileGridYOffset = 0;
-    
+
     /** The image's SampleModel. */
     protected SampleModel sampleModel = null;
-    
+
     /** The image's ColorModel. */
     protected ColorModel colorModel = null;
-    
+
     /** The image's sources, stored in a Vector. */
-    protected Vector sources = new Vector();
+    protected List sources = new ArrayList();
 
     /** A Hashtable containing the image properties. */
-    protected Hashtable properties = new Hashtable();
+    protected Map properties = new HashMap();
 
     public SimpleRenderedImage() {}
 
@@ -118,13 +123,13 @@ public abstract class SimpleRenderedImage implements RenderedImage {
     public int getHeight() {
         return height;
     }
-    
+
     /** Returns a Rectangle indicating the image bounds. */
     public Rectangle getBounds() {
         return new Rectangle(getMinX(), getMinY(),
                              getWidth(), getHeight());
     }
-    
+
     /** Returns the width of a tile. */
     public int getTileWidth() {
         return tileWidth;
@@ -135,14 +140,14 @@ public abstract class SimpleRenderedImage implements RenderedImage {
         return tileHeight;
     }
 
-    /** 
+    /**
      * Returns the X coordinate of the upper-left pixel of tile (0, 0).
      */
     public int getTileGridXOffset() {
         return tileGridXOffset;
     }
 
-    /** 
+    /**
      * Returns the Y coordinate of the upper-left pixel of tile (0, 0).
      */
     public int getTileGridYOffset() {
@@ -176,11 +181,11 @@ public abstract class SimpleRenderedImage implements RenderedImage {
     public int getNumXTiles() {
         return getMaxTileX() - getMinTileX() + 1;
     }
-    
+
     /**
      * Returns the vertical index of the uppermost row of tiles.  getMinTileY()
      * is implemented in terms of getMinY() and so does not need to be
-     * implemented by subclasses. 
+     * implemented by subclasses.
      */
     public int getMinTileY() {
         return YToTileY(getMinY());
@@ -217,37 +222,35 @@ public abstract class SimpleRenderedImage implements RenderedImage {
 
     /**
      * Gets a property from the property set of this image.  If the
-     * property name is not recognized,
-     * <code>java.awt.Image.UndefinedProperty</code> will be returned.
+     * property name is not recognized, <code>null</code> will be returned.
      *
      * @param name the name of the property to get, as a
-     * <code>String</code>.  @return a reference to the property
-     * <code>Object</code>, or the value
-     * <code>java.awt.Image.UndefinedProperty.</code>
+     * <code>String</code>.
+     * @return a reference to the property
+     * <code>Object</code>, or the value <code>null</code>
      */
     public Object getProperty(String name) {
         name = name.toLowerCase();
         return properties.get(name);
     }
-    
+
     /**
      * Returns a list of the properties recognized by this image.  If
-     * no properties are available, <code>null</code> will be
-     * returned.
+     * no properties are available, an empty String[] will be returned.
      *
      * @return an array of <code>String</code>s representing valid
      *         property names.
      */
     public String[] getPropertyNames() {
         String[] names = new String[properties.size()];
-        int index = 0;
-
-        Enumeration e = properties.keys();
-        while (e.hasMoreElements()) {
-            String name = (String)e.nextElement();
-            names[index++] = name;
-        }
-        
+//        int index = 0;
+//
+//        Enumeration e = properties.keys();
+//        while (e.hasMoreElements()) {
+//            String name = (String)e.nextElement();
+//            names[index++] = name;
+//        }
+        properties.keySet().toArray( names );
         return names;
     }
 
@@ -262,20 +265,20 @@ public abstract class SimpleRenderedImage implements RenderedImage {
      * for matches.
      *
      * @return an array of <code>String</code>s giving the valid
-     * property names.
+     * property names (can be null).
      */
     public String[] getPropertyNames(String prefix) {
-        String propertyNames[] = getPropertyNames();
+        String[] propertyNames = getPropertyNames();
         if (propertyNames == null) {
             return null;
         }
 
         prefix = prefix.toLowerCase();
 
-        Vector names = new Vector();
+        List names = new ArrayList();
         for (int i = 0; i < propertyNames.length; i++) {
             if (propertyNames[i].startsWith(prefix)) {
-                names.addElement(propertyNames[i]);
+                names.add(propertyNames[i]);
             }
         }
 
@@ -284,11 +287,13 @@ public abstract class SimpleRenderedImage implements RenderedImage {
         }
 
         // Copy the strings from the Vector over to a String array.
-        String prefixNames[] = new String[names.size()];
-        int count = 0;
-        for (Iterator it = names.iterator(); it.hasNext(); ) {
-            prefixNames[count++] = (String)it.next();
-        }
+        String[] prefixNames = new String[names.size()];
+
+//        int count = 0;
+//        for (Iterator it = names.iterator(); it.hasNext(); ) { // todo xx.toArray()
+//            prefixNames[count++] = (String)it.next();
+//        }
+        names.toArray( prefixNames );
 
         return prefixNames;
     }
@@ -334,7 +339,7 @@ public abstract class SimpleRenderedImage implements RenderedImage {
     }
 
     /**
-     * Converts a pixel's Y coordinate into a vertical tile index. 
+     * Converts a pixel's Y coordinate into a vertical tile index.
      * This is a convenience method.  No attempt is made to detect
      * out-of-range coordinates.
      *
@@ -485,13 +490,13 @@ public abstract class SimpleRenderedImage implements RenderedImage {
      *
      * @param dest a WritableRaster to hold the returned portion of
      *        the image.
-     * @return a reference to the supplied WritableRaster, or to a 
+     * @return a reference to the supplied WritableRaster, or to a
      *         new WritableRaster if the supplied one was null.
      */
     public WritableRaster copyData(WritableRaster dest) {
         Rectangle bounds;
         Raster tile;
-                    
+
         if (dest == null) {
             bounds = getBounds();
             Point p = new Point(minX, minY);
@@ -502,12 +507,12 @@ public abstract class SimpleRenderedImage implements RenderedImage {
         } else {
             bounds = dest.getBounds();
         }
-        
+
         int startX = XToTileX(bounds.x);
         int startY = YToTileY(bounds.y);
         int endX = XToTileX(bounds.x + bounds.width - 1);
         int endY = YToTileY(bounds.y + bounds.height - 1);
-            
+
         for (int j = startY; j <= endY; j++) {
             for (int i = startX; i <= endX; i++) {
                 tile = getTile(i, j);

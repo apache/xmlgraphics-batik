@@ -1,10 +1,11 @@
 /*
 
-   Copyright 1999-2003,2006  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -15,16 +16,14 @@
    limitations under the License.
 
 */
-
 package org.apache.batik.extension;
-
-import java.net.MalformedURLException;
-import java.net.URL;
 
 import org.apache.batik.css.engine.CSSStylableElement;
 import org.apache.batik.css.engine.StyleDeclarationProvider;
 import org.apache.batik.css.engine.StyleMap;
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.util.ParsedURL;
+
 import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSValue;
@@ -48,7 +47,7 @@ public abstract class StylableExtensionElement
     /**
      * The base URL.
      */
-    protected URL cssBase;
+    protected ParsedURL cssBase;
 
     /**
      * The computed style map.
@@ -71,7 +70,7 @@ public abstract class StylableExtensionElement
     }
 
     // CSSStylableElement //////////////////////////////////////////
-    
+
     /**
      * Returns the computed style of this element/pseudo-element.
      */
@@ -103,19 +102,13 @@ public abstract class StylableExtensionElement
     /**
      * Returns the CSS base URL of this element.
      */
-    public URL getCSSBase() {
+    public ParsedURL getCSSBase() {
         if (cssBase == null) {
-            try {
-                String bu = getBaseURI();
-                if (bu == null) {
-                    return null;
-                }
-                cssBase = new URL(bu);
-            } catch (MalformedURLException e) {
-                // !!! TODO
-                e.printStackTrace();
-                throw new InternalError();
+            String bu = getBaseURI();
+            if (bu == null) {
+                return null;
             }
+            cssBase = new ParsedURL(bu);
         }
         return cssBase;
     }
@@ -150,7 +143,7 @@ public abstract class StylableExtensionElement
      * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGStylable#getStyle()}.
      */
     public CSSStyleDeclaration getStyle() {
-        throw new InternalError("Not implemented");
+        throw new UnsupportedOperationException("Not implemented");
     }
 
     /**
@@ -158,7 +151,7 @@ public abstract class StylableExtensionElement
      * org.w3c.dom.svg.SVGStylable#getPresentationAttribute(String)}.
      */
     public CSSValue getPresentationAttribute(String name) {
-        throw new InternalError("Not implemented");
+        throw new UnsupportedOperationException("Not implemented");
     }
 
     /**
@@ -166,6 +159,6 @@ public abstract class StylableExtensionElement
      * org.w3c.dom.svg.SVGStylable#getClassName()}.
      */
     public SVGAnimatedString getClassName() {
-        throw new InternalError("Not implemented");
+        throw new UnsupportedOperationException("Not implemented");
     }
 }

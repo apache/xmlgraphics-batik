@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2000  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -53,10 +54,10 @@ public class ParseException extends RuntimeException {
      * @param column The column of the last parsed character.
      */
     public ParseException (String message, int line, int column) {
-	super(message);
-	exception = null;
-	lineNumber = line;
-	columnNumber = column;
+        super(message);
+        exception = null;
+        lineNumber = line;
+        columnNumber = column;
     }
     
     /**
@@ -68,9 +69,9 @@ public class ParseException extends RuntimeException {
      * @param e The exception to be wrapped in a ParseException.
      */
     public ParseException (Exception e) {
-	exception = e;
-	lineNumber = -1;
-	columnNumber = -1;
+        exception = e;
+        lineNumber = -1;
+        columnNumber = -1;
     }
     
     /**
@@ -82,8 +83,8 @@ public class ParseException extends RuntimeException {
      * @param e The exception to be wrapped in a SAXException.
      */
     public ParseException (String message, Exception e) {
-	super(message);
-	this.exception = e;
+        super(message);
+        this.exception = e;
     }
     
     /**
@@ -95,13 +96,13 @@ public class ParseException extends RuntimeException {
      * @return The error or warning message.
      */
     public String getMessage () {
-	String message = super.getMessage();
-	
-	if (message == null && exception != null) {
-	    return exception.getMessage();
-	} else {
-	    return message;
-	}
+        String message = super.getMessage();
+        
+        if (message == null && exception != null) {
+            return exception.getMessage();
+        } else {
+            return message;
+        }
     }
     
     /**
@@ -109,20 +110,20 @@ public class ParseException extends RuntimeException {
      * @return The embedded exception, or null if there is none.
      */
     public Exception getException () {
-	return exception;
+        return exception;
     }
 
     /**
      * Returns the line of the last parsed character.
      */
     public int getLineNumber() {
-	return lineNumber;
+        return lineNumber;
     }
 
     /**
      * Returns the column of the last parsed character.
      */
     public int getColumnNumber() {
-	return columnNumber;
+        return columnNumber;
     }
 }

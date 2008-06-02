@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001-2004  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -219,7 +220,7 @@ public class GraphicsUtil {
             } else {
                 clipR   = clip.getBounds();
 
-                if (clipR.intersects(crR) == false)
+                if ( ! clipR.intersects(crR) )
                     return; // Nothing to draw...
                 clipR = clipR.intersection(crR);
             }
@@ -227,7 +228,7 @@ public class GraphicsUtil {
             Rectangle gcR = getDestinationBounds(g2d);
             // System.out.println("ClipRects: " + clipR + " -> " + gcR);
             if (gcR != null) {
-                if (clipR.intersects(gcR) == false)
+                if ( ! clipR.intersects(gcR) )
                     return; // Nothing to draw...
                 clipR = clipR.intersection(gcR);
             }
@@ -242,7 +243,7 @@ public class GraphicsUtil {
             if ((srcSM.getWidth()*srcSM.getHeight()) >=
                 (clipR.width*clipR.height))
                 // if srcSM tiles are around the clip size
-                // then just draw the renderedImage 
+                // then just draw the renderedImage
                 useDrawRenderedImage = true;
 
             Object atpHint = g2d.getRenderingHint
@@ -262,14 +263,14 @@ public class GraphicsUtil {
                 // the clip size is smaller than the tile size.
                 Raster r = cr.getData(clipR);
                 wr = ((WritableRaster)r).createWritableChild
-                    (clipR.x, clipR.y, clipR.width, clipR.height, 
+                    (clipR.x, clipR.y, clipR.width, clipR.height,
                      0, 0, null);
-                
+
                 BufferedImage bi = new BufferedImage
                     (srcCM, wr, srcCM.isAlphaPremultiplied(), null);
-                
+
                 // Any of the drawImage calls that take an
-                // Affine are prone to the 'CGGStackRestore: gstack 
+                // Affine are prone to the 'CGGStackRestore: gstack
                 // underflow' bug on Mac OS X.  This should work
                 // around that problem.
                 g2d.drawImage(bi, clipR.x, clipR.y, null);
@@ -293,11 +294,11 @@ public class GraphicsUtil {
                     System.err.println("SrcCM: " + srcCM);
                     System.err.println("CR: " + cr);
                     System.err.println("CRR: " + crR + " TG: [" +
-                                       xt0 +"," +
-                                       yt0 +"," +
-                                       xt1 +"," +
+                                       xt0 + ',' +
+                                       yt0 + ',' +
+                                       xt1 + ',' +
                                        yt1 +"] Off: " +
-                                       cr.getTileGridXOffset() +"," +
+                                       cr.getTileGridXOffset() + ',' +
                                        cr.getTileGridYOffset());
                 }
 
@@ -316,11 +317,11 @@ public class GraphicsUtil {
 
                 if (false) {
                     System.out.println("clipR: " + clipR + " TG: [" +
-                                       xt0 +"," +
-                                       yt0 +"," +
-                                       xt1 +"," +
+                                       xt0 + ',' +
+                                       yt0 + ',' +
+                                       xt1 + ',' +
                                        yt1 +"] Off: " +
-                                       cr.getTileGridXOffset() +"," +
+                                       cr.getTileGridXOffset() + ',' +
                                        cr.getTileGridYOffset());
                 }
 
@@ -355,10 +356,10 @@ public class GraphicsUtil {
                         }
 
                         // For some reason using the transform version
-                        // causes a gStackUnderflow error but if I just 
+                        // causes a gStackUnderflow error but if I just
                         // use the drawImage with an x & y it works.
                         g2d.drawImage(subBI, iR.x, iR.y, null);
-                        // AffineTransform trans 
+                        // AffineTransform trans
                         //  = AffineTransform.getTranslateInstance(iR.x, iR.y);
                         // g2d.drawImage(subBI, trans, null);
 
@@ -487,7 +488,8 @@ public class GraphicsUtil {
     }
 
 
-    public final static boolean WARN_DESTINATION;
+    public static final boolean WARN_DESTINATION;
+
     static {
         boolean warn = true;
         try {
@@ -509,6 +511,10 @@ public class GraphicsUtil {
 
         // Check if this is a BufferedImage G2d if so throw an error...
         GraphicsConfiguration gc = g2d.getDeviceConfiguration();
+        if (gc == null) {
+            return null;
+        }
+
         GraphicsDevice gd = gc.getDevice();
         if (WARN_DESTINATION &&
             (gd.getType() == GraphicsDevice.TYPE_IMAGE_BUFFER) &&
@@ -523,18 +529,20 @@ public class GraphicsUtil {
 
     public static ColorModel getDestinationColorModel(Graphics2D g2d) {
         BufferedImage bi = getDestination(g2d);
-        if (bi != null)
+        if (bi != null) {
             return bi.getColorModel();
+        }
 
         GraphicsConfiguration gc = g2d.getDeviceConfiguration();
-        if (gc == null) 
+        if (gc == null) {
             return null; // Can't tell
+        }
 
         // We are going to a BufferedImage but no hint was provided
         // so we can't determine the destination Color Model.
         if (gc.getDevice().getType() == GraphicsDevice.TYPE_IMAGE_BUFFER) {
             if (g2d.getRenderingHint(RenderingHintsKeyExt.KEY_TRANSCODING) ==
-                RenderingHintsKeyExt.VALUE_TRANSCODING_PRINTING) 
+                RenderingHintsKeyExt.VALUE_TRANSCODING_PRINTING)
                 return sRGB_Unpre;
 
             // System.out.println("CM: " + gc.getColorModel());
@@ -554,15 +562,20 @@ public class GraphicsUtil {
 
     public static Rectangle getDestinationBounds(Graphics2D g2d) {
         BufferedImage bi = getDestination(g2d);
-        if (bi != null)
+        if (bi != null) {
             return new Rectangle(0, 0, bi.getWidth(), bi.getHeight());
+        }
 
         GraphicsConfiguration gc = g2d.getDeviceConfiguration();
+        if (gc == null) {
+            return null;
+        }
 
         // We are going to a BufferedImage but no hint was provided
         // so we can't determine the destination bounds.
-        if (gc.getDevice().getType() == GraphicsDevice.TYPE_IMAGE_BUFFER)
+        if (gc.getDevice().getType() == GraphicsDevice.TYPE_IMAGE_BUFFER) {
             return null;
+        }
 
         // This is a JDK 1.3ism, so we will just return null...
         // return gc.getBounds();
@@ -572,7 +585,7 @@ public class GraphicsUtil {
 
     /**
      * Standard prebuilt Linear_sRGB color model with no alpha */
-    public final static ColorModel Linear_sRGB =
+    public static final ColorModel Linear_sRGB =
         new DirectColorModel(ColorSpace.getInstance
                              (ColorSpace.CS_LINEAR_RGB), 24,
                              0x00FF0000, 0x0000FF00,
@@ -581,7 +594,7 @@ public class GraphicsUtil {
     /**
      * Standard prebuilt Linear_sRGB color model with premultiplied alpha.
      */
-    public final static ColorModel Linear_sRGB_Pre =
+    public static final ColorModel Linear_sRGB_Pre =
         new DirectColorModel(ColorSpace.getInstance
                              (ColorSpace.CS_LINEAR_RGB), 32,
                              0x00FF0000, 0x0000FF00,
@@ -590,7 +603,7 @@ public class GraphicsUtil {
     /**
      * Standard prebuilt Linear_sRGB color model with unpremultiplied alpha.
      */
-    public final static ColorModel Linear_sRGB_Unpre =
+    public static final ColorModel Linear_sRGB_Unpre =
         new DirectColorModel(ColorSpace.getInstance
                              (ColorSpace.CS_LINEAR_RGB), 32,
                              0x00FF0000, 0x0000FF00,
@@ -600,7 +613,7 @@ public class GraphicsUtil {
     /**
      * Standard prebuilt sRGB color model with no alpha.
      */
-    public final static ColorModel sRGB =
+    public static final ColorModel sRGB =
         new DirectColorModel(ColorSpace.getInstance
                              (ColorSpace.CS_sRGB), 24,
                              0x00FF0000, 0x0000FF00,
@@ -609,7 +622,7 @@ public class GraphicsUtil {
     /**
      * Standard prebuilt sRGB color model with premultiplied alpha.
      */
-    public final static ColorModel sRGB_Pre =
+    public static final ColorModel sRGB_Pre =
         new DirectColorModel(ColorSpace.getInstance
                              (ColorSpace.CS_sRGB), 32,
                              0x00FF0000, 0x0000FF00,
@@ -618,7 +631,7 @@ public class GraphicsUtil {
     /**
      * Standard prebuilt sRGB color model with unpremultiplied alpha.
      */
-    public final static ColorModel sRGB_Unpre =
+    public static final ColorModel sRGB_Unpre =
         new DirectColorModel(ColorSpace.getInstance
                              (ColorSpace.CS_sRGB), 32,
                              0x00FF0000, 0x0000FF00,
@@ -633,10 +646,9 @@ public class GraphicsUtil {
      *                the alpha channel set in accordance with
      *                <tt>premult</tt>
      */
-    public static ColorModel makeLinear_sRGBCM(boolean premult) {
-        if (premult)
-            return Linear_sRGB_Pre;
-        return Linear_sRGB_Unpre;
+    public static ColorModel makeLinear_sRGBCM( boolean premult ) {
+
+         return premult ? Linear_sRGB_Pre : Linear_sRGB_Unpre;
     }
 
     /**
@@ -1020,7 +1032,7 @@ public class GraphicsUtil {
 
         // System.out.println("CoerceData: " + cm.isAlphaPremultiplied() +
         //                    " Out: " + newAlphaPreMult);
-        if (cm.hasAlpha()== false)
+        if ( ! cm.hasAlpha() )
             // Nothing to do no alpha channel
             return cm;
 
@@ -1047,7 +1059,7 @@ public class GraphicsUtil {
         else {
             int [] pixel = null;
             int    bands = wr.getNumBands();
-            float  norm = 1f/255f;
+            float  norm = 1.0f/255f;
             int x0, x1, y0, y1, a, b;
             float alpha;
             x0 = wr.getMinX();
@@ -1067,7 +1079,7 @@ public class GraphicsUtil {
                 }
         }
     }
-    
+
     public static void divideAlpha(WritableRaster wr) {
         if (is_BYTE_COMP_Data(wr.getSampleModel()))
             divide_BYTE_COMP_Data(wr);
@@ -1078,7 +1090,7 @@ public class GraphicsUtil {
             float ialpha;
             int    bands = wr.getNumBands();
             int [] pixel = null;
-        
+
             x0 = wr.getMinX();
             x1 = x0+wr.getWidth();
             y0 = wr.getMinY();
@@ -1141,7 +1153,7 @@ public class GraphicsUtil {
         //                    " is: " + dst.isAlphaPremultiplied());
 
         if (srcAlpha == dstAlpha)
-            if ((srcAlpha == false) ||
+            if (( ! srcAlpha ) ||
                 (src.isAlphaPremultiplied() == dst.isAlphaPremultiplied())) {
                 // They match one another so just copy everything...
                 copyData(src.getRaster(), dst.getRaster());
@@ -1393,20 +1405,19 @@ public class GraphicsUtil {
             = (db.getOffset() +
                sppsm.getOffset(wr.getMinX()-wr.getSampleModelTranslateX(),
                                wr.getMinY()-wr.getSampleModelTranslateY()));
-        int pixel, a, aFP;
+
         // Access the pixel data array
-        final int pixels[] = db.getBankData()[0];
+        final int[] pixels = db.getBankData()[0];
         for (int y=0; y<wr.getHeight(); y++) {
             int sp = base + y*scanStride;
             final int end = sp + width;
             while (sp < end) {
-                pixel = pixels[sp];
-                a = pixel>>>24;
+                int pixel = pixels[sp];
+                int a = pixel>>>24;
                 if (a<=0) {
                     pixels[sp] = 0x00FFFFFF;
-                }
-                else if (a<255) {
-                    aFP = (0x00FF0000/a);
+                } else if (a<255) {
+                    int aFP = (0x00FF0000/a);
                     pixels[sp] =
                         ((a << 24) |
                          (((((pixel&0xFF0000)>>16)*aFP)&0xFF0000)    ) |
@@ -1433,14 +1444,14 @@ public class GraphicsUtil {
                sppsm.getOffset(wr.getMinX()-wr.getSampleModelTranslateX(),
                                wr.getMinY()-wr.getSampleModelTranslateY()));
         // Access the pixel data array
-        final int pixels[] = db.getBankData()[0];
+        final int[] pixels = db.getBankData()[0];
         for (int y=0; y<wr.getHeight(); y++) {
             int sp = base + y*scanStride;
             final int end = sp + width;
             while (sp < end) {
                 int pixel = pixels[sp];
                 int a = pixel>>>24;
-                if ((a>=0) && (a<255)) {
+                if ((a>=0) && (a<255)) {   // this does NOT include a == 255 (0xff) !
                     pixels[sp] = ((a << 24) |
                                   ((((pixel&0xFF0000)*a)>>8)&0xFF0000) |
                                   ((((pixel&0x00FF00)*a)>>8)&0x00FF00) |
@@ -1470,25 +1481,23 @@ public class GraphicsUtil {
                csm.getOffset(wr.getMinX()-wr.getSampleModelTranslateX(),
                              wr.getMinY()-wr.getSampleModelTranslateY()));
 
-
-        int a=0;
         int aOff = bandOff[bandOff.length-1];
         int bands = bandOff.length-1;
-        int b, i;
+
         // Access the pixel data array
-        final byte pixels[] = db.getBankData()[0];
+        final byte[] pixels = db.getBankData()[0];
         for (int y=0; y<wr.getHeight(); y++) {
             int sp = base + y*scanStride;
             final int end = sp + width*pixStride;
             while (sp < end) {
-              a = pixels[sp+aOff]&0xFF;
+              int a = pixels[sp+aOff]&0xFF;
               if (a==0) {
-                for (b=0; b<bands; b++)
+                for ( int b=0; b<bands; b++)
                   pixels[sp+bandOff[b]] = (byte)0xFF;
-              } else if (a<255) {
+              } else if (a<255) {         // this does NOT include a == 255 (0xff) !
                 int aFP = (0x00FF0000/a);
-                for (b=0; b<bands; b++) {
-                  i = sp+bandOff[b];
+                for ( int b=0; b<bands; b++) {
+                  int i = sp+bandOff[b];
                   pixels[i] = (byte)(((pixels[i]&0xFF)*aFP)>>>16);
                 }
               }
@@ -1516,21 +1525,19 @@ public class GraphicsUtil {
                              wr.getMinY()-wr.getSampleModelTranslateY()));
 
 
-        int a=0;
         int aOff = bandOff[bandOff.length-1];
         int bands = bandOff.length-1;
-        int b, i;
 
         // Access the pixel data array
-        final byte pixels[] = db.getBankData()[0];
+        final byte[] pixels = db.getBankData()[0];
         for (int y=0; y<wr.getHeight(); y++) {
             int sp = base + y*scanStride;
             final int end = sp + width*pixStride;
             while (sp < end) {
-              a = pixels[sp+aOff]&0xFF;
+              int a = pixels[sp+aOff]&0xFF;
               if (a!=0xFF)
-                for (b=0; b<bands; b++) {
-                  i = sp+bandOff[b];
+                for ( int b=0; b<bands; b++) {
+                  int i = sp+bandOff[b];
                   pixels[i] = (byte)(((pixels[i]&0xFF)*a)>>8);
                 }
               sp+=pixStride;
@@ -1548,7 +1555,7 @@ public class GraphicsUtil {
                 org.ImageDisplay.printImage
                     (label, subBI,
                      new Rectangle(75-iR.x, 90-iR.y, 32, 32));
-                
+
             }
 
 
@@ -1580,7 +1587,7 @@ public class GraphicsUtil {
                     System.out.println("BICM class: " + ri.getColorModel().getClass());
                     System.out.println("BICS: " + ri.getColorModel().getColorSpace());
                     System.out.println
-                        ("sRGB CS: " + 
+                        ("sRGB CS: " +
                          ColorSpace.getInstance(ColorSpace.CS_sRGB));
                     System.out.println("G2D info");
                     System.out.println("\tComposite: " + g2d.getComposite());

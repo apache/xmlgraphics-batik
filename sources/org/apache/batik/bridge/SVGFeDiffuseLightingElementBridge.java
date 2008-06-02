@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001-2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -76,11 +77,12 @@ public class SVGFeDiffuseLightingElementBridge
 
         // 'surfaceScale' attribute - default is 1
         float surfaceScale
-            = convertNumber(filterElement, SVG_SURFACE_SCALE_ATTRIBUTE, 1);
+            = convertNumber(filterElement, SVG_SURFACE_SCALE_ATTRIBUTE, 1, ctx);
 
         // 'diffuseConstant' attribute - default is 1
         float diffuseConstant
-            = convertNumber(filterElement, SVG_DIFFUSE_CONSTANT_ATTRIBUTE, 1);
+            = convertNumber(filterElement, SVG_DIFFUSE_CONSTANT_ATTRIBUTE, 1,
+                            ctx);
 
         // 'kernelUnitLength' attribute
         // <!> FIXME: Why is it ignored ???
@@ -89,7 +91,7 @@ public class SVGFeDiffuseLightingElementBridge
         Light light = extractLight(filterElement, ctx);
 
         // 'kernelUnitLength' attribute
-        double [] kernelUnitLength = convertKernelUnitLength(filterElement);
+        double[] kernelUnitLength = convertKernelUnitLength(filterElement, ctx);
 
         // 'in' attribute
         Filter in = getIn(filterElement,

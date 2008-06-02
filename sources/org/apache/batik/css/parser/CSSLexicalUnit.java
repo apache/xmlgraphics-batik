@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2000-2001,2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -27,24 +28,28 @@ import org.w3c.css.sac.LexicalUnit;
  */
 public abstract class CSSLexicalUnit implements LexicalUnit {
 
-         public static final String UNIT_TEXT_CENTIMETER  = "cm";
-         public static final String UNIT_TEXT_DEGREE      = "deg";
-         public static final String UNIT_TEXT_EM          = "em";
-         public static final String UNIT_TEXT_EX          = "ex";
-         public static final String UNIT_TEXT_GRADIAN     = "grad";
-         public static final String UNIT_TEXT_HERTZ       = "Hz";
-         public static final String UNIT_TEXT_INCH        = "in";
-         public static final String UNIT_TEXT_KILOHERTZ   = "kHz";
-         public static final String UNIT_TEXT_MILLIMETER  = "mm";
-         public static final String UNIT_TEXT_MILLISECOND = "ms";
-         public static final String UNIT_TEXT_PERCENTAGE  = "%";
-         public static final String UNIT_TEXT_PICA        = "pc";
-         public static final String UNIT_TEXT_PIXEL       = "px";
-         public static final String UNIT_TEXT_POINT       = "pt";
-         public static final String UNIT_TEXT_RADIAN      = "rad";
-         public static final String UNIT_TEXT_REAL        = "";
-         public static final String UNIT_TEXT_SECOND      = "s";
-
+    public static final String UNIT_TEXT_CENTIMETER  = "cm";
+    public static final String UNIT_TEXT_DEGREE      = "deg";
+    public static final String UNIT_TEXT_EM          = "em";
+    public static final String UNIT_TEXT_EX          = "ex";
+    public static final String UNIT_TEXT_GRADIAN     = "grad";
+    public static final String UNIT_TEXT_HERTZ       = "Hz";
+    public static final String UNIT_TEXT_INCH        = "in";
+    public static final String UNIT_TEXT_KILOHERTZ   = "kHz";
+    public static final String UNIT_TEXT_MILLIMETER  = "mm";
+    public static final String UNIT_TEXT_MILLISECOND = "ms";
+    public static final String UNIT_TEXT_PERCENTAGE  = "%";
+    public static final String UNIT_TEXT_PICA        = "pc";
+    public static final String UNIT_TEXT_PIXEL       = "px";
+    public static final String UNIT_TEXT_POINT       = "pt";
+    public static final String UNIT_TEXT_RADIAN      = "rad";
+    public static final String UNIT_TEXT_REAL        = "";
+    public static final String UNIT_TEXT_SECOND      = "s";
+    
+    public static final String TEXT_RGBCOLOR          = "rgb";
+    public static final String TEXT_RECT_FUNCTION     = "rect";
+    public static final String TEXT_COUNTER_FUNCTION  = "counter";
+    public static final String TEXT_COUNTERS_FUNCTION = "counters";
 
     /**
      * The lexical unit type.
@@ -384,6 +389,20 @@ public abstract class CSSLexicalUnit implements LexicalUnit {
             super(t, prev);
             parameters = params;
         }
+        /**
+         * <b>SAC</b>: Implements {@link LexicalUnit#getFunctionName()}.
+         */
+        public String getFunctionName() {
+            switch (lexicalUnitType) {
+            case SAC_RGBCOLOR:          return TEXT_RGBCOLOR;
+            case SAC_RECT_FUNCTION:     return TEXT_RECT_FUNCTION;
+            case SAC_COUNTER_FUNCTION:  return TEXT_COUNTER_FUNCTION;
+            case SAC_COUNTERS_FUNCTION: return TEXT_COUNTERS_FUNCTION;
+            default: break;
+            }
+            return super.getFunctionName();
+        }
+    
 
         /**
          * <b>SAC</b>: Implements {@link LexicalUnit#getParameters()}.

@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001,2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -18,6 +19,7 @@
 package org.apache.batik.dom.svg;
 
 import org.apache.batik.dom.AbstractDocument;
+
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGFontFaceNameElement;
 
@@ -30,6 +32,18 @@ import org.w3c.dom.svg.SVGFontFaceNameElement;
 public class SVGOMFontFaceNameElement
     extends    SVGOMElement
     implements SVGFontFaceNameElement {
+
+//     /**
+//      * Table mapping XML attribute names to TraitInformation objects.
+//      */
+//     protected static DoublyIndexedTable xmlTraitInformation;
+//     static {
+//         DoublyIndexedTable t =
+//             new DoublyIndexedTable(SVGOMElement.xmlTraitInformation);
+//         t.put(null, SVG_NAME_ATTRIBUTE,
+//                 new TraitInformation(false, SVGTypes.TYPE_CDATA));
+//         xmlTraitInformation = t;
+//     }
 
     /**
      * Creates a new SVGOMFontFaceNameElement object.
@@ -44,7 +58,6 @@ public class SVGOMFontFaceNameElement
      */
     public SVGOMFontFaceNameElement(String prefix, AbstractDocument owner) {
         super(prefix, owner);
-
     }
 
     /**
@@ -60,4 +73,11 @@ public class SVGOMFontFaceNameElement
     protected Node newNode() {
         return new SVGOMFontFaceNameElement();
     }
+
+//     /**
+//      * Returns the table of TraitInformation objects for this element.
+//      */
+//     protected DoublyIndexedTable getTraitInformationTable() {
+//         return xmlTraitInformation;
+//     }
 }

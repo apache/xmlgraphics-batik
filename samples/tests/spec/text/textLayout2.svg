@@ -4,11 +4,12 @@
 
 <!--
 
-   Copyright 2001-2002  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -27,7 +28,7 @@
 <!-- ========================================================================= -->
 <?xml-stylesheet type="text/css" href="../../resources/style/test.css" ?>
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="450" height="500" viewBox="0 0 450 500">
-<title>Text Layout Properties</title>
+    <title>Text Layout Properties</title>
 
     <!-- ============================================================= -->
     <!-- Test content                                                  -->
@@ -70,18 +71,18 @@
         <text x="50%" y="45%" text-anchor="middle" font-size="7.5" font-style="italic">(Try selecting the following text regions)</text>
 
         <text text-anchor="start" font-size="15">
-	    <tspan x="120" y="50%">Text selections can span multiple</tspan>
-          <tspan x="120" y="53%">lines via &lt;tspan&gt; elements.</tspan>
+            <tspan x="120" y="50%">Text selections can span multiple</tspan>
+            <tspan x="120" y="53%">lines via &lt;tspan&gt; elements.</tspan>
         </text>
 
         <text text-anchor="start" fill="blue" font-size="20" transform="translate(90, 360)">
-          <tspan x="0 10 25 50 75 90 100 90 75 50 25 10 0" 
-                 y="0 -25 -40 -50 -40 -25 0 25 40 50 40 25 10 0">Text-circle.</tspan>
+            <tspan x="0 10 25 50 75 90 100 90 75 50 25 10 0" 
+                   y="0 -25 -40 -50 -40 -25 0 25 40 50 40 25 10 0">Text-circle.</tspan>
         </text>
 
         <text fill="green" font-size="20" transform="translate(250, 320)"
-            x="0 20 40 60 80 80 80 80 80 60 40 20 0 0 0 0" 
-            y="0 0 0 0 0 20 40 60 80 80 80 80 80 60 40 20">
+              x="0 20 40 60 80 80 80 80 80 60 40 20 0 0 0 0" 
+              y="0 0 0 0 0 20 40 60 80 80 80 80 80 60 40 20">
             Text-in-a-square
         </text>
 

@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2002-2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -29,6 +30,8 @@ import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.css.engine.value.ValueConstants;
 import org.apache.batik.css.engine.value.ValueManager;
 import org.apache.batik.util.CSSConstants;
+import org.apache.batik.util.SVGTypes;
+
 import org.w3c.css.sac.LexicalUnit;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.css.CSSPrimitiveValue;
@@ -40,11 +43,11 @@ import org.w3c.dom.css.CSSPrimitiveValue;
  * @version $Id$
  */
 public class FontSizeManager extends LengthManager {
-    
+
     /**
      * The identifier values.
      */
-    protected final static StringMap values = new StringMap();
+    protected static final StringMap values = new StringMap();
     static {
         values.put(CSSConstants.CSS_ALL_VALUE,
                    ValueConstants.ALL_VALUE);
@@ -79,16 +82,37 @@ public class FontSizeManager extends LengthManager {
      * Implements {@link ValueManager#isInheritedProperty()}.
      */
     public boolean isInheritedProperty() {
-	return true;
+        return true;
+    }
+
+    /**
+     * Implements {@link ValueManager#isAnimatableProperty()}.
+     */
+    public boolean isAnimatableProperty() {
+        return true;
+    }
+
+    /**
+     * Implements {@link ValueManager#isAdditiveProperty()}.
+     */
+    public boolean isAdditiveProperty() {
+        return true;
     }
 
     /**
      * Implements {@link ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return CSSConstants.CSS_FONT_SIZE_PROPERTY;
+        return CSSConstants.CSS_FONT_SIZE_PROPERTY;
     }
-    
+
+    /**
+     * Implements {@link ValueManager#getPropertyType()}.
+     */
+    public int getPropertyType() {
+        return SVGTypes.TYPE_FONT_SIZE_VALUE;
+    }
+
     /**
      * Implements {@link ValueManager#getDefaultValue()}.
      */
@@ -101,11 +125,11 @@ public class FontSizeManager extends LengthManager {
      */
     public Value createValue(LexicalUnit lu, CSSEngine engine)
         throws DOMException {
-	switch (lu.getLexicalUnitType()) {
-	case LexicalUnit.SAC_INHERIT:
-	    return ValueConstants.INHERIT_VALUE;
+        switch (lu.getLexicalUnitType()) {
+        case LexicalUnit.SAC_INHERIT:
+            return ValueConstants.INHERIT_VALUE;
 
-	case LexicalUnit.SAC_IDENT:
+        case LexicalUnit.SAC_IDENT:
             String s = lu.getStringValue().toLowerCase().intern();
             Object v = values.get(s);
             if (v == null) {
@@ -159,7 +183,7 @@ public class FontSizeManager extends LengthManager {
                                   v / ctx.getPixelUnitToMillimeter());
 
         case CSSPrimitiveValue.CSS_CM:
-            ctx = engine.getCSSContext(); 
+            ctx = engine.getCSSContext();
             v = value.getFloatValue();
             return new FloatValue(CSSPrimitiveValue.CSS_NUMBER,
                                   v * 10f / ctx.getPixelUnitToMillimeter());
@@ -221,7 +245,7 @@ public class FontSizeManager extends LengthManager {
             }
             return new FloatValue(CSSPrimitiveValue.CSS_NUMBER, fs * scale);
         }
-        
+
         // absolute identifiers
         CSSContext ctx = engine.getCSSContext();
         float fs = ctx.getMediumFontSize();

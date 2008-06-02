@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001-2005  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -25,8 +26,13 @@ import java.lang.ref.SoftReference;
 import org.apache.batik.css.engine.CSSEngineEvent;
 import org.apache.batik.css.engine.SVGCSSEngine;
 import org.apache.batik.dom.events.AbstractEvent;
+import org.apache.batik.dom.svg.AbstractSVGTransformList;
+import org.apache.batik.dom.svg.AnimatedLiveAttributeValue;
+import org.apache.batik.dom.svg.LiveAttributeException;
 import org.apache.batik.dom.svg.SVGContext;
+import org.apache.batik.dom.svg.SVGMotionAnimatableElement;
 import org.apache.batik.dom.svg.SVGOMElement;
+import org.apache.batik.dom.svg.SVGOMAnimatedTransformList;
 import org.apache.batik.ext.awt.geom.SegmentList;
 import org.apache.batik.gvt.CanvasGraphicsNode;
 import org.apache.batik.gvt.CompositeGraphicsNode;
@@ -38,6 +44,7 @@ import org.w3c.dom.events.DocumentEvent;
 import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.events.MutationEvent;
 import org.w3c.dom.svg.SVGFitToViewBox;
+import org.w3c.dom.svg.SVGTransformable;
 
 /**
  * The base bridge class for SVG graphics node. By default, the namespace URI is
@@ -60,16 +67,11 @@ import org.w3c.dom.svg.SVGFitToViewBox;
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
-public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
-    implements SVGContext, 
-               BridgeUpdateHandler, 
-               GraphicsNodeBridge, 
+public abstract class AbstractGraphicsNodeBridge extends AnimatableSVGBridge
+    implements SVGContext,
+               BridgeUpdateHandler,
+               GraphicsNodeBridge,
                ErrorConstants {
-    
-    /**
-     * The element that has been handled by this bridge.
-     */
-    protected Element e;
 
     /**
      * The graphics node constructed by this bridge.
@@ -77,14 +79,14 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
     protected GraphicsNode node;
 
     /**
-     * The bridge context to use for dynamic updates.
-     */
-    protected BridgeContext ctx;
-
-    /**
      * Whether the document is an SVG 1.2 document.
      */
     protected boolean isSVG12;
+
+    /**
+     * The unit context for length conversions.
+     */
+    protected UnitProcessor.Context unitContext;
 
     /**
      * Constructs a new abstract bridge.
@@ -105,14 +107,15 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
         }
 
         GraphicsNode node = instantiateGraphicsNode();
+
         // 'transform'
-        String s = e.getAttributeNS(null, SVG_TRANSFORM_ATTRIBUTE);
-        if (s.length() != 0) {
-            node.setTransform
-                (SVGUtilities.convertTransform(e, SVG_TRANSFORM_ATTRIBUTE, s));
-        }
+        setTransform(node, e, ctx);
+
         // 'visibility'
         node.setVisible(CSSUtilities.convertVisibility(e));
+
+        associateSVGContext(ctx, e, node);
+
         return node;
     }
 
@@ -156,27 +159,75 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
     }
 
     /**
+     * Returns an {@link AffineTransform} that is the transformation to
+     * be applied to the node.
+     */
+    protected AffineTransform computeTransform(SVGTransformable te,
+                                               BridgeContext ctx) {
+        try {
+            AffineTransform at = new AffineTransform();
+
+            // 'transform'
+            SVGOMAnimatedTransformList atl =
+                (SVGOMAnimatedTransformList) te.getTransform();
+            if (atl.isSpecified()) {
+                atl.check();
+                AbstractSVGTransformList tl =
+                    (AbstractSVGTransformList) te.getTransform().getAnimVal();
+                at.concatenate(tl.getAffineTransform());
+            }
+
+            // motion animation
+            if (e instanceof SVGMotionAnimatableElement) {
+                SVGMotionAnimatableElement mae = (SVGMotionAnimatableElement) e;
+                AffineTransform mat = mae.getMotionTransform();
+                if (mat != null) {
+                    at.concatenate(mat);
+                }
+            }
+
+            return at;
+        } catch (LiveAttributeException ex) {
+            throw new BridgeException(ctx, ex);
+        }
+    }
+
+    /**
+     * Sets the graphics node's transform to the current animated transform
+     * value.
+     */
+    protected void setTransform(GraphicsNode n, Element e, BridgeContext ctx) {
+        n.setTransform(computeTransform((SVGTransformable) e, ctx));
+    }
+
+    /**
+     * Associates the {@link SVGContext} with the element.  This method should
+     * be called even for static documents, since some bridges will need to
+     * access animated attribute values even during the first build.
+     */
+    protected void associateSVGContext(BridgeContext ctx,
+                                       Element e,
+                                       GraphicsNode node) {
+        this.e = e;
+        this.node = node;
+        this.ctx = ctx;
+        this.unitContext = UnitProcessor.createContext(ctx, e);
+        this.isSVG12 = ctx.isSVG12();
+        ((SVGOMElement)e).setSVGContext(this);
+    }
+
+    /**
      * This method is invoked during the build phase if the document
-     * is dynamic. The responsability of this method is to ensure that
+     * is dynamic. The responsibility of this method is to ensure that
      * any dynamic modifications of the element this bridge is
      * dedicated to, happen on its associated GVT product.
      */
     protected void initializeDynamicSupport(BridgeContext ctx,
                                             Element e,
                                             GraphicsNode node) {
-        if (!ctx.isInteractive())
-            return;
-
-        // Bind the nodes for interactive and dynamic
-        ctx.bind(e, node);
-
-        if (ctx.isDynamic()) {
-            // only set context for dynamic documents not interactive.
-            this.e = e;
-            this.node = node;
-            this.ctx = ctx;
-            ((SVGOMElement)e).setSVGContext(this);
-            isSVG12 = ctx.isSVG12();
+        if (ctx.isInteractive()) {
+            // Bind the nodes for interactive and dynamic.
+            ctx.bind(e, node);
         }
     }
 
@@ -186,17 +237,6 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
      * Invoked when an MutationEvent of type 'DOMAttrModified' is fired.
      */
     public void handleDOMAttrModifiedEvent(MutationEvent evt) {
-        String attrName = evt.getAttrName();
-        if (attrName.equals(SVG_TRANSFORM_ATTRIBUTE)) {
-            String s = evt.getNewValue();
-            AffineTransform at = GraphicsNode.IDENTITY;
-            if (s.length() != 0) {
-                at = SVGUtilities.convertTransform
-                    (e, SVG_TRANSFORM_ATTRIBUTE, s);
-            }
-            node.setTransform(at);
-            handleGeometryChanged();
-        }
     }
 
     /**
@@ -236,7 +276,7 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
      * Invoked when an MutationEvent of type 'DOMNodeInserted' is fired.
      */
     public void handleDOMNodeInsertedEvent(MutationEvent evt) {
-        if ( evt.getTarget() instanceof Element ){
+        if (evt.getTarget() instanceof Element) {
             // Handle "generic" bridges.
             Element e2 = (Element)evt.getTarget();
             Bridge b = ctx.getBridge(e2);
@@ -250,13 +290,21 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
      * Invoked when an MutationEvent of type 'DOMNodeRemoved' is fired.
      */
     public void handleDOMNodeRemovedEvent(MutationEvent evt) {
+        Node parent = e.getParentNode();
+        if (parent instanceof SVGOMElement) {
+            SVGContext bridge = ((SVGOMElement) parent).getSVGContext();
+            if (bridge instanceof SVGSwitchElementBridge) {
+                ((SVGSwitchElementBridge) bridge).handleChildElementRemoved(e);
+                return;
+            }
+        }
         CompositeGraphicsNode gn = node.getParent();
         gn.remove(node);
         disposeTree(e);
     }
 
     /**
-     * Invoked when an MutationEvent of type 'DOMCharacterDataModified' 
+     * Invoked when an MutationEvent of type 'DOMCharacterDataModified'
      * is fired.
      */
     public void handleDOMCharacterDataModified(MutationEvent evt) {
@@ -269,21 +317,35 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
         SVGOMElement elt = (SVGOMElement)e;
         elt.setSVGContext(null);
         ctx.unbind(e);
+
+        bboxShape = null;
     }
 
-
     /**
-     * Disposes all resources related to the specified node and its subtree
+     * Disposes all resources related to the specified node and its subtree.
      */
     protected void disposeTree(Node node) {
+        disposeTree(node, true);
+    }
+
+    /**
+     * Disposes all resources related to the specified node and its subtree,
+     * and optionally removes the nodes' {@link SVGContext}.
+     */
+    protected void disposeTree(Node node, boolean removeContext) {
         if (node instanceof SVGOMElement) {
             SVGOMElement elt = (SVGOMElement)node;
-            BridgeUpdateHandler h = (BridgeUpdateHandler)elt.getSVGContext();
-            if (h != null)
+            SVGContext ctx = elt.getSVGContext();
+            if (ctx instanceof BridgeUpdateHandler) {
+                BridgeUpdateHandler h = (BridgeUpdateHandler) ctx;
+                if (removeContext) {
+                    elt.setSVGContext(null);
+                }
                 h.dispose();
+            }
         }
-        for (Node n = node.getFirstChild(); n!=null; n = n.getNextSibling()) {
-            disposeTree(n);
+        for (Node n = node.getFirstChild(); n != null; n = n.getNextSibling()) {
+            disposeTree(n, removeContext);
         }
     }
 
@@ -292,9 +354,13 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
      */
     public void handleCSSEngineEvent(CSSEngineEvent evt) {
         try {
-            int [] properties = evt.getProperties();
-            for (int i=0; i < properties.length; ++i) {
-                handleCSSPropertyChanged(properties[i]);
+            SVGCSSEngine eng = (SVGCSSEngine) evt.getSource();
+            int[] properties = evt.getProperties();
+            for (int i = 0; i < properties.length; i++) {
+                int idx = properties[i];
+                handleCSSPropertyChanged(idx);
+                String pn = eng.getPropertyName(idx);
+                fireBaseAttributeListeners(pn);
             }
         } catch (Exception ex) {
             ctx.getUserAgent().displayError(ex);
@@ -329,9 +395,31 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
                 // Remove the subtree.
                 CompositeGraphicsNode parent = node.getParent();
                 parent.remove(node);
-                disposeTree(e);
+                disposeTree(e, false);
             }
             break;
+        }
+    }
+
+    /**
+     * Invoked when the animated value of an animatable attribute has changed.
+     */
+    public void handleAnimatedAttributeChanged
+            (AnimatedLiveAttributeValue alav) {
+        if (alav.getNamespaceURI() == null
+                && alav.getLocalName().equals(SVG_TRANSFORM_ATTRIBUTE)) {
+            setTransform(node, e, ctx);
+            handleGeometryChanged();
+        }
+    }
+
+    /**
+     * Invoked when an 'other' animation value has changed.
+     */
+    public void handleOtherAnimationChanged(String type) {
+        if (type.equals("motion")) {
+            setTransform(node, e, ctx);
+            handleGeometryChanged();
         }
     }
 
@@ -388,7 +476,6 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
      */
     public float getPixelToMM() {
         return getPixelUnitToMillimeter();
-            
     }
 
     protected SoftReference bboxShape = null;
@@ -405,7 +492,7 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
             return null;
         }
         Shape s = node.getOutline();
-        
+
         if ((bboxShape != null) && (s == bboxShape.get())) return bbox;
         bboxShape = new SoftReference(s); // don't keep this live.
         bbox = null;

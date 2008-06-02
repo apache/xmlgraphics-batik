@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2004 The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -36,8 +37,8 @@ import org.w3c.css.sac.LexicalUnit;
  *
  * The form of this property is:
  *     [ [ <font-style> || <font-variant> || <font-weight> ]?
- *         <font-size> [ / <line-height> ]? <font-family> ] | 
- *       caption | icon | menu | message-box | small-caption | 
+ *         <font-size> [ / <line-height> ]? <font-family> ] |
+ *       caption | icon | menu | message-box | small-caption |
  *       status-bar | inherit
  *
  *  It is worth noting that there is a potential ambiguity
@@ -49,7 +50,7 @@ import org.w3c.css.sac.LexicalUnit;
  * @author <a href="mailto:deweese@apache.org">deweese</a>
  * @version $Id$
  */
-public class FontShorthandManager     
+public class FontShorthandManager
     extends AbstractValueFactory
     implements ShorthandManager {
 
@@ -59,7 +60,21 @@ public class FontShorthandManager
      * Implements {@link ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return CSSConstants.CSS_FONT_PROPERTY;
+        return CSSConstants.CSS_FONT_PROPERTY;
+    }
+
+    /**
+     * Implements {@link ShorthandManager#isAnimatableProperty()}.
+     */
+    public boolean isAnimatableProperty() {
+        return true;
+    }
+
+    /**
+     * Implements {@link ValueManager#isAdditiveProperty()}.
+     */
+    public boolean isAdditiveProperty() {
+        return false;
     }
 
     static LexicalUnit NORMAL_LU = CSSLexicalUnit.createString
@@ -76,7 +91,7 @@ public class FontShorthandManager
         (LexicalUnit.SAC_POINT, 8, null);
 
 
-    static LexicalUnit FONT_FAMILY_LU; 
+    static LexicalUnit FONT_FAMILY_LU;
     static {
         LexicalUnit lu;
         FONT_FAMILY_LU = CSSLexicalUnit.createString
@@ -84,18 +99,18 @@ public class FontShorthandManager
         lu = CSSLexicalUnit.createString
             (LexicalUnit.SAC_IDENT, "Helvetica", FONT_FAMILY_LU);
         CSSLexicalUnit.createString
-            (LexicalUnit.SAC_IDENT, 
+            (LexicalUnit.SAC_IDENT,
              CSSConstants.CSS_SANS_SERIF_VALUE, lu);
     }
 
-    protected final static Set values = new HashSet();
+    protected static final Set values = new HashSet();
     static {
-	values.add(CSSConstants.CSS_CAPTION_VALUE);
-	values.add(CSSConstants.CSS_ICON_VALUE);
-	values.add(CSSConstants.CSS_MENU_VALUE);
-	values.add(CSSConstants.CSS_MESSAGE_BOX_VALUE);
-	values.add(CSSConstants.CSS_SMALL_CAPTION_VALUE);
-	values.add(CSSConstants.CSS_STATUS_BAR_VALUE);
+        values.add(CSSConstants.CSS_CAPTION_VALUE);
+        values.add(CSSConstants.CSS_ICON_VALUE);
+        values.add(CSSConstants.CSS_MENU_VALUE);
+        values.add(CSSConstants.CSS_MESSAGE_BOX_VALUE);
+        values.add(CSSConstants.CSS_SMALL_CAPTION_VALUE);
+        values.add(CSSConstants.CSS_STATUS_BAR_VALUE);
     }
 
     public void handleSystemFont(CSSEngine eng,
@@ -133,7 +148,7 @@ public class FontShorthandManager
         switch (lu.getLexicalUnitType()) {
         case LexicalUnit.SAC_INHERIT: return;
         case LexicalUnit.SAC_IDENT: {
-            String s= lu.getStringValue().toLowerCase();
+            String s = lu.getStringValue().toLowerCase();
             if (values.contains(s)) {
                 handleSystemFont(eng, ph, s, imp);
                 return;
@@ -167,52 +182,54 @@ public class FontShorthandManager
         StringMap fszSM = fszVM.getIdentifiers();
 
 
-        // Check for font-style, font-varient, & font-weight
+        // Check for font-style, font-variant, & font-weight
         // These are all optional.
 
         boolean svwDone= false;
-        LexicalUnit intLU = null;;
+        LexicalUnit intLU = null;
         while (!svwDone && (lu != null)) {
             switch (lu.getLexicalUnitType()) {
             case LexicalUnit.SAC_IDENT: {
-                String s= lu.getStringValue().toLowerCase().intern();
-                if ((fontStyle   == null) && (fstSM.get(s) != null)) {
-                    fontStyle   = lu; 
+                String s = lu.getStringValue().toLowerCase().intern();
+                if (fontStyle == null && fstSM.get(s) != null) {
+                    fontStyle = lu;
                     if (intLU != null) {
                         if (fontWeight == null) {
                             fontWeight = intLU;
                             intLU = null;
-                        } else 
+                        } else {
                             throw createInvalidLexicalUnitDOMException
                                 (intLU.getLexicalUnitType());
+                        }
                     }
-                    break; 
+                    break;
                 }
 
-                if ((fontVariant == null) && (fvSM.get(s)  != null)) {
-                    fontVariant = lu; 
+                if (fontVariant == null && fvSM.get(s) != null) {
+                    fontVariant = lu;
                     if (intLU != null) {
                         if (fontWeight == null) {
                             fontWeight = intLU;
                             intLU = null;
-                        } else 
+                        } else {
                             throw createInvalidLexicalUnitDOMException
                                 (intLU.getLexicalUnitType());
+                        }
                     }
-                    break; 
+                    break;
                 }
 
-                if ((intLU == null) && (fontWeight  == null) && 
-                    (fwSM.get(s)  != null)) {
-                    fontWeight = lu; 
-                    break; 
+                if (intLU == null && fontWeight == null
+                        && fwSM.get(s) != null) {
+                    fontWeight = lu;
+                    break;
                 }
 
                 svwDone = true;
                 break;
             }
             case LexicalUnit.SAC_INTEGER:
-                if ((intLU == null) && (fontWeight == null)) {
+                if (intLU == null && fontWeight == null) {
                     intLU = lu;
                     break;
                 }
@@ -241,17 +258,17 @@ public class FontShorthandManager
         }
             break;
 
-	case LexicalUnit.SAC_EM:
-	case LexicalUnit.SAC_EX:
-	case LexicalUnit.SAC_PIXEL:
-	case LexicalUnit.SAC_CENTIMETER:
-	case LexicalUnit.SAC_MILLIMETER:
-	case LexicalUnit.SAC_INCH:
-	case LexicalUnit.SAC_POINT:
-	case LexicalUnit.SAC_PICA:
-	case LexicalUnit.SAC_INTEGER:
-	case LexicalUnit.SAC_REAL:
-	case LexicalUnit.SAC_PERCENTAGE:
+        case LexicalUnit.SAC_EM:
+        case LexicalUnit.SAC_EX:
+        case LexicalUnit.SAC_PIXEL:
+        case LexicalUnit.SAC_CENTIMETER:
+        case LexicalUnit.SAC_MILLIMETER:
+        case LexicalUnit.SAC_INCH:
+        case LexicalUnit.SAC_POINT:
+        case LexicalUnit.SAC_PICA:
+        case LexicalUnit.SAC_INTEGER:
+        case LexicalUnit.SAC_REAL:
+        case LexicalUnit.SAC_PERCENTAGE:
             fontSize = lu;
             lu = lu.getNextLexicalUnit();
             break;
@@ -284,7 +301,7 @@ public class FontShorthandManager
         if (lu == null)
             throw createMalformedLexicalUnitDOMException();
 
-        // Now at this point we want to look for 
+        // Now at this point we want to look for
         // line-height.
         switch (lu.getLexicalUnitType()) {
         case LexicalUnit.SAC_OPERATOR_SLASH: // we have line-height
@@ -311,8 +328,9 @@ public class FontShorthandManager
         ph.property(CSSConstants.CSS_FONT_VARIANT_PROPERTY, fontVariant, imp);
         ph.property(CSSConstants.CSS_FONT_WEIGHT_PROPERTY,  fontWeight,  imp);
         ph.property(CSSConstants.CSS_FONT_SIZE_PROPERTY,    fontSize,    imp);
-        if (lh!=-1)
-            ph.property(CSSConstants.CSS_LINE_HEIGHT_PROPERTY,  
+        if (lh != -1) {
+            ph.property(CSSConstants.CSS_LINE_HEIGHT_PROPERTY,
                         lineHeight,  imp);
+        }
     }
 }

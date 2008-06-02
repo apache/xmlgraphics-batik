@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2006  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -23,23 +24,31 @@ import java.util.Map;
 
 import org.apache.batik.util.Service;
 
+/**
+ *
+ * @version $Id$
+ */
 public class ImageWriterRegistry {
 
-    private static ImageWriterRegistry instance;
-    
-    private Map imageWriterMap = new HashMap();
-    
+    private static volatile ImageWriterRegistry instance;
+
+    private final Map imageWriterMap = new HashMap();
+
     private ImageWriterRegistry() {
         setup();
     }
-    
+
     public static ImageWriterRegistry getInstance() {
         if (instance == null) {
-            instance = new ImageWriterRegistry();
+            synchronized( ImageWriterRegistry.class ){
+                if ( instance == null ){
+                    instance = new ImageWriterRegistry();
+                }
+            }
         }
         return instance;
     }
-    
+
     private void setup() {
         Iterator iter = Service.providers(ImageWriter.class);
         while (iter.hasNext()) {
@@ -48,13 +57,18 @@ public class ImageWriterRegistry {
             register(writer);
         }
     }
-    
+
     public void register(ImageWriter writer) {
         imageWriterMap.put(writer.getMIMEType(), writer);
     }
-    
+
+    /**
+     * get the ImageWriter registered for mime, or null.
+     * @param mime used for lookup
+     * @return the registered ImageWriter (maybe null)
+     */
     public ImageWriter getWriterFor(String mime) {
         return (ImageWriter)imageWriterMap.get(mime);
     }
-    
+
 }

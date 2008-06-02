@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001-2003,2006  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -46,6 +47,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
+import org.w3c.dom.DocumentType;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -74,13 +76,13 @@ public class SAXDocumentFactory
     /**
      * The SAX2 parser object.
      */
-    private XMLReader parser;
+    protected XMLReader parser;
 
     /**
      * The created document.
      */
     protected Document document;
-    
+
     /**
      * The created document descriptor.
      */
@@ -105,8 +107,14 @@ public class SAXDocumentFactory
      * Contains collected string data.  May be Text, CDATA or Comment.
      */
     protected StringBuffer stringBuffer = new StringBuffer();
+
     /**
-     * Indicates if stringBuffer has content, needed in case of 
+     * The DTD to use when the document is created.
+     */
+    protected DocumentType doctype;
+
+    /**
+     * Indicates if stringBuffer has content, needed in case of
      * zero sized "text" content.
      */
     protected boolean stringContent;
@@ -153,7 +161,7 @@ public class SAXDocumentFactory
     protected ErrorHandler errorHandler;
 
     protected interface PreInfo {
-        public Node createNode(Document doc);
+        Node createNode(Document doc);
     }
 
     static class ProcessingInstructionInfo implements PreInfo {
@@ -162,7 +170,7 @@ public class SAXDocumentFactory
             this.target = target;
             this.data = data;
         }
-        public Node createNode(Document doc) { 
+        public Node createNode(Document doc) {
             return doc.createProcessingInstruction(target, data);
         }
     }
@@ -172,7 +180,7 @@ public class SAXDocumentFactory
         public CommentInfo(String comment) {
             this.comment = comment;
         }
-        public Node createNode(Document doc) { 
+        public Node createNode(Document doc) {
             return doc.createComment(comment);
         }
     }
@@ -182,7 +190,7 @@ public class SAXDocumentFactory
         public CDataInfo(String cdata) {
             this.cdata = cdata;
         }
-        public Node createNode(Document doc) { 
+        public Node createNode(Document doc) {
             return doc.createCDATASection(cdata);
         }
     }
@@ -192,7 +200,7 @@ public class SAXDocumentFactory
         public TextInfo(String text) {
             this.text = text;
         }
-        public Node createNode(Document doc) { 
+        public Node createNode(Document doc) {
             return doc.createTextNode(text);
         }
     }
@@ -211,8 +219,8 @@ public class SAXDocumentFactory
      */
     public SAXDocumentFactory(DOMImplementation impl,
                               String parser) {
-	implementation           = impl;
-	parserClassName          = parser;
+        implementation           = impl;
+        parserClassName          = parser;
     }
 
     /**
@@ -224,8 +232,8 @@ public class SAXDocumentFactory
     public SAXDocumentFactory(DOMImplementation impl,
                               String parser,
                               boolean dd) {
-	implementation           = impl;
-	parserClassName          = parser;
+        implementation           = impl;
+        parserClassName          = parser;
         createDocumentDescriptor = dd;
     }
 
@@ -259,8 +267,8 @@ public class SAXDocumentFactory
      * @param is The document input stream.
      * @exception IOException if an error occured while reading the document.
      */
-    public Document createDocument(String ns, String root, String uri, 
-				   InputStream is) throws IOException {
+    public Document createDocument(String ns, String root, String uri,
+                                   InputStream is) throws IOException {
         InputSource inp = new InputSource(is);
         inp.setSystemId(uri);
         return createDocument(ns, root, uri, inp);
@@ -272,7 +280,7 @@ public class SAXDocumentFactory
      * @param is The document input stream.
      * @exception IOException if an error occured while reading the document.
      */
-    public Document createDocument(String uri, InputStream is) 
+    public Document createDocument(String uri, InputStream is)
         throws IOException {
         InputSource inp = new InputSource(is);
         inp.setSystemId(uri);
@@ -314,11 +322,12 @@ public class SAXDocumentFactory
             if (ex != null && ex instanceof InterruptedIOException) {
                 throw (InterruptedIOException) ex;
             }
-            throw new IOException(e.getMessage());
+            throw new SAXIOException(e);
         }
         currentNode = null;
         Document ret = document;
         document = null;
+        doctype = null;
         return ret;
     }
 
@@ -344,7 +353,7 @@ public class SAXDocumentFactory
      */
     protected Document createDocument(String ns, String root, String uri,
                                       InputSource is)
-	throws IOException {
+        throws IOException {
         Document ret = createDocument(is);
         Element docElem = ret.getDocumentElement();
 
@@ -398,7 +407,7 @@ public class SAXDocumentFactory
      * @exception IOException if an error occured while reading the document.
      */
     protected Document createDocument(InputSource is)
-	throws IOException {
+        throws IOException {
         try {
             if (parserClassName != null) {
                 parser = XMLReaderFactory.createXMLReader(parserClassName);
@@ -419,29 +428,30 @@ public class SAXDocumentFactory
             parser.setErrorHandler((errorHandler == null) ?
                                    this : errorHandler);
 
-            parser.setFeature("http://xml.org/sax/features/namespaces", 
-			      true);
+            parser.setFeature("http://xml.org/sax/features/namespaces",
+                              true);
             parser.setFeature("http://xml.org/sax/features/namespace-prefixes",
                               true);
             parser.setFeature("http://xml.org/sax/features/validation",
-			      isValidating);
+                              isValidating);
             parser.setProperty("http://xml.org/sax/properties/lexical-handler",
-			       this);
+                               this);
             parser.parse(is);
-	} catch (SAXException e) {
+        } catch (SAXException e) {
             Exception ex = e.getException();
             if (ex != null && ex instanceof InterruptedIOException) {
                 throw (InterruptedIOException)ex;
             }
-            throw new IOException(e.getMessage());
-	}
+            throw new SAXIOException(e);
+        }
 
         currentNode  = null;
         Document ret = document;
         document     = null;
+        doctype      = null;
         locator      = null;
         parser       = null;
-	return ret;
+        return ret;
     }
 
     /**
@@ -466,10 +476,10 @@ public class SAXDocumentFactory
      * depending on the specified parameter.
      *
      * @param isValidating indicates that the XML parser will validate the XML
-     * document 
+     * document
      */
     public void setValidating(boolean isValidating) {
-	this.isValidating = isValidating;
+        this.isValidating = isValidating;
     }
 
     /**
@@ -477,7 +487,7 @@ public class SAXDocumentFactory
      * otherwise.
      */
     public boolean isValidating() {
-	return isValidating;
+        return isValidating;
     }
 
     /**
@@ -504,7 +514,7 @@ public class SAXDocumentFactory
      * org.xml.sax.ErrorHandler#error(SAXParseException)}.
      */
     public void error(SAXParseException ex) throws SAXException {
-	throw ex;
+        throw ex;
     }
 
     /**
@@ -521,15 +531,16 @@ public class SAXDocumentFactory
     public void startDocument() throws SAXException {
         preInfo    = new LinkedList();
         namespaces = new HashTableStack();
-	namespaces.put("xml", XMLSupport.XML_NAMESPACE_URI);
-	namespaces.put("xmlns", XMLSupport.XMLNS_NAMESPACE_URI);
-	namespaces.put("", null);
+        namespaces.put("xml", XMLSupport.XML_NAMESPACE_URI);
+        namespaces.put("xmlns", XMLSupport.XMLNS_NAMESPACE_URI);
+        namespaces.put("", null);
 
         inDTD        = false;
         inCDATA      = false;
         inProlog     = true;
         currentNode  = null;
         document     = null;
+        doctype      = null;
         isStandalone = false;
         xmlVersion   = XMLConstants.XML_VERSION_10;
 
@@ -548,9 +559,9 @@ public class SAXDocumentFactory
      * org.xml.sax.ContentHandler#startElement(String,String,String,Attributes)}.
      */
     public void startElement(String     uri,
-			     String     localName,
-			     String     rawName,
-			     Attributes attributes) throws SAXException {
+                             String     localName,
+                             String     rawName,
+                             Attributes attributes) throws SAXException {
         // Check If we should halt early.
         if (HaltingThread.hasBeenHalted()) {
             throw new SAXException(new InterruptedIOException());
@@ -558,26 +569,28 @@ public class SAXDocumentFactory
 
         if (inProlog) {
             inProlog = false;
-            try {
-                isStandalone = parser.getFeature
-                    ("http://xml.org/sax/features/is-standalone");
-            } catch (SAXNotRecognizedException ex) {
-            }
-            try {
-                xmlVersion = (String) parser.getProperty
-                    ("http://xml.org/sax/properties/document-xml-version");
-            } catch (SAXNotRecognizedException ex) {
+            if (parser != null) {
+                try {
+                    isStandalone = parser.getFeature
+                        ("http://xml.org/sax/features/is-standalone");
+                } catch (SAXNotRecognizedException ex) {
+                }
+                try {
+                    xmlVersion = (String) parser.getProperty
+                        ("http://xml.org/sax/properties/document-xml-version");
+                } catch (SAXNotRecognizedException ex) {
+                }
             }
         }
 
-	// Namespaces resolution
-	int len = attributes.getLength();
-	namespaces.push();
+        // Namespaces resolution
+        int len = attributes.getLength();
+        namespaces.push();
         String version = null;
-	for (int i = 0; i < len; i++) {
-	    String aname = attributes.getQName(i);
+        for (int i = 0; i < len; i++) {
+            String aname = attributes.getQName(i);
             int slen = aname.length();
-            if (slen < 5) 
+            if (slen < 5)
                 continue;
             if (aname.equals("version")) {
                 version = attributes.getValue(i);
@@ -589,29 +602,29 @@ public class SAXDocumentFactory
                 String ns = attributes.getValue(i);
                 if (ns.length() == 0)
                     ns = null;
- 		namespaces.put("", ns);
-	    } else if (aname.charAt(5) == ':') {
+                namespaces.put("", ns);
+            } else if (aname.charAt(5) == ':') {
                 String ns = attributes.getValue(i);
                 if (ns.length() == 0) {
                     ns = null;
                 }
                 namespaces.put(aname.substring(6), ns);
             }
-	}
+        }
 
         // Add any collected String Data before element.
         appendStringData();
 
-	// Element creation
-	Element e;
-	int idx = rawName.indexOf(':');
-	String nsp = (idx == -1 || idx == rawName.length()-1)
-	    ? ""
-	    : rawName.substring(0, idx);
-	String nsURI = namespaces.get(nsp);
+        // Element creation
+        Element e;
+        int idx = rawName.indexOf(':');
+        String nsp = (idx == -1 || idx == rawName.length()-1)
+            ? ""
+            : rawName.substring(0, idx);
+        String nsURI = namespaces.get(nsp);
         if (currentNode == null) {
             implementation = getDOMImplementation(version);
-            document = implementation.createDocument(nsURI, rawName, null);
+            document = implementation.createDocument(nsURI, rawName, doctype);
             Iterator i = preInfo.iterator();
             currentNode = e = document.getDocumentElement();
             while (i.hasNext()) {
@@ -633,21 +646,21 @@ public class SAXDocumentFactory
                                            locator.getColumnNumber());
         }
 
-	// Attributes creation
-	for (int i = 0; i < len; i++) {
-	    String aname = attributes.getQName(i);
-	    if (aname.equals("xmlns")) {
-		e.setAttributeNS(XMLSupport.XMLNS_NAMESPACE_URI,
-				 aname,
-				 attributes.getValue(i));
-	    } else {
-		idx = aname.indexOf(':');
-		nsURI = (idx == -1)
+        // Attributes creation
+        for (int i = 0; i < len; i++) {
+            String aname = attributes.getQName(i);
+            if (aname.equals("xmlns")) {
+                e.setAttributeNS(XMLSupport.XMLNS_NAMESPACE_URI,
+                                 aname,
+                                 attributes.getValue(i));
+            } else {
+                idx = aname.indexOf(':');
+                nsURI = (idx == -1)
                     ? null
                     : namespaces.get(aname.substring(0, idx));
-		e.setAttributeNS(nsURI, aname, attributes.getValue(i));
-	    }
-	}
+                e.setAttributeNS(nsURI, aname, attributes.getValue(i));
+            }
+        }
     }
 
     /**
@@ -655,12 +668,12 @@ public class SAXDocumentFactory
      * org.xml.sax.ContentHandler#endElement(String,String,String)}.
      */
     public void endElement(String uri, String localName, String rawName)
-	throws SAXException {
+        throws SAXException {
         appendStringData(); // add string data if any.
 
         if (currentNode != null)
             currentNode = currentNode.getParentNode();
-	namespaces.pop();
+        namespaces.pop();
     }
 
     public void appendStringData() {
@@ -679,12 +692,12 @@ public class SAXDocumentFactory
             currentNode.appendChild(n);
         }
     }
-    
+
     /**
      * <b>SAX</b>: Implements {@link
      * org.xml.sax.ContentHandler#characters(char[],int,int)}.
      */
-    public void characters(char ch[], int start, int length)
+    public void characters(char[] ch, int start, int length)
         throws SAXException {
         stringBuffer.append(ch, start, length);
         stringContent = true;
@@ -709,9 +722,9 @@ public class SAXDocumentFactory
      */
     public void processingInstruction(String target, String data)
         throws SAXException {
-	if (inDTD)
+        if (inDTD)
             return;
-        
+
         appendStringData(); // Add any collected String Data before PI
 
         if (currentNode == null)
@@ -728,16 +741,17 @@ public class SAXDocumentFactory
      * org.xml.sax.ext.LexicalHandler#startDTD(String,String,String)}.
      */
     public void startDTD(String name, String publicId, String systemId)
-	throws SAXException {
+        throws SAXException {
         appendStringData(); // Add collected string data before entering DTD
-	inDTD = true;
+        doctype = implementation.createDocumentType(name, publicId, systemId);
+        inDTD = true;
     }
 
     /**
      * <b>SAX</b>: Implements {@link org.xml.sax.ext.LexicalHandler#endDTD()}.
      */
     public void endDTD() throws SAXException {
-	inDTD = false;
+        inDTD = false;
     }
 
     /**
@@ -777,8 +791,8 @@ public class SAXDocumentFactory
      * <b>SAX</b>: Implements
      * {@link org.xml.sax.ext.LexicalHandler#comment(char[],int,int)}.
      */
-    public void comment(char ch[], int start, int length) throws SAXException {
-	if (inDTD) return;
+    public void comment(char[] ch, int start, int length) throws SAXException {
+        if (inDTD) return;
         appendStringData();
 
         String str = new String(ch, start, length);

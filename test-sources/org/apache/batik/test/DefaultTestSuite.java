@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -18,7 +19,8 @@
 package org.apache.batik.test;
 
 import java.util.Iterator;
-import java.util.Vector;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Default implementation of the <tt>TestSuite</tt> interface.
@@ -35,7 +37,7 @@ public class DefaultTestSuite extends AbstractTest implements TestSuite {
     /**
      * Stores the list of child tests
      */
-    protected Vector tests = new Vector();
+    protected List tests = new ArrayList();
 
     /**
      * Adds a <tt>Test</tt> to the suite
@@ -46,7 +48,7 @@ public class DefaultTestSuite extends AbstractTest implements TestSuite {
         }
 
         test.setParent(this);
-        tests.addElement(test);
+        tests.add(test);
     }
 
     /**
@@ -62,7 +64,7 @@ public class DefaultTestSuite extends AbstractTest implements TestSuite {
     public TestReport runImpl(){
         Iterator iter = tests.iterator();
 
-        DefaultTestSuiteReport report 
+        DefaultTestSuiteReport report
             = new DefaultTestSuiteReport(this);
 
         while(iter.hasNext()){
@@ -92,7 +94,7 @@ public class DefaultTestSuite extends AbstractTest implements TestSuite {
     }
 
     public void setName(String name){
-        if(name == null && !"".equals(name)){
+        if(name == null && !"".equals(name)){      // ?? logic ??
             throw new IllegalArgumentException();
         }
 
@@ -101,7 +103,7 @@ public class DefaultTestSuite extends AbstractTest implements TestSuite {
 
     public Test[] getChildrenTests(){
         Test[] children = new Test[tests.size()];
-        tests.copyInto(children);
+        tests.toArray(children);
         return children;
     }
 

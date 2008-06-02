@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2002-2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -34,55 +35,60 @@ import org.w3c.dom.css.CSSValue;
  * @version $Id$
  */
 public abstract class LengthManager extends AbstractValueManager {
-    
+
+    /**
+     * precomputed square-root of 2.0
+     */
+    static final double SQRT2 = Math.sqrt( 2.0 );
+
     /**
      * Implements {@link ValueManager#createValue(LexicalUnit,CSSEngine)}.
      */
     public Value createValue(LexicalUnit lu, CSSEngine engine)
         throws DOMException {
-	switch (lu.getLexicalUnitType()) {
-	case LexicalUnit.SAC_EM:
-	    return new FloatValue(CSSPrimitiveValue.CSS_EMS,
+        switch (lu.getLexicalUnitType()) {
+        case LexicalUnit.SAC_EM:
+            return new FloatValue(CSSPrimitiveValue.CSS_EMS,
                                   lu.getFloatValue());
 
-	case LexicalUnit.SAC_EX:
-	    return new FloatValue(CSSPrimitiveValue.CSS_EXS,
+        case LexicalUnit.SAC_EX:
+            return new FloatValue(CSSPrimitiveValue.CSS_EXS,
                                   lu.getFloatValue());
 
-	case LexicalUnit.SAC_PIXEL:
-	    return new FloatValue(CSSPrimitiveValue.CSS_PX,
+        case LexicalUnit.SAC_PIXEL:
+            return new FloatValue(CSSPrimitiveValue.CSS_PX,
                                   lu.getFloatValue());
 
-	case LexicalUnit.SAC_CENTIMETER:
-	    return new FloatValue(CSSPrimitiveValue.CSS_CM,
+        case LexicalUnit.SAC_CENTIMETER:
+            return new FloatValue(CSSPrimitiveValue.CSS_CM,
                                   lu.getFloatValue());
 
-	case LexicalUnit.SAC_MILLIMETER:
-	    return new FloatValue(CSSPrimitiveValue.CSS_MM,
+        case LexicalUnit.SAC_MILLIMETER:
+            return new FloatValue(CSSPrimitiveValue.CSS_MM,
                                   lu.getFloatValue());
 
-	case LexicalUnit.SAC_INCH:
-	    return new FloatValue(CSSPrimitiveValue.CSS_IN,
+        case LexicalUnit.SAC_INCH:
+            return new FloatValue(CSSPrimitiveValue.CSS_IN,
                                   lu.getFloatValue());
 
-	case LexicalUnit.SAC_POINT:
-	    return new FloatValue(CSSPrimitiveValue.CSS_PT,
+        case LexicalUnit.SAC_POINT:
+            return new FloatValue(CSSPrimitiveValue.CSS_PT,
                                   lu.getFloatValue());
 
-	case LexicalUnit.SAC_PICA:
-	    return new FloatValue(CSSPrimitiveValue.CSS_PC,
+        case LexicalUnit.SAC_PICA:
+            return new FloatValue(CSSPrimitiveValue.CSS_PC,
                                   lu.getFloatValue());
 
-	case LexicalUnit.SAC_INTEGER:
-	    return new FloatValue(CSSPrimitiveValue.CSS_NUMBER,
+        case LexicalUnit.SAC_INTEGER:
+            return new FloatValue(CSSPrimitiveValue.CSS_NUMBER,
                                   lu.getIntegerValue());
 
-	case LexicalUnit.SAC_REAL:
-	    return new FloatValue(CSSPrimitiveValue.CSS_NUMBER,
+        case LexicalUnit.SAC_REAL:
+            return new FloatValue(CSSPrimitiveValue.CSS_NUMBER,
                                   lu.getFloatValue());
 
-	case LexicalUnit.SAC_PERCENTAGE:
-	    return new FloatValue(CSSPrimitiveValue.CSS_PERCENTAGE,
+        case LexicalUnit.SAC_PERCENTAGE:
+            return new FloatValue(CSSPrimitiveValue.CSS_PERCENTAGE,
                                   lu.getFloatValue());
         }
         throw createInvalidLexicalUnitDOMException(lu.getLexicalUnitType());
@@ -93,19 +99,19 @@ public abstract class LengthManager extends AbstractValueManager {
      */
     public Value createFloatValue(short type, float floatValue)
         throws DOMException {
-	switch (type) {
-	case CSSPrimitiveValue.CSS_PERCENTAGE:
-	case CSSPrimitiveValue.CSS_EMS:
-	case CSSPrimitiveValue.CSS_EXS:
-	case CSSPrimitiveValue.CSS_PX:
-	case CSSPrimitiveValue.CSS_CM:
-	case CSSPrimitiveValue.CSS_MM:
-	case CSSPrimitiveValue.CSS_IN:
-	case CSSPrimitiveValue.CSS_PT:
-	case CSSPrimitiveValue.CSS_PC:
-	case CSSPrimitiveValue.CSS_NUMBER:
-	    return new FloatValue(type, floatValue);
-	}
+        switch (type) {
+        case CSSPrimitiveValue.CSS_PERCENTAGE:
+        case CSSPrimitiveValue.CSS_EMS:
+        case CSSPrimitiveValue.CSS_EXS:
+        case CSSPrimitiveValue.CSS_PX:
+        case CSSPrimitiveValue.CSS_CM:
+        case CSSPrimitiveValue.CSS_MM:
+        case CSSPrimitiveValue.CSS_IN:
+        case CSSPrimitiveValue.CSS_PT:
+        case CSSPrimitiveValue.CSS_PC:
+        case CSSPrimitiveValue.CSS_NUMBER:
+            return new FloatValue(type, floatValue);
+        }
         throw createInvalidFloatTypeDOMException(type);
     }
 
@@ -135,7 +141,7 @@ public abstract class LengthManager extends AbstractValueManager {
                                   v / ctx.getPixelUnitToMillimeter());
 
         case CSSPrimitiveValue.CSS_CM:
-            ctx = engine.getCSSContext(); 
+            ctx = engine.getCSSContext();
             v = value.getFloatValue();
             return new FloatValue(CSSPrimitiveValue.CSS_NUMBER,
                                   v * 10f / ctx.getPixelUnitToMillimeter());
@@ -195,7 +201,7 @@ public abstract class LengthManager extends AbstractValueManager {
                 double w = ctx.getBlockWidth(elt);
                 double h = ctx.getBlockHeight(elt);
                 fs = (float)(value.getFloatValue() *
-                        (Math.sqrt(w * w + h * h) / Math.sqrt(2)) / 100.0);
+                        (Math.sqrt(w * w + h * h) / SQRT2 ) / 100.0);
             }
             return new FloatValue(CSSPrimitiveValue.CSS_NUMBER, fs);
         }
@@ -205,9 +211,9 @@ public abstract class LengthManager extends AbstractValueManager {
     //
     // Orientation enumeration
     //
-    protected final static int HORIZONTAL_ORIENTATION = 0;
-    protected final static int VERTICAL_ORIENTATION = 1;
-    protected final static int BOTH_ORIENTATION = 2;
+    protected static final int HORIZONTAL_ORIENTATION = 0;
+    protected static final int VERTICAL_ORIENTATION = 1;
+    protected static final int BOTH_ORIENTATION = 2;
 
     /**
      * Indicates the orientation of the property associated with

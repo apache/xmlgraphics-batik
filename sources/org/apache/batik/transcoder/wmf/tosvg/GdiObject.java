@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001-2004  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -18,7 +19,10 @@
 
 package org.apache.batik.transcoder.wmf.tosvg;
 
-/** Represents GDI Objects encountred in WMF Files.
+/**
+ * Represents GDI Objects encountred in WMF Files.
+ *
+ * @version $Id$
  */
 public class GdiObject {
     GdiObject( int _id, boolean _used ) {
@@ -26,12 +30,12 @@ public class GdiObject {
         used = _used;
         type = 0;
     }
-    
+
     public void clear() {
         used = false;
         type = 0;
     }
-    
+
     /** Setup this Object, which means that it is used and associated with an Object.
      *  <p>The Object can be any Java <i>Object</i> that is useful for an implementation of
      *  {@link AbstractWMFPainter} that uses this GdiObject.</p>
@@ -50,31 +54,31 @@ public class GdiObject {
         type = _type;
         used = true;
     }
-    
+
     /** Return true if this GdiObject is used.
      */
     public boolean isUsed() {
         return used;
     }
-    
+
     /** Return the type of this GdiObject.
      */
     public int getType() {
         return type;
     }
-    
+
     /** Return the Object associated with this GdiObject.
-     */ 
+     */
     public Object getObject() {
         return obj;
     }
-    
+
     /** Return the identification of this GdiObject.
      */
     public int getID() {
         return id;
     }
-    
+
     int id;
     boolean used;
     Object obj;

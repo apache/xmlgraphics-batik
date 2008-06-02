@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -29,25 +30,25 @@ public interface AffineRable extends Filter {
       /**
        * Returns the source to be offset.
        */
-    public Filter getSource();
+      Filter getSource();
 
       /**
        * Sets the source to be offset.
        * @param src image to offset.
        */
-    public void setSource(Filter src);
+      void setSource(Filter src);
 
       /**
        * Set the affine.
        * @param affine the new Affine transform for the filter.
        */
-    public void setAffine(AffineTransform affine);
+      void setAffine(AffineTransform affine);
 
       /**
        * Get the current affine.
        * @return The current affine transform for the filter.
        */
-    public AffineTransform getAffine();
+      AffineTransform getAffine();
 }
 
 

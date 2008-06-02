@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001-2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -85,7 +86,7 @@ public class SVGClip extends AbstractSVGConverter {
                     clipDesc = NO_CLIP;
                 else {
                     clipPathAttrBuf.append(SIGN_POUND);
-                    clipPathAttrBuf.append(clipDef.getAttributeNS(null, ATTR_ID));
+                    clipPathAttrBuf.append(clipDef.getAttributeNS(null, SVG_ID_ATTRIBUTE));
                     clipPathAttrBuf.append(URL_SUFFIX);
 
                     clipDesc = new SVGClipDescriptor(clipPathAttrBuf.toString(),
@@ -115,7 +116,7 @@ public class SVGClip extends AbstractSVGConverter {
         clipDef.setAttributeNS(null, SVG_CLIP_PATH_UNITS_ATTRIBUTE,
                                SVG_USER_SPACE_ON_USE_VALUE);
 
-        clipDef.setAttributeNS(null, ATTR_ID,
+        clipDef.setAttributeNS(null, SVG_ID_ATTRIBUTE,
                                generatorContext.
                                idGenerator.generateID(ID_PREFIX_CLIP_PATH));
 

@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2000-2003,2005-2006  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -32,6 +33,7 @@ import org.apache.batik.dom.xbl.NodeXBL;
 import org.apache.batik.dom.xbl.XBLManagerData;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.XMLConstants;
+
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
@@ -41,11 +43,9 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.UserDataHandler;
-import org.w3c.dom.events.DocumentEvent;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventException;
 import org.w3c.dom.events.EventListener;
-import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.events.MutationEvent;
 
 /**
@@ -63,7 +63,7 @@ public abstract class AbstractNode
     /**
      * An empty instance of NodeList.
      */
-    public final static NodeList EMPTY_NODE_LIST = new NodeList() {
+    public static final NodeList EMPTY_NODE_LIST = new NodeList() {
         public Node item(int i) { return null; }
         public int  getLength() { return 0; }
     };
@@ -356,8 +356,12 @@ public abstract class AbstractNode
 
         String name = getLocalName();
         if (prefix == null) {
+            // prefix null is explicitly allowed by org.w3c.dom.Node#setPrefix(String)
             setNodeName(name);
+            return;
         }
+
+        // prefix is guaranteed to be non-null here...
         if (!prefix.equals("") && !DOMUtilities.isValidName(prefix)) {
             throw createDOMException(DOMException.INVALID_CHARACTER_ERR,
                                      "prefix",
@@ -382,7 +386,7 @@ public abstract class AbstractNode
                                                     getNodeName(),
                                                     uri });
         }
-        setNodeName(prefix + ":" + name);
+        setNodeName(prefix + ':' + name);
     }
 
     /**
@@ -417,7 +421,7 @@ public abstract class AbstractNode
         Node n = node.getParentNode();
         while (n != null) {
             if (n.getNodeType() == Node.ELEMENT_NODE) {
-                base = getCascadedXMLBase((Element) n);
+                base = getCascadedXMLBase(n);
                 break;
             }
             n = n.getParentNode();
@@ -598,36 +602,36 @@ public abstract class AbstractNode
         if (namespaceURI == null || namespaceURI.length() == 0) {
             return null;
         }
-        int type = getNodeType(); 
-        switch (type) { 
-            case Node.ELEMENT_NODE: 
-                return lookupNamespacePrefix(namespaceURI, (Element) this); 
+        int type = getNodeType();
+        switch (type) {
+            case Node.ELEMENT_NODE:
+                return lookupNamespacePrefix(namespaceURI, (Element) this);
             case Node.DOCUMENT_NODE:
                 AbstractNode de
                     = (AbstractNode) ((Document) this).getDocumentElement();
-                return de.lookupPrefix(namespaceURI); 
-            case Node.ENTITY_NODE : 
-            case Node.NOTATION_NODE: 
-            case Node.DOCUMENT_FRAGMENT_NODE: 
-            case Node.DOCUMENT_TYPE_NODE: 
+                return de.lookupPrefix(namespaceURI);
+            case Node.ENTITY_NODE :
+            case Node.NOTATION_NODE:
+            case Node.DOCUMENT_FRAGMENT_NODE:
+            case Node.DOCUMENT_TYPE_NODE:
                 return null;
             case Node.ATTRIBUTE_NODE:
                 AbstractNode ownerElement
                     = (AbstractNode) ((Attr) this).getOwnerElement();
                 if (ownerElement != null) {
-                    return ownerElement.lookupPrefix(namespaceURI); 
-                } 
-                return null; 
+                    return ownerElement.lookupPrefix(namespaceURI);
+                }
+                return null;
             default:
                 for (Node n = this.getParentNode();
                         n != null;
                         n = n.getParentNode()) {
                     if (n.getNodeType() == ELEMENT_NODE) {
-                        return ((AbstractNode) n).lookupPrefix(namespaceURI); 
-                    } 
-                } 
-                return null; 
-        } 
+                        return ((AbstractNode) n).lookupPrefix(namespaceURI);
+                    }
+                }
+                return null;
+        }
     }
 
     /**
@@ -660,14 +664,14 @@ public abstract class AbstractNode
                     }
                 }
             }
-        } 
+        }
         for (Node n = getParentNode(); n != null; n = n.getParentNode()) {
             if (n.getNodeType() == ELEMENT_NODE) {
                 return ((AbstractNode) n).lookupNamespacePrefix
                     (namespaceURI, originalElement);
             }
-        } 
-        return null; 
+        }
+        return null;
     }
 
     /**
@@ -692,7 +696,7 @@ public abstract class AbstractNode
                     return owner.isDefaultNamespace(namespaceURI);
                 }
                 return false;
-            case ELEMENT_NODE:  
+            case ELEMENT_NODE:
                 if (getPrefix() == null) {
                     String ns = getNamespaceURI();
                     return ns == null && namespaceURI == null
@@ -707,7 +711,7 @@ public abstract class AbstractNode
                             return attr.getNodeValue().equals(namespaceURI);
                         }
                     }
-                } 
+                }
                 // fall through
             default:
                 for (Node n = this; n != null; n = n.getParentNode()) {
@@ -725,24 +729,24 @@ public abstract class AbstractNode
      * {@link org.w3c.dom.Node#lookupNamespaceURI(String)}.
      */
     public String lookupNamespaceURI(String prefix) {
-        switch (getNodeType()) { 
-            case DOCUMENT_NODE: 
+        switch (getNodeType()) {
+            case DOCUMENT_NODE:
                 AbstractNode de =
                     (AbstractNode) ((Document) this).getDocumentElement();
                 return de.lookupNamespaceURI(prefix);
-            case ENTITY_NODE: 
-            case NOTATION_NODE: 
-            case DOCUMENT_TYPE_NODE: 
-            case DOCUMENT_FRAGMENT_NODE: 
+            case ENTITY_NODE:
+            case NOTATION_NODE:
+            case DOCUMENT_TYPE_NODE:
+            case DOCUMENT_FRAGMENT_NODE:
                 return null;
-            case ATTRIBUTE_NODE: 
+            case ATTRIBUTE_NODE:
                 AbstractNode owner
                     = (AbstractNode) ((Attr) this).getOwnerElement();
                 if (owner != null) {
-                    return owner.lookupNamespaceURI(prefix); 
+                    return owner.lookupNamespaceURI(prefix);
                 }
                 return null;
-            case ELEMENT_NODE: 
+            case ELEMENT_NODE:
                 /*String ns = getNamespaceURI();
                 if (ns != null && compareStrings(getPrefix(), prefix)) {
                     return getNamespaceURI();
@@ -767,17 +771,17 @@ public abstract class AbstractNode
                             return null;
                         }
                     }
-                } 
+                }
                 // fall through
-            default: 
+            default:
                 for (Node n = this.getParentNode(); n != null; n = n.getParentNode()) {
                     if (n.getNodeType() == ELEMENT_NODE) {
                         AbstractNode an = (AbstractNode) n;
                         return an.lookupNamespaceURI(prefix);
                     }
                 }
-                return null; 
-        } 
+                return null;
+        }
     }
 
     /**
@@ -814,7 +818,7 @@ public abstract class AbstractNode
         }
         Node n = getFirstChild();
         Node m = other.getFirstChild();
-        while (n != null && m != null) {
+        if (n != null && m != null) {
             if (!((AbstractNode) n).isEqualNode(m)) {
                 return false;
             }
@@ -938,7 +942,7 @@ public abstract class AbstractNode
     /**
      * <b>DOM</b>: Implements
      * {@link
-     * EventTarget#addEventListenerNS(String,String,EventListener,boolean)}.
+     * NodeEventTarget#addEventListenerNS(String,String,EventListener,boolean,Object)}.
      */
     public void addEventListenerNS(String namespaceURI,
                                    String type,
@@ -974,7 +978,7 @@ public abstract class AbstractNode
     /**
      * <b>DOM</b>: Implements
      * {@link
-     * EventTarget#removeEventListenerNS(String,String,EventListener,boolean)}.
+     * NodeEventTarget#removeEventListenerNS(String,String,EventListener,boolean)}.
      */
     public void removeEventListenerNS(String namespaceURI,
                                       String type,
@@ -1012,7 +1016,8 @@ public abstract class AbstractNode
 
     /**
      * <b>DOM</b>: Implements
-     * {@link org.w3c.dom.events.EventTarget#willTriggerNS(String,String)}.
+     * <code>EventTarget#willTriggerNS(String,String)</code> from an old draft
+     * of DOM Level 3 Events.
      */
     public boolean willTriggerNS(String namespaceURI, String type) {
         return true;
@@ -1020,7 +1025,8 @@ public abstract class AbstractNode
 
     /**
      * <b>DOM</b>: Implements
-     * {@link org.w3c.dom.events.EventTarget#hasEventListenerNS(String,String)}.
+     * <code>EventTarget.hasEventListenerNS(String,String)</code> from an old
+     * draft of DOM Level 3 Events.
      */
     public boolean hasEventListenerNS(String namespaceURI, String type) {
         if (eventSupport == null) {
@@ -1060,8 +1066,8 @@ public abstract class AbstractNode
     public void fireDOMNodeInsertedIntoDocumentEvent() {
         AbstractDocument doc = getCurrentDocument();
         if (doc.getEventsEnabled()) {
-            DocumentEvent de = (DocumentEvent)doc;
-            DOMMutationEvent ev = (DOMMutationEvent)de.createEvent("MutationEvents");
+            DOMMutationEvent ev =
+                (DOMMutationEvent)doc.createEvent("MutationEvents");
             ev.initMutationEventNS(XMLConstants.XML_EVENTS_NAMESPACE_URI,
                                    "DOMNodeInsertedIntoDocument",
                                    true,   // canBubbleArg
@@ -1081,9 +1087,8 @@ public abstract class AbstractNode
     public void fireDOMNodeRemovedFromDocumentEvent() {
         AbstractDocument doc = getCurrentDocument();
         if (doc.getEventsEnabled()) {
-            DocumentEvent de = (DocumentEvent)doc;
             DOMMutationEvent ev
-                = (DOMMutationEvent) de.createEvent("MutationEvents");
+                = (DOMMutationEvent) doc.createEvent("MutationEvents");
             ev.initMutationEventNS(XMLConstants.XML_EVENTS_NAMESPACE_URI,
                                    "DOMNodeRemovedFromDocument",
                                    true,   // canBubbleArg
@@ -1104,9 +1109,8 @@ public abstract class AbstractNode
                                                      String newv) {
         AbstractDocument doc = getCurrentDocument();
         if (doc.getEventsEnabled()) {
-            DocumentEvent de = (DocumentEvent)doc;
             DOMMutationEvent ev
-                = (DOMMutationEvent) de.createEvent("MutationEvents");
+                = (DOMMutationEvent) doc.createEvent("MutationEvents");
             ev.initMutationEventNS(XMLConstants.XML_EVENTS_NAMESPACE_URI,
                                    "DOMCharacterDataModified",
                                    true,  // canBubbleArg

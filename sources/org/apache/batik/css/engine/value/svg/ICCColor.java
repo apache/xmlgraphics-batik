@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2002-2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -28,7 +29,7 @@ import org.w3c.dom.css.CSSValue;
  * @version $Id$
  */
 public class ICCColor extends AbstractValue {
-    
+
     /**
      * The color profile.
      */
@@ -81,17 +82,17 @@ public class ICCColor extends AbstractValue {
     }
 
     /**
-     *  A string representation of the current value. 
+     *  A string representation of the current value.
      */
     public String getCssText() {
-        StringBuffer sb = new StringBuffer();
+        StringBuffer sb = new StringBuffer( count * 8 );
         sb.append("icc-color(");
         sb.append(colorProfile);
         for (int i = 0; i < count; i++) {
             sb.append(", ");
             sb.append(colors[i]);
         }
-        sb.append(")");
+        sb.append( ')' );
         return sb.toString();
     }
 
@@ -101,9 +102,7 @@ public class ICCColor extends AbstractValue {
     public void append(float c) {
         if (count == colors.length) {
             float[] t = new float[count * 2];
-            for (int i = 0; i < count; i++) {
-                t[i] = colors[i];
-            }
+            System.arraycopy( colors, 0, t, 0, count );
             colors = t;
         }
         colors[count++] = c;

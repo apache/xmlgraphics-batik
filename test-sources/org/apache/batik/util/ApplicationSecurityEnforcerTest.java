@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2002  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -26,8 +27,8 @@ import org.apache.batik.test.*;
  * @version $Id$
  */
 public class ApplicationSecurityEnforcerTest extends DefaultTestSuite {
-    final static Class APP_MAIN_CLASS = org.apache.batik.apps.svgbrowser.Main.class;
-    final static String APP_SECURITY_POLICY = "org/apache/batik/apps/svgbrowser/resources/svgbrowser.policy";
+    static final Class APP_MAIN_CLASS = org.apache.batik.apps.svgbrowser.Main.class;
+    static final String APP_SECURITY_POLICY = "org/apache/batik/apps/svgbrowser/resources/svgbrowser.policy";
 
     /**
      * In the constructor, append atomic tests
@@ -66,10 +67,10 @@ public class ApplicationSecurityEnforcerTest extends DefaultTestSuite {
                 } catch (SecurityException se2){
                     passed = true;
                 }
-            } 
+            }
 
             aseA.enforceSecurity(false);
-            
+
             return passed;
         }
     }
@@ -113,7 +114,7 @@ public class ApplicationSecurityEnforcerTest extends DefaultTestSuite {
 
     static class CheckNoPolicyFile extends AbstractTest {
         public boolean runImplBasic() {
-            ApplicationSecurityEnforcer ase = 
+            ApplicationSecurityEnforcer ase =
                 new ApplicationSecurityEnforcer(APP_MAIN_CLASS,
                                                 "dont.exist.policy");
 

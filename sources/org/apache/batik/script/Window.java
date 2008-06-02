@@ -1,10 +1,11 @@
 /*
 
-   Copyright 1999-2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -81,6 +82,11 @@ public interface Window {
     Node parseXML(String text, Document doc);
 
     /**
+     * Serializes the given node.
+     */
+    String printNode(Node n);
+
+    /**
      * Gets data from the given URI.
      * @param uri The URI where the data is located.
      * @param h A handler called when the data is available.
@@ -102,7 +108,7 @@ public interface Window {
      * @param h A handler called when the data is available.
      */
     void postURL(String uri, String content, URLResponseHandler h);
-    
+
     /**
      * Posts data to the given URI.
      * @param uri The URI where the data is located.
@@ -110,7 +116,7 @@ public interface Window {
      * @param h A handler called when the data is available.
      * @param mimeType The mimeType to asscoiate with post.
      */
-    void postURL(String uri, String content, URLResponseHandler h, 
+    void postURL(String uri, String content, URLResponseHandler h,
                  String mimeType);
 
     /**
@@ -122,15 +128,15 @@ public interface Window {
      * @param enc      The encoding to apply to <tt>content</tt>
      *                 may be "gzip", "deflate", or <tt>null</tt>.
      */
-    void postURL(String uri, String content, URLResponseHandler h, 
+    void postURL(String uri, String content, URLResponseHandler h,
                  String mimeType, String enc);
 
 
     /**
      * To handle the completion of a 'getURL()' or 'postURL' call.
      */
-    public interface URLResponseHandler {
-        
+    interface URLResponseHandler {
+
         /**
          * Called when the response is recieved.
          * @param success Whether the data was successfully retreived.

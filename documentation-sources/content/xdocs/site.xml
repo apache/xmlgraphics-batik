@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+
+<!--
+  See http://forrest.apache.org/docs/linking.html for the format of this file.
+  -->
+
+<!-- ========================================================================= -->
+<!-- author cam@mcc.id.au                                                      -->
+<!-- version $Id$ -->
+<!-- ========================================================================= -->
+
+<site xmlns="http://apache.org/forrest/linkmap/1.0" 
+      label="Batik" href="" tab="home">
+
+  <project label="Project">
+    <index label="Overview" href="index.html"/>
+    <!--news label="News" href="news.html"/-->
+    <license label="License" href="license.html"/>
+    <download label="Download" href="download.cgi"/>
+    <install label="Installation notes" href="install.html"/>
+    <status label="Status" href="status.html"/>
+    <demo label="Demo" href="demo.html"/>
+    <faq label="FAQs" href="faq.html"/>
+    <mailing-lists label="Mailing lists" href="mailing-lists.html"/>
+    <contributors label="Contributors" href="contributors.html"/>
+    <bugs label="Bug database" href="http://issues.apache.org/bugzilla/buglist.cgi?query_format=specific&amp;bug_status=__open__&amp;product=Batik"/>
+    <uses label="Projects using Batik" href="uses.html"/>
+    <asf-sponsorship label="ASF sponsorship program" href="http://www.apache.org/foundation/sponsorship.html"/>"
+    <asf-thanks label="ASF thanks" href="http://www.apache.org/foundation/thanks.html"/>"
+  </project>
+
+  <resources label="Resources">
+    <specs label="Specifications">
+      <for11 label="For SVG 1.1">
+        <svg11 label="SVG 1.1" href="http://www.w3.org/TR/SVG11/"/>
+        <css2 label="CSS Level 2" href="http://www.w3.org/TR/REC-CSS2/"/>
+        <dom2core label="DOM Level 2 Core" href="http://www.w3.org/TR/DOM-Level-2-Core/"/>
+        <dom2ev label="DOM Level 2 Events" href="http://www.w3.org/TR/DOM-Level-2-Events/"/>
+        <dom2style label="DOM Level 2 Style" href="http://www.w3.org/TR/DOM-Level-2-Style/"/>
+        <ecmascript label="ECMAScript 3rd ed." href="http://www.ecma-international.org/publications/standards/Ecma-262.htm"/>
+        <smil label="SMIL Animation" href="http://www.w3.org/TR/2001/REC-smil-animation-20010904/"/>
+      </for11>
+      <for12 label="For SVG 1.2">
+        <svg12t label="SVG Tiny 1.2 (draft)" href="http://www.w3.org/TR/SVGMobile12/"/>
+        <svg12 label="SVG Full 1.2 (draft)" href="http://www.w3.org/TR/SVG12/"/>
+        <dom3core label="DOM Level 3 Core" href="http://www.w3.org/TR/DOM-Level-3-Core/"/>
+        <dom3ev label="DOM Level 3 Events (draft)" href="http://www.w3.org/TR/DOM-Level-3-Events/"/>
+        <dom3xpath label="DOM Level 3 XPath (note)" href="http://www.w3.org/TR/DOM-Level-3-XPath/"/>
+      </for12>
+    </specs>
+    <wiki label="Batik wiki" href="http://wiki.apache.org/xmlgraphics-batik/FrontPage"/>
+    <svg-wiki label="SVG wiki" href="http://wiki.svg.org/"/>
+    <svg-dev label="SVG Developers mailing list" href="http://groups.yahoo.com/group/svg-developers/"/>
+    <www-svg label="W3C SVG mailing list" href="http://lists.w3.org/Archives/Public/www-svg/"/>
+    <svg-freenode label="#svg IRC channel" href="http://svg.jibbering.com/"/>
+  </resources>
+
+  <tools label="Tools" href="tools/" tab="tools">
+    <about label="About the tools" href="index.html"/>
+    <browser label="Browser" href="browser.html"/>
+    <rasterizer label="Rasterizer" href="rasterizer.html"/>
+    <font-converter label="Font converter" href="font-converter.html"/>
+    <pretty-printer label="Pretty printer" href="pretty-printer.html"/>
+  </tools>
+
+  <using label="Using Batik" href="using/" tab="using">
+    <modules label="Index" href="index.html"/>
+    <architecture label="Architecture" href="architecture.html"/>
+    <javadoc label="Javadoc APIs" href="../javadoc/"/>
+    <!--css-engine label="CSS engine" href="css.html"/-->
+    <dom-api label="DOM API" href="dom-api.html"/>
+    <parsers label="Parsers" href="parsers.html"/>
+    <scripting label="Scripting" href="scripting/">
+      <scripting-ecmascript label="Scripting with ECMAScript" href="ecmascript.html"/>
+      <java label="Scripting with Java" href="java.html"/>
+      <security label="Security" href="security.html"/>
+    </scripting>
+    <generator label="SVG generator" href="svg-generator.html"/>
+    <swing label="Swing components" href="swing.html"/>
+    <transcoder label="Transcoder API" href="transcoder.html"/>
+    <extending label="Extending Batik" href="extending.html"/>
+    <!--applet label="Batik in an applet" href="applet.html"/>
+    <glossary label="Glossary" href="glossary.html"/-->
+  </using>
+
+  <development label="Development" href="dev/" tab="dev">
+    <current label="Index" href="index.html"/>
+    <branches label="Branches" href="branches.html"/>
+    <svg12support label="SVG 1.2 support" href="svg12.html"/>
+      <!--flow-text label="Flowing text" href="flow-text.html"/>
+      <dom3 label="DOM Level 3" href="dom3.html"/>
+      <sxbl label="sXBL" href="sxbl.html"/>
+      <xmlev label="XML Events" href="xmlevents.html"/-->
+    <test label="Test infrastructure" href="test.html"/>
+  </development>
+</site>

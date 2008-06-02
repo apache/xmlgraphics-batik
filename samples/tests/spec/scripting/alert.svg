@@ -4,11 +4,12 @@
 
 <!--
 
-   Copyright 2001,2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -33,13 +34,13 @@
 <title>Alert on mouse events</title>
 
 <defs>
-	<script type="text/ecmascript">
+    <script type="text/ecmascript">
 
-	function showDialog(msg) {
-		alert(msg);
-	}
+    function showDialog(msg) {
+        alert(msg);
+    }
 
-	</script>
+    </script>
 </defs>
 
     <!-- ============================================================= -->
@@ -50,50 +51,50 @@
     </g>
 
 
-	<!-- ########## board ############ -->
-	<g style="stroke:black">
-		<g>
-			<rect x="50" y="60" width="350" height="20" style="fill:#eee"/>
-			<rect x="50" y="80" width="350" height="60" style="fill:none"/>
-		</g>
-		<g transform="translate(0 80)">
-			<rect x="50" y="60" width="350" height="20" style="fill:#eee"/>
-			<rect x="50" y="80" width="350" height="60" style="fill:none"/>
-		</g>
-		<g transform="translate(0 160)">
-			<rect x="50" y="60" width="350" height="20" style="fill:#eee"/>
-			<rect x="50" y="80" width="350" height="60" style="fill:none"/>
-		</g>
-		<line x1="225" y1="60" x2="225" y2="300" />
-	</g>
-	<g style="fill:black; stroke:none; text-anchor:middle; font-size:14">
-		<g>
-			<text x="137.5" y="75">mousedown</text>
-			<text x="312.5" y="75">mouseup</text>
-		</g>
-		<g transform="translate(0 80)">
-			<text x="137.5" y="75">mouseover</text>
-			<text x="312.5" y="75">mouseout</text>
-		</g>
-		<g transform="translate(0 160)">
-			<text x="137.5" y="75">mousemove</text>
-			<text x="312.5" y="75">onclick</text>
-		</g>
-	</g>
+    <!-- ########## board ############ -->
+    <g style="stroke:black">
+        <g>
+            <rect x="50" y="60" width="350" height="20" style="fill:#eee"/>
+            <rect x="50" y="80" width="350" height="60" style="fill:none"/>
+        </g>
+        <g transform="translate(0 80)">
+            <rect x="50" y="60" width="350" height="20" style="fill:#eee"/>
+            <rect x="50" y="80" width="350" height="60" style="fill:none"/>
+        </g>
+        <g transform="translate(0 160)">
+            <rect x="50" y="60" width="350" height="20" style="fill:#eee"/>
+            <rect x="50" y="80" width="350" height="60" style="fill:none"/>
+        </g>
+        <line x1="225" y1="60" x2="225" y2="300" />
+    </g>
+    <g style="fill:black; stroke:none; text-anchor:middle; font-size:14">
+        <g>
+            <text x="137.5" y="75">mousedown</text>
+            <text x="312.5" y="75">mouseup</text>
+        </g>
+        <g transform="translate(0 80)">
+            <text x="137.5" y="75">mouseover</text>
+            <text x="312.5" y="75">mouseout</text>
+        </g>
+        <g transform="translate(0 160)">
+            <text x="137.5" y="75">mousemove</text>
+            <text x="312.5" y="75">onclick</text>
+        </g>
+    </g>
 
-	<!-- ########## content ############ -->
-	<g>
-		<circle cx="137.5" cy="110" r="20" style="fill:crimson" onmousedown="showDialog('onmousedown')"/>
-		<circle cx="312.5" cy="110" r="20" style="fill:crimson" onmouseup="showDialog('onmouseup')"/>
-	</g>
-	<g transform="translate(0 80)">
-		<circle cx="137.5" cy="110" r="20" style="fill:crimson" onmouseover="showDialog('onmouseover')"/>
-		<circle cx="312.5" cy="110" r="20" style="fill:crimson" onmouseout="showDialog('onmouseout')"/>
-	</g>
-	<g transform="translate(0 160)">
-		<circle cx="137.5" cy="110" r="20" style="fill:crimson" onmousemove="showDialog('onmousemove')"/>
-		<circle cx="312.5" cy="110" r="20" style="fill:crimson" onclick="showDialog('onclick')"/>
-	</g>
+    <!-- ########## content ############ -->
+    <g>
+        <circle cx="137.5" cy="110" r="20" style="fill:crimson" onmousedown="showDialog('onmousedown')"/>
+        <circle cx="312.5" cy="110" r="20" style="fill:crimson" onmouseup="showDialog('onmouseup')"/>
+    </g>
+    <g transform="translate(0 80)">
+        <circle cx="137.5" cy="110" r="20" style="fill:crimson" onmouseover="showDialog('onmouseover')"/>
+        <circle cx="312.5" cy="110" r="20" style="fill:crimson" onmouseout="showDialog('onmouseout')"/>
+    </g>
+    <g transform="translate(0 160)">
+        <circle cx="137.5" cy="110" r="20" style="fill:crimson" onmousemove="showDialog('onmousemove')"/>
+        <circle cx="312.5" cy="110" r="20" style="fill:crimson" onclick="showDialog('onclick')"/>
+    </g>
 
 
     <!-- ============================================================= -->

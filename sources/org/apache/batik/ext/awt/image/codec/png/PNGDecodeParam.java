@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -71,6 +72,8 @@ import org.apache.batik.ext.awt.image.codec.util.PropertyUtil;
  *
  * <p><b> This class is not a committed part of the JAI API.  It may
  * be removed or changed in future releases of JAI.</b>
+ *
+ * @version $Id$
  */
 public class PNGDecodeParam implements ImageDecodeParam {
 
@@ -222,7 +225,7 @@ public class PNGDecodeParam implements ImageDecodeParam {
      *
      * <p> This parameter affects the decoding of all image types.
      *
-     * @throws IllegalArgumentException if <code>userExponent</code> is 
+     * @throws IllegalArgumentException if <code>userExponent</code> is
      * negative.
      */
     public void setUserExponent(float userExponent) {
@@ -271,7 +274,7 @@ public class PNGDecodeParam implements ImageDecodeParam {
      *
      * <p> This parameter affects the decoding of all image types.
      *
-     * @throws IllegalArgumentException if <code>userExponent</code> is 
+     * @throws IllegalArgumentException if <code>userExponent</code> is
      * negative.
      */
     public void setDisplayExponent(float displayExponent) {
@@ -334,12 +337,12 @@ public class PNGDecodeParam implements ImageDecodeParam {
      * If <code>getGenerateEncodeParam()</code> is <code>true</code>,
      * this method may be called after decoding has completed, and
      * will return an instance of <code>PNGEncodeParam</code> containing
-     * information about the contents of the PNG file just decoded. 
+     * information about the contents of the PNG file just decoded.
      */
     public PNGEncodeParam getEncodeParam() {
         return encodeParam;
     }
-    
+
     /**
      * Sets the current encoder param instance.  This method is
      * intended to be called by the PNG decoder and will overwrite the

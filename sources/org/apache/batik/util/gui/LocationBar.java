@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2000,2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -30,7 +31,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import org.apache.batik.util.gui.resource.ResourceManager;
+import org.apache.batik.util.resources.ResourceManager;
 
 /**
  * This class represents a location bar.
@@ -42,7 +43,7 @@ public class LocationBar extends JPanel {
     /**
      * The gui resources file name
      */
-    protected final static String RESOURCES =
+    protected static final String RESOURCES =
         "org.apache.batik.util.gui.resources.LocationBar";
 
     /**
@@ -58,7 +59,7 @@ public class LocationBar extends JPanel {
         bundle = ResourceBundle.getBundle(RESOURCES, Locale.getDefault());
         rManager = new ResourceManager(bundle);
     }
-    
+
     /**
      * The combo box
      */

@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -21,8 +22,8 @@ import java.awt.EventQueue;
 import java.awt.geom.AffineTransform;
 import java.io.File;
 import java.net.MalformedURLException;
+import java.lang.ref.WeakReference;
 
-import org.apache.batik.swing.JSVGCanvas;
 import org.apache.batik.swing.gvt.GVTTreeRendererListener;
 import org.apache.batik.swing.gvt.GVTTreeRendererEvent;
 import org.apache.batik.swing.svg.SVGDocumentLoaderListener;
@@ -61,10 +62,10 @@ public class JSVGInterruptTest extends JSVGMemoryLeakTest {
     DelayRunnable stopper = null;
 
 
-    final static int COMPLETE  = 1;
-    final static int CANCELLED = 2;
-    final static int FAILED    = 4;
-    final static int MAX_WAIT  = 40000;
+    static final int COMPLETE  = 1;
+    static final int CANCELLED = 2;
+    static final int FAILED    = 4;
+    static final int MAX_WAIT  = 40000;
 
     public JSVGCanvasHandler createHandler() {
         return new JSVGCanvasHandler(this, this) {
@@ -77,7 +78,7 @@ public class JSVGInterruptTest extends JSVGMemoryLeakTest {
                         synchronized (renderMonitor) {
                             delegate.canvasInit(canvas);
                             if ( abort) return;
-                            
+
                             while (!done) {
                                 checkRender();
                                 if ( abort) return;
@@ -102,7 +103,7 @@ public class JSVGInterruptTest extends JSVGMemoryLeakTest {
 
     public boolean canvasInit(final JSVGCanvas canvas) {
         // System.err.println("In Init");
-        theCanvas = canvas;
+        theCanvas = new WeakReference( canvas );
         theFrame  = handler.getFrame();
         registerObjectDesc(canvas, "JSVGCanvas");
         registerObjectDesc(handler.getFrame(), "JFrame");
@@ -179,7 +180,7 @@ public class JSVGInterruptTest extends JSVGMemoryLeakTest {
                     state = doTweak(setTrans, renderListener);
                     canvas.removeGVTTreeRendererListener(renderListener);
                     System.err.println("Finished render Tweak: " + state);
-                    
+
                     handler.scriptDone();
                 }
             };
@@ -200,7 +201,7 @@ public class JSVGInterruptTest extends JSVGMemoryLeakTest {
                 System.err.println("Tweaking: " + delay);
                 delayable.setDelay(delay);
                 EventQueue.invokeLater(r);
-                
+
                 long start = System.currentTimeMillis();
                 long end   = start + MAX_WAIT;
                 long curr  = start;
@@ -225,7 +226,7 @@ public class JSVGInterruptTest extends JSVGMemoryLeakTest {
         }
     }
 
-    
+
     public void triggerStopProcessing(int delay) {
         stopper = new DelayRunnable(delay, stopRunnable);
         stopper.start();
@@ -235,7 +236,7 @@ public class JSVGInterruptTest extends JSVGMemoryLeakTest {
     }
 
     interface SetDelayable {
-        public void setDelay(int delay);
+        void setDelay(int delay);
     }
 
     class MyLoaderListener implements SVGDocumentLoaderListener, SetDelayable {
@@ -296,7 +297,7 @@ public class JSVGInterruptTest extends JSVGMemoryLeakTest {
         }
     }
 
-    class MyOnloadListener 
+    class MyOnloadListener
         implements SVGLoadEventDispatcherListener, SetDelayable {
         int delay = 0;
         public void setDelay(int delay) { this.delay = delay; }
@@ -382,12 +383,39 @@ public class JSVGInterruptTest extends JSVGMemoryLeakTest {
     }
 
 
+    /**
+     * a Runnable is run after the given delay has elapsed.
+     * A call to abort() can <i>prevent</i> the start of the Runable before it is
+     * started - it does not abort after it started.
+     */
     class DelayRunnable extends Thread {
-        int delay;
-        Runnable r;
-        boolean stop     = false;
-        boolean complete = false;
-        public DelayRunnable(int delay, Runnable r) {
+
+        /**
+         * delay in milliSeconds - must not change after creation.
+         */
+        private final int delay;
+
+        /**
+         * the Runnable to start - must not change after creation.
+         */
+        private final Runnable r;
+
+        volatile boolean stop     = false;
+        volatile boolean complete = false;
+
+        /**
+         * @param delay to wait before r is started in milliSeconds
+         * @param r a Runnable to start after delay
+         */
+        DelayRunnable(int delay, Runnable r) {
+
+            if ( delay < 0 ){
+                throw new IllegalArgumentException("delay must be >= 0 ! is:" + delay );
+            }
+            if ( r == null ){
+                throw new IllegalArgumentException("Runnable must not be null!");
+            }
+
             this.delay = delay;
             this.r = r;
             setDaemon(true);

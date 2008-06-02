@@ -1,0 +1,124 @@
+<?xml version="1.0"?>
+
+<!--
+
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+
+<!-- ========================================================================= -->
+<!-- author vincent.hardy@eng.sun.com                                          -->
+<!-- version $Id: ttf2svg.xml 201374 2004-08-18 07:17:26Z vhardy $ -->
+<!-- ========================================================================= -->
+
+<!DOCTYPE document PUBLIC "-//APACHE//DTD Documentation V2.0//EN" "http://forrest.apache.org/dtd/document-v20.dtd">
+<document>
+  <header>
+    <title>SVG Font Converter</title>
+  </header>
+
+  <body>
+    <p>
+      The TrueType Font to SVG (<code>ttf2svg</code>) application lets you
+      convert a range of characters from a TrueType Font into the SVG font
+      format.
+    </p>
+
+    <section id="running">
+      <title>Running the font converter</title>
+      <p>
+        If you are using the Batik binary distribution, type the following at
+        the command line:
+      </p>
+      <source>java -jar batik-ttf2svg.jar <em>OPTIONS</em></source>
+      <p>
+        If you are using the Batik source distribution, type the following at
+        the command line:
+      </p>
+      <source>build ttf2svg <em>OPTIONS</em></source>
+      <p>
+        In both cases, the options are the same:
+      </p>
+      <source><em>ttf-path</em> <em>[</em><strong>-l</strong> <em>range-begin] [</em><strong>-h</strong> <em>range-end] [</em><strong>-ascii</strong><em>] [</em><strong>-id</strong> <em>id] [</em><strong>-o</strong> <em>output-path] [</em><strong>-testcard</strong><em>]</em></source>
+      <p>
+        where:
+      </p>
+      <dl class="options">
+        <dt><em>ttf-path</em></dt>
+        <dd>
+          <p>specifies the TrueType Font file containing the characters to be
+            converted,</p>
+        </dd>
+        <dt><strong>-l</strong> <em>range-begin</em> <strong>-h</strong> <em>range-end</em></dt>
+        <dd>
+          <p>specifies the range of characters (by codepoint, in decimal) to be
+            converted,</p>
+        </dd>
+        <dt><strong>-ascii</strong></dt>
+        <dd>
+          <p>forces usage of the ASCII character map in the font, instead of the
+            Unicode character map,</p>
+        </dd>
+        <dt><strong>-id</strong> <em>id</em></dt>
+        <dd>
+          <p>specifies the value for the <code>id</code> attribute of the generated
+            <code>font</code> element,</p>
+        </dd>
+        <dt><strong>-o</strong> <em>output-path</em></dt>
+        <dd>
+          <p>specifies the pathname of the output SVG document containing the
+            generated SVG font, and</p>
+        </dd>
+        <dt><strong>-testcard</strong></dt>
+        <dd>
+          <p>specifies that a sequence of SVG <code>text</code> elements should be
+            appended to the output SVG file to test the characters in the SVG
+            font, providing an easy way to validate that generated SVG
+            font visually.</p>
+        </dd>
+      </dl>
+      <p>
+        For example:
+      </p>
+      <source>java -jar batik-ttf2svg.jar /usr/home/myFont.ttf -l 48 -h 57 -id MySVGFont -o mySVGFont.svg -testcard</source>
+      <p>
+        will convert characters 48 to 57, i.e., <code>'0'</code> to
+        <code>'9'</code>, in the <code>myFont.ttf</code> file into their SVG
+        equivalent in the <code>mySVGFont.svg</code> file, appending a test 
+        card so that the font can be visualized.
+      </p>
+    </section> 
+
+    <anchor id="useCases" />
+
+    <section id="use-cases">
+      <title>Use cases</title>
+      <p>
+        The TrueType Font converter application is helpful to be able to embed
+        font definitions in SVG files. This will ensure that the SVG document
+        will look exactly the same on all platform by not relying on system
+        fonts.
+      </p>
+      <p>
+        Note that users of the tool should make sure that they have the right
+        to embed the font before embedding it in an SVG file and should refer
+        to the font license for information. Note that TrueType Font files
+        contain a flag that defines the “embeddability” of a font and there are
+        tools for checking that flag.
+      </p>
+    </section>
+  </body>
+</document>

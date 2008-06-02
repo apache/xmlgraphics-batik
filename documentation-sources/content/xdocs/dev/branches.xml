@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+
+<!-- ========================================================================= -->
+<!-- author cam@mcc.id.au                                                      -->
+<!-- version $Id$ -->
+<!-- ========================================================================= -->
+
+<!DOCTYPE document PUBLIC "-//APACHE//DTD Documentation V2.0//EN" "http://forrest.apache.org/dtd/document-v20.dtd">
+<document>
+  <header>
+    <title>Subversion repository branches</title>
+  </header>
+
+  <body>
+    <p>
+      This page contains information on the current work that is being done
+      in Batik’s Subversion repository.  There are currently three main branches
+      in use in the repository:
+    </p>
+    <dl>
+      <dt>trunk</dt>
+      <dd>
+        <p>
+          The
+          <a href="http://svn.apache.org/repos/asf/xmlgraphics/batik/trunk">trunk</a>
+          is the main development branch.  All bug fixes and most new
+          non-experimental features are checked in to this branch.  While it is
+          the bleeding edge of the available Batik code, it is generally stable
+          enough to use.  For more information on SVG 1.2 features that are
+          supported by the trunk, see the
+          <a href="site:svg12support">SVG 1.2 support</a> page.
+        </p>
+      </dd>
+      <dt>webapi</dt>
+      <dd>
+        <p>
+          The
+          <a href="http://svn.apache.org/repos/asf/xmlgraphics/batik/branches/webapi">webapi</a>
+          branch is where some experimental support for some of the work being
+          produced by the <a href="http://www.w3.org/2006/webapi/">Web API
+            WG</a> (specifically, support for
+          <a href="http://www.w3.org/TR/XMLHttpRequest">XMLHttpRequest</a> and
+          the <a href="http://www.w3.org/TR/Window">Window object</a>).  When
+          the specifications and the implementation mature enough, the
+          code will be folded back into the trunk.
+        </p>
+      </dd>
+      <dt>svg11</dt>
+      <dd>
+        <p>
+          The
+          <a href="http://svn.apache.org/repos/asf/xmlgraphics/batik/branches/svg11">svg11</a>
+          branch contains the code that was the trunk before the old svg12
+          branch became the trunk.  Bug fixes that are made on the trunk are
+          also ported to the svg11 branch.  This branch will be deprecated at
+          some point in the future.
+        </p>
+      </dd>
+    </dl>
+  </body>
+</document>
+

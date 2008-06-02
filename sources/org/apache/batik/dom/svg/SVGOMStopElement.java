@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2000-2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -18,6 +19,9 @@
 package org.apache.batik.dom.svg;
 
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.util.DoublyIndexedTable;
+import org.apache.batik.util.SVGTypes;
+
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedNumber;
 import org.w3c.dom.svg.SVGStopElement;
@@ -33,6 +37,23 @@ public class SVGOMStopElement
     implements SVGStopElement {
 
     /**
+     * Table mapping XML attribute names to TraitInformation objects.
+     */
+    protected static DoublyIndexedTable xmlTraitInformation;
+    static {
+        DoublyIndexedTable t =
+            new DoublyIndexedTable(SVGStylableElement.xmlTraitInformation);
+        t.put(null, SVG_OFFSET_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_NUMBER_OR_PERCENTAGE));
+        xmlTraitInformation = t;
+    }
+
+    /**
+     * The 'offset' attribute value.
+     */
+    protected SVGOMAnimatedNumber offset;
+
+    /**
      * Creates a new SVGOMStopElement object.
      */
     protected SVGOMStopElement() {
@@ -45,6 +66,22 @@ public class SVGOMStopElement
      */
     public SVGOMStopElement(String prefix, AbstractDocument owner) {
         super(prefix, owner);
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes all live attributes for this element.
+     */
+    protected void initializeAllLiveAttributes() {
+        super.initializeAllLiveAttributes();
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes the live attribute values of this element.
+     */
+    private void initializeLiveAttributes() {
+        offset = createLiveAnimatedNumber(null, SVG_OFFSET_ATTRIBUTE, 0f, true);
     }
 
     /**
@@ -59,7 +96,7 @@ public class SVGOMStopElement
      * org.w3c.dom.svg.SVGStopElement#getOffset()}.
      */
     public SVGAnimatedNumber getOffset() {
-        return getAnimatedNumberAttribute(null, SVG_OFFSET_ATTRIBUTE, 0f);
+        return offset;
     }
     
     /**
@@ -68,4 +105,11 @@ public class SVGOMStopElement
     protected Node newNode() {
         return new SVGOMStopElement();
     }    
+
+    /**
+     * Returns the table of TraitInformation objects for this element.
+     */
+    protected DoublyIndexedTable getTraitInformationTable() {
+        return xmlTraitInformation;
+    }
 }

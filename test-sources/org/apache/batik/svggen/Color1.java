@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001,2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -39,7 +40,7 @@ public class Color1 implements Painter {
         // Colors used for labels and test output
         java.awt.Color labelColor = java.awt.Color.black;
 
-        java.awt.Color colorConstants[] = { java.awt.Color.black,
+        java.awt.Color[] colorConstants = { java.awt.Color.black,
                                    java.awt.Color.blue,
                                    java.awt.Color.cyan,
                                    java.awt.Color.darkGray,
@@ -53,7 +54,7 @@ public class Color1 implements Painter {
                                    java.awt.Color.white,
                                    java.awt.Color.yellow };
 
-        String colorConstantStrings[] =  { "black",
+        String[] colorConstantStrings =  { "black",
                                            "blue",
                                            "cyan",
                                            "darkGray",
@@ -109,7 +110,7 @@ public class Color1 implements Painter {
             g.fillRect(0, 0, 40, stepHeight);
 
             g.setPaint(labelColor);
-            g.drawString("" + opacity, 50, stepHeight/2);
+            g.drawString( String.valueOf( opacity ), 50, stepHeight/2);
             g.translate(0, stepHeight);
         }
     }

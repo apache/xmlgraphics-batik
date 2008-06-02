@@ -4,11 +4,12 @@
 
 <!--
 
-   Copyright 2001  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -45,7 +46,7 @@
                 </font-face-src>     
             </font-face>
 
-	     <path id="Path1" style="fill:none; stroke:blue;" transform="scale(0.15,0.15)"
+            <path id="Path1" style="fill:none; stroke:blue;" transform="scale(0.15,0.15)"
                   d="M 100 200 C 200 100 300 0 400 100 C 500 200 600 300 700 200 C 800 100 900 100 900 100"/>
             <path id="Path2" style="fill:none; stroke:blue;" transform="scale(0.30,0.50)"
                   d="M 100 100 C100 0 400 00 400 100"/>
@@ -53,9 +54,9 @@
         </defs>
        
 
-	  <g transform="translate(0,70)">
+        <g transform="translate(0,70)">
             <use xlink:href="#Path1" style="fill:none; stroke:blue; stroke-width:2"/>
-	      <text font-family="'SVGComic'" font-size="20" style="text-anchor:start">
+            <text font-family="'SVGComic'" font-size="20" style="text-anchor:start">
                 <textPath xlink:href="#Path1" startOffset="0%">Font <tspan fill="red" dy="-10">on</tspan><tspan dy="10"> a Path</tspan></textPath>
             </text>
             <text font-size="10" x="35" y="60">startOffset="0%"</text>
@@ -65,26 +66,26 @@
 
          <g transform="translate(150,70)">
             <use xlink:href="#Path1" style="fill:none; stroke:blue; stroke-width:2"/>
-	      <text font-family="'SVGComic'" font-size="20" style="text-anchor:middle">
+            <text font-family="'SVGComic'" font-size="20" style="text-anchor:middle">
                 <textPath xlink:href="#Path1" startOffset="0%">Font <tspan fill="red" dy="-10">on</tspan><tspan dy="10"> a Path</tspan></textPath>
             </text>
-		<text font-size="10" x="35" y="60">startOffset="0%"</text>
+            <text font-size="10" x="35" y="60">startOffset="0%"</text>
             <text font-size="10" x="35" y="70">text-anchor="middle"</text>
          </g>
 
          <g transform="translate(300,70)">
             <use xlink:href="#Path1" style="fill:none; stroke:blue; stroke-width:2"/>
-	      <text font-family="'SVGComic'" font-size="20" style="text-anchor:end">
+            <text font-family="'SVGComic'" font-size="20" style="text-anchor:end">
                 <textPath xlink:href="#Path1" startOffset="50%">Font <tspan fill="red" dy="-10">on</tspan><tspan dy="10"> a Path</tspan></textPath>
             </text>
-		<text font-size="10" x="35" y="60">startOffset="50%"</text>
+            <text font-size="10" x="35" y="60">startOffset="50%"</text>
             <text font-size="10" x="35" y="70">text-anchor="end"</text>
          </g>
 
 
          <g transform="translate(0,220)">
             <use xlink:href="#Path1" style="fill:none; stroke:blue; stroke-width:2"/>
-	      <text font-family="'SVGComic'" font-size="20" style="text-anchor:start">
+            <text font-family="'SVGComic'" font-size="20" style="text-anchor:start">
                 <textPath xlink:href="#Path1" startOffset="50%">Font <tspan fill="red" dy="-10">on</tspan><tspan dy="10"> a Path</tspan></textPath>
             </text>
             <text font-size="10" x="35" y="60">startOffset="50%"</text>
@@ -94,7 +95,7 @@
 
          <g transform="translate(150,220)">
             <use xlink:href="#Path1" style="fill:none; stroke:blue; stroke-width:2"/>
-	      <text id="middle50" font-family="'SVGComic'" 
+            <text id="middle50" font-family="'SVGComic'" 
                     font-size="20" style="text-anchor:middle">
                 <textPath xlink:href="#Path1" startOffset="50%">Font <tspan fill="red" dy="-10">on</tspan><tspan dy="10"> a Path</tspan></textPath>
             </text>
@@ -104,7 +105,7 @@
 
          <g transform="translate(300,220)">
             <use xlink:href="#Path1" style="fill:none; stroke:blue; stroke-width:2"/>
-	      <text font-family="'SVGComic'" font-size="20" style="text-anchor:end">
+            <text font-family="'SVGComic'" font-size="20" style="text-anchor:end">
                 <textPath xlink:href="#Path1" startOffset="100%">Font <tspan fill="red" dy="-10">on</tspan><tspan dy="10"> a Path</tspan></textPath>
             </text>
             <text font-size="10" x="35" y="60">startOffset="100%"</text>
@@ -114,7 +115,7 @@
 
         <g transform="translate(0,370)">
             <use xlink:href="#Path1" style="fill:none; stroke:blue; stroke-width:2"/>
-	      <text id="start35" font-family="'SVGComic'" 
+            <text id="start35" font-family="'SVGComic'" 
                     font-size="20" style="text-anchor:start">
                 <textPath xlink:href="#Path1" startOffset="35">Font <tspan fill="red" dy="-10">on</tspan><tspan dy="10"> a Path</tspan></textPath>
             </text>
@@ -125,7 +126,7 @@
 
          <g transform="translate(150,370)">
             <use xlink:href="#Path1" style="fill:none; stroke:blue; stroke-width:2"/>
-	      <text font-family="'SVGComic'" font-size="20" style="text-anchor:middle">
+            <text font-family="'SVGComic'" font-size="20" style="text-anchor:middle">
                 <textPath xlink:href="#Path1" startOffset="35">Font <tspan fill="red" dy="-10">on</tspan><tspan dy="10"> a Path</tspan></textPath>
             </text>
             <text font-size="10" x="35" y="60">startOffset="35"</text>
@@ -134,7 +135,7 @@
 
          <g transform="translate(300,370)">
             <use xlink:href="#Path1" style="fill:none; stroke:blue; stroke-width:2"/>
-	      <text font-family="'SVGComic'" font-size="20" style="text-anchor:end">
+            <text font-family="'SVGComic'" font-size="20" style="text-anchor:end">
                 <textPath xlink:href="#Path1" startOffset="35">Font <tspan fill="red" dy="-10">on</tspan><tspan dy="10"> a Path</tspan></textPath>
             </text>
             <text font-size="10" x="35" y="60">startOffset="35"</text>

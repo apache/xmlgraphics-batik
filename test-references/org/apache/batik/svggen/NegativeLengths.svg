@@ -10,32 +10,32 @@
       /></clipPath
     ></defs
     ><g text-rendering="optimizeLegibility"
-    ><text xml:space="preserve" x="10" y="20" stroke="none"
+    ><text x="10" xml:space="preserve" y="20" stroke="none"
       >Rectangle</text
       ><line y2="38" fill="none" x1="110" x2="110" y1="30"
       /><line y2="30" fill="none" x1="150" x2="155" y1="30"
-      /><rect fill="none" width="5" x="170" height="8" y="30"
-      /><text xml:space="preserve" x="10" y="20" transform="translate(0,35)" stroke="none"
+      /><rect fill="none" x="170" width="5" height="8" y="30"
+      /><text x="10" xml:space="preserve" y="20" transform="translate(0,35)" stroke="none"
       >RoundRectangle2D</text
-      ><line transform="translate(0,35)" fill="none" x1="110" x2="110" y1="30" y2="38"
-      /><line transform="translate(0,35)" fill="none" x1="150" x2="155" y1="30" y2="30"
+      ><line y2="38" fill="none" x1="110" x2="110" transform="translate(0,35)" y1="30"
+      /><line y2="30" fill="none" x1="150" x2="155" transform="translate(0,35)" y1="30"
       /><rect x="170" y="30" transform="translate(0,35)" fill="none" width="5" rx="1" ry="1" height="8"
-      /><text xml:space="preserve" x="10" y="20" transform="translate(0,70)" stroke="none"
+      /><text x="10" xml:space="preserve" y="20" transform="translate(0,70)" stroke="none"
       >RoundRectangle2D, negative radius</text
-      ><line transform="translate(0,70)" fill="none" x1="110" x2="110" y1="30" y2="38"
-      /><line transform="translate(0,70)" fill="none" x1="150" x2="155" y1="30" y2="30"
+      ><line y2="38" fill="none" x1="110" x2="110" transform="translate(0,70)" y1="30"
+      /><line y2="30" fill="none" x1="150" x2="155" transform="translate(0,70)" y1="30"
       /><rect x="170" y="30" transform="translate(0,70)" fill="none" width="5" rx="1" ry="1" height="8"
-      /><text xml:space="preserve" x="10" y="20" transform="translate(0,105)" stroke="none"
+      /><text x="10" xml:space="preserve" y="20" transform="translate(0,105)" stroke="none"
       >Circle</text
       ><circle fill="none" r="0" cx="30" transform="translate(0,105)" cy="30"
       /><circle fill="none" r="2.5" cx="52.5" transform="translate(0,105)" cy="32.5"
-      /><text xml:space="preserve" x="10" y="20" transform="translate(0,140)" stroke="none"
+      /><text x="10" xml:space="preserve" y="20" transform="translate(0,140)" stroke="none"
       >Ellipse</text
       ><circle fill="none" r="0" cx="90" transform="translate(0,140)" cy="30"
-      /><line transform="translate(0,140)" fill="none" x1="110" x2="110" y1="30" y2="38"
-      /><line transform="translate(0,140)" fill="none" x1="150" x2="155" y1="30" y2="30"
-      /><ellipse transform="translate(0,140)" fill="none" rx="2.5" cx="172.5" ry="4" cy="34"
-      /><text xml:space="preserve" x="10" y="20" transform="translate(0,175)" stroke="none"
+      /><line y2="38" fill="none" x1="110" x2="110" transform="translate(0,140)" y1="30"
+      /><line y2="30" fill="none" x1="150" x2="155" transform="translate(0,140)" y1="30"
+      /><ellipse rx="2.5" fill="none" ry="4" cx="172.5" transform="translate(0,140)" cy="34"
+      /><text x="10" xml:space="preserve" y="20" transform="translate(0,175)" stroke="none"
       >fill3Drect</text
       ><line transform="translate(0,175)" fill="white" x1="30" x2="31" y1="30" y2="30" stroke="none"
       /><rect x="50" y="30" transform="translate(0,175)" fill="white" width="1" height="8" stroke="none"
@@ -53,7 +53,7 @@
       /><rect x="171" y="30" transform="translate(0,175)" fill="white" width="3" height="1" stroke="none"
       /><rect x="171" y="37" transform="translate(0,175)" fill="rgb(134,134,134)" width="4" height="1" stroke="none"
       /><rect x="174" y="30" transform="translate(0,175)" fill="rgb(134,134,134)" width="1" height="7" stroke="none"
-      /><text x="10" y="25" transform="translate(0,215)" clip-path="url(#clipPath1)" stroke="none" xml:space="preserve"
+      /><text x="10" xml:space="preserve" y="25" clip-path="url(#clipPath1)" transform="translate(0,215)" stroke="none"
       >Hello There</text
     ></g
   ></g

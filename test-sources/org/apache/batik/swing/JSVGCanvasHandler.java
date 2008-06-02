@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -22,6 +23,7 @@ import java.awt.EventQueue;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.lang.ref.WeakReference;
 
 import javax.swing.JFrame;
 
@@ -40,9 +42,11 @@ import org.apache.batik.util.RunnableQueue;
 
 import org.apache.batik.swing.gvt.GVTTreeRendererAdapter;
 import org.apache.batik.swing.gvt.GVTTreeRendererEvent;
-import org.apache.batik.swing.JSVGCanvas;
 import org.apache.batik.swing.svg.SVGDocumentLoaderAdapter;
 import org.apache.batik.swing.svg.SVGDocumentLoaderEvent;
+import org.apache.batik.swing.svg.SVGLoadEventDispatcherAdapter;
+import org.apache.batik.swing.svg.SVGLoadEventDispatcherEvent;
+import org.apache.batik.swing.svg.SVGLoadEventDispatcher;
 
 /**
  * One line Class Desc
@@ -55,46 +59,46 @@ import org.apache.batik.swing.svg.SVGDocumentLoaderEvent;
 public class JSVGCanvasHandler {
 
     public interface Delegate {
-        public String getName();
+        String getName();
         // Returns true if a load event was triggered.  In this case
         // the handler will wait for the load event to complete/fail.
-        public boolean canvasInit(JSVGCanvas canvas);
-        public void canvasLoaded(JSVGCanvas canvas);
-        public void canvasRendered(JSVGCanvas canvas);
-        public boolean canvasUpdated(JSVGCanvas canvas);
-        public void canvasDone(JSVGCanvas canvas);
-        public void failure(TestReport report);
+        boolean canvasInit(JSVGCanvas canvas);
+        void canvasLoaded(JSVGCanvas canvas);
+        void canvasRendered(JSVGCanvas canvas);
+        boolean canvasUpdated(JSVGCanvas canvas);
+        void canvasDone(JSVGCanvas canvas);
+        void failure(TestReport report);
     }
-    
+
     public static final String REGARD_TEST_INSTANCE = "regardTestInstance";
-    public static final String REGARD_START_SCRIPT = 
+    public static final String REGARD_START_SCRIPT =
         "try { regardStart(); } catch (er) {}";
 
     /**
      * Error when canvas can't load SVG file.
      * {0} The file/url that could not be loaded.
      */
-    public static final String ERROR_CANNOT_LOAD_SVG = 
+    public static final String ERROR_CANNOT_LOAD_SVG =
         "JSVGCanvasHandler.message.error.could.not.load.svg";
 
     /**
      * Error when canvas can't render SVG file.
      * {0} The file/url that could not be rendered.
      */
-    public static final String ERROR_SVG_RENDER_FAILED = 
+    public static final String ERROR_SVG_RENDER_FAILED =
         "JSVGCanvasHandler.message.error.svg.render.failed";
 
     /**
      * Error when canvas can't peform render update SVG file.
      * {0} The file/url that could not be updated..
      */
-    public static final String ERROR_SVG_UPDATE_FAILED = 
+    public static final String ERROR_SVG_UPDATE_FAILED =
         "JSVGCanvasHandler.message.error.svg.update.failed";
 
     /**
      * Entry describing the error
      */
-    public static final String ENTRY_KEY_ERROR_DESCRIPTION 
+    public static final String ENTRY_KEY_ERROR_DESCRIPTION
         = "JSVGCanvasHandler.entry.key.error.description";
 
     public static String fmt(String key, Object []args) {
@@ -103,18 +107,21 @@ public class JSVGCanvasHandler {
 
     JFrame     frame = null;
     JSVGCanvas canvas = null;
-    UpdateManager updateManager = null;
+    WeakReference updateManager = null;
     WindowListener wl = null;
     InitialRenderListener irl = null;
     LoadListener ll = null;
+    SVGLoadEventListener sll = null;
     UpdateRenderListener url = null;
-    
+
     boolean failed;
     boolean abort = false;
     boolean done  = false;
-    Object loadMonitor = new Object();
-    Object renderMonitor = new Object();
-    
+
+    final Object loadMonitor = new Object();
+
+    final Object renderMonitor = new Object();
+
     Delegate delegate;
     Test host;
     String desc;
@@ -149,28 +156,8 @@ public class JSVGCanvasHandler {
                 checkRender();
                 if ( abort) return;
 
-                try {
-                    EventQueue.invokeAndWait(new Runnable() {
-                            public void run() {
-                                updateManager = canvas.getUpdateManager();
-                                if (updateManager == null)
-                                    return;
-                                url = new UpdateRenderListener();
-                                updateManager.addUpdateManagerListener(url);
-                            }});
-                } catch (Throwable t) { t.printStackTrace(); }
-
-                if ( abort) return;
-
-                if (updateManager == null)
+                if (updateManager == null || updateManager.get() == null)
                     return;
-
-                // Wait for Update Manager to Start.
-                while (!updateManager.isRunning());
-
-                bindHost();
-
-                if ( abort) return;
 
                 while (!done) {
                     checkUpdate();
@@ -185,7 +172,7 @@ public class JSVGCanvasHandler {
         }
     }
 
-    public void setupCanvas() { 
+    public void setupCanvas() {
         try {
             EventQueue.invokeAndWait(new Runnable() {
                     public void run() {
@@ -213,8 +200,11 @@ public class JSVGCanvasHandler {
                         canvas.addGVTTreeRendererListener(irl);
                         ll = new LoadListener();
                         canvas.addSVGDocumentLoaderListener(ll);
+                        sll = new SVGLoadEventListener();
+                        canvas.addSVGLoadEventDispatcherListener(sll);
+
                     }});
-        } catch (Throwable t) { 
+        } catch (Throwable t) {
             t.printStackTrace();
         }
     }
@@ -223,6 +213,9 @@ public class JSVGCanvasHandler {
     public void scriptDone() {
         Runnable r = new Runnable() {
                 public void run() {
+                    UpdateManager um = getUpdateManager();
+                    if (um != null)
+                        um.forceRepaint();
                     synchronized(renderMonitor) {
                         done = true;
                         failed = false;
@@ -230,16 +223,17 @@ public class JSVGCanvasHandler {
                     }
                 }
             };
-        if ((updateManager == null) ||
-            (!updateManager.isRunning())){
+        UpdateManager um = getUpdateManager();
+        if ((um == null) ||
+            (!um.isRunning())){
             // Don't run it in this thread or we deadlock the event queue.
             Thread t = new Thread(r);
             t.start();
         } else {
-            updateManager.getUpdateRunnableQueue().invokeLater(r);
+            um.getUpdateRunnableQueue().invokeLater(r);
         }
     }
-    
+
     public void dispose() {
         if (frame != null) {
             frame.removeWindowListener(wl);
@@ -264,7 +258,7 @@ public class JSVGCanvasHandler {
             if (abort || failed) {
                 DefaultTestReport report = new DefaultTestReport(host);
                 report.setErrorCode(errorCode);
-                report.setDescription(new TestReport.Entry[] { 
+                report.setDescription(new TestReport.Entry[] {
                     new TestReport.Entry
                     (fmt(ENTRY_KEY_ERROR_DESCRIPTION, null),
                      fmt(errorCode, new Object[]{desc}))
@@ -294,16 +288,17 @@ public class JSVGCanvasHandler {
     }
 
     public void bindHost() {
+        UpdateManager um = getUpdateManager();
         RunnableQueue rq;
-        rq = updateManager.getUpdateRunnableQueue();
+        rq = um.getUpdateRunnableQueue();
         rq.invokeLater(new Runnable() {
-                UpdateManager um = updateManager;
+                UpdateManager um = getUpdateManager();
                 public void run() {
                     ScriptingEnvironment scriptEnv;
                     scriptEnv = um.getScriptingEnvironment();
                     Interpreter interp;
                     interp    = scriptEnv.getInterpreter();
-                    interp.bindObject(REGARD_TEST_INSTANCE, 
+                    interp.bindObject(REGARD_TEST_INSTANCE,
                                       host);
                     try {
                         interp.evaluate(REGARD_START_SCRIPT);
@@ -312,6 +307,13 @@ public class JSVGCanvasHandler {
                     }
                 }
             });
+    }
+
+    protected UpdateManager getUpdateManager() {
+        if (updateManager != null) {
+            return (UpdateManager) updateManager.get();
+        }
+        return null;
     }
 
     class UpdateRenderListener implements UpdateManagerListener {
@@ -326,7 +328,9 @@ public class JSVGCanvasHandler {
                 renderMonitor.notifyAll();
             }
         }
-        public void managerStarted(UpdateManagerEvent e) { }
+        public void managerStarted(UpdateManagerEvent e) {
+          bindHost();
+        }
         public void managerSuspended(UpdateManagerEvent e) { }
         public void managerResumed(UpdateManagerEvent e) { }
         public void managerStopped(UpdateManagerEvent e) { }
@@ -375,4 +379,16 @@ public class JSVGCanvasHandler {
             }
         }
     }
+
+    class SVGLoadEventListener extends SVGLoadEventDispatcherAdapter {
+        public void svgLoadEventDispatchStarted(SVGLoadEventDispatcherEvent e){
+            SVGLoadEventDispatcher dispatcher;
+            dispatcher = (SVGLoadEventDispatcher)e.getSource();
+            UpdateManager um = dispatcher.getUpdateManager();
+            updateManager = new WeakReference(um);
+            url = new UpdateRenderListener();
+            um.addUpdateManagerListener(url);
+        }
+    }
+
 }

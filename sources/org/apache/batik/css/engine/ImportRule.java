@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2002  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -17,7 +18,7 @@
  */
 package org.apache.batik.css.engine;
 
-import java.net.URL;
+import org.apache.batik.util.ParsedURL;
 
 /**
  * This class represents a @import CSS rule.
@@ -26,21 +27,16 @@ import java.net.URL;
  * @version $Id$
  */
 public class ImportRule extends MediaRule {
-    
+
     /**
      * The type constant.
      */
-    public final static short TYPE = (short)2;
+    public static final short TYPE = (short)2;
 
     /**
      * The URI of the imported stylesheet.
      */
-    protected URL uri;
-
-    /**
-     * Creates a new ImportRule.
-     * @param ss The imported style-sheet.
-     */
+    protected ParsedURL uri;
 
     /**
      * Returns a constant identifying the rule type.
@@ -52,14 +48,14 @@ public class ImportRule extends MediaRule {
     /**
      * Sets the URI of the imported stylesheet.
      */
-    public void setURI(URL u) {
+    public void setURI(ParsedURL u) {
         uri = u;
     }
 
     /**
      * Returns the URI of the imported stylesheet.
      */
-    public URL getURI() {
+    public ParsedURL getURI() {
         return uri;
     }
 

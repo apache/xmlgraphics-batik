@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001,2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -136,14 +137,14 @@ public class Base64Test extends AbstractTest {
 
         if (action.equals("ROUND"))
             this.ref = in;
-        else if (!action.equals("ENCODE") && 
+        else if (!action.equals("ENCODE") &&
                  !action.equals("DECODE")) {
             report.setErrorCode(ERROR_BAD_ACTION_STRING);
             report.setDescription(new TestReport.Entry[] {
                 new TestReport.Entry
                     (TestMessages.formatMessage
                      (ENTRY_KEY_ERROR_DESCRIPTION, null),
-                     TestMessages.formatMessage(ERROR_BAD_ACTION_STRING, 
+                     TestMessages.formatMessage(ERROR_BAD_ACTION_STRING,
                                             new String[]{action}))
                     });
             report.setPassed(false);
@@ -177,7 +178,7 @@ public class Base64Test extends AbstractTest {
 
           // Copy the input to the Base64 Encoder (in a seperate thread).
           Thread t = new StreamCopier(inIS, os);
-          
+
           // Read that from the piped output stream.
           inIS = new PipedInputStream(pos);
           t.start();
@@ -186,11 +187,11 @@ public class Base64Test extends AbstractTest {
         if (action.equals("DECODE")||
             action.equals("ROUND")) {
             inIS = new Base64DecodeStream(inIS);
-        } 
+        }
 
 
         int mismatch = compareStreams(inIS, refIS, action.equals("ENCODE"));
-        
+
         if (mismatch == -1) {
           report.setPassed(true);
           return report;
@@ -200,8 +201,8 @@ public class Base64Test extends AbstractTest {
         report.setDescription(new TestReport.Entry[] {
           new TestReport.Entry
             (TestMessages.formatMessage(ENTRY_KEY_ERROR_DESCRIPTION, null),
-             TestMessages.formatMessage(ERROR_WRONG_RESULT, 
-                                    new String[]{""+mismatch}))
+             TestMessages.formatMessage(ERROR_WRONG_RESULT,
+                                    new String[]{ String.valueOf( mismatch )} ))
             });
         report.setPassed(false);
         return report;
@@ -211,7 +212,7 @@ public class Base64Test extends AbstractTest {
      * Returns true if the contents of <tt>is1</tt> match the
      * contents of <tt>is2</tt>
      */
-    public static int compareStreams(InputStream is1, InputStream is2, 
+    public static int compareStreams(InputStream is1, InputStream is2,
                               boolean skipws) {
         byte [] data1 = new byte[100];
         byte [] data2 = new byte[100];
@@ -249,7 +250,7 @@ public class Base64Test extends AbstractTest {
                     // check if the rest of is2 is whitespace...
                     for (int i2=0; i2<len2; i2++)
                         if ((data2[i2] != '\n') &&
-                            (data2[i2] != '\r') && 
+                            (data2[i2] != '\r') &&
                             (data2[i2] != ' '))
                             return idx+i2;
                     off1 = off2 = 0;
@@ -264,7 +265,7 @@ public class Base64Test extends AbstractTest {
                     // Check if rest of is1 is whitespace...
                     for (int i1=0; i1<len1; i1++)
                         if ((data1[i1] != '\n') &&
-                            (data1[i1] != '\r') && 
+                            (data1[i1] != '\r') &&
                             (data1[i1] != ' '))
                             return idx+i1;
                     off1 = off2 = 0;
@@ -275,14 +276,14 @@ public class Base64Test extends AbstractTest {
                 int i2=0;
                 while((i1<len1) && (i2<len2)) {
                     if (skipws) {
-                        if ((data1[i1] == '\n') || 
-                            (data1[i1] == '\r') || 
+                        if ((data1[i1] == '\n') ||
+                            (data1[i1] == '\r') ||
                             (data1[i1] == ' ')) {
                             i1++;
                             continue;
                         }
-                        if ((data2[i2] == '\n') || 
-                            (data2[i2] == '\r') || 
+                        if ((data2[i2] == '\n') ||
+                            (data2[i2] == '\r') ||
                             (data2[i2] == ' ')) {
                             i2++;
                             continue;

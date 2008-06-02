@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2003-2004  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -45,23 +46,23 @@ public abstract class MemoryLeakTest  extends AbstractTest {
     // (why so large I don't know) - it will bail if the all
     // the objects of interest are collected sooner so the runtime
     // is really only a concern for failures.
-    final static int NUM_GC=10;
-    final static int MIN_MEMORY=200000; // 200KB
-    final static int ALLOC_SZ=1000; // 100KB
+    static final int NUM_GC=10;
+    static final int MIN_MEMORY=200000; // 200KB
+    static final int ALLOC_SZ=1000; // 100KB
 
-    final static String ERROR_OBJS_NOT_CLEARED = 
+    static final String ERROR_OBJS_NOT_CLEARED =
         "MemoryLeakTest.message.error.objs.not.cleared";
 
-    final static String ERROR_DESCRIPTION = 
+    static final String ERROR_DESCRIPTION =
         "TestReport.entry.key.error.description";
-        
+
     public static String fmt(String key, Object []args) {
         return Messages.formatMessage(key, args);
     }
 
     public MemoryLeakTest() {
     }
-    
+
     Map objs = new HashMap();
     List entries = new ArrayList();
 
@@ -76,7 +77,7 @@ public abstract class MemoryLeakTest  extends AbstractTest {
             objs.put(desc, new WeakRef(o, desc));
         }
     }
-    
+
     public boolean checkObject(String desc) {
         String [] strs = new String[1];
         strs[0] = desc;
@@ -91,7 +92,7 @@ public abstract class MemoryLeakTest  extends AbstractTest {
             while (true) {
                 boolean passed = true;
                 synchronized (objs) {
-                    // System.err.println("FreeMemory: " + rt.freeMemory() + 
+                    // System.err.println("FreeMemory: " + rt.freeMemory() +
                     //                    " of " +rt.totalMemory());
 
                     for (int i=0; i<descs.length; i++) {
@@ -114,7 +115,7 @@ public abstract class MemoryLeakTest  extends AbstractTest {
         } finally {
             l = null;
         }
-        
+
         for (int i=0; i<NUM_GC; i++)
             rt.gc();
 
@@ -143,11 +144,11 @@ public abstract class MemoryLeakTest  extends AbstractTest {
              fmt(ERROR_OBJS_NOT_CLEARED, new Object[]{objStr}));
         entries.add(entry);
 
-        if (objStr.length() > 40) 
+        if (objStr.length() > 40)
             objStr = objStr.substring(0,40) + "..." ;
         System.err.println(">>>>> Objects not cleared: " + objStr);
-        // System.err.println("Waiting for heap dump...");
-        // try { Thread.sleep(60000); } catch (InterruptedException ie) { }
+        // System.err.println("Waiting 5 second for heap dump...");
+        // try { Thread.sleep(5000); } catch (InterruptedException ie) { }
         return false;
     }
 
@@ -163,7 +164,7 @@ public abstract class MemoryLeakTest  extends AbstractTest {
         int nBlock = (int)(rt.totalMemory()/(ALLOC_SZ*NUM_GC));
         try {
             while (true) {
-                // System.err.println("FreeMemory: " + rt.freeMemory() + 
+                // System.err.println("FreeMemory: " + rt.freeMemory() +
                 //                    " of " +rt.totalMemory());
 
                 boolean passed = true;
@@ -219,11 +220,11 @@ public abstract class MemoryLeakTest  extends AbstractTest {
              fmt(ERROR_OBJS_NOT_CLEARED, new Object[]{objStr}));
         entries.add(entry);
 
-        if (objStr.length() > 40) 
+        if (objStr.length() > 40)
             objStr = objStr.substring(0,40) + "..." ;
         System.err.println(">>>>> Objects not cleared: " + objStr);
-        // System.err.println("Waiting for heap dump...");
-        // try { Thread.sleep(60000); } catch (InterruptedException ie) { }
+        // System.err.println("Waiting for 5 seconds for heap dump...");
+        // try { Thread.sleep(5000); } catch (InterruptedException ie) { }
         return false;
     }
 
@@ -267,7 +268,7 @@ public abstract class MemoryLeakTest  extends AbstractTest {
                 objs.remove(desc);
             }
         }
-        
+
     }
-    
+
 }

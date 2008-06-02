@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2000-2001  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -22,16 +23,17 @@ import java.io.Serializable;
 /**
  * A simple hashtable, not synchronized, with fixed load factor,
  * that maps objects to ints.
- *
+ * This implementation is not Thread-safe.
+ * 
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
 public class IntTable implements Serializable {
-	    
+
     /**
      * The initial capacity
      */
-    protected final static int INITIAL_CAPACITY = 11;
+    protected static final int INITIAL_CAPACITY = 11;
 
     /**
      * The underlying array
@@ -132,7 +134,8 @@ public class IntTable implements Serializable {
 
         // The key is not in the hash table
         int len = table.length;
-        if (count++ >= (len * 3) >>> 2) {
+        if (count++ >= (len - (len >> 2))) {
+            // more than 75% loaded: grow
             rehash();
             index = hash % table.length;
         }
@@ -158,7 +161,8 @@ public class IntTable implements Serializable {
 
         // The key is not in the hash table
         int len = table.length;
-        if (count++ >= (len * 3) >>> 2) {
+        if (count++ >= (len - (len >> 2))) {
+            // more than 75% loaded: grow
             rehash();
             index = hash % table.length;
         }
@@ -184,7 +188,8 @@ public class IntTable implements Serializable {
 
         // The key is not in the hash table
         int len = table.length;
-        if (count++ >= (len * 3) >>> 2) {
+        if (count++ >= (len - (len >> 2))) {
+            // more than 75% loaded: grow
             rehash();
             index = hash % table.length;
         }

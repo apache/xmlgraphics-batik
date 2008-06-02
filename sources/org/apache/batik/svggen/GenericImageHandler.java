@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001,2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -33,16 +34,16 @@ import org.w3c.dom.Element;
  */
 public interface GenericImageHandler {
     /**
-     * Sets the DomTreeManager this image handler may need to 
+     * Sets the DomTreeManager this image handler may need to
      * interact with.
      */
-    public void setDOMTreeManager(DOMTreeManager domTreeManager);
+    void setDOMTreeManager(DOMTreeManager domTreeManager);
 
     /**
      * Creates an Element suitable for referring to images.
      * Note that no assumptions can be made about the name of this Element.
      */
-    public Element createElement(SVGGeneratorContext generatorContext);
+    Element createElement(SVGGeneratorContext generatorContext);
 
     /**
      * The handler should set the xlink:href and return a transform
@@ -57,7 +58,7 @@ public interface GenericImageHandler {
      *
      * @return transform converting the image dimension to rendered dimension
      */
-    public AffineTransform handleImage(Image image, Element imageElement,
+    AffineTransform handleImage(Image image, Element imageElement,
                                        int x, int y,
                                        int width, int height,
                                        SVGGeneratorContext generatorContext);
@@ -75,7 +76,7 @@ public interface GenericImageHandler {
      *
      * @return transform converting the image dimension to rendered dimension
      */
-    public AffineTransform handleImage(RenderedImage image, Element imageElement,
+    AffineTransform handleImage(RenderedImage image, Element imageElement,
                                        int x, int y,
                                        int width, int height,
                                        SVGGeneratorContext generatorContext);
@@ -93,7 +94,7 @@ public interface GenericImageHandler {
      *
      * @return transform converting the image dimension to rendered dimension
      */
-    public AffineTransform handleImage(RenderableImage image, Element imageElement,
+    AffineTransform handleImage(RenderableImage image, Element imageElement,
                                        double x, double y,
                                        double width, double height,
                                        SVGGeneratorContext generatorContext);

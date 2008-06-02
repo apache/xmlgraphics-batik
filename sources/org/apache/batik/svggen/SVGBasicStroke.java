@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001,2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -92,8 +93,8 @@ public class SVGBasicStroke extends AbstractSVGConverter{
     /**
      * @param dashArray float array to convert to a string
      */
-    private final String dashArrayToSVG(float dashArray[]){
-        StringBuffer dashArrayBuf = new StringBuffer();
+    private final String dashArrayToSVG(float[] dashArray){
+        StringBuffer dashArrayBuf = new StringBuffer( dashArray.length * 8 );
         if(dashArray.length > 0)
             dashArrayBuf.append(doubleString(dashArray[0]));
 

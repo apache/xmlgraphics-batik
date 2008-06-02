@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001,2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -31,6 +32,10 @@ import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
  * @version $Id$
  */
 public class AWTFontFamily implements GVTFontFamily {
+
+    public static final 
+        AttributedCharacterIterator.Attribute TEXT_COMPOUND_DELIMITER =
+        GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER;
 
     protected GVTFontFace fontFace;
     protected Font   font;
@@ -106,7 +111,7 @@ public class AWTFontFamily implements GVTFontFamily {
         Map fontAttributes = new HashMap(attrs);
         fontAttributes.put(TextAttribute.SIZE, new Float(size));
         fontAttributes.put(TextAttribute.FAMILY, fontFace.getFamilyName());
-        fontAttributes.remove(GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER);
+        fontAttributes.remove(TEXT_COMPOUND_DELIMITER);
         return new AWTGVTFont(fontAttributes);
     }
      

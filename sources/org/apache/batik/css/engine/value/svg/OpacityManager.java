@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2002-2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -22,6 +23,8 @@ import org.apache.batik.css.engine.value.AbstractValueManager;
 import org.apache.batik.css.engine.value.FloatValue;
 import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.css.engine.value.ValueManager;
+import org.apache.batik.util.SVGTypes;
+
 import org.w3c.css.sac.LexicalUnit;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.css.CSSPrimitiveValue;
@@ -56,14 +59,35 @@ public class OpacityManager extends AbstractValueManager {
      * Implements {@link ValueManager#isInheritedProperty()}.
      */
     public boolean isInheritedProperty() {
-	return inherited;
+        return inherited;
+    }
+
+    /**
+     * Implements {@link ValueManager#isAnimatableProperty()}.
+     */
+    public boolean isAnimatableProperty() {
+        return true;
+    }
+
+    /**
+     * Implements {@link ValueManager#isAdditiveProperty()}.
+     */
+    public boolean isAdditiveProperty() {
+        return true;
+    }
+
+    /**
+     * Implements {@link ValueManager#getPropertyType()}.
+     */
+    public int getPropertyType() {
+        return SVGTypes.TYPE_NUMBER_OR_INHERIT;
     }
 
     /**
      * Implements {@link ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return property;
+        return property;
     }
     
     /**
@@ -78,9 +102,9 @@ public class OpacityManager extends AbstractValueManager {
      */
     public Value createValue(LexicalUnit lu, CSSEngine engine)
         throws DOMException {
-	switch (lu.getLexicalUnitType()) {
-	case LexicalUnit.SAC_INHERIT:
-	    return SVGValueConstants.INHERIT_VALUE;
+        switch (lu.getLexicalUnitType()) {
+        case LexicalUnit.SAC_INHERIT:
+            return SVGValueConstants.INHERIT_VALUE;
 
         case LexicalUnit.SAC_INTEGER:
             return new FloatValue(CSSPrimitiveValue.CSS_NUMBER,
@@ -98,9 +122,9 @@ public class OpacityManager extends AbstractValueManager {
      */
     public Value createFloatValue(short type, float floatValue)
         throws DOMException {
-	if (type == CSSPrimitiveValue.CSS_NUMBER) {
-	    return new FloatValue(type, floatValue);
-	}
+        if (type == CSSPrimitiveValue.CSS_NUMBER) {
+            return new FloatValue(type, floatValue);
+        }
         throw createInvalidFloatTypeDOMException(type);
     }
 }

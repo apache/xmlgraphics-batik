@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -32,24 +33,24 @@ public interface FloodRable extends Filter {
      * Set the flood paint.
      * @param paint the flood paint to use when filling
      */
-    public void setFloodPaint(Paint paint);
+    void setFloodPaint(Paint paint);
 
     /**
      * Get the flood paint.
      * @return The current flood paint for the filter
      */
-    public Paint getFloodPaint();
+    Paint getFloodPaint();
 
     /**
      * Sets the flood region
      * @param floodRegion region to flood with floodPaint
      */
-    public void setFloodRegion(Rectangle2D floodRegion);
-    
+    void setFloodRegion(Rectangle2D floodRegion);
+
     /**
      * Get the flood region
      */
-     public Rectangle2D getFloodRegion();
+    Rectangle2D getFloodRegion();
 }
 
 

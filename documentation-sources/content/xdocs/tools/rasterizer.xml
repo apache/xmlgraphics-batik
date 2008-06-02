@@ -1,0 +1,562 @@
+<?xml version="1.0"?>
+
+<!--
+
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+
+<!-- ========================================================================= -->
+<!-- author vincent.hardy@eng.sun.com                                          -->
+<!-- version $Id: svgrasterizer.xml 388441 2006-03-24 07:50:03Z cam $ -->
+<!-- ========================================================================= -->
+
+<!DOCTYPE document PUBLIC "-//APACHE//DTD Documentation V2.0//EN" "http://forrest.apache.org/dtd/document-v20.dtd">
+<document>
+  <header>
+    <title>SVG Rasterizer</title>
+  </header>
+
+  <body>
+    <p>
+      This page describes the features of the SVG Rasterizer utility that
+      comes with the Batik distribution.  The SVG Rasterizer is a utility that
+      can convert SVG files to a raster format. The tool can convert individual
+      files or sets of files, making it easy to convert entire directories of
+      SVG files. The provided formats are
+      <abbr title="Joint Photography Expert Group">JPEG</abbr>,
+      <abbr title="Portable Network Graphics">PNG</abbr> and
+      <abbr title="Tagged Image File Format">TIFF</abbr>, however the design
+      allows new formats to be added easily.  In addition, the rasterizer can
+      (despite its name) transcode to
+      <abbr title="Portable Document Format">PDF</abbr>.
+    </p>
+
+    <section id="downloading">
+      <title>Downloading the rasterizer</title>
+
+      <p>
+        Refer to the <a href="site:install">install page</a> and
+        the <a href="site:download">download area</a> to find out what to
+        download and how to install it. Remember that you can get either the
+        source or binary distribution.
+      </p>
+    </section>
+
+    <section id="using">
+      <title>Rasterizing one or several SVG files</title>
+      <p>
+        The method for starting the rasterizer depends on the distribution of Batik 
+        that you chose to download. The following describes how to start the viewer
+        for each distribution.
+      </p>
+
+      <section id="using-binary">
+        <title>Using the binary distribution</title>
+
+        <p>
+          If you downloaded the binary distribution of Batik, you should have
+          a file called <code>batik-1.6.zip</code> (or similar), and, after
+          expanding that file, a jar file called
+          <code>batik-rasterizer.jar</code>.  To start the rasterizer, open a
+          console, go to the directory where you expanded the distribution (and
+          where <code>batik-rasterizer.jar</code> is located) and simply type
+          the following at the command prompt:
+        </p>
+        <source>java -jar batik-rasterizer.jar <em>FILES</em></source>
+        <p>
+          For example, if you type:
+        </p>
+        <source>java -jar batik-rasterizer.jar samples/batikFX.svg</source>
+        <p>
+          you will see the following printout:
+        </p>
+        <source>Converting file: samples/BatikFX.svg to samples/BatikFX.png</source>
+        <p>
+          Once the conversion is complete, you will find a
+          <code>batikFX.png</code> file in the samples directory.
+        </p>
+        <p>
+          You can pass options on the command line:
+        </p>
+        <source>java -jar batik-rasterizer.jar <em>[OPTIONS] FILES</em></source>
+        <p>
+          where, as options:
+        </p>
+        <dl class="options">
+          <dt><strong>-d</strong> <em>dir|file</em></dt>
+          <dd>
+            <p>
+              specifies the output directory, or the output file if there is
+              only a single input file,
+            </p>
+          </dd>
+          <dt><strong>-m</strong> <em>mime-type</em></dt>
+          <dd>
+            <p>
+              specifies the output MIME type, which must be one of
+              <code>image/png</code>, <code>image/jpeg</code>,
+              <code>image/tiff</code> or <code>application/pdf</code>,
+            </p>
+          </dd>
+          <dt><strong>-w</strong> <em>width</em></dt>
+          <dd>
+            <p>
+              specifies the output width as a floating point value,
+            </p>
+          </dd>
+          <dt><strong>-h</strong> <em>height</em></dt>
+          <dd>
+            <p>
+              specifies the output height as a floating point value,
+            </p>
+          </dd>
+          <dt><strong>-maxw</strong> <em>width</em></dt>
+          <dd>
+            <p>
+              specifies the maximum output width as a floating point value,
+            </p>
+          </dd>
+          <dt><strong>-maxh</strong> <em>height</em></dt>
+          <dd>
+            <p>
+              specifies the maximum output height as a floating point value,
+            </p>
+          </dd>
+          <dt><strong>-a</strong> <em>x</em><strong>,</strong><em>y</em><strong>,</strong><em>width</em><strong>,</strong><em>height</em></dt>
+          <dd>
+            <p>specifies the area of interest (as floating point values) of the
+              SVG file to rasterize (and if not specified, will be determined
+              by the <code>width</code>/<code>height</code>/<code>viewBox</code>
+              attributes if specified in the document, and be 0,0,400,400 otherwise),</p>
+          </dd>
+          <dt><strong>-bg</strong> <em>alpha</em><strong>.</strong><em>red</em><strong>.</strong><em>green</em><strong>.</strong><em>blue</em></dt>
+          <dd>
+            <p>specifies the background fill color as an ARGB quadruple, where
+              each component is an integer in the range 0&#x2014;255,</p>
+          </dd>
+          <dt><strong>-cssMedia</strong> <em>media</em></dt>
+          <dd>
+            <p>specifies the CSS media type used for matching CSS rules,</p>
+          </dd>
+          <dt><strong>-cssAlternate</strong> <em>file|uri</em></dt>
+          <dd>
+            <p>specifies the CSS alternate stylesheet to use,</p>
+          </dd>
+          <dt><strong>-cssUser</strong> <em>file|uri</em></dt>
+          <dd>
+            <p>specifies the CSS user stylesheet to use in addition to any
+              other referenced or embedded stylesheets,</p>
+          </dd>
+          <dt><strong>-lang</strong> <em>language-code</em></dt>
+          <dd>
+            <p>specifies the
+              <a href="http://www.faqs.org/rfcs/rfc3066.html">RFC 3066</a>
+              language code to use,</p>
+          </dd>
+          <dt><strong>-q</strong> <em>quality</em></dt>
+          <dd>
+            <p>specifies the quality of the output image, as a floating point
+              number in the range 0 &lt; <em>quality</em> &lt; 1 when generating
+              JPEG images,</p>
+          </dd>
+          <dt><strong>-dpi</strong> <em>resolution</em></dt>
+          <dd>
+            <p>specifies the resolution of the output image in dots per inch,</p>
+          </dd>
+          <dt><strong>-validate</strong></dt>
+          <dd>
+            <p>specifies that the source SVG files must be validated against
+              their DTDs,</p>
+          </dd>
+          <dt><strong>-onload</strong></dt>
+          <dd>
+            <p>specifies that the SVG files should be rasterized after
+              dispatching the SVG load event,</p>
+          </dd>
+          <dt><strong>-scriptSecurityOff</strong></dt>
+          <dd>
+            <p>specifies that any security checks on the scripts running as a
+              result of dispatching the SVG load event will be bypassed, and</p>
+          </dd>
+          <dt><strong>-scripts</strong> <em>allowed-script-types</em></dt>
+          <dd>
+            <p>specifies a list of script types (i.e., values for the
+              <code>type</code> attribute on <code>script</code> elements)
+              that should be loaded.</p>
+          </dd>
+        </dl>
+
+        <p>
+          For example:
+        </p>
+        <source>java -jar batik-rasterizer.jar -d myDir -m image/jpeg samples/*.svg</source>
+        <p>
+          will generate JPEG images for all the SVG files found in the samples
+          directory.
+        </p>
+      </section>
+
+      <section id="usingSource">
+        <title>Using the source distribution</title>
+
+        <p>
+          If you downloaded the source distribution of Batik, you got a zip or
+          tar file that expanded into a directory called <code>xml-batik</code>
+          or <code>batik-<em>version</em></code>.  In that directory, you can
+          find build scripts for the platform you are running on.  For example,
+          there is a <code>build.bat</code> script for users of the Windows
+          platform and there is a <code>build.sh</code> script for UNIX users.
+        </p>
+        <p>
+          To start the rasterizer you should:
+        </p>
+        <ul>
+          <li>
+            Make sure that your <code>JAVA_HOME</code> environment variable is
+            set to your JDK installation directory.
+          </li>
+          <li>
+            Open a command line window and go to the <code>xml-batik</code>
+            or <code>batik-<em>version</em></code> directory where the Batik
+            distribution was expanded.
+          </li>
+          <li>
+            <p>For windows, type the following at the command prompt:</p>
+            <source>build svgrasterizer</source>
+            <p>and for Unix:</p>
+            <source>./build.sh svgrasterizer</source>
+            <p>This will print out a help message for the rasterizer.</p>
+          </li>
+        </ul>
+        <p>
+          You can pass options to the rasterizer as follows, for Windows:
+        </p>
+        <source>build svgrasterizer <em>[OPTIONS] FILES</em></source>
+        <p>
+          and for Unix:
+        </p>
+        <source>./build.sh svgrasterizer <em>[OPTIONS] FILES</em></source>
+        <p>
+          Refer to <a href="#using-binary">“Using the binary distribution”</a>
+          for an explanation of the options.
+        </p>
+      </section>
+
+    </section>
+
+    <section id="task">
+      <title>Rasterizer Ant task</title>
+      <p>
+        The Rasterizer task is an <a href="http://ant.apache.org/">Ant</a>
+        version of the rasterizer utility. It fulfills the same basic 
+        purpose as the utility but has a different syntax and a 
+        slightly different set of features.
+      </p>
+
+      <p>
+        The task is able to produce four raster formats:
+        <abbr title="Portable Network Graphics">PNG</abbr>,
+        <abbr title="Joint Photographic Expert Group">JPEG</abbr>,
+        <abbr title="Tagged Image File Format">TIFF</abbr> and
+        <abbr title="Portable Document Format">PDF</abbr>.
+      </p>
+
+      <section id="initTask">
+        <title>Using the rasterizer task</title>
+
+        <p>
+          The first thing to do is to compile rasterizer task classes.
+          Download the source distribution of Batik and see the
+          <code>README</code> file in the
+          <code>contrib/rasterizertask</code> directory for more
+          instructions. The build procedure works the same way as when building 
+          Batik itself.
+        </p>
+
+        <p>
+          After building, ensure that the generated
+          <code>batik-rasterizer.jar</code> and the classes (or jar file) of the
+          rasterizer task are in your <code>CLASSPATH</code>.
+        </p>
+
+        <p>
+          Next you have to define the task in your Ant project. To do this, add
+          the following line either after the <code>project</code> start tag or
+          after the <code>target</code> start tag in the target you are using
+          the rasterizer task:
+        </p>
+
+        <source>  &lt;taskdef name="rasterize" 
+           classname="org.apache.tools.ant.taskdefs.optional.RasterizerTask"/&gt;</source>
+
+        <p>
+          Now you can use the rasterizer task in your project. See the
+          <a href="#taskParameters">parameters section</a> for an explanation of
+          the available parameters or the
+          <a href="#taskExamples">examples section</a> to see few usage examples.
+        </p>
+      </section>
+
+      <section id="taskParameters">
+        <title>Parameters of the Ant task</title>
+        <p>
+          The following table lists the attributes that may be specified on
+          the <code>rasterize</code> task element.
+        </p>
+        <table>
+          <tr>
+            <th>Attribute</th>
+            <th>Description</th>
+            <th>Required</th>
+          </tr>
+          <tr>
+            <td>result</td>
+            <td>
+              Sets the type of the result image. Only one of the
+              following values must be used: <code>image/png</code>, 
+              <code>image/jpeg</code>, <code>image/tiff</code> and
+              <code>application/pdf</code>. The value must be in 
+              lowercase letters.
+            </td>
+            <td>Yes</td>
+          </tr>
+          <tr>
+            <td>height</td>
+            <td>
+              Sets the height of the result image in pixels. The task 
+              calculates the height from the SVG file if this parameter has not
+              been set. The rasterizer keeps the aspect ratio of the SVG file
+              even if the both <code>height</code> and <code>width</code> have
+              been set.
+            </td>
+            <td>No</td>
+          </tr>
+          <tr>
+            <td>width</td>
+            <td>
+              Sets the width of the result image in pixels. The task calculates
+              the width from the SVG file if this parameter has not been set.
+              The rasterizer keeps the aspect ratio of the SVG file even if the
+              both <code>height</code> and <code>width</code> have been set. 
+            </td>
+            <td>No</td>
+          </tr>
+          <tr>
+            <td>maxheight</td>
+            <td>
+              Sets the maximum height of the result image in pixels.  The image
+              won’t be higher than defined in this parameter, regardless of the
+              size set in the image itself or in other parameters.  This is a
+              floating point value.
+            </td>
+            <td>No</td>
+          </tr>
+          <tr>
+            <td>maxwidth</td>
+            <td>
+              Sets the maximum width of the result image in pixels.  The image
+              won’t be wider than defined in this parameter, regardless of the
+              size set in the image itself or in other parameters.  This is a
+              floating point value.
+            </td>
+            <td>No</td>
+          </tr>
+          <tr>
+            <td>quality</td>
+            <td>
+              Sets the quality of the produced image. The value must be
+              greater than 0 but smaller than 1, larger numbers meaning higher
+              quality. The quality value is used only with JPEG images.
+              The default quality value is 0.99.
+            </td>
+            <td>No</td>
+          </tr>
+          <tr>
+            <td>area</td>
+            <td>
+              Defines the area in the SVG file which will be rasterized. Parts
+              outside this area are discarded and don’t show in the result
+              image. The area attribute value has four integers separated by
+              commas.  The first two integers set the x and y coordinates of 
+              the upper left corner of the area, respectively. The last two
+              integers set the width and height of the area, respectively. For
+              example, <code>10, 20, 100, 200</code> sets the 
+              rectangular area from point <code>10, 10</code> to point
+              <code>110, 220</code>.  The specified area is applied to all
+              images if more than one file is rasterized during one task.
+            </td>
+            <td>No</td>
+          </tr>
+          <tr>
+            <td>bg</td>
+            <td>
+              Sets the background color of the result image.  The
+              <code>bg</code> attribute value is either three or four integers
+              separated with commas.  The four values are alpha channel, red, 
+              green, and blue, respectively. If only three values are given,
+              then the values are red, green, and blue and the alpha channel
+              is automatically set to 255 (opaque).  All values have to between
+              0 and 255.  The default value is none which means that background 
+              is transparent and not filled with any color.
+            </td>
+            <td>No</td>
+          </tr>
+          <tr>
+            <td>media</td>
+            <td>
+              CSS media type that is used to select a CSS stylesheet. The
+              selected stylesheet is then used to rasterize the SVG files. Only
+              the visual media group is supported (see the
+              <a href="site:css2">CSS2 specification</a> for more information
+              about media groups).  The default value is <code>screen</code>.
+            </td>
+            <td>No</td>
+          </tr>
+          <tr>
+            <td>dpi</td>
+            <td>
+              Resolution for the result image. The attribute value is used to
+              compute the “pixel to millimeter” ratio used when processing SVG
+              files.  The default value is 96.
+            </td>
+            <td>No</td>
+          </tr>
+          <tr>
+            <td>lang</td>
+            <td>
+              Language which is used select language specific areas from the
+              SVG file during the rasterizing process. The valid values are
+              defined in
+              <a href="http://www.faqs.org/rfcs/rfc3066.html">RFC3066</a>.  The
+              default value is <code>en</code>.
+            </td>
+            <td>No</td>
+          </tr>
+          <tr>
+            <td>src</td>
+            <td>
+              Name of a one input file. Use this parameter to convert just one
+              file whose name and location are known.  The <code>dest</code>
+              parameter must also be given.
+            </td>
+            <td>
+              One of the following is required: <code>src</code> attribute,
+              <code>srcdir</code> attribute or <code>fileset</code> element(s).
+            </td>
+          </tr>
+          <tr>
+            <td>dest</td>
+            <td>
+              Name of a one output file. Used this with <code>src</code>
+              parameter only. The output directory is created if it doesn’t
+              exist.
+            </td>
+            <td>Required if <code>src</code> is used.</td>
+          </tr>
+          <tr>
+            <td>srcdir</td>
+            <td>
+              Name of the input directory. <code>srcdir</code> and
+              <code>fileset</code> elements can be combined and
+              <code>srcdir</code> can be omitted if there is at least one
+              <code>fileset</code> child element.  <code>srcdir</code> file
+              selection can be controlled with <code>include</code>,
+              <code>exclude</code>, etc.  child elements. Note that without
+              control parameters the task tries to rasterize <em>all</em> files
+              in the given directory.
+            </td>
+            <td>
+              One of the following is required: <code>src</code> attribute,
+              <code>srcdir</code> attribute or <code>fileset</code> element(s).
+            </td>
+          </tr>
+          <tr>
+            <td>destdir</td>
+            <td>
+              Name of an output directory. Use this with the <code>srcdir</code>
+              attribute or <code>fileset</code> elements. The task generates
+              the names of the output images by changing the suffix of the
+              input file names to correspond the result image type. A suffix is
+              added if the input file doesn’t have one. Output directories are 
+              created if they don’t exist.
+            </td>
+            <td>
+              Required if <code>srcdir</code> attribute or
+              <code>fileset</code> elements are used.
+            </td>
+          </tr>
+          <tr>
+            <td>classname</td>
+            <td>
+              Class name of the XML parser used to parse SVG images.  The value
+              can be either the complete classname with package information
+              included or the special name <code>jaxp</code>, which means any
+              available parser in the <code>CLASSPATH</code> that supports JAXP.
+              See the Batik code for the default value.
+            </td>
+            <td>No</td>
+          </tr>
+        </table>
+        <p>
+          You can use <code>fileset</code> elements to select input 
+          files and directories. See the
+          <a href="http://ant.apache.org/">Ant</a> documentation to learn how
+          to use
+          <a href="http://ant.apache.org/manual/CoreTypes/fileset.html">filesets</a>.
+        </p>
+      </section>
+
+      <section id="taskExamples">
+        <title>Examples of using the rasterizer task</title>
+
+        <p>
+          The following example is the complete Ant project that converts an SVG
+          image (called <code>input.svg</code>) to a PNG image (called
+          <code>output.png</code>):
+        </p>
+
+        <source><![CDATA[<?xml version="1.0"?>
+
+<project name="RasterizerExample" default="main" basedir=".">
+
+  <taskdef name="rasterize" 
+           classname="org.apache.tools.ant.taskdefs.optional.RasterizerTask"/>
+
+  <target name="main">
+    <rasterize result="image/png" src="input.svg" dest="output.png"/>
+  </target>
+</project>]]></source>
+
+        <p>
+          The next example is just one task in a project. It converts all files
+          with a <code>.svg</code> suffix in the <code>images</code> directory and
+          all files in the <code>images2</code> directory to TIFF images. The
+          resulting image files are placed in the <code>results</code> directory.
+        </p>
+
+        <source><![CDATA[  <rasterize result="image/tiff" destdir="results">
+    <fileset dir="images">
+      <include name="**/*.svg"/>
+    </fileset>
+    <fileset dir="images2"/>
+  </rasterize>]]></source>
+
+      </section>
+    </section>
+
+  </body>
+</document>

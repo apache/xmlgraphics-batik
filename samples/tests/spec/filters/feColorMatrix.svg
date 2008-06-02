@@ -4,11 +4,12 @@
 
 <!--
 
-   Copyright 2001  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -72,7 +73,7 @@
       <filter id="matrixAlpha" filterUnits="objectBoundingBox" 
               x="0%" y="0%" width="100%" height="100%">
         <feTurbulence type="turbulence" baseFrequency="0.05" numOctaves="2" stitchTiles="noStitch" seed="0" result="turb"/>
-		<feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" />
+        <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" />
       </filter>
 
       <filter id="matrixRed" filterUnits="objectBoundingBox" 
@@ -84,13 +85,13 @@
       <filter id="matrixGreen" filterUnits="objectBoundingBox" 
               x="0%" y="0%" width="100%" height="100%">
         <feTurbulence type="turbulence" baseFrequency="0.05" numOctaves="2" stitchTiles="noStitch" seed="0" result="turb"/>
-	    <feColorMatrix type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 0 1" />
+        <feColorMatrix type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 0 1" />
       </filter>
 
       <filter id="matrixBlue" filterUnits="objectBoundingBox" 
               x="0%" y="0%" width="100%" height="100%">
         <feTurbulence type="turbulence" baseFrequency="0.05" numOctaves="2" stitchTiles="noStitch" seed="0" result="turb"/>
-		<feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 0 1" />
+        <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 0 1" />
       </filter>
 
     </defs>

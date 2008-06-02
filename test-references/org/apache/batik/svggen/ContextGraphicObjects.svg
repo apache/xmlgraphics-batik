@@ -18,7 +18,7 @@
       ><g
       ><defs id="testdefs1"
         ><font horiz-adv-x="77.7832" id="testfont1"
-          ><font-face ascent="91.23535" descent="19.506836" units-per-em="100" font-family="Times New Roman" font-style="normal" font-weight="normal"
+          ><font-face ascent="91.23535" font-style="normal" descent="19.506836" units-per-em="100" font-family="Times New Roman" font-weight="normal"
             /><missing-glyph horiz-adv-x="77.7832" d="M13.875 0 L13.875 62.5 L63.875 62.5 L63.875 0 L13.875 0 ZM15.4375 1.5625 L62.3125 1.5625 L62.3125 60.9375 L15.4375 60.9375 L15.4375 1.5625 Z"
             /><glyph unicode=")" horiz-adv-x="33.30078" d="M2.25 67.3906 L2.25 69.4375 Q9.6719 65.7656 14.5938 60.7969 Q21.5781 53.6562 25.3906 44.0625 Q29.2031 34.4688 29.2031 24.0781 Q29.2031 8.9375 21.7578 -3.5312 Q14.3125 -16 2.25 -21.375 L2.25 -19.5625 Q8.25 -16.2031 12.1328 -10.4609 Q16.0156 -4.7188 17.8984 4.1328 Q19.7812 12.9844 19.7812 22.6094 Q19.7812 33.0156 18.1719 41.6094 Q16.9375 48.3438 15.1094 52.3984 Q13.2812 56.4531 10.2578 60.2109 Q7.2344 63.9688 2.25 67.3906 Z"
             /><glyph unicode="." horiz-adv-x="25.0" d="M12.5 9.4688 Q14.7969 9.4688 16.3594 7.8828 Q17.9219 6.2969 17.9219 4.0469 Q17.9219 1.8125 16.3359 0.2266 Q14.75 -1.3594 12.5 -1.3594 Q10.25 -1.3594 8.6641 0.2266 Q7.0781 1.8125 7.0781 4.0469 Q7.0781 6.3438 8.6641 7.9062 Q10.25 9.4688 12.5 9.4688 Z"
@@ -121,14 +121,14 @@ HAR34A7c8eAq7qrHyZNXd0jHHbgDd7TuCMnhKwjuwB24Q7uju7Xjzf8BxjbJhW9v
 vFkAAAAASUVORK5CYII=" xlink:type="simple" xlink:actuate="onLoad" height="150" id="testimage2" preserveAspectRatio="xMidYMid meet" xlink:show="embed"
         /></defs
         ><g class="testC1"
-        ><text xml:space="preserve" x="20" y="40" class="testC2"
+        ><text x="20" xml:space="preserve" y="40" class="testC2"
           >Hello SVG drawString(...)</text
           ><circle r="30" class="testC3" cx="50" transform="translate(0,70)" cy="30"
           /><circle r="30" class="testC4" cx="50" transform="translate(60,70)" cy="30"
           /><circle r="30" class="testC5" cx="50" transform="translate(120,70)" cy="30"
           /><circle r="30" class="testC6" cx="50" transform="translate(180,70)" cy="30"
-          /><use transform="translate(0,130) matrix(1,0,0,1,40,40)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC7" xlink:actuate="onLoad" xlink:show="embed"
-          /><use transform="translate(0,130) matrix(1,0,0,1,40,40)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage2" xlink:type="simple" class="testC8" xlink:actuate="onLoad" xlink:show="embed"
+          /><use transform="translate(0,130) matrix(1,0,0,1,40,40)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" xlink:actuate="onLoad" class="testC7" xlink:show="embed"
+          /><use transform="translate(0,130) matrix(1,0,0,1,40,40)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage2" xlink:type="simple" xlink:actuate="onLoad" class="testC8" xlink:show="embed"
         /></g
       ></g
     ></g

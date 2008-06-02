@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001,2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -25,7 +26,8 @@ import java.awt.image.IndexColorModel;
 import java.awt.image.RenderedImage;
 import java.awt.image.SampleModel;
 import java.util.Date;
-import java.util.Vector;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * An instance of <code>ImageEncodeParam</code> for encoding images in
@@ -33,6 +35,8 @@ import java.util.Vector;
  *
  * <p><b> This class is not a committed part of the JAI API.  It may
  * be removed or changed in future releases of JAI.</b>
+ *
+ * @version $Id$
  */
 public abstract class PNGEncodeParam implements ImageEncodeParam {
 
@@ -80,7 +84,7 @@ public abstract class PNGEncodeParam implements ImageEncodeParam {
      * <p> Note that this method does not provide any guarantee that
      * the given image will be successfully encoded by the PNG
      * encoder, as it only performs a very superficial analysis of
-     * the image structure. 
+     * the image structure.
      */
     public static PNGEncodeParam getDefaultEncodeParam(RenderedImage im) {
         ColorModel colorModel = im.getColorModel();
@@ -104,16 +108,16 @@ public abstract class PNGEncodeParam implements ImageEncodeParam {
         public Palette() {}
 
         // bKGD chunk
-        
+
         private boolean backgroundSet = false;
-        
+
         /**
          * Suppresses the 'bKGD' chunk from being output.
          */
         public void unsetBackground() {
             backgroundSet = false;
         }
-        
+
         /**
          * Returns true if a 'bKGD' chunk will be output.
          */
@@ -134,7 +138,7 @@ public abstract class PNGEncodeParam implements ImageEncodeParam {
             this.bitDepth = bitDepth;
             bitDepthSet = true;
         }
-    
+
         // PLTE chunk
 
         private int[] palette = null;
@@ -153,18 +157,18 @@ public abstract class PNGEncodeParam implements ImageEncodeParam {
          */
         public void setPalette(int[] rgb) {
             if (rgb.length < 1*3 || rgb.length > 256*3) {
-		throw new 
-		  IllegalArgumentException(PropertyUtil.getString("PNGEncodeParam0"));
+                throw new
+                  IllegalArgumentException(PropertyUtil.getString("PNGEncodeParam0"));
             }
             if ((rgb.length % 3) != 0) {
-                throw new 
-         	  IllegalArgumentException(PropertyUtil.getString("PNGEncodeParam1"));
+                throw new
+                   IllegalArgumentException(PropertyUtil.getString("PNGEncodeParam1"));
             }
-            
+
             palette = (int[])(rgb.clone());
             paletteSet = true;
         }
-        
+
         /**
          * Returns the current RGB palette.
          *
@@ -189,7 +193,7 @@ public abstract class PNGEncodeParam implements ImageEncodeParam {
             palette = null;
             paletteSet = false;
         }
-        
+
         /**
          * Returns true if a 'PLTE' chunk will be output.
          */
@@ -198,9 +202,9 @@ public abstract class PNGEncodeParam implements ImageEncodeParam {
         }
 
         // bKGD chunk
-        
+
         private int backgroundPaletteIndex;
-        
+
         /**
          * Sets the palette index of the suggested background color.
          *
@@ -210,7 +214,7 @@ public abstract class PNGEncodeParam implements ImageEncodeParam {
             backgroundPaletteIndex = index;
             backgroundSet = true;
         }
-        
+
         /**
          * Returns the palette index of the suggested background color.
          *
@@ -245,7 +249,7 @@ public abstract class PNGEncodeParam implements ImageEncodeParam {
             }
             transparencySet = true;
         }
-        
+
         /**
          * Returns the alpha values associated with each palette entry.
          *
@@ -274,16 +278,16 @@ public abstract class PNGEncodeParam implements ImageEncodeParam {
         public Gray() {}
 
         // bKGD chunk
-        
+
         private boolean backgroundSet = false;
-        
+
         /**
          * Suppresses the 'bKGD' chunk from being output.
          */
         public void unsetBackground() {
             backgroundSet = false;
         }
-        
+
         /**
          * Returns true if a 'bKGD' chunk will be output.
          */
@@ -309,9 +313,9 @@ public abstract class PNGEncodeParam implements ImageEncodeParam {
             this.bitDepth = bitDepth;
             bitDepthSet = true;
         }
-    
+
         // bKGD chunk
-        
+
         private int backgroundPaletteGray;
 
         /**
@@ -323,7 +327,7 @@ public abstract class PNGEncodeParam implements ImageEncodeParam {
             backgroundPaletteGray = gray;
             backgroundSet = true;
         }
-        
+
         /**
          * Returns the suggested gray level of the background.
          *
@@ -358,7 +362,7 @@ public abstract class PNGEncodeParam implements ImageEncodeParam {
             transparency[0] = transparentGray;
             transparencySet = true;
         }
-        
+
         /**
          * Returns the gray value to be used to denote transparency.
          *
@@ -394,7 +398,7 @@ public abstract class PNGEncodeParam implements ImageEncodeParam {
             bitShiftSet = true;
         }
 
-        /** 
+        /**
          * Returns the desired bit shift for a grayscale image.
          *
          * <p> If the bit shift has not previously been set, or has been
@@ -438,16 +442,16 @@ public abstract class PNGEncodeParam implements ImageEncodeParam {
         public RGB() {}
 
         // bKGD chunk
-        
+
         private boolean backgroundSet = false;
-        
+
         /**
          * Suppresses the 'bKGD' chunk from being output.
          */
         public void unsetBackground() {
             backgroundSet = false;
         }
-        
+
         /**
          * Returns true if a 'bKGD' chunk will be output.
          */
@@ -466,14 +470,14 @@ public abstract class PNGEncodeParam implements ImageEncodeParam {
             this.bitDepth = bitDepth;
             bitDepthSet = true;
         }
-    
+
         // bKGD chunk
 
         private int[] backgroundRGB;
 
         /**
          * Sets the RGB value of the suggested background color.
-         * The <code>rgb</code> parameter should have 3 entries. 
+         * The <code>rgb</code> parameter should have 3 entries.
          *
          * <p> The 'bKGD' chunk will encode this information.
          */
@@ -484,7 +488,7 @@ public abstract class PNGEncodeParam implements ImageEncodeParam {
             backgroundRGB = rgb;
             backgroundSet = true;
         }
-        
+
         /**
          * Returns the RGB value of the suggested background color.
          *
@@ -503,7 +507,7 @@ public abstract class PNGEncodeParam implements ImageEncodeParam {
         // tRNS chunk
 
         private int[] transparency;
-        
+
         /**
          * Sets the RGB value to be used to denote transparency.
          *
@@ -516,7 +520,7 @@ public abstract class PNGEncodeParam implements ImageEncodeParam {
             transparency = (int[])(transparentRGB.clone());
             transparencySet = true;
         }
-        
+
         /**
          * Returns the RGB value to be used to denote transparency.
          *
@@ -541,8 +545,8 @@ public abstract class PNGEncodeParam implements ImageEncodeParam {
      * Sets the desired bit depth of an image.
      */
     public abstract void setBitDepth(int bitDepth);
-    
-    /** 
+
+    /**
      * Returns the desired bit depth for a grayscale image.
      *
      * <p> If the bit depth has not previously been set, or has been
@@ -560,7 +564,7 @@ public abstract class PNGEncodeParam implements ImageEncodeParam {
     /**
      * Suppresses the setting of the bit depth of a grayscale image.
      * The depth of the encoded image will be inferred from the source
-     * image bit depth, rounded up to the next power of 2 between 1 
+     * image bit depth, rounded up to the next power of 2 between 1
      * and 16.
      */
     public void unsetBitDepth() {
@@ -582,7 +586,7 @@ public abstract class PNGEncodeParam implements ImageEncodeParam {
     public boolean getInterlacing() {
         return useInterlacing;
     }
-    
+
     // bKGD chunk - delegate to subclasses
 
     // In JAI 1.0, 'backgroundSet' was private.  The JDK 1.2 compiler
@@ -859,7 +863,7 @@ public abstract class PNGEncodeParam implements ImageEncodeParam {
         pd[0] = xPixelsPerUnit;
         pd[1] = yPixelsPerUnit;
         pd[2] = unitSpecifier;
-        
+
         setPhysicalDimension(pd);
     }
 
@@ -878,7 +882,7 @@ public abstract class PNGEncodeParam implements ImageEncodeParam {
         if (!physicalDimensionSet) {
             throw new IllegalStateException(PropertyUtil.getString("PNGEncodeParam16"));
         }
-        return (int[])(physicalDimension.clone());        
+        return (int[])(physicalDimension.clone());
     }
 
     /**
@@ -953,7 +957,7 @@ public abstract class PNGEncodeParam implements ImageEncodeParam {
 
     /**
      * Sets the number of significant bits for each band of the image.
-     * 
+     *
      * <p> The number of entries in the <code>significantBits</code>
      * array must be equal to the number of output bands in the image:
      * 1 for a gray image, 2 for gray+alpha, 3 for index or truecolor,
@@ -1210,9 +1214,9 @@ public abstract class PNGEncodeParam implements ImageEncodeParam {
     }
 
     // Other chunk types
-    
-    Vector chunkType = new Vector();
-    Vector chunkData = new Vector();
+
+    List chunkType = new ArrayList();
+    List chunkData = new ArrayList();
 
     /**
      * Adds a private chunk, in binary form, to the list of chunks to
@@ -1241,7 +1245,7 @@ public abstract class PNGEncodeParam implements ImageEncodeParam {
      * than the return value of <code>getNumPrivateChunks</code>.
      */
     public synchronized String getPrivateChunkType(int index) {
-        return (String)chunkType.elementAt(index);
+        return (String)chunkType.get(index);
     }
 
     /**
@@ -1251,7 +1255,7 @@ public abstract class PNGEncodeParam implements ImageEncodeParam {
      * <code>getNumPrivateChunks</code>.
      */
     public synchronized byte[] getPrivateChunkData(int index) {
-        return (byte[])chunkData.elementAt(index);
+        return (byte[])chunkData.get(index);
     }
 
     /**
@@ -1260,8 +1264,8 @@ public abstract class PNGEncodeParam implements ImageEncodeParam {
      * transcoding PNG images.
      */
     public synchronized void removeUnsafeToCopyPrivateChunks() {
-        Vector newChunkType = new Vector();
-        Vector newChunkData = new Vector();
+        List newChunkType = new ArrayList();
+        List newChunkData = new ArrayList();
 
         int len = getNumPrivateChunks();
         for (int i = 0; i < len; i++) {
@@ -1281,8 +1285,8 @@ public abstract class PNGEncodeParam implements ImageEncodeParam {
      * Remove all private chunks associated with this parameter instance.
      */
     public synchronized void removeAllPrivateChunks() {
-        chunkType = new Vector();
-        chunkData = new Vector();
+        chunkType = new ArrayList();
+        chunkData = new ArrayList();
     }
 
     /**
@@ -1383,7 +1387,7 @@ public abstract class PNGEncodeParam implements ImageEncodeParam {
             left   = currRow[i - bytesPerPixel] & 0xff;
             up     = prevRow[i] & 0xff;
             upleft = prevRow[i - bytesPerPixel] & 0xff;
-                
+
             // no filter
             badness[0] += curr;
 
@@ -1396,12 +1400,12 @@ public abstract class PNGEncodeParam implements ImageEncodeParam {
             diff = curr - up;
             scratchRows[2][i]  = (byte)diff;
             badness    [2]    +=   (diff>=0)?diff:-diff;
-                
+
             // average filter
             diff = curr - ((left+up)>>1);
             scratchRows[3][i]  = (byte)diff;
             badness    [3]    +=   (diff>=0)?diff:-diff;
-                
+
             // paeth filter
 
             // Original code much simplier but doesn't take full
@@ -1439,7 +1443,7 @@ public abstract class PNGEncodeParam implements ImageEncodeParam {
                     diff = curr-left;
                   else
                     diff = curr-upleft;
-                else 
+                else
                   // pc is negative and less than or equal to pa,
                   // but since pa is greater than pb this isn't an issue...
                   if (pb <= -pc)
@@ -1450,18 +1454,18 @@ public abstract class PNGEncodeParam implements ImageEncodeParam {
             } else {
               if (pb<0) {
                 pb =-pb; // make it positive...
-                if (pa <= pb) {  
+                if (pa <= pb) {
                   // pc would be negative and less than or equal to pb
                   pc = pb-pa;
                   if (pa <= pc)
                     diff = curr-left;
-                  else if (pb == pc) 
+                  else if (pb == pc)
                     // if pa is zero then pc==pb otherwise
                     // pc must be less than pb.
                     diff = curr-up;
-                  else 
+                  else
                     diff = curr-upleft;
-                } else { 
+                } else {
                   // pc would be positive and less than pa.
                   pc = pa-pb;
                   if (pb <= pc)
@@ -1482,7 +1486,7 @@ public abstract class PNGEncodeParam implements ImageEncodeParam {
         }
         int filterType = 0;
         int minBadness = badness[0];
-        
+
         for (int i = 1; i < 5; i++) {
             if (badness[i] < minBadness) {
                 minBadness = badness[i];
@@ -1495,7 +1499,7 @@ public abstract class PNGEncodeParam implements ImageEncodeParam {
                              scratchRows[0], bytesPerPixel,
                              bytesPerRow);
         }
-        
+
         return filterType;
     }
 }

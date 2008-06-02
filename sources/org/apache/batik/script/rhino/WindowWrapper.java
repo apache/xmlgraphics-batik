@@ -1,10 +1,11 @@
 /*
 
-   Copyright 1999-2003,2006  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -26,13 +27,12 @@ import org.apache.batik.script.Window;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.ImporterTopLevel;
-import org.mozilla.javascript.JavaScriptException;
 import org.mozilla.javascript.NativeObject;
-import org.mozilla.javascript.PropertyException;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
-import org.mozilla.javascript.WrappedException;
+
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
 /**
  * This class wraps a Window object to expose it to the interpreter.
@@ -44,13 +44,13 @@ import org.w3c.dom.Document;
  */
 public class WindowWrapper extends ImporterTopLevel {
 
-    private final static Object[] EMPTY_ARGUMENTS = new Object[0];
+    private static final Object[] EMPTY_ARGUMENTS = new Object[0];
 
     /**
      * The rhino interpreter.
      */
     protected RhinoInterpreter interpreter;
-    
+
     /**
      * The wrapped window.
      */
@@ -61,15 +61,11 @@ public class WindowWrapper extends ImporterTopLevel {
      */
     public WindowWrapper(Context context) {
         super(context);
-        String[] names = { "setInterval", "setTimeout", "clearInterval", 
-                           "clearTimeout", "parseXML", "getURL", "postURL",
-                           "alert", "confirm", "prompt" };
-        try {
-            this.defineFunctionProperties(names, WindowWrapper.class,
-                                          ScriptableObject.DONTENUM);
-        } catch (PropertyException e) {
-            throw new Error();  // should never happen
-        }
+        String[] names = { "setInterval", "setTimeout", "clearInterval",
+                           "clearTimeout", "parseXML", "printNode", "getURL",
+                           "postURL", "alert", "confirm", "prompt" };
+        this.defineFunctionProperties(names, WindowWrapper.class,
+                                      ScriptableObject.DONTENUM);
     }
 
     public String getClassName() {
@@ -86,8 +82,7 @@ public class WindowWrapper extends ImporterTopLevel {
     public static Object setInterval(Context cx,
                                      Scriptable thisObj,
                                      Object[] args,
-                                     Function funObj)
-        throws JavaScriptException {
+                                     Function funObj) {
         int len = args.length;
         WindowWrapper ww = (WindowWrapper)thisObj;
         Window window = ww.window;
@@ -95,7 +90,7 @@ public class WindowWrapper extends ImporterTopLevel {
         if (len < 2) {
             throw Context.reportRuntimeError("invalid argument count");
         }
-        long to = ((Long)Context.toType(args[1], Long.TYPE)).longValue();
+        long to = ((Long)Context.jsToJava(args[1], Long.TYPE)).longValue();
         if (args[0] instanceof Function) {
             RhinoInterpreter interp =
                 (RhinoInterpreter)window.getInterpreter();
@@ -105,7 +100,7 @@ public class WindowWrapper extends ImporterTopLevel {
             return Context.toObject(window.setInterval(fw, to), thisObj);
         }
         String script =
-	  (String)Context.toType(args[0], String.class);
+            (String)Context.jsToJava(args[0], String.class);
         return Context.toObject(window.setInterval(script, to), thisObj);
     }
 
@@ -115,15 +110,14 @@ public class WindowWrapper extends ImporterTopLevel {
     public static Object setTimeout(Context cx,
                                     Scriptable thisObj,
                                     Object[] args,
-                                    Function funObj)
-        throws JavaScriptException {
+                                    Function funObj) {
         int len = args.length;
         WindowWrapper ww = (WindowWrapper)thisObj;
         Window window = ww.window;
         if (len < 2) {
             throw Context.reportRuntimeError("invalid argument count");
         }
-        long to = ((Long)Context.toType(args[1], Long.TYPE)).longValue();
+        long to = ((Long)Context.jsToJava(args[1], Long.TYPE)).longValue();
         if (args[0] instanceof Function) {
             RhinoInterpreter interp =
                 (RhinoInterpreter)window.getInterpreter();
@@ -133,7 +127,7 @@ public class WindowWrapper extends ImporterTopLevel {
             return Context.toObject(window.setTimeout(fw, to), thisObj);
         }
         String script =
-            (String)Context.toType(args[0], String.class);
+            (String)Context.jsToJava(args[0], String.class);
         return Context.toObject(window.setTimeout(script, to), thisObj);
     }
 
@@ -143,13 +137,12 @@ public class WindowWrapper extends ImporterTopLevel {
     public static void clearInterval(Context cx,
                                      Scriptable thisObj,
                                      Object[] args,
-                                     Function funObj)
-        throws JavaScriptException {
+                                     Function funObj) {
         int len = args.length;
         WindowWrapper ww = (WindowWrapper)thisObj;
         Window window = ww.window;
         if (len >= 1) {
-            window.clearInterval(Context.toType(args[0], Object.class));
+            window.clearInterval(Context.jsToJava(args[0], Object.class));
         }
     }
 
@@ -159,13 +152,12 @@ public class WindowWrapper extends ImporterTopLevel {
     public static void clearTimeout(Context cx,
                                     Scriptable thisObj,
                                     Object[] args,
-                                    Function funObj)
-        throws JavaScriptException {
+                                    Function funObj) {
         int len = args.length;
         WindowWrapper ww = (WindowWrapper)thisObj;
         Window window = ww.window;
         if (len >= 1) {
-            window.clearTimeout(Context.toType(args[0], Object.class));
+            window.clearTimeout(Context.jsToJava(args[0], Object.class));
         }
     }
 
@@ -175,8 +167,7 @@ public class WindowWrapper extends ImporterTopLevel {
     public static Object parseXML(Context cx,
                                   Scriptable thisObj,
                                   final Object[] args,
-                                  Function funObj)
-        throws JavaScriptException {
+                                  Function funObj) {
         int len = args.length;
         WindowWrapper ww = (WindowWrapper)thisObj;
         final Window window = ww.window;
@@ -190,11 +181,37 @@ public class WindowWrapper extends ImporterTopLevel {
         Object ret = AccessController.doPrivileged( new PrivilegedAction() {
                 public Object run() {
                     return window.parseXML
-                        ((String)Context.toType(args[0], String.class),
-                         (Document)Context.toType(args[1], Document.class));
+                        ((String)Context.jsToJava(args[0], String.class),
+                         (Document)Context.jsToJava(args[1], Document.class));
                 }
             }, acc);
         return Context.toObject(ret, thisObj);
+    }
+
+    /**
+     * Wraps the 'printNode' method of the Window interface.
+     */
+    public static Object printNode(Context cx,
+                                   Scriptable thisObj,
+                                   final Object[] args,
+                                   Function funObj) {
+        if (args.length != 1) {
+            throw Context.reportRuntimeError("invalid argument count");
+        }
+
+        WindowWrapper ww = (WindowWrapper)thisObj;
+        final Window window = ww.window;
+
+        AccessControlContext acc =
+            ((RhinoInterpreter)window.getInterpreter()).getAccessControlContext();
+
+        Object ret = AccessController.doPrivileged(new PrivilegedAction() {
+                public Object run() {
+                    return window.printNode
+                        ((Node) Context.jsToJava(args[0], Node.class));
+                }
+            }, acc);
+        return Context.toString(ret);
     }
 
     /**
@@ -203,8 +220,7 @@ public class WindowWrapper extends ImporterTopLevel {
     public static void getURL(Context cx,
                               Scriptable thisObj,
                               final Object[] args,
-                              Function funObj)
-        throws JavaScriptException {
+                              Function funObj) {
         int len = args.length;
         WindowWrapper ww = (WindowWrapper)thisObj;
         final Window window = ww.window;
@@ -213,7 +229,7 @@ public class WindowWrapper extends ImporterTopLevel {
         }
         RhinoInterpreter interp =
             (RhinoInterpreter)window.getInterpreter();
-        final String uri = (String)Context.toType(args[0], String.class);
+        final String uri = (String)Context.jsToJava(args[0], String.class);
         Window.URLResponseHandler urlHandler = null;
         if (args[1] instanceof Function) {
             urlHandler = new GetURLFunctionWrapper
@@ -239,7 +255,7 @@ public class WindowWrapper extends ImporterTopLevel {
                     public Object run() {
                         window.getURL
                             (uri, fw,
-                             (String)Context.toType(args[2], String.class));
+                             (String)Context.jsToJava(args[2], String.class));
                         return null;
                     }
                 }, acc);
@@ -252,8 +268,7 @@ public class WindowWrapper extends ImporterTopLevel {
     public static void postURL(Context cx,
                                Scriptable thisObj,
                                final Object[] args,
-                               Function funObj)
-        throws JavaScriptException {
+                               Function funObj) {
         int len = args.length;
         WindowWrapper ww = (WindowWrapper)thisObj;
         final Window window = ww.window;
@@ -262,8 +277,8 @@ public class WindowWrapper extends ImporterTopLevel {
         }
         RhinoInterpreter interp =
             (RhinoInterpreter)window.getInterpreter();
-        final String uri     = (String)Context.toType(args[0], String.class);
-        final String content = (String)Context.toType(args[1], String.class);
+        final String uri     = (String)Context.jsToJava(args[0], String.class);
+        final String content = (String)Context.jsToJava(args[1], String.class);
         Window.URLResponseHandler urlHandler = null;
         if (args[2] instanceof Function) {
             urlHandler = new GetURLFunctionWrapper
@@ -291,7 +306,7 @@ public class WindowWrapper extends ImporterTopLevel {
                     public Object run() {
                         window.postURL
                             (uri, content, fw,
-                             (String)Context.toType(args[3], String.class));
+                             (String)Context.jsToJava(args[3], String.class));
                         return null;
                     }
                 }, acc);
@@ -301,8 +316,8 @@ public class WindowWrapper extends ImporterTopLevel {
                     public Object run() {
                         window.postURL
                             (uri, content, fw,
-                             (String)Context.toType(args[3], String.class),
-                             (String)Context.toType(args[4], String.class));
+                             (String)Context.jsToJava(args[3], String.class),
+                             (String)Context.jsToJava(args[4], String.class));
                         return null;
                     }
                 }, acc);
@@ -315,14 +330,13 @@ public class WindowWrapper extends ImporterTopLevel {
     public static void alert(Context cx,
                              Scriptable thisObj,
                              Object[] args,
-                             Function funObj)
-        throws JavaScriptException {
+                             Function funObj) {
         int len = args.length;
         WindowWrapper ww = (WindowWrapper)thisObj;
         Window window = ww.window;
         if (len >= 1) {
             String message =
-                (String)Context.toType(args[0], String.class);
+                (String)Context.jsToJava(args[0], String.class);
             window.alert(message);
         }
     }
@@ -333,14 +347,13 @@ public class WindowWrapper extends ImporterTopLevel {
     public static Object confirm(Context cx,
                                   Scriptable thisObj,
                                   Object[] args,
-                                  Function funObj)
-        throws JavaScriptException {
+                                  Function funObj) {
         int len = args.length;
         WindowWrapper ww = (WindowWrapper)thisObj;
         Window window = ww.window;
         if (len >= 1) {
             String message =
-                (String)Context.toType(args[0], String.class);
+                (String)Context.jsToJava(args[0], String.class);
             if (window.confirm(message))
                 return Context.toObject(Boolean.TRUE, thisObj);
             else
@@ -355,8 +368,7 @@ public class WindowWrapper extends ImporterTopLevel {
     public static Object prompt(Context cx,
                                 Scriptable thisObj,
                                 Object[] args,
-                                Function funObj)
-        throws JavaScriptException {
+                                Function funObj) {
 
         WindowWrapper ww = (WindowWrapper)thisObj;
         Window window = ww.window;
@@ -367,14 +379,14 @@ public class WindowWrapper extends ImporterTopLevel {
                 break;
             case 1:
                 String message =
-                    (String)Context.toType(args[0], String.class);
+                    (String)Context.jsToJava(args[0], String.class);
                 result = window.prompt(message);
                 break;
             default:
                 message =
-                    (String)Context.toType(args[0], String.class);
+                    (String)Context.jsToJava(args[0], String.class);
                 String defVal =
-                    (String)Context.toType(args[1], String.class);
+                    (String)Context.jsToJava(args[1], String.class);
                 result = window.prompt(message, defVal);
                 break;
         }
@@ -382,7 +394,7 @@ public class WindowWrapper extends ImporterTopLevel {
         if (result == null) {
             return null;
         }
-        return Context.toObject(result, thisObj);
+        return Context.toString(result);
     }
 
     /**
@@ -420,11 +432,7 @@ public class WindowWrapper extends ImporterTopLevel {
          * Calls the function.
          */
         public void run() {
-            try {
-                interpreter.callHandler(function, arguments);
-            } catch (JavaScriptException e) {
-                throw new WrappedException(e);
-            }
+            interpreter.callHandler(function, arguments);
         }
     }
 
@@ -468,14 +476,10 @@ public class WindowWrapper extends ImporterTopLevel {
         public void getURLDone(final boolean success,
                                final String mime,
                                final String content) {
-            try {
-                interpreter.callHandler
-                    (function, 
-                     new GetURLDoneArgBuilder(success, mime, 
-                                              content, windowWrapper));
-            } catch (JavaScriptException e) {
-                throw new WrappedException(e);
-            }
+            interpreter.callHandler
+                (function,
+                 new GetURLDoneArgBuilder(success, mime,
+                                          content, windowWrapper));
         }
     }
 
@@ -522,24 +526,19 @@ public class WindowWrapper extends ImporterTopLevel {
         public void getURLDone(final boolean success,
                                final String mime,
                                final String content) {
-            try {
-                interpreter.callMethod
-                    (object, COMPLETE,
-                     new GetURLDoneArgBuilder(success, mime, 
-                                              content, windowWrapper));
-            } catch (JavaScriptException e) {
-                Context.exit();
-                throw new WrappedException(e);
-            }
+            interpreter.callMethod
+                (object, COMPLETE,
+                 new GetURLDoneArgBuilder(success, mime,
+                                          content, windowWrapper));
         }
     }
 
-    static class GetURLDoneArgBuilder 
+    static class GetURLDoneArgBuilder
         implements RhinoInterpreter.ArgumentsBuilder {
         boolean success;
         String mime, content;
         WindowWrapper windowWrapper;
-        public GetURLDoneArgBuilder(boolean success, 
+        public GetURLDoneArgBuilder(boolean success,
                                     String mime, String content,
                                     WindowWrapper ww) {
             this.success = success;

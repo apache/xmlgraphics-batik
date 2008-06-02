@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001,2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -40,14 +41,14 @@ import java.io.UTFDataFormatException;
  * <code>SeekableStream</code> guarantee the ability to seek backwards while
  * others may not offer this feature in the interest of providing greater
  * efficiency for those users who do not require it.
- * 
+ *
  * <p> The <code>DataInput</code> interface is supported as well.  This included
  * the <code>skipBytes()</code> and <code>readFully()</code> methods and a
  * variety of <code>read</code> methods for various data types.
  *
  * <p> A number of concrete subclasses of <code>SeekableStream</code> are
  * supplied in the <code>com.sun.media.jai.codec</code> package.
- * 
+ *
  * <p> Three classes are provided for the purpose of adapting a standard
  * <code>InputStream</code> to the <code>SeekableStream</code> interface.
  * <code>ForwardSeekableStream</code> does not allows seeking backwards, but is
@@ -80,15 +81,16 @@ import java.io.UTFDataFormatException;
  * supplied by a given <code>InputStream</code>.  The caller, by means of the
  * <code>canSeekBackwards</code> parameter, determines whether support for
  * seeking backwards is required.
- * 
+ *
+ * @version $Id$
  */
 public abstract class SeekableStream extends InputStream implements DataInput {
 
     /**
-     * Returns a <code>SeekableStream</code> that will read from a 
+     * Returns a <code>SeekableStream</code> that will read from a
      * given <code>InputStream</code>, optionally including support
      * for seeking backwards.  This is a convenience method that
-     * avoids the need to instantiate specific subclasses of 
+     * avoids the need to instantiate specific subclasses of
      * <code>SeekableStream</code> depending on the current security
      * model.
      *
@@ -182,7 +184,7 @@ public abstract class SeekableStream extends InputStream implements DataInput {
      * @exception  IOException  if an I/O error occurs.
      */
     public abstract int read(byte[] b, int off, int len) throws IOException;
-    
+
     // Implemented in InputStream:
     //
     // public int read(byte[] b) throws IOException {
@@ -190,7 +192,7 @@ public abstract class SeekableStream extends InputStream implements DataInput {
     // public int available) throws IOException
     // public void close() throws IOException;
 
-    /** Marked position */
+    /** Marked position, shared by {@link ForwardSeekableStream} */
     protected long markPos = -1L;
 
     /**
@@ -228,7 +230,7 @@ public abstract class SeekableStream extends InputStream implements DataInput {
     }
 
     /**
-     * Returns <code>true</code> if this object supports calls to 
+     * Returns <code>true</code> if this object supports calls to
      * <code>seek(pos)</code> with an offset <code>pos</code> smaller
      * than the current offset, as returned by <code>getFilePointer</code>.
      */
@@ -246,7 +248,7 @@ public abstract class SeekableStream extends InputStream implements DataInput {
     public abstract long getFilePointer() throws IOException;
 
     /**
-     * Sets the offset, measured from the beginning of this 
+     * Sets the offset, measured from the beginning of this
      * stream, at which the next read occurs.
      *
      * <p> If <code>canSeekBackwards()</code> returns <code>false</code>,
@@ -254,10 +256,10 @@ public abstract class SeekableStream extends InputStream implements DataInput {
      * the current value of <code>getFilePointer()</code> will have
      * no effect.
      *
-     * @param      pos   the offset position, measured in bytes from the 
-     *                   beginning of the stream, at which to set the stream 
+     * @param      pos   the offset position, measured in bytes from the
+     *                   beginning of the stream, at which to set the stream
      *                   pointer.
-     * @exception  IOException  if <code>pos</code> is less than 
+     * @exception  IOException  if <code>pos</code> is less than
      *                          <code>0</code> or if an I/O error occurs.
      */
     public abstract void seek(long pos) throws IOException;
@@ -265,27 +267,27 @@ public abstract class SeekableStream extends InputStream implements DataInput {
     // Methods from RandomAccessFile
 
     /**
-     * Reads <code>b.length</code> bytes from this stream into the byte 
-     * array, starting at the current stream pointer. This method reads 
-     * repeatedly from the stream until the requested number of bytes are 
-     * read. This method blocks until the requested number of bytes are 
-     * read, the end of the stream is detected, or an exception is thrown. 
+     * Reads <code>b.length</code> bytes from this stream into the byte
+     * array, starting at the current stream pointer. This method reads
+     * repeatedly from the stream until the requested number of bytes are
+     * read. This method blocks until the requested number of bytes are
+     * read, the end of the stream is detected, or an exception is thrown.
      *
      * @param      b   the buffer into which the data is read.
      * @exception  EOFException  if this stream reaches the end before reading
      *               all the bytes.
-     * @exception  IOException   if an I/O error occurs.       
+     * @exception  IOException   if an I/O error occurs.
      */
     public final void readFully(byte[] b) throws IOException {
         readFully(b, 0, b.length);
     }
 
     /**
-     * Reads exactly <code>len</code> bytes from this stream into the byte 
-     * array, starting at the current stream pointer. This method reads 
-     * repeatedly from the stream until the requested number of bytes are 
-     * read. This method blocks until the requested number of bytes are 
-     * read, the end of the stream is detected, or an exception is thrown. 
+     * Reads exactly <code>len</code> bytes from this stream into the byte
+     * array, starting at the current stream pointer. This method reads
+     * repeatedly from the stream until the requested number of bytes are
+     * read. This method blocks until the requested number of bytes are
+     * read, the end of the stream is detected, or an exception is thrown.
      *
      * @param      b     the buffer into which the data is read.
      * @param      off   the start offset of the data.
@@ -297,26 +299,26 @@ public abstract class SeekableStream extends InputStream implements DataInput {
     public final void readFully(byte[] b, int off, int len)
         throws IOException {
         int n = 0;
-	do {
-	    int count = this.read(b, off + n, len - n);
-	    if (count < 0)
-		throw new EOFException();
-	    n += count;
-	} while (n < len);
+        do {
+            int count = this.read(b, off + n, len - n);
+            if (count < 0)
+                throw new EOFException();
+            n += count;
+        } while (n < len);
     }
 
     // Methods from DataInput, plus little-endian versions
 
     /**
-     * Attempts to skip over <code>n</code> bytes of input discarding the 
-     * skipped bytes. 
+     * Attempts to skip over <code>n</code> bytes of input discarding the
+     * skipped bytes.
      * <p>
-     * 
-     * This method may skip over some smaller number of bytes, possibly zero. 
-     * This may result from any of a number of conditions; reaching end of 
-     * stream before <code>n</code> bytes have been skipped is only one 
-     * possibility. This method never throws an <code>EOFException</code>. 
-     * The actual number of bytes skipped is returned.  If <code>n</code> 
+     *
+     * This method may skip over some smaller number of bytes, possibly zero.
+     * This may result from any of a number of conditions; reaching end of
+     * stream before <code>n</code> bytes have been skipped is only one
+     * possibility. This method never throws an <code>EOFException</code>.
+     * The actual number of bytes skipped is returned.  If <code>n</code>
      * is negative, no bytes are skipped.
      *
      * @param      n   the number of bytes to be skipped.
@@ -327,40 +329,40 @@ public abstract class SeekableStream extends InputStream implements DataInput {
         if (n <= 0) {
             return 0;
         }
-	return (int)skip(n);
+        return (int)skip(n);
     }
 
     /**
-     * Reads a <code>boolean</code> from this stream. This method reads a 
-     * single byte from the stream, starting at the current stream pointer. 
-     * A value of <code>0</code> represents 
-     * <code>false</code>. Any other value represents <code>true</code>. 
-     * This method blocks until the byte is read, the end of the stream 
-     * is detected, or an exception is thrown. 
+     * Reads a <code>boolean</code> from this stream. This method reads a
+     * single byte from the stream, starting at the current stream pointer.
+     * A value of <code>0</code> represents
+     * <code>false</code>. Any other value represents <code>true</code>.
+     * This method blocks until the byte is read, the end of the stream
+     * is detected, or an exception is thrown.
      *
      * @return     the <code>boolean</code> value read.
      * @exception  EOFException  if this stream has reached the end.
      * @exception  IOException   if an I/O error occurs.
      */
     public final boolean readBoolean() throws IOException {
-	int ch = this.read();
-	if (ch < 0)
-	    throw new EOFException();
-	return (ch != 0);
+        int ch = this.read();
+        if (ch < 0)
+            throw new EOFException();
+        return (ch != 0);
     }
 
     /**
-     * Reads a signed eight-bit value from this stream. This method reads a 
-     * byte from the stream, starting from the current stream pointer. 
-     * If the byte read is <code>b</code>, where 
-     * <code>0&nbsp;&lt;=&nbsp;b&nbsp;&lt;=&nbsp;255</code>, 
+     * Reads a signed eight-bit value from this stream. This method reads a
+     * byte from the stream, starting from the current stream pointer.
+     * If the byte read is <code>b</code>, where
+     * <code>0&nbsp;&lt;=&nbsp;b&nbsp;&lt;=&nbsp;255</code>,
      * then the result is:
      * <blockquote><pre>
      *     (byte)(b)
      * </pre></blockquote>
      * <p>
-     * This method blocks until the byte is read, the end of the stream 
-     * is detected, or an exception is thrown. 
+     * This method blocks until the byte is read, the end of the stream
+     * is detected, or an exception is thrown.
      *
      * @return     the next byte of this stream as a signed eight-bit
      *             <code>byte</code>.
@@ -368,19 +370,19 @@ public abstract class SeekableStream extends InputStream implements DataInput {
      * @exception  IOException   if an I/O error occurs.
      */
     public final byte readByte() throws IOException {
-	int ch = this.read();
-	if (ch < 0)
-	    throw new EOFException();
-	return (byte)(ch);
+        int ch = this.read();
+        if (ch < 0)
+            throw new EOFException();
+        return (byte)(ch);
     }
 
     /**
-     * Reads an unsigned eight-bit number from this stream. This method reads 
-     * a byte from this stream, starting at the current stream pointer, 
-     * and returns that byte. 
+     * Reads an unsigned eight-bit number from this stream. This method reads
+     * a byte from this stream, starting at the current stream pointer,
+     * and returns that byte.
      * <p>
-     * This method blocks until the byte is read, the end of the stream 
-     * is detected, or an exception is thrown. 
+     * This method blocks until the byte is read, the end of the stream
+     * is detected, or an exception is thrown.
      *
      * @return     the next byte of this stream, interpreted as an unsigned
      *             eight-bit number.
@@ -388,26 +390,26 @@ public abstract class SeekableStream extends InputStream implements DataInput {
      * @exception  IOException   if an I/O error occurs.
      */
     public final int readUnsignedByte() throws IOException {
-	int ch = this.read();
-	if (ch < 0)
-	    throw new EOFException();
-	return ch;
+        int ch = this.read();
+        if (ch < 0)
+            throw new EOFException();
+        return ch;
     }
 
     /**
      * Reads a signed 16-bit number from this stream.
-     * The method reads two 
-     * bytes from this stream, starting at the current stream pointer. 
-     * If the two bytes read, in order, are 
-     * <code>b1</code> and <code>b2</code>, where each of the two values is 
-     * between <code>0</code> and <code>255</code>, inclusive, then the 
+     * The method reads two
+     * bytes from this stream, starting at the current stream pointer.
+     * If the two bytes read, in order, are
+     * <code>b1</code> and <code>b2</code>, where each of the two values is
+     * between <code>0</code> and <code>255</code>, inclusive, then the
      * result is equal to:
      * <blockquote><pre>
      *     (short)((b1 &lt;&lt; 8) | b2)
      * </pre></blockquote>
      * <p>
-     * This method blocks until the two bytes are read, the end of the 
-     * stream is detected, or an exception is thrown. 
+     * This method blocks until the two bytes are read, the end of the
+     * stream is detected, or an exception is thrown.
      *
      * @return     the next two bytes of this stream, interpreted as a signed
      *             16-bit number.
@@ -416,27 +418,27 @@ public abstract class SeekableStream extends InputStream implements DataInput {
      * @exception  IOException   if an I/O error occurs.
      */
     public final short readShort() throws IOException {
-	int ch1 = this.read();
-	int ch2 = this.read();
-	if ((ch1 | ch2) < 0)
-	    throw new EOFException();
-	return (short)((ch1 << 8) + (ch2 << 0));
+        int ch1 = this.read();
+        int ch2 = this.read();
+        if ((ch1 | ch2) < 0)
+            throw new EOFException();
+        return (short)((ch1 << 8) + (ch2 << 0));
     }
 
     /**
      * Reads a signed 16-bit number from this stream in little-endian order.
-     * The method reads two 
-     * bytes from this stream, starting at the current stream pointer. 
-     * If the two bytes read, in order, are 
-     * <code>b1</code> and <code>b2</code>, where each of the two values is 
-     * between <code>0</code> and <code>255</code>, inclusive, then the 
+     * The method reads two
+     * bytes from this stream, starting at the current stream pointer.
+     * If the two bytes read, in order, are
+     * <code>b1</code> and <code>b2</code>, where each of the two values is
+     * between <code>0</code> and <code>255</code>, inclusive, then the
      * result is equal to:
      * <blockquote><pre>
      *     (short)((b2 &lt;&lt; 8) | b1)
      * </pre></blockquote>
      * <p>
-     * This method blocks until the two bytes are read, the end of the 
-     * stream is detected, or an exception is thrown. 
+     * This method blocks until the two bytes are read, the end of the
+     * stream is detected, or an exception is thrown.
      *
      * @return     the next two bytes of this stream, interpreted as a signed
      *             16-bit number.
@@ -445,26 +447,26 @@ public abstract class SeekableStream extends InputStream implements DataInput {
      * @exception  IOException   if an I/O error occurs.
      */
     public final short readShortLE() throws IOException {
-	int ch1 = this.read();
-	int ch2 = this.read();
-	if ((ch1 | ch2) < 0)
-	    throw new EOFException();
-	return (short)((ch2 << 8) + (ch1 << 0));
+        int ch1 = this.read();
+        int ch2 = this.read();
+        if ((ch1 | ch2) < 0)
+            throw new EOFException();
+        return (short)((ch2 << 8) + (ch1 << 0));
     }
 
     /**
-     * Reads an unsigned 16-bit number from this stream. This method reads 
-     * two bytes from the stream, starting at the current stream pointer. 
-     * If the bytes read, in order, are 
-     * <code>b1</code> and <code>b2</code>, where 
-     * <code>0&nbsp;&lt;=&nbsp;b1, b2&nbsp;&lt;=&nbsp;255</code>, 
+     * Reads an unsigned 16-bit number from this stream. This method reads
+     * two bytes from the stream, starting at the current stream pointer.
+     * If the bytes read, in order, are
+     * <code>b1</code> and <code>b2</code>, where
+     * <code>0&nbsp;&lt;=&nbsp;b1, b2&nbsp;&lt;=&nbsp;255</code>,
      * then the result is equal to:
      * <blockquote><pre>
      *     (b1 &lt;&lt; 8) | b2
      * </pre></blockquote>
      * <p>
-     * This method blocks until the two bytes are read, the end of the 
-     * stream is detected, or an exception is thrown. 
+     * This method blocks until the two bytes are read, the end of the
+     * stream is detected, or an exception is thrown.
      *
      * @return     the next two bytes of this stream, interpreted as an
      *             unsigned 16-bit integer.
@@ -473,27 +475,27 @@ public abstract class SeekableStream extends InputStream implements DataInput {
      * @exception  IOException   if an I/O error occurs.
      */
     public final int readUnsignedShort() throws IOException {
-	int ch1 = this.read();
-	int ch2 = this.read();
-	if ((ch1 | ch2) < 0)
-	    throw new EOFException();
-	return (ch1 << 8) + (ch2 << 0);
+        int ch1 = this.read();
+        int ch2 = this.read();
+        if ((ch1 | ch2) < 0)
+            throw new EOFException();
+        return (ch1 << 8) + (ch2 << 0);
     }
 
     /**
      * Reads an unsigned 16-bit number from this stream in little-endian order.
-     * This method reads 
-     * two bytes from the stream, starting at the current stream pointer. 
-     * If the bytes read, in order, are 
-     * <code>b1</code> and <code>b2</code>, where 
-     * <code>0&nbsp;&lt;=&nbsp;b1, b2&nbsp;&lt;=&nbsp;255</code>, 
+     * This method reads
+     * two bytes from the stream, starting at the current stream pointer.
+     * If the bytes read, in order, are
+     * <code>b1</code> and <code>b2</code>, where
+     * <code>0&nbsp;&lt;=&nbsp;b1, b2&nbsp;&lt;=&nbsp;255</code>,
      * then the result is equal to:
      * <blockquote><pre>
      *     (b2 &lt;&lt; 8) | b1
      * </pre></blockquote>
      * <p>
-     * This method blocks until the two bytes are read, the end of the 
-     * stream is detected, or an exception is thrown. 
+     * This method blocks until the two bytes are read, the end of the
+     * stream is detected, or an exception is thrown.
      *
      * @return     the next two bytes of this stream, interpreted as an
      *             unsigned 16-bit integer.
@@ -502,26 +504,26 @@ public abstract class SeekableStream extends InputStream implements DataInput {
      * @exception  IOException   if an I/O error occurs.
      */
     public final int readUnsignedShortLE() throws IOException {
-	int ch1 = this.read();
-	int ch2 = this.read();
-	if ((ch1 | ch2) < 0)
-	    throw new EOFException();
-	return (ch2 << 8) + (ch1 << 0);
+        int ch1 = this.read();
+        int ch2 = this.read();
+        if ((ch1 | ch2) < 0)
+            throw new EOFException();
+        return (ch2 << 8) + (ch1 << 0);
     }
 
     /**
      * Reads a Unicode character from this stream. This method reads two
-     * bytes from the stream, starting at the current stream pointer. 
-     * If the bytes read, in order, are 
-     * <code>b1</code> and <code>b2</code>, where 
-     * <code>0&nbsp;&lt;=&nbsp;b1,&nbsp;b2&nbsp;&lt;=&nbsp;255</code>, 
+     * bytes from the stream, starting at the current stream pointer.
+     * If the bytes read, in order, are
+     * <code>b1</code> and <code>b2</code>, where
+     * <code>0&nbsp;&lt;=&nbsp;b1,&nbsp;b2&nbsp;&lt;=&nbsp;255</code>,
      * then the result is equal to:
      * <blockquote><pre>
      *     (char)((b1 &lt;&lt; 8) | b2)
      * </pre></blockquote>
      * <p>
-     * This method blocks until the two bytes are read, the end of the 
-     * stream is detected, or an exception is thrown. 
+     * This method blocks until the two bytes are read, the end of the
+     * stream is detected, or an exception is thrown.
      *
      * @return     the next two bytes of this stream as a Unicode character.
      * @exception  EOFException  if this stream reaches the end before reading
@@ -529,27 +531,27 @@ public abstract class SeekableStream extends InputStream implements DataInput {
      * @exception  IOException   if an I/O error occurs.
      */
     public final char readChar() throws IOException {
-	int ch1 = this.read();
-	int ch2 = this.read();
-	if ((ch1 | ch2) < 0)
-	    throw new EOFException();
-	return (char)((ch1 << 8) + (ch2 << 0));
+        int ch1 = this.read();
+        int ch2 = this.read();
+        if ((ch1 | ch2) < 0)
+            throw new EOFException();
+        return (char)((ch1 << 8) + (ch2 << 0));
     }
 
     /**
      * Reads a Unicode character from this stream in little-endian order.
      * This method reads two
-     * bytes from the stream, starting at the current stream pointer. 
-     * If the bytes read, in order, are 
-     * <code>b1</code> and <code>b2</code>, where 
-     * <code>0&nbsp;&lt;=&nbsp;b1,&nbsp;b2&nbsp;&lt;=&nbsp;255</code>, 
+     * bytes from the stream, starting at the current stream pointer.
+     * If the bytes read, in order, are
+     * <code>b1</code> and <code>b2</code>, where
+     * <code>0&nbsp;&lt;=&nbsp;b1,&nbsp;b2&nbsp;&lt;=&nbsp;255</code>,
      * then the result is equal to:
      * <blockquote><pre>
      *     (char)((b2 &lt;&lt; 8) | b1)
      * </pre></blockquote>
      * <p>
-     * This method blocks until the two bytes are read, the end of the 
-     * stream is detected, or an exception is thrown. 
+     * This method blocks until the two bytes are read, the end of the
+     * stream is detected, or an exception is thrown.
      *
      * @return     the next two bytes of this stream as a Unicode character.
      * @exception  EOFException  if this stream reaches the end before reading
@@ -557,26 +559,26 @@ public abstract class SeekableStream extends InputStream implements DataInput {
      * @exception  IOException   if an I/O error occurs.
      */
     public final char readCharLE() throws IOException {
-	int ch1 = this.read();
-	int ch2 = this.read();
-	if ((ch1 | ch2) < 0)
-	    throw new EOFException();
-	return (char)((ch2 << 8) + (ch1 << 0));
+        int ch1 = this.read();
+        int ch2 = this.read();
+        if ((ch1 | ch2) < 0)
+            throw new EOFException();
+        return (char)((ch2 << 8) + (ch1 << 0));
     }
 
     /**
-     * Reads a signed 32-bit integer from this stream. This method reads 4 
-     * bytes from the stream, starting at the current stream pointer. 
+     * Reads a signed 32-bit integer from this stream. This method reads 4
+     * bytes from the stream, starting at the current stream pointer.
      * If the bytes read, in order, are <code>b1</code>,
-     * <code>b2</code>, <code>b3</code>, and <code>b4</code>, where 
-     * <code>0&nbsp;&lt;=&nbsp;b1, b2, b3, b4&nbsp;&lt;=&nbsp;255</code>, 
+     * <code>b2</code>, <code>b3</code>, and <code>b4</code>, where
+     * <code>0&nbsp;&lt;=&nbsp;b1, b2, b3, b4&nbsp;&lt;=&nbsp;255</code>,
      * then the result is equal to:
      * <blockquote><pre>
      *     (b1 &lt;&lt; 24) | (b2 &lt;&lt; 16) + (b3 &lt;&lt; 8) + b4
      * </pre></blockquote>
      * <p>
-     * This method blocks until the four bytes are read, the end of the 
-     * stream is detected, or an exception is thrown. 
+     * This method blocks until the four bytes are read, the end of the
+     * stream is detected, or an exception is thrown.
      *
      * @return     the next four bytes of this stream, interpreted as an
      *             <code>int</code>.
@@ -585,29 +587,29 @@ public abstract class SeekableStream extends InputStream implements DataInput {
      * @exception  IOException   if an I/O error occurs.
      */
     public final int readInt() throws IOException {
-	int ch1 = this.read();
-	int ch2 = this.read();
-	int ch3 = this.read();
-	int ch4 = this.read();
-	if ((ch1 | ch2 | ch3 | ch4) < 0)
-	    throw new EOFException();
-	return ((ch1 << 24) + (ch2 << 16) + (ch3 << 8) + (ch4 << 0));
+        int ch1 = this.read();
+        int ch2 = this.read();
+        int ch3 = this.read();
+        int ch4 = this.read();
+        if ((ch1 | ch2 | ch3 | ch4) < 0)
+            throw new EOFException();
+        return ((ch1 << 24) + (ch2 << 16) + (ch3 << 8) + (ch4 << 0));
     }
 
     /**
      * Reads a signed 32-bit integer from this stream in little-endian order.
-     * This method reads 4 
-     * bytes from the stream, starting at the current stream pointer. 
+     * This method reads 4
+     * bytes from the stream, starting at the current stream pointer.
      * If the bytes read, in order, are <code>b1</code>,
-     * <code>b2</code>, <code>b3</code>, and <code>b4</code>, where 
-     * <code>0&nbsp;&lt;=&nbsp;b1, b2, b3, b4&nbsp;&lt;=&nbsp;255</code>, 
+     * <code>b2</code>, <code>b3</code>, and <code>b4</code>, where
+     * <code>0&nbsp;&lt;=&nbsp;b1, b2, b3, b4&nbsp;&lt;=&nbsp;255</code>,
      * then the result is equal to:
      * <blockquote><pre>
      *     (b4 &lt;&lt; 24) | (b3 &lt;&lt; 16) + (b2 &lt;&lt; 8) + b1
      * </pre></blockquote>
      * <p>
-     * This method blocks until the four bytes are read, the end of the 
-     * stream is detected, or an exception is thrown. 
+     * This method blocks until the four bytes are read, the end of the
+     * stream is detected, or an exception is thrown.
      *
      * @return     the next four bytes of this stream, interpreted as an
      *             <code>int</code>.
@@ -616,28 +618,28 @@ public abstract class SeekableStream extends InputStream implements DataInput {
      * @exception  IOException   if an I/O error occurs.
      */
     public final int readIntLE() throws IOException {
-	int ch1 = this.read();
-	int ch2 = this.read();
-	int ch3 = this.read();
-	int ch4 = this.read();
-	if ((ch1 | ch2 | ch3 | ch4) < 0)
-	    throw new EOFException();
-	return ((ch4 << 24) + (ch3 << 16) + (ch2 << 8) + (ch1 << 0));
+        int ch1 = this.read();
+        int ch2 = this.read();
+        int ch3 = this.read();
+        int ch4 = this.read();
+        if ((ch1 | ch2 | ch3 | ch4) < 0)
+            throw new EOFException();
+        return ((ch4 << 24) + (ch3 << 16) + (ch2 << 8) + (ch1 << 0));
     }
 
     /**
-     * Reads an unsigned 32-bit integer from this stream. This method reads 4 
-     * bytes from the stream, starting at the current stream pointer. 
+     * Reads an unsigned 32-bit integer from this stream. This method reads 4
+     * bytes from the stream, starting at the current stream pointer.
      * If the bytes read, in order, are <code>b1</code>,
-     * <code>b2</code>, <code>b3</code>, and <code>b4</code>, where 
-     * <code>0&nbsp;&lt;=&nbsp;b1, b2, b3, b4&nbsp;&lt;=&nbsp;255</code>, 
+     * <code>b2</code>, <code>b3</code>, and <code>b4</code>, where
+     * <code>0&nbsp;&lt;=&nbsp;b1, b2, b3, b4&nbsp;&lt;=&nbsp;255</code>,
      * then the result is equal to:
      * <blockquote><pre>
      *     (b1 &lt;&lt; 24) | (b2 &lt;&lt; 16) + (b3 &lt;&lt; 8) + b4
      * </pre></blockquote>
      * <p>
-     * This method blocks until the four bytes are read, the end of the 
-     * stream is detected, or an exception is thrown. 
+     * This method blocks until the four bytes are read, the end of the
+     * stream is detected, or an exception is thrown.
      *
      * @return     the next four bytes of this stream, interpreted as a
      *             <code>long</code>.
@@ -646,31 +648,31 @@ public abstract class SeekableStream extends InputStream implements DataInput {
      * @exception  IOException   if an I/O error occurs.
      */
     public final long readUnsignedInt() throws IOException {
-	long ch1 = this.read();
-	long ch2 = this.read();
-	long ch3 = this.read();
-	long ch4 = this.read();
-	if ((ch1 | ch2 | ch3 | ch4) < 0)
-	    throw new EOFException();
-	return ((ch1 << 24) + (ch2 << 16) + (ch3 << 8) + (ch4 << 0));
+        long ch1 = this.read();
+        long ch2 = this.read();
+        long ch3 = this.read();
+        long ch4 = this.read();
+        if ((ch1 | ch2 | ch3 | ch4) < 0)
+            throw new EOFException();
+        return ((ch1 << 24) + (ch2 << 16) + (ch3 << 8) + (ch4 << 0));
     }
 
     private byte[] ruileBuf = new byte[4];
 
     /**
      * Reads an unsigned 32-bit integer from this stream in little-endian
-     * order.  This method reads 4 
-     * bytes from the stream, starting at the current stream pointer. 
+     * order.  This method reads 4
+     * bytes from the stream, starting at the current stream pointer.
      * If the bytes read, in order, are <code>b1</code>,
-     * <code>b2</code>, <code>b3</code>, and <code>b4</code>, where 
-     * <code>0&nbsp;&lt;=&nbsp;b1, b2, b3, b4&nbsp;&lt;=&nbsp;255</code>, 
+     * <code>b2</code>, <code>b3</code>, and <code>b4</code>, where
+     * <code>0&nbsp;&lt;=&nbsp;b1, b2, b3, b4&nbsp;&lt;=&nbsp;255</code>,
      * then the result is equal to:
      * <blockquote><pre>
      *     (b4 &lt;&lt; 24) | (b3 &lt;&lt; 16) + (b2 &lt;&lt; 8) + b1
      * </pre></blockquote>
      * <p>
-     * This method blocks until the four bytes are read, the end of the 
-     * stream is detected, or an exception is thrown. 
+     * This method blocks until the four bytes are read, the end of the
+     * stream is detected, or an exception is thrown.
      *
      * @return     the next four bytes of this stream, interpreted as a
      *             <code>long</code>.
@@ -680,20 +682,20 @@ public abstract class SeekableStream extends InputStream implements DataInput {
      */
     public final long readUnsignedIntLE() throws IOException {
         this.readFully(ruileBuf);
-	long ch1 = (ruileBuf[0] & 0xff);
-	long ch2 = (ruileBuf[1] & 0xff);
-	long ch3 = (ruileBuf[2] & 0xff);
-	long ch4 = (ruileBuf[3] & 0xff);
+        long ch1 = (ruileBuf[0] & 0xff);
+        long ch2 = (ruileBuf[1] & 0xff);
+        long ch3 = (ruileBuf[2] & 0xff);
+        long ch4 = (ruileBuf[3] & 0xff);
 
-	return ((ch4 << 24) + (ch3 << 16) + (ch2 << 8) + (ch1 << 0));
+        return ((ch4 << 24) + (ch3 << 16) + (ch2 << 8) + (ch1 << 0));
     }
 
     /**
      * Reads a signed 64-bit integer from this stream. This method reads eight
-     * bytes from the stream, starting at the current stream pointer. 
-     * If the bytes read, in order, are 
-     * <code>b1</code>, <code>b2</code>, <code>b3</code>, 
-     * <code>b4</code>, <code>b5</code>, <code>b6</code>, 
+     * bytes from the stream, starting at the current stream pointer.
+     * If the bytes read, in order, are
+     * <code>b1</code>, <code>b2</code>, <code>b3</code>,
+     * <code>b4</code>, <code>b5</code>, <code>b6</code>,
      * <code>b7</code>, and <code>b8,</code> where:
      * <blockquote><pre>
      *     0 &lt;= b1, b2, b3, b4, b5, b6, b7, b8 &lt;=255,
@@ -707,8 +709,8 @@ public abstract class SeekableStream extends InputStream implements DataInput {
      *     + ((long)b7 &lt;&lt; 8) + b8
      * </pre></blockquote>
      * <p>
-     * This method blocks until the eight bytes are read, the end of the 
-     * stream is detected, or an exception is thrown. 
+     * This method blocks until the eight bytes are read, the end of the
+     * stream is detected, or an exception is thrown.
      *
      * @return     the next eight bytes of this stream, interpreted as a
      *             <code>long</code>.
@@ -717,16 +719,16 @@ public abstract class SeekableStream extends InputStream implements DataInput {
      * @exception  IOException   if an I/O error occurs.
      */
     public final long readLong() throws IOException {
-	return ((long)(readInt()) << 32) + (readInt() & 0xFFFFFFFFL);
+        return ((long)(readInt()) << 32) + (readInt() & 0xFFFFFFFFL);
     }
 
     /**
      * Reads a signed 64-bit integer from this stream in little-endian
      * order. This method reads eight
-     * bytes from the stream, starting at the current stream pointer. 
-     * If the bytes read, in order, are 
-     * <code>b1</code>, <code>b2</code>, <code>b3</code>, 
-     * <code>b4</code>, <code>b5</code>, <code>b6</code>, 
+     * bytes from the stream, starting at the current stream pointer.
+     * If the bytes read, in order, are
+     * <code>b1</code>, <code>b2</code>, <code>b3</code>,
+     * <code>b4</code>, <code>b5</code>, <code>b6</code>,
      * <code>b7</code>, and <code>b8,</code> where:
      * <blockquote><pre>
      *     0 &lt;= b1, b2, b3, b4, b5, b6, b7, b8 &lt;=255,
@@ -740,8 +742,8 @@ public abstract class SeekableStream extends InputStream implements DataInput {
      *     + ((long)b7 &lt;&lt; 8) + b8
      * </pre></blockquote>
      * <p>
-     * This method blocks until the eight bytes are read, the end of the 
-     * stream is detected, or an exception is thrown. 
+     * This method blocks until the eight bytes are read, the end of the
+     * stream is detected, or an exception is thrown.
      *
      * @return     the next eight bytes of this stream, interpreted as a
      *             <code>long</code>.
@@ -752,19 +754,19 @@ public abstract class SeekableStream extends InputStream implements DataInput {
     public final long readLongLE() throws IOException {
         int i1 = readIntLE();
         int i2 = readIntLE();
-	return ((long)i2 << 32) + (i1 & 0xFFFFFFFFL);
+        return ((long)i2 << 32) + (i1 & 0xFFFFFFFFL);
     }
 
     /**
-     * Reads a <code>float</code> from this stream. This method reads an 
-     * <code>int</code> value, starting at the current stream pointer, 
-     * as if by the <code>readInt</code> method 
-     * and then converts that <code>int</code> to a <code>float</code> 
-     * using the <code>intBitsToFloat</code> method in class 
-     * <code>Float</code>. 
+     * Reads a <code>float</code> from this stream. This method reads an
+     * <code>int</code> value, starting at the current stream pointer,
+     * as if by the <code>readInt</code> method
+     * and then converts that <code>int</code> to a <code>float</code>
+     * using the <code>intBitsToFloat</code> method in class
+     * <code>Float</code>.
      * <p>
-     * This method blocks until the four bytes are read, the end of the 
-     * stream is detected, or an exception is thrown. 
+     * This method blocks until the four bytes are read, the end of the
+     * stream is detected, or an exception is thrown.
      *
      * @return     the next four bytes of this stream, interpreted as a
      *             <code>float</code>.
@@ -773,20 +775,20 @@ public abstract class SeekableStream extends InputStream implements DataInput {
      * @exception  IOException   if an I/O error occurs.
      */
     public final float readFloat() throws IOException {
-	return Float.intBitsToFloat(readInt());
+        return Float.intBitsToFloat(readInt());
     }
 
     /**
      * Reads a <code>float</code> from this stream in little-endian order.
-     * This method reads an 
-     * <code>int</code> value, starting at the current stream pointer, 
-     * as if by the <code>readInt</code> method 
-     * and then converts that <code>int</code> to a <code>float</code> 
-     * using the <code>intBitsToFloat</code> method in class 
-     * <code>Float</code>. 
+     * This method reads an
+     * <code>int</code> value, starting at the current stream pointer,
+     * as if by the <code>readInt</code> method
+     * and then converts that <code>int</code> to a <code>float</code>
+     * using the <code>intBitsToFloat</code> method in class
+     * <code>Float</code>.
      * <p>
-     * This method blocks until the four bytes are read, the end of the 
-     * stream is detected, or an exception is thrown. 
+     * This method blocks until the four bytes are read, the end of the
+     * stream is detected, or an exception is thrown.
      *
      * @return     the next four bytes of this stream, interpreted as a
      *             <code>float</code>.
@@ -795,19 +797,19 @@ public abstract class SeekableStream extends InputStream implements DataInput {
      * @exception  IOException   if an I/O error occurs.
      */
     public final float readFloatLE() throws IOException {
-	return Float.intBitsToFloat(readIntLE());
+        return Float.intBitsToFloat(readIntLE());
     }
 
     /**
-     * Reads a <code>double</code> from this stream. This method reads a 
-     * <code>long</code> value, starting at the current stream pointer, 
-     * as if by the <code>readLong</code> method 
-     * and then converts that <code>long</code> to a <code>double</code> 
-     * using the <code>longBitsToDouble</code> method in 
+     * Reads a <code>double</code> from this stream. This method reads a
+     * <code>long</code> value, starting at the current stream pointer,
+     * as if by the <code>readLong</code> method
+     * and then converts that <code>long</code> to a <code>double</code>
+     * using the <code>longBitsToDouble</code> method in
      * class <code>Double</code>.
      * <p>
-     * This method blocks until the eight bytes are read, the end of the 
-     * stream is detected, or an exception is thrown. 
+     * This method blocks until the eight bytes are read, the end of the
+     * stream is detected, or an exception is thrown.
      *
      * @return     the next eight bytes of this stream, interpreted as a
      *             <code>double</code>.
@@ -816,20 +818,20 @@ public abstract class SeekableStream extends InputStream implements DataInput {
      * @exception  IOException   if an I/O error occurs.
      */
     public final double readDouble() throws IOException {
-	return Double.longBitsToDouble(readLong());
+        return Double.longBitsToDouble(readLong());
     }
 
     /**
      * Reads a <code>double</code> from this stream in little-endian order.
-     * This method reads a 
-     * <code>long</code> value, starting at the current stream pointer, 
-     * as if by the <code>readLong</code> method 
-     * and then converts that <code>long</code> to a <code>double</code> 
-     * using the <code>longBitsToDouble</code> method in 
+     * This method reads a
+     * <code>long</code> value, starting at the current stream pointer,
+     * as if by the <code>readLong</code> method
+     * and then converts that <code>long</code> to a <code>double</code>
+     * using the <code>longBitsToDouble</code> method in
      * class <code>Double</code>.
      * <p>
-     * This method blocks until the eight bytes are read, the end of the 
-     * stream is detected, or an exception is thrown. 
+     * This method blocks until the eight bytes are read, the end of the
+     * stream is detected, or an exception is thrown.
      *
      * @return     the next eight bytes of this stream, interpreted as a
      *             <code>double</code>.
@@ -838,12 +840,12 @@ public abstract class SeekableStream extends InputStream implements DataInput {
      * @exception  IOException   if an I/O error occurs.
      */
     public final double readDoubleLE() throws IOException {
-	return Double.longBitsToDouble(readLongLE());
+        return Double.longBitsToDouble(readLongLE());
     }
 
     /**
      * Reads the next line of text from this stream.  This method successively
-     * reads bytes from the stream, starting at the current stream pointer, 
+     * reads bytes from the stream, starting at the current stream pointer,
      * until it reaches a line terminator or the end
      * of the stream.  Each byte is converted into a character by taking the
      * byte's value for the lower eight bits of the character and setting the
@@ -865,59 +867,59 @@ public abstract class SeekableStream extends InputStream implements DataInput {
      * @exception  IOException  if an I/O error occurs.
      */
     public final String readLine() throws IOException {
-	StringBuffer input = new StringBuffer();
-	int c = -1;
-	boolean eol = false;
+        StringBuffer input = new StringBuffer();
+        int c = -1;
+        boolean eol = false;
 
-	while (!eol) {
-	    switch (c = read()) {
-	    case -1:
-	    case '\n':
-		eol = true;
-		break;
-	    case '\r':
-		eol = true;
-		long cur = getFilePointer();
-		if ((read()) != '\n') {
-		    seek(cur);
-		}
-		break;
-	    default:
-		input.append((char)c);
-		break;
-	    }
-	}
+        while (!eol) {
+            switch (c = read()) {
+            case -1:
+            case '\n':
+                eol = true;
+                break;
+            case '\r':
+                eol = true;
+                long cur = getFilePointer();
+                if ((read()) != '\n') {
+                    seek(cur);
+                }
+                break;
+            default:
+                input.append((char)c);
+                break;
+            }
+        }
 
-	if ((c == -1) && (input.length() == 0)) {
-	    return null;
-	}
-	return input.toString();
+        if ((c == -1) && (input.length() == 0)) {
+            return null;
+        }
+        return input.toString();
     }
 
     /**
-     * Reads in a string from this stream. The string has been encoded 
-     * using a modified UTF-8 format. 
+     * Reads in a string from this stream. The string has been encoded
+     * using a modified UTF-8 format.
      * <p>
      * The first two bytes are read, starting from the current stream
-     * pointer, as if by 
-     * <code>readUnsignedShort</code>. This value gives the number of 
+     * pointer, as if by
+     * <code>readUnsignedShort</code>. This value gives the number of
      * following bytes that are in the encoded string, not
-     * the length of the resulting string. The following bytes are then 
-     * interpreted as bytes encoding characters in the UTF-8 format 
-     * and are converted into characters. 
+     * the length of the resulting string. The following bytes are then
+     * interpreted as bytes encoding characters in the UTF-8 format
+     * and are converted into characters.
      * <p>
-     * This method blocks until all the bytes are read, the end of the 
-     * stream is detected, or an exception is thrown. 
+     * This method blocks until all the bytes are read, the end of the
+     * stream is detected, or an exception is thrown.
      *
      * @return     a Unicode string.
      * @exception  EOFException            if this stream reaches the end before
      *               reading all the bytes.
      * @exception  IOException             if an I/O error occurs.
-     * @exception  UTFDataFormatException  if the bytes do not represent 
+     * @exception  UTFDataFormatException  if the bytes do not represent
      *               valid UTF-8 encoding of a Unicode string.
      */
     public final String readUTF() throws IOException {
-	return DataInputStream.readUTF(this);
+        return DataInputStream.readUTF(this);
     }
 
     /**

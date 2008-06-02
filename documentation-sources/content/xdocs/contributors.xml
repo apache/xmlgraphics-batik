@@ -1,0 +1,422 @@
+<?xml version="1.0"?>
+
+<!--
+
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+
+<!-- ====================================================================== -->
+<!-- author stephane@hillion.org                                            -->
+<!-- version $Id: whoAreWe.xml 388441 2006-03-24 07:50:03Z cam $    -->
+<!-- ====================================================================== -->
+
+<!DOCTYPE document PUBLIC "-//APACHE//DTD Documentation V2.0//EN" "http://forrest.apache.org/dtd/document-v20.dtd">
+<document>
+  <header>
+    <title>Batik contributors</title>
+  </header>
+
+  <body>
+    <p>
+      This page contains information about the current Batik developers and
+      the features they are working on at the moment.
+    </p>
+
+    <section id="committers">
+      <title>Committers</title>
+      <p>
+        This section lists all developers with commit access to the Batik
+        subversion repository.
+      </p>
+      <p>
+        The following people are active Batik developers:
+      </p>
+      <dl>
+        <dt>Thomas DeWeese (TD)</dt>
+        <dd>
+          <p><a href="mailto:Thomas.DeWeese@Kodak.com">Thomas.DeWeese@Kodak.com</a></p>
+          <p>
+            Thomas DeWeese is a Senior Software Engineer at Eastman Kodak Company,
+            in Rochester New York where he has worked for the Image Science
+            Division’s image application development group since 1994.  Thomas
+            has made contributions to the imaging portions of the Java2D API,
+            and was a major contributor to the Java Advanced Image API (version
+            1.0).  Since then he has participated in the Jini Printing Working
+            group and has recently become a member of Kodak’s SVG Working Group
+            team.
+          </p>
+        </dd>
+
+        <dt>Cameron McCormack (CM)</dt>
+        <dd>
+          <p><a href="mailto:cam@mcc.id.au">cam@mcc.id.au</a></p>
+          <p>
+            Cameron McCormack is a postgraduate student at Monash University in
+            Melbourne, Australia, where he is undertaking his PhD.  His thesis
+            relates to adaptive layout of diagrams, and he has worked on an
+            extension to SVG to allow expressions as attribute values.  He also
+            is an invited expert on the SVG Working Group.  Cameron
+            has been a committer since 2004, and has contributed code mostly
+            related to SMIL animation and upcoming SVG 1.2 support.
+          </p>
+        </dd>
+
+        <dt>Dieter von Holten (DH)</dt>
+        <dd>
+          <p>
+            Dieter is a freelance programmer living in Hamburg, Germany. He
+            spends his time on projects in refineries and tankfarms, chasing
+            bits from ERP to PLC and back. Although not specifically an expert
+            with graphics, he tries to help out “maintaining and enhancing this
+            interesting, non-trivial piece of code”.
+          </p>
+        </dd>
+      </dl>
+
+      <p>
+        The following people are some of the Batik project founders and
+        helped define and implement the initial Batik architecture:
+      </p>
+
+      <dl>
+        <dt>Bill Haneman</dt>
+        <dd>
+          <p><a href="mailto:bill.haneman@ireland.sun.com">bill.haneman@ireland.sun.com</a></p>
+          <p>
+            Bill Haneman works for Sun Microsystems’ Desktop Enabling Middleware
+            group in Dublin, Ireland, and implemented much of the Batik’s text
+            support (though not SVG Fonts, thanks Bella, Dean, and David!).  He is
+            also technical lead for the
+            <a href="http://developer.gnome.org/projects/gap">GNOME
+              Accessibility Project</a>, an open project to provide an
+            accessibility framework for Linux and Solaris(TM) desktops.  A
+            twenty-year veteran of scientific programming and application
+            development, he is a US expatriate who plays traditional Irish music
+            on the uilleann pipes. 
+          </p> 
+        </dd>
+
+        <dt>Vincent Hardy</dt>
+        <dd>
+          <p><a href="mailto:vincent.hardy@eng.sun.com">vincent.hardy@eng.sun.com</a></p>
+          <p>
+            Vincent is one of the founders of the SVG Batik project at Apache.
+            He is a Senior Staff Engineer at Sun Microsystems Inc., where he is
+            part of the XML technology center.  Vincent represented Sun in the
+            W3C’s SVG Working Group and is currently a W3C fellow in the W3C
+            office in Sophia Antipolis, France.  Vincent is the author of papers
+            and a book on the Java 2D API.
+          </p>
+        </dd>
+
+        <dt>Stephane Hillion</dt>
+        <dd>
+          <p><a href="mailto:shillion@ilog.fr">shillion@ilog.fr</a></p>
+          <p>
+            Stephane is a software engineer at the Koala project, part of
+            ILOG’s visualization R&amp;D team, located in Sophia-Antipolis,
+            France. His main interests are in programming languages and web
+            standards. He wrote the Apache Batik’s DOM, CSS and Swing modules.
+          </p>
+        </dd>
+
+        <dt>Dean Jackson</dt>
+        <dd>
+          <p><a href="mailto:dean.jackson@cmis.csiro.au">dean.jackson@cmis.csiro.au</a></p>
+          <p>
+            Dean is employed by CSIRO Australia and is currently working at
+            the World Wide Web Consortium (W3C) full time on SVG. He is a member
+            of the W3C’s SVG working group, and was a developer
+            of the CSIRO SVG Toolkit, one of the first and most complete open source
+            SVG libraries. 
+          </p>
+        </dd>
+
+        <dt>Christophe Jolif</dt>
+        <dd>
+          <p><a href="mailto:cjolif@ilog.fr">cjolif@ilog.fr</a></p>
+          <p>
+            Christophe Jolif is a Software Architect mainly working on the ILOG
+            JViews Component Suite, the ILOG Java visualization framework. He has
+            been working for ILOG since 1997, and is representing the company in the
+            Scalable Vector Graphics (SVG) W3C Working Group since 1999. He has 
+            implemented SVG import and export features in ILOG JViews and is now
+            also working on the SVG Batik project at Apache.
+          </p>
+        </dd>
+
+        <dt>Thierry Kormann</dt>
+        <dd>
+          <p><a href="mailto:tkormann@ilog.fr">tkormann@ilog.fr</a></p>
+          <p>
+            Thierry is a software engineer, at the Koala project of ILOG located at
+            Sophia-Antipolis, France and a member of the SVG working group. Thierry has
+            contributed to most of Koala’s projects involving Java and XML. Since
+            then, he co-founded the Apache Batik project. His daytime job is focused on
+            Graphics and XML related technologies. Prior to joining ILOG, Thierry worked
+            as a software engineer for Bull.
+          </p>
+        </dd>
+
+        <dt>Nicolas Socheleau</dt>
+        <dd>
+          <p><a href="mailto:nicolas.socheleau@bitflash.com">nicolas.socheleau@bitflash.com</a></p>
+          <p>
+            Nicolas Socheleau is a software engineer at BitFlash Inc, Ottawa, Canada 
+            where he worked on different SVG related projects. He joined the Batik 
+            team in June 2002. His interests include XML technologies and Graphics. He
+            contributed some text functionality and SVG DOM interface implementations.
+          </p>
+        </dd>
+
+        <dt>Emmanuel Tissandier</dt>
+        <dd>
+          <p><a href="mailto:tissandi@ilog.fr">tissandi@ilog.fr</a></p>
+          <p>
+            Emmanuel Tissandier has been working for 10 years as a software engineer
+            in object oriented environments. He started with the development of CASE
+            tools at Rank Xerox and joined the visualization R&amp;D team of ILOG in
+            1995. Since 1997, he has been the R&amp;D Project Manager for the ILOG
+            JViews Component Suite, a product for delivering two-dimensional
+            structured graphics, cartography, diagrams, and Gantt charts in Java.  
+          </p>
+        </dd>
+      </dl>
+
+      <p>
+        Bella Robinson implemented the SVG font support in Batik:
+      </p>
+
+      <dl>
+        <dt>Bella Robinson</dt>
+        <dd>
+          <p><a href="mailto:bella.robinson@cmis.csiro.au">bella.robinson@cmis.csiro.au</a></p>
+          <p>
+            Bella is a Software Engineer working for CSIRO Australia. She was one
+            of the main developers of the CSIRO SVG Toolkit and has also been working
+            on a Pocket SVG Viewer for handheld devices. Her interests include 
+            graphics and XML programming.
+          </p>
+        </dd>
+      </dl>
+
+      <p>
+        In addition, <a href="mailto:James.Davidson@eng.sun.com">James
+          Davidson</a> and <a href="mailto:stefano@apache.org">Stefano
+          Mazzochi</a>, two Apache veterans who helped the Batik team start the
+        project at Apache, also have commit access to the Subversion repository.
+      </p>        
+    </section>
+
+    <section id="contributors">
+      <title>Batik contributors</title>
+      <p>
+        The following people have contributed to Batik:
+      </p>
+      <ul>
+        <li>
+          <a href="mailto:andjelkovic.ivan@gmail.com">Ivan
+            Andjelkovic</a>&#x2014;Google Summer of Code student who worked
+          on enhancements to the DOM Viewer window.
+        </li>
+        <li>
+          <a href="mailto:carnold@houston.rr.com">Curt
+            Arnold</a>&#x2014;Contributed many bug reports and fixes.
+        </li>
+        <li>
+          <a href="mailto:r_diblasi@hotmail.com">Robert A.
+            DiBlasi</a>&#x2014;Contributed a lot of feedback on the Batik
+          documentation and suggestions on how to improve it.
+        </li>
+        <li>
+          <a href="mailto:archie@dellroad.org">Archie
+            Cobbs</a>&#x2014;Contributed a thread deadlocking fix.
+        </li>
+        <li>
+          <a href="mailto:Paul_Evenblij@nl.compuware.com">Paul
+            Evenblij</a>&#x2014;Contributed an improvement to the way images are
+          handled by the SVGGraphics2D component. Also contributed bug fixes on
+          the SVGGraphics2D component.
+        </li>
+        <li>
+          <a href="mailto:pier.fumagalli@eng.sun.com">Pier
+            Fumagalli</a>&#x2014;Helped with the Batik web site and mailing
+          lists.
+        </li>
+        <li>
+          <a href="mailto:herve.girod@club-internet.fr">Hervé
+            Girod</a>&#x2014;Contributed many improvements to the WMF
+          transcoder.
+        </li>
+        <li>
+          <a href="mailto:Christophe.Held@sophia.inria.fr">Christophe
+            Held</a>&#x2014;Contributed a math formula in SVG generated from
+          MathML.
+        </li>
+        <li>
+          <a href="mailto:tonny@kiyut.com">Tonny Kohar</a>&#x2014;Contributed
+          a syntax highlight XML editor component for use in Squiggle.
+        </li>
+        <li>
+          <a href="mailto:webmaestro@mac.com">Clay Leeds</a>&#x2014;Helped
+          getting Batik’s new site set up.
+        </li>
+        <li>
+          <a href="mailto:keiron@aftexsw.com">Keiron Liddle</a>&#x2014;A
+          <a href="http://xmlgraphics.apache.org/fop/">FOP</a> member who worked
+          on an SVG to PDF transcoder that is a part of FOP but works in the
+          Batik infrastructure.
+        </li>
+        <li>
+          <a href="mailto:jeremias@apache.org">Jeremias 
+            Märki</a>&#x2014;Another FOP member who contributed code to improve
+          compatibility with GNU Classpath.
+        </li>
+        <li>
+          <a href="mailto:john.morrison@uk.experian.com">John
+            Morrison</a>&#x2014;Contributed a set of XSL stylesheets to generate
+          SVG charts, such as line graphs, bar charts or pie charts.
+        </li>
+        <li>
+          <a href="mailto:neumann@karto.baug.ethz.ch">Andreas
+            Neumann</a>&#x2014;Contributed two SVG maps which
+          <a href="mailto:bert@w3.org">Bert Bos</a> has internationalized
+          (adding an English version to the original German text).
+        </li>
+        <li>
+          <a href="mailto:luano@asd.ie">Luan O’Carroll</a>&#x2014;Contributed
+          the original WMF transcoder.
+        </li>
+        <li>
+          <a href="mailto:spei@cs.uiowa.edu">Sheng Pei</a>&#x2014;Contributed
+          to filter support and the regard tool.
+        </li>
+        <li>
+          <a href="mailto:neeme.praks@one.ee">Neeme
+            Praks</a>&#x2014;Contributed patches, feedback and scripts for
+          building charts from John Morrisson’s XSL stylesheets.
+        </li>
+        <li>
+          <a href="mailto:ruini@iki.fi">Henri Ruini</a>&#x2014;Contributed to
+          a rewrite of the rasterizer application.
+        </li>
+        <li>
+          <a href="mailto:david@steadystate.co.uk">David
+            Schweinsberg</a>&#x2014;Contributed the True Type Font to SVG Font
+          converter.
+        </li>
+        <li>
+          <a href="mailto:eric_suen_cn@hotmail.com">Eric Suen</a>&#x2014;Tracked
+          down some memory leaks.
+        </li>
+        <li>
+          <a href="mailto:natalian@cs.brown.edu">Nicholas
+            Talian</a>&#x2014;Contributed on gradients.
+        </li>
+        <li>
+          <a href="mailto:andres@onemileup.com">Andres
+            Toussaint</a>&#x2014;Contributed SVGAnimatedPathData functionality.
+        </li>
+      </ul>
+    </section>
+
+    <section id="expertise">
+      <title>Areas of expertise</title>
+      <p>
+        The following table summarizes the areas of expertise of each active
+        committer. It allows better coordination of both internal and
+        external development efforts.
+      </p>
+
+      <div class="expertise">
+        <table>
+          <tr>
+            <th/><th class="tick"><abbr title="Thomas DeWeese">TD</abbr></th><th class="tick"><abbr title="Cameron McCormack">CM</abbr></th><th class="tick"><abbr title="Dieter von Holten">DH</abbr></th>
+          </tr>
+          <tr>
+            <td class="area">Team Contact</td>
+            <td>X</td><td/><td/>
+          </tr>
+          <tr>
+            <td class="area">Bridge</td>
+            <td/><td>X</td><td/>
+          </tr>
+          <tr>
+            <td class="area">Browser</td>
+            <td>X</td><td/><td/>
+          </tr>
+          <tr>
+            <td class="area">CSS</td>
+            <td>X</td><td>X</td><td/>
+          </tr>
+          <tr>
+            <td class="area">Documentation</td>
+            <td>X</td><td>X</td><td/>
+          </tr>
+          <tr>
+            <td class="area">SVG DOM</td>
+            <td/><td>X</td><td/>
+          </tr>
+          <tr>
+            <td class="area">GVT Core</td>
+            <td>X</td><td/><td/>
+          </tr>
+          <tr>
+            <td class="area">GVT Filters</td>
+            <td>X</td><td/><td/>
+          </tr>
+          <tr>
+            <td class="area">GVT Renderer</td>
+            <td>X</td><td/><td/>
+          </tr>
+          <tr>
+            <td class="area">GVT Text</td>
+            <td>X</td><td/><td/>
+          </tr>
+          <tr>
+            <td class="area">SVGGraphics2D</td>
+            <td>X</td><td/><td/>
+          </tr>
+          <tr>
+            <td class="area">SMIL Animation</td>
+            <td/><td>X</td><td/>
+          </tr>
+          <tr>
+            <td class="area">Micro Parsers</td>
+            <td>X</td><td/><td/>
+          </tr>
+          <tr>
+            <td class="area">Rasterizer</td>
+            <td>X</td><td/><td/>
+          </tr>
+          <tr>
+            <td class="area">Scripting</td>
+            <td/><td>X</td><td/>
+          </tr>
+          <tr>
+            <td class="area">Swing Components</td>
+            <td>X</td><td/><td/>
+          </tr>
+          <tr>
+            <td class="area">Test</td>
+            <td>X</td><td/><td>X</td>
+          </tr>
+        </table>
+      </div>
+    </section>
+  </body>
+</document>

@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2002-2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -25,6 +26,8 @@ import org.apache.batik.css.engine.value.ListValue;
 import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.css.engine.value.ValueManager;
 import org.apache.batik.util.CSSConstants;
+import org.apache.batik.util.SVGTypes;
+
 import org.w3c.css.sac.LexicalUnit;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.css.CSSPrimitiveValue;
@@ -42,14 +45,35 @@ public class StrokeDasharrayManager extends LengthManager {
      * Implements {@link ValueManager#isInheritedProperty()}.
      */
     public boolean isInheritedProperty() {
-	return true;
+        return true;
+    }
+
+    /**
+     * Implements {@link ValueManager#isAnimatableProperty()}.
+     */
+    public boolean isAnimatableProperty() {
+        return true;
+    }
+
+    /**
+     * Implements {@link ValueManager#isAdditiveProperty()}.
+     */
+    public boolean isAdditiveProperty() {
+        return false;
+    }
+
+    /**
+     * Implements {@link ValueManager#getPropertyType()}.
+     */
+    public int getPropertyType() {
+        return SVGTypes.TYPE_LENGTH_LIST_OR_IDENT;
     }
 
     /**
      * Implements {@link ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return CSSConstants.CSS_STROKE_DASHARRAY_PROPERTY;
+        return CSSConstants.CSS_STROKE_DASHARRAY_PROPERTY;
     }
     
     /**
@@ -68,14 +92,14 @@ public class StrokeDasharrayManager extends LengthManager {
         case LexicalUnit.SAC_INHERIT:
             return SVGValueConstants.INHERIT_VALUE;
 
-	case LexicalUnit.SAC_IDENT:
-	    if (lu.getStringValue().equalsIgnoreCase
+        case LexicalUnit.SAC_IDENT:
+            if (lu.getStringValue().equalsIgnoreCase
                 (CSSConstants.CSS_NONE_VALUE)) {
-		return SVGValueConstants.NONE_VALUE;
-	    }
+                return SVGValueConstants.NONE_VALUE;
+            }
             throw createInvalidIdentifierDOMException(lu.getStringValue());
 
-	default:
+        default:
             ListValue lv = new ListValue(' ');
             do {
                 Value v = super.createValue(lu, engine);

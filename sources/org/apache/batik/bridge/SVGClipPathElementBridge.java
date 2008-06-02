@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001-2005  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -38,8 +39,8 @@ import org.w3c.dom.Node;
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
-public class SVGClipPathElementBridge extends AbstractSVGBridge
-    implements ClipBridge {
+public class SVGClipPathElementBridge extends AnimatableGenericSVGBridge
+        implements ClipBridge {
 
     /**
      * Constructs a new bridge for the &lt;clipPath> element.
@@ -73,7 +74,7 @@ public class SVGClipPathElementBridge extends AbstractSVGBridge
         s = clipElement.getAttributeNS(null, SVG_TRANSFORM_ATTRIBUTE);
         if (s.length() != 0) {
             Tx = SVGUtilities.convertTransform
-                (clipElement, SVG_TRANSFORM_ATTRIBUTE, s);
+                (clipElement, SVG_TRANSFORM_ATTRIBUTE, s, ctx);
         } else {
             Tx = new AffineTransform();
         }
@@ -85,7 +86,7 @@ public class SVGClipPathElementBridge extends AbstractSVGBridge
             coordSystemType = SVGUtilities.USER_SPACE_ON_USE;
         } else {
             coordSystemType = SVGUtilities.parseCoordinateSystem
-                (clipElement, SVG_CLIP_PATH_UNITS_ATTRIBUTE, s);
+                (clipElement, SVG_CLIP_PATH_UNITS_ATTRIBUTE, s, ctx);
         }
         // additional transform to move to objectBoundingBox coordinate system
         if (coordSystemType == SVGUtilities.OBJECT_BOUNDING_BOX) {

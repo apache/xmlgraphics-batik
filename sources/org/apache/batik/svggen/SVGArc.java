@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001,2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -61,8 +62,8 @@ public class SVGArc extends SVGGraphicObjectConverter {
 
         if (width == 0 || height == 0) {
             Line2D line = new Line2D.Double
-                (arc.getX(), arc.getY(), 
-                 arc.getX() + width, 
+                (arc.getX(), arc.getY(),
+                 arc.getX() + width,
                  arc.getY() + height);
             if (svgLine == null) {
                 svgLine = new SVGLine(generatorContext);
@@ -81,7 +82,7 @@ public class SVGArc extends SVGGraphicObjectConverter {
 
         Element svgPath = generatorContext.domFactory.createElementNS
             (SVG_NAMESPACE_URI, SVG_PATH_TAG);
-        StringBuffer d = new StringBuffer("");
+        StringBuffer d = new StringBuffer( 64 );
 
         Point2D startPt = arc.getStartPoint();
         Point2D endPt   = arc.getEndPoint();
@@ -98,20 +99,20 @@ public class SVGArc extends SVGGraphicObjectConverter {
         d.append(SPACE);
         d.append(doubleString(height / 2));
         d.append(SPACE);
-        d.append("0");  // no rotation with J2D arc.
+        d.append( '0' );  // no rotation with J2D arc.
         d.append(SPACE);
-        if (ext > 0) { 
+        if (ext > 0) {
             // CCW sweep case, ext > 0
-            if (ext > 180)  d.append("1");  // use large arc.
-            else            d.append("0");  // use small arc.
+            if (ext > 180)  d.append( '1' );  // use large arc.
+            else            d.append( '0' );  // use small arc.
             d.append(SPACE);
-            d.append("0");  // sweep ccw
+            d.append( '0' );  // sweep ccw
         } else {
             // CW sweep case, ext < 0
-            if (ext < -180)  d.append("1");  // use large arc.
-            else             d.append("0");  // use small arc.
+            if (ext < -180)  d.append( '1' );  // use large arc.
+            else             d.append( '0' );  // use small arc.
             d.append(SPACE);
-            d.append("1");  // sweep cw
+            d.append( '1' );  // sweep cw
         }
 
         d.append(SPACE);

@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001-2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -38,7 +39,7 @@ import org.apache.batik.test.TestSuiteReport;
 
 /**
  * Validates the operation of the <tt>XMLTestSuireRunner</tt> by checking
- * that it runs the tests specified by the command line parameter and 
+ * that it runs the tests specified by the command line parameter and
  * only these tests. <br />
  * The test uses an dummy &lt;testRun&gt; which contains: <br />
  * - testRun, id="all"
@@ -95,7 +96,7 @@ public class XMLTestSuiteRunnerValidator extends DefaultTestSuite {
 
     /**
      * This suite is made of elementary tests which validate that
-     * the XML result for a given input contains a list of 
+     * the XML result for a given input contains a list of
      * report ids and no more (i.e., that the expected test reports
      * were generated and no more). <br />
      * Specificaly, with fully qualified ids: <br />
@@ -104,9 +105,9 @@ public class XMLTestSuiteRunnerValidator extends DefaultTestSuite {
      *   for B3. <br />
      * - 1 target test-suite: "all.A". A test-report with
      *   "A1", "A2", "duplicatedId", "AG", "AG.AG1" and "AG.AG2" should be produced.<br />
-     * - 1 target test-suite and 2 tests: "all.B and 
-     *   all.A.A1 and all.A.A2. A test-report for "all.B.B1", "all.B.B2", 
-     *   "all.B.B3", "all.B.duplicatedId", "all.A.A1" and "all.A.A2" 
+     * - 1 target test-suite and 2 tests: "all.B and
+     *   all.A.A1 and all.A.A2. A test-report for "all.B.B1", "all.B.B2",
+     *   "all.B.B3", "all.B.duplicatedId", "all.A.A1" and "all.A.A2"
      *   should be produced. <br />
      * - 1 target testGroup: "AG". A test-report with
      *   "A.AG", "A.AG.AG1" and "A.AG.AG2" should be produced.<br />
@@ -116,8 +117,8 @@ public class XMLTestSuiteRunnerValidator extends DefaultTestSuite {
      *   pass for "all.A.duplicatedId" and "all.B.duplicatedId".
      */
     public XMLTestSuiteRunnerValidator() {
-        Object config[][] = {
-            {"", new String[]{"all", 
+        Object[][] config = {
+            {"", new String[]{"all",
                               "all.A", "all.A.A1", "all.A.A2", "all.A.duplicatedId", "all.A.duplicatedId.1", "all.A.duplicatedId.2",
                               "all.A.AG", "all.A.AG.AG1", "all.A.AG.AG2",
                               "all.B", "all.B.B1", "all.B.B2", "all.B.B3", "all.B.duplicatedId"}},
@@ -128,15 +129,15 @@ public class XMLTestSuiteRunnerValidator extends DefaultTestSuite {
                                     "all.A", "all.A.A1", "all.A.A2", "all.A.duplicatedId", "all.A.duplicatedId.1", "all.A.duplicatedId.2",
                                     "all.A.AG", "all.A.AG.AG1", "all.A.AG.AG2"}},
 
-            {"all.B all.A.A1 all.A.A2", 
+            {"all.B all.A.A1 all.A.A2",
              new String[] {"all",
                            "all.B", "all.B.B1", "all.B.B2", "all.B.B3", "all.B.duplicatedId",
                            "all.A", "all.A.A1", "all.A.A2"}},
 
-            {"duplicatedId", 
+            {"duplicatedId",
              new String[] {"all",
                            "all.A", "all.A.duplicatedId", "all.A.duplicatedId.1", "all.A.duplicatedId.2",
-                           "all.B", "all.B.duplicatedId"}}, 
+                           "all.B", "all.B.duplicatedId"}},
 
             {"AG",
              new String[] {"all",
@@ -150,7 +151,7 @@ public class XMLTestSuiteRunnerValidator extends DefaultTestSuite {
         }
 
     }
-    
+
     static class XMLTestSuiteRunnerTest extends AbstractTest {
         /**
          * Argument to feed into the XMLTestSuiteRunner
@@ -170,7 +171,7 @@ public class XMLTestSuiteRunnerValidator extends DefaultTestSuite {
          *        an array of Strings containing the expected ids
          *        from the XMLTestSuiteRunner operation.
          */
-        public XMLTestSuiteRunnerTest(Object config[]){
+        public XMLTestSuiteRunnerTest(Object[] config){
             StringTokenizer st = new StringTokenizer((String)config[0], " ");
             int nArgs = st.countTokens();
             args = new String[nArgs];
@@ -195,12 +196,12 @@ public class XMLTestSuiteRunnerValidator extends DefaultTestSuite {
             Document doc = loadDummyTestRun();
 
             //
-            // Now run the test. 
+            // Now run the test.
             //
-            XMLTestSuiteRunner runner 
+            XMLTestSuiteRunner runner
                 = new XMLTestSuiteRunner();
 
-            TestReport runReport 
+            TestReport runReport
                 = runner.run(doc, args);
 
             //
@@ -293,7 +294,7 @@ public class XMLTestSuiteRunnerValidator extends DefaultTestSuite {
                 }
             }
         }
-           
+
         /**
          * Loads the dummy testRun description
          */
@@ -318,7 +319,7 @@ public class XMLTestSuiteRunnerValidator extends DefaultTestSuite {
             if(!(idSet.contains(id))){
                 return id;
             }
-            
+
             idSet.remove(id);
 
             //
@@ -328,7 +329,7 @@ public class XMLTestSuiteRunnerValidator extends DefaultTestSuite {
                 TestReport[] childReports = ((TestSuiteReport)report).getChildrenReports();
                 if(childReports != null){
                     for(int i=0; i<childReports.length; i++){
-                        String idNotExpected 
+                        String idNotExpected
                             = checkTestReport(childReports[i],
                                               idSet);
                         if(idNotExpected != null){
@@ -340,8 +341,8 @@ public class XMLTestSuiteRunnerValidator extends DefaultTestSuite {
 
             return null;
         }
-            
+
     }
 
-    
+
 }

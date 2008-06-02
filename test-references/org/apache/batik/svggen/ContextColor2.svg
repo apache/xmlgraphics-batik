@@ -19,7 +19,7 @@
       ><g
       ><defs id="testdefs1"
         ><font horiz-adv-x="75.0" id="testfont1"
-          ><font-face ascent="92.163086" descent="19.555664" units-per-em="100" font-family="Arial" font-style="normal" font-weight="normal"
+          ><font-face ascent="92.163086" font-style="normal" descent="19.555664" units-per-em="100" font-family="Arial" font-weight="normal"
             /><missing-glyph horiz-adv-x="75.0" d="M12.5 0 L12.5 62.5 L62.5 62.5 L62.5 0 L12.5 0 ZM14.0625 1.5625 L60.9375 1.5625 L60.9375 60.9375 L14.0625 60.9375 L14.0625 1.5625 Z"
             /><glyph unicode="i" horiz-adv-x="22.216797" d="M6.6406 61.4688 L6.6406 71.5781 L15.4375 71.5781 L15.4375 61.4688 L6.6406 61.4688 ZM6.6406 0 L6.6406 51.8594 L15.4375 51.8594 L15.4375 0 L6.6406 0 Z"
             /><glyph unicode="m" horiz-adv-x="83.30078" d="M6.5938 0 L6.5938 51.8594 L14.4531 51.8594 L14.4531 44.5781 Q16.8906 48.3906 20.9453 50.7109 Q25 53.0312 30.1719 53.0312 Q35.9375 53.0312 39.625 50.6406 Q43.3125 48.25 44.8281 43.9531 Q50.9844 53.0312 60.8438 53.0312 Q68.5625 53.0312 72.7109 48.7578 Q76.8594 44.4844 76.8594 35.5938 L76.8594 0 L68.1094 0 L68.1094 32.6719 Q68.1094 37.9375 67.2578 40.2578 Q66.4062 42.5781 64.1641 43.9922 Q61.9219 45.4062 58.8906 45.4062 Q53.4219 45.4062 49.8047 41.7734 Q46.1875 38.1406 46.1875 30.125 L46.1875 0 L37.4062 0 L37.4062 33.6875 Q37.4062 39.5469 35.2578 42.4766 Q33.1094 45.4062 28.2188 45.4062 Q24.5156 45.4062 21.3672 43.4531 Q18.2188 41.5 16.7969 37.7422 Q15.375 33.9844 15.375 26.9062 L15.375 0 L6.5938 0 Z"
@@ -49,17 +49,17 @@
           /></font
         ></defs
         ><g class="testC1"
-        ><text xml:space="preserve" x="10" y="30" class="testC2"
+        ><text x="10" xml:space="preserve" y="30" class="testC2"
           >Opaque Colors, Half Transparent AlphaComposite</text
-          ><rect width="100" x="10" height="50" y="40" class="testC3"
-          /><rect width="100" x="10" height="50" y="40" class="testC4"
-          /><rect width="100" x="10" height="50" y="40" class="testC5"
-          /><text xml:space="preserve" x="10" y="30" class="testC6" transform="translate(0,90)"
+          ><rect x="10" width="100" height="50" y="40" class="testC3"
+          /><rect x="10" width="100" height="50" y="40" class="testC4"
+          /><rect x="10" width="100" height="50" y="40" class="testC5"
+          /><text x="10" xml:space="preserve" y="30" class="testC6" transform="translate(0,90)"
           >Transparent Colors, Opaque AlphaComposite SrcOver</text
         ></g
         ><g class="testC7" transform="translate(0,90)"
-        ><rect width="100" x="10" height="50" y="40" class="testC8"
-          /><rect width="100" x="10" height="50" y="40" class="testC9"
+        ><rect x="10" width="100" height="50" y="40" class="testC8"
+          /><rect x="10" width="100" height="50" y="40" class="testC9"
         /></g
       ></g
     ></g

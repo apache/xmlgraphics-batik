@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001-2004  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -23,6 +24,7 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Event;
 import java.awt.EventQueue;
+import java.awt.FileDialog;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -43,6 +45,7 @@ import java.awt.image.BufferedImage;
 import java.awt.print.PrinterException;
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -50,6 +53,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.util.HashMap;
@@ -76,13 +80,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JToolBar;
 import javax.swing.JWindow;
 import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.text.Document;
-import javax.swing.text.PlainDocument;
 
 import org.apache.batik.bridge.DefaultExternalResourceSecurity;
 import org.apache.batik.bridge.DefaultScriptSecurity;
@@ -105,6 +107,7 @@ import org.apache.batik.ext.swing.JAffineTransformChooser;
 import org.apache.batik.swing.JSVGCanvas;
 import org.apache.batik.swing.gvt.GVTTreeRendererEvent;
 import org.apache.batik.swing.gvt.GVTTreeRendererListener;
+import org.apache.batik.swing.gvt.Overlay;
 import org.apache.batik.swing.svg.GVTTreeBuilderEvent;
 import org.apache.batik.swing.svg.GVTTreeBuilderListener;
 import org.apache.batik.swing.svg.LinkActivationEvent;
@@ -124,10 +127,10 @@ import org.apache.batik.transcoder.image.TIFFTranscoder;
 import org.apache.batik.transcoder.print.PrintTranscoder;
 import org.apache.batik.transcoder.svg2svg.SVGTranscoder;
 import org.apache.batik.util.ParsedURL;
+import org.apache.batik.util.Platform;
 import org.apache.batik.util.Service;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLConstants;
-import org.apache.batik.util.gui.DOMViewer;
 import org.apache.batik.util.gui.JErrorPane;
 import org.apache.batik.util.gui.LocationBar;
 import org.apache.batik.util.gui.MemoryMonitor;
@@ -136,11 +139,12 @@ import org.apache.batik.util.gui.resource.ActionMap;
 import org.apache.batik.util.gui.resource.JComponentModifier;
 import org.apache.batik.util.gui.resource.MenuFactory;
 import org.apache.batik.util.gui.resource.MissingListenerException;
-import org.apache.batik.util.gui.resource.ResourceManager;
 import org.apache.batik.util.gui.resource.ToolBarFactory;
+import org.apache.batik.util.gui.xmleditor.XMLDocument;
+import org.apache.batik.util.gui.xmleditor.XMLTextEditor;
+import org.apache.batik.util.resources.ResourceManager;
 import org.apache.batik.xml.XMLUtilities;
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.ContextListener;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.css.ViewCSS;
@@ -162,12 +166,13 @@ public class JSVGViewerFrame
                LinkActivationListener,
                UpdateManagerListener {
 
-    static private String EOL;
+    private static String EOL;
     static {
-        String  temp;
-        try { temp = System.getProperty ("line.separator", "\n"); }
-        catch (SecurityException e) { temp = "\n"; }
-        EOL = temp;
+        try {
+            EOL = System.getProperty("line.separator", "\n");
+        } catch (SecurityException e) {
+            EOL = "\n";
+        }
     }
 
     /**
@@ -184,171 +189,89 @@ public class JSVGViewerFrame
         = "java.util.logging.LoggingPermission";
 
     static {
-        Class cl = null;
         try {
-            cl = Class.forName(JDK_1_4_PRESENCE_TEST_CLASS);
-        } catch (ClassNotFoundException e){
-        }
-
-        if (cl != null) {
+            Class.forName(JDK_1_4_PRESENCE_TEST_CLASS);
             priorJDK1_4 = false;
-        }
-    }
-
-    static JFrame debuggerFrame = null;
-    static Class  debuggerClass = null;
-    static Method clearAllBreakpoints = null;
-    static Method scriptGo = null;
-    static Method setExitAction = null;
-    static {
-        try {
-            debuggerClass = JSVGViewerFrame.class.getClassLoader().loadClass
-                ("org.mozilla.javascript.tools.debugger.Main");
-            clearAllBreakpoints = debuggerClass.getMethod
-                ("clearAllBreakpoints", (Class[])null);
-            scriptGo = debuggerClass.getMethod("go", (Class[])null);
-            setExitAction = debuggerClass.getMethod
-                ("setExitAction", new Class[] {Runnable.class});
-        } catch (ThreadDeath td) {
-            debuggerClass = null;
-            clearAllBreakpoints = null;
-            scriptGo = null;
-            setExitAction = null;
-            throw td;
-        } catch (Throwable t) {
-            debuggerClass = null;
-            clearAllBreakpoints = null;
-            scriptGo = null;
-            setExitAction = null;
-        }
-    }
-
-    public static void showDebugger() {
-        if (debuggerClass == null) return;
-        if (debuggerFrame == null) {
-            try {
-                Constructor c = debuggerClass.getConstructor
-                    (new Class [] { String.class });
-                debuggerFrame = (JFrame)c.newInstance
-                    (new Object[] { "Rhino JavaScript Debugger" });
-                // Customize the menubar a bit, disable menu
-                // items that can't be used and change 'Exit' to 'Close'.
-                JMenuBar menuBar = debuggerFrame.getJMenuBar();
-                JMenu    menu    = menuBar.getMenu(0);
-                menu.getItem(0).setEnabled(false); // Open...
-                menu.getItem(1).setEnabled(false); // Run...
-                menu.getItem(3).setText
-                    (Resources.getString("Close.text")); // Exit -> "Close"
-                menu.getItem(3).setAccelerator
-                    (KeyStroke.getKeyStroke(KeyEvent.VK_W, Event.CTRL_MASK));
-
-                debuggerFrame.setSize(600, 460);
-                debuggerFrame.pack();
-                WindowAdapter wa = new WindowAdapter() {
-                        public void windowClosing(WindowEvent e) {
-                            hideDebugger();
-                        }};
-                setExitAction.invoke(debuggerFrame, 
-                                     new Object [] { new Runnable() {
-                                             public void run() {
-                                                 hideDebugger();
-                                             }}});
-                debuggerFrame.addWindowListener(wa);
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                return;
-            }
-        }
-        if (debuggerFrame != null) {
-            debuggerFrame.setVisible(true);
-            Context.addContextListener((ContextListener)debuggerFrame);
-        }
-    }
-
-    public static void hideDebugger() {
-        if (debuggerFrame == null)
-            return;
-        Context.removeContextListener((ContextListener)debuggerFrame);
-        debuggerFrame.setVisible(false);
-        try {
-            clearAllBreakpoints.invoke(debuggerFrame, (Object[])null);
-            scriptGo.invoke(debuggerFrame, (Object[])null);
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (ClassNotFoundException e) {
         }
     }
 
     /**
      * The gui resources file name
      */
-    public final static String RESOURCES =
+    public static final String RESOURCES =
         "org.apache.batik.apps.svgbrowser.resources.GUI";
 
     // The actions names.
-    public final static String ABOUT_ACTION = "AboutAction";
-    public final static String OPEN_ACTION = "OpenAction";
-    public final static String OPEN_LOCATION_ACTION = "OpenLocationAction";
-    public final static String NEW_WINDOW_ACTION = "NewWindowAction";
-    public final static String RELOAD_ACTION = "ReloadAction";
-    public final static String SAVE_AS_ACTION = "SaveAsAction";
-    public final static String BACK_ACTION = "BackAction";
-    public final static String FORWARD_ACTION = "ForwardAction";
-    public final static String FULL_SCREEN_ACTION = "FullScreenAction";
-    public final static String PRINT_ACTION = "PrintAction";
-    public final static String EXPORT_AS_JPG_ACTION = "ExportAsJPGAction";
-    public final static String EXPORT_AS_PNG_ACTION = "ExportAsPNGAction";
-    public final static String EXPORT_AS_TIFF_ACTION = "ExportAsTIFFAction";
-    public final static String PREFERENCES_ACTION = "PreferencesAction";
-    public final static String CLOSE_ACTION = "CloseAction";
-    public final static String VIEW_SOURCE_ACTION = "ViewSourceAction";
-    public final static String EXIT_ACTION = "ExitAction";
-    public final static String RESET_TRANSFORM_ACTION = "ResetTransformAction";
-    public final static String ZOOM_IN_ACTION = "ZoomInAction";
-    public final static String ZOOM_OUT_ACTION = "ZoomOutAction";
-    public final static String PREVIOUS_TRANSFORM_ACTION = "PreviousTransformAction";
-    public final static String NEXT_TRANSFORM_ACTION = "NextTransformAction";
-    public final static String USE_STYLESHEET_ACTION = "UseStylesheetAction";
-    public final static String PLAY_ACTION = "PlayAction";
-    public final static String PAUSE_ACTION = "PauseAction";
-    public final static String STOP_ACTION = "StopAction";
-    public final static String MONITOR_ACTION = "MonitorAction";
-    public final static String DOM_VIEWER_ACTION = "DOMViewerAction";
-    public final static String SET_TRANSFORM_ACTION = "SetTransformAction";
-    public final static String FIND_DIALOG_ACTION = "FindDialogAction";
-    public final static String THUMBNAIL_DIALOG_ACTION = "ThumbnailDialogAction";
-    public final static String FLUSH_ACTION = "FlushAction";
-    public final static String TOGGLE_DEBUGGER_ACTION = "ToggleDebuggerAction";
+    public static final String ABOUT_ACTION = "AboutAction";
+    public static final String OPEN_ACTION = "OpenAction";
+    public static final String OPEN_LOCATION_ACTION = "OpenLocationAction";
+    public static final String NEW_WINDOW_ACTION = "NewWindowAction";
+    public static final String RELOAD_ACTION = "ReloadAction";
+    public static final String SAVE_AS_ACTION = "SaveAsAction";
+    public static final String BACK_ACTION = "BackAction";
+    public static final String FORWARD_ACTION = "ForwardAction";
+    public static final String FULL_SCREEN_ACTION = "FullScreenAction";
+    public static final String PRINT_ACTION = "PrintAction";
+    public static final String EXPORT_AS_JPG_ACTION = "ExportAsJPGAction";
+    public static final String EXPORT_AS_PNG_ACTION = "ExportAsPNGAction";
+    public static final String EXPORT_AS_TIFF_ACTION = "ExportAsTIFFAction";
+    public static final String PREFERENCES_ACTION = "PreferencesAction";
+    public static final String CLOSE_ACTION = "CloseAction";
+    public static final String VIEW_SOURCE_ACTION = "ViewSourceAction";
+    public static final String EXIT_ACTION = "ExitAction";
+    public static final String RESET_TRANSFORM_ACTION = "ResetTransformAction";
+    public static final String ZOOM_IN_ACTION = "ZoomInAction";
+    public static final String ZOOM_OUT_ACTION = "ZoomOutAction";
+    public static final String PREVIOUS_TRANSFORM_ACTION = "PreviousTransformAction";
+    public static final String NEXT_TRANSFORM_ACTION = "NextTransformAction";
+    public static final String USE_STYLESHEET_ACTION = "UseStylesheetAction";
+    public static final String PLAY_ACTION = "PlayAction";
+    public static final String PAUSE_ACTION = "PauseAction";
+    public static final String STOP_ACTION = "StopAction";
+    public static final String MONITOR_ACTION = "MonitorAction";
+    public static final String DOM_VIEWER_ACTION = "DOMViewerAction";
+    public static final String SET_TRANSFORM_ACTION = "SetTransformAction";
+    public static final String FIND_DIALOG_ACTION = "FindDialogAction";
+    public static final String THUMBNAIL_DIALOG_ACTION = "ThumbnailDialogAction";
+    public static final String FLUSH_ACTION = "FlushAction";
+    public static final String TOGGLE_DEBUGGER_ACTION = "ToggleDebuggerAction";
 
     /**
      * The cursor indicating that an operation is pending.
      */
-    public final static Cursor WAIT_CURSOR =
+    public static final Cursor WAIT_CURSOR =
         new Cursor(Cursor.WAIT_CURSOR);
 
     /**
      * The default cursor.
      */
-    public final static Cursor DEFAULT_CURSOR =
+    public static final Cursor DEFAULT_CURSOR =
         new Cursor(Cursor.DEFAULT_CURSOR);
 
     /**
      * Name for the os-name property
      */
-    public final static String PROPERTY_OS_NAME 
+    public static final String PROPERTY_OS_NAME
         = Resources.getString("JSVGViewerFrame.property.os.name");
 
     /**
      * Name for the os.name default
      */
-    public final static String PROPERTY_OS_NAME_DEFAULT 
+    public static final String PROPERTY_OS_NAME_DEFAULT
         = Resources.getString("JSVGViewerFrame.property.os.name.default");
 
     /**
      * Name for the os.name property prefix we are looking
      * for in OpenAction to work around JFileChooser bug
      */
-    public final static String PROPERTY_OS_WINDOWS_PREFIX 
+    public static final String PROPERTY_OS_WINDOWS_PREFIX
         = Resources.getString("JSVGViewerFrame.property.os.windows.prefix");
+
+    /**
+     * Resource string name for the Open dialog.
+     */
+    protected static final String OPEN_TITLE = "Open.title";
 
     /**
      * The input handlers
@@ -382,7 +305,73 @@ public class JSVGViewerFrame
     /**
      * The JSVGCanvas.
      */
-    protected JSVGCanvas svgCanvas;
+    protected Canvas svgCanvas;
+
+    /**
+     * An extension of JSVGCanvas that exposes the Rhino interpreter.
+     */
+    protected class Canvas extends JSVGCanvas {
+
+        /**
+         * Creates a new Canvas.
+         */
+        public Canvas(SVGUserAgent ua, boolean eventsEnabled,
+                      boolean selectableText) {
+            super(ua, eventsEnabled, selectableText);
+        }
+
+        /**
+         * Returns the Rhino interpreter for this canvas.
+         */
+        public Object getRhinoInterpreter() {
+            if (bridgeContext == null) {
+                return null;
+            }
+            return bridgeContext.getInterpreter("text/ecmascript");
+        }
+
+        /**
+         * JSVGViewerFrame DOMViewerController implementation.
+         */
+        protected class JSVGViewerDOMViewerController
+                // extends CanvasDOMViewerController {
+                implements DOMViewerController {
+
+            public boolean canEdit() {
+                return getUpdateManager() != null;
+            }
+
+            public ElementOverlayManager createSelectionManager() {
+                if (canEdit()) {
+                    return new ElementOverlayManager(Canvas.this);
+                }
+                return null;
+            }
+
+            public org.w3c.dom.Document getDocument() {
+                return Canvas.this.svgDocument;
+            }
+
+            public void performUpdate(Runnable r) {
+                if (canEdit()) {
+                    getUpdateManager().getUpdateRunnableQueue().invokeLater(r);
+                } else {
+                    r.run();
+                }
+            }
+
+            public void removeSelectionOverlay(Overlay selectionOverlay) {
+                getOverlays().remove(selectionOverlay);
+            }
+
+            public void selectNode(Node node) {
+                DOMViewerAction dViewerAction =
+                    (DOMViewerAction) getAction(DOM_VIEWER_ACTION);
+                dViewerAction.openDOMViewer();
+                domViewer.selectNode(node);
+            }
+        }
+    }
 
     /**
      * The panel where the svgCanvas is displayed
@@ -533,6 +522,11 @@ public class JSVGViewerFrame
     protected String alternateStyleSheet;
 
     /**
+     * The debugger object.
+     */
+    protected Debugger debugger;
+
+    /**
      * Creates a new SVG viewer frame.
      */
     public JSVGViewerFrame(Application app) {
@@ -549,14 +543,14 @@ public class JSVGViewerFrame
         // bigger than the screen does not cause the creation
         // of unnecessary large images.
         //
-        svgCanvas = new JSVGCanvas(userAgent, true, true){
+        svgCanvas = new Canvas(userAgent, true, true) {
                 Dimension screenSize;
-                
+
                 {
                     screenSize = Toolkit.getDefaultToolkit().getScreenSize();
                     setMaximumSize(screenSize);
                 }
-                
+
                 public Dimension getPreferredSize(){
                     Dimension s = super.getPreferredSize();
                     if (s.width > screenSize.width) s.width =screenSize.width;
@@ -564,7 +558,7 @@ public class JSVGViewerFrame
                     return s;
                 }
 
-                
+
                 /**
                  * This method is called when the component knows the desired
                  * size of the window (based on width/height of outermost SVG
@@ -574,6 +568,7 @@ public class JSVGViewerFrame
                     setPreferredSize(d);
                     invalidate();
                     if (JSVGViewerFrame.this.autoAdjust) {
+                        Platform.unmaximize(JSVGViewerFrame.this);
                         JSVGViewerFrame.this.pack();
                     }
                 }
@@ -590,7 +585,7 @@ public class JSVGViewerFrame
                         thumbnailDialog.setInteractionEnabled(!b);
                 }
             };
-        
+
         javax.swing.ActionMap map = svgCanvas.getActionMap();
         map.put(FULL_SCREEN_ACTION, new FullScreenAction());
         javax.swing.InputMap imap = svgCanvas.getInputMap(JComponent.WHEN_FOCUSED);
@@ -648,12 +643,13 @@ public class JSVGViewerFrame
         try {
             // Create the menu
             MenuFactory mf = new MenuFactory(bundle, this);
-            JMenuBar mb = mf.createJMenuBar("MenuBar");
+            JMenuBar mb =
+                mf.createJMenuBar("MenuBar", application.getUISpecialization());
             setJMenuBar(mb);
 
             localHistory = new LocalHistory(mb, this);
 
-            String uri[] = application.getVisitedURIs();
+            String[] uri = application.getVisitedURIs();
             for (int i=0; i<uri.length; i++) {
                 if (uri[i] != null && !"".equals(uri[i])) {
                     localHistory.update(uri[i]);
@@ -669,6 +665,7 @@ public class JSVGViewerFrame
             p.add(tb, BorderLayout.NORTH);
             p.add(new javax.swing.JSeparator(), BorderLayout.CENTER);
             p.add(locationBar = new LocationBar(), BorderLayout.SOUTH);
+            locationBar.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
 
         } catch (MissingResourceException e) {
             System.out.println(e.getMessage());
@@ -781,14 +778,14 @@ public class JSVGViewerFrame
         locationBar.addActionListener(new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 String st = locationBar.getText().trim();
-                int i = st.indexOf("#");
+                int i = st.indexOf( '#' );
                 String t = "";
                 if (i != -1) {
                     t = st.substring(i + 1);
                     st = st.substring(0, i);
                 }
 
-                if (st.equals("")) 
+                if (st.equals(""))
                     return;
 
                 try{
@@ -818,7 +815,7 @@ public class JSVGViewerFrame
 
                 String fi = svgCanvas.getFragmentIdentifier();
                 if (svgDocument != null) {
-                    ParsedURL docPURL 
+                    ParsedURL docPURL
                         = new ParsedURL(svgDocument.getURL());
                     ParsedURL purl = new ParsedURL(docPURL, st);
                     fi = (fi == null) ? "" : fi;
@@ -827,20 +824,20 @@ public class JSVGViewerFrame
                     }
                 }
                 if (t.length() != 0) {
-                    st += "#" + t;
+                    st += '#' + t;
                 }
                 locationBar.setText(st);
                 locationBar.addToHistory(st);
                 showSVGDocument(st);
             }
         });
-
     }
 
     /**
      * Call dispose on canvas as well.
      */
     public void dispose() {
+        hideDebugger();
         svgCanvas.dispose();
         super.dispose();
     }
@@ -877,6 +874,300 @@ public class JSVGViewerFrame
     }
 
     /**
+     * Shows the Rhino debugger.
+     */
+    public void showDebugger() {
+        if (debugger == null && Debugger.isPresent) {
+            debugger = new Debugger(this, locationBar.getText());
+            debugger.initialize();
+        }
+    }
+
+    /**
+     * Hides and destroys the Rhino debugger.
+     */
+    public void hideDebugger() {
+        if (debugger != null) {
+            debugger.clearAllBreakpoints();
+            debugger.go();
+            debugger.dispose();
+            debugger = null;
+        }
+    }
+
+    /**
+     * Rhino debugger class.
+     */
+    protected static class Debugger {
+
+        /**
+         * Whether the Rhino debugger classes are present.
+         */
+        protected static boolean isPresent;
+
+        /**
+         * The Rhino debugger class.
+         */
+        protected static Class debuggerClass;
+
+        /**
+         * The Rhino ContextFactory class.
+         */
+        protected static Class contextFactoryClass;
+
+        // Indexes into the debuggerMethods array.
+        protected static final int CLEAR_ALL_BREAKPOINTS_METHOD = 0;
+        protected static final int GO_METHOD                    = 1;
+        protected static final int SET_EXIT_ACTION_METHOD       = 2;
+        protected static final int ATTACH_TO_METHOD             = 3;
+        protected static final int DETACH_METHOD                = 4;
+        protected static final int DISPOSE_METHOD               = 5;
+        protected static final int GET_DEBUG_FRAME_METHOD       = 6;
+
+        /**
+         * Rhino debugger class constructor.
+         */
+        protected static Constructor debuggerConstructor;
+
+        /**
+         * Rhino debugger class methods.
+         */
+        protected static Method[] debuggerMethods;
+
+        /**
+         * The RhinoInterpreter class.
+         */
+        protected static Class rhinoInterpreterClass;
+
+        /**
+         * The {@code getContextFactory} method on the {@link
+         * org.apache.batik.script.rhino.RhinoInterpreter} class.
+         */
+        protected static Method getContextFactoryMethod;
+
+        static {
+            try {
+                Class dc =
+                    Class.forName("org.mozilla.javascript.tools.debugger.Main");
+                Class cfc =
+                    Class.forName("org.mozilla.javascript.ContextFactory");
+                rhinoInterpreterClass = Class.forName
+                    ("org.apache.batik.script.rhino.RhinoInterpreter");
+                debuggerConstructor =
+                    dc.getConstructor(new Class[] { String.class });
+                debuggerMethods = new Method[] {
+                    dc.getMethod("clearAllBreakpoints", (Class[]) null),
+                    dc.getMethod("go", (Class[]) null),
+                    dc.getMethod("setExitAction", new Class[] {Runnable.class}),
+                    dc.getMethod("attachTo", new Class[] { cfc }),
+                    dc.getMethod("detach", (Class[]) null),
+                    dc.getMethod("dispose", (Class[]) null),
+                    dc.getMethod("getDebugFrame", (Class[]) null)
+                };
+                getContextFactoryMethod =
+                    rhinoInterpreterClass.getMethod("getContextFactory",
+                                                    (Class[]) null);
+                debuggerClass = dc;
+                isPresent = true;
+            } catch (ClassNotFoundException cnfe) {
+            } catch (NoSuchMethodException nsme) {
+            } catch (SecurityException se) {
+            }
+        }
+
+        /**
+         * The Rhino debugger instance.
+         */
+        protected Object debuggerInstance;
+
+        /**
+         * The JSVGViewerFrame.
+         */
+        protected JSVGViewerFrame svgFrame;
+
+        /**
+         * Creates a new Debugger.
+         */
+        public Debugger(JSVGViewerFrame frame, String url) {
+            svgFrame = frame;
+            try {
+                debuggerInstance = debuggerConstructor.newInstance
+                    (new Object[] { "JavaScript Debugger - " + url });
+            } catch (IllegalAccessException iae) {
+                throw new RuntimeException(iae.getMessage());
+            } catch (InvocationTargetException ite) {
+                ite.printStackTrace();
+                throw new RuntimeException(ite.getMessage());
+            } catch (InstantiationException ie) {
+                throw new RuntimeException(ie.getMessage());
+            }
+        }
+
+        /**
+         * Sets the document URL to use in the window title.
+         */
+        public void setDocumentURL(String url) {
+            getDebugFrame().setTitle("JavaScript Debugger - " + url);
+        }
+
+        /**
+         * Initializes the debugger by massaging the GUI and attaching it
+         * to the Rhino interpreter's {@link
+         * org.mozilla.javascript.ContextFactory}.
+         */
+        public void initialize() {
+            // Customize the menubar a bit, disable menu
+            // items that can't be used and change 'Exit' to 'Close'.
+            JFrame   debugGui = getDebugFrame();
+            JMenuBar menuBar  = debugGui.getJMenuBar();
+            JMenu    menu     = menuBar.getMenu(0);
+            menu.getItem(0).setEnabled(false); // Open...
+            menu.getItem(1).setEnabled(false); // Run...
+            menu.getItem(3).setText
+                (Resources.getString("Close.text")); // Exit -> "Close"
+            menu.getItem(3).setAccelerator
+                (KeyStroke.getKeyStroke(KeyEvent.VK_W, Event.CTRL_MASK));
+
+            debugGui.setSize(600, 460);
+            debugGui.pack();
+            setExitAction(new Runnable() {
+                    public void run() {
+                        svgFrame.hideDebugger();
+                    }});
+            WindowAdapter wa = new WindowAdapter() {
+                    public void windowClosing(WindowEvent e) {
+                        svgFrame.hideDebugger();
+                    }};
+            debugGui.addWindowListener(wa);
+            debugGui.setVisible(true);
+            attach();
+        }
+
+        /**
+         * Attaches the debugger to the canvas' current interpreter.
+         */
+        public void attach() {
+            Object interpreter = svgFrame.svgCanvas.getRhinoInterpreter();
+            if (interpreter != null) {
+                attachTo(getContextFactory(interpreter));
+            }
+        }
+
+        /**
+         * Calls {@code getDebugFrame} on {@link #debuggerInstance}.
+         */
+        protected JFrame getDebugFrame() {
+            try {
+                return (JFrame) debuggerMethods[GET_DEBUG_FRAME_METHOD].invoke
+                    (debuggerInstance, (Object[]) null);
+            } catch (InvocationTargetException ite) {
+                throw new RuntimeException(ite.getMessage());
+            } catch (IllegalAccessException iae) {
+                throw new RuntimeException(iae.getMessage());
+            }
+        }
+
+        /**
+         * Calls {@code setExitAction} on {@link #debuggerInstance}.
+         */
+        protected void setExitAction(Runnable r) {
+            try {
+                debuggerMethods[SET_EXIT_ACTION_METHOD].invoke
+                    (debuggerInstance, new Object[] { r });
+            } catch (InvocationTargetException ite) {
+                throw new RuntimeException(ite.getMessage());
+            } catch (IllegalAccessException iae) {
+                throw new RuntimeException(iae.getMessage());
+            }
+        }
+
+        /**
+         * Calls {@code attachTo} on {@link #debuggerInstance}.
+         */
+        public void attachTo(Object contextFactory) {
+            try {
+                debuggerMethods[ATTACH_TO_METHOD].invoke
+                    (debuggerInstance, new Object[] { contextFactory });
+            } catch (InvocationTargetException ite) {
+                throw new RuntimeException(ite.getMessage());
+            } catch (IllegalAccessException iae) {
+                throw new RuntimeException(iae.getMessage());
+            }
+        }
+
+        /**
+         * Calls {@code detach} on {@link #debuggerInstance}.
+         */
+        public void detach() {
+            try {
+                debuggerMethods[DETACH_METHOD].invoke(debuggerInstance,
+                                                      (Object[]) null);
+            } catch (InvocationTargetException ite) {
+                throw new RuntimeException(ite.getMessage());
+            } catch (IllegalAccessException iae) {
+                throw new RuntimeException(iae.getMessage());
+            }
+        }
+
+        /**
+         * Calls {@code go} on {@link #debuggerInstance}.
+         */
+        public void go() {
+            try {
+                debuggerMethods[GO_METHOD].invoke(debuggerInstance,
+                                                  (Object[]) null);
+            } catch (InvocationTargetException ite) {
+                throw new RuntimeException(ite.getMessage());
+            } catch (IllegalAccessException iae) {
+                throw new RuntimeException(iae.getMessage());
+            }
+        }
+
+        /**
+         * Calls {@code clearAllBreakpoints} on {@link #debuggerInstance}.
+         */
+        public void clearAllBreakpoints() {
+            try {
+                debuggerMethods[CLEAR_ALL_BREAKPOINTS_METHOD].invoke
+                    (debuggerInstance, (Object[]) null);
+            } catch (InvocationTargetException ite) {
+                throw new RuntimeException(ite.getMessage());
+            } catch (IllegalAccessException iae) {
+                throw new RuntimeException(iae.getMessage());
+            }
+        }
+
+        /**
+         * Calls {@code dispose} on {@link #debuggerInstance}.
+         */
+        public void dispose() {
+            try {
+                debuggerMethods[DISPOSE_METHOD].invoke(debuggerInstance,
+                                                       (Object[]) null);
+            } catch (InvocationTargetException ite) {
+                throw new RuntimeException(ite.getMessage());
+            } catch (IllegalAccessException iae) {
+                throw new RuntimeException(iae.getMessage());
+            }
+        }
+
+        /**
+         * Calls {@code getContextFactory} on the given instance of
+         * {@link org.apache.batik.script.rhino.RhinoInterpreter}.
+         */
+        protected Object getContextFactory(Object rhinoInterpreter) {
+            try {
+                return getContextFactoryMethod.invoke(rhinoInterpreter,
+                                                      (Object[]) null);
+            } catch (InvocationTargetException ite) {
+                throw new RuntimeException(ite.getMessage());
+            } catch (IllegalAccessException iae) {
+                throw new RuntimeException(iae.getMessage());
+            }
+        }
+    }
+
+    /**
      * To show the about dialog
      */
     public class AboutAction extends AbstractAction {
@@ -886,7 +1177,7 @@ public class JSVGViewerFrame
         public void actionPerformed(ActionEvent e){
             AboutDialog dlg = new AboutDialog(JSVGViewerFrame.this);
             // Work around pack() bug on some platforms
-            dlg.setSize(dlg.getPreferredSize()); 
+            dlg.setSize(dlg.getPreferredSize());
             dlg.setLocationRelativeTo(JSVGViewerFrame.this);
             dlg.setVisible(true);
             dlg.toFront();
@@ -901,41 +1192,69 @@ public class JSVGViewerFrame
         public OpenAction() {
         }
         public void actionPerformed(ActionEvent e) {
-            JFileChooser fileChooser = null;
-
-            // Apply work around Windows problem when security is enabled, 
-            // and when prior to JDK 1.4.
-            String os = System.getProperty(PROPERTY_OS_NAME, PROPERTY_OS_NAME_DEFAULT);
-            SecurityManager sm = System.getSecurityManager();
-            
-            if ( priorJDK1_4 && sm != null && os.indexOf(PROPERTY_OS_WINDOWS_PREFIX) != -1 ){
-                fileChooser = new JFileChooser(makeAbsolute(currentPath),
-                                               new WindowsAltFileSystemView());
+            File f = null;
+            if (Platform.isOSX) {
+                FileDialog fileDialog =
+                    new FileDialog(JSVGViewerFrame.this,
+                                   Resources.getString(OPEN_TITLE));
+                fileDialog.setFilenameFilter(new FilenameFilter() {
+                    public boolean accept(File dir, String name) {
+                        Iterator iter = getHandlers().iterator();
+                        while (iter.hasNext()) {
+                            SquiggleInputHandler handler
+                                = (SquiggleInputHandler)iter.next();
+                            if (handler.accept(new File(dir, name))) {
+                                return true;
+                            }
+                        }
+                        return false;
+                    }
+                });
+                fileDialog.setVisible(true);
+                String filename = fileDialog.getFile();
+                if (fileDialog != null) {
+                    String dirname = fileDialog.getDirectory();
+                    f = new File(dirname, filename);
+                }
             } else {
-                fileChooser = new JFileChooser(makeAbsolute(currentPath));
+                JFileChooser fileChooser = null;
+
+                // Apply work around Windows problem when security is enabled,
+                // and when prior to JDK 1.4.
+                String os = System.getProperty(PROPERTY_OS_NAME, PROPERTY_OS_NAME_DEFAULT);
+                SecurityManager sm = System.getSecurityManager();
+
+                if ( priorJDK1_4 && sm != null && os.indexOf(PROPERTY_OS_WINDOWS_PREFIX) != -1 ){
+                    fileChooser = new JFileChooser(makeAbsolute(currentPath),
+                                                   new WindowsAltFileSystemView());
+                } else {
+                    fileChooser = new JFileChooser(makeAbsolute(currentPath));
+                }
+
+                fileChooser.setFileHidingEnabled(false);
+                fileChooser.setFileSelectionMode
+                    (JFileChooser.FILES_ONLY);
+
+                //
+                // Add file filters from the handlers map
+                //
+                Iterator iter = getHandlers().iterator();
+                while (iter.hasNext()) {
+                    SquiggleInputHandler handler
+                        = (SquiggleInputHandler)iter.next();
+                    fileChooser.addChoosableFileFilter
+                        (new SquiggleInputHandlerFilter(handler));
+                }
+
+                int choice = fileChooser.showOpenDialog(JSVGViewerFrame.this);
+                if (choice == JFileChooser.APPROVE_OPTION) {
+                    f = fileChooser.getSelectedFile();
+                    currentPath = f;
+                }
             }
 
-            fileChooser.setFileHidingEnabled(false);
-            fileChooser.setFileSelectionMode
-                (JFileChooser.FILES_ONLY);
-
-            //
-            // Add file filters from the handlers map
-            //
-            Iterator iter = getHandlers().iterator();
-            while (iter.hasNext()) {
-                SquiggleInputHandler handler 
-                    = (SquiggleInputHandler)iter.next();
-                fileChooser.addChoosableFileFilter
-                    (new SquiggleInputHandlerFilter(handler));
-            }
-            
-            int choice = fileChooser.showOpenDialog(JSVGViewerFrame.this);
-            if (choice == JFileChooser.APPROVE_OPTION) {
-                File f = fileChooser.getSelectedFile();
-                
-                currentPath = f;
-                try { 
+            if (f != null) {
+                try {
                     String furl = f.toURL().toString();
                     showSVGDocument(furl);
                 } catch (MalformedURLException ex) {
@@ -953,9 +1272,9 @@ public class JSVGViewerFrame
     public void showSVGDocument(String uri){
         try {
             ParsedURL purl = new ParsedURL(uri);
-            SquiggleInputHandler 
+            SquiggleInputHandler
                 handler = getInputHandler(purl);
-            
+
             handler.handle(purl,
                            JSVGViewerFrame.this);
         } catch (Exception e) {
@@ -974,7 +1293,7 @@ public class JSVGViewerFrame
         SquiggleInputHandler handler = null;
 
         while (iter.hasNext()) {
-            SquiggleInputHandler curHandler = 
+            SquiggleInputHandler curHandler =
                 (SquiggleInputHandler)iter.next();
             if (curHandler.accept(purl)) {
                 handler = curHandler;
@@ -992,7 +1311,7 @@ public class JSVGViewerFrame
 
 
     /**
-     * Returns the list of input file handler. 
+     * Returns the list of input file handler.
      */
     protected static Vector getHandlers() {
         if (handlers != null) {
@@ -1001,10 +1320,10 @@ public class JSVGViewerFrame
 
         handlers = new Vector();
         registerHandler(new SVGInputHandler());
-        
+
         Iterator iter = Service.providers(SquiggleInputHandler.class);
         while (iter.hasNext()) {
-            SquiggleInputHandler handler 
+            SquiggleInputHandler handler
                 = (SquiggleInputHandler)iter.next();
 
             registerHandler(handler);
@@ -1017,7 +1336,7 @@ public class JSVGViewerFrame
      * Registers an input file handler by adding it to the handlers map.
      * @param handler the new input handler to register.
      */
-    public static synchronized 
+    public static synchronized
         void registerHandler(SquiggleInputHandler handler) {
         Vector handlers = getHandlers();
         handlers.addElement(handler);
@@ -1041,7 +1360,7 @@ public class JSVGViewerFrame
             if (uriChooser.showDialog() == URIChooser.OK_OPTION) {
                 String s = uriChooser.getText();
                 if (s == null) return;
-                int i = s.indexOf("#");
+                int i = s.indexOf( '#' );
                 String t = "";
                 if (i != -1) {
                     t = s.substring(i + 1);
@@ -1066,7 +1385,7 @@ public class JSVGViewerFrame
                     }
                     if (s != null) {
                         if (svgDocument != null) {
-                            ParsedURL docPURL 
+                            ParsedURL docPURL
                                 = new ParsedURL(svgDocument.getURL());
                             ParsedURL purl = new ParsedURL(docPURL, s);
                             String fi = svgCanvas.getFragmentIdentifier();
@@ -1075,7 +1394,7 @@ public class JSVGViewerFrame
                             }
                         }
                         if (t.length() != 0) {
-                            s += "#" + t;
+                            s += '#' + t;
                         }
 
                         showSVGDocument(s);
@@ -1204,7 +1523,7 @@ public class JSVGViewerFrame
                         String uri = doc.getURL();
                         String fragment = svgCanvas.getFragmentIdentifier();
                         if (fragment != null) {
-                            uri += "#"+fragment;
+                            uri += '#' +fragment;
                         }
 
                         //
@@ -1270,29 +1589,29 @@ public class JSVGViewerFrame
 
             SVGOptionPanel sop;
             sop = SVGOptionPanel.showDialog(JSVGViewerFrame.this);
-            
+
             final boolean useXMLBase  = sop.getUseXMLBase();
             final boolean prettyPrint = sop.getPrettyPrint();
             sop = null;
 
             final SVGDocument svgDoc = svgCanvas.getSVGDocument();
             if (svgDoc == null) return;
-            
+
             statusBar.setMessage(resources.getString("Message.saveAs"));
             currentSavePath = f;
             OutputStreamWriter w = null;
-            try { 
+            try {
                 OutputStream tos = null;
                 tos = new FileOutputStream(f);
                 tos = new BufferedOutputStream(tos);
                 w = new OutputStreamWriter(tos, "utf-8");
-            } catch (Exception ex) { 
-                userAgent.displayError(ex); 
+            } catch (Exception ex) {
+                userAgent.displayError(ex);
                 return;
             }
 
             final OutputStreamWriter writer  = w;
-            
+
             final Runnable doneRun = new Runnable() {
                     public void run() {
                         String doneStr = resources.getString("Message.done");
@@ -1303,13 +1622,13 @@ public class JSVGViewerFrame
                     public void run() {
                         try {
                             // Write standard XML header.
-                            writer.write 
+                            writer.write
                                 ("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
                                 writer.write (EOL);
 
                             Node fc = svgDoc.getFirstChild();
                             if (fc.getNodeType() != Node.DOCUMENT_TYPE_NODE) {
-                                // Not DT node in Document, so 
+                                // Not DT node in Document, so
                                 // provide Document Type dec.
                                 writer.write ("<!DOCTYPE svg PUBLIC '");
                                 writer.write (SVGConstants.SVG_PUBLIC_ID);
@@ -1327,14 +1646,14 @@ public class JSVGViewerFrame
 
                             if (doXMLBase) {
                                 root.setAttributeNS
-                                    (XMLConstants.XML_NAMESPACE_URI, 
+                                    (XMLConstants.XML_NAMESPACE_URI,
                                      "xml:base",
                                      svgDoc.getURL());
                             }
 
                             if (prettyPrint) {
                                 SVGTranscoder trans = new SVGTranscoder();
-                                trans.transcode(new TranscoderInput(svgDoc), 
+                                trans.transcode(new TranscoderInput(svgDoc),
                                                 new TranscoderOutput(writer));
                             } else {
                                 DOMUtilities.writeDocument(svgDoc, writer);
@@ -1344,7 +1663,7 @@ public class JSVGViewerFrame
 
                             if (doXMLBase)
                                 root.removeAttributeNS
-                                    (XMLConstants.XML_NAMESPACE_URI, 
+                                    (XMLConstants.XML_NAMESPACE_URI,
                                      "xml:base");
 
                             if (EventQueue.isDispatchThread()) {
@@ -1446,10 +1765,9 @@ public class JSVGViewerFrame
             int choice = fileChooser.showSaveDialog(JSVGViewerFrame.this);
             if (choice == JFileChooser.APPROVE_OPTION) {
 
-		// Start: By Jun Inamori (jun@oop-reserch.com)
-                boolean isIndexed =
-                    PNGOptionPanel.showDialog(JSVGViewerFrame.this);
-		// End: By Jun Inamori (jun@oop-reserch.com)
+            // Start: By Jun Inamori (jun@oop-reserch.com)
+            boolean isIndexed = PNGOptionPanel.showDialog(JSVGViewerFrame.this);
+            // End: By Jun Inamori (jun@oop-reserch.com)
 
                 final File f = fileChooser.getSelectedFile();
                 BufferedImage buffer = svgCanvas.getOffScreen();
@@ -1467,14 +1785,13 @@ public class JSVGViewerFrame
                                 application.getXMLParserClassName());
                     }
                     trans.addTranscodingHint(PNGTranscoder.KEY_FORCE_TRANSPARENT_WHITE,
-                                             new Boolean(true));
+                                             Boolean.TRUE );
 
-		    // Start: By Jun Inamori
-		    if(isIndexed){
-			trans.addTranscodingHint
-                            (PNGTranscoder.KEY_INDEXED,new Integer(256));
-		    }
-		    // End: By Jun Inamori
+            // Start: By Jun Inamori
+            if(isIndexed){
+                trans.addTranscodingHint(PNGTranscoder.KEY_INDEXED,new Integer(256));
+            }
+            // End: By Jun Inamori
 
                     final BufferedImage img = trans.createImage(w, h);
 
@@ -1566,12 +1883,12 @@ public class JSVGViewerFrame
             }
 
             final ParsedURL u = new ParsedURL(svgDocument.getURL());
-            
+
             final JFrame fr = new JFrame(u.toString());
             fr.setSize(resources.getInteger("ViewSource.width"),
                        resources.getInteger("ViewSource.height"));
-            final JTextArea ta  = new JTextArea();
-            ta.setLineWrap(true);
+            final XMLTextEditor ta  = new XMLTextEditor();
+            // ta.setLineWrap(true);
             ta.setFont(new Font("monospaced", Font.PLAIN, 12));
 
             JScrollPane scroll = new JScrollPane();
@@ -1585,7 +1902,7 @@ public class JSVGViewerFrame
                     char [] buffer = new char[4096];
 
                     try {
-                        Document  doc = new PlainDocument();
+                        Document  doc = new XMLDocument();
 
                         ParsedURL purl = new ParsedURL(svgDocument.getURL());
                         InputStream is
@@ -1602,7 +1919,7 @@ public class JSVGViewerFrame
 
                         ta.setDocument(doc);
                         ta.setEditable(false);
-                        ta.setBackground(Color.white);
+                        // ta.setBackground(Color.white);
                         fr.setVisible(true);
                     } catch (Exception ex) {
                         userAgent.displayError(ex);
@@ -1630,19 +1947,14 @@ public class JSVGViewerFrame
     public class ToggleDebuggerAction extends AbstractAction {
         public ToggleDebuggerAction() {
             super("Toggle Debugger Action");
-            if (debuggerClass == null)
-                setEnabled(false);
         }
 
         public void actionPerformed(ActionEvent e) {
-            if (debuggerClass == null) {
-                setEnabled(false);
-                return;
-            }
-            if ((debuggerFrame == null) || !debuggerFrame.isShowing())
+            if (debugger == null) {
                 showDebugger();
-            else
+            } else {
                 hideDebugger();
+            }
         }
     }
 
@@ -1774,7 +2086,7 @@ public class JSVGViewerFrame
      */
     public class PlayAction extends   AbstractAction
                             implements JComponentModifier {
-        java.util.List components = new LinkedList();
+        List components = new LinkedList();
         public PlayAction() {}
         public void actionPerformed(ActionEvent e) {
             svgCanvas.resumeProcessing();
@@ -1798,7 +2110,7 @@ public class JSVGViewerFrame
      */
     public class PauseAction extends   AbstractAction
                             implements JComponentModifier {
-        java.util.List components = new LinkedList();
+        List components = new LinkedList();
         public PauseAction() {}
         public void actionPerformed(ActionEvent e) {
             svgCanvas.suspendProcessing();
@@ -1822,7 +2134,7 @@ public class JSVGViewerFrame
      */
     public class StopAction extends    AbstractAction
                             implements JComponentModifier {
-        java.util.List components = new LinkedList();
+        List components = new LinkedList();
         public StopAction() {}
         public void actionPerformed(ActionEvent e) {
             svgCanvas.stopProcessing();
@@ -1948,28 +2260,36 @@ public class JSVGViewerFrame
                 svgCanvas.getParent().remove(svgCanvas);
                 svgCanvasPanel.add(svgCanvas, BorderLayout.CENTER);
                 window.setVisible(false);
-            } 
+            }
         }
     }
-    
+
     /**
      * To display the DOM viewer of the document
      */
     public class DOMViewerAction extends AbstractAction {
-        public DOMViewerAction() {}
+
+        public DOMViewerAction() {
+        }
+
         public void actionPerformed(ActionEvent e) {
-            if (domViewer == null) {
-                domViewer = new DOMViewer();
-                if (svgDocument != null) {
-                    domViewer.setDocument(svgDocument,
-                                          (ViewCSS)svgDocument.getDocumentElement());
-                }
+            openDOMViewer();
+        }
+
+        public void openDOMViewer() {
+            if (domViewer == null || domViewer.isDisplayable()) {
+                domViewer = new DOMViewer
+                    (svgCanvas.new JSVGViewerDOMViewerController());
                 Rectangle fr = getBounds();
                 Dimension td = domViewer.getSize();
-                domViewer.setLocation(fr.x + (fr.width  - td.width) / 2,
+                domViewer.setLocation(fr.x + (fr.width - td.width) / 2,
                                       fr.y + (fr.height - td.height) / 2);
             }
             domViewer.setVisible(true);
+        }
+
+        public DOMViewer getDOMViewer() {
+            return domViewer;
         }
     }
 
@@ -2051,6 +2371,10 @@ public class JSVGViewerFrame
         svgCanvas.setCursor(DEFAULT_CURSOR);
         String s = svgDocumentURL;
         locationBar.setText(s);
+        if (debugger != null) {
+            debugger.detach();
+            debugger.setDocumentURL(s);
+        }
         if (title == null) {
             title = getTitle();
         }
@@ -2147,6 +2471,9 @@ public class JSVGViewerFrame
         svgCanvas.setSelectionOverlayXORMode
             (application.isSelectionOverlayXORMode());
         svgCanvas.requestFocus();  // request focus when load completes.
+        if (debugger != null) {
+            debugger.attach();
+        }
     }
 
     /**
@@ -2336,9 +2663,13 @@ public class JSVGViewerFrame
                 return;
             }
 
-            if (s.indexOf("#") != -1) {
+            if (s.indexOf( '#' ) != -1) {
                 localHistory.update(s);
                 locationBar.setText(s);
+                if (debugger != null) {
+                    debugger.detach();
+                    debugger.setDocumentURL(s);
+                }
                 application.addVisitedURI(s);
                 backAction.update();
                 forwardAction.update();
@@ -2503,7 +2834,7 @@ public class JSVGViewerFrame
         public float getPixelUnitToMillimeter() {
             return 0.26458333333333333333333333333333f; // 96dpi
         }
-        
+
         /**
          * Returns the size of a px CSS unit in millimeters.
          * This will be removed after next release.
@@ -2511,18 +2842,18 @@ public class JSVGViewerFrame
          */
         public float getPixelToMM() {
             return getPixelUnitToMillimeter();
-            
+
         }
 
         /**
          * Returns the default font family.
          */
         public String getDefaultFontFamily() {
-            return application.getDefaultFontFamily(); 
+            return application.getDefaultFontFamily();
         }
 
-        /** 
-         * Returns the  medium font size. 
+        /**
+         * Returns the  medium font size.
          */
         public float getMediumFontSize() {
             // 9pt (72pt == 1in)
@@ -2643,14 +2974,14 @@ public class JSVGViewerFrame
         /**
          * Returns the security settings for the given script
          * type, script url and document url
-         * 
-         * @param scriptType type of script, as found in the 
+         *
+         * @param scriptType type of script, as found in the
          *        type attribute of the &lt;script&gt; element.
          * @param scriptURL url for the script, as defined in
          *        the script's xlink:href attribute. If that
          *        attribute was empty, then this parameter should
          *        be null
-         * @param docURL url for the document into which the 
+         * @param docURL url for the document into which the
          *        script was found.
          */
         public ScriptSecurity getScriptSecurity(String scriptType,
@@ -2682,18 +3013,18 @@ public class JSVGViewerFrame
          * This method throws a SecurityException if the script
          * of given type, found at url and referenced from docURL
          * should not be loaded.
-         * 
+         *
          * This is a convenience method to call checkLoadScript
-         * on the ScriptSecurity strategy returned by 
+         * on the ScriptSecurity strategy returned by
          * getScriptSecurity.
          *
-         * @param scriptType type of script, as found in the 
+         * @param scriptType type of script, as found in the
          *        type attribute of the &lt;script&gt; element.
          * @param scriptURL url for the script, as defined in
          *        the script's xlink:href attribute. If that
          *        attribute was empty, then this parameter should
          *        be null
-         * @param docURL url for the document into which the 
+         * @param docURL url for the document into which the
          *        script was found.
          */
         public void checkLoadScript(String scriptType,
@@ -2705,21 +3036,21 @@ public class JSVGViewerFrame
 
             if (s != null) {
                 s.checkLoadScript();
-            } 
+            }
         }
 
         /**
-         * Returns the security settings for the given 
+         * Returns the security settings for the given
          * resource url and document url
-         * 
+         *
          * @param resourceURL url for the resource, as defined in
          *        the resource's xlink:href attribute. If that
          *        attribute was empty, then this parameter should
          *        be null
-         * @param docURL url for the document into which the 
+         * @param docURL url for the document into which the
          *        resource was found.
          */
-        public ExternalResourceSecurity 
+        public ExternalResourceSecurity
             getExternalResourceSecurity(ParsedURL resourceURL,
                                         ParsedURL docURL){
             switch(application.getAllowedExternalResourceOrigin()) {
@@ -2740,24 +3071,24 @@ public class JSVGViewerFrame
          * This method throws a SecurityException if the resource
          * found at url and referenced from docURL
          * should not be loaded.
-         * 
+         *
          * This is a convenience method to call checkLoadExternalResource
-         * on the ExternalResourceSecurity strategy returned by 
+         * on the ExternalResourceSecurity strategy returned by
          * getExternalResourceSecurity.
          *
          * @param resourceURL url for the script, as defined in
          *        the resource's xlink:href attribute. If that
          *        attribute was empty, then this parameter should
          *        be null
-         * @param docURL url for the document into which the 
+         * @param docURL url for the document into which the
          *        resource was found.
          */
-        public void 
+        public void
             checkLoadExternalResource(ParsedURL resourceURL,
                                       ParsedURL docURL) throws SecurityException {
-            ExternalResourceSecurity s 
+            ExternalResourceSecurity s
                 =  getExternalResourceSecurity(resourceURL, docURL);
-            
+
             if (s != null) {
                 s.checkLoadExternalResource();
             }
@@ -2803,5 +3134,4 @@ public class JSVGViewerFrame
             return extension;
         }
     }
-
 }

@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2000,2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -57,17 +58,17 @@ public abstract class GraphicsNodeInputEvent extends GraphicsNodeEvent {
     /**
      * The mouse button1 modifier constant.
      */
-    public static final int BUTTON1_MASK = InputEvent.BUTTON1_MASK;
+    public static final int BUTTON1_MASK = 1 << 10; // BUTTON1_DOWN_MASK
 
     /**
      * The mouse button2 modifier constant.
      */
-    public static final int BUTTON2_MASK = InputEvent.ALT_MASK;
+    public static final int BUTTON2_MASK = 1 << 11; // BUTTON2_DOWN_MASK
 
     /**
      * The mouse button3 modifier constant.
      */
-    public static final int BUTTON3_MASK = InputEvent.META_MASK;
+    public static final int BUTTON3_MASK = 1 << 12; // BUTTON3_DOWN_MASK
 
     /**
      * The caps lock constant.
@@ -97,7 +98,7 @@ public abstract class GraphicsNodeInputEvent extends GraphicsNodeEvent {
     long when;
 
     /**
-     * The state of the modifier key at the time the graphics node
+     * The state of the modifier keys at the time the graphics node
      * input event was fired.
      */
     int modifiers;
@@ -155,7 +156,7 @@ public abstract class GraphicsNodeInputEvent extends GraphicsNodeEvent {
      * Returns whether or not the Meta modifier is down on this event.
      */
     public boolean isMetaDown() {
-        return (modifiers & META_MASK) != 0;
+        return AWTEventDispatcher.isMetaDown(modifiers);
     }
 
     /**

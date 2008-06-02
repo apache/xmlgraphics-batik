@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2000-2002,2005  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -90,8 +91,9 @@ public class EventListenerList {
                 && listener == head.listener) {
             head = head.next;
         } else {
+            Entry e;
             Entry prev = head;
-            for (Entry e = head.next; e != null; e = e.next) {
+            for (e = head.next; e != null; e = e.next) {
                 if ((namespaceURI != null && namespaceURI.equals(e.namespaceURI)
                             || namespaceURI == null && e.namespaceURI == null)
                         && e.listener == listener) {
@@ -100,8 +102,10 @@ public class EventListenerList {
                 }
                 prev = e;
             }
-            // Listener not present.
-            return;
+            if (e == null) {
+                // Listener not present.
+                return;
+            }
         }
         counts.dec(namespaceURI);
         n--;

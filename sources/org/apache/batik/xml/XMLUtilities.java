@@ -1,10 +1,11 @@
 /*
 
-   Copyright 1999-2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -57,7 +58,7 @@ public class XMLUtilities extends XMLCharacters {
      * first character of an XML name.
      */
     public static boolean isXMLNameFirstCharacter(char c) {
-	return (NAME_FIRST_CHARACTER[c / 32] & (1 << (c % 32))) != 0;
+        return (NAME_FIRST_CHARACTER[c / 32] & (1 << (c % 32))) != 0;
     }
 
     /**
@@ -65,29 +66,33 @@ public class XMLUtilities extends XMLCharacters {
      * first character of an XML 1.1 name.
      */
     public static boolean isXML11NameFirstCharacter(char c) {
-	return (NAME11_FIRST_CHARACTER[c / 32] & (1 << (c % 32))) != 0;
+        return (NAME11_FIRST_CHARACTER[c / 32] & (1 << (c % 32))) != 0;
     }
 
     /**
      * Tests whether the given character is a valid XML name character.
      */
     public static boolean isXMLNameCharacter(char c) {
-	return (NAME_CHARACTER[c / 32] & (1 << (c % 32))) != 0;
+        return (NAME_CHARACTER[c / 32] & (1 << (c % 32))) != 0;
     }
 
     /**
      * Tests whether the given character is a valid XML 1.1 name character.
      */
     public static boolean isXML11NameCharacter(char c) {
-	return (NAME11_CHARACTER[c / 32] & (1 << (c % 32))) != 0;
+        return (NAME11_CHARACTER[c / 32] & (1 << (c % 32))) != 0;
     }
 
     /**
      * Tests whether the given 32 bits character is valid in XML documents.
+     * Because the majority of code-points is covered by the table-lookup-test,
+     * we do it first.
+     * This method gives meaningful results only for c >= 0 .
      */
     public static boolean isXMLCharacter(int c) {
-	return (c >= 0x10000 && c <= 0x10ffff) ||
-	    (XML_CHARACTER[c / 32] & (1 << (c % 32))) != 0;
+
+        return ( ( ( XML_CHARACTER[c >>> 5 ] & (1 << (c & 0x1F ))) != 0 )
+                || (c >= 0x10000 && c <= 0x10ffff) );
     }
 
     /**
@@ -103,7 +108,7 @@ public class XMLUtilities extends XMLCharacters {
      * Tests whether the given character is a valid XML public ID character.
      */
     public static boolean isXMLPublicIdCharacter(char c) {
-	return (c < 128) &&
+        return (c < 128) &&
             (PUBLIC_ID_CHARACTER[c / 32] & (1 << (c % 32))) != 0;
     }
 
@@ -111,7 +116,7 @@ public class XMLUtilities extends XMLCharacters {
      * Tests whether the given character is a valid XML version character.
      */
     public static boolean isXMLVersionCharacter(char c) {
-	return (c < 128) &&
+        return (c < 128) &&
             (VERSION_CHARACTER[c / 32] & (1 << (c % 32))) != 0;
     }
 
@@ -119,7 +124,7 @@ public class XMLUtilities extends XMLCharacters {
      * Tests whether the given character is a valid aphabetic character.
      */
     public static boolean isXMLAlphabeticCharacter(char c) {
-	return (c < 128) &&
+        return (c < 128) &&
             (ALPHABETIC_CHARACTER[c / 32] & (1 << (c % 32))) != 0;
     }
 
@@ -232,7 +237,7 @@ public class XMLUtilities extends XMLCharacters {
         }
 
         while (isXMLSpace((char)(c = r.read())));
-            
+
         if (c != 'v') {
             return e;
         }
@@ -254,7 +259,7 @@ public class XMLUtilities extends XMLCharacters {
         if ((c = r.read()) != 'n') {
             return e;
         }
-             
+
         c = r.read();
         while (isXMLSpace((char)c)) {
             c = r.read();
@@ -265,7 +270,7 @@ public class XMLUtilities extends XMLCharacters {
         }
 
         while (isXMLSpace((char)(c = r.read())));
-            
+
         if (c != '"' && c != '\'') {
             return e;
         }
@@ -321,7 +326,7 @@ public class XMLUtilities extends XMLCharacters {
         }
 
         while (isXMLSpace((char)(c = r.read())));
-            
+
         if (c != '"' && c != '\'') {
             return e;
         }

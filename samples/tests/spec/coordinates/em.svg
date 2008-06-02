@@ -4,11 +4,12 @@
 
 <!--
 
-   Copyright 2001  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -40,38 +41,38 @@
 
 <g style="fill:none; stroke:black" transform="translate(20 0)">
 
-	<line x1="0" y1="80" x2="300" y2="80" />
-	<text x="0" y="94" style="stroke:none; fill:black; font-size:12">width: 300</text>
+  <line x1="0" y1="80" x2="300" y2="80" />
+  <text x="0" y="94" style="stroke:none; fill:black; font-size:12">width: 300</text>
 
-	<line x1="0" y1="110" x2="30em" y2="110" style="font-size: 10"/>
-	<text x="0" y="124" style="stroke:none; fill:black; font-size:12">width: 30em / font-size: 10</text>
+  <line x1="0" y1="110" x2="30em" y2="110" style="font-size: 10"/>
+  <text x="0" y="124" style="stroke:none; fill:black; font-size:12">width: 30em / font-size: 10</text>
 
-	<line x1="0" y1="140" x2="60em" y2="140" style="font-size: 5"/>
-	<text x="0" y="154" style="stroke:none; fill:black; font-size:12">width: 60em / font-size: 5</text>
+  <line x1="0" y1="140" x2="60em" y2="140" style="font-size: 5"/>
+  <text x="0" y="154" style="stroke:none; fill:black; font-size:12">width: 60em / font-size: 5</text>
 
-	<line x1="0" y1="170" x2="30em" y2="170" style="font-size: 10px"/>
-	<text x="0" y="184" style="stroke:none; fill:black; font-size:12">width: 30em / font-size: 10px</text>
+  <line x1="0" y1="170" x2="30em" y2="170" style="font-size: 10px"/>
+  <text x="0" y="184" style="stroke:none; fill:black; font-size:12">width: 30em / font-size: 10px</text>
 
-	<line x1="0" y1="200" x2="60em" y2="200" style="font-size: 5px"/>
-	<text x="0" y="214" style="stroke:none; fill:black; font-size:12">width: 60em / font-size: 5px</text>
+  <line x1="0" y1="200" x2="60em" y2="200" style="font-size: 5px"/>
+  <text x="0" y="214" style="stroke:none; fill:black; font-size:12">width: 60em / font-size: 5px</text>
 
-	<g font-size="2">
-		<line x1="0" y1="230" x2="30em" y2="230" style="font-size: 5em"/>
-		<text x="0" y="244" style="stroke:none; fill:black; font-size:12">width: 30em / font-size: 5em / parent font-size: 2</text>
-	</g>
+  <g font-size="2">
+    <line x1="0" y1="230" x2="30em" y2="230" style="font-size: 5em"/>
+    <text x="0" y="244" style="stroke:none; fill:black; font-size:12">width: 30em / font-size: 5em / parent font-size: 2</text>
+  </g>
 
-	<g font-size="2px">
-		<line x1="0" y1="260" x2="30em" y2="260" style="font-size: 5em"/>
-		<text x="0" y="274" style="stroke:none; fill:black; font-size:12">width: 30em / font-size: 5em / parent font-size: 2px</text>
-	</g>
+  <g font-size="2px">
+    <line x1="0" y1="260" x2="30em" y2="260" style="font-size: 5em"/>
+    <text x="0" y="274" style="stroke:none; fill:black; font-size:12">width: 30em / font-size: 5em / parent font-size: 2px</text>
+  </g>
 
-	<line x1="0" y1="290" x2="30em" y2="290" style="font-size: 7.5pt"/>
-	<text x="0" y="304" style="stroke:none; fill:black; font-size:12">width: 30em / font-size: 7.5pt (96dpi)</text>
+  <line x1="0" y1="290" x2="30em" y2="290" style="font-size: 7.5pt"/>
+  <text x="0" y="304" style="stroke:none; fill:black; font-size:12">width: 30em / font-size: 7.5pt (96dpi)</text>
 
-	<g font-size="3.75pt">
-		<line x1="0" y1="320" x2="30em" y2="320" style="font-size: 2em"/>
-		<text x="0" y="334" style="stroke:none; fill:black; font-size:12">width: 30em / font-size: 2em / parent font-size: 3.75pt (96dpi)</text>
-	</g>
+  <g font-size="3.75pt">
+    <line x1="0" y1="320" x2="30em" y2="320" style="font-size: 2em"/>
+    <text x="0" y="334" style="stroke:none; fill:black; font-size:12">width: 30em / font-size: 2em / parent font-size: 3.75pt (96dpi)</text>
+  </g>
 
 </g>
 

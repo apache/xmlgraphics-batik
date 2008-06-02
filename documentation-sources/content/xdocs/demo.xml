@@ -1,0 +1,131 @@
+<?xml version="1.0"?>
+
+<!--
+
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+
+<!-- ========================================================================= -->
+<!-- author vincent.hardy@eng.sun.com                                          -->
+<!-- version $Id: demo.xml 201374 2004-08-18 07:17:26Z vhardy $ -->
+<!-- ========================================================================= -->
+
+<!DOCTYPE document PUBLIC "-//APACHE//DTD Documentation V2.0//EN" "http://forrest.apache.org/dtd/document-v20.dtd">
+<document>
+  <header>
+    <title>Batik Demo</title>
+  </header>
+
+  <body>
+    <p>
+      This page demonstrates the use of Batik’s
+      <a href="site:swing">JSVGCanvas</a> swing component in a Java applet.
+    </p>
+
+    <table id="layout">
+      <tr>
+        <td>
+          <applet id="chart" codebase="demo/" code="AppletDemo.class"
+                  width="400" height="300" mayscript="mayscript"
+                  archive="batik-awt-util.jar,
+                           batik-bridge.jar,
+                           batik-css.jar,
+                           batik-dom.jar,
+                           batik-ext.jar,
+                           batik-gvt.jar,
+                           batik-parser.jar,
+                           batik-svg-dom.jar,
+                           batik-script.jar,
+                           batik-swing.jar,
+                           batik-util.jar,
+                           batik-xml.jar,
+                           xml-apis-dom3.jar">
+            [Your browser doesn’t seem to support Java applets, which is required
+            for this demo.]
+          </applet>
+        </td>
+        <td>
+          <table id="data">
+            <tr>
+              <th>Expense</th><th>Amount</th>
+            </tr>
+            <tr>
+              <td>Shoe</td>
+              <td><input id="ShoeBar" type="text" value="10"/></td>
+            </tr>
+            <tr>
+              <td>Car</td>
+              <td><input id="CarBar" type="text" value="20"/></td>
+            </tr>
+            <tr>
+              <td>Travel</td>
+              <td><input id="TravelBar" type="text" value="10"/></td>
+            </tr>
+            <tr>
+              <td>Computer</td>
+              <td><input id="ComputerBar" type="text" value="60"/></td>
+            </tr>
+          </table>
+          <p>
+            <button onclick="update()">Update chart</button>
+          </p>
+        </td>
+      </tr>
+    </table>
+
+    <script><![CDATA[
+      var chart;
+
+      function get(id) {
+        var e = document.getElementById(id);
+        // This loop just gets around the problem of IE returning the 'a'
+        // element looked up by name, rather than the desired element by id.
+        while (e.nodeType != 1 || e.getAttribute("id") != id) {
+          e = e.nextSibling;
+        }
+        return e;
+      }
+
+      function update() {
+        chart = get("chart");
+        updateBar("ShoeBar");
+        updateBar("CarBar");
+        updateBar("TravelBar");
+        updateBar("ComputerBar");
+      }
+
+      function updateBar(name) {
+        var input = get(name);
+        var value = Number(input.value);
+        if (!isNaN(value) && value >= 0) {
+          chart.updateBar(name, value);
+        }
+      }
+    ]]></script>
+
+    <p>
+      The applet (<a href="demo/AppletDemo.java">view source</a>) displays
+      the
+      <a href="http://svn.apache.org/repos/asf/xmlgraphics/batik/trunk/samples/barChart.svg">barChart.svg</a>
+      sample from the Batik distribution using a <code>JSVGCanvas</code>.
+      Script in the web page then interacts with the applet, by calling the
+      <code>updateBar</code> method of the applet object when the
+      <b>Update chart</b> button is pressed.  This method modifies the
+      SVG document being displayed to update the heights of the bars.
+    </p>
+  </body>
+</document>

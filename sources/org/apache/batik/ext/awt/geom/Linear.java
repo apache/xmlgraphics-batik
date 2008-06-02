@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2003 The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -33,7 +34,7 @@ public class Linear implements Segment {
         p2 = new Point2D.Double();
     }
 
-    public Linear(double x1, double y1,  
+    public Linear(double x1, double y1,
                   double x2, double y2) {
         p1 = new Point2D.Double(x1, y1);
         p2 = new Point2D.Double(x2, y2);
@@ -45,28 +46,28 @@ public class Linear implements Segment {
     }
 
     public Object clone() {
-        return new Linear(new Point2D.Double(p1.x, p1.y), 
+        return new Linear(new Point2D.Double(p1.x, p1.y),
                           new Point2D.Double(p2.x, p2.y));
     }
 
     public Segment reverse() {
-        return new Linear(new Point2D.Double(p2.x, p2.y), 
+        return new Linear(new Point2D.Double(p2.x, p2.y),
                           new Point2D.Double(p1.x, p1.y));
     }
 
-    public double minX() { 
+    public double minX() {
         if (p1.x < p2.x) return p1.x;
         return p2.x;
     }
-    public double maxX() {  
+    public double maxX() {
         if (p1.x > p2.x) return p1.x;
         return p2.x;
     }
-    public double minY() { 
+    public double minY() {
         if (p1.y < p2.y) return p1.y;
         return p2.y;
     }
-    public double maxY() { 
+    public double maxY() {
         if (p1.y > p2.y) return p2.y;
         return p1.y;
     }
@@ -102,9 +103,9 @@ public class Linear implements Segment {
         if ((y <= p1.y) && (y <= p2.y)) return null;
         if ((y >= p1.y) && (y >= p2.y)) return null;
 
-	// This should be checked for numerical stability.  So you
-	// need to ensure that p2.y-p1.y retains enough bits to be
-	// useful.
+        // This should be checked for numerical stability.  So you
+        // need to ensure that p2.y-p1.y retains enough bits to be
+        // useful.
         double t = (y-p1.y)/(p2.y-p1.y);
 
         Segment [] t0 = {getSegment(0,t)};
@@ -214,9 +215,9 @@ public class Linear implements Segment {
         return getLength();
     }
 
-    public String toString() { 
-        return ("M" + p1.x + "," + p1.y + 
-                "L" + p2.x + "," + p2.y);
+    public String toString() {
+        return "M" + p1.x + ',' + p1.y +
+                'L' + p2.x + ',' + p2.y;
     }
 
     /*
@@ -225,7 +226,7 @@ public class Linear implements Segment {
         return (((a + eps) > b) && ((a-eps) < b));
     }
 
-    public static void sub(Linear orig, Linear curr, 
+    public static void sub(Linear orig, Linear curr,
                            double t, double inc, int lev) {
         Linear left=new Linear();
         Linear right=new Linear();

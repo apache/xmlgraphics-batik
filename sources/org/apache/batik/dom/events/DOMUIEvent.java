@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2000,2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -18,6 +19,7 @@
 package org.apache.batik.dom.events;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.batik.xml.XMLUtilities;
 
@@ -29,6 +31,7 @@ import org.w3c.dom.views.AbstractView;
  * associated with User Interface events.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
+ * @version $Id$
  */
 public class DOMUIEvent extends AbstractEvent implements UIEvent {
 
@@ -37,18 +40,18 @@ public class DOMUIEvent extends AbstractEvent implements UIEvent {
 
     /**
      * DOM: The <code>view</code> attribute identifies the
-     * <code>AbstractView</code> from which the event was generated.  
+     * <code>AbstractView</code> from which the event was generated.
      */
     public AbstractView getView() {
-	return view;
+        return view;
     }
 
     /**
      * DOM: Specifies some detail information about the
-     * <code>Event</code>, depending on the type of event.  
+     * <code>Event</code>, depending on the type of event.
      */
     public int getDetail() {
-	return detail;
+        return detail;
     }
 
     /**
@@ -62,20 +65,20 @@ public class DOMUIEvent extends AbstractEvent implements UIEvent {
      *
      * @param typeArg Specifies the event type.
      * @param canBubbleArg Specifies whether or not the event can bubble.
-     * @param cancelableArg Specifies whether or not the event's default  
+     * @param cancelableArg Specifies whether or not the event's default
      *   action can be prevented.
-     * @param viewArg Specifies the <code>Event</code>'s 
+     * @param viewArg Specifies the <code>Event</code>'s
      *   <code>AbstractView</code>.
-     * @param detailArg Specifies the <code>Event</code>'s detail.  
+     * @param detailArg Specifies the <code>Event</code>'s detail.
      */
-    public void initUIEvent(String typeArg, 
-			    boolean canBubbleArg, 
-			    boolean cancelableArg, 
-			    AbstractView viewArg, 
-			    int detailArg) {
-	initEvent(typeArg, canBubbleArg, cancelableArg);
-	this.view = viewArg;
-	this.detail = detailArg;
+    public void initUIEvent(String typeArg,
+                            boolean canBubbleArg,
+                            boolean cancelableArg,
+                            AbstractView viewArg,
+                            int detailArg) {
+        initEvent(typeArg, canBubbleArg, cancelableArg);
+        this.view = viewArg;
+        this.detail = detailArg;
     }
 
     /**
@@ -83,20 +86,20 @@ public class DOMUIEvent extends AbstractEvent implements UIEvent {
      */
     public void initUIEventNS(String namespaceURIArg,
                               String typeArg,
-                              boolean canBubbleArg, 
-                              boolean cancelableArg, 
-                              AbstractView viewArg, 
+                              boolean canBubbleArg,
+                              boolean cancelableArg,
+                              AbstractView viewArg,
                               int detailArg) {
         initEventNS(namespaceURIArg, typeArg, canBubbleArg, cancelableArg);
-	this.view = viewArg;
-	this.detail = detailArg;
+        this.view = viewArg;
+        this.detail = detailArg;
     }
 
     /**
      * Splits a whitespace separated string into tokens.
      */
     protected String[] split(String s) {
-        ArrayList a = new ArrayList(8);
+        List a = new ArrayList(8);
         StringBuffer sb;
         int i = 0;
         int len = s.length();

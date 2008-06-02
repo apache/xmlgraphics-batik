@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001-2004  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -20,6 +21,9 @@ package org.apache.batik.dom.svg;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.util.XMLSupport;
+import org.apache.batik.util.DoublyIndexedTable;
+import org.apache.batik.util.SVGTypes;
+
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedBoolean;
 import org.w3c.dom.svg.SVGAnimatedLength;
@@ -39,7 +43,7 @@ public class SVGOMCursorElement
     /**
      * The attribute initializer.
      */
-    protected final static AttributeInitializer attributeInitializer;
+    protected static final AttributeInitializer attributeInitializer;
     static {
         attributeInitializer = new AttributeInitializer(4);
         attributeInitializer.addAttribute(XMLSupport.XMLNS_NAMESPACE_URI,
@@ -54,6 +58,37 @@ public class SVGOMCursorElement
     }
 
     /**
+     * Table mapping XML attribute names to TraitInformation objects.
+     */
+    protected static DoublyIndexedTable xmlTraitInformation;
+    static {
+        DoublyIndexedTable t =
+            new DoublyIndexedTable(SVGOMURIReferenceElement.xmlTraitInformation);
+        t.put(null, SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_BOOLEAN));
+        t.put(null, SVG_X_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_LENGTH, PERCENTAGE_VIEWPORT_WIDTH));
+        t.put(null, SVG_Y_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_LENGTH, PERCENTAGE_VIEWPORT_HEIGHT));
+        xmlTraitInformation = t;
+    }
+
+    /**
+     * The 'x' attribute value.
+     */
+    protected SVGOMAnimatedLength x;
+
+    /**
+     * The 'y' attribute value.
+     */
+    protected SVGOMAnimatedLength y;
+
+    /**
+     * The 'externalResourcesRequired' attribute value.
+     */
+    protected SVGOMAnimatedBoolean externalResourcesRequired;
+
+    /**
      * Creates a new SVGOMCursorElement object.
      */
     protected SVGOMCursorElement() {
@@ -66,7 +101,30 @@ public class SVGOMCursorElement
      */
     public SVGOMCursorElement(String prefix, AbstractDocument owner) {
         super(prefix, owner);
+        initializeLiveAttributes();
+    }
 
+    /**
+     * Initializes all live attributes for this element.
+     */
+    protected void initializeAllLiveAttributes() {
+        super.initializeAllLiveAttributes();
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes the live attribute values of this element.
+     */
+    private void initializeLiveAttributes() {
+        x = createLiveAnimatedLength
+            (null, SVG_X_ATTRIBUTE, SVG_CURSOR_X_DEFAULT_VALUE,
+             SVGOMAnimatedLength.HORIZONTAL_LENGTH, false);
+        y = createLiveAnimatedLength
+            (null, SVG_Y_ATTRIBUTE, SVG_CURSOR_Y_DEFAULT_VALUE,
+             SVGOMAnimatedLength.VERTICAL_LENGTH, false);
+        externalResourcesRequired =
+            createLiveAnimatedBoolean
+                (null, SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE, false);
     }
 
     /**
@@ -80,18 +138,14 @@ public class SVGOMCursorElement
      * <b>DOM</b>: Implements {@link SVGCursorElement#getX()}.
      */
     public SVGAnimatedLength getX() {
-        return getAnimatedLengthAttribute
-            (null, SVG_X_ATTRIBUTE, SVG_CURSOR_X_DEFAULT_VALUE,
-             SVGOMAnimatedLength.HORIZONTAL_LENGTH);
+        return x;
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGCursorElement#getY()}.
      */
     public SVGAnimatedLength getY() {
-        return getAnimatedLengthAttribute
-            (null, SVG_Y_ATTRIBUTE, SVG_CURSOR_Y_DEFAULT_VALUE,
-             SVGOMAnimatedLength.VERTICAL_LENGTH);
+        return y;
     }
 
     // SVGExternalResourcesRequired support /////////////////////////////
@@ -101,8 +155,7 @@ public class SVGOMCursorElement
      * org.w3c.dom.svg.SVGExternalResourcesRequired#getExternalResourcesRequired()}.
      */
     public SVGAnimatedBoolean getExternalResourcesRequired() {
-	return SVGExternalResourcesRequiredSupport.
-            getExternalResourcesRequired(this);
+        return externalResourcesRequired;
     }
 
     // SVGTests support ///////////////////////////////////////////////////
@@ -112,7 +165,7 @@ public class SVGOMCursorElement
      * org.w3c.dom.svg.SVGTests#getRequiredFeatures()}.
      */
     public SVGStringList getRequiredFeatures() {
-	return SVGTestsSupport.getRequiredFeatures(this);
+        return SVGTestsSupport.getRequiredFeatures(this);
     }
 
     /**
@@ -120,7 +173,7 @@ public class SVGOMCursorElement
      * org.w3c.dom.svg.SVGTests#getRequiredExtensions()}.
      */
     public SVGStringList getRequiredExtensions() {
-	return SVGTestsSupport.getRequiredExtensions(this);
+        return SVGTestsSupport.getRequiredExtensions(this);
     }
 
     /**
@@ -128,7 +181,7 @@ public class SVGOMCursorElement
      * org.w3c.dom.svg.SVGTests#getSystemLanguage()}.
      */
     public SVGStringList getSystemLanguage() {
-	return SVGTestsSupport.getSystemLanguage(this);
+        return SVGTestsSupport.getSystemLanguage(this);
     }
 
     /**
@@ -136,7 +189,7 @@ public class SVGOMCursorElement
      * org.w3c.dom.svg.SVGTests#hasExtension(String)}.
      */
     public boolean hasExtension(String extension) {
-	return SVGTestsSupport.hasExtension(this, extension);
+        return SVGTestsSupport.hasExtension(this, extension);
     }
 
     /**
@@ -152,5 +205,12 @@ public class SVGOMCursorElement
      */
     protected Node newNode() {
         return new SVGOMCursorElement();
+    }
+
+    /**
+     * Returns the table of TraitInformation objects for this element.
+     */
+    protected DoublyIndexedTable getTraitInformationTable() {
+        return xmlTraitInformation;
     }
 }

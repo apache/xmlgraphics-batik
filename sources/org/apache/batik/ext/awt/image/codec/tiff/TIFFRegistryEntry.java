@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001,2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -30,7 +31,11 @@ import org.apache.batik.ext.awt.image.spi.ImageTagRegistry;
 import org.apache.batik.ext.awt.image.spi.MagicNumberRegistryEntry;
 import org.apache.batik.util.ParsedURL;
 
-public class TIFFRegistryEntry 
+/**
+ *
+ * @version $Id$
+ */
+public class TIFFRegistryEntry
     extends MagicNumberRegistryEntry {
 
     static final byte [] sig1 = {(byte)0x49, (byte)0x49, 42,  0};
@@ -54,9 +59,10 @@ public class TIFFRegistryEntry
      * @param origURL The original URL, if any, for documentation
      *                purposes only.  This may be null.
      * @param needRawData If true the image returned should not have
-     *                    any default color correction the file may 
-     *                    specify applied.  */
-    public Filter handleStream(InputStream inIS, 
+     *                    any default color correction the file may
+     *                    specify applied.
+     */
+    public Filter handleStream(InputStream inIS,
                                ParsedURL   origURL,
                                boolean needRawData) {
 
@@ -77,22 +83,22 @@ public class TIFFRegistryEntry
                     Filter filt;
                     try {
                         TIFFDecodeParam param = new TIFFDecodeParam();
-                        SeekableStream ss = 
+                        SeekableStream ss =
                             SeekableStream.wrapInputStream(is, true);
                         CachableRed cr = new TIFFImage(ss, param, 0);
                         cr = new Any2sRGBRed(cr);
                         filt = new RedRable(cr);
                     } catch (IOException ioe) {
                         filt = ImageTagRegistry.getBrokenLinkImage
-                            (this, errCode, errParam);
+                            (TIFFRegistryEntry.this, errCode, errParam);
                     } catch (ThreadDeath td) {
                         filt = ImageTagRegistry.getBrokenLinkImage
-                            (this, errCode, errParam);
+                            (TIFFRegistryEntry.this, errCode, errParam);
                         dr.setSource(filt);
                         throw td;
                     } catch (Throwable t) {
                         filt = ImageTagRegistry.getBrokenLinkImage
-                            (this, errCode, errParam);
+                            (TIFFRegistryEntry.this, errCode, errParam);
                     }
 
                     dr.setSource(filt);

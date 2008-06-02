@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+
+<!-- ========================================================================= -->
+<!-- author cam@mcc.id.au                                                      -->
+<!-- version $Id$ -->
+<!-- ========================================================================= -->
+
+<!DOCTYPE document PUBLIC "-//APACHE//DTD Documentation V2.0//EN" "http://forrest.apache.org/dtd/document-v20.dtd">
+<document>
+  <header>
+    <title>Using Batik</title>
+  </header>
+
+  <body>
+    <p>
+      The Batik toolkit has a number of modules that can be used to provide
+      SVG support to your application.  This section includes resources for
+      explaining how to use these modules.
+    </p>
+    <dl>
+      <dt>Architecture</dt>
+      <dd>
+        <p>
+          The <a href="site:architecture">architecture</a> page gives an
+          overview of how the various modules in Batik fit together.
+        </p>
+      </dd>
+      <dt>Javadoc APIs</dt>
+      <dd>
+        <p>
+          The <a href="site:javadoc">Javadoc APIs</a> document all
+          of the classes packaged with Batik.
+        </p>
+      </dd>
+      <!--dt>CSS engine</dt>
+      <dd>
+        <p>
+          The <a href="site:css">CSS engine</a> page describes how to use
+          the CSS 2 engine that comes with Batik.
+        </p>
+      </dd-->
+      <dt>DOM API</dt>
+      <dd>
+        <p>
+          The <a href="site:dom-api">DOM API</a> page explains how to use the
+          DOM interfaces to create and render SVG documents.
+        </p>
+      </dd>
+      <dt>Parsers</dt>
+      <dd>
+        <p>
+          The <a href="site:parsers">Parsers</a> page describes the parser
+          classes that can be used for parsing the microsyntaxes of SVG
+          (such as path data and transform lists).
+        </p>
+      </dd>
+      <dt>Scripting</dt>
+      <dd>
+        <p>
+          The scripting pages (<a href="site:scripting-ecmascript">Scriping with
+            ECMAScript</a>, <a href="site:java">Scripting with
+            Java</a> and <a href="site:security">Security</a>)
+          document how to programmatically manipulate SVG documents, and how
+          script interpreters can be used and extended in Batik.
+        </p>
+      </dd>
+      <dt>SVG generator</dt>
+      <dd>
+        <p>
+          The <a href="site:generator">SVG Generator</a> page documents the
+          <code>SVGGraphics2D</code> class, which can be used to construct
+          SVG documents from Java2D drawing commands.
+        </p>
+      </dd>
+      <dt>Swing components</dt>
+      <dd>
+        <p>
+          The <a href="site:swing">Swing components</a> page describes the
+          SVG canvas component, the primary method for displaying SVG content
+          in Swing applications.
+        </p>
+      </dd>
+      <dt>Transcoder API</dt>
+      <dd>
+        <p>
+          The <a href="site:transcoder">Transcoder API</a> page explains how
+          to use the transcoder classes to convert SVG content to other formats
+          (raster or vector).
+        </p>
+      </dd>
+      <dt>Extending Batik</dt>
+      <dd>
+        <p>
+          The <a href="site:extending">Extending Batik</a> page lists the parts
+          of the Batik API that are extensible and explains how to add
+          functionality to the existing modules.
+        </p>
+      </dd>
+      <!--dt>Batik in an applet</dt>
+      <dd>
+        <p>
+          The <a href="site:applet">Batik in an applet</a> page explains how
+          Batik can be used in a Java applet in a web page.
+        </p>
+      </dd>
+      <dt>Glossary</dt>
+      <dd>
+        <p>
+          Finally, the <a href="site:glossary">Glossary page</a> explains common Batik
+          terminology used in this section.
+        </p>
+      </dd-->
+    </dl>
+  </body>
+</document>

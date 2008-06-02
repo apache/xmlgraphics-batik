@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001-2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -52,8 +53,6 @@ import java.util.Set;
 
 import org.apache.batik.ext.awt.g2d.AbstractGraphics2D;
 import org.apache.batik.ext.awt.g2d.GraphicContext;
-import org.apache.batik.util.CSSConstants;
-import org.apache.batik.util.XMLConstants;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
@@ -90,7 +89,8 @@ import org.w3c.dom.Node;
  * @see                org.w3c.dom.Document
  */
 public class SVGGraphics2D extends AbstractGraphics2D
-    implements Cloneable, SVGSyntax, XMLConstants, ErrorConstants, CSSConstants {
+    implements Cloneable, SVGSyntax, ErrorConstants {
+
     /*
      * Constants definitions
      */
@@ -170,7 +170,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
     public final void setSVGCanvasSize(Dimension svgCanvasSize) {
         this.svgCanvasSize = new Dimension(svgCanvasSize);
     }
-    
+
     /**
      * @return the SVGGeneratorContext used by this SVGGraphics2D instance.
      */
@@ -181,7 +181,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
     /**
      * @return the SVGShape used by this SVGGraphics2D instance to
      *         turn Java2D shapes into SVG Shape objects.
-     */ 
+     */
     public final SVGShape getShapeConverter() {
         return shapeConverter;
     }
@@ -193,7 +193,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
         return domTreeManager;
     }
 
-    /** 
+    /**
      * Set a DOM Tree manager for the SVGGraphics2D.
      * @param treeMgr the new DOM Tree manager this SVGGraphics2D should use
      */
@@ -209,12 +209,12 @@ public class SVGGraphics2D extends AbstractGraphics2D
         return domGroupManager;
     }
 
-    /** 
+    /**
      * Set a new DOM Group manager for this SVGGraphics2D.
      * @param groupMgr the new DOM Group manager this SVGGraphics2D should use
      */
      protected final void setDOMGroupManager(DOMGroupManager groupMgr) {
-	this.domGroupManager = groupMgr;
+        this.domGroupManager = groupMgr;
     }
 
     /**
@@ -286,10 +286,10 @@ public class SVGGraphics2D extends AbstractGraphics2D
     }
 
     /**
-     * Helper method to create an <tt>SVGGeneratorContext</tt> from the 
+     * Helper method to create an <tt>SVGGeneratorContext</tt> from the
      * constructor parameters.
      */
-    public static SVGGeneratorContext 
+    public static SVGGeneratorContext
         buildSVGGeneratorContext(Document domFactory,
                                  ImageHandler imageHandler,
                                  ExtensionHandler extensionHandler){
@@ -445,8 +445,8 @@ public class SVGGraphics2D extends AbstractGraphics2D
         throws SVGGraphics2DIOException {
         Element svgRoot = getRoot();
         stream(svgRoot, writer, useCss, false);
-    }    
-    
+    }
+
     /**
      * @param svgRoot root element to stream out
      */
@@ -565,18 +565,16 @@ public class SVGGraphics2D extends AbstractGraphics2D
      * This version of the getRoot method will append the input svgRoot
      * and set its attributes.
      *
-     * @param svgRoot an SVG element underwhich the content should 
+     * @param svgRoot an SVG element underwhich the content should
      *        be appended.
-     * @return the svg root node of the SVG document associated with 
+     * @return the svg root node of the SVG document associated with
      *         this object.
      */
     public Element getRoot(Element svgRoot) {
         svgRoot = domTreeManager.getRoot(svgRoot);
         if (svgCanvasSize != null){
-            svgRoot.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE,
-                                   "" + svgCanvasSize.width);
-            svgRoot.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE,
-                                   "" + svgCanvasSize.height);
+            svgRoot.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE,  String.valueOf( svgCanvasSize.width ) );
+            svgRoot.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE, String.valueOf( svgCanvasSize.height) );
         }
         return svgRoot;
     }
@@ -611,7 +609,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
         generatorCtx.errorHandler.
             handleError(new SVGGraphics2DRuntimeException(ERR_XOR));
     }
-    
+
     /**
      * Gets the font metrics for the specified font.
      * @return    the font metrics for the specified font.
@@ -682,7 +680,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
                                                          img.getWidth(null),
                                                          img.getHeight(null),
                                                          getGeneratorContext());
-        
+
         if (xform == null) {
             domGroupManager.addElement(imageElement);
         } else {
@@ -739,13 +737,13 @@ public class SVGGraphics2D extends AbstractGraphics2D
                              ImageObserver observer){
         Element imageElement =
             getGenericImageHandler().createElement(getGeneratorContext());
-        AffineTransform xform 
+        AffineTransform xform
             = getGenericImageHandler().handleImage(
                                        img, imageElement,
                                        x, y,
                                        width, height,
                                        getGeneratorContext());
-        
+
         if (xform == null) {
             domGroupManager.addElement(imageElement);
         } else {
@@ -1023,7 +1021,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
 
         Element image =
             getGenericImageHandler().createElement(getGeneratorContext());
-        AffineTransform trans1 
+        AffineTransform trans1
             = getGenericImageHandler().handleImage(
                                        img, image,
                                        img.getMinX(),
@@ -1031,9 +1029,9 @@ public class SVGGraphics2D extends AbstractGraphics2D
                                        img.getWidth(),
                                        img.getHeight(),
                                        getGeneratorContext());
-        
+
         AffineTransform xform;
-        
+
         // Concatenate the transformation we receive from the imageHandler
         // to the user-supplied one. Be aware that both may be null.
         if (trans2 == null) {
@@ -1099,11 +1097,11 @@ public class SVGGraphics2D extends AbstractGraphics2D
      */
     public void drawRenderableImage(RenderableImage img,
                                     AffineTransform trans2){
-                                    
+
         Element image =
             getGenericImageHandler().createElement(getGeneratorContext());
-        
-        AffineTransform trans1 = 
+
+        AffineTransform trans1 =
             getGenericImageHandler().handleImage(
                                      img, image,
                                      img.getMinX(),
@@ -1111,7 +1109,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
                                      img.getWidth(),
                                      img.getHeight(),
                                      getGeneratorContext());
-        
+
         AffineTransform xform;
 
         // Concatenate the transformation we receive from the imageHandler
@@ -1191,33 +1189,33 @@ public class SVGGraphics2D extends AbstractGraphics2D
                 getFontConverter().recordFontUsage(s, getFont());
         }
 
-        // Account for the font transform if there is one           
+        // Account for the font transform if there is one
         AffineTransform savTxf = getTransform();
-        AffineTransform txtTxf = transformText(x, y);            
+        AffineTransform txtTxf = transformText(x, y);
 
         Element text =
             getDOMFactory().createElementNS(SVG_NAMESPACE_URI, SVG_TEXT_TAG);
         text.setAttributeNS(null, SVG_X_ATTRIBUTE, generatorCtx.doubleString(x));
         text.setAttributeNS(null, SVG_Y_ATTRIBUTE, generatorCtx.doubleString(y));
-            
+
         text.setAttributeNS(XML_NAMESPACE_URI,
-                            XML_SPACE_ATTRIBUTE,
+                            XML_SPACE_QNAME,
                             XML_PRESERVE_VALUE);
         text.appendChild(getDOMFactory().createTextNode(s));
         domGroupManager.addElement(text, DOMGroupManager.FILL);
-            
+
         if (txtTxf != null){
             this.setTransform(savTxf);
-        }                            
+        }
     }
-    
+
     private AffineTransform transformText(float x, float y) {
-        AffineTransform txtTxf = null;       
+        AffineTransform txtTxf = null;
         Font font = getFont();
         if (font != null){
             txtTxf = font.getTransform();
             if (txtTxf != null && !txtTxf.isIdentity()){
-                // 
+                //
                 // The additional transform applies about the text's origin
                 //
                 AffineTransform t = new AffineTransform();
@@ -1267,16 +1265,18 @@ public class SVGGraphics2D extends AbstractGraphics2D
         // ati. This will be used to decide if we create tspan
         // Elements under the text Element or not
         boolean multiSpans = false;
-        if (ati.getRunLimit() < ati.getEndIndex()) multiSpans = true;  
-        
+        if (ati.getRunLimit() < ati.getEndIndex()) multiSpans = true;
+
         // create the parent text Element
-        Element text = getDOMFactory().createElementNS(SVG_NAMESPACE_URI, 
+        Element text = getDOMFactory().createElementNS(SVG_NAMESPACE_URI,
                                                        SVG_TEXT_TAG);
-        text.setAttributeNS(null, SVG_X_ATTRIBUTE, 
+        text.setAttributeNS(null, SVG_X_ATTRIBUTE,
                             generatorCtx.doubleString(x));
-        text.setAttributeNS(null, SVG_Y_ATTRIBUTE, 
+        text.setAttributeNS(null, SVG_Y_ATTRIBUTE,
                             generatorCtx.doubleString(y));
-        
+        text.setAttributeNS(XML_NAMESPACE_URI, XML_SPACE_QNAME,
+                            XML_PRESERVE_VALUE);
+
         Font  baseFont  = getFont();
         Paint basePaint = getPaint();
 
@@ -1294,7 +1294,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
 
         boolean firstSpan = true;
         AffineTransform savTxf = getTransform();
-        AffineTransform txtTxf = null;        
+        AffineTransform txtTxf = null;
         while (ch != AttributedCharacterIterator.DONE) {
             // first get the text Element or create a child Element if
             // we used tspans
@@ -1304,23 +1304,25 @@ public class SVGGraphics2D extends AbstractGraphics2D
                     (SVG_NAMESPACE_URI, SVG_TSPAN_TAG);
                 text.appendChild(tspan);
             }
-            
-            // decorate the tspan Element : 
+
+            // decorate the tspan Element :
             setTextElementFill(ati);
             boolean resetTransform = setTextFontAttributes(ati, baseFont);
 
-            // management of font attributes                       
+            // management of font attributes
             if (resetTransform || firstSpan) {
                 // Account for the font transform if there is one
                 txtTxf = transformText(x, y);
                 firstSpan = false;
-            }            
+            }
 
             // retrieve the current span of text for the run
-            StringBuffer buf = new StringBuffer();
-            buf.append(ch);
             int start = ati.getIndex();
             int end   = ati.getRunLimit()-1;
+
+            StringBuffer buf = new StringBuffer( end - start );
+            buf.append(ch);
+
             for (int i=start; i<end; i++) {
                 ch = ati.next();
                 buf.append(ch);
@@ -1334,13 +1336,13 @@ public class SVGGraphics2D extends AbstractGraphics2D
                 // needed
                 getDOMTreeManager().getGraphicContextConverter().
                     getFontConverter().recordFontUsage(s, getFont());
-            }            
+            }
 
             // This must come after registering font usage other
             // wise it doesn't know what chars were used.
             SVGGraphicContext elementGC;
             elementGC = domTreeManager.gcConverter.toSVG(gc);
-            elementGC.getGroupContext().put(SVG_STROKE_ATTRIBUTE, 
+            elementGC.getGroupContext().put(SVG_STROKE_ATTRIBUTE,
                                             SVG_NONE_VALUE);
 
             SVGGraphicContext deltaGC;
@@ -1348,7 +1350,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
 
             // management of underline, strike attributes, etc..
             setTextElementAttributes(deltaGC, ati);
-            
+
             domTreeManager.getStyleHandler().
                 setStyle(tspan, deltaGC.getContext(),
                          domTreeManager.getGeneratorContext());
@@ -1356,13 +1358,13 @@ public class SVGGraphics2D extends AbstractGraphics2D
             tspan.appendChild(getDOMFactory().createTextNode(s));
             if ((resetTransform || firstSpan) && (txtTxf != null)) {
                 this.setTransform(savTxf);
-            }                                
+            }
             ch = ati.next();  // get first char of next run.
         }
         setFont(baseFont);
         setPaint(basePaint);
     }
-    
+
     /**
      * Fills the interior of a <code>Shape</code> using the settings of the
      * <code>Graphics2D</code> context. The rendering attributes applied
@@ -1381,8 +1383,8 @@ public class SVGGraphics2D extends AbstractGraphics2D
             domGroupManager.addElement(svgShape, DOMGroupManager.FILL);
         }
     }
-    
-    /** Set the Element Font and Size attributes, depending on the 
+
+    /** Set the Element Font and Size attributes, depending on the
      * AttributedCharacterIterator attributes.
      */
     private boolean setTextFontAttributes(AttributedCharacterIterator ati,
@@ -1401,7 +1403,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
 
         return resetTransform;
     }
-    
+
     /** Set the Element attributes, depending on the AttributedCharacterIterator attributes.
      *  The following attributes are set :
      *  <ul>
@@ -1418,7 +1420,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
         }
     }
 
-    private void setTextElementAttributes(SVGGraphicContext tspanGC, 
+    private void setTextElementAttributes(SVGGraphicContext tspanGC,
                                           AttributedCharacterIterator ati) {
         String decoration = "";
         if (isUnderline(ati))
@@ -1427,15 +1429,15 @@ public class SVGGraphics2D extends AbstractGraphics2D
             decoration += CSS_LINE_THROUGH_VALUE + " ";
         int len = decoration.length();
         if (len != 0)
-            tspanGC.getContext().put(CSS_TEXT_DECORATION_PROPERTY, 
+            tspanGC.getContext().put(CSS_TEXT_DECORATION_PROPERTY,
                                      decoration.substring(0, len-1));
     }
-   
+
     /** Return true if the AttributedCharacterIterator is bold (at its current position).
-     */         
+     */
     private boolean isBold(AttributedCharacterIterator ati) {
         Object weight = ati.getAttribute(TextAttribute.WEIGHT);
-        if (weight == null) 
+        if (weight == null)
             return false;
         if (weight.equals(TextAttribute.WEIGHT_REGULAR))
             return false;
@@ -1447,10 +1449,10 @@ public class SVGGraphics2D extends AbstractGraphics2D
             return false;
         return true;
     }
-    
+
     /** Return true if the AttributedCharacterIterator is italic (at
      * its current position).
-     */ 
+     */
     private boolean isItalic(AttributedCharacterIterator ati) {
         Object attr = ati.getAttribute(TextAttribute.POSTURE);
         if (TextAttribute.POSTURE_OBLIQUE.equals(attr)) return true;
@@ -1459,7 +1461,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
 
     /** Return true if the AttributedCharacterIterator is underlined
      * (at its current position).
-     */     
+     */
     private boolean isUnderline(AttributedCharacterIterator ati) {
         Object attr = ati.getAttribute(TextAttribute.UNDERLINE);
         if (TextAttribute.UNDERLINE_ON.equals(attr)) return true;
@@ -1470,7 +1472,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
 
     /** Return true if the AttributedCharacterIterator is striked
      * through (at its current position).
-     */         
+     */
     private boolean isStrikeThrough(AttributedCharacterIterator ati) {
         Object attr = ati.getAttribute(TextAttribute.STRIKETHROUGH);
         if (TextAttribute.STRIKETHROUGH_ON.equals(attr)) return true;
@@ -1508,7 +1510,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
     /**
      * This method let's users indicate that they don't care that
      * certain text attributes will not be properly converted to
-     * SVG, in exchange when those attributes are used they will 
+     * SVG, in exchange when those attributes are used they will
      * get real SVG text instead of paths.
      *
      * @param attrs The set of attrs to treat as unsupported, and

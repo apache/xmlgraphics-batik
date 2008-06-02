@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2000-2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -18,6 +19,9 @@
 package org.apache.batik.dom.svg;
 
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.util.DoublyIndexedTable;
+import org.apache.batik.util.SVGTypes;
+
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedNumber;
 import org.w3c.dom.svg.SVGAnimatedString;
@@ -34,6 +38,37 @@ public class SVGOMFEOffsetElement
     implements SVGFEOffsetElement {
 
     /**
+     * Table mapping XML attribute names to TraitInformation objects.
+     */
+    protected static DoublyIndexedTable xmlTraitInformation;
+    static {
+        DoublyIndexedTable t =
+            new DoublyIndexedTable(SVGOMFilterPrimitiveStandardAttributes.xmlTraitInformation);
+        t.put(null, SVG_IN_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_CDATA));
+        t.put(null, SVG_DX_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_NUMBER));
+        t.put(null, SVG_DY_ATTRIBUTE,
+                new TraitInformation(true, SVGTypes.TYPE_NUMBER));
+        xmlTraitInformation = t;
+    }
+
+    /**
+     * The 'in' attribute value.
+     */
+    protected SVGOMAnimatedString in;
+
+    /**
+     * The 'dx' attribute value.
+     */
+    protected SVGOMAnimatedNumber dx;
+
+    /**
+     * The 'dy' attribute value.
+     */
+    protected SVGOMAnimatedNumber dy;
+
+    /**
      * Creates a new SVGOMFEOffsetElement object.
      */
     protected SVGOMFEOffsetElement() {
@@ -46,6 +81,24 @@ public class SVGOMFEOffsetElement
      */
     public SVGOMFEOffsetElement(String prefix, AbstractDocument owner) {
         super(prefix, owner);
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes all live attributes for this element.
+     */
+    protected void initializeAllLiveAttributes() {
+        super.initializeAllLiveAttributes();
+        initializeLiveAttributes();
+    }
+
+    /**
+     * Initializes the live attribute values of this element.
+     */
+    private void initializeLiveAttributes() {
+        in = createLiveAnimatedString(null, SVG_IN_ATTRIBUTE);
+        dx = createLiveAnimatedNumber(null, SVG_DX_ATTRIBUTE, 0f);
+        dy = createLiveAnimatedNumber(null, SVG_DY_ATTRIBUTE, 0f);
     }
 
     /**
@@ -60,7 +113,7 @@ public class SVGOMFEOffsetElement
      * SVGFEOffsetElement#getIn1()}.
      */
     public SVGAnimatedString getIn1() {
-        return getAnimatedStringAttribute(null, SVG_IN_ATTRIBUTE);
+        return in;
     }
 
     /**
@@ -68,7 +121,7 @@ public class SVGOMFEOffsetElement
      * org.w3c.dom.svg.SVGFEOffsetElement#getDx()}.
      */
     public SVGAnimatedNumber getDx() {
-        return getAnimatedNumberAttribute(null, SVG_DX_ATTRIBUTE, 0f);
+        return dx;
     } 
 
     /**
@@ -76,7 +129,7 @@ public class SVGOMFEOffsetElement
      * org.w3c.dom.svg.SVGFEOffsetElement#getDy()}.
      */
     public SVGAnimatedNumber getDy() {
-        return getAnimatedNumberAttribute(null, SVG_DY_ATTRIBUTE, 0f);
+        return dy;
     }
 
     /**
@@ -84,5 +137,12 @@ public class SVGOMFEOffsetElement
      */
     protected Node newNode() {
         return new SVGOMFEOffsetElement();
+    }
+
+    /**
+     * Returns the table of TraitInformation objects for this element.
+     */
+    protected DoublyIndexedTable getTraitInformationTable() {
+        return xmlTraitInformation;
     }
 }

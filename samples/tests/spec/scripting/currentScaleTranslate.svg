@@ -4,11 +4,12 @@
 
 <!--
 
-   Copyright 2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -36,66 +37,66 @@
     <title>svg current scale/translate modification</title>
 
     <script type="text/ecmascript"><![CDATA[
-	var count = 1;
-	function setScaleTrans(scale, newX, newY) {
-	   document.getRootElement().currentScale = scale;
-	   var pt = document.getRootElement().currentTranslate;
-	   pt.x = newX;
-	   pt.y = newX;
-	}
-	 
-	function update() {
-	   if ((count%10) == 0) {
-	      var scale = 1+((count/10)%10)/4;
+        var count = 1;
+        function setScaleTrans(scale, newX, newY) {
+           document.getRootElement().currentScale = scale;
+           var pt = document.getRootElement().currentTranslate;
+           pt.x = newX;
+           pt.y = newX;
+        }
+         
+        function update() {
+           if ((count%10) == 0) {
+              var scale = 1+((count/10)%10)/4;
               document.getRootElement().currentScale = scale;
-	   }
+           }
 
-	var t;
-	var mat;
+        var t;
+        var mat;
            t = document.getElementById('cnt');
-	   t.firstChild.data = ("Count: " + count);
+           t.firstChild.data = ("Count: " + count);
 
-	   mat = t.getScreenCTM();
+           mat = t.getScreenCTM();
            t = document.getElementById('foo');
-	   t.firstChild.data = 
-	       "The ScrnCTM is: (" + mat.a +","+ mat.b +","+ mat.c +","+ mat.d +","+ mat.e +","+ mat.f +")";
+           t.firstChild.data = 
+               "The ScrnCTM is: (" + mat.a +","+ mat.b +","+ mat.c +","+ mat.d +","+ mat.e +","+ mat.f +")";
 
-	   mat = t.getCTM();
+           mat = t.getCTM();
            t = document.getElementById('bar');
-	   t.firstChild.data = 
-	       "The CTM is: (" + mat.a +","+ mat.b +","+ mat.c +","+ mat.d +","+ mat.e +","+ mat.f +")";
+           t.firstChild.data = 
+               "The CTM is: (" + mat.a +","+ mat.b +","+ mat.c +","+ mat.d +","+ mat.e +","+ mat.f +")";
 
-	   var scale = document.getRootElement().currentScale;
+           var scale = document.getRootElement().currentScale;
            t = document.getElementById('baz');
-	   t.firstChild.data = "The Scale is: "+scale;
+           t.firstChild.data = "The Scale is: "+scale;
 
-	   var trans = document.getRootElement().currentTranslate;
+           var trans = document.getRootElement().currentTranslate;
            t = document.getElementById('bat');
-	   t.firstChild.data = "The Trans is ["+trans.x+", " +trans.y+"]";
+           t.firstChild.data = "The Trans is ["+trans.x+", " +trans.y+"]";
 
            t = document.getElementById('vp');
-	   var vp = document.rootElement.viewport;
-	   t.firstChild.data = ("Viewport: ["+ vp.x+", " +vp.y+", " +
-	                        vp.width+", " +vp.height+"]");
+           var vp = document.rootElement.viewport;
+           t.firstChild.data = ("Viewport: ["+ vp.x+", " +vp.y+", " +
+                                vp.width+", " +vp.height+"]");
 
-	   count++;
-	  setTimeout('update()', 1000);
-	}
+           count++;
+          setTimeout('update()', 1000);
+        }
 
-	function mouseOver(evt) {
-	   t = document.getElementById('rec');
-	   var x = evt.getClientX();
-	   var y = evt.getClientY();
-	   mat = t.getScreenCTM();
-	   imat = mat.inverse();
-	   var pt = document.getRootElement().createSVGPoint();
- 	   pt.x = x;
-	   pt.y = y;
-	   pt = pt.matrixTransform(imat);
-	   t.firstChild.data = ("Loc: [" + evt.getClientX() + ", " + 
-	                        evt.getClientY() + "] [" + 
-	                        pt.x + ", " + pt.y + "]");
-	}
+        function mouseOver(evt) {
+           t = document.getElementById('rec');
+           var x = evt.getClientX();
+           var y = evt.getClientY();
+           mat = t.getScreenCTM();
+           imat = mat.inverse();
+           var pt = document.getRootElement().createSVGPoint();
+            pt.x = x;
+           pt.y = y;
+           pt = pt.matrixTransform(imat);
+           t.firstChild.data = ("Loc: [" + evt.getClientX() + ", " + 
+                                evt.getClientY() + "] [" + 
+                                pt.x + ", " + pt.y + "]");
+        }
     ]]></script>
 
     <g id="test-content">

@@ -1,0 +1,263 @@
+<?xml version="1.0"?>
+
+<!--
+
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+
+<!-- ========================================================================= -->
+<!-- author cam@mcc.id.au                                                      -->
+<!-- version $Id$ -->
+<!-- ========================================================================= -->
+
+<!DOCTYPE document PUBLIC "-//APACHE//DTD Documentation V2.0//EN" "http://forrest.apache.org/dtd/document-v20.dtd">
+<document>
+  <header>
+    <title>Parser module</title>
+  </header>
+
+  <body>
+    <p>
+      SVG has a number of microsyntaxes that are used within attribute values,
+      such as the <code>transform</code> attribute on
+      <code>SVGTransformable</code> elements, and the path data <code>d</code>
+      attribute on <code>path</code> elements.  Since these are not trivial to
+      parse, this functionality has been factored out into a separate package
+      that can be used by other SVG-processing applications if needed.
+    </p>
+
+    <section id="parsersHandlersAndProducers">
+      <title>Parsers, handlers and producers</title>
+
+      <p>
+        In the parser module, each microsyntax is supported by a pair of classes:
+        a parser and a handler.  The parser is a class that implements the
+        <a class="class" href="../javadoc/org/apache/batik/parser/Parser.html">Parser</a>
+        interface, which has methods to parse values from a
+        <a class="class" href="http://java.sun.com/j2se/1.5.0/docs/api/java/io/Reader.html">Reader</a>
+        or a 
+        <a class="class" href="http://java.sun.com/j2se/1.5.0/docs/api/java/lang/String.html">String</a>.
+        The handler is an interface specific to the microsyntax that will have
+        its methods called whenever the corresponding element in the input is
+        parsed.  For those handler interfaces that have more than one method,
+        adapter classes are provided (named <code>Default</code>*).
+      </p>
+      <p>
+        Parsers can also have an error handler associated with them, whose
+        single method <code>error</code> will be called when there is a
+        problem parsing the input.  If an error handler is not associated with
+        a parser, a
+        <a class="class" href="../javadoc/org/apache/batik/parser/ParseException.html">ParseException</a>
+        will be thrown if an error occurs.
+      </p>
+      <p>
+        The microsyntaxes supported by the parser module are:
+      </p>
+      <dl>
+        <dt>Angles</dt>
+        <dd>
+          <p>
+            Implemented by
+            <a class="class" href="../javadoc/org/apache/batik/parser/AngleParser.html">AngleParser</a>,
+            handled with
+            <a class="class" href="../javadoc/org/apache/batik/parser/AngleHandler.html">AngleHandler</a>.
+            This parser is used for parsing angles formed by a floating point
+            number followed by <code>deg</code>, <code>grad</code> or
+            <code>rad</code>.  It is not currently used by the rest of the Batik
+            codebase.
+          </p>
+        </dd>
+        <dt>Clock values</dt>
+        <dd>
+          <p>
+            Implemented by
+            <a class="class" href="../javadoc/org/apache/batik/parser/ClockParser.html">ClockParser</a>,
+            handled with
+            <a class="class" href="../javadoc/org/apache/batik/parser/ClockHandler.html">ClockHandler</a>.
+            This parser is used for parsing SMIL
+            <a href="http://www.w3.org/TR/smil-animation/#Timing-ClockValueSyntax">clock values</a>.
+          </p>
+        </dd>
+        <dt>Fragment identifiers</dt>
+        <dd>
+          <p>
+            Implemented by
+            <a class="class" href="../javadoc/org/apache/batik/parser/FragmentIdentifierParser.html">FragmentIdentifierParser</a>,
+            handled with
+            <a class="class" href="../javadoc/org/apache/batik/parser/FragmentIdentifierHandler.html">FragmentIdentifierHandler</a>.
+            This parser is used for parsing the various formats of
+            <a href="http://www.w3.org/TR/SVG11/linking.html#SVGFragmentIdentifiers">fragment
+              identifier</a> that SVG allows.
+          </p>
+        </dd>
+        <dt>Lengths</dt>
+        <dd>
+          <p>
+            Implemented by
+            <a class="class" href="../javadoc/org/apache/batik/parser/LengthParser.html">LengthParser</a>,
+            handled with
+            <a class="class" href="../javadoc/org/apache/batik/parser/LengthHandler.html">LengthHandler</a>.
+            This parser is used for parsing SVG length values.
+          </p>
+        </dd>
+        <dt>Length lists</dt>
+        <dd>
+          <p>
+            Implemented by
+            <a class="class" href="../javadoc/org/apache/batik/parser/LengthListParser.html">LengthListParser</a>,
+            handled with
+            <a class="class" href="../javadoc/org/apache/batik/parser/LengthListHandler.html">LengthListHandler</a>.
+            This parser is used for parsing lists of comma or space separated
+            SVG lengths.
+          </p>
+        </dd>
+        <dt>Numbers</dt>
+        <dd>
+          <p>
+            Implemented by
+            <a class="class" href="../javadoc/org/apache/batik/parser/NumberListParser.html">NumberListParser</a>,
+            handled with
+            <a class="class" href="../javadoc/org/apache/batik/parser/NumberListHandler.html">NumberListHandler</a>.
+            This parser is used for parsing SVG number values.
+          </p>
+        </dd>
+        <dt>Number lists</dt>
+        <dd>
+          <p>
+            Implemented by
+            <a class="class" href="../javadoc/org/apache/batik/parser/NumberListParser.html">NumberListParser</a>,
+            handled with
+            <a class="class" href="../javadoc/org/apache/batik/parser/NumberListHandler.html">NumberListHandler</a>.
+            This parser is used for parsing lists of comma or space separated
+            SVG numbers.
+          </p>
+        </dd>
+        <dt>Path data</dt>
+        <dd>
+          <p>
+            Implemented by
+            <a class="class" href="../javadoc/org/apache/batik/parser/PathParser.html">PathParser</a>,
+            handled with
+            <a class="class" href="../javadoc/org/apache/batik/parser/PathHandler.html">PathHandler</a>.
+            This parser is used for parsing SVG path data, as found in
+            <code>path</code> element <code>d</code> attributes.
+          </p>
+        </dd>
+        <dt>Points</dt>
+        <dd>
+          <p>
+            Implemented by
+            <a class="class" href="../javadoc/org/apache/batik/parser/PointsParser.html">PointsParser</a>,
+            handled with
+            <a class="class" href="../javadoc/org/apache/batik/parser/PointsHandler.html">PointsHandler</a>.
+            This parser is used for parsing point lists, as found in
+            <code>polygon</code> element <code>points</code> attributes.
+          </p>
+        </dd>
+        <dt>Preserve aspect ratio values</dt>
+        <dd>
+          <p>
+            Implemented by
+            <a class="class" href="../javadoc/org/apache/batik/parser/PreserveAspectRatioParser.html">PreserveAspectRatioParser</a>,
+            handled with
+            <a class="class" href="../javadoc/org/apache/batik/parser/PreserveAspectRatioHandler.html">PreserveAspectRatioHandler</a>.
+            This parser is used for parsing the values found in the
+            <code>preserveAspectRatio</code> attribute of <code>svg</code>
+            elements.
+          </p>
+        </dd>
+        <dt>Transform lists</dt>
+        <dd>
+          <p>
+            Implemented by
+            <a class="class" href="../javadoc/org/apache/batik/parser/TransformListParser.html">TransformListParser</a>,
+            handled with
+            <a class="class" href="../javadoc/org/apache/batik/parser/TransformListHandler.html">TransformListHandler</a>.
+            This parser is used for parsing transform lists, as found in the
+            <code>transform</code> attribute of any transformable element.
+          </p>
+        </dd>
+      </dl>
+      <p>
+        Some microsyntaxes also have a corresponding producer class, which is
+        an implementation of the handler interface that generates an object
+        while parsing.
+      </p>
+    </section>
+
+    <section id="examples">
+      <title>Examples</title>
+
+      <p>
+        The following example code demonstrates how to use the parser classes
+        to parse a list of points:
+      </p>
+
+      <source>import java.awt.geom.Point2D;
+import java.util.LinkedList;
+import java.util.List;
+
+import org.apache.batik.parser.DefaultPointsHandler;
+import org.apache.batik.parser.ParseException;
+import org.apache.batik.parser.PointsHandler;
+import org.apache.batik.parser.PointsParser;
+
+public class PointsParserExample {
+
+    public List extractPoints(String s) throws ParseException {
+        final LinkedList points = new LinkedList();
+        PointsParser pp = new PointsParser();
+        PointsHandler ph = new DefaultPointsHandler() {
+            public void point(float x, float y) throws ParseException {
+                Point2D p = new Point2D.Float(x, y);
+                points.add(p);
+            }
+        };
+        pp.setPointsHandler(ph);
+        pp.parse(s);
+        return points;
+    }
+}</source>
+
+      <p>
+        This example uses the
+        <a class="class" href="../javadoc/org/apache/batik/parser/AWTTransformProducer.html">AWTTransformProducer</a>
+        class to generate an
+        <a class="class" href="http://java.sun.com/j2se/1.5.0/docs/api/java/awt/geom/AffineTransform.html">AffineTransform</a>
+        object from an SVG transform list:
+      </p>
+
+      <source>import java.awt.geom.AffineTransform;
+
+import org.apache.batik.parser.AWTTransformProducer;
+import org.apache.batik.parser.ParseException;
+import org.apache.batik.parser.TransformListParser;
+
+public class TransformParserExample {
+
+    public AffineTransform parseTransformList(String s) throws ParseException {
+        TransformListParser p = new TransformListParser();
+        AWTTransformProducer tp = new AWTTransformProducer();
+        p.setTransformListHandler(tp);
+        p.parse(s);
+        return tp.getAffineTransform();
+    }
+}
+</source>
+    </section>
+  </body>
+</document>

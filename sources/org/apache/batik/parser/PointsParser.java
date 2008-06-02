@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2000-2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -42,7 +43,7 @@ public class PointsParser extends NumberParser {
      * Creates a new PointsParser.
      */
     public PointsParser() {
-	pointsHandler = DefaultPointsHandler.INSTANCE;
+        pointsHandler = DefaultPointsHandler.INSTANCE;
     }
 
     /**
@@ -57,14 +58,14 @@ public class PointsParser extends NumberParser {
      * @param handler The transform list handler.
      */
     public void setPointsHandler(PointsHandler handler) {
-	pointsHandler = handler;
+        pointsHandler = handler;
     }
 
     /**
      * Returns the points handler in use.
      */
     public PointsHandler getPointsHandler() {
-	return pointsHandler;
+        return pointsHandler;
     }
 
     /**
@@ -83,7 +84,7 @@ public class PointsParser extends NumberParser {
             float x = parseFloat();
             skipCommaSpaces();
             float y = parseFloat();
-		    
+                    
             pointsHandler.point(x, y);
             skipCommaSpaces();
         }

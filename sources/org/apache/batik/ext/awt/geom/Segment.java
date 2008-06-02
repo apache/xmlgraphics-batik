@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2003 The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -26,26 +27,26 @@ import java.awt.geom.Rectangle2D;
  * @version $Id$
  */
 public interface Segment extends Cloneable {
-    public double minX();
-    public double maxX();
-    public double minY();
-    public double maxY();
-    public Rectangle2D getBounds2D();
+    double minX();
+    double maxX();
+    double minY();
+    double maxY();
+    Rectangle2D getBounds2D();
 
-    public Point2D.Double evalDt(double t);
-    public Point2D.Double eval(double t);
+    Point2D.Double evalDt(double t);
+    Point2D.Double eval(double t);
 
-    public Segment getSegment(double t0, double t1);
-    public Segment splitBefore(double t);
-    public Segment splitAfter(double t);
-    public void    subdivide(Segment s0, Segment s1);
-    public void    subdivide(double t, Segment s0, Segment s1);
-    public double  getLength();
-    public double  getLength(double maxErr);
+    Segment getSegment(double t0, double t1);
+    Segment splitBefore(double t);
+    Segment splitAfter(double t);
+    void    subdivide(Segment s0, Segment s1);
+    void    subdivide(double t, Segment s0, Segment s1);
+    double  getLength();
+    double  getLength(double maxErr);
 
-    public SplitResults split(double y);
+    SplitResults split(double y);
 
-    public static class SplitResults {
+    class SplitResults {
         Segment [] above;
         Segment [] below;
         SplitResults(Segment []below, Segment []above) {

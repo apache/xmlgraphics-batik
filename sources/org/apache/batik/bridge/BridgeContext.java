@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2000-2005  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -24,7 +25,6 @@ import java.io.InterruptedIOException;
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -47,6 +47,8 @@ import org.apache.batik.css.engine.SystemColorSupport;
 import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.dom.AbstractNode;
 import org.apache.batik.dom.events.NodeEventTarget;
+import org.apache.batik.dom.svg.AnimatedAttributeListener;
+import org.apache.batik.dom.svg.AnimatedLiveAttributeValue;
 import org.apache.batik.dom.svg.SVGContext;
 import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.dom.svg.SVGOMDocument;
@@ -212,21 +214,21 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      * the DOM tree (in practice text holds references to the source
      * text elements for font resolution).
      */
-    public final static int STATIC      = 0;
+    public static final int STATIC      = 0;
 
     /**
      * Indicates that DOM listeners should be registered to support,
      * 'interactivity' this includes anchors and cursors, but does not
      * include support for DOM modifications.
      */
-    public final static int INTERACTIVE = 1;
+    public static final int INTERACTIVE = 1;
 
     /**
      * Indicates that all DOM listeners should be registered. This supports
      * 'interactivity' (anchors and cursors), as well as DOM modifications
      * listeners to update the GVT rendering tree.
      */
-    public final static int DYNAMIC     = 2;
+    public static final int DYNAMIC     = 2;
 
     /**
      * Whether the bridge should support dynamic, or interactive features.
@@ -255,14 +257,29 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     protected HashSet childContexts = new HashSet();
 
     /**
-     * Constructs a new empty bridge context.
+     * The animation engine for the document.
      */
-    protected BridgeContext() {}
+    protected SVGAnimationEngine animationEngine;
+
+    /**
+     * The animation limiting mode.
+     */
+    protected int animationLimitingMode;
+
+    /**
+     * The amount of animation limiting.
+     */
+    protected float animationLimitingAmount;
 
     /**
      * By default we share a unique instance of InterpreterPool.
      */
     private static InterpreterPool sharedPool = new InterpreterPool();
+
+    /**
+     * Constructs a new empty bridge context.
+     */
+    protected BridgeContext() {}
 
     /**
      * Constructs a new bridge context.
@@ -299,7 +316,16 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         this.documentLoader = documentLoader;
     }
 
-    /** 
+    /**
+     * Calls dispose on this BridgeContext, if it is a child context.
+     */
+    protected void finalize() {
+        if (primaryContext != null) {
+            dispose();
+        }
+    }
+
+    /**
      * This function creates a new 'sub' BridgeContext to associated
      * with 'newDoc' if one currently doesn't exist, otherwise it
      * returns the BridgeContext currently associated with the
@@ -307,11 +333,14 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      * @param newDoc The document to get/create a BridgeContext for.
      */
     public BridgeContext createSubBridgeContext(SVGOMDocument newDoc) {
-        CSSEngine eng = newDoc.getCSSEngine();
-        if (eng != null)
-            return (BridgeContext)newDoc.getCSSEngine().getCSSContext();
-
         BridgeContext subCtx;
+
+        CSSEngine eng = newDoc.getCSSEngine();
+        if (eng != null) {
+            subCtx = (BridgeContext) newDoc.getCSSEngine().getCSSContext();
+            return subCtx;
+        }
+
         subCtx = createBridgeContext(newDoc);
         subCtx.primaryContext = primaryContext != null ? primaryContext : this;
         subCtx.primaryContext.childContexts.add(new WeakReference(subCtx));
@@ -325,9 +354,9 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         return subCtx;
     }
 
-    /** 
+    /**
      * This function creates a new BridgeContext, it mostly
-     * exists so subclasses can provide an instance of 
+     * exists so subclasses can provide an instance of
      * themselves when a sub BridgeContext is needed.
      */
     public BridgeContext createBridgeContext(SVGOMDocument doc) {
@@ -353,10 +382,10 @@ public class BridgeContext implements ErrorConstants, CSSContext {
             String uri = userAgent.getUserStyleSheetURI();
             if (uri != null) {
                 try {
-                    URL url = new URL(uri);
+                    ParsedURL url = new ParsedURL(uri);
                     eng.setUserAgentStyleSheet
                         (eng.parseStyleSheet(url, "all"));
-                } catch (MalformedURLException e) {
+                } catch (Exception e) {
                     userAgent.displayError(e);
                 }
             }
@@ -379,17 +408,17 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      * might be used by bridges (especially SVGTextElementBridge) to set the
      * text painter of each TextNode.
      *
-     * @param textPainter the text painter for text nodes 
+     * @param textPainter the text painter for text nodes
      */
     public void setTextPainter(TextPainter textPainter) {
-	this.textPainter = textPainter;
+        this.textPainter = textPainter;
     }
 
     /**
      * Returns the text painter that will be used be text nodes.
      */
     public TextPainter getTextPainter() {
-	return textPainter;
+        return textPainter;
     }
 
     /**
@@ -597,8 +626,8 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     }
 
     /**
-     * Sets the document as a STATIC, INTERACTIVE or DYNAMIC document. 
-     * Call this method before the build phase 
+     * Sets the document as a STATIC, INTERACTIVE or DYNAMIC document.
+     * Call this method before the build phase
      * (ie. before <tt>gvtBuilder.build(...)</tt>)
      * otherwise, that will have no effect.
      *
@@ -688,6 +717,18 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         return res;
     }
 
+    /**
+     * Returns the AnimationEngine for the document.  Creates one if
+     * it doesn't exist.
+     */
+    public SVGAnimationEngine getAnimationEngine() {
+        if (animationEngine == null) {
+            animationEngine = new SVGAnimationEngine(document, this);
+            setAnimationLimitingMode();
+        }
+        return animationEngine;
+    }
+
     // reference management //////////////////////////////////////////////////
 
     /**
@@ -710,7 +751,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
             URIResolver ur = createURIResolver(document, documentLoader);
             Node ref = ur.getNode(uri, e);
             if (ref == null) {
-                throw new BridgeException(e, ERR_URI_BAD_TARGET,
+                throw new BridgeException(this, e, ERR_URI_BAD_TARGET,
                                           new Object[] {uri});
             } else {
                 SVGOMDocument refDoc =
@@ -718,7 +759,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
                                        ? ref
                                        : ref.getOwnerDocument());
                 // This is new rather than attaching this BridgeContext
-                // with the new document we now create a whole new 
+                // with the new document we now create a whole new
                 // BridgeContext to go with the new document.
                 // This means that the new document has it's own
                 // world of stuff and it should avoid memory leaks
@@ -730,16 +771,16 @@ public class BridgeContext implements ErrorConstants, CSSContext {
                 return ref;
             }
         } catch (MalformedURLException ex) {
-            throw new BridgeException(e, ERR_URI_MALFORMED,
+            throw new BridgeException(this, e, ex, ERR_URI_MALFORMED,
                                       new Object[] {uri});
         } catch (InterruptedIOException ex) {
             throw new InterruptedBridgeException();
         } catch (IOException ex) {
-            ex.printStackTrace();
-            throw new BridgeException(e, ERR_URI_IO,
+            //ex.printStackTrace();
+            throw new BridgeException(this, e, ex, ERR_URI_IO,
                                       new Object[] {uri});
         } catch (SecurityException ex) {
-            throw new BridgeException(e, ERR_URI_UNSECURE,
+            throw new BridgeException(this, e, ex, ERR_URI_UNSECURE,
                                       new Object[] {uri});
         }
     }
@@ -754,7 +795,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     public Element getReferencedElement(Element e, String uri) {
         Node ref = getReferencedNode(e, uri);
         if (ref != null && ref.getNodeType() != Node.ELEMENT_NODE) {
-            throw new BridgeException(e, ERR_URI_REFERENCE_A_DOCUMENT,
+            throw new BridgeException(this, e, ERR_URI_REFERENCE_A_DOCUMENT,
                                       new Object[] {uri});
         }
         return (Element) ref;
@@ -824,72 +865,76 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     // Bindings //////////////////////////////////////////////////////////////
 
     /**
-     * Binds the specified GraphicsNode to the specified Element. This method
+     * Binds the specified GraphicsNode to the specified Node. This method
      * automatically bind the graphics node to the element and the element to
      * the graphics node.
      *
-     * @param element the element to bind to the specified graphics node
-     * @param node the graphics node to bind to the specified element
+     * @param node the DOM Node to bind to the specified graphics node
+     * @param gn the graphics node to bind to the specified element
      */
-    public void bind(Element element, GraphicsNode node) {
+    public void bind(Node node, GraphicsNode gn) {
         if (elementNodeMap == null) {
             elementNodeMap = new WeakHashMap();
             nodeElementMap = new WeakHashMap();
         }
-        elementNodeMap.put(element, new SoftReference(node));
-        nodeElementMap.put(node, new SoftReference(element));
+        elementNodeMap.put(node, new SoftReference(gn));
+        nodeElementMap.put(gn, new SoftReference(node));
     }
 
     /**
-     * Removes the binding of the specified Element.
+     * Removes the binding of the specified Node.
      *
-     * @param element the element to unbind
+     * @param node the DOM Node to unbind
      */
-    public void unbind(Element element) {
+    public void unbind(Node node) {
         if (elementNodeMap == null) {
             return;
         }
-        GraphicsNode node = null;
-        SoftReference sr = (SoftReference)elementNodeMap.get(element);
+        GraphicsNode gn = null;
+        SoftReference sr = (SoftReference)elementNodeMap.get(node);
         if (sr != null)
-            node = (GraphicsNode)sr.get();
-        elementNodeMap.remove(element);
-        if (node != null)
-            nodeElementMap.remove(node);
+            gn = (GraphicsNode)sr.get();
+        elementNodeMap.remove(node);
+        if (gn != null)
+            nodeElementMap.remove(gn);
     }
 
     /**
-     * Returns the GraphicsNode associated to the specified Element or
+     * Returns the GraphicsNode associated to the specified Node or
      * null if any.
      *
-     * @param element the element associated to the graphics node to return
+     * @param node the DOM Node associated to the graphics node to return
      */
-    public GraphicsNode getGraphicsNode(Element element) {
+    public GraphicsNode getGraphicsNode(Node node) {
         if (elementNodeMap != null) {
-            SoftReference sr = (SoftReference)elementNodeMap.get(element);
-            if (sr != null) 
+            SoftReference sr = (SoftReference)elementNodeMap.get(node);
+            if (sr != null)
                 return (GraphicsNode)sr.get();
         }
         return null;
     }
 
     /**
-     * Returns the Element associated to the specified GraphicsNode or
+     * Returns the Node associated to the specified GraphicsNode or
      * null if any.
      *
-     * @param node the graphics node associated to the element to return
+     * @param gn the graphics node associated to the element to return
      */
-    public Element getElement(GraphicsNode node) {
+    public Element getElement(GraphicsNode gn) {
         if (nodeElementMap != null) {
-            SoftReference sr = (SoftReference)nodeElementMap.get(node);
-            if (sr != null) 
-                return (Element)sr.get();
+            SoftReference sr = (SoftReference)nodeElementMap.get(gn);
+            if (sr != null) {
+                Node n = (Node) sr.get();
+                if (n.getNodeType() == Node.ELEMENT_NODE) {
+                    return (Element) n;
+                }
+            }
         }
         return null;
     }
 
     // Bridge management /////////////////////////////////////////////////////
- 
+
     /**
      * Returns true if the specified element has a GraphicsNodeBridge
      * associated to it, false otherwise.
@@ -908,6 +953,13 @@ public class BridgeContext implements ErrorConstants, CSSContext {
             return false;
         }
         return (localNameMap.get(localName) instanceof GraphicsNodeBridge);
+    }
+
+    /**
+     * Returns the bridge for the document node.
+     */
+    public DocumentBridge getDocumentBridge() {
+        return new SVGDocumentBridge();
     }
 
     /**
@@ -982,7 +1034,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     }
 
     /**
-     * Associates the specified <tt>Bridge</tt> object with it's 
+     * Associates the specified <tt>Bridge</tt> object with it's
      * namespace URI and local name.
      *
      * @param bridge the bridge that manages the element
@@ -1087,6 +1139,11 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     protected CSSEngineListener cssPropertiesChangedListener;
 
     /**
+     * The listener to receive notification of animated attribute changes.
+     */
+    protected AnimatedAttributeListener animatedAttributeListener;
+
+    /**
      * The EventListener that is responsible of managing DOM focus event.
      */
     protected FocusManager focusManager;
@@ -1097,14 +1154,14 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     protected CursorManager cursorManager = new CursorManager(this);
 
     /**
-     * Adds EventListeners to the input document to handle the cursor 
+     * Adds EventListeners to the input document to handle the cursor
      * property.
-     * This is not done in the addDOMListeners method because 
-     * addDOMListeners is only used for dynamic content whereas 
+     * This is not done in the addDOMListeners method because
+     * addDOMListeners is only used for dynamic content whereas
      * cursor support is provided for all content.
      * Also note that it is very important that the listeners be
      * registered for the capture phase as the 'default' behavior
-     * for cursors is handled by the BridgeContext during the 
+     * for cursors is handled by the BridgeContext during the
      * capture phase and the 'custom' behavior (handling of 'auto'
      * on anchors, for example), is handled during the bubbling phase.
      */
@@ -1115,12 +1172,12 @@ public class BridgeContext implements ErrorConstants, CSSContext {
             new DOMMouseOverEventListener();
         evtTarget.addEventListenerNS
             (XMLConstants.XML_EVENTS_NAMESPACE_URI,
-             SVGConstants.SVG_EVENT_MOUSEOVER, 
+             SVGConstants.SVG_EVENT_MOUSEOVER,
              domMouseOverListener, true, null);
         storeEventListenerNS
             (evtTarget,
              XMLConstants.XML_EVENTS_NAMESPACE_URI,
-             SVGConstants.SVG_EVENT_MOUSEOVER, 
+             SVGConstants.SVG_EVENT_MOUSEOVER,
              domMouseOverListener, true);
 
         DOMMouseOutEventListener domMouseOutListener =
@@ -1132,7 +1189,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         storeEventListenerNS
             (evtTarget,
              XMLConstants.XML_EVENTS_NAMESPACE_URI,
-             SVGConstants.SVG_EVENT_MOUSEOUT, 
+             SVGConstants.SVG_EVENT_MOUSEOUT,
              domMouseOutListener, true);
 
     }
@@ -1169,37 +1226,39 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      * properties and update the GVT tree in response.
      */
     public void addDOMListeners() {
-        NodeEventTarget evtTarget = (NodeEventTarget)document;
+        SVGOMDocument doc = (SVGOMDocument)document;
 
         domAttrModifiedEventListener = new DOMAttrModifiedEventListener();
-        evtTarget.addEventListenerNS
+        doc.addEventListenerNS
             (XMLConstants.XML_EVENTS_NAMESPACE_URI,
              "DOMAttrModified",
              domAttrModifiedEventListener, true, null);
 
         domNodeInsertedEventListener = new DOMNodeInsertedEventListener();
-        evtTarget.addEventListenerNS
+        doc.addEventListenerNS
             (XMLConstants.XML_EVENTS_NAMESPACE_URI,
              "DOMNodeInserted",
              domNodeInsertedEventListener, true, null);
 
         domNodeRemovedEventListener = new DOMNodeRemovedEventListener();
-        evtTarget.addEventListenerNS
+        doc.addEventListenerNS
             (XMLConstants.XML_EVENTS_NAMESPACE_URI,
              "DOMNodeRemoved",
              domNodeRemovedEventListener, true, null);
 
-        domCharacterDataModifiedEventListener = 
+        domCharacterDataModifiedEventListener =
             new DOMCharacterDataModifiedEventListener();
-        evtTarget.addEventListenerNS
+        doc.addEventListenerNS
             (XMLConstants.XML_EVENTS_NAMESPACE_URI,
              "DOMCharacterDataModified",
              domCharacterDataModifiedEventListener, true, null);
 
+        animatedAttributeListener = new AnimatedAttrListener();
+        doc.addAnimatedAttributeListener(animatedAttributeListener);
+
         focusManager = new FocusManager(document);
 
-        SVGOMDocument svgDocument = (SVGOMDocument)document;
-        CSSEngine cssEngine = svgDocument.getCSSEngine();
+        CSSEngine cssEngine = doc.getCSSEngine();
         cssPropertiesChangedListener = new CSSPropertiesChangedListener();
         cssEngine.addCSSEngineListener(cssPropertiesChangedListener);
     }
@@ -1208,28 +1267,29 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      * Removes event listeners from the DOM and CSS engine.
      */
     protected void removeDOMListeners() {
-        NodeEventTarget evtTarget = (NodeEventTarget)document;
+        SVGOMDocument doc = (SVGOMDocument)document;
 
-        evtTarget.removeEventListenerNS
+        doc.removeEventListenerNS
             (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMAttrModified",
              domAttrModifiedEventListener, true);
-        evtTarget.removeEventListenerNS
+        doc.removeEventListenerNS
             (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMNodeInserted",
              domNodeInsertedEventListener, true);
-        evtTarget.removeEventListenerNS
+        doc.removeEventListenerNS
             (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMNodeRemoved",
              domNodeRemovedEventListener, true);
-        evtTarget.removeEventListenerNS
+        doc.removeEventListenerNS
             (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMCharacterDataModified",
              domCharacterDataModifiedEventListener, true);
-        
-        SVGOMDocument svgDocument = (SVGOMDocument)document;
-        CSSEngine cssEngine = svgDocument.getCSSEngine();
+
+        doc.removeAnimatedAttributeListener(animatedAttributeListener);
+
+        CSSEngine cssEngine = doc.getCSSEngine();
         if (cssEngine != null) {
             cssEngine.removeCSSEngineListener
                 (cssPropertiesChangedListener);
             cssEngine.dispose();
-            svgDocument.setCSSEngine(null);
+            doc.setCSSEngine(null);
         }
     }
 
@@ -1260,7 +1320,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         }
     }
 
-    public static class SoftReferenceMememto 
+    public static class SoftReferenceMememto
         extends CleanerThread.SoftReferenceCleared {
         Object mememto;
         Set    set;
@@ -1288,15 +1348,15 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     protected static class EventListenerMememto {
 
         public SoftReference target; // Soft ref to EventTarget
-        public SoftReference listener; // Soft ref to EventListener 
+        public SoftReference listener; // Soft ref to EventListener
         public boolean useCapture;
         public String namespaceURI;
         public String eventType;
         public boolean namespaced;
 
-        public EventListenerMememto(EventTarget t, 
-                                    String s, 
-                                    EventListener l, 
+        public EventListenerMememto(EventTarget t,
+                                    String s,
+                                    EventListener l,
                                     boolean b,
                                     BridgeContext ctx) {
             Set set = ctx.eventListenerSet;
@@ -1306,10 +1366,10 @@ public class BridgeContext implements ErrorConstants, CSSContext {
             useCapture = b;
         }
 
-        public EventListenerMememto(EventTarget t, 
+        public EventListenerMememto(EventTarget t,
                                     String n,
-                                    String s, 
-                                    EventListener l, 
+                                    String s,
+                                    EventListener l,
                                     boolean b,
                                     BridgeContext ctx) {
             this(t, s, l, b, ctx);
@@ -1345,10 +1405,19 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     }
 
     /**
+     * Clears the list of child BridgeContexts and disposes them if there are
+     * no more references to them.
+     */
+    protected void clearChildContexts() {
+        childContexts.clear();
+    }
+
+    /**
      * Disposes this BridgeContext.
      */
     public void dispose() {
-        childContexts.clear();
+        clearChildContexts();
+
         synchronized (eventListenerSet) {
             // remove all listeners added by Bridges
             Iterator iter = eventListenerSet.iterator();
@@ -1374,6 +1443,12 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         if (document != null) {
             removeDOMListeners();
         }
+
+        if (animationEngine != null) {
+            animationEngine.dispose();
+            animationEngine = null;
+        }
+
         Iterator iter = interpreterMap.values().iterator();
         while (iter.hasNext()) {
             Interpreter interpreter = (Interpreter)iter.next();
@@ -1385,21 +1460,34 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         if (focusManager != null) {
             focusManager.dispose();
         }
+        if (elementDataMap != null) {
+            elementDataMap.clear();
+        }
+        if (nodeElementMap != null) {
+            nodeElementMap.clear();
+        }
+        if (elementNodeMap != null) {
+            elementNodeMap.clear();
+        }        
     }
 
     /**
-     * Returns the SVGContext associated to the specified Node or null if any.
+     * Returns the SVGContext associated to the specified Node or null if
+     * there is none.
      */
     protected static SVGContext getSVGContext(Node node) {
         if (node instanceof SVGOMElement) {
-            return ((SVGOMElement)node).getSVGContext();
+            return ((SVGOMElement) node).getSVGContext();
+        } else if (node instanceof SVGOMDocument) {
+            return ((SVGOMDocument) node).getSVGContext();
         } else {
             return null;
         }
     }
 
     /**
-     * Returns the SVGContext associated to the specified Node or null if any.
+     * Returns the BridgeUpdateHandler associated to the specified Node
+     * or null if there is none.
      */
     protected static BridgeUpdateHandler getBridgeUpdateHandler(Node node) {
         SVGContext ctx = getSVGContext(node);
@@ -1454,7 +1542,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
             if (newTarget != null)
                 cursor = CSSUtilities.convertCursor
                     (newTarget, BridgeContext.this);
-            if (cursor == null) 
+            if (cursor == null)
                 cursor = CursorManager.DEFAULT_CURSOR;
 
             userAgent.setSVGCursor(cursor);
@@ -1463,11 +1551,11 @@ public class BridgeContext implements ErrorConstants, CSSContext {
 
 
     /**
-     * The DOM EventListener invoked when the mouse mouves over a new 
+     * The DOM EventListener invoked when the mouse mouves over a new
      * element.
-     * 
+     *
      * Here is how cursors are handled:
-     * 
+     *
      */
     protected class DOMMouseOverEventListener implements EventListener {
 
@@ -1483,13 +1571,13 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         public void handleEvent(Event evt) {
             Element target = (Element)evt.getTarget();
             Cursor cursor = CSSUtilities.convertCursor(target, BridgeContext.this);
-            
+
             if (cursor != null) {
                 userAgent.setSVGCursor(cursor);
             }
         }
     }
-    
+
     /**
      * The DOM EventListener invoked when a node is added.
      */
@@ -1506,7 +1594,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
          */
         public void handleEvent(Event evt) {
             MutationEvent me = (MutationEvent)evt;
-            BridgeUpdateHandler h = 
+            BridgeUpdateHandler h =
                 getBridgeUpdateHandler(me.getRelatedNode());
             if (h != null) {
                 try {
@@ -1598,8 +1686,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
             Element elem = evt.getElement();
             SVGContext ctx = getSVGContext(elem);
             if (ctx == null) {
-                GraphicsNode pgn = getGraphicsNode
-                    ((Element)elem.getParentNode());
+                GraphicsNode pgn = getGraphicsNode(elem.getParentNode());
                 if ((pgn == null) || !(pgn instanceof CompositeGraphicsNode)) {
                     // Something changed in this element but we really don't
                     // care since its parent isn't displayed either.
@@ -1621,7 +1708,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
                             (BridgeContext.this, elem);
                         if (childNode == null) {
                             // the added element is not a graphic element?
-                            break; 
+                            break;
                         }
                         int idx = -1;
                         for(Node ps = elem.getPreviousSibling(); ps != null;
@@ -1639,13 +1726,61 @@ public class BridgeContext implements ErrorConstants, CSSContext {
                         }
                         // insert after prevSibling, if
                         // it was -1 this becomes 0 (first slot)
-                        idx++; 
+                        idx++;
                         parent.add(idx, childNode);
                         break;
                     }
                 }
             } if (ctx != null && (ctx instanceof BridgeUpdateHandler)) {
                 ((BridgeUpdateHandler)ctx).handleCSSEngineEvent(evt);
+            }
+        }
+    }
+
+    /**
+     * A listener class for changes to animated attributes in the document.
+     */
+    protected class AnimatedAttrListener
+        implements AnimatedAttributeListener {
+
+        /**
+         * Creates a new AnimatedAttributeListener.
+         */
+        public AnimatedAttrListener() {
+        }
+
+        /**
+         * Called to notify an object of a change to the animated value of
+         * an animated XML attribute.
+         * @param e the owner element of the changed animated attribute
+         * @param alav the AnimatedLiveAttributeValue that changed
+         */
+        public void animatedAttributeChanged(Element e,
+                                             AnimatedLiveAttributeValue alav) {
+            BridgeUpdateHandler h = getBridgeUpdateHandler(e);
+            if (h != null) {
+                try {
+                    h.handleAnimatedAttributeChanged(alav);
+                } catch (Exception ex) {
+                    userAgent.displayError(ex);
+                }
+            }
+        }
+
+        /**
+         * Called to notify an object of a change to the value of an 'other'
+         * animation.
+         * @param e the element being animated
+         * @param type the type of animation whose value changed
+         */
+        public void otherAnimationChanged(Element e, String type) {
+            BridgeUpdateHandler h = getBridgeUpdateHandler(e);
+            if (h != null) {
+                try {
+                    h.handleOtherAnimationChanged(type);
+                } catch (Exception ex) {
+                    userAgent.displayError(ex);
+                }
             }
         }
     }
@@ -1701,7 +1836,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      */
     public float getPixelToMillimeter() {
         return getPixelUnitToMillimeter();
-            
+
     }
 
     /**
@@ -1731,19 +1866,19 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      * This method throws a SecurityException if the resource
      * found at url and referenced from docURL
      * should not be loaded.
-     * 
+     *
      * This is a convenience method to call checkLoadExternalResource
-     * on the ExternalResourceSecurity strategy returned by 
+     * on the ExternalResourceSecurity strategy returned by
      * getExternalResourceSecurity.
      *
      * @param resourceURL url for the script, as defined in
      *        the resource's xlink:href attribute. If that
      *        attribute was empty, then this parameter should
      *        be null
-     * @param docURL url for the document into which the 
+     * @param docURL url for the document into which the
      *        resource was found.
      */
-    public void 
+    public void
         checkLoadExternalResource(ParsedURL resourceURL,
                                   ParsedURL docURL) throws SecurityException {
         userAgent.checkLoadExternalResource(resourceURL,
@@ -1757,14 +1892,14 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     public boolean isDynamicDocument(Document doc) {
         return BaseScriptingEnvironment.isDynamicDocument(this, doc);
     }
-    
+
     /**
      * Tells whether the given SVG document is Interactive.
      * We say it is, if it has any &lt;title>, &lt;desc>, or &lt;a> elements,
      * of if the 'cursor' property is anything but Auto on any element.
      */
     public boolean isInteractiveDocument(Document doc) {
-        
+
         Element root = ((SVGDocument)doc).getRootElement();
         if (!SVGConstants.SVG_NAMESPACE_URI.equals(root.getNamespaceURI()))
             return false;
@@ -1788,7 +1923,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     public boolean checkInteractiveElement(SVGDocument doc,
                                            Element e) {
         String tag = e.getLocalName();
-        
+
         // Check if it's one of our important element.
         if (SVGConstants.SVG_A_TAG.equals(tag))
             return true;
@@ -1812,7 +1947,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
 
         /* We would like to do this but the CSS Engine isn't setup when
            we want to do this.
-           
+
         // Check if cursor property is set to something other than 'auto'.
         Value cursorValue = CSSUtilities.getComputedStyle
             (e, SVGCSSEngine.CURSOR_INDEX);
@@ -1837,7 +1972,59 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         }
         return false;
     }
-    
+
+    /**
+     * Sets the animation limiting mode to "none".
+     */
+    public void setAnimationLimitingNone() {
+        animationLimitingMode = 0;
+        if (animationEngine != null) {
+            setAnimationLimitingMode();
+        }
+    }
+
+    /**
+     * Sets the animation limiting mode to a percentage of CPU.
+     * @param pc the maximum percentage of CPU to use (0 &lt; pc ≤ 1)
+     */
+    public void setAnimationLimitingCPU(float pc) {
+        animationLimitingMode = 1;
+        animationLimitingAmount = pc;
+        if (animationEngine != null) {
+            setAnimationLimitingMode();
+        }
+    }
+
+    /**
+     * Sets the animation limiting mode to a number of frames per second.
+     * @param fps the maximum number of frames per second (fps &gt; 0)
+     */
+    public void setAnimationLimitingFPS(float fps) {
+        animationLimitingMode = 2;
+        animationLimitingAmount = fps;
+        if (animationEngine != null) {
+            setAnimationLimitingMode();
+        }
+    }
+
+    /**
+     * Set the animationg limiting mode on the animation engine.
+     */
+    protected void setAnimationLimitingMode() {
+        switch (animationLimitingMode) {
+            case 0: // unlimited
+                animationEngine.setAnimationLimitingNone();
+                break;
+            case 1: // %cpu
+                animationEngine.setAnimationLimitingCPU
+                    (animationLimitingAmount);
+                break;
+            case 2: // fps
+                animationEngine.setAnimationLimitingFPS
+                    (animationLimitingAmount);
+                break;
+        }
+    }
 
     // bridge extensions support //////////////////////////////////////////////
 
@@ -1893,7 +2080,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      */
     protected static List globalExtensions = null;
 
-    public synchronized static List getGlobalBridgeExtensions() {
+    public static synchronized List getGlobalBridgeExtensions() {
         if (globalExtensions != null) {
             return globalExtensions;
         }
@@ -1919,7 +2106,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
             }
         }
         return globalExtensions;
-    }        
+    }
 
     public static class CSSEngineUserAgentWrapper implements CSSEngineUserAgent {
         UserAgent ua;

@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001,2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -58,8 +59,8 @@ import org.w3c.dom.Element;
  * @version $Id$
  */
 public class DOMGroupManager implements SVGSyntax, ErrorConstants {
-    public final static short DRAW = 0x01;
-    public final static short FILL = 0x10;
+    public static final short DRAW = 0x01;
+    public static final short FILL = 0x10;
 
     /**
      * Reference to the GraphicContext this manager will use to
@@ -248,7 +249,7 @@ public class DOMGroupManager implements SVGSyntax, ErrorConstants {
      * given transform stack
      */
     protected void setTransform(Element element,
-                              TransformStackElement transformStack[]) {
+                              TransformStackElement[] transformStack) {
         String transform = domTreeManager.gcConverter.
             toSVG(transformStack).trim();
         if (transform.length() > 0)
@@ -266,10 +267,10 @@ public class DOMGroupManager implements SVGSyntax, ErrorConstants {
                                          referenceGc.getGroupContext());
         Map graphicElementDelta = gc.getGraphicElementContext();
 
-        TransformStackElement gcTransformStack[] = gc.getTransformStack();
-        TransformStackElement referenceStack[] = referenceGc.getTransformStack();
+        TransformStackElement[] gcTransformStack = gc.getTransformStack();
+        TransformStackElement[] referenceStack = referenceGc.getTransformStack();
         int deltaStackLength = gcTransformStack.length - referenceStack.length;
-        TransformStackElement deltaTransformStack[] =
+        TransformStackElement[] deltaTransformStack =
             new TransformStackElement[deltaStackLength];
 
         System.arraycopy(gcTransformStack, referenceStack.length,

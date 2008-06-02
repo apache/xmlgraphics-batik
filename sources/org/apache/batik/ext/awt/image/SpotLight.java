@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -121,7 +122,7 @@ public class SpotLight extends AbstractLight {
         this.pointAtZ = pointAtZ;
         this.specularExponent = specularExponent;
         this.limitingConeAngle = limitingConeAngle;
-        this.limitingCos = Math.cos(limitingConeAngle*Math.PI/180.);
+        this.limitingCos = Math.cos( Math.toRadians( limitingConeAngle ) );
 
         S[0] = pointAtX - lightX;
         S[1] = pointAtY - lightY;
@@ -150,24 +151,27 @@ public class SpotLight extends AbstractLight {
      * @param L array of length 3 where the result is stored
      * @return the intensity factor for this light vector.
      */
-    public final double getLightBase(final double x, final double y, 
+    public final double getLightBase(final double x, final double y,
                                      final double z,
-                                     final double L[]){
+                                     final double[] L){
         // Light Vector, L
-        L[0] = lightX - x;
-        L[1] = lightY - y;
-        L[2] = lightZ - z;
+        double L0 = lightX - x;
+        double L1 = lightY - y;
+        double L2 = lightZ - z;
 
-        final double invNorm = 1/Math.sqrt(L[0]*L[0] +
-                                           L[1]*L[1] +
-                                           L[2]*L[2]);
+        final double invNorm = 1.0/Math.sqrt( L0*L0 + L1*L1 + L2*L2 );
 
-        L[0] *= invNorm;
-        L[1] *= invNorm;
-        L[2] *= invNorm;
-        
-        double LS = -(L[0]*S[0] + L[1]*S[1] + L[2]*S[2]);
-        
+        L0 *= invNorm;
+        L1 *= invNorm;
+        L2 *= invNorm;
+
+        double LS = -(L0*S[0] + L1*S[1] + L2*S[2]);
+
+        // copy the work-variables into return-array
+        L[0] = L0;
+        L[1] = L1;
+        L[2] = L2;
+
         if(LS <= limitingCos){
             return 0;
         } else {
@@ -193,9 +197,9 @@ public class SpotLight extends AbstractLight {
      * @param L array of length 3 where the result is stored,
      *          x,y,z are scaled by light intensity.
      */
-    public final void getLight(final double x, final double y, 
+    public final void getLight(final double x, final double y,
                                final double z,
-                               final double L[]){
+                               final double[] L){
         final double s = getLightBase(x, y, z, L);
         L[0] *= s;
         L[1] *= s;
@@ -213,16 +217,16 @@ public class SpotLight extends AbstractLight {
      *          3 is the intensity of the light at this point.
      */
     public final void getLight4(final double x, final double y, final double z,
-                               final double L[]){
+                               final double[] L){
         L[3] = getLightBase(x, y, z, L);
     }
 
-    public double[][] getLightRow4(double x, double y, 
+    public double[][] getLightRow4(double x, double y,
                                   final double dx, final int width,
                                   final double[][] z,
                                   final double[][] lightRow) {
         double [][] ret = lightRow;
-        if (ret == null) 
+        if (ret == null)
             ret = new double[width][4];
 
         for(int i=0; i<width; i++){

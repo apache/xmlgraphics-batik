@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2002  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -28,7 +29,7 @@ import org.w3c.css.sac.AttributeCondition;
  */
 public abstract class AbstractAttributeCondition
     implements AttributeCondition,
-	       ExtendedCondition {
+               ExtendedCondition {
 
     /**
      * The attribute value.
@@ -39,7 +40,7 @@ public abstract class AbstractAttributeCondition
      * Creates a new AbstractAttributeCondition object.
      */
     protected AbstractAttributeCondition(String value) {
-	this.value = value;
+        this.value = value;
     }
 
     /**
@@ -55,10 +56,18 @@ public abstract class AbstractAttributeCondition
     }
 
     /**
+     * equal objects should have equal hashCodes.
+     * @return hashCode of this AbstractAttributeCondition
+     */
+    public int hashCode() {
+        return value == null ? -1 : value.hashCode();
+    }
+
+    /**
      * Returns the specificity of this condition.
      */
     public int getSpecificity() {
-	return 1 << 8;
+        return 1 << 8;
     }
 
     /**
@@ -66,6 +75,6 @@ public abstract class AbstractAttributeCondition
      * org.w3c.css.sac.AttributeCondition#getValue()}.
      */
     public String getValue() {
-	return value;
+        return value;
     }
 }

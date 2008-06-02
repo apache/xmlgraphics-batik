@@ -4,11 +4,12 @@
 
 <!--
 
-   Copyright 2001-2002  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -280,9 +281,9 @@
 
         <g id="plate" transform="translate(-198.75,-55.3)">
             <path d="M35.7172852,0C16.6279297,0,1.1523438,15.4765625,1.1523438,34.5668945L0,110.6098633h362.9350586c19.0898438,0,34.5644531-15.4765625,34.5644531-34.5664063V0H35.7172852z M23.75,100.4711914
-			c-5.5229492,0-10-4.4765625-10-9.9980469c0-5.5234375,4.4770508-10,10-10s10,4.4765625,10,10c0,5.5214844-4.4770508,9.9980469-10,9.9980469z M23.75,31.8046875c-5.5229492,0-10-4.4775391-10-10s4.4770508-10,10-10s10,4.4775391,10,10s-4.4770508,10-10,10z
-			 M373.7495117,100.4711914c-5.5234375,0-10-4.4765625-10-9.9980469c0-5.5234375,4.4765625-10,10-10s10,4.4765625,10,10c0,5.5214844-4.4765625,9.9980469-10,9.9980469z M373.7495117,31.8046875c-5.5234375,0-10-4.4765625-10-9.9990234
-			c0-5.5234375,4.4765625-10,10-10s10,4.4765625,10,10c0,5.5224609-4.4765625,9.9990234-10,9.9990234z"/>
+                        c-5.5229492,0-10-4.4765625-10-9.9980469c0-5.5234375,4.4770508-10,10-10s10,4.4765625,10,10c0,5.5214844-4.4770508,9.9980469-10,9.9980469z M23.75,31.8046875c-5.5229492,0-10-4.4775391-10-10s4.4770508-10,10-10s10,4.4775391,10,10s-4.4770508,10-10,10z
+                         M373.7495117,100.4711914c-5.5234375,0-10-4.4765625-10-9.9980469c0-5.5234375,4.4765625-10,10-10s10,4.4765625,10,10c0,5.5214844-4.4765625,9.9980469-10,9.9980469z M373.7495117,31.8046875c-5.5234375,0-10-4.4765625-10-9.9990234
+                        c0-5.5234375,4.4765625-10,10-10s10,4.4765625,10,10c0,5.5224609-4.4765625,9.9990234-10,9.9990234z"/>
         </g>
 
         <g id="graphics">

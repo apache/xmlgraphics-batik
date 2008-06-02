@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001,2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -38,8 +39,8 @@ import org.apache.batik.util.SVGConstants;
 
 /**
  * Simple component which displays, side by side, the drawing
- * created by a <tt>Painter</tt>, rendered in a 
- * <tt>JPainterComponent</tt> on the left, and in a 
+ * created by a <tt>Painter</tt>, rendered in a
+ * <tt>JPainterComponent</tt> on the left, and in a
  * <tt>JSVGCanvas</tt> on the right, where the SVG
  * displayed is the one created by the <tt>SVGGraphics2D</tt>
  *
@@ -53,7 +54,7 @@ public class JPainterCompare extends JPanel implements SVGConstants{
     public static final Dimension CANVAS_SIZE
         = new Dimension(300, 400);
 
-    public static String MESSAGES_USAGE 
+    public static String MESSAGES_USAGE
         = "JPainterCompare.messages.usage";
 
     public static String MESSAGES_LOADING_CLASS
@@ -74,7 +75,7 @@ public class JPainterCompare extends JPanel implements SVGConstants{
     public static String ERROR_CLASS_NOT_PAINTER
         = "JPainterCompare.error.class.not.painter";
 
-    public static String ERROR_COULD_NOT_TRANSCODE_TO_SVG 
+    public static String ERROR_COULD_NOT_TRANSCODE_TO_SVG
         = "JPainterCompare.error.could.not.transcode.to.svg";
 
     public static String ERROR_COULD_NOT_CONVERT_FILE_PATH_TO_URL
@@ -112,7 +113,7 @@ public class JPainterCompare extends JPanel implements SVGConstants{
                 sem.notifyAll();
             }
         }
-        
+
         public void documentLoadingCompleted(SVGDocumentLoaderEvent e){
             success = true;
             synchronized(sem){
@@ -140,7 +141,7 @@ public class JPainterCompare extends JPanel implements SVGConstants{
         try{
             tmpFile = File.createTempFile(CONFIG_TMP_FILE_PREFIX,
                                           ".svg");
-            
+
             OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream(tmpFile), "UTF-8");
 
             painter.paint(g2d);
@@ -152,7 +153,7 @@ public class JPainterCompare extends JPanel implements SVGConstants{
                 (Messages.formatMessage(ERROR_COULD_NOT_TRANSCODE_TO_SVG,
                                         new Object[]{e.getClass().getName()}));
         }
-        
+
         //
         // Now, transcode SVG to a BufferedImage
         //
@@ -195,7 +196,7 @@ public class JPainterCompare extends JPanel implements SVGConstants{
      * <tt>Painter</tt> on the right.
      *
      */
-    public static void main(String args[]){
+    public static void main(String[] args){
         if(args.length <= 0){
             System.out.println(Messages.formatMessage
                                (MESSAGES_USAGE, null));

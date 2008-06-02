@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -24,10 +25,10 @@ package org.apache.batik.test.svg;
  * @version $Id$
  */
 public class SamplesRenderingTest extends PreconfiguredRenderingTest {
-    public static final String SVG_URL_PREFIX 
+    public static final String SVG_URL_PREFIX
         = "";
 
-    public static final String REF_IMAGE_PREFIX 
+    public static final String REF_IMAGE_PREFIX
         = "test-references/";
 
     public static final String REF_IMAGE_SUFFIX
@@ -52,7 +53,7 @@ public class SamplesRenderingTest extends PreconfiguredRenderingTest {
         = "candidate-reference/";
 
     public SamplesRenderingTest(){
-        setValidating(new Boolean(true));
+        setValidating( Boolean.TRUE );
     }
 
     protected String getSVGURLPrefix(){
@@ -75,6 +76,10 @@ public class SamplesRenderingTest extends PreconfiguredRenderingTest {
         return VARIATION_SUFFIX;
     }
 
+    protected String[] getVariationPlatforms() {
+        return DEFAULT_VARIATION_PLATFORMS;
+    }
+
     protected String getSaveVariationPrefix(){
         return SAVE_VARIATION_PREFIX;
     }
@@ -90,6 +95,4 @@ public class SamplesRenderingTest extends PreconfiguredRenderingTest {
     protected String getCandidateReferenceSuffix(){
         return SAVE_CANDIDATE_REFERENCE_SUFFIX;
     }
-
-
 }

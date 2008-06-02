@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2002-2004  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -23,7 +24,6 @@ import java.io.SerializablePermission;
 import java.lang.reflect.ReflectPermission;
 import java.net.NetPermission;
 import java.net.SocketPermission;
-import java.net.URL;
 import java.security.AllPermission;
 import java.security.Permission;
 import java.sql.SQLPermission;
@@ -41,6 +41,7 @@ import org.w3c.dom.events.EventTarget;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.script.ScriptHandler;
 import org.apache.batik.script.Window;
+import org.apache.batik.util.ParsedURL;
 
 /**
  * @author <a href="mailto:vhardy@apache.org">Vincent Hardy</a>
@@ -150,7 +151,7 @@ public class JarCheckPermissionsDenied implements ScriptHandler {
         // If the document is loaded over the network, check that the
         // class has permission to access the server
         //
-        URL docURL = ((SVGOMDocument)document).getURLObject();
+        ParsedURL docURL = ((SVGOMDocument)document).getParsedURL();
         if ((docURL != null) && 
             (docURL.getHost() != null) && 
             (!"".equals(docURL.getHost()))) {

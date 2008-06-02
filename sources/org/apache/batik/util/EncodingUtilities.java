@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -27,11 +28,11 @@ import java.util.Map;
  * @version $Id$
  */
 public class EncodingUtilities {
-    
+
     /**
      * The standard to Java encoding table.
      */
-    protected final static Map ENCODINGS = new HashMap();
+    protected static final Map ENCODINGS = new HashMap();
     static {
         ENCODINGS.put("UTF-8",           "UTF8");
         ENCODINGS.put("UTF-16",          "Unicode");
@@ -59,7 +60,7 @@ public class EncodingUtilities {
         ENCODINGS.put("EBCDIC-CP-US",    "Cp037");
         ENCODINGS.put("EBCDIC-CP-CA",    "Cp037");
         ENCODINGS.put("EBCDIC-CP-NL",    "Cp037");
-	ENCODINGS.put("EBCDIC-CP-WT",    "Cp037");
+        ENCODINGS.put("EBCDIC-CP-WT",    "Cp037");
         ENCODINGS.put("EBCDIC-CP-DK",    "Cp277");
         ENCODINGS.put("EBCDIC-CP-NO",    "Cp277");
         ENCODINGS.put("EBCDIC-CP-FI",    "Cp278");

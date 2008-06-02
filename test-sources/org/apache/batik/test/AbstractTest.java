@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001-2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -24,7 +25,7 @@ import java.io.PrintWriter;
  * Base class containing convenience methods for writing tests. <br />
  * There are at least three approaches to write new tests derived from
  * <tt>AbstractTest</tt>:<br /><ul>
- * <li>You can simply override the <tt>runImplBase</tt> method and 
+ * <li>You can simply override the <tt>runImplBasic</tt> method and 
  * return true or false depending on whether or not the test fails.</li>
  * <li>You can choose to report more complex test failure conditions 
  * by overriding the <tt>runImpl</tt> method which returns a <tt>TestReport</tt>.
@@ -40,7 +41,7 @@ import java.io.PrintWriter;
  * Here are some examples:
  * <code>
  * public class MyTestA extends AbstractTest {
- * public boolean runImplBase() {
+ * public boolean runImplBasic() {
  *    if(someConditionFails){
  *       return false;
  *    }

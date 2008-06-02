@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2005  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -42,6 +43,7 @@ import org.apache.batik.util.XMLConstants;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
@@ -130,10 +132,8 @@ public class SVG12BridgeContext extends BridgeContext {
      * Disposes this BridgeContext.
      */
     public void dispose() {
-        AbstractNode n = (AbstractNode) document;
-        XBLEventSupport es = (XBLEventSupport) n.initializeEventSupport();
+        clearChildContexts();
 
-        childContexts.clear();
         synchronized (eventListenerSet) {
             // remove all listeners added by Bridges
             Iterator iter = eventListenerSet.iterator();
@@ -149,7 +149,13 @@ public class SVG12BridgeContext extends BridgeContext {
                 }
                 if (m instanceof ImplementationEventListenerMememto) {
                     String ns = m.getNamespaceURI();
-                    es.removeImplementationEventListenerNS(ns, t, el, uc);
+                    Node nde = (Node)et;
+                    AbstractNode n = (AbstractNode)nde.getOwnerDocument();
+                    if (n != null) {
+                        XBLEventSupport es;
+                        es = (XBLEventSupport) n.initializeEventSupport();
+                        es.removeImplementationEventListenerNS(ns, t, el, uc);
+                    }
                 } else if (in) {
                     String ns = m.getNamespaceURI();
                     et.removeEventListenerNS(ns, t, el, uc);
@@ -163,6 +169,12 @@ public class SVG12BridgeContext extends BridgeContext {
             removeDOMListeners();
             removeBindingListener();
         }
+
+        if (animationEngine != null) {
+            animationEngine.dispose();
+            animationEngine = null;
+        }
+
         Iterator iter = interpreterMap.values().iterator();
         while (iter.hasNext()) {
             Interpreter interpreter = (Interpreter)iter.next();
@@ -212,9 +224,9 @@ public class SVG12BridgeContext extends BridgeContext {
      * shadow trees can be caught.
      */
     public void addDOMListeners() {
-        AbstractNode n = (AbstractNode) document;
+        SVGOMDocument doc = (SVGOMDocument)document;
         XBLEventSupport evtSupport
-            = (XBLEventSupport) n.initializeEventSupport();
+            = (XBLEventSupport) doc.initializeEventSupport();
 
         domAttrModifiedEventListener
             = new EventListenerWrapper(new DOMAttrModifiedEventListener());
@@ -244,10 +256,12 @@ public class SVG12BridgeContext extends BridgeContext {
              "DOMCharacterDataModified",
              domCharacterDataModifiedEventListener, true);
 
+        animatedAttributeListener = new AnimatedAttrListener();
+        doc.addAnimatedAttributeListener(animatedAttributeListener);
+        
         focusManager = new SVG12FocusManager(document);
 
-        SVGOMDocument svgDocument = (SVGOMDocument)document;
-        CSSEngine cssEngine = svgDocument.getCSSEngine();
+        CSSEngine cssEngine = doc.getCSSEngine();
         cssPropertiesChangedListener = new CSSPropertiesChangedListener();
         cssEngine.addCSSEngineListener(cssPropertiesChangedListener);
     }
@@ -331,32 +345,33 @@ public class SVG12BridgeContext extends BridgeContext {
      * Removes event listeners from the DOM and CSS engine.
      */
     protected void removeDOMListeners() {
-        NodeEventTarget evtTarget = (NodeEventTarget)document;
+        SVGOMDocument doc = (SVGOMDocument)document;
 
-        evtTarget.removeEventListenerNS
+        doc.removeEventListenerNS
             (XMLConstants.XML_EVENTS_NAMESPACE_URI,
              "DOMAttrModified",
              domAttrModifiedEventListener, true);
-        evtTarget.removeEventListenerNS
+        doc.removeEventListenerNS
             (XMLConstants.XML_EVENTS_NAMESPACE_URI,
              "DOMNodeInserted",
              domNodeInsertedEventListener, true);
-        evtTarget.removeEventListenerNS
+        doc.removeEventListenerNS
             (XMLConstants.XML_EVENTS_NAMESPACE_URI,
              "DOMNodeRemoved",
              domNodeRemovedEventListener, true);
-        evtTarget.removeEventListenerNS
+        doc.removeEventListenerNS
             (XMLConstants.XML_EVENTS_NAMESPACE_URI,
              "DOMCharacterDataModified",
              domCharacterDataModifiedEventListener, true);
         
-        SVGOMDocument svgDocument = (SVGOMDocument)document;
-        CSSEngine cssEngine = svgDocument.getCSSEngine();
+        doc.removeAnimatedAttributeListener(animatedAttributeListener);
+
+        CSSEngine cssEngine = doc.getCSSEngine();
         if (cssEngine != null) {
             cssEngine.removeCSSEngineListener
                 (cssPropertiesChangedListener);
             cssEngine.dispose();
-            svgDocument.setCSSEngine(null);
+            doc.setCSSEngine(null);
         }
     }
 

@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2002-2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -21,7 +22,7 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 
 import org.apache.batik.i18n.LocalizableSupport;
-import org.apache.batik.util.gui.resource.ResourceManager;
+import org.apache.batik.util.resources.ResourceManager;
 
 /**
  * This class manages the message for the security utilities
@@ -39,7 +40,7 @@ public class Messages {
     /**
      * The error messages bundle class name.
      */
-    protected final static String RESOURCES =
+    protected static final String RESOURCES =
         "org.apache.batik.util.resources.Messages";
 
     /**
@@ -83,7 +84,7 @@ public class Messages {
         return resourceManager.getString(key);
     }
 
-    public static int getInteger(String key) 
+    public static int getInteger(String key)
         throws MissingResourceException {
         return resourceManager.getInteger(key);
     }

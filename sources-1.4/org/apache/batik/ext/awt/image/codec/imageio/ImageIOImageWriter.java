@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2006  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -70,38 +71,52 @@ public class ImageIOImageWriter implements ImageWriter, IIOWriteWarningListener 
                 throws IOException {
         Iterator iter;
         iter = ImageIO.getImageWritersByMIMEType(getMIMEType());
-        javax.imageio.ImageWriter iiowriter = (javax.imageio.ImageWriter)iter.next();
-        if (iiowriter != null) {
-            iiowriter.addIIOWriteWarningListener(this);
-            
-            ImageOutputStream imgout = ImageIO.createImageOutputStream(out);
-            
-            ImageWriteParam iwParam = getDefaultWriteParam(iiowriter, image, params);
-            
-            ImageTypeSpecifier type;
-            if (iwParam.getDestinationType() != null) {
-                type = iwParam.getDestinationType();
+        javax.imageio.ImageWriter iiowriter = null;
+        try {
+            iiowriter = (javax.imageio.ImageWriter)iter.next();
+            if (iiowriter != null) {
+                iiowriter.addIIOWriteWarningListener(this);
+
+                ImageOutputStream imgout = null;
+                try {
+                    imgout = ImageIO.createImageOutputStream(out);
+                    ImageWriteParam iwParam = getDefaultWriteParam(iiowriter, image, params);
+
+                    ImageTypeSpecifier type;
+                    if (iwParam.getDestinationType() != null) {
+                        type = iwParam.getDestinationType();
+                    } else {
+                        type = ImageTypeSpecifier.createFromRenderedImage(image);
+                    }
+
+                    //Handle metadata
+                    IIOMetadata meta = iiowriter.getDefaultImageMetadata(
+                            type, iwParam);
+                    //meta might be null for some JAI codecs as they don't support metadata
+                    if (params != null && meta != null) {
+                        meta = updateMetadata(meta, params); 
+                    }
+
+                    //Write image
+                    iiowriter.setOutput(imgout);
+                    IIOImage iioimg = new IIOImage(image, null, meta);
+                    iiowriter.write(null, iioimg, iwParam);
+                } finally {
+                    if (imgout != null) {
+                        System.err.println("closing");
+                        imgout.close();
+                    }
+                }
             } else {
-                type = ImageTypeSpecifier.createFromRenderedImage(image);
+                throw new UnsupportedOperationException("No ImageIO codec for writing " 
+                        + getMIMEType() + " is available!");
             }
-            
-            //Handle metadata
-            IIOMetadata meta = iiowriter.getDefaultImageMetadata(
-                    type, iwParam);
-            //meta might be null for some JAI codecs as they don't support metadata
-            if (params != null && meta != null) {
-                meta = updateMetadata(meta, params); 
+        } finally {
+            if (iiowriter != null) {
+                System.err.println("disposing");
+                iiowriter.dispose();
             }
-            
-            //Write image
-            iiowriter.setOutput(imgout);
-            IIOImage iioimg = new IIOImage(image, null, meta);
-            iiowriter.write(null, iioimg, iwParam);
-        } else {
-            throw new UnsupportedOperationException("No ImageIO codec for writing " 
-                    + getMIMEType() + " is available!");
         }
-        
     }
     
     /**

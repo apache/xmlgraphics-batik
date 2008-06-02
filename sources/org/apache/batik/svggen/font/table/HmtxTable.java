@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001,2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -59,7 +60,9 @@ public class HmtxTable implements Table {
         hMetrics = new int[numberOfHMetrics];
         ByteArrayInputStream bais = new ByteArrayInputStream(buf);
         for (int i = 0; i < numberOfHMetrics; i++) {
-            hMetrics[i] = (bais.read()<<24 | bais.read()<<16 | 
+            // pack 4 bytes from bais into an int and store in hMetrics[]
+            // bais.read() returns an int 0..255, so no need to worry for sign-extension here
+            hMetrics[i] = (bais.read()<<24 | bais.read()<<16 |
                            bais.read()<< 8 | bais.read());
         }
         if (lsbCount > 0) {

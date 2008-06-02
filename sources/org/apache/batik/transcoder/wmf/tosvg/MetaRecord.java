@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001-2004  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -18,47 +19,82 @@
 
 package org.apache.batik.transcoder.wmf.tosvg;
 
-import java.util.Vector;
+import java.util.List;
+import java.util.ArrayList;
 
+/**
+ * This is used to keep data while processing WMF-files.
+ * It is tagged with a type and holds a list of Integer-objects.
+ * It seems, it might be rewritten to keep just the plain int-data.
+ *
+ * @author <a href="mailto:bella.robinson@cmis.csiro.au">Bella Robinson</a>
+ * @version $Id$
+ */
 public class MetaRecord /*implements Serializable*/ {
-    public int	functionId;
-    public int	numPoints;
 
-    private Vector ptVector;
+    public int functionId;
+    public int numPoints;
+
+    private final List ptVector = new ArrayList();
 
     public MetaRecord() {
-        ptVector = new Vector();
     }
 
     public void EnsureCapacity( int cc ) {
-        ptVector.ensureCapacity( cc );
     }
 
+    /**
+     * when you are storing Integer-objects, consider using addElement( int ) instead.
+     * @param obj
+     */
     public void AddElement( Object obj ) {
-        ptVector.addElement( obj );
+        ptVector.add( obj );
     }
 
-    public Integer ElementAt( int offset ) {
-        return (Integer)ptVector.elementAt( offset );
+    /**
+     * helper method to add int-values. This way we keep the call to new Integer()
+     * in one place, here.
+     *
+     * @param iValue  the value to add to ptVector, wrapped in an Integer
+     */
+    public final void addElement( int iValue ){
+        ptVector.add( new Integer( iValue ) );
     }
-    
+
+    /**
+     * if you dont really need the Integer-object from this method
+     * it is recommended to use the <code>elementAt()</code>-method instead,
+     * which returns an <code>int</code>.
+     */
+    public Integer ElementAt( int offset ) {
+        return (Integer)ptVector.get( offset );
+    }
+
+    /**
+     * helper-method to return the plain int-value from the record
+     * and save the .intValue()-call at the caller's site.
+     * @param offset of the element to get
+     * @return the intValue of the element at offset
+     */
+    public final int elementAt( int offset ){
+        return ((Integer)ptVector.get( offset )).intValue();
+    }
+
     /** A record that contain byte arrays elements.
      */
     public static class ByteRecord extends MetaRecord {
-        public byte[] bstr;
-        
+        public final byte[] bstr;
+
         public ByteRecord(byte[] bstr) {
             this.bstr = bstr;
         }
     }
-    
-    public static class StringRecord extends MetaRecord /*implements Serializable*/ {
-        public String text;
-        
-        public StringRecord( String newText ) {
-            text = new String( newText );
-        }
-    }    
-}
-    
 
+    public static class StringRecord extends MetaRecord /*implements Serializable*/ {
+        public final String text;
+
+        public StringRecord( String newText ) {
+            text = newText;
+        }
+    }
+}

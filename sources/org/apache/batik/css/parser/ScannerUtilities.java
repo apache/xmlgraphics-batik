@@ -1,10 +1,11 @@
 /*
 
-   Copyright 1999-2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -29,31 +30,31 @@ public class ScannerUtilities {
     /**
      * The set of the valid identifier start characters.
      */
-    protected final static int[] IDENTIFIER_START = 
+    protected static final int[] IDENTIFIER_START =
     { 0x0, 0x0, 0x87FFFFFE, 0x7FFFFFE };
 
     /**
      * The set of the valid name characters.
      */
-    protected final static int[] NAME = 
+    protected static final int[] NAME =
     { 0, 0x3FF2000, 0x87FFFFFE, 0x7FFFFFE };
 
     /**
      * The set of the valid hexadecimal characters.
      */
-    protected final static int[] HEXADECIMAL = 
+    protected static final int[] HEXADECIMAL =
     { 0, 0x3FF0000, 0x7E, 0x7E };
 
     /**
      * The set of the valid string characters.
      */
-    protected final static int[] STRING = 
+    protected static final int[] STRING =
     { 0x200, 0xFFFFFF7B, 0xFFFFFFFF, 0x7FFFFFFF };
 
     /**
      * The set of the valid uri characters.
      */
-    protected final static int[] URI = 
+    protected static final int[] URI =
     { 0x0, 0xFFFFFC7A, 0xFFFFFFFF, 0x7FFFFFFF };
 
     /**
@@ -78,34 +79,34 @@ public class ScannerUtilities {
      * Tests whether the given character is a valid identifier start character.
      */
     public static boolean isCSSIdentifierStartCharacter(char c) {
-	return c >= 128 || ((IDENTIFIER_START[c>>5] & (1 << (c &0x1F))) != 0);
+        return c >= 128 || ((IDENTIFIER_START[c>>5] & (1 << (c &0x1F))) != 0);
     }
 
     /**
      * Tests whether the given character is a valid name character.
      */
     public static boolean isCSSNameCharacter(char c) {
-	return c >= 128 || ((NAME[c >>5] & (1 << (c &0x1F))) != 0);
+        return c >= 128 || ((NAME[c >>5] & (1 << (c &0x1F))) != 0);
     }
 
     /**
      * Tests whether the given character is a valid hexadecimal character.
      */
     public static boolean isCSSHexadecimalCharacter(char c) {
-	return c < 128 && ((HEXADECIMAL[c>>5] & (1 << (c&0x1F))) != 0);
+        return c < 128 && ((HEXADECIMAL[c>>5] & (1 << (c&0x1F))) != 0);
     }
 
     /**
      * Tests whether the given character is a valid string character.
      */
     public static boolean isCSSStringCharacter(char c) {
-	return c >= 128 || ((STRING[c>>5] & (1 << (c&0x1F))) != 0);
+        return c >= 128 || ((STRING[c>>5] & (1 << (c&0x1F))) != 0);
     }
 
     /**
      * Tests whether the given character is a valid URI character.
      */
     public static boolean isCSSURICharacter(char c) {
-	return c >= 128 || ((URI[c>>5] & (1 << (c&0x1F))) != 0);
+        return c >= 128 || ((URI[c>>5] & (1 << (c&0x1F))) != 0);
     }
 }

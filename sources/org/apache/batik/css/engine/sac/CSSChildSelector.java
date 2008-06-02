@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2002  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -37,7 +38,7 @@ public class CSSChildSelector extends AbstractDescendantSelector {
      * Creates a new CSSChildSelector object.
      */
     public CSSChildSelector(Selector ancestor, SimpleSelector simple) {
-	super(ancestor, simple);
+        super(ancestor, simple);
     }
 
     /**
@@ -45,20 +46,20 @@ public class CSSChildSelector extends AbstractDescendantSelector {
      * org.w3c.css.sac.Selector#getSelectorType()}.
      */
     public short getSelectorType() {
-	return SAC_CHILD_SELECTOR;
+        return SAC_CHILD_SELECTOR;
     }
 
     /**
      * Tests whether this selector matches the given element.
      */
     public boolean match(Element e, String pseudoE) {
-	Node n = e.getParentNode();
-	if (n != null && n.getNodeType() == Node.ELEMENT_NODE) {
-	    return ((ExtendedSelector)getAncestorSelector()).match((Element)n,
+        Node n = e.getParentNode();
+        if (n != null && n.getNodeType() == Node.ELEMENT_NODE) {
+            return ((ExtendedSelector)getAncestorSelector()).match((Element)n,
                                                                    null) &&
-		   ((ExtendedSelector)getSimpleSelector()).match(e, pseudoE);
-	}
-	return false;
+                   ((ExtendedSelector)getSimpleSelector()).match(e, pseudoE);
+        }
+        return false;
     }
 
     /**
@@ -73,10 +74,10 @@ public class CSSChildSelector extends AbstractDescendantSelector {
      * Returns a representation of the selector.
      */
     public String toString() {
-	SimpleSelector s = getSimpleSelector();
-	if (s.getSelectorType() == SAC_PSEUDO_ELEMENT_SELECTOR) {
-	    return "" + getAncestorSelector() + s;
-	}
-	return getAncestorSelector() + " > " + s;
+        SimpleSelector s = getSimpleSelector();
+        if (s.getSelectorType() == SAC_PSEUDO_ELEMENT_SELECTOR) {
+            return String.valueOf( getAncestorSelector() ) + s;
+        }
+        return getAncestorSelector() + " > " + s;
     }
 }

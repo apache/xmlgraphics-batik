@@ -1,0 +1,614 @@
+<?xml version="1.0"?>
+
+<!--
+
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+
+<!-- ========================================================================= -->
+<!-- author vincent.hardy@eng.sun.com                      -->
+<!-- version $Id: testInfrastructure.xml 215909 2005-07-12 02:05:44Z cam $ -->
+<!-- ========================================================================= -->
+
+<!DOCTYPE document PUBLIC "-//APACHE//DTD Documentation V2.0//EN" "http://forrest.apache.org/dtd/document-v20.dtd">
+<document>
+  <header>
+    <title>Test infrastructure</title>
+  </header>
+
+  <body>
+    <p>
+      This document describes the Batik test infrastructure whose goals 
+      are to:
+    </p>
+    <ul>
+      <li>make it easy to detect regressions,</li>
+      <li>make it easy to run test suites, and</li>
+      <li>make it easy to write new tests and add them
+        to an existing test suite.</li>
+    </ul>
+    <p>
+      The intent for the test infrastructure is that it grows
+      along with Batik and keeps monitoring the health of
+      the code base.
+    </p>
+    <p>
+      While the test suites in the infrastructure will be
+      run every day by build/test machines, they are also 
+      intended to help the commiters and developers get confident
+      that their code modifications did not introduce regressions.
+    </p>
+
+    <section id="infrastructure">
+      <title>The test infrastructure</title>
+    
+      <section>
+        <title>High-level interfaces</title>
+        <p>
+          The following are the high level interfaces in the infrastructure.
+        </p>
+
+        <!-- <div class="figure"><img src="images/testHighLevel.jpg" alt="Batik Viewer"/></div> -->
+        
+        <dl class="classes">
+          <dt><a class="class" href="../javadoc/org/apache/batik/test/Test.html">Test</a></dt>
+          <dd>
+            <p>
+              A <code>Test</code> is performing whatever check is needed in its
+              <code>run</code> method, and each run produces a
+              <code>TestReport</code>.
+            </p>
+          </dd>
+          <dt><a class="class" href="../javadoc/org/apache/batik/test/TestReport.html">TestReport</a></dt>
+          <dd>
+            <p>
+              A <code>TestReport</code> describes whether a <code>Test</code>
+              run passed or failed and provides a description of the failure in
+              terms of an error code (unique in the context of a given
+              <code>Test</code>) and a set of key/value pairs.
+            </p>
+          </dd>
+          <dt><a class="class" href="../javadoc/org/apache/batik/test/TestSuite.html">TestSuite</a></dt>
+          <dd>
+            <p>
+              A <code>TestSuite</code> is a test aggregation which can run a set
+              of <code>Test</code> instances.
+            </p>
+          </dd>
+          <dt><a class="class" href="../javadoc/org/apache/batik/test/TestReportProcessor.html">TestReportProcessor</a></dt>
+          <dd>
+            <p>
+              A <code>TestReportProcessor</code> is used to analyze a
+              <code>TestReport</code>.  A specific implementation can choose to
+              create graphs, send an email or write an HTML file.
+            </p>
+          </dd>
+        </dl>
+      </section>
+
+      <section>
+        <title>Default implementations</title>
+
+        <p>
+          The test infrastructure comes with a number of default
+          implementations for the interfaces described above. 
+          Specifically:
+        </p>
+
+        <dl class="classes">
+          <dt><a class="class" href="../javadoc/org/apache/batik/test/AbstractTest.html">AbstractTest</a></dt>
+          <dd>
+            <p>
+              This implementation of the <code>Test</code> interface is
+              intended to make it easier to write a “safe” <code>Test</code>
+              implementation.  See the <a href="#writingNewTests">Writing new
+                tests</a> section for a description of how to use that class.
+            </p>
+          </dd>
+          <dt><a class="class" href="../javadoc/org/apache/batik/test/DefaultTestReport.html">DefaultTestReport</a></dt>
+          <dd>
+            <p>
+              This class provides a simple implementation of the
+              <code>TestReport</code> interface that most <code>Test</code>
+              implementations will be able to use. See the
+              <a href="#writingNewTests">Writing new tests</a> section for
+              more details.
+            </p>
+          </dd>
+          <dt><a class="class" href="../javadoc/org/apache/batik/test/DefaultTestSuite.html">DefaultTestSuite</a></dt>
+          <dd>
+            <p>
+              This class provides an implementation of the 
+              <code>TestSuite</code> interface and makes it
+              easy to aggregate <code>Test</code> instances.
+            </p>
+          </dd>
+          <dt><a class="class" href="../javadoc/org/apache/batik/test/SimpleTestReportProcessor.html">SimpleTestReportProcessor</a></dt>
+          <dd>
+            <p>
+              This class is a sample <code>TestReportProcessor</code>
+              implementation that simply traces the content of a
+              <code>TestReport</code> to an output stream.
+            </p>
+          </dd>
+          <dt><a class="class" href="../javadoc/org/apache/batik/test/TestReportMailer.html">TestReportMailer</a></dt>
+          <dd>
+            <p>
+              This is another implementation of the
+              <code>TestReportProcessor</code> interface that emails a test
+              report to a list of destination e-mail addresses.
+            </p>
+          </dd>
+        </dl>
+      </section>
+      
+      <section>
+        <title>XML implementations</title>
+
+        <p>
+          The test infrastructure is using XML-out (and XML-in
+          too, see the <a href="#runningATestSuite">Running a test suite</a>
+          section) as a favorite way to generate test reports. The
+          <a class="class" href="../javadoc/org/apache/batik/test/XMLTestReportProcessor.html">XMLTestReportProcessor</a>
+          implementation of the <code>TestReportProcessor</code> interface.
+          It outputs reports in XML in a configurable directory.
+        </p>
+        <p>
+          The <code>XMLTestReportProcessor</code> can notify an
+          <a class="class" href="../javadoc/org/apache/batik/test/XMLReportConsumer.html">XMLReportConsumer</a>
+          when it has created a new report. There is one implementation of
+          that interface that can run an XSL stylesheet on the 
+          XML report (e.g., to generate an HTML report), called
+          <a class="class" href="../javadoc/org/apache/batik/test/XSLXMLReportConsumer.html">XSLXMLReportConsumer</a>.
+          This is used by the <code>regard</code> rule in the Batik build to produce an
+          HTML report for the default regression test suite.
+        </p>
+      </section>
+    </section>
+
+    <section id="managingATestSuite">
+      <title>Managing test suites</title>
+
+      <p>
+        The infrastructure is designed to make it easy to create, update
+        and modify test suites. This section describes how to describe a
+        set of tests to be run and how to actually run that test suite.
+      </p>
+
+      <section>
+        <title>Describing a test suite</title>
+        <p>
+          Test suites can be described in XML (XML-in refered to earlier
+          in this document). The general format for describing a test suite is:
+        </p>
+        <source><![CDATA[<testSuite id="testSuiteA" name="MyFavoriteTestSuite">
+  <!-- Set of tests to be run -->
+  <test id="t1" class="myFavoriteTestClassA"/>
+  <test id="t2" class="myFavoriteTestClassB"/>
+  <test id="t3" class="myFavoriteTestClassC"/>
+</testSuite>]]></source>
+
+        <p>
+          Note that tests can be grouped in <code>testGroup</code> elements,
+          which can have their own <code>id</code> and <code>class</code>
+          attributes. This is useful because it allows developers to run
+          specific tests or test groups by specifying their IDs. In addition,
+          because the class attribute is inherited by a <code>test</code> element
+          from its parent, <code>testGroup</code>s allow the developers to
+          group tests which use the same class and specify that class on the
+          group.
+        </p>
+
+        <p>
+          <code>Test</code> instances listed in a test suite can have arguments
+          passed to them, as defined by the test class.  These arguments are
+          passed in using <code>arg</code> child elements.
+        </p>
+
+        <p>
+          The following example shows a test suite with two tests:
+        </p>
+
+        <source><![CDATA[<testSuite id="sampleTestSuite" name="SAMPLE TEST SUITE">
+
+  <!-- ========================================================================== -->
+  <!-- Validates that the SVGRenderingAccuracyTest class is operating as expected -->
+  <!-- ========================================================================== -->
+  <test id="renderingAccuracyTest" class="org.apache.batik.test.svg.SVGRenderingAccuracyTestValidator"/>
+
+  <!-- ========================================================================== -->
+  <!-- Rendering regression tests                                                 -->
+  <!-- ========================================================================== -->
+  <test id="anne.svg" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <arg class="java.net.URL" 
+         value="file:samples/anne.svg"/>
+    <arg class="java.net.URL" 
+         value="file:test-references/samples/solaris/anne.png"/>
+    <property name="VariationURL" 
+           class="java.net.URL" 
+           value="file:test-references/samples/variation/anne.png"/>
+    <property name="SaveVariation" 
+           class="java.io.File" 
+           value="test-references/samples/variation-candidate/anne.png"/>
+  </test>
+
+</testSuite>]]></source>
+      </section>
+
+      <section id="runningATestSuite">
+        <title>Running a test suite</title>
+
+        <p>
+          Yet another XML file describes which test to run and how to process
+          the generated test reports. The general syntax is something
+          like:
+        </p>
+        <source><![CDATA[<testRun id="regard" name="Test Run Name Here">
+
+  <!-- =================================== -->
+  <!-- Descriptions of processors that     -->
+  <!-- will process the results of the     -->
+  <!-- test suite                          -->
+  <!-- =================================== -->
+  <testReportProcessor class="myFavoriteReportProcessorA"/>
+  <testReportProcessor class="myFavoriteReportProcessorB"/>
+
+  <!-- =================================== -->
+  <!-- Set of test suite to run. They will -->
+  <!-- produce TestReports.                -->
+  <!-- =================================== -->
+  <testSuite href="http://url.to.my.first.test.suite"/>
+  <testSuite href="http://url.to.my.second.test.suite"/>
+
+</testRun>]]></source>
+
+        <p>
+          <code>testRun</code> elements can be nested. In a nutshell, you can
+          specify a set of <code>TestReportProcessor</code>s which should
+          process the <code>TestReport</code> generated by the
+          <code>TestSuite</code> built from the list of <code>Test</code>
+          instances described in the files referenced by the
+          <code>testSuite</code> elements.
+        </p>
+        <p>
+          For example:
+        </p>
+        <source><![CDATA[<testRun name="Batik Standard Regression Test Run">
+
+  <testRun name="REGARD">
+    <testReportProcessor class="org.apache.batik.test.xml.XMLTestReportProcessor"> 
+      <arg class="org.apache.batik.test.xml.XSLXMLReportConsumer">
+        <!-- Stylesheet -->
+        <arg class="java.lang.String" value="file:test-resources/org/apache/batik/test/svg/HTMLReport.xsl"/>
+        <!-- Ouput Directory -->
+        <arg class="java.lang.String" value="test-reports/html"/>
+        <!-- Output file prefix -->
+        <arg class="java.lang.String" value="RegardResult"/>
+        <!-- Output file suffix -->
+        <arg class="java.lang.String" value=".html"/>
+      </arg>
+    </testReportProcessor>
+
+    <testSuite href="file:test-resources/org/apache/batik/test/samplesRendering.xml"/> 
+    <testSuite href="file:test-resources/org/apache/batik/svggen/regsvggen.xml"/>
+    <testSuite href="file:test-resources/org/apache/batik/test/unitTesting.xml"/> 
+  </testRun>
+
+</testRun>]]></source>
+
+        <p>
+          There is a rule in Batik's <code>build.xml</code> file to run a test
+          suite defined in an XML file as the one above. At the command line,
+          type the following, for Windows:
+        </p>
+        <source>build runtestsuite path/to/my/newly/created/testSuite.xml</source>
+        <p>
+          and for Unix:
+        </p>
+        <source>build.sh runtestsuite path/to/my/newly/created/testSuite.xml</source>
+        <p>
+          In addition, the <code>regard</code> rule runs a specific set of
+          tests by default, so that you do not need to pass any
+          <em>testRun</em> file argument.
+        </p>
+        <p>
+          <strong><code>regard</code> is the project’s safeguard against
+            regressions</strong>.</p>
+      </section>
+    </section>
+
+    <section id="regard">
+      <title>regard: the Batik regression test suite</title>
+    
+      <p>
+        The regard test suite contains all the regression tests for the Batik
+        project.  The <code>regard</code> tool is a specific test suite
+        description, <code>regard.xml</code> (which you can find in the
+        <code>test-resources/org/apache/batik/test</code> directory). That
+        file contains a set of test suite files which sould be run.
+      </p> 
+
+      <p>
+        The following describes how to use the regard tool and some of the
+        most important tests in the regard test suite.
+      </p>
+
+      <section>
+        <title>Running regard</title>
+
+        <p>
+          The regard tool lets you run either all the tests or any specific
+          test you want in the test suite. To run all the tests in the regard
+          test suite, type the following at the command line, for Windows:
+        </p>
+
+        <source>build regard</source>
+        <p>
+          and for Unix:
+        </p>
+        <source>build.sh regard</source>
+
+        <p>
+          To run a specific test in the test suite, type the qualified test ID
+          or any substring of that ID:
+        </p>
+
+        <source>build.sh regard <em>id-list</em></source>
+
+        <p>For example:</p>
+        <source>build.sh regard unitTesting.ts batikFX.svg</source>
+
+        <p>
+          will run all the tests with an ID containing
+          <code>unitTesting.ts</code> (i.e., all the test selection unit
+          testing, see
+          <code>test-resources/org/apache/batik/gvt/unitTesting.xml</code>)
+          and the accuracy rendering test on <code>batikFX.svg</code> (because
+          it is the only test with <code>batikFX.svg</code> in its ID).
+        </p>
+      </section>
+     
+      <section>
+        <title>Rendering accuracy tests</title>
+
+        <p>
+          There is a <code>Test</code> implementation,
+          <a class="class" href="../javadoc/org/apache/batik/test/SVGRenderingAccuracyTest.html">SVGRenderingAccuracyTest</a>,
+          which checks that Batik’s rendering of an SVG document stays accurate.
+          It compares reference images with the rendering Batik produces and
+          reports any discrepency.
+        </p>
+
+        <p>
+          An <code>SVGRenderingAccuracyTest</code>’s constructor configuration
+          is made of:
+        </p>
+        <ul>
+          <li>the URL to the SVG it should render, and</li>
+          <li>the URL to a reference PNG file.</li>
+        </ul>
+  
+        <p>
+          The default behavior for the test is to render the SVG into a PNG
+          file and compare with the reference image. If there is no
+          difference, the test passes. Otherwise, it fails.
+        </p>
+
+        <p>
+          In addition to this default behavior, the
+          <code>SVGRenderingAccuracyTest</code> can take an optional
+          configuration parameter, an image URL defined as an “accepted”
+          variation around the reference image. If such a variation image is
+          specified, then the test will pass if:
+        </p>
+        <ul>
+          <li>the rasterized SVG is equal to the reference image, or</li>
+          <li>
+            the difference between the rasterized SVG and the reference image
+            is exactly the same as the accepted variation image.
+          </li>
+        </ul>
+
+        <p>
+          Finally, to ease the process of creating “accepted” variation
+          images, <code>SVGRenderingAccuracyTest</code> can take an optional
+          file name (called <code>saveVariation</code>) describing where the
+          variation between the rasterized SVG and the reference image will be
+          stored in case the rasterized SVG is different from the reference
+          image and the difference is not equal to the variation image, if any
+          was defined. That way, it becomes possible to run a test, and if that
+          test fails, the developer can review the <code>saveVariation</code>
+          image and decide whether it is an acceptable variation or not and
+          use it in subsequent test run as the “accepted” variation image, which
+          will allow the test to pass if that exact same variation remains
+          constant.
+        </p>
+      </section>
+
+      <section>
+        <title>Day to day use of regard</title>
+
+        <section>
+          <title>Initial set up</title>
+          <p>
+            To set up the test environment the first time, you need to:
+          </p>
+          <ul>
+            <li>
+              check out the latest version of the code, including the
+              <code>test-</code>* directories (sources, resources and
+              references) and the <code>build.xml</code> file, and
+            </li>
+            <li>
+              run the regard test suite once:
+              <source>build regard</source>
+            </li>
+          </ul>
+          <p>
+            This will generate an HTML test report (<code>report.html</code>)
+            in the
+            <tt>test-reports/<em>yyyy</em>.<em>mm</em>.<em>dd</em>-<em>HHhMMmSSs</em>/html</tt>
+            directory.  Depending on how much different text rendering is
+            between your work environment and the environment used to create
+            the reference images, you will get more or less test that will
+            fail, because of differences in the way text is rendered on various
+            platforms and because of fonts not being available on some
+            platforms. For example, a running the test on a Windows 2000
+            laptop against images generated on the Solaris platform caused 16
+            tests out of 71 to fail.
+          </p>
+          <p>
+            Review the HTML report to make sure that the differences are
+            really due to text variations.  This will usually be the case and
+            you can make sure by clicking on the diff images contained in the
+            report to see them at full scale. You can you can then turn the
+            “candidate” variations generated by the test into “accepted”
+            variations by moving files from one directory to another:
+          </p>
+          <source>mv test-references/samples/candidate-variations/*.png test-references/samples/accepted-variations/*.png
+mv test-references/samples/tests/candidate-variations/*.png test-references/samples/tests/accepted-variations/*.png</source>
+          <p>You can now run the test again:</p>
+          <source>build regard</source>
+          <p>
+            Check the newly generated HTML report in the
+            <code>test-reports/html</code> directory: there should no
+            longer be any test failure.
+          </p>
+        </section>
+
+        <section>
+          <title>Daily usage</title>
+
+          <p>
+            Once the intial set up has been done, you can use regard by simply
+            updating your SVN copy, including the test-references. If no
+            change occurs, your test will keep passing with your reference
+            images. If a test fails (e.g., if someone checks in a new reference
+            image from a platform different than the one you are using, you
+            will have to check if it is because of system specific reasons or
+            if there is a bigger problem.
+          </p>
+        </section>
+      </section>
+
+      <section>
+        <title>SVG generator tests</title>
+
+        <p>
+          Regard contains over 100 tests for checking regressions on the SVG
+          generator. If you use <code>svggen</code> as an argument to regard,
+          all the SVG generator tests will be run (because
+          <code>regard.xml</code> points to
+          <code>test-resources/org/apache/batik/svggen/regsvggen.xml</code>,
+          which is a test suite description for the SVG generator and that
+          file’s root <code>testSuite</code> element has the “svggen” ID).
+        </p>
+      </section>
+    </section>
+
+    <section id="writingNewTests">
+      <title>Writing new tests</title>
+
+      <p>
+        Writing a new test involves either configuring a new test or writing a
+        new <code>Test</code> class. In both cases, you will need to add an
+        entry to a test suite’s XML description. This section uses two test
+        suites as an example: the “regard” test suite to show how to configure
+        a new test and the “unitTests” test suite to show how to add a new
+        <code>Test</code> implementation.
+      </p>
+
+      <section>
+        <title>Adding a new test configuration</title>
+        <p>
+          Imagine that you add a cool new test case to the
+          <code>samples</code> directory, such as
+          <code>linking-viewBox.svg</code>.  In order to check for regressions
+          on that file you can add the following entry:
+        </p>
+        <source><![CDATA[  <test id="anne.svg" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <arg class="java.net.URL" 
+        value="file:samples/tests/linkingViewBox.svg"/>
+    <arg class="java.net.URL" 
+         value="file:test-references/samples/tests/solaris/linkingViewBox.png"/>
+    <property name="VariationURL" 
+              class="java.net.URL" 
+              value="file:test-references/samples/tests/variation/linkingViewBox.png"/>
+    <property name="SaveVariation" 
+              class="java.io.File" 
+              value="test-references/samples/tests/variation-candidate/linkingViewBox.png"/>
+  </test>]]></source>
+        <p>
+          to the
+          <code>test-resources/org/apache/batik/test/samplesRendering.xml</code>
+          test suite description, the description of the regard test suite. If
+          you have access to the build machine where the reference images are
+          typically generated, you can check 0n the reference image in
+          <code>test-references/samples/tests</code>. Otherwise (and this is
+          OK), you can let the test fail the first time it is run on the
+          build/test machine and that will be a reminder for whoever is
+          responsible for that machine that a valid reference image should be
+          checked in.
+        </p>
+      </section>
+
+      <section>
+        <title>Writing a new test</title>
+  
+        <p>
+          Imagine you want to validate some aspect of your code, and let's take
+          the bridge error handling as an example. You could create a new
+          class in the <code>test-sources</code> directory, in
+          <code>test-sources/org/apache/batik/bridge</code> in our example,
+          and let's call it <code>ErrorHandlingTest</code>.  To simplify the
+          implementation of the <code>Test</code> interface, you can choose
+          to derive from the <code>AbstractTest</code> class and generate a
+          <code>DefaultTestReport</code>.
+        </p>
+
+        <p>
+          While writing the <code>Test</code> you may want to use your own XML
+          file with just your test, for example:
+        </p>
+        <source><![CDATA[  <testReportProcessor class="org.apache.batik.test.SimpleTestReportProcessor"/> 
+
+  <test class="org.apache.batik.bridge.ErrorHandlingTest">
+    <!-- Expected error code -->
+    <arg class="java.lang.String" value="expected.error.code"/>
+    <!-- Input SVG that this test manipulates to generate error conditions -->
+    <arg class="java.net.URL" value="file:test-resources/org/apache/batik/bridge/ErrorHandlingBase.svg"/>
+    <!-- Id of the element to test -->
+    <arg class="java.lang.String value="rectangle6"/>
+    <!-- Attribute to test -->
+    <arg class="java.lang.String value="x"/>
+    <!-- Value to test on the attribute -->
+    <arg class="java.lang.String value="abcd"/>
+  </test>]]></source>
+        <p>
+          This is just an example and does not pretend to be the right way to go
+          about implementing or specifying this specific type of test. Once done
+          with tuning the test, one or multiple configurations for the test can
+          be added to the relevant test suite’s XML description. In some cases,
+          it will be interesting to create a separate test suite.
+        </p>
+      </section>
+
+    </section>
+
+  </body>
+
+</document>

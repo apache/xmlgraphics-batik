@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2002-2003  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -23,6 +24,7 @@ import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.css.engine.value.ValueConstants;
 import org.apache.batik.css.engine.value.ValueManager;
 import org.apache.batik.util.CSSConstants;
+import org.apache.batik.util.SVGTypes;
 
 /**
  * This class provides a manager for the 'display' property values.
@@ -31,45 +33,45 @@ import org.apache.batik.util.CSSConstants;
  * @version $Id$
  */
 public class DisplayManager extends IdentifierManager {
-    
+
     /**
      * The identifier values.
      */
-    protected final static StringMap values = new StringMap();
+    protected static final StringMap values = new StringMap();
     static {
-	values.put(CSSConstants.CSS_BLOCK_VALUE,
+        values.put(CSSConstants.CSS_BLOCK_VALUE,
                    ValueConstants.BLOCK_VALUE);
-	values.put(CSSConstants.CSS_COMPACT_VALUE,
+        values.put(CSSConstants.CSS_COMPACT_VALUE,
                    ValueConstants.COMPACT_VALUE);
-	values.put(CSSConstants.CSS_INLINE_VALUE,
+        values.put(CSSConstants.CSS_INLINE_VALUE,
                    ValueConstants.INLINE_VALUE);
-	values.put(CSSConstants.CSS_INLINE_TABLE_VALUE,
+        values.put(CSSConstants.CSS_INLINE_TABLE_VALUE,
                    ValueConstants.INLINE_TABLE_VALUE);
-	values.put(CSSConstants.CSS_LIST_ITEM_VALUE,
+        values.put(CSSConstants.CSS_LIST_ITEM_VALUE,
                    ValueConstants.LIST_ITEM_VALUE);
-	values.put(CSSConstants.CSS_MARKER_VALUE,
+        values.put(CSSConstants.CSS_MARKER_VALUE,
                    ValueConstants.MARKER_VALUE);
-	values.put(CSSConstants.CSS_NONE_VALUE,
+        values.put(CSSConstants.CSS_NONE_VALUE,
                    ValueConstants.NONE_VALUE);
-	values.put(CSSConstants.CSS_RUN_IN_VALUE,
+        values.put(CSSConstants.CSS_RUN_IN_VALUE,
                    ValueConstants.RUN_IN_VALUE);
-	values.put(CSSConstants.CSS_TABLE_VALUE,
+        values.put(CSSConstants.CSS_TABLE_VALUE,
                    ValueConstants.TABLE_VALUE);
-	values.put(CSSConstants.CSS_TABLE_CAPTION_VALUE,
+        values.put(CSSConstants.CSS_TABLE_CAPTION_VALUE,
                    ValueConstants.TABLE_CAPTION_VALUE);
-	values.put(CSSConstants.CSS_TABLE_CELL_VALUE,
+        values.put(CSSConstants.CSS_TABLE_CELL_VALUE,
                    ValueConstants.TABLE_CELL_VALUE);
-	values.put(CSSConstants.CSS_TABLE_COLUMN_VALUE,
+        values.put(CSSConstants.CSS_TABLE_COLUMN_VALUE,
                    ValueConstants.TABLE_COLUMN_VALUE);
-	values.put(CSSConstants.CSS_TABLE_COLUMN_GROUP_VALUE,
+        values.put(CSSConstants.CSS_TABLE_COLUMN_GROUP_VALUE,
                    ValueConstants.TABLE_COLUMN_GROUP_VALUE);
-	values.put(CSSConstants.CSS_TABLE_FOOTER_GROUP_VALUE,
+        values.put(CSSConstants.CSS_TABLE_FOOTER_GROUP_VALUE,
                    ValueConstants.TABLE_FOOTER_GROUP_VALUE);
-	values.put(CSSConstants.CSS_TABLE_HEADER_GROUP_VALUE,
+        values.put(CSSConstants.CSS_TABLE_HEADER_GROUP_VALUE,
                    ValueConstants.TABLE_HEADER_GROUP_VALUE);
-	values.put(CSSConstants.CSS_TABLE_ROW_VALUE,
+        values.put(CSSConstants.CSS_TABLE_ROW_VALUE,
                    ValueConstants.TABLE_ROW_VALUE);
-	values.put(CSSConstants.CSS_TABLE_ROW_GROUP_VALUE,
+        values.put(CSSConstants.CSS_TABLE_ROW_GROUP_VALUE,
                    ValueConstants.TABLE_ROW_GROUP_VALUE);
     }
 
@@ -78,7 +80,28 @@ public class DisplayManager extends IdentifierManager {
      * org.apache.batik.css.engine.value.ValueManager#isInheritedProperty()}.
      */
     public boolean isInheritedProperty() {
-	return false;
+        return false;
+    }
+
+    /**
+     * Implements {@link ValueManager#isAnimatableProperty()}.
+     */
+    public boolean isAnimatableProperty() {
+        return true;
+    }
+
+    /**
+     * Implements {@link ValueManager#isAdditiveProperty()}.
+     */
+    public boolean isAdditiveProperty() {
+        return false;
+    }
+
+    /**
+     * Implements {@link ValueManager#getPropertyType()}.
+     */
+    public int getPropertyType() {
+        return SVGTypes.TYPE_IDENT;
     }
 
     /**
@@ -86,9 +109,9 @@ public class DisplayManager extends IdentifierManager {
      * org.apache.batik.css.engine.value.ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-	return CSSConstants.CSS_DISPLAY_PROPERTY;
+        return CSSConstants.CSS_DISPLAY_PROPERTY;
     }
-    
+
     /**
      * Implements {@link
      * org.apache.batik.css.engine.value.ValueManager#getDefaultValue()}.

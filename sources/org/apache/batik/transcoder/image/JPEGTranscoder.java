@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001,2003,2006  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -82,7 +83,7 @@ public class JPEGTranscoder extends ImageTranscoder {
                 te = new TranscoderException
                     (Messages.formatMessage("jpeg.unspecifiedQuality", null));
                 handler.error(te);
-                quality = .75f;
+                quality = 0.75f;
             }
 
             ImageWriter writer = ImageWriterRegistry.getInstance()
@@ -133,7 +134,7 @@ public class JPEGTranscoder extends ImageTranscoder {
         public boolean isCompatibleValue(Object v) {
             if (v instanceof Float) {
                 float q = ((Float)v).floatValue();
-                return (q > 0 && q <= 1f);
+                return (q > 0 && q <= 1.0f);
             } else {
                 return false;
             }
@@ -155,8 +156,8 @@ public class JPEGTranscoder extends ImageTranscoder {
             this.os = os;
         }
 
-        public void close() throws IOException { 
-            if (os == null) return; 
+        public void close() throws IOException {
+            if (os == null) return;
             try {
                 os.close();
             } catch (IOException ioe) {
@@ -164,8 +165,8 @@ public class JPEGTranscoder extends ImageTranscoder {
             }
         }
 
-        public void flush() throws IOException { 
-            if (os == null) return; 
+        public void flush() throws IOException {
+            if (os == null) return;
             try {
                 os.flush();
             } catch (IOException ioe) {
@@ -173,26 +174,26 @@ public class JPEGTranscoder extends ImageTranscoder {
             }
         }
 
-        public void write(byte[] b) throws IOException { 
-            if (os == null) return; 
+        public void write(byte[] b) throws IOException {
+            if (os == null) return;
             try {
                 os.write(b);
             } catch (IOException ioe) {
                 os = null;
             }
         }
-        
-        public void write(byte[] b, int off, int len) throws IOException { 
-            if (os == null) return; 
+
+        public void write(byte[] b, int off, int len) throws IOException {
+            if (os == null) return;
             try {
                 os.write(b, off, len);
             } catch (IOException ioe) {
                 os = null;
             }
         }
-        
-        public void write(int b)  throws IOException { 
-            if (os == null) return; 
+
+        public void write(int b)  throws IOException {
+            if (os == null) return;
             try {
                 os.write(b);
             } catch (IOException ioe) {

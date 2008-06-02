@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2000,2002  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -37,7 +38,7 @@ public abstract class AbstractDocumentFragment
      * @return "#document-fragment".
      */
     public String getNodeName() {
-	return "#document-fragment";
+        return "#document-fragment";
     }
 
     /**
@@ -45,30 +46,30 @@ public abstract class AbstractDocumentFragment
      * @return {@link org.w3c.dom.Node#DOCUMENT_FRAGMENT_NODE}
      */
     public short getNodeType() {
-	return DOCUMENT_FRAGMENT_NODE;
+        return DOCUMENT_FRAGMENT_NODE;
     }
 
     /**
      * Checks the validity of a node to be inserted.
      */
     protected void checkChildType(Node n, boolean replace) {
-	switch (n.getNodeType()) {
-	case ELEMENT_NODE:
-	case PROCESSING_INSTRUCTION_NODE:
-	case COMMENT_NODE:
-	case TEXT_NODE:
-	case CDATA_SECTION_NODE:
-	case ENTITY_REFERENCE_NODE:
-	case DOCUMENT_FRAGMENT_NODE:
-	    break;
-	default:
-	    throw createDOMException
+        switch (n.getNodeType()) {
+        case ELEMENT_NODE:
+        case PROCESSING_INSTRUCTION_NODE:
+        case COMMENT_NODE:
+        case TEXT_NODE:
+        case CDATA_SECTION_NODE:
+        case ENTITY_REFERENCE_NODE:
+        case DOCUMENT_FRAGMENT_NODE:
+            break;
+        default:
+            throw createDOMException
                 (DOMException.HIERARCHY_REQUEST_ERR,
                  "child.type",
                  new Object[] { new Integer(getNodeType()),
                                 getNodeName(),
                                 new Integer(n.getNodeType()),
                                 n.getNodeName() });
-	}
+        }
     }
 }

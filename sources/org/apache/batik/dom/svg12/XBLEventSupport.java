@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2005  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -21,7 +22,6 @@ import java.util.HashSet;
 
 import org.apache.batik.dom.AbstractNode;
 import org.apache.batik.dom.events.AbstractEvent;
-import org.apache.batik.dom.events.CustomEvent;
 import org.apache.batik.dom.events.EventListenerList;
 import org.apache.batik.dom.events.EventSupport;
 import org.apache.batik.dom.events.NodeEventTarget;
@@ -40,6 +40,9 @@ import org.w3c.dom.events.MutationEvent;
 
 /**
  * An EventSupport class that handles XBL-specific event processing.
+ *
+ * @author <a href="mailto:cam%40mcc%2eid%2eau">Cameron McCormack</a>
+ * @version $Id$
  */
 public class XBLEventSupport extends EventSupport {
 
@@ -167,7 +170,7 @@ public class XBLEventSupport extends EventSupport {
      * Moves all of the event listeners from this EventSupport object
      * to the given EventSupport object.
      * Used by {@link
-     * org.apache.batik.dom.AbstractDocument#renameNode(String,String,Node)}.
+     * org.apache.batik.dom.AbstractDocument#renameNode(Node,String,String)}.
      */
     public void moveEventListeners(EventSupport other) {
         super.moveEventListeners(other);
@@ -187,7 +190,7 @@ public class XBLEventSupport extends EventSupport {
      * <code>dispatchEvent</code> is called.
      *
      * @param target the target node
-     * @param e Specifies the event type, behavior, and contextual
+     * @param evt Specifies the event type, behavior, and contextual
      * information to be used in processing the event.
      *
      * @return The return value of <code>dispatchEvent</code>
@@ -204,30 +207,19 @@ public class XBLEventSupport extends EventSupport {
      *   <code>null</code> or an empty string will also trigger this
      *   exception.  
      */
-    public boolean dispatchEvent(NodeEventTarget target, Event e) 
+    public boolean dispatchEvent(NodeEventTarget target, Event evt) 
             throws EventException {
 //         System.err.println("\t[] dispatching " + e.getType() + " on " + ((Node) target).getNodeName());
-        if (e == null) {
+        if (evt == null) {
             return false;
         }
-        AbstractEvent aevt = null;
-        CustomEvent ce = null;
-        boolean isCustom;
-        if (e instanceof CustomEvent) {
-            isCustom = true;
-            ce = (CustomEvent) e;
-        } else if (e instanceof org.w3c.dom.events.CustomEvent) {
-            isCustom = true;
-            ce = new WrappedEvent((org.w3c.dom.events.CustomEvent) e);
-        } else if (e instanceof AbstractEvent) {
-            isCustom = false;
-            aevt = (AbstractEvent) e;
-        } else {
+        if (!(evt instanceof AbstractEvent)) {
             throw createEventException
                 (DOMException.NOT_SUPPORTED_ERR,
                  "unsupported.event",
                  new Object[] {});
         }
+        AbstractEvent e = (AbstractEvent) evt;
         String type = e.getType();
         if (type == null || type.length() == 0) {
             throw createEventException
@@ -236,22 +228,15 @@ public class XBLEventSupport extends EventSupport {
                  new Object[] {});
         }
         // fix event status
-        if (!isCustom) {
-            setTarget(aevt, target);
-            stopPropagation(aevt, false);
-            stopImmediatePropagation(aevt, false);
-            preventDefault(aevt, false);
-        } else {
-            ce.setTarget(target);
-        }
+        setTarget(e, target);
+        stopPropagation(e, false);
+        stopImmediatePropagation(e, false);
+        preventDefault(e, false);
         // dump the tree hierarchy from top to the target
         NodeEventTarget[] ancestors = getAncestors(target);
-        int bubbleLimit = 0;
-        if (aevt != null) {
-            bubbleLimit = aevt.getBubbleLimit();
-        }
+        int bubbleLimit = e.getBubbleLimit();
         int minAncestor = 0;
-        if (isSingleScopeEvent(aevt)) {
+        if (isSingleScopeEvent(e)) {
             // DOM Mutation events are dispatched only within the
             // one shadow scope
             AbstractNode targetNode = (AbstractNode) target;
@@ -259,8 +244,8 @@ public class XBLEventSupport extends EventSupport {
             if (boundElement != null) {
                 minAncestor = ancestors.length;
                 while (minAncestor > 0) {
-                    AbstractNode ancestorNode
-                        = (AbstractNode) ancestors[minAncestor - 1];
+                    AbstractNode ancestorNode =
+                        (AbstractNode) ancestors[minAncestor - 1];
                     if (ancestorNode.getXblBoundElement() != boundElement) {
                         break;
                     }
@@ -283,14 +268,7 @@ public class XBLEventSupport extends EventSupport {
 //             }
 //             System.err.println(((Node) ancestors[i]).getNodeName());
 //         }
-        Object evts = getRetargettedEvents(target, ancestors, e, isCustom);
-        CustomEvent[] ces = null;
-        AbstractEvent[] aevts = null;
-        if (isCustom) {
-            ces = (CustomEvent[]) evts;
-        } else {
-            aevts = (AbstractEvent[]) evts;
-        }
+        AbstractEvent[] es = getRetargettedEvents(target, ancestors, e);
         boolean preventDefault = false;
         // CAPTURING_PHASE : fire event listeners from top to EventTarget
         HashSet stoppedGroups = new HashSet();
@@ -298,112 +276,65 @@ public class XBLEventSupport extends EventSupport {
         for (int i = 0; i < minAncestor; i++) {
             NodeEventTarget node = ancestors[i];
 //             System.err.println("\t--   CAPTURING " + e.getType() + "  " + ((Node) node).getNodeName());
-            if (isCustom) {
-                ces[i].setDispatchState(node, Event.CAPTURING_PHASE);
-                fireImplementationEventListeners(node, ces[i], true, true);
-            } else {
-                setCurrentTarget(aevts[i], node);
-                setEventPhase(aevts[i], Event.CAPTURING_PHASE);
-                fireImplementationEventListeners(node, aevts[i], true, false);
-            }
+            setCurrentTarget(es[i], node);
+            setEventPhase(es[i], Event.CAPTURING_PHASE);
+            fireImplementationEventListeners(node, es[i], true);
         }
         for (int i = minAncestor; i < ancestors.length; i++) {
             NodeEventTarget node = ancestors[i];
 //             System.err.println("\t-- * CAPTURING " + e.getType() + "  " + ((Node) node).getNodeName());
-            if (isCustom) {
-                ces[i].setDispatchState(node, Event.CAPTURING_PHASE);
-                fireImplementationEventListeners(node, ces[i], true, true);
-                fireEventListeners(node, ces[i], true,
-                                   stoppedGroups, toBeStoppedGroups, true);
-                fireHandlerGroupEventListeners
-                    (node, ces[i], true,
-                     stoppedGroups, toBeStoppedGroups, true);
-                preventDefault = preventDefault || ces[i].isDefaultPrevented();
-            } else {
-                setCurrentTarget(aevts[i], node);
-                setEventPhase(aevts[i], Event.CAPTURING_PHASE);
-                fireImplementationEventListeners(node, aevts[i], true, false);
-                fireEventListeners(node, aevts[i], true,
-                                   stoppedGroups, toBeStoppedGroups, false);
-                fireHandlerGroupEventListeners
-                    (node, aevts[i], true,
-                     stoppedGroups, toBeStoppedGroups, false);
-                preventDefault = preventDefault || aevts[i].isDefaultPrevented();
-            }
+            setCurrentTarget(es[i], node);
+            setEventPhase(es[i], Event.CAPTURING_PHASE);
+            fireImplementationEventListeners(node, es[i], true);
+            fireEventListeners(node, es[i], true, stoppedGroups,
+                               toBeStoppedGroups);
+            fireHandlerGroupEventListeners(node, es[i], true, stoppedGroups,
+                                           toBeStoppedGroups);
+            preventDefault = preventDefault || es[i].getDefaultPrevented();
             stoppedGroups.addAll(toBeStoppedGroups);
             toBeStoppedGroups.clear();
         }
         // AT_TARGET : fire local event listeners
 //         System.err.println("\t-- * AT_TARGET " + e.getType() + "  " + ((Node) target).getNodeName());
-        if (isCustom) {
-            ce.setDispatchState(target, Event.AT_TARGET);
-        } else {
-            setEventPhase(aevt, Event.AT_TARGET);
-            setCurrentTarget(aevt, target);
-        }
-        fireImplementationEventListeners(target, e, false, isCustom);
-        fireEventListeners(target, e, false,
-                           stoppedGroups, toBeStoppedGroups, isCustom);
-        fireHandlerGroupEventListeners
-            (node, e, false, stoppedGroups, toBeStoppedGroups, isCustom);
+        setEventPhase(e, Event.AT_TARGET);
+        setCurrentTarget(e, target);
+        fireImplementationEventListeners(target, e, false);
+        fireEventListeners(target, e, false, stoppedGroups,
+                           toBeStoppedGroups);
+        fireHandlerGroupEventListeners(node, e, false, stoppedGroups,
+                                       toBeStoppedGroups);
         stoppedGroups.addAll(toBeStoppedGroups);
         toBeStoppedGroups.clear();
-        if (isCustom) {
-            preventDefault = preventDefault || ce.isDefaultPrevented();
-        } else {
-            preventDefault = preventDefault || aevt.isDefaultPrevented();
-        }
+        preventDefault = preventDefault || e.getDefaultPrevented();
         // BUBBLING_PHASE : fire event listeners from target to top
         if (e.getBubbles()) {
             for (int i = ancestors.length - 1; i >= minAncestor; i--) {
                 NodeEventTarget node = ancestors[i];
 //                 System.err.println("\t-- * BUBBLING  " + e.getType() + "  " + ((Node) node).getNodeName());
-                if (isCustom) {
-                    ces[i].setDispatchState(node, Event.BUBBLING_PHASE);
-                    fireImplementationEventListeners(node, ces[i], false, true);
-                    fireEventListeners(node, ces[i], false,
-                                       stoppedGroups, toBeStoppedGroups,
-                                       true);
-                    fireHandlerGroupEventListeners
-                        (node, ces[i], false,
-                         stoppedGroups, toBeStoppedGroups, true);
-                    preventDefault
-                        = preventDefault || ces[i].isDefaultPrevented();
-                } else {
-                    setCurrentTarget(aevts[i], node);
-                    setEventPhase(aevts[i], Event.BUBBLING_PHASE);
-                    fireImplementationEventListeners
-                        (node, aevts[i], false, false);
-                    fireEventListeners(node, aevts[i], false,
-                                       stoppedGroups, toBeStoppedGroups,
-                                       isCustom);
-                    fireHandlerGroupEventListeners
-                        (node, aevts[i], false,
-                         stoppedGroups, toBeStoppedGroups, false);
-                    preventDefault
-                        = preventDefault || aevts[i].isDefaultPrevented();
-                }
+                setCurrentTarget(es[i], node);
+                setEventPhase(es[i], Event.BUBBLING_PHASE);
+                fireImplementationEventListeners(node, es[i], false);
+                fireEventListeners(node, es[i], false, stoppedGroups,
+                                   toBeStoppedGroups);
+                fireHandlerGroupEventListeners
+                    (node, es[i], false, stoppedGroups, toBeStoppedGroups);
+                preventDefault =
+                    preventDefault || es[i].getDefaultPrevented();
                 stoppedGroups.addAll(toBeStoppedGroups);
                 toBeStoppedGroups.clear();
             }
             for (int i = minAncestor - 1; i >= 0; i--) {
                 NodeEventTarget node = ancestors[i];
 //                 System.err.println("\t--   BUBBLING  " + e.getType() + "  " + ((Node) node).getNodeName());
-                if (isCustom) {
-                    ces[i].setDispatchState(node, Event.BUBBLING_PHASE);
-                    fireImplementationEventListeners
-                        (node, ces[i], false, false);
-                    preventDefault
-                        = preventDefault || ces[i].isDefaultPrevented();
-                } else {
-                    setCurrentTarget(aevts[i], node);
-                    setEventPhase(aevts[i], Event.BUBBLING_PHASE);
-                    fireImplementationEventListeners
-                        (node, aevts[i], false, false);
-                    preventDefault
-                        = preventDefault || aevts[i].isDefaultPrevented();
-                }
+                setCurrentTarget(es[i], node);
+                setEventPhase(es[i], Event.BUBBLING_PHASE);
+                fireImplementationEventListeners(node, es[i], false);
+                preventDefault =
+                    preventDefault || es[i].getDefaultPrevented();
             }
+        }
+        if (!preventDefault) {
+            runDefaultActions(e);
         }
         return preventDefault;
     }
@@ -412,18 +343,17 @@ public class XBLEventSupport extends EventSupport {
      * Fires the event handlers registered on an XBL 'handlerGroup' element.
      */
     protected void fireHandlerGroupEventListeners(NodeEventTarget node, 
-                                                  Event e,
+                                                  AbstractEvent e,
                                                   boolean useCapture,
                                                   HashSet stoppedGroups,
-                                                  HashSet toBeStoppedGroups,
-                                                  boolean isCustom) {
+                                                  HashSet toBeStoppedGroups) {
         // get the XBL definitions in effect for the event target
         NodeList defs = ((NodeXBL) node).getXblDefinitions();
         for (int j = 0; j < defs.getLength(); j++) {
             // find the 'handlerGroup' element
             Node n = defs.item(j).getFirstChild();
-            while (n != null
-                    && !(n instanceof XBLOMHandlerGroupElement)) {
+            while (n != null &&
+                    !(n instanceof XBLOMHandlerGroupElement)) {
                 n = n.getNextSibling();
             }
             if (n == null) {
@@ -444,7 +374,7 @@ public class XBLEventSupport extends EventSupport {
             // dump event listeners, we get the registered listeners NOW
             EventListenerList.Entry[] listeners = list.getEventListeners();
             fireEventListeners(node, e, listeners, stoppedGroups,
-                               toBeStoppedGroups, isCustom);
+                               toBeStoppedGroups);
         }
     }
 
@@ -462,66 +392,45 @@ public class XBLEventSupport extends EventSupport {
      * in the event flow.  The Event objects are retargetted if an sXBL
      * shadow scope is crossed and the event is not a DOM mutation event.
      */
-    protected Event[] getRetargettedEvents(NodeEventTarget target,
-                                           NodeEventTarget[] ancestors,
-                                           Event evt,
-                                           boolean isCustom) {
-        boolean singleScope = isSingleScopeEvent(evt);
+    protected AbstractEvent[] getRetargettedEvents(NodeEventTarget target,
+                                                   NodeEventTarget[] ancestors,
+                                                   AbstractEvent e) {
+        boolean singleScope = isSingleScopeEvent(e);
         AbstractNode targetNode = (AbstractNode) target;
-        Event[] events = new Event[ancestors.length];
+        AbstractEvent[] es = new AbstractEvent[ancestors.length];
         if (ancestors.length > 0) {
             int index = ancestors.length - 1;
             Node boundElement = targetNode.getXblBoundElement();
             AbstractNode ancestorNode = (AbstractNode) ancestors[index];
-            if (!singleScope
-                    && ancestorNode.getXblBoundElement() != boundElement) {
-                events[index] = retargetEvent(evt, ancestors[index], isCustom);
+            if (!singleScope &&
+                    ancestorNode.getXblBoundElement() != boundElement) {
+                es[index] = retargetEvent(e, ancestors[index]);
             } else {
-                events[index] = evt;
+                es[index] = e;
             }
             while (--index >= 0) {
                 ancestorNode = (AbstractNode) ancestors[index + 1];
                 boundElement = ancestorNode.getXblBoundElement();
-                AbstractNode nextAncestorNode
-                    = (AbstractNode) ancestors[index];
+                AbstractNode nextAncestorNode = (AbstractNode) ancestors[index];
                 Node nextBoundElement = nextAncestorNode.getXblBoundElement();
                 if (!singleScope && nextBoundElement != boundElement) {
-                    events[index] = retargetEvent
-                        (events[index + 1], ancestors[index], isCustom);
+                    es[index] = retargetEvent(es[index + 1], ancestors[index]);
                 } else {
-                    events[index] = events[index + 1];
+                    es[index] = es[index + 1];
                 }
             }
         }
-        if (isCustom) {
-            CustomEvent[] ces = new CustomEvent[events.length];
-            for (int i = 0; i < ces.length; i++) {
-                ces[i] = (CustomEvent) events[i];
-            }
-            return ces;
-        } else {
-            AbstractEvent[] aevts = new AbstractEvent[events.length];
-            for (int i = 0; i < aevts.length; i++) {
-                aevts[i] = (AbstractEvent) events[i];
-            }
-            return aevts;
-        }
+        return es;
     }
 
     /**
      * Clones and retargets the given event.
      */
-    protected Event retargetEvent(Event evt,
-                                  NodeEventTarget target,
-                                  boolean isCustom) {
-        if (isCustom) {
-            CustomEvent ce = ((CustomEvent) evt).retarget(target);
-            return ce;
-        } else {
-            AbstractEvent ae = ((AbstractEvent) evt).cloneEvent();
-            setTarget(ae, target);
-            return ae;
-        }
+    protected AbstractEvent retargetEvent(AbstractEvent e,
+                                          NodeEventTarget target) {
+        AbstractEvent clonedEvent = e.cloneEvent();
+        setTarget(clonedEvent, target);
+        return clonedEvent;
     }
     
     /**
@@ -542,23 +451,22 @@ public class XBLEventSupport extends EventSupport {
      * target.
      */
     protected void fireImplementationEventListeners(NodeEventTarget node, 
-                                                    Event e,
-                                                    boolean useCapture,
-                                                    boolean isCustom) {
+                                                    AbstractEvent e,
+                                                    boolean useCapture) {
         String type = e.getType();
         XBLEventSupport support = (XBLEventSupport) node.getEventSupport();
         // check if the event support has been instantiated
         if (support == null) {
             return;
         }
-        EventListenerList list
-            = support.getImplementationEventListeners(type, useCapture);
+        EventListenerList list =
+            support.getImplementationEventListeners(type, useCapture);
         // check if the event listeners list is not empty
         if (list == null) {
             return;
         }
         // dump event listeners, we get the registered listeners NOW
         EventListenerList.Entry[] listeners = list.getEventListeners();
-        fireEventListeners(node, e, listeners, null, null, isCustom);
+        fireEventListeners(node, e, listeners, null, null);
     }
 }

@@ -1,10 +1,11 @@
 /*
 
-   Copyright 2001-2002  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -261,7 +262,7 @@ public class RasterizerTask extends MatchingTask {
         this.language = language;
     }
 
-	/**
+    /**
      * Sets classname of an XML parser.
      * The attribute is optional.
      *
@@ -346,7 +347,7 @@ public class RasterizerTask extends MatchingTask {
 
         String[] sources;        // Array of input files.
 
-		// Store default XML parser information and set user class.
+        // Store default XML parser information and set user class.
         String defaultParser = XMLResourceDescriptor.getXMLParserClassName();
         // Throws BuildException.
         XMLResourceDescriptor.setXMLParserClassName(getParserClassName(readerClassName));
@@ -540,7 +541,7 @@ public class RasterizerTask extends MatchingTask {
      *
      * @return Result image type as an object or <code>null</code> if the parameter doesn't have corresponding object.
      */
-	protected DestinationType getResultType(String type) {
+    protected DestinationType getResultType(String type) {
         if(type.equals(DestinationType.PNG_STR)) {
             return DestinationType.PNG;
         } else if(type.equals(DestinationType.JPEG_STR)) {
@@ -551,7 +552,7 @@ public class RasterizerTask extends MatchingTask {
             return DestinationType.PDF;
         }
         return null;
-	}
+    }
 
     /**
      * Checks if the quality value can be set. Only result image type

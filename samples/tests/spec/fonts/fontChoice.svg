@@ -4,11 +4,12 @@
 
 <!--
 
-   Copyright 2001  The Apache Software Foundation 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -170,7 +171,7 @@
         <text x="50" y="150" font-family="SVGGeorgia, SansSerif" font-size="35">Georgia</text>
 
 
-	  <!-- The characters 'd', 'G', 'a', 'g' and 'r' should use the bold version of SVG Georgia -->
+        <!-- The characters 'd', 'G', 'a', 'g' and 'r' should use the bold version of SVG Georgia -->
 
         <text x="50" y="225" font-family="SVGGeorgia, SansSerif" font-size="35" 
               font-weight="bold">Bold Georgia</text>
@@ -184,12 +185,12 @@
               font-style="italic" font-weight="bold">Bold Italic SansSerif</text>
 
         <!-- description for each test -->
-	  <g font-size="10">
-	      <text x="50" y="170">font-family="SVGGeorgia, SansSerif"</text>
+        <g font-size="10">
+            <text x="50" y="170">font-family="SVGGeorgia, SansSerif"</text>
             <text x="50" y="245">font-family="SVGGeorgia, SansSerif" font-weight="bold"</text>
             <text x="50" y="320">font-family="SansSerif, SVGGeorgia"</text>
             <text x="50" y="395">font-family="SVGGeorgia, SansSerif" font-weight="bold" font-style="italic"</text>
-	  </g>
+        </g>
        
     </g>
 
