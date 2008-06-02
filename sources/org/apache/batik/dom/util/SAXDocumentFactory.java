@@ -47,6 +47,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
+import org.w3c.dom.DocumentType;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -106,6 +107,12 @@ public class SAXDocumentFactory
      * Contains collected string data.  May be Text, CDATA or Comment.
      */
     protected StringBuffer stringBuffer = new StringBuffer();
+
+    /**
+     * The DTD to use when the document is created.
+     */
+    protected DocumentType doctype;
+
     /**
      * Indicates if stringBuffer has content, needed in case of
      * zero sized "text" content.
@@ -320,6 +327,7 @@ public class SAXDocumentFactory
         currentNode = null;
         Document ret = document;
         document = null;
+        doctype = null;
         return ret;
     }
 
@@ -440,6 +448,7 @@ public class SAXDocumentFactory
         currentNode  = null;
         Document ret = document;
         document     = null;
+        doctype      = null;
         locator      = null;
         parser       = null;
         return ret;
@@ -531,6 +540,7 @@ public class SAXDocumentFactory
         inProlog     = true;
         currentNode  = null;
         document     = null;
+        doctype      = null;
         isStandalone = false;
         xmlVersion   = XMLConstants.XML_VERSION_10;
 
@@ -614,7 +624,7 @@ public class SAXDocumentFactory
         String nsURI = namespaces.get(nsp);
         if (currentNode == null) {
             implementation = getDOMImplementation(version);
-            document = implementation.createDocument(nsURI, rawName, null);
+            document = implementation.createDocument(nsURI, rawName, doctype);
             Iterator i = preInfo.iterator();
             currentNode = e = document.getDocumentElement();
             while (i.hasNext()) {
@@ -733,6 +743,7 @@ public class SAXDocumentFactory
     public void startDTD(String name, String publicId, String systemId)
         throws SAXException {
         appendStringData(); // Add collected string data before entering DTD
+        doctype = implementation.createDocumentType(name, publicId, systemId);
         inDTD = true;
     }
 

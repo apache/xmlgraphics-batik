@@ -82,6 +82,11 @@ public interface Window {
     Node parseXML(String text, Document doc);
 
     /**
+     * Serializes the given node.
+     */
+    String printNode(Node n);
+
+    /**
      * Gets data from the given URI.
      * @param uri The URI where the data is located.
      * @param h A handler called when the data is available.
