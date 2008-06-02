@@ -3121,6 +3121,12 @@
             <code>clearTimeout</code> call.
           </p>
         </func>
+        <func name="printNode" params="node">
+          <p>
+            Returns a string that is the serialization of the given DOM
+            node.
+          </p>
+        </func>
         <func name="parseXML" params="text, document">
           <p>
             Parses and returns a <code>DocumentFragment</code> object.
