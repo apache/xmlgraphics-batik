@@ -627,8 +627,8 @@ public class AbstractJSVGComponent extends JGVTComponent {
      * implementation.  In this case you should use 'getSVGDocument()'
      * to get the actual DOM that is attached to the rendering interface.
      *
-     * Note that the prepartation for rendering and the rendering it's
-     * self occur asynchronously so you need to register event handlers
+     * Note that the prepartation for rendering and the rendering itself
+     * occur asynchronously so you need to register event handlers
      * if you want to know when the document is truely displayed.
      *
      * Notes for documents that you want to change in Java:
@@ -655,8 +655,8 @@ public class AbstractJSVGComponent extends JGVTComponent {
      * to get the actual DOM that is attached to the rendering
      * interface.
      *
-     * Note that the prepartation for rendering and the rendering it's
-     * self occur asynchronously so you need to register event handlers
+     * Note that the prepartation for rendering and the rendering itself
+     * occur asynchronously so you need to register event handlers
      * if you want to know when the document is truely displayed.
      *
      * Notes for documents that you want to change in Java.
