@@ -27,10 +27,13 @@ import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.WeakHashMap;
 import java.util.jar.Manifest;
 
 import org.apache.batik.dom.AbstractElement;
@@ -248,6 +251,17 @@ public class BaseScriptingEnvironment {
     protected Interpreter interpreter;
 
     /**
+     * Map of {@link Interpreter} to {@link org.apache.batik.script.Window}
+     * objects.
+     */
+    protected Map windowObjects = new HashMap();
+
+    /**
+     * Set of &lt;script> elements that have already been executed.
+     */
+    protected WeakHashMap executedScripts = new WeakHashMap();
+
+    /**
      * Creates a new BaseScriptingEnvironment.
      * @param ctx the bridge context
      */
@@ -259,18 +273,35 @@ public class BaseScriptingEnvironment {
     }
 
     /**
-     * Creates a new Window object.
+     * Returns the Window object for the specified {@link Interpreter}.
      */
-    public org.apache.batik.script.Window createWindow
-        (Interpreter interp, String lang) {
-        return new Window(interp, lang);
+    public org.apache.batik.script.Window getWindow(Interpreter interp,
+                                                    String lang) {
+        org.apache.batik.script.Window w =
+            (org.apache.batik.script.Window) windowObjects.get(interp);
+        if (w == null) {
+            w = interp == null ? new Window(null, null)
+                               : createWindow(interp, lang);
+            windowObjects.put(interp, w);
+        }
+        return w;
+    }
+
+    /**
+     * Returns the Window object for scripting languages that have no
+     * {@link Interpreter} object.
+     */
+    public org.apache.batik.script.Window getWindow() {
+        return getWindow(null, null);
     }
 
     /**
      * Creates a new Window object.
      */
-    public org.apache.batik.script.Window createWindow() {
-        return createWindow(null, null);
+    protected org.apache.batik.script.Window createWindow(Interpreter interp,
+                                                          String lang) {
+        
+        return new Window(interp, lang);
     }
 
     /**
@@ -289,7 +320,7 @@ public class BaseScriptingEnvironment {
         interpreter = bridgeContext.getInterpreter(lang);
         if (interpreter == null) {
             if (languages.contains(lang)) {
-                // Already issued warning so just return null;
+                // Already issued warning so just return null.
                 return null;
             }
 
@@ -309,222 +340,240 @@ public class BaseScriptingEnvironment {
      * Initializes the environment of the given interpreter.
      */
     public void initializeEnvironment(Interpreter interp, String lang) {
-        interp.bindObject("window", createWindow(interp, lang));
+        interp.bindObject("window", getWindow(interp, lang));
     }
 
     /**
-     * Loads the scripts contained in the <script> elements.
+     * Loads the scripts contained in the &lt;script> elements.
      */
     public void loadScripts() {
-        org.apache.batik.script.Window window = null;
-
         NodeList scripts = document.getElementsByTagNameNS
             (SVGConstants.SVG_NAMESPACE_URI, SVGConstants.SVG_SCRIPT_TAG);
-        int len = scripts.getLength();
 
-        if (len == 0) {
+        int len = scripts.getLength();
+        for (int i = 0; i < len; i++) {
+            AbstractElement script = (AbstractElement) scripts.item(i);
+            loadScript(script);
+        }
+    }
+
+    /**
+     * Executes the specified &lt;script> element, if it hasn't been
+     * executed already.
+     */
+    protected void loadScript(AbstractElement script) {
+        // Don't execute <script> elements more than once.
+        if (executedScripts.containsKey(script)) {
             return;
         }
 
-        for (int i = 0; i < len; i++) {
-            AbstractElement script = (AbstractElement) scripts.item(i);
-            String type = script.getAttributeNS
-                (null, SVGConstants.SVG_TYPE_ATTRIBUTE);
-
-            if (type.length() == 0) {
-                type = SVGConstants.SVG_SCRIPT_TYPE_DEFAULT_VALUE;
-            }
-
-            //
-            // Java code invocation.
-            //
-            if (type.equals(SVGConstants.SVG_SCRIPT_TYPE_JAVA)) {
-                try {
-                    String href = XLinkSupport.getXLinkHref(script);
-                    ParsedURL purl = new ParsedURL(script.getBaseURI(), href);
-
-                    checkCompatibleScriptURL(type, purl);
-
-                    DocumentJarClassLoader cll;
-                    URL docURL = null;
-                    try {
-                        docURL = new URL(docPURL.toString());
-                    } catch (MalformedURLException mue) {
-                        /* nothing just let docURL be null */
-                    }
-                    cll = new DocumentJarClassLoader
-                        (new URL(purl.toString()), docURL);
-
-                    // Get the 'Script-Handler' entry in the manifest.
-                    URL url = cll.findResource("META-INF/MANIFEST.MF");
-                    if (url == null) {
-                        continue;
-                    }
-                    Manifest man = new Manifest(url.openStream());
-
-                    String sh;
-
-                    sh = man.getMainAttributes().getValue("Script-Handler");
-                    if (sh != null) {
-                        // Run the script handler.
-                        ScriptHandler h;
-                        h = (ScriptHandler)cll.loadClass(sh).newInstance();
-
-                        if (window == null) {
-                            window = createWindow();
-                        }
-
-                        h.run(document, window);
-                    }
-
-                    sh = man.getMainAttributes().getValue("SVG-Handler-Class");
-                    if (sh != null) {
-                        // Run the initializer
-                        EventListenerInitializer initializer;
-                        initializer =
-                            (EventListenerInitializer)cll.loadClass(sh).newInstance();
-
-                        if (window == null) {
-                            window = createWindow();
-                        }
-
-                        initializer.initializeEventListeners((SVGDocument)document);
-                    }
-                } catch (Exception e) {
-                    if (userAgent != null) {
-                        userAgent.displayError(e);
-                    }
+        // Don't execute a <script> element that has been removed from
+        // the document.
+        {
+            Node n = script;
+            do {
+                n = n.getParentNode();
+                if (n == null) {
+                    return;
                 }
-                continue;
-            }
+            } while (n.getNodeType() != Node.DOCUMENT_NODE);
+        }
 
-            //
-            // Scripting language invocation.
-            //
-            Interpreter interpreter = getInterpreter(type);
-            if (interpreter == null)
-                // Can't find interpreter so just skip this script block.
-                continue;
+        String type = script.getAttributeNS
+            (null, SVGConstants.SVG_TYPE_ATTRIBUTE);
 
+        if (type.length() == 0) {
+            type = SVGConstants.SVG_SCRIPT_TYPE_DEFAULT_VALUE;
+        }
+
+        //
+        // Java code invocation.
+        //
+        if (type.equals(SVGConstants.SVG_SCRIPT_TYPE_JAVA)) {
             try {
                 String href = XLinkSupport.getXLinkHref(script);
-                String desc = null;
-                Reader reader = null;
+                ParsedURL purl = new ParsedURL(script.getBaseURI(), href);
 
-                if (href.length() > 0) {
-                    desc = href;
+                checkCompatibleScriptURL(type, purl);
 
-                    // External script.
-                    ParsedURL purl = new ParsedURL(script.getBaseURI(), href);
+                DocumentJarClassLoader cll;
+                URL docURL = null;
+                try {
+                    docURL = new URL(docPURL.toString());
+                } catch (MalformedURLException mue) {
+                    /* nothing just let docURL be null */
+                }
+                cll = new DocumentJarClassLoader
+                    (new URL(purl.toString()), docURL);
 
-                    checkCompatibleScriptURL(type, purl);
-                    InputStream is = purl.openStream();
-                    String mediaType = purl.getContentTypeMediaType();
-                    String enc = purl.getContentTypeCharset();
-                    if (enc != null) {
-                        try {
-                            reader = new InputStreamReader(is, enc);
-                        } catch (UnsupportedEncodingException uee) {
-                            enc = null;
-                        }
+                // Get the 'Script-Handler' entry in the manifest.
+                URL url = cll.findResource("META-INF/MANIFEST.MF");
+                if (url == null) {
+                    return;
+                }
+                Manifest man = new Manifest(url.openStream());
+
+                String sh;
+
+                executedScripts.put(script, null);
+
+                sh = man.getMainAttributes().getValue("Script-Handler");
+                if (sh != null) {
+                    // Run the script handler.
+                    ScriptHandler h;
+                    h = (ScriptHandler)cll.loadClass(sh).newInstance();
+
+                    h.run(document, getWindow());
+                }
+
+                sh = man.getMainAttributes().getValue("SVG-Handler-Class");
+                if (sh != null) {
+                    // Run the initializer
+                    EventListenerInitializer initializer;
+                    initializer =
+                        (EventListenerInitializer)cll.loadClass(sh).newInstance();
+
+                    getWindow();
+
+                    initializer.initializeEventListeners((SVGDocument)document);
+                }
+
+            } catch (Exception e) {
+                if (userAgent != null) {
+                    userAgent.displayError(e);
+                }
+            }
+            return;
+        }
+
+        //
+        // Scripting language invocation.
+        //
+        Interpreter interpreter = getInterpreter(type);
+        if (interpreter == null) {
+            // Can't find interpreter so just skip this script block.
+            return;
+        }
+
+        try {
+            String href = XLinkSupport.getXLinkHref(script);
+            String desc = null;
+            Reader reader = null;
+
+            if (href.length() > 0) {
+                desc = href;
+
+                // External script.
+                ParsedURL purl = new ParsedURL(script.getBaseURI(), href);
+
+                checkCompatibleScriptURL(type, purl);
+                InputStream is = purl.openStream();
+                String mediaType = purl.getContentTypeMediaType();
+                String enc = purl.getContentTypeCharset();
+                if (enc != null) {
+                    try {
+                        reader = new InputStreamReader(is, enc);
+                    } catch (UnsupportedEncodingException uee) {
+                        enc = null;
                     }
-                    if (reader == null) {
-                        if (APPLICATION_ECMASCRIPT.equals(mediaType)) {
-                            // No encoding was specified in the MIME type, so
-                            // infer it according to RFC 4329.
-                            if (purl.hasContentTypeParameter("version")) {
-                                // Future versions of application/ecmascript 
-                                // are not supported, so skip this script 
-                                // element if the version parameter is present.
-                                continue;
-                            }
+                }
+                if (reader == null) {
+                    if (APPLICATION_ECMASCRIPT.equals(mediaType)) {
+                        // No encoding was specified in the MIME type, so
+                        // infer it according to RFC 4329.
+                        if (purl.hasContentTypeParameter("version")) {
+                            // Future versions of application/ecmascript 
+                            // are not supported, so skip this script 
+                            // element if the version parameter is present.
+                            return;
+                        }
 
-                            PushbackInputStream pbis =
-                                new PushbackInputStream(is, 8);
-                            byte[] buf = new byte[4];
-                            int read = pbis.read(buf);
-                            if (read > 0) {
-                                pbis.unread(buf, 0, read);
-                                if (read >= 2) {
-                                    if (buf[0] == (byte)0xff &&
-                                            buf[1] == (byte)0xfe) {
-                                        if (read >= 4 && buf[2] == 0 &&
-                                                buf[3] == 0) {
-                                            enc = "UTF32-LE";
-                                            pbis.skip(4);
-                                        } else {
-                                            enc = "UTF-16LE";
-                                            pbis.skip(2);
-                                        }
-                                    } else if (buf[0] == (byte)0xfe &&
-                                            buf[1] == (byte)0xff) {
-                                        enc = "UTF-16BE";
-                                        pbis.skip(2);
-                                    } else if (read >= 3
-                                            && buf[0] == (byte)0xef 
-                                            && buf[1] == (byte)0xbb
-                                            && buf[2] == (byte)0xbf) {
-                                        enc = "UTF-8";
-                                        pbis.skip(3);
-                                    } else if (read >= 4 && buf[0] == 0 &&
-                                            buf[1] == 0 &&
-                                            buf[2] == (byte)0xfe &&
-                                            buf[3] == (byte)0xff) {
-                                        enc = "UTF-32BE";
+                        PushbackInputStream pbis =
+                            new PushbackInputStream(is, 8);
+                        byte[] buf = new byte[4];
+                        int read = pbis.read(buf);
+                        if (read > 0) {
+                            pbis.unread(buf, 0, read);
+                            if (read >= 2) {
+                                if (buf[0] == (byte)0xff &&
+                                        buf[1] == (byte)0xfe) {
+                                    if (read >= 4 && buf[2] == 0 &&
+                                            buf[3] == 0) {
+                                        enc = "UTF32-LE";
                                         pbis.skip(4);
+                                    } else {
+                                        enc = "UTF-16LE";
+                                        pbis.skip(2);
                                     }
-                                }
-                                if (enc == null) {
+                                } else if (buf[0] == (byte)0xfe &&
+                                        buf[1] == (byte)0xff) {
+                                    enc = "UTF-16BE";
+                                    pbis.skip(2);
+                                } else if (read >= 3
+                                        && buf[0] == (byte)0xef 
+                                        && buf[1] == (byte)0xbb
+                                        && buf[2] == (byte)0xbf) {
                                     enc = "UTF-8";
+                                    pbis.skip(3);
+                                } else if (read >= 4 && buf[0] == 0 &&
+                                        buf[1] == 0 &&
+                                        buf[2] == (byte)0xfe &&
+                                        buf[3] == (byte)0xff) {
+                                    enc = "UTF-32BE";
+                                    pbis.skip(4);
                                 }
                             }
-                            reader = new InputStreamReader(pbis, enc);
-                        } else {
-                            reader = new InputStreamReader(is);
+                            if (enc == null) {
+                                enc = "UTF-8";
+                            }
                         }
-                    }
-                } else {
-                    checkCompatibleScriptURL(type, docPURL);
-                    DocumentLoader dl = bridgeContext.getDocumentLoader();
-                    Element e = script;
-                    SVGDocument d = (SVGDocument)e.getOwnerDocument();
-                    int line = dl.getLineNumber(script);
-                    desc = Messages.formatMessage
-                        (INLINE_SCRIPT_DESCRIPTION,
-                         new Object [] {d.getURL(),
-                                        "<"+script.getNodeName()+">",
-                                        new Integer(line)});
-                    // Inline script.
-                    Node n = script.getFirstChild();
-                    if (n != null) {
-                        StringBuffer sb = new StringBuffer();
-                        while (n != null) {
-                            if (n.getNodeType() == Node.CDATA_SECTION_NODE
-                                || n.getNodeType() == Node.TEXT_NODE)
-                                sb.append(n.getNodeValue());
-                            n = n.getNextSibling();
-                        }
-                        reader = new StringReader(sb.toString());
+                        reader = new InputStreamReader(pbis, enc);
                     } else {
-                        continue;
+                        reader = new InputStreamReader(is);
                     }
                 }
-
-                interpreter.evaluate(reader, desc);
-
-            } catch (IOException e) {
-                if (userAgent != null) {
-                    userAgent.displayError(e);
+            } else {
+                checkCompatibleScriptURL(type, docPURL);
+                DocumentLoader dl = bridgeContext.getDocumentLoader();
+                Element e = script;
+                SVGDocument d = (SVGDocument)e.getOwnerDocument();
+                int line = dl.getLineNumber(script);
+                desc = Messages.formatMessage
+                    (INLINE_SCRIPT_DESCRIPTION,
+                     new Object [] {d.getURL(),
+                                    "<"+script.getNodeName()+">",
+                                    new Integer(line)});
+                // Inline script.
+                Node n = script.getFirstChild();
+                if (n != null) {
+                    StringBuffer sb = new StringBuffer();
+                    while (n != null) {
+                        if (n.getNodeType() == Node.CDATA_SECTION_NODE
+                            || n.getNodeType() == Node.TEXT_NODE)
+                            sb.append(n.getNodeValue());
+                        n = n.getNextSibling();
+                    }
+                    reader = new StringReader(sb.toString());
+                } else {
+                    return;
                 }
-                return;
-            } catch (InterpreterException e) {
-                System.err.println("InterpExcept: " + e);
-                handleInterpreterException(e);
-                return;
-            } catch (SecurityException e) {
-                if (userAgent != null) {
-                    userAgent.displayError(e);
-                }
+            }
+
+            executedScripts.put(script, null);
+            interpreter.evaluate(reader, desc);
+
+        } catch (IOException e) {
+            if (userAgent != null) {
+                userAgent.displayError(e);
+            }
+            return;
+        } catch (InterpreterException e) {
+            System.err.println("InterpExcept: " + e);
+            handleInterpreterException(e);
+            return;
+        } catch (SecurityException e) {
+            if (userAgent != null) {
+                userAgent.displayError(e);
             }
         }
     }
