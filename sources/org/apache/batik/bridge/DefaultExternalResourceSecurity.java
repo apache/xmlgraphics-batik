@@ -97,6 +97,3 @@ public class DefaultExternalResourceSecurity implements ExternalResourceSecurity
         }
     }
 }
-
-
-    

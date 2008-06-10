@@ -27,6 +27,7 @@ package org.apache.batik.bridge;
  * @version $Id$
  */
 public interface ExternalResourceSecurity {
+
     /**
      * Controls whether the external resource should be loaded or not.
      *
@@ -34,6 +35,3 @@ public interface ExternalResourceSecurity {
      */
     void checkLoadExternalResource();
 }
-
-
-    

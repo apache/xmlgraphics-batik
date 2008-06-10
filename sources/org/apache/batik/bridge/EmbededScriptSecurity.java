@@ -30,6 +30,7 @@ import org.apache.batik.util.ParsedURL;
  * @version $Id$
  */
 public class EmbededScriptSecurity implements ScriptSecurity {
+
     public static final String DATA_PROTOCOL = "data";
 
     /**
@@ -95,6 +96,3 @@ public class EmbededScriptSecurity implements ScriptSecurity {
         }
     }
 }
-
-
-    

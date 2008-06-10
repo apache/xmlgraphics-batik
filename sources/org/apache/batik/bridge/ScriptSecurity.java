@@ -30,6 +30,7 @@ package org.apache.batik.bridge;
  * @version $Id$
  */
 public interface ScriptSecurity {
+
     /**
      * Controls whether the script should be loaded or not.
      *
@@ -37,6 +38,3 @@ public interface ScriptSecurity {
      */
     void checkLoadScript();
 }
-
-
-    

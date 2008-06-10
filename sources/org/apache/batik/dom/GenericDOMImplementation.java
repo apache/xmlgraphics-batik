@@ -30,6 +30,7 @@ import org.w3c.dom.DocumentType;
  * @version $Id$
  */
 public class GenericDOMImplementation extends AbstractDOMImplementation {
+
     /**
      * The default instance of this class.
      */
