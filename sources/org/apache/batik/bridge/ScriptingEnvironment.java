@@ -32,16 +32,20 @@ import java.io.Writer;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.GZIPOutputStream;
 
+import org.apache.batik.dom.AbstractElement;
 import org.apache.batik.dom.GenericDOMImplementation;
 import org.apache.batik.dom.events.NodeEventTarget;
 import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
 import org.apache.batik.dom.svg.SVGOMDocument;
+import org.apache.batik.dom.svg.SVGOMScriptElement;
 import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.dom.util.SAXDocumentFactory;
 import org.apache.batik.dom.util.XLinkSupport;
@@ -313,7 +317,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
     Map attrToDOMEvent = new HashMap(SVG_EVENT_ATTRS.length);
     Map attrToListener = new HashMap(SVG_EVENT_ATTRS.length);
     {
-        for (int i=0; i<SVG_EVENT_ATTRS.length; i++) {
+        for (int i = 0; i < SVG_EVENT_ATTRS.length; i++) {
             attrToDOMEvent.put(SVG_EVENT_ATTRS[i], SVG_DOM_EVENT[i]);
             attrToListener.put(SVG_EVENT_ATTRS[i], listeners[i]);
         }
@@ -373,8 +377,8 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
     /**
      * Creates a new Window object.
      */
-    public org.apache.batik.script.Window createWindow(Interpreter interp,
-                                                       String lang) {
+    protected org.apache.batik.script.Window createWindow(Interpreter interp,
+                                                          String lang) {
         return new Window(interp, lang);
     }
 
@@ -1266,8 +1270,29 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
      * The listener class for 'DOMNodeInserted' event.
      */
     protected class DOMNodeInsertedListener implements EventListener {
+        protected LinkedList toExecute = new LinkedList();
+
         public void handleEvent(Event evt) {
-            addScriptingListeners((Node)evt.getTarget());
+            Node n = (Node) evt.getTarget();
+            addScriptingListeners(n);
+            gatherScriptElements(n);
+            while (!toExecute.isEmpty()) {
+                loadScript((AbstractElement) toExecute.removeFirst());
+            }
+        }
+
+        protected void gatherScriptElements(Node n) {
+            if (n.getNodeType() == Node.ELEMENT_NODE) {
+                if (n instanceof SVGOMScriptElement) {
+                    toExecute.add(n);
+                } else {
+                    n = n.getFirstChild();
+                    while (n != null) {
+                        gatherScriptElements(n);
+                        n = n.getNextSibling();
+                    }
+                }
+            }
         }
     }
 
