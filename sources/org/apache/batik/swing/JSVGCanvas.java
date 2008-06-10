@@ -548,7 +548,7 @@ public class JSVGCanvas extends JSVGComponent {
     /**
      * To hide the listener methods. This class just reset the tooltip.
      */
-    protected class CanvasSVGListener extends ExtendedSVGListener {
+    protected class CanvasSVGListener extends SVGListener {
 
         /**
          * Called when the loading of a document was started.

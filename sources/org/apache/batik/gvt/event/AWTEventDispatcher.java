@@ -25,6 +25,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
@@ -46,18 +48,16 @@ import org.apache.batik.gvt.GraphicsNode;
  * for containment are performed from the EventDispatcher's "root"
  * node.</p>
  *
- * This class is made abstract so that concrete versions can be made
- * for different JDK versions.
- *
  * @author <a href="mailto:bill.haneman@ireland.sun.com">Bill Haneman</a>
  * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>
  * @author <a href="mailto:tkormann@ilog.fr">Thierry Kormann</a>
  * @version $Id$
  */
-public abstract class AbstractAWTEventDispatcher
+public class AWTEventDispatcher
         implements EventDispatcher,
                    MouseListener,
                    MouseMotionListener,
+                   MouseWheelListener,
                    KeyListener {
 
     /**
@@ -108,7 +108,7 @@ public abstract class AbstractAWTEventDispatcher
     /**
      * Constructs a new event dispatcher.
      */
-    public AbstractAWTEventDispatcher() {
+    public AWTEventDispatcher() {
     }
 
     /**
@@ -216,6 +216,15 @@ public abstract class AbstractAWTEventDispatcher
      * @param evt the mouse event to propagate
      */
     public void mouseDragged(MouseEvent evt) {
+        dispatchEvent(evt);
+    }
+
+    /**
+     * Dispatches the specified AWT mouse wheel event down to the GVT tree.
+     * The mouse wheel event is mutated to a GraphicsNodeMouseWheelEvent.
+     * @param evt the mouse event to propagate
+     */
+    public void mouseWheelMoved(MouseWheelEvent evt) {
         dispatchEvent(evt);
     }
 
@@ -383,7 +392,9 @@ public abstract class AbstractAWTEventDispatcher
             }
             return;
         }
-        if (evt instanceof MouseEvent) {
+        if (evt instanceof MouseWheelEvent) {
+            dispatchMouseWheelEvent((MouseWheelEvent) evt);
+        } else if (evt instanceof MouseEvent) {
             dispatchMouseEvent((MouseEvent) evt);
         } else if (evt instanceof KeyEvent) {
             InputEvent e = (InputEvent)evt;
@@ -435,25 +446,22 @@ public abstract class AbstractAWTEventDispatcher
 
     /**
      * Dispatches the specified AWT key event.
-     * Abstract because KeyEvent.getKeyLocation() is available only in
-     * JDKs &gt;= 1.4.
      * @param evt the key event to dispatch
      */
-    protected abstract void dispatchKeyEvent(KeyEvent evt);
-
-    /**
-     * Returns the modifiers mask for this event.  Overridden in the descendent
-     * class to use {@link InputEvent#getModifiers()} in JRE 1.3 or
-     * {@link InputEvent#getModifiersEx()} in JREs &gt;= 1.4.
-     */
-    protected abstract int getModifiers(InputEvent evt);
-
-    /**
-     * Returns the button whose state changed for the given event.  Overridden
-     * in the descendant class to use {@link InputEvent#getModifiers()} in JRE
-     * 1.3 or {@link MouseEvent#getButton()} in JREs &gt;= 1.4.
-     */
-    protected abstract int getButton(MouseEvent evt);
+    protected void dispatchKeyEvent(KeyEvent evt) {
+        currentKeyEventTarget = lastHit;
+        GraphicsNode target =
+            currentKeyEventTarget == null ? root : currentKeyEventTarget;
+        processKeyEvent
+            (new GraphicsNodeKeyEvent(target,
+                                      evt.getID(),
+                                      evt.getWhen(),
+                                      evt.getModifiersEx(),
+                                      getCurrentLockState(),
+                                      evt.getKeyCode(),
+                                      evt.getKeyChar(),
+                                      evt.getKeyLocation()));
+    }
 
     /**
      * Dispatches the specified AWT mouse event.
@@ -489,9 +497,9 @@ public abstract class AbstractAWTEventDispatcher
                                                     MouseEvent.
                                                     MOUSE_EXITED,
                                                     evt.getWhen(),
-                                                    getModifiers(evt),
+                                                    evt.getModifiersEx(),
                                                     currentLockState,
-                                                    getButton(evt),
+                                                    evt.getButton(),
                                                     (float)gnp.getX(),
                                                     (float)gnp.getY(),
                                                     (int)Math.floor(p.getX()),  // evt.getX() ??
@@ -509,9 +517,9 @@ public abstract class AbstractAWTEventDispatcher
                                                     MouseEvent.
                                                     MOUSE_ENTERED,
                                                     evt.getWhen(),
-                                                    getModifiers(evt),
+                                                    evt.getModifiersEx(),
                                                     currentLockState,
-                                                    getButton(evt),
+                                                    evt.getButton(),
                                                     (float)gnp.getX(),
                                                     (float)gnp.getY(),
                                                     (int)Math.floor(p.getX()),
@@ -529,9 +537,9 @@ public abstract class AbstractAWTEventDispatcher
             gvtevt = new GraphicsNodeMouseEvent(node,
                                                 evt.getID(),
                                                 evt.getWhen(),
-                                                getModifiers(evt),
+                                                evt.getModifiersEx(),
                                                 currentLockState,
-                                                getButton(evt),
+                                                evt.getButton(),
                                                 (float)gnp.getX(),
                                                 (float)gnp.getY(),
                                                 (int)Math.floor(p.getX()),
@@ -549,9 +557,9 @@ public abstract class AbstractAWTEventDispatcher
             gvtevt = new GraphicsNodeMouseEvent(root,
                                                 evt.getID(),
                                                 evt.getWhen(),
-                                                getModifiers(evt),
+                                                evt.getModifiersEx(),
                                                 currentLockState,
-                                                getButton(evt),
+                                                evt.getButton(),
                                                 (float)gnp.getX(),
                                                 (float)gnp.getY(),
                                                 (int)Math.floor(p.getX()),
@@ -564,6 +572,22 @@ public abstract class AbstractAWTEventDispatcher
             processMouseEvent(gvtevt);
         }
         lastHit = node;
+    }
+
+    /**
+     * Dispatches the specified AWT mouse wheel event.
+     * @param evt the mouse wheel event to dispatch
+     */
+    protected void dispatchMouseWheelEvent(MouseWheelEvent evt) {
+        if (lastHit != null) {
+            processMouseWheelEvent
+                (new GraphicsNodeMouseWheelEvent(lastHit,
+                                                 evt.getID(),
+                                                 evt.getWhen(),
+                                                 evt.getModifiersEx(),
+                                                 getCurrentLockState(),
+                                                 evt.getWheelRotation()));
+        }
     }
 
     /**
@@ -614,6 +638,22 @@ public abstract class AbstractAWTEventDispatcher
                 break;
             default:
                 throw new IllegalArgumentException("Unknown Mouse Event type: "+evt.getID());
+            }
+        }
+    }
+
+    /**
+     * Processes the specified event by firing the 'global' listeners
+     * attached to this event dispatcher.
+     * @param evt the event to process
+     */
+    protected void processMouseWheelEvent(GraphicsNodeMouseWheelEvent evt) {
+        if (glisteners != null) {
+            GraphicsNodeMouseWheelListener[] listeners =
+                (GraphicsNodeMouseWheelListener[])
+                getListeners(GraphicsNodeMouseWheelListener.class);
+            for (int i = 0; i < listeners.length; i++) {
+                listeners[i].mouseWheelMoved(evt);
             }
         }
     }
@@ -695,25 +735,20 @@ public abstract class AbstractAWTEventDispatcher
      * @param e the input event
      */
     protected boolean isNodeIncrementEvent(InputEvent e) {
-        // DONE: Improve code readability!
-        //        return ((e.getID() == nodeIncrementEventID) &&
-        //                ((e instanceof KeyEvent) ?
-        //                     (((KeyEvent) e).getKeyCode() == nodeIncrementEventCode) : true) &&
-        //                ((e.getModifiers() & nodeIncrementEventModifiers) != 0));
-
-        if ( e.getID() != nodeIncrementEventID ){
+        if (e.getID() != nodeIncrementEventID) {
             // not an incrementEvent: false
             return false;
         }
 
-        if (( e instanceof KeyEvent ) ){
-            if (( (KeyEvent) e).getKeyCode() != nodeIncrementEventCode ){
+        if (e instanceof KeyEvent) {
+            if (((KeyEvent) e).getKeyCode() != nodeIncrementEventCode) {
                 // it was a KeyEvent, but not a nodeIncrementEventCode : false
                 return false;
             }
         }
+
         // here: it was not a KeyEvent at all OR a KeyEvent with nodeIncrementEventCode
-        if (( e.getModifiers() & nodeIncrementEventModifiers ) == 0 ) {
+        if ((e.getModifiers() & nodeIncrementEventModifiers) == 0) {
             // no nodeIncrementEventModifiers were set: false
             return false;
         }
@@ -727,30 +762,33 @@ public abstract class AbstractAWTEventDispatcher
      * false otherwise.
      */
     protected boolean isNodeDecrementEvent(InputEvent e) {
-        // DONE: Improve code readability!   YES !!
-        //        return ((e.getID() == nodeDecrementEventID) &&
-        //                ((e instanceof KeyEvent) ?
-        //                     ( ((KeyEvent) e).getKeyCode() == nodeDecrementEventCode) : true) &&
-        //                ((e.getModifiers() & nodeDecrementEventModifiers) != 0  ));
-
-        if ( e.getID() != nodeDecrementEventID ){
+        if (e.getID() != nodeDecrementEventID) {
             // not an nodeDecrementEvent: false
             return false;
         }
 
-        if (( e instanceof KeyEvent ) ){
-            if (( (KeyEvent) e).getKeyCode() != nodeDecrementEventCode ){
+        if (e instanceof KeyEvent) {
+            if (((KeyEvent) e).getKeyCode() != nodeDecrementEventCode) {
                 // it was a KeyEvent, but not a nodeDecrementEventCode : false
                 return false;
             }
         }
+
         // here: it was not a KeyEvent at all OR a KeyEvent with nodeIncrementEventCode
-        if (( e.getModifiers() & nodeDecrementEventModifiers ) == 0 ) {
+        if ((e.getModifiers() & nodeDecrementEventModifiers) == 0) {
             // no nodeDecrementEventModifiers were set: false
             return false;
         }
 
         // this is the only path to success...
         return true;
+    }
+
+    /**
+     * Returns whether the meta key is down according to the given modifiers
+     * bitfield.
+     */
+    protected static boolean isMetaDown(int modifiers) {
+        return (modifiers & GraphicsNodeInputEvent.META_MASK) != 0;
     }
 }

@@ -969,7 +969,16 @@ public class DOMUtilities extends XMLUtilities {
      * Gets a DOM 3 modifiers string from the given lock and
      * shift bitmasks.
      */
-    public static String getModifiersList(int lockState, int modifiers) {
-        return DOMUtilitiesSupport.getModifiersList(lockState, modifiers);
+    public static String getModifiersList(int lockState, int modifiersEx) {
+        if ((modifiersEx & (1 << 13)) != 0) {
+            modifiersEx = 0x10 | ((modifiersEx >> 6) & 0x0f);
+        } else {
+            modifiersEx = (modifiersEx >> 6) & 0x0f;
+        }
+        String s = LOCK_STRINGS[lockState & 0x0f];
+        if (s.length() != 0) {
+            return s + ' ' + MODIFIER_STRINGS[modifiersEx];
+        }
+        return MODIFIER_STRINGS[modifiersEx];
     }
 }

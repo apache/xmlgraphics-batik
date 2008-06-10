@@ -28,6 +28,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.NoninvertibleTransformException;
@@ -91,10 +92,6 @@ import org.w3c.dom.svg.SVGSVGElement;
  * component also lets you translate, zoom and rotate the document being
  * displayed. This is the fundamental class for rendering SVG documents in a
  * swing application.
- *
- * This class is made abstract so that concrete versions can be made
- * for different JDK versions.  In particular, this is for MouseWheelEvent
- * support, which only exists in JDKs &gt;= 1.4.
  *
  * <h2>Rendering Process</h2>
  *
@@ -201,7 +198,7 @@ import org.w3c.dom.svg.SVGSVGElement;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class AbstractJSVGComponent extends JGVTComponent {
+public class JSVGComponent extends JGVTComponent {
 
     /**
      * Means that the component must auto detect whether
@@ -399,21 +396,21 @@ public class AbstractJSVGComponent extends JGVTComponent {
     protected float animationLimitingAmount;
 
     /**
-     * Creates a new AbstractJSVGComponent.
+     * Creates a new JSVGComponent.
      */
-    public AbstractJSVGComponent() {
+    public JSVGComponent() {
         this(null, false, false);
     }
 
     /**
-     * Creates a new AbstractJSVGComponent.
+     * Creates a new JSVGComponent.
      * @param ua a SVGUserAgent instance or null.
      * @param eventsEnabled Whether the GVT tree should be reactive
      *        to mouse and key events.
      * @param selectableText Whether the text should be selectable.
      */
-    public AbstractJSVGComponent(SVGUserAgent ua, boolean eventsEnabled,
-                                 boolean selectableText) {
+    public JSVGComponent(SVGUserAgent ua, boolean eventsEnabled,
+                         boolean selectableText) {
         super(eventsEnabled, selectableText);
 
         svgUserAgent = ua;
@@ -840,7 +837,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
         Dimension2D dim = bridgeContext.getDocumentSize();
         Dimension   mySz = new Dimension((int)dim.getWidth(),
                                          (int)dim.getHeight());
-        AbstractJSVGComponent.this.setMySize(mySz);
+        JSVGComponent.this.setMySize(mySz);
         SVGSVGElement elt = svgDocument.getRootElement();
         prevComponentSize = getSize();
         AffineTransform at = calculateViewingTransform
@@ -1047,7 +1044,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
                     AffineTransform myAT = at;
                     CanvasGraphicsNode myCGN = getCanvasGraphicsNode();
                     public void run() {
-                        synchronized (AbstractJSVGComponent.this) {
+                        synchronized (JSVGComponent.this) {
                             myCGN.setViewingTransform(myAT);
                             if (viewingTransform == myAT)
                                 viewingTransform = null;
@@ -1426,7 +1423,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
      * To hide the listener methods.
      */
     protected class SVGListener
-        extends ExtendedListener
+        extends Listener
         implements SVGDocumentLoaderListener,
                    GVTTreeBuilderListener,
                    SVGLoadEventDispatcherListener,
@@ -1547,7 +1544,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
 
             gvtRoot = null;
 
-            if (isDynamicDocument && AbstractJSVGComponent.this.eventsEnabled) {
+            if (isDynamicDocument && JSVGComponent.this.eventsEnabled) {
                 startSVGLoadEventDispatcher(e.getGVTRoot());
             } else {
                 if (isInteractiveDocument) {
@@ -1556,8 +1553,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
                                                           svgDocument);
                 }
 
-                AbstractJSVGComponent.this.setGraphicsNode
-                    (e.getGVTRoot(), false);
+                JSVGComponent.this.setGraphicsNode(e.getGVTRoot(), false);
                 scheduleGVTRendering();
             }
         }
@@ -1584,7 +1580,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
                 startDocumentLoader();
                 return;
             }
-            AbstractJSVGComponent.this.image = null;
+            JSVGComponent.this.image = null;
             repaint();
         }
 
@@ -1613,10 +1609,10 @@ public class AbstractJSVGComponent extends JGVTComponent {
 
             GraphicsNode gn = e.getGVTRoot();
             if (gn == null) {
-                AbstractJSVGComponent.this.image = null;
+                JSVGComponent.this.image = null;
                 repaint();
             } else {
-                AbstractJSVGComponent.this.setGraphicsNode(gn, false);
+                JSVGComponent.this.setGraphicsNode(gn, false);
                 computeRenderingTransform();
             }
             userAgent.displayError(((GVTTreeBuilder)e.getSource())
@@ -1664,8 +1660,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
                 return;
             }
 
-            AbstractJSVGComponent.this.setGraphicsNode
-                (e.getGVTRoot(), false);
+            JSVGComponent.this.setGraphicsNode(e.getGVTRoot(), false);
             scheduleGVTRendering();
         }
 
@@ -1724,10 +1719,10 @@ public class AbstractJSVGComponent extends JGVTComponent {
 
             GraphicsNode gn = e.getGVTRoot();
             if (gn == null) {
-                AbstractJSVGComponent.this.image = null;
+                JSVGComponent.this.image = null;
                 repaint();
             } else {
-                AbstractJSVGComponent.this.setGraphicsNode(gn, false);
+                JSVGComponent.this.setGraphicsNode(gn, false);
                 computeRenderingTransform();
             }
             userAgent.displayError(((SVGLoadEventDispatcher)e.getSource())
@@ -2287,6 +2282,25 @@ public class AbstractJSVGComponent extends JGVTComponent {
                 }
 
                 rq.invokeLater(new MouseMovedRunnable(e));
+            }
+        }
+
+        /**
+         * Dispatches the event to the GVT tree.
+         */
+        protected void dispatchMouseWheelMoved(final MouseWheelEvent e) {
+            if (!isInteractiveDocument) {
+                super.dispatchMouseWheelMoved(e);
+                return;
+            }
+
+            if (updateManager != null && updateManager.isRunning()) {
+                updateManager.getUpdateRunnableQueue().invokeLater
+                    (new Runnable() {
+                        public void run() {
+                            eventDispatcher.mouseWheelMoved(e);
+                        }
+                    });
             }
         }
     }
@@ -3093,7 +3107,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
          * <code>UserAgent</code> to dispatch events on GVT.
          */
         public EventDispatcher getEventDispatcher() {
-            return AbstractJSVGComponent.this.eventDispatcher;
+            return JSVGComponent.this.eventDispatcher;
         }
 
         /**
@@ -3131,7 +3145,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
                 svgUserAgent.showAlert(message);
                 return;
             }
-            AbstractJSVGComponent.this.showAlert(message);
+            JSVGComponent.this.showAlert(message);
         }
 
         /**
@@ -3141,7 +3155,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
             if (svgUserAgent != null) {
                 return svgUserAgent.showPrompt(message);
             }
-            return AbstractJSVGComponent.this.showPrompt(message);
+            return JSVGComponent.this.showPrompt(message);
         }
 
         /**
@@ -3151,7 +3165,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
             if (svgUserAgent != null) {
                 return svgUserAgent.showPrompt(message, defaultValue);
             }
-            return AbstractJSVGComponent.this.showPrompt
+            return JSVGComponent.this.showPrompt
                 (message, defaultValue);
         }
 
@@ -3162,7 +3176,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
             if (svgUserAgent != null) {
                 return svgUserAgent.showConfirm(message);
             }
-            return AbstractJSVGComponent.this.showConfirm(message);
+            return JSVGComponent.this.showConfirm(message);
         }
 
         /**
@@ -3293,7 +3307,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
                     href = newURI.toString();
                     svgUserAgent.openLink(href, true);
                 } else {
-                    AbstractJSVGComponent.this.loadSVGDocument(href);
+                    JSVGComponent.this.loadSVGDocument(href);
                 }
                 return;
             }
@@ -3332,7 +3346,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
             if (svgUserAgent != null) {
                 svgUserAgent.openLink(href, false);
             } else {
-                AbstractJSVGComponent.this.loadSVGDocument(href);
+                JSVGComponent.this.loadSVGDocument(href);
             }
         }
 
@@ -3344,8 +3358,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
 
             if (ll.length > 0) {
                 LinkActivationEvent ev;
-                ev = new LinkActivationEvent
-                    (AbstractJSVGComponent.this, elt, href);
+                ev = new LinkActivationEvent(JSVGComponent.this, elt, href);
 
                 for (int i = 0; i < ll.length; i++) {
                     LinkActivationListener l = (LinkActivationListener)ll[i];
@@ -3359,8 +3372,8 @@ public class AbstractJSVGComponent extends JGVTComponent {
          * @param cursor the new cursor
          */
         public void setSVGCursor(Cursor cursor) {
-            if (cursor != AbstractJSVGComponent.this.getCursor())
-                AbstractJSVGComponent.this.setCursor(cursor);
+            if (cursor != JSVGComponent.this.getCursor())
+                JSVGComponent.this.setCursor(cursor);
         }
 
         /**
@@ -3369,7 +3382,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
          * @param end   The Mark for the end of the selection.
          */
         public void setTextSelection(Mark start, Mark end) {
-            AbstractJSVGComponent.this.select(start, end);
+            JSVGComponent.this.select(start, end);
         }
 
         /**
@@ -3377,7 +3390,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
          * cleared.
          */
         public void deselectAll() {
-            AbstractJSVGComponent.this.deselectAll();
+            JSVGComponent.this.deselectAll();
         }
 
         /**
@@ -3406,7 +3419,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
          * applied to the drawing by the UserAgent.
          */
         public AffineTransform getTransform() {
-            return AbstractJSVGComponent.this.renderingTransform;
+            return JSVGComponent.this.renderingTransform;
         }
 
         /**
@@ -3414,7 +3427,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
          * applied to the drawing by the UserAgent.
          */
         public void setTransform(AffineTransform at) {
-            AbstractJSVGComponent.this.setRenderingTransform(at);
+            JSVGComponent.this.setRenderingTransform(at);
         }
 
         /**
@@ -3623,7 +3636,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
         public SVGDocument getBrokenLinkDocument(Element e,
                                                  String url,
                                                  String message) {
-            Class cls = AbstractJSVGComponent.class;
+            Class cls = JSVGComponent.class;
             URL blURL = cls.getResource("resources/BrokenLink.svg");
             if (blURL == null)
                 throw new BridgeException

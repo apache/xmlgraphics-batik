@@ -37,6 +37,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
@@ -64,14 +66,10 @@ import org.apache.batik.util.Platform;
 /**
  * This class represents a component which can display a GVT tree.
  *
- * This class is made abstract so that concrete versions can be made
- * for different JDK versions.  In particular, this is for MouseWheelEvent
- * support, which only exists in JDKs &gt;= 1.4.
- *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public abstract class AbstractJGVTComponent extends JComponent {
+public class JGVTComponent extends JComponent {
 
     /**
      * The listener.
@@ -205,21 +203,21 @@ public abstract class AbstractJGVTComponent extends JComponent {
     protected boolean disableInteractions;
 
     /**
-     * Creates a new AbstractJGVTComponent.
+     * Creates a new JGVTComponent.
      */
-    public AbstractJGVTComponent() {
+    public JGVTComponent() {
         this(false, false);
     }
 
     /**
-     * Creates a new abstract JGVTComponent.
+     * Creates a new JGVTComponent.
      * @param eventsEnabled Whether the GVT tree should be reactive
      *        to mouse and key events.
      * @param selectableText Whether the text should be selectable.
      *        if eventEnabled is false, this flag is ignored.
      */
-    public AbstractJGVTComponent(boolean eventsEnabled,
-                                 boolean selectableText) {
+    public JGVTComponent(boolean eventsEnabled,
+                         boolean selectableText) {
         setBackground(Color.white);
         // setDoubleBuffered(false);
 
@@ -242,12 +240,20 @@ public abstract class AbstractJGVTComponent extends JComponent {
     }
 
     /**
+     * Creates an instance of Listener.
+     */
+    protected Listener createListener() {
+        return new Listener();
+    }
+
+    /**
      * Adds the AWT listeners.
      */
     protected void addAWTListeners() {
         addKeyListener(listener);
         addMouseListener(listener);
         addMouseMotionListener(listener);
+        addMouseWheelListener(listener);
     }
 
     /**
@@ -805,20 +811,14 @@ public abstract class AbstractJGVTComponent extends JComponent {
     }
 
     /**
-     * Creates an instance of Listener.
-     */
-    protected Listener createListener() {
-        return new Listener();
-    }
-
-    /**
      * To hide the listener methods.
      */
     protected class Listener
         implements GVTTreeRendererListener,
                    KeyListener,
                    MouseListener,
-                   MouseMotionListener {
+                   MouseMotionListener,
+                   MouseWheelListener {
         boolean checkClick = false;
         boolean hadDrag = false;
         int startX, startY;
@@ -1206,6 +1206,28 @@ public abstract class AbstractJGVTComponent extends JComponent {
          */
         protected void dispatchMouseMoved(MouseEvent e) {
             eventDispatcher.mouseMoved(e);
+        }
+
+        // MouseWheelListener ///////////////////////////////////////////////
+
+        /**
+         * Invoked when the mouse wheel has been scrolled.
+         */
+        public void mouseWheelMoved(MouseWheelEvent e) {
+            /*selectInteractor(e);
+            if (interactor != null) {
+                interactor.mouseWheelMoved(e);
+                deselectInteractor();
+            } else*/ if (eventDispatcher != null) {
+                dispatchMouseWheelMoved(e);
+            }
+        }
+
+        /**
+         * Dispatches the mouse event to the GVT tree.
+         */
+        protected void dispatchMouseWheelMoved(MouseWheelEvent e) {
+            eventDispatcher.mouseWheelMoved(e);
         }
 
         /**

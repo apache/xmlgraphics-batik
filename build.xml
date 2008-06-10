@@ -158,7 +158,6 @@ To display the available targets type:
     <available property="jacl.present" classname="tcl.lang.Interp">
       <classpath refid="libs-classpath"/>
     </available>
-    <available property="jdk14.present" classname="java.lang.CharSequence"/>
     
     <!-- When compiling Batik under GNU Classpath, the Sun codecs are not available. -->
     <condition property="sun-codecs.present">
@@ -171,15 +170,6 @@ To display the available targets type:
       </and>
     </condition>
     
-    <condition property="src-jdk" value="sources-1.4">
-      <equals arg1="${jdk14.present}" arg2="true"/>
-    </condition>
-    <condition property="src-jdk" value="sources-1.3">
-      <not>
-        <equals arg1="${jdk14.present}" arg2="true"/>
-      </not>
-    </condition>
-  
     <condition property="javadoc-exclusion-rhino"
                value="org.apache.batik.script.rhino">
       <not>
@@ -274,8 +264,7 @@ To display the available targets type:
     <echo message=""/>
     <echo message="    compile"/>
     <echo message="        Compiles all of Batik except the test infrastructure."/>
-    <echo message="        (Creates class files in classes/ from files in sources/,"/>
-    <echo message="        sources-1.3/ and sources-1.4/.)"/>
+    <echo message="        (Creates class files in classes/ from files in sources/.)"/>
     <echo message=""/>
     <echo message="    compiletest"/>
     <echo message="        Compiles the Batik test infrastructure."/>
@@ -407,8 +396,6 @@ To display the available targets type:
         <include name="resources/**"/>
         <include name="samples/**"/>
         <include name="sources/**"/>
-        <include name="sources-1.3/**"/>
-        <include name="sources-1.4/**"/>
         <include name="test-resources/**"/>
         <include name="test-sources/**"/>
       </zipfileset>
@@ -476,8 +463,6 @@ To display the available targets type:
         <include name="resources/**"/>
         <include name="samples/**"/>
         <include name="sources/**"/>
-        <include name="sources-1.3/**"/>
-        <include name="sources-1.4/**"/>
         <include name="test-resources/**"/>
         <include name="test-sources/**"/>
       </tarfileset>
@@ -1007,7 +992,6 @@ JAVA=/usr/bin/java
     <javac destdir="${dest}" deprecation="${deprecation}" 
            debug="${debug}" optimize="${optimize}" encoding="UTF-8">
       <src path="${src}"/>
-      <src path="${src-jdk}"/>
       <classpath refid="libs-classpath"/>
       <exclude name="**/*.html"/>
       <exclude name="**/rhino/*"   unless="rhino.present"/>      
@@ -1256,8 +1240,6 @@ JAVA=/usr/bin/java
                  if="sun-codecs.present"/>
         <include name="${package-prefix}/ext/awt/image/codec/jpeg/*.class"
                  if="sun-codecs.present"/>
-        <include name="${package-prefix}/ext/awt/image/codec/imageio/*.class"
-                 if="jdk14.present"/>
       </fileset>
       <fileset dir="${resources}" excludes="**/.svn/">
         <include name="${package-prefix}/ext/awt/image/codec/**/properties"/>
@@ -2108,7 +2090,6 @@ JAVA=/usr/bin/java
              doctitle="${Project} API Specification ${completeVersion}"
              bottom="Copyright &#169; ${year} Apache Software Foundation. All Rights Reserved.">
       <sourcepath path="${src}"/>
-      <sourcepath path="${src-jdk}"/>
       <classpath refid="libs-classpath"/>
       <link href="${dom.javadoc}"/>
       <link href="${jdk.javadoc}"/>
