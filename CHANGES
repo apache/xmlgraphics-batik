@@ -20,6 +20,8 @@ Bug fixing is an on-going task, so it is implied in all sub-releases.
   * DocumentType nodes are now created for XML documents where one was
     supplied in the markup (although only the name, publicId and systemId
     properties of the DocumentType object are filled in).
+  * Dynamically created <script> elements inserted into the document are
+    now executed (at most once, as with HTML).
 
 4. Bug fixes
 
