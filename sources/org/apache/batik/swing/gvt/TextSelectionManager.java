@@ -58,7 +58,7 @@ public class TextSelectionManager {
     /**
      * The associated JGVTComponent.
      */
-    protected AbstractJGVTComponent component;
+    protected JGVTComponent component;
 
     /**
      * The selection overlay.
@@ -109,7 +109,7 @@ public class TextSelectionManager {
     /**
      * Creates a new TextSelectionManager.
      */
-    public TextSelectionManager(AbstractJGVTComponent comp,
+    public TextSelectionManager(JGVTComponent comp,
                                 EventDispatcher ed) {
         textSelector = new ConcreteTextSelector();
         textSelectionListener = new TextSelectionListener();
