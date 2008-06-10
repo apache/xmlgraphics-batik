@@ -23,7 +23,7 @@ import java.io.Reader;
 import java.io.Writer;
 
 /**
- * An hight level interface that represents an interpreter engine of
+ * A high level interface that represents an interpreter engine for
  * a particular scripting language.
  *
  * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>

@@ -395,7 +395,7 @@ public class ParsedURL {
      * types, and automatically decompressing them if found.
      * @param mimeType The expected mime type of the content
      *        in the returned InputStream (mapped to Http accept
-     *        header among other possabilities).
+     *        header among other possibilities).
      */
     public InputStream openStream(String mimeType) throws IOException {
         List mt = new ArrayList(1);
