@@ -24,10 +24,8 @@ import java.awt.Dimension;
 import java.awt.Rectangle;
 
 import java.awt.event.ComponentAdapter;
-/*
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-*/
 
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.AffineTransform;
@@ -72,7 +70,7 @@ import org.w3c.dom.events.EventListener;
  * A Swing component that consists of a JSVGCanvas with optional scroll
  * bars.
  * <p>
- *   Reimplementation, rather than imlementing the Scrollable interface,
+ *   Reimplementation, rather than implementing the Scrollable interface,
  *   provides several advantages. The main advantage is the ability to
  *   control more precisely ScrollBar events; fewer JSVGCanvas updates
  *   are required when scrolling. This creates a significant performance
@@ -258,13 +256,7 @@ public class JSVGScrollPane extends JPanel
      * Provides mouse wheel support. The mouse wheel will scroll the currently
      * displayed scroll bar, if only one is displayed. If two scrollbars are
      * displayed, the mouse wheel will only scroll the vertical scrollbar.
-     *
-     * This is commented out because it requires JDK 1.4 and currently
-     * Batik targets JDK 1.3.
-     *
-     * TODO Move this to a JDK 1.4 specific class in sources-1.4.
      */
-    /*
     protected class WheelListener implements MouseWheelListener
     {
         public void mouseWheelMoved(MouseWheelEvent e)
@@ -282,7 +274,6 @@ public class JSVGScrollPane extends JPanel
 
         }// mouseWheelMoved()
     }// inner class WheelListener
-    */
 
 
     /**
