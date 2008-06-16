@@ -579,7 +579,7 @@ public class JSVGComponent extends JGVTComponent {
     /**
      * Loads a SVG document from the given URL.
      * <em>Note: Because the loading is multi-threaded, the current
-     * SVG document is not garanteed to be updated after this method
+     * SVG document is not guaranteed to be updated after this method
      * returns. The only way to be notified a document has been loaded
      * is to listen to the <tt>SVGDocumentLoaderEvent</tt>s.</em>
      */
