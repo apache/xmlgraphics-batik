@@ -139,6 +139,11 @@ public class ParsedURLData {
     protected String contentTypeCharset;
 
     /**
+     * The URL that was ultimately used to fetch the resource.
+     */
+    protected URL postConnectionURL;
+
+    /**
      * Void constructor
      */
     public ParsedURLData() {
@@ -540,8 +545,9 @@ loop2:          while (i < len) {
                                         encodingHeader);
             }
 
-            contentType     = urlC.getContentType();
-            contentEncoding = urlC.getContentEncoding();
+            contentType       = urlC.getContentType();
+            contentEncoding   = urlC.getContentEncoding();
+            postConnectionURL = urlC.getURL();
         }
 
         return (stream = urlC.getInputStream());
@@ -595,6 +601,20 @@ loop2:          while (i < len) {
             ret += "#" + ref;
 
         return ret;
+    }
+
+    /**
+     * Returns the URL that was ultimately used to fetch the resource
+     * represented by the <code>ParsedURL</code>.
+     */
+    public String getPostConnectionURL() {
+        if (postConnectionURL != null) {
+            if (ref != null) {
+                return postConnectionURL.toString() + '#' + ref;
+            }
+            return postConnectionURL.toString();
+        }
+        return toString();
     }
 }
 

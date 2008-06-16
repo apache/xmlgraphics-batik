@@ -246,6 +246,17 @@ public class ParsedURL {
     }
 
     /**
+     * Returns the URL that was ultimately used to fetch the resource
+     * represented by this <code>ParsedURL</code>.  For HTTP URLs,
+     * this will result in the post-redirect URL being returned.
+     * If there was no redirect, or if this isn't an HTTP URL, the
+     * original URL is returned (the same string as {@link toString()}).
+     */
+    public String getPostConnectionURL() {
+        return data.getPostConnectionURL();
+    }
+
+    /**
      * Implement Object.equals.
      * Relies heavily on the contained ParsedURLData's implementation
      * of equals.
@@ -269,7 +280,7 @@ public class ParsedURL {
 
     /**
      * Returns true if the URL looks well formed and complete.
-     * This does not garuntee that the stream can be opened but
+     * This does not guarantee that the stream can be opened but
      * is a good indication that things aren't totally messed up.
      */
     public boolean complete() {

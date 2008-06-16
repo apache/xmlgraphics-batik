@@ -156,6 +156,7 @@ public class SAXSVGDocumentFactory
         ParsedURL purl = new ParsedURL(uri);
 
         InputStream is = purl.openStream(MimeTypeConstants.MIME_TYPES_SVG);
+        uri = purl.getPostConnectionURL();
 
         InputSource isrc = new InputSource(is);
 
@@ -199,7 +200,7 @@ public class SAXSVGDocumentFactory
 
         SVGOMDocument doc = (SVGOMDocument) super.createDocument
             (SVGDOMImplementation.SVG_NAMESPACE_URI, "svg", uri, isrc);
-        doc.setParsedURL(purl);
+        doc.setParsedURL(new ParsedURL(uri));
         doc.setDocumentInputEncoding(charset);
         doc.setXmlStandalone(isStandalone);
         doc.setXmlVersion(xmlVersion);
