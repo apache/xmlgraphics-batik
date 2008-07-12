@@ -122,7 +122,10 @@ public class RunnableQueue implements Runnable {
      */
     public static RunnableQueue createRunnableQueue() {
         RunnableQueue result = new RunnableQueue();
-        synchronized (result) {       // todo ?? sync on local object has no meaning ??
+        synchronized (result) {
+            // Sync on the new object, so we can wait until the new
+            // thread is ready to go.
+
             HaltingThread ht = new HaltingThread
                 (result, "RunnableQueue-" + threadCount++);
             ht.setDaemon(true);
