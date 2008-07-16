@@ -221,6 +221,7 @@ public class RhinoInterpreter implements Interpreter {
      * @see org.apache.batik.script.rhino.RhinoClassLoader
      */
     public AccessControlContext getAccessControlContext() {
+        if (rhinoClassLoader == null) return null;
         return rhinoClassLoader.getAccessControlContext();
     }
 
