@@ -175,16 +175,24 @@ public class WindowWrapper extends ImporterTopLevel {
             throw Context.reportRuntimeError("invalid argument count");
         }
 
-        AccessControlContext acc =
-            ((RhinoInterpreter)window.getInterpreter()).getAccessControlContext();
+        RhinoInterpreter     interp = (RhinoInterpreter)window.getInterpreter();
+        AccessControlContext acc    = interp.getAccessControlContext();
 
-        Object ret = AccessController.doPrivileged( new PrivilegedAction() {
+        PrivilegedAction pa = new PrivilegedAction() {
                 public Object run() {
                     return window.parseXML
                         ((String)Context.jsToJava(args[0], String.class),
                          (Document)Context.jsToJava(args[1], Document.class));
                 }
-            }, acc);
+            };
+
+        Object ret;
+        // If acc is null we are running in an Applet (or some other
+        // restrictive environment) so don't sweat security it's 
+        // the "Browsers" problem...
+        if (acc != null) ret = AccessController.doPrivileged(pa , acc);
+        else             ret = AccessController.doPrivileged(pa);
+
         return Context.toObject(ret, thisObj);
     }
 
