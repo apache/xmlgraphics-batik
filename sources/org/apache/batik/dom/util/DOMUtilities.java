@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.util.XMLConstants;
 import org.apache.batik.xml.XMLUtilities;
 
 import org.w3c.dom.Attr;
@@ -47,7 +48,7 @@ import org.w3c.dom.NodeList;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class DOMUtilities extends XMLUtilities {
+public class DOMUtilities extends XMLUtilities implements XMLConstants {
 
     /**
      * Does not need to be instantiated.
@@ -55,12 +56,56 @@ public class DOMUtilities extends XMLUtilities {
     protected DOMUtilities() {
     }
  
+    /**
+     * A node in a linked list of prefix to namespace name mappings.
+     */
     private static class NSMap {
+
+        /**
+         * The prefix to map.
+         */
         private String prefix;
-        private String ns; // "" is used for no namespace
+
+        /**
+         * The namespace name that the prefix maps to.
+         * The empty string is used to represent no namespace.
+         */
+        private String ns;
+
+        /**
+         * The next namespace prefix mapping in the list.
+         */
         private NSMap next;
+
+        /**
+         * The next number to use when generating prefixes.
+         * A prefix of the form <code>"a" + number</code> is generated when
+         * serializing a node whose namespace URI does not correspond to
+         * a prefix in scope.
+         */
         private int nextPrefixNumber;
 
+        /**
+         * Constructs a new namespace prefix mapping object with the
+         * XML and XMLNS namespaces predeclared.
+         */
+        public static NSMap create() {
+            return new NSMap().declare(XMLConstants.XML_PREFIX,
+                                       XMLConstants.XML_NAMESPACE_URI)
+                              .declare(XMLConstants.XMLNS_PREFIX,
+                                       XMLConstants.XMLNS_NAMESPACE_URI);
+        }
+
+        /**
+         * Creates a new <code>NSMap</code> object.
+         */
+        private NSMap() {
+        }
+
+        /**
+         * Declares a new prefix mapping by returning a new
+         * <code>NSMap</code> object that links to this one.
+         */
         public NSMap declare(String prefix, String ns) {
             NSMap m = new NSMap();
             m.prefix = prefix;
@@ -70,6 +115,9 @@ public class DOMUtilities extends XMLUtilities {
             return m;
         }
 
+        /**
+         * Returns a new, generated namespace prefix.
+         */
         public String getNewPrefix() {
             String prefix;
             do {
@@ -78,6 +126,11 @@ public class DOMUtilities extends XMLUtilities {
             return prefix;
         }
 
+        /**
+         * Returns the namespace URI that the specified prefix
+         * maps to, or <code>null</code> if the prefix has not
+         * been declared.
+         */
         public String getNamespace(String prefix) {
             for (NSMap m = this; m.next != null; m = m.next) {
                 if (m.prefix.equals(prefix)) {
@@ -87,6 +140,13 @@ public class DOMUtilities extends XMLUtilities {
             return null;
         }
 
+        /**
+         * Returns the prefix appropriate for an element that maps to specified
+         * namespace URI.  If the specified namespace is the default namespace
+         * (i.e., it has an empty string prefix mapping to it), then the empty
+         * string is returned.  If there is no appropriate prefix,
+         * <code>null</code> is returned.
+         */
         public String getPrefixForElement(String ns) {
             for (NSMap m = this; m.next != null; m = m.next) {
                 if (ns.equals(m.ns)) {
@@ -96,6 +156,11 @@ public class DOMUtilities extends XMLUtilities {
             return null;
         }
 
+        /**
+         * Returns the prefix appropriate for an attribute that maps to
+         * specified namespace URI.  If there is no appropriate prefix,
+         * <code>null</code> is returned.
+         */
         public String getPrefixForAttr(String ns) {
             for (NSMap m = this; m.next != null; m = m.next) {
                 if (ns.equals(m.ns) && !m.prefix.equals("")) {
@@ -115,7 +180,7 @@ public class DOMUtilities extends XMLUtilities {
         if (doc.getDocumentElement() == null) {
             throw new IOException("No document element");
         }
-        NSMap m = new NSMap();
+        NSMap m = NSMap.create();
         for (Node n = doc.getFirstChild();
              n != null;
              n = n.getNextSibling()) {
@@ -198,6 +263,8 @@ public class DOMUtilities extends XMLUtilities {
                             if (prefix == null) {
                                 prefix = m.getNewPrefix();
                                 m = m.declare(prefix, ans);
+                                w.write(" xmlns:" + prefix + "=\""
+                                         + contentToString(ans, isXML11) + '"');
                             }
                             name = prefix + ':' + a.getLocalName();
                         }
@@ -304,7 +371,7 @@ public class DOMUtilities extends XMLUtilities {
             writeDocument((Document) n, w);
         } else {
             AbstractDocument d = (AbstractDocument) n.getOwnerDocument();
-            writeNode(n, w, new NSMap(),
+            writeNode(n, w, NSMap.create(),
                       d == null ? false : "1.1".equals(d.getXmlVersion()));
         }
     }
