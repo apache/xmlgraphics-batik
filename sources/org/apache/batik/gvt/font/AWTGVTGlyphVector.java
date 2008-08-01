@@ -163,7 +163,7 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
     }
 
     /**
-     * Returns a tight bounds on the GylphVector including stroking.
+     * Returns a tight bounds on the GlyphVector including stroking.
      */
     public Rectangle2D getBounds2D(AttributedCharacterIterator aci) {
         aci.first();
