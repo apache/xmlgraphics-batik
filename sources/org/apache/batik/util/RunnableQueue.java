@@ -337,9 +337,9 @@ public class RunnableQueue implements Runnable {
      * Waits until the given Runnable's <tt>run()</tt> has returned.
      * The given runnable preempts any runnable that is not currently
      * executing (ie the next runnable started will be the one given).
-     * <em>Note:</em> <tt>preemptAndWait()</tt> must not be called from the
+     * <em>Note: <tt>preemptAndWait()</tt> must not be called from the
      * current thread (for example from the <tt>run()</tt> method of the
-     * argument).
+     * argument).</em>
      * @throws IllegalStateException if getThread() is null or if the
      *         thread returned by getThread() is the current one.
      */

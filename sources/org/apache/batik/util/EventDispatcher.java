@@ -25,7 +25,7 @@ import java.lang.reflect.InvocationTargetException;
 /**
  * Generic class to dispatch events in a highly reliable way.
  *
- * @author <a href="mailto:deweese@apache.org">l449433</a>
+ * @author <a href="mailto:deweese@apache.org">Thomas DeWeese</a>
  * @version $Id$
  */
 public class EventDispatcher {
