@@ -27,7 +27,7 @@ import org.mozilla.javascript.ClassShutter;
  * @version $Id$
  */
 public class RhinoClassShutter implements ClassShutter {
-    
+
     /*
     public RhinoClassShutter() {
         // I suspect that we might want to initialize this
@@ -46,7 +46,7 @@ public class RhinoClassShutter implements ClassShutter {
         test("org.apache.batik.bridge.ScriptingEnvironment");
     }
     public void test(String cls) {
-        System.err.println("Test '" + cls + "': " + 
+        System.err.println("Test '" + cls + "': " +
                            visibleToScripts(cls));
     }
     */
@@ -60,7 +60,7 @@ public class RhinoClassShutter implements ClassShutter {
             return false;
 
         if (fullClassName.startsWith("org.apache.batik.")) {
-            // Just get packge within batik.
+            // Just get package within batik.
             String batikPkg = fullClassName.substring(17);
 
             // Don't let them mess with Batik script internals.
@@ -71,13 +71,33 @@ public class RhinoClassShutter implements ClassShutter {
             if (batikPkg.startsWith("apps"))
                 return false;
 
-            // Don't let them get Scripting stuff from bridge.
+            // Don't let them get scripting stuff from bridge, but specifically
+            // allow access to:
+            //
+            //   o.a.b.bridge.ScriptingEnvironment$Window$IntervalScriptTimerTask
+            //   o.a.b.bridge.ScriptingEnvironment$Window$IntervalRunnableTimerTask
+            //   o.a.b.bridge.ScriptingEnvironment$Window$TimeoutScriptTimerTask
+            //   o.a.b.bridge.ScriptingEnvironment$Window$TimeoutRunnableTimerTask
+            //
+            // since objects of these classes are returned by setInterval() and
+            // setTimeout().
             if (batikPkg.startsWith("bridge.")) {
-                
-                if (batikPkg.indexOf(".BaseScriptingEnvironment")!=-1)
+                String batikBridgeClass = batikPkg.substring(7);
+                if (batikBridgeClass.startsWith("ScriptingEnvironment")) {
+                    if (batikBridgeClass.startsWith("$Window$", 20)) {
+                        String c = batikBridgeClass.substring(28);
+                        if (c.equals("IntervalScriptTimerTask")
+                                || c.equals("IntervalRunnableTimerTask")
+                                || c.equals("TimeoutScriptTimerTask")
+                                || c.equals("TimeoutRunnableTimerTask")) {
+                            return true;
+                        }
+                    }
                     return false;
-                if (batikPkg.indexOf(".ScriptingEnvironment")!=-1)
+                }
+                if (batikBridgeClass.startsWith("BaseScriptingEnvironment")) {
                     return false;
+                }
             }
         }
 
