@@ -728,6 +728,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
             interpreter = interp;
             script = s;
         }
+
         public void run() {
             synchronized (this) {
                 if (error)
@@ -769,6 +770,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
         public EvaluateRunnableRunnable(Runnable r) {
             runnable = r;
         }
+
         public void run() {
             synchronized (this) {
                 if (error)
@@ -796,6 +798,111 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
     protected class Window implements org.apache.batik.script.Window {
 
         /**
+         * A <code>TimerTask</code> to invoke a
+         * <code>setInterval()</code>-scheduled function that is specified
+         * by a String.
+         */
+        protected class IntervalScriptTimerTask extends TimerTask {
+
+            protected EvaluateIntervalRunnable eir;
+
+            public IntervalScriptTimerTask(String script) {
+                eir = new EvaluateIntervalRunnable(script, interpreter);
+            }
+
+            public void run() {
+                synchronized (eir) {
+                    if (eir.count > 1)
+                        return;
+                    eir.count++;
+                }
+                synchronized (updateRunnableQueue.getIteratorLock()) {
+                    if (updateRunnableQueue.getThread() == null) {
+                        cancel();
+                        return;
+                    }
+                    updateRunnableQueue.invokeLater(eir);
+                }
+                synchronized (eir) {
+                    if (eir.error)
+                        cancel();
+                }
+            }
+        }
+
+        /**
+         * A <code>TimerTask</code> to invoke a
+         * <code>setInterval()</code>-scheduled function that is specified
+         * by a <code>Runnable</code>.
+         */
+        protected class IntervalRunnableTimerTask extends TimerTask {
+
+            protected EvaluateRunnableRunnable eihr;
+
+            public IntervalRunnableTimerTask(Runnable r) {
+                eihr = new EvaluateRunnableRunnable(r);
+            }
+
+            public void run() {
+                synchronized (eihr) {
+                    if (eihr.count > 1)
+                        return;
+                    eihr.count++;
+                }
+                updateRunnableQueue.invokeLater(eihr);
+                synchronized (eihr) {
+                    if (eihr.error)
+                        cancel();
+                }
+            }
+        }
+
+        /**
+         * A <code>TimerTask</code> to invoke a
+         * <code>setTimeout()</code>-scheduled function that is specified
+         * by a String.
+         */
+        protected class TimeoutScriptTimerTask extends TimerTask {
+            private String script;
+
+            public TimeoutScriptTimerTask(String script) {
+                this.script = script;
+            }
+
+            public void run() {
+                updateRunnableQueue.invokeLater
+                    (new EvaluateRunnable(script, interpreter));
+            }
+        }
+
+        /**
+         * A <code>TimerTask</code> to invoke a
+         * <code>setTimeout()</code>-scheduled function that is specified
+         * by a Runnable.
+         */
+        protected class TimeoutRunnableTimerTask extends TimerTask {
+            private Runnable r;
+
+            public TimeoutRunnableTimerTask(Runnable r) {
+                this.r = r;
+            }
+
+            public void run() {
+                updateRunnableQueue.invokeLater(new Runnable() {
+                        public void run() {
+                            try {
+                                r.run();
+                            } catch (Exception e) {
+                                if (userAgent != null) {
+                                    userAgent.displayError(e);
+                                }
+                            }
+                        }
+                    });
+            }
+        }
+
+        /**
          * The associated interpreter.
          */
         protected Interpreter interpreter;
@@ -818,29 +925,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
          * org.apache.batik.script.Window#setInterval(String,long)}.
          */
         public Object setInterval(final String script, long interval) {
-            TimerTask tt = new TimerTask() {
-                    EvaluateIntervalRunnable eir =
-                        new EvaluateIntervalRunnable(script, interpreter);
-                    public void run() {
-                        synchronized (eir) {
-                            if (eir.count > 1)
-                                return;
-                            eir.count++;
-                        }
-                        synchronized (updateRunnableQueue.getIteratorLock()) {
-                            if (updateRunnableQueue.getThread() == null) {
-                                cancel();
-                                return;
-                            }
-                            updateRunnableQueue.invokeLater(eir);
-                        }
-                        synchronized (eir) {
-                            if (eir.error)
-                                cancel();
-                        }
-                    }
-                };
-
+            IntervalScriptTimerTask tt = new IntervalScriptTimerTask(script);
             timer.schedule(tt, interval, interval);
             return tt;
         }
@@ -850,23 +935,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
          * org.apache.batik.script.Window#setInterval(Runnable,long)}.
          */
         public Object setInterval(final Runnable r, long interval) {
-            TimerTask tt = new TimerTask() {
-                    EvaluateRunnableRunnable eihr =
-                        new EvaluateRunnableRunnable(r);
-                    public void run() {
-                        synchronized (eihr) {
-                            if (eihr.count > 1)
-                                return;
-                            eihr.count++;
-                        }
-                        updateRunnableQueue.invokeLater(eihr);
-                        synchronized (eihr) {
-                            if (eihr.error)
-                                cancel();
-                        }
-                    }
-                };
-
+            IntervalRunnableTimerTask tt = new IntervalRunnableTimerTask(r);
             timer.schedule(tt, interval, interval);
             return tt;
         }
@@ -885,13 +954,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
          * org.apache.batik.script.Window#setTimeout(String,long)}.
          */
         public Object setTimeout(final String script, long timeout) {
-            TimerTask tt = new TimerTask() {
-                    public void run() {
-                        updateRunnableQueue.invokeLater
-                            (new EvaluateRunnable(script, interpreter));
-                    }
-                };
-
+            TimeoutScriptTimerTask tt = new TimeoutScriptTimerTask(script);
             timer.schedule(tt, timeout);
             return tt;
         }
@@ -901,22 +964,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
          * org.apache.batik.script.Window#setTimeout(Runnable,long)}.
          */
         public Object setTimeout(final Runnable r, long timeout) {
-            TimerTask tt = new TimerTask() {
-                    public void run() {
-                        updateRunnableQueue.invokeLater(new Runnable() {
-                                public void run() {
-                                    try {
-                                        r.run();
-                                    } catch (Exception e) {
-                                        if (userAgent != null) {
-                                            userAgent.displayError(e);
-                                        }
-                                    }
-                                }
-                            });
-                    }
-                };
-
+            TimeoutRunnableTimerTask tt = new TimeoutRunnableTimerTask(r);
             timer.schedule(tt, timeout);
             return tt;
         }
