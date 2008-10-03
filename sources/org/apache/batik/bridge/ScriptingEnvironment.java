@@ -849,6 +849,8 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
                         return;
                     eihr.count++;
                 }
+                // XXX Should this have the same synchronization as in
+                //     IntervalScriptTimerTask.run() above?
                 updateRunnableQueue.invokeLater(eihr);
                 synchronized (eihr) {
                     if (eihr.error)
@@ -863,6 +865,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
          * by a String.
          */
         protected class TimeoutScriptTimerTask extends TimerTask {
+
             private String script;
 
             public TimeoutScriptTimerTask(String script) {
@@ -881,6 +884,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
          * by a Runnable.
          */
         protected class TimeoutRunnableTimerTask extends TimerTask {
+
             private Runnable r;
 
             public TimeoutRunnableTimerTask(Runnable r) {
