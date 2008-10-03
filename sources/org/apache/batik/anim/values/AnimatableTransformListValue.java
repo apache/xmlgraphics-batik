@@ -99,8 +99,7 @@ public class AnimatableTransformListValue extends AnimatableValue {
                                         List transforms) {
         super(target);
 
-        this.transforms = new Vector( transforms );
-
+        this.transforms = new Vector(transforms);
     }
 
     /**
