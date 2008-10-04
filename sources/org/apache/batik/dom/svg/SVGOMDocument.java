@@ -651,7 +651,7 @@ public class SVGOMDocument
          */
         public void handleEvent(Event evt) {
             evt = EventSupport.getUltimateOriginalEvent(evt);
-            listener.subtreeModified((Node) evt.getTarget());
+            listener.characterDataModified((Node) evt.getTarget());
         }
     }
 
