@@ -73,7 +73,7 @@ public class Quadradic extends AbstractSegment {
         }
 
         double a = (p1-2*p2+p3);
-        double b = (p2-p1);
+        double b = (p3-p2);
 
         if (a == 0) return;
 
