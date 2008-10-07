@@ -18,10 +18,10 @@
  */
 package org.apache.batik.bridge;
 
-import java.awt.Dimension;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Dimension2D;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
@@ -163,9 +163,20 @@ public class SVGSVGElementBridge
                 // X & Y are ignored on outermost SVG.
                 cgn.setPositionTransform(positionTransform);
             } else if (doc == ctx.getDocument()) {
+                final double dw = w;
+                final double dh = h;
                 // <!> FIXME: hack to compute the original document's size
-                ctx.setDocumentSize(new Dimension((int) (w + 0.5f),
-                                                  (int) (h + 0.5f)));
+                ctx.setDocumentSize(new Dimension2D() {
+                        double w= dw;
+                        double h= dh;
+
+                        public double getWidth()  { return w; }
+                        public double getHeight() { return h; }
+                        public void   setSize(double w, double h) {
+                            this.w = w;
+                            this.h = h;
+                        }
+                    });
             }
             // Set the viewing transform, this is often updated when the
             // component prepares for rendering.
