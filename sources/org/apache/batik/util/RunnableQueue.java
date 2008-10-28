@@ -234,9 +234,9 @@ public class RunnableQueue implements Runnable {
                     }
                 }
 
-                runnableStart(rable);
-
                 try {
+                    runnableStart(rable);
+
                     rable.run();
                 } catch (ThreadDeath td) {
                     // Let it kill us...
@@ -251,9 +251,31 @@ public class RunnableQueue implements Runnable {
                 if (l != null) {
                     l.unlock();
                 }
-                runnableInvoked(rable);
+
+                try {
+                    runnableInvoked(rable);
+                } catch (ThreadDeath td) {
+                    // Let it kill us...
+                    throw td;
+                } catch (Throwable t) {
+                    // Might be nice to notify someone directly.
+                    // But this is more or less what Swing does.
+                    t.printStackTrace();
+                }
             }
         } finally {
+            do {
+                // Empty the list of pending runnables and unlock them (so
+                // invokeAndWait will return).
+                // It's up to the runnables to check if the runnable actually
+                // ran, if that is important.
+                synchronized (list) {
+                    l = (Link)list.pop();
+                }
+                if (l == null) break;
+                else           l.unlock();
+            } while (true);
+
             synchronized (this) {
                 runnableQueueThread = null;
             }
