@@ -43,7 +43,7 @@
       <p>
         The DOM API defines an interface called
         <a class="class" href="http://java.sun.com/j2se/1.5.0/docs/api/org/w3c/dom/DOMImplementation.html">DOMImplementation</a>,
-        which represents the boostrap of any DOM implementation. The role of
+        which represents the bootstrap of any DOM implementation. The role of
         this class is to bootstrap a particular implementation of the DOM by
         providing a method to create a
         <a class="class" href="http://java.sun.com/j2se/1.5.0/docs/api/org/w3c/dom/Document.html">Document</a>.
