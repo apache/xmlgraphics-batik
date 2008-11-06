@@ -386,7 +386,9 @@ public abstract class AnimationEngine {
                 Map.Entry e2 = (Map.Entry) j.next();
                 String type = (String) e2.getKey();
                 Sandwich sandwich = (Sandwich) e2.getValue();
-                if (sandwich.shouldUpdate || sandwich.animation.isDirty) {
+                if (sandwich.shouldUpdate ||
+                        sandwich.animation != null
+                            && sandwich.animation.isDirty) {
                     AnimatableValue av = null;
                     AbstractAnimation anim = sandwich.animation;
                     if (anim != null) {
