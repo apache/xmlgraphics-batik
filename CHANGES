@@ -10,7 +10,7 @@ Bug fixing is an on-going task, so it is implied in all sub-releases.
 1. Bugzilla problem reports fixed:
 
     44590, 44919, 44936, 44966, 45112, 45114, 45117, 45520, 45883, 
-    44553, 45958	
+    44553, 45958, 46124
 
 2. New features
 
@@ -35,6 +35,8 @@ Bug fixing is an on-going task, so it is implied in all sub-releases.
   * Changes to a CDATA section in a <style> element are now detected.
   * Fixed tight bounds calculation for Quadradic Bezier curves.
   * Now uses float for Document Dimensions.
+  * Ensure motion animations that are removed from a document don't
+    cause an NPE.
 
 1.7beta1 -> 1.7
 ---------------
