@@ -475,13 +475,11 @@ public abstract class AnimationEngine {
     public void toInactive(AbstractAnimation anim, boolean isFrozen) {
         anim.isActive = false;
         anim.isFrozen = isFrozen;
-        anim.beginTime = Float.NEGATIVE_INFINITY;
         anim.markDirty();
         if (!isFrozen) {
             anim.value = null;
+            anim.beginTime = Float.NEGATIVE_INFINITY;
             moveToBottom(anim);
-        } else {
-            pushDown(anim);
         }
     }
 
