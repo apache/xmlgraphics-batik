@@ -1156,7 +1156,7 @@ JAVA=/usr/bin/java
     <delete dir="${build}/tmp"/>
   </target>
 
-  <!-- External code (just DOM Level 3 Events) (dependencies: none) -->
+  <!-- External code (DOM Level 3 Events and ElementTraversal interfaces) (dependencies: none) -->
   <target name="ext-jar" depends="init, compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-ext.jar">
       <manifest>
