@@ -37,6 +37,8 @@ Bug fixing is an on-going task, so it is implied in all sub-releases.
   * Now uses float for Document Dimensions.
   * Ensure motion animations that are removed from a document don't
     cause an NPE.
+  * Animations that become frozen are now not incorrectly deprioritised
+    compared to other animations on the same attribute.
 
 1.7beta1 -> 1.7
 ---------------
