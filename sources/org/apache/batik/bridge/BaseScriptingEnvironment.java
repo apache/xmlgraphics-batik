@@ -920,5 +920,19 @@ public class BaseScriptingEnvironment {
             return interpreter;
         }
 
+        /**
+         * Returns the Location.
+         */
+        public org.w3c.dom.Location getLocation() {
+            return null;
+        }
+
+        /**
+         * Returns the parent Window object.
+         */
+        public org.w3c.dom.Window getParent() {
+            return null;
+        }
+
     }
 }

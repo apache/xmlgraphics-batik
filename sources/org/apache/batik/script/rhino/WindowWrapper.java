@@ -33,6 +33,7 @@ import org.mozilla.javascript.ScriptableObject;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+import org.w3c.dom.Location;
 
 /**
  * This class wraps a Window object to expose it to the interpreter.
@@ -66,6 +67,8 @@ public class WindowWrapper extends ImporterTopLevel {
                            "postURL", "alert", "confirm", "prompt" };
         this.defineFunctionProperties(names, WindowWrapper.class,
                                       ScriptableObject.DONTENUM);
+        this.defineProperty("location", WindowWrapper.class,
+                            ScriptableObject.PERMANENT);
     }
 
     public String getClassName() {
@@ -188,7 +191,7 @@ public class WindowWrapper extends ImporterTopLevel {
 
         Object ret;
         // If acc is null we are running in an Applet (or some other
-        // restrictive environment) so don't sweat security it's 
+        // restrictive environment) so don't sweat security it's
         // the "Browsers" problem...
         if (acc != null) ret = AccessController.doPrivileged(pa , acc);
         else             ret = AccessController.doPrivileged(pa);
@@ -403,6 +406,21 @@ public class WindowWrapper extends ImporterTopLevel {
             return null;
         }
         return Context.toString(result);
+    }
+
+    /**
+     * Return the Location for this Window.
+     */
+    public Location getLocation() {
+        return window.getLocation();
+    }
+
+    /**
+     * Return the Location for this Window.
+     */
+    public void setLocation(Object val) {
+        String url = (String)Context.jsToJava(val, String.class);
+        window.getLocation().assign(url);
     }
 
     /**

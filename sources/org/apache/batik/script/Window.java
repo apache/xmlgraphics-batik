@@ -30,7 +30,7 @@ import org.w3c.dom.Node;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public interface Window {
+public interface Window extends org.w3c.dom.Window {
     /**
      * Evaluates the given string repeatedly after the given amount of
      * time.  This method does not stall the script: the evaluation is

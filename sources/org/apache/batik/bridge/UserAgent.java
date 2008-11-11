@@ -299,4 +299,11 @@ public interface UserAgent {
      *                loaded (not available, corrupt, unknown format, ...).
      */
     SVGDocument getBrokenLinkDocument(Element e, String url, String message);
+
+    /**
+     * This method should load a new document described by the supplied URL.
+     *
+     * @param url The url to be loaded as a string.
+     */
+    void loadDocument(String url);
 }
