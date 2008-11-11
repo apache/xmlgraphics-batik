@@ -10,11 +10,13 @@ Bug fixing is an on-going task, so it is implied in all sub-releases.
 1. Bugzilla problem reports fixed:
 
     44590, 44919, 44936, 44966, 45112, 45114, 45117, 45520, 45883, 
-    44553, 45958, 46124
+    44553, 45958, 46072, 46124
 
 2. New features
 
   * Support for the printNode() script function.
+  * Support for the Window and Location interface subsets from
+    SVG Tiny 1.2.
 
 3. Improvements
 
