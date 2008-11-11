@@ -49,6 +49,7 @@ import org.apache.batik.dom.svg.SVGOMScriptElement;
 import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.dom.util.SAXDocumentFactory;
 import org.apache.batik.dom.util.XLinkSupport;
+import org.apache.batik.bridge.Location;
 import org.apache.batik.script.Interpreter;
 import org.apache.batik.script.InterpreterException;
 import org.apache.batik.script.ScriptEventWrapper;
@@ -917,6 +918,11 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
         protected String language;
 
         /**
+         * The Location object
+         */
+        protected Location location;
+
+        /**
          * Creates a new Window for the given language.
          */
         public Window(Interpreter interp, String lang) {
@@ -1315,6 +1321,23 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
          */
         public Interpreter getInterpreter() {
             return interpreter;
+        }
+
+        /**
+         * Returns a Window object representing the parent of this Window.
+         */
+        public org.w3c.dom.Window getParent() {
+            return null;
+        }
+
+        /**
+         * Returns a Location object representing this Window.
+         */
+        public org.w3c.dom.Location getLocation() {
+            if (location == null) {
+                location = new Location(bridgeContext);
+            }
+            return location;
         }
     }
 

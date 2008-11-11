@@ -449,4 +449,13 @@ public class UserAgentAdapter implements UserAgent {
         throw new BridgeException(ctx, e, ErrorConstants.ERR_URI_IMAGE_BROKEN,
                                   new Object[] {url, message });
     }
+
+    /**
+     * This method should load a new document described by the supplied URL.
+     *
+     * @param url The url to be loaded as a string.
+     */
+    public void loadDocument(String url) {
+        // Do nothing.
+    }
 }

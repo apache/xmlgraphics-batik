@@ -3082,6 +3082,15 @@ public class JSVGComponent extends JGVTComponent {
             } catch (Exception e) {
             }
         }
+
+        /**
+         * This method should load a new document described by the supplied URL.
+         *
+         * @param url The url to be loaded as a string.
+         */
+        public void loadDocument(String url) {
+            userAgent.loadDocument(url);
+        }
     }
 
     /**
@@ -3676,6 +3685,15 @@ public class JSVGComponent extends JGVTComponent {
                      new Object[] {url, message });
             }
             return doc;
+        }
+
+        /**
+         * This method should load a new document described by the supplied URL.
+         *
+         * @param url The url to be loaded as a string.
+         */
+        public void loadDocument(String url) {
+            JSVGComponent.this.loadSVGDocument(url);
         }
     }
 
