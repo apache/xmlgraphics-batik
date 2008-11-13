@@ -41,6 +41,8 @@ Bug fixing is an on-going task, so it is implied in all sub-releases.
     cause an NPE.
   * Animations that become frozen are now not incorrectly deprioritised
     compared to other animations on the same attribute.
+  * Avoid canvas repaint problems that occur in some circumstances when
+    it is being resized.
 
 1.7beta1 -> 1.7
 ---------------
