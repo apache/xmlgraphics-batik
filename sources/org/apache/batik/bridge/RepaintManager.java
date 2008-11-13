@@ -80,10 +80,10 @@ public class RepaintManager {
 
             rects.add(r);
         }
-        RectListManager devRLM =null;
+        RectListManager devRLM = null;
         try {
-             devRLM = new RectListManager(rects);
-             devRLM.mergeRects(COPY_OVERHEAD, COPY_LINE_OVERHEAD);
+            devRLM = new RectListManager(rects);
+            devRLM.mergeRects(COPY_OVERHEAD, COPY_LINE_OVERHEAD);
         } catch(Exception e) {
             e.printStackTrace();
         }

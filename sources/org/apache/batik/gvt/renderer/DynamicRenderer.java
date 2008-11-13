@@ -179,6 +179,10 @@ public class DynamicRenderer extends StaticRenderer {
         boolean repaintAll = false;
 
         Rectangle dr = copyRaster.getBounds();
+        Rectangle sr = null;
+        if (currentRaster != null) {
+            sr = currentRaster.getBounds();
+        }
 
         // Ensure only one thread works on baseRaster at a time...
         synchronized (syncRaster) {
@@ -216,6 +220,8 @@ public class DynamicRenderer extends StaticRenderer {
                         Rectangle r = (Rectangle)iter.next();
                         if (!dr.intersects(r)) continue;
                         r = dr.intersection(r);
+                        if (sr != null && !sr.intersects(r)) continue;
+                        r = sr.intersection(r);
                         // System.err.println("Copy: " + r);
                         Raster src = currentRaster.createWritableChild
                             (r.x, r.y, r.width, r.height, r.x, r.y, null);
@@ -252,11 +258,12 @@ public class DynamicRenderer extends StaticRenderer {
             }
         }
 
-        if (HaltingThread.hasBeenHalted())
+        if (HaltingThread.hasBeenHalted()) {
             return;
+        }
 
         // System.out.println("Dmg: "   + damagedAreas);
-        // System.out.println("Areas: " + devRects);
+        // System.out.println("Areas: " + devRLM);
 
         // Swap the buffers if the rendering completed cleanly.
         BufferedImage tmpBI = workingOffScreen;
