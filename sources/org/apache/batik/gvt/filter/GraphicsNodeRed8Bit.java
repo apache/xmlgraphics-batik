@@ -34,6 +34,7 @@ import org.apache.batik.ext.awt.image.rendered.AbstractRed;
 import org.apache.batik.ext.awt.image.rendered.AbstractTiledRed;
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.util.Platform;
 
 /**
  * This implementation of RenderableImage will render its input
@@ -146,14 +147,8 @@ public class GraphicsNodeRed8Bit extends AbstractRed {
         g.dispose();
     }
 
-    static final boolean onMacOSX;
-    static {
-        // This should be OK for applets.
-        onMacOSX = ("Mac OS X".equals(System.getProperty("os.name")));
-    }
-
     public ColorModel createColorModel() {
-        if (onMacOSX)
+        if (Platform.isOSX)
             return GraphicsUtil.sRGB_Pre;
         return GraphicsUtil.sRGB_Unpre;
     }

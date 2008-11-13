@@ -38,6 +38,7 @@ import java.text.CharacterIterator;
 import org.apache.batik.gvt.text.ArabicTextHandler;
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
 import org.apache.batik.gvt.text.TextPaintInfo;
+import org.apache.batik.util.Platform;
 
 /**
  * This is a wrapper class for a java.awt.font.GlyphVector instance.
@@ -502,10 +503,11 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
     static {
         String s = System.getProperty("java.specification.version");
         if ("1.4".compareTo(s) <= 0) {
+            // TODO Java 5
             outlinesPositioned = true;
             drawGlyphVectorWorks = true;
             glyphVectorTransformWorks = true;
-        } else if ("Mac OS X".equals(System.getProperty("os.name"))) {
+        } else if (Platform.isOSX) {
             outlinesPositioned = true;
             drawGlyphVectorWorks = false;
             glyphVectorTransformWorks = false;
