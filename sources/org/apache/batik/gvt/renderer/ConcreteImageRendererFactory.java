@@ -18,6 +18,7 @@
  */
 package org.apache.batik.gvt.renderer;
 
+import org.apache.batik.util.Platform;
 
 /**
  * This class provides a factory for renderers.
@@ -35,27 +36,20 @@ public class ConcreteImageRendererFactory implements ImageRendererFactory {
     }
 
     /**
-     * Creates a new static image renderer
+     * Creates a new static image renderer.
      */
-    public ImageRenderer createStaticImageRenderer(){
-        if (onMacOSX)
+    public ImageRenderer createStaticImageRenderer() {
+        if (Platform.isOSX)
             return new MacRenderer();
         return new StaticRenderer();
     }
 
     /**
-     * Creates a new dynamic image renderer
+     * Creates a new dynamic image renderer.
      */
-    public ImageRenderer createDynamicImageRenderer(){
-        if (onMacOSX)
+    public ImageRenderer createDynamicImageRenderer() {
+        if (Platform.isOSX)
             return new MacRenderer();
         return new DynamicRenderer();
-    }
-
-
-    static final boolean onMacOSX;
-    static {
-        // This should be OK for applets.
-        onMacOSX = ("Mac OS X".equals(System.getProperty("os.name")));
     }
 }

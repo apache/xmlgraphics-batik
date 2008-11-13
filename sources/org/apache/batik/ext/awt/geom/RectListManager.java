@@ -170,6 +170,8 @@ public class RectListManager implements Collection {
 
     /**
      * Similar to clone only strongly typed
+     * TODO Java 5: The use of covariant return types on clone() can eliminate
+     * this method.
      */
     public RectListManager copy() {
         return new RectListManager(rects);
