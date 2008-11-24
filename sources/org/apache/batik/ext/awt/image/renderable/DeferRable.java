@@ -39,7 +39,7 @@ import java.util.Vector;
  * @version $Id$
  */
 public class DeferRable implements Filter {
-    Filter      src;
+    volatile Filter  src;
     Rectangle2D bounds;
     Map         props;
     /**
@@ -56,8 +56,7 @@ public class DeferRable implements Filter {
             try {
                 // Wait for someone to set src.
                 wait();
-            }
-            catch(InterruptedException ie) {
+            } catch(InterruptedException ie) {
                 // Loop around again see if src is set now...
             }
         }
