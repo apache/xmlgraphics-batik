@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -250,7 +251,7 @@ public class ParsedURL {
      * represented by this <code>ParsedURL</code>.  For HTTP URLs,
      * this will result in the post-redirect URL being returned.
      * If there was no redirect, or if this isn't an HTTP URL, the
-     * original URL is returned (the same string as {@link toString()}).
+     * original URL is returned (the same string as {@link #toString()}).
      */
     public String getPostConnectionURL() {
         return data.getPostConnectionURL();
@@ -470,8 +471,7 @@ public class ParsedURL {
      */
     public InputStream openStreamRaw(String [] mimeTypes) throws IOException {
         List mt = new ArrayList(mimeTypes.length);
-        for (int i=0; i<mimeTypes.length; i++)
-            mt.add(mimeTypes[i]);
+        mt.addAll(Arrays.asList(mimeTypes));
         return data.openStreamRaw(userAgent, mt.iterator());
     }
 

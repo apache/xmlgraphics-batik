@@ -331,7 +331,7 @@ public class RunnableQueue implements Runnable {
             list.push(l);
             list.notify();
         }
-        l.lock();
+        l.lock();           // todo: the 'other side' of list may retrieve the l before it is locked...
     }
 
 
@@ -381,7 +381,7 @@ public class RunnableQueue implements Runnable {
             preemptCount++;
             list.notify();
         }
-        l.lock();
+        l.lock();               // todo: the 'other side' of list may retrieve the l before it is locked...
     }
 
     public RunnableQueueState getQueueState() {

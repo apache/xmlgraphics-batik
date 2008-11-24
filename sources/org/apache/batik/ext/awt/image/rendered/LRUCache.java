@@ -151,7 +151,7 @@ public class LRUCache {
                 System.out.println("In Use: " + used.getSize() +
                                                    " Free: " + free.getSize());
                 LRUNode nde = (LRUNode)used.getHead();
-        if (nde == null) return;
+                if (nde == null) return;
                 do {
                         System.out.println(nde.getObj());
                         nde = (LRUNode)nde.getNext();

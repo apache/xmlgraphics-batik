@@ -100,7 +100,7 @@ public class FillShapePainter implements ShapePainter {
         if ((paint == null) || (shape == null))
             return  null;
 
-            return shape.getBounds2D();
+        return shape.getBounds2D();
     }
 
     /**
