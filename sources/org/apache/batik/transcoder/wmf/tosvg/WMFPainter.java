@@ -611,39 +611,8 @@ public class WMFPainter extends AbstractWMFPainter {
 
                 case WMFConstants.META_ARC:
                 case WMFConstants.META_PIE:
-                    {
-                        double left, top, right, bottom;
-                        double xstart, ystart, xend, yend;
-                        left = scaleX * ( vpX + xOffset + mr.elementAt( 0 ) );
-                        top =  scaleY * ( vpY + yOffset + mr.elementAt( 1 ) );
-                        right = scaleX * ( vpX + xOffset + mr.elementAt( 2 ) );
-                        bottom = scaleY * ( vpY + yOffset + mr.elementAt( 3 ) );
-                        xstart = scaleX * ( vpX + xOffset + mr.elementAt( 4 ) );
-                        ystart = scaleY * ( vpY + yOffset + mr.elementAt( 5 ) );
-                        xend = scaleX * ( vpX + xOffset + mr.elementAt( 6 ) );
-                        yend = scaleY * ( vpY + yOffset + mr.elementAt( 7 ) );
-                        setBrushPaint( currentStore, g2d, brushObject );
-
-                        double cx = left + (right - left)/2;
-                        double cy = top + (bottom - top)/2;
-                        double startAngle = - Math.toDegrees( Math.atan2(ystart - cy, xstart - cx) );
-                        double endAngle   = - Math.toDegrees( Math.atan2(yend - cy, xend - cx) );
-
-                        double extentAngle = endAngle - startAngle;
-                        if (extentAngle < 0) extentAngle += 360;
-                        if (startAngle < 0) startAngle +=360;
-
-                        Arc2D.Double arc = new Arc2D.Double(left, top, right - left, bottom - top,
-                            startAngle, extentAngle, Arc2D.OPEN);
-                        if ( mr.functionId == WMFConstants.META_ARC ) g2d.draw(arc);
-                        else g2d.fill(arc);
-                        firstEffectivePaint = false;
-                    }
-                    break;
-
-
                 case WMFConstants.META_CHORD:
-                {
+                    {
                         double left, top, right, bottom;
                         double xstart, ystart, xend, yend;
                         left   = scaleX * ( vpX + xOffset + mr.elementAt( 0 ) );
@@ -665,9 +634,32 @@ public class WMFPainter extends AbstractWMFPainter {
                         if (extentAngle < 0) extentAngle += 360;
                         if (startAngle < 0) startAngle +=360;
 
-                        Arc2D.Double arc = new Arc2D.Double(left, top, right - left, bottom - top,
-                            startAngle, extentAngle, Arc2D.CHORD);
-                        paint(brushObject, penObject, arc, g2d);
+                        
+                        Arc2D.Double arc;
+                        switch(mr.functionId) {
+                        case WMFConstants.META_ARC:
+                            arc = new Arc2D.Double(left, top, 
+                                                   right - left, bottom - top,
+                                                   startAngle, extentAngle, 
+                                                   Arc2D.OPEN);
+                            g2d.draw(arc);
+                            break;
+                        case WMFConstants.META_PIE:
+                            arc = new Arc2D.Double(left, top, 
+                                                   right - left, bottom - top,
+                                                   startAngle, extentAngle, 
+                                                   Arc2D.PIE);
+                            paint(brushObject, penObject, arc, g2d);
+                            // g2d.fill(arc);                    
+                            break;
+                        case WMFConstants.META_CHORD:
+                            arc = new Arc2D.Double(left, top, 
+                                                   right - left, 
+                                                   bottom - top,
+                                                   startAngle, extentAngle, 
+                                                   Arc2D.CHORD);
+                            paint(brushObject, penObject, arc, g2d);
+                        }
                         firstEffectivePaint = false;
                     }
                     break;
