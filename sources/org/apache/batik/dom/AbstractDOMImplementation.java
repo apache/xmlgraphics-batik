@@ -19,9 +19,13 @@
 package org.apache.batik.dom;
 
 import java.io.Serializable;
+import java.util.Locale;
+import java.util.MissingResourceException;
 
 import org.apache.batik.dom.events.DocumentEventSupport;
 import org.apache.batik.dom.events.EventSupport;
+import org.apache.batik.i18n.Localizable;
+import org.apache.batik.i18n.LocalizableSupport;
 import org.apache.batik.dom.util.HashTable;
 
 import org.w3c.dom.DOMImplementation;
@@ -36,7 +40,20 @@ import org.w3c.dom.DOMImplementation;
 
 public abstract class AbstractDOMImplementation
         implements DOMImplementation,
+                   Localizable,
                    Serializable {
+
+    /**
+     * The error messages bundle class name.
+     */
+    protected static final String RESOURCES =
+        "org.apache.batik.dom.resources.Messages";
+
+    /**
+     * The localizable support for the error messages.
+     */
+    protected LocalizableSupport localizableSupport =
+        new LocalizableSupport(RESOURCES, getClass().getClassLoader());
 
     /**
      * The supported features.
@@ -128,5 +145,32 @@ public abstract class AbstractDOMImplementation
      */
     public EventSupport createEventSupport(AbstractNode n) {
         return new EventSupport(n);
+    }
+
+    // Localizable //////////////////////////////////////////////////////
+
+    /**
+     * Implements {@link Localizable#setLocale(Locale)}.
+     */
+    public void setLocale(Locale l) {
+        localizableSupport.setLocale(l);
+    }
+
+    /**
+     * Implements {@link Localizable#getLocale()}.
+     */
+    public Locale getLocale() {
+        return localizableSupport.getLocale();
+    }
+
+    protected void initLocalizable() {
+    }
+
+    /**
+     * Implements {@link Localizable#formatMessage(String,Object[])}.
+     */
+    public String formatMessage(String key, Object[] args)
+        throws MissingResourceException {
+        return localizableSupport.formatMessage(key, args);
     }
 }

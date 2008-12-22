@@ -36,6 +36,10 @@ import org.apache.batik.util.EncodingUtilities;
  */
 public class XMLUtilities extends XMLCharacters {
 
+    // Bitfield constants used in the return value of testXMLQName.
+    public static final int IS_XML_10_NAME  = 1;
+    public static final int IS_XML_10_QNAME = 2;
+
     /**
      * This class does not need to be instantiated.
      */
@@ -87,7 +91,7 @@ public class XMLUtilities extends XMLCharacters {
      * Tests whether the given 32 bits character is valid in XML documents.
      * Because the majority of code-points is covered by the table-lookup-test,
      * we do it first.
-     * This method gives meaningful results only for c >= 0 .
+     * This method gives meaningful results only for c >= 0.
      */
     public static boolean isXMLCharacter(int c) {
 
@@ -126,6 +130,41 @@ public class XMLUtilities extends XMLCharacters {
     public static boolean isXMLAlphabeticCharacter(char c) {
         return (c < 128) &&
             (ALPHABETIC_CHARACTER[c / 32] & (1 << (c % 32))) != 0;
+    }
+
+    /**
+     * Test whether the given string is an XML 1.0 Name and/or QName.
+     * @return A bitfield of {@link #IS_XML_10_NAME} and
+     *   {@link #IS_XML_10_QNAME}.
+     */
+    public static int testXMLQName(String s) {
+        int isQName = IS_XML_10_QNAME;
+        boolean foundColon = false;
+        int len = s.length();
+        if (len == 0) {
+            return 0;
+        }
+        char c = s.charAt(0);
+        if (!isXMLNameFirstCharacter(c)) {
+            return 0;
+        }
+        if (c == ':') {
+            isQName = 0;
+        }
+        for (int i = 1; i < len; i++) {
+            c = s.charAt(i);
+            if (!isXMLNameCharacter(c)) {
+                return 0;
+            }
+            if (isQName != 0 && c == ':') {
+                if (foundColon || i == len - 1) {
+                    isQName = 0;
+                } else {
+                    foundColon = true;
+                }
+            }
+        }
+        return IS_XML_10_NAME | isQName;
     }
 
     /**

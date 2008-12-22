@@ -22,8 +22,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Locale;
-import java.util.MissingResourceException;
 
 import org.apache.batik.css.engine.CSSContext;
 import org.apache.batik.css.engine.CSSEngine;
@@ -32,15 +30,15 @@ import org.apache.batik.css.engine.value.ValueManager;
 import org.apache.batik.css.parser.ExtendedParser;
 import org.apache.batik.css.parser.ExtendedParserWrapper;
 import org.apache.batik.dom.util.DOMUtilities;
-import org.apache.batik.i18n.Localizable;
-import org.apache.batik.i18n.LocalizableSupport;
 import org.apache.batik.util.DoublyIndexedTable;
 import org.apache.batik.util.Service;
 import org.apache.batik.util.XMLResourceDescriptor;
+import org.apache.batik.xml.XMLUtilities;
 
 import org.w3c.css.sac.Parser;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
+import org.w3c.dom.DocumentType;
 import org.w3c.dom.Element;
 import org.w3c.dom.css.DOMImplementationCSS;
 import org.w3c.dom.css.ViewCSS;
@@ -57,8 +55,7 @@ import org.w3c.dom.css.ViewCSS;
 public abstract class ExtensibleDOMImplementation
     extends AbstractDOMImplementation
     implements DOMImplementationCSS,
-               StyleSheetFactory,
-               Localizable {
+               StyleSheetFactory {
 
     /**
      * The custom elements factories.
@@ -76,57 +73,15 @@ public abstract class ExtensibleDOMImplementation
     protected List customShorthandManagers;
 
     /**
-     * The error messages bundle class name.
-     */
-    protected static final String RESOURCES =
-        "org.apache.batik.dom.resources.Messages";
-
-    /**
-     * The localizable support for the error messages.
-     */
-    protected LocalizableSupport localizableSupport;
-
-    /**
      * Creates a new DOMImplementation.
      */
     public ExtensibleDOMImplementation() {
-        initLocalizable();
-
         Iterator iter = getDomExtensions().iterator();
 
         while(iter.hasNext()) {
             DomExtension de = (DomExtension)iter.next();
             de.registerTags(this);
         }
-    }
-
-    // Localizable //////////////////////////////////////////////////////
-
-    /**
-     * Implements {@link Localizable#setLocale(Locale)}.
-     */
-    public void setLocale(Locale l) {
-        localizableSupport.setLocale(l);
-    }
-
-    /**
-     * Implements {@link Localizable#getLocale()}.
-     */
-    public Locale getLocale() {
-        return localizableSupport.getLocale();
-    }
-
-    protected void initLocalizable() {
-        localizableSupport =
-            new LocalizableSupport(RESOURCES, getClass().getClassLoader());
-    }
-
-    /**
-     * Implements {@link Localizable#formatMessage(String,Object[])}.
-     */
-    public String formatMessage(String key, Object[] args)
-        throws MissingResourceException {
-        return localizableSupport.formatMessage(key, args);
     }
 
     /**
@@ -250,6 +205,33 @@ public abstract class ExtensibleDOMImplementation
         return new GenericElementNS(namespaceURI.intern(),
                                     qualifiedName.intern(),
                                     document);
+    }
+
+    /**
+     * <b>DOM</b>: Implements {@link
+     * DOMImplementation#createDocumentType(String,String,String)}.
+     */
+    public DocumentType createDocumentType(String qualifiedName,
+                                           String publicId,
+                                           String systemId) {
+
+        if (qualifiedName == null) {
+            qualifiedName = "";
+        }
+        int test = XMLUtilities.testXMLQName(qualifiedName);
+        if ((test & XMLUtilities.IS_XML_10_NAME) == 0) {
+            throw new DOMException
+                (DOMException.INVALID_CHARACTER_ERR,
+                 formatMessage("xml.name",
+                               new Object[] { qualifiedName }));
+        }
+        if ((test & XMLUtilities.IS_XML_10_QNAME) == 0) {
+            throw new DOMException
+                (DOMException.INVALID_CHARACTER_ERR,
+                 formatMessage("invalid.qname",
+                               new Object[] { qualifiedName }));
+        }
+        return new GenericDocumentType(qualifiedName, publicId, systemId);
     }
 
     // The element factories /////////////////////////////////////////////////
