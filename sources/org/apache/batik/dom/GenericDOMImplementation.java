@@ -18,6 +18,8 @@
  */
 package org.apache.batik.dom;
 
+import org.apache.batik.xml.XMLUtilities;
+
 import org.w3c.dom.DOMException;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
@@ -25,7 +27,7 @@ import org.w3c.dom.DocumentType;
 
 /**
  * This class implements the {@link org.w3c.dom.DOMImplementation}.
- *
+ 
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
@@ -54,17 +56,6 @@ public class GenericDOMImplementation extends AbstractDOMImplementation {
 
     /**
      * <b>DOM</b>: Implements {@link
-     * DOMImplementation#createDocumentType(String,String,String)}.
-     */
-    public DocumentType createDocumentType(String qualifiedName,
-                                           String publicId,
-                                           String systemId) {
-        throw new DOMException(DOMException.NOT_SUPPORTED_ERR,
-                               "Doctype not supported");
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
      * DOMImplementation#createDocument(String,String,DocumentType)}.
      */
     public Document createDocument(String namespaceURI,
@@ -74,5 +65,32 @@ public class GenericDOMImplementation extends AbstractDOMImplementation {
         result.appendChild(result.createElementNS(namespaceURI,
                                                   qualifiedName));
         return result;
+    }
+
+    /**
+     * <b>DOM</b>: Implements {@link
+     * DOMImplementation#createDocumentType(String,String,String)}.
+     */
+    public DocumentType createDocumentType(String qualifiedName,
+                                           String publicId,
+                                           String systemId) {
+
+        if (qualifiedName == null) {
+            qualifiedName = "";
+        }
+        int test = XMLUtilities.testXMLQName(qualifiedName);
+        if ((test & XMLUtilities.IS_XML_10_NAME) == 0) {
+            throw new DOMException
+                (DOMException.INVALID_CHARACTER_ERR,
+                 formatMessage("xml.name",
+                               new Object[] { qualifiedName }));
+        }
+        if ((test & XMLUtilities.IS_XML_10_QNAME) == 0) {
+            throw new DOMException
+                (DOMException.INVALID_CHARACTER_ERR,
+                 formatMessage("invalid.qname",
+                               new Object[] { qualifiedName }));
+        }
+        return new GenericDocumentType(qualifiedName, publicId, systemId);
     }
 }

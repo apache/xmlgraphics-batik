@@ -30,7 +30,6 @@ import org.apache.batik.css.parser.ExtendedParser;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.AbstractStylableDocument;
 import org.apache.batik.dom.ExtensibleDOMImplementation;
-import org.apache.batik.dom.GenericDocumentType;
 import org.apache.batik.dom.events.DOMTimeEvent;
 import org.apache.batik.dom.events.DocumentEventSupport;
 import org.apache.batik.dom.util.CSSStyleDeclarationFactory;
@@ -126,16 +125,6 @@ public class SVGDOMImplementation
      */
     public ViewCSS createViewCSS(AbstractStylableDocument doc) {
         return new CSSOMSVGViewCSS(doc.getCSSEngine());
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
-     * DOMImplementation#createDocumentType(String,String,String)}.
-     */
-    public DocumentType createDocumentType(String qualifiedName,
-                                           String publicId,
-                                           String systemId) {
-        return new GenericDocumentType(qualifiedName, publicId, systemId);
     }
 
     /**

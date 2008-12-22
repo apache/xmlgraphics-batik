@@ -33,13 +33,27 @@ public class GenericDocumentType
         extends AbstractChildNode 
         implements DocumentType {
 
+    /**
+     * The qualified name of the document element.
+     */
     protected String qualifiedName;
+
+    /**
+     * The DTD public ID, if specified.
+     */
     protected String publicId;
+
+    /**
+     * The DTD system ID, if specified.
+     */
     protected String systemId;
 
+    /**
+     * Creates a new DocumentType object.
+     */
     public GenericDocumentType(String qualifiedName,
-                                   String publicId,
-                                   String systemId) {
+                               String publicId,
+                               String systemId) {
         this.qualifiedName = qualifiedName;
         this.publicId      = publicId;
         this.systemId      = systemId;
@@ -49,18 +63,28 @@ public class GenericDocumentType
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getNodeName()}.
      * @return The name of the DTD.
      */
-    public String getNodeName() { return qualifiedName; }
+    public String getNodeName() {
+        return qualifiedName;
+    }
 
-    public short getNodeType() { return DOCUMENT_TYPE_NODE; }
+    public short getNodeType() {
+        return DOCUMENT_TYPE_NODE;
+    }
 
-    public boolean isReadonly() { return true; }
-    public void    setReadonly(boolean ro) {}
+    public boolean isReadonly() {
+        return true;
+    }
+
+    public void setReadonly(boolean ro) {
+    }
 
     /**
      * <b>DOM</b>: Implements {@link org.w3c.dom.DocumentType#getName()}.
-     * @return The name of the DTD.
+     * @return The name of document element as specified in the DTD.
      */
-    public String getName() { return null; }
+    public String getName() {
+        return qualifiedName;
+    }
 
     /**
      * <b>DOM</b>: Implements {@link org.w3c.dom.DocumentType#getEntities()}.
@@ -82,21 +106,27 @@ public class GenericDocumentType
      * <b>DOM</b>: Implements {@link org.w3c.dom.DocumentType#getPublicId()}.
      * @return The public id.
      */
-    public String getPublicId() { return publicId; }
+    public String getPublicId() {
+        return publicId;
+    }
 
     /**
      * <b>DOM</b>: Implements {@link org.w3c.dom.DocumentType#getSystemId()}.
      * @return The public id.
      */
-    public String getSystemId() { return systemId; }
+    public String getSystemId() {
+        return systemId;
+    }
 
     /**
      * <b>DOM</b>: Implements {@link org.w3c.dom.DocumentType#getInternalSubset()}.
      * @return The public id.
      */
-    public String getInternalSubset() { return null; }
-
+    public String getInternalSubset() {
+        return null;
+    }
 
     protected Node newNode() { 
-        return new GenericDocumentType(qualifiedName, publicId, systemId); }
+        return new GenericDocumentType(qualifiedName, publicId, systemId);
+    }
 }
