@@ -325,7 +325,7 @@ public class DefaultGraphics2D extends AbstractGraphics2D {
      * <code>Graphics2D</code>.
      */
     public GraphicsConfiguration getDeviceConfiguration(){
-        System.out.println("getDeviceConviguration");
+        System.out.println("getDeviceConfiguration");
         return null;
     }
 
