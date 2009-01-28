@@ -447,18 +447,23 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
         try {
             String ns = alav.getNamespaceURI();
             String ln = alav.getLocalName();
-            if (ns == null
-                    && (ln.equals(SVG_X_ATTRIBUTE)
-                        || ln.equals(SVG_Y_ATTRIBUTE)
-                        || ln.equals(SVG_TRANSFORM_ATTRIBUTE))) {
-                node.setTransform(computeTransform((SVGTransformable) e, ctx));
-                handleGeometryChanged();
-            } else if (ns == null
-                    && (ln.equals(SVG_WIDTH_ATTRIBUTE)
-                        || ln.equals(SVG_HEIGHT_ATTRIBUTE))
-                    || ns.equals(XLINK_NAMESPACE_URI)
-                        && (ln.equals(XLINK_HREF_ATTRIBUTE))) {
-                buildCompositeGraphicsNode(ctx, e, (CompositeGraphicsNode)node);
+            if (ns == null) {
+                if (ln.equals(SVG_X_ATTRIBUTE) ||
+                    ln.equals(SVG_Y_ATTRIBUTE) ||
+                    ln.equals(SVG_TRANSFORM_ATTRIBUTE)) {
+                    node.setTransform
+                        (computeTransform((SVGTransformable) e, ctx));
+                    handleGeometryChanged();
+                } 
+                else if (ln.equals(SVG_WIDTH_ATTRIBUTE) ||
+                         ln.equals(SVG_HEIGHT_ATTRIBUTE))
+                    buildCompositeGraphicsNode
+                        (ctx, e, (CompositeGraphicsNode)node);
+            } else {
+                if (ns.equals(XLINK_NAMESPACE_URI) &&
+                    ln.equals(XLINK_HREF_ATTRIBUTE)) 
+                    buildCompositeGraphicsNode
+                        (ctx, e, (CompositeGraphicsNode)node);
             }
         } catch (LiveAttributeException ex) {
             throw new BridgeException(ctx, ex);
