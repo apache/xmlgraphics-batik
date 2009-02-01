@@ -36,6 +36,7 @@ import org.apache.batik.bridge.InterruptedBridgeException;
 import org.apache.batik.script.Interpreter;
 import org.apache.batik.script.InterpreterException;
 import org.apache.batik.script.Window;
+import org.apache.batik.script.ImportInfo;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextAction;
 import org.mozilla.javascript.ContextFactory;
@@ -58,21 +59,6 @@ import org.w3c.dom.events.EventTarget;
  * @version $Id$
  */
 public class RhinoInterpreter implements Interpreter {
-
-    /**
-     * Java packages that will be imported into the scripting environment.
-     */
-    protected static String[] TO_BE_IMPORTED = {
-        "java.lang",
-        "org.w3c.dom",
-        "org.w3c.dom.css",
-        "org.w3c.dom.events",
-        "org.w3c.dom.smil",
-        "org.w3c.dom.stylesheets",
-        "org.w3c.dom.svg",
-        "org.w3c.dom.views",
-        "org.w3c.dom.xpath"
-    };
 
     /**
      * The number of cached compiled scripts to store.
@@ -168,14 +154,26 @@ public class RhinoInterpreter implements Interpreter {
                 globalObject = createGlobalObject(cx);
                 ClassCache cache = ClassCache.get(globalObject);
                 cache.setCachingEnabled(rhinoClassLoader != null);
+                
+                ImportInfo ii = ImportInfo.getImports();
+                
                 // import Java lang package & DOM Level 3 & SVG DOM packages
-                StringBuffer sb = new StringBuffer("importPackage(Packages.");
-                for (int i = 0; i < TO_BE_IMPORTED.length - 1; i++) {
-                    sb.append(TO_BE_IMPORTED[i]);
-                    sb.append(");importPackage(Packages.");
+                StringBuffer sb = new StringBuffer();
+                Iterator iter;
+                iter = ii.getPackages();
+                while (iter.hasNext()) {
+                    String pkg = (String)iter.next();
+                    sb.append("importPackage(Packages.");
+                    sb.append(pkg);
+                    sb.append(");");
                 }
-                sb.append(TO_BE_IMPORTED[TO_BE_IMPORTED.length - 1]);
-                sb.append(')');
+                iter = ii.getClasses();
+                while (iter.hasNext()) {
+                    String cls = (String)iter.next();
+                    sb.append("importClass(Packages.");
+                    sb.append(cls);
+                    sb.append(");");
+                }
                 cx.evaluateString(globalObject, sb.toString(), null, 0,
                                   rhinoClassLoader);
                 return null;
