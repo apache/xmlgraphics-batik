@@ -20,6 +20,7 @@ package org.apache.batik.script.rhino.svg12;
 
 import java.net.URL;
 
+import org.apache.batik.script.ImportInfo;
 import org.apache.batik.script.rhino.RhinoInterpreter;
 
 import org.mozilla.javascript.Context;
@@ -39,6 +40,14 @@ public class SVG12RhinoInterpreter extends RhinoInterpreter {
      */
     public SVG12RhinoInterpreter(URL documentURL) {
         super(documentURL);
+    }
+
+    /**
+     * Creates an SVG12RhinoInterpreter object.
+     */
+    public SVG12RhinoInterpreter(URL documentURL,
+                                 ImportInfo imports) {
+        super(documentURL, imports);
     }
 
     /**

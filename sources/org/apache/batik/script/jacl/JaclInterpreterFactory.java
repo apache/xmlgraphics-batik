@@ -57,4 +57,17 @@ public class JaclInterpreterFactory implements InterpreterFactory {
     public Interpreter createInterpreter(URL documentURL, boolean svg12) {
         return new JaclInterpreter();
     }
+
+    /**
+     * Creates an instance of <code>JaclInterpreter</code> class.
+     *
+     * @param documentURL the url for the document which will be scripted
+     * @param svg12 whether the document is an SVG 1.2 document
+     * @param imports The set of classes/packages to import (if
+     *                the interpreter supports that), may be null.
+     */
+    public Interpreter createInterpreter(URL documentURL, boolean svg12,
+                                         ImportInfo imports) {
+        return new JaclInterpreter();
+    }
 }

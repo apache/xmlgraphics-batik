@@ -26,23 +26,37 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
 
-import java.util.List;
-import java.util.LinkedList;
+import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 /**
- * This class represents a list of classes/packages to import.
+ * This class represents a list of Java classes/packages to import
+ * into a scripting environment.
  *
- * It initializes it's self by reading a file from the classpath.
+ * It can initializes it's self by reading a file,
+ * from the classpath (META_INF/imports/script.xt).
+ *
+ * The format of the file is as follows:
+ *
+ * Anything after a '#' on a line is ignored.
+ *
+ * The first space delimited token on a line must be either 'class' or
+ * 'package'.
+ *
+ * The remainder of a line is whitespace delimited, fully qualified,
+ * Java class/package name (i.e.  java.lang.System).
  *
  * @author <a href="mailto:deweese@apache.org>deweese</a>
  * @version $Id: skel.el,v 1.1 2003/05/13 21:04:46 deweese Exp $
  */
 public class ImportInfo {
+    /** Default file to read imports from, can be overridden
+     *  by setting the 'org.apache.batik.script.imports' System
+     * property*/
     static final String defaultFile = "META-INF/imports/script.txt";
-    static final String classStr    = "class";
-    static final String packageStr  = "package";
 
     static String importFile;
     static {
@@ -57,6 +71,12 @@ public class ImportInfo {
 
     static ImportInfo defaultImports=null;
 
+    /**
+     * Returns the default ImportInfo instance.
+     *
+     * This instance is initialized by reading the file
+     * identified by 'importFile'.
+     */
     static public ImportInfo getImports() {
         if (defaultImports == null) 
             defaultImports = readImports();
@@ -93,24 +113,61 @@ public class ImportInfo {
     }
 
     
-    protected List classes;
-    protected List packages;
+    protected Set classes;
+    protected Set packages;
 
+    /**
+     * Construct an empty ImportInfo instance
+     */
     public ImportInfo() {
-        classes = new LinkedList();
-        packages = new LinkedList();
-    }
-    public Iterator getClasses()  { return classes.iterator(); }
-    public Iterator getPackages() { return packages.iterator(); }
-
-    public void addClass(String cls) {
-        classes.add(cls);
+        classes = new HashSet();
+        packages = new HashSet();
     }
 
-    public void addPackage(String pkg) {
-        packages.add(pkg);
+    /**
+     * Return an unmodifiable iterator over the list of classes 
+     */
+    public Iterator getClasses()  { 
+        return Collections.unmodifiableSet(classes).iterator(); 
+    }
+    /**
+     * Return an unmodifiable iterator over the list of packages 
+     */
+    public Iterator getPackages() { 
+        return Collections.unmodifiableSet(packages).iterator(); 
     }
 
+    /**
+     * Add a class to the set of classes to import (must be
+     * a fully qualified classname - "java.lang.System"). 
+     */
+    public void addClass  (String cls) { classes.add(cls); }
+    /**
+     * Add a package to the set of packages to import (must be
+     * a fully qualified package - "java.lang"). 
+     */
+    public void addPackage(String pkg) { packages.add(pkg); }
+
+    /**
+     * Remove a class from the set of classes to import (must be
+     * a fully qualified classname - "java.lang.System"). 
+     * @return true if the class was present.
+     */
+    public boolean removeClass(String cls) { return classes.remove(cls); }
+    /**
+     * Remove a package from the set of packages to import (must be
+     * a fully qualified package - "java.lang"). 
+     * @return true if the package was present.
+     */
+    public boolean removePackage(String pkg) { return packages.remove(pkg); }
+
+
+    static final String classStr    = "class";
+    static final String packageStr  = "package";
+    /**
+     * Add imports read from a URL to this ImportInfo instance.
+     * See the class documentation for the expected format of the file.
+     */
     public void addImports(URL src) throws IOException
     {
         InputStream    is = null;

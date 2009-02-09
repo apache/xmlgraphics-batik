@@ -87,15 +87,39 @@ public class InterpreterPool {
      * @param document the document that needs the interpreter
      * @param language the scripting language
      */
-    public Interpreter createInterpreter(Document document, String language) {
-        InterpreterFactory factory = (InterpreterFactory)factories.get(language);
+    public Interpreter createInterpreter(Document document, 
+                                         String language) {
+        return createInterpreter(document, language, null);
+    }
+
+    /**
+     * Creates a new interpreter for the specified document and
+     * according to the specified language. This method can return
+     * null if no interpreter has been found for the specified
+     * language.
+     *
+     * @param document the document that needs the interpreter
+     * @param language the scripting language
+     * @param imports The set of classes/packages to import (if
+     *                the interpreter supports that).
+     */
+    public Interpreter createInterpreter(Document document, 
+                                         String language,
+                                         ImportInfo imports) {
+        InterpreterFactory factory;
+        factory = (InterpreterFactory)factories.get(language);
+
         if (factory == null) return null;
+
+        if (imports == null)
+            imports = ImportInfo.getImports();
 
         Interpreter interpreter = null;
         SVGOMDocument svgDoc = (SVGOMDocument) document;
         try {
             URL url = new URL(svgDoc.getDocumentURI());
-            interpreter = factory.createInterpreter(url, svgDoc.isSVG12());
+            interpreter = factory.createInterpreter(url, svgDoc.isSVG12(),
+                                                    imports);
         } catch (MalformedURLException e) {
         }
 

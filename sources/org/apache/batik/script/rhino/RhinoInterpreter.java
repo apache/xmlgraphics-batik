@@ -141,6 +141,27 @@ public class RhinoInterpreter implements Interpreter {
      * @see org.apache.batik.script.InterpreterPool
      */
     public RhinoInterpreter(URL documentURL) {
+        init(documentURL, null);
+    }
+
+    /**
+     * Build a <code>Interpreter</code> for ECMAScript using Rhino.
+     *
+     * @param documentURL the URL for the document which references
+     * @param imports the set of Java classes/packages to import 
+     *                into the scripting enviornment.
+     *
+     * @see org.apache.batik.script.Interpreter
+     * @see org.apache.batik.script.InterpreterPool
+     */
+    public RhinoInterpreter(URL documentURL,
+                            ImportInfo imports) {
+        init(documentURL, imports);
+    }
+
+    protected void init(URL documentURL,
+                        final ImportInfo imports)
+    {
         try {
             rhinoClassLoader = new RhinoClassLoader
                 (documentURL, getClass().getClassLoader());
@@ -155,8 +176,9 @@ public class RhinoInterpreter implements Interpreter {
                 ClassCache cache = ClassCache.get(globalObject);
                 cache.setCachingEnabled(rhinoClassLoader != null);
                 
-                ImportInfo ii = ImportInfo.getImports();
-                
+                ImportInfo ii = imports;
+                if (ii == null) ii = ImportInfo.getImports();
+
                 // import Java lang package & DOM Level 3 & SVG DOM packages
                 StringBuffer sb = new StringBuffer();
                 Iterator iter;
