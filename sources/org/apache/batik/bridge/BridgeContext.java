@@ -560,7 +560,9 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         Interpreter interpreter = (Interpreter)interpreterMap.get(language);
         if (interpreter == null) {
             try {
-                interpreter = interpreterPool.createInterpreter(document, language);
+                interpreter = interpreterPool.createInterpreter(document, 
+                                                                language,
+                                                                null);
                 interpreterMap.put(language, interpreter);
             } catch (Exception e) {
                 if (userAgent != null) {

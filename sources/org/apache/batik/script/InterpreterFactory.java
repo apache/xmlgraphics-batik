@@ -40,6 +40,18 @@ public interface InterpreterFactory {
      *
      * @param documentURL the url for the document which will be scripted
      * @param svg12 whether the document is an SVG 1.2 document
+     * @param imports The set of classes/packages to import (if
+     *                the interpreter supports that), may be null.
+     */
+    Interpreter createInterpreter(URL documentURL, boolean svg12,
+                                  ImportInfo imports);
+
+    /**
+     * This method should create an instance of <code>Interpreter</code>
+     * interface implementation.
+     *
+     * @param documentURL the url for the document which will be scripted
+     * @param svg12 whether the document is an SVG 1.2 document
      */
     Interpreter createInterpreter(URL documentURL, boolean svg12);
 }

@@ -20,6 +20,7 @@ package org.apache.batik.script.rhino;
 
 import java.net.URL;
 
+import org.apache.batik.script.ImportInfo;
 import org.apache.batik.script.Interpreter;
 import org.apache.batik.script.InterpreterFactory;
 import org.apache.batik.script.rhino.svg12.SVG12RhinoInterpreter;
@@ -63,9 +64,22 @@ public class RhinoInterpreterFactory implements InterpreterFactory {
      * @param svg12 whether the document is an SVG 1.2 document
      */
     public Interpreter createInterpreter(URL documentURL, boolean svg12) {
+        return createInterpreter(documentURL, svg12, null);
+    }
+
+    /**
+     * Creates an instance of <code>RhinoInterpreter</code> class.
+     *
+     * @param documentURL the url for the document which will be scripted
+     * @param svg12 whether the document is an SVG 1.2 document
+     * @param imports The set of classes/packages to import (if
+     *                the interpreter supports that), may be null.
+     */
+    public Interpreter createInterpreter(URL documentURL, boolean svg12,
+                                         ImportInfo imports) {
         if (svg12) {
-            return new SVG12RhinoInterpreter(documentURL);
+            return new SVG12RhinoInterpreter(documentURL, imports);
         }
-        return new RhinoInterpreter(documentURL);
+        return new RhinoInterpreter(documentURL, imports);
     }
 }
