@@ -324,7 +324,7 @@ public abstract class AbstractGraphicsNodeBridge extends AnimatableSVGBridge
     /**
      * Disposes all resources related to the specified node and its subtree.
      */
-    protected void disposeTree(Node node) {
+    protected static void disposeTree(Node node) {
         disposeTree(node, true);
     }
 
@@ -332,7 +332,7 @@ public abstract class AbstractGraphicsNodeBridge extends AnimatableSVGBridge
      * Disposes all resources related to the specified node and its subtree,
      * and optionally removes the nodes' {@link SVGContext}.
      */
-    protected void disposeTree(Node node, boolean removeContext) {
+    protected static void disposeTree(Node node, boolean removeContext) {
         if (node instanceof SVGOMElement) {
             SVGOMElement elt = (SVGOMElement)node;
             SVGContext ctx = elt.getSVGContext();
