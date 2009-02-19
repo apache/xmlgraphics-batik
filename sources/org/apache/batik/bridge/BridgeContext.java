@@ -1444,6 +1444,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
 
         if (document != null) {
             removeDOMListeners();
+            AbstractGraphicsNodeBridge.disposeTree(document);
         }
 
         if (animationEngine != null) {
