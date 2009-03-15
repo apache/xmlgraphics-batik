@@ -9,8 +9,8 @@ Bug fixing is an on-going task, so it is implied in all sub-releases.
 
 1. Bugzilla problem reports fixed:
 
-    44590, 44919, 44936, 44966, 45112, 45114, 45117, 45520, 45883, 
-    44553, 45958, 46072, 46124, 46430, 46431, 43411
+    43411, 44553, 44590, 44919, 44936, 44966, 45112, 45114, 45117,
+    45397, 45520, 45883, 45958, 46072, 46124, 46430, 46431, 46855
 
 2. New features
 
@@ -46,6 +46,8 @@ Bug fixing is an on-going task, so it is implied in all sub-releases.
   * Exceptions are now thrown if an invalid QName is passed to
     DOMImplementation.createDocumentType().
   * DocumentType.getName() now returns the correct value.
+  * Fixed SVGLocatable.farthestViewportElement to return null when
+    called on the outermost <svg> element.
 
 1.7beta1 -> 1.7
 ---------------
