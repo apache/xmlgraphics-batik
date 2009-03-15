@@ -64,7 +64,11 @@ public class SVGLocatableSupport {
      * org.w3c.dom.svg.SVGLocatable#getFarthestViewportElement()}.
      */
     public static SVGElement getFarthestViewportElement(Element elt) {
-        return (SVGElement)elt.getOwnerDocument().getDocumentElement();
+        Element rootSVG = elt.getOwnerDocument().getDocumentElement();
+        if (elt == rootSVG) {
+            return null;
+        }
+        return (SVGElement) rootSVG;
     }
 
     /**
