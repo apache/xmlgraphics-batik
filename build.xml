@@ -458,8 +458,8 @@ To display the available targets type:
         <include name="forrest.properties"/>
         <include name="svn-revision"/>
         <include name="contrib/**"/>
-        <include name="documentation-sources/**"/>
         <include name="lib/**"/>
+        <include name="documentation-sources/**"/>
         <include name="resources/**"/>
         <include name="samples/**"/>
         <include name="sources/**"/>
