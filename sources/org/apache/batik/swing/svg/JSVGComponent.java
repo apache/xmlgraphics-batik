@@ -843,7 +843,9 @@ public class JSVGComponent extends JGVTComponent {
         AffineTransform at = calculateViewingTransform
             (fragmentIdentifier, elt);
         CanvasGraphicsNode cgn = getCanvasGraphicsNode(gn);
-        cgn.setViewingTransform(at);
+        if (cgn != null) {
+            cgn.setViewingTransform(at);
+        }
         viewingTransform = null;
         initialTransform = new AffineTransform();
         setRenderingTransform(initialTransform, false);
@@ -1045,7 +1047,9 @@ public class JSVGComponent extends JGVTComponent {
                     CanvasGraphicsNode myCGN = getCanvasGraphicsNode();
                     public void run() {
                         synchronized (JSVGComponent.this) {
-                            myCGN.setViewingTransform(myAT);
+                            if (myCGN != null) {
+                                myCGN.setViewingTransform(myAT);
+                            }
                             if (viewingTransform == myAT)
                                 viewingTransform = null;
                         }
