@@ -2089,6 +2089,7 @@ JAVA=/usr/bin/java
              windowtitle="${Project} Javadoc"
              doctitle="${Project} API Specification ${completeVersion}"
              bottom="Copyright &#169; ${year} Apache Software Foundation. All Rights Reserved.">
+      <arg value="-notimestamp"/>
       <sourcepath path="${src}"/>
       <classpath refid="libs-classpath"/>
       <link href="${dom.javadoc}"/>
