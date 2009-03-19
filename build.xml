@@ -2155,6 +2155,11 @@ JAVA=/usr/bin/java
       <arg value="Automatic publish"/>
     </exec>
     <delete file="${forrest-build}/publish.toadd}"/>
+    <echo message=""/>
+    <echo message="Site has been committed to .../repos/asf/xmlgraphics/site/deploy/batik/."/>
+    <echo message=""/>
+    <echo message="Don't forget to run 'svn up' from /www/xmlgraphics.apache.org/batik on"/>
+    <echo message="people.apache.org now."/>
   </target>
 
   <target name="publishdoc" depends="prepare-publish,sitedoc,do-publish"
