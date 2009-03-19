@@ -134,22 +134,25 @@ public class Service {
                 // Just try the next file...
             } finally {
                 // close and release all io-resources to avoid leaks
-                if ( is != null ){
+                if (is != null) {
                     try {
                         is.close();
-                    } catch ( IOException ignored ){}
+                    } catch (IOException ignored) {
+                    }
                     is = null;
                 }
-                if ( r != null ){
+                if (r != null) {
                     try{
                         r.close();
-                    } catch ( IOException ignored ){}
+                    } catch (IOException ignored) {
+                    }
                     r = null;
                 }
-                if ( br == null ){
-                    try{
+                if (br != null) {
+                    try {
                         br.close();
-                    } catch ( IOException ignored ){}
+                    } catch (IOException ignored) {
+                    }
                     br = null;
                 }
             }
