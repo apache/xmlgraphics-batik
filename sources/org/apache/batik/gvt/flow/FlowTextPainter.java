@@ -135,7 +135,7 @@ public class FlowTextPainter extends StrokingTextPainter {
         // Make a list of the GlyphVectors so we can construct a
         // multiGlyphVector that makes them all look like one big
         // glyphVector
-        GVTGlyphVector [] gvs            = new GVTGlyphVector[acis.length];       // todo - not used?
+        // GVTGlyphVector [] gvs            = new GVTGlyphVector[acis.length];       // todo - not used?
         WordInfo       [][] wordInfos    = new WordInfo[acis.length][];
         Iterator clIter = chunkLayouts.iterator();
 
@@ -154,7 +154,7 @@ public class FlowTextPainter extends StrokingTextPainter {
                 gvl.add(gl.getGlyphVector());
             }
             GVTGlyphVector gv = new MultiGlyphVector(gvl);
-            gvs[chunk] = gv;
+            // gvs[chunk] = gv;
             wordInfos[chunk] = doWordAnalysis(gv, aci, numWords, frc);
             aci.first();
             BlockInfo bi = (BlockInfo)aci.getAttribute(FLOW_PARAGRAPH);
@@ -190,7 +190,7 @@ public class FlowTextPainter extends StrokingTextPainter {
 
                 while (!li.addWord(wi)) {
                     // step down 1/10 of a line height and try again.
-                    newY = li.getCurrentY()+lh * 0.1;
+                    newY = li.getCurrentY() + (lh * 0.1);
                     if (li.gotoY(newY)) break;
                 }
                 if (fr.done()) break;
@@ -213,7 +213,7 @@ public class FlowTextPainter extends StrokingTextPainter {
 
                     li = new LineInfo(fr, bi, false);
                     while (!li.addWord(wi)) {
-                        newY =li.getCurrentY()+lh * 0.1;
+                        newY =li.getCurrentY() + (lh * 0.1);
                         if (li.gotoY(newY)) break;
                     }
                     if (fr.done()) break;

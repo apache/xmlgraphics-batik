@@ -256,8 +256,12 @@ public class SVGAnimationEngine extends AnimationEngine {
             animationEventNames11.add(eventNamesCommon[i]);
             animationEventNames12.add(eventNamesCommon[i]);
         }
-        animationEventNames11.addAll(Arrays.asList(eventNamesSVG11));
-        animationEventNames12.addAll(Arrays.asList(eventNamesSVG12));
+        for (int i = 0; i < eventNamesSVG11.length; i++) {
+            animationEventNames11.add(eventNamesSVG11[i]);
+        }
+        for (int i = 0; i < eventNamesSVG12.length; i++) {
+            animationEventNames12.add(eventNamesSVG12[i]);
+        }
     }
 
     /**
