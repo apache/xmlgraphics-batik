@@ -1417,14 +1417,16 @@ public class StrokingTextPainter extends BasicTextPainter {
 
         // get the list of text runs
         List textRuns = getTextRuns(node, aci);
-
-        // for each text run, see if its been hit
-        for (int i = 0; i < textRuns.size(); ++i) {
-            TextRun textRun = (TextRun)textRuns.get(i);
-            TextSpanLayout layout = textRun.getLayout();
-            TextHit textHit = layout.hitTestChar((float) x, (float) y);
-            if (textHit != null && layout.getBounds2D().contains(x,y)) {
-                return new BasicTextPainter.BasicMark(node, textHit);
+        if (textRuns != null) {
+            // for each text run, see if its been hit
+            for (int i = 0; i < textRuns.size(); ++i) {
+                TextRun textRun = (TextRun)textRuns.get(i);
+                TextSpanLayout layout = textRun.getLayout();
+                TextHit textHit = layout.hitTestChar((float) x, (float) y);
+                Rectangle2D bounds = layout.getBounds2D();
+                if ((textHit != null) && 
+                    (bounds != null) && bounds.contains(x,y))
+                    return new BasicTextPainter.BasicMark(node, textHit);
             }
         }
 

@@ -301,7 +301,9 @@ public class MarkerShapePainter implements ShapePainter {
         }
 
         if (middleMarkerProxies != null) {
-            children.addAll(Arrays.asList(middleMarkerProxies));
+            for(int i=0; i<middleMarkerProxies.length; i++){
+                children.add(middleMarkerProxies[i]);
+            }
         }
 
         if (endMarkerProxy != null) {

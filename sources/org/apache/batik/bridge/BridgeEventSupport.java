@@ -260,8 +260,7 @@ public abstract class BridgeEventSupport implements SVGConstants {
         public void mouseEntered(GraphicsNodeMouseEvent evt) {
             Point clientXY = evt.getClientPoint();
             GraphicsNode node = evt.getGraphicsNode();
-            Element targetElement = getEventTarget
-                (node, new Point2D.Float(evt.getX(), evt.getY()));
+            Element targetElement = getEventTarget(node, evt.getPoint2D());
             Element relatedElement = getRelatedElement(evt);
             dispatchMouseEvent("mouseover",
                                targetElement,
@@ -275,7 +274,7 @@ public abstract class BridgeEventSupport implements SVGConstants {
             Point clientXY = evt.getClientPoint();
             // Get the 'new' node for the DOM event.
             GraphicsNode node = evt.getRelatedNode();
-            Element targetElement = getEventTarget(node, clientXY);
+            Element targetElement = getEventTarget(node, evt.getPoint2D());
             if (lastTargetElement != null) {
                 dispatchMouseEvent("mouseout",
                                    lastTargetElement, // target
@@ -294,7 +293,7 @@ public abstract class BridgeEventSupport implements SVGConstants {
         public void mouseMoved(GraphicsNodeMouseEvent evt) {
             Point clientXY = evt.getClientPoint();
             GraphicsNode node = evt.getGraphicsNode();
-            Element targetElement = getEventTarget(node, clientXY);
+            Element targetElement = getEventTarget(node, evt.getPoint2D());
             Element holdLTE = lastTargetElement;
             if (holdLTE != targetElement) {
                 if (holdLTE != null) {
@@ -335,8 +334,7 @@ public abstract class BridgeEventSupport implements SVGConstants {
                                           boolean cancelable) {
             Point clientXY = evt.getClientPoint();
             GraphicsNode node = evt.getGraphicsNode();
-            Element targetElement = getEventTarget
-                (node, new Point2D.Float(evt.getX(), evt.getY()));
+            Element targetElement = getEventTarget(node, evt.getPoint2D());
             Element relatedElement = getRelatedElement(evt);
             dispatchMouseEvent(eventType,
                                targetElement,
@@ -431,28 +429,21 @@ public abstract class BridgeEventSupport implements SVGConstants {
          * @param node the graphics node that received the event
          * @param coords the mouse coordinates in the GVT tree space
          */
-        protected Element getEventTarget(GraphicsNode node, Point2D coords) {
+        protected Element getEventTarget(GraphicsNode node, Point2D pt) {
             Element target = context.getElement(node);
             // Lookup inside the text element children to see if the target
             // is a tspan or textPath
-
             if (target != null && node instanceof TextNode) {
                 TextNode textNode = (TextNode)node;
                 List list = textNode.getTextRuns();
-                Point2D pt = (Point2D)coords.clone();
-                // place coords in text node coordinate system
-                try {
-                    node.getGlobalTransform().createInverse().transform(pt, pt);
-                } catch (NoninvertibleTransformException ex) {
-                }
                 if (list != null){
+                    float x = (float)pt.getX();
+                    float y = (float)pt.getY();
                     for (int i = 0 ; i < list.size(); i++) {
                         StrokingTextPainter.TextRun run =
                             (StrokingTextPainter.TextRun)list.get(i);
                         AttributedCharacterIterator aci = run.getACI();
                         TextSpanLayout layout = run.getLayout();
-                        float x = (float)pt.getX();
-                        float y = (float)pt.getY();
                         TextHit textHit = layout.hitTestChar(x, y);
                         Rectangle2D bounds = layout.getBounds2D();
                         if ((textHit != null) &&
