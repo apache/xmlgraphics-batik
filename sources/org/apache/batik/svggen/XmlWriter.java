@@ -178,11 +178,6 @@ class XmlWriter implements SVGConstants {
                 start = last + 1;
                 out.write ("&amp;");
                 break;
-            case '\'':
-                out.write (data, start, last - start);
-                start = last + 1;
-                out.write ("&apos;");
-                break;
             case '"':
                 out.write (data, start, last - start);
                 start = last + 1;
