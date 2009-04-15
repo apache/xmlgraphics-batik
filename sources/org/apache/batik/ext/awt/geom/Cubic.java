@@ -227,17 +227,17 @@ public class Cubic extends AbstractSegment {
     public void subdivide(double t, Cubic c0, Cubic c1) {
         if ((c0 == null) && (c1 == null)) return;
 
-        Point2D.Double np = eval(t);
+        Point2D.Double np  = eval(t);
         Point2D.Double npd = evalDt(t);
 
         if (c0 != null) {
             c0.p1.x = p1.x;
             c0.p1.y = p1.y;
-            c0.p2.x = (p2.x+p1.x)*t;
-            c0.p2.y = (p2.y+p1.y)*t;
+            c0.p2.x = p1.x + (p2.x-p1.x)*t;
+            c0.p2.y = p1.y + (p2.y-p1.y)*t;
 
-            c0.p3.x = np.x-(npd.x*t/3);
-            c0.p3.y = np.y-(npd.y*t/3);
+            c0.p3.x = np.x-npd.x*t/3;
+            c0.p3.y = np.y-npd.y*t/3;
             c0.p4.x = np.x;
             c0.p4.y = np.y;
         }
@@ -248,8 +248,8 @@ public class Cubic extends AbstractSegment {
             c1.p2.x = np.x+(npd.x*(1-t)/3);
             c1.p2.y = np.y+(npd.y*(1-t)/3);
 
-            c1.p3.x = (p4.x+p3.x)*(1-t);
-            c1.p3.y = (p4.y+p3.y)*(1-t);
+            c1.p3.x = p4.x + (p3.x-p4.x)*(1-t);
+            c1.p3.y = p4.y + (p3.y-p4.y)*(1-t);
             c1.p4.x = p4.x;
             c1.p4.y = p4.y;
         }
