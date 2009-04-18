@@ -77,7 +77,7 @@ For creating a distribution the following steps must be done:
     http://www.w3.org/Graphics/SVG for instructions on how to get
     the SVG test suite.
 
- 8) Update the README and CHANGES file describing the content of the
+ 8) Update the README and CHANGES files describing the content of the
     release and the modifications which have taken place,
     http://www.apache.org/dist/xmlgraphics/batik/README.  This file has a
     small header followed by the contents of the CHANGES file from the
