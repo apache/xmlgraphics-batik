@@ -645,8 +645,7 @@ public abstract class SVG12BridgeEventSupport extends BridgeEventSupport {
         public void mouseEntered(GraphicsNodeMouseEvent evt) {
             Point clientXY = evt.getClientPoint();
             GraphicsNode node = evt.getGraphicsNode();
-            Element targetElement = getEventTarget
-                (node, new Point2D.Float(evt.getX(), evt.getY()));
+            Element targetElement = getEventTarget(node, evt.getPoint2D());
             Element relatedElement = getRelatedElement(evt);
             int n = 0;
             if (relatedElement != null && targetElement != null) {
@@ -666,7 +665,7 @@ public abstract class SVG12BridgeEventSupport extends BridgeEventSupport {
             Point clientXY = evt.getClientPoint();
             // Get the 'new' node for the DOM event.
             GraphicsNode node = evt.getRelatedNode();
-            Element targetElement = getEventTarget(node, clientXY);
+            Element targetElement = getEventTarget(node, evt.getPoint2D());
             if (lastTargetElement != null) {
                 int n = 0;
                 if (targetElement != null) {
@@ -688,7 +687,7 @@ public abstract class SVG12BridgeEventSupport extends BridgeEventSupport {
         public void mouseMoved(GraphicsNodeMouseEvent evt) {
             Point clientXY = evt.getClientPoint();
             GraphicsNode node = evt.getGraphicsNode();
-            Element targetElement = getEventTarget(node, clientXY);
+            Element targetElement = getEventTarget(node, evt.getPoint2D());
             Element holdLTE = lastTargetElement;
             if (holdLTE != targetElement) {
                 if (holdLTE != null) {
