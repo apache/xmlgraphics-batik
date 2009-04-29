@@ -153,18 +153,7 @@ public class ConcreteTextSelector implements Selector {
             clearSelection();
         } else if (mevt != null) {
 
-            Point2D p = new Point2D.Double(mevt.getX(), mevt.getY());
-            AffineTransform t = source.getGlobalTransform();
-            if (t == null) {
-                t = new AffineTransform();
-            }
-            else {
-                 try {
-                     t = t.createInverse();
-                 } catch (NoninvertibleTransformException ni) {
-                 }
-            }
-            p = t.transform(p, null);
+            Point2D p = mevt.getPoint2D();
 
             if ((source instanceof Selectable) && 
                 (isSelectStartGesture(evt))) {

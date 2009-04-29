@@ -29,6 +29,7 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 import java.lang.reflect.Array;
 import java.util.EventListener;
@@ -476,7 +477,13 @@ public class AWTEventDispatcher
         }
 
         GraphicsNode node = root.nodeHitAt(gnp);
-
+        if (node != null) {
+            try {
+                node.getGlobalTransform().createInverse().transform(gnp, gnp);
+            } catch (NoninvertibleTransformException ex) {
+            }
+        }
+        
         // If the receiving node has changed, send a notification
         // check if we enter a new node
         Point screenPos;
