@@ -200,11 +200,11 @@ public class SVGFont extends AbstractSVGConverter {
      * only its size attribute modified.
      */
     private static Font createCommonSizeFont(Font font) {
-        Map attributes = new HashMap(font.getAttributes());
+        Map attributes = new HashMap();
         attributes.put(TextAttribute.SIZE, new Float(COMMON_FONT_SIZE));
         // Remove Transform from font otherwise it will be applied twice.
-        attributes.remove(TextAttribute.TRANSFORM);
-        return new Font(attributes);
+        attributes.put(TextAttribute.TRANSFORM, null);
+        return font.deriveFont(attributes);
     }
 
     /**

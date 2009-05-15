@@ -29,6 +29,8 @@ Bug fixing is an on-going task, so it is implied in all sub-releases.
   * The location bar in Squiggle is now updated if the requested document
     followed an HTTP redirect.
   * Improve Batik's Rhino class shutter so that it works with Rhino 1.6R7.
+  * Allow SVGGenerator2D to embed fonts that weren't obtained from the
+    standard AWT font lookup mechanism.
 
 4. Bug fixes
 
