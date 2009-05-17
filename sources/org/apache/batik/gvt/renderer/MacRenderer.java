@@ -84,8 +84,8 @@ public class MacRenderer implements ImageRenderer {
                        AffineTransform at){
         renderingHints = new RenderingHints(null);
         renderingHints.add(rh);
-        if (at == null) at = new AffineTransform();
-        else            at = new AffineTransform(at);
+        if (at == null) usr2dev = new AffineTransform();
+        else            usr2dev = new AffineTransform(at);
     }
 
     public void dispose() {
