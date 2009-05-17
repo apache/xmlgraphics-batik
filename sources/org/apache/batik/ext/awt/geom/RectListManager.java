@@ -613,9 +613,8 @@ public class RectListManager implements Collection {
 
     public void mergeRects(int overhead, int lineOverhead) {
         if (size == 0) return;
-        Rectangle r, cr, mr;
+        Rectangle r, cr;
         int cost1, cost2, cost3;
-        mr = new Rectangle();
         Rectangle []splits = new Rectangle[4];
         for (int j, i=0; i<size; i++) {
             r = rects[i];
@@ -637,7 +636,7 @@ public class RectListManager implements Collection {
                              (cr.height*lineOverhead) +
                              (cr.height*cr.width));
 
-                    mr = r.union(cr);
+                    Rectangle mr = r.union(cr);
                     cost3 = (overhead                 +
                              (mr.height*lineOverhead) +
                              (mr.height*mr.width));
