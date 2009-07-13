@@ -101,6 +101,9 @@ public class JPEGRegistryEntry
                                 throw new IOException
                                     ("JPEG File was truncated");
                         }
+                        decoder = null;
+                        is.close();
+
                         dr.setBounds(new Rectangle2D.Double
                                      (0, 0, image.getWidth(),
                                       image.getHeight()));

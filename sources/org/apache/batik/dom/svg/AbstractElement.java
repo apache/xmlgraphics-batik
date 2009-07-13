@@ -125,7 +125,7 @@ public abstract class AbstractElement
                 Attr a =
                     getAttributeNodeNS(XML_NAMESPACE_URI, SVG_ID_ATTRIBUTE);
                 if (a == null) {
-                    setAttributeNS(XML_NAMESPACE_URI, SVG_ID_ATTRIBUTE, newv);
+                    setAttributeNS(XML_NAMESPACE_URI, XML_ID_QNAME, newv);
                 } else if (!a.getNodeValue().equals(newv)) {
                     a.setNodeValue(newv);
                 }
