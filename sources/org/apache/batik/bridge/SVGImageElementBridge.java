@@ -258,6 +258,11 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
             Filter img = reg.readURL(reference, purl, colorspace,
                                      false, false);
             if (img != null) {
+                try {
+                    reference.tie();
+                } catch (IOException ioe) {
+                    // This would be from a close,  Let it slide...
+                }
                 // It's a bouncing baby Raster...
                 return createRasterImageNode(ctx, e, img, purl);
             }
@@ -284,21 +289,26 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
              * Next see if it's an XML document.
              */
             Document doc = loader.loadDocument(purl.toString(), reference);
+            reference.release();
             imgDocument = (SVGDocument)doc;
             return createSVGImageNode(ctx, e, imgDocument);
         } catch (BridgeException ex) {
+            reference.release();
             throw ex;
         } catch (SecurityException secEx ) {
+            reference.release();
             throw new BridgeException(ctx, e, secEx, ERR_URI_UNSECURE,
                                       new Object[] {purl});
         } catch (InterruptedIOException iioe) {
+            reference.release();
             if (HaltingThread.hasBeenHalted())
                 throw new InterruptedBridgeException();
 
         } catch (InterruptedBridgeException ibe) {
+            reference.release();
             throw ibe;
         } catch (Exception ex) {
-            /* Nothing to do */
+            /* Do nothing drop out... */
             // ex.printStackTrace();
         }
 
@@ -352,21 +362,46 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
             throw new IOException("Reset unsupported");
         }
 
-        public void retry() throws IOException {
+        public synchronized void retry() throws IOException {
             super.reset();
+            wasClosed = false;
+            isTied = false;
         }
 
-        public void close() throws IOException {
-            /* do nothing */
+        public synchronized void close() throws IOException {
+            wasClosed = true;
+            if (isTied) {
+                super.close();
+                // System.err.println("Closing stream - from close");
+            }
         }
 
+        /**
+         * Let stream know that it is perminately tied to one
+         * image decoder.  This means that it can allow that
+         * decoder to close the stream.
+         */
+        public synchronized void tie() throws IOException {
+            isTied = true;
+            if (wasClosed) {
+                super.close();
+                // System.err.println("Closing stream - from tie");
+            }
+        }
+
+        /**
+         * Close the stream.
+         */
         public void release() {
             try {
                 super.close();
+                // System.err.println("Closing stream - from release");
             } catch (IOException ioe) {
                 // Like Duh! what would you do close it again?
             }
         }
+        boolean wasClosed = false;
+        boolean isTied = false;
     }
 
     protected ProtectedStream openStream(Element e, ParsedURL purl)

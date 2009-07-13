@@ -479,6 +479,8 @@ public class PNGRed extends AbstractRed {
                 properties.put("significant_bits", significantBits);
             }
         }
+        distream.close();
+        stream.close();
     }
 
     private static String getChunkType(DataInputStream distream) {
@@ -783,6 +785,13 @@ public class PNGRed extends AbstractRed {
         }
 
         decodeImage(interlaceMethod == 1);
+
+        // Free resources associated with compressed data.
+        dataStream.close();
+        infStream.close();
+        seqStream.close();
+        streamVec = null;
+
         SampleModel sm = theTile.getSampleModel();
         ColorModel  cm;
 

@@ -157,7 +157,7 @@ public abstract class SVGOMElement
      */
     public void setId(String id) {
         if (((SVGOMDocument) ownerDocument).isSVG12) {
-            setAttributeNS(XML_NAMESPACE_URI, SVG_ID_ATTRIBUTE, id);
+            setAttributeNS(XML_NAMESPACE_URI, XML_ID_QNAME, id);
             Attr a = getAttributeNodeNS(null, SVG_ID_ATTRIBUTE);
             if (a != null) {
                 a.setNodeValue(id);
