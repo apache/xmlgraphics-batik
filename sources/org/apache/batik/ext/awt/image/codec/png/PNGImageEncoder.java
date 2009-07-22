@@ -502,7 +502,9 @@ public class PNGImageEncoder extends ImageEncoderImpl {
         }
 
         dos.finish();
+        dos.close();
         ios.flush();
+        ios.close();
     }
 
     private void writeIEND() throws IOException {
@@ -782,6 +784,7 @@ public class PNGImageEncoder extends ImageEncoderImpl {
                 DeflaterOutputStream dos = new DeflaterOutputStream(cs);
                 dos.write(value);
                 dos.finish();
+                dos.close();
 
                 cs.writeToStream(dataOutput);
                 cs.close();
@@ -1034,5 +1037,6 @@ public class PNGImageEncoder extends ImageEncoderImpl {
         writeIEND();
 
         dataOutput.flush();
+        dataOutput.close();
     }
 }
