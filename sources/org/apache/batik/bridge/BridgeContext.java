@@ -563,7 +563,10 @@ public class BridgeContext implements ErrorConstants, CSSContext {
                 interpreter = interpreterPool.createInterpreter(document, 
                                                                 language,
                                                                 null);
-                interpreterMap.put(language, interpreter);
+                String[] mimeTypes = interpreter.getMimeTypes();
+                for (int i = 0; i < mimeTypes.length; i++) {
+                    interpreterMap.put(mimeTypes[i], interpreter);
+                }
             } catch (Exception e) {
                 if (userAgent != null) {
                     userAgent.displayError(e);

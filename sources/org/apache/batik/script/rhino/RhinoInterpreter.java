@@ -205,6 +205,14 @@ public class RhinoInterpreter implements Interpreter {
     }
 
     /**
+     * Returns the content types of the scripting languages this interpreter
+     * handles.
+     */
+    public String[] getMimeTypes() {
+        return RhinoInterpreterFactory.RHINO_MIMETYPES;
+    }
+
+    /**
      * Returns the window object for this interpreter.
      */
     public Window getWindow() {

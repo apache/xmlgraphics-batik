@@ -32,6 +32,12 @@ import java.io.Writer;
 public interface Interpreter extends org.apache.batik.i18n.Localizable {
 
     /**
+     * Returns the content types of the scripting languages this interpreter
+     * handles.
+     */
+    String[] getMimeTypes();
+
+    /**
      * This method should evaluate a piece of script associated to a given 
      * description.
      *

@@ -33,7 +33,7 @@ public class JaclInterpreterFactory implements InterpreterFactory {
     /**
      * The MIME types that jacl can handle.
      */
-    private static final String[] JACL_MIMETYPES = { "text/tcl" };
+    public static final String[] JACL_MIMETYPES = { "text/tcl" };
 
     /**
      * Builds a <code>JaclInterpreterFactory</code>.
