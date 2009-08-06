@@ -33,7 +33,7 @@ public class JPythonInterpreterFactory implements InterpreterFactory {
     /**
      * The MIME types that JPython can handle.
      */
-    private static final String[] JPYTHON_MIMETYPES =  { "text/python" };
+    public static final String[] JPYTHON_MIMETYPES =  { "text/python" };
 
     /**
      * Builds a <code>JPythonInterpreterFactory</code>.

@@ -37,7 +37,7 @@ public class RhinoInterpreterFactory implements InterpreterFactory {
     /**
      * The MIME types that Rhino can handle.
      */
-    private static final String[] RHINO_MIMETYPES = {
+    public static final String[] RHINO_MIMETYPES = {
         "application/ecmascript",
         "application/javascript",
         "text/ecmascript",

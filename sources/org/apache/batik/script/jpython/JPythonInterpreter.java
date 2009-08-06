@@ -41,6 +41,14 @@ public class JPythonInterpreter implements org.apache.batik.script.Interpreter {
 
     // org.apache.batik.script.Intepreter implementation
 
+    /**
+     * Returns the content types of the scripting languages this interpreter
+     * handles.
+     */
+    public String[] getMimeTypes() {
+        return JPythonInterpreterFactory.JPYTHON_MIMETYPES;
+    }
+
     public Object evaluate(Reader scriptreader)
         throws IOException {
         return evaluate(scriptreader, "");
