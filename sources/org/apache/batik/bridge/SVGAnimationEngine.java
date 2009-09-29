@@ -121,6 +121,12 @@ public class SVGAnimationEngine extends AnimationEngine {
     protected AnimationTickRunnable animationTickRunnable;
 
     /**
+     * The initial time that will be seeked to when the animation engine starts,
+     * as set by {@link #setCurrentTime}.
+     */
+    protected float initialStartTime;
+
+    /**
      * The factory for unparsed string values.
      */
     protected UncomputedAnimatableStringValueFactory
@@ -392,18 +398,23 @@ public class SVGAnimationEngine extends AnimationEngine {
         if (p) {
             pause();
         }
-        return t;
+        return Float.isNaN(t) ? 0 : t;
     }
 
     /**
      * Sets the current document time.
      */
     public float setCurrentTime(float t) {
-        float ret = super.setCurrentTime(t);
-        if (animationTickRunnable != null) {
-            animationTickRunnable.resume();
+        if (started) {
+            float ret = super.setCurrentTime(t);
+            if (animationTickRunnable != null) {
+                animationTickRunnable.resume();
+            }
+            return ret;
+        } else {
+            initialStartTime = t;
+            return 0;
         }
-        return ret;
     }
 
     /**
@@ -438,6 +449,7 @@ public class SVGAnimationEngine extends AnimationEngine {
                         (SVGAnimationElementBridge) bridges[i];
                     bridge.initializeTimedElement();
                 }
+
                 // tick(0, false);
                 // animationThread = new AnimationThread();
                 // animationThread.start();
@@ -446,6 +458,9 @@ public class SVGAnimationEngine extends AnimationEngine {
                     RunnableQueue q = um.getUpdateRunnableQueue();
                     animationTickRunnable = new AnimationTickRunnable(q, this);
                     q.setIdleRunnable(animationTickRunnable);
+                    if (initialStartTime != 0) {
+                        setCurrentTime(initialStartTime);
+                    }
                 }
             } catch (AnimationException ex) {
                 throw new BridgeException(ctx, ex.getElement().getElement(),
