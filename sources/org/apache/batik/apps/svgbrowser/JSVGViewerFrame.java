@@ -1908,7 +1908,7 @@ public class JSVGViewerFrame
                         InputStream is
                             = u.openStream(getInputHandler(purl).
                                            getHandledMimeTypes());
-                        // u.openStream(MimeTypeConstants.MIME_TYPES_SVG);
+                        // u.openStream(MimeTypeConstants.MIME_TYPES_SVG_LIST.iterator());
 
                         Reader in = XMLUtilities.createXMLDocumentReader(is);
                         int len;

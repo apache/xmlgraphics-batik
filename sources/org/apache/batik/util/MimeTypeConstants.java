@@ -18,6 +18,9 @@
  */
 package org.apache.batik.util;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * This interface defines constants for Various Mime Types
  *
@@ -28,8 +31,8 @@ public interface MimeTypeConstants {
     //
     // Mime Type Constants
     //
-    String [] MIME_TYPES_SVG = {
-        "image/svg+xml",
-        "application/xml",
-        "text/xml" };
+   String [] MIME_TYPES_SVG = {"image/svg+xml",
+                                     "application/xml",
+                                     "text/xml" };
+   List MIME_TYPES_SVG_LIST = Arrays.asList(MIME_TYPES_SVG);
 }
