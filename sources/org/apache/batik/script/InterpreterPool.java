@@ -116,12 +116,13 @@ public class InterpreterPool {
 
         Interpreter interpreter = null;
         SVGOMDocument svgDoc = (SVGOMDocument) document;
+        URL url = null;
         try {
-            URL url = new URL(svgDoc.getDocumentURI());
-            interpreter = factory.createInterpreter(url, svgDoc.isSVG12(),
-                                                    imports);
+            url = new URL(svgDoc.getDocumentURI());
         } catch (MalformedURLException e) {
         }
+        interpreter = factory.createInterpreter(url, svgDoc.isSVG12(),
+                                                imports);
 
         if (interpreter == null) return null;
 
