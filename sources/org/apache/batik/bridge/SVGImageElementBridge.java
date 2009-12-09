@@ -408,7 +408,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         throws IOException {
         List mimeTypes = new ArrayList
             (ImageTagRegistry.getRegistry().getRegisteredMimeTypes());
-        mimeTypes.add(MimeTypeConstants.MIME_TYPES_SVG);
+        mimeTypes.addAll(MimeTypeConstants.MIME_TYPES_SVG_LIST);
         InputStream reference = purl.openStream(mimeTypes.iterator());
         return new ProtectedStream(reference);
     }

@@ -155,7 +155,8 @@ public class SAXSVGDocumentFactory
     public Document createDocument(String uri) throws IOException {
         ParsedURL purl = new ParsedURL(uri);
 
-        InputStream is = purl.openStream(MimeTypeConstants.MIME_TYPES_SVG);
+        InputStream is = purl.openStream
+           (MimeTypeConstants.MIME_TYPES_SVG_LIST.iterator());
         uri = purl.getPostConnectionURL();
 
         InputSource isrc = new InputSource(is);
