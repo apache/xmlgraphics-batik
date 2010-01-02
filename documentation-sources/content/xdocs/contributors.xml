@@ -81,11 +81,11 @@
             Dieter is a freelance programmer living in Hamburg, Germany. He
             spends his time on projects in refineries and tankfarms, chasing
             bits from ERP to PLC and back. Although not specifically an expert
-            with graphics, he tries to help out &quot;maintaining and enhancing this
-            interesting, non-trivial piece of code&quot;.
+            with graphics, he tries to help out “maintaining and enhancing this
+            interesting, non-trivial piece of code”.
           </p>
         </dd>
-        <dt>Helder Miguel Alves Magalh&#227;es (HM)</dt>
+        <dt>Helder Magalhães (HM)</dt>
         <dd>
           <p><a href="mailto:helder.magalhaes@gmail.com">helder.magalhaes@gmail.com</a></p>
           <p>Helder is a software engineer at the Power Systems Automation unit of
@@ -355,75 +355,75 @@
       <div class="expertise">
         <table>
           <tr>
-            <th/><th class="tick"><abbr title="Thomas DeWeese">TD</abbr></th><th class="tick"><abbr title="Cameron McCormack">CM</abbr></th><th class="tick"><abbr title="Dieter von Holten">DH</abbr></th>
+            <th/><th class="tick"><abbr title="Thomas DeWeese">TD</abbr></th><th class="tick"><abbr title="Cameron McCormack">CM</abbr></th><th class="tick"><abbr title="Dieter von Holten">DH</abbr></th><th class="tick"><abbr title="Helder Magalhães">HM</abbr></th>
           </tr>
           <tr>
             <td class="area">Team Contact</td>
-            <td>X</td><td/><td/>
+            <td>X</td><td/><td/><td/>
           </tr>
           <tr>
             <td class="area">Bridge</td>
-            <td/><td>X</td><td/>
+            <td/><td>X</td><td/><td/>
           </tr>
           <tr>
             <td class="area">Browser</td>
-            <td>X</td><td/><td/>
+            <td>X</td><td/><td/><td/>
           </tr>
           <tr>
             <td class="area">CSS</td>
-            <td>X</td><td>X</td><td/>
+            <td>X</td><td>X</td><td/><td/>
           </tr>
           <tr>
             <td class="area">Documentation</td>
-            <td>X</td><td>X</td><td/>
+            <td>X</td><td>X</td><td/><td>X</td>
           </tr>
           <tr>
             <td class="area">SVG DOM</td>
-            <td/><td>X</td><td/>
+            <td/><td>X</td><td/><td/>
           </tr>
           <tr>
             <td class="area">GVT Core</td>
-            <td>X</td><td/><td/>
+            <td>X</td><td/><td/><td/>
           </tr>
           <tr>
             <td class="area">GVT Filters</td>
-            <td>X</td><td/><td/>
+            <td>X</td><td/><td/><td/>
           </tr>
           <tr>
             <td class="area">GVT Renderer</td>
-            <td>X</td><td/><td/>
+            <td>X</td><td/><td/><td/>
           </tr>
           <tr>
             <td class="area">GVT Text</td>
-            <td>X</td><td/><td/>
+            <td>X</td><td/><td/><td/>
           </tr>
           <tr>
             <td class="area">SVGGraphics2D</td>
-            <td>X</td><td/><td/>
+            <td>X</td><td/><td/><td/>
           </tr>
           <tr>
             <td class="area">SMIL Animation</td>
-            <td/><td>X</td><td/>
+            <td/><td>X</td><td/><td/>
           </tr>
           <tr>
             <td class="area">Micro Parsers</td>
-            <td>X</td><td/><td/>
+            <td>X</td><td/><td/><td/>
           </tr>
           <tr>
             <td class="area">Rasterizer</td>
-            <td>X</td><td/><td/>
+            <td>X</td><td/><td/><td/>
           </tr>
           <tr>
             <td class="area">Scripting</td>
-            <td/><td>X</td><td/>
+            <td/><td>X</td><td/><td/>
           </tr>
           <tr>
             <td class="area">Swing Components</td>
-            <td>X</td><td/><td/>
+            <td>X</td><td/><td/><td/>
           </tr>
           <tr>
             <td class="area">Test</td>
-            <td>X</td><td/><td>X</td>
+            <td>X</td><td/><td>X</td><td>X</td>
           </tr>
         </table>
       </div>
