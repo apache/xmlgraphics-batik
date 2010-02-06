@@ -51,9 +51,7 @@ public class PNGOptionPanel extends OptionPanel {
         ExtendedGridBagConstraints constraints =
             new ExtendedGridBagConstraints();
 
-
         constraints.insets = new Insets(5, 5, 5, 5);
-
         constraints.weightx = 0;
         constraints.weighty = 0;
         constraints.fill = GridBagConstraints.NONE;
@@ -61,7 +59,7 @@ public class PNGOptionPanel extends OptionPanel {
         add(new JLabel(resources.getString("PNGOptionPanel.label")),
             constraints);
 
-        check=new JCheckBox();
+        check = new JCheckBox();
 
         constraints.weightx = 1.0;
         constraints.fill = GridBagConstraints.HORIZONTAL;

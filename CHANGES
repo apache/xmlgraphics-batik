@@ -9,9 +9,9 @@ Bug fixing is an on-going task, so it is implied in all sub-releases.
 
 1. Bugzilla problem reports fixed:
 
-    43411, 44553, 44590, 44919, 44936, 44966, 45112, 45114, 45117,
-    45397, 45520, 45883, 45958, 46072, 46124, 46430, 46431, 46855,
-    46871, 47201, 47202, 48411
+    43411, 43847, 44553, 44590, 44919, 44936, 44966, 45112, 45114,
+    45117, 45397, 45520, 45883, 45958, 46072, 46124, 46430, 46431,
+    46855, 46871, 47201, 47202, 48411
 
 
 2. New features
@@ -55,6 +55,7 @@ Bug fixing is an on-going task, so it is implied in all sub-releases.
   * JavaScript fragments using different types within the one document
     (such as text/javascript and application/ecmascript) now share the
     same script interpreter.
+  * Exporting 256 color indexed PNG files in Squiggle now works.
 
 1.7beta1 -> 1.7
 ---------------
