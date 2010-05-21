@@ -211,6 +211,8 @@ class IDATOutputStream extends FilterOutputStream {
     }
 
     public void flush() throws IOException {
+        if (bytesWritten == 0) return;
+
         // Length
         writeInt(bytesWritten);
         // 'IDAT' signature
