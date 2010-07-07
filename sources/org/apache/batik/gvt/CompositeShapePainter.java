@@ -201,6 +201,7 @@ public class CompositeShapePainter implements ShapePainter {
         Rectangle2D bounds = null;
         for (int i=0; i < count; ++i) {
             Rectangle2D pb = painters[i].getSensitiveBounds2D();
+            if (pb == null) continue;
             if (bounds == null) bounds = (Rectangle2D)pb.clone();
             else                bounds.add(pb);
         }
