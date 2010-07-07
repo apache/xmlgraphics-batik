@@ -102,6 +102,7 @@ public class BackgroundRable8Bit
 
             // System.out.println("GN: " + gn);
             Rectangle2D cr2d = gn.getBounds();
+            if (cr2d == null) continue;
             AffineTransform at = gn.getTransform();
             if (at != null)
                 cr2d = at.createTransformedShape(cr2d).getBounds2D();
@@ -301,6 +302,7 @@ public class BackgroundRable8Bit
                     break;
 
                 Rectangle2D cbounds = childGN.getBounds();
+                if (cbounds == null) continue;
                 // System.out.println("Child : " + childGN);
                 // System.out.println("Bounds: " + cbounds);
                 // System.out.println("      : " + aoi);
