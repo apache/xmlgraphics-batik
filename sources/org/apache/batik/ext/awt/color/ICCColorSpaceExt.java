@@ -30,6 +30,7 @@ import java.awt.color.ICC_Profile;
  *
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
+ * @deprecated use the version from XML Graphics Commons instead
  */
 public class ICCColorSpaceExt extends ICC_ColorSpace {
     public static final int PERCEPTUAL = 0;

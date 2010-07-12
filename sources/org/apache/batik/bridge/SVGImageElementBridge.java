@@ -42,7 +42,6 @@ import org.apache.batik.dom.svg.LiveAttributeException;
 import org.apache.batik.dom.svg.SVGOMAnimatedPreserveAspectRatio;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.svg.SVGOMElement;
-import org.apache.batik.ext.awt.color.ICCColorSpaceExt;
 import org.apache.batik.ext.awt.image.renderable.ClipRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.spi.BrokenLinkProvider;
@@ -57,6 +56,8 @@ import org.apache.batik.util.HaltingThread;
 import org.apache.batik.util.MimeTypeConstants;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.XMLConstants;
+
+import org.apache.xmlgraphics.java2d.color.ICCColorSpaceExt;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -968,7 +969,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
 
             colorSpace = new ICCColorSpaceExt
                 (ICC_Profile.getInstance(ColorSpace.CS_sRGB),
-                 ICCColorSpaceExt.AUTO);
+                 ICCColorSpaceExt.AUTO, "sRGB", null);
 
         } else if (!CSS_AUTO_VALUE.equalsIgnoreCase(colorProfileProperty)
                    && !"".equalsIgnoreCase(colorProfileProperty)){

@@ -28,12 +28,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 
-import org.apache.batik.ext.awt.color.ICCColorSpaceExt;
 import org.apache.batik.ext.awt.image.URLImageCache;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.renderable.ProfileRable;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.Service;
+
+import org.apache.xmlgraphics.java2d.color.ICCColorSpaceExt;
 
 /**
  * This class handles the registered Image tag handlers.  These are

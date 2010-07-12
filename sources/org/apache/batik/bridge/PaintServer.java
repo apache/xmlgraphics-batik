@@ -23,11 +23,15 @@ import java.awt.Color;
 import java.awt.Paint;
 import java.awt.Shape;
 import java.awt.Stroke;
+import java.awt.color.ICC_Profile;
+import java.io.IOException;
 
 import org.apache.batik.css.engine.SVGCSSEngine;
 import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.css.engine.value.svg.ICCColor;
-import org.apache.batik.ext.awt.color.ICCColorSpaceExt;
+import org.apache.batik.css.engine.value.svg12.CIELabColor;
+import org.apache.batik.css.engine.value.svg12.DeviceColor;
+import org.apache.batik.css.engine.value.svg12.ICCNamedColor;
 import org.apache.batik.gvt.CompositeShapePainter;
 import org.apache.batik.gvt.FillShapePainter;
 import org.apache.batik.gvt.GraphicsNode;
@@ -38,6 +42,16 @@ import org.apache.batik.gvt.ShapePainter;
 import org.apache.batik.gvt.StrokeShapePainter;
 import org.apache.batik.util.CSSConstants;
 import org.apache.batik.util.SVGConstants;
+
+import org.apache.xmlgraphics.java2d.color.CIELabColorSpace;
+import org.apache.xmlgraphics.java2d.color.ColorSpaces;
+import org.apache.xmlgraphics.java2d.color.ColorWithAlternatives;
+import org.apache.xmlgraphics.java2d.color.DeviceCMYKColorSpace;
+import org.apache.xmlgraphics.java2d.color.ICCColorSpaceExt;
+import org.apache.xmlgraphics.java2d.color.NamedColorSpace;
+import org.apache.xmlgraphics.java2d.color.profile.NamedColorProfile;
+import org.apache.xmlgraphics.java2d.color.profile.NamedColorProfileParser;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.css.CSSValue;
@@ -271,7 +285,7 @@ public abstract class PaintServer
             switch (v.getPrimitiveType()) {
             case CSSPrimitiveValue.CSS_RGBCOLOR:
                 return convertRGBICCColor(paintedElement, v,
-                                          (ICCColor)paintDef.item(1),
+                                          paintDef.item(1),
                                           opacity, ctx);
 
             case CSSPrimitiveValue.CSS_URI: {
@@ -290,7 +304,7 @@ public abstract class PaintServer
                         return convertColor(v, opacity);
                     } else {
                         return convertRGBICCColor(paintedElement, v,
-                                                  (ICCColor)paintDef.item(2),
+                                                  paintDef.item(2),
                                                   opacity, ctx);
                     }
                 default:
@@ -376,12 +390,20 @@ public abstract class PaintServer
      */
     public static Color convertRGBICCColor(Element paintedElement,
                                            Value colorDef,
-                                           ICCColor iccColor,
+                                           Value iccColor,
                                            float opacity,
                                            BridgeContext ctx) {
         Color color = null;
-        if (iccColor != null){
-            color = convertICCColor(paintedElement, iccColor, opacity, ctx);
+        if (iccColor != null) {
+            if (iccColor instanceof ICCColor) {
+                color = convertICCColor(paintedElement, (ICCColor)iccColor, opacity, ctx);
+            } else if (iccColor instanceof ICCNamedColor) {
+                color = convertICCNamedColor(paintedElement, (ICCNamedColor)iccColor, opacity, ctx);
+            } else if (iccColor instanceof CIELabColor) {
+                color = convertCIELabColor(paintedElement, (CIELabColor)iccColor, opacity, ctx);
+            } else if (iccColor instanceof DeviceColor) {
+                color = convertDeviceColor(paintedElement, colorDef, (DeviceColor)iccColor, opacity, ctx);
+            }
         }
         if (color == null){
             color = convertColor(colorDef, opacity);
@@ -402,7 +424,7 @@ public abstract class PaintServer
     public static Color convertICCColor(Element e,
                                         ICCColor c,
                                         float opacity,
-                                        BridgeContext ctx){
+                                        BridgeContext ctx) {
         // Get ICC Profile's name
         String iccProfileName = c.getColorProfile();
         if (iccProfileName == null){
@@ -434,7 +456,134 @@ public abstract class PaintServer
 
         // Convert values to RGB
         float[] rgb = profileCS.intendedToRGB(colorValue);
+        //TODO Preserve original ICC color value!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         return new Color(rgb[0], rgb[1], rgb[2], opacity);
+    }
+
+    /**
+     * Returns a Color object that corresponds to the input Paint's
+     * ICC named color value or null if the related color profile could not
+     * be used or loaded for any reason.
+     *
+     * @param e the element using the color
+     * @param c the ICC named color definition
+     * @param opacity the opacity
+     * @param ctx the bridge context to use
+     */
+    public static Color convertICCNamedColor(Element e,
+                                        ICCNamedColor c,
+                                        float opacity,
+                                        BridgeContext ctx) {
+        // Get ICC Profile's name
+        String iccProfileName = c.getColorProfile();
+        if (iccProfileName == null){
+            return null;
+        }
+        // Ask the bridge to map the ICC profile name to an  ICC_Profile object
+        SVGColorProfileElementBridge profileBridge
+            = (SVGColorProfileElementBridge)
+            ctx.getBridge(SVG_NAMESPACE_URI, SVG_COLOR_PROFILE_TAG);
+        if (profileBridge == null){
+            return null; // no bridge for color profile
+        }
+
+        ICCColorSpaceExt profileCS
+            = profileBridge.createICCColorSpaceExt(ctx, e, iccProfileName);
+        if (profileCS == null){
+            return null; // no profile
+        }
+        ICC_Profile iccProfile = profileCS.getProfile();
+
+        String iccProfileSrc = null; //TODO Fill me!
+
+        if (NamedColorProfileParser.isNamedColorProfile(iccProfile)) {
+            NamedColorProfileParser parser = new NamedColorProfileParser();
+            NamedColorProfile ncp;
+            try {
+                ncp = parser.parseProfile(iccProfile, iccProfileName, iccProfileSrc);
+            } catch (IOException ioe) {
+                return null;
+            }
+            NamedColorSpace ncs = ncp.getNamedColor(c.getColorName());
+            if (ncs != null) {
+                Color specColor
+                    = new ColorWithAlternatives(ncs, new float[] {1.0f}, opacity, null);
+                return specColor;
+            } else {
+                /*
+                log.warn("Color '" + colorName
+                        + "' does not exist in named color profile: " + iccProfileSrc);
+                */
+                //parsedColor = sRGB;
+                return null;
+            }
+        } else {
+            //log.warn("ICC profile is no named color profile: " + iccProfileSrc);
+            //parsedColor = sRGB;
+        }
+
+        // Convert values to RGB
+        //float[] rgb = profileCS.intendedToRGB(colorValue);
+        //TODO Preserve original ICC color value!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //return new Color(rgb[0], rgb[1], rgb[2], opacity);
+        return null;
+    }
+
+    /**
+     * Returns a Color object that corresponds to the input Paint's
+     * CIE Lab color value.
+     *
+     * @param e the element using the color
+     * @param c the CIE Lab color definition
+     * @param opacity the opacity
+     * @param ctx the bridge context to use
+     */
+    public static Color convertCIELabColor(Element e,
+                                        CIELabColor c,
+                                        float opacity,
+                                        BridgeContext ctx) {
+        //We're assuming here that SVG Color 1.2 means to use D50 as white point for CIE Lab
+        CIELabColorSpace cs = ColorSpaces.getCIELabColorSpaceD50();
+        float[] lab = c.getColorValues();
+        Color specColor = cs.toColor(lab[0], lab[1], lab[2], opacity);
+        return specColor;
+    }
+
+    /**
+     * Returns a Color object that corresponds to the input Paint's
+     * device-specific color value.
+     *
+     * @param e the element using the color
+     * @param srgb the sRGB fallback color
+     * @param c the device-specific color definition
+     * @param opacity the opacity
+     * @param ctx the bridge context to use
+     */
+    public static Color convertDeviceColor(Element e,
+                                        Value srgb,
+                                        DeviceColor c,
+                                        float opacity,
+                                        BridgeContext ctx) {
+        int r = resolveColorComponent(srgb.getRed());
+        int g = resolveColorComponent(srgb.getGreen());
+        int b = resolveColorComponent(srgb.getBlue());
+        if (c.isNChannel()) {
+            return convertColor(srgb, opacity); //NYI
+        } else {
+            if (c.getNumberOfColors() == 4) {
+                DeviceCMYKColorSpace cmykCs = ColorSpaces.getDeviceCMYKColorSpace();
+                float[] comps = new float[4];
+                for (int i = 0; i < 4; i++) {
+                    comps[i] = c.getColor(i);
+                }
+                Color cmyk = new ColorWithAlternatives(cmykCs, comps, opacity, null);
+                Color specColor = new ColorWithAlternatives(r, g, b, Math.round(opacity * 255f),
+                        new Color[] {cmyk});
+                return specColor;
+            } else {
+                return convertColor(srgb, opacity); //NYI
+            }
+        }
     }
 
     /**

@@ -21,10 +21,11 @@ package org.apache.batik.ext.awt.image.renderable;
 import java.awt.image.RenderedImage;
 import java.awt.image.renderable.RenderContext;
 
-import org.apache.batik.ext.awt.color.ICCColorSpaceExt;
 import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
 import org.apache.batik.ext.awt.image.rendered.ProfileRed;
+
+import org.apache.xmlgraphics.java2d.color.ICCColorSpaceExt;
 
 /**
  * Implements the interface expected from a color matrix
@@ -34,7 +35,7 @@ import org.apache.batik.ext.awt.image.rendered.ProfileRed;
  * @version $Id$
  */
 public class ProfileRable extends  AbstractRable{
-    
+
     private ICCColorSpaceExt colorSpace;
 
     /**

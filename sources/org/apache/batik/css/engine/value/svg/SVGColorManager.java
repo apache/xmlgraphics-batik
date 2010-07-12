@@ -24,6 +24,9 @@ import org.apache.batik.css.engine.StyleMap;
 import org.apache.batik.css.engine.value.ListValue;
 import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.css.engine.value.ValueManager;
+import org.apache.batik.css.engine.value.svg12.CIELabColor;
+import org.apache.batik.css.engine.value.svg12.DeviceColor;
+import org.apache.batik.css.engine.value.svg12.ICCNamedColor;
 import org.apache.batik.util.CSSConstants;
 import org.apache.batik.util.SVGTypes;
 
@@ -100,7 +103,7 @@ public class SVGColorManager extends ColorManager {
         return property;
     }
 
-    
+
     /**
      * Implements {@link
      * org.apache.batik.css.engine.value.ValueManager#getDefaultValue()}.
@@ -108,7 +111,7 @@ public class SVGColorManager extends ColorManager {
     public Value getDefaultValue() {
         return defaultValue;
     }
-    
+
     /**
      * Implements {@link ValueManager#createValue(LexicalUnit,CSSEngine)}.
      */
@@ -125,36 +128,127 @@ public class SVGColorManager extends ColorManager {
         if (lu == null) {
             return v;
         }
-        if (lu.getLexicalUnitType() != LexicalUnit.SAC_FUNCTION ||
-            !lu.getFunctionName().equalsIgnoreCase("icc-color")) {
+
+        if (lu.getLexicalUnitType() != LexicalUnit.SAC_FUNCTION) {
             throw createInvalidLexicalUnitDOMException
                 (lu.getLexicalUnitType());
         }
+
+        ListValue result = new ListValue(' ');
+        result.append(v);
+
+        String functionName = lu.getFunctionName();
+        if (functionName.equalsIgnoreCase(ICCColor.ICC_COLOR_FUNCTION)) {
+            result.append(createICCColorValue(lu, v));
+        } else if (functionName.equalsIgnoreCase(ICCNamedColor.ICC_NAMED_COLOR_FUNCTION)) {
+            result.append(createICCNamedColorValue(lu, v));
+        } else if (functionName.equalsIgnoreCase(CIELabColor.CIE_LAB_COLOR_FUNCTION)) {
+            result.append(createCIELabColorValue(lu, v));
+        } else if (functionName.equalsIgnoreCase(DeviceColor.DEVICE_CMYK_COLOR_FUNCTION)) {
+            result.append(createDeviceColorValue(lu, v, 4));
+        } else if (functionName.equalsIgnoreCase(DeviceColor.DEVICE_RGB_COLOR_FUNCTION)) {
+            result.append(createDeviceColorValue(lu, v, 3));
+        } else if (functionName.equalsIgnoreCase(DeviceColor.DEVICE_GRAY_COLOR_FUNCTION)) {
+            result.append(createDeviceColorValue(lu, v, 1));
+        } else if (functionName.equalsIgnoreCase(DeviceColor.DEVICE_CMYK_COLOR_FUNCTION)) {
+            result.append(createDeviceColorValue(lu, v, 0));
+        } else {
+            throw createInvalidLexicalUnitDOMException(lu.getLexicalUnitType());
+        }
+        return result;
+    }
+
+    private Value createICCColorValue(LexicalUnit lu, Value v) {
         lu = lu.getParameters();
+        expectIdent(lu);
+
+        ICCColor icc = new ICCColor(lu.getStringValue());
+
+        lu = lu.getNextLexicalUnit();
+        while (lu != null) {
+            expectComma(lu);
+            lu = lu.getNextLexicalUnit();
+            icc.append(getColorValue(lu));
+            lu = lu.getNextLexicalUnit();
+        }
+        return icc;
+    }
+
+    private Value createICCNamedColorValue(LexicalUnit lu, Value v) {
+        lu = lu.getParameters();
+        expectIdent(lu);
+        String profileName = lu.getStringValue();
+
+        lu = lu.getNextLexicalUnit();
+        expectComma(lu);
+        lu = lu.getNextLexicalUnit();
+        expectIdent(lu);
+        String colorName = lu.getStringValue();
+
+        ICCNamedColor icc = new ICCNamedColor(profileName, colorName);
+
+        lu = lu.getNextLexicalUnit();
+        return icc;
+    }
+
+    private Value createCIELabColorValue(LexicalUnit lu, Value v) {
+        lu = lu.getParameters();
+        float l = getColorValue(lu);
+        lu = lu.getNextLexicalUnit();
+        expectComma(lu);
+        lu = lu.getNextLexicalUnit();
+        float a = getColorValue(lu);
+        lu = lu.getNextLexicalUnit();
+        expectComma(lu);
+        lu = lu.getNextLexicalUnit();
+        float b = getColorValue(lu);
+
+        CIELabColor icc = new CIELabColor(l, a, b);
+
+        lu = lu.getNextLexicalUnit();
+        return icc;
+    }
+
+    private Value createDeviceColorValue(LexicalUnit lu, Value v, int expectedComponents) {
+        lu = lu.getParameters();
+
+        boolean nChannel = (expectedComponents <= 0);
+        DeviceColor col = new DeviceColor(nChannel);
+
+        col.append(getColorValue(lu));
+        LexicalUnit lastUnit = lu;
+        lu = lu.getNextLexicalUnit();
+        while (lu != null) {
+            expectComma(lu);
+            lu = lu.getNextLexicalUnit();
+            col.append(getColorValue(lu));
+            lastUnit = lu;
+            lu = lu.getNextLexicalUnit();
+        }
+        if (!nChannel && expectedComponents != col.getNumberOfColors()) {
+            throw createInvalidLexicalUnitDOMException(lastUnit.getLexicalUnitType());
+        }
+        return col;
+    }
+
+    private void expectIdent(LexicalUnit lu) {
         if (lu.getLexicalUnitType() != LexicalUnit.SAC_IDENT) {
             throw createInvalidLexicalUnitDOMException
                 (lu.getLexicalUnitType());
         }
-        ListValue result = new ListValue(' ');
-        result.append(v);
+    }
 
-        ICCColor icc = new ICCColor(lu.getStringValue());
-        result.append(icc);
-
-        lu = lu.getNextLexicalUnit();
-        while (lu != null) {
-            if (lu.getLexicalUnitType() != LexicalUnit.SAC_OPERATOR_COMMA) {
-                throw createInvalidLexicalUnitDOMException
-                    (lu.getLexicalUnitType());
-            }
-            lu = lu.getNextLexicalUnit();
-            if (lu == null) {
-                throw createInvalidLexicalUnitDOMException((short)-1);
-            }
-            icc.append(getColorValue(lu));
-            lu = lu.getNextLexicalUnit();
+    private void expectComma(LexicalUnit lu) {
+        if (lu.getLexicalUnitType() != LexicalUnit.SAC_OPERATOR_COMMA) {
+            throw createInvalidLexicalUnitDOMException
+                (lu.getLexicalUnitType());
         }
-        return result;
+    }
+
+    private void expectNonNull(LexicalUnit lu) {
+        if (lu == null) {
+            throw createInvalidLexicalUnitDOMException((short)-1);
+        }
     }
 
     /**
@@ -192,6 +286,7 @@ public class SVGColorManager extends ColorManager {
      * Creates a float value usable as a component of an RGBColor.
      */
     protected float getColorValue(LexicalUnit lu) {
+        expectNonNull(lu);
         switch (lu.getLexicalUnitType()) {
         case LexicalUnit.SAC_INTEGER:
             return lu.getIntegerValue();

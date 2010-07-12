@@ -16,21 +16,20 @@
    limitations under the License.
 
  */
-package org.apache.batik.css.engine.value.svg;
+package org.apache.batik.css.engine.value.svg12;
 
 import org.apache.batik.css.engine.value.AbstractValue;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.css.CSSValue;
 
 /**
- * This class represents an ICC color value.
+ * This class represents an ICC named color value.
  *
- * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class ICCColor extends AbstractValue {
+public class ICCNamedColor extends AbstractValue {
 
-    public static final String ICC_COLOR_FUNCTION = "icc-color";
+    public static final String ICC_NAMED_COLOR_FUNCTION = "icc-named-color";
 
     /**
      * The color profile.
@@ -38,20 +37,16 @@ public class ICCColor extends AbstractValue {
     protected String colorProfile;
 
     /**
-     * The color count.
+     * The color name.
      */
-    protected int count;
-
-    /**
-     * The colors.
-     */
-    protected float[] colors = new float[5];
+    protected String colorName;
 
     /**
      * Creates a new ICCColor.
      */
-    public ICCColor(String name) {
-        colorProfile = name;
+    public ICCNamedColor(String profileName, String colorName) {
+        this.colorProfile = profileName;
+        this.colorName = colorName;
     }
 
     /**
@@ -70,43 +65,23 @@ public class ICCColor extends AbstractValue {
     }
 
     /**
-     * Returns the number of colors.
+     * Returns the color name
      */
-    public int getNumberOfColors() throws DOMException {
-        return count;
-    }
-
-    /**
-     * Returns the color at the given index.
-     */
-    public float getColor(int i) throws DOMException {
-        return colors[i];
+    public String getColorName() throws DOMException {
+        return colorName;
     }
 
     /**
      *  A string representation of the current value.
      */
     public String getCssText() {
-        StringBuffer sb = new StringBuffer( count * 8 );
-        sb.append(ICC_COLOR_FUNCTION).append('(');
+        StringBuffer sb = new StringBuffer(ICC_NAMED_COLOR_FUNCTION);
+        sb.append('(');
         sb.append(colorProfile);
-        for (int i = 0; i < count; i++) {
-            sb.append(", ");
-            sb.append(colors[i]);
-        }
+        sb.append(", ");
+        sb.append(colorName);
         sb.append( ')' );
         return sb.toString();
     }
 
-    /**
-     * Appends a color to the list.
-     */
-    public void append(float c) {
-        if (count == colors.length) {
-            float[] t = new float[count * 2];
-            System.arraycopy( colors, 0, t, 0, count );
-            colors = t;
-        }
-        colors[count++] = c;
-    }
 }

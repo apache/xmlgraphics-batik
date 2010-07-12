@@ -23,9 +23,10 @@ import java.io.IOException;
 
 import org.apache.batik.dom.AbstractNode;
 import org.apache.batik.dom.util.XLinkSupport;
-import org.apache.batik.ext.awt.color.ICCColorSpaceExt;
 import org.apache.batik.ext.awt.color.NamedProfileCache;
 import org.apache.batik.util.ParsedURL;
+
+import org.apache.xmlgraphics.java2d.color.ICCColorSpaceExt;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -128,7 +129,7 @@ public class SVGColorProfileElementBridge extends AbstractSVGBridge
 
         // Extract the rendering intent from profile element
         int intent = convertIntent(profile, ctx);
-        cs = new ICCColorSpaceExt(p, intent);
+        cs = new ICCColorSpaceExt(p, intent, href, iccProfileName);
 
         // Add profile to cache
         cache.put(iccProfileName.toLowerCase(), cs);

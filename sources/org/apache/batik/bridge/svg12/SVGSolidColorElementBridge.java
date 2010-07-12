@@ -34,7 +34,6 @@ import org.apache.batik.css.engine.CSSEngine;
 import org.apache.batik.css.engine.CSSStylableElement;
 import org.apache.batik.css.engine.StyleMap;
 import org.apache.batik.css.engine.value.Value;
-import org.apache.batik.css.engine.value.svg.ICCColor;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.gvt.GraphicsNode;
@@ -156,7 +155,7 @@ public class SVGSolidColorElementBridge extends AnimatableGenericSVGBridge
                 } else {
                     return PaintServer.convertRGBICCColor
                         (paintElement, colorDef.item(0),
-                         (ICCColor)colorDef.item(1),
+                         colorDef.item(1),
                          opacity, ctx);
                 }
             }

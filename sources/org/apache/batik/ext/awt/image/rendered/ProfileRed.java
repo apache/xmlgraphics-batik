@@ -35,8 +35,7 @@ import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
 import java.awt.image.WritableRaster;
 
-import org.apache.batik.ext.awt.color.ICCColorSpaceExt;
-
+import org.apache.xmlgraphics.java2d.color.ICCColorSpaceExt;
 
 /**
  * This implementation of rendered image forces a color profile
