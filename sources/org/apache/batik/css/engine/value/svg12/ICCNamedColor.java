@@ -42,7 +42,7 @@ public class ICCNamedColor extends AbstractValue {
     protected String colorName;
 
     /**
-     * Creates a new ICCColor.
+     * Creates a new ICCNamedColor.
      */
     public ICCNamedColor(String profileName, String colorName) {
         this.colorProfile = profileName;

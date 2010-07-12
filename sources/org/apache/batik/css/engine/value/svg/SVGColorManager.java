@@ -24,6 +24,7 @@ import org.apache.batik.css.engine.StyleMap;
 import org.apache.batik.css.engine.value.ListValue;
 import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.css.engine.value.ValueManager;
+import org.apache.batik.css.engine.value.svg12.CIELCHColor;
 import org.apache.batik.css.engine.value.svg12.CIELabColor;
 import org.apache.batik.css.engine.value.svg12.DeviceColor;
 import org.apache.batik.css.engine.value.svg12.ICCNamedColor;
@@ -161,6 +162,8 @@ public class SVGColorManager extends ColorManager {
             return createICCNamedColorValue(lu, v);
         } else if (functionName.equalsIgnoreCase(CIELabColor.CIE_LAB_COLOR_FUNCTION)) {
             return createCIELabColorValue(lu, v);
+        } else if (functionName.equalsIgnoreCase(CIELCHColor.CIE_LCH_COLOR_FUNCTION)) {
+            return createCIELCHColorValue(lu, v);
         } else if (functionName.equalsIgnoreCase(DeviceColor.DEVICE_CMYK_COLOR_FUNCTION)) {
             return createDeviceColorValue(lu, v, 4);
         } else if (functionName.equalsIgnoreCase(DeviceColor.DEVICE_RGB_COLOR_FUNCTION)) {
@@ -219,6 +222,24 @@ public class SVGColorManager extends ColorManager {
         float b = getColorValue(lu);
 
         CIELabColor icc = new CIELabColor(l, a, b);
+
+        lu = lu.getNextLexicalUnit();
+        return icc;
+    }
+
+    private Value createCIELCHColorValue(LexicalUnit lu, Value v) {
+        lu = lu.getParameters();
+        float l = getColorValue(lu);
+        lu = lu.getNextLexicalUnit();
+        expectComma(lu);
+        lu = lu.getNextLexicalUnit();
+        float c = getColorValue(lu);
+        lu = lu.getNextLexicalUnit();
+        expectComma(lu);
+        lu = lu.getNextLexicalUnit();
+        float h = getColorValue(lu);
+
+        CIELCHColor icc = new CIELCHColor(l, c, h);
 
         lu = lu.getNextLexicalUnit();
         return icc;

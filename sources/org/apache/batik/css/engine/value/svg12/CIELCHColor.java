@@ -19,35 +19,38 @@
 package org.apache.batik.css.engine.value.svg12;
 
 /**
- * This class represents an CIE L*a*b* color value.
+ * This class represents an CIE LCH color value.
  *
  * @version $Id$
  */
-public class CIELabColor extends AbstractCIEColor {
+public class CIELCHColor extends AbstractCIEColor {
 
-    public static final String CIE_LAB_COLOR_FUNCTION = "cielab";
+    public static final String CIE_LCH_COLOR_FUNCTION = "cielch";
 
     /**
-     * Creates a new CIELabColor.
-     * @param l the L* value
-     * @param a the a* value
-     * @param b the b* value
+     * Creates a new CIELCHColor.
+     * @param l the lightness (L) value
+     * @param c the chroma (C) value
+     * @param h the hue (H) value
      * @param whitepoint the white point in CIE XYZ coordinates
      */
-    public CIELabColor(float l, float a, float b, float[] whitepoint) {
-        super(new float[] {l, a, b}, whitepoint);
+    public CIELCHColor(float l, float c, float h, float[] whitepoint) {
+        super(new float[] {l, c, h}, whitepoint);
     }
 
     /**
-     * Creates a new CIELabColor with D65 as illuminant.
+     * Creates a new CIELCHColor with D65 as illuminant.
+     * @param l the lightness (L) value
+     * @param c the chroma (C) value
+     * @param h the hue (H) value
      */
-    public CIELabColor(float l, float a, float b) {
-        this(l, a, b, null);
+    public CIELCHColor(float l, float c, float h) {
+        this(l, c, h, null);
     }
 
     /** {@inheritDoc} */
     public String getFunctionName() {
-        return CIE_LAB_COLOR_FUNCTION;
+        return CIE_LCH_COLOR_FUNCTION;
     }
 
 }
