@@ -170,7 +170,7 @@ public class SVGColorManager extends ColorManager {
             return createDeviceColorValue(lu, v, 3);
         } else if (functionName.equalsIgnoreCase(DeviceColor.DEVICE_GRAY_COLOR_FUNCTION)) {
             return createDeviceColorValue(lu, v, 1);
-        } else if (functionName.equalsIgnoreCase(DeviceColor.DEVICE_CMYK_COLOR_FUNCTION)) {
+        } else if (functionName.equalsIgnoreCase(DeviceColor.DEVICE_NCHANNEL_COLOR_FUNCTION)) {
             return createDeviceColorValue(lu, v, 0);
         }
         return null;

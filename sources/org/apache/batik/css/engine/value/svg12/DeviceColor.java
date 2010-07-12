@@ -89,20 +89,20 @@ public class DeviceColor extends AbstractValue {
      */
     public String getCssText() {
         StringBuffer sb = new StringBuffer( count * 8 );
-        switch (count) {
-        case 1:
-            sb.append(DEVICE_GRAY_COLOR_FUNCTION);
-            break;
-        case 3:
-            sb.append(DEVICE_RGB_COLOR_FUNCTION);
-            break;
-        case 4:
-            sb.append(DEVICE_CMYK_COLOR_FUNCTION);
-            break;
-        default:
-            if (nChannel) {
-                sb.append(DEVICE_NCHANNEL_COLOR_FUNCTION);
-            } else {
+        if (nChannel) {
+            sb.append(DEVICE_NCHANNEL_COLOR_FUNCTION);
+        } else {
+            switch (count) {
+            case 1:
+                sb.append(DEVICE_GRAY_COLOR_FUNCTION);
+                break;
+            case 3:
+                sb.append(DEVICE_RGB_COLOR_FUNCTION);
+                break;
+            case 4:
+                sb.append(DEVICE_CMYK_COLOR_FUNCTION);
+                break;
+            default:
                 throw new IllegalStateException("Invalid number of components encountered");
             }
         }
