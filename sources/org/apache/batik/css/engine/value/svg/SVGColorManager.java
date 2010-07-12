@@ -129,6 +129,7 @@ public class SVGColorManager extends ColorManager {
             return v;
         }
 
+        //If we have more content here, there is a color function after the sRGB color.
         if (lu.getLexicalUnitType() != LexicalUnit.SAC_FUNCTION) {
             throw createInvalidLexicalUnitDOMException
                 (lu.getLexicalUnitType());
@@ -137,25 +138,39 @@ public class SVGColorManager extends ColorManager {
         ListValue result = new ListValue(' ');
         result.append(v);
 
-        String functionName = lu.getFunctionName();
-        if (functionName.equalsIgnoreCase(ICCColor.ICC_COLOR_FUNCTION)) {
-            result.append(createICCColorValue(lu, v));
-        } else if (functionName.equalsIgnoreCase(ICCNamedColor.ICC_NAMED_COLOR_FUNCTION)) {
-            result.append(createICCNamedColorValue(lu, v));
-        } else if (functionName.equalsIgnoreCase(CIELabColor.CIE_LAB_COLOR_FUNCTION)) {
-            result.append(createCIELabColorValue(lu, v));
-        } else if (functionName.equalsIgnoreCase(DeviceColor.DEVICE_CMYK_COLOR_FUNCTION)) {
-            result.append(createDeviceColorValue(lu, v, 4));
-        } else if (functionName.equalsIgnoreCase(DeviceColor.DEVICE_RGB_COLOR_FUNCTION)) {
-            result.append(createDeviceColorValue(lu, v, 3));
-        } else if (functionName.equalsIgnoreCase(DeviceColor.DEVICE_GRAY_COLOR_FUNCTION)) {
-            result.append(createDeviceColorValue(lu, v, 1));
-        } else if (functionName.equalsIgnoreCase(DeviceColor.DEVICE_CMYK_COLOR_FUNCTION)) {
-            result.append(createDeviceColorValue(lu, v, 0));
+        Value colorValue = parseColorFunction(lu, v);
+        if (colorValue != null) {
+            result.append(colorValue);
         } else {
             throw createInvalidLexicalUnitDOMException(lu.getLexicalUnitType());
         }
         return result;
+    }
+
+    private Value parseColorFunction(LexicalUnit lu, Value v) {
+        String functionName = lu.getFunctionName();
+        if (functionName.equalsIgnoreCase(ICCColor.ICC_COLOR_FUNCTION)) {
+            return createICCColorValue(lu, v);
+        }
+        return parseColor12Function(lu, v);
+    }
+
+    private Value parseColor12Function(LexicalUnit lu, Value v) {
+        String functionName = lu.getFunctionName();
+        if (functionName.equalsIgnoreCase(ICCNamedColor.ICC_NAMED_COLOR_FUNCTION)) {
+            return createICCNamedColorValue(lu, v);
+        } else if (functionName.equalsIgnoreCase(CIELabColor.CIE_LAB_COLOR_FUNCTION)) {
+            return createCIELabColorValue(lu, v);
+        } else if (functionName.equalsIgnoreCase(DeviceColor.DEVICE_CMYK_COLOR_FUNCTION)) {
+            return createDeviceColorValue(lu, v, 4);
+        } else if (functionName.equalsIgnoreCase(DeviceColor.DEVICE_RGB_COLOR_FUNCTION)) {
+            return createDeviceColorValue(lu, v, 3);
+        } else if (functionName.equalsIgnoreCase(DeviceColor.DEVICE_GRAY_COLOR_FUNCTION)) {
+            return createDeviceColorValue(lu, v, 1);
+        } else if (functionName.equalsIgnoreCase(DeviceColor.DEVICE_CMYK_COLOR_FUNCTION)) {
+            return createDeviceColorValue(lu, v, 0);
+        }
+        return null;
     }
 
     private Value createICCColorValue(LexicalUnit lu, Value v) {

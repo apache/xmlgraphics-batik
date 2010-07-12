@@ -105,4 +105,8 @@ public class CIELabColor extends AbstractValue {
         return sb.toString();
     }
 
+    /** {@inheritDoc} */
+    public String toString() {
+        return getCssText();
+    }
 }

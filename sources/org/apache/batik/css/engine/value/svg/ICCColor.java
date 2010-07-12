@@ -109,4 +109,9 @@ public class ICCColor extends AbstractValue {
         }
         colors[count++] = c;
     }
+
+    /** {@inheritDoc} */
+    public String toString() {
+        return getCssText();
+    }
 }

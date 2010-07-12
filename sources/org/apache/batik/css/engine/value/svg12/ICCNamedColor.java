@@ -84,4 +84,8 @@ public class ICCNamedColor extends AbstractValue {
         return sb.toString();
     }
 
+    /** {@inheritDoc} */
+    public String toString() {
+        return getCssText();
+    }
 }
