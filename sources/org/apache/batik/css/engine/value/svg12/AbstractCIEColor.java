@@ -34,8 +34,8 @@ public abstract class AbstractCIEColor extends AbstractValue {
     /** The three color values. */
     protected float[] values = new float[3];
 
-    /** The white point, initialized to D65. */
-    protected float[] whitepoint = ColorSpaces.getCIELabColorSpaceD65().getWhitePoint();
+    /** The white point, initialized to D50. */
+    protected float[] whitepoint = ColorSpaces.getCIELabColorSpaceD50().getWhitePoint();
 
     /**
      * Creates a new CIE-based color.

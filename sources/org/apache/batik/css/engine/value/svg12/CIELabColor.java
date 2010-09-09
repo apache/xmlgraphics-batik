@@ -39,7 +39,7 @@ public class CIELabColor extends AbstractCIEColor {
     }
 
     /**
-     * Creates a new CIELabColor with D65 as illuminant.
+     * Creates a new CIELabColor with D50 as illuminant.
      */
     public CIELabColor(float l, float a, float b) {
         this(l, a, b, null);

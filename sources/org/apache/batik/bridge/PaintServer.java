@@ -514,18 +514,11 @@ public abstract class PaintServer
                 log.warn("Color '" + colorName
                         + "' does not exist in named color profile: " + iccProfileSrc);
                 */
-                //parsedColor = sRGB;
-                return null;
             }
         } else {
             //log.warn("ICC profile is no named color profile: " + iccProfileSrc);
-            //parsedColor = sRGB;
         }
 
-        // Convert values to RGB
-        //float[] rgb = profileCS.intendedToRGB(colorValue);
-        //TODO Preserve original ICC color value!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        //return new Color(rgb[0], rgb[1], rgb[2], opacity);
         return null;
     }
 
@@ -542,8 +535,7 @@ public abstract class PaintServer
                                         CIELabColor c,
                                         float opacity,
                                         BridgeContext ctx) {
-        //We're assuming here that SVG Color 1.2 means to use D50 as white point for CIE Lab
-        CIELabColorSpace cs = ColorSpaces.getCIELabColorSpaceD50();
+        CIELabColorSpace cs = new CIELabColorSpace(c.getWhitePoint());
         float[] lab = c.getColorValues();
         Color specColor = cs.toColor(lab[0], lab[1], lab[2], opacity);
         return specColor;
