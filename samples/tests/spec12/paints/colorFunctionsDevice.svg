@@ -44,13 +44,13 @@
 
         <g stroke="black" stroke-width="2" transform="translate(35, 90)">
 
-            <rect y="0" width="40" height="40" fill="#00FF00 device-gray(0.4)"/>
+          <rect y="0" width="40" height="40" fill="#FF0000 device-gray(0.4)"/>
 
-            <rect y="60" width="40" height="40" fill="#00FF00 device-rgb(153, 153, 122)"/>
+          <rect y="60" width="40" height="40" fill="#FF0000 device-rgb(153, 153, 122)"/>
 
-            <rect y="120" width="40" height="40" fill="#00FF00 device-cmyk(0.0,0.0,0.2,0.4)"/>
+          <rect y="120" width="40" height="40" fill="#FF0000 device-cmyk(0.0,0.0,0.2,0.4)"/>
 
-            <rect y="180" width="40" height="40" fill="#00FF00 device-nchannel(0.5,1.0)"/>
+          <rect y="180" width="40" height="40" fill="#FF0000 device-nchannel(0.5,1.0)"/>
 
         </g>
       
@@ -62,21 +62,21 @@
       
         <g text-anchor="start" transform="translate(90, 110)">
           <text y="0">
-            <tspan>#00FF00 device-gray(0.4)</tspan>
-            <tspan x="0" dy="12">Gray where device-specific colors are supported, green otherwise.</tspan>
+            <tspan>#FF0000 device-gray(0.4)</tspan>
+            <tspan x="0" dy="12">Gray where device-specific colors are supported, red otherwise.</tspan>
           </text>
           <text y="60">
-            <tspan>#00FF00 device-rgb(153, 153, 122)</tspan>
-            <tspan x="0" dy="12">Khaki where device-specific colors are supported, green otherwise.</tspan>
+            <tspan>#FF0000 device-rgb(153, 153, 122)</tspan>
+            <tspan x="0" dy="12">Khaki where device-specific colors are supported, red otherwise.</tspan>
           </text>
           <text y="120">
-            <tspan>#00FF00 device-cmyk(0.0,0.0,0.2,0.4)</tspan>
-            <tspan x="0" dy="12">Khaki where device-specific colors are supported, green otherwise.</tspan>
+            <tspan>#FF0000 device-cmyk(0.0,0.0,0.2,0.4)</tspan>
+            <tspan x="0" dy="12">Khaki where device-specific colors are supported, red otherwise.</tspan>
           </text>
           <text y="180">
-            <tspan>#00FF00 device-nchannel(0.5,1.0)</tspan>
+            <tspan>#FF0000 device-nchannel(0.5,1.0)</tspan>
             <tspan x="0" dy="12">Some device-dependent color where device-specific colors are</tspan>
-            <tspan x="0" dy="12">supported, green otherwise.</tspan>
+            <tspan x="0" dy="12">supported, red otherwise.</tspan>
           </text>
         </g>
     </g>
