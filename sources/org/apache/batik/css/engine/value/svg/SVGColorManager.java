@@ -143,7 +143,7 @@ public class SVGColorManager extends ColorManager {
         if (colorValue != null) {
             result.append(colorValue);
         } else {
-            throw createInvalidLexicalUnitDOMException(lu.getLexicalUnitType());
+            return v; //use sRGB fallback if an unsupported color function is encountered
         }
         return result;
     }
