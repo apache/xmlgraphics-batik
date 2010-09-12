@@ -51,7 +51,7 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
     static final String PROPERTY_LINE_SEPARATOR_DEFAULT = "\n";
 
     static final int DEFAULT_FIRST = 32;
-    static final int DEFAULT_LAST = 128;
+    static final int DEFAULT_LAST = 126;
 
     static {
         String  temp;
@@ -339,12 +339,18 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
                     Feature medi = gsub.getFeatureList().findFeature(ls, FEATURE_TAG_MEDI);
                     Feature fina = gsub.getFeatureList().findFeature(ls, FEATURE_TAG_FINA);
 
-                    initialSubst = (SingleSubst)
-                        gsub.getLookupList().getLookup(init, 0).getSubtable(0);
-                    medialSubst = (SingleSubst)
-                        gsub.getLookupList().getLookup(medi, 0).getSubtable(0);
-                    terminalSubst = (SingleSubst)
-                        gsub.getLookupList().getLookup(fina, 0).getSubtable(0);
+                    if (init != null) {
+                        initialSubst = (SingleSubst)
+                            gsub.getLookupList().getLookup(init, 0).getSubtable(0);
+                    }
+                    if (medi != null) {
+                        medialSubst = (SingleSubst)
+                            gsub.getLookupList().getLookup(medi, 0).getSubtable(0);
+                    }
+                    if (fina != null) {
+                        terminalSubst = (SingleSubst)
+                            gsub.getLookupList().getLookup(fina, 0).getSubtable(0);
+                    }
                 }
             }
         }
