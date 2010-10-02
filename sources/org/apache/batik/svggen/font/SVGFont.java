@@ -21,6 +21,8 @@ package org.apache.batik.svggen.font;
 
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.util.Set;
+import java.util.HashSet;
 
 import org.apache.batik.svggen.font.table.CmapFormat;
 import org.apache.batik.svggen.font.table.Feature;
@@ -370,6 +372,7 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
             }
 
             // Include our requested range
+            Set glyphSet = new HashSet();
             for (int i = first; i <= last; i++) {
                 int glyphIndex = cmapFmt.mapCharCode(i);
                 //        ps.println(String.valueOf(i) + " -> " + String.valueOf(glyphIndex));
@@ -377,6 +380,9 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
                 //        sb.append(font.getGlyphs()[glyphIndex].toString() + "\n");
 
                 if (glyphIndex > 0) {
+                    // add glyph ID to set so we can filter later
+                    glyphSet.add(glyphIndex);
+
                     ps.println(getGlyphAsSVG(
                         font,
                         font.getGlyph(glyphIndex),
@@ -396,7 +402,11 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
                 KernSubtable kst = kern.getSubtable(0);
                 PostTable post = (PostTable) font.getTable(Table.post);
                 for (int i = 0; i < kst.getKerningPairCount(); i++) {
-                    ps.println(getKerningPairAsSVG(kst.getKerningPair(i), post));
+                    KerningPair kpair = kst.getKerningPair(i);
+                    // check if left and right are both in our glyph set
+                    if (glyphSet.contains(kpair.getLeft()) && glyphSet.contains(kpair.getRight())) {
+                        ps.println(getKerningPairAsSVG(kpair, post));
+                    }
                 }
             }
         } catch (Exception e) {
