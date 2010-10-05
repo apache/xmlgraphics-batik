@@ -40,15 +40,8 @@
         <dt>Java Runtime Environment</dt>
         <dd>
           <p>
-            A Java 1.3 or above compatible runtime environment must be present.
-            Note that to support the following features a Java 1.4 or above
-            JRE is required:
+            A Java 1.4 or above compatible runtime environment must be present.
           </p>
-          <ul>
-            <li>
-              SVG 1.2 <a href="dev/svg12.html#other">mouse wheel events</a>
-            </li>
-          </ul>
         </dd>
       </dl>
     </section>
