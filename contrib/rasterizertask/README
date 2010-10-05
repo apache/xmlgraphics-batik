@@ -22,5 +22,5 @@ work if the Ant in use is a different version from the Ant used to build
 the task. Use the same Ant version to build and to execute task to avoid 
 strange problems.
 
-At least JDK 1.3 is needed to build and execute the task.
+At least JDK 1.4 is needed to build and execute the task.
 

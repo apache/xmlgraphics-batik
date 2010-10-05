@@ -41,7 +41,7 @@
     <p>
       In general, extensions are added through the Service
       Provider Interface mechanism as described in the 
-      <a href="http://java.sun.com/j2se/1.3/docs/guide/jar/jar.html#Service Provider">jar
+      <a href="http://java.sun.com/j2se/1.4/docs/guide/jar/jar.html#Service Provider">jar
         file documentation</a>.  This allows for the extension of Batik
       simply by adding a new jar file(s) to the class path, and thus no
       modification of the Batik source is required!
