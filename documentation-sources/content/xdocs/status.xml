@@ -3054,6 +3054,16 @@
             An alias for <code>event</code>.
           </p>
         </prop>
+        <prop name="location">
+          <p>
+            Implementation of the <a href="http://www.w3.org/TR/SVGTiny12/svgudom.html#dom__Location">
+              Location</a> interface.  Methods <code>assign</code> and
+            <code>reload</code> are available.
+          </p>
+          <note>
+            This interface is available since version 1.8.
+          </note>
+        </prop>
         <prop name="window">
           <p>
             The global object (a self-reference).
@@ -3140,6 +3150,26 @@
             Gets data from the given <code>uri</code>. This method returns
             immediately and the given <code>function</code> is called when the
             data is fully downloaded.  The optional <code>encoding</code>
+            argument is the encoding to assume the data is in, defaulting to
+            UTF-8.  The argument passed to the function is an object with
+            three properties:
+          </p>
+          <dl>
+            <dt>success</dt>
+            <dd><code>true</code> if the data is available, <code>false</code> otherwise.</dd>
+            <dt>contentType</dt>
+            <dd>The content type of the data, if it is known by the implementation.</dd>
+            <dt>content</dt>
+            <dd>A string holding the data.</dd>
+          </dl>
+        </func>
+        <func name="postURL" params="uri, content, function[, type, encoding]">
+          <p>
+            Sends data to the given <code>uri</code>. This method returns
+            immediately and the given <code>function</code> is called when the
+            data is fully downloaded.  The optional <code>type</code> argument
+            will specify the <code>Content-Type</code> HTTP header to use, defaulting to
+            <code>text/plain</code>.  The optional <code>encoding</code>
             argument is the encoding to assume the data is in, defaulting to
             UTF-8.  The argument passed to the function is an object with
             three properties:
