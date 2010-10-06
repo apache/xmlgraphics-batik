@@ -33,6 +33,9 @@ Bug fixing is an on-going task, so it is implied in all sub-releases.
   * Allow SVGGenerator2D to embed fonts that weren't obtained from the
     standard AWT font lookup mechanism.
   * ttf2svg no longer outputs hkern elements outside user-provided glyph range.
+  * Batik now tries to access content in HTTP error responses (for example, one
+    is able to setup custom content for missing - HTTP code 404 - and/or other
+    erroneous situations).
 
 4. Bug fixes
 

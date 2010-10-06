@@ -550,7 +550,18 @@ loop2:          while (i < len) {
             postConnectionURL = urlC.getURL();
         }
 
-        return (stream = urlC.getInputStream());
+        try {
+            return (stream = urlC.getInputStream());
+        } catch (IOException e) {
+            if (urlC instanceof HttpURLConnection) {
+                // bug 49889: if available, return the error stream
+                // (allow interpretation of content in the HTTP error response)
+                return (stream = ((HttpURLConnection) urlC).getErrorStream());
+            } else {
+                throw e;
+            }
+        }
+
     }
 
     /**
