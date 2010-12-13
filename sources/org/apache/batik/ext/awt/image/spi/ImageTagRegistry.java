@@ -34,7 +34,7 @@ import org.apache.batik.ext.awt.image.renderable.ProfileRable;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.Service;
 
-import org.apache.xmlgraphics.java2d.color.ICCColorSpaceExt;
+import org.apache.xmlgraphics.java2d.color.ICCColorSpaceWithIntent;
 
 /**
  * This class handles the registered Image tag handlers.  These are
@@ -83,7 +83,7 @@ public class ImageTagRegistry implements ErrorConstants {
         imgCache.clear(purl);
     }
 
-    public Filter checkCache(ParsedURL purl, ICCColorSpaceExt colorSpace) {
+    public Filter checkCache(ParsedURL purl, ICCColorSpaceWithIntent colorSpace) {
         // I just realized that this whole thing could
         boolean needRawData = (colorSpace != null);
 
@@ -108,12 +108,12 @@ public class ImageTagRegistry implements ErrorConstants {
         return readURL(null, purl, null, true, true);
     }
 
-    public Filter readURL(ParsedURL purl, ICCColorSpaceExt colorSpace) {
+    public Filter readURL(ParsedURL purl, ICCColorSpaceWithIntent colorSpace) {
         return readURL(null, purl, colorSpace, true, true);
     }
 
     public Filter readURL(InputStream is, ParsedURL purl,
-                          ICCColorSpaceExt colorSpace,
+                          ICCColorSpaceWithIntent colorSpace,
                           boolean allowOpenStream,
                           boolean returnBrokenLink) {
         if ((is != null) && !is.markSupported())
@@ -230,7 +230,7 @@ public class ImageTagRegistry implements ErrorConstants {
         return readStream(is, null);
     }
 
-    public Filter readStream(InputStream is, ICCColorSpaceExt colorSpace) {
+    public Filter readStream(InputStream is, ICCColorSpaceWithIntent colorSpace) {
         if (!is.markSupported())
             // Doesn't support mark so wrap with BufferedInputStream that does.
             is = new BufferedInputStream(is);

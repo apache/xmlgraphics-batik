@@ -47,7 +47,7 @@ import org.apache.xmlgraphics.java2d.color.CIELabColorSpace;
 import org.apache.xmlgraphics.java2d.color.ColorSpaces;
 import org.apache.xmlgraphics.java2d.color.ColorWithAlternatives;
 import org.apache.xmlgraphics.java2d.color.DeviceCMYKColorSpace;
-import org.apache.xmlgraphics.java2d.color.ICCColorSpaceExt;
+import org.apache.xmlgraphics.java2d.color.ICCColorSpaceWithIntent;
 import org.apache.xmlgraphics.java2d.color.NamedColorSpace;
 import org.apache.xmlgraphics.java2d.color.profile.NamedColorProfile;
 import org.apache.xmlgraphics.java2d.color.profile.NamedColorProfileParser;
@@ -438,8 +438,8 @@ public abstract class PaintServer
             return null; // no bridge for color profile
         }
 
-        ICCColorSpaceExt profileCS
-            = profileBridge.createICCColorSpaceExt(ctx, e, iccProfileName);
+        ICCColorSpaceWithIntent profileCS
+            = profileBridge.createICCColorSpaceWithIntent(ctx, e, iccProfileName);
         if (profileCS == null){
             return null; // no profile
         }
@@ -487,8 +487,8 @@ public abstract class PaintServer
             return null; // no bridge for color profile
         }
 
-        ICCColorSpaceExt profileCS
-            = profileBridge.createICCColorSpaceExt(ctx, e, iccProfileName);
+        ICCColorSpaceWithIntent profileCS
+            = profileBridge.createICCColorSpaceWithIntent(ctx, e, iccProfileName);
         if (profileCS == null){
             return null; // no profile
         }

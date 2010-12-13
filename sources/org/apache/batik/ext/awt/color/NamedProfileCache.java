@@ -21,7 +21,7 @@ package org.apache.batik.ext.awt.color;
 
 import org.apache.batik.util.SoftReferenceCache;
 
-import org.apache.xmlgraphics.java2d.color.ICCColorSpaceExt;
+import org.apache.xmlgraphics.java2d.color.ICCColorSpaceWithIntent;
 
 /**
  * This class manages a cache of soft references to named profiles that
@@ -71,8 +71,8 @@ public class NamedProfileCache extends SoftReferenceCache {
      * cache.
      * @param the profile name
      */
-    public synchronized ICCColorSpaceExt request(String profileName) {
-        return (ICCColorSpaceExt)super.requestImpl(profileName);
+    public synchronized ICCColorSpaceWithIntent request(String profileName) {
+        return (ICCColorSpaceWithIntent)super.requestImpl(profileName);
     }
 
     /**
@@ -91,7 +91,7 @@ public class NamedProfileCache extends SoftReferenceCache {
      * probably cleared or flushed since we were put on the hook
      * for it, so in that case we will do nothing.
      */
-    public synchronized void put(String profileName, ICCColorSpaceExt bi) {
+    public synchronized void put(String profileName, ICCColorSpaceWithIntent bi) {
         super.putImpl(profileName, bi);
     }
 }

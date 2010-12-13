@@ -26,8 +26,8 @@ import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.ext.awt.color.NamedProfileCache;
 import org.apache.batik.util.ParsedURL;
 
-import org.apache.xmlgraphics.java2d.color.ICCColorSpaceExt;
-
+import org.apache.xmlgraphics.java2d.color.ICCColorSpaceWithIntent;
+import org.apache.xmlgraphics.java2d.color.RenderingIntent;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -56,18 +56,22 @@ public class SVGColorProfileElementBridge extends AbstractSVGBridge
 
     /**
      * Creates an ICC_ColorSpace according to the specified parameters.
+     * <p>
+     * If a color profile cannot be located an error message will be sent to the user agent
+     * and the method returns null. In this case, Batik will later fall back to sRGB.
      *
      * @param ctx the bridge context to use
      * @param paintedElement element on which the color is painted
      * @param iccProfileName name of the profile that should be loaded
      *        that could be a color-profile element or an @color-profile
      *        CSS rule
+     * @return the ICC color profile (or null if the color profile could not be located)
      */
-    public ICCColorSpaceExt createICCColorSpaceExt(BridgeContext ctx,
+    public ICCColorSpaceWithIntent createICCColorSpaceWithIntent(BridgeContext ctx,
                                                    Element paintedElement,
                                                    String iccProfileName) {
         // Check if there is one if the cache.
-        ICCColorSpaceExt cs = cache.request(iccProfileName.toLowerCase()); // todo locale??
+        ICCColorSpaceWithIntent cs = cache.request(iccProfileName.toLowerCase()); // todo locale??
         if (cs != null){
             return cs;
         }
@@ -80,7 +84,7 @@ public class SVGColorProfileElementBridge extends AbstractSVGBridge
 
         int n = list.getLength();
         Element profile = null;
-        for(int i=0; i<n; i++){
+        for(int i = 0; i < n; i++){
             Node node = list.item(i);
             if(node.getNodeType() == Node.ELEMENT_NODE){
                 Element profileNode = (Element)node;
@@ -93,8 +97,9 @@ public class SVGColorProfileElementBridge extends AbstractSVGBridge
             }
         }
 
-        if(profile == null)
+        if (profile == null) {
             return null;
+        }
 
         // Now that we have a profile element,
         // try to load the corresponding ICC profile xlink:href
@@ -136,36 +141,36 @@ public class SVGColorProfileElementBridge extends AbstractSVGBridge
         }
 
         // Extract the rendering intent from profile element
-        int intent = convertIntent(profile, ctx);
-        cs = new ICCColorSpaceExt(p, intent, href, iccProfileName);
+        RenderingIntent intent = convertIntent(profile, ctx);
+        cs = new ICCColorSpaceWithIntent(p, intent, href, iccProfileName);
 
         // Add profile to cache
         cache.put(iccProfileName.toLowerCase(), cs);
         return cs;
     }
 
-    private static int convertIntent(Element profile, BridgeContext ctx) {
+    private static RenderingIntent convertIntent(Element profile, BridgeContext ctx) {
 
         String intent
             = profile.getAttributeNS(null, SVG_RENDERING_INTENT_ATTRIBUTE);
 
         if (intent.length() == 0) {
-            return ICCColorSpaceExt.AUTO;
+            return RenderingIntent.AUTO;
         }
         if (SVG_PERCEPTUAL_VALUE.equals(intent)) {
-            return ICCColorSpaceExt.PERCEPTUAL;
+            return RenderingIntent.PERCEPTUAL;
         }
         if (SVG_AUTO_VALUE.equals(intent)) {
-            return ICCColorSpaceExt.AUTO;
+            return RenderingIntent.AUTO;
         }
         if (SVG_RELATIVE_COLORIMETRIC_VALUE.equals(intent)) {
-            return ICCColorSpaceExt.RELATIVE_COLORIMETRIC;
+            return RenderingIntent.RELATIVE_COLORIMETRIC;
         }
         if (SVG_ABSOLUTE_COLORIMETRIC_VALUE.equals(intent)) {
-            return ICCColorSpaceExt.ABSOLUTE_COLORIMETRIC;
+            return RenderingIntent.ABSOLUTE_COLORIMETRIC;
         }
         if (SVG_SATURATION_VALUE.equals(intent)) {
-            return ICCColorSpaceExt.SATURATION;
+            return RenderingIntent.SATURATION;
         }
         throw new BridgeException
             (ctx, profile, ERR_ATTRIBUTE_VALUE_MALFORMED,
