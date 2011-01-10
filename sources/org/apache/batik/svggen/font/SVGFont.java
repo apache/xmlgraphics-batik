@@ -448,11 +448,14 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
             // sb.append("<glyph unicode=\"").append(code).append("\"");
 
             // Glyph name
-            sb.append(XML_SPACE).append(SVG_GLYPH_NAME_ATTRIBUTE).append(XML_EQUAL_QUOT)
-                // sb.append(" glyph-name=\"")
-                .append(font.getPostTable().getGlyphName(glyphIndex))
-                // .append("\"");
-                .append(XML_CHAR_QUOT);
+            String glyphName = font.getPostTable().getGlyphName(glyphIndex);
+            if (glyphName != null) {
+                sb.append(XML_SPACE).append(SVG_GLYPH_NAME_ATTRIBUTE).append(XML_EQUAL_QUOT)
+                    // sb.append(" glyph-name=\"")
+                    .append(glyphName)
+                    // .append("\"");
+                    .append(XML_CHAR_QUOT);
+            }
         }
         if (horiz_advance_x != defaultHorizAdvanceX) {
             sb.append(XML_SPACE).append(SVG_HORIZ_ADV_X_ATTRIBUTE).append(XML_EQUAL_QUOT)
@@ -584,16 +587,39 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
     }
 
     protected static String getKerningPairAsSVG(KerningPair kp, PostTable post) {
+        String leftGlyphName = post.getGlyphName(kp.getLeft());
+        String rightGlyphName = post.getGlyphName(kp.getRight());
+
         StringBuffer sb = new StringBuffer();
-        // sb.append("<hkern g1=\"");
+        // sb.append("<hkern ");
         sb.append(XML_OPEN_TAG_START).append(SVG_HKERN_TAG).append(XML_SPACE);
-        sb.append(SVG_G1_ATTRIBUTE).append(XML_EQUAL_QUOT);
 
-        sb.append(post.getGlyphName(kp.getLeft()));
-        // sb.append("\" g2=\"");
-        sb.append(XML_CHAR_QUOT).append(XML_SPACE).append(SVG_G2_ATTRIBUTE).append(XML_EQUAL_QUOT);
+        if (leftGlyphName == null) {
+            sb.append(SVG_U1_ATTRIBUTE).append(XML_EQUAL_QUOT);
 
-        sb.append(post.getGlyphName(kp.getRight()));
+            sb.append(kp.getLeft());
+        } else {
+            // sb.append("g1=\"");
+            sb.append(SVG_G1_ATTRIBUTE).append(XML_EQUAL_QUOT);
+
+            sb.append(leftGlyphName);
+        }
+
+        // sb.append("\" ");
+        sb.append(XML_CHAR_QUOT).append(XML_SPACE);
+
+        if (rightGlyphName == null) {
+            // sb.append("u2=\"");
+            sb.append(SVG_U2_ATTRIBUTE).append(XML_EQUAL_QUOT);
+
+            sb.append(kp.getRight());
+        } else {
+            // sb.append("g2=\"");
+            sb.append(SVG_G2_ATTRIBUTE).append(XML_EQUAL_QUOT);
+
+            sb.append(rightGlyphName);
+        }
+
         // sb.append("\" k=\"");
         sb.append(XML_CHAR_QUOT).append(XML_SPACE).append(SVG_K_ATTRIBUTE).append(XML_EQUAL_QUOT);
 
