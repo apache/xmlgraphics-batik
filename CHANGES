@@ -62,6 +62,8 @@ Bug fixing is an on-going task, so it is implied in all sub-releases.
     same script interpreter.
   * Exporting 256 color indexed PNG files in Squiggle now works.
   * Avoid an NPE in ttf2svg when resolving substitutions for Arabic script.
+  * ttf2svg now correctly writes out kerning pairs for characters that have
+    no name.
 
 5. Misc
 
