@@ -107,7 +107,7 @@
           <dt><strong>-m</strong> <em>mime-type</em></dt>
           <dd>
             <p>
-              specifies the output MIME type, which must be one of
+              specifies the output MIME type, which should be one of
               <code>image/png</code>, <code>image/jpeg</code>,
               <code>image/tiff</code> or <code>application/pdf</code>,
             </p>
@@ -161,6 +161,10 @@
             <p>specifies the CSS user stylesheet to use in addition to any
               other referenced or embedded stylesheets,</p>
           </dd>
+          <dt><strong>-font-family</strong> <em>defaultFontFamily</em></dt>
+          <dd>
+            <p>specifies default font family to be used when none is specified,</p>
+          </dd>
           <dt><strong>-lang</strong> <em>language-code</em></dt>
           <dd>
             <p>specifies the
@@ -172,6 +176,12 @@
             <p>specifies the quality of the output image, as a floating point
               number in the range 0 &lt; <em>quality</em> &lt; 1 when generating
               JPEG images,</p>
+          </dd>
+          <dt><strong>-indexed</strong> <em>1|2|4|8</em></dt>
+          <dd>
+            <p>specifies the number of bits per pixel of the output image,
+              using an adaptive pallete, resulting in an indexed image when
+              generating PNG images,</p>
           </dd>
           <dt><strong>-dpi</strong> <em>resolution</em></dt>
           <dd>
@@ -187,10 +197,20 @@
             <p>specifies that the SVG files should be rasterized after
               dispatching the SVG load event,</p>
           </dd>
+          <dt><strong>-snapshotTime</strong></dt>
+          <dd>
+            <p>specifies the document time that should be seeked to before
+              rasterizing the document, implying -onload,</p>
+          </dd>
           <dt><strong>-scriptSecurityOff</strong></dt>
           <dd>
             <p>specifies that any security checks on the scripts running as a
-              result of dispatching the SVG load event will be bypassed, and</p>
+              result of dispatching the SVG load event will be bypassed,</p>
+          </dd>
+          <dt><strong>-anyScriptOrigin</strong></dt>
+          <dd>
+            <p>specifies that scripts can be loaded from any location, while by
+              default they can only be loaded from the same location as the document, and</p>
           </dd>
           <dt><strong>-scripts</strong> <em>allowed-script-types</em></dt>
           <dd>

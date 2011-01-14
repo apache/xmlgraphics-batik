@@ -9,9 +9,10 @@ Bug fixing is an on-going task, so it is implied in all sub-releases.
 
 1. Bugzilla problem reports fixed:
 
-    43411, 43847, 44553, 44590, 44919, 44936, 44966, 45112, 45114,
-    45117, 45397, 45520, 45883, 45958, 46072, 46124, 46430, 46431,
-    46855, 46871, 47201, 47202, 48411
+    43411, 43847, 43950, 44553, 44590, 44919, 44936, 44966, 45112,
+    45114, 45117, 45397, 45520, 45883, 45958, 46072, 46124, 46202,
+    46430, 46431, 46855, 46871, 47201, 47202, 48182, 48411, 49889,
+    50006
 
 
 2. New features
@@ -32,6 +33,10 @@ Bug fixing is an on-going task, so it is implied in all sub-releases.
   * Improve Batik's Rhino class shutter so that it works with Rhino 1.6R7.
   * Allow SVGGenerator2D to embed fonts that weren't obtained from the
     standard AWT font lookup mechanism.
+  * ttf2svg no longer outputs hkern elements outside user-provided glyph range.
+  * Batik now tries to access content in HTTP error responses (for example, one
+    is able to setup custom content for missing - HTTP code 404 - and/or other
+    erroneous situations).
 
 4. Bug fixes
 
@@ -56,6 +61,13 @@ Bug fixing is an on-going task, so it is implied in all sub-releases.
     (such as text/javascript and application/ecmascript) now share the
     same script interpreter.
   * Exporting 256 color indexed PNG files in Squiggle now works.
+  * Avoid an NPE in ttf2svg when resolving substitutions for Arabic script.
+  * ttf2svg now correctly writes out kerning pairs for characters that have
+    no name.
+
+5. Misc
+
+  * Minimum required Java version was raised to 1.4.
 
 1.7beta1 -> 1.7
 ---------------

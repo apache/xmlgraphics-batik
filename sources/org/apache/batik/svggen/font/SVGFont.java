@@ -21,6 +21,8 @@ package org.apache.batik.svggen.font;
 
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.util.Set;
+import java.util.HashSet;
 
 import org.apache.batik.svggen.font.table.CmapFormat;
 import org.apache.batik.svggen.font.table.Feature;
@@ -51,7 +53,7 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
     static final String PROPERTY_LINE_SEPARATOR_DEFAULT = "\n";
 
     static final int DEFAULT_FIRST = 32;
-    static final int DEFAULT_LAST = 128;
+    static final int DEFAULT_LAST = 126;
 
     static {
         String  temp;
@@ -339,12 +341,18 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
                     Feature medi = gsub.getFeatureList().findFeature(ls, FEATURE_TAG_MEDI);
                     Feature fina = gsub.getFeatureList().findFeature(ls, FEATURE_TAG_FINA);
 
-                    initialSubst = (SingleSubst)
-                        gsub.getLookupList().getLookup(init, 0).getSubtable(0);
-                    medialSubst = (SingleSubst)
-                        gsub.getLookupList().getLookup(medi, 0).getSubtable(0);
-                    terminalSubst = (SingleSubst)
-                        gsub.getLookupList().getLookup(fina, 0).getSubtable(0);
+                    if (init != null) {
+                        initialSubst = (SingleSubst)
+                            gsub.getLookupList().getLookup(init, 0).getSubtable(0);
+                    }
+                    if (medi != null) {
+                        medialSubst = (SingleSubst)
+                            gsub.getLookupList().getLookup(medi, 0).getSubtable(0);
+                    }
+                    if (fina != null) {
+                        terminalSubst = (SingleSubst)
+                            gsub.getLookupList().getLookup(fina, 0).getSubtable(0);
+                    }
                 }
             }
         }
@@ -364,6 +372,7 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
             }
 
             // Include our requested range
+            Set glyphSet = new HashSet();
             for (int i = first; i <= last; i++) {
                 int glyphIndex = cmapFmt.mapCharCode(i);
                 //        ps.println(String.valueOf(i) + " -> " + String.valueOf(glyphIndex));
@@ -371,6 +380,9 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
                 //        sb.append(font.getGlyphs()[glyphIndex].toString() + "\n");
 
                 if (glyphIndex > 0) {
+                    // add glyph ID to set so we can filter later
+                    glyphSet.add(glyphIndex);
+
                     ps.println(getGlyphAsSVG(
                         font,
                         font.getGlyph(glyphIndex),
@@ -390,7 +402,11 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
                 KernSubtable kst = kern.getSubtable(0);
                 PostTable post = (PostTable) font.getTable(Table.post);
                 for (int i = 0; i < kst.getKerningPairCount(); i++) {
-                    ps.println(getKerningPairAsSVG(kst.getKerningPair(i), post));
+                    KerningPair kpair = kst.getKerningPair(i);
+                    // check if left and right are both in our glyph set
+                    if (glyphSet.contains(kpair.getLeft()) && glyphSet.contains(kpair.getRight())) {
+                        ps.println(getKerningPairAsSVG(kpair, post));
+                    }
                 }
             }
         } catch (Exception e) {
@@ -432,11 +448,14 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
             // sb.append("<glyph unicode=\"").append(code).append("\"");
 
             // Glyph name
-            sb.append(XML_SPACE).append(SVG_GLYPH_NAME_ATTRIBUTE).append(XML_EQUAL_QUOT)
-                // sb.append(" glyph-name=\"")
-                .append(font.getPostTable().getGlyphName(glyphIndex))
-                // .append("\"");
-                .append(XML_CHAR_QUOT);
+            String glyphName = font.getPostTable().getGlyphName(glyphIndex);
+            if (glyphName != null) {
+                sb.append(XML_SPACE).append(SVG_GLYPH_NAME_ATTRIBUTE).append(XML_EQUAL_QUOT)
+                    // sb.append(" glyph-name=\"")
+                    .append(glyphName)
+                    // .append("\"");
+                    .append(XML_CHAR_QUOT);
+            }
         }
         if (horiz_advance_x != defaultHorizAdvanceX) {
             sb.append(XML_SPACE).append(SVG_HORIZ_ADV_X_ATTRIBUTE).append(XML_EQUAL_QUOT)
@@ -568,16 +587,39 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
     }
 
     protected static String getKerningPairAsSVG(KerningPair kp, PostTable post) {
+        String leftGlyphName = post.getGlyphName(kp.getLeft());
+        String rightGlyphName = post.getGlyphName(kp.getRight());
+
         StringBuffer sb = new StringBuffer();
-        // sb.append("<hkern g1=\"");
+        // sb.append("<hkern ");
         sb.append(XML_OPEN_TAG_START).append(SVG_HKERN_TAG).append(XML_SPACE);
-        sb.append(SVG_G1_ATTRIBUTE).append(XML_EQUAL_QUOT);
 
-        sb.append(post.getGlyphName(kp.getLeft()));
-        // sb.append("\" g2=\"");
-        sb.append(XML_CHAR_QUOT).append(XML_SPACE).append(SVG_G2_ATTRIBUTE).append(XML_EQUAL_QUOT);
+        if (leftGlyphName == null) {
+            sb.append(SVG_U1_ATTRIBUTE).append(XML_EQUAL_QUOT);
 
-        sb.append(post.getGlyphName(kp.getRight()));
+            sb.append(kp.getLeft());
+        } else {
+            // sb.append("g1=\"");
+            sb.append(SVG_G1_ATTRIBUTE).append(XML_EQUAL_QUOT);
+
+            sb.append(leftGlyphName);
+        }
+
+        // sb.append("\" ");
+        sb.append(XML_CHAR_QUOT).append(XML_SPACE);
+
+        if (rightGlyphName == null) {
+            // sb.append("u2=\"");
+            sb.append(SVG_U2_ATTRIBUTE).append(XML_EQUAL_QUOT);
+
+            sb.append(kp.getRight());
+        } else {
+            // sb.append("g2=\"");
+            sb.append(SVG_G2_ATTRIBUTE).append(XML_EQUAL_QUOT);
+
+            sb.append(rightGlyphName);
+        }
+
         // sb.append("\" k=\"");
         sb.append(XML_CHAR_QUOT).append(XML_SPACE).append(SVG_K_ATTRIBUTE).append(XML_EQUAL_QUOT);
 

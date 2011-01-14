@@ -52,7 +52,7 @@
       <p>
         In both cases, the options are the same:
       </p>
-      <source><em>ttf-path</em> <em>[</em><strong>-l</strong> <em>range-begin] [</em><strong>-h</strong> <em>range-end] [</em><strong>-ascii</strong><em>] [</em><strong>-id</strong> <em>id] [</em><strong>-o</strong> <em>output-path] [</em><strong>-testcard</strong><em>]</em></source>
+      <source><em>ttf-path</em> <em>[</em><strong>-l</strong> <em>range-begin] [</em><strong>-h</strong> <em>range-end] [</em><strong>-autorange</strong><em>] [</em><strong>-ascii</strong><em>] [</em><strong>-id</strong> <em>id] [</em><strong>-o</strong> <em>output-path] [</em><strong>-testcard</strong><em>]</em></source>
       <p>
         where:
       </p>
@@ -66,6 +66,11 @@
         <dd>
           <p>specifies the range of characters (by codepoint, in decimal) to be
             converted,</p>
+        </dd>
+        <dt><strong>-autorange</strong></dt>
+        <dd>
+          <p>automatically determines the available character range, instead of using the
+            default, ASCII printable characters (ranging from 32 to 126),</p>
         </dd>
         <dt><strong>-ascii</strong></dt>
         <dd>
