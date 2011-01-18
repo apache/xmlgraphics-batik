@@ -235,7 +235,7 @@ public class SVGFont extends AbstractSVGConverter {
                                          frc.isAntiAliased(),
                                          frc.usesFractionalMetrics());
 
-        String fontSize = "" + doubleString(font.getSize2D());
+        String fontSize = doubleString(font.getSize2D()) + "px";
         String fontWeight = weightToSVG(font);
         String fontStyle = styleToSVG(font);
         String fontFamilyStr = familyToSVG(font);
