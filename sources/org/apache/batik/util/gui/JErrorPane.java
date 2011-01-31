@@ -44,6 +44,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 
 import org.apache.batik.util.gui.resource.ActionMap;
 import org.apache.batik.util.gui.resource.ButtonFactory;
@@ -115,6 +116,11 @@ public class JErrorPane extends JPanel implements ActionMap {
     protected JPanel subpanel;
 
     /**
+     * The OK button.
+     */
+    protected JButton okButton;
+
+    /**
      * Constructs a new JErrorPane.
      *
      * @param th the throwable object that describes the errror
@@ -178,10 +184,11 @@ public class JErrorPane extends JPanel implements ActionMap {
     }
 
     public JDialog createDialog(Component owner, String title) {
-        JDialog dialog  =
+        JDialog dialog =
             new JDialog(JOptionPane.getFrameForComponent(owner), title);
         dialog.getContentPane().add(this, BorderLayout.CENTER);
         dialog.pack();
+        dialog.getRootPane().setDefaultButton(okButton);
         return dialog;
     }
 
@@ -191,7 +198,7 @@ public class JErrorPane extends JPanel implements ActionMap {
         showDetailButton = bf.createJButton("ShowDetailButton");
         panel.add(showDetailButton);
 
-        JButton okButton = bf.createJButton("OKButton");
+        okButton = bf.createJButton("OKButton");
         panel.add(okButton);
 
         return panel;
