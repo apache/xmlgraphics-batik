@@ -226,8 +226,12 @@ public abstract class SVGStylableElement
      */
     public void addTargetListener(String ns, String an, boolean isCSS,
                                   AnimationTargetListener l) {
-        if (isCSS && svgContext != null) {
-            ((SVGAnimationTargetContext) svgContext).addTargetListener(an, l);
+        if (isCSS) {
+            if (svgContext != null) {
+                SVGAnimationTargetContext actx =
+                    (SVGAnimationTargetContext) svgContext;
+                actx.addTargetListener(an, l);
+            }
         } else {
             super.addTargetListener(ns, an, isCSS, l);
         }
@@ -239,7 +243,11 @@ public abstract class SVGStylableElement
     public void removeTargetListener(String ns, String an, boolean isCSS,
                                      AnimationTargetListener l) {
         if (isCSS) {
-            ((SVGAnimationTargetContext)svgContext).removeTargetListener(an, l);
+            if (svgContext != null) {
+                SVGAnimationTargetContext actx =
+                    (SVGAnimationTargetContext) svgContext;
+                actx.removeTargetListener(an, l);
+            }
         } else {
             super.removeTargetListener(ns, an, isCSS, l);
         }

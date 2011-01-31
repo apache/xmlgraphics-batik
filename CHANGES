@@ -12,7 +12,7 @@ Bug fixing is an on-going task, so it is implied in all sub-releases.
     43411, 43847, 43950, 44553, 44590, 44919, 44936, 44966, 45112,
     45114, 45117, 45397, 45520, 45883, 45958, 46072, 46124, 46202,
     46430, 46431, 46855, 46871, 47201, 47202, 48182, 48411, 49889,
-    50006
+    50006, 50100
 
 
 2. New features
@@ -64,6 +64,10 @@ Bug fixing is an on-going task, so it is implied in all sub-releases.
   * Avoid an NPE in ttf2svg when resolving substitutions for Arabic script.
   * ttf2svg now correctly writes out kerning pairs for characters that have
     no name.
+  * SVGGraphics2D now serializes font-size values in style="" attributes
+    with a unit.
+  * Avoid an NPE when disposing a document that had animations targetting
+    CSS properties on elements that subsequently became display:none.
 
 5. Misc
 
