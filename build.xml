@@ -92,7 +92,9 @@ To display the available targets type:
     <property name="debug"              value="off"/>
     <property name="optimize"           value="on"/>
     <property name="deprecation"        value="on"/>
-  
+    <property name="javac.source"       value="1.5"/>
+    <property name="javac.target"       value="1.5"/>
+    
     <property name="src"                value="sources"/>
     <property name="src-internal-codec" value="sources-internal-codec"/>
     <property name="resources"          value="resources"/>
@@ -218,6 +220,11 @@ To display the available targets type:
     <echo message="    JAVA_HOME: ${env.JAVA_HOME}"/>
     <echo message="    VM:        ${java.vm.version}, ${java.vm.vendor}"/>
 
+    <presetdef name="javac">
+      <javac source="${javac.source}" target="${javac.target}"
+        debug="${debug}" deprecation="${deprecation}" optimize="${optimize}"/>
+    </presetdef>
+    
     <property name="init.done" value="true"/>
   </target>
 
@@ -577,8 +584,7 @@ JAVA=/usr/bin/java
         <attribute name="Implementation-Version" value="${completeVersion}${svn-revision-suffix}"/>
         <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
         <attribute name="Build-Id" value="${build.id}"/>
-        <attribute name="Main-Class" value="org.apache.batik.apps.rasterizer.Main"/>
-        <attribute name="Class-Path" value="batik-ext-${completeVersion}.jar batik-dom-${completeVersion}.jar batik-css-${completeVersion}.jar batik-svg-dom-${completeVersion}.jar batik-gvt-${completeVersion}.jar batik-parser-${completeVersion}.jar batik-script-${completeVersion}.jar batik-bridge-${completeVersion}.jar batik-anim-${completeVersion}.jar batik-transcoder-${completeVersion}.jar batik-awt-util-${completeVersion}.jar batik-codec-${completeVersion}.jar batik-util-${completeVersion}.jar batik-xml-${completeVersion}.jar xerces-2.5.0.jar xalan-2.6.0.jar xml-apis-1.3.04.jar xml-apis-ext-1.3.04.jar fop-0.94.jar batik-js.jar"/>
+        <attribute name="Main-Class" value="org.apache.batik.apps.rasterizer.DynamicMain"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
       <fileset dir="${dest}">
@@ -645,12 +651,11 @@ JAVA=/usr/bin/java
         <attribute name="Implementation-Version" value="${completeVersion}${svn-revision-suffix}"/>
         <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
         <attribute name="Build-Id" value="${build.id}"/>
-        <attribute name="Main-Class" value="org.apache.batik.apps.svgbrowser.Main"/>
-        <attribute name="Class-Path" value="batik-ext-${completeVersion}.jar batik-dom-${completeVersion}.jar batik-css-${completeVersion}.jar batik-svg-dom-${completeVersion}.jar batik-gvt-${completeVersion}.jar batik-parser-${completeVersion}.jar batik-script-${completeVersion}.jar batik-bridge-${completeVersion}.jar batik-swing-${completeVersion}.jar batik-anim-${completeVersion}.jar batik-transcoder-${completeVersion}.jar batik-gui-util-${completeVersion}.jar batik-awt-util-${completeVersion}.jar batik-codec-${completeVersion}.jar batik-util-${completeVersion}.jar batik-xml-${completeVersion}.jar xerces-2.5.0.jar xalan-2.6.0.jar xml-apis-1.3.04.jar xml-apis-ext-1.3.04.jar batik-js.jar"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
       <fileset dir="${dest}">
         <include name="${package-prefix}/apps/svgbrowser/**/*.class"/>
+        <include name="${package-prefix}/util/AppStarterUtil*.class"/>
       </fileset>
       <fileset dir="${resources}" excludes="**/.svn/">
         <include name="${package-prefix}/apps/svgbrowser/**/resources/**"/>
@@ -819,8 +824,7 @@ JAVA=/usr/bin/java
 
     <echo message="debug ${debug}, optimize ${optimize}, deprecation ${deprecation}"/>
 
-    <javac srcdir="${testsrc}" destdir="${dest}"  deprecation="${deprecation}" 
-           debug="${debug}" optimize="${optimize}" encoding="UTF-8">
+    <javac srcdir="${testsrc}" destdir="${dest}" encoding="UTF-8">
       <classpath>
         <pathelement location="${dest}"/>
         <path refid="libs-classpath"/>
@@ -843,8 +847,7 @@ JAVA=/usr/bin/java
 
     <echo message="debug ${debug}, optimize ${optimize}, deprecation ${deprecation}"/>
 
-    <javac srcdir="${samples}/tests/resources/java/sources" destdir="${samples}/tests/resources/java/classes"  deprecation="${deprecation}" 
-           debug="${debug}" optimize="${optimize}" encoding="UTF-8">
+    <javac srcdir="${samples}/tests/resources/java/sources" destdir="${samples}/tests/resources/java/classes" encoding="UTF-8">
       <classpath>
         <pathelement location="${dest}"/>
         <pathelement location="${samples}/tests/resources/java/classes"/>
@@ -853,8 +856,7 @@ JAVA=/usr/bin/java
       </classpath>
     </javac>
 
-    <javac srcdir="${testresources}" destdir="${testresources}/classes"  deprecation="${deprecation}" 
-           debug="${debug}" optimize="${optimize}" encoding="UTF-8">
+    <javac srcdir="${testresources}" destdir="${testresources}/classes" encoding="UTF-8">
       <classpath>
         <pathelement location="${dest}"/>
         <pathelement location="${testresources}/classes"/>
@@ -989,8 +991,7 @@ JAVA=/usr/bin/java
   </target>
 
   <target name="compile" depends="init, compile-prepare" unless="compile.done">
-    <javac destdir="${dest}" deprecation="${deprecation}" 
-           debug="${debug}" optimize="${optimize}" encoding="UTF-8">
+    <javac destdir="${dest}" encoding="UTF-8">
       <src path="${src}"/>
       <classpath refid="libs-classpath"/>
       <exclude name="**/*.html"/>
@@ -1637,6 +1638,7 @@ JAVA=/usr/bin/java
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
       <fileset dir="${dest}">
         <include name="${package-prefix}/apps/svgbrowser/**/*.class"/>
+        <include name="${package-prefix}/util/AppStarterUtil*.class"/>
       </fileset>
       <fileset dir="${resources}" excludes="**/.svn/">
         <include name="${package-prefix}/apps/svgbrowser/**/resources/**"/>
@@ -1687,6 +1689,7 @@ JAVA=/usr/bin/java
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
       <fileset dir="${dest}">
         <include name="${package-prefix}/apps/rasterizer/**/*.class"/>
+        <include name="${package-prefix}/util/AppStarterUtil*.class"/>
       </fileset>
       <fileset dir="${resources}" excludes="**/.svn/">
         <include name="${package-prefix}/apps/rasterizer/**/resources/**"/>
