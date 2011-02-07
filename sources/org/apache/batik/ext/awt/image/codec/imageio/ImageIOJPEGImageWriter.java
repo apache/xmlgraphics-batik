@@ -37,25 +37,23 @@ import org.apache.batik.ext.awt.image.spi.ImageWriterParams;
 public class ImageIOJPEGImageWriter extends ImageIOImageWriter {
 
     private static final String JPEG_NATIVE_FORMAT = "javax_imageio_jpeg_image_1.0";
-    
+
     /**
      * Main constructor.
      */
     public ImageIOJPEGImageWriter() {
         super("image/jpeg");
     }
- 
-    /**
-     * @see ImageIOImageWriter#updateMetadata(javax.imageio.metadata.IIOMetadata, ImageWriterParams)
-     */
+
+    /** {@inheritDoc} */
+    @Override
     protected IIOMetadata updateMetadata(IIOMetadata meta, ImageWriterParams params) {
         //ImageIODebugUtil.dumpMetadata(meta);
         if (JPEG_NATIVE_FORMAT.equals(meta.getNativeMetadataFormatName())) {
             meta = addAdobeTransform(meta);
 
             IIOMetadataNode root = (IIOMetadataNode)meta.getAsTree(JPEG_NATIVE_FORMAT);
-            //IIOMetadataNode root = new IIOMetadataNode(jpegmeta);
-            
+
             IIOMetadataNode jv = getChildNode(root, "JPEGvariety");
             if (jv == null) {
                 jv = new IIOMetadataNode("JPEGvariety");
@@ -78,33 +76,22 @@ public class ImageIOJPEGImageWriter extends ImageIOImageWriter {
                 child.setAttribute("Ydensity", params.getResolution().toString());
                 child.setAttribute("thumbWidth", null);
                 child.setAttribute("thumbHeight", null);
-                
+
             }
-            
-            /*
-            IIOMetadataNode ms = getChildNode(root, "markerSequence");
-            if (ms == null) {
-                ms = new IIOMetadataNode("markerSequence");
-                root.appendChild(ms);
-            }*/
-            
+
             try {
                 meta.setFromTree(JPEG_NATIVE_FORMAT, root);
-                //meta.mergeTree(JPEG_NATIVE_FORMAT, root);
             } catch (IIOInvalidTreeException e) {
-                throw new RuntimeException("Cannot update image metadata: " 
+                throw new RuntimeException("Cannot update image metadata: "
                             + e.getMessage(), e);
             }
 
             //ImageIODebugUtil.dumpMetadata(meta);
-            
-            //meta = super.updateMetadata(meta, params);
-            //ImageIODebugUtil.dumpMetadata(meta);
         }
-        
+
         return meta;
     }
-    
+
     private static IIOMetadata addAdobeTransform(IIOMetadata meta) {
         // add the adobe transformation (transform 1 -> to YCbCr)
         IIOMetadataNode root = (IIOMetadataNode)meta.getAsTree(JPEG_NATIVE_FORMAT);
@@ -130,32 +117,30 @@ public class ImageIOJPEGImageWriter extends ImageIOImageWriter {
         try {
             meta.setFromTree(JPEG_NATIVE_FORMAT, root);
         } catch (IIOInvalidTreeException e) {
-            throw new RuntimeException("Cannot update image metadata: " 
+            throw new RuntimeException("Cannot update image metadata: "
                         + e.getMessage(), e);
         }
         return meta;
-    }    
-    
-    /**
-     * @see ImageIOImageWriter#getDefaultWriteParam(javax.imageio.ImageWriter, java.awt.image.RenderedImage, ImageWriterParams)
-     */
+    }
+
+    /** {@inheritDoc} */
+    @Override
     protected ImageWriteParam getDefaultWriteParam(
             ImageWriter iiowriter, RenderedImage image,
             ImageWriterParams params) {
         JPEGImageWriteParam param = new JPEGImageWriteParam(iiowriter.getLocale());
-        //ImageTypeSpecifier type = ImageTypeSpecifier.createFromRenderedImage(image);
-        /*
-        ImageTypeSpecifier type = new ImageTypeSpecifier(
-                image.getColorModel(), image.getSampleModel());
-                */
-        /* didn't work as expected...
-        ImageTypeSpecifier type = ImageTypeSpecifier.createFromBufferedImageType(
-                BufferedImage.TYPE_INT_RGB);
-        param.setDestinationType(type);
-        param.setSourceBands(new int[] {0, 1, 2});
-        */
+        param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+        param.setCompressionQuality(params.getJPEGQuality());
+        if (params.getCompressionMethod() != null
+                && !"JPEG".equals(params.getCompressionMethod())) {
+            throw new IllegalArgumentException(
+                    "No compression method other than JPEG is supported for JPEG output!");
+        }
+        if (params.getJPEGForceBaseline()) {
+            param.setProgressiveMode(JPEGImageWriteParam.MODE_DISABLED);
+        }
         return param;
     }
-    
-    
+
+
 }

@@ -21,7 +21,6 @@
 # -----------------------------------------------------------------------------
 
 org.apache.batik.ext.awt.image.codec.png.PNGImageWriter
-org.apache.batik.ext.awt.image.codec.jpeg.JPEGImageWriter
 #org.apache.batik.ext.awt.image.codec.imageio.ImageIOPNGImageWriter
 #org.apache.batik.ext.awt.image.codec.imageio.ImageIOTIFFImageWriter
-#org.apache.batik.ext.awt.image.codec.imageio.ImageIOJPEGImageWriter
+org.apache.batik.ext.awt.image.codec.imageio.ImageIOJPEGImageWriter
