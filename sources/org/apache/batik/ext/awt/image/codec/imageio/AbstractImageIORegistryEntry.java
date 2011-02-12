@@ -35,20 +35,20 @@ import org.apache.batik.ext.awt.image.renderable.DeferRable;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.renderable.RedRable;
 import org.apache.batik.ext.awt.image.rendered.Any2sRGBRed;
-import org.apache.batik.ext.awt.image.rendered.FormatRed;
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
+import org.apache.batik.ext.awt.image.rendered.FormatRed;
 import org.apache.batik.ext.awt.image.spi.ImageTagRegistry;
 import org.apache.batik.ext.awt.image.spi.MagicNumberRegistryEntry;
 import org.apache.batik.util.ParsedURL;
 
 /**
  * This is the base class for all ImageIO-based RegistryEntry implementations. They
- * have a slightly lower priority than the RegistryEntry implementations using the 
+ * have a slightly lower priority than the RegistryEntry implementations using the
  * internal codecs, so these take precedence if they are available.
  *
  * @version $Id$
  */
-public abstract class AbstractImageIORegistryEntry 
+public abstract class AbstractImageIORegistryEntry
     extends MagicNumberRegistryEntry {
 
     /**
@@ -63,7 +63,7 @@ public abstract class AbstractImageIORegistryEntry
                                         MagicNumber [] magicNumbers) {
         super(name, PRIORITY + 100, exts, mimeTypes, magicNumbers);
     }
-    
+
     /**
      * Constructor, simplifies construction of entry when only
      * one extension and one magic number is required.
@@ -78,7 +78,7 @@ public abstract class AbstractImageIORegistryEntry
                                     int offset, byte[] magicNumber) {
         super(name, PRIORITY + 100, ext, mimeType, offset, magicNumber);
     }
-    
+
     /**
      * Decode the Stream into a RenderableImage
      *
@@ -86,10 +86,10 @@ public abstract class AbstractImageIORegistryEntry
      * @param origURL The original URL, if any, for documentation
      *                purposes only.  This may be null.
      * @param needRawData If true the image returned should not have
-     *                    any default color correction the file may 
-     *                    specify applied.  
+     *                    any default color correction the file may
+     *                    specify applied.
      */
-    public Filter handleStream(InputStream inIS, 
+    public Filter handleStream(InputStream inIS,
                                ParsedURL   origURL,
                                boolean     needRawData) {
         final DeferRable  dr  = new DeferRable();
@@ -105,28 +105,30 @@ public abstract class AbstractImageIORegistryEntry
         }
 
         Thread t = new Thread() {
+                @Override
                 public void run() {
                     Filter filt;
                     try{
-                        Iterator iter = ImageIO.getImageReadersByMIMEType(
+                        Iterator<ImageReader> iter = ImageIO.getImageReadersByMIMEType(
                                 getMimeTypes().get(0).toString());
                         if (!iter.hasNext()) {
                             throw new UnsupportedOperationException(
-                                    "No image reader for " 
+                                    "No image reader for "
                                         + getFormatName() + " available!");
                         }
-                        ImageReader reader = (ImageReader)iter.next();
+                        ImageReader reader = iter.next();
                         ImageInputStream imageIn = ImageIO.createImageInputStream(is);
                         reader.setInput(imageIn, true);
-                        
+
                         int imageIndex = 0;
                         dr.setBounds(new Rectangle2D.Double
-                                     (0, 0, 
-                                      reader.getWidth(imageIndex), 
+                                     (0, 0,
+                                      reader.getWidth(imageIndex),
                                       reader.getHeight(imageIndex)));
                         CachableRed cr;
-                        //Naïve approach probably wasting lots of memory
+                        //Naive approach possibly wasting lots of memory
                         //and ignoring the gamma correction done by PNGRed :-(
+                        //Matches the code used by the former JPEGRegistryEntry, though.
                         BufferedImage bi = reader.read(imageIndex);
                         cr = GraphicsUtil.wrap(bi);
                         cr = new Any2sRGBRed(cr);
@@ -140,17 +142,17 @@ public abstract class AbstractImageIORegistryEntry
                     } catch (IOException ioe) {
                         // Something bad happened here...
                         filt = ImageTagRegistry.getBrokenLinkImage
-                            (AbstractImageIORegistryEntry.this, 
+                            (AbstractImageIORegistryEntry.this,
                              errCode, errParam);
                     } catch (ThreadDeath td) {
                         filt = ImageTagRegistry.getBrokenLinkImage
-                            (AbstractImageIORegistryEntry.this, 
+                            (AbstractImageIORegistryEntry.this,
                              errCode, errParam);
                         dr.setSource(filt);
                         throw td;
                     } catch (Throwable t) {
                         filt = ImageTagRegistry.getBrokenLinkImage
-                            (AbstractImageIORegistryEntry.this, 
+                            (AbstractImageIORegistryEntry.this,
                              errCode, errParam);
                     }
 
