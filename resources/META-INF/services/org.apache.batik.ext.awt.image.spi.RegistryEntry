@@ -21,8 +21,7 @@
 # -----------------------------------------------------------------------------
 
 org.apache.batik.ext.awt.image.codec.png.PNGRegistryEntry
-org.apache.batik.ext.awt.image.codec.jpeg.JPEGRegistryEntry
 org.apache.batik.ext.awt.image.codec.tiff.TIFFRegistryEntry
-#org.apache.batik.ext.awt.image.codec.imageio.ImageIOJPEGRegistryEntry
+org.apache.batik.ext.awt.image.codec.imageio.ImageIOJPEGRegistryEntry
 #org.apache.batik.ext.awt.image.codec.imageio.ImageIOPNGRegistryEntry
 #org.apache.batik.ext.awt.image.codec.imageio.ImageIOTIFFRegistryEntry
