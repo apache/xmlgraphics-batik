@@ -57,10 +57,10 @@
         <dom2ev label="DOM Level 2 Events" href="http://www.w3.org/TR/DOM-Level-2-Events/"/>
         <dom2style label="DOM Level 2 Style" href="http://www.w3.org/TR/DOM-Level-2-Style/"/>
         <ecmascript label="ECMAScript 3rd ed." href="http://www.ecma-international.org/publications/standards/Ecma-262.htm"/>
-        <smil label="SMIL Animation" href="http://www.w3.org/TR/2001/REC-smil-animation-20010904/"/>
+        <smil label="SMIL Animation" href="http://www.w3.org/TR/smil-animation"/>
       </for11>
       <for12 label="For SVG 1.2">
-        <svg12t label="SVG Tiny 1.2 (draft)" href="http://www.w3.org/TR/SVGMobile12/"/>
+        <svg12t label="SVG Tiny 1.2" href="http://www.w3.org/TR/SVGTiny12/"/>
         <svg12 label="SVG Full 1.2 (draft)" href="http://www.w3.org/TR/SVG12/"/>
         <dom3core label="DOM Level 3 Core" href="http://www.w3.org/TR/DOM-Level-3-Core/"/>
         <dom3ev label="DOM Level 3 Events (draft)" href="http://www.w3.org/TR/DOM-Level-3-Events/"/>

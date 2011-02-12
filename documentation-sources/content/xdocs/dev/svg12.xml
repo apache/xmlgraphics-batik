@@ -251,7 +251,7 @@ public class C {
       </p>
       <ul>
         <li>
-          the <a href="http://www.w3.org/TR/SVGMobile12/painting.html#SolidColorElement"><code>solidColor</code>
+          the <a href="http://www.w3.org/TR/SVGTiny12/painting.html#SolidColorElement"><code>solidColor</code>
             paint server element,</a>
         </li>
         <li>
@@ -262,7 +262,7 @@ public class C {
         </li>
         <li>
           the XML Events
-          <a href="http://www.w3.org/TR/SVGMobile12/script.html#HandlerElement"><code>handler</code>
+          <a href="http://www.w3.org/TR/SVGTiny12/script.html#HandlerElement"><code>handler</code>
             element</a>,
         </li>
         <li>

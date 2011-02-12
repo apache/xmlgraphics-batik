@@ -1,32 +1,32 @@
 <?xml version="1.0"?>
 <?xml-stylesheet type="text/xsl"?>
 <rdf:RDF xml:lang="en"
-         xmlns="http://usefulinc.com/ns/doap#" 
-         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
+         xmlns="http://usefulinc.com/ns/doap#"
+         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
          xmlns:asfext="http://projects.apache.org/ns/asfext#"
          xmlns:foaf="http://xmlns.com/foaf/0.1/">
 <!--
   =======================================================================
 
-   Copyright (c) 2006-2007 The Apache Software Foundation.  
+   Copyright (c) 2006-2011 The Apache Software Foundation.
    All rights reserved.
 
   =======================================================================
 -->
   <Project rdf:about="http://xmlgraphics.apache.org/batik/">
-    <created>2007-02-16</created>
-    <license rdf:resource="http://usefulinc.com/doap/licenses/asl20" />
+    <created>2000-10-01</created>
+    <license rdf:resource="http://usefulinc.com/doap/licenses/asl20"/>
     <name>Apache Batik</name>
-    <homepage rdf:resource="http://xmlgraphics.apache.org/batik/" />
-    <asfext:pmc rdf:resource="http://xmlgraphics.apache.org" />
+    <homepage rdf:resource="http://xmlgraphics.apache.org/batik/"/>
+    <asfext:pmc rdf:resource="http://xmlgraphics.apache.org"/>
     <shortdesc>The Apache Foundation’s Java-based toolkit for SVG generation and manipulation.</shortdesc>
     <description>Batik is a Java-based toolkit for applications or applets to use images in the Scalable Vector Graphics (SVG) format for various purposes, such as display, generation and manipulation.</description>
-    <bug-database rdf:resource="http://issues.apache.org/bugzilla/buglist.cgi?query_format=specific&amp;order=relevance+desc&amp;bug_status=__open__&amp;product=Batik&amp;content=" />
-    <mailing-list rdf:resource="http://xmlgraphics.apache.org/batik/mailing-list.html" />
-    <download-page rdf:resource="http://xmlgraphics.apache.org/download.cgi" />
-    <programming-language>SVG</programming-language>
-    <category rdf:resource="http://projects.apache.org/category/xml" />
-    <category rdf:resource="http://projects.apache.org/category/graphics" />
+    <bug-database rdf:resource="http://issues.apache.org/bugzilla/buglist.cgi?query_format=specific&amp;order=relevance+desc&amp;bug_status=__open__&amp;product=Batik&amp;content="/>
+    <mailing-list rdf:resource="http://xmlgraphics.apache.org/batik/mailing-list.html"/>
+    <download-page rdf:resource="http://xmlgraphics.apache.org/download.cgi"/>
+    <programming-language>Java</programming-language>
+    <category rdf:resource="http://projects.apache.org/category/xml"/>
+    <category rdf:resource="http://projects.apache.org/category/graphics"/>
     <release>
       <Version>
         <name>Batik 1.6</name>
@@ -67,7 +67,7 @@
       <asfext:title>Scalable Vector Graphics (SVG) Tiny 1.2</asfext:title>
       <asfext:body>W3C</asfext:body>
       <asfext:id>SVG Tiny 1.2</asfext:id>
-      <asfext:url rdf:resource="http://www.w3.org/TR/SVGMobile12/"/>
+      <asfext:url rdf:resource="http://www.w3.org/TR/SVGTiny12/"/>
      </asfext:Standard>
     </asfext:implements>
     <asfext:implements>
