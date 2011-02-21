@@ -68,6 +68,8 @@ Bug fixing is an on-going task, so it is implied in all sub-releases.
     with a unit.
   * Avoid an NPE when disposing a document that had animations targetting
     CSS properties on elements that subsequently became display:none.
+  * The startOffset="" attribute on textPath elements now allows negative
+    percentages.
 
 5. Misc
 

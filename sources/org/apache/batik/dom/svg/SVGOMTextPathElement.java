@@ -151,7 +151,7 @@ public class SVGOMTextPathElement
             createLiveAnimatedLength
                 (null, SVG_START_OFFSET_ATTRIBUTE,
                  SVG_TEXT_PATH_START_OFFSET_DEFAULT_VALUE,
-                 SVGOMAnimatedLength.OTHER_LENGTH, true);
+                 SVGOMAnimatedLength.OTHER_LENGTH, false);
         href =
             createLiveAnimatedString(XLINK_NAMESPACE_URI, XLINK_HREF_ATTRIBUTE);
     }
