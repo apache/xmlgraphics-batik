@@ -126,9 +126,6 @@ public class SVGTextPathElementBridge extends AnimatableGenericSVGBridge
                 try {
                     startOffsetPercent = SVGUtilities.convertSVGNumber(percentString);
                 } catch (NumberFormatException e) {
-                    startOffsetPercent = -1;
-                }
-                if (startOffsetPercent < 0) {
                     throw new BridgeException
                         (ctx, textPathElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
                          new Object[] {SVG_START_OFFSET_ATTRIBUTE, s});
