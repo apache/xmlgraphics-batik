@@ -18,8 +18,9 @@
  */
 package org.apache.batik.util;
 
-import java.awt.Frame;
-import java.lang.reflect.Method;
+import java.awt.GraphicsEnvironment;
+import java.awt.HeadlessException;
+import java.awt.Toolkit;
 
 /**
  * Platform specific functionality.
@@ -34,4 +35,18 @@ public abstract class Platform {
      */
     public static boolean isOSX =
         System.getProperty("os.name").equals("Mac OS X");
+
+    /**
+     * Returns the active screen resolution. If Batik is run in a headless environment, this
+     * method will return the default "96" unlike {@link Toolkit#getScreenResolution()} which
+     * will throw a {@link HeadlessException}.
+     * @return the screen resolution in dpi
+     */
+    public static int getScreenResolution() {
+        if (GraphicsEnvironment.isHeadless()) {
+            return 96;
+        } else {
+            return Toolkit.getDefaultToolkit().getScreenResolution();
+        }
+    }
 }

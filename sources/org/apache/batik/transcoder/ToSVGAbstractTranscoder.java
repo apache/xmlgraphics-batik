@@ -18,7 +18,6 @@
  */
 package org.apache.batik.transcoder;
 
-import java.awt.Toolkit;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -32,6 +31,7 @@ import org.apache.batik.svggen.SVGGraphics2D;
 import org.apache.batik.transcoder.keys.BooleanKey;
 import org.apache.batik.transcoder.keys.FloatKey;
 import org.apache.batik.transcoder.keys.IntegerKey;
+import org.apache.batik.util.Platform;
 import org.apache.batik.util.SVGConstants;
 
 import org.xml.sax.XMLFilter;
@@ -93,8 +93,8 @@ public abstract class ToSVGAbstractTranscoder extends AbstractTranscoder
     public static float PIXEL_TO_MILLIMETERS;
     public static float PIXEL_PER_INCH;
     static {
-        PIXEL_TO_MILLIMETERS = 25.4f /  (float)Toolkit.getDefaultToolkit().getScreenResolution();
-        PIXEL_PER_INCH = Toolkit.getDefaultToolkit().getScreenResolution();
+        PIXEL_TO_MILLIMETERS = 25.4f / (float)Platform.getScreenResolution();
+        PIXEL_PER_INCH = Platform.getScreenResolution();
     }
 
     public static final int TRANSCODER_ERROR_BASE = 0xff00;
@@ -153,7 +153,9 @@ public abstract class ToSVGAbstractTranscoder extends AbstractTranscoder
            DOMImplementation domImpl = SVGDOMImplementation.getDOMImplementation();
 
            doc = domImpl.createDocument(SVG_NAMESPACE_URI, SVG_SVG_TAG, null);
-        } else doc = output.getDocument();
+        } else {
+            doc = output.getDocument();
+        }
 
         return doc;
     }
@@ -184,8 +186,9 @@ public abstract class ToSVGAbstractTranscoder extends AbstractTranscoder
 
         try {
             boolean escaped = false;
-            if (hints.containsKey(KEY_ESCAPED))
+            if (hints.containsKey(KEY_ESCAPED)) {
                 escaped = ((Boolean)hints.get(KEY_ESCAPED)).booleanValue();
+            }
             // Output stream
             OutputStream os = output.getOutputStream();
             if (os != null) {
