@@ -20,7 +20,6 @@
 package org.apache.batik.transcoder.wmf.tosvg;
 
 import java.awt.Rectangle;
-import java.awt.Toolkit;
 import java.awt.geom.Rectangle2D;
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -28,6 +27,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 import org.apache.batik.transcoder.wmf.WMFConstants;
+import org.apache.batik.util.Platform;
 
 /**
  * This class provides a general framework to read WMF Metafiles.
@@ -35,9 +35,8 @@ import org.apache.batik.transcoder.wmf.WMFConstants;
  */
 public abstract class AbstractWMFReader {
 
-    // todo should be able to run in headless environment - as is written, will throw exception during init
-    public static final float PIXEL_PER_INCH = Toolkit.getDefaultToolkit().getScreenResolution();
-    public static final float MM_PER_PIXEL = 25.4f / Toolkit.getDefaultToolkit().getScreenResolution();
+    public static final float PIXEL_PER_INCH = Platform.getScreenResolution();
+    public static final float MM_PER_PIXEL = 25.4f / Platform.getScreenResolution();
     protected int left, right, top, bottom, width, height, inch;
     protected float scaleX, scaleY, scaleXY;
     protected int vpW, vpH, vpX, vpY;
@@ -47,7 +46,7 @@ public abstract class AbstractWMFReader {
 
     protected volatile boolean bReading = false;
     protected boolean isAldus = false;
-    protected boolean isotropic = true;    
+    protected boolean isotropic = true;
 
     protected int mtType, mtHeaderSize, mtVersion, mtSize, mtNoObjects;
     protected int mtMaxRecord, mtNoParameters;
@@ -60,7 +59,7 @@ public abstract class AbstractWMFReader {
     public AbstractWMFReader() {
         scaleX = 1;
         scaleY = 1;
-        scaleXY = 1f;        
+        scaleXY = 1f;
         left = -1;
         top = -1;
         width = -1;
@@ -77,7 +76,7 @@ public abstract class AbstractWMFReader {
         this.height = height;
     }
 
-    /** 
+    /**
      * Read the next short (2 bytes) value in the DataInputStream.
      */
     protected short readShort(DataInputStream is) throws IOException {
@@ -89,9 +88,9 @@ public abstract class AbstractWMFReader {
         return i;
     }
 
-    /** 
+    /**
      * Read the next int (4 bytes) value in the DataInputStream.
-     */    
+     */
     protected int readInt( DataInputStream is) throws IOException {
         byte js[] = new byte[ 4 ];
         is.readFully(js);
@@ -362,7 +361,7 @@ public abstract class AbstractWMFReader {
         if ( dwIsAldus == WMFConstants.META_ALDUS_APM ) {
             // Read the aldus placeable header.
             int   key = dwIsAldus;
-            isAldus = true;            
+            isAldus = true;
             readShort( is ); // metafile handle, always zero
             left = readShort( is );
             top = readShort( is );
@@ -388,14 +387,14 @@ public abstract class AbstractWMFReader {
 
             width = right - left;
             height = bottom - top;
-            
+
             // read the beginning of the header
             mtType = readShort( is );
-            mtHeaderSize = readShort( is );                        
+            mtHeaderSize = readShort( is );
         } else {
             // read the beginning of the header, the first int corresponds to the first two parameters
-            mtType = ((dwIsAldus << 16) >> 16);                        
-            mtHeaderSize = dwIsAldus >> 16;            
+            mtType = ((dwIsAldus << 16) >> 16);
+            mtHeaderSize = dwIsAldus >> 16;
         }
 
         mtVersion = readShort( is );
