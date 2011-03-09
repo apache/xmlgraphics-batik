@@ -70,6 +70,8 @@ Bug fixing is an on-going task, so it is implied in all sub-releases.
     CSS properties on elements that subsequently became display:none.
   * The startOffset="" attribute on textPath elements now allows negative
     percentages.
+  * Correctly handle individual missing <view> attributes by looking at
+    the closest ancestor SVG element.
 
 5. Misc
 

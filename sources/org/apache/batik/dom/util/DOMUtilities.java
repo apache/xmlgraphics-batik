@@ -1048,4 +1048,16 @@ public class DOMUtilities extends XMLUtilities implements XMLConstants {
         }
         return MODIFIER_STRINGS[modifiersEx];
     }
+
+    /**
+     * Returns whether the given element has a particular attribute and that
+     * it exists due to being specified explicitly, rather than being defaulted
+     * from a DTD.
+     */
+    public static boolean isAttributeSpecifiedNS(Element e,
+                                                 String namespaceURI,
+                                                 String localName) {
+        Attr a = e.getAttributeNodeNS(namespaceURI, localName);
+        return a != null && a.getSpecified();
+    }
 }
