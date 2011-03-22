@@ -147,14 +147,20 @@ public class FontFamilyManager extends AbstractValueManager {
             case LexicalUnit.SAC_IDENT:
                 StringBuffer sb = new StringBuffer(lu.getStringValue());
                 lu = lu.getNextLexicalUnit();
-                if (lu != null &&
-                    lu.getLexicalUnitType() == LexicalUnit.SAC_IDENT) {
+                if (lu != null && isIdentOrNumber(lu)) {
                     do {
                         sb.append(' ');
-                        sb.append(lu.getStringValue());
+                        switch (lu.getLexicalUnitType()) {
+                        case LexicalUnit.SAC_IDENT:
+                            sb.append(lu.getStringValue());
+                            break;
+                        case LexicalUnit.SAC_INTEGER:
+                            //Some font names contain integer values but are not quoted!
+                            //Example: "Univers 45 Light"
+                            sb.append(Integer.toString(lu.getIntegerValue()));
+                        }
                         lu = lu.getNextLexicalUnit();
-                    } while (lu != null &&
-                             lu.getLexicalUnitType() == LexicalUnit.SAC_IDENT);
+                    } while (lu != null && isIdentOrNumber(lu));
                     result.append(new StringValue(CSSPrimitiveValue.CSS_STRING,
                                                   sb.toString()));
                 } else {
@@ -167,17 +173,25 @@ public class FontFamilyManager extends AbstractValueManager {
                                         (CSSPrimitiveValue.CSS_STRING, id));
                 }
             }
-            if (lu == null) {
+            if (lu == null)
                 return result;
-            }
-            if (lu.getLexicalUnitType() != LexicalUnit.SAC_OPERATOR_COMMA) {
+            if (lu.getLexicalUnitType() != LexicalUnit.SAC_OPERATOR_COMMA)
                 throw createInvalidLexicalUnitDOMException
                     (lu.getLexicalUnitType());
-            }
             lu = lu.getNextLexicalUnit();
-            if (lu == null) {
+            if (lu == null)
                 throw createMalformedLexicalUnitDOMException();
-            }
+        }
+    }
+
+    private boolean isIdentOrNumber(LexicalUnit lu) {
+        short type = lu.getLexicalUnitType();
+        switch (type) {
+        case LexicalUnit.SAC_IDENT:
+        case LexicalUnit.SAC_INTEGER:
+            return true;
+        default:
+            return false;
         }
     }
 
