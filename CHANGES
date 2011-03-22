@@ -9,10 +9,10 @@ Bug fixing is an on-going task, so it is implied in all sub-releases.
 
 1. Bugzilla problem reports fixed:
 
-    43411, 43847, 43950, 44553, 44590, 44919, 44936, 44966, 45112,
-    45114, 45117, 45397, 45520, 45883, 45958, 46072, 46124, 46202,
-    46430, 46431, 46855, 46871, 47201, 47202, 48182, 48411, 49889,
-    50006, 50100
+    42408, 43411, 43847, 43950, 44553, 44590, 44919, 44936, 44966,
+    45112, 45114, 45117, 45397, 45520, 45883, 45958, 46072, 46124,
+    46202, 46430, 46431, 46855, 46871, 47201, 47202, 48182, 48411,
+    49889, 50006, 50100
 
 
 2. New features
@@ -72,10 +72,11 @@ Bug fixing is an on-going task, so it is implied in all sub-releases.
     percentages.
   * Correctly handle individual missing <view> attributes by looking at
     the closest ancestor SVG element.
+  * Fixed HeadlessExceptions related to WMF transcoding.
 
 5. Misc
 
-  * Minimum required Java version was raised to 1.4.
+  * Minimum required Java version was raised to 1.5.
 
 1.7beta1 -> 1.7
 ---------------
