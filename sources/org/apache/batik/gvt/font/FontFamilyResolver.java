@@ -18,6 +18,7 @@
  */
 package org.apache.batik.gvt.font;
 
+import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.util.Collection;
 import java.util.HashMap;
@@ -90,6 +91,15 @@ public class FontFamilyResolver {
             if (!fontNameWithDashes.equals(fontNames[i])) {
                fonts.put(fontNameWithDashes.toLowerCase(), fontNames[i]);
             }
+        }
+
+        //Also register all font names, not just font families.
+        //Example: Font Family: "Univers", but Font Name: "Univers 45 Light"
+        //Without this, matching "Univers 45 Light" is not possible.
+        Font[] allFonts = env.getAllFonts();
+        for (int i = 0; i < allFonts.length; i++) {
+            Font f = allFonts[i];
+            fonts.put(f.getFontName().toLowerCase(), f.getFontName());
         }
 
         // first add the default font

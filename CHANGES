@@ -12,7 +12,7 @@ Bug fixing is an on-going task, so it is implied in all sub-releases.
     42408, 43411, 43847, 43950, 44553, 44590, 44919, 44936, 44966,
     45112, 45114, 45117, 45397, 45520, 45883, 45958, 46072, 46124,
     46202, 46430, 46431, 46855, 46871, 47201, 47202, 48182, 48411,
-    49889, 50006, 50100
+    49889, 49968, 50006, 50100
 
 
 2. New features
@@ -37,6 +37,9 @@ Bug fixing is an on-going task, so it is implied in all sub-releases.
   * Batik now tries to access content in HTTP error responses (for example, one
     is able to setup custom content for missing - HTTP code 404 - and/or other
     erroneous situations).
+  * Internally registers not only font families but also makes font available
+    through their font names.
+  * All CSS font weights are now handled for font selection
 
 4. Bug fixes
 
@@ -73,6 +76,8 @@ Bug fixing is an on-going task, so it is implied in all sub-releases.
   * Correctly handle individual missing <view> attributes by looking at
     the closest ancestor SVG element.
   * Fixed HeadlessExceptions related to WMF transcoding.
+  * Font families containing numbers (like "Univers 45 Light") no longer
+    cause errors.
 
 5. Misc
 
