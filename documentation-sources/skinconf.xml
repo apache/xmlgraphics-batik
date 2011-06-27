@@ -18,13 +18,14 @@
 
  $Id$
 -->
-
 <!--
 Skin configuration file. This file contains details of your project,
 which will be used to configure the chosen Forrest skin.
--->
 
-<!DOCTYPE skinconfig PUBLIC "-//APACHE//DTD Skin Configuration V0.7-1//EN" "http://forrest.apache.org/dtd/skinconfig-v07-1.dtd">
+Explanation of some elements has been removed from this file.
+See main/fresh-site/src/documentation/skinconf.xml for details.
+-->
+<!DOCTYPE skinconfig PUBLIC "-//APACHE//DTD Skin Configuration V0.8-2//EN" "http://forrest.apache.org/dtd/skinconfig-v08-2.dtd">
 <skinconfig>
   <!-- To enable lucene search add provider="lucene" (default is google).
     Add box-location="alt" to move the search box to an alternate location
@@ -33,23 +34,23 @@ which will be used to configure the chosen Forrest skin.
     no search box. @domain will enable sitesearch for the specific domain with google.
     In other words google will search the @domain for the query string.
   -->
-  <!--search name="MyProject" domain="mydomain" provider="google"/-->
+  <search name="Apache Batik" domain="xmlgraphics.apache.org" provider="google"/>
 
   <!-- Disable the print link? If enabled, invalid HTML 4.0.1 -->
   <disable-print-link>true</disable-print-link>  
   <!-- Disable the PDF link? -->
-  <disable-pdf-link>true</disable-pdf-link>
+  <disable-pdf-link>false</disable-pdf-link>
   <!-- Disable the POD link? -->
   <disable-pod-link>true</disable-pod-link>
   <!-- Disable the Text link? FIXME: NOT YET IMPLEMENETED. -->
   <disable-txt-link>true</disable-txt-link>
   <!-- Disable the xml source link? -->
   <!-- The xml source link makes it possible to access the xml rendition
-    of the source frim the html page, and to have it generated statically.
+    of the source from the html page, and to have it generated statically.
     This can be used to enable other sites and services to reuse the
     xml format for their uses. Keep this disabled if you don't want other
     sites to easily reuse your pages.-->
-  <disable-xml-link>true</disable-xml-link>
+  <disable-xml-link>false</disable-xml-link>
 
   <!-- Disable navigation icons on all external links? -->
   <disable-external-link-image>false</disable-external-link-image>
@@ -61,16 +62,18 @@ which will be used to configure the chosen Forrest skin.
   <disable-compliance-links>true</disable-compliance-links>
 
   <!-- Render mailto: links unrecognisable by spam harvesters? -->
-  <obfuscate-mail-links>false</obfuscate-mail-links>
+  <obfuscate-mail-links>true</obfuscate-mail-links>
   <obfuscate-mail-value>.at.</obfuscate-mail-value>
-
-  <!-- Disable the javascript facility to change the font size -->
-  <disable-font-script>true</disable-font-script>
+<!-- Disable the javascript facility to change the font size -->
+  <disable-font-script>false</disable-font-script>
 
   <!-- mandatory project logo
        default skin: renders it at the top -->
   <project-name>Apache Batik</project-name>
-  <project-description>Apache Batik</project-description>
+  <project-description>Batik is a Java-based toolkit for
+  applications or applets that want to use images in the
+  Scalable Vector Graphics (SVG) format for various purposes,
+  such as display, generation or manipulation.</project-description>
   <project-url>http://xmlgraphics.apache.org/batik/</project-url>
   <project-logo>images/batik.png</project-logo>
   <!-- Alternative static image:
@@ -79,7 +82,11 @@ which will be used to configure the chosen Forrest skin.
   <!-- optional group logo
        default skin: renders it at the top-left corner -->
   <group-name>Apache XML Graphics</group-name>
-  <group-description>Apache XML Graphics</group-description>
+  <group-description>Apache XML Graphics is responsible for the
+  creation and maintenance of software for managing the
+  conversion of XML formats to graphical output, and the
+  creation and maintenance of related software components,
+  based on software licensed to the Foundation</group-description>
   <group-url>http://xmlgraphics.apache.org/</group-url>
   <group-logo>images/group-logo.png</group-logo>
   <!-- Alternative static image:
@@ -94,11 +101,17 @@ which will be used to configure the chosen Forrest skin.
   <favicon-url></favicon-url>
 
   <!-- The following are used to construct a copyright statement -->
-  <year>2000–2011</year>
-  <vendor>The Apache Software Foundation.</vendor>
+  <year inception="true">2000</year>
+  <vendor>The Apache Software Foundation. Licensed under Apache License 2.0</vendor>
   <copyright-link>http://www.apache.org/licenses/</copyright-link>
-  
-  <!-- Some skins use this to form a 'breadcrumb trail' of links.
+<!-- Optional text trademark statement below the copyright statement -->
+  <trademark-statement>
+    Apache, Apache Forrest, the Apache feather logo, and the Apache Forrest
+    logos are trademarks of The Apache Software Foundation. All other marks mentioned may be trademarks or registered trademarks of their respective owners.
+  </trademark-statement>
+<!-- Some skins use this to form a 'breadcrumb trail' of links.
+    If you don't want these, then set the attributes to blank.
+    The DTD purposefully requires them.
     Use location="alt" to move the trail to an alternate location
     (if the skin supports it).
     Omit the location attribute to display the trail in the default location.
@@ -114,8 +127,7 @@ which will be used to configure the chosen Forrest skin.
     <link2 name="xml" href="http://xml.apache.org/"/>
     <link3 name="graphics" href="http://xmlgraphics.apache.org/"/>
   </trail>
-
-  <!-- Configure the TOC, i.e. the Table of Contents.
+<!-- Configure the TOC, i.e. the Table of Contents.
   @max-depth
    how many "section" levels need to be included in the
    generated Table of Contents (TOC). 
@@ -212,7 +224,7 @@ which will be used to configure the chosen Forrest skin.
       left: 0;
       float: none;
     }
-    #top .projectlogoA1 {
+    #top .projectlogo {
       text-align: center;
       float: none;
       margin: 0 auto;
@@ -709,13 +721,12 @@ which will be used to configure the chosen Forrest skin.
        Specified below are the default settings.
     -->
     <margins double-sided="false">
-      <top>1in</top>
-      <bottom>1in</bottom>
-      <inner>1.25in</inner>
-      <outer>1in</outer>
+      <top>0.5in</top>
+      <bottom>0.5in</bottom>
+      <inner>1in</inner>
+      <outer>0.5in</outer>
     </margins>
-
-    <!--
+<!--
       Print the URL text next to all links going outside the file
     -->
     <show-external-urls>false</show-external-urls>
@@ -728,8 +739,7 @@ which will be used to configure the chosen Forrest skin.
     -->
     <disable-copyright-footer>false</disable-copyright-footer>
   </pdf>
-
-  <!-- 
+<!-- 
     Credits are typically rendered as a set of small clickable
     images in the page footer.
     
@@ -745,8 +755,8 @@ which will be used to configure the chosen Forrest skin.
       at the bottom of the screen.
 
     Comment out the whole <credit>-element if you want no credits in the
-    web pages  
-   -->
+    web pages 
+  -->
   <credits>
     <credit box-location="alt">
       <name>Built with Apache Forrest</name>
@@ -755,6 +765,7 @@ which will be used to configure the chosen Forrest skin.
       <width>88</width>
       <height>31</height>
     </credit>
+    <!--
     <credit box-location="alt2">
       <name>Next ApacheCon Event</name>
       <url>http://www.apache.org/events/current-event.html</url>
@@ -762,15 +773,25 @@ which will be used to configure the chosen Forrest skin.
       <width>125</width>
       <height>125</height>
     </credit>
+    -->
     <!-- A credit with @role="pdf" will be used to compose a footer
      for each page in the PDF, using either "name" or "url" or both.
     -->
-    <!--
-    <credit role="pdf">
-      <name>Built with Apache Forrest</name>
-      <url>http://forrest.apache.org/</url>
+    <credit box-location="alt2">
+      <name>ApacheCon NA 2011</name>
+      <url>http://na11.apachecon.com/</url>
+      <image>http://apache.org/ads/ApacheCon/2011-na-125x125.png</image>
+      <width>125</width>
+      <height>125</height>
     </credit>
-    -->
+    
+    <credit role="pdf">
+      <name>PDF created by Apache FOP</name>
+      <url>http://xmlgraphics.apache.org/fop/</url>
+      <image>images/logo.jpg</image>
+      <width>138</width>
+      <height>31</height>
+    </credit>
   </credits>
 
 </skinconfig>
