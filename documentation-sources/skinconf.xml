@@ -779,7 +779,7 @@ See main/fresh-site/src/documentation/skinconf.xml for details.
     -->
     <credit box-location="alt2">
       <name>ApacheCon NA 2011</name>
-      <url>http://na11.apachecon.com/</url>
+      <url>http://www.apachecon.com/</url>
       <image>http://apache.org/ads/ApacheCon/2011-na-125x125.png</image>
       <width>125</width>
       <height>125</height>
