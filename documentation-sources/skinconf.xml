@@ -765,26 +765,17 @@ See main/fresh-site/src/documentation/skinconf.xml for details.
       <width>88</width>
       <height>31</height>
     </credit>
-    <!--
     <credit box-location="alt2">
-      <name>Next ApacheCon Event</name>
-      <url>http://www.apache.org/events/current-event.html</url>
+      <name>ApacheCon</name>
+      <url>http://www.apachecon.com/</url>
       <image>http://www.apache.org/events/current-event-125x125.png</image>
       <width>125</width>
       <height>125</height>
     </credit>
-    -->
+
     <!-- A credit with @role="pdf" will be used to compose a footer
      for each page in the PDF, using either "name" or "url" or both.
     -->
-    <credit box-location="alt2">
-      <name>ApacheCon NA 2011</name>
-      <url>http://www.apachecon.com/</url>
-      <image>http://apache.org/ads/ApacheCon/2011-na-125x125.png</image>
-      <width>125</width>
-      <height>125</height>
-    </credit>
-    
     <credit role="pdf">
       <name>PDF created by Apache FOP</name>
       <url>http://xmlgraphics.apache.org/fop/</url>
