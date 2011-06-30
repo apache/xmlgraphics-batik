@@ -206,8 +206,10 @@ public abstract class TextUtilities implements CSSConstants, ErrorConstants {
     public static Float convertFontWeight(Element e) {
         Value v = CSSUtilities.getComputedStyle
             (e, SVGCSSEngine.FONT_WEIGHT_INDEX);
-        float f = v.getFloatValue();
-        switch ((int)f) {
+        int weight = (int)v.getFloatValue();
+        //Note: the mapping from CSS2 to TextAttribute's weights is somewhat arbitrary.
+        //Important is to map 400/normal to REGULAR and 700/bold to BOLD.
+        switch (weight) {
         case 100:
             return TextAttribute.WEIGHT_EXTRA_LIGHT;
         case 200:
@@ -219,17 +221,27 @@ public abstract class TextUtilities implements CSSConstants, ErrorConstants {
         case 500:
             return TextAttribute.WEIGHT_SEMIBOLD;
         default:
-            return TextAttribute.WEIGHT_BOLD;
-            /* Would like to do this but the JDK 1.3 & 1.4
-               seems to drop back to 'REGULAR' instead of 'BOLD'
-               if there is not a match.
-        case 700:
-            return TextAttribute.WEIGHT_HEAVY;
-        case 800:
-            return TextAttribute.WEIGHT_EXTRABOLD;
-        case 900:
-            return TextAttribute.WEIGHT_ULTRABOLD;
-            */
+            String javaVersionString = System.getProperty("java.specification.version");
+            float javaVersion = (javaVersionString != null
+                    ? Float.parseFloat(javaVersionString) : 1.5f);
+            if (javaVersion < 1.5) {
+                // Would like to do this but the JDK 1.3 & 1.4
+                // seems to drop back to 'REGULAR' instead of 'BOLD'
+                // if there is not a match.
+                return TextAttribute.WEIGHT_BOLD;
+            }
+            switch (weight) {
+            case 600:
+                return TextAttribute.WEIGHT_MEDIUM;
+            case 700:
+                return TextAttribute.WEIGHT_BOLD;
+            case 800:
+                return TextAttribute.WEIGHT_HEAVY;
+            case 900:
+                return TextAttribute.WEIGHT_ULTRABOLD;
+            default:
+                return TextAttribute.WEIGHT_REGULAR; //No matching CSS value (probably illegal)
+            }
         }
     }
 
