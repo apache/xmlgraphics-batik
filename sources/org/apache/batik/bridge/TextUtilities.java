@@ -206,8 +206,10 @@ public abstract class TextUtilities implements CSSConstants, ErrorConstants {
     public static Float convertFontWeight(Element e) {
         Value v = CSSUtilities.getComputedStyle
             (e, SVGCSSEngine.FONT_WEIGHT_INDEX);
-        float f = v.getFloatValue();
-        switch ((int)f) {
+        int weight = (int)v.getFloatValue();
+        //Note: the mapping from CSS2 to TextAttribute's weights is somewhat arbitrary.
+        //Important is to map 400/normal to REGULAR and 700/bold to BOLD.
+        switch (weight) {
         case 100:
             return TextAttribute.WEIGHT_EXTRA_LIGHT;
         case 200:
@@ -228,15 +230,17 @@ public abstract class TextUtilities implements CSSConstants, ErrorConstants {
                 // if there is not a match.
                 return TextAttribute.WEIGHT_BOLD;
             }
-            switch ((int)f) {
+            switch (weight) {
+            case 600:
+                return TextAttribute.WEIGHT_MEDIUM;
             case 700:
-                return TextAttribute.WEIGHT_HEAVY;
+                return TextAttribute.WEIGHT_BOLD;
             case 800:
-                return TextAttribute.WEIGHT_EXTRABOLD;
+                return TextAttribute.WEIGHT_HEAVY;
             case 900:
                 return TextAttribute.WEIGHT_ULTRABOLD;
             default:
-                return TextAttribute.WEIGHT_BOLD;
+                return TextAttribute.WEIGHT_REGULAR; //No matching CSS value (probably illegal)
             }
         }
     }
