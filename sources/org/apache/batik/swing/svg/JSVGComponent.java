@@ -999,46 +999,46 @@ public class JSVGComponent extends JGVTComponent {
                 return ((oldD.width != d.width) || (oldD.height != d.height));
             }
 
-            if (!recenterOnResize)
-                return true;
+            if (recenterOnResize) {
+                // Here we map the old center of the component down to
+                // the user coodinate system with the old viewing
+                // transform and then back to the screen with the
+                // new viewing transform.  We then adjust the rendering
+                // transform so it lands in the same place.
+                Point2D pt = new Point2D.Float(oldD.width/2.0f,
+                                               oldD.height/2.0f);
+                AffineTransform rendAT = getRenderingTransform();
+                if (rendAT != null) {
+                    try {
+                        AffineTransform invRendAT = rendAT.createInverse();
+                        pt = invRendAT.transform(pt, null);
+                    } catch (NoninvertibleTransformException e) { }
+                }
+                if (vt != null) {
+                    try {
+                        AffineTransform invVT = vt.createInverse();
+                        pt = invVT.transform(pt, null);
+                    } catch (NoninvertibleTransformException e) { }
+                }
+                if (at != null)
+                    pt = at.transform(pt, null);
+                if (rendAT != null)
+                    pt = rendAT.transform(pt, null);
+                
+                // Now figure out how far we need to shift things
+                // to get the center point to line up again.
+                float dx = (float)((d.width/2.0f) -pt.getX());
+                float dy = (float)((d.height/2.0f)-pt.getY());
+                // Round the values to nearest integer.
+                dx = (int)((dx < 0)?(dx - .5):(dx + .5));
+                dy = (int)((dy < 0)?(dy - .5):(dy + .5));
+                if ((dx != 0) || (dy != 0)) {
+                    rendAT.preConcatenate
+                        (AffineTransform.getTranslateInstance(dx, dy));
+                    setRenderingTransform(rendAT, false);
+                }
+            }
 
-            // Here we map the old center of the component down to
-            // the user coodinate system with the old viewing
-            // transform and then back to the screen with the
-            // new viewing transform.  We then adjust the rendering
-            // transform so it lands in the same place.
-            Point2D pt = new Point2D.Float(oldD.width/2.0f,
-                                           oldD.height/2.0f);
-            AffineTransform rendAT = getRenderingTransform();
-            if (rendAT != null) {
-                try {
-                    AffineTransform invRendAT = rendAT.createInverse();
-                    pt = invRendAT.transform(pt, null);
-                } catch (NoninvertibleTransformException e) { }
-            }
-            if (vt != null) {
-                try {
-                    AffineTransform invVT = vt.createInverse();
-                    pt = invVT.transform(pt, null);
-                } catch (NoninvertibleTransformException e) { }
-            }
-            if (at != null)
-                pt = at.transform(pt, null);
-            if (rendAT != null)
-                pt = rendAT.transform(pt, null);
-
-            // Now figure out how far we need to shift things
-            // to get the center point to line up again.
-            float dx = (float)((d.width/2.0f) -pt.getX());
-            float dy = (float)((d.height/2.0f)-pt.getY());
-            // Round the values to nearest integer.
-            dx = (int)((dx < 0)?(dx - .5):(dx + .5));
-            dy = (int)((dy < 0)?(dy - .5):(dy + .5));
-            if ((dx != 0) || (dy != 0)) {
-                rendAT.preConcatenate
-                    (AffineTransform.getTranslateInstance(dx, dy));
-                setRenderingTransform(rendAT, false);
-            }
             synchronized (this) {
                 viewingTransform = at;
             }
