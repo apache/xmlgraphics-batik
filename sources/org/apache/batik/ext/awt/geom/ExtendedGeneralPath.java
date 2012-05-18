@@ -194,9 +194,10 @@ public class ExtendedGeneralPath implements ExtendedShape, Cloneable {
         double Py1 = y1 * y1;
         // check that radii are large enough
         double radiiCheck = Px1/Prx + Py1/Pry;
-        if (radiiCheck > 1) {
-            rx = Math.sqrt(radiiCheck) * rx;
-            ry = Math.sqrt(radiiCheck) * ry;
+        if (radiiCheck > 0.99999) {  // don't cut it too close
+            double radiiScale = Math.sqrt(radiiCheck) * 1.00001;
+            rx = radiiScale * rx;
+            ry = radiiScale * ry;
             Prx = rx * rx;
             Pry = ry * ry;
         }
