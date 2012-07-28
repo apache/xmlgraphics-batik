@@ -12,8 +12,8 @@ Bug fixing is an ongoing task, so it is implied in all sub-releases.
 
     42408, 43411, 43847, 43950, 44553, 44590, 44919, 44936, 44966,
     45112, 45114, 45117, 45397, 45520, 45883, 45958, 46072, 46124,
-    46202, 46430, 46431, 46855, 46871, 47201, 47202, 48182, 48411,
-    49889, 49968, 50006, 50100
+    46202, 46430, 46431, 46513, 46855, 46871, 47201, 47202, 48182,
+    48411, 49889, 49968, 50006, 50100
 
 2. New features
 
@@ -40,6 +40,8 @@ Bug fixing is an ongoing task, so it is implied in all sub-releases.
   * Internally registers not only font families but also makes font available
     through their font names.
   * All CSS font weights are now handled for font selection
+  * Compatibility with GNU Classpath, OpenJDK and other open JVM was improved
+    (image I/O is now used by default, over the Sun proprietary classes).
 
 4. Bug fixes
 
@@ -78,6 +80,7 @@ Bug fixing is an ongoing task, so it is implied in all sub-releases.
   * Fixed HeadlessExceptions related to WMF transcoding.
   * Font families containing numbers (like "Univers 45 Light") no longer
     cause errors.
+  * Compiling on Oracle JDK 7 and JDK 8 as well now works.
 
 5. Misc
 

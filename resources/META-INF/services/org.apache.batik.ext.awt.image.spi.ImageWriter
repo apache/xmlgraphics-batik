@@ -20,7 +20,10 @@
 # $Id$
 # -----------------------------------------------------------------------------
 
-org.apache.batik.ext.awt.image.codec.png.PNGImageWriter
-#org.apache.batik.ext.awt.image.codec.imageio.ImageIOPNGImageWriter
-#org.apache.batik.ext.awt.image.codec.imageio.ImageIOTIFFImageWriter
+# NOTE: the "codec" package is deprecated, there entries are kept here for compatibility with older JVM versions
+# (uses "sun.image", which is only supported in Sun Java implementations and was retired in JDK 7)
+#org.apache.batik.ext.awt.image.codec.png.PNGImageWriter
+
+org.apache.batik.ext.awt.image.codec.imageio.ImageIOPNGImageWriter
+org.apache.batik.ext.awt.image.codec.imageio.ImageIOTIFFImageWriter
 org.apache.batik.ext.awt.image.codec.imageio.ImageIOJPEGImageWriter
