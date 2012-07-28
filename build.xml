@@ -164,6 +164,20 @@ To display the available targets type:
       <and>
         <available classname="com.sun.image.codec.jpeg.JPEGCodec" 
                    classpathref="libs-classpath"/>
+        <!-- This became quite tricky in JDK 7, as the Sun codecs were "retired"
+             (they are available in run-time although the "classes are not located when compiling")
+             http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6527962 -->
+        <not>
+            <and>
+                <equals arg1="${java.specification.vendor}" arg2="Oracle Corporation"/>
+                <or>
+                    <!-- According to Sun issue 6527962, the classes are to be completely removed in JDK 8
+                         (so there should be no need to extend this list any longer) -->
+                    <equals arg1="${java.specification.version}" arg2="1.7"/>
+                    <equals arg1="${java.specification.version}" arg2="1.8"/>
+                </or>
+            </and>
+        </not>
         <not>
           <equals arg1="${sun-codecs.disabled}" arg2="true"/>
         </not>
