@@ -222,7 +222,7 @@ To display the available targets type:
       <os family="windows"/>
     </condition>
   
-    <condition property="forrest.args" value="/c ${env.FORREST_HOME}\bin\forrest.bat" else="">
+    <condition property="forrest.args" value="/c &quot;${env.FORREST_HOME}\bin\forrest.bat&quot;" else="">
       <os family="windows"/>
     </condition>
   

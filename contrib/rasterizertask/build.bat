@@ -37,13 +37,13 @@ SET BATIK_HOME=.\..\..
 
 :: ----- Set up classpath ---------------------------------------------------
 
-SET CP=%JAVA_HOME%\lib\tools.jar;%ANT_HOME%\lib\build\ant-1.6.5.jar;%ANT_HOME%\lib\build\ant-launcher-1.6.5.jar;%BATIK_HOME%\lib\build\crimson-1.1.3.jar
+SET CP="%JAVA_HOME%\lib\tools.jar";"%ANT_HOME%\lib\build\ant-1.6.5.jar";"%ANT_HOME%\lib\build\ant-launcher-1.6.5.jar";"%BATIK_HOME%\lib\build\crimson-1.1.3.jar"
 SET CP=%CP%;%BATIK_HOME%\classes
 
 
 :: ----- Execute ------------------------------------------------------------
 
-%JAVA_HOME%\bin\java.exe %ANT_OPTS% -classpath %CP% org.apache.tools.ant.Main -Dant.home=%ANT_HOME% %1 -Dargs="%2 %3 %4 %5 %6 %7 %8 %9"
+"%JAVA_HOME%\bin\java.exe" %ANT_OPTS% -classpath %CP% org.apache.tools.ant.Main -Dant.home=%ANT_HOME% %1 -Dargs="%2 %3 %4 %5 %6 %7 %8 %9"
 
 
 :: ----- Cleanup the environment --------------------------------------------
