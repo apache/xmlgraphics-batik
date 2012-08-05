@@ -80,7 +80,10 @@ Bug fixing is an ongoing task, so it is implied in all sub-releases.
   * Fixed HeadlessExceptions related to WMF transcoding.
   * Font families containing numbers (like "Univers 45 Light") no longer
     cause errors.
-  * Compiling on Oracle JDK 7 and JDK 8 as well now works.
+  * Compiling on Oracle JDK 7 and JDK 8 now works.
+  * On Windows, spaces within environment variables like JAVA_HOME no longer
+    cause errors (JDK 6 and above default install location were moved from
+    the system drive root to a Java folder inside Program Files).
 
 5. Misc
 
