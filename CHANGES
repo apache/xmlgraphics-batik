@@ -13,7 +13,7 @@ Bug fixing is an ongoing task, so it is implied in all sub-releases.
     42408, 43411, 43847, 43950, 44553, 44590, 44919, 44936, 44966,
     45112, 45114, 45117, 45397, 45520, 45883, 45958, 46072, 46124,
     46202, 46430, 46431, 46513, 46855, 46871, 47201, 47202, 48182,
-    48411, 49889, 49968, 50006, 50100
+    48411, 49889, 49968, 50006, 50100, 51908
 
 2. New features
 
@@ -84,6 +84,8 @@ Bug fixing is an ongoing task, so it is implied in all sub-releases.
   * On Windows, spaces within environment variables like JAVA_HOME no longer
     cause errors (JDK 6 and above default install location were moved from
     the system drive root to a Java folder inside Program Files).
+  * Fixed a manifest issue affecting several Jars which prevented proper
+    integration with NetBeans and other third-party IDEs and tools.
 
 5. Misc
 
