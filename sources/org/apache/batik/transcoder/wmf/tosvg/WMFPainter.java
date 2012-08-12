@@ -55,7 +55,7 @@ import org.apache.batik.util.Platform;
 
 /**
   * Core class for rendering the WMF image. It is able to render a
-  * WMF file in a <tt>Graphics</tt> object.
+  * WMF file in a <code>Graphics</code> object.
   *
   * @version $Id$
   * @author <a href="mailto:luano@asd.ie">Luan O'Carroll</a>

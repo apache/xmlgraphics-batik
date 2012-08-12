@@ -23,8 +23,8 @@ import java.util.List;
 import java.util.ArrayList;
 
 /**
- * Simple implementation of the <tt>TestReport</tt> interface
- * for <tt>TestSuite</tt>
+ * Simple implementation of the <code>TestReport</code> interface
+ * for <code>TestSuite</code>
  *
  * @author <a href="mailto:vhardy@apache.lorg">Vincent Hardy</a>
  * @version $Id$
@@ -49,7 +49,7 @@ public class DefaultTestSuiteReport implements TestSuiteReport {
         = "DefaultTestSuiteReport.entry.key.passed.child.test.report";
 
     /**
-     * Set of <tt>TestReport</tt> coming from the <tt>TestSuite</tt>
+     * Set of <code>TestReport</code> coming from the <code>TestSuite</code>
      */
     protected List reports = new ArrayList();
 

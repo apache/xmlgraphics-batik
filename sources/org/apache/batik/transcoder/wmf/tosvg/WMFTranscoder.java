@@ -38,17 +38,17 @@ import org.apache.batik.transcoder.TranscoderOutput;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-/** This class implements the <tt>Transcoder</tt> interface and
+/** This class implements the <code>Transcoder</code> interface and
  *  can convert a WMF input document into an SVG document.
  *  <p>This class is copied from
  *  batik org.apache.batik.transcoder.wmf.tosvg.WMFTranscoder class.</p>
- *  <p>It can use <tt>TranscoderInput</tt> that are either a URI
- *  or a <tt>InputStream</tt> or a <tt>Reader</tt>. The
- *  <tt>XMLReader</tt> and <tt>Document</tt> <tt>TranscoderInput</tt>
+ *  <p>It can use <code>TranscoderInput</code> that are either a URI
+ *  or a <code>InputStream</code> or a <code>Reader</code>. The
+ *  <code>XMLReader</code> and <code>Document</code> <code>TranscoderInput</code>
  *  types are not supported.</p>
  *
- *  <p>This transcoder can use <tt>TranscoderOutputs</tt> that are
- *  of any type except the <tt>XMLFilter</tt> type.</p>
+ *  <p>This transcoder can use <code>TranscoderOutputs</code> that are
+ *  of any type except the <code>XMLFilter</code> type.</p>
  *
  *  <p>Corrected bugs from the original class:</p>
  *  <ul>
@@ -199,7 +199,7 @@ public class WMFTranscoder extends ToSVGAbstractTranscoder {
     }
 
     /**
-     * Checks that the input is one of URI or an <tt>InputStream</tt>
+     * Checks that the input is one of URI or an <code>InputStream</code>
      * returns it as a DataInputStream
      */
     private DataInputStream getCompatibleInput(TranscoderInput input)

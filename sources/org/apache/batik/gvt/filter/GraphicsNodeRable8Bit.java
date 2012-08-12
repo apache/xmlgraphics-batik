@@ -59,7 +59,7 @@ public class GraphicsNodeRable8Bit
 
     /**
      * Returns true if this Rable get's it's contents by calling
-     * primitivePaint on the associated <tt>GraphicsNode</tt> or
+     * primitivePaint on the associated <code>GraphicsNode</code> or
      * false if it uses paint.
      */
     public boolean getUsePrimitivePaint() {
@@ -68,7 +68,7 @@ public class GraphicsNodeRable8Bit
 
     /**
      * Set to true if this Rable should get it's contents by calling
-     * primitivePaint on the associated <tt>GraphicsNode</tt> or false
+     * primitivePaint on the associated <code>GraphicsNode</code> or false
      * if it should use paint.  
      */
     public void setUsePrimitivePaint(boolean usePrimitivePaint) {
@@ -81,14 +81,14 @@ public class GraphicsNodeRable8Bit
     private GraphicsNode node;
 
     /**
-     * Returns the <tt>GraphicsNode</tt> rendered by this image
+     * Returns the <code>GraphicsNode</code> rendered by this image
      */
     public GraphicsNode getGraphicsNode(){
         return node;
     }
 
     /**
-     * Sets the <tt>GraphicsNode</tt> this image should render
+     * Sets the <code>GraphicsNode</code> this image should render
      */
     public void setGraphicsNode(GraphicsNode node){
         if(node == null){
@@ -137,7 +137,7 @@ public class GraphicsNodeRable8Bit
     /**
      * @param node      the GraphicsNode this image should represent
      * @param usePrimitivePaint indicates if the image should
-     *        include any filters or mask operations on <tt>node</tt>
+     *        include any filters or mask operations on <code>node</code>
      */
     public GraphicsNodeRable8Bit(GraphicsNode node, 
                                  boolean      usePrimitivePaint){

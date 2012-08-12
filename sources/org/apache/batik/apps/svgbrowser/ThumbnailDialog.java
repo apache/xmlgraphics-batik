@@ -108,7 +108,7 @@ public class ThumbnailDialog extends JDialog {
     protected boolean interactionEnabled = true;
 
     /**
-     * Constructs a new <tt>ThumbnailDialog</tt> for the specified canvas.
+     * Constructs a new <code>ThumbnailDialog</code> for the specified canvas.
      *
      * @param owner the owner frame
      * @param svgCanvas the canvas that owns the SVG document to display

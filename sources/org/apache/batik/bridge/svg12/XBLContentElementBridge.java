@@ -79,7 +79,7 @@ public class XBLContentElementBridge extends AbstractGraphicsNodeBridge {
     }
 
     /**
-     * Creates a <tt>GraphicsNode</tt> according to the specified parameters.
+     * Creates a <code>GraphicsNode</code> according to the specified parameters.
      *
      * @param ctx the bridge context to use
      * @param e the element that describes the graphics node to build
@@ -91,8 +91,8 @@ public class XBLContentElementBridge extends AbstractGraphicsNodeBridge {
     }
 
     /**
-     * Creates a <tt>GraphicsNode</tt> from the input element and
-     * populates the input <tt>CompositeGraphicsNode</tt>
+     * Creates a <code>GraphicsNode</code> from the input element and
+     * populates the input <code>CompositeGraphicsNode</code>
      *
      * @param ctx the bridge context to use
      * @param e the element that describes the graphics node to build
@@ -145,7 +145,7 @@ public class XBLContentElementBridge extends AbstractGraphicsNodeBridge {
     }
 
     /**
-     * Creates a <tt>CompositeGraphicsNode</tt>.
+     * Creates a <code>CompositeGraphicsNode</code>.
      */
     protected GraphicsNode instantiateGraphicsNode() {
         // Not needed, since createGraphicsNode is overridden

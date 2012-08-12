@@ -39,7 +39,7 @@ import org.w3c.dom.Document;
 
 /**
  * Checks for regressions in rendering a specific SVG document.
- * The <tt>Test</tt> will rasterize and SVG document and 
+ * The <code>Test</code> will rasterize and SVG document and 
  * compare it to a reference image. The test passes if the 
  * rasterized SVG and the reference image match exactly (i.e.,
  * all pixel values are the same).
@@ -169,7 +169,7 @@ public class SVGRenderingAccuracyTest extends AbstractRenderingAccuracyTest {
     }
 
     /**
-     * Returns the <tt>ImageTranscoder</tt> the Test should
+     * Returns the <code>ImageTranscoder</code> the Test should
      * use
      */
     public ImageTranscoder getTestImageTranscoder(){

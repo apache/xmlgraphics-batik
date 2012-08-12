@@ -19,8 +19,8 @@
 package org.apache.batik.util;
 
 /**
- * This <tt>SecurityManager</tt> extension exposes the <tt>getClassContext</tt>
- * method so that it can be used by the <tt>BatikSecuritySupport</tt> or other
+ * This <code>SecurityManager</code> extension exposes the <code>getClassContext</code>
+ * method so that it can be used by the <code>BatikSecuritySupport</code> or other
  * security related class.
  *
  * @author <a mailto="vincent.hardy@sun.com">Vincent Hardy</a>

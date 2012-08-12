@@ -62,7 +62,7 @@ public class SVGPatternElementBridge extends AnimatableGenericSVGBridge
     }
 
     /**
-     * Creates a <tt>Paint</tt> according to the specified parameters.
+     * Creates a <code>Paint</code> according to the specified parameters.
      *
      * @param ctx the bridge context to use
      * @param patternElement the pattern element that defines a Paint

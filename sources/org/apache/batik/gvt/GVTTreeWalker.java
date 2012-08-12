@@ -21,7 +21,7 @@ package org.apache.batik.gvt;
 import java.util.List;
 
 /**
- * <tt>GVTTreeWalker</tt> objects are used to navigate a GVT tree or subtree.
+ * <code>GVTTreeWalker</code> objects are used to navigate a GVT tree or subtree.
  *
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
@@ -38,7 +38,7 @@ public class GVTTreeWalker {
     protected GraphicsNode currentNode;
 
     /**
-     * Constructs a new <tt>GVTTreeWalker</tt>.
+     * Constructs a new <code>GVTTreeWalker</code>.
      *
      * @param treeRoot the top of the graphics node tree to search
      */
@@ -78,14 +78,14 @@ public class GVTTreeWalker {
     }
 
     /**
-     * Returns the current <tt>GraphicsNode</tt>.
+     * Returns the current <code>GraphicsNode</code>.
      */
     public GraphicsNode getCurrentGraphicsNode() {
         return currentNode;
     }
 
     /**
-     * Returns the previous <tt>GraphicsNode</tt>. If the current
+     * Returns the previous <code>GraphicsNode</code>. If the current
      * graphics node does not have a previous node, returns null and
      * retains the current node.
      */
@@ -98,7 +98,7 @@ public class GVTTreeWalker {
     }
 
     /**
-     * Returns the next <tt>GraphicsNode</tt>. If the current graphics
+     * Returns the next <code>GraphicsNode</code>. If the current graphics
      * node does not have a next node, returns null and retains the
      * current node.
      */
@@ -111,7 +111,7 @@ public class GVTTreeWalker {
     }
 
     /**
-     * Returns the parent of the current <tt>GraphicsNode</tt>. If the
+     * Returns the parent of the current <code>GraphicsNode</code>. If the
      * current graphics node has no parent, returns null and retains
      * the current node.
      */
@@ -128,7 +128,7 @@ public class GVTTreeWalker {
 
     /**
      * Returns the next sibling of the current
-     * <tt>GraphicsNode</tt>. If the current graphics node does not
+     * <code>GraphicsNode</code>. If the current graphics node does not
      * have a next sibling, returns null and retains the current node.
      */
     public GraphicsNode getNextSibling() {
@@ -141,7 +141,7 @@ public class GVTTreeWalker {
 
     /**
      * Returns the next previous of the current
-     * <tt>GraphicsNode</tt>. If the current graphics node does not
+     * <code>GraphicsNode</code>. If the current graphics node does not
      * have a previous sibling, returns null and retains the current
      * node.
      */
@@ -155,7 +155,7 @@ public class GVTTreeWalker {
 
     /**
      * Returns the first child of the current
-     * <tt>GraphicsNode</tt>. If the current graphics node does not
+     * <code>GraphicsNode</code>. If the current graphics node does not
      * have a first child, returns null and retains the current node.
      */
     public GraphicsNode firstChild() {
@@ -167,7 +167,7 @@ public class GVTTreeWalker {
     }
 
     /**
-     * Returns the last child of the current <tt>GraphicsNode</tt>. If
+     * Returns the last child of the current <code>GraphicsNode</code>. If
      * the current graphics node does not have a last child, returns
      * null and retains the current node.
      */

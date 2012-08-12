@@ -21,7 +21,7 @@ package org.apache.batik.gvt.text;
 
 /**
  * Class that encapsulates information returned from hit testing
- * a <tt>TextSpanLayout</tt> instance.
+ * a <code>TextSpanLayout</code> instance.
  * @see org.apache.batik.gvt.text.TextSpanLayout
  *
  * @author <a href="mailto:bill.haneman@ireland.sun.com">Bill Haneman</a>

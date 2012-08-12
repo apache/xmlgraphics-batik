@@ -41,7 +41,7 @@ public class AlternateStylesheetTest extends AbstractImageTranscoderTest {
     protected String alternateStylesheet;
 
     /**
-     * Constructs a new <tt>AlternateStylesheetTest</tt>.
+     * Constructs a new <code>AlternateStylesheetTest</code>.
      *
      * @param inputURI the URI of the input image
      * @param refImageURI the URI of the reference image
@@ -56,7 +56,7 @@ public class AlternateStylesheetTest extends AbstractImageTranscoderTest {
     }
 
     /**
-     * Creates the <tt>TranscoderInput</tt>.
+     * Creates the <code>TranscoderInput</code>.
      */
     protected TranscoderInput createTranscoderInput() {
         return new TranscoderInput(resolveURL(inputURI).toString());

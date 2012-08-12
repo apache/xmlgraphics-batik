@@ -104,16 +104,16 @@ import org.w3c.dom.svg.SVGSVGElement;
  *
  * <li><b>Building a DOM tree</b>
  *
- * <blockquote>If the <tt>{@link #loadSVGDocument(String)}</tt> method is used,
+ * <blockquote>If the <code>{@link #loadSVGDocument(String)}</code> method is used,
  * the SVG file is parsed and an SVG DOM Tree is built.</blockquote></li>
  *
  * <li><b>Building a GVT tree</b>
  *
  * <blockquote>Once an SVGDocument is created (using the step 1 or if the
- * <tt>{@link #setSVGDocument(SVGDocument)}</tt> method has been used) - a GVT
+ * <code>{@link #setSVGDocument(SVGDocument)}</code> method has been used) - a GVT
  * tree is constructed. The GVT tree is the data structure used internally to
- * render an SVG document. see the <tt>{@link org.apache.batik.gvt}
- * package.</tt></blockquote></li>
+ * render an SVG document. see the <code>{@link org.apache.batik.gvt}
+ * package.</code></blockquote></li>
  *
  * <li><b>Executing the SVGLoad event handlers</b>
  *
@@ -124,8 +124,8 @@ import org.w3c.dom.svg.SVGSVGElement;
  *
  * <li><b>Rendering the GVT tree</b>
  *
- * <blockquote>Then the GVT tree is rendered. see the <tt>{@link
- * org.apache.batik.gvt.renderer}</tt> package.</blockquote></li>
+ * <blockquote>Then the GVT tree is rendered. see the <code>{@link
+ * org.apache.batik.gvt.renderer}</code> package.</blockquote></li>
  *
  * <li><b>Running the document</b>
  *
@@ -139,11 +139,11 @@ import org.w3c.dom.svg.SVGSVGElement;
  * happens and eventually perform some operations - such as resizing the window
  * to the size of the document or get the SVGDocument built via a URI, five
  * different listeners are provided (one per step):
- * <tt>{@link SVGDocumentLoaderListener}</tt>,
- * <tt>{@link GVTTreeBuilderListener}</tt>,
- * <tt>{@link SVGLoadEventDispatcherListener}</tt>,
- * <tt>{@link org.apache.batik.swing.gvt.GVTTreeRendererListener}</tt>,
- * <tt>{@link org.apache.batik.bridge.UpdateManagerListener}</tt>.</p>
+ * <code>{@link SVGDocumentLoaderListener}</code>,
+ * <code>{@link GVTTreeBuilderListener}</code>,
+ * <code>{@link SVGLoadEventDispatcherListener}</code>,
+ * <code>{@link org.apache.batik.swing.gvt.GVTTreeRendererListener}</code>,
+ * <code>{@link org.apache.batik.bridge.UpdateManagerListener}</code>.</p>
  *
  * <p>Each listener has methods to be notified of the start of a phase,
  *    and methods to be notified of the end of a phase.
@@ -187,8 +187,8 @@ import org.w3c.dom.svg.SVGSVGElement;
  *
  * <h2>User Agent</h2>
  *
- * <p>The <tt>JSVGComponent</tt> can pick up some informations to a user
- * agent. The <tt>{@link SVGUserAgent}</tt> provides a way to control the
+ * <p>The <code>JSVGComponent</code> can pick up some informations to a user
+ * agent. The <code>{@link SVGUserAgent}</code> provides a way to control the
  * resolution used to display an SVG document (controling the pixel to
  * millimeter conversion factor), perform an operation in respond to a click on
  * an hyperlink, control the default language to use, or specify a user
@@ -511,7 +511,7 @@ public class JSVGComponent extends JGVTComponent {
      * available after the first rendering completes.  You can be
      * notifed when the rendering completes by registering a
      * GVTTreeRendererListener with the component and waiting for the
-     * <tt>gvtRenderingCompleted</tt> event.
+     * <code>gvtRenderingCompleted</code> event.
      *
      * An UpdateManager is only created for Dynamic documents.  By
      * default the Canvas attempts to autodetect dynamic documents by
@@ -581,7 +581,7 @@ public class JSVGComponent extends JGVTComponent {
      * <em>Note: Because the loading is multi-threaded, the current
      * SVG document is not guaranteed to be updated after this method
      * returns. The only way to be notified a document has been loaded
-     * is to listen to the <tt>SVGDocumentLoaderEvent</tt>s.</em>
+     * is to listen to the <code>SVGDocumentLoaderEvent</code>s.</em>
      */
     public void loadSVGDocument(String url) {
         String oldURI = null;

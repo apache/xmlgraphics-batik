@@ -35,7 +35,7 @@ import org.apache.batik.transcoder.image.ImageTranscoder;
 import org.apache.batik.transcoder.image.PNGTranscoder;
 
 /**
- * Validates the operation of <tt>SVGRenderingAccuracyTest</tt>
+ * Validates the operation of <code>SVGRenderingAccuracyTest</code>
  * by forcing specific test case situations and checking that
  * they are handled properly by the class.
  * 
@@ -228,7 +228,7 @@ public class SVGRenderingAccuracyTestValidator extends DefaultTestSuite {
 
 
     /**
-     * Creates an <tt>SVGRenderingAccuracyTest</tt> with an
+     * Creates an <code>SVGRenderingAccuracyTest</code> with an
      * invalid URL for the source SVG. Checks that this 
      * error is reported as a failure.
      */
@@ -254,7 +254,7 @@ public class SVGRenderingAccuracyTestValidator extends DefaultTestSuite {
     }
 
     /**
-     * Creates an <tt>SVGRenderingAccuracyTest</tt> with a
+     * Creates an <code>SVGRenderingAccuracyTest</code> with a
      * valid URL pointing to an invalid SVG document. Checks that this 
      * error is reported as a failure.
      */
@@ -277,7 +277,7 @@ public class SVGRenderingAccuracyTestValidator extends DefaultTestSuite {
     }
 
     /**
-     * Creates an <tt>SVGRenderingAccuracyTest</tt> with an
+     * Creates an <code>SVGRenderingAccuracyTest</code> with an
      * valid URL for the source SVG but with an invalid 
      * URL for the reference image.
      */
@@ -304,7 +304,7 @@ public class SVGRenderingAccuracyTestValidator extends DefaultTestSuite {
     }
 
     /**
-     * Creates an <tt>SVGRenderingAccuracyTest</tt> with an
+     * Creates an <code>SVGRenderingAccuracyTest</code> with an
      * valid URL for the source SVG valid 
      * URL for the reference image, but the reference image,
      * but the reference image does not exist

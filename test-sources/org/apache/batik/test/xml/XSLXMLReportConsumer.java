@@ -34,7 +34,7 @@ import org.apache.xalan.xslt.XSLTProcessor;*/
 import org.apache.batik.test.TestException;
 
 /**
- * This implementation of the <tt>XMLTestReportProcessor.XMLReportConsumer</tt>
+ * This implementation of the <code>XMLTestReportProcessor.XMLReportConsumer</code>
  * interface simply applies an XSL transformation to the input
  * XML file and stores the result in a configurable directory.
  *

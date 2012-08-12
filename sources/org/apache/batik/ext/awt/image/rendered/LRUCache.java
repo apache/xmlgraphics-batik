@@ -36,7 +36,7 @@ public class LRUCache {
          * Called when the object first becomes active in the LRU cache.
          * @param nde The LRU cache node associated with this object.
          *            should be remembered so it can be returned by
-         *            <tt>lruGet</tt>.
+         *            <code>lruGet</code>.
          */
         void    lruSet(LRUNode nde);
         /**

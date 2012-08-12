@@ -31,7 +31,7 @@ import org.apache.batik.test.Test;
 import org.apache.batik.test.TestReport;
 
 /**
- * Validates the operation of the <tt>Main</tt> class.
+ * Validates the operation of the <code>Main</code> class.
  *
  * @author <a href="mailto:vhardy@apache.org">Vincent Hardy</a>
  * @version $Id$

@@ -24,7 +24,7 @@ import org.apache.batik.gvt.GraphicsNode;
 import org.w3c.dom.Element;
 
 /**
- * Bridge class for vending <tt>Paint</tt> objects.
+ * Bridge class for vending <code>Paint</code> objects.
  *
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
@@ -32,7 +32,7 @@ import org.w3c.dom.Element;
 public interface PaintBridge extends Bridge {
 
     /**
-     * Creates a <tt>Paint</tt> according to the specified parameters.
+     * Creates a <code>Paint</code> according to the specified parameters.
      *
      * @param ctx the bridge context to use
      * @param paintElement the element that defines a Paint

@@ -21,7 +21,7 @@ package org.apache.batik.bridge;
 import org.apache.batik.util.ParsedURL;
 
 /**
- * This implementation of the <tt>ScriptSecurity</tt> interface only
+ * This implementation of the <code>ScriptSecurity</code> interface only
  * allows scripts embeded in the document, i.e., scripts whith either
  * the same URL as the document (as for event attributes) or scripts
  * embeded with the data protocol.

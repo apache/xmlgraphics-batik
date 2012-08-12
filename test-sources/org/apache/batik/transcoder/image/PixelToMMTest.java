@@ -41,7 +41,7 @@ public class PixelToMMTest extends AbstractImageTranscoderTest {
     protected Float px2mm;
 
     /**
-     * Constructs a new <tt>PixelToMMTest</tt>.
+     * Constructs a new <code>PixelToMMTest</code>.
      *
      * @param inputURI the URI of the input image
      * @param refImageURI the URI of the reference image
@@ -56,7 +56,7 @@ public class PixelToMMTest extends AbstractImageTranscoderTest {
     }
 
     /**
-     * Creates the <tt>TranscoderInput</tt>.
+     * Creates the <code>TranscoderInput</code>.
      */
     protected TranscoderInput createTranscoderInput() {
         return new TranscoderInput(resolveURL(inputURI).toString());

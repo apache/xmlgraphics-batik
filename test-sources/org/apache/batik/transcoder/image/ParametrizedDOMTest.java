@@ -41,7 +41,7 @@ public class ParametrizedDOMTest extends AbstractImageTranscoderTest {
     protected String refImageURI;
 
     /**
-     * Constructs a new <tt>ParametrizedDOMTest</tt>.
+     * Constructs a new <code>ParametrizedDOMTest</code>.
      *
      * @param inputURI the URI of the input image
      * @param refImageURI the URI of the reference image
@@ -52,7 +52,7 @@ public class ParametrizedDOMTest extends AbstractImageTranscoderTest {
     }
 
     /**
-     * Creates the <tt>TranscoderInput</tt>.
+     * Creates the <code>TranscoderInput</code>.
      */
     protected TranscoderInput createTranscoderInput() {
         try {

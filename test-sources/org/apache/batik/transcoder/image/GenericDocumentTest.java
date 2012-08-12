@@ -44,7 +44,7 @@ public class GenericDocumentTest extends AbstractImageTranscoderTest {
     protected String refImageURI;
 
     /**
-     * Constructs a new <tt>GenericDocumentTest</tt>.
+     * Constructs a new <code>GenericDocumentTest</code>.
      *
      * @param inputURI the URI of the input image
      * @param refImageURI the URI of the reference image
@@ -55,7 +55,7 @@ public class GenericDocumentTest extends AbstractImageTranscoderTest {
     }
 
     /**
-     * Creates the <tt>TranscoderInput</tt>.
+     * Creates the <code>TranscoderInput</code>.
      */
     protected TranscoderInput createTranscoderInput() {
         try {

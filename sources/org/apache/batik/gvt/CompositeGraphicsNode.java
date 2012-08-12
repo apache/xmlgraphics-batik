@@ -91,7 +91,7 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
     private Shape outline;
 
     /**
-     * Constructs a new empty <tt>CompositeGraphicsNode</tt>.
+     * Constructs a new empty <code>CompositeGraphicsNode</code>.
      */
     public CompositeGraphicsNode() {}
 
@@ -758,7 +758,7 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
 
     /**
      * <b>Not supported</b> -
-     * Throws <tt>UnsupportedOperationException</tt> exception.
+     * Throws <code>UnsupportedOperationException</code> exception.
      */
     public boolean addAll(Collection c) {
         throw new UnsupportedOperationException();
@@ -766,7 +766,7 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
 
     /**
      * <b>Not supported</b> -
-     * Throws <tt>UnsupportedOperationException</tt> exception.
+     * Throws <code>UnsupportedOperationException</code> exception.
      */
     public boolean addAll(int index, Collection c) {
         throw new UnsupportedOperationException();
@@ -804,7 +804,7 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
      *
      * @param index the position of the graphics node to remove
      * @return the graphics node that was removed
-     * @exception IndexOutOfBoundsException if index out of range <tt>
+     * @exception IndexOutOfBoundsException if index out of range <code>
      */
     public Object remove(int index) {
         // Check for correct argument
@@ -838,7 +838,7 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
 
     /**
      * <b>Not supported</b> -
-     * Throws <tt>UnsupportedOperationException</tt> exception.
+     * Throws <code>UnsupportedOperationException</code> exception.
      */
     public boolean removeAll(Collection c) {
         throw new UnsupportedOperationException();
@@ -846,7 +846,7 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
 
     /**
      * <b>Not supported</b> -
-     * Throws <tt>UnsupportedOperationException</tt> exception.
+     * Throws <code>UnsupportedOperationException</code> exception.
      */
     public boolean retainAll(Collection c) {
         throw new UnsupportedOperationException();
@@ -854,7 +854,7 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
 
     /**
      * <b>Not supported</b> -
-     * Throws <tt>UnsupportedOperationException</tt> exception.
+     * Throws <code>UnsupportedOperationException</code> exception.
      */
     public void clear() {
         throw new UnsupportedOperationException();
@@ -948,7 +948,7 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
 
     /**
      * <b>Not supported</b> -
-     * Throws <tt>UnsupportedOperationException</tt> exception.
+     * Throws <code>UnsupportedOperationException</code> exception.
      */
     public List subList(int fromIndex, int toIndex) {
         throw new UnsupportedOperationException();

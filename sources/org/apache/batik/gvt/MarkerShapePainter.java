@@ -93,7 +93,7 @@ public class MarkerShapePainter implements ShapePainter {
     private Rectangle2D dGeometryBounds;
 
     /**
-     * Constructs a new <tt>MarkerShapePainter</tt> that can be used to markers
+     * Constructs a new <code>MarkerShapePainter</code> that can be used to markers
      * on top of a shape.
      *
      * @param shape Shape to be painted by this painter.
@@ -314,7 +314,7 @@ public class MarkerShapePainter implements ShapePainter {
     }
 
     /**
-     * Builds a proxy <tt>GraphicsNode</tt> for the input <tt>Marker</tt> to be
+     * Builds a proxy <code>GraphicsNode</code> for the input <code>Marker</code> to be
      * drawn at the start position
      */
     protected ProxyGraphicsNode buildStartMarkerProxy() {
@@ -371,7 +371,7 @@ public class MarkerShapePainter implements ShapePainter {
     }
 
     /**
-     * Builds a proxy <tt>GraphicsNode</tt> for the input <tt>Marker</tt> to be
+     * Builds a proxy <code>GraphicsNode</code> for the input <code>Marker</code> to be
      * drawn at the end position.
      */
     protected ProxyGraphicsNode buildEndMarkerProxy() {
@@ -459,8 +459,8 @@ public class MarkerShapePainter implements ShapePainter {
     }
 
     /**
-     * Builds a proxy <tt>GraphicsNode</tt> for the input
-     * <tt>Marker</tt> to be drawn at the middle positions
+     * Builds a proxy <code>GraphicsNode</code> for the input
+     * <code>Marker</code> to be drawn at the middle positions
      */
     protected ProxyGraphicsNode[] buildMiddleMarkerProxies() {
 

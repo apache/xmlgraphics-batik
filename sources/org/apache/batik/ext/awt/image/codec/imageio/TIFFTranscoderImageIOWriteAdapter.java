@@ -38,7 +38,7 @@ import org.apache.batik.transcoder.TranscodingHints;
 import org.apache.batik.transcoder.image.TIFFTranscoder;
 
 /**
- * This class is a helper to <tt>TIFFTranscoder</tt> that writes TIFF images 
+ * This class is a helper to <code>TIFFTranscoder</code> that writes TIFF images 
  * through the Image I/O API.
  *
  * @version $Id$

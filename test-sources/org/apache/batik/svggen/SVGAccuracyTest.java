@@ -49,7 +49,7 @@ import org.w3c.dom.DOMImplementation;
 
 /**
  * This test validates that a given rendering sequence, modeled
- * by a <tt>Painter</tt> is properly converted to an SVG document
+ * by a <code>Painter</code> is properly converted to an SVG document
  * by comparing the generated SVG document to a known, valid
  * SVG reference.
  *
@@ -60,7 +60,7 @@ public class SVGAccuracyTest extends AbstractTest
     implements SVGConstants{
     /**
      * Error when an error occurs while generating SVG
-     * with the <tt>SVGGraphics2D</tt>
+     * with the <code>SVGGraphics2D</code>
      * {0} = painter class name if painter not null. Null otherwise
      * {1} = exception class name
      * {2} = exception message
@@ -137,7 +137,7 @@ public class SVGAccuracyTest extends AbstractTest
 
     /**
      * Constructor
-     * @param painter the <tt>Painter</tt> object which will
+     * @param painter the <code>Painter</code> object which will
      *        perform an arbitrary rendering sequence.
      * @param refURL the location of a reference SVG which
      *        should be exactly identical to that generated
@@ -345,7 +345,7 @@ public class SVGAccuracyTest extends AbstractTest
     }
 
     /**
-     * Builds an <tt>SVGGraphics2D</tt> with a default
+     * Builds an <code>SVGGraphics2D</code> with a default
      * configuration.
      */
     protected SVGGraphics2D buildSVGGraphics2D() {
@@ -364,7 +364,7 @@ public class SVGAccuracyTest extends AbstractTest
 
 
     /**
-     * Eventually configure the <tt>SVGGraphics2D</tt> after dumping in it and just
+     * Eventually configure the <code>SVGGraphics2D</code> after dumping in it and just
      * before serializing the DOM Tree.
      */
     protected void configureSVGGraphics2D(SVGGraphics2D g2d) {}

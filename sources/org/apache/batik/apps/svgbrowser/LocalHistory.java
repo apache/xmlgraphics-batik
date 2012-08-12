@@ -116,7 +116,7 @@ public class LocalHistory {
 
     /**
      * Goes back of one position in the history.
-     * Assumes that <tt>canGoBack()</tt> is true.
+     * Assumes that <code>canGoBack()</code> is true.
      */
     public void back() {
         update();
@@ -134,7 +134,7 @@ public class LocalHistory {
 
     /**
      * Goes forward of one position in the history.
-     * Assumes that <tt>canGoForward()</tt> is true.
+     * Assumes that <code>canGoForward()</code> is true.
      */
     public void forward() {
         update();

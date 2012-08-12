@@ -23,8 +23,8 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 /**
- * A simple implementation of the <tt>TestReportProcessor</tt> interface
- * that prints out the <tt>TestReport</tt> to the standard output.
+ * A simple implementation of the <code>TestReportProcessor</code> interface
+ * that prints out the <code>TestReport</code> to the standard output.
  *
  * @author <a href="mailto:vhardy@apache.org">Vincent Hardy</a>
  * @version $Id$
@@ -51,7 +51,7 @@ public class SimpleTestReportProcessor implements TestReportProcessor {
     private PrintWriter printWriter;
 
     /**
-     * Sets the <tt>PrintWriter</tt> this processor should use
+     * Sets the <code>PrintWriter</code> this processor should use
      */
     public void setPrintWriter(PrintWriter printWriter){
         this.printWriter = printWriter;

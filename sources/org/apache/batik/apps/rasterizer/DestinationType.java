@@ -24,7 +24,7 @@ import org.apache.batik.transcoder.image.PNGTranscoder;
 import org.apache.batik.transcoder.image.TIFFTranscoder;
 
 /**
- * Describes the type of destination for an <tt>SVGConverter</tt>
+ * Describes the type of destination for an <code>SVGConverter</code>
  * operation.
  *
  * @author Henri Ruini
@@ -81,7 +81,7 @@ public final class DestinationType {
     /**
      * Returns a transcoder object of the result image type.
      *
-     * @return Transcoder object or <tt>null</tt> if there isn't a proper transcoder.
+     * @return Transcoder object or <code>null</code> if there isn't a proper transcoder.
      */
     protected Transcoder getTranscoder(){
         switch(code) {

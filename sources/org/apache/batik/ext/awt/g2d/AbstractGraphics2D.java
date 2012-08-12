@@ -46,19 +46,19 @@ import java.text.AttributedCharacterIterator;
 import java.util.Map;
 
 /**
- * This extension of the <tt>java.awt.Graphics2D</tt> abstract class
- * is still abstract, but it implements a lot of the <tt>Graphics2D</tt>
+ * This extension of the <code>java.awt.Graphics2D</code> abstract class
+ * is still abstract, but it implements a lot of the <code>Graphics2D</code>
  * method in a way that concrete implementations can reuse.
  *
- * This class uses a <tt>GraphicContext</tt> to store the state of
+ * This class uses a <code>GraphicContext</code> to store the state of
  * its various attributes that control the rendering, such as the
- * current <tt>Font</tt>, <tt>Paint</tt> or clip.
+ * current <code>Font</code>, <code>Paint</code> or clip.
  *
  * Concrete implementations can focus on implementing the rendering
- * methods, such as <tt>drawShape</tt>. As a convenience, rendering
+ * methods, such as <code>drawShape</code>. As a convenience, rendering
  * methods that can be expressed with other rendering methods (e.g.,
- * <tt>drawRect</tt> can be expressed as <tt>draw(new Rectangle(..))</tt>),
- * are implemented by <tt>AbstractGraphics2D</tt>
+ * <code>drawRect</code> can be expressed as <code>draw(new Rectangle(..))</code>),
+ * are implemented by <code>AbstractGraphics2D</code>
  *
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
@@ -67,7 +67,7 @@ import java.util.Map;
 public abstract class AbstractGraphics2D extends Graphics2D implements Cloneable {
     /**
      * Current state of the Graphic Context. The GraphicsContext
-     * class manages the state of this <tt>Graphics2D</tt> graphic context
+     * class manages the state of this <code>Graphics2D</code> graphic context
      * attributes.
      */
     protected GraphicContext gc;

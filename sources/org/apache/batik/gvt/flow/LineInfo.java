@@ -256,10 +256,10 @@ public class LineInfo {
     }
 
     /**
-     * This function merges the glyph groups from <tt>wi<tt/>
+     * This function merges the glyph groups from <code>wi</code>
      * into the glyph groups that are already on this line.
      * It does no fit checking, just adds them in the
-     * proper place in the <tt>newGGIS</tt> data member.
+     * proper place in the <code>newGGIS</code> data member.
      */
     protected void mergeGlyphGroups(WordInfo wi) {
         int numGG = wi.getNumGlyphGroups();

@@ -101,29 +101,29 @@ public class TIFFField implements Comparable, Serializable {
      * <tr>
      * <th> TIFF type </th> <th> Java type </th>
      * <tr>
-     * <td><tt>TIFF_BYTE</tt></td>      <td><tt>byte</tt></td>
+     * <td><code>TIFF_BYTE</code></td>      <td><code>byte</code></td>
      * <tr>
-     * <td><tt>TIFF_ASCII</tt></td>     <td><tt>String</tt></td>
+     * <td><code>TIFF_ASCII</code></td>     <td><code>String</code></td>
      * <tr>
-     * <td><tt>TIFF_SHORT</tt></td>     <td><tt>char</tt></td>
+     * <td><code>TIFF_SHORT</code></td>     <td><code>char</code></td>
      * <tr>
-     * <td><tt>TIFF_LONG</tt></td>      <td><tt>long</tt></td>
+     * <td><code>TIFF_LONG</code></td>      <td><code>long</code></td>
      * <tr>
-     * <td><tt>TIFF_RATIONAL</tt></td>  <td><tt>long[2]</tt></td>
+     * <td><code>TIFF_RATIONAL</code></td>  <td><code>long[2]</code></td>
      * <tr>
-     * <td><tt>TIFF_SBYTE</tt></td>     <td><tt>byte</tt></td>
+     * <td><code>TIFF_SBYTE</code></td>     <td><code>byte</code></td>
      * <tr>
-     * <td><tt>TIFF_UNDEFINED</tt></td> <td><tt>byte</tt></td>
+     * <td><code>TIFF_UNDEFINED</code></td> <td><code>byte</code></td>
      * <tr>
-     * <td><tt>TIFF_SSHORT</tt></td>    <td><tt>short</tt></td>
+     * <td><code>TIFF_SSHORT</code></td>    <td><code>short</code></td>
      * <tr>
-     * <td><tt>TIFF_SLONG</tt></td>     <td><tt>int</tt></td>
+     * <td><code>TIFF_SLONG</code></td>     <td><code>int</code></td>
      * <tr>
-     * <td><tt>TIFF_SRATIONAL</tt></td> <td><tt>int[2]</tt></td>
+     * <td><code>TIFF_SRATIONAL</code></td> <td><code>int[2]</code></td>
      * <tr>
-     * <td><tt>TIFF_FLOAT</tt></td>     <td><tt>float</tt></td>
+     * <td><code>TIFF_FLOAT</code></td>     <td><code>float</code></td>
      * <tr>
-     * <td><tt>TIFF_DOUBLE</tt></td>    <td><tt>double</tt></td>
+     * <td><code>TIFF_DOUBLE</code></td>    <td><code>double</code></td>
      * </table>
      */
     public TIFFField(int tag, int type, int count, Object data) {

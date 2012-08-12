@@ -19,8 +19,8 @@
 package org.apache.batik.test;
 
 /**
- * Interface for classes that can process <tt>TestReport</tt> instances
- * This allows different applications to use the same <tt>TestReport</tt>
+ * Interface for classes that can process <code>TestReport</code> instances
+ * This allows different applications to use the same <code>TestReport</code>
  * for different purposes, such as generating an XML output or
  * emailing a test result summary.
  *
@@ -36,12 +36,12 @@ public interface TestReportProcessor {
 
     /**
      * Requests the processor to process the input
-     * <tt>TestReport</tt> instances. Note that a processor
+     * <code>TestReport</code> instances. Note that a processor
      * should make its own copy of any resource described
-     * by a <tt>TestReport</tt> such as files, as these
+     * by a <code>TestReport</code> such as files, as these
      * may be transient resources. In particular, a
      * processor should not keep a reference to the
-     * input <tt>TestReport</tt>
+     * input <code>TestReport</code>
      */
     void processReport(TestReport report)
         throws TestException;

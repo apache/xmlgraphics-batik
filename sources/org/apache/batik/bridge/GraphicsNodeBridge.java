@@ -22,8 +22,8 @@ import org.apache.batik.gvt.GraphicsNode;
 import org.w3c.dom.Element;
 
 /**
- * Bridge class for creating, building, and updating a <tt>GraphicsNode</tt>
- * according to an <tt>Element</tt>.
+ * Bridge class for creating, building, and updating a <code>GraphicsNode</code>
+ * according to an <code>Element</code>.
  *
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
@@ -31,7 +31,7 @@ import org.w3c.dom.Element;
 public interface GraphicsNodeBridge extends Bridge {
 
     /**
-     * Creates a <tt>GraphicsNode</tt> according to the specified parameters.
+     * Creates a <code>GraphicsNode</code> according to the specified parameters.
      * This is called before children have been added to the
      * returned GraphicsNode (obviously since you construct and return it).
      *

@@ -41,8 +41,8 @@ public abstract class AnimatableGenericSVGBridge
         implements GenericBridge, BridgeUpdateHandler, SVGContext {
 
     /**
-     * Invoked to handle an <tt>Element</tt> for a given <tt>BridgeContext</tt>.
-     * For example, see the <tt>SVGTitleElementBridge</tt>.
+     * Invoked to handle an <code>Element</code> for a given <code>BridgeContext</code>.
+     * For example, see the <code>SVGTitleElementBridge</code>.
      *
      * @param ctx the bridge context to use
      * @param e the element being handled

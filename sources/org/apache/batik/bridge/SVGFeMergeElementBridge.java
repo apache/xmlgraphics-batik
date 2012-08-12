@@ -55,19 +55,19 @@ public class SVGFeMergeElementBridge
     }
 
     /**
-     * Creates a <tt>Filter</tt> primitive according to the specified
+     * Creates a <code>Filter</code> primitive according to the specified
      * parameters.
      *
      * @param ctx the bridge context to use
      * @param filterElement the element that defines a filter
      * @param filteredElement the element that references the filter
      * @param filteredNode the graphics node to filter
-     * @param inputFilter the <tt>Filter</tt> that represents the current
+     * @param inputFilter the <code>Filter</code> that represents the current
      *        filter input if the filter chain.
      * @param filterRegion the filter area defined for the filter chain
      *        the new node will be part of.
      * @param filterMap a map where the mediator can map a name to the
-     *        <tt>Filter</tt> it creates. Other <tt>FilterBridge</tt>s
+     *        <code>Filter</code> it creates. Other <code>FilterBridge</code>s
      *        can then access a filter node from the filterMap if they
      *        know its name.
      */
@@ -133,7 +133,7 @@ public class SVGFeMergeElementBridge
      * @param filterElement the feMerge filter element
      * @param filteredElement the filtered element
      * @param filteredNode the filtered graphics node
-     * @param inputFilter the <tt>Filter</tt> that represents the current
+     * @param inputFilter the <code>Filter</code> that represents the current
      *        filter input if the filter chain.
      * @param filterMap the filter map that contains named filter primitives
      * @param ctx the bridge context
@@ -196,16 +196,16 @@ public class SVGFeMergeElementBridge
         }
 
         /**
-         * Creates a <tt>Filter</tt> according to the specified parameters.
+         * Creates a <code>Filter</code> according to the specified parameters.
          *
          * @param ctx the bridge context to use
          * @param filterElement the element that defines a filter
          * @param filteredElement the element that references the filter
          * @param filteredNode the graphics node to filter
-         * @param inputFilter the <tt>Filter</tt> that represents the current
+         * @param inputFilter the <code>Filter</code> that represents the current
          *        filter input if the filter chain.
          * @param filterMap a map where the mediator can map a name to the
-         *        <tt>Filter</tt> it creates. Other <tt>FilterBridge</tt>s
+         *        <code>Filter</code> it creates. Other <code>FilterBridge</code>s
          *        can then access a filter node from the filterMap if they
          *        know its name.
          */

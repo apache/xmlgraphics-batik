@@ -65,7 +65,7 @@ public class SVGGeneratorContext implements ErrorConstants {
 
     /**
      * Generic image handler. This allows more sophisticated
-     * image handling strategies than the <tt>ImageHandler</tt>
+     * image handling strategies than the <code>ImageHandler</code>
      * interfaces.
      */
     GenericImageHandler genericImageHandler;

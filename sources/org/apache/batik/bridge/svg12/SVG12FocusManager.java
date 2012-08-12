@@ -43,7 +43,7 @@ import org.w3c.dom.events.EventTarget;
 public class SVG12FocusManager extends FocusManager {
 
     /**
-     * Constructs a new <tt>SVG12FocusManager</tt> for the specified document.
+     * Constructs a new <code>SVG12FocusManager</code> for the specified document.
      *
      * @param doc the document
      */

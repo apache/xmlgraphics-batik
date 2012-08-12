@@ -21,8 +21,8 @@ package org.apache.batik.gvt.filter;
 import org.apache.batik.gvt.GraphicsNode;
 
 /**
- * This interface lets <tt>GraphicsNode</tt> create instances of
- * <tt>GraphicsNodeRable</tt> appropriate for the filter module
+ * This interface lets <code>GraphicsNode</code> create instances of
+ * <code>GraphicsNodeRable</code> appropriate for the filter module
  * implementation.
  *
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
@@ -30,8 +30,8 @@ import org.apache.batik.gvt.GraphicsNode;
  */
 public class ConcreteGraphicsNodeRableFactory implements GraphicsNodeRableFactory {
     /**
-     * Returns a <tt>GraphicsNodeRable</tt> initialized with the
-     * input <tt>GraphicsNode</tt>.
+     * Returns a <code>GraphicsNodeRable</code> initialized with the
+     * input <code>GraphicsNode</code>.
      */
     public GraphicsNodeRable createGraphicsNodeRable(GraphicsNode node){
         return (GraphicsNodeRable)node.getGraphicsNodeRable(true);

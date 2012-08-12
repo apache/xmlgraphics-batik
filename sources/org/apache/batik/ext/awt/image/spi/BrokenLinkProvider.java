@@ -45,7 +45,7 @@ public abstract class BrokenLinkProvider {
      * This method is responsbile for constructing an image that will
      * represent the missing image in the document.  This method
      * recives information about the reason a broken link image is
-     * being requested in the <tt>code</tt> and <tt>params</tt>
+     * being requested in the <code>code</code> and <code>params</code>
      * parameters. These parameters may be used to generate nicely
      * localized messages for insertion into the broken link image, or
      * for selecting the broken link image returned.

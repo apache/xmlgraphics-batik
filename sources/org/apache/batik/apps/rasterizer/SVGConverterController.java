@@ -26,7 +26,7 @@ import org.apache.batik.transcoder.Transcoder;
 
 /**
  * Interface for controlling some aspectes of the
- * <tt>SVGConverter</tt> operation.
+ * <code>SVGConverter</code> operation.
  *
  * @author <a href="mailto:vhardy@apache.org">Vincent Hardy</a>
  * @version $Id$

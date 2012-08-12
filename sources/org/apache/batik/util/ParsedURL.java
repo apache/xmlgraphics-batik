@@ -124,7 +124,7 @@ public class ParsedURL {
 
     /**
      * Returns the handler for a particular protocol.  If protocol is
-     * <tt>null</tt> or no match is found in the handlers map it
+     * <code>null</code> or no match is found in the handlers map it
      * returns the default protocol handler.
      * @param protocol The protocol to get a handler for.
      */
@@ -143,7 +143,7 @@ public class ParsedURL {
 
     /**
      * Registers a Protocol handler by adding it to the handlers map.
-     * If the given protocol handler returns <tt>null</tt> as it's
+     * If the given protocol handler returns <code>null</code> as it's
      * supported protocol then it is registered as the default
      * protocol handler.
      * @param handler the new Protocol Handler to register
@@ -313,7 +313,7 @@ public class ParsedURL {
     }
 
     /**
-     * Returns the host for this URL, if any, <tt>null</tt> if there isn't
+     * Returns the host for this URL, if any, <code>null</code> if there isn't
      * one or it doesn't make sense for the protocol.
      */
     public String getHost() {

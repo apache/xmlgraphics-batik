@@ -24,18 +24,18 @@ import java.io.PrintWriter;
 /**
  * Base class containing convenience methods for writing tests. <br />
  * There are at least three approaches to write new tests derived from
- * <tt>AbstractTest</tt>:<br /><ul>
- * <li>You can simply override the <tt>runImplBasic</tt> method and 
+ * <code>AbstractTest</code>:<br /><ul>
+ * <li>You can simply override the <code>runImplBasic</code> method and 
  * return true or false depending on whether or not the test fails.</li>
  * <li>You can choose to report more complex test failure conditions 
- * by overriding the <tt>runImpl</tt> method which returns a <tt>TestReport</tt>.
- * In that case, you can use the convenience methods such as <tt>reportFailure</tt>
- * <tt>reportSuccess</tt> or <tt>reportException</tt> to help build a <tt>TestReport</tt>,
- * and use the <tt>TestReport</tt>'s <tt>addDescriptionEntry</tt> to populate
+ * by overriding the <code>runImpl</code> method which returns a <code>TestReport</code>.
+ * In that case, you can use the convenience methods such as <code>reportFailure</code>
+ * <code>reportSuccess</code> or <code>reportException</code> to help build a <code>TestReport</code>,
+ * and use the <code>TestReport</code>'s <code>addDescriptionEntry</code> to populate
  * the report with relevant error description.</li>
- * <li>You can choose to use the various assertion methods such as <tt>assertNull</tt>,
- * <tt>assertEquals</tt> or <tt>assertTrue</tt>. These methods throw exceptions which
- * will be turned in <tt>TestReports</tt> by the <tt>AbstractTest</tt>.</li>
+ * <li>You can choose to use the various assertion methods such as <code>assertNull</code>,
+ * <code>assertEquals</code> or <code>assertTrue</code>. These methods throw exceptions which
+ * will be turned in <code>TestReports</code> by the <code>AbstractTest</code>.</li>
  * </ul>
  * 
  * Here are some examples:
@@ -111,7 +111,7 @@ public abstract class AbstractTest implements Test {
             };
     
     /**
-     * Returns this <tt>Test</tt>'s name. 
+     * Returns this <code>Test</code>'s name. 
      */
     public String getName(){
         if(name == null){
@@ -133,14 +133,14 @@ public abstract class AbstractTest implements Test {
     }
 
     /**
-     * Return this <tt>Test</tt>'s id.
+     * Return this <code>Test</code>'s id.
      */
     public String getId(){
         return id;
     }
 
     /**
-     * Return this <tt>Test</tt>'s qualified id.
+     * Return this <code>Test</code>'s qualified id.
      */
     public String getQualifiedId(){
         if(parent == null){
@@ -150,7 +150,7 @@ public abstract class AbstractTest implements Test {
     }
 
     /**
-     * Set this <tt>Test</tt>'s id. Null is not allowed.
+     * Set this <code>Test</code>'s id. Null is not allowed.
      */
     public void setId(String id){
         if(id == null){
@@ -171,11 +171,11 @@ public abstract class AbstractTest implements Test {
     /**
      * This default implementation of the run method
      * catches any Exception thrown from the 
-     * runImpl method and creates a <tt>TestReport</tt>
-     * indicating an internal <tt>Test</tt> failure
+     * runImpl method and creates a <code>TestReport</code>
+     * indicating an internal <code>Test</code> failure
      * when that happens. Otherwise, this method
-     * simply returns the <tt>TestReport</tt> generated
-     * by the <tt>runImpl</tt> method.
+     * simply returns the <code>TestReport</code> generated
+     * by the <code>runImpl</code> method.
      */
     public TestReport run(){
         try{
@@ -313,9 +313,9 @@ public abstract class AbstractTest implements Test {
 
     /**
      * Convenience method to help implementations report errors.
-     * An <tt>AbstractTest</tt> extension will typically catch 
+     * An <code>AbstractTest</code> extension will typically catch 
      * exceptions for specific error conditions it wants to point 
-     * out. For example:<tt>
+     * out. For example:<code>
      * public TestReport runImpl() throws Exception { <br />
      *   try{ <br />
      *      .... something .... <br />
@@ -325,11 +325,11 @@ public abstract class AbstractTest implements Test {
      * <br />
      * public static final String MY_SPECIAL_ERROR_CODE = "myNonQualifiedClassName.my.error.code" <br />
      * <br />
-     * </tt> <br />
+     * </code> <br />
      * Note that the implementor will also need to add an entry
      * in its Messages.properties file. That file is expected to be 
-     * in a resource file called <tt>Messages</tt> having the same package 
-     * name as the <tt>Test</tt> class, appended with "<tt>.resources</tt>".
+     * in a resource file called <code>Messages</code> having the same package 
+     * name as the <code>Test</code> class, appended with "<code>.resources</code>".
      */
     public TestReport reportException(String errorCode,
                                       Exception e){

@@ -21,7 +21,7 @@ package org.apache.batik.bridge;
 import org.apache.batik.util.ParsedURL;
 
 /**
- * Default implementation for the <tt>ExternalResourceSecurity</tt> interface.
+ * Default implementation for the <code>ExternalResourceSecurity</code> interface.
  * It allows all types of external resources to be loaded, but only if they
  * come from the same server as the document they are referenced from.
  *

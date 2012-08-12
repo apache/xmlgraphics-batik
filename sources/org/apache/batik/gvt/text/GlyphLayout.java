@@ -426,7 +426,7 @@ public class GlyphLayout implements TextSpanLayout {
      * @param decorationType an integer indicating the type(s) of decorations
      *     included in this shape.  May be the result of "OR-ing" several
      *     values together:
-     * e.g. <tt>DECORATION_UNDERLINE | DECORATION_STRIKETHROUGH</tt>
+     * e.g. <code>DECORATION_UNDERLINE | DECORATION_STRIKETHROUGH</code>
      */
     public Shape getDecorationOutline(int decorationType) {
         syncLayout();

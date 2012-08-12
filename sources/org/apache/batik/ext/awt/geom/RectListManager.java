@@ -61,7 +61,7 @@ public class RectListManager implements Collection {
     public static Comparator comparator = new RectXComparator();
 
     /**
-     * Construct a <tt>RectListManager</tt> from a Collection of Rectangles
+     * Construct a <code>RectListManager</code> from a Collection of Rectangles
      * @param rects Collection that must only contain rectangles.
      */
     public RectListManager(Collection rects) {
@@ -77,9 +77,9 @@ public class RectListManager implements Collection {
     }
 
     /**
-     * Construct a <tt>RectListManager</tt> from an Array of
-     * <tt>Rectangles</tt>
-     * @param rects Array of <tt>Rectangles</tt>, must not contain
+     * Construct a <code>RectListManager</code> from an Array of
+     * <code>Rectangles</code>
+     * @param rects Array of <code>Rectangles</code>, must not contain
      *              any null entries.
      */
     public RectListManager(Rectangle [] rects) {
@@ -87,9 +87,9 @@ public class RectListManager implements Collection {
     }
 
     /**
-     * Construct a <tt>RectListManager</tt> from an Array of
-     * <tt>Rectangles</tt>
-     * @param rects Array of <tt>Rectangles</tt>, must not contain
+     * Construct a <code>RectListManager</code> from an Array of
+     * <code>Rectangles</code>
+     * @param rects Array of <code>Rectangles</code>, must not contain
      *              any null entries in the range [off, off+sz-1].
      * @param off   The offset to start copying from in rects.
      * @param sz    The number of entries to copy from rects.
@@ -102,8 +102,8 @@ public class RectListManager implements Collection {
     }
 
     /**
-     * Construct a <tt>RectListManager</tt> from another
-     * <tt>RectListManager</tt> (data is copied).
+     * Construct a <code>RectListManager</code> from another
+     * <code>RectListManager</code> (data is copied).
      * @param rlm RectListManager to copy.
      */
     public RectListManager(RectListManager rlm) {
@@ -111,7 +111,7 @@ public class RectListManager implements Collection {
     }
 
     /**
-     * Construct a <tt>RectListManager</tt> with one rectangle
+     * Construct a <code>RectListManager</code> with one rectangle
      * @param rect The rectangle to put in this rlm.
      */
     public RectListManager(Rectangle rect) {
@@ -121,7 +121,7 @@ public class RectListManager implements Collection {
 
 
     /**
-     * Construct an initially empty <tt>RectListManager</tt>.
+     * Construct an initially empty <code>RectListManager</code>.
      */
     public RectListManager() {
         this.rects = new Rectangle[10];
@@ -129,8 +129,8 @@ public class RectListManager implements Collection {
     }
 
     /**
-     * Construct an initially empty <tt>RectListManager</tt>,
-     * with initial <tt>capacity</tt>.
+     * Construct an initially empty <code>RectListManager</code>,
+     * with initial <code>capacity</code>.
      * @param capacity The inital capacity for the list.  Setting
      *                 this appropriately can save reallocations.
      */
@@ -162,7 +162,7 @@ public class RectListManager implements Collection {
     }
 
     /**
-     * Standard <tt>Object</tt> clone method.
+     * Standard <code>Object</code> clone method.
      */
     public Object clone() throws CloneNotSupportedException {
         return copy();
@@ -552,7 +552,7 @@ public class RectListManager implements Collection {
     }
 
     /**
-     * Adds the contents of <tt>rlm</tt> to this RectListManager.  No
+     * Adds the contents of <code>rlm</code> to this RectListManager.  No
      * collapsing of rectangles is done here the contents are simply
      * added (you should generally call 'mergeRects' some time after
      * this operation before using the contents of this

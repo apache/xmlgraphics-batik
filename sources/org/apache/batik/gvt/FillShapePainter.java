@@ -43,8 +43,8 @@ public class FillShapePainter implements ShapePainter {
     protected Paint paint;
 
     /**
-     * Constructs a new <tt>FillShapePainter</tt> that can be used to fill
-     * a <tt>Shape</tt>.
+     * Constructs a new <code>FillShapePainter</code> that can be used to fill
+     * a <code>Shape</code>.
      *
      * @param shape Shape to be painted by this painter
      * Should not be null.  

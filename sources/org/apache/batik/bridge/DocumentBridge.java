@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
 public interface DocumentBridge extends Bridge {
 
     /**
-     * Creates a <tt>GraphicsNode</tt> according to the specified parameters.
+     * Creates a <code>GraphicsNode</code> according to the specified parameters.
      * This is called before children have been added to the
      * returned GraphicsNode (obviously since you construct and return it).
      *

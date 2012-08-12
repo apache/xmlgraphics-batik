@@ -20,7 +20,7 @@ package org.apache.batik.swing.svg;
 
 /**
  * An adapter class that represents a listener to the
- * <tt>SVGDocumentLoaderEvent</tt> events.
+ * <code>SVGDocumentLoaderEvent</code> events.
  *
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$

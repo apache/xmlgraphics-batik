@@ -55,7 +55,7 @@ public class SVGClipPathElementBridge extends AnimatableGenericSVGBridge
     }
 
     /**
-     * Creates a <tt>Clip</tt> according to the specified parameters.
+     * Creates a <code>Clip</code> according to the specified parameters.
      *
      * @param ctx the bridge context to use
      * @param clipElement the element that defines the clip

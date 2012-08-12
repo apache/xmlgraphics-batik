@@ -43,25 +43,25 @@ import org.w3c.dom.Document;
 /**
  * This class enables to transcode an input to an image of any format.
  *
- * <p>Two transcoding hints (<tt>KEY_WIDTH</tt> and
- * <tt>KEY_HEIGHT</tt>) can be used to respectively specify the image
+ * <p>Two transcoding hints (<code>KEY_WIDTH</code> and
+ * <code>KEY_HEIGHT</code>) can be used to respectively specify the image
  * width and the image height. If only one of these keys is specified,
  * the transcoder preserves the aspect ratio of the original image.
  *
- * <p>The <tt>KEY_BACKGROUND_COLOR</tt> defines the background color
+ * <p>The <code>KEY_BACKGROUND_COLOR</code> defines the background color
  * to use for opaque image formats, or the background color that may
  * be used for image formats that support alpha channel.
  *
- * <p>The <tt>KEY_AOI</tt> represents the area of interest to paint
+ * <p>The <code>KEY_AOI</code> represents the area of interest to paint
  * in device space.
  *
  * <p>Three additional transcoding hints that act on the SVG
  * processor can be specified:
  *
- * <p><tt>KEY_LANGUAGE</tt> to set the default language to use (may be
+ * <p><code>KEY_LANGUAGE</code> to set the default language to use (may be
  * used by a &lt;switch> SVG element for example),
- * <tt>KEY_USER_STYLESHEET_URI</tt> to fix the URI of a user
- * stylesheet, and <tt>KEY_MM_PER_PIXEL</tt> to specify the number of
+ * <code>KEY_USER_STYLESHEET_URI</code> to fix the URI of a user
+ * stylesheet, and <code>KEY_MM_PER_PIXEL</code> to specify the number of
  * millimeters in each pixel .
  *
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
@@ -70,7 +70,7 @@ import org.w3c.dom.Document;
 public abstract class ImageTranscoder extends SVGAbstractTranscoder {
 
     /**
-     * Constructs a new <tt>ImageTranscoder</tt>.
+     * Constructs a new <code>ImageTranscoder</code>.
      */
     protected ImageTranscoder() {
     }

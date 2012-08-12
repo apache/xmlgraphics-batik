@@ -21,7 +21,7 @@ package org.apache.batik.bridge;
 import org.apache.batik.util.ParsedURL;
 
 /**
- * This implementation of <tt>ExternalResourceSecurity</tt> allows any 
+ * This implementation of <code>ExternalResourceSecurity</code> allows any 
  * external references.
  *
  * @author <a href="mailto:vhardy@apache.org">Vincent Hardy</a>

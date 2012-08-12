@@ -209,8 +209,8 @@ public class Base64Test extends AbstractTest {
     }
 
     /**
-     * Returns true if the contents of <tt>is1</tt> match the
-     * contents of <tt>is2</tt>
+     * Returns true if the contents of <code>is1</code> match the
+     * contents of <code>is2</code>
      */
     public static int compareStreams(InputStream is1, InputStream is2,
                               boolean skipws) {

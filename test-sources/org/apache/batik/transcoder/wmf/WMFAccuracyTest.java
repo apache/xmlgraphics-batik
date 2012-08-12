@@ -62,7 +62,7 @@ public class WMFAccuracyTest extends AbstractTest
 
     /**
      * Error when an error occurs while generating SVG
-     * with the <tt>SVGGraphics2D</tt>
+     * with the <code>SVGGraphics2D</code>
      * {0} = painter class name if painter not null. Null otherwise
      * {1} = exception class name
      * {2} = exception message

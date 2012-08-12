@@ -110,7 +110,7 @@ public class DoublyLinkedList {
     public Node getTail() { return head.getPrev(); }
 
     /**
-     * Moves <tt>nde</tt> to the head of the list (equivilent to
+     * Moves <code>nde</code> to the head of the list (equivilent to
      * remove(nde); add(nde); but faster.
      */
     public void touch(Node nde) {
@@ -141,8 +141,8 @@ public class DoublyLinkedList {
     }
 
     /**
-     * Adds <tt>nde</tt> to the head of the list.
-     * In perl this is called an 'unpop'.  <tt>nde</tt> should
+     * Adds <code>nde</code> to the head of the list.
+     * In perl this is called an 'unpop'.  <code>nde</code> should
      * not currently be part of any list.
      * @param nde the node to add to the list.
      */
@@ -199,7 +199,7 @@ public class DoublyLinkedList {
 
 
     /**
-     * Adds <tt>nde</tt> to tail of list
+     * Adds <code>nde</code> to tail of list
      */
     public void push(Node nde) {
         nde.insertBefore(head);
@@ -208,7 +208,7 @@ public class DoublyLinkedList {
     }
 
     /**
-     * Adds <tt>nde</tt> to head of list
+     * Adds <code>nde</code> to head of list
      */
     public void unpop(Node nde) {
         nde.insertBefore(head);

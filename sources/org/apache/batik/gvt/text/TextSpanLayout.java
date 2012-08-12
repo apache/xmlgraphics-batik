@@ -33,7 +33,7 @@ import org.apache.batik.gvt.font.GVTLineMetrics;
  * glyph sets paintable by TextPainter instances.
  * Similar to java.awt.font.TextLayout in function and purpose.
  * Note that while this utility interface is provided for the convenience of
- * <tt>TextPainter</tt> implementations, conforming <tt>TextPainter</tt>s
+ * <code>TextPainter</code> implementations, conforming <code>TextPainter</code>s
  * are not required to use this class.
  * @see java.awt.font.TextLayout
  * @see org.apache.batik.gvt.TextPainter
@@ -63,7 +63,7 @@ public interface TextSpanLayout {
      * @param decorationType an integer indicating the type(s) of decorations
      *     included in this shape.  May be the result of "OR-ing" several
      *     values together:
-     * e.g. <tt>DECORATION_UNDERLINE | DECORATION_STRIKETHROUGH</tt>
+     * e.g. <code>DECORATION_UNDERLINE | DECORATION_STRIKETHROUGH</code>
      */
     Shape getDecorationOutline(int decorationType);
 
@@ -139,7 +139,7 @@ public interface TextSpanLayout {
 
     /**
      * Returns a Shape which encloses the currently selected glyphs
-     * as specified by glyph indices <tt>begin</tt> and <tt>end</tt>.
+     * as specified by glyph indices <code>begin</code> and <code>end</code>.
      * @param beginCharIndex the index of the first glyph in the contiguous
      *                       selection.
      * @param endCharIndex the index of the last glyph in the contiguous

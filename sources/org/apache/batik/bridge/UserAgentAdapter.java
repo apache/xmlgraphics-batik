@@ -205,7 +205,7 @@ public class UserAgentAdapter implements UserAgent {
     }
 
     /**
-     * Returns <tt>false</tt>. The XML parser is not in validation mode.
+     * Returns <code>false</code>. The XML parser is not in validation mode.
      */
     public boolean isXMLParserValidating() {
         return false;

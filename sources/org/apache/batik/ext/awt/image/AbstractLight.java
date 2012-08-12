@@ -66,7 +66,7 @@ public abstract class AbstractLight implements Light {
     }
 
     /**
-     * Sets the new light color, <tt>newColor</tt> should be in sRGB.
+     * Sets the new light color, <code>newColor</code> should be in sRGB.
      */
     public void setColor(Color newColor){
         color = new double[3];

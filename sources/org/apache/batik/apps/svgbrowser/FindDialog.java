@@ -134,14 +134,14 @@ public class FindDialog extends JDialog implements ActionMap {
     /** The highlight center and zoom button. */
     protected JRadioButton highlightCenterZoomButton;
     /**
-     * Constructs a new <tt>FindDialog</tt>.
+     * Constructs a new <code>FindDialog</code>.
      */
     public FindDialog(JSVGCanvas svgCanvas) {
         this(null, svgCanvas);
     }
 
     /**
-     * Constructs a new <tt>FindDialog</tt>.
+     * Constructs a new <code>FindDialog</code>.
      */
     public FindDialog(Frame owner, JSVGCanvas svgCanvas) {
         super(owner, resources.getString("Dialog.title"));
@@ -311,7 +311,7 @@ public class FindDialog extends JDialog implements ActionMap {
     }
 
     /**
-     * Shows the current selected <tt>TextNode</tt>.
+     * Shows the current selected <code>TextNode</code>.
      */
     protected void showSelectedGraphicsNode() {
         GraphicsNode gn = walker.getCurrentGraphicsNode();

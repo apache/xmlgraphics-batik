@@ -63,9 +63,9 @@ public class URIResolver {
 
     /**
      * Imports the Element referenced by the given URI on Element
-     * <tt>ref</tt>.
+     * <code>ref</code>.
      * @param uri The element URI.
-     * @param ref The Element in the DOM tree to evaluate <tt>uri</tt>
+     * @param ref The Element in the DOM tree to evaluate <code>uri</code>
      *            from.  
      * @return The referenced element or null if element can't be found.
      */
@@ -84,9 +84,9 @@ public class URIResolver {
 
     /**
      * Imports the Node referenced by the given URI on Element
-     * <tt>ref</tt>.
+     * <code>ref</code>.
      * @param uri The element URI.
-     * @param ref The Element in the DOM tree to evaluate <tt>uri</tt>
+     * @param ref The Element in the DOM tree to evaluate <code>uri</code>
      *            from. 
      * @return The referenced Node/Document or null if element can't be found.
      */

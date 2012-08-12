@@ -45,7 +45,7 @@ import org.apache.batik.gvt.filter.Mask;
 import org.apache.batik.util.HaltingThread;
 
 /**
- * A partial implementation of the <tt>GraphicsNode</tt> interface.
+ * A partial implementation of the <code>GraphicsNode</code> interface.
  *
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @author <a href="mailto:etissandier@ilog.fr">Emmanuel Tissandier</a>

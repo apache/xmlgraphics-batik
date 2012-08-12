@@ -38,7 +38,7 @@ import org.apache.batik.ext.awt.image.renderable.TileRable8Bit;
 import org.apache.batik.ext.awt.image.rendered.TileCacheRed;
 
 /**
- * <tt>PaintContext</tt> for the <tt>ConcretePatterPaint</tt>
+ * <code>PaintContext</code> for the <code>ConcretePatterPaint</code>
  * paint implementation.
  *
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>

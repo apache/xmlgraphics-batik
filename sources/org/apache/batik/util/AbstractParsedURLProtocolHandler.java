@@ -31,7 +31,7 @@ public abstract class AbstractParsedURLProtocolHandler
     protected String protocol;
 
     /**
-     * Constrcut a ProtocolHandler for <tt>protocol</tt>
+     * Constrcut a ProtocolHandler for <code>protocol</code>
      */
     public AbstractParsedURLProtocolHandler(String protocol) {
         this.protocol = protocol;

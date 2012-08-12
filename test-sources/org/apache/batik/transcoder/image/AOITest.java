@@ -49,7 +49,7 @@ public class AOITest extends AbstractImageTranscoderTest {
     protected Float imgHeight;
 
     /**
-     * Constructs a new <tt>AOITest</tt>.
+     * Constructs a new <code>AOITest</code>.
      *
      * @param inputURI the URI of the input image
      * @param refImageURI the URI of the reference image
@@ -75,7 +75,7 @@ public class AOITest extends AbstractImageTranscoderTest {
     }
 
     /**
-     * Constructs a new <tt>AOITest</tt>.
+     * Constructs a new <code>AOITest</code>.
      *
      * @param inputURI the URI of the input image
      * @param refImageURI the URI of the reference image
@@ -105,7 +105,7 @@ public class AOITest extends AbstractImageTranscoderTest {
     }
 
     /**
-     * Creates the <tt>TranscoderInput</tt>.
+     * Creates the <code>TranscoderInput</code>.
      */
     protected TranscoderInput createTranscoderInput() {
         return new TranscoderInput(resolveURL(inputURI).toString());

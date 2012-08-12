@@ -34,7 +34,7 @@ import org.apache.batik.util.HaltingThread;
 public class ShapeNode extends AbstractGraphicsNode {
 
     /**
-     * The shape that describes this <tt>ShapeNode</tt>.
+     * The shape that describes this <code>ShapeNode</code>.
      */
     protected Shape shape;
 
@@ -69,7 +69,7 @@ public class ShapeNode extends AbstractGraphicsNode {
     private Shape sensitiveArea;
 
     /**
-     * Constructs a new empty <tt>ShapeNode</tt>.
+     * Constructs a new empty <code>ShapeNode</code>.
      */
     public ShapeNode() {}
 
@@ -78,7 +78,7 @@ public class ShapeNode extends AbstractGraphicsNode {
     //
 
     /**
-     * Sets the shape of this <tt>ShapeNode</tt>.
+     * Sets the shape of this <code>ShapeNode</code>.
      *
      * @param newShape the new shape of this shape node
      */
@@ -97,14 +97,14 @@ public class ShapeNode extends AbstractGraphicsNode {
     }
 
     /**
-     * Returns the shape of this <tt>ShapeNode</tt>.
+     * Returns the shape of this <code>ShapeNode</code>.
      */
     public Shape getShape() {
         return shape;
     }
 
     /**
-     * Sets the <tt>ShapePainter</tt> used by this shape node to render its
+     * Sets the <code>ShapePainter</code> used by this shape node to render its
      * shape.
      *
      * @param newShapePainter the new ShapePainter to use
@@ -122,7 +122,7 @@ public class ShapeNode extends AbstractGraphicsNode {
     }
 
     /**
-     * Returns the <tt>ShapePainter</tt> used by this shape node to render its
+     * Returns the <code>ShapePainter</code> used by this shape node to render its
      * shape.
      */
     public ShapePainter getShapePainter() {
@@ -159,7 +159,7 @@ public class ShapeNode extends AbstractGraphicsNode {
     //
 
     /**
-     * Invalidates this <tt>ShapeNode</tt>. This node and all its ancestors have
+     * Invalidates this <code>ShapeNode</code>. This node and all its ancestors have
      * been informed that all its cached values related to its bounds must be
      * recomputed.
      */

@@ -23,7 +23,7 @@ import org.apache.batik.gvt.filter.Mask;
 import org.w3c.dom.Element;
 
 /**
- * Factory class for vending <tt>Mask</tt> objects.
+ * Factory class for vending <code>Mask</code> objects.
  *
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @version $Id$
@@ -31,7 +31,7 @@ import org.w3c.dom.Element;
 public interface MaskBridge extends Bridge {
 
     /**
-     * Creates a <tt>Mask</tt> according to the specified parameters.
+     * Creates a <code>Mask</code> according to the specified parameters.
      *
      * @param ctx the bridge context to use
      * @param maskElement the element that defines the mask

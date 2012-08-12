@@ -118,7 +118,7 @@ public abstract class AbstractSVGLightingElementBridge
         extends AnimatableGenericSVGBridge {
 
         /**
-         * Creates a <tt>Light</tt> according to the specified parameters.
+         * Creates a <code>Light</code> according to the specified parameters.
          *
          * @param ctx the bridge context to use
          * @param filterElement the lighting filter primitive element
@@ -150,7 +150,7 @@ public abstract class AbstractSVGLightingElementBridge
         }
 
         /**
-         * Creates a <tt>Light</tt> according to the specified parameters.
+         * Creates a <code>Light</code> according to the specified parameters.
          *
          * @param ctx the bridge context to use
          * @param filterElement the lighting filter primitive element
@@ -218,7 +218,7 @@ public abstract class AbstractSVGLightingElementBridge
         }
 
         /**
-         * Creates a <tt>Light</tt> according to the specified parameters.
+         * Creates a <code>Light</code> according to the specified parameters.
          *
          * @param ctx the bridge context to use
          * @param filterElement the lighting filter primitive element
@@ -261,7 +261,7 @@ public abstract class AbstractSVGLightingElementBridge
         }
 
         /**
-         * Creates a <tt>Light</tt> according to the specified parameters.
+         * Creates a <code>Light</code> according to the specified parameters.
          *
          * @param ctx the bridge context to use
          * @param filterElement the lighting filter primitive element

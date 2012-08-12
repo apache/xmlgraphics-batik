@@ -61,11 +61,11 @@ import org.w3c.dom.svg.SVGSVGElement;
 /**
  * This class may be the base class of all transcoders which take an
  * SVG document as input and which need to build a DOM tree. The
- * <tt>SVGAbstractTranscoder</tt> uses several different hints that
+ * <code>SVGAbstractTranscoder</code> uses several different hints that
  * guide it's behaviour:<br/>
  *
  * <ul>
- *   <li><tt>KEY_WIDTH, KEY_HEIGHT</tt> can be used to specify how to scale the
+ *   <li><code>KEY_WIDTH, KEY_HEIGHT</code> can be used to specify how to scale the
  *       SVG image</li>
  * </ul>
  *
@@ -138,7 +138,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
     }
 
     /**
-     * Creates a <tt>DocumentFactory</tt> that is used to create an SVG DOM
+     * Creates a <code>DocumentFactory</code> that is used to create an SVG DOM
      * tree. The specified DOM Implementation is ignored and the Batik
      * SVG DOM Implementation is automatically used.
      *
@@ -808,7 +808,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
 
 
     /**
-     * A user agent implementation for <tt>PrintTranscoder</tt>.
+     * A user agent implementation for <code>PrintTranscoder</code>.
      */
     protected class SVGAbstractTranscoderUserAgent extends UserAgentAdapter {
         /**
@@ -843,7 +843,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
         }
 
         /**
-         * Displays the specified error message using the <tt>ErrorHandler</tt>.
+         * Displays the specified error message using the <code>ErrorHandler</code>.
          */
         public void displayError(String message) {
             try {
@@ -855,7 +855,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
         }
 
         /**
-         * Displays the specified error using the <tt>ErrorHandler</tt>.
+         * Displays the specified error using the <code>ErrorHandler</code>.
          */
         public void displayError(Exception e) {
             try {
@@ -868,7 +868,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
         }
 
         /**
-         * Displays the specified message using the <tt>ErrorHandler</tt>.
+         * Displays the specified message using the <code>ErrorHandler</code>.
          */
         public void displayMessage(String message) {
             try {
@@ -881,7 +881,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
 
         /**
          * Returns the pixel to millimeter conversion factor specified in the
-         * <tt>TranscodingHints</tt> or 0.26458333 if not specified.
+         * <code>TranscodingHints</code> or 0.26458333 if not specified.
          */
         public float getPixelUnitToMillimeter() {
             Object obj = SVGAbstractTranscoder.this.hints.get
@@ -895,7 +895,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
 
         /**
          * Returns the user language specified in the
-         * <tt>TranscodingHints</tt> or "en" (english) if any.
+         * <code>TranscodingHints</code> or "en" (english) if any.
          */
         public String getLanguages() {
             if (SVGAbstractTranscoder.this.hints.containsKey(KEY_LANGUAGE)) {
@@ -939,7 +939,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
 
         /**
          * Returns the user stylesheet specified in the
-         * <tt>TranscodingHints</tt> or null if any.
+         * <code>TranscodingHints</code> or null if any.
          */
         public String getUserStyleSheetURI() {
             String s = (String)SVGAbstractTranscoder.this.hints.get

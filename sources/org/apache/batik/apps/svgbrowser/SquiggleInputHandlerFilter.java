@@ -23,7 +23,7 @@ import java.io.File;
 import javax.swing.filechooser.FileFilter;
 
 /**
- * This class filters file for a given <tt>SquiggleInputHandler</tt>
+ * This class filters file for a given <code>SquiggleInputHandler</code>
  *
  * @author <a mailto="vincent.hardy@sun.com">Vincent Hardy</a>
  * @version $Id$

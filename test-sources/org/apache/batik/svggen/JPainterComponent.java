@@ -26,19 +26,19 @@ import javax.swing.JComponent;
 
 /**
  * Simple component which displays the rendering created by
- * a <tt>Painter</tt>.
+ * a <code>Painter</code>.
  *
  * @author <a href="mailto:vincent.hardy@sun.com">Vincent Hardy</a>
  * @version $Id$
  */
 public class JPainterComponent extends JComponent {
     /**
-     * <tt>Painter</tt>
+     * <code>Painter</code>
      */
     protected Painter painter;
 
     /**
-     * Delegates to its <tt>Painter</tt>
+     * Delegates to its <code>Painter</code>
      */
     public void paint(Graphics _g){
         Graphics2D g = (Graphics2D)_g;

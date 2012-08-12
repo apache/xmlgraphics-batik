@@ -51,11 +51,11 @@ public interface GVTAttributedCharacterIterator extends AttributedCharacterItera
     /**
      * Sets values of a per-character attribute associated with the content
      *     string.
-     * Characters from <tt>beginIndex</tt> to <tt>endIndex</tt>
-     *     (zero-offset) are assigned values for attribute key <tt>attr</tt>
-     *     from the array <tt>attValues.</tt>
+     * Characters from <code>beginIndex</code> to <code>endIndex</code>
+     *     (zero-offset) are assigned values for attribute key <code>attr</code>
+     *     from the array <code>attValues.</code>
      * If the length of attValues is less than character span
-     *     <tt>(endIndex-beginIndex)</tt> the last value is duplicated;
+     *     <code>(endIndex-beginIndex)</code> the last value is duplicated;
      *     if attValues is longer than the character span
      *     the extra values are ignored.
      * Note that if either beginIndex or endIndex are outside the bounds

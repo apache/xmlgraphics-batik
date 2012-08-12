@@ -38,7 +38,7 @@ public class CompositeShapePainter implements ShapePainter {
     protected Shape shape;
 
     /**
-     * The enclosed <tt>ShapePainter</tt>s of this composite shape painter.
+     * The enclosed <code>ShapePainter</code>s of this composite shape painter.
      */
     protected ShapePainter [] painters;
 
@@ -48,7 +48,7 @@ public class CompositeShapePainter implements ShapePainter {
     protected int count;
 
     /**
-     * Constructs a new empty <tt>CompositeShapePainter</tt>.
+     * Constructs a new empty <code>CompositeShapePainter</code>.
      */
     public CompositeShapePainter(Shape shape) {
         if (shape == null) {

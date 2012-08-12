@@ -3102,7 +3102,7 @@ public class JSVGViewerFrame
         }
 
         /**
-         * Returns true if <tt>f</tt> is a file with the correct extension,
+         * Returns true if <code>f</code> is a file with the correct extension,
          * false otherwise.
          */
         public boolean accept(File f) {

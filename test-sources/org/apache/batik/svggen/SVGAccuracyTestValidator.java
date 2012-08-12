@@ -30,7 +30,7 @@ import org.apache.batik.test.TestReportValidator;
 import org.apache.batik.test.TestReport;
 
 /**
- * Validates the operation of the <tt>SVGAccuractyTest</tt> class
+ * Validates the operation of the <code>SVGAccuractyTest</code> class
  *
  * @author <a href="mailto:vhardy@apache.org">Vincent Hardy</a>
  * @version $Id$

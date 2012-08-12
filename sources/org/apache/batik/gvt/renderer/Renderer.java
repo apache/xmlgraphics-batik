@@ -45,7 +45,7 @@ public interface Renderer {
     GraphicsNode getTree();
 
     /**
-     * Repaints the associated GVT tree at least under <tt>area</tt>.
+     * Repaints the associated GVT tree at least under <code>area</code>.
      *
      * @param area the region to be repainted, in the current user
      * space coordinate system.
@@ -54,7 +54,7 @@ public interface Renderer {
 
     /**
      * Repaints the associated GVT tree at least in areas under the
-     * list of <tt>areas</tt>.
+     * list of <code>areas</code>.
      *
      * @param areas a List of regions to be repainted, in the current
      * user space coordinate system.

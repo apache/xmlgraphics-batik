@@ -32,7 +32,7 @@ import org.apache.batik.transcoder.TranscodingHints;
 import org.apache.batik.transcoder.image.resources.Messages;
 
 /**
- * This class is an <tt>ImageTranscoder</tt> that produces a JPEG image.
+ * This class is an <code>ImageTranscoder</code> that produces a JPEG image.
  *
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @version $Id$
@@ -148,7 +148,7 @@ public class JPEGTranscoder extends ImageTranscoder {
     private static class OutputStreamWrapper extends OutputStream {
         OutputStream os;
         /**
-         * Constructs a wrapper around <tt>os</tt> that will not throw
+         * Constructs a wrapper around <code>os</code> that will not throw
          * IOExceptions.
          * <@param os>The Stream to wrap.
          */

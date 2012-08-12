@@ -29,7 +29,7 @@ public abstract class AbstractTranscoder extends TranscoderSupport
     implements Transcoder {
 
     /**
-     * Constructs a new <tt>AbstractTranscoder</tt>.
+     * Constructs a new <code>AbstractTranscoder</code>.
      */
     protected AbstractTranscoder() {}
 }

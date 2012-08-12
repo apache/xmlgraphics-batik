@@ -19,7 +19,7 @@
 package org.apache.batik.bridge;
 
 /**
- * This implementation for the <tt>ScriptSecurity</tt> interface
+ * This implementation for the <code>ScriptSecurity</code> interface
  * does not allow scripts to be loaded.
  *
  * @author <a href="mailto:vhardy@apache.org">Vincent Hardy</a>
