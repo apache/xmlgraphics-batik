@@ -48,17 +48,17 @@ import org.apache.batik.util.ParsedURL;
  * The Batik Transcoder API is used to execute the conversion. FOP is
  * needed to be able to transcode to the PDF format<br />
  *
- * The source has to be list of files or URL (set by the <tt>setSources</tt>
+ * The source has to be list of files or URL (set by the <code>setSources</code>
  * method). <br />
  *
  * The destination can be:<br /><ul>
  * <li><b>unspecified</b>. In that case, only file sources can be converted and
  * a file in the same directory as the source will be created.</li>
- * <li><b>a directory</b>, set by the <tt>setDst</tt> method. In that case,
+ * <li><b>a directory</b>, set by the <code>setDst</code> method. In that case,
  * the output files are created in that destination directory</li>
  * <li><b>a file</b>. In case there is a <i>single
  * source</i>, the destination can be a single named file
- * (set with the <tt>setDst</tt> method.</li>)<br />
+ * (set with the <code>setDst</code> method.</li>)<br />
  * </ul>
  *
  * <hr />
@@ -123,8 +123,8 @@ public class SVGConverter {
         = "SVGConverter.error.cannot.use.dst.file";
 
     //
-    // Reported when the <tt>Transcoder</tt> for the requested
-    // <tt>destinationType</tt> cannot be found.
+    // Reported when the <code>Transcoder</code> for the requested
+    // <code>destinationType</code> cannot be found.
     //
     public static final String ERROR_CANNOT_ACCESS_TRANSCODER
         = "SVGConverter.error.cannot.access.transcoder";
@@ -277,7 +277,7 @@ public class SVGConverter {
     /** Alternate stylesheet for which should be applied to the SVG */
     protected String alternateStylesheet = null;
 
-    /** Contents of <tt>fileset</tt> elements. */
+    /** Contents of <code>fileset</code> elements. */
     protected List files = new ArrayList();
 
     /**
@@ -310,7 +310,7 @@ public class SVGConverter {
     //
 
     /**
-     * Sets the <tt>destinationType</tt> attribute value.
+     * Sets the <code>destinationType</code> attribute value.
      * Should not be null.
      */
     public void setDestinationType(DestinationType destinationType) {
@@ -444,7 +444,7 @@ public class SVGConverter {
     }
 
     /**
-     * Sets the <tt>area</tt> as a Rectangle. This value can
+     * Sets the <code>area</code> as a Rectangle. This value can
      * be null in which case the whole image will be rendered. If the
      * area is not null, then only the portion of the image it
      * defines will be rendered.
@@ -461,7 +461,7 @@ public class SVGConverter {
      * Sets the list of individual SVG sources. The strings
      * can be either URLs or file names. Note that invalid
      * sources (e.g., read-protected files or invalid URLs)
-     * will cause <tt>SVGConverterExceptions</tt> to be
+     * will cause <code>SVGConverterExceptions</code> to be
      * thrown during the transcoding process (see {@link #execute});
      */
     public void setSources(String[] sources) {
@@ -499,7 +499,7 @@ public class SVGConverter {
     }
 
     /**
-     * Sets the <tt>backgroundColor</tt> value. This can be
+     * Sets the <code>backgroundColor</code> value. This can be
      * null in which case no color will be used to fill the
      * background before rendering this SVG image.
      */
@@ -512,7 +512,7 @@ public class SVGConverter {
     }
 
     /**
-     * Sets the <tt>mediaType</tt> value. This value controls
+     * Sets the <code>mediaType</code> value. This value controls
      * the CSS media for which the image should be rendered. It
      * can be null, in which case no specific media selectors will
      * apply. If it is not null, it can contain space separated values
@@ -528,7 +528,7 @@ public class SVGConverter {
     }
 
     /**
-     * Sets the <tt>defaultFontFamily</tt> value. This value controls
+     * Sets the <code>defaultFontFamily</code> value. This value controls
      * the default value for the font-family CSS property when that
      * property is unspecified.
      */
@@ -541,7 +541,7 @@ public class SVGConverter {
     }
 
     /**
-     * Sets the <tt>alternateStyleSheet</tt> value. This value
+     * Sets the <code>alternateStyleSheet</code> value. This value
      * controls the CSS alternate stylesheet to select in the
      * rendered SVG file(s). It may be null, in which case no alternate
      * stylesheet will be selected.
@@ -1108,7 +1108,7 @@ public class SVGConverter {
      *
      * @param file File to be checked.
      *
-     * @return <tt>true</tt> if the file is writeable and <tt>false</tt> otherwise.
+     * @return <code>true</code> if the file is writeable and <code>false</code> otherwise.
      */
     protected boolean isWriteable(File file) {
         if (file.exists()) {

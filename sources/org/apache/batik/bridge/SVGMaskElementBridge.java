@@ -51,7 +51,7 @@ public class SVGMaskElementBridge extends AnimatableGenericSVGBridge
     }
 
     /**
-     * Creates a <tt>Mask</tt> according to the specified parameters.
+     * Creates a <code>Mask</code> according to the specified parameters.
      *
      * @param ctx the bridge context to use
      * @param maskElement the element that defines the mask

@@ -53,8 +53,8 @@ public class BridgeException extends RuntimeException {
     protected GraphicsNode node;
 
     /**
-     * Constructs a new <tt>BridgeException</tt> based on the specified
-     * <tt>LiveAttributeException</tt>.
+     * Constructs a new <code>BridgeException</code> based on the specified
+     * <code>LiveAttributeException</code>.
      *
      * @param ctx the bridge context to use for determining the element's
      *            source position
@@ -84,7 +84,7 @@ public class BridgeException extends RuntimeException {
     }
 
      /**
-     * Constructs a new <tt>BridgeException</tt> with the specified parameters.
+     * Constructs a new <code>BridgeException</code> with the specified parameters.
      *
      * @param ctx the bridge context to use for determining the element's
      *            source position
@@ -104,7 +104,7 @@ public class BridgeException extends RuntimeException {
     }
 
     /**
-     * Constructs a new <tt>BridgeException</tt> with the specified parameters.
+     * Constructs a new <code>BridgeException</code> with the specified parameters.
      *
      * @param ctx the bridge context to use for determining the element's
      *            source position
@@ -128,7 +128,7 @@ public class BridgeException extends RuntimeException {
     }
 
     /**
-     * Constructs a new <tt>BridgeException</tt> with the specified parameters.
+     * Constructs a new <code>BridgeException</code> with the specified parameters.
      *
      * @param ctx the bridge context to use for determining the element's
      *            source position

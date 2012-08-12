@@ -23,9 +23,9 @@ package org.apache.batik.gvt.event;
  * events. The methods in this class are empty. This class exists as
  * convenience for creating listener objects.
  *
- * <p>Extend this class to create a <tt>GraphicsNodeMouseEvent</tt>
+ * <p>Extend this class to create a <code>GraphicsNodeMouseEvent</code>
  * listener and override the methods for the events of interest. (If
- * you implement the <tt>GraphicsNodeMouseListener</tt> interface, you
+ * you implement the <code>GraphicsNodeMouseListener</code> interface, you
  * have to define all of the methods in it. This abstract class
  * defines null methods for them all, so you can only have to define
  * methods for events you care about.)

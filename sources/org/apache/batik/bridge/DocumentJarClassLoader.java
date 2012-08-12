@@ -28,11 +28,11 @@ import java.security.Policy;
 import java.util.Enumeration;
 
 /**
- * This <tt>ClassLoader</tt> implementation only grants permission to
+ * This <code>ClassLoader</code> implementation only grants permission to
  * connect back to the server from where the document referencing the
  * jar file was loaded. 
  * 
- * A <tt>URLClassLoader</tt> extension is needed in case the user
+ * A <code>URLClassLoader</code> extension is needed in case the user
  * allows linked jar files to come from a different origin than
  * the document referencing them.
  *

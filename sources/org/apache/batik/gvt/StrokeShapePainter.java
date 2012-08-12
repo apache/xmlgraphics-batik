@@ -54,8 +54,8 @@ public class StrokeShapePainter implements ShapePainter {
     protected Paint paint;
 
     /**
-     * Constructs a new <tt>ShapePainter</tt> that can be used to draw the
-     * outline of a <tt>Shape</tt>.
+     * Constructs a new <code>ShapePainter</code> that can be used to draw the
+     * outline of a <code>Shape</code>.
      *
      * @param shape shape to be painted by this painter.
      * Should not be null.

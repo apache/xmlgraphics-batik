@@ -37,27 +37,27 @@ public interface SVGSVGContext extends SVGContext {
 
     /**
      * Returns a List of all the DOM elements that intersect
-     * <tt>svgRect</tt> that are below <tt>end</tt> in the
+     * <code>svgRect</code> that are below <code>end</code> in the
      * rendering order.
      */
     List getIntersectionList(SVGRect svgRect, Element end);
 
     /**
      * Returns a List of all the DOM elements that are encosed in
-     * <tt>svgRect</tt> that are below <tt>end</tt> in the
+     * <code>svgRect</code> that are below <code>end</code> in the
      * rendering order.
      */
     List getEnclosureList(SVGRect rect, Element end);
 
     /**
      * Returns true if the given DOM element intersects
-     * <tt>svgRect</tt>.
+     * <code>svgRect</code>.
      */
     boolean checkIntersection(Element element, SVGRect rect);
 
     /**
      * Returns true if the given DOM element is enclosed in the
-     * <tt>svgRect</tt>.
+     * <code>svgRect</code>.
      */
     boolean checkEnclosure(Element element, SVGRect rect);
 

@@ -172,7 +172,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         return (TextNode)node;
     }
     /**
-     * Creates a <tt>GraphicsNode</tt> according to the specified parameters.
+     * Creates a <code>GraphicsNode</code> according to the specified parameters.
      *
      * @param ctx the bridge context to use
      * @param e the element that describes the graphics node to build
@@ -1472,7 +1472,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
     }
 
     /**
-     * This method adds all the font related properties to <tt>result</tt>
+     * This method adds all the font related properties to <code>result</code>
      * It also builds a List of the GVTFonts and returns it.
      */
     protected List getFontList(BridgeContext ctx,
@@ -2014,7 +2014,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         }
 
         /**
-         * Returns the namespace URI of the element this <tt>Bridge</tt> is
+         * Returns the namespace URI of the element this <code>Bridge</code> is
          * dedicated to.
          */
         public String getNamespaceURI() {
@@ -2022,7 +2022,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         }
 
         /**
-         * Returns the local name of the element this <tt>Bridge</tt> is dedicated
+         * Returns the local name of the element this <code>Bridge</code> is dedicated
          * to.
          */
         public String getLocalName() {

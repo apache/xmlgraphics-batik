@@ -37,7 +37,7 @@ public class TranscoderSupport {
     protected ErrorHandler handler = defaultErrorHandler;
 
     /**
-     * Constructs a new <tt>TranscoderSupport</tt>.
+     * Constructs a new <code>TranscoderSupport</code>.
      */
     public TranscoderSupport() { }
 

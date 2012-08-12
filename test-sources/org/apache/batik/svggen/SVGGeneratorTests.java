@@ -28,7 +28,7 @@ import org.apache.batik.test.util.ImageCompareTest;
 
 /**
  * This test validates that a given rendering sequence, modeled
- * by a <tt>Painter</tt> by doing several subtests for a
+ * by a <code>Painter</code> by doing several subtests for a
  * single input class:
  * + SVGAccuracyTest with several configurations
  * + SVGRenderingAccuracyTest

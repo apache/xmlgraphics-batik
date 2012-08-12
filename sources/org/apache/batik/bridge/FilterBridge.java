@@ -23,7 +23,7 @@ import org.apache.batik.gvt.GraphicsNode;
 import org.w3c.dom.Element;
 
 /**
- * Bridge class for vending <tt>Filter</tt> objects.
+ * Bridge class for vending <code>Filter</code> objects.
  *
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
@@ -32,7 +32,7 @@ import org.w3c.dom.Element;
 public interface FilterBridge extends Bridge {
 
     /**
-     * Creates a <tt>Filter</tt> according to the specified parameters.
+     * Creates a <code>Filter</code> according to the specified parameters.
      *
      * @param ctx the bridge context to use
      * @param filterElement the element that defines the filter

@@ -129,7 +129,7 @@ public class DynamicRenderer extends StaticRenderer {
     }
 
     /**
-     * Repaints the associated GVT tree under the list of <tt>areas</tt>.
+     * Repaints the associated GVT tree under the list of <code>areas</code>.
      *
      * If double buffered is true and this method completes cleanly it
      * will set the result of the repaint as the image returned by

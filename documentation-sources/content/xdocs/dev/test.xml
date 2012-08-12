@@ -461,7 +461,7 @@
           <p>
             This will generate an HTML test report (<code>report.html</code>)
             in the
-            <tt>test-reports/<em>yyyy</em>.<em>mm</em>.<em>dd</em>-<em>HHhMMmSSs</em>/html</tt>
+            <code>test-reports/<em>yyyy</em>.<em>mm</em>.<em>dd</em>-<em>HHhMMmSSs</em>/html</code>
             directory.  Depending on how much different text rendering is
             between your work environment and the environment used to create
             the reference images, you will get more or less test that will

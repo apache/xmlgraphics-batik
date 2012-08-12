@@ -414,7 +414,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
     }
 
     /**
-     * Creates an <tt>ImageNode</tt>.
+     * Creates an <code>ImageNode</code>.
      */
     protected GraphicsNode instantiateGraphicsNode() {
         return new ImageNode();
@@ -853,7 +853,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         protected Element imgElement;
 
         /**
-         * Constructs a new <tt>ForwardEventListener</tt>
+         * Constructs a new <code>ForwardEventListener</code>
          */
         public ForwardEventListener(Element svgElement, Element imgElement) {
             this.svgElement = svgElement;

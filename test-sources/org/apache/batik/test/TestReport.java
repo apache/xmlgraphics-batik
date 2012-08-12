@@ -19,16 +19,16 @@
 package org.apache.batik.test;
 
 /**
- * Defines the interface of a <tt>TestReport</tt> produced
- * by a <tt>Test</tt> case.
+ * Defines the interface of a <code>TestReport</code> produced
+ * by a <code>Test</code> case.
  *
  * @author <a href="mailto:vhardy@apache.lorg">Vincent Hardy</a>
  * @version $Id$
  */
 public interface TestReport {
     /**
-     * Error code to be used when a <tt>Test</tt> fails in
-     * its own operation (i.e., the <tt>Test</tt> itself
+     * Error code to be used when a <code>Test</code> fails in
+     * its own operation (i.e., the <code>Test</code> itself
      * fails, not what it is testing. An internal failure
      * is reported when any type of exception occurs while
      * running the test.
@@ -79,7 +79,7 @@ public interface TestReport {
      * ENTRY_KEY_INTERNAL_TEST_FAILURE_EXCEPTION_CLASS, in
      * which case, the test itself failed unexpectedly. In this
      * case, the entry is used to describe an expected exception
-     * for which the <tt>Test</tt> author probably created a
+     * for which the <code>Test</code> author probably created a
      * specific error code.
      */
     String
@@ -92,7 +92,7 @@ public interface TestReport {
      * ENTRY_KEY_INTERNAL_TEST_FAILURE_EXCEPTION_MESSAGE, in
      * which case, the test itself failed unexpectedly. In this
      * case, the entry is used to describe an expected exception
-     * for which the <tt>Test</tt> author probably created a
+     * for which the <code>Test</code> author probably created a
      * specific error code.
      */
     String
@@ -105,7 +105,7 @@ public interface TestReport {
      * ENTRY_KEY_INTERNAL_TEST_FAILURE_EXCEPTION_STACK_TRACE, in
      * which case, the test itself failed unexpectedly. In this
      * case, the entry is used to describe an expected exception
-     * for which the <tt>Test</tt> author probably created a
+     * for which the <code>Test</code> author probably created a
      * specific error code.
      */
     String
@@ -122,7 +122,7 @@ public interface TestReport {
 
     /**
      * Inner class for describing an information element in a
-     * <tt>TestReport</tt>
+     * <code>TestReport</code>
      */
     class Entry {
         private String entryKey;
@@ -155,29 +155,29 @@ public interface TestReport {
     String getErrorCode();
 
     /**
-     * Returns an array of <tt>Entry</tt> objects describing the
+     * Returns an array of <code>Entry</code> objects describing the
      * test result.
-     * Accepted value types are <tt>String</tt> objects, <tt>URL</tt>
-     * objects, <tt>File</tt> objects and <tt>TestReport</tt> objects.
-     * <tt>File</tt> objects should be considered as temporary files
+     * Accepted value types are <code>String</code> objects, <code>URL</code>
+     * objects, <code>File</code> objects and <code>TestReport</code> objects.
+     * <code>File</code> objects should be considered as temporary files
      */
     Entry[] getDescription();
 
     /**
-     * Appends <tt>entry</tt> to the array of description entry.
+     * Appends <code>entry</code> to the array of description entry.
      */
     void addDescriptionEntry(String key,
                                     Object value);
 
     /**
-     * Returns the <tt>Test</tt> object that generated this
-     * <tt>TestReport</tt>
+     * Returns the <code>Test</code> object that generated this
+     * <code>TestReport</code>
      */
     Test getTest();
 
     /**
-     * Returns the parent report in case this <tt>TestReport</tt> is
-     * part of a <tt>TestSuiteReport</tt>. This may be null.
+     * Returns the parent report in case this <code>TestReport</code> is
+     * part of a <code>TestSuiteReport</code>. This may be null.
      */
     TestSuiteReport getParentReport();
 

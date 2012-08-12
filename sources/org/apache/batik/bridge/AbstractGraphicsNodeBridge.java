@@ -48,8 +48,8 @@ import org.w3c.dom.svg.SVGTransformable;
 
 /**
  * The base bridge class for SVG graphics node. By default, the namespace URI is
- * the SVG namespace. Override the <tt>getNamespaceURI</tt> if you want to add
- * custom <tt>GraphicsNode</tt> with a custom namespace.
+ * the SVG namespace. Override the <code>getNamespaceURI</code> if you want to add
+ * custom <code>GraphicsNode</code> with a custom namespace.
  *
  * <p>This class handles various attributes that are defined on most
  * of the SVG graphic elements as described in the SVG
@@ -94,7 +94,7 @@ public abstract class AbstractGraphicsNodeBridge extends AnimatableSVGBridge
     protected AbstractGraphicsNodeBridge() {}
 
     /**
-     * Creates a <tt>GraphicsNode</tt> according to the specified parameters.
+     * Creates a <code>GraphicsNode</code> according to the specified parameters.
      *
      * @param ctx the bridge context to use
      * @param e the element that describes the graphics node to build

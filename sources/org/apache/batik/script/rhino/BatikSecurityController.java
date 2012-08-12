@@ -30,7 +30,7 @@ import org.mozilla.javascript.SecurityController;
 import org.mozilla.javascript.WrappedException;
 
 /**
- * This implementation of the Rhino <tt>SecurityController</tt> interface is
+ * This implementation of the Rhino <code>SecurityController</code> interface is
  * meant for use within the context of Batik only. It is a partial
  * implementation of the interface that does what is needed by Batik and
  * no more.

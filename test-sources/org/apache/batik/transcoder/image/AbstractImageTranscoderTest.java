@@ -77,7 +77,7 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
         "AbstractImageTranscoderTest.error.transcoder.exception";
 
     /**
-     * Constructs a new <tt>AbstractImageTranscoderTest</tt>.
+     * Constructs a new <code>AbstractImageTranscoderTest</code>.
      */
     public AbstractImageTranscoderTest() {
     }
@@ -139,7 +139,7 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
     }
 
     /**
-     * Creates the <tt>TranscoderInput</tt>.
+     * Creates the <code>TranscoderInput</code>.
      */
     protected abstract TranscoderInput createTranscoderInput();
 
@@ -224,7 +224,7 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
         protected byte [] refImgData;
 
         /**
-         * Constructs a new <tt>DiffImageTranscoder</tt>.
+         * Constructs a new <code>DiffImageTranscoder</code>.
          *
          * @param refImgData the reference image data
          */

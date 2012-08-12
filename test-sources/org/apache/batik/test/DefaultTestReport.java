@@ -19,7 +19,7 @@
 package org.apache.batik.test;
 
 /**
- * Simple, default implementation for the <tt>TestReport</tt>
+ * Simple, default implementation for the <code>TestReport</code>
  * interface.
  * 
  * @author <a href="mailto:vhardy@apache.org">Vincent Hardy</a>
@@ -36,7 +36,7 @@ public class DefaultTestReport implements TestReport {
     
     /**
      * Parent report, in case this report is part of a
-     * <tt>TestSuiteReport</tt>
+     * <code>TestSuiteReport</code>
      */
     protected TestSuiteReport parent;
 

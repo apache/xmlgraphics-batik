@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 /**
- * Default implementation of the <tt>TestSuite</tt> interface.
+ * Default implementation of the <code>TestSuite</code> interface.
  *
  * @author <a href="mailto:vhardy@apache.lorg">Vincent Hardy</a>
  * @version $Id$
@@ -40,7 +40,7 @@ public class DefaultTestSuite extends AbstractTest implements TestSuite {
     protected List tests = new ArrayList();
 
     /**
-     * Adds a <tt>Test</tt> to the suite
+     * Adds a <code>Test</code> to the suite
      */
     public void addTest(Test test){
         if(test == null){
@@ -52,7 +52,7 @@ public class DefaultTestSuite extends AbstractTest implements TestSuite {
     }
 
     /**
-     * Removes a <tt>Test</tt> from the suite.
+     * Removes a <code>Test</code> from the suite.
      */
     public void removeTest(Test test){
         tests.remove(test);

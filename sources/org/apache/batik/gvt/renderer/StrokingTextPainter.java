@@ -57,7 +57,7 @@ import org.apache.batik.gvt.text.TextSpanLayout;
 
 /**
  * More sophisticated implementation of TextPainter which
- * renders the attributed character iterator of a <tt>TextNode</tt>.
+ * renders the attributed character iterator of a <code>TextNode</code>.
  * <em>StrokingTextPainter includes support for stroke, fill, opacity,
  * text-decoration, and other attributes.</em>
  *

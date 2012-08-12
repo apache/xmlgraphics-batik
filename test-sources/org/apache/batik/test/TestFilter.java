@@ -27,8 +27,8 @@ package org.apache.batik.test;
 public interface TestFilter {
     /**
      * The filter will return null or the input
-     * <tt>Test</tt>. The filter may modify the test content
-     * for example <tt>TestSuites</tt> may have some of their
+     * <code>Test</code>. The filter may modify the test content
+     * for example <code>TestSuites</code> may have some of their
      * children tests removed.
      */
     Test filter(Test t);

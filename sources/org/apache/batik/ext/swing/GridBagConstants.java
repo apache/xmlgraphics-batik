@@ -21,7 +21,7 @@ package org.apache.batik.ext.swing;
 import java.awt.GridBagConstraints;
 
 /**
- * <tt>GridBagConstraints</tt> constants.
+ * <code>GridBagConstraints</code> constants.
  *
  * @author <a href="mailto:vhardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$

@@ -60,12 +60,12 @@ public class DocumentLoader {
     protected UserAgent userAgent;
 
     /**
-     * Constructs a new <tt>DocumentLoader</tt>.
+     * Constructs a new <code>DocumentLoader</code>.
      */
     protected DocumentLoader() { }
 
     /**
-     * Constructs a new <tt>DocumentLoader</tt> with the specified XML parser.
+     * Constructs a new <code>DocumentLoader</code> with the specified XML parser.
      * @param userAgent the user agent to use
      */
     public DocumentLoader(UserAgent userAgent) {

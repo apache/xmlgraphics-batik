@@ -99,8 +99,8 @@ public class FlowExtGlyphLayout extends GlyphLayout {
     // display order not logical order).
 
     /**
-     * This will wrap the text associated with <tt>aci</tt> and
-     * <tt>layouts</tt>.
+     * This will wrap the text associated with <code>aci</code> and
+     * <code>layouts</code>.
      * @param acis An array of Attributed Charater Iterators containing the 
      *             text to wrap.  There is one aci per text chunk
      *             (which maps to flowPara elements. Used to access

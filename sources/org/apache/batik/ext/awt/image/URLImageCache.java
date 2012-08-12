@@ -52,7 +52,7 @@ public class URLImageCache extends SoftReferenceCache {
     public URLImageCache() { }
 
     /**
-     * Check if <tt>request(url)</tt> will return with a Filter
+     * Check if <code>request(url)</code> will return with a Filter
      * (not putting you on the hook for it).  Note that it is possible
      * that this will return true but between this call and the call
      * to request the soft-reference will be cleared.  So it
@@ -64,7 +64,7 @@ public class URLImageCache extends SoftReferenceCache {
     }
 
     /**
-     * Check if <tt>request(url)</tt> will return immediately with the
+     * Check if <code>request(url)</code> will return immediately with the
      * Filter.  Note that it is possible that this will return
      * true but between this call and the call to request the
      * soft-reference will be cleared.

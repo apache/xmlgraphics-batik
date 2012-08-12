@@ -41,13 +41,13 @@ import org.w3c.dom.DOMImplementation;
 public class DOMTest extends AbstractImageTranscoderTest {
 
     /**
-     * Constructs a new <tt>DOMTest</tt>.
+     * Constructs a new <code>DOMTest</code>.
      */
     public DOMTest() {
     }
 
     /**
-     * Creates the <tt>TranscoderInput</tt>.
+     * Creates the <code>TranscoderInput</code>.
      */
     protected TranscoderInput createTranscoderInput() {
         DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();

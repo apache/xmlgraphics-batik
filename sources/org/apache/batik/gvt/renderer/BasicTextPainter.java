@@ -31,7 +31,7 @@ import org.apache.batik.gvt.text.TextLayoutFactory;
 
 /**
  * Basic implementation of TextPainter which
- * renders the attributed character iterator of a <tt>TextNode</tt>.
+ * renders the attributed character iterator of a <code>TextNode</code>.
  * Suitable for use with "standard" java.awt.font.TextAttributes only.
  * @see java.awt.font.TextAttribute
  *

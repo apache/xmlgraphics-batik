@@ -35,12 +35,12 @@ import org.apache.batik.parser.ParseException;
 import org.apache.batik.util.ApplicationSecurityEnforcer;
 
 /**
- * Handles command line parameters to configure the <tt>SVGConverter</tt>
+ * Handles command line parameters to configure the <code>SVGConverter</code>
  * and rasterizer images. <br />
  *
- * Each command line option is handled by an <tt>OptionHandler</tt> which
+ * Each command line option is handled by an <code>OptionHandler</code> which
  * is responsible for converting the option into a configuration of the
- * <tt>SVGConverter</tt> which is used to perform the conversion.
+ * <code>SVGConverter</code> which is used to perform the conversion.
  *
  * @author <a href="mailto:vhardy@apache.org">Vincent Hardy</a>
  * @version $Id$
@@ -57,7 +57,7 @@ public class Main implements SVGConverterController {
      */
     public static interface OptionHandler {
         /**
-         * The <tt>OptionHandler</tt> should configure the <tt>SVGConverter</tt>
+         * The <code>OptionHandler</code> should configure the <code>SVGConverter</code>
          * according to the value of the option.
          *
          * Should throw an IllegalArgumentException if optionValue
@@ -79,12 +79,12 @@ public class Main implements SVGConverterController {
     }
 
     /**
-     * This abstract implementation of the <tt>OptionHandler</tt> interface
+     * This abstract implementation of the <code>OptionHandler</code> interface
      * throws an exception if the number of arguments passed to the
-     * <tt>handleOption</tt> method does not match the number of expected
-     * optionValues. If the size matches, the <tt>safeHandleOption</tt>
+     * <code>handleOption</code> method does not match the number of expected
+     * optionValues. If the size matches, the <code>safeHandleOption</code>
      * method is invoked.
-     * Subclasses can implement the <tt>safeHandleOption</tt> method
+     * Subclasses can implement the <code>safeHandleOption</code> method
      * assuming that the input array size is correct.
      */
     public abstract static class AbstractOptionHandler implements OptionHandler {
@@ -104,7 +104,7 @@ public class Main implements SVGConverterController {
     /**
      * Base class for options with no option value (i.e., the presence
      * of the option means something in itself. Subclasses should implement
-     * the <tt>handleOption</tt> method which takes only an <tt>SVGConverter</tt>
+     * the <code>handleOption</code> method which takes only an <code>SVGConverter</code>
      * as a parameter.
      */
     public abstract static class NoValueOptionHandler extends AbstractOptionHandler {
@@ -121,8 +121,8 @@ public class Main implements SVGConverterController {
 
     /**
      * Base class for options with a single option value. Subclasses should
-     * provide an implementation for the <tt>handleOption</tt> method which
-     * takes a <tt>String</tt> and an <tt>SVGConverter</tt> as parameters.
+     * provide an implementation for the <code>handleOption</code> method which
+     * takes a <code>String</code> and an <code>SVGConverter</code> as parameters.
      */
     public abstract static class SingleValueOptionHandler extends AbstractOptionHandler {
         public void safeHandleOption(String[] optionValues, SVGConverter c){
@@ -138,8 +138,8 @@ public class Main implements SVGConverterController {
 
     /**
      * Base class for options which expect the single optionValue to
-     * be a float. Subclasses should implement the <tt>handleOption</tt>
-     * method which takes a float and an <tt>SVGConverter</tt> as
+     * be a float. Subclasses should implement the <code>handleOption</code>
+     * method which takes a float and an <code>SVGConverter</code> as
      * parameters.
      */
     public abstract static class FloatOptionHandler extends SingleValueOptionHandler {
@@ -156,8 +156,8 @@ public class Main implements SVGConverterController {
 
     /**
      * Base class for options which expect the single optionValue to
-     * be a time value. Subclasses should implement the <tt>handleOption</tt>
-     * method which takes a float and an <tt>SVGConverter</tt> as
+     * be a time value. Subclasses should implement the <code>handleOption</code>
+     * method which takes a float and an <code>SVGConverter</code> as
      * parameters.
      */
     public abstract static class TimeOptionHandler extends FloatOptionHandler {
@@ -179,9 +179,9 @@ public class Main implements SVGConverterController {
     }
 
     /**
-     * Base class for options which expect a <tt>Rectangle</tt> optionValue.
-     * Subclasses should implement the <tt>handleOption</tt> method which
-     * takes a <tt>Rectangle</tt> and an <tt>SVGConverter</tt> as parameters.
+     * Base class for options which expect a <code>Rectangle</code> optionValue.
+     * Subclasses should implement the <code>handleOption</code> method which
+     * takes a <code>Rectangle</code> and an <code>SVGConverter</code> as parameters.
      */
     public abstract static class RectangleOptionHandler extends SingleValueOptionHandler {
         public void handleOption(String optionValue, SVGConverter c){
@@ -234,9 +234,9 @@ public class Main implements SVGConverterController {
     }
 
     /**
-     * Base class for options which expect a <tt>Color</tt> optionValue.
-     * Subclasses should implement the <tt>handleOption</tt> method which
-     * takes a <tt>Color</tt> and an <tt>SVGConverter</tt> as parameters.
+     * Base class for options which expect a <code>Color</code> optionValue.
+     * Subclasses should implement the <code>handleOption</code> method which
+     * takes a <code>Color</code> and an <code>SVGConverter</code> as parameters.
      */
     public abstract static class ColorOptionHandler extends SingleValueOptionHandler {
         public void handleOption(String optionValue, SVGConverter c){

@@ -50,8 +50,8 @@ public class GaussianBlurRed8Bit extends AbstractRed {
     int dX, dY;
 
     /**
-     * Construct a blurred version of <tt>src</tt>, by blurring with a
-     * gaussian kernel with standard Deviation of <tt>stdDev</tt> pixels.
+     * Construct a blurred version of <code>src</code>, by blurring with a
+     * gaussian kernel with standard Deviation of <code>stdDev</code> pixels.
      * @param src The source image to blur
      * @param stdDev The Standard Deviation of the Gaussian kernel.
      * @param rh     Rendering hints.
@@ -63,8 +63,8 @@ public class GaussianBlurRed8Bit extends AbstractRed {
     }
 
     /**
-     * Construct a blurred version of <tt>src</tt>, by blurring with a
-     * gaussian kernel with standard Deviation of <tt>stdDev</tt> pixels.
+     * Construct a blurred version of <code>src</code>, by blurring with a
+     * gaussian kernel with standard Deviation of <code>stdDev</code> pixels.
      * @param src The source image to blur
      * @param stdDevX The Standard Deviation of the Gaussian kernel in X
      * @param stdDevY The Standard Deviation of the Gaussian kernel in Y

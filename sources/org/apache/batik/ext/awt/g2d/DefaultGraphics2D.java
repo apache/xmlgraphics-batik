@@ -35,12 +35,12 @@ import java.awt.image.renderable.RenderableImage;
 import java.text.AttributedCharacterIterator;
 
 /**
- * This concrete implementation of <tt>AbstractGraphics2D</tt> is a 
+ * This concrete implementation of <code>AbstractGraphics2D</code> is a 
  * simple help to programmers to get started with their own 
- * implementation of <tt>Graphics2D</tt>. 
- * <tt>DefaultGraphics2D</tt> implements all the abstract methods
- * is <tt>AbstractGraphics2D</tt> and makes it easy to start 
- * implementing a <tt>Graphic2D</tt> piece-meal.
+ * implementation of <code>Graphics2D</code>. 
+ * <code>DefaultGraphics2D</code> implements all the abstract methods
+ * is <code>AbstractGraphics2D</code> and makes it easy to start 
+ * implementing a <code>Graphic2D</code> piece-meal.
  *
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$

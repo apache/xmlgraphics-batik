@@ -43,8 +43,8 @@ import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.css.CSSValue;
 
 /**
- * A collection of utility methods to deliver <tt>java.awt.Paint</tt>,
- * <tt>java.awt.Stroke</tt> objects that could be used to paint a
+ * A collection of utility methods to deliver <code>java.awt.Paint</code>,
+ * <code>java.awt.Stroke</code> objects that could be used to paint a
  * shape. This class also provides additional methods the deliver SVG
  * Paint using the ShapePainter interface.
  *
@@ -65,7 +65,7 @@ public abstract class PaintServer
     /////////////////////////////////////////////////////////////////////////
 
     /**
-     * Returns a <tt>ShapePainter</tt> defined on the specified
+     * Returns a <code>ShapePainter</code> defined on the specified
      * element and for the specified shape node.
      *
      * @param e the element with the marker CSS properties
@@ -99,7 +99,7 @@ public abstract class PaintServer
     /////////////////////////////////////////////////////////////////////////
 
     /**
-     * Returns a <tt>Marker</tt> defined on the specified element by
+     * Returns a <code>Marker</code> defined on the specified element by
      * the specified value, and for the specified shape node.
      *
      * @param e the painted element
@@ -129,7 +129,7 @@ public abstract class PaintServer
     /////////////////////////////////////////////////////////////////////////
 
     /**
-     * Returns a <tt>ShapePainter</tt> defined on the specified element and
+     * Returns a <code>ShapePainter</code> defined on the specified element and
      * for the specified shape node, and using the specified bridge
      * context.
      *
@@ -233,7 +233,7 @@ public abstract class PaintServer
     }
 
     /**
-     * Converts a Paint definition to a concrete <tt>java.awt.Paint</tt>
+     * Converts a Paint definition to a concrete <code>java.awt.Paint</code>
      * instance according to the specified parameters.
      *
      * @param paintedElement the element interested in a Paint
@@ -454,7 +454,7 @@ public abstract class PaintServer
     /////////////////////////////////////////////////////////////////////////
 
     /**
-     * Converts a <tt>Stroke</tt> object defined on the specified element.
+     * Converts a <code>Stroke</code> object defined on the specified element.
      *
      * @param e the element on which the stroke is specified
      */

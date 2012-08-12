@@ -85,9 +85,9 @@ public class XMLResourceDescriptor {
      * Returns the class name of the XML parser to use.
      *
      * <p>This method first checks if any XML parser has been specified using
-     * the <tt>setXMLParserClassName</tt> method. If any, this method will
+     * the <code>setXMLParserClassName</code> method. If any, this method will
      * return the value of the property 'org.xml.sax.driver' specified in the
-     * <tt>resources/XMLResourceDescriptor.properties</tt> resource file.
+     * <code>resources/XMLResourceDescriptor.properties</code> resource file.
      */
     public static String getXMLParserClassName() {
         if (xmlParserClassName == null) {
@@ -110,10 +110,10 @@ public class XMLResourceDescriptor {
      * Returns the class name of the CSS parser to use.
      *
      * <p>This method first checks if any CSS parser has been
-     * specified using the <tt>setCSSParserClassName</tt> method. If
+     * specified using the <code>setCSSParserClassName</code> method. If
      * any, this method will return the value of the property
      * 'org.w3c.css.sac.driver' specified in the
-     * <tt>resources/XMLResourceDescriptor.properties</tt> resource
+     * <code>resources/XMLResourceDescriptor.properties</code> resource
      * file.
      */
     public static String getCSSParserClassName() {

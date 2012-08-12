@@ -168,7 +168,7 @@ public abstract class ToSVGAbstractTranscoder extends AbstractTranscoder
     }
 
     /** Writes the SVG content held by the svgGenerator to the
-     * <tt>TranscoderOutput</tt>. This method does nothing if the output already
+     * <code>TranscoderOutput</code>. This method does nothing if the output already
      * contains a Document.
      */
     protected void writeSVGToOutput(SVGGraphics2D svgGenerator, Element svgRoot,

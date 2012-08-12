@@ -20,7 +20,7 @@ package org.apache.batik.test;
 
 /**
  * Classes in the test package and subpackages should throw 
- * <tt>TestException</tt> to reflect internal failures in their
+ * <code>TestException</code> to reflect internal failures in their
  * operation.
  *
  * @author <a href="mailto:vhardy@apache.org">Vincent Hardy</a>

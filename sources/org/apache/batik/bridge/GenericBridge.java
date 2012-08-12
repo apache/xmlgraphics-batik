@@ -21,7 +21,7 @@ package org.apache.batik.bridge;
 import org.w3c.dom.Element;
 
 /**
- * A tagging interface that bridges for elements child of <tt>GraphicsNodeBridge</tt>
+ * A tagging interface that bridges for elements child of <code>GraphicsNodeBridge</code>
  * should implement.
  *
  * @author <a href="mailto:vincent.hardy@apache.org">Vincent Hardy</a>
@@ -31,8 +31,8 @@ import org.w3c.dom.Element;
 public interface GenericBridge extends Bridge {
 
     /**
-     * Invoked to handle an <tt>Element</tt> for a given <tt>BridgeContext</tt>.
-     * For example, see the <tt>SVGTitleElementBridge</tt>.
+     * Invoked to handle an <code>Element</code> for a given <code>BridgeContext</code>.
+     * For example, see the <code>SVGTitleElementBridge</code>.
      *
      * @param ctx the bridge context to use
      * @param e the element being handled

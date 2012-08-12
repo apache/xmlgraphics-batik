@@ -65,7 +65,7 @@ public class SVGDocumentBridge implements DocumentBridge, BridgeUpdateHandler,
     // Bridge ////////////////////////////////////////////////////////////////
 
     /**
-     * Returns the namespace URI of the element this <tt>Bridge</tt> is
+     * Returns the namespace URI of the element this <code>Bridge</code> is
      * dedicated to.  Returns <code>null</code>, as a Document node has no
      * namespace URI.
      */
@@ -74,7 +74,7 @@ public class SVGDocumentBridge implements DocumentBridge, BridgeUpdateHandler,
     }
 
     /**
-     * Returns the local name of the element this <tt>Bridge</tt> is dedicated
+     * Returns the local name of the element this <code>Bridge</code> is dedicated
      * to.  Returns <code>null</code>, as a Document node has no local name.
      */
     public String getLocalName() {
@@ -91,7 +91,7 @@ public class SVGDocumentBridge implements DocumentBridge, BridgeUpdateHandler,
     // DocumentBridge ////////////////////////////////////////////////////////
 
     /**
-     * Creates a <tt>GraphicsNode</tt> according to the specified parameters.
+     * Creates a <code>GraphicsNode</code> according to the specified parameters.
      * This is called before children have been added to the
      * returned GraphicsNode (obviously since you construct and return it).
      *

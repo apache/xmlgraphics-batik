@@ -55,7 +55,7 @@ public class LiveAttributeException extends RuntimeException {
     protected String value;
 
     /**
-     * Constructs a new <tt>LiveAttributeException</tt> with the specified
+     * Constructs a new <code>LiveAttributeException</code> with the specified
      * parameters.
      *
      * @param e the element on which the error occured

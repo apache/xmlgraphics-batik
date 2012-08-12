@@ -46,9 +46,9 @@ import javax.swing.border.Border;
 import javax.swing.text.Document;
 
 /**
- * The <tt>JAffineTransformChooser</tt> is a pane that contains
+ * The <code>JAffineTransformChooser</code> is a pane that contains
  * controls to let a user select the various components that
- * make up an <tt>AffineTransform</tt>
+ * make up an <code>AffineTransform</code>
  *
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
@@ -106,7 +106,7 @@ public class JAffineTransformChooser extends JGridBagPanel{
         = "JAffineTransformChooser.config.right.pad";
 
     /**
-     * The <tt>AffineTransform</tt> value represented by the
+     * The <code>AffineTransform</code> value represented by the
      * chooser
      */
     protected AffineTransform txf;
@@ -356,7 +356,7 @@ public class JAffineTransformChooser extends JGridBagPanel{
 
     /**
      * Creates a new modal dialog box that can be used to
-     * configure an <tt>AffineTransform</tt>
+     * configure an <code>AffineTransform</code>
      *
      * @param cmp the dialog's parent component
      * @param title the dialog's title

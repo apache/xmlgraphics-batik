@@ -19,11 +19,11 @@
 package org.apache.batik.test;
 
 /**
- * Simple GUI tool to run a <tt>Test</tt>. This tool takes
+ * Simple GUI tool to run a <code>Test</code>. This tool takes
  * a class name parameter as an input and provides a GUI to
- * run an instance of the test. The generated <tt>TestReport</tt>
+ * run an instance of the test. The generated <code>TestReport</code>
  * is printed to the standard output with the
- * <tt>SimpleTestReportProcessor</tt>
+ * <code>SimpleTestReportProcessor</code>
  *
  * @author <a href="mailto:vhardy@apache.org">Vincent Hardy</a>
  * @version $Id$

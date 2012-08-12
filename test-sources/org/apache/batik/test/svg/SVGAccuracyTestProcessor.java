@@ -21,8 +21,8 @@ package org.apache.batik.test.svg;
 import org.apache.batik.test.xml.XMLTestReportProcessor;
 
 /**
- * This implementation of the <tt>TestReportProcessor</tt> interface
- * converts the <tt>TestReports</tt> it processes into an 
+ * This implementation of the <code>TestReportProcessor</code> interface
+ * converts the <code>TestReports</code> it processes into an 
  * XML document that it outputs in a directory. The directory
  * used by the object can be configured at creation time.
  *

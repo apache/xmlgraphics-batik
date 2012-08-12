@@ -19,18 +19,18 @@
 package org.apache.batik.test;
 
 /**
- * This <tt>Test</tt> implementation can be used to validate the
+ * This <code>Test</code> implementation can be used to validate the
  * operation of a specific test. A typical use is to create
- * known error conditions and check that the input <tt>Test</tt>
+ * known error conditions and check that the input <code>Test</code>
  * reports these errors properly.
  * <p>
  * This test checks that a given test status (passed or not)
- * and a given error code is returned by a <tt>Test</tt>.
- * A <tt>TestReportValidator</tt> is built with the <tt>Test</tt> to
+ * and a given error code is returned by a <code>Test</code>.
+ * A <code>TestReportValidator</code> is built with the <code>Test</code> to
  * run, the expected status (passed or failed) and the expected
- * error code. The <tt>TestReportValidator</tt> will pass if the
- * expected values are produced by the <tt>TestReport</tt>
- * created by the associated <tt>Test</tt>. Otherwise, it will
+ * error code. The <code>TestReportValidator</code> will pass if the
+ * expected values are produced by the <code>TestReport</code>
+ * created by the associated <code>Test</code>. Otherwise, it will
  * fail with one of two error codes:<br />
  * + if the status is not the one expected, then the
  *   ERROR_UNEXPECTED_TEST_STATUS code is used.. The report
@@ -52,12 +52,12 @@ public class TestReportValidator extends AbstractTest {
     private Test test;
 
     /**
-     * Status expected from the <tt>TestReport</tt>
+     * Status expected from the <code>TestReport</code>
      */
     private boolean expectedStatus;
 
     /**
-     * Error code expected from the <tt>TestReport</tt>
+     * Error code expected from the <code>TestReport</code>
      */
     private String expectedErrorCode;
 

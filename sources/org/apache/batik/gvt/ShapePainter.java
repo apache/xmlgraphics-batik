@@ -24,7 +24,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.geom.Point2D;
 
 /**
- * Renders the shape of a <tt>ShapeNode</tt>.
+ * Renders the shape of a <code>ShapeNode</code>.
  *
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @version $Id$
@@ -49,7 +49,7 @@ public interface ShapePainter {
     Rectangle2D getPaintedBounds2D();
 
     /**
-     * Returns true if <tt>pt</tt> is in the painted area.
+     * Returns true if <code>pt</code> is in the painted area.
      */
     boolean inPaintedArea(Point2D pt);
 
@@ -66,7 +66,7 @@ public interface ShapePainter {
     Rectangle2D getSensitiveBounds2D();
 
     /**
-     * Returns true if <tt>pt</tt> is in the sensitive area.
+     * Returns true if <code>pt</code> is in the sensitive area.
      */
     boolean inSensitiveArea(Point2D pt);
 

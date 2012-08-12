@@ -20,7 +20,7 @@ package org.apache.batik.swing.gvt;
 
 /**
  * An adapter class that represents a listener to the
- * <tt>GVTTreeRendererEvent</tt> events.
+ * <code>GVTTreeRendererEvent</code> events.
  *
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$

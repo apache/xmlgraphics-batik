@@ -41,7 +41,7 @@ public class DefaultFontFamilyTest extends AbstractImageTranscoderTest {
     protected String defaultFontFamily;
 
     /**
-     * Constructs a new <tt>DefaultFontFamilyTest</tt>.
+     * Constructs a new <code>DefaultFontFamilyTest</code>.
      *
      * @param inputURI the URI of the input image
      * @param refImageURI the URI of the reference image
@@ -56,7 +56,7 @@ public class DefaultFontFamilyTest extends AbstractImageTranscoderTest {
     }
 
     /**
-     * Creates the <tt>TranscoderInput</tt>.
+     * Creates the <code>TranscoderInput</code>.
      */
     protected TranscoderInput createTranscoderInput() {
         return new TranscoderInput(resolveURL(inputURI).toString());

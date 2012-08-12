@@ -21,7 +21,7 @@ package org.apache.batik.bridge;
 import org.apache.batik.util.ParsedURL;
 
 /**
- * Default implementation for the <tt>ScriptSecurity</tt> interface.
+ * Default implementation for the <code>ScriptSecurity</code> interface.
  * It allows all types of scripts to be loaded, but only if they
  * come from the same server as the document they are included into.
  *

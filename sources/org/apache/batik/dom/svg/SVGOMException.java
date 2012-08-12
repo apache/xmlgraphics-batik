@@ -29,7 +29,7 @@ import org.w3c.dom.svg.SVGException;
 public class SVGOMException extends SVGException {
 
     /**
-     * Constructs a new <tt>SVGOMException</tt> with the specified parameters.
+     * Constructs a new <code>SVGOMException</code> with the specified parameters.
      *
      * @param code the exception code
      * @param message the error message

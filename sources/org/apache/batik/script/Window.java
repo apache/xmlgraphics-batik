@@ -125,8 +125,8 @@ public interface Window extends org.w3c.dom.Window {
      * @param content The data to post to the server.
      * @param h A handler called when the data is available.
      * @param mimeType The mimeType to asscoiate with post.
-     * @param enc      The encoding to apply to <tt>content</tt>
-     *                 may be "gzip", "deflate", or <tt>null</tt>.
+     * @param enc      The encoding to apply to <code>content</code>
+     *                 may be "gzip", "deflate", or <code>null</code>.
      */
     void postURL(String uri, String content, URLResponseHandler h,
                  String mimeType, String enc);

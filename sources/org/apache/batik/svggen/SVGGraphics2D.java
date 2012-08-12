@@ -286,7 +286,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
     }
 
     /**
-     * Helper method to create an <tt>SVGGeneratorContext</tt> from the
+     * Helper method to create an <code>SVGGeneratorContext</code> from the
      * constructor parameters.
      */
     public static SVGGeneratorContext

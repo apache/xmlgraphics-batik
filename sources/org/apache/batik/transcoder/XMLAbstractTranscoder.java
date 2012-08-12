@@ -38,12 +38,12 @@ import org.w3c.dom.Document;
  * transcoding hints:
  *
  * <ul>
- * <li><tt>KEY_DOM_IMPLEMENTATION</tt>: the DOM Implementation to use
+ * <li><code>KEY_DOM_IMPLEMENTATION</code>: the DOM Implementation to use
  *
- * <li><tt>KEY_DOCUMENT_ELEMENT_NAMESPACE_URI</tt>: the namespace URI of the
+ * <li><code>KEY_DOCUMENT_ELEMENT_NAMESPACE_URI</code>: the namespace URI of the
  * document to create
  *
- * <li><tt>KEY_DOCUMENT_ELEMENT</tt>: the qualified name of the document type
+ * <li><code>KEY_DOCUMENT_ELEMENT</code>: the qualified name of the document type
  * to create
  * </ul>
  *
@@ -53,7 +53,7 @@ import org.w3c.dom.Document;
 public abstract class XMLAbstractTranscoder extends AbstractTranscoder {
 
     /**
-     * Constructs a new <tt>XMLAbstractTranscoder</tt>.
+     * Constructs a new <code>XMLAbstractTranscoder</code>.
      */
     protected XMLAbstractTranscoder() {
         hints.put(KEY_XML_PARSER_VALIDATING, Boolean.FALSE);
@@ -61,9 +61,9 @@ public abstract class XMLAbstractTranscoder extends AbstractTranscoder {
 
     /**
      * Transcodes the specified XML input in the specified output. All
-     * <tt>TranscoderException</tt> exceptions not catched previously
-     * are tagged as fatal errors (ie. call the <tt>fatalError</tt>
-     * method of the <tt>ErrorHandler</tt>).
+     * <code>TranscoderException</code> exceptions not catched previously
+     * are tagged as fatal errors (ie. call the <code>fatalError</code>
+     * method of the <code>ErrorHandler</code>).
      *
      * @param input the XML input to transcode
      * @param output the ouput where to transcode
@@ -149,10 +149,10 @@ public abstract class XMLAbstractTranscoder extends AbstractTranscoder {
     }
 
     /**
-     * Creates the <tt>DocumentFactory</tt> used to create the DOM
+     * Creates the <code>DocumentFactory</code> used to create the DOM
      * tree. Override this method if you have to use another
-     * implementation of the <tt>DocumentFactory</tt> (ie. for SVG,
-     * you have to use the <tt>SAXSVGDocumentFactory</tt>).
+     * implementation of the <code>DocumentFactory</code> (ie. for SVG,
+     * you have to use the <code>SAXSVGDocumentFactory</code>).
      *
      * @param domImpl the DOM Implementation to use
      * @param parserClassname the XML parser classname

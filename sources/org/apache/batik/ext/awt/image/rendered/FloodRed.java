@@ -47,7 +47,7 @@ public class FloodRed extends AbstractRed {
     private WritableRaster raster;
 
     /**
-     * Construct a fully transparent black image <tt>bounds</tt> size.
+     * Construct a fully transparent black image <code>bounds</code> size.
      * @param bounds the bounds of the image (in fact will respond with
      *               any request).
      */
@@ -56,7 +56,7 @@ public class FloodRed extends AbstractRed {
     }
 
     /**
-     * Construct a fully transparent image <tt>bounds</tt> size, will
+     * Construct a fully transparent image <code>bounds</code> size, will
      * paint one tile with paint.  Thus paint should not be a pattered
      * paint or gradient but should be a solid color.
      * @param bounds the bounds of the image (in fact will respond with

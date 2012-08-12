@@ -36,7 +36,7 @@ import org.w3c.dom.Document;
 public class TiledImageTranscoder extends SVGAbstractTranscoder {
     
     /**
-     * Constructs a new <tt>ImageTranscoder</tt>.
+     * Constructs a new <code>ImageTranscoder</code>.
      */
     protected TiledImageTranscoder() {
     }

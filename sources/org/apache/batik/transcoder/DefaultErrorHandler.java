@@ -19,8 +19,8 @@
 package org.apache.batik.transcoder;
 
 /**
- * A default <tt>ErrorHandler</tt> that throws a
- * <tt>TranscoderException</tt> when a fatal error occured and display
+ * A default <code>ErrorHandler</code> that throws a
+ * <code>TranscoderException</code> when a fatal error occured and display
  * a message when a warning or an error occured.
  *
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>

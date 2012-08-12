@@ -74,7 +74,7 @@ public class FocusManager {
     protected EventListener mouseoutListener;
 
     /**
-     * Constructs a new <tt>FocusManager</tt> for the specified document.
+     * Constructs a new <code>FocusManager</code> for the specified document.
      *
      * @param doc the document
      */

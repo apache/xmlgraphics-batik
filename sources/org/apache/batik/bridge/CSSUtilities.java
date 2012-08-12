@@ -654,7 +654,7 @@ public abstract class CSSUtilities
     /////////////////////////////////////////////////////////////////////////
 
     /**
-     * Returns a <tt>Filter</tt> referenced by the specified element
+     * Returns a <code>Filter</code> referenced by the specified element
      * and which applies on the specified graphics node.
      * Handle the 'filter' property.
      *
@@ -696,7 +696,7 @@ public abstract class CSSUtilities
     /////////////////////////////////////////////////////////////////////////
 
     /**
-     * Returns a <tt>Clip</tt> referenced by the specified element and
+     * Returns a <code>Clip</code> referenced by the specified element and
      * which applies on the specified graphics node.
      * Handle the 'clip-path' property.
      *
@@ -750,7 +750,7 @@ public abstract class CSSUtilities
     /////////////////////////////////////////////////////////////////////////
 
     /**
-     * Returns a <tt>Mask</tt> referenced by the specified element and
+     * Returns a <code>Mask</code> referenced by the specified element and
      * which applies on the specified graphics node.
      * Handle the 'mask' property.
      *
@@ -804,7 +804,7 @@ public abstract class CSSUtilities
 
     /**
      * Converts the color defined on the specified lighting filter element
-     * to a <tt>Color</tt>.
+     * to a <code>Color</code>.
      *
      * @param e the lighting filter element
      * @param ctx the bridge context
@@ -825,7 +825,7 @@ public abstract class CSSUtilities
 
     /**
      * Converts the color defined on the specified &lt;feFlood>
-     * element to a <tt>Color</tt>.
+     * element to a <code>Color</code>.
      *
      * @param e the feFlood element
      * @param ctx the bridge context
@@ -848,7 +848,7 @@ public abstract class CSSUtilities
 
     /**
      * Converts the color defined on the specified &lt;stop> element
-     * to a <tt>Color</tt>.
+     * to a <code>Color</code>.
      *
      * @param e the stop element
      * @param opacity the paint opacity

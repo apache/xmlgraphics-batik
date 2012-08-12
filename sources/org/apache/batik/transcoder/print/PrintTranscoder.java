@@ -49,26 +49,26 @@ import org.apache.batik.transcoder.keys.StringKey;
 import org.w3c.dom.Document;
 
 /**
- * This class is a <tt>Transcoder</tt> that prints SVG images.
+ * This class is a <code>Transcoder</code> that prints SVG images.
  * This class works as follows: any-time the transcode method
  * is invoked, the corresponding input is cached and nothing
  * else happens. <br />
- * However, the <tt>PrintTranscoder</tt> is also a Printable. If used
+ * However, the <code>PrintTranscoder</code> is also a Printable. If used
  * in a print operation, it will print each of the input
  * it cached, one input per page.
  * <br />
- * The <tt>PrintTranscoder</tt> uses several different hints that
+ * The <code>PrintTranscoder</code> uses several different hints that
  * guide its printing:<br />
  * <ul>
- *   <li><tt>KEY_LANGUAGE, KEY_USER_STYLESHEET_URI, KEY_PIXEL_TO_MM,
- *       KEY_XML_PARSER_CLASSNAME</tt> can be used to set the defaults for
+ *   <li><code>KEY_LANGUAGE, KEY_USER_STYLESHEET_URI, KEY_PIXEL_TO_MM,
+ *       KEY_XML_PARSER_CLASSNAME</code> can be used to set the defaults for
  *       the various SVG properties.</li>
- *   <li><tt>KEY_PAGE_WIDTH, KEY_PAGE_HEIGHT, KEY_MARGIN_TOP, KEY_MARGIN_BOTTOM,
- *       KEY_MARGIN_LEFT, KEY_MARGIN_RIGHT</tt> and <tt>KEY_PAGE_ORIENTATION</tt>
+ *   <li><code>KEY_PAGE_WIDTH, KEY_PAGE_HEIGHT, KEY_MARGIN_TOP, KEY_MARGIN_BOTTOM,
+ *       KEY_MARGIN_LEFT, KEY_MARGIN_RIGHT</code> and <code>KEY_PAGE_ORIENTATION</code>
  *       can be used to specify the printing page characteristics.</li>
- *   <li><tt>KEY_WIDTH, KEY_HEIGHT</tt> can be used to specify how to scale the
+ *   <li><code>KEY_WIDTH, KEY_HEIGHT</code> can be used to specify how to scale the
  *       SVG image</li>
- *   <li><tt>KEY_SCALE_TO_PAGE</tt> can be used to specify whether or not the
+ *   <li><code>KEY_SCALE_TO_PAGE</code> can be used to specify whether or not the
  *       SVG image should be scaled uniformly to fit into the printed page or
  *       if it should just be centered into the printed page.</li>
  * </ul>

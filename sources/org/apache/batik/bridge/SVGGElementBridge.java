@@ -55,7 +55,7 @@ public class SVGGElementBridge extends AbstractGraphicsNodeBridge {
     }
 
     /**
-     * Creates a <tt>GraphicsNode</tt> according to the specified parameters.
+     * Creates a <code>GraphicsNode</code> according to the specified parameters.
      *
      * @param ctx the bridge context to use
      * @param e the element that describes the graphics node to build
@@ -84,7 +84,7 @@ public class SVGGElementBridge extends AbstractGraphicsNodeBridge {
     }
 
     /**
-     * Creates a <tt>CompositeGraphicsNode</tt>.
+     * Creates a <code>CompositeGraphicsNode</code>.
      */
     protected GraphicsNode instantiateGraphicsNode() {
         return new CompositeGraphicsNode();

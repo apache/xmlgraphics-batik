@@ -25,7 +25,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 
 /**
- * Describes a file source for the <tt>SVGConverter</tt>
+ * Describes a file source for the <code>SVGConverter</code>
  *
  * @author <a href="mailto:vhardy@apache.org">Vincent Hardy</a>
  * @version $Id$

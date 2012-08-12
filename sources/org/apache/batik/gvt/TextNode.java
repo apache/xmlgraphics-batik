@@ -60,7 +60,7 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
     protected AttributedCharacterIterator aci;
 
     /**
-     * The text of this <tt>TextNode</tt>.
+     * The text of this <code>TextNode</code>.
      */
     protected String text;
 
@@ -101,7 +101,7 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
     private Shape outline;
 
     /**
-     * Constructs a new empty <tt>TextNode</tt>.
+     * Constructs a new empty <code>TextNode</code>.
      */
     public TextNode() {
     }
@@ -145,7 +145,7 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
     }
 
     /**
-     * Returns the text of this <tt>TextNode</tt> as a string.
+     * Returns the text of this <code>TextNode</code> as a string.
      */
     public String getText() {
 
@@ -225,7 +225,7 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
     //
 
     /**
-     * Invalidates this <tt>TextNode</tt>. This node and all its ancestors have
+     * Invalidates this <code>TextNode</code>. This node and all its ancestors have
      * been informed that all its cached values related to its bounds must be
      * recomputed.
      */
@@ -460,7 +460,7 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
     }
 
     /**
-     * Defines where the text of a <tt>TextNode</tt> can be anchored
+     * Defines where the text of a <code>TextNode</code> can be anchored
      * relative to its location.
      */
     public static final class Anchor implements java.io.Serializable {

@@ -127,7 +127,7 @@ public class FilterResRable8Bit extends AbstractRable
 
 
     /**
-     * This returns true if <tt>ri</tt> and all of <tt>ri</tt>'s
+     * This returns true if <code>ri</code> and all of <code>ri</code>'s
      * sources implement the PaintRable interface.  This is used to
      * indicate that the chain has a good potential for bypassing the
      * filterRes operation entirely.

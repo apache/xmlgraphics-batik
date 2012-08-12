@@ -29,13 +29,13 @@ package org.apache.batik.bridge;
 public interface Bridge {
 
     /**
-     * Returns the namespace URI of the element this <tt>Bridge</tt> is
+     * Returns the namespace URI of the element this <code>Bridge</code> is
      * dedicated to.
      */
     String getNamespaceURI();
 
     /**
-     * Returns the local name of the element this <tt>Bridge</tt> is dedicated
+     * Returns the local name of the element this <code>Bridge</code> is dedicated
      * to.
      */
     String getLocalName();

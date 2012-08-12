@@ -30,7 +30,7 @@ import java.util.*;
 import java.util.List;
 
 /**
- * Validates the operation of the <tt>SVGRasterizer</tt>.
+ * Validates the operation of the <code>SVGRasterizer</code>.
  * It validates the option setting and the manipulation
  * of source and destination sources.
  *

@@ -27,7 +27,7 @@ package org.apache.batik.ext.awt.image;
  */
 public final class CompositeRule implements java.io.Serializable {
 
-    /** Porter-Duff src over rule, also used for feBlend <tt>normal</tt>. */
+    /** Porter-Duff src over rule, also used for feBlend <code>normal</code>. */
     public static final int RULE_OVER = 1;
 
     /** Porter-Duff src in rule. */

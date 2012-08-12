@@ -531,7 +531,7 @@ public abstract class AbstractDocument
     }
 
     /**
-     * Remove the mapping for <tt>element</tt> to <tt>id</tt>
+     * Remove the mapping for <code>element</code> to <code>id</code>
      */
     public void removeIdEntry(Element e, String id) {
         // Remove old Id mapping if we have one.

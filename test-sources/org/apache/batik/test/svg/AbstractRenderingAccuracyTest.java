@@ -59,7 +59,7 @@ import org.apache.batik.test.TestReport;
 
 /**
  * Checks for regressions in rendering a specific SVG document.
- * The <tt>Test</tt> will rasterize and SVG document and
+ * The <code>Test</code> will rasterize and SVG document and
  * compare it to a reference image. The test passes if the
  * rasterized SVG and the reference image match exactly (i.e.,
  * all pixel values are the same).
@@ -364,7 +364,7 @@ public abstract class AbstractRenderingAccuracyTest extends AbstractTest {
     }
 
     /**
-     * Returns this <tt>Test</tt>'s name. The name is the
+     * Returns this <code>Test</code>'s name. The name is the
      * URL of the SVG being rendered.
      */
     public String getName(){
@@ -375,7 +375,7 @@ public abstract class AbstractRenderingAccuracyTest extends AbstractTest {
     }
 
     /**
-     * Requests this <tt>Test</tt> to run and produce a
+     * Requests this <code>Test</code> to run and produce a
      * report.
      *
      */

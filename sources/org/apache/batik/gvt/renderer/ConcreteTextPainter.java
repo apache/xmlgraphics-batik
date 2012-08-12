@@ -26,7 +26,7 @@ import java.text.AttributedCharacterIterator;
 import org.apache.batik.gvt.TextNode;
 
 /**
- * Renders the attributed character iterator of a <tt>TextNode</tt>.
+ * Renders the attributed character iterator of a <code>TextNode</code>.
  *
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$

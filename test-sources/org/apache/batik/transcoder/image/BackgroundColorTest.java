@@ -45,13 +45,13 @@ import org.w3c.dom.DOMImplementation;
 public class BackgroundColorTest extends AbstractImageTranscoderTest {
 
     /**
-     * Constructs a new <tt>BackgroundColorTest</tt>.
+     * Constructs a new <code>BackgroundColorTest</code>.
      */
     public BackgroundColorTest() {
     }
 
     /**
-     * Creates the <tt>TranscoderInput</tt>.
+     * Creates the <code>TranscoderInput</code>.
      */
     protected TranscoderInput createTranscoderInput() {
         DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();

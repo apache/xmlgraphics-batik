@@ -41,7 +41,7 @@ import org.apache.batik.ext.awt.image.renderable.PadRable8Bit;
 public class PatternPaint implements Paint {
 
     /**
-     * The <tt>GraphicsNode</tt> that this <tt>Paint</tt> uses to
+     * The <code>GraphicsNode</code> that this <code>Paint</code> uses to
      * produce the pixel pattern
      */
     private GraphicsNode node;
@@ -73,7 +73,7 @@ public class PatternPaint implements Paint {
     private PatternPaintContext lastContext;
 
     /**
-     * Constructs a new <tt>PatternPaint</tt>.
+     * Constructs a new <code>PatternPaint</code>.
      *
      * @param node Used to generate the paint pixel pattern
      * @param patternRegion Region to which this paint is constrained

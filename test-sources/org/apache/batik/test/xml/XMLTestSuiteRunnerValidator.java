@@ -38,7 +38,7 @@ import org.apache.batik.test.TestReport;
 import org.apache.batik.test.TestSuiteReport;
 
 /**
- * Validates the operation of the <tt>XMLTestSuireRunner</tt> by checking
+ * Validates the operation of the <code>XMLTestSuireRunner</code> by checking
  * that it runs the tests specified by the command line parameter and
  * only these tests. <br />
  * The test uses an dummy &lt;testRun&gt; which contains: <br />
@@ -187,7 +187,7 @@ public class XMLTestSuiteRunnerValidator extends DefaultTestSuite {
         }
 
         /**
-         * <tt>AbstractTest</tt>'s template method implementation.
+         * <code>AbstractTest</code>'s template method implementation.
          */
         public TestReport runImpl() throws Exception{
             //
@@ -308,7 +308,7 @@ public class XMLTestSuiteRunnerValidator extends DefaultTestSuite {
         }
 
         /**
-         * Validates that the input <tt>TestReport</tt>
+         * Validates that the input <code>TestReport</code>
          * contains only the expected identifiers.
          * The following code is by no means optimized,
          * but it gets the job done.

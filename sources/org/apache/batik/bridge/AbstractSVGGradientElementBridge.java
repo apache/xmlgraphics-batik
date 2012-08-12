@@ -50,7 +50,7 @@ public abstract class AbstractSVGGradientElementBridge
     protected AbstractSVGGradientElementBridge() {}
 
     /**
-     * Creates a <tt>Paint</tt> according to the specified parameters.
+     * Creates a <code>Paint</code> according to the specified parameters.
      *
      * @param ctx the bridge context to use
      * @param paintElement the element that defines a Paint
@@ -209,7 +209,7 @@ public abstract class AbstractSVGGradientElementBridge
     }
 
     /**
-     * Returns a list of <tt>Stop</tt> elements, children of the
+     * Returns a list of <code>Stop</code> elements, children of the
      * specified paintElement can have or null if any.
      *
      * @param gradientElement the paint element
@@ -301,7 +301,7 @@ public abstract class AbstractSVGGradientElementBridge
         }
 
         /**
-         * Creates a <tt>Stop</tt> according to the specified parameters.
+         * Creates a <code>Stop</code> according to the specified parameters.
          *
          * @param ctx the bridge context to use
          * @param gradientElement the gradient element

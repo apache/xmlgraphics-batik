@@ -73,7 +73,7 @@ public class SVGSolidColorElementBridge extends AnimatableGenericSVGBridge
     }
 
     /**
-     * Creates a <tt>Paint</tt> according to the specified parameters.
+     * Creates a <code>Paint</code> according to the specified parameters.
      *
      * @param ctx the bridge context to use
      * @param paintElement the element that defines a Paint

@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.LinkedList;
 
 /**
- * This class provides an implementation for the <tt>addTest</tt>
- * method and a protected member to store the children <tt>Test</tt>
+ * This class provides an implementation for the <code>addTest</code>
+ * method and a protected member to store the children <code>Test</code>
  * instances.
  *
  * @author <a href="mailto:vhardy@apache.lorg">Vincent Hardy</a>
@@ -31,12 +31,12 @@ import java.util.LinkedList;
  */
 public abstract class AbstractTestSuite implements TestSuite {
     /**
-     * Stores the list of children <tt>Test</tt> instances.
+     * Stores the list of children <code>Test</code> instances.
      */
     protected List children = new LinkedList();
 
     /**
-     * Adds a <tt>Test</tt> to the suite
+     * Adds a <code>Test</code> to the suite
      */
     public void addTest(Test test){
         if(test != null){

@@ -29,7 +29,7 @@ import org.apache.batik.transcoder.TranscodingHints;
 import org.apache.batik.transcoder.image.PNGTranscoder;
 
 /**
- * This class is a helper to <tt>PNGTranscoder</tt> that writes PNG images
+ * This class is a helper to <code>PNGTranscoder</code> that writes PNG images
  * through the internal PNG codec.
  *
  * @version $Id$

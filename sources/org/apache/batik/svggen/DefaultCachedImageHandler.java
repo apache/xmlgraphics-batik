@@ -85,7 +85,7 @@ public abstract class DefaultCachedImageHandler
     }
 
     /**
-     * This <tt>GenericImageHandler</tt> implementation does not
+     * This <code>GenericImageHandler</code> implementation does not
      * need to interact with the DOMTreeManager.
      */
     public void setDOMTreeManager(DOMTreeManager domTreeManager){
@@ -374,8 +374,8 @@ public abstract class DefaultCachedImageHandler
     }
 
     /**
-     * This method will delegate to the <tt>handleHREF</tt> which
-     * uses a <tt>RenderedImage</tt>
+     * This method will delegate to the <code>handleHREF</code> which
+     * uses a <code>RenderedImage</code>
      */
     protected void handleHREF(RenderableImage image, Element imageElement,
                               SVGGeneratorContext generatorContext)

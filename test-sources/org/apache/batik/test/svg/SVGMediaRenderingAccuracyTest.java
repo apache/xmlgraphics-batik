@@ -31,7 +31,7 @@ import org.apache.batik.transcoder.image.PNGTranscoder;
 public class SVGMediaRenderingAccuracyTest 
     extends ParametrizedRenderingAccuracyTest {
     /**
-     * Returns the <tt>ImageTranscoder</tt> the Test should
+     * Returns the <code>ImageTranscoder</code> the Test should
      * use
      */
     public ImageTranscoder getTestImageTranscoder(){

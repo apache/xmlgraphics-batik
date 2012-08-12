@@ -69,7 +69,7 @@ public class SoftReferenceCache {
     }
 
     /**
-     * Check if <tt>request(key)</tt> will return with an Object
+     * Check if <code>request(key)</code> will return with an Object
      * (not putting you on the hook for it).  Note that it is possible
      * that this will return true but between this call and the call
      * to request the soft-reference will be cleared.  So it
@@ -98,7 +98,7 @@ public class SoftReferenceCache {
     }
 
     /**
-     * Check if <tt>request(key)</tt> will return immediately with the
+     * Check if <code>request(key)</code> will return immediately with the
      * Object.  Note that it is possible that this will return
      * true but between this call and the call to request the
      * soft-reference will be cleared.

@@ -28,7 +28,7 @@ import org.apache.batik.gvt.ShapePainter;
 import org.w3c.dom.Element;
 
 /**
- * The base bridge class for shapes. Subclasses bridge <tt>ShapeNode</tt>.
+ * The base bridge class for shapes. Subclasses bridge <code>ShapeNode</code>.
  *
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
@@ -70,7 +70,7 @@ public abstract class SVGShapeElementBridge extends AbstractGraphicsNodeBridge {
     }
 
     /**
-     * Creates a <tt>ShapeNode</tt>.
+     * Creates a <code>ShapeNode</code>.
      */
     protected GraphicsNode instantiateGraphicsNode() {
         return new ShapeNode();

@@ -22,7 +22,7 @@ import org.apache.batik.gvt.Marker;
 import org.w3c.dom.Element;
 
 /**
- * Factory class for vending <tt>Marker</tt> objects.
+ * Factory class for vending <code>Marker</code> objects.
  *
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
@@ -30,7 +30,7 @@ import org.w3c.dom.Element;
 public interface MarkerBridge extends Bridge {
 
     /**
-     * Creates a <tt>Marker</tt> according to the specified parameters.
+     * Creates a <code>Marker</code> according to the specified parameters.
      *
      * @param ctx the bridge context to use
      * @param markerElement the element that represents the marker

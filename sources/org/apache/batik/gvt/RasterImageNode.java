@@ -40,7 +40,7 @@ public class RasterImageNode extends AbstractGraphicsNode {
     protected Filter image;
 
     /**
-     * Constructs a new empty <tt>RasterImageNode</tt>.
+     * Constructs a new empty <code>RasterImageNode</code>.
      */
     public RasterImageNode() {}
 

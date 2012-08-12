@@ -22,37 +22,37 @@ import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.gvt.GraphicsNode;
 
 /**
- * This interface allows <tt>GraphicsNode</tt> to be seen as
- * <tt>RenderableImages</tt>, which can be used for operations such as
+ * This interface allows <code>GraphicsNode</code> to be seen as
+ * <code>RenderableImages</code>, which can be used for operations such as
  * filtering, masking or compositing.
- * Given a <tt>GraphicsNode</tt>, a <tt>GraphicsNodeRable</tt> can be
- * created through a <tt>GraphicsNodeRableFactory</tt>.
+ * Given a <code>GraphicsNode</code>, a <code>GraphicsNodeRable</code> can be
+ * created through a <code>GraphicsNodeRableFactory</code>.
  *
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
 public interface GraphicsNodeRable extends Filter {
     /**
-     * Returns the <tt>GraphicsNode</tt> for which a rendering can be obtained
-     * @return the <tt>GraphicsNode</tt> associated with this image.
+     * Returns the <code>GraphicsNode</code> for which a rendering can be obtained
+     * @return the <code>GraphicsNode</code> associated with this image.
      */
     GraphicsNode getGraphicsNode();
 
     /**
-     * Sets the <tt>GraphicsNode</tt> associated with this image.
+     * Sets the <code>GraphicsNode</code> associated with this image.
      */
     void setGraphicsNode(GraphicsNode node);
 
     /**
      * Returns true if this Rable get's it's contents by calling
-     * primitivePaint on the associated <tt>GraphicsNode</tt> or
+     * primitivePaint on the associated <code>GraphicsNode</code> or
      * false if it uses paint.
      */
     boolean getUsePrimitivePaint();
 
     /**
      * Set to true if this Rable should get it's contents by calling
-     * primitivePaint on the associated <tt>GraphicsNode</tt> or false
+     * primitivePaint on the associated <code>GraphicsNode</code> or false
      * if it should use paint.
      */
     void setUsePrimitivePaint(boolean usePrimitivePaint);

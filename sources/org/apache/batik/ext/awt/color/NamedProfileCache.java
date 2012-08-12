@@ -40,7 +40,7 @@ public class NamedProfileCache extends SoftReferenceCache {
     public NamedProfileCache() { }
 
     /**
-     * Check if <tt>request(profileName)</tt> will return with a ICCColorSpaceExt
+     * Check if <code>request(profileName)</code> will return with a ICCColorSpaceExt
      * (not putting you on the hook for it).  Note that it is possible
      * that this will return true but between this call and the call
      * to request the soft-reference will be cleared.  So it
@@ -52,7 +52,7 @@ public class NamedProfileCache extends SoftReferenceCache {
     }
 
     /**
-     * Check if <tt>request(profileName)</tt> will return immediately with the
+     * Check if <code>request(profileName)</code> will return immediately with the
      * ICCColorSpaceExt.  Note that it is possible that this will return
      * true but between this call and the call to request the
      * soft-reference will be cleared.

@@ -54,7 +54,7 @@ public class SVGMarkerElementBridge extends AnimatableGenericSVGBridge
     }
 
     /**
-     * Creates a <tt>Marker</tt> according to the specified parameters.
+     * Creates a <code>Marker</code> according to the specified parameters.
      *
      * @param ctx the bridge context to use
      * @param markerElement the element that represents the marker

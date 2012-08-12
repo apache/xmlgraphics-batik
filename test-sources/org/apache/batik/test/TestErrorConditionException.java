@@ -22,8 +22,8 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 /**
- * Exception which <tt>AbstractTest</tt> extensions can throw from the 
- * <tt>rumImpl</tt> method to report an error condition.
+ * Exception which <code>AbstractTest</code> extensions can throw from the 
+ * <code>rumImpl</code> method to report an error condition.
  *
  * @author <a href="mailto:vhardy@apache.org">Vincent Hardy</a>
  * @version $Id$

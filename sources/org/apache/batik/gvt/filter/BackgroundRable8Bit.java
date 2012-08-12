@@ -55,14 +55,14 @@ public class BackgroundRable8Bit
     private GraphicsNode node;
 
     /**
-     * Returns the <tt>GraphicsNode</tt> rendered by this image
+     * Returns the <code>GraphicsNode</code> rendered by this image
      */
     public GraphicsNode getGraphicsNode(){
         return node;
     }
 
     /**
-     * Sets the <tt>GraphicsNode</tt> this image should render
+     * Sets the <code>GraphicsNode</code> this image should render
      */
     public void setGraphicsNode(GraphicsNode node){
         if(node == null){
@@ -253,7 +253,7 @@ public class BackgroundRable8Bit
 
     /**
      * Returns a filter that represents the background image
-     * for <tt>child</tt>.
+     * for <code>child</code>.
      * @param gn    Node to get background image for.
      * @param child Child to stop at when compositing children of gn into
      *              the background image.

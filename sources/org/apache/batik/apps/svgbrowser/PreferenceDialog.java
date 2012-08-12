@@ -305,7 +305,7 @@ public class PreferenceDialog extends JDialog
         = "PreferenceDialog.label.cancel";
 
     /**
-     * <tt>PreferenceManager</tt> used to store and retrieve
+     * <code>PreferenceManager</code> used to store and retrieve
      * preferences
      */
     protected PreferenceManager model;

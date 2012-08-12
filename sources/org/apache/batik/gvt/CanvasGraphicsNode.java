@@ -52,7 +52,7 @@ public class CanvasGraphicsNode extends CompositeGraphicsNode {
     protected Paint backgroundPaint;
 
     /**
-     * Constructs a new empty <tt>CanvasGraphicsNode</tt>.
+     * Constructs a new empty <code>CanvasGraphicsNode</code>.
      */
     public CanvasGraphicsNode() {}
 

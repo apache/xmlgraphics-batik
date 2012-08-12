@@ -22,7 +22,7 @@ import java.awt.Image;
 import java.beans.SimpleBeanInfo;
 
 /**
- * A <tt>BeanInfo</tt> for the <tt>JSVGCanvas</tt>.
+ * A <code>BeanInfo</code> for the <code>JSVGCanvas</code>.
  *
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
@@ -42,7 +42,7 @@ public class JSVGCanvasBeanInfo extends SimpleBeanInfo {
     protected Image iconMono32x32;
 
     /**
-     * Constructs a new <tt>BeanInfo</tt> for a <tt>JSVGCanvas</tt>.
+     * Constructs a new <code>BeanInfo</code> for a <code>JSVGCanvas</code>.
      */
     public JSVGCanvasBeanInfo() {
         iconColor16x16 = loadImage("resources/batikColor16x16.gif");

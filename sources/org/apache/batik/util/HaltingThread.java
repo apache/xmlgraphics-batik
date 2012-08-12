@@ -63,7 +63,7 @@ public class HaltingThread extends Thread {
     }
 
     /**
-     * Calls 'halt' on <tt>Thread.currentThread()</tt> if it is an
+     * Calls 'halt' on <code>Thread.currentThread()</code> if it is an
      * instance of HaltingThread otherwise it does nothing.
      */
     public static void haltThread() {
@@ -71,7 +71,7 @@ public class HaltingThread extends Thread {
     }
 
     /**
-     * Calls 'halt' on <tt>t</tt> if it is an instance of
+     * Calls 'halt' on <code>t</code> if it is an instance of
      * HaltingThread otherwise it does nothing.
      */
     public static void haltThread(Thread t) {
@@ -81,7 +81,7 @@ public class HaltingThread extends Thread {
 
     /**
      * Returns the result of calling hasBeenHalted on
-     * <tt>Thread.currentThread()</tt>, if it is an instance of
+     * <code>Thread.currentThread()</code>, if it is an instance of
      * HaltingThread otherwise it returns false.
      */
     public static boolean hasBeenHalted() {
@@ -89,7 +89,7 @@ public class HaltingThread extends Thread {
     }
 
     /**
-     * Returns the result of calling hasBeenHalted on <tt>t</tt>,
+     * Returns the result of calling hasBeenHalted on <code>t</code>,
      * if it is an instance of HaltingThread otherwise it returns false.
      */
     public static boolean hasBeenHalted(Thread t) {

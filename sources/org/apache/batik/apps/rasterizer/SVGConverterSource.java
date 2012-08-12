@@ -23,7 +23,7 @@ import java.io.InputStream;
 
 /**
  * Interface used to handle both Files and URLs in the
- * <tt>SVGConverter</tt>
+ * <code>SVGConverter</code>
  *
  * @author <a href="mailto:vhardy@apache.org">Vincent Hardy</a>
  * @version $Id$
@@ -36,7 +36,7 @@ public interface SVGConverterSource {
     String getName();
 
     /**
-     * Gets a <tt>TranscoderInput</tt> for that source
+     * Gets a <code>TranscoderInput</code> for that source
      */
     InputStream openStream() throws IOException;
 

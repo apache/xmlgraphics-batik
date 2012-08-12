@@ -33,8 +33,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * This class bridges an SVG <tt>color-profile</tt> element with an
- * <tt>ICC_ColorSpace</tt> object.
+ * This class bridges an SVG <code>color-profile</code> element with an
+ * <code>ICC_ColorSpace</code> object.
  *
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$ */

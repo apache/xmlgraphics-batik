@@ -49,7 +49,7 @@ public class MaxDimensionTest extends AbstractImageTranscoderTest {
 
     //-- Constructors --------------------------------------------------------
     /**
-     * Constructs a new <tt>MaxDimensionTest</tt>.
+     * Constructs a new <code>MaxDimensionTest</code>.
      *
      * @param inputURI URI of the input image.
      * @param refImageURI URI of the reference image.
@@ -64,7 +64,7 @@ public class MaxDimensionTest extends AbstractImageTranscoderTest {
     }
 
     /**
-     * Constructs a new <tt>MaxDimensionTest</tt>.
+     * Constructs a new <code>MaxDimensionTest</code>.
      *
      * @param inputURI URI of the input image.
      * @param refImageURI URI of the reference image.
@@ -85,7 +85,7 @@ public class MaxDimensionTest extends AbstractImageTranscoderTest {
 
     //-- Methods -------------------------------------------------------------
     /**
-     * Creates the <tt>TranscoderInput</tt>.
+     * Creates the <code>TranscoderInput</code>.
      */
     protected TranscoderInput createTranscoderInput() {
         return new TranscoderInput(resolveURL(inputURI).toString());

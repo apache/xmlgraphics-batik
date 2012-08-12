@@ -19,7 +19,7 @@
 package org.apache.batik.test;
 
 /**
- * Exception which Tests can throw when a specific <tt>assertEquals</tt> fails.
+ * Exception which Tests can throw when a specific <code>assertEquals</code> fails.
  *
  * @author <a href="mailto:vhardy@apache.org">Vincent Hardy</a>
  * @version $Id$

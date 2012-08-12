@@ -33,7 +33,7 @@ public class ImageNode extends CompositeGraphicsNode {
     protected boolean hitCheckChildren = false;
     
     /**
-     * Constructs a new empty <tt>ImageNode</tt>.
+     * Constructs a new empty <code>ImageNode</code>.
      */
     public ImageNode() {}
 

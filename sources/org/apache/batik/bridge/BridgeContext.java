@@ -83,7 +83,7 @@ import org.w3c.dom.svg.SVGDocument;
  * and cannot be reused.
  *
  * The context encapsulates the dynamic bindings between DOM elements
- * and GVT nodes, graphic contexts such as a <tt>GraphicsNodeRenderContext</tt>,
+ * and GVT nodes, graphic contexts such as a <code>GraphicsNodeRenderContext</code>,
  * and the different objects required by the GVT builder to interpret
  * a SVG DOM tree such as the current viewport or the user agent.
  *
@@ -633,7 +633,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     /**
      * Sets the document as a STATIC, INTERACTIVE or DYNAMIC document.
      * Call this method before the build phase
-     * (ie. before <tt>gvtBuilder.build(...)</tt>)
+     * (ie. before <code>gvtBuilder.build(...)</code>)
      * otherwise, that will have no effect.
      *
      *@param status the document dynamicStatus
@@ -643,7 +643,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     }
 
     /**
-     * Sets the document as DYNAMIC if <tt>dynamic</tt> is true
+     * Sets the document as DYNAMIC if <code>dynamic</code> is true
      * STATIC otherwise.
      */
     public void setDynamic(boolean dynamic) {
@@ -654,7 +654,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     }
 
     /**
-     * Sets the document as INTERACTIVE if <tt>interactive</tt> is
+     * Sets the document as INTERACTIVE if <code>interactive</code> is
      * true STATIC otherwise.
      */
     public void setInteractive(boolean interactive) {
@@ -1010,7 +1010,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     }
 
     /**
-     * Associates the specified <tt>Bridge</tt> object with the specified
+     * Associates the specified <code>Bridge</code> object with the specified
      * namespace URI and local name.
      * @param namespaceURI the namespace URI
      * @param localName the local name
@@ -1039,7 +1039,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     }
 
     /**
-     * Associates the specified <tt>Bridge</tt> object with it's
+     * Associates the specified <code>Bridge</code> object with it's
      * namespace URI and local name.
      *
      * @param bridge the bridge that manages the element
@@ -1049,7 +1049,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     }
 
     /**
-     * Removes the <tt>Bridge</tt> object associated to the specified
+     * Removes the <code>Bridge</code> object associated to the specified
      * namespace URI and local name.
      *
      * @param namespaceURI the namespace URI
@@ -1073,7 +1073,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     }
 
     /**
-     * Sets the <tt>Bridge</tt> object to be used for foreign
+     * Sets the <code>Bridge</code> object to be used for foreign
      * namespace elements.
      *
      * @param bridge the bridge that manages the element

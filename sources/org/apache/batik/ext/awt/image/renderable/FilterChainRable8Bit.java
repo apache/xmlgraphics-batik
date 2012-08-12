@@ -38,7 +38,7 @@ import org.apache.batik.ext.awt.image.SVGComposite;
  *  <li>A pad operation that makes the input image a big as the
  *      filter region.</li>
  *  <li>If there is a filterResolution specified along at least
- *      one of the axis, a <tt>AffineRable</tt>
+ *      one of the axis, a <code>AffineRable</code>
  * </ul>
  *
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>

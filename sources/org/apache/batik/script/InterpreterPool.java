@@ -32,7 +32,7 @@ import org.w3c.dom.Document;
 /**
  * A class allowing to create/query an {@link
  * org.apache.batik.script.Interpreter} corresponding to a particular
- * <tt>Document</tt> and scripting language.
+ * <code>Document</code> and scripting language.
  *
  * <p>By default, it is able to create interpreters for ECMAScript,
  * Python and Tcl scripting languages if you provide the right jar
@@ -72,7 +72,7 @@ public class InterpreterPool {
     }
 
     /**
-     * Constructs a new <tt>InterpreterPool</tt>.
+     * Constructs a new <code>InterpreterPool</code>.
      */
     public InterpreterPool() {
         factories.putAll(defaultFactories);

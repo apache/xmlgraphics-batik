@@ -34,7 +34,7 @@ public class RootGraphicsNode extends CompositeGraphicsNode {
     List treeGraphicsNodeChangeListeners = null;
 
    /**
-     * Constructs a new empty <tt>RootGraphicsNode</tt>.
+     * Constructs a new empty <code>RootGraphicsNode</code>.
      */
     public RootGraphicsNode() {}
 

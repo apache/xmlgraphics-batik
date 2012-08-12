@@ -48,9 +48,9 @@ public abstract class SVGDescriptiveElementBridge extends AbstractSVGBridge
 
 
     /**
-     * Invoked to handle an <tt>Element</tt> for a given
-     * <tt>BridgeContext</tt>.  For example, see the
-     * <tt>SVGDescElementBridge</tt>.
+     * Invoked to handle an <code>Element</code> for a given
+     * <code>BridgeContext</code>.  For example, see the
+     * <code>SVGDescElementBridge</code>.
      *
      * @param ctx the bridge context to use
      * @param e the element to be handled

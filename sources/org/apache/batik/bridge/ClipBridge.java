@@ -23,7 +23,7 @@ import org.apache.batik.gvt.GraphicsNode;
 import org.w3c.dom.Element;
 
 /**
- * Factory class for vending <tt>Shape</tt> objects that represents a
+ * Factory class for vending <code>Shape</code> objects that represents a
  * clipping area.
  *
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
@@ -33,7 +33,7 @@ import org.w3c.dom.Element;
 public interface ClipBridge extends Bridge {
 
     /**
-     * Creates a <tt>Clip</tt> according to the specified parameters.
+     * Creates a <code>Clip</code> according to the specified parameters.
      *
      * @param ctx the bridge context to use
      * @param clipElement the element that defines the clip

@@ -26,7 +26,7 @@ import org.apache.batik.gvt.GraphicsNode;
 import org.w3c.dom.Element;
 
 /**
- * Factory class for vending <tt>Filter</tt> objects that represents
+ * Factory class for vending <code>Filter</code> objects that represents
  * a filter primitive.
  *
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
@@ -35,7 +35,7 @@ import org.w3c.dom.Element;
 public interface FilterPrimitiveBridge extends Bridge {
 
     /**
-     * Creates a <tt>Filter</tt> primitive according to the specified
+     * Creates a <code>Filter</code> primitive according to the specified
      * parameters.
      *
      * @param ctx the bridge context to use
@@ -43,12 +43,12 @@ public interface FilterPrimitiveBridge extends Bridge {
      * @param filteredElement the element that references the filter
      * @param filteredNode the graphics node to filter
      *
-     * @param in the <tt>Filter</tt> that represents the current
+     * @param in the <code>Filter</code> that represents the current
      *        filter input if the filter chain.
      * @param filterRegion the filter area defined for the filter chain
      *        the new node will be part of.
      * @param filterMap a map where the mediator can map a name to the
-     *        <tt>Filter</tt> it creates. Other <tt>FilterBridge</tt>s
+     *        <code>Filter</code> it creates. Other <code>FilterBridge</code>s
      *        can then access a filter node from the filterMap if they
      *        know its name.
      */

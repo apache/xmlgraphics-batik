@@ -459,7 +459,7 @@ public abstract class ViewBox implements SVGConstants, ErrorConstants {
 
 
         /**
-         * Constructs a new <tt>ViewHandler</tt> instance.
+         * Constructs a new <code>ViewHandler</code> instance.
          */
         protected ViewHandler() { }
 

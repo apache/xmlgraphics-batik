@@ -34,7 +34,7 @@ public class URITest extends AbstractImageTranscoderTest {
     protected String refImageURI;
 
     /**
-     * Constructs a new <tt>URITest</tt>.
+     * Constructs a new <code>URITest</code>.
      *
      * @param inputURI the URI of the input image
      * @param refImageURI the URI of the reference image
@@ -45,7 +45,7 @@ public class URITest extends AbstractImageTranscoderTest {
     }
 
     /**
-     * Creates the <tt>TranscoderInput</tt>.
+     * Creates the <code>TranscoderInput</code>.
      */
     protected TranscoderInput createTranscoderInput() {
         return new TranscoderInput(resolveURL(inputURI).toString());

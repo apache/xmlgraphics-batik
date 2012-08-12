@@ -25,7 +25,7 @@ import org.w3c.dom.Document;
 import org.xml.sax.XMLFilter;
 
 /**
- * This class represents a single output for a <tt>Transcoder</tt>.
+ * This class represents a single output for a <code>Transcoder</code>.
  *
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @version $Id$
@@ -58,13 +58,13 @@ public class TranscoderOutput {
     protected String uri;
 
     /**
-     * Constructs a new empty <tt>TranscoderOutput</tt>.
+     * Constructs a new empty <code>TranscoderOutput</code>.
      */
     public TranscoderOutput() {
     }
 
     /**
-     * Constructs a new <tt>TranscoderOutput</tt> with the specified
+     * Constructs a new <code>TranscoderOutput</code> with the specified
      * XML filter.
      * @param xmlFilter the XML filter of this transcoder output
      */
@@ -73,7 +73,7 @@ public class TranscoderOutput {
     }
 
     /**
-     * Constructs a new <tt>TranscoderOutput</tt> with the specified
+     * Constructs a new <code>TranscoderOutput</code> with the specified
      * byte stream output.
      * @param ostream the byte stream of this transcoder output
      */
@@ -82,7 +82,7 @@ public class TranscoderOutput {
     }
 
     /**
-     * Constructs a new <tt>TranscoderOutput</tt> with the specified
+     * Constructs a new <code>TranscoderOutput</code> with the specified
      * character stream.
      * @param writer the character stream of this transcoder output
      */
@@ -91,7 +91,7 @@ public class TranscoderOutput {
     }
 
     /**
-     * Constructs a new <tt>TranscoderOutput</tt> with the specified Document.
+     * Constructs a new <code>TranscoderOutput</code> with the specified Document.
      * @param document the Document of this transcoder output
      */
     public TranscoderOutput(Document document) {
@@ -99,7 +99,7 @@ public class TranscoderOutput {
     }
 
     /**
-     * Constructs a new <tt>TranscoderOutput</tt> with the specified uri.
+     * Constructs a new <code>TranscoderOutput</code> with the specified uri.
      * @param uri the URI of this transcoder output
      */
     public TranscoderOutput(String uri) {

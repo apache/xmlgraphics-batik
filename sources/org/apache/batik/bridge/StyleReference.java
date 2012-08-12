@@ -35,7 +35,7 @@ public class StyleReference {
     private String styleAttribute;
 
     /**
-     * Creates a new <tt>StyleReference</tt>.
+     * Creates a new <code>StyleReference</code>.
      * @param node the graphics node impacted.
      * @param styleAttribute the name of the style attribute that is impacted.
      */

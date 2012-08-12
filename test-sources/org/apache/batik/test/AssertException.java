@@ -29,7 +29,7 @@ public abstract class AssertException extends TestErrorConditionException {
         = "AssertException.entry.key.assertion.type";
 
     /**
-     * <tt>TestErrorConditionException</tt> implementation.
+     * <code>TestErrorConditionException</code> implementation.
      */
     public TestReport getTestReport(Test test){
         DefaultTestReport report = new DefaultTestReport(test);

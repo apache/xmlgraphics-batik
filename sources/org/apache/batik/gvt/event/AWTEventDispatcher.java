@@ -711,7 +711,7 @@ public class AWTEventDispatcher
     }
 
     /**
-     * Associates all InputEvents of type <tt>e.getID()</tt>
+     * Associates all InputEvents of type <code>e.getID()</code>
      * with "incrementing" of the currently selected GraphicsNode.
      */
     public void setNodeIncrementEvent(InputEvent e) {
@@ -723,7 +723,7 @@ public class AWTEventDispatcher
     }
 
     /**
-     * Associates all InputEvents of type <tt>e.getID()</tt>
+     * Associates all InputEvents of type <code>e.getID()</code>
      * with "decrementing" of the currently selected GraphicsNode.
      * The notion of "currently selected" GraphicsNode is used
      * for dispatching KeyEvents.

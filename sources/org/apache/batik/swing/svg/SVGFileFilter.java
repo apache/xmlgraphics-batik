@@ -32,7 +32,7 @@ import javax.swing.filechooser.FileFilter;
  */
 public class SVGFileFilter extends FileFilter {
     /**
-     * Returns true if <tt>f</tt> is an SVG file
+     * Returns true if <code>f</code> is an SVG file
      */
     public boolean accept(File f) {
         boolean accept = false;

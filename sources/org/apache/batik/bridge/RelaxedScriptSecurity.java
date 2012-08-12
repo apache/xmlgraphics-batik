@@ -21,7 +21,7 @@ package org.apache.batik.bridge;
 import org.apache.batik.util.ParsedURL;
 
 /**
- * This implementation for the <tt>ScriptSecurity</tt> interface.
+ * This implementation for the <code>ScriptSecurity</code> interface.
  * allows the script to be loaded and does not impose constraints
  * on the urls.
  * Note that this only means there is no check on the script's

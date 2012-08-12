@@ -19,7 +19,7 @@
 package org.apache.batik.ext.awt.image;
 
 /**
- * Defines the interface for all the <tt>ComponentTransferOp</tt> transfer
+ * Defines the interface for all the <code>ComponentTransferOp</code> transfer
  * functions, which can all be converted to a lookup table
  *
  * @author <a href="mailto:sheng.pei@eng.sun.com">Sheng Pei</a>

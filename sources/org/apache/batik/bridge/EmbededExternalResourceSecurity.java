@@ -21,7 +21,7 @@ package org.apache.batik.bridge;
 import org.apache.batik.util.ParsedURL;
 
 /**
- * This implementation of the <tt>ExternalResourceSecurity</tt> interface only
+ * This implementation of the <code>ExternalResourceSecurity</code> interface only
  * allows external resources embeded in the document, i.e., externalResources
  * embeded with the data protocol.
  *

@@ -118,7 +118,7 @@ public class RunnableQueue implements Runnable {
     /**
      * Creates a new RunnableQueue started in a new thread.
      * @return a RunnableQueue which is guaranteed to have entered its
-     *         <tt>run()</tt> method.
+     *         <code>run()</code> method.
      */
     public static RunnableQueue createRunnableQueue() {
         RunnableQueue result = new RunnableQueue();
@@ -285,7 +285,7 @@ public class RunnableQueue implements Runnable {
     /**
      * Returns the thread in which the RunnableQueue is currently running.
      * @return null if the RunnableQueue has not entered his
-     *         <tt>run()</tt> method.
+     *         <code>run()</code> method.
      */
     public HaltingThread getThread() {
         return runnableQueueThread;
@@ -309,9 +309,9 @@ public class RunnableQueue implements Runnable {
     }
 
     /**
-     * Waits until the given Runnable's <tt>run()</tt> has returned.
-     * <em>Note: <tt>invokeAndWait()</tt> must not be called from the
-     * current thread (for example from the <tt>run()</tt> method of the
+     * Waits until the given Runnable's <code>run()</code> has returned.
+     * <em>Note: <code>invokeAndWait()</code> must not be called from the
+     * current thread (for example from the <code>run()</code> method of the
      * argument).</em>
      * @throws IllegalStateException if getThread() is null or if the
      *         thread returned by getThread() is the current one.
@@ -356,11 +356,11 @@ public class RunnableQueue implements Runnable {
     }
 
     /**
-     * Waits until the given Runnable's <tt>run()</tt> has returned.
+     * Waits until the given Runnable's <code>run()</code> has returned.
      * The given runnable preempts any runnable that is not currently
      * executing (ie the next runnable started will be the one given).
-     * <em>Note: <tt>preemptAndWait()</tt> must not be called from the
-     * current thread (for example from the <tt>run()</tt> method of the
+     * <em>Note: <code>preemptAndWait()</code> must not be called from the
+     * current thread (for example from the <code>run()</code> method of the
      * argument).</em>
      * @throws IllegalStateException if getThread() is null or if the
      *         thread returned by getThread() is the current one.

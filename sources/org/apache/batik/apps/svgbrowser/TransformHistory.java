@@ -42,7 +42,7 @@ public class TransformHistory {
 
     /**
      * Goes back of one position in the history.
-     * Assumes that <tt>canGoBack()</tt> is true.
+     * Assumes that <code>canGoBack()</code> is true.
      */
     public void back() {
         position -= 2;
@@ -57,7 +57,7 @@ public class TransformHistory {
 
     /**
      * Goes forward of one position in the history.
-     * Assumes that <tt>canGoForward()</tt> is true.
+     * Assumes that <code>canGoForward()</code> is true.
      */
     public void forward() {
     }
