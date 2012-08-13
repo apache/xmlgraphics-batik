@@ -1,5 +1,3 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-
 <!--
 
    Licensed to the Apache Software Foundation (ASF) under one or more
@@ -51,16 +49,16 @@
     <!-- == Targets ====================================================== -->
     <target name="help"
         description="Displays usage information.">
-        <echo>SVG Rasterizer Task build file.</echo>
-        <echo>Available targets are:</echo>
-        <echo>  compile --> Compiles the source code.</echo>
-        <echo>  jar     --> Builds the JAR distribution.</echo>
-        <echo>  javadoc --> Generates Javadoc documentation.</echo>
-        <echo>  clean   --> Deletes generated directories.</echo>
+        <echo message="SVG Rasterizer Task build file."/>
+        <echo message="Available targets are:"/>
+        <echo message="  compile --> Compiles the source code."/>
+        <echo message="  jar     --> Builds the JAR distribution."/>
+        <echo message="  javadoc --> Generates Javadoc documentation."/>
+        <echo message="  clean   --> Deletes generated directories."/>
     </target>
 
     <target name="prepare">
-        <echo>Using ${ant.version}.</echo>
+        <echo message="Using ${ant.version}."/>
         <tstamp/>
     </target>
 
@@ -77,7 +75,7 @@
         <mkdir dir="${build}/lib" />
         <jar jarfile="${build}/lib/RasterizerTask.jar"
             basedir="${build.classes}"
-            excludes="**/CVS"
+            excludes="**/.svn/"
             includes="**/*.class">
         </jar>
     </target>
