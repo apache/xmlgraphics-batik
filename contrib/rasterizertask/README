@@ -15,7 +15,8 @@ you need to compile Batik first and then compile the task by typing
 .\build.bat compile
 in this directory. Type 
 .\build.bat help
-to display other available targets. These commands work only in Windows.
+to display other available targets. In Linux and similar, replace ".\" with
+"./" and ".bat" with ".sh" (without the quotes).
 
 NOTE: Due the internal changes in Ant itself the rasterizer task may not 
 work if the Ant in use is a different version from the Ant used to build 
