@@ -145,55 +145,65 @@ public class TIFFTranscoder extends ImageTranscoder {
     /**
      * The forceTransparentWhite key.
      *
-     * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Key: </TH>
-     * <TD VALIGN="TOP">KEY_FORCE_TRANSPARENT_WHITE</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
-     * <TD VALIGN="TOP">Boolean</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
-     * <TD VALIGN="TOP">false</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Required: </TH>
-     * <TD VALIGN="TOP">No</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
-     * <TD VALIGN="TOP">It controls whether the encoder should
-     * force the image's fully transparent pixels to be fully transparent
-     * white instead of fully transparent black.  This is usefull when the
-     * encoded TIFF is displayed in a viewer which does not support TIFF
-     * transparency and lets the image display with a white background instead
-     * of a black background. <br /> 
-     *
-     * However, note that the modified image will display differently
-     * over a white background in a viewer that supports
-     * transparency.</TD></TR>
-     * </TABLE> 
+     * <table border="0" cellspacing="0" cellpadding="1">
+     *   <tr>
+     *     <th valign="top" align="right">Key:</th>
+     *     <td valign="top">KEY_FORCE_TRANSPARENT_WHITE</td>
+     *   </tr>
+     *   <tr>
+     *     <th valign="top" align="right">Value:</th>
+     *     <td valign="top">Boolean</td>
+     *   </tr>
+     *   <tr>
+     *     <th valign="top" align="right">Default:</th>
+     *     <td valign="top">false</td>
+     *   </tr>
+     *   <tr>
+     *     <th valign="top" align="right">Required:</th>
+     *     <td valign="top">No</td>
+     *   </tr>
+     *   <tr>
+     *     <th valign="top" align="right">Description:</th>
+     *     <td valign="top">It controls whether the encoder should
+     *       force the image's fully transparent pixels to be fully transparent
+     *       white instead of fully transparent black.  This is useful when the
+     *       encoded TIFF is displayed in a viewer which does not support TIFF
+     *       transparency and lets the image display with a white background instead
+     *       of a black background.
+     *       <br />
+     *       However, note that the modified image will display differently
+     *       over a white background in a viewer that supports
+     *       transparency.</td>
+     *   </tr>
+     * </table> 
      */
     public static final TranscodingHints.Key KEY_FORCE_TRANSPARENT_WHITE
         = ImageTranscoder.KEY_FORCE_TRANSPARENT_WHITE;
 
     /**
      * The compression method for the image.
-     * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Key: </TH>
-     * <TD VALIGN="TOP">KEY_COMPRESSION_METHOD</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
-     * <TD VALIGN="TOP">String ("none", "packbits", "jpeg" etc.)</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
-     * <TD VALIGN="TOP">"none" (no compression)</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Required: </TH>
-     * <TD VALIGN="TOP">Recommended</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
-     * <TD VALIGN="TOP">Specify the compression method used to encode the image.</TD></TR>
-     * </TABLE>
+     * <table border="0" cellspacing="0" cellpadding="1">
+     *   <tr>
+     *     <th valign="top" align="right">Key:</th>
+     *     <td valign="top">KEY_COMPRESSION_METHOD</td>
+     *   </tr>
+     *   <tr>
+     *     <th valign="top" align="right">Value:</th>
+     *     <td valign="top">String ("none", "packbits", "jpeg" etc.)</td>
+     *   </tr>
+     *   <tr>
+     *     <th valign="top" align="right">Default:</th>
+     *     <td valign="top">"none" (no compression)</td>
+     *   </tr>
+     *   <tr>
+     *     <th valign="top" align="right">Required:</th>
+     *     <td valign="top">Recommended</td>
+     *   </tr>
+     *   <tr>
+     *     <th valign="top" align="right">Description:</th>
+     *     <td valign="top">Specify the compression method used to encode the image.</td>
+     *   </tr>
+     * </table>
      */
     public static final TranscodingHints.Key KEY_COMPRESSION_METHOD
         = new StringKey();

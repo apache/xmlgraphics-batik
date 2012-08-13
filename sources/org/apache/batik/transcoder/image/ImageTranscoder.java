@@ -206,25 +206,30 @@ public abstract class ImageTranscoder extends SVGAbstractTranscoder {
 
     /**
      * The image background paint key.
-     * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Key: </TH>
-     * <TD VALIGN="TOP">KEY_BACKGROUND_COLOR</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
-     * <TD VALIGN="TOP">Paint</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
-     * <TD VALIGN="TOP">null</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Required: </TH>
-     * <TD VALIGN="TOP">No</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
-     * <TD VALIGN="TOP">Specify the background color to use.
-     * The color is required by opaque image formats and is used by
-     * image formats that support alpha channel.</TD></TR>
-     * </TABLE>
+     * <table border="0" cellspacing="0" cellpadding="1">
+     *   <tr>
+     *     <th valign="top" align="right">Key:</th>
+     *     <td valign="top">KEY_BACKGROUND_COLOR</td>
+     *   </tr>
+     *   <tr>
+     *     <th valign="top" align="right">Value:</th>
+     *     <td valign="top">Paint</td>
+     *   </tr>
+     *   <tr>
+     *     <th valign="top" align="right">Default:</th>
+     *     <td valign="top">null</td>
+     *   </tr>
+     *   <tr>
+     *     <th valign="top" align="right">Required:</th>
+     *     <td valign="top">No</td>
+     *   </tr>
+     *   <tr>
+     *     <th valign="top" align="right">Description:</th>
+     *     <td valign="top">Specify the background color to use.
+     *       The color is required by opaque image formats and is used by
+     *       image formats that support alpha channel.</td>
+     *   </tr>
+     * </table>
      */
     public static final TranscodingHints.Key KEY_BACKGROUND_COLOR
         = new PaintKey();
@@ -232,38 +237,41 @@ public abstract class ImageTranscoder extends SVGAbstractTranscoder {
     /**
      * The forceTransparentWhite key.
      *
-     * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Key: </TH>
-     * <TD VALIGN="TOP">KEY_FORCE_TRANSPARENT_WHITE</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
-     * <TD VALIGN="TOP">Boolean</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
-     * <TD VALIGN="TOP">false</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Required: </TH>
-     * <TD VALIGN="TOP">No</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
-
-     * <TD VALIGN="TOP">It controls whether the encoder should force
-     * the image's fully transparent pixels to be fully transparent
-     * white instead of fully transparent black.  This is usefull when
-     * the encoded file is displayed in a browser which does not
-     * support transparency correctly and lets the image display with
-     * a white background instead of a black background. <br />
-     *
-     * However, note that the modified image will display differently
-     * over a white background in a viewer that supports
-     * transparency.<br/>
-     *
-     * Not all Transcoders use this key (in particular some formats
-     * can't preserve the alpha channel at all in which case this
-     * is not used.
-     * </TD></TR>
-     * </TABLE>
+     * <table border="0" cellspacing="0" cellpadding="1">
+     *   <tr>
+     *     <th valign="top" align="right">Key:</th>
+     *     <td valign="top">KEY_FORCE_TRANSPARENT_WHITE</td>
+     *   </tr>
+     *   <tr>
+     *     <th valign="top" align="right">Value:</th>
+     *     <td valign="top">Boolean</td>
+     *   </tr>
+     *   <tr>
+     *     <th valign="top" align="right">Default:</th>
+     *     <td valign="top">false</td>
+     *   </tr>
+     *   <tr>
+     *     <th valign="top" align="right">Required:</th>
+     *     <td valign="top">No</td>
+     *   </tr>
+     *   <tr>
+     *     <th valign="top" align="right">Description:</th>
+     *     <td valign="top">It controls whether the encoder should force
+     *       the image's fully transparent pixels to be fully transparent
+     *       white instead of fully transparent black.  This is useful when
+     *       the encoded file is displayed in a browser which does not
+     *       support transparency correctly and lets the image display with
+     *       a white background instead of a black background.
+     *       <br />
+     *       However, note that the modified image will display differently
+     *       over a white background in a viewer that supports
+     *       transparency.
+     *       <br/>
+     *       Not all Transcoders use this key (in particular some formats
+     *       can't preserve the alpha channel at all in which case this
+     *       is not used).</td>
+     *   </tr>
+     * </table>
      */
     public static final TranscodingHints.Key KEY_FORCE_TRANSPARENT_WHITE
         = new BooleanKey();
