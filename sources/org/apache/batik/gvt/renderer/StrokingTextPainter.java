@@ -863,6 +863,7 @@ public class StrokingTextPainter extends BasicTextPainter {
         Paint prevPaint = null;
         Paint prevStrokePaint = null;
         Stroke prevStroke = null;
+        boolean prevVisible = true;
         Rectangle2D decorationRect = null;
         double yLoc = 0, height = 0;
 
@@ -871,15 +872,17 @@ public class StrokingTextPainter extends BasicTextPainter {
             AttributedCharacterIterator runaci = textRun.getACI();
             runaci.first();
 
-            TextPaintInfo tpi = (TextPaintInfo)runaci.getAttribute(PAINT_INFO);
-            if ((tpi != null) && (tpi.composite != null)) {
-                g2d.setComposite(tpi.composite);
-            }
-
             Paint  paint       = null;
             Stroke stroke      = null;
             Paint  strokePaint = null;
+            boolean visible    = true;
+            TextPaintInfo tpi = (TextPaintInfo)runaci.getAttribute(PAINT_INFO);
             if (tpi != null) {
+                visible = tpi.visible;
+                System.err.println("Visible: " + visible);
+                if (tpi.composite != null) {
+                    g2d.setComposite(tpi.composite);
+                }
                 switch (decorationType) {
                 case TextSpanLayout.DECORATION_UNDERLINE :
                     paint       = tpi.underlinePaint;
@@ -913,10 +916,10 @@ public class StrokingTextPainter extends BasicTextPainter {
             if (textRun.isFirstRunInChunk() ||
                 (paint != prevPaint) ||
                 (stroke != prevStroke) ||
-                (strokePaint != prevStrokePaint)) {
-                // if there is a current decoration, draw it now
-                if (decorationRect != null) {
-
+                (strokePaint != prevStrokePaint) ||
+                (visible != prevVisible)) {
+                // if there is a current visible decoration, draw it now
+                if (prevVisible && (decorationRect != null)) {
                     if (prevPaint != null) {
                         // fill the decoration
                         g2d.setPaint(prevPaint);
@@ -928,8 +931,8 @@ public class StrokingTextPainter extends BasicTextPainter {
                         g2d.setStroke(prevStroke);
                         g2d.draw(decorationRect);
                     }
-                    decorationRect = null;
                 }
+                decorationRect = null;
             }
 
             if ((paint != null || strokePaint != null)
@@ -961,12 +964,12 @@ public class StrokingTextPainter extends BasicTextPainter {
             prevPaint = paint;
             prevStroke = stroke;
             prevStrokePaint = strokePaint;
+            prevVisible = visible;
         }
 
-        // if there is a decoration rect that hasn't been drawn yet, draw it now
-
-        if (decorationRect != null) {
-
+        // if there is a decoration rect that hasn't been drawn yet and
+        // the text paint info says the test is visible, draw it now.
+        if (prevVisible && (decorationRect != null)) {
             if (prevPaint != null) {
                 // fill the decoration
                 g2d.setPaint(prevPaint);
@@ -1256,7 +1259,7 @@ public class StrokingTextPainter extends BasicTextPainter {
     }
 
     /**
-     * Returns the strokeed outline of the specified decoration type.
+     * Returns the stroked outline of the specified decoration type.
      * If the decoration has no stroke it will return the fill outline
      *
      * @param textRuns The list of text runs to get the decoration outline for.
