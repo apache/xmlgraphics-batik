@@ -103,7 +103,6 @@ public class ImageIOImageWriter implements ImageWriter, IIOWriteWarningListener 
                     iiowriter.write(null, iioimg, iwParam);
                 } finally {
                     if (imgout != null) {
-                        System.err.println("closing");
                         imgout.close();
                     }
                 }
@@ -113,7 +112,6 @@ public class ImageIOImageWriter implements ImageWriter, IIOWriteWarningListener 
             }
         } finally {
             if (iiowriter != null) {
-                System.err.println("disposing");
                 iiowriter.dispose();
             }
         }
@@ -130,7 +128,6 @@ public class ImageIOImageWriter implements ImageWriter, IIOWriteWarningListener 
             javax.imageio.ImageWriter iiowriter, RenderedImage image, 
             ImageWriterParams params) {
         ImageWriteParam param = iiowriter.getDefaultWriteParam();
-        System.err.println("Param: " + params);
         if ((params != null) && (params.getCompressionMethod() != null)) {
             param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
             param.setCompressionType(params.getCompressionMethod());
