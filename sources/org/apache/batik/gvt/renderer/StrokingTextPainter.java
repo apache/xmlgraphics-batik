@@ -879,7 +879,6 @@ public class StrokingTextPainter extends BasicTextPainter {
             TextPaintInfo tpi = (TextPaintInfo)runaci.getAttribute(PAINT_INFO);
             if (tpi != null) {
                 visible = tpi.visible;
-                System.err.println("Visible: " + visible);
                 if (tpi.composite != null) {
                     g2d.setComposite(tpi.composite);
                 }

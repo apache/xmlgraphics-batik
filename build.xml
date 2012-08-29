@@ -138,6 +138,9 @@ To display the available targets type:
     </path>
   
     <path id="libs-build-classpath">
+      <fileset dir="lib/build">
+        <include name="stylebook*.jar"/>
+      </fileset>
       <fileset dir="lib">
         <include name="xalan*.jar"/>
         <include name="xerces*.jar"/>
@@ -965,6 +968,9 @@ JAVA=/usr/bin/java
           outputproperty="svn-revision-number"
           errorproperty="svn-revision-transform-error"
           resultproperty="svn-revision-transform-result">
+      <classpath>
+        <path refid="libs-build-classpath"/>
+      </classpath>
       <arg line="-in svn-info.xml -xsl ${lib}/build/svn-info-revision.xsl"/>
     </java>
     <condition property="svn-revision-determined">
