@@ -30,7 +30,7 @@ import org.apache.batik.util.Service;
  */
 public class ImageWriterRegistry {
 
-    private static volatile ImageWriterRegistry instance;
+    private static ImageWriterRegistry instance;
 
     private final Map imageWriterMap = new HashMap();
 
@@ -39,14 +39,12 @@ public class ImageWriterRegistry {
     }
 
     public static ImageWriterRegistry getInstance() {
-        if (instance == null) {
-            synchronized( ImageWriterRegistry.class ){
-                if ( instance == null ){
-                    instance = new ImageWriterRegistry();
-                }
-            }
+      synchronized( ImageWriterRegistry.class ){
+        if ( instance == null ){
+          instance = new ImageWriterRegistry();
         }
         return instance;
+      }
     }
 
     private void setup() {
