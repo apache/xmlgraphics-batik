@@ -76,7 +76,7 @@ To display the available targets type:
   <property environment="env"/>
 
   <!-- Initializations .................................................... -->
-  <target name="init" unless="init.done">
+  <target name="init">
     <tstamp>
       <format property="ts" pattern="yyyyMMdd-HHmmss-z"/>
     </tstamp>
@@ -183,7 +183,7 @@ To display the available targets type:
         </not>
       </and>
     </condition>
-    
+
     <condition property="javadoc-exclusion-rhino"
                value="org.apache.batik.script.rhino">
       <not>
@@ -231,8 +231,6 @@ To display the available targets type:
     <echo message=""/>
     <echo message="    JAVA_HOME: ${env.JAVA_HOME}"/>
     <echo message="    VM:        ${java.vm.version}, ${java.vm.vendor}"/>
-
-    <property name="init.done" value="true"/>
   </target>
 
   <!-- Help ............................................................... -->
@@ -1250,6 +1248,8 @@ JAVA=/usr/bin/java
       <fileset dir="${dest}">
         <include name="${package-prefix}/ext/awt/image/codec/util/*.class"/>
         <include name="${package-prefix}/ext/awt/image/codec/png/*.class"/>
+        <include name="${package-prefix}/ext/awt/image/codec/imageio/*.class"
+                 unless="sun-codecs.present"/>
         <include name="${package-prefix}/ext/awt/image/codec/tiff/*.class"
                  if="sun-codecs.present"/>
         <include name="${package-prefix}/ext/awt/image/codec/jpeg/*.class"
