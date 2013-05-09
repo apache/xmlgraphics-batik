@@ -359,6 +359,15 @@ public class Main implements SVGConverterController {
         = Messages.get("Main.cl.option.max.height.description", "No description");
 
     /**
+     * Option to specify the output image's slace.
+     */
+    public static String CL_OPTION_SCALE
+        = Messages.get("Main.cl.option.scale", "-s");
+
+    public static String CL_OPTION_SCALE_DESCRIPTION
+        = Messages.get("Main.cl.option.scale.description", "No description");
+    
+    /**
      * Option to specify the area of interest in the output
      * image.
      */
@@ -628,7 +637,23 @@ public class Main implements SVGConverterController {
                                   return CL_OPTION_MAX_HEIGHT_DESCRIPTION;
                               }
                           });
+        
+        optionMap.put(CL_OPTION_SCALE,
+            new FloatOptionHandler(){
+                    public void handleOption(float optionValue,
+                                             SVGConverter c){
+                        if (optionValue <= 0){
+                            throw new IllegalArgumentException();
+                        }
 
+                        c.setScale(optionValue);
+                    }
+
+                    public String getOptionDescription(){
+                        return CL_OPTION_SCALE_DESCRIPTION;
+                    }
+                });
+        
         optionMap.put(CL_OPTION_AOI,
                       new RectangleOptionHandler(){
                               public void handleOption(Rectangle2D optionValue,

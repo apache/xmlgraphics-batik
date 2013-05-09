@@ -109,7 +109,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
      * Image's width and height (init to 400x400).
      */
     protected float width=400, height=400;
-
+    
     /** The user agent dedicated to an SVG Transcoder. */
     protected UserAgent userAgent;
 
@@ -356,6 +356,12 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
         if (hints.containsKey(KEY_HEIGHT)) {
             imgHeight = ((Float)hints.get(KEY_HEIGHT)).floatValue();
         }
+        
+        float scale = 1;
+        
+        if(hints.containsKey(KEY_SCALE)) {
+        	scale = ((Float)hints.get(KEY_SCALE)).floatValue();
+        }	        		
 
         if (imgWidth > 0 && imgHeight > 0) {
             width = imgWidth;
@@ -367,8 +373,8 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
             width = imgWidth;
             height = (docHeight * imgWidth) / docWidth;
         } else {
-            width = docWidth;
-            height = docHeight;
+            width = scale * docWidth;
+            height = scale * docHeight;
         }
 
         // Limit image size according to the maximuxm size hints.
@@ -511,6 +517,35 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
     public static final TranscodingHints.Key KEY_MAX_HEIGHT
         = new LengthKey();
 
+    /**
+     * The scale key.
+     * <table border="0" cellspacing="0" cellpadding="1">
+     *   <tr>
+     *     <th valign="top" align="right">Key:</th>
+     *     <td valign="top">KEY_SCALE</td>
+     *   </tr>
+     *   <tr>
+     *     <th valign="top" align="right">Value:</th>
+     *     <td valign="top">Float</td>
+     *   </tr>
+     *   <tr>
+     *     <th valign="top" align="right">Default:</th>
+     *     <td valign="top">1</td>
+     *   </tr>
+     *   <tr>
+     *     <th valign="top" align="right">Required:</th>
+     *     <td valign="top">No</td>
+     *   </tr>
+     *   <tr>
+     *     <th valign="top" align="right">Description:</th>
+     *     <td valign="top">Specifies the scale of 
+     *       rasterization.</td>
+     *   </tr>
+     * </table>
+     */
+    public static final TranscodingHints.Key KEY_SCALE
+        = new FloatKey();
+    
     /**
      * The area of interest key.
      * <table border="0" cellspacing="0" cellpadding="1">
