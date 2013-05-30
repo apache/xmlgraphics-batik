@@ -63,7 +63,7 @@ public class RhinoInterpreter implements Interpreter {
     /**
      * The number of cached compiled scripts to store.
      */
-    private static final int MAX_CACHED_SCRIPTS = 32;
+    private static final int MAX_CACHED_SCRIPTS = 0xFFFF;
 
     /**
      * Constant used to describe an SVG source
