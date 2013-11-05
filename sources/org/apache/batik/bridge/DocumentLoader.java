@@ -120,7 +120,7 @@ public class DocumentLoader {
      * @exception IOException if an I/O error occured while loading
      * the document
      */
-    public Document loadDocument(String uri, InputStream is) 
+    public Document loadDocument(String uri, InputStream is)
         throws IOException {
         Document ret = checkCache(uri);
         if (ret != null)
