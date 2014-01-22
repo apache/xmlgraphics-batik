@@ -156,7 +156,7 @@ public class AbstractWMFPainter {
              * to overall size, else we will go after the end of the byte array...
              */
             _size = bit.length - offset;
-            int pad = (_size / _height) - _width;            
+            int pad = (_size / _height) - _width;
             for (int j = 0; j < _height; j++) {
                 for (int i = 0; i < _width; i++) {
                     bitI[_width*(_height-j-1)+i] = palette [((int)bit[offset] & 0x00ff)];
@@ -178,7 +178,7 @@ public class AbstractWMFPainter {
                 offset += 4;
             }
 
-            // populate the int array : each pixel correspond to a bit in the byte array
+            // populate the int array : each pixel corresponds to a bit in the byte array
             int pos = 7;
             byte currentByte = bit[offset];
             // padded to long words
@@ -191,7 +191,8 @@ public class AbstractWMFPainter {
                     if (pos == -1) {
                         pos = 7;
                         offset++;
-                        currentByte = bit[offset];
+                        if (offset < bit.length)
+                            currentByte = bit[offset];
                     }
                 }
                 offset +=pad;
