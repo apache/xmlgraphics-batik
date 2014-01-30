@@ -24,8 +24,10 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
 
 import org.apache.batik.gvt.event.EventDispatcher;
+import org.apache.batik.gvt.font.FontFamilyResolver;
 import org.apache.batik.gvt.text.Mark;
 import org.apache.batik.util.ParsedURL;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGAElement;
 import org.w3c.dom.svg.SVGDocument;
@@ -306,4 +308,7 @@ public interface UserAgent {
      * @param url The url to be loaded as a string.
      */
     void loadDocument(String url);
+
+    /** Returns the Font Family Resolver */
+    public FontFamilyResolver getFontFamilyResolver();
 }

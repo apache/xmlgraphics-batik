@@ -19,7 +19,6 @@
 package org.apache.batik.gvt.font;
 
 import java.text.AttributedCharacterIterator;
-
 import java.util.Map;
 
 /**
@@ -57,5 +56,10 @@ public interface GVTFontFamily {
      * @param attrs The Attribute Map to get Values from.
      */
     GVTFont deriveFont(float size, Map attrs);
+
+    /**
+     * This method returns true iff the font is a complex SVG font
+     */
+    boolean isComplex();
      
 }
