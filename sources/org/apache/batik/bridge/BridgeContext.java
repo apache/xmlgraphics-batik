@@ -58,6 +58,7 @@ import org.apache.batik.dom.xbl.XBLManager;
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.TextPainter;
+import org.apache.batik.gvt.font.FontFamilyResolver;
 import org.apache.batik.script.Interpreter;
 import org.apache.batik.script.InterpreterPool;
 import org.apache.batik.util.CSSConstants;
@@ -280,6 +281,10 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      * Constructs a new empty bridge context.
      */
     protected BridgeContext() {}
+
+    public final FontFamilyResolver getFontFamilyResolver() {
+        return userAgent.getFontFamilyResolver();
+    }
 
     /**
      * Constructs a new bridge context.
