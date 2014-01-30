@@ -29,8 +29,8 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.lang.ref.SoftReference;
 import java.text.AttributedCharacterIterator;
-import java.text.AttributedString;
 import java.text.AttributedCharacterIterator.Attribute;
+import java.text.AttributedString;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -61,7 +61,6 @@ import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.TextNode;
-import org.apache.batik.gvt.font.FontFamilyResolver;
 import org.apache.batik.gvt.font.GVTFont;
 import org.apache.batik.gvt.font.GVTFontFamily;
 import org.apache.batik.gvt.font.GVTGlyphMetrics;
@@ -1521,21 +1520,17 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             Value it = val.item(i);
             String fontFamilyName = it.getStringValue();
             GVTFontFamily fontFamily;
-            fontFamily = SVGFontUtilities.getFontFamily
-                (element, ctx, fontFamilyName,
-                 fontWeightString, fontStyleString);
-            if (fontFamily == null) continue;
-            if (fontFamily instanceof UnresolvedFontFamily) {
-                fontFamily = FontFamilyResolver.resolve
-                    ((UnresolvedFontFamily)fontFamily);
-                if (fontFamily == null) continue;
+            fontFamily = SVGFontUtilities.getFontFamily(element, ctx, fontFamilyName,
+                    fontWeightString, fontStyleString);
+            if (fontFamily != null && fontFamily instanceof UnresolvedFontFamily) {
+                fontFamily = ctx.getFontFamilyResolver().resolve(fontFamily.getFamilyName());
+            }
+            if (fontFamily == null) {
+                continue;
             }
             fontFamilyList.add(fontFamily);
-            if (fontFamily instanceof SVGFontFamily) {
-                SVGFontFamily svgFF = (SVGFontFamily)fontFamily;
-                if (svgFF.isComplex()) {
-                    usingComplexSVGFont = true;
-                }
+            if (fontFamily.isComplex()) {
+                usingComplexSVGFont = true;
             }
             GVTFont ft = fontFamily.deriveFont(fontSize, result);
             fontList.add(ft);

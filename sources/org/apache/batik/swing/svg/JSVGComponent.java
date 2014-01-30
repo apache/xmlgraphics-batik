@@ -33,6 +33,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -40,7 +41,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.net.URL;
 
 import javax.swing.JOptionPane;
 
@@ -68,8 +68,10 @@ import org.apache.batik.gvt.CanvasGraphicsNode;
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.event.EventDispatcher;
-import org.apache.batik.gvt.text.Mark;
+import org.apache.batik.gvt.font.DefaultFontFamilyResolver;
+import org.apache.batik.gvt.font.FontFamilyResolver;
 import org.apache.batik.gvt.renderer.ImageRenderer;
+import org.apache.batik.gvt.text.Mark;
 import org.apache.batik.script.Interpreter;
 import org.apache.batik.swing.gvt.GVTTreeRendererEvent;
 import org.apache.batik.swing.gvt.JGVTComponent;
@@ -80,8 +82,8 @@ import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.SVGFeatureStrings;
 import org.apache.batik.util.XMLResourceDescriptor;
 
-import org.w3c.dom.Document;
 import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGAElement;
 import org.w3c.dom.svg.SVGDocument;
@@ -3095,6 +3097,10 @@ public class JSVGComponent extends JGVTComponent {
         public void loadDocument(String url) {
             userAgent.loadDocument(url);
         }
+
+        public FontFamilyResolver getFontFamilyResolver() {
+            return userAgent.getFontFamilyResolver();
+        }
     }
 
     /**
@@ -3698,6 +3704,10 @@ public class JSVGComponent extends JGVTComponent {
          */
         public void loadDocument(String url) {
             JSVGComponent.this.loadSVGDocument(url);
+        }
+
+        public FontFamilyResolver getFontFamilyResolver() {
+            return DefaultFontFamilyResolver.SINGLETON;
         }
     }
 

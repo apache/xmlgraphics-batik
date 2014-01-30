@@ -93,7 +93,8 @@ public abstract class FontFace extends GVTFontFace
      * Returns the font associated with this rule or element.
      */
     public GVTFontFamily getFontFamily(BridgeContext ctx) {
-        String name = FontFamilyResolver.lookup(familyName);
+        final FontFamilyResolver fontFamilyResolver = ctx.getFontFamilyResolver();
+        String name = fontFamilyResolver.lookup(familyName);
         if (name != null) {
             GVTFontFace ff = createFontFace(name, this);
             return new AWTFontFamily(ff);
@@ -104,7 +105,7 @@ public abstract class FontFace extends GVTFontFace
             Object o = iter.next();
             if (o instanceof String) {
                 String str = (String)o;
-                name = FontFamilyResolver.lookup(str);
+                name = fontFamilyResolver.lookup(str);
                 if (name != null) {
                     GVTFontFace ff = createFontFace(str, this);
                     return new AWTFontFamily(ff);

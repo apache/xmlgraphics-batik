@@ -40,6 +40,7 @@ import java.util.Set;
 
 import org.apache.batik.gvt.TextNode;
 import org.apache.batik.gvt.TextPainter;
+import org.apache.batik.gvt.font.DefaultFontFamilyResolver;
 import org.apache.batik.gvt.font.FontFamilyResolver;
 import org.apache.batik.gvt.font.GVTFont;
 import org.apache.batik.gvt.font.GVTFontFamily;
@@ -407,7 +408,7 @@ public class StrokingTextPainter extends BasicTextPainter {
      *
      * @return The new modified aci.
      */
-    protected static AttributedCharacterIterator createModifiedACIForFontMatching
+    protected AttributedCharacterIterator createModifiedACIForFontMatching
         (AttributedCharacterIterator aci) {
 
         aci.first();
@@ -434,8 +435,7 @@ public class StrokingTextPainter extends BasicTextPainter {
             // then use the default font
             if (fonts.size() == 0) {
                 // create a list of fonts of the correct size
-                fonts.add(FontFamilyResolver.defaultFont.deriveFont
-                    (fontSize, aci));
+                fonts.add(getFontFamilyResolver().getDefault().deriveFont(fontSize, aci));
             }
 
             // now for each char or group of chars in the string,
@@ -538,7 +538,7 @@ public class StrokingTextPainter extends BasicTextPainter {
                 } else {
                     char c = aci.setIndex(start+i);
                     GVTFontFamily fontFamily;
-                    fontFamily = FontFamilyResolver.getFamilyThatCanDisplay(c);
+                    fontFamily = getFontFamilyResolver().getFamilyThatCanDisplay(c);
                     // fontFamily = (GVTFontFamily)resolvedFontFamilies.get(0);
 
                     if (runStart == -1) {
@@ -583,6 +583,9 @@ public class StrokingTextPainter extends BasicTextPainter {
         return aci;
     }
 
+    protected FontFamilyResolver getFontFamilyResolver() {
+        return DefaultFontFamilyResolver.SINGLETON;
+    }
 
     protected TextChunk getTextChunk(TextNode node,
                                      AttributedCharacterIterator aci,
