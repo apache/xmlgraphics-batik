@@ -85,5 +85,9 @@ public class UnresolvedFontFamily implements GVTFontFamily {
      * @param attrs The Attribute Map to get Values from.
      */
     public GVTFont deriveFont(float size, Map attrs) { return null; }
+
+    public boolean isComplex() {
+        return false;
+    }
      
 }

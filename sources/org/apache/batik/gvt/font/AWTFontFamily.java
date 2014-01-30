@@ -23,6 +23,7 @@ import java.awt.font.TextAttribute;
 import java.text.AttributedCharacterIterator;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
 
 /**
@@ -113,6 +114,10 @@ public class AWTFontFamily implements GVTFontFamily {
         fontAttributes.put(TextAttribute.FAMILY, fontFace.getFamilyName());
         fontAttributes.remove(TEXT_COMPOUND_DELIMITER);
         return new AWTGVTFont(fontAttributes);
+    }
+
+    public boolean isComplex() {
+        return false;
     }
      
 }
