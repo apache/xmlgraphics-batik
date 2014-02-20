@@ -19,9 +19,11 @@
 
 package org.apache.batik.gvt.font;
 
-public interface FontFamilyResolver {
+import java.io.InputStream;
 
-    String lookup(String familyName);
+import org.apache.batik.bridge.FontFace;
+
+public interface FontFamilyResolver {
 
     /**
      * Resolves a font family name into a GVTFontFamily. If the font
@@ -34,9 +36,12 @@ public interface FontFamilyResolver {
      */
     GVTFontFamily resolve(String familyName);
 
+    GVTFontFamily resolve(String familyName, FontFace fontFace);
+
+    GVTFontFamily loadFont(InputStream in, FontFace fontFace) throws Exception;
+
     GVTFontFamily getDefault();
 
     GVTFontFamily getFamilyThatCanDisplay(char c);
-
 
 }
