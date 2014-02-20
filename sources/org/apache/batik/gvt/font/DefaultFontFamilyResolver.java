@@ -20,6 +20,7 @@ package org.apache.batik.gvt.font;
 
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -27,6 +28,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+
+import org.apache.batik.bridge.FontFace;
 
 /**
  * The is a utility class that is used for resolving UnresolvedFontFamilies.
@@ -130,9 +133,19 @@ public final class DefaultFontFamilyResolver implements FontFamilyResolver {
      */
     protected static final Map resolvedFontFamilies = new HashMap();
 
-    /** {@inheritDoc} */
-    public String lookup(String familyName) {
-        return (String)fonts.get(familyName.toLowerCase());
+    public AWTFontFamily resolve(String familyName, FontFace fontFace) {
+        String fontName = (String)fonts.get(fontFace.getFamilyName().toLowerCase());
+        if (fontName == null) {
+            return null;
+        } else {
+            GVTFontFace face = FontFace.createFontFace(fontName, fontFace);
+            return new AWTFontFamily(fontFace);
+        }
+    }
+
+    public GVTFontFamily loadFont(InputStream in, FontFace ff) throws Exception {
+        Font font = Font.createFont(Font.TRUETYPE_FONT, in.toURL().openStream());
+        return new AWTFontFamily(ff, font);
     }
 
     /** {@inheritDoc} */

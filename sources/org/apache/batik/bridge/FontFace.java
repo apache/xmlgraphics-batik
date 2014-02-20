@@ -18,22 +18,20 @@
  */
 package org.apache.batik.bridge;
 
-import java.awt.Font;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.svg.SVGDocument;
+
 import org.apache.batik.dom.AbstractNode;
-import org.apache.batik.gvt.font.AWTFontFamily;
 import org.apache.batik.gvt.font.FontFamilyResolver;
 import org.apache.batik.gvt.font.GVTFontFace;
 import org.apache.batik.gvt.font.GVTFontFamily;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.XMLConstants;
-
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.svg.SVGDocument;
 
 /**
  * This class represents a &lt;font-face> element or @font-face rule
@@ -94,21 +92,18 @@ public abstract class FontFace extends GVTFontFace
      */
     public GVTFontFamily getFontFamily(BridgeContext ctx) {
         final FontFamilyResolver fontFamilyResolver = ctx.getFontFamilyResolver();
-        String name = fontFamilyResolver.lookup(familyName);
-        if (name != null) {
-            GVTFontFace ff = createFontFace(name, this);
-            return new AWTFontFamily(ff);
+        GVTFontFamily family = fontFamilyResolver.resolve(familyName, this);
+        if (family != null) {
+            return family;
         }
 
         Iterator iter = srcs.iterator();
         while (iter.hasNext()) {
             Object o = iter.next();
             if (o instanceof String) {
-                String str = (String)o;
-                name = fontFamilyResolver.lookup(str);
-                if (name != null) {
-                    GVTFontFace ff = createFontFace(str, this);
-                    return new AWTFontFamily(ff);
+                family = fontFamilyResolver.resolve((String) o, this);
+                if (family != null) {
+                    return family;
                 }
             } else if (o instanceof ParsedURL) {
                 try {
@@ -129,7 +124,7 @@ public abstract class FontFace extends GVTFontFace
             }
         }
 
-        return new AWTFontFamily(this);
+        return null;
     }
 
     /**
@@ -198,7 +193,7 @@ public abstract class FontFace extends GVTFontFace
                 }
             }
             // todo : if the above loop fails to find a fontFaceElt, a null is passed to createFontFace()
-            
+
             SVGFontFaceElementBridge fontFaceBridge;
             fontFaceBridge = (SVGFontFaceElementBridge)ctx.getBridge
                 (SVG_NAMESPACE_URI, SVG_FONT_FACE_TAG);
@@ -208,11 +203,8 @@ public abstract class FontFace extends GVTFontFace
             return new SVGFontFamily(gff, fontElt, ctx);
         }
         // Must be a reference to a 'Web Font'.
-        // Let's see if JDK can parse it.
         try {
-            Font font = Font.createFont(Font.TRUETYPE_FONT,
-                                        purl.openStream());
-            return new AWTFontFamily(this, font);
+            return ctx.getFontFamilyResolver().loadFont(purl.openStream(), this);
         } catch (Exception ex) {
         }
         return null;
