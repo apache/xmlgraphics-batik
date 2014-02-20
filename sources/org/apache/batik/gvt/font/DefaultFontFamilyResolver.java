@@ -144,7 +144,7 @@ public final class DefaultFontFamilyResolver implements FontFamilyResolver {
     }
 
     public GVTFontFamily loadFont(InputStream in, FontFace ff) throws Exception {
-        Font font = Font.createFont(Font.TRUETYPE_FONT, in.toURL().openStream());
+        Font font = Font.createFont(Font.TRUETYPE_FONT, in);
         return new AWTFontFamily(ff, font);
     }
 
