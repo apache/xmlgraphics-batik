@@ -61,7 +61,7 @@ public class TimingSpecifierListProducer
      * Returns an array of the parsed TimingSpecifiers.
      */
     public TimingSpecifier[] getTimingSpecifiers() {
-        return (TimingSpecifier[]) timingSpecifiers.toArray(new TimingSpecifier[0]);
+        return (TimingSpecifier[]) timingSpecifiers.toArray(new TimingSpecifier[timingSpecifiers.size()]);
     }
 
     /**
