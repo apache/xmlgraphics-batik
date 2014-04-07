@@ -69,11 +69,6 @@ public class JPEGTranscoder extends ImageTranscoder {
         // it nulls out the stream and just ignores any future calls.
         ostream = new OutputStreamWrapper(ostream);
 
-        if (ostream == null) {
-            throw new TranscoderException(
-                Messages.formatMessage("jpeg.badoutput", null));
-        }
-
         try {
             float quality;
             if (hints.containsKey(KEY_QUALITY)) {
