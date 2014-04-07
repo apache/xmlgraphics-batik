@@ -2093,7 +2093,8 @@ JAVA=/usr/bin/java
                            org.w3c.css.*,
                            org.w3c.dom.*"
              excludepackagenames="${javadoc-exclusions}"
-             maxmemory="128m"
+             maxmemory="512m"
+             failonerror="yes"
              destdir="${docs}/javadoc"
              encoding="UTF-8"
              docencoding="UTF-8"
