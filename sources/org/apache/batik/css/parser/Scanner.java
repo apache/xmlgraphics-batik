@@ -225,6 +225,17 @@ public class Scanner {
     }
 
     /**
+     * Closes the underlying stream used by the scanner.
+     */
+    public void close() {
+        try {
+            reader.close();
+        } catch(IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
      * Returns the end gap of the current lexical unit.
      */
     protected int endGap() {
