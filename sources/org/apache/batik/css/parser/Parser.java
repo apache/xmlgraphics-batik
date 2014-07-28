@@ -236,6 +236,7 @@ public class Parser implements ExtendedParser, Localizable {
             }
         } finally {
             documentHandler.endDocument(source);
+            scanner.close();
             scanner = null;
         }
     }
@@ -270,6 +271,7 @@ public class Parser implements ExtendedParser, Localizable {
         } catch (CSSParseException e) {
             reportError(e);
         } finally {
+            scanner.close();
             scanner = null;
         }
     }
@@ -290,6 +292,7 @@ public class Parser implements ExtendedParser, Localizable {
     protected void parseRuleInternal() throws CSSException, IOException {
         nextIgnoreSpaces();
         parseRule();
+        scanner.close();
         scanner = null;
     }
 
@@ -310,6 +313,7 @@ public class Parser implements ExtendedParser, Localizable {
         throws CSSException, IOException {
         nextIgnoreSpaces();
         SelectorList ret = parseSelectorList();
+        scanner.close();
         scanner = null;
         return ret;
     }
@@ -344,6 +348,7 @@ public class Parser implements ExtendedParser, Localizable {
         if (current != LexicalUnits.EOF)
             exception = createCSSParseException("eof.expected");
 
+        scanner.close();
         scanner = null;
 
         if (exception != null) {
@@ -369,6 +374,7 @@ public class Parser implements ExtendedParser, Localizable {
         throws CSSException, IOException {
         nextIgnoreSpaces();
 
+        scanner.close();
         scanner = null;
 
         switch (current) {
