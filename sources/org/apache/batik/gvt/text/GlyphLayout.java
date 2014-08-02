@@ -52,11 +52,11 @@ import org.apache.batik.gvt.font.GVTLineMetrics;
  */
 public class GlyphLayout implements TextSpanLayout {
 
-    private GVTGlyphVector gv;
+    protected GVTGlyphVector gv;
     private GVTFont font;
     private GVTLineMetrics metrics;
     private AttributedCharacterIterator aci;
-    private Point2D advance;
+    protected Point2D advance;
     private Point2D offset;
     private float   xScale=1;
     private float   yScale=1;
@@ -70,7 +70,7 @@ public class GlyphLayout implements TextSpanLayout {
     // When layoutApplied is false it means that the glyph positions
     // are different from where they would be if you did
     // doExplicitGlyphLayout().
-    private boolean layoutApplied = false;
+    protected boolean layoutApplied = false;
     // When spacingApplied is false it means that xScale, yScale and
     // kerning/wordspacing stuff haven't been applied. This can
     // be rectified by calling adjustTextSpacing().  Note that when
@@ -250,7 +250,6 @@ public class GlyphLayout implements TextSpanLayout {
             this.adjSpacing = adjSpacing;
 
             // We don't affect layoutApplied directly...
-            // System.out.println("layoutApplied: " + layoutApplied);
 
             // However if we did path layout or spacing it's all junk now...
             spacingApplied = false;
@@ -266,7 +265,6 @@ public class GlyphLayout implements TextSpanLayout {
      * (e.g. if the aci has multiple X or Y values).
      */
     public void setOffset(Point2D offset) {
-        // System.err.println("SetOffset: " + offset + " - " + this.offset);
         if ((offset.getX() != this.offset.getX()) ||
             (offset.getY() != this.offset.getY())) {
             if ((layoutApplied)||(spacingApplied)) {
@@ -276,7 +274,6 @@ public class GlyphLayout implements TextSpanLayout {
                 float dy = (float)(offset.getY()-this.offset.getY());
                 int numGlyphs = gv.getNumGlyphs();
 
-                // System.out.println("DXY: [" + dx +","+dy+"]");
                 float [] gp = gv.getGlyphPositions(0, numGlyphs+1, null);
                 Point2D.Float pos = new Point2D.Float();
                 for (int i=0; i<=numGlyphs; i++) {
@@ -365,7 +362,6 @@ public class GlyphLayout implements TextSpanLayout {
      */
     private final void syncLayout() {
         if (!pathApplied) {
-            // System.out.println("Doing Path Layout: " + this);
             doPathLayout();
         }
     }
@@ -638,8 +634,6 @@ public class GlyphLayout implements TextSpanLayout {
                             // box isn't empty so use it's points...
                             ptIdx += 2;
                     } else {
-                        // System.out.println("Type: " + type +
-                        //                    " count: " + count);
                         // Wasn't a quadralateral so just add it don't try
                         // and merge it...
                         addPtsToPath(shape, topPts, botPts, ptIdx);
@@ -666,7 +660,6 @@ public class GlyphLayout implements TextSpanLayout {
     public static int makeConvexHull(Point2D.Float [] pts, int numPts) {
         // Sort the Pts in X...
         Point2D.Float tmp;
-        // System.out.print("Sorting...");
         for (int i=1; i<numPts; i++) {
             // Simple bubble sort (numPts should be small so shouldn't
             // be too bad.).
@@ -679,8 +672,6 @@ public class GlyphLayout implements TextSpanLayout {
                 continue;
             }
         }
-
-        // System.out.println("Sorted");
 
         Point2D.Float pt0 = pts[0];
         Point2D.Float pt1 = pts[numPts-1];
@@ -790,7 +781,6 @@ public class GlyphLayout implements TextSpanLayout {
         for (int n=nBotPts-1; n>0; n--, i++)
             pts[i] = botList[n];
 
-        // System.out.println("CHull has " + i + " pts");
         return i;
     }
 
@@ -943,8 +933,6 @@ public class GlyphLayout implements TextSpanLayout {
             Shape gbounds = gv.getGlyphLogicalBounds(i);
             if (gbounds != null) {
                 Rectangle2D gbounds2d = gbounds.getBounds2D();
-                // System.out.println("Hit Test: [" + x + ", " + y + "] - " +
-                //                    gbounds2d);
                 if (gbounds.contains(x, y)) {
                     boolean isRightHalf =
                         (x > (gbounds2d.getX()+(gbounds2d.getWidth()/2d)));
@@ -1076,7 +1064,6 @@ public class GlyphLayout implements TextSpanLayout {
             (metrics.getAscent() + Math.abs(metrics.getDescent()));
 
         int numGlyphs = gv.getNumGlyphs();
-        // System.out.println("NumGlyphs: " + numGlyphs);
 
         float[] gp = gv.getGlyphPositions(0, numGlyphs+1, null);
         float verticalFirstOffset = 0f;
@@ -1105,7 +1092,6 @@ public class GlyphLayout implements TextSpanLayout {
         boolean hasArabicTransparent = false;
 
         while (i < numGlyphs) {
-            //System.out.println("limit: " + runLimit + ", " + aciIndex);
             if (aciIndex+aciStart >= runLimit) {
                 runLimit = aci.getRunLimit(runAtts);
                 x        = (Float) aci.getAttribute(X);
@@ -1167,7 +1153,6 @@ public class GlyphLayout implements TextSpanLayout {
             float oy = 0f;
             float glyphOrientationRotation = 0f;
             float glyphRotation = 0f;
-
 
             if (ch != CharacterIterator.DONE) {
                 if (vertical) {
@@ -1520,12 +1505,10 @@ public class GlyphLayout implements TextSpanLayout {
         if ((kern != null) && (!kern.isNaN())) {
             kernVal = kern.floatValue();
             autoKern = false;
-            //System.out.println("KERNING: "+kernVal);
         }
         if ((letterSpacing != null) && (!letterSpacing.isNaN())) {
             letterSpacingVal = letterSpacing.floatValue();
             doLetterSpacing = true;
-            //System.out.println("LETTER-SPACING: "+letterSpacingVal);
         }
         if ((wordSpacing != null) && (!wordSpacing.isNaN())) {
             doWordSpacing = true;
@@ -1840,16 +1823,6 @@ public class GlyphLayout implements TextSpanLayout {
                 glyphMidY  = (float)(glyphBounds.getY()+glyphHeight/2f);
                 glyphMidY -= (float)currentGlyphPos.getY();
             }
-
-            // System.err.println("GMX: " + glyphMidX +
-            //                    " W2: " + (glyphWidth/2) +
-            //                    " PosX: " + currentGlyphPos.getX() +
-            //                    " BX: "   + glyphBounds.getX());
-            //
-            // System.err.println("GMY: " + glyphMidY +
-            //                    " H2: " + (glyphHeight/2) +
-            //                    " PosY: " + currentGlyphPos.getY() +
-            //                    " BY: "   + glyphBounds.getY());
 
             float charMidPos;
             if (horizontal) {

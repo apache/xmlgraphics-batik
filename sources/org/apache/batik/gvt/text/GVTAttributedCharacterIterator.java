@@ -345,6 +345,12 @@ public interface GVTAttributedCharacterIterator extends AttributedCharacterItera
         public static final TextAttribute ARABIC_FORM =
                                           new TextAttribute("ARABIC_FORM");
 
+        public static final TextAttribute SCRIPT =
+                                          new TextAttribute("SCRIPT");
+
+        public static final TextAttribute LANGUAGE =
+                                          new TextAttribute("LANGUAGE");
+
         // VALUES
 
         /** Value for WRITING_MODE indicating left-to-right */
