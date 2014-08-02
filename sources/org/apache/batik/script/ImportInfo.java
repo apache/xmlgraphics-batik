@@ -232,7 +232,7 @@ public class ImportInfo {
                 } catch ( IOException ignored ){}
                 r = null;
             }
-            if ( br == null ){
+            if ( br != null ){
                 try{
                     br.close();
                 } catch ( IOException ignored ){}

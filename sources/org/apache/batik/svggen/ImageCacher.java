@@ -327,9 +327,9 @@ public abstract class ImageCacher implements SVGSyntax, ErrorConstants {
         boolean imagesMatch(Object o1, Object o2)
                 throws SVGGraphics2DIOException {
             boolean match = false;
+            FileInputStream imageStream = null;
             try {
-                FileInputStream imageStream =
-                                    new FileInputStream((File) o1);
+                imageStream = new FileInputStream((File) o1);
                 int imageLen = imageStream.available();
                 byte[] imageBytes = new byte[imageLen];
                 byte[] candidateBytes =
@@ -345,6 +345,12 @@ public abstract class ImageCacher implements SVGSyntax, ErrorConstants {
             } catch(IOException e) {
                 throw new SVGGraphics2DIOException(
                                     ERR_READ+((File) o1).getName());
+            } finally {
+                try {
+                    if (imageStream != null)
+                        imageStream.close();
+                } catch (IOException e) {
+                }
             }
             return match;
         }
