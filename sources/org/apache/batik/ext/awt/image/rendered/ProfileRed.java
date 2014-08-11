@@ -35,8 +35,7 @@ import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
 import java.awt.image.WritableRaster;
 
-import org.apache.batik.ext.awt.color.ICCColorSpaceExt;
-
+import org.apache.xmlgraphics.java2d.color.ICCColorSpaceWithIntent;
 
 /**
  * This implementation of rendered image forces a color profile
@@ -58,7 +57,7 @@ public class ProfileRed extends AbstractRed {
                                false,
                                DataBuffer.TYPE_INT);
 
-    private ICCColorSpaceExt colorSpace;
+    private ICCColorSpaceWithIntent colorSpace;
 
     /**
      * @param src Images on which the input ColorSpace should
@@ -67,7 +66,7 @@ public class ProfileRed extends AbstractRed {
      *        source
      */
     public ProfileRed(CachableRed src,
-                      ICCColorSpaceExt colorSpace){
+                      ICCColorSpaceWithIntent colorSpace){
         this.colorSpace = colorSpace;
 
         init(src, src.getBounds(),

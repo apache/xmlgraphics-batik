@@ -53,10 +53,23 @@ public class SoftReferenceCache {
      */
     protected final Map map = new HashMap();
 
+    private final boolean synchronous;
+
     /**
      * Let people create their own caches.
      */
-    protected SoftReferenceCache() { }
+    protected SoftReferenceCache() {
+        this(false);
+    }
+
+    /**
+     * Constructs a soft reference cache.
+     * @param synchronous true to enable synchronous mode, false to enable waiting on requestImpl()
+     *          until another thread adds the missing object
+     */
+    protected SoftReferenceCache(boolean synchronous) {
+        this.synchronous = synchronous;
+    }
 
     /**
      * Let people flush the cache (remove any cached data).  Pending
@@ -126,6 +139,9 @@ public class SoftReferenceCache {
 
             Object o = map.get(key);
             while(o == null) {
+                if (synchronous) {
+                    return null; //Noone will add the value asynchronously, so don't wait()
+                }
                 try {
                     // When something is cleared or put we will be notified.
                     wait();

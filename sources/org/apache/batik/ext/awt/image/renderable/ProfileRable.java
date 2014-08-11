@@ -21,10 +21,11 @@ package org.apache.batik.ext.awt.image.renderable;
 import java.awt.image.RenderedImage;
 import java.awt.image.renderable.RenderContext;
 
-import org.apache.batik.ext.awt.color.ICCColorSpaceExt;
 import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
 import org.apache.batik.ext.awt.image.rendered.ProfileRed;
+
+import org.apache.xmlgraphics.java2d.color.ICCColorSpaceWithIntent;
 
 /**
  * Implements the interface expected from a color matrix
@@ -34,14 +35,14 @@ import org.apache.batik.ext.awt.image.rendered.ProfileRed;
  * @version $Id$
  */
 public class ProfileRable extends  AbstractRable{
-    
-    private ICCColorSpaceExt colorSpace;
+
+    private ICCColorSpaceWithIntent colorSpace;
 
     /**
      * Instances should be built through the static
      * factory methods
      */
-    public ProfileRable(Filter src, ICCColorSpaceExt colorSpace){
+    public ProfileRable(Filter src, ICCColorSpaceWithIntent colorSpace){
         super(src);
         this.colorSpace = colorSpace;
     }
@@ -63,7 +64,7 @@ public class ProfileRable extends  AbstractRable{
     /**
      * Sets the ColorSpace of the Profile operation
      */
-    public void setColorSpace(ICCColorSpaceExt colorSpace){
+    public void setColorSpace(ICCColorSpaceWithIntent colorSpace){
         touch();
         this.colorSpace = colorSpace;
     }
@@ -71,7 +72,7 @@ public class ProfileRable extends  AbstractRable{
     /**
      * Returns the ColorSpace of the Profile operation
      */
-    public ICCColorSpaceExt getColorSpace(){
+    public ICCColorSpaceWithIntent getColorSpace(){
         return colorSpace;
     }
 
