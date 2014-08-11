@@ -21,9 +21,11 @@ package org.apache.batik.ext.awt.color;
 
 import org.apache.batik.util.SoftReferenceCache;
 
+import org.apache.xmlgraphics.java2d.color.ICCColorSpaceWithIntent;
+
 /**
  * This class manages a cache of soft references to named profiles that
- * we have already loaded. 
+ * we have already loaded.
  *
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
@@ -37,7 +39,9 @@ public class NamedProfileCache extends SoftReferenceCache {
     /**
      * Let people create there own caches.
      */
-    public NamedProfileCache() { }
+    public NamedProfileCache() {
+        super(true);
+    }
 
     /**
      * Check if <code>request(profileName)</code> will return with a ICCColorSpaceExt
@@ -45,7 +49,7 @@ public class NamedProfileCache extends SoftReferenceCache {
      * that this will return true but between this call and the call
      * to request the soft-reference will be cleared.  So it
      * is still possible for request to return NULL, just much less
-     * likely (you can always call 'clear' in that case). 
+     * likely (you can always call 'clear' in that case).
      */
     public synchronized boolean isPresent(String profileName) {
         return super.isPresentImpl(profileName);
@@ -64,9 +68,11 @@ public class NamedProfileCache extends SoftReferenceCache {
     /**
      * If this returns null then you are now 'on the hook'.
      * to put the ICCColorSpaceExt associated with String into the
-     * cache.  */
-    public synchronized ICCColorSpaceExt request(String profileName) {
-        return (ICCColorSpaceExt)super.requestImpl(profileName);
+     * cache.
+     * @param the profile name
+     */
+    public synchronized ICCColorSpaceWithIntent request(String profileName) {
+        return (ICCColorSpaceWithIntent)super.requestImpl(profileName);
     }
 
     /**
@@ -85,7 +91,7 @@ public class NamedProfileCache extends SoftReferenceCache {
      * probably cleared or flushed since we were put on the hook
      * for it, so in that case we will do nothing.
      */
-    public synchronized void put(String profileName, ICCColorSpaceExt bi) {
+    public synchronized void put(String profileName, ICCColorSpaceWithIntent bi) {
         super.putImpl(profileName, bi);
     }
 }

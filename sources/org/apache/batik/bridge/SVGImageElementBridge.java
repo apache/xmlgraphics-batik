@@ -42,7 +42,7 @@ import org.apache.batik.dom.svg.LiveAttributeException;
 import org.apache.batik.dom.svg.SVGOMAnimatedPreserveAspectRatio;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.svg.SVGOMElement;
-import org.apache.batik.ext.awt.color.ICCColorSpaceExt;
+import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.ext.awt.image.renderable.ClipRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.spi.BrokenLinkProvider;
@@ -57,6 +57,9 @@ import org.apache.batik.util.HaltingThread;
 import org.apache.batik.util.MimeTypeConstants;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.XMLConstants;
+
+import org.apache.xmlgraphics.java2d.color.ICCColorSpaceWithIntent;
+import org.apache.xmlgraphics.java2d.color.RenderingIntent;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -204,7 +207,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
 
         DocumentLoader loader = ctx.getDocumentLoader();
         ImageTagRegistry reg = ImageTagRegistry.getRegistry();
-        ICCColorSpaceExt colorspace = extractColorSpace(e, ctx);
+        ICCColorSpaceWithIntent colorspace = extractColorSpace(e, ctx);
         {
             /**
              *  Before we open the URL we see if we have the
@@ -956,19 +959,19 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
      * @param element the element with the color-profile property
      * @param ctx the bridge context
      */
-    protected static ICCColorSpaceExt extractColorSpace(Element element,
+    protected static ICCColorSpaceWithIntent extractColorSpace(Element element,
                                                         BridgeContext ctx) {
 
         String colorProfileProperty = CSSUtilities.getComputedStyle
             (element, SVGCSSEngine.COLOR_PROFILE_INDEX).getStringValue();
 
         // The only cases that need special handling are 'sRGB' and 'name'
-        ICCColorSpaceExt colorSpace = null;
+        ICCColorSpaceWithIntent colorSpace = null;
         if (CSS_SRGB_VALUE.equalsIgnoreCase(colorProfileProperty)) {
 
-            colorSpace = new ICCColorSpaceExt
+            colorSpace = new ICCColorSpaceWithIntent
                 (ICC_Profile.getInstance(ColorSpace.CS_sRGB),
-                 ICCColorSpaceExt.AUTO);
+                 RenderingIntent.AUTO, "sRGB", null);
 
         } else if (!CSS_AUTO_VALUE.equalsIgnoreCase(colorProfileProperty)
                    && !"".equalsIgnoreCase(colorProfileProperty)){
@@ -978,7 +981,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
                 (SVGColorProfileElementBridge) ctx.getBridge
                 (SVG_NAMESPACE_URI, SVG_COLOR_PROFILE_TAG);
             if (profileBridge != null) {
-                colorSpace = profileBridge.createICCColorSpaceExt
+                colorSpace = profileBridge.createICCColorSpaceWithIntent
                     (ctx, element, colorProfileProperty);
 
             }

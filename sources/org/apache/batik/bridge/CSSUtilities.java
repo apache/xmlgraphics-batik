@@ -31,7 +31,6 @@ import org.apache.batik.css.engine.CSSStylableElement;
 import org.apache.batik.css.engine.SVGCSSEngine;
 import org.apache.batik.css.engine.value.ListValue;
 import org.apache.batik.css.engine.value.Value;
-import org.apache.batik.css.engine.value.svg.ICCColor;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.ext.awt.MultipleGradientPaint;
 import org.apache.batik.ext.awt.image.renderable.ClipRable;
@@ -815,7 +814,7 @@ public abstract class CSSUtilities
             return PaintServer.convertColor(v, 1);
         } else {
             return PaintServer.convertRGBICCColor
-                (e, v.item(0), (ICCColor)v.item(1), 1, ctx);
+                (e, v.item(0), v.item(1), 1, ctx);
         }
     }
 
@@ -838,7 +837,7 @@ public abstract class CSSUtilities
             return PaintServer.convertColor(v, f);
         } else {
             return PaintServer.convertRGBICCColor
-                (e, v.item(0), (ICCColor)v.item(1), f, ctx);
+                (e, v.item(0), v.item(1), f, ctx);
         }
     }
 
@@ -864,7 +863,7 @@ public abstract class CSSUtilities
             return PaintServer.convertColor(v, opacity);
         } else {
             return PaintServer.convertRGBICCColor
-                (e, v.item(0), (ICCColor)v.item(1), opacity, ctx);
+                (e, v.item(0), v.item(1), opacity, ctx);
         }
     }
 
