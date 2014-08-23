@@ -232,8 +232,8 @@ public class StrokingTextPainter extends BasicTextPainter {
             chunkStart += (chunkACIs[i].getEndIndex() - chunkACIs[i].getBeginIndex());
         }
 
-        // create text runs for each chunk and add them to the list
-        List textRuns = new ArrayList();
+        // Create text runs for each chunk and add them to the list.
+        List perNodeRuns = new ArrayList();
         TextChunk chunk, prevChunk=null;
         int currentChunk = 0;
 
@@ -243,23 +243,46 @@ public class StrokingTextPainter extends BasicTextPainter {
             // create from the ACI.
             chunkACIs[currentChunk].first();
 
+            List perChunkRuns = new ArrayList();
             chunk = getTextChunk(node,
                                  chunkACIs[currentChunk],
                                  chunkCharMaps != null ? chunkCharMaps[currentChunk] : null,
-                                 textRuns,
+                                 perChunkRuns,
                                  prevChunk);
 
-            // Adjust according to text-anchor property value
+            // Perform bidi reordering on chunk's runs. Must be performed before
+            // adjusting chunk offsets.
+            perChunkRuns = reorderTextRuns(chunk, perChunkRuns);
+
+            // Adjust according to text-anchor property value.
             chunkACIs[currentChunk].first();
             if (chunk != null) {
-                location = adjustChunkOffsets(location, textRuns, chunk);
+                location = adjustChunkOffsets(location, perChunkRuns, chunk);
             }
+            
+            // Append per chunk runs to overall node runs.
+            perNodeRuns.addAll(perChunkRuns);
+
             prevChunk = chunk;
             currentChunk++;
 
         } while (chunk != null && currentChunk < chunkACIs.length);
 
-        return textRuns;
+        return perNodeRuns;
+    }
+
+    /**
+     * Reorder text runs as required by bidi algorithm.
+     * @param runs - unordered runs
+     * @return reordered runs
+     */
+    protected List reorderTextRuns(TextChunk chunk, List runs) {
+        // NOP here since they were previous reordered (by batik's
+        // BidiAttributedCharacterIterator); derived painters (e.g., FOP) may
+        // use a different strategy.
+        // N.B. batik doesn't sub-divide a text chunk at bidi level
+        // boundaries; however, derived painters may do so.
+        return runs;
     }
 
     /**
@@ -577,6 +600,10 @@ public class StrokingTextPainter extends BasicTextPainter {
         return DefaultFontFamilyResolver.SINGLETON;
     }
 
+    protected Set getTextRunBoundaryAttributes() {
+        return extendedAtts;
+    }
+
     protected TextChunk getTextChunk(TextNode node,
                                      AttributedCharacterIterator aci,
                                      int [] charMap,
@@ -596,9 +623,10 @@ public class StrokingTextPainter extends BasicTextPainter {
         Point2D.Float advance       = new Point2D.Float(0,0);
         boolean isChunkStart  = true;
         TextSpanLayout layout = null;
+        Set textRunBoundaryAttributes = getTextRunBoundaryAttributes();
         do {
-            int start = aci.getRunStart(extendedAtts);
-            int end   = aci.getRunLimit(extendedAtts);
+            int start = aci.getRunStart(textRunBoundaryAttributes);
+            int end   = aci.getRunLimit(textRunBoundaryAttributes);
 
             AttributedCharacterIterator runaci;
             runaci = new AttributedCharacterSpanIterator(aci, start, end);
@@ -691,8 +719,8 @@ public class StrokingTextPainter extends BasicTextPainter {
             visualAdvance = new Point2D.Float
             ((float)(chunk.advance.getX() + lastW -
                      lastMetrics.getHorizontalAdvance()),
-             (float)(chunk.advance.getY() - lastMetrics.getVerticalAdvance() +
-                     lastH));
+             (float)(chunk.advance.getY() + lastH -
+                     lastMetrics.getVerticalAdvance()));
         } else {
             Point2D advance    = chunk.advance;
 
@@ -702,19 +730,19 @@ public class StrokingTextPainter extends BasicTextPainter {
             if (layout.isVertical()) {
                 if (lengthAdj == ADJUST_SPACING) {
                     yScale = (float)
-                        ((length.floatValue()-lastH)/
-                         (advance.getY()-lastMetrics.getVerticalAdvance()));
+                        ((length.floatValue() - lastH) /
+                         (advance.getY() - lastMetrics.getVerticalAdvance()));
                 } else {
-                    double adv =(advance.getY()-
-                                 lastMetrics.getVerticalAdvance() + lastH);
+                    double adv =(advance.getY() + lastH -
+                                 lastMetrics.getVerticalAdvance());
                     yScale = (float)(length.floatValue()/adv);
                 }
                 visualAdvance = new Point2D.Float(0, length.floatValue());
             } else {
                 if (lengthAdj == ADJUST_SPACING) {
                     xScale = (float)
-                        ((length.floatValue()-lastW)/
-                         (advance.getX()-lastMetrics.getHorizontalAdvance()));
+                        ((length.floatValue() - lastW) /
+                         (advance.getX() - lastMetrics.getHorizontalAdvance()));
                 } else {
                     double adv = (advance.getX() + lastW -
                                   lastMetrics.getHorizontalAdvance());
@@ -1587,11 +1615,16 @@ public class StrokingTextPainter extends BasicTextPainter {
 
     // inner classes
 
-    class TextChunk {
+    public class TextChunk {
 
+        // the following denote indices of text runs over all chunks of text node,
+        // where index 0 is first run of first chunk of text node; the begin index
+        // of the first chunk is 0; for subsequent chunks, the begin index is the
+        // end index of its immediately previous chunk; the end index is exclusive
         public int begin;
         public int end;
-        public Point2D advance;
+
+        public Point2D advance; // sum of advances of runs in chunk
 
         public TextChunk(int begin, int end, Point2D advance) {
             this.begin = begin;
@@ -1608,12 +1641,14 @@ public class StrokingTextPainter extends BasicTextPainter {
      */
     public class TextRun {
 
-        protected AttributedCharacterIterator aci;
-        protected TextSpanLayout layout;
-        protected int anchorType;
-        protected boolean firstRunInChunk;
-        protected Float length;
-        protected Integer lengthAdjust;
+        protected AttributedCharacterIterator aci;      // source aci
+        protected TextSpanLayout layout;                // layout object
+        protected int anchorType;                       // text-anchor attribute
+        protected boolean firstRunInChunk;              // first run in chunk flag
+        protected Float length;                         // textLength attribute
+        protected Integer lengthAdjust;                 // lengthAdjust attribute
+        private int level;                              // resolved bidi level of run
+        private int reversals;                          // reversal count
 
         public TextRun(TextSpanLayout layout,
                        AttributedCharacterIterator aci,
@@ -1646,6 +1681,13 @@ public class StrokingTextPainter extends BasicTextPainter {
                 (GVTAttributedCharacterIterator.TextAttribute.BBOX_WIDTH);
             lengthAdjust = (Integer) aci.getAttribute
                 (GVTAttributedCharacterIterator.TextAttribute.LENGTH_ADJUST);
+
+            Integer level = (Integer) aci.getAttribute(BIDI_LEVEL);
+            if (level != null) {
+                this.level = level.intValue();
+            } else {
+                this.level = -1;
+            }
         }
 
         public AttributedCharacterIterator getACI() {
@@ -1670,6 +1712,20 @@ public class StrokingTextPainter extends BasicTextPainter {
 
         public boolean isFirstRunInChunk() {
             return firstRunInChunk;
+        }
+
+        public int getBidiLevel() {
+            return level;
+        }
+
+        public void reverse() {
+            reversals++;
+        }
+
+        public void maybeReverseGlyphs(boolean mirror) {
+            if ((reversals & 1) == 1) {
+                layout.maybeReverse(mirror);
+            }
         }
 
     }

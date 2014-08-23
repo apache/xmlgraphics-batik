@@ -227,4 +227,15 @@ public interface TextSpanLayout {
      * an alt glyph.
      */
     boolean isAltGlyph();
+
+    /**
+     * Return true if this text has been reversed.
+     */
+    boolean isReversed();
+
+    /**
+     * Reverse (and optionally mirror) glyphs if not
+     * already reversed.
+     */
+    void maybeReverse(boolean mirror);
 }

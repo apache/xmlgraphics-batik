@@ -707,6 +707,15 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
         return numChars;
     }
 
+    @Override
+    public boolean isReversed() {
+        return false;
+    }
+
+    @Override
+    public void maybeReverse(boolean mirror) {
+    }
+
     /**
      * Draws this glyph vector.
      */
