@@ -387,6 +387,15 @@ public class MultiGlyphVector implements GVTGlyphVector {
         return ret;
     }
 
+    @Override
+    public boolean isReversed() {
+        return false;
+    }
+
+    @Override
+    public void maybeReverse(boolean mirror) {
+    }
+
     /**
      * Draws the glyph vector.
      */

@@ -184,6 +184,17 @@ public interface GVTGlyphVector {
     int getCharacterCount(int startGlyphIndex, int endGlyphIndex);
 
     /**
+     * Return true if glyphs have been reversed.
+     */
+    boolean isReversed();
+
+    /**
+     * Reverse (and optionally mirror) glyphs if not
+     * already reversed.
+     */
+    void maybeReverse(boolean mirror);
+
+    /**
      * Draws the glyph vector.
      */
     void draw(Graphics2D graphics2D,

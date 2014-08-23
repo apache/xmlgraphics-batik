@@ -815,6 +815,15 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
         return charCount;
     }
 
+    @Override
+    public boolean isReversed() {
+        return false;
+    }
+
+    @Override
+    public void maybeReverse(boolean mirror) {
+    }
+
     /**
      * Draws this glyph vector.
      */

@@ -2030,4 +2030,14 @@ public class GlyphLayout implements TextSpanLayout {
     public boolean isAltGlyph(){
         return this.isAltGlyph;
     }
+
+    @Override
+    public boolean isReversed(){
+        return gv.isReversed();
+    }
+
+    @Override
+    public void maybeReverse(boolean mirror){
+        gv.maybeReverse(mirror);
+    }
 }
