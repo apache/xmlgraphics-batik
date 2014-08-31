@@ -254,15 +254,15 @@ public class StrokingTextPainter extends BasicTextPainter {
             // adjusting chunk offsets.
             perChunkRuns = reorderTextRuns(chunk, perChunkRuns);
 
-            // Adjust according to text-anchor property value.
-            chunkACIs[currentChunk].first();
-            if (chunk != null) {
-                location = adjustChunkOffsets(location, perChunkRuns, chunk);
-            }
-            
             // Append per chunk runs to overall node runs.
             perNodeRuns.addAll(perChunkRuns);
 
+            // Adjust according to text-anchor property value.
+            chunkACIs[currentChunk].first();
+            if (chunk != null) {
+                location = adjustChunkOffsets(location, perNodeRuns, chunk);
+            }
+            
             prevChunk = chunk;
             currentChunk++;
 
