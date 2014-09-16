@@ -19,6 +19,7 @@
 package org.apache.batik.svggen;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.apache.batik.test.Test;
@@ -48,8 +49,10 @@ public class SVGGeneratorTests extends DefaultTestSuite {
     public static final String ACCEPTED_VARIATION_DIR
         = "accepted-variation";
 
-    public static final String[] VARIATION_PLATFORMS = 
+    public static final String[] VARIATION_PLATFORMS =
         org.apache.batik.test.svg.PreconfiguredRenderingTest.DEFAULT_VARIATION_PLATFORMS;
+
+    private static final String ACCEPTED_REF_DIR = "accepted-ref";
 
     public static final String CANDIDATE_VARIATION_DIR
         = "candidate-variation";
@@ -165,7 +168,7 @@ public class SVGGeneratorTests extends DefaultTestSuite {
         String cl = CUSTOM_CONTEXT_GENERATION_PREFIX + getNonQualifiedClassName(painter);
 
         GeneratorContext test
-            = new GeneratorContext(painter, makeURL(painter, CUSTOM_CONTEXT_GENERATION_PREFIX));
+            = new GeneratorContext(painter, getReferenceURL(painter, CUSTOM_CONTEXT_GENERATION_PREFIX));
 
         test.setSaveSVG(new File(GENERATOR_REFERENCE_BASE + CANDIDATE_REF_DIR + "/" + cl + SVG_EXTENSION));
         test.setName(id + "-ConfiguredContextGeneration");
@@ -177,7 +180,7 @@ public class SVGGeneratorTests extends DefaultTestSuite {
         String cl = PLAIN_GENERATION_PREFIX + getNonQualifiedClassName(painter);
 
         SVGAccuracyTest test
-            = new SVGAccuracyTest(painter, makeURL(painter, PLAIN_GENERATION_PREFIX));
+            = new SVGAccuracyTest(painter, getReferenceURL(painter, PLAIN_GENERATION_PREFIX));
 
         test.setSaveSVG(new File(GENERATOR_REFERENCE_BASE + CANDIDATE_REF_DIR + "/" + cl + SVG_EXTENSION));
         test.setName(id + "-DefaultContextGeneration");
@@ -191,17 +194,24 @@ public class SVGGeneratorTests extends DefaultTestSuite {
         return cl.substring(n+1);
     }
 
-    private URL makeURL(Painter painter, String prefix){
-        String urlString = "file:" + GENERATOR_REFERENCE_BASE
-            + prefix + getNonQualifiedClassName(painter) + SVG_EXTENSION;
-        URL url = null;
-        try{
-            url = new URL(urlString);
-        }catch(Exception e){
-            throw new Error( e.getMessage() ); // Should not happen
+    private URL getReferenceURL(Painter painter, String prefix){
+        String suffix = prefix + getNonQualifiedClassName(painter) + SVG_EXTENSION;
+        File acceptedReference = new File(GENERATOR_REFERENCE_BASE + ACCEPTED_REF_DIR + '/' + suffix);
+        if (acceptedReference.exists()) {
+            return file2URL(acceptedReference);
+        } else {
+            File reference = new File(GENERATOR_REFERENCE_BASE + suffix);
+            return file2URL(reference);
         }
-
-        return url;
     }
+
+    private URL file2URL(File file) {
+        try {
+            return file.toURI().toURL();
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
 
