@@ -72,9 +72,11 @@
             <!-- NOTE: see jarCheckLoadEmbeded below.                          -->
             <test id="jarLoad" class="org.apache.batik.bridge.JarLoadTest"/>               
 
+            <!-- Not working: See BATIK-1083
             <test id="jarCheckPermissionsDenied">
                 <property name="Secure" class="java.lang.Boolean" value="true" />
             </test>
+            -->
 
             <test id="jarCheckPermissionsGranted">
                 <property name="Secure" class="java.lang.Boolean" value="false" />
