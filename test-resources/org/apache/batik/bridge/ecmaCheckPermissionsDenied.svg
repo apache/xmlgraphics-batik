@@ -37,6 +37,7 @@
     <script type="text/ecmascript"><![CDATA[
 importPackage(Packages.java.awt);
 importPackage(Packages.java.io);
+importPackage(Packages.java.lang);
 importPackage(Packages.java.lang.reflect);
 importPackage(Packages.java.net);
 importPackage(Packages.java.security);
