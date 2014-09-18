@@ -37,15 +37,15 @@
     <g id="testContent">
 
 <defs>
-        <linearGradient id="hGrad" x1="0" y1="0" x2="1" y2="0">
+        <linearGradient id="hGrad" x1="0" y1="0" x2="1" y2="0" gradientUnits="userSpaceOnUse">
                 <stop offset="0" style="stop-color:crimson" />
                 <stop offset="1" style="stop-color:gold" />
         </linearGradient>
-        <linearGradient id="vGrad" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id="vGrad" x1="0" y1="0" x2="0" y2="1" gradientUnits="userSpaceOnUse">
                 <stop offset="0" style="stop-color:crimson" />
                 <stop offset="1" style="stop-color:gold" />
         </linearGradient>
-        <linearGradient id="hvGrad" x1="0" y1="0" x2="1" y2="1">
+        <linearGradient id="hvGrad" x1="0" y1="0" x2="1" y2="1" gradientUnits="userSpaceOnUse">
                 <stop offset="0" style="stop-color:crimson" />
                 <stop offset="1" style="stop-color:gold" />
         </linearGradient>
@@ -72,13 +72,13 @@
 </g>
 
 <g style="stroke-width:6">
-        <line x1="85" y1="195" x2="165" y2="195" style="stroke:url(#hGrad)" />
-        <line x1="185" y1="195" x2="265" y2="195" style="stroke:url(#vGrad)"/>
-        <line x1="285" y1="195" x2="365" y2="195" style="stroke:url(#hvGrad)"/>
+        <line x2="1" transform="translate(85, 195) scale(80, 1)" stroke="url(#hGrad)"/>
+        <line x2="1" transform="translate(185, 195) scale(80, 1)" stroke="url(#vGrad)"/>
+        <line x2="1" transform="translate(285, 195) scale(80, 1)" stroke="url(#hvGrad)"/>
 
-        <line x1="120" y1="285" x2="120" y2="405" style="stroke:url(#hGrad)"/>
-        <line x1="220" y1="285" x2="220" y2="405" style="stroke:url(#vGrad)"/>
-        <line x1="320" y1="285" x2="320" y2="405" style="stroke:url(#hvGrad)"/>
+        <line y2="1" transform="translate(120, 285) scale(1, 120)" stroke="url(#hGrad)"/>
+        <line y2="1" transform="translate(220, 285) scale(1, 120)" stroke="url(#vGrad)"/>
+        <line y2="1" transform="translate(320, 285) scale(1, 120)" stroke="url(#hvGrad)"/>
 </g>
 
     </g>

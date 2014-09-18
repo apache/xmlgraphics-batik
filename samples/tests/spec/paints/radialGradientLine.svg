@@ -37,7 +37,7 @@
     <g id="testContent">
 
 <defs>
-        <radialGradient id="grad" cx=".5" cy=".5" r="1">
+        <radialGradient id="grad" cx=".5" cy=".5" r="1" gradientUnits="userSpaceOnUse">
                 <stop offset="0" style="stop-color:crimson" />
                 <stop offset="1" style="stop-color:gold" />
         </radialGradient>
@@ -58,8 +58,8 @@
         <text transform="translate(70 350)rotate(-90)">vertical &lt;Line></text>
 </g>
 <g style="stroke-width:6">
-        <line x1="185" y1="195" x2="265" y2="195" style="stroke:url(#grad)" />
-        <line x1="220" y1="285" x2="220" y2="405" style="stroke:url(#grad)"/>
+        <line x2="1" transform="translate(185, 195) scale(80, 1)" stroke="url(#grad)" />
+        <line y2="1" transform="translate(220, 285) scale(1, 120)" stroke="url(#grad)"/>
 </g>
 
     </g>
