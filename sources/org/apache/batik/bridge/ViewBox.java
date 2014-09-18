@@ -91,12 +91,12 @@ public abstract class ViewBox implements SVGConstants, ErrorConstants {
             throw new BridgeException(ctx, e, ERR_URI_MALFORMED,
                                       new Object[] {ref});
         }
-        if (!(viewElement.getNamespaceURI().equals(SVG_NAMESPACE_URI)
-              && viewElement.getLocalName().equals(SVG_VIEW_TAG))) {
-            viewElement = null;
-        }
 
         Element ancestorSVG = getClosestAncestorSVGElement(e);
+        if (!(viewElement.getNamespaceURI().equals(SVG_NAMESPACE_URI)
+              && viewElement.getLocalName().equals(SVG_VIEW_TAG))) {
+            viewElement = ancestorSVG;
+        }
 
         // 'viewBox'
         float[] vb;
