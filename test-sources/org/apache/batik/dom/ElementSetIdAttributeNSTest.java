@@ -28,11 +28,27 @@ import org.w3c.dom.Element;
  * @version $Id$
  */
 public class ElementSetIdAttributeNSTest extends DOM3Test {
+
+    private static final String ATTR_NAME = "blah";
+
+    private static final String ATTR_VALUE = "abc";
+
     public boolean runImplBasic() throws Exception {
         Document doc = newSVGDoc();
-        doc.getDocumentElement().setAttributeNS(null, "blah", "abc");
-        ((AbstractElement) doc.getDocumentElement()).setIdAttributeNS(null, "blah", true);
-        Element e = doc.getElementById("abc");
-        return doc.getDocumentElement() == e;
+        doc.getDocumentElement().setAttributeNS(null, ATTR_NAME, ATTR_VALUE);
+        if (!setIdAttributeWorks(doc, true)) {
+            return false;
+        }
+        return setIdAttributeWorks(doc, false);
+    }
+
+    private boolean setIdAttributeWorks(Document doc, boolean isId) {
+        doc.getDocumentElement().setIdAttributeNS(null, ATTR_NAME, isId);
+        Element e = doc.getElementById(ATTR_VALUE);
+        if (isId) {
+            return e == doc.getDocumentElement();
+        } else {
+            return e == null;
+        }
     }
 }
