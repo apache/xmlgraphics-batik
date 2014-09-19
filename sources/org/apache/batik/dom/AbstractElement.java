@@ -336,6 +336,7 @@ public abstract class AbstractElement
                                      "readonly.node",
                                      new Object[] { name });
         }
+        updateIdEntry(a, isId);
         a.isIdAttr = isId;
     }
 
@@ -359,6 +360,7 @@ public abstract class AbstractElement
                                      "readonly.node",
                                      new Object[] { a.getNodeName() });
         }
+        updateIdEntry(a, isId);
         a.isIdAttr = isId;
     }
 
@@ -374,7 +376,18 @@ public abstract class AbstractElement
                                      "readonly.node",
                                      new Object[] { a.getNodeName() });
         }
+        updateIdEntry(a, isId);
         a.isIdAttr = isId;
+    }
+
+    private void updateIdEntry(AbstractAttr a, boolean isId) {
+        if (a.isIdAttr) {
+            if (!isId) {
+                ownerDocument.removeIdEntry(this, a.getValue());
+            }
+        } else if (isId) {
+            ownerDocument.addIdEntry(this, a.getValue());
+        }
     }
 
     /**
