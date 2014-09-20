@@ -254,15 +254,15 @@ public class StrokingTextPainter extends BasicTextPainter {
             // adjusting chunk offsets.
             perChunkRuns = reorderTextRuns(chunk, perChunkRuns);
 
-            // Append per chunk runs to overall node runs.
-            perNodeRuns.addAll(perChunkRuns);
-
             // Adjust according to text-anchor property value.
             chunkACIs[currentChunk].first();
             if (chunk != null) {
-                location = adjustChunkOffsets(location, perNodeRuns, chunk);
+                location = adjustChunkOffsets(location, perChunkRuns, chunk);
             }
             
+            // Append per chunk runs to overall node runs.
+            perNodeRuns.addAll(perChunkRuns);
+
             prevChunk = chunk;
             currentChunk++;
 
@@ -678,7 +678,8 @@ public class StrokingTextPainter extends BasicTextPainter {
     protected Point2D adjustChunkOffsets(Point2D location,
                                          List textRuns,
                                          TextChunk chunk) {
-        TextRun r          = (TextRun) textRuns.get(chunk.begin);
+        int     numRuns    = chunk.end - chunk.begin;
+        TextRun r          = (TextRun) textRuns.get(0);
         int     anchorType = r.getAnchorType();
         Float   length     = r.getLength();
         Integer lengthAdj  = r.getLengthAdjust();
@@ -688,10 +689,10 @@ public class StrokingTextPainter extends BasicTextPainter {
             doAdjust = false;
 
         int numChars = 0;
-        for (int n=chunk.begin; n<chunk.end; ++n) {
-            r = (TextRun) textRuns.get(n);
+        for (int i = 0; i < numRuns; ++i) {
+            r = (TextRun) textRuns.get(i);
             AttributedCharacterIterator aci = r.getACI();
-            numChars += aci.getEndIndex()-aci.getBeginIndex();
+            numChars += aci.getEndIndex() - aci.getBeginIndex();
         }
         if ((lengthAdj ==
              GVTAttributedCharacterIterator.TextAttribute.ADJUST_SPACING) &&
@@ -701,7 +702,7 @@ public class StrokingTextPainter extends BasicTextPainter {
         float xScale = 1;
         float yScale = 1;
 
-        r = (TextRun)textRuns.get(chunk.end-1);
+        r = (TextRun)textRuns.get(numRuns - 1);
         TextSpanLayout  layout          = r.getLayout();
         GVTGlyphMetrics lastMetrics =
             layout.getGlyphMetrics(layout.getGlyphCount()-1);
@@ -752,8 +753,8 @@ public class StrokingTextPainter extends BasicTextPainter {
             }
 
             Point2D.Float adv = new Point2D.Float(0,0);
-            for (int n=chunk.begin; n<chunk.end; ++n) {
-                r = (TextRun) textRuns.get(n);
+            for (int i = 0; i < numRuns; ++i) {
+                r = (TextRun) textRuns.get(i);
                 layout = r.getLayout();
                 layout.setScale(xScale, yScale, lengthAdj==ADJUST_SPACING);
                 Point2D lAdv = layout.getAdvance2D();
@@ -778,7 +779,7 @@ public class StrokingTextPainter extends BasicTextPainter {
             break; // leave untouched
         }
 
-        r = (TextRun) textRuns.get(chunk.begin);
+        r = (TextRun) textRuns.get(0);
         layout = r.getLayout();
         AttributedCharacterIterator runaci = r.getACI();
         runaci.first();
@@ -819,8 +820,8 @@ public class StrokingTextPainter extends BasicTextPainter {
             tpShiftY  = 0;
         }
 
-        for (int n=chunk.begin; n<chunk.end; ++n) {
-            r = (TextRun) textRuns.get(n);
+        for (int i = 0; i < numRuns; ++i) {
+            r = (TextRun) textRuns.get(i);
             layout = r.getLayout();
             runaci = r.getACI();
             runaci.first();
