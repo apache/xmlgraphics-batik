@@ -21,6 +21,8 @@ package org.apache.batik.transcoder.image;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ByteArrayInputStream;
@@ -34,7 +36,10 @@ import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import java.util.Arrays;
 import java.util.Map;
+
+import org.apache.commons.io.IOUtils;
 
 import org.apache.batik.ext.awt.image.spi.ImageTagRegistry;
 import org.apache.batik.ext.awt.image.spi.ImageWriter;
@@ -253,7 +258,11 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
         public void writeImage(BufferedImage img, TranscoderOutput output)
             throws TranscoderException {
 
-            compareImage(img);
+            try {
+                compareImage(img);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         protected void writeCandidateReference(byte [] imgData) {
@@ -269,25 +278,13 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
             return;
         }
 
-        protected void writeCandidateVariation(byte [] imgData, byte [] refData)
-        {
-            writeCandidateReference(imgData);
+        protected void writeCandidateVariation(byte[] diff) {
             try {
-                BufferedImage ref = getImage(new ByteArrayInputStream(refData));
-                BufferedImage img = getImage(new ByteArrayInputStream(imgData));
-                BufferedImage diff =
-                    SVGRenderingAccuracyTest.buildDiffImage(ref, img);
                 String s = new File(filename).getName();
                 s = ("test-references/org/apache/batik/transcoder/image/"+
                      "candidate-variation/"+s);
-                ImageWriter writer = ImageWriterRegistry.getInstance()
-                    .getWriterFor("image/png");
                 OutputStream out = new FileOutputStream(s);
-                try {
-                    writer.writeImage(diff, out);
-                } finally {
-                    out.close();
-                }
+                IOUtils.copy(new ByteArrayInputStream(diff), out);
                 report.addDescriptionEntry(DIFFERENCE_IMAGE,new File(s));
             } catch (Exception e) { }
         }
@@ -296,7 +293,7 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
          * Compares both source and result images and set the state flag.
          */
         protected void compareImage(BufferedImage img)
-            throws TranscoderException {
+            throws TranscoderException, IOException {
             // compare the resulting image with the reference image
             // state = true if refImg is the same than img
 
@@ -315,25 +312,37 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
                 return;
             }
 
-            if (refImgData.length != imgData.length) {
-                report.setErrorCode(ERROR_IMAGE_DIFFER);
-                report.addDescriptionEntry(ERROR_IMAGE_DIFFER, "");
-                report.setPassed(false);
-                writeCandidateVariation(imgData, refImgData);
-                return;
-            }
-
-            for (int i = 0; i < refImgData.length; ++i) {
-                if (refImgData[i] != imgData[i]) {
+            if (!Arrays.equals(refImgData, imgData)) {
+                byte[] actualDiff = createDiffImage(img);
+                File acceptedDiffFile = new File(
+                        "test-references/org/apache/batik/transcoder/image/accepted-variation/",
+                        new File(filename).getName());
+                if (!(acceptedDiffFile.exists() && dataFromFileEqual(acceptedDiffFile, actualDiff))) {
                     report.setErrorCode(ERROR_IMAGE_DIFFER);
                     report.addDescriptionEntry(ERROR_IMAGE_DIFFER, "");
                     report.setPassed(false);
-                    writeCandidateVariation(imgData, refImgData);
+                    writeCandidateReference(imgData);
+                    writeCandidateVariation(actualDiff);
                     return;
                 }
             }
 
             state = true;
+        }
+
+        private byte[] createDiffImage(BufferedImage actualImage) throws IOException {
+            BufferedImage referenceImage = getImage(new ByteArrayInputStream(refImgData));
+            BufferedImage diffImage = SVGRenderingAccuracyTest.buildDiffImage(referenceImage, actualImage);
+            ImageWriter writer = ImageWriterRegistry.getInstance().getWriterFor("image/png");
+            ByteArrayOutputStream diff = new ByteArrayOutputStream();
+            writer.writeImage(diffImage, diff);
+            return diff.toByteArray();
+        }
+
+        private boolean dataFromFileEqual(File file, byte[] data) throws IOException {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            IOUtils.copy(new BufferedInputStream(new FileInputStream(file)), out);
+            return Arrays.equals(out.toByteArray(), data);
         }
 
         /**
