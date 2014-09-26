@@ -43,11 +43,6 @@
     <!--                               Samples                              -->
     <testSuite href="file:test-resources/org/apache/batik/test/samplesRendering.xml" /> 
 
-    <!--                           SVG Working Group                        -->
-    <!--                           Basic Effectivity                        -->
-    <!--                               Test Suite                           -->
-    <testSuite href="file:test-resources/org/apache/batik/test/beSuite.xml" />
-
 
     <!-- ================================================================== -->
     <!--                         SVG Generator Tests                        -->
