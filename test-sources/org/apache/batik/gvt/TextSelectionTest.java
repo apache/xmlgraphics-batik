@@ -136,9 +136,9 @@ public class TextSelectionTest extends JSVGRenderingAccuracyTest {
             svgFile + '-' +textID+ '-' + start + '-' + end +PNG_EXTENSION;
     }
 
-    public String buildVariationURL(String svgDir, String svgFile){
-        return getVariationPrefix() + svgDir + getVariationSuffix() +
-            svgFile + '-' +textID+ '-' + start + '-' + end +PNG_EXTENSION;
+    public String[] buildVariationURLs(String svgDir, String svgFile){
+        return new String[] {getVariationPrefix() + svgDir + getVariationSuffix() +
+            svgFile + '-' +textID+ '-' + start + '-' + end +PNG_EXTENSION};
 
     }
 
