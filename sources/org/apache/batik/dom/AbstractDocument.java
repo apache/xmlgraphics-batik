@@ -397,6 +397,14 @@ public abstract class AbstractDocument
             result = createDocumentFragment();
             break;
 
+        case DOCUMENT_TYPE_NODE:
+            DocumentType docType = (DocumentType) importedNode;
+            GenericDocumentType copy = new GenericDocumentType(docType.getName(),
+                    docType.getPublicId(), docType.getSystemId());
+            copy.ownerDocument = this;
+            result = copy;
+            break;
+
         default:
             throw createDOMException(DOMException.NOT_SUPPORTED_ERR,
                                      "import.node",
