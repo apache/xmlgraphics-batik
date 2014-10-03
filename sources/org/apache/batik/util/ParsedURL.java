@@ -534,7 +534,7 @@ public class ParsedURL {
     public static ParsedURLData parseURL(String urlStr) {
         if (urlStr != null && !urlStr.contains(":") && !urlStr.startsWith("#")) {
             // an URL needs a protocol; default to file:// if none set
-            urlStr = "file://" + urlStr;
+            urlStr = "file:" + urlStr;
         }
         ParsedURLProtocolHandler handler = getHandler(getProtocol(urlStr));
         return handler.parseURL(urlStr);

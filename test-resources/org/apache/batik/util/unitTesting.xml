@@ -158,8 +158,8 @@
     <!-- ====================================================================== -->
    <test id="ParsedURL.1" class="org.apache.batik.util.ParsedURLTest">
         <!-- Test simple parsing -->
-        <arg class="java.lang.String" value="xml.apache.org" />
-        <arg class="java.lang.String" value="//xml.apache.org" />
+        <arg class="java.lang.String" value="just.a.path" />
+        <arg class="java.lang.String" value="file:just.a.path" />
     </test>
    <test id="ParsedURL.2" class="org.apache.batik.util.ParsedURLTest">
         <!-- Test simple parsing -->
