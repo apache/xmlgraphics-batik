@@ -197,7 +197,7 @@ public class SVGRenderingAccuracyTestValidator extends DefaultTestSuite {
             }
 
             if (t.variationURLs == null
-                    || t.variationURLs.size() != 1
+                    || t.variationURLs.size() != 3
                     || !t.variationURLs.get(0).toString()
                             .endsWith(expectedVariationURL)) {
                 TestReport r = reportError(ERROR_UNEXPECTED_VARIATION_URL);
