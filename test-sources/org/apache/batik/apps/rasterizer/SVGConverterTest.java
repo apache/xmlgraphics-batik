@@ -180,7 +180,8 @@ public class SVGConverterTest extends DefaultTestSuite {
         t.setId("HintsConfigTest.KEY_ALTERNATE_STYLESHEET");
 
         t = new HintsConfigTest(new Object[][]{
-            {ImageTranscoder.KEY_USER_STYLESHEET_URI, "userStylesheet.css"}}){
+            {ImageTranscoder.KEY_USER_STYLESHEET_URI,
+                new File(System.getProperty("user.dir"), "userStylesheet.css").toURI().toString()}}){
                 protected void deltaConfigure(SVGConverter c){
                     c.setUserStylesheet("userStylesheet.css");
                 }
