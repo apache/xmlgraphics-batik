@@ -119,7 +119,7 @@ public abstract class AbstractImageHandlerEncoder extends DefaultImageHandler {
             this.urlRoot = urlRoot;
         else {
             try{
-                this.urlRoot = imageDirFile.toURL().toString();
+                this.urlRoot = imageDirFile.toURI().toURL().toString();
             } catch (MalformedURLException e) {
                 throw new SVGGraphics2DIOException(ERR_CANNOT_USE_IMAGE_DIR+
                                                    e.getMessage(),

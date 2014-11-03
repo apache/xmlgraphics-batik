@@ -881,7 +881,7 @@ public class SVGConverter {
         if (userStylesheet != null) {
             String userStylesheetURL;
             try {
-                URL userDir = new File(System.getProperty("user.dir")).toURL();
+                URL userDir = new File(System.getProperty("user.dir")).toURI().toURL();
                 userStylesheetURL = new ParsedURL(userDir, userStylesheet).toString();
             } catch (Exception e) {
                 userStylesheetURL = userStylesheet;

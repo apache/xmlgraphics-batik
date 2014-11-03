@@ -1255,7 +1255,7 @@ public class JSVGViewerFrame
 
             if (f != null) {
                 try {
-                    String furl = f.toURL().toString();
+                    String furl = f.toURI().toURL().toString();
                     showSVGDocument(furl);
                 } catch (MalformedURLException ex) {
                     if (userAgent != null) {
