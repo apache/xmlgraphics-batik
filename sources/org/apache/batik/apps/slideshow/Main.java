@@ -129,7 +129,7 @@ public class Main extends JComponent {
                 GVTBuilder builder = new GVTBuilder();
 
                 try {
-                    String fileName = files[ i ].toURL().toString();
+                    String fileName = files[ i ].toURI().toURL().toString();
                     System.out.println("Reading: " + fileName );
                     Document svgDoc = loader.loadDocument( fileName );
                     System.out.println("Building: " + fileName );
@@ -307,7 +307,7 @@ public class Main extends JComponent {
             return;
         }
         try {
-            URL flURL = new File(file).toURL();
+            URL flURL = new File(file).toURI().toURL();
             String line;
             while ((line = br.readLine()) != null) {
                 String str = line;
