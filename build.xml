@@ -1002,7 +1002,8 @@ JAVA=/usr/bin/java
 
   <target name="compile" depends="init, compile-prepare" unless="compile.done">
     <javac destdir="${dest}" deprecation="${deprecation}" 
-           debug="${debug}" optimize="${optimize}" encoding="UTF-8">
+           debug="${debug}" optimize="${optimize}" encoding="UTF-8"
+           includeAntRuntime="true">
       <src path="${src}"/>
       <classpath refid="libs-classpath"/>
       <exclude name="**/*.html"/>

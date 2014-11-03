@@ -28,10 +28,12 @@ import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.Authenticator;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -515,7 +517,7 @@ public class Main implements Application {
             overrideSecurityPolicy = true;
 
             System.setProperty(PROPERTY_JAVA_SECURITY_POLICY,
-                               policyFile.toURL().toString());
+                               policyFile.toURI().toURL().toString());
 
         }
     }
@@ -547,7 +549,7 @@ public class Main implements Application {
 
                 try{
                     if (file.canRead()) {
-                        uri = file.toURL().toString();
+                        uri = file.toURI().toURL().toString();
                     }
                 }catch(SecurityException se){
                     // Cannot access files.
@@ -846,7 +848,7 @@ public class Main implements Application {
         try {
             File f = new File(ssPath);
             if (f.exists()) {
-                return f.toURL().toString();
+                return f.toURI().toURL().toString();
             }
         } catch (IOException ioe) {
             // Nothing...
@@ -959,8 +961,13 @@ public class Main implements Application {
         StringBuffer lastVisitedBuffer = new StringBuffer( lastVisited.size() * 8 );
 
         for (int i=0; i<lastVisited.size(); i++) {
-            lastVisitedBuffer.append
-                (URLEncoder.encode(lastVisited.get(i).toString()));
+            try {
+                lastVisitedBuffer.append
+                    (URLEncoder.encode(lastVisited.get(i).toString(),
+                        Charset.defaultCharset().name()));
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException(e);
+            }
             lastVisitedBuffer.append(URI_SEPARATOR);
         }
 
@@ -1013,7 +1020,12 @@ public class Main implements Application {
         }
 
         for (int i=0; i<n; i++) {
-                lastVisited.addElement(URLDecoder.decode(st.nextToken()));
+            try {
+                lastVisited.addElement(URLDecoder.decode(st.nextToken(),
+                    Charset.defaultCharset().name()));
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 }

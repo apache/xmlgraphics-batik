@@ -61,7 +61,7 @@ public class SVGConverterFileSource implements SVGConverterSource {
 
     public String getURI(){
         try{
-            String uri = file.toURL().toString();
+            String uri = file.toURI().toURL().toString();
             if (ref != null && !"".equals(ref)){
                 uri += '#' + ref;
             }

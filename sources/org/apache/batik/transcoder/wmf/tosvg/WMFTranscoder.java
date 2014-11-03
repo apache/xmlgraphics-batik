@@ -259,7 +259,7 @@ public class WMFTranscoder extends ToSVGAbstractTranscoder {
                 File inputFile = new File(fileName);
                 File outputFile = new File(outputFileName);
                 try {
-                    TranscoderInput input = new TranscoderInput(inputFile.toURL().toString());
+                    TranscoderInput input = new TranscoderInput(inputFile.toURI().toURL().toString());
                     TranscoderOutput output = new TranscoderOutput(new FileOutputStream(outputFile));
                     transcoder.transcode(input, output);
                 }catch(MalformedURLException e){
