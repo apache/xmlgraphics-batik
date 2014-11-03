@@ -440,6 +440,8 @@ public interface SVGConstants extends CSSConstants, XMLConstants {
     String SVG_ALPHABETIC_ATTRIBUTE = "alphabetic";
     String SVG_ATTRIBUTE_NAME_ATTRIBUTE = "attributeName";
     String SVG_ATTRIBUTE_TYPE_ATTRIBUTE = "attributeType";
+    String SVG_BACKGROUND_ATTRIBUTE = CSS_BACKGROUND_PROPERTY;
+    String SVG_BACKGROUND_MODE_ATTRIBUTE = CSS_BACKGROUND_MODE_PROPERTY;
     String SVG_BASE_FREQUENCY_ATTRIBUTE = "baseFrequency";
     String SVG_BASE_PROFILE_ATTRIBUTE = "baseProfile";
     String SVG_BEGIN_ATTRIBUTE = "begin";

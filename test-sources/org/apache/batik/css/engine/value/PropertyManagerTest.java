@@ -199,6 +199,15 @@ public class PropertyManagerTest extends AbstractTest {
     }
 
     /**
+     * Manager for 'background'.
+     */
+    public static class BackgroundManager extends SVGPaintManager {
+        public BackgroundManager() {
+            super(CSSConstants.CSS_BACKGROUND_PROPERTY);
+        }
+    }
+
+    /**
      * Manager for 'fill'.
      */
     public static class FillManager extends SVGPaintManager {

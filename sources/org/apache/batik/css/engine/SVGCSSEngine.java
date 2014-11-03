@@ -21,6 +21,7 @@ package org.apache.batik.css.engine;
 import org.apache.batik.css.engine.value.ShorthandManager;
 import org.apache.batik.css.engine.value.ValueConstants;
 import org.apache.batik.css.engine.value.ValueManager;
+import org.apache.batik.css.engine.value.css2.BackgroundModeManager;
 import org.apache.batik.css.engine.value.css2.ClipManager;
 import org.apache.batik.css.engine.value.css2.CursorManager;
 import org.apache.batik.css.engine.value.css2.DirectionManager;
@@ -62,6 +63,7 @@ import org.apache.batik.css.engine.value.svg.OpacityManager;
 import org.apache.batik.css.engine.value.svg.PointerEventsManager;
 import org.apache.batik.css.engine.value.svg.SVGColorManager;
 import org.apache.batik.css.engine.value.svg.SVGPaintManager;
+import org.apache.batik.css.engine.value.svg.SVGValueConstants;
 import org.apache.batik.css.engine.value.svg.ShapeRenderingManager;
 import org.apache.batik.css.engine.value.svg.SpacingManager;
 import org.apache.batik.css.engine.value.svg.StrokeDasharrayManager;
@@ -193,6 +195,8 @@ public class SVGCSSEngine extends CSSEngine {
      */
     public static final ValueManager[] SVG_VALUE_MANAGERS = {
         new AlignmentBaselineManager(),
+        new SVGColorManager(CSSConstants.CSS_BACKGROUND_PROPERTY, ValueConstants.TRANSPARENT_VALUE),
+        new BackgroundModeManager(),
         new BaselineShiftManager(),
         new ClipManager(),
         new ClipPathManager(),
@@ -279,8 +283,10 @@ public class SVGCSSEngine extends CSSEngine {
     // The property indexes.
     //
     public static final int ALIGNMENT_BASELINE_INDEX = 0;
+    public static final int BACKGROUND_INDEX = ALIGNMENT_BASELINE_INDEX + 1;
+    public static final int BACKGROUND_MODE_INDEX = BACKGROUND_INDEX + 1;
     public static final int BASELINE_SHIFT_INDEX =
-        ALIGNMENT_BASELINE_INDEX + 1;
+        BACKGROUND_MODE_INDEX + 1;
     public static final int CLIP_INDEX = BASELINE_SHIFT_INDEX + 1;
     public static final int CLIP_PATH_INDEX = CLIP_INDEX +1;
     public static final int CLIP_RULE_INDEX = CLIP_PATH_INDEX + 1;

@@ -79,6 +79,13 @@ public abstract class AbstractValue implements Value {
     }
 
     /**
+     * Implements {@link Value#getAlpha()}.
+     */
+    public Value getAlpha() throws DOMException {
+        throw createDOMException();
+    }
+
+    /**
      * Implements {@link Value#getLength()}.
      */
     public int getLength() throws DOMException {

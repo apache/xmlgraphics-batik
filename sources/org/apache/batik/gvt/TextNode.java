@@ -27,6 +27,7 @@ import java.awt.geom.Rectangle2D;
 import java.text.AttributedCharacterIterator;
 import java.text.CharacterIterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.batik.gvt.renderer.StrokingTextPainter;
 import org.apache.batik.gvt.text.AttributedCharacterSpanIterator;
@@ -63,6 +64,11 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
      * The text of this <code>TextNode</code>.
      */
     protected String text;
+
+    /**
+     * Attibutes that apply to text node as a whole (not to individual text runs).
+     */
+    protected Map textAttributes;
 
     /**
      * The begin mark.
@@ -167,6 +173,13 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
     }
 
     /**
+     * Returns the top level text attributes of text node.
+     */
+    public Map getTextAttributes() {
+        return textAttributes;
+    }
+
+    /**
      * Sets the location of this text node.
      *
      * @param newLocation the new location of this text node
@@ -195,19 +208,25 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
         fireGraphicsNodeChangeCompleted();
     }
                                   
-
     /**
      * Sets the attributed character iterator of this text node.
      *
      * @param newAci the new attributed character iterator
+     * @param textAttributes top-level text node attributes map
      */
     public void setAttributedCharacterIterator
         (AttributedCharacterIterator newAci) {
+        this.setAttributedCharacterIterator(newAci);
+    }
+
+    public void setAttributedCharacterIterator
+        (AttributedCharacterIterator newAci, Map textAttributes) {
         fireGraphicsNodeChangeStarted();
         invalidateGeometryCache();
         this.aci = newAci;
-        text = null;
-        textRuns = null;
+        this.text = null;
+        this.textAttributes = textAttributes;
+        this.textRuns = null;
         fireGraphicsNodeChangeCompleted();
     }
 
@@ -540,6 +559,11 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
             }
         }
     }
+
+    public enum BackgroundMode {
+        BBOX,
+        LINE_HEIGHT;
+    };
 }
 
 

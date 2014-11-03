@@ -23,7 +23,11 @@ import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 import org.apache.batik.css.engine.SVGCSSEngine;
+import org.apache.batik.css.engine.value.ComputedValue;
 import org.apache.batik.css.engine.value.Value;
+import org.apache.batik.css.engine.value.ValueConstants;
+import org.apache.batik.css.engine.value.svg12.LineHeightValue;
+import org.apache.batik.css.engine.value.svg12.SVG12ValueConstants;
 import org.apache.batik.gvt.TextNode;
 import org.apache.batik.util.CSSConstants;
 import org.w3c.dom.Element;
@@ -146,6 +150,25 @@ public abstract class TextUtilities implements CSSConstants, ErrorConstants {
     }
 
     /**
+     * Converts the line-height CSS value to a float value.
+     * @param e the element
+     */
+    public static Float convertLineHeight(Element e, int lineHeightIndex, float fontSize) {
+        Value v = CSSUtilities.getComputedStyle(e, lineHeightIndex);
+        if ((v == ValueConstants.INHERIT_VALUE) ||
+            (v == SVG12ValueConstants.NORMAL_VALUE)) {
+            return fontSize*1.1f;
+        }
+        float lineHeight = v.getFloatValue();
+        if (v instanceof ComputedValue)
+            v = ((ComputedValue)v).getComputedValue();
+        if ((v instanceof LineHeightValue) &&
+            ((LineHeightValue)v).getFontSizeRelative())
+            lineHeight *= fontSize;
+        return Float.valueOf(lineHeight);
+    }
+
+    /**
      * Converts the font-style CSS value to a float value.
      * @param e the element
      */
@@ -259,6 +282,23 @@ public abstract class TextUtilities implements CSSConstants, ErrorConstants {
             return TextNode.Anchor.MIDDLE;
         default:
             return TextNode.Anchor.END;
+        }
+    }
+
+    /**
+     * Converts the backgorund-mode CSS value to a TextNode.BackgroundMode.
+     * @param e the element
+     */
+    public static TextNode.BackgroundMode convertBackgroundMode(Element e) {
+        Value v = CSSUtilities.getComputedStyle
+            (e, SVGCSSEngine.BACKGROUND_MODE_INDEX);
+        switch (v.getStringValue().charAt(0)) {
+        case 'b':
+            return TextNode.BackgroundMode.BBOX;
+        case 'l':
+            return TextNode.BackgroundMode.LINE_HEIGHT;
+        default:
+            return TextNode.BackgroundMode.LINE_HEIGHT;
         }
     }
 

@@ -40,6 +40,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
+import org.apache.batik.css.engine.CSSEngine;
 import org.apache.batik.css.engine.CSSEngineEvent;
 import org.apache.batik.css.engine.CSSStylableElement;
 import org.apache.batik.css.engine.SVGCSSEngine;
@@ -61,6 +62,7 @@ import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.TextNode;
+import org.apache.batik.gvt.TextNode.BackgroundMode;
 import org.apache.batik.gvt.font.GVTFont;
 import org.apache.batik.gvt.font.GVTFontFamily;
 import org.apache.batik.gvt.font.GVTGlyphMetrics;
@@ -73,6 +75,7 @@ import org.apache.batik.gvt.text.TextHit;
 import org.apache.batik.gvt.text.TextPaintInfo;
 import org.apache.batik.gvt.text.TextPath;
 import org.apache.batik.gvt.text.TextSpanLayout;
+import org.apache.batik.util.SVG12CSSConstants;
 import org.apache.batik.util.XMLConstants;
 
 import org.w3c.dom.Element;
@@ -96,6 +99,8 @@ import org.w3c.dom.svg.SVGTextPositioningElement;
  */
 public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
     implements SVGTextContent {
+
+    public static final Color TRANSPARENT = new Color(0, 0, 0, 0);
 
     protected static final Integer ZERO = new Integer(0);
 
@@ -632,11 +637,13 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         TextNode tn = (TextNode)node;
         elemTPI.clear();
 
-        AttributedString as = buildAttributedString(ctx, e);
+        Map[] returnTextAttributes = new Map[1];
+        AttributedString as = buildAttributedString(ctx, e, returnTextAttributes);
         if (as == null) {
             tn.setAttributedCharacterIterator(null);
             return;
         }
+        Map textAttributes = returnTextAttributes[0];
 
         addGlyphPositionAttributes(as, e, ctx);
         if (ctx.isDynamic()) {
@@ -644,7 +651,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         }
 
         // Install the ACI in the text node.
-        tn.setAttributedCharacterIterator(as.getIterator());
+        tn.setAttributedCharacterIterator(as.getIterator(), textAttributes);
 
         // Now get the real paint into - this needs to
         // wait until the text node is laidout so we can get
@@ -658,7 +665,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
 
         if (usingComplexSVGFont) {
             // Force Complex SVG fonts to be recreated, if we have them.
-            tn.setAttributedCharacterIterator(as.getIterator());
+            tn.setAttributedCharacterIterator(as.getIterator(), textAttributes);
         }
 
         if (ctx.isDynamic()) {
@@ -752,6 +759,8 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
      */
     protected void handleCSSPropertyChanged(int property) {
         switch(property) {                  // fall-through is intended
+        case SVGCSSEngine.BACKGROUND_INDEX:
+        case SVGCSSEngine.BACKGROUND_MODE_INDEX:
         case SVGCSSEngine.FILL_INDEX:
         case SVGCSSEngine.FILL_OPACITY_INDEX:
         case SVGCSSEngine.STROKE_INDEX:
@@ -821,7 +830,8 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         if (usingComplexSVGFont)
             // Force Complex SVG fonts to be recreated
             textNode.setAttributedCharacterIterator
-                (textNode.getAttributedCharacterIterator());
+                (textNode.getAttributedCharacterIterator(),
+                 textNode.getTextAttributes());
     }
 
     int getElementStartIndex(Element element) {
@@ -850,12 +860,15 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
      */
     protected AttributedString buildAttributedString(BridgeContext ctx,
                                                      Element element) {
-
-        AttributedStringBuffer asb = new AttributedStringBuffer();
-        fillAttributedStringBuffer(ctx, element, true, null, null, null, asb);
-        return asb.toAttributedString();
+        return this.buildAttributedString(ctx, element, null);
     }
 
+    protected AttributedString buildAttributedString(BridgeContext ctx,
+                                                     Element element, Map[] returnTextAttributes) {
+        AttributedStringBuffer asb = new AttributedStringBuffer();
+        fillAttributedStringBuffer(ctx, element, true, null, null, null, asb, returnTextAttributes);
+        return asb.toAttributedString();
+    }
 
     /**
      * This is used to store the end of the last piece of text
@@ -875,6 +888,17 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                                               Integer bidiLevel,
                                               Map initialAttributes,
                                               AttributedStringBuffer asb) {
+        this.fillAttributedStringBuffer(ctx, element, top, textPath, bidiLevel, initialAttributes, asb);
+    }
+
+    protected void fillAttributedStringBuffer(BridgeContext ctx,
+                                              Element element,
+                                              boolean top,
+                                              TextPath textPath,
+                                              Integer bidiLevel,
+                                              Map initialAttributes,
+                                              AttributedStringBuffer asb,
+                                              Map[] returnTextAttributes) {
         // 'requiredFeatures', 'requiredExtensions', 'systemLanguage' &
         // 'display="none".
         if ((!SVGUtilities.matchUserAgent(element, ctx.getUserAgent())) ||
@@ -900,6 +924,10 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                 : new HashMap(initialAttributes);
         initialAttributes =
             getAttributeMap(ctx, element, textPath, bidiLevel, map);
+        // retain top level text element's attributes
+        if (returnTextAttributes != null)
+            returnTextAttributes[0] = map;
+        // batik bidi processing
         Object o = map.get(TextAttribute.BIDI_EMBEDDING);
         Integer subBidiLevel = bidiLevel;
         if (o != null) {
@@ -938,7 +966,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                                                textPath,
                                                subBidiLevel,
                                                initialAttributes,
-                                               asb);
+                                               asb, null);
                     if (asb.count != before) {
                         initialAttributes = null;
                     }
@@ -955,7 +983,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                                                    newTextPath,
                                                    subBidiLevel,
                                                    initialAttributes,
-                                                   asb);
+                                                   asb, null);
                         if (asb.count != before) {
                             initialAttributes = null;
                         }
@@ -1002,7 +1030,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                                                textPath,
                                                subBidiLevel,
                                                initialAttributes,
-                                               asb);
+                                               asb, null);
                     if (asb.count != before) {
                         initialAttributes = null;
                     }
@@ -1497,7 +1525,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         // Font weight
         result.put(TextAttribute.WEIGHT,
                 TextUtilities.convertFontWeight(element));
-
+    
         // Font weight
         Value v = CSSUtilities.getComputedStyle
             (element, SVGCSSEngine.FONT_WEIGHT_INDEX);
@@ -1589,6 +1617,8 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         TextPaintInfo pi = new TextPaintInfo();
         // Set some basic props so we can get bounds info for complex paints.
         pi.visible   = true;
+        pi.backgroundPaint = TRANSPARENT;
+        pi.backgroundMode = BackgroundMode.LINE_HEIGHT;
         pi.fillPaint = Color.black;
         result.put(PAINT_INFO, pi);
         elemTPI.put(element, pi);
@@ -1893,7 +1923,8 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             (sm.isNullCascaded(SVGCSSEngine.FILL_INDEX)) &&
             (sm.isNullCascaded(SVGCSSEngine.STROKE_INDEX)) &&
             (sm.isNullCascaded(SVGCSSEngine.STROKE_WIDTH_INDEX)) &&
-            (sm.isNullCascaded(SVGCSSEngine.OPACITY_INDEX))) {
+            (sm.isNullCascaded(SVGCSSEngine.OPACITY_INDEX)) &&
+            (sm.isNullCascaded(SVGCSSEngine.BACKGROUND_INDEX))) {
             // If not, keep the same decorations.
             return pi;
         }
@@ -1914,6 +1945,8 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             pi.composite    = AlphaComposite.SrcOver;
 
         pi.visible      = CSSUtilities.convertVisibility(element);
+        pi.backgroundPaint = PaintServer.convertBackgroundPaint(element, node, ctx);
+        pi.backgroundMode = TextUtilities.convertBackgroundMode(element);
         pi.fillPaint    = PaintServer.convertFillPaint  (element, node, ctx);
         pi.strokePaint  = PaintServer.convertStrokePaint(element, node, ctx);
         pi.strokeStroke = PaintServer.convertStroke     (element);

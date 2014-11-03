@@ -36,6 +36,8 @@ public interface CSSConstants {
     // The CSS property names.
     //
     String CSS_ALIGNMENT_BASELINE_PROPERTY = "alignment-baseline";
+    String CSS_BACKGROUND_PROPERTY = "background";
+    String CSS_BACKGROUND_MODE_PROPERTY = "background-mode";
     String CSS_BASELINE_SHIFT_PROPERTY = "baseline-shift";
     String CSS_CLIP_PROPERTY = "clip";
     String CSS_CLIP_PATH_PROPERTY = "clip-path";
@@ -118,6 +120,7 @@ public interface CSSConstants {
     String CSS_AZURE_VALUE = "azure";
     String CSS_BACKGROUND_VALUE = "background";
     String CSS_BASELINE_VALUE = "baseline";
+    String CSS_BBOX_VALUE = "bbox";
     String CSS_BEFORE_EDGE_VALUE = "before-edge";
     String CSS_BEIGE_VALUE = "beige";
     String CSS_BEVEL_VALUE = "bevel";
@@ -252,6 +255,7 @@ public interface CSSConstants {
     String CSS_LIGHTYELLOW_VALUE = "lightyellow";
     String CSS_LIMEGREEN_VALUE = "limegreen";
     String CSS_LIME_VALUE = "lime";
+    String CSS_LINE_HEIGHT_VALUE = "line-height";
     String CSS_LINEARRGB_VALUE = "linearrgb";
     String CSS_LINEN_VALUE = "linen";
     String CSS_LINE_THROUGH_VALUE = "line-through";
@@ -377,6 +381,7 @@ public interface CSSConstants {
     String CSS_TB_RL_VALUE = "tb-rl";
     String CSS_TB_VALUE = "tb";
     String CSS_TEAL_VALUE = "teal";
+    String CSS_TRANSPARENT_VALUE = "transparent";
     String CSS_TEXT_AFTER_EDGE_VALUE = "text-after-edge";
     String CSS_TEXT_BEFORE_EDGE_VALUE = "text-before-edge";
     String CSS_TEXT_BOTTOM_VALUE = "text-bottom";

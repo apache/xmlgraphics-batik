@@ -27,6 +27,8 @@ import java.awt.color.ICC_Profile;
 import java.io.IOException;
 
 import org.apache.batik.css.engine.SVGCSSEngine;
+import org.apache.batik.css.engine.value.ComputedValue;
+import org.apache.batik.css.engine.value.RGBAColorValue;
 import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.css.engine.value.svg.ICCColor;
 import org.apache.batik.css.engine.value.svg12.CIELabColor;
@@ -241,6 +243,28 @@ public abstract class PaintServer
 
         return convertPaint(filledElement,
                             filledNode,
+                            v,
+                            opacity,
+                            ctx);
+    }
+
+    /**
+     * Converts for the specified element, its background paint properties
+     * to a Paint object.
+     *
+     * @param backgroundElement the element interested in a Paint
+     * @param backgroundNode the graphics node to fill
+     * @param ctx the bridge context
+     */
+    public static Paint convertBackgroundPaint(Element backgroundElement,
+                                         GraphicsNode backgroundNode,
+                                         BridgeContext ctx) {
+        Value v = CSSUtilities.getComputedStyle
+            (backgroundElement, SVGCSSEngine.BACKGROUND_INDEX);
+        float opacity = 1f;
+
+        return convertPaint(backgroundElement,
+                            backgroundNode,
                             v,
                             opacity,
                             ctx);
@@ -584,10 +608,16 @@ public abstract class PaintServer
      * @param opacity The opacity value (0 &lt;= o &lt;= 1).
      */
     public static Color convertColor(Value c, float opacity) {
+        if (c instanceof ComputedValue)
+            c = ((ComputedValue)c).getComputedValue();
         int r = resolveColorComponent(c.getRed());
         int g = resolveColorComponent(c.getGreen());
         int b = resolveColorComponent(c.getBlue());
-        return new Color(r, g, b, Math.round(opacity * 255f));
+        if (c instanceof RGBAColorValue) {
+            return new Color(r, g, b,
+                Math.round(resolveAlphaComponent(((RGBAColorValue)c).getAlpha()) * 255f));
+        } else
+            return new Color(r, g, b, Math.round(opacity * 255f));
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -754,6 +784,27 @@ public abstract class PaintServer
         default:
             throw new IllegalArgumentException
                 ("Color component argument is not an appropriate CSS value");
+        }
+    }
+
+    /**
+     * Returns the value of the alpha component as a float in range [0.0, 1.0].
+     * @param v the value that defines the alpha component
+     */
+    public static float resolveAlphaComponent(Value v) {
+        float f;
+        switch(v.getPrimitiveType()) {
+        case CSSPrimitiveValue.CSS_PERCENTAGE:
+            f = v.getFloatValue();
+            f = (f > 100f) ? 100f : (f < 0f) ? 0f : f;
+            return f / 100f;
+        case CSSPrimitiveValue.CSS_NUMBER:
+            f = v.getFloatValue();
+            f = (f > 1f) ? 1f : (f < 0f) ? 0f : f;
+            return f;
+        default:
+            throw new IllegalArgumentException
+                ("Alpha component argument is not an appropriate CSS value");
         }
     }
 

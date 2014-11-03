@@ -325,7 +325,7 @@ public interface GVTAttributedCharacterIterator extends AttributedCharacterItera
                                           new TextAttribute("HORIZONTAL_ORIENTATION_ANGLE");
 
         public static final TextAttribute GVT_FONT_FAMILIES =
-                       new TextAttribute("GVT_FONT_FAMILIES");
+                                          new TextAttribute("GVT_FONT_FAMILIES");
 
         public static final TextAttribute GVT_FONTS =
                                           new TextAttribute("GVT_FONTS");
@@ -350,6 +350,9 @@ public interface GVTAttributedCharacterIterator extends AttributedCharacterItera
 
         public static final TextAttribute LANGUAGE =
                                           new TextAttribute("LANGUAGE");
+
+        public static final TextAttribute BACKGROUND_MODE =
+                                          new TextAttribute("BACKGROUND_MODE");
 
         // VALUES
 

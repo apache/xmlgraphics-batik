@@ -32,6 +32,7 @@ public class SVGStylingAttributes implements SVGSyntax{
     static Set attrSet = new HashSet();
 
     static {
+        attrSet.add(SVG_BACKGROUND_ATTRIBUTE);
         attrSet.add(SVG_CLIP_PATH_ATTRIBUTE);
         attrSet.add(SVG_COLOR_INTERPOLATION_ATTRIBUTE);
         attrSet.add(SVG_COLOR_RENDERING_ATTRIBUTE);

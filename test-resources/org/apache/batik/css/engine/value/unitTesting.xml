@@ -37,6 +37,14 @@
 </test>
 
 <!-- ############################################################################## -->
+<test id="css.engine.value.svg.background">
+  <arg class="java.lang.String" value="org.apache.batik.css.engine.value.PropertyManagerTest$BackgroundManager" />
+  <arg class="java.lang.Boolean" value="true" />
+  <arg class="java.lang.String" value="rgb(0, 0, 0)" />
+  <arg class="java.lang.String" value="" />
+</test>
+
+<!-- ############################################################################## -->
 <test id="css.engine.value.svg.baseline-shift">
   <arg class="java.lang.String" value="org.apache.batik.css.engine.value.svg.BaselineShiftManager" />
   <arg class="java.lang.Boolean" value="false" />
