@@ -139,6 +139,10 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         AttributedCharacterIterator.Attribute BASELINE_SHIFT
         = GVTAttributedCharacterIterator.TextAttribute.BASELINE_SHIFT;
 
+    public static final
+        AttributedCharacterIterator.Attribute LINE_HEIGHT
+        = GVTAttributedCharacterIterator.TextAttribute.LINE_HEIGHT;
+
     protected AttributedString laidoutText;
 
     // This is used to track the TextPainterInfo for each element
@@ -1567,6 +1571,11 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         // Eventually this will need to go for SVG fonts it
         // holds hard ref to DOM.
         result.put(GVT_FONT_FAMILIES, fontFamilyList);
+
+        // Line height
+        result.put(LINE_HEIGHT,
+                   TextUtilities.convertLineHeight(element,
+                   SVGCSSEngine.LINE_HEIGHT_INDEX, fontSize));
 
         if (!ctx.isDynamic()) {
             // Only leave this in the map for dynamic documents.

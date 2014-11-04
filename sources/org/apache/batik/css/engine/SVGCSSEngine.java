@@ -34,6 +34,7 @@ import org.apache.batik.css.engine.value.css2.FontStretchManager;
 import org.apache.batik.css.engine.value.css2.FontStyleManager;
 import org.apache.batik.css.engine.value.css2.FontVariantManager;
 import org.apache.batik.css.engine.value.css2.FontWeightManager;
+import org.apache.batik.css.engine.value.css2.LineHeightManager;
 import org.apache.batik.css.engine.value.css2.OverflowManager;
 import org.apache.batik.css.engine.value.css2.SrcManager;
 import org.apache.batik.css.engine.value.css2.TextDecorationManager;
@@ -111,8 +112,6 @@ public class SVGCSSEngine extends CSSEngine {
               true,
               null,
               ctx);
-        // SVG defines line-height to be font-size.
-        lineHeightIndex = fontSizeIndex;
     }
 
     /**
@@ -141,8 +140,6 @@ public class SVGCSSEngine extends CSSEngine {
               true,
               null,
               ctx);
-        // SVG defines line-height to be font-size.
-        lineHeightIndex = fontSizeIndex;
     }
 
     protected SVGCSSEngine(Document doc,
@@ -162,8 +159,6 @@ public class SVGCSSEngine extends CSSEngine {
               mergeArrays(SVG_VALUE_MANAGERS, vms),
               mergeArrays(SVG_SHORTHAND_MANAGERS, sms),
               pe, sns, sln, cns, cln, hints, hintsNS, ctx);
-        // SVG defines line-height to be font-size.
-        lineHeightIndex = fontSizeIndex;
     }
 
 
@@ -237,6 +232,7 @@ public class SVGCSSEngine extends CSSEngine {
         new SpacingManager(CSSConstants.CSS_LETTER_SPACING_PROPERTY),
         new SVGColorManager(CSSConstants.CSS_LIGHTING_COLOR_PROPERTY,
                             ValueConstants.WHITE_RGB_VALUE),
+        new LineHeightManager(),
         new MarkerManager(CSSConstants.CSS_MARKER_END_PROPERTY),
 
         new MarkerManager(CSSConstants.CSS_MARKER_MID_PROPERTY),
@@ -335,7 +331,8 @@ public class SVGCSSEngine extends CSSEngine {
     public static final int KERNING_INDEX = IMAGE_RENDERING_INDEX + 1;
     public static final int LETTER_SPACING_INDEX = KERNING_INDEX + 1;
     public static final int LIGHTING_COLOR_INDEX = LETTER_SPACING_INDEX + 1;
-    public static final int MARKER_END_INDEX = LIGHTING_COLOR_INDEX + 1;
+    public static final int LINE_HEIGHT_INDEX = LIGHTING_COLOR_INDEX + 1;
+    public static final int MARKER_END_INDEX = LINE_HEIGHT_INDEX + 1;
 
 
     public static final int MARKER_MID_INDEX = MARKER_END_INDEX + 1;

@@ -135,13 +135,16 @@ public class StrokingTextPainter extends BasicTextPainter {
     public static final GVTAttributedCharacterIterator.TextAttribute ALT_GLYPH_HANDLER =
         GVTAttributedCharacterIterator.TextAttribute.ALT_GLYPH_HANDLER;
 
+    public static final
+        AttributedCharacterIterator.Attribute LINE_HEIGHT
+        = GVTAttributedCharacterIterator.TextAttribute.LINE_HEIGHT;
+
     static Set extendedAtts = new HashSet();
 
     static {
         extendedAtts.add(FLOW_PARAGRAPH);
         extendedAtts.add(TEXT_COMPOUND_ID);
         extendedAtts.add(GVT_FONT);
-        // extendedAtts.add(BIDI_LEVEL);
     }
 
     /**
@@ -904,7 +907,7 @@ public class StrokingTextPainter extends BasicTextPainter {
             Point2D firstPosition = gv.getGlyphPosition(0);
             Map textAttributes = node.getTextAttributes();
             double fontSize = (textAttributes != null) ? ((Float) textAttributes.get(TextAttribute.SIZE)).doubleValue() : 0d;
-            double lineHeight = fontSize * 1.25f;
+            double lineHeight = (textAttributes != null) ? ((Float) textAttributes.get(LINE_HEIGHT)).doubleValue() : fontSize * 1.1f;
             return computeLineHeightBounds(firstPosition, ascent, emHeight, lineHeight, node.getPrimitiveBounds().getWidth());
         } else {
             return new Rectangle2D.Double();
@@ -952,7 +955,7 @@ public class StrokingTextPainter extends BasicTextPainter {
             Point2D firstPosition = new Point2D.Double(bbox.getX(), gv.getGlyphPosition(0).getY());
             AttributedCharacterIterator aci = run.getACI();
             double fontSize = (aci != null) ? ((Float) aci.getAttribute(TextAttribute.SIZE)).doubleValue() : 0d;
-            double lineHeight = fontSize * 1.25f;
+            double lineHeight = (aci != null) ? ((Float) aci.getAttribute(LINE_HEIGHT)).doubleValue() : fontSize * 1.1f;
             return computeLineHeightBounds(firstPosition, ascent, emHeight, lineHeight, bbox.getWidth());
         } else {
             return new Rectangle2D.Double();

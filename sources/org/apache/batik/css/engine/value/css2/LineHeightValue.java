@@ -15,15 +15,38 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 
-*/
+ */
+package org.apache.batik.css.engine.value.css2;
 
-package org.apache.batik.css.engine.value.svg12;
+import org.apache.batik.css.engine.value.FloatValue;
 
 /**
- * This class provides a factory for the 'margin-*' properties values.
+ * This class represents line-height values.  These are basically
+ * FloatValues except that it may be 'font-size' relative.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class LineHeightManager extends org.apache.batik.css.engine.value.css2.LineHeightManager {
+public class LineHeightValue extends FloatValue {
+    
+    /**
+     * True if the line-height is relative to the font-size
+     */
+    protected boolean fontSizeRelative;
+
+    /**
+     * Creates a new value.
+     */
+    public LineHeightValue(short unitType, float floatValue, 
+                           boolean fontSizeRelative) {
+        super(unitType, floatValue);
+        this.fontSizeRelative   = fontSizeRelative;
+    }
+
+    /**
+     * The type of the value.
+     */
+    public boolean getFontSizeRelative() {
+        return fontSizeRelative;
+    }
 }
