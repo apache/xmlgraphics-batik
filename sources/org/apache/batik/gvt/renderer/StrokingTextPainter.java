@@ -887,10 +887,10 @@ public class StrokingTextPainter extends BasicTextPainter {
                     BackgroundMode mode = tpi.backgroundMode;
                     if (paint != null) {
                         if ((paint instanceof Color) && (((Color)paint).getAlpha() != 0)) {
-                            float[] padding = (float[]) textAttributes.get(BACKGROUND_PADDING);
                             Rectangle2D bounds = computeBackgroundBounds(node, textRuns, mode);
                             if (!bounds.isEmpty()) {
                                 g2d.setPaint(paint);
+                                adjustForPadding(bounds, (float[]) textAttributes.get(BACKGROUND_PADDING));
                                 g2d.fill(bounds);
                             }
                         }
@@ -961,10 +961,11 @@ public class StrokingTextPainter extends BasicTextPainter {
                                                 p.append(bRun, false);
                                             }
                                         }
-                                        Rectangle2D b = p.getBounds2D();
-                                        if (!b.isEmpty()) {
+                                        Rectangle2D bounds = p.getBounds2D();
+                                        if (!bounds.isEmpty()) {
                                             g2d.setPaint(paint);
-                                            g2d.fill(b);
+                                            adjustForPadding(bounds, (float[]) runaci.getAttribute(BACKGROUND_PADDING));
+                                            g2d.fill(bounds);
                                         }
                                     }
                                 }
@@ -1009,6 +1010,20 @@ public class StrokingTextPainter extends BasicTextPainter {
         double w = width;
         double h = lineHeight;
         return new Rectangle2D.Double(x, y, w, h);
+    }
+
+    private void adjustForPadding(Rectangle2D b, float[] padding) {
+        if (padding != null) {
+            double x = b.getX();
+            double y = b.getY();
+            double w = b.getWidth();
+            double h = b.getHeight();
+            x -= padding[3];
+            y -= padding[0];
+            w += padding[1] + padding[3];
+            h += padding[0] + padding[2];
+            b.setFrame(x, y, w, h);
+        }
     }
 
     /**
