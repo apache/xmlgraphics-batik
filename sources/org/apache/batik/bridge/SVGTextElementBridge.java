@@ -20,6 +20,7 @@ package org.apache.batik.bridge;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
+import java.awt.Paint;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.font.TextAttribute;
@@ -142,6 +143,10 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
     public static final
         AttributedCharacterIterator.Attribute LINE_HEIGHT
         = GVTAttributedCharacterIterator.TextAttribute.LINE_HEIGHT;
+
+    public static final
+        AttributedCharacterIterator.Attribute BACKGROUND_PADDING
+        = GVTAttributedCharacterIterator.TextAttribute.BACKGROUND_PADDING;
 
     protected AttributedString laidoutText;
 
@@ -926,6 +931,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         Map map = initialAttributes == null
                 ? new HashMap()
                 : new HashMap(initialAttributes);
+        // augment initial attributes with this element's attribute map
         initialAttributes =
             getAttributeMap(ctx, element, textPath, bidiLevel, map);
         // retain top level text element's attributes
@@ -1626,12 +1632,15 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         TextPaintInfo pi = new TextPaintInfo();
         // Set some basic props so we can get bounds info for complex paints.
         pi.visible   = true;
-        pi.backgroundPaint = TRANSPARENT;
-        pi.backgroundMode = BackgroundMode.LINE_HEIGHT;
         pi.fillPaint = Color.black;
         result.put(PAINT_INFO, pi);
         elemTPI.put(element, pi);
 
+        // Background padding
+        float[] backgroundPadding = TextUtilities.convertBackgroundPadding(element);
+        result.put(BACKGROUND_PADDING, backgroundPadding);
+
+        // Text path
         if (textPath != null) {
             result.put(TEXTPATH, textPath);
         }
@@ -1933,7 +1942,8 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             (sm.isNullCascaded(SVGCSSEngine.STROKE_INDEX)) &&
             (sm.isNullCascaded(SVGCSSEngine.STROKE_WIDTH_INDEX)) &&
             (sm.isNullCascaded(SVGCSSEngine.OPACITY_INDEX)) &&
-            (sm.isNullCascaded(SVGCSSEngine.BACKGROUND_INDEX))) {
+            (sm.isNullCascaded(SVGCSSEngine.BACKGROUND_INDEX)) &&
+            (sm.isNullCascaded(SVGCSSEngine.BACKGROUND_MODE_INDEX))) {
             // If not, keep the same decorations.
             return pi;
         }
@@ -1954,8 +1964,13 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             pi.composite    = AlphaComposite.SrcOver;
 
         pi.visible      = CSSUtilities.convertVisibility(element);
-        pi.backgroundPaint = PaintServer.convertBackgroundPaint(element, node, ctx);
-        pi.backgroundMode = TextUtilities.convertBackgroundMode(element);
+        StyleMap sm = ((CSSStylableElement)element).getComputedStyleMap(null);
+        Paint backgroundPaint = PaintServer.convertBackgroundPaint(element, node, ctx);
+        if (!sm.isNullCascaded(SVGCSSEngine.BACKGROUND_INDEX))
+            pi.backgroundPaint = backgroundPaint;
+        BackgroundMode backgroundMode = TextUtilities.convertBackgroundMode(element);
+        if (!sm.isNullCascaded(SVGCSSEngine.BACKGROUND_MODE_INDEX))
+            pi.backgroundMode = backgroundMode;
         pi.fillPaint    = PaintServer.convertFillPaint  (element, node, ctx);
         pi.strokePaint  = PaintServer.convertStrokePaint(element, node, ctx);
         pi.strokeStroke = PaintServer.convertStroke     (element);

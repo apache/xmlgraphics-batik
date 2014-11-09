@@ -286,7 +286,7 @@ public abstract class TextUtilities implements CSSConstants, ErrorConstants {
     }
 
     /**
-     * Converts the backgorund-mode CSS value to a TextNode.BackgroundMode.
+     * Converts the background-mode CSS value to a TextNode.BackgroundMode.
      * @param e the element
      */
     public static TextNode.BackgroundMode convertBackgroundMode(Element e) {
@@ -300,6 +300,27 @@ public abstract class TextUtilities implements CSSConstants, ErrorConstants {
         default:
             return TextNode.BackgroundMode.LINE_HEIGHT;
         }
+    }
+
+    /**
+     * Converts the background-padding CSS value to a floats[] instance.
+     * @param e the element
+     */
+    public static float[] convertBackgroundPadding(Element e) {
+        Value v;
+        v = CSSUtilities.getComputedStyle(e, SVGCSSEngine.BACKGROUND_PADDING_TOP_INDEX);
+        float top = v.getFloatValue();
+
+        v = CSSUtilities.getComputedStyle(e, SVGCSSEngine.BACKGROUND_PADDING_RIGHT_INDEX);
+        float right = v.getFloatValue();
+
+        v = CSSUtilities.getComputedStyle(e, SVGCSSEngine.BACKGROUND_PADDING_BOTTOM_INDEX);
+        float bottom = v.getFloatValue();
+
+        v = CSSUtilities.getComputedStyle(e, SVGCSSEngine.BACKGROUND_PADDING_LEFT_INDEX);
+        float left = v.getFloatValue();
+
+        return new float[] { top, right, bottom, left };
     }
 
     /**

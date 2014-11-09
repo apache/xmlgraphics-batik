@@ -30,6 +30,7 @@ import java.awt.font.TextAttribute;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.lang.ref.SoftReference;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
 import java.text.CharacterIterator;
@@ -58,7 +59,6 @@ import org.apache.batik.gvt.text.TextHit;
 import org.apache.batik.gvt.text.TextPaintInfo;
 import org.apache.batik.gvt.text.TextPath;
 import org.apache.batik.gvt.text.TextSpanLayout;
-
 
 /**
  * More sophisticated implementation of TextPainter which
@@ -139,6 +139,10 @@ public class StrokingTextPainter extends BasicTextPainter {
         AttributedCharacterIterator.Attribute LINE_HEIGHT
         = GVTAttributedCharacterIterator.TextAttribute.LINE_HEIGHT;
 
+    public static final
+        AttributedCharacterIterator.Attribute BACKGROUND_PADDING
+        = GVTAttributedCharacterIterator.TextAttribute.BACKGROUND_PADDING;
+
     static Set extendedAtts = new HashSet();
 
     static {
@@ -176,7 +180,7 @@ public class StrokingTextPainter extends BasicTextPainter {
         // 1. draw text node background
         paintBackground(node, textRuns, g2d);
         // 2. draw text run backgrounds
-        paintBackgrounds(textRuns, g2d);
+        paintBackgrounds(node, textRuns, g2d);
         // 3. draw text run underline and overline
         paintDecorations(textRuns, g2d, TextSpanLayout.DECORATION_UNDERLINE);
         paintDecorations(textRuns, g2d, TextSpanLayout.DECORATION_OVERLINE);
@@ -875,17 +879,20 @@ public class StrokingTextPainter extends BasicTextPainter {
      */
     protected void paintBackground(TextNode node, List textRuns, Graphics2D g2d) {
         Map textAttributes = node.getTextAttributes();
-        TextPaintInfo tpi = (textAttributes != null) ? (TextPaintInfo) textAttributes.get(PAINT_INFO) : null;
-        if (tpi != null) {
-            if (tpi.visible) {
-                Paint paint = tpi.backgroundPaint;
-                BackgroundMode mode = tpi.backgroundMode;
-                if (paint != null) {
-                    if ((paint instanceof Color) && (((Color)paint).getAlpha() != 0)) {
-                        Rectangle2D bounds = computeBackgroundBounds(node, textRuns, mode);
-                        if (!bounds.isEmpty()) {
-                            g2d.setPaint(paint);
-                            g2d.fill(bounds);
+        if (textAttributes != null) {
+            TextPaintInfo tpi = (TextPaintInfo) textAttributes.get(PAINT_INFO);
+            if (tpi != null) {
+                if (tpi.visible) {
+                    Paint paint = tpi.backgroundPaint;
+                    BackgroundMode mode = tpi.backgroundMode;
+                    if (paint != null) {
+                        if ((paint instanceof Color) && (((Color)paint).getAlpha() != 0)) {
+                            float[] padding = (float[]) textAttributes.get(BACKGROUND_PADDING);
+                            Rectangle2D bounds = computeBackgroundBounds(node, textRuns, mode);
+                            if (!bounds.isEmpty()) {
+                                g2d.setPaint(paint);
+                                g2d.fill(bounds);
+                            }
                         }
                     }
                 }
@@ -895,7 +902,7 @@ public class StrokingTextPainter extends BasicTextPainter {
 
     private Rectangle2D computeBackgroundBounds(TextNode node, List textRuns, BackgroundMode mode) {
         if (mode == BackgroundMode.BBOX) {
-            return node.getPrimitiveBounds();
+            return computeBBoxBounds(node.getPrimitiveBounds());
         } else if (mode == BackgroundMode.LINE_HEIGHT) {
             TextRun run = (TextRun) textRuns.get(0);
             TextSpanLayout layout = run.getLayout();
@@ -917,22 +924,51 @@ public class StrokingTextPainter extends BasicTextPainter {
     /**
      * Paint text run backgrounds.
      */
-    protected void paintBackgrounds(List textRuns, Graphics2D g2d) {
-        for (int i = 0; i < textRuns.size(); i++) {
-            TextRun textRun = (TextRun)textRuns.get(i);
-            AttributedCharacterIterator runaci = textRun.getACI();
-            runaci.first();
-            TextPaintInfo tpi = (TextPaintInfo)runaci.getAttribute(PAINT_INFO);
-            if (tpi != null) {
-                if (tpi.visible) {
-                    Paint paint = tpi.backgroundPaint;
-                    BackgroundMode mode = tpi.backgroundMode;
-                    if (paint != null) {
-                        if ((paint instanceof Color) && (((Color)paint).getAlpha() != 0)) {
-                            Rectangle2D bounds = computeBackgroundBounds(textRun, mode);
-                            if (!bounds.isEmpty()) {
-                                g2d.setPaint(paint);
-                                g2d.fill(bounds);
+    protected void paintBackgrounds(TextNode node, List textRuns, Graphics2D g2d) {
+        Map textAttributes = node.getTextAttributes();
+        if (textAttributes != null) {
+            TextPaintInfo tpiText = (TextPaintInfo) textAttributes.get(PAINT_INFO);
+            if (tpiText != null) {
+                if (tpiText.visible) {
+                    int numRuns = textRuns.size();
+                    List elements = new java.util.ArrayList(numRuns);
+                    for (int i = 0; i < numRuns; i++) {
+                        TextRun textRun = (TextRun)textRuns.get(i);
+                        AttributedCharacterIterator runaci = textRun.getACI();
+                        runaci.first();
+                        elements.add(((SoftReference) runaci.getAttribute(TEXT_COMPOUND_ID)).get());
+                    }
+                    Set eDrawn = new HashSet();
+                    for (int i = 0; i < numRuns; i++) {
+                        TextRun textRun = (TextRun)textRuns.get(i);
+                        AttributedCharacterIterator runaci = textRun.getACI();
+                        runaci.first();
+                        TextPaintInfo tpi = (TextPaintInfo)runaci.getAttribute(PAINT_INFO);
+                        if (tpi != null) {
+                            Object e = elements.get(i);
+                            if ((tpi == tpiText) || eDrawn.contains(e))
+                                continue;
+                            else if (tpi.visible) {
+                                Paint paint = tpi.backgroundPaint;
+                                BackgroundMode mode = tpi.backgroundMode;
+                                if (paint != null) {
+                                    if ((paint instanceof Color) && (((Color)paint).getAlpha() != 0)) {
+                                        GeneralPath p = new GeneralPath();
+                                        for (int j = i; j < numRuns; j++) {
+                                            Object eRun = elements.get(j);
+                                            if (eRun == e) {
+                                                Rectangle2D bRun = computeBackgroundBounds((TextRun) textRuns.get(j), mode);
+                                                p.append(bRun, false);
+                                            }
+                                        }
+                                        Rectangle2D b = p.getBounds2D();
+                                        if (!b.isEmpty()) {
+                                            g2d.setPaint(paint);
+                                            g2d.fill(b);
+                                        }
+                                    }
+                                }
+                                eDrawn.add(e);
                             }
                         }
                     }
@@ -943,7 +979,7 @@ public class StrokingTextPainter extends BasicTextPainter {
 
     private Rectangle2D computeBackgroundBounds(TextRun run, BackgroundMode mode) {
         if (mode == BackgroundMode.BBOX) {
-            return run.getLayout().getBounds2D();
+            return computeBBoxBounds(run.getLayout().getBounds2D());
         } else if (mode == BackgroundMode.LINE_HEIGHT) {
             TextSpanLayout layout = run.getLayout();
             GVTLineMetrics lineMetrics = layout.getLineMetrics();
@@ -962,9 +998,17 @@ public class StrokingTextPainter extends BasicTextPainter {
         }
     }
 
-    private Rectangle2D computeLineHeightBounds(Point2D position, double ascent, double emHeight, double lineHeight, double width) {
-            double y = position.getY() - (ascent / emHeight) * lineHeight;
-            return new Rectangle2D.Double(position.getX(), y, width, lineHeight);
+    private Rectangle2D computeBBoxBounds(Rectangle2D bbox) {
+        return bbox;
+    }
+
+    private Rectangle2D computeLineHeightBounds(
+        Point2D position, double ascent, double emHeight, double lineHeight, double width) {
+        double x = position.getX();
+        double y = position.getY() - (ascent / emHeight) * lineHeight;
+        double w = width;
+        double h = lineHeight;
+        return new Rectangle2D.Double(x, y, w, h);
     }
 
     /**

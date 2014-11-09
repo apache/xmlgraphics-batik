@@ -22,6 +22,8 @@ import org.apache.batik.css.engine.value.ShorthandManager;
 import org.apache.batik.css.engine.value.ValueConstants;
 import org.apache.batik.css.engine.value.ValueManager;
 import org.apache.batik.css.engine.value.css2.BackgroundModeManager;
+import org.apache.batik.css.engine.value.css2.BackgroundPaddingShorthandManager;
+import org.apache.batik.css.engine.value.css2.BackgroundPaddingLengthManager;
 import org.apache.batik.css.engine.value.css2.ClipManager;
 import org.apache.batik.css.engine.value.css2.CursorManager;
 import org.apache.batik.css.engine.value.css2.DirectionManager;
@@ -192,6 +194,10 @@ public class SVGCSSEngine extends CSSEngine {
         new AlignmentBaselineManager(),
         new SVGColorManager(CSSConstants.CSS_BACKGROUND_PROPERTY, ValueConstants.TRANSPARENT_VALUE),
         new BackgroundModeManager(),
+        new BackgroundPaddingLengthManager(CSSConstants.CSS_BACKGROUND_PADDING_BOTTOM_PROPERTY),
+        new BackgroundPaddingLengthManager(CSSConstants.CSS_BACKGROUND_PADDING_LEFT_PROPERTY),
+        new BackgroundPaddingLengthManager(CSSConstants.CSS_BACKGROUND_PADDING_RIGHT_PROPERTY),
+        new BackgroundPaddingLengthManager(CSSConstants.CSS_BACKGROUND_PADDING_TOP_PROPERTY),
         new BaselineShiftManager(),
         new ClipManager(),
         new ClipPathManager(),
@@ -271,6 +277,7 @@ public class SVGCSSEngine extends CSSEngine {
      * The shorthand managers for SVG.
      */
     public static final ShorthandManager[] SVG_SHORTHAND_MANAGERS = {
+        new BackgroundPaddingShorthandManager(),
         new FontShorthandManager(),
         new MarkerShorthandManager(),
     };
@@ -281,8 +288,12 @@ public class SVGCSSEngine extends CSSEngine {
     public static final int ALIGNMENT_BASELINE_INDEX = 0;
     public static final int BACKGROUND_INDEX = ALIGNMENT_BASELINE_INDEX + 1;
     public static final int BACKGROUND_MODE_INDEX = BACKGROUND_INDEX + 1;
+    public static final int BACKGROUND_PADDING_BOTTOM_INDEX = BACKGROUND_MODE_INDEX + 1;
+    public static final int BACKGROUND_PADDING_LEFT_INDEX = BACKGROUND_PADDING_BOTTOM_INDEX + 1;
+    public static final int BACKGROUND_PADDING_RIGHT_INDEX = BACKGROUND_PADDING_LEFT_INDEX + 1;
+    public static final int BACKGROUND_PADDING_TOP_INDEX = BACKGROUND_PADDING_RIGHT_INDEX + 1;
     public static final int BASELINE_SHIFT_INDEX =
-        BACKGROUND_MODE_INDEX + 1;
+        BACKGROUND_PADDING_TOP_INDEX + 1;
     public static final int CLIP_INDEX = BASELINE_SHIFT_INDEX + 1;
     public static final int CLIP_PATH_INDEX = CLIP_INDEX +1;
     public static final int CLIP_RULE_INDEX = CLIP_PATH_INDEX + 1;
