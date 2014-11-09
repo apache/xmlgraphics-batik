@@ -140,8 +140,8 @@ public class StrokingTextPainter extends BasicTextPainter {
         = GVTAttributedCharacterIterator.TextAttribute.LINE_HEIGHT;
 
     public static final
-        AttributedCharacterIterator.Attribute BACKGROUND_PADDING
-        = GVTAttributedCharacterIterator.TextAttribute.BACKGROUND_PADDING;
+        AttributedCharacterIterator.Attribute BACKGROUND_OUTLINE
+        = GVTAttributedCharacterIterator.TextAttribute.BACKGROUND_OUTLINE;
 
     static Set extendedAtts = new HashSet();
 
@@ -890,7 +890,7 @@ public class StrokingTextPainter extends BasicTextPainter {
                             Rectangle2D bounds = computeBackgroundBounds(node, textRuns, mode);
                             if (!bounds.isEmpty()) {
                                 g2d.setPaint(paint);
-                                adjustForPadding(bounds, (float[]) textAttributes.get(BACKGROUND_PADDING));
+                                adjustForOutline(bounds, (float[]) textAttributes.get(BACKGROUND_OUTLINE));
                                 g2d.fill(bounds);
                             }
                         }
@@ -964,7 +964,7 @@ public class StrokingTextPainter extends BasicTextPainter {
                                         Rectangle2D bounds = p.getBounds2D();
                                         if (!bounds.isEmpty()) {
                                             g2d.setPaint(paint);
-                                            adjustForPadding(bounds, (float[]) runaci.getAttribute(BACKGROUND_PADDING));
+                                            adjustForOutline(bounds, (float[]) runaci.getAttribute(BACKGROUND_OUTLINE));
                                             g2d.fill(bounds);
                                         }
                                     }
@@ -1012,16 +1012,16 @@ public class StrokingTextPainter extends BasicTextPainter {
         return new Rectangle2D.Double(x, y, w, h);
     }
 
-    private void adjustForPadding(Rectangle2D b, float[] padding) {
-        if (padding != null) {
+    private void adjustForOutline(Rectangle2D b, float[] outline) {
+        if (outline != null) {
             double x = b.getX();
             double y = b.getY();
             double w = b.getWidth();
             double h = b.getHeight();
-            x -= padding[3];
-            y -= padding[0];
-            w += padding[1] + padding[3];
-            h += padding[0] + padding[2];
+            x -= outline[3];
+            y -= outline[0];
+            w += outline[1] + outline[3];
+            h += outline[0] + outline[2];
             b.setFrame(x, y, w, h);
         }
     }

@@ -28,22 +28,22 @@ import org.w3c.dom.DOMException;
 
 /**
  * This class represents an object which provide support for the
- * 'background-padding' shorthand property.
+ * 'background-outline' shorthand property.
  *
  * @author <a href="mailto:gadams@apache.org">Glenn Adams</a>
  * @version $Id$
  */
-public class BackgroundPaddingShorthandManager
+public class BackgroundOutlineShorthandManager
     extends AbstractValueFactory
     implements ShorthandManager {
 
-    public BackgroundPaddingShorthandManager() { }
+    public BackgroundOutlineShorthandManager() { }
     
     /**
      * Implements {@link ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-        return CSSConstants.CSS_BACKGROUND_PADDING_PROPERTY;
+        return CSSConstants.CSS_BACKGROUND_OUTLINE_PROPERTY;
     }
     
     /**
@@ -87,9 +87,9 @@ public class BackgroundPaddingShorthandManager
         default:
         }
 
-        ph.property(CSSConstants.CSS_BACKGROUND_PADDING_TOP_PROPERTY,    lus[0], imp);
-        ph.property(CSSConstants.CSS_BACKGROUND_PADDING_RIGHT_PROPERTY,  lus[1], imp);
-        ph.property(CSSConstants.CSS_BACKGROUND_PADDING_BOTTOM_PROPERTY, lus[2], imp);
-        ph.property(CSSConstants.CSS_BACKGROUND_PADDING_LEFT_PROPERTY,   lus[3], imp);
+        ph.property(CSSConstants.CSS_BACKGROUND_OUTLINE_TOP_PROPERTY,    lus[0], imp);
+        ph.property(CSSConstants.CSS_BACKGROUND_OUTLINE_RIGHT_PROPERTY,  lus[1], imp);
+        ph.property(CSSConstants.CSS_BACKGROUND_OUTLINE_BOTTOM_PROPERTY, lus[2], imp);
+        ph.property(CSSConstants.CSS_BACKGROUND_OUTLINE_LEFT_PROPERTY,   lus[3], imp);
     }
 }

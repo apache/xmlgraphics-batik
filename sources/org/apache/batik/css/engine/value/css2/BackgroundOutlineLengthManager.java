@@ -30,16 +30,16 @@ import org.w3c.css.sac.LexicalUnit;
 import org.w3c.dom.DOMException;
 
 /**
- * This class provides a factory for the 'background-padding-*' properties values.
+ * This class provides a factory for the 'background-outline-*' properties values.
  *
  * @author <a href="mailto:gadams@apache.org">Glenn Adams</a>
  * @version $Id$
  */
-public class BackgroundPaddingLengthManager extends LengthManager {
+public class BackgroundOutlineLengthManager extends LengthManager {
 
     protected String  prop;
 
-    public BackgroundPaddingLengthManager(String prop) {
+    public BackgroundOutlineLengthManager(String prop) {
         this.prop = prop;
     }
     
@@ -102,7 +102,7 @@ public class BackgroundPaddingLengthManager extends LengthManager {
      * this manager.
      */
     protected int getOrientation() {
-        // background paddings are always wrt to block width, event for top/bottom.
+        // background outlines are always wrt to block width, event for top/bottom.
         return HORIZONTAL_ORIENTATION;
     }
 }

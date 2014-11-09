@@ -351,8 +351,8 @@ public interface GVTAttributedCharacterIterator extends AttributedCharacterItera
         public static final TextAttribute LANGUAGE =
                                           new TextAttribute("LANGUAGE");
 
-        public static final TextAttribute BACKGROUND_PADDING =
-                                          new TextAttribute("BACKGROUND_PADDING");
+        public static final TextAttribute BACKGROUND_OUTLINE =
+                                          new TextAttribute("BACKGROUND_OUTLINE");
 
         // VALUES
 

@@ -303,21 +303,21 @@ public abstract class TextUtilities implements CSSConstants, ErrorConstants {
     }
 
     /**
-     * Converts the background-padding CSS value to a floats[] instance.
+     * Converts the background-outline CSS value to a floats[] instance.
      * @param e the element
      */
-    public static float[] convertBackgroundPadding(Element e) {
+    public static float[] convertBackgroundOutline(Element e) {
         Value v;
-        v = CSSUtilities.getComputedStyle(e, SVGCSSEngine.BACKGROUND_PADDING_TOP_INDEX);
+        v = CSSUtilities.getComputedStyle(e, SVGCSSEngine.BACKGROUND_OUTLINE_TOP_INDEX);
         float top = v.getFloatValue();
 
-        v = CSSUtilities.getComputedStyle(e, SVGCSSEngine.BACKGROUND_PADDING_RIGHT_INDEX);
+        v = CSSUtilities.getComputedStyle(e, SVGCSSEngine.BACKGROUND_OUTLINE_RIGHT_INDEX);
         float right = v.getFloatValue();
 
-        v = CSSUtilities.getComputedStyle(e, SVGCSSEngine.BACKGROUND_PADDING_BOTTOM_INDEX);
+        v = CSSUtilities.getComputedStyle(e, SVGCSSEngine.BACKGROUND_OUTLINE_BOTTOM_INDEX);
         float bottom = v.getFloatValue();
 
-        v = CSSUtilities.getComputedStyle(e, SVGCSSEngine.BACKGROUND_PADDING_LEFT_INDEX);
+        v = CSSUtilities.getComputedStyle(e, SVGCSSEngine.BACKGROUND_OUTLINE_LEFT_INDEX);
         float left = v.getFloatValue();
 
         return new float[] { top, right, bottom, left };

@@ -145,8 +145,8 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         = GVTAttributedCharacterIterator.TextAttribute.LINE_HEIGHT;
 
     public static final
-        AttributedCharacterIterator.Attribute BACKGROUND_PADDING
-        = GVTAttributedCharacterIterator.TextAttribute.BACKGROUND_PADDING;
+        AttributedCharacterIterator.Attribute BACKGROUND_OUTLINE
+        = GVTAttributedCharacterIterator.TextAttribute.BACKGROUND_OUTLINE;
 
     protected AttributedString laidoutText;
 
@@ -770,10 +770,10 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         switch(property) {                  // fall-through is intended
         case SVGCSSEngine.BACKGROUND_COLOR_INDEX:
         case SVGCSSEngine.BACKGROUND_MODE_INDEX:
-        case SVGCSSEngine.BACKGROUND_PADDING_BOTTOM_INDEX:
-        case SVGCSSEngine.BACKGROUND_PADDING_LEFT_INDEX:
-        case SVGCSSEngine.BACKGROUND_PADDING_RIGHT_INDEX:
-        case SVGCSSEngine.BACKGROUND_PADDING_TOP_INDEX:
+        case SVGCSSEngine.BACKGROUND_OUTLINE_BOTTOM_INDEX:
+        case SVGCSSEngine.BACKGROUND_OUTLINE_LEFT_INDEX:
+        case SVGCSSEngine.BACKGROUND_OUTLINE_RIGHT_INDEX:
+        case SVGCSSEngine.BACKGROUND_OUTLINE_TOP_INDEX:
         case SVGCSSEngine.FILL_INDEX:
         case SVGCSSEngine.FILL_OPACITY_INDEX:
         case SVGCSSEngine.STROKE_INDEX:
@@ -1640,9 +1640,9 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         result.put(PAINT_INFO, pi);
         elemTPI.put(element, pi);
 
-        // Background padding
-        float[] backgroundPadding = TextUtilities.convertBackgroundPadding(element);
-        result.put(BACKGROUND_PADDING, backgroundPadding);
+        // Background outline
+        float[] backgroundOutline = TextUtilities.convertBackgroundOutline(element);
+        result.put(BACKGROUND_OUTLINE, backgroundOutline);
 
         // Text path
         if (textPath != null) {

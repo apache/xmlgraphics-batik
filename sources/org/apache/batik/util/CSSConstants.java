@@ -38,11 +38,11 @@ public interface CSSConstants {
     String CSS_ALIGNMENT_BASELINE_PROPERTY = "alignment-baseline";
     String CSS_BACKGROUND_COLOR_PROPERTY = "background-color";
     String CSS_BACKGROUND_MODE_PROPERTY = "background-mode";
-    String CSS_BACKGROUND_PADDING_PROPERTY = "background-padding";
-    String CSS_BACKGROUND_PADDING_BOTTOM_PROPERTY = "background-padding-bottom";
-    String CSS_BACKGROUND_PADDING_LEFT_PROPERTY = "background-padding-left";
-    String CSS_BACKGROUND_PADDING_RIGHT_PROPERTY = "background-padding-right";
-    String CSS_BACKGROUND_PADDING_TOP_PROPERTY = "background-padding-top";
+    String CSS_BACKGROUND_OUTLINE_PROPERTY = "background-outline";
+    String CSS_BACKGROUND_OUTLINE_BOTTOM_PROPERTY = "background-outline-bottom";
+    String CSS_BACKGROUND_OUTLINE_LEFT_PROPERTY = "background-outline-left";
+    String CSS_BACKGROUND_OUTLINE_RIGHT_PROPERTY = "background-outline-right";
+    String CSS_BACKGROUND_OUTLINE_TOP_PROPERTY = "background-outline-top";
     String CSS_BASELINE_SHIFT_PROPERTY = "baseline-shift";
     String CSS_CLIP_PROPERTY = "clip";
     String CSS_CLIP_PATH_PROPERTY = "clip-path";
