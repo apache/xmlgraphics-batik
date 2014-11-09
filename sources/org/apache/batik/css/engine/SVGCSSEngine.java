@@ -192,7 +192,7 @@ public class SVGCSSEngine extends CSSEngine {
      */
     public static final ValueManager[] SVG_VALUE_MANAGERS = {
         new AlignmentBaselineManager(),
-        new SVGColorManager(CSSConstants.CSS_BACKGROUND_PROPERTY, ValueConstants.TRANSPARENT_VALUE),
+        new SVGColorManager(CSSConstants.CSS_BACKGROUND_COLOR_PROPERTY, ValueConstants.TRANSPARENT_VALUE),
         new BackgroundModeManager(),
         new BackgroundPaddingLengthManager(CSSConstants.CSS_BACKGROUND_PADDING_BOTTOM_PROPERTY),
         new BackgroundPaddingLengthManager(CSSConstants.CSS_BACKGROUND_PADDING_LEFT_PROPERTY),
@@ -286,8 +286,8 @@ public class SVGCSSEngine extends CSSEngine {
     // The property indexes.
     //
     public static final int ALIGNMENT_BASELINE_INDEX = 0;
-    public static final int BACKGROUND_INDEX = ALIGNMENT_BASELINE_INDEX + 1;
-    public static final int BACKGROUND_MODE_INDEX = BACKGROUND_INDEX + 1;
+    public static final int BACKGROUND_COLOR_INDEX = ALIGNMENT_BASELINE_INDEX + 1;
+    public static final int BACKGROUND_MODE_INDEX = BACKGROUND_COLOR_INDEX + 1;
     public static final int BACKGROUND_PADDING_BOTTOM_INDEX = BACKGROUND_MODE_INDEX + 1;
     public static final int BACKGROUND_PADDING_LEFT_INDEX = BACKGROUND_PADDING_BOTTOM_INDEX + 1;
     public static final int BACKGROUND_PADDING_RIGHT_INDEX = BACKGROUND_PADDING_LEFT_INDEX + 1;

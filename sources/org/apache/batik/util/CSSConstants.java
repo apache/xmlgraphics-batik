@@ -36,7 +36,7 @@ public interface CSSConstants {
     // The CSS property names.
     //
     String CSS_ALIGNMENT_BASELINE_PROPERTY = "alignment-baseline";
-    String CSS_BACKGROUND_PROPERTY = "background";
+    String CSS_BACKGROUND_COLOR_PROPERTY = "background-color";
     String CSS_BACKGROUND_MODE_PROPERTY = "background-mode";
     String CSS_BACKGROUND_PADDING_PROPERTY = "background-padding";
     String CSS_BACKGROUND_PADDING_BOTTOM_PROPERTY = "background-padding-bottom";

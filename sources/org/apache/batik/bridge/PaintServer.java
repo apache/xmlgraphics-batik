@@ -260,7 +260,7 @@ public abstract class PaintServer
                                          GraphicsNode backgroundNode,
                                          BridgeContext ctx) {
         Value v = CSSUtilities.getComputedStyle
-            (backgroundElement, SVGCSSEngine.BACKGROUND_INDEX);
+            (backgroundElement, SVGCSSEngine.BACKGROUND_COLOR_INDEX);
         float opacity = 1f;
 
         return convertPaint(backgroundElement,

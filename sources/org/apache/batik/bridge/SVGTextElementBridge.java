@@ -768,8 +768,12 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
      */
     protected void handleCSSPropertyChanged(int property) {
         switch(property) {                  // fall-through is intended
-        case SVGCSSEngine.BACKGROUND_INDEX:
+        case SVGCSSEngine.BACKGROUND_COLOR_INDEX:
         case SVGCSSEngine.BACKGROUND_MODE_INDEX:
+        case SVGCSSEngine.BACKGROUND_PADDING_BOTTOM_INDEX:
+        case SVGCSSEngine.BACKGROUND_PADDING_LEFT_INDEX:
+        case SVGCSSEngine.BACKGROUND_PADDING_RIGHT_INDEX:
+        case SVGCSSEngine.BACKGROUND_PADDING_TOP_INDEX:
         case SVGCSSEngine.FILL_INDEX:
         case SVGCSSEngine.FILL_OPACITY_INDEX:
         case SVGCSSEngine.STROKE_INDEX:
@@ -1942,7 +1946,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             (sm.isNullCascaded(SVGCSSEngine.STROKE_INDEX)) &&
             (sm.isNullCascaded(SVGCSSEngine.STROKE_WIDTH_INDEX)) &&
             (sm.isNullCascaded(SVGCSSEngine.OPACITY_INDEX)) &&
-            (sm.isNullCascaded(SVGCSSEngine.BACKGROUND_INDEX)) &&
+            (sm.isNullCascaded(SVGCSSEngine.BACKGROUND_COLOR_INDEX)) &&
             (sm.isNullCascaded(SVGCSSEngine.BACKGROUND_MODE_INDEX))) {
             // If not, keep the same decorations.
             return pi;
@@ -1966,7 +1970,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         pi.visible      = CSSUtilities.convertVisibility(element);
         StyleMap sm = ((CSSStylableElement)element).getComputedStyleMap(null);
         Paint backgroundPaint = PaintServer.convertBackgroundPaint(element, node, ctx);
-        if (!sm.isNullCascaded(SVGCSSEngine.BACKGROUND_INDEX))
+        if (!sm.isNullCascaded(SVGCSSEngine.BACKGROUND_COLOR_INDEX))
             pi.backgroundPaint = backgroundPaint;
         BackgroundMode backgroundMode = TextUtilities.convertBackgroundMode(element);
         if (!sm.isNullCascaded(SVGCSSEngine.BACKGROUND_MODE_INDEX))
