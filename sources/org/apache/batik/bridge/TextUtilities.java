@@ -159,12 +159,17 @@ public abstract class TextUtilities implements CSSConstants, ErrorConstants {
             (v == SVG12ValueConstants.NORMAL_VALUE)) {
             return fontSize*1.1f;
         }
-        float lineHeight = v.getFloatValue();
+        float lineHeight = fontSize;
         if (v instanceof ComputedValue)
             v = ((ComputedValue)v).getComputedValue();
-        if ((v instanceof LineHeightValue) &&
-            ((LineHeightValue)v).getFontSizeRelative())
-            lineHeight *= fontSize;
+        if (v instanceof LineHeightValue) {
+            lineHeight = v.getFloatValue();
+            if (((LineHeightValue)v).getFontSizeRelative())
+                lineHeight *= fontSize;
+        } else if (v.getPrimitiveType() == CSSPrimitiveValue.CSS_IDENT) {
+            if (v.getStringValue().equals(CSS_NORMAL_VALUE))
+                lineHeight = fontSize * 1.1f;
+        }
         return Float.valueOf(lineHeight);
     }
 

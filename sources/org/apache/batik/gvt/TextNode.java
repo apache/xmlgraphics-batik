@@ -216,7 +216,7 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
      */
     public void setAttributedCharacterIterator
         (AttributedCharacterIterator newAci) {
-        this.setAttributedCharacterIterator(newAci);
+        this.setAttributedCharacterIterator(newAci, null);
     }
 
     public void setAttributedCharacterIterator
