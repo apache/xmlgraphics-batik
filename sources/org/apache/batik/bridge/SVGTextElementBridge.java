@@ -101,8 +101,6 @@ import org.w3c.dom.svg.SVGTextPositioningElement;
 public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
     implements SVGTextContent {
 
-    public static final Color TRANSPARENT = new Color(0, 0, 0, 0);
-
     protected static final Integer ZERO = new Integer(0);
 
     public static final
@@ -1970,10 +1968,10 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         pi.visible      = CSSUtilities.convertVisibility(element);
         StyleMap sm = ((CSSStylableElement)element).getComputedStyleMap(null);
         Paint backgroundPaint = PaintServer.convertBackgroundPaint(element, node, ctx);
-        if (!sm.isNullCascaded(SVGCSSEngine.BACKGROUND_COLOR_INDEX))
+        if ((pi.backgroundPaint == null) || !sm.isNullCascaded(SVGCSSEngine.BACKGROUND_COLOR_INDEX))
             pi.backgroundPaint = backgroundPaint;
         BackgroundMode backgroundMode = TextUtilities.convertBackgroundMode(element);
-        if (!sm.isNullCascaded(SVGCSSEngine.BACKGROUND_MODE_INDEX))
+        if ((pi.backgroundMode == null) || !sm.isNullCascaded(SVGCSSEngine.BACKGROUND_MODE_INDEX))
             pi.backgroundMode = backgroundMode;
         pi.fillPaint    = PaintServer.convertFillPaint  (element, node, ctx);
         pi.strokePaint  = PaintServer.convertStrokePaint(element, node, ctx);
