@@ -226,11 +226,70 @@ To display the available targets type:
       <os family="windows"/>
     </condition>
   
+    <property name="build.dir" value="${basedir}/${build}"/>
+    <property name="build.unit.tests.dir" value="${build.dir}/test-classes"/>
+    <property name="test.dir" value="${basedir}/test"/>
+    <property name="junit.fork" value="yes"/>
+    <property name="junit.formatter.brief" value="on"/>
+    <property name="junit.haltonfailure" value="off"/>
+    <property name="junit.html.reports.dir" value="${build.dir}/test-reports/html"/>
+    <property name="junit.printsummary" value="off"/>
+    <property name="junit.reports.dir" value="${build.dir}/test-reports"/>
+    <property name="lib-tools" value="${basedir}/lib/build"/>
+
+    <path id="junit-libs-build-classpath">
+      <fileset dir="${basedir}/lib">
+        <include name="*.jar"/>
+      </fileset>
+    </path>
+
+    <path id="junit-libs-tools-build-classpath">
+      <path refid="junit-libs-build-classpath"/>
+      <fileset dir="${lib-tools}">
+        <include name="*.jar"/>
+      </fileset>
+    </path>
+
+    <path id="junit-standard-classpath">
+      <pathelement location="${build.unit.tests.dir}"/>
+      <path refid="junit-libs-tools-build-classpath"/>
+      <fileset dir="${build.dir}/lib">
+        <include name="${project}-all.jar"/>
+      </fileset>
+    </path>
+
+    <available property="junit.present" classname="org.junit.Test" classpathref="junit-libs-tools-build-classpath"/>
+    <condition property="junit.message" value="    JUnit:     Support PRESENT">
+      <equals arg1="${junit.present}" arg2="true"/>
+    </condition>
+    <condition property="junit.message" value="    JUnit:     Support NOT Present - Committers are required to have JUnit working">
+      <not>
+        <equals arg1="${junit.present}" arg2="true"/>
+      </not>
+    </condition>
+
+    <condition property="xmlunit.present">
+      <and>
+        <available classname="org.custommonkey.xmlunit.XMLTestCase" classpathref="junit-libs-tools-build-classpath"/>
+        <isset property="junit.present"/>
+      </and>
+    </condition>
+    <condition property="xmlunit.message" value="    XMLUnit:   Support PRESENT">
+      <equals arg1="${xmlunit.present}" arg2="true"/>
+    </condition>
+    <condition property="xmlunit.message" value="    XMLUnit:   Support NOT Present - you can get it from http://xmlunit.sourceforge.net">
+      <not>
+        <equals arg1="${xmlunit.present}" arg2="true"/>
+      </not>
+    </condition>
+
     <!-- Info ............................................................... -->
     <echo message=" == ${Project} ${completeVersion} build file ================================"/>
     <echo message=""/>
     <echo message="    JAVA_HOME: ${env.JAVA_HOME}"/>
     <echo message="    VM:        ${java.vm.version}, ${java.vm.vendor}"/>
+    <echo message="${junit.message}"/>
+    <echo message="${xmlunit.message}"/>
   </target>
 
   <!-- Help ............................................................... -->
@@ -2233,4 +2292,132 @@ JAVA=/usr/bin/java
     <delete file="${project}-docs-${completeVersion}.tar.gz"/>
     <delete file="${project}-src-${completeVersion}.tar.gz"/>
   </target>
+
+  <!-- Junit testing .. -->
+
+  <presetdef name="junit">
+    <junit haltonfailure="${junit.haltonfailure}"
+      fork="${junit.fork}"
+      printsummary="${junit.printsummary}"
+      maxmemory="256m"/>
+  </presetdef>
+
+  <macrodef name="junit-run">
+    <attribute name="title"/>
+    <attribute name="basedir" default=""/>
+    <attribute name="testsuite"/>
+    <attribute name="outfile"/>
+    <attribute name="classpath" default="junit-standard-classpath"/>
+    <sequential>
+      <echo message="Running @{title} tests..."/>
+      <junit dir="${basedir}" haltonfailure="yes" fork="${junit.fork}" forkmode="once" 
+        errorproperty="batik.junit.error" failureproperty="batik.junit.failure" printsummary="${junit.printsummary}">
+        <sysproperty key="basedir" value="${basedir}/@{basedir}"/>
+        <sysproperty key="jawa.awt.headless" value="true"/>
+        <formatter type="brief" usefile="false" if="junit.formatter.brief.use"/>
+        <formatter type="plain" usefile="true"/>
+        <formatter type="xml" usefile="true"/>
+        <classpath>
+          <path refid="@{classpath}"/>
+        </classpath>
+	<assertions>
+	  <enable/>
+	</assertions>
+        <test name="@{testsuite}" todir="${junit.reports.dir}" outfile="@{outfile}"/>
+      </junit>
+    </sequential>
+  </macrodef>
+
+  <target name="junit-init" depends="init" if="xmlunit.present">
+    <condition property="junit.formatter.brief.use">
+      <istrue value="${junit.formatter.brief}"/>
+    </condition>
+  </target>
+
+  <target name="junit-with-xmlunit" depends="junit-init" if="xmlunit.present">
+    <patternset id="test-sources"/>
+  </target>
+
+  <target name="junit-without-xmlunit" depends="junit-init" unless="xmlunit.present">
+    <patternset id="test-sources">
+      <exclude name="**/intermediate/*"/>
+    </patternset>
+  </target>
+
+  <target name="junit-compile-java" depends="all-jar, junit-with-xmlunit, junit-without-xmlunit" if="junit.present">
+    <mkdir dir="${build.unit.tests.dir}"/>
+    <mkdir dir="${junit.reports.dir}"/>
+    <javac destdir="${build.unit.tests.dir}" includeAntRuntime="true">
+      <src path="${test.dir}/java"/>
+      <patternset refid="test-sources"/>
+      <classpath>
+        <path refid="junit-libs-tools-build-classpath"/>
+        <fileset dir="${build.dir}/lib">
+          <include name="${project}-all.jar"/>
+        </fileset>
+      </classpath>
+    </javac>
+    <copy todir="${build.unit.tests.dir}">
+      <fileset dir="${test.dir}/java">
+        <include name="**/*.svg"/>
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="junit-compile-copy-resources" if="junit.present">
+<!--    <copy todir="${build.unit.tests.dir}"/> -->
+  </target>
+
+  <target name="junit-compile" depends="junit-init, junit-compile-java, junit-compile-copy-resources" description="Compiles BATIK's JUnit tests" if="junit.present"/>
+
+  <target name="junit-all" depends="junit-compile" description="Runs BATIK's JUnit basic tests" if="junit.present">
+    <junit dir="${basedir}" haltonfailure="yes" fork="${junit.fork}" forkmode="once" 
+      errorproperty="batik.junit.error" failureproperty="batik.junit.failure" printsummary="${junit.printsummary}">
+      <sysproperty key="jawa.awt.headless" value="true"/>
+      <formatter type="brief" usefile="false" if="junit.formatter.brief.use"/>
+      <formatter type="plain" usefile="true"/>
+      <formatter type="xml" usefile="true"/>
+      <classpath>
+        <path refid="junit-standard-classpath"/>
+      </classpath>
+      <assertions>
+        <enable/>
+      </assertions>
+      <batchtest todir="${junit.reports.dir}">
+        <fileset dir="${build.unit.tests.dir}" includes="**/*TestCase.class"/>
+      </batchtest>
+    </junit>
+  </target>
+
+  <target name="junit" depends="junit-all" description="Runs all of BATIK's JUnit tests" 
+    if="junit.present">
+    <fail>
+      <condition>
+        <or>
+          <isset property="batik.junit.error"/>
+          <isset property="batik.junit.failure"/>
+        </or>
+      </condition>
+NOTE:
+**************************************************************************
+* One or more of the Junit tests had Failures or Errors or were skipped! *
+*         Please check the output above for relevant messages.           *
+*    Or use the "junit-reports" target to generate HTML test reports.    *
+**************************************************************************
+    </fail>
+    <echo>All Junit tests passed!</echo>
+    <echo>Use the "junit-reports" target to generate HTML test reports</echo>
+  </target>
+
+  <target name="junit-reports" description="Generates HTML test reports">
+    <mkdir dir="${junit.html.reports.dir}"/>
+    <junitreport todir="${junit.reports.dir}">
+      <fileset dir="${junit.reports.dir}">
+        <include name="TEST-*.xml"/>
+      </fileset>
+      <report format="frames" todir="${junit.html.reports.dir}"/>
+    </junitreport>
+    <echo>JUnit HTML test reports should be available in ${junit.html.reports.dir}</echo>
+  </target>
+
 </project>
