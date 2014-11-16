@@ -61,11 +61,11 @@ public class SVGAccuracyTestValidator extends DefaultTestSuite {
                                  "dummyFile.svg");
 
             Test t 
-                = new SVGAccuracyTest(painter, refURL);
+                = new SVGAccuracyTestCase(painter, refURL);
             
             setConfig(t,
                       false,
-                      SVGAccuracyTest.ERROR_CANNOT_GENERATE_SVG);
+                      SVGAccuracyTestCase.ERROR_CANNOT_GENERATE_SVG);
 
             return super.runImpl();
         }
@@ -84,11 +84,11 @@ public class SVGAccuracyTestValidator extends DefaultTestSuite {
             URL refURL = new URL("http",
                                  "dummyHost",
                                  "dummyFile.svg");
-            Test t = new SVGAccuracyTest(painter, refURL);
+            Test t = new SVGAccuracyTestCase(painter, refURL);
             
             setConfig(t,
                       false,
-                      SVGAccuracyTest.ERROR_CANNOT_GENERATE_SVG);
+                      SVGAccuracyTestCase.ERROR_CANNOT_GENERATE_SVG);
 
             return super.runImpl();
         }
@@ -105,11 +105,11 @@ public class SVGAccuracyTestValidator extends DefaultTestSuite {
 
     static class NullReferenceURL extends ValidPainterTest {
         public TestReport runImpl() throws Exception {
-            Test t = new SVGAccuracyTest(this, null);
+            Test t = new SVGAccuracyTestCase(this, null);
 
             setConfig(t,
                       false,
-                      SVGAccuracyTest.ERROR_CANNOT_OPEN_REFERENCE_SVG_FILE);
+                      SVGAccuracyTestCase.ERROR_CANNOT_OPEN_REFERENCE_SVG_FILE);
 
             return super.runImpl();
         }
@@ -117,14 +117,14 @@ public class SVGAccuracyTestValidator extends DefaultTestSuite {
 
     static class InexistantReferenceURL extends ValidPainterTest {
         public TestReport runImpl() throws Exception {
-            Test t = new SVGAccuracyTest(this,
+            Test t = new SVGAccuracyTestCase(this,
                                          new URL("http",
                                                  "dummyHost",
                                                  "dummyFile.svg"));
 
             setConfig(t,
                       false,
-                      SVGAccuracyTest.ERROR_CANNOT_OPEN_REFERENCE_SVG_FILE);
+                      SVGAccuracyTestCase.ERROR_CANNOT_OPEN_REFERENCE_SVG_FILE);
 
             return super.runImpl();
         }
@@ -136,12 +136,12 @@ public class SVGAccuracyTestValidator extends DefaultTestSuite {
                                                null);
             tmpFile.deleteOnExit();
 
-            Test t = new SVGAccuracyTest(this,
+            Test t = new SVGAccuracyTestCase(this,
                                          tmpFile.toURL());
 
             setConfig(t,
                       false,
-                      SVGAccuracyTest.ERROR_GENERATED_SVG_INACCURATE);
+                      SVGAccuracyTestCase.ERROR_GENERATED_SVG_INACCURATE);
 
             return super.runImpl();
         }
@@ -153,14 +153,14 @@ public class SVGAccuracyTestValidator extends DefaultTestSuite {
                                                null);
             tmpFile.deleteOnExit();
 
-            SVGAccuracyTest t = new SVGAccuracyTest(this,
+            SVGAccuracyTestCase t = new SVGAccuracyTestCase(this,
                                                     tmpFile.toURL());
             
             t.setSaveSVG(tmpFile);
 
             setConfig(t,
                       false,
-                      SVGAccuracyTest.ERROR_GENERATED_SVG_INACCURATE);
+                      SVGAccuracyTestCase.ERROR_GENERATED_SVG_INACCURATE);
 
             // This first run should fail but it should
             // have created the reference image in tmpFile

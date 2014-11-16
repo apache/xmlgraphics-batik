@@ -18,19 +18,20 @@
  */
 package org.apache.batik.test.xml;
 
-import org.apache.batik.test.DefaultTestSuite;
+import org.apache.batik.test.AbstractTest;
  
+import org.junit.Test;
+
 /**
- * Dummy TestSuite which always passes. Needed for the test infrastructure
+ * Dummy Test which always passes. Needed for the test infrastructure
  * validation.
  *
  * @author <a href="mailto:vhardy@apache.lorg">Vincent Hardy</a>
  * @version $Id$
  */
-public class DummyValidTestSuite extends DefaultTestSuite{
-    public DummyValidTestSuite(){
-        addTest(new DummyValidTestCase() {{setId("1");}});
-        addTest(new DummyValidTestCase() {{setId("2");}});
+public class DummyValidTestCase extends AbstractTest {
+    @Test
+    public void testDummy() {
     }
 }
 

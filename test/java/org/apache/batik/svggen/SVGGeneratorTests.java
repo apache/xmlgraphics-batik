@@ -179,8 +179,8 @@ public class SVGGeneratorTests extends DefaultTestSuite {
     private Test makeSVGAccuracyTest(Painter painter, String id){
         String cl = PLAIN_GENERATION_PREFIX + getNonQualifiedClassName(painter);
 
-        SVGAccuracyTest test
-            = new SVGAccuracyTest(painter, getReferenceURL(painter, PLAIN_GENERATION_PREFIX));
+        SVGAccuracyTestCase test
+            = new SVGAccuracyTestCase(painter, getReferenceURL(painter, PLAIN_GENERATION_PREFIX));
 
         test.setSaveSVG(new File(GENERATOR_REFERENCE_BASE + CANDIDATE_REF_DIR + "/" + cl + SVG_EXTENSION));
         test.setName(id + "-DefaultContextGeneration");

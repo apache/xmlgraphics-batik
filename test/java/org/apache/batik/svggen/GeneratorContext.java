@@ -39,7 +39,7 @@ import org.apache.batik.util.SVGConstants;
  * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>
  * @version $Id$
  */
-public class GeneratorContext extends SVGAccuracyTest implements SVGConstants {
+public class GeneratorContext extends SVGAccuracyTestCase implements SVGConstants {
     public static class TestIDGenerator extends SVGIDGenerator {
         public String generateID(String prefix) {
             return "test"+super.generateID(prefix);
