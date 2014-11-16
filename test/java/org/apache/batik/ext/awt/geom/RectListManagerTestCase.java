@@ -37,9 +37,14 @@ import java.util.StringTokenizer;
 import org.apache.batik.test.AbstractTest;
 import org.apache.batik.test.DefaultTestReport;
 import org.apache.batik.test.TestReport;
-import org.apache.batik.util.Base64Test;
+import org.apache.batik.util.Base64TestCase;
 
+import org.junit.Ignore;
+import org.junit.Test;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * This test validates that the text selection API's work properly.
@@ -47,7 +52,8 @@ import org.apache.batik.util.Base64Test;
  * @author <a href="mailto:deweese@apache.org">Thomas DeWeese</a>
  * @version $Id$
  */
-public class RectListManagerTest extends AbstractTest {
+@Ignore
+public class RectListManagerTestCase extends AbstractTest {
 
     /**
      * Directory for reference files
@@ -106,7 +112,7 @@ public class RectListManagerTest extends AbstractTest {
      * @param rects  The rects file to load
      * @param ref    The reference file.
      */
-    public RectListManagerTest(String rects, String ref) {
+    public RectListManagerTestCase(String rects, String ref) {
         this.rects = resolveURL(REFERENCE_DIR+rects);
         this.ref   = resolveURL(REFERENCE_DIR+ref);
         this.var   = resolveURL(REFERENCE_DIR+VARIATION_DIR+ref);
@@ -378,7 +384,7 @@ public class RectListManagerTest extends AbstractTest {
             return mismatch;
         }
         public void run() {
-            mismatch = Base64Test.compareStreams (is1, is2, true);
+            mismatch = Base64TestCase.compareStreams (is1, is2, true);
         }
     }
 }

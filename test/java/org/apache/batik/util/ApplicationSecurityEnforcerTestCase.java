@@ -20,20 +20,28 @@ package org.apache.batik.util;
 
 import org.apache.batik.test.*;
 
+import org.junit.Ignore;
+import org.junit.Test;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 /**
  * Validates the operation of the security enforcer class.
  *
  * @author <a mailto="vincent.hardy@sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-public class ApplicationSecurityEnforcerTest extends DefaultTestSuite {
+@Ignore
+public class ApplicationSecurityEnforcerTestCase extends DefaultTestSuite {
     static final Class APP_MAIN_CLASS = org.apache.batik.apps.svgbrowser.Main.class;
     static final String APP_SECURITY_POLICY = "org/apache/batik/apps/svgbrowser/resources/svgbrowser.policy";
 
     /**
      * In the constructor, append atomic tests
      */
-    public ApplicationSecurityEnforcerTest(){
+    public ApplicationSecurityEnforcerTestCase(){
         addTest(new CheckNoSecurityManagerOverride());
         addTest(new CheckSecurityEnforcement());
         addTest(new CheckSecurityRemoval());

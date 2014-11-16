@@ -23,6 +23,13 @@ import java.awt.geom.*;
 import java.awt.image.*;
 import java.io.*;
 
+import org.junit.Ignore;
+import org.junit.Test;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 /**
  * This test validates the PNGEncoder operation. It creates a
  * BufferedImage, then encodes it with the PNGEncoder, then
@@ -31,7 +38,8 @@ import java.io.*;
  * @author <a href="mailto:vhardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-public class PNGEncoderTest extends AbstractTest {
+@Ignore
+public class PNGEncoderTestCase extends AbstractTest {
     /**
      * Error when image cannot be encoded
      * {0} = trace for the exception which was reported

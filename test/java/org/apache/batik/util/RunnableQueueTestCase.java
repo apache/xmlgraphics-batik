@@ -25,7 +25,15 @@ import java.util.Random;
 import org.apache.batik.test.AbstractTest;
 import org.apache.batik.test.TestReport;
 
-public class RunnableQueueTest extends AbstractTest {
+import org.junit.Ignore;
+import org.junit.Test;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+@Ignore
+public class RunnableQueueTestCase extends AbstractTest {
 
     public int nThreads;
     public int activeThreads;
@@ -36,10 +44,10 @@ public class RunnableQueueTest extends AbstractTest {
      * Creates a new RunnableQueueTest.
      * @param nThreads number of runnables to queue
      */
-    public RunnableQueueTest(int nThreads) {
+    public RunnableQueueTestCase(int nThreads) {
         this.nThreads = nThreads;
     }
-    public RunnableQueueTest(Integer nThreads) {
+    public RunnableQueueTestCase(Integer nThreads) {
         this((nThreads==null)?10:nThreads.intValue());
     }
         
@@ -176,9 +184,9 @@ public class RunnableQueueTest extends AbstractTest {
                 }
             } catch (InterruptedException ie) {
             }
-            synchronized(RunnableQueueTest.this) {
+            synchronized(RunnableQueueTestCase.this) {
                 activeThreads--;
-                RunnableQueueTest.this.notify();
+                RunnableQueueTestCase.this.notify();
             }
         }
     }
@@ -205,7 +213,7 @@ public class RunnableQueueTest extends AbstractTest {
     }
 
     public static void main(String []args) {
-        RunnableQueueTest rqt = new RunnableQueueTest(20);
+        RunnableQueueTestCase rqt = new RunnableQueueTestCase(20);
         try {
             rqt.runImpl();
         } catch (Exception e) {

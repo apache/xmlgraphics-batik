@@ -26,6 +26,12 @@ import java.io.OutputStream;
 import org.apache.batik.util.Base64DecodeStream;
 import org.apache.batik.util.Base64EncoderStream;
 
+import org.junit.Ignore;
+import org.junit.Test;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * This test validates the PNGEncoder operation when combined with
@@ -34,7 +40,8 @@ import org.apache.batik.util.Base64EncoderStream;
  * @author <a href="mailto:vhardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-public class Base64PNGEncoderTest extends PNGEncoderTest {
+@Ignore
+public class Base64PNGEncoderTestCase extends PNGEncoderTestCase {
     /**
      * Template method for building the PNG output stream
      */

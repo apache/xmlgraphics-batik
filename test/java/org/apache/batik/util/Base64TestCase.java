@@ -32,13 +32,21 @@ import java.io.PrintWriter;
 
 import java.net.URL;
 
+import org.junit.Ignore;
+import org.junit.Test;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 /**
  * This test validates that the Base65 encoder/decoders work properly.
  *
  * @author <a href="mailto:deweese@apache.org">Thomas DeWeese</a>
  * @version $Id$
  */
-public class Base64Test extends AbstractTest {
+@Ignore
+public class Base64TestCase extends AbstractTest {
     /**
      * Error when bad action string given.
      * {0} = Bad action string
@@ -85,7 +93,7 @@ public class Base64Test extends AbstractTest {
      * @param in     The source file to apply 'action' to.
      * @param ref    The reference file.
      */
-    public Base64Test(String action, URL in, URL ref) {
+    public Base64TestCase(String action, URL in, URL ref) {
         this.action = action;
         this.in     = in;
         this.ref    = ref;
@@ -95,7 +103,7 @@ public class Base64Test extends AbstractTest {
      * Constructor, for round trip testing (only one file required).
      * @param in     The source file to round trip.
      */
-    public Base64Test(URL in) {
+    public Base64TestCase(URL in) {
         this.action = "ROUND";
         this.in     = in;
     }
