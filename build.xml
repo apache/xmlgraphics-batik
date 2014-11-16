@@ -232,9 +232,9 @@ To display the available targets type:
     <property name="junit.fork" value="yes"/>
     <property name="junit.formatter.brief" value="on"/>
     <property name="junit.haltonfailure" value="off"/>
-    <property name="junit.html.reports.dir" value="${build.dir}/test-reports/html"/>
     <property name="junit.printsummary" value="off"/>
     <property name="junit.reports.dir" value="${build.dir}/test-reports"/>
+    <property name="junit.html.reports.dir" value="${junit.reports.dir}/html"/>
     <property name="lib-tools" value="${basedir}/lib/build"/>
 
     <path id="junit-libs-build-classpath">
@@ -649,7 +649,7 @@ JAVA=/usr/bin/java
         <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
         <attribute name="Build-Id" value="${build.id}"/>
         <attribute name="Main-Class" value="org.apache.batik.apps.rasterizer.Main"/>
-        <attribute name="Class-Path" value="batik-ext-${completeVersion}.jar batik-dom-${completeVersion}.jar batik-css-${completeVersion}.jar batik-svg-dom-${completeVersion}.jar batik-gvt-${completeVersion}.jar batik-parser-${completeVersion}.jar batik-script-${completeVersion}.jar batik-bridge-${completeVersion}.jar batik-anim-${completeVersion}.jar batik-transcoder-${completeVersion}.jar batik-awt-util-${completeVersion}.jar batik-codec-${completeVersion}.jar batik-util-${completeVersion}.jar batik-xml-${completeVersion}.jar xerces-2.5.0.jar xalan-2.6.0.jar xml-apis-1.3.04.jar xml-apis-ext-1.3.04.jar fop-0.94.jar batik-js.jar"/>
+        <attribute name="Class-Path" value="batik-ext-${completeVersion}.jar batik-dom-${completeVersion}.jar batik-css-${completeVersion}.jar batik-svg-dom-${completeVersion}.jar batik-gvt-${completeVersion}.jar batik-parser-${completeVersion}.jar batik-script-${completeVersion}.jar batik-bridge-${completeVersion}.jar batik-anim-${completeVersion}.jar batik-transcoder-${completeVersion}.jar batik-awt-util-${completeVersion}.jar batik-codec-${completeVersion}.jar batik-util-${completeVersion}.jar batik-xml-${completeVersion}.jar xerces-2.5.0.jar xalan-2.6.0.jar xml-apis-1.3.04.jar xml-apis-ext-1.3.04.jar batik-js.jar"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
       <fileset dir="${dest}">
@@ -2357,15 +2357,15 @@ JAVA=/usr/bin/java
         </fileset>
       </classpath>
     </javac>
-    <copy todir="${build.unit.tests.dir}">
-      <fileset dir="${test.dir}/java">
-        <include name="**/*.svg"/>
-      </fileset>
-    </copy>
   </target>
 
   <target name="junit-compile-copy-resources" if="junit.present">
-<!--    <copy todir="${build.unit.tests.dir}"/> -->
+    <copy todir="${build.unit.tests.dir}">
+      <fileset dir="${test.dir}/resources">
+        <include name="META-INF/**"/>
+        <include name="**/*.properties"/>
+      </fileset>
+    </copy>
   </target>
 
   <target name="junit-compile" depends="junit-init, junit-compile-java, junit-compile-copy-resources" description="Compiles BATIK's JUnit tests" if="junit.present"/>
@@ -2409,7 +2409,7 @@ NOTE:
     <echo>Use the "junit-reports" target to generate HTML test reports</echo>
   </target>
 
-  <target name="junit-reports" description="Generates HTML test reports">
+  <target name="junit-reports" depends="junit-init" description="Generates HTML test reports">
     <mkdir dir="${junit.html.reports.dir}"/>
     <junitreport todir="${junit.reports.dir}">
       <fileset dir="${junit.reports.dir}">

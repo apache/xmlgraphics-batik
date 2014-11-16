@@ -119,7 +119,7 @@ public class SVGRenderingAccuracyTestValidator extends DefaultTestSuite {
      * Creates a SVG source URL for the given svg content
      */
     public static URL createSVGSourceURL(String svgContent) throws Exception{
-        File tmpFile = File.createTempFile(SVGRenderingAccuracyTest.TEMP_FILE_PREFIX,
+        File tmpFile = File.createTempFile(SVGRenderingAccuracyTestCase.TEMP_FILE_PREFIX,
                                            null);
         FileWriter writer = new FileWriter(tmpFile);
         writer.write(svgContent);
@@ -133,8 +133,8 @@ public class SVGRenderingAccuracyTestValidator extends DefaultTestSuite {
     public static URL createValidReferenceImage(String svgContent) throws Exception{
         TranscoderInput validSrc = new TranscoderInput(new StringReader(svgContent));
         
-        File tmpFile = File.createTempFile(SVGRenderingAccuracyTest.TEMP_FILE_PREFIX,
-                                           SVGRenderingAccuracyTest.TEMP_FILE_SUFFIX);
+        File tmpFile = File.createTempFile(SVGRenderingAccuracyTestCase.TEMP_FILE_PREFIX,
+                                           SVGRenderingAccuracyTestCase.TEMP_FILE_SUFFIX);
         
         TranscoderOutput validDst 
             = new TranscoderOutput(new FileOutputStream(tmpFile));
@@ -184,8 +184,8 @@ public class SVGRenderingAccuracyTestValidator extends DefaultTestSuite {
         }
 
         public TestReport runImpl() throws Exception {
-            SVGRenderingAccuracyTest t 
-                = new SamplesRenderingTest();
+            SVGRenderingAccuracyTestCase t 
+                = new SamplesRenderingTestCase();
 
             t.setId(svgURL);
 
@@ -228,7 +228,7 @@ public class SVGRenderingAccuracyTestValidator extends DefaultTestSuite {
 
 
     /**
-     * Creates an <code>SVGRenderingAccuracyTest</code> with an
+     * Creates an <code>SVGRenderingAccuracyTestCase</code> with an
      * invalid URL for the source SVG. Checks that this 
      * error is reported as a failure.
      */
@@ -242,19 +242,19 @@ public class SVGRenderingAccuracyTestValidator extends DefaultTestSuite {
             // Create a valid reference image
             URL refImgURL = createValidReferenceImage(validSVG);
 
-            Test t = new SVGRenderingAccuracyTest(invalidSVGURL.toString(),
+            Test t = new SVGRenderingAccuracyTestCase(invalidSVGURL.toString(),
                                                   refImgURL.toString());
 
             setConfig(t,
                       false,
-                      SVGRenderingAccuracyTest.ERROR_CANNOT_TRANSCODE_SVG);
+                      SVGRenderingAccuracyTestCase.ERROR_CANNOT_TRANSCODE_SVG);
 
             return super.runImpl();
         }
     }
 
     /**
-     * Creates an <code>SVGRenderingAccuracyTest</code> with a
+     * Creates an <code>SVGRenderingAccuracyTestCase</code> with a
      * valid URL pointing to an invalid SVG document. Checks that this 
      * error is reported as a failure.
      */
@@ -266,18 +266,18 @@ public class SVGRenderingAccuracyTestValidator extends DefaultTestSuite {
             // Create a valid reference image
             URL refImgURL = createValidReferenceImage(validSVG);
 
-            Test t = new SVGRenderingAccuracyTest(validSVGURL.toString(),
+            Test t = new SVGRenderingAccuracyTestCase(validSVGURL.toString(),
                                                   refImgURL.toString());
             setConfig(t,
                       false,
-                      SVGRenderingAccuracyTest.ERROR_CANNOT_TRANSCODE_SVG);
+                      SVGRenderingAccuracyTestCase.ERROR_CANNOT_TRANSCODE_SVG);
 
             return super.runImpl();
         }
     }
 
     /**
-     * Creates an <code>SVGRenderingAccuracyTest</code> with an
+     * Creates an <code>SVGRenderingAccuracyTestCase</code> with an
      * valid URL for the source SVG but with an invalid 
      * URL for the reference image.
      */
@@ -292,19 +292,19 @@ public class SVGRenderingAccuracyTestValidator extends DefaultTestSuite {
             invalidReferenceImageURL = new URL("http",
                                                "dummyHost",
                                                "dummyFile.png");
-            Test t = new SVGRenderingAccuracyTest(validSVGURL.toString(),
+            Test t = new SVGRenderingAccuracyTestCase(validSVGURL.toString(),
                                                   invalidReferenceImageURL.toString());
 
             setConfig(t,
                       false,
-                      SVGRenderingAccuracyTest.ERROR_CANNOT_OPEN_REFERENCE_IMAGE);
+                      SVGRenderingAccuracyTestCase.ERROR_CANNOT_OPEN_REFERENCE_IMAGE);
 
             return super.runImpl();
         }
     }
 
     /**
-     * Creates an <code>SVGRenderingAccuracyTest</code> with an
+     * Creates an <code>SVGRenderingAccuracyTestCase</code> with an
      * valid URL for the source SVG valid 
      * URL for the reference image, but the reference image,
      * but the reference image does not exist
@@ -317,17 +317,17 @@ public class SVGRenderingAccuracyTestValidator extends DefaultTestSuite {
             // Create an valid URL for the reference image.
             // We use the createSVGSourceURL method to create
             // a File that the ImageLoader is not able to load.
-            File tmpFile = File.createTempFile(SVGRenderingAccuracyTest.TEMP_FILE_PREFIX,
+            File tmpFile = File.createTempFile(SVGRenderingAccuracyTestCase.TEMP_FILE_PREFIX,
                                                null);
             URL refImgURL = tmpFile.toURL();
             tmpFile.delete();
             
-            Test t = new SVGRenderingAccuracyTest(validSVGURL.toString(),
+            Test t = new SVGRenderingAccuracyTestCase(validSVGURL.toString(),
                                                   refImgURL.toString());
 
             setConfig(t,
                       false,
-                      SVGRenderingAccuracyTest.ERROR_CANNOT_OPEN_REFERENCE_IMAGE);
+                      SVGRenderingAccuracyTestCase.ERROR_CANNOT_OPEN_REFERENCE_IMAGE);
 
             return super.runImpl();
         }
@@ -348,12 +348,12 @@ public class SVGRenderingAccuracyTestValidator extends DefaultTestSuite {
             //
             // Run test and check report
             //
-            Test t = new SVGRenderingAccuracyTest(validSVGURL.toString(),
+            Test t = new SVGRenderingAccuracyTestCase(validSVGURL.toString(),
                                                   validRefImageURL.toString());
 
             setConfig(t,
                       false,
-                      SVGRenderingAccuracyTest.ERROR_SVG_RENDERING_NOT_ACCURATE);                      
+                      SVGRenderingAccuracyTestCase.ERROR_SVG_RENDERING_NOT_ACCURATE);                      
 
             return super.runImpl();
         }
@@ -368,12 +368,12 @@ public class SVGRenderingAccuracyTestValidator extends DefaultTestSuite {
             URL validRefImageURL = createValidReferenceImage(validRedSVG);
             
 
-            Test t = new SVGRenderingAccuracyTest(validSVGURL.toString(),
+            Test t = new SVGRenderingAccuracyTestCase(validSVGURL.toString(),
                                                   validRefImageURL.toString());
 
             setConfig(t,
                       false, 
-                      SVGRenderingAccuracyTest.ERROR_SVG_RENDERING_NOT_ACCURATE);
+                      SVGRenderingAccuracyTestCase.ERROR_SVG_RENDERING_NOT_ACCURATE);
 
             return super.runImpl();
         }
@@ -387,7 +387,7 @@ public class SVGRenderingAccuracyTestValidator extends DefaultTestSuite {
             // Create an valid URL for the reference image.
             URL validRefImageURL = createValidReferenceImage(validSVG);
 
-            setConfig(new SVGRenderingAccuracyTest(validSVGURL.toString(),
+            setConfig(new SVGRenderingAccuracyTestCase(validSVGURL.toString(),
                                                    validRefImageURL.toString()),
                       true,
                       null);
@@ -407,18 +407,18 @@ public class SVGRenderingAccuracyTestValidator extends DefaultTestSuite {
             // Create an valid URL for the reference image.
             URL validRefImageURL = createValidReferenceImage(validSVGVariation);
 
-            SVGRenderingAccuracyTest t 
-                = new SVGRenderingAccuracyTest(validSVGURL.toString(),
+            SVGRenderingAccuracyTestCase t 
+                = new SVGRenderingAccuracyTestCase(validSVGURL.toString(),
                                                validRefImageURL.toString());
 
-            File tmpVariationFile = File.createTempFile(SVGRenderingAccuracyTest.TEMP_FILE_PREFIX, null);
+            File tmpVariationFile = File.createTempFile(SVGRenderingAccuracyTestCase.TEMP_FILE_PREFIX, null);
 
             // Run the test with the tmpVariationFile
             t.setSaveVariation(tmpVariationFile);
 
             setConfig(t,
                       false,
-                      SVGRenderingAccuracyTest.ERROR_SVG_RENDERING_NOT_ACCURATE);
+                      SVGRenderingAccuracyTestCase.ERROR_SVG_RENDERING_NOT_ACCURATE);
 
             super.runImpl();            
 

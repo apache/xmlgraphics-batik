@@ -26,7 +26,7 @@ import org.apache.batik.test.AbstractTest;
 import org.apache.batik.test.DefaultTestSuite;
 
 /**
- * This test validates the operation of SelfContainedSVGOnLoadTest.
+ * This test validates the operation of SelfContainedSVGOnLoadTestCase.
  * It is a test agregation which points to several tests which
  * correspond to expected error conditions. The test simply
  * validates that the expected error conditions are properly
@@ -124,7 +124,7 @@ public class SelfContainedSVGOnLoadTestValidator extends DefaultTestSuite {
 
     static class ReportSuccess extends AbstractTest {
         public TestReport rumImpl() throws Exception {
-            SelfContainedSVGOnLoadTest t = new SelfContainedSVGOnLoadTest(successURL);
+            SelfContainedSVGOnLoadTestCase t = new SelfContainedSVGOnLoadTestCase(successURL);
             TestReport tr = t.run();
 
             if (!tr.hasPassed()) {
@@ -138,7 +138,7 @@ public class SelfContainedSVGOnLoadTestValidator extends DefaultTestSuite {
     static class MissingOrEmptyErrorCode extends DefaultErrorTest {
         public MissingOrEmptyErrorCode(){
             super(missingOrEmptyErrorCodeURL,
-                  SelfContainedSVGOnLoadTest.ERROR_MISSING_OR_EMPTY_ERROR_CODE_ON_FAILED_TEST,
+                  SelfContainedSVGOnLoadTestCase.ERROR_MISSING_OR_EMPTY_ERROR_CODE_ON_FAILED_TEST,
                   null);
         }
     }
@@ -146,8 +146,8 @@ public class SelfContainedSVGOnLoadTestValidator extends DefaultTestSuite {
     static class UnexpectedResultValue extends DefaultErrorTest{
         public UnexpectedResultValue(){
             super(unexpectedResultValueURL,
-                  SelfContainedSVGOnLoadTest.ERROR_UNEXPECTED_RESULT_VALUE,
-                  new String[]{SelfContainedSVGOnLoadTest.ENTRY_KEY_RESULT_VALUE});
+                  SelfContainedSVGOnLoadTestCase.ERROR_UNEXPECTED_RESULT_VALUE,
+                  new String[]{SelfContainedSVGOnLoadTestCase.ENTRY_KEY_RESULT_VALUE});
         }
     }
 
@@ -155,24 +155,24 @@ public class SelfContainedSVGOnLoadTestValidator extends DefaultTestSuite {
     static class InvalidTestResultElementsNumber extends DefaultErrorTest{
         public InvalidTestResultElementsNumber(){
             super(invalidTestResultElementsNumberURL,
-                  SelfContainedSVGOnLoadTest.ERROR_UNEXPECTED_NUMBER_OF_TEST_RESULT_ELEMENTS,
-                  new String[]{SelfContainedSVGOnLoadTest.ENTRY_KEY_NUMBER_OF_TEST_RESULT_ELEMENTS});
+                  SelfContainedSVGOnLoadTestCase.ERROR_UNEXPECTED_NUMBER_OF_TEST_RESULT_ELEMENTS,
+                  new String[]{SelfContainedSVGOnLoadTestCase.ENTRY_KEY_NUMBER_OF_TEST_RESULT_ELEMENTS});
         }
     }
 
     static class ProcessingError extends DefaultErrorTest{
         public ProcessingError(){
             super(processingErrorURL,
-                  SelfContainedSVGOnLoadTest.ERROR_WHILE_PROCESSING_SVG_DOCUMENT,
-                  new String[]{SelfContainedSVGOnLoadTest.ENTRY_KEY_ERROR_DESCRIPTION});
+                  SelfContainedSVGOnLoadTestCase.ERROR_WHILE_PROCESSING_SVG_DOCUMENT,
+                  new String[]{SelfContainedSVGOnLoadTestCase.ENTRY_KEY_ERROR_DESCRIPTION});
         }
     }
 
     static class CannotLoadSVGDocument extends DefaultErrorTest {
         public CannotLoadSVGDocument(){
             super(invalidURL,
-                  SelfContainedSVGOnLoadTest.ERROR_CANNOT_LOAD_SVG_DOCUMENT,
-                  new String[] {SelfContainedSVGOnLoadTest.ENTRY_KEY_ERROR_DESCRIPTION});
+                  SelfContainedSVGOnLoadTestCase.ERROR_CANNOT_LOAD_SVG_DOCUMENT,
+                  new String[] {SelfContainedSVGOnLoadTestCase.ENTRY_KEY_ERROR_DESCRIPTION});
         }
     }
 
@@ -191,8 +191,8 @@ public class SelfContainedSVGOnLoadTestValidator extends DefaultTestSuite {
         }
 
         public TestReport runImpl() throws Exception {
-            SelfContainedSVGOnLoadTest t
-                = new SelfContainedSVGOnLoadTest(svgURL);
+            SelfContainedSVGOnLoadTestCase t
+                = new SelfContainedSVGOnLoadTestCase(svgURL);
             TestReport tr = t.run();
 
             if(tr.hasPassed()){
@@ -240,7 +240,7 @@ public class SelfContainedSVGOnLoadTestValidator extends DefaultTestSuite {
                         if (key != null){
                             r.addDescriptionEntry(ENTRY_KEY, key);
                             r.addDescriptionEntry(ENTRY_EXPECTED_KEY,
-                              SelfContainedSVGOnLoadTest.ENTRY_KEY_NUMBER_OF_TEST_RESULT_ELEMENTS);
+                              SelfContainedSVGOnLoadTestCase.ENTRY_KEY_NUMBER_OF_TEST_RESULT_ELEMENTS);
                         }
                         return r;
                     }
