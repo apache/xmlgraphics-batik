@@ -18,16 +18,11 @@
  */
 package org.apache.batik.parser;
 
-import java.io.*;
+import java.io.StringReader;
 
-import org.apache.batik.test.*;
-
-import org.junit.Ignore;
 import org.junit.Test;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertEquals;
 
 /**
  * To test the length parser.
@@ -35,56 +30,76 @@ import static org.junit.Assert.fail;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-@Ignore
-public class LengthParserTestCase extends AbstractTest {
+public class LengthParserTestCase {
 
-    protected String sourceLength;
-    protected String destinationLength;
-
-    protected StringBuffer buffer;
-    protected String resultLength;
-
-    /**
-     * Creates a new LengthParserTest.
-     * @param slength The length to parse.
-     * @param dlength The length after serialization.
-     */
-    public LengthParserTestCase(String slength, String dlength) {
-        sourceLength = slength;
-        destinationLength = dlength;
+    @Test
+    public void testLengthParser1() throws Exception {
+        testLength("123.456", "123.456");
     }
 
-    public TestReport runImpl() throws Exception {
+    @Test
+    public void testLengthParser2() throws Exception {
+        testLength("123em", "123.0em");
+    }
+
+    @Test
+    public void testLengthParser3() throws Exception {
+        testLength(".456ex", "0.456ex");
+    }
+
+    @Test
+    public void testLengthParser4() throws Exception {
+        testLength("-.456789in", "-0.456789in");
+    }
+
+    @Test
+    public void testLengthParser5() throws Exception {
+        testLength("-456789.cm", "-456789.0cm");
+    }
+
+    @Test
+    public void testLengthParser6() throws Exception {
+        testLength("-4567890.mm", "-4567890.0mm");
+    }
+
+    @Test
+    public void testLengthParser7() throws Exception {
+        testLength("-000456789.pc", "-456789.0pc");
+    }
+
+    @Test
+    public void testLengthParser8() throws Exception {
+        testLength("-0.00456789pt", "-0.00456789pt");
+    }
+
+    @Test
+    public void testLengthParser9() throws Exception {
+        testLength("-0px", "0.0px");
+    }
+
+    @Test
+    public void testLengthParser10() throws Exception {
+        testLength("0000%", "0.0%");
+    }
+
+    private void testLength(String length, String expected) throws Exception {
         LengthParser pp = new LengthParser();
-        pp.setLengthHandler(new TestHandler());
-
-        try {
-            pp.parse(new StringReader(sourceLength));
-        } catch (ParseException e) {
-            DefaultTestReport report = new DefaultTestReport(this);
-            report.setErrorCode("parse.error");
-            report.addDescriptionEntry("exception.text", e.getMessage());
-            report.setPassed(false);
-            return report;
-        }
-
-        if (!destinationLength.equals(resultLength)) {
-            DefaultTestReport report = new DefaultTestReport(this);
-            report.setErrorCode("invalid.parsing.events");
-            report.addDescriptionEntry("expected.text", destinationLength);
-            report.addDescriptionEntry("generated.text", resultLength);
-            report.setPassed(false);
-            return report;
-        }
-
-        return reportSuccess();
+        StringBuffer results = new StringBuffer();
+        pp.setLengthHandler(new TestHandler(results));
+        pp.parse(new StringReader(length));
+        assertEquals(null, expected, results.toString());
     }
 
-    class TestHandler extends DefaultLengthHandler {
-        public TestHandler() {}
+    private static class TestHandler extends DefaultLengthHandler {
+        
+        private StringBuffer buffer;
+
+        public TestHandler(StringBuffer buffer) {
+            this.buffer = buffer;
+        }
 
         public void startLength() throws ParseException {
-            buffer = new StringBuffer();
+            buffer.setLength(0);
         }
         
         public void lengthValue(float v) throws ParseException {
@@ -128,7 +143,6 @@ public class LengthParserTestCase extends AbstractTest {
         }
 
         public void endLength() throws ParseException {
-            resultLength = buffer.toString();
         }
     }
 }

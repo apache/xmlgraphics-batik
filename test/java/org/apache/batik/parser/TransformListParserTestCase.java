@@ -17,16 +17,11 @@
 
 package org.apache.batik.parser;
 
-import java.io.*;
+import java.io.StringReader;
 
-import org.apache.batik.test.*;
-
-import org.junit.Ignore;
 import org.junit.Test;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertEquals;
 
 /**
  * To test the transform list parser.
@@ -34,58 +29,80 @@ import static org.junit.Assert.fail;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-@Ignore
-public class TransformListParserTestCase extends AbstractTest {
+public class TransformListParserTestCase {
 
-    protected String sourceTransform;
-    protected String destinationTransform;
-
-    protected StringBuffer buffer;
-    protected String resultTransform;
-
-    /**
-     * Creates a new TransformListParserTest.
-     * @param stransform The transform to parse.
-     * @param dtransform The transform after serialization.
-     */
-    public TransformListParserTestCase(String stransform, String dtransform) {
-        sourceTransform = stransform;
-        destinationTransform = dtransform;
+    @Test
+    public void testTransformParser1() throws Exception {
+        testTransformList("matrix(1 2 3 4 5 6)", "matrix(1.0, 2.0, 3.0, 4.0, 5.0, 6.0)");
     }
 
-    public TestReport runImpl() throws Exception {
+    @Test
+    public void testTransformParser2() throws Exception {
+        testTransformList("translate(1)", "translate(1.0)");
+    }
+
+    @Test
+    public void testTransformParser3() throws Exception {
+        testTransformList("translate(1e2 3e4)", "translate(100.0, 30000.0)");
+    }
+
+    @Test
+    public void testTransformParser4() throws Exception {
+        testTransformList("scale(1e-2)", "scale(0.01)");
+    }
+
+    @Test
+    public void testTransformParser5() throws Exception {
+        testTransformList("scale(-1e-2 -3e-4)", "scale(-0.01, -3.0E-4)");
+    }
+
+    @Test
+    public void testTransformParser6() throws Exception {
+        testTransformList("skewX(1.234)", "skewX(1.234)");
+    }
+
+    @Test
+    public void testTransformParser7() throws Exception {
+        testTransformList("skewY(.1)", "skewY(0.1)");
+    }
+
+    @Test
+    public void testTransformParser8() throws Exception {
+        testTransformList("translate(1,2) skewY(.1)", "translate(1.0, 2.0) skewY(0.1)");
+    }
+
+    @Test
+    public void testTransformParser9() throws Exception {
+        testTransformList("scale(1,2),skewX(.1e1)", "scale(1.0, 2.0) skewX(1.0)");
+    }
+
+    @Test
+    public void testTransformParser10() throws Exception {
+        testTransformList("scale(1) , skewX(2) translate(3,4)", "scale(1.0) skewX(2.0) translate(3.0, 4.0)");
+    }
+
+    private void testTransformList(String path, String expected) throws Exception {
         TransformListParser pp = new TransformListParser();
-        pp.setTransformListHandler(new TestHandler());
-
-        try {
-            pp.parse(new StringReader(sourceTransform));
-        } catch (ParseException e) {
-            DefaultTestReport report = new DefaultTestReport(this);
-            report.setErrorCode("parse.error");
-            report.addDescriptionEntry("exception.text", e.getMessage());
-            report.setPassed(false);
-            return report;
-        }
-
-        if (!destinationTransform.equals(resultTransform)) {
-            DefaultTestReport report = new DefaultTestReport(this);
-            report.setErrorCode("invalid.parsing.events");
-            report.addDescriptionEntry("expected.text", destinationTransform);
-            report.addDescriptionEntry("generated.text", resultTransform);
-            report.setPassed(false);
-            return report;
-        }
-
-        return reportSuccess();
+        StringBuffer results = new StringBuffer();
+        pp.setTransformListHandler(new TestHandler(results));
+        pp.parse(new StringReader(path));
+        assertEquals(null, expected, results.toString());
     }
 
-    class TestHandler extends DefaultTransformListHandler {
-        boolean first;
-        public TestHandler() {}
-        public void startTransformList() throws ParseException {
-            buffer = new StringBuffer();
-            first = true;
+    private static class TestHandler extends DefaultTransformListHandler {
+
+        private StringBuffer buffer;
+        private boolean first;
+
+        public TestHandler(StringBuffer buffer) {
+            this.buffer = buffer;
+            this.first = true;
         }
+
+        public void startTransformList() throws ParseException {
+            buffer.setLength(0);
+        }
+
         public void matrix(float a, float b, float c, float d, float e, float f)
             throws ParseException {
             if (!first) {
@@ -106,18 +123,21 @@ public class TransformListParserTestCase extends AbstractTest {
             buffer.append(f);
             buffer.append(")");
         }
+
         public void rotate(float theta) throws ParseException {
             if (!first) {
                 buffer.append(' ');
             }
             first = false;
         }
+
         public void rotate(float theta, float cx, float cy) throws ParseException {
             if (!first) {
                 buffer.append(' ');
             }
             first = false;
         }
+
         public void translate(float tx) throws ParseException {
             if (!first) {
                 buffer.append(' ');
@@ -127,6 +147,7 @@ public class TransformListParserTestCase extends AbstractTest {
             buffer.append(tx);
             buffer.append(")");
         }
+
         public void translate(float tx, float ty) throws ParseException {
             if (!first) {
                 buffer.append(' ');
@@ -138,6 +159,7 @@ public class TransformListParserTestCase extends AbstractTest {
             buffer.append(ty);
             buffer.append(")");
         }
+
         public void scale(float sx) throws ParseException {
             if (!first) {
                 buffer.append(' ');
@@ -147,6 +169,7 @@ public class TransformListParserTestCase extends AbstractTest {
             buffer.append(sx);
             buffer.append(")");
         }
+
         public void scale(float sx, float sy) throws ParseException {
             if (!first) {
                 buffer.append(' ');
@@ -158,6 +181,7 @@ public class TransformListParserTestCase extends AbstractTest {
             buffer.append(sy);
             buffer.append(")");
         }
+
         public void skewX(float skx) throws ParseException {
             if (!first) {
                 buffer.append(' ');
@@ -167,6 +191,7 @@ public class TransformListParserTestCase extends AbstractTest {
             buffer.append(skx);
             buffer.append(")");
         }
+
         public void skewY(float sky) throws ParseException {
             if (!first) {
                 buffer.append(' ');
@@ -176,8 +201,9 @@ public class TransformListParserTestCase extends AbstractTest {
             buffer.append(sky);
             buffer.append(")");
         }
+
         public void endTransformList() throws ParseException {
-            resultTransform = buffer.toString();
         }
+
     }
 }

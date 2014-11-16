@@ -18,16 +18,9 @@
  */
 package org.apache.batik.parser;
 
-import java.io.*;
+import java.io.StringReader;
 
-import org.apache.batik.test.*;
-
-import org.junit.Ignore;
 import org.junit.Test;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 /**
  * To test the length parser.
@@ -35,30 +28,60 @@ import static org.junit.Assert.fail;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-@Ignore
-public class LengthParserFailureTestCase extends AbstractTest {
+public class LengthParserFailureTestCase {
 
-    protected String sourceLength;
-
-    /**
-     * Creates a new LengthParserFailureTest.
-     * @param slength The length to parse.
-     */
-    public LengthParserFailureTestCase(String slength) {
-        sourceLength = slength;
+    @Test(expected=ParseException.class)
+    public void testLengthParserFail1() throws Exception {
+        testLengthParserFailure("123.456.7");
     }
 
-    public TestReport runImpl() throws Exception {
+    @Test(expected=ParseException.class)
+    public void testLengthParserFail2() throws Exception {
+        testLengthParserFailure("1e+");
+    }
+
+    @Test(expected=ParseException.class)
+    public void testLengthParserFail3() throws Exception {
+        testLengthParserFailure("+e3");
+    }
+
+    @Test(expected=ParseException.class)
+    public void testLengthParserFail4() throws Exception {
+        testLengthParserFailure("1Em");
+    }
+
+    @Test(expected=ParseException.class)
+    public void testLengthParserFail5() throws Exception {
+        testLengthParserFailure("--1");
+    }
+
+    @Test(expected=ParseException.class)
+    public void testLengthParserFail6() throws Exception {
+        testLengthParserFailure("-1E--2");
+    }
+
+    @Test(expected=ParseException.class)
+    public void testLengthParserFail7() throws Exception {
+        testLengthParserFailure("-.E+1");
+    }
+
+    @Test(expected=ParseException.class)
+    public void testLengthParserFail8() throws Exception {
+        testLengthParserFailure("-.0EE+1");
+    }
+
+    @Test(expected=ParseException.class)
+    public void testLengthParserFail9() throws Exception {
+        testLengthParserFailure("1Eem");
+    }
+
+    @Test(expected=ParseException.class)
+    public void testLengthParserFail10() throws Exception {
+        testLengthParserFailure("1em%");
+    }
+
+    private void testLengthParserFailure(String length) throws Exception {
         LengthParser pp = new LengthParser();
-        try {
-            pp.parse(new StringReader(sourceLength));
-        } catch (ParseException e) {
-            return reportSuccess();
-        }
-        DefaultTestReport report = new DefaultTestReport(this);
-        report.setErrorCode("parse.without.error");
-        report.addDescriptionEntry("input.text", sourceLength);
-        report.setPassed(false);
-        return report;
+        pp.parse(new StringReader(length));
     }
 }
