@@ -717,11 +717,9 @@ public class StrokingTextPainter extends BasicTextPainter {
         Point2D visualAdvance;
 
         if (!doAdjust) {
-            visualAdvance = new Point2D.Float
-            ((float)(chunk.advance.getX() + lastW -
-                     lastMetrics.getHorizontalAdvance()),
-             (float)(chunk.advance.getY() + lastH -
-                     lastMetrics.getVerticalAdvance()));
+            visualAdvance = new Point2D.Float(
+                    (float) (chunk.advance.getX()),
+                    (float) (chunk.advance.getY() + lastH - lastMetrics.getVerticalAdvance()));
         } else {
             Point2D advance    = chunk.advance;
 
