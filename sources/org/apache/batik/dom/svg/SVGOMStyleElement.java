@@ -24,6 +24,7 @@ import org.apache.batik.css.engine.StyleSheet;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.util.ParsedURL;
+import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLConstants;
 
 import org.w3c.dom.DOMException;
@@ -115,7 +116,7 @@ public class SVGOMStyleElement
      */
     public StyleSheet getCSSStyleSheet() {
         if (styleSheet == null) {
-            if (getType().equals("text/css")) {
+            if (getType().equals(SVGConstants.CSS_MIME_TYPE)) {
                 SVGOMDocument doc = (SVGOMDocument)getOwnerDocument();
                 CSSEngine e = doc.getCSSEngine();
                 String text = "";
@@ -174,7 +175,10 @@ public class SVGOMStyleElement
      * <b>DOM</b>: Implements {@link SVGStyleElement#getType()}.
      */
     public String getType() {
-        return getAttributeNS(null, SVG_TYPE_ATTRIBUTE);
+        if (hasAttributeNS(null, SVG_TYPE_ATTRIBUTE))
+            return getAttributeNS(null, SVG_TYPE_ATTRIBUTE);
+        else
+            return SVGConstants.CSS_MIME_TYPE;
     }
 
     /**
