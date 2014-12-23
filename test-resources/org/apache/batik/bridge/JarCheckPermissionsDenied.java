@@ -38,9 +38,7 @@ import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
 
-import org.apache.batik.dom.svg.SVGOMDocument;
-import org.apache.batik.script.ScriptHandler;
-import org.apache.batik.script.Window;
+import org.apache.batik.anim.dom.SVGOMDocument;
 import org.apache.batik.util.ParsedURL;
 
 /**

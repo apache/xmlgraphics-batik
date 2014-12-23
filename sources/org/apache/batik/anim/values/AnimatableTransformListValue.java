@@ -22,7 +22,7 @@ import java.util.Iterator;
 import java.util.Vector;
 import java.util.List;
 
-import org.apache.batik.dom.anim.AnimationTarget;
+import org.apache.batik.anim.dom.AnimationTarget;
 import org.apache.batik.dom.svg.AbstractSVGTransform;
 import org.apache.batik.dom.svg.SVGOMTransform;
 

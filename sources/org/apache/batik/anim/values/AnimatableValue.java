@@ -22,7 +22,7 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
-import org.apache.batik.dom.anim.AnimationTarget;
+import org.apache.batik.anim.dom.AnimationTarget;
 
 /**
  * An abstract class for values in the animation engine.

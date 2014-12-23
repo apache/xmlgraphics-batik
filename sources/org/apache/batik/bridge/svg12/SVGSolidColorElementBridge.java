@@ -23,6 +23,7 @@ import java.awt.Paint;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.batik.anim.dom.SVGOMDocument;
 import org.apache.batik.bridge.AnimatableGenericSVGBridge;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeException;
@@ -34,7 +35,6 @@ import org.apache.batik.css.engine.CSSEngine;
 import org.apache.batik.css.engine.CSSStylableElement;
 import org.apache.batik.css.engine.StyleMap;
 import org.apache.batik.css.engine.value.Value;
-import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.util.SVG12Constants;

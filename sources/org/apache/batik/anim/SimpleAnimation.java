@@ -20,9 +20,9 @@ package org.apache.batik.anim;
 
 import java.awt.geom.Point2D;
 
+import org.apache.batik.anim.dom.AnimatableElement;
 import org.apache.batik.anim.timing.TimedElement;
 import org.apache.batik.anim.values.AnimatableValue;
-import org.apache.batik.dom.anim.AnimatableElement;
 import org.apache.batik.ext.awt.geom.Cubic;
 import org.apache.batik.util.SMILConstants;
 

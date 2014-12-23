@@ -28,14 +28,14 @@ import java.awt.Shape;
 import java.awt.BasicStroke;
 import java.awt.geom.AffineTransform;
 
+import org.apache.batik.bridge.ConcreteTextSelector;
+import org.apache.batik.bridge.Mark;
 import org.apache.batik.gvt.Selectable;
 import org.apache.batik.gvt.event.EventDispatcher;
 import org.apache.batik.gvt.event.GraphicsNodeMouseEvent;
 import org.apache.batik.gvt.event.GraphicsNodeMouseListener;
 import org.apache.batik.gvt.event.SelectionEvent;
 import org.apache.batik.gvt.event.SelectionListener;
-import org.apache.batik.gvt.text.ConcreteTextSelector;
-import org.apache.batik.gvt.text.Mark;
 
 /**
  * This class represents an object which manage GVT text nodes selection.

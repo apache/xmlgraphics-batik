@@ -73,6 +73,8 @@ import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
+import org.apache.batik.anim.dom.SVGOMDocument;
+import org.apache.batik.anim.dom.XBLOMContentElement;
 import org.apache.batik.apps.svgbrowser.DOMDocumentTree.DOMDocumentTreeAdapter;
 import org.apache.batik.apps.svgbrowser.DOMDocumentTree.DOMDocumentTreeEvent;
 import org.apache.batik.apps.svgbrowser.DOMDocumentTree.DropCompletedInfo;
@@ -86,8 +88,6 @@ import org.apache.batik.apps.svgbrowser.NodeTemplates.NodeTemplateDescriptor;
 import org.apache.batik.bridge.svg12.ContentManager;
 import org.apache.batik.bridge.svg12.DefaultXBLManager;
 import org.apache.batik.dom.AbstractDocument;
-import org.apache.batik.dom.svg.SVGOMDocument;
-import org.apache.batik.dom.svg12.XBLOMContentElement;
 import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.dom.util.SAXDocumentFactory;
 import org.apache.batik.dom.xbl.NodeXBL;

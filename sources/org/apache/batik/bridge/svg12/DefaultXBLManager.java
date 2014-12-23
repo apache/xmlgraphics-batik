@@ -29,6 +29,13 @@ import java.util.Map;
 
 import javax.swing.event.EventListenerList;
 
+import org.apache.batik.anim.dom.BindableElement;
+import org.apache.batik.anim.dom.XBLEventSupport;
+import org.apache.batik.anim.dom.XBLOMContentElement;
+import org.apache.batik.anim.dom.XBLOMDefinitionElement;
+import org.apache.batik.anim.dom.XBLOMImportElement;
+import org.apache.batik.anim.dom.XBLOMShadowTreeElement;
+import org.apache.batik.anim.dom.XBLOMTemplateElement;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeException;
 import org.apache.batik.bridge.ErrorConstants;
@@ -36,13 +43,6 @@ import org.apache.batik.dom.AbstractAttrNS;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.AbstractNode;
 import org.apache.batik.dom.events.NodeEventTarget;
-import org.apache.batik.dom.svg12.BindableElement;
-import org.apache.batik.dom.svg12.XBLEventSupport;
-import org.apache.batik.dom.svg12.XBLOMContentElement;
-import org.apache.batik.dom.svg12.XBLOMDefinitionElement;
-import org.apache.batik.dom.svg12.XBLOMImportElement;
-import org.apache.batik.dom.svg12.XBLOMShadowTreeElement;
-import org.apache.batik.dom.svg12.XBLOMTemplateElement;
 import org.apache.batik.dom.xbl.NodeXBL;
 import org.apache.batik.dom.xbl.ShadowTreeEvent;
 import org.apache.batik.dom.xbl.XBLManager;

@@ -22,10 +22,10 @@ import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
 
-import org.apache.batik.dom.svg.AbstractSVGAnimatedLength;
-import org.apache.batik.dom.svg.AnimatedLiveAttributeValue;
+import org.apache.batik.anim.dom.AbstractSVGAnimatedLength;
+import org.apache.batik.anim.dom.AnimatedLiveAttributeValue;
+import org.apache.batik.anim.dom.SVGOMRectElement;
 import org.apache.batik.dom.svg.LiveAttributeException;
-import org.apache.batik.dom.svg.SVGOMRectElement;
 import org.apache.batik.gvt.ShapeNode;
 import org.apache.batik.gvt.ShapePainter;
 

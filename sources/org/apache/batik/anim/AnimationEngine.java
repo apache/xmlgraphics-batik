@@ -23,12 +23,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.batik.anim.dom.AnimationTarget;
+import org.apache.batik.anim.dom.AnimationTargetListener;
 import org.apache.batik.anim.timing.TimedDocumentRoot;
 import org.apache.batik.anim.timing.TimedElement;
 import org.apache.batik.anim.timing.TimegraphListener;
 import org.apache.batik.anim.values.AnimatableValue;
-import org.apache.batik.dom.anim.AnimationTarget;
-import org.apache.batik.dom.anim.AnimationTargetListener;
 import org.apache.batik.util.DoublyIndexedTable;
 
 import org.w3c.dom.Document;

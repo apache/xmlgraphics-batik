@@ -22,13 +22,13 @@ import java.awt.font.FontRenderContext;
 import java.awt.geom.Point2D;
 import java.text.AttributedCharacterIterator;
 
-import org.apache.batik.gvt.text.TextLayoutFactory;
-import org.apache.batik.gvt.text.TextSpanLayout;
+import org.apache.batik.bridge.TextLayoutFactory;
+import org.apache.batik.bridge.TextSpanLayout;
 /**
  * Factory instance that returns TextSpanLayouts appropriate to
  * FlowRoot instances.
  *
- * @see org.apache.batik.gvt.text.TextSpanLayout
+ * @see org.apache.batik.bridge.TextSpanLayout
  * @author <a href="mailto:dewese@apache.org">Thomas DeWeese</a>
  * @version $Id$
  */

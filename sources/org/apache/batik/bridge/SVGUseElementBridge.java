@@ -23,13 +23,13 @@ import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 
+import org.apache.batik.anim.dom.AbstractSVGAnimatedLength;
+import org.apache.batik.anim.dom.AnimatedLiveAttributeValue;
+import org.apache.batik.anim.dom.SVGOMAnimatedLength;
+import org.apache.batik.anim.dom.SVGOMDocument;
+import org.apache.batik.anim.dom.SVGOMUseElement;
 import org.apache.batik.dom.events.NodeEventTarget;
-import org.apache.batik.dom.svg.AbstractSVGAnimatedLength;
-import org.apache.batik.dom.svg.AnimatedLiveAttributeValue;
 import org.apache.batik.dom.svg.LiveAttributeException;
-import org.apache.batik.dom.svg.SVGOMAnimatedLength;
-import org.apache.batik.dom.svg.SVGOMDocument;
-import org.apache.batik.dom.svg.SVGOMUseElement;
 import org.apache.batik.dom.svg.SVGOMUseShadowRoot;
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;

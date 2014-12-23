@@ -21,8 +21,8 @@ package org.apache.batik.bridge;
 import java.util.ArrayList;
 
 import org.apache.batik.anim.AbstractAnimation;
-import org.apache.batik.dom.anim.AnimationTarget;
 import org.apache.batik.anim.TransformAnimation;
+import org.apache.batik.anim.dom.AnimationTarget;
 import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.anim.values.AnimatableTransformListValue;
 import org.apache.batik.dom.svg.SVGOMTransform;

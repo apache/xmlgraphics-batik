@@ -27,11 +27,11 @@ import javax.swing.SwingUtilities;
 
 import org.w3c.dom.Element;
 
+import org.apache.batik.anim.dom.SVGOMDocument;
+import org.apache.batik.anim.dom.SVGOMElement;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.UpdateManager;
 import org.apache.batik.dom.svg.SVGContext;
-import org.apache.batik.dom.svg.SVGOMDocument;
-import org.apache.batik.dom.svg.SVGOMElement;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.test.DefaultTestReport;
 import org.apache.batik.test.MemoryLeakTest;

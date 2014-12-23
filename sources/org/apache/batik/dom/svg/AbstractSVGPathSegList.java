@@ -26,7 +26,6 @@ import org.w3c.dom.svg.SVGException;
 import org.w3c.dom.svg.SVGPathSeg;
 import org.w3c.dom.svg.SVGPathSegArcAbs;
 import org.w3c.dom.svg.SVGPathSegArcRel;
-import org.w3c.dom.svg.SVGPathSegClosePath;
 import org.w3c.dom.svg.SVGPathSegCurvetoCubicAbs;
 import org.w3c.dom.svg.SVGPathSegCurvetoCubicRel;
 import org.w3c.dom.svg.SVGPathSegCurvetoCubicSmoothAbs;
@@ -225,60 +224,6 @@ public abstract class AbstractSVGPathSegList
         return pathSegItem;
     }
 
-    /**
-     * Internal representation of the item SVGPathSeg.
-     */
-    protected class SVGPathSegItem extends AbstractSVGItem
-        implements SVGPathSeg,
-                   SVGPathSegClosePath {
-
-        protected short type;
-
-        protected String letter;
-
-        protected float x;
-        protected float y;
-        protected float x1;
-        protected float y1;
-        protected float x2;
-        protected float y2;
-        protected float r1;
-        protected float r2;
-        protected float angle;
-        protected boolean largeArcFlag;
-        protected boolean sweepFlag;
-
-        protected SVGPathSegItem(){}
-
-        public SVGPathSegItem(short type,String letter){
-            this.type = type;
-            this.letter = letter;
-        }
-
-        public SVGPathSegItem(SVGPathSeg pathSeg){
-            type = pathSeg.getPathSegType();
-            switch(type){
-            case SVGPathSeg.PATHSEG_CLOSEPATH:
-                letter = PATHSEG_CLOSEPATH_LETTER;
-                break;
-            default:
-            }
-        }
-        protected String getStringValue(){
-            return letter;
-        }
-
-        public short getPathSegType() {
-            return type;
-        }
-
-
-        public String getPathSegTypeAsLetter(){
-            return letter;
-        }
-
-    }
-
     public class SVGPathSegMovetoLinetoItem extends SVGPathSegItem
         implements SVGPathSegMovetoAbs,
                    SVGPathSegMovetoRel,
@@ -288,8 +233,8 @@ public abstract class AbstractSVGPathSegList
         public SVGPathSegMovetoLinetoItem(short type, String letter,
                                           float x, float y){
             super(type,letter);
-            this.x = x;
-            this.y = y;
+            this.setX(x);
+            this.setY(y);
         }
 
         public SVGPathSegMovetoLinetoItem(SVGPathSeg pathSeg){
@@ -297,50 +242,43 @@ public abstract class AbstractSVGPathSegList
             switch(type){
             case SVGPathSeg.PATHSEG_LINETO_REL:
                 letter = PATHSEG_LINETO_REL_LETTER;
-                x = ((SVGPathSegLinetoRel)pathSeg).getX();
-                y = ((SVGPathSegLinetoRel)pathSeg).getY();
+                setX(((SVGPathSegLinetoRel)pathSeg).getX());
+                setY(((SVGPathSegLinetoRel)pathSeg).getY());
                 break;
             case SVGPathSeg.PATHSEG_LINETO_ABS:
                 letter = PATHSEG_LINETO_ABS_LETTER;
-                x = ((SVGPathSegLinetoAbs)pathSeg).getX();
-                y = ((SVGPathSegLinetoAbs)pathSeg).getY();
+                setX(((SVGPathSegLinetoAbs)pathSeg).getX());
+                setY(((SVGPathSegLinetoAbs)pathSeg).getY());
                 break;
             case SVGPathSeg.PATHSEG_MOVETO_REL:
                 letter = PATHSEG_MOVETO_REL_LETTER;
-                x = ((SVGPathSegMovetoRel)pathSeg).getX();
-                y = ((SVGPathSegMovetoRel)pathSeg).getY();
+                setX(((SVGPathSegMovetoRel)pathSeg).getX());
+                setY(((SVGPathSegMovetoRel)pathSeg).getY());
                 break;
             case SVGPathSeg.PATHSEG_MOVETO_ABS:
                 letter = PATHSEG_MOVETO_ABS_LETTER;
-                x = ((SVGPathSegMovetoAbs)pathSeg).getX();
-                y = ((SVGPathSegMovetoAbs)pathSeg).getY();
+                setX(((SVGPathSegMovetoAbs)pathSeg).getX());
+                setY(((SVGPathSegMovetoAbs)pathSeg).getY());
                 break;
             default:
             }
         }
 
-        public float getX(){
-            return x;
-        }
-        public float getY(){
-            return y;
-        }
-
         public void setX(float x){
-            this.x = x;
+            super.setX(x);
             resetAttribute();
         }
         public void setY(float y){
-            this.y = y;
+            super.setY(y);
             resetAttribute();
         }
 
         protected String getStringValue(){
             return letter
                     + ' '
-                    + Float.toString(x)
+                    + Float.toString(getX())
                     + ' '
-                    + Float.toString(y);
+                    + Float.toString(getY());
         }
     }
 
@@ -352,12 +290,12 @@ public abstract class AbstractSVGPathSegList
                                       float x1,float y1,float x2, float y2,
                                       float x, float y){
             super(type,letter);
-            this.x = x;
-            this.y = y;
-            this.x1 = x1;
-            this.y1 = y1;
-            this.x2 = x2;
-            this.y2 = y2;
+            this.setX(x);
+            this.setY(y);
+            this.setX1(x1);
+            this.setY1(y1);
+            this.setX2(x2);
+            this.setY2(y2);
         }
 
         public SVGPathSegCurvetoCubicItem(SVGPathSeg pathSeg){
@@ -365,88 +303,67 @@ public abstract class AbstractSVGPathSegList
             switch(type){
             case SVGPathSeg.PATHSEG_CURVETO_CUBIC_ABS:
                 letter = PATHSEG_CURVETO_CUBIC_ABS_LETTER;
-                x = ((SVGPathSegCurvetoCubicAbs)pathSeg).getX();
-                y = ((SVGPathSegCurvetoCubicAbs)pathSeg).getY();
-                x1 = ((SVGPathSegCurvetoCubicAbs)pathSeg).getX1();
-                y1 = ((SVGPathSegCurvetoCubicAbs)pathSeg).getY1();
-                x2 = ((SVGPathSegCurvetoCubicAbs)pathSeg).getX2();
-                y2 = ((SVGPathSegCurvetoCubicAbs)pathSeg).getY2();
+                setX(((SVGPathSegCurvetoCubicAbs)pathSeg).getX());
+                setY(((SVGPathSegCurvetoCubicAbs)pathSeg).getY());
+                setX1(((SVGPathSegCurvetoCubicAbs)pathSeg).getX1());
+                setY1(((SVGPathSegCurvetoCubicAbs)pathSeg).getY1());
+                setX2(((SVGPathSegCurvetoCubicAbs)pathSeg).getX2());
+                setY2(((SVGPathSegCurvetoCubicAbs)pathSeg).getY2());
                 break;
             case SVGPathSeg.PATHSEG_CURVETO_CUBIC_REL:
                 letter = PATHSEG_CURVETO_CUBIC_REL_LETTER;
-                x = ((SVGPathSegCurvetoCubicRel)pathSeg).getX();
-                y = ((SVGPathSegCurvetoCubicRel)pathSeg).getY();
-                x1 = ((SVGPathSegCurvetoCubicRel)pathSeg).getX1();
-                y1 = ((SVGPathSegCurvetoCubicRel)pathSeg).getY1();
-                x2 = ((SVGPathSegCurvetoCubicRel)pathSeg).getX2();
-                y2 = ((SVGPathSegCurvetoCubicRel)pathSeg).getY2();
+                setX(((SVGPathSegCurvetoCubicRel)pathSeg).getX());
+                setY(((SVGPathSegCurvetoCubicRel)pathSeg).getY());
+                setX1(((SVGPathSegCurvetoCubicRel)pathSeg).getX1());
+                setY1(((SVGPathSegCurvetoCubicRel)pathSeg).getY1());
+                setX2(((SVGPathSegCurvetoCubicRel)pathSeg).getX2());
+                setY2(((SVGPathSegCurvetoCubicRel)pathSeg).getY2());
                 break;
             default:
             }
         }
 
-        public float getX(){
-            return x;
-        }
-        public float getY(){
-            return y;
-        }
-
         public void setX(float x){
-            this.x = x;
+            super.setX(x);
             resetAttribute();
         }
         public void setY(float y){
-            this.y = y;
+            super.setY(y);
             resetAttribute();
-        }
-
-        public float getX1(){
-            return x1;
-        }
-        public float getY1(){
-            return y1;
         }
 
         public void setX1(float x1){
-            this.x1 = x1;
+            super.setX1(x1);
             resetAttribute();
         }
         public void setY1(float y1){
-            this.y1 = y1;
+            super.setY1(y1);
             resetAttribute();
-        }
-
-        public float getX2(){
-            return x2;
-        }
-        public float getY2(){
-            return y2;
         }
 
         public void setX2(float x2){
-            this.x2 = x2;
+            super.setX2(x2);
             resetAttribute();
         }
         public void setY2(float y2){
-            this.y2 = y2;
+            super.setY2(y2);
             resetAttribute();
         }
 
         protected String getStringValue(){
             return letter
                     + ' '
-                    + Float.toString(x1)
+                    + Float.toString(getX1())
                     + ' '
-                    + Float.toString(y1)
+                    + Float.toString(getY1())
                     + ' '
-                    + Float.toString(x2)
+                    + Float.toString(getX2())
                     + ' '
-                    + Float.toString(y2)
+                    + Float.toString(getY2())
                     + ' '
-                    + Float.toString(x)
+                    + Float.toString(getX())
                     + ' '
-                    + Float.toString(y);
+                    + Float.toString(getY());
         }
     }
 
@@ -457,10 +374,10 @@ public abstract class AbstractSVGPathSegList
         public SVGPathSegCurvetoQuadraticItem(short type,String letter,
                                           float x1,float y1,float x, float y ){
             super(type,letter);
-            this.x = x;
-            this.y = y;
-            this.x1 = x1;
-            this.y1 = y1;
+            this.setX(x);
+            this.setY(y);
+            this.setX1(x1);
+            this.setY1(y1);
         }
 
         public SVGPathSegCurvetoQuadraticItem(SVGPathSeg pathSeg){
@@ -468,52 +385,38 @@ public abstract class AbstractSVGPathSegList
             switch(type){
             case SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_ABS:
                 letter = PATHSEG_CURVETO_QUADRATIC_ABS_LETTER;
-                x = ((SVGPathSegCurvetoQuadraticAbs)pathSeg).getX();
-                y = ((SVGPathSegCurvetoQuadraticAbs)pathSeg).getY();
-                x1 = ((SVGPathSegCurvetoQuadraticAbs)pathSeg).getX1();
-                y1= ((SVGPathSegCurvetoQuadraticAbs)pathSeg).getY1();
+                setX(((SVGPathSegCurvetoQuadraticAbs)pathSeg).getX());
+                setY(((SVGPathSegCurvetoQuadraticAbs)pathSeg).getY());
+                setX1(((SVGPathSegCurvetoQuadraticAbs)pathSeg).getX1());
+                setY1(((SVGPathSegCurvetoQuadraticAbs)pathSeg).getY1());
                 break;
             case SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_REL:
                 letter = PATHSEG_CURVETO_QUADRATIC_REL_LETTER;
-                x = ((SVGPathSegCurvetoQuadraticRel)pathSeg).getX();
-                y = ((SVGPathSegCurvetoQuadraticRel)pathSeg).getY();
-                x1 = ((SVGPathSegCurvetoQuadraticRel)pathSeg).getX1();
-                y1= ((SVGPathSegCurvetoQuadraticRel)pathSeg).getY1();
+                setX(((SVGPathSegCurvetoQuadraticRel)pathSeg).getX());
+                setY(((SVGPathSegCurvetoQuadraticRel)pathSeg).getY());
+                setX1(((SVGPathSegCurvetoQuadraticRel)pathSeg).getX1());
+                setY1(((SVGPathSegCurvetoQuadraticRel)pathSeg).getY1());
                 break;
         default:
 
             }
         }
 
-        public float getX(){
-            return x;
-        }
-        public float getY(){
-            return y;
-        }
-
         public void setX(float x){
-            this.x = x;
+            super.setX(x);
             resetAttribute();
         }
         public void setY(float y){
-            this.y = y;
+            super.setY(y);
             resetAttribute();
-        }
-
-        public float getX1(){
-            return x1;
-        }
-        public float getY1(){
-            return y1;
         }
 
         public void setX1(float x1){
-            this.x1 = x1;
+            super.setX1(x1);
             resetAttribute();
         }
         public void setY1(float y1){
-            this.y1 = y1;
+            super.setY1(y1);
             resetAttribute();
         }
 
@@ -521,13 +424,13 @@ public abstract class AbstractSVGPathSegList
 
             return letter
                     + ' '
-                    + Float.toString(x1)
+                    + Float.toString(getX1())
                     + ' '
-                    + Float.toString(y1)
+                    + Float.toString(getY1())
                     + ' '
-                    + Float.toString(x)
+                    + Float.toString(getX())
                     + ' '
-                    + Float.toString(y);
+                    + Float.toString(getY());
          }
     }
 
@@ -540,13 +443,13 @@ public abstract class AbstractSVGPathSegList
                              boolean largeArcFlag, boolean sweepFlag,
                              float x, float y ){
             super(type,letter);
-            this.x = x;
-            this.y = y;
-            this.r1 = r1;
-            this.r2 = r2;
-            this.angle = angle;
-            this.largeArcFlag = largeArcFlag;
-            this.sweepFlag = sweepFlag;
+            this.setX(x);
+            this.setY(y);
+            this.setR1(r1);
+            this.setR2(r2);
+            this.setAngle(angle);
+            this.setLargeArcFlag(largeArcFlag);
+            this.setSweepFlag(sweepFlag);
         }
 
         public SVGPathSegArcItem(SVGPathSeg pathSeg){
@@ -554,103 +457,85 @@ public abstract class AbstractSVGPathSegList
             switch(type){
             case SVGPathSeg.PATHSEG_ARC_ABS:
                 letter = PATHSEG_ARC_ABS_LETTER;
-                x = ((SVGPathSegArcAbs)pathSeg).getX();
-                y = ((SVGPathSegArcAbs)pathSeg).getY();
-                r1 = ((SVGPathSegArcAbs)pathSeg).getR1();
-                r2 = ((SVGPathSegArcAbs)pathSeg).getR2();
-                angle = ((SVGPathSegArcAbs)pathSeg).getAngle();
-                largeArcFlag = ((SVGPathSegArcAbs)pathSeg).getLargeArcFlag();
-                sweepFlag = ((SVGPathSegArcAbs)pathSeg).getSweepFlag();
+                setX(((SVGPathSegArcAbs)pathSeg).getX());
+                setY(((SVGPathSegArcAbs)pathSeg).getY());
+                setR1(((SVGPathSegArcAbs)pathSeg).getR1());
+                setR2(((SVGPathSegArcAbs)pathSeg).getR2());
+                setAngle(((SVGPathSegArcAbs)pathSeg).getAngle());
+                setLargeArcFlag(((SVGPathSegArcAbs)pathSeg).getLargeArcFlag());
+                setSweepFlag(((SVGPathSegArcAbs)pathSeg).getSweepFlag());
                 break;
             case SVGPathSeg.PATHSEG_ARC_REL:
                 letter = PATHSEG_ARC_REL_LETTER;
-                x = ((SVGPathSegArcRel)pathSeg).getX();
-                y = ((SVGPathSegArcRel)pathSeg).getY();
-                r1 = ((SVGPathSegArcRel)pathSeg).getR1();
-                r2 = ((SVGPathSegArcRel)pathSeg).getR2();
-                angle = ((SVGPathSegArcRel)pathSeg).getAngle();
-                largeArcFlag = ((SVGPathSegArcRel)pathSeg).getLargeArcFlag();
-                sweepFlag = ((SVGPathSegArcRel)pathSeg).getSweepFlag();
+                setX(((SVGPathSegArcRel)pathSeg).getX());
+                setY(((SVGPathSegArcRel)pathSeg).getY());
+                setR1(((SVGPathSegArcRel)pathSeg).getR1());
+                setR2(((SVGPathSegArcRel)pathSeg).getR2());
+                setAngle(((SVGPathSegArcRel)pathSeg).getAngle());
+                setLargeArcFlag(((SVGPathSegArcRel)pathSeg).getLargeArcFlag());
+                setSweepFlag(((SVGPathSegArcRel)pathSeg).getSweepFlag());
                 break;
             default:
             }
         }
 
-        public float getX(){
-            return x;
-        }
-        public float getY(){
-            return y;
-        }
-
         public void setX(float x){
-            this.x = x;
+            super.setX(x);
             resetAttribute();
         }
         public void setY(float y){
-            this.y = y;
+            super.setY(y);
             resetAttribute();
-        }
-
-        public float getR1(){
-            return r1;
-        }
-        public float getR2(){
-            return r2;
         }
 
         public void setR1(float r1){
-            this.r1 = r1;
+            super.setR1(r1);
             resetAttribute();
         }
         public void setR2(float r2){
-            this.r2 = r2;
+            super.setR2(r2);
             resetAttribute();
         }
 
-        public float getAngle(){
-            return angle;
-        }
-
         public void setAngle(float angle){
-            this.angle = angle;
+            super.setAngle(angle);
             resetAttribute();
         }
 
         public boolean getSweepFlag(){
-            return sweepFlag;
+            return isSweepFlag();
         }
 
         public void setSweepFlag(boolean sweepFlag){
-            this.sweepFlag = sweepFlag;
+            super.setSweepFlag(sweepFlag);
             resetAttribute();
         }
 
         public boolean getLargeArcFlag(){
-            return largeArcFlag;
+            return isLargeArcFlag();
         }
 
         public void setLargeArcFlag(boolean largeArcFlag){
-            this.largeArcFlag = largeArcFlag;
+            super.setLargeArcFlag(largeArcFlag);
             resetAttribute();
         }
 
         protected String getStringValue(){
             return letter
                     + ' '
-                    + Float.toString(r1)
+                    + Float.toString(getR1())
                     + ' '
-                    + Float.toString(r2)
+                    + Float.toString(getR2())
                     + ' '
-                    + Float.toString(angle)
+                    + Float.toString(getAngle())
                     + ' '
-                    + ((largeArcFlag?"1":"0"))
+                    + ((isLargeArcFlag()?"1":"0"))
                     + ' '
-                    + ((sweepFlag?"1":"0"))
+                    + ((isSweepFlag()?"1":"0"))
                     + (' ')
-                    + Float.toString(x)
+                    + Float.toString(getX())
                     + ' '
-                    + Float.toString(y);
+                    + Float.toString(getY());
         }
     }
 
@@ -662,36 +547,32 @@ public abstract class AbstractSVGPathSegList
         public SVGPathSegLinetoHorizontalItem(short type, String letter,
                                               float value){
             super(type,letter);
-            this.x = value;
+            this.setX(value);
         }
         public SVGPathSegLinetoHorizontalItem(SVGPathSeg pathSeg){
             this.type = pathSeg.getPathSegType();
             switch(type){
             case SVGPathSeg.PATHSEG_LINETO_HORIZONTAL_ABS:
                 letter = PATHSEG_LINETO_HORIZONTAL_ABS_LETTER;
-                x = ((SVGPathSegLinetoHorizontalAbs)pathSeg).getX();
+                setX(((SVGPathSegLinetoHorizontalAbs)pathSeg).getX());
                 break;
             case SVGPathSeg.PATHSEG_LINETO_HORIZONTAL_REL:
                 letter = PATHSEG_LINETO_HORIZONTAL_REL_LETTER;
-                x = ((SVGPathSegLinetoHorizontalRel)pathSeg).getX();
+                setX(((SVGPathSegLinetoHorizontalRel)pathSeg).getX());
                 break;
             default:
             }
         }
 
-        public float getX(){
-            return x;
-        }
-
         public void setX(float x){
-            this.x = x;
+            super.setX(x);
             resetAttribute();
         }
 
         protected String getStringValue(){
             return letter
                     + ' '
-                    + Float.toString(x);
+                    + Float.toString(getX());
         }
     }
 
@@ -703,7 +584,7 @@ public abstract class AbstractSVGPathSegList
         public SVGPathSegLinetoVerticalItem(short type, String letter,
                                           float value){
             super(type,letter);
-            this.y = value;
+            this.setY(value);
         }
 
         public SVGPathSegLinetoVerticalItem(SVGPathSeg pathSeg){
@@ -711,29 +592,25 @@ public abstract class AbstractSVGPathSegList
             switch(type){
             case SVGPathSeg.PATHSEG_LINETO_VERTICAL_ABS:
                 letter = PATHSEG_LINETO_VERTICAL_ABS_LETTER;
-                y = ((SVGPathSegLinetoVerticalAbs)pathSeg).getY();
+                setY(((SVGPathSegLinetoVerticalAbs)pathSeg).getY());
                 break;
             case SVGPathSeg.PATHSEG_LINETO_VERTICAL_REL:
                 letter = PATHSEG_LINETO_VERTICAL_REL_LETTER;
-                y = ((SVGPathSegLinetoVerticalRel)pathSeg).getY();
+                setY(((SVGPathSegLinetoVerticalRel)pathSeg).getY());
                 break;
             default:
             }
         }
 
-        public float getY(){
-            return y;
-        }
-
         public void setY(float y){
-            this.y = y;
+            super.setY(y);
             resetAttribute();
         }
 
         protected String getStringValue(){
             return letter
                     + ' '
-                    + Float.toString(y);
+                    + Float.toString(getY());
         }
     }
 
@@ -744,10 +621,10 @@ public abstract class AbstractSVGPathSegList
         public SVGPathSegCurvetoCubicSmoothItem(short type,String letter,
                                           float x2,float y2,float x, float y ){
             super(type,letter);
-            this.x = x;
-            this.y = y;
-            this.x2 = x2;
-            this.y2 = y2;
+            this.setX(x);
+            this.setY(y);
+            this.setX2(x2);
+            this.setY2(y2);
         }
 
         public SVGPathSegCurvetoCubicSmoothItem(SVGPathSeg pathSeg){
@@ -755,64 +632,50 @@ public abstract class AbstractSVGPathSegList
             switch(type){
             case SVGPathSeg.PATHSEG_CURVETO_CUBIC_SMOOTH_ABS:
                 letter = PATHSEG_CURVETO_CUBIC_SMOOTH_ABS_LETTER;
-                x = ((SVGPathSegCurvetoCubicSmoothAbs)pathSeg).getX();
-                y = ((SVGPathSegCurvetoCubicSmoothAbs)pathSeg).getY();
-                x2 = ((SVGPathSegCurvetoCubicSmoothAbs)pathSeg).getX2();
-                y2 = ((SVGPathSegCurvetoCubicSmoothAbs)pathSeg).getY2();
+                setX(((SVGPathSegCurvetoCubicSmoothAbs)pathSeg).getX());
+                setY(((SVGPathSegCurvetoCubicSmoothAbs)pathSeg).getY());
+                setX2(((SVGPathSegCurvetoCubicSmoothAbs)pathSeg).getX2());
+                setY2(((SVGPathSegCurvetoCubicSmoothAbs)pathSeg).getY2());
                 break;
             case SVGPathSeg.PATHSEG_CURVETO_CUBIC_SMOOTH_REL:
                 letter = PATHSEG_CURVETO_CUBIC_SMOOTH_REL_LETTER;
-                x = ((SVGPathSegCurvetoCubicSmoothRel)pathSeg).getX();
-                y = ((SVGPathSegCurvetoCubicSmoothRel)pathSeg).getY();
-                x2 = ((SVGPathSegCurvetoCubicSmoothRel)pathSeg).getX2();
-                y2 = ((SVGPathSegCurvetoCubicSmoothRel)pathSeg).getY2();
+                setX(((SVGPathSegCurvetoCubicSmoothRel)pathSeg).getX());
+                setY(((SVGPathSegCurvetoCubicSmoothRel)pathSeg).getY());
+                setX2(((SVGPathSegCurvetoCubicSmoothRel)pathSeg).getX2());
+                setY2(((SVGPathSegCurvetoCubicSmoothRel)pathSeg).getY2());
                 break;
             default:
             }
         }
 
-        public float getX(){
-            return x;
-        }
-        public float getY(){
-            return y;
-        }
-
         public void setX(float x){
-            this.x = x;
+            super.setX(x);
             resetAttribute();
         }
         public void setY(float y){
-            this.y = y;
+            super.setY(y);
             resetAttribute();
-        }
-
-        public float getX2(){
-            return x2;
-        }
-        public float getY2(){
-            return y2;
         }
 
         public void setX2(float x2){
-            this.x2 = x2;
+            super.setX2(x2);
             resetAttribute();
         }
         public void setY2(float y2){
-            this.y2 = y2;
+            super.setY2(y2);
             resetAttribute();
         }
 
         protected String getStringValue(){
             return letter
                     + ' '
-                    + Float.toString(x2)
+                    + Float.toString(getX2())
                     + ' '
-                    + Float.toString(y2)
+                    + Float.toString(getY2())
                     + ' '
-                    + Float.toString(x)
+                    + Float.toString(getX())
                     + ' '
-                    + Float.toString(y);
+                    + Float.toString(getY());
         }
     }
 
@@ -823,8 +686,8 @@ public abstract class AbstractSVGPathSegList
         public SVGPathSegCurvetoQuadraticSmoothItem(short type, String letter,
                                                 float x, float y){
             super(type,letter);
-            this.x = x;
-            this.y = y;
+            this.setX(x);
+            this.setY(y);
         }
 
         public SVGPathSegCurvetoQuadraticSmoothItem(SVGPathSeg pathSeg){
@@ -832,40 +695,33 @@ public abstract class AbstractSVGPathSegList
             switch(type){
             case SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_SMOOTH_ABS:
                 letter = PATHSEG_CURVETO_QUADRATIC_SMOOTH_ABS_LETTER;
-                x = ((SVGPathSegCurvetoQuadraticSmoothAbs)pathSeg).getX();
-                y = ((SVGPathSegCurvetoQuadraticSmoothAbs)pathSeg).getY();
+                setX(((SVGPathSegCurvetoQuadraticSmoothAbs)pathSeg).getX());
+                setY(((SVGPathSegCurvetoQuadraticSmoothAbs)pathSeg).getY());
                 break;
             case SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_SMOOTH_REL:
                 letter = PATHSEG_CURVETO_QUADRATIC_SMOOTH_REL_LETTER;
-                x = ((SVGPathSegCurvetoQuadraticSmoothRel)pathSeg).getX();
-                y = ((SVGPathSegCurvetoQuadraticSmoothRel)pathSeg).getY();
+                setX(((SVGPathSegCurvetoQuadraticSmoothRel)pathSeg).getX());
+                setY(((SVGPathSegCurvetoQuadraticSmoothRel)pathSeg).getY());
                 break;
             default:
             }
         }
 
-        public float getX(){
-            return x;
-        }
-        public float getY(){
-            return y;
-        }
-
         public void setX(float x){
-            this.x = x;
+            super.setX(x);
             resetAttribute();
         }
         public void setY(float y){
-            this.y = y;
+            super.setY(y);
             resetAttribute();
         }
 
         protected String getStringValue(){
             return letter
                     + ' '
-                    + Float.toString(x)
+                    + Float.toString(getX())
                     + ' '
-                    + Float.toString(y);
+                    + Float.toString(getY());
         }
     }
 

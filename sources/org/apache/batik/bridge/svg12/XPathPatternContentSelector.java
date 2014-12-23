@@ -24,8 +24,8 @@ import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 
+import org.apache.batik.anim.dom.XBLOMContentElement;
 import org.apache.batik.dom.AbstractDocument;
-import org.apache.batik.dom.svg12.XBLOMContentElement;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

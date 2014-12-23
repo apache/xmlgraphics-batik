@@ -20,8 +20,8 @@ package org.apache.batik.bridge;
 
 import java.text.AttributedCharacterIterator;
 
+import org.apache.batik.anim.dom.SVGOMDocument;
 import org.apache.batik.dom.AbstractNode;
-import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.gvt.font.Glyph;
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;

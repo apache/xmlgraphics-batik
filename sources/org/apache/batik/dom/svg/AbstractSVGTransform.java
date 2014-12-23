@@ -71,7 +71,7 @@ public abstract class AbstractSVGTransform implements SVGTransform {
     /**
      * Sets the type of transformation.
      */
-    protected void setType(short type) {
+    public void setType(short type) {
         this.type = type;
     }
 
