@@ -18,12 +18,12 @@
  */
 package org.apache.batik.bridge.svg12;
 
+import org.apache.batik.anim.dom.XBLOMContentElement;
 import org.apache.batik.bridge.AbstractGraphicsNodeBridge;
 import org.apache.batik.bridge.Bridge;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.dom.AbstractDocument;
-import org.apache.batik.dom.svg12.XBLOMContentElement;
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.util.XBLConstants;

@@ -21,7 +21,7 @@ package org.apache.batik.bridge.svg12;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.apache.batik.dom.svg12.XBLOMContentElement;
+import org.apache.batik.anim.dom.XBLOMContentElement;
 import org.apache.batik.parser.AbstractScanner;
 import org.apache.batik.parser.ParseException;
 import org.apache.batik.xml.XMLUtilities;

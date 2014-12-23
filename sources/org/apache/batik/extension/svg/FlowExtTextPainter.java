@@ -24,9 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Iterator;
 
-import org.apache.batik.gvt.TextNode;
-import org.apache.batik.gvt.TextPainter;
-import org.apache.batik.gvt.renderer.StrokingTextPainter;
+import org.apache.batik.bridge.StrokingTextPainter;
+import org.apache.batik.bridge.TextNode;
+import org.apache.batik.bridge.TextPainter;
 
 /**
  * One line Class Desc

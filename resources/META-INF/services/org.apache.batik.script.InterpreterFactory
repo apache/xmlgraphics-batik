@@ -23,7 +23,7 @@
 
 
 # ECMAScript
-org.apache.batik.script.rhino.RhinoInterpreterFactory
+org.apache.batik.bridge.RhinoInterpreterFactory
 # TCL
 #org.apache.batik.script.jacl.JaclInterpreterFactory
 # Python

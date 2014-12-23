@@ -25,12 +25,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.gvt.font.GVTFontFamily;
 import org.apache.batik.gvt.font.GVTFontFace;
 import org.apache.batik.gvt.font.UnresolvedFontFamily;
 import org.apache.batik.util.SVGConstants;
 
+import org.apache.batik.anim.dom.SVGOMDocument;
 import org.apache.batik.css.engine.CSSEngine;
 import org.apache.batik.css.engine.FontFaceRule;
 

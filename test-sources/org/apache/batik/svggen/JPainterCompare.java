@@ -31,7 +31,7 @@ import javax.swing.JPanel;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 
-import org.apache.batik.dom.svg.SVGDOMImplementation;
+import org.apache.batik.anim.dom.SVGDOMImplementation;
 import org.apache.batik.swing.JSVGCanvas;
 import org.apache.batik.swing.svg.SVGDocumentLoaderAdapter;
 import org.apache.batik.swing.svg.SVGDocumentLoaderEvent;

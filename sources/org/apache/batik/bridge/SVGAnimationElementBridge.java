@@ -25,16 +25,16 @@ import java.util.Calendar;
 
 import org.apache.batik.anim.AbstractAnimation;
 import org.apache.batik.anim.AnimationEngine;
+import org.apache.batik.anim.dom.AnimatableElement;
+import org.apache.batik.anim.dom.AnimatedLiveAttributeValue;
+import org.apache.batik.anim.dom.AnimationTarget;
+import org.apache.batik.anim.dom.AnimationTargetListener;
+import org.apache.batik.anim.dom.SVGOMElement;
 import org.apache.batik.anim.timing.TimedElement;
 import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.css.engine.CSSEngineEvent;
 import org.apache.batik.dom.AbstractNode;
-import org.apache.batik.dom.anim.AnimatableElement;
-import org.apache.batik.dom.anim.AnimationTarget;
-import org.apache.batik.dom.anim.AnimationTargetListener;
-import org.apache.batik.dom.svg.AnimatedLiveAttributeValue;
 import org.apache.batik.dom.svg.SVGAnimationContext;
-import org.apache.batik.dom.svg.SVGOMElement;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.util.SVGTypes;
 

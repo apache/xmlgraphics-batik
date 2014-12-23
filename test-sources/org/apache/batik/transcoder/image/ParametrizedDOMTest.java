@@ -22,7 +22,7 @@ import java.io.IOException;
 
 import org.w3c.dom.Document;
 
-import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
+import org.apache.batik.anim.dom.SAXSVGDocumentFactory;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.util.XMLResourceDescriptor;
 

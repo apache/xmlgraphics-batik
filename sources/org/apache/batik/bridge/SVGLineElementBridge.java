@@ -20,10 +20,10 @@ package org.apache.batik.bridge;
 
 import java.awt.geom.Line2D;
 
-import org.apache.batik.dom.svg.AbstractSVGAnimatedLength;
-import org.apache.batik.dom.svg.AnimatedLiveAttributeValue;
+import org.apache.batik.anim.dom.AbstractSVGAnimatedLength;
+import org.apache.batik.anim.dom.AnimatedLiveAttributeValue;
+import org.apache.batik.anim.dom.SVGOMLineElement;
 import org.apache.batik.dom.svg.LiveAttributeException;
-import org.apache.batik.dom.svg.SVGOMLineElement;
 import org.apache.batik.gvt.ShapeNode;
 import org.apache.batik.gvt.ShapePainter;
 

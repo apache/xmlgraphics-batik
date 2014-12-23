@@ -29,7 +29,7 @@ import org.apache.batik.gvt.font.GVTGlyphVector;
  * @author <a href="mailto:deweese@apache.org">deweese</a>
  * @version $Id$
  */
-class GlyphGroupInfo {
+public class GlyphGroupInfo {
     int start, end;
     int glyphCount, lastGlyphCount;
     boolean hideLast;

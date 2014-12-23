@@ -26,9 +26,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.batik.bridge.GlyphLayout;
 import org.apache.batik.gvt.font.GVTGlyphVector;
 import org.apache.batik.gvt.font.MultiGlyphVector;
-import org.apache.batik.gvt.text.GlyphLayout;
 
 /**
  * A GlyphLayout class for SVG 1.2 flowing text.

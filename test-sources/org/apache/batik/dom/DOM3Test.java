@@ -19,8 +19,8 @@
 package org.apache.batik.dom;
 
 import org.apache.batik.test.AbstractTest;
-import org.apache.batik.dom.svg.SVGOMDocument;
-import org.apache.batik.dom.svg.SVGDOMImplementation;
+import org.apache.batik.anim.dom.SVGDOMImplementation;
+import org.apache.batik.anim.dom.SVGOMDocument;
 
 import org.w3c.dom.Document;
 

@@ -51,6 +51,7 @@ import java.util.List;
 
 import javax.swing.JComponent;
 
+import org.apache.batik.bridge.Mark;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.event.AWTEventDispatcher;
 import org.apache.batik.gvt.event.EventDispatcher;
@@ -59,7 +60,6 @@ import org.apache.batik.gvt.event.SelectionEvent;
 import org.apache.batik.gvt.renderer.ConcreteImageRendererFactory;
 import org.apache.batik.gvt.renderer.ImageRenderer;
 import org.apache.batik.gvt.renderer.ImageRendererFactory;
-import org.apache.batik.gvt.text.Mark;
 import org.apache.batik.util.HaltingThread;
 import org.apache.batik.util.Platform;
 

@@ -43,12 +43,12 @@ import java.util.zip.GZIPOutputStream;
 import org.apache.batik.dom.AbstractElement;
 import org.apache.batik.dom.GenericDOMImplementation;
 import org.apache.batik.dom.events.NodeEventTarget;
-import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
-import org.apache.batik.dom.svg.SVGOMDocument;
-import org.apache.batik.dom.svg.SVGOMScriptElement;
 import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.dom.util.SAXDocumentFactory;
 import org.apache.batik.dom.util.XLinkSupport;
+import org.apache.batik.anim.dom.SAXSVGDocumentFactory;
+import org.apache.batik.anim.dom.SVGOMDocument;
+import org.apache.batik.anim.dom.SVGOMScriptElement;
 import org.apache.batik.bridge.Location;
 import org.apache.batik.script.Interpreter;
 import org.apache.batik.script.InterpreterException;
@@ -378,7 +378,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
     /**
      * Creates a new Window object.
      */
-    protected org.apache.batik.script.Window createWindow(Interpreter interp,
+    protected org.apache.batik.bridge.Window createWindow(Interpreter interp,
                                                           String lang) {
         return new Window(interp, lang);
     }
@@ -796,7 +796,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
     /**
      * Represents the window object of this environment.
      */
-    protected class Window implements org.apache.batik.script.Window {
+    protected class Window implements org.apache.batik.bridge.Window {
 
         /**
          * A <code>TimerTask</code> to invoke a
@@ -932,7 +932,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
 
         /**
          * Implements {@link
-         * org.apache.batik.script.Window#setInterval(String,long)}.
+         * org.apache.batik.bridge.Window#setInterval(String,long)}.
          */
         public Object setInterval(final String script, long interval) {
             IntervalScriptTimerTask tt = new IntervalScriptTimerTask(script);
@@ -942,7 +942,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
 
         /**
          * Implements {@link
-         * org.apache.batik.script.Window#setInterval(Runnable,long)}.
+         * org.apache.batik.bridge.Window#setInterval(Runnable,long)}.
          */
         public Object setInterval(final Runnable r, long interval) {
             IntervalRunnableTimerTask tt = new IntervalRunnableTimerTask(r);
@@ -952,7 +952,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
 
         /**
          * Implements {@link
-         * org.apache.batik.script.Window#clearInterval(Object)}.
+         * org.apache.batik.bridge.Window#clearInterval(Object)}.
          */
         public void clearInterval(Object interval) {
             if (interval == null) return;
@@ -961,7 +961,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
 
         /**
          * Implements {@link
-         * org.apache.batik.script.Window#setTimeout(String,long)}.
+         * org.apache.batik.bridge.Window#setTimeout(String,long)}.
          */
         public Object setTimeout(final String script, long timeout) {
             TimeoutScriptTimerTask tt = new TimeoutScriptTimerTask(script);
@@ -971,7 +971,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
 
         /**
          * Implements {@link
-         * org.apache.batik.script.Window#setTimeout(Runnable,long)}.
+         * org.apache.batik.bridge.Window#setTimeout(Runnable,long)}.
          */
         public Object setTimeout(final Runnable r, long timeout) {
             TimeoutRunnableTimerTask tt = new TimeoutRunnableTimerTask(r);
@@ -981,7 +981,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
 
         /**
          * Implements {@link
-         * org.apache.batik.script.Window#clearTimeout(Object)}.
+         * org.apache.batik.bridge.Window#clearTimeout(Object)}.
          */
         public void clearTimeout(Object timeout) {
             if (timeout == null) return;
@@ -990,7 +990,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
 
         /**
          * Implements {@link
-         * org.apache.batik.script.Window#parseXML(String,Document)}.
+         * org.apache.batik.bridge.Window#parseXML(String,Document)}.
          */
         public Node parseXML(String text, Document doc) {
             // Try and parse it as an SVGDocument
@@ -1057,9 +1057,9 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
 
         /**
          * Implements {@link
-         * org.apache.batik.script.Window#getURL(String,org.apache.batik.script.Window.URLResponseHandler)}.
+         * org.apache.batik.bridge.Window#getURL(String,org.apache.batik.bridge.Window.URLResponseHandler)}.
          */
-        public void getURL(String uri, org.apache.batik.script.Window.URLResponseHandler h) {
+        public void getURL(String uri, org.apache.batik.bridge.Window.URLResponseHandler h) {
             getURL(uri, h, null);
         }
 
@@ -1068,10 +1068,10 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
         static final String UTF_8  ="UTF-8";
         /**
          * Implements {@link
-         * org.apache.batik.script.Window#getURL(String,org.apache.batik.script.Window.URLResponseHandler,String)}.
+         * org.apache.batik.bridge.Window#getURL(String,org.apache.batik.bridge.Window.URLResponseHandler,String)}.
          */
         public void getURL(final String uri,
-                           final org.apache.batik.script.Window.URLResponseHandler h,
+                           final org.apache.batik.bridge.Window.URLResponseHandler h,
                            final String enc) {
             Thread t = new Thread() {
                     public void run() {
@@ -1145,19 +1145,19 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
 
 
         public void postURL(String uri, String content,
-                            org.apache.batik.script.Window.URLResponseHandler h) {
+                            org.apache.batik.bridge.Window.URLResponseHandler h) {
             postURL(uri, content, h, "text/plain", null);
         }
 
         public void postURL(String uri, String content,
-                            org.apache.batik.script.Window.URLResponseHandler h,
+                            org.apache.batik.bridge.Window.URLResponseHandler h,
                      String mimeType) {
             postURL(uri, content, h, mimeType, null);
         }
 
         public void postURL(final String uri,
                             final String content,
-                            final org.apache.batik.script.Window.URLResponseHandler h,
+                            final org.apache.batik.bridge.Window.URLResponseHandler h,
                             final String mimeType,
                             final String fEnc) {
             Thread t = new Thread() {

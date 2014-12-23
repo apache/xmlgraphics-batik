@@ -30,7 +30,7 @@ import java.util.HashMap;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 
-import org.apache.batik.dom.svg.SVGDOMImplementation;
+import org.apache.batik.anim.dom.SVGDOMImplementation;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

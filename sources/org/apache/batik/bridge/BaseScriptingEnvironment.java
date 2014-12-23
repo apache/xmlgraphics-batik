@@ -43,7 +43,6 @@ import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.script.Interpreter;
 import org.apache.batik.script.InterpreterException;
 import org.apache.batik.script.ScriptEventWrapper;
-import org.apache.batik.script.ScriptHandler;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLConstants;
@@ -251,7 +250,7 @@ public class BaseScriptingEnvironment {
     protected Interpreter interpreter;
 
     /**
-     * Map of {@link Interpreter} to {@link org.apache.batik.script.Window}
+     * Map of {@link Interpreter} to {@link org.apache.batik.bridge.Window}
      * objects.
      */
     protected Map windowObjects = new HashMap();
@@ -275,10 +274,10 @@ public class BaseScriptingEnvironment {
     /**
      * Returns the Window object for the specified {@link Interpreter}.
      */
-    public org.apache.batik.script.Window getWindow(Interpreter interp,
+    public org.apache.batik.bridge.Window getWindow(Interpreter interp,
                                                     String lang) {
-        org.apache.batik.script.Window w =
-            (org.apache.batik.script.Window) windowObjects.get(interp);
+        org.apache.batik.bridge.Window w =
+            (org.apache.batik.bridge.Window) windowObjects.get(interp);
         if (w == null) {
             w = interp == null ? new Window(null, null)
                                : createWindow(interp, lang);
@@ -291,14 +290,14 @@ public class BaseScriptingEnvironment {
      * Returns the Window object for scripting languages that have no
      * {@link Interpreter} object.
      */
-    public org.apache.batik.script.Window getWindow() {
+    public org.apache.batik.bridge.Window getWindow() {
         return getWindow(null, null);
     }
 
     /**
      * Creates a new Window object.
      */
-    protected org.apache.batik.script.Window createWindow(Interpreter interp,
+    protected org.apache.batik.bridge.Window createWindow(Interpreter interp,
                                                           String lang) {
         
         return new Window(interp, lang);
@@ -756,7 +755,7 @@ public class BaseScriptingEnvironment {
     /**
      * Represents the window object of this environment.
      */
-    protected class Window implements org.apache.batik.script.Window {
+    protected class Window implements org.apache.batik.bridge.Window {
 
         /**
          * The associated interpreter.
@@ -778,7 +777,7 @@ public class BaseScriptingEnvironment {
 
         /**
          * Implements {@link
-         * org.apache.batik.script.Window#setInterval(String,long)}.
+         * org.apache.batik.bridge.Window#setInterval(String,long)}.
          */
         public Object setInterval(final String script, long interval) {
             return null;
@@ -786,7 +785,7 @@ public class BaseScriptingEnvironment {
 
         /**
          * Implements {@link
-         * org.apache.batik.script.Window#setInterval(Runnable,long)}.
+         * org.apache.batik.bridge.Window#setInterval(Runnable,long)}.
          */
         public Object setInterval(final Runnable r, long interval) {
             return null;
@@ -794,14 +793,14 @@ public class BaseScriptingEnvironment {
 
         /**
          * Implements {@link
-         * org.apache.batik.script.Window#clearInterval(Object)}.
+         * org.apache.batik.bridge.Window#clearInterval(Object)}.
          */
         public void clearInterval(Object interval) {
         }
 
         /**
          * Implements {@link
-         * org.apache.batik.script.Window#setTimeout(String,long)}.
+         * org.apache.batik.bridge.Window#setTimeout(String,long)}.
          */
         public Object setTimeout(final String script, long timeout) {
             return null;
@@ -809,7 +808,7 @@ public class BaseScriptingEnvironment {
 
         /**
          * Implements {@link
-         * org.apache.batik.script.Window#setTimeout(Runnable,long)}.
+         * org.apache.batik.bridge.Window#setTimeout(Runnable,long)}.
          */
         public Object setTimeout(final Runnable r, long timeout) {
             return null;
@@ -817,7 +816,7 @@ public class BaseScriptingEnvironment {
 
         /**
          * Implements {@link
-         * org.apache.batik.script.Window#clearTimeout(Object)}.
+         * org.apache.batik.bridge.Window#clearTimeout(Object)}.
          */
         public void clearTimeout(Object timeout) {
         }
@@ -844,7 +843,7 @@ public class BaseScriptingEnvironment {
          * @param uri The URI where the data is located.
          * @param h A handler called when the data is available.
          */
-        public void getURL(String uri, org.apache.batik.script.Window.URLResponseHandler h) {
+        public void getURL(String uri, org.apache.batik.bridge.Window.URLResponseHandler h) {
             getURL(uri, h, "UTF8");
         }
 
@@ -855,24 +854,24 @@ public class BaseScriptingEnvironment {
          * @param enc The character encoding of the data.
          */
         public void getURL(String uri,
-                           org.apache.batik.script.Window.URLResponseHandler h,
+                           org.apache.batik.bridge.Window.URLResponseHandler h,
                            String enc) {
         }
 
         public void postURL(String uri, String content,
-                            org.apache.batik.script.Window.URLResponseHandler h) {
+                            org.apache.batik.bridge.Window.URLResponseHandler h) {
             postURL(uri, content, h, "text/plain", null);
         }
 
         public void postURL(String uri, String content,
-                            org.apache.batik.script.Window.URLResponseHandler h,
+                            org.apache.batik.bridge.Window.URLResponseHandler h,
                      String mimeType) {
             postURL(uri, content, h, mimeType, null);
         }
 
         public void postURL(String uri,
                             String content,
-                            org.apache.batik.script.Window.URLResponseHandler h,
+                            org.apache.batik.bridge.Window.URLResponseHandler h,
                             String mimeType,
                             String fEnc) {
         }

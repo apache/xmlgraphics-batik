@@ -30,10 +30,13 @@ grant codeBase "${app.dev.base}/lib/xerces_2_5_0.jar" {
   permission java.security.AllPermission;
 };
 
-grant codeBase "${app.dev.base}/lib/pdf-transcoder.jar" {
+grant codeBase "${app.dev.base}/lib/fop-transcoder-allinone-svn-trunk.jar" {
   permission java.security.AllPermission;
 };
 
+grant codeBase "${app.dev.base}/lib/xmlgraphics-commons-svn-trunk.jar" {
+  permission java.security.AllPermission;
+};
 
 grant codeBase "${app.dev.base}/lib/js.jar" {
   permission java.lang.RuntimePermission "createClassLoader";

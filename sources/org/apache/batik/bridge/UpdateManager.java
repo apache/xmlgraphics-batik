@@ -29,11 +29,11 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.apache.batik.anim.dom.SVGOMDocument;
 import org.apache.batik.bridge.svg12.DefaultXBLManager;
 import org.apache.batik.bridge.svg12.SVG12BridgeContext;
 import org.apache.batik.bridge.svg12.SVG12ScriptingEnvironment;
 import org.apache.batik.dom.events.AbstractEvent;
-import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.RootGraphicsNode;
 import org.apache.batik.gvt.UpdateTracker;
