@@ -1,4 +1,8 @@
 #!/bin/bash
+# This script is used to generate the pom files needed to build the maven jars.
+# After running the script the new pom template files are in the checkpoms directory;
+# check them and if they look OK move them to the sources directory. Note that
+# this script runs builddeps first.
 ./builddeps.sh
 rm -rf checkpoms
 mkdir checkpoms

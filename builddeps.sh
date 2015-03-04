@@ -1,4 +1,8 @@
 #!/bin/bash
+# This scripts generates a diagram of the dependencies between the different jars.
+# To run it both jdeps (comes with jdk 1.8) and dot (comes with graphviz) need to
+# be present. The diagram, batik-jars-deps.svg, can be found in the checkdeps folder.
+# NOTE: Before running the script run "ant jars maven-artifacts".
 rm -rf checkdeps
 mkdir checkdeps
 ls -l batik-svn-trunk/maven/batik-*/*/*.jar | awk '{printf("cp %s checkdeps/\n", $9)}' > cp.sh
