@@ -26,6 +26,10 @@ grant codeBase "${app.jar.base}/@jarsLibDir@xml-apis-ext.jar" {
   permission java.security.AllPermission;
 };
 
+grant codeBase "${app.jar.base}/@jarsLibDir@xalan-2.6.0.jar" {
+  permission java.security.AllPermission;
+};
+
 grant codeBase "${app.jar.base}/@jarsLibDir@xerces_2_5_0.jar" {
   permission java.security.AllPermission;
 };
@@ -91,6 +95,22 @@ grant codeBase "${app.jar.base}/@jarsLibDir@batik-xml-@batikVersion@.jar" {
 };
 
 grant codeBase "${app.jar.base}/@jarsLibDir@xmlgraphics-commons-@xgcVersion@.jar" {
+  permission java.security.AllPermission;
+};
+
+grant codeBase "${app.jar.base}/@jarsLibDir@batik-anim-@batikVersion@.jar" {
+  permission java.security.AllPermission;
+};
+
+grant codeBase "${app.jar.base}/@jarsLibDir@batik-codec-@batikVersion@.jar" {
+  permission java.security.AllPermission;
+};
+
+grant codeBase "${app.jar.base}/@jarsLibDir@batik-extension-@batikVersion@.jar" {
+  permission java.security.AllPermission;
+};
+
+grant codeBase "${app.jar.base}/@jarsLibDir@batik-svggen-@batikVersion@.jar" {
   permission java.security.AllPermission;
 };
 

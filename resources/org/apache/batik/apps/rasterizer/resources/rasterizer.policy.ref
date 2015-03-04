@@ -18,7 +18,15 @@
 // $Id: rasterizer.bin.policy 476799 2006-11-19 11:33:41Z cam $
 // -----------------------------------------------------------------------------
 
-grant codeBase "${app.jar.base}/@jarsLibDir@xml-apis-dom3.jar" {
+grant codeBase "${app.jar.base}/@jarsLibDir@xml-apis-ext.jar" {
+  permission java.security.AllPermission;
+};
+
+grant codeBase "${app.jar.base}/@jarsLibDir@xml-apis.jar" {
+  permission java.security.AllPermission;
+};
+
+grant codeBase "${app.jar.base}/@jarsLibDir@xalan-2.6.0.jar" {
   permission java.security.AllPermission;
 };
 
@@ -91,6 +99,22 @@ grant codeBase "${app.jar.base}/@jarsLibDir@fop-transcoder-allinone-@fopVersion@
 };
 
 grant codeBase "${app.jar.base}/@jarsLibDir@xmlgraphics-commons-@xgcVersion@.jar" {
+  permission java.security.AllPermission;
+};
+
+grant codeBase "${app.jar.base}/@jarsLibDir@batik-anim-@batikVersion@.jar" {
+  permission java.security.AllPermission;
+};
+
+grant codeBase "${app.jar.base}/@jarsLibDir@batik-codec-@batikVersion@.jar" {
+  permission java.security.AllPermission;
+};
+
+grant codeBase "${app.jar.base}/@jarsLibDir@batik-extension-@batikVersion@.jar" {
+  permission java.security.AllPermission;
+};
+
+grant codeBase "${app.jar.base}/@jarsLibDir@batik-svggen-@batikVersion@.jar" {
   permission java.security.AllPermission;
 };
 
