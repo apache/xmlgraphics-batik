@@ -1,4 +1,5 @@
 #!/bin/bash
+# See buildpoms script. This is an auxiliar script used by buildpoms.sh.
 desc="Batik module description"
 case "$1" in
 'batik-anim')
