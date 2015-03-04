@@ -1049,13 +1049,15 @@ JAVA=/usr/bin/java
   <target name="bean" depends="init, compile, prepare-build">
     <mkdir dir="${build}/tmp"/>
     <unjar src="lib/xerces_2_5_0.jar" dest="${build}/tmp"/>
-    <jar jarfile="${build}/lib/${project}-bean-${completeVersion}.jar"
-         manifest="${src}/${project}-bean.mf">
+    <jar jarfile="${build}/lib/${project}-bean-${completeVersion}.jar">
       <manifest>
         <attribute name="Implementation-Title" value="Batik JavaBean"/>
         <attribute name="Implementation-Version" value="${completeVersion}"/>
         <attribute name="Implementation-Vendor" value="${vendor}"/>
         <attribute name="Build-Id" value="${build.id}"/>
+      	<section name="org/apache/batik/swing/JSVGCanvas.class">
+            <attribute name="Java-Bean" value="True"/>
+        </section>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
       <fileset dir="${dest}">
@@ -1616,6 +1618,7 @@ JAVA=/usr/bin/java
   <target name="squiggle-jar-call" depends="init, compile, prepare-build">
     <filter token="jarsLibDir" value="${jarsLibDir}" />
     <filter token="batikVersion" value="${completeVersion}" />
+    <filter token="xgcVersion" value="${xgcVersion}" />
     <copy file="${resources}/${package-prefix}/apps/svgbrowser/resources/svgbrowser.policy.ref"
           tofile="${resources}/${package-prefix}/apps/svgbrowser/resources/svgbrowser.policy.tmp"
           filtering="true" />
@@ -1730,6 +1733,7 @@ JAVA=/usr/bin/java
         <attribute name="Implementation-Version" value="${completeVersion}"/>
         <attribute name="Implementation-Vendor" value="${vendor}"/>
         <attribute name="Main-Class" value="org.apache.batik.apps.rasterizer.Main" />
+        <attribute name="Build-Id" value="${build.id}"/>
         <!-- this causes ant to emit bogus warning regarding multiple class-path entries -->
         <attribute name="Class-Path" value="${jarsLibDir}${project}-ext-${jarVersion}.jar" />
         <attribute name="Class-Path" value="${jarsLibDir}${project}-dom-${jarVersion}.jar" />
@@ -1752,7 +1756,6 @@ JAVA=/usr/bin/java
         <attribute name="Class-Path" value="${jarsLibDir}js.jar" />
         <attribute name="Class-Path" value="${jarsLibDir}fop-transcoder-allinone-${fopVersion}.jar" />
         <attribute name="Class-Path" value="${jarsLibDir}xmlgraphics-commons-${xgcVersion}.jar" />
-        <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
       <fileset dir="${dest}">
@@ -1831,12 +1834,41 @@ JAVA=/usr/bin/java
 
   <!-- batik.jar (dependencies: all) -->
   <target name="root-jar" depends="init, compile, prepare-build">
-    <jar manifest="${src}/${project}.mf" jarfile="${build}/${project}-${completeVersion}.jar">
+    <jar flattenAttributes="true" jarfile="${build}/${project}-${completeVersion}.jar">
       <manifest>
         <attribute name="Implementation-Title" value="Batik"/>
         <attribute name="Implementation-Version" value="${completeVersion}"/>
         <attribute name="Implementation-Vendor" value="${vendor}"/>
         <attribute name="Build-Id" value="${build.id}"/>
+        <attribute name="Main-Class" value="org.apache.batik.apps.svgbrowser.Main" />
+        <!-- this causes ant to emit bogus warning regarding multiple class-path entries -->
+        <attribute name="Class-Path" value="lib/${project}-ext-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="lib/${project}-dom-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="lib/${project}-css-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="lib/${project}-svg-dom-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="lib/${project}-gvt-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="lib/${project}-parser-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="lib/${project}-script-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="lib/${project}-bridge-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="lib/${project}-swing-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="lib/${project}-anim-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="lib/${project}-transcoder-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="lib/${project}-gui-util-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="lib/${project}-awt-util-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="lib/${project}-codec-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="lib/${project}-util-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="lib/${project}-svggen-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="lib/${project}-xml-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="${project}-squiggle-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="${project}-rasterizer-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="${project}-svgpp-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="lib/xerces_2_5_0.jar" />
+        <attribute name="Class-Path" value="lib/xalan-2.6.0.jar" />
+        <attribute name="Class-Path" value="lib/xml-apis.jar" />
+        <attribute name="Class-Path" value="lib/xml-apis-ext.jar" />
+        <attribute name="Class-Path" value="lib/js.jar" />
+        <attribute name="Class-Path" value="lib/fop-transcoder-allinone-${fopVersion}.jar" />
+        <attribute name="Class-Path" value="lib/xmlgraphics-commons-${xgcVersion}.jar" />
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
     </jar>

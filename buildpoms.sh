@@ -1,3 +1,4 @@
+#!/bin/bash
 ./builddeps.sh
 rm -rf checkpoms
 mkdir checkpoms
