@@ -4,7 +4,6 @@
 	<classpathentry excluding="org/apache/batik/script/jacl/**|org/apache/batik/script/jpython/**|**/.svn/" kind="src" path="sources"/>
 	<classpathentry excluding="**/.svn/" kind="src" path="test-sources"/>
 	<classpathentry kind="lib" path="lib/js.jar"/>
-	<classpathentry kind="lib" path="lib/pdf-transcoder.jar"/>
 	<classpathentry kind="lib" path="lib/xerces_2_5_0.jar"/>
 	<classpathentry kind="lib" path="lib/xml-apis.jar"/>
 	<classpathentry kind="lib" path="lib/xml-apis-ext.jar"/>
@@ -12,5 +11,6 @@
 	<classpathentry excluding="**/.svn/" kind="src" path="test-resources"/>
 	<classpathentry kind="lib" path="lib/xalan-2.6.0.jar"/>
 	<classpathentry kind="lib" path="lib/xmlgraphics-commons-svn-trunk.jar"/>
+	<classpathentry kind="lib" path="lib/fop-transcoder-allinone-svn-trunk.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
