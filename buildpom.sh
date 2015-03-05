@@ -155,7 +155,7 @@ echo '<?xml version="1.0"?>
   </organization>
 
   <dependencies>'
-grep jar checkdeps/dot/$1-svn-trunk.jar.dot | grep -v java | grep org.apache.batik | awk '{print $4}' | sort -u | sed s/xalan-2.6.0/xalan/g | sed s/'-svn-trunk.jar)";'//g | sed s/'.jar)";'//g | sed s/'('//g | awk '{version = "@version@"; groupId = "org.apache.xmlgraphics"; if ($1 == "xml-apis" || $1 == "xml-apis-ext") {version = "1.3.04"; groupId = "xml-apis"} else if ($1 == "xmlgraphics-commons") {version = "@xgcVersion@"} else if ($1 == "xalan") {version = "2.6.0"; groupId = "xalan";}; printf("    <dependency>\n      <groupId>%s</groupId>\n      <artifactId>%s</artifactId>\n      <version>%s</version>\n    </dependency>\n", groupId, $1, version);}'
+grep jar checkdeps/dot/$1-svn-trunk.jar.dot | grep -v java | grep org.apache.batik | awk '{print $4}' | sort -u | sed s/xalan-2.7.0/xalan/g | sed s/'-svn-trunk.jar)";'//g | sed s/'.jar)";'//g | sed s/'('//g | awk '{version = "@version@"; groupId = "org.apache.xmlgraphics"; if ($1 == "xml-apis" || $1 == "xml-apis-ext") {version = "1.3.04"; groupId = "xml-apis"} else if ($1 == "xmlgraphics-commons") {version = "@xgcVersion@"} else if ($1 == "xalan") {version = "2.7.0"; groupId = "xalan";}; printf("    <dependency>\n      <groupId>%s</groupId>\n      <artifactId>%s</artifactId>\n      <version>%s</version>\n    </dependency>\n", groupId, $1, version);}'
 echo '  </dependencies>
 </project>'
 
