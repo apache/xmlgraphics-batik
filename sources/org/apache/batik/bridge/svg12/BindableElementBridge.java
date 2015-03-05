@@ -18,6 +18,7 @@
  */
 package org.apache.batik.bridge.svg12;
 
+import org.apache.batik.anim.dom.BindableElement;
 import org.apache.batik.bridge.AbstractGraphicsNodeBridge;
 import org.apache.batik.bridge.Bridge;
 import org.apache.batik.bridge.BridgeContext;
@@ -25,7 +26,6 @@ import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.bridge.SVGUtilities;
 import org.apache.batik.bridge.ScriptingEnvironment;
 import org.apache.batik.bridge.UpdateManager;
-import org.apache.batik.dom.svg12.BindableElement;
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
 

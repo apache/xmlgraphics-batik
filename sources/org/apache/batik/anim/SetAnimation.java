@@ -19,8 +19,8 @@
 package org.apache.batik.anim;
 
 import org.apache.batik.anim.values.AnimatableValue;
+import org.apache.batik.anim.dom.AnimatableElement;
 import org.apache.batik.anim.timing.TimedElement;
-import org.apache.batik.dom.anim.AnimatableElement;
 
 /**
  * An animation class for 'set' animations.

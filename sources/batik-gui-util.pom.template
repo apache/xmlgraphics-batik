@@ -77,5 +77,10 @@
       <artifactId>batik-util</artifactId>
       <version>@version@</version>
     </dependency>
+    <dependency>
+      <groupId>org.apache.xmlgraphics</groupId>
+      <artifactId>batik-xml</artifactId>
+      <version>@version@</version>
+    </dependency>
   </dependencies>
 </project>

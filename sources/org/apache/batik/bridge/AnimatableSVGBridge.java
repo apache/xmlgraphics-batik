@@ -22,9 +22,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import org.apache.batik.dom.anim.AnimationTarget;
-import org.apache.batik.dom.anim.AnimationTargetListener;
-import org.apache.batik.dom.svg.SVGAnimationTargetContext;
+import org.apache.batik.anim.dom.AnimationTarget;
+import org.apache.batik.anim.dom.AnimationTargetListener;
+import org.apache.batik.anim.dom.SVGAnimationTargetContext;
 
 import org.w3c.dom.Element;
 

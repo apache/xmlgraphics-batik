@@ -28,9 +28,6 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.apache.batik.gvt.event.EventDispatcher;
-import org.apache.batik.gvt.font.DefaultFontFamilyResolver;
-import org.apache.batik.gvt.font.FontFamilyResolver;
-import org.apache.batik.gvt.text.Mark;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.SVGFeatureStrings;
 import org.apache.batik.util.XMLResourceDescriptor;

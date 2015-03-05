@@ -18,8 +18,6 @@
  */package org.apache.batik.bridge;
 
 import org.w3c.dom.*;
-import org.apache.batik.script.ScriptHandler;
-import org.apache.batik.script.Window;
 
 /**
  * If this script is loaded by jarCheckLoad.svg, it will mark

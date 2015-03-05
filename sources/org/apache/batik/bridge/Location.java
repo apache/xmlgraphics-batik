@@ -19,8 +19,9 @@
 package org.apache.batik.bridge;
 
 import java.net.URL;
+
+import org.apache.batik.anim.dom.SVGOMDocument;
 import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.AbstractDocument;
 
 /**

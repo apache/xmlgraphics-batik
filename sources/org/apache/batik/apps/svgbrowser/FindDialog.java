@@ -47,10 +47,10 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
+import org.apache.batik.bridge.Mark;
+import org.apache.batik.bridge.TextNode;
 import org.apache.batik.gvt.GVTTreeWalker;
 import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.TextNode;
-import org.apache.batik.gvt.text.Mark;
 import org.apache.batik.swing.JSVGCanvas;
 import org.apache.batik.util.resources.ResourceManager;
 import org.apache.batik.util.gui.ExtendedGridBagConstraints;

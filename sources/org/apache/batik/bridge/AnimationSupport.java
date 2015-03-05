@@ -20,10 +20,10 @@ package org.apache.batik.bridge;
 
 import java.util.Calendar;
 
+import org.apache.batik.anim.dom.SVGOMAnimationElement;
 import org.apache.batik.anim.timing.TimedElement;
 import org.apache.batik.dom.events.DOMTimeEvent;
 import org.apache.batik.dom.svg.IdContainer;
-import org.apache.batik.dom.svg.SVGOMAnimationElement;
 import org.apache.batik.dom.svg.SVGOMUseShadowRoot;
 import org.apache.batik.util.XMLConstants;
 
