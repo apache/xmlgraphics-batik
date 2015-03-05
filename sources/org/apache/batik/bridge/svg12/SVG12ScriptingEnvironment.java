@@ -18,6 +18,7 @@
  */
 package org.apache.batik.bridge.svg12;
 
+import org.apache.batik.anim.dom.XBLEventSupport;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.DocumentLoader;
 import org.apache.batik.bridge.Messages;
@@ -27,7 +28,6 @@ import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.AbstractElement;
 import org.apache.batik.dom.events.EventSupport;
 import org.apache.batik.dom.svg12.SVGGlobal;
-import org.apache.batik.dom.svg12.XBLEventSupport;
 import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.dom.util.TriplyIndexedTable;
 import org.apache.batik.script.Interpreter;
@@ -290,7 +290,7 @@ public class SVG12ScriptingEnvironment extends ScriptingEnvironment {
     /**
      * Creates a new Window object.
      */
-    public org.apache.batik.script.Window createWindow(Interpreter interp,
+    public org.apache.batik.bridge.Window createWindow(Interpreter interp,
                                                        String lang) {
         return new Global(interp, lang);
     }

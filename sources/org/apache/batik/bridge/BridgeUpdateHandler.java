@@ -18,8 +18,8 @@
  */
 package org.apache.batik.bridge;
 
+import org.apache.batik.anim.dom.AnimatedLiveAttributeValue;
 import org.apache.batik.css.engine.CSSEngineEvent;
-import org.apache.batik.dom.svg.AnimatedLiveAttributeValue;
 
 import org.w3c.dom.events.MutationEvent;
 

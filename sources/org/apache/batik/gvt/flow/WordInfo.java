@@ -30,13 +30,13 @@ import org.apache.batik.gvt.font.GVTLineMetrics;
  * @author <a href="mailto:deweese@apache.org">deweese</a>
  * @version $Id$
  */
-class WordInfo {
+public class WordInfo {
     int      index = -1;
     float    ascent=-1, descent=-1, lineHeight=-1;
     GlyphGroupInfo [] glyphGroups=null;
     Object            flowLine=null;
 
-    WordInfo(int index) {
+    public WordInfo(int index) {
         this.index = index;
     }
 

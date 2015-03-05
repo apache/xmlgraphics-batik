@@ -21,8 +21,8 @@ package org.apache.batik.bridge;
 import java.awt.geom.AffineTransform;
 import java.util.StringTokenizer;
 
+import org.apache.batik.anim.dom.SVGOMAnimatedRect;
 import org.apache.batik.dom.svg.LiveAttributeException;
-import org.apache.batik.dom.svg.SVGOMAnimatedRect;
 import org.apache.batik.parser.AWTTransformProducer;
 import org.apache.batik.parser.FragmentIdentifierHandler;
 import org.apache.batik.parser.FragmentIdentifierParser;

@@ -18,8 +18,8 @@
  */
 package org.apache.batik.extension.svg;
 
+import org.apache.batik.anim.dom.SVGOMTextPositioningElement;
 import org.apache.batik.dom.AbstractDocument;
-import org.apache.batik.dom.svg.SVGOMTextPositioningElement;
 import org.w3c.dom.Node;
 
 /**

@@ -23,14 +23,14 @@ import java.util.List;
 
 import org.apache.batik.anim.AbstractAnimation;
 import org.apache.batik.anim.AnimationEngine;
-import org.apache.batik.dom.anim.AnimationTarget;
 import org.apache.batik.anim.MotionAnimation;
+import org.apache.batik.anim.dom.AnimationTarget;
+import org.apache.batik.anim.dom.SVGOMElement;
+import org.apache.batik.anim.dom.SVGOMPathElement;
 import org.apache.batik.anim.values.AnimatableMotionPointValue;
 import org.apache.batik.anim.values.AnimatableValue;
 import org.apache.batik.ext.awt.geom.ExtendedGeneralPath;
 import org.apache.batik.dom.svg.SVGAnimatedPathDataSupport;
-import org.apache.batik.dom.svg.SVGOMElement;
-import org.apache.batik.dom.svg.SVGOMPathElement;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.parser.AWTPathProducer;
 import org.apache.batik.parser.AngleHandler;

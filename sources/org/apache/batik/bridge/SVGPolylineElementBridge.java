@@ -21,11 +21,11 @@ package org.apache.batik.bridge;
 import java.awt.Shape;
 import java.awt.geom.GeneralPath;
 
+import org.apache.batik.anim.dom.AnimatedLiveAttributeValue;
+import org.apache.batik.anim.dom.SVGOMAnimatedPoints;
+import org.apache.batik.anim.dom.SVGOMPolylineElement;
 import org.apache.batik.css.engine.SVGCSSEngine;
-import org.apache.batik.dom.svg.AnimatedLiveAttributeValue;
 import org.apache.batik.dom.svg.LiveAttributeException;
-import org.apache.batik.dom.svg.SVGOMAnimatedPoints;
-import org.apache.batik.dom.svg.SVGOMPolylineElement;
 import org.apache.batik.gvt.ShapeNode;
 import org.apache.batik.parser.AWTPolylineProducer;
 

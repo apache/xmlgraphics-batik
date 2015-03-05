@@ -20,6 +20,9 @@ package org.apache.batik.bridge.svg12;
 
 import java.util.Iterator;
 
+import org.apache.batik.anim.dom.SVGOMDocument;
+import org.apache.batik.anim.dom.XBLEventSupport;
+import org.apache.batik.anim.dom.XBLOMShadowTreeElement;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeUpdateHandler;
 import org.apache.batik.bridge.DocumentLoader;
@@ -31,9 +34,6 @@ import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.AbstractNode;
 import org.apache.batik.dom.events.EventSupport;
 import org.apache.batik.dom.events.NodeEventTarget;
-import org.apache.batik.dom.svg.SVGOMDocument;
-import org.apache.batik.dom.svg12.XBLEventSupport;
-import org.apache.batik.dom.svg12.XBLOMShadowTreeElement;
 import org.apache.batik.dom.xbl.NodeXBL;
 import org.apache.batik.dom.xbl.XBLManager;
 import org.apache.batik.script.Interpreter;

@@ -22,12 +22,12 @@ import java.awt.Shape;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 
+import org.apache.batik.anim.dom.AnimatedLiveAttributeValue;
+import org.apache.batik.anim.dom.SVGOMAnimatedPathData;
+import org.apache.batik.anim.dom.SVGOMPathElement;
 import org.apache.batik.css.engine.SVGCSSEngine;
-import org.apache.batik.dom.svg.AnimatedLiveAttributeValue;
 import org.apache.batik.dom.svg.LiveAttributeException;
 import org.apache.batik.dom.svg.SVGAnimatedPathDataSupport;
-import org.apache.batik.dom.svg.SVGOMAnimatedPathData;
-import org.apache.batik.dom.svg.SVGOMPathElement;
 import org.apache.batik.dom.svg.SVGPathContext;
 import org.apache.batik.ext.awt.geom.PathLength;
 import org.apache.batik.gvt.ShapeNode;

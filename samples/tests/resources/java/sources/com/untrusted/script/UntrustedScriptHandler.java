@@ -18,14 +18,6 @@
  */
 package com.untrusted.script;
 
-import org.apache.batik.script.ScriptHandler;
-import org.apache.batik.script.Window;
-
-import org.apache.batik.dom.svg.SVGOMDocument;
-
-import org.w3c.dom.*;
-import org.w3c.dom.events.*;
-
 import java.awt.AWTPermission;
 import java.io.FilePermission;
 import java.io.SerializablePermission;
@@ -35,10 +27,20 @@ import java.net.SocketPermission;
 import java.net.URL;
 import java.security.AllPermission;
 import java.security.Permission;
-import java.security.SecurityPermission;
 import java.sql.SQLPermission;
 import java.util.PropertyPermission;
+
 import javax.sound.sampled.AudioPermission;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Window;
+import org.w3c.dom.events.Event;
+import org.w3c.dom.events.EventListener;
+import org.w3c.dom.events.EventTarget;
+
+import org.apache.batik.anim.dom.SVGOMDocument;
+import org.apache.batik.bridge.ScriptHandler;
 
 /**
  * This class implements the ScriptHandler interface and represents an 
@@ -290,6 +292,12 @@ public class UntrustedScriptHandler implements ScriptHandler {
             }, false);
 
         
+    }
+
+    @Override
+    public void run(Document doc, org.apache.batik.bridge.Window win) {
+        // TODO Auto-generated method stub
+
     }
 
 }

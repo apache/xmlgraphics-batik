@@ -18,7 +18,7 @@
  */
 package org.apache.batik.anim.values;
 
-import org.apache.batik.dom.anim.AnimationTarget;
+import org.apache.batik.anim.dom.AnimationTarget;
 
 import org.w3c.dom.svg.SVGLength;
 

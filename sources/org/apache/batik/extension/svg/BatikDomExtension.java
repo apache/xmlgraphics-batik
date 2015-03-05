@@ -18,10 +18,10 @@
  */
 package org.apache.batik.extension.svg;
 
+import org.apache.batik.anim.dom.SVGDOMImplementation;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.DomExtension;
 import org.apache.batik.dom.ExtensibleDOMImplementation;
-import org.apache.batik.dom.svg.SVGDOMImplementation;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

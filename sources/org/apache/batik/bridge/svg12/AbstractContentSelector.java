@@ -20,7 +20,7 @@ package org.apache.batik.bridge.svg12;
 
 import java.util.HashMap;
 
-import org.apache.batik.dom.svg12.XBLOMContentElement;
+import org.apache.batik.anim.dom.XBLOMContentElement;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

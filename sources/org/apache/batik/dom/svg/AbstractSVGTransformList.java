@@ -192,7 +192,7 @@ public abstract class AbstractSVGTransformList
     /**
      * An {@link SVGTransform} in the list.
      */
-    protected class SVGTransformItem
+    public class SVGTransformItem
             extends AbstractSVGTransform
             implements SVGItem {
 
@@ -222,13 +222,13 @@ public abstract class AbstractSVGTransformList
         /**
          * Creates a new, uninitialized SVGTransformItem.
          */
-        protected SVGTransformItem() {
+        public SVGTransformItem() {
         }
 
         /**
          * Creates a new SVGTransformItem from the given {@link SVGTransform}.
          */
-        protected SVGTransformItem(SVGTransform transform) {
+        public SVGTransformItem(SVGTransform transform) {
             assign(transform);
         }
 

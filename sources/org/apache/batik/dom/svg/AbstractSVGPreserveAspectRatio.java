@@ -152,7 +152,7 @@ public abstract class AbstractSVGPreserveAspectRatio
     /**
      * Returns the string representation of the preserve aspect ratio value.
      */
-    protected String getValueAsString() {
+    public String getValueAsString() {
         if (align < 1 || align > 10) {
             throw createDOMException
                 (DOMException.INVALID_MODIFICATION_ERR,

@@ -349,7 +349,11 @@ public abstract class AbstractRenderingAccuracyTest extends AbstractTest {
         if (this.variationURLs == null) {
             this.variationURLs = new LinkedList();
         }
-        this.variationURLs.add(resolveURL(variationURL));
+        try {
+            this.variationURLs.add(resolveURL(variationURL));
+        } catch (IllegalArgumentException iae) {
+            // no worries
+        }
     }
 
     /**

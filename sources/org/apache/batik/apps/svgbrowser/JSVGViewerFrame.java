@@ -86,6 +86,7 @@ import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.text.Document;
 
+import org.apache.batik.anim.dom.SVGOMDocument;
 import org.apache.batik.bridge.DefaultExternalResourceSecurity;
 import org.apache.batik.bridge.DefaultScriptSecurity;
 import org.apache.batik.bridge.EmbededExternalResourceSecurity;
@@ -100,7 +101,6 @@ import org.apache.batik.bridge.UpdateManager;
 import org.apache.batik.bridge.UpdateManagerEvent;
 import org.apache.batik.bridge.UpdateManagerListener;
 import org.apache.batik.dom.StyleSheetProcessingInstruction;
-import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.HashTable;
 import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.ext.swing.JAffineTransformChooser;
@@ -941,7 +941,7 @@ public class JSVGViewerFrame
 
         /**
          * The {@code getContextFactory} method on the {@link
-         * org.apache.batik.script.rhino.RhinoInterpreter} class.
+         * org.apache.batik.bridge.RhinoInterpreter} class.
          */
         protected static Method getContextFactoryMethod;
 
@@ -1153,7 +1153,7 @@ public class JSVGViewerFrame
 
         /**
          * Calls {@code getContextFactory} on the given instance of
-         * {@link org.apache.batik.script.rhino.RhinoInterpreter}.
+         * {@link org.apache.batik.bridge.RhinoInterpreter}.
          */
         protected Object getContextFactory(Object rhinoInterpreter) {
             try {

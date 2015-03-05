@@ -25,12 +25,12 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 
+import org.apache.batik.anim.dom.XBLEventSupport;
+import org.apache.batik.anim.dom.XBLOMContentElement;
+import org.apache.batik.anim.dom.XBLOMShadowTreeElement;
 import org.apache.batik.dom.AbstractNode;
 import org.apache.batik.dom.events.NodeEventTarget;
 import org.apache.batik.dom.xbl.XBLManager;
-import org.apache.batik.dom.svg12.XBLEventSupport;
-import org.apache.batik.dom.svg12.XBLOMContentElement;
-import org.apache.batik.dom.svg12.XBLOMShadowTreeElement;
 import org.apache.batik.util.XBLConstants;
 import org.apache.batik.util.XMLConstants;
 

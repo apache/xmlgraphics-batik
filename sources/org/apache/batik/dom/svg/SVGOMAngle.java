@@ -36,7 +36,7 @@ public class SVGOMAngle implements SVGAngle {
     /**
      * The type of this angle.
      */
-    protected short unitType;
+    private short unitType;
 
     /**
      * The value of this angle.
@@ -63,7 +63,7 @@ public class SVGOMAngle implements SVGAngle {
      */
     public float getValue() {
         revalidate();
-        return toUnit(unitType, value, SVG_ANGLETYPE_DEG);
+        return toUnit(getUnitType(), value, SVG_ANGLETYPE_DEG);
     }
 
     /**
@@ -71,7 +71,7 @@ public class SVGOMAngle implements SVGAngle {
      */
     public void setValue(float value) throws DOMException {
         revalidate();
-        this.unitType = SVG_ANGLETYPE_DEG;
+        this.setUnitType(SVG_ANGLETYPE_DEG);
         this.value = value;
         reset();
     }
@@ -99,7 +99,7 @@ public class SVGOMAngle implements SVGAngle {
      */
     public String getValueAsString() {
         revalidate();
-        return Float.toString(value) + UNITS[unitType];
+        return Float.toString(value) + UNITS[getUnitType()];
     }
 
     /**
@@ -115,7 +115,7 @@ public class SVGOMAngle implements SVGAngle {
      * SVGAngle#newValueSpecifiedUnits(short,float)}.
      */
     public void newValueSpecifiedUnits(short unit, float value) {
-        unitType = unit;
+        setUnitType(unit);
         this.value = value;
         reset();
     }
@@ -125,8 +125,8 @@ public class SVGOMAngle implements SVGAngle {
      * SVGAngle#convertToSpecifiedUnits(short)}.
      */
     public void convertToSpecifiedUnits(short unit) {
-        value = toUnit(unitType, value, unit);
-        unitType = unit;
+        value = toUnit(getUnitType(), value, unit);
+        setUnitType(unit);
     }
 
     /**
@@ -156,19 +156,19 @@ public class SVGOMAngle implements SVGAngle {
                     value = v;
                 }
                 public void deg() throws ParseException {
-                    unitType = SVG_ANGLETYPE_DEG;
+                    setUnitType(SVG_ANGLETYPE_DEG);
                 }
                 public void rad() throws ParseException {
-                    unitType = SVG_ANGLETYPE_RAD;
+                    setUnitType(SVG_ANGLETYPE_RAD);
                 }
                 public void grad() throws ParseException {
-                    unitType = SVG_ANGLETYPE_GRAD;
+                    setUnitType(SVG_ANGLETYPE_GRAD);
                 }
             });
-            unitType = SVG_ANGLETYPE_UNSPECIFIED;
+            setUnitType(SVG_ANGLETYPE_UNSPECIFIED);
             angleParser.parse(s);
         } catch (ParseException e) {
-            unitType = SVG_ANGLETYPE_UNKNOWN;
+            setUnitType(SVG_ANGLETYPE_UNKNOWN);
             value = 0;
         }
     }
@@ -193,5 +193,9 @@ public class SVGOMAngle implements SVGAngle {
             toUnit = 2;
         }
         return (float) (K[fromUnit - 2][toUnit - 2] * value);
+    }
+
+    public void setUnitType(short unitType) {
+        this.unitType = unitType;
     }
 }

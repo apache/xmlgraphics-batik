@@ -22,7 +22,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.util.HashMap;
 
-import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
+import org.apache.batik.anim.dom.SAXSVGDocumentFactory;
 import org.apache.batik.dom.svg.SVGDocumentFactory;
 import org.apache.batik.dom.util.DocumentDescriptor;
 import org.apache.batik.util.CleanerThread;

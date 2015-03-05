@@ -24,7 +24,6 @@ import java.util.StringTokenizer;
 
 import org.apache.batik.css.engine.SVGCSSEngine;
 import org.apache.batik.css.engine.value.Value;
-import org.apache.batik.gvt.TextNode;
 import org.apache.batik.util.CSSConstants;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
