@@ -1589,7 +1589,7 @@ JAVA=/usr/bin/java
         <attribute name="Class-Path" value="${jarsLibDir}${project}-util-${jarVersion}.jar" />
         <attribute name="Class-Path" value="${jarsLibDir}${project}-xml-${jarVersion}.jar" />
         <attribute name="Class-Path" value="${jarsLibDir}xerces_2_5_0.jar" />
-        <attribute name="Class-Path" value="${jarsLibDir}xalan-2.6.0.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}xalan-2.7.0.jar" />
         <attribute name="Class-Path" value="${jarsLibDir}xml-apis.jar" />
         <attribute name="Class-Path" value="${jarsLibDir}xml-apis-ext.jar" />
         <attribute name="Class-Path" value="${jarsLibDir}xmlgraphics-commons-${xgcVersion}.jar"/>
@@ -1647,7 +1647,7 @@ JAVA=/usr/bin/java
         <attribute name="Class-Path" value="${jarsLibDir}${project}-util-${jarVersion}.jar" />
         <attribute name="Class-Path" value="${jarsLibDir}${project}-xml-${jarVersion}.jar" />
         <attribute name="Class-Path" value="${jarsLibDir}xerces_2_5_0.jar" />
-        <attribute name="Class-Path" value="${jarsLibDir}xalan-2.6.0.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}xalan-2.7.0.jar" />
         <attribute name="Class-Path" value="${jarsLibDir}xml-apis.jar" />
         <attribute name="Class-Path" value="${jarsLibDir}xml-apis-ext.jar" />
         <attribute name="Class-Path" value="${jarsLibDir}js.jar" />
@@ -1750,7 +1750,7 @@ JAVA=/usr/bin/java
         <attribute name="Class-Path" value="${jarsLibDir}${project}-util-${jarVersion}.jar" />
         <attribute name="Class-Path" value="${jarsLibDir}${project}-xml-${jarVersion}.jar" />
         <attribute name="Class-Path" value="${jarsLibDir}xerces_2_5_0.jar" />
-        <attribute name="Class-Path" value="${jarsLibDir}xalan-2.6.0.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}xalan-2.7.0.jar" />
         <attribute name="Class-Path" value="${jarsLibDir}xml-apis.jar" />
         <attribute name="Class-Path" value="${jarsLibDir}xml-apis-ext.jar" />
         <attribute name="Class-Path" value="${jarsLibDir}js.jar" />
@@ -1863,7 +1863,7 @@ JAVA=/usr/bin/java
         <attribute name="Class-Path" value="${project}-rasterizer-${completeVersion}.jar" />
         <attribute name="Class-Path" value="${project}-svgpp-${completeVersion}.jar" />
         <attribute name="Class-Path" value="lib/xerces_2_5_0.jar" />
-        <attribute name="Class-Path" value="lib/xalan-2.6.0.jar" />
+        <attribute name="Class-Path" value="lib/xalan-2.7.0.jar" />
         <attribute name="Class-Path" value="lib/xml-apis.jar" />
         <attribute name="Class-Path" value="lib/xml-apis-ext.jar" />
         <attribute name="Class-Path" value="lib/js.jar" />

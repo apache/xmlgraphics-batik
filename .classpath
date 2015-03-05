@@ -9,7 +9,7 @@
 	<classpathentry kind="lib" path="lib/xml-apis-ext.jar"/>
 	<classpathentry excluding="**/.svn/" kind="src" path="resources"/>
 	<classpathentry excluding="**/.svn/" kind="src" path="test-resources"/>
-	<classpathentry kind="lib" path="lib/xalan-2.6.0.jar"/>
+	<classpathentry kind="lib" path="lib/xalan-2.7.0.jar"/>
 	<classpathentry kind="lib" path="lib/xmlgraphics-commons-svn-trunk.jar"/>
 	<classpathentry kind="lib" path="lib/fop-transcoder-allinone-svn-trunk.jar"/>
 	<classpathentry kind="output" path="classes"/>

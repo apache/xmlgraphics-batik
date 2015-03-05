@@ -26,7 +26,7 @@ grant codeBase "${app.jar.base}/@jarsLibDir@xml-apis-ext.jar" {
   permission java.security.AllPermission;
 };
 
-grant codeBase "${app.jar.base}/@jarsLibDir@xalan-2.6.0.jar" {
+grant codeBase "${app.jar.base}/@jarsLibDir@xalan-2.7.0.jar" {
   permission java.security.AllPermission;
 };
 
