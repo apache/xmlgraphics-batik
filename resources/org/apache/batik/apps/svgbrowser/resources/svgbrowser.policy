@@ -22,11 +22,11 @@ grant codeBase "${app.dev.base}/classes/" {
   permission java.security.AllPermission;
 };
 
-grant codeBase "${app.dev.base}/lib/xml-apis.jar" {
+grant codeBase "${app.dev.base}/lib/xml-apis-1.3.04.jar" {
   permission java.security.AllPermission;
 };
 
-grant codeBase "${app.dev.base}/lib/xml-apis-ext.jar" {
+grant codeBase "${app.dev.base}/lib/xml-apis-ext-1.3.04.jar" {
   permission java.security.AllPermission;
 };
 
