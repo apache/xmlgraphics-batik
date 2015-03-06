@@ -1,5 +1,5 @@
-The pdf-transcoder.jar file is built from the Apache FOP project
-(http://xmlgraphics.apache.org/fop), version 0.94.
+The fop-transcoder-allinone-1.1.jar file is built from the Apache FOP project
+(http://xmlgraphics.apache.org/fop), version 1.1.
 
 This is only needed if you want to transcode to PDF, otherwise it can
 be removed.
