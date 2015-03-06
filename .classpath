@@ -5,8 +5,8 @@
 	<classpathentry excluding="**/.svn/" kind="src" path="test-sources"/>
 	<classpathentry kind="lib" path="lib/js.jar"/>
 	<classpathentry kind="lib" path="lib/xerces_2_5_0.jar"/>
-	<classpathentry kind="lib" path="lib/xml-apis.jar"/>
-	<classpathentry kind="lib" path="lib/xml-apis-ext.jar"/>
+	<classpathentry kind="lib" path="lib/xml-apis-1.3.04.jar"/>
+	<classpathentry kind="lib" path="lib/xml-apis-ext-1.3.04.jar"/>
 	<classpathentry excluding="**/.svn/" kind="src" path="resources"/>
 	<classpathentry excluding="**/.svn/" kind="src" path="test-resources"/>
 	<classpathentry kind="lib" path="lib/xalan-2.7.0.jar"/>
