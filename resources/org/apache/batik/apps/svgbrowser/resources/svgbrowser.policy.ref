@@ -18,11 +18,11 @@
 // $Id: rasterizer.bin.policy 476799 2006-11-19 11:33:41Z cam $
 // -----------------------------------------------------------------------------
 
-grant codeBase "${app.jar.base}/@jarsLibDir@xml-apis.jar" {
+grant codeBase "${app.jar.base}/@jarsLibDir@xml-apis-1.3.04.jar" {
   permission java.security.AllPermission;
 };
 
-grant codeBase "${app.jar.base}/@jarsLibDir@xml-apis-ext.jar" {
+grant codeBase "${app.jar.base}/@jarsLibDir@xml-apis-ext-1.3.04.jar" {
   permission java.security.AllPermission;
 };
 
