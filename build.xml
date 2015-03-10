@@ -362,8 +362,8 @@ To display the available targets type:
     <delete dir="${build}/docs/javadoc"/>
   </target>
 
-  <target name="bin-zip" depends="init, jars, htmldoc, bundle-script">
-    <zip zipfile="${project}-${completeVersion}.zip">
+  <target name="bin-zip" depends="init, jars, bundle-script">
+    <zip zipfile="${project}-bin-${completeVersion}.zip">
       <zipfileset dir="." prefix="${project}-${completeVersion}">
         <include name="LICENSE"/>
         <include name="NOTICE"/>
@@ -429,8 +429,8 @@ To display the available targets type:
     <delete dir="${build}/docs/javadoc"/>
   </target>
 
-  <target name="bin-tgz" depends="init, jars, htmldoc, bundle-script">
-    <tar tarfile="${project}-${completeVersion}.tar.gz" compression="gzip">
+  <target name="bin-tgz" depends="init, jars, bundle-script">
+    <tar tarfile="${project}-bin-${completeVersion}.tar.gz" compression="gzip">
       <tarfileset dir="." prefix="${project}-${completeVersion}">
         <include name="LICENSE"/>
         <include name="NOTICE"/>
@@ -2160,9 +2160,9 @@ JAVA=/usr/bin/java
   </target>
 
   <!-- Documentation ...................................................... -->
-  <target name="html" depends="javadoc, htmldoc"
+  <target name="html" depends="javadoc"
           description="Generates the HTML documentation, including javadocs, in ${build}/docs/"/>
-  <target name="htmldoc" depends="init, forrest"
+  <target name="htmldoc" depends="init"
           description="Generates HTML documentation">
     <mkdir dir="${docs}"/>
     <copy todir="${docs}">
@@ -2171,7 +2171,7 @@ JAVA=/usr/bin/java
   </target>
 
   <target name="site" depends="site-javadoc, sitedoc"/>
-  <target name="sitedoc" depends="init, forrest"
+  <target name="sitedoc" depends="init"
           description="Generates the http://xmlgraphics.apache.org/batik/ site">
     <mkdir dir="${site}"/>
     <copy todir="${site}">
@@ -2340,10 +2340,10 @@ JAVA=/usr/bin/java
           depends="init, clean-compile, clean-docs, clean-test"
           description="Cleans everything">
     <delete dir="${build}"/>
-    <delete file="${project}-${completeVersion}.zip"/>
+    <delete file="${project}-bin-${completeVersion}.zip"/>
     <delete file="${project}-docs-${completeVersion}.zip"/>
     <delete file="${project}-src-${completeVersion}.zip"/>
-    <delete file="${project}-${completeVersion}.tar.gz"/>
+    <delete file="${project}-bin-${completeVersion}.tar.gz"/>
     <delete file="${project}-docs-${completeVersion}.tar.gz"/>
     <delete file="${project}-src-${completeVersion}.tar.gz"/>
   </target>
