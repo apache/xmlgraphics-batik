@@ -632,20 +632,11 @@ JAVA=/usr/bin/java
     <!-- batik-ttf2svg application artifact -->
     <mkdir dir="${maven}/${project}-ttf2svg/${completeVersion}"/>
     <copy file="${src}/${project}-ttf2svg.pom.template" tofile="${maven}/${project}-ttf2svg/${completeVersion}/${project}-ttf2svg-${completeVersion}.pom" filtering="true"/>
-    <jar jarfile="${maven}/${project}-ttf2svg/${completeVersion}/${project}-ttf2svg-${completeVersion}.jar">
-      <manifest>
-        <attribute name="Implementation-Title" value="Batik TrueType to SVG Font converter"/>
-        <attribute name="Implementation-Version" value="${completeVersion}"/>
-        <attribute name="Implementation-Vendor" value="${vendor}"/>
-        <attribute name="Build-Id" value="${build.id}"/>
-        <attribute name="Main-Class" value="org.apache.batik.apps.ttf2svg.Main"/>
-        <attribute name="Class-Path" value="${project}-svggen-${completeVersion}.jar ${project}-util-${completeVersion}.jar"/>
-      </manifest>
-      <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
-      <fileset dir="${dest}">
-        <include name="${package-prefix}/apps/ttf2svg/**/*.class"/>
-      </fileset>
-    </jar>
+    <antcall target="ttf2svg-jar-call" >
+      <param name="jarsLibDir" value="" />
+      <param name="jarVersion" value="${completeVersion}" />
+      <param name="ttf2svgJar" value="${maven}/${project}-ttf2svg/${completeVersion}/${project}-ttf2svg-${completeVersion}.jar"/>
+    </antcall>
 
     <!-- library artifacts -->
     <mkdir dir="${maven}/${project}-anim/${completeVersion}"/>
@@ -1814,8 +1805,8 @@ JAVA=/usr/bin/java
   </target>
 
   <target name="ttf2svg-jar-call" depends="init, compile, prepare-build">
-    <jar   flattenAttributes="true"
-           jarfile="${ttf2svgJar}">
+    <jar flattenAttributes="true"
+         jarfile="${ttf2svgJar}">
     <manifest>
       <attribute name="Implementation-Title" value="Batik TrueType to SVG Font converter"/>
       <attribute name="Implementation-Version" value="${completeVersion}"/>
