@@ -20,7 +20,7 @@ package org.apache.batik.anim.values;
 
 import java.util.Arrays;
 
-import org.apache.batik.dom.anim.AnimationTarget;
+import org.apache.batik.anim.dom.AnimationTarget;
 
 /**
  * An SVG path value in the animation system.

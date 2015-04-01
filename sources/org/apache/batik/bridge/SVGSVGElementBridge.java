@@ -29,13 +29,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.batik.dom.svg.AbstractSVGAnimatedLength;
-import org.apache.batik.dom.svg.AnimatedLiveAttributeValue;
+import org.apache.batik.anim.dom.AbstractSVGAnimatedLength;
+import org.apache.batik.anim.dom.AnimatedLiveAttributeValue;
+import org.apache.batik.anim.dom.SVGOMAnimatedRect;
+import org.apache.batik.anim.dom.SVGOMElement;
+import org.apache.batik.anim.dom.SVGOMSVGElement;
 import org.apache.batik.dom.svg.LiveAttributeException;
 import org.apache.batik.dom.svg.SVGContext;
-import org.apache.batik.dom.svg.SVGOMAnimatedRect;
-import org.apache.batik.dom.svg.SVGOMElement;
-import org.apache.batik.dom.svg.SVGOMSVGElement;
 import org.apache.batik.dom.svg.SVGSVGContext;
 import org.apache.batik.ext.awt.image.renderable.ClipRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.Filter;
@@ -43,7 +43,6 @@ import org.apache.batik.gvt.CanvasGraphicsNode;
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.ShapeNode;
-import org.apache.batik.gvt.TextNode;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

@@ -28,7 +28,6 @@ import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.css.engine.value.ValueConstants;
 import org.apache.batik.css.engine.value.svg12.LineHeightValue;
 import org.apache.batik.css.engine.value.svg12.SVG12ValueConstants;
-import org.apache.batik.gvt.TextNode;
 import org.apache.batik.util.CSSConstants;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -169,6 +168,8 @@ public abstract class TextUtilities implements CSSConstants, ErrorConstants {
         } else if (v.getPrimitiveType() == CSSPrimitiveValue.CSS_IDENT) {
             if (v.getStringValue().equals(CSS_NORMAL_VALUE))
                 lineHeight = fontSize * 1.1f;
+        } else if (v.getPrimitiveType() == CSSPrimitiveValue.CSS_NUMBER) {
+            lineHeight = v.getFloatValue();
         }
         return Float.valueOf(lineHeight);
     }

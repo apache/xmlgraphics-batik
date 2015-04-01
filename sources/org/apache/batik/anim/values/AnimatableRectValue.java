@@ -18,7 +18,7 @@
  */
 package org.apache.batik.anim.values;
 
-import org.apache.batik.dom.anim.AnimationTarget;
+import org.apache.batik.anim.dom.AnimationTarget;
 
 /**
  * An SVG rect value in the animation system.

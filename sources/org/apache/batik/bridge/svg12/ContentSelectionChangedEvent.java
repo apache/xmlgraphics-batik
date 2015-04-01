@@ -20,7 +20,7 @@ package org.apache.batik.bridge.svg12;
 
 import java.util.EventObject;
 
-import org.apache.batik.dom.svg12.XBLOMContentElement;
+import org.apache.batik.anim.dom.XBLOMContentElement;
 
 /**
  * An event to signify a change to the list of selected nodes for an

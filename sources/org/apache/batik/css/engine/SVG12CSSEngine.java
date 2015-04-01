@@ -83,6 +83,7 @@ public class SVG12CSSEngine extends SVGCSSEngine {
      */
     public static final ValueManager[] SVG_VALUE_MANAGERS = {
         new MarginLengthManager(SVG12CSSConstants.CSS_INDENT_PROPERTY),
+        new LineHeightManager(),
         new MarginLengthManager(SVG12CSSConstants.CSS_MARGIN_BOTTOM_PROPERTY),
         new MarginLengthManager(SVG12CSSConstants.CSS_MARGIN_LEFT_PROPERTY),
         new MarginLengthManager(SVG12CSSConstants.CSS_MARGIN_RIGHT_PROPERTY),
@@ -104,7 +105,8 @@ public class SVG12CSSEngine extends SVGCSSEngine {
     // The property indexes.
     //
     public static final int INDENT_INDEX        = SVGCSSEngine.FINAL_INDEX+1;
-    public static final int MARGIN_BOTTOM_INDEX = INDENT_INDEX+1;
+    public static final int LINE_HEIGHT_INDEX   = INDENT_INDEX + 1;
+    public static final int MARGIN_BOTTOM_INDEX = LINE_HEIGHT_INDEX+1;
     public static final int MARGIN_LEFT_INDEX   = MARGIN_BOTTOM_INDEX+1;
     public static final int MARGIN_RIGHT_INDEX  = MARGIN_LEFT_INDEX+1;
     public static final int MARGIN_TOP_INDEX    = MARGIN_RIGHT_INDEX+1;

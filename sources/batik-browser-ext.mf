@@ -1,4 +1,0 @@
-Manifest-Version: 1.0
-Main-Class: org.apache.batik.apps.svgbrowser.Main
-Class-Path: ../batik-squiggle.jar
-            ../lib/batik-extension.jar

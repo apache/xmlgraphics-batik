@@ -26,4 +26,7 @@ package org.apache.batik.css.engine.value.svg12;
  * @version $Id$
  */
 public class LineHeightManager extends org.apache.batik.css.engine.value.css2.LineHeightManager {
+    public LineHeightManager() {
+        super();
+    }
 }

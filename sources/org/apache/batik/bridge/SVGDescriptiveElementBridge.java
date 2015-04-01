@@ -25,10 +25,10 @@ import java.awt.geom.Rectangle2D;
 import org.w3c.dom.Element;
 import org.w3c.dom.events.MutationEvent;
 
+import org.apache.batik.anim.dom.AnimatedLiveAttributeValue;
+import org.apache.batik.anim.dom.SVGOMElement;
 import org.apache.batik.css.engine.CSSEngineEvent;
-import org.apache.batik.dom.svg.AnimatedLiveAttributeValue;
 import org.apache.batik.dom.svg.SVGContext;
-import org.apache.batik.dom.svg.SVGOMElement;
 
 /**
  * Base class for 'descriptive' elements, mostly title and desc.

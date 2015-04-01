@@ -23,11 +23,11 @@ import java.awt.Cursor;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.batik.anim.dom.SVGOMAElement;
+import org.apache.batik.anim.dom.SVGOMAnimationElement;
+import org.apache.batik.anim.dom.SVGOMDocument;
 import org.apache.batik.dom.events.AbstractEvent;
 import org.apache.batik.dom.events.NodeEventTarget;
-import org.apache.batik.dom.svg.SVGOMAElement;
-import org.apache.batik.dom.svg.SVGOMAnimationElement;
-import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.XMLConstants;

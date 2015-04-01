@@ -33,6 +33,7 @@ import org.apache.batik.bridge.Bridge;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeException;
 import org.apache.batik.bridge.CSSUtilities;
+import org.apache.batik.bridge.MultiResGraphicsNode;
 import org.apache.batik.bridge.SVGImageElementBridge;
 import org.apache.batik.bridge.SVGUtilities;
 import org.apache.batik.bridge.UnitProcessor;
@@ -41,7 +42,6 @@ import org.apache.batik.dom.AbstractNode;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.ImageNode;
-import org.apache.batik.gvt.svg12.MultiResGraphicsNode;
 
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.SVG12Constants;

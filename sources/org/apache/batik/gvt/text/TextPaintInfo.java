@@ -22,7 +22,7 @@ import java.awt.Composite;
 import java.awt.Paint;
 import java.awt.Stroke;
 
-import org.apache.batik.gvt.TextNode.BackgroundMode;
+import org.apache.batik.bridge.TextNode.BackgroundMode;
 
 /**
  * One line Class Desc

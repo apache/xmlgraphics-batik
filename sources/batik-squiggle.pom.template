@@ -74,6 +74,11 @@
   <dependencies>
     <dependency>
       <groupId>org.apache.xmlgraphics</groupId>
+      <artifactId>batik-anim</artifactId>
+      <version>@version@</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.xmlgraphics</groupId>
       <artifactId>batik-awt-util</artifactId>
       <version>@version@</version>
     </dependency>
@@ -105,11 +110,6 @@
     <dependency>
       <groupId>org.apache.xmlgraphics</groupId>
       <artifactId>batik-script</artifactId>
-      <version>@version@</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.xmlgraphics</groupId>
-      <artifactId>batik-svg-dom</artifactId>
       <version>@version@</version>
     </dependency>
     <dependency>

@@ -27,7 +27,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGDocument;
 
 import org.apache.batik.dom.AbstractNode;
-import org.apache.batik.gvt.font.FontFamilyResolver;
 import org.apache.batik.gvt.font.GVTFontFace;
 import org.apache.batik.gvt.font.GVTFontFamily;
 import org.apache.batik.util.ParsedURL;

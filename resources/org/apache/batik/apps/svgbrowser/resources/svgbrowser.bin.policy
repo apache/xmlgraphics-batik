@@ -18,11 +18,11 @@
 // $Id$
 // -----------------------------------------------------------------------------
 
-grant codeBase "${app.jar.base}/lib/xml-apis.jar" {
+grant codeBase "${app.jar.base}/lib/xml-apis-1.3.04.jar" {
   permission java.security.AllPermission;
 };
 
-grant codeBase "${app.jar.base}/lib/xml-apis-ext.jar" {
+grant codeBase "${app.jar.base}/lib/xml-apis-ext-1.3.04.jar" {
   permission java.security.AllPermission;
 };
 
@@ -87,6 +87,10 @@ grant codeBase "${app.jar.base}/lib/batik-util.jar" {
 };
 
 grant codeBase "${app.jar.base}/lib/batik-xml.jar" {
+  permission java.security.AllPermission;
+};
+
+grant codeBase "${app.jar.base}/lib/xmlgraphics-commons-svn-trunk" {
   permission java.security.AllPermission;
 };
 

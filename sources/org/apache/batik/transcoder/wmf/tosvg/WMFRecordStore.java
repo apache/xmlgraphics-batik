@@ -252,15 +252,12 @@ public class WMFRecordStore extends AbstractWMFReader {
                         ySign = -1;
                     }
 
-                    mr.addElement((int)(width  * scaleXY));
-                    mr.addElement( height );
-                    records.add( mr );
-
                     if (_bext && functionId == WMFConstants.META_SETWINDOWEXT) {
                       vpW = width;
                       vpH = height;
-                      if (! isotropic) scaleXY = (float)vpW / (float)vpH;
-                      vpW = (int)(vpW * scaleXY);                      
+                      // two lines below commented out due to bug BATIK-1096
+                      // if (! isotropic) scaleXY = (float)vpW / (float)vpH;
+                      // vpW = (int)(vpW * scaleXY);
                       _bext = false;
                     }
                     // sets the width, height of the image if the file does not have an APM (in this case it is retrieved
@@ -269,6 +266,10 @@ public class WMFRecordStore extends AbstractWMFReader {
                         this.width = vpW;
                         this.height = vpH;
                     }                            
+
+                    mr.addElement((int)(width  * scaleXY));
+                    mr.addElement( height );
+                    records.add( mr );
                 }
                 break;
 

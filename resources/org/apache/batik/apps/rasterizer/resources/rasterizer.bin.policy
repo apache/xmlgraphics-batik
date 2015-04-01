@@ -90,6 +90,10 @@ grant codeBase "${app.jar.base}/lib/batik-xml.jar" {
   permission java.security.AllPermission;
 };
 
+ grant codeBase "${app.jar.base}/lib/xmlgraphics-commons-svn-trunk" {
+   permission java.security.AllPermission;
+ };
+
 grant codeBase "${app.jar.base}/lib/js.jar" {
   permission java.lang.RuntimePermission "createClassLoader";
   permission java.net.SocketPermission "*", "listen, connect, resolve, accept";

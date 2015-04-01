@@ -80,15 +80,18 @@ To display the available targets type:
     <tstamp>
       <format property="ts" pattern="yyyyMMdd-HHmmss-z"/>
     </tstamp>
-    <property name="Project"            value="Apache Batik"/>
-    <property name="project"            value="batik"/>
-    <property name="year"               value="2009"/>
-    <property name="version"            value="1.8"/>
-    <property name="revisionType"       value="pre"/>
-    <property name="revisionNumber"     value=""/>
-    <property name="completeVersion"    value="${version}${revisionType}${revisionNumber}"/>
-  
-    <property file="build.properties"/>
+    <property name="Project"            value="Apache Batik" />
+    <property name="project"            value="batik" />
+    <property name="year"               value="2014" />
+    <property name="version"            value="svn-trunk" />
+    <property name="revisionType"       value="" />
+    <property name="revisionNumber"     value="" />
+    <property name="completeVersion"    value="${version}${revisionType}${revisionNumber}" />
+    <property name="xgcVersion"         value="svn-trunk" />
+    <property name="fopVersion"         value="svn-trunk" />
+    <property name="vendor"             value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)" />
+
+  	<property file="build.properties"/>
     <property name="debug"              value="off"/>
     <property name="optimize"           value="on"/>
     <property name="deprecation"        value="on"/>
@@ -114,7 +117,7 @@ To display the available targets type:
     <property name="class-prefix"       value="org.apache.${project}"/>
   
     <property name="dom.javadoc"        value="http://www.w3.org/2003/01/dom2-javadoc/"/>
-    <property name="jdk.javadoc"        value="http://java.sun.com/j2se/1.4/docs/api/"/>
+    <property name="jdk.javadoc"        value="http://docs.oracle.com/javase/6/docs/api/"/>
     <property name="rhino.javadoc"      value="http://www.mozilla.org/rhino/apidocs/"/>
   
     <property name="site"               value="site"/>
@@ -144,8 +147,9 @@ To display the available targets type:
       <fileset dir="lib">
         <include name="xalan*.jar"/>
         <include name="xerces*.jar"/>
-        <include name="xml-apis.jar"/>
-        <include name="xml-apis-ext.jar"/>
+        <include name="xml-apis-1.3.04.jar"/>
+        <include name="xml-apis-ext-1.3.04.jar"/>
+        <include name="xmlgraphics-commons*.jar"/>
       </fileset>
     </path>
   
@@ -358,8 +362,8 @@ To display the available targets type:
     <delete dir="${build}/docs/javadoc"/>
   </target>
 
-  <target name="bin-zip" depends="init, jars, htmldoc, bundle-script">
-    <zip zipfile="${project}-${completeVersion}.zip">
+  <target name="bin-zip" depends="init, jars, bundle-script">
+    <zip zipfile="${project}-bin-${completeVersion}.zip">
       <zipfileset dir="." prefix="${project}-${completeVersion}">
         <include name="LICENSE"/>
         <include name="NOTICE"/>
@@ -425,8 +429,8 @@ To display the available targets type:
     <delete dir="${build}/docs/javadoc"/>
   </target>
 
-  <target name="bin-tgz" depends="init, jars, htmldoc, bundle-script">
-    <tar tarfile="${project}-${completeVersion}.tar.gz" compression="gzip">
+  <target name="bin-tgz" depends="init, jars, bundle-script">
+    <tar tarfile="${project}-bin-${completeVersion}.tar.gz" compression="gzip">
       <tarfileset dir="." prefix="${project}-${completeVersion}">
         <include name="LICENSE"/>
         <include name="NOTICE"/>
@@ -498,9 +502,9 @@ To display the available targets type:
   <key>CFBundleExecutable</key>
   <string>Squiggle</string>
   <key>CFBundleVersion</key>
-  <string>${completeVersion}${svn-revision-suffix}</string>
+  <string>${completeVersion}</string>
   <key>CFBundleShortVersionString</key>
-  <string>${completeVersion}${svn-revision-suffix}</string>
+  <string>${completeVersion}</string>
   <key>CFBundleIconFile</key>
   <string>Squiggle.icns</string>
   <key>CFBundleIdentifier</key>
@@ -557,174 +561,85 @@ JAVA=/usr/bin/java
     <copy file="${src}/make-squiggle-app.sh.template"
           tofile="${build}/lib/make-squiggle-app.sh">
       <filterset>
-        <filter token="VERSION" value="${completeVersion}${svn-revision-suffix}"/>
+        <filter token="VERSION" value="${completeVersion}"/>
         <filter token="YEAR" value="${year}"/>
       </filterset>
     </copy>
     <chmod perm="a+x" file="${build}/lib/make-squiggle-app.sh"/>
   </target>
 
-  <!-- Generates maven artifacts to be copied to
-       http://people.apache.org/repo/m2-ibiblio-rsync-repository/org/apache/xmlgraphics/.
-       Updating maven-metadata.xml files, and PGP signing of artifacts and POMs
-       must be done manually.
-
-       Note that the rules to build the artifact jars here are mostly redundant
-       with the relevant jar target (e.g. rasterizer-jar, squiggle-jar).  The
-       commonality should be factored out.
-       -->
+  <!-- 
+    Generates maven artifacts to be copied to
+    http://people.apache.org/repo/m2-ibiblio-rsync-repository/org/apache/xmlgraphics/.
+    Updating maven-metadata.xml files, and PGP signing of artifacts and POMs must be done manually.
+  -->
   <target name="maven-artifacts" depends="init, determine-svn-revision, jars">
     <filter token="version" value="${completeVersion}"/>
 
     <!-- batik-rasterizer application artifact -->
-    <mkdir dir="${maven}/batik-rasterizer/${completeVersion}"/>
-    <copy file="${src}/batik-rasterizer.pom.template" tofile="${maven}/batik-rasterizer/${completeVersion}/batik-rasterizer-${completeVersion}.pom" filtering="true"/>
-    <move file="${resources}/${package-prefix}/apps/rasterizer/resources/rasterizer.policy"
-          tofile="${resources}/${package-prefix}/apps/rasterizer/resources/rasterizer.classes.policy"/>
-    <move file="${resources}/${package-prefix}/apps/rasterizer/resources/rasterizer.bin.policy"
-          tofile="${resources}/${package-prefix}/apps/rasterizer/resources/rasterizer.policy"/>
-    <jar jarfile="${maven}/batik-rasterizer/${completeVersion}/batik-rasterizer-${completeVersion}.jar">
-      <manifest>
-        <attribute name="Implementation-Title" value="Batik SVG rasterizer"/>
-        <attribute name="Implementation-Version" value="${completeVersion}${svn-revision-suffix}"/>
-        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
-        <attribute name="Build-Id" value="${build.id}"/>
-        <attribute name="Main-Class" value="org.apache.batik.apps.rasterizer.Main"/>
-        <attribute name="Class-Path" value="batik-ext-${completeVersion}.jar batik-dom-${completeVersion}.jar batik-css-${completeVersion}.jar batik-svg-dom-${completeVersion}.jar batik-gvt-${completeVersion}.jar batik-parser-${completeVersion}.jar batik-script-${completeVersion}.jar batik-bridge-${completeVersion}.jar batik-anim-${completeVersion}.jar batik-transcoder-${completeVersion}.jar batik-awt-util-${completeVersion}.jar batik-codec-${completeVersion}.jar batik-util-${completeVersion}.jar batik-xml-${completeVersion}.jar xerces-2.5.0.jar xalan-2.6.0.jar xml-apis-1.3.04.jar xml-apis-ext-1.3.04.jar fop-0.94.jar batik-js.jar"/>
-      </manifest>
-      <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
-      <fileset dir="${dest}">
-        <include name="${package-prefix}/apps/rasterizer/**/*.class"/>
-      </fileset>
-      <fileset dir="${resources}" excludes="**/.svn/">
-        <include name="${package-prefix}/apps/rasterizer/**/resources/**"/>
-      </fileset>
-    </jar>
-    <move file="${resources}/${package-prefix}/apps/rasterizer/resources/rasterizer.policy"
-          tofile="${resources}/${package-prefix}/apps/rasterizer/resources/rasterizer.bin.policy"/>
-    <move file="${resources}/${package-prefix}/apps/rasterizer/resources/rasterizer.classes.policy"
-          tofile="${resources}/${package-prefix}/apps/rasterizer/resources/rasterizer.policy"/>
+    <mkdir dir="${maven}/${project}-rasterizer/${completeVersion}"/>
+    <copy file="${src}/${project}-rasterizer.pom.template"
+          tofile="${maven}/${project}-rasterizer/${completeVersion}/${project}-rasterizer-${completeVersion}.pom" filtering="true"/>
+    <antcall target="rasterizer-jar-call">
+      <param name="jarsLibDir" value="" />
+      <param name="jarVersion" value="${completeVersion}" />
+      <param name="rasterizerJar" value="${maven}/${project}-rasterizer/${completeVersion}/${project}-rasterizer-${completeVersion}.jar" />
+    </antcall>
 
     <!-- batik-rasterizer-ext application artifact -->
-    <mkdir dir="${maven}/batik-rasterizer-ext/${completeVersion}"/>
-    <copy file="${src}/batik-rasterizer-ext.pom.template" tofile="${maven}/batik-rasterizer-ext/${completeVersion}/batik-rasterizer-ext-${completeVersion}.pom" filtering="true"/>
-    <jar jarfile="${maven}/batik-rasterizer-ext/${completeVersion}/batik-rasterizer-ext-${completeVersion}.jar">
-      <manifest>
-        <attribute name="Implementation-Title" value="Batik SVG rasterizer with extensions"/>
-        <attribute name="Implementation-Version" value="${completeVersion}${svn-revision-suffix}"/>
-        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
-        <attribute name="Build-Id" value="${build.id}"/>
-        <attribute name="Main-Class" value="org.apache.batik.apps.svgbrowser.Main"/>
-        <attribute name="Class-Path" value="batik-rasterizer-${completeVersion}.jar batik-extension-${completeVersion}.jar"/>
-      </manifest>
-      <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
-      <fileset dir="${resources}" excludes="**/.svn/">
-        <include name="META-INF/services/**"/>
-      </fileset>
-    </jar>
+    <mkdir dir="${maven}/${project}-rasterizer-ext/${completeVersion}"/>
+    <copy file="${src}/${project}-rasterizer-ext.pom.template" tofile="${maven}/${project}-rasterizer-ext/${completeVersion}/${project}-rasterizer-ext-${completeVersion}.pom" filtering="true"/>
+    <antcall target="rasterizer-ext-jar-call">
+      <param name="rasterizer-extJar" value="${maven}/${project}-rasterizer-ext/${completeVersion}/${project}-rasterizer-ext-${completeVersion}.jar" />
+    </antcall>
 
     <!-- batik-slideshow application artifact -->
-    <mkdir dir="${maven}/batik-slideshow/${completeVersion}"/>
-    <copy file="${src}/batik-slideshow.pom.template" tofile="${maven}/batik-slideshow/${completeVersion}/batik-slideshow-${completeVersion}.pom" filtering="true"/>
-    <jar jarfile="${maven}/batik-slideshow/${completeVersion}/batik-slideshow-${completeVersion}.jar">
-      <manifest>
-        <attribute name="Implementation-Title" value="Batik SVG slide show tool"/>
-        <attribute name="Implementation-Version" value="${completeVersion}${svn-revision-suffix}"/>
-        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
-        <attribute name="Build-Id" value="${build.id}"/>
-        <attribute name="Main-Class" value="org.apache.batik.apps.slideshow.Main"/>
-        <attribute name="Class-Path" value="batik-ext-${completeVersion}.jar batik-dom-${completeVersion}.jar batik-css-${completeVersion}.jar batik-svg-dom-${completeVersion}.jar batik-gvt-${completeVersion}.jar batik-parser-${completeVersion}.jar batik-script-${completeVersion}.jar batik-bridge-${completeVersion}.jar batik-anim-${completeVersion}.jar batik-transcoder-${completeVersion}.jar batik-gui-util-${completeVersion}.jar batik-awt-util-${completeVersion}.jar batik-codec-${completeVersion}.jar batik-util-${completeVersion}.jar batik-xml-${completeVersion}.jar xerces-2.5.0.jar xalan-2.6.0.jar xml-apis-1.3.04.jar xml-apis-ext-1.3.04.jar batik-js.jar"/>
-      </manifest>
-      <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
-      <fileset dir="${dest}">
-        <include name="${package-prefix}/apps/slideshow/**/*.class"/>
-      </fileset>
-      <fileset dir="${resources}" excludes="**/.svn/">
-        <include name="${package-prefix}/apps/slideshow/**/resources/**"/>
-      </fileset>
-    </jar>
+    <mkdir dir="${maven}/${project}-slideshow/${completeVersion}"/>
+    <copy file="${src}/${project}-slideshow.pom.template" tofile="${maven}/${project}-slideshow/${completeVersion}/${project}-slideshow-${completeVersion}.pom" filtering="true"/>
+      <antcall target="svg-slideshow-jar-call">
+        <param name="jarsLibDir" value="lib/" />
+        <param name="jarVersion" value="${completeVersion}" />
+        <param name="svg-slideshowJar" value= "${maven}/${project}-slideshow/${completeVersion}/${project}-slideshow-${completeVersion}.jar"/>
+      </antcall>
 
     <!-- batik-squiggle application artifact -->
-    <mkdir dir="${maven}/batik-squiggle/${completeVersion}"/>
-    <copy file="${src}/batik-squiggle.pom.template" tofile="${maven}/batik-squiggle/${completeVersion}/batik-squiggle-${completeVersion}.pom" filtering="true"/>
-    <move file="${resources}/${package-prefix}/apps/svgbrowser/resources/svgbrowser.policy"
-          tofile="${resources}/${package-prefix}/apps/svgbrowser/resources/svgbrowser.classes.policy"/>
-    <move file="${resources}/${package-prefix}/apps/svgbrowser/resources/svgbrowser.bin.policy"
-          tofile="${resources}/${package-prefix}/apps/svgbrowser/resources/svgbrowser.policy"/>
-    <jar jarfile="${maven}/batik-squiggle/${completeVersion}/batik-squiggle-${completeVersion}.jar">
-      <manifest>
-        <attribute name="Implementation-Title" value="Batik Squiggle SVG browser"/>
-        <attribute name="Implementation-Version" value="${completeVersion}${svn-revision-suffix}"/>
-        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
-        <attribute name="Build-Id" value="${build.id}"/>
-        <attribute name="Main-Class" value="org.apache.batik.apps.svgbrowser.Main"/>
-        <attribute name="Class-Path" value="batik-ext-${completeVersion}.jar batik-dom-${completeVersion}.jar batik-css-${completeVersion}.jar batik-svg-dom-${completeVersion}.jar batik-gvt-${completeVersion}.jar batik-parser-${completeVersion}.jar batik-script-${completeVersion}.jar batik-bridge-${completeVersion}.jar batik-swing-${completeVersion}.jar batik-anim-${completeVersion}.jar batik-transcoder-${completeVersion}.jar batik-gui-util-${completeVersion}.jar batik-awt-util-${completeVersion}.jar batik-codec-${completeVersion}.jar batik-util-${completeVersion}.jar batik-xml-${completeVersion}.jar xerces-2.5.0.jar xalan-2.6.0.jar xml-apis-1.3.04.jar xml-apis-ext-1.3.04.jar batik-js.jar"/>
-      </manifest>
-      <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
-      <fileset dir="${dest}">
-        <include name="${package-prefix}/apps/svgbrowser/**/*.class"/>
-      </fileset>
-      <fileset dir="${resources}" excludes="**/.svn/">
-        <include name="${package-prefix}/apps/svgbrowser/**/resources/**"/>
-        <exclude name="${package-prefix}/apps/svgbrowser/resources/squiggle.xsl"/>
-        <exclude name="${package-prefix}/apps/svgbrowser/resources/squiggle.svg"/>
-      </fileset>
-    </jar>
-    <move file="${resources}/${package-prefix}/apps/svgbrowser/resources/svgbrowser.policy"
-          tofile="${resources}/${package-prefix}/apps/svgbrowser/resources/svgbrowser.bin.policy"/>
-    <move file="${resources}/${package-prefix}/apps/svgbrowser/resources/svgbrowser.classes.policy"
-          tofile="${resources}/${package-prefix}/apps/svgbrowser/resources/svgbrowser.policy"/>
+    <mkdir dir="${maven}/${project}-squiggle/${completeVersion}"/>
+    <copy file="${src}/${project}-squiggle.pom.template" tofile="${maven}/${project}-squiggle/${completeVersion}/${project}-squiggle-${completeVersion}.pom" filtering="true"/>
+    <antcall target="squiggle-jar-call">
+        <param name="jarsLibDir" value="" />
+        <param name="jarVersion" value="${completeVersion}" />
+        <param name="squiggleJar" value="${maven}/${project}-squiggle/${completeVersion}/${project}-squiggle-${completeVersion}.jar" />
+    </antcall>
 
     <!-- batik-squiggle-ext application artifact -->
-    <mkdir dir="${maven}/batik-squiggle-ext/${completeVersion}"/>
-    <copy file="${src}/batik-squiggle-ext.pom.template" tofile="${maven}/batik-squiggle-ext/${completeVersion}/batik-squiggle-ext-${completeVersion}.pom" filtering="true"/>
-    <jar jarfile="${maven}/batik-squiggle-ext/${completeVersion}/batik-squiggle-ext-${completeVersion}.jar">
-      <manifest>
-        <attribute name="Implementation-Title" value="Batik Squiggle SVG browser with extensions"/>
-        <attribute name="Implementation-Version" value="${completeVersion}${svn-revision-suffix}"/>
-        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
-        <attribute name="Build-Id" value="${build.id}"/>
-        <attribute name="Main-Class" value="org.apache.batik.apps.svgbrowser.Main"/>
-        <attribute name="Class-Path" value="batik-squiggle-${completeVersion}.jar batik-extension-${completeVersion}.jar"/>
-      </manifest>
-      <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
-      <fileset dir="${resources}" excludes="**/.svn/">
-        <include name="META-INF/services/**"/>
-      </fileset>
-    </jar>
+    <mkdir dir="${maven}/${project}-squiggle-ext/${completeVersion}"/>
+    <copy file="${src}/${project}-squiggle-ext.pom.template" tofile="${maven}/${project}-squiggle-ext/${completeVersion}/${project}-squiggle-ext-${completeVersion}.pom" filtering="true"/>
+    <antcall target="squiggle-ext-jar-call">
+      <param name="jarsLibDir" value="" />
+      <param name="jarVersion" value="${completeVersion}" />
+      <param name="squiggle-extJar" value="${maven}/${project}-squiggle-ext/${completeVersion}/${project}-squiggle-ext-${completeVersion}.jar" />
+    </antcall>
 
     <!-- batik-svgpp application artifact -->
-    <mkdir dir="${maven}/batik-svgpp/${completeVersion}"/>
-    <copy file="${src}/batik-svgpp.pom.template" tofile="${maven}/batik-svgpp/${completeVersion}/batik-svgpp-${completeVersion}.pom" filtering="true"/>
-    <jar jarfile="${maven}/batik-svgpp/${completeVersion}/batik-svgpp-${completeVersion}.jar">
-      <manifest>
-        <attribute name="Implementation-Title" value="Batik XML pretty printer"/>
-        <attribute name="Implementation-Version" value="${completeVersion}${svn-revision-suffix}"/>
-        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
-        <attribute name="Build-Id" value="${build.id}"/>
-        <attribute name="Main-Class" value="org.apache.batik.apps.svgpp.Main"/>
-        <attribute name="Class-Path" value="batik-ext-${completeVersion}.jar batik-dom-${completeVersion}.jar batik-parser-${completeVersion}.jar batik-transcoder-${completeVersion}.jar batik-util-${completeVersion}.jar batik-xml-${completeVersion}.jar xml-apis-1.3.04.jar xml-apis-ext-1.3.04.jar"/>
-      </manifest>
-      <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
-      <fileset dir="${dest}">
-        <include name="${package-prefix}/apps/svgpp/**/*.class"/>
-      </fileset>
-      <fileset dir="${resources}" excludes="**/.svn/">
-        <include name="${package-prefix}/apps/svgpp/**/resources/**"/>
-      </fileset>
-    </jar>
+    <mkdir dir="${maven}/${project}-svgpp/${completeVersion}"/>
+    <copy file="${src}/${project}-svgpp.pom.template" tofile="${maven}/${project}-svgpp/${completeVersion}/${project}-svgpp-${completeVersion}.pom" filtering="true"/>
+    <antcall target="svg-pp-jar-call">
+      <param name="jarsLibDir" value="" />
+      <param name="jarVersion" value="${completeVersion}" />
+      <param name="svg-ppJar" value="${maven}/${project}-svgpp/${completeVersion}/${project}-svgpp-${completeVersion}.jar" />
+    </antcall>
 
     <!-- batik-ttf2svg application artifact -->
-    <mkdir dir="${maven}/batik-ttf2svg/${completeVersion}"/>
-    <copy file="${src}/batik-ttf2svg.pom.template" tofile="${maven}/batik-ttf2svg/${completeVersion}/batik-ttf2svg-${completeVersion}.pom" filtering="true"/>
-    <jar jarfile="${maven}/batik-ttf2svg/${completeVersion}/batik-ttf2svg-${completeVersion}.jar">
+    <mkdir dir="${maven}/${project}-ttf2svg/${completeVersion}"/>
+    <copy file="${src}/${project}-ttf2svg.pom.template" tofile="${maven}/${project}-ttf2svg/${completeVersion}/${project}-ttf2svg-${completeVersion}.pom" filtering="true"/>
+    <jar jarfile="${maven}/${project}-ttf2svg/${completeVersion}/${project}-ttf2svg-${completeVersion}.jar">
       <manifest>
         <attribute name="Implementation-Title" value="Batik TrueType to SVG Font converter"/>
-        <attribute name="Implementation-Version" value="${completeVersion}${svn-revision-suffix}"/>
-        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
+        <attribute name="Implementation-Version" value="${completeVersion}"/>
+        <attribute name="Implementation-Vendor" value="${vendor}"/>
         <attribute name="Build-Id" value="${build.id}"/>
         <attribute name="Main-Class" value="org.apache.batik.apps.ttf2svg.Main"/>
-        <attribute name="Class-Path" value="batik-svggen-${completeVersion}.jar batik-util-${completeVersion}.jar"/>
+        <attribute name="Class-Path" value="${project}-svggen-${completeVersion}.jar ${project}-util-${completeVersion}.jar"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
       <fileset dir="${dest}">
@@ -733,81 +648,81 @@ JAVA=/usr/bin/java
     </jar>
 
     <!-- library artifacts -->
-    <mkdir dir="${maven}/batik-anim/${completeVersion}"/>
-    <copy file="${src}/batik-anim.pom.template" tofile="${maven}/batik-anim/${completeVersion}/batik-anim-${completeVersion}.pom" filtering="true"/>
-    <copy file="${build}/lib/batik-anim.jar" tofile="${maven}/batik-anim/${completeVersion}/batik-anim-${completeVersion}.jar"/>
+    <mkdir dir="${maven}/${project}-anim/${completeVersion}"/>
+    <copy file="${src}/${project}-anim.pom.template" tofile="${maven}/${project}-anim/${completeVersion}/${project}-anim-${completeVersion}.pom" filtering="true"/>
+    <copy file="${build}/lib/${project}-anim-${completeVersion}.jar" tofile="${maven}/${project}-anim/${completeVersion}/${project}-anim-${completeVersion}.jar"/>
 
-    <mkdir dir="${maven}/batik-awt-util/${completeVersion}"/>
-    <copy file="${src}/batik-awt-util.pom.template" tofile="${maven}/batik-awt-util/${completeVersion}/batik-awt-util-${completeVersion}.pom" filtering="true"/>
-    <copy file="${build}/lib/batik-awt-util.jar" tofile="${maven}/batik-awt-util/${completeVersion}/batik-awt-util-${completeVersion}.jar"/>
+    <mkdir dir="${maven}/${project}-awt-util/${completeVersion}"/>
+    <copy file="${src}/${project}-awt-util.pom.template" tofile="${maven}/${project}-awt-util/${completeVersion}/${project}-awt-util-${completeVersion}.pom" filtering="true"/>
+    <copy file="${build}/lib/${project}-awt-util-${completeVersion}.jar" tofile="${maven}/${project}-awt-util/${completeVersion}/${project}-awt-util-${completeVersion}.jar"/>
 
-    <mkdir dir="${maven}/batik-bridge/${completeVersion}"/>
-    <copy file="${src}/batik-bridge.pom.template" tofile="${maven}/batik-bridge/${completeVersion}/batik-bridge-${completeVersion}.pom" filtering="true"/>
-    <copy file="${build}/lib/batik-bridge.jar" tofile="${maven}/batik-bridge/${completeVersion}/batik-bridge-${completeVersion}.jar"/>
+    <mkdir dir="${maven}/${project}-bridge/${completeVersion}"/>
+    <copy file="${src}/${project}-bridge.pom.template" tofile="${maven}/${project}-bridge/${completeVersion}/${project}-bridge-${completeVersion}.pom" filtering="true"/>
+    <copy file="${build}/lib/${project}-bridge-${completeVersion}.jar" tofile="${maven}/${project}-bridge/${completeVersion}/${project}-bridge-${completeVersion}.jar"/>
 
-    <mkdir dir="${maven}/batik-codec/${completeVersion}"/>
-    <copy file="${src}/batik-codec.pom.template" tofile="${maven}/batik-codec/${completeVersion}/batik-codec-${completeVersion}.pom" filtering="true"/>
-    <copy file="${build}/lib/batik-codec.jar" tofile="${maven}/batik-codec/${completeVersion}/batik-codec-${completeVersion}.jar"/>
+    <mkdir dir="${maven}/${project}-codec/${completeVersion}"/>
+    <copy file="${src}/${project}-codec.pom.template" tofile="${maven}/${project}-codec/${completeVersion}/${project}-codec-${completeVersion}.pom" filtering="true"/>
+    <copy file="${build}/lib/${project}-codec-${completeVersion}.jar" tofile="${maven}/${project}-codec/${completeVersion}/${project}-codec-${completeVersion}.jar"/>
 
-    <mkdir dir="${maven}/batik-css/${completeVersion}"/>
-    <copy file="${src}/batik-css.pom.template" tofile="${maven}/batik-css/${completeVersion}/batik-css-${completeVersion}.pom" filtering="true"/>
-    <copy file="${build}/lib/batik-css.jar" tofile="${maven}/batik-css/${completeVersion}/batik-css-${completeVersion}.jar"/>
+    <mkdir dir="${maven}/${project}-css/${completeVersion}"/>
+    <copy file="${src}/${project}-css.pom.template" tofile="${maven}/${project}-css/${completeVersion}/${project}-css-${completeVersion}.pom" filtering="true"/>
+    <copy file="${build}/lib/${project}-css-${completeVersion}.jar" tofile="${maven}/${project}-css/${completeVersion}/${project}-css-${completeVersion}.jar"/>
 
-    <mkdir dir="${maven}/batik-dom/${completeVersion}"/>
-    <copy file="${src}/batik-dom.pom.template" tofile="${maven}/batik-dom/${completeVersion}/batik-dom-${completeVersion}.pom" filtering="true"/>
-    <copy file="${build}/lib/batik-dom.jar" tofile="${maven}/batik-dom/${completeVersion}/batik-dom-${completeVersion}.jar"/>
+    <mkdir dir="${maven}/${project}-dom/${completeVersion}"/>
+    <copy file="${src}/${project}-dom.pom.template" tofile="${maven}/${project}-dom/${completeVersion}/${project}-dom-${completeVersion}.pom" filtering="true"/>
+    <copy file="${build}/lib/${project}-dom-${completeVersion}.jar" tofile="${maven}/${project}-dom/${completeVersion}/${project}-dom-${completeVersion}.jar"/>
 
-    <mkdir dir="${maven}/batik-extension/${completeVersion}"/>
-    <copy file="${src}/batik-extension.pom.template" tofile="${maven}/batik-extension/${completeVersion}/batik-extension-${completeVersion}.pom" filtering="true"/>
-    <copy file="${build}/lib/batik-extension.jar" tofile="${maven}/batik-extension/${completeVersion}/batik-extension-${completeVersion}.jar"/>
+    <mkdir dir="${maven}/${project}-extension/${completeVersion}"/>
+    <copy file="${src}/${project}-extension.pom.template" tofile="${maven}/${project}-extension/${completeVersion}/${project}-extension-${completeVersion}.pom" filtering="true"/>
+    <copy file="${build}/lib/${project}-extension-${completeVersion}.jar" tofile="${maven}/${project}-extension/${completeVersion}/${project}-extension-${completeVersion}.jar"/>
 
-    <mkdir dir="${maven}/batik-ext/${completeVersion}"/>
-    <copy file="${src}/batik-ext.pom.template" tofile="${maven}/batik-ext/${completeVersion}/batik-ext-${completeVersion}.pom" filtering="true"/>
-    <copy file="${build}/lib/batik-ext.jar" tofile="${maven}/batik-ext/${completeVersion}/batik-ext-${completeVersion}.jar"/>
+    <mkdir dir="${maven}/${project}-ext/${completeVersion}"/>
+    <copy file="${src}/${project}-ext.pom.template" tofile="${maven}/${project}-ext/${completeVersion}/${project}-ext-${completeVersion}.pom" filtering="true"/>
+    <copy file="${build}/lib/${project}-ext-${completeVersion}.jar" tofile="${maven}/${project}-ext/${completeVersion}/${project}-ext-${completeVersion}.jar"/>
 
-    <mkdir dir="${maven}/batik-gui-util/${completeVersion}"/>
-    <copy file="${src}/batik-gui-util.pom.template" tofile="${maven}/batik-gui-util/${completeVersion}/batik-gui-util-${completeVersion}.pom" filtering="true"/>
-    <copy file="${build}/lib/batik-gui-util.jar" tofile="${maven}/batik-gui-util/${completeVersion}/batik-gui-util-${completeVersion}.jar"/>
+    <mkdir dir="${maven}/${project}-gui-util/${completeVersion}"/>
+    <copy file="${src}/${project}-gui-util.pom.template" tofile="${maven}/${project}-gui-util/${completeVersion}/${project}-gui-util-${completeVersion}.pom" filtering="true"/>
+    <copy file="${build}/lib/${project}-gui-util-${completeVersion}.jar" tofile="${maven}/${project}-gui-util/${completeVersion}/${project}-gui-util-${completeVersion}.jar"/>
 
-    <mkdir dir="${maven}/batik-gvt/${completeVersion}"/>
-    <copy file="${src}/batik-gvt.pom.template" tofile="${maven}/batik-gvt/${completeVersion}/batik-gvt-${completeVersion}.pom" filtering="true"/>
-    <copy file="${build}/lib/batik-gvt.jar" tofile="${maven}/batik-gvt/${completeVersion}/batik-gvt-${completeVersion}.jar"/>
+    <mkdir dir="${maven}/${project}-gvt/${completeVersion}"/>
+    <copy file="${src}/${project}-gvt.pom.template" tofile="${maven}/${project}-gvt/${completeVersion}/${project}-gvt-${completeVersion}.pom" filtering="true"/>
+    <copy file="${build}/lib/${project}-gvt-${completeVersion}.jar" tofile="${maven}/${project}-gvt/${completeVersion}/${project}-gvt-${completeVersion}.jar"/>
 
-    <mkdir dir="${maven}/batik-parser/${completeVersion}"/>
-    <copy file="${src}/batik-parser.pom.template" tofile="${maven}/batik-parser/${completeVersion}/batik-parser-${completeVersion}.pom" filtering="true"/>
-    <copy file="${build}/lib/batik-parser.jar" tofile="${maven}/batik-parser/${completeVersion}/batik-parser-${completeVersion}.jar"/>
+    <mkdir dir="${maven}/${project}-parser/${completeVersion}"/>
+    <copy file="${src}/${project}-parser.pom.template" tofile="${maven}/${project}-parser/${completeVersion}/${project}-parser-${completeVersion}.pom" filtering="true"/>
+    <copy file="${build}/lib/${project}-parser-${completeVersion}.jar" tofile="${maven}/${project}-parser/${completeVersion}/${project}-parser-${completeVersion}.jar"/>
 
-    <mkdir dir="${maven}/batik-script/${completeVersion}"/>
-    <copy file="${src}/batik-script.pom.template" tofile="${maven}/batik-script/${completeVersion}/batik-script-${completeVersion}.pom" filtering="true"/>
-    <copy file="${build}/lib/batik-script.jar" tofile="${maven}/batik-script/${completeVersion}/batik-script-${completeVersion}.jar"/>
+    <mkdir dir="${maven}/${project}-script/${completeVersion}"/>
+    <copy file="${src}/${project}-script.pom.template" tofile="${maven}/${project}-script/${completeVersion}/${project}-script-${completeVersion}.pom" filtering="true"/>
+    <copy file="${build}/lib/${project}-script-${completeVersion}.jar" tofile="${maven}/${project}-script/${completeVersion}/${project}-script-${completeVersion}.jar"/>
 
-    <mkdir dir="${maven}/batik-svg-dom/${completeVersion}"/>
-    <copy file="${src}/batik-svg-dom.pom.template" tofile="${maven}/batik-svg-dom/${completeVersion}/batik-svg-dom-${completeVersion}.pom" filtering="true"/>
-    <copy file="${build}/lib/batik-svg-dom.jar" tofile="${maven}/batik-svg-dom/${completeVersion}/batik-svg-dom-${completeVersion}.jar"/>
+    <mkdir dir="${maven}/${project}-svg-dom/${completeVersion}"/>
+    <copy file="${src}/${project}-svg-dom.pom.template" tofile="${maven}/${project}-svg-dom/${completeVersion}/${project}-svg-dom-${completeVersion}.pom" filtering="true"/>
+    <copy file="${build}/lib/${project}-svg-dom-${completeVersion}.jar" tofile="${maven}/${project}-svg-dom/${completeVersion}/${project}-svg-dom-${completeVersion}.jar"/>
 
-    <mkdir dir="${maven}/batik-svggen/${completeVersion}"/>
-    <copy file="${src}/batik-svggen.pom.template" tofile="${maven}/batik-svggen/${completeVersion}/batik-svggen-${completeVersion}.pom" filtering="true"/>
-    <copy file="${build}/lib/batik-svggen.jar" tofile="${maven}/batik-svggen/${completeVersion}/batik-svggen-${completeVersion}.jar"/>
+    <mkdir dir="${maven}/${project}-svggen/${completeVersion}"/>
+    <copy file="${src}/${project}-svggen.pom.template" tofile="${maven}/${project}-svggen/${completeVersion}/${project}-svggen-${completeVersion}.pom" filtering="true"/>
+    <copy file="${build}/lib/${project}-svggen-${completeVersion}.jar" tofile="${maven}/${project}-svggen/${completeVersion}/${project}-svggen-${completeVersion}.jar"/>
 
-    <mkdir dir="${maven}/batik-swing/${completeVersion}"/>
-    <copy file="${src}/batik-swing.pom.template" tofile="${maven}/batik-swing/${completeVersion}/batik-swing-${completeVersion}.pom" filtering="true"/>
-    <copy file="${build}/lib/batik-swing.jar" tofile="${maven}/batik-swing/${completeVersion}/batik-swing-${completeVersion}.jar"/>
+    <mkdir dir="${maven}/${project}-swing/${completeVersion}"/>
+    <copy file="${src}/${project}-swing.pom.template" tofile="${maven}/${project}-swing/${completeVersion}/${project}-swing-${completeVersion}.pom" filtering="true"/>
+    <copy file="${build}/lib/${project}-swing-${completeVersion}.jar" tofile="${maven}/${project}-swing/${completeVersion}/${project}-swing-${completeVersion}.jar"/>
 
-    <mkdir dir="${maven}/batik-transcoder/${completeVersion}"/>
-    <copy file="${src}/batik-transcoder.pom.template" tofile="${maven}/batik-transcoder/${completeVersion}/batik-transcoder-${completeVersion}.pom" filtering="true"/>
-    <copy file="${build}/lib/batik-transcoder.jar" tofile="${maven}/batik-transcoder/${completeVersion}/batik-transcoder-${completeVersion}.jar"/>
+    <mkdir dir="${maven}/${project}-transcoder/${completeVersion}"/>
+    <copy file="${src}/${project}-transcoder.pom.template" tofile="${maven}/${project}-transcoder/${completeVersion}/${project}-transcoder-${completeVersion}.pom" filtering="true"/>
+    <copy file="${build}/lib/${project}-transcoder-${completeVersion}.jar" tofile="${maven}/${project}-transcoder/${completeVersion}/${project}-transcoder-${completeVersion}.jar"/>
 
-    <mkdir dir="${maven}/batik-util/${completeVersion}"/>
-    <copy file="${src}/batik-util.pom.template" tofile="${maven}/batik-util/${completeVersion}/batik-util-${completeVersion}.pom" filtering="true"/>
-    <copy file="${build}/lib/batik-util.jar" tofile="${maven}/batik-util/${completeVersion}/batik-util-${completeVersion}.jar"/>
+    <mkdir dir="${maven}/${project}-util/${completeVersion}"/>
+    <copy file="${src}/${project}-util.pom.template" tofile="${maven}/${project}-util/${completeVersion}/${project}-util-${completeVersion}.pom" filtering="true"/>
+    <copy file="${build}/lib/${project}-util-${completeVersion}.jar" tofile="${maven}/${project}-util/${completeVersion}/${project}-util-${completeVersion}.jar"/>
 
-    <mkdir dir="${maven}/batik-xml/${completeVersion}"/>
-    <copy file="${src}/batik-xml.pom.template" tofile="${maven}/batik-xml/${completeVersion}/batik-xml-${completeVersion}.pom" filtering="true"/>
-    <copy file="${build}/lib/batik-xml.jar" tofile="${maven}/batik-xml/${completeVersion}/batik-xml-${completeVersion}.jar"/>
+    <mkdir dir="${maven}/${project}-xml/${completeVersion}"/>
+    <copy file="${src}/${project}-xml.pom.template" tofile="${maven}/${project}-xml/${completeVersion}/${project}-xml-${completeVersion}.pom" filtering="true"/>
+    <copy file="${build}/lib/${project}-xml-${completeVersion}.jar" tofile="${maven}/${project}-xml/${completeVersion}/${project}-xml-${completeVersion}.jar"/>
 
-    <mkdir dir="${maven}/batik-js/${completeVersion}"/>
-    <copy file="${src}/batik-js.pom.template" tofile="${maven}/batik-js/${completeVersion}/batik-js-${completeVersion}.pom" filtering="true"/>
-    <copy file="${build}/lib/js.jar" tofile="${maven}/batik-js/${completeVersion}/batik-js-${completeVersion}.jar"/>
+    <mkdir dir="${maven}/${project}-js/${completeVersion}"/>
+    <copy file="${src}/${project}-js.pom.template" tofile="${maven}/${project}-js/${completeVersion}/${project}-js-${completeVersion}.pom" filtering="true"/>
+    <copy file="${build}/lib/js.jar" tofile="${maven}/${project}-js/${completeVersion}/${project}-js-${completeVersion}.jar"/>
 
     <!-- Generate checksums of all artifacts and POMs -->
     <checksum algorithm="MD5" fileext=".md5">
@@ -1034,6 +949,12 @@ JAVA=/usr/bin/java
     <delete file="${samples}/tests/spec/scripting/java-binding.jar"/>
     <delete file="${samples}/anne.pdf"/>
     <delete file="${samples}/anne.png"/>
+    <delete dir="${test-references}" includes="**/candidate-reference/*"/>
+    <delete dir="${test-references}" includes="**/candidate-variation/*"/>
+    <delete dir="${test-resources}" includes="**/JarCheckPermissions*.jar"/>
+    <delete dir="${test-resources}/classes"/>
+    <delete dir="${samples}/tests/resources/java/classes"/>
+    <delete dir="${test-reports}"/>
   </target>
 
 
@@ -1083,11 +1004,11 @@ JAVA=/usr/bin/java
   <!-- All batik in a single jar (dependencies: none) -->
   <target name="all-jar" depends="init, compile, prepare-build"
           description="Creates a combined JAR file of the Batik libraries in ${build}/lib">
-    <jar jarfile="${build}/lib/${project}-all.jar">
+    <jar jarfile="${build}/lib/${project}-all-${completeVersion}.jar">
       <manifest>
         <attribute name="Implementation-Title" value="Batik all-in-one JAR"/>
-        <attribute name="Implementation-Version" value="${completeVersion}${svn-revision-suffix}"/>
-        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
+        <attribute name="Implementation-Version" value="${completeVersion}"/>
+        <attribute name="Implementation-Vendor" value="${vendor}"/>
         <attribute name="Build-Id" value="${build.id}"/>
         <attribute name="Main-Class" value="${class-prefix}.apps.svgbrowser.Main"/>
       </manifest>
@@ -1105,11 +1026,11 @@ JAVA=/usr/bin/java
   <!-- All batik in a single jar, without SAX and DOM bindings
        (dependencies: batik-ext.jar) -->
   <target name="libs-jar" depends="init, compile, prepare-build">
-    <jar jarfile="${build}/lib/${project}-libs.jar">
+    <jar jarfile="${build}/lib/${project}-libs-${completeVersion}.jar">
       <manifest>
         <attribute name="Implementation-Title" value="Batik all-in-one minus external dependencies"/>
-        <attribute name="Implementation-Version" value="${completeVersion}${svn-revision-suffix}"/>
-        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
+        <attribute name="Implementation-Version" value="${completeVersion}"/>
+        <attribute name="Implementation-Vendor" value="${vendor}"/>
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <fileset dir="${dest}" excludes="**/.svn/">
@@ -1128,13 +1049,15 @@ JAVA=/usr/bin/java
   <target name="bean" depends="init, compile, prepare-build">
     <mkdir dir="${build}/tmp"/>
     <unjar src="lib/xerces_2_5_0.jar" dest="${build}/tmp"/>
-    <jar jarfile="${build}/lib/${project}-bean.jar"
-         manifest="${src}/${project}-bean.mf">
+    <jar jarfile="${build}/lib/${project}-bean-${completeVersion}.jar">
       <manifest>
         <attribute name="Implementation-Title" value="Batik JavaBean"/>
-        <attribute name="Implementation-Version" value="${completeVersion}${svn-revision-suffix}"/>
-        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
+        <attribute name="Implementation-Version" value="${completeVersion}"/>
+        <attribute name="Implementation-Vendor" value="${vendor}"/>
         <attribute name="Build-Id" value="${build.id}"/>
+      	<section name="org/apache/batik/swing/JSVGCanvas.class">
+            <attribute name="Java-Bean" value="True"/>
+        </section>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
       <fileset dir="${dest}">
@@ -1171,11 +1094,11 @@ JAVA=/usr/bin/java
 
   <!-- External code (DOM Level 3 Events and ElementTraversal interfaces) (dependencies: none) -->
   <target name="ext-jar" depends="init, compile, prepare-build">
-    <jar jarfile="${build}/lib/${project}-ext.jar">
+    <jar jarfile="${build}/lib/${project}-ext-${completeVersion}.jar">
       <manifest>
         <attribute name="Implementation-Title" value="Batik external code"/>
-        <attribute name="Implementation-Version" value="${completeVersion}${svn-revision-suffix}"/>
-        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
+        <attribute name="Implementation-Version" value="${completeVersion}"/>
+        <attribute name="Implementation-Vendor" value="${vendor}"/>
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${lib}">
@@ -1189,11 +1112,11 @@ JAVA=/usr/bin/java
 
   <!-- Util, i18n (dependencies: none) -->
   <target name="util-jar" depends="init, compile, prepare-build">
-    <jar jarfile="${build}/lib/${project}-util.jar">
+    <jar jarfile="${build}/lib/${project}-util-${completeVersion}.jar">
       <manifest>
         <attribute name="Implementation-Title" value="Batik utility library"/>
-        <attribute name="Implementation-Version" value="${completeVersion}${svn-revision-suffix}"/>
-        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
+        <attribute name="Implementation-Version" value="${completeVersion}"/>
+        <attribute name="Implementation-Vendor" value="${vendor}"/>
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
@@ -1214,11 +1137,11 @@ JAVA=/usr/bin/java
 
   <!-- AWT Util (dependencies: none) -->
   <target name="awt-util-jar" depends="init, compile, prepare-build">
-    <jar jarfile="${build}/lib/${project}-awt-util.jar">
+    <jar jarfile="${build}/lib/${project}-awt-util-${completeVersion}.jar">
       <manifest>
         <attribute name="Implementation-Title" value="Batik AWT utility library"/>
-        <attribute name="Implementation-Version" value="${completeVersion}${svn-revision-suffix}"/>
-        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
+        <attribute name="Implementation-Version" value="${completeVersion}"/>
+        <attribute name="Implementation-Vendor" value="${vendor}"/>
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
@@ -1238,11 +1161,11 @@ JAVA=/usr/bin/java
 
   <!-- Codecs (dependencies: awt-util, transcoder) -->
   <target name="codec-jar" depends="init, compile, prepare-build">
-    <jar jarfile="${build}/lib/${project}-codec.jar">
+    <jar jarfile="${build}/lib/${project}-codec-${completeVersion}.jar">
       <manifest>
         <attribute name="Implementation-Title" value="Batik image codecs"/>
-        <attribute name="Implementation-Version" value="${completeVersion}${svn-revision-suffix}"/>
-        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
+        <attribute name="Implementation-Version" value="${completeVersion}"/>
+        <attribute name="Implementation-Vendor" value="${vendor}"/>
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
@@ -1267,11 +1190,11 @@ JAVA=/usr/bin/java
 
   <!-- SVGGraphics2D (dependencies: util, awt-util) -->
   <target name="svggen-jar" depends="init, compile, prepare-build">
-    <jar jarfile="${build}/lib/${project}-svggen.jar">
+    <jar jarfile="${build}/lib/${project}-svggen-${completeVersion}.jar">
       <manifest>
         <attribute name="Implementation-Title" value="Batik SVG generator"/>
-        <attribute name="Implementation-Version" value="${completeVersion}${svn-revision-suffix}"/>
-        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
+        <attribute name="Implementation-Version" value="${completeVersion}"/>
+        <attribute name="Implementation-Vendor" value="${vendor}"/>
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
@@ -1286,11 +1209,11 @@ JAVA=/usr/bin/java
 
   <!-- SVGGraphics2D (dependencies: util, awt-util) -->
   <target name="svggen-full-jar" depends="init, compile, prepare-build">
-    <jar jarfile="${build}/lib/${project}-svggenfull.jar">
+    <jar jarfile="${build}/lib/${project}-svggenfull-${completeVersion}.jar">
       <manifest>
         <attribute name="Implementation-Title" value="Batik SVG generator plus dependencies"/>
-        <attribute name="Implementation-Version" value="${completeVersion}${svn-revision-suffix}"/>
-        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
+        <attribute name="Implementation-Version" value="${completeVersion}"/>
+        <attribute name="Implementation-Vendor" value="${vendor}"/>
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
@@ -1310,11 +1233,11 @@ JAVA=/usr/bin/java
 
   <!-- GUI Util (dependencies: none) -->
   <target name="gui-util-jar" depends="init, compile, prepare-build">
-    <jar jarfile="${build}/lib/${project}-gui-util.jar">
+    <jar jarfile="${build}/lib/${project}-gui-util-${completeVersion}.jar">
       <manifest>
         <attribute name="Implementation-Title" value="Batik GUI utility library"/>
-        <attribute name="Implementation-Version" value="${completeVersion}${svn-revision-suffix}"/>
-        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
+        <attribute name="Implementation-Version" value="${completeVersion}"/>
+        <attribute name="Implementation-Vendor" value="${vendor}"/>
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
@@ -1330,11 +1253,11 @@ JAVA=/usr/bin/java
 
   <!-- DOM Level 3 (dependencies: ext, util) -->
   <target name="dom-jar" depends="init, compile, prepare-build">
-    <jar jarfile="${build}/lib/${project}-dom.jar">
+    <jar jarfile="${build}/lib/${project}-dom-${completeVersion}.jar">
       <manifest>
         <attribute name="Implementation-Title" value="Batik DOM Level 3 implementation"/>
-        <attribute name="Implementation-Version" value="${completeVersion}${svn-revision-suffix}"/>
-        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
+        <attribute name="Implementation-Version" value="${completeVersion}"/>
+        <attribute name="Implementation-Vendor" value="${vendor}"/>
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
@@ -1358,11 +1281,11 @@ JAVA=/usr/bin/java
 
   <!-- CSS Engine (dependencies: ext, util) -->
   <target name="css-jar" depends="init, compile, prepare-build">
-    <jar jarfile="${build}/lib/${project}-css.jar">
+    <jar jarfile="${build}/lib/${project}-css-${completeVersion}.jar">
       <manifest>
         <attribute name="Implementation-Title" value="Batik CSS engine"/>
-        <attribute name="Implementation-Version" value="${completeVersion}${svn-revision-suffix}"/>
-        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
+        <attribute name="Implementation-Version" value="${completeVersion}"/>
+        <attribute name="Implementation-Vendor" value="${vendor}"/>
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
@@ -1391,16 +1314,15 @@ JAVA=/usr/bin/java
 
   <!-- SVG DOM (dependencies: ext, DOM, CSS, util) -->
   <target name="svg-dom-jar" depends="init, compile, prepare-build">
-    <jar jarfile="${build}/lib/${project}-svg-dom.jar">
+    <jar jarfile="${build}/lib/${project}-svg-dom-${completeVersion}.jar">
       <manifest>
         <attribute name="Implementation-Title" value="Batik SVG DOM implementation"/>
-        <attribute name="Implementation-Version" value="${completeVersion}${svn-revision-suffix}"/>
-        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
+        <attribute name="Implementation-Version" value="${completeVersion}"/>
+        <attribute name="Implementation-Vendor" value="${vendor}"/>
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
       <fileset dir="${dest}">
-        <include name="${package-prefix}/dom/anim/*.class"/>
         <include name="${package-prefix}/dom/svg/*.class"/>
         <include name="${package-prefix}/dom/svg12/*.class"/>
       </fileset>
@@ -1414,11 +1336,11 @@ JAVA=/usr/bin/java
 
   <!-- GVT (dependencies: util, awt-util) -->
   <target name="gvt-jar" depends="init, compile, prepare-build">
-    <jar jarfile="${build}/lib/${project}-gvt.jar">
+    <jar jarfile="${build}/lib/${project}-gvt-${completeVersion}.jar">
       <manifest>
         <attribute name="Implementation-Title" value="Batik GVT library"/>
-        <attribute name="Implementation-Version" value="${completeVersion}${svn-revision-suffix}"/>
-        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
+        <attribute name="Implementation-Version" value="${completeVersion}"/>
+        <attribute name="Implementation-Vendor" value="${vendor}"/>
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
@@ -1434,11 +1356,11 @@ JAVA=/usr/bin/java
 
   <!-- Parser (dependencies: util) -->
   <target name="parser-jar" depends="init, compile, prepare-build">
-    <jar jarfile="${build}/lib/${project}-parser.jar">
+    <jar jarfile="${build}/lib/${project}-parser-${completeVersion}.jar">
       <manifest>
         <attribute name="Implementation-Title" value="Batik parser library"/>
-        <attribute name="Implementation-Version" value="${completeVersion}${svn-revision-suffix}"/>
-        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
+        <attribute name="Implementation-Version" value="${completeVersion}"/>
+        <attribute name="Implementation-Vendor" value="${vendor}"/>
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
@@ -1454,11 +1376,11 @@ JAVA=/usr/bin/java
 
   <!-- Script (dependencies: util) -->
   <target name="script-jar" depends="init, compile, prepare-build">
-    <jar jarfile="${build}/lib/${project}-script.jar">
+    <jar jarfile="${build}/lib/${project}-script-${completeVersion}.jar">
       <manifest>
         <attribute name="Implementation-Title" value="Batik script library"/>
-        <attribute name="Implementation-Version" value="${completeVersion}${svn-revision-suffix}"/>
-        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
+        <attribute name="Implementation-Version" value="${completeVersion}"/>
+        <attribute name="Implementation-Vendor" value="${vendor}"/>
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
@@ -1475,11 +1397,11 @@ JAVA=/usr/bin/java
 
   <!-- Transcoder (dependencies: all) -->
   <target name="transcoder-jar" depends="init, compile, prepare-build">
-    <jar jarfile="${build}/lib/${project}-transcoder.jar">
+    <jar jarfile="${build}/lib/${project}-transcoder-${completeVersion}.jar">
       <manifest>
         <attribute name="Implementation-Title" value="Batik transcoder"/>
-        <attribute name="Implementation-Version" value="${completeVersion}${svn-revision-suffix}"/>
-        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
+        <attribute name="Implementation-Version" value="${completeVersion}"/>
+        <attribute name="Implementation-Vendor" value="${vendor}"/>
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
@@ -1494,11 +1416,11 @@ JAVA=/usr/bin/java
 
   <!-- XML (dependencies: util) -->
   <target name="xml-jar" depends="init, compile, prepare-build">
-    <jar jarfile="${build}/lib/${project}-xml.jar">
+    <jar jarfile="${build}/lib/${project}-xml-${completeVersion}.jar">
       <manifest>
         <attribute name="Implementation-Title" value="Batik XML utility library"/>
-        <attribute name="Implementation-Version" value="${completeVersion}${svn-revision-suffix}"/>
-        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
+        <attribute name="Implementation-Version" value="${completeVersion}"/>
+        <attribute name="Implementation-Vendor" value="${vendor}"/>
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
@@ -1513,11 +1435,11 @@ JAVA=/usr/bin/java
 
   <!-- Bridge (dependencies: all) -->
   <target name="bridge-jar" depends="init, compile, prepare-build">
-    <jar jarfile="${build}/lib/${project}-bridge.jar">
+    <jar jarfile="${build}/lib/${project}-bridge-${completeVersion}.jar">
       <manifest>
         <attribute name="Implementation-Title" value="Batik bridge"/>
-        <attribute name="Implementation-Version" value="${completeVersion}${svn-revision-suffix}"/>
-        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
+        <attribute name="Implementation-Version" value="${completeVersion}"/>
+        <attribute name="Implementation-Vendor" value="${vendor}"/>
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
@@ -1533,11 +1455,11 @@ JAVA=/usr/bin/java
 
   <!-- Swing (dependencies: all) -->
   <target name="swing-jar" depends="init, compile, prepare-build">
-    <jar jarfile="${build}/lib/${project}-swing.jar">
+    <jar jarfile="${build}/lib/${project}-swing-${completeVersion}.jar">
       <manifest>
         <attribute name="Implementation-Title" value="Batik Swing components"/>
-        <attribute name="Implementation-Version" value="${completeVersion}${svn-revision-suffix}"/>
-        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
+        <attribute name="Implementation-Version" value="${completeVersion}"/>
+        <attribute name="Implementation-Vendor" value="${vendor}"/>
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
@@ -1552,16 +1474,17 @@ JAVA=/usr/bin/java
 
   <!-- Animation (dependencies: dom, util, xml, parser) -->
   <target name="anim-jar" depends="init, compile, prepare-build">
-    <jar jarfile="${build}/lib/${project}-anim.jar">
+    <jar jarfile="${build}/lib/${project}-anim-${completeVersion}.jar">
       <manifest>
         <attribute name="Implementation-Title" value="Batik animation"/>
-        <attribute name="Implementation-Version" value="${completeVersion}${svn-revision-suffix}"/>
-        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
+        <attribute name="Implementation-Version" value="${completeVersion}"/>
+        <attribute name="Implementation-Vendor" value="${vendor}"/>
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
       <fileset dir="${dest}">
         <include name="${package-prefix}/anim/*.class"/>
+        <include name="${package-prefix}/anim/dom/*.class"/>
         <include name="${package-prefix}/anim/timing/*.class"/>
         <include name="${package-prefix}/anim/values/*.class"/>
       </fileset>
@@ -1573,11 +1496,11 @@ JAVA=/usr/bin/java
 
   <!-- Extensions (dependencies: all) -->
   <target name="extension-jar" depends="init, compile, prepare-build">
-    <jar jarfile="${build}/lib/${project}-extension.jar">
+    <jar jarfile="${build}/lib/${project}-extension-${completeVersion}.jar">
       <manifest>
         <attribute name="Implementation-Title" value="Batik extensions"/>
-        <attribute name="Implementation-Version" value="${completeVersion}${svn-revision-suffix}"/>
-        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
+        <attribute name="Implementation-Version" value="${completeVersion}"/>
+        <attribute name="Implementation-Vendor" value="${vendor}"/>
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
@@ -1596,13 +1519,30 @@ JAVA=/usr/bin/java
 
   <!-- SVG Pretty-printer (dependencies: ???) -->
   <target name="svg-pp-jar" depends="init, compile, prepare-build">
-    <jar manifest="${src}/${project}-pp.mf"
-         jarfile="${build}/${project}-svgpp.jar">
+    <antcall target = "svg-pp-jar-call">
+      <param name="jarsLibDir" value="lib/" />
+      <param name="jarVersion" value="${completeVersion}" />
+      <param name="svg-ppJar" value= "${build}/${project}-svgpp-${completeVersion}.jar" />
+    </antcall>
+  </target>
+
+  <target name="svg-pp-jar-call" depends="init, compile, prepare-build">
+    <jar flattenAttributes="true"
+         jarfile="${svg-ppJar}">
       <manifest>
         <attribute name="Implementation-Title" value="Batik XML pretty printer"/>
-        <attribute name="Implementation-Version" value="${completeVersion}${svn-revision-suffix}"/>
-        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
+        <attribute name="Implementation-Version" value="${completeVersion}"/>
+        <attribute name="Implementation-Vendor" value="${vendor}"/>
         <attribute name="Build-Id" value="${build.id}"/>
+        <attribute name="Main-Class" value="org.apache.batik.apps.svgpp.Main"/>
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-ext-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-dom-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-parser-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-transcoder-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-util-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-xml-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}xml-apis-1.3.04.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}xml-apis-ext-1.3.04.jar" />
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
       <fileset dir="${dest}">
@@ -1611,135 +1551,280 @@ JAVA=/usr/bin/java
       <fileset dir="${resources}" excludes="**/.svn/">
         <include name="${package-prefix}/apps/svgpp/**/resources/**"/>
       </fileset>
-    </jar>
+      </jar>
   </target>
 
   <!-- SVG Slide-show (dependencies: ???) -->
   <target name="svg-slideshow-jar" depends="init, compile, prepare-build">
-    <jar manifest="${src}/${project}-slideshow.mf"
-         jarfile="${build}/${project}-slideshow.jar">
+      <antcall target="svg-slideshow-jar-call">
+        <param name="jarsLibDir" value="lib/" />
+        <param name="jarVersion" value="${completeVersion}" />
+        <param name="svg-slideshowJar" value= "${build}/${project}-slideshow-${completeVersion}.jar"/>
+      </antcall>
+  </target>
+
+  <target name="svg-slideshow-jar-call" depends="init, compile, prepare-build">
+    <filter token="batikVersion" value="${completeVersion}" />
+    <jar flattenAttributes="true"
+         jarfile="${svg-slideshowJar}">
       <manifest>
         <attribute name="Implementation-Title" value="Batik SVG slide show tool"/>
-        <attribute name="Implementation-Version" value="${completeVersion}${svn-revision-suffix}"/>
-        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
+        <attribute name="Implementation-Version" value="${completeVersion}"/>
+        <attribute name="Implementation-Vendor" value="${vendor}"/>
         <attribute name="Build-Id" value="${build.id}"/>
+        <attribute name="Main-Class" value="org.apache.batik.apps.slideshow.Main"/>
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-ext-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-dom-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-css-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-svg-dom-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-gvt-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-parser-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-script-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-bridge-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-anim-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-transcoder-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-gui-uti-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-awt-util-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-codec-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-util-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-xml-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}xerces_2_5_0.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}xalan-2.7.0.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}xml-apis-1.3.04.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}xml-apis-ext-1.3.04.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}xmlgraphics-commons-${xgcVersion}.jar"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
       <fileset dir="${dest}">
         <include name="${package-prefix}/apps/slideshow/**/*.class"/>
       </fileset>
-      <fileset dir="${resources}" excludes="**/.svn/">
-        <include name="${package-prefix}/apps/slideshow/**/resources/**"/>
+      <fileset dir="${resources}">
+        <exclude name="**/.svn/" />
+        <include name="${package-prefix}/apps/slideshow/**/resources/**" />
+
       </fileset>
     </jar>
   </target>
 
-
   <!-- Squiggle (dependencies: all) -->
   <target name="squiggle-jar" depends="init, compile, prepare-build">
-    <move file="${resources}/${package-prefix}/apps/svgbrowser/resources/svgbrowser.policy"
-          tofile="${resources}/${package-prefix}/apps/svgbrowser/resources/svgbrowser.classes.policy"/>
-    <move file="${resources}/${package-prefix}/apps/svgbrowser/resources/svgbrowser.bin.policy"
-          tofile="${resources}/${package-prefix}/apps/svgbrowser/resources/svgbrowser.policy"/>
-    <jar manifest="${src}/${project}-browser.mf"
-         jarfile="${build}/${project}-squiggle.jar">
+    <antcall target="squiggle-jar-call">
+      <param name="jarsLibDir" value="lib/" />
+      <param name="jarVersion" value="${completeVersion}" />
+      <param name="squiggleJar" value="${build}/${project}-squiggle-${completeVersion}.jar" />
+    </antcall>
+  </target>
+
+  <target name="squiggle-jar-call" depends="init, compile, prepare-build">
+    <filter token="jarsLibDir" value="${jarsLibDir}" />
+    <filter token="batikVersion" value="${completeVersion}" />
+    <filter token="xgcVersion" value="${xgcVersion}" />
+    <copy file="${resources}/${package-prefix}/apps/svgbrowser/resources/svgbrowser.policy.ref"
+          tofile="${resources}/${package-prefix}/apps/svgbrowser/resources/svgbrowser.policy.tmp"
+          filtering="true" />
+    <jar flattenAttributes="true"
+         jarfile="${squiggleJar}">
       <manifest>
         <attribute name="Implementation-Title" value="Batik Squiggle SVG browser"/>
-        <attribute name="Implementation-Version" value="${completeVersion}${svn-revision-suffix}"/>
-        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
+        <attribute name="Implementation-Version" value="${completeVersion}"/>
+        <attribute name="Implementation-Vendor" value="${vendor}"/>
+        <attribute name="Main-Class" value="org.apache.batik.apps.svgbrowser.Main" />
+        <!-- this causes ant to emit bogus warning regarding multiple class-path entries -->
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-ext-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-dom-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-css-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-svg-dom-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-gvt-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-parser-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-script-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-bridge-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-swing-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-anim-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-transcoder-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-gui-util-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-awt-util-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-codec-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-util-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-xml-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}xerces_2_5_0.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}xalan-2.7.0.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}xml-apis-1.3.04.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}xml-apis-ext-1.3.04.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}js.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}xmlgraphics-commons-${xgcVersion}.jar"/>
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
       <fileset dir="${dest}">
         <include name="${package-prefix}/apps/svgbrowser/**/*.class"/>
       </fileset>
-      <fileset dir="${resources}" excludes="**/.svn/">
+      <fileset dir="${resources}">
+        <exclude name="**/.svn/" />
+        <include name="${package-prefix}/apps/svgbrowser/**/resources/Messages.properties" />
         <include name="${package-prefix}/apps/svgbrowser/**/resources/**"/>
         <exclude name="${package-prefix}/apps/svgbrowser/resources/squiggle.xsl"/>
         <exclude name="${package-prefix}/apps/svgbrowser/resources/squiggle.svg"/>
+        <exclude name="${package-prefix}/apps/svgbrowser/resources/*.policy.tmp"/>
+
       </fileset>
+      <mappedresources>
+        <fileset dir="${resources}">
+          <!--exclude name="**/.svn/" />
+          <include name="${package-prefix}/apps/rasterizer/**/resources/Messages.properties" /-->
+          <include name="${package-prefix}/apps/svgbrowser/**/resources/*.policy.tmp" />
+        </fileset>
+        <globmapper from="*.policy.tmp" to="*.policy" />
+      </mappedresources>
     </jar>
-    <move file="${resources}/${package-prefix}/apps/svgbrowser/resources/svgbrowser.policy"
-          tofile="${resources}/${package-prefix}/apps/svgbrowser/resources/svgbrowser.bin.policy"/>
-    <move file="${resources}/${package-prefix}/apps/svgbrowser/resources/svgbrowser.classes.policy"
-          tofile="${resources}/${package-prefix}/apps/svgbrowser/resources/svgbrowser.policy"/>
+    <delete file="${resources}/${package-prefix}/apps/svgbrowser/resources/svgbrowser.policy.tmp" />
   </target>
 
   <target name="squiggle-ext-jar" depends="init, squiggle-jar">
-     <mkdir dir="${build}/extensions"/>
-     <jar manifest="${src}/${project}-browser-ext.mf"
-          jarfile="${build}/extensions/${project}-squiggle-ext.jar">
+    <mkdir dir="${build}/extensions"/>
+    <antcall target="squiggle-ext-jar-call">
+      <param name="jarsLibDir" value="lib/" />
+      <param name="jarVersion" value="" />
+      <param name="squiggle-extJar" value="${build}/extensions/${project}-squiggle-ext-${completeVersion}.jar" />
+    </antcall>
+  </target>
+
+  <target name="squiggle-ext-jar-call" depends="init, squiggle-jar">
+    <filter token="batikVersion" value="${completeVersion}" />
+    <jar flattenAttributes="true"
+         jarfile="${squiggle-extJar}">
       <manifest>
         <attribute name="Implementation-Title" value="Batik Squiggle SVG browser with extensions"/>
-        <attribute name="Implementation-Version" value="${completeVersion}${svn-revision-suffix}"/>
-        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
+        <attribute name="Implementation-Version" value="${completeVersion}"/>
+        <attribute name="Implementation-Vendor" value="${vendor}"/>
         <attribute name="Build-Id" value="${build.id}"/>
+        <attribute name="Main-Class" value="org.apache.batik.apps.svgbrowser.Main"/>
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-squiggle-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-${project}-extension-${completeVersion}.ja" />
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
       <fileset dir="${resources}" excludes="**/.svn/">
         <include name="META-INF/services/**"/>
       </fileset>
-     </jar>
+    </jar>
   </target>
-
   <!-- Squiggle - SVG Browser (dependencies: all) -->
   <target name="svg-browser-jar" depends="init, squiggle-jar"/>
 
   <!-- Rasterizer (dependencies: all except GUI util) -->
-  <target name="rasterizer-jar" depends="init, compile, prepare-build">
-    <move file="${resources}/${package-prefix}/apps/rasterizer/resources/rasterizer.policy"
-          tofile="${resources}/${package-prefix}/apps/rasterizer/resources/rasterizer.classes.policy"/>
-    <move file="${resources}/${package-prefix}/apps/rasterizer/resources/rasterizer.bin.policy"
-          tofile="${resources}/${package-prefix}/apps/rasterizer/resources/rasterizer.policy"/>
-    <jar manifest="${src}/${project}-rasterizer.mf"
-         jarfile="${build}/${project}-rasterizer.jar">
+  <target name="rasterizer-jar">
+    <antcall target="rasterizer-jar-call">
+      <param name="jarsLibDir" value="lib/" />
+      <param name="jarVersion" value="${completeVersion}" />
+      <param name="rasterizerJar" value="${build}/${project}-rasterizer-${completeVersion}.jar" />
+    </antcall>
+  </target>
+  <target name="rasterizer-jar-call" depends="init, compile, prepare-build">
+    <filter token="jarsLibDir" value="${jarsLibDir}" />
+    <filter token="fopVersion" value="${fopVersion}" />
+    <filter token="xgcVersion" value="${xgcVersion}" />
+    <filter token="batikVersion" value="${completeVersion}" />
+    <copy file="${resources}/${package-prefix}/apps/rasterizer/resources/rasterizer.policy.ref"
+          tofile="${resources}/${package-prefix}/apps/rasterizer/resources/rasterizer.policy.tmp"
+          filtering="true" />
+    <jar flattenAttributes="true"
+         jarfile="${rasterizerJar}">
       <manifest>
         <attribute name="Implementation-Title" value="Batik SVG rasterizer"/>
-        <attribute name="Implementation-Version" value="${completeVersion}${svn-revision-suffix}"/>
-        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
+        <attribute name="Implementation-Version" value="${completeVersion}"/>
+        <attribute name="Implementation-Vendor" value="${vendor}"/>
+        <attribute name="Main-Class" value="org.apache.batik.apps.rasterizer.Main" />
         <attribute name="Build-Id" value="${build.id}"/>
+        <!-- this causes ant to emit bogus warning regarding multiple class-path entries -->
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-ext-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-dom-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-css-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-svg-dom-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-gvt-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-parser-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-script-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-bridge-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-anim-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-transcoder-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-awt-util-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-codec-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-util-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-xml-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}xerces_2_5_0.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}xalan-2.7.0.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}xml-apis-1.3.04.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}xml-apis-ext-1.3.04.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}js.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}fop-transcoder-allinone-${fopVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}xmlgraphics-commons-${xgcVersion}.jar" />
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
       <fileset dir="${dest}">
         <include name="${package-prefix}/apps/rasterizer/**/*.class"/>
       </fileset>
-      <fileset dir="${resources}" excludes="**/.svn/">
-        <include name="${package-prefix}/apps/rasterizer/**/resources/**"/>
+      <fileset dir="${resources}">
+        <exclude name="**/.svn/" />
+        <include name="${package-prefix}/apps/rasterizer/**/resources/Messages.properties" />
       </fileset>
+      <mappedresources>
+        <fileset dir="${resources}">
+          <include name="${package-prefix}/apps/rasterizer/**/resources/*.policy.tmp" />
+        </fileset>
+        <globmapper from="*.policy.tmp" to="*.policy" />
+      </mappedresources>
     </jar>
-    <move file="${resources}/${package-prefix}/apps/rasterizer/resources/rasterizer.policy"
-          tofile="${resources}/${package-prefix}/apps/rasterizer/resources/rasterizer.bin.policy"/>
-    <move file="${resources}/${package-prefix}/apps/rasterizer/resources/rasterizer.classes.policy"
-          tofile="${resources}/${package-prefix}/apps/rasterizer/resources/rasterizer.policy"/>
+    <delete file="${resources}/${package-prefix}/apps/rasterizer/resources/rasterizer.policy.tmp" />
   </target>
 
   <target name="rasterizer-ext-jar" depends="init, rasterizer-jar">
-     <mkdir dir="${build}/extensions"/>
-     <jar manifest="${src}/${project}-rasterizer-ext.mf"
-          jarfile="${build}/extensions/${project}-rasterizer-ext.jar">
-      <manifest>
-        <attribute name="Implementation-Title" value="Batik SVG rasterizer with extensions"/>
-        <attribute name="Implementation-Version" value="${completeVersion}${svn-revision-suffix}"/>
-        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
-        <attribute name="Build-Id" value="${build.id}"/>
-      </manifest>
+    <mkdir dir="${build}/extensions"/>
+    <antcall target="rasterizer-ext-jar-call" >
+      <param name="jarsLibDir" value="" />
+      <param name="jarVersion" value="${completeVersion}" />
+      <param name="rasterizer-extJar" value="${build}/extensions/${project}-rasterizer-ext-${completeVersion}.jar"/>
+    </antcall>
+
+  </target>
+
+  <target name="rasterizer-ext-jar-call" depends="init, rasterizer-jar">
+    <filter token="batikVersion" value="${completeVersion}" />
+    <jar   flattenAttributes="true"
+            jarfile="${rasterizer-extJar}">
+    <manifest>
+      <attribute name="Implementation-Title" value="Batik SVG rasterizer with extensions"/>
+      <attribute name="Implementation-Version" value="${completeVersion}"/>
+      <attribute name="Implementation-Vendor" value="${vendor}"/>
+      <attribute name="Build-Id" value="${build.id}"/>
+      <attribute name="Main-Class" value="org.apache.batik.apps.svgbrowser.Main"/>
+      <attribute name="Class-Path" value="${jarsLibDir}${project}-extension-${jarVersion}.jar" />
+      <attribute name="Class-Path" value="${jarsLibDir}${project}-rasterizer-${jarVersion}.jar" />
+    </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
       <fileset dir="${resources}" excludes="**/.svn/">
         <include name="META-INF/services/**"/>
       </fileset>
-     </jar>
+    </jar>
   </target>
-
   <!-- batik-ttf2svg.jar (dependencies: all) -->
   <target name="ttf2svg-jar" depends="init, compile, prepare-build">
-    <jar manifest="${src}/${project}-ttf2svg.mf"
-         jarfile="${build}/${project}-ttf2svg.jar">
-      <manifest>
-        <attribute name="Implementation-Title" value="Batik TrueType to SVG Font converter"/>
-        <attribute name="Implementation-Version" value="${completeVersion}${svn-revision-suffix}"/>
-        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
-        <attribute name="Build-Id" value="${build.id}"/>
-      </manifest>
+    <antcall target="ttf2svg-jar-call" >
+      <param name="jarsLibDir" value="lib/" />
+      <param name="jarVersion" value="${completeVersion}" />
+      <param name="ttf2svgJar" value="${build}/${project}-ttf2svg-${completeVersion}.jar"/>
+    </antcall>
+  </target>
+
+  <target name="ttf2svg-jar-call" depends="init, compile, prepare-build">
+    <jar   flattenAttributes="true"
+           jarfile="${ttf2svgJar}">
+    <manifest>
+      <attribute name="Implementation-Title" value="Batik TrueType to SVG Font converter"/>
+      <attribute name="Implementation-Version" value="${completeVersion}"/>
+      <attribute name="Implementation-Vendor" value="${vendor}"/>
+      <attribute name="Build-Id" value="${build.id}"/>
+      <attribute name="Main-Class" value="org.apache.batik.apps.ttf2svg.Main"/>
+      <attribute name="Class-Path" value="${jarsLibDir}${project}-svggen-${jarVersion}.jar" />
+      <attribute name="Class-Path" value="${jarsLibDir}${project}-util-${jarVersion}.jar" />
+    </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
       <fileset dir="${dest}">
         <include name="${package-prefix}/apps/ttf2svg/**/*.class"/>
@@ -1749,12 +1834,41 @@ JAVA=/usr/bin/java
 
   <!-- batik.jar (dependencies: all) -->
   <target name="root-jar" depends="init, compile, prepare-build">
-    <jar manifest="${src}/${project}.mf" jarfile="${build}/${project}.jar">
+    <jar flattenAttributes="true" jarfile="${build}/${project}-${completeVersion}.jar">
       <manifest>
         <attribute name="Implementation-Title" value="Batik"/>
-        <attribute name="Implementation-Version" value="${completeVersion}${svn-revision-suffix}"/>
-        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
+        <attribute name="Implementation-Version" value="${completeVersion}"/>
+        <attribute name="Implementation-Vendor" value="${vendor}"/>
         <attribute name="Build-Id" value="${build.id}"/>
+        <attribute name="Main-Class" value="org.apache.batik.apps.svgbrowser.Main" />
+        <!-- this causes ant to emit bogus warning regarding multiple class-path entries -->
+        <attribute name="Class-Path" value="lib/${project}-ext-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="lib/${project}-dom-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="lib/${project}-css-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="lib/${project}-svg-dom-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="lib/${project}-gvt-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="lib/${project}-parser-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="lib/${project}-script-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="lib/${project}-bridge-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="lib/${project}-swing-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="lib/${project}-anim-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="lib/${project}-transcoder-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="lib/${project}-gui-util-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="lib/${project}-awt-util-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="lib/${project}-codec-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="lib/${project}-util-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="lib/${project}-svggen-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="lib/${project}-xml-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="${project}-squiggle-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="${project}-rasterizer-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="${project}-svgpp-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="lib/xerces_2_5_0.jar" />
+        <attribute name="Class-Path" value="lib/xalan-2.7.0.jar" />
+        <attribute name="Class-Path" value="lib/xml-apis-1.3.04.jar" />
+        <attribute name="Class-Path" value="lib/xml-apis-ext-1.3.04.jar" />
+        <attribute name="Class-Path" value="lib/js.jar" />
+        <attribute name="Class-Path" value="lib/fop-transcoder-allinone-${fopVersion}.jar" />
+        <attribute name="Class-Path" value="lib/xmlgraphics-commons-${xgcVersion}.jar" />
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
     </jar>
@@ -1764,11 +1878,11 @@ JAVA=/usr/bin/java
   <!-- This jar only contains the generic parts of the Batik test    -->
   <!-- infrastructure.                                               -->
   <target name="regard-jar" depends="init, compiletest, prepare-build">
-    <jar jarfile="regard.jar">
+    <jar jarfile="regard-${completeVersion}.jar">
       <manifest>
         <attribute name="Implementation-Title" value="Batik Regard regression testing tool"/>
-        <attribute name="Implementation-Version" value="${completeVersion}${svn-revision-suffix}"/>
-        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
+        <attribute name="Implementation-Version" value="${completeVersion}"/>
+        <attribute name="Implementation-Vendor" value="${vendor}"/>
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <fileset dir="${dest}">
@@ -1788,11 +1902,11 @@ JAVA=/usr/bin/java
 
   <!-- imageCodecs.jar : A jar containing the image codecs -->
   <target name="imageCodecs-jar" depends="init, compiletest, prepare-build">
-    <jar jarfile="imageCodecs.jar">
+    <jar jarfile="imageCodecs-${completeVersion}.jar">
       <manifest>
         <attribute name="Implementation-Title" value="Batik image codecs"/>
-        <attribute name="Implementation-Version" value="${completeVersion}${svn-revision-suffix}"/>
-        <attribute name="Implementation-Vendor" value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)"/>
+        <attribute name="Implementation-Version" value="${completeVersion}"/>
+        <attribute name="Implementation-Vendor" value="${vendor}"/>
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
@@ -2046,9 +2160,9 @@ JAVA=/usr/bin/java
   </target>
 
   <!-- Documentation ...................................................... -->
-  <target name="html" depends="javadoc, htmldoc"
+  <target name="html" depends="javadoc"
           description="Generates the HTML documentation, including javadocs, in ${build}/docs/"/>
-  <target name="htmldoc" depends="init, forrest"
+  <target name="htmldoc" depends="init"
           description="Generates HTML documentation">
     <mkdir dir="${docs}"/>
     <copy todir="${docs}">
@@ -2057,7 +2171,7 @@ JAVA=/usr/bin/java
   </target>
 
   <target name="site" depends="site-javadoc, sitedoc"/>
-  <target name="sitedoc" depends="init, forrest"
+  <target name="sitedoc" depends="init"
           description="Generates the http://xmlgraphics.apache.org/batik/ site">
     <mkdir dir="${site}"/>
     <copy todir="${site}">
@@ -2226,10 +2340,10 @@ JAVA=/usr/bin/java
           depends="init, clean-compile, clean-docs, clean-test"
           description="Cleans everything">
     <delete dir="${build}"/>
-    <delete file="${project}-${completeVersion}.zip"/>
+    <delete file="${project}-bin-${completeVersion}.zip"/>
     <delete file="${project}-docs-${completeVersion}.zip"/>
     <delete file="${project}-src-${completeVersion}.zip"/>
-    <delete file="${project}-${completeVersion}.tar.gz"/>
+    <delete file="${project}-bin-${completeVersion}.tar.gz"/>
     <delete file="${project}-docs-${completeVersion}.tar.gz"/>
     <delete file="${project}-src-${completeVersion}.tar.gz"/>
   </target>

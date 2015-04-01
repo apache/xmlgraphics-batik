@@ -18,8 +18,8 @@
  */
 package org.apache.batik.extension;
 
+import org.apache.batik.anim.dom.SVGOMElement;
 import org.apache.batik.dom.AbstractDocument;
-import org.apache.batik.dom.svg.SVGOMElement;
 
 /**
  * This class implements the basic features an element must have in order

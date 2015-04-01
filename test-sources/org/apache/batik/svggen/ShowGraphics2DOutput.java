@@ -27,11 +27,11 @@ import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGDocument;
 
+import org.apache.batik.anim.dom.SVGDOMImplementation;
 import org.apache.batik.bridge.BaseScriptingEnvironment;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.bridge.UserAgentAdapter;
-import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.test.AbstractTest;
 import org.apache.batik.test.TestReport;
 
