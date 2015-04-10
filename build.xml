@@ -486,6 +486,33 @@ To display the available targets type:
     <delete file="svn-revision" failonerror="false"/>
   </target>
 
+  <target name="src-jar" depends="init, record-svn-revision">
+    <jar jarfile="${build}/lib/${project}-src-${completeVersion}.jar">
+      <fileset dir=".">
+        <include name="LICENSE"/>
+        <include name="KEYS"/>
+        <include name="MAINTAIN"/>
+        <include name="NOTICE"/>
+        <include name="README"/>
+        <include name="CHANGES"/>
+        <include name="build.bat"/>
+        <include name="build.sh"/>
+        <include name="build.xml"/>
+        <include name="forrest.properties"/>
+        <include name="svn-revision"/>
+        <include name="contrib/**"/>
+        <include name="lib/**"/>
+        <include name="documentation-sources/**"/>
+        <include name="resources/**"/>
+        <include name="samples/**"/>
+        <include name="sources/**"/>
+        <include name="test-resources/**"/>
+        <include name="test-sources/**"/>
+      </fileset>
+    </jar>
+    <delete file="svn-revision" failonerror="false"/>
+  </target>
+
   <target name="dmg" depends="appbundle">
     <exec executable="hdiutil">
       <arg line="create -srcfolder ${app} ${dmg}"/>

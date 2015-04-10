@@ -502,7 +502,11 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
 
     static {
         String s = System.getProperty("java.specification.version");
-        if ("1.4".compareTo(s) <= 0) {
+        if ("1.6".compareTo(s) <= 0) {
+            outlinesPositioned = true;
+            drawGlyphVectorWorks = false;       // [GA] not verified; needs further research
+            glyphVectorTransformWorks = true;
+        } else if ("1.4".compareTo(s) <= 0) {
             // TODO Java 5
             outlinesPositioned = true;
             drawGlyphVectorWorks = true;
