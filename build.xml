@@ -582,8 +582,15 @@ JAVA=/usr/bin/java
           tofile="${maven}/${project}-rasterizer/${completeVersion}/${project}-rasterizer-${completeVersion}.pom" filtering="true"/>
     <antcall target="rasterizer-jar-call">
       <param name="jarsLibDir" value="" />
-      <param name="jarVersion" value="${completeVersion}" />
+      <param name="extension" value="class" />
+      <param name="location" value="${dest}" />
       <param name="rasterizerJar" value="${maven}/${project}-rasterizer/${completeVersion}/${project}-rasterizer-${completeVersion}.jar" />
+    </antcall>
+    <antcall target="rasterizer-jar-call">
+      <param name="jarsLibDir" value="" />
+      <param name="extension" value="java" />
+      <param name="location" value="${src}" />
+      <param name="rasterizerJar" value="${maven}/${project}-rasterizer/${completeVersion}/${project}-rasterizer-${completeVersion}-sources.jar" />
     </antcall>
 
     <!-- batik-rasterizer-ext application artifact -->
@@ -596,19 +603,33 @@ JAVA=/usr/bin/java
     <!-- batik-slideshow application artifact -->
     <mkdir dir="${maven}/${project}-slideshow/${completeVersion}"/>
     <copy file="${src}/${project}-slideshow.pom.template" tofile="${maven}/${project}-slideshow/${completeVersion}/${project}-slideshow-${completeVersion}.pom" filtering="true"/>
-      <antcall target="svg-slideshow-jar-call">
-        <param name="jarsLibDir" value="lib/" />
-        <param name="jarVersion" value="${completeVersion}" />
-        <param name="svg-slideshowJar" value= "${maven}/${project}-slideshow/${completeVersion}/${project}-slideshow-${completeVersion}.jar"/>
-      </antcall>
+    <antcall target="slideshow-jar-call">
+      <param name="jarsLibDir" value="" />
+      <param name="extension" value="class" />
+      <param name="location" value="${dest}" />
+      <param name="slideshowJar" value= "${maven}/${project}-slideshow/${completeVersion}/${project}-slideshow-${completeVersion}.jar"/>
+    </antcall>
+    <antcall target="slideshow-jar-call">
+      <param name="jarsLibDir" value="" />
+      <param name="extension" value="java" />
+      <param name="location" value="${src}" />
+      <param name="slideshowJar" value= "${maven}/${project}-slideshow/${completeVersion}/${project}-slideshow-${completeVersion}-sources.jar"/>
+    </antcall>
 
     <!-- batik-squiggle application artifact -->
     <mkdir dir="${maven}/${project}-squiggle/${completeVersion}"/>
     <copy file="${src}/${project}-squiggle.pom.template" tofile="${maven}/${project}-squiggle/${completeVersion}/${project}-squiggle-${completeVersion}.pom" filtering="true"/>
     <antcall target="squiggle-jar-call">
-        <param name="jarsLibDir" value="" />
-        <param name="jarVersion" value="${completeVersion}" />
-        <param name="squiggleJar" value="${maven}/${project}-squiggle/${completeVersion}/${project}-squiggle-${completeVersion}.jar" />
+      <param name="jarsLibDir" value="" />
+      <param name="location" value="${dest}" />
+      <param name="extension" value="class" />
+      <param name="squiggleJar" value="${maven}/${project}-squiggle/${completeVersion}/${project}-squiggle-${completeVersion}.jar" />
+    </antcall>
+    <antcall target="squiggle-jar-call">
+      <param name="jarsLibDir" value="" />
+      <param name="location" value="${src}" />
+      <param name="extension" value="java" />
+      <param name="squiggleJar" value="${maven}/${project}-squiggle/${completeVersion}/${project}-squiggle-${completeVersion}-sources.jar" />
     </antcall>
 
     <!-- batik-squiggle-ext application artifact -->
@@ -616,17 +637,23 @@ JAVA=/usr/bin/java
     <copy file="${src}/${project}-squiggle-ext.pom.template" tofile="${maven}/${project}-squiggle-ext/${completeVersion}/${project}-squiggle-ext-${completeVersion}.pom" filtering="true"/>
     <antcall target="squiggle-ext-jar-call">
       <param name="jarsLibDir" value="" />
-      <param name="jarVersion" value="${completeVersion}" />
       <param name="squiggle-extJar" value="${maven}/${project}-squiggle-ext/${completeVersion}/${project}-squiggle-ext-${completeVersion}.jar" />
     </antcall>
 
     <!-- batik-svgpp application artifact -->
     <mkdir dir="${maven}/${project}-svgpp/${completeVersion}"/>
     <copy file="${src}/${project}-svgpp.pom.template" tofile="${maven}/${project}-svgpp/${completeVersion}/${project}-svgpp-${completeVersion}.pom" filtering="true"/>
-    <antcall target="svg-pp-jar-call">
+    <antcall target="svgpp-jar-call">
       <param name="jarsLibDir" value="" />
-      <param name="jarVersion" value="${completeVersion}" />
-      <param name="svg-ppJar" value="${maven}/${project}-svgpp/${completeVersion}/${project}-svgpp-${completeVersion}.jar" />
+      <param name="location" value="${dest}" />
+      <param name="extension" value="class" />
+      <param name="svgppJar" value="${maven}/${project}-svgpp/${completeVersion}/${project}-svgpp-${completeVersion}.jar" />
+    </antcall>
+    <antcall target="svgpp-jar-call">
+      <param name="jarsLibDir" value="" />
+      <param name="location" value="${src}" />
+      <param name="extension" value="java" />
+      <param name="svgppJar" value="${maven}/${project}-svgpp/${completeVersion}/${project}-svgpp-${completeVersion}-sources.jar" />
     </antcall>
 
     <!-- batik-ttf2svg application artifact -->
@@ -634,82 +661,107 @@ JAVA=/usr/bin/java
     <copy file="${src}/${project}-ttf2svg.pom.template" tofile="${maven}/${project}-ttf2svg/${completeVersion}/${project}-ttf2svg-${completeVersion}.pom" filtering="true"/>
     <antcall target="ttf2svg-jar-call" >
       <param name="jarsLibDir" value="" />
-      <param name="jarVersion" value="${completeVersion}" />
+      <param name="location" value="${dest}" />
+      <param name="extension" value="class" />
       <param name="ttf2svgJar" value="${maven}/${project}-ttf2svg/${completeVersion}/${project}-ttf2svg-${completeVersion}.jar"/>
+    </antcall>
+    <antcall target="ttf2svg-jar-call" >
+      <param name="jarsLibDir" value="" />
+      <param name="location" value="${src}" />
+      <param name="extension" value="java" />
+      <param name="ttf2svgJar" value="${maven}/${project}-ttf2svg/${completeVersion}/${project}-ttf2svg-${completeVersion}-sources.jar"/>
     </antcall>
 
     <!-- library artifacts -->
     <mkdir dir="${maven}/${project}-anim/${completeVersion}"/>
     <copy file="${src}/${project}-anim.pom.template" tofile="${maven}/${project}-anim/${completeVersion}/${project}-anim-${completeVersion}.pom" filtering="true"/>
     <copy file="${build}/lib/${project}-anim-${completeVersion}.jar" tofile="${maven}/${project}-anim/${completeVersion}/${project}-anim-${completeVersion}.jar"/>
+    <antcall target="anim-jar-src" />
 
     <mkdir dir="${maven}/${project}-awt-util/${completeVersion}"/>
     <copy file="${src}/${project}-awt-util.pom.template" tofile="${maven}/${project}-awt-util/${completeVersion}/${project}-awt-util-${completeVersion}.pom" filtering="true"/>
     <copy file="${build}/lib/${project}-awt-util-${completeVersion}.jar" tofile="${maven}/${project}-awt-util/${completeVersion}/${project}-awt-util-${completeVersion}.jar"/>
+    <antcall target="awt-util-jar-src" />
 
     <mkdir dir="${maven}/${project}-bridge/${completeVersion}"/>
     <copy file="${src}/${project}-bridge.pom.template" tofile="${maven}/${project}-bridge/${completeVersion}/${project}-bridge-${completeVersion}.pom" filtering="true"/>
     <copy file="${build}/lib/${project}-bridge-${completeVersion}.jar" tofile="${maven}/${project}-bridge/${completeVersion}/${project}-bridge-${completeVersion}.jar"/>
+    <antcall target="bridge-jar-src" />
 
     <mkdir dir="${maven}/${project}-codec/${completeVersion}"/>
     <copy file="${src}/${project}-codec.pom.template" tofile="${maven}/${project}-codec/${completeVersion}/${project}-codec-${completeVersion}.pom" filtering="true"/>
     <copy file="${build}/lib/${project}-codec-${completeVersion}.jar" tofile="${maven}/${project}-codec/${completeVersion}/${project}-codec-${completeVersion}.jar"/>
+    <antcall target="codec-jar-src" />
 
     <mkdir dir="${maven}/${project}-css/${completeVersion}"/>
     <copy file="${src}/${project}-css.pom.template" tofile="${maven}/${project}-css/${completeVersion}/${project}-css-${completeVersion}.pom" filtering="true"/>
     <copy file="${build}/lib/${project}-css-${completeVersion}.jar" tofile="${maven}/${project}-css/${completeVersion}/${project}-css-${completeVersion}.jar"/>
+    <antcall target="css-jar-src" />
 
     <mkdir dir="${maven}/${project}-dom/${completeVersion}"/>
     <copy file="${src}/${project}-dom.pom.template" tofile="${maven}/${project}-dom/${completeVersion}/${project}-dom-${completeVersion}.pom" filtering="true"/>
     <copy file="${build}/lib/${project}-dom-${completeVersion}.jar" tofile="${maven}/${project}-dom/${completeVersion}/${project}-dom-${completeVersion}.jar"/>
+    <antcall target="dom-jar-src" />
 
     <mkdir dir="${maven}/${project}-extension/${completeVersion}"/>
     <copy file="${src}/${project}-extension.pom.template" tofile="${maven}/${project}-extension/${completeVersion}/${project}-extension-${completeVersion}.pom" filtering="true"/>
     <copy file="${build}/lib/${project}-extension-${completeVersion}.jar" tofile="${maven}/${project}-extension/${completeVersion}/${project}-extension-${completeVersion}.jar"/>
+    <antcall target="extension-jar-src" />
 
     <mkdir dir="${maven}/${project}-ext/${completeVersion}"/>
     <copy file="${src}/${project}-ext.pom.template" tofile="${maven}/${project}-ext/${completeVersion}/${project}-ext-${completeVersion}.pom" filtering="true"/>
     <copy file="${build}/lib/${project}-ext-${completeVersion}.jar" tofile="${maven}/${project}-ext/${completeVersion}/${project}-ext-${completeVersion}.jar"/>
+    <antcall target="ext-jar-src" />
 
     <mkdir dir="${maven}/${project}-gui-util/${completeVersion}"/>
     <copy file="${src}/${project}-gui-util.pom.template" tofile="${maven}/${project}-gui-util/${completeVersion}/${project}-gui-util-${completeVersion}.pom" filtering="true"/>
     <copy file="${build}/lib/${project}-gui-util-${completeVersion}.jar" tofile="${maven}/${project}-gui-util/${completeVersion}/${project}-gui-util-${completeVersion}.jar"/>
+    <antcall target="gui-util-jar-src" />
 
     <mkdir dir="${maven}/${project}-gvt/${completeVersion}"/>
     <copy file="${src}/${project}-gvt.pom.template" tofile="${maven}/${project}-gvt/${completeVersion}/${project}-gvt-${completeVersion}.pom" filtering="true"/>
     <copy file="${build}/lib/${project}-gvt-${completeVersion}.jar" tofile="${maven}/${project}-gvt/${completeVersion}/${project}-gvt-${completeVersion}.jar"/>
+    <antcall target="gvt-jar-src" />
 
     <mkdir dir="${maven}/${project}-parser/${completeVersion}"/>
     <copy file="${src}/${project}-parser.pom.template" tofile="${maven}/${project}-parser/${completeVersion}/${project}-parser-${completeVersion}.pom" filtering="true"/>
     <copy file="${build}/lib/${project}-parser-${completeVersion}.jar" tofile="${maven}/${project}-parser/${completeVersion}/${project}-parser-${completeVersion}.jar"/>
+    <antcall target="parser-jar-src" />
 
     <mkdir dir="${maven}/${project}-script/${completeVersion}"/>
     <copy file="${src}/${project}-script.pom.template" tofile="${maven}/${project}-script/${completeVersion}/${project}-script-${completeVersion}.pom" filtering="true"/>
     <copy file="${build}/lib/${project}-script-${completeVersion}.jar" tofile="${maven}/${project}-script/${completeVersion}/${project}-script-${completeVersion}.jar"/>
+    <antcall target="script-jar-src" />
 
     <mkdir dir="${maven}/${project}-svg-dom/${completeVersion}"/>
     <copy file="${src}/${project}-svg-dom.pom.template" tofile="${maven}/${project}-svg-dom/${completeVersion}/${project}-svg-dom-${completeVersion}.pom" filtering="true"/>
     <copy file="${build}/lib/${project}-svg-dom-${completeVersion}.jar" tofile="${maven}/${project}-svg-dom/${completeVersion}/${project}-svg-dom-${completeVersion}.jar"/>
+    <antcall target="svg-dom-jar-src" />
 
     <mkdir dir="${maven}/${project}-svggen/${completeVersion}"/>
     <copy file="${src}/${project}-svggen.pom.template" tofile="${maven}/${project}-svggen/${completeVersion}/${project}-svggen-${completeVersion}.pom" filtering="true"/>
     <copy file="${build}/lib/${project}-svggen-${completeVersion}.jar" tofile="${maven}/${project}-svggen/${completeVersion}/${project}-svggen-${completeVersion}.jar"/>
+    <antcall target="svggen-jar-src" />
 
     <mkdir dir="${maven}/${project}-swing/${completeVersion}"/>
     <copy file="${src}/${project}-swing.pom.template" tofile="${maven}/${project}-swing/${completeVersion}/${project}-swing-${completeVersion}.pom" filtering="true"/>
     <copy file="${build}/lib/${project}-swing-${completeVersion}.jar" tofile="${maven}/${project}-swing/${completeVersion}/${project}-swing-${completeVersion}.jar"/>
+    <antcall target="swing-jar-src" />
 
     <mkdir dir="${maven}/${project}-transcoder/${completeVersion}"/>
     <copy file="${src}/${project}-transcoder.pom.template" tofile="${maven}/${project}-transcoder/${completeVersion}/${project}-transcoder-${completeVersion}.pom" filtering="true"/>
     <copy file="${build}/lib/${project}-transcoder-${completeVersion}.jar" tofile="${maven}/${project}-transcoder/${completeVersion}/${project}-transcoder-${completeVersion}.jar"/>
+    <antcall target="transcoder-jar-src" />
 
     <mkdir dir="${maven}/${project}-util/${completeVersion}"/>
     <copy file="${src}/${project}-util.pom.template" tofile="${maven}/${project}-util/${completeVersion}/${project}-util-${completeVersion}.pom" filtering="true"/>
     <copy file="${build}/lib/${project}-util-${completeVersion}.jar" tofile="${maven}/${project}-util/${completeVersion}/${project}-util-${completeVersion}.jar"/>
+    <antcall target="util-jar-src" />
 
     <mkdir dir="${maven}/${project}-xml/${completeVersion}"/>
     <copy file="${src}/${project}-xml.pom.template" tofile="${maven}/${project}-xml/${completeVersion}/${project}-xml-${completeVersion}.pom" filtering="true"/>
     <copy file="${build}/lib/${project}-xml-${completeVersion}.jar" tofile="${maven}/${project}-xml/${completeVersion}/${project}-xml-${completeVersion}.jar"/>
+    <antcall target="xml-jar-src" />
 
     <mkdir dir="${maven}/${project}-js/${completeVersion}"/>
     <copy file="${src}/${project}-js.pom.template" tofile="${maven}/${project}-js/${completeVersion}/${project}-js-${completeVersion}.pom" filtering="true"/>
@@ -976,9 +1028,9 @@ JAVA=/usr/bin/java
                                extension-jar,
                                xml-jar,
                                root-jar,
-                               svg-pp-jar,
+                               svgpp-jar,
                                svggen-jar,
-                               svg-slideshow-jar,
+                               slideshow-jar,
                                squiggle-jar,
                                squiggle-ext-jar,
                                rasterizer-jar,
@@ -1037,7 +1089,7 @@ JAVA=/usr/bin/java
 
   <!-- What is needed to the JSVGCanvas bean in a jar,
        including the XML parser -->
-  <target name="bean" depends="init, compile, prepare-build">
+  <target name="bean-jar" depends="init, compile, prepare-build">
     <mkdir dir="${build}/tmp"/>
     <unjar src="lib/xerces_2_5_0.jar" dest="${build}/tmp"/>
     <jar jarfile="${build}/lib/${project}-bean-${completeVersion}.jar">
@@ -1084,8 +1136,30 @@ JAVA=/usr/bin/java
   </target>
 
   <!-- External code (DOM Level 3 Events and ElementTraversal interfaces) (dependencies: none) -->
-  <target name="ext-jar" depends="init, compile, prepare-build">
-    <jar jarfile="${build}/lib/${project}-ext-${completeVersion}.jar">
+  <target name="ext-jar" depends="init">
+    <antcall target="ext-jar-call">
+      <param name="extension" value="class" />
+      <param name="location" value="${dest}" />
+      <param name="resources" value="${resources}" />
+      <param name="targetJar" value="${build}/lib/${project}-ext-${completeVersion}.jar" />
+    </antcall>
+  </target>
+
+  <target name="ext-jar-src" depends="init">
+    <antcall target="ext-jar-call">
+      <param name="extension" value="java" />
+      <param name="location" value="${src}" />
+      <param name="resources" value="nonexisting" />
+      <param name="targetJar" value="${maven}/${project}-ext/${completeVersion}/${project}-ext-${completeVersion}-sources.jar" />
+    </antcall>
+  </target>
+
+  <target name="ext-jar-call" depends="init, compile, prepare-build">
+    <filter token="extension" value="${extension}" />
+    <filter token="location" value="${location}" />
+    <filter token="targetJar" value="${targetJar}" />
+    <filter token="resources" value="${resources}" />
+    <jar jarfile="${targetJar}">
       <manifest>
         <attribute name="Implementation-Title" value="Batik external code"/>
         <attribute name="Implementation-Version" value="${completeVersion}"/>
@@ -1095,15 +1169,37 @@ JAVA=/usr/bin/java
       <metainf dir="${lib}">
         <include name="LICENSE.dom-*.txt"/>
       </metainf>
-      <fileset dir="${dest}">
-        <include name="org/w3c/**"/>
+      <fileset dir="${location}">
+        <include name="org/w3c/**.${extension}"/>
       </fileset>
     </jar>
   </target>
 
   <!-- Util, i18n (dependencies: none) -->
-  <target name="util-jar" depends="init, compile, prepare-build">
-    <jar jarfile="${build}/lib/${project}-util-${completeVersion}.jar">
+  <target name="util-jar" depends="init">
+    <antcall target="util-jar-call">
+      <param name="extension" value="class" />
+      <param name="location" value="${dest}" />
+      <param name="resources" value="${resources}" />
+      <param name="targetJar" value="${build}/lib/${project}-util-${completeVersion}.jar" />
+    </antcall>
+  </target>
+
+  <target name="util-jar-src" depends="init">
+    <antcall target="util-jar-call">
+      <param name="extension" value="java" />
+      <param name="location" value="${src}" />
+      <param name="resources" value="nonexisting" />
+      <param name="targetJar" value="${maven}/${project}-util/${completeVersion}/${project}-util-${completeVersion}-sources.jar" />
+    </antcall>
+  </target>
+
+  <target name="util-jar-call" depends="init, compile, prepare-build">
+    <filter token="extension" value="${extension}" />
+    <filter token="location" value="${location}" />
+    <filter token="targetJar" value="${targetJar}" />
+    <filter token="resources" value="${resources}" />
+    <jar jarfile="${targetJar}">
       <manifest>
         <attribute name="Implementation-Title" value="Batik utility library"/>
         <attribute name="Implementation-Version" value="${completeVersion}"/>
@@ -1111,24 +1207,45 @@ JAVA=/usr/bin/java
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
-      <fileset dir="${dest}">
-        <include name="${package-prefix}/i18n/*.class"/>
-        <include name="${package-prefix}/util/*.class"/>
-        <include name="${package-prefix}/util/io/*.class"/>
-        <include name="${package-prefix}/Version.class"/>
-        <include name="${package-prefix}/util/resources/*.class"/>
+      <fileset dir="${location}">
+        <include name="${package-prefix}/i18n/*.${extension}"/>
+        <include name="${package-prefix}/util/*.${extension}"/>
+        <include name="${package-prefix}/util/io/*.${extension}"/>
+        <include name="${package-prefix}/Version.${extension}"/>
+        <include name="${package-prefix}/util/resources/*.${extension}"/>
       </fileset>
-      <fileset dir="${resources}" excludes="**/.svn/">
+      <fileset dir="${resources}" excludes="**/.svn/" erroronmissingdir="false">
         <include name="${package-prefix}/util/resources/**"/>
         <include name="${package-prefix}/util/io/resources/**"/>
       </fileset>
     </jar>
   </target>
 
-
   <!-- AWT Util (dependencies: none) -->
-  <target name="awt-util-jar" depends="init, compile, prepare-build">
-    <jar jarfile="${build}/lib/${project}-awt-util-${completeVersion}.jar">
+  <target name="awt-util-jar" depends="init">
+    <antcall target="awt-util-jar-call">
+      <param name="extension" value="class" />
+      <param name="location" value="${dest}" />
+      <param name="resources" value="${resources}" />
+      <param name="targetJar" value="${build}/lib/${project}-awt-util-${completeVersion}.jar" />
+    </antcall>
+  </target>
+
+  <target name="awt-util-jar-src" depends="init">
+    <antcall target="awt-util-jar-call">
+      <param name="extension" value="java" />
+      <param name="location" value="${src}" />
+      <param name="resources" value="nonexisting" />
+      <param name="targetJar" value="${maven}/${project}-awt-util/${completeVersion}/${project}-awt-util-${completeVersion}-sources.jar" />
+    </antcall>
+  </target>
+
+  <target name="awt-util-jar-call" depends="init, compile, prepare-build">
+    <filter token="extension" value="${extension}" />
+    <filter token="location" value="${location}" />
+    <filter token="targetJar" value="${targetJar}" />
+    <filter token="resources" value="${resources}" />
+    <jar jarfile="${targetJar}">
       <manifest>
         <attribute name="Implementation-Title" value="Batik AWT utility library"/>
         <attribute name="Implementation-Version" value="${completeVersion}"/>
@@ -1136,12 +1253,12 @@ JAVA=/usr/bin/java
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
-      <fileset dir="${dest}">
-        <include name="${package-prefix}/ext/awt/**/*.class"/>
-        <include name="${package-prefix}/ext/swing/**/*.class"/>
-        <exclude name="${package-prefix}/ext/awt/image/codec/**/*.class"/>
+      <fileset dir="${location}">
+        <include name="${package-prefix}/ext/awt/**/*.${extension}"/>
+        <include name="${package-prefix}/ext/swing/**/*.${extension}"/>
+        <exclude name="${package-prefix}/ext/awt/image/codec/**/*.${extension}"/>
       </fileset>
-      <fileset dir="${resources}" excludes="**/.svn/">
+      <fileset dir="${resources}" excludes="**/.svn/" erroronmissingdir="false">
         <include name="${package-prefix}/ext/awt/image/**"/>
         <include name="${package-prefix}/ext/swing/**"/>
         <exclude name="${package-prefix}/ext/awt/image/codec/**/properties"/>
@@ -1149,10 +1266,31 @@ JAVA=/usr/bin/java
     </jar>
   </target>
 
-
   <!-- Codecs (dependencies: awt-util, transcoder) -->
-  <target name="codec-jar" depends="init, compile, prepare-build">
-    <jar jarfile="${build}/lib/${project}-codec-${completeVersion}.jar">
+  <target name="codec-jar" depends="init">
+    <antcall target="codec-jar-call">
+      <param name="extension" value="class" />
+      <param name="location" value="${dest}" />
+      <param name="resources" value="${resources}" />
+      <param name="targetJar" value="${build}/lib/${project}-codec-${completeVersion}.jar" />
+    </antcall>
+  </target>
+
+  <target name="codec-jar-src" depends="init">
+    <antcall target="codec-jar-call">
+      <param name="extension" value="java" />
+      <param name="location" value="${src}" />
+      <param name="resources" value="nonexisting" />
+      <param name="targetJar" value="${maven}/${project}-codec/${completeVersion}/${project}-codec-${completeVersion}-sources.jar" />
+    </antcall>
+  </target>
+
+  <target name="codec-jar-call" depends="init, compile, prepare-build">
+    <filter token="extension" value="${extension}" />
+    <filter token="location" value="${location}" />
+    <filter token="targetJar" value="${targetJar}" />
+    <filter token="resources" value="${resources}" />
+    <jar jarfile="${targetJar}">
       <manifest>
         <attribute name="Implementation-Title" value="Batik image codecs"/>
         <attribute name="Implementation-Version" value="${completeVersion}"/>
@@ -1160,17 +1298,17 @@ JAVA=/usr/bin/java
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
-      <fileset dir="${dest}">
-        <include name="${package-prefix}/ext/awt/image/codec/util/*.class"/>
-        <include name="${package-prefix}/ext/awt/image/codec/png/*.class"/>
-        <include name="${package-prefix}/ext/awt/image/codec/imageio/*.class"
+      <fileset dir="${location}">
+        <include name="${package-prefix}/ext/awt/image/codec/util/*.${extension}"/>
+        <include name="${package-prefix}/ext/awt/image/codec/png/*.${extension}"/>
+        <include name="${package-prefix}/ext/awt/image/codec/imageio/*.${extension}"
                  unless="sun-codecs.present"/>
-        <include name="${package-prefix}/ext/awt/image/codec/tiff/*.class"
+        <include name="${package-prefix}/ext/awt/image/codec/tiff/*.${extension}"
                  if="sun-codecs.present"/>
-        <include name="${package-prefix}/ext/awt/image/codec/jpeg/*.class"
+        <include name="${package-prefix}/ext/awt/image/codec/jpeg/*.${extension}"
                  if="sun-codecs.present"/>
       </fileset>
-      <fileset dir="${resources}" excludes="**/.svn/">
+      <fileset dir="${resources}" excludes="**/.svn/" erroronmissingdir="false">
         <include name="${package-prefix}/ext/awt/image/codec/**/properties"/>
         <include name="META-INF/services/org.apache.batik.ext.awt.image.spi.ImageWriter"/>
         <include name="META-INF/services/org.apache.batik.ext.awt.image.spi.RegistryEntry"/>
@@ -1178,10 +1316,31 @@ JAVA=/usr/bin/java
     </jar>
   </target>
 
-
   <!-- SVGGraphics2D (dependencies: util, awt-util) -->
-  <target name="svggen-jar" depends="init, compile, prepare-build">
-    <jar jarfile="${build}/lib/${project}-svggen-${completeVersion}.jar">
+  <target name="svggen-jar" depends="init">
+    <antcall target="svggen-jar-call">
+      <param name="extension" value="class" />
+      <param name="location" value="${dest}" />
+      <param name="resources" value="${resources}" />
+      <param name="targetJar" value="${build}/lib/${project}-svggen-${completeVersion}.jar" />
+    </antcall>
+  </target>
+
+  <target name="svggen-jar-src" depends="init">
+    <antcall target="svggen-jar-call">
+      <param name="extension" value="java" />
+      <param name="location" value="${src}" />
+      <param name="resources" value="nonexisting" />
+      <param name="targetJar" value="${maven}/${project}-svggen/${completeVersion}/${project}-svggen-${completeVersion}-sources.jar" />
+    </antcall>
+  </target>
+
+  <target name="svggen-jar-call" depends="init, compile, prepare-build">
+    <filter token="extension" value="${extension}" />
+    <filter token="location" value="${location}" />
+    <filter token="targetJar" value="${targetJar}" />
+    <filter token="resources" value="${resources}" />
+    <jar jarfile="${targetJar}">
       <manifest>
         <attribute name="Implementation-Title" value="Batik SVG generator"/>
         <attribute name="Implementation-Version" value="${completeVersion}"/>
@@ -1189,10 +1348,10 @@ JAVA=/usr/bin/java
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
-      <fileset dir="${dest}">
-        <include name="${package-prefix}/svggen/**/*.class"/>
+      <fileset dir="${location}">
+        <include name="${package-prefix}/svggen/**/*.${extension}"/>
       </fileset>
-      <fileset dir="${resources}" excludes="**/.svn/">
+      <fileset dir="${resources}" excludes="**/.svn/" erroronmissingdir="false">
         <include name="${package-prefix}/svggen/font/resources/**"/>
       </fileset>
     </jar>
@@ -1221,10 +1380,31 @@ JAVA=/usr/bin/java
     </jar>
   </target>
 
-
   <!-- GUI Util (dependencies: none) -->
-  <target name="gui-util-jar" depends="init, compile, prepare-build">
-    <jar jarfile="${build}/lib/${project}-gui-util-${completeVersion}.jar">
+  <target name="gui-util-jar" depends="init">
+    <antcall target="gui-util-jar-call">
+      <param name="extension" value="class" />
+      <param name="location" value="${dest}" />
+      <param name="resources" value="${resources}" />
+      <param name="targetJar" value="${build}/lib/${project}-gui-util-${completeVersion}.jar" />
+    </antcall>
+  </target>
+
+  <target name="gui-util-jar-src" depends="init">
+    <antcall target="gui-util-jar-call">
+      <param name="extension" value="java" />
+      <param name="location" value="${src}" />
+      <param name="resources" value="nonexisting" />
+      <param name="targetJar" value="${maven}/${project}-gui-util/${completeVersion}/${project}-gui-util-${completeVersion}-sources.jar" />
+    </antcall>
+  </target>
+
+  <target name="gui-util-jar-call" depends="init, compile, prepare-build">
+    <filter token="extension" value="${extension}" />
+    <filter token="location" value="${location}" />
+    <filter token="targetJar" value="${targetJar}" />
+    <filter token="resources" value="${resources}" />
+    <jar jarfile="${targetJar}">
       <manifest>
         <attribute name="Implementation-Title" value="Batik GUI utility library"/>
         <attribute name="Implementation-Version" value="${completeVersion}"/>
@@ -1232,19 +1412,40 @@ JAVA=/usr/bin/java
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
-      <fileset dir="${dest}">
-        <include name="${package-prefix}/util/gui/**/*.class"/>
+      <fileset dir="${location}">
+        <include name="${package-prefix}/util/gui/**/*.${extension}"/>
       </fileset>
-      <fileset dir="${resources}" excludes="**/.svn/">
+      <fileset dir="${resources}" excludes="**/.svn/" erroronmissingdir="false">
         <include name="${package-prefix}/util/gui/**/resources/**"/>
       </fileset>
     </jar>
   </target>
 
+	<!-- DOM Level 3 (dependencies: ext, util) -->
+  <target name="dom-jar" depends="init">
+    <antcall target="dom-jar-call">
+      <param name="extension" value="class" />
+      <param name="location" value="${dest}" />
+      <param name="resources" value="${resources}" />
+      <param name="targetJar" value="${build}/lib/${project}-dom-${completeVersion}.jar" />
+    </antcall>
+  </target>
 
-  <!-- DOM Level 3 (dependencies: ext, util) -->
-  <target name="dom-jar" depends="init, compile, prepare-build">
-    <jar jarfile="${build}/lib/${project}-dom-${completeVersion}.jar">
+  <target name="dom-jar-src" depends="init">
+    <antcall target="dom-jar-call">
+      <param name="extension" value="java" />
+      <param name="location" value="${src}" />
+      <param name="resources" value="nonexisting" />
+      <param name="targetJar" value="${maven}/${project}-dom/${completeVersion}/${project}-dom-${completeVersion}-sources.jar" />
+    </antcall>
+  </target>
+
+  <target name="dom-jar-call" depends="init, compile, prepare-build">
+    <filter token="extension" value="${extension}" />
+    <filter token="location" value="${location}" />
+    <filter token="targetJar" value="${targetJar}" />
+    <filter token="resources" value="${resources}" />
+    <jar jarfile="${targetJar}">
       <manifest>
         <attribute name="Implementation-Title" value="Batik DOM Level 3 implementation"/>
         <attribute name="Implementation-Version" value="${completeVersion}"/>
@@ -1252,14 +1453,14 @@ JAVA=/usr/bin/java
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
-      <fileset dir="${dest}">
-        <include name="${package-prefix}/dom/*.class"/>
-        <include name="${package-prefix}/dom/events/*.class"/>
-        <include name="${package-prefix}/dom/traversal/*.class"/>
-        <include name="${package-prefix}/dom/util/*.class"/>
-        <include name="${package-prefix}/dom/xbl/*.class"/>
+      <fileset dir="${location}">
+        <include name="${package-prefix}/dom/*.${extension}"/>
+        <include name="${package-prefix}/dom/events/*.${extension}"/>
+        <include name="${package-prefix}/dom/traversal/*.${extension}"/>
+        <include name="${package-prefix}/dom/util/*.${extension}"/>
+        <include name="${package-prefix}/dom/xbl/*.${extension}"/>
       </fileset>
-      <fileset dir="${resources}" excludes="**/.svn/">
+      <fileset dir="${resources}" excludes="**/.svn/" erroronmissingdir="false">
         <include name="${package-prefix}/dom/resources/*"/>
         <include name="${package-prefix}/dom/events/resources/**"/>
         <include name="${package-prefix}/dom/traversal/resources/**"/>
@@ -1269,10 +1470,31 @@ JAVA=/usr/bin/java
     </jar>
   </target>
 
-
   <!-- CSS Engine (dependencies: ext, util) -->
-  <target name="css-jar" depends="init, compile, prepare-build">
-    <jar jarfile="${build}/lib/${project}-css-${completeVersion}.jar">
+  <target name="css-jar" depends="init">
+    <antcall target="css-jar-call">
+      <param name="extension" value="class" />
+      <param name="location" value="${dest}" />
+      <param name="resources" value="${resources}" />
+      <param name="targetJar" value="${build}/lib/${project}-css-${completeVersion}.jar" />
+    </antcall>
+  </target>
+
+  <target name="css-jar-src" depends="init">
+    <antcall target="css-jar-call">
+      <param name="extension" value="java" />
+      <param name="location" value="${src}" />
+      <param name="resources" value="nonexisting" />
+      <param name="targetJar" value="${maven}/${project}-css/${completeVersion}/${project}-css-${completeVersion}-sources.jar" />
+    </antcall>
+  </target>
+
+  <target name="css-jar-call" depends="init, compile, prepare-build">
+    <filter token="extension" value="${extension}" />
+    <filter token="location" value="${location}" />
+    <filter token="targetJar" value="${targetJar}" />
+    <filter token="resources" value="${resources}" />
+    <jar jarfile="${targetJar}">
       <manifest>
         <attribute name="Implementation-Title" value="Batik CSS engine"/>
         <attribute name="Implementation-Version" value="${completeVersion}"/>
@@ -1280,17 +1502,17 @@ JAVA=/usr/bin/java
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
-      <fileset dir="${dest}">
-        <include name="${package-prefix}/css/dom/*.class"/>
-        <include name="${package-prefix}/css/engine/*.class"/>
-        <include name="${package-prefix}/css/engine/sac/*.class"/>
-        <include name="${package-prefix}/css/engine/value/*.class"/>
-        <include name="${package-prefix}/css/engine/value/css2/*.class"/>
-        <include name="${package-prefix}/css/engine/value/svg/*.class"/>
-        <include name="${package-prefix}/css/engine/value/svg12/*.class"/>
-        <include name="${package-prefix}/css/parser/*.class"/>
+      <fileset dir="${location}">
+        <include name="${package-prefix}/css/dom/*.${extension}"/>
+        <include name="${package-prefix}/css/engine/*.${extension}"/>
+        <include name="${package-prefix}/css/engine/sac/*.${extension}"/>
+        <include name="${package-prefix}/css/engine/value/*.${extension}"/>
+        <include name="${package-prefix}/css/engine/value/css2/*.${extension}"/>
+        <include name="${package-prefix}/css/engine/value/svg/*.${extension}"/>
+        <include name="${package-prefix}/css/engine/value/svg12/*.${extension}"/>
+        <include name="${package-prefix}/css/parser/*.${extension}"/>
       </fileset>
-      <fileset dir="${resources}" excludes="**/.svn/">
+      <fileset dir="${resources}" excludes="**/.svn/" erroronmissingdir="false">
         <include name="${package-prefix}/css/dom/resources/**"/>
         <include name="${package-prefix}/css/engine/resources/**"/>
         <include name="${package-prefix}/css/engine/sac/resources/**"/>
@@ -1304,8 +1526,30 @@ JAVA=/usr/bin/java
   </target>
 
   <!-- SVG DOM (dependencies: ext, DOM, CSS, util) -->
-  <target name="svg-dom-jar" depends="init, compile, prepare-build">
-    <jar jarfile="${build}/lib/${project}-svg-dom-${completeVersion}.jar">
+  <target name="svg-dom-jar" depends="init">
+    <antcall target="svg-dom-jar-call">
+      <param name="extension" value="class" />
+      <param name="location" value="${dest}" />
+      <param name="resources" value="${resources}" />
+      <param name="targetJar" value="${build}/lib/${project}-svg-dom-${completeVersion}.jar" />
+    </antcall>
+  </target>
+
+  <target name="svg-dom-jar-src" depends="init">
+    <antcall target="svg-dom-jar-call">
+      <param name="extension" value="java" />
+      <param name="location" value="${src}" />
+      <param name="resources" value="nonexisting" />
+      <param name="targetJar" value="${maven}/${project}-svg-dom/${completeVersion}/${project}-svg-dom-${completeVersion}-sources.jar" />
+    </antcall>
+  </target>
+
+  <target name="svg-dom-jar-call" depends="init, compile, prepare-build">
+    <filter token="extension" value="${extension}" />
+    <filter token="location" value="${location}" />
+    <filter token="targetJar" value="${targetJar}" />
+    <filter token="resources" value="${resources}" />
+    <jar jarfile="${targetJar}">
       <manifest>
         <attribute name="Implementation-Title" value="Batik SVG DOM implementation"/>
         <attribute name="Implementation-Version" value="${completeVersion}"/>
@@ -1313,21 +1557,42 @@ JAVA=/usr/bin/java
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
-      <fileset dir="${dest}">
-        <include name="${package-prefix}/dom/svg/*.class"/>
-        <include name="${package-prefix}/dom/svg12/*.class"/>
+      <fileset dir="${location}">
+        <include name="${package-prefix}/dom/svg/*.${extension}"/>
+        <include name="${package-prefix}/dom/svg12/*.${extension}"/>
       </fileset>
-      <fileset dir="${resources}" excludes="**/.svn/">
+      <fileset dir="${resources}" excludes="**/.svn/" erroronmissingdir="false">
         <include name="${package-prefix}/dom/svg/resources/**"/>
         <include name="${package-prefix}/dom/svg12/resources/**"/>
       </fileset>
     </jar>
   </target>
 
-
   <!-- GVT (dependencies: util, awt-util) -->
-  <target name="gvt-jar" depends="init, compile, prepare-build">
-    <jar jarfile="${build}/lib/${project}-gvt-${completeVersion}.jar">
+  <target name="gvt-jar" depends="init">
+    <antcall target="gvt-jar-call">
+      <param name="extension" value="class" />
+      <param name="location" value="${dest}" />
+      <param name="resources" value="${resources}" />
+      <param name="targetJar" value="${build}/lib/${project}-gvt-${completeVersion}.jar" />
+    </antcall>
+  </target>
+
+  <target name="gvt-jar-src" depends="init">
+    <antcall target="gvt-jar-call">
+      <param name="extension" value="java" />
+      <param name="location" value="${src}" />
+      <param name="resources" value="nonexisting" />
+      <param name="targetJar" value="${maven}/${project}-gvt/${completeVersion}/${project}-gvt-${completeVersion}-sources.jar" />
+    </antcall>
+  </target>
+
+  <target name="gvt-jar-call" depends="init, compile, prepare-build">
+    <filter token="extension" value="${extension}" />
+    <filter token="location" value="${location}" />
+    <filter token="targetJar" value="${targetJar}" />
+    <filter token="resources" value="${resources}" />
+    <jar jarfile="${targetJar}">
       <manifest>
         <attribute name="Implementation-Title" value="Batik GVT library"/>
         <attribute name="Implementation-Version" value="${completeVersion}"/>
@@ -1335,19 +1600,40 @@ JAVA=/usr/bin/java
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
-      <fileset dir="${dest}">
-        <include name="${package-prefix}/gvt/**/*.class"/>
+      <fileset dir="${location}">
+        <include name="${package-prefix}/gvt/**/*.${extension}"/>
       </fileset>
-      <fileset dir="${resources}" excludes="**/.svn/">
+      <fileset dir="${resources}" excludes="**/.svn/" erroronmissingdir="false">
         <include name="${package-prefix}/gvt/**/resources/*"/>
       </fileset>
     </jar>
   </target>
 
-
   <!-- Parser (dependencies: util) -->
-  <target name="parser-jar" depends="init, compile, prepare-build">
-    <jar jarfile="${build}/lib/${project}-parser-${completeVersion}.jar">
+  <target name="parser-jar" depends="init">
+    <antcall target="parser-jar-call">
+      <param name="extension" value="class" />
+      <param name="location" value="${dest}" />
+      <param name="resources" value="${resources}" />
+      <param name="targetJar" value="${build}/lib/${project}-parser-${completeVersion}.jar" />
+    </antcall>
+  </target>
+
+  <target name="parser-jar-src" depends="init">
+    <antcall target="parser-jar-call">
+      <param name="extension" value="java" />
+      <param name="location" value="${src}" />
+      <param name="resources" value="nonexisting" />
+      <param name="targetJar" value="${maven}/${project}-parser/${completeVersion}/${project}-parser-${completeVersion}-sources.jar" />
+    </antcall>
+  </target>
+
+  <target name="parser-jar-call" depends="init, compile, prepare-build">
+    <filter token="extension" value="${extension}" />
+    <filter token="location" value="${location}" />
+    <filter token="targetJar" value="${targetJar}" />
+    <filter token="resources" value="${resources}" />
+    <jar jarfile="${targetJar}">
       <manifest>
         <attribute name="Implementation-Title" value="Batik parser library"/>
         <attribute name="Implementation-Version" value="${completeVersion}"/>
@@ -1355,19 +1641,40 @@ JAVA=/usr/bin/java
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
-      <fileset dir="${dest}">
-        <include name="${package-prefix}/parser/**/*.class"/>
+      <fileset dir="${location}">
+        <include name="${package-prefix}/parser/**/*.${extension}"/>
       </fileset>
-      <fileset dir="${resources}" excludes="**/.svn/">
+      <fileset dir="${resources}" excludes="**/.svn/" erroronmissingdir="false">
         <include name="${package-prefix}/parser/**/resources/*"/>
       </fileset>
     </jar>
   </target>
 
-
   <!-- Script (dependencies: util) -->
-  <target name="script-jar" depends="init, compile, prepare-build">
-    <jar jarfile="${build}/lib/${project}-script-${completeVersion}.jar">
+  <target name="script-jar" depends="init">
+    <antcall target="script-jar-call">
+      <param name="extension" value="class" />
+      <param name="location" value="${dest}" />
+      <param name="resources" value="${resources}" />
+      <param name="targetJar" value="${build}/lib/${project}-script-${completeVersion}.jar" />
+    </antcall>
+  </target>
+
+  <target name="script-jar-src" depends="init">
+    <antcall target="script-jar-call">
+      <param name="extension" value="java" />
+      <param name="location" value="${src}" />
+      <param name="resources" value="nonexisting" />
+      <param name="targetJar" value="${maven}/${project}-script/${completeVersion}/${project}-script-${completeVersion}-sources.jar" />
+    </antcall>
+  </target>
+
+  <target name="script-jar-call" depends="init, compile, prepare-build">
+    <filter token="extension" value="${extension}" />
+    <filter token="location" value="${location}" />
+    <filter token="targetJar" value="${targetJar}" />
+    <filter token="resources" value="${resources}" />
+    <jar jarfile="${targetJar}">
       <manifest>
         <attribute name="Implementation-Title" value="Batik script library"/>
         <attribute name="Implementation-Version" value="${completeVersion}"/>
@@ -1375,20 +1682,41 @@ JAVA=/usr/bin/java
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
-      <fileset dir="${dest}">
-        <include name="${package-prefix}/script/**/*.class"/>
+      <fileset dir="${location}">
+        <include name="${package-prefix}/script/**/*.${extension}"/>
       </fileset>
-      <fileset dir="${resources}" excludes="**/.svn/">
+      <fileset dir="${resources}" excludes="**/.svn/" erroronmissingdir="false">
         <include name="${package-prefix}/script/**/resources/*"/>
         <include name="META-INF/services/org.apache.batik.script.InterpreterFactory"/>
       </fileset>
     </jar>
   </target>
 
-
   <!-- Transcoder (dependencies: all) -->
-  <target name="transcoder-jar" depends="init, compile, prepare-build">
-    <jar jarfile="${build}/lib/${project}-transcoder-${completeVersion}.jar">
+  <target name="transcoder-jar" depends="init">
+    <antcall target="transcoder-jar-call">
+      <param name="extension" value="class" />
+      <param name="location" value="${dest}" />
+      <param name="resources" value="${resources}" />
+      <param name="targetJar" value="${build}/lib/${project}-transcoder-${completeVersion}.jar" />
+    </antcall>
+  </target>
+
+  <target name="transcoder-jar-src" depends="init">
+    <antcall target="transcoder-jar-call">
+      <param name="extension" value="java" />
+      <param name="location" value="${src}" />
+      <param name="resources" value="nonexisting" />
+      <param name="targetJar" value="${maven}/${project}-transcoder/${completeVersion}/${project}-transcoder-${completeVersion}-sources.jar" />
+    </antcall>
+  </target>
+
+  <target name="transcoder-jar-call" depends="init, compile, prepare-build">
+    <filter token="extension" value="${extension}" />
+    <filter token="location" value="${location}" />
+    <filter token="targetJar" value="${targetJar}" />
+    <filter token="resources" value="${resources}" />
+    <jar jarfile="${targetJar}">
       <manifest>
         <attribute name="Implementation-Title" value="Batik transcoder"/>
         <attribute name="Implementation-Version" value="${completeVersion}"/>
@@ -1396,18 +1724,40 @@ JAVA=/usr/bin/java
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
-      <fileset dir="${dest}">
-        <include name="${package-prefix}/transcoder/**/*.class"/>
+      <fileset dir="${location}">
+        <include name="${package-prefix}/transcoder/**/*.${extension}"/>
       </fileset>
-      <fileset dir="${resources}" excludes="**/.svn/">
+      <fileset dir="${resources}" excludes="**/.svn/" erroronmissingdir="false">
         <include name="${package-prefix}/transcoder/**/resources/*"/>
       </fileset>
     </jar>
   </target>
 
-  <!-- XML (dependencies: util) -->
-  <target name="xml-jar" depends="init, compile, prepare-build">
-    <jar jarfile="${build}/lib/${project}-xml-${completeVersion}.jar">
+	<!-- XML (dependencies: util) -->
+  <target name="xml-jar" depends="init">
+    <antcall target="xml-jar-call">
+      <param name="extension" value="class" />
+      <param name="location" value="${dest}" />
+      <param name="resources" value="${resources}" />
+      <param name="targetJar" value="${build}/lib/${project}-xml-${completeVersion}.jar" />
+    </antcall>
+  </target>
+
+  <target name="xml-jar-src" depends="init">
+    <antcall target="xml-jar-call">
+      <param name="extension" value="java" />
+      <param name="location" value="${src}" />
+      <param name="resources" value="nonexisting" />
+      <param name="targetJar" value="${maven}/${project}-xml/${completeVersion}/${project}-xml-${completeVersion}-sources.jar" />
+    </antcall>
+  </target>
+
+  <target name="xml-jar-call" depends="init, compile, prepare-build">
+    <filter token="extension" value="${extension}" />
+    <filter token="location" value="${location}" />
+    <filter token="targetJar" value="${targetJar}" />
+    <filter token="resources" value="${resources}" />
+    <jar jarfile="${targetJar}">
       <manifest>
         <attribute name="Implementation-Title" value="Batik XML utility library"/>
         <attribute name="Implementation-Version" value="${completeVersion}"/>
@@ -1415,18 +1765,40 @@ JAVA=/usr/bin/java
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
-      <fileset dir="${dest}">
-        <include name="${package-prefix}/xml/**/*.class"/>
+      <fileset dir="${location}">
+        <include name="${package-prefix}/xml/**/*.${extension}"/>
       </fileset>
-      <fileset dir="${resources}" excludes="**/.svn/">
+      <fileset dir="${resources}" excludes="**/.svn/" erroronmissingdir="false">
         <include name="${package-prefix}/xml/**/resources/*"/>
       </fileset>
     </jar>
   </target>
 
   <!-- Bridge (dependencies: all) -->
-  <target name="bridge-jar" depends="init, compile, prepare-build">
-    <jar jarfile="${build}/lib/${project}-bridge-${completeVersion}.jar">
+  <target name="bridge-jar" depends="init">
+    <antcall target="bridge-jar-call">
+      <param name="extension" value="class" />
+      <param name="location" value="${dest}" />
+      <param name="resources" value="${resources}" />
+      <param name="targetJar" value="${build}/lib/${project}-bridge-${completeVersion}.jar" />
+    </antcall>
+  </target>
+
+  <target name="bridge-jar-src" depends="init">
+    <antcall target="bridge-jar-call">
+      <param name="extension" value="java" />
+      <param name="location" value="${src}" />
+      <param name="resources" value="nonexisting" />
+      <param name="targetJar" value="${maven}/${project}-bridge/${completeVersion}/${project}-bridge-${completeVersion}-sources.jar" />
+    </antcall>
+  </target>
+
+  <target name="bridge-jar-call" depends="init, compile, prepare-build">
+    <filter token="extension" value="${extension}" />
+    <filter token="location" value="${location}" />
+    <filter token="targetJar" value="${targetJar}" />
+    <filter token="resources" value="${resources}" />
+    <jar jarfile="${targetJar}">
       <manifest>
         <attribute name="Implementation-Title" value="Batik bridge"/>
         <attribute name="Implementation-Version" value="${completeVersion}"/>
@@ -1434,10 +1806,10 @@ JAVA=/usr/bin/java
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
-      <fileset dir="${dest}">
-        <include name="${package-prefix}/bridge/**/*.class"/>
+      <fileset dir="${location}">
+        <include name="${package-prefix}/bridge/**/*.${extension}"/>
       </fileset>
-      <fileset dir="${resources}" excludes="**/.svn/">
+      <fileset dir="${resources}" excludes="**/.svn/" erroronmissingdir="false">
         <include name="${package-prefix}/bridge/BrokenLink.svg"/>
         <include name="${package-prefix}/bridge/**/resources/*"/>
       </fileset>
@@ -1445,8 +1817,30 @@ JAVA=/usr/bin/java
   </target>
 
   <!-- Swing (dependencies: all) -->
-  <target name="swing-jar" depends="init, compile, prepare-build">
-    <jar jarfile="${build}/lib/${project}-swing-${completeVersion}.jar">
+  <target name="swing-jar" depends="init">
+    <antcall target="swing-jar-call">
+      <param name="extension" value="class" />
+      <param name="location" value="${dest}" />
+      <param name="resources" value="${resources}" />
+      <param name="targetJar" value="${build}/lib/${project}-swing-${completeVersion}.jar" />
+    </antcall>
+  </target>
+
+  <target name="swing-jar-src" depends="init">
+    <antcall target="swing-jar-call">
+      <param name="extension" value="java" />
+      <param name="location" value="${src}" />
+      <param name="resources" value="nonexisting" />
+      <param name="targetJar" value="${maven}/${project}-swing/${completeVersion}/${project}-swing-${completeVersion}-sources.jar" />
+    </antcall>
+  </target>
+
+  <target name="swing-jar-call" depends="init, compile, prepare-build">
+    <filter token="extension" value="${extension}" />
+    <filter token="location" value="${location}" />
+    <filter token="targetJar" value="${targetJar}" />
+    <filter token="resources" value="${resources}" />
+    <jar jarfile="${targetJar}">
       <manifest>
         <attribute name="Implementation-Title" value="Batik Swing components"/>
         <attribute name="Implementation-Version" value="${completeVersion}"/>
@@ -1454,18 +1848,40 @@ JAVA=/usr/bin/java
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
-      <fileset dir="${dest}">
-        <include name="${package-prefix}/swing/**/*.class"/>
+      <fileset dir="${location}">
+        <include name="${package-prefix}/swing/**/*.${extension}"/>
       </fileset>
-      <fileset dir="${resources}" excludes="**/.svn/">
+      <fileset dir="${resources}" excludes="**/.svn/" erroronmissingdir="false">
         <include name="${package-prefix}/swing/**/resources/*"/>
       </fileset>
     </jar>
   </target>
 
   <!-- Animation (dependencies: dom, util, xml, parser) -->
-  <target name="anim-jar" depends="init, compile, prepare-build">
-    <jar jarfile="${build}/lib/${project}-anim-${completeVersion}.jar">
+  <target name="anim-jar" depends="init">
+    <antcall target="anim-jar-call">
+      <param name="extension" value="class" />
+      <param name="location" value="${dest}" />
+      <param name="resources" value="${resources}" />
+      <param name="targetJar" value="${build}/lib/${project}-anim-${completeVersion}.jar" />
+    </antcall>
+  </target>
+
+  <target name="anim-jar-src" depends="init">
+    <antcall target="anim-jar-call">
+      <param name="extension" value="java" />
+      <param name="location" value="${src}" />
+      <param name="resources" value="nonexisting" />
+      <param name="targetJar" value="${maven}/${project}-anim/${completeVersion}/${project}-anim-${completeVersion}-sources.jar" />
+    </antcall>
+  </target>
+
+  <target name="anim-jar-call" depends="init, compile, prepare-build">
+    <filter token="extension" value="${extension}" />
+    <filter token="location" value="${location}" />
+    <filter token="targetJar" value="${targetJar}" />
+    <filter token="resources" value="${resources}" />
+    <jar jarfile="${targetJar}">
       <manifest>
         <attribute name="Implementation-Title" value="Batik animation"/>
         <attribute name="Implementation-Version" value="${completeVersion}"/>
@@ -1473,21 +1889,43 @@ JAVA=/usr/bin/java
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
-      <fileset dir="${dest}">
-        <include name="${package-prefix}/anim/*.class"/>
-        <include name="${package-prefix}/anim/dom/*.class"/>
-        <include name="${package-prefix}/anim/timing/*.class"/>
-        <include name="${package-prefix}/anim/values/*.class"/>
+      <fileset dir="${location}">
+        <include name="${package-prefix}/anim/*.${extension}"/>
+        <include name="${package-prefix}/anim/dom/*.${extension}"/>
+        <include name="${package-prefix}/anim/timing/*.${extension}"/>
+        <include name="${package-prefix}/anim/values/*.${extension}"/>
       </fileset>
-      <fileset dir="${resources}" excludes="**/.svn/">
+      <fileset dir="${resources}" excludes="**/.svn/" erroronmissingdir="false">
         <include name="${package-prefix}/anim/**/resources/*"/>
       </fileset>
     </jar>
   </target>
 
   <!-- Extensions (dependencies: all) -->
-  <target name="extension-jar" depends="init, compile, prepare-build">
-    <jar jarfile="${build}/lib/${project}-extension-${completeVersion}.jar">
+  <target name="extension-jar" depends="init">
+    <antcall target="extension-jar-call">
+      <param name="extension" value="class" />
+      <param name="location" value="${dest}" />
+      <param name="resources" value="${resources}" />
+      <param name="targetJar" value="${build}/lib/${project}-extension-${completeVersion}.jar" />
+    </antcall>
+  </target>
+
+  <target name="extension-jar-src" depends="init">
+    <antcall target="extension-jar-call">
+      <param name="extension" value="java" />
+      <param name="location" value="${src}" />
+      <param name="resources" value="nonexisting" />
+      <param name="targetJar" value="${maven}/${project}-extension/${completeVersion}/${project}-extension-${completeVersion}-sources.jar" />
+    </antcall>
+  </target>
+
+  <target name="extension-jar-call" depends="init, compile, prepare-build">
+    <filter token="extension" value="${extension}" />
+    <filter token="location" value="${location}" />
+    <filter token="targetJar" value="${targetJar}" />
+    <filter token="resources" value="${resources}" />
+    <jar jarfile="${targetJar}">
       <manifest>
         <attribute name="Implementation-Title" value="Batik extensions"/>
         <attribute name="Implementation-Version" value="${completeVersion}"/>
@@ -1495,49 +1933,49 @@ JAVA=/usr/bin/java
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
-      <fileset dir="${resources}" excludes="**/.svn/">
+      <fileset dir="${resources}" excludes="**/.svn/" erroronmissingdir="false">
         <include name="META-INF/services/org.apache.batik.bridge.BridgeExtension"/>
         <include name="META-INF/services/org.apache.batik.dom.DomExtension"/>
       </fileset>
-      <fileset dir="${dest}">
-        <include name="${package-prefix}/extension/**/*.class"/>
+      <fileset dir="${location}">
+        <include name="${package-prefix}/extension/**/*.${extension}"/>
       </fileset>
-      <fileset dir="${resources}" excludes="**/.svn/">
+      <fileset dir="${resources}" excludes="**/.svn/" erroronmissingdir="false">
         <include name="${package-prefix}/extension/**/resources/*"/>
       </fileset>
     </jar>
   </target>
 
   <!-- SVG Pretty-printer (dependencies: ???) -->
-  <target name="svg-pp-jar" depends="init, compile, prepare-build">
-    <antcall target = "svg-pp-jar-call">
+  <target name="svgpp-jar" depends="init, compile, prepare-build">
+    <antcall target = "svgpp-jar-call">
       <param name="jarsLibDir" value="lib/" />
-      <param name="jarVersion" value="${completeVersion}" />
-      <param name="svg-ppJar" value= "${build}/${project}-svgpp-${completeVersion}.jar" />
+      <param name="location" value="${dest}" />
+      <param name="extension" value="class" />
+      <param name="svgppJar" value= "${build}/${project}-svgpp-${completeVersion}.jar" />
     </antcall>
   </target>
 
-  <target name="svg-pp-jar-call" depends="init, compile, prepare-build">
-    <jar flattenAttributes="true"
-         jarfile="${svg-ppJar}">
+  <target name="svgpp-jar-call" depends="init, compile, prepare-build">
+    <jar flattenAttributes="true" jarfile="${svgppJar}">
       <manifest>
         <attribute name="Implementation-Title" value="Batik XML pretty printer"/>
         <attribute name="Implementation-Version" value="${completeVersion}"/>
         <attribute name="Implementation-Vendor" value="${vendor}"/>
         <attribute name="Build-Id" value="${build.id}"/>
         <attribute name="Main-Class" value="org.apache.batik.apps.svgpp.Main"/>
-        <attribute name="Class-Path" value="${jarsLibDir}${project}-ext-${jarVersion}.jar" />
-        <attribute name="Class-Path" value="${jarsLibDir}${project}-dom-${jarVersion}.jar" />
-        <attribute name="Class-Path" value="${jarsLibDir}${project}-parser-${jarVersion}.jar" />
-        <attribute name="Class-Path" value="${jarsLibDir}${project}-transcoder-${jarVersion}.jar" />
-        <attribute name="Class-Path" value="${jarsLibDir}${project}-util-${jarVersion}.jar" />
-        <attribute name="Class-Path" value="${jarsLibDir}${project}-xml-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-ext-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-dom-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-parser-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-transcoder-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-util-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-xml-${completeVersion}.jar" />
         <attribute name="Class-Path" value="${jarsLibDir}xml-apis-1.3.04.jar" />
         <attribute name="Class-Path" value="${jarsLibDir}xml-apis-ext-1.3.04.jar" />
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
-      <fileset dir="${dest}">
-        <include name="${package-prefix}/apps/svgpp/**/*.class"/>
+      <fileset dir="${location}">
+        <include name="${package-prefix}/apps/svgpp/**/*.${extension}"/>
       </fileset>
       <fileset dir="${resources}" excludes="**/.svn/">
         <include name="${package-prefix}/apps/svgpp/**/resources/**"/>
@@ -1546,39 +1984,38 @@ JAVA=/usr/bin/java
   </target>
 
   <!-- SVG Slide-show (dependencies: ???) -->
-  <target name="svg-slideshow-jar" depends="init, compile, prepare-build">
-      <antcall target="svg-slideshow-jar-call">
-        <param name="jarsLibDir" value="lib/" />
-        <param name="jarVersion" value="${completeVersion}" />
-        <param name="svg-slideshowJar" value= "${build}/${project}-slideshow-${completeVersion}.jar"/>
-      </antcall>
+  <target name="slideshow-jar" depends="init, compile, prepare-build">
+    <antcall target="slideshow-jar-call">
+      <param name="jarsLibDir" value="lib/" />
+      <param name="extension" value="class" />
+      <param name="location" value="${dest}" />
+      <param name="slideshowJar" value= "${build}/${project}-slideshow-${completeVersion}.jar"/>
+    </antcall>
   </target>
 
-  <target name="svg-slideshow-jar-call" depends="init, compile, prepare-build">
-    <filter token="batikVersion" value="${completeVersion}" />
-    <jar flattenAttributes="true"
-         jarfile="${svg-slideshowJar}">
+  <target name="slideshow-jar-call" depends="init, compile, prepare-build">
+    <jar flattenAttributes="true" jarfile="${slideshowJar}">
       <manifest>
         <attribute name="Implementation-Title" value="Batik SVG slide show tool"/>
         <attribute name="Implementation-Version" value="${completeVersion}"/>
         <attribute name="Implementation-Vendor" value="${vendor}"/>
         <attribute name="Build-Id" value="${build.id}"/>
         <attribute name="Main-Class" value="org.apache.batik.apps.slideshow.Main"/>
-        <attribute name="Class-Path" value="${jarsLibDir}${project}-ext-${jarVersion}.jar" />
-        <attribute name="Class-Path" value="${jarsLibDir}${project}-dom-${jarVersion}.jar" />
-        <attribute name="Class-Path" value="${jarsLibDir}${project}-css-${jarVersion}.jar" />
-        <attribute name="Class-Path" value="${jarsLibDir}${project}-svg-dom-${jarVersion}.jar" />
-        <attribute name="Class-Path" value="${jarsLibDir}${project}-gvt-${jarVersion}.jar" />
-        <attribute name="Class-Path" value="${jarsLibDir}${project}-parser-${jarVersion}.jar" />
-        <attribute name="Class-Path" value="${jarsLibDir}${project}-script-${jarVersion}.jar" />
-        <attribute name="Class-Path" value="${jarsLibDir}${project}-bridge-${jarVersion}.jar" />
-        <attribute name="Class-Path" value="${jarsLibDir}${project}-anim-${jarVersion}.jar" />
-        <attribute name="Class-Path" value="${jarsLibDir}${project}-transcoder-${jarVersion}.jar" />
-        <attribute name="Class-Path" value="${jarsLibDir}${project}-gui-uti-${jarVersion}.jar" />
-        <attribute name="Class-Path" value="${jarsLibDir}${project}-awt-util-${jarVersion}.jar" />
-        <attribute name="Class-Path" value="${jarsLibDir}${project}-codec-${jarVersion}.jar" />
-        <attribute name="Class-Path" value="${jarsLibDir}${project}-util-${jarVersion}.jar" />
-        <attribute name="Class-Path" value="${jarsLibDir}${project}-xml-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-ext-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-dom-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-css-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-svg-dom-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-gvt-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-parser-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-script-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-bridge-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-anim-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-transcoder-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-gui-uti-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-awt-util-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-codec-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-util-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-xml-${completeVersion}.jar" />
         <attribute name="Class-Path" value="${jarsLibDir}xerces_2_5_0.jar" />
         <attribute name="Class-Path" value="${jarsLibDir}xalan-2.7.0.jar" />
         <attribute name="Class-Path" value="${jarsLibDir}xml-apis-1.3.04.jar" />
@@ -1586,13 +2023,12 @@ JAVA=/usr/bin/java
         <attribute name="Class-Path" value="${jarsLibDir}xmlgraphics-commons-${xgcVersion}.jar"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
-      <fileset dir="${dest}">
-        <include name="${package-prefix}/apps/slideshow/**/*.class"/>
+      <fileset dir="${location}">
+        <include name="${package-prefix}/apps/slideshow/**/*.${extension}"/>
       </fileset>
       <fileset dir="${resources}">
         <exclude name="**/.svn/" />
         <include name="${package-prefix}/apps/slideshow/**/resources/**" />
-
       </fileset>
     </jar>
   </target>
@@ -1601,42 +2037,41 @@ JAVA=/usr/bin/java
   <target name="squiggle-jar" depends="init, compile, prepare-build">
     <antcall target="squiggle-jar-call">
       <param name="jarsLibDir" value="lib/" />
-      <param name="jarVersion" value="${completeVersion}" />
+      <param name="location" value="${dest}" />
+      <param name="extension" value="class" />
       <param name="squiggleJar" value="${build}/${project}-squiggle-${completeVersion}.jar" />
     </antcall>
   </target>
 
   <target name="squiggle-jar-call" depends="init, compile, prepare-build">
     <filter token="jarsLibDir" value="${jarsLibDir}" />
-    <filter token="batikVersion" value="${completeVersion}" />
     <filter token="xgcVersion" value="${xgcVersion}" />
     <copy file="${resources}/${package-prefix}/apps/svgbrowser/resources/svgbrowser.policy.ref"
           tofile="${resources}/${package-prefix}/apps/svgbrowser/resources/svgbrowser.policy.tmp"
           filtering="true" />
-    <jar flattenAttributes="true"
-         jarfile="${squiggleJar}">
+    <jar flattenAttributes="true" jarfile="${squiggleJar}">
       <manifest>
         <attribute name="Implementation-Title" value="Batik Squiggle SVG browser"/>
         <attribute name="Implementation-Version" value="${completeVersion}"/>
         <attribute name="Implementation-Vendor" value="${vendor}"/>
         <attribute name="Main-Class" value="org.apache.batik.apps.svgbrowser.Main" />
         <!-- this causes ant to emit bogus warning regarding multiple class-path entries -->
-        <attribute name="Class-Path" value="${jarsLibDir}${project}-ext-${jarVersion}.jar" />
-        <attribute name="Class-Path" value="${jarsLibDir}${project}-dom-${jarVersion}.jar" />
-        <attribute name="Class-Path" value="${jarsLibDir}${project}-css-${jarVersion}.jar" />
-        <attribute name="Class-Path" value="${jarsLibDir}${project}-svg-dom-${jarVersion}.jar" />
-        <attribute name="Class-Path" value="${jarsLibDir}${project}-gvt-${jarVersion}.jar" />
-        <attribute name="Class-Path" value="${jarsLibDir}${project}-parser-${jarVersion}.jar" />
-        <attribute name="Class-Path" value="${jarsLibDir}${project}-script-${jarVersion}.jar" />
-        <attribute name="Class-Path" value="${jarsLibDir}${project}-bridge-${jarVersion}.jar" />
-        <attribute name="Class-Path" value="${jarsLibDir}${project}-swing-${jarVersion}.jar" />
-        <attribute name="Class-Path" value="${jarsLibDir}${project}-anim-${jarVersion}.jar" />
-        <attribute name="Class-Path" value="${jarsLibDir}${project}-transcoder-${jarVersion}.jar" />
-        <attribute name="Class-Path" value="${jarsLibDir}${project}-gui-util-${jarVersion}.jar" />
-        <attribute name="Class-Path" value="${jarsLibDir}${project}-awt-util-${jarVersion}.jar" />
-        <attribute name="Class-Path" value="${jarsLibDir}${project}-codec-${jarVersion}.jar" />
-        <attribute name="Class-Path" value="${jarsLibDir}${project}-util-${jarVersion}.jar" />
-        <attribute name="Class-Path" value="${jarsLibDir}${project}-xml-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-ext-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-dom-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-css-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-svg-dom-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-gvt-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-parser-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-script-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-bridge-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-swing-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-anim-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-transcoder-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-gui-util-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-awt-util-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-codec-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-util-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-xml-${completeVersion}.jar" />
         <attribute name="Class-Path" value="${jarsLibDir}xerces_2_5_0.jar" />
         <attribute name="Class-Path" value="${jarsLibDir}xalan-2.7.0.jar" />
         <attribute name="Class-Path" value="${jarsLibDir}xml-apis-1.3.04.jar" />
@@ -1646,8 +2081,8 @@ JAVA=/usr/bin/java
         <attribute name="Build-Id" value="${build.id}"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
-      <fileset dir="${dest}">
-        <include name="${package-prefix}/apps/svgbrowser/**/*.class"/>
+      <fileset dir="${location}">
+        <include name="${package-prefix}/apps/svgbrowser/**/*.${extension}"/>
       </fileset>
       <fileset dir="${resources}">
         <exclude name="**/.svn/" />
@@ -1656,7 +2091,6 @@ JAVA=/usr/bin/java
         <exclude name="${package-prefix}/apps/svgbrowser/resources/squiggle.xsl"/>
         <exclude name="${package-prefix}/apps/svgbrowser/resources/squiggle.svg"/>
         <exclude name="${package-prefix}/apps/svgbrowser/resources/*.policy.tmp"/>
-
       </fileset>
       <mappedresources>
         <fileset dir="${resources}">
@@ -1674,15 +2108,12 @@ JAVA=/usr/bin/java
     <mkdir dir="${build}/extensions"/>
     <antcall target="squiggle-ext-jar-call">
       <param name="jarsLibDir" value="lib/" />
-      <param name="jarVersion" value="" />
       <param name="squiggle-extJar" value="${build}/extensions/${project}-squiggle-ext-${completeVersion}.jar" />
     </antcall>
   </target>
 
   <target name="squiggle-ext-jar-call" depends="init, squiggle-jar">
-    <filter token="batikVersion" value="${completeVersion}" />
-    <jar flattenAttributes="true"
-         jarfile="${squiggle-extJar}">
+    <jar flattenAttributes="true" jarfile="${squiggle-extJar}">
       <manifest>
         <attribute name="Implementation-Title" value="Batik Squiggle SVG browser with extensions"/>
         <attribute name="Implementation-Version" value="${completeVersion}"/>
@@ -1705,7 +2136,8 @@ JAVA=/usr/bin/java
   <target name="rasterizer-jar">
     <antcall target="rasterizer-jar-call">
       <param name="jarsLibDir" value="lib/" />
-      <param name="jarVersion" value="${completeVersion}" />
+      <param name="extension" value="class" />
+      <param name="location" value="${dest}" />
       <param name="rasterizerJar" value="${build}/${project}-rasterizer-${completeVersion}.jar" />
     </antcall>
   </target>
@@ -1713,12 +2145,12 @@ JAVA=/usr/bin/java
     <filter token="jarsLibDir" value="${jarsLibDir}" />
     <filter token="fopVersion" value="${fopVersion}" />
     <filter token="xgcVersion" value="${xgcVersion}" />
-    <filter token="batikVersion" value="${completeVersion}" />
+    <filter token="extension" value="${extension}" />
+    <filter token="location" value="${location}" />
     <copy file="${resources}/${package-prefix}/apps/rasterizer/resources/rasterizer.policy.ref"
           tofile="${resources}/${package-prefix}/apps/rasterizer/resources/rasterizer.policy.tmp"
           filtering="true" />
-    <jar flattenAttributes="true"
-         jarfile="${rasterizerJar}">
+    <jar flattenAttributes="true" jarfile="${rasterizerJar}">
       <manifest>
         <attribute name="Implementation-Title" value="Batik SVG rasterizer"/>
         <attribute name="Implementation-Version" value="${completeVersion}"/>
@@ -1726,20 +2158,20 @@ JAVA=/usr/bin/java
         <attribute name="Main-Class" value="org.apache.batik.apps.rasterizer.Main" />
         <attribute name="Build-Id" value="${build.id}"/>
         <!-- this causes ant to emit bogus warning regarding multiple class-path entries -->
-        <attribute name="Class-Path" value="${jarsLibDir}${project}-ext-${jarVersion}.jar" />
-        <attribute name="Class-Path" value="${jarsLibDir}${project}-dom-${jarVersion}.jar" />
-        <attribute name="Class-Path" value="${jarsLibDir}${project}-css-${jarVersion}.jar" />
-        <attribute name="Class-Path" value="${jarsLibDir}${project}-svg-dom-${jarVersion}.jar" />
-        <attribute name="Class-Path" value="${jarsLibDir}${project}-gvt-${jarVersion}.jar" />
-        <attribute name="Class-Path" value="${jarsLibDir}${project}-parser-${jarVersion}.jar" />
-        <attribute name="Class-Path" value="${jarsLibDir}${project}-script-${jarVersion}.jar" />
-        <attribute name="Class-Path" value="${jarsLibDir}${project}-bridge-${jarVersion}.jar" />
-        <attribute name="Class-Path" value="${jarsLibDir}${project}-anim-${jarVersion}.jar" />
-        <attribute name="Class-Path" value="${jarsLibDir}${project}-transcoder-${jarVersion}.jar" />
-        <attribute name="Class-Path" value="${jarsLibDir}${project}-awt-util-${jarVersion}.jar" />
-        <attribute name="Class-Path" value="${jarsLibDir}${project}-codec-${jarVersion}.jar" />
-        <attribute name="Class-Path" value="${jarsLibDir}${project}-util-${jarVersion}.jar" />
-        <attribute name="Class-Path" value="${jarsLibDir}${project}-xml-${jarVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-ext-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-dom-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-css-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-svg-dom-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-gvt-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-parser-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-script-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-bridge-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-anim-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-transcoder-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-awt-util-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-codec-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-util-${completeVersion}.jar" />
+        <attribute name="Class-Path" value="${jarsLibDir}${project}-xml-${completeVersion}.jar" />
         <attribute name="Class-Path" value="${jarsLibDir}xerces_2_5_0.jar" />
         <attribute name="Class-Path" value="${jarsLibDir}xalan-2.7.0.jar" />
         <attribute name="Class-Path" value="${jarsLibDir}xml-apis-1.3.04.jar" />
@@ -1749,8 +2181,8 @@ JAVA=/usr/bin/java
         <attribute name="Class-Path" value="${jarsLibDir}xmlgraphics-commons-${xgcVersion}.jar" />
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
-      <fileset dir="${dest}">
-        <include name="${package-prefix}/apps/rasterizer/**/*.class"/>
+      <fileset dir="${location}">
+        <include name="${package-prefix}/apps/rasterizer/**/*.${extension}"/>
       </fileset>
       <fileset dir="${resources}">
         <exclude name="**/.svn/" />
@@ -1770,24 +2202,20 @@ JAVA=/usr/bin/java
     <mkdir dir="${build}/extensions"/>
     <antcall target="rasterizer-ext-jar-call" >
       <param name="jarsLibDir" value="" />
-      <param name="jarVersion" value="${completeVersion}" />
       <param name="rasterizer-extJar" value="${build}/extensions/${project}-rasterizer-ext-${completeVersion}.jar"/>
     </antcall>
-
   </target>
 
   <target name="rasterizer-ext-jar-call" depends="init, rasterizer-jar">
-    <filter token="batikVersion" value="${completeVersion}" />
-    <jar   flattenAttributes="true"
-            jarfile="${rasterizer-extJar}">
+    <jar flattenAttributes="true" jarfile="${rasterizer-extJar}">
     <manifest>
       <attribute name="Implementation-Title" value="Batik SVG rasterizer with extensions"/>
       <attribute name="Implementation-Version" value="${completeVersion}"/>
       <attribute name="Implementation-Vendor" value="${vendor}"/>
       <attribute name="Build-Id" value="${build.id}"/>
       <attribute name="Main-Class" value="org.apache.batik.apps.svgbrowser.Main"/>
-      <attribute name="Class-Path" value="${jarsLibDir}${project}-extension-${jarVersion}.jar" />
-      <attribute name="Class-Path" value="${jarsLibDir}${project}-rasterizer-${jarVersion}.jar" />
+      <attribute name="Class-Path" value="${jarsLibDir}${project}-extension-${completeVersion}.jar" />
+      <attribute name="Class-Path" value="${jarsLibDir}${project}-rasterizer-${completeVersion}.jar" />
     </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
       <fileset dir="${resources}" excludes="**/.svn/">
@@ -1795,30 +2223,31 @@ JAVA=/usr/bin/java
       </fileset>
     </jar>
   </target>
+
   <!-- batik-ttf2svg.jar (dependencies: all) -->
   <target name="ttf2svg-jar" depends="init, compile, prepare-build">
     <antcall target="ttf2svg-jar-call" >
       <param name="jarsLibDir" value="lib/" />
-      <param name="jarVersion" value="${completeVersion}" />
+      <param name="extension" value="class" />
+      <param name="location" value="${dest}" />
       <param name="ttf2svgJar" value="${build}/${project}-ttf2svg-${completeVersion}.jar"/>
     </antcall>
   </target>
 
   <target name="ttf2svg-jar-call" depends="init, compile, prepare-build">
-    <jar flattenAttributes="true"
-         jarfile="${ttf2svgJar}">
+    <jar flattenAttributes="true" jarfile="${ttf2svgJar}">
     <manifest>
       <attribute name="Implementation-Title" value="Batik TrueType to SVG Font converter"/>
       <attribute name="Implementation-Version" value="${completeVersion}"/>
       <attribute name="Implementation-Vendor" value="${vendor}"/>
       <attribute name="Build-Id" value="${build.id}"/>
       <attribute name="Main-Class" value="org.apache.batik.apps.ttf2svg.Main"/>
-      <attribute name="Class-Path" value="${jarsLibDir}${project}-svggen-${jarVersion}.jar" />
-      <attribute name="Class-Path" value="${jarsLibDir}${project}-util-${jarVersion}.jar" />
+      <attribute name="Class-Path" value="${jarsLibDir}${project}-svggen-${completeVersion}.jar" />
+      <attribute name="Class-Path" value="${jarsLibDir}${project}-util-${completeVersion}.jar" />
     </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
-      <fileset dir="${dest}">
-        <include name="${package-prefix}/apps/ttf2svg/**/*.class"/>
+      <fileset dir="${location}">
+        <include name="${package-prefix}/apps/ttf2svg/**/*.${extension}"/>
       </fileset>
     </jar>
   </target>
