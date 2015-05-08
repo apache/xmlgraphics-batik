@@ -12,9 +12,9 @@ cp lib/*.jar checkdeps
 rm cp.sh
 cd checkdeps
 jdeps -dotoutput dot -classpath . *
-grep batik dot/batik* | grep jar | grep -v 'java\.' | grep -v javax | grep -v xml-apis | grep -v xalan | grep -v JDK | grep -v Path | grep -v '{' | awk '{print $1 " -> " $5}' | sort -u | sed s/'dot\/'/'"'/g | sed s/'.dot:'/'"'/g | sed s/'('/'"'/g | sed s/')"'/'"'/g  > deps.dot
+grep batik dot/batik* | grep jar | grep -v 'not found' | grep -v 'java\.' | grep -v javax | grep -v xml-apis | grep -v xalan | grep -v JDK | grep -v Path | grep -v '{' | awk '{print $1 " -> " $5}' | sort -u | sed s/'dot\/'/'"'/g | sed s/'.dot:'/'"'/g | sed s/'('/'"'/g | sed s/')"'/'"'/g  > deps.dot
 echo 'digraph "batik-jars-deps" {' > batikdeps.dot
-cat deps.dot >> batikdeps.dot
+awk '{if ($1";" != $3) {print $0}}' deps.dot >> batikdeps.dot
 echo '}' >> batikdeps.dot
 sed s/-svn-trunk//g batikdeps.dot | sed s/'.jar'//g > batikdeps-2.dot
 dot -Tsvg batikdeps-2.dot -o batik-jars-deps.svg
