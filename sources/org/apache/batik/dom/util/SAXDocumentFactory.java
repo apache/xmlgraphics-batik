@@ -30,25 +30,25 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.apache.batik.util.HaltingThread;
-import org.apache.batik.util.XMLConstants;
-
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.xml.sax.Attributes;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
-import org.w3c.dom.DOMImplementation;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
+import org.apache.batik.util.HaltingThread;
+import org.apache.batik.util.XMLConstants;
 
 /**
  * This class contains methods for creating Document instances
@@ -391,6 +391,16 @@ public class SAXDocumentFactory
     static SAXParserFactory saxFactory;
     static {
         saxFactory = SAXParserFactory.newInstance();
+        try {
+            saxFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+            saxFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+        } catch (SAXNotRecognizedException e) {
+            e.printStackTrace();
+        } catch (SAXNotSupportedException e) {
+            e.printStackTrace();
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
