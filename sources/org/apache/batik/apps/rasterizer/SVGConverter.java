@@ -204,6 +204,9 @@ public class SVGConverter {
     /** Default height */
     protected static final float DEFAULT_HEIGHT = -1;
 
+    /** Default scale */
+    protected static final float DEFAULT_SCALE = 1;
+
     /** Result type */
     protected DestinationType destinationType = DEFAULT_RESULT_TYPE;
 
@@ -218,6 +221,9 @@ public class SVGConverter {
 
     /** Maximum output image width. */
     protected float maxWidth = DEFAULT_WIDTH;
+
+    /** Output image scale. */
+    protected float scale = DEFAULT_SCALE;
 
     /** Output image quality. */
     protected float quality = DEFAULT_QUALITY;
@@ -363,6 +369,18 @@ public class SVGConverter {
         return maxHeight;
     }
 
+    /**
+     * If equal to one, the scale 
+     * does not have any effect on the output image
+     */
+    public void setScale(float scale) {
+        this.scale = scale;
+    }
+
+    public float getScale(){
+        return scale;
+    }
+    
     /**
      * If less than or equal to zero, the maximum width
      * does not have any effect on the output image.
@@ -860,6 +878,10 @@ public class SVGConverter {
         }
         if (maxWidth > 0){
             map.put(ImageTranscoder.KEY_MAX_WIDTH, new Float(this.maxWidth));
+        }
+
+        if (scale > 0){
+          map.put(ImageTranscoder.KEY_SCALE, new Float(this.scale));
         }
 
         // Set CSS Media
