@@ -1170,7 +1170,8 @@ JAVA=/usr/bin/java
         <include name="LICENSE.dom-*.txt"/>
       </metainf>
       <fileset dir="${location}">
-        <include name="org/w3c/**.${extension}"/>
+        <include name="org/w3c/dom/*.${extension}"/>
+        <include name="org/w3c/dom/events/*.${extension}"/>
       </fileset>
     </jar>
   </target>
