@@ -20,6 +20,7 @@ package org.apache.batik.script.jpython;
 
 import java.net.URL;
 
+import org.apache.batik.script.ImportInfo;
 import org.apache.batik.script.Interpreter;
 import org.apache.batik.script.InterpreterFactory;
 
