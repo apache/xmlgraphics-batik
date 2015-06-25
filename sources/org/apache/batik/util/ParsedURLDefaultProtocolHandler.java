@@ -316,12 +316,16 @@ public class ParsedURLDefaultProtocolHandler
         // No path? well we will treat this as being relative to it's self.
         if (path == null) path = "";
         idx = path.lastIndexOf('/');
-        if (idx == -1) 
+        if (idx == -1) {
             // baseURL is just a filename (in current dir) so use current dir
             // as base of new URL.
             path = "";
-        else
+        } else {
             path = path.substring(0,idx+1);
+            if (urlStr.startsWith(path)) {
+                urlStr = urlStr.substring(path.length());
+            }
+        }
         
         // System.err.println("Base Path: " + path);
         // System.err.println("Base PortStr: " + baseURL.getPortStr());
