@@ -1,0 +1,55 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.apache.xmlgraphics</groupId>
+  <artifactId>batik-all</artifactId>
+  <version>1.9.0-SNAPSHOT</version>
+  <name>${project.groupId}:${project.artifactId}</name>
+  <description>XML Graphics Batik</description>
+
+  <properties>
+    <checkstyle.version>2.15</checkstyle.version>
+    <exec.version>1.4.0</exec.version>
+    <findbugs.version>3.0.1</findbugs.version>
+    <java.version>1.7</java.version>
+    <junit.version>4.11</junit.version>
+    <project.info.reports.version>2.8</project.info.reports.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <release.version>2.5.2</release.version>
+    <surefire.version>2.18.1</surefire.version>
+  </properties>
+
+  <scm>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/xmlgraphics/batik/trunk/</connection>
+    <url>scm:svn:https://svn.apache.org/repos/asf/xmlgraphics/batik/trunk/</url>
+    <developerConnection></developerConnection>
+  </scm>
+
+  <distributionManagement>
+    <site>
+      <id>${project.artifactId}-site</id>
+      <url>${project.baseUri}</url>
+    </site>
+  </distributionManagement>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.xmlgraphics</groupId>
+      <artifactId>commons</artifactId>
+      <version>2.1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>xml-apis</groupId>
+      <artifactId>xml-apis-ext</artifactId>
+      <version>1.3.04</version>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+</project>
