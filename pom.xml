@@ -74,6 +74,7 @@
 
   <modules>
     <module>batik-awt-util</module>
+    <module>batik-css</module>
     <module>batik-ext</module>
     <module>batik-util</module>
     <module>batik-xml</module>

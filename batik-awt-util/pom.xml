@@ -41,7 +41,7 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.xmlgraphics</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>commons</artifactId>
       <version>${xmlgraphics.commons.version}</version>
     </dependency>
