@@ -78,6 +78,7 @@
     <module>batik-dom</module>
     <module>batik-ext</module>
     <module>batik-parser</module>
+    <module>batik-svg-dom</module>
     <module>batik-util</module>
     <module>batik-xml</module>
   </modules>
