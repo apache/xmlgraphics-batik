@@ -24,9 +24,9 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>batik-util</artifactId>
+  <artifactId>batik-ext</artifactId>
   <name>${project.groupId}:${project.artifactId}</name>
-  <description>Batik utility library</description>
+  <description>Batik external code</description>
 
   <parent>
     <groupId>org.apache.xmlgraphics</groupId>

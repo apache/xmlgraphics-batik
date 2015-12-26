@@ -73,6 +73,7 @@
 
   <modules>
     <module>batik-util</module>
+    <module>batik-ext</module>
   </modules>
 
 </project>
