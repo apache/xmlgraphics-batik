@@ -24,7 +24,7 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>batik-css</artifactId>
+  <artifactId>batik-dom</artifactId>
   <name>${project.groupId}:${project.artifactId}</name>
   <description>Batik DOM implementation</description>
 
