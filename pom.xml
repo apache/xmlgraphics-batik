@@ -22,6 +22,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <release.version>2.5.2</release.version>
     <surefire.version>2.18.1</surefire.version>
+    <xmlgraphics.commons.version>2.1.0-SNAPSHOT</xmlgraphics.commons.version>
   </properties>
 
   <mailingLists>
@@ -72,8 +73,9 @@
   </distributionManagement>
 
   <modules>
-    <module>batik-util</module>
+    <module>batik-awt-util</module>
     <module>batik-ext</module>
+    <module>batik-util</module>
   </modules>
 
 </project>
