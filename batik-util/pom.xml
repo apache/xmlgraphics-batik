@@ -23,42 +23,16 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.apache.xmlgraphics</groupId>
+
   <artifactId>batik-util</artifactId>
-  <version>@version@</version>
-  <packaging>jar</packaging>
-  <name>Batik utility library</name>
-  <url>http://xmlgraphics.apache.org/batik/</url>
-  <inceptionYear>2000</inceptionYear>
+  <name>${project.groupId}:${project.artifactId}</name>
+  <description>Batik utility library</description>
 
-  <mailingLists>
-    <mailingList>
-      <name>Batik Users List</name>
-      <subscribe>batik-users-subscribe@xmlgraphics.apache.org</subscribe>
-      <unsubscribe>batik-users-unsubscribe@xmlgraphics.apache.org</unsubscribe>
-      <archive>http://mail-archives.apache.org/mod_mbox/xmlgraphics-batik-users/</archive>
-    </mailingList>
-    <mailingList>
-      <name>Batik Developer List</name>
-      <subscribe>batik-dev-subscribe@xmlgraphics.apache.org</subscribe>
-      <unsubscribe>batik-dev-unsubscribe@xmlgraphics.apache.org</unsubscribe>
-      <archive>http://mail-archives.apache.org/mod_mbox/xmlgraphics-batik-dev/</archive>
-    </mailingList>
-    <mailingList>
-      <name>Batik Commit List</name>
-      <subscribe>batik-commits-subscribe@xmlgraphics.apache.org</subscribe>
-      <unsubscribe>batik-commits-unsubscribe@xmlgraphics.apache.org</unsubscribe>
-      <archive>http://mail-archives.apache.org/mod_mbox/xmlgraphics-batik-commits/</archive>
-    </mailingList>
-  </mailingLists>
-
-  <licenses>
-    <license>
-      <name>The Apache Software License, Version 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
+  <parent>
+    <groupId>org.apache.xmlgraphics</groupId>
+    <artifactId>batik</artifactId>
+    <version>1.9.0-SNAPSHOT</version>
+  </parent>
 
   <scm>
     <connection>scm:svn:http://svn.apache.org/repos/asf/xmlgraphics/batik/trunk</connection>
@@ -71,6 +45,4 @@
     <url>http://www.apache.org/</url>
   </organization>
 
-  <dependencies>
-  </dependencies>
 </project>
