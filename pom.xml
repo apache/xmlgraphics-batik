@@ -97,6 +97,7 @@
     <module>batik-svgpp</module>
     <module>batik-swing</module>
     <module>batik-transcoder</module>
+    <module>batik-ttf2svg</module>
     <module>batik-util</module>
     <module>batik-xml</module>
   </modules>
