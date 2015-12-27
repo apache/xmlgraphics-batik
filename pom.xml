@@ -89,6 +89,7 @@
     <module>batik-script</module>
     <module>batik-svg-dom</module>
     <module>batik-svggen</module>
+    <module>batik-transcoder</module>
     <module>batik-util</module>
     <module>batik-xml</module>
   </modules>
