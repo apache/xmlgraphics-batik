@@ -81,6 +81,7 @@
     <module>batik-anim</module>
     <module>batik-awt-util</module>
     <module>batik-bridge</module>
+    <module>batik-codec</module>
     <module>batik-css</module>
     <module>batik-dom</module>
     <module>batik-ext</module>
