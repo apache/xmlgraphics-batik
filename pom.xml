@@ -88,6 +88,7 @@
     <module>batik-parser</module>
     <module>batik-script</module>
     <module>batik-svg-dom</module>
+    <module>batik-svggen</module>
     <module>batik-util</module>
     <module>batik-xml</module>
   </modules>
