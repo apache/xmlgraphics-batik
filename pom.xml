@@ -84,6 +84,7 @@
     <module>batik-css</module>
     <module>batik-dom</module>
     <module>batik-ext</module>
+    <module>batik-gui-util</module>
     <module>batik-gvt</module>
     <module>batik-parser</module>
     <module>batik-script</module>
