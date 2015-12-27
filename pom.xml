@@ -88,13 +88,13 @@
     <module>batik-gui-util</module>
     <module>batik-gvt</module>
     <module>batik-parser</module>
-    <module>batik-rasterizer</module>
     <module>batik-script</module>
     <module>batik-slideshow</module>
     <module>batik-svg-dom</module>
     <module>batik-svgbrowser</module>
     <module>batik-svggen</module>
     <module>batik-svgpp</module>
+    <module>batik-svgrasterizer</module>
     <module>batik-swing</module>
     <module>batik-transcoder</module>
     <module>batik-ttf2svg</module>
