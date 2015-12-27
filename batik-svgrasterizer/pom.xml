@@ -24,9 +24,9 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>batik-rasterizer</artifactId>
+  <artifactId>batik-svgrasterizer</artifactId>
   <name>${project.groupId}:${project.artifactId}</name>
-  <description>Batik SVG Rasterizer application</description>
+  <description>Batik SVG Rasterizer Library</description>
 
   <parent>
     <groupId>org.apache.xmlgraphics</groupId>
