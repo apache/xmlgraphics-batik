@@ -94,6 +94,7 @@
     <module>batik-svg-dom</module>
     <module>batik-svgbrowser</module>
     <module>batik-svggen</module>
+    <module>batik-svgpp</module>
     <module>batik-swing</module>
     <module>batik-transcoder</module>
     <module>batik-util</module>
@@ -110,6 +111,13 @@
           <configuration>
             <source>${java.version}</source>
             <target>${java.version}</target>
+          <compilerArgs>
+            <!-- [TBD] fix deprecation and unchecked warnings
+            <arg>-Xlint:deprecation</arg>
+            <arg>-Xlint:unchecked</arg>
+            -->
+          </compilerArgs>
+          <showWarnings>false</showWarnings>
           </configuration>
         </plugin>
         <plugin>
