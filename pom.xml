@@ -82,6 +82,7 @@
     <module>batik-css</module>
     <module>batik-dom</module>
     <module>batik-ext</module>
+    <module>batik-gvt</module>
     <module>batik-parser</module>
     <module>batik-script</module>
     <module>batik-svg-dom</module>
@@ -89,4 +90,35 @@
     <module>batik-xml</module>
   </modules>
 
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>${compiler.version}</version>
+          <configuration>
+            <source>${java.version}</source>
+            <target>${java.version}</target>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-project-info-reports-plugin</artifactId>
+          <version>${project.info.reports.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${surefire.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>findbugs-maven-plugin</artifactId>
+          <version>${findbugs.version}</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+  
 </project>
