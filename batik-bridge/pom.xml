@@ -24,9 +24,9 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>batik-dom</artifactId>
+  <artifactId>batik-bridge</artifactId>
   <name>${project.groupId}:${project.artifactId}</name>
-  <description>Batik DOM implementation</description>
+  <description>Batik bridge</description>
 
   <parent>
     <groupId>org.apache.xmlgraphics</groupId>
@@ -37,12 +37,42 @@
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>batik-anim</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>batik-awt-util</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>batik-css</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>batik-ext</artifactId>
+      <artifactId>batik-dom</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>batik-gvt</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>batik-parser</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>batik-script</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>batik-svg-dom</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
@@ -56,14 +86,9 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>xalan</groupId>
-      <artifactId>xalan</artifactId>
-      <version>${xalan.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>xml-apis</groupId>
-      <artifactId>xml-apis</artifactId>
-      <version>${xmlapis.version}</version>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>commons</artifactId>
+      <version>${xmlgraphics.commons.version}</version>
     </dependency>
     <dependency>
       <groupId>xml-apis</groupId>
