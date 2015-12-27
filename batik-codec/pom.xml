@@ -24,9 +24,9 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>batik-script</artifactId>
+  <artifactId>batik-codec</artifactId>
   <name>${project.groupId}:${project.artifactId}</name>
-  <description>Batik script language support</description>
+  <description>Batik image codecs</description>
 
   <parent>
     <groupId>org.apache.xmlgraphics</groupId>
@@ -37,23 +37,23 @@
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>batik-anim</artifactId>
+      <artifactId>batik-awt-util</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>batik-bridge</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>batik-transcoder</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>batik-util</artifactId>
       <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.mozilla</groupId>
-      <artifactId>rhino</artifactId>
-      <version>${rhino.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.python</groupId>
-      <artifactId>jython</artifactId>
-      <version>${jython.version}</version>
     </dependency>
   </dependencies>
 
@@ -64,7 +64,7 @@
         <version>${compiler.version}</version>
         <configuration>
           <excludes>
-            <exclude>**/jacl/*</exclude>
+            <exclude>**/codec/tiff/*</exclude>
           </excludes>
         </configuration>
       </plugin>
