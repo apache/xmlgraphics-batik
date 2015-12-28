@@ -24,9 +24,9 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>batik-rasterizer-ext</artifactId>
+  <artifactId>batik-squiggle</artifactId>
   <name>${project.groupId}:${project.artifactId}</name>
-  <description>Batik SVG Rasterizer Application with Extensions</description>
+  <description>Batik SVG Browser Application</description>
 
   <parent>
     <groupId>org.apache.xmlgraphics</groupId>
@@ -37,12 +37,7 @@
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>batik-svgrasterizer</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>batik-extension</artifactId>
+      <artifactId>batik-svgbrowser</artifactId>
       <version>${project.version}</version>
     </dependency>
   </dependencies>
@@ -55,7 +50,7 @@
         <configuration>
           <archive>
             <manifest>
-              <mainClass>org.apache.batik.apps.rasterizer.Main</mainClass>
+              <mainClass>org.apache.batik.apps.svgbrowser.Main</mainClass>
               <addClasspath>true</addClasspath>
             </manifest>
           </archive>
