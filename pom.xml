@@ -102,6 +102,8 @@
     <module>batik-svgpp</module>
     <module>batik-svgrasterizer</module>
     <module>batik-swing</module>
+    <module>batik-test</module>
+    <module>batik-test-util</module>
     <module>batik-transcoder</module>
     <module>batik-ttf2svg</module>
     <module>batik-util</module>
