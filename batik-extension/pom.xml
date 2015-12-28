@@ -23,114 +23,73 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.apache.xmlgraphics</groupId>
+
   <artifactId>batik-extension</artifactId>
-  <version>@version@</version>
-  <packaging>jar</packaging>
-  <name>Batik extension classes</name>
-  <url>http://xmlgraphics.apache.org/batik/</url>
-  <inceptionYear>2000</inceptionYear>
+  <name>${project.groupId}:${project.artifactId}</name>
+  <description>Batik Extension Support</description>
 
-  <mailingLists>
-    <mailingList>
-      <name>Batik Users List</name>
-      <subscribe>batik-users-subscribe@xmlgraphics.apache.org</subscribe>
-      <unsubscribe>batik-users-unsubscribe@xmlgraphics.apache.org</unsubscribe>
-      <archive>http://mail-archives.apache.org/mod_mbox/xmlgraphics-batik-users/</archive>
-    </mailingList>
-    <mailingList>
-      <name>Batik Developer List</name>
-      <subscribe>batik-dev-subscribe@xmlgraphics.apache.org</subscribe>
-      <unsubscribe>batik-dev-unsubscribe@xmlgraphics.apache.org</unsubscribe>
-      <archive>http://mail-archives.apache.org/mod_mbox/xmlgraphics-batik-dev/</archive>
-    </mailingList>
-    <mailingList>
-      <name>Batik Commit List</name>
-      <subscribe>batik-commits-subscribe@xmlgraphics.apache.org</subscribe>
-      <unsubscribe>batik-commits-unsubscribe@xmlgraphics.apache.org</unsubscribe>
-      <archive>http://mail-archives.apache.org/mod_mbox/xmlgraphics-batik-commits/</archive>
-    </mailingList>
-  </mailingLists>
-
-  <licenses>
-    <license>
-      <name>The Apache Software License, Version 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
-
-  <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/xmlgraphics/batik/trunk</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/xmlgraphics/batik/trunk</developerConnection>
-    <url>http://svn.apache.org/viewvc/xmlgraphics/batik/trunk/?root=Apache-SVN</url>
-  </scm>
-
-  <organization>
-    <name>Apache Software Foundation</name>
-    <url>http://www.apache.org/</url>
-  </organization>
+  <parent>
+    <groupId>org.apache.xmlgraphics</groupId>
+    <artifactId>batik</artifactId>
+    <version>1.9.0-SNAPSHOT</version>
+  </parent>
 
   <dependencies>
     <dependency>
-      <groupId>org.apache.xmlgraphics</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>batik-anim</artifactId>
-      <version>@version@</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.xmlgraphics</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>batik-awt-util</artifactId>
-      <version>@version@</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.xmlgraphics</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>batik-bridge</artifactId>
-      <version>@version@</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.xmlgraphics</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>batik-css</artifactId>
-      <version>@version@</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.xmlgraphics</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>batik-dom</artifactId>
-      <version>@version@</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.xmlgraphics</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>batik-ext</artifactId>
-      <version>@version@</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.xmlgraphics</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>batik-gvt</artifactId>
-      <version>@version@</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.xmlgraphics</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>batik-parser</artifactId>
-      <version>@version@</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.xmlgraphics</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>batik-svg-dom</artifactId>
-      <version>@version@</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.xmlgraphics</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>batik-util</artifactId>
-      <version>@version@</version>
-    </dependency>
-    <dependency>
-      <groupId>xml-apis</groupId>
-      <artifactId>xml-apis</artifactId>
-      <version>1.3.04</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>xml-apis</groupId>
       <artifactId>xml-apis-ext</artifactId>
-      <version>1.3.04</version>
+      <version>${xmlapis.version}</version>
     </dependency>
   </dependencies>
+
 </project>

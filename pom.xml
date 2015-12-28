@@ -17,6 +17,7 @@
     <compiler.version>3.3</compiler.version>
     <exec.version>1.4.0</exec.version>
     <findbugs.version>3.0.1</findbugs.version>
+    <jar.version>2.6</jar.version>
     <java.version>1.6</java.version>
     <junit.version>4.11</junit.version>
     <jython.version>2.7.0</jython.version>
@@ -85,9 +86,12 @@
     <module>batik-css</module>
     <module>batik-dom</module>
     <module>batik-ext</module>
+    <module>batik-extension</module>
     <module>batik-gui-util</module>
     <module>batik-gvt</module>
     <module>batik-parser</module>
+    <module>batik-rasterizer</module>
+    <module>batik-rasterizer-ext</module>
     <module>batik-script</module>
     <module>batik-slideshow</module>
     <module>batik-svg-dom</module>
