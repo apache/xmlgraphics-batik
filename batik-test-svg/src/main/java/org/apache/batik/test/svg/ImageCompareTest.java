@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.batik.test.util;
+package org.apache.batik.test.svg;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
