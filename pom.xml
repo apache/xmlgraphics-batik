@@ -94,6 +94,8 @@
     <module>batik-rasterizer-ext</module>
     <module>batik-script</module>
     <module>batik-slideshow</module>
+    <module>batik-squiggle</module>
+    <module>batik-squiggle-ext</module>
     <module>batik-svg-dom</module>
     <module>batik-svgbrowser</module>
     <module>batik-svggen</module>
