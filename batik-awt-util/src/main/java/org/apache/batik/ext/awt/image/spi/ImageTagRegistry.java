@@ -276,8 +276,7 @@ public class ImageTagRegistry implements ErrorConstants {
             RegistryEntry re = (RegistryEntry)li.next();
             if (re.getPriority() > priority) {
                 li.previous();
-                li.add(newRE);
-                return;
+                break; // Insertion point found.
             }
         }
         li.add(newRE);
