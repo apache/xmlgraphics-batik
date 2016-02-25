@@ -77,10 +77,6 @@
       <id>${project.artifactId}-site</id>
       <url>${project.baseUri}</url>
     </site>
-    <snapshotRepository>
-      <id>apache.snapshots.https</id>
-      <url>https://repository.apache.org/content/repositories/snapshots</url>
-    </snapshotRepository>
   </distributionManagement>
 
   <modules>
