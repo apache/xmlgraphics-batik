@@ -889,8 +889,35 @@ JAVA=/usr/bin/java
                    determine-svn-revision-set"/>
 
   <target name="determine-svn-revision-svn-info" depends="init">
-    <dirset id="dirs" dir="${src}/${package-prefix}">
-      <include name="**"/>
+    <dirset id="dirs" dir="${basedir}">
+      <include name="batik-anim/src/main/java/${package-prefix}/**"/>
+      <include name="batik-awt-util/src/main/java/${package-prefix}/**"/>
+      <include name="batik-bridge/src/main/java/${package-prefix}/**"/>
+      <include name="batik-codec/src/main/java/${package-prefix}/**"/>
+      <include name="batik-constants/src/main/java/${package-prefix}/**"/>
+      <include name="batik-css/src/main/java/${package-prefix}/**"/>
+      <include name="batik-dom/src/main/java/${package-prefix}/**"/>
+      <include name="batik-ext/src/main/java/${package-prefix}/**"/>
+      <include name="batik-extension/src/main/java/${package-prefix}/**"/>
+      <include name="batik-gui-util/src/main/java/${package-prefix}/**"/>
+      <include name="batik-gvt/src/main/java/${package-prefix}/**"/>
+      <include name="batik-i18n/src/main/java/${package-prefix}/**"/>
+      <include name="batik-parser/src/main/java/${package-prefix}/**"/>
+      <include name="batik-rasterizer/src/main/java/${package-prefix}/**"/>
+      <include name="batik-rasterizer-ext/src/main/java/${package-prefix}/**"/>
+      <include name="batik-script/src/main/java/${package-prefix}/**"/>
+      <include name="batik-slideshow/src/main/java/${package-prefix}/**"/>
+      <include name="batik-squiggle/src/main/java/${package-prefix}/**"/>
+      <include name="batik-svg-dom/src/main/java/${package-prefix}/**"/>
+      <include name="batik-svgbrowser/src/main/java/${package-prefix}/**"/>
+      <include name="batik-svggen/src/main/java/${package-prefix}/**"/>
+      <include name="batik-svgpp/src/main/java/${package-prefix}/**"/>
+      <include name="batik-svgrasterizer/src/main/java/${package-prefix}/**"/>
+      <include name="batik-swing/src/main/java/${package-prefix}/**"/>
+      <include name="batik-transcoder/src/main/java/${package-prefix}/**"/>
+      <include name="batik-ttf2svg/src/main/java/${package-prefix}/**"/>
+      <include name="batik-util/src/main/java/${package-prefix}/**"/>
+      <include name="batik-xml/src/main/java/${package-prefix}/**"/>
     </dirset>
     <pathconvert refid="dirs" pathsep=" " property="svn-info-dirs"/>
     <exec executable="svn" output="svn-info.xml"
@@ -946,7 +973,34 @@ JAVA=/usr/bin/java
     <javac destdir="${dest}" deprecation="${deprecation}" 
            debug="${debug}" optimize="${optimize}" encoding="UTF-8"
            includeAntRuntime="true">
-      <src path="${src}"/>
+      <src path="batik-anim/src/main/java"/>
+      <src path="batik-awt-util/src/main/java"/>
+      <src path="batik-bridge/src/main/java"/>
+      <src path="batik-codec/src/main/java"/>
+      <src path="batik-constants/src/main/java"/>
+      <src path="batik-css/src/main/java"/>
+      <src path="batik-dom/src/main/java"/>
+      <src path="batik-ext/src/main/java"/>
+      <src path="batik-extension/src/main/java"/>
+      <src path="batik-gui-util/src/main/java"/>
+      <src path="batik-gvt/src/main/java"/>
+      <src path="batik-i18n/src/main/java"/>
+      <src path="batik-parser/src/main/java"/>
+      <src path="batik-rasterizer/src/main/java"/>
+      <src path="batik-rasterizer-ext/src/main/java"/>
+      <src path="batik-script/src/main/java"/>
+      <src path="batik-slideshow/src/main/java"/>
+      <src path="batik-squiggle/src/main/java"/>
+      <src path="batik-svg-dom/src/main/java"/>
+      <src path="batik-svgbrowser/src/main/java"/>
+      <src path="batik-svggen/src/main/java"/>
+      <src path="batik-svgpp/src/main/java"/>
+      <src path="batik-svgrasterizer/src/main/java"/>
+      <src path="batik-swing/src/main/java"/>
+      <src path="batik-transcoder/src/main/java"/>
+      <src path="batik-ttf2svg/src/main/java"/>
+      <src path="batik-util/src/main/java"/>
+      <src path="batik-xml/src/main/java"/>
       <classpath refid="libs-classpath"/>
       <exclude name="**/*.html"/>
       <exclude name="**/rhino/*"   unless="rhino.present"/>      
@@ -1043,7 +1097,82 @@ JAVA=/usr/bin/java
       <fileset dir="${dest}" excludes="**/.svn/">
         <include name="**"/>
       </fileset>
-      <fileset dir="${resources}" excludes="**/.svn/">
+      <fileset dir="batik-anim/src/main/resources" excludes="**/.svn/">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-awt-util/src/main/resources" excludes="**/.svn/">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-bridge/src/main/resources" excludes="**/.svn/">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-codec/src/main/resources" excludes="**/.svn/">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-css/src/main/resources" excludes="**/.svn/">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-dom/src/main/resources" excludes="**/.svn/">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-ext/src/main/resources" excludes="**/.svn/">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-extension/src/main/resources" excludes="**/.svn/">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-gui-util/src/main/resources" excludes="**/.svn/">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-gvt/src/main/resources" excludes="**/.svn/">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-parser/src/main/resources" excludes="**/.svn/">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-rasterizer/src/main/resources" excludes="**/.svn/">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-rasterizer-ext/src/main/resources" excludes="**/.svn/">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-script/src/main/resources" excludes="**/.svn/">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-slideshow/src/main/resources" excludes="**/.svn/">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-squiggle/src/main/resources" excludes="**/.svn/">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-svg-dom/src/main/resources" excludes="**/.svn/">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-svgbrowser/src/main/resources" excludes="**/.svn/">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-svggen/src/main/resources" excludes="**/.svn/">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-svgpp/src/main/resources" excludes="**/.svn/">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-svgrasterizer/src/main/resources" excludes="**/.svn/">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-swing/src/main/resources" excludes="**/.svn/">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-transcoder/src/main/resources" excludes="**/.svn/">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-ttf2svg/src/main/resources" excludes="**/.svn/">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-util/src/main/resources" excludes="**/.svn/">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-xml/src/main/resources" excludes="**/.svn/">
         <include name="**"/>
       </fileset>
     </jar>
@@ -1064,7 +1193,82 @@ JAVA=/usr/bin/java
         <include name="org/apache/batik/**"/>
         <include name="org/w3c/**"/>
       </fileset>
-      <fileset dir="${resources}" excludes="**/.svn/">
+      <fileset dir="batik-anim/src/main/resources" excludes="**/.svn/">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-awt-util/src/main/resources" excludes="**/.svn/">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-bridge/src/main/resources" excludes="**/.svn/">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-codec/src/main/resources" excludes="**/.svn/">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-css/src/main/resources" excludes="**/.svn/">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-dom/src/main/resources" excludes="**/.svn/">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-ext/src/main/resources" excludes="**/.svn/">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-extension/src/main/resources" excludes="**/.svn/">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-gui-util/src/main/resources" excludes="**/.svn/">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-gvt/src/main/resources" excludes="**/.svn/">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-parser/src/main/resources" excludes="**/.svn/">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-rasterizer/src/main/resources" excludes="**/.svn/">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-rasterizer-ext/src/main/resources" excludes="**/.svn/">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-script/src/main/resources" excludes="**/.svn/">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-slideshow/src/main/resources" excludes="**/.svn/">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-squiggle/src/main/resources" excludes="**/.svn/">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-svg-dom/src/main/resources" excludes="**/.svn/">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-svgbrowser/src/main/resources" excludes="**/.svn/">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-svggen/src/main/resources" excludes="**/.svn/">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-svgpp/src/main/resources" excludes="**/.svn/">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-svgrasterizer/src/main/resources" excludes="**/.svn/">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-swing/src/main/resources" excludes="**/.svn/">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-transcoder/src/main/resources" excludes="**/.svn/">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-ttf2svg/src/main/resources" excludes="**/.svn/">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-util/src/main/resources" excludes="**/.svn/">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-xml/src/main/resources" excludes="**/.svn/">
         <include name="**"/>
       </fileset>
     </jar>
