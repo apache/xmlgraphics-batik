@@ -15,7 +15,6 @@
   <properties>
     <checkstyle.version>2.15</checkstyle.version>
     <compiler.version>3.3</compiler.version>
-    <exec.version>1.4.0</exec.version>
     <findbugs.version>3.0.1</findbugs.version>
     <jar.version>2.6</jar.version>
     <java.version>1.6</java.version>
