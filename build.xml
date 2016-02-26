@@ -773,8 +773,16 @@ JAVA=/usr/bin/java
 
     <echo message="debug ${debug}, optimize ${optimize}, deprecation ${deprecation}"/>
 
-    <javac srcdir="${testsrc}" destdir="${dest}"  deprecation="${deprecation}" 
+    <javac destdir="${dest}"  deprecation="${deprecation}" 
            debug="${debug}" optimize="${optimize}" encoding="UTF-8">
+      <src path="${testsrc}"/>
+      <src path="batik-test/src/main/java"/>
+      <src path="batik-test-svg/src/main/java"/>
+      <src path="batik-test-swing/src/main/java"/>
+      <src path="batik-test-util/src/main/java"/>
+      <src path="batik-util/src/test/java"/>
+      <exclude name="org/apache/batik/util/*TestCases.java"/>
+      <exclude name="org/apache/batik/util/*TestSuite.java"/>
       <classpath>
         <pathelement location="${dest}"/>
         <path refid="libs-classpath"/>
