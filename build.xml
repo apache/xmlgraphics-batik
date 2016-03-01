@@ -978,7 +978,91 @@ JAVA=/usr/bin/java
     <property name="compile-prepare.done" value="true"/>
   </target>
 
-  <target name="compile" depends="init, compile-prepare" unless="compile.done">
+  <target name="compile-copy-resources" depends="init, compile-prepare" unless="compile-copy-resources.done">
+    <property name="compile-copy-resources.done" value="true"/>
+    <copy todir="${dest}">
+      <fileset dir="batik-anim/src/main/resources">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-awt-util/src/main/resources">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-bridge/src/main/resources">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-codec/src/main/resources">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-css/src/main/resources">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-dom/src/main/resources">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-ext/src/main/resources">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-extension/src/main/resources">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-gui-util/src/main/resources">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-gvt/src/main/resources">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-parser/src/main/resources">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-rasterizer/src/main/resources">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-rasterizer-ext/src/main/resources">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-script/src/main/resources">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-slideshow/src/main/resources">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-squiggle/src/main/resources">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-svg-dom/src/main/resources">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-svgbrowser/src/main/resources">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-svggen/src/main/resources">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-svgpp/src/main/resources">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-svgrasterizer/src/main/resources">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-swing/src/main/resources">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-transcoder/src/main/resources">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-ttf2svg/src/main/resources">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-util/src/main/resources">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="batik-xml/src/main/resources">
+        <include name="**"/>
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="compile" depends="init, compile-prepare, compile-copy-resources" unless="compile.done">
     <javac destdir="${dest}" deprecation="${deprecation}" 
            debug="${debug}" optimize="${optimize}" encoding="UTF-8"
            includeAntRuntime="true">
@@ -1042,6 +1126,7 @@ JAVA=/usr/bin/java
     <delete dir="${test-references}" includes="**/candidate-reference/*"/>
     <delete dir="${test-references}" includes="**/candidate-variation/*"/>
     <delete dir="${test-resources}" includes="**/JarCheckPermissions*.jar"/>
+    <delete dir="${test-resources}" includes="${package-prefix}/apps/rasterizer/invalidSVG.png"/>
     <delete dir="${test-resources}/classes"/>
     <delete dir="${samples}/tests/resources/java/classes"/>
     <delete dir="${test-reports}"/>
@@ -1106,6 +1191,7 @@ JAVA=/usr/bin/java
       <fileset dir="${dest}" excludes="**/.svn/">
         <include name="**"/>
       </fileset>
+<!--
       <fileset dir="batik-anim/src/main/resources" excludes="**/.svn/">
         <include name="**"/>
       </fileset>
@@ -1184,6 +1270,7 @@ JAVA=/usr/bin/java
       <fileset dir="batik-xml/src/main/resources" excludes="**/.svn/">
         <include name="**"/>
       </fileset>
+-->
     </jar>
   </target>
 
@@ -1202,6 +1289,7 @@ JAVA=/usr/bin/java
         <include name="org/apache/batik/**"/>
         <include name="org/w3c/**"/>
       </fileset>
+<!--
       <fileset dir="batik-anim/src/main/resources" excludes="**/.svn/">
         <include name="**"/>
       </fileset>
@@ -1280,6 +1368,7 @@ JAVA=/usr/bin/java
       <fileset dir="batik-xml/src/main/resources" excludes="**/.svn/">
         <include name="**"/>
       </fileset>
+-->
     </jar>
   </target>
 
@@ -2348,9 +2437,6 @@ JAVA=/usr/bin/java
         <path refid="libs-build-classpath"/>
         <pathelement location="resources"/>
         <pathelement location="test-resources"/>
-        <dirset dir="${basedir}">
-          <include name="**/classes"/>
-        </dirset>
       </classpath>
       <arg line="test-resources/org/apache/batik/test/regard.xml ${args}"/>
     </java>
