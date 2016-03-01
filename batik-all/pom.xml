@@ -201,6 +201,7 @@
               <archive>
                 <manifest>
                   <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                  <mainClass>org.apache.batik.apps.svgbrowser.Main</mainClass>
                 </manifest>
               </archive>
               <descriptors>

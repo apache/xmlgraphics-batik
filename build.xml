@@ -149,6 +149,7 @@ To display the available targets type:
         <include name="xerces*.jar"/>
         <include name="xml-apis-1.3.04.jar"/>
         <include name="xml-apis-ext-1.3.04.jar"/>
+        <include name="xml-serializer-2.7.1.jar"/>
         <include name="xmlgraphics-commons*.jar"/>
       </fileset>
     </path>
@@ -2340,13 +2341,16 @@ JAVA=/usr/bin/java
 <!--      <jvmarg value="-Xincgc"/> -->
 <!--      <jvmarg value="-Xrunhprof:format=b"/> -->
 <!--      <jvmarg value="-Xrunhprof:net=localhost:1234,format=b"/> -->
-      <jvmarg value="-Xmx256m"/>  <jvmarg value="-Xms64m"/>
+      <jvmarg value="-Xmx1024m"/>  <jvmarg value="-Xms64m"/>
       <classpath>
         <pathelement location="${dest}"/>
         <path refid="libs-classpath"/>
         <path refid="libs-build-classpath"/>
         <pathelement location="resources"/>
         <pathelement location="test-resources"/>
+        <dirset dir="${basedir}">
+          <include name="**/classes"/>
+        </dirset>
       </classpath>
       <arg line="test-resources/org/apache/batik/test/regard.xml ${args}"/>
     </java>
