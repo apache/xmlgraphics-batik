@@ -58,7 +58,7 @@
     <!-- ================================================================ -->
     <test id="dom.svg.publicIds" 
           name="Checks that there are system ids for the supported public Ids"
-          class="org.apache.batik.dom.svg.SystemIdTest" />
+          class="org.apache.batik.anim.dom.SystemIdTest" />
 
 
 </testSuite>
