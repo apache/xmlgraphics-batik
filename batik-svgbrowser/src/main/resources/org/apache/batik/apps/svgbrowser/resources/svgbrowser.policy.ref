@@ -15,7 +15,7 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 //
-// $Id: rasterizer.bin.policy 476799 2006-11-19 11:33:41Z cam $
+// $Id$
 // -----------------------------------------------------------------------------
 
 grant codeBase "${app.jar.base}/@jarsLibDir@xml-apis-1.3.04.jar" {

@@ -50,7 +50,7 @@ import java.util.Set;
  * Java class/package name (i.e.  java.lang.System).
  *
  * @author <a href="mailto:deweese@apache.org>deweese</a>
- * @version $Id: skel.el,v 1.1 2003/05/13 21:04:46 deweese Exp $
+ * @version $Id$
  */
 public class ImportInfo {
     /** Default file to read imports from, can be overridden

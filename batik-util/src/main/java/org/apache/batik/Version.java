@@ -72,7 +72,7 @@ public final class Version {
         if (pkg != null) {
             version = pkg.getImplementationVersion();
         }
-        String headURL = "$HeadURL$";
+        String headURL = "$HeadURL: https://svn.apache.org/repos/asf/xmlgraphics/batik/branches/maven/batik-util/src/main/java/org/apache/batik/Version.java $";
         String prefix = "$HeadURL: ";
         String suffix = "/sources/org/apache/batik/Version.java $";
         if (headURL.startsWith(prefix) && headURL.endsWith(suffix)) {
