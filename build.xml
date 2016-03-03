@@ -1123,7 +1123,9 @@ JAVA=/usr/bin/java
     <delete file="${samples}/tests/spec/scripting/java-binding.jar"/>
     <delete file="${samples}/anne.pdf"/>
     <delete file="${samples}/anne.png"/>
+    <delete dir="${test-references}" includes="**/candidate-reference/**" includeemptydirs="true"/>
     <delete dir="${test-references}" includes="**/candidate-reference" includeemptydirs="true"/>
+    <delete dir="${test-references}" includes="**/candidate-variation/**" includeemptydirs="true"/>
     <delete dir="${test-references}" includes="**/candidate-variation" includeemptydirs="true"/>
     <delete dir="${test-references}" includes="${package-prefix}/ext/awt/geom/candidate" includeemptydirs="true"/>
     <delete dir="${test-references}" includes="${package-prefix}/ext/awt/geom/variation" includeemptydirs="true"/>
@@ -1133,6 +1135,8 @@ JAVA=/usr/bin/java
     <delete dir="${test-references}" includes="${package-prefix}/transcoder/wmf/candidate/**" includeemptydirs="true"/>
     <delete dir="${test-resources}" includes="**/JarCheckPermissions*.jar"/>
     <delete file="${test-resources}/${package-prefix}/apps/rasterizer/invalidSVG.png"/>
+    <delete file="${test-resources}/${package-prefix}/bridge/IWasLoaded.jar"/>
+    <delete file="${test-resources}/${package-prefix}/bridge/IWasLoadedToo.jar"/>
     <delete dir="${test-resources}/classes"/>
     <delete dir="${samples}/tests/resources/java/classes"/>
     <delete dir="${test-reports}"/>
