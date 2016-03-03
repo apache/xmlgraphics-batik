@@ -22,7 +22,7 @@
 <!-- ====================================================================== -->
 <!-- author vincent.hardy@eng.sun.com                                       -->
 <!-- author cjolif@ilog.fr                                                  -->
-<!-- version $Id: faq.xml 388441 2006-03-24 07:50:03Z cam $ -->
+<!-- version $Id$ -->
 <!-- ====================================================================== -->
 
 <!DOCTYPE faqs PUBLIC "-//APACHE//DTD FAQ V2.0//EN" "http://forrest.apache.org/dtd/faq-v20.dtd">

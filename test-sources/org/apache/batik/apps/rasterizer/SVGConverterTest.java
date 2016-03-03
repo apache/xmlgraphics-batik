@@ -18,7 +18,7 @@
 package org.apache.batik.apps.rasterizer;
 
 import org.apache.batik.test.*;
-import org.apache.batik.test.util.ImageCompareTest;
+import org.apache.batik.test.svg.ImageCompareTest;
 import org.apache.batik.transcoder.Transcoder;
 import org.apache.batik.transcoder.image.ImageTranscoder;
 import org.apache.batik.transcoder.image.JPEGTranscoder;
