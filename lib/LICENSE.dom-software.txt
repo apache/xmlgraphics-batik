@@ -71,4 +71,4 @@ Other questions about this notice can be
 directed to site-policy@w3.org.
 
 webmaster
-(last updated $Date$)
+(last updated $Date: 2002-12-09 09:15:21 -0700 (Mon, 09 Dec 2002) $)

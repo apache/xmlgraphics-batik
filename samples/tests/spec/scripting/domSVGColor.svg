@@ -24,7 +24,7 @@
 <!-- Test of the dom SVGColor interface                                     -->
 <!--                                                                        -->
 <!-- @author deweese@apache.org                                             -->
-<!-- @version $Id: fill.svg 201374 2004-08-18 07:17:26Z vhardy $ -->
+<!-- @version $Id$ -->
 <!-- ====================================================================== -->
 
 <?xml-stylesheet type="text/css" href="../../resources/style/test.css" ?>  
