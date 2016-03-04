@@ -2215,8 +2215,8 @@ JAVA=/usr/bin/java
         <attribute name="Class-Path" value="${project}-squiggle-${completeVersion}.jar" />
         <attribute name="Class-Path" value="${project}-rasterizer-${completeVersion}.jar" />
         <attribute name="Class-Path" value="${project}-svgpp-${completeVersion}.jar" />
-        <attribute name="Class-Path" value="lib/xerces_2_5_0.jar" />
-        <attribute name="Class-Path" value="lib/xalan-2.7.0.jar" />
+        <attribute name="Class-Path" value="lib/xercesImpl-2.9.1.jar" />
+        <attribute name="Class-Path" value="lib/xalan-2.7.2.jar" />
         <attribute name="Class-Path" value="lib/xml-apis-1.3.04.jar" />
         <attribute name="Class-Path" value="lib/xml-apis-ext-1.3.04.jar" />
         <attribute name="Class-Path" value="lib/js.jar" />
