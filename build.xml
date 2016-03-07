@@ -109,7 +109,6 @@ To display the available targets type:
     <property name="forrest-build"      value="${build}/forrest"/>
     <property name="app"                value="${build}/Squiggle.app"/>
     <property name="dmg"                value="${build}/Squiggle-${completeVersion}.dmg"/>
-    <property name="maven"              value="${build}/maven"/>
     <property name="lib"                value="lib"/>
     <property name="samples"            value="samples"/>
     <property name="package-prefix"     value="org/apache/${project}"/>
@@ -295,10 +294,6 @@ To display the available targets type:
     <echo message="    all-jar"/>
     <echo message="        Builds a single jar that contains all Batik libraries."/>
     <echo message="        (Creates ${build}/lib/${project}-all.jar.)"/>
-    <echo message=""/>
-    <echo message="    maven-artifacts"/>
-    <echo message="        Builds Maven artifacts for all jars."/>
-    <echo message="        (Creates ${maven}/.)"/>
     <echo message=""/>
     <echo message="    javadoc"/>
     <echo message="        Generates the API documentation."/>
@@ -594,177 +589,6 @@ JAVA=/usr/bin/java
       </filterset>
     </copy>
     <chmod perm="a+x" file="${build}/lib/make-squiggle-app.sh"/>
-  </target>
-
-  <!-- 
-    Generates maven artifacts to be copied to
-    http://people.apache.org/repo/m2-ibiblio-rsync-repository/org/apache/xmlgraphics/.
-    Updating maven-metadata.xml files, and PGP signing of artifacts and POMs must be done manually.
-  -->
-  <target name="maven-artifacts" depends="init, determine-svn-revision, jars">
-    <filter token="version" value="${completeVersion}"/>
-
-    <!-- batik-rasterizer application artifact -->
-    <mkdir dir="${maven}/${project}-rasterizer/${completeVersion}"/>
-    <copy file="${src}/${project}-rasterizer.pom.template"
-          tofile="${maven}/${project}-rasterizer/${completeVersion}/${project}-rasterizer-${completeVersion}.pom" filtering="true"/>
-    <antcall target="rasterizer-jar-call">
-      <param name="jarsLibDir" value="" />
-      <param name="jarVersion" value="${completeVersion}" />
-      <param name="rasterizerJar" value="${maven}/${project}-rasterizer/${completeVersion}/${project}-rasterizer-${completeVersion}.jar" />
-    </antcall>
-
-    <!-- batik-rasterizer-ext application artifact -->
-    <mkdir dir="${maven}/${project}-rasterizer-ext/${completeVersion}"/>
-    <copy file="${src}/${project}-rasterizer-ext.pom.template" tofile="${maven}/${project}-rasterizer-ext/${completeVersion}/${project}-rasterizer-ext-${completeVersion}.pom" filtering="true"/>
-    <antcall target="rasterizer-ext-jar-call">
-      <param name="rasterizer-extJar" value="${maven}/${project}-rasterizer-ext/${completeVersion}/${project}-rasterizer-ext-${completeVersion}.jar" />
-    </antcall>
-
-    <!-- batik-slideshow application artifact -->
-    <mkdir dir="${maven}/${project}-slideshow/${completeVersion}"/>
-    <copy file="${src}/${project}-slideshow.pom.template" tofile="${maven}/${project}-slideshow/${completeVersion}/${project}-slideshow-${completeVersion}.pom" filtering="true"/>
-      <antcall target="svg-slideshow-jar-call">
-        <param name="jarsLibDir" value="lib/" />
-        <param name="jarVersion" value="${completeVersion}" />
-        <param name="svg-slideshowJar" value= "${maven}/${project}-slideshow/${completeVersion}/${project}-slideshow-${completeVersion}.jar"/>
-      </antcall>
-
-    <!-- batik-squiggle application artifact -->
-    <mkdir dir="${maven}/${project}-squiggle/${completeVersion}"/>
-    <copy file="${src}/${project}-squiggle.pom.template" tofile="${maven}/${project}-squiggle/${completeVersion}/${project}-squiggle-${completeVersion}.pom" filtering="true"/>
-    <antcall target="squiggle-jar-call">
-        <param name="jarsLibDir" value="" />
-        <param name="jarVersion" value="${completeVersion}" />
-        <param name="squiggleJar" value="${maven}/${project}-squiggle/${completeVersion}/${project}-squiggle-${completeVersion}.jar" />
-    </antcall>
-
-    <!-- batik-squiggle-ext application artifact -->
-    <mkdir dir="${maven}/${project}-squiggle-ext/${completeVersion}"/>
-    <copy file="${src}/${project}-squiggle-ext.pom.template" tofile="${maven}/${project}-squiggle-ext/${completeVersion}/${project}-squiggle-ext-${completeVersion}.pom" filtering="true"/>
-    <antcall target="squiggle-ext-jar-call">
-      <param name="jarsLibDir" value="" />
-      <param name="jarVersion" value="${completeVersion}" />
-      <param name="squiggle-extJar" value="${maven}/${project}-squiggle-ext/${completeVersion}/${project}-squiggle-ext-${completeVersion}.jar" />
-    </antcall>
-
-    <!-- batik-svgpp application artifact -->
-    <mkdir dir="${maven}/${project}-svgpp/${completeVersion}"/>
-    <copy file="${src}/${project}-svgpp.pom.template" tofile="${maven}/${project}-svgpp/${completeVersion}/${project}-svgpp-${completeVersion}.pom" filtering="true"/>
-    <antcall target="svg-pp-jar-call">
-      <param name="jarsLibDir" value="" />
-      <param name="jarVersion" value="${completeVersion}" />
-      <param name="svg-ppJar" value="${maven}/${project}-svgpp/${completeVersion}/${project}-svgpp-${completeVersion}.jar" />
-    </antcall>
-
-    <!-- batik-ttf2svg application artifact -->
-    <mkdir dir="${maven}/${project}-ttf2svg/${completeVersion}"/>
-    <copy file="${src}/${project}-ttf2svg.pom.template" tofile="${maven}/${project}-ttf2svg/${completeVersion}/${project}-ttf2svg-${completeVersion}.pom" filtering="true"/>
-    <jar jarfile="${maven}/${project}-ttf2svg/${completeVersion}/${project}-ttf2svg-${completeVersion}.jar">
-      <manifest>
-        <attribute name="Implementation-Title" value="Batik TrueType to SVG Font converter"/>
-        <attribute name="Implementation-Version" value="${completeVersion}"/>
-        <attribute name="Implementation-Vendor" value="${vendor}"/>
-        <attribute name="Build-Id" value="${build.id}"/>
-        <attribute name="Main-Class" value="org.apache.batik.apps.ttf2svg.Main"/>
-        <attribute name="Class-Path" value="${project}-svggen-${completeVersion}.jar ${project}-util-${completeVersion}.jar"/>
-      </manifest>
-      <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
-      <fileset dir="${dest}">
-        <include name="${package-prefix}/apps/ttf2svg/**/*.class"/>
-      </fileset>
-    </jar>
-
-    <!-- library artifacts -->
-    <mkdir dir="${maven}/${project}-anim/${completeVersion}"/>
-    <copy file="${src}/${project}-anim.pom.template" tofile="${maven}/${project}-anim/${completeVersion}/${project}-anim-${completeVersion}.pom" filtering="true"/>
-    <copy file="${build}/lib/${project}-anim-${completeVersion}.jar" tofile="${maven}/${project}-anim/${completeVersion}/${project}-anim-${completeVersion}.jar"/>
-
-    <mkdir dir="${maven}/${project}-awt-util/${completeVersion}"/>
-    <copy file="${src}/${project}-awt-util.pom.template" tofile="${maven}/${project}-awt-util/${completeVersion}/${project}-awt-util-${completeVersion}.pom" filtering="true"/>
-    <copy file="${build}/lib/${project}-awt-util-${completeVersion}.jar" tofile="${maven}/${project}-awt-util/${completeVersion}/${project}-awt-util-${completeVersion}.jar"/>
-
-    <mkdir dir="${maven}/${project}-bridge/${completeVersion}"/>
-    <copy file="${src}/${project}-bridge.pom.template" tofile="${maven}/${project}-bridge/${completeVersion}/${project}-bridge-${completeVersion}.pom" filtering="true"/>
-    <copy file="${build}/lib/${project}-bridge-${completeVersion}.jar" tofile="${maven}/${project}-bridge/${completeVersion}/${project}-bridge-${completeVersion}.jar"/>
-
-    <mkdir dir="${maven}/${project}-codec/${completeVersion}"/>
-    <copy file="${src}/${project}-codec.pom.template" tofile="${maven}/${project}-codec/${completeVersion}/${project}-codec-${completeVersion}.pom" filtering="true"/>
-    <copy file="${build}/lib/${project}-codec-${completeVersion}.jar" tofile="${maven}/${project}-codec/${completeVersion}/${project}-codec-${completeVersion}.jar"/>
-
-    <mkdir dir="${maven}/${project}-css/${completeVersion}"/>
-    <copy file="${src}/${project}-css.pom.template" tofile="${maven}/${project}-css/${completeVersion}/${project}-css-${completeVersion}.pom" filtering="true"/>
-    <copy file="${build}/lib/${project}-css-${completeVersion}.jar" tofile="${maven}/${project}-css/${completeVersion}/${project}-css-${completeVersion}.jar"/>
-
-    <mkdir dir="${maven}/${project}-dom/${completeVersion}"/>
-    <copy file="${src}/${project}-dom.pom.template" tofile="${maven}/${project}-dom/${completeVersion}/${project}-dom-${completeVersion}.pom" filtering="true"/>
-    <copy file="${build}/lib/${project}-dom-${completeVersion}.jar" tofile="${maven}/${project}-dom/${completeVersion}/${project}-dom-${completeVersion}.jar"/>
-
-    <mkdir dir="${maven}/${project}-extension/${completeVersion}"/>
-    <copy file="${src}/${project}-extension.pom.template" tofile="${maven}/${project}-extension/${completeVersion}/${project}-extension-${completeVersion}.pom" filtering="true"/>
-    <copy file="${build}/lib/${project}-extension-${completeVersion}.jar" tofile="${maven}/${project}-extension/${completeVersion}/${project}-extension-${completeVersion}.jar"/>
-
-    <mkdir dir="${maven}/${project}-ext/${completeVersion}"/>
-    <copy file="${src}/${project}-ext.pom.template" tofile="${maven}/${project}-ext/${completeVersion}/${project}-ext-${completeVersion}.pom" filtering="true"/>
-    <copy file="${build}/lib/${project}-ext-${completeVersion}.jar" tofile="${maven}/${project}-ext/${completeVersion}/${project}-ext-${completeVersion}.jar"/>
-
-    <mkdir dir="${maven}/${project}-gui-util/${completeVersion}"/>
-    <copy file="${src}/${project}-gui-util.pom.template" tofile="${maven}/${project}-gui-util/${completeVersion}/${project}-gui-util-${completeVersion}.pom" filtering="true"/>
-    <copy file="${build}/lib/${project}-gui-util-${completeVersion}.jar" tofile="${maven}/${project}-gui-util/${completeVersion}/${project}-gui-util-${completeVersion}.jar"/>
-
-    <mkdir dir="${maven}/${project}-gvt/${completeVersion}"/>
-    <copy file="${src}/${project}-gvt.pom.template" tofile="${maven}/${project}-gvt/${completeVersion}/${project}-gvt-${completeVersion}.pom" filtering="true"/>
-    <copy file="${build}/lib/${project}-gvt-${completeVersion}.jar" tofile="${maven}/${project}-gvt/${completeVersion}/${project}-gvt-${completeVersion}.jar"/>
-
-    <mkdir dir="${maven}/${project}-parser/${completeVersion}"/>
-    <copy file="${src}/${project}-parser.pom.template" tofile="${maven}/${project}-parser/${completeVersion}/${project}-parser-${completeVersion}.pom" filtering="true"/>
-    <copy file="${build}/lib/${project}-parser-${completeVersion}.jar" tofile="${maven}/${project}-parser/${completeVersion}/${project}-parser-${completeVersion}.jar"/>
-
-    <mkdir dir="${maven}/${project}-script/${completeVersion}"/>
-    <copy file="${src}/${project}-script.pom.template" tofile="${maven}/${project}-script/${completeVersion}/${project}-script-${completeVersion}.pom" filtering="true"/>
-    <copy file="${build}/lib/${project}-script-${completeVersion}.jar" tofile="${maven}/${project}-script/${completeVersion}/${project}-script-${completeVersion}.jar"/>
-
-    <mkdir dir="${maven}/${project}-svg-dom/${completeVersion}"/>
-    <copy file="${src}/${project}-svg-dom.pom.template" tofile="${maven}/${project}-svg-dom/${completeVersion}/${project}-svg-dom-${completeVersion}.pom" filtering="true"/>
-    <copy file="${build}/lib/${project}-svg-dom-${completeVersion}.jar" tofile="${maven}/${project}-svg-dom/${completeVersion}/${project}-svg-dom-${completeVersion}.jar"/>
-
-    <mkdir dir="${maven}/${project}-svggen/${completeVersion}"/>
-    <copy file="${src}/${project}-svggen.pom.template" tofile="${maven}/${project}-svggen/${completeVersion}/${project}-svggen-${completeVersion}.pom" filtering="true"/>
-    <copy file="${build}/lib/${project}-svggen-${completeVersion}.jar" tofile="${maven}/${project}-svggen/${completeVersion}/${project}-svggen-${completeVersion}.jar"/>
-
-    <mkdir dir="${maven}/${project}-swing/${completeVersion}"/>
-    <copy file="${src}/${project}-swing.pom.template" tofile="${maven}/${project}-swing/${completeVersion}/${project}-swing-${completeVersion}.pom" filtering="true"/>
-    <copy file="${build}/lib/${project}-swing-${completeVersion}.jar" tofile="${maven}/${project}-swing/${completeVersion}/${project}-swing-${completeVersion}.jar"/>
-
-    <mkdir dir="${maven}/${project}-transcoder/${completeVersion}"/>
-    <copy file="${src}/${project}-transcoder.pom.template" tofile="${maven}/${project}-transcoder/${completeVersion}/${project}-transcoder-${completeVersion}.pom" filtering="true"/>
-    <copy file="${build}/lib/${project}-transcoder-${completeVersion}.jar" tofile="${maven}/${project}-transcoder/${completeVersion}/${project}-transcoder-${completeVersion}.jar"/>
-
-    <mkdir dir="${maven}/${project}-util/${completeVersion}"/>
-    <copy file="${src}/${project}-util.pom.template" tofile="${maven}/${project}-util/${completeVersion}/${project}-util-${completeVersion}.pom" filtering="true"/>
-    <copy file="${build}/lib/${project}-util-${completeVersion}.jar" tofile="${maven}/${project}-util/${completeVersion}/${project}-util-${completeVersion}.jar"/>
-
-    <mkdir dir="${maven}/${project}-xml/${completeVersion}"/>
-    <copy file="${src}/${project}-xml.pom.template" tofile="${maven}/${project}-xml/${completeVersion}/${project}-xml-${completeVersion}.pom" filtering="true"/>
-    <copy file="${build}/lib/${project}-xml-${completeVersion}.jar" tofile="${maven}/${project}-xml/${completeVersion}/${project}-xml-${completeVersion}.jar"/>
-
-    <mkdir dir="${maven}/${project}-js/${completeVersion}"/>
-    <copy file="${src}/${project}-js.pom.template" tofile="${maven}/${project}-js/${completeVersion}/${project}-js-${completeVersion}.pom" filtering="true"/>
-    <copy file="${build}/lib/js.jar" tofile="${maven}/${project}-js/${completeVersion}/${project}-js-${completeVersion}.jar"/>
-
-    <!-- Generate checksums of all artifacts and POMs -->
-    <checksum algorithm="MD5" fileext=".md5">
-      <fileset dir="${maven}">
-        <include name="**/*.jar"/>
-        <include name="**/*.pom"/>
-      </fileset>
-    </checksum>
-    <checksum algorithm="SHA1" fileext=".sha1">
-      <fileset dir="${maven}">
-        <include name="**/*.jar"/>
-        <include name="**/*.pom"/>
-      </fileset>
-    </checksum>
   </target>
 
   <!-- Compilation ........................................................ -->
