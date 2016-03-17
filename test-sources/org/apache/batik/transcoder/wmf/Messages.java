@@ -27,7 +27,7 @@ import org.apache.batik.i18n.LocalizableSupport;
  * This class manages the message for the test.wmf module.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
- * @version $Id: Messages.java 201374 2004-08-18 07:17:26Z vhardy $
+ * @version $Id$
  */
 public class Messages {
 

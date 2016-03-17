@@ -25,7 +25,7 @@ import java.net.URL;
 import org.apache.batik.test.Test;
 import org.apache.batik.test.DefaultTestSuite;
 import org.apache.batik.test.svg.SVGRenderingAccuracyTest;
-import org.apache.batik.test.util.ImageCompareTest;
+import org.apache.batik.test.svg.ImageCompareTest;
 
 /**
  * This test validates that a given rendering sequence, modeled
