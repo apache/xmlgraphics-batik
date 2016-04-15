@@ -58,17 +58,6 @@
   </dependencies>
 
   <build>
-    <plugins>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>${compiler.version}</version>
-        <configuration>
-          <excludes>
-            <exclude>**/codec/tiff/*</exclude>
-          </excludes>
-        </configuration>
-      </plugin>
-    </plugins>
     <resources>
       <resource>
         <directory>src/main/resources</directory>
