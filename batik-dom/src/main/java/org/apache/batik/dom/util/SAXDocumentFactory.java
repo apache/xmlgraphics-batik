@@ -444,6 +444,8 @@ public class SAXDocumentFactory
                               true);
             parser.setFeature("http://xml.org/sax/features/validation",
                               isValidating);
+            parser.setFeature("http://xml.org/sax/features/external-general-entities", false);
+            parser.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
             parser.setProperty("http://xml.org/sax/properties/lexical-handler",
                                this);
             parser.parse(is);
