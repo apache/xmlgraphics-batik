@@ -402,6 +402,7 @@ public class SAXDocumentFactory
         try {
             saxFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
             saxFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+			saxFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
         } catch (SAXNotRecognizedException e) {
             e.printStackTrace();
         } catch (SAXNotSupportedException e) {
@@ -446,6 +447,7 @@ public class SAXDocumentFactory
                               isValidating);
             parser.setFeature("http://xml.org/sax/features/external-general-entities", false);
             parser.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+			parser.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
             parser.setProperty("http://xml.org/sax/properties/lexical-handler",
                                this);
             parser.parse(is);
