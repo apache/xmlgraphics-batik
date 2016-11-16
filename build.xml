@@ -128,6 +128,37 @@ To display the available targets type:
     <!-- For site deployment -->
     <property name="deploy.svn.url"     value="https://svn.apache.org/repos/asf/xmlgraphics/site/deploy/batik"/>
     <property name="build.site-dir"     value="${site}"/>
+    
+    <path id="source.files">
+        <pathelement path="batik-anim/src/main/java"/>
+        <pathelement path="batik-awt-util/src/main/java"/>
+        <pathelement path="batik-bridge/src/main/java"/>
+        <pathelement path="batik-codec/src/main/java"/>
+        <pathelement path="batik-constants/src/main/java"/>
+        <pathelement path="batik-css/src/main/java"/>
+        <pathelement path="batik-dom/src/main/java"/>
+        <pathelement path="batik-ext/src/main/java"/>
+        <pathelement path="batik-extension/src/main/java"/>
+        <pathelement path="batik-gui-util/src/main/java"/>
+        <pathelement path="batik-gvt/src/main/java"/>
+        <pathelement path="batik-i18n/src/main/java"/>
+        <pathelement path="batik-parser/src/main/java"/>
+        <pathelement path="batik-rasterizer/src/main/java"/>
+        <pathelement path="batik-rasterizer-ext/src/main/java"/>
+        <pathelement path="batik-script/src/main/java"/>
+        <pathelement path="batik-slideshow/src/main/java"/>
+        <pathelement path="batik-squiggle/src/main/java"/>
+        <pathelement path="batik-svg-dom/src/main/java"/>
+        <pathelement path="batik-svgbrowser/src/main/java"/>
+        <pathelement path="batik-svggen/src/main/java"/>
+        <pathelement path="batik-svgpp/src/main/java"/>
+        <pathelement path="batik-svgrasterizer/src/main/java"/>
+        <pathelement path="batik-swing/src/main/java"/>
+        <pathelement path="batik-transcoder/src/main/java"/>
+        <pathelement path="batik-ttf2svg/src/main/java"/>
+        <pathelement path="batik-util/src/main/java"/>
+        <pathelement path="batik-xml/src/main/java"/>
+    </path>
   
     <pathconvert property="cwd">
       <path path="."/>
@@ -377,7 +408,7 @@ To display the available targets type:
         <include name="LICENSE.*.txt"/>
         <include name="README.*.txt"/>
       </zipfileset>
-      <zipfileset dir="${resources}/${package-prefix}/extensions"
+      <zipfileset dir="batik-extension/src/main/resources/${package-prefix}/extensions"
                   prefix="${project}-${completeVersion}/extensions">
         <include name="README.txt"/>
       </zipfileset>
@@ -407,7 +438,7 @@ To display the available targets type:
         <include name="documentation-sources/**"/>
         <include name="resources/**"/>
         <include name="samples/**"/>
-        <include name="sources/**"/>
+        <include name="*/src/**"/>
         <include name="test-resources/**"/>
         <include name="test-sources/**"/>
       </zipfileset>
@@ -444,7 +475,7 @@ To display the available targets type:
         <include name="LICENSE.*.txt"/>
         <include name="README.*.txt"/>
       </tarfileset>
-      <tarfileset dir="${resources}/${package-prefix}/extensions"
+      <tarfileset dir="batik-extension/src/main/resources/${package-prefix}/extensions"
                   prefix="${project}-${completeVersion}/extensions">
         <include name="README.txt"/>
       </tarfileset>
@@ -474,7 +505,7 @@ To display the available targets type:
         <include name="documentation-sources/**"/>
         <include name="resources/**"/>
         <include name="samples/**"/>
-        <include name="sources/**"/>
+        <include name="*/src/**"/>
         <include name="test-resources/**"/>
         <include name="test-sources/**"/>
       </tarfileset>
@@ -501,7 +532,7 @@ To display the available targets type:
         <include name="documentation-sources/**"/>
         <include name="resources/**"/>
         <include name="samples/**"/>
-        <include name="sources/**"/>
+        <include name="*/src/**"/>
         <include name="test-resources/**"/>
         <include name="test-sources/**"/>
       </fileset>
@@ -581,14 +612,14 @@ JAVA=/usr/bin/java
   </target>
 
   <target name="bundle-script" depends="init, determine-svn-revision">
-    <copy file="${src}/make-squiggle-app.sh.template"
+<!--     <copy file="${src}/make-squiggle-app.sh.template"
           tofile="${build}/lib/make-squiggle-app.sh">
       <filterset>
         <filter token="VERSION" value="${completeVersion}"/>
         <filter token="YEAR" value="${year}"/>
       </filterset>
     </copy>
-    <chmod perm="a+x" file="${build}/lib/make-squiggle-app.sh"/>
+    <chmod perm="a+x" file="${build}/lib/make-squiggle-app.sh"/> -->
   </target>
 
   <!-- Compilation ........................................................ -->
@@ -823,36 +854,36 @@ JAVA=/usr/bin/java
       <fileset dir="batik-dom/src/main/resources">
         <include name="**"/>
       </fileset>
-      <fileset dir="batik-ext/src/main/resources">
+<!--       <fileset dir="batik-ext/src/main/resources">
         <include name="**"/>
-      </fileset>
+      </fileset> -->
       <fileset dir="batik-extension/src/main/resources">
         <include name="**"/>
       </fileset>
       <fileset dir="batik-gui-util/src/main/resources">
         <include name="**"/>
       </fileset>
-      <fileset dir="batik-gvt/src/main/resources">
+<!--       <fileset dir="batik-gvt/src/main/resources">
         <include name="**"/>
-      </fileset>
+      </fileset> -->
       <fileset dir="batik-parser/src/main/resources">
         <include name="**"/>
       </fileset>
-      <fileset dir="batik-rasterizer/src/main/resources">
+<!--       <fileset dir="batik-rasterizer/src/main/resources">
         <include name="**"/>
-      </fileset>
-      <fileset dir="batik-rasterizer-ext/src/main/resources">
+      </fileset> -->
+<!--       <fileset dir="batik-rasterizer-ext/src/main/resources">
         <include name="**"/>
-      </fileset>
+      </fileset> -->
       <fileset dir="batik-script/src/main/resources">
         <include name="**"/>
       </fileset>
-      <fileset dir="batik-slideshow/src/main/resources">
+<!--       <fileset dir="batik-slideshow/src/main/resources">
         <include name="**"/>
-      </fileset>
-      <fileset dir="batik-squiggle/src/main/resources">
+      </fileset> -->
+<!--       <fileset dir="batik-squiggle/src/main/resources">
         <include name="**"/>
-      </fileset>
+      </fileset> -->
       <fileset dir="batik-svg-dom/src/main/resources">
         <include name="**"/>
       </fileset>
@@ -874,9 +905,9 @@ JAVA=/usr/bin/java
       <fileset dir="batik-transcoder/src/main/resources">
         <include name="**"/>
       </fileset>
-      <fileset dir="batik-ttf2svg/src/main/resources">
+<!--       <fileset dir="batik-ttf2svg/src/main/resources">
         <include name="**"/>
-      </fileset>
+      </fileset> -->
       <fileset dir="batik-util/src/main/resources">
         <include name="**"/>
       </fileset>
@@ -903,11 +934,11 @@ JAVA=/usr/bin/java
       <src path="batik-gvt/src/main/java"/>
       <src path="batik-i18n/src/main/java"/>
       <src path="batik-parser/src/main/java"/>
-      <src path="batik-rasterizer/src/main/java"/>
-      <src path="batik-rasterizer-ext/src/main/java"/>
+      <!-- <src path="batik-rasterizer/src/main/java"/> -->
+      <!-- <src path="batik-rasterizer-ext/src/main/java"/> -->
       <src path="batik-script/src/main/java"/>
       <src path="batik-slideshow/src/main/java"/>
-      <src path="batik-squiggle/src/main/java"/>
+      <!-- <src path="batik-squiggle/src/main/java"/> -->
       <src path="batik-svg-dom/src/main/java"/>
       <src path="batik-svgbrowser/src/main/java"/>
       <src path="batik-svggen/src/main/java"/>
@@ -1509,9 +1540,9 @@ JAVA=/usr/bin/java
       <fileset dir="${dest}">
         <include name="${package-prefix}/gvt/**/*.class"/>
       </fileset>
-      <fileset dir="batik-gvt/src/main/resources" excludes="**/.svn/">
+      <!-- <fileset dir="batik-gvt/src/main/resources" excludes="**/.svn/">
         <include name="${package-prefix}/gvt/**/resources/*"/>
-      </fileset>
+      </fileset> -->
     </jar>
   </target>
 
@@ -1757,10 +1788,10 @@ JAVA=/usr/bin/java
       <fileset dir="${dest}">
         <include name="${package-prefix}/apps/slideshow/**/*.class"/>
       </fileset>
-      <fileset dir="batik-slideshow/src/main/resources">
+<!--       <fileset dir="batik-slideshow/src/main/resources">
         <exclude name="**/.svn/" />
         <include name="${package-prefix}/apps/slideshow/**/resources/**" />
-      </fileset>
+      </fileset> -->
     </jar>
   </target>
 
@@ -2395,7 +2426,8 @@ JAVA=/usr/bin/java
              splitindex="true"
              windowtitle="${Project} Javadoc"
              doctitle="${Project} API Specification ${completeVersion}"
-             bottom="Copyright &#169; ${year} &lt;a href='http://www.apache.org/'&gt;Apache Software Foundation&lt;/a&gt;. All Rights Reserved.">
+             bottom="Copyright &#169; ${year} &lt;a href='http://www.apache.org/'&gt;Apache Software Foundation&lt;/a&gt;. All Rights Reserved."
+             sourcepathref="source.files">
       <arg value="-notimestamp"/>
       <sourcepath path="${src}"/>
       <classpath refid="libs-classpath"/>
