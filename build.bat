@@ -33,7 +33,7 @@ if not "%ANT_HOME%" == "" goto gotAntHome
 :: ----- Set Up The Runtime Classpath -----------------------------------------
 
 
-set CP="%JAVA_HOME%\lib\tools.jar";.\lib\build\ant-1.6.5.jar;.\lib\build\ant-launcher-1.6.5.jar;.\lib\build\crimson-1.1.3.jar
+set CP="%JAVA_HOME%\lib\tools.jar";.\lib\build\ant-1.9.7.jar;.\lib\build\ant-launcher-1.9.7.jar;.\lib\build\crimson-1.1.3.jar
  
 :: If Forrest is present, add the ForrestBot dependency jars to the classpath.
 
