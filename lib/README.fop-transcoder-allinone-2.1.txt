@@ -1,4 +1,4 @@
-The fop-transcoder-allinone-svn-trunk.jar file is built from the Apache FOP project
+The fop-transcoder-allinone-2.1.jar file is built from the Apache FOP project
 (http://xmlgraphics.apache.org/fop), version svn-trunk.
 
 This is only needed if you want to transcode to PDF, otherwise it can
