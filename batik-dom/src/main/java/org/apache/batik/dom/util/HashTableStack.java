@@ -18,6 +18,8 @@
  */
 package org.apache.batik.dom.util;
 
+import java.util.HashMap;
+
 /**
  * This class represents a stack of HashTable objects.
  *
@@ -56,12 +58,12 @@ public class HashTableStack {
      * Creates a mapping in the table on the top of the stack.
      */
     public String put(String s, String v) {
-        if (current.pushCount != 0) {
+        while (current.pushCount > 0) {
             current.pushCount--;
             current = new Link(current);
         }
         if (s.length() == 0) current.defaultStr = v;
-        return (String)current.table.put(s, v);
+        return current.table.put(s, v);
     }
     
     /**
@@ -71,7 +73,7 @@ public class HashTableStack {
         if (s.length() == 0) return current.defaultStr;
 
         for (Link l = current; l != null; l = l.next) {
-            String uri = (String)l.table.get(s);
+            String uri = l.table.get(s);
             if (uri != null) {
                 return uri;
             }
@@ -86,7 +88,7 @@ public class HashTableStack {
         /**
          * The table.
          */
-        public HashTable table;
+        public HashMap<String, String> table;
         
         /**
          * The next link.
@@ -108,7 +110,7 @@ public class HashTableStack {
          * Creates a new link.
          */
         public Link(Link n) {
-            table = new HashTable();
+            table = new HashMap<String, String>();
             next  = n;
             if (next != null) 
                 defaultStr = next.defaultStr;
