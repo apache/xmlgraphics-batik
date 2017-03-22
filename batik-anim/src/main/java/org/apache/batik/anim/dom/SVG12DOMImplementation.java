@@ -20,6 +20,8 @@ package org.apache.batik.anim.dom;
 
 import java.net.URL;
 
+import java.util.HashMap;
+
 import org.apache.batik.css.engine.CSSContext;
 import org.apache.batik.css.engine.CSSEngine;
 import org.apache.batik.css.engine.SVG12CSSEngine;
@@ -34,7 +36,6 @@ import org.apache.batik.dom.events.DocumentEventSupport;
 import org.apache.batik.dom.events.EventSupport;
 import org.apache.batik.dom.svg12.SVGOMWheelEvent;
 import org.apache.batik.dom.svg12.XBLOMShadowTreeEvent;
-import org.apache.batik.dom.util.HashTable;
 import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.SVG12Constants;
@@ -173,7 +174,7 @@ public class SVG12DOMImplementation
     /**
      * The SVG element factories.
      */
-    protected static HashTable svg12Factories = new HashTable(svg11Factories);
+    protected static HashMap<String, ElementFactory> svg12Factories = new HashMap<String, ElementFactory>(svg11Factories);
 
     static {
         svg12Factories.put(SVG12Constants.SVG_FLOW_DIV_TAG,
@@ -413,7 +414,7 @@ public class SVG12DOMImplementation
     /**
      * The XBL element factories.
      */
-    protected static HashTable xblFactories = new HashTable();
+    protected static HashMap<String, ElementFactory> xblFactories = new HashMap<String, ElementFactory>();
 
     static {
         xblFactories.put(XBLConstants.XBL_XBL_TAG,

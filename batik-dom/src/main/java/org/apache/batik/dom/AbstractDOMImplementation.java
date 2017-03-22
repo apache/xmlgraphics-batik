@@ -20,13 +20,13 @@ package org.apache.batik.dom;
 
 import java.io.Serializable;
 import java.util.Locale;
+import java.util.HashMap;
 import java.util.MissingResourceException;
 
 import org.apache.batik.dom.events.DocumentEventSupport;
 import org.apache.batik.dom.events.EventSupport;
 import org.apache.batik.i18n.Localizable;
 import org.apache.batik.i18n.LocalizableSupport;
-import org.apache.batik.dom.util.HashTable;
 
 import org.w3c.dom.DOMImplementation;
 
@@ -58,7 +58,7 @@ public abstract class AbstractDOMImplementation
     /**
      * The supported features.
      */
-    protected final HashTable features = new HashTable();
+    protected final HashMap<String, Object> features = new HashMap<String, Object>();
     {
         // registerFeature("BasicEvents",        "3.0");
         registerFeature("Core",               new String[] { "2.0", "3.0" });

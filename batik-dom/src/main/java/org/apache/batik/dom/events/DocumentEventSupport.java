@@ -18,7 +18,8 @@
  */
 package org.apache.batik.dom.events;
 
-import org.apache.batik.dom.util.HashTable;
+import java.util.HashMap;
+
 import org.w3c.dom.DOMException;
 import org.w3c.dom.events.Event;
 
@@ -98,7 +99,7 @@ public class DocumentEventSupport {
     /**
      * The event factories table.
      */
-    protected HashTable eventFactories = new HashTable();
+    protected HashMap<String, EventFactory> eventFactories = new HashMap<String, EventFactory>();
     {
         // DOM 3 event names:
         eventFactories.put(EVENT_TYPE.toLowerCase(),
@@ -161,7 +162,7 @@ public class DocumentEventSupport {
      */
     public Event createEvent(String eventType)
             throws DOMException {
-        EventFactory ef = (EventFactory)eventFactories.get(eventType.toLowerCase());
+        EventFactory ef = eventFactories.get(eventType.toLowerCase());
         if (ef == null) {
             throw new DOMException(DOMException.NOT_SUPPORTED_ERR,
                                    "Bad event type: " + eventType);

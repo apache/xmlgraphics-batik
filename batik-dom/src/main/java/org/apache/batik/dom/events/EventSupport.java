@@ -18,13 +18,14 @@
  */
 package org.apache.batik.dom.events;
 
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Iterator;
 
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.AbstractNode;
-import org.apache.batik.dom.util.HashTable;
 
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
@@ -46,12 +47,12 @@ public class EventSupport {
     /**
      * The capturing listeners table.
      */
-    protected HashTable capturingListeners;
+    protected HashMap<String, EventListenerList> capturingListeners;
 
     /**
      * The bubbling listeners table.
      */
-    protected HashTable bubblingListeners;
+    protected HashMap<String, EventListenerList> bubblingListeners;
 
     /**
      * The node for which events are being handled.
@@ -107,19 +108,19 @@ public class EventSupport {
                                    EventListener listener,
                                    boolean useCapture,
                                    Object group) {
-        HashTable listeners;
+        HashMap<String, EventListenerList> listeners;
         if (useCapture) {
             if (capturingListeners == null) {
-                capturingListeners = new HashTable();
+                capturingListeners = new HashMap();
             }
             listeners = capturingListeners;
         } else {
             if (bubblingListeners == null) {
-                bubblingListeners = new HashTable();
+                bubblingListeners = new HashMap();
             }
             listeners = bubblingListeners;
         }
-        EventListenerList list = (EventListenerList) listeners.get(type);
+        EventListenerList list = listeners.get(type);
         if (list == null) {
             list = new EventListenerList();
             listeners.put(type, list);
@@ -166,7 +167,7 @@ public class EventSupport {
                                       String type,
                                       EventListener listener,
                                       boolean useCapture) {
-        HashTable listeners;
+        HashMap<String, EventListenerList> listeners;
         if (useCapture) {
             listeners = capturingListeners;
         } else {
@@ -175,7 +176,7 @@ public class EventSupport {
         if (listeners == null) {
             return;
         }
-        EventListenerList list = (EventListenerList) listeners.get(type);
+        EventListenerList list = listeners.get(type);
         if (list != null) {
             list.removeListener(namespaceURI, listener);
             if (list.size() == 0) {
@@ -304,7 +305,7 @@ public class EventSupport {
      */
     protected void fireEventListeners(NodeEventTarget node,
                                       AbstractEvent e,
-                                      EventListenerList.Entry[] listeners,
+                                      Collection<EventListenerList.Entry> listeners,
                                       HashSet stoppedGroups,
                                       HashSet toBeStoppedGroups) {
         if (listeners == null) {
@@ -312,16 +313,16 @@ public class EventSupport {
         }
         // fire event listeners
         String eventNS = e.getNamespaceURI();
-        for (int i = 0; i < listeners.length; i++) {
+        for (EventListenerList.Entry l : listeners) {
             try {
-                String listenerNS = listeners[i].getNamespaceURI();
+                String listenerNS = l.getNamespaceURI();
                 if (listenerNS != null && eventNS != null
                         && !listenerNS.equals(eventNS)) {
                     continue;
                 }
-                Object group = listeners[i].getGroup();
+                Object group = l.getGroup();
                 if (stoppedGroups == null || !stoppedGroups.contains(group)) {
-                    listeners[i].getListener().handleEvent(e);
+                    l.getListener().handleEvent(e);
                     if (e.getStopImmediatePropagation()) {
                         if (stoppedGroups != null) {
                             stoppedGroups.add(group);
@@ -362,7 +363,7 @@ public class EventSupport {
             return;
         }
         // dump event listeners, we get the registered listeners NOW
-        EventListenerList.Entry[] listeners = list.getEventListeners();
+        Collection<EventListenerList.Entry> listeners = list.getEventListeners();
         fireEventListeners(node, e, listeners, stoppedGroups,
                            toBeStoppedGroups);
     }
@@ -392,8 +393,7 @@ public class EventSupport {
      */
     public boolean hasEventListenerNS(String namespaceURI, String type) {
         if (capturingListeners != null) {
-            EventListenerList ell
-                = (EventListenerList) capturingListeners.get(type);
+            EventListenerList ell = capturingListeners.get(type);
             if (ell != null) {
                 if (ell.hasEventListener(namespaceURI)) {
                     return true;
@@ -401,8 +401,7 @@ public class EventSupport {
             }
         }
         if (bubblingListeners != null) {
-            EventListenerList ell
-                = (EventListenerList) capturingListeners.get(type);
+            EventListenerList ell = capturingListeners.get(type);
             if (ell != null) {
                 return ell.hasEventListener(namespaceURI);
             }
@@ -418,12 +417,12 @@ public class EventSupport {
      */
     public EventListenerList getEventListeners(String type,
                                                boolean useCapture) {
-        HashTable listeners
+        HashMap<String, EventListenerList> listeners
             = useCapture ? capturingListeners : bubblingListeners;
         if (listeners == null) {
             return null;
         }
-        return (EventListenerList) listeners.get(type);
+        return listeners.get(type);
     }
 
     /**

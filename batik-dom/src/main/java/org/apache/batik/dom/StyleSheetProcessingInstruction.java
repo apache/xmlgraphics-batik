@@ -19,8 +19,9 @@
 
 package org.apache.batik.dom;
 
+import java.util.HashMap;
+
 import org.apache.batik.dom.util.DOMUtilities;
-import org.apache.batik.dom.util.HashTable;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
 import org.w3c.dom.stylesheets.LinkStyle;
@@ -55,7 +56,7 @@ public class StyleSheetProcessingInstruction
     /**
      * The pseudo attributes.
      */
-    protected transient HashTable pseudoAttributes;
+    protected transient HashMap<String, String> pseudoAttributes;
 
     /**
      * Creates a new ProcessingInstruction object.
@@ -116,9 +117,9 @@ public class StyleSheetProcessingInstruction
     /**
      * Returns the pseudo attributes in a table.
      */
-    public HashTable getPseudoAttributes() {
+    public HashMap<String, String> getPseudoAttributes() {
         if (pseudoAttributes == null) {
-            pseudoAttributes = new HashTable();
+            pseudoAttributes = new HashMap<String, String>();
             pseudoAttributes.put("alternate", "no");
             pseudoAttributes.put("media",     "all");
             DOMUtilities.parseStyleSheetPIData(data, pseudoAttributes);

@@ -18,13 +18,14 @@
  */
 package org.apache.batik.anim.dom;
 
+import java.util.HashMap;
+
 import org.apache.batik.css.engine.CSSEngine;
 import org.apache.batik.css.engine.CSSStyleSheetNode;
 import org.apache.batik.css.engine.StyleSheet;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.StyleSheetFactory;
 import org.apache.batik.dom.StyleSheetProcessingInstruction;
-import org.apache.batik.dom.util.HashTable;
 import org.apache.batik.util.ParsedURL;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
@@ -78,14 +79,14 @@ public class SVGStyleSheetProcessingInstruction
      */
     public StyleSheet getCSSStyleSheet() {
         if (styleSheet == null) {
-            HashTable attrs = getPseudoAttributes();
-            String type = (String)attrs.get("type");
+            HashMap<String, String> attrs = getPseudoAttributes();
+            String type = attrs.get("type");
 
             if ("text/css".equals(type)) {
-                String title     = (String)attrs.get("title");
-                String media     = (String)attrs.get("media");
-                String href      = (String)attrs.get("href");
-                String alternate = (String)attrs.get("alternate");
+                String title     = attrs.get("title");
+                String media     = attrs.get("media");
+                String href      = attrs.get("href");
+                String alternate = attrs.get("alternate");
                 SVGOMDocument doc = (SVGOMDocument)getOwnerDocument();
                 ParsedURL durl = doc.getParsedURL();
                 ParsedURL burl = new ParsedURL(durl, href);

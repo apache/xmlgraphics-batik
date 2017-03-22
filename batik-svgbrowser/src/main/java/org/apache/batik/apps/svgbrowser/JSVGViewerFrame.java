@@ -101,7 +101,6 @@ import org.apache.batik.bridge.UpdateManager;
 import org.apache.batik.bridge.UpdateManagerEvent;
 import org.apache.batik.bridge.UpdateManagerListener;
 import org.apache.batik.dom.StyleSheetProcessingInstruction;
-import org.apache.batik.dom.util.HashTable;
 import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.ext.swing.JAffineTransformChooser;
 import org.apache.batik.swing.JSVGCanvas;
@@ -2048,9 +2047,9 @@ public class JSVGViewerFrame
                     if (n instanceof StyleSheetProcessingInstruction) {
                         StyleSheetProcessingInstruction sspi;
                         sspi = (StyleSheetProcessingInstruction)n;
-                        HashTable attrs = sspi.getPseudoAttributes();
-                        final String title = (String)attrs.get("title");
-                        String alt = (String)attrs.get("alternate");
+                        HashMap<String, String> attrs = sspi.getPseudoAttributes();
+                        final String title = attrs.get("title");
+                        String alt = attrs.get("alternate");
                         if (title != null && "yes".equals(alt)) {
                             JRadioButtonMenuItem button;
                             button = new JRadioButtonMenuItem(title);

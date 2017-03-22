@@ -23,6 +23,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -780,15 +781,15 @@ public class DOMUtilities extends XMLUtilities implements XMLConstants {
             return false;
         }
         char c = s.charAt(0);
-        int d = c / 32;
-        int m = c % 32;
+        int d = c >> 5;
+        int m = c & 0x1F;
         if ((NAME_FIRST_CHARACTER[d] & (1 << m)) == 0) {
             return false;
         }
         for (int i = 1; i < len; i++) {
             c = s.charAt(i);
-            d = c / 32;
-            m = c % 32;
+            d = c >> 5;
+            m = c & 0x1F;
             if ((NAME_CHARACTER[d] & (1 << m)) == 0) {
                 return false;
             }
@@ -805,15 +806,15 @@ public class DOMUtilities extends XMLUtilities implements XMLConstants {
             return false;
         }
         char c = s.charAt(0);
-        int d = c / 32;
-        int m = c % 32;
+        int d = c >> 5;
+        int m = c & 0x1F;
         if ((NAME11_FIRST_CHARACTER[d] & (1 << m)) == 0) {
             return false;
         }
         for (int i = 1; i < len; i++) {
             c = s.charAt(i);
-            d = c / 32;
-            m = c % 32;
+            d = c >> 5;
+            m = c & 0x1F;
             if ((NAME11_CHARACTER[d] & (1 << m)) == 0) {
                 return false;
             }
@@ -855,7 +856,7 @@ public class DOMUtilities extends XMLUtilities implements XMLConstants {
      * Parses a 'xml-stylesheet' processing instruction data section and
      * puts the pseudo attributes in the given table.
      */
-    public static void parseStyleSheetPIData(String data, HashTable table) {
+    public static void parseStyleSheetPIData(String data, HashMap<String, String> table) {
         // !!! Internationalization
         char c;
         int i = 0;
@@ -870,8 +871,8 @@ public class DOMUtilities extends XMLUtilities implements XMLConstants {
         while (i < data.length()) {
             // Parse the pseudo attribute name
             c = data.charAt(i);
-            int d = c / 32;
-            int m = c % 32;
+            int d = c >> 5;
+            int m = c & 0x1F;
             if ((NAME_FIRST_CHARACTER[d] & (1 << m)) == 0) {
                 throw new DOMException(DOMException.INVALID_CHARACTER_ERR,
                                        "Wrong name initial:  " + c);
@@ -880,8 +881,8 @@ public class DOMUtilities extends XMLUtilities implements XMLConstants {
             ident.append(c);
             while (++i < data.length()) {
                 c = data.charAt(i);
-                d = c / 32;
-                m = c % 32;
+                d = c >> 5;
+                m = c & 0x1F;
                 if ((NAME_CHARACTER[d] & (1 << m)) == 0) {
                     break;
                 }

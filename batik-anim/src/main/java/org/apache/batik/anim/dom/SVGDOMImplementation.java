@@ -20,6 +20,8 @@ package org.apache.batik.anim.dom;
 
 import java.net.URL;
 
+import java.util.HashMap;
+
 import org.apache.batik.css.dom.CSSOMSVGViewCSS;
 import org.apache.batik.css.engine.CSSContext;
 import org.apache.batik.css.engine.CSSEngine;
@@ -35,7 +37,6 @@ import org.apache.batik.dom.events.DocumentEventSupport;
 import org.apache.batik.dom.svg.SVGOMEvent;
 import org.apache.batik.dom.util.CSSStyleDeclarationFactory;
 import org.apache.batik.dom.util.DOMUtilities;
-import org.apache.batik.dom.util.HashTable;
 import org.apache.batik.i18n.LocalizableSupport;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.SVGConstants;
@@ -76,7 +77,7 @@ public class SVGDOMImplementation
     protected static final String RESOURCES =
         "org.apache.batik.dom.svg.resources.Messages";
 
-    protected HashTable factories;
+    protected HashMap<String, ElementFactory> factories;
 
     /**
      * Returns the default instance of this class.
@@ -172,7 +173,7 @@ public class SVGDOMImplementation
      * Creates a stylesheet from the data of an xml-stylesheet
      * processing instruction or return null.
      */
-    public StyleSheet createStyleSheet(Node n, HashTable attrs) {
+    public StyleSheet createStyleSheet(Node n, HashMap<String, String> attrs) {
         throw new UnsupportedOperationException
             ("StyleSheetFactory.createStyleSheet is not implemented"); // XXX
     }
@@ -232,7 +233,7 @@ public class SVGDOMImplementation
     /**
      * The SVG element factories.
      */
-    protected static HashTable svg11Factories = new HashTable();
+    protected static HashMap<String, ElementFactory> svg11Factories = new HashMap<String, ElementFactory>();
 
     static {
         svg11Factories.put(SVGConstants.SVG_A_TAG,

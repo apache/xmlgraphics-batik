@@ -19,13 +19,14 @@
 package org.apache.batik.anim.dom;
 
 import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Collection;
 
 import org.apache.batik.dom.AbstractNode;
 import org.apache.batik.dom.events.AbstractEvent;
 import org.apache.batik.dom.events.EventListenerList;
 import org.apache.batik.dom.events.EventSupport;
 import org.apache.batik.dom.events.NodeEventTarget;
-import org.apache.batik.dom.util.HashTable;
 import org.apache.batik.dom.xbl.NodeXBL;
 import org.apache.batik.dom.xbl.ShadowTreeEvent;
 import org.apache.batik.util.XMLConstants;
@@ -49,17 +50,17 @@ public class XBLEventSupport extends EventSupport {
     /**
      * The unstoppable capturing listeners table.
      */
-    protected HashTable capturingImplementationListeners;
+    protected HashMap<String, EventListenerList> capturingImplementationListeners;
 
     /**
      * The unstoppable bubbling listeners table.
      */
-    protected HashTable bubblingImplementationListeners;
+    protected HashMap<String, EventListenerList> bubblingImplementationListeners;
 
     /**
      * Map of event types to their aliases.
      */
-    protected static HashTable eventTypeAliases = new HashTable();
+    protected static HashMap<String, String> eventTypeAliases = new HashMap<String, String>();
     static {
         eventTypeAliases.put("SVGLoad",   "load");
         eventTypeAliases.put("SVGUnoad",  "unload");
@@ -124,19 +125,19 @@ public class XBLEventSupport extends EventSupport {
                                                  String type,
                                                  EventListener listener,
                                                  boolean useCapture) {
-        HashTable listeners;
+        HashMap<String, EventListenerList> listeners;
         if (useCapture) {
             if (capturingImplementationListeners == null) {
-                capturingImplementationListeners = new HashTable();
+                capturingImplementationListeners = new HashMap<String, EventListenerList>();
             }
             listeners = capturingImplementationListeners;
         } else {
             if (bubblingImplementationListeners == null) {
-                bubblingImplementationListeners = new HashTable();
+                bubblingImplementationListeners = new HashMap<String, EventListenerList>();
             }
             listeners = bubblingImplementationListeners;
         }
-        EventListenerList list = (EventListenerList) listeners.get(type);
+        EventListenerList list = listeners.get(type);
         if (list == null) {
             list = new EventListenerList();
             listeners.put(type, list);
@@ -151,12 +152,12 @@ public class XBLEventSupport extends EventSupport {
                                                     String type,
                                                     EventListener listener,
                                                     boolean useCapture) {
-        HashTable listeners = useCapture ? capturingImplementationListeners
-                                         : bubblingImplementationListeners;
+        HashMap<String, EventListenerList> listeners = useCapture
+            ? capturingImplementationListeners : bubblingImplementationListeners;
         if (listeners == null) {
             return;
         }
-        EventListenerList list = (EventListenerList) listeners.get(type);
+        EventListenerList list = listeners.get(type);
         if (list == null) {
             return;
         }
@@ -372,7 +373,7 @@ public class XBLEventSupport extends EventSupport {
                 return;
             }
             // dump event listeners, we get the registered listeners NOW
-            EventListenerList.Entry[] listeners = list.getEventListeners();
+            Collection<EventListenerList.Entry> listeners = list.getEventListeners();
             fireEventListeners(node, e, listeners, stoppedGroups,
                                toBeStoppedGroups);
         }
@@ -438,12 +439,9 @@ public class XBLEventSupport extends EventSupport {
      */
     public EventListenerList getImplementationEventListeners
             (String type, boolean useCapture) {
-        HashTable listeners = useCapture ? capturingImplementationListeners
-                                         : bubblingImplementationListeners;
-        if (listeners == null) {
-            return null;
-        }
-        return (EventListenerList) listeners.get(type);
+        HashMap<String, EventListenerList> listeners = useCapture
+            ? capturingImplementationListeners : bubblingImplementationListeners;
+        return listeners != null ? listeners.get(type) : null;
     }
 
     /**
@@ -466,7 +464,7 @@ public class XBLEventSupport extends EventSupport {
             return;
         }
         // dump event listeners, we get the registered listeners NOW
-        EventListenerList.Entry[] listeners = list.getEventListeners();
+        Collection<EventListenerList.Entry> listeners = list.getEventListeners();
         fireEventListeners(node, e, listeners, null, null);
     }
 }

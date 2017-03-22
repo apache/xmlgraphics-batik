@@ -18,8 +18,9 @@
  */
 package org.apache.batik.dom.events;
 
-import org.apache.batik.dom.util.IntTable;
-import org.apache.batik.dom.util.HashTable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 
 import org.w3c.dom.events.EventListener;
 
@@ -31,31 +32,10 @@ import org.w3c.dom.events.EventListener;
  * @version $Id$
  */
 public class EventListenerList {
-
-    /**
-     * Total number of event listners.
-     */
-    protected int n;
-
-    /**
-     * Linked list of entries.
-     */
-    protected Entry head;
-
-    /**
-     * Counts of listener entries with a given namespace URI.
-     */
-    protected IntTable counts = new IntTable();
-
     /**
      * Cache of listeners with any namespace URI.
      */
-    protected Entry[] listeners;
-
-    /**
-     * Caches of listeners with a given namespace URI.
-     */
-    protected HashTable listenersNS = new HashTable();
+    private ArrayList<Entry> listeners = new ArrayList<Entry>();
 
     /**
      * Adds a listener.
@@ -63,19 +43,15 @@ public class EventListenerList {
     public void addListener(String namespaceURI,
                             Object group,
                             EventListener listener) {
-        for (Entry e = head; e != null; e = e.next) {
-            if ((namespaceURI != null && namespaceURI.equals(e.namespaceURI)
-                        || namespaceURI == null && e.namespaceURI == null)
-                    && e.listener == listener) {
+        for (Entry e : listeners) {
+            if (e.listener == listener
+                && (namespaceURI != null && namespaceURI.equals(e.namespaceURI)
+                    || namespaceURI == null && e.namespaceURI == null)) {
                 // Listener is already in the list, so do nothing.
                 return;
             }
         }
-        head = new Entry(listener, namespaceURI, group, head);
-        counts.inc(namespaceURI);
-        n++;
-        listeners = null;
-        listenersNS.remove(namespaceURI);
+        listeners.add(new Entry(listener, namespaceURI, group));
     }
 
     /**
@@ -83,75 +59,22 @@ public class EventListenerList {
      */
     public void removeListener(String namespaceURI,
                                EventListener listener) {
-        if (head == null) {
-            return;
-        } else if (head != null
-                && (namespaceURI != null && namespaceURI.equals(head.namespaceURI)
-                    || namespaceURI == null && head.namespaceURI == null)
-                && listener == head.listener) {
-            head = head.next;
-        } else {
-            Entry e;
-            Entry prev = head;
-            for (e = head.next; e != null; e = e.next) {
-                if ((namespaceURI != null && namespaceURI.equals(e.namespaceURI)
-                            || namespaceURI == null && e.namespaceURI == null)
-                        && e.listener == listener) {
-                    prev.next = e.next;
-                    break;
-                }
-                prev = e;
-            }
-            if (e == null) {
-                // Listener not present.
+        for(Iterator<Entry> it = listeners.iterator(); it.hasNext(); ) {
+            Entry e = it.next();
+            if (listener == e.listener
+                && (namespaceURI != null && namespaceURI.equals(e.namespaceURI)
+                    || namespaceURI == null && e.namespaceURI == null) ) {
+                it.remove();
                 return;
             }
         }
-        counts.dec(namespaceURI);
-        n--;
-        listeners = null;
-        listenersNS.remove(namespaceURI);
     }
 
     /**
      * Returns an array containing all event listener entries.
      */
-    public Entry[] getEventListeners() {
-        if (listeners != null) {
-            return listeners;
-        }
-        listeners = new Entry[n];
-        int i = 0;
-        for (Entry e = head; e != null; e = e.next) {
-            listeners[i++] = e;
-        }
+    public Collection<Entry> getEventListeners() {
         return listeners;
-    }
-
-    /**
-     * Returns an array of EventListeners that match the given namespace URI.
-     */
-    public Entry[] getEventListeners(String namespaceURI) {
-        if (namespaceURI == null) {
-            return getEventListeners();
-        }
-        Entry[] ls = (Entry[]) listenersNS.get(namespaceURI);
-        if (ls != null) {
-            return ls;
-        }
-        int count = counts.get(namespaceURI);
-        if (count == 0) {
-            return null;
-        }
-        ls = new Entry[count];
-        listenersNS.put(namespaceURI, ls);
-        int i = 0;
-        for (Entry e = head; i < count; e = e.next) {
-            if (namespaceURI.equals(e.namespaceURI)) {
-                ls[i++] = e;
-            }
-        }
-        return ls;
     }
 
     /**
@@ -159,16 +82,21 @@ public class EventListenerList {
      */
     public boolean hasEventListener(String namespaceURI) {
         if (namespaceURI == null) {
-            return n != 0;
+            return !listeners.isEmpty();
         }
-        return counts.get(namespaceURI) != 0;
+        for (Entry e : listeners) {
+            if (namespaceURI.equals(e.namespaceURI)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
      * Returns the number of event listeners stored in this object.
      */
     public int size() {
-        return n;
+        return listeners.size();
     }
 
     /**
@@ -192,26 +120,14 @@ public class EventListenerList {
         protected Object group;
 
         /**
-         * Flag used by getListeners.
-         */
-        protected boolean mark;
-
-        /**
-         * The next Entry in the list.
-         */
-        protected Entry next;
-
-        /**
          * Creates a new Entry object.
          */
         public Entry(EventListener listener,
                      String namespaceURI,
-                     Object group,
-                     Entry next) {
+                     Object group) {
             this.listener = listener;
             this.namespaceURI = namespaceURI;
             this.group = group;
-            this.next = next;
         }
 
         /**
