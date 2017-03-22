@@ -92,7 +92,7 @@ To display the available targets type:
     <property name="vendor"             value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)" />
 
   	<property file="build.properties"/>
-    <property name="debug"              value="off"/>
+    <property name="debug"              value="on"/>
     <property name="optimize"           value="on"/>
     <property name="deprecation"        value="on"/>
     <property name="javac.source" value="1.6"/>
