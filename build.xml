@@ -82,7 +82,7 @@ To display the available targets type:
     </tstamp>
     <property name="Project"            value="Apache Batik" />
     <property name="project"            value="batik" />
-    <property name="year"               value="2014" />
+    <property name="year"               value="2017" />
     <property name="version"            value="svn-trunk" />
     <property name="revisionType"       value="" />
     <property name="revisionNumber"     value="" />
@@ -433,6 +433,7 @@ To display the available targets type:
         <include name="build.bat"/>
         <include name="build.sh"/>
         <include name="build.xml"/>
+        <include name="**/pom.xml"/>
         <include name="forrest.properties"/>
         <include name="svn-revision"/>
         <include name="contrib/**"/>
