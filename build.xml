@@ -88,11 +88,11 @@ To display the available targets type:
     <property name="revisionNumber"     value="" />
     <property name="completeVersion"    value="${version}${revisionType}${revisionNumber}" />
     <property name="xgcVersion"         value="2.2" />
-    <property name="fopVersion"         value="2.1" />
+    <property name="fopVersion"         value="2.2" />
     <property name="vendor"             value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)" />
 
   	<property file="build.properties"/>
-    <property name="debug"              value="off"/>
+    <property name="debug"              value="on"/>
     <property name="optimize"           value="on"/>
     <property name="deprecation"        value="on"/>
     <property name="javac.source" value="1.6"/>
@@ -433,6 +433,7 @@ To display the available targets type:
         <include name="build.bat"/>
         <include name="build.sh"/>
         <include name="build.xml"/>
+        <include name="**/pom.xml"/>
         <include name="forrest.properties"/>
         <include name="svn-revision"/>
         <include name="contrib/**"/>
@@ -500,6 +501,7 @@ To display the available targets type:
         <include name="build.bat"/>
         <include name="build.sh"/>
         <include name="build.xml"/>
+        <include name="**/pom.xml"/>
         <include name="forrest.properties"/>
         <include name="svn-revision"/>
         <include name="contrib/**"/>
