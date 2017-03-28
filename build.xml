@@ -501,6 +501,7 @@ To display the available targets type:
         <include name="build.bat"/>
         <include name="build.sh"/>
         <include name="build.xml"/>
+        <include name="**/pom.xml"/>
         <include name="forrest.properties"/>
         <include name="svn-revision"/>
         <include name="contrib/**"/>
