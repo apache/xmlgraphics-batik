@@ -181,7 +181,7 @@ To display the available targets type:
         <include name="xerces*.jar"/>
         <include name="xml-apis-1.3.04.jar"/>
         <include name="xml-apis-ext-1.3.04.jar"/>
-        <include name="xml-serializer-2.7.1.jar"/>
+        <include name="serializer-2.7.2.jar"/>
         <include name="xmlgraphics-commons*.jar"/>
       </fileset>
     </path>
