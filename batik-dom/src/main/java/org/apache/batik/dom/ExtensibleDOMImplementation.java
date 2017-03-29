@@ -33,6 +33,7 @@ import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.util.DoublyIndexedTable;
 import org.apache.batik.util.Service;
 import org.apache.batik.util.XMLResourceDescriptor;
+import org.apache.batik.util.SVGConstants;
 import org.apache.batik.xml.XMLUtilities;
 
 import org.w3c.css.sac.Parser;
@@ -202,7 +203,7 @@ public abstract class ExtensibleDOMImplementation
                                   document);
             }
         }
-        return new GenericElementNS(namespaceURI.intern(),
+        return new GenericElementNS(namespaceURI == SVGConstants.SVG_NAMESPACE_URI ? namespaceURI : namespaceURI.intern(),
                                     qualifiedName.intern(),
                                     document);
     }

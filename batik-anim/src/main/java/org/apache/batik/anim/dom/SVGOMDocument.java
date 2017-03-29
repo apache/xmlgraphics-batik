@@ -359,7 +359,7 @@ public class SVGOMDocument
         if (namespaceURI == null) {
             return new GenericAttr(qualifiedName.intern(), this);
         } else {
-            return new GenericAttrNS(namespaceURI.intern(),
+            return new GenericAttrNS(namespaceURI == SVG_NAMESPACE_URI ? SVG_NAMESPACE_URI : namespaceURI.intern(),
                                      qualifiedName.intern(),
                                      this);
         }
