@@ -20,9 +20,7 @@
 # $Id$
 # -----------------------------------------------------------------------------
 
-# NOTE: the "codec" package is deprecated, there entries are kept here for compatibility with older JVM versions
-# (uses "sun.image", which is only supported in Sun Java implementations and was retired in JDK 7)
-#org.apache.batik.ext.awt.image.codec.png.PNGRegistryEntry
+org.apache.batik.ext.awt.image.codec.png.PNGRegistryEntry
 
 org.apache.batik.ext.awt.image.codec.imageio.ImageIOJPEGRegistryEntry
 org.apache.batik.ext.awt.image.codec.imageio.ImageIOPNGRegistryEntry
