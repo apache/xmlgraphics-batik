@@ -599,7 +599,7 @@ public abstract class TimedElement implements SMILConstants {
      *         element is currently active.
      */
     protected float sampleAt(float parentSimpleTime, boolean hyperlinking) {
-        // Trace.enter(this, "sampleAt", new Object[] { new Float(parentSimpleTime) } ); try {
+        // Trace.enter(this, "sampleAt", new Object[] { Float.valueOf(parentSimpleTime) } ); try {
         isSampling = true;
 
         float time = parentSimpleTime; // No time containers in SVG.
@@ -897,7 +897,7 @@ public abstract class TimedElement implements SMILConstants {
      */
     protected Interval computeInterval(boolean first, boolean fixedBegin,
                                        float beginAfter, boolean incl) {
-        // Trace.enter(this, "computeInterval", new Object[] { new Boolean(first), new Boolean(fixedBegin), new Float(beginAfter)} ); try {
+        // Trace.enter(this, "computeInterval", new Object[] { new Boolean(first), new Boolean(fixedBegin), Float.valueOf(beginAfter)} ); try {
         // Trace.print("computing interval from begins=" + beginInstanceTimes + ", ends=" + endInstanceTimes);
         Iterator beginIterator = beginInstanceTimes.iterator();
         Iterator endIterator = endInstanceTimes.iterator();

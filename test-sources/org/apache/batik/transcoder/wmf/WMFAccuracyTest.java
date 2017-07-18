@@ -316,9 +316,9 @@ public class WMFAccuracyTest extends AbstractTest
 
             report.setErrorCode(ERROR_GENERATED_SVG_INACCURATE);
             report.addDescriptionEntry(fmtMsg(ENTRY_KEY_LINE_NUMBER),
-                                       new Integer(line));
+                                       Integer.valueOf(line));
             report.addDescriptionEntry(fmtMsg(ENTRY_KEY_COLUMN_NUMBER),
-                                       new Integer(cn));
+                                       Integer.valueOf(cn));
             report.addDescriptionEntry(fmtMsg(ENTRY_KEY_COLUMN_EXPECTED_VALUE),
                                        expectedChar);
             report.addDescriptionEntry(fmtMsg(ENTRY_KEY_COLUMN_FOUND_VALUE),

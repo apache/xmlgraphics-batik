@@ -38,13 +38,13 @@ public class MaxDimensionTest extends AbstractImageTranscoderTest {
     /** The URI of the reference image. */
     protected String refImageURI;
     /** The maximum width of the image. */
-    protected Float maxWidth = new Float(Float.NaN);
+    protected Float maxWidth = Float.valueOf(Float.NaN);
     /** The maximum height of the image. */
-    protected Float maxHeight = new Float(Float.NaN);
+    protected Float maxHeight = Float.valueOf(Float.NaN);
     /** The width of the image. */
-    protected Float width = new Float(Float.NaN);
+    protected Float width = Float.valueOf(Float.NaN);
     /** The height of the image. */
-    protected Float height = new Float(Float.NaN);
+    protected Float height = Float.valueOf(Float.NaN);
 
 
     //-- Constructors --------------------------------------------------------

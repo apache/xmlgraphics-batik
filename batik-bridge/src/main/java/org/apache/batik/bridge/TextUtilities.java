@@ -78,8 +78,8 @@ public abstract class TextUtilities implements CSSConstants, ErrorConstants {
         StringTokenizer st = new StringTokenizer(valueStr, ", ", false);
         while (st.hasMoreTokens()) {
             values.add
-                (new Float(UnitProcessor.svgHorizontalCoordinateToUserSpace
-                           (st.nextToken(), attrName, uctx)));
+                (UnitProcessor.svgHorizontalCoordinateToUserSpace
+                        (st.nextToken(), attrName, uctx));
         }
         return values;
     }
@@ -104,8 +104,8 @@ public abstract class TextUtilities implements CSSConstants, ErrorConstants {
         StringTokenizer st = new StringTokenizer(valueStr, ", ", false);
         while (st.hasMoreTokens()) {
             values.add
-                (new Float(UnitProcessor.svgVerticalCoordinateToUserSpace
-                           (st.nextToken(), attrName, uctx)));
+                (UnitProcessor.svgVerticalCoordinateToUserSpace
+                        (st.nextToken(), attrName, uctx));
         }
         return values;
     }
@@ -123,8 +123,8 @@ public abstract class TextUtilities implements CSSConstants, ErrorConstants {
             try {
                 s = st.nextToken();
                 values.add
-                    (new Float(Math.toRadians
-                               (SVGUtilities.convertSVGNumber(s))));
+                    ((float) Math.toRadians
+                            (SVGUtilities.convertSVGNumber(s)));
             } catch (NumberFormatException nfEx ) {
                 throw new BridgeException
                     (ctx, element, nfEx, ERR_ATTRIBUTE_VALUE_MALFORMED,
@@ -141,7 +141,7 @@ public abstract class TextUtilities implements CSSConstants, ErrorConstants {
     public static Float convertFontSize(Element e) {
         Value v = CSSUtilities.getComputedStyle
             (e, SVGCSSEngine.FONT_SIZE_INDEX);
-        return new Float(v.getFloatValue());
+        return v.getFloatValue();
     }
 
     /**
@@ -282,7 +282,7 @@ public abstract class TextUtilities implements CSSConstants, ErrorConstants {
                 return null;
             }
         } else {
-            return new Float(v.getFloatValue());
+            return v.getFloatValue();
         }
     }
 
@@ -297,7 +297,7 @@ public abstract class TextUtilities implements CSSConstants, ErrorConstants {
         if (v.getPrimitiveType() == CSSPrimitiveValue.CSS_IDENT) {
             return null;
         }
-        return new Float(v.getFloatValue());
+        return v.getFloatValue();
     }
 
     /**
@@ -311,7 +311,7 @@ public abstract class TextUtilities implements CSSConstants, ErrorConstants {
         if (v.getPrimitiveType() == CSSPrimitiveValue.CSS_IDENT) {
             return null;
         }
-        return new Float(v.getFloatValue());
+        return v.getFloatValue();
     }
 
     /**
@@ -325,6 +325,6 @@ public abstract class TextUtilities implements CSSConstants, ErrorConstants {
         if (v.getPrimitiveType() == CSSPrimitiveValue.CSS_IDENT) {
             return null;
         }
-        return new Float(v.getFloatValue());
+        return v.getFloatValue();
     }
 }

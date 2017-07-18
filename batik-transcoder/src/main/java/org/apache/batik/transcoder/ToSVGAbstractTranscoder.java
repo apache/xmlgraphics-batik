@@ -73,13 +73,13 @@ import org.w3c.dom.Element;
  *  <li>KEY_ESCAPED : this Boolean ley allow to escape XML characters in the output</li>
  *  </ul>
  *  <pre>
- *     transcoder.addTranscodingHint(ToSVGAbstractTranscoder.KEY_INPUT_WIDTH, new Integer(input_width));
+ *     transcoder.addTranscodingHint(ToSVGAbstractTranscoder.KEY_INPUT_WIDTH, Integer.valueOf(input_width));
  *  </pre>
  *  </li>
  *  <li>KEY_WIDTH, KEY_HEIGHT : this Float values allows to force the width and height of the output:
  *  </ul>
  *  <pre>
- *     transcoder.addTranscodingHint(ToSVGAbstractTranscoder.KEY_WIDTH, new Float(width));
+ *     transcoder.addTranscodingHint(ToSVGAbstractTranscoder.KEY_WIDTH, Float.valueOf(width));
  *  </pre>
  *  </li>
  *  </li>
@@ -187,7 +187,7 @@ public abstract class ToSVGAbstractTranscoder extends AbstractTranscoder
         try {
             boolean escaped = false;
             if (hints.containsKey(KEY_ESCAPED)) {
-                escaped = ((Boolean)hints.get(KEY_ESCAPED)).booleanValue();
+                escaped = (Boolean) hints.get(KEY_ESCAPED);
             }
             // Output stream
             OutputStream os = output.getOutputStream();

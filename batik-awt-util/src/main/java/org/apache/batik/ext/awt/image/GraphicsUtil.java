@@ -495,7 +495,7 @@ public class GraphicsUtil {
         try {
             String s = System.getProperty
                 ("org.apache.batik.warn_destination", "true");
-            warn = Boolean.valueOf(s).booleanValue();
+            warn = Boolean.valueOf(s);
         } catch (SecurityException se) {
         } catch (NumberFormatException nfe) {
         } finally {

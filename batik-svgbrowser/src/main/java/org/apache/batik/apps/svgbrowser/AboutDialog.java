@@ -125,7 +125,7 @@ public class AboutDialog extends JWindow {
 
         JLabel l = new JLabel(icon);
         l.setBounds(0, 0, w, h);
-        p.add(l, new Integer(0));
+        p.add(l, Integer.valueOf(0));
 
         JLabel l2 = new JLabel("Batik " + Version.getVersion());
         l2.setForeground(new Color(232, 232, 232, 255));
@@ -134,7 +134,7 @@ public class AboutDialog extends JWindow {
         l2.setHorizontalAlignment(JLabel.RIGHT);
         l2.setVerticalAlignment(JLabel.BOTTOM);
         l2.setBounds(w - 320, h - 117, 300, 100);
-        p.add(l2, new Integer(2));
+        p.add(l2, Integer.valueOf(2));
 
         ((JComponent)getContentPane()).setBorder
             (BorderFactory.createCompoundBorder

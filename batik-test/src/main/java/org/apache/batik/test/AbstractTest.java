@@ -308,7 +308,7 @@ public abstract class AbstractTest implements Test {
     }
 
     public void assertEquals(int ref, int cmp) throws AssertEqualsException {
-        assertEquals(new Integer(ref), new Integer(cmp));
+        assertEquals(Integer.valueOf(ref), Integer.valueOf(cmp));
     }
 
     /**

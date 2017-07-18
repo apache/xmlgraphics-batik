@@ -224,12 +224,12 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
         List glyphCodes = new ArrayList();
         for (int i = 0; i < glyphNames.length; i++) {
             if (glyphNames[i] != null && glyphNames[i].equals(name)) {
-                glyphCodes.add(new Integer(i));
+                glyphCodes.add(i);
             }
         }
         int[] glyphCodeArray = new int[glyphCodes.size()];
         for (int i = 0; i < glyphCodes.size(); i++) {
-            glyphCodeArray[i] = ((Integer)glyphCodes.get(i)).intValue();
+            glyphCodeArray[i] = (Integer) glyphCodes.get(i);
         }
         return glyphCodeArray;
     }
@@ -246,12 +246,12 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
         List glyphCodes = new ArrayList();
         for (int i = 0; i < glyphUnicodes.length; i++) {
             if (glyphUnicodes[i] != null && glyphUnicodes[i].equals(unicode)) {
-                glyphCodes.add(new Integer(i));
+                glyphCodes.add(i);
             }
         }
         int[] glyphCodeArray = new int[glyphCodes.size()];
         for (int i = 0; i < glyphCodes.size(); i++) {
-            glyphCodeArray[i] = ((Integer)glyphCodes.get(i)).intValue();
+            glyphCodeArray[i] = (Integer) glyphCodes.get(i);
         }
         return glyphCodeArray;
     }

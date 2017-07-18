@@ -51,7 +51,7 @@ public class PNGTranscoderImageIOWriteAdapter implements
 
         int n = -1;
         if (hints.containsKey(PNGTranscoder.KEY_INDEXED)) {
-            n=((Integer)hints.get(PNGTranscoder.KEY_INDEXED)).intValue();
+            n= (Integer) hints.get(PNGTranscoder.KEY_INDEXED);
             if (n==1||n==2||n==4||n==8) 
                 //PNGEncodeParam.Palette can handle these numbers only.
                 img = IndexImage.getIndexedImage(img, 1<<n);

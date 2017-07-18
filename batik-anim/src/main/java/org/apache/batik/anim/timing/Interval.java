@@ -72,7 +72,7 @@ public class Interval {
      */
     public Interval(float begin, float end, InstanceTime beginInstanceTime,
                     InstanceTime endInstanceTime) {
-        // Trace.enter(this, null, new Object[] { new Float(begin), new Float(end), beginInstanceTime, endInstanceTime } ); try {
+        // Trace.enter(this, null, new Object[] { Float.valueOf(begin), Float.valueOf(end), beginInstanceTime, endInstanceTime } ); try {
         this.begin = begin;
         this.end = end;
         this.beginInstanceTime = beginInstanceTime;
@@ -147,7 +147,7 @@ public class Interval {
      * Updates the begin time for this interval.
      */
     float setBegin(float begin) {
-        // Trace.enter(this, "setBegin", new Object[] { new Float(begin) } ); try {
+        // Trace.enter(this, "setBegin", new Object[] { Float.valueOf(begin) } ); try {
         float minTime = Float.POSITIVE_INFINITY;
         this.begin = begin;
         Iterator i = beginDependents.iterator();
@@ -166,7 +166,7 @@ public class Interval {
      * Updates the end time for this interval.
      */
     float setEnd(float end, InstanceTime endInstanceTime) {
-        // Trace.enter(this, "setEnd", new Object[] { new Float(end) } ); try {
+        // Trace.enter(this, "setEnd", new Object[] { Float.valueOf(end) } ); try {
         float minTime = Float.POSITIVE_INFINITY;
         this.end = end;
         this.endInstanceTime = endInstanceTime;

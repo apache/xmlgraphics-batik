@@ -236,7 +236,7 @@ public abstract class SVGOMElement
         if (isReadonly()) {
             throw createDOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR,
                                      "readonly.node",
-                                     new Object[] { new Integer(getNodeType()),
+                                     new Object[] {(int) getNodeType(),
                                                     getNodeName() });
         }
         if (prefix != null &&
@@ -244,7 +244,7 @@ public abstract class SVGOMElement
             !DOMUtilities.isValidName(prefix)) {
             throw createDOMException(DOMException.INVALID_CHARACTER_ERR,
                                      "prefix",
-                                     new Object[] { new Integer(getNodeType()),
+                                     new Object[] {(int) getNodeType(),
                                                     getNodeName(),
                                                     prefix });
         }

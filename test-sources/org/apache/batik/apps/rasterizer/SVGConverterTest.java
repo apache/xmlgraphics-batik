@@ -84,7 +84,7 @@ public class SVGConverterTest extends DefaultTestSuite {
         t.setId("HintsConfigTest.KEY_AOI");
 
         t = new HintsConfigTest(new Object[][]{
-            {JPEGTranscoder.KEY_QUALITY, new Float(.5)}}){
+            {JPEGTranscoder.KEY_QUALITY, Float.valueOf(.5)}}){
                 protected void deltaConfigure(SVGConverter c){
                     c.setQuality(.5f);
                 }
@@ -94,7 +94,7 @@ public class SVGConverterTest extends DefaultTestSuite {
         t.setId("HintsConfigTest.KEY_QUALITY");
 
         t = new HintsConfigTest(new Object[][]{
-            {PNGTranscoder.KEY_INDEXED, new Integer(8)}}){
+            {PNGTranscoder.KEY_INDEXED, Integer.valueOf(8)}}){
                 protected void deltaConfigure(SVGConverter c){
                     c.setIndexed(8);
                 }
@@ -113,7 +113,7 @@ public class SVGConverterTest extends DefaultTestSuite {
         t.setId("HintsConfigTest.KEY_BACKGROUND_COLOR");
 
         t = new HintsConfigTest(new Object[][]{
-            {ImageTranscoder.KEY_HEIGHT, new Float(50)}}){
+            {ImageTranscoder.KEY_HEIGHT, Float.valueOf(50)}}){
                 protected void deltaConfigure(SVGConverter c){
                     c.setHeight(50);
                 }
@@ -123,7 +123,7 @@ public class SVGConverterTest extends DefaultTestSuite {
         t.setId("HintsConfigTest.KEY_HEIGHT");
 
         t = new HintsConfigTest(new Object[][]{
-            {ImageTranscoder.KEY_WIDTH, new Float(50)}}){
+            {ImageTranscoder.KEY_WIDTH, Float.valueOf(50)}}){
                 protected void deltaConfigure(SVGConverter c){
                     c.setWidth(50);
                 }
@@ -133,7 +133,7 @@ public class SVGConverterTest extends DefaultTestSuite {
         t.setId("HintsConfigTest.KEY_WIDTH");
 
         t = new HintsConfigTest(new Object[][]{
-            {ImageTranscoder.KEY_MAX_HEIGHT, new Float(50)}}){
+            {ImageTranscoder.KEY_MAX_HEIGHT, Float.valueOf(50)}}){
                 protected void deltaConfigure(SVGConverter c){
                     c.setMaxHeight(50);
                 }
@@ -142,7 +142,7 @@ public class SVGConverterTest extends DefaultTestSuite {
         t.setId("HintsConfigTest.KEY_MAX_HEIGHT");
 
         t = new HintsConfigTest(new Object[][]{
-            {ImageTranscoder.KEY_MAX_WIDTH, new Float(50)}}){
+            {ImageTranscoder.KEY_MAX_WIDTH, Float.valueOf(50)}}){
                 protected void deltaConfigure(SVGConverter c){
                     c.setMaxWidth(50);
                 }
@@ -199,7 +199,7 @@ public class SVGConverterTest extends DefaultTestSuite {
         t.setId("HintsConfigTest.KEY_LANGUAGE");
 
         t = new HintsConfigTest(new Object[][]{
-            {ImageTranscoder.KEY_PIXEL_UNIT_TO_MILLIMETER, new Float(.5f)}}){
+            {ImageTranscoder.KEY_PIXEL_UNIT_TO_MILLIMETER, Float.valueOf(.5f)}}){
                 protected void deltaConfigure(SVGConverter c){
                     c.setPixelUnitToMillimeter(.5f);
                 }

@@ -1721,7 +1721,7 @@ public class JSVGViewerFrame
                                 application.getXMLParserClassName());
                     }
                     trans.addTranscodingHint
-                        (JPEGTranscoder.KEY_QUALITY, new Float(quality));
+                        (JPEGTranscoder.KEY_QUALITY, quality);
 
                     final BufferedImage img = trans.createImage(w, h);
 
@@ -1785,7 +1785,7 @@ public class JSVGViewerFrame
                                              Boolean.TRUE );
 
                     if(isIndexed){
-                        trans.addTranscodingHint(PNGTranscoder.KEY_INDEXED, new Integer(8));
+                        trans.addTranscodingHint(PNGTranscoder.KEY_INDEXED, 8);
                     }
 
                     final BufferedImage img = trans.createImage(w, h);

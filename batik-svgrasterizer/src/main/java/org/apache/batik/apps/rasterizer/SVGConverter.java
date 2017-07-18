@@ -833,12 +833,12 @@ public class SVGConverter {
 
         // Set image quality. ------------------------------------------------
         if (quality > 0) {
-            map.put(JPEGTranscoder.KEY_QUALITY, new Float(this.quality));
+            map.put(JPEGTranscoder.KEY_QUALITY, this.quality);
         }
 
         // Set image indexed. ------------------------------------------------
         if (indexed != -1) {
-            map.put(PNGTranscoder.KEY_INDEXED, new Integer(indexed));
+            map.put(PNGTranscoder.KEY_INDEXED, indexed);
         }
 
         // Set image background color -----------------------------------------
@@ -848,18 +848,18 @@ public class SVGConverter {
 
         // Set image height and width. ----------------------------------------
         if (height > 0) {
-            map.put(ImageTranscoder.KEY_HEIGHT, new Float(this.height));
+            map.put(ImageTranscoder.KEY_HEIGHT, this.height);
         }
         if (width > 0){
-            map.put(ImageTranscoder.KEY_WIDTH, new Float(this.width));
+            map.put(ImageTranscoder.KEY_WIDTH, this.width);
         }
 
         // Set maximum height and width ---------------------------------------
         if (maxHeight > 0) {
-            map.put(ImageTranscoder.KEY_MAX_HEIGHT, new Float(this.maxHeight));
+            map.put(ImageTranscoder.KEY_MAX_HEIGHT, this.maxHeight);
         }
         if (maxWidth > 0){
-            map.put(ImageTranscoder.KEY_MAX_WIDTH, new Float(this.maxWidth));
+            map.put(ImageTranscoder.KEY_MAX_WIDTH, this.maxWidth);
         }
 
         // Set CSS Media
@@ -897,7 +897,7 @@ public class SVGConverter {
         // Sets the millimeters per pixel
         if (pixelUnitToMillimeter > 0){
             map.put(ImageTranscoder.KEY_PIXEL_UNIT_TO_MILLIMETER,
-                    new Float(pixelUnitToMillimeter));
+                    pixelUnitToMillimeter);
         }
 
         // Set validation
@@ -912,7 +912,7 @@ public class SVGConverter {
 
         // Set snapshot time
         if (!Float.isNaN(snapshotTime)) {
-            map.put(ImageTranscoder.KEY_SNAPSHOT_TIME, new Float(snapshotTime));
+            map.put(ImageTranscoder.KEY_SNAPSHOT_TIME, snapshotTime);
         }
 
         // Set allowed scripts

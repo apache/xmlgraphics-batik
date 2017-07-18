@@ -1241,8 +1241,8 @@ public class NodeTemplates {
                             baseFieldName + VALUE).get(this).toString();
                     String nodeName = getClass().getField(baseFieldName + NAME)
                             .get(this).toString();
-                    short nodeType = ((Short) getClass().getField(
-                            baseFieldName + TYPE).get(this)).shortValue();
+                    short nodeType = (Short) getClass().getField(
+                            baseFieldName + TYPE).get(this);
                     String nodeDescription = getClass().getField(
                             baseFieldName + DESCRIPTION).get(this).toString();
                     String nodeCategory = getClass().getField(
