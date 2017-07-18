@@ -58,7 +58,7 @@ public class SyncbaseTimingSpecifier extends OffsetTimingSpecifier {
                                    float offset, String syncbaseID,
                                    boolean syncBegin) {
         super(owner, isBegin, offset);
-        // Trace.enter(this, null, new Object[] { owner, new Boolean(isBegin), new Float(offset), syncbaseID, new Boolean(syncBegin) } ); try {
+        // Trace.enter(this, null, new Object[] { owner, new Boolean(isBegin), Float.valueOf(offset), syncbaseID, new Boolean(syncBegin) } ); try {
         this.syncbaseID = syncbaseID;
         this.syncBegin = syncBegin;
         this.syncbaseElement = owner.getTimedElementById(syncbaseID);
@@ -126,7 +126,7 @@ public class SyncbaseTimingSpecifier extends OffsetTimingSpecifier {
      * to indicate that its value has changed.
      */
     float handleTimebaseUpdate(InstanceTime instanceTime, float newTime) {
-        // Trace.enter(this, "handleTimebaseUpdate", new Object[] { instanceTime, new Float(newTime) } ); try {
+        // Trace.enter(this, "handleTimebaseUpdate", new Object[] { instanceTime, Float.valueOf(newTime) } ); try {
         if (owner.hasPropagated) {
             return Float.POSITIVE_INFINITY;
         }

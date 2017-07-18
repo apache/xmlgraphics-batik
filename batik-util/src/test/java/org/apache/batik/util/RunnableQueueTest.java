@@ -40,7 +40,7 @@ public class RunnableQueueTest extends AbstractTest {
         this.nThreads = nThreads;
     }
     public RunnableQueueTest(Integer nThreads) {
-        this((nThreads==null)?10:nThreads.intValue());
+        this((nThreads==null)?10: nThreads);
     }
         
         /**

@@ -274,8 +274,8 @@ public class SVGAccuracyTest extends AbstractTest
             }
 
             report.setErrorCode(ERROR_GENERATED_SVG_INACCURATE);
-            report.addDescriptionEntry(Messages.formatMessage(ENTRY_KEY_LINE_NUMBER,null), new Integer(ln));
-            report.addDescriptionEntry(Messages.formatMessage(ENTRY_KEY_COLUMN_NUMBER,null), new Integer(cn));
+            report.addDescriptionEntry(Messages.formatMessage(ENTRY_KEY_LINE_NUMBER,null), Integer.valueOf(ln));
+            report.addDescriptionEntry(Messages.formatMessage(ENTRY_KEY_COLUMN_NUMBER,null), Integer.valueOf(cn));
             report.addDescriptionEntry(Messages.formatMessage(ENTRY_KEY_COLUMN_EXPECTED_VALUE,null), expectedChar);
             report.addDescriptionEntry(Messages.formatMessage(ENTRY_KEY_COLUMN_FOUND_VALUE,null), foundChar);
             report.addDescriptionEntry(Messages.formatMessage(ENTRY_KEY_REFERENCE_LINE,null), refLine);

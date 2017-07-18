@@ -372,7 +372,7 @@ public class Main extends JComponent {
                     break;
                 }
                 try {
-                    frameDelay = Integer.decode(args[i+1]).intValue();
+                    frameDelay = Integer.decode(args[i + 1]);
                     i++;
                 } catch (NumberFormatException nfe) {
                     System.err.println
@@ -386,7 +386,7 @@ public class Main extends JComponent {
                     break;
                 }
                 try {
-                    duration = Integer.decode(args[i+1]).intValue();
+                    duration = Integer.decode(args[i + 1]);
                     i++;
                 } catch (NumberFormatException nfe) {
                     System.err.println
@@ -404,12 +404,12 @@ public class Main extends JComponent {
                     int idx = args[i+1].indexOf(',');
                     int w, h;
                     if (idx == -1)
-                        w = h = Integer.decode(args[i+1]).intValue();
+                        w = h = Integer.decode(args[i + 1]);
                     else {
                         String wStr = args[i+1].substring(0,idx);
                         String hStr = args[i+1].substring(idx+1);
-                        w = Integer.decode(wStr).intValue();
-                        h = Integer.decode(hStr).intValue();
+                        w = Integer.decode(wStr);
+                        h = Integer.decode(hStr);
                     }
                     d = new Dimension(w, h);
                     i++;

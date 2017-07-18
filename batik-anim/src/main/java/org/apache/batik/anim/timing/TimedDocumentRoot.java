@@ -129,7 +129,7 @@ public abstract class TimedDocumentRoot extends TimeContainer {
      * Samples the entire timegraph at the given time.
      */
     public float seekTo(float time, boolean hyperlinking) {
-        // Trace.enter(this, "seekTo", new Object[] { new Float(time) } ); try {
+        // Trace.enter(this, "seekTo", new Object[] { Float.valueOf(time) } ); try {
         isSampling = true;
         lastSampleTime = time;
         isHyperlinking = hyperlinking;

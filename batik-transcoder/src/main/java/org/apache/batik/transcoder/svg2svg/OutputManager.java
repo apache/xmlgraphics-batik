@@ -451,7 +451,7 @@ public class OutputManager {
         throws IOException {
         xmlSpace.add(0, xmlSpace.get(0));
 
-        startingLines.add(0, new Integer(line));
+        startingLines.add(0, line);
 
         if (prettyPrinter.getFormat()) {
             if (canIndent) {
@@ -555,7 +555,7 @@ public class OutputManager {
         if (name != null) {
             if (prettyPrinter.getFormat()) {
                 if (xmlSpace.get(0) != Boolean.TRUE &&
-                    (line != ((Integer)startingLines.get(0)).intValue() ||
+                    (line != (Integer) startingLines.get(0) ||
                      column + name.length + 3 >= prettyPrinter.getDocumentWidth())) {
                     printNewline();
                     printString(margin.toString());

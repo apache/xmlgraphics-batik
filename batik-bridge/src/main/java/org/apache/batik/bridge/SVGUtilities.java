@@ -512,7 +512,7 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
         if (vals[0] == null)
             filterRes[0] = -1;
         else {
-            filterRes[0] = vals[0].floatValue();
+            filterRes[0] = vals[0];
             if (filterRes[0] < 0)
                 throw new BridgeException
                     (ctx, filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
@@ -522,7 +522,7 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
         if (vals[1] == null)
             filterRes[1] = filterRes[0];
         else {
-            filterRes[1] = vals[1].floatValue();
+            filterRes[1] = vals[1];
             if (filterRes[1] < 0)
                 throw new BridgeException
                     (ctx, filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
@@ -547,9 +547,9 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
 
         try {
             StringTokenizer tokens = new StringTokenizer(attrValue, " ");
-            ret[0] = new Float(Float.parseFloat(tokens.nextToken()));
+            ret[0] = Float.parseFloat(tokens.nextToken());
             if (tokens.hasMoreTokens()) {
-                ret[1] = new Float(Float.parseFloat(tokens.nextToken()));
+                ret[1] = Float.parseFloat(tokens.nextToken());
             }
 
             if (tokens.hasMoreTokens()) {

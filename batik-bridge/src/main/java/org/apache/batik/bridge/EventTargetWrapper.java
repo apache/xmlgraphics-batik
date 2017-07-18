@@ -215,7 +215,7 @@ class EventTargetWrapper extends NativeJavaObject {
                     args[i] = Context.jsToJava(args[i], paramTypes[i]);
                 ((EventTarget)njo.unwrap()).addEventListener
                     ((String)args[0], evtListener,
-                     ((Boolean)args[2]).booleanValue());
+                            (Boolean) args[2]);
                 return Undefined.instance;
             }
             if (args[1] instanceof NativeObject) {
@@ -236,7 +236,7 @@ class EventTargetWrapper extends NativeJavaObject {
                     args[i] = Context.jsToJava(args[i], paramTypes[i]);
                 ((EventTarget)njo.unwrap()).addEventListener
                     ((String)args[0], evtListener,
-                     ((Boolean)args[2]).booleanValue());
+                            (Boolean) args[2]);
                 return Undefined.instance;
             }
             return delegate.call(ctx, scope, thisObj, args);
@@ -268,7 +268,7 @@ class EventTargetWrapper extends NativeJavaObject {
                 for (int i = 0; i < args.length; i++)
                     args[i] = Context.jsToJava(args[i], paramTypes[i]);
                 ((EventTarget)njo.unwrap()).removeEventListener
-                    ((String)args[0], el, ((Boolean)args[2]).booleanValue());
+                    ((String)args[0], el, (Boolean) args[2]);
                 return Undefined.instance;
             }
             if (args[1] instanceof NativeObject) {
@@ -284,7 +284,7 @@ class EventTargetWrapper extends NativeJavaObject {
                 for (int i = 0; i < args.length; i++)
                     args[i] = Context.jsToJava(args[i], paramTypes[i]);
                 ((EventTarget)njo.unwrap()).removeEventListener
-                    ((String)args[0], el, ((Boolean)args[2]).booleanValue());
+                    ((String)args[0], el, (Boolean) args[2]);
                 return Undefined.instance;
             }
             return delegate.call(ctx, scope, thisObj, args);

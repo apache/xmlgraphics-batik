@@ -52,13 +52,13 @@ public class MetaRecord /*implements Serializable*/ {
     }
 
     /**
-     * helper method to add int-values. This way we keep the call to new Integer()
+     * helper method to add int-values. This way we keep the call to Integer.valueOf()
      * in one place, here.
      *
      * @param iValue  the value to add to ptVector, wrapped in an Integer
      */
     public final void addElement( int iValue ){
-        ptVector.add( new Integer( iValue ) );
+        ptVector.add(iValue);
     }
 
     /**
@@ -77,7 +77,7 @@ public class MetaRecord /*implements Serializable*/ {
      * @return the intValue of the element at offset
      */
     public final int elementAt( int offset ){
-        return ((Integer)ptVector.get( offset )).intValue();
+        return (Integer) ptVector.get(offset);
     }
 
     /** A record that contain byte arrays elements.

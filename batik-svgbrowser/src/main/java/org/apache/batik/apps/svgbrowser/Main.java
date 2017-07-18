@@ -377,19 +377,19 @@ public class Main implements Application {
         defaults.put(PreferenceDialog.PREFERENCE_KEY_LOAD_ECMASCRIPT,
                      Boolean.TRUE);
         defaults.put(PreferenceDialog.PREFERENCE_KEY_ALLOWED_SCRIPT_ORIGIN,
-                     new Integer(ResourceOrigin.DOCUMENT));
+                ResourceOrigin.DOCUMENT);
         defaults.put(PreferenceDialog.PREFERENCE_KEY_ALLOWED_EXTERNAL_RESOURCE_ORIGIN,
-                     new Integer(ResourceOrigin.ANY));
+                ResourceOrigin.ANY);
         defaults.put(PREFERENCE_KEY_VISITED_URI_LIST,
                      "");
         defaults.put(PREFERENCE_KEY_VISITED_URI_LIST_LENGTH,
-                     new Integer(MAX_VISITED_URIS));
+                MAX_VISITED_URIS);
         defaults.put(PreferenceDialog.PREFERENCE_KEY_ANIMATION_RATE_LIMITING_MODE,
-                     new Integer(1));
+                1);
         defaults.put(PreferenceDialog.PREFERENCE_KEY_ANIMATION_RATE_LIMITING_CPU,
-                     new Float(0.75f));
+                0.75f);
         defaults.put(PreferenceDialog.PREFERENCE_KEY_ANIMATION_RATE_LIMITING_FPS,
-                     new Float(10));
+                (float) 10);
         defaults.put(PreferenceDialog.PREFERENCE_KEY_USER_STYLESHEET_ENABLED,
                      Boolean.TRUE);
 

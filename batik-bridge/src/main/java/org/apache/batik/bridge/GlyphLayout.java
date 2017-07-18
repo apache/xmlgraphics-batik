@@ -349,9 +349,8 @@ public class GlyphLayout implements TextSpanLayout {
     public boolean isLeftToRight() {
         aci.first();
         int bidiLevel =
-            ((Integer)aci.getAttribute
-             (GVTAttributedCharacterIterator.TextAttribute.BIDI_LEVEL))
-            .intValue();
+                (Integer) aci.getAttribute
+                        (GVTAttributedCharacterIterator.TextAttribute.BIDI_LEVEL);
 
         // Check if low bit is set if not then we are left to right
         // (even bidi level).
@@ -987,7 +986,7 @@ public class GlyphLayout implements TextSpanLayout {
         aci.first();
         Float dy = (Float) aci.getAttribute(DY);
         if (dy != null)
-            y += dy.floatValue();
+            y += dy;
 
         Stroke overlineStroke =
             new BasicStroke(overlineThickness);
@@ -1018,7 +1017,7 @@ public class GlyphLayout implements TextSpanLayout {
         aci.first();
         Float dy = (Float) aci.getAttribute(DY);
         if (dy != null)
-            y += dy.floatValue();
+            y += dy;
 
         Rectangle2D logicalBounds = gv.getLogicalBounds();
 
@@ -1042,7 +1041,7 @@ public class GlyphLayout implements TextSpanLayout {
         aci.first();
         Float dy = (Float) aci.getAttribute(DY);
         if (dy != null)
-            y += dy.floatValue();
+            y += dy;
 
         Rectangle2D logicalBounds = gv.getLogicalBounds();
         return strikethroughStroke.createStrokedShape(
@@ -1186,26 +1185,26 @@ public class GlyphLayout implements TextSpanLayout {
                 if (rotation == null || rotation.isNaN()) {
                     glyphRotation = glyphOrientationRotation;
                 } else {
-                    glyphRotation = (rotation.floatValue() +
+                    glyphRotation = (rotation +
                                      glyphOrientationRotation);
                 }
 
                 if ((x != null) && !x.isNaN()) {
                     if (i == 0)
-                        shift_x_pos = (float)(x.floatValue()-offset.getX());
-                    curr_x_pos = x.floatValue()-shift_x_pos;
+                        shift_x_pos = (float)(x -offset.getX());
+                    curr_x_pos = x -shift_x_pos;
                 }
                 if (dx != null && !dx.isNaN()) {
-                    curr_x_pos += dx.floatValue();
+                    curr_x_pos += dx;
                 }
 
                 if ((y != null) && !y.isNaN()) {
                     if (i == 0)
-                        shift_y_pos = (float)(y.floatValue()-offset.getY());
-                    curr_y_pos = y.floatValue()-shift_y_pos;
+                        shift_y_pos = (float)(y -offset.getY());
+                    curr_y_pos = y -shift_y_pos;
                 }
                 if (dy != null && !dy.isNaN()) {
-                    curr_y_pos += dy.floatValue();
+                    curr_y_pos += dy;
                 } else if (i > 0) {
                     curr_y_pos += gp[i*2 + 1]-gp[i*2 - 1];
                 }
@@ -1219,7 +1218,7 @@ public class GlyphLayout implements TextSpanLayout {
                             baselineAdjust = -baselineAscent*0.5f;
                         }
                     } else if (baseline instanceof Float) {
-                        baselineAdjust = ((Float) baseline).floatValue();
+                        baselineAdjust = (Float) baseline;
                     }
                     if (vertical) {
                         ox = baselineAdjust;
@@ -1468,7 +1467,7 @@ public class GlyphLayout implements TextSpanLayout {
         aci.first();
         Boolean customSpacing =  (Boolean) aci.getAttribute(
                GVTAttributedCharacterIterator.TextAttribute.CUSTOM_SPACING);
-        if ((customSpacing != null) && customSpacing.booleanValue()) {
+        if ((customSpacing != null) && customSpacing) {
             advance = doSpacing
                 ((Float) aci.getAttribute
                  (GVTAttributedCharacterIterator.TextAttribute.KERNING),
@@ -1506,11 +1505,11 @@ public class GlyphLayout implements TextSpanLayout {
         float letterSpacingVal = 0f;
 
         if ((kern != null) && (!kern.isNaN())) {
-            kernVal = kern.floatValue();
+            kernVal = kern;
             autoKern = false;
         }
         if ((letterSpacing != null) && (!letterSpacing.isNaN())) {
-            letterSpacingVal = letterSpacing.floatValue();
+            letterSpacingVal = letterSpacing;
             doLetterSpacing = true;
         }
         if ((wordSpacing != null) && (!wordSpacing.isNaN())) {
@@ -1622,9 +1621,9 @@ public class GlyphLayout implements TextSpanLayout {
                         dx = (float) (gpos.getX() - px)/(nWS+1);
                         dy = (float) (gpos.getY() - py)/(nWS+1);
                         if (vertical) {
-                            dy += wordSpacing.floatValue()/(nWS+1);
+                            dy += wordSpacing /(nWS+1);
                         } else {
-                            dx += wordSpacing.floatValue()/(nWS+1);
+                            dx += wordSpacing /(nWS+1);
                         }
                         for (int j=beginWS; j<=endWS; ++j) {
                             x += dx;

@@ -146,9 +146,9 @@ public class ClassFileUtilities {
                     }
                     Integer n = (Integer) fromJar.deps.get(toJar);
                     if (n == null) {
-                        fromJar.deps.put(toJar, new Integer(1));
+                        fromJar.deps.put(toJar, 1);
                     } else {
-                        fromJar.deps.put(toJar, new Integer(n.intValue() + 1));
+                        fromJar.deps.put(toJar, n + 1);
                     }
                 }
             }
@@ -163,7 +163,7 @@ public class ClassFileUtilities {
                     Triple t = new Triple();
                     t.from = fromJar;
                     t.to = toJar;
-                    t.count = ((Integer) fromJar.deps.get(toJar)).intValue();
+                    t.count = (Integer) fromJar.deps.get(toJar);
                     triples.add(t);
                 }
             }
@@ -362,7 +362,7 @@ public class ClassFileUtilities {
                 break;
 
             case CONSTANT_CLASS_INFO:
-                classes.add(new Integer(dis.readShort() & 0xffff));
+                classes.add(dis.readShort() & 0xffff);
                 break;
 
             case CONSTANT_STRING_INFO:
@@ -371,7 +371,7 @@ public class ClassFileUtilities {
 
             case CONSTANT_NAMEANDTYPE_INFO:
                 dis.readShort();
-                desc.add(new Integer(dis.readShort() & 0xffff));
+                desc.add(dis.readShort() & 0xffff);
                 break;
 
             case CONSTANT_UTF8_INFO:
@@ -387,12 +387,12 @@ public class ClassFileUtilities {
 
         Iterator it = classes.iterator();
         while (it.hasNext()) {
-            result.add(strs[((Integer)it.next()).intValue()]);
+            result.add(strs[((Integer) it.next())]);
         }
 
         it = desc.iterator();
         while (it.hasNext()) {
-            result.addAll(getDescriptorClasses(strs[((Integer)it.next()).intValue()]));
+            result.addAll(getDescriptorClasses(strs[((Integer) it.next())]));
         }
 
         return result;

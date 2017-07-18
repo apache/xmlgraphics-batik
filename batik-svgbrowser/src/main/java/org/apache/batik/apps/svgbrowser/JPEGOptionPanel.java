@@ -72,9 +72,9 @@ public class JPEGOptionPanel extends OptionPanel {
         quality.setBorder(BorderFactory.createEmptyBorder(0,0,10,0));
         Hashtable labels = new Hashtable();
         for (int i=0; i < 100; i+=10) {
-            labels.put(new Integer(i), new JLabel("0."+i/10));
+            labels.put(i, new JLabel("0."+i/10));
         }
-        labels.put(new Integer(100), new JLabel("1"));
+        labels.put(100, new JLabel("1"));
         quality.setLabelTable(labels);
 
         Dimension dim = quality.getPreferredSize();

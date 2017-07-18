@@ -107,7 +107,7 @@ public abstract class XMLAbstractTranscoder extends AbstractTranscoder {
             // parse the XML document
             DocumentFactory f = createDocumentFactory(domImpl, parserClassname);
             Object xmlParserValidating = hints.get(KEY_XML_PARSER_VALIDATING);
-            boolean validating = xmlParserValidating != null && ((Boolean) xmlParserValidating).booleanValue();
+            boolean validating = xmlParserValidating != null && (Boolean) xmlParserValidating;
             f.setValidating(validating);
             try {
                 if (input.getInputStream() != null) {

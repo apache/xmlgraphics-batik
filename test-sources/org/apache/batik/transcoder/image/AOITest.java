@@ -70,8 +70,8 @@ public class AOITest extends AbstractImageTranscoderTest {
              y, 
              width, 
              height, 
-             new Float(-1), 
-             new Float(-1));
+             Float.valueOf(-1), 
+             Float.valueOf(-1));
     }
 
     /**
