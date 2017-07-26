@@ -24,7 +24,7 @@
   <testGroup id="swing.memoryLeaks" 
              class="org.apache.batik.swing.JSVGMemoryLeakTest">
     <test id="samples/anne.svg" />
-    <test id="samples/tests/spec/scripting/memoryLeak1.svg"/>
+    <!-- <test id="samples/tests/spec/scripting/memoryLeak1.svg"/> -->
     <test id="samples/tests/spec/scripting/primaryDoc.svg"/>
   </testGroup>
 
