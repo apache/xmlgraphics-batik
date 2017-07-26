@@ -84,7 +84,7 @@ public class SVGConverterTest extends DefaultTestSuite {
         t.setId("HintsConfigTest.KEY_AOI");
 
         t = new HintsConfigTest(new Object[][]{
-            {JPEGTranscoder.KEY_QUALITY, Float.valueOf(.5)}}){
+            {JPEGTranscoder.KEY_QUALITY, Float.valueOf(.5f)}}){
                 protected void deltaConfigure(SVGConverter c){
                     c.setQuality(.5f);
                 }
