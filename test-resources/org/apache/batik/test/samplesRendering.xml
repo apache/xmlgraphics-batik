@@ -429,16 +429,16 @@
 
     <testGroup id="updateTests" name="Dynamic Update Tests"
                class="org.apache.batik.test.svg.JSVGRenderingAccuracyTest">
-        <!-- <test id="samples/tests/spec/scripting/boundsTransformChange.svg" /> -->
+        <test id="samples/tests/spec/scripting/boundsTransformChange.svg" />
         <test id="samples/tests/spec/scripting/eventAttrAdd.svg" />
         <test id="samples/tests/spec/scripting/markerUpdate.svg" />
-        <!-- <test id="samples/tests/spec/scripting/rootSizeChange.svg" /> -->
-        <!-- <test id="samples/tests/spec/scripting/rectResizeOnClick.svg" /> -->
+        <test id="samples/tests/spec/scripting/rootSizeChange.svg" />
+        <test id="samples/tests/spec/scripting/rectResizeOnClick.svg" />
         <test id="samples/tests/spec/scripting/setProperty.svg" />
         <test id="samples/tests/spec/scripting/styling.svg" />
         <test id="samples/tests/spec/scripting/svgFontMove.svg" />
         <test id="samples/tests/spec/scripting/text_content.svg" />
         <test id="samples/tests/spec/scripting/textProperties2.svg" />
-        <!-- <test id="samples/tests/spec/scripting/visibilityOnClick.svg" /> -->
+        <test id="samples/tests/spec/scripting/visibilityOnClick.svg" />
     </testGroup>
 </testSuite>
