@@ -124,7 +124,7 @@ public class SVGRenderingAccuracyTestValidator extends DefaultTestSuite {
         FileWriter writer = new FileWriter(tmpFile);
         writer.write(svgContent);
         writer.close();
-        return tmpFile.toURL();
+        return tmpFile.toURI().toURL();
     }
 
     /**
@@ -146,7 +146,7 @@ public class SVGRenderingAccuracyTestValidator extends DefaultTestSuite {
         
         tmpFile.deleteOnExit();
         
-        return tmpFile.toURL();
+        return tmpFile.toURI().toURL();
     }
 
 
@@ -214,10 +214,10 @@ public class SVGRenderingAccuracyTestValidator extends DefaultTestSuite {
                 return r;
             }
 
-            if(!t.saveVariation.toURL().toString().endsWith(expectedCandidateURL)){
+            if(!t.saveVariation.toURI().toURL().toString().endsWith(expectedCandidateURL)){
                 TestReport r = reportError(ERROR_UNEXPECTED_CANDIDATE_URL);
                 r.addDescriptionEntry(ENTRY_KEY_EXPECTED_VALUE, expectedCandidateURL);
-                r.addDescriptionEntry(ENTRY_KEY_FOUND_VALUE, "" + t.saveVariation.toURL().toString());
+                r.addDescriptionEntry(ENTRY_KEY_FOUND_VALUE, "" + t.saveVariation.toURI().toURL().toString());
                 return r;
             }
 
@@ -319,7 +319,7 @@ public class SVGRenderingAccuracyTestValidator extends DefaultTestSuite {
             // a File that the ImageLoader is not able to load.
             File tmpFile = File.createTempFile(SVGRenderingAccuracyTest.TEMP_FILE_PREFIX,
                                                null);
-            URL refImgURL = tmpFile.toURL();
+            URL refImgURL = tmpFile.toURI().toURL();
             tmpFile.delete();
             
             Test t = new SVGRenderingAccuracyTest(validSVGURL.toString(),
@@ -422,7 +422,7 @@ public class SVGRenderingAccuracyTestValidator extends DefaultTestSuite {
 
             super.runImpl();            
 
-            t.addVariationURL(tmpVariationFile.toURL().toString());
+            t.addVariationURL(tmpVariationFile.toURI().toURL().toString());
             t.setSaveVariation(null);
 
             setConfig(t, true, null);

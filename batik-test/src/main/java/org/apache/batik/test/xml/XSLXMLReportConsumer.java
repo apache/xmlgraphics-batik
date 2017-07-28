@@ -91,7 +91,7 @@ public class XSLXMLReportConsumer
         TransformerFactory tFactory = TransformerFactory.newInstance();
         Transformer transformer = tFactory.newTransformer(new StreamSource(stylesheet));
         
-        transformer.transform(new StreamSource(xmlReport.toURL().toString()), 
+        transformer.transform(new StreamSource(xmlReport.toURI().toURL().toString()),
                               new StreamResult(new FileOutputStream(createNewReportOutput(reportDirectory).getAbsolutePath())));
     }
     

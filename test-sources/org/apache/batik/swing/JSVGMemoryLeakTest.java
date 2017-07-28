@@ -170,7 +170,7 @@ public class JSVGMemoryLeakTest extends MemoryLeakTest
 
         File f = new File(getId());
         try {
-            canvas.setURI(f.toURL().toString());
+            canvas.setURI(f.toURI().toURL().toString());
         } catch (MalformedURLException mue) {
         }
         registerObjectDesc(canvas, "JSVGCanvas");

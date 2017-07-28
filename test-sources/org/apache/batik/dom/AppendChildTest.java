@@ -64,7 +64,7 @@ public class AppendChildTest extends AbstractTest {
             (GenericDOMImplementation.getDOMImplementation(), parser);
 
         File f = (new File(testFileName));
-        URL url = f.toURL();
+        URL url = f.toURI().toURL();
         Document doc = df.createDocument(null,
                                          rootTag,
                                          url.toString(),

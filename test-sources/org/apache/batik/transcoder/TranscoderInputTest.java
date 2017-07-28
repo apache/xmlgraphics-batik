@@ -51,7 +51,7 @@ import org.w3c.dom.Document;
  */
 public class TranscoderInputTest extends AbstractTest {
     public TestReport runImpl() throws Exception {
-        String TEST_URI = (new File("samples/anne.svg")).toURL().toString();
+        String TEST_URI = (new File("samples/anne.svg")).toURI().toURL().toString();
 
         TestTranscoder t = new TestTranscoder();
 

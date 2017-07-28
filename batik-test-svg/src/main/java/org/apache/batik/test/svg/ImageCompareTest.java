@@ -122,7 +122,7 @@ public class ImageCompareTest extends AbstractTest {
         File f = (new File(url)).getAbsoluteFile();
         if(f.exists()){
             try{
-                return f.toURL();
+                return f.toURI().toURL();
             }catch(MalformedURLException e){
                 throw new IllegalArgumentException();
             }

@@ -435,7 +435,7 @@ public class XMLTestReportProcessor
                                       key.toString());
 
             entryElement.setAttribute(XTR_VALUE_ATTRIBUTE,
-                                      tmpFileCopy.toURL().toString());
+                                      tmpFileCopy.toURI().toURL().toString());
 
         }
         else {

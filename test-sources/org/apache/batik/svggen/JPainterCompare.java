@@ -162,7 +162,7 @@ public class JPainterCompare extends JPanel implements SVGConstants{
         svgCanvas.addSVGDocumentLoaderListener(l);
 
         try{
-            svgCanvas.setURI(tmpFile.toURL().toString());
+            svgCanvas.setURI(tmpFile.toURI().toURL().toString());
             synchronized(l.sem){
                 l.sem.wait();
             }

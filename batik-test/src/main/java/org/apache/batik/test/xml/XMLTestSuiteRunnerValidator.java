@@ -302,7 +302,7 @@ public class XMLTestSuiteRunnerValidator extends DefaultTestSuite {
             DocumentBuilder docBuilder
                 = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 
-            URL url = (new File(XMLTestSuiteRunnerValidator.dummyTestRun)).toURL();
+            URL url = (new File(XMLTestSuiteRunnerValidator.dummyTestRun)).toURI().toURL();
             return docBuilder.parse(url.toString());
 
         }

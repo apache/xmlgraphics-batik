@@ -100,7 +100,7 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
         File f = (new File(url)).getAbsoluteFile();
         if(f.getParentFile().exists()){
             try{
-                return f.toURL();
+                return f.toURI().toURL();
             }catch(MalformedURLException e){
                 throw new IllegalArgumentException();
             }
