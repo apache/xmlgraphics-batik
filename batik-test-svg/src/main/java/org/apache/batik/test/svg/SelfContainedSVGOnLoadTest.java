@@ -173,7 +173,7 @@ public class SelfContainedSVGOnLoadTest extends AbstractTest {
         File f = (new File(url)).getAbsoluteFile();
         if(f.getParentFile().exists()){
             try{
-                return f.toURL().toString();
+                return f.toURI().toURL().toString();
             }catch(MalformedURLException e){
                 throw new IllegalArgumentException();
             }

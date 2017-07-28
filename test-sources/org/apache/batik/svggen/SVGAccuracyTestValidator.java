@@ -137,7 +137,7 @@ public class SVGAccuracyTestValidator extends DefaultTestSuite {
             tmpFile.deleteOnExit();
 
             Test t = new SVGAccuracyTest(this,
-                                         tmpFile.toURL());
+                                         tmpFile.toURI().toURL());
 
             setConfig(t,
                       false,
@@ -154,7 +154,7 @@ public class SVGAccuracyTestValidator extends DefaultTestSuite {
             tmpFile.deleteOnExit();
 
             SVGAccuracyTest t = new SVGAccuracyTest(this,
-                                                    tmpFile.toURL());
+                                                    tmpFile.toURI().toURL());
             
             t.setSaveSVG(tmpFile);
 

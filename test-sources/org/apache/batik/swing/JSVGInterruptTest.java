@@ -113,7 +113,7 @@ public class JSVGInterruptTest extends JSVGMemoryLeakTest {
         File f = new File(getId());
         String uri;
         try {
-            uri = f.toURL().toString();
+            uri = f.toURI().toURL().toString();
         } catch (MalformedURLException mue) {
             throw new IllegalArgumentException(mue.getMessage());
         }

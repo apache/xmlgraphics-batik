@@ -259,11 +259,11 @@ public class SVGAccuracyTest extends AbstractTest
             int cn = computeColumnNumber(refLine, newLine);
             String expectedChar = "eol";
             if(cn >= 0 && refLine != null && refLine.length() > cn){
-                expectedChar = (new Character(refLine.charAt(cn))).toString();
+                expectedChar = (Character.valueOf(refLine.charAt(cn))).toString();
             }
             String foundChar = "null";
             if(cn >=0 && newLine != null && newLine.length() > cn){
-                foundChar = (new Character(newLine.charAt(cn))).toString();
+                foundChar = (Character.valueOf(newLine.charAt(cn))).toString();
             }
 
             if(expectedChar.equals(" ")){

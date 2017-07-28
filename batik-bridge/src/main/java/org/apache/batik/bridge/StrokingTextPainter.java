@@ -730,7 +730,7 @@ public class StrokingTextPainter extends BasicTextPainter {
                                  lastMetrics.getVerticalAdvance());
                     yScale = (float)(length /adv);
                 }
-                visualAdvance = new Point2D.Float(0, length.floatValue());
+                visualAdvance = new Point2D.Float(0, length);
             } else {
                 if (lengthAdj == ADJUST_SPACING) {
                     xScale = (float)
@@ -741,7 +741,7 @@ public class StrokingTextPainter extends BasicTextPainter {
                                   lastMetrics.getHorizontalAdvance());
                     xScale = (float)(length /adv);
                 }
-                visualAdvance = new Point2D.Float(length.floatValue(), 0);
+                visualAdvance = new Point2D.Float(length, 0);
             }
 
             Point2D.Float adv = new Point2D.Float(0,0);

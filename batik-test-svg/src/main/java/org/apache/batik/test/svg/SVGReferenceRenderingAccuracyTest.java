@@ -100,10 +100,10 @@ public class SVGReferenceRenderingAccuracyTest
         if(f.getParentFile().exists()){
             try{
                 if (fragment == null) {
-                    return f.toURL(); // No fragment.
+                    return f.toURI().toURL(); // No fragment.
                 } else {
                     // Construct URL that includes fragment...
-                    return new URL(f.toURL(), fragment);
+                    return new URL(f.toURI().toURL(), fragment);
                 }
             }catch(MalformedURLException e){
                 throw new IllegalArgumentException();

@@ -143,10 +143,10 @@ public class TestReportValidator extends AbstractTest {
         if( tr.hasPassed() != expectedStatus ){
             TestReport.Entry expectedStatusEntry
                 = new TestReport.Entry(Messages.formatMessage(ENTRY_KEY_EXPECTED_STATUS, null),
-                                       ( new Boolean(expectedStatus)).toString());
+                                       (Boolean.valueOf(expectedStatus)).toString());
             TestReport.Entry receivedStatusEntry
                 = new TestReport.Entry(Messages.formatMessage(ENTRY_KEY_RECEIVED_STATUS, null),
-                                       (new Boolean(tr.hasPassed())).toString());
+                                       (Boolean.valueOf(tr.hasPassed())).toString());
             r.setDescription(new TestReport.Entry[]{ expectedStatusEntry, receivedStatusEntry });
             r.setErrorCode(ERROR_UNEXPECTED_TEST_STATUS);
             r.setPassed(false);

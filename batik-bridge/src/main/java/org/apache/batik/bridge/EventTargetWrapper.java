@@ -320,7 +320,7 @@ class EventTargetWrapper extends NativeJavaObject {
                     ((String)args[0],
                      (String)args[1],
                      evtListener,
-                     ((Boolean)args[3]).booleanValue(),
+                            (Boolean) args[3],
                      args[4]);
                 return Undefined.instance;
             }
@@ -339,7 +339,7 @@ class EventTargetWrapper extends NativeJavaObject {
                     ((String)args[0],
                      (String)args[1],
                      evtListener,
-                     ((Boolean)args[3]).booleanValue(),
+                            (Boolean) args[3],
                      args[4]);
                 return Undefined.instance;
             }
@@ -375,7 +375,7 @@ class EventTargetWrapper extends NativeJavaObject {
                     ((String)args[0],
                      (String)args[1],
                      el,
-                     ((Boolean)args[3]).booleanValue());
+                            (Boolean) args[3]);
                 return Undefined.instance;
             }
             if (args[2] instanceof NativeObject) {
@@ -396,7 +396,7 @@ class EventTargetWrapper extends NativeJavaObject {
                     ((String)args[0],
                      (String)args[1],
                      el,
-                     ((Boolean)args[3]).booleanValue());
+                            (Boolean) args[3]);
                 return Undefined.instance;
             }
             return delegate.call(ctx, scope, thisObj, args);

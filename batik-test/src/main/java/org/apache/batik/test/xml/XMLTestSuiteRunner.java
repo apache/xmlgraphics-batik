@@ -516,7 +516,7 @@ public class XMLTestSuiteRunner implements XTRunConstants, XTSConstants{
         URL url = null;
         if(file.exists()){
             try {
-                url = file.toURL();
+                url = file.toURI().toURL();
             }catch(MalformedURLException e){
                 System.err.println(Messages.formatMessage(COULD_NOT_CONVERT_FILE_NAME_TO_URI,
                                                             new Object[]{uriStr}));
