@@ -2559,4 +2559,31 @@ JAVA=/usr/bin/java
     <delete file="${project}-docs-${completeVersion}.tar.gz"/>
     <delete file="${project}-src-${completeVersion}.tar.gz"/>
   </target>
+
+  <target name="junit" depends="init, compiletest, testdirs">
+    <property name="junit.reports.dir" value="${build}/test-reports"/>   
+    <path id="standard-junit-classpath">
+        <pathelement location="${dest}"/>
+        <path refid="libs-classpath"/>
+        <path refid="libs-build-classpath"/>
+        <pathelement location="resources"/>
+        <pathelement location="test-resources"/>
+    </path>               
+    <mkdir dir="${junit.reports.dir}"/>
+    <junit dir="${basedir}" haltonfailure="yes" fork="true" forkmode="once" printsummary="yes" showoutput="true">
+      <!-- <sysproperty key="jawa.awt.headless" value="true"/> -->
+      <formatter type="brief" usefile="false"/>
+      <formatter type="plain" usefile="true"/>
+      <formatter type="xml" usefile="true"/>
+      <classpath>
+        <path refid="standard-junit-classpath"/>
+      </classpath>
+      <assertions>
+        <enable/>
+      </assertions>
+      <batchtest todir="${junit.reports.dir}">
+        <fileset dir="classes" includes="**/*TestCase.class"/>
+      </batchtest>
+    </junit>
+  </target>  
 </project>
