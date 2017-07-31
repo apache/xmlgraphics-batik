@@ -102,6 +102,8 @@ public class JUnitRunnerTestCase {
     }
 
     private static List<String> EXCLUDE = Arrays.asList(
+"samples/tests/spec/scripting/memoryLeak1.svg",
+"samples/tests/spec/scripting/primaryDoc.svg",
 "PerformanceTestValidator",
 "DoubleStringPerformanceTest",
 "text.selection.latin",
