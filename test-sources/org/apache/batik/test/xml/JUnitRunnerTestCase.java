@@ -80,9 +80,17 @@ public class JUnitRunnerTestCase {
             }
             return;
         }
-        if (!EXCLUDE.contains(test.getId())) {
+        if (!EXCLUDE.contains(getId(test))) {
             tests.add(new Test[]{test});
         }
+    }
+
+    private static String getId(Test test) {
+        String id = test.getId();
+        if (id == null || id.length() == 0) {
+            id = test.getName();
+        }
+        return id;
     }
 
     private Test test;
@@ -93,15 +101,20 @@ public class JUnitRunnerTestCase {
     
     @org.junit.Test
     public void test() throws ParserConfigurationException, SAXException, TestException, IOException {
-        System.out.println("Running: " + test.getId());
+        String id = getId(test);
+        System.out.println("Running: " + id);
         TestReport report = test.run();
         if (!report.hasPassed()) {
-            System.out.println("Failed: " + test.getId());
+            System.out.println("Failed: " + id);
         }
-        Assert.assertTrue(test.getId(), report.hasPassed());
+        Assert.assertTrue(id, report.hasPassed());
     }
 
     private static List<String> EXCLUDE = Arrays.asList(
+"org.apache.batik.util.ApplicationSecurityEnforcerTest$CheckNoSecurityManagerOverride",
+"org.apache.batik.util.ApplicationSecurityEnforcerTest$CheckSecurityEnforcement",
+"org.apache.batik.util.ApplicationSecurityEnforcerTest$CheckSecurityRemoval",
+"org.apache.batik.util.ApplicationSecurityEnforcerTest$CheckNoPolicyFile",
 "ATransform.defaultContextGeneration",
 "BasicShapes.defaultContextGeneration",
 "BasicShapes2.defaultContextGeneration",
@@ -575,7 +588,6 @@ public class JUnitRunnerTestCase {
 "MainConfigTest.dpi",
 "MainConfigTest.quality",
 "MainConfigTest.indexed",
-"",
 "defaultTest",
 "B64.1",
 "B64.2",
