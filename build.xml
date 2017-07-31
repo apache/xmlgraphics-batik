@@ -2571,7 +2571,7 @@ JAVA=/usr/bin/java
     </path>               
     <mkdir dir="${junit.reports.dir}"/>
     <junit dir="${basedir}" haltonfailure="yes" fork="true" forkmode="once" printsummary="yes" showoutput="true">
-      <!-- <sysproperty key="jawa.awt.headless" value="true"/> -->
+      <sysproperty key="jawa.awt.headless" value="true"/>
       <formatter type="brief" usefile="false"/>
       <formatter type="plain" usefile="true"/>
       <formatter type="xml" usefile="true"/>
