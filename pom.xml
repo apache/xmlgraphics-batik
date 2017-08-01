@@ -5,7 +5,7 @@
 
   <groupId>org.apache.xmlgraphics</groupId>
   <artifactId>batik</artifactId>
-  <version>1.9</version>
+  <version>1.9.1</version>
   <name>${project.groupId}:${project.artifactId}</name>
   <description>XML Graphics Batik</description>
   <packaging>pom</packaging>
