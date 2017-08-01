@@ -26,6 +26,7 @@ import org.apache.batik.test.TestReport;
 import org.apache.batik.test.TestReportProcessor;
 
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.w3c.dom.Document;
@@ -36,6 +37,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -45,6 +47,18 @@ import java.util.List;
 
 @RunWith(Parameterized.class)
 public class JUnitRunnerTestCase {
+
+    @BeforeClass
+    public static void beforeClass() throws IOException {
+        String sm = "grant { permission java.security.AllPermission; };";
+        File tmp = File.createTempFile("batik", "sm");
+        FileOutputStream fos = new FileOutputStream(tmp);
+        fos.write(sm.getBytes());
+        fos.close();
+        tmp.deleteOnExit();
+        System.setProperty("java.security.policy", tmp.getAbsolutePath());
+    }
+
     @Parameterized.Parameters
     public static Collection<Test[]> data() throws ParserConfigurationException, SAXException, TestException, IOException {
         return getTests();
@@ -111,10 +125,7 @@ public class JUnitRunnerTestCase {
     }
 
     private static List<String> EXCLUDE = Arrays.asList(
-"org.apache.batik.util.ApplicationSecurityEnforcerTest$CheckNoSecurityManagerOverride",
-"org.apache.batik.util.ApplicationSecurityEnforcerTest$CheckSecurityEnforcement",
-"org.apache.batik.util.ApplicationSecurityEnforcerTest$CheckSecurityRemoval",
-"org.apache.batik.util.ApplicationSecurityEnforcerTest$CheckNoPolicyFile",
+//fail on CI
 "ATransform.defaultContextGeneration",
 "BasicShapes.defaultContextGeneration",
 "BasicShapes2.defaultContextGeneration",
@@ -135,9 +146,7 @@ public class JUnitRunnerTestCase {
 "TextSpacePreserve.renderingCheck",
 "TransformCollapse.defaultContextGeneration",
 "NullSetSVGDocumentTest",
-"samples/tests/spec/scripting/memoryLeak1.svg",
-"samples/tests/spec/scripting/primaryDoc.svg",
-"PerformanceTestValidator",
+
 "DoubleStringPerformanceTest",
 "text.selection.latin",
 "text.selection.latin-ext",
@@ -202,8 +211,7 @@ public class JUnitRunnerTestCase {
 "transcoder.image.hints.alternateStylesheet.s4",
 "transcoder.image.hints.alternateStylesheet.s5",
 "transcoder.image.hints.px2mm.96dpi",
-"transcoder.image.hints.px2mm.72dpi",      
-"NullURITest",      
+"transcoder.image.hints.px2mm.72dpi",
 "samples/anne.svg",
 "samples/asf-logo.svg",
 "samples/barChart.svg",
@@ -561,34 +569,8 @@ public class JUnitRunnerTestCase {
 "TransformCollapse.renderingCheck",
 "TransformCollapse.ContextrenderingCheck",
 "ConfigErrorTest.ERROR_UNABLE_TO_CREATE_OUTPUT_DIR",
-"MainConfigTest.output",
-"MainConfigTest.source",
-"MainConfigTest.mimeType.jpegA",
-"MainConfigTest.mimeType.jpegB",
-"MainConfigTest.mimeType.jpegC",
-"MainConfigTest.mimeType.png",
-"MainConfigTest.mimeType.pdf",
-"MainConfigTest.mimeType.tiff",
-"MainConfigTest.width",
-"MainConfigTest.height",
-"MainConfigTest.maxWidth",
-"MainConfigTest.maxHeight",
-"MainConfigTest.aoi",
-"MainConfigTest.backgroundColor",
-"MainConfigTest.cssMedia",
-"MainConfigTest.fontFamily",
-"MainConfigTest.cssAlternate",
-"MainConfigTest.validate",
-"MainConfigTest.onload",
-"MainConfigTest.scripts",
-"MainConfigTest.anyScriptOrigin",
-"MainConfigTest.scriptSecurityOff",
-"MainConfigTest.lang",
-"MainConfigTest.cssUser",
-"MainConfigTest.dpi",
-"MainConfigTest.quality",
-"MainConfigTest.indexed",
 "defaultTest",
+"org.apache.batik.util.ApplicationSecurityEnforcerTest$CheckNoPolicyFile",
 "B64.1",
 "B64.2",
 "B64.3",
@@ -615,128 +597,9 @@ public class JUnitRunnerTestCase {
 "B64.24",
 "B64.25",
 "B64.26",
-"bridge/ecmaCheckNoLoadAny(scripts=application/java-archive)(scriptOrigin=ANY)(secure=true)(restricted=false)",
-"bridge/ecmaCheckNoLoadAny(scripts=application/java-archive)(scriptOrigin=DOCUMENT)(secure=true)(restricted=false)",
-"bridge/ecmaCheckNoLoadAny(scripts=application/java-archive)(scriptOrigin=EMBEDED)(secure=true)(restricted=false)",
-"bridge/ecmaCheckNoLoadAny(scripts=application/java-archive)(scriptOrigin=NONE)(secure=true)(restricted=false)",
-"bridge/ecmaCheckNoLoadAny(scripts=application/java-archive)(scriptOrigin=ANY)(secure=false)(restricted=false)",
-"bridge/ecmaCheckNoLoadAny(scripts=application/java-archive)(scriptOrigin=DOCUMENT)(secure=false)(restricted=false)",
-"bridge/ecmaCheckNoLoadAny(scripts=application/java-archive)(scriptOrigin=EMBEDED)(secure=false)(restricted=false)",
-"bridge/ecmaCheckNoLoadAny(scripts=application/java-archive)(scriptOrigin=NONE)(secure=false)(restricted=false)",
-"bridge/ecmaCheckNoLoadSameAsDocument(scripts=application/java-archive)(scriptOrigin=ANY)(secure=true)(restricted=false)",
-"bridge/ecmaCheckNoLoadSameAsDocument(scripts=application/java-archive)(scriptOrigin=DOCUMENT)(secure=true)(restricted=false)",
-"bridge/ecmaCheckNoLoadSameAsDocument(scripts=application/java-archive)(scriptOrigin=EMBEDED)(secure=true)(restricted=false)",
-"bridge/ecmaCheckNoLoadSameAsDocument(scripts=application/java-archive)(scriptOrigin=NONE)(secure=true)(restricted=false)",
-"bridge/ecmaCheckNoLoadSameAsDocument(scripts=application/java-archive)(scriptOrigin=ANY)(secure=false)(restricted=false)",
-"bridge/ecmaCheckNoLoadSameAsDocument(scripts=application/java-archive)(scriptOrigin=DOCUMENT)(secure=false)(restricted=false)",
-"bridge/ecmaCheckNoLoadSameAsDocument(scripts=application/java-archive)(scriptOrigin=EMBEDED)(secure=false)(restricted=false)",
-"bridge/ecmaCheckNoLoadSameAsDocument(scripts=application/java-archive)(scriptOrigin=NONE)(secure=false)(restricted=false)",
-"bridge/ecmaCheckNoLoadEmbed(scripts=application/java-archive)(scriptOrigin=ANY)(secure=true)(restricted=false)",
-"bridge/ecmaCheckNoLoadEmbed(scripts=application/java-archive)(scriptOrigin=DOCUMENT)(secure=true)(restricted=false)",
-"bridge/ecmaCheckNoLoadEmbed(scripts=application/java-archive)(scriptOrigin=EMBEDED)(secure=true)(restricted=false)",
-"bridge/ecmaCheckNoLoadEmbed(scripts=application/java-archive)(scriptOrigin=NONE)(secure=true)(restricted=false)",
-"bridge/ecmaCheckNoLoadEmbed(scripts=application/java-archive)(scriptOrigin=ANY)(secure=false)(restricted=false)",
-"bridge/ecmaCheckNoLoadEmbed(scripts=application/java-archive)(scriptOrigin=DOCUMENT)(secure=false)(restricted=false)",
-"bridge/ecmaCheckNoLoadEmbed(scripts=application/java-archive)(scriptOrigin=EMBEDED)(secure=false)(restricted=false)",
-"bridge/ecmaCheckNoLoadEmbed(scripts=application/java-archive)(scriptOrigin=NONE)(secure=false)(restricted=false)",
-"bridge/ecmaCheckNoLoadEmbedAttr(scripts=application/java-archive)(scriptOrigin=ANY)(secure=true)(restricted=false)",
-"bridge/ecmaCheckNoLoadEmbedAttr(scripts=application/java-archive)(scriptOrigin=DOCUMENT)(secure=true)(restricted=false)",
-"bridge/ecmaCheckNoLoadEmbedAttr(scripts=application/java-archive)(scriptOrigin=EMBEDED)(secure=true)(restricted=false)",
-"bridge/ecmaCheckNoLoadEmbedAttr(scripts=application/java-archive)(scriptOrigin=NONE)(secure=true)(restricted=false)",
-"bridge/ecmaCheckNoLoadEmbedAttr(scripts=application/java-archive)(scriptOrigin=ANY)(secure=false)(restricted=false)",
-"bridge/ecmaCheckNoLoadEmbedAttr(scripts=application/java-archive)(scriptOrigin=DOCUMENT)(secure=false)(restricted=false)",
-"bridge/ecmaCheckNoLoadEmbedAttr(scripts=application/java-archive)(scriptOrigin=EMBEDED)(secure=false)(restricted=false)",
-"bridge/ecmaCheckNoLoadEmbedAttr(scripts=application/java-archive)(scriptOrigin=NONE)(secure=false)(restricted=false)",
-"bridge/ecmaCheckNoLoadAny(scripts=text/ecmascript)(scriptOrigin=ANY)(secure=true)(restricted=true)",
-"bridge/ecmaCheckNoLoadAny(scripts=text/ecmascript)(scriptOrigin=DOCUMENT)(secure=true)(restricted=true)",
-"bridge/ecmaCheckNoLoadAny(scripts=text/ecmascript)(scriptOrigin=EMBEDED)(secure=true)(restricted=true)",
-"bridge/ecmaCheckNoLoadAny(scripts=text/ecmascript)(scriptOrigin=NONE)(secure=true)(restricted=true)",
-"bridge/ecmaCheckNoLoadSameAsDocument(scripts=text/ecmascript)(scriptOrigin=ANY)(secure=true)(restricted=true)",
-"bridge/ecmaCheckNoLoadSameAsDocument(scripts=text/ecmascript)(scriptOrigin=DOCUMENT)(secure=true)(restricted=true)",
-"bridge/ecmaCheckNoLoadSameAsDocument(scripts=text/ecmascript)(scriptOrigin=EMBEDED)(secure=true)(restricted=true)",
-"bridge/ecmaCheckNoLoadSameAsDocument(scripts=text/ecmascript)(scriptOrigin=NONE)(secure=true)(restricted=true)",
-"bridge/ecmaCheckNoLoadEmbed(scripts=text/ecmascript)(scriptOrigin=ANY)(secure=true)(restricted=true)",
-"bridge/ecmaCheckNoLoadEmbed(scripts=text/ecmascript)(scriptOrigin=DOCUMENT)(secure=true)(restricted=true)",
-"bridge/ecmaCheckNoLoadEmbed(scripts=text/ecmascript)(scriptOrigin=EMBEDED)(secure=true)(restricted=true)",
-"bridge/ecmaCheckNoLoadEmbed(scripts=text/ecmascript)(scriptOrigin=NONE)(secure=true)(restricted=true)",
-"bridge/ecmaCheckNoLoadEmbedAttr(scripts=text/ecmascript)(scriptOrigin=ANY)(secure=true)(restricted=true)",
-"bridge/ecmaCheckNoLoadEmbedAttr(scripts=text/ecmascript)(scriptOrigin=DOCUMENT)(secure=true)(restricted=true)",
-"bridge/ecmaCheckNoLoadEmbedAttr(scripts=text/ecmascript)(scriptOrigin=EMBEDED)(secure=true)(restricted=true)",
-"bridge/ecmaCheckNoLoadEmbedAttr(scripts=text/ecmascript)(scriptOrigin=NONE)(secure=true)(restricted=true)",
-"bridge/ecmaCheckNoLoadAny(scripts=text/ecmascript)(scriptOrigin=DOCUMENT)(secure=true)(restricted=false)",
-"bridge/ecmaCheckNoLoadAny(scripts=text/ecmascript)(scriptOrigin=DOCUMENT)(secure=false)(restricted=false)",
-"bridge/ecmaCheckNoLoadAny(scripts=text/ecmascript)(scriptOrigin=EMBEDED)(secure=true)(restricted=false)",
-"bridge/ecmaCheckNoLoadAny(scripts=text/ecmascript)(scriptOrigin=EMBEDED)(secure=false)(restricted=false)",
-"bridge/ecmaCheckNoLoadSameAsDocument(scripts=text/ecmascript)(scriptOrigin=EMBEDED)(secure=true)(restricted=false)",
-"bridge/ecmaCheckNoLoadSameAsDocument(scripts=text/ecmascript)(scriptOrigin=EMBEDED)(secure=false)(restricted=false)",
-"bridge/ecmaCheckNoLoadAny(scripts=text/ecmascript)(scriptOrigin=NONE)(secure=true)(restricted=false)",
-"bridge/ecmaCheckNoLoadAny(scripts=text/ecmascript)(scriptOrigin=NONE)(secure=false)(restricted=false)",
-"bridge/ecmaCheckNoLoadSameAsDocument(scripts=text/ecmascript)(scriptOrigin=NONE)(secure=true)(restricted=false)",
-"bridge/ecmaCheckNoLoadSameAsDocument(scripts=text/ecmascript)(scriptOrigin=NONE)(secure=false)(restricted=false)",
-"bridge/ecmaCheckNoLoadEmbed(scripts=text/ecmascript)(scriptOrigin=NONE)(secure=true)(restricted=false)",
-"bridge/ecmaCheckNoLoadEmbed(scripts=text/ecmascript)(scriptOrigin=NONE)(secure=false)(restricted=false)",
-"bridge/ecmaCheckNoLoadEmbedAttr(scripts=text/ecmascript)(scriptOrigin=NONE)(secure=true)(restricted=false)",
-"bridge/ecmaCheckNoLoadEmbedAttr(scripts=text/ecmascript)(scriptOrigin=NONE)(secure=false)(restricted=false)",
-"ecmaCheckLoadAny(scripts=text/ecmascript)(scriptOrigin=any)(secure=true)",
-"ecmaCheckLoadAny(scripts=text/ecmascript)(scriptOrigin=any)(secure=false)",
-"ecmaCheckLoadSameAsDocument(scripts=text/ecmascript)(scriptOrigin=any)(secure=true)",
-"ecmaCheckLoadSameAsDocument(scripts=text/ecmascript)(scriptOrigin=any)(secure=false)",
-"ecmaCheckLoadSameAsDocument(scripts=text/ecmascript)(scriptOrigin=document)(secure=true)",
-"ecmaCheckLoadSameAsDocument(scripts=text/ecmascript)(scriptOrigin=document)(secure=false)",
-"ecmaCheckLoadEmbed(scripts=text/ecmascript)(scriptOrigin=any)(secure=true)",
-"ecmaCheckLoadEmbed(scripts=text/ecmascript)(scriptOrigin=any)(secure=false)",
-"ecmaCheckLoadEmbed(scripts=text/ecmascript)(scriptOrigin=document)(secure=true)",
-"ecmaCheckLoadEmbed(scripts=text/ecmascript)(scriptOrigin=document)(secure=false)",
-"ecmaCheckLoadEmbed(scripts=text/ecmascript)(scriptOrigin=embeded)(secure=true)",
-"ecmaCheckLoadEmbed(scripts=text/ecmascript)(scriptOrigin=embeded)(secure=false)",
-"ecmaCheckLoadEmbedAttr(scripts=text/ecmascript)(scriptOrigin=any)(secure=true)",
-"ecmaCheckLoadEmbedAttr(scripts=text/ecmascript)(scriptOrigin=any)(secure=false)",
-"ecmaCheckLoadEmbedAttr(scripts=text/ecmascript)(scriptOrigin=document)(secure=true)",
-"ecmaCheckLoadEmbedAttr(scripts=text/ecmascript)(scriptOrigin=document)(secure=false)",
-"ecmaCheckLoadEmbedAttr(scripts=text/ecmascript)(scriptOrigin=embeded)(secure=true)",
-"ecmaCheckLoadEmbedAttr(scripts=text/ecmascript)(scriptOrigin=embeded)(secure=false)",
 "ecmaCheckPermissionsDenied",
 "ecmaCheckPermissionsDeniedFunction",
 "ecmaCheckPermissionsDeniedEval",
-"ecmaCheckPermissionsGranted",
-"ecmaCheckPermissionsGrantedFunction",
-"ecmaCheckPermissionsGrantedEval",
-"bridge/jarCheckNoLoadAny(scripts=text/ecmascript)(scriptOrigin=ANY)(secure=true)",
-"bridge/jarCheckNoLoadAny(scripts=text/ecmascript)(scriptOrigin=DOCUMENT)(secure=true)",
-"bridge/jarCheckNoLoadAny(scripts=text/ecmascript)(scriptOrigin=EMBEDED)(secure=true)",
-"bridge/jarCheckNoLoadAny(scripts=text/ecmascript)(scriptOrigin=NONE)(secure=true)",
-"bridge/jarCheckNoLoadAny(scripts=text/ecmascript)(scriptOrigin=ANY)(secure=false)",
-"bridge/jarCheckNoLoadAny(scripts=text/ecmascript)(scriptOrigin=DOCUMENT)(secure=false)",
-"bridge/jarCheckNoLoadAny(scripts=text/ecmascript)(scriptOrigin=EMBEDED)(secure=false)",
-"bridge/jarCheckNoLoadAny(scripts=text/ecmascript)(scriptOrigin=NONE)(secure=false)",
-"bridge/jarCheckNoLoadSameAsDocument(scripts=text/ecmascript)(scriptOrigin=ANY)(secure=true)",
-"bridge/jarCheckNoLoadSameAsDocument(scripts=text/ecmascript)(scriptOrigin=DOCUMENT)(secure=true)",
-"bridge/jarCheckNoLoadSameAsDocument(scripts=text/ecmascript)(scriptOrigin=EMBEDED)(secure=true)",
-"bridge/jarCheckNoLoadSameAsDocument(scripts=text/ecmascript)(scriptOrigin=NONE)(secure=true)",
-"bridge/jarCheckNoLoadSameAsDocument(scripts=text/ecmascript)(scriptOrigin=ANY)(secure=false)",
-"bridge/jarCheckNoLoadSameAsDocument(scripts=text/ecmascript)(scriptOrigin=DOCUMENT)(secure=false)",
-"bridge/jarCheckNoLoadSameAsDocument(scripts=text/ecmascript)(scriptOrigin=EMBEDED)(secure=false)",
-"bridge/jarCheckNoLoadSameAsDocument(scripts=text/ecmascript)(scriptOrigin=NONE)(secure=false)",
-"bridge/jarCheckNoLoadEmbed(scripts=text/ecmascript)(scriptOrigin=ANY)(secure=true)",
-"bridge/jarCheckNoLoadEmbed(scripts=text/ecmascript)(scriptOrigin=DOCUMENT)(secure=true)",
-"bridge/jarCheckNoLoadEmbed(scripts=text/ecmascript)(scriptOrigin=EMBEDED)(secure=true)",
-"bridge/jarCheckNoLoadEmbed(scripts=text/ecmascript)(scriptOrigin=NONE)(secure=true)",
-"bridge/jarCheckNoLoadEmbed(scripts=text/ecmascript)(scriptOrigin=ANY)(secure=false)",
-"bridge/jarCheckNoLoadEmbed(scripts=text/ecmascript)(scriptOrigin=DOCUMENT)(secure=false)",
-"bridge/jarCheckNoLoadEmbed(scripts=text/ecmascript)(scriptOrigin=EMBEDED)(secure=false)",
-"bridge/jarCheckNoLoadEmbed(scripts=text/ecmascript)(scriptOrigin=NONE)(secure=false)",
-"bridge/jarCheckNoLoadAny(scripts=application/java-archive)(scriptOrigin=DOCUMENT)(secure=true)",
-"bridge/jarCheckNoLoadAny(scripts=application/java-archive)(scriptOrigin=DOCUMENT)(secure=false)",
-"bridge/jarCheckNoLoadAny(scripts=application/java-archive)(scriptOrigin=EMBEDED)(secure=true)",
-"bridge/jarCheckNoLoadAny(scripts=application/java-archive)(scriptOrigin=EMBEDED)(secure=false)",
-"bridge/jarCheckNoLoadSameAsDocument(scripts=application/java-archive)(scriptOrigin=EMBEDED)(secure=true)",
-"bridge/jarCheckNoLoadSameAsDocument(scripts=application/java-archive)(scriptOrigin=EMBEDED)(secure=false)",
-"bridge/jarCheckNoLoadAny(scripts=application/java-archive)(scriptOrigin=NONE)(secure=true)",
-"bridge/jarCheckNoLoadAny(scripts=application/java-archive)(scriptOrigin=NONE)(secure=false)",
-"bridge/jarCheckNoLoadSameAsDocument(scripts=application/java-archive)(scriptOrigin=NONE)(secure=true)",
-"bridge/jarCheckNoLoadSameAsDocument(scripts=application/java-archive)(scriptOrigin=NONE)(secure=false)",
-"bridge/jarCheckNoLoadEmbed(scripts=application/java-archive)(scriptOrigin=NONE)(secure=true)",
-"bridge/jarCheckNoLoadEmbed(scripts=application/java-archive)(scriptOrigin=NONE)(secure=false)",
 "jarCheckLoadAny(scripts=application/java-archive)(scriptOrigin=any)(secure=true)",
 "jarCheckLoadAny(scripts=application/java-archive)(scriptOrigin=any)(secure=false)",
 "jarCheckLoadSameAsDocument(scripts=application/java-archive)(scriptOrigin=any)(secure=true)",
@@ -744,11 +607,7 @@ public class JUnitRunnerTestCase {
 "jarCheckLoadSameAsDocument(scripts=application/java-archive)(scriptOrigin=document)(secure=true)",
 "jarCheckLoadSameAsDocument(scripts=application/java-archive)(scriptOrigin=document)(secure=false)",
 "jarCheckPermissionsGranted",
-"externalResourcesAccess.secure",
 "externalResourcesAccess.unsecure",
-"bridge/ecmaCheckNoEmbed",
-"bridge/ecmaCheckPermissionsDeniedScript",
-"bridge/jarCheckLoadEmbed",
 "bridge/error/rect-negative-width",
 "bridge/error/clipPath-clipPathUnits-invalid",
 "bridge/error/clipPath-subelement-invalid",
@@ -805,8 +664,6 @@ public class JUnitRunnerTestCase {
 "bridge/error/rect-negative-height",
 "bridge/error/rect-negative-rx",
 "bridge/error/rect-negative-ry",
-"bridge/error/transform",
-"bridge/error/xml-invalid",
-"script/rhino/eval"
+"bridge/error/transform"
     );
 }
