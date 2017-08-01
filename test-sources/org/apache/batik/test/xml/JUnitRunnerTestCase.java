@@ -146,6 +146,9 @@ public class JUnitRunnerTestCase {
 "TextSpacePreserve.renderingCheck",
 "TransformCollapse.defaultContextGeneration",
 "NullSetSVGDocumentTest",
+"samples/tests/spec/scripting/memoryLeak1.svg",
+"samples/tests/spec/scripting/primaryDoc.svg",
+"NullURITest",
 
 "DoubleStringPerformanceTest",
 "text.selection.latin",
