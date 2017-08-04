@@ -108,8 +108,8 @@ public class BStroke implements Painter {
         // Varying width
         g.setPaint(Color.black);
         g.drawString("Varying width", 10, 10);
-        for(int i=0; i<strokesWidth.length; i++){
-            g.setStroke(strokesWidth[i]);
+        for (BasicStroke aStrokesWidth : strokesWidth) {
+            g.setStroke(aStrokesWidth);
             g.drawLine(10, 30, 10, 80);
             g.translate(20, 0);
         }
@@ -118,8 +118,8 @@ public class BStroke implements Painter {
         g.setTransform(defaultTransform);
         g.translate(0, 120);
         g.drawString("Varying end caps", 10, 10);
-        for(int i=0; i<strokesCap.length; i++){
-            g.setStroke(strokesCap[i]);
+        for (BasicStroke aStrokesCap : strokesCap) {
+            g.setStroke(aStrokesCap);
             g.drawLine(15, 30, 15, 80);
             g.translate(30, 0);
         }
@@ -133,8 +133,8 @@ public class BStroke implements Painter {
         g.translate(0, 240);
         g.drawString("Varying line joins", 10, 10);
         g.translate(20, 20);
-        for(int i=0; i<strokesJoin.length; i++){
-            g.setStroke(strokesJoin[i]);
+        for (BasicStroke aStrokesJoin : strokesJoin) {
+            g.setStroke(aStrokesJoin);
             g.draw(needle);
             g.translate(35, 0);
         }
@@ -149,8 +149,8 @@ public class BStroke implements Painter {
         miterShape.lineTo(0, 30); // 45 degree elbow.
         g.drawString("Varying miter limit", 10, 10);
         g.translate(10, 30);
-        for(int i=0; i<strokesMiter.length; i++){
-            g.setStroke(strokesMiter[i]);
+        for (BasicStroke aStrokesMiter : strokesMiter) {
+            g.setStroke(aStrokesMiter);
             g.draw(miterShape);
             g.translate(40, 0);
         }
@@ -160,8 +160,8 @@ public class BStroke implements Painter {
         g.translate(150, 0);
         g.drawString("Varying dash patterns", 10, 10);
         g.translate(20, 0);
-        for(int i=0; i<strokesDash.length; i++){
-            g.setStroke(strokesDash[i]);
+        for (BasicStroke aStrokesDash : strokesDash) {
+            g.setStroke(aStrokesDash);
             g.drawLine(10, 20, 10, 80);
             g.translate(20, 0);
         }

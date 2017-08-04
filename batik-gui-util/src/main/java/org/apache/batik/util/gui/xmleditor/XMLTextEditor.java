@@ -19,7 +19,6 @@
 package org.apache.batik.util.gui.xmleditor;
 
 import java.awt.Color;
-import java.awt.Font;
 
 import javax.swing.JEditorPane;
 import javax.swing.event.UndoableEditEvent;

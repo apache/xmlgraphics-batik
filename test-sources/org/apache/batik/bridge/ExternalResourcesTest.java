@@ -176,7 +176,7 @@ public class ExternalResourcesTest extends AbstractTest
     }
 
     public void setSecure(Boolean secure) {
-        this.secure = secure.booleanValue();
+        this.secure = secure;
     }
 
     /**
@@ -315,20 +315,19 @@ public class ExternalResourcesTest extends AbstractTest
             ids[i] = st.nextToken().trim();
         }
 
-        for (int i=0; i<ids.length; i++) {
-            String id = ids[i];
+        for (String id : ids) {
             userAgent = buildUserAgent();
             builder = new GVTBuilder();
             ctx = new BridgeContext(userAgent);
             ctx.setDynamic(true);
 
-            Document cloneDoc = (Document)doc.cloneNode(true);
+            Document cloneDoc = (Document) doc.cloneNode(true);
             Element insertionPoint = cloneDoc.getElementById(INSERTION_POINT_ID);
 
             if (insertionPoint == null) {
                 report.setErrorCode(ERROR_NO_INSERTION_POINT_IN_DOCUMENT);
                 report.addDescriptionEntry(ENTRY_KEY_INSERTION_POINT_ID,
-                                           INSERTION_POINT_ID);
+                        INSERTION_POINT_ID);
                 report.setPassed(false);
                 return report;
             }
@@ -338,7 +337,7 @@ public class ExternalResourcesTest extends AbstractTest
             if (target == null) {
                 report.setErrorCode(ERROR_TARGET_ID_NOT_FOUND);
                 report.addDescriptionEntry(ENTRY_KEY_TARGET_ID,
-                                           id);
+                        id);
                 report.setPassed(false);
                 return report;
             }
@@ -349,7 +348,7 @@ public class ExternalResourcesTest extends AbstractTest
                 GraphicsNode gn = builder.build(ctx, cloneDoc);
                 gn.getBounds();
                 th = userAgent.getDisplayError();
-            } catch (BridgeException e){
+            } catch (BridgeException e) {
                 th = e;
             } catch (SecurityException e) {
                 th = e;
@@ -363,12 +362,12 @@ public class ExternalResourcesTest extends AbstractTest
                 if (!secure)
                     failures.add(id);
             } else if (th instanceof BridgeException) {
-                BridgeException be = (BridgeException)th;
-                if (!secure  ||
-                    (secure && !ERR_URI_UNSECURE.equals(be.getCode()))) {
+                BridgeException be = (BridgeException) th;
+                if (!secure ||
+                        (secure && !ERR_URI_UNSECURE.equals(be.getCode()))) {
                     report.setErrorCode(ERROR_WHILE_PROCESSING_SVG_DOCUMENT);
                     report.addDescriptionEntry(ENTRY_KEY_ERROR_DESCRIPTION,
-                                               be.getMessage());
+                            be.getMessage());
                     report.setPassed(false);
                     return report;
                 }
@@ -376,7 +375,7 @@ public class ExternalResourcesTest extends AbstractTest
                 // Some unknown exception was displayed...
                 report.setErrorCode(ERROR_WHILE_PROCESSING_SVG_DOCUMENT);
                 report.addDescriptionEntry(ENTRY_KEY_ERROR_DESCRIPTION,
-                                           th.getMessage());
+                        th.getMessage());
                 report.setPassed(false);
                 return report;
             }
@@ -389,15 +388,15 @@ public class ExternalResourcesTest extends AbstractTest
 
         if (secure) {
             report.setErrorCode(ERROR_UNTHROWN_SECURITY_EXCEPTIONS);
-            for (int i=0; i<failures.size(); i++) {
+            for (Object failure : failures) {
                 report.addDescriptionEntry(ENTRY_KEY_EXPECTED_EXCEPTION_ON,
-                                           failures.get(i));
+                        failure);
             }
         } else {
             report.setErrorCode(ERROR_THROWN_SECURITY_EXCEPTIONS);
-            for (int i=0; i<failures.size(); i++) {
+            for (Object failure : failures) {
                 report.addDescriptionEntry(ENTRY_KEY_UNEXPECTED_EXCEPTION_ON,
-                                           failures.get(i));
+                        failure);
             }
         }
 

@@ -720,9 +720,9 @@ public class PreferenceManager
     {
         int j = 0;
         if (values != null)
-            for (int i = 0; i < values.length; i++) {
-                if (values[i] != null) {
-                    setString(mkey+j, values[i]);
+            for (String value : values) {
+                if (value != null) {
+                    setString(mkey + j, value);
                     j++;
                 }
             }
@@ -756,9 +756,9 @@ public class PreferenceManager
     {
         int j = 0;
         if (values != null)
-            for (int i = 0 ; i < values.length; i++) {
-                if (values[i] != null) {
-                    setURL(mkey+j, values[i]);
+            for (URL value : values) {
+                if (value != null) {
+                    setURL(mkey + j, value);
                     j++;
                 }
             }
@@ -792,9 +792,9 @@ public class PreferenceManager
     {
         int j = 0;
         if (values != null)
-            for (int i = 0 ; i < values.length; i++) {
-                if (values[i] != null) {
-                    setFile(mkey+j, values[i]);
+            for (File value : values) {
+                if (value != null) {
+                    setFile(mkey + j, value);
                     j++;
                 }
             }

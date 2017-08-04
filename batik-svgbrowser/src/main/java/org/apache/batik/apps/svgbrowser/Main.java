@@ -35,7 +35,6 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -604,10 +603,9 @@ public class Main implements Application {
         System.out.println(resources.getString("Command.syntax"));
         System.out.println();
         System.out.println(resources.getString("Command.options"));
-        Iterator it = handlers.keySet().iterator();
-        while (it.hasNext()) {
-            String s = (String)it.next();
-            System.out.println(((OptionHandler)handlers.get(s)).getDescription());
+        for (Object o : handlers.keySet()) {
+            String s = (String) o;
+            System.out.println(((OptionHandler) handlers.get(s)).getDescription());
         }
     }
 
@@ -757,9 +755,8 @@ public class Main implements Application {
     }
 
     private void setPreferences() throws IOException {
-        Iterator it = viewerFrames.iterator();
-        while (it.hasNext()) {
-            setPreferences((JSVGViewerFrame)it.next());
+        for (Object viewerFrame : viewerFrames) {
+            setPreferences((JSVGViewerFrame) viewerFrame);
         }
 
         System.setProperty("proxyHost", preferenceManager.getString
@@ -960,11 +957,11 @@ public class Main implements Application {
         // Now, save the list of visited URL into the preferences
         StringBuffer lastVisitedBuffer = new StringBuffer( lastVisited.size() * 8 );
 
-        for (int i=0; i<lastVisited.size(); i++) {
+        for (Object aLastVisited : lastVisited) {
             try {
                 lastVisitedBuffer.append
-                    (URLEncoder.encode(lastVisited.get(i).toString(),
-                        Charset.defaultCharset().name()));
+                        (URLEncoder.encode(aLastVisited.toString(),
+                                Charset.defaultCharset().name()));
             } catch (UnsupportedEncodingException e) {
                 throw new RuntimeException(e);
             }

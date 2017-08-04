@@ -601,10 +601,9 @@ public class JSVGComponent extends JGVTComponent {
                     nextDocumentLoader = new SVGDocumentLoader(url, loader);
                     nextDocumentLoader.setPriority(Thread.MIN_PRIORITY);
 
-                    Iterator it = svgDocumentLoaderListeners.iterator();
-                    while (it.hasNext()) {
+                    for (Object svgDocumentLoaderListener : svgDocumentLoaderListeners) {
                         nextDocumentLoader.addSVGDocumentLoaderListener
-                            ((SVGDocumentLoaderListener)it.next());
+                                ((SVGDocumentLoaderListener) svgDocumentLoaderListener);
                     }
                     startDocumentLoader();
                 }
@@ -771,10 +770,9 @@ public class JSVGComponent extends JGVTComponent {
         nextGVTTreeBuilder = new GVTTreeBuilder(doc, bridgeContext);
         nextGVTTreeBuilder.setPriority(Thread.MIN_PRIORITY);
 
-        Iterator it = gvtTreeBuilderListeners.iterator();
-        while (it.hasNext()) {
+        for (Object gvtTreeBuilderListener : gvtTreeBuilderListeners) {
             nextGVTTreeBuilder.addGVTTreeBuilderListener
-                ((GVTTreeBuilderListener)it.next());
+                    ((GVTTreeBuilderListener) gvtTreeBuilderListener);
         }
 
         initializeEventHandling();
@@ -885,10 +883,9 @@ public class JSVGComponent extends JGVTComponent {
                                        svgDocument,
                                        bridgeContext,
                                        um);
-        Iterator it = svgLoadEventDispatcherListeners.iterator();
-        while (it.hasNext()) {
+        for (Object svgLoadEventDispatcherListener : svgLoadEventDispatcherListeners) {
             svgLoadEventDispatcher.addSVGLoadEventDispatcherListener
-                ((SVGLoadEventDispatcherListener)it.next());
+                    ((SVGLoadEventDispatcherListener) svgLoadEventDispatcherListener);
         }
 
         svgLoadEventDispatcher.start();
@@ -1864,9 +1861,9 @@ public class JSVGComponent extends JGVTComponent {
                         Object[] dll = updateManagerListeners.toArray();
 
                         if (dll.length > 0) {
-                            for (int i = 0; i < dll.length; i++) {
-                                ((UpdateManagerListener)dll[i]).
-                                    managerStarted(e);
+                            for (Object aDll : dll) {
+                                ((UpdateManagerListener) aDll).
+                                        managerStarted(e);
                             }
                         }
                     }
@@ -1882,9 +1879,9 @@ public class JSVGComponent extends JGVTComponent {
                         Object[] dll = updateManagerListeners.toArray();
 
                         if (dll.length > 0) {
-                            for (int i = 0; i < dll.length; i++) {
-                                ((UpdateManagerListener)dll[i]).
-                                    managerSuspended(e);
+                            for (Object aDll : dll) {
+                                ((UpdateManagerListener) aDll).
+                                        managerSuspended(e);
                             }
                         }
                     }
@@ -1900,9 +1897,9 @@ public class JSVGComponent extends JGVTComponent {
                         Object[] dll = updateManagerListeners.toArray();
 
                         if (dll.length > 0) {
-                            for (int i = 0; i < dll.length; i++) {
-                                ((UpdateManagerListener)dll[i]).
-                                    managerResumed(e);
+                            for (Object aDll : dll) {
+                                ((UpdateManagerListener) aDll).
+                                        managerResumed(e);
                             }
                         }
                     }
@@ -1921,9 +1918,9 @@ public class JSVGComponent extends JGVTComponent {
                         Object[] dll = updateManagerListeners.toArray();
 
                         if (dll.length > 0) {
-                            for (int i = 0; i < dll.length; i++) {
-                                ((UpdateManagerListener)dll[i]).
-                                    managerStopped(e);
+                            for (Object aDll : dll) {
+                                ((UpdateManagerListener) aDll).
+                                        managerStopped(e);
                             }
                         }
 
@@ -1958,9 +1955,9 @@ public class JSVGComponent extends JGVTComponent {
                         Object[] dll = updateManagerListeners.toArray();
 
                         if (dll.length > 0) {
-                            for (int i = 0; i < dll.length; i++) {
-                                ((UpdateManagerListener)dll[i]).
-                                    updateStarted(e);
+                            for (Object aDll : dll) {
+                                ((UpdateManagerListener) aDll).
+                                        updateStarted(e);
                             }
                         }
                     }
@@ -1991,9 +1988,8 @@ public class JSVGComponent extends JGVTComponent {
 
                             List l = e.getDirtyAreas();
                             if (l != null) {
-                                Iterator i = l.iterator();
-                                while (i.hasNext()) {
-                                    Rectangle r = (Rectangle)i.next();
+                                for (Object aL : l) {
+                                    Rectangle r = (Rectangle) aL;
                                     if (updateOverlay != null) {
                                         updateOverlay.addRect(r);
                                         r = getRenderRect();
@@ -2019,9 +2015,9 @@ public class JSVGComponent extends JGVTComponent {
                         Object[] dll = updateManagerListeners.toArray();
 
                         if (dll.length > 0) {
-                            for (int i = 0; i < dll.length; i++) {
-                                ((UpdateManagerListener)dll[i]).
-                                    updateCompleted(e);
+                            for (Object aDll : dll) {
+                                ((UpdateManagerListener) aDll).
+                                        updateCompleted(e);
                             }
                         }
                     }
@@ -2037,9 +2033,9 @@ public class JSVGComponent extends JGVTComponent {
                         Object[] dll = updateManagerListeners.toArray();
 
                         if (dll.length > 0) {
-                            for (int i = 0; i < dll.length; i++) {
-                                ((UpdateManagerListener)dll[i]).
-                                    updateFailed(e);
+                            for (Object aDll : dll) {
+                                ((UpdateManagerListener) aDll).
+                                        updateFailed(e);
                             }
                         }
                     }
@@ -3379,8 +3375,8 @@ public class JSVGComponent extends JGVTComponent {
                 LinkActivationEvent ev;
                 ev = new LinkActivationEvent(JSVGComponent.this, elt, href);
 
-                for (int i = 0; i < ll.length; i++) {
-                    LinkActivationListener l = (LinkActivationListener)ll[i];
+                for (Object aLl : ll) {
+                    LinkActivationListener l = (LinkActivationListener) aLl;
                     l.linkActivated(ev);
                 }
             }

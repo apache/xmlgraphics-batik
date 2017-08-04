@@ -43,7 +43,6 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 import java.io.BufferedInputStream;
 import java.text.AttributedCharacterIterator;
-import java.util.Iterator;
 import java.util.Stack;
 import java.util.List;
 import java.util.ArrayList;
@@ -1065,9 +1064,8 @@ public class WMFPainter extends AbstractWMFPainter {
     /** Just to be consistent with PolyPolygon filling.
      */
     private void drawPolyPolygon(Graphics2D g2d, List pols) {
-        Iterator it = pols.iterator();
-        while (it.hasNext()) {
-            Polygon2D pol = (Polygon2D)(it.next());
+        for (Object pol1 : pols) {
+            Polygon2D pol = (Polygon2D) (pol1);
             g2d.draw(pol);
         }
     }
@@ -1081,8 +1079,8 @@ public class WMFPainter extends AbstractWMFPainter {
             g2d.fill((Polygon2D)(pols.get(0)));
         } else {
             GeneralPath path = new GeneralPath(GeneralPath.WIND_EVEN_ODD);
-            for (int i = 0; i < pols.size(); i++) {
-                Polygon2D pol = (Polygon2D)(pols.get(i));
+            for (Object pol1 : pols) {
+                Polygon2D pol = (Polygon2D) pol1;
                 path.append(pol, false);
             }
             g2d.fill(path);

@@ -23,7 +23,6 @@ import java.io.ObjectInputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Locale;
 import java.util.MissingResourceException;
@@ -496,10 +495,9 @@ public class SVGOMDocument
      * modified.
      */
     protected void overrideStyleTextChanged(CSSStylableElement e, String text) {
-        Iterator i = cssNavigableDocumentListeners.keySet().iterator();
-        while (i.hasNext()) {
+        for (Object o : cssNavigableDocumentListeners.keySet()) {
             CSSNavigableDocumentListener l =
-                (CSSNavigableDocumentListener) i.next();
+                    (CSSNavigableDocumentListener) o;
             l.overrideStyleTextChanged(e, text);
         }
     }
@@ -509,10 +507,9 @@ public class SVGOMDocument
      */
     protected void overrideStylePropertyRemoved(CSSStylableElement e,
                                                 String name) {
-        Iterator i = cssNavigableDocumentListeners.keySet().iterator();
-        while (i.hasNext()) {
+        for (Object o : cssNavigableDocumentListeners.keySet()) {
             CSSNavigableDocumentListener l =
-                (CSSNavigableDocumentListener) i.next();
+                    (CSSNavigableDocumentListener) o;
             l.overrideStylePropertyRemoved(e, name);
         }
     }
@@ -522,10 +519,9 @@ public class SVGOMDocument
      */
     protected void overrideStylePropertyChanged
             (CSSStylableElement e, String name, String value, String prio) {
-        Iterator i = cssNavigableDocumentListeners.keySet().iterator();
-        while (i.hasNext()) {
+        for (Object o : cssNavigableDocumentListeners.keySet()) {
             CSSNavigableDocumentListener l =
-                (CSSNavigableDocumentListener) i.next();
+                    (CSSNavigableDocumentListener) o;
             l.overrideStylePropertyChanged(e, name, value, prio);
         }
     }
@@ -701,10 +697,9 @@ public class SVGOMDocument
          */
         public void animatedAttributeChanged(Element e,
                                              AnimatedLiveAttributeValue alav) {
-            Iterator i = animatedAttributeListeners.iterator();
-            while (i.hasNext()) {
+            for (Object animatedAttributeListener : animatedAttributeListeners) {
                 AnimatedAttributeListener aal =
-                    (AnimatedAttributeListener) i.next();
+                        (AnimatedAttributeListener) animatedAttributeListener;
                 aal.animatedAttributeChanged(e, alav);
             }
         }
@@ -716,10 +711,9 @@ public class SVGOMDocument
          * @param type the type of animation whose value changed
          */
         public void otherAnimationChanged(Element e, String type) {
-            Iterator i = animatedAttributeListeners.iterator();
-            while (i.hasNext()) {
+            for (Object animatedAttributeListener : animatedAttributeListeners) {
                 AnimatedAttributeListener aal =
-                    (AnimatedAttributeListener) i.next();
+                        (AnimatedAttributeListener) animatedAttributeListener;
                 aal.otherAnimationChanged(e, type);
             }
         }

@@ -470,9 +470,9 @@ public class SVGConverter {
         }
         else{
             this.sources = new ArrayList();
-            for (int i=0; i<sources.length; i++){
-                if (sources[i] != null){
-                    this.sources.add(sources[i]);
+            for (String source : sources) {
+                if (source != null) {
+                    this.sources.add(source);
                 }
             }
 
@@ -736,11 +736,11 @@ public class SVGConverter {
             // exist and we may fail later on in createOutputDir
             //
             int n = sources.size();
-            for(int i=0; i<n; i++){
-                SVGConverterSource src = (SVGConverterSource)sources.get(i);
+            for (Object source : sources) {
+                SVGConverterSource src = (SVGConverterSource) source;
                 // Generate output filename from input filename.
                 File outputName = new File(dst.getPath(),
-                                           getDestinationFile(src.getName()));
+                        getDestinationFile(src.getName()));
                 dstFiles.add(outputName);
 
             }
@@ -751,17 +751,17 @@ public class SVGConverter {
             // sources. This only work if sources are files.
             //
             int n = sources.size();
-            for(int i=0; i<n; i++){
-                SVGConverterSource src = (SVGConverterSource)sources.get(i);
+            for (Object source : sources) {
+                SVGConverterSource src = (SVGConverterSource) source;
                 if (!(src instanceof SVGConverterFileSource)) {
                     throw new SVGConverterException(ERROR_CANNOT_COMPUTE_DESTINATION,
-                                                     new Object[]{src});
+                            new Object[]{src});
                 }
 
                 // Generate output filename from input filename.
-                SVGConverterFileSource fs = (SVGConverterFileSource)src;
+                SVGConverterFileSource fs = (SVGConverterFileSource) src;
                 File outputName = new File(fs.getFile().getParent(),
-                                           getDestinationFile(src.getName()));
+                        getDestinationFile(src.getName()));
                 dstFiles.add(outputName);
             }
 
@@ -784,17 +784,17 @@ public class SVGConverter {
         }
 
         int n = this.sources.size();
-        for (int i=0; i<n; i++){
-            String sourceString = (String)(this.sources.get(i));
+        for (Object source : this.sources) {
+            String sourceString = (String) source;
             File file = new File(sourceString);
             if (file.exists()) {
                 sources.add(new SVGConverterFileSource(file));
             } else {
                 String[] fileNRef = getFileNRef(sourceString);
                 file = new File(fileNRef[0]);
-                if (file.exists()){
+                if (file.exists()) {
                     sources.add(new SVGConverterFileSource(file, fileNRef[1]));
-                } else{
+                } else {
                     sources.add(new SVGConverterURLSource(sourceString));
                 }
             }

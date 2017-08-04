@@ -286,11 +286,11 @@ public class MultiGlyphVector implements GVTGlyphVector {
      */
     public Rectangle2D getLogicalBounds() {
         Rectangle2D ret = null;
-        for (int idx=0; idx<gvs.length; idx++) {
-            Rectangle2D b = gvs[idx].getLogicalBounds();
+        for (GVTGlyphVector gv : gvs) {
+            Rectangle2D b = gv.getLogicalBounds();
             if (ret == null) ret = b;
-            //else ret = ret.createUnion(b);
-            else ret.add( b );   //  same as union
+                //else ret = ret.createUnion(b);
+            else ret.add(b);   //  same as union
         }
         return ret;
     }
@@ -301,8 +301,8 @@ public class MultiGlyphVector implements GVTGlyphVector {
      */
     public Shape getOutline() {
         GeneralPath ret = null;
-        for (int idx=0; idx<gvs.length; idx++) {
-            Shape s = gvs[idx].getOutline();
+        for (GVTGlyphVector gv : gvs) {
+            Shape s = gv.getOutline();
             if (ret == null) ret = new GeneralPath(s);
             else ret.append(s, false);
         }
@@ -327,13 +327,12 @@ public class MultiGlyphVector implements GVTGlyphVector {
     public Rectangle2D getBounds2D(AttributedCharacterIterator aci) {
         Rectangle2D ret = null;
         int begin = aci.getBeginIndex();
-        for (int idx=0; idx<gvs.length; idx++) {
-            GVTGlyphVector gv = gvs[idx];
-            int end = gv.getCharacterCount(0, gv.getNumGlyphs())+1;
-            Rectangle2D b = gvs[idx].getBounds2D
-                (new AttributedCharacterSpanIterator(aci, begin, end));
+        for (GVTGlyphVector gv : gvs) {
+            int end = gv.getCharacterCount(0, gv.getNumGlyphs()) + 1;
+            Rectangle2D b = gv.getBounds2D
+                    (new AttributedCharacterSpanIterator(aci, begin, end));
             if (ret == null) ret = b;
-            //else ret = ret.createUnion(b);
+                //else ret = ret.createUnion(b);
             else ret.add(b);
             begin = end;
         }
@@ -347,18 +346,18 @@ public class MultiGlyphVector implements GVTGlyphVector {
      */
     public Rectangle2D getGeometricBounds() {
         Rectangle2D ret = null;
-        for (int idx=0; idx<gvs.length; idx++) {
-            Rectangle2D b = gvs[idx].getGeometricBounds();
+        for (GVTGlyphVector gv : gvs) {
+            Rectangle2D b = gv.getGeometricBounds();
             if (ret == null) ret = b;
-            //else ret = ret.createUnion(b);
+                //else ret = ret.createUnion(b);
             else ret.add(b);
         }
         return ret;
     }
 
     public void performDefaultLayout() {
-        for (int idx=0; idx<gvs.length; idx++) {
-            gvs[idx].performDefaultLayout();
+        for (GVTGlyphVector gv : gvs) {
+            gv.performDefaultLayout();
         }
     }
 
@@ -402,9 +401,8 @@ public class MultiGlyphVector implements GVTGlyphVector {
     public void draw(Graphics2D g2d,
               AttributedCharacterIterator aci) {
         int begin = aci.getBeginIndex();
-        for (int idx=0; idx<gvs.length; idx++) {
-            GVTGlyphVector gv = gvs[idx];
-            int end = gv.getCharacterCount(0, gv.getNumGlyphs())+1;
+        for (GVTGlyphVector gv : gvs) {
+            int end = gv.getCharacterCount(0, gv.getNumGlyphs()) + 1;
             gv.draw(g2d, new AttributedCharacterSpanIterator(aci, begin, end));
             begin = end;
         }

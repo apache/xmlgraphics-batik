@@ -153,8 +153,8 @@ public class SVGGeneratorTests extends DefaultTestSuite {
         String candidateReference = GENERATOR_REFERENCE_BASE + RENDERING_DIR + "/" + RENDERING_CANDIDATE_REF_DIR + "/" + cl + PNG_EXTENSION;
 
         SVGRenderingAccuracyTest test = new SVGRenderingAccuracyTest(testSource, testReference);
-        for (int i = 0; i < variationURLs.length; i++) {
-            test.addVariationURL(variationURLs[i]);
+        for (String variationURL : variationURLs) {
+            test.addVariationURL(variationURL);
         }
         test.setSaveVariation(new File(saveVariation));
         test.setCandidateReference(new File(candidateReference));

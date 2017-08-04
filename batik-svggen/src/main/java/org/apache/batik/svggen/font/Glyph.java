@@ -64,11 +64,11 @@ public class Glyph {
      * @param factor a 16.16 fixed value
      */
     public void scale(int factor) {
-        for (int i = 0; i < points.length; i++) {
+        for (Point point : points) {
             //points[i].x = ( points[i].x * factor ) >> 6;
             //points[i].y = ( points[i].y * factor ) >> 6;
-            points[i].x = ((points[i].x<<10) * factor) >> 26;
-            points[i].y = ((points[i].y<<10) * factor) >> 26;
+            point.x = ((point.x << 10) * factor) >> 26;
+            point.y = ((point.y << 10) * factor) >> 26;
         }
         leftSideBearing = (short)(( leftSideBearing * factor) >> 6);
         advanceWidth = (advanceWidth * factor) >> 6;

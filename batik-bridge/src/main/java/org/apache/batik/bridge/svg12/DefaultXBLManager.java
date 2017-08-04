@@ -200,19 +200,19 @@ public class DefaultXBLManager implements XBLManager, XBLConstants {
              docSubtreeListener, true);
 
         // Add definitions.
-        for (int i = 0; i < defs.length; i++) {
-            if (defs[i].getAttributeNS(null, XBL_REF_ATTRIBUTE).length() != 0) {
-                addDefinitionRef(defs[i]);
+        for (XBLOMDefinitionElement def : defs) {
+            if (def.getAttributeNS(null, XBL_REF_ATTRIBUTE).length() != 0) {
+                addDefinitionRef(def);
             } else {
-                String ns = defs[i].getElementNamespaceURI();
-                String ln = defs[i].getElementLocalName();
-                addDefinition(ns, ln, defs[i], null);
+                String ns = def.getElementNamespaceURI();
+                String ln = def.getElementLocalName();
+                addDefinition(ns, ln, def, null);
             }
         }
 
         // Add imports.
-        for (int i = 0; i < imports.length; i++) {
-            addImport(imports[i]);
+        for (Element anImport : imports) {
+            addImport(anImport);
         }
 
         // Bind all of the bindable elements in the document that have a
@@ -250,8 +250,7 @@ public class DefaultXBLManager implements XBLManager, XBLConstants {
         int nSlots = imports.values().size();
         ImportRecord[] irs = new ImportRecord[ nSlots ];
         imports.values().toArray( irs );
-        for (int i = 0; i < irs.length; i++) {
-            ImportRecord ir = irs[i];
+        for (ImportRecord ir : irs) {
             if (ir.importElement.getLocalName().equals(XBL_DEFINITION_TAG)) {
                 removeDefinitionRef(ir.importElement);
             } else {
@@ -262,10 +261,10 @@ public class DefaultXBLManager implements XBLManager, XBLConstants {
         // Remove all bindings.
         Object[] defRecs = definitions.getValuesArray();
         definitions.clear();
-        for (int i = 0; i < defRecs.length; i++) {
-            DefinitionRecord defRec = (DefinitionRecord) defRecs[i];
+        for (Object defRec1 : defRecs) {
+            DefinitionRecord defRec = (DefinitionRecord) defRec1;
             TreeSet defs = (TreeSet) definitionLists.get(defRec.namespaceURI,
-                                                         defRec.localName);
+                    defRec.localName);
             if (defs != null) {
                 while (!defs.isEmpty()) {
                     defRec = (DefinitionRecord) defs.first();
@@ -403,8 +402,8 @@ public class DefaultXBLManager implements XBLManager, XBLConstants {
              importAttrListener, false);
 
         Object[] defRecs = definitions.getValuesArray();
-        for (int i = 0; i < defRecs.length; i++) {
-            DefinitionRecord defRec = (DefinitionRecord) defRecs[i];
+        for (Object defRec1 : defRecs) {
+            DefinitionRecord defRec = (DefinitionRecord) defRec1;
             if (defRec.importElement == imp) {
                 removeDefinition(defRec);
             }
@@ -1422,10 +1421,10 @@ public class DefaultXBLManager implements XBLManager, XBLConstants {
         public void handleEvent(Event evt) {
             Object[] defs = importRemovedListener.toBeRemoved.toArray();
             importRemovedListener.toBeRemoved.clear();
-            for (int i = 0; i < defs.length; i++) {
-                XBLOMDefinitionElement def = (XBLOMDefinitionElement) defs[i];
+            for (Object def1 : defs) {
+                XBLOMDefinitionElement def = (XBLOMDefinitionElement) def1;
                 DefinitionRecord defRec
-                    = (DefinitionRecord) definitions.get(def, importElement);
+                        = (DefinitionRecord) definitions.get(def, importElement);
                 removeDefinition(defRec);
             }
         }
@@ -1542,11 +1541,11 @@ public class DefaultXBLManager implements XBLManager, XBLConstants {
         public void handleEvent(Event evt) {
             Object[] defs = docRemovedListener.defsToBeRemoved.toArray();
             docRemovedListener.defsToBeRemoved.clear();
-            for (int i = 0; i < defs.length; i++) {
-                XBLOMDefinitionElement def = (XBLOMDefinitionElement) defs[i];
+            for (Object def1 : defs) {
+                XBLOMDefinitionElement def = (XBLOMDefinitionElement) def1;
                 if (def.getAttributeNS(null, XBL_REF_ATTRIBUTE).length() == 0) {
                     DefinitionRecord defRec
-                        = (DefinitionRecord) definitions.get(def, null);
+                            = (DefinitionRecord) definitions.get(def, null);
                     removeDefinition(defRec);
                 } else {
                     removeDefinitionRef(def);
@@ -1555,14 +1554,14 @@ public class DefaultXBLManager implements XBLManager, XBLConstants {
 
             Object[] imps = docRemovedListener.importsToBeRemoved.toArray();
             docRemovedListener.importsToBeRemoved.clear();
-            for (int i = 0; i < imps.length; i++) {
-                removeImport((Element) imps[i]);
+            for (Object imp : imps) {
+                removeImport((Element) imp);
             }
 
             Object[] nodes = docRemovedListener.nodesToBeInvalidated.toArray();
             docRemovedListener.nodesToBeInvalidated.clear();
-            for (int i = 0; i < nodes.length; i++) {
-                invalidateChildNodes((Node) nodes[i]);
+            for (Object node : nodes) {
+                invalidateChildNodes((Node) node);
             }
         }
     }

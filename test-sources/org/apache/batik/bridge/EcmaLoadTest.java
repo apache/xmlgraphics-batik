@@ -55,10 +55,10 @@ public class EcmaLoadTest extends DefaultTestSuite {
         //
         for (int i=0; i<scriptSource.length; i++) {
             for (int j=0; j<scriptOrigin[i].length; j++) {
-                for (int k=0; k<secure.length; k++) {
-                    ScriptSelfTest t= buildTest(scripts, scriptSource[i],
-                                                scriptOrigin[i][j],
-                                                secure[k]);
+                for (boolean aSecure : secure) {
+                    ScriptSelfTest t = buildTest(scripts, scriptSource[i],
+                            scriptOrigin[i][j],
+                            aSecure);
                     addTest(t);
                 }
             }

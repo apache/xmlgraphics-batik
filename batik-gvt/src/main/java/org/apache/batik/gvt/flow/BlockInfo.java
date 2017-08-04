@@ -20,7 +20,6 @@ package org.apache.batik.gvt.flow;
 
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextAttribute;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -95,9 +94,8 @@ public class BlockInfo {
         if (fsFloat != null)
             fontSize = fsFloat;
 
-        Iterator i = fontList.iterator();
-        while (i.hasNext()) {
-            GVTFont font = (GVTFont)i.next();
+        for (Object aFontList : fontList) {
+            GVTFont font = (GVTFont) aFontList;
             GVTLineMetrics lm = font.getLineMetrics("", frc);
             this.ascent = lm.getAscent();
             this.descent = lm.getDescent();

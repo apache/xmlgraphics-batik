@@ -246,8 +246,8 @@ public class SVGFeConvolveMatrixElementBridge
         if (s.length() == 0) {
             // default is sum of kernel values (if sum is zero then 1.0)
             float sum = 0;
-            for (int i=0; i < kernelMatrix.length; ++i) {
-                sum += kernelMatrix[i];
+            for (float aKernelMatrix : kernelMatrix) {
+                sum += aKernelMatrix;
             }
             return (sum == 0) ? 1.0f : sum;
         } else {

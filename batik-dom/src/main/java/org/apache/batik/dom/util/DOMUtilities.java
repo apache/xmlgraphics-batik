@@ -23,10 +23,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.util.XMLConstants;
@@ -526,8 +523,8 @@ public class DOMUtilities extends XMLUtilities implements XMLConstants {
      */
     public static boolean isAnyNodeAncestorOf(ArrayList ancestorNodes, Node node) {
         int n = ancestorNodes.size();
-        for (int i = 0; i < n; i++) {
-            Node ancestor = (Node) ancestorNodes.get(i);
+        for (Object ancestorNode : ancestorNodes) {
+            Node ancestor = (Node) ancestorNode;
             if (isAncestorOf(ancestor, node)) {
                 return true;
             }
@@ -606,8 +603,8 @@ public class DOMUtilities extends XMLUtilities implements XMLConstants {
             return false;
         }
         int n = children.size();
-        for (int i = 0; i < n; i++) {
-            Node child = (Node) children.get(i);
+        for (Object aChildren : children) {
+            Node child = (Node) aChildren;
             if (canAppend(child, parentNode)) {
                 return true;
             }
@@ -672,9 +669,8 @@ public class DOMUtilities extends XMLUtilities implements XMLConstants {
             // Copy the prefixes from the prefixes map to the wrapper element
             if (prefixes != null) {
                 wrapperElementPrefix += " ";
-                Iterator iter = prefixes.entrySet().iterator();
-                while (iter.hasNext()) {
-                    Map.Entry e = (Map.Entry) iter.next();
+                for (Object o : prefixes.entrySet()) {
+                    Map.Entry e = (Map.Entry) o;
                     String currentKey = (String) e.getKey();
                     String currentValue = (String) e.getValue();
                     wrapperElementPrefix += currentKey + "=\"" + currentValue

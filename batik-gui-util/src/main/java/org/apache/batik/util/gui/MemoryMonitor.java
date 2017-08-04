@@ -723,10 +723,9 @@ public class MemoryMonitor extends JFrame implements ActionMap {
             public void run() {
                 long free  = runtime.freeMemory();
                 long total = runtime.totalMemory();
-                Iterator it = components.iterator();
-                while (it.hasNext()) {
-                    Component c = (Component)it.next();
-                    ((MemoryChangeListener)c).memoryStateChanged(total, free);
+                for (Object component : components) {
+                    Component c = (Component) component;
+                    ((MemoryChangeListener) c).memoryStateChanged(total, free);
                     c.repaint();
                 }
                 synchronized (this) { inEventQueue = false; }

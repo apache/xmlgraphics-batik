@@ -44,13 +44,13 @@ public class JarNoLoadTest extends DefaultTestSuite {
         // should not be loaded, no matter their origin or the
         // other security settings.
         //
-        for (int i=0; i<scriptSource.length; i++) {
-            for (int j=0; j<secure.length; j++) {
-                for (int k=0; k<scriptOrigin.length; k++) {
+        for (String aScriptSource : scriptSource) {
+            for (boolean aSecure : secure) {
+                for (String aScriptOrigin : scriptOrigin) {
                     SVGOnLoadExceptionTest t = buildTest(scripts,
-                                                         scriptSource[i],
-                                                         scriptOrigin[k],
-                                                         secure[j]);
+                            aScriptSource,
+                            aScriptOrigin,
+                            aSecure);
                     addTest(t);
                 }
             }
@@ -65,10 +65,10 @@ public class JarNoLoadTest extends DefaultTestSuite {
         scripts = "application/java-archive";
         for (int j=0; j<scriptOrigin.length; j++) {
             for (int i=0; i<j; i++) {
-                for (int k=0; k<secure.length; k++) {
-                    SVGOnLoadExceptionTest t= buildTest(scripts, scriptSource[i],
-                                                        scriptOrigin[j],
-                                                        secure[k]);
+                for (boolean aSecure : secure) {
+                    SVGOnLoadExceptionTest t = buildTest(scripts, scriptSource[i],
+                            scriptOrigin[j],
+                            aSecure);
                     addTest(t);
                 }
             }

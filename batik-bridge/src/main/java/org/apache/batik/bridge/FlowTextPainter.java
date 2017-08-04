@@ -151,9 +151,8 @@ public class FlowTextPainter extends StrokingTextPainter {
             AttributedCharacterIterator aci = acis[chunk];
             List gvl = new LinkedList();
             List layouts = (List)clIter.next();
-            Iterator iter = layouts.iterator();
-            while (iter.hasNext()) {
-                GlyphLayout gl = (GlyphLayout)iter.next();
+            for (Object layout : layouts) {
+                GlyphLayout gl = (GlyphLayout) layout;
                 gvl.add(gl.getGlyphVector());
             }
             GVTGlyphVector gv = new MultiGlyphVector(gvl);

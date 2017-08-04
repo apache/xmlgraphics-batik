@@ -267,8 +267,8 @@ public class DOMMouseEvent extends DOMUIEvent implements MouseEvent {
         relatedTarget = relatedTargetArg;
         modifierKeys.clear();
         String[] modifiers = split(modifiersList);
-        for (int i = 0; i < modifiers.length; i++) {
-            modifierKeys.add(modifiers[i]);
+        for (String modifier : modifiers) {
+            modifierKeys.add(modifier);
         }
     }
 }

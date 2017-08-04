@@ -29,7 +29,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -134,9 +133,8 @@ public class BaseScriptingEnvironment {
      */
     public static boolean isDynamicElement
         (Element elt, BridgeContext ctx, List bridgeExtensions) {
-        Iterator i = bridgeExtensions.iterator();
-        while (i.hasNext()) {
-            BridgeExtension bridgeExtension = (BridgeExtension) i.next();
+        for (Object bridgeExtension1 : bridgeExtensions) {
+            BridgeExtension bridgeExtension = (BridgeExtension) bridgeExtension1;
             if (bridgeExtension.isDynamicElement(elt)) {
                 return true;
             }

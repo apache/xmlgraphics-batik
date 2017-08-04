@@ -89,8 +89,7 @@ public abstract class SVGKernElementBridge extends AbstractSVGBridge {
                         System.arraycopy( firstGlyphSet, 0, tmp, 0, firstGlyphLen );
                         firstGlyphSet = tmp;
                     }
-                    for (int i = 0; i < glyphCodes.length; i++)
-                        firstGlyphSet[firstGlyphLen++] = glyphCodes[i];
+                    for (int glyphCode : glyphCodes) firstGlyphSet[firstGlyphLen++] = glyphCode;
                 }
             }
         }
@@ -116,8 +115,7 @@ public abstract class SVGKernElementBridge extends AbstractSVGBridge {
                         System.arraycopy( secondGlyphSet, 0, tmp, 0, secondGlyphLen );
                         secondGlyphSet = tmp;
                     }
-                    for (int i = 0; i < glyphCodes.length; i++)
-                        secondGlyphSet[secondGlyphLen++] = glyphCodes[i];
+                    for (int glyphCode : glyphCodes) secondGlyphSet[secondGlyphLen++] = glyphCode;
                 }
             }
         }
@@ -140,8 +138,7 @@ public abstract class SVGKernElementBridge extends AbstractSVGBridge {
                     System.arraycopy( firstGlyphSet, 0, tmp, 0, firstGlyphLen );
                     firstGlyphSet = tmp;
                 }
-                for (int i = 0; i < glyphCodes.length; i++)
-                    firstGlyphSet[firstGlyphLen++] = glyphCodes[i];
+                for (int glyphCode : glyphCodes) firstGlyphSet[firstGlyphLen++] = glyphCode;
             }
         }
 
@@ -163,8 +160,7 @@ public abstract class SVGKernElementBridge extends AbstractSVGBridge {
                     System.arraycopy( secondGlyphSet, 0, tmp, 0, secondGlyphLen );
                     secondGlyphSet = tmp;
                 }
-                for (int i = 0; i < glyphCodes.length; i++)
-                    secondGlyphSet[secondGlyphLen++] = glyphCodes[i];
+                for (int glyphCode : glyphCodes) secondGlyphSet[secondGlyphLen++] = glyphCode;
             }
         }
 

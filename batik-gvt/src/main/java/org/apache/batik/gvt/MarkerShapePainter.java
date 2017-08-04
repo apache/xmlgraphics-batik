@@ -27,7 +27,6 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import org.apache.batik.ext.awt.geom.ExtendedGeneralPath;
 import org.apache.batik.ext.awt.geom.ExtendedPathIterator;
@@ -301,8 +300,8 @@ public class MarkerShapePainter implements ShapePainter {
         }
 
         if (middleMarkerProxies != null) {
-            for(int i=0; i<middleMarkerProxies.length; i++){
-                children.add(middleMarkerProxies[i]);
+            for (ProxyGraphicsNode middleMarkerProxy : middleMarkerProxies) {
+                children.add(middleMarkerProxy);
             }
         }
 

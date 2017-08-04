@@ -23,7 +23,6 @@ import java.awt.font.TextLayout;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -99,11 +98,10 @@ public class BidiAttributedCharacterIterator implements AttributedCharacterItera
                 Map attrMap = aci.getAttributes();
                 int extent  = aci.getRunLimit();
                 Map destMap = new HashMap(attrMap.size());
-                Iterator it  = attrMap.entrySet().iterator();
-                while (it.hasNext()) {
+                for (Object o : attrMap.entrySet()) {
                     // Font doesn't like getting attribute sets with
                     // null keys or values so we strip them here.
-                    Map.Entry e = (Map.Entry)it.next();
+                    Map.Entry e = (Map.Entry) o;
                     Object key = e.getKey();
                     if (key == null) continue;
                     Object value = e.getValue();

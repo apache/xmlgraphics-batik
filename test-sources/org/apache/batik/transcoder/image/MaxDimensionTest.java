@@ -38,13 +38,13 @@ public class MaxDimensionTest extends AbstractImageTranscoderTest {
     /** The URI of the reference image. */
     protected String refImageURI;
     /** The maximum width of the image. */
-    protected Float maxWidth = Float.valueOf(Float.NaN);
+    protected Float maxWidth = Float.NaN;
     /** The maximum height of the image. */
-    protected Float maxHeight = Float.valueOf(Float.NaN);
+    protected Float maxHeight = Float.NaN;
     /** The width of the image. */
-    protected Float width = Float.valueOf(Float.NaN);
+    protected Float width = Float.NaN;
     /** The height of the image. */
-    protected Float height = Float.valueOf(Float.NaN);
+    protected Float height = Float.NaN;
 
 
     //-- Constructors --------------------------------------------------------
@@ -98,16 +98,16 @@ public class MaxDimensionTest extends AbstractImageTranscoderTest {
      */
     protected Map createTranscodingHints() {
         Map hints = new HashMap(7);
-        if (!width.isNaN() && width.floatValue() > 0) {
+        if (!width.isNaN() && width > 0) {
             hints.put(ImageTranscoder.KEY_WIDTH, width);
         }
-        if (!height.isNaN() && height.floatValue() > 0) {
+        if (!height.isNaN() && height > 0) {
             hints.put(ImageTranscoder.KEY_HEIGHT, height);
         }
-        if (maxWidth.floatValue() > 0) {
+        if (maxWidth > 0) {
             hints.put(ImageTranscoder.KEY_MAX_WIDTH, maxWidth);
         }
-        if (maxHeight.floatValue() > 0) {
+        if (maxHeight > 0) {
             hints.put(ImageTranscoder.KEY_MAX_HEIGHT, maxHeight);
         }
         return hints;

@@ -167,8 +167,8 @@ public abstract class MultipleGradientPaint implements Paint {
 
         // Process transparency
         boolean opaque = true;
-        for(int i=0; i<colors.length; i++){
-            opaque = opaque && (colors[i].getAlpha()==0xff);
+        for (Color color : colors) {
+            opaque = opaque && (color.getAlpha() == 0xff);
         }
 
         if(opaque) {

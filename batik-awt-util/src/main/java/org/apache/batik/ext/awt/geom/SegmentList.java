@@ -126,13 +126,13 @@ public class SegmentList {
             }
 
             Segment [] resAbove = results.getAbove();
-            for(int i=0; i<resAbove.length; i++) {
-                above.add(resAbove[i]);
+            for (Segment aResAbove : resAbove) {
+                above.add(aResAbove);
             }
 
             Segment [] resBelow = results.getBelow();
-            for(int i=0; i<resBelow.length; i++) {
-                below.add(resBelow[i]);
+            for (Segment aResBelow : resBelow) {
+                below.add(aResBelow);
             }
         }
         return new SegmentList.SplitResults(above, below);

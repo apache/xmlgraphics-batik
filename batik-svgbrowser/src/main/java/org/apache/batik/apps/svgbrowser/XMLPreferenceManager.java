@@ -27,7 +27,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
@@ -163,11 +162,10 @@ public class XMLPreferenceManager extends PreferenceManager {
 
             w.write("<preferences xmlns=\"http://xml.apache.org/batik/preferences\">\n");
 
-            Iterator it = m.keySet().iterator();
-            while (it.hasNext()) {
-                String n = (String)it.next();
-                String v = (String)m.get(n);
-                
+            for (Object o : m.keySet()) {
+                String n = (String) o;
+                String v = (String) m.get(n);
+
                 w.write("<property name=\"" + n + "\">");
                 try {
                     w.write(DOMUtilities.contentToString(v, false));
@@ -187,15 +185,11 @@ public class XMLPreferenceManager extends PreferenceManager {
          */
         private synchronized void enumerate(Map m) {
             if (defaults != null) {
-                Iterator it = m.keySet().iterator();
-                while (it.hasNext()) {
-                    Object k = it.next();
+                for (Object k : m.keySet()) {
                     m.put(k, defaults.get(k));
                 }
             }
-            Iterator it = keySet().iterator();
-            while (it.hasNext()) {
-                Object k = it.next();
+            for (Object k : keySet()) {
                 m.put(k, get(k));
             }
         }

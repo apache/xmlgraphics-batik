@@ -491,9 +491,8 @@ public abstract class AbstractSVGList {
         if (list == null) {
             return;
         }
-        Iterator it = list.iterator();
-        while (it.hasNext()) {
-            SVGItem item = (SVGItem)it.next();
+        for (Object aList : list) {
+            SVGItem item = (SVGItem) aList;
             item.setParent(null);
         }
         list.clear();

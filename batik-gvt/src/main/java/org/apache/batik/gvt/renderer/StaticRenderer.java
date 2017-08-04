@@ -34,7 +34,6 @@ import java.awt.image.WritableRaster;
 import java.awt.image.renderable.RenderContext;
 import java.lang.ref.SoftReference;
 import java.util.Collection;
-import java.util.Iterator;
 
 import org.apache.batik.ext.awt.geom.RectListManager;
 import org.apache.batik.ext.awt.image.GraphicsUtil;
@@ -427,9 +426,8 @@ public class StaticRenderer implements ImageRenderer {
      */
     public void flush(Collection areas) {
         AffineTransform at = getTransform();
-        Iterator i = areas.iterator();
-        while (i.hasNext()) {
-            Shape s = (Shape)i.next();
+        for (Object area : areas) {
+            Shape s = (Shape) area;
             Rectangle r = at.createTransformedShape(s).getBounds();
             flush(r);
         }

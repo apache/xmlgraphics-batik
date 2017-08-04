@@ -20,7 +20,6 @@ package org.apache.batik.svggen.font.table;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -66,9 +65,8 @@ public class GlyfCompositeDescript extends GlyfDescript {
         int firstIndex = 0;
         int firstContour = 0;
 
-        Iterator i = components.iterator();
-        while (i.hasNext()) {
-            GlyfCompositeComp comp = (GlyfCompositeComp)i.next();
+        for (Object component : components) {
+            GlyfCompositeComp comp = (GlyfCompositeComp) component;
             comp.setFirstIndex(firstIndex);
             comp.setFirstContour(firstContour);
 
@@ -76,7 +74,7 @@ public class GlyfCompositeDescript extends GlyfDescript {
             desc = parentTable.getDescription(comp.getGlyphIndex());
             if (desc != null) {
                 desc.resolve();
-                firstIndex   += desc.getPointCount();
+                firstIndex += desc.getPointCount();
                 firstContour += desc.getContourCount();
             }
         }
@@ -162,8 +160,8 @@ public class GlyfCompositeDescript extends GlyfDescript {
 
     protected GlyfCompositeComp getCompositeComp(int i) {
         GlyfCompositeComp c;
-        for (int n = 0; n < components.size(); n++) {
-            c = (GlyfCompositeComp) components.get(n);
+        for (Object component : components) {
+            c = (GlyfCompositeComp) component;
             GlyphDescription gd = parentTable.getDescription(c.getGlyphIndex());
             if (c.getFirstIndex() <= i && i < (c.getFirstIndex() + gd.getPointCount())) {
                 return c;
@@ -174,8 +172,8 @@ public class GlyfCompositeDescript extends GlyfDescript {
 
     protected GlyfCompositeComp getCompositeCompEndPt(int i) {
         GlyfCompositeComp c;
-        for (int j = 0; j < components.size(); j++) {
-            c = (GlyfCompositeComp) components.get(j);
+        for (Object component : components) {
+            c = (GlyfCompositeComp) component;
             GlyphDescription gd = parentTable.getDescription(c.getGlyphIndex());
             if (c.getFirstContour() <= i && i < (c.getFirstContour() + gd.getContourCount())) {
                 return c;

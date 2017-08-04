@@ -174,17 +174,17 @@ public class HashTable implements Serializable {
             return null;
         }
         int j = 0;
-        for ( int i = 0; i < table.length; i++ ) {
-            Entry e = table[ i ];
-            if ( e == null ) {
+        for (Entry aTable : table) {
+            Entry e = aTable;
+            if (e == null) {
                 continue;
             }
             do {
-                if ( j++ == index ) {
+                if (j++ == index) {
                     return e.key;
                 }
                 e = e.next;
-            } while ( e != null );
+            } while (e != null);
         }
         return null;
     }
@@ -197,17 +197,17 @@ public class HashTable implements Serializable {
             return null;
         }
         int j = 0;
-        for ( int i = 0; i < table.length; i++ ) {
-            Entry e = table[ i ];
-            if ( e == null ) {
+        for (Entry aTable : table) {
+            Entry e = aTable;
+            if (e == null) {
                 continue;
             }
             do {
-                if ( j++ == index ) {
+                if (j++ == index) {
                     return e.value;
                 }
                 e = e.next;
-            } while ( e != null );
+            } while (e != null);
         }
         return null;
     }

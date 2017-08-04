@@ -76,10 +76,9 @@ public abstract class ExtensibleDOMImplementation
      * Creates a new DOMImplementation.
      */
     public ExtensibleDOMImplementation() {
-        Iterator iter = getDomExtensions().iterator();
 
-        while(iter.hasNext()) {
-            DomExtension de = (DomExtension)iter.next();
+        for (Object o : getDomExtensions()) {
+            DomExtension de = (DomExtension) o;
             de.registerTags(this);
         }
     }

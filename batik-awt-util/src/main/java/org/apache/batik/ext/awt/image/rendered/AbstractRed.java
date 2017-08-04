@@ -31,7 +31,6 @@ import java.awt.image.RenderedImage;
 import java.awt.image.SampleModel;
 import java.awt.image.WritableRaster;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -434,9 +433,8 @@ public abstract class AbstractRed implements CachableRed {
     public Object getProperty(String name) {
         Object ret = props.get(name);
         if (ret != null) return ret;
-        Iterator i = srcs.iterator();
-        while (i.hasNext()) {
-            RenderedImage ri = (RenderedImage)i.next();
+        for (Object src : srcs) {
+            RenderedImage ri = (RenderedImage) src;
             ret = ri.getProperty(name);
             if (ret != null) return ret;
         }
@@ -454,15 +452,14 @@ public abstract class AbstractRed implements CachableRed {
 //            ret[i++] = (String)iter.next();
 //        }
 
-        Iterator iter = srcs.iterator();
-        while (iter.hasNext()) {
-            RenderedImage ri = (RenderedImage)iter.next();
-            String [] srcProps = ri.getPropertyNames();
+        for (Object src : srcs) {
+            RenderedImage ri = (RenderedImage) src;
+            String[] srcProps = ri.getPropertyNames();
             if (srcProps.length != 0) {
-                String [] tmp = new String[ret.length+srcProps.length];
-                System.arraycopy(ret,0,tmp,0,ret.length);
+                String[] tmp = new String[ret.length + srcProps.length];
+                System.arraycopy(ret, 0, tmp, 0, ret.length);
                 /// ??? System.arraycopy((tmp,ret.length,srcProps,0,srcProps.length);
-                System.arraycopy( srcProps, 0, tmp, ret.length, srcProps.length);
+                System.arraycopy(srcProps, 0, tmp, ret.length, srcProps.length);
                 ret = tmp;
             }
         }

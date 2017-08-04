@@ -90,22 +90,21 @@ public abstract class AnimationEngine {
      */
     public void dispose() {
         // Remove any target listeners that are registered.
-        Iterator i = targets.entrySet().iterator();
-        while (i.hasNext()) {
-            Map.Entry e = (Map.Entry) i.next();
+        for (Object o : targets.entrySet()) {
+            Map.Entry e = (Map.Entry) o;
             AnimationTarget target = (AnimationTarget) e.getKey();
             TargetInfo info = (TargetInfo) e.getValue();
 
             Iterator j = info.xmlAnimations.iterator();
             while (j.hasNext()) {
                 DoublyIndexedTable.Entry e2 =
-                    (DoublyIndexedTable.Entry) j.next();
+                        (DoublyIndexedTable.Entry) j.next();
                 String namespaceURI = (String) e2.getKey1();
                 String localName = (String) e2.getKey2();
                 Sandwich sandwich = (Sandwich) e2.getValue();
                 if (sandwich.listenerRegistered) {
                     target.removeTargetListener(namespaceURI, localName, false,
-                                                targetListener);
+                            targetListener);
                 }
             }
 
@@ -116,7 +115,7 @@ public abstract class AnimationEngine {
                 Sandwich sandwich = (Sandwich) e2.getValue();
                 if (sandwich.listenerRegistered) {
                     target.removeTargetListener(null, propertyName, true,
-                                                targetListener);
+                            targetListener);
                 }
             }
         }
@@ -304,8 +303,7 @@ public abstract class AnimationEngine {
         float waitTime = timedDocumentRoot.seekTo(time, hyperlinking);
         Map.Entry[] targetEntries =
             (Map.Entry[]) targets.entrySet().toArray(MAP_ENTRY_ARRAY);
-        for (int i = 0; i < targetEntries.length; i++) {
-            Map.Entry e = targetEntries[i];
+        for (Map.Entry e : targetEntries) {
             AnimationTarget target = (AnimationTarget) e.getKey();
             TargetInfo info = (TargetInfo) e.getValue();
 
@@ -313,29 +311,29 @@ public abstract class AnimationEngine {
             Iterator j = info.xmlAnimations.iterator();
             while (j.hasNext()) {
                 DoublyIndexedTable.Entry e2 =
-                    (DoublyIndexedTable.Entry) j.next();
+                        (DoublyIndexedTable.Entry) j.next();
                 String namespaceURI = (String) e2.getKey1();
                 String localName = (String) e2.getKey2();
                 Sandwich sandwich = (Sandwich) e2.getValue();
                 if (sandwich.shouldUpdate ||
                         sandwich.animation != null
-                            && sandwich.animation.isDirty) {
+                                && sandwich.animation.isDirty) {
                     AnimatableValue av = null;
                     boolean usesUnderlying = false;
                     AbstractAnimation anim = sandwich.animation;
                     if (anim != null) {
                         av = anim.getComposedValue();
                         usesUnderlying =
-                            sandwich.lowestAnimation.usesUnderlyingValue();
+                                sandwich.lowestAnimation.usesUnderlyingValue();
                         anim.isDirty = false;
                     }
                     if (usesUnderlying && !sandwich.listenerRegistered) {
                         target.addTargetListener(namespaceURI, localName, false,
-                                                 targetListener);
+                                targetListener);
                         sandwich.listenerRegistered = true;
                     } else if (!usesUnderlying && sandwich.listenerRegistered) {
                         target.removeTargetListener(namespaceURI, localName,
-                                                    false, targetListener);
+                                false, targetListener);
                         sandwich.listenerRegistered = false;
                     }
                     target.updateAttributeValue(namespaceURI, localName, av);
@@ -351,23 +349,23 @@ public abstract class AnimationEngine {
                 Sandwich sandwich = (Sandwich) e2.getValue();
                 if (sandwich.shouldUpdate ||
                         sandwich.animation != null
-                            && sandwich.animation.isDirty) {
+                                && sandwich.animation.isDirty) {
                     AnimatableValue av = null;
                     boolean usesUnderlying = false;
                     AbstractAnimation anim = sandwich.animation;
                     if (anim != null) {
                         av = anim.getComposedValue();
                         usesUnderlying =
-                            sandwich.lowestAnimation.usesUnderlyingValue();
+                                sandwich.lowestAnimation.usesUnderlyingValue();
                         anim.isDirty = false;
                     }
                     if (usesUnderlying && !sandwich.listenerRegistered) {
                         target.addTargetListener(null, propertyName, true,
-                                                 targetListener);
+                                targetListener);
                         sandwich.listenerRegistered = true;
                     } else if (!usesUnderlying && sandwich.listenerRegistered) {
                         target.removeTargetListener(null, propertyName, true,
-                                                    targetListener);
+                                targetListener);
                         sandwich.listenerRegistered = false;
                     }
                     if (usesUnderlying) {
@@ -388,7 +386,7 @@ public abstract class AnimationEngine {
                 Sandwich sandwich = (Sandwich) e2.getValue();
                 if (sandwich.shouldUpdate ||
                         sandwich.animation != null
-                            && sandwich.animation.isDirty) {
+                                && sandwich.animation.isDirty) {
                     AnimatableValue av = null;
                     AbstractAnimation anim = sandwich.animation;
                     if (anim != null) {

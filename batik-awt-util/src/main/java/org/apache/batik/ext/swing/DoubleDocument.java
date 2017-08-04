@@ -53,10 +53,10 @@ public class DoubleDocument extends PlainDocument {
         if(offs==0 && buffer!=null && buffer.length>0 && buffer[0]=='-')
             digit[j++] = buffer[0];
 
-        for (int i = 0; i < buffer.length; i++) {
-            if(Character.isDigit(buffer[i]))
-                digit[j++] = buffer[i];
-            if(!hasDot && buffer[i]=='.'){
+        for (char aBuffer : buffer) {
+            if (Character.isDigit(aBuffer))
+                digit[j++] = aBuffer;
+            if (!hasDot && aBuffer == '.') {
                 digit[j++] = '.';
                 hasDot = true;
             }

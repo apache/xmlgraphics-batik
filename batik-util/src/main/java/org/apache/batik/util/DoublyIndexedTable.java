@@ -168,8 +168,8 @@ public class DoublyIndexedTable {
         Object[] values = new Object[count];
         int i = 0;
 
-        for (int index = 0; index < table.length; index++) {
-            for (Entry e = table[index]; e != null; e = e.next) {
+        for (Entry aTable : table) {
+            for (Entry e = aTable; e != null; e = e.next) {
                 values[i++] = e.value;
             }
         }

@@ -144,8 +144,8 @@ public class XMLInputHandler implements SquiggleInputHandler {
             return false;
         }
 
-        for (int i=0; i<XVG_FILE_EXTENSIONS.length; i++) {
-            if (path.endsWith(XVG_FILE_EXTENSIONS[i])) {
+        for (String XVG_FILE_EXTENSION : XVG_FILE_EXTENSIONS) {
+            if (path.endsWith(XVG_FILE_EXTENSION)) {
                 return true;
             }
         }
