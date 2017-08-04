@@ -151,7 +151,7 @@ public class PropertyManagerTest extends AbstractTest {
         }
 
         // test if the property is inherited or not
-        if (isInherited.booleanValue() != manager.isInheritedProperty()) {
+        if (isInherited != manager.isInheritedProperty()) {
             report.setErrorCode(ERROR_IS_INHERITED);
             report.setPassed(false);
             report.addDescriptionEntry(ERROR_IS_INHERITED, "");
@@ -177,15 +177,15 @@ public class PropertyManagerTest extends AbstractTest {
         // test all possible identifiers
         if (identValues != null) {
             try {
-                for (int i=0; i < identValues.length; ++i) {
-                    LexicalUnit lu = cssParser.parsePropertyValue(identValues[i]);
+                for (String identValue : identValues) {
+                    LexicalUnit lu = cssParser.parsePropertyValue(identValue);
                     Value v = manager.createValue(lu, null);
                     String s = v.getCssText();
-                    if (!identValues[i].equalsIgnoreCase(s)) {
+                    if (!identValue.equalsIgnoreCase(s)) {
                         report.setErrorCode(ERROR_INVALID_VALUE);
                         report.setPassed(false);
                         report.addDescriptionEntry(ERROR_INVALID_VALUE,
-                                                   identValues[i]+ '/' +s);
+                                identValue + '/' + s);
                     }
                 }
             } catch (Exception ex) {

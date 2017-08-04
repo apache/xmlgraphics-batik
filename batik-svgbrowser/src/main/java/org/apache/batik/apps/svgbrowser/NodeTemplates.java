@@ -1229,8 +1229,7 @@ public class NodeTemplates {
      */
     private void initializeTemplates() {
         Field[] fields = getClass().getDeclaredFields();
-        for (int i = 0; i < fields.length; i++) {
-            Field currentField = fields[i];
+        for (Field currentField : fields) {
             try {
                 if (currentField.getType() == String.class
                         && currentField.getName().endsWith("MemberName")) {

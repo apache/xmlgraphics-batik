@@ -49,10 +49,10 @@ public class JarLoadTest extends DefaultTestSuite {
         //
         for (int i=0; i<scriptSource.length; i++) {
             for (int j=0; j<=i; j++) {
-                for (int k=0; k<secure.length; k++) {
-                    ScriptSelfTest t= buildTest(scripts, scriptSource[i],
-                                                scriptOrigin[j],
-                                                secure[k]);
+                for (boolean aSecure : secure) {
+                    ScriptSelfTest t = buildTest(scripts, scriptSource[i],
+                            scriptOrigin[j],
+                            aSecure);
                     addTest(t);
                 }
             }

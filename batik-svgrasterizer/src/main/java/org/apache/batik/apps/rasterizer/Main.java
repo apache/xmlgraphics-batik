@@ -21,7 +21,6 @@ package org.apache.batik.apps.rasterizer;
 import java.awt.Color;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.List;
@@ -840,8 +839,8 @@ public class Main implements SVGConverterController {
 
     public Main(String[] args){
         this.args = new ArrayList();
-        for (int i=0; i<args.length; i++){
-            this.args.add(args[i]);
+        for (String arg : args) {
+            this.args.add(arg);
         }
     }
 
@@ -969,14 +968,13 @@ public class Main implements SVGConverterController {
      */
     protected String[] expandSources(List sources){
         List expandedSources = new ArrayList();
-        Iterator iter = sources.iterator();
-        while (iter.hasNext()){
-            String v = (String)iter.next();
+        for (Object source : sources) {
+            String v = (String) source;
             File f = new File(v);
-            if (f.exists() && f.isDirectory()){
+            if (f.exists() && f.isDirectory()) {
                 File[] fl = f.listFiles(new SVGConverter.SVGFileFilter());
-                for (int i=0; i<fl.length; i++){
-                    expandedSources.add(fl[i].getPath());
+                for (File aFl : fl) {
+                    expandedSources.add(aFl.getPath());
                 }
             } else {
                 expandedSources.add(v);

@@ -27,7 +27,6 @@ import java.io.PrintWriter;
 import java.net.URL;
 
 import java.util.List;
-import java.util.Iterator;
 
 import org.apache.batik.test.DefaultTestReport;
 import org.apache.batik.test.TestReport;
@@ -134,9 +133,8 @@ public class JSVGRenderingAccuracyTest extends SamplesRenderingTest
 
                 // Paint the overlays
                 Graphics2D g = theImage.createGraphics();
-                Iterator it = overlays.iterator();
-                while (it.hasNext()) {
-                    ((Overlay)it.next()).paint(g);
+                for (Object overlay : overlays) {
+                    ((Overlay) overlay).paint(g);
                 }
 
                 saveImage(theImage, fos);

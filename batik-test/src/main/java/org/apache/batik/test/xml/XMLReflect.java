@@ -94,8 +94,8 @@ public class XMLReflect implements XMLReflectConstants{
             String argsClassesStr = "null";
             if (argsClasses != null) {
                 argsClassesStr = "";
-                for (int i=0; i<argsClasses.length; i++) {
-                    argsClassesStr += argsClasses[i].getName() + " / ";
+                for (Class argsClass : argsClasses) {
+                    argsClassesStr += argsClass.getName() + " / ";
                 }
             }
             throw new Exception(Messages.formatMessage(NO_MATCHING_CONSTRUCTOR,
@@ -203,24 +203,23 @@ public class XMLReflect implements XMLReflectConstants{
     public static Constructor getDeclaredConstructor(Class cl,
                                                  Class[] argClasses){
         Constructor[] cs = cl.getDeclaredConstructors();
-        for(int i=0; i<cs.length; i++){
-            Class[] reqArgClasses = cs[i].getParameterTypes();
-            if(reqArgClasses != null && reqArgClasses.length > 0){
-                if(reqArgClasses.length == argClasses.length){
-                    int j=0;
-                    for(; j<argClasses.length; j++){
-                        if(!reqArgClasses[j].isAssignableFrom(argClasses[j])){
+        for (Constructor c : cs) {
+            Class[] reqArgClasses = c.getParameterTypes();
+            if (reqArgClasses != null && reqArgClasses.length > 0) {
+                if (reqArgClasses.length == argClasses.length) {
+                    int j = 0;
+                    for (; j < argClasses.length; j++) {
+                        if (!reqArgClasses[j].isAssignableFrom(argClasses[j])) {
                             break;
                         }
                     }
-                    if(j == argClasses.length){
-                        return cs[i];
+                    if (j == argClasses.length) {
+                        return c;
                     }
                 }
-            }
-            else{
-                if(argClasses == null || argClasses.length == 0){
-                    return cs[i];
+            } else {
+                if (argClasses == null || argClasses.length == 0) {
+                    return c;
                 }
             }
         }

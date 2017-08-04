@@ -402,7 +402,7 @@ public class SVGOnLoadExceptionTest extends AbstractTest {
         //
         String parserClassName = XMLResourceDescriptor.getXMLParserClassName();
         SAXSVGDocumentFactory f = new SAXSVGDocumentFactory(parserClassName);
-        f.setValidating(validate.booleanValue());
+        f.setValidating(validate);
         Document doc = null;
 
         try {

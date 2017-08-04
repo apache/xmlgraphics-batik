@@ -69,9 +69,9 @@ public class AOITest extends AbstractImageTranscoderTest {
              x, 
              y, 
              width, 
-             height, 
-             Float.valueOf(-1), 
-             Float.valueOf(-1));
+             height,
+                (float) -1,
+                (float) -1);
     }
 
     /**
@@ -96,10 +96,10 @@ public class AOITest extends AbstractImageTranscoderTest {
                    Float imgHeight) {
         this.inputURI = inputURI;
         this.refImageURI = refImageURI;
-        this.aoi = new Rectangle2D.Float(x.floatValue(),
-                                         y.floatValue(),
-                                         width.floatValue(),
-                                         height.floatValue());
+        this.aoi = new Rectangle2D.Float(x,
+                y,
+                width,
+                height);
         this.imgWidth = imgWidth;
         this.imgHeight = imgHeight;
     }
@@ -117,10 +117,10 @@ public class AOITest extends AbstractImageTranscoderTest {
     protected Map createTranscodingHints() {
         Map hints = new HashMap(11);
         hints.put(ImageTranscoder.KEY_AOI, aoi);
-        if (imgWidth.floatValue() > 0) {
+        if (imgWidth > 0) {
             hints.put(ImageTranscoder.KEY_WIDTH, imgWidth);
         }
-        if (imgHeight.floatValue() > 0) {
+        if (imgHeight > 0) {
             hints.put(ImageTranscoder.KEY_HEIGHT, imgHeight);
         }
         return hints;

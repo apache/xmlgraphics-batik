@@ -42,7 +42,6 @@ import org.apache.batik.dom.AbstractNode;
 import org.apache.batik.dom.events.DOMMouseEvent;
 import org.apache.batik.dom.events.NodeEventTarget;
 import org.apache.batik.dom.svg.LiveAttributeException;
-import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.ext.awt.image.renderable.ClipRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.spi.BrokenLinkProvider;

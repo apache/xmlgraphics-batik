@@ -867,10 +867,9 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
      * @param c the collection to be checked for containment
      */
     public boolean containsAll(Collection c) {
-        Iterator i = c.iterator();
-        while (i.hasNext()) {
-            if (!contains(i.next())) {
-                    return false;
+        for (Object aC : c) {
+            if (!contains(aC)) {
+                return false;
             }
         }
         return true;

@@ -45,15 +45,15 @@ public class EcmaNoLoadTest extends DefaultTestSuite {
         // should not be loaded, no matter their origin or the
         // other security settings.
         //
-        for (int i=0; i<scriptSource.length; i++) {
-            for (int j=0; j<secure.length; j++) {
-                for (int k=0; k<scriptOrigin.length; k++) {
+        for (String aScriptSource : scriptSource) {
+            for (boolean aSecure : secure) {
+                for (String aScriptOrigin : scriptOrigin) {
                     SVGOnLoadExceptionTest t = buildTest(scripts,
-                                                         scriptSource[i],
-                                                         scriptOrigin[k],
-                                                         secure[j],
-                                                         false,
-                                                         false);
+                            aScriptSource,
+                            aScriptOrigin,
+                            aSecure,
+                            false,
+                            false);
                     addTest(t);
                 }
             }
@@ -90,12 +90,12 @@ public class EcmaNoLoadTest extends DefaultTestSuite {
                 max = j+1;
             }
             for (int i=0; i<max; i++) {
-                for (int k=0; k<secure.length; k++) {
-                    SVGOnLoadExceptionTest t= buildTest(scripts, scriptSource[i],
-                                                        scriptOrigin[j],
-                                                        secure[k],
-                                                        false,
-                                                        false);
+                for (boolean aSecure : secure) {
+                    SVGOnLoadExceptionTest t = buildTest(scripts, scriptSource[i],
+                            scriptOrigin[j],
+                            aSecure,
+                            false,
+                            false);
                     addTest(t);
                 }
             }

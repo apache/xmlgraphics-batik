@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.Iterator;
 
 import org.apache.batik.test.AbstractTest;
 import org.apache.batik.test.DefaultTestReport;
@@ -95,9 +94,8 @@ public abstract class MemoryLeakTest  extends AbstractTest {
                     // System.err.println("FreeMemory: " + rt.freeMemory() +
                     //                    " of " +rt.totalMemory());
 
-                    for (int i=0; i<descs.length; i++) {
-                        String desc = descs[i];
-                        WeakRef wr = (WeakRef)objs.get(desc);
+                    for (String desc : descs) {
+                        WeakRef wr = (WeakRef) objs.get(desc);
                         if ((wr == null) || (wr.get() == null)) continue;
                         passed = false;
                         break;
@@ -122,9 +120,8 @@ public abstract class MemoryLeakTest  extends AbstractTest {
         StringBuffer sb = new StringBuffer();
         boolean passed = true;
         synchronized (objs) {
-            for (int i=0; i<descs.length; i++) {
-                String desc = descs[i];
-                WeakRef wr = (WeakRef)objs.get(desc);
+            for (String desc : descs) {
+                WeakRef wr = (WeakRef) objs.get(desc);
                 if (wr == null) continue;
                 Object o = wr.get();
                 if (o == null) continue;
@@ -169,9 +166,8 @@ public abstract class MemoryLeakTest  extends AbstractTest {
 
                 boolean passed = true;
                 synchronized (objs) {
-                    Iterator iter = objs.values().iterator();
-                    while (iter.hasNext()) {
-                        WeakRef wr = (WeakRef)iter.next();
+                    for (Object o : objs.values()) {
+                        WeakRef wr = (WeakRef) o;
                         if ((wr != null) && (wr.get() != null)) {
                             passed = false;
                             break;
@@ -198,9 +194,8 @@ public abstract class MemoryLeakTest  extends AbstractTest {
         StringBuffer sb = new StringBuffer();
         synchronized (objs) {
             boolean passed = true;
-            Iterator iter = objs.values().iterator();
-            while (iter.hasNext()) {
-                WeakRef wr = (WeakRef)iter.next();
+            for (Object o1 : objs.values()) {
+                WeakRef wr = (WeakRef) o1;
                 Object o = wr.get();
                 if (o == null) continue;
                 if (!passed)

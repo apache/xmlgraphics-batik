@@ -360,8 +360,8 @@ abstract class MultipleGradientPaintContext implements PaintContext {
             estimatedSize = Integer.MAX_VALUE;
             hasDiscontinuity = true;
         } else {
-            for (int i = 0; i < workTbl.length; i++) {
-                estimatedSize += (workTbl[i]/Imin) * GRADIENT_SIZE;
+            for (float aWorkTbl : workTbl) {
+                estimatedSize += (aWorkTbl / Imin) * GRADIENT_SIZE;
             }
         }
 
@@ -486,10 +486,10 @@ abstract class MultipleGradientPaintContext implements PaintContext {
         // Put all gradients in a single array
         gradient = new int[gradientsTot];
         int curOffset = 0;
-        for(int i = 0; i < gradients.length; i++){
-            System.arraycopy(gradients[i], 0, gradient,
-                             curOffset, gradients[i].length);
-            curOffset += gradients[i].length;
+        for (int[] gradient1 : gradients) {
+            System.arraycopy(gradient1, 0, gradient,
+                    curOffset, gradient1.length);
+            curOffset += gradient1.length;
         }
         gradient[gradient.length-1] = hiColors[hiColors.length-1].getRGB();
 

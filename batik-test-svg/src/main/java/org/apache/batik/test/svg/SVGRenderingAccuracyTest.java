@@ -98,7 +98,7 @@ public class SVGRenderingAccuracyTest extends AbstractRenderingAccuracyTest {
         if (validate == null){
             throw new IllegalArgumentException();
         }
-        this.validate = validate.booleanValue();
+        this.validate = validate;
     }
 
     public boolean getValidating(){

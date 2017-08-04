@@ -579,8 +579,8 @@ public class DropDownComponent extends JPanel {
         private int getPreferredWidth() {
             Component[] components = menuPanel.getComponents();
             int maxWidth = 0;
-            for (int i = 0; i < components.length; i++) {
-                int currentWidth = components[i].getPreferredSize().width;
+            for (Component component : components) {
+                int currentWidth = component.getPreferredSize().width;
                 if (maxWidth < currentWidth) {
                     maxWidth = currentWidth;
                 }
@@ -627,8 +627,8 @@ public class DropDownComponent extends JPanel {
                     item.setSelected(wasSelected);
                 }
             } else {
-                for (int i = 0; i < n; i++) {
-                    ScrollablePopupMenuItem item = (ScrollablePopupMenuItem) comps[i];
+                for (Component comp : comps) {
+                    ScrollablePopupMenuItem item = (ScrollablePopupMenuItem) comp;
                     if (item == targetItem) {
                         break;
                     }
@@ -667,8 +667,8 @@ public class DropDownComponent extends JPanel {
         public int getSelectedItemsCount() {
             int selectionCount = 0;
             Component[] components = menuPanel.getComponents();
-            for (int i = 0; i < components.length; i++) {
-                ScrollablePopupMenuItem item = (ScrollablePopupMenuItem) components[i];
+            for (Component component : components) {
+                ScrollablePopupMenuItem item = (ScrollablePopupMenuItem) component;
                 if (item.isSelected()) {
                     selectionCount++;
                 }

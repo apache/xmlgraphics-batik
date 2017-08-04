@@ -20,7 +20,6 @@ package org.apache.batik.bridge;
 
 import java.awt.Cursor;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.batik.anim.dom.SVGOMAElement;
@@ -178,9 +177,7 @@ public class SVGAElementBridge extends SVGGElementBridge {
 
             List l = ae.getDefaultActions();
             if (l != null) {
-                Iterator i = l.iterator();
-                while (i.hasNext()) {
-                    Object o = i.next();
+                for (Object o : l) {
                     if (o instanceof AnchorDefaultActionable)
                         return; // only one anchor in default list...
                 }
@@ -254,9 +251,7 @@ public class SVGAElementBridge extends SVGGElementBridge {
 
             List l = ae.getDefaultActions();
             if (l != null) {
-                Iterator i = l.iterator();
-                while (i.hasNext()) {
-                    Object o = i.next();
+                for (Object o : l) {
                     if (o instanceof MouseOverDefaultActionable)
                         return; // only one anchor in default list...
                 }
@@ -340,9 +335,7 @@ public class SVGAElementBridge extends SVGGElementBridge {
             
             List l = ae.getDefaultActions();
             if (l != null) {
-                Iterator i = l.iterator();
-                while (i.hasNext()) {
-                    Object o = i.next();
+                for (Object o : l) {
                     if (o instanceof MouseOutDefaultActionable)
                         return; // only one anchor in default list...
                 }

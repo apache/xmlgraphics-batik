@@ -1386,9 +1386,8 @@ public abstract class AbstractDocument
 
         if (!namespaceDeclarations) {
             // remove namespace declarations
-            Iterator i = toRemove.iterator();
-            while (i.hasNext()) {
-                e.removeAttributeNode((Attr) i.next());
+            for (Object aToRemove : toRemove) {
+                e.removeAttributeNode((Attr) aToRemove);
             }
         } else {
             if (namespaces) {
@@ -2115,8 +2114,8 @@ public abstract class AbstractDocument
                 if (DOMConstants.DOM_ERROR_HANDLER_PARAM.equals(s)) {
                     return true;
                 }
-                for (int i = 0; i < booleanParamNames.length; i++) {
-                    if (booleanParamNames[i].equals(s)) {
+                for (String booleanParamName : booleanParamNames) {
+                    if (booleanParamName.equals(s)) {
                         return true;
                     }
                 }

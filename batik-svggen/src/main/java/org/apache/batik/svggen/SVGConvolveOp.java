@@ -94,8 +94,8 @@ public class SVGConvolveOp extends AbstractSVGFilterConverter {
             // Convert the kernel values
             float[] data = kernel.getKernelData(null);
             StringBuffer kernelMatrixBuf = new StringBuffer( data.length * 8 );
-            for(int i=0; i<data.length; i++){
-                kernelMatrixBuf.append(doubleString(data[i]));
+            for (float aData : data) {
+                kernelMatrixBuf.append(doubleString(aData));
                 kernelMatrixBuf.append(SPACE);
             }
 

@@ -239,8 +239,7 @@ public final class TurbulencePatternRed extends AbstractRed {
 
     public boolean[] getChannels(){
         boolean[] channels = new boolean[4];
-        for(int i=0; i<this.channels.length; i++)
-            channels[this.channels[i]] = true;
+        for (int channel : this.channels) channels[channel] = true;
 
         return channels;
     }

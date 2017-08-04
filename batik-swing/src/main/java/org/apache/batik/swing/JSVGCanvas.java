@@ -30,7 +30,6 @@ import java.awt.event.MouseMotionAdapter;
 import java.awt.geom.AffineTransform;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -562,23 +561,22 @@ public class JSVGCanvas extends JSVGComponent {
 
     protected void installSVGDocument(SVGDocument doc) {
         if (toolTipDocs != null) {
-            Iterator i = toolTipDocs.keySet().iterator();
-            while (i.hasNext()) {
+            for (Object o : toolTipDocs.keySet()) {
                 SVGDocument ttdoc;
-                ttdoc = (SVGDocument)i.next();
+                ttdoc = (SVGDocument) o;
                 if (ttdoc == null) continue;
 
                 NodeEventTarget root;
-                root = (NodeEventTarget)ttdoc.getRootElement();
+                root = (NodeEventTarget) ttdoc.getRootElement();
                 if (root == null) continue;
                 root.removeEventListenerNS
-                    (XMLConstants.XML_EVENTS_NAMESPACE_URI,
-                     SVGConstants.SVG_EVENT_MOUSEOVER,
-                     toolTipListener, false);
+                        (XMLConstants.XML_EVENTS_NAMESPACE_URI,
+                                SVGConstants.SVG_EVENT_MOUSEOVER,
+                                toolTipListener, false);
                 root.removeEventListenerNS
-                    (XMLConstants.XML_EVENTS_NAMESPACE_URI,
-                     SVGConstants.SVG_EVENT_MOUSEOUT,
-                     toolTipListener, false);
+                        (XMLConstants.XML_EVENTS_NAMESPACE_URI,
+                                SVGConstants.SVG_EVENT_MOUSEOUT,
+                                toolTipListener, false);
             }
             toolTipDocs = null;
         }

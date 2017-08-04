@@ -24,7 +24,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -109,8 +108,7 @@ public final class DefaultFontFamilyResolver implements FontFamilyResolver {
         //Example: Font Family: "Univers", but Font Name: "Univers 45 Light"
         //Without this, matching "Univers 45 Light" is not possible.
         Font[] allFonts = env.getAllFonts();
-        for (int i = 0; i < allFonts.length; i++) {
-            Font f = allFonts[i];
+        for (Font f : allFonts) {
             fonts.put(f.getFontName().toLowerCase(), f.getFontName());
         }
 
@@ -119,9 +117,8 @@ public final class DefaultFontFamilyResolver implements FontFamilyResolver {
         awtFonts.add(new AWTGVTFont(DEFAULT_FONT_FAMILY.getFamilyName(), 0, 12));
 
         Collection fontValues = fonts.values();
-        Iterator iter = fontValues.iterator();
-        while(iter.hasNext()) {
-            String fontFamily = (String)iter.next();
+        for (Object fontValue : fontValues) {
+            String fontFamily = (String) fontValue;
             AWTFontFamily awtFontFamily = new AWTFontFamily(fontFamily);
             awtFontFamilies.add(awtFontFamily);
             AWTGVTFont font = new AWTGVTFont(fontFamily, 0, 12);

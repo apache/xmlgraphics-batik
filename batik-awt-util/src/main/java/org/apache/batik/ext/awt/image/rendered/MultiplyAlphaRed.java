@@ -210,26 +210,32 @@ public class MultiplyAlphaRed extends AbstractRed {
                           // 2 is probably next most common...
                     switch (bands) {
                     case 2:
-                        for (int x=0; x<alphaData.length; x++) {
-                            a = alphaData[x]&0xFF;
-                            wrData[i] = ((wrData[i]&0xFF)*a)>>8; ++i;
-                            wrData[i] = ((wrData[i]&0xFF)*a)>>8; ++i;
+                        for (int anAlphaData2 : alphaData) {
+                            a = anAlphaData2 & 0xFF;
+                            wrData[i] = ((wrData[i] & 0xFF) * a) >> 8;
+                            ++i;
+                            wrData[i] = ((wrData[i] & 0xFF) * a) >> 8;
+                            ++i;
                         }
                         break;
                     case 4:
-                        for (int x=0; x<alphaData.length; x++) {
-                            a = alphaData[x]&0xFF;
-                            wrData[i] = ((wrData[i]&0xFF)*a)>>8; ++i;
-                            wrData[i] = ((wrData[i]&0xFF)*a)>>8; ++i;
-                            wrData[i] = ((wrData[i]&0xFF)*a)>>8; ++i;
-                            wrData[i] = ((wrData[i]&0xFF)*a)>>8; ++i;
+                        for (int anAlphaData1 : alphaData) {
+                            a = anAlphaData1 & 0xFF;
+                            wrData[i] = ((wrData[i] & 0xFF) * a) >> 8;
+                            ++i;
+                            wrData[i] = ((wrData[i] & 0xFF) * a) >> 8;
+                            ++i;
+                            wrData[i] = ((wrData[i] & 0xFF) * a) >> 8;
+                            ++i;
+                            wrData[i] = ((wrData[i] & 0xFF) * a) >> 8;
+                            ++i;
                         }
                         break;
                     default:
-                        for (int x=0; x<alphaData.length; x++) {
-                            a = alphaData[x]&0xFF;
-                            for (b=0; b<bands; b++) {
-                                wrData[i] = ((wrData[i]&0xFF)*a)>>8;
+                        for (int anAlphaData : alphaData) {
+                            a = anAlphaData & 0xFF;
+                            for (b = 0; b < bands; b++) {
+                                wrData[i] = ((wrData[i] & 0xFF) * a) >> 8;
                                 ++i;
                             }
                         }

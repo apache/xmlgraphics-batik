@@ -248,13 +248,11 @@ public class WMFTranscoder extends ToSVGAbstractTranscoder {
         WMFTranscoder transcoder = new WMFTranscoder();
         int nFiles = args.length;
 
-        for(int i=0; i<nFiles; i++){
-            String fileName = args[i];
-            if(!fileName.toLowerCase().endsWith(WMF_EXTENSION)){
-                System.err.println(args[i] + " does not have the " + WMF_EXTENSION + " extension. It is ignored");
-            }
-            else{
-                System.out.print("Processing : " + args[i] + "...");
+        for (String fileName : args) {
+            if (!fileName.toLowerCase().endsWith(WMF_EXTENSION)) {
+                System.err.println(fileName + " does not have the " + WMF_EXTENSION + " extension. It is ignored");
+            } else {
+                System.out.print("Processing : " + fileName + "...");
                 String outputFileName = fileName.substring(0, fileName.toLowerCase().indexOf(WMF_EXTENSION)) + SVG_EXTENSION;
                 File inputFile = new File(fileName);
                 File outputFile = new File(outputFileName);
@@ -262,9 +260,9 @@ public class WMFTranscoder extends ToSVGAbstractTranscoder {
                     TranscoderInput input = new TranscoderInput(inputFile.toURI().toURL().toString());
                     TranscoderOutput output = new TranscoderOutput(new FileOutputStream(outputFile));
                     transcoder.transcode(input, output);
-                }catch(MalformedURLException e){
+                } catch (MalformedURLException e) {
                     throw new TranscoderException(e);
-                }catch(IOException e){
+                } catch (IOException e) {
                     throw new TranscoderException(e);
                 }
                 System.out.println(".... Done");

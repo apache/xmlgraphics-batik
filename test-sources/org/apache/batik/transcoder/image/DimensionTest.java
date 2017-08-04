@@ -74,10 +74,10 @@ public class DimensionTest extends AbstractImageTranscoderTest {
      */
     protected Map createTranscodingHints() {
         Map hints = new HashMap(7);
-        if (width.floatValue() > 0) {
+        if (width > 0) {
             hints.put(ImageTranscoder.KEY_WIDTH, width);
         }
-        if (height.floatValue() > 0) {
+        if (height > 0) {
             hints.put(ImageTranscoder.KEY_HEIGHT, height);
         }
         return hints;

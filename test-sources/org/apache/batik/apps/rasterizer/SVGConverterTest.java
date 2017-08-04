@@ -84,7 +84,7 @@ public class SVGConverterTest extends DefaultTestSuite {
         t.setId("HintsConfigTest.KEY_AOI");
 
         t = new HintsConfigTest(new Object[][]{
-            {JPEGTranscoder.KEY_QUALITY, Float.valueOf(.5f)}}){
+            {JPEGTranscoder.KEY_QUALITY, .5f}}){
                 protected void deltaConfigure(SVGConverter c){
                     c.setQuality(.5f);
                 }
@@ -94,7 +94,7 @@ public class SVGConverterTest extends DefaultTestSuite {
         t.setId("HintsConfigTest.KEY_QUALITY");
 
         t = new HintsConfigTest(new Object[][]{
-            {PNGTranscoder.KEY_INDEXED, Integer.valueOf(8)}}){
+            {PNGTranscoder.KEY_INDEXED, 8}}){
                 protected void deltaConfigure(SVGConverter c){
                     c.setIndexed(8);
                 }
@@ -113,7 +113,7 @@ public class SVGConverterTest extends DefaultTestSuite {
         t.setId("HintsConfigTest.KEY_BACKGROUND_COLOR");
 
         t = new HintsConfigTest(new Object[][]{
-            {ImageTranscoder.KEY_HEIGHT, Float.valueOf(50)}}){
+            {ImageTranscoder.KEY_HEIGHT, 50f}}){
                 protected void deltaConfigure(SVGConverter c){
                     c.setHeight(50);
                 }
@@ -123,7 +123,7 @@ public class SVGConverterTest extends DefaultTestSuite {
         t.setId("HintsConfigTest.KEY_HEIGHT");
 
         t = new HintsConfigTest(new Object[][]{
-            {ImageTranscoder.KEY_WIDTH, Float.valueOf(50)}}){
+            {ImageTranscoder.KEY_WIDTH, 50f}}){
                 protected void deltaConfigure(SVGConverter c){
                     c.setWidth(50);
                 }
@@ -133,7 +133,7 @@ public class SVGConverterTest extends DefaultTestSuite {
         t.setId("HintsConfigTest.KEY_WIDTH");
 
         t = new HintsConfigTest(new Object[][]{
-            {ImageTranscoder.KEY_MAX_HEIGHT, Float.valueOf(50)}}){
+            {ImageTranscoder.KEY_MAX_HEIGHT, 50f}}){
                 protected void deltaConfigure(SVGConverter c){
                     c.setMaxHeight(50);
                 }
@@ -142,7 +142,7 @@ public class SVGConverterTest extends DefaultTestSuite {
         t.setId("HintsConfigTest.KEY_MAX_HEIGHT");
 
         t = new HintsConfigTest(new Object[][]{
-            {ImageTranscoder.KEY_MAX_WIDTH, Float.valueOf(50)}}){
+            {ImageTranscoder.KEY_MAX_WIDTH, 50f}}){
                 protected void deltaConfigure(SVGConverter c){
                     c.setMaxWidth(50);
                 }
@@ -199,7 +199,7 @@ public class SVGConverterTest extends DefaultTestSuite {
         t.setId("HintsConfigTest.KEY_LANGUAGE");
 
         t = new HintsConfigTest(new Object[][]{
-            {ImageTranscoder.KEY_PIXEL_UNIT_TO_MILLIMETER, Float.valueOf(.5f)}}){
+            {ImageTranscoder.KEY_PIXEL_UNIT_TO_MILLIMETER, .5f}}){
                 protected void deltaConfigure(SVGConverter c){
                     c.setPixelUnitToMillimeter(.5f);
                 }
@@ -545,8 +545,8 @@ abstract class AbstractConfigTest extends AbstractTest implements SVGConverterCo
     protected String makeSourceList(List v){
         int n = v.size();
         StringBuffer sb = new StringBuffer( n * 8 );
-        for (int i=0; i<n; i++){
-            sb.append( v.get(i).toString() );
+        for (Object aV : v) {
+            sb.append(aV.toString());
         }
 
         return sb.toString();
@@ -690,25 +690,23 @@ abstract class AbstractConfigTest extends AbstractTest implements SVGConverterCo
             return report;
         }
 
-        Iterator iter = expectedConfig.hints.keySet().iterator();
-        while (iter.hasNext()){
-            Object hintKey = iter.next();
+        for (Object hintKey : expectedConfig.hints.keySet()) {
             Object expectedHintValue = expectedConfig.hints.get(hintKey);
 
             Object computedHintValue = computedConfig.hints.get(hintKey);
 
-            if (!expectedHintValue.equals(computedHintValue)){
+            if (!expectedHintValue.equals(computedHintValue)) {
                 TestReport report = reportError(ERROR_UNEXPECTED_TRANSCODING_HINT);
                 report.addDescriptionEntry(ENTRY_KEY_EXPECTED_HINT_KEY,
-                                           hintKey.toString());
+                        hintKey.toString());
                 report.addDescriptionEntry(ENTRY_KEY_EXPECTED_HINT_VALUE,
-                                           expectedHintValue.toString());
+                        expectedHintValue.toString());
                 report.addDescriptionEntry(ENTRY_KEY_COMPUTED_HINT_VALUE,
-                                           "" + computedHintValue);
+                        "" + computedHintValue);
                 report.addDescriptionEntry(ENTRY_KEY_EXPECTED_HINTS,
-                                           makeHintsString(expectedConfig.hints));
+                        makeHintsString(expectedConfig.hints));
                 report.addDescriptionEntry(ENTRY_KEY_COMPUTED_HINTS,
-                                           makeHintsString(computedConfig.hints));
+                        makeHintsString(computedConfig.hints));
 
                 return report;
             }
@@ -840,8 +838,8 @@ class HintsConfigTest extends AbstractConfigTest {
         // Add hints from constructor argument
         //
         int n = hintsMap.length;
-        for (int i=0; i<n; i++){
-            hints.put(hintsMap[i][0], hintsMap[i][1]);
+        for (Object[] aHintsMap : hintsMap) {
+            hints.put(aHintsMap[0], aHintsMap[1]);
         }
         config.hints = hints;
 
@@ -883,9 +881,9 @@ class SourcesConfigTest extends AbstractConfigTest {
 
         List sources = new ArrayList();
         List dest = new ArrayList();
-        for (int i=0; i<expectedSources.length; i++){
-            sources.add(new SVGConverterFileSource(new File(expectedSources[i] + SVG_EXTENSION)));
-            dest.add(new File(expectedSources[i] + DST_TYPE.getExtension()));
+        for (Object expectedSource : expectedSources) {
+            sources.add(new SVGConverterFileSource(new File(expectedSource + SVG_EXTENSION)));
+            dest.add(new File(expectedSource + DST_TYPE.getExtension()));
         }
         config.sources = sources;
         config.dest = dest;
@@ -929,12 +927,12 @@ class DestConfigTest extends AbstractConfigTest {
 
         List sources = new ArrayList();
         List dest = new ArrayList();
-        for (int i=0; i<sourcesStrings.length; i++){
-            sources.add(new SVGConverterFileSource(new File(sourcesStrings[i])));
+        for (String sourcesString : sourcesStrings) {
+            sources.add(new SVGConverterFileSource(new File(sourcesString)));
         }
 
-        for (int i=0; i<expectedDest.length; i++){
-            dest.add(new File(expectedDest[i]));
+        for (String anExpectedDest : expectedDest) {
+            dest.add(new File(anExpectedDest));
         }
 
         config.sources = sources;

@@ -729,9 +729,8 @@ public class UpdateManager  {
 
     long findNewAllResumeTime() {
         long ret = -1;
-        Iterator i = suspensionList.iterator();
-        while (i.hasNext()) {
-            SuspensionInfo si = (SuspensionInfo)i.next();
+        for (Object aSuspensionList : suspensionList) {
+            SuspensionInfo si = (SuspensionInfo) aSuspensionList;
             long t = si.getResumeMilli();
             if (t > ret) ret = t;
         }

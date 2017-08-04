@@ -57,14 +57,14 @@ public class Font1 implements Painter {
         g.setPaint(fontColor);
         g.translate(0, 20);
         int[] fontSizes = { 6, 8, 10, 12, 18, 36, 48 };
-        for(int i=0; i<fontSizes.length; i++){
-            java.awt.Font font = new java.awt.Font(defaultFont.getFamily(),
-                                 java.awt.Font.PLAIN,
-                                 fontSizes[i]);
+        for (int fontSize : fontSizes) {
+            Font font = new Font(defaultFont.getFamily(),
+                    Font.PLAIN,
+                    fontSize);
             g.setFont(font);
             g.drawString("aA", 10, 40);
             double width = font.createGlyphVector(frc, "aA").getVisualBounds().getWidth();
-            g.translate(width*1.2, 0);
+            g.translate(width * 1.2, 0);
         }
 
         g.setTransform(defaultTransform);
@@ -110,12 +110,12 @@ public class Font1 implements Painter {
         g.drawString("Font Families", 10, 30);
         g.setPaint(fontColor);
 
-        for(int i=0; i<fontFamilies.length; i++){
-            java.awt.Font font = new java.awt.Font(fontFamilies[i], java.awt.Font.PLAIN, 18);
+        for (String fontFamily : fontFamilies) {
+            Font font = new Font(fontFamily, Font.PLAIN, 18);
             g.setFont(font);
-            double height = font.createGlyphVector(frc, fontFamilies[i]).getVisualBounds().getHeight();
-            g.translate(0, height*1.4);
-            g.drawString(fontFamilies[i], 10, 40);
+            double height = font.createGlyphVector(frc, fontFamily).getVisualBounds().getHeight();
+            g.translate(0, height * 1.4);
+            g.drawString(fontFamily, 10, 40);
         }
 
         //
@@ -133,11 +133,10 @@ public class Font1 implements Painter {
         g.drawString("Logical Fonts", 10, 0);
         g.setPaint(fontColor);
 
-        for(int i=0; i<logicalFonts.length; i++){
-            Font font = logicalFonts[i];
+        for (Font font : logicalFonts) {
             g.setFont(font);
             double height = font.createGlyphVector(frc, font.getName()).getVisualBounds().getHeight();
-            g.translate(0, height*1.4);
+            g.translate(0, height * 1.4);
             g.drawString(font.getName(), 10, 0);
         }
     }

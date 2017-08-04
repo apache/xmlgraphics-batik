@@ -79,8 +79,8 @@ public class SVGCSSStyler implements SVGSyntax{
                                        styleAttrBuffer.toString().trim());
 
                 int n = toBeRemoved.size();
-                for(int i=0; i<n; i++) {
-                    element.removeAttribute((String)toBeRemoved.get( i ));
+                for (Object aToBeRemoved : toBeRemoved) {
+                    element.removeAttribute((String) aToBeRemoved);
                 }
             }
             // else

@@ -150,14 +150,14 @@ public class JSVGMemoryLeakTest extends MemoryLeakTest
         UpdateManager um = getTheCanvas().getUpdateManager();
         BridgeContext bc = um.getBridgeContext();
         BridgeContext[] ctxs = bc.getChildContexts();
-        for (int i = 0; i < ctxs.length; i++) {
-            bc = ctxs[i];
+        for (BridgeContext ctx : ctxs) {
+            bc = ctx;
             if (bc == null) {
                 continue;
             }
             String url = ((SVGOMDocument) bc.getDocument()).getURL();
             if (url.indexOf(uriSubstring) != -1) {
-                registerObjectDesc(ctxs[i], desc);
+                registerObjectDesc(ctx, desc);
             }
         }
     }
@@ -195,10 +195,10 @@ public class JSVGMemoryLeakTest extends MemoryLeakTest
         registerObjectDesc(um, "updateManager");
         registerObjectDesc(bc, "bridgeContext");
         BridgeContext[] subCtxs = bc.getChildContexts();
-        for (int i = 0; i < subCtxs.length; i++) {
-            if (subCtxs[i] != null) {
-                SVGOMDocument doc = (SVGOMDocument) subCtxs[i].getDocument();
-                registerObjectDesc(subCtxs[i], "BridgeContext_" + doc.getURL());
+        for (BridgeContext subCtx : subCtxs) {
+            if (subCtx != null) {
+                SVGOMDocument doc = (SVGOMDocument) subCtx.getDocument();
+                registerObjectDesc(subCtx, "BridgeContext_" + doc.getURL());
             }
         }
     }

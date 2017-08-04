@@ -22,7 +22,6 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -263,12 +262,11 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
             String baseURI = ((AbstractNode) e).getBaseURI();
             ParsedURL purl = new ParsedURL(baseURI, uriStr);
 
-            Iterator iter = refs.iterator();
-            while (iter.hasNext()) {
-                if (purl.equals(iter.next()))
+            for (Object ref : refs) {
+                if (purl.equals(ref))
                     throw new BridgeException
-                        (ctx, e, ERR_XLINK_HREF_CIRCULAR_DEPENDENCIES,
-                         new Object[] {uriStr});
+                            (ctx, e, ERR_XLINK_HREF_CIRCULAR_DEPENDENCIES,
+                                    new Object[]{uriStr});
             }
 
             try {

@@ -378,8 +378,8 @@ public class ArabicTextHandler {
 
         int [][]remaps = doubleCharRemappings[ch1-doubleCharFirst];
         if (remaps == null) return false;
-        for (int i=0; i<remaps.length; i++) {
-            if (remaps[i][0] == ch2)
+        for (int[] remap : remaps) {
+            if (remap[0] == ch2)
                 return true;
         }
         return false;
@@ -402,9 +402,9 @@ public class ArabicTextHandler {
 
         int [][]remaps = doubleCharRemappings[ch1-doubleCharFirst];
         if (remaps == null) return -1;
-        for (int i=0; i<remaps.length; i++) {
-            if (remaps[i][0] == ch2)
-                return remaps[i][form];
+        for (int[] remap : remaps) {
+            if (remap[0] == ch2)
+                return remap[form];
         }
         return -1;
     }

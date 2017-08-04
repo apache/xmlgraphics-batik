@@ -577,9 +577,8 @@ public class JGVTComponent extends JComponent {
             g2d.drawRenderedImage(image, null);
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                                  RenderingHints.VALUE_ANTIALIAS_OFF);
-            Iterator it = overlays.iterator();
-            while (it.hasNext()) {
-                ((Overlay)it.next()).paint(g);
+            for (Object overlay : overlays) {
+                ((Overlay) overlay).paint(g);
             }
         }
     }
@@ -733,10 +732,9 @@ public class JGVTComponent extends JComponent {
                                               visRect.width, visRect.height);
         gvtTreeRenderer.setPriority(Thread.MIN_PRIORITY);
 
-        Iterator it = gvtTreeRendererListeners.iterator();
-        while (it.hasNext()) {
+        for (Object gvtTreeRendererListener : gvtTreeRendererListeners) {
             gvtTreeRenderer.addGVTTreeRendererListener
-                ((GVTTreeRendererListener)it.next());
+                    ((GVTTreeRendererListener) gvtTreeRendererListener);
         }
 
         // Disable the dispatch during the rendering
@@ -1238,9 +1236,8 @@ public class JGVTComponent extends JComponent {
                 !suspendInteractions &&
                 interactor == null &&
                 gvtRoot != null) {
-                Iterator it = interactors.iterator();
-                while (it.hasNext()) {
-                    Interactor i = (Interactor)it.next();
+                for (Object interactor1 : interactors) {
+                    Interactor i = (Interactor) interactor1;
                     if (i.startInteraction(ie)) {
                         interactor = i;
                         break;

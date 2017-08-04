@@ -127,8 +127,8 @@ public class XMLTestSuiteRunner implements XTRunConstants, XTSConstants{
 
         public IdBasedTestFilter(String[] ids){
             this.ids = ids;
-            for(int i=0; i<ids.length; i++){
-                unmatchedIds.add(ids[i]);
+            for (String id : ids) {
+                unmatchedIds.add(id);
             }
         }
 
@@ -194,7 +194,7 @@ public class XMLTestSuiteRunner implements XTRunConstants, XTSConstants{
         }
 
         protected boolean isRequestedId(String id){
-            for(int i=0; i<ids.length; i++){
+            for (String id1 : ids) {
                 //
                 // id substring of ids[i]
                 // ======================
@@ -213,15 +213,15 @@ public class XMLTestSuiteRunner implements XTRunConstants, XTSConstants{
                 //          "all.B" (ids[0]) is a substring of "all.B.B3" (id)
                 // Conclusion: id is accepted because it is a child test of ids[0]
                 //
-                if(ids[i].lastIndexOf(id) == 0){
+                if (id1.lastIndexOf(id) == 0) {
                     // System.out.println("accepting " + id + ". It is (or is the a parent of) " + ids[i]);
-                    unmatchedIds.remove(ids[i]);
+                    unmatchedIds.remove(id1);
                     return true;
                 }
 
-                if(id.lastIndexOf(ids[i]) != -1){
+                if (id.lastIndexOf(id1) != -1) {
                     // System.out.println("accepting " + id + " it is (or is a child of) the requested " + ids[i]);
-                    unmatchedIds.remove(ids[i]);
+                    unmatchedIds.remove(id1);
                     return true;
                 }
             }

@@ -19,7 +19,6 @@
 
 package org.apache.batik.dom.traversal;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -94,9 +93,8 @@ public class TraversalSupport {
      */
     public void nodeToBeRemoved(Node removedNode) {
         if (iterators != null) {
-            Iterator it = iterators.iterator();
-            while (it.hasNext()) {
-                ((DOMNodeIterator)it.next()).nodeToBeRemoved(removedNode);
+            for (Object iterator : iterators) {
+                ((DOMNodeIterator) iterator).nodeToBeRemoved(removedNode);
             }
         }
     }

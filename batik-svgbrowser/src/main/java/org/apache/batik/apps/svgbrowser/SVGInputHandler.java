@@ -93,8 +93,8 @@ public class SVGInputHandler implements SquiggleInputHandler {
      */
     public boolean accept(String path) {
         if (path == null) return false;
-        for (int i=0; i<SVG_FILE_EXTENSIONS.length; i++) {
-            if (path.endsWith(SVG_FILE_EXTENSIONS[i])) {
+        for (String SVG_FILE_EXTENSION : SVG_FILE_EXTENSIONS) {
+            if (path.endsWith(SVG_FILE_EXTENSION)) {
                 return true;
             }
         }

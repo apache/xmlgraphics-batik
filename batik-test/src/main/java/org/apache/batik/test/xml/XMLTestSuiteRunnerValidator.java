@@ -146,8 +146,8 @@ public class XMLTestSuiteRunnerValidator extends DefaultTestSuite {
                            "all.A.AG.AG1", "all.A.AG.AG2"}}
         };
 
-        for(int i=0; i<config.length; i++){
-            addTest(new XMLTestSuiteRunnerTest(config[i]));
+        for (Object[] aConfig : config) {
+            addTest(new XMLTestSuiteRunnerTest(aConfig));
         }
 
     }
@@ -266,8 +266,8 @@ public class XMLTestSuiteRunnerValidator extends DefaultTestSuite {
                 if(r instanceof TestSuiteReport){
                     TestReport[] c = ((TestSuiteReport)r).getChildrenReports();
                     if(c != null){
-                        for(int i=0; i<c.length; i++){
-                            appendReportIds(c[i], sb);
+                        for (TestReport aC : c) {
+                            appendReportIds(aC, sb);
                         }
                     }
                 }
@@ -287,8 +287,8 @@ public class XMLTestSuiteRunnerValidator extends DefaultTestSuite {
                 if(r instanceof TestSuiteReport){
                     TestReport[] c = ((TestSuiteReport)r).getChildrenReports();
                     if(c != null){
-                        for(int i=0; i<c.length; i++){
-                            appendReportIds(c[i], sb);
+                        for (TestReport aC : c) {
+                            appendReportIds(aC, sb);
                         }
                     }
                 }
@@ -328,11 +328,11 @@ public class XMLTestSuiteRunnerValidator extends DefaultTestSuite {
             if(report instanceof TestSuiteReport){
                 TestReport[] childReports = ((TestSuiteReport)report).getChildrenReports();
                 if(childReports != null){
-                    for(int i=0; i<childReports.length; i++){
+                    for (TestReport childReport : childReports) {
                         String idNotExpected
-                            = checkTestReport(childReports[i],
-                                              idSet);
-                        if(idNotExpected != null){
+                                = checkTestReport(childReport,
+                                idSet);
+                        if (idNotExpected != null) {
                             return idNotExpected;
                         }
                     }

@@ -97,8 +97,8 @@ public class SVGGraphicContextConverter {
         // no need for synchronized map => use HashMap
         Map groupAttrMap = new HashMap();
 
-        for (int i=0; i<converters.length; i++) {
-            SVGDescriptor desc = converters[i].toSVG(gc);
+        for (SVGConverter converter : converters) {
+            SVGDescriptor desc = converter.toSVG(gc);
             if (desc != null)
                 desc.getAttributeMap(groupAttrMap);
         }
@@ -114,8 +114,7 @@ public class SVGGraphicContextConverter {
      */
     public List getDefinitionSet() {
         List defSet = new LinkedList();
-        for(int i=0; i<converters.length; i++)
-            defSet.addAll(converters[i].getDefinitionSet());
+        for (SVGConverter converter : converters) defSet.addAll(converter.getDefinitionSet());
 
         return defSet;
     }

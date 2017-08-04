@@ -98,8 +98,8 @@ public class ConvolveMatrixRable8Bit
         this.kernel = k;
         kernelHasNegValues = false;
         float [] kv = k.getKernelData(null);
-        for (int i=0; i<kv.length; i++)
-            if (kv[i] < 0) {
+        for (float aKv : kv)
+            if (aKv < 0) {
                 kernelHasNegValues = true;
                 break;
             }

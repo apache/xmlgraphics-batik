@@ -234,9 +234,8 @@ public abstract class AbstractRable implements Filter {
     public Object getProperty(String name) {
         Object ret = props.get(name);
         if (ret != null) return ret;
-        Iterator i = srcs.iterator();
-        while (i.hasNext()) {
-            RenderableImage ri = (RenderableImage)i.next();
+        for (Object src : srcs) {
+            RenderableImage ri = (RenderableImage) src;
             ret = ri.getProperty(name);
             if (ret != null) return ret;
         }

@@ -185,9 +185,9 @@ public class DropDownHistoryModel implements ScrollablePopupMenuModel {
      * @return True if item was successfully removed
      */
     protected boolean removeFirstScrollablePopupMenuItem(String details) {
-        for (int i = 0; i < items.size(); i++) {
+        for (Object item1 : items) {
             ScrollablePopupMenuItem item =
-                (ScrollablePopupMenuItem) items.get(i);
+                    (ScrollablePopupMenuItem) item1;
             removeItem(item, details);
             return true;
         }

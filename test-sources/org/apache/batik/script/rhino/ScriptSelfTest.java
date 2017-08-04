@@ -50,7 +50,7 @@ public class ScriptSelfTest extends SelfContainedSVGOnLoadTest {
     }
 
     public void setSecure(Boolean secure){
-        this.secure = secure.booleanValue();
+        this.secure = secure;
     }
 
     public Boolean getSecure(){
@@ -58,7 +58,7 @@ public class ScriptSelfTest extends SelfContainedSVGOnLoadTest {
     }
 
     public void setConstrain(Boolean constrain){
-        this.constrain = constrain.booleanValue();
+        this.constrain = constrain;
     }
 
     public Boolean getConstrain(){

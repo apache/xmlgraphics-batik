@@ -166,9 +166,7 @@ public class ClipRable8Bit
 
         if (false) {
             java.util.Set s = rh.keySet();
-            java.util.Iterator i = s.iterator();
-            while (i.hasNext()) {
-                Object o = i.next();
+            for (Object o : s) {
                 System.out.println("XXX: " + o + " -> " + rh.get(o));
             }
         }

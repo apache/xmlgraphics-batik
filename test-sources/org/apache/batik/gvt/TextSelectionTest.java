@@ -126,8 +126,8 @@ public class TextSelectionTest extends JSVGRenderingAccuracyTest {
     public TextSelectionTest(String file,   String textID,
                              Integer start, Integer end) {
         this.textID    = textID;
-        this.start = start.intValue();
-        this.end   = end.intValue();
+        this.start = start;
+        this.end   = end;
         super.setFile(file);
     }
 

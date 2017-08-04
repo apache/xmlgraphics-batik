@@ -2018,8 +2018,8 @@ public class GlyphLayout implements TextSpanLayout {
      */
     public boolean hasCharacterIndex(int index){
 
-        for (int n=0; n<charMap.length; n++) {
-            if (index == charMap[n])
+        for (int aCharMap : charMap) {
+            if (index == aCharMap)
                 return true;
         }
         return false;

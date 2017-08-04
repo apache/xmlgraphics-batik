@@ -86,8 +86,8 @@ public class Kern {
         }
         if (glyphUnicode.length() < 1) return false;
         char glyphChar = glyphUnicode.charAt(0);
-        for (int i = 0; i < firstUnicodeRanges.length; i++) {
-            if (firstUnicodeRanges[i].contains(glyphChar))
+        for (UnicodeRange firstUnicodeRange : firstUnicodeRanges) {
+            if (firstUnicodeRange.contains(glyphChar))
                 return true;
         }
         return false;
@@ -107,8 +107,8 @@ public class Kern {
             int pt = Arrays.binarySearch(firstGlyphCodes, glyphCode);
             if (pt >= 0) return true;
         }
-        for (int i = 0; i < firstUnicodeRanges.length; i++) {
-            if (firstUnicodeRanges[i].contains(glyphUnicode))
+        for (UnicodeRange firstUnicodeRange : firstUnicodeRanges) {
+            if (firstUnicodeRange.contains(glyphUnicode))
                 return true;
         }
         return false;
@@ -131,8 +131,8 @@ public class Kern {
         }
         if (glyphUnicode.length() < 1) return false;
         char glyphChar = glyphUnicode.charAt(0);
-        for (int i = 0; i < secondUnicodeRanges.length; i++) {
-            if (secondUnicodeRanges[i].contains(glyphChar))
+        for (UnicodeRange secondUnicodeRange : secondUnicodeRanges) {
+            if (secondUnicodeRange.contains(glyphChar))
                 return true;
         }
         return false;
@@ -153,8 +153,8 @@ public class Kern {
             int pt = Arrays.binarySearch(secondGlyphCodes, glyphCode);
             if (pt >= 0) return true;
         }
-        for (int i = 0; i < secondUnicodeRanges.length; i++) {
-            if (secondUnicodeRanges[i].contains(glyphUnicode))
+        for (UnicodeRange secondUnicodeRange : secondUnicodeRanges) {
+            if (secondUnicodeRange.contains(glyphUnicode))
                 return true;
         }
         return false;

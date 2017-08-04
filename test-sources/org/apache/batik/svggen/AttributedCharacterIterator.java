@@ -46,7 +46,7 @@ public class AttributedCharacterIterator implements Painter {
         //
         Font font = new Font(fontName, Font.PLAIN, fontSize);
         styledText.addAttribute(TextAttribute.FAMILY, font.getFamily());
-        styledText.addAttribute(TextAttribute.SIZE, Float.valueOf(font.getSize()));
+        styledText.addAttribute(TextAttribute.SIZE, (float) font.getSize());
         styledText.addAttribute(TextAttribute.FOREGROUND, Color.black);
 
         //

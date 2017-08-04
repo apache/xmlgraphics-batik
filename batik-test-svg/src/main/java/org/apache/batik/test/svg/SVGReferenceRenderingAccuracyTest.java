@@ -67,8 +67,8 @@ public class SVGReferenceRenderingAccuracyTest
                   buildRefImgURL(dirNfile[0], dirNfile[1]));
 
         String[] variationURLs = buildVariationURLs(dirNfile[0], dirNfile[1]);
-        for (int i = 0; i < variationURLs.length; i++) {
-            addVariationURL(variationURLs[i]);
+        for (String variationURL : variationURLs) {
+            addVariationURL(variationURL);
         }
         setSaveVariation(new File(buildSaveVariationFile(dirNfile[0], dirNfile[1])));
         setCandidateReference(new File(buildCandidateReferenceFile(dirNfile[0], dirNfile[1])));

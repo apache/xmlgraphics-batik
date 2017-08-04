@@ -49,8 +49,8 @@ public class DoubleStringPerformanceTest extends PerformanceTest {
 
         int maxLength = 0;
         for (int i=0; i<1000; i++) {
-            for (int j=0; j<testValues.length; j++) {
-                maxLength = Math.max((gc.doubleString(testValues[j])).length(), maxLength);
+            for (double testValue : testValues) {
+                maxLength = Math.max((gc.doubleString(testValue)).length(), maxLength);
             }
         }
     }

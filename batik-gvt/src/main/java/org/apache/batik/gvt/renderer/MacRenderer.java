@@ -347,9 +347,8 @@ public class MacRenderer implements ImageRenderer {
             }
 
 
-            Iterator iter = devRLM.iterator();
-            while (iter.hasNext()) {
-                Rectangle r = (Rectangle)iter.next();
+            for (Object aDevRLM : devRLM) {
+                Rectangle r = (Rectangle) aDevRLM;
                 if (!dr.intersects(r)) continue;
                 r = dr.intersection(r);
                 g2d.setTransform(IDENTITY);
