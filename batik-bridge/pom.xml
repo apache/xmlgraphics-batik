@@ -95,6 +95,12 @@
       <artifactId>xml-apis-ext</artifactId>
       <version>${xmlapis.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.mozilla</groupId>
+      <artifactId>rhino</artifactId>
+      <version>${rhino.version}</version>
+      <optional>true</optional>
+    </dependency>
   </dependencies>
 
   <build>
