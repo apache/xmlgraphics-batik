@@ -129,7 +129,7 @@ public class TranscodingHints extends HashMap {
             putAll(((TranscodingHints) m));
         } else {
             for (Object o : m.entrySet()) {
-                Entry entry = (Entry) o;
+                Map.Entry entry = (Map.Entry) o;
                 put(entry.getKey(), entry.getValue());
             }
         }
