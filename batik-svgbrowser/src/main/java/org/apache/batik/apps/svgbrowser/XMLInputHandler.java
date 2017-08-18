@@ -57,7 +57,7 @@ import org.w3c.dom.svg.SVGDocument;
  * input XML file and the handler checks that the result is an 
  * SVG document with an SVG root.
  *
- * @author <a mailto="vincent.hardy@sun.com">Vincent Hardy</a>
+ * @author <a href="mailto:vincent.hardy@sun.com">Vincent Hardy</a>
  * @version $Id$
  */
 public class XMLInputHandler implements SquiggleInputHandler {

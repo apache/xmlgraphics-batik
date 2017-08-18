@@ -1343,8 +1343,8 @@ public abstract class PNGEncodeParam implements ImageEncodeParam {
      *
      * <pre>
      * for (int i = bytesPerPixel; i &lt; bytesPerRow + bytesPerPixel; i++) {
-     *     int curr = currRow[i] & 0xff;
-     *     int left = currRow[i - bytesPerPixel] & 0xff;
+     *     int curr = currRow[i] &amp; 0xff;
+     *     int left = currRow[i - bytesPerPixel] &amp; 0xff;
      *     scratchRow[PNG_FILTER_SUB][i] = (byte)(curr - left);
      * }
      * return PNG_FILTER_SUB;

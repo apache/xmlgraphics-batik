@@ -49,7 +49,7 @@ import java.util.Set;
  * The remainder of a line is whitespace delimited, fully qualified,
  * Java class/package name (i.e.  java.lang.System).
  *
- * @author <a href="mailto:deweese@apache.org>deweese</a>
+ * @author <a href="mailto:deweese@apache.org">deweese</a>
  * @version $Id$
  */
 public class ImportInfo {

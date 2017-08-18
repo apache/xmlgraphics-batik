@@ -23,7 +23,7 @@ package org.apache.batik.util;
  * method so that it can be used by the <code>BatikSecuritySupport</code> or other
  * security related class.
  *
- * @author <a mailto="vincent.hardy@sun.com">Vincent Hardy</a>
+ * @author <a href="mailto:vincent.hardy@sun.com">Vincent Hardy</a>
  * @version $Id$
  */
 public class BatikSecurityManager extends SecurityManager {

@@ -37,7 +37,7 @@ public final class Version {
      *   branch.  The format of the returned string will be one of the
      *   following:
      * </p>
-     * <table>
+     * <table summary="">
      *   <tr>
      *     <th>Source</th>
      *     <th>Version string</th>

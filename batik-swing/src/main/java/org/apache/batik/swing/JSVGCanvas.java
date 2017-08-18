@@ -993,7 +993,7 @@ public class JSVGCanvas extends JSVGComponent {
 
         /**
          * Converts line breaks to HTML breaks and encodes special entities.
-         * Poor way of replacing '&lt;', '&gt;' and '&' in content.
+         * Poor way of replacing '&lt;', '&gt;' and '&amp;' in content.
          */
         public String toFormattedHTML(String str) {
             StringBuffer sb = new StringBuffer(str);

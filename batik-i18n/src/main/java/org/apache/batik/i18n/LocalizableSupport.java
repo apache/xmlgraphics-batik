@@ -58,7 +58,7 @@ import java.util.MissingResourceException;
  *   <li>
  *     if a Locale has been set by a call to setLocale(), use this Locale,
  *     else,
- *   <li/>
+ *   </li>
  *   <li>
  *     if a Locale has been set by a call to the setDefaultLocale() method
  *     of a LocalizableSupport object in the current LocaleGroup, use this
@@ -67,7 +67,7 @@ import java.util.MissingResourceException;
  *   <li>
  *     use the object returned by Locale.getDefault() (and set by
  *     Locale.setDefault()).
- *   <li/>
+ *   </li>
  * </ul>
  * This offers the possibility to have a different Locale for each object,
  * a Locale for a group of object and/or a Locale for the JVM instance.

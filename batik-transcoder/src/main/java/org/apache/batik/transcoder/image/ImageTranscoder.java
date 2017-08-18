@@ -59,7 +59,7 @@ import org.w3c.dom.Document;
  * processor can be specified:
  *
  * <p><code>KEY_LANGUAGE</code> to set the default language to use (may be
- * used by a &lt;switch> SVG element for example),
+ * used by a &lt;switch&gt; SVG element for example),
  * <code>KEY_USER_STYLESHEET_URI</code> to fix the URI of a user
  * stylesheet, and <code>KEY_MM_PER_PIXEL</code> to specify the number of
  * millimeters in each pixel .

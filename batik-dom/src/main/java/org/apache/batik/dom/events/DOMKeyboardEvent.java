@@ -330,7 +330,7 @@ public class DOMKeyboardEvent extends DOMUIEvent implements KeyboardEvent {
     }
 
     /**
-     * <b>DOM</b: Initializes this KeyboardEvent object.
+     * <b>DOM</b>: Initializes this KeyboardEvent object.
      * @param namespaceURIArg Specifies the event namespace URI.
      * @param typeArg Specifies the event type.
      * @param canBubbleArg Specifies whether or not the event can bubble.

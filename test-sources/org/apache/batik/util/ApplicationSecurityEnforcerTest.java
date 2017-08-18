@@ -23,7 +23,7 @@ import org.apache.batik.test.*;
 /**
  * Validates the operation of the security enforcer class.
  *
- * @author <a mailto="vincent.hardy@sun.com">Vincent Hardy</a>
+ * @author <a href="mailto:vincent.hardy@sun.com">Vincent Hardy</a>
  * @version $Id$
  */
 public class ApplicationSecurityEnforcerTest extends DefaultTestSuite {

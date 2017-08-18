@@ -39,7 +39,7 @@ import org.apache.batik.test.TestReport;
  * Checks that the content generated from the SVGGraphics2D and to which
  * an event handler has been added can be processed by Batik.
  *
- * @author <a mailto="vincent.hardy@sun.com">Vincent Hardy</a>
+ * @author <a href="mailto:vincent.hardy@sun.com">Vincent Hardy</a>
  * @version $Id$
  */
 public class ShowGraphics2DOutput extends AbstractTest {

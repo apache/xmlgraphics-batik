@@ -422,7 +422,7 @@ public abstract class BridgeEventSupport implements SVGConstants {
          * event or null if any.
          *
          * @param node the graphics node that received the event
-         * @param coords the mouse coordinates in the GVT tree space
+         * @param pt the mouse coordinates in the GVT tree space
          */
         protected Element getEventTarget(GraphicsNode node, Point2D pt) {
             Element target = context.getElement(node);

@@ -25,7 +25,7 @@ import javax.swing.filechooser.FileFilter;
 /**
  * This class filters file for a given <code>SquiggleInputHandler</code>
  *
- * @author <a mailto="vincent.hardy@sun.com">Vincent Hardy</a>
+ * @author <a href="mailto:vincent.hardy@sun.com">Vincent Hardy</a>
  * @version $Id$
  */
 public class SquiggleInputHandlerFilter extends FileFilter {
