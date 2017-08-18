@@ -32,7 +32,7 @@ import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.XMLConstants;
 
 /**
- * This class represents a &lt;font-face> element or @font-face rule
+ * This class represents a &lt;font-face&gt; element or @font-face rule
  *
  * @author <a href="mailto:bella.robinson@cmis.csiro.au">Bella Robinson</a>
  * @version $Id$

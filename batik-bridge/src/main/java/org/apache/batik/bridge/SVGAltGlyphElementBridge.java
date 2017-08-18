@@ -32,7 +32,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * Bridge class for the &lt;altGlyph> element.
+ * Bridge class for the &lt;altGlyph&gt; element.
  *
  * @author <a href="mailto:bella.robinson@cmis.csiro.au">Bella Robinson</a>
  * @version $Id$
@@ -44,7 +44,7 @@ public class SVGAltGlyphElementBridge extends AbstractSVGBridge
         = GVTAttributedCharacterIterator.TextAttribute.PAINT_INFO;
 
     /**
-     * Constructs a new bridge for the &lt;altGlyph> element.
+     * Constructs a new bridge for the &lt;altGlyph&gt; element.
      */
     public SVGAltGlyphElementBridge() {
     }
@@ -58,7 +58,7 @@ public class SVGAltGlyphElementBridge extends AbstractSVGBridge
 
     /**
      * Constructs an array of Glyphs that represents the specified
-     * &lt;altGlyph> element at the requested size.
+     * &lt;altGlyph&gt; element at the requested size.
      *
      * @param ctx The current bridge context.
      * @param altGlyphElement The altGlyph element to base the SVGGVTGlyphVector

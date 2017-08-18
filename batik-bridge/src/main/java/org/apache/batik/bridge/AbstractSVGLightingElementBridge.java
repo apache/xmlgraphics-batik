@@ -29,7 +29,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /**
- * Bridge class for the &lt;feDiffuseLighting> element.
+ * Bridge class for the &lt;feDiffuseLighting&gt; element.
  *
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
@@ -132,7 +132,7 @@ public abstract class AbstractSVGLightingElementBridge
     }
 
     /**
-     * Bridge class for the &lt;feSpotLight> element.
+     * Bridge class for the &lt;feSpotLight&gt; element.
      */
     public static class SVGFeSpotLightElementBridge
         extends AbstractSVGLightElementBridge {
@@ -200,7 +200,7 @@ public abstract class AbstractSVGLightingElementBridge
     }
 
     /**
-     * Bridge class for the &lt;feDistantLight> element.
+     * Bridge class for the &lt;feDistantLight&gt; element.
      */
     public static class SVGFeDistantLightElementBridge
         extends AbstractSVGLightElementBridge {
@@ -243,7 +243,7 @@ public abstract class AbstractSVGLightingElementBridge
     }
 
     /**
-     * Bridge class for the &lt;fePointLight> element.
+     * Bridge class for the &lt;fePointLight&gt; element.
      */
     public static class SVGFePointLightElementBridge
         extends AbstractSVGLightElementBridge {

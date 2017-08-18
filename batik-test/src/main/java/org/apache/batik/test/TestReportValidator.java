@@ -31,7 +31,7 @@ package org.apache.batik.test;
  * error code. The <code>TestReportValidator</code> will pass if the
  * expected values are produced by the <code>TestReport</code>
  * created by the associated <code>Test</code>. Otherwise, it will
- * fail with one of two error codes:<br />
+ * fail with one of two error codes:<br>
  * + if the status is not the one expected, then the
  *   ERROR_UNEXPECTED_TEST_STATUS code is used.. The report
  *   description will have two entries: ENTRY_KEY_EXPECTED_STATUS

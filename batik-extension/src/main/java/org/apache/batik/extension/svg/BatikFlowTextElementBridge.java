@@ -58,7 +58,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /**
- * Bridge class for the &lt;flowText> element.
+ * Bridge class for the &lt;flowText&gt; element.
  *
  * @author <a href="mailto:deweese@apache.org">Thomas DeWeese</a>
  * @version $Id$
@@ -83,7 +83,7 @@ public class BatikFlowTextElementBridge extends SVGTextElementBridge
         = GVTAttributedCharacterIterator.TextAttribute.PREFORMATTED;
 
     /**
-     * Constructs a new bridge for the &lt;flowText> element.
+     * Constructs a new bridge for the &lt;flowText&gt; element.
      */
     public BatikFlowTextElementBridge() {}
 

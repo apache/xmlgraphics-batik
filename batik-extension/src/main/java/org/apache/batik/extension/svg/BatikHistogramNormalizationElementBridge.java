@@ -43,7 +43,7 @@ public class BatikHistogramNormalizationElementBridge
     implements BatikExtConstants {
 
     /**
-     * Constructs a new bridge for the &lt;histogramNormalization> element.
+     * Constructs a new bridge for the &lt;histogramNormalization&gt; element.
      */
     public BatikHistogramNormalizationElementBridge() { /* nothing */ }
 

@@ -32,7 +32,7 @@ import org.apache.batik.gvt.GraphicsNode;
 import org.w3c.dom.Element;
 
 /**
- * Bridge class for the &lt;feComposite> element.
+ * Bridge class for the &lt;feComposite&gt; element.
  *
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
@@ -42,7 +42,7 @@ public class SVGFeCompositeElementBridge
 
 
     /**
-     * Constructs a new bridge for the &lt;feComposite> element.
+     * Constructs a new bridge for the &lt;feComposite&gt; element.
      */
     public SVGFeCompositeElementBridge() {}
 

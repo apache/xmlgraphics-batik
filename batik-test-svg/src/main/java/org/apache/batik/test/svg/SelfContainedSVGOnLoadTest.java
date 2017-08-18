@@ -45,14 +45,14 @@ import org.apache.batik.util.XMLResourceDescriptor;
  * event.
  * 
  * The SVG input file should contain script that will position the 
- * result of the test in the DOM using the following namespace: <br />
- * xmlns:test="http://xml.apache.org/batik/test" <br />
+ * result of the test in the DOM using the following namespace: <br>
+ * xmlns:test="http://xml.apache.org/batik/test" <br>
  * 
  * The result should be set in the <code>result</code> attribute of the
  * &lt;testResult&gt; element by the script embeded in the input SVG
- * test file. <br />
+ * test file. <br>
  * 
- * Sample input SVG file:<br /><code>
+ * Sample input SVG file:<br><code>
  * &lt;svg ... onload="runTest(evt)" xmlns:test="http://xml.apache.org/batik/test" &gt;
  *   &lt;script type="text/ecmascript"&gt;
  *   function runTest(evt) {

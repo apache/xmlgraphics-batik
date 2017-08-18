@@ -26,7 +26,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGTests;
 
 /**
- * Bridge class for the &lt;switch> element.
+ * Bridge class for the &lt;switch&gt; element.
  *
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
@@ -40,7 +40,7 @@ public class SVGSwitchElementBridge extends SVGGElementBridge {
     protected Element selectedChild;
 
     /**
-     * Constructs a new bridge for the &lt;switch> element.
+     * Constructs a new bridge for the &lt;switch&gt; element.
      */
     public SVGSwitchElementBridge() {}
 
@@ -97,7 +97,7 @@ public class SVGSwitchElementBridge extends SVGGElementBridge {
     }
 
     /**
-     * Returns true as the &lt;switch> element is not a container.
+     * Returns true as the &lt;switch&gt; element is not a container.
      */
     public boolean isComposite() {
         return false;

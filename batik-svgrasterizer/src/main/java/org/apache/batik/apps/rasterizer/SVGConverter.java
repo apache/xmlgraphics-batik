@@ -43,28 +43,28 @@ import org.apache.batik.util.ParsedURL;
 
 /**
  * This application can be used to convert SVG images to raster images.
- * <br />
+ * <br>
  * Possible result raster image formats are PNG, JPEG, TIFF, and PDF.
  * The Batik Transcoder API is used to execute the conversion. FOP is
- * needed to be able to transcode to the PDF format<br />
+ * needed to be able to transcode to the PDF format<br>
  *
  * The source has to be list of files or URL (set by the <code>setSources</code>
- * method). <br />
+ * method). <br>
  *
- * The destination can be:<br /><ul>
+ * The destination can be:<br><ul>
  * <li><b>unspecified</b>. In that case, only file sources can be converted and
  * a file in the same directory as the source will be created.</li>
  * <li><b>a directory</b>, set by the <code>setDst</code> method. In that case,
  * the output files are created in that destination directory</li>
  * <li><b>a file</b>. In case there is a <i>single
  * source</i>, the destination can be a single named file
- * (set with the <code>setDst</code> method.</li>)<br />
+ * (set with the <code>setDst</code> method.</li>)<br>
  * </ul>
  *
  * <hr />
  *
  * There are a number of options which control the way the image is
- * converted to the destination format:<br /><ul>
+ * converted to the destination format:<br><ul>
  * <li>destinationType: controls the type of conversion which should be done.
  *     see the {@link DestinationType} documentation.</li>
  * <li>width/height: they control the desired width and height, in user space,

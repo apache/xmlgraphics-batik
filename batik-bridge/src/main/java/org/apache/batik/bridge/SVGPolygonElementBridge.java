@@ -34,7 +34,7 @@ import org.w3c.dom.svg.SVGPoint;
 import org.w3c.dom.svg.SVGPointList;
 
 /**
- * Bridge class for the &lt;polygon> element.
+ * Bridge class for the &lt;polygon&gt; element.
  *
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
@@ -48,7 +48,7 @@ public class SVGPolygonElementBridge extends SVGDecoratedShapeElementBridge {
     protected static final Shape DEFAULT_SHAPE = new GeneralPath();
 
     /**
-     * Constructs a new bridge for the &lt;polygon> element.
+     * Constructs a new bridge for the &lt;polygon&gt; element.
      */
     public SVGPolygonElementBridge() {}
 

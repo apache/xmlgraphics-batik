@@ -31,7 +31,7 @@ import org.apache.batik.gvt.GraphicsNode;
 import org.w3c.dom.Element;
 
 /**
- * Bridge class for the &lt;feMorphology> element.
+ * Bridge class for the &lt;feMorphology&gt; element.
  *
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
@@ -41,7 +41,7 @@ public class SVGFeMorphologyElementBridge
 
 
     /**
-     * Constructs a new bridge for the &lt;feMorphology> element.
+     * Constructs a new bridge for the &lt;feMorphology&gt; element.
      */
     public SVGFeMorphologyElementBridge() {}
 

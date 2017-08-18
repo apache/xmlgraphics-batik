@@ -152,7 +152,7 @@ public class PNGTranscoder extends ImageTranscoder {
     /**
      * The gamma correction key.
      *
-     * <table border="0" cellspacing="0" cellpadding="1">
+     * <table summary="" border="0" cellspacing="0" cellpadding="1">
      *   <tr>
      *     <th valign="top" align="right">Key:</th>
      *     <td valign="top">KEY_GAMMA</td>
@@ -193,7 +193,7 @@ public class PNGTranscoder extends ImageTranscoder {
      * The color indexed image key to specify number of colors used in
      * palette.
      *
-     * <table border="0" cellspacing="0" cellpadding="1">
+     * <table summary="" border="0" cellspacing="0" cellpadding="1">
      *   <tr>
      *     <th valign="top" align="right">Key:</th>
      *     <td valign="top">KEY_INDEXED</td>

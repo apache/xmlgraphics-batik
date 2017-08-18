@@ -34,7 +34,7 @@ import org.apache.batik.gvt.GraphicsNode;
 import org.w3c.dom.Element;
 
 /**
- * Bridge class for the &lt;feConvolveMatrix> element.
+ * Bridge class for the &lt;feConvolveMatrix&gt; element.
  *
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
@@ -44,7 +44,7 @@ public class SVGFeConvolveMatrixElementBridge
 
 
     /**
-     * Constructs a new bridge for the &lt;feConvolveMatrix> element.
+     * Constructs a new bridge for the &lt;feConvolveMatrix&gt; element.
      */
     public SVGFeConvolveMatrixElementBridge() {}
 

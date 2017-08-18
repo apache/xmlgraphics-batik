@@ -58,7 +58,7 @@ import org.w3c.dom.DOMImplementation;
  * converts the <code>TestReports</code> it processes into an
  * XML document that it outputs in a directory. The directory
  * used by the object can be configured at creation time.
- * <br />
+ * <br>
  * The <code>XMLTestReportProcessor</code> can optionally notify a
  * report consumer of the XML file it created.
  *

@@ -24,7 +24,7 @@ import java.net.URL;
 /**
  * Protocol Handler for the 'jar' protocol.
  * This appears to have the format:
- * jar:<URL for jar file>!<path in jar file>
+ * jar:&lt;URL for jar file&gt;!&lt;path in jar file&gt;
  *
  * @author <a href="mailto:deweese@apache.org">Thomas DeWeese</a>
  * @version $Id$ 

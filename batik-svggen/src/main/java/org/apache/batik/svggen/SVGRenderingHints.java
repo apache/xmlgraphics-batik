@@ -26,16 +26,16 @@ import org.apache.batik.ext.awt.g2d.GraphicContext;
  * Utility class that converts a RenderingHints object into
  * a set of SVG properties. Here is how individual hints
  * are converted.
- * + RENDERING -> sets all other hints to
+ * + RENDERING -&gt; sets all other hints to
  *                initial value.
- * + FRACTIONAL_METRICS -> sets initial values for
+ * + FRACTIONAL_METRICS -&gt; sets initial values for
  *                         text-rendering and shape-rendering.
- * + ALPHA_INTERPOLATION -> Not mapped
- * + ANTIALIASING -> shape-rendering and text-rendering
- * + COLOR_RENDERING -> color-rendering
- * + DITHERING -> not mapped
- * + INTERPOLATION -> image-rendering
- * + TEXT_ANTIALIASING -> text-rendering
+ * + ALPHA_INTERPOLATION -&gt; Not mapped
+ * + ANTIALIASING -&gt; shape-rendering and text-rendering
+ * + COLOR_RENDERING -&gt; color-rendering
+ * + DITHERING -&gt; not mapped
+ * + INTERPOLATION -&gt; image-rendering
+ * + TEXT_ANTIALIASING -&gt; text-rendering
  *
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$

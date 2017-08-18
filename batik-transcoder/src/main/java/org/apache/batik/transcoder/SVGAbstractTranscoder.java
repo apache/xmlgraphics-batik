@@ -62,7 +62,7 @@ import org.w3c.dom.svg.SVGSVGElement;
  * This class may be the base class of all transcoders which take an
  * SVG document as input and which need to build a DOM tree. The
  * <code>SVGAbstractTranscoder</code> uses several different hints that
- * guide it's behaviour:<br/>
+ * guide it's behaviour:<br>
  *
  * <ul>
  *   <li><code>KEY_WIDTH, KEY_HEIGHT</code> can be used to specify how to scale the
@@ -398,7 +398,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
 
     /**
      * The image width key.
-     * <table border="0" cellspacing="0" cellpadding="1">
+     * <table summary="" border="0" cellspacing="0" cellpadding="1">
      *   <tr>
      *     <th valign="top" align="right">Key:</th>
      *     <td valign="top">KEY_WIDTH</td>
@@ -425,7 +425,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
 
     /**
      * The image height key.
-     * <table border="0" cellspacing="0" cellpadding="1">
+     * <table summary="" border="0" cellspacing="0" cellpadding="1">
      *   <tr>
      *     <th valign="top" align="right">Key:</th>
      *     <td valign="top">KEY_HEIGHT</td>
@@ -453,7 +453,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
 
     /**
      * The maximum width of the image key.
-     * <table border="0" cellspacing="0" cellpadding="1">
+     * <table summary="" border="0" cellspacing="0" cellpadding="1">
      *   <tr>
      *     <th valign="top" align="right">Key:</th>
      *     <td valign="top">KEY_MAX_WIDTH</td>
@@ -483,7 +483,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
 
     /**
      * The maximux height of the image key.
-     * <table border="0" cellspacing="0" cellpadding="1">
+     * <table summary="" border="0" cellspacing="0" cellpadding="1">
      *   <tr>
      *     <th valign="top" align="right">Key:</th>
      *     <td valign="top">KEY_MAX_HEIGHT</td>
@@ -513,7 +513,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
 
     /**
      * The area of interest key.
-     * <table border="0" cellspacing="0" cellpadding="1">
+     * <table summary="" border="0" cellspacing="0" cellpadding="1">
      *   <tr>
      *     <th valign="top" align="right">Key:</th>
      *     <td valign="top">KEY_AOI</td>
@@ -543,7 +543,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
 
     /**
      * The language key.
-     * <table border="0" cellspacing="0" cellpadding="1">
+     * <table summary="" border="0" cellspacing="0" cellpadding="1">
      *   <tr>
      *     <th valign="top" align="right">Key:</th>
      *     <td valign="top">KEY_LANGUAGE</td>
@@ -571,7 +571,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
 
     /**
      * The media key.
-     * <table border="0" cellspacing="0" cellpadding="1">
+     * <table summary="" border="0" cellspacing="0" cellpadding="1">
      *   <tr>
      *     <th valign="top" align="right">Key:</th>
      *     <td valign="top">KEY_MEDIA</td>
@@ -600,7 +600,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
     /**
      * The default font-family key.
      *
-     * <table border="0" cellspacing="0" cellpadding="1">
+     * <table summary="" border="0" cellspacing="0" cellpadding="1">
      *   <tr>
      *     <th valign="top" align="right">Key:</th>
      *     <td valign="top">KEY_DEFAULT_FONT_FAMILY</td>
@@ -630,7 +630,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
 
     /**
      * The alternate stylesheet key.
-     * <table border="0" cellspacing="0" cellpadding="1">
+     * <table summary="" border="0" cellspacing="0" cellpadding="1">
      *   <tr>
      *     <th valign="top" align="right">Key:</th>
      *     <td valign="top">KEY_ALTERNATE_STYLESHEET</td>
@@ -658,7 +658,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
 
     /**
      * The user stylesheet URI key.
-     * <table border="0" cellspacing="0" cellpadding="1">
+     * <table summary="" border="0" cellspacing="0" cellpadding="1">
      *   <tr>
      *     <th valign="top" align="right">Key:</th>
      *     <td valign="top">KEY_USER_STYLESHEET_URI</td>
@@ -686,7 +686,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
 
     /**
      * The number of millimeters in each pixel key.
-     * <table border="0" cellspacing="0" cellpadding="1">
+     * <table summary="" border="0" cellspacing="0" cellpadding="1">
      *   <tr>
      *     <th valign="top" align="right">Key:</th>
      *     <td valign="top">KEY_PIXEL_UNIT_TO_MILLIMETER</td>
@@ -717,7 +717,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
      * @deprecated As of Batik Version 1.5b3
      * @see #KEY_PIXEL_UNIT_TO_MILLIMETER
      *
-     * <table border="0" cellspacing="0" cellpadding="1">
+     * <table summary="" border="0" cellspacing="0" cellpadding="1">
      *   <tr>
      *     <th valign="top" align="right">Key:</th>
      *     <td valign="top">KEY_PIXEL_TO_MM</td>
@@ -745,7 +745,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
 
     /**
      * The 'onload' execution key.
-     * <table border="0" cellspacing="0" cellpadding="1">
+     * <table summary="" border="0" cellspacing="0" cellpadding="1">
      *   <tr>
      *     <th valign="top" align="right">Key:</th>
      *     <td valign="top">KEY_EXECUTE_ONLOAD</td>
@@ -774,7 +774,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
 
     /**
      * The snapshot time key.
-     * <table border="0" cellspacing="0" cellpadding="1">
+     * <table summary="" border="0" cellspacing="0" cellpadding="1">
      *   <tr>
      *     <th valign="top" align="right">Key:</th>
      *     <td valign="top">KEY_SNAPSHOT_TIME</td>
@@ -806,7 +806,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
      * The set of supported script languages (i.e., the set of possible
      * values for the &lt;script&gt; tag's type attribute).
      *
-     * <table border="0" cellspacing="0" cellpadding="1">
+     * <table summary="" border="0" cellspacing="0" cellpadding="1">
      *   <tr>
      *     <th valign="top" align="right">Key:</th>
      *     <td valign="top">KEY_ALLOWED_SCRIPT_TYPES</td>
@@ -848,7 +848,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
      * Controls whether or not scripts can only be loaded from the
      * same location as the document which references them.
      *
-     * <table border="0" cellspacing="0" cellpadding="1">
+     * <table summary="" border="0" cellspacing="0" cellpadding="1">
      *   <tr>
      *     <th valign="top" align="right">Key:</th>
      *     <td valign="top">KEY_CONSTRAIN_SCRIPT_ORIGIN</td>

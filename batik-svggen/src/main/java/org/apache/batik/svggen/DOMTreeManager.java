@@ -345,7 +345,7 @@ public class DOMTreeManager implements SVGSyntax, ErrorConstants {
 
     /**
      * Lets custom implementations for various extensions add
-     * elements to the <defs> sections.
+     * elements to the &lt;defs&gt; sections.
      */
     public void addOtherDef(Element definition){
         if (otherDefs == null){

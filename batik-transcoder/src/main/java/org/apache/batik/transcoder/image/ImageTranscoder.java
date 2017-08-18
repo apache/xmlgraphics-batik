@@ -206,7 +206,7 @@ public abstract class ImageTranscoder extends SVGAbstractTranscoder {
 
     /**
      * The image background paint key.
-     * <table border="0" cellspacing="0" cellpadding="1">
+     * <table summary="" border="0" cellspacing="0" cellpadding="1">
      *   <tr>
      *     <th valign="top" align="right">Key:</th>
      *     <td valign="top">KEY_BACKGROUND_COLOR</td>
@@ -237,7 +237,7 @@ public abstract class ImageTranscoder extends SVGAbstractTranscoder {
     /**
      * The forceTransparentWhite key.
      *
-     * <table border="0" cellspacing="0" cellpadding="1">
+     * <table summary="" border="0" cellspacing="0" cellpadding="1">
      *   <tr>
      *     <th valign="top" align="right">Key:</th>
      *     <td valign="top">KEY_FORCE_TRANSPARENT_WHITE</td>
@@ -262,11 +262,11 @@ public abstract class ImageTranscoder extends SVGAbstractTranscoder {
      *       the encoded file is displayed in a browser which does not
      *       support transparency correctly and lets the image display with
      *       a white background instead of a black background.
-     *       <br />
+     *       <br>
      *       However, note that the modified image will display differently
      *       over a white background in a viewer that supports
      *       transparency.
-     *       <br/>
+     *       <br>
      *       Not all Transcoders use this key (in particular some formats
      *       can't preserve the alpha channel at all in which case this
      *       is not used).</td>

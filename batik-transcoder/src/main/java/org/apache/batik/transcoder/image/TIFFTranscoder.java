@@ -145,7 +145,7 @@ public class TIFFTranscoder extends ImageTranscoder {
     /**
      * The forceTransparentWhite key.
      *
-     * <table border="0" cellspacing="0" cellpadding="1">
+     * <table summary="" border="0" cellspacing="0" cellpadding="1">
      *   <tr>
      *     <th valign="top" align="right">Key:</th>
      *     <td valign="top">KEY_FORCE_TRANSPARENT_WHITE</td>
@@ -170,7 +170,7 @@ public class TIFFTranscoder extends ImageTranscoder {
      *       encoded TIFF is displayed in a viewer which does not support TIFF
      *       transparency and lets the image display with a white background instead
      *       of a black background.
-     *       <br />
+     *       <br>
      *       However, note that the modified image will display differently
      *       over a white background in a viewer that supports
      *       transparency.</td>
@@ -182,7 +182,7 @@ public class TIFFTranscoder extends ImageTranscoder {
 
     /**
      * The compression method for the image.
-     * <table border="0" cellspacing="0" cellpadding="1">
+     * <table summary="" border="0" cellspacing="0" cellpadding="1">
      *   <tr>
      *     <th valign="top" align="right">Key:</th>
      *     <td valign="top">KEY_COMPRESSION_METHOD</td>

@@ -32,7 +32,7 @@ import org.apache.batik.ext.awt.image.SVGComposite;
  * Implements a filter chain. A filter chain is defined by its
  * filter region (i.e., the bounding box of its input/output), its
  * filter resolution and its source. Its source cannot be null,
- * but its resolution can. <br />
+ * but its resolution can. <br>
  * The filter chain decomposes as follows: 
  * <ul>
  *  <li>A pad operation that makes the input image a big as the

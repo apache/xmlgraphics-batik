@@ -28,7 +28,7 @@ import org.apache.batik.gvt.GraphicsNode;
 import org.w3c.dom.Element;
 
 /**
- * Bridge class for the &lt;feSpecularLighting> element.
+ * Bridge class for the &lt;feSpecularLighting&gt; element.
  *
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
@@ -38,7 +38,7 @@ public class SVGFeSpecularLightingElementBridge
 
 
     /**
-     * Constructs a new bridge for the &lt;feSpecularLighting> element.
+     * Constructs a new bridge for the &lt;feSpecularLighting&gt; element.
      */
     public SVGFeSpecularLightingElementBridge() {}
 
