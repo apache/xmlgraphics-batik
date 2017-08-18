@@ -1242,7 +1242,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
      * For characters in script systems such as Hebrew and Arabic,
      * the glyphs can be rendered from right to left, in which case the
      * coordinate supplied is the location of the leftmost character
-     * on the baseline.<br />
+     * on the baseline.<br>
      *
      *
      * @param ati the iterator whose text is to be rendered

@@ -78,7 +78,7 @@ import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 
 /**
- * Bridge class for the &lt;flowRoot> element.
+ * Bridge class for the &lt;flowRoot&gt; element.
  *
  * @author <a href="mailto:deweese@apache.org">Thomas DeWeese</a>
  * @version $Id$
@@ -140,7 +140,7 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
     protected RegionChangeListener regionChangeListener;
 
     /**
-     * Constructs a new bridge for the &lt;flowRoot> element.
+     * Constructs a new bridge for the &lt;flowRoot&gt; element.
      */
     public SVGFlowRootElementBridge() {}
 

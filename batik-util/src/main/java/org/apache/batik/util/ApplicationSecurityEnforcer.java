@@ -24,14 +24,14 @@ import java.security.Policy;
 /**
  * This is a helper class which helps applications enforce secure
  * script execution.
- * <br />
+ * <br>
  * It is used by the Squiggle browser as well as the rasterizer.
- * <br />
+ * <br>
  * This class can install a <code>SecurityManager</code> for an application
  * and resolves whether the application runs in a development
  * environment or from a jar file (in other words, it resolves code-base
  * issues for the application).
- * <br />
+ * <br>
  *
  * @author <a mailto="vincent.hardy@sun.com">Vincent Hardy</a>
  * @version $Id$

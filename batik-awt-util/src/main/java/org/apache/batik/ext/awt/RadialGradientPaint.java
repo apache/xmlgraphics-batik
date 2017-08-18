@@ -138,7 +138,7 @@ public final class RadialGradientPaint extends MultipleGradientPaint {
      *
      * @throws IllegalArgumentException
      *         if fractions.length != colors.length, or if colors is less
-     *         than 2 in size, or if radius < 0
+     *         than 2 in size, or if radius &lt; 0
      *
      *
      */
@@ -174,7 +174,7 @@ public final class RadialGradientPaint extends MultipleGradientPaint {
      *
      * @throws IllegalArgumentException
      *         if fractions.length != colors.length, or if colors is less
-     *         than 2 in size, or if radius < 0
+     *         than 2 in size, or if radius &lt; 0
      *
      *
      */
@@ -218,7 +218,7 @@ public final class RadialGradientPaint extends MultipleGradientPaint {
      *
      * @throws IllegalArgumentException
      *         if fractions.length != colors.length, or if colors is less
-     *         than 2 in size, or if radius < 0
+     *         than 2 in size, or if radius &lt; 0
      *
      *
      */
@@ -260,7 +260,7 @@ public final class RadialGradientPaint extends MultipleGradientPaint {
      *
      * @throws IllegalArgumentException
      *         if fractions.length != colors.length, or if colors is less
-     *         than 2 in size, or if radius < 0
+     *         than 2 in size, or if radius &lt; 0
      *
      */
     public RadialGradientPaint(Point2D center, float radius,
@@ -305,7 +305,7 @@ public final class RadialGradientPaint extends MultipleGradientPaint {
      *
      * @throws IllegalArgumentException
      *         if fractions.length != colors.length, or if colors is less
-     *         than 2 in size, or if radius < 0
+     *         than 2 in size, or if radius &lt; 0
      *
      */
     public RadialGradientPaint(Point2D center, float radius,
@@ -356,7 +356,7 @@ public final class RadialGradientPaint extends MultipleGradientPaint {
      *
      * @throws IllegalArgumentException
      *         if fractions.length != colors.length, or if colors is less
-     *         than 2 in size, or if radius < 0
+     *         than 2 in size, or if radius &lt; 0
      *
      */
     public RadialGradientPaint(Point2D center,
@@ -407,7 +407,7 @@ public final class RadialGradientPaint extends MultipleGradientPaint {
      *
      * @throws IllegalArgumentException
      *         if fractions.length != colors.length, or if colors is less
-     *         than 2 in size, or if radius < 0
+     *         than 2 in size, or if radius &lt; 0
      *
      */
     public RadialGradientPaint(Rectangle2D gradientBounds,

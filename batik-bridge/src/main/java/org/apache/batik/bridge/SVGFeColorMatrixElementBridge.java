@@ -31,7 +31,7 @@ import org.apache.batik.gvt.GraphicsNode;
 import org.w3c.dom.Element;
 
 /**
- * Bridge class for the &lt;feColorMatrix> element.
+ * Bridge class for the &lt;feColorMatrix&gt; element.
  *
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
@@ -40,7 +40,7 @@ public class SVGFeColorMatrixElementBridge
     extends AbstractSVGFilterPrimitiveElementBridge {
 
     /**
-     * Constructs a new bridge for the &lt;feColorMatrix> element.
+     * Constructs a new bridge for the &lt;feColorMatrix&gt; element.
      */
     public SVGFeColorMatrixElementBridge() {}
 

@@ -3047,7 +3047,7 @@ public class JSVGComponent extends JGVTComponent {
         /**
          * This Implementation simply forwards the request to the AWT thread.
          *
-         * @param e   The <image> element that can't be loaded.
+         * @param e   The &lt;image&gt; element that can't be loaded.
          * @param url The resolved url that can't be loaded.
          * @param msg As best as can be determined the reason it can't be
          *            loaded (not available, corrupt, unknown format,...).
@@ -3643,7 +3643,7 @@ public class JSVGComponent extends JGVTComponent {
          * for content referenced by images so you can't actually see
          * the info).
          *
-         * @param e   The &lt;image> element that can't be loaded.
+         * @param e   The &lt;image&gt; element that can't be loaded.
          * @param url The resolved url that can't be loaded.
          * @param message As best as can be determined the reason it can't be
          *                loaded (not available, corrupt, unknown format,...).

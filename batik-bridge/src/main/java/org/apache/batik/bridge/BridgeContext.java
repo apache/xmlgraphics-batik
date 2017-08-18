@@ -1901,7 +1901,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
 
     /**
      * Tells whether the given SVG document is Interactive.
-     * We say it is, if it has any &lt;title>, &lt;desc>, or &lt;a> elements,
+     * We say it is, if it has any &lt;title&gt;, &lt;desc&gt;, or &lt;a&gt; elements,
      * of if the 'cursor' property is anything but Auto on any element.
      */
     public boolean isInteractiveDocument(Document doc) {

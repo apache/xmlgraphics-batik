@@ -34,7 +34,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /**
- * Bridge class for the &lt;clipPath> element.
+ * Bridge class for the &lt;clipPath&gt; element.
  *
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
@@ -43,7 +43,7 @@ public class SVGClipPathElementBridge extends AnimatableGenericSVGBridge
         implements ClipBridge {
 
     /**
-     * Constructs a new bridge for the &lt;clipPath> element.
+     * Constructs a new bridge for the &lt;clipPath&gt; element.
      */
     public SVGClipPathElementBridge() {}
 

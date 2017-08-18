@@ -65,7 +65,7 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
 
     /**
      * Returns the logical parent element of the given element.
-     * The parent element of a used element is the &lt;use> element
+     * The parent element of a used element is the &lt;use&gt; element
      * which reference it.
      */
     public static Element getParentElement(Element elt) {

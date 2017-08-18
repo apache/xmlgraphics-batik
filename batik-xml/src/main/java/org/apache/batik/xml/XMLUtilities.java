@@ -91,7 +91,7 @@ public class XMLUtilities extends XMLCharacters {
      * Tests whether the given 32 bits character is valid in XML documents.
      * Because the majority of code-points is covered by the table-lookup-test,
      * we do it first.
-     * This method gives meaningful results only for c >= 0.
+     * This method gives meaningful results only for c &gt;= 0.
      */
     public static boolean isXMLCharacter(int c) {
 

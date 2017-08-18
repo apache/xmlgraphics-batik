@@ -56,7 +56,7 @@ import java.awt.image.WritableRaster;
  * The weight factor for the linear combination is the result of applying
  * the 's' curve function to the fractional part of x and y (rx0, ry0).
  * The S curve function get's it's name because it looks a bit like as
- * 'S' from 0->1.
+ * 'S' from 0-&gt;1.
  *
  * @author     <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @author     <a href="mailto:DeWeese@apache.org">Thomas DeWeese</a>

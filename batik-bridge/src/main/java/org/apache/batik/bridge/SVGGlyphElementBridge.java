@@ -41,7 +41,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * Bridge class for the &lt;glyph> element.
+ * Bridge class for the &lt;glyph&gt; element.
  *
  * @author <a href="mailto:bella.robinson@cmis.csiro.au">Bella Robinson</a>
  * @version $Id$
@@ -50,7 +50,7 @@ public class SVGGlyphElementBridge extends AbstractSVGBridge
     implements ErrorConstants {
 
     /**
-     * Constructs a new bridge for the &lt;glyph> element.
+     * Constructs a new bridge for the &lt;glyph&gt; element.
      */
     protected SVGGlyphElementBridge() {}
 
@@ -62,7 +62,7 @@ public class SVGGlyphElementBridge extends AbstractSVGBridge
     }
 
     /**
-     * Constructs a new Glyph that represents the specified &lt;glyph> element
+     * Constructs a new Glyph that represents the specified &lt;glyph&gt; element
      * at the requested size.
      *
      * @param ctx The current bridge context.

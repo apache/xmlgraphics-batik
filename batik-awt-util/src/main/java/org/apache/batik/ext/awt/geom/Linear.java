@@ -131,8 +131,8 @@ public class Linear implements Segment {
     /**
      * Subdivides this Linear segment into two segments at t = 0.5.
      * can be done with getSegment but this is more efficent.
-     * @param s0 if non-null contains portion of curve from  0->.5
-     * @param s1 if non-null contains portion of curve from .5->1
+     * @param s0 if non-null contains portion of curve from  0-&gt;.5
+     * @param s1 if non-null contains portion of curve from .5-&gt;1
      */
     public void subdivide(Segment s0, Segment s1) {
         Linear l0=null, l1=null;
@@ -143,8 +143,8 @@ public class Linear implements Segment {
 
     /**
      * Subdivides this Linear segment into two segments at given t.
-     * @param s0 if non-null contains portion of curve from 0->t.
-     * @param s1 if non-null contains portion of curve from t->1.
+     * @param s0 if non-null contains portion of curve from 0-&gt;t.
+     * @param s1 if non-null contains portion of curve from t-&gt;1.
      */
     public void subdivide(double t, Segment s0, Segment s1) {
         Linear l0=null, l1=null;
@@ -156,8 +156,8 @@ public class Linear implements Segment {
     /**
      * Subdivides this Cubic curve into two curves at t = 0.5.
      * Can be done with getSegment but this is more efficent.
-     * @param l0 if non-null contains portion of curve from  0->.5
-     * @param l1 if non-null contains portion of curve from .5->1
+     * @param l0 if non-null contains portion of curve from  0-&gt;.5
+     * @param l1 if non-null contains portion of curve from .5-&gt;1
      */
     public void subdivide(Linear l0, Linear l1) {
         if ((l0 == null) && (l1 == null)) return;
@@ -183,8 +183,8 @@ public class Linear implements Segment {
      * Subdivides this Cubic curve into two curves.
      * Can be done with getSegment but this is more efficent.
      * @param t position to split the curve
-     * @param l0 if non-null contains portion of curve from  0->t
-     * @param l1 if non-null contains portion of curve from t->1
+     * @param l0 if non-null contains portion of curve from  0-&gt;t
+     * @param l1 if non-null contains portion of curve from t-&gt;1
      */
     public void subdivide(double t, Linear l0, Linear l1) {
         if ((l0 == null) && (l1 == null)) return;

@@ -22,12 +22,12 @@ import java.awt.*;
 import java.awt.geom.*;
 
 /**
- * This test validates the convertion of Java 2D negative length values:<br />
- * - On rectangles: a negative width or height makes the rectangle invisible.<br />
- * - On rounded rectangles: a negative width or height makes the rectangle invisible.<br />
- * - On ellipses: a negative width or height makes the ellipse invisible<br />
+ * This test validates the convertion of Java 2D negative length values:<br>
+ * - On rectangles: a negative width or height makes the rectangle invisible.<br>
+ * - On rounded rectangles: a negative width or height makes the rectangle invisible.<br>
+ * - On ellipses: a negative width or height makes the ellipse invisible<br>
  * - On 3D rect: a negative width *and* height makes the rectangle invisible. A
- *               negative width or height makes the rectangle display as a line.<br />
+ *               negative width or height makes the rectangle display as a line.<br>
  * The above behavior is that of the default Graphics2D implementations.
  *
  * @author <a href="mailto:vhardy@sun.com">Vincent Hardy</a>

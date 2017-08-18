@@ -40,7 +40,7 @@ public class BatikStarElementBridge
     implements BatikExtConstants {
 
     /**
-     * Constructs a new bridge for the &lt;rect> element.
+     * Constructs a new bridge for the &lt;rect&gt; element.
      */
     public BatikStarElementBridge() { /* nothing */ }
 

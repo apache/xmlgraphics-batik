@@ -37,7 +37,7 @@ import org.w3c.dom.events.EventListener;
 import org.w3c.dom.svg.SVGAElement;
 
 /**
- * Bridge class for the &lt;a> element.
+ * Bridge class for the &lt;a&gt; element.
  *
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
@@ -49,7 +49,7 @@ public class SVGAElementBridge extends SVGGElementBridge {
     protected CursorMouseOutListener  cl;
 
     /**
-     * Constructs a new bridge for the &lt;a> element.
+     * Constructs a new bridge for the &lt;a&gt; element.
      */
     public SVGAElementBridge() {}
 
@@ -138,7 +138,7 @@ public class SVGAElementBridge extends SVGGElementBridge {
     }
 
     /**
-     * Returns true as the &lt;a> element is a container.
+     * Returns true as the &lt;a&gt; element is a container.
      */
     public boolean isComposite() {
         return true;

@@ -27,7 +27,7 @@ import org.apache.batik.gvt.GraphicsNode;
 import org.w3c.dom.Element;
 
 /**
- * Bridge class for the &lt;feTile> element.
+ * Bridge class for the &lt;feTile&gt; element.
  *
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
@@ -37,7 +37,7 @@ public class SVGFeTileElementBridge
 
 
     /**
-     * Constructs a new bridge for the &lt;feTile> element.
+     * Constructs a new bridge for the &lt;feTile&gt; element.
      */
     public SVGFeTileElementBridge() {}
 

@@ -38,8 +38,8 @@ public abstract class SVGKernElementBridge extends AbstractSVGBridge {
      * Creates a Kern object that repesents the specified kerning element.
      *
      * @param ctx The bridge context.
-     * @param kernElement The kerning element. Should be either a &lt;hkern>
-     * or &lt;vkern> element.
+     * @param kernElement The kerning element. Should be either a &lt;hkern&gt;
+     * or &lt;vkern&gt; element.
      * @param font The font the kerning is related to.
      *
      * @return kern The new Kern object

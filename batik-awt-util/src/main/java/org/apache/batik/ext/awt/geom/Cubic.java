@@ -157,8 +157,8 @@ public class Cubic extends AbstractSegment {
     /**
      * Subdivides this Cubic curve into two curves at t = 0.5.
      * can be done with getSegment but this is more efficent.
-     * @param s0 if non-null contains portion of curve from  0->.5
-     * @param s1 if non-null contains portion of curve from .5->1
+     * @param s0 if non-null contains portion of curve from  0-&gt;.5
+     * @param s1 if non-null contains portion of curve from .5-&gt;1
      */
     public void subdivide(Segment s0, Segment s1) {
         Cubic c0=null, c1=null;
@@ -169,8 +169,8 @@ public class Cubic extends AbstractSegment {
 
     /**
      * Subdivides this Cubic curve into two curves at given t.
-     * @param s0 if non-null contains portion of curve from 0->t.
-     * @param s1 if non-null contains portion of curve from t->1.
+     * @param s0 if non-null contains portion of curve from 0-&gt;t.
+     * @param s1 if non-null contains portion of curve from t-&gt;1.
      */
     public void subdivide(double t, Segment s0, Segment s1) {
         Cubic c0=null, c1=null;
@@ -182,8 +182,8 @@ public class Cubic extends AbstractSegment {
     /**
      * Subdivides this Cubic curve into two curves at t = 0.5.
      * can be done with getSegment but this is more efficent.
-     * @param c0 if non-null contains portion of curve from  0->.5
-     * @param c1 if non-null contains portion of curve from .5->1
+     * @param c0 if non-null contains portion of curve from  0-&gt;.5
+     * @param c1 if non-null contains portion of curve from .5-&gt;1
      */
     public void subdivide(Cubic c0, Cubic c1) {
         if ((c0 == null) && (c1 == null)) return;
@@ -221,8 +221,8 @@ public class Cubic extends AbstractSegment {
 
     /**
      * Subdivides this Cubic curve into two curves at given t.
-     * @param c0 if non-null contains portion of curve from 0->t.
-     * @param c1 if non-null contains portion of curve from t->1.
+     * @param c0 if non-null contains portion of curve from 0-&gt;t.
+     * @param c1 if non-null contains portion of curve from t-&gt;1.
      */
     public void subdivide(double t, Cubic c0, Cubic c1) {
         if ((c0 == null) && (c1 == null)) return;

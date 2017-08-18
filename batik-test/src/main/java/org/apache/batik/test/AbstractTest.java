@@ -22,9 +22,9 @@ import java.io.StringWriter;
 import java.io.PrintWriter;
 
 /**
- * Base class containing convenience methods for writing tests. <br />
+ * Base class containing convenience methods for writing tests. <br>
  * There are at least three approaches to write new tests derived from
- * <code>AbstractTest</code>:<br /><ul>
+ * <code>AbstractTest</code>:<br><ul>
  * <li>You can simply override the <code>runImplBasic</code> method and 
  * return true or false depending on whether or not the test fails.</li>
  * <li>You can choose to report more complex test failure conditions 
@@ -316,16 +316,16 @@ public abstract class AbstractTest implements Test {
      * An <code>AbstractTest</code> extension will typically catch 
      * exceptions for specific error conditions it wants to point 
      * out. For example:<code>
-     * public TestReport runImpl() throws Exception { <br />
-     *   try{ <br />
-     *      .... something .... <br />
-     *   catch(MySpecialException e){ <br />
-     *      return reportException(MY_SPECIAL_ERROR_CODE, e); <br />
-     *   } <br />
-     * <br />
-     * public static final String MY_SPECIAL_ERROR_CODE = "myNonQualifiedClassName.my.error.code" <br />
-     * <br />
-     * </code> <br />
+     * public TestReport runImpl() throws Exception { <br>
+     *   try{ <br>
+     *      .... something .... <br>
+     *   catch(MySpecialException e){ <br>
+     *      return reportException(MY_SPECIAL_ERROR_CODE, e); <br>
+     *   } <br>
+     * <br>
+     * public static final String MY_SPECIAL_ERROR_CODE = "myNonQualifiedClassName.my.error.code" <br>
+     * <br>
+     * </code> <br>
      * Note that the implementor will also need to add an entry
      * in its Messages.properties file. That file is expected to be 
      * in a resource file called <code>Messages</code> having the same package 

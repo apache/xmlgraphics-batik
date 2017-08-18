@@ -24,7 +24,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 /**
- * Bridge class for the &lt;font> element.
+ * Bridge class for the &lt;font&gt; element.
  *
  * @author <a href="mailto:bella.robinson@cmis.csiro.au">Bella Robinson</a>
  * @version $Id$
@@ -32,7 +32,7 @@ import org.w3c.dom.NodeList;
 public class SVGFontElementBridge extends AbstractSVGBridge {
 
     /**
-     * Constructs a new bridge for the &lt;font> element.
+     * Constructs a new bridge for the &lt;font&gt; element.
      */
     public SVGFontElementBridge() {
     }
@@ -45,7 +45,7 @@ public class SVGFontElementBridge extends AbstractSVGBridge {
     }
 
     /**
-     * Constructs a new SVGGVTFont that represents the specified &lt;font> element
+     * Constructs a new SVGGVTFont that represents the specified &lt;font&gt; element
      * at the requested size.
      *
      * @param ctx The current bridge context.

@@ -83,7 +83,7 @@ import org.w3c.dom.svg.SVGTextContentElement;
 import org.w3c.dom.svg.SVGTextPositioningElement;
 
 /**
- * Bridge class for the &lt;text> element.
+ * Bridge class for the &lt;text&gt; element.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @author <a href="mailto:bill.haneman@ireland.sun.com">Bill Haneman</a>
@@ -144,7 +144,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
     protected boolean usingComplexSVGFont = false;
 
     /**
-     * Constructs a new bridge for the &lt;text> element.
+     * Constructs a new bridge for the &lt;text&gt; element.
      */
     public SVGTextElementBridge() {}
 

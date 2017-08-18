@@ -265,7 +265,7 @@ public abstract class AbstractSVGGradientElementBridge
     }
 
     /**
-     * This class represents a gradient &lt;stop> element.
+     * This class represents a gradient &lt;stop&gt; element.
      */
     public static class Stop {
 
@@ -287,7 +287,7 @@ public abstract class AbstractSVGGradientElementBridge
     }
 
     /**
-     * Bridge class for the gradient &lt;stop> element.
+     * Bridge class for the gradient &lt;stop&gt; element.
      */
     public static class SVGStopElementBridge extends AnimatableGenericSVGBridge
             implements Bridge {

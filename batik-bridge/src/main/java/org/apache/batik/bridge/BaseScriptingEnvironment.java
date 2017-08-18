@@ -254,7 +254,7 @@ public class BaseScriptingEnvironment {
     protected Map windowObjects = new HashMap();
 
     /**
-     * Set of &lt;script> elements that have already been executed.
+     * Set of &lt;script&gt; elements that have already been executed.
      */
     protected WeakHashMap executedScripts = new WeakHashMap();
 
@@ -341,7 +341,7 @@ public class BaseScriptingEnvironment {
     }
 
     /**
-     * Loads the scripts contained in the &lt;script> elements.
+     * Loads the scripts contained in the &lt;script&gt; elements.
      */
     public void loadScripts() {
         NodeList scripts = document.getElementsByTagNameNS
@@ -355,7 +355,7 @@ public class BaseScriptingEnvironment {
     }
 
     /**
-     * Executes the specified &lt;script> element, if it hasn't been
+     * Executes the specified &lt;script&gt; element, if it hasn't been
      * executed already.
      */
     protected void loadScript(AbstractElement script) {

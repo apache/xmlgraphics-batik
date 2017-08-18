@@ -40,7 +40,7 @@ public class SVGIDGenerator {
      *
      * @param prefix defines the prefix for which the id should
      *               be generated.
-     * @return a value of the form <prefix><n>
+     * @return a value of the form &lt;prefix&gt;&lt;n&gt;
      */
     public String generateID(String prefix) {
         Integer maxId = (Integer)prefixMap.get(prefix);

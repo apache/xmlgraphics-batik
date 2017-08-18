@@ -31,7 +31,7 @@ import org.apache.batik.gvt.ShapePainter;
 import org.w3c.dom.Element;
 
 /**
- * Bridge class for the &lt;circle> element.
+ * Bridge class for the &lt;circle&gt; element.
  *
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
@@ -39,7 +39,7 @@ import org.w3c.dom.Element;
 public class SVGCircleElementBridge extends SVGShapeElementBridge {
 
     /**
-     * Constructs a new bridge for the &lt;circle> element.
+     * Constructs a new bridge for the &lt;circle&gt; element.
      */
     public SVGCircleElementBridge() {}
 

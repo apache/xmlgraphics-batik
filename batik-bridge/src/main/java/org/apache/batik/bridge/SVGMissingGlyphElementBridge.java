@@ -19,7 +19,7 @@
 package org.apache.batik.bridge;
 
 /**
- * Bridge class for the &lt;missing-glyph> element.
+ * Bridge class for the &lt;missing-glyph&gt; element.
  *
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @version $Id$

@@ -437,7 +437,7 @@ public class UserAgentAdapter implements UserAgent {
     /**
      * This Implementation simply throws a BridgeException.
      *
-     * @param e   The &lt;image> element that can't be loaded.
+     * @param e   The &lt;image&gt; element that can't be loaded.
      * @param url The resolved url that can't be loaded.
      * @param message As best as can be determined the reason it can't be
      *                loaded (not available, corrupt, unknown format,...).

@@ -36,8 +36,8 @@ import org.w3c.css.sac.LexicalUnit;
  * This class provides support for the CSS2 'font' shorthand property.
  *
  * The form of this property is:
- *     [ [ <font-style> || <font-variant> || <font-weight> ]?
- *         <font-size> [ / <line-height> ]? <font-family> ] |
+ *     [ [ &lt;font-style&gt; || &lt;font-variant&gt; || &lt;font-weight&gt; ]?
+ *         &lt;font-size&gt; [ / &lt;line-height&gt; ]? &lt;font-family&gt; ] |
  *       caption | icon | menu | message-box | small-caption |
  *       status-bar | inherit
  *
