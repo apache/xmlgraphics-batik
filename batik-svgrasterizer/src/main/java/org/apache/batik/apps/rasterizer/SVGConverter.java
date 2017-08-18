@@ -58,10 +58,10 @@ import org.apache.batik.util.ParsedURL;
  * the output files are created in that destination directory</li>
  * <li><b>a file</b>. In case there is a <i>single
  * source</i>, the destination can be a single named file
- * (set with the <code>setDst</code> method.</li>)<br>
+ * (set with the <code>setDst</code> method.)</li>
  * </ul>
  *
- * <hr />
+ * <hr>
  *
  * There are a number of options which control the way the image is
  * converted to the destination format:<br><ul>

@@ -70,22 +70,16 @@ import org.w3c.dom.Element;
  *    }
  *  </pre>
  *  <p>Several transcoding hints are available for this transcoder :</p>
- *  <ul>
- *  <li>KEY_INPUT_WIDTH, KEY_INPUT_HEIGHT, KEY_XOFFSET, KEY_YOFFSET : this Integer values allows to
+ *  KEY_INPUT_WIDTH, KEY_INPUT_HEIGHT, KEY_XOFFSET, KEY_YOFFSET : this Integer values allows to
  *  set the  portion of the image to transcode, defined by the width, height, and offset
  *  of this portion in Metafile units.
- *  </ul>
  *  <pre>
  *     transcoder.addTranscodingHint(FromWMFTranscoder.KEY_INPUT_WIDTH, Integer.valueOf(input_width));
  *  </pre>
- *  </li>
- *  <li>KEY_WIDTH, KEY_HEIGHT : this Float values allows to force the width and height of the output:
- *  </ul>
+ *  KEY_WIDTH, KEY_HEIGHT : this Float values allows to force the width and height of the output:
  *  <pre>
  *     transcoder.addTranscodingHint(FromWMFTranscoder.KEY_WIDTH, Float.valueOf(width));
  *  </pre>
- *  </li>
- *  </ul>
  *
  * @version $Id$
  */

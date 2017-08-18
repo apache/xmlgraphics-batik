@@ -804,7 +804,7 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
      *
      * @param index the position of the graphics node to remove
      * @return the graphics node that was removed
-     * @exception IndexOutOfBoundsException if index out of range <code>
+     * @exception IndexOutOfBoundsException if index out of range
      */
     public Object remove(int index) {
         // Check for correct argument

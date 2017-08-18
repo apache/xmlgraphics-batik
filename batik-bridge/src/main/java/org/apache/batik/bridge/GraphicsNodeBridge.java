@@ -72,7 +72,7 @@ public interface GraphicsNodeBridge extends Bridge {
      * static SVG content) will always return the same instance.
      * A dynamic Bridge will return a new instance on each call.
      *
-     * <!> FIX ME: Move to Bridge 
+     * FIX ME: Move to Bridge
      */
     Bridge getInstance();
 

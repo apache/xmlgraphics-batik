@@ -79,18 +79,18 @@ import java.awt.image.ColorModel;
  *
  *
  * <p>
- * <img src = "radial.jpg">
+ * <img alt="" src = "radial.jpg">
  * <p>
  * This image demonstrates a radial gradient with NO_CYCLE and default focus.
  * <p>
  *
- * <img src = "radial2.jpg">
+ * <img alt="" src = "radial2.jpg">
  * <p>
  * This image demonstrates a radial gradient with NO_CYCLE and non-centered
  * focus.
  * <p>
  *
- * <img src = "radial3.jpg">
+ * <img alt="" src = "radial3.jpg">
  * <p>
  * This image demonstrates a radial gradient with REFLECT and non-centered
  * focus.

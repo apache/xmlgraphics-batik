@@ -33,7 +33,7 @@ import java.security.Policy;
  * issues for the application).
  * <br>
  *
- * @author <a mailto="vincent.hardy@sun.com">Vincent Hardy</a>
+ * @author <a href="mailto:vincent.hardy@sun.com">Vincent Hardy</a>
  * @version $Id$
  */
 public class ApplicationSecurityEnforcer {

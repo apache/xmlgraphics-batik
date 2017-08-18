@@ -65,7 +65,7 @@ public final class CompositeRule implements java.io.Serializable {
        *  Fs = 1 and Fd = (1-As), thus:
        *
        *        Cd = Cs + Cd*(1-As)
-       *        Ad = As + Ad*(1-As)</pre>
+       *        Ad = As + Ad*(1-As)
        * </pre>
        */
     public static final CompositeRule OVER = new CompositeRule(RULE_OVER);
