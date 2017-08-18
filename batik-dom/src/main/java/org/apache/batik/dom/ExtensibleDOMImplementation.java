@@ -207,8 +207,7 @@ public abstract class ExtensibleDOMImplementation
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * DOMImplementation#createDocumentType(String,String,String)}.
+     * <b>DOM</b>: Implements DOMImplementation#createDocumentType(String,String,String).
      */
     public DocumentType createDocumentType(String qualifiedName,
                                            String publicId,

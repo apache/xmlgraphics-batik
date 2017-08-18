@@ -148,7 +148,7 @@ public class SVGOMFEConvolveMatrixElement
     }
 
     /**
-     * <b>DOM</b>: Implements {@link SVGFEConvolveMatrixElement#getIn1()}.
+     * <b>DOM</b>: Implements SVGFEConvolveMatrixElement#getIn1().
      */
     public SVGAnimatedString getIn1() {
         return in;
