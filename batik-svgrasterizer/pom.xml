@@ -50,6 +50,11 @@
       <artifactId>batik-util</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>batik-codec</artifactId>
+      <version>${project.version}</version>
+    </dependency>
   </dependencies>
 
   <build>
