@@ -104,7 +104,7 @@ public class TIFFTranscoder extends ImageTranscoder {
                 "org.apache.batik.ext.awt.image.codec.tiff.TIFFTranscoderInternalCodecWriteAdapter");
         if (adapter == null) {
             adapter = getWriteAdapter(
-                "org.apache.batik.transcoder.image.TIFFTranscoderImageIOWriteAdapter");
+                "org.apache.batik.ext.awt.image.codec.imageio.TIFFTranscoderImageIOWriteAdapter");
         }
         if (adapter == null) {
             throw new TranscoderException(

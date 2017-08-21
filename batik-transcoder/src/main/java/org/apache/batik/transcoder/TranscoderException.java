@@ -51,7 +51,7 @@ public class TranscoderException extends Exception {
      * @param ex the original exception
      */
     public TranscoderException(String s, Exception ex) {
-        super(s);
+        super(s, ex);
         this.ex = ex;
     }
 
