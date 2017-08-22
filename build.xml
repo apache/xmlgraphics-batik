@@ -101,7 +101,7 @@ To display the available targets type:
     <property name="src"                value="sources"/>
     <property name="src-internal-codec" value="sources-internal-codec"/>
     <property name="resources"          value="resources"/>
-    <property name="testsrc"            value="test-sources"/>
+    <property name="testsrc"            value="batik-test-old/src/main/java"/>
     <property name="testresources"      value="test-resources"/>
     <property name="dest"               value="classes"/>
     <property name="dest-internal-codec" value="classes-internal-codec"/>

@@ -24,9 +24,9 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>batik-util</artifactId>
+  <artifactId>batik-test-old</artifactId>
   <name>${project.groupId}:${project.artifactId}</name>
-  <description>Batik utility library</description>
+  <description>Batik Test Old</description>
 
   <parent>
     <groupId>org.apache.xmlgraphics</groupId>
@@ -35,55 +35,46 @@
   </parent>
 
   <dependencies>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>batik-constants</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>batik-i18n</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
+     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>batik-test</artifactId>
       <version>${project.version}</version>
-      <scope>test</scope>
+    </dependency>
+     <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>batik-util</artifactId>
+      <version>${project.version}</version>
+      <type>test-jar</type>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>batik-test-swing</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>batik-test-svg</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>batik-all</artifactId>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>${junit.version}</version>
-      <scope>test</scope>
+      <!-- <scope>test</scope> -->
     </dependency>
   </dependencies>
 
   <build>
     <plugins>
       <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>${surefire.version}</version><!--$NO-MVN-MAN-VER$-->
-        <configuration>
-          <includes>
-            <include>**/*TestCase.java</include>
-            <include>**/*TestCases.java</include>
-          </includes>
-          <redirectTestOutputToFile>true</redirectTestOutputToFile>
-        </configuration>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
       </plugin>
-       <plugin>
-         <groupId>org.apache.maven.plugins</groupId>
-         <artifactId>maven-jar-plugin</artifactId>
-         <version>${jar.version}</version>
-         <executions>
-           <execution>
-             <goals>
-               <goal>test-jar</goal>
-             </goals>
-           </execution>
-         </executions>
-       </plugin>
     </plugins>
     <resources>
       <resource>
@@ -99,6 +90,5 @@
       </resource>
     </resources>
   </build>
-  
 
 </project>
