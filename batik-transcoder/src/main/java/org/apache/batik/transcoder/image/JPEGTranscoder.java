@@ -112,7 +112,7 @@ public class JPEGTranscoder extends ImageTranscoder {
      *   </tr>
      *   <tr>
      *     <th valign="top" align="right">Default:</th>
-     *     <td valign="top">1 (no lossy)</td>
+     *     <td valign="top">0.75 (lossy)</td>
      *   </tr>
      *   <tr>
      *     <th valign="top" align="right">Required:</th>
