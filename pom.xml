@@ -100,9 +100,9 @@
     <module>batik-xml</module>
     
     <module>batik-test-old</module>
-<!--
     <module>batik-test-svg</module>
     <module>batik-test-swing</module>
+<!--
     <module>batik-test-util</module>
 -->
   </modules>
