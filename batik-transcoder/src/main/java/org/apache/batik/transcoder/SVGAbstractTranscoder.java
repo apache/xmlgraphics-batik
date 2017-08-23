@@ -223,7 +223,6 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
                 }
             }
         } catch (BridgeException ex) {
-            ex.printStackTrace();
             throw new TranscoderException(ex);
         }
 
