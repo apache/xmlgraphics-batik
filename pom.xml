@@ -98,6 +98,8 @@
     <module>batik-util</module>
     <module>batik-ttf2svg</module>
     <module>batik-xml</module>
+    
+    <module>batik-test-old</module>
 <!--
     <module>batik-test-svg</module>
     <module>batik-test-swing</module>
