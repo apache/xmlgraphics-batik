@@ -87,7 +87,7 @@ public class SelfContainedSVGOnLoadTest extends AbstractTest {
         = "SelfContainedSVGOnLoadTest.error.while.processing.svg.document";
 
     /**
-     * There is either 0 or more than one <testResult> elements in
+     * There is either 0 or more than one &lt;testResult&gt; elements in
      * the document after dispatching the onload event.
      */
     public static final String ERROR_UNEXPECTED_NUMBER_OF_TEST_RESULT_ELEMENTS

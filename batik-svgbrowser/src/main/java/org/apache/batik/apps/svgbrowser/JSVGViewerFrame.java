@@ -1012,8 +1012,8 @@ public class JSVGViewerFrame
 
         /**
          * Initializes the debugger by massaging the GUI and attaching it
-         * to the Rhino interpreter's {@link
-         * org.mozilla.javascript.ContextFactory}.
+         * to the Rhino interpreter's
+         * org.mozilla.javascript.ContextFactory.
          */
         public void initialize() {
             // Customize the menubar a bit, disable menu

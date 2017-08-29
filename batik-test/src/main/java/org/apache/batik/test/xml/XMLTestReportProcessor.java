@@ -460,8 +460,8 @@ public class XMLTestReportProcessor
      * for the given name. If a file in that directory does not
      * exist yet, then it is used. Otherwise, a file with the same
      * name with a digit suffix is created. For example, if "myFile.png"
-     * is requested, then "myFile.png" is created or "myFile<n>.png"
-     * where <n> will be one or several digits.
+     * is requested, then "myFile.png" is created or "myFile&lt;n&gt;.png"
+     * where &lt;n&gt; will be one or several digits.
      */
     protected File createResourceFileForName(String fileName){
         File r = new File(xmlResourcesDirectory, fileName);
@@ -601,7 +601,7 @@ public class XMLTestReportProcessor
     }
 
     /**
-     * Poor way of replacing '<', '>', '"', '&' and '''
+     * Poor way of replacing '&lt;', '&gt;', '"', '&amp;' and '''
      * in attribute values.
      */
     protected String encode(String attrValue){
