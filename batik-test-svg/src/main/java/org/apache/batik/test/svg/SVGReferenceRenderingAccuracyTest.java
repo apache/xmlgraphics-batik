@@ -36,7 +36,7 @@ public class SVGReferenceRenderingAccuracyTest
     /**
      * For this type of test, the id should be made as 
      * follows:<br>
-     * <fileName>#reference-alias <br>
+     * &lt;fileName&gt;#reference-alias <br>
      * For example: <br>
      * samples/anne.svg#svgView(viewBox(0,0,100,100))-viewBox1
      */

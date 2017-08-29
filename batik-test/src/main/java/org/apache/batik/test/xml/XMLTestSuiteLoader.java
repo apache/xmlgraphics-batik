@@ -57,7 +57,7 @@ public class XMLTestSuiteLoader implements XTSConstants {
     /**
      * An error happened while processing a <code>Test</code>
      * description.
-     * {0} : the <test> "className" attribute value
+     * {0} : the &lt;test&gt; "className" attribute value
      * {1} : exception's class name
      * {2} : exception's message
      * {3} : exception's stack trace

@@ -78,7 +78,7 @@ public class XMLTestSuiteRunner implements XTRunConstants, XTSConstants{
     /**
      * An error happened while processing a <code>TestreportProcessor</code>
      * description.
-     * {0} : the <testReportProcessor> "className" attribute value
+     * {0} : the &lt;testReportProcessor&gt; "className" attribute value
      * {1} : exception's class name
      * {2} : exception's message
      * {3} : exception's stack trace
@@ -232,7 +232,7 @@ public class XMLTestSuiteRunner implements XTRunConstants, XTSConstants{
 
     /**
      * Builds an array of <code>TestReportProcessor</code> from the input
-     * element, assuming the input element is a <testSuite> instance,
+     * element, assuming the input element is a &lt;testSuite&gt; instance,
      */
     protected TestReportProcessor[] extractTestReportProcessor(Element element)
         throws TestException

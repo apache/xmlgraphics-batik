@@ -723,8 +723,8 @@ public class SVGOMSVGElement
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.events.DocumentEvent#canDispatch(String,String)}.
+     * <b>DOM</b>: Implements
+     * org.w3c.dom.events.DocumentEvent#canDispatch(String,String).
      */
     public boolean canDispatch(String namespaceURI, String type)
             throws DOMException {
