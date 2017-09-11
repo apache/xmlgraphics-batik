@@ -308,5 +308,5 @@ public interface UserAgent {
     void loadDocument(String url);
 
     /** Returns the Font Family Resolver */
-    public FontFamilyResolver getFontFamilyResolver();
+    FontFamilyResolver getFontFamilyResolver();
 }

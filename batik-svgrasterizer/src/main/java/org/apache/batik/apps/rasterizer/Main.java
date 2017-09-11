@@ -54,7 +54,7 @@ public class Main implements SVGConverterController {
     /**
      * Interface for handling one command line option
      */
-    public static interface OptionHandler {
+    public interface OptionHandler {
         /**
          * The <code>OptionHandler</code> should configure the <code>SVGConverter</code>
          * according to the value of the option.

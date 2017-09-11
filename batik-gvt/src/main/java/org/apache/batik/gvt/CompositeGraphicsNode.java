@@ -792,7 +792,9 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
         }
         // Remove the node
         int index = 0;
-        for (; node != children[index]; index++);     // fires exception when node not found!
+        for (; node != children[index]; index++) {
+            // fires exception when node not found!
+        }
         remove(index);
         return true;
     }

@@ -63,21 +63,21 @@
     <module name="EmptyBlock">
       <property name="tokens" value="LITERAL_CATCH,LITERAL_DO,LITERAL_ELSE,LITERAL_FINALLY,LITERAL_FOR,LITERAL_IF,LITERAL_TRY,LITERAL_WHILE,STATIC_INIT"/>
       <property name="option" value="text"/>
-    </module>
+    </module>-->
 
     <module name="EmptyStatement"/>
 
-    <module name="EqualsHashCode"/>
+<!--     <module name="EqualsHashCode"/>
 
-    <module name="ExplicitInitialization"/>
+    <module name="ExplicitInitialization"/> -->
 
     <module name="FileContentsHolder"/>
 
-    <module name="FinalClass"/>
+    <!-- <module name="FinalClass"/> -->
 
     <module name="GenericWhitespace"/> 
 
-    <module name="HideUtilityClassConstructor"/>-->
+    <!-- <module name="HideUtilityClassConstructor"/> -->
 
     <module name="IllegalImport"/><!--
 
