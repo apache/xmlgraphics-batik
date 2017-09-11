@@ -198,7 +198,7 @@ public class XMLScanner {
                 end = false;
             } else if (current == ']') {
                 end = true;
-            } else if (current == '>' && end == true) {
+            } else if (current == '>' && end) {
                 return CHARACTER_DATA_CONTEXT;
             }
             nextChar();

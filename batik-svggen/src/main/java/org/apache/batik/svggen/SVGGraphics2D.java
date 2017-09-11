@@ -1463,10 +1463,9 @@ public class SVGGraphics2D extends AbstractGraphics2D
      */
     private boolean isUnderline(AttributedCharacterIterator ati) {
         Object attr = ati.getAttribute(TextAttribute.UNDERLINE);
-        if (TextAttribute.UNDERLINE_ON.equals(attr)) return true;
+        return TextAttribute.UNDERLINE_ON.equals(attr);
         // What to do about UNDERLINE_LOW_*?  Right now we don't
         // draw them since we can't really model them...
-        else return false;
     }
 
     /** Return true if the AttributedCharacterIterator is striked

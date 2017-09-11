@@ -433,11 +433,11 @@ public class DOMViewer extends JFrame implements ActionMap {
         }
 
         public boolean canEdit(Element el) {
-            if (panel == null || panel.document == null || true
-                    /*|| panel.document.getDocumentElement() != el*/) {
+//            if (panel == null || panel.document == null || true
+//                    /*|| panel.document.getDocumentElement() != el*/) {
                 return true;
-            }
-            return false;
+//            }
+//            return false;
         }
     }
 

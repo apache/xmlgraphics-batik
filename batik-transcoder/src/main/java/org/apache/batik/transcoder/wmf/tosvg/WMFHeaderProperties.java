@@ -557,7 +557,7 @@ public class WMFHeaderProperties extends AbstractWMFReader {
                 resizeImageBounds((int)(dx + widthDst), (int)(dy + heightDst));                
 
                 int len = 2*recSize - 22;
-                byte bitmap[] = new byte[len];                    
+                byte[] bitmap = new byte[len];
                 for (int i = 0; i < len; i++) bitmap[i] = is.readByte();
             }
             break;                                                
