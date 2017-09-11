@@ -143,6 +143,16 @@
           <artifactId>findbugs-maven-plugin</artifactId>
           <version>${findbugs.version}</version>
         </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-checkstyle-plugin</artifactId>
+          <version>${checkstyle.version}</version>
+          <configuration>
+            <configLocation>checkstyle.xml</configLocation>
+            <violationSeverity>warning</violationSeverity>
+            <includeResources>false</includeResources>
+          </configuration>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
