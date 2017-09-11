@@ -23,10 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
-import org.apache.batik.test.AbstractTest;
-import org.apache.batik.test.DefaultTestReport;
-import org.apache.batik.test.TestReport;
-
 import org.apache.batik.util.CleanerThread;
 
 /**
