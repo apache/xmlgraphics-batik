@@ -293,7 +293,7 @@ public class HistoryBrowser {
     /**
      * The HistoryBrowserListener.
      */
-    public static interface HistoryBrowserListener extends EventListener {
+    public interface HistoryBrowserListener extends EventListener {
 
         /**
          * The command has been executed.
@@ -535,7 +535,7 @@ public class HistoryBrowser {
     /**
      * Wrapps the command's execute, undo and redo methods.
      */
-    public static interface CommandController {
+    public interface CommandController {
 
         /**
          * Wrapps the execute method.

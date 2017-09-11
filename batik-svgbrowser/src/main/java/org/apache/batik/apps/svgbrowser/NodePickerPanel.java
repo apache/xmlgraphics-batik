@@ -1312,7 +1312,7 @@ public class NodePickerPanel extends JPanel implements ActionMap {
     /**
      * Node picker listener.
      */
-    public static interface NodePickerListener extends EventListener {
+    public interface NodePickerListener extends EventListener {
         /**
          * Updates the element from the data contained in the NodePickerEvent.
          */

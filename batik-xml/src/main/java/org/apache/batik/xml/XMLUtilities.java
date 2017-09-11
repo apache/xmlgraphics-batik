@@ -275,7 +275,9 @@ public class XMLUtilities extends XMLCharacters {
             return e;
         }
 
-        while (isXMLSpace((char)(c = r.read())));
+        while (isXMLSpace((char)(c = r.read()))) {
+            //skip
+        }
 
         if (c != 'v') {
             return e;
@@ -308,7 +310,9 @@ public class XMLUtilities extends XMLCharacters {
             return e;
         }
 
-        while (isXMLSpace((char)(c = r.read())));
+        while (isXMLSpace((char)(c = r.read()))) {
+            //skip
+        }
 
         if (c != '"' && c != '\'') {
             return e;
@@ -328,7 +332,9 @@ public class XMLUtilities extends XMLCharacters {
         if (!isXMLSpace((char)(c = r.read()))) {
             return e;
         }
-        while (isXMLSpace((char)(c = r.read())));
+        while (isXMLSpace((char)(c = r.read()))) {
+            //skip
+        }
 
         if (c != 'e') {
             return e;
@@ -364,7 +370,9 @@ public class XMLUtilities extends XMLCharacters {
             return e;
         }
 
-        while (isXMLSpace((char)(c = r.read())));
+        while (isXMLSpace((char)(c = r.read()))) {
+            //skip
+        }
 
         if (c != '"' && c != '\'') {
             return e;

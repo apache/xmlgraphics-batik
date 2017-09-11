@@ -829,7 +829,7 @@ public class DOMDocumentTree extends JTree implements Autoscroll {
     /**
      * The DOMDocumentTreeListener.
      */
-    public static interface DOMDocumentTreeListener extends EventListener {
+    public interface DOMDocumentTreeListener extends EventListener {
 
         /**
          * Fired after successfully completed drop.

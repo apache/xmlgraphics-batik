@@ -240,4 +240,4 @@ public class ImportInfo {
             }
         }
     }
-};
+}

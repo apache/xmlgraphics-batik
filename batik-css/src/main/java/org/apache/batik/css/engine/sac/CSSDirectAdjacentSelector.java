@@ -60,8 +60,9 @@ public class CSSDirectAdjacentSelector extends AbstractSiblingSelector {
         if (!((ExtendedSelector)getSiblingSelector()).match(e, pseudoE))
             return false;
         while ((n = n.getPreviousSibling()) != null &&
-               n.getNodeType() != Node.ELEMENT_NODE);
-
+               n.getNodeType() != Node.ELEMENT_NODE) {
+            //empty
+        }
         if (n == null) 
             return false;
 

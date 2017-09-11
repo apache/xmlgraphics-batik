@@ -648,7 +648,7 @@ public class DOMViewer extends JFrame implements ActionMap {
                     domViewerController.performUpdate(new Runnable() {
                         public void run() {
                             selectNode(elem);
-                        };
+                        }
                     });
                 }
             });
