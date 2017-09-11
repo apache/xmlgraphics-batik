@@ -2585,5 +2585,23 @@ JAVA=/usr/bin/java
         <fileset dir="classes" includes="**/*TestCase.class"/>
       </batchtest>
     </junit>
+  </target>
+
+  <target name="checkstyle" depends="init" description="Runs Checkstyle for a code quality report">
+    <property name="checkstyle.location" value="lib/checkstyle-5.6-all.jar" />
+    <property name="checkstyle.config" value="checkstyle.xml" />
+    <path id="checkstyle-classpath">
+      <pathelement location="${checkstyle.location}"/>
+    </path>
+    <taskdef name="checkstyle" classname="com.puppycrawl.tools.checkstyle.CheckStyleTask" classpathref="checkstyle-classpath"/>
+    <mkdir dir="${build}"/>
+    <checkstyle config="${checkstyle.config}" failonviolation="true" maxWarnings="0">
+      <classpath>
+        <path refid="checkstyle-classpath"/>
+      </classpath>
+      <fileset dir="." includes="**/*.java"/>
+      <formatter type="xml" toFile="${build}/report_checkstyle.xml"/>
+      <formatter type="plain"/>
+    </checkstyle>
   </target>  
 </project>
