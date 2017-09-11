@@ -24,7 +24,6 @@ import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 import java.util.MissingResourceException;
 
-import org.apache.batik.anim.dom.SAXSVGDocumentFactory;
 import org.apache.batik.test.AbstractTest;
 import org.apache.batik.test.TestReport;
 import org.apache.batik.test.DefaultTestReport;

@@ -48,7 +48,6 @@ import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.anim.dom.SAXSVGDocumentFactory;
 import org.apache.batik.anim.dom.SVGOMDocument;
 import org.apache.batik.anim.dom.SVGOMScriptElement;
-import org.apache.batik.bridge.Location;
 import org.apache.batik.script.Interpreter;
 import org.apache.batik.script.InterpreterException;
 import org.apache.batik.script.ScriptEventWrapper;

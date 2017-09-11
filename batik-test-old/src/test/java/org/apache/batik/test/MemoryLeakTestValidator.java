@@ -18,8 +18,6 @@
  */
 package org.apache.batik.test;
 
-import org.apache.batik.test.TestReport;
-
 /**
  * One line Class Desc
  *

@@ -39,9 +39,9 @@
     <property name="file" value="checkstylesuppressions.xml"/>
   </module>
   
-  <!-- <module name="TreeWalker">
+   <module name="TreeWalker">
     
-    <module name="LineLength">
+    <!--<module name="LineLength">
       <property name="max" value="120"/>
     </module>   
     
@@ -129,7 +129,7 @@
     
     <module name="ParenPad"/>
     
-    <module name="RedundantImport"/>
+    
     
     <module name="RedundantModifier"/>
     
@@ -164,9 +164,11 @@
       <property name="allowMissingParamTags" value="true"/>
       <property name="allowMissingReturnTag" value="true"/>
       <property name="allowMissingThrowsTags" value="true"/>
-    </module>
+    </module>-->
     
-  </module> -->
+    <module name="RedundantImport"/>
+    
+  </module> 
   
 
 </module>

@@ -21,7 +21,6 @@ package org.apache.batik.dom;
 
 import java.io.StringReader;
 
-import org.apache.batik.dom.AbstractElement;
 import org.apache.batik.dom.util.SAXDocumentFactory;
 import org.apache.batik.test.AbstractTest;
 import org.apache.batik.util.XMLResourceDescriptor;

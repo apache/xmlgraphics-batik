@@ -18,7 +18,6 @@
  */
 package org.apache.batik.bridge;
 
-import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.dom.AbstractDocument;
 
 /**
