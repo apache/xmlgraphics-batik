@@ -77,7 +77,7 @@ public class ImportInfo {
      * This instance is initialized by reading the file
      * identified by 'importFile'.
      */
-    static public ImportInfo getImports() {
+    public static ImportInfo getImports() {
         if (defaultImports == null) 
             defaultImports = readImports();
         return defaultImports;    
