@@ -207,7 +207,7 @@ public class PNGDecodeParam implements ImageDecodeParam {
      * </pre>
      *
      * where <code>gamma_from_file</code> is the gamma of the file
-     * data, as determined by the <code>gAMA</code>, </code>sRGB</code>,
+     * data, as determined by the <code>gAMA</code>, <code>sRGB</code>,
      * and/or <code>iCCP</code> chunks, and <code>display_exponent</code>
      * is the exponent of the intrinsic transfer curve of the display,
      * generally 2.2.
@@ -260,7 +260,7 @@ public class PNGDecodeParam implements ImageDecodeParam {
      * </pre>
      *
      * where <code>gamma_from_file</code> is the gamma of the file
-     * data, as determined by the <code>gAMA</code>, </code>sRGB</code>,
+     * data, as determined by the <code>gAMA</code>, <code>sRGB</code>,
      * and/or <code>iCCP</code> chunks, and <code>user_exponent</code>
      * is an additional user-supplied parameter.
      *

@@ -792,7 +792,9 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
         }
         // Remove the node
         int index = 0;
-        for (; node != children[index]; index++);     // fires exception when node not found!
+        for (; node != children[index]; index++) {
+            // fires exception when node not found!
+        }
         remove(index);
         return true;
     }
@@ -804,7 +806,7 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
      *
      * @param index the position of the graphics node to remove
      * @return the graphics node that was removed
-     * @exception IndexOutOfBoundsException if index out of range <code>
+     * @exception IndexOutOfBoundsException if index out of range
      */
     public Object remove(int index) {
         // Check for correct argument
@@ -867,10 +869,9 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
      * @param c the collection to be checked for containment
      */
     public boolean containsAll(Collection c) {
-        Iterator i = c.iterator();
-        while (i.hasNext()) {
-            if (!contains(i.next())) {
-                    return false;
+        for (Object aC : c) {
+            if (!contains(aC)) {
+                return false;
             }
         }
         return true;

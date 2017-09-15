@@ -39,7 +39,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /**
- * Bridge class for the &lt;filter> element.
+ * Bridge class for the &lt;filter&gt; element.
  *
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
@@ -53,7 +53,7 @@ public class SVGFilterElementBridge extends AnimatableGenericSVGBridge
     protected static final Color TRANSPARENT_BLACK = new Color(0, true);
 
     /**
-     * Constructs a new bridge for the &lt;filter> element.
+     * Constructs a new bridge for the &lt;filter&gt; element.
      */
     public SVGFilterElementBridge() {}
 

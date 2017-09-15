@@ -20,7 +20,6 @@ package org.apache.batik.bridge.svg12;
 
 import java.awt.Point;
 import java.awt.event.KeyEvent;
-import java.awt.geom.Point2D;
 
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeEventSupport;

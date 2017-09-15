@@ -293,7 +293,7 @@ public interface UserAgent {
      * can't be loaded.  If it returns 'null' then a BridgeException will
      * be thrown.
      *
-     * @param e   The &lt;image> element that can't be loaded.
+     * @param e   The &lt;image&gt; element that can't be loaded.
      * @param url The resolved url that can't be loaded.
      * @param message As best as can be determined the reason it can't be
      *                loaded (not available, corrupt, unknown format, ...).
@@ -308,5 +308,5 @@ public interface UserAgent {
     void loadDocument(String url);
 
     /** Returns the Font Family Resolver */
-    public FontFamilyResolver getFontFamilyResolver();
+    FontFamilyResolver getFontFamilyResolver();
 }

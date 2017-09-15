@@ -62,7 +62,7 @@ import org.w3c.dom.svg.SVGSVGElement;
  * This class may be the base class of all transcoders which take an
  * SVG document as input and which need to build a DOM tree. The
  * <code>SVGAbstractTranscoder</code> uses several different hints that
- * guide it's behaviour:<br/>
+ * guide it's behaviour:<br>
  *
  * <ul>
  *   <li><code>KEY_WIDTH, KEY_HEIGHT</code> can be used to specify how to scale the
@@ -184,9 +184,9 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
         }
 
         if (hints.containsKey(KEY_WIDTH))
-            width = ((Float)hints.get(KEY_WIDTH)).floatValue();
+            width = (Float) hints.get(KEY_WIDTH);
         if (hints.containsKey(KEY_HEIGHT))
-            height = ((Float)hints.get(KEY_HEIGHT)).floatValue();
+            height = (Float) hints.get(KEY_HEIGHT);
 
 
         SVGOMDocument svgDoc = (SVGOMDocument)document;
@@ -198,7 +198,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
         // flag that indicates if the document is dynamic
         boolean isDynamic =
             hints.containsKey(KEY_EXECUTE_ONLOAD) &&
-             ((Boolean)hints.get(KEY_EXECUTE_ONLOAD)).booleanValue();
+                    (Boolean) hints.get(KEY_EXECUTE_ONLOAD);
 
         GraphicsNode gvtRoot;
         try {
@@ -215,7 +215,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
                 se.dispatchSVGLoadEvent();
                 if (hints.containsKey(KEY_SNAPSHOT_TIME)) {
                     float t =
-                        ((Float) hints.get(KEY_SNAPSHOT_TIME)).floatValue();
+                            (Float) hints.get(KEY_SNAPSHOT_TIME);
                     ctx.getAnimationEngine().setCurrentTime(t);
                 } else if (ctx.isSVG12()) {
                     float t = SVGUtilities.convertSnapshotTime(root, null);
@@ -223,7 +223,6 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
                 }
             }
         } catch (BridgeException ex) {
-            ex.printStackTrace();
             throw new TranscoderException(ex);
         }
 
@@ -350,11 +349,11 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
         // Compute the image's width and height according the hints
         float imgWidth = -1;
         if (hints.containsKey(KEY_WIDTH)) {
-            imgWidth = ((Float)hints.get(KEY_WIDTH)).floatValue();
+            imgWidth = (Float) hints.get(KEY_WIDTH);
         }
         float imgHeight = -1;
         if (hints.containsKey(KEY_HEIGHT)) {
-            imgHeight = ((Float)hints.get(KEY_HEIGHT)).floatValue();
+            imgHeight = (Float) hints.get(KEY_HEIGHT);
         }
 
         if (imgWidth > 0 && imgHeight > 0) {
@@ -374,11 +373,11 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
         // Limit image size according to the maximuxm size hints.
         float imgMaxWidth = -1;
         if (hints.containsKey(KEY_MAX_WIDTH)) {
-            imgMaxWidth = ((Float)hints.get(KEY_MAX_WIDTH)).floatValue();
+            imgMaxWidth = (Float) hints.get(KEY_MAX_WIDTH);
         }
         float imgMaxHeight = -1;
         if (hints.containsKey(KEY_MAX_HEIGHT)) {
-            imgMaxHeight = ((Float)hints.get(KEY_MAX_HEIGHT)).floatValue();
+            imgMaxHeight = (Float) hints.get(KEY_MAX_HEIGHT);
         }
 
         if ((imgMaxHeight > 0) && (height > imgMaxHeight)) {
@@ -398,7 +397,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
 
     /**
      * The image width key.
-     * <table border="0" cellspacing="0" cellpadding="1">
+     * <table summary="" border="0" cellspacing="0" cellpadding="1">
      *   <tr>
      *     <th valign="top" align="right">Key:</th>
      *     <td valign="top">KEY_WIDTH</td>
@@ -425,7 +424,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
 
     /**
      * The image height key.
-     * <table border="0" cellspacing="0" cellpadding="1">
+     * <table summary="" border="0" cellspacing="0" cellpadding="1">
      *   <tr>
      *     <th valign="top" align="right">Key:</th>
      *     <td valign="top">KEY_HEIGHT</td>
@@ -453,7 +452,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
 
     /**
      * The maximum width of the image key.
-     * <table border="0" cellspacing="0" cellpadding="1">
+     * <table summary="" border="0" cellspacing="0" cellpadding="1">
      *   <tr>
      *     <th valign="top" align="right">Key:</th>
      *     <td valign="top">KEY_MAX_WIDTH</td>
@@ -483,7 +482,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
 
     /**
      * The maximux height of the image key.
-     * <table border="0" cellspacing="0" cellpadding="1">
+     * <table summary="" border="0" cellspacing="0" cellpadding="1">
      *   <tr>
      *     <th valign="top" align="right">Key:</th>
      *     <td valign="top">KEY_MAX_HEIGHT</td>
@@ -513,7 +512,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
 
     /**
      * The area of interest key.
-     * <table border="0" cellspacing="0" cellpadding="1">
+     * <table summary="" border="0" cellspacing="0" cellpadding="1">
      *   <tr>
      *     <th valign="top" align="right">Key:</th>
      *     <td valign="top">KEY_AOI</td>
@@ -543,7 +542,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
 
     /**
      * The language key.
-     * <table border="0" cellspacing="0" cellpadding="1">
+     * <table summary="" border="0" cellspacing="0" cellpadding="1">
      *   <tr>
      *     <th valign="top" align="right">Key:</th>
      *     <td valign="top">KEY_LANGUAGE</td>
@@ -571,7 +570,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
 
     /**
      * The media key.
-     * <table border="0" cellspacing="0" cellpadding="1">
+     * <table summary="" border="0" cellspacing="0" cellpadding="1">
      *   <tr>
      *     <th valign="top" align="right">Key:</th>
      *     <td valign="top">KEY_MEDIA</td>
@@ -600,7 +599,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
     /**
      * The default font-family key.
      *
-     * <table border="0" cellspacing="0" cellpadding="1">
+     * <table summary="" border="0" cellspacing="0" cellpadding="1">
      *   <tr>
      *     <th valign="top" align="right">Key:</th>
      *     <td valign="top">KEY_DEFAULT_FONT_FAMILY</td>
@@ -630,7 +629,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
 
     /**
      * The alternate stylesheet key.
-     * <table border="0" cellspacing="0" cellpadding="1">
+     * <table summary="" border="0" cellspacing="0" cellpadding="1">
      *   <tr>
      *     <th valign="top" align="right">Key:</th>
      *     <td valign="top">KEY_ALTERNATE_STYLESHEET</td>
@@ -658,7 +657,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
 
     /**
      * The user stylesheet URI key.
-     * <table border="0" cellspacing="0" cellpadding="1">
+     * <table summary="" border="0" cellspacing="0" cellpadding="1">
      *   <tr>
      *     <th valign="top" align="right">Key:</th>
      *     <td valign="top">KEY_USER_STYLESHEET_URI</td>
@@ -686,7 +685,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
 
     /**
      * The number of millimeters in each pixel key.
-     * <table border="0" cellspacing="0" cellpadding="1">
+     * <table summary="" border="0" cellspacing="0" cellpadding="1">
      *   <tr>
      *     <th valign="top" align="right">Key:</th>
      *     <td valign="top">KEY_PIXEL_UNIT_TO_MILLIMETER</td>
@@ -717,7 +716,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
      * @deprecated As of Batik Version 1.5b3
      * @see #KEY_PIXEL_UNIT_TO_MILLIMETER
      *
-     * <table border="0" cellspacing="0" cellpadding="1">
+     * <table summary="" border="0" cellspacing="0" cellpadding="1">
      *   <tr>
      *     <th valign="top" align="right">Key:</th>
      *     <td valign="top">KEY_PIXEL_TO_MM</td>
@@ -745,7 +744,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
 
     /**
      * The 'onload' execution key.
-     * <table border="0" cellspacing="0" cellpadding="1">
+     * <table summary="" border="0" cellspacing="0" cellpadding="1">
      *   <tr>
      *     <th valign="top" align="right">Key:</th>
      *     <td valign="top">KEY_EXECUTE_ONLOAD</td>
@@ -774,7 +773,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
 
     /**
      * The snapshot time key.
-     * <table border="0" cellspacing="0" cellpadding="1">
+     * <table summary="" border="0" cellspacing="0" cellpadding="1">
      *   <tr>
      *     <th valign="top" align="right">Key:</th>
      *     <td valign="top">KEY_SNAPSHOT_TIME</td>
@@ -806,7 +805,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
      * The set of supported script languages (i.e., the set of possible
      * values for the &lt;script&gt; tag's type attribute).
      *
-     * <table border="0" cellspacing="0" cellpadding="1">
+     * <table summary="" border="0" cellspacing="0" cellpadding="1">
      *   <tr>
      *     <th valign="top" align="right">Key:</th>
      *     <td valign="top">KEY_ALLOWED_SCRIPT_TYPES</td>
@@ -848,7 +847,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
      * Controls whether or not scripts can only be loaded from the
      * same location as the document which references them.
      *
-     * <table border="0" cellspacing="0" cellpadding="1">
+     * <table summary="" border="0" cellspacing="0" cellpadding="1">
      *   <tr>
      *     <th valign="top" align="right">Key:</th>
      *     <td valign="top">KEY_CONSTRAIN_SCRIPT_ORIGIN</td>
@@ -958,7 +957,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
             Object obj = SVGAbstractTranscoder.this.hints.get
                 (KEY_PIXEL_UNIT_TO_MILLIMETER);
             if (obj != null) {
-                return ((Float)obj).floatValue();
+                return (Float) obj;
             }
 
             return super.getPixelUnitToMillimeter();
@@ -1041,7 +1040,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
             Boolean b = (Boolean)SVGAbstractTranscoder.this.hints.get
                 (KEY_XML_PARSER_VALIDATING);
             if (b != null)
-                return b.booleanValue();
+                return b;
 
             return super.isXMLParserValidating();
         }
@@ -1076,8 +1075,8 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
             if (SVGAbstractTranscoder.this.hints.containsKey
                 (KEY_CONSTRAIN_SCRIPT_ORIGIN)) {
                 constrainOrigin =
-                    ((Boolean)SVGAbstractTranscoder.this.hints.get
-                     (KEY_CONSTRAIN_SCRIPT_ORIGIN)).booleanValue();
+                        (Boolean) SVGAbstractTranscoder.this.hints.get
+                                (KEY_CONSTRAIN_SCRIPT_ORIGIN);
             }
 
             if (constrainOrigin) {

@@ -76,7 +76,7 @@ public class SAXSVGDocumentFactory
      * The dtd public IDs resource bundle class name.
      */
     protected static final String DTDIDS =
-        "org.apache.batik.dom.svg.resources.dtdids";
+        "org.apache.batik.anim.dom.resources.dtdids";
 
     /**
      * Constant for HTTP content type header charset field.

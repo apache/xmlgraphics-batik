@@ -650,9 +650,9 @@ public class JSVGViewerFrame
             localHistory = new LocalHistory(mb, this);
 
             String[] uri = application.getVisitedURIs();
-            for (int i=0; i<uri.length; i++) {
-                if (uri[i] != null && !"".equals(uri[i])) {
-                    localHistory.update(uri[i]);
+            for (String anUri : uri) {
+                if (anUri != null && !"".equals(anUri)) {
+                    localHistory.update(anUri);
                 }
             }
             p = new JPanel(new BorderLayout());
@@ -1012,8 +1012,8 @@ public class JSVGViewerFrame
 
         /**
          * Initializes the debugger by massaging the GUI and attaching it
-         * to the Rhino interpreter's {@link
-         * org.mozilla.javascript.ContextFactory}.
+         * to the Rhino interpreter's
+         * org.mozilla.javascript.ContextFactory.
          */
         public void initialize() {
             // Customize the menubar a bit, disable menu
@@ -1199,10 +1199,9 @@ public class JSVGViewerFrame
                                    Resources.getString(OPEN_TITLE));
                 fileDialog.setFilenameFilter(new FilenameFilter() {
                     public boolean accept(File dir, String name) {
-                        Iterator iter = getHandlers().iterator();
-                        while (iter.hasNext()) {
+                        for (Object o : getHandlers()) {
                             SquiggleInputHandler handler
-                                = (SquiggleInputHandler)iter.next();
+                                    = (SquiggleInputHandler) o;
                             if (handler.accept(new File(dir, name))) {
                                 return true;
                             }
@@ -1238,12 +1237,11 @@ public class JSVGViewerFrame
                 //
                 // Add file filters from the handlers map
                 //
-                Iterator iter = getHandlers().iterator();
-                while (iter.hasNext()) {
+                for (Object o : getHandlers()) {
                     SquiggleInputHandler handler
-                        = (SquiggleInputHandler)iter.next();
+                            = (SquiggleInputHandler) o;
                     fileChooser.addChoosableFileFilter
-                        (new SquiggleInputHandlerFilter(handler));
+                            (new SquiggleInputHandlerFilter(handler));
                 }
 
                 int choice = fileChooser.showOpenDialog(JSVGViewerFrame.this);
@@ -1476,9 +1474,8 @@ public class JSVGViewerFrame
 
         protected void update() {
             boolean b = localHistory.canGoBack();
-            Iterator it = components.iterator();
-            while (it.hasNext()) {
-                ((JComponent)it.next()).setEnabled(b);
+            for (Object component : components) {
+                ((JComponent) component).setEnabled(b);
             }
         }
     }
@@ -1503,9 +1500,8 @@ public class JSVGViewerFrame
 
         protected void update() {
             boolean b = localHistory.canGoForward();
-            Iterator it = components.iterator();
-            while (it.hasNext()) {
-                ((JComponent)it.next()).setEnabled(b);
+            for (Object component : components) {
+                ((JComponent) component).setEnabled(b);
             }
         }
     }
@@ -1721,7 +1717,7 @@ public class JSVGViewerFrame
                                 application.getXMLParserClassName());
                     }
                     trans.addTranscodingHint
-                        (JPEGTranscoder.KEY_QUALITY, new Float(quality));
+                        (JPEGTranscoder.KEY_QUALITY, quality);
 
                     final BufferedImage img = trans.createImage(w, h);
 
@@ -1785,7 +1781,7 @@ public class JSVGViewerFrame
                                              Boolean.TRUE );
 
                     if(isIndexed){
-                        trans.addTranscodingHint(PNGTranscoder.KEY_INDEXED, new Integer(8));
+                        trans.addTranscodingHint(PNGTranscoder.KEY_INDEXED, 8);
                     }
 
                     final BufferedImage img = trans.createImage(w, h);
@@ -1976,9 +1972,8 @@ public class JSVGViewerFrame
 
         protected void update() {
             boolean b = transformHistory.canGoBack();
-            Iterator it = components.iterator();
-            while (it.hasNext()) {
-                ((JComponent)it.next()).setEnabled(b);
+            for (Object component : components) {
+                ((JComponent) component).setEnabled(b);
             }
         }
     }
@@ -2006,9 +2001,8 @@ public class JSVGViewerFrame
 
         protected void update() {
             boolean b = transformHistory.canGoForward();
-            Iterator it = components.iterator();
-            while (it.hasNext()) {
-                ((JComponent)it.next()).setEnabled(b);
+            for (Object component : components) {
+                ((JComponent) component).setEnabled(b);
             }
         }
     }
@@ -2093,9 +2087,8 @@ public class JSVGViewerFrame
         }
 
         public void update(boolean enabled) {
-            Iterator it = components.iterator();
-            while (it.hasNext()) {
-                ((JComponent)it.next()).setEnabled(enabled);
+            for (Object component : components) {
+                ((JComponent) component).setEnabled(enabled);
             }
         }
     }
@@ -2117,9 +2110,8 @@ public class JSVGViewerFrame
         }
 
         public void update(boolean enabled) {
-            Iterator it = components.iterator();
-            while (it.hasNext()) {
-                ((JComponent)it.next()).setEnabled(enabled);
+            for (Object component : components) {
+                ((JComponent) component).setEnabled(enabled);
             }
         }
     }
@@ -2141,9 +2133,8 @@ public class JSVGViewerFrame
         }
 
         public void update(boolean enabled) {
-            Iterator it = components.iterator();
-            while (it.hasNext()) {
-                ((JComponent)it.next()).setEnabled(enabled);
+            for (Object component : components) {
+                ((JComponent) component).setEnabled(enabled);
             }
         }
     }

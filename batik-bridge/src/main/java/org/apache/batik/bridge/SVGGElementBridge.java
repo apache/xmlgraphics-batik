@@ -28,7 +28,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.events.MutationEvent;
 
 /**
- * Bridge class for the &lt;g> element.
+ * Bridge class for the &lt;g&gt; element.
  *
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
@@ -36,7 +36,7 @@ import org.w3c.dom.events.MutationEvent;
 public class SVGGElementBridge extends AbstractGraphicsNodeBridge {
 
     /**
-     * Constructs a new bridge for the &lt;g> element.
+     * Constructs a new bridge for the &lt;g&gt; element.
      */
     public SVGGElementBridge() {}
 
@@ -91,7 +91,7 @@ public class SVGGElementBridge extends AbstractGraphicsNodeBridge {
     }
 
     /**
-     * Returns true as the &lt;g> element is a container.
+     * Returns true as the &lt;g&gt; element is a container.
      */
     public boolean isComposite() {
         return true;

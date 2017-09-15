@@ -324,13 +324,13 @@ public class DOMKeyboardEvent extends DOMUIEvent implements KeyboardEvent {
         keyLocation = keyLocationArg;
         modifierKeys.clear();
         String[] modifiers = split(modifiersList);
-        for (int i = 0; i < modifiers.length; i++) {
-            modifierKeys.add(modifiers[i]);
+        for (String modifier : modifiers) {
+            modifierKeys.add(modifier);
         }
     }
 
     /**
-     * <b>DOM</b: Initializes this KeyboardEvent object.
+     * <b>DOM</b>: Initializes this KeyboardEvent object.
      * @param namespaceURIArg Specifies the event namespace URI.
      * @param typeArg Specifies the event type.
      * @param canBubbleArg Specifies whether or not the event can bubble.
@@ -363,8 +363,8 @@ public class DOMKeyboardEvent extends DOMUIEvent implements KeyboardEvent {
         keyLocation = keyLocationArg;
         modifierKeys.clear();
         String[] modifiers = split(modifiersList);
-        for (int i = 0; i < modifiers.length; i++) {
-            modifierKeys.add(modifiers[i]);
+        for (String modifier : modifiers) {
+            modifierKeys.add(modifier);
         }
     }
 }

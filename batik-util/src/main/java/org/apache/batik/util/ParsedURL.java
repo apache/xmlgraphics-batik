@@ -424,8 +424,7 @@ public class ParsedURL {
      */
     public InputStream openStream(String [] mimeTypes) throws IOException {
         List mt = new ArrayList(mimeTypes.length);
-        for (int i=0; i<mimeTypes.length; i++)
-            mt.add(mimeTypes[i]);
+        for (String mimeType : mimeTypes) mt.add(mimeType);
         return data.openStream(userAgent, mt.iterator());
     }
 

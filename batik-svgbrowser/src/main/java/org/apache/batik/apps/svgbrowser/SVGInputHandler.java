@@ -26,7 +26,7 @@ import org.apache.batik.util.ParsedURL;
  * This implementation of the <code>SquiggleInputHandler</code> class
  * simply displays an SVG file into the JSVGCanvas.
  *
- * @author <a mailto="vincent.hardy@sun.com">Vincent Hardy</a>
+ * @author <a href="mailto:vincent.hardy@sun.com">Vincent Hardy</a>
  * @version $Id$
  */
 public class SVGInputHandler implements SquiggleInputHandler {
@@ -93,8 +93,8 @@ public class SVGInputHandler implements SquiggleInputHandler {
      */
     public boolean accept(String path) {
         if (path == null) return false;
-        for (int i=0; i<SVG_FILE_EXTENSIONS.length; i++) {
-            if (path.endsWith(SVG_FILE_EXTENSIONS[i])) {
+        for (String SVG_FILE_EXTENSION : SVG_FILE_EXTENSIONS) {
+            if (path.endsWith(SVG_FILE_EXTENSION)) {
                 return true;
             }
         }

@@ -43,10 +43,10 @@ public class XMLContext extends StyleContext {
     public static final String ATTRIBUTE_VALUE_STYLE  = "attribute_value";
     public static final String CDATA_STYLE            = "cdata";
     
-    /** Map<String, Color> */
+    //Map<String, Color>
     protected Map syntaxForegroundMap = null;
     
-    /** Map<String, Font> */
+    //Map<String, Font>
     protected Map syntaxFontMap = null;
     
     

@@ -23,7 +23,6 @@ import java.util.Iterator;
 
 import org.apache.batik.anim.values.AnimatablePathDataValue;
 import org.apache.batik.anim.values.AnimatableValue;
-import org.apache.batik.dom.svg.AbstractSVGList;
 import org.apache.batik.dom.svg.AbstractSVGNormPathSegList;
 import org.apache.batik.dom.svg.AbstractSVGPathSegList;
 import org.apache.batik.dom.svg.ListBuilder;

@@ -27,7 +27,7 @@
 <!-- @version $Id$                                                          -->
 <!-- ====================================================================== -->
 
-<svg id="body" width="450" height="500" viewBox="0 0 450 500">
+<svg xmlns="http://www.w3.org/2000/svg" id="body" width="450" height="500" viewBox="0 0 450 500">
   <script type="text/ecmascript"><![CDATA[
     var inRegard=false;
     var elems = new Array

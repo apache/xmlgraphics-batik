@@ -18,7 +18,6 @@
  */
 package org.apache.batik.bridge;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -33,7 +32,7 @@ import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.XMLConstants;
 
 /**
- * This class represents a &lt;font-face> element or @font-face rule
+ * This class represents a &lt;font-face&gt; element or @font-face rule
  *
  * @author <a href="mailto:bella.robinson@cmis.csiro.au">Bella Robinson</a>
  * @version $Id$
@@ -96,9 +95,7 @@ public abstract class FontFace extends GVTFontFace
             return family;
         }
 
-        Iterator iter = srcs.iterator();
-        while (iter.hasNext()) {
-            Object o = iter.next();
+        for (Object o : srcs) {
             if (o instanceof String) {
                 family = fontFamilyResolver.resolve((String) o, this);
                 if (family != null) {
@@ -106,7 +103,7 @@ public abstract class FontFace extends GVTFontFace
                 }
             } else if (o instanceof ParsedURL) {
                 try {
-                    GVTFontFamily ff = getFontFamily(ctx, (ParsedURL)o);
+                    GVTFontFamily ff = getFontFamily(ctx, (ParsedURL) o);
                     if (ff != null)
                         return ff;
                 } catch (SecurityException ex) {

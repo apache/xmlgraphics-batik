@@ -20,7 +20,6 @@ package org.apache.batik.bridge;
 
 import java.awt.Cursor;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.batik.anim.dom.SVGOMAElement;
@@ -38,7 +37,7 @@ import org.w3c.dom.events.EventListener;
 import org.w3c.dom.svg.SVGAElement;
 
 /**
- * Bridge class for the &lt;a> element.
+ * Bridge class for the &lt;a&gt; element.
  *
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
@@ -50,7 +49,7 @@ public class SVGAElementBridge extends SVGGElementBridge {
     protected CursorMouseOutListener  cl;
 
     /**
-     * Constructs a new bridge for the &lt;a> element.
+     * Constructs a new bridge for the &lt;a&gt; element.
      */
     public SVGAElementBridge() {}
 
@@ -139,7 +138,7 @@ public class SVGAElementBridge extends SVGGElementBridge {
     }
 
     /**
-     * Returns true as the &lt;a> element is a container.
+     * Returns true as the &lt;a&gt; element is a container.
      */
     public boolean isComposite() {
         return true;
@@ -178,9 +177,7 @@ public class SVGAElementBridge extends SVGGElementBridge {
 
             List l = ae.getDefaultActions();
             if (l != null) {
-                Iterator i = l.iterator();
-                while (i.hasNext()) {
-                    Object o = i.next();
+                for (Object o : l) {
                     if (o instanceof AnchorDefaultActionable)
                         return; // only one anchor in default list...
                 }
@@ -254,9 +251,7 @@ public class SVGAElementBridge extends SVGGElementBridge {
 
             List l = ae.getDefaultActions();
             if (l != null) {
-                Iterator i = l.iterator();
-                while (i.hasNext()) {
-                    Object o = i.next();
+                for (Object o : l) {
                     if (o instanceof MouseOverDefaultActionable)
                         return; // only one anchor in default list...
                 }
@@ -340,9 +335,7 @@ public class SVGAElementBridge extends SVGGElementBridge {
             
             List l = ae.getDefaultActions();
             if (l != null) {
-                Iterator i = l.iterator();
-                while (i.hasNext()) {
-                    Object o = i.next();
+                for (Object o : l) {
                     if (o instanceof MouseOutDefaultActionable)
                         return; // only one anchor in default list...
                 }

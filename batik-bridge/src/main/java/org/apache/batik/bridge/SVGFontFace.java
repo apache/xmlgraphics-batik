@@ -24,7 +24,7 @@ import org.apache.batik.gvt.font.GVTFontFamily;
 import org.w3c.dom.Element;
 
 /**
- * This class represents a &lt;font-face> element or @font-face rule
+ * This class represents a &lt;font-face&gt; element or @font-face rule
  *
  * @author <a href="mailto:bella.robinson@cmis.csiro.au">Bella Robinson</a>
  * @version $Id$

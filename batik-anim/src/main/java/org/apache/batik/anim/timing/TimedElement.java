@@ -599,23 +599,22 @@ public abstract class TimedElement implements SMILConstants {
      *         element is currently active.
      */
     protected float sampleAt(float parentSimpleTime, boolean hyperlinking) {
-        // Trace.enter(this, "sampleAt", new Object[] { new Float(parentSimpleTime) } ); try {
+        // Trace.enter(this, "sampleAt", new Object[] { Float.valueOf(parentSimpleTime) } ); try {
         isSampling = true;
 
         float time = parentSimpleTime; // No time containers in SVG.
 
         // First, process any events that occurred since the last sampling,
         // taking into account event sensitivity.
-        Iterator i = handledEvents.entrySet().iterator();
-        while (i.hasNext()) {
-            Map.Entry e = (Map.Entry) i.next();
+        for (Object o : handledEvents.entrySet()) {
+            Map.Entry e = (Map.Entry) o;
             Event evt = (Event) e.getKey();
             Set ts = (Set) e.getValue();
             Iterator j = ts.iterator();
             boolean hasBegin = false, hasEnd = false;
             while (j.hasNext() && !(hasBegin && hasEnd)) {
                 EventLikeTimingSpecifier t =
-                    (EventLikeTimingSpecifier) j.next();
+                        (EventLikeTimingSpecifier) j.next();
                 if (t.isBegin()) {
                     hasBegin = true;
                 } else {
@@ -627,7 +626,7 @@ public abstract class TimedElement implements SMILConstants {
                 useBegin = !isActive || restartMode == RESTART_ALWAYS;
                 useEnd = !useBegin;
             } else if (hasBegin && (!isActive ||
-                        restartMode == RESTART_ALWAYS)) {
+                    restartMode == RESTART_ALWAYS)) {
                 useBegin = true;
                 useEnd = false;
             } else if (hasEnd && isActive) {
@@ -639,7 +638,7 @@ public abstract class TimedElement implements SMILConstants {
             j = ts.iterator();
             while (j.hasNext()) {
                 EventLikeTimingSpecifier t =
-                    (EventLikeTimingSpecifier) j.next();
+                        (EventLikeTimingSpecifier) j.next();
                 boolean isBegin = t.isBegin();
                 if (isBegin && useBegin || !isBegin && useEnd) {
                     t.resolve(evt);
@@ -838,8 +837,8 @@ public abstract class TimedElement implements SMILConstants {
      * accesskey or repeat timing specifiers.
      */
     protected boolean endHasEventConditions() {
-        for (int i = 0; i < endTimes.length; i++) {
-            if (endTimes[i].isEventCondition()) {
+        for (TimingSpecifier endTime : endTimes) {
+            if (endTime.isEventCondition()) {
                 return true;
             }
         }
@@ -897,7 +896,7 @@ public abstract class TimedElement implements SMILConstants {
      */
     protected Interval computeInterval(boolean first, boolean fixedBegin,
                                        float beginAfter, boolean incl) {
-        // Trace.enter(this, "computeInterval", new Object[] { new Boolean(first), new Boolean(fixedBegin), new Float(beginAfter)} ); try {
+        // Trace.enter(this, "computeInterval", new Object[] { new Boolean(first), new Boolean(fixedBegin), Float.valueOf(beginAfter)} ); try {
         // Trace.print("computing interval from begins=" + beginInstanceTimes + ", ends=" + endInstanceTimes);
         Iterator beginIterator = beginInstanceTimes.iterator();
         Iterator endIterator = endInstanceTimes.iterator();
@@ -1179,7 +1178,7 @@ public abstract class TimedElement implements SMILConstants {
                 try {
                     this.min = parseClockValue(min, false);
                 } catch (ParseException ex) {
-                	this.min = 0;
+                    this.min = 0;
                 }
                 if (this.min < 0) {
                     this.min = 0;
@@ -1203,7 +1202,7 @@ public abstract class TimedElement implements SMILConstants {
                 try {
                     this.max = parseClockValue(max, false);
                 } catch (ParseException ex) {
-                	this.max = INDEFINITE;
+                    this.max = INDEFINITE;
                 }
                 if (this.max < 0) {
                     this.max = 0;
@@ -1289,11 +1288,11 @@ public abstract class TimedElement implements SMILConstants {
      * Initializes this timed element.
      */
     public void initialize() {
-        for (int i = 0; i < beginTimes.length; i++) {
-            beginTimes[i].initialize();
+        for (TimingSpecifier beginTime : beginTimes) {
+            beginTime.initialize();
         }
-        for (int i = 0; i < endTimes.length; i++) {
-            endTimes[i].initialize();
+        for (TimingSpecifier endTime : endTimes) {
+            endTime.initialize();
         }
     }
 
@@ -1301,11 +1300,11 @@ public abstract class TimedElement implements SMILConstants {
      * Deinitializes this timed element.
      */
     public void deinitialize() {
-        for (int i = 0; i < beginTimes.length; i++) {
-            beginTimes[i].deinitialize();
+        for (TimingSpecifier beginTime : beginTimes) {
+            beginTime.deinitialize();
         }
-        for (int i = 0; i < endTimes.length; i++) {
-            endTimes[i].deinitialize();
+        for (TimingSpecifier endTime : endTimes) {
+            endTime.deinitialize();
         }
     }
 

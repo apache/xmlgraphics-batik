@@ -1100,8 +1100,8 @@ public class NodePickerPanel extends JPanel implements ActionMap {
             DefaultTableModel model =
                 (DefaultTableModel) attributesTable.getModel();
             int[] selectedRows = attributesTable.getSelectedRows();
-            for (int i = 0; i < selectedRows.length; i++) {
-                String attrName = (String) model.getValueAt(selectedRows[i], 0);
+            for (int selectedRow : selectedRows) {
+                String attrName = (String) model.getValueAt(selectedRow, 0);
                 if (attrName != null) {
                     String prefix = DOMUtilities.getPrefix(attrName);
                     String localName = DOMUtilities.getLocalName(attrName);
@@ -1312,7 +1312,7 @@ public class NodePickerPanel extends JPanel implements ActionMap {
     /**
      * Node picker listener.
      */
-    public static interface NodePickerListener extends EventListener {
+    public interface NodePickerListener extends EventListener {
         /**
          * Updates the element from the data contained in the NodePickerEvent.
          */

@@ -51,7 +51,7 @@ import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGRect;
 
 /**
- * Bridge class for the &lt;svg> element.
+ * Bridge class for the &lt;svg&gt; element.
  *
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
@@ -61,7 +61,7 @@ public class SVGSVGElementBridge
     implements SVGSVGContext {
 
     /**
-     * Constructs a new bridge for the &lt;svg> element.
+     * Constructs a new bridge for the &lt;svg&gt; element.
      */
     public SVGSVGElementBridge() {}
 
@@ -407,7 +407,7 @@ public class SVGSVGElementBridge
     }
 
     /**
-     * A viewport defined an &lt;svg> element.
+     * A viewport defined an &lt;svg&gt; element.
      */
     public static class SVGSVGElementViewport implements Viewport {
         private float width;

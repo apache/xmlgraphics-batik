@@ -453,7 +453,7 @@ public class SVGOMSVGElement
         if (!ctx.unsuspendRedraw(suspend_handle_id)) {
             throw createDOMException
                 (DOMException.NOT_FOUND_ERR, "invalid.suspend.handle",
-                 new Object[] { new Integer(suspend_handle_id) });
+                 new Object[] {suspend_handle_id});
         }
     }
 
@@ -723,8 +723,8 @@ public class SVGOMSVGElement
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.events.DocumentEvent#canDispatch(String,String)}.
+     * <b>DOM</b>: Implements
+     * org.w3c.dom.events.DocumentEvent#canDispatch(String,String).
      */
     public boolean canDispatch(String namespaceURI, String type)
             throws DOMException {

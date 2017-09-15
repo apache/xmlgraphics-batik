@@ -41,7 +41,7 @@ public class ColorSwitchBridge
     implements PaintBridge, BatikExtConstants {
 
     /**
-     * Constructs a new bridge for the &lt;batik:colorSwitch> element.
+     * Constructs a new bridge for the &lt;batik:colorSwitch&gt; element.
      */
     public ColorSwitchBridge() { /* nothing */ }
 

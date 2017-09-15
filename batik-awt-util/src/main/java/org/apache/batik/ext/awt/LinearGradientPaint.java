@@ -44,7 +44,6 @@ import java.awt.image.ColorModel;
  * For example:
  * <br>
  * <code>
- * <p>
  * Point2D start = new Point2D.Float(0, 0);<br>
  * Point2D end = new Point2D.Float(100,100);<br>
  * float[] dist = {0.0, 0.2, 1.0};<br>
@@ -73,7 +72,7 @@ import java.awt.image.ColorModel;
  * <p> The following image demonstrates the options NO_CYCLE and REFLECT.
  *
  * <p>
- * <img src = "cyclic.jpg">
+ * <img alt="" src = "cyclic.jpg">
  *
  * <p> The colorSpace parameter allows the user to specify in which colorspace
  *  the interpolation should be performed, default sRGB or linearized RGB.

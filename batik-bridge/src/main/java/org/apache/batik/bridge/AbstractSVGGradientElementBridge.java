@@ -257,16 +257,15 @@ public abstract class AbstractSVGGradientElementBridge
      * @param key the url to search for
      */
     private static boolean contains(List urls, ParsedURL key) {
-        Iterator iter = urls.iterator();
-        while (iter.hasNext()) {
-            if (key.equals(iter.next()))
+        for (Object url : urls) {
+            if (key.equals(url))
                 return true;
         }
         return false;
     }
 
     /**
-     * This class represents a gradient &lt;stop> element.
+     * This class represents a gradient &lt;stop&gt; element.
      */
     public static class Stop {
 
@@ -288,7 +287,7 @@ public abstract class AbstractSVGGradientElementBridge
     }
 
     /**
-     * Bridge class for the gradient &lt;stop> element.
+     * Bridge class for the gradient &lt;stop&gt; element.
      */
     public static class SVGStopElementBridge extends AnimatableGenericSVGBridge
             implements Bridge {

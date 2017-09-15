@@ -18,7 +18,6 @@
  */
 package org.apache.batik.anim.timing;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -57,9 +56,8 @@ public abstract class TimeContainer extends TimedElement {
         e.root = root;
         if (e instanceof TimeContainer) {
             TimeContainer c = (TimeContainer) e;
-            Iterator it = c.children.iterator();
-            while (it.hasNext()) {
-                TimedElement te = (TimedElement)it.next();
+            for (Object aChildren : c.children) {
+                TimedElement te = (TimedElement) aChildren;
                 setRoot(te, root);
             }
         }
@@ -108,9 +106,8 @@ public abstract class TimeContainer extends TimedElement {
     protected float sampleChildren(float parentSimpleTime,
                                    boolean hyperlinking) {
         float mint = Float.POSITIVE_INFINITY;
-        Iterator i = children.iterator();
-        while (i.hasNext()) {
-            TimedElement e = (TimedElement) i.next();
+        for (Object aChildren : children) {
+            TimedElement e = (TimedElement) aChildren;
             float t = e.sampleAt(parentSimpleTime, hyperlinking);
             if (t < mint) {
                 mint = t;
@@ -124,9 +121,8 @@ public abstract class TimeContainer extends TimedElement {
      */
     protected void reset(boolean clearCurrentBegin) {
         super.reset(clearCurrentBegin);
-        Iterator i = children.iterator();
-        while (i.hasNext()) {
-            TimedElement e = (TimedElement) i.next();
+        for (Object aChildren : children) {
+            TimedElement e = (TimedElement) aChildren;
             e.reset(clearCurrentBegin);
         }
     }

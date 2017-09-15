@@ -19,7 +19,6 @@
 package org.apache.batik.anim.timing;
 
 import java.util.Calendar;
-import java.util.Iterator;
 import java.util.LinkedList;
 
 import org.apache.batik.util.DoublyIndexedSet;
@@ -129,7 +128,7 @@ public abstract class TimedDocumentRoot extends TimeContainer {
      * Samples the entire timegraph at the given time.
      */
     public float seekTo(float time, boolean hyperlinking) {
-        // Trace.enter(this, "seekTo", new Object[] { new Float(time) } ); try {
+        // Trace.enter(this, "seekTo", new Object[] { Float.valueOf(time) } ); try {
         isSampling = true;
         lastSampleTime = time;
         isHyperlinking = hyperlinking;
@@ -138,8 +137,8 @@ public abstract class TimedDocumentRoot extends TimeContainer {
         // about a partial ordering of timed elements to sample.
         float mint = Float.POSITIVE_INFINITY;
         TimedElement[] es = getChildren();
-        for (int i = 0; i < es.length; i++) {
-            float t = es[i].sampleAt(time, hyperlinking);
+        for (TimedElement e1 : es) {
+            float t = e1.sampleAt(time, hyperlinking);
             if (t < mint) {
                 mint = t;
             }
@@ -147,11 +146,11 @@ public abstract class TimedDocumentRoot extends TimeContainer {
         boolean needsUpdates;
         do {
             needsUpdates = false;
-            for (int i = 0; i < es.length; i++) {
-                if (es[i].shouldUpdateCurrentInterval) {
+            for (TimedElement e : es) {
+                if (e.shouldUpdateCurrentInterval) {
                     needsUpdates = true;
                     // System.err.print("{" + ((Test.AnimateElement) es[i]).id + "} ");
-                    float t = es[i].sampleAt(time, hyperlinking);
+                    float t = e.sampleAt(time, hyperlinking);
                     if (t < mint) {
                         mint = t;
                     }
@@ -221,9 +220,8 @@ public abstract class TimedDocumentRoot extends TimeContainer {
      * timegraph listeners.
      */
     void fireElementAdded(TimedElement e) {
-        Iterator i = listeners.iterator();
-        while (i.hasNext()) {
-            ((TimegraphListener) i.next()).elementAdded(e);
+        for (Object listener : listeners) {
+            ((TimegraphListener) listener).elementAdded(e);
         }
     }
 
@@ -232,9 +230,8 @@ public abstract class TimedDocumentRoot extends TimeContainer {
      * timegraph listeners.
      */
     void fireElementRemoved(TimedElement e) {
-        Iterator i = listeners.iterator();
-        while (i.hasNext()) {
-            ((TimegraphListener) i.next()).elementRemoved(e);
+        for (Object listener : listeners) {
+            ((TimegraphListener) listener).elementRemoved(e);
         }
     }
 

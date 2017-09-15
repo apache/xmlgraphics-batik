@@ -571,7 +571,7 @@ public class MemoryMonitor extends JFrame implements ActionMap {
             freeMemory  = free;
 
             // Add a new point to the data
-            data.add(new Long(totalMemory - freeMemory));
+            data.add(totalMemory - freeMemory);
             if (data.size() > 190) {
                 data.remove(0);
                 xShift = (xShift + 1) % 10;
@@ -580,11 +580,11 @@ public class MemoryMonitor extends JFrame implements ActionMap {
             // Create the path that match the data
             Iterator it = data.iterator();
             GeneralPath p = new GeneralPath();
-            long l = ((Long)it.next()).longValue();
+            long l = (Long) it.next();
             p.moveTo(5, ((float)(totalMemory - l) / totalMemory) * 80 + 10);
             int i = 6;
             while (it.hasNext()) {
-                l = ((Long)it.next()).longValue();
+                l = (Long) it.next();
                 p.lineTo(i, ((float)(totalMemory - l) / totalMemory) * 80 + 10);
                 i++;
             }
@@ -723,10 +723,9 @@ public class MemoryMonitor extends JFrame implements ActionMap {
             public void run() {
                 long free  = runtime.freeMemory();
                 long total = runtime.totalMemory();
-                Iterator it = components.iterator();
-                while (it.hasNext()) {
-                    Component c = (Component)it.next();
-                    ((MemoryChangeListener)c).memoryStateChanged(total, free);
+                for (Object component : components) {
+                    Component c = (Component) component;
+                    ((MemoryChangeListener) c).memoryStateChanged(total, free);
                     c.repaint();
                 }
                 synchronized (this) { inEventQueue = false; }

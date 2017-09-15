@@ -19,7 +19,6 @@
 package org.apache.batik.util.gui.resource;
 
 import java.net.URL;
-import java.util.Iterator;
 import java.util.List;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -146,10 +145,9 @@ public class MenuFactory extends ResourceManager {
                MissingListenerException {
         JMenuBar result = new JMenuBar();
         List     menus  = getSpecializedStringList(name, specialization);
-        Iterator it     = menus.iterator();
 
-        while (it.hasNext()) {
-            result.add(createJMenuComponent((String)it.next(), specialization));
+        for (Object menu : menus) {
+            result.add(createJMenuComponent((String) menu, specialization));
         }
         return result;
     }
@@ -295,10 +293,9 @@ public class MenuFactory extends ResourceManager {
         initializeJMenuItem(result, name, specialization);
 
         List     items = getSpecializedStringList(name, specialization);
-        Iterator it    = items.iterator();
 
-        while (it.hasNext()) {
-            result.add(createJMenuComponent((String)it.next(), specialization));
+        for (Object item : items) {
+            result.add(createJMenuComponent((String) item, specialization));
         }
         return result;
     }

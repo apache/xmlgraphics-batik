@@ -18,7 +18,6 @@
  */
 package org.apache.batik.anim.dom;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 
 import org.apache.batik.anim.values.AnimatableNumberOptionalNumberValue;
@@ -236,7 +235,7 @@ public abstract class SVGOMElement
         if (isReadonly()) {
             throw createDOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR,
                                      "readonly.node",
-                                     new Object[] { new Integer(getNodeType()),
+                                     new Object[] {(int) getNodeType(),
                                                     getNodeName() });
         }
         if (prefix != null &&
@@ -244,7 +243,7 @@ public abstract class SVGOMElement
             !DOMUtilities.isValidName(prefix)) {
             throw createDOMException(DOMException.INVALID_CHARACTER_ERR,
                                      "prefix",
-                                     new Object[] { new Integer(getNodeType()),
+                                     new Object[] {(int) getNodeType(),
                                                     getNodeName(),
                                                     prefix });
         }
@@ -841,9 +840,8 @@ public abstract class SVGOMElement
     void fireBaseAttributeListeners(String ns, String ln) {
         if (targetListeners != null) {
             LinkedList ll = (LinkedList) targetListeners.get(ns, ln);
-            Iterator it = ll.iterator();
-            while (it.hasNext()) {
-                AnimationTargetListener l = (AnimationTargetListener) it.next();
+            for (Object aLl : ll) {
+                AnimationTargetListener l = (AnimationTargetListener) aLl;
                 l.baseValueChanged(this, ns, ln, false);
             }
         }

@@ -45,7 +45,7 @@ import org.w3c.dom.svg.SVGTransformable;
 import org.w3c.dom.svg.SVGUseElement;
 
 /**
- * Bridge class for the &lt;use> element.
+ * Bridge class for the &lt;use&gt; element.
  *
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
@@ -65,7 +65,7 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
     protected BridgeContext subCtx;
 
     /**
-     * Constructs a new bridge for the &lt;use> element.
+     * Constructs a new bridge for the &lt;use&gt; element.
      */
     public SVGUseElementBridge() {}
 
@@ -362,7 +362,7 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
     }
 
     /**
-     * Returns false as the &lt;use> element is a not container.
+     * Returns false as the &lt;use&gt; element is a not container.
      */
     public boolean isComposite() {
         return false;

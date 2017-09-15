@@ -15,7 +15,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 
-*/
+ */
 
 package org.apache.batik.ext.awt.color;
 
@@ -69,7 +69,7 @@ public class NamedProfileCache extends SoftReferenceCache {
      * If this returns null then you are now 'on the hook'.
      * to put the ICCColorSpaceExt associated with String into the
      * cache.
-     * @param the profile name
+     * @param profileName the profile name
      */
     public synchronized ICCColorSpaceWithIntent request(String profileName) {
         return (ICCColorSpaceWithIntent)super.requestImpl(profileName);

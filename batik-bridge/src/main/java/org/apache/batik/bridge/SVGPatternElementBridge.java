@@ -23,7 +23,6 @@ import java.awt.Paint;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -41,7 +40,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /**
- * Bridge class for the &lt;pattern> element.
+ * Bridge class for the &lt;pattern&gt; element.
  *
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
@@ -309,9 +308,8 @@ public class SVGPatternElementBridge extends AnimatableGenericSVGBridge
      * @param urls the list of ParsedURLs
      * @param key the url to search for */
     private static boolean contains(List urls, ParsedURL key) {
-        Iterator iter = urls.iterator();
-        while (iter.hasNext()) {
-            if (key.equals(iter.next()))
+        for (Object url : urls) {
+            if (key.equals(url))
                 return true;
         }
         return false;

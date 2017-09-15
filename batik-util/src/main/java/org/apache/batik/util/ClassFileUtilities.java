@@ -90,9 +90,9 @@ public class ClassFileUtilities {
         File cwd = new File(".");
         File buildDir = null;
         String[] cwdFiles = cwd.list();
-        for (int i = 0; i < cwdFiles.length; i++) {
-            if (cwdFiles[i].startsWith("batik-")) {
-                buildDir = new File(cwdFiles[i]);
+        for (String cwdFile : cwdFiles) {
+            if (cwdFile.startsWith("batik-")) {
+                buildDir = new File(cwdFile);
                 if (!buildDir.isDirectory()) {
                     buildDir = null;
                 } else {
@@ -122,9 +122,8 @@ public class ClassFileUtilities {
                 // System.out.println(fromFile.name);
                 Set result = getClassDependencies(fromFile.getInputStream(),
                                                   classpath, false);
-                Iterator j = result.iterator();
-                while (j.hasNext()) {
-                    ClassFile toFile = (ClassFile) cs.get(j.next());
+                for (Object aResult : result) {
+                    ClassFile toFile = (ClassFile) cs.get(aResult);
                     if (fromFile != toFile && toFile != null) {
                         fromFile.deps.add(toFile);
                     }
@@ -134,9 +133,8 @@ public class ClassFileUtilities {
             i = cs.values().iterator();
             while (i.hasNext()) {
                 ClassFile fromFile = (ClassFile) i.next();
-                Iterator j = fromFile.deps.iterator();
-                while (j.hasNext()) {
-                    ClassFile toFile = (ClassFile) j.next();
+                for (Object dep : fromFile.deps) {
+                    ClassFile toFile = (ClassFile) dep;
                     Jar fromJar = fromFile.jar;
                     Jar toJar = toFile.jar;
                     if (fromFile.name.equals(toFile.name)
@@ -146,9 +144,9 @@ public class ClassFileUtilities {
                     }
                     Integer n = (Integer) fromJar.deps.get(toJar);
                     if (n == null) {
-                        fromJar.deps.put(toJar, new Integer(1));
+                        fromJar.deps.put(toJar, 1);
                     } else {
-                        fromJar.deps.put(toJar, new Integer(n.intValue() + 1));
+                        fromJar.deps.put(toJar, n + 1);
                     }
                 }
             }
@@ -157,13 +155,12 @@ public class ClassFileUtilities {
             i = js.values().iterator();
             while (i.hasNext()) {
                 Jar fromJar = (Jar) i.next();
-                Iterator j = fromJar.deps.keySet().iterator();
-                while (j.hasNext()) {
-                    Jar toJar = (Jar) j.next();
+                for (Object o : fromJar.deps.keySet()) {
+                    Jar toJar = (Jar) o;
                     Triple t = new Triple();
                     t.from = fromJar;
                     t.to = toJar;
-                    t.count = ((Integer) fromJar.deps.get(toJar)).intValue();
+                    t.count = (Integer) fromJar.deps.get(toJar);
                     triples.add(t);
                 }
             }
@@ -175,17 +172,15 @@ public class ClassFileUtilities {
                 System.out.println
                     (t.count + "," + t.from.name + "," + t.to.name);
                 if (showFiles) {
-                    Iterator j = t.from.files.iterator();
-                    while (j.hasNext()) {
-                        ClassFile fromFile = (ClassFile) j.next();
-                        Iterator k = fromFile.deps.iterator();
-                        while (k.hasNext()) {
-                            ClassFile toFile = (ClassFile) k.next();
+                    for (Object file : t.from.files) {
+                        ClassFile fromFile = (ClassFile) file;
+                        for (Object dep : fromFile.deps) {
+                            ClassFile toFile = (ClassFile) dep;
                             if (toFile.jar == t.to
                                     && !t.from.files.contains(toFile.name)) {
                                 System.out.println
-                                    ("\t" + fromFile.name + " --> "
-                                          + toFile.name);
+                                        ("\t" + fromFile.name + " --> "
+                                                + toFile.name);
                             }
                         }
                     }
@@ -224,13 +219,13 @@ public class ClassFileUtilities {
 
     private static void collectJars(File dir, Map jars, Map classFiles) throws IOException {
         File[] files = dir.listFiles();
-        for (int i = 0; i < files.length; i++) {
-            String n = files[i].getName();
-            if (n.endsWith(".jar") && files[i].isFile()) {
+        for (File file : files) {
+            String n = file.getName();
+            if (n.endsWith(".jar") && file.isFile()) {
                 Jar j = new Jar();
-                j.name = files[i].getPath();
-                j.file = files[i];
-                j.jarFile = new JarFile(files[i]);
+                j.name = file.getPath();
+                j.file = file;
+                j.jarFile = new JarFile(file);
                 jars.put(j.name, j);
 
                 Enumeration entries = j.jarFile.entries();
@@ -245,8 +240,8 @@ public class ClassFileUtilities {
                         j.files.add(cf);
                     }
                 }
-            } else if (files[i].isDirectory()) {
-                collectJars(files[i], jars, classFiles);
+            } else if (file.isDirectory()) {
+                collectJars(file, jars, classFiles);
             }
         }
     }
@@ -286,17 +281,15 @@ public class ClassFileUtilities {
                                                  boolean rec)
             throws IOException {
 
-        Iterator it = getClassDependencies(is).iterator();
-        while (it.hasNext()) {
-            String s = (String)it.next();
+        for (Object o : getClassDependencies(is)) {
+            String s = (String) o;
             if (!done.contains(s)) {
                 done.add(s);
 
-                Iterator cpit = classpath.iterator();
-                while (cpit.hasNext()) {
+                for (Object aClasspath : classpath) {
                     InputStream depis = null;
                     String path = null;
-                    Object cpEntry = cpit.next();
+                    Object cpEntry = aClasspath;
                     if (cpEntry instanceof JarFile) {
                         JarFile jarFile = (JarFile) cpEntry;
                         String classFileName = s + ".class";
@@ -318,7 +311,7 @@ public class ClassFileUtilities {
 
                         if (rec) {
                             computeClassDependencies
-                                (depis, classpath, done, result, rec);
+                                    (depis, classpath, done, result, rec);
                         }
                     }
                 }
@@ -362,7 +355,7 @@ public class ClassFileUtilities {
                 break;
 
             case CONSTANT_CLASS_INFO:
-                classes.add(new Integer(dis.readShort() & 0xffff));
+                classes.add(dis.readShort() & 0xffff);
                 break;
 
             case CONSTANT_STRING_INFO:
@@ -371,7 +364,7 @@ public class ClassFileUtilities {
 
             case CONSTANT_NAMEANDTYPE_INFO:
                 dis.readShort();
-                desc.add(new Integer(dis.readShort() & 0xffff));
+                desc.add(dis.readShort() & 0xffff);
                 break;
 
             case CONSTANT_UTF8_INFO:
@@ -387,12 +380,12 @@ public class ClassFileUtilities {
 
         Iterator it = classes.iterator();
         while (it.hasNext()) {
-            result.add(strs[((Integer)it.next()).intValue()]);
+            result.add(strs[((Integer) it.next())]);
         }
 
         it = desc.iterator();
         while (it.hasNext()) {
-            result.addAll(getDescriptorClasses(strs[((Integer)it.next()).intValue()]));
+            result.addAll(getDescriptorClasses(strs[((Integer) it.next())]));
         }
 
         return result;

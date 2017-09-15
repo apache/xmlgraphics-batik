@@ -38,7 +38,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -434,11 +433,11 @@ public class DOMViewer extends JFrame implements ActionMap {
         }
 
         public boolean canEdit(Element el) {
-            if (panel == null || panel.document == null || true
-                    /*|| panel.document.getDocumentElement() != el*/) {
+//            if (panel == null || panel.document == null || true
+//                    /*|| panel.document.getDocumentElement() != el*/) {
                 return true;
-            }
-            return false;
+//            }
+//            return false;
         }
     }
 
@@ -649,7 +648,7 @@ public class DOMViewer extends JFrame implements ActionMap {
                     domViewerController.performUpdate(new Runnable() {
                         public void run() {
                             selectNode(elem);
-                        };
+                        }
                     });
                 }
             });
@@ -1692,8 +1691,8 @@ public class DOMViewer extends JFrame implements ActionMap {
             HashMap menuMap = new HashMap();
             ArrayList categoriesList = templates.getCategories();
             int n = categoriesList.size();
-            for (int i = 0; i < n; i++) {
-                String category = categoriesList.get(i).toString();
+            for (Object aCategoriesList : categoriesList) {
+                String category = aCategoriesList.toString();
                 JMenu currentMenu = new JMenu(category);
                 submenu.add(currentMenu);
                 // Add submenus to the map
@@ -1710,17 +1709,16 @@ public class DOMViewer extends JFrame implements ActionMap {
                     return n1.getName().compareTo(n2.getName());
                 }
             });
-            Iterator iter = values.iterator();
-            while (iter.hasNext()) {
+            for (Object value : values) {
                 NodeTemplateDescriptor desc =
-                    (NodeTemplateDescriptor) iter .next();
+                        (NodeTemplateDescriptor) value;
                 String toParse = desc.getXmlValue();
                 short nodeType = desc.getType();
                 String nodeCategory = desc.getCategory();
                 JMenuItem currentItem = new JMenuItem(desc.getName());
                 currentItem.addActionListener
-                    (new NodeTemplateParser(toParse, nodeType));
-                JMenu currentSubmenu = (JMenu)menuMap.get(nodeCategory);
+                        (new NodeTemplateParser(toParse, nodeType));
+                JMenu currentSubmenu = (JMenu) menuMap.get(nodeCategory);
                 currentSubmenu.add(currentItem);
             }
             return submenu;
@@ -1834,20 +1832,19 @@ public class DOMViewer extends JFrame implements ActionMap {
              */
             protected void handleElementSelection(TreeSelectionEvent ev) {
                 TreePath[] paths = ev.getPaths();
-                for (int i = 0; i < paths.length; i++) {
-                    TreePath path = paths[i];
+                for (TreePath path : paths) {
                     DefaultMutableTreeNode mtn =
-                        (DefaultMutableTreeNode) path.getLastPathComponent();
+                            (DefaultMutableTreeNode) path.getLastPathComponent();
                     Object nodeInfo = mtn.getUserObject();
                     if (nodeInfo instanceof NodeInfo) {
                         Node node = ((NodeInfo) nodeInfo).getNode();
                         if (node.getNodeType() == Node.ELEMENT_NODE) {
                             if (ev.isAddedPath(path)) {
                                 elementOverlayManager.addElement
-                                    ((Element) node);
+                                        ((Element) node);
                             } else {
                                 elementOverlayManager.removeElement
-                                    ((Element) node);
+                                        ((Element) node);
                             }
                         }
                     }

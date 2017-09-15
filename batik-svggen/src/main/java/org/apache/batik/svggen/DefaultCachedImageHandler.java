@@ -269,7 +269,7 @@ public abstract class DefaultCachedImageHandler
 
     /**
      * Determines the transformation needed to get the cached image to
-     * scale & position properly. Sets x and y attributes on the element
+     * scale &amp; position properly. Sets x and y attributes on the element
      * accordingly.
      */
     protected AffineTransform handleTransform(Element imageElement,

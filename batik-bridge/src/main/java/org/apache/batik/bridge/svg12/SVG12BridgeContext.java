@@ -18,8 +18,6 @@
  */
 package org.apache.batik.bridge.svg12;
 
-import java.util.Iterator;
-
 import org.apache.batik.anim.dom.SVGOMDocument;
 import org.apache.batik.anim.dom.XBLEventSupport;
 import org.apache.batik.anim.dom.XBLOMShadowTreeElement;
@@ -136,21 +134,20 @@ public class SVG12BridgeContext extends BridgeContext {
 
         synchronized (eventListenerSet) {
             // remove all listeners added by Bridges
-            Iterator iter = eventListenerSet.iterator();
-            while (iter.hasNext()) {
-                EventListenerMememto m = (EventListenerMememto)iter.next();
+            for (Object anEventListenerSet : eventListenerSet) {
+                EventListenerMememto m = (EventListenerMememto) anEventListenerSet;
                 NodeEventTarget et = m.getTarget();
-                EventListener   el = m.getListener();
-                boolean         uc = m.getUseCapture();
-                String          t  = m.getEventType();
-                boolean         in = m.getNamespaced();
+                EventListener el = m.getListener();
+                boolean uc = m.getUseCapture();
+                String t = m.getEventType();
+                boolean in = m.getNamespaced();
                 if (et == null || el == null || t == null) {
                     continue;
                 }
                 if (m instanceof ImplementationEventListenerMememto) {
                     String ns = m.getNamespaceURI();
-                    Node nde = (Node)et;
-                    AbstractNode n = (AbstractNode)nde.getOwnerDocument();
+                    Node nde = (Node) et;
+                    AbstractNode n = (AbstractNode) nde.getOwnerDocument();
                     if (n != null) {
                         XBLEventSupport es;
                         es = (XBLEventSupport) n.initializeEventSupport();
@@ -175,9 +172,8 @@ public class SVG12BridgeContext extends BridgeContext {
             animationEngine = null;
         }
 
-        Iterator iter = interpreterMap.values().iterator();
-        while (iter.hasNext()) {
-            Interpreter interpreter = (Interpreter)iter.next();
+        for (Object o : interpreterMap.values()) {
+            Interpreter interpreter = (Interpreter) o;
             if (interpreter != null)
                 interpreter.dispose();
         }
@@ -315,15 +311,14 @@ public class SVG12BridgeContext extends BridgeContext {
         XBLEventSupport es = (XBLEventSupport) n.initializeEventSupport();
 
         synchronized (eventListenerSet) {
-            Iterator i = eventListenerSet.iterator();
-            while (i.hasNext()) {
-                EventListenerMememto elm = (EventListenerMememto)i.next();
+            for (Object anEventListenerSet : eventListenerSet) {
+                EventListenerMememto elm = (EventListenerMememto) anEventListenerSet;
                 NodeEventTarget et = elm.getTarget();
                 if (et == evtTarget) {
                     EventListener el = elm.getListener();
-                    boolean       uc = elm.getUseCapture();
-                    String        t  = elm.getEventType();
-                    boolean       in = elm.getNamespaced();
+                    boolean uc = elm.getUseCapture();
+                    String t = elm.getEventType();
+                    boolean in = elm.getNamespaced();
                     if (et == null || el == null || t == null) {
                         continue;
                     }

@@ -1229,8 +1229,7 @@ public class NodeTemplates {
      */
     private void initializeTemplates() {
         Field[] fields = getClass().getDeclaredFields();
-        for (int i = 0; i < fields.length; i++) {
-            Field currentField = fields[i];
+        for (Field currentField : fields) {
             try {
                 if (currentField.getType() == String.class
                         && currentField.getName().endsWith("MemberName")) {
@@ -1241,8 +1240,8 @@ public class NodeTemplates {
                             baseFieldName + VALUE).get(this).toString();
                     String nodeName = getClass().getField(baseFieldName + NAME)
                             .get(this).toString();
-                    short nodeType = ((Short) getClass().getField(
-                            baseFieldName + TYPE).get(this)).shortValue();
+                    short nodeType = (Short) getClass().getField(
+                            baseFieldName + TYPE).get(this);
                     String nodeDescription = getClass().getField(
                             baseFieldName + DESCRIPTION).get(this).toString();
                     String nodeCategory = getClass().getField(

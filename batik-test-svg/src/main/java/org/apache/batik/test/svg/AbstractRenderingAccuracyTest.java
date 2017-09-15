@@ -31,7 +31,6 @@ import java.io.StringWriter;
 import java.net.URL;
 import java.net.MalformedURLException;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -309,7 +308,7 @@ public abstract class AbstractRenderingAccuracyTest extends AbstractTest {
         File f = (new File(url)).getAbsoluteFile();
         if(f.getParentFile().exists()){
             try{
-                return f.toURL();
+                return f.toURI().toURL();
             }catch(MalformedURLException e){
                 throw new IllegalArgumentException();
             }
@@ -533,9 +532,8 @@ public abstract class AbstractRenderingAccuracyTest extends AbstractTest {
             // computed difference.
             //
             if (variationURLs != null) {
-                Iterator it = variationURLs.iterator();
-                while (it.hasNext()) {
-                    URL variationURL = (URL) it.next();
+                for (Object variationURL1 : variationURLs) {
+                    URL variationURL = (URL) variationURL1;
                     File tmpDiff = imageToFile(diff, IMAGE_TYPE_DIFF);
 
                     InputStream variationURLStream = null;
@@ -544,18 +542,18 @@ public abstract class AbstractRenderingAccuracyTest extends AbstractTest {
                     } catch (IOException e) {
                         // Could not open variationURL stream. Just trace that
                         System.err.println
-                            (Messages.formatMessage
-                                (COULD_NOT_OPEN_VARIATION_URL,
-                                 new Object[] { variationURL.toString() }));
+                                (Messages.formatMessage
+                                        (COULD_NOT_OPEN_VARIATION_URL,
+                                                new Object[]{variationURL.toString()}));
                     }
 
                     if (variationURLStream != null) {
                         InputStream refDiffStream =
-                            new BufferedInputStream(variationURLStream);
+                                new BufferedInputStream(variationURLStream);
 
                         InputStream tmpDiffStream =
-                            new BufferedInputStream
-                                (new FileInputStream(tmpDiff));
+                                new BufferedInputStream
+                                        (new FileInputStream(tmpDiff));
 
                         if (compare(refDiffStream, tmpDiffStream)) {
                             // We accept the generated result.
@@ -734,7 +732,7 @@ public abstract class AbstractRenderingAccuracyTest extends AbstractTest {
      */
     protected BufferedImage getImage(File file)
         throws Exception {
-        return getImage(file.toURL());
+        return getImage(file.toURI().toURL());
     }
 
     /**

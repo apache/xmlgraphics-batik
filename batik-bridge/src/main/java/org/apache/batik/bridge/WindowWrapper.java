@@ -15,7 +15,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 
-*/
+ */
 
 package org.apache.batik.bridge;
 
@@ -93,7 +93,7 @@ public class WindowWrapper extends ImporterTopLevel {
         if (len < 2) {
             throw Context.reportRuntimeError("invalid argument count");
         }
-        long to = ((Long)Context.jsToJava(args[1], Long.TYPE)).longValue();
+        long to = (Long) Context.jsToJava(args[1], Long.TYPE);
         if (args[0] instanceof Function) {
             RhinoInterpreter interp =
                 (RhinoInterpreter)window.getInterpreter();
@@ -120,7 +120,7 @@ public class WindowWrapper extends ImporterTopLevel {
         if (len < 2) {
             throw Context.reportRuntimeError("invalid argument count");
         }
-        long to = ((Long)Context.jsToJava(args[1], Long.TYPE)).longValue();
+        long to = (Long) Context.jsToJava(args[1], Long.TYPE);
         if (args[0] instanceof Function) {
             RhinoInterpreter interp =
                 (RhinoInterpreter)window.getInterpreter();

@@ -15,7 +15,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 
-*/
+ */
 
 package org.apache.batik.transcoder.wmf.tosvg;
 
@@ -116,7 +116,7 @@ public class RecordStore {
             mr.functionId = functionId;
 
             for ( int j = 0; j < numPts; j++ ){
-                mr.AddElement( new Integer( is.readShort()));
+                mr.AddElement((int) is.readShort());
             }
 
             records.add( mr );

@@ -15,7 +15,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 
-*/
+ */
 
 package org.apache.batik.ext.awt.image.rendered;
 
@@ -56,7 +56,7 @@ import java.awt.image.WritableRaster;
  * The weight factor for the linear combination is the result of applying
  * the 's' curve function to the fractional part of x and y (rx0, ry0).
  * The S curve function get's it's name because it looks a bit like as
- * 'S' from 0->1.
+ * 'S' from 0-&gt;1.
  *
  * @author     <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @author     <a href="mailto:DeWeese@apache.org">Thomas DeWeese</a>
@@ -239,8 +239,7 @@ public final class TurbulencePatternRed extends AbstractRed {
 
     public boolean[] getChannels(){
         boolean[] channels = new boolean[4];
-        for(int i=0; i<this.channels.length; i++)
-            channels[this.channels[i]] = true;
+        for (int channel : this.channels) channels[channel] = true;
 
         return channels;
     }

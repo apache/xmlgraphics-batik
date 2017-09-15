@@ -34,7 +34,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * Bridge class for the &lt;feImage> element.
+ * Bridge class for the &lt;feImage&gt; element.
  *
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
@@ -43,7 +43,7 @@ public class SVGFeImageElementBridge
     extends AbstractSVGFilterPrimitiveElementBridge {
 
     /**
-     * Constructs a new bridge for the &lt;feImage> element.
+     * Constructs a new bridge for the &lt;feImage&gt; element.
      */
     public SVGFeImageElementBridge() {}
 

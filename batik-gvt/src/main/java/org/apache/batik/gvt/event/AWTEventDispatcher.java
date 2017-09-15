@@ -609,38 +609,38 @@ public class AWTEventDispatcher
                 getListeners(GraphicsNodeMouseListener.class);
             switch (evt.getID()) {
             case GraphicsNodeMouseEvent.MOUSE_MOVED:
-                for (int i = 0; i < listeners.length; i++) {
-                    listeners[i].mouseMoved(evt);
+                for (GraphicsNodeMouseListener listener6 : listeners) {
+                    listener6.mouseMoved(evt);
                 }
                 break;
             case GraphicsNodeMouseEvent.MOUSE_DRAGGED:
-                for (int i = 0; i < listeners.length; i++) {
-                    listeners[i].mouseDragged(evt);
+                for (GraphicsNodeMouseListener listener5 : listeners) {
+                    listener5.mouseDragged(evt);
                 }
                 break;
             case GraphicsNodeMouseEvent.MOUSE_ENTERED:
-                for (int i = 0; i < listeners.length; i++) {
-                    listeners[i].mouseEntered(evt);
+                for (GraphicsNodeMouseListener listener4 : listeners) {
+                    listener4.mouseEntered(evt);
                 }
                 break;
             case GraphicsNodeMouseEvent.MOUSE_EXITED:
-                for (int i = 0; i < listeners.length; i++) {
-                    listeners[i].mouseExited(evt);
+                for (GraphicsNodeMouseListener listener3 : listeners) {
+                    listener3.mouseExited(evt);
                 }
                 break;
             case GraphicsNodeMouseEvent.MOUSE_CLICKED:
-                for (int i = 0; i < listeners.length; i++) {
-                    listeners[i].mouseClicked(evt);
+                for (GraphicsNodeMouseListener listener2 : listeners) {
+                    listener2.mouseClicked(evt);
                 }
                 break;
             case GraphicsNodeMouseEvent.MOUSE_PRESSED:
-                for (int i = 0; i < listeners.length; i++) {
-                    listeners[i].mousePressed(evt);
+                for (GraphicsNodeMouseListener listener1 : listeners) {
+                    listener1.mousePressed(evt);
                 }
                 break;
             case GraphicsNodeMouseEvent.MOUSE_RELEASED:
-                for (int i = 0; i < listeners.length; i++) {
-                    listeners[i].mouseReleased(evt);
+                for (GraphicsNodeMouseListener listener : listeners) {
+                    listener.mouseReleased(evt);
                 }
                 break;
             default:
@@ -659,8 +659,8 @@ public class AWTEventDispatcher
             GraphicsNodeMouseWheelListener[] listeners =
                 (GraphicsNodeMouseWheelListener[])
                 getListeners(GraphicsNodeMouseWheelListener.class);
-            for (int i = 0; i < listeners.length; i++) {
-                listeners[i].mouseWheelMoved(evt);
+            for (GraphicsNodeMouseWheelListener listener : listeners) {
+                listener.mouseWheelMoved(evt);
             }
         }
     }
@@ -679,18 +679,18 @@ public class AWTEventDispatcher
 
             switch (evt.getID()) {
             case GraphicsNodeKeyEvent.KEY_PRESSED:
-                for (int i=0; i<listeners.length; ++i) {
-                    listeners[i].keyPressed(evt);
+                for (GraphicsNodeKeyListener listener2 : listeners) {
+                    listener2.keyPressed(evt);
                 }
                 break;
             case GraphicsNodeKeyEvent.KEY_RELEASED:
-                for (int i=0; i<listeners.length; ++i) {
-                    listeners[i].keyReleased(evt);
+                for (GraphicsNodeKeyListener listener1 : listeners) {
+                    listener1.keyReleased(evt);
                 }
                 break;
             case GraphicsNodeKeyEvent.KEY_TYPED:
-                for (int i=0; i<listeners.length; ++i) {
-                    listeners[i].keyTyped(evt);
+                for (GraphicsNodeKeyListener listener : listeners) {
+                    listener.keyTyped(evt);
                 }
                 break;
             default:

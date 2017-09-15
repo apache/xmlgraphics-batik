@@ -15,7 +15,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 
-*/
+ */
 
 package org.apache.batik.bridge.svg12;
 
@@ -29,7 +29,6 @@ import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.LinkedList;
 import java.util.Map;
@@ -79,7 +78,7 @@ import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 
 /**
- * Bridge class for the &lt;flowRoot> element.
+ * Bridge class for the &lt;flowRoot&gt; element.
  *
  * @author <a href="mailto:deweese@apache.org">Thomas DeWeese</a>
  * @version $Id$
@@ -141,7 +140,7 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
     protected RegionChangeListener regionChangeListener;
 
     /**
-     * Constructs a new bridge for the &lt;flowRoot> element.
+     * Constructs a new bridge for the &lt;flowRoot&gt; element.
      */
     public SVGFlowRootElementBridge() {}
 
@@ -439,7 +438,7 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
              ch = aci.next()) {
 
                 chars.append( ch ).append( ' ' ).append( ' ' );
-                int w = ((Integer)aci.getAttribute(WORD_LIMIT)).intValue();
+                int w = (Integer) aci.getAttribute(WORD_LIMIT);
                 brkStr.append( w ).append( ' ' );
                 if (w < 10) {
                     // for small values append another ' '
@@ -509,13 +508,13 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
                     (ctx, e, true, null, null, asb, lnLocs);
 
                 paraElems.add(e);
-                paraEnds.add(new Integer(asb.length()));
+                paraEnds.add(asb.length());
             } else if (ln.equals(SVG12Constants.SVG_FLOW_REGION_BREAK_TAG)) {
                 fillAttributedStringBuffer
                     (ctx, e, true, null, null, asb, lnLocs);
 
                 paraElems.add(e);
-                paraEnds.add(new Integer(asb.length()));
+                paraEnds.add(asb.length());
             }
         }
         divTPI.startChar = 0;
@@ -530,16 +529,15 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
         // Note: The Working Group (in conjunction with XHTML working
         // group) has decided that multiple line elements collapse.
         int prevLN = 0;
-        Iterator lnIter = lnLocs.iterator();
-        while (lnIter.hasNext()) {
-            int nextLN = ((Integer)lnIter.next()).intValue();
+        for (Object lnLoc : lnLocs) {
+            int nextLN = (Integer) lnLoc;
             if (nextLN == prevLN) continue;
 
             // System.out.println("Attr: [" + prevLN + "," + nextLN + "]");
             ret.addAttribute(FLOW_LINE_BREAK,
-                             new Object(),
-                             prevLN, nextLN);
-            prevLN  = nextLN;
+                    new Object(),
+                    prevLN, nextLN);
+            prevLN = nextLN;
         }
 
         int start=0;
@@ -547,7 +545,7 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
         List emptyPara = null;
         for (int i=0; i<paraElems.size(); i++, start=end) {
             Element elem = (Element)paraElems.get(i);
-            end  = ((Integer)paraEnds.get(i)).intValue();
+            end  = (Integer) paraEnds.get(i);
             if (start == end) {
                 if (emptyPara == null)
                     emptyPara = new LinkedList();
@@ -663,7 +661,7 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
 
         int lineBreak = -1;
         if (lnLocs.size() != 0) {
-            lineBreak = ((Integer)lnLocs.get(lnLocs.size()-1)).intValue();
+            lineBreak = (Integer) lnLocs.get(lnLocs.size() - 1);
         }
 
         for (Node n = getFirstChild(element);
@@ -681,7 +679,7 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
                     int idx = lnLocs.size()-1;
                     if (!prevEndsWithSpace && (idx >= 0)) {
                         Integer i = (Integer)lnLocs.get(idx);
-                        if (i.intValue() == len) {
+                        if (i == len) {
                             prevEndsWithSpace = true;
                         }
                     }
@@ -706,7 +704,7 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
                     // System.out.println("Line: " + asb.length() +
                     //                    " - '" +  asb + "'");
                     lineBreak = asb.length();
-                    lnLocs.add(new Integer(lineBreak));
+                    lnLocs.add(lineBreak);
                     if (before != lineBreak) {
                         initialAttributes = null;
                     }
@@ -791,13 +789,13 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
                 int len = asb.length();
                 if (idx >= 0) {
                     Integer i = (Integer)lnLocs.get(idx);
-                    if (i.intValue() >= len) {
-                        i = new Integer(len-1);
+                    if (i >= len) {
+                        i = len - 1;
                         lnLocs.set(idx, i);
                         idx--;
                         while (idx >= 0) {
                             i = (Integer)lnLocs.get(idx);
-                            if (i.intValue() < len-1)
+                            if (i < len-1)
                                 break;
                             lnLocs.remove(idx);
                             idx--;
@@ -808,11 +806,10 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
                 strippedSome = true;
             }
             if (strippedSome) {
-                Iterator iter = elemTPI.values().iterator();
-                while (iter.hasNext()) {
-                    TextPaintInfo tpi = (TextPaintInfo)iter.next();
+                for (Object o1 : elemTPI.values()) {
+                    TextPaintInfo tpi = (TextPaintInfo) o1;
                     if (tpi.endChar >= asb.length()) {
-                        tpi.endChar = asb.length()-1;
+                        tpi.endChar = asb.length() - 1;
                         if (tpi.startChar > tpi.endChar)
                             tpi.startChar = tpi.endChar;
                     }
@@ -834,9 +831,9 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
         Map inheritingMap =
             super.getAttributeMap(ctx, element, textPath, bidiLevel, result);
 
-        float fontSize   = TextUtilities.convertFontSize(element).floatValue();
+        float fontSize   = TextUtilities.convertFontSize(element);
         float lineHeight = getLineHeight(ctx, element, fontSize);
-        result.put(LINE_HEIGHT, new Float(lineHeight));
+        result.put(LINE_HEIGHT, lineHeight);
 
         return inheritingMap;
     }
@@ -923,7 +920,7 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
         Map   fontAttrs      = new HashMap(20);
         List  fontList       = getFontList(ctx, element, fontAttrs);
         Float fs             = (Float)fontAttrs.get(TextAttribute.SIZE);
-        float fontSize       = fs.floatValue();
+        float fontSize       = fs;
         float lineHeight     = getLineHeight(ctx, element, fontSize);
 
         String ln = element.getLocalName();

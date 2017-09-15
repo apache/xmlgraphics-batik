@@ -18,7 +18,6 @@
  */
 package org.apache.batik.svggen;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -178,9 +177,9 @@ public class DOMTreeManager implements SVGSyntax, ErrorConstants {
             // we iterate over it. If that would happen, we might skip entries
             // within the list or ignore new entries at the end. Fix #40686
             int nManagers = groupManagers.size();
-            for(int i=0; i<nManagers; i++){
-                DOMGroupManager gm = (DOMGroupManager)groupManagers.get(i);
-                if( gm != groupManager )
+            for (Object groupManager1 : groupManagers) {
+                DOMGroupManager gm = (DOMGroupManager) groupManager1;
+                if (gm != groupManager)
                     gm.recycleCurrentGroup();
             }
         }
@@ -204,8 +203,8 @@ public class DOMTreeManager implements SVGSyntax, ErrorConstants {
             // we iterate over it. If that would happen, we might skip entries
             // within the list or ignore new entries at the end. Fix #40686
             int nManagers = groupManagers.size();
-            for(int i=0; i<nManagers; i++){
-                DOMGroupManager gm = (DOMGroupManager)groupManagers.get(i);
+            for (Object groupManager : groupManagers) {
+                DOMGroupManager gm = (DOMGroupManager) groupManager;
                 gm.recycleCurrentGroup();
             }
         }
@@ -295,9 +294,8 @@ public class DOMTreeManager implements SVGSyntax, ErrorConstants {
         Element genericDefs =
             generatorContext.domFactory.createElementNS(SVG_NAMESPACE_URI,
                                                         SVG_DEFS_TAG);
-        Iterator iter = genericDefSet.iterator();
-        while (iter.hasNext()) {
-            genericDefs.appendChild((Element)iter.next());
+        for (Object aGenericDefSet : genericDefSet) {
+            genericDefs.appendChild((Element) aGenericDefSet);
         }
 
         genericDefs.setAttributeNS(null, SVG_ID_ATTRIBUTE, ID_PREFIX_GENERIC_DEFS);
@@ -347,7 +345,7 @@ public class DOMTreeManager implements SVGSyntax, ErrorConstants {
 
     /**
      * Lets custom implementations for various extensions add
-     * elements to the <defs> sections.
+     * elements to the &lt;defs&gt; sections.
      */
     public void addOtherDef(Element definition){
         if (otherDefs == null){
@@ -408,9 +406,7 @@ public class DOMTreeManager implements SVGSyntax, ErrorConstants {
                                                topLevelGroup.getFirstChild());
                 }
 
-                Iterator iter = defSet.iterator();
-                while(iter.hasNext())
-                    defElement.appendChild((Element)iter.next());
+                for (Object aDefSet : defSet) defElement.appendChild((Element) aDefSet);
             }
         }
 

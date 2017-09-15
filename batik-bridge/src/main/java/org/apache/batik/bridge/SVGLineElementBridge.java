@@ -30,7 +30,7 @@ import org.apache.batik.gvt.ShapePainter;
 import org.w3c.dom.Element;
 
 /**
- * Bridge class for the &lt;line> element.
+ * Bridge class for the &lt;line&gt; element.
  *
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
 public class SVGLineElementBridge extends SVGDecoratedShapeElementBridge {
 
     /**
-     * Constructs a new bridge for the &lt;line> element.
+     * Constructs a new bridge for the &lt;line&gt; element.
      */
     public SVGLineElementBridge() {}
 

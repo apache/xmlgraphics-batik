@@ -134,7 +134,7 @@ public class ArabicTextHandler {
                 if (x != null && !x.isNaN()) {
                     reorderedAS.addAttribute
                         (GVTAttributedCharacterIterator.TextAttribute.X,
-                         new Float(Float.NaN), charOrder[0], charOrder[0]+1);
+                                Float.NaN, charOrder[0], charOrder[0]+1);
                     reorderedAS.addAttribute
                         (GVTAttributedCharacterIterator.TextAttribute.X,
                          x, 0, 1);
@@ -142,7 +142,7 @@ public class ArabicTextHandler {
                 if (y != null && !y.isNaN()) {
                     reorderedAS.addAttribute
                         (GVTAttributedCharacterIterator.TextAttribute.Y,
-                         new Float(Float.NaN), charOrder[0], charOrder[0]+1);
+                                Float.NaN, charOrder[0], charOrder[0]+1);
                     reorderedAS.addAttribute
                         (GVTAttributedCharacterIterator.TextAttribute.Y,
                          y, 0, 1);
@@ -207,7 +207,7 @@ public class ArabicTextHandler {
                     if (arabicCharShapesRight(prevChar)
                         && arabicCharShapesLeft(currentChar)) {
                         // Increment the form of the previous char
-                        prevForm = new Integer(prevForm.intValue()+1);
+                        prevForm = prevForm + 1;
                         as.addAttribute(ARABIC_FORM, prevForm,
                                         prevCharIndex, prevCharIndex+1);
 
@@ -378,8 +378,8 @@ public class ArabicTextHandler {
 
         int [][]remaps = doubleCharRemappings[ch1-doubleCharFirst];
         if (remaps == null) return false;
-        for (int i=0; i<remaps.length; i++) {
-            if (remaps[i][0] == ch2)
+        for (int[] remap : remaps) {
+            if (remap[0] == ch2)
                 return true;
         }
         return false;
@@ -402,9 +402,9 @@ public class ArabicTextHandler {
 
         int [][]remaps = doubleCharRemappings[ch1-doubleCharFirst];
         if (remaps == null) return -1;
-        for (int i=0; i<remaps.length; i++) {
-            if (remaps[i][0] == ch2)
-                return remaps[i][form];
+        for (int[] remap : remaps) {
+            if (remap[0] == ch2)
+                return remap[form];
         }
         return -1;
     }
@@ -453,7 +453,7 @@ public class ArabicTextHandler {
                         && nextForm.equals(ARABIC_INITIAL)) {
                         // look for an isolated ligature
                         int substChar = ArabicTextHandler.getSubstituteChar
-                            (c, nextChar,ARABIC_ISOLATED.intValue());
+                            (c, nextChar, ARABIC_ISOLATED);
                         if (substChar > -1) {
                             substString.append((char)substChar);
                             i++;
@@ -462,7 +462,7 @@ public class ArabicTextHandler {
                     } else if (form.equals(ARABIC_TERMINAL)) {
                         // look for a terminal ligature
                         int substChar = ArabicTextHandler.getSubstituteChar
-                            (c, nextChar,ARABIC_TERMINAL.intValue());
+                            (c, nextChar, ARABIC_TERMINAL);
                         if (substChar > -1) {
                             substString.append((char)substChar);
                             i++;
@@ -472,7 +472,7 @@ public class ArabicTextHandler {
                                && nextForm.equals(ARABIC_MEDIAL)) {
                         // look for a medial ligature
                         int substChar = ArabicTextHandler.getSubstituteChar
-                            (c, nextChar,ARABIC_MEDIAL.intValue());
+                            (c, nextChar, ARABIC_MEDIAL);
                         if (substChar > -1) {
                             substString.append((char)substChar);
                             i++;
@@ -484,8 +484,8 @@ public class ArabicTextHandler {
 
             // couldn't find a matching ligature so just look for a
             // simple substitution
-            if (form != null && form.intValue() > 0) {
-                int substChar = getSubstituteChar(c, form.intValue());
+            if (form != null && form > 0) {
+                int substChar = getSubstituteChar(c, form);
                 if (substChar > -1) {
                     c = (char)substChar;
                 }

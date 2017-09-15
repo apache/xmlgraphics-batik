@@ -92,7 +92,7 @@ public class TiledImageTranscoder extends SVGAbstractTranscoder {
         try {
             FileOutputStream fos = new FileOutputStream(args[1]);
             TiledImageTranscoder tit = new TiledImageTranscoder();
-            tit.addTranscodingHint(KEY_WIDTH, new Float(10240));
+            tit.addTranscodingHint(KEY_WIDTH, Float.valueOf(10240));
             tit.transcode(new TranscoderInput("file:" + args[0]), 
                           new TranscoderOutput(fos));
         } catch (IOException ioe) {

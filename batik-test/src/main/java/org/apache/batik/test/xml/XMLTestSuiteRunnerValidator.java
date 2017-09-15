@@ -40,28 +40,28 @@ import org.apache.batik.test.TestSuiteReport;
 /**
  * Validates the operation of the <code>XMLTestSuireRunner</code> by checking
  * that it runs the tests specified by the command line parameter and
- * only these tests. <br />
- * The test uses an dummy &lt;testRun&gt; which contains: <br />
+ * only these tests. <br>
+ * The test uses an dummy &lt;testRun&gt; which contains: <br>
  * - testRun, id="all"
- *     - testSuite, href="testSuiteA.xml" <br />
- *     - testSuite, href="testSuiteB.xml" <br />
- * Where: <br />
- * - testSuite, id="A" <br />
- *     - test, id="A1" <br />
- *     - test, id="A2" <br />
- *     - test, id="duplicateId" <br />
- *     - testGroup, id="AG" <br />
- *          - test, id="AG1" <br />
- *          - test, id="AG2" <br />
+ *     - testSuite, href="testSuiteA.xml" <br>
+ *     - testSuite, href="testSuiteB.xml" <br>
+ * Where: <br>
+ * - testSuite, id="A" <br>
+ *     - test, id="A1" <br>
+ *     - test, id="A2" <br>
+ *     - test, id="duplicateId" <br>
+ *     - testGroup, id="AG" <br>
+ *          - test, id="AG1" <br>
+ *          - test, id="AG2" <br>
  *
- * and: <br />
- * - testSuite, id="B" <br />
- *     - test, id="B1" <br />
- *     - test, id="B2" <br />
- *     - test, id="B3" <br />
- *     - test, id="duplicateId" <br />
+ * and: <br>
+ * - testSuite, id="B" <br>
+ *     - test, id="B1" <br>
+ *     - test, id="B2" <br>
+ *     - test, id="B3" <br>
+ *     - test, id="duplicateId" <br>
  *
- * where all the leaf test pass. <br />
+ * where all the leaf test pass. <br>
  *
  * @author <a href="mailto:vhardy@apache.org">Vincent Hardy</a>
  * @version $Id$
@@ -98,21 +98,21 @@ public class XMLTestSuiteRunnerValidator extends DefaultTestSuite {
      * This suite is made of elementary tests which validate that
      * the XML result for a given input contains a list of
      * report ids and no more (i.e., that the expected test reports
-     * were generated and no more). <br />
-     * Specificaly, with fully qualified ids: <br />
-     * - no arguments. All tests-reports should be produced. <br />
+     * were generated and no more). <br>
+     * Specificaly, with fully qualified ids: <br>
+     * - no arguments. All tests-reports should be produced. <br>
      * - 1 target test: "all.B.B3". A single test-report should be produced
-     *   for B3. <br />
+     *   for B3. <br>
      * - 1 target test-suite: "all.A". A test-report with
-     *   "A1", "A2", "duplicatedId", "AG", "AG.AG1" and "AG.AG2" should be produced.<br />
+     *   "A1", "A2", "duplicatedId", "AG", "AG.AG1" and "AG.AG2" should be produced.<br>
      * - 1 target test-suite and 2 tests: "all.B and
      *   all.A.A1 and all.A.A2. A test-report for "all.B.B1", "all.B.B2",
      *   "all.B.B3", "all.B.duplicatedId", "all.A.A1" and "all.A.A2"
-     *   should be produced. <br />
+     *   should be produced. <br>
      * - 1 target testGroup: "AG". A test-report with
-     *   "A.AG", "A.AG.AG1" and "A.AG.AG2" should be produced.<br />
-     * <br />
-     * In addition, the following test with non-qualified ids: <br />
+     *   "A.AG", "A.AG.AG1" and "A.AG.AG2" should be produced.<br>
+     * <br>
+     * In addition, the following test with non-qualified ids: <br>
      * - 1 target test id: "duplicatedId" should be produced and
      *   pass for "all.A.duplicatedId" and "all.B.duplicatedId".
      */
@@ -146,8 +146,8 @@ public class XMLTestSuiteRunnerValidator extends DefaultTestSuite {
                            "all.A.AG.AG1", "all.A.AG.AG2"}}
         };
 
-        for(int i=0; i<config.length; i++){
-            addTest(new XMLTestSuiteRunnerTest(config[i]));
+        for (Object[] aConfig : config) {
+            addTest(new XMLTestSuiteRunnerTest(aConfig));
         }
 
     }
@@ -266,8 +266,8 @@ public class XMLTestSuiteRunnerValidator extends DefaultTestSuite {
                 if(r instanceof TestSuiteReport){
                     TestReport[] c = ((TestSuiteReport)r).getChildrenReports();
                     if(c != null){
-                        for(int i=0; i<c.length; i++){
-                            appendReportIds(c[i], sb);
+                        for (TestReport aC : c) {
+                            appendReportIds(aC, sb);
                         }
                     }
                 }
@@ -287,8 +287,8 @@ public class XMLTestSuiteRunnerValidator extends DefaultTestSuite {
                 if(r instanceof TestSuiteReport){
                     TestReport[] c = ((TestSuiteReport)r).getChildrenReports();
                     if(c != null){
-                        for(int i=0; i<c.length; i++){
-                            appendReportIds(c[i], sb);
+                        for (TestReport aC : c) {
+                            appendReportIds(aC, sb);
                         }
                     }
                 }
@@ -302,7 +302,7 @@ public class XMLTestSuiteRunnerValidator extends DefaultTestSuite {
             DocumentBuilder docBuilder
                 = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 
-            URL url = (new File(XMLTestSuiteRunnerValidator.dummyTestRun)).toURL();
+            URL url = (new File(XMLTestSuiteRunnerValidator.dummyTestRun)).toURI().toURL();
             return docBuilder.parse(url.toString());
 
         }
@@ -328,11 +328,11 @@ public class XMLTestSuiteRunnerValidator extends DefaultTestSuite {
             if(report instanceof TestSuiteReport){
                 TestReport[] childReports = ((TestSuiteReport)report).getChildrenReports();
                 if(childReports != null){
-                    for(int i=0; i<childReports.length; i++){
+                    for (TestReport childReport : childReports) {
                         String idNotExpected
-                            = checkTestReport(childReports[i],
-                                              idSet);
-                        if(idNotExpected != null){
+                                = checkTestReport(childReport,
+                                idSet);
+                        if (idNotExpected != null) {
                             return idNotExpected;
                         }
                     }

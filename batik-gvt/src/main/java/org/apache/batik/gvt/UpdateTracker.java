@@ -15,7 +15,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 
-*/
+ */
 
 package org.apache.batik.gvt;
 
@@ -25,7 +25,6 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -66,10 +65,9 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
 
         List ret = new LinkedList();
         Set keys = dirtyNodes.keySet();
-        Iterator i = keys.iterator();
-        while (i.hasNext()) {
-            WeakReference gnWRef = (WeakReference)i.next();
-            GraphicsNode  gn     = (GraphicsNode)gnWRef.get();
+        for (Object key : keys) {
+            WeakReference gnWRef = (WeakReference) key;
+            GraphicsNode gn = (GraphicsNode) gnWRef.get();
             // GraphicsNode  srcGN  = gn;
 
             // if the weak ref has been cleared then this node is no
@@ -79,12 +77,12 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
             if (gn == null) continue;
 
             AffineTransform oat;
-            oat = (AffineTransform)dirtyNodes.get(gnWRef);
-            if (oat != null){
+            oat = (AffineTransform) dirtyNodes.get(gnWRef);
+            if (oat != null) {
                 oat = new AffineTransform(oat);
             }
 
-            Rectangle2D srcORgn = (Rectangle2D)fromBounds.remove(gnWRef);
+            Rectangle2D srcORgn = (Rectangle2D) fromBounds.remove(gnWRef);
 
             Rectangle2D srcNRgn = null;
             AffineTransform nat = null;
@@ -112,8 +110,8 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
                 if (gn == null)
                     break; // We reached the top of the tree
 
-                Filter f= gn.getFilter();
-                if ( f != null) {
+                Filter f = gn.getFilter();
+                if (f != null) {
                     srcNRgn = f.getBounds2D();
                     nat = null;
                 }
@@ -122,7 +120,7 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
                 AffineTransform at = gn.getTransform();
                 // Get the parent's Affine last time we rendered.
                 gnWRef = gn.getWeakReference();
-                AffineTransform poat = (AffineTransform)dirtyNodes.get(gnWRef);
+                AffineTransform poat = (AffineTransform) dirtyNodes.get(gnWRef);
                 if (poat == null) poat = at;
                 if (poat != null) {
                     if (oat != null)
@@ -131,7 +129,7 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
                         oat = new AffineTransform(poat);
                 }
 
-                if (at != null){
+                if (at != null) {
                     if (nat != null)
                         nat.preConcatenate(at);
                     else
@@ -190,10 +188,9 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
         Rectangle2D ret = null;
         if (gn instanceof CompositeGraphicsNode) {
             CompositeGraphicsNode cgn = (CompositeGraphicsNode)gn;
-            Iterator iter = cgn.iterator();
 
-            while (iter.hasNext()) {
-                GraphicsNode childGN = (GraphicsNode)iter.next();
+            for (Object aCgn : cgn) {
+                GraphicsNode childGN = (GraphicsNode) aCgn;
                 Rectangle2D r2d = getNodeDirtyRegion(childGN, at);
                 if (r2d != null) {
                     if (f != null) {
@@ -204,7 +201,7 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
                         break;
                     }
                     if ((ret == null) || (ret == NULL_RECT)) ret = r2d;
-                    //else ret = ret.createUnion(r2d);
+                        //else ret = ret.createUnion(r2d);
                     else ret.add(r2d);
                 }
             }

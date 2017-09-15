@@ -20,7 +20,6 @@ package org.apache.batik.dom.events;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Iterator;
 
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.AbstractNode;
@@ -252,11 +251,10 @@ public class EventSupport {
         e.setEventPhase(Event.CAPTURING_PHASE);
         HashSet stoppedGroups = new HashSet();
         HashSet toBeStoppedGroups = new HashSet();
-        for (int i = 0; i < ancestors.length; i++) {
-            NodeEventTarget node = ancestors[i];
+        for (NodeEventTarget node : ancestors) {
             e.setCurrentTarget(node);
             fireEventListeners(node, e, true, stoppedGroups,
-                               toBeStoppedGroups);
+                    toBeStoppedGroups);
             stoppedGroups.addAll(toBeStoppedGroups);
             toBeStoppedGroups.clear();
         }
@@ -291,9 +289,8 @@ public class EventSupport {
     protected void runDefaultActions(AbstractEvent e) {
         List runables = e.getDefaultActions();
         if (runables != null) {
-            Iterator i = runables.iterator();
-            while (i.hasNext()) {
-                Runnable r = (Runnable)i.next();
+            for (Object runable : runables) {
+                Runnable r = (Runnable) runable;
                 r.run();
             }
         }
@@ -312,16 +309,16 @@ public class EventSupport {
         }
         // fire event listeners
         String eventNS = e.getNamespaceURI();
-        for (int i = 0; i < listeners.length; i++) {
+        for (EventListenerList.Entry listener : listeners) {
             try {
-                String listenerNS = listeners[i].getNamespaceURI();
+                String listenerNS = listener.getNamespaceURI();
                 if (listenerNS != null && eventNS != null
                         && !listenerNS.equals(eventNS)) {
                     continue;
                 }
-                Object group = listeners[i].getGroup();
+                Object group = listener.getGroup();
                 if (stoppedGroups == null || !stoppedGroups.contains(group)) {
-                    listeners[i].getListener().handleEvent(e);
+                    listener.getListener().handleEvent(e);
                     if (e.getStopImmediatePropagation()) {
                         if (stoppedGroups != null) {
                             stoppedGroups.add(group);

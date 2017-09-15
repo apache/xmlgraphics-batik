@@ -57,7 +57,7 @@ import org.w3c.dom.svg.SVGDocument;
  * input XML file and the handler checks that the result is an 
  * SVG document with an SVG root.
  *
- * @author <a mailto="vincent.hardy@sun.com">Vincent Hardy</a>
+ * @author <a href="mailto:vincent.hardy@sun.com">Vincent Hardy</a>
  * @version $Id$
  */
 public class XMLInputHandler implements SquiggleInputHandler {
@@ -144,8 +144,8 @@ public class XMLInputHandler implements SquiggleInputHandler {
             return false;
         }
 
-        for (int i=0; i<XVG_FILE_EXTENSIONS.length; i++) {
-            if (path.endsWith(XVG_FILE_EXTENSIONS[i])) {
+        for (String XVG_FILE_EXTENSION : XVG_FILE_EXTENSIONS) {
+            if (path.endsWith(XVG_FILE_EXTENSION)) {
                 return true;
             }
         }

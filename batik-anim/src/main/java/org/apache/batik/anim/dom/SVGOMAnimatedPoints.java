@@ -23,7 +23,6 @@ import java.util.Iterator;
 
 import org.apache.batik.anim.values.AnimatablePointListValue;
 import org.apache.batik.anim.values.AnimatableValue;
-import org.apache.batik.dom.svg.AbstractSVGList;
 import org.apache.batik.dom.svg.AbstractSVGPointList;
 import org.apache.batik.dom.svg.ListBuilder;
 import org.apache.batik.dom.svg.LiveAttributeException;

@@ -356,8 +356,7 @@ public abstract class AbstractGraphicsNodeBridge extends AnimatableSVGBridge
         try {
             SVGCSSEngine eng = (SVGCSSEngine) evt.getSource();
             int[] properties = evt.getProperties();
-            for (int i = 0; i < properties.length; i++) {
-                int idx = properties[i];
+            for (int idx : properties) {
                 handleCSSPropertyChanged(idx);
                 String pn = eng.getPropertyName(idx);
                 fireBaseAttributeListeners(pn);

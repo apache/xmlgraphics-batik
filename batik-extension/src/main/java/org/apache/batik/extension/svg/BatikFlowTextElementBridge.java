@@ -15,7 +15,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 
-*/
+ */
 
 package org.apache.batik.extension.svg;
 
@@ -58,7 +58,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /**
- * Bridge class for the &lt;flowText> element.
+ * Bridge class for the &lt;flowText&gt; element.
  *
  * @author <a href="mailto:deweese@apache.org">Thomas DeWeese</a>
  * @version $Id$
@@ -83,7 +83,7 @@ public class BatikFlowTextElementBridge extends SVGTextElementBridge
         = GVTAttributedCharacterIterator.TextAttribute.PREFORMATTED;
 
     /**
-     * Constructs a new bridge for the &lt;flowText> element.
+     * Constructs a new bridge for the &lt;flowText&gt; element.
      */
     public BatikFlowTextElementBridge() {}
 
@@ -342,13 +342,13 @@ public class BatikFlowTextElementBridge extends SVGTextElementBridge
                     (ctx, e, true, null, null, asb, lnLocs);
 
                 paraElems.add(e);
-                paraEnds.add(new Integer(asb.length()));
+                paraEnds.add(asb.length());
             } else if (ln.equals(BATIK_EXT_FLOW_REGION_BREAK_TAG)) {
                 fillAttributedStringBuffer
                         (ctx, e, true, null, null, asb, lnLocs);
 
                 paraElems.add(e);
-                paraEnds.add(new Integer(asb.length()));
+                paraEnds.add(asb.length());
             }
         }
         divTPI.startChar = 0;
@@ -363,7 +363,7 @@ public class BatikFlowTextElementBridge extends SVGTextElementBridge
         int prevLN = 0;
         Iterator lnIter = lnLocs.iterator();
         while (lnIter.hasNext()) {
-            int nextLN = ((Integer)lnIter.next()).intValue();
+            int nextLN = (Integer) lnIter.next();
             if (nextLN == prevLN) continue;
 
             ret.addAttribute(FLOW_LINE_BREAK,
@@ -378,7 +378,7 @@ public class BatikFlowTextElementBridge extends SVGTextElementBridge
         List emptyPara = null;
         for (int i=0; i<paraElems.size(); i++, start=end) {
             Element elem = (Element)paraElems.get(i);
-            end  = ((Integer)paraEnds.get(i)).intValue();
+            end  = (Integer) paraEnds.get(i);
             if (start == end) {
                 if (emptyPara == null)
                     emptyPara = new LinkedList();
@@ -581,7 +581,7 @@ public class BatikFlowTextElementBridge extends SVGTextElementBridge
                                                asb, lnLocs);
                     // System.out.println("Line: " + asb.length() +
                     //                    " - '" +  asb + "'");
-                    lnLocs.add(new Integer(asb.length()));
+                    lnLocs.add(asb.length());
                     if (asb.length() != before) {
                         initialAttributes = null;
                     }

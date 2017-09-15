@@ -48,7 +48,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EventListener;
 import java.util.EventObject;
-import java.util.Iterator;
 
 import javax.swing.JPanel;
 import javax.swing.JRootPane;
@@ -161,12 +160,11 @@ public class DOMDocumentTree extends JTree implements Autoscroll {
                 return;
             }
             ArrayList nodeList = new ArrayList();
-            for (int i = 0; i < paths.length; i++) {
-                TreePath path = paths[i];
+            for (TreePath path : paths) {
                 // If the root node 'being dragged'
                 if (path.getPathCount() > 1) {
                     DefaultMutableTreeNode node =
-                        (DefaultMutableTreeNode) path.getLastPathComponent();
+                            (DefaultMutableTreeNode) path.getLastPathComponent();
                     Node associatedNode = getDomNodeFromTreeNode(node);
                     if (associatedNode != null) {
                         nodeList.add(associatedNode);
@@ -324,10 +322,10 @@ public class DOMDocumentTree extends JTree implements Autoscroll {
                         .getTransferable();
                 // Transferable transferable = dtde.getTransferable();
                 DataFlavor[] flavors = transferable.getTransferDataFlavors();
-                for (int i = 0; i < flavors.length; i++) {
-                    if (transferable.isDataFlavorSupported(flavors[i])) {
+                for (DataFlavor flavor : flavors) {
+                    if (transferable.isDataFlavorSupported(flavor)) {
                         transferData = (TransferData) transferable
-                                .getTransferData(flavors[i]);
+                                .getTransferData(flavor);
                         return;
                     }
                 }
@@ -691,8 +689,8 @@ public class DOMDocumentTree extends JTree implements Autoscroll {
          * @return boolean
          */
         public boolean isDataFlavorSupported(DataFlavor flavor) {
-            for (int i = 0; i < FLAVORS.length; i++) {
-                if (flavor.equals(FLAVORS[i])) {
+            for (DataFlavor FLAVOR : FLAVORS) {
+                if (flavor.equals(FLAVOR)) {
                     return true;
                 }
             }
@@ -755,9 +753,8 @@ public class DOMDocumentTree extends JTree implements Autoscroll {
          */
         public String getNodesAsXML() {
             String toReturn = "";
-            Iterator iterator = nodeList.iterator();
-            while (iterator.hasNext()) {
-                Node node = (Node) iterator.next();
+            for (Object aNodeList : nodeList) {
+                Node node = (Node) aNodeList;
                 toReturn += DOMUtilities.getXML(node);
             }
             return toReturn;
@@ -832,7 +829,7 @@ public class DOMDocumentTree extends JTree implements Autoscroll {
     /**
      * The DOMDocumentTreeListener.
      */
-    public static interface DOMDocumentTreeListener extends EventListener {
+    public interface DOMDocumentTreeListener extends EventListener {
 
         /**
          * Fired after successfully completed drop.
@@ -1002,8 +999,8 @@ public class DOMDocumentTree extends JTree implements Autoscroll {
                                              Node parentNode) {
         ArrayList children = new ArrayList();
         int n = potentialChildren.size();
-        for (int i = 0; i < n; i++) {
-            Node node = (Node) potentialChildren.get(i);
+        for (Object aPotentialChildren : potentialChildren) {
+            Node node = (Node) aPotentialChildren;
             if (DOMUtilities.canAppend(node, parentNode)) {
                 children.add(node);
             }

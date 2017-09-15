@@ -15,7 +15,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 
-*/
+ */
 
 package org.apache.batik.transcoder.wmf.tosvg;
 
@@ -71,7 +71,7 @@ public class TextureFactory {
      *  texture will be cached, so the Paint will only be created once.
      */
     public Paint getTexture(int textureId) {
-        Integer _itexture = new Integer(textureId);
+        Integer _itexture = textureId;
         if (textures.containsKey( _itexture)) {
             Paint paint = (Paint)(textures.get(_itexture));
             return paint;

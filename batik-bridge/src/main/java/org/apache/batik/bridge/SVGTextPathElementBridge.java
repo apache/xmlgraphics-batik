@@ -30,7 +30,7 @@ import org.apache.batik.parser.PathParser;
 import org.w3c.dom.Element;
 
 /**
- * Bridge class for the &lt;textPath> element.
+ * Bridge class for the &lt;textPath&gt; element.
  *
  * @author <a href="mailto:bella.robinson@cmis.csiro.au">Bella Robinson</a>
  * @version $Id$
@@ -39,7 +39,7 @@ public class SVGTextPathElementBridge extends AnimatableGenericSVGBridge
                                       implements ErrorConstants {
 
     /**
-     * Constructs a new bridge for the &lt;textPath> element.
+     * Constructs a new bridge for the &lt;textPath&gt; element.
      */
     public SVGTextPathElementBridge() {}
 
@@ -59,7 +59,7 @@ public class SVGTextPathElementBridge extends AnimatableGenericSVGBridge
      * is to be rendered.
      *
      * @param ctx The bridge context.
-     * @param textPathElement The &lt;textPath> element.
+     * @param textPathElement The &lt;textPath&gt; element.
      *
      * @return The new TextPath.
      */

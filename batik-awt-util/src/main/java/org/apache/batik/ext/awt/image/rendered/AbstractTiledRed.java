@@ -561,11 +561,10 @@ public abstract class AbstractTiledRed
         int workTileWidth = tileWidth;    // local is cheaper
         int workTileHeight = tileHeight;  // local is cheaper
         int maxTileSize = 0;
-        for ( int i = 0; i < blocks.length; i++ ) {
-            TileBlock curr = blocks[ i ];
-            int sz = ( ( curr.getWidth() * workTileWidth ) *
-                       ( curr.getHeight() * workTileHeight ) );
-            if ( sz > maxTileSize ) {
+        for (TileBlock curr : blocks) {
+            int sz = ((curr.getWidth() * workTileWidth) *
+                    (curr.getHeight() * workTileHeight));
+            if (sz > maxTileSize) {
                 maxTileSize = sz;
             }
         }
@@ -576,25 +575,24 @@ public abstract class AbstractTiledRed
         // cache for reuse in hasBeenHalted()
         Thread currentThread = Thread.currentThread();
 
-        for ( int i = 0; i < blocks.length; i++ ) {
-            TileBlock curr = blocks[ i ];
+        for (TileBlock curr : blocks) {
             int xloc = curr.getXLoc() * workTileWidth + tileGridXOff;
             int yloc = curr.getYLoc() * workTileHeight + tileGridYOff;
-            Rectangle tb = new Rectangle( xloc, yloc,
+            Rectangle tb = new Rectangle(xloc, yloc,
                     curr.getWidth() * workTileWidth,
-                    curr.getHeight() * workTileHeight );
-            tb = tb.intersection( bounds );
-            Point loc = new Point( tb.x, tb.y );
-            WritableRaster child = Raster.createPackedRaster( dbi, tb.width, tb.height, tb.width, masks, loc );
-            genRect( child );
-            if ( use_INT_PACK ) {
-                GraphicsUtil.copyData_INT_PACK( child, wr );
+                    curr.getHeight() * workTileHeight);
+            tb = tb.intersection(bounds);
+            Point loc = new Point(tb.x, tb.y);
+            WritableRaster child = Raster.createPackedRaster(dbi, tb.width, tb.height, tb.width, masks, loc);
+            genRect(child);
+            if (use_INT_PACK) {
+                GraphicsUtil.copyData_INT_PACK(child, wr);
             } else {
-                GraphicsUtil.copyData_FALLBACK( child, wr );
+                GraphicsUtil.copyData_FALLBACK(child, wr);
             }
 
             // Check If we should halt early.
-            if ( HaltingThread.hasBeenHalted( currentThread ) ) {
+            if (HaltingThread.hasBeenHalted(currentThread)) {
                 return;
             }
         }
@@ -610,26 +608,24 @@ public abstract class AbstractTiledRed
         int workTileWidth = tileWidth;    // local is cheaper
         int workTileHeight = tileHeight;  // local is cheaper
 
-        for ( int i = 0; i < blocks.length; i++ ) {
-            TileBlock curr = blocks[ i ];
-
+        for (TileBlock curr : blocks) {
             // System.out.println("Block " + i + ":\n" + curr);
 
             int xloc = curr.getXLoc() * workTileWidth + tileGridXOff;
             int yloc = curr.getYLoc() * workTileHeight + tileGridYOff;
-            Rectangle tb = new Rectangle( xloc, yloc,
+            Rectangle tb = new Rectangle(xloc, yloc,
                     curr.getWidth() * workTileWidth,
-                    curr.getHeight() * workTileHeight );
-            tb = tb.intersection( bounds );
+                    curr.getHeight() * workTileHeight);
+            tb = tb.intersection(bounds);
 
             WritableRaster child =
-                    wr.createWritableChild( tb.x, tb.y, tb.width, tb.height,
-                            tb.x, tb.y, null );
+                    wr.createWritableChild(tb.x, tb.y, tb.width, tb.height,
+                            tb.x, tb.y, null);
             // System.out.println("Computing : " + child);
-            genRect( child );
+            genRect(child);
 
             // Check If we should halt early.
-            if ( HaltingThread.hasBeenHalted( currentThread ) ) {
+            if (HaltingThread.hasBeenHalted(currentThread)) {
                 return;
             }
         }

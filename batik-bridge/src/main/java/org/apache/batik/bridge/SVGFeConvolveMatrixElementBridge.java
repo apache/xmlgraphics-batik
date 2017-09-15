@@ -34,7 +34,7 @@ import org.apache.batik.gvt.GraphicsNode;
 import org.w3c.dom.Element;
 
 /**
- * Bridge class for the &lt;feConvolveMatrix> element.
+ * Bridge class for the &lt;feConvolveMatrix&gt; element.
  *
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
@@ -44,7 +44,7 @@ public class SVGFeConvolveMatrixElementBridge
 
 
     /**
-     * Constructs a new bridge for the &lt;feConvolveMatrix> element.
+     * Constructs a new bridge for the &lt;feConvolveMatrix&gt; element.
      */
     public SVGFeConvolveMatrixElementBridge() {}
 
@@ -246,8 +246,8 @@ public class SVGFeConvolveMatrixElementBridge
         if (s.length() == 0) {
             // default is sum of kernel values (if sum is zero then 1.0)
             float sum = 0;
-            for (int i=0; i < kernelMatrix.length; ++i) {
-                sum += kernelMatrix[i];
+            for (float aKernelMatrix : kernelMatrix) {
+                sum += aKernelMatrix;
             }
             return (sum == 0) ? 1.0f : sum;
         } else {

@@ -4,9 +4,15 @@ Change Log
 The following log records some of the most important changes.
 Bug fixing is an ongoing task, so it is implied in all sub-releases.
 
-
-1.7 -> 1.8pre
+1.8 -> 1.9pre
 -------------
+
+- Maven build support
+- Java 6 or later is minimum runtime required
+- FOP-2489: An SVG file using markers is not rendered by FOP 2.0
+
+1.7 -> 1.8
+----------
 
 1. Bugzilla problem reports fixed:
 

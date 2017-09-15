@@ -33,7 +33,7 @@ import org.apache.batik.gvt.GraphicsNode;
 import org.w3c.dom.Element;
 
 /**
- * Bridge class for the &lt;feDisplacementMap> element.
+ * Bridge class for the &lt;feDisplacementMap&gt; element.
  *
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
@@ -43,7 +43,7 @@ public class SVGFeDisplacementMapElementBridge
 
 
     /**
-     * Constructs a new bridge for the &lt;feDisplacementMap> element.
+     * Constructs a new bridge for the &lt;feDisplacementMap&gt; element.
      */
     public SVGFeDisplacementMapElementBridge() {}
 

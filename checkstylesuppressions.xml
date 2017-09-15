@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suppressions PUBLIC "-//Puppy Crawl//DTD Suppressions 1.1//EN" "http://www.puppycrawl.com/dtds/suppressions_1_1.dtd">
+<suppressions>
+  <suppress files="NodeXBL.java" checks="RegexpHeader"/>
+  <suppress files="OriginalEvent.java" checks="RegexpHeader"/>
+  <suppress files="ShadowTreeEvent.java" checks="RegexpHeader"/>
+  <suppress files="XBLShadowTreeElement.java" checks="RegexpHeader"/>
+  <suppress files="CustomEvent.java" checks="RegexpHeader"/>
+  <suppress files="DocumentEvent.java" checks="RegexpHeader"/>
+  <suppress files="Event.java" checks="RegexpHeader"/>
+  <suppress files="EventException.java" checks="RegexpHeader"/>
+  <suppress files="EventListener.java" checks="RegexpHeader"/>
+  <suppress files="EventTarget.java" checks="RegexpHeader"/>
+  <suppress files="KeyboardEvent.java" checks="RegexpHeader"/>
+  <suppress files="MouseEvent.java" checks="RegexpHeader"/>
+  <suppress files="MutationEvent.java" checks="RegexpHeader"/>
+  <suppress files="MutationNameEvent.java" checks="RegexpHeader"/>
+  <suppress files="TextEvent.java" checks="RegexpHeader"/>
+  <suppress files="UIEvent.java" checks="RegexpHeader"/>
+  <suppress files="Global.java" checks="RegexpHeader"/>
+  <suppress files="SVGGlobal.java" checks="RegexpHeader"/>
+</suppressions>

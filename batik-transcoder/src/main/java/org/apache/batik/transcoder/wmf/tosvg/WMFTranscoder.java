@@ -15,7 +15,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 
-*/
+ */
 
 package org.apache.batik.transcoder.wmf.tosvg;
 
@@ -70,22 +70,16 @@ import org.w3c.dom.Element;
  *    }
  *  </pre>
  *  <p>Several transcoding hints are available for this transcoder :</p>
- *  <ul>
- *  <li>KEY_INPUT_WIDTH, KEY_INPUT_HEIGHT, KEY_XOFFSET, KEY_YOFFSET : this Integer values allows to
+ *  KEY_INPUT_WIDTH, KEY_INPUT_HEIGHT, KEY_XOFFSET, KEY_YOFFSET : this Integer values allows to
  *  set the  portion of the image to transcode, defined by the width, height, and offset
  *  of this portion in Metafile units.
- *  </ul>
  *  <pre>
- *     transcoder.addTranscodingHint(FromWMFTranscoder.KEY_INPUT_WIDTH, new Integer(input_width));
+ *     transcoder.addTranscodingHint(FromWMFTranscoder.KEY_INPUT_WIDTH, Integer.valueOf(input_width));
  *  </pre>
- *  </li>
- *  <li>KEY_WIDTH, KEY_HEIGHT : this Float values allows to force the width and height of the output:
- *  </ul>
+ *  KEY_WIDTH, KEY_HEIGHT : this Float values allows to force the width and height of the output:
  *  <pre>
- *     transcoder.addTranscodingHint(FromWMFTranscoder.KEY_WIDTH, new Float(width));
+ *     transcoder.addTranscodingHint(FromWMFTranscoder.KEY_WIDTH, Float.valueOf(width));
  *  </pre>
- *  </li>
- *  </ul>
  *
  * @version $Id$
  */
@@ -127,8 +121,8 @@ public class WMFTranscoder extends ToSVGAbstractTranscoder {
         float conv = 1.0f; // conversion factor
 
         if (hints.containsKey(KEY_INPUT_WIDTH)) {
-            wmfwidth = ((Integer)hints.get(KEY_INPUT_WIDTH)).intValue();
-            wmfheight = ((Integer)hints.get(KEY_INPUT_HEIGHT)).intValue();
+            wmfwidth = (Integer) hints.get(KEY_INPUT_WIDTH);
+            wmfheight = (Integer) hints.get(KEY_INPUT_HEIGHT);
         } else {
             wmfwidth = currentStore.getWidthPixels();
             wmfheight = currentStore.getHeightPixels();
@@ -138,7 +132,7 @@ public class WMFTranscoder extends ToSVGAbstractTranscoder {
 
         // change the output width and height if required
         if (hints.containsKey(KEY_WIDTH)) {
-            width = ((Float)hints.get(KEY_WIDTH)).floatValue();
+            width = (Float) hints.get(KEY_WIDTH);
             conv = width / wmfwidth;
             height = height * width / wmfwidth;
         }
@@ -147,10 +141,10 @@ public class WMFTranscoder extends ToSVGAbstractTranscoder {
         int xOffset = 0;
         int yOffset = 0;
         if (hints.containsKey(KEY_XOFFSET)) {
-            xOffset = ((Integer)hints.get(KEY_XOFFSET)).intValue();
+            xOffset = (Integer) hints.get(KEY_XOFFSET);
         }
         if (hints.containsKey(KEY_YOFFSET)) {
-            yOffset = ((Integer)hints.get(KEY_YOFFSET)).intValue();
+            yOffset = (Integer) hints.get(KEY_YOFFSET);
         }
 
         // Set the size and viewBox on the output document
@@ -163,8 +157,8 @@ public class WMFTranscoder extends ToSVGAbstractTranscoder {
         int vpH;
         // if we took only a part of the image, we use its dimension for computing
         if (hints.containsKey(KEY_INPUT_WIDTH)) {
-            vpW = (int)(((Integer)hints.get(KEY_INPUT_WIDTH)).intValue() * conv);
-            vpH = (int)(((Integer)hints.get(KEY_INPUT_HEIGHT)).intValue() * conv);
+            vpW = (int)((Integer) hints.get(KEY_INPUT_WIDTH) * conv);
+            vpH = (int)((Integer) hints.get(KEY_INPUT_HEIGHT) * conv);
         // else we took the whole image dimension
         } else {
             vpW = (int)(currentStore.getWidthUnits() * sizeFactor);
@@ -248,13 +242,11 @@ public class WMFTranscoder extends ToSVGAbstractTranscoder {
         WMFTranscoder transcoder = new WMFTranscoder();
         int nFiles = args.length;
 
-        for(int i=0; i<nFiles; i++){
-            String fileName = args[i];
-            if(!fileName.toLowerCase().endsWith(WMF_EXTENSION)){
-                System.err.println(args[i] + " does not have the " + WMF_EXTENSION + " extension. It is ignored");
-            }
-            else{
-                System.out.print("Processing : " + args[i] + "...");
+        for (String fileName : args) {
+            if (!fileName.toLowerCase().endsWith(WMF_EXTENSION)) {
+                System.err.println(fileName + " does not have the " + WMF_EXTENSION + " extension. It is ignored");
+            } else {
+                System.out.print("Processing : " + fileName + "...");
                 String outputFileName = fileName.substring(0, fileName.toLowerCase().indexOf(WMF_EXTENSION)) + SVG_EXTENSION;
                 File inputFile = new File(fileName);
                 File outputFile = new File(outputFileName);
@@ -262,9 +254,9 @@ public class WMFTranscoder extends ToSVGAbstractTranscoder {
                     TranscoderInput input = new TranscoderInput(inputFile.toURI().toURL().toString());
                     TranscoderOutput output = new TranscoderOutput(new FileOutputStream(outputFile));
                     transcoder.transcode(input, output);
-                }catch(MalformedURLException e){
+                } catch (MalformedURLException e) {
                     throw new TranscoderException(e);
-                }catch(IOException e){
+                } catch (IOException e) {
                     throw new TranscoderException(e);
                 }
                 System.out.println(".... Done");

@@ -33,7 +33,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -49,7 +48,6 @@ import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.anim.dom.SAXSVGDocumentFactory;
 import org.apache.batik.anim.dom.SVGOMDocument;
 import org.apache.batik.anim.dom.SVGOMScriptElement;
-import org.apache.batik.bridge.Location;
 import org.apache.batik.script.Interpreter;
 import org.apache.batik.script.InterpreterException;
 import org.apache.batik.script.ScriptEventWrapper;
@@ -1421,7 +1419,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
             int line = dl.getLineNumber(elt);
             final String desc = Messages.formatMessage
                 (EVENT_SCRIPT_DESCRIPTION,
-                 new Object [] {d.getURL(), attribute, new Integer(line)});
+                 new Object [] {d.getURL(), attribute, line});
 
             // Find the scripting language
             Element e = elt;

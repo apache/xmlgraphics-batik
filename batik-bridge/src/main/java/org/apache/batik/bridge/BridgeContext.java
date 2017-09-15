@@ -567,8 +567,8 @@ public class BridgeContext implements ErrorConstants, CSSContext {
                                                                 language,
                                                                 null);
                 String[] mimeTypes = interpreter.getMimeTypes();
-                for (int i = 0; i < mimeTypes.length; i++) {
-                    interpreterMap.put(mimeTypes[i], interpreter);
+                for (String mimeType : mimeTypes) {
+                    interpreterMap.put(mimeType, interpreter);
                 }
             } catch (Exception e) {
                 if (userAgent != null) {
@@ -1205,15 +1205,14 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     public void removeUIEventListeners(Document doc) {
         EventTarget evtTarget = (EventTarget)doc.getDocumentElement();
         synchronized (eventListenerSet) {
-            Iterator i = eventListenerSet.iterator();
-            while (i.hasNext()) {
-                EventListenerMememto elm = (EventListenerMememto)i.next();
+            for (Object anEventListenerSet : eventListenerSet) {
+                EventListenerMememto elm = (EventListenerMememto) anEventListenerSet;
                 NodeEventTarget et = elm.getTarget();
                 if (et == evtTarget) {
                     EventListener el = elm.getListener();
-                    boolean       uc = elm.getUseCapture();
-                    String        t  = elm.getEventType();
-                    boolean       n  = elm.getNamespaced();
+                    boolean uc = elm.getUseCapture();
+                    String t = elm.getEventType();
+                    boolean n = elm.getNamespaced();
                     if (et == null || el == null || t == null) {
                         continue;
                     }
@@ -1428,14 +1427,13 @@ public class BridgeContext implements ErrorConstants, CSSContext {
 
         synchronized (eventListenerSet) {
             // remove all listeners added by Bridges
-            Iterator iter = eventListenerSet.iterator();
-            while (iter.hasNext()) {
-                EventListenerMememto m = (EventListenerMememto)iter.next();
+            for (Object anEventListenerSet : eventListenerSet) {
+                EventListenerMememto m = (EventListenerMememto) anEventListenerSet;
                 NodeEventTarget et = m.getTarget();
-                EventListener   el = m.getListener();
-                boolean         uc = m.getUseCapture();
-                String          t  = m.getEventType();
-                boolean         n  = m.getNamespaced();
+                EventListener el = m.getListener();
+                boolean uc = m.getUseCapture();
+                String t = m.getEventType();
+                boolean n = m.getNamespaced();
                 if (et == null || el == null || t == null) {
                     continue;
                 }
@@ -1458,9 +1456,8 @@ public class BridgeContext implements ErrorConstants, CSSContext {
             animationEngine = null;
         }
 
-        Iterator iter = interpreterMap.values().iterator();
-        while (iter.hasNext()) {
-            Interpreter interpreter = (Interpreter)iter.next();
+        for (Object o : interpreterMap.values()) {
+            Interpreter interpreter = (Interpreter) o;
             if (interpreter != null)
                 interpreter.dispose();
         }
@@ -1705,8 +1702,8 @@ public class BridgeContext implements ErrorConstants, CSSContext {
                 // Check if 'display' changed on this element.
 
                 int [] properties = evt.getProperties();
-                for (int i=0; i < properties.length; ++i) {
-                    if (properties[i] == SVGCSSEngine.DISPLAY_INDEX) {
+                for (int property : properties) {
+                    if (property == SVGCSSEngine.DISPLAY_INDEX) {
                         if (!CSSUtilities.convertDisplay(elem)) {
                             // (Still) Not displayed
                             break;
@@ -1714,17 +1711,17 @@ public class BridgeContext implements ErrorConstants, CSSContext {
                         // build the graphics node
                         GVTBuilder builder = getGVTBuilder();
                         GraphicsNode childNode = builder.build
-                            (BridgeContext.this, elem);
+                                (BridgeContext.this, elem);
                         if (childNode == null) {
                             // the added element is not a graphic element?
                             break;
                         }
                         int idx = -1;
-                        for(Node ps = elem.getPreviousSibling(); ps != null;
-                            ps = ps.getPreviousSibling()) {
+                        for (Node ps = elem.getPreviousSibling(); ps != null;
+                             ps = ps.getPreviousSibling()) {
                             if (ps.getNodeType() != Node.ELEMENT_NODE)
                                 continue;
-                            Element pse = (Element)ps;
+                            Element pse = (Element) ps;
                             GraphicsNode gn = getGraphicsNode(pse);
                             if (gn == null)
                                 continue;
@@ -1904,7 +1901,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
 
     /**
      * Tells whether the given SVG document is Interactive.
-     * We say it is, if it has any &lt;title>, &lt;desc>, or &lt;a> elements,
+     * We say it is, if it has any &lt;title&gt;, &lt;desc&gt;, or &lt;a&gt; elements,
      * of if the 'cursor' property is anything but Auto on any element.
      */
     public boolean isInteractiveDocument(Document doc) {
@@ -2045,10 +2042,9 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     public void registerSVGBridges() {
         UserAgent ua = getUserAgent();
         List ext = getBridgeExtensions(document);
-        Iterator iter = ext.iterator();
 
-        while(iter.hasNext()) {
-            BridgeExtension be = (BridgeExtension)iter.next();
+        for (Object anExt : ext) {
+            BridgeExtension be = (BridgeExtension) anExt;
             be.registerTags(this);
             ua.registerExtension(be);
         }

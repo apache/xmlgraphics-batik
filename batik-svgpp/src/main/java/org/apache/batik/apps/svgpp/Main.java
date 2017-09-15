@@ -15,7 +15,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 
-*/
+ */
 
 package org.apache.batik.apps.svgpp;
 
@@ -296,7 +296,7 @@ public class Main {
                 throw new IllegalArgumentException();
             }
             transcoder.addTranscodingHint(SVGTranscoder.KEY_TABULATION_WIDTH,
-                                          new Integer(arguments[index++]));
+                                          Integer.valueOf(arguments[index++]));
         }
 
         public String getDescription() {
@@ -314,7 +314,7 @@ public class Main {
                 throw new IllegalArgumentException();
             }
             transcoder.addTranscodingHint(SVGTranscoder.KEY_DOCUMENT_WIDTH,
-                                          new Integer(arguments[index++]));
+                                          Integer.valueOf(arguments[index++]));
         }
 
         public String getDescription() {

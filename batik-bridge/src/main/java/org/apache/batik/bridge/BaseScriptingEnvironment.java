@@ -29,7 +29,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -134,9 +133,8 @@ public class BaseScriptingEnvironment {
      */
     public static boolean isDynamicElement
         (Element elt, BridgeContext ctx, List bridgeExtensions) {
-        Iterator i = bridgeExtensions.iterator();
-        while (i.hasNext()) {
-            BridgeExtension bridgeExtension = (BridgeExtension) i.next();
+        for (Object bridgeExtension1 : bridgeExtensions) {
+            BridgeExtension bridgeExtension = (BridgeExtension) bridgeExtension1;
             if (bridgeExtension.isDynamicElement(elt)) {
                 return true;
             }
@@ -256,7 +254,7 @@ public class BaseScriptingEnvironment {
     protected Map windowObjects = new HashMap();
 
     /**
-     * Set of &lt;script> elements that have already been executed.
+     * Set of &lt;script&gt; elements that have already been executed.
      */
     protected WeakHashMap executedScripts = new WeakHashMap();
 
@@ -343,7 +341,7 @@ public class BaseScriptingEnvironment {
     }
 
     /**
-     * Loads the scripts contained in the &lt;script> elements.
+     * Loads the scripts contained in the &lt;script&gt; elements.
      */
     public void loadScripts() {
         NodeList scripts = document.getElementsByTagNameNS
@@ -357,7 +355,7 @@ public class BaseScriptingEnvironment {
     }
 
     /**
-     * Executes the specified &lt;script> element, if it hasn't been
+     * Executes the specified &lt;script&gt; element, if it hasn't been
      * executed already.
      */
     protected void loadScript(AbstractElement script) {
@@ -541,7 +539,7 @@ public class BaseScriptingEnvironment {
                     (INLINE_SCRIPT_DESCRIPTION,
                      new Object [] {d.getURL(),
                                     "<"+script.getNodeName()+">",
-                                    new Integer(line)});
+                             line});
                 // Inline script.
                 Node n = script.getFirstChild();
                 if (n != null) {
@@ -656,7 +654,7 @@ public class BaseScriptingEnvironment {
             (EVENT_SCRIPT_DESCRIPTION,
              new Object [] {d.getURL(),
                             SVGConstants.SVG_ONLOAD_ATTRIBUTE,
-                            new Integer(line)});
+                     line});
 
         EventListener l = new EventListener() {
                 public void handleEvent(Event evt) {

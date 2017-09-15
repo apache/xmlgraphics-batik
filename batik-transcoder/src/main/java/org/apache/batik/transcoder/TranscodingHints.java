@@ -19,7 +19,6 @@
 package org.apache.batik.transcoder;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -129,9 +128,8 @@ public class TranscodingHints extends HashMap {
         if (m instanceof TranscodingHints) {
             putAll(((TranscodingHints) m));
         } else {
-            Iterator iter = m.entrySet().iterator();
-            while (iter.hasNext()) {
-                Map.Entry entry = (Map.Entry) iter.next();
+            for (Object o : m.entrySet()) {
+                Map.Entry entry = (Map.Entry) o;
                 put(entry.getKey(), entry.getValue());
             }
         }

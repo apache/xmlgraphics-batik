@@ -823,7 +823,7 @@ public abstract class CSSUtilities
     /////////////////////////////////////////////////////////////////////////
 
     /**
-     * Converts the color defined on the specified &lt;feFlood>
+     * Converts the color defined on the specified &lt;feFlood&gt;
      * element to a <code>Color</code>.
      *
      * @param e the feFlood element
@@ -846,7 +846,7 @@ public abstract class CSSUtilities
     /////////////////////////////////////////////////////////////////////////
 
     /**
-     * Converts the color defined on the specified &lt;stop> element
+     * Converts the color defined on the specified &lt;stop&gt; element
      * to a <code>Color</code>.
      *
      * @param e the stop element

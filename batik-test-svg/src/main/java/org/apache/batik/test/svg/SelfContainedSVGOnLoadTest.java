@@ -45,14 +45,14 @@ import org.apache.batik.util.XMLResourceDescriptor;
  * event.
  * 
  * The SVG input file should contain script that will position the 
- * result of the test in the DOM using the following namespace: <br />
- * xmlns:test="http://xml.apache.org/batik/test" <br />
+ * result of the test in the DOM using the following namespace: <br>
+ * xmlns:test="http://xml.apache.org/batik/test" <br>
  * 
  * The result should be set in the <code>result</code> attribute of the
  * &lt;testResult&gt; element by the script embeded in the input SVG
- * test file. <br />
+ * test file. <br>
  * 
- * Sample input SVG file:<br /><code>
+ * Sample input SVG file:<br><code>
  * &lt;svg ... onload="runTest(evt)" xmlns:test="http://xml.apache.org/batik/test" &gt;
  *   &lt;script type="text/ecmascript"&gt;
  *   function runTest(evt) {
@@ -87,7 +87,7 @@ public class SelfContainedSVGOnLoadTest extends AbstractTest {
         = "SelfContainedSVGOnLoadTest.error.while.processing.svg.document";
 
     /**
-     * There is either 0 or more than one <testResult> elements in
+     * There is either 0 or more than one &lt;testResult&gt; elements in
      * the document after dispatching the onload event.
      */
     public static final String ERROR_UNEXPECTED_NUMBER_OF_TEST_RESULT_ELEMENTS
@@ -173,7 +173,7 @@ public class SelfContainedSVGOnLoadTest extends AbstractTest {
         File f = (new File(url)).getAbsoluteFile();
         if(f.getParentFile().exists()){
             try{
-                return f.toURL().toString();
+                return f.toURI().toURL().toString();
             }catch(MalformedURLException e){
                 throw new IllegalArgumentException();
             }

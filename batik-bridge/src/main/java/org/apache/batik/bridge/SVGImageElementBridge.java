@@ -42,7 +42,6 @@ import org.apache.batik.dom.AbstractNode;
 import org.apache.batik.dom.events.DOMMouseEvent;
 import org.apache.batik.dom.events.NodeEventTarget;
 import org.apache.batik.dom.svg.LiveAttributeException;
-import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.ext.awt.image.renderable.ClipRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.spi.BrokenLinkProvider;
@@ -72,7 +71,7 @@ import org.w3c.dom.svg.SVGImageElement;
 import org.w3c.dom.svg.SVGSVGElement;
 
 /**
- * Bridge class for the &lt;image> element.
+ * Bridge class for the &lt;image&gt; element.
  *
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
@@ -84,7 +83,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
     protected BridgeContext subCtx = null;
     protected boolean hitCheckChildren = false;
     /**
-     * Constructs a new bridge for the &lt;image> element.
+     * Constructs a new bridge for the &lt;image&gt; element.
      */
     public SVGImageElementBridge() {}
 

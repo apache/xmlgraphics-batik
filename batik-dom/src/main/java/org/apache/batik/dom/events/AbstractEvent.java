@@ -279,7 +279,7 @@ public abstract class AbstractEvent
 
     /**
      * <b>DOM</b>: Implements
-     * {@link org.w3c.dom.events.Event#initEventNS(String,String,boolean,boolean)}.
+     * org.w3c.dom.events.Event#initEventNS(String,String,boolean,boolean).
      */
     public void initEventNS(String namespaceURIArg,
                             String eventTypeArg,

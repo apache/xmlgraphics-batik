@@ -15,7 +15,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 
-*/
+ */
 package org.apache.batik.transcoder.print;
 
 import java.awt.Graphics;
@@ -52,13 +52,13 @@ import org.w3c.dom.Document;
  * This class is a <code>Transcoder</code> that prints SVG images.
  * This class works as follows: any-time the transcode method
  * is invoked, the corresponding input is cached and nothing
- * else happens. <br />
+ * else happens. <br>
  * However, the <code>PrintTranscoder</code> is also a Printable. If used
  * in a print operation, it will print each of the input
  * it cached, one input per page.
- * <br />
+ * <br>
  * The <code>PrintTranscoder</code> uses several different hints that
- * guide its printing:<br />
+ * guide its printing:<br>
  * <ul>
  *   <li><code>KEY_LANGUAGE, KEY_USER_STYLESHEET_URI, KEY_PIXEL_TO_MM,
  *       KEY_XML_PARSER_CLASSNAME</code> can be used to set the defaults for
@@ -183,12 +183,12 @@ public class PrintTranscoder extends SVGAbstractTranscoder
         Float pageWidth = (Float)hints.get(KEY_PAGE_WIDTH);
         Float pageHeight = (Float)hints.get(KEY_PAGE_HEIGHT);
         if(pageWidth != null){
-            paper.setSize(pageWidth.floatValue(),
+            paper.setSize(pageWidth,
                           paper.getHeight());
         }
         if(pageHeight != null){
             paper.setSize(paper.getWidth(),
-                          pageHeight.floatValue());
+                    pageHeight);
         }
 
         float x=0, y=0;
@@ -201,18 +201,18 @@ public class PrintTranscoder extends SVGAbstractTranscoder
         Float bottomMargin = (Float)hints.get(KEY_MARGIN_BOTTOM);
 
         if(leftMargin != null){
-            x      = leftMargin.floatValue();
-            width -= leftMargin.floatValue();
+            x      = leftMargin;
+            width -= leftMargin;
         }
         if(topMargin != null){
-            y       = topMargin.floatValue();
-            height -= topMargin.floatValue();
+            y       = topMargin;
+            height -= topMargin;
         }
         if(rightMargin != null){
-            width -= rightMargin.floatValue();
+            width -= rightMargin;
         }
         if(bottomMargin != null){
-            height -= bottomMargin.floatValue();
+            height -= bottomMargin;
         }
 
         paper.setImageableArea(x, y, width, height);
@@ -235,7 +235,7 @@ public class PrintTranscoder extends SVGAbstractTranscoder
         // If required, pop up a dialog to adjust the page format
         //
         Boolean showPageFormat = (Boolean)hints.get(KEY_SHOW_PAGE_DIALOG);
-        if ((showPageFormat != null) && (showPageFormat.booleanValue())) {
+        if ((showPageFormat != null) && (showPageFormat)) {
             PageFormat tmpPageFormat = printerJob.pageDialog(pageFormat);
             if(tmpPageFormat == pageFormat){
                 // Dialog was cancelled, meaning that the print process should
@@ -255,7 +255,7 @@ public class PrintTranscoder extends SVGAbstractTranscoder
         //
         Boolean showPrinterDialog;
         showPrinterDialog = (Boolean)hints.get(KEY_SHOW_PRINTER_DIALOG);
-        if(showPrinterDialog != null && showPrinterDialog.booleanValue()){
+        if(showPrinterDialog != null && showPrinterDialog){
             if(!printerJob.printDialog()){
                 // Dialog was cancelled, meaning that the print process
                 // should be stopped.
@@ -378,7 +378,7 @@ public class PrintTranscoder extends SVGAbstractTranscoder
     protected void setImageSize(float docWidth, float docHeight) {
         // Check hint to know if scaling is really needed
         Boolean scaleToPage = (Boolean)hints.get(KEY_SCALE_TO_PAGE);
-        if(scaleToPage != null && !scaleToPage.booleanValue()) {
+        if(scaleToPage != null && !scaleToPage) {
             float w = docWidth;
             float h = docHeight;
             if (hints.containsKey(KEY_AOI)) {
@@ -404,7 +404,7 @@ public class PrintTranscoder extends SVGAbstractTranscoder
 
     /**
      * The showPageDialog key.
-     * <table border="0" cellspacing="0" cellpadding="1">
+     * <table summary="" border="0" cellspacing="0" cellpadding="1">
      *   <tr>
      *     <th valign="top" align="right">Key:</th>
      *     <td valign="top">KEY_SHOW_PAGE_DIALOG</td>
@@ -434,7 +434,7 @@ public class PrintTranscoder extends SVGAbstractTranscoder
 
     /**
      * The showPrinterDialog key.
-     * <table border="0" cellspacing="0" cellpadding="1">
+     * <table summary="" border="0" cellspacing="0" cellpadding="1">
      *   <tr>
      *     <th valign="top" align="right">Key:</th>
      *     <td valign="top">KEY_SHOW_PAGE_DIALOG</td>
@@ -467,7 +467,7 @@ public class PrintTranscoder extends SVGAbstractTranscoder
 
     /**
      * The pageWidth key.
-     * <table border="0" cellspacing="0" cellpadding="1">
+     * <table summary="" border="0" cellspacing="0" cellpadding="1">
      *   <tr>
      *     <th valign="top" align="right">Key:</th>
      *     <td valign="top">KEY_PAGE_WIDTH</td>
@@ -495,7 +495,7 @@ public class PrintTranscoder extends SVGAbstractTranscoder
 
     /**
      * The pageHeight key.
-     * <table border="0" cellspacing="0" cellpadding="1">
+     * <table summary="" border="0" cellspacing="0" cellpadding="1">
      *   <tr>
      *     <th valign="top" align="right">Key:</th>
      *     <td valign="top">KEY_PAGE_HEIGHT</td>
@@ -523,7 +523,7 @@ public class PrintTranscoder extends SVGAbstractTranscoder
 
     /**
      * The marginTop key.
-     * <table border="0" cellspacing="0" cellpadding="1">
+     * <table summary="" border="0" cellspacing="0" cellpadding="1">
      *   <tr>
      *     <th valign="top" align="right">Key:</th>
      *     <td valign="top">KEY_MARGIN_TOP</td>
@@ -550,7 +550,7 @@ public class PrintTranscoder extends SVGAbstractTranscoder
 
     /**
      * The marginRight key.
-     * <table border="0" cellspacing="0" cellpadding="1">
+     * <table summary="" border="0" cellspacing="0" cellpadding="1">
      *   <tr>
      *     <th valign="top" align="right">Key:</th>
      *     <td valign="top">KEY_MARGIN_RIGHT</td>
@@ -578,7 +578,7 @@ public class PrintTranscoder extends SVGAbstractTranscoder
 
     /**
      * The marginBottom key.
-     * <table border="0" cellspacing="0" cellpadding="1">
+     * <table summary="" border="0" cellspacing="0" cellpadding="1">
      *   <tr>
      *     <th valign="top" align="right">Key:</th>
      *     <td valign="top">KEY_MARGIN_BOTTOM</td>
@@ -606,7 +606,7 @@ public class PrintTranscoder extends SVGAbstractTranscoder
 
     /**
      * The marginLeft key.
-     * <table border="0" cellspacing="0" cellpadding="1">
+     * <table summary="" border="0" cellspacing="0" cellpadding="1">
      * <tr>
      * <th valign="top" align="right">Key:</th>
      * <td valign="top">KEY_MARGIN_LEFT</td></tr>
@@ -629,7 +629,7 @@ public class PrintTranscoder extends SVGAbstractTranscoder
 
     /**
      * The pageOrientation key.
-     * <table border="0" cellspacing="0" cellpadding="1">
+     * <table summary="" border="0" cellspacing="0" cellpadding="1">
      *   <tr>
      *     <th valign="top" align="right">Key:</th>
      *     <td valign="top">KEY_PAGE_ORIENTATION</td>
@@ -658,7 +658,7 @@ public class PrintTranscoder extends SVGAbstractTranscoder
 
     /**
      * The scaleToPage key.
-     * <table border="0" cellspacing="0" cellpadding="1">
+     * <table summary="" border="0" cellspacing="0" cellpadding="1">
      *   <tr>
      *     <th valign="top" align="right">Key:</th>
      *     <td valign="top">KEY_SCALE_TO_PAGE</td>
@@ -781,9 +781,9 @@ public class PrintTranscoder extends SVGAbstractTranscoder
         // First, request the transcoder to transcode
         // each of the input files
         //
-        for(int i=0; i<args.length; i++){
-            transcoder.transcode(new TranscoderInput(new File(args[i]).toURI().toURL().toString()),
-                                 null);
+        for (String arg : args) {
+            transcoder.transcode(new TranscoderInput(new File(arg).toURI().toURL().toString()),
+                    null);
         }
 
         //
@@ -800,7 +800,7 @@ public class PrintTranscoder extends SVGAbstractTranscoder
         String str = System.getProperty(property);
         if(str != null){
             try{
-                Float value = new Float(Float.parseFloat(str));
+                Float value = Float.parseFloat(str);
                 transcoder.addTranscodingHint(key, value);
             }catch(NumberFormatException e){
                 handleValueError(property, str);

@@ -111,8 +111,8 @@ public abstract class AbstractDOMImplementation
             return version.equals(v);
         } else {
             String[] va = (String[])v;
-            for (int i = 0; i < va.length; i++) {
-                if (version.equals(va[i])) {
+            for (String aVa : va) {
+                if (version.equals(aVa)) {
                     return true;
                 }
             }

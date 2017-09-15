@@ -36,7 +36,7 @@ public class JGridBagPanel extends JPanel implements GridBagConstants{
     /**
      * Provides insets desired for a given grid cell
      */
-    public static interface InsetsManager{
+    public interface InsetsManager{
         /**
          * Returns the insets for cell (gridx, gridy);
          */

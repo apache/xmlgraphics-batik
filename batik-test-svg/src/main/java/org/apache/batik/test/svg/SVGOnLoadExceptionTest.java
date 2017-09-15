@@ -307,7 +307,7 @@ public class SVGOnLoadExceptionTest extends AbstractTest {
         File f = (new File(url)).getAbsoluteFile();
         if(f.getParentFile().exists()){
             try{
-                return f.toURL().toString();
+                return f.toURI().toURL().toString();
             }catch(MalformedURLException e){
                 throw new IllegalArgumentException();
             }
@@ -348,7 +348,7 @@ public class SVGOnLoadExceptionTest extends AbstractTest {
                 // calling context with only the permission to read
                 // the file.
                 Policy policy = Policy.getPolicy();
-                URL classesURL = (new File("classes")).toURL();
+                URL classesURL = (new File("classes")).toURI().toURL();
                 CodeSource cs = new CodeSource(classesURL, (Certificate[])null);
                 PermissionCollection permissionsOrig
                     = policy.getPermissions(cs);
@@ -402,7 +402,7 @@ public class SVGOnLoadExceptionTest extends AbstractTest {
         //
         String parserClassName = XMLResourceDescriptor.getXMLParserClassName();
         SAXSVGDocumentFactory f = new SAXSVGDocumentFactory(parserClassName);
-        f.setValidating(validate.booleanValue());
+        f.setValidating(validate);
         Document doc = null;
 
         try {

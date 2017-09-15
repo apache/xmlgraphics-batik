@@ -30,7 +30,6 @@ import java.awt.event.MouseMotionAdapter;
 import java.awt.geom.AffineTransform;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -562,23 +561,22 @@ public class JSVGCanvas extends JSVGComponent {
 
     protected void installSVGDocument(SVGDocument doc) {
         if (toolTipDocs != null) {
-            Iterator i = toolTipDocs.keySet().iterator();
-            while (i.hasNext()) {
+            for (Object o : toolTipDocs.keySet()) {
                 SVGDocument ttdoc;
-                ttdoc = (SVGDocument)i.next();
+                ttdoc = (SVGDocument) o;
                 if (ttdoc == null) continue;
 
                 NodeEventTarget root;
-                root = (NodeEventTarget)ttdoc.getRootElement();
+                root = (NodeEventTarget) ttdoc.getRootElement();
                 if (root == null) continue;
                 root.removeEventListenerNS
-                    (XMLConstants.XML_EVENTS_NAMESPACE_URI,
-                     SVGConstants.SVG_EVENT_MOUSEOVER,
-                     toolTipListener, false);
+                        (XMLConstants.XML_EVENTS_NAMESPACE_URI,
+                                SVGConstants.SVG_EVENT_MOUSEOVER,
+                                toolTipListener, false);
                 root.removeEventListenerNS
-                    (XMLConstants.XML_EVENTS_NAMESPACE_URI,
-                     SVGConstants.SVG_EVENT_MOUSEOUT,
-                     toolTipListener, false);
+                        (XMLConstants.XML_EVENTS_NAMESPACE_URI,
+                                SVGConstants.SVG_EVENT_MOUSEOUT,
+                                toolTipListener, false);
             }
             toolTipDocs = null;
         }
@@ -683,7 +681,7 @@ public class JSVGCanvas extends JSVGComponent {
 
     /**
      * A swing action to apply a zoom factor to the canvas.
-     * This can be used to zoom in (scale > 1) and out (scale <1).
+     * This can be used to zoom in (scale &gt; 1) and out (scale &lt;1).
      */
     public class ZoomAction extends AffineAction {
         public ZoomAction(double scale) {
@@ -867,9 +865,9 @@ public class JSVGCanvas extends JSVGComponent {
         /**
          * The handleElement method builds a tool tip from the
          * content of a &lt;title&gt; element, a &lt;desc&gt;
-         * element or both. <br/>
+         * element or both. <br>
          * Because these elements can appear in any order, here
-         * is the algorithm used to build the tool tip:<br />
+         * is the algorithm used to build the tool tip:<br>
          * <ul>
          * <li>If a &lt;title&gt; is passed to <code>handleElement</code>
          *     the method checks if there is a &gt;desc&gt; peer. If
@@ -995,7 +993,7 @@ public class JSVGCanvas extends JSVGComponent {
 
         /**
          * Converts line breaks to HTML breaks and encodes special entities.
-         * Poor way of replacing '<', '>' and '&' in content.
+         * Poor way of replacing '&lt;', '&gt;' and '&amp;' in content.
          */
         public String toFormattedHTML(String str) {
             StringBuffer sb = new StringBuffer(str);
@@ -1180,7 +1178,7 @@ public class JSVGCanvas extends JSVGComponent {
     /**
      * Sets a specific tooltip on the JSVGCanvas when a given event occurs.
      * This listener is used in the handleElement method to set, remove or
-     * modify the JSVGCanvas tooltip on mouseover and on mouseout.<br/>
+     * modify the JSVGCanvas tooltip on mouseover and on mouseout.<br>
      *
      * Because we are on a single <code>JComponent</code> we trigger an artificial
      * <code>MouseEvent</code> when the toolTip is set to a non-null value, so as

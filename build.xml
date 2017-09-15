@@ -82,7 +82,7 @@ To display the available targets type:
     </tstamp>
     <property name="Project"            value="Apache Batik" />
     <property name="project"            value="batik" />
-    <property name="year"               value="2014" />
+    <property name="year"               value="2017" />
     <property name="version"            value="svn-trunk" />
     <property name="revisionType"       value="" />
     <property name="revisionNumber"     value="" />
@@ -92,14 +92,16 @@ To display the available targets type:
     <property name="vendor"             value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)" />
 
   	<property file="build.properties"/>
-    <property name="debug"              value="off"/>
+    <property name="debug"              value="on"/>
     <property name="optimize"           value="on"/>
     <property name="deprecation"        value="on"/>
+    <property name="javac.source" value="1.6"/>
+    <property name="javac.target" value="1.6"/>
   
     <property name="src"                value="sources"/>
     <property name="src-internal-codec" value="sources-internal-codec"/>
     <property name="resources"          value="resources"/>
-    <property name="testsrc"            value="test-sources"/>
+    <property name="testsrc"            value="batik-test-old/src/test/java"/>
     <property name="testresources"      value="test-resources"/>
     <property name="dest"               value="classes"/>
     <property name="dest-internal-codec" value="classes-internal-codec"/>
@@ -179,7 +181,7 @@ To display the available targets type:
         <include name="xerces*.jar"/>
         <include name="xml-apis-1.3.04.jar"/>
         <include name="xml-apis-ext-1.3.04.jar"/>
-        <include name="xml-serializer-2.7.1.jar"/>
+        <include name="serializer-2.7.2.jar"/>
         <include name="xmlgraphics-commons*.jar"/>
       </fileset>
     </path>
@@ -431,6 +433,7 @@ To display the available targets type:
         <include name="build.bat"/>
         <include name="build.sh"/>
         <include name="build.xml"/>
+        <include name="**/pom.xml"/>
         <include name="forrest.properties"/>
         <include name="svn-revision"/>
         <include name="contrib/**"/>
@@ -498,6 +501,7 @@ To display the available targets type:
         <include name="build.bat"/>
         <include name="build.sh"/>
         <include name="build.xml"/>
+        <include name="**/pom.xml"/>
         <include name="forrest.properties"/>
         <include name="svn-revision"/>
         <include name="contrib/**"/>
@@ -629,13 +633,13 @@ JAVA=/usr/bin/java
 
     <echo message="debug ${debug}, optimize ${optimize}, deprecation ${deprecation}"/>
 
-    <javac destdir="${dest}"  deprecation="${deprecation}" 
+    <javac source="${javac.source}" target="${javac.target}" destdir="${dest}"  deprecation="${deprecation}" 
            debug="${debug}" optimize="${optimize}" encoding="UTF-8">
       <src path="${testsrc}"/>
       <src path="batik-test/src/main/java"/>
       <src path="batik-test-svg/src/main/java"/>
       <src path="batik-test-swing/src/main/java"/>
-      <src path="batik-test-util/src/main/java"/>
+      <!-- <src path="batik-test-util/src/main/java"/> -->
       <src path="batik-util/src/test/java"/>
       <exclude name="org/apache/batik/util/*TestCases.java"/>
       <exclude name="org/apache/batik/util/*TestSuite.java"/>
@@ -661,7 +665,7 @@ JAVA=/usr/bin/java
 
     <echo message="debug ${debug}, optimize ${optimize}, deprecation ${deprecation}"/>
 
-    <javac srcdir="${samples}/tests/resources/java/sources" destdir="${samples}/tests/resources/java/classes"  deprecation="${deprecation}" 
+    <javac source="${javac.source}" target="${javac.target}" srcdir="${samples}/tests/resources/java/sources" destdir="${samples}/tests/resources/java/classes"  deprecation="${deprecation}" 
            debug="${debug}" optimize="${optimize}" encoding="UTF-8">
       <classpath>
         <pathelement location="${dest}"/>
@@ -671,7 +675,7 @@ JAVA=/usr/bin/java
       </classpath>
     </javac>
 
-    <javac srcdir="${testresources}" destdir="${testresources}/classes"  deprecation="${deprecation}" 
+    <javac source="${javac.source}" target="${javac.target}" srcdir="${testresources}" destdir="${testresources}/classes"  deprecation="${deprecation}" 
            debug="${debug}" optimize="${optimize}" encoding="UTF-8">
       <classpath>
         <pathelement location="${dest}"/>
@@ -918,7 +922,7 @@ JAVA=/usr/bin/java
   </target>
 
   <target name="compile" depends="init, compile-prepare, compile-copy-resources" unless="compile.done">
-    <javac destdir="${dest}" deprecation="${deprecation}" 
+    <javac source="${javac.source}" target="${javac.target}" destdir="${dest}" deprecation="${deprecation}" 
            debug="${debug}" optimize="${optimize}" encoding="UTF-8"
            includeAntRuntime="true">
       <src path="batik-anim/src/main/java"/>
@@ -2555,4 +2559,49 @@ JAVA=/usr/bin/java
     <delete file="${project}-docs-${completeVersion}.tar.gz"/>
     <delete file="${project}-src-${completeVersion}.tar.gz"/>
   </target>
+
+  <target name="junit" depends="init, compiletest, testdirs">
+    <property name="junit.reports.dir" value="${build}/test-reports"/>   
+    <path id="standard-junit-classpath">
+        <pathelement location="${dest}"/>
+        <path refid="libs-classpath"/>
+        <path refid="libs-build-classpath"/>
+        <pathelement location="resources"/>
+        <pathelement location="test-resources"/>
+    </path>               
+    <mkdir dir="${junit.reports.dir}"/>
+    <junit dir="${basedir}" haltonfailure="yes" fork="true" forkmode="once" printsummary="yes" showoutput="true">
+      <sysproperty key="jawa.awt.headless" value="true"/>
+      <formatter type="brief" usefile="false"/>
+      <formatter type="plain" usefile="true"/>
+      <formatter type="xml" usefile="true"/>
+      <classpath>
+        <path refid="standard-junit-classpath"/>
+      </classpath>
+      <assertions>
+        <enable/>
+      </assertions>
+      <batchtest todir="${junit.reports.dir}">
+        <fileset dir="classes" includes="**/*TestCase.class"/>
+      </batchtest>
+    </junit>
+  </target>
+
+  <target name="checkstyle" depends="init" description="Runs Checkstyle for a code quality report">
+    <property name="checkstyle.location" value="lib/checkstyle-5.6-all.jar" />
+    <property name="checkstyle.config" value="checkstyle.xml" />
+    <path id="checkstyle-classpath">
+      <pathelement location="${checkstyle.location}"/>
+    </path>
+    <taskdef name="checkstyle" classname="com.puppycrawl.tools.checkstyle.CheckStyleTask" classpathref="checkstyle-classpath"/>
+    <mkdir dir="${build}"/>
+    <checkstyle config="${checkstyle.config}" failonviolation="true" maxWarnings="0">
+      <classpath>
+        <path refid="checkstyle-classpath"/>
+      </classpath>
+      <fileset dir="." includes="**/*.java"/>
+      <formatter type="xml" toFile="${build}/report_checkstyle.xml"/>
+      <formatter type="plain"/>
+    </checkstyle>
+  </target>  
 </project>

@@ -134,8 +134,8 @@ public class OutputManager {
      * Prints a char array.
      */
     public void printCharacters(char[] ca) throws IOException {
-        for (int i = 0; i < ca.length; i++) {
-            printCharacter(ca[i]);
+        for (char aCa : ca) {
+            printCharacter(aCa);
         }
     }
 
@@ -451,7 +451,7 @@ public class OutputManager {
         throws IOException {
         xmlSpace.add(0, xmlSpace.get(0));
 
-        startingLines.add(0, new Integer(line));
+        startingLines.add(0, line);
 
         if (prettyPrinter.getFormat()) {
             if (canIndent) {
@@ -507,16 +507,15 @@ public class OutputManager {
                 printCharacter(ai.delimiter);
             }
         } else {
-            Iterator it = attributes.iterator();
-            while (it.hasNext()) {
-                AttributeInfo ai = (AttributeInfo)it.next();
+            for (Object attribute : attributes) {
+                AttributeInfo ai = (AttributeInfo) attribute;
 
                 if (ai.isAttribute("xml:space")) {
                     xmlSpace.set(0, (ai.value.equals("preserve")
-                                     ? Boolean.TRUE
-                                     : Boolean.FALSE));
+                            ? Boolean.TRUE
+                            : Boolean.FALSE));
                 }
-            
+
                 printSpaces(ai.space, false);
                 printCharacters(ai.name);
 
@@ -555,7 +554,7 @@ public class OutputManager {
         if (name != null) {
             if (prettyPrinter.getFormat()) {
                 if (xmlSpace.get(0) != Boolean.TRUE &&
-                    (line != ((Integer)startingLines.get(0)).intValue() ||
+                    (line != (Integer) startingLines.get(0) ||
                      column + name.length + 3 >= prettyPrinter.getDocumentWidth())) {
                     printNewline();
                     printString(margin.toString());
@@ -725,8 +724,8 @@ public class OutputManager {
      */
     protected int newlines(char[] text) {
         int result = 0;
-        for (int i = 0; i < text.length; i++) {
-            if (text[i] == 10) {
+        for (char aText : text) {
+            if (aText == 10) {
                 result++;
             }
         }
@@ -737,8 +736,8 @@ public class OutputManager {
      * Tells whether the given character represents white spaces.
      */
     protected boolean isWhiteSpace(char[] text) {
-        for (int i = 0; i < text.length; i++) {
-            if (!XMLUtilities.isXMLSpace(text[i])) {
+        for (char aText : text) {
+            if (!XMLUtilities.isXMLSpace(aText)) {
                 return false;
             }
         }

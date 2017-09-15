@@ -140,8 +140,7 @@ public class TileBlock {
      */
     static int getWork(TileBlock [] blocks) {
         int ret=0;
-        for (int i=0; i<blocks.length; i++)
-            ret += blocks[i].getWork();
+        for (TileBlock block : blocks) ret += block.getWork();
         return ret;
     }
 

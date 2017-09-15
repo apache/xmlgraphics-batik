@@ -31,7 +31,7 @@ import org.apache.batik.gvt.GraphicsNode;
 import org.w3c.dom.Element;
 
 /**
- * Bridge class for the &lt;feOffset> element.
+ * Bridge class for the &lt;feOffset&gt; element.
  *
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
@@ -40,7 +40,7 @@ public class SVGFeOffsetElementBridge
     extends AbstractSVGFilterPrimitiveElementBridge {
 
     /**
-     * Constructs a new bridge for the &lt;feOffset> element.
+     * Constructs a new bridge for the &lt;feOffset&gt; element.
      */
     public SVGFeOffsetElementBridge() {}
 

@@ -43,7 +43,6 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 import java.io.BufferedInputStream;
 import java.text.AttributedCharacterIterator;
-import java.util.Iterator;
 import java.util.Stack;
 import java.util.List;
 import java.util.ArrayList;
@@ -66,7 +65,7 @@ public class WMFPainter extends AbstractWMFPainter {
      */
     private static final int INPUT_BUFFER_SIZE = 30720;
 
-    private static final Integer INTEGER_0 = new Integer( 0 );
+    private static final Integer INTEGER_0 = 0;
 
     private float scale, scaleX, scaleY, conv;
     private float xOffset, yOffset;
@@ -695,12 +694,12 @@ public class WMFPainter extends AbstractWMFPainter {
                     break;
 
                 case WMFConstants.META_SAVEDC:
-                    dcStack.push( new Float( penWidth ));
-                    dcStack.push( new Float( startX ));
-                    dcStack.push( new Float( startY ));
-                    dcStack.push( new Integer( brushObject ));
-                    dcStack.push( new Integer( penObject ));
-                    dcStack.push( new Integer( fontObject ));
+                    dcStack.push(penWidth);
+                    dcStack.push(startX);
+                    dcStack.push(startY);
+                    dcStack.push(brushObject);
+                    dcStack.push(penObject);
+                    dcStack.push(fontObject);
                     dcStack.push( frgdColor );
                     dcStack.push( bkgdColor );
                     break;
@@ -708,12 +707,12 @@ public class WMFPainter extends AbstractWMFPainter {
                 case WMFConstants.META_RESTOREDC:
                     bkgdColor = (Color)dcStack.pop();
                     frgdColor = (Color)dcStack.pop();
-                    fontObject = ((Integer)(dcStack.pop())).intValue();
-                    penObject = ((Integer)(dcStack.pop())).intValue();
-                    brushObject = ((Integer)(dcStack.pop())).intValue();
-                    startY = ((Float)(dcStack.pop())).floatValue();
-                    startX = ((Float)(dcStack.pop())).floatValue();
-                    penWidth = ((Float)(dcStack.pop())).floatValue();
+                    fontObject = (Integer) (dcStack.pop());
+                    penObject = (Integer) (dcStack.pop());
+                    brushObject = (Integer) (dcStack.pop());
+                    startY = (Float) (dcStack.pop());
+                    startX = (Float) (dcStack.pop());
+                    penWidth = (Float) (dcStack.pop());
                     break;
 
                 case WMFConstants.META_POLYBEZIER16:
@@ -777,7 +776,7 @@ public class WMFPainter extends AbstractWMFPainter {
                     //UPDATED : added SETROP2
                 case WMFConstants.META_SETROP2:
                     {
-                        float rop = (float)(mr.ElementAt( 0 ).intValue());
+                        float rop = (float)(mr.ElementAt(0));
                         Paint paint = null;
                         boolean ok = false;
                         if (rop == WMFConstants.META_BLACKNESS) {
@@ -896,19 +895,19 @@ public class WMFPainter extends AbstractWMFPainter {
                     break;
                 case WMFConstants.META_DIBBITBLT:
                     {
-                        int rop = mr.ElementAt( 0 ).intValue();
-                        float height = (mr.ElementAt( 1 ).intValue() *
+                        int rop = mr.ElementAt(0);
+                        float height = (mr.ElementAt(1) *
                                         conv * currentStore.getVpWFactor());
-                        float width  = (mr.ElementAt( 2 ).intValue() *
+                        float width  = (mr.ElementAt(2) *
                                         conv * currentStore.getVpHFactor());
-                        int sy = mr.ElementAt( 3 ).intValue();
-                        int sx = mr.ElementAt( 4 ).intValue();
+                        int sy = mr.ElementAt(3);
+                        int sx = mr.ElementAt(4);
                         float dy = (conv * currentStore.getVpWFactor() *
                                     (vpY + yOffset +
-                                     (float)mr.ElementAt( 5 ).intValue()));
+                                     (float) mr.ElementAt(5)));
                         float dx = (conv * currentStore.getVpHFactor() *
                                     (vpX + xOffset +
-                                     (float)mr.ElementAt( 6 ).intValue()));
+                                     (float) mr.ElementAt(6)));
                         if (mr instanceof MetaRecord.ByteRecord) {
                             byte[] bitmap = ((MetaRecord.ByteRecord)mr).bstr;
 
@@ -1065,9 +1064,8 @@ public class WMFPainter extends AbstractWMFPainter {
     /** Just to be consistent with PolyPolygon filling.
      */
     private void drawPolyPolygon(Graphics2D g2d, List pols) {
-        Iterator it = pols.iterator();
-        while (it.hasNext()) {
-            Polygon2D pol = (Polygon2D)(it.next());
+        for (Object pol1 : pols) {
+            Polygon2D pol = (Polygon2D) (pol1);
             g2d.draw(pol);
         }
     }
@@ -1081,8 +1079,8 @@ public class WMFPainter extends AbstractWMFPainter {
             g2d.fill((Polygon2D)(pols.get(0)));
         } else {
             GeneralPath path = new GeneralPath(GeneralPath.WIND_EVEN_ODD);
-            for (int i = 0; i < pols.size(); i++) {
-                Polygon2D pol = (Polygon2D)(pols.get(i));
+            for (Object pol1 : pols) {
+                Polygon2D pol = (Polygon2D) pol1;
                 path.append(pol, false);
             }
             g2d.fill(path);

@@ -292,9 +292,8 @@ public class BackgroundRable8Bit
         if (child != null) {
             CompositeGraphicsNode cgn = (CompositeGraphicsNode)gn;
             List children = cgn.getChildren();
-            Iterator i = children.iterator();
-            while (i.hasNext()) {
-                GraphicsNode childGN = (GraphicsNode)i.next();
+            for (Object aChildren : children) {
+                GraphicsNode childGN = (GraphicsNode) aChildren;
                 // System.out.println("Parent: "      + cgn +
                 //                    "\n  Child: "   + child +
                 //                    "\n  ChildGN: " + childGN);
@@ -314,7 +313,7 @@ public class BackgroundRable8Bit
 
                 if (aoi.intersects(cbounds)) {
                     srcs.add(childGN.getEnableBackgroundGraphicsNodeRable
-                             (true));
+                            (true));
                 }
             }
         }

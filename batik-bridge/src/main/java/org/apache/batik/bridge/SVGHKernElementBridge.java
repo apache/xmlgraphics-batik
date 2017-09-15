@@ -19,7 +19,7 @@
 package org.apache.batik.bridge;
 
 /**
- * Bridge class for the &lt;hkern> element.
+ * Bridge class for the &lt;hkern&gt; element.
  *
  * @author <a href="mailto:dean.jackson@cmis.csiro.au">Dean Jackson</a>
  * @version $Id$
@@ -27,7 +27,7 @@ package org.apache.batik.bridge;
 public class SVGHKernElementBridge extends SVGKernElementBridge {
 
     /**
-     * Constructs a new bridge for the &lt;hkern> element.
+     * Constructs a new bridge for the &lt;hkern&gt; element.
      */
     public SVGHKernElementBridge() {}
 

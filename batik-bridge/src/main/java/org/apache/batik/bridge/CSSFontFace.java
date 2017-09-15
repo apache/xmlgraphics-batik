@@ -34,7 +34,7 @@ import org.w3c.dom.css.CSSValue;
 import org.w3c.dom.css.CSSPrimitiveValue;
 
 /**
- * This class represents a &lt;font-face> element or @font-face rule
+ * This class represents a &lt;font-face&gt; element or @font-face rule
  *
  * @author <a href="mailto:bella.robinson@cmis.csiro.au">Bella Robinson</a>
  * @version $Id$

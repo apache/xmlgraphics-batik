@@ -22,7 +22,6 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -66,7 +65,7 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
 
     /**
      * Returns the logical parent element of the given element.
-     * The parent element of a used element is the &lt;use> element
+     * The parent element of a used element is the &lt;use&gt; element
      * which reference it.
      */
     public static Element getParentElement(Element elt) {
@@ -263,12 +262,11 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
             String baseURI = ((AbstractNode) e).getBaseURI();
             ParsedURL purl = new ParsedURL(baseURI, uriStr);
 
-            Iterator iter = refs.iterator();
-            while (iter.hasNext()) {
-                if (purl.equals(iter.next()))
+            for (Object ref : refs) {
+                if (purl.equals(ref))
                     throw new BridgeException
-                        (ctx, e, ERR_XLINK_HREF_CIRCULAR_DEPENDENCIES,
-                         new Object[] {uriStr});
+                            (ctx, e, ERR_XLINK_HREF_CIRCULAR_DEPENDENCIES,
+                                    new Object[]{uriStr});
             }
 
             try {
@@ -512,7 +510,7 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
         if (vals[0] == null)
             filterRes[0] = -1;
         else {
-            filterRes[0] = vals[0].floatValue();
+            filterRes[0] = vals[0];
             if (filterRes[0] < 0)
                 throw new BridgeException
                     (ctx, filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
@@ -522,7 +520,7 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
         if (vals[1] == null)
             filterRes[1] = filterRes[0];
         else {
-            filterRes[1] = vals[1].floatValue();
+            filterRes[1] = vals[1];
             if (filterRes[1] < 0)
                 throw new BridgeException
                     (ctx, filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
@@ -547,9 +545,9 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
 
         try {
             StringTokenizer tokens = new StringTokenizer(attrValue, " ");
-            ret[0] = new Float(Float.parseFloat(tokens.nextToken()));
+            ret[0] = Float.parseFloat(tokens.nextToken());
             if (tokens.hasMoreTokens()) {
-                ret[1] = new Float(Float.parseFloat(tokens.nextToken()));
+                ret[1] = Float.parseFloat(tokens.nextToken());
             }
 
             if (tokens.hasMoreTokens()) {

@@ -15,7 +15,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 
-*/
+ */
 
 package org.apache.batik.transcoder.wmf.tosvg;
 
@@ -80,7 +80,7 @@ public abstract class AbstractWMFReader {
      * Read the next short (2 bytes) value in the DataInputStream.
      */
     protected short readShort(DataInputStream is) throws IOException {
-        byte js[] = new byte[ 2 ];
+        byte[] js = new byte[ 2 ];
         is.readFully(js);
         int iTemp = ((0xff) & js[ 1 ] ) << 8;
         short i = (short)(0xffff & iTemp);
@@ -92,7 +92,7 @@ public abstract class AbstractWMFReader {
      * Read the next int (4 bytes) value in the DataInputStream.
      */
     protected int readInt( DataInputStream is) throws IOException {
-        byte js[] = new byte[ 4 ];
+        byte[] js = new byte[ 4 ];
         is.readFully(js);
         int i = ((0xff) & js[ 3 ] ) << 24;
         i |= ((0xff) & js[ 2 ] ) << 16;
@@ -298,7 +298,7 @@ public abstract class AbstractWMFReader {
     /** Read this InputStream records. The aldus placeable header have already been
      * read (see {@link #read(DataInputStream)}). The behavior of this method is left
      * to the subclass.
-     * <p>Each Metafile record is composed of :
+     * Each Metafile record is composed of :
      * <ul>
      * <li>the size of the Record in int (32 bits)</li>
      * <li>the function ID for the Record on a short word (16 bits)</li>
@@ -306,14 +306,14 @@ public abstract class AbstractWMFReader {
      * the remaining size in short words (16 bits) for the parameters is equal to
      * the total size for the record minus 3 short words (= 16 + 32 bits)</li>
      * </ul>
-     * </p>
+     *
      * <p>Example :</p>
-     * <pre>while (functionId > 0) {
+     * <pre>while (functionId &gt; 0) {
      *        recSize = readInt( is );
      *        // Subtract size in 16-bit words of recSize and functionId;
      *        recSize -= 3;
      *        functionId = readShort( is );
-     *        if ( functionId <= 0 )
+     *        if ( functionId &lt;= 0 )
      *          break;
      *        switch ( functionId ) {
      *          case WMFConstants.&lt;a WMF function ID&gt; {
@@ -322,7 +322,7 @@ public abstract class AbstractWMFReader {
      *          break;
      *
      *          default:
-     *             for ( int j = 0; j < recSize; j++ )
+     *             for ( int j = 0; j &lt; recSize; j++ )
      *               readShort(is);
      *          break;
      * </pre>

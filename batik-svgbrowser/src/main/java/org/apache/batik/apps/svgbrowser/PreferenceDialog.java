@@ -1196,7 +1196,7 @@ public class PreferenceDialog extends JDialog
                 // button.setIconTextGap(0);
                 AbstractButton.class.getMethod
                     ("setIconTextGap", new Class[] { Integer.TYPE })
-                    .invoke(button, new Object[] { new Integer(0) });
+                    .invoke(button, new Object[] {0});
             } catch (Exception ex) {
             }
             button.setPressedIcon(icon2);

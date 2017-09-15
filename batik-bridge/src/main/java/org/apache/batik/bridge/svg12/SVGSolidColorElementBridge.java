@@ -53,7 +53,7 @@ public class SVGSolidColorElementBridge extends AnimatableGenericSVGBridge
         implements PaintBridge {
 
     /**
-     * Constructs a new bridge for the &lt;rect> element.
+     * Constructs a new bridge for the &lt;rect&gt; element.
      */
     public SVGSolidColorElementBridge() { /* nothing */ }
 

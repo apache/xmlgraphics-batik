@@ -54,8 +54,8 @@ public abstract class AbstractCompoundCommand extends AbstractUndoableCommand {
 
     public void execute() {
         int n = atomCommands.size();
-        for (int i = 0; i < n; i++) {
-            UndoableCommand cmd = (UndoableCommand) atomCommands.get(i);
+        for (Object atomCommand : atomCommands) {
+            UndoableCommand cmd = (UndoableCommand) atomCommand;
             cmd.execute();
         }
     }
@@ -70,8 +70,8 @@ public abstract class AbstractCompoundCommand extends AbstractUndoableCommand {
 
     public void redo() {
         int n = atomCommands.size();
-        for (int i = 0; i < n; i++) {
-            UndoableCommand cmd = (UndoableCommand) atomCommands.get(i);
+        for (Object atomCommand : atomCommands) {
+            UndoableCommand cmd = (UndoableCommand) atomCommand;
             cmd.redo();
         }
     }

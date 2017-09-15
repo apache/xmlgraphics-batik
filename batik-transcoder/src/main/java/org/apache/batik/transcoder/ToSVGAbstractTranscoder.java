@@ -42,48 +42,42 @@ import org.w3c.dom.Element;
 
 /** This class allows to simplify the creation of a transcoder which transcodes to
  *  SVG content.
- *  <p>To use this class, you just have to implement the <i>transcode</i> method of
+ *  To use this class, you just have to implement the <i>transcode</i> method of
  *  the <i>AbstractTranscoder</i> class :
- *  <ul>
- *  <li>first get  the associated Document from the <i>TranscoderOutput</i> :
+ *  first get  the associated Document from the <i>TranscoderOutput</i> :
  *  {@link #createDocument(TranscoderOutput)}, then create a new
- *  {@link org.apache.batik.svggen.SVGGraphics2D} with this Document</li>
+ *  {@link org.apache.batik.svggen.SVGGraphics2D} with this Document
  *  <pre>
  *    Document doc = this.createDocument(output);
  *    svgGenerator = new SVGGraphics2D(doc);
  *  </pre>
- *  <li>Perform the effective transcoding, using the
- *  {@link org.apache.batik.svggen.SVGGraphics2D} previously created</li>
- *  <li>then call the
+ *  Perform the effective transcoding, using the
+ *  {@link org.apache.batik.svggen.SVGGraphics2D} previously created
+ *  then call the
  *  {@link #writeSVGToOutput(SVGGraphics2D, Element, TranscoderOutput)} to create the
- *  effective output file (if the output is set to be a File or URI)</li>
+ *  effective output file (if the output is set to be a File or URI)
  *  <pre>
  *    Element svgRoot = svgGenerator.getRoot();
  *    writeSVGToOutput(svgGenerator, svgRoot, output);
  *  </pre>
- *  </ul>
- *  </p>
  *
  *  <p>Several transcoding hints are defined for this abstract transcoder, but no default
  *  implementation is provided. Subclasses must implement which keys are relevant to them :</p>
  *  <ul>
  *  <li>KEY_INPUT_WIDTH, KEY_INPUT_HEIGHT, KEY_XOFFSET, KEY_YOFFSET : this Integer keys allows to
  *  set the  portion of the image to transcode, defined by the width, height, and offset
- *  of this portion in Metafile units.
+ *  of this portion in Metafile units.</li>
  *  <li>KEY_ESCAPED : this Boolean ley allow to escape XML characters in the output</li>
  *  </ul>
  *  <pre>
- *     transcoder.addTranscodingHint(ToSVGAbstractTranscoder.KEY_INPUT_WIDTH, new Integer(input_width));
+ *     transcoder.addTranscodingHint(ToSVGAbstractTranscoder.KEY_INPUT_WIDTH, Integer.valueOf(input_width));
  *  </pre>
- *  </li>
- *  <li>KEY_WIDTH, KEY_HEIGHT : this Float values allows to force the width and height of the output:
- *  </ul>
+ *
+ *  KEY_WIDTH, KEY_HEIGHT : this Float values allows to force the width and height of the output:
+ *
  *  <pre>
- *     transcoder.addTranscodingHint(ToSVGAbstractTranscoder.KEY_WIDTH, new Float(width));
+ *     transcoder.addTranscodingHint(ToSVGAbstractTranscoder.KEY_WIDTH, Float.valueOf(width));
  *  </pre>
- *  </li>
- *  </li>
- *  </ul>
  *
  * @version $Id$
  */
@@ -187,7 +181,7 @@ public abstract class ToSVGAbstractTranscoder extends AbstractTranscoder
         try {
             boolean escaped = false;
             if (hints.containsKey(KEY_ESCAPED)) {
-                escaped = ((Boolean)hints.get(KEY_ESCAPED)).booleanValue();
+                escaped = (Boolean) hints.get(KEY_ESCAPED);
             }
             // Output stream
             OutputStream os = output.getOutputStream();

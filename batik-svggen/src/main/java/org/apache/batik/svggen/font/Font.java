@@ -66,9 +66,9 @@ public class Font {
     }
 
     public Table getTable(int tableType) {
-        for (int i = 0; i < tables.length; i++) {
-            if ((tables[i] != null) && (tables[i].getType() == tableType)) {
-                return tables[i];
+        for (Table table : tables) {
+            if ((table != null) && (table.getType() == tableType)) {
+                return table;
             }
         }
         return null;

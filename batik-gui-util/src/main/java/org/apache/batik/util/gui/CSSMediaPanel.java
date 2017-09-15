@@ -28,7 +28,6 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -182,9 +181,8 @@ public class CSSMediaPanel extends JPanel implements ActionMap {
      */
     public void setMedia(List mediaList) {
         listModel.removeAllElements();
-        Iterator iter = mediaList.iterator();
-        while (iter.hasNext()) {
-            listModel.addElement(iter.next());
+        for (Object aMediaList : mediaList) {
+            listModel.addElement(aMediaList);
         }
     }
 

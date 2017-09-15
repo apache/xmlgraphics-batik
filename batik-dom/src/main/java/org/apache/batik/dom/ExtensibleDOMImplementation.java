@@ -76,10 +76,9 @@ public abstract class ExtensibleDOMImplementation
      * Creates a new DOMImplementation.
      */
     public ExtensibleDOMImplementation() {
-        Iterator iter = getDomExtensions().iterator();
 
-        while(iter.hasNext()) {
-            DomExtension de = (DomExtension)iter.next();
+        for (Object o : getDomExtensions()) {
+            DomExtension de = (DomExtension) o;
             de.registerTags(this);
         }
     }
@@ -208,8 +207,7 @@ public abstract class ExtensibleDOMImplementation
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * DOMImplementation#createDocumentType(String,String,String)}.
+     * <b>DOM</b>: Implements DOMImplementation#createDocumentType(String,String,String).
      */
     public DocumentType createDocumentType(String qualifiedName,
                                            String publicId,
