@@ -297,7 +297,7 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
     public void setSelection(Mark begin, Mark end) {
         if ((begin.getTextNode() != this) ||
             (end.getTextNode() != this))
-            throw new Error("Markers not from this TextNode");
+            throw new RuntimeException("Markers not from this TextNode");
 
         beginMark = begin;
         endMark   = end;
@@ -534,7 +534,7 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
             case ANCHOR_END:
                 return END;
             default:
-                throw new Error("Unknown Anchor type");
+                throw new RuntimeException("Unknown Anchor type");
             }
         }
     }

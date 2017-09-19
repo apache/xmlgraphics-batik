@@ -107,7 +107,7 @@ public class ConcreteTextSelector implements Selector {
     public void setSelection(Mark begin, Mark end) {
         TextNode node = begin.getTextNode();
         if (node != end.getTextNode()) {
-            throw new Error("Markers not from same TextNode");
+            throw new RuntimeException("Markers not from same TextNode");
         }
         node.setSelection(begin, end);
         selectionNode = node;

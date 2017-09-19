@@ -256,7 +256,7 @@ public class SVGTransform extends AbstractSVGConverter{
         default:
             // This should never happen. If it does, there is a
             // serious error.
-            throw new Error();
+            throw new RuntimeException();
         }
 
         return transformString.toString();

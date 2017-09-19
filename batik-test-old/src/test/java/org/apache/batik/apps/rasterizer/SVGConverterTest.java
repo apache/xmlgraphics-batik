@@ -303,7 +303,7 @@ public class SVGConverterTest extends DefaultTestSuite {
                     try {
                         dummy = File.createTempFile("dummyPNG", ".png");
                     } catch(IOException ioEx ){
-                        throw new Error( ioEx.getMessage() );
+                        throw new RuntimeException( ioEx.getMessage() );
                     }
                     c.setSources(new String[]{"samples/anne.svg", "samples/batikFX.svg"});
                     c.setDst(dummy);

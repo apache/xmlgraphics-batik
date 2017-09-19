@@ -918,7 +918,7 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
             }
             break;
         default:
-            throw new Error("invalid unitsType:" + unitsType); // can't be reached
+            throw new RuntimeException("invalid unitsType:" + unitsType); // can't be reached
         }
 
         Rectangle2D region = new Rectangle2D.Double(x, y, w, h);
@@ -1139,7 +1139,7 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
                 (hStr, SVG_HEIGHT_ATTRIBUTE, uctx);
             break;
         default:
-            throw new Error("invalid unitsType:" + unitsType ); // can't be reached
+            throw new RuntimeException("invalid unitsType:" + unitsType ); // can't be reached
         }
         return new Rectangle2D.Double(x, y, w, h);
     }

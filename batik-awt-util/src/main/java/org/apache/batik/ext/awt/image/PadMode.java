@@ -76,7 +76,7 @@ public final class PadMode implements java.io.Serializable {
         case MODE_WRAP:
             return WRAP;
         default:
-            throw new Error("Unknown Pad Mode type");
+            throw new RuntimeException("Unknown Pad Mode type");
         }
     }
 }

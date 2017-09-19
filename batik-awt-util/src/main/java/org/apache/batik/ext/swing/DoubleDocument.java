@@ -101,7 +101,7 @@ public class DoubleDocument extends PlainDocument {
         }catch(BadLocationException e){
             // Will not happen because we are sure
             // we use the proper range
-            throw new Error( e.getMessage() );
+            throw new RuntimeException( e.getMessage() );
         }
     }
 }

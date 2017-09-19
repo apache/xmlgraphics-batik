@@ -1023,7 +1023,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         // start assert
         if (!(namespaceURI.equals(bridge.getNamespaceURI())
               && localName.equals(bridge.getLocalName()))) {
-            throw new Error("Invalid Bridge: "+
+            throw new RuntimeException("Invalid Bridge: "+
                             namespaceURI+"/"+bridge.getNamespaceURI()+" "+
                             localName+"/"+bridge.getLocalName()+" "+
                             bridge.getClass());

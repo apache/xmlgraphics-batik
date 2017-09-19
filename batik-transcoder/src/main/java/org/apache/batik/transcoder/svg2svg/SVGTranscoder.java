@@ -170,18 +170,18 @@ public class SVGTranscoder extends AbstractTranscoder {
         if (r == null) {
             Document d = input.getDocument();
             if (d == null) {
-                throw new Error("Reader or Document expected");
+                throw new RuntimeException("Reader or Document expected");
             }
             StringWriter sw = new StringWriter( 1024 );
             try {
                 DOMUtilities.writeDocument(d, sw);
             } catch ( IOException ioEx ) {
-                throw new Error("IO:" + ioEx.getMessage() );
+                throw new RuntimeException("IO:" + ioEx.getMessage() );
             }
             r = new StringReader(sw.toString());
         }
         if (w == null) {
-            throw new Error("Writer expected");
+            throw new RuntimeException("Writer expected");
         }
         prettyPrint(r, w);
     }

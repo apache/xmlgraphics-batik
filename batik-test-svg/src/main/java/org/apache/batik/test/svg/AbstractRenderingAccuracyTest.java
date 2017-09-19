@@ -251,12 +251,12 @@ public abstract class AbstractRenderingAccuracyTest extends AbstractTest {
         if(tempDirectory == null){
             String tmpDir = System.getProperty("java.io.tmpdir");
             if(tmpDir == null){
-                throw new Error();
+                throw new RuntimeException();
             }
 
             tempDirectory = new File(tmpDir);
             if(!tempDirectory.exists()){
-                throw new Error();
+                throw new RuntimeException();
             }
         }
         return tempDirectory;

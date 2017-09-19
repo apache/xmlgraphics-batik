@@ -123,7 +123,7 @@ public class ScriptSelfTest extends SelfContainedSVGOnLoadTest {
                 } else if ("none".equals(scriptOrigin)) {
                     scriptSecurity = new NoLoadScriptSecurity(scriptType);
                 } else {
-                    throw new Error("Wrong scriptOrigin : " + scriptOrigin);
+                    throw new RuntimeException("Wrong scriptOrigin : " + scriptOrigin);
                 }
             }
 

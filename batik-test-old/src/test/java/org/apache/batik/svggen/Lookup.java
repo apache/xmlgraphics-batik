@@ -65,7 +65,7 @@ public class Lookup implements Painter {
         }
 
         if(image == null){
-            throw new Error("Could not load image");
+            throw new RuntimeException("Could not load image");
         }
 
         BufferedImage bi = new BufferedImage(image.getWidth(null),

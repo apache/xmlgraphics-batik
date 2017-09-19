@@ -225,7 +225,7 @@ public class SVGAlphaComposite extends AbstractSVGConverter {
             id = ID_PREFIX_ALPHA_COMPOSITE_DST_OVER;
             break;
         default:
-            throw new Error("invalid rule:" + composite.getRule() );
+            throw new RuntimeException("invalid rule:" + composite.getRule() );
         }
 
         Element compositeFilter =

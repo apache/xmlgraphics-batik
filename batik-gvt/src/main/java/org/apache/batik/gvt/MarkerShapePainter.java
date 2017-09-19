@@ -686,7 +686,7 @@ public class MarkerShapePainter implements ShapePainter {
             break;
         case PathIterator.SEG_CLOSE:
             // Should not have any close at this point
-            throw new Error("should not have SEG_CLOSE here");
+            throw new RuntimeException("should not have SEG_CLOSE here");
         case PathIterator.SEG_MOVETO:
             // Cannot compute the slope
         default:
@@ -825,7 +825,7 @@ public class MarkerShapePainter implements ShapePainter {
             return new Point2D.Double(coords[5], coords[6]);
         case PathIterator.SEG_CLOSE:
         default:
-            throw new Error( "invalid segmentType:" + segType );
+            throw new RuntimeException( "invalid segmentType:" + segType );
             // Should never happen: close segments are replaced with lineTo
         }
     }
