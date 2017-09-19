@@ -190,7 +190,7 @@ public class AffineRed extends AbstractRed {
         myBI = new BufferedImage(myCM,wr.createWritableTranslatedChild(0,0),
                                  myCM.isAlphaPremultiplied(), null);
 
-        op.filter(srcBI, myBI);
+        op.filter(srcBI.getRaster(), myBI.getRaster());
 
         // if ((count % 40) == 0) {
         //     org.apache.batik.ImageDisplay.showImage("Src: " , srcBI);
