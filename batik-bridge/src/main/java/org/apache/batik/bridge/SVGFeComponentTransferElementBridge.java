@@ -292,7 +292,7 @@ public class SVGFeComponentTransferElementBridge
                 }
             }
             default:
-                throw new Error("invalid convertType:" + type ); // can't be reached
+                throw new RuntimeException("invalid convertType:" + type ); // can't be reached
             }
 
         }

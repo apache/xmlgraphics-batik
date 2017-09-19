@@ -102,7 +102,7 @@ public final class ARGBChannel implements Serializable{
         case CHANNEL_A:
             return A;
         default:
-            throw new Error("Unknown ARGBChannel value");
+            throw new RuntimeException("Unknown ARGBChannel value");
         }
     }
 }

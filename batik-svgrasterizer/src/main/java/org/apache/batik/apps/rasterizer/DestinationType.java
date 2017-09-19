@@ -124,7 +124,7 @@ public final class DestinationType {
         case PDF_CODE:
             return PDF;
         default:
-            throw new Error("unknown code:" + code );
+            throw new RuntimeException("unknown code:" + code );
         }
     }
 }

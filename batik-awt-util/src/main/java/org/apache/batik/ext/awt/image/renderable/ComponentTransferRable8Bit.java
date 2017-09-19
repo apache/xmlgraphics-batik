@@ -226,7 +226,7 @@ public class ComponentTransferRable8Bit
                 break;
             default:
                 // Should never happen
-                throw new Error();
+                throw new RuntimeException();
             }
         }
 

@@ -94,7 +94,7 @@ public class CanvasGraphicsNode extends CompositeGraphicsNode {
                 inverseTransform = transform.createInverse();
             }catch(NoninvertibleTransformException e){
                 // Should never happen.
-                throw new Error( e.getMessage() );
+                throw new RuntimeException( e.getMessage() );
             }
         }
         else{
@@ -127,7 +127,7 @@ public class CanvasGraphicsNode extends CompositeGraphicsNode {
                 inverseTransform = transform.createInverse();
             }catch(NoninvertibleTransformException e){
                 // Should never happen.
-                throw new Error( e.getMessage() );
+                throw new RuntimeException( e.getMessage() );
             }
         }
         else{

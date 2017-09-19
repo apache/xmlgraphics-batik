@@ -236,7 +236,7 @@ public final class CompositeRule implements java.io.Serializable {
         case RULE_LIGHTEN:
             return LIGHTEN;
         default:
-            throw new Error("Unknown Composite Rule type");
+            throw new RuntimeException("Unknown Composite Rule type");
         }
     }
 
@@ -271,7 +271,7 @@ public final class CompositeRule implements java.io.Serializable {
         case RULE_LIGHTEN:
             return "[CompositeRule: LIGHTEN]";
         default:
-            throw new Error("Unknown Composite Rule type");
+            throw new RuntimeException("Unknown Composite Rule type");
         }
     }
 

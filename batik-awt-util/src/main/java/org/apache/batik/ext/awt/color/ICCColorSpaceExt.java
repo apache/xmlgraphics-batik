@@ -83,7 +83,7 @@ public class ICCColorSpaceExt extends ICC_ColorSpace {
             case SATURATION:
             return saturationToRGB(values);
             default:
-            throw new Error("invalid intent:" + intent );
+            throw new RuntimeException("invalid intent:" + intent );
         }
     }
 

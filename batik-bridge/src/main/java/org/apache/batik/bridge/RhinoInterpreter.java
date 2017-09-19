@@ -362,7 +362,7 @@ public class RhinoInterpreter implements Interpreter {
                                      SOURCE_NAME_SVG, 1, rhinoClassLoader);
                             } catch (IOException ioEx ) {
                                 // Should never happen: using a string
-                                throw new Error( ioEx.getMessage() );
+                                throw new RuntimeException( ioEx.getMessage() );
                             }
                         }
                     };

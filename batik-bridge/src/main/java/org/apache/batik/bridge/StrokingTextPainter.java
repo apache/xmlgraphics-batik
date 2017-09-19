@@ -1470,7 +1470,7 @@ public class StrokingTextPainter extends BasicTextPainter {
             start = (BasicTextPainter.BasicMark) startMark;
             finish = (BasicTextPainter.BasicMark) finishMark;
         } catch (ClassCastException cce) {
-            throw new Error
+            throw new RuntimeException
                 ("This Mark was not instantiated by this TextPainter class!");
         }
 
@@ -1478,7 +1478,7 @@ public class StrokingTextPainter extends BasicTextPainter {
         if (textNode == null)
             return null;
         if (textNode != finish.getTextNode())
-            throw new Error("Markers are from different TextNodes!");
+            throw new RuntimeException("Markers are from different TextNodes!");
 
         AttributedCharacterIterator aci;
         aci = textNode.getAttributedCharacterIterator();
@@ -1555,7 +1555,7 @@ public class StrokingTextPainter extends BasicTextPainter {
             begin = (BasicTextPainter.BasicMark) beginMark;
             end = (BasicTextPainter.BasicMark) endMark;
         } catch (ClassCastException cce) {
-            throw new Error
+            throw new RuntimeException
                 ("This Mark was not instantiated by this TextPainter class!");
         }
 
@@ -1563,7 +1563,7 @@ public class StrokingTextPainter extends BasicTextPainter {
         if (textNode == null)
             return null;
         if (textNode != end.getTextNode())
-            throw new Error("Markers are from different TextNodes!");
+            throw new RuntimeException("Markers are from different TextNodes!");
 
         AttributedCharacterIterator aci;
         aci = textNode.getAttributedCharacterIterator();

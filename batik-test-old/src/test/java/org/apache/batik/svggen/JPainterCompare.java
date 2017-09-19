@@ -180,7 +180,7 @@ public class JPainterCompare extends JPanel implements SVGConstants{
         }
 
         else{
-            throw new Error
+            throw new RuntimeException
                 (Messages.formatMessage(ERROR_COULD_NOT_RENDER_GENERATED_SVG,null));
         }
     }

@@ -193,7 +193,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
                 inverseTransform = transform.createInverse();
             }catch(NoninvertibleTransformException e){
                 // Should never happen.
-                throw new Error( e.getMessage() );
+                throw new RuntimeException( e.getMessage() );
             }
         } else {
             // The transform is not invertible. Use the same

@@ -236,7 +236,7 @@ public class ApplicationSecurityEnforcer {
         if (mainClassURL == null){
             // Something is really wrong: we would be running a class
             // which can't be found....
-            throw new Error(appMainClassRelativeURL);
+            throw new RuntimeException(appMainClassRelativeURL);
         }
         
         String expandedMainClassName = mainClassURL.toString();
@@ -274,7 +274,7 @@ public class ApplicationSecurityEnforcer {
                 // Something is seriously wrong. This should *never* happen
                 // as the APP_SECURITY_POLICY_URL is such that it will be
                 // a substring of its corresponding URL value
-                throw new Error();
+                throw new RuntimeException();
             }
             
             String appCodeBase = expandedMainClassName.substring(0, codeBaseEnd);
@@ -312,7 +312,7 @@ public class ApplicationSecurityEnforcer {
                 // Something is seriously wrong. This should *never* happen
                 // as the APP_SECURITY_POLICY_URL is such that it will be
                 // a substring of its corresponding URL value
-                throw new Error();
+                throw new RuntimeException();
             }
             
             String appCodeBase = expandedMainClassName.substring(0, codeBaseEnd);

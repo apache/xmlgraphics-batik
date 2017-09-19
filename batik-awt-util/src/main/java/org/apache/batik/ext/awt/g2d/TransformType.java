@@ -105,7 +105,7 @@ public class TransformType{
         case TRANSFORM_GENERAL:
             return TransformType.GENERAL;
         default:
-            throw new Error("Unknown TransformType value:" + val );
+            throw new RuntimeException("Unknown TransformType value:" + val );
         }
     }
 }
