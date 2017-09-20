@@ -73,7 +73,7 @@
 
     <module name="FileContentsHolder"/>
 
-    <!-- <module name="FinalClass"/> -->
+    <module name="FinalClass"/>
 
     <module name="GenericWhitespace"/> 
 
@@ -153,7 +153,7 @@
 
     <module name="TypecastParenPad">
       <property name="tokens" value="RPAREN,TYPECAST"/>
-    </module><!-- -->
+    </module>
 
     <module name="UnusedImports">
       <property name="processJavadoc" value="true"/>

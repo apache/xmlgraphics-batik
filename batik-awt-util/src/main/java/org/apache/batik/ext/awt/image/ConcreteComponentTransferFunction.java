@@ -27,7 +27,7 @@ package org.apache.batik.ext.awt.image;
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-public class ConcreteComponentTransferFunction implements ComponentTransferFunction {
+public final class ConcreteComponentTransferFunction implements ComponentTransferFunction {
     private int type;
     private float slope;
     private float[] tableValues;

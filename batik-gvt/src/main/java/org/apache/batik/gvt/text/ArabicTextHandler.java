@@ -32,7 +32,7 @@ import java.util.Map;
  * @author <a href="mailto:bella.robinson@cmis.csiro.au">Bella Robinson</a>
  * @version $Id$
  */
-public class ArabicTextHandler {
+public final class ArabicTextHandler {
 
     private static final int arabicStart = 0x0600;
     private static final int arabicEnd = 0x06FF;

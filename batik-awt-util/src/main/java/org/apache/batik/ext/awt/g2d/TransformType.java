@@ -25,7 +25,7 @@ package org.apache.batik.ext.awt.g2d;
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-public class TransformType{
+public final class TransformType{
     /*
      * Transform type constants
      */
