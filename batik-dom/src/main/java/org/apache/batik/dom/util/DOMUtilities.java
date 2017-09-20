@@ -56,7 +56,7 @@ public class DOMUtilities extends XMLUtilities implements XMLConstants {
     /**
      * A node in a linked list of prefix to namespace name mappings.
      */
-    private static class NSMap {
+    private static final class NSMap {
 
         /**
          * The prefix to map.

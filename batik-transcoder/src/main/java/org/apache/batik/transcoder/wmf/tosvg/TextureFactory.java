@@ -36,7 +36,7 @@ import org.apache.batik.transcoder.wmf.WMFConstants;
  *
  * @version $Id$
  */
-public class TextureFactory {
+public final class TextureFactory {
     private static TextureFactory fac = null;
     private Map textures = new HashMap(1);
     private static final int SIZE = 10;

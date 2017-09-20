@@ -38,7 +38,7 @@ import org.apache.batik.swing.*;
 *    
 *    
 */
-public class ScrollExample
+public final class ScrollExample
 {
     
     /** Command-line start */
