@@ -36,7 +36,6 @@ import org.apache.batik.css.engine.CSSEngineEvent;
 import org.apache.batik.dom.AbstractNode;
 import org.apache.batik.dom.svg.SVGAnimationContext;
 import org.apache.batik.dom.util.XLinkSupport;
-import org.apache.batik.util.SVGTypes;
 
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
@@ -241,7 +240,7 @@ public abstract class SVGAnimationElementBridge extends AbstractSVGBridge
     /**
      * Returns whether the animation element being handled by this bridge can
      * animate attributes of the specified type.
-     * @param type one of the TYPE_ constants defined in {@link SVGTypes}.
+     * @param type one of the TYPE_ constants defined in {@link org.apache.batik.util.SVGTypes;}.
      */
     protected abstract boolean canAnimateType(int type);
 
