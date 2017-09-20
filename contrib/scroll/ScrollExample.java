@@ -24,7 +24,6 @@ import java.io.File;
 import java.net.URL;
 import java.net.MalformedURLException;
 import javax.swing.JFrame;
-import javax.swing.WindowConstants;
 
 import org.apache.batik.swing.*;
 

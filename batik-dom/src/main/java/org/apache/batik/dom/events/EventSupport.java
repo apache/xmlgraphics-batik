@@ -26,7 +26,6 @@ import org.apache.batik.dom.AbstractNode;
 import org.apache.batik.dom.util.HashTable;
 
 import org.w3c.dom.DOMException;
-import org.w3c.dom.Node;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventException;
 import org.w3c.dom.events.EventListener;
@@ -187,7 +186,7 @@ public class EventSupport {
      * Moves all of the event listeners from this EventSupport object
      * to the given EventSupport object.
      * Used by {@link
-     * org.apache.batik.dom.AbstractDocument#renameNode(Node,String,String)}.
+     * org.apache.batik.dom.AbstractDocument#renameNode(org.w3c.dom.Node,String,String)}.
      */
     public void moveEventListeners(EventSupport other) {
         other.capturingListeners = capturingListeners;

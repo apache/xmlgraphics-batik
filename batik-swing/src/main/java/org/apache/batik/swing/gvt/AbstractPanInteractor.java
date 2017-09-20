@@ -19,14 +19,13 @@
 package org.apache.batik.swing.gvt;
 
 import java.awt.Cursor;
-import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 
 /**
  * This class represents a pan interactor.
  * To use it, just redefine the {@link
- * InteractorAdapter#startInteraction(InputEvent)} method.
+ * InteractorAdapter#startInteraction(java.awt.event.InputEvent)} method.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$

@@ -16,7 +16,6 @@
    limitations under the License.
 
  */
-import java.io.IOException;
 import java.net.URL;
 
 import javax.swing.JApplet; 
