@@ -111,7 +111,8 @@ public interface EventTarget {
      *    NOT_SUPPORTED_ERR: Raised if the <code>Event</code> object has not 
      *   been created using <code>DocumentEvent.createEvent()</code>. 
      *   <br> INVALID_CHARACTER_ERR: Raised if <code>Event.type</code> is not 
-     *   an <a href='http://www.w3.org/TR/2004/REC-xml-names11-20040204/#NT-NCName'>NCName</a> as defined in [<a href='http://www.w3.org/TR/2004/REC-xml-names11-20040204/'>XML Namespaces 1.1</a>]
+     *   an <a href='http://www.w3.org/TR/2004/REC-xml-names11-20040204/#NT-NCName'>NCName</a> as defined in
+     *   [<a href='http://www.w3.org/TR/2004/REC-xml-names11-20040204/'>XML Namespaces 1.1</a>]
      *   . 
      * @version DOM Level 3
      */

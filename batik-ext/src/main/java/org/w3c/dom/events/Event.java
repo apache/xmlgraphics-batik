@@ -45,7 +45,9 @@ public interface Event {
     short BUBBLING_PHASE            = 3;
 
     /**
-     *  The local name of the event type. The name must be an <a href='http://www.w3.org/TR/2004/REC-xml-names11-20040204/#NT-NCName'>NCName</a> as defined in [<a href='http://www.w3.org/TR/2004/REC-xml-names11-20040204/'>XML Namespaces 1.1</a>]
+     *  The local name of the event type. The name must be an
+     *  <a href='http://www.w3.org/TR/2004/REC-xml-names11-20040204/#NT-NCName'>NCName</a> as defined in
+     *  [<a href='http://www.w3.org/TR/2004/REC-xml-names11-20040204/'>XML Namespaces 1.1</a>]
      *  and is case-sensitive. 
      */
     String getType();

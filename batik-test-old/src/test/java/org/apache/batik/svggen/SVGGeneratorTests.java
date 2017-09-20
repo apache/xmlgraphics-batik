@@ -145,12 +145,16 @@ public class SVGGeneratorTests extends DefaultTestSuite {
         String testSource = GENERATOR_REFERENCE_BASE + cl + SVG_EXTENSION;
         String testReference = GENERATOR_REFERENCE_BASE + RENDERING_DIR + "/" + cl + PNG_EXTENSION;
         String[] variationURLs = new String[VARIATION_PLATFORMS.length + 1];
-        variationURLs[0] = GENERATOR_REFERENCE_BASE + RENDERING_DIR + "/" + ACCEPTED_VARIATION_DIR + "/" + cl + PNG_EXTENSION;
+        variationURLs[0] =
+                GENERATOR_REFERENCE_BASE + RENDERING_DIR + "/" + ACCEPTED_VARIATION_DIR + "/" + cl + PNG_EXTENSION;
         for (int i = 0; i < VARIATION_PLATFORMS.length; i++) {
-            variationURLs[i + 1] = GENERATOR_REFERENCE_BASE + RENDERING_DIR + "/" + ACCEPTED_VARIATION_DIR + "/" + cl + '_' + VARIATION_PLATFORMS[i] + PNG_EXTENSION;
+            variationURLs[i + 1] = GENERATOR_REFERENCE_BASE + RENDERING_DIR + "/" + ACCEPTED_VARIATION_DIR + "/" + cl
+                    + '_' + VARIATION_PLATFORMS[i] + PNG_EXTENSION;
         }
-        String saveVariation = GENERATOR_REFERENCE_BASE + RENDERING_DIR + "/" + CANDIDATE_VARIATION_DIR + "/" + cl + PNG_EXTENSION;
-        String candidateReference = GENERATOR_REFERENCE_BASE + RENDERING_DIR + "/" + RENDERING_CANDIDATE_REF_DIR + "/" + cl + PNG_EXTENSION;
+        String saveVariation =
+                GENERATOR_REFERENCE_BASE + RENDERING_DIR + "/" + CANDIDATE_VARIATION_DIR + "/" + cl + PNG_EXTENSION;
+        String candidateReference =
+                GENERATOR_REFERENCE_BASE + RENDERING_DIR + "/" + RENDERING_CANDIDATE_REF_DIR + "/" + cl + PNG_EXTENSION;
 
         SVGRenderingAccuracyTest test = new SVGRenderingAccuracyTest(testSource, testReference);
         for (String variationURL : variationURLs) {

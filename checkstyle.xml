@@ -40,10 +40,10 @@
 
   <module name="TreeWalker">
 
-<!--     <module name="LineLength">
-      <property name="max" value="120"/>
+     <module name="LineLength">
+      <property name="max" value="150"/>
     </module> 
-
+<!--
     <module name="AnnotationUseStyle"/>-->
 
     <module name="ArrayTypeStyle"/>

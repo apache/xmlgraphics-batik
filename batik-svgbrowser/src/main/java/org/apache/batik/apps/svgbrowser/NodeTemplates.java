@@ -1150,7 +1150,8 @@ public class NodeTemplates {
 
     public static String animateElementName = SVGConstants.SVG_ANIMATE_TAG;
 
-    public static String animateElementValue = "<animate attributeName=\"fill\" from=\"white\" to=\"black\" dur=\"1s\"/>";
+    public static String animateElementValue =
+            "<animate attributeName=\"fill\" from=\"white\" to=\"black\" dur=\"1s\"/>";
 
     public static short animateElementType = Node.ELEMENT_NODE;
 
@@ -1163,7 +1164,8 @@ public class NodeTemplates {
 
     public static String animateColorElementName = SVGConstants.SVG_ANIMATE_COLOR_TAG;
 
-    public static String animateColorElementValue = "<animateColor attributeName=\"fill\" from=\"white\" to=\"black\" dur=\"1s\"/>";
+    public static String animateColorElementValue =
+            "<animateColor attributeName=\"fill\" from=\"white\" to=\"black\" dur=\"1s\"/>";
 
     public static short animateColorElementType = Node.ELEMENT_NODE;
 
@@ -1189,7 +1191,8 @@ public class NodeTemplates {
 
     public static String animateTransformElementName = SVGConstants.SVG_ANIMATE_TRANSFORM_TAG;
 
-    public static String animateTransformElementValue = "<animateTransform attributeName=\"transform\" type=\"rotate\" from=\"0\" to=\"0\" dur=\"1s\"/>";
+    public static String animateTransformElementValue =
+            "<animateTransform attributeName=\"transform\" type=\"rotate\" from=\"0\" to=\"0\" dur=\"1s\"/>";
 
     public static short animateTransformElementType = Node.ELEMENT_NODE;
 

@@ -197,7 +197,8 @@ public interface MouseEvent extends UIEvent {
      * @param relatedTargetArg  Refer to the 
      *   <code>MouseEvent.initMouseEvent()</code> method for a description 
      *   of this parameter. 
-     * @param modifiersList  A <a href='http://www.w3.org/TR/2004/REC-xml-20040204/#NT-S'>white space</a> separated list of modifier key identifiers to be activated on this 
+     * @param modifiersList  A <a href='http://www.w3.org/TR/2004/REC-xml-20040204/#NT-S'>white space</a> separated
+     *                       list of modifier key identifiers to be activated on this
      *   object. As an example, <code>"Control Alt"</code> will activated 
      *   the control and alt modifiers.   
      * @since DOM Level 3
