@@ -132,7 +132,8 @@ public interface KeyboardEvent extends UIEvent {
      *   <code>KeyboardEvent.keyIdentifier</code>. 
      * @param keyLocationArg  Specifies <code>KeyboardEvent.keyLocation</code>
      *   . 
-     * @param modifiersList  A <a href='http://www.w3.org/TR/2004/REC-xml-20040204/#NT-S'>white space</a> separated list of modifier key identifiers to be activated on this 
+     * @param modifiersList  A <a href='http://www.w3.org/TR/2004/REC-xml-20040204/#NT-S'>white space</a> separated
+     *                       list of modifier key identifiers to be activated on this
      *   object. 
      */
     void initKeyboardEvent(String typeArg,
@@ -164,7 +165,8 @@ public interface KeyboardEvent extends UIEvent {
      * @param keyLocationArg  Refer to the 
      *   <code>KeyboardEvent.initKeyboardEvent()</code> method for a 
      *   description of this parameter. 
-     * @param modifiersList  A <a href='http://www.w3.org/TR/2004/REC-xml-20040204/#NT-S'>white space</a> separated list of modifier key identifiers to be activated on this 
+     * @param modifiersList  A <a href='http://www.w3.org/TR/2004/REC-xml-20040204/#NT-S'>white space</a> separated
+     *                       list of modifier key identifiers to be activated on this
      *   object. As an example, <code>"Control Alt"</code> will activated 
      *   the control and alt modifiers. 
      */

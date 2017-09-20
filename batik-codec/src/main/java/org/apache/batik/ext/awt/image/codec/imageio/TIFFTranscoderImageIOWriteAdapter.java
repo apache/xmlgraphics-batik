@@ -48,7 +48,8 @@ public class TIFFTranscoderImageIOWriteAdapter
 
     /**
      * @throws TranscoderException 
-     * @see org.apache.batik.transcoder.image.TIFFTranscoder.WriteAdapter#writeImage(TIFFTranscoder, java.awt.image.BufferedImage, org.apache.batik.transcoder.TranscoderOutput)
+     * @see org.apache.batik.transcoder.image.TIFFTranscoder.WriteAdapter#writeImage(TIFFTranscoder,
+     * java.awt.image.BufferedImage, org.apache.batik.transcoder.TranscoderOutput)
      */
     public void writeImage(TIFFTranscoder transcoder, BufferedImage img,
             TranscoderOutput output) throws TranscoderException {
