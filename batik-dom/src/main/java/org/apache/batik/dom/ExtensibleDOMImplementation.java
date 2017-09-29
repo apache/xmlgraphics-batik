@@ -18,6 +18,7 @@
  */
 package org.apache.batik.dom;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -123,7 +124,7 @@ public abstract class ExtensibleDOMImplementation
         String pn = XMLResourceDescriptor.getCSSParserClassName();
         Parser p;
         try {
-            p = (Parser)Class.forName(pn).newInstance();
+            p = (Parser)Class.forName(pn).getDeclaredConstructor().newInstance();
         } catch (ClassNotFoundException e) {
             throw new DOMException(DOMException.INVALID_ACCESS_ERR,
                                    formatMessage("css.parser.class",
@@ -136,6 +137,14 @@ public abstract class ExtensibleDOMImplementation
             throw new DOMException(DOMException.INVALID_ACCESS_ERR,
                                    formatMessage("css.parser.access",
                                                  new Object[] { pn }));
+        } catch (NoSuchMethodException e) {
+            throw new DOMException(DOMException.INVALID_ACCESS_ERR,
+                    formatMessage("css.parser.access",
+                            new Object[] { pn }));
+        } catch (InvocationTargetException e) {
+            throw new DOMException(DOMException.INVALID_ACCESS_ERR,
+                    formatMessage("css.parser.access",
+                            new Object[] { pn }));
         }
         ExtendedParser ep = ExtendedParserWrapper.wrap(p);
 

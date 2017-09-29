@@ -95,7 +95,7 @@ public class SVGGeneratorTests extends DefaultTestSuite {
         Object o = null;
 
         try {
-            o = cl.newInstance();
+            o = cl.getDeclaredConstructor().newInstance();
         }catch(Exception e){
             throw new IllegalArgumentException(clName);
         }

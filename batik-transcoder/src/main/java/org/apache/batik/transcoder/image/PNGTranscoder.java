@@ -21,6 +21,7 @@ package org.apache.batik.transcoder.image;
 import java.awt.image.BufferedImage;
 import java.awt.image.SinglePixelPackedSampleModel;
 import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
 
 import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.transcoder.TranscoderException;
@@ -63,13 +64,17 @@ public class PNGTranscoder extends ImageTranscoder {
         WriteAdapter adapter;
         try {
             Class clazz = Class.forName(className);
-            adapter = (WriteAdapter)clazz.newInstance();
+            adapter = (WriteAdapter)clazz.getDeclaredConstructor().newInstance();
             return adapter;
         } catch (ClassNotFoundException e) {
             return null;
         } catch (InstantiationException e) {
             return null;
         } catch (IllegalAccessException e) {
+            return null;
+        } catch (NoSuchMethodException e) {
+            return null;
+        } catch (InvocationTargetException e) {
             return null;
         }
     }

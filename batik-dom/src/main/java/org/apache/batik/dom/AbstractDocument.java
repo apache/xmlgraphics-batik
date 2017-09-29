@@ -2730,7 +2730,7 @@ public abstract class AbstractDocument
             implementation = (DOMImplementation)m.invoke(null, (Object[])null);
         } catch (Exception e) {
             try {
-                implementation = (DOMImplementation)c.newInstance();
+                implementation = (DOMImplementation)c.getDeclaredConstructor().newInstance();
             } catch (Exception ex) {
             }
         }
