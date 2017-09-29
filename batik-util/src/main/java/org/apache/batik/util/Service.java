@@ -120,7 +120,7 @@ public class Service {
                         // System.out.println("Line: " + line);
 
                         // Try and load the class
-                        Object obj = cl.loadClass(line).newInstance();
+                        Object obj = cl.loadClass(line).getDeclaredConstructor().newInstance();
                         // stick it into our vector...
                         l.add(obj);
                     } catch (Exception ex) {

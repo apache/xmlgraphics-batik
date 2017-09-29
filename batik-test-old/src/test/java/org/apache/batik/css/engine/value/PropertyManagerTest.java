@@ -121,7 +121,7 @@ public class PropertyManagerTest extends AbstractTest {
      * Creates the value manager.
      */
     protected ValueManager createValueManager() throws Exception {
-        return (ValueManager)Class.forName(managerClassName).newInstance();
+        return (ValueManager)Class.forName(managerClassName).getDeclaredConstructor().newInstance();
     }
 
     /**

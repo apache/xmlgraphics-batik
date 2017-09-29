@@ -228,7 +228,7 @@ public class JPainterCompare extends JPanel implements SVGConstants{
         Object o = null;
 
         try{
-            o = cl.newInstance();
+            o = cl.getDeclaredConstructor().newInstance();
             System.out.println
                 (Messages.formatMessage(MESSAGES_INSTANCIATED_OBJECT,
                                         null));

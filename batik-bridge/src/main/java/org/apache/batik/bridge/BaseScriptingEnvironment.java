@@ -418,7 +418,7 @@ public class BaseScriptingEnvironment {
                 if (sh != null) {
                     // Run the script handler.
                     ScriptHandler h;
-                    h = (ScriptHandler)cll.loadClass(sh).newInstance();
+                    h = (ScriptHandler)cll.loadClass(sh).getDeclaredConstructor().newInstance();
 
                     h.run(document, getWindow());
                 }
@@ -428,7 +428,7 @@ public class BaseScriptingEnvironment {
                     // Run the initializer
                     EventListenerInitializer initializer;
                     initializer =
-                        (EventListenerInitializer)cll.loadClass(sh).newInstance();
+                        (EventListenerInitializer)cll.loadClass(sh).getDeclaredConstructor().newInstance();
 
                     getWindow();
 

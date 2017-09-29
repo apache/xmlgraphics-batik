@@ -94,7 +94,7 @@ public final class DestinationType {
             case PDF_CODE:
                 try {
                     Class pdfClass = Class.forName("org.apache.fop.svg.PDFTranscoder");
-                    return (Transcoder)pdfClass.newInstance();
+                    return (Transcoder)pdfClass.getDeclaredConstructor().newInstance();
                 } catch(Exception e) {
                     return null;
                 }

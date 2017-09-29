@@ -253,7 +253,7 @@ public class XMLReflect implements XMLReflectConstants{
             }
             else{
                 // Default constructor
-                return cl.newInstance();
+                return cl.getDeclaredConstructor().newInstance();
             }
         }
         else{

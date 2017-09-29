@@ -73,7 +73,7 @@ public class SimpleTestRunner {
         Test t = null;
 
         try{
-            t = (Test)cl.newInstance();
+            t = (Test)cl.getDeclaredConstructor().newInstance();
         }catch(ClassCastException e){
             System.err.println(Messages.formatMessage(ERROR_CLASS_CAST,
                                                       new Object[]{ className,
