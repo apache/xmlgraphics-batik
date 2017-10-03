@@ -18,9 +18,11 @@
  */
 package org.apache.batik.dom.events;
 
-import org.apache.batik.dom.util.HashTable;
+
 import org.w3c.dom.DOMException;
 import org.w3c.dom.events.Event;
+
+import java.util.HashMap;
 
 /**
  * This class implements the behavior of DocumentEvent.
@@ -98,7 +100,7 @@ public class DocumentEventSupport {
     /**
      * The event factories table.
      */
-    protected HashTable eventFactories = new HashTable();
+    protected HashMap eventFactories = new HashMap();
     {
         // DOM 3 event names:
         eventFactories.put(EVENT_TYPE.toLowerCase(),

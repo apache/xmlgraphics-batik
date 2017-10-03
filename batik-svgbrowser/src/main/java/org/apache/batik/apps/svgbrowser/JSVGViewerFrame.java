@@ -101,7 +101,7 @@ import org.apache.batik.bridge.UpdateManager;
 import org.apache.batik.bridge.UpdateManagerEvent;
 import org.apache.batik.bridge.UpdateManagerListener;
 import org.apache.batik.dom.StyleSheetProcessingInstruction;
-import org.apache.batik.dom.util.HashTable;
+
 import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.ext.swing.JAffineTransformChooser;
 import org.apache.batik.swing.JSVGCanvas;
@@ -2042,7 +2042,7 @@ public class JSVGViewerFrame
                     if (n instanceof StyleSheetProcessingInstruction) {
                         StyleSheetProcessingInstruction sspi;
                         sspi = (StyleSheetProcessingInstruction)n;
-                        HashTable attrs = sspi.getPseudoAttributes();
+                        HashMap attrs = sspi.getPseudoAttributes();
                         final String title = (String)attrs.get("title");
                         String alt = (String)attrs.get("alternate");
                         if (title != null && "yes".equals(alt)) {

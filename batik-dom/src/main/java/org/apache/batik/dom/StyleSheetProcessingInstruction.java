@@ -20,11 +20,13 @@
 package org.apache.batik.dom;
 
 import org.apache.batik.dom.util.DOMUtilities;
-import org.apache.batik.dom.util.HashTable;
+
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
 import org.w3c.dom.stylesheets.LinkStyle;
 import org.w3c.dom.stylesheets.StyleSheet;
+
+import java.util.HashMap;
 
 /**
  * This class provides an implementation of the 'xml-stylesheet' processing
@@ -55,7 +57,7 @@ public class StyleSheetProcessingInstruction
     /**
      * The pseudo attributes.
      */
-    protected transient HashTable pseudoAttributes;
+    protected transient HashMap pseudoAttributes;
 
     /**
      * Creates a new ProcessingInstruction object.
@@ -116,9 +118,9 @@ public class StyleSheetProcessingInstruction
     /**
      * Returns the pseudo attributes in a table.
      */
-    public HashTable getPseudoAttributes() {
+    public HashMap getPseudoAttributes() {
         if (pseudoAttributes == null) {
-            pseudoAttributes = new HashTable();
+            pseudoAttributes = new HashMap();
             pseudoAttributes.put("alternate", "no");
             pseudoAttributes.put("media",     "all");
             DOMUtilities.parseStyleSheetPIData(data, pseudoAttributes);

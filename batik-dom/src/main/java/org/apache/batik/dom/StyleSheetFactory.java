@@ -18,9 +18,11 @@
  */
 package org.apache.batik.dom;
 
-import org.apache.batik.dom.util.HashTable;
+
 import org.w3c.dom.Node;
 import org.w3c.dom.stylesheets.StyleSheet;
+
+import java.util.HashMap;
 
 /**
  * This interface represents a StyleSheet factory.
@@ -34,5 +36,5 @@ public interface StyleSheetFactory {
      * processing instruction or return null when it is not possible
      * to create the given stylesheet.
      */
-    StyleSheet createStyleSheet(Node node, HashTable pseudoAttrs);
+    StyleSheet createStyleSheet(Node node, HashMap pseudoAttrs);
 }
