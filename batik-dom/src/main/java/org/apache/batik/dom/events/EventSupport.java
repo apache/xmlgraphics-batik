@@ -18,12 +18,12 @@
  */
 package org.apache.batik.dom.events;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.AbstractNode;
-import org.apache.batik.dom.util.HashTable;
 
 import org.w3c.dom.DOMException;
 import org.w3c.dom.events.Event;
@@ -44,12 +44,12 @@ public class EventSupport {
     /**
      * The capturing listeners table.
      */
-    protected HashTable capturingListeners;
+    protected HashMap capturingListeners;
 
     /**
      * The bubbling listeners table.
      */
-    protected HashTable bubblingListeners;
+    protected HashMap bubblingListeners;
 
     /**
      * The node for which events are being handled.
@@ -105,15 +105,15 @@ public class EventSupport {
                                    EventListener listener,
                                    boolean useCapture,
                                    Object group) {
-        HashTable listeners;
+        HashMap listeners;
         if (useCapture) {
             if (capturingListeners == null) {
-                capturingListeners = new HashTable();
+                capturingListeners = new HashMap();
             }
             listeners = capturingListeners;
         } else {
             if (bubblingListeners == null) {
-                bubblingListeners = new HashTable();
+                bubblingListeners = new HashMap();
             }
             listeners = bubblingListeners;
         }
@@ -164,7 +164,7 @@ public class EventSupport {
                                       String type,
                                       EventListener listener,
                                       boolean useCapture) {
-        HashTable listeners;
+        HashMap listeners;
         if (useCapture) {
             listeners = capturingListeners;
         } else {
@@ -414,7 +414,7 @@ public class EventSupport {
      */
     public EventListenerList getEventListeners(String type,
                                                boolean useCapture) {
-        HashTable listeners
+        HashMap listeners
             = useCapture ? capturingListeners : bubblingListeners;
         if (listeners == null) {
             return null;

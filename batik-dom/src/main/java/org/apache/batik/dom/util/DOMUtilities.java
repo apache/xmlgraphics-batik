@@ -23,6 +23,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.batik.dom.AbstractDocument;
@@ -851,7 +852,7 @@ public class DOMUtilities extends XMLUtilities implements XMLConstants {
      * Parses a 'xml-stylesheet' processing instruction data section and
      * puts the pseudo attributes in the given table.
      */
-    public static void parseStyleSheetPIData(String data, HashTable table) {
+    public static void parseStyleSheetPIData(String data, HashMap table) {
         // !!! Internationalization
         char c;
         int i = 0;

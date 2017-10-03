@@ -24,10 +24,12 @@ import org.apache.batik.css.engine.StyleSheet;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.StyleSheetFactory;
 import org.apache.batik.dom.StyleSheetProcessingInstruction;
-import org.apache.batik.dom.util.HashTable;
+
 import org.apache.batik.util.ParsedURL;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
+
+import java.util.HashMap;
 
 /**
  * This class provides an implementation of the 'xml-stylesheet' processing
@@ -78,7 +80,7 @@ public class SVGStyleSheetProcessingInstruction
      */
     public StyleSheet getCSSStyleSheet() {
         if (styleSheet == null) {
-            HashTable attrs = getPseudoAttributes();
+            HashMap attrs = getPseudoAttributes();
             String type = (String)attrs.get("type");
 
             if ("text/css".equals(type)) {

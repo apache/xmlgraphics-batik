@@ -18,6 +18,7 @@
  */
 package org.apache.batik.anim.dom;
 
+import java.util.HashMap;
 import java.util.HashSet;
 
 import org.apache.batik.dom.AbstractNode;
@@ -25,7 +26,7 @@ import org.apache.batik.dom.events.AbstractEvent;
 import org.apache.batik.dom.events.EventListenerList;
 import org.apache.batik.dom.events.EventSupport;
 import org.apache.batik.dom.events.NodeEventTarget;
-import org.apache.batik.dom.util.HashTable;
+
 import org.apache.batik.dom.xbl.NodeXBL;
 import org.apache.batik.dom.xbl.ShadowTreeEvent;
 import org.apache.batik.util.XMLConstants;
@@ -49,17 +50,17 @@ public class XBLEventSupport extends EventSupport {
     /**
      * The unstoppable capturing listeners table.
      */
-    protected HashTable capturingImplementationListeners;
+    protected HashMap capturingImplementationListeners;
 
     /**
      * The unstoppable bubbling listeners table.
      */
-    protected HashTable bubblingImplementationListeners;
+    protected HashMap bubblingImplementationListeners;
 
     /**
      * Map of event types to their aliases.
      */
-    protected static HashTable eventTypeAliases = new HashTable();
+    protected static HashMap eventTypeAliases = new HashMap();
     static {
         eventTypeAliases.put("SVGLoad",   "load");
         eventTypeAliases.put("SVGUnoad",  "unload");
@@ -124,15 +125,15 @@ public class XBLEventSupport extends EventSupport {
                                                  String type,
                                                  EventListener listener,
                                                  boolean useCapture) {
-        HashTable listeners;
+        HashMap listeners;
         if (useCapture) {
             if (capturingImplementationListeners == null) {
-                capturingImplementationListeners = new HashTable();
+                capturingImplementationListeners = new HashMap();
             }
             listeners = capturingImplementationListeners;
         } else {
             if (bubblingImplementationListeners == null) {
-                bubblingImplementationListeners = new HashTable();
+                bubblingImplementationListeners = new HashMap();
             }
             listeners = bubblingImplementationListeners;
         }
@@ -151,7 +152,7 @@ public class XBLEventSupport extends EventSupport {
                                                     String type,
                                                     EventListener listener,
                                                     boolean useCapture) {
-        HashTable listeners = useCapture ? capturingImplementationListeners
+        HashMap listeners = useCapture ? capturingImplementationListeners
                                          : bubblingImplementationListeners;
         if (listeners == null) {
             return;
@@ -438,7 +439,7 @@ public class XBLEventSupport extends EventSupport {
      */
     public EventListenerList getImplementationEventListeners
             (String type, boolean useCapture) {
-        HashTable listeners = useCapture ? capturingImplementationListeners
+        HashMap listeners = useCapture ? capturingImplementationListeners
                                          : bubblingImplementationListeners;
         if (listeners == null) {
             return null;

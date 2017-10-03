@@ -21,6 +21,7 @@ package org.apache.batik.apps.svgbrowser;
 import java.io.File;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.HashMap;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -35,7 +36,7 @@ import javax.xml.transform.stream.StreamSource;
 import org.apache.batik.anim.dom.SAXSVGDocumentFactory;
 import org.apache.batik.anim.dom.SVGDOMImplementation;
 import org.apache.batik.dom.util.DOMUtilities;
-import org.apache.batik.dom.util.HashTable;
+
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLResourceDescriptor;
@@ -292,7 +293,7 @@ public class XMLInputHandler implements SquiggleInputHandler {
                 ProcessingInstruction pi 
                     = (ProcessingInstruction)child;
                 
-                HashTable table = new HashTable();
+                HashMap table = new HashMap();
                 DOMUtilities.parseStyleSheetPIData(pi.getData(),
                                                    table);
 

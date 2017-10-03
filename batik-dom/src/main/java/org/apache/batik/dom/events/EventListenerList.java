@@ -19,9 +19,11 @@
 package org.apache.batik.dom.events;
 
 import org.apache.batik.dom.util.IntTable;
-import org.apache.batik.dom.util.HashTable;
+
 
 import org.w3c.dom.events.EventListener;
+
+import java.util.HashMap;
 
 /**
  * Class to manager event listeners for one event type.
@@ -55,7 +57,7 @@ public class EventListenerList {
     /**
      * Caches of listeners with a given namespace URI.
      */
-    protected HashTable listenersNS = new HashTable();
+    protected HashMap listenersNS = new HashMap();
 
     /**
      * Adds a listener.
