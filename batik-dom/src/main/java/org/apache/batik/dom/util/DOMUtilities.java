@@ -852,7 +852,7 @@ public class DOMUtilities extends XMLUtilities implements XMLConstants {
      * Parses a 'xml-stylesheet' processing instruction data section and
      * puts the pseudo attributes in the given table.
      */
-    public static void parseStyleSheetPIData(String data, HashMap table) {
+    public static void parseStyleSheetPIData(String data, HashMap<String, String> table) {
         // !!! Internationalization
         char c;
         int i = 0;

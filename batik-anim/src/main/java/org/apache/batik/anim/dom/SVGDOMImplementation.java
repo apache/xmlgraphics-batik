@@ -77,7 +77,7 @@ public class SVGDOMImplementation
     protected static final String RESOURCES =
         "org.apache.batik.dom.svg.resources.Messages";
 
-    protected HashMap factories;
+    protected HashMap<String, ElementFactory> factories;
 
     /**
      * Returns the default instance of this class.
@@ -173,7 +173,7 @@ public class SVGDOMImplementation
      * Creates a stylesheet from the data of an xml-stylesheet
      * processing instruction or return null.
      */
-    public StyleSheet createStyleSheet(Node n, HashMap attrs) {
+    public StyleSheet createStyleSheet(Node n, HashMap<String, String> attrs) {
         throw new UnsupportedOperationException
             ("StyleSheetFactory.createStyleSheet is not implemented"); // XXX
     }
@@ -233,7 +233,7 @@ public class SVGDOMImplementation
     /**
      * The SVG element factories.
      */
-    protected static HashMap svg11Factories = new HashMap();
+    protected static HashMap<String, ElementFactory> svg11Factories = new HashMap<String, ElementFactory>();
 
     static {
         svg11Factories.put(SVGConstants.SVG_A_TAG,

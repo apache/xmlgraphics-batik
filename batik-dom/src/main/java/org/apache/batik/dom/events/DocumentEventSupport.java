@@ -100,7 +100,7 @@ public class DocumentEventSupport {
     /**
      * The event factories table.
      */
-    protected HashMap eventFactories = new HashMap();
+    protected HashMap<String, EventFactory> eventFactories = new HashMap<String, EventFactory>();
     {
         // DOM 3 event names:
         eventFactories.put(EVENT_TYPE.toLowerCase(),
@@ -163,7 +163,7 @@ public class DocumentEventSupport {
      */
     public Event createEvent(String eventType)
             throws DOMException {
-        EventFactory ef = (EventFactory)eventFactories.get(eventType.toLowerCase());
+        EventFactory ef = eventFactories.get(eventType.toLowerCase());
         if (ef == null) {
             throw new DOMException(DOMException.NOT_SUPPORTED_ERR,
                                    "Bad event type: " + eventType);

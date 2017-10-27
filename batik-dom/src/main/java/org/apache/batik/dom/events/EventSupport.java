@@ -44,12 +44,12 @@ public class EventSupport {
     /**
      * The capturing listeners table.
      */
-    protected HashMap capturingListeners;
+    protected HashMap<String, EventListenerList> capturingListeners;
 
     /**
      * The bubbling listeners table.
      */
-    protected HashMap bubblingListeners;
+    protected HashMap<String, EventListenerList> bubblingListeners;
 
     /**
      * The node for which events are being handled.
@@ -105,7 +105,7 @@ public class EventSupport {
                                    EventListener listener,
                                    boolean useCapture,
                                    Object group) {
-        HashMap listeners;
+        HashMap<String, EventListenerList> listeners;
         if (useCapture) {
             if (capturingListeners == null) {
                 capturingListeners = new HashMap();
@@ -117,7 +117,7 @@ public class EventSupport {
             }
             listeners = bubblingListeners;
         }
-        EventListenerList list = (EventListenerList) listeners.get(type);
+        EventListenerList list = listeners.get(type);
         if (list == null) {
             list = new EventListenerList();
             listeners.put(type, list);
@@ -164,7 +164,7 @@ public class EventSupport {
                                       String type,
                                       EventListener listener,
                                       boolean useCapture) {
-        HashMap listeners;
+        HashMap<String, EventListenerList> listeners;
         if (useCapture) {
             listeners = capturingListeners;
         } else {
@@ -173,7 +173,7 @@ public class EventSupport {
         if (listeners == null) {
             return;
         }
-        EventListenerList list = (EventListenerList) listeners.get(type);
+        EventListenerList list = listeners.get(type);
         if (list != null) {
             list.removeListener(namespaceURI, listener);
             if (list.size() == 0) {
@@ -388,8 +388,7 @@ public class EventSupport {
      */
     public boolean hasEventListenerNS(String namespaceURI, String type) {
         if (capturingListeners != null) {
-            EventListenerList ell
-                = (EventListenerList) capturingListeners.get(type);
+            EventListenerList ell = capturingListeners.get(type);
             if (ell != null) {
                 if (ell.hasEventListener(namespaceURI)) {
                     return true;
@@ -397,8 +396,7 @@ public class EventSupport {
             }
         }
         if (bubblingListeners != null) {
-            EventListenerList ell
-                = (EventListenerList) capturingListeners.get(type);
+            EventListenerList ell = capturingListeners.get(type);
             if (ell != null) {
                 return ell.hasEventListener(namespaceURI);
             }
@@ -414,12 +412,12 @@ public class EventSupport {
      */
     public EventListenerList getEventListeners(String type,
                                                boolean useCapture) {
-        HashMap listeners
+        HashMap<String, EventListenerList> listeners
             = useCapture ? capturingListeners : bubblingListeners;
         if (listeners == null) {
             return null;
         }
-        return (EventListenerList) listeners.get(type);
+        return listeners.get(type);
     }
 
     /**

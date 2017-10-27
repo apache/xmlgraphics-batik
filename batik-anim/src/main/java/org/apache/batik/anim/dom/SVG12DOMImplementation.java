@@ -174,7 +174,7 @@ public class SVG12DOMImplementation
     /**
      * The SVG element factories.
      */
-    protected static HashMap svg12Factories = new HashMap(svg11Factories);
+    protected static HashMap<String, ElementFactory> svg12Factories = new HashMap<String, ElementFactory>(svg11Factories);
 
     static {
         svg12Factories.put(SVG12Constants.SVG_FLOW_DIV_TAG,
@@ -414,7 +414,7 @@ public class SVG12DOMImplementation
     /**
      * The XBL element factories.
      */
-    protected static HashMap xblFactories = new HashMap();
+    protected static HashMap<String, ElementFactory> xblFactories = new HashMap<String, ElementFactory>();
 
     static {
         xblFactories.put(XBLConstants.XBL_XBL_TAG,

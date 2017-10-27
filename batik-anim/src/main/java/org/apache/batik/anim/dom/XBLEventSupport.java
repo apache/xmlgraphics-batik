@@ -50,17 +50,17 @@ public class XBLEventSupport extends EventSupport {
     /**
      * The unstoppable capturing listeners table.
      */
-    protected HashMap capturingImplementationListeners;
+    protected HashMap<String, EventListenerList> capturingImplementationListeners;
 
     /**
      * The unstoppable bubbling listeners table.
      */
-    protected HashMap bubblingImplementationListeners;
+    protected HashMap<String, EventListenerList> bubblingImplementationListeners;
 
     /**
      * Map of event types to their aliases.
      */
-    protected static HashMap eventTypeAliases = new HashMap();
+    protected static HashMap<String, String> eventTypeAliases = new HashMap<String, String>();
     static {
         eventTypeAliases.put("SVGLoad",   "load");
         eventTypeAliases.put("SVGUnoad",  "unload");
@@ -125,19 +125,19 @@ public class XBLEventSupport extends EventSupport {
                                                  String type,
                                                  EventListener listener,
                                                  boolean useCapture) {
-        HashMap listeners;
+        HashMap<String, EventListenerList> listeners;
         if (useCapture) {
             if (capturingImplementationListeners == null) {
-                capturingImplementationListeners = new HashMap();
+                capturingImplementationListeners = new HashMap<String, EventListenerList>();
             }
             listeners = capturingImplementationListeners;
         } else {
             if (bubblingImplementationListeners == null) {
-                bubblingImplementationListeners = new HashMap();
+                bubblingImplementationListeners = new HashMap<String, EventListenerList>();
             }
             listeners = bubblingImplementationListeners;
         }
-        EventListenerList list = (EventListenerList) listeners.get(type);
+        EventListenerList list = listeners.get(type);
         if (list == null) {
             list = new EventListenerList();
             listeners.put(type, list);
@@ -152,12 +152,12 @@ public class XBLEventSupport extends EventSupport {
                                                     String type,
                                                     EventListener listener,
                                                     boolean useCapture) {
-        HashMap listeners = useCapture ? capturingImplementationListeners
-                                         : bubblingImplementationListeners;
+        HashMap<String, EventListenerList> listeners = useCapture
+            ? capturingImplementationListeners : bubblingImplementationListeners;
         if (listeners == null) {
             return;
         }
-        EventListenerList list = (EventListenerList) listeners.get(type);
+        EventListenerList list = listeners.get(type);
         if (list == null) {
             return;
         }
@@ -439,12 +439,9 @@ public class XBLEventSupport extends EventSupport {
      */
     public EventListenerList getImplementationEventListeners
             (String type, boolean useCapture) {
-        HashMap listeners = useCapture ? capturingImplementationListeners
-                                         : bubblingImplementationListeners;
-        if (listeners == null) {
-            return null;
-        }
-        return (EventListenerList) listeners.get(type);
+        HashMap<String, EventListenerList> listeners = useCapture
+            ? capturingImplementationListeners : bubblingImplementationListeners;
+        return listeners != null ? listeners.get(type) : null;
     }
 
     /**
