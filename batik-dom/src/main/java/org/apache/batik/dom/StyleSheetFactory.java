@@ -36,5 +36,5 @@ public interface StyleSheetFactory {
      * processing instruction or return null when it is not possible
      * to create the given stylesheet.
      */
-    StyleSheet createStyleSheet(Node node, HashMap pseudoAttrs);
+    StyleSheet createStyleSheet(Node node, HashMap<String, String> pseudoAttrs);
 }

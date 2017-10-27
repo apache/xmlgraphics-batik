@@ -80,14 +80,14 @@ public class SVGStyleSheetProcessingInstruction
      */
     public StyleSheet getCSSStyleSheet() {
         if (styleSheet == null) {
-            HashMap attrs = getPseudoAttributes();
-            String type = (String)attrs.get("type");
+            HashMap<String, String> attrs = getPseudoAttributes();
+            String type = attrs.get("type");
 
             if ("text/css".equals(type)) {
-                String title     = (String)attrs.get("title");
-                String media     = (String)attrs.get("media");
-                String href      = (String)attrs.get("href");
-                String alternate = (String)attrs.get("alternate");
+                String title     = attrs.get("title");
+                String media     = attrs.get("media");
+                String href      = attrs.get("href");
+                String alternate = attrs.get("alternate");
                 SVGOMDocument doc = (SVGOMDocument)getOwnerDocument();
                 ParsedURL durl = doc.getParsedURL();
                 ParsedURL burl = new ParsedURL(durl, href);

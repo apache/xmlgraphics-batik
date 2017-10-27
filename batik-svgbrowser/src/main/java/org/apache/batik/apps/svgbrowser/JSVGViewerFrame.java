@@ -2042,9 +2042,9 @@ public class JSVGViewerFrame
                     if (n instanceof StyleSheetProcessingInstruction) {
                         StyleSheetProcessingInstruction sspi;
                         sspi = (StyleSheetProcessingInstruction)n;
-                        HashMap attrs = sspi.getPseudoAttributes();
-                        final String title = (String)attrs.get("title");
-                        String alt = (String)attrs.get("alternate");
+                        HashMap<String, String> attrs = sspi.getPseudoAttributes();
+                        final String title = attrs.get("title");
+                        String alt = attrs.get("alternate");
                         if (title != null && "yes".equals(alt)) {
                             JRadioButtonMenuItem button;
                             button = new JRadioButtonMenuItem(title);

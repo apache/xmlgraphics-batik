@@ -58,7 +58,7 @@ public abstract class AbstractDOMImplementation
     /**
      * The supported features.
      */
-    protected final HashMap features = new HashMap();
+    protected final HashMap<String, Object> features = new HashMap<String, Object>();
     {
         // registerFeature("BasicEvents",        "3.0");
         registerFeature("Core",               new String[] { "2.0", "3.0" });

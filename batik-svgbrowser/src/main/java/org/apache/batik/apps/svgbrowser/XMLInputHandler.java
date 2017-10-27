@@ -293,7 +293,7 @@ public class XMLInputHandler implements SquiggleInputHandler {
                 ProcessingInstruction pi 
                     = (ProcessingInstruction)child;
                 
-                HashMap table = new HashMap();
+                HashMap<String, String> table = new HashMap<String, String>();
                 DOMUtilities.parseStyleSheetPIData(pi.getData(),
                                                    table);
 

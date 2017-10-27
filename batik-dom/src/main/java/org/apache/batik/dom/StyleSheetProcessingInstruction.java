@@ -57,7 +57,7 @@ public class StyleSheetProcessingInstruction
     /**
      * The pseudo attributes.
      */
-    protected transient HashMap pseudoAttributes;
+    protected transient HashMap<String, String> pseudoAttributes;
 
     /**
      * Creates a new ProcessingInstruction object.
@@ -118,9 +118,9 @@ public class StyleSheetProcessingInstruction
     /**
      * Returns the pseudo attributes in a table.
      */
-    public HashMap getPseudoAttributes() {
+    public HashMap<String, String> getPseudoAttributes() {
         if (pseudoAttributes == null) {
-            pseudoAttributes = new HashMap();
+            pseudoAttributes = new HashMap<String, String>();
             pseudoAttributes.put("alternate", "no");
             pseudoAttributes.put("media",     "all");
             DOMUtilities.parseStyleSheetPIData(data, pseudoAttributes);
