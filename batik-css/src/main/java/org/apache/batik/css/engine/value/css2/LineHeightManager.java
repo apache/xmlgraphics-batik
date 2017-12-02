@@ -16,8 +16,7 @@
    limitations under the License.
 
  */
-
-package org.apache.batik.css.engine.value.svg12;
+package org.apache.batik.css.engine.value.css2;
 
 import org.apache.batik.css.engine.CSSEngine;
 import org.apache.batik.css.engine.CSSStylableElement;
@@ -25,8 +24,9 @@ import org.apache.batik.css.engine.StyleMap;
 import org.apache.batik.css.engine.value.LengthManager;
 import org.apache.batik.css.engine.value.FloatValue;
 import org.apache.batik.css.engine.value.Value;
+import org.apache.batik.css.engine.value.ValueConstants;
 import org.apache.batik.css.engine.value.ValueManager;
-import org.apache.batik.util.SVG12CSSConstants;
+import org.apache.batik.util.CSSConstants;
 import org.apache.batik.util.SVGTypes;
 
 import org.w3c.css.sac.LexicalUnit;
@@ -76,14 +76,14 @@ public class LineHeightManager extends LengthManager {
      * Implements {@link ValueManager#getPropertyName()}.
      */
     public String getPropertyName() {
-        return SVG12CSSConstants.CSS_LINE_HEIGHT_PROPERTY;
+        return CSSConstants.CSS_LINE_HEIGHT_PROPERTY;
     }
 
     /**
      * Implements {@link ValueManager#getDefaultValue()}.
      */
     public Value getDefaultValue() {
-        return SVG12ValueConstants.NORMAL_VALUE;
+        return ValueConstants.NORMAL_VALUE;
     }
 
     /**
@@ -94,11 +94,11 @@ public class LineHeightManager extends LengthManager {
 
         switch (lu.getLexicalUnitType()) {
         case LexicalUnit.SAC_INHERIT:
-            return SVG12ValueConstants.INHERIT_VALUE;
+            return ValueConstants.INHERIT_VALUE;
         case LexicalUnit.SAC_IDENT: {
             String s = lu.getStringValue().toLowerCase();
-            if (SVG12CSSConstants.CSS_NORMAL_VALUE.equals(s))
-                return SVG12ValueConstants.NORMAL_VALUE;
+            if (CSSConstants.CSS_NORMAL_VALUE.equals(s))
+                return ValueConstants.NORMAL_VALUE;
             throw createInvalidIdentifierDOMException(lu.getStringValue());
         }
         default:

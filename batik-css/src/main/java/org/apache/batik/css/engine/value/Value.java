@@ -84,6 +84,14 @@ public interface Value {
     Value getBlue() throws DOMException;
 
     /**
+     * The alpha value of the RGBA color. 
+     * @exception DOMException
+     *    INVALID_ACCESS_ERR: Raised if the value doesn't contain a RGB
+     *    color value. 
+     */
+    Value getAlpha() throws DOMException;
+
+    /**
      * The number of <code>CSSValues</code> in the list. The range of valid 
      * values of the indices is <code>0</code> to <code>length-1</code> 
      * inclusive.

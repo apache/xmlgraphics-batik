@@ -351,6 +351,9 @@ public interface GVTAttributedCharacterIterator extends AttributedCharacterItera
         public static final TextAttribute LANGUAGE =
                                           new TextAttribute("LANGUAGE");
 
+        public static final TextAttribute BACKGROUND_OUTLINE =
+                                          new TextAttribute("BACKGROUND_OUTLINE");
+
         // VALUES
 
         /** Value for WRITING_MODE indicating left-to-right */

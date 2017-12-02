@@ -342,6 +342,8 @@ public class ColorManager extends AbstractColorManager {
                            SVGValueConstants.BLUE_RGB_VALUE);
         computedValues.put(CSSConstants.CSS_TEAL_VALUE,
                            SVGValueConstants.TEAL_RGB_VALUE);
+        computedValues.put(CSSConstants.CSS_TRANSPARENT_VALUE,
+                           SVGValueConstants.TRANSPARENT_RGB_VALUE);
         computedValues.put(CSSConstants.CSS_AQUA_VALUE,
                            SVGValueConstants.AQUA_RGB_VALUE);
 

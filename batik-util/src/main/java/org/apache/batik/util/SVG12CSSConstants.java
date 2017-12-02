@@ -56,7 +56,5 @@ public interface SVG12CSSConstants extends CSSConstants {
     String CSS_END_VALUE    = "end";
     /** Value for text-align to both edges of region */
     String CSS_FULL_VALUE = "full";
-    /** Value for line-height for 'normal' line height */
-    String CSS_NORMAL_VALUE = "normal";
 
 }

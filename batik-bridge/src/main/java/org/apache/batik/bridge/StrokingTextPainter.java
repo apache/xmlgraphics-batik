@@ -16,9 +16,9 @@
    limitations under the License.
 
  */
-
 package org.apache.batik.bridge;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.RenderingHints;
@@ -29,6 +29,7 @@ import java.awt.font.TextAttribute;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.lang.ref.SoftReference;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
 import java.text.CharacterIterator;
@@ -36,18 +37,19 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.batik.gvt.font.GVTFont;
 import org.apache.batik.gvt.font.GVTFontFamily;
 import org.apache.batik.gvt.font.GVTGlyphMetrics;
+import org.apache.batik.gvt.font.GVTGlyphVector;
 import org.apache.batik.gvt.font.GVTLineMetrics;
 import org.apache.batik.gvt.text.AttributedCharacterSpanIterator;
 import org.apache.batik.gvt.text.BidiAttributedCharacterIterator;
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
 import org.apache.batik.gvt.text.TextPaintInfo;
 import org.apache.batik.gvt.text.TextPath;
-
 
 /**
  * More sophisticated implementation of TextPainter which
@@ -124,13 +126,20 @@ public class StrokingTextPainter extends BasicTextPainter {
     public static final GVTAttributedCharacterIterator.TextAttribute ALT_GLYPH_HANDLER =
         GVTAttributedCharacterIterator.TextAttribute.ALT_GLYPH_HANDLER;
 
+    public static final
+        AttributedCharacterIterator.Attribute LINE_HEIGHT
+        = GVTAttributedCharacterIterator.TextAttribute.LINE_HEIGHT;
+
+    public static final
+        AttributedCharacterIterator.Attribute BACKGROUND_OUTLINE
+        = GVTAttributedCharacterIterator.TextAttribute.BACKGROUND_OUTLINE;
+
     static Set extendedAtts = new HashSet();
 
     static {
         extendedAtts.add(FLOW_PARAGRAPH);
         extendedAtts.add(TEXT_COMPOUND_ID);
         extendedAtts.add(GVT_FONT);
-        // extendedAtts.add(BIDI_LEVEL);
     }
 
     /**
@@ -159,13 +168,17 @@ public class StrokingTextPainter extends BasicTextPainter {
 
         List textRuns = getTextRuns(node, aci);
 
-        // draw the underline and overline first, then the actual text
-        // and finally the strikethrough
+        // 1. draw text node background
+        paintBackground(node, textRuns, g2d);
+        // 2. draw text run backgrounds
+        paintBackgrounds(node, textRuns, g2d);
+        // 3. draw text run underline and overline
         paintDecorations(textRuns, g2d, TextSpanLayout.DECORATION_UNDERLINE);
         paintDecorations(textRuns, g2d, TextSpanLayout.DECORATION_OVERLINE);
+        // 4. draw text run glyphs
         paintTextRuns(textRuns, g2d);
-        paintDecorations
-            (textRuns, g2d, TextSpanLayout.DECORATION_STRIKETHROUGH);
+        // 5. draw text run strike through
+        paintDecorations(textRuns, g2d, TextSpanLayout.DECORATION_STRIKETHROUGH);
     }
 
     protected void printAttrs(AttributedCharacterIterator aci) {
@@ -848,6 +861,158 @@ public class StrokingTextPainter extends BasicTextPainter {
             }
         }
         return new Point2D.Float(absX, absY);
+    }
+
+    /**
+     * Paint text node background.
+     */
+    protected void paintBackground(TextNode node, List textRuns, Graphics2D g2d) {
+        Map textAttributes = node.getTextAttributes();
+        if (textAttributes != null) {
+            TextPaintInfo tpi = (TextPaintInfo) textAttributes.get(PAINT_INFO);
+            if (tpi != null) {
+                if (tpi.visible) {
+                    Paint paint = tpi.backgroundPaint;
+                    String mode = tpi.backgroundMode;
+                    if (paint != null) {
+                        if ((paint instanceof Color) && (((Color)paint).getAlpha() != 0)) {
+                            Rectangle2D bounds = computeBackgroundBounds(node, textRuns, mode);
+                            if (!bounds.isEmpty()) {
+                                g2d.setPaint(paint);
+                                adjustForOutline(bounds, (float[]) textAttributes.get(BACKGROUND_OUTLINE));
+                                g2d.fill(bounds);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private Rectangle2D computeBackgroundBounds(TextNode node, List textRuns, String mode) {
+        if (mode == TextPaintInfo.BBOX) {
+            return computeBBoxBounds(node.getPrimitiveBounds());
+        } else if (mode == TextPaintInfo.LINE_HEIGHT) {
+            TextRun run = (TextRun) textRuns.get(0);
+            TextSpanLayout layout = run.getLayout();
+            GVTLineMetrics lineMetrics = layout.getLineMetrics();
+            double ascent = lineMetrics.getAscent();
+            double descent = lineMetrics.getDescent();
+            double emHeight = ascent + descent;
+            GVTGlyphVector gv = layout.getGlyphVector();
+            Point2D firstPosition = gv.getGlyphPosition(0);
+            Map textAttributes = node.getTextAttributes();
+            double fontSize = (textAttributes != null) ? ((Float) textAttributes.get(TextAttribute.SIZE)).doubleValue() : 0d;
+            double lineHeight = (textAttributes != null) ? ((Float) textAttributes.get(LINE_HEIGHT)).doubleValue() : fontSize * 1.1f;
+            return computeLineHeightBounds(firstPosition, ascent, emHeight, lineHeight, node.getPrimitiveBounds().getWidth());
+        } else {
+            return new Rectangle2D.Double();
+        }
+    }
+
+    /**
+     * Paint text run backgrounds.
+     */
+    protected void paintBackgrounds(TextNode node, List textRuns, Graphics2D g2d) {
+        Map textAttributes = node.getTextAttributes();
+        if (textAttributes != null) {
+            TextPaintInfo tpiText = (TextPaintInfo) textAttributes.get(PAINT_INFO);
+            if (tpiText != null) {
+                if (tpiText.visible) {
+                    int numRuns = textRuns.size();
+                    List elements = new java.util.ArrayList(numRuns);
+                    for (int i = 0; i < numRuns; i++) {
+                        TextRun textRun = (TextRun)textRuns.get(i);
+                        AttributedCharacterIterator runaci = textRun.getACI();
+                        runaci.first();
+                        elements.add(((SoftReference) runaci.getAttribute(TEXT_COMPOUND_ID)).get());
+                    }
+                    Set eDrawn = new HashSet();
+                    for (int i = 0; i < numRuns; i++) {
+                        TextRun textRun = (TextRun)textRuns.get(i);
+                        AttributedCharacterIterator runaci = textRun.getACI();
+                        runaci.first();
+                        TextPaintInfo tpi = (TextPaintInfo)runaci.getAttribute(PAINT_INFO);
+                        if (tpi != null) {
+                            Object e = elements.get(i);
+                            if ((tpi == tpiText) || eDrawn.contains(e))
+                                continue;
+                            else if (tpi.visible) {
+                                Paint paint = tpi.backgroundPaint;
+                                String mode = tpi.backgroundMode;
+                                if (paint != null) {
+                                    if ((paint instanceof Color) && (((Color)paint).getAlpha() != 0)) {
+                                        GeneralPath p = new GeneralPath();
+                                        for (int j = i; j < numRuns; j++) {
+                                            Object eRun = elements.get(j);
+                                            if (eRun == e) {
+                                                Rectangle2D bRun = computeBackgroundBounds((TextRun) textRuns.get(j), mode);
+                                                p.append(bRun, false);
+                                            }
+                                        }
+                                        Rectangle2D bounds = p.getBounds2D();
+                                        if (!bounds.isEmpty()) {
+                                            g2d.setPaint(paint);
+                                            adjustForOutline(bounds, (float[]) runaci.getAttribute(BACKGROUND_OUTLINE));
+                                            g2d.fill(bounds);
+                                        }
+                                    }
+                                }
+                                eDrawn.add(e);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private Rectangle2D computeBackgroundBounds(TextRun run, String mode) {
+        if (mode == TextPaintInfo.BBOX) {
+            return computeBBoxBounds(run.getLayout().getBounds2D());
+        } else if (mode == TextPaintInfo.LINE_HEIGHT) {
+            TextSpanLayout layout = run.getLayout();
+            GVTLineMetrics lineMetrics = layout.getLineMetrics();
+            double ascent = lineMetrics.getAscent();
+            double descent = lineMetrics.getDescent();
+            double emHeight = ascent + descent;
+            GVTGlyphVector gv = layout.getGlyphVector();
+            Rectangle2D bbox = layout.getBounds2D();
+            Point2D firstPosition = new Point2D.Double(bbox.getX(), gv.getGlyphPosition(0).getY());
+            AttributedCharacterIterator aci = run.getACI();
+            double fontSize = (aci != null) ? ((Float) aci.getAttribute(TextAttribute.SIZE)).doubleValue() : 0d;
+            double lineHeight = (aci != null) ? ((Float) aci.getAttribute(LINE_HEIGHT)).doubleValue() : fontSize * 1.1f;
+            return computeLineHeightBounds(firstPosition, ascent, emHeight, lineHeight, bbox.getWidth());
+        } else {
+            return new Rectangle2D.Double();
+        }
+    }
+
+    private Rectangle2D computeBBoxBounds(Rectangle2D bbox) {
+        return bbox;
+    }
+
+    private Rectangle2D computeLineHeightBounds(
+        Point2D position, double ascent, double emHeight, double lineHeight, double width) {
+        double x = position.getX();
+        double y = position.getY() - (ascent / emHeight) * lineHeight;
+        double w = width;
+        double h = lineHeight;
+        return new Rectangle2D.Double(x, y, w, h);
+    }
+
+    private void adjustForOutline(Rectangle2D b, float[] outline) {
+        if (outline != null) {
+            double x = b.getX();
+            double y = b.getY();
+            double w = b.getWidth();
+            double h = b.getHeight();
+            x -= outline[3];
+            y -= outline[0];
+            w += outline[1] + outline[3];
+            h += outline[0] + outline[2];
+            b.setFrame(x, y, w, h);
+        }
     }
 
     /**

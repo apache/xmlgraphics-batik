@@ -20,6 +20,7 @@ package org.apache.batik.bridge;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
+import java.awt.Paint;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.font.TextAttribute;
@@ -70,6 +71,7 @@ import org.apache.batik.gvt.text.TextPaintInfo;
 import org.apache.batik.gvt.text.TextPath;
 import org.apache.batik.util.XMLConstants;
 
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSPrimitiveValue;
@@ -82,6 +84,9 @@ import org.w3c.dom.svg.SVGNumberList;
 import org.w3c.dom.svg.SVGTextContentElement;
 import org.w3c.dom.svg.SVGTextPositioningElement;
 
+
+import org.apache.batik.css.engine.value.StringValue;
+
 /**
  * Bridge class for the &lt;text&gt; element.
  *
@@ -93,6 +98,8 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
     implements SVGTextContent {
 
     protected static final Integer ZERO = 0;
+
+    public static final Color TRANSPARENT = new Color(0, 0, 0, 0);
 
     public static final
         AttributedCharacterIterator.Attribute TEXT_COMPOUND_DELIMITER =
@@ -128,6 +135,14 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
     public static final
         AttributedCharacterIterator.Attribute BASELINE_SHIFT
         = GVTAttributedCharacterIterator.TextAttribute.BASELINE_SHIFT;
+
+    public static final
+        AttributedCharacterIterator.Attribute LINE_HEIGHT
+        = GVTAttributedCharacterIterator.TextAttribute.LINE_HEIGHT;
+
+    public static final
+        AttributedCharacterIterator.Attribute BACKGROUND_OUTLINE
+        = GVTAttributedCharacterIterator.TextAttribute.BACKGROUND_OUTLINE;
 
     protected AttributedString laidoutText;
 
@@ -627,11 +642,13 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         TextNode tn = (TextNode)node;
         elemTPI.clear();
 
-        AttributedString as = buildAttributedString(ctx, e);
+        Map[] returnTextAttributes = new Map[1];
+        AttributedString as = buildAttributedString(ctx, e, returnTextAttributes);
         if (as == null) {
             tn.setAttributedCharacterIterator(null);
             return;
         }
+        Map textAttributes = returnTextAttributes[0];
 
         addGlyphPositionAttributes(as, e, ctx);
         if (ctx.isDynamic()) {
@@ -639,7 +656,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         }
 
         // Install the ACI in the text node.
-        tn.setAttributedCharacterIterator(as.getIterator());
+        tn.setAttributedCharacterIterator(as.getIterator(), textAttributes);
 
         // Now get the real paint into - this needs to
         // wait until the text node is laidout so we can get
@@ -653,7 +670,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
 
         if (usingComplexSVGFont) {
             // Force Complex SVG fonts to be recreated, if we have them.
-            tn.setAttributedCharacterIterator(as.getIterator());
+            tn.setAttributedCharacterIterator(as.getIterator(), textAttributes);
         }
 
         if (ctx.isDynamic()) {
@@ -747,6 +764,12 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
      */
     protected void handleCSSPropertyChanged(int property) {
         switch(property) {                  // fall-through is intended
+        case SVGCSSEngine.BACKGROUND_COLOR_INDEX:
+        case SVGCSSEngine.BACKGROUND_MODE_INDEX:
+        case SVGCSSEngine.BACKGROUND_OUTLINE_BOTTOM_INDEX:
+        case SVGCSSEngine.BACKGROUND_OUTLINE_LEFT_INDEX:
+        case SVGCSSEngine.BACKGROUND_OUTLINE_RIGHT_INDEX:
+        case SVGCSSEngine.BACKGROUND_OUTLINE_TOP_INDEX:
         case SVGCSSEngine.FILL_INDEX:
         case SVGCSSEngine.FILL_OPACITY_INDEX:
         case SVGCSSEngine.STROKE_INDEX:
@@ -816,7 +839,8 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         if (usingComplexSVGFont)
             // Force Complex SVG fonts to be recreated
             textNode.setAttributedCharacterIterator
-                (textNode.getAttributedCharacterIterator());
+                (textNode.getAttributedCharacterIterator(),
+                 textNode.getTextAttributes());
     }
 
     int getElementStartIndex(Element element) {
@@ -845,12 +869,15 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
      */
     protected AttributedString buildAttributedString(BridgeContext ctx,
                                                      Element element) {
-
-        AttributedStringBuffer asb = new AttributedStringBuffer();
-        fillAttributedStringBuffer(ctx, element, true, null, null, null, asb);
-        return asb.toAttributedString();
+        return this.buildAttributedString(ctx, element, null);
     }
 
+    protected AttributedString buildAttributedString(BridgeContext ctx,
+                                                     Element element, Map[] returnTextAttributes) {
+        AttributedStringBuffer asb = new AttributedStringBuffer();
+        fillAttributedStringBuffer(ctx, element, true, null, null, null, asb, returnTextAttributes);
+        return asb.toAttributedString();
+    }
 
     /**
      * This is used to store the end of the last piece of text
@@ -870,6 +897,17 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                                               Integer bidiLevel,
                                               Map initialAttributes,
                                               AttributedStringBuffer asb) {
+        this.fillAttributedStringBuffer(ctx, element, top, textPath, bidiLevel, initialAttributes, asb);
+    }
+
+    protected void fillAttributedStringBuffer(BridgeContext ctx,
+                                              Element element,
+                                              boolean top,
+                                              TextPath textPath,
+                                              Integer bidiLevel,
+                                              Map initialAttributes,
+                                              AttributedStringBuffer asb,
+                                              Map[] returnTextAttributes) {
         // 'requiredFeatures', 'requiredExtensions', 'systemLanguage' &
         // 'display="none".
         if ((!SVGUtilities.matchUserAgent(element, ctx.getUserAgent())) ||
@@ -893,8 +931,13 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         Map map = initialAttributes == null
                 ? new HashMap()
                 : new HashMap(initialAttributes);
+        // augment initial attributes with this element's attribute map
         initialAttributes =
             getAttributeMap(ctx, element, textPath, bidiLevel, map);
+        // retain top level text element's attributes
+        if (returnTextAttributes != null)
+            returnTextAttributes[0] = map;
+        // batik bidi processing
         Object o = map.get(TextAttribute.BIDI_EMBEDDING);
         Integer subBidiLevel = bidiLevel;
         if (o != null) {
@@ -933,7 +976,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                                                textPath,
                                                subBidiLevel,
                                                initialAttributes,
-                                               asb);
+                                               asb, null);
                     if (asb.count != before) {
                         initialAttributes = null;
                     }
@@ -950,7 +993,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                                                    newTextPath,
                                                    subBidiLevel,
                                                    initialAttributes,
-                                                   asb);
+                                                   asb, null);
                         if (asb.count != before) {
                             initialAttributes = null;
                         }
@@ -997,7 +1040,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                                                textPath,
                                                subBidiLevel,
                                                initialAttributes,
-                                               asb);
+                                               asb, null);
                     if (asb.count != before) {
                         initialAttributes = null;
                     }
@@ -1532,6 +1575,11 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         // holds hard ref to DOM.
         result.put(GVT_FONT_FAMILIES, fontFamilyList);
 
+        // Line height
+        result.put(LINE_HEIGHT,
+                   TextUtilities.convertLineHeight(element,
+                   SVGCSSEngine.LINE_HEIGHT_INDEX, fontSize));
+
         if (!ctx.isDynamic()) {
             // Only leave this in the map for dynamic documents.
             // Otherwise it will cause the whole DOM to stay when
@@ -1585,6 +1633,11 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         result.put(PAINT_INFO, pi);
         elemTPI.put(element, pi);
 
+        // Background outline
+        float[] backgroundOutline = TextUtilities.convertBackgroundOutline(element);
+        result.put(BACKGROUND_OUTLINE, backgroundOutline);
+
+        // Text path
         if (textPath != null) {
             result.put(TEXTPATH, textPath);
         }
@@ -1885,7 +1938,9 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             (sm.isNullCascaded(SVGCSSEngine.FILL_INDEX)) &&
             (sm.isNullCascaded(SVGCSSEngine.STROKE_INDEX)) &&
             (sm.isNullCascaded(SVGCSSEngine.STROKE_WIDTH_INDEX)) &&
-            (sm.isNullCascaded(SVGCSSEngine.OPACITY_INDEX))) {
+            (sm.isNullCascaded(SVGCSSEngine.OPACITY_INDEX)) &&
+            (sm.isNullCascaded(SVGCSSEngine.BACKGROUND_COLOR_INDEX)) &&
+            (sm.isNullCascaded(SVGCSSEngine.BACKGROUND_MODE_INDEX))) {
             // If not, keep the same decorations.
             return pi;
         }
@@ -1906,6 +1961,13 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             pi.composite    = AlphaComposite.SrcOver;
 
         pi.visible      = CSSUtilities.convertVisibility(element);
+        StyleMap sm = ((CSSStylableElement)element).getComputedStyleMap(null);
+        Paint backgroundPaint = PaintServer.convertBackgroundPaint(element, node, ctx);
+        if (!sm.isNullCascaded(SVGCSSEngine.BACKGROUND_COLOR_INDEX))
+            pi.backgroundPaint = backgroundPaint;
+        StringValue backgroundMode = TextUtilities.convertBackgroundMode(element);
+        if (!sm.isNullCascaded(SVGCSSEngine.BACKGROUND_MODE_INDEX))
+            pi.backgroundMode = backgroundMode.getStringValue();
         pi.fillPaint    = PaintServer.convertFillPaint  (element, node, ctx);
         pi.strokePaint  = PaintServer.convertStrokePaint(element, node, ctx);
         pi.strokeStroke = PaintServer.convertStroke     (element);

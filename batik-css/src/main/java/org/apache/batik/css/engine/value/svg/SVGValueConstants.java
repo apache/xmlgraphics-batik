@@ -719,6 +719,13 @@ public interface SVGValueConstants extends ValueConstants {
                         CSSConstants.CSS_BASELINE_VALUE);
     
     /**
+     * The 'bbox' keyword.
+     */
+    Value BBOX_VALUE =
+        new StringValue(CSSPrimitiveValue.CSS_IDENT,
+                        CSSConstants.CSS_BBOX_VALUE);
+    
+    /**
      * The 'before-edge' keyword.
      */
     Value BEFORE_EDGE_VALUE =
@@ -808,6 +815,13 @@ public interface SVGValueConstants extends ValueConstants {
     Value LINEARRGB_VALUE =
         new StringValue(CSSPrimitiveValue.CSS_IDENT,
                         CSSConstants.CSS_LINEARRGB_VALUE);
+    
+    /**
+     * The 'line-height' keyword (used with background-mode property).
+     */
+    Value LINE_HEIGHT_VALUE =
+        new StringValue(CSSPrimitiveValue.CSS_IDENT,
+                        CSSConstants.CSS_LINE_HEIGHT_VALUE);
     
     /**
      * The 'lr' keyword.

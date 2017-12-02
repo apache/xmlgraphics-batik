@@ -21,6 +21,9 @@ package org.apache.batik.css.engine;
 import org.apache.batik.css.engine.value.ShorthandManager;
 import org.apache.batik.css.engine.value.ValueConstants;
 import org.apache.batik.css.engine.value.ValueManager;
+import org.apache.batik.css.engine.value.css2.BackgroundModeManager;
+import org.apache.batik.css.engine.value.css2.BackgroundOutlineShorthandManager;
+import org.apache.batik.css.engine.value.css2.BackgroundOutlineLengthManager;
 import org.apache.batik.css.engine.value.css2.ClipManager;
 import org.apache.batik.css.engine.value.css2.CursorManager;
 import org.apache.batik.css.engine.value.css2.DirectionManager;
@@ -33,6 +36,7 @@ import org.apache.batik.css.engine.value.css2.FontStretchManager;
 import org.apache.batik.css.engine.value.css2.FontStyleManager;
 import org.apache.batik.css.engine.value.css2.FontVariantManager;
 import org.apache.batik.css.engine.value.css2.FontWeightManager;
+import org.apache.batik.css.engine.value.css2.LineHeightManager;
 import org.apache.batik.css.engine.value.css2.OverflowManager;
 import org.apache.batik.css.engine.value.css2.SrcManager;
 import org.apache.batik.css.engine.value.css2.TextDecorationManager;
@@ -109,8 +113,6 @@ public class SVGCSSEngine extends CSSEngine {
               true,
               null,
               ctx);
-        // SVG defines line-height to be font-size.
-        lineHeightIndex = fontSizeIndex;
     }
 
     /**
@@ -139,8 +141,6 @@ public class SVGCSSEngine extends CSSEngine {
               true,
               null,
               ctx);
-        // SVG defines line-height to be font-size.
-        lineHeightIndex = fontSizeIndex;
     }
 
     protected SVGCSSEngine(Document doc,
@@ -160,8 +160,6 @@ public class SVGCSSEngine extends CSSEngine {
               mergeArrays(SVG_VALUE_MANAGERS, vms),
               mergeArrays(SVG_SHORTHAND_MANAGERS, sms),
               pe, sns, sln, cns, cln, hints, hintsNS, ctx);
-        // SVG defines line-height to be font-size.
-        lineHeightIndex = fontSizeIndex;
     }
 
 
@@ -193,6 +191,12 @@ public class SVGCSSEngine extends CSSEngine {
      */
     public static final ValueManager[] SVG_VALUE_MANAGERS = {
         new AlignmentBaselineManager(),
+        new SVGColorManager(CSSConstants.CSS_BACKGROUND_COLOR_PROPERTY, ValueConstants.TRANSPARENT_VALUE),
+        new BackgroundModeManager(),
+        new BackgroundOutlineLengthManager(CSSConstants.CSS_BACKGROUND_OUTLINE_BOTTOM_PROPERTY),
+        new BackgroundOutlineLengthManager(CSSConstants.CSS_BACKGROUND_OUTLINE_LEFT_PROPERTY),
+        new BackgroundOutlineLengthManager(CSSConstants.CSS_BACKGROUND_OUTLINE_RIGHT_PROPERTY),
+        new BackgroundOutlineLengthManager(CSSConstants.CSS_BACKGROUND_OUTLINE_TOP_PROPERTY),
         new BaselineShiftManager(),
         new ClipManager(),
         new ClipPathManager(),
@@ -233,6 +237,7 @@ public class SVGCSSEngine extends CSSEngine {
         new SpacingManager(CSSConstants.CSS_LETTER_SPACING_PROPERTY),
         new SVGColorManager(CSSConstants.CSS_LIGHTING_COLOR_PROPERTY,
                             ValueConstants.WHITE_RGB_VALUE),
+        new LineHeightManager(),
         new MarkerManager(CSSConstants.CSS_MARKER_END_PROPERTY),
 
         new MarkerManager(CSSConstants.CSS_MARKER_MID_PROPERTY),
@@ -271,6 +276,7 @@ public class SVGCSSEngine extends CSSEngine {
      * The shorthand managers for SVG.
      */
     public static final ShorthandManager[] SVG_SHORTHAND_MANAGERS = {
+        new BackgroundOutlineShorthandManager(),
         new FontShorthandManager(),
         new MarkerShorthandManager(),
     };
@@ -279,8 +285,14 @@ public class SVGCSSEngine extends CSSEngine {
     // The property indexes.
     //
     public static final int ALIGNMENT_BASELINE_INDEX = 0;
+    public static final int BACKGROUND_COLOR_INDEX = ALIGNMENT_BASELINE_INDEX + 1;
+    public static final int BACKGROUND_MODE_INDEX = BACKGROUND_COLOR_INDEX + 1;
+    public static final int BACKGROUND_OUTLINE_BOTTOM_INDEX = BACKGROUND_MODE_INDEX + 1;
+    public static final int BACKGROUND_OUTLINE_LEFT_INDEX = BACKGROUND_OUTLINE_BOTTOM_INDEX + 1;
+    public static final int BACKGROUND_OUTLINE_RIGHT_INDEX = BACKGROUND_OUTLINE_LEFT_INDEX + 1;
+    public static final int BACKGROUND_OUTLINE_TOP_INDEX = BACKGROUND_OUTLINE_RIGHT_INDEX + 1;
     public static final int BASELINE_SHIFT_INDEX =
-        ALIGNMENT_BASELINE_INDEX + 1;
+        BACKGROUND_OUTLINE_TOP_INDEX + 1;
     public static final int CLIP_INDEX = BASELINE_SHIFT_INDEX + 1;
     public static final int CLIP_PATH_INDEX = CLIP_INDEX +1;
     public static final int CLIP_RULE_INDEX = CLIP_PATH_INDEX + 1;
@@ -329,7 +341,8 @@ public class SVGCSSEngine extends CSSEngine {
     public static final int KERNING_INDEX = IMAGE_RENDERING_INDEX + 1;
     public static final int LETTER_SPACING_INDEX = KERNING_INDEX + 1;
     public static final int LIGHTING_COLOR_INDEX = LETTER_SPACING_INDEX + 1;
-    public static final int MARKER_END_INDEX = LIGHTING_COLOR_INDEX + 1;
+    public static final int LINE_HEIGHT_INDEX = LIGHTING_COLOR_INDEX + 1;
+    public static final int MARKER_END_INDEX = LINE_HEIGHT_INDEX + 1;
 
 
     public static final int MARKER_MID_INDEX = MARKER_END_INDEX + 1;

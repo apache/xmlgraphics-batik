@@ -22,6 +22,8 @@ import java.awt.Composite;
 import java.awt.Paint;
 import java.awt.Stroke;
 
+import org.apache.batik.util.CSSConstants;
+
 /**
  * One line Class Desc
  *
@@ -32,6 +34,8 @@ import java.awt.Stroke;
  */
 public class TextPaintInfo {
     public boolean   visible;
+    public Paint     backgroundPaint;
+    public String    backgroundMode;
     public Paint     fillPaint;
     public Paint     strokePaint;
     public Stroke    strokeStroke;
@@ -51,6 +55,9 @@ public class TextPaintInfo {
 
     public int    startChar, endChar;
 
+    public static final String BBOX = CSSConstants.CSS_BBOX_VALUE;
+    public static final String LINE_HEIGHT = CSSConstants.CSS_LINE_HEIGHT_VALUE;
+    
     public TextPaintInfo() { }
     
     public TextPaintInfo(TextPaintInfo pi) {
@@ -59,6 +66,8 @@ public class TextPaintInfo {
 
     public void set(TextPaintInfo pi) {
         if (pi == null) {
+            this.backgroundPaint = null;
+            this.backgroundMode = null;
             this.fillPaint    = null;
             this.strokePaint  = null;
             this.strokeStroke = null;
@@ -78,6 +87,8 @@ public class TextPaintInfo {
 
             this.visible = false;
         } else {
+            this.backgroundPaint = pi.backgroundPaint;
+            this.backgroundMode = pi.backgroundMode;
             this.fillPaint    = pi.fillPaint;
             this.strokePaint  = pi.strokePaint;
             this.strokeStroke = pi.strokeStroke;
@@ -104,6 +115,12 @@ public class TextPaintInfo {
             if (tpi2 == null) return true;
             return false;
         } else if (tpi2 == null) return false;
+
+        if ((tpi1.backgroundPaint == null) != (tpi2.backgroundPaint == null))
+            return false;
+
+        if ((tpi1.backgroundMode == null) != (tpi2.backgroundMode == null))
+            return false;
 
         if ((tpi1.fillPaint == null) != (tpi2.fillPaint == null))
             return false;

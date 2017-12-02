@@ -16,7 +16,9 @@
    limitations under the License.
 
  */
-package org.apache.batik.css.engine.value.svg12;
+package org.apache.batik.css.engine.value.css2;
+
+import org.apache.batik.css.engine.value.FloatValue;
 
 /**
  * This class represents line-height values.  These are basically
@@ -25,8 +27,26 @@ package org.apache.batik.css.engine.value.svg12;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class LineHeightValue extends org.apache.batik.css.engine.value.css2.LineHeightValue {
-    public LineHeightValue(short unitType, float floatValue, boolean fontSizeRelative) {
-        super(unitType, floatValue, fontSizeRelative);
+public class LineHeightValue extends FloatValue {
+    
+    /**
+     * True if the line-height is relative to the font-size
+     */
+    protected boolean fontSizeRelative;
+
+    /**
+     * Creates a new value.
+     */
+    public LineHeightValue(short unitType, float floatValue, 
+                           boolean fontSizeRelative) {
+        super(unitType, floatValue);
+        this.fontSizeRelative   = fontSizeRelative;
+    }
+
+    /**
+     * The type of the value.
+     */
+    public boolean getFontSizeRelative() {
+        return fontSizeRelative;
     }
 }

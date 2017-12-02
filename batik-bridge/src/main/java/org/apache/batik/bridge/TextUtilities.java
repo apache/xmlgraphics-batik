@@ -22,13 +22,21 @@ import java.awt.font.TextAttribute;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
+
+
 import org.apache.batik.css.engine.SVGCSSEngine;
+import org.apache.batik.css.engine.value.ComputedValue;
 import org.apache.batik.css.engine.value.Value;
+import org.apache.batik.css.engine.value.ValueConstants;
+import org.apache.batik.css.engine.value.svg12.LineHeightValue;
+import org.apache.batik.css.engine.value.svg12.SVG12ValueConstants;
 import org.apache.batik.util.CSSConstants;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSPrimitiveValue;
+import org.apache.batik.gvt.text.TextPaintInfo;
 
+import org.apache.batik.css.engine.value.StringValue;
 /**
  * A collection of utility method for text.
  *
@@ -142,6 +150,30 @@ public abstract class TextUtilities implements CSSConstants, ErrorConstants {
         Value v = CSSUtilities.getComputedStyle
             (e, SVGCSSEngine.FONT_SIZE_INDEX);
         return v.getFloatValue();
+    }
+
+    /**
+     * Converts the line-height CSS value to a float value.
+     * @param e the element
+     */
+    public static Float convertLineHeight(Element e, int lineHeightIndex, float fontSize) {
+        Value v = CSSUtilities.getComputedStyle(e, lineHeightIndex);
+        if ((v == ValueConstants.INHERIT_VALUE) ||
+            (v == SVG12ValueConstants.NORMAL_VALUE)) {
+            return fontSize*1.1f;
+        }
+        float lineHeight = fontSize;
+        if (v instanceof ComputedValue)
+            v = ((ComputedValue)v).getComputedValue();
+        if (v instanceof LineHeightValue) {
+            lineHeight = v.getFloatValue();
+            if (((LineHeightValue)v).getFontSizeRelative())
+                lineHeight *= fontSize;
+        } else if (v.getPrimitiveType() == CSSPrimitiveValue.CSS_IDENT) {
+            if (v.getStringValue().equals(CSS_NORMAL_VALUE))
+                lineHeight = fontSize * 1.1f;
+        }
+        return Float.valueOf(lineHeight);
     }
 
     /**
@@ -259,6 +291,43 @@ public abstract class TextUtilities implements CSSConstants, ErrorConstants {
         default:
             return TextNode.Anchor.END;
         }
+    }
+
+    /**
+     * Converts the background-mode CSS value to a TextNode.BackgroundMode.
+     * @param e the element
+     */
+    public static StringValue convertBackgroundMode(Element e) {
+        Value v = CSSUtilities.getComputedStyle
+            (e, SVGCSSEngine.BACKGROUND_MODE_INDEX);
+        switch (v.getStringValue().charAt(0)) {
+        case 'b':
+            return new StringValue(CSSPrimitiveValue.CSS_IDENT,TextPaintInfo.BBOX);
+        case 'l':
+        default:
+            return new StringValue(CSSPrimitiveValue.CSS_IDENT,TextPaintInfo.LINE_HEIGHT);
+        }
+    }
+
+    /**
+     * Converts the background-outline CSS value to a floats[] instance.
+     * @param e the element
+     */
+    public static float[] convertBackgroundOutline(Element e) {
+        Value v;
+        v = CSSUtilities.getComputedStyle(e, SVGCSSEngine.BACKGROUND_OUTLINE_TOP_INDEX);
+        float top = v.getFloatValue();
+
+        v = CSSUtilities.getComputedStyle(e, SVGCSSEngine.BACKGROUND_OUTLINE_RIGHT_INDEX);
+        float right = v.getFloatValue();
+
+        v = CSSUtilities.getComputedStyle(e, SVGCSSEngine.BACKGROUND_OUTLINE_BOTTOM_INDEX);
+        float bottom = v.getFloatValue();
+
+        v = CSSUtilities.getComputedStyle(e, SVGCSSEngine.BACKGROUND_OUTLINE_LEFT_INDEX);
+        float left = v.getFloatValue();
+
+        return new float[] { top, right, bottom, left };
     }
 
     /**

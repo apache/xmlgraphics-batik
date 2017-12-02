@@ -124,6 +124,13 @@ public class ComputedValue implements Value {
     }
 
     /**
+     * Implements {@link Value#getGreen()}.
+     */
+    public Value getAlpha() throws DOMException {
+        return computedValue.getAlpha();
+    }
+
+    /**
      * Implements {@link Value#getLength()}.
      */
     public int getLength() throws DOMException {
