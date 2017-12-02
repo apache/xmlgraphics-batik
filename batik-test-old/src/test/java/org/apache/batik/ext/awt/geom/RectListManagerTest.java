@@ -111,7 +111,8 @@ public class RectListManagerTest extends AbstractTest {
     public RectListManagerTest(String rects, String ref) {
         this.rects = resolveURL(REFERENCE_DIR+rects);
         this.ref   = resolveURL(REFERENCE_DIR+ref);
-        this.var   = resolveURL(REFERENCE_DIR+VARIATION_DIR+ref);
+        // this.var   = resolveURL(REFERENCE_DIR+VARIATION_DIR+ref); // no variation file(s)
+        this.var   = null;
         this.can   = new File(REFERENCE_DIR+CANDIDATE_DIR+ref);
     }
 
