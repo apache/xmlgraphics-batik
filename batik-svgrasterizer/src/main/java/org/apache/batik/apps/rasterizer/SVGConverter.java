@@ -989,6 +989,7 @@ public class SVGConverter {
             boolean proceed = controller.proceedOnSourceTranscodingFailure
                 (inputFile, outputFile, e.getErrorCode());
             if (proceed){
+                e.printStackTrace();
                 return;
             } else {
                 throw e;
