@@ -16,20 +16,15 @@
    limitations under the License.
 
  */
-package org.w3c.dom;
+package org.apache.batik.w3c.dom;
 
-public interface Location {
-    /**
-     * Invocation of this method causes the user agent to navigate to the
-     * supplied location.
-     *
-     * @param url A string containing the URL where the user agent should
-     *    navigate to.
-     */
-    void assign(String url);
+import org.w3c.dom.Element;
 
-    /**
-     * The user agent reloads the current document.
-     */
-    void reload();
+public interface ElementTraversal {
+
+    Element getFirstElementChild();
+    Element getLastElementChild();
+    Element getNextElementSibling();
+    Element getPreviousElementSibling();
+    int getChildElementCount();
 }

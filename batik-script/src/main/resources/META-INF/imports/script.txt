@@ -1,8 +1,8 @@
 class java.lang.System # Optional
 
 # The rest are needed for SVG DOM conformance.
-# class org.w3c.dom.Window # conflicts with our Window class..
-class org.w3c.dom.Location
+# class org.apache.batik.w3c.dom.Window # conflicts with our Window class..
+class org.apache.batik.w3c.dom.Location
 class org.w3c.dom.Attr
 class org.w3c.dom.CDATASection
 class org.w3c.dom.CharacterData
@@ -249,4 +249,4 @@ class org.w3c.dom.events.MutationEvent
 class org.w3c.dom.events.MutationNameEvent
 class org.w3c.dom.events.TextEvent
 class org.w3c.dom.events.UIEvent
-class org.w3c.dom.ElementTraversal
+class org.apache.batik.w3c.dom.ElementTraversal
