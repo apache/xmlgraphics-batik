@@ -181,7 +181,7 @@ public class SVGMarkerElementBridge extends AnimatableGenericSVGBridge
         markerContentNode.setTransform(markerTxf);
 
         // 'overflow' property
-        if (CSSUtilities.convertOverflow(markerElement)) { // overflow:hidden
+        if (CSSUtilities.isOverflow(markerElement)) { // overflow:hidden
             Rectangle2D markerClip;
             float [] offsets = CSSUtilities.convertClip(markerElement);
             if (offsets == null) { // clip:auto

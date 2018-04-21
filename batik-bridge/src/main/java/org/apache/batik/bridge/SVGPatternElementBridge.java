@@ -108,7 +108,7 @@ public class SVGPatternElementBridge extends AnimatableGenericSVGBridge
         }
 
         // 'overflow' on the pattern element
-        boolean overflowIsHidden = CSSUtilities.convertOverflow(patternElement);
+        boolean overflowIsHidden = CSSUtilities.isOverflow(patternElement);
 
         // 'patternContentUnits' - default is userSpaceOnUse
         short contentCoordSystem;

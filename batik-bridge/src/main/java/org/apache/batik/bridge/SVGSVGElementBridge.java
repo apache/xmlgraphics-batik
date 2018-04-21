@@ -183,7 +183,7 @@ public class SVGSVGElementBridge
 
             // 'overflow' and 'clip'
             Shape clip = null;
-            if (CSSUtilities.convertOverflow(e)) { // overflow:hidden
+            if (CSSUtilities.isOverflow(e)) { // overflow:hidden
                 float [] offsets = CSSUtilities.convertClip(e);
                 if (offsets == null) { // clip:auto
                     clip = new Rectangle2D.Float(x, y, w, h);
@@ -359,7 +359,7 @@ public class SVGSVGElementBridge
                         
                         // 'overflow' and 'clip'
                         Shape clip = null;
-                        if (CSSUtilities.convertOverflow(e)) { // overflow:hidden
+                        if (CSSUtilities.isOverflow(e)) { // overflow:hidden
                             float [] offsets = CSSUtilities.convertClip(e);
                             if (offsets == null) { // clip:auto
                                 clip = new Rectangle2D.Float(x, y, w, h);

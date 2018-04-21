@@ -616,7 +616,7 @@ public abstract class CSSUtilities
      *
      * @param e the element with the 'overflow' property
      */
-    public static boolean convertOverflow(Element e) {
+    public static boolean isOverflow(Element e) {
         Value v = getComputedStyle(e, SVGCSSEngine.OVERFLOW_INDEX);
         String s = v.getStringValue();
         return (s.charAt(0) == 'h') || (s.charAt(0) == 's');
