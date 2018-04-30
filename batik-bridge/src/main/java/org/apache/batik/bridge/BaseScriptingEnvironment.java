@@ -46,6 +46,7 @@ import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLConstants;
 
+import org.apache.batik.w3c.dom.Location;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -920,14 +921,14 @@ public class BaseScriptingEnvironment {
         /**
          * Returns the Location.
          */
-        public org.w3c.dom.Location getLocation() {
+        public Location getLocation() {
             return null;
         }
 
         /**
          * Returns the parent Window object.
          */
-        public org.w3c.dom.Window getParent() {
+        public org.apache.batik.w3c.dom.Window getParent() {
             return null;
         }
 
