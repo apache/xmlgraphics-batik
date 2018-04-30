@@ -26,7 +26,7 @@ import org.apache.batik.test.AbstractTest;
 import org.apache.batik.util.XMLResourceDescriptor;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.ElementTraversal;
+import org.apache.batik.w3c.dom.ElementTraversal;
 
 /**
  * Tests the {@link ElementTraversal} interface.

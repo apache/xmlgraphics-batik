@@ -33,7 +33,7 @@ import org.mozilla.javascript.ScriptableObject;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
-import org.w3c.dom.Location;
+import org.apache.batik.w3c.dom.Location;
 
 /**
  * This class wraps a Window object to expose it to the interpreter.

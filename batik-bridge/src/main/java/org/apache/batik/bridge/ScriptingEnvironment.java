@@ -1324,14 +1324,14 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
         /**
          * Returns a Window object representing the parent of this Window.
          */
-        public org.w3c.dom.Window getParent() {
+        public org.apache.batik.w3c.dom.Window getParent() {
             return null;
         }
 
         /**
          * Returns a Location object representing this Window.
          */
-        public org.w3c.dom.Location getLocation() {
+        public org.apache.batik.w3c.dom.Location getLocation() {
             if (location == null) {
                 location = new Location(bridgeContext);
             }

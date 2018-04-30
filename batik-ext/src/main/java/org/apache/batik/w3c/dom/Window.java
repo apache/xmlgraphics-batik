@@ -16,7 +16,7 @@
    limitations under the License.
 
  */
-package org.w3c.dom;
+package org.apache.batik.w3c.dom;
 
 public interface Window {
     Window getParent();
