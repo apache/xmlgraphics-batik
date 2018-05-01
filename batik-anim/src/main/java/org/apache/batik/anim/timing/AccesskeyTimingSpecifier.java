@@ -25,7 +25,7 @@ import org.apache.batik.util.XMLConstants;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
-import org.w3c.dom.events.KeyboardEvent;
+import org.apache.batik.w3c.dom.events.KeyboardEvent;
 
 /**
  * A class to handle SMIL access key timing specifiers.

@@ -19,7 +19,7 @@
 package org.apache.batik.dom.events;
 
 import org.w3c.dom.Node;
-import org.w3c.dom.events.MutationNameEvent;
+import org.apache.batik.w3c.dom.events.MutationNameEvent;
 
 /**
  * Class to implement DOM 3 MutationName events.

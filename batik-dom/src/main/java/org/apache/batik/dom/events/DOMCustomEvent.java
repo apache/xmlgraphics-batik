@@ -18,7 +18,7 @@
  */
 package org.apache.batik.dom.events;
 
-import org.w3c.dom.events.CustomEvent;
+import org.apache.batik.w3c.dom.events.CustomEvent;
 
 /**
  * A custom event object.

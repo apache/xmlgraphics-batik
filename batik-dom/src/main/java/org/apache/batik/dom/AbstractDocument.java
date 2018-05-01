@@ -64,7 +64,7 @@ import org.w3c.dom.DOMStringList;
 import org.w3c.dom.Element;
 import org.w3c.dom.events.DocumentEvent;
 import org.w3c.dom.events.Event;
-import org.w3c.dom.events.MutationNameEvent;
+import org.apache.batik.w3c.dom.events.MutationNameEvent;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
