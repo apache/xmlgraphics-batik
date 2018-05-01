@@ -20,7 +20,7 @@ package org.apache.batik.dom.events;
 
 import java.util.HashSet;
 
-import org.w3c.dom.events.KeyboardEvent;
+import org.apache.batik.w3c.dom.events.KeyboardEvent;
 import org.w3c.dom.views.AbstractView;
 
 /**

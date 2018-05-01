@@ -10,9 +10,10 @@
  * [1] http://www.w3.org/Consortium/Legal/2002/copyright-software-20021231
  */
 
-package org.w3c.dom.events;
+package org.apache.batik.w3c.dom.events;
 
 import org.w3c.dom.Node;
+import org.w3c.dom.events.MutationEvent;
 
 /**
  *  The <code>MutationNameEvent</code> interface provides specific contextual 
