@@ -2729,9 +2729,13 @@ public abstract class AbstractDocument
             Method m = c.getMethod("getDOMImplementation", (Class[])null);
             implementation = (DOMImplementation)m.invoke(null, (Object[])null);
         } catch (Exception e) {
-            try {
-                implementation = (DOMImplementation)c.getDeclaredConstructor().newInstance();
-            } catch (Exception ex) {
+            if (DOMImplementation.class.isAssignableFrom(c)) {
+                try {
+                    implementation = (DOMImplementation)c.getDeclaredConstructor().newInstance();
+                } catch (Exception ex) {
+                }
+            } else {
+                throw new SecurityException("Trying to create object that is not a DOMImplementation.");
             }
         }
     }
