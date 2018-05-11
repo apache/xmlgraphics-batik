@@ -82,7 +82,7 @@ To display the available targets type:
     </tstamp>
     <property name="Project"            value="Apache Batik" />
     <property name="project"            value="batik" />
-    <property name="year"               value="2017" />
+    <property name="year"               value="2018" />
     <property name="version"            value="svn-trunk" />
     <property name="revisionType"       value="" />
     <property name="revisionNumber"     value="" />
