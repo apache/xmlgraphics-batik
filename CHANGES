@@ -4,8 +4,27 @@ Change Log
 The following log records some of the most important changes.
 Bug fixing is an ongoing task, so it is implied in all sub-releases.
 
-1.8 -> 1.9pre
--------------
+1.9 -> 1.10pre
+--------------
+
+BATIK-906: Should never use Error to report runtime errors
+BATIK-1123: Missing import of ImportInfo class
+BATIK-1125: Rasterizer fails with base64 embedded png
+BATIK-1140: Show line numbers on exception
+BATIK-1142: Remove e.printStackTrace for BridgeException in SVGAbstractTranscoder
+BATIK-1157: Wrong value for default JPEG quality in documentation
+BATIK-1170: Incorrect ColorConvertOp alpha handling breaks masking
+BATIK-1196: Run batik tests from junit
+BATIK-1197: Make jython and rhino optional
+BATIK-1198: TIFF transcoder looks for invalid class name for its WriteAdapter
+BATIK-1200: ImagingOpException: Unable to transform src image
+BATIK-1204: Remove hashtable
+BATIK-1212: Show real error on URL failure
+BATIK-1216: Compile error on Java 10
+BATIK-1222: Only call DOMImplementation in deserialization
+
+1.8 -> 1.9
+----------
 
 - Maven build support
 - Java 6 or later is minimum runtime required
