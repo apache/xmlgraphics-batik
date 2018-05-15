@@ -65,7 +65,7 @@ public class XMLScanner {
     
     protected int nextChar() {
         try {
-            current = (int)string.charAt(position);
+            current = string.charAt(position);
             position++;
         } catch (Exception ex) {
             current = -1;

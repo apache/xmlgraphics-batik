@@ -119,34 +119,34 @@ public abstract class AbstractWMFReader {
      * Returns the viewport width, in inches.
      */
     public float getViewportWidthInch() {
-      return (float)vpW / (float)inch;
+      return (float)vpW / inch;
     }
 
     /**
      * Returns the viewport height, in inches.
      */
     public float getViewportHeightInch() {
-      return (float)vpH / (float)inch;
+      return (float)vpH / inch;
     }
 
     /** Return the number of pixels per unit.
      */
     public float getPixelsPerUnit() {
-        return PIXEL_PER_INCH / (float)inch;
+        return PIXEL_PER_INCH / inch;
     }
 
     /**
      * Returns the viewport width, in pixels.
      */
     public int getVpW() {
-      return (int)(PIXEL_PER_INCH * (float)vpW / (float)inch);
+      return (int)(PIXEL_PER_INCH * vpW / inch);
     }
 
     /**
      * Returns the viewport height, in pixels.
      */
     public int getVpH() {
-      return (int)(PIXEL_PER_INCH * (float)vpH / (float)inch);
+      return (int)(PIXEL_PER_INCH * vpH / inch);
     }
 
     /** get the left units in the WMF Metafile. This value is given
@@ -214,10 +214,10 @@ public abstract class AbstractWMFReader {
     /** get the Rectangle defining the viewport of the WMF Metafile, in pixels.
      */
     public Rectangle2D getRectanglePixel() {
-        float _left = PIXEL_PER_INCH * (float)left / (float)inch;
-        float _right = PIXEL_PER_INCH * (float)right / (float)inch;
-        float _top = PIXEL_PER_INCH * (float)top / (float)inch;
-        float _bottom = PIXEL_PER_INCH * (float)bottom / (float)inch;
+        float _left = PIXEL_PER_INCH * left / inch;
+        float _right = PIXEL_PER_INCH * right / inch;
+        float _top = PIXEL_PER_INCH * top / inch;
+        float _bottom = PIXEL_PER_INCH * bottom / inch;
 
         Rectangle2D.Float rec = new Rectangle2D.Float(_left, _top, _right - _left, _bottom - _top);
 
@@ -227,10 +227,10 @@ public abstract class AbstractWMFReader {
     /** get the Rectangle defining the viewport of the WMF Metafile, in inchs.
      */
     public Rectangle2D getRectangleInch() {
-        float _left = (float)left / (float)inch;
-        float _right = (float)right / (float)inch;
-        float _top = (float)top / (float)inch;
-        float _bottom = (float)bottom / (float)inch;
+        float _left = (float)left / inch;
+        float _right = (float)right / inch;
+        float _top = (float)top / inch;
+        float _bottom = (float)bottom / inch;
 
         Rectangle2D.Float rec = new Rectangle2D.Float(_left, _top, _right - _left, _bottom - _top);
 
@@ -240,31 +240,31 @@ public abstract class AbstractWMFReader {
     /** get the width of the WMF Metafile, in pixels.
      */
     public int getWidthPixels() {
-        return (int)(PIXEL_PER_INCH * (float)width / (float)inch);
+        return (int)(PIXEL_PER_INCH * width / inch);
     }
 
     /** get the factor to transform Metafile dimensions in pixels
      */
     public float getUnitsToPixels() {
-        return (PIXEL_PER_INCH / (float)inch);
+        return (PIXEL_PER_INCH / inch);
     }
 
     /** get the factor to transform logical units width in pixels
      */
     public float getVpWFactor() {
-        return (PIXEL_PER_INCH * (float)width / (float)inch) / (float)vpW;
+        return (PIXEL_PER_INCH * width / inch) / vpW;
     }
 
     /** get the factor to transform logical units height in pixels
      */
     public float getVpHFactor() {
-        return (PIXEL_PER_INCH * (float)height / (float)inch) / (float)vpH;
+        return (PIXEL_PER_INCH * height / inch) / vpH;
     }
 
     /** get the height of the WMF Metafile, in pixels.
      */
     public int getHeightPixels() {
-        return (int)(PIXEL_PER_INCH * (float)height / (float)inch);
+        return (int)(PIXEL_PER_INCH * height / inch);
     }
 
     /** Return the sign of X coordinates. It is equal to 1 by default, but can be -1 if

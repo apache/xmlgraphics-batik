@@ -2599,7 +2599,7 @@ public abstract class AbstractDocument
          * {@link org.w3c.dom.xpath.XPathNSResolver#lookupNamespaceURI(String)}.
          */
         public String lookupNamespaceURI(String prefix) {
-            return ((AbstractNode) contextNode).lookupNamespaceURI(prefix);
+            return contextNode.lookupNamespaceURI(prefix);
         }
     }
 

@@ -112,7 +112,7 @@ public class ParsedURLDataTest extends AbstractTest {
         }
         StringBuffer sb = new StringBuffer();
         for (int i=0; i<num; i++) {
-            int val = ((int)data[i])&0xFF;
+            int val = data[i] &0xFF;
             if (val < 16) {
                 sb.append("0");
             }

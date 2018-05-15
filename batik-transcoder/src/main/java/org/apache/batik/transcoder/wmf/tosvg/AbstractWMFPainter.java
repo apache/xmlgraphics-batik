@@ -64,10 +64,10 @@ public class AbstractWMFPainter {
      */
     protected BufferedImage getImage(byte[] bit, int width, int height) {
         // get the header of the bitmap, first the width and height
-        int _width = (((int)bit[7] & 0x00ff) << 24) | (((int)bit[6] & 0x00ff) << 16)
-                    | (((int)bit[5] & 0x00ff) << 8) | (int)bit[4] & 0x00ff;
-        int _height = (((int)bit[11] & 0x00ff) << 24) | (((int)bit[10] & 0x00ff) << 16)
-                    | (((int)bit[9] & 0x00ff) <<8) | (int)bit[8] & 0x00ff;
+        int _width = ((bit[7] & 0x00ff) << 24) | ((bit[6] & 0x00ff) << 16)
+                    | ((bit[5] & 0x00ff) << 8) | bit[4] & 0x00ff;
+        int _height = ((bit[11] & 0x00ff) << 24) | ((bit[10] & 0x00ff) << 16)
+                    | ((bit[9] & 0x00ff) <<8) | bit[8] & 0x00ff;
 
         // if width and height of the bitmap are different from advertised, we abort
         if ((width != _width) || (height != _height)) return null;
@@ -76,10 +76,10 @@ public class AbstractWMFPainter {
 
     protected Dimension getImageDimension(byte[] bit) {
         // get the header of the bitmap, first the width and height
-        int _width = (((int)bit[7] & 0x00ff) << 24) | (((int)bit[6] & 0x00ff) << 16)
-                    | (((int)bit[5] & 0x00ff) << 8) | (int)bit[4] & 0x00ff;
-        int _height = (((int)bit[11] & 0x00ff) << 24) | (((int)bit[10] & 0x00ff) << 16)
-                    | (((int)bit[9] & 0x00ff) << 8) | (int)bit[8] & 0x00ff;
+        int _width = ((bit[7] & 0x00ff) << 24) | ((bit[6] & 0x00ff) << 16)
+                    | ((bit[5] & 0x00ff) << 8) | bit[4] & 0x00ff;
+        int _height = ((bit[11] & 0x00ff) << 24) | ((bit[10] & 0x00ff) << 16)
+                    | ((bit[9] & 0x00ff) << 8) | bit[8] & 0x00ff;
         return new Dimension(_width, _height);
     }
 
@@ -91,10 +91,10 @@ public class AbstractWMFPainter {
      */
     protected BufferedImage getImage(byte[] bit) {
         // get the header of the bitmap, first the width and height
-        int _width = (((int)bit[7] & 0x00ff) << 24) | (((int)bit[6] & 0x00ff) << 16)
-                    | (((int)bit[5] & 0x00ff) << 8) | (int)bit[4] & 0x00ff;
-        int _height = (((int)bit[11] & 0x00ff) << 24) | (((int)bit[10] & 0x00ff) << 16)
-                    | (((int)bit[9] & 0x00ff) << 8) | (int)bit[8] & 0x00ff;
+        int _width = ((bit[7] & 0x00ff) << 24) | ((bit[6] & 0x00ff) << 16)
+                    | ((bit[5] & 0x00ff) << 8) | bit[4] & 0x00ff;
+        int _height = ((bit[11] & 0x00ff) << 24) | ((bit[10] & 0x00ff) << 16)
+                    | ((bit[9] & 0x00ff) << 8) | bit[8] & 0x00ff;
 
         // OK, we can safely create the data array now
         int[] bitI = new int[_width * _height];
@@ -103,22 +103,22 @@ public class AbstractWMFPainter {
 
         // retrieve useful informations in bitmap header
         // size of header
-        int _headerSize = (((int)bit[3] & 0x00ff) << 24) | (((int)bit[2] & 0x00ff)<<16)
-                            | (((int)bit[1] & 0x00ff) << 8) | (int)bit[0] & 0x00ff;
+        int _headerSize = ((bit[3] & 0x00ff) << 24) | ((bit[2] & 0x00ff)<<16)
+                            | ((bit[1] & 0x00ff) << 8) | bit[0] & 0x00ff;
         // number of planes
-        int _planes = (((int)bit[13] & 0x00ff) << 8) | (int)bit[12] & 0x00ff;
+        int _planes = ((bit[13] & 0x00ff) << 8) | bit[12] & 0x00ff;
         // number of bits per pixel
-        int _nbit = (((int)bit[15] & 0x00ff) << 8) | (int)bit[14] & 0x00ff;
+        int _nbit = ((bit[15] & 0x00ff) << 8) | bit[14] & 0x00ff;
         // compression factor : unused
         // size of the image
-        int _size = (((int)bit[23] & 0x00ff) << 24) | (((int)bit[22] & 0x00ff) << 16)
-                        | (((int)bit[21] & 0x00ff) << 8) | (int)bit[20] & 0x00ff;
+        int _size = ((bit[23] & 0x00ff) << 24) | ((bit[22] & 0x00ff) << 16)
+                        | ((bit[21] & 0x00ff) << 8) | bit[20] & 0x00ff;
         // infer the size of image if it is not given in the file
         if (_size == 0) _size = ((((_width * _nbit) + 31) & ~31 ) >> 3) * _height;
 
         // number of used colors
-        int _clrused = (((int)bit[35] & 0x00ff) << 24) | (((int)bit[34]&0x00ff) << 16)
-                        | (((int)bit[33] & 0x00ff) << 8) | (int)bit[32]&0x00ff;
+        int _clrused = ((bit[35] & 0x00ff) << 24) | ((bit[34] &0x00ff) << 16)
+                        | ((bit[33] & 0x00ff) << 8) | bit[32] &0x00ff;
 
         // 24 bit image
         if (_nbit == 24) {
@@ -129,8 +129,8 @@ public class AbstractWMFPainter {
             for (int j = 0; j < _height; j++) {
                 for (int i = 0; i < _width; i++) {
                     bitI[_width * (_height - j - 1) + i] =
-                        (255 & 0x00ff) << 24 | (((int)bit[offset+2] & 0x00ff) << 16)
-                        | (((int)bit[offset+1] & 0x00ff) << 8) | (int)bit[offset] & 0x00ff;
+                        (255 & 0x00ff) << 24 | ((bit[offset+2] & 0x00ff) << 16)
+                        | ((bit[offset+1] & 0x00ff) << 8) | bit[offset] & 0x00ff;
                     offset += 3;
                 }
                 offset += pad;
@@ -145,9 +145,9 @@ public class AbstractWMFPainter {
             int offset = _headerSize;
             int[]  palette = new int[nbColors];
             for (int i = 0; i < nbColors; i++) {
-                palette[i] = (255 & 0x00ff) << 24 | (((int)bit[offset+2] & 0x00ff) << 16)
-                            | (((int)bit[offset+1] & 0x00ff) << 8)
-                            | (int)bit[offset] & 0x00ff;
+                palette[i] = (255 & 0x00ff) << 24 | ((bit[offset+2] & 0x00ff) << 16)
+                            | ((bit[offset+1] & 0x00ff) << 8)
+                            | bit[offset] & 0x00ff;
                 offset += 4;
             }
 
@@ -159,7 +159,7 @@ public class AbstractWMFPainter {
             int pad = (_size / _height) - _width;
             for (int j = 0; j < _height; j++) {
                 for (int i = 0; i < _width; i++) {
-                    bitI[_width*(_height-j-1)+i] = palette [((int)bit[offset] & 0x00ff)];
+                    bitI[_width*(_height-j-1)+i] = palette [(bit[offset] & 0x00ff)];
                     offset++;
                 }
                 offset += pad;
@@ -172,9 +172,9 @@ public class AbstractWMFPainter {
             int offset = _headerSize;
             int[]  palette = new int[nbColors];
             for (int i = 0; i < nbColors; i++) {
-                palette[i] = (255 & 0x00ff) << 24 | (((int)bit[offset+2] & 0x00ff) << 16)
-                            | (((int)bit[offset+1] & 0x00ff) << 8)
-                            | (int)bit[offset] & 0x00ff;
+                palette[i] = (255 & 0x00ff) << 24 | ((bit[offset+2] & 0x00ff) << 16)
+                            | ((bit[offset+1] & 0x00ff) << 8)
+                            | bit[offset] & 0x00ff;
                 offset += 4;
             }
 

@@ -85,8 +85,8 @@ public class ParsedURLData {
         if (((data[0]&0x0F)  == 8) &&
             ((data[0]>>>4)   <= 7)) {
             // Check for a zlib (deflate) stream
-            int chk = ((((int)data[0])&0xFF)*256+
-                       (((int)data[1])&0xFF));
+            int chk = ((data[0] &0xFF)*256+
+                       (data[1] &0xFF));
             if ((chk %31)  == 0) {
                 try {
                     // I'm not really as certain of this check

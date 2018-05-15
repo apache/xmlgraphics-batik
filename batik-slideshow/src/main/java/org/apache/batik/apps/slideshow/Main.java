@@ -124,33 +124,33 @@ public class Main extends JComponent {
 
         public void run() {
             renderer.setDoubleBuffered(true);
-            for (int i=0; i<files.length; i++) {
-                GraphicsNode   gvtRoot = null;
+            for (File file : files) {
+                GraphicsNode gvtRoot = null;
                 GVTBuilder builder = new GVTBuilder();
 
                 try {
-                    String fileName = files[ i ].toURI().toURL().toString();
-                    System.out.println("Reading: " + fileName );
-                    Document svgDoc = loader.loadDocument( fileName );
-                    System.out.println("Building: " + fileName );
+                    String fileName = file.toURI().toURL().toString();
+                    System.out.println("Reading: " + fileName);
+                    Document svgDoc = loader.loadDocument(fileName);
+                    System.out.println("Building: " + fileName);
                     gvtRoot = builder.build(ctx, svgDoc);
-                    System.out.println("Rendering: " + fileName );
+                    System.out.println("Rendering: " + fileName);
                     renderer.setTree(gvtRoot);
 
-                    Element elt = ((SVGDocument)svgDoc).getRootElement();
+                    Element elt = ((SVGDocument) svgDoc).getRootElement();
                     renderer.setTransform
-                        (ViewBox.getViewTransform
-                         (null, elt, display.getWidth(), display.getHeight(),
-                          ctx));
+                            (ViewBox.getViewTransform
+                                    (null, elt, display.getWidth(), display.getHeight(),
+                                            ctx));
 
                     renderer.updateOffScreen(display.getWidth(),
-                                             display.getHeight());
+                            display.getHeight());
 
                     Rectangle r = new Rectangle(0, 0,
-                                                display.getWidth(),
-                                                display.getHeight());
+                            display.getWidth(),
+                            display.getHeight());
                     renderer.repaint(r);
-                    System.out.println("Painting: " + fileName );
+                    System.out.println("Painting: " + fileName);
                     image = renderer.getOffScreen();
                     setTransition(image);
 

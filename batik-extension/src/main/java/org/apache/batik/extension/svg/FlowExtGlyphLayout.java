@@ -155,14 +155,13 @@ public class FlowExtGlyphLayout extends GlyphLayout {
             {
                 List extraP = (List)aci.getAttribute(FLOW_EMPTY_PARAGRAPH);
                 if (extraP != null) {
-                    Iterator epi = extraP.iterator();
-                    while (epi.hasNext()) {
-                        MarginInfo emi = (MarginInfo)epi.next();
-                        float inc = ((prevBotMargin > emi.getTopMargin()) 
-                                     ? prevBotMargin 
-                                     : emi.getTopMargin());
+                    for (Object anExtraP : extraP) {
+                        MarginInfo emi = (MarginInfo) anExtraP;
+                        float inc = ((prevBotMargin > emi.getTopMargin())
+                                ? prevBotMargin
+                                : emi.getTopMargin());
                         if ((dy + inc <= height) &&
-                            !emi.isFlowRegionBreak()) {
+                                !emi.isFlowRegionBreak()) {
                             dy += inc;
                             prevBotMargin = emi.getBottomMargin();
                         } else {
@@ -176,11 +175,11 @@ public class FlowExtGlyphLayout extends GlyphLayout {
                             currentRegion = (RegionInfo) flowRectsIter.next();
                             height = (float) currentRegion.getHeight();
                             // start a new alignment offset for this flow rect.
-                            verticalAlignOffset = new Point2D.Float(0,0);
+                            verticalAlignOffset = new Point2D.Float(0, 0);
 
                             // Don't use this paragraph info in next
                             // flow region!
-                            dy            = 0;
+                            dy = 0;
                             prevBotMargin = 0;
                         }
                     }
@@ -191,9 +190,8 @@ public class FlowExtGlyphLayout extends GlyphLayout {
 
             List gvl = new LinkedList();
             List layouts = (List)clIter.next();
-            Iterator iter = layouts.iterator();
-            while (iter.hasNext()) {
-                GlyphLayout gl = (GlyphLayout)iter.next();
+            for (Object layout : layouts) {
+                GlyphLayout gl = (GlyphLayout) layout;
                 gvl.add(gl.getGlyphVector());
             }
             GVTGlyphVector gv = new MultiGlyphVector(gvl);

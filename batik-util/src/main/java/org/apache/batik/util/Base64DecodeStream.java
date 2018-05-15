@@ -102,7 +102,7 @@ public class Base64DecodeStream extends InputStream {
             }
         }
 
-        return ((int)out_buffer[out_offset++])&0xFF;
+        return out_buffer[out_offset++] &0xFF;
     }
 
     public int read(byte []out, int offset, int len)
@@ -146,10 +146,10 @@ public class Base64DecodeStream extends InputStream {
             off = out;
         }
 
-        a = pem_array[((int)decode_buffer[0])&0xFF];
-        b = pem_array[((int)decode_buffer[1])&0xFF];
-        c = pem_array[((int)decode_buffer[2])&0xFF];
-        d = pem_array[((int)decode_buffer[3])&0xFF];
+        a = pem_array[decode_buffer[0] &0xFF];
+        b = pem_array[decode_buffer[1] &0xFF];
+        c = pem_array[decode_buffer[2] &0xFF];
+        d = pem_array[decode_buffer[3] &0xFF];
 
         out_buffer[0] = (byte)((a<<2) | (b>>>4));
         out_buffer[1] = (byte)((b<<4) | (c>>>2));

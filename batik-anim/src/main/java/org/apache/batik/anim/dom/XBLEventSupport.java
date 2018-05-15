@@ -91,7 +91,7 @@ public class XBLEventSupport extends EventSupport {
             (namespaceURI, type, listener, useCapture, group);
         if (namespaceURI == null
                 || namespaceURI.equals(XMLConstants.XML_EVENTS_NAMESPACE_URI)) {
-            String alias = (String) eventTypeAliases.get(type);
+            String alias = eventTypeAliases.get(type);
             if (alias != null) {
                 super.addEventListenerNS
                     (namespaceURI, alias, listener, useCapture, group);
@@ -109,7 +109,7 @@ public class XBLEventSupport extends EventSupport {
         super.removeEventListenerNS(namespaceURI, type, listener, useCapture);
         if (namespaceURI == null
                 || namespaceURI.equals(XMLConstants.XML_EVENTS_NAMESPACE_URI)) {
-            String alias = (String) eventTypeAliases.get(type);
+            String alias = eventTypeAliases.get(type);
             if (alias != null) {
                 super.removeEventListenerNS
                     (namespaceURI, alias, listener, useCapture);

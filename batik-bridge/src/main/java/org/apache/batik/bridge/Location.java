@@ -47,23 +47,23 @@ public class Location implements org.apache.batik.w3c.dom.Location
      *    navigate to.
      */
     public void assign(String url) {
-        ((UserAgent)bridgeContext.getUserAgent()).loadDocument(url);
+        bridgeContext.getUserAgent().loadDocument(url);
     }
 
     /**
      * The user agent reloads the current document.
      */
     public void reload() {
-        String url = ((AbstractDocument) bridgeContext.getDocument())
+        String url = bridgeContext.getDocument()
                     .getDocumentURI();
-        ((UserAgent)bridgeContext.getUserAgent()).loadDocument(url);
+        bridgeContext.getUserAgent().loadDocument(url);
     }
 
     /**
      * Returns the URL of this location as a String.
      */
     public String toString() {
-        return ((AbstractDocument) bridgeContext.getDocument())
+        return bridgeContext.getDocument()
                     .getDocumentURI();
     }
 }

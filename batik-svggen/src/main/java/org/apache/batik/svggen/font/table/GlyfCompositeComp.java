@@ -76,21 +76,21 @@ public class GlyfCompositeComp {
         // Get the scale values (if any)
         if ((flags & WE_HAVE_A_SCALE) != 0) {
             int i = (short)(bais.read()<<8 | bais.read());
-            xscale = yscale = (double) i / (double) 0x4000;
+            xscale = yscale = (double) i / 0x4000;
         } else if ((flags & WE_HAVE_AN_X_AND_Y_SCALE) != 0) {
             short i = (short)(bais.read()<<8 | bais.read());
-            xscale = (double) i / (double) 0x4000;
+            xscale = (double) i / 0x4000;
             i = (short)(bais.read()<<8 | bais.read());
-            yscale = (double) i / (double) 0x4000;
+            yscale = (double) i / 0x4000;
         } else if ((flags & WE_HAVE_A_TWO_BY_TWO) != 0) {
             int i = (short)(bais.read()<<8 | bais.read());
-            xscale = (double) i / (double) 0x4000;
+            xscale = (double) i / 0x4000;
             i = (short)(bais.read()<<8 | bais.read());
-            scale01 = (double) i / (double) 0x4000;
+            scale01 = (double) i / 0x4000;
             i = (short)(bais.read()<<8 | bais.read());
-            scale10 = (double) i / (double) 0x4000;
+            scale10 = (double) i / 0x4000;
             i = (short)(bais.read()<<8 | bais.read());
-            yscale = (double) i / (double) 0x4000;
+            yscale = (double) i / 0x4000;
         }
     }
 

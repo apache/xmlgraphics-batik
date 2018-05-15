@@ -31,7 +31,7 @@ public class MediaRule extends StyleSheet implements Rule {
     /**
      * The type constant.
      */
-    public static final short TYPE = (short)1;
+    public static final short TYPE = 1;
 
     /**
      * The media list.

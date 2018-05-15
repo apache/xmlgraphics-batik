@@ -293,7 +293,7 @@ public class Polygon2D implements Shape, Cloneable, Serializable {
      *                         <code>false</code> otherwise.
      */
     public boolean contains(int x, int y) {
-        return contains((double) x, (double) y);
+        return contains((double) x, y);
     }
 
     /**

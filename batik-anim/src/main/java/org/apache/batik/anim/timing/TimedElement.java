@@ -1403,7 +1403,7 @@ public abstract class TimedElement implements SMILConstants {
      * exposing animation information from the document.
      */
     public TimingSpecifier[] getBeginTimingSpecifiers() {
-        return (TimingSpecifier[]) beginTimes.clone();
+        return beginTimes.clone();
     }
 
     /**
@@ -1413,7 +1413,7 @@ public abstract class TimedElement implements SMILConstants {
      * exposing animation information from the document.
      */
     public TimingSpecifier[] getEndTimingSpecifiers() {
-        return (TimingSpecifier[]) endTimes.clone();
+        return endTimes.clone();
     }
 
     /**
