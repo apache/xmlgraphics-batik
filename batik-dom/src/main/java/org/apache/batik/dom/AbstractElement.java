@@ -1107,7 +1107,7 @@ public abstract class AbstractElement
     /**
      * Inner class to hold type information about this element.
      */
-    public class ElementTypeInfo implements TypeInfo {
+    public static class ElementTypeInfo implements TypeInfo {
 
         /**
          * Type namespace.

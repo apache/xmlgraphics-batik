@@ -1153,7 +1153,7 @@ public class JSVGCanvas extends JSVGComponent {
      * Helper class. Simply keeps track of the last known mouse
      * position over the canvas.
      */
-    protected class LocationListener extends MouseMotionAdapter {
+    protected static class LocationListener extends MouseMotionAdapter {
 
         protected int lastX, lastY;
 

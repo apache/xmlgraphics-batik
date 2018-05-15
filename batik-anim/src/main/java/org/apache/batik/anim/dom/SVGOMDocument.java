@@ -549,7 +549,7 @@ public class SVGOMDocument
     /**
      * DOM node inserted listener wrapper.
      */
-    protected class DOMNodeInsertedListenerWrapper implements EventListener {
+    protected static class DOMNodeInsertedListenerWrapper implements EventListener {
 
         /**
          * The CSSNavigableDocumentListener.
@@ -575,7 +575,7 @@ public class SVGOMDocument
     /**
      * DOM node removed listener wrapper.
      */
-    protected class DOMNodeRemovedListenerWrapper implements EventListener {
+    protected static class DOMNodeRemovedListenerWrapper implements EventListener {
 
         /**
          * The CSSNavigableDocumentListener.
@@ -601,7 +601,7 @@ public class SVGOMDocument
     /**
      * DOM subtree modified listener wrapper.
      */
-    protected class DOMSubtreeModifiedListenerWrapper implements EventListener {
+    protected static class DOMSubtreeModifiedListenerWrapper implements EventListener {
 
         /**
          * The CSSNavigableDocumentListener.
@@ -628,7 +628,7 @@ public class SVGOMDocument
     /**
      * DOM character data modified listener wrapper.
      */
-    protected class DOMCharacterDataModifiedListenerWrapper
+    protected static class DOMCharacterDataModifiedListenerWrapper
             implements EventListener {
 
         /**
@@ -656,7 +656,7 @@ public class SVGOMDocument
     /**
      * DOM attribute modified listener wrapper.
      */
-    protected class DOMAttrModifiedListenerWrapper implements EventListener {
+    protected static class DOMAttrModifiedListenerWrapper implements EventListener {
 
         /**
          * The CSSNavigableDocumentListener.

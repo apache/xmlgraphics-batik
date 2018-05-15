@@ -416,7 +416,7 @@ public class ExternalResourcesTest extends AbstractTest
         }
     }
 
-    class MyUserAgentAdapter extends UserAgentAdapter implements MyUserAgent {
+    static class MyUserAgentAdapter extends UserAgentAdapter implements MyUserAgent {
         Exception ex = null;
         public void displayError(Exception ex) {
             this.ex = ex;

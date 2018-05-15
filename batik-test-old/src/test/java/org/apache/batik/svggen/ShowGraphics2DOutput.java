@@ -90,7 +90,7 @@ public class ShowGraphics2DOutput extends AbstractTest {
         }
     }
 
-    class TestUserAgent extends UserAgentAdapter {
+    static class TestUserAgent extends UserAgentAdapter {
         boolean failed;
 
         public void displayError(Exception e) {

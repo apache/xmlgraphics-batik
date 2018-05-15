@@ -1702,16 +1702,16 @@ public abstract class AbstractDocument
                                       Exception e) {
         try {
             return new DocumentError(type,
-                                     severity,
-                                     getCurrentDocument().formatMessage(key, args),
-                                     related,
-                                     e);
+                    severity,
+                    getCurrentDocument().formatMessage(key, args),
+                    related,
+                    e);
         } catch (Exception ex) {
             return new DocumentError(type,
-                                     severity,
-                                     key,
-                                     related,
-                                     e);
+                    severity,
+                    key,
+                    related,
+                    e);
         }
     }
 
@@ -1746,7 +1746,7 @@ public abstract class AbstractDocument
     /**
      * DOMError implementation.
      */
-    protected class DocumentError implements DOMError {
+    protected static class DocumentError implements DOMError {
 
         /**
          * The error type.
@@ -2580,7 +2580,7 @@ public abstract class AbstractDocument
     /**
      * An XPathNSResolver that uses Node.lookupNamespaceURI.
      */
-    protected class XPathNodeNSResolver implements XPathNSResolver {
+    protected static class XPathNodeNSResolver implements XPathNSResolver {
 
         /**
          * The context node for namespace prefix resolution.

@@ -128,7 +128,7 @@ class WindowsAltFileSystemView extends FileSystemView {
 
         // Create the A: drive whether it is mounted or not
         FileSystemRoot floppy = new FileSystemRoot(Resources.getString(FLOPPY_DRIVE)
-                                                   + "\\");
+                + "\\");
         rootsVector.add(floppy);
 
         // Run through all possible mount points and check
@@ -146,7 +146,7 @@ class WindowsAltFileSystemView extends FileSystemView {
         return roots;
     }
 
-    class FileSystemRoot extends File {
+    static class FileSystemRoot extends File {
         public FileSystemRoot(File f) {
             super(f, "");
         }

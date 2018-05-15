@@ -173,7 +173,7 @@ public abstract class AbstractSVGPreserveAspectRatio
         return value + ' ' + MEET_OR_SLICE_VALUES[meetOrSlice];
     }
 
-    protected class PreserveAspectRatioParserHandler
+    protected static class PreserveAspectRatioParserHandler
         extends DefaultPreserveAspectRatioHandler {
         public short align =
             SVGPreserveAspectRatio.SVG_PRESERVEASPECTRATIO_XMIDYMID;

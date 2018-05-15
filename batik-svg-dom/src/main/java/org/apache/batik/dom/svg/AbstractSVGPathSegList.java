@@ -224,7 +224,7 @@ public abstract class AbstractSVGPathSegList
         return pathSegItem;
     }
 
-    public class SVGPathSegMovetoLinetoItem extends SVGPathSegItem
+    public static class SVGPathSegMovetoLinetoItem extends SVGPathSegItem
         implements SVGPathSegMovetoAbs,
                    SVGPathSegMovetoRel,
                    SVGPathSegLinetoAbs,
@@ -282,7 +282,7 @@ public abstract class AbstractSVGPathSegList
         }
     }
 
-    public class SVGPathSegCurvetoCubicItem extends SVGPathSegItem
+    public static class SVGPathSegCurvetoCubicItem extends SVGPathSegItem
         implements SVGPathSegCurvetoCubicAbs,
                    SVGPathSegCurvetoCubicRel {
 
@@ -367,7 +367,7 @@ public abstract class AbstractSVGPathSegList
         }
     }
 
-    public class SVGPathSegCurvetoQuadraticItem extends SVGPathSegItem
+    public static class SVGPathSegCurvetoQuadraticItem extends SVGPathSegItem
         implements SVGPathSegCurvetoQuadraticAbs,
                    SVGPathSegCurvetoQuadraticRel {
 
@@ -434,7 +434,7 @@ public abstract class AbstractSVGPathSegList
          }
     }
 
-    public class SVGPathSegArcItem extends SVGPathSegItem
+    public static class SVGPathSegArcItem extends SVGPathSegItem
         implements SVGPathSegArcAbs,
                    SVGPathSegArcRel {
 
@@ -539,7 +539,7 @@ public abstract class AbstractSVGPathSegList
         }
     }
 
-    public class SVGPathSegLinetoHorizontalItem
+    public static class SVGPathSegLinetoHorizontalItem
         extends SVGPathSegItem
         implements SVGPathSegLinetoHorizontalAbs,
                    SVGPathSegLinetoHorizontalRel {
@@ -576,7 +576,7 @@ public abstract class AbstractSVGPathSegList
         }
     }
 
-    public class SVGPathSegLinetoVerticalItem
+    public static class SVGPathSegLinetoVerticalItem
         extends SVGPathSegItem
     implements SVGPathSegLinetoVerticalAbs,
                SVGPathSegLinetoVerticalRel {
@@ -614,7 +614,7 @@ public abstract class AbstractSVGPathSegList
         }
     }
 
-    public class SVGPathSegCurvetoCubicSmoothItem extends SVGPathSegItem
+    public static class SVGPathSegCurvetoCubicSmoothItem extends SVGPathSegItem
         implements SVGPathSegCurvetoCubicSmoothAbs,
                    SVGPathSegCurvetoCubicSmoothRel {
 
@@ -679,7 +679,7 @@ public abstract class AbstractSVGPathSegList
         }
     }
 
-    public class SVGPathSegCurvetoQuadraticSmoothItem extends SVGPathSegItem
+    public static class SVGPathSegCurvetoQuadraticSmoothItem extends SVGPathSegItem
         implements SVGPathSegCurvetoQuadraticSmoothAbs ,
                    SVGPathSegCurvetoQuadraticSmoothRel {
 
@@ -750,18 +750,16 @@ public abstract class AbstractSVGPathSegList
          * Implements {@link org.apache.batik.parser.PathHandler#movetoRel(float,float)}.
          */
         public void movetoRel(float x, float y) throws ParseException {
-            listHandler.item(new SVGPathSegMovetoLinetoItem
-                (SVGPathSeg.PATHSEG_MOVETO_REL,PATHSEG_MOVETO_REL_LETTER,
-                 x,y));
+            listHandler.item(new SVGPathSegMovetoLinetoItem(SVGPathSeg.PATHSEG_MOVETO_REL, PATHSEG_MOVETO_REL_LETTER,
+                    x, y));
         }
 
         /**
          * Implements {@link org.apache.batik.parser.PathHandler#movetoAbs(float,float)}.
          */
         public void movetoAbs(float x, float y) throws ParseException {
-            listHandler.item(new SVGPathSegMovetoLinetoItem
-                (SVGPathSeg.PATHSEG_MOVETO_ABS,PATHSEG_MOVETO_ABS_LETTER,
-                 x,y));
+            listHandler.item(new SVGPathSegMovetoLinetoItem(SVGPathSeg.PATHSEG_MOVETO_ABS, PATHSEG_MOVETO_ABS_LETTER,
+                    x, y));
         }
 
         /**
@@ -777,54 +775,48 @@ public abstract class AbstractSVGPathSegList
          * Implements {@link org.apache.batik.parser.PathHandler#linetoRel(float,float)}.
          */
         public void linetoRel(float x, float y) throws ParseException {
-            listHandler.item(new SVGPathSegMovetoLinetoItem
-                (SVGPathSeg.PATHSEG_LINETO_REL,PATHSEG_LINETO_REL_LETTER,
-                 x,y));
+            listHandler.item(new SVGPathSegMovetoLinetoItem(SVGPathSeg.PATHSEG_LINETO_REL, PATHSEG_LINETO_REL_LETTER,
+                    x, y));
         }
 
         /**
          * Implements {@link org.apache.batik.parser.PathHandler#linetoAbs(float,float)}.
          */
         public void linetoAbs(float x, float y) throws ParseException {
-            listHandler.item(new SVGPathSegMovetoLinetoItem
-                (SVGPathSeg.PATHSEG_LINETO_ABS,PATHSEG_LINETO_ABS_LETTER,
-                 x,y));
+            listHandler.item(new SVGPathSegMovetoLinetoItem(SVGPathSeg.PATHSEG_LINETO_ABS, PATHSEG_LINETO_ABS_LETTER,
+                    x, y));
         }
 
         /**
          * Implements {@link org.apache.batik.parser.PathHandler#linetoHorizontalRel(float)}.
          */
         public void linetoHorizontalRel(float x) throws ParseException {
-            listHandler.item(new SVGPathSegLinetoHorizontalItem
-                (SVGPathSeg.PATHSEG_LINETO_HORIZONTAL_REL,PATHSEG_LINETO_HORIZONTAL_REL_LETTER,
-                 x));
+            listHandler.item(new SVGPathSegLinetoHorizontalItem(SVGPathSeg.PATHSEG_LINETO_HORIZONTAL_REL, PATHSEG_LINETO_HORIZONTAL_REL_LETTER,
+                    x));
         }
 
         /**
          * Implements {@link org.apache.batik.parser.PathHandler#linetoHorizontalAbs(float)}.
          */
         public void linetoHorizontalAbs(float x) throws ParseException {
-            listHandler.item(new SVGPathSegLinetoHorizontalItem
-                (SVGPathSeg.PATHSEG_LINETO_HORIZONTAL_ABS,PATHSEG_LINETO_HORIZONTAL_ABS_LETTER,
-                 x));
+            listHandler.item(new SVGPathSegLinetoHorizontalItem(SVGPathSeg.PATHSEG_LINETO_HORIZONTAL_ABS, PATHSEG_LINETO_HORIZONTAL_ABS_LETTER,
+                    x));
         }
 
         /**
          * Implements {@link org.apache.batik.parser.PathHandler#linetoVerticalRel(float)}.
          */
         public void linetoVerticalRel(float y) throws ParseException {
-            listHandler.item(new SVGPathSegLinetoVerticalItem
-                (SVGPathSeg.PATHSEG_LINETO_VERTICAL_REL,PATHSEG_LINETO_VERTICAL_REL_LETTER,
-                 y));
+            listHandler.item(new SVGPathSegLinetoVerticalItem(SVGPathSeg.PATHSEG_LINETO_VERTICAL_REL, PATHSEG_LINETO_VERTICAL_REL_LETTER,
+                    y));
         }
 
         /**
          * Implements {@link org.apache.batik.parser.PathHandler#linetoVerticalAbs(float)}.
          */
         public void linetoVerticalAbs(float y) throws ParseException {
-            listHandler.item(new SVGPathSegLinetoVerticalItem
-                (SVGPathSeg.PATHSEG_LINETO_VERTICAL_ABS,PATHSEG_LINETO_VERTICAL_ABS_LETTER,
-                 y));
+            listHandler.item(new SVGPathSegLinetoVerticalItem(SVGPathSeg.PATHSEG_LINETO_VERTICAL_ABS, PATHSEG_LINETO_VERTICAL_ABS_LETTER,
+                    y));
         }
 
         /**
@@ -834,9 +826,8 @@ public abstract class AbstractSVGPathSegList
         public void curvetoCubicRel(float x1, float y1,
                                     float x2, float y2,
                                     float x, float y) throws ParseException {
-            listHandler.item(new SVGPathSegCurvetoCubicItem
-                (SVGPathSeg.PATHSEG_CURVETO_CUBIC_REL,PATHSEG_CURVETO_CUBIC_REL_LETTER,
-                 x1,y1,x2,y2,x,y));
+            listHandler.item(new SVGPathSegCurvetoCubicItem(SVGPathSeg.PATHSEG_CURVETO_CUBIC_REL, PATHSEG_CURVETO_CUBIC_REL_LETTER,
+                    x1, y1, x2, y2, x, y));
         }
 
         /**
@@ -846,9 +837,8 @@ public abstract class AbstractSVGPathSegList
         public void curvetoCubicAbs(float x1, float y1,
                                     float x2, float y2,
                                     float x, float y) throws ParseException {
-            listHandler.item(new SVGPathSegCurvetoCubicItem
-                (SVGPathSeg.PATHSEG_CURVETO_CUBIC_ABS,PATHSEG_CURVETO_CUBIC_ABS_LETTER,
-                 x1,y1,x2,y2,x,y));
+            listHandler.item(new SVGPathSegCurvetoCubicItem(SVGPathSeg.PATHSEG_CURVETO_CUBIC_ABS, PATHSEG_CURVETO_CUBIC_ABS_LETTER,
+                    x1, y1, x2, y2, x, y));
         }
 
         /**
@@ -857,9 +847,9 @@ public abstract class AbstractSVGPathSegList
          */
         public void curvetoCubicSmoothRel(float x2, float y2,
                                           float x, float y) throws ParseException {
-            listHandler.item(new SVGPathSegCurvetoCubicSmoothItem
-                (SVGPathSeg.PATHSEG_CURVETO_CUBIC_SMOOTH_REL,PATHSEG_CURVETO_CUBIC_SMOOTH_REL_LETTER,
-                 x2,y2,x,y));
+            listHandler.item(new SVGPathSegCurvetoCubicSmoothItem(SVGPathSeg.PATHSEG_CURVETO_CUBIC_SMOOTH_REL,
+                    PATHSEG_CURVETO_CUBIC_SMOOTH_REL_LETTER,
+                    x2, y2, x, y));
         }
 
         /**
@@ -868,9 +858,9 @@ public abstract class AbstractSVGPathSegList
          */
         public void curvetoCubicSmoothAbs(float x2, float y2,
                                           float x, float y) throws ParseException {
-            listHandler.item(new SVGPathSegCurvetoCubicSmoothItem
-                (SVGPathSeg.PATHSEG_CURVETO_CUBIC_SMOOTH_ABS,PATHSEG_CURVETO_CUBIC_SMOOTH_ABS_LETTER,
-                 x2,y2,x,y));
+            listHandler.item(new SVGPathSegCurvetoCubicSmoothItem(SVGPathSeg.PATHSEG_CURVETO_CUBIC_SMOOTH_ABS,
+                    PATHSEG_CURVETO_CUBIC_SMOOTH_ABS_LETTER,
+                    x2, y2, x, y));
         }
 
         /**
@@ -879,9 +869,9 @@ public abstract class AbstractSVGPathSegList
          */
         public void curvetoQuadraticRel(float x1, float y1,
                                         float x, float y) throws ParseException {
-            listHandler.item(new SVGPathSegCurvetoQuadraticItem
-                (SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_REL,PATHSEG_CURVETO_QUADRATIC_REL_LETTER,
-                 x1,y1,x,y));
+            listHandler.item(new SVGPathSegCurvetoQuadraticItem(SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_REL,
+                    PATHSEG_CURVETO_QUADRATIC_REL_LETTER,
+                    x1, y1, x, y));
         }
 
         /**
@@ -890,9 +880,9 @@ public abstract class AbstractSVGPathSegList
          */
         public void curvetoQuadraticAbs(float x1, float y1,
                                         float x, float y) throws ParseException {
-            listHandler.item(new SVGPathSegCurvetoQuadraticItem
-                (SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_ABS,PATHSEG_CURVETO_QUADRATIC_ABS_LETTER,
-                 x1,y1,x,y));
+            listHandler.item(new SVGPathSegCurvetoQuadraticItem(SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_ABS,
+                    PATHSEG_CURVETO_QUADRATIC_ABS_LETTER,
+                    x1, y1, x, y));
         }
 
         /**
@@ -900,9 +890,9 @@ public abstract class AbstractSVGPathSegList
          */
         public void curvetoQuadraticSmoothRel(float x, float y)
             throws ParseException {
-            listHandler.item(new SVGPathSegCurvetoQuadraticSmoothItem
-                (SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_SMOOTH_REL,PATHSEG_CURVETO_QUADRATIC_SMOOTH_REL_LETTER,
-                 x,y));
+            listHandler.item(new SVGPathSegCurvetoQuadraticSmoothItem(SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_SMOOTH_REL,
+                    PATHSEG_CURVETO_QUADRATIC_SMOOTH_REL_LETTER,
+                    x, y));
         }
 
         /**
@@ -910,9 +900,9 @@ public abstract class AbstractSVGPathSegList
          */
         public void curvetoQuadraticSmoothAbs(float x, float y)
             throws ParseException {
-            listHandler.item(new SVGPathSegCurvetoQuadraticSmoothItem
-                (SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_SMOOTH_ABS,PATHSEG_CURVETO_QUADRATIC_SMOOTH_ABS_LETTER,
-                 x,y));
+            listHandler.item(new SVGPathSegCurvetoQuadraticSmoothItem(SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_SMOOTH_ABS,
+                    PATHSEG_CURVETO_QUADRATIC_SMOOTH_ABS_LETTER,
+                    x, y));
         }
 
         /**
@@ -923,9 +913,8 @@ public abstract class AbstractSVGPathSegList
                            float xAxisRotation,
                            boolean largeArcFlag, boolean sweepFlag,
                            float x, float y) throws ParseException {
-            listHandler.item(new SVGPathSegArcItem
-                (SVGPathSeg.PATHSEG_ARC_REL,PATHSEG_ARC_REL_LETTER,
-                 rx,ry,xAxisRotation,largeArcFlag,sweepFlag,x,y));
+            listHandler.item(new SVGPathSegArcItem(SVGPathSeg.PATHSEG_ARC_REL, PATHSEG_ARC_REL_LETTER,
+                    rx, ry, xAxisRotation, largeArcFlag, sweepFlag, x, y));
         }
 
         /**
@@ -936,9 +925,8 @@ public abstract class AbstractSVGPathSegList
                            float xAxisRotation,
                            boolean largeArcFlag, boolean sweepFlag,
                            float x, float y) throws ParseException {
-            listHandler.item(new SVGPathSegArcItem
-                (SVGPathSeg.PATHSEG_ARC_ABS,PATHSEG_ARC_ABS_LETTER,
-                 rx,ry,xAxisRotation,largeArcFlag,sweepFlag,x,y));
+            listHandler.item(new SVGPathSegArcItem(SVGPathSeg.PATHSEG_ARC_ABS, PATHSEG_ARC_ABS_LETTER,
+                    rx, ry, xAxisRotation, largeArcFlag, sweepFlag, x, y));
         }
     }
 }

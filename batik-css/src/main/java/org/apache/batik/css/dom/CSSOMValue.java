@@ -726,7 +726,7 @@ public class CSSOMValue
     /**
      * This class provides an abstract implementation of a ModificationHandler.
      */
-    public abstract class AbstractModificationHandler
+    public abstract static class AbstractModificationHandler
         implements ModificationHandler {
 
         /**

@@ -18,8 +18,6 @@
  */
 package org.apache.batik.bridge;
 
-import org.apache.batik.dom.AbstractDocument;
-
 /**
  * This class implements the org.apache.batik.w3c.dom.Location interface for Batik
  *

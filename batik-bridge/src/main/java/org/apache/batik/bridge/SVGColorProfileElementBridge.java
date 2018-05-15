@@ -21,7 +21,6 @@ package org.apache.batik.bridge;
 import java.awt.color.ICC_Profile;
 import java.io.IOException;
 
-import org.apache.batik.dom.AbstractNode;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.ext.awt.color.NamedProfileCache;
 import org.apache.batik.util.ParsedURL;

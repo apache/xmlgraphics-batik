@@ -317,7 +317,7 @@ public class XMLInputHandler implements SquiggleInputHandler {
      * Implements the URIResolver interface so that relative urls used in 
      * transformations are resolved properly.
      */
-    public class DocumentURIResolver implements URIResolver {
+    public static class DocumentURIResolver implements URIResolver {
         String documentURI;
 
         public DocumentURIResolver(String documentURI) {

@@ -54,7 +54,7 @@ public class LRUCache {
      * Interface for nodes in the LRU cache, basicly nodes in a doubly
      * linked list.
      */
-        public class LRUNode extends DoublyLinkedList.Node {
+        public static class LRUNode extends DoublyLinkedList.Node {
                 private   LRUObj  obj  = null;
                 public    LRUObj  getObj ()               { return obj; }
                 protected void    setObj (LRUObj  newObj) {

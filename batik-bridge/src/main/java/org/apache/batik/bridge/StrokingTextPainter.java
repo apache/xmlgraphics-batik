@@ -1607,7 +1607,7 @@ public class StrokingTextPainter extends BasicTextPainter {
 
     // inner classes
 
-    public class TextChunk {
+    public static class TextChunk {
 
         // the following denote indices of text runs over all chunks of text node,
         // where index 0 is first run of first chunk of text node; the begin index
@@ -1631,7 +1631,7 @@ public class StrokingTextPainter extends BasicTextPainter {
      * Inner convenience class for associating a TextLayout for
      * sub-spans, and the ACI which iterates over that subspan.
      */
-    public class TextRun {
+    public static class TextRun {
 
         protected AttributedCharacterIterator aci;      // source aci
         protected TextSpanLayout layout;                // layout object

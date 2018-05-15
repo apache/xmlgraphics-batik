@@ -74,7 +74,7 @@ public abstract class AbstractSVGNormPathSegList extends AbstractSVGPathSegList 
         public void startPath() throws ParseException {
             listHandler.startList();
             lastAbs = new SVGPathSegGenericItem(SVGPathSeg.PATHSEG_MOVETO_ABS,
-                    PATHSEG_MOVETO_ABS_LETTER, 0,0,0,0,0,0);
+                    PATHSEG_MOVETO_ABS_LETTER, 0, 0, 0, 0, 0, 0);
         }
 
         /**
@@ -95,9 +95,8 @@ public abstract class AbstractSVGNormPathSegList extends AbstractSVGPathSegList 
          * Implements {@link org.apache.batik.parser.PathHandler#movetoAbs(float,float)}.
          */
         public void movetoAbs(float x, float y) throws ParseException {
-            listHandler.item(new SVGPathSegMovetoLinetoItem
-                    (SVGPathSeg.PATHSEG_MOVETO_ABS,PATHSEG_MOVETO_ABS_LETTER,
-                            x,y));
+            listHandler.item(new SVGPathSegMovetoLinetoItem(SVGPathSeg.PATHSEG_MOVETO_ABS, PATHSEG_MOVETO_ABS_LETTER,
+                    x, y));
             lastAbs.setX(x);
             lastAbs.setY(y);
             lastAbs.setPathSegType(SVGPathSeg.PATHSEG_MOVETO_ABS);
@@ -122,9 +121,8 @@ public abstract class AbstractSVGNormPathSegList extends AbstractSVGPathSegList 
          * Implements {@link org.apache.batik.parser.PathHandler#linetoAbs(float,float)}.
          */
         public void linetoAbs(float x, float y) throws ParseException {
-            listHandler.item(new SVGPathSegMovetoLinetoItem
-                    (SVGPathSeg.PATHSEG_LINETO_ABS,PATHSEG_LINETO_ABS_LETTER,
-                            x,y));
+            listHandler.item(new SVGPathSegMovetoLinetoItem(SVGPathSeg.PATHSEG_LINETO_ABS, PATHSEG_LINETO_ABS_LETTER,
+                    x, y));
             lastAbs.setX(x);
             lastAbs.setY(y);
             lastAbs.setPathSegType(SVGPathSeg.PATHSEG_LINETO_ABS);
@@ -177,9 +175,8 @@ public abstract class AbstractSVGNormPathSegList extends AbstractSVGPathSegList 
         public void curvetoCubicAbs(float x1, float y1,
                 float x2, float y2,
                 float x, float y) throws ParseException {
-            listHandler.item(new SVGPathSegCurvetoCubicItem
-                    (SVGPathSeg.PATHSEG_CURVETO_CUBIC_ABS,PATHSEG_CURVETO_CUBIC_ABS_LETTER,
-                            x1,y1,x2,y2,x,y));
+            listHandler.item(new SVGPathSegCurvetoCubicItem(SVGPathSeg.PATHSEG_CURVETO_CUBIC_ABS, PATHSEG_CURVETO_CUBIC_ABS_LETTER,
+                    x1, y1, x2, y2, x, y));
             lastAbs.setValue(x1,y1,x2,y2,x,y);
             lastAbs.setPathSegType(SVGPathSeg.PATHSEG_CURVETO_CUBIC_ABS);
         }
@@ -321,7 +318,7 @@ public abstract class AbstractSVGNormPathSegList extends AbstractSVGPathSegList 
     }
 
 
-    protected class SVGPathSegGenericItem extends SVGPathSegItem {
+    protected static class SVGPathSegGenericItem extends SVGPathSegItem {
 
         public SVGPathSegGenericItem(short type, String letter,
                 float x1, float y1, float x2, float y2, float x, float y){

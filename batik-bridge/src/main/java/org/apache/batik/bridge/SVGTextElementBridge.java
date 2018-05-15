@@ -1981,7 +1981,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
      * Implementation of <code>SVGContext</code> for
      * the children of &lt;text&gt;
      */
-    public abstract class AbstractTextChildSVGContext
+    public abstract static class AbstractTextChildSVGContext
             extends AnimatableSVGBridge {
 
         /** Text bridge parent */
