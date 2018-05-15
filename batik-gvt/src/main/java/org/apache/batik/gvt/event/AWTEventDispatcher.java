@@ -104,7 +104,7 @@ public class AWTEventDispatcher
     private int nodeIncrementEventModifiers = 0;
     private int nodeDecrementEventID = KeyEvent.KEY_PRESSED;
     private int nodeDecrementEventCode = KeyEvent.VK_TAB;
-    private int nodeDecrementEventModifiers = InputEvent.SHIFT_MASK;
+    private int nodeDecrementEventModifiers = InputEvent.SHIFT_DOWN_MASK;
 
     /**
      * Constructs a new event dispatcher.
@@ -719,7 +719,7 @@ public class AWTEventDispatcher
         if (e instanceof KeyEvent) {
             nodeIncrementEventCode = ((KeyEvent) e).getKeyCode();
         }
-        nodeIncrementEventModifiers = e.getModifiers();
+        nodeIncrementEventModifiers = e.getModifiersEx();
     }
 
     /**
@@ -733,7 +733,7 @@ public class AWTEventDispatcher
         if (e instanceof KeyEvent) {
             nodeDecrementEventCode = ((KeyEvent) e).getKeyCode();
         }
-        nodeDecrementEventModifiers = e.getModifiers();
+        nodeDecrementEventModifiers = e.getModifiersEx();
     }
 
     /**
@@ -755,7 +755,7 @@ public class AWTEventDispatcher
         }
 
         // here: it was not a KeyEvent at all OR a KeyEvent with nodeIncrementEventCode
-        if ((e.getModifiers() & nodeIncrementEventModifiers) == 0) {
+        if ((e.getModifiersEx() & nodeIncrementEventModifiers) == 0) {
             // no nodeIncrementEventModifiers were set: false
             return false;
         }
@@ -782,7 +782,7 @@ public class AWTEventDispatcher
         }
 
         // here: it was not a KeyEvent at all OR a KeyEvent with nodeIncrementEventCode
-        if ((e.getModifiers() & nodeDecrementEventModifiers) == 0) {
+        if ((e.getModifiersEx() & nodeDecrementEventModifiers) == 0) {
             // no nodeDecrementEventModifiers were set: false
             return false;
         }

@@ -2229,7 +2229,7 @@ public class JSVGComponent extends JGVTComponent {
                             MouseDraggedRunnable mdr;
                             mdr = (MouseDraggedRunnable)next;
                             MouseEvent mev = mdr.event;
-                            if (mev.getModifiers() == e.getModifiers()) {
+                            if (mev.getModifiersEx() == e.getModifiersEx()) {
                                 mdr.event = e;
                             }
                             return;
@@ -2273,7 +2273,7 @@ public class JSVGComponent extends JGVTComponent {
                             MouseMovedRunnable mmr;
                             mmr = (MouseMovedRunnable)next;
                             MouseEvent mev = mmr.event;
-                            if (mev.getModifiers() == e.getModifiers()) {
+                            if (mev.getModifiersEx() == e.getModifiersEx()) {
                                 mmr.event = e;
                             }
                             return;

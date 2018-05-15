@@ -1078,7 +1078,7 @@ public class JGVTComponent extends JComponent {
                         (e.getComponent(),
                          MouseEvent.MOUSE_CLICKED,
                          e.getWhen(),
-                         e.getModifiers(),
+                         e.getModifiersEx(),
                          e.getX(),
                          e.getY(),
                          e.getClickCount(),

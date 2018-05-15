@@ -33,27 +33,27 @@ public abstract class GraphicsNodeInputEvent extends GraphicsNodeEvent {
     /**
      * The shift key modifier constant.
      */
-    public static final int SHIFT_MASK = InputEvent.SHIFT_MASK;
+    public static final int SHIFT_MASK = InputEvent.SHIFT_DOWN_MASK;
 
     /**
      * The control key modifier constant.
      */
-    public static final int CTRL_MASK = InputEvent.CTRL_MASK;
+    public static final int CTRL_MASK = InputEvent.CTRL_DOWN_MASK;
 
     /**
      * The meta key modifier constant.
      */
-    public static final int META_MASK = InputEvent.META_MASK;
+    public static final int META_MASK = InputEvent.META_DOWN_MASK;
 
     /**
      * The alt key modifier constant.
      */
-    public static final int ALT_MASK = InputEvent.ALT_MASK;
+    public static final int ALT_MASK = InputEvent.ALT_DOWN_MASK;
 
     /**
      * The alt-graph key modifier constant.
      */
-    public static final int ALT_GRAPH_MASK = InputEvent.ALT_GRAPH_MASK;
+    public static final int ALT_GRAPH_MASK = InputEvent.ALT_GRAPH_DOWN_MASK;
 
     /**
      * The mouse button1 modifier constant.
@@ -134,7 +134,7 @@ public abstract class GraphicsNodeInputEvent extends GraphicsNodeEvent {
                                      int lockState) {
         super(source, evt.getID());
         this.when = evt.getWhen();
-        this.modifiers = evt.getModifiers();
+        this.modifiers = evt.getModifiersEx();
         this.lockState = lockState;
     }
 

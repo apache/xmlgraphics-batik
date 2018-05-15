@@ -22,7 +22,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.Event;
 import java.awt.EventQueue;
 import java.awt.FileDialog;
 import java.awt.Font;
@@ -32,6 +31,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -620,11 +620,11 @@ public class JSVGViewerFrame
                       cMap.get(JSVGCanvas.ZOOM_OUT_ACTION));
 
         listeners.put(PREVIOUS_TRANSFORM_ACTION, previousTransformAction);
-        key = KeyStroke.getKeyStroke(KeyEvent.VK_K, KeyEvent.CTRL_MASK);
+        key = KeyStroke.getKeyStroke(KeyEvent.VK_K, KeyEvent.CTRL_DOWN_MASK);
         imap.put(key, previousTransformAction);
 
         listeners.put(NEXT_TRANSFORM_ACTION, nextTransformAction);
-        key = KeyStroke.getKeyStroke(KeyEvent.VK_L, KeyEvent.CTRL_MASK);
+        key = KeyStroke.getKeyStroke(KeyEvent.VK_L, KeyEvent.CTRL_DOWN_MASK);
         imap.put(key, nextTransformAction);
 
         listeners.put(USE_STYLESHEET_ACTION, useStylesheetAction);
@@ -1026,7 +1026,7 @@ public class JSVGViewerFrame
             menu.getItem(3).setText
                 (Resources.getString("Close.text")); // Exit -> "Close"
             menu.getItem(3).setAccelerator
-                (KeyStroke.getKeyStroke(KeyEvent.VK_W, Event.CTRL_MASK));
+                (KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.CTRL_DOWN_MASK));
 
             debugGui.setSize(600, 460);
             debugGui.pack();
