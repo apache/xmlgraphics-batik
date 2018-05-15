@@ -25,7 +25,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.batik.dom.AbstractNode;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.ext.awt.MultipleGradientPaint;
 import org.apache.batik.gvt.GraphicsNode;

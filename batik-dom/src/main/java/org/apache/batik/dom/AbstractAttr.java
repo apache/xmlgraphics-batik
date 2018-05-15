@@ -338,7 +338,7 @@ public abstract class AbstractAttr extends AbstractParentNode implements Attr {
     /**
      * Inner class to hold type information about this attribute.
      */
-    public class AttrTypeInfo implements TypeInfo {
+    public static class AttrTypeInfo implements TypeInfo {
 
         /**
          * Type namespace.

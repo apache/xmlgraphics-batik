@@ -245,8 +245,8 @@ public class SVG12BridgeContext extends BridgeContext {
              "DOMNodeRemoved",
              domNodeRemovedEventListener, true);
 
-        domCharacterDataModifiedEventListener = 
-            new EventListenerWrapper(new DOMCharacterDataModifiedEventListener());
+        domCharacterDataModifiedEventListener =
+                new EventListenerWrapper(new DOMCharacterDataModifiedEventListener());
         evtSupport.addImplementationEventListenerNS
             (XMLConstants.XML_EVENTS_NAMESPACE_URI,
              "DOMCharacterDataModified",
@@ -467,7 +467,7 @@ public class SVG12BridgeContext extends BridgeContext {
      * Wrapper for DOM event listeners so that they will see only
      * original events (i.e., not retargetted).
      */
-    protected class EventListenerWrapper implements EventListener {
+    protected static class EventListenerWrapper implements EventListener {
 
         /**
          * The wrapped listener.

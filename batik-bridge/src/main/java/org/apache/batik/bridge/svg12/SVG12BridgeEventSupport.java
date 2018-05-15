@@ -25,7 +25,6 @@ import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeEventSupport;
 import org.apache.batik.bridge.FocusManager;
 import org.apache.batik.bridge.UserAgent;
-import org.apache.batik.dom.events.AbstractEvent;
 import org.apache.batik.dom.events.DOMKeyboardEvent;
 import org.apache.batik.dom.events.DOMMouseEvent;
 import org.apache.batik.dom.events.DOMTextEvent;

@@ -176,7 +176,7 @@ public class EventListenerList {
     /**
      * EventListenerTable entry class.
      */
-    public class Entry {
+    public static class Entry {
         
         /**
          * The event listener.

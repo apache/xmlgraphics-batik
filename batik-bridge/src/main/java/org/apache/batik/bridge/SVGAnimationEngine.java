@@ -151,9 +151,9 @@ public class SVGAnimationEngine extends AnimationEngine {
      */
     protected Factory[] factories = {
         null, // TYPE_UNKNOWN
-        new AnimatableIntegerValueFactory(), // TYPE_INTEGER
-        new AnimatableNumberValueFactory(), // TYPE_NUMBER
-        new AnimatableLengthValueFactory(), // TYPE_LENGTH
+            new AnimatableIntegerValueFactory(), // TYPE_INTEGER
+            new AnimatableNumberValueFactory(), // TYPE_NUMBER
+            new AnimatableLengthValueFactory(), // TYPE_LENGTH
         null, // TYPE_NUMBER_OPTIONAL_NUMBER
         new AnimatableAngleValueFactory(), // TYPE_ANGLE
         new AnimatableColorValueFactory(), // TYPE_COLOR
@@ -163,8 +163,8 @@ public class SVGAnimationEngine extends AnimationEngine {
         uncomputedAnimatableStringValueFactory, // TYPE_URI
         null, // TYPE_FREQUENCY
         null, // TYPE_TIME
-        new AnimatableNumberListValueFactory(), // TYPE_NUMBER_LIST
-        new AnimatableLengthListValueFactory(), // TYPE_LENGTH_LIST
+            new AnimatableNumberListValueFactory(), // TYPE_NUMBER_LIST
+            new AnimatableLengthListValueFactory(), // TYPE_LENGTH_LIST
         uncomputedAnimatableStringValueFactory, // TYPE_IDENT
         uncomputedAnimatableStringValueFactory, // TYPE_CDATA
         animatableLengthOrIdentFactory, // TYPE_LENGTH_OR_INHERIT
@@ -172,7 +172,7 @@ public class SVGAnimationEngine extends AnimationEngine {
         uncomputedAnimatableStringValueFactory, // TYPE_CLIP_VALUE
         uncomputedAnimatableStringValueFactory, // TYPE_URI_OR_IDENT
         uncomputedAnimatableStringValueFactory, // TYPE_CURSOR_VALUE
-        new AnimatablePathDataFactory(), // TYPE_PATH_DATA
+            new AnimatablePathDataFactory(), // TYPE_PATH_DATA
         uncomputedAnimatableStringValueFactory, // TYPE_ENABLE_BACKGROUND_VALUE
         null, // TYPE_TIME_VALUE_LIST
         animatableNumberOrIdentFactory, // TYPE_NUMBER_OR_INHERIT
@@ -181,8 +181,8 @@ public class SVGAnimationEngine extends AnimationEngine {
         new AnimatableNumberOrIdentFactory(true), // TYPE_FONT_WEIGHT_VALUE
         new AnimatableAngleOrIdentFactory(), // TYPE_ANGLE_OR_IDENT
         null, // TYPE_KEY_SPLINES_VALUE
-        new AnimatablePointListValueFactory(), // TYPE_POINTS_VALUE
-        new AnimatablePreserveAspectRatioValueFactory(), // TYPE_PRESERVE_ASPECT_RATIO_VALUE
+            new AnimatablePointListValueFactory(), // TYPE_POINTS_VALUE
+            new AnimatablePreserveAspectRatioValueFactory(), // TYPE_PRESERVE_ASPECT_RATIO_VALUE
         null, // TYPE_URI_LIST
         uncomputedAnimatableStringValueFactory, // TYPE_LENGTH_LIST_OR_IDENT
         null, // TYPE_CHARACTER_OR_UNICODE_RANGE_LIST
@@ -197,10 +197,10 @@ public class SVGAnimationEngine extends AnimationEngine {
         animatableNumberOrIdentFactory, // TYPE_FONT_SIZE_ADJUST_VALUE
         null, // TYPE_LANG_VALUE
         null, // TYPE_LANG_LIST_VALUE
-        new AnimatableNumberOrPercentageValueFactory(), // TYPE_NUMBER_OR_PERCENTAGE
+            new AnimatableNumberOrPercentageValueFactory(), // TYPE_NUMBER_OR_PERCENTAGE
         null, // TYPE_TIMING_SPECIFIER_LIST
-        new AnimatableBooleanValueFactory(), // TYPE_BOOLEAN
-        new AnimatableRectValueFactory() // TYPE_RECT
+            new AnimatableBooleanValueFactory(), // TYPE_BOOLEAN
+            new AnimatableRectValueFactory() // TYPE_RECT
     };
 
     /**
@@ -1091,7 +1091,7 @@ public class SVGAnimationEngine extends AnimationEngine {
     /**
      * Factory class for {@link AnimatableBooleanValue}s.
      */
-    protected class AnimatableBooleanValueFactory implements Factory {
+    protected static class AnimatableBooleanValueFactory implements Factory {
 
         /**
          * Creates a new AnimatableValue from a string.
@@ -1114,7 +1114,7 @@ public class SVGAnimationEngine extends AnimationEngine {
     /**
      * Factory class for {@link AnimatableIntegerValue}s.
      */
-    protected class AnimatableIntegerValueFactory implements Factory {
+    protected static class AnimatableIntegerValueFactory implements Factory {
 
         /**
          * Creates a new AnimatableValue from a string.
@@ -1137,7 +1137,7 @@ public class SVGAnimationEngine extends AnimationEngine {
     /**
      * Factory class for {@link AnimatableNumberValue}s.
      */
-    protected class AnimatableNumberValueFactory implements Factory {
+    protected static class AnimatableNumberValueFactory implements Factory {
 
         /**
          * Creates a new AnimatableValue from a string.
@@ -1159,7 +1159,7 @@ public class SVGAnimationEngine extends AnimationEngine {
     /**
      * Factory class for {@link AnimatableNumberOrPercentageValue}s.
      */
-    protected class AnimatableNumberOrPercentageValueFactory
+    protected static class AnimatableNumberOrPercentageValueFactory
             implements Factory {
 
         /**
@@ -1200,7 +1200,7 @@ public class SVGAnimationEngine extends AnimationEngine {
     /**
      * Factory class for {@link AnimatablePreserveAspectRatioValue}s.
      */
-    protected class AnimatablePreserveAspectRatioValueFactory implements Factory {
+    protected static class AnimatablePreserveAspectRatioValueFactory implements Factory {
 
         /**
          * The parsed 'align' value.
@@ -1353,7 +1353,7 @@ public class SVGAnimationEngine extends AnimationEngine {
     /**
      * Factory class for {@link AnimatableLengthValue}s.
      */
-    protected class AnimatableLengthValueFactory implements Factory {
+    protected static class AnimatableLengthValueFactory implements Factory {
 
         /**
          * The parsed length unit type.
@@ -1447,7 +1447,7 @@ public class SVGAnimationEngine extends AnimationEngine {
     /**
      * Factory class for {@link AnimatableLengthListValue}s.
      */
-    protected class AnimatableLengthListValueFactory implements Factory {
+    protected static class AnimatableLengthListValueFactory implements Factory {
 
         /**
          * Parser for length lists.
@@ -1498,7 +1498,7 @@ public class SVGAnimationEngine extends AnimationEngine {
     /**
      * Factory class for {@link AnimatableNumberListValue}s.
      */
-    protected class AnimatableNumberListValueFactory implements Factory {
+    protected static class AnimatableNumberListValueFactory implements Factory {
 
         /**
          * Parser for number lists.
@@ -1545,7 +1545,7 @@ public class SVGAnimationEngine extends AnimationEngine {
     /**
      * Factory class for {@link AnimatableNumberListValue}s.
      */
-    protected class AnimatableRectValueFactory implements Factory {
+    protected static class AnimatableRectValueFactory implements Factory {
 
         /**
          * Parser for number lists.
@@ -1596,7 +1596,7 @@ public class SVGAnimationEngine extends AnimationEngine {
     /**
      * Factory class for {@link AnimatablePointListValue}s.
      */
-    protected class AnimatablePointListValueFactory implements Factory {
+    protected static class AnimatablePointListValueFactory implements Factory {
 
         /**
          * Parser for point lists.
@@ -1643,7 +1643,7 @@ public class SVGAnimationEngine extends AnimationEngine {
     /**
      * Factory class for {@link AnimatablePathDataValue}s.
      */
-    protected class AnimatablePathDataFactory implements Factory {
+    protected static class AnimatablePathDataFactory implements Factory {
 
         /**
          * Parser for path data.
@@ -1691,7 +1691,7 @@ public class SVGAnimationEngine extends AnimationEngine {
     /**
      * Factory class for {@link AnimatableStringValue}s.
      */
-    protected class UncomputedAnimatableStringValueFactory implements Factory {
+    protected static class UncomputedAnimatableStringValueFactory implements Factory {
 
         public AnimatableValue createValue(AnimationTarget target, String ns,
                                            String ln, boolean isCSS, String s) {

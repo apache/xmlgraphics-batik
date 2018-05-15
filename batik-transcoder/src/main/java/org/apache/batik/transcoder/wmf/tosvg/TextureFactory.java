@@ -170,7 +170,7 @@ public final class TextureFactory {
     /** Contain a handle to a Colored texture, with optional foreground and
      * background colors.
      */
-    private class ColoredTexture {
+    private static class ColoredTexture {
 
         final int textureId;
         final Color foreground;

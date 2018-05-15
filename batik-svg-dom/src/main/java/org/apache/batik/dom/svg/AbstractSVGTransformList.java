@@ -192,7 +192,7 @@ public abstract class AbstractSVGTransformList
     /**
      * An {@link SVGTransform} in the list.
      */
-    public class SVGTransformItem
+    public static class SVGTransformItem
             extends AbstractSVGTransform
             implements SVGItem {
 

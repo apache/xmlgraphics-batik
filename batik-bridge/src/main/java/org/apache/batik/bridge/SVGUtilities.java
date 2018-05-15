@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import org.apache.batik.css.engine.CSSEngine;
-import org.apache.batik.dom.AbstractNode;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.gvt.GraphicsNode;

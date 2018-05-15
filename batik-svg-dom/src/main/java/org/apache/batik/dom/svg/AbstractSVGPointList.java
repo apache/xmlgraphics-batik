@@ -141,7 +141,7 @@ public abstract class AbstractSVGPointList
      * Helper class to interface the {@link PointsParser} and the
      * {@link PointsHandler}.
      */
-    protected class PointsListBuilder implements PointsHandler {
+    protected static class PointsListBuilder implements PointsHandler {
 
         /**
          * The {@link ListHandler} to pass newly created {@link SVGPointItem}

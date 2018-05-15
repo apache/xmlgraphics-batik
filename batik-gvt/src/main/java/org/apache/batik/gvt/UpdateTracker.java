@@ -282,7 +282,7 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
         fromBounds.put(gnWRef, r2d);
     }
 
-    class ChngSrcRect extends Rectangle2D.Float {
+    static class ChngSrcRect extends Rectangle2D.Float {
         ChngSrcRect(Rectangle2D r2d) {
             super((float)r2d.getX(), (float)r2d.getY(),
                   (float)r2d.getWidth(), (float)r2d.getHeight());

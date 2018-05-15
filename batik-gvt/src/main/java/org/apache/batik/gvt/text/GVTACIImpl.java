@@ -386,7 +386,7 @@ public class GVTACIImpl
      * SVGAttributedCharacterIterator.TextAttribute.X, TextAttribute.Y,
      * TextAttribute.ROTATE attributes to TextAttribute.TRANSFORM attributes.
      */
-    public class TransformAttributeFilter implements
+    public static class TransformAttributeFilter implements
                      GVTAttributedCharacterIterator.AttributeFilter {
 
         /**

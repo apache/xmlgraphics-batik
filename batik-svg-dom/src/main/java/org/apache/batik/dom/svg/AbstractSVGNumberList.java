@@ -160,7 +160,7 @@ public abstract class AbstractSVGNumberList
      * Helper class to interface the {@link NumberListParser} and the
      * {@link NumberListHandler}.
      */
-    protected class NumberListBuilder implements NumberListHandler {
+    protected static class NumberListBuilder implements NumberListHandler {
 
         /**
          * The ListHandler to notify of parsed numbers.

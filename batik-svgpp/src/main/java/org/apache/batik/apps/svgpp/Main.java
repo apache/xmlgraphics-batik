@@ -20,7 +20,6 @@
 package org.apache.batik.apps.svgpp;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.batik.i18n.LocalizableSupport;

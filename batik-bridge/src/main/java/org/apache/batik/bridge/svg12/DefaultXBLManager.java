@@ -447,7 +447,7 @@ public class DefaultXBLManager implements XBLManager, XBLConstants {
             }
         }
         defRec = new DefinitionRecord(namespaceURI, localName, def,
-                                      template, imp);
+                template, imp);
         defs.add(defRec);
         definitions.put(def, imp, defRec);
         addDefinitionElementListeners(def, ir);
@@ -1186,7 +1186,7 @@ public class DefaultXBLManager implements XBLManager, XBLConstants {
     /**
      * Record class for storing information about an XBL definition.
      */
-    protected class DefinitionRecord implements Comparable {
+    protected static class DefinitionRecord implements Comparable {
 
         /**
          * The namespace URI.
@@ -1376,7 +1376,7 @@ public class DefaultXBLManager implements XBLManager, XBLConstants {
     /**
      * DOM node removed listener for imported XBL trees.
      */
-    protected class ImportRemovedListener implements EventListener {
+    protected static class ImportRemovedListener implements EventListener {
 
         /**
          * List of definition elements to be removed from the document.

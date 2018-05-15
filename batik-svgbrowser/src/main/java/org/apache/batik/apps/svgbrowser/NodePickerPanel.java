@@ -1339,7 +1339,7 @@ public class NodePickerPanel extends JPanel implements ActionMap {
     /**
      * The panel to view and edit the elements xml representation.
      */
-    protected class SVGInputPanel extends JPanel {
+    protected static class SVGInputPanel extends JPanel {
 
         /**
          * The text area.

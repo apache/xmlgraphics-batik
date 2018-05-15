@@ -602,7 +602,7 @@ public class UpdateManager  {
         outOfDateTime = 0;
     }
 
-    protected class SuspensionInfo {
+    protected static class SuspensionInfo {
         /**
          * The index of this redraw suspension
          */
@@ -621,7 +621,7 @@ public class UpdateManager  {
         public long getResumeMilli() { return resumeMilli; }
     }
 
-    protected class RepaintTimerTask extends TimerTask {
+    protected static class RepaintTimerTask extends TimerTask {
         UpdateManager um;
         RepaintTimerTask(UpdateManager um) {
             this.um = um;
@@ -675,7 +675,7 @@ public class UpdateManager  {
     int addRedrawSuspension(int max_wait_milliseconds) {
         long resumeTime = System.currentTimeMillis() + max_wait_milliseconds;
         SuspensionInfo si = new SuspensionInfo(nextSuspensionIndex++,
-                                               resumeTime);
+                resumeTime);
         if (resumeTime > allResumeTime) {
             allResumeTime = resumeTime;
             // System.err.println("Added AllRes Time: " + allResumeTime);

@@ -388,7 +388,7 @@ public class JSVGInterruptTest extends JSVGMemoryLeakTest {
      * A call to abort() can <i>prevent</i> the start of the Runable before it is
      * started - it does not abort after it started.
      */
-    class DelayRunnable extends Thread {
+    static class DelayRunnable extends Thread {
 
         /**
          * delay in milliSeconds - must not change after creation.

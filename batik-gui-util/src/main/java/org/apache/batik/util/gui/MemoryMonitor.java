@@ -168,7 +168,7 @@ public class MemoryMonitor extends JFrame implements ActionMap {
     /**
      * The action associated with the 'Collect' button of the memory monitor.
      */
-    protected class CollectButtonAction extends AbstractAction {
+    protected static class CollectButtonAction extends AbstractAction {
         public void actionPerformed(ActionEvent e) {
             System.gc();
         }
