@@ -367,6 +367,7 @@ public class SVGOnLoadExceptionTest extends AbstractTest {
                     }
                 }
 
+                fileName = new File(fileName).getAbsolutePath();
                 permissions.add(new FilePermission(fileName, "read"));
                 permissions.add(new RuntimePermission("accessDeclaredMembers"));
 
