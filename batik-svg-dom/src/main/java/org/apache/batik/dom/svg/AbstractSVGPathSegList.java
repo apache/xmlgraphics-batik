@@ -725,7 +725,7 @@ public abstract class AbstractSVGPathSegList
         }
     }
 
-    protected class PathSegListBuilder extends DefaultPathHandler {
+    protected static class PathSegListBuilder extends DefaultPathHandler {
 
         protected ListHandler listHandler;
 

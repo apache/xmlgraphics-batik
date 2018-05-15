@@ -1823,7 +1823,7 @@ public abstract class AbstractDocument
         /**
          * The DOMLocator implementation.
          */
-        protected class ErrorLocation implements DOMLocator {
+        protected static class ErrorLocation implements DOMLocator {
 
             /**
              * The node that caused the error.

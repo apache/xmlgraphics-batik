@@ -426,7 +426,7 @@ public class ExternalResourcesTest extends AbstractTest
         public Exception getDisplayError() { return ex; }
     }
 
-    class SecureUserAgent extends MyUserAgentAdapter {
+    static class SecureUserAgent extends MyUserAgentAdapter {
         public ExternalResourceSecurity
             getExternalResourceSecurity(ParsedURL resourcePURL,
                                         ParsedURL docPURL){
@@ -435,7 +435,7 @@ public class ExternalResourcesTest extends AbstractTest
         }
     }
 
-    class RelaxedUserAgent extends MyUserAgentAdapter {
+    static class RelaxedUserAgent extends MyUserAgentAdapter {
         public ExternalResourceSecurity
             getExternalResourceSecurity(ParsedURL resourcePURL,
                                         ParsedURL docPURL){

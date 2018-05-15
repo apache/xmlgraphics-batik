@@ -60,7 +60,7 @@ public abstract class AbstractSVGNormPathSegList extends AbstractSVGPathSegList 
         pathParser.parse(value);
     }
 
-    protected class NormalizedPathSegListBuilder extends DefaultPathHandler {
+    protected static class NormalizedPathSegListBuilder extends DefaultPathHandler {
 
         protected ListHandler listHandler;
         protected SVGPathSegGenericItem lastAbs;
