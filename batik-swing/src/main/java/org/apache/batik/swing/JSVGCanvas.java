@@ -322,25 +322,25 @@ public class JSVGCanvas extends JSVGComponent {
         key = KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0);
         inputMap.put(key, SCROLL_DOWN_ACTION);
 
-        key = KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, KeyEvent.SHIFT_MASK);
+        key = KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, KeyEvent.SHIFT_DOWN_MASK);
         inputMap.put(key, FAST_SCROLL_RIGHT_ACTION);
 
-        key = KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, KeyEvent.SHIFT_MASK);
+        key = KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, KeyEvent.SHIFT_DOWN_MASK);
         inputMap.put(key, FAST_SCROLL_LEFT_ACTION);
 
-        key = KeyStroke.getKeyStroke(KeyEvent.VK_UP, KeyEvent.SHIFT_MASK);
+        key = KeyStroke.getKeyStroke(KeyEvent.VK_UP, KeyEvent.SHIFT_DOWN_MASK);
         inputMap.put(key, FAST_SCROLL_UP_ACTION);
 
-        key = KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, KeyEvent.SHIFT_MASK);
+        key = KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, KeyEvent.SHIFT_DOWN_MASK);
         inputMap.put(key, FAST_SCROLL_DOWN_ACTION);
 
-        key = KeyStroke.getKeyStroke(KeyEvent.VK_I, KeyEvent.CTRL_MASK);
+        key = KeyStroke.getKeyStroke(KeyEvent.VK_I, KeyEvent.CTRL_DOWN_MASK);
         inputMap.put(key, ZOOM_IN_ACTION);
 
-        key = KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_MASK);
+        key = KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_DOWN_MASK);
         inputMap.put(key, ZOOM_OUT_ACTION);
 
-        key = KeyStroke.getKeyStroke(KeyEvent.VK_T, KeyEvent.CTRL_MASK);
+        key = KeyStroke.getKeyStroke(KeyEvent.VK_T, KeyEvent.CTRL_DOWN_MASK);
         inputMap.put(key, RESET_TRANSFORM_ACTION);
     }
 
@@ -774,11 +774,11 @@ public class JSVGCanvas extends JSVGComponent {
      */
     protected Interactor zoomInteractor = new AbstractZoomInteractor() {
         public boolean startInteraction(InputEvent ie) {
-            int mods = ie.getModifiers();
+            int mods = ie.getModifiersEx();
             return
                 ie.getID() == MouseEvent.MOUSE_PRESSED &&
-                (mods & InputEvent.BUTTON1_MASK) != 0 &&
-                (mods & InputEvent.CTRL_MASK) != 0;
+                (mods & InputEvent.BUTTON1_DOWN_MASK) != 0 &&
+                (mods & InputEvent.CTRL_DOWN_MASK) != 0;
         }
     };
 
@@ -789,11 +789,11 @@ public class JSVGCanvas extends JSVGComponent {
     protected Interactor imageZoomInteractor
         = new AbstractImageZoomInteractor() {
         public boolean startInteraction(InputEvent ie) {
-            int mods = ie.getModifiers();
+            int mods = ie.getModifiersEx();
             return
                 ie.getID() == MouseEvent.MOUSE_PRESSED &&
-                (mods & InputEvent.BUTTON3_MASK) != 0 &&
-                (mods & InputEvent.SHIFT_MASK) != 0;
+                (mods & InputEvent.BUTTON3_DOWN_MASK) != 0 &&
+                (mods & InputEvent.SHIFT_DOWN_MASK) != 0;
         }
     };
 
@@ -803,11 +803,11 @@ public class JSVGCanvas extends JSVGComponent {
      */
     protected Interactor panInteractor = new AbstractPanInteractor() {
         public boolean startInteraction(InputEvent ie) {
-            int mods = ie.getModifiers();
+            int mods = ie.getModifiersEx();
             return
                 ie.getID() == MouseEvent.MOUSE_PRESSED &&
-                (mods & InputEvent.BUTTON1_MASK) != 0 &&
-                (mods & InputEvent.SHIFT_MASK) != 0;
+                (mods & InputEvent.BUTTON1_DOWN_MASK) != 0 &&
+                (mods & InputEvent.SHIFT_DOWN_MASK) != 0;
         }
     };
 
@@ -817,11 +817,11 @@ public class JSVGCanvas extends JSVGComponent {
      */
     protected Interactor rotateInteractor = new AbstractRotateInteractor() {
         public boolean startInteraction(InputEvent ie) {
-            int mods = ie.getModifiers();
+            int mods = ie.getModifiersEx();
             return
                 ie.getID() == MouseEvent.MOUSE_PRESSED &&
-                (mods & InputEvent.BUTTON3_MASK) != 0 &&
-                (mods & InputEvent.CTRL_MASK) != 0;
+                (mods & InputEvent.BUTTON3_DOWN_MASK) != 0 &&
+                (mods & InputEvent.CTRL_DOWN_MASK) != 0;
         }
     };
 
@@ -832,12 +832,12 @@ public class JSVGCanvas extends JSVGComponent {
     protected Interactor resetTransformInteractor =
         new AbstractResetTransformInteractor() {
         public boolean startInteraction(InputEvent ie) {
-            int mods = ie.getModifiers();
+            int mods = ie.getModifiersEx();
             return
                 ie.getID() == MouseEvent.MOUSE_CLICKED &&
-                (mods & InputEvent.BUTTON3_MASK) != 0 &&
-                (mods & InputEvent.SHIFT_MASK) != 0 &&
-                (mods & InputEvent.CTRL_MASK) != 0;
+                (mods & InputEvent.BUTTON3_DOWN_MASK) != 0 &&
+                (mods & InputEvent.SHIFT_DOWN_MASK) != 0 &&
+                (mods & InputEvent.CTRL_DOWN_MASK) != 0;
         }
     };
 
