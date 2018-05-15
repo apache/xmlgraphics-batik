@@ -502,7 +502,7 @@ public abstract class AbstractSVGTransformList
      * Helper class to interface the {@link TransformListParser} and the
      * {@link ListHandler}.
      */
-    protected class TransformListBuilder implements TransformListHandler {
+    protected static class TransformListBuilder implements TransformListHandler {
 
         /**
          * The {@link ListHandler} to pass newly created
