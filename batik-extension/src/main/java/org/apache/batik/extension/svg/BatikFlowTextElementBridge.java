@@ -361,16 +361,15 @@ public class BatikFlowTextElementBridge extends SVGTextElementBridge
         // Note: The Working Group (in conjunction with XHTML working
         // group) has decided that multiple line elements collapse.
         int prevLN = 0;
-        Iterator lnIter = lnLocs.iterator();
-        while (lnIter.hasNext()) {
-            int nextLN = (Integer) lnIter.next();
+        for (Object lnLoc : lnLocs) {
+            int nextLN = (Integer) lnLoc;
             if (nextLN == prevLN) continue;
 
             ret.addAttribute(FLOW_LINE_BREAK,
-                             new Object(),
-                             prevLN, nextLN);
+                    new Object(),
+                    prevLN, nextLN);
             // System.out.println("Attr: [" + prevLN + "," + nextLN + "]");
-            prevLN  = nextLN;
+            prevLN = nextLN;
         }
 
         int start=0;
@@ -669,11 +668,10 @@ public class BatikFlowTextElementBridge extends SVGTextElementBridge
                 strippedSome = true;
             }
             if (strippedSome) {
-                Iterator iter = elemTPI.values().iterator();
-                while (iter.hasNext()) {
-                    TextPaintInfo tpi = (TextPaintInfo)iter.next();
+                for (Object o1 : elemTPI.values()) {
+                    TextPaintInfo tpi = (TextPaintInfo) o1;
                     if (tpi.endChar >= asb.length()) {
-                        tpi.endChar = asb.length()-1;
+                        tpi.endChar = asb.length() - 1;
                         if (tpi.startChar > tpi.endChar)
                             tpi.startChar = tpi.endChar;
                     }

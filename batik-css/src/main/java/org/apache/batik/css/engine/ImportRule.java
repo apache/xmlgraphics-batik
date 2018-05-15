@@ -31,7 +31,7 @@ public class ImportRule extends MediaRule {
     /**
      * The type constant.
      */
-    public static final short TYPE = (short)2;
+    public static final short TYPE = 2;
 
     /**
      * The URI of the imported stylesheet.

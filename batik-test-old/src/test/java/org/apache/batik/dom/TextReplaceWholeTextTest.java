@@ -36,7 +36,7 @@ public class TextReplaceWholeTextTest extends DOM3Test {
         doc.getDocumentElement().appendChild(n1);
         doc.getDocumentElement().appendChild(n2);
         doc.getDocumentElement().appendChild(n3);
-        ((AbstractText) n2).replaceWholeText("xyz");
+        n2.replaceWholeText("xyz");
 
         return doc.getDocumentElement().getFirstChild().getNodeValue().equals("xyz")
                 && doc.getDocumentElement().getFirstChild().getNextSibling() == null;

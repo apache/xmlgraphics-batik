@@ -113,12 +113,12 @@ public class WMFPainter extends AbstractWMFPainter {
         this.conv = scale;
         this.xOffset = -xOffset;
         this.yOffset = -yOffset;
-        this.scale = (float)currentStore.getWidthPixels() / (float)currentStore.getWidthUnits() * scale;
-        this.scale = this.scale * (float)currentStore.getWidthPixels() / (float)currentStore.getVpW() ;
-        float xfactor  = (float)currentStore.getVpW() / (float)currentStore.getWidthPixels()
-            * (float)currentStore.getWidthUnits() / (float)currentStore.getWidthPixels();
-        float yfactor  = (float)currentStore.getVpH() / (float)currentStore.getHeightPixels()
-            * (float)currentStore.getHeightUnits() / (float)currentStore.getHeightPixels();
+        this.scale = (float)currentStore.getWidthPixels() / currentStore.getWidthUnits() * scale;
+        this.scale = this.scale * currentStore.getWidthPixels() / currentStore.getVpW();
+        float xfactor  = (float)currentStore.getVpW() / currentStore.getWidthPixels()
+            * currentStore.getWidthUnits() / currentStore.getWidthPixels();
+        float yfactor  = (float)currentStore.getVpH() / currentStore.getHeightPixels()
+            * currentStore.getHeightUnits() / currentStore.getHeightPixels();
         this.xOffset = this.xOffset * xfactor;
         this.yOffset = this.yOffset * yfactor;
         scaleX = this.scale;
@@ -179,16 +179,16 @@ public class WMFPainter extends AbstractWMFPainter {
 
                 switch ( mr.functionId ) {
                 case WMFConstants.META_SETWINDOWORG:
-                    currentStore.setVpX( vpX = -(float)mr.elementAt( 0 ) );
-                    currentStore.setVpY( vpY = -(float)mr.elementAt( 1 ) );
+                    currentStore.setVpX( vpX = -mr.elementAt( 0 ));
+                    currentStore.setVpY( vpY = -mr.elementAt( 1 ));
                     vpX = vpX * scale;
                     vpY = vpY * scale;
                     break;
 
                 case WMFConstants.META_SETWINDOWORG_EX: // ???? LOOKS SUSPICIOUS
                 case WMFConstants.META_SETWINDOWEXT:
-                    vpW = (float)mr.elementAt( 0 );
-                    vpH = (float)mr.elementAt( 1 );
+                    vpW = mr.elementAt( 0 );
+                    vpH = mr.elementAt( 1 );
 
 
                     scaleX = scale;
@@ -512,10 +512,10 @@ public class WMFPainter extends AbstractWMFPainter {
                         float x1, y1, x2, y2, x3, y3;
                         x1 = scaleX * ( vpX + xOffset + mr.elementAt( 0 ) );
                         x2 = scaleX * ( vpX + xOffset + mr.elementAt( 2 ) );
-                        x3 = scaleX * (float)(mr.elementAt( 4 ) );
+                        x3 = scaleX * (mr.elementAt( 4 ) );
                         y1 = scaleY * ( vpY + yOffset + mr.elementAt( 1 ) );
                         y2 = scaleY * ( vpY + yOffset + mr.elementAt( 3 ) );
-                        y3 = scaleY * (float)(mr.elementAt( 5 ) );
+                        y3 = scaleY * (mr.elementAt( 5 ) );
 
                         RoundRectangle2D rec =
                             new RoundRectangle2D.Float(x1, y1, x2-x1, y2-y1, x3, y3);
@@ -803,9 +803,9 @@ public class WMFPainter extends AbstractWMFPainter {
                     break;
                 case WMFConstants.META_PATBLT:
                     {
-                        float rop = (float)(mr.elementAt( 0 ) );
-                        float height = scaleY * (float)(mr.elementAt( 1 ) );
-                        float width = scaleX * (float)(mr.elementAt( 2 ) );
+                        float rop = (mr.elementAt( 0 ) );
+                        float height = scaleY * (mr.elementAt( 1 ) );
+                        float width = scaleX * (mr.elementAt( 2 ) );
                         float left = scaleX * (vpX + xOffset + mr.elementAt( 3 ) );
                         float top  = scaleY * (vpY + yOffset + mr.elementAt( 4 ) );
 
@@ -849,8 +849,8 @@ public class WMFPainter extends AbstractWMFPainter {
                         int sx = mr.elementAt( 4 );
                         float dy = conv * currentStore.getVpWFactor() * (vpY + yOffset + mr.elementAt( 7 ) );
                         float dx = conv * currentStore.getVpHFactor() * (vpX + xOffset + mr.elementAt( 8 ) );
-                        float heightDst = (float)(mr.elementAt( 5 ) );
-                        float widthDst = (float)(mr.elementAt( 6 ) );
+                        float heightDst = (mr.elementAt( 5 ) );
+                        float widthDst = (mr.elementAt( 6 ) );
                         widthDst = widthDst * conv * currentStore.getVpWFactor();
                         heightDst = heightDst * conv * currentStore.getVpHFactor();
                         byte[] bitmap = ((MetaRecord.ByteRecord)mr).bstr;
@@ -869,11 +869,11 @@ public class WMFPainter extends AbstractWMFPainter {
                         int sy = mr.elementAt( 3 );
                         int sx = mr.elementAt( 4 );
                         float dy = conv * currentStore.getVpWFactor() *
-                            (vpY + yOffset + (float)mr.elementAt( 7 ));
+                            (vpY + yOffset + mr.elementAt( 7 ));
                         float dx = conv * currentStore.getVpHFactor() *
-                            (vpX + xOffset + (float)mr.elementAt( 8 ));
-                        float heightDst = (float)(mr.elementAt( 5 ));
-                        float widthDst = (float)(mr.elementAt( 6 ));
+                            (vpX + xOffset + mr.elementAt( 8 ));
+                        float heightDst = (mr.elementAt( 5 ));
+                        float widthDst = (mr.elementAt( 6 ));
                         widthDst = widthDst * conv * currentStore.getVpWFactor();
                         heightDst = heightDst * conv * currentStore.getVpHFactor();
                         byte[] bitmap = ((MetaRecord.ByteRecord)mr).bstr;
@@ -977,7 +977,7 @@ public class WMFPainter extends AbstractWMFPainter {
     private Paint getPaint(byte[] bit) {
         Dimension d = getImageDimension(bit);
         BufferedImage img = getImage(bit);
-        Rectangle2D rec = new Rectangle2D.Float(0, 0, (float)d.width, (float)d.height);
+        Rectangle2D rec = new Rectangle2D.Float(0, 0, d.width, d.height);
         TexturePaint paint = new TexturePaint(img, rec);
         return paint;
     }

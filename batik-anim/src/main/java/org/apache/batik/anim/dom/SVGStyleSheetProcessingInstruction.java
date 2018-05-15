@@ -68,7 +68,7 @@ public class SVGStyleSheetProcessingInstruction
     public String getStyleSheetURI() {
         SVGOMDocument svgDoc = (SVGOMDocument) getOwnerDocument();
         ParsedURL url = svgDoc.getParsedURL();
-        String href = (String)getPseudoAttributes().get("href");
+        String href = getPseudoAttributes().get("href");
         if (url != null) {
             return new ParsedURL(url, href).toString();
         }

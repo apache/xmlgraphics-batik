@@ -35,6 +35,6 @@ public class AttrIsIdTest extends DOM3Test {
         g.setAttributeNS(null, "id", "n1");
         doc.getDocumentElement().appendChild(g);
         Attr a = g.getAttributeNodeNS(null, "id");
-        return ((AbstractAttr) a).isId();
+        return a.isId();
     }
 }

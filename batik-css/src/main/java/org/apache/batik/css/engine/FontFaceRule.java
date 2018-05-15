@@ -33,7 +33,7 @@ public class FontFaceRule implements Rule {
     /**
      * The type constant.
      */
-    public static final short TYPE = (short)3;
+    public static final short TYPE = 3;
 
     StyleMap sm;
     ParsedURL purl;

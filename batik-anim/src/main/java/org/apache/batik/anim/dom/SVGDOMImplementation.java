@@ -195,7 +195,7 @@ public class SVGDOMImplementation
                                    String           qualifiedName) {
         if (SVGConstants.SVG_NAMESPACE_URI.equals(namespaceURI)) {
             String name = DOMUtilities.getLocalName(qualifiedName);
-            ElementFactory ef = (ElementFactory)factories.get(name);
+            ElementFactory ef = factories.get(name);
             if (ef != null)
                 return ef.create(DOMUtilities.getPrefix(qualifiedName),
                                  document);

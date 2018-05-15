@@ -87,7 +87,7 @@ public abstract class ToSVGAbstractTranscoder extends AbstractTranscoder
     public static float PIXEL_TO_MILLIMETERS;
     public static float PIXEL_PER_INCH;
     static {
-        PIXEL_TO_MILLIMETERS = 25.4f / (float)Platform.getScreenResolution();
+        PIXEL_TO_MILLIMETERS = 25.4f / Platform.getScreenResolution();
         PIXEL_PER_INCH = Platform.getScreenResolution();
     }
 

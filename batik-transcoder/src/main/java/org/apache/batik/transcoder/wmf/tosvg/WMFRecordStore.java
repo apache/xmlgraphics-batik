@@ -300,8 +300,8 @@ public class WMFRecordStore extends AbstractWMFReader {
                     mr.addElement( xnum );
                     mr.addElement( ynum );
                     records.add( mr );
-                    scaleX = scaleX * (float)xdenom / (float)xnum;
-                    scaleY = scaleY * (float)ydenom / (float)ynum;
+                    scaleX = scaleX * xdenom / xnum;
+                    scaleY = scaleY * ydenom / ynum;
                 }
                 break;
 

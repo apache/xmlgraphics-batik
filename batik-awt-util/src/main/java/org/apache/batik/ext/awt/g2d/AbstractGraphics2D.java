@@ -605,7 +605,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements Cloneable
      * @see         java.awt.Graphics#drawChars
      */
     public void drawString(String str, int x, int y){
-        drawString(str, (float)x, (float)y);
+        drawString(str, (float)x, y);
     }
 
 
@@ -623,7 +623,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements Cloneable
      */
     public void drawString(AttributedCharacterIterator iterator,
                            int x, int y){
-        drawString(iterator, (float)x, (float)y);
+        drawString(iterator, (float)x, y);
     }
 
     /**

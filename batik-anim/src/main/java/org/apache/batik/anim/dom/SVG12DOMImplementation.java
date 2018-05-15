@@ -119,12 +119,12 @@ public class SVG12DOMImplementation
         String name = DOMUtilities.getLocalName(qualifiedName);
         String prefix = DOMUtilities.getPrefix(qualifiedName);
         if (SVG12Constants.SVG_NAMESPACE_URI.equals(namespaceURI)) {
-            ElementFactory ef = (ElementFactory)factories.get(name);
+            ElementFactory ef = factories.get(name);
             if (ef != null) {
                 return ef.create(prefix, document);
             }
         } else if (XBLConstants.XBL_NAMESPACE_URI.equals(namespaceURI)) {
-            ElementFactory ef = (ElementFactory)xblFactories.get(name);
+            ElementFactory ef = xblFactories.get(name);
             if (ef != null) {
                 return ef.create(prefix, document);
             }

@@ -136,10 +136,9 @@ public class Main {
         System.out.println(localizableSupport.formatMessage("syntax", null));
         System.out.println();
         System.out.println(localizableSupport.formatMessage("options", null));
-        Iterator it = handlers.keySet().iterator();
-        while (it.hasNext()) {
-            String s = (String)it.next();
-            System.out.println(((OptionHandler)handlers.get(s)).getDescription());
+        for (Object o : handlers.keySet()) {
+            String s = (String) o;
+            System.out.println(((OptionHandler) handlers.get(s)).getDescription());
         }
     }
 

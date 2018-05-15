@@ -143,7 +143,7 @@ public class MultiplyAlphaRed extends AbstractRed {
                 int end = sp + rgn.width;
 
                 while (sp<end) {
-                    int a = ((int)alpPixels[ap++])&0xFF;
+                    int a = alpPixels[ap++] &0xFF;
                     final int pix = srcPixels[sp];
                     srcPixels[sp] =
                         ((((((pix>>>24)     ) *a)&0xFF00)<<16) |
@@ -161,7 +161,7 @@ public class MultiplyAlphaRed extends AbstractRed {
                 int ap = alpBase + y*alpScanStride;
                 int end = sp + rgn.width;
                 while (sp<end) {
-                    int a = ((int)alpPixels[ap++])&0xFF;
+                    int a = alpPixels[ap++] &0xFF;
                     int sa = srcPixels[sp]>>>24;
                     srcPixels[sp] = ((((sa*a) & 0xFF00)<<16)|
                                      srcPixels[sp]&0x00FFFFFF);

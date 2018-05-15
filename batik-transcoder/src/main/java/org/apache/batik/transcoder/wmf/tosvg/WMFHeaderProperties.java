@@ -169,7 +169,7 @@ public class WMFHeaderProperties extends AbstractWMFReader {
             case WMFConstants.META_SETWINDOWEXT: {
                 vpH = readShort( is );
                 vpW = readShort( is );
-                if (! isotropic) scaleXY = (float)vpW / (float)vpH;
+                if (! isotropic) scaleXY = (float)vpW / vpH;
                 vpW = (int)(vpW * scaleXY);                
             }
             break;
@@ -304,14 +304,14 @@ public class WMFHeaderProperties extends AbstractWMFReader {
                     int lfHeight = readShort( is );
                     float size = (int)(scaleY * lfHeight);
                     int lfWidth = readShort( is );
-                    int escape = (int)readShort( is );
-                    int orient = (int)readShort( is );
-                    int weight = (int)readShort( is );
+                    int escape = readShort( is );
+                    int orient = readShort( is );
+                    int weight = readShort( is );
 
-                    int italic = (int)is.readByte();
-                    int underline = (int)is.readByte();
-                    int strikeOut = (int)is.readByte();
-                    int charset = (int)(is.readByte() & 0x00ff);
+                    int italic = is.readByte();
+                    int underline = is.readByte();
+                    int strikeOut = is.readByte();
+                    int charset = is.readByte() & 0x00ff;
                     int lfOutPrecision = is.readByte();
                     int lfClipPrecision = is.readByte();
                     int lfQuality = is.readByte();
@@ -527,12 +527,12 @@ public class WMFHeaderProperties extends AbstractWMFReader {
                     readShort( is ); // widthSrc
                     readShort( is ); // sy
                     readShort( is ); // sx
-                    float heightDst = (float)readShort( is );
-                    float widthDst = (float)readShort( is ) * scaleXY;       
-                    float dy = (float)readShort( is ) * getVpWFactor() * (float)inch / PIXEL_PER_INCH;
-                    float dx = (float)readShort( is ) * getVpWFactor() * (float)inch / PIXEL_PER_INCH * scaleXY; 
-                    widthDst = widthDst * getVpWFactor() * (float)inch / PIXEL_PER_INCH;
-                    heightDst = heightDst * getVpHFactor() * (float)inch / PIXEL_PER_INCH;
+                    float heightDst = readShort( is );
+                    float widthDst = readShort( is ) * scaleXY;
+                    float dy = readShort( is ) * getVpWFactor() * inch / PIXEL_PER_INCH;
+                    float dx = readShort( is ) * getVpWFactor() * inch / PIXEL_PER_INCH * scaleXY;
+                    widthDst = widthDst * getVpWFactor() * inch / PIXEL_PER_INCH;
+                    heightDst = heightDst * getVpHFactor() * inch / PIXEL_PER_INCH;
                     resizeImageBounds((int)dx, (int)dy);
                     resizeImageBounds((int)(dx + widthDst), (int)(dy + heightDst));
 
@@ -547,12 +547,12 @@ public class WMFHeaderProperties extends AbstractWMFReader {
                 readShort( is ); // widthSrc
                 readShort( is ); // sy
                 readShort( is ); // sx
-                float heightDst = (float)readShort( is );
-                float widthDst = (float)readShort( is ) * scaleXY;                    
-                float dy = (float)readShort( is ) * getVpHFactor() * (float)inch / PIXEL_PER_INCH;                                         
-                float dx = (float)readShort( is ) * getVpHFactor() * (float)inch / PIXEL_PER_INCH * scaleXY;  
-                widthDst = widthDst * getVpWFactor() * (float)inch / PIXEL_PER_INCH;
-                heightDst = heightDst * getVpHFactor() * (float)inch / PIXEL_PER_INCH;                                            
+                float heightDst = readShort( is );
+                float widthDst = readShort( is ) * scaleXY;
+                float dy = readShort( is ) * getVpHFactor() * inch / PIXEL_PER_INCH;
+                float dx = readShort( is ) * getVpHFactor() * inch / PIXEL_PER_INCH * scaleXY;
+                widthDst = widthDst * getVpWFactor() * inch / PIXEL_PER_INCH;
+                heightDst = heightDst * getVpHFactor() * inch / PIXEL_PER_INCH;
                 resizeImageBounds((int)dx, (int)dy);
                 resizeImageBounds((int)(dx + widthDst), (int)(dy + heightDst));                
 
@@ -571,9 +571,9 @@ public class WMFHeaderProperties extends AbstractWMFReader {
                 float width = readShort( is ) 
                     * (float)inch / PIXEL_PER_INCH * getVpWFactor() * scaleXY;
                 float dy = 
-                    (float)inch / PIXEL_PER_INCH * getVpHFactor() * readShort( is );
+                    inch / PIXEL_PER_INCH * getVpHFactor() * readShort( is );
                 float dx = 
-                    (float)inch / PIXEL_PER_INCH * getVpWFactor() * readShort( is ) * scaleXY;
+                    inch / PIXEL_PER_INCH * getVpWFactor() * readShort( is ) * scaleXY;
                 resizeImageBounds((int)dx, (int)dy);
                 resizeImageBounds((int)(dx + width), (int)(dy + height));                        
                 }
@@ -617,14 +617,14 @@ public class WMFHeaderProperties extends AbstractWMFReader {
      * the Metafile, in Metafile Units.
      */
     public int getWidthBoundsUnits() {
-        return (int)((float)inch * (float)_bwidth / PIXEL_PER_INCH);
+        return (int)((float)inch * _bwidth / PIXEL_PER_INCH);
     }
 
     /** @return the height of the Rectangle bounding the figures enclosed in
      * the Metafile in Metafile Units.
      */
     public int getHeightBoundsUnits() {
-        return (int)((float)inch * (float)_bheight / PIXEL_PER_INCH);
+        return (int)((float)inch * _bheight / PIXEL_PER_INCH);
     }
 
     /** @return the X offset of the Rectangle bounding the figures enclosed in
@@ -643,7 +643,7 @@ public class WMFHeaderProperties extends AbstractWMFReader {
 
     private void resetBounds() {
         // calculate geometry size
-        scale =  (float)getWidthPixels() / (float)vpW ;
+        scale =  (float)getWidthPixels() / vpW;
         if (_bright != -1) {
             _bright = (int)(scale * (vpX +_bright));
             _bleft = (int)(scale * (vpX +_bleft));
@@ -653,10 +653,10 @@ public class WMFHeaderProperties extends AbstractWMFReader {
 
         // calculate image size
         if (_iright != -1) {
-            _iright = (int)((float)_iright * (float)getWidthPixels() / (float)width);
-            _ileft = (int)((float)_ileft * (float)getWidthPixels() / (float)width);
-            _ibottom = (int)((float)_ibottom * (float)getWidthPixels() / (float)width);
-            _itop = (int)((float)_itop  * (float)getWidthPixels() / (float)width);
+            _iright = (int)((float)_iright * getWidthPixels() / width);
+            _ileft = (int)((float)_ileft * getWidthPixels() / width);
+            _ibottom = (int)((float)_ibottom * getWidthPixels() / width);
+            _itop = (int)((float)_itop  * getWidthPixels() / width);
 
             // merge image and geometry size
             if ((_bright == -1) || (_iright > _bright)) _bright = _iright;

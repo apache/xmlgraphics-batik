@@ -49,6 +49,6 @@ public class NodeGetUserDataTest extends DOM3Test {
         n.setUserData("key", "val", udh);
         ((AbstractDocument) doc).renameNode(n, null, "abc");
         return udh.getCount() == 1
-                && ((String) n.getUserData("key")).equals("val");
+                && n.getUserData("key").equals("val");
     }
 }

@@ -31,7 +31,7 @@ public class StyleRule implements Rule {
     /**
      * The type constant.
      */
-    public static final short TYPE = (short)0;
+    public static final short TYPE = 0;
 
     /**
      * The selector list.
