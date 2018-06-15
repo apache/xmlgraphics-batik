@@ -83,7 +83,7 @@ To display the available targets type:
     <property name="Project"            value="Apache Batik" />
     <property name="project"            value="batik" />
     <property name="year"               value="2018" />
-    <property name="version"            value="svn-trunk" />
+    <property name="version"            value="1.11.0-SNAPSHOT" />
     <property name="revisionType"       value="" />
     <property name="revisionNumber"     value="" />
     <property name="completeVersion"    value="${version}${revisionType}${revisionNumber}" />
@@ -1010,38 +1010,39 @@ JAVA=/usr/bin/java
   </target>
 
   <!-- Generates all the jars except all-jar -->
-  <target name="jars" depends="init,
-                               ext-jar,
-                               util-jar,
-                               awt-util-jar,
-                               gui-util-jar,
-                               dom-jar,
-                               css-jar,
-                               svg-dom-jar,
-                               gvt-jar,
-                               parser-jar,
-                               script-jar,
-                               transcoder-jar,
-                               bridge-jar,
-                               swing-jar,
-                               anim-jar,
-                               codec-jar,
-                               extension-jar,
-                               xml-jar,
-                               root-jar,
-                               svg-pp-jar,
-                               svggen-jar,
-                               svg-slideshow-jar,
-                               squiggle-jar,
-                               squiggle-ext-jar,
-                               rasterizer-jar,
-                               rasterizer-ext-jar,
-                               ttf2svg-jar">
+  <target name="jars" depends="init">
     <copy todir="${build}/lib">
       <fileset dir="${lib}">
         <include name="*.jar"/>
       </fileset>
     </copy>
+    <available file="batik-all/target/batik-all-${version}.jar" property="batik-all.exists" />
+    <fail message="Run 'mvn clean install' first" unless="batik-all.exists" />
+    <copy todir="${build}/lib" flatten="true">
+      <fileset dir=".">
+        <include name="*/target/*.jar"/>
+        <exclude name="*/target/batik-rasterizer-*.jar"/>
+        <exclude name="*/target/batik-slideshow-*.jar"/>
+        <exclude name="*/target/batik-squiggle-*.jar"/>
+        <exclude name="*/target/batik-svgpp-*.jar"/>
+        <exclude name="*/target/batik-ttf2svg-*.jar"/>
+      </fileset>
+    </copy>
+    <copy todir="${build}/extensions" flatten="true">
+      <fileset dir=".">
+        <include name="*/target/batik-rasterizer-ext-*.jar"/>
+        <include name="*/target/batik-squiggle-ext-*.jar"/>
+      </fileset>
+    </copy>
+    <copy todir="${build}" flatten="true">
+      <fileset dir=".">
+        <include name="*/target/batik-rasterizer-${version}.jar"/>
+        <include name="*/target/batik-slideshow-${version}.jar"/>
+        <include name="*/target/batik-squiggle-${version}.jar"/>
+        <include name="*/target/batik-svgpp-${version}.jar"/>
+        <include name="*/target/batik-ttf2svg-${version}.jar"/>
+      </fileset>
+    </copy>    
   </target>
 
 
