@@ -87,7 +87,7 @@ To display the available targets type:
     <property name="revisionType"       value="" />
     <property name="revisionNumber"     value="" />
     <property name="completeVersion"    value="${version}${revisionType}${revisionNumber}" />
-    <property name="xgcVersion"         value="svn-trunk" />
+    <property name="xgcVersion"         value="2.3.0-SNAPSHOT" />
     <property name="fopVersion"         value="svn-trunk" />
     <property name="vendor"             value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)" />
 

@@ -52,6 +52,7 @@
             <manifest>
               <mainClass>org.apache.batik.apps.rasterizer.Main</mainClass>
               <addClasspath>true</addClasspath>
+              <classpathPrefix>lib/</classpathPrefix>
             </manifest>
           </archive>
         </configuration>
