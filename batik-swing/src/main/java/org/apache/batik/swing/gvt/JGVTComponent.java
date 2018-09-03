@@ -18,6 +18,7 @@
  */
 package org.apache.batik.swing.gvt;
 
+import java.awt.AWTPermission;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -1272,7 +1273,7 @@ public class JGVTComponent extends JComponent {
             securityManager = System.getSecurityManager();
             if (securityManager != null) {
                 try {
-                    securityManager.checkSystemClipboardAccess();
+                    securityManager.checkPermission(new AWTPermission("accessClipboard"));
                 } catch (SecurityException e) {
                     return; // Can't access clipboard.
                 }
