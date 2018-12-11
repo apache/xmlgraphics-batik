@@ -809,7 +809,9 @@ public class PrettyPrinter {
                     do {
                         type = scanner.next();
                     } while (type != LexicalUnits.RSQUARE_BRACKET);
+                    type = scanner.next();
                 }
+
                 if (type == LexicalUnits.S) {
                     type = scanner.next();
                 }
