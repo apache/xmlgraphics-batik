@@ -16,7 +16,7 @@
    limitations under the License.
 
  */
-package org.apache.batik.util;
+package org.apache.batik.constants;
 
 /**
  * Contains common XML constants.

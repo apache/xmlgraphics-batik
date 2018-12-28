@@ -1,0 +1,8 @@
+target/
+.idea/
+samples/anne.pdf
+samples/anne.png
+test-resources/org/apache/batik/apps/rasterizer/invalidSVG.png
+
+*.class
+*.jar

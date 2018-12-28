@@ -50,7 +50,7 @@ import org.apache.batik.dom.xbl.XBLManagerData;
 import org.apache.batik.dom.xbl.XBLShadowTreeElement;
 import org.apache.batik.util.DoublyIndexedTable;
 import org.apache.batik.util.XBLConstants;
-import org.apache.batik.util.XMLConstants;
+import org.apache.batik.constants.XMLConstants;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;

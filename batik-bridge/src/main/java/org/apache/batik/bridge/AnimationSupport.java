@@ -25,7 +25,7 @@ import org.apache.batik.anim.timing.TimedElement;
 import org.apache.batik.dom.events.DOMTimeEvent;
 import org.apache.batik.dom.svg.IdContainer;
 import org.apache.batik.dom.svg.SVGOMUseShadowRoot;
-import org.apache.batik.util.XMLConstants;
+import org.apache.batik.constants.XMLConstants;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

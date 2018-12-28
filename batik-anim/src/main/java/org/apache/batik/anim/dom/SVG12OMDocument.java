@@ -19,7 +19,7 @@
 package org.apache.batik.anim.dom;
 
 import org.apache.batik.css.engine.CSSNavigableDocumentListener;
-import org.apache.batik.util.XMLConstants;
+import org.apache.batik.constants.XMLConstants;
 
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.DocumentType;

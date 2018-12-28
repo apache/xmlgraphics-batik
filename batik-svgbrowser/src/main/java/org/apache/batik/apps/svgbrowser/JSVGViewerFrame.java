@@ -130,7 +130,7 @@ import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.Platform;
 import org.apache.batik.util.Service;
 import org.apache.batik.util.SVGConstants;
-import org.apache.batik.util.XMLConstants;
+import org.apache.batik.constants.XMLConstants;
 import org.apache.batik.util.gui.JErrorPane;
 import org.apache.batik.util.gui.LocationBar;
 import org.apache.batik.util.gui.MemoryMonitor;

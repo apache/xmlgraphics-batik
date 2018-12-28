@@ -14,16 +14,16 @@
 
   <properties>
     <checkstyle.version>2.15</checkstyle.version>
-    <compiler.version>3.3</compiler.version>
+    <compiler.version>3.8.0</compiler.version>
     <findbugs.version>3.0.1</findbugs.version>
-    <jar.version>2.6</jar.version>
-    <java.version>1.6</java.version>
+    <jar.version>3.1.1</jar.version>
+    <java.version>8</java.version>
     <junit.version>4.11</junit.version>
     <jython.version>2.7.0</jython.version>
     <org.slf4j.simpleLogger.defaultLogLevel>error</org.slf4j.simpleLogger.defaultLogLevel>
     <project.info.reports.version>2.8</project.info.reports.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <release.version>2.5.2</release.version>
+    <release.version>2.5.3</release.version>
     <rhino.version>1.7.7</rhino.version>
     <surefire.version>2.18.1</surefire.version>
     <xalan.version>2.7.2</xalan.version>
@@ -173,6 +173,16 @@
       </snapshots>
     </repository>
   </repositories>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>maven.central</id>
+      <url>http://central.maven.org/maven2/</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </pluginRepository>
+  </pluginRepositories>
 
   <distributionManagement>
     <site>

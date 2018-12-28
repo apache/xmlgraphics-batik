@@ -72,7 +72,7 @@ import org.apache.batik.gvt.text.TextPaintInfo;
 import org.apache.batik.gvt.text.TextPath;
 import org.apache.batik.util.SVG12Constants;
 import org.apache.batik.util.SVG12CSSConstants;
-import org.apache.batik.util.XMLConstants;
+import org.apache.batik.constants.XMLConstants;
 
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
