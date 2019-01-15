@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.batik.dom.AbstractDocument;
-import org.apache.batik.util.XMLConstants;
+import org.apache.batik.constants.XMLConstants;
 import org.apache.batik.xml.XMLUtilities;
 
 import org.w3c.dom.Attr;

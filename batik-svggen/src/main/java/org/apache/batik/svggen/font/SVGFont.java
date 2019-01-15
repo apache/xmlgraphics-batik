@@ -38,7 +38,7 @@ import org.apache.batik.svggen.font.table.ScriptTags;
 import org.apache.batik.svggen.font.table.SingleSubst;
 import org.apache.batik.svggen.font.table.Table;
 import org.apache.batik.util.SVGConstants;
-import org.apache.batik.util.XMLConstants;
+import org.apache.batik.constants.XMLConstants;
 
 /**
  * Converts a TrueType font to an SVG embedded font.

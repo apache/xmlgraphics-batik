@@ -29,7 +29,7 @@ import org.apache.batik.dom.AbstractNode;
 import org.apache.batik.gvt.font.GVTFontFace;
 import org.apache.batik.gvt.font.GVTFontFamily;
 import org.apache.batik.util.ParsedURL;
-import org.apache.batik.util.XMLConstants;
+import org.apache.batik.constants.XMLConstants;
 
 /**
  * This class represents a &lt;font-face&gt; element or @font-face rule

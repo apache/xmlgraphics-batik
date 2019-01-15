@@ -16,13 +16,13 @@
    limitations under the License.
 
  */
-package org.apache.batik.util;
+package org.apache.batik.constants;
 
 /**
  * Contains common XML constants.
  *
  * @author <a href="mailto:vhardy@eng.sun.com">Vincent Hardy</a>
- * @version $Id$
+ * @version $Id: XMLConstants.java 1733416 2016-03-03 07:07:13Z gadams $
  */
 public interface XMLConstants {
 

@@ -18,6 +18,8 @@
  */
 package org.apache.batik.util;
 
+import org.apache.batik.constants.XMLConstants;
+
 /**
  * Define SVG constants, such as tag names, attribute names and URI
  *

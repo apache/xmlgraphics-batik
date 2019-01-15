@@ -57,7 +57,7 @@ import org.apache.batik.swing.svg.JSVGComponent;
 import org.apache.batik.swing.svg.SVGDocumentLoaderEvent;
 import org.apache.batik.swing.svg.SVGUserAgent;
 import org.apache.batik.util.SVGConstants;
-import org.apache.batik.util.XMLConstants;
+import org.apache.batik.constants.XMLConstants;
 // import org.apache.batik.util.gui.DOMViewer;
 // import org.apache.batik.util.gui.DOMViewerController;
 // import org.apache.batik.util.gui.ElementOverlayManager;

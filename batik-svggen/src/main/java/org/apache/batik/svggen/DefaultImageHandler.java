@@ -22,7 +22,7 @@ import java.awt.Image;
 import java.awt.image.RenderedImage;
 import java.awt.image.renderable.RenderableImage;
 
-import org.apache.batik.util.XMLConstants;
+import org.apache.batik.constants.XMLConstants;
 
 import org.w3c.dom.Element;
 

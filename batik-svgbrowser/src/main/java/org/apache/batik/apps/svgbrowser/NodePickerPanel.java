@@ -64,7 +64,7 @@ import org.apache.batik.util.gui.resource.ActionMap;
 import org.apache.batik.util.gui.resource.ButtonFactory;
 import org.apache.batik.util.gui.resource.MissingListenerException;
 import org.apache.batik.util.gui.xmleditor.XMLTextEditor;
-import org.apache.batik.util.XMLConstants;
+import org.apache.batik.constants.XMLConstants;
 import org.apache.batik.util.resources.ResourceManager;
 
 import org.w3c.dom.Attr;

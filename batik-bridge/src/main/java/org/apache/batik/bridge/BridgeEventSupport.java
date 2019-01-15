@@ -38,7 +38,7 @@ import org.apache.batik.gvt.event.GraphicsNodeMouseEvent;
 import org.apache.batik.gvt.event.GraphicsNodeMouseListener;
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
 import org.apache.batik.util.SVGConstants;
-import org.apache.batik.util.XMLConstants;
+import org.apache.batik.constants.XMLConstants;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

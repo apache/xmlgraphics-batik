@@ -44,7 +44,7 @@ import org.apache.batik.script.InterpreterException;
 import org.apache.batik.script.ScriptEventWrapper;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.SVGConstants;
-import org.apache.batik.util.XMLConstants;
+import org.apache.batik.constants.XMLConstants;
 
 import org.apache.batik.w3c.dom.Location;
 import org.w3c.dom.Document;
