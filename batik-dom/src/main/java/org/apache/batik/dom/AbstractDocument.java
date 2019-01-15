@@ -43,7 +43,7 @@ import org.apache.batik.i18n.LocalizableSupport;
 import org.apache.batik.util.CleanerThread;
 import org.apache.batik.util.DOMConstants;
 import org.apache.batik.util.SoftDoublyIndexedTable;
-import org.apache.batik.util.XMLConstants;
+import org.apache.batik.constants.XMLConstants;
 
 import org.apache.xml.utils.PrefixResolver;
 

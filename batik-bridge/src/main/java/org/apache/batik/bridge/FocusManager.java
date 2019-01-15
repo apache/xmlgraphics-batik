@@ -20,7 +20,7 @@ package org.apache.batik.bridge;
 
 import org.apache.batik.dom.events.DOMUIEvent;
 import org.apache.batik.dom.events.NodeEventTarget;
-import org.apache.batik.util.XMLConstants;
+import org.apache.batik.constants.XMLConstants;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

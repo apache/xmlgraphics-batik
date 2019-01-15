@@ -37,7 +37,7 @@ import org.apache.batik.gvt.event.GraphicsNodeKeyEvent;
 import org.apache.batik.gvt.event.GraphicsNodeMouseEvent;
 import org.apache.batik.gvt.event.GraphicsNodeMouseWheelEvent;
 import org.apache.batik.gvt.event.GraphicsNodeMouseWheelListener;
-import org.apache.batik.util.XMLConstants;
+import org.apache.batik.constants.XMLConstants;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

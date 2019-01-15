@@ -33,7 +33,7 @@ import org.apache.batik.dom.svg.LiveAttributeException;
 import org.apache.batik.dom.svg.SVGOMUseShadowRoot;
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.util.XMLConstants;
+import org.apache.batik.constants.XMLConstants;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;

@@ -20,7 +20,7 @@ package org.apache.batik.css.engine.sac;
 
 import java.util.Set;
 
-import org.apache.batik.util.XMLConstants;
+import org.apache.batik.constants.XMLConstants;
 
 import org.w3c.css.sac.LangCondition;
 import org.w3c.dom.Element;

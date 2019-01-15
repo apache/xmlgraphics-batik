@@ -78,7 +78,7 @@ import org.apache.batik.parser.PreserveAspectRatioHandler;
 import org.apache.batik.parser.PreserveAspectRatioParser;
 import org.apache.batik.util.RunnableQueue;
 import org.apache.batik.util.SMILConstants;
-import org.apache.batik.util.XMLConstants;
+import org.apache.batik.constants.XMLConstants;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

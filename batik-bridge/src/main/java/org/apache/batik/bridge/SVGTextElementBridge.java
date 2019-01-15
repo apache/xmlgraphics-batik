@@ -68,7 +68,7 @@ import org.apache.batik.gvt.font.UnresolvedFontFamily;
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
 import org.apache.batik.gvt.text.TextPaintInfo;
 import org.apache.batik.gvt.text.TextPath;
-import org.apache.batik.util.XMLConstants;
+import org.apache.batik.constants.XMLConstants;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

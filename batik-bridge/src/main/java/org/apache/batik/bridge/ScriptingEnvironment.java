@@ -55,7 +55,7 @@ import org.apache.batik.util.EncodingUtilities;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.RunnableQueue;
 import org.apache.batik.util.SVGConstants;
-import org.apache.batik.util.XMLConstants;
+import org.apache.batik.constants.XMLConstants;
 import org.apache.batik.util.XMLResourceDescriptor;
 
 import org.w3c.dom.Document;

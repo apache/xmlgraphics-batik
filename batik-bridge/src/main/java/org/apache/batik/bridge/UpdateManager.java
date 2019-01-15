@@ -39,7 +39,7 @@ import org.apache.batik.gvt.RootGraphicsNode;
 import org.apache.batik.gvt.UpdateTracker;
 import org.apache.batik.gvt.renderer.ImageRenderer;
 import org.apache.batik.util.EventDispatcher;
-import org.apache.batik.util.XMLConstants;
+import org.apache.batik.constants.XMLConstants;
 import org.apache.batik.util.EventDispatcher.Dispatcher;
 import org.apache.batik.util.RunnableQueue;
 import org.w3c.dom.Document;

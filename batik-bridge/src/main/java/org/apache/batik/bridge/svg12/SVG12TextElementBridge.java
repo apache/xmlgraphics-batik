@@ -26,7 +26,7 @@ import org.apache.batik.dom.AbstractNode;
 import org.apache.batik.dom.events.EventSupport;
 import org.apache.batik.dom.events.NodeEventTarget;
 import org.apache.batik.dom.xbl.NodeXBL;
-import org.apache.batik.util.XMLConstants;
+import org.apache.batik.constants.XMLConstants;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

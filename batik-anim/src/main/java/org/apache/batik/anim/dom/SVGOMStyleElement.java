@@ -25,7 +25,7 @@ import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.SVGConstants;
-import org.apache.batik.util.XMLConstants;
+import org.apache.batik.constants.XMLConstants;
 
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;

@@ -43,7 +43,7 @@ import org.apache.batik.test.TestReportProcessor;
 import org.apache.batik.test.TestSuite;
 import org.apache.batik.test.TestException;
 
-import org.apache.batik.util.XMLConstants;
+import org.apache.batik.constants.XMLConstants;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
