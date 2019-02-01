@@ -4,8 +4,17 @@ Change Log
 The following log records some of the most important changes.
 Bug fixing is an ongoing task, so it is implied in all sub-releases.
 
-1.9 -> 1.10pre
---------------
+1.10 -> 1.11pre
+---------------
+
+BATIK-1232: Zip release should use mvn jars
+BATIK-1233: Add policy file for batik-rasterizer
+BATIK-1234: Tools cannot be run using java -jar xxx.jar when built with Maven
+BATIK-1240: Java 11 compile error
+BATIK-1249: Fix Java 11 module error
+
+1.9 -> 1.10
+-----------
 
 BATIK-906: Should never use Error to report runtime errors
 BATIK-1123: Missing import of ImportInfo class
