@@ -516,6 +516,71 @@ To display the available targets type:
     </tar>
     <delete file="svn-revision" failonerror="false"/>
   </target>
+  
+  <target name="release-dist" depends="dist-zip,dist-tgz" description="Generates the distribution package and signs the release">
+    <input message="Passphrase for your default private key" addproperty="pwd">
+      <handler classname="org.apache.tools.ant.input.SecureInputHandler" />
+    </input>
+    <antcall target="sha512">
+      <param name="sign.archive" value="${project}-docs-${completeVersion}.zip"/>
+    </antcall>
+    <antcall target="sign-file">
+      <param name="sign.archive" value="${project}-docs-${completeVersion}.zip"/>
+      <param name="pwd" value="${pwd}"/>
+    </antcall>
+    <antcall target="sha512">
+      <param name="sign.archive" value="${project}-docs-${completeVersion}.tar.gz"/>
+    </antcall>
+    <antcall target="sign-file">
+      <param name="sign.archive" value="${project}-docs-${completeVersion}.tar.gz"/>
+      <param name="pwd" value="${pwd}"/>
+    </antcall>   
+    <antcall target="sha512">
+      <param name="sign.archive" value="${project}-bin-${completeVersion}.zip"/>
+    </antcall>
+    <antcall target="sign-file">
+      <param name="sign.archive" value="${project}-bin-${completeVersion}.zip"/>
+      <param name="pwd" value="${pwd}"/>
+    </antcall>
+    <antcall target="sha512">
+      <param name="sign.archive" value="${project}-bin-${completeVersion}.tar.gz"/>
+    </antcall>
+    <antcall target="sign-file">
+      <param name="sign.archive" value="${project}-bin-${completeVersion}.tar.gz"/>
+      <param name="pwd" value="${pwd}"/>
+    </antcall> 
+    <antcall target="sha512">
+      <param name="sign.archive" value="${project}-src-${completeVersion}.zip"/>
+    </antcall>
+    <antcall target="sign-file">
+      <param name="sign.archive" value="${project}-src-${completeVersion}.zip"/>
+      <param name="pwd" value="${pwd}"/>
+    </antcall>
+    <antcall target="sha512">
+      <param name="sign.archive" value="${project}-src-${completeVersion}.tar.gz"/>
+    </antcall>
+    <antcall target="sign-file">
+      <param name="sign.archive" value="${project}-src-${completeVersion}.tar.gz"/>
+      <param name="pwd" value="${pwd}"/>
+    </antcall>     
+  </target>  
+  
+  <target name="sha512">
+    <property name="sha512sum.exec" value="sha512sum"/>
+    <property name="sha512sum.options" value=""/>
+    <exec executable="${sha512sum.exec}" output="${sign.archive}.sha512">
+      <arg line="${sha512sum.options} ${sign.archive}"/>
+    </exec>
+  </target>
+  
+  <target name="sign-file">
+    <property name="gpg.exec" value="gpg"/>
+    <property name="gpg.options" value="--armor --detach-sign --force-v3-sigs --batch --verbose --passphrase-fd 0"/>
+    <delete file="${sign.archive}.asc"/>
+    <exec executable="${gpg.exec}" inputstring="${pwd}">
+      <arg line="${gpg.options} ${sign.archive}"/>
+    </exec>
+  </target>  
 
   <target name="src-jar" depends="init, record-svn-revision">
     <jar jarfile="${build}/lib/${project}-src-${completeVersion}.jar">
