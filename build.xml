@@ -45,14 +45,14 @@ Building Instructions
 First, make sure your current working directory is where this file is located.
 Then type:
 
-  [unix]  ./build.sh compile
+  [unix]  ant compile
   [win32] .\build.bat compile
 
 This action will compile the sources to the 'classes' directory.
 
 You can now launch the SVG browser by typing:
 
-  [unix]  ./build.sh squiggle
+  [unix]  ant squiggle
   [win32] .\build.bat squiggle
 
 
@@ -61,7 +61,7 @@ Build Targets
 
 To display the available targets type:
 
-  [unix]  ./build.sh  help
+  [unix]  ant help
   [win32] .\build.bat help
 
  
@@ -1135,7 +1135,7 @@ JAVA=/usr/bin/java
     <condition property="squiggle-suffix" value="osx" else="others">
       <os name="Mac OS X"/>
     </condition>
-    <antcall target="squiggle-${squiggle-suffix}"/>
+    <antcall target="squiggle-${squiggle-suffix}" inheritRefs="true"/>
   </target>
 
   <target name="squiggle-osx" depends="appbundle">
