@@ -18,23 +18,115 @@
 // $Id$
 // -----------------------------------------------------------------------------
 
-grant codeBase "${app.dev.base}/classes/" {
+grant codeBase "${app.jar.base}/xml-apis-ext-${xmlapis.version}.jar" {
   permission java.security.AllPermission;
 };
 
-grant codeBase "${app.dev.base}/lib/xml-apis-1.3.04.jar" {
+grant codeBase "${app.jar.base}/xml-apis-${xmlapis.version}.jar" {
   permission java.security.AllPermission;
 };
 
-grant codeBase "${app.dev.base}/lib/xml-apis-ext-1.3.04.jar" {
+grant codeBase "${app.jar.base}/xalan-${xalan.version}.jar" {
   permission java.security.AllPermission;
 };
 
-grant codeBase "${app.dev.base}/lib/xerces_2_5_0.jar" {
+grant codeBase "${app.jar.base}/xercesImpl-2.9.1.jar" {
   permission java.security.AllPermission;
 };
 
-grant codeBase "${app.dev.base}/lib/js.jar" {
+grant codeBase "${app.jar.base}/../batik-rasterizer-${version}.jar" {
+  permission java.security.AllPermission;
+};
+
+grant codeBase "${app.jar.base}/batik-svgrasterizer-${version}.jar" {
+  permission java.security.AllPermission;
+};
+
+grant codeBase "${app.jar.base}/batik-ext-${version}.jar" {
+  permission java.security.AllPermission;
+};
+
+grant codeBase "${app.jar.base}/batik-dom-${version}.jar" {
+  permission java.security.AllPermission;
+};
+
+grant codeBase "${app.jar.base}/batik-css-${version}.jar" {
+  permission java.security.AllPermission;
+};
+
+grant codeBase "${app.jar.base}/batik-svg-dom-${version}.jar" {
+  permission java.security.AllPermission;
+};
+
+grant codeBase "${app.jar.base}/batik-gvt-${version}.jar" {
+  permission java.security.AllPermission;
+};
+
+grant codeBase "${app.jar.base}/batik-parser-${version}.jar" {
+  permission java.security.AllPermission;
+};
+
+grant codeBase "${app.jar.base}/batik-script-${version}.jar" {
+  permission java.security.AllPermission;
+};
+
+grant codeBase "${app.jar.base}/batik-bridge-${version}.jar" {
+  permission java.security.AllPermission;
+};
+
+grant codeBase "${app.jar.base}/batik-swing-${version}.jar" {
+  permission java.security.AllPermission;
+};
+
+grant codeBase "${app.jar.base}/batik-transcoder-${version}.jar" {
+  permission java.security.AllPermission;
+};
+
+grant codeBase "${app.jar.base}/batik-gui-util-${version}.jar" {
+  permission java.security.AllPermission;
+};
+
+grant codeBase "${app.jar.base}/batik-awt-util-${version}.jar" {
+  permission java.security.AllPermission;
+};
+
+grant codeBase "${app.jar.base}/batik-util-${version}.jar" {
+  permission java.security.AllPermission;
+};
+
+grant codeBase "${app.jar.base}/batik-xml-${version}.jar" {
+  permission java.security.AllPermission;
+};
+
+grant codeBase "${app.jar.base}/fop-transcoder-allinone-svn-trunk.jar" {
+  permission java.security.AllPermission;
+};
+
+grant codeBase "${app.jar.base}/xmlgraphics-commons-${xmlgraphics.commons.version}.jar" {
+  permission java.security.AllPermission;
+};
+
+grant codeBase "${app.jar.base}/batik-anim-${version}.jar" {
+  permission java.security.AllPermission;
+};
+
+grant codeBase "${app.jar.base}/batik-codec-${version}.jar" {
+  permission java.security.AllPermission;
+};
+
+grant codeBase "${app.jar.base}/batik-extension-${version}.jar" {
+  permission java.security.AllPermission;
+};
+
+grant codeBase "${app.jar.base}/batik-svggen-${version}.jar" {
+  permission java.security.AllPermission;
+};
+
+grant codeBase "${app.jar.base}/batik-svgbrowser-${version}.jar" {
+  permission java.security.AllPermission;
+};
+
+grant codeBase "${app.jar.base}/js.jar" {
   permission java.lang.RuntimePermission "createClassLoader";
   permission java.net.SocketPermission "*", "listen, connect, resolve, accept";
   permission java.lang.RuntimePermission "accessDeclaredMembers";
@@ -46,7 +138,6 @@ grant codeBase "${app.dev.base}/lib/js.jar" {
 };
 
 grant {
-  permission java.io.FilePermission "resources/org/apache/batik/dom/svg/resources/svg10.dtd", "read";
-  permission java.io.FilePermission "resources/org/apache/batik/dom/svg/resources/UserAgentStyleSheet.css", "read";
+ permission java.io.FilePermission  "${app.jar.base}/batik-svg-dom-${version}.jar", "read";
 };
 
