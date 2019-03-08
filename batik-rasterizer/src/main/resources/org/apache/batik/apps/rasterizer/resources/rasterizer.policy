@@ -98,7 +98,7 @@ grant codeBase "${app.jar.base}/batik-xml-${version}.jar" {
   permission java.security.AllPermission;
 };
 
-grant codeBase "${app.jar.base}/fop-transcoder-allinone-svn-trunk.jar" {
+grant codeBase "${app.jar.base}/fop-transcoder-allinone-${xmlgraphics.commons.version}.jar" {
   permission java.security.AllPermission;
 };
 
