@@ -90,7 +90,7 @@ grant codeBase "${app.jar.base}/lib/batik-xml.jar" {
   permission java.security.AllPermission;
 };
 
-grant codeBase "${app.jar.base}/lib/xmlgraphics-commons-svn-trunk" {
+grant codeBase "${app.jar.base}/lib/xmlgraphics-commons-${xmlgraphics.commons.version}" {
   permission java.security.AllPermission;
 };
 

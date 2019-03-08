@@ -54,6 +54,9 @@
               <addClasspath>true</addClasspath>
               <classpathPrefix>lib/</classpathPrefix>
             </manifest>
+            <manifestEntries>
+              <Class-Path>lib/fop-transcoder-allinone-${xmlgraphics.commons.version}.jar</Class-Path>
+            </manifestEntries>
           </archive>
         </configuration>
       </plugin>
