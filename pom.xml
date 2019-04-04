@@ -16,8 +16,8 @@
     <checkstyle.version>2.15</checkstyle.version>
     <compiler.version>3.3</compiler.version>
     <findbugs.version>3.0.1</findbugs.version>
-    <jar.version>2.6</jar.version>
-    <java.version>1.6</java.version>
+    <jar.version>3.1.1</jar.version>
+    <java.version>1.7</java.version>
     <junit.version>4.11</junit.version>
     <jython.version>2.7.0</jython.version>
     <org.slf4j.simpleLogger.defaultLogLevel>error</org.slf4j.simpleLogger.defaultLogLevel>
