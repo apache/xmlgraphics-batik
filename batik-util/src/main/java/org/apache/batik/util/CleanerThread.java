@@ -30,7 +30,7 @@ import java.lang.ref.PhantomReference;
  * Complete Class Desc
  *
  * @author <a href="mailto:deweese@apache.org">l449433</a>
- * @version $Id: CleanerThread.java 1808023 2017-09-11 12:43:22Z ssteiner $
+ * @version $Id$
  */
 public class CleanerThread extends Thread {
 
@@ -73,7 +73,7 @@ public class CleanerThread extends Thread {
      * the cleaner ReferenceQueue.
      */
     public abstract static class SoftReferenceCleared extends SoftReference
-            implements ReferenceCleared {
+      implements ReferenceCleared {
         public SoftReferenceCleared(Object o) {
             super (o, CleanerThread.getReferenceQueue());
         }
@@ -84,7 +84,7 @@ public class CleanerThread extends Thread {
      * the cleaner ReferenceQueue.
      */
     public abstract static class WeakReferenceCleared extends WeakReference
-            implements ReferenceCleared {
+      implements ReferenceCleared {
         public WeakReferenceCleared(Object o) {
             super (o, CleanerThread.getReferenceQueue());
         }
@@ -95,8 +95,8 @@ public class CleanerThread extends Thread {
      * the cleaner ReferenceQueue.
      */
     public abstract static class PhantomReferenceCleared
-            extends PhantomReference
-            implements ReferenceCleared {
+      extends PhantomReference
+      implements ReferenceCleared {
         public PhantomReferenceCleared(Object o) {
             super (o, CleanerThread.getReferenceQueue());
         }
