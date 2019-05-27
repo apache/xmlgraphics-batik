@@ -95,8 +95,8 @@ public class CleanerThread extends Thread {
      * the cleaner ReferenceQueue.
      */
     public abstract static class PhantomReferenceCleared
-      extends PhantomReference
-      implements ReferenceCleared {
+        extends PhantomReference
+        implements ReferenceCleared {
         public PhantomReferenceCleared(Object o) {
             super (o, CleanerThread.getReferenceQueue());
         }
