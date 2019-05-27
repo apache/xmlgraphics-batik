@@ -30,7 +30,7 @@ import java.lang.ref.PhantomReference;
  * Complete Class Desc
  *
  * @author <a href="mailto:deweese@apache.org">l449433</a>
- * @version $Id$
+ * @version $Id: CleanerThread.java 1808023 2017-09-11 12:43:22Z ssteiner $
  */
 public class CleanerThread extends Thread {
 
@@ -48,6 +48,16 @@ public class CleanerThread extends Thread {
         return queue;
     }
 
+    public static void shutdown() {
+        synchronized (CleanerThread.class) {
+            if ( queue != null ) {
+                thread.interrupt();
+                thread = null;
+                queue = null;
+            }
+        }
+    }
+
     /**
      * If objects registered with the reference queue associated with
      * this class implement this interface then the 'cleared' method
@@ -63,7 +73,7 @@ public class CleanerThread extends Thread {
      * the cleaner ReferenceQueue.
      */
     public abstract static class SoftReferenceCleared extends SoftReference
-      implements ReferenceCleared {
+            implements ReferenceCleared {
         public SoftReferenceCleared(Object o) {
             super (o, CleanerThread.getReferenceQueue());
         }
@@ -74,7 +84,7 @@ public class CleanerThread extends Thread {
      * the cleaner ReferenceQueue.
      */
     public abstract static class WeakReferenceCleared extends WeakReference
-      implements ReferenceCleared {
+            implements ReferenceCleared {
         public WeakReferenceCleared(Object o) {
             super (o, CleanerThread.getReferenceQueue());
         }
@@ -85,8 +95,8 @@ public class CleanerThread extends Thread {
      * the cleaner ReferenceQueue.
      */
     public abstract static class PhantomReferenceCleared
-        extends PhantomReference
-        implements ReferenceCleared {
+            extends PhantomReference
+            implements ReferenceCleared {
         public PhantomReferenceCleared(Object o) {
             super (o, CleanerThread.getReferenceQueue());
         }
@@ -106,7 +116,7 @@ public class CleanerThread extends Thread {
                     ref = queue.remove();
                     // System.err.println("Cleaned: " + ref);
                 } catch (InterruptedException ie) {
-                    continue;
+                    return;
                 }
 
                 if (ref instanceof ReferenceCleared) {
