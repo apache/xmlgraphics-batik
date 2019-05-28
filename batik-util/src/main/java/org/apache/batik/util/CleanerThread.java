@@ -52,8 +52,14 @@ public class CleanerThread extends Thread {
         synchronized (CleanerThread.class) {
             if ( queue != null ) {
                 thread.interrupt();
-                thread = null;
-                queue = null;
+                try {
+                    thread.join();
+                } catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt(); // Restore interrupt flag
+                } finally {
+                    thread = null;
+                    queue = null;
+                }
             }
         }
     }
@@ -109,7 +115,7 @@ public class CleanerThread extends Thread {
     }
 
     public void run() {
-        while(true) {
+        while(!Thread.currentThread().isInterrupted()) {
             try {
                 Reference ref;
                 try {
