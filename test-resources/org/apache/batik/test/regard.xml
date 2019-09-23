@@ -56,6 +56,7 @@
     <testSuite href="file:test-resources/org/apache/batik/apps/rasterizer/unitTesting.xml" />
     <testSuite href="file:test-resources/org/apache/batik/test/unitTesting.xml" />  
     <testSuite href="file:test-resources/org/apache/batik/ext/awt/image/codec/unitTesting.xml" />
+    <testSuite href="file:test-resources/org/apache/batik/ext/awt/image/spi/unitTesting.xml" />
     <testSuite href="file:test-resources/org/apache/batik/ext/awt/geom/unitTesting.xml" /> 
     <testSuite href="file:test-resources/org/apache/batik/util/unitTesting.xml" />
     <testSuite href="file:test-resources/org/apache/batik/bridge/unitTesting.xml" /> 
