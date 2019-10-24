@@ -4,8 +4,17 @@ Change Log
 The following log records some of the most important changes.
 Bug fixing is an ongoing task, so it is implied in all sub-releases.
 
-1.10 -> 1.11pre
----------------
+1.11 -> 1.12
+------------
+
+BATIK-1203: ImageTagRegistry forgets to reinitialize cache
+BATIK-1251: Correct policy file in Squiggle
+BATIK-1253: build.sh referenced from build.xml
+BATIK-1257: Rasterizer - insufficient permissions when transcoding to PDF
+BATIK-1272: Update Xerces to 2.12
+
+1.10 -> 1.11
+------------
 
 BATIK-1232: Zip release should use mvn jars
 BATIK-1233: Add policy file for batik-rasterizer

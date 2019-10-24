@@ -53,7 +53,7 @@
     <dependency>
       <groupId>xml-apis</groupId>
       <artifactId>xml-apis-ext</artifactId>
-      <version>${xmlapis.version}</version>
+      <version>${xmlapisext.version}</version>
     </dependency>
   </dependencies>
 
