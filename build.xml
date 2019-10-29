@@ -409,6 +409,7 @@ To display the available targets type:
       <zipfileset dir="lib" prefix="${project}-${completeVersion}/lib">
         <include name="LICENSE.*.txt"/>
         <include name="README.*.txt"/>
+        <include name="NOTICE.*.txt"/>
       </zipfileset>
       <zipfileset dir="batik-extension/src/main/resources/${package-prefix}/extensions"
                   prefix="${project}-${completeVersion}/extensions">
@@ -477,6 +478,7 @@ To display the available targets type:
       <tarfileset dir="lib" prefix="${project}-${completeVersion}/lib">
         <include name="LICENSE.*.txt"/>
         <include name="README.*.txt"/>
+        <include name="NOTICE.*.txt"/>
       </tarfileset>
       <tarfileset dir="batik-extension/src/main/resources/${package-prefix}/extensions"
                   prefix="${project}-${completeVersion}/extensions">
