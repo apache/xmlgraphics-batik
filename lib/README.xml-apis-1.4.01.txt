@@ -1,5 +1,5 @@
 This distribution includes xml-apis.jar from the XML Commons External
-1.3.04 binary distribution, which can also be obtained from:
+1.4.01 binary distribution, which can also be obtained from:
 
   http://xml.apache.org/mirrors.cgi
 
