@@ -255,7 +255,7 @@
             distribution was expanded.
           </li>
           <li>
-            <p>For windows, type the following at the command prompt:</p>
+            <p>For Windows, type the following at the command prompt:</p>
             <source>build svgrasterizer</source>
             <p>and for Unix:</p>
             <source>./build.sh svgrasterizer</source>

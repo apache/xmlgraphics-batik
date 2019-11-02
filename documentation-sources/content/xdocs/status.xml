@@ -51,7 +51,7 @@
       <dt>Partially supported</dt>
       <dd>
         <p>
-          If a feature is <partial>partially</partial> suppored, this means that Batik performs
+          If a feature is <partial>partially</partial> supported, this means that Batik performs
           some processing for it, but there are known bugs with this processing.
         </p>
       </dd>

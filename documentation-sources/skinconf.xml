@@ -42,7 +42,7 @@ See main/fresh-site/src/documentation/skinconf.xml for details.
   <disable-pdf-link>false</disable-pdf-link>
   <!-- Disable the POD link? -->
   <disable-pod-link>true</disable-pod-link>
-  <!-- Disable the Text link? FIXME: NOT YET IMPLEMENETED. -->
+  <!-- Disable the Text link? FIXME: NOT YET IMPLEMENTED. -->
   <disable-txt-link>true</disable-txt-link>
   <!-- Disable the xml source link? -->
   <!-- The xml source link makes it possible to access the xml rendition

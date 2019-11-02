@@ -369,7 +369,7 @@ public class SaveAsJPEGTiles {
             This hint lets you choose an alternate stylesheet the author of the SVG
             document to transcode might have provided using the
             <a href="http://www.w3.org/TR/xml-stylesheet/">xml-stylesheet</a>
-            processing instruction. For exxample:
+            processing instruction. For example:
           </p>
           <source>trans.addTranscodingHint(ImageTranscoder.KEY_ALTERNATE_STYLESHEET,
                          alternateStylesheetName);</source>

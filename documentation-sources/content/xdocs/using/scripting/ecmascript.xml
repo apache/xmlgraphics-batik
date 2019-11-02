@@ -181,7 +181,7 @@
         predefined I/O facilities to interact with the console. However, it is
         very common for ECMAScript compatible languages to provide a function
         named <code>print</code> to output messages to the console. We will
-        describe here an example of cutomization of the Batik Rhino
+        describe here an example of customization of the Batik Rhino
         interpreter to add such functionality to it. 
       </p>
       <p>

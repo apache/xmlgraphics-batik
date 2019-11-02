@@ -390,7 +390,7 @@
           <a class="class" href="../javadoc/org/apache/batik/test/SVGRenderingAccuracyTest.html">SVGRenderingAccuracyTest</a>,
           which checks that Batik’s rendering of an SVG document stays accurate.
           It compares reference images with the rendering Batik produces and
-          reports any discrepency.
+          reports any discrepancy.
         </p>
 
         <p>
@@ -557,7 +557,7 @@ mv test-references/samples/tests/candidate-variations/*.png test-references/samp
           <code>test-resources/org/apache/batik/test/samplesRendering.xml</code>
           test suite description, the description of the regard test suite. If
           you have access to the build machine where the reference images are
-          typically generated, you can check 0n the reference image in
+          typically generated, you can check on the reference image in
           <code>test-references/samples/tests</code>. Otherwise (and this is
           OK), you can let the test fail the first time it is run on the
           build/test machine and that will be a reminder for whoever is
