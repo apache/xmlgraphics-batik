@@ -47,15 +47,17 @@
 
    o  A Java 7 or later compatible virtual machine for your operating system.
 
+
   Optional Libraries
   ------------------
 
   By default, Batik includes a scripting engine for ECMAScript. It is possible
   to add support for additional scripting languages (Python and TCL).
-  
+
   See http://xmlgraphics.apache.org/batik/install.html#optionalComponents for
   details.
- 
+
+
   Installation Instructions and Documentation
   -------------------------------------------
 

@@ -1,16 +1,16 @@
 
-                         Project Maintanance Howto
+                         Project Maintenance Howto
                          -------------------------
-                     
+
 This document introduces newcomers to the management and maintenance of 
 the Batik project hosted under xmlgraphics.apache.org
-(http://xmlgraphics.apache.org/batik).
+(http://xmlgraphics.apache.org/batik/).
 
 Each project is required to use Ant as build tool and to be coherent with the
 rest of the build systems of the other projects, so that nightly builds and
 distribution creation can be done automatically without per-project scripts.
 
-This implies it is *very* important that properties names are not changed
+This implies it is *very* important that property names are not changed
 but kept consistent with the other projects.
 
 Distribution Creation
@@ -139,10 +139,10 @@ For creating a distribution the following steps must be done:
        ln -s batik-1.5.zip.asc batik-current.zip.asc
        <- lots more files ->
 
-    Finally remove the old releases (every release is automatically copied 
+    Finally remove the old releases (every release is automatically copied
     to 'archive.apache.org/dist/xmlgraphics/batik' from
     'www.apache.org/dist/xmlgraphics/batik' so you can just remove an old
-    release from www.apache.org:
+    release from www.apache.org):
 
        rm batik-1.5b4.zip
 
@@ -156,14 +156,14 @@ Site Creation
 For creating the web site, the following steps must be done:
 
 [Note: due to JVM font-rendering problems, this is best done on a
-       windows machine]
+       Windows machine]
 
  1) run the build script with target "publish", which will generate the
     site and use ForrestBot to commit it to the repository
  2) connect to people.apache.org with your account
  3) execute "cd /www/xmlgraphics.apache.org/batik"
  4) execute "svn update"
- 
+
 If the javadocs don't need to be regenerated, the "publishdoc" build
 target can be used instead of "publish".  This will be much quicker.
 
@@ -176,5 +176,5 @@ changes there directly.
 Nightly Builds
 --------------
 
-The nightly builds are current performed by a crontab entry in
+The nightly builds are currently performed by a crontab entry in
 Thomas DeWeese's people.apache.org account: /home/deweese/bin/nightly.csh
