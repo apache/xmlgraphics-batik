@@ -245,13 +245,13 @@ To display the available targets type:
   
     <uptodate property="IWasLoadedUpToDate" 
      targetfile="${testresources}/org/apache/batik/bridge/IWasLoaded.jar">
-     <srcfiles dir="${testresources}//org/apache/batik/bridge"
+     <srcfiles dir="${testresources}/org/apache/batik/bridge"
                includes="IWasLoaded.java"/>
     </uptodate>
   
     <uptodate property="IWasLoadedTooUpToDate" 
      targetfile="${testresources}/org/apache/batik/bridge/IWasLoadedToo.jar">
-     <srcfiles dir="${testresources}//org/apache/batik/bridge"
+     <srcfiles dir="${testresources}/org/apache/batik/bridge"
                includes="IWasLoadedToo.java"/>
     </uptodate>
   
