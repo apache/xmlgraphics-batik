@@ -46,9 +46,6 @@
                   font-style: normal; stroke: none; stroke-width: 0; 
                   fill: black } ]]>
      </style>
-
-     <text x="0" y="0" text-anchor="start" id="sample">sample</text>
-
     </defs>
 
     <g id="testContent" text-anchor="start" font-size="30" class="SerifPlain">
