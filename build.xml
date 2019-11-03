@@ -118,7 +118,7 @@ To display the available targets type:
     <property name="class-prefix"       value="org.apache.${project}"/>
   
     <property name="dom.javadoc"        value="http://www.w3.org/2003/01/dom2-javadoc/"/>
-    <property name="jdk.javadoc"        value="http://docs.oracle.com/javase/6/docs/api/"/>
+    <property name="jdk.javadoc"        value="http://docs.oracle.com/javase/7/docs/api/"/>
     <property name="rhino.javadoc"      value="http://www.mozilla.org/rhino/apidocs/"/>
   
     <property name="site"               value="site"/>
