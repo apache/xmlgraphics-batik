@@ -21,7 +21,7 @@
 
 -->
 <!-- ========================================================================= -->
-<!-- Checks that embeded ecam script is not loaded.                            -->
+<!-- Checks that embeded ecmaScript is not loaded.                             -->
 <!--                                                                           -->
 <!-- @author vincent.hardy@sun.com                                             -->
 <!-- @version $Id$   -->
