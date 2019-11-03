@@ -379,7 +379,7 @@
 </test>
 
 <!-- ############################################################################## -->
-<test id="css.engine.value.svg.pointer-events'">
+<test id="css.engine.value.svg.pointer-events">
   <arg class="java.lang.String" value="org.apache.batik.css.engine.value.svg.PointerEventsManager" />
   <arg class="java.lang.Boolean" value="true" />
   <arg class="java.lang.String" value="visiblePainted" />
@@ -388,7 +388,7 @@
 </test>
 
 <!-- ############################################################################## -->
-<test id="css.engine.value.svg.shape-rendering'">
+<test id="css.engine.value.svg.shape-rendering">
   <arg class="java.lang.String" value="org.apache.batik.css.engine.value.svg.ShapeRenderingManager" />
   <arg class="java.lang.Boolean" value="true" />
   <arg class="java.lang.String" value="auto" />
@@ -396,7 +396,7 @@
 </test>
 
 <!-- ############################################################################## -->
-<test id="css.engine.value.svg.stop-color'">
+<test id="css.engine.value.svg.stop-color">
   <arg class="java.lang.String" value="org.apache.batik.css.engine.value.PropertyManagerTest$StopColorManager" />
   <arg class="java.lang.Boolean" value="false" />
   <arg class="java.lang.String" value="rgb(0, 0, 0)" />
@@ -404,7 +404,7 @@
 </test>
 
 <!-- ############################################################################## -->
-<test id="css.engine.value.svg.stop-opacity'">
+<test id="css.engine.value.svg.stop-opacity">
   <arg class="java.lang.String" value="org.apache.batik.css.engine.value.PropertyManagerTest$StopOpacityManager" />
   <arg class="java.lang.Boolean" value="false" />
   <arg class="java.lang.String" value="1" />
