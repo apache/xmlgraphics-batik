@@ -125,7 +125,7 @@
    <!--+
        |  Configures logging.
        |  The 'log-kit' parameter specifies the location of the log kit
-       |  configuration file (usually called logkit.xconf.
+       |  configuration file (usually called logkit.xconf).
        |
        |  Logger specifies the logging category (for all logging prior
        |  to other Cocoon logging categories taking over)
