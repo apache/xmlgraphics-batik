@@ -16,7 +16,7 @@
 ::   See the License for the specific language governing permissions and
 ::   limitations under the License.
 ::
-:: build.bat - MS-DOS build script for rasterizer task
+:: build.bat - Win32 build script for rasterizer task
 ::
 :: $Id$
 :: --------------------------------------------------------------------------
@@ -43,7 +43,7 @@ SET CP=%CP%;%BATIK_HOME%\classes
 
 :: ----- Execute ------------------------------------------------------------
 
-"%JAVA_HOME%\bin\java.exe" %ANT_OPTS% -classpath %CP% org.apache.tools.ant.Main -Dant.home=%ANT_HOME% %1 -Dargs="%2 %3 %4 %5 %6 %7 %8 %9"
+"%JAVA_HOME%\bin\java.exe" %ANT_OPTS% -classpath %CP% org.apache.tools.ant.Main -emacs -Dant.home=%ANT_HOME% %1 -Dargs="%2 %3 %4 %5 %6 %7 %8 %9"
 
 
 :: ----- Cleanup the environment --------------------------------------------
