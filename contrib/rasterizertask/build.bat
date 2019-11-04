@@ -37,7 +37,7 @@ SET BATIK_HOME=.\..\..
 
 :: ----- Set up classpath ---------------------------------------------------
 
-SET CP="%JAVA_HOME%\lib\tools.jar";"%ANT_HOME%\lib\build\ant-1.6.5.jar";"%ANT_HOME%\lib\build\ant-launcher-1.6.5.jar";"%BATIK_HOME%\lib\build\crimson-1.1.3.jar"
+SET CP="%JAVA_HOME%\lib\tools.jar";"%ANT_HOME%\lib\build\ant-1.9.3.jar";"%ANT_HOME%\lib\build\ant-launcher-1.9.3.jar";"%BATIK_HOME%\lib\build\crimson-1.1.3.jar"
 SET CP=%CP%;%BATIK_HOME%\classes
 
 
