@@ -34,13 +34,13 @@ import javax.sound.sampled.AudioPermission;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Window;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
 
 import org.apache.batik.anim.dom.SVGOMDocument;
 import org.apache.batik.bridge.ScriptHandler;
+import org.apache.batik.w3c.dom.Window;
 
 /**
  * This class implements the ScriptHandler interface and represents an 

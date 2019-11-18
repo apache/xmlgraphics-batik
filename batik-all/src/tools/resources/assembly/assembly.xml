@@ -7,16 +7,6 @@
     <format>jar</format>
   </formats>
   <includeBaseDirectory>false</includeBaseDirectory>
-  <files>
-    <file>
-      <source>../LICENSE</source>
-      <outputDirectory>META-INF</outputDirectory>
-    </file>
-    <file>
-      <source>../NOTICE</source>
-      <outputDirectory>META-INF</outputDirectory>
-    </file>
-  </files>
   <dependencySets>
     <dependencySet>
       <unpack>true</unpack>

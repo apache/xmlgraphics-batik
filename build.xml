@@ -72,8 +72,9 @@ To display the available targets type:
 <project default="help" name="batik" basedir=".">
 
   <!-- Configuring the build -->
-  <property file="${basedir}/build-local.properties"/>
   <property environment="env"/>
+  <property file="${basedir}/build-local.properties"/>
+  <property file="${basedir}/build.properties"/>
 
   <!-- Initializations .................................................... -->
   <target name="init">
@@ -90,14 +91,11 @@ To display the available targets type:
     <property name="xgcVersion"         value="2.4.0-SNAPSHOT" />
     <property name="fopVersion"         value="2.4.0-SNAPSHOT" />
     <property name="vendor"             value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)" />
-
-  	<property file="build.properties"/>
     <property name="debug"              value="on"/>
     <property name="optimize"           value="on"/>
     <property name="deprecation"        value="on"/>
     <property name="javac.source" value="1.7"/>
     <property name="javac.target" value="1.7"/>
-  
     <property name="src"                value="sources"/>
     <property name="src-internal-codec" value="sources-internal-codec"/>
     <property name="resources"          value="resources"/>
@@ -391,7 +389,21 @@ To display the available targets type:
     <delete dir="${build}/docs/javadoc"/>
   </target>
 
-  <target name="bin-zip" depends="init, jars, bundle-script">
+  <target name="copy-shared-resources">
+    <copy todir="${basedir}">
+      <fileset dir="${basedir}/batik-shared-resources/src/main/resources">
+        <include name="LICENSE"/>
+        <include name="NOTICE"/>
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="clean-shared-resources">
+    <delete file="${basedir}/LICENSE" failonerror="false"/>
+    <delete file="${basedir}/NOTICE" failonerror="false"/>
+  </target>
+
+  <target name="bin-zip" depends="init, copy-shared-resources, jars, bundle-script">
     <zip zipfile="${project}-bin-${completeVersion}.zip">
       <zipfileset dir="." prefix="${project}-${completeVersion}">
         <include name="LICENSE"/>
@@ -422,7 +434,7 @@ To display the available targets type:
     </zip>
   </target>
 
-  <target name="src-zip" depends="init, record-svn-revision">
+  <target name="src-zip" depends="init, copy-shared-resources, record-svn-revision">
     <zip zipfile="${project}-src-${completeVersion}.zip">
       <zipfileset dir="." prefix="${project}-${completeVersion}">
         <include name="LICENSE"/>
@@ -460,7 +472,7 @@ To display the available targets type:
     <delete dir="${build}/docs/javadoc"/>
   </target>
 
-  <target name="bin-tgz" depends="init, jars, bundle-script">
+  <target name="bin-tgz" depends="init, copy-shared-resources, jars, bundle-script">
     <tar tarfile="${project}-bin-${completeVersion}.tar.gz" compression="gzip">
       <tarfileset dir="." prefix="${project}-${completeVersion}">
         <include name="LICENSE"/>
@@ -491,7 +503,7 @@ To display the available targets type:
     </tar>
   </target>
 
-  <target name="src-tgz" depends="init, record-svn-revision">
+  <target name="src-tgz" depends="init, copy-shared-resources, record-svn-revision">
     <tar tarfile="${project}-src-${completeVersion}.tar.gz" compression="gzip">
       <tarfileset dir="." prefix="${project}-${completeVersion}">
         <include name="LICENSE"/>
@@ -584,7 +596,7 @@ To display the available targets type:
     </exec>
   </target>  
 
-  <target name="src-jar" depends="init, record-svn-revision">
+  <target name="src-jar" depends="init, copy-shared-resources, record-svn-revision">
     <jar jarfile="${build}/lib/${project}-src-${completeVersion}.jar">
       <fileset dir=".">
         <include name="LICENSE"/>
@@ -706,7 +718,6 @@ JAVA=/usr/bin/java
       <src path="batik-test/src/main/java"/>
       <src path="batik-test-svg/src/main/java"/>
       <src path="batik-test-swing/src/main/java"/>
-      <!-- <src path="batik-test-util/src/main/java"/> -->
       <src path="batik-util/src/test/java"/>
       <exclude name="org/apache/batik/util/*TestCases.java"/>
       <exclude name="org/apache/batik/util/*TestSuite.java"/>
@@ -810,7 +821,6 @@ JAVA=/usr/bin/java
       </fileset>
     </jar>
   </target>
-
 
   <target name="record-svn-revision" depends="determine-svn-revision"
           if="svn-revision-determined">
@@ -1114,7 +1124,7 @@ JAVA=/usr/bin/java
 
 
   <!-- All batik in a single jar (dependencies: none) -->
-  <target name="all-jar" depends="init, compile, prepare-build"
+  <target name="all-jar" depends="init, copy-shared-resources, compile, prepare-build"
           description="Creates a combined JAR file of the Batik libraries in ${build}/lib">
     <jar jarfile="${build}/lib/${project}-all-${completeVersion}.jar">
       <manifest>
@@ -1550,7 +1560,7 @@ JAVA=/usr/bin/java
 
   <!-- Cleans everything .................................................. -->
   <target name="clean"
-          depends="init, clean-compile, clean-docs, clean-test"
+          depends="init, clean-compile, clean-docs, clean-test, clean-shared-resources"
           description="Cleans everything">
     <delete dir="${build}"/>
     <delete file="${project}-bin-${completeVersion}.zip"/>
