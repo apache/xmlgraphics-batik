@@ -26,7 +26,7 @@
 
   <artifactId>batik-shared-resources</artifactId>
   <name>${project.groupId}:${project.artifactId}</name>
-  <description>Batik shared resources</description>
+  <description>Batik Shared Resources</description>
 
   <parent>
     <groupId>org.apache.xmlgraphics</groupId>
