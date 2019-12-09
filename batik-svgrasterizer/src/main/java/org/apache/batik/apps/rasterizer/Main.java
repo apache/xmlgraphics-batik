@@ -501,6 +501,12 @@ public class Main implements SVGConverterController {
     public static String CL_OPTION_CONSTRAIN_SCRIPT_ORIGIN_DESCRIPTION
         = Messages.get("Main.cl.option.constrain.script.origin.description", "No description");
 
+    public static String CL_OPTION_BLOCK_EXTERNAL_RESOURCES
+            = Messages.get("Main.cl.option.block.external.resources", "-blockExternalResources");
+
+    public static String CL_OPTION_BLOCK_EXTERNAL_RESOURCES_DESCRIPTION
+            = Messages.get("Main.cl.option.block.external.resources.description", "No description");
+
     /**
      * Option to turn off secure execution of scripts
      */
@@ -829,6 +835,17 @@ public class Main implements SVGConverterController {
                               return CL_OPTION_SECURITY_OFF_DESCRIPTION;
                           }
                       });
+
+        optionMap.put(CL_OPTION_BLOCK_EXTERNAL_RESOURCES,
+                new NoValueOptionHandler(){
+                    public void handleOption(SVGConverter c){
+                        c.allowExternalResources = false;
+                    }
+
+                    public String getOptionDescription(){
+                        return CL_OPTION_BLOCK_EXTERNAL_RESOURCES_DESCRIPTION;
+                    }
+                });
     }
 
     /**

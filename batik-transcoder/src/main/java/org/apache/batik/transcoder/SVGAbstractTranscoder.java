@@ -33,8 +33,10 @@ import org.apache.batik.bridge.BaseScriptingEnvironment;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeException;
 import org.apache.batik.bridge.DefaultScriptSecurity;
+import org.apache.batik.bridge.ExternalResourceSecurity;
 import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.bridge.NoLoadScriptSecurity;
+import org.apache.batik.bridge.NoLoadExternalResourceSecurity;
 import org.apache.batik.bridge.RelaxedScriptSecurity;
 import org.apache.batik.bridge.SVGUtilities;
 import org.apache.batik.bridge.ScriptSecurity;
@@ -877,6 +879,9 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
         = new BooleanKey();
 
 
+    public static final TranscodingHints.Key KEY_ALLOW_EXTERNAL_RESOURCES
+            = new BooleanKey();
+
     /**
      * A user agent implementation for <code>PrintTranscoder</code>.
      */
@@ -1109,5 +1114,19 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
             }
         }
 
+        public ExternalResourceSecurity getExternalResourceSecurity(ParsedURL resourceURL, ParsedURL docURL) {
+            if (isAllowExternalResources()) {
+                return super.getExternalResourceSecurity(resourceURL, docURL);
+            }
+            return new NoLoadExternalResourceSecurity();
+        }
+
+        public boolean isAllowExternalResources() {
+            Boolean b = (Boolean)SVGAbstractTranscoder.this.hints.get(KEY_ALLOW_EXTERNAL_RESOURCES);
+            if (b != null) {
+                return b;
+            }
+            return true;
+        }
     }
 }

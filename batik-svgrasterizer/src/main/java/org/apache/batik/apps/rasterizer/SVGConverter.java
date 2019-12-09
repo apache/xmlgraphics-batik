@@ -253,6 +253,8 @@ public class SVGConverter {
         the document which references them. */
     protected boolean constrainScriptOrigin = true;
 
+    protected boolean allowExternalResources = true;
+
     /** Controls whether scripts should be run securely or not */
     protected boolean securityOff = false;
 
@@ -923,6 +925,10 @@ public class SVGConverter {
         // Set constrain script origin
         if (!constrainScriptOrigin) {
             map.put(ImageTranscoder.KEY_CONSTRAIN_SCRIPT_ORIGIN, Boolean.FALSE);
+        }
+
+        if (!allowExternalResources) {
+            map.put(ImageTranscoder.KEY_ALLOW_EXTERNAL_RESOURCES, Boolean.FALSE);
         }
 
         return map;
