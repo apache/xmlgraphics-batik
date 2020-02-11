@@ -116,10 +116,8 @@
           <configuration>
             <source>${java.version}</source>
             <target>${java.version}</target>
-            <executable>${jdk.path}/bin/javac</executable>
-            <fork>true</fork>
-          <compilerArgs></compilerArgs>
-          <showWarnings>false</showWarnings>
+            <compilerArgs></compilerArgs>
+            <showWarnings>false</showWarnings>
           </configuration>
         </plugin>
         <plugin>
@@ -150,7 +148,35 @@
       </plugins>
     </pluginManagement>
   </build>
-  
+
+  <profiles>
+    <profile>
+      <id>custom-javac</id>
+      <activation>
+        <property>
+          <name>jdk.path</name>
+        </property>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-compiler-plugin</artifactId>
+              <version>${compiler.version}</version>
+              <configuration>
+                <source>${java.version}</source>
+                <target>${java.version}</target>
+                <executable>${jdk.path}/bin/javac</executable>
+                <fork>true</fork>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
+  </profiles>
+
   <scm>
     <connection>scm:svn:https://svn.apache.org/repos/asf/xmlgraphics/batik/trunk/</connection>
     <url>scm:svn:https://svn.apache.org/repos/asf/xmlgraphics/batik/trunk/</url>
