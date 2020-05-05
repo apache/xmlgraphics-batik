@@ -30,7 +30,7 @@ grant codeBase "${app.dev.base}/lib/xerces_2_5_0.jar" {
   permission java.security.AllPermission;
 };
 
-grant codeBase "${app.dev.base}/lib/fop-transcoder-allinone-${xmlgraphics.commons.version}.jar" {
+grant codeBase "${app.dev.base}/lib/fop-transcoder-allinone-${xmlgraphics.fop.version}.jar" {
   permission java.security.AllPermission;
 };
 
