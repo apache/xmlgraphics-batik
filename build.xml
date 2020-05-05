@@ -84,12 +84,12 @@ To display the available targets type:
     <property name="Project"            value="Apache Batik" />
     <property name="project"            value="batik" />
     <property name="year"               value="2020" />
-    <property name="version"            value="1.13.0-SNAPSHOT" />
+    <property name="version"            value="1.13" />
     <property name="revisionType"       value="" />
     <property name="revisionNumber"     value="" />
     <property name="completeVersion"    value="${version}${revisionType}${revisionNumber}" />
-    <property name="xgcVersion"         value="2.4.0-SNAPSHOT" />
-    <property name="fopVersion"         value="2.4.0-SNAPSHOT" />
+    <property name="xgcVersion"         value="2.4" />
+    <property name="fopVersion"         value="2.5" />
     <property name="vendor"             value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)" />
     <property name="debug"              value="on"/>
     <property name="optimize"           value="on"/>
