@@ -847,8 +847,10 @@ public class NodePickerPanel extends JPanel implements ActionMap {
         Document doc = null;
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         try {
-            javax.xml.parsers.DocumentBuilder parser = factory
-                    .newDocumentBuilder();
+            factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+            factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+            javax.xml.parsers.DocumentBuilder parser = factory.newDocumentBuilder();
             parser.setErrorHandler(new ErrorHandler() {
                 public void error(SAXParseException exception)
                         throws SAXException {
