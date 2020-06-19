@@ -43,8 +43,16 @@ public class ParsedURLDataProtocolHandler
     }
 
     public ParsedURLData parseURL(ParsedURL baseURL, String urlStr) {
-        // No relative form...
-        return parseURL(urlStr);
+        if (urlStr.startsWith("#")) {
+            // Use the base, it contains the encoded document
+            ParsedURLData parseURL = parseURL(baseURL.toString());
+            // .. and pass the reference
+            parseURL.ref = urlStr.substring(1); // Skip the #
+            return parseURL;
+        } else {
+            // No relative form...
+            return parseURL(urlStr);
+        }
     }
 
     public ParsedURLData parseURL(String urlStr) {
