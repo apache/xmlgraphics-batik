@@ -365,6 +365,8 @@ public abstract class AbstractDocument
         case ATTRIBUTE_NODE:
             result = createAttributeNS(importedNode.getNamespaceURI(),
                                        importedNode.getNodeName());
+            result.setNodeValue(importedNode.getNodeValue());
+            deep = false;
             break;
 
         case TEXT_NODE:
