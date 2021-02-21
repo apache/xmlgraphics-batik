@@ -394,19 +394,25 @@ public class Scanner {
                                          reader.getColumn());
             case '-':
                 nextChar();
-                if (current != '-') {
-                    type = LexicalUnits.MINUS;
-                    return;
-                }
-                nextChar();
-                if (current == '>') {
+                if (current == '-') {
                     nextChar();
-                    type = LexicalUnits.CDC;
+                    if (current == '>') {
+                        nextChar();
+                        type = LexicalUnits.CDC;
+                        return;
+                    } else if (ScannerUtilities.isCSSNameCharacter((char)current)) {
+                        scanIdentifierOrFunction();
+                        return;
+                    }
+                } else if ((ScannerUtilities.isCSSNameCharacter((char)current))
+                        && (!Character.isDigit((char)current))) {
+                    scanIdentifierOrFunction();
                     return;
                 }
-                throw new ParseException("character",
-                                         reader.getLine(),
-                                         reader.getColumn());
+
+                type = LexicalUnits.MINUS;
+                return;
+
             case '|':
                 nextChar();
                 if (current == '=') {
@@ -775,26 +781,30 @@ public class Scanner {
                                              reader.getLine(),
                                              reader.getColumn());
                 }
-                // Identifier
-                while ((current != -1) &&
-                       ScannerUtilities.isCSSNameCharacter((char)current)) {
-                    nextChar();
-                    while (current == '\\') {
-                        nextChar();
-                        escape();
-                    }
-                }
-                if (current == '(') {
-                    nextChar();
-                    type = LexicalUnits.FUNCTION;
-                    return;
-                }
-                type = LexicalUnits.IDENTIFIER;
+                scanIdentifierOrFunction();
                 return;
             }
         } catch (IOException e) {
             throw new ParseException(e);
         }
+    }
+
+    private void scanIdentifierOrFunction() throws IOException {
+        // Identifier
+        while ((current != -1) &&
+               ScannerUtilities.isCSSNameCharacter((char)current)) {
+            nextChar();
+            while (current == '\\') {
+                nextChar();
+                escape();
+            }
+        }
+        if (current == '(') {
+            nextChar();
+            type = LexicalUnits.FUNCTION;
+            return;
+        }
+        type = LexicalUnits.IDENTIFIER;
     }
 
     /**
