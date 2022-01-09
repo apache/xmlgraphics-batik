@@ -4,6 +4,12 @@ Change Log
 The following log records some of the most important changes.
 Bug fixing is an ongoing task, so it is implied in all sub-releases.
 
+1.13 -> 1.14
+------------
+
+BATIK-1284: Dont load DTDs in NodePickerPanel
+BATIK-1292: Remove console message "About to transcoder source of type: ..."
+
 1.12 -> 1.13
 ------------
 

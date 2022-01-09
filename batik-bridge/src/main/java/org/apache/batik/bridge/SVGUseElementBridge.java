@@ -22,6 +22,8 @@ import java.awt.Cursor;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.batik.anim.dom.AbstractSVGAnimatedLength;
 import org.apache.batik.anim.dom.AnimatedLiveAttributeValue;
@@ -51,6 +53,8 @@ import org.w3c.dom.svg.SVGUseElement;
  * @version $Id$
  */
 public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
+
+    private List<String> visited = new ArrayList<>();
 
     /**
      * Used to handle mutation of the referenced content. This is
@@ -116,6 +120,11 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
         // get the referenced element
         SVGOMUseElement ue = (SVGOMUseElement) e;
         String uri = ue.getHref().getAnimVal();
+        String id = uri + ";" + ue.getStyle().getCssText();
+        if (visited.contains(id)) {
+            return null;
+        }
+        visited.add(id);
         if (uri.length() == 0) {
             throw new BridgeException(ctx, e, ERR_ATTRIBUTE_MISSING,
                                       new Object[] {"xlink:href"});
