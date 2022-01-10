@@ -415,11 +415,6 @@ public class SVGConverterTest extends DefaultTestSuite {
         addTest(t);
         t.setId("OutputTest.reference");
 
-        t = new ConverterOutputTest("samples/manyuse.svg",  // File to convert
-                "test-reports/manyuse.png", // Output
-                "test-references/samples/manyuse.png"); // reference
-        addTest(t);
-        t.setId("manyuse");
     }
 }
 
