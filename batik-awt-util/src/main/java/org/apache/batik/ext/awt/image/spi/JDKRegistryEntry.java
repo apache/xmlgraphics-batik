@@ -35,16 +35,22 @@ import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.renderable.RedRable;
 import org.apache.batik.util.ParsedURL;
 
+import aQute.bnd.annotation.spi.ServiceProvider;
+
 /**
  * This Image tag registy entry is setup to wrap the core JDK
  * Image stream tools.
  *
  * @version $Id$
  */
+@ServiceProvider(value = RegistryEntry.class, attribute = {
+		"mimeTypes:List<String>='" + JDKRegistryEntry.MIMETYPE_IMAGE_GIF  + "'",
+		"extensions:List<String>=''" })
 public class JDKRegistryEntry extends AbstractRegistryEntry
     implements URLRegistryEntry {
 
-    /**
+    protected static final String MIMETYPE_IMAGE_GIF = "image/gif";
+	/**
      * The priority of this entry.
      * This entry should in most cases be the last entry.
      * but if one wishes one could set a priority higher and be called
@@ -54,7 +60,7 @@ public class JDKRegistryEntry extends AbstractRegistryEntry
         1000*MagicNumberRegistryEntry.PRIORITY;
 
     public JDKRegistryEntry() {
-        super ("JDK", PRIORITY, new String[0], new String [] {"image/gif"});
+        super ("JDK", PRIORITY, new String[0], new String [] {MIMETYPE_IMAGE_GIF});
     }
 
     /**

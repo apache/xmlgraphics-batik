@@ -29,12 +29,22 @@ import org.apache.batik.util.ParsedURL;
  * @author <a href="mailto:vincent.hardy@sun.com">Vincent Hardy</a>
  * @version $Id$
  */
+//@ServiceProvider(value=SquiggleInputHandler.class,attribute ={
+//		"mimeTypes:List<String>='"+SVGInputHandler.MIME_TYPE_IMAGE_SVG_XML+"'",
+//		"extensions:List<String>='"+SVGInputHandler.EXTENSION_SVG+","+SVGInputHandler.EXTENSION_SVGZ+"'"})
 public class SVGInputHandler implements SquiggleInputHandler {
-    public static final String[] SVG_MIME_TYPES = 
-    { "image/svg+xml" };
+
+	public static final String MIME_TYPE_IMAGE_SVG_XML = "image/svg+xml";
+
+	public static final String EXTENSION_SVGZ = ".svgz";
+	
+	public static final String EXTENSION_SVG = ".svg";
+
+	public static final String[] SVG_MIME_TYPES = 
+    { MIME_TYPE_IMAGE_SVG_XML };
 
     public static final String[] SVG_FILE_EXTENSIONS =
-    { ".svg", ".svgz" };
+    { EXTENSION_SVG, EXTENSION_SVGZ };
 
     /**
      * Returns the list of mime types handled by this handler.

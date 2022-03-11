@@ -24,17 +24,22 @@ import org.apache.batik.script.ImportInfo;
 import org.apache.batik.script.Interpreter;
 import org.apache.batik.script.InterpreterFactory;
 
+import aQute.bnd.annotation.spi.ServiceProvider;
+
 /**
  * Allows to create instances of <code>JPythonInterpreter</code> class.
  * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>
  * @version $Id$
  */
+@ServiceProvider(value = InterpreterFactory.class, attribute = { "mimeTypes:List<String>='"
+		+ JPythonInterpreterFactory.MIMETYPE_TEXT_PYTHON + "'" })
 public class JPythonInterpreterFactory implements InterpreterFactory {
 
-    /**
+    protected static final String MIMETYPE_TEXT_PYTHON = "text/python";
+	/**
      * The MIME types that JPython can handle.
      */
-    public static final String[] JPYTHON_MIMETYPES =  { "text/python" };
+    public static final String[] JPYTHON_MIMETYPES =  { MIMETYPE_TEXT_PYTHON };
 
     /**
      * Builds a <code>JPythonInterpreterFactory</code>.

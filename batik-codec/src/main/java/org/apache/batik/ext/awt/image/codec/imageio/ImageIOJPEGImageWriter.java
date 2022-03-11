@@ -29,20 +29,26 @@ import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
 
 import org.apache.batik.ext.awt.image.spi.ImageWriterParams;
 
+import aQute.bnd.annotation.spi.ServiceProvider;
+
 /**
  * ImageWriter that encodes JPEG images using Image I/O.
  *
  * @version $Id$
  */
+@ServiceProvider(value = ImageWriter.class, attribute = {
+      "mimeType:String='" + ImageIOJPEGImageWriter.MIMETYPE_IMAGE_JPEG + "'" ,
+		"codec:String='" + ImageIOImageWriter.CODEC + "'" })
 public class ImageIOJPEGImageWriter extends ImageIOImageWriter {
 
-    private static final String JPEG_NATIVE_FORMAT = "javax_imageio_jpeg_image_1.0";
+    public static final String MIMETYPE_IMAGE_JPEG = "image/jpeg";
+	private static final String JPEG_NATIVE_FORMAT = "javax_imageio_jpeg_image_1.0";
 
     /**
      * Main constructor.
      */
     public ImageIOJPEGImageWriter() {
-        super("image/jpeg");
+        super(MIMETYPE_IMAGE_JPEG);
     }
 
     /** {@inheritDoc} */

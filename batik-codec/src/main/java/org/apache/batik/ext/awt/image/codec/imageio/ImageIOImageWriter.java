@@ -48,6 +48,8 @@ public class ImageIOImageWriter implements ImageWriter, IIOWriteWarningListener 
 
     private String targetMIME;
     
+    public static final String CODEC="ImageIO";
+    
     /**
      * Main constructor.
      * @param mime the MIME type of the image format

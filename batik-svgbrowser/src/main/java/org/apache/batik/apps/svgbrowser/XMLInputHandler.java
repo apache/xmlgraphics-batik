@@ -36,7 +36,6 @@ import javax.xml.transform.stream.StreamSource;
 import org.apache.batik.anim.dom.SAXSVGDocumentFactory;
 import org.apache.batik.anim.dom.SVGDOMImplementation;
 import org.apache.batik.dom.util.DOMUtilities;
-
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLResourceDescriptor;
@@ -61,12 +60,22 @@ import org.w3c.dom.svg.SVGDocument;
  * @author <a href="mailto:vincent.hardy@sun.com">Vincent Hardy</a>
  * @version $Id$
  */
+//@ServiceProvider(value=SquiggleInputHandler.class,attribute ={
+//		"mimeTypes:List<String>='"+XMLInputHandler.MIME_TYPE_IMAGE_XML_XSL_SVG+"'",
+//		"extensions:List<String>='"+XMLInputHandler.EXTENSION_XML+","+XMLInputHandler.EXTENSION_XSL+"'"})
 public class XMLInputHandler implements SquiggleInputHandler {
-    public static final String[] XVG_MIME_TYPES = 
-    { "image/xml+xsl+svg" };
+
+	public static final String MIME_TYPE_IMAGE_XML_XSL_SVG = "image/xml+xsl+svg";
+
+	public static final String EXTENSION_XML = ".xml";
+
+	public static final String EXTENSION_XSL = ".xsl";
+
+	public static final String[] XVG_MIME_TYPES = 
+    { MIME_TYPE_IMAGE_XML_XSL_SVG };
 
     public static final String[] XVG_FILE_EXTENSIONS =
-    { ".xml", ".xsl" };
+    { EXTENSION_XML, EXTENSION_XSL };
 
     public static final String ERROR_NO_XML_STYLESHEET_PROCESSING_INSTRUCTION
         = "XMLInputHandler.error.no.xml.stylesheet.processing.instruction";

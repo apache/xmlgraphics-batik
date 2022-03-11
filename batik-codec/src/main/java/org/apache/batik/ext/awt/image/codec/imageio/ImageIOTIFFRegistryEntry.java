@@ -19,24 +19,40 @@
 package org.apache.batik.ext.awt.image.codec.imageio;
 
 import org.apache.batik.ext.awt.image.spi.MagicNumberRegistryEntry;
+import org.apache.batik.ext.awt.image.spi.RegistryEntry;
+
+import aQute.bnd.annotation.spi.ServiceProvider;
 
 /**
  * RegistryEntry implementation for loading TIFF images through Image I/O.
  *
  * @version $Id$
  */
+@ServiceProvider(value = RegistryEntry.class, attribute = {
+		"mimeTypes:List<String>='" + ImageIOTIFFRegistryEntry.MIMETYPE_IMAGE_TIF + ","
+				+ ImageIOTIFFRegistryEntry.MIMETYPE_IMAGE_TIFF + "'",
+		"extensions:List<String>='" + ImageIOTIFFRegistryEntry.EXTENSION_TIF + "," + ImageIOTIFFRegistryEntry.EXTENSION_TIFF
+				+ "'" })
 public class ImageIOTIFFRegistryEntry 
     extends AbstractImageIORegistryEntry {
 
-    static final byte [] sig1 = {(byte)0x49, (byte)0x49, 42,  0};
+    protected static final String MIMETYPE_IMAGE_TIF = "image/tif";
+    
+    protected static final String MIMETYPE_IMAGE_TIFF = "image/tiff";
+	
+    protected static final String EXTENSION_TIF = "tif";
+	
+    protected static final String EXTENSION_TIFF = "tiff";
+	
+	static final byte [] sig1 = {(byte)0x49, (byte)0x49, 42,  0};
     static final byte [] sig2 = {(byte)0x4D, (byte)0x4D,  0, 42};
 
     static MagicNumberRegistryEntry.MagicNumber [] magicNumbers = {
         new MagicNumberRegistryEntry.MagicNumber(0, sig1),
         new MagicNumberRegistryEntry.MagicNumber(0, sig2) };
 
-    static final String [] exts      = {"tiff", "tif" };
-    static final String [] mimeTypes = {"image/tiff", "image/tif" };
+    static final String [] exts      = {EXTENSION_TIFF, EXTENSION_TIF };
+    static final String [] mimeTypes = {MIMETYPE_IMAGE_TIFF, MIMETYPE_IMAGE_TIF };
 
     public ImageIOTIFFRegistryEntry() {
         super("TIFF", exts, mimeTypes, magicNumbers);

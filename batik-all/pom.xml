@@ -27,7 +27,7 @@
   <artifactId>batik-all</artifactId>
   <name>${project.groupId}:${project.artifactId}</name>
   <description>Batik aggregate artifact</description>
-  <packaging>pom</packaging>
+  <packaging>jar</packaging>
 
   <parent>
     <groupId>org.apache.xmlgraphics</groupId>
@@ -186,30 +186,21 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>package-all</id>
-            <phase>package</phase>
-            <goals>
-              <goal>single</goal>
-            </goals>
-            <configuration>
-              <addMavenDescriptor>false</addMavenDescriptor>
-              <appendAssemblyId>false</appendAssemblyId>
-              <archive>
-                <manifest>
-                  <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                  <mainClass>org.apache.batik.apps.svgbrowser.Main</mainClass>
-                </manifest>
-              </archive>
-              <descriptors>
-                <descriptor>src/tools/resources/assembly/assembly.xml</descriptor>
-              </descriptors>
-            </configuration>
-          </execution>
-        </executions>
+        <groupId>biz.aQute.bnd</groupId>
+        <artifactId>bnd-maven-plugin</artifactId>
+        <configuration>
+          <bnd><![CDATA[
+          Export-Package: org.apache.batik.*
+          
+          // May be renamed from 'extensions' to 'extension'
+          -privatepackage: \
+            org.apache.batik.extensions
+
+          Main-Class: org.apache.batik.apps.svgbrowser.Main
+
+          -includeresource: /META-INF/imports/script.txt=/${project.parent.basedir}/batik-script/src/main/resources/META-INF/imports/script.txt
+          ]]></bnd>
+        </configuration>
       </plugin>
     </plugins>
   </build>

@@ -24,6 +24,8 @@ import org.apache.batik.script.ImportInfo;
 import org.apache.batik.script.Interpreter;
 import org.apache.batik.script.InterpreterFactory;
 
+import aQute.bnd.annotation.spi.ServiceProvider;
+
 /**
  * Allows to create instances of <code>RhinoInterpreter</code> class.
  *
@@ -31,16 +33,25 @@ import org.apache.batik.script.InterpreterFactory;
  * @author <a href="mailto:vhardy@apache.org">Vincent Hardy</a>
  * @version $Id$
  */
+@ServiceProvider(value = InterpreterFactory.class, attribute = { "mimeTypes:List<String>='"
+		+ RhinoInterpreterFactory.MIMETYPE_TEXT_JAVASCRIPT + ","
+		+ RhinoInterpreterFactory.MIMETYPE_TEXT_ECMASCRIPT + ","
+		+ RhinoInterpreterFactory.MIMETYPE_APPLICATION_JAVASCRIPT + ","
+		+ RhinoInterpreterFactory.MIMETYPE_APPLICATION_ECMASCRIPT + "'" })
 public class RhinoInterpreterFactory implements InterpreterFactory {
 
-    /**
+    protected static final String MIMETYPE_TEXT_JAVASCRIPT = "text/javascript";
+	protected static final String MIMETYPE_TEXT_ECMASCRIPT = "text/ecmascript";
+	protected static final String MIMETYPE_APPLICATION_JAVASCRIPT = "application/javascript";
+	protected static final String MIMETYPE_APPLICATION_ECMASCRIPT = "application/ecmascript";
+	/**
      * The MIME types that Rhino can handle.
      */
     public static final String[] RHINO_MIMETYPES = {
-        "application/ecmascript",
-        "application/javascript",
-        "text/ecmascript",
-        "text/javascript",
+        MIMETYPE_APPLICATION_ECMASCRIPT,
+        MIMETYPE_APPLICATION_JAVASCRIPT,
+        MIMETYPE_TEXT_ECMASCRIPT,
+        MIMETYPE_TEXT_JAVASCRIPT,
     };
 
     /**

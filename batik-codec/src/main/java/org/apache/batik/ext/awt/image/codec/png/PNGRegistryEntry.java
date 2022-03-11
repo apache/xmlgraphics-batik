@@ -34,20 +34,28 @@ import org.apache.batik.ext.awt.image.rendered.CachableRed;
 import org.apache.batik.ext.awt.image.rendered.FormatRed;
 import org.apache.batik.ext.awt.image.spi.ImageTagRegistry;
 import org.apache.batik.ext.awt.image.spi.MagicNumberRegistryEntry;
+import org.apache.batik.ext.awt.image.spi.RegistryEntry;
 import org.apache.batik.util.ParsedURL;
+
+import aQute.bnd.annotation.spi.ServiceProvider;
 
 /**
  *
  * @version $Id$
  */
+@ServiceProvider(value = RegistryEntry.class, attribute = {
+		"mimeTypes:List<String>='" + PNGRegistryEntry.MIMETYPE_IMAGE_PNG  + "'",
+		"extensions:List<String>='" + PNGRegistryEntry.EXTENSION_PNG + "'" })
 public class PNGRegistryEntry
     extends MagicNumberRegistryEntry {
 
 
-    static final byte [] signature = {(byte)0x89, 80, 78, 71, 13, 10, 26, 10};
+    protected static final String EXTENSION_PNG = "png";
+	protected static final String MIMETYPE_IMAGE_PNG = "image/png";
+	static final byte [] signature = {(byte)0x89, 80, 78, 71, 13, 10, 26, 10};
 
     public PNGRegistryEntry() {
-        super("PNG", "png", "image/png", 0, signature);
+        super("PNG", EXTENSION_PNG, MIMETYPE_IMAGE_PNG, 0, signature);
     }
 
     /**

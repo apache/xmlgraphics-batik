@@ -22,11 +22,14 @@ import java.util.Collections;
 import java.util.Iterator;
 
 import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.bridge.BridgeExtension;
 import org.apache.batik.bridge.SVGBridgeExtension;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.SVG12Constants;
 import org.apache.batik.util.XBLConstants;
 import org.w3c.dom.Element;
+
+import aQute.bnd.annotation.spi.ServiceProvider;
 
 /**
  * This is a Service interface for classes that want to extend the
@@ -35,6 +38,7 @@ import org.w3c.dom.Element;
  * @author <a href="mailto:thomas.deweese@kodak.com">Thomas DeWeese</a>
  * @version $Id$
  */
+@ServiceProvider(value = BridgeExtension.class)
 public class SVG12BridgeExtension extends SVGBridgeExtension {
 
     /**
