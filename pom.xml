@@ -154,7 +154,12 @@
           <configuration>
             <bnd><![CDATA[
             Bundle-SymbolicName: ${groupId}.${artifactId}
-            -includeresource: META-INF/=${project.parent.basedir}/batik-shared-resources/src/main/resources/
+            -includeresource.shared: META-INF/=${project.parent.basedir}/batik-shared-resources/src/main/resources/
+            Import-Package: \
+              com.apple.eawt.*;resolution=optional,\
+              org.python.*;resolution=optional,\
+              org.mozilla.*;resolution=optional,\
+              *
             ]]></bnd>
         </configuration>
           <executions>
