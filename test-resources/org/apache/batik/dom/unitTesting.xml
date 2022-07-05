@@ -42,9 +42,9 @@
         <arg class="java.lang.String" value="root" />
         <arg class="java.lang.String" value="targetAttribute" />
         <arg class="java.lang.String" value="targetValue" />
-        <property name="ParserClassName"
+        <!--<property name="ParserClassName"
                   class="java.lang.String"
-                  value="org.apache.xerces.parsers.SAXParser" />
+                  value="org.apache.xerces.parsers.SAXParser" />-->
     </test>
 
     <!-- ========================================================================== -->
