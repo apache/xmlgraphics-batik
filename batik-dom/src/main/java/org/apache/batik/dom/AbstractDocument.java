@@ -45,12 +45,6 @@ import org.apache.batik.util.DOMConstants;
 import org.apache.batik.util.SoftDoublyIndexedTable;
 import org.apache.batik.constants.XMLConstants;
 
-import org.apache.xml.utils.PrefixResolver;
-
-import org.apache.xpath.XPath;
-import org.apache.xpath.XPathContext;
-import org.apache.xpath.objects.XObject;
-
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentType;
@@ -78,6 +72,13 @@ import org.w3c.dom.xpath.XPathException;
 import org.w3c.dom.xpath.XPathExpression;
 import org.w3c.dom.xpath.XPathNSResolver;
 import org.w3c.dom.xpath.XPathResult;
+
+import javax.xml.namespace.NamespaceContext;
+import javax.xml.transform.TransformerException;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 /**
  * This class implements the {@link org.w3c.dom.Document} interface.
@@ -2177,7 +2178,7 @@ public abstract class AbstractDocument
         /**
          * The compiled XPath expression.
          */
-        protected XPath xpath;
+        protected javax.xml.xpath.XPathExpression xpath;
 
         /**
          * The namespace resolver.
@@ -2190,11 +2191,6 @@ public abstract class AbstractDocument
         protected NSPrefixResolver prefixResolver;
 
         /**
-         * The XPathContext object.
-         */
-        protected XPathContext context;
-
-        /**
          * Creates a new XPathExpr object.
          */
         public XPathExpr(String expr, XPathNSResolver res)
@@ -2202,9 +2198,10 @@ public abstract class AbstractDocument
             resolver = res;
             prefixResolver = new NSPrefixResolver();
             try {
-                xpath = new XPath(expr, null, prefixResolver, XPath.SELECT);
-                context = new XPathContext();
-            } catch (javax.xml.transform.TransformerException te) {
+                XPath xPathAPI = XPathFactory.newInstance().newXPath();
+                xPathAPI.setNamespaceContext(prefixResolver);
+                xpath = xPathAPI.compile(expr);
+            } catch (XPathExpressionException te) {
                 throw createXPathException
                     (XPathException.INVALID_EXPRESSION_ERR,
                      "xpath.invalid.expression",
@@ -2245,48 +2242,25 @@ public abstract class AbstractDocument
                          new Object[] {(int) contextNode.getNodeType(),
                                         contextNode.getNodeName() });
             }
-            context.reset();
-            XObject result = null;
-            try {
-                result = xpath.execute(context, contextNode, prefixResolver);
-            } catch (javax.xml.transform.TransformerException te) {
-                throw createXPathException
-                    (XPathException.INVALID_EXPRESSION_ERR,
-                     "xpath.error",
-                     new Object[] { xpath.getPatternString(),
-                                    te.getMessage() });
-            }
+
             try {
                 switch (type) {
                     case XPathResult.ANY_UNORDERED_NODE_TYPE:
                     case XPathResult.FIRST_ORDERED_NODE_TYPE:
-                        return convertSingleNode(result, type);
+                        return new Result((Node) xpath.evaluate(contextNode, XPathConstants.NODE), type);
                     case XPathResult.BOOLEAN_TYPE:
-                        return convertBoolean(result);
+                        return new Result((Boolean) xpath.evaluate(contextNode, XPathConstants.BOOLEAN));
                     case XPathResult.NUMBER_TYPE:
-                        return convertNumber(result);
+                        return new Result((Double) xpath.evaluate(contextNode, XPathConstants.NUMBER));
                     case XPathResult.ORDERED_NODE_ITERATOR_TYPE:
                     case XPathResult.UNORDERED_NODE_ITERATOR_TYPE:
                     case XPathResult.ORDERED_NODE_SNAPSHOT_TYPE:
                     case XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE:
-                        return convertNodeIterator(result, type);
+                        return new Result((Node) xpath.evaluate(contextNode, XPathConstants.NODE), type);
                     case XPathResult.STRING_TYPE:
-                        return convertString(result);
-                    case XPathResult.ANY_TYPE:
-                        switch (result.getType()) {
-                            case XObject.CLASS_BOOLEAN:
-                                return convertBoolean(result);
-                            case XObject.CLASS_NUMBER:
-                                return convertNumber(result);
-                            case XObject.CLASS_STRING:
-                                return convertString(result);
-                            case XObject.CLASS_NODESET:
-                                return convertNodeIterator
-                                    (result,
-                                     XPathResult.UNORDERED_NODE_ITERATOR_TYPE);
-                        }
+                        return new Result((String) xpath.evaluate(contextNode, XPathConstants.STRING));
                 }
-            } catch (javax.xml.transform.TransformerException te) {
+            } catch (XPathExpressionException | TransformerException te) {
                 throw createXPathException
                     (XPathException.TYPE_ERR,
                      "xpath.cannot.convert.result",
@@ -2294,45 +2268,6 @@ public abstract class AbstractDocument
                                     te.getMessage() });
             }
             return null;
-        }
-
-        /**
-         * Converts an XObject to a single node XPathResult.
-         */
-        protected Result convertSingleNode(XObject xo, short type)
-                throws javax.xml.transform.TransformerException {
-            return new Result(xo.nodelist().item(0), type);
-        }
-
-        /**
-         * Converts an XObject to a boolean XPathResult.
-         */
-        protected Result convertBoolean(XObject xo)
-                throws javax.xml.transform.TransformerException {
-            return new Result(xo.bool());
-        }
-
-        /**
-         * Converts an XObject to a number XPathResult.
-         */
-        protected Result convertNumber(XObject xo)
-                throws javax.xml.transform.TransformerException {
-            return new Result(xo.num());
-        }
-
-        /**
-         * Converts an XObject to a string XPathResult.
-         */
-        protected Result convertString(XObject xo) {
-            return new Result(xo.str());
-        }
-
-        /**
-         * Converts an XObject to a node iterator XPathResult.
-         */
-        protected Result convertNodeIterator(XObject xo, short type)
-                throws javax.xml.transform.TransformerException {
-            return new Result(xo.nodelist(), type);
         }
 
         /**
@@ -2537,42 +2472,23 @@ public abstract class AbstractDocument
         /**
          * Xalan prefix resolver.
          */
-        protected class NSPrefixResolver implements PrefixResolver {
-
+        protected class NSPrefixResolver implements NamespaceContext {
             /**
-             * Get the base URI for this resolver.  Since this resolver isn't
-             * associated with a particular node, returns null.
+             * Resolves the given namespace prefix.
              */
-            public String getBaseIdentifier() {
+            public String getNamespaceURI(String prefix) {
+                if (resolver == null) {
+                    return null;
+                }
+                return resolver.lookupNamespaceURI(prefix);
+            }
+
+            public String getPrefix(String namespaceURI) {
                 return null;
             }
 
-            /**
-             * Resolves the given namespace prefix.
-             */
-            public String getNamespaceForPrefix(String prefix) {
-                if (resolver == null) {
-                    return null;
-                }
-                return resolver.lookupNamespaceURI(prefix);
-            }
-
-            /**
-             * Resolves the given namespace prefix.
-             */
-            public String getNamespaceForPrefix(String prefix, Node context) {
-                // ignore the context node
-                if (resolver == null) {
-                    return null;
-                }
-                return resolver.lookupNamespaceURI(prefix);
-            }
-
-            /**
-             * Returns whether this PrefixResolver handles a null prefix.
-             */
-            public boolean handlesNullPrefixes() {
-                return false;
+            public Iterator getPrefixes(String namespaceURI) {
+                return null;
             }
         }
     }

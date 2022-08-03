@@ -18,19 +18,21 @@
  */
 package org.apache.batik.bridge.svg12;
 
-import java.util.ArrayList;
-
-import org.apache.xml.utils.PrefixResolver;
-import org.apache.xpath.XPath;
-import org.apache.xpath.XPathContext;
-
 import org.apache.batik.anim.dom.XBLOMContentElement;
 import org.apache.batik.dom.AbstractDocument;
-
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.xpath.XPathException;
+
+import javax.xml.namespace.NamespaceContext;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * A class to handle the XPath Pattern syntax for XBL content elements.
@@ -48,12 +50,7 @@ public class XPathPatternContentSelector extends AbstractContentSelector {
     /**
      * The XPath expression.
      */
-    protected XPath xpath;
-
-    /**
-     * The XPath context.
-     */
-    protected XPathContext context;
+    protected XPathExpression xpath;
 
     /**
      * The selected nodes.
@@ -81,10 +78,11 @@ public class XPathPatternContentSelector extends AbstractContentSelector {
      * Parses the XPath selector.
      */
     protected void parse() {
-        context = new XPathContext();
         try {
-            xpath = new XPath(expression, null, prefixResolver, XPath.MATCH);
-        } catch (javax.xml.transform.TransformerException te) {
+            XPath xPathAPI = XPathFactory.newInstance().newXPath();
+            xPathAPI.setNamespaceContext(prefixResolver);
+            xpath = xPathAPI.compile(expression);
+        } catch (XPathExpressionException te) {
             AbstractDocument doc
                 = (AbstractDocument) contentElement.getOwnerDocument();
             throw doc.createXPathException
@@ -173,9 +171,8 @@ public class XPathPatternContentSelector extends AbstractContentSelector {
         protected void update(Node n) {
             if (!isSelected(n)) {
                 try {
-                    double matchScore
-                        = xpath.execute(context, n, prefixResolver).num();
-                    if (matchScore != XPath.MATCH_SCORE_NONE) {
+                    Double matchScore = (Double) xpath.evaluate(n, XPathConstants.NUMBER);
+                    if (matchScore != null) {
                         if (!descendantSelected(n)) {
                             nodes.add(n);
                         }
@@ -186,7 +183,7 @@ public class XPathPatternContentSelector extends AbstractContentSelector {
                             n = n.getNextSibling();
                         }
                     }
-                } catch (javax.xml.transform.TransformerException te) {
+                } catch (XPathExpressionException te) {
                     AbstractDocument doc
                         = (AbstractDocument) contentElement.getOwnerDocument();
                     throw doc.createXPathException
@@ -217,36 +214,20 @@ public class XPathPatternContentSelector extends AbstractContentSelector {
     /**
      * Xalan prefix resolver.
      */
-    protected class NSPrefixResolver implements PrefixResolver {
-
+    protected class NSPrefixResolver implements NamespaceContext {
         /**
-         * Get the base URI for this resolver.  Since this resolver isn't
-         * associated with a particular node, returns null.
+         * Resolves the given namespace prefix.
          */
-        public String getBaseIdentifier() {
+        public String getNamespaceURI(String prefix) {
+            return contentElement.lookupNamespaceURI(prefix);
+        }
+
+        public String getPrefix(String namespaceURI) {
             return null;
         }
 
-        /**
-         * Resolves the given namespace prefix.
-         */
-        public String getNamespaceForPrefix(String prefix) {
-            return contentElement.lookupNamespaceURI(prefix);
-        }
-
-        /**
-         * Resolves the given namespace prefix.
-         */
-        public String getNamespaceForPrefix(String prefix, Node context) {
-            // ignore the context node
-            return contentElement.lookupNamespaceURI(prefix);
-        }
-
-        /**
-         * Returns whether this PrefixResolver handles a null prefix.
-         */
-        public boolean handlesNullPrefixes() {
-            return false;
+        public Iterator getPrefixes(String namespaceURI) {
+            return null;
         }
     }
 }
