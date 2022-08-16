@@ -20,6 +20,9 @@ package org.apache.batik.bridge;
 
 import org.apache.batik.util.ParsedURL;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 /**
  * Default implementation for the <code>ExternalResourceSecurity</code> interface.
  * It allows all types of external resources to be loaded, but only if they
@@ -81,6 +84,13 @@ public class DefaultExternalResourceSecurity implements ExternalResourceSecurity
         } else {
             String docHost    = docURL.getHost();
             String externalResourceHost = externalResourceURL.getHost();
+            if (externalResourceHost == null && !DATA_PROTOCOL.equals(externalResourceURL.getProtocol())) {
+                try {
+                    externalResourceHost = new URI(externalResourceURL.getPath()).getHost();
+                } catch (URISyntaxException e) {
+                    throw new RuntimeException(e);
+                }
+            }
             
             if ((docHost != externalResourceHost) &&
                 ((docHost == null) || (!docHost.equals(externalResourceHost)))){
