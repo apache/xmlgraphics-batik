@@ -21,6 +21,7 @@
     <java.version>1.7</java.version>
     <junit.version>4.11</junit.version>
     <jython.version>2.7.0</jython.version>
+    <bnd.version>6.2.0</bnd.version>
     <org.slf4j.simpleLogger.defaultLogLevel>error</org.slf4j.simpleLogger.defaultLogLevel>
     <project.info.reports.version>2.8</project.info.reports.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -144,6 +145,31 @@
             <includeResources>false</includeResources>
           </configuration>
         </plugin>
+        <plugin>
+          <groupId>biz.aQute.bnd</groupId>
+          <artifactId>bnd-maven-plugin</artifactId>
+          <version>${bnd.version}</version>
+          <extensions>true</extensions>
+          <configuration>
+            <bnd><![CDATA[
+            Bundle-SymbolicName: ${groupId}.${artifactId}
+            -includeresource.shared: META-INF/=${project.parent.basedir}/batik-shared-resources/src/main/resources/
+            Import-Package: \
+              com.apple.eawt.*;resolution=optional,\
+              org.python.*;resolution=optional,\
+              org.mozilla.*;resolution=optional,\
+              *
+            ]]></bnd>
+        </configuration>
+          <executions>
+            <execution>
+              <id>jar</id>
+              <goals>
+                <goal>jar</goal>
+              </goals>
+            </execution>
+        </executions>
+      </plugin>
       </plugins>
     </pluginManagement>
   </build>
@@ -199,5 +225,15 @@
       <url>${project.baseUri}</url>
     </site>
   </distributionManagement>
+  
+  <dependencies>
+    <!-- Build-Time-Dependencies -->
+    <dependency>
+      <groupId>biz.aQute.bnd</groupId>
+      <artifactId>biz.aQute.bnd.annotation</artifactId>
+      <version>${bnd.version}</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
 
 </project>

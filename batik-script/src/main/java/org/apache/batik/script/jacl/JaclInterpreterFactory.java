@@ -20,21 +20,28 @@ package org.apache.batik.script.jacl;
 
 import java.net.URL;
 
+import org.apache.batik.ext.awt.image.spi.RegistryEntry;
 import org.apache.batik.script.ImportInfo;
 import org.apache.batik.script.Interpreter;
 import org.apache.batik.script.InterpreterFactory;
+import org.apache.batik.script.jpython.JPythonInterpreterFactory;
+
+import aQute.bnd.annotation.spi.ServiceProvider;
 
 /**
  * Allows to create instances of <code>JaclInterpreter</code> class.
  * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>
  * @version $Id$
  */
+@ServiceProvider(value = InterpreterFactory.class, attribute = { "mimeTypes:List<String>='"
+		+ JaclInterpreterFactory.MIMETYPE_TEXT_PYTHON + "'" })
 public class JaclInterpreterFactory implements InterpreterFactory {
 
-    /**
+    private static final String MIMETYPE_TEXT_TCL = "text/tcl";
+	/**
      * The MIME types that jacl can handle.
      */
-    public static final String[] JACL_MIMETYPES = { "text/tcl" };
+    public static final String[] JACL_MIMETYPES = { MIMETYPE_TEXT_TCL };
 
     /**
      * Builds a <code>JaclInterpreterFactory</code>.

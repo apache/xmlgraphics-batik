@@ -18,18 +18,35 @@
  */
 package org.apache.batik.ext.awt.image.codec.imageio;
 
+import org.apache.batik.ext.awt.image.spi.RegistryEntry;
+
+import aQute.bnd.annotation.spi.ServiceProvider;
+
 /**
  * RegistryEntry implementation for loading JPEG images through Image I/O.
  *
  * @version $Id$
  */
+@ServiceProvider(value = RegistryEntry.class, attribute = {
+		"mimeTypes:List<String>='" + ImageIOJPEGRegistryEntry.MIMETYPE_IMAGE_JPEG + ","
+				+ ImageIOJPEGRegistryEntry.MIMETYPE_IMAGE_JPG + "'",
+		"extensions:List<String>='" + ImageIOJPEGRegistryEntry.EXTENSION_JPG + "," + ImageIOJPEGRegistryEntry.EXTENSION_JPEG
+				+ "'" })
 public class ImageIOJPEGRegistryEntry 
     extends AbstractImageIORegistryEntry {
 
-    static final byte [] sigJPEG   = {(byte)0xFF, (byte)0xd8, 
+	protected static final String EXTENSION_JPG = "jpg";
+	
+	protected static final String EXTENSION_JPEG = "jpeg";
+	
+	protected static final String MIMETYPE_IMAGE_JPG = "image/jpg";
+	
+	protected static final String MIMETYPE_IMAGE_JPEG = "image/jpeg";
+	
+	static final byte [] sigJPEG   = {(byte)0xFF, (byte)0xd8, 
                                       (byte)0xFF};
-    static final String [] exts      = {"jpeg", "jpg" };
-    static final String [] mimeTypes = {"image/jpeg", "image/jpg" };
+    static final String [] exts      = {EXTENSION_JPEG, EXTENSION_JPG };
+    static final String [] mimeTypes = {MIMETYPE_IMAGE_JPEG, MIMETYPE_IMAGE_JPG };
     static final MagicNumber [] magicNumbers = {
         new MagicNumber(0, sigJPEG)
     };

@@ -31,9 +31,18 @@ import org.apache.batik.ext.awt.image.spi.ImageWriterParams;
  *
  * @version $Id$
  */
+// NOTE: the "codec" package is deprecated, there entries are kept here for compatibility with older JVM versions
+// (uses "sun.image", which is only supported in Sun Java implementations and was retired in JDK 7)
+//@ServiceProvider(value = ImageWriter.class, attribute = {
+//		"mimeType:String='" + PNGImageWriter.MIMETYPE_IMAGE_PNG + "'" ,
+//		"codec:String='" + PNGImageWriter.CODEC + "'" })
 public class PNGImageWriter implements ImageWriter {
 
-    /**
+    public static final String CODEC="Batik";
+
+	public static final String MIMETYPE_IMAGE_PNG = "image/png";
+
+	/**
      * @see ImageWriter#writeImage(java.awt.image.RenderedImage, java.io.OutputStream)
      */
     public void writeImage(RenderedImage image, OutputStream out)
@@ -54,6 +63,6 @@ public class PNGImageWriter implements ImageWriter {
      * @see ImageWriter#getMIMEType()
      */
     public String getMIMEType() {
-        return "image/png";
+        return MIMETYPE_IMAGE_PNG;
     }
 }

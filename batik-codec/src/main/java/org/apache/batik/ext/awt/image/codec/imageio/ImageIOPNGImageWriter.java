@@ -18,18 +18,27 @@
  */
 package org.apache.batik.ext.awt.image.codec.imageio;
 
+import javax.imageio.ImageWriter;
+
+import aQute.bnd.annotation.spi.ServiceProvider;
+
 /**
  * ImageWriter that encodes PNG images using Image I/O.
  *
  * @version $Id$
  */
+@ServiceProvider(value = ImageWriter.class, attribute = {
+	      "mimeType:String='" + ImageIOPNGImageWriter.MIMETYPE_IMAGE_PNG + "'" ,
+			"codec:String='" + ImageIOImageWriter.CODEC + "'" })
 public class ImageIOPNGImageWriter extends ImageIOImageWriter {
 
-    /**
+    public static final String MIMETYPE_IMAGE_PNG = "image/png";
+
+	/**
      * Main constructor.
      */
     public ImageIOPNGImageWriter() {
-        super("image/png");
+        super(MIMETYPE_IMAGE_PNG);
     }
     
 }

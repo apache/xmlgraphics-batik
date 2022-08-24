@@ -18,18 +18,27 @@
  */
 package org.apache.batik.ext.awt.image.codec.imageio;
 
+import javax.imageio.ImageWriter;
+
+import aQute.bnd.annotation.spi.ServiceProvider;
+
 /**
  * ImageWriter that encodes TIFF images using Image I/O.
  *
  * @version $Id$
  */
+@ServiceProvider(value = ImageWriter.class, attribute = {
+	      "mimeType:String='" + ImageIOTIFFImageWriter.MIMETYPE_IMAGE_TIFF + "'" ,
+			"codec:String='" + ImageIOImageWriter.CODEC + "'"  })
 public class ImageIOTIFFImageWriter extends ImageIOImageWriter {
 
-    /**
+    public static final String MIMETYPE_IMAGE_TIFF = "image/tiff";
+
+	/**
      * Main constructor.
      */
     public ImageIOTIFFImageWriter() {
-        super("image/tiff");
+        super(MIMETYPE_IMAGE_TIFF);
     }
 
 }

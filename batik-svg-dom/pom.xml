@@ -62,11 +62,6 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>batik-shared-resources</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
       <artifactId>batik-util</artifactId>
       <version>${project.version}</version>
     </dependency>
@@ -80,23 +75,15 @@
   <build>
     <plugins>
       <plugin>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <version>${dependency.version}</version><!--$NO-MVN-MAN-VER$-->
-        <executions>
-          <execution>
-            <id>unpack-shared-resources</id>
-            <phase>prepare-package</phase>
-            <goals>
-              <goal>unpack-dependencies</goal>
-            </goals>
-            <configuration>
-              <includeGroupIds>${project.groupId}</includeGroupIds>
-              <includeArtifactIds>batik-shared-resources</includeArtifactIds>
-              <includes>**/LICENSE,**/NOTICE</includes>
-              <outputDirectory>${project.build.outputDirectory}</outputDirectory>
-            </configuration>
-          </execution>
-        </executions>
+        <groupId>biz.aQute.bnd</groupId>
+        <artifactId>bnd-maven-plugin</artifactId>
+        <configuration>
+          <bnd><![CDATA[
+          Export-Package: \
+            org.apache.batik.dom.svg.*,\
+            org.apache.batik.dom.svg12.*
+          ]]></bnd>
+        </configuration>
       </plugin>
     </plugins>
   </build>

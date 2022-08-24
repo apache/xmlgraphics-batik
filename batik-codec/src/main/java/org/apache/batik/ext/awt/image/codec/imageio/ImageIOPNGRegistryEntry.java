@@ -18,19 +18,30 @@
  */
 package org.apache.batik.ext.awt.image.codec.imageio;
 
+import org.apache.batik.ext.awt.image.spi.RegistryEntry;
+
+import aQute.bnd.annotation.spi.ServiceProvider;
+
 /**
  * RegistryEntry implementation for loading PNG images through Image I/O.
  *
  * @version $Id$
  */
+@ServiceProvider(value = RegistryEntry.class, attribute = {
+		"mimeTypes:List<String>='" + ImageIOPNGRegistryEntry.MIMETYPE_IMAGE_PNG  + "'",
+		"extensions:List<String>='" + ImageIOPNGRegistryEntry.EXTENSION_PNG + "'" })
 public class ImageIOPNGRegistryEntry 
     extends AbstractImageIORegistryEntry {
 
 
-    static final byte [] signature = {(byte)0x89, 80, 78, 71, 13, 10, 26, 10};
+    protected static final String EXTENSION_PNG = "png";
+   
+	protected static final String MIMETYPE_IMAGE_PNG = "image/png";
+
+	static final byte [] signature = {(byte)0x89, 80, 78, 71, 13, 10, 26, 10};
 
     public ImageIOPNGRegistryEntry() {
-        super("PNG", "png", "image/png", 0, signature);
+        super("PNG", EXTENSION_PNG, MIMETYPE_IMAGE_PNG, 0, signature);
     }
 
 }

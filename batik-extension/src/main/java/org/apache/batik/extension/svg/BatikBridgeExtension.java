@@ -18,14 +18,16 @@
  */
 package org.apache.batik.extension.svg;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Arrays;
 
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeExtension;
 import org.w3c.dom.Element;
+
+import aQute.bnd.annotation.spi.ServiceProvider;
 
 /**
  * This is a Service interface for classes that want to extend the
@@ -34,6 +36,7 @@ import org.w3c.dom.Element;
  * @author <a href="mailto:thomas.deweese@kodak.com">Thomas DeWeese</a>
  * @version $Id$
  */
+@ServiceProvider(value = BridgeExtension.class)
 public class BatikBridgeExtension implements BridgeExtension {
 
     /**
