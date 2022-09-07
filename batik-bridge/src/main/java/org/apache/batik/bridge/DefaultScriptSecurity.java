@@ -83,6 +83,10 @@ public class DefaultScriptSecurity implements ScriptSecurity {
         } else {
             String docHost    = docURL.getHost();
             String scriptHost = scriptURL.getHost();
+
+            if (scriptHost == null && scriptURL.getPath() != null) {
+                scriptHost = new ParsedURL(scriptURL.getPath()).getHost();
+            }
             
             if ((docHost != scriptHost) &&
                 ((docHost == null) || (!docHost.equals(scriptHost)))) {
