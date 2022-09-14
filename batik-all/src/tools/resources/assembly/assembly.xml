@@ -17,6 +17,10 @@
         </excludes>
       </unpackOptions>
       <useTransitiveDependencies>false</useTransitiveDependencies>
+      <excludes>
+        <exclude>xml-apis:*</exclude>
+        <exclude>*:xmlgraphics-commons</exclude>
+      </excludes>      
     </dependencySet>
   </dependencySets>
 </assembly>
