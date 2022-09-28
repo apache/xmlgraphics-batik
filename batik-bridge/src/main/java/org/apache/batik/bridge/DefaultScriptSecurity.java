@@ -20,6 +20,8 @@ package org.apache.batik.bridge;
 
 import org.apache.batik.util.ParsedURL;
 
+import static org.apache.batik.util.SVGConstants.SVG_SCRIPT_TYPE_JAVA;
+
 /**
  * Default implementation for the <code>ScriptSecurity</code> interface.
  * It allows all types of scripts to be loaded, but only if they
@@ -76,7 +78,7 @@ public class DefaultScriptSecurity implements ScriptSecurity {
                                  ParsedURL docURL){
         // Make sure that the archives comes from the same host
         // as the document itself
-        if (docURL == null) {
+        if (docURL == null || SVG_SCRIPT_TYPE_JAVA.equals(scriptType)) {
             se = new SecurityException
                 (Messages.formatMessage(ERROR_CANNOT_ACCESS_DOCUMENT_URL,
                                         new Object[]{scriptURL}));
