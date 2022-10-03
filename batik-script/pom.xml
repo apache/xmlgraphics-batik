@@ -69,11 +69,6 @@
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>${compiler.version}</version><!--$NO-MVN-MAN-VER$-->
-        <configuration>
-          <excludes>
-            <exclude>**/jacl/*</exclude>
-          </excludes>
-        </configuration>
       </plugin>
       <plugin>
         <artifactId>maven-dependency-plugin</artifactId>
