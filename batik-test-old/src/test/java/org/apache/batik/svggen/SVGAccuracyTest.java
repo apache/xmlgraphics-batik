@@ -44,8 +44,14 @@ import org.apache.batik.test.DefaultTestReport;
 import org.apache.batik.test.TestReport;
 
 import org.apache.batik.dom.GenericDOMImplementation;
+import org.apache.commons.io.IOUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.DOMImplementation;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 /**
  * This test validates that a given rendering sequence, modeled
@@ -216,6 +222,10 @@ public class SVGAccuracyTest extends AbstractTest
 
         InputStream newStream = new ByteArrayInputStream(bos.toByteArray());
 
+        if (xmlEqual(bos.toByteArray())) {
+            return report;
+        }
+
         boolean accurate = true;
         String refLine = null;
         String newLine = null;
@@ -289,6 +299,20 @@ public class SVGAccuracyTest extends AbstractTest
         return report;
     }
 
+    private boolean xmlEqual(byte[] data) throws ParserConfigurationException, IOException, SAXException {
+        byte[] ref = IOUtils.toByteArray(refURL.openStream());
+        if (ref.length == 0) {
+            return false;
+        }
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder db = factory.newDocumentBuilder();
+        Document doc1 = db.parse(refURL.openStream());
+        doc1.normalizeDocument();
+        Document doc2 = db.parse(new ByteArrayInputStream(data));
+        doc2.normalizeDocument();
+        return doc1.isEqualNode(doc2);
+    }
+
     public int computeColumnNumber(String aStr, String bStr){
         if(aStr == null || bStr == null){
             return -1;
@@ -320,7 +344,7 @@ public class SVGAccuracyTest extends AbstractTest
         if(saveSVG == null){
             return;
         }
-
+        saveSVG.getParentFile().mkdirs();
         FileOutputStream os = new FileOutputStream(saveSVG);
         os.write(data);
         os.close();

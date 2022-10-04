@@ -424,6 +424,7 @@ public abstract class AbstractRenderingAccuracyTest extends AbstractTest {
         FileOutputStream tmpFileOS = null;
 
         try{
+            tmpFile.getParentFile().mkdirs();
             tmpFileOS = new FileOutputStream(tmpFile);
         }catch(IOException e){
             report.setErrorCode(ERROR_CANNOT_CREATE_TEMP_FILE_STREAM);
@@ -649,6 +650,7 @@ public abstract class AbstractRenderingAccuracyTest extends AbstractTest {
     protected void saveImage(BufferedImage img, File imgFile)
         throws IOException {
         if(!imgFile.exists()){
+            imgFile.getParentFile().mkdirs();
             imgFile.createNewFile();
         }
         OutputStream out = new FileOutputStream(imgFile);
