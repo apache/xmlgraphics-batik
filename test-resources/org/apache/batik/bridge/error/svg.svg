@@ -25,7 +25,7 @@
 <!-- @author vincent.hardy@eng.sun.com                                         -->
 <!-- @version $Id$ -->
 <!-- ========================================================================= -->
-<svg xmlns="http://www.w3.org/2000/svg" width="230" height="170"
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="230" height="170"
      viewBox="0 0 230 170" preserveAspectRatio="xMidYMin slice">
     <defs>
         <path id="SVG_S" d="M0,129.776l8.172-20.018c3.676,2.566,6.955,4.443,9.836,5.629c2.879,1.188,5.572,1.779,8.08,1.779c1.756,0,3.139-0.332,4.148-0.998c1.008-0.666,1.514-1.568,1.514-2.705c0-1.98-2.523-3.492-7.566-4.533
