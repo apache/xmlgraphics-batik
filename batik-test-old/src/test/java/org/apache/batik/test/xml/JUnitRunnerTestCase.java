@@ -616,7 +616,6 @@ public class JUnitRunnerTestCase {
 "jarCheckLoadSameAsDocument(scripts=application/java-archive)(scriptOrigin=document)(secure=true)",
 "jarCheckLoadSameAsDocument(scripts=application/java-archive)(scriptOrigin=document)(secure=false)",
 "jarCheckPermissionsGranted",
-"externalResourcesAccess.unsecure",
 "bridge/error/rect-negative-width",
 "bridge/error/clipPath-clipPathUnits-invalid",
 "bridge/error/clipPath-subelement-invalid",
