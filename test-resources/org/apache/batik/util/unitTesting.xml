@@ -33,123 +33,123 @@
 
     <test id="B64.1" class="org.apache.batik.util.Base64Test">
         <arg class="java.lang.String" value="ENCODE" />
-        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/zeroByte" />
-        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/zeroByte.64" />
+        <arg class="java.net.URL" value="file:batik-util/src/test/resources/org/apache/batik/util/zeroByte" />
+        <arg class="java.net.URL" value="file:batik-util/src/test/resources/org/apache/batik/util/zeroByte.64" />
     </test>
    <test id="B64.2" class="org.apache.batik.util.Base64Test">
         <arg class="java.lang.String" value="DECODE" />
-        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/zeroByte.64" />
-        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/zeroByte" />
+        <arg class="java.net.URL" value="file:batik-util/src/test/resources/org/apache/batik/util/zeroByte.64" />
+        <arg class="java.net.URL" value="file:batik-util/src/test/resources/org/apache/batik/util/zeroByte" />
     </test>
    <test id="B64.3" class="org.apache.batik.util.Base64Test">
-        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/zeroByte" />
+        <arg class="java.net.URL" value="file:batik-util/src/test/resources/org/apache/batik/util/zeroByte" />
     </test>
 
    <test id="B64.4" class="org.apache.batik.util.Base64Test">
         <arg class="java.lang.String" value="ENCODE" />
-        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/oneByte" />
-        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/oneByte.64" />
+        <arg class="java.net.URL" value="file:batik-util/src/test/resources/org/apache/batik/util/oneByte" />
+        <arg class="java.net.URL" value="file:batik-util/src/test/resources/org/apache/batik/util/oneByte.64" />
     </test>
    <test id="B64.5" class="org.apache.batik.util.Base64Test">
         <arg class="java.lang.String" value="DECODE" />
-        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/oneByte.64" />
-        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/oneByte" />
+        <arg class="java.net.URL" value="file:batik-util/src/test/resources/org/apache/batik/util/oneByte.64" />
+        <arg class="java.net.URL" value="file:batik-util/src/test/resources/org/apache/batik/util/oneByte" />
     </test>
    <test id="B64.6" class="org.apache.batik.util.Base64Test">
-        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/oneByte" />
+        <arg class="java.net.URL" value="file:batik-util/src/test/resources/org/apache/batik/util/oneByte" />
     </test>
 
    <test id="B64.7" class="org.apache.batik.util.Base64Test">
         <arg class="java.lang.String" value="ENCODE" />
-        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/twoByte" />
-        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/twoByte.64" />
+        <arg class="java.net.URL" value="file:batik-util/src/test/resources/org/apache/batik/util/twoByte" />
+        <arg class="java.net.URL" value="file:batik-util/src/test/resources/org/apache/batik/util/twoByte.64" />
     </test>
    <test id="B64.8" class="org.apache.batik.util.Base64Test">
         <arg class="java.lang.String" value="DECODE" />
-        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/twoByte.64" />
-        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/twoByte" />
+        <arg class="java.net.URL" value="file:batik-util/src/test/resources/org/apache/batik/util/twoByte.64" />
+        <arg class="java.net.URL" value="file:batik-util/src/test/resources/org/apache/batik/util/twoByte" />
     </test>
    <test id="B64.9" class="org.apache.batik.util.Base64Test">
-        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/twoByte" />
+        <arg class="java.net.URL" value="file:batik-util/src/test/resources/org/apache/batik/util/twoByte" />
     </test>
 
    <test id="B64.10" class="org.apache.batik.util.Base64Test">
         <arg class="java.lang.String" value="ENCODE" />
-        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/threeByte" />
-        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/threeByte.64" />
+        <arg class="java.net.URL" value="file:batik-util/src/test/resources/org/apache/batik/util/threeByte" />
+        <arg class="java.net.URL" value="file:batik-util/src/test/resources/org/apache/batik/util/threeByte.64" />
     </test>
    <test id="B64.11" class="org.apache.batik.util.Base64Test">
         <arg class="java.lang.String" value="DECODE" />
-        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/threeByte.64" />
-        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/threeByte" />
+        <arg class="java.net.URL" value="file:batik-util/src/test/resources/org/apache/batik/util/threeByte.64" />
+        <arg class="java.net.URL" value="file:batik-util/src/test/resources/org/apache/batik/util/threeByte" />
     </test>
    <test id="B64.12" class="org.apache.batik.util.Base64Test">
-        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/threeByte" />
+        <arg class="java.net.URL" value="file:batik-util/src/test/resources/org/apache/batik/util/threeByte" />
     </test>
 
    <test id="B64.13" class="org.apache.batik.util.Base64Test">
         <arg class="java.lang.String" value="ENCODE" />
-        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/fourByte" />
-        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/fourByte.64" />
+        <arg class="java.net.URL" value="file:batik-util/src/test/resources/org/apache/batik/util/fourByte" />
+        <arg class="java.net.URL" value="file:batik-util/src/test/resources/org/apache/batik/util/fourByte.64" />
     </test>
    <test id="B64.14" class="org.apache.batik.util.Base64Test">
         <arg class="java.lang.String" value="DECODE" />
-        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/fourByte.64" />
-        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/fourByte" />
+        <arg class="java.net.URL" value="file:batik-util/src/test/resources/org/apache/batik/util/fourByte.64" />
+        <arg class="java.net.URL" value="file:batik-util/src/test/resources/org/apache/batik/util/fourByte" />
     </test>
    <test id="B64.15" class="org.apache.batik.util.Base64Test">
-        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/fourByte" />
+        <arg class="java.net.URL" value="file:batik-util/src/test/resources/org/apache/batik/util/fourByte" />
     </test>
 
    <test id="B64.16" class="org.apache.batik.util.Base64Test">
         <arg class="java.lang.String" value="ENCODE" />
-        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/tenByte" />
-        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/tenByte.64" />
+        <arg class="java.net.URL" value="file:batik-util/src/test/resources/org/apache/batik/util/tenByte" />
+        <arg class="java.net.URL" value="file:batik-util/src/test/resources/org/apache/batik/util/tenByte.64" />
     </test>
    <test id="B64.17" class="org.apache.batik.util.Base64Test">
         <arg class="java.lang.String" value="DECODE" />
-        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/tenByte.64" />
-        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/tenByte" />
+        <arg class="java.net.URL" value="file:batik-util/src/test/resources/org/apache/batik/util/tenByte.64" />
+        <arg class="java.net.URL" value="file:batik-util/src/test/resources/org/apache/batik/util/tenByte" />
     </test>
    <test id="B64.18" class="org.apache.batik.util.Base64Test">
-        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/tenByte" />
+        <arg class="java.net.URL" value="file:batik-util/src/test/resources/org/apache/batik/util/tenByte" />
     </test>
 
    <test id="B64.19" class="org.apache.batik.util.Base64Test">
         <arg class="java.lang.String" value="ENCODE" />
-        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/small" />
-        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/small.64" />
+        <arg class="java.net.URL" value="file:batik-util/src/test/resources/org/apache/batik/util/small" />
+        <arg class="java.net.URL" value="file:batik-util/src/test/resources/org/apache/batik/util/small.64" />
     </test>
    <test id="B64.20" class="org.apache.batik.util.Base64Test">
         <arg class="java.lang.String" value="DECODE" />
-        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/small.64" />
-        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/small" />
+        <arg class="java.net.URL" value="file:batik-util/src/test/resources/org/apache/batik/util/small.64" />
+        <arg class="java.net.URL" value="file:batik-util/src/test/resources/org/apache/batik/util/small" />
     </test>
    <test id="B64.21" class="org.apache.batik.util.Base64Test">
-        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/small" />
+        <arg class="java.net.URL" value="file:batik-util/src/test/resources/org/apache/batik/util/small" />
     </test>
 
    <test id="B64.22" class="org.apache.batik.util.Base64Test">
         <arg class="java.lang.String" value="ENCODE" />
-        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/medium" />
-        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/medium.64" />
+        <arg class="java.net.URL" value="file:batik-util/src/test/resources/org/apache/batik/util/medium" />
+        <arg class="java.net.URL" value="file:batik-util/src/test/resources/org/apache/batik/util/medium.64" />
     </test>
    <test id="B64.23" class="org.apache.batik.util.Base64Test">
         <arg class="java.lang.String" value="DECODE" />
-        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/medium.64" />
-        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/medium" />
+        <arg class="java.net.URL" value="file:batik-util/src/test/resources/org/apache/batik/util/medium.64" />
+        <arg class="java.net.URL" value="file:batik-util/src/test/resources/org/apache/batik/util/medium" />
     </test>
    <test id="B64.24" class="org.apache.batik.util.Base64Test">
         <arg class="java.lang.String" value="DECODE" />
-        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/medium.pc.64" />
-        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/medium" />
+        <arg class="java.net.URL" value="file:batik-util/src/test/resources/org/apache/batik/util/medium.pc.64" />
+        <arg class="java.net.URL" value="file:batik-util/src/test/resources/org/apache/batik/util/medium" />
     </test>
    <test id="B64.25" class="org.apache.batik.util.Base64Test">
-        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/medium" />
+        <arg class="java.net.URL" value="file:batik-util/src/test/resources/org/apache/batik/util/medium" />
     </test>
 
    <test id="B64.26" class="org.apache.batik.util.Base64Test">
-        <arg class="java.net.URL" value="file:test-references/org/apache/batik/util/large" />
+        <arg class="java.net.URL" value="file:batik-util/src/test/resources/org/apache/batik/util/large" />
     </test>
 
 
