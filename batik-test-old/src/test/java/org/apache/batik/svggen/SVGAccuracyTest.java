@@ -304,9 +304,10 @@ public class SVGAccuracyTest extends AbstractTest
         if (ref.length == 0) {
             return false;
         }
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder db = factory.newDocumentBuilder();
-        Document doc1 = db.parse(refURL.openStream());
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        dbf.setNamespaceAware(true);
+        DocumentBuilder db = dbf.newDocumentBuilder();
+        Document doc1 = db.parse(new ByteArrayInputStream(ref));
         doc1.normalizeDocument();
         Document doc2 = db.parse(new ByteArrayInputStream(data));
         doc2.normalizeDocument();

@@ -134,7 +134,6 @@ public class JUnitRunnerTestCase {
     private static List<String> EXCLUDE = Arrays.asList(
 //fail on CI
 "Color1.renderingCheck",
-"Gradient.defaultContextGeneration",
 "Lookup.renderingCheck",
 "Rescale.renderingCheck",
 "TextSpacePreserve.renderingCheck",
