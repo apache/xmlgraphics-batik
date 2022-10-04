@@ -52,6 +52,7 @@ import org.apache.batik.bridge.RelaxedScriptSecurity;
 import org.apache.batik.bridge.ScriptSecurity;
 import org.apache.batik.bridge.UserAgentAdapter;
 import org.apache.batik.test.AbstractTest;
+import org.apache.batik.test.DefaultTestReport;
 import org.apache.batik.test.TestReport;
 import org.apache.batik.util.ApplicationSecurityEnforcer;
 import org.apache.batik.util.ParsedURL;
@@ -337,7 +338,13 @@ public class SVGOnLoadExceptionTest extends AbstractTest {
                                               "org/apache/batik/apps/svgbrowser/resources/svgbrowser.policy");
 
         if (secure) {
-            ase.enforceSecurity(true);
+            try {
+                ase.enforceSecurity(true);
+            } catch (UnsupportedOperationException e) {
+                if ("java.lang.SecurityException".equals(expectedExceptionClass)) {
+                    return new DefaultTestReport(this);
+                }
+            }
         }
 
         try {

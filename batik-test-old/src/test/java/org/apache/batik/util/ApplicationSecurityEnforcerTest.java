@@ -50,7 +50,11 @@ public class ApplicationSecurityEnforcerTest extends DefaultTestSuite {
             ApplicationSecurityEnforcer aseA
                 = buildTestTarget();
 
-            aseA.enforceSecurity(true);
+            try {
+                aseA.enforceSecurity(true);
+            } catch (UnsupportedOperationException e) {
+                return true;
+            }
 
             ApplicationSecurityEnforcer aseB
                 = buildTestTarget();
@@ -67,6 +71,8 @@ public class ApplicationSecurityEnforcerTest extends DefaultTestSuite {
                 } catch (SecurityException se2){
                     passed = true;
                 }
+            } catch (UnsupportedOperationException e) {
+
             }
 
             aseA.enforceSecurity(false);
@@ -82,9 +88,11 @@ public class ApplicationSecurityEnforcerTest extends DefaultTestSuite {
             try {
                 ase.enforceSecurity(true);
                 SecurityManager sm = System.getSecurityManager();
-                if (sm == ase.lastSecurityManagerInstalled){
+                if (sm == ase.lastSecurityManagerInstalled) {
                     return true;
                 }
+            } catch (UnsupportedOperationException e) {
+                return true;
             } finally {
                 System.setSecurityManager(null);
             }
@@ -98,7 +106,11 @@ public class ApplicationSecurityEnforcerTest extends DefaultTestSuite {
             ApplicationSecurityEnforcer ase = buildTestTarget();
 
             try {
-                ase.enforceSecurity(true);
+                try {
+                    ase.enforceSecurity(true);
+                } catch (UnsupportedOperationException e) {
+
+                }
                 ase.enforceSecurity(false);
                 SecurityManager sm = System.getSecurityManager();
                 if (sm == null && ase.lastSecurityManagerInstalled == null) {

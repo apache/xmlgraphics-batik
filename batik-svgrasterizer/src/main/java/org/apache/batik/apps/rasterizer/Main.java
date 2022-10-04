@@ -934,8 +934,10 @@ public class Main implements SVGConverterController {
         ApplicationSecurityEnforcer securityEnforcer =
             new ApplicationSecurityEnforcer(this.getClass(),
                                             RASTERIZER_SECURITY_POLICY);
-
-        securityEnforcer.enforceSecurity(!c.getSecurityOff());
+        try {
+            securityEnforcer.enforceSecurity(!c.getSecurityOff());
+        } catch (UnsupportedOperationException e) {
+        }
 
         String[] expandedSources = expandSources(sources);
 

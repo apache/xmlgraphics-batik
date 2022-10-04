@@ -42,9 +42,9 @@ public abstract class PerformanceTest extends AbstractTest {
     protected double referenceScore = -1;
 
     /**
-     * Allowed deviation from the reference score. 10% by default
+     * Allowed deviation from the reference score. 15% by default
      */
-    protected double allowedScoreDeviation = 0.1;
+    protected double allowedScoreDeviation = 0.15;
 
     /**
      * Score during last run

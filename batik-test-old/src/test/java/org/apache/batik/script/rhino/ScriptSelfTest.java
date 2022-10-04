@@ -81,7 +81,11 @@ public class ScriptSelfTest extends SelfContainedSVGOnLoadTest {
                                               "org/apache/batik/apps/svgbrowser/resources/svgbrowser.policy");
 
         if (secure) {
-            ase.enforceSecurity(true);
+            try {
+                ase.enforceSecurity(true);
+            } catch (UnsupportedOperationException e) {
+
+            }
         }
 
         try {

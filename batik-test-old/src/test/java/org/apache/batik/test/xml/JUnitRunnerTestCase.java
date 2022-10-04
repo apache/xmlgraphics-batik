@@ -122,6 +122,11 @@ public class JUnitRunnerTestCase {
         TestReport report = test.run();
         if (!report.hasPassed()) {
             System.out.println("Failed: " + id);
+            if (report.getDescription() != null) {
+                for (TestReport.Entry entry : report.getDescription()) {
+                    System.out.println(entry.getKey() + " " + entry.getValue());
+                }
+            }
         }
         Assert.assertTrue(id, report.hasPassed());
     }
