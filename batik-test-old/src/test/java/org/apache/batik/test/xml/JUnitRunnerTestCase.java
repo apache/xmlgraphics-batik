@@ -577,7 +577,6 @@ public class JUnitRunnerTestCase {
 "TransformCollapse.configuredContextGeneration",
 "TransformCollapse.renderingCheck",
 "TransformCollapse.ContextrenderingCheck",
-"ConfigErrorTest.ERROR_UNABLE_TO_CREATE_OUTPUT_DIR",
 "defaultTest",
 "org.apache.batik.util.ApplicationSecurityEnforcerTest$CheckNoPolicyFile",
 "B64.1",
@@ -616,9 +615,6 @@ public class JUnitRunnerTestCase {
 "jarCheckLoadSameAsDocument(scripts=application/java-archive)(scriptOrigin=document)(secure=true)",
 "jarCheckLoadSameAsDocument(scripts=application/java-archive)(scriptOrigin=document)(secure=false)",
 "jarCheckPermissionsGranted",
-"bridge/error/feMerge-feMergeNode-invalid",
-"bridge/error/filter-filterPrimitive-invalid",
-"bridge/error/pattern-subelement-invalid",
 // exclude additional failures appearing under JDK 1.8.0_152 on MacOS
 "Bug4389.renderingCheck",
 "Bug4389.ContextrenderingCheck",
