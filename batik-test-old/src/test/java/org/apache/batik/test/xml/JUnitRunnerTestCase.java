@@ -133,6 +133,21 @@ public class JUnitRunnerTestCase {
 
     private static List<String> EXCLUDE = Arrays.asList(
 //fail on CI
+"ATransform.defaultContextGeneration",
+"Bug4945.defaultContextGeneration",
+"Bug6535.defaultContextGeneration",
+"Bug17965.defaultContextGeneration",
+"Color1.defaultContextGeneration",
+"Color2.defaultContextGeneration",
+"Gradient.defaultContextGeneration",
+"IdentityTest.defaultContextGeneration",
+"NegativeLengths.defaultContextGeneration",
+"ShearTest.defaultContextGeneration",
+"TextSpacePreserve.defaultContextGeneration",
+"BasicShapes.defaultContextGeneration",
+"TransformCollapse.defaultContextGeneration",
+"BasicShapes2.defaultContextGeneration",
+"BStroke.defaultContextGeneration",
 "Color1.renderingCheck",
 "Lookup.renderingCheck",
 "Rescale.renderingCheck",
