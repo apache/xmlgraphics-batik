@@ -20,6 +20,9 @@ package org.apache.batik.script.rhino;
 
 import org.mozilla.javascript.ClassShutter;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Class shutter that restricts access to Batik internals from script.
  *
@@ -27,6 +30,7 @@ import org.mozilla.javascript.ClassShutter;
  * @version $Id$
  */
 public class RhinoClassShutter implements ClassShutter {
+    private static final List<String> WHITELIST = Arrays.asList("java.io.PrintStream", "java.lang.System", "java.net.URL");
 
     /*
     public RhinoClassShutter() {
@@ -55,6 +59,10 @@ public class RhinoClassShutter implements ClassShutter {
      * Returns whether the given class is visible to scripts.
      */
     public boolean visibleToScripts(String fullClassName) {
+        if (fullClassName.startsWith("java.") && !WHITELIST.contains(fullClassName) && !fullClassName.endsWith("Permission")) {
+            return false;
+        }
+
         // Don't let them mess with script engine's internals.
         if (fullClassName.startsWith("org.mozilla.javascript"))
             return false;
