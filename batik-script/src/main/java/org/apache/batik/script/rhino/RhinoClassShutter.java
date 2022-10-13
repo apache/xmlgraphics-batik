@@ -59,7 +59,7 @@ public class RhinoClassShutter implements ClassShutter {
      * Returns whether the given class is visible to scripts.
      */
     public boolean visibleToScripts(String fullClassName) {
-        if (fullClassName.startsWith("java.") && !WHITELIST.contains(fullClassName) && !fullClassName.endsWith("Permission")) {
+        if (!WHITELIST.contains(fullClassName) && !fullClassName.endsWith("Permission") && !fullClassName.startsWith("org.")) {
             return false;
         }
 
