@@ -84,7 +84,7 @@ To display the available targets type:
     <property name="Project"            value="Apache Batik" />
     <property name="project"            value="batik" />
     <property name="year"               value="2022" />
-    <property name="version"            value="1.15.0-SNAPSHOT" />
+    <property name="version"            value="1.16.0-SNAPSHOT" />
     <property name="revisionType"       value="" />
     <property name="revisionNumber"     value="" />
     <property name="completeVersion"    value="${version}${revisionType}${revisionNumber}" />
