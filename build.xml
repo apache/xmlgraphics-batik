@@ -88,8 +88,8 @@ To display the available targets type:
     <property name="revisionType"       value="" />
     <property name="revisionNumber"     value="" />
     <property name="completeVersion"    value="${version}${revisionType}${revisionNumber}" />
-    <property name="xgcVersion"         value="2.8.0-SNAPSHOT" />
-    <property name="fopVersion"         value="2.8.0-SNAPSHOT" />
+    <property name="xgcVersion"         value="2.7" />
+    <property name="fopVersion"         value="2.7" />
     <property name="vendor"             value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)" />
     <property name="debug"              value="on"/>
     <property name="optimize"           value="on"/>
