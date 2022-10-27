@@ -20,6 +20,7 @@ package org.apache.batik.script.rhino;
 
 import org.mozilla.javascript.ClassShutter;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,7 +31,10 @@ import java.util.List;
  * @version $Id$
  */
 public class RhinoClassShutter implements ClassShutter {
-    private static final List<String> WHITELIST = Arrays.asList("java.io.PrintStream", "java.lang.System", "java.net.URL");
+    public static final List<String> WHITELIST = new ArrayList<>();
+    static {
+        WHITELIST.addAll(Arrays.asList("java.io.PrintStream", "java.lang.System", "java.net.URL"));
+    }
 
     /*
     public RhinoClassShutter() {

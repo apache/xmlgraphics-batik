@@ -24,6 +24,10 @@ import org.junit.Test;
 public class RhinoClassShutterTest {
     @Test
     public void testImports() {
-        Assert.assertFalse(new RhinoClassShutter().visibleToScripts("java.lang.Runtime"));
+        String runtimeClass = "java.lang.Runtime";
+        Assert.assertFalse(new RhinoClassShutter().visibleToScripts(runtimeClass));
+        RhinoClassShutter.WHITELIST.add(runtimeClass);
+        Assert.assertTrue(new RhinoClassShutter().visibleToScripts(runtimeClass));
+        RhinoClassShutter.WHITELIST.remove(runtimeClass);
     }
 }
