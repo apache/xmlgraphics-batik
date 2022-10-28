@@ -29,5 +29,6 @@ public class RhinoClassShutterTest {
         RhinoClassShutter.WHITELIST.add(runtimeClass);
         Assert.assertTrue(new RhinoClassShutter().visibleToScripts(runtimeClass));
         RhinoClassShutter.WHITELIST.remove(runtimeClass);
+        Assert.assertFalse(new RhinoClassShutter().visibleToScripts("org.x"));
     }
 }
