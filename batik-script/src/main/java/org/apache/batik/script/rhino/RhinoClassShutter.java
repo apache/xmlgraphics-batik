@@ -32,11 +32,6 @@ import java.util.List;
  */
 public class RhinoClassShutter implements ClassShutter {
     public static final List<String> WHITELIST = new ArrayList<>();
-    static {
-        WHITELIST.addAll(Arrays.asList("java.io.PrintStream", "java.lang.System", "java.net.URL", ".*Permission",
-                "org.w3c.dom.*", "org.apache.batik.w3c.*", "org.apache.batik.anim.*", "org.apache.batik.dom.*",
-                "org.apache.batik.css.*"));
-    }
 
     /*
     public RhinoClassShutter() {

@@ -18,6 +18,7 @@
  */
 package org.apache.batik.test.xml;
 
+import org.apache.batik.script.rhino.RhinoClassShutter;
 import org.apache.batik.test.DefaultTestSuite;
 import org.apache.batik.test.Test;
 import org.apache.batik.test.TestException;
@@ -57,6 +58,9 @@ public class JUnitRunnerTestCase {
         fos.close();
         tmp.deleteOnExit();
         System.setProperty("java.security.policy", tmp.getAbsolutePath());
+        RhinoClassShutter.WHITELIST.addAll(Arrays.asList("java.io.PrintStream", "java.lang.System", "java.net.URL",
+                ".*Permission", "org.w3c.dom.*", "org.apache.batik.w3c.*", "org.apache.batik.anim.*",
+                "org.apache.batik.dom.*", "org.apache.batik.css.*"));
     }
 
     @Parameterized.Parameters
