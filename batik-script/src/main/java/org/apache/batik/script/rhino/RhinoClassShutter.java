@@ -21,7 +21,6 @@ package org.apache.batik.script.rhino;
 import org.mozilla.javascript.ClassShutter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
