@@ -77,6 +77,9 @@ public class DefaultExternalResourceSecurity implements ExternalResourceSecurity
                                            ParsedURL docURL){
         // Make sure that the archives comes from the same host
         // as the document itself
+        if (DATA_PROTOCOL.equals(externalResourceURL.getProtocol())) {
+            return;
+        }
         if (docURL == null) {
             se = new SecurityException
                 (Messages.formatMessage(ERROR_CANNOT_ACCESS_DOCUMENT_URL,

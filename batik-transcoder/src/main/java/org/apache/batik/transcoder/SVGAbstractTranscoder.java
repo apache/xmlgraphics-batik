@@ -32,11 +32,11 @@ import org.apache.batik.anim.dom.SVGOMDocument;
 import org.apache.batik.bridge.BaseScriptingEnvironment;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeException;
+import org.apache.batik.bridge.DefaultExternalResourceSecurity;
 import org.apache.batik.bridge.DefaultScriptSecurity;
 import org.apache.batik.bridge.ExternalResourceSecurity;
 import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.bridge.NoLoadScriptSecurity;
-import org.apache.batik.bridge.NoLoadExternalResourceSecurity;
 import org.apache.batik.bridge.RelaxedScriptSecurity;
 import org.apache.batik.bridge.SVGUtilities;
 import org.apache.batik.bridge.ScriptSecurity;
@@ -1118,7 +1118,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
             if (isAllowExternalResources()) {
                 return super.getExternalResourceSecurity(resourceURL, docURL);
             }
-            return new NoLoadExternalResourceSecurity();
+            return new DefaultExternalResourceSecurity(resourceURL, docURL);
         }
 
         public boolean isAllowExternalResources() {
@@ -1126,7 +1126,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
             if (b != null) {
                 return b;
             }
-            return true;
+            return false;
         }
     }
 }
