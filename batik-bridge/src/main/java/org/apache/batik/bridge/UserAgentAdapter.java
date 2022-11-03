@@ -362,7 +362,7 @@ public class UserAgentAdapter implements UserAgent {
     public ExternalResourceSecurity 
         getExternalResourceSecurity(ParsedURL resourceURL,
                                     ParsedURL docURL) {
-        return new RelaxedExternalResourceSecurity(resourceURL, docURL);
+        return new DefaultExternalResourceSecurity(resourceURL, docURL);
     }
     
     /**
