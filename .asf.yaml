@@ -1,0 +1,12 @@
+github:
+  description: "Apache XML Graphics Batik"
+  homepage: https://xmlgraphics.apache.org/batik/
+  labels:
+    - batik
+    - apache
+
+notifications:
+  commits:      commits@xmlgraphics.apache.org
+  issues:       batik-dev@xmlgraphics.apache.org
+  pullrequests: batik-dev@xmlgraphics.apache.org
+  jira_options: link label
