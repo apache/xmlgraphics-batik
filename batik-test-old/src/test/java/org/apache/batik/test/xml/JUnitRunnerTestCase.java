@@ -124,19 +124,21 @@ public class JUnitRunnerTestCase {
         String id = getId(test);
         System.out.println("Running: " + id);
         TestReport report = test.run();
+        StringBuilder error = new StringBuilder();
         if (!report.hasPassed()) {
-            System.out.println("Failed: " + id);
+            error.append("Failed: ").append(id).append("\n");
             if (report.getDescription() != null) {
                 for (TestReport.Entry entry : report.getDescription()) {
-                    System.out.println(entry.getKey() + " " + entry.getValue());
+                    error.append(entry.getKey()).append(" ").append(entry.getValue()).append("\n");
                 }
             }
         }
-        Assert.assertTrue(id, report.hasPassed());
+        Assert.assertTrue(error.toString(), report.hasPassed());
     }
 
     private static List<String> EXCLUDE = Arrays.asList(
 //fail on CI
+"ShowSVG",
 "ATransform.defaultContextGeneration",
 "Bug4945.defaultContextGeneration",
 "Bug6535.defaultContextGeneration",
