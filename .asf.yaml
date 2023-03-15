@@ -7,6 +7,6 @@ github:
 
 notifications:
   commits:      commits@xmlgraphics.apache.org
-  issues:       batik-dev@xmlgraphics.apache.org
-  pullrequests: batik-dev@xmlgraphics.apache.org
+  # issues:       batik-dev@xmlgraphics.apache.org
+  # pullrequests: batik-dev@xmlgraphics.apache.org
   jira_options: link label
