@@ -23,8 +23,11 @@ import java.awt.Color;
 import java.awt.Paint;
 import java.awt.Shape;
 import java.awt.Stroke;
+import java.awt.color.ColorSpace;
 import java.awt.color.ICC_Profile;
 import java.io.IOException;
+
+import org.apache.batik.svggen.SimpleCMYKColorSpace;
 
 import org.apache.batik.css.engine.SVGCSSEngine;
 import org.apache.batik.css.engine.value.Value;
@@ -430,6 +433,23 @@ public abstract class PaintServer
         if (iccProfileName == null){
             return null;
         }
+
+        // START PATCH to support CMYK CR-756. If we would proceed here
+        // normal, batik would look up a ICC Color profile which does
+        // not exist and convert the CMYK values to RGB. To properly
+        // pass through the CMYK values to the formats when reading
+        // SVGs we have to use the Assentis ColorSpace
+        if("#CMYK".equalsIgnoreCase(iccProfileName) && c.getNumberOfColors() >= 4 ){
+
+            ColorSpace cmyk_cs = SimpleCMYKColorSpace.getInstance();
+            float alpha = 1.0f;
+            if(c.getNumberOfColors() > 4){
+                alpha = c.getColor(4);
+            }
+            return new java.awt.Color(cmyk_cs, new float[] {c.getColor(0), c.getColor(1), c.getColor(2), c.getColor(3)}, alpha);
+        }
+        //END PATCH
+
         // Ask the bridge to map the ICC profile name to an  ICC_Profile object
         SVGColorProfileElementBridge profileBridge
             = (SVGColorProfileElementBridge)
@@ -630,8 +650,8 @@ public abstract class PaintServer
             // negative values
             if ( dashoffset < 0 ) {
                 float dashpatternlength = 0;
-                for (float aDasharray : dasharray) {
-                    dashpatternlength += aDasharray;
+                for ( int i=0; i<dasharray.length; i++ ) {
+                    dashpatternlength += dasharray[i];
                 }
                 // if the dash pattern consists of an odd number of elements,
                 // the pattern length must be doubled
@@ -737,7 +757,7 @@ public abstract class PaintServer
     /////////////////////////////////////////////////////////////////////////
 
     /**
-     * Returns the value of one color component (0 &lt;= result &lt;= 255).
+     * Returns the value of one color component (0 <= result <= 255).
      * @param v the value that defines the color component
      */
     public static int resolveColorComponent(Value v) {

@@ -1,0 +1,33 @@
+pool:
+  vmImage: ubuntu-22.04
+
+variables:
+  - group: pipeline-secrets
+  - name: version
+    value: 1.16-assentis-1 # Carefully review before PR
+
+steps:
+  # branch builds are doing branch specific SNAPSHOT
+- template: templates/maven.yml
+  parameters:
+    displayName: branch build
+    revision: $(version)-$(Build.SourceBranchName)-SNAPSHOT
+    goals: deploy
+    condition: and(not(startsWith(variables['Build.SourceBranch'], 'refs/pull')), ne(variables['Build.SourceBranch'], 'refs/heads/batik-1_14-assentis'))
+
+  # pull request builds are executing only the install maven goal
+- template: templates/maven.yml
+  parameters:
+    displayName: pullrequest build
+    revision: $(version)-SNAPSHOT
+    condition: startsWith(variables['Build.SourceBranch'], 'refs/pull')
+
+  # master build is doing a release (no SNAPSHOT set). This requires to properly update the version 
+  # in this pipeline step each time one wants to do a release...
+- template: templates/maven.yml
+  parameters:
+    displayName: release build
+    revision: $(version)
+    goals: deploy
+    profiles: azure,release
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/batik-1_14-assentis')

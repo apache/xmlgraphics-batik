@@ -186,7 +186,7 @@ public abstract class ImageCacher implements SVGSyntax, ErrorConstants {
      * set of images processed by the ImageHandler. Each entry
      * corresponds to one unique member of this set.
      */
-    private static class ImageCacheEntry {
+    private class ImageCacheEntry {
 
         /** A checksum calculated for the data cached */
         public int checksum;

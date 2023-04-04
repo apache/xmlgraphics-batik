@@ -1,0 +1,31 @@
+parameters:
+  displayName: Maven
+  condition: true
+  mavenPomFile: pom.xml
+  publishJUnitResults: false
+  testResultsFiles: '**/TEST-*.xml'
+  testCoverageTool: None
+  revision: ''
+  goals: install
+  profiles: 'azure,development'
+  additionalOptions: ''
+  jdkVersion: '1.8'
+  mavenXmx: '4G'
+
+steps:
+- task: Maven@3
+  displayName: ${{ parameters.displayName }}
+  condition: ${{ parameters.condition }}
+  inputs:
+    mavenPomFile: ${{ parameters.mavenPomFile }}
+    mavenOptions: '-Xmx${{ parameters.mavenXmx }} -XX:+TieredCompilation -XX:TieredStopAtLevel=1'
+    jdkVersion: ${{ parameters.jdkVersion }}
+    publishJUnitResults: ${{ parameters.publishJUnitResults }}
+    testResultsFiles: ${{ parameters.testResultsFiles }}
+    codeCoverageToolOption: ${{ parameters.testCoverageTool }}
+    goals: ${{ parameters.goals }}
+    options: >-
+      -B -s azure/settings.xml
+      -Drevision=${{ parameters.revision }} -P${{ parameters.profiles }}
+      -Dazure.nexus.user=$(azure-nexus-user) -Dazure.nexus.password=$(azure-nexus-password)
+      ${{ parameters.additionalOptions }}

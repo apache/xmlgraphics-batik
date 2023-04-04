@@ -1,5 +1,16 @@
+13 lines (10 sloc)  92 Bytes
+ 
+
 *~
+.idea
+*.iml
+
 .classpath
 .project
 .settings
+
 target
+.flattened-pom.xml
+
+.mvn/*
+!.mvn/.keep

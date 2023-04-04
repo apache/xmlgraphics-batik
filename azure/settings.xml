@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+    <servers>
+        <server>
+            <id>sc-maven-plugins</id>
+            <username>${azure.nexus.user}</username>
+            <password>${azure.nexus.password}</password>
+        </server>
+        <server>
+            <id>sc-all-3rdparty</id>
+            <username>${azure.nexus.user}</username>
+            <password>${azure.nexus.password}</password>
+        </server>
+        <server>
+            <id>thirdparty</id>
+            <username>${azure.nexus.user}</username>
+            <password>${azure.nexus.password}</password>
+        </server>
+    </servers>
+
+    <profiles>
+        <profile>
+            <id>azure</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <repositories>
+                <repository>
+                    <id>apache.snapshots.https</id>
+                    <url>https://repository.apache.org/content/repositories/snapshots</url>
+                    <snapshots>
+                        <enabled>true</enabled>
+                        <updatePolicy>always</updatePolicy>
+                    </snapshots>
+                </repository>
+                <!-- assentis cloud repos -->
+                <repository>
+                    <id>sc-all-3rdparty</id>
+                    <url>https://appservice-nexus.azurewebsites.net/repository/sc-all-3rdparty/</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                </repository>
+            </repositories>
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>sc-maven-plugins</id>
+                    <url>https://appservice-nexus.azurewebsites.net/repository/sc-maven-plugins/</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                </pluginRepository>
+            </pluginRepositories>
+        </profile>
+    </profiles>
+</settings>
