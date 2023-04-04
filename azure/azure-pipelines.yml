@@ -13,7 +13,7 @@ steps:
     displayName: branch build
     revision: $(version)-$(Build.SourceBranchName)-SNAPSHOT
     goals: deploy
-    condition: and(not(startsWith(variables['Build.SourceBranch'], 'refs/pull')), ne(variables['Build.SourceBranch'], 'refs/heads/batik-1_14-assentis'))
+    condition: and(not(startsWith(variables['Build.SourceBranch'], 'refs/pull')), ne(variables['Build.SourceBranch'], 'refs/heads/batik-1_16-assentis'))
 
   # pull request builds are executing only the install maven goal
 - template: templates/maven.yml
@@ -30,4 +30,4 @@ steps:
     revision: $(version)
     goals: deploy
     profiles: azure,release
-    condition: eq(variables['Build.SourceBranch'], 'refs/heads/batik-1_14-assentis')
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/batik-1_16-assentis')
