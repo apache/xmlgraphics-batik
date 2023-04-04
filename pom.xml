@@ -144,6 +144,17 @@
             <includeResources>false</includeResources>
           </configuration>
         </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <configuration>
+            <source>8</source>
+            <doclint>none</doclint>
+            <sourceFileExcludes>
+              <sourceFileExclude>**/jacl/*.java</sourceFileExclude>
+            </sourceFileExcludes>
+          </configuration>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
