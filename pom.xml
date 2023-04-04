@@ -13,7 +13,7 @@
   <inceptionYear>2000</inceptionYear>
 
   <properties>
-    <revision>1.14-assentis-SNAPSHOT</revision>
+    <revision>1.16-assentis-SNAPSHOT</revision>
     <checkstyle.version>2.15</checkstyle.version>
     <compiler.version>3.3</compiler.version>
     <dependency.version>3.1.1</dependency.version>

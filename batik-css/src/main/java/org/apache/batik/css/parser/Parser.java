@@ -383,7 +383,7 @@ public class Parser implements ExtendedParser, Localizable {
         case LexicalUnits.IMPORT_SYMBOL:
             return true;
         default:
-            reportError("token", new Object[] {current});
+            reportError("token", new Object[] { new Integer(current) });
             return false;
         }
     }
@@ -920,7 +920,7 @@ public class Parser implements ExtendedParser, Localizable {
                 if (current == LexicalUnits.RIGHT_BRACE) {
                     if (op) {
                         throw createCSSParseException
-                            ("token", new Object[] {current});
+                            ("token", new Object[] { new Integer(current) });
                     }
                     return result;
                 }
@@ -932,8 +932,7 @@ public class Parser implements ExtendedParser, Localizable {
                 case LexicalUnits.RIGHT_CURLY_BRACE:
                 case LexicalUnits.EOF:
                     if (op) {
-                        throw createCSSParseException
-                            ("token", new Object[] {current});
+                        throw createCSSParseException("token", new Object[] { new Integer(current) });
                     }
                     return result;
                 default:
@@ -1030,8 +1029,7 @@ public class Parser implements ExtendedParser, Localizable {
             }
             if (sgn) {
                 throw createCSSParseException
-                    ("token",
-                     new Object[] {current});
+                    ("token", new Object[] { new Integer(current) });
             }
         }
         switch (current) {
@@ -1056,11 +1054,24 @@ public class Parser implements ExtendedParser, Localizable {
             return CSSLexicalUnit.createString(LexicalUnit.SAC_URI,
                                                val, prev);
         case LexicalUnits.HASH:
-            return hexcolor(prev);
+                // START PATCH
+                String value = scanner.getStringValue();
+
+                // patched. XEP expects icc colors in the form
+                // fill="rgb(22,44,11) icc-color(#CMYK,0.5,0.7,0.2,1.0)" the id #CMYK is fix. therefore
+                // the DocFamily business charts contain that string. The Batik parser fails parsing this
+                // ID because it thinks this is a rgb value. This patch solves it
+                if(isValidRGBHexValue(value)){
+                    return hexcolor(prev);
+                }else{
+                    nextIgnoreSpaces();
+                    return CSSLexicalUnit.createString(LexicalUnit.SAC_IDENT, "#" + value, prev);
+                }
+                // END PATCH
+                // return hexcolor(prev); // like it was before the patch
         default:
             throw createCSSParseException
-                ("token",
-                 new Object[] {current});
+                ("token", new Object[] { new Integer(current) });
         }
     }
 
@@ -1076,7 +1087,7 @@ public class Parser implements ExtendedParser, Localizable {
         if (current != LexicalUnits.RIGHT_BRACE) {
             throw createCSSParseException
                 ("token",
-                 new Object[] {current});
+                 new Object[] { new Integer(current) });
         }
         nextIgnoreSpaces();
 
@@ -1748,5 +1759,17 @@ public class Parser implements ExtendedParser, Localizable {
             }
         }
         return result;
+    }
+
+    public static boolean isValidRGBHexValue(String value){
+        if(value.length() == 6 || value.length() == 3){
+            for(char c : value.toCharArray()){
+                if(!ScannerUtilities.isCSSHexadecimalCharacter(Character.toLowerCase(c))){
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
     }
 }

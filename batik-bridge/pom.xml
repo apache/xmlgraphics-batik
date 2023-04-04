@@ -106,12 +106,6 @@
       <version>${xmlapisext.version}</version>
     </dependency>
     <dependency>
-      <groupId>xalan</groupId>
-      <artifactId>xalan</artifactId>
-      <version>${xalan.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
       <groupId>org.mozilla</groupId>
       <artifactId>rhino</artifactId>
       <version>${rhino.version}</version>

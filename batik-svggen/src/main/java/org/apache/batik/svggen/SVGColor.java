@@ -18,8 +18,10 @@
  */
 package org.apache.batik.svggen;
 
+
 import java.awt.Color;
 import java.awt.Paint;
+import java.awt.color.ColorSpace;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,7 +35,8 @@ import org.apache.batik.ext.awt.g2d.GraphicContext;
  * @version $Id$
  * @see                 org.apache.batik.svggen.DOMTreeManager
  */
-public class SVGColor extends AbstractSVGConverter{
+public class SVGColor extends AbstractSVGConverter {
+
     /**
      * Predefined CSS colors
      */
@@ -98,7 +101,7 @@ public class SVGColor extends AbstractSVGConverter{
      */
     public SVGDescriptor toSVG(GraphicContext gc) {
         Paint paint = gc.getPaint();
-        return toSVG((Color)paint, generatorContext);
+        return toSVG((Color) paint, generatorContext);
     }
 
     /**
@@ -109,26 +112,41 @@ public class SVGColor extends AbstractSVGConverter{
         //
         // First, convert the color value
         //
-        String cssColor = (String)colorMap.get(color);
-        if (cssColor==null) {
-            // color is not one of the predefined colors
-            StringBuffer cssColorBuffer = new StringBuffer(RGB_PREFIX);
-            cssColorBuffer.append(color.getRed());
-            cssColorBuffer.append(COMMA);
-            cssColorBuffer.append(color.getGreen());
-            cssColorBuffer.append(COMMA);
-            cssColorBuffer.append(color.getBlue());
-            cssColorBuffer.append(RGB_SUFFIX);
-            cssColor = cssColorBuffer.toString();
-        }
+        // color is not one of the predefined colors
+        StringBuffer cssColorBuffer = new StringBuffer(RGB_PREFIX);
+        cssColorBuffer.append(color.getRed());
+        cssColorBuffer.append(COMMA);
+        cssColorBuffer.append(color.getGreen());
+        cssColorBuffer.append(COMMA);
+        cssColorBuffer.append(color.getBlue());
+        cssColorBuffer.append(RGB_SUFFIX);
+        ColorSpace cs = color.getColorSpace();
+        if (cs instanceof SimpleCMYKColorSpace || cs.getType() == ColorSpace.TYPE_CMYK) {
+            cssColorBuffer.append(" icc-color(#CMYK, ");
+            float[] fff = new float[4];
+            fff = color.getColorComponents(fff);
 
+            cssColorBuffer.append(fff[0]);
+            cssColorBuffer.append(COMMA);
+            cssColorBuffer.append(fff[1]);
+            cssColorBuffer.append(COMMA);
+            cssColorBuffer.append(fff[2]);
+            cssColorBuffer.append(COMMA);
+            cssColorBuffer.append(fff[3]);
+            cssColorBuffer.append(")");
+        } else if (cs instanceof SpotColorSpace) {
+            SpotColorSpace scs = (SpotColorSpace) cs;
+            if (scs.getSpotColorName() != null && !scs.getSpotColorName().equals("")) {
+                cssColorBuffer.append(" icc-color(#SpotColor,'" + scs.getSpotColorName() + "'," + scs.getTint() + " )");
+            }
+        }
         //
         // Now, convert the alpha value, if needed
         //
-        float alpha = color.getAlpha()/255f;
+        float alpha = color.getAlpha() / 255f;
 
         String alphaString = gc.doubleString(alpha);
 
-        return new SVGPaintDescriptor(cssColor, alphaString);
+        return new SVGPaintDescriptor(cssColorBuffer.toString(), alphaString);
     }
 }
