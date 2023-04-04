@@ -1,0 +1,1 @@
+# .mvn directory is needed so ${maven.multiModuleProjectDirectory} variable resolves in each (sub)module.

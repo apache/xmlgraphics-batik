@@ -27,12 +27,12 @@
   <artifactId>batik-all</artifactId>
   <name>${project.groupId}:${project.artifactId}</name>
   <description>Batik aggregate artifact</description>
-  <packaging>pom</packaging>
+  <packaging>jar</packaging>
 
   <parent>
     <groupId>org.apache.xmlgraphics</groupId>
     <artifactId>batik</artifactId>
-    <version>1.16</version>
+    <version>${revision}</version>
   </parent>
 
   <dependencies>
@@ -231,28 +231,79 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-assembly-plugin</artifactId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.4.1</version>
         <executions>
           <execution>
-            <id>package-all</id>
             <phase>package</phase>
             <goals>
-              <goal>single</goal>
+              <goal>shade</goal>
             </goals>
             <configuration>
-              <addMavenDescriptor>false</addMavenDescriptor>
-              <appendAssemblyId>false</appendAssemblyId>
-              <archive>
-                <manifest>
-                  <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                  <mainClass>org.apache.batik.apps.svgbrowser.Main</mainClass>
-                </manifest>
-              </archive>
-              <descriptors>
-                <descriptor>src/tools/resources/assembly/assembly.xml</descriptor>
-              </descriptors>
+              <artifactSet>
+                <includes>
+                  <!-- Please keep src/site/xdoc/artifacts.xml in sync with this list -->
+                  <include>${project.groupId}:batik-anim</include>
+                  <include>${project.groupId}:batik-awt-util</include>
+                  <include>${project.groupId}:batik-bridge</include>
+                  <include>${project.groupId}:batik-codec</include>
+                  <include>${project.groupId}:batik-constants</include>
+                  <include>${project.groupId}:batik-css</include>
+                  <include>${project.groupId}:batik-dom</include>
+                  <include>${project.groupId}:batik-ext</include>
+                  <include>${project.groupId}:batik-extension</include>
+                  <include>${project.groupId}:batik-gui-util</include>
+                  <include>${project.groupId}:batik-gvt</include>
+                  <include>${project.groupId}:batik-i18n</include>
+                  <include>${project.groupId}:batik-parser</include>
+                  <include>${project.groupId}:batik-rasterizer-ext</include>
+                  <include>${project.groupId}:batik-rasterizer</include>
+                  <include>${project.groupId}:batik-script</include>
+                  <include>${project.groupId}:batik-shared-resources</include>
+                  <include>${project.groupId}:batik-slideshow</include>
+                  <include>${project.groupId}:batik-squiggle-ext</include>
+                  <include>${project.groupId}:batik-squiggle</include>
+                  <include>${project.groupId}:batik-svg-dom</include>
+                  <include>${project.groupId}:batik-svgbrowser</include>
+                  <include>${project.groupId}:batik-svggen</include>
+                  <include>${project.groupId}:batik-svgpp</include>
+                  <include>${project.groupId}:batik-svgrasterizer</include>
+                  <include>${project.groupId}:batik-swing</include>
+                  <include>${project.groupId}:batik-transcoder</include>
+                  <include>${project.groupId}:batik-util</include>
+                  <include>${project.groupId}:batik-ttf2svg</include>
+                  <include>${project.groupId}:batik-xml</include>
+                </includes>
+              </artifactSet>
+              <generateUniqueDependencyReducedPom>true</generateUniqueDependencyReducedPom>
+              <promoteTransitiveDependencies>true</promoteTransitiveDependencies>
+              <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml</dependencyReducedPomLocation>
             </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>flatten-maven-plugin</artifactId>
+        <version>1.1.0</version>
+        <configuration>
+          <updatePomFile>true</updatePomFile>
+          <flattenMode>clean</flattenMode>
+        </configuration>
+        <executions>
+          <execution>
+            <id>flatten</id>
+            <phase>package</phase>
+            <goals>
+              <goal>flatten</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>flatten.clean</id>
+            <phase>clean</phase>
+            <goals>
+              <goal>clean</goal>
+            </goals>
           </execution>
         </executions>
       </plugin>

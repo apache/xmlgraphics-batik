@@ -31,7 +31,7 @@
   <parent>
     <groupId>org.apache.xmlgraphics</groupId>
     <artifactId>batik</artifactId>
-    <version>1.16</version>
+    <version>${revision}</version>
   </parent>
 
   <dependencies>
@@ -49,6 +49,16 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>xmlgraphics-commons</artifactId>
       <version>${xmlgraphics.commons.version}</version>
+      <exclusions>
+        <exclusion>  <!-- declare the exclusion here -->
+          <groupId>commons-io</groupId>
+          <artifactId>commons-io</artifactId>
+        </exclusion>
+        <exclusion>  <!-- declare the exclusion here -->
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
   </dependencies>
 

@@ -5,7 +5,7 @@
 
   <groupId>org.apache.xmlgraphics</groupId>
   <artifactId>batik</artifactId>
-  <version>1.16</version>
+  <version>${revision}</version>
   <name>${project.groupId}:${project.artifactId}</name>
   <description>XML Graphics Batik</description>
   <packaging>pom</packaging>
@@ -13,6 +13,7 @@
   <inceptionYear>2000</inceptionYear>
 
   <properties>
+    <revision>1.14-assentis-SNAPSHOT</revision>
     <checkstyle.version>2.15</checkstyle.version>
     <compiler.version>3.3</compiler.version>
     <dependency.version>3.1.1</dependency.version>
@@ -100,7 +101,7 @@
     <module>batik-util</module>
     <module>batik-ttf2svg</module>
     <module>batik-xml</module>
-    <module>batik-test-old</module>
+<!--    <module>batik-test-old</module>-->
     <module>batik-test-svg</module>
     <module>batik-test-swing</module>
   </modules>
@@ -115,6 +116,8 @@
           <configuration>
             <source>${java.version}</source>
             <target>${java.version}</target>
+            <executable>${jdk.path}/bin/javac</executable>
+            <fork>true</fork>
             <compilerArgs></compilerArgs>
             <showWarnings>false</showWarnings>
           </configuration>
@@ -146,58 +149,59 @@
         </plugin>
       </plugins>
     </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>flatten-maven-plugin</artifactId>
+        <version>1.1.0</version>
+        <configuration>
+          <updatePomFile>true</updatePomFile>
+          <flattenMode>resolveCiFriendliesOnly</flattenMode>
+        </configuration>
+        <executions>
+          <execution>
+            <id>flatten</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>flatten</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>flatten.clean</id>
+            <phase>clean</phase>
+            <goals>
+              <goal>clean</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
-
+  
   <profiles>
     <profile>
-      <id>custom-javac</id>
+      <id>development</id>
       <activation>
-        <property>
-          <name>jdk.path</name>
-        </property>
+        <activeByDefault>true</activeByDefault>
       </activation>
-      <build>
-        <pluginManagement>
-          <plugins>
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-compiler-plugin</artifactId>
-              <version>${compiler.version}</version>
-              <configuration>
-                <source>${java.version}</source>
-                <target>${java.version}</target>
-                <executable>${jdk.path}/bin/javac</executable>
-                <fork>true</fork>
-              </configuration>
-            </plugin>
-          </plugins>
-        </pluginManagement>
-      </build>
+      <distributionManagement>
+        <repository>
+          <id>thirdparty</id>
+          <url>https://appservice-nexus.azurewebsites.net/repository/thirdparty-snapshots/</url>
+        </repository>
+      </distributionManagement>
+    </profile>
+    <profile>
+      <id>release</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <distributionManagement>
+        <repository>
+          <id>thirdparty</id>
+          <url>https://appservice-nexus.azurewebsites.net/repository/thirdparty-releases/</url>
+        </repository>
+      </distributionManagement>
     </profile>
   </profiles>
-
-  <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/xmlgraphics/batik/trunk/</connection>
-    <url>scm:svn:https://svn.apache.org/repos/asf/xmlgraphics/batik/trunk/</url>
-    <developerConnection></developerConnection>
-  </scm>
-
-  <repositories>
-    <repository>
-      <id>apache.snapshots.https</id>
-      <url>https://repository.apache.org/content/repositories/snapshots</url>
-      <snapshots>
-        <enabled>true</enabled>
-        <updatePolicy>always</updatePolicy>
-      </snapshots>
-    </repository>
-  </repositories>
-
-  <distributionManagement>
-    <site>
-      <id>${project.artifactId}-site</id>
-      <url>${project.baseUri}</url>
-    </site>
-  </distributionManagement>
-
 </project>

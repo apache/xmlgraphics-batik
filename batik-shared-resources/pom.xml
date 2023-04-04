@@ -31,7 +31,7 @@
   <parent>
     <groupId>org.apache.xmlgraphics</groupId>
     <artifactId>batik</artifactId>
-    <version>1.16</version>
+    <version>${revision}</version>
   </parent>
 
   <build>
