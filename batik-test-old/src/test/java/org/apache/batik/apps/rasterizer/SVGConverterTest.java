@@ -276,6 +276,17 @@ public class SVGConverterTest extends DefaultTestSuite {
         addTest(t);
         t.setId("Operationtest.PDFTranscoding");
 
+        // Test for SVG to PNG Transcoding for Arabic Characters
+        t = new OperationTest(){
+            protected  void configure(SVGConverter c){
+                c.setDestinationType(DestinationType.PNG);
+                c.setSources(new String[]{"samples/tests/spec/text/arabicCharacters.svg"});
+                c.setDst(new File("samples/arabicCharacters.png"));
+            }
+        };
+        addTest(t);
+        t.setId("OperationTest.Bug_BATIK1355");
+
         ///////////////////////////////////////////////////////////////////////
         // Add configuration error test. These tests check that the expected
         // error gets reported for a given mis-configuration

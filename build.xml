@@ -1059,6 +1059,7 @@ JAVA=/usr/bin/java
     <delete file="${samples}/tests/spec/scripting/java-binding.jar"/>
     <delete file="${samples}/anne.pdf"/>
     <delete file="${samples}/anne.png"/>
+    <delete file="${samples}/arabicCharacters.png"/>
     <delete dir="${test-references}" includes="**/candidate-reference/**" includeemptydirs="true"/>
     <delete dir="${test-references}" includes="**/candidate-reference" includeemptydirs="true"/>
     <delete dir="${test-references}" includes="**/candidate-variation/**" includeemptydirs="true"/>

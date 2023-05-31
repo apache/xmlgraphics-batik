@@ -228,6 +228,7 @@ public class JUnitRunnerTestCase {
 "transcoder.image.hints.px2mm.96dpi",
 "transcoder.image.hints.px2mm.72dpi",
 "samples/anne.svg",
+"samples/arabicCharacters.svg",
 "samples/asf-logo.svg",
 "samples/barChart.svg",
 "samples/batik3D.svg",
