@@ -4,6 +4,13 @@ Change Log
 The following log records some of the most important changes.
 Bug fixing is an ongoing task, so it is implied in all sub-releases.
 
+1.17
+----
+
+BATIK-1346: Allow configuration of rhino whitelist
+BATIK-1347: Switch to empty whitelist for rhino
+BATIK-1349: Block loading external resource by default
+
 1.16
 ----
 
