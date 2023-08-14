@@ -129,6 +129,15 @@ To display the available targets type:
     <property name="deploy.svn.url"     value="https://svn.apache.org/repos/asf/xmlgraphics/site/deploy/batik"/>
     <property name="build.site-dir"     value="${site}"/>
     
+    <property name="copy.dependencies.arg" value=""/>
+    
+    <condition property="isWindows">
+      <os family="windows" />
+    </condition>
+    <condition property="isUnix">
+      <os family="unix" />
+    </condition>    
+    
     <path id="source.files">
         <pathelement path="batik-anim/src/main/java"/>
         <pathelement path="batik-awt-util/src/main/java"/>
@@ -1124,7 +1133,7 @@ JAVA=/usr/bin/java
 
 
   <!-- All batik in a single jar (dependencies: none) -->
-  <target name="all-jar" depends="init, copy-shared-resources, compile, prepare-build"
+  <target name="all-jar" depends="mvn-jars,init, copy-shared-resources, compile, prepare-build"
           description="Creates a combined JAR file of the Batik libraries in ${build}/lib">
     <jar jarfile="${build}/lib/${project}-all-${completeVersion}.jar">
       <manifest>
@@ -1140,6 +1149,37 @@ JAVA=/usr/bin/java
       </fileset>
     </jar>
   </target>
+  
+  <target name="mvn-jars" depends="mvn-jars-unix,mvn-jars-windows" unless="dev">
+    <delete failonerror="false">
+      <fileset dir="${basedir}/lib">
+        <include name="fop-transcoder*.jar"/>
+        <include name="rhino*.jar"/>
+        <include name="xml*.jar"/>
+      </fileset>
+    </delete>
+    <copy todir="${basedir}/lib">
+      <fileset dir="${basedir}/batik-test-old/target/dependency">
+        <include name="fop-transcoder*.jar"/>
+        <include name="rhino*.jar"/>
+        <include name="xml*.jar"/>
+      </fileset>
+    </copy>
+  </target>
+  <target name="mvn-jars-unix" if="isUnix" unless="dev">
+    <exec executable="mvn" dir="${basedir}" failonerror="true">
+      <arg value="clean"/>
+      <arg line="${copy.dependencies.arg} dependency:copy-dependencies -DskipTests"/>
+    </exec>
+  </target>
+  <target name="mvn-jars-windows" if="isWindows" unless="dev">
+    <exec executable="cmd" dir="${basedir}" failonerror="true">
+	  <arg value="/c"/>
+	  <arg value="mvn"/>    
+      <arg value="clean"/>
+      <arg line="${copy.dependencies.arg} dependency:copy-dependencies -DskipTests"/>
+    </exec>
+  </target>  
 
   <!-- Applications ....................................................... -->
   <target name="squiggle" depends="init, compile"
