@@ -367,7 +367,7 @@ public class LanguageDialog extends JDialog implements ActionMap {
          * Returns the selected user languages.
          */
         public String getLanguages() {
-            StringBuffer result = new StringBuffer();
+            StringBuilder result = new StringBuilder();
             if (userListModel.getSize() > 0) {
                 result.append(userListModel.getElementAt(0));
 

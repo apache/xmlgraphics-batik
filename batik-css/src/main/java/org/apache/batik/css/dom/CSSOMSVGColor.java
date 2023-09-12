@@ -639,7 +639,7 @@ public class CSSOMSVGColor
          * Called when the red value text has changed.
          */
         public void redTextChanged(String text) throws DOMException {
-            StringBuffer sb = new StringBuffer(40);
+            StringBuilder sb = new StringBuilder(40);
             Value value = getValue();
             switch (getColorType()) {
             case SVG_COLORTYPE_RGBCOLOR:
@@ -671,7 +671,7 @@ public class CSSOMSVGColor
          */
         public void redFloatValueChanged(short unit, float fValue)
             throws DOMException {
-            StringBuffer sb = new StringBuffer(40);
+            StringBuilder sb = new StringBuilder(40);
             Value value = getValue();
             switch (getColorType()) {
             case SVG_COLORTYPE_RGBCOLOR:
@@ -703,7 +703,7 @@ public class CSSOMSVGColor
          * Called when the green value text has changed.
          */
         public void greenTextChanged(String text) throws DOMException {
-            StringBuffer sb = new StringBuffer(40);
+            StringBuilder sb = new StringBuilder(40);
             Value value = getValue();
             switch (getColorType()) {
             case SVG_COLORTYPE_RGBCOLOR:
@@ -736,7 +736,7 @@ public class CSSOMSVGColor
          */
         public void greenFloatValueChanged(short unit, float fValue)
             throws DOMException {
-            StringBuffer sb = new StringBuffer(40);
+            StringBuilder sb = new StringBuilder(40);
             Value value = getValue();
             switch (getColorType()) {
             case SVG_COLORTYPE_RGBCOLOR:
@@ -768,7 +768,7 @@ public class CSSOMSVGColor
          * Called when the blue value text has changed.
          */
         public void blueTextChanged(String text) throws DOMException {
-            StringBuffer sb = new StringBuffer(40);
+            StringBuilder sb = new StringBuilder(40);
             Value value = getValue();
             switch (getColorType()) {
             case SVG_COLORTYPE_RGBCOLOR:
@@ -801,7 +801,7 @@ public class CSSOMSVGColor
          */
         public void blueFloatValueChanged(short unit, float fValue)
             throws DOMException {
-            StringBuffer sb = new StringBuffer(40);
+            StringBuilder sb = new StringBuilder(40);
             Value value = getValue();
             switch (getColorType()) {
             case SVG_COLORTYPE_RGBCOLOR:
@@ -894,8 +894,8 @@ public class CSSOMSVGColor
             Value value = getValue();
             switch (getColorType()) {
             case SVG_COLORTYPE_RGBCOLOR_ICCCOLOR:
-                StringBuffer sb =
-                    new StringBuffer( value.item(0).getCssText());
+                StringBuilder sb =
+                    new StringBuilder( value.item(0).getCssText());
                 sb.append(" icc-color(");
                 sb.append(cp);
                 ICCColor iccc = (ICCColor)value.item(1);
@@ -920,8 +920,8 @@ public class CSSOMSVGColor
             Value value = getValue();
             switch (getColorType()) {
             case SVG_COLORTYPE_RGBCOLOR_ICCCOLOR:
-                StringBuffer sb =
-                    new StringBuffer( value.item(0).getCssText());
+                StringBuilder sb =
+                    new StringBuilder( value.item(0).getCssText());
                 sb.append(" icc-color(");
                 ICCColor iccc = (ICCColor)value.item(1);
                 sb.append(iccc.getColorProfile());
@@ -942,8 +942,8 @@ public class CSSOMSVGColor
             Value value = getValue();
             switch (getColorType()) {
             case SVG_COLORTYPE_RGBCOLOR_ICCCOLOR:
-                StringBuffer sb =
-                    new StringBuffer( value.item(0).getCssText());
+                StringBuilder sb =
+                    new StringBuilder( value.item(0).getCssText());
                 sb.append(" icc-color(");
                 ICCColor iccc = (ICCColor)value.item(1);
                 sb.append(iccc.getColorProfile());
@@ -966,8 +966,8 @@ public class CSSOMSVGColor
             Value value = getValue();
             switch (getColorType()) {
             case SVG_COLORTYPE_RGBCOLOR_ICCCOLOR:
-                StringBuffer sb =
-                    new StringBuffer( value.item(0).getCssText());
+                StringBuilder sb =
+                    new StringBuilder( value.item(0).getCssText());
                 sb.append(" icc-color(");
                 ICCColor iccc = (ICCColor)value.item(1);
                 sb.append(iccc.getColorProfile());
@@ -998,8 +998,8 @@ public class CSSOMSVGColor
             Value value = getValue();
             switch (getColorType()) {
             case SVG_COLORTYPE_RGBCOLOR_ICCCOLOR:
-                StringBuffer sb =
-                    new StringBuffer( value.item(0).getCssText());
+                StringBuilder sb =
+                    new StringBuilder( value.item(0).getCssText());
                 sb.append(" icc-color(");
                 ICCColor iccc = (ICCColor)value.item(1);
                 sb.append(iccc.getColorProfile());
@@ -1030,8 +1030,8 @@ public class CSSOMSVGColor
             Value value = getValue();
             switch (getColorType()) {
             case SVG_COLORTYPE_RGBCOLOR_ICCCOLOR:
-                StringBuffer sb =
-                    new StringBuffer( value.item(0).getCssText());
+                StringBuilder sb =
+                    new StringBuilder( value.item(0).getCssText());
                 sb.append(" icc-color(");
                 ICCColor iccc = (ICCColor)value.item(1);
                 sb.append(iccc.getColorProfile());
@@ -1060,8 +1060,8 @@ public class CSSOMSVGColor
             Value value = getValue();
             switch (getColorType()) {
             case SVG_COLORTYPE_RGBCOLOR_ICCCOLOR:
-                StringBuffer sb =
-                    new StringBuffer( value.item(0).getCssText());
+                StringBuilder sb =
+                    new StringBuilder( value.item(0).getCssText());
                 sb.append(" icc-color(");
                 ICCColor iccc = (ICCColor)value.item(1);
                 sb.append(iccc.getColorProfile());

@@ -52,7 +52,7 @@ public class OutputManager {
     /**
      * The margin.
      */
-    protected StringBuffer margin = new StringBuffer();
+    protected StringBuilder margin = new StringBuilder();
 
     /**
      * The current line.
@@ -762,7 +762,7 @@ public class OutputManager {
                 startsWithSpace = true;
                 i++;
             }
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             for (;;) {
                 if (i >= text.length || XMLUtilities.isXMLSpace(text[i])) {
                     break;

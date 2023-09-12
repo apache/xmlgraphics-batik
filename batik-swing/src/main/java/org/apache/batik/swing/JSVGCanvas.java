@@ -996,7 +996,7 @@ public class JSVGCanvas extends JSVGComponent {
          * Poor way of replacing '&lt;', '&gt;' and '&amp;' in content.
          */
         public String toFormattedHTML(String str) {
-            StringBuffer sb = new StringBuffer(str);
+            StringBuilder sb = new StringBuilder(str);
             replace(sb, XML_CHAR_AMP, XML_ENTITY_AMP);  // Must go first!
             replace(sb, XML_CHAR_LT, XML_ENTITY_LT);
             replace(sb, XML_CHAR_GT, XML_ENTITY_GT);
@@ -1008,7 +1008,7 @@ public class JSVGCanvas extends JSVGComponent {
             return sb.toString();
         }
 
-        protected void replace(StringBuffer sb, char c, String r) {
+        protected void replace(StringBuilder sb, char c, String r) {
             String v = sb.toString();
             int i = v.length();
 

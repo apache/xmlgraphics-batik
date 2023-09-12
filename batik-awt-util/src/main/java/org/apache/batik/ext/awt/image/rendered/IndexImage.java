@@ -267,7 +267,7 @@ public class IndexImage{
 //            if ( flagChangedLo || flagChangedHi ){
 //                System.out.println("old min:" + min[ splitChannel ] + "/max:" + max[ splitChannel ]
 //                + " new: " + loBound + "/" + hiBound );
-//                StringBuffer buff = new StringBuffer( 100 );
+//                StringBuilder buff = new StringBuilder( 100 );
 //                for( int i= min[ splitChannel ]; i <= max[ splitChannel]; i++ ){
 //                    buff.append( counts[ i ] );
 //                    buff.append( ',' );
@@ -592,7 +592,7 @@ public class IndexImage{
      */
     static void logRGB( byte[] r, byte[] g, byte[] b ){
 
-        StringBuffer buff = new StringBuffer( 100 );
+        StringBuilder buff = new StringBuilder( 100 );
         int nColors = r.length;
         for( int i= 0; i < nColors; i++ ) {
             String rgbStr= "(" + (r[i]+128) + ',' + (g[i] +128 ) + ',' + (b[i] + 128) + ")," ;

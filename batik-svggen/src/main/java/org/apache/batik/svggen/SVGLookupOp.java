@@ -196,7 +196,7 @@ public class SVGLookupOp extends AbstractSVGFilterConverter {
             //
 
             // Process filter attribute
-//            StringBuffer filterAttrBuf = new StringBuffer(URL_PREFIX);
+//            StringBuilder filterAttrBuf = new StringBuilder(URL_PREFIX);
 //            filterAttrBuf.append(SIGN_POUND);
 //            filterAttrBuf.append(filterDef.getAttributeNS(null, SVG_ID_ATTRIBUTE));
 //            filterAttrBuf.append(URL_SUFFIX);
@@ -223,9 +223,9 @@ public class SVGLookupOp extends AbstractSVGFilterConverter {
         if((nComponents != 1) && (nComponents != 3) && (nComponents != 4))
             throw new SVGGraphics2DRuntimeException(ERR_ILLEGAL_BUFFERED_IMAGE_LOOKUP_OP);
 
-        StringBuffer[] lookupTableBuf = new StringBuffer[nComponents];
+        StringBuilder[] lookupTableBuf = new StringBuilder[nComponents];
         for(int i=0; i<nComponents; i++)
-            lookupTableBuf[i] = new StringBuffer();
+            lookupTableBuf[i] = new StringBuilder();
 
         if(!(lookupTable instanceof ByteLookupTable)){
             int[] src = new int[nComponents];

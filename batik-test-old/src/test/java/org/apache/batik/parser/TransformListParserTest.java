@@ -34,7 +34,7 @@ public class TransformListParserTest extends AbstractTest {
     protected String sourceTransform;
     protected String destinationTransform;
 
-    protected StringBuffer buffer;
+    protected StringBuilder buffer;
     protected String resultTransform;
 
     /**
@@ -77,7 +77,7 @@ public class TransformListParserTest extends AbstractTest {
         boolean first;
         public TestHandler() {}
         public void startTransformList() throws ParseException {
-            buffer = new StringBuffer();
+            buffer = new StringBuilder();
             first = true;
         }
         public void matrix(float a, float b, float c, float d, float e, float f)

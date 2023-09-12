@@ -964,7 +964,7 @@ public class Main implements SVGConverterController {
     }
 
     protected String toString( String[] v){
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         int n = v != null ? v.length:0;
         for (int i=0; i<n; i++){
             sb.append(v[i] );
