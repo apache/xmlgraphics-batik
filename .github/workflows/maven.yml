@@ -11,17 +11,22 @@ on:
 
 jobs:
   build:
-
+    name: Test with Java ${{ matrix.jdk }}
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        jdk: [ '8', '11', '17', '21' ]
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up JDK 8
+    - uses: actions/checkout@v4
+    - name: Set up JDK ${{ matrix.jdk }}
       uses: actions/setup-java@v3
       with:
-        java-version: '8'
+        java-version: ${{ matrix.jdk }}
         distribution: 'temurin'
         cache: maven
+
     - name: Build with Maven
       run: mvn -B package checkstyle:check --file pom.xml
 
