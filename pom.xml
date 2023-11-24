@@ -13,23 +13,25 @@
   <inceptionYear>2000</inceptionYear>
 
   <properties>
-    <checkstyle.version>2.15</checkstyle.version>
-    <compiler.version>3.3</compiler.version>
-    <dependency.version>3.1.1</dependency.version>
-    <findbugs.version>3.0.1</findbugs.version>
-    <jar.version>3.1.1</jar.version>
+    <checkstyle.version>3.3.1</checkstyle.version>
+    <compiler.version>3.11.0</compiler.version>
+    <dependency.version>3.6.1</dependency.version>
+    <findbugs.version>3.0.4</findbugs.version>
+    <jar.version>3.3.0</jar.version>
     <java.version>1.8</java.version>
-    <junit.version>4.11</junit.version>
-    <jython.version>2.7.0</jython.version>
+    <junit.version>4.13.2</junit.version>
+<!--    <junit4.version>4.13.2</junit4.version>-->
+    <junit5.version>5.10.1</junit5.version>
+    <jython.version>2.7.3</jython.version>
     <org.slf4j.simpleLogger.defaultLogLevel>error</org.slf4j.simpleLogger.defaultLogLevel>
-    <project.info.reports.version>2.8</project.info.reports.version>
+    <project.info.reports.version>3.4.5</project.info.reports.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <release.version>2.5.2</release.version>
-    <rhino.version>1.7.7</rhino.version>
-    <surefire.version>2.18.1</surefire.version>
+    <release.version>3.0.1</release.version>
+    <rhino.version>1.7.14</rhino.version>
+    <surefire.version>3.2.2</surefire.version>
     <xmlapis.version>1.4.01</xmlapis.version>
     <xmlapisext.version>1.3.04</xmlapisext.version>
-    <xmlgraphics.commons.version>2.7</xmlgraphics.commons.version>
+    <xmlgraphics.commons.version>2.9</xmlgraphics.commons.version>
     <jdk.path>${env.JAVA_HOME}</jdk.path>
   </properties>
 
@@ -64,8 +66,13 @@
 
   <organization>
     <name>Apache Software Foundation</name>
-    <url>http://www.apache.org/</url>
+    <url>https://www.apache.org/</url>
   </organization>
+
+  <issueManagement>
+    <system>Jira</system>
+    <url>https://issues.apache.org/jira/browse/BATIK</url>
+  </issueManagement>
 
   <modules>
     <module>batik-all</module>
@@ -121,6 +128,16 @@
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>${jar.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>3.6.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-project-info-reports-plugin</artifactId>
           <version>${project.info.reports.version}</version>
         </plugin>
@@ -147,6 +164,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
+          <version>3.6.2</version>
           <configuration>
             <source>8</source>
             <doclint>none</doclint>

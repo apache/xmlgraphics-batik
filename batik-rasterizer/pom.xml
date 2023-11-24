@@ -50,6 +50,7 @@
   <build>
     <plugins>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
         <version>${jar.version}</version>
         <configuration>
@@ -60,12 +61,14 @@
               <classpathPrefix>lib/</classpathPrefix>
             </manifest>
             <manifestEntries>
+              <Automatic-Module-Name>org.apache.xmlgraphics.batik.rasterizer</Automatic-Module-Name>
               <Class-Path>lib/fop-transcoder-allinone-${xmlgraphics.commons.version}.jar</Class-Path>
             </manifestEntries>
           </archive>
         </configuration>
       </plugin>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <version>${dependency.version}</version><!--$NO-MVN-MAN-VER$-->
         <executions>

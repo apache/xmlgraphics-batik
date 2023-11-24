@@ -55,6 +55,7 @@
   <build>
     <plugins>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
         <version>${jar.version}</version>
         <configuration>
@@ -63,10 +64,14 @@
               <mainClass>org.apache.batik.apps.svgbrowser.Main</mainClass>
               <addClasspath>true</addClasspath>
             </manifest>
+            <manifestEntries>
+              <Automatic-Module-Name>org.apache.xmlgraphics.batik.squiggleext</Automatic-Module-Name>
+            </manifestEntries>
           </archive>
         </configuration>
       </plugin>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <version>${dependency.version}</version><!--$NO-MVN-MAN-VER$-->
         <executions>
