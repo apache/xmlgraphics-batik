@@ -394,6 +394,9 @@ public class Scanner {
                                          reader.getColumn());
             case '-':
                 nextChar();
+                if (current == 'i') {
+                    return;
+                }
                 if (current != '-') {
                     type = LexicalUnits.MINUS;
                     return;

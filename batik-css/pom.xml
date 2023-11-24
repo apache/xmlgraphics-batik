@@ -55,6 +55,12 @@
       <artifactId>xml-apis-ext</artifactId>
       <version>${xmlapisext.version}</version>
     </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
