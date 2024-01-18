@@ -16,7 +16,7 @@
     <checkstyle.version>2.15</checkstyle.version>
     <compiler.version>3.3</compiler.version>
     <dependency.version>3.1.1</dependency.version>
-    <findbugs.version>3.0.1</findbugs.version>
+    <findbugs.version>3.1.12.2</findbugs.version>
     <jar.version>3.1.1</jar.version>
     <java.version>1.8</java.version>
     <junit.version>4.11</junit.version>
@@ -130,8 +130,8 @@
           <version>${surefire.version}</version>
         </plugin>
         <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>findbugs-maven-plugin</artifactId>
+          <groupId>com.github.spotbugs</groupId>
+          <artifactId>spotbugs-maven-plugin</artifactId>
           <version>${findbugs.version}</version>
         </plugin>
         <plugin>
