@@ -319,7 +319,7 @@ public class SAXSVGDocumentFactory
 
     public DOMImplementation getDOMImplementation(String ver) {
         if (ver == null || ver.length() == 0
-                || ver.equals("1.0") || ver.equals("1.1")) {
+                || ver.equals("1.0") || ver.equals("1.1") || ver.equals("1")) {
             return SVGDOMImplementation.getDOMImplementation();
         } else if (ver.equals("1.2")) {
             return SVG12DOMImplementation.getDOMImplementation();
