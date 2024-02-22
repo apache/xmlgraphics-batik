@@ -88,8 +88,8 @@ To display the available targets type:
     <property name="revisionType"       value="" />
     <property name="revisionNumber"     value="" />
     <property name="completeVersion"    value="${version}${revisionType}${revisionNumber}" />
-    <property name="xgcVersion"         value="2.7" />
-    <property name="fopVersion"         value="2.7" />
+    <property name="xgcVersion"         value="2.9.0-SNAPSHOT" />
+    <property name="fopVersion"         value="2.9.0-SNAPSHOT" />
     <property name="vendor"             value="The Apache Software Foundation (http://xmlgraphics.apache.org/batik/)" />
     <property name="debug"              value="on"/>
     <property name="optimize"           value="on"/>
@@ -1156,6 +1156,8 @@ JAVA=/usr/bin/java
         <include name="fop-transcoder*.jar"/>
         <include name="rhino*.jar"/>
         <include name="xml*.jar"/>
+        <include name="junit*.jar"/>
+        <include name="hamcrest*.jar"/>
       </fileset>
     </delete>
     <copy todir="${basedir}/lib">
@@ -1163,13 +1165,15 @@ JAVA=/usr/bin/java
         <include name="fop-transcoder*.jar"/>
         <include name="rhino*.jar"/>
         <include name="xml*.jar"/>
+        <include name="junit*.jar"/>
+        <include name="hamcrest*.jar"/>
       </fileset>
     </copy>
   </target>
   <target name="mvn-jars-unix" if="isUnix" unless="dev">
     <exec executable="mvn" dir="${basedir}" failonerror="true">
       <arg value="clean"/>
-      <arg line="${copy.dependencies.arg} dependency:copy-dependencies -DskipTests"/>
+      <arg line="${copy.dependencies.arg} dependency:copy-dependencies -DskipTests -B"/>
     </exec>
   </target>
   <target name="mvn-jars-windows" if="isWindows" unless="dev">
@@ -1177,7 +1181,7 @@ JAVA=/usr/bin/java
 	  <arg value="/c"/>
 	  <arg value="mvn"/>    
       <arg value="clean"/>
-      <arg line="${copy.dependencies.arg} dependency:copy-dependencies -DskipTests"/>
+      <arg line="${copy.dependencies.arg} dependency:copy-dependencies -DskipTests -B"/>
     </exec>
   </target>  
 
