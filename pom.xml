@@ -199,7 +199,6 @@
       <url>https://repository.apache.org/content/repositories/snapshots</url>
       <snapshots>
         <enabled>true</enabled>
-        <updatePolicy>always</updatePolicy>
       </snapshots>
     </repository>
   </repositories>
