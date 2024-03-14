@@ -313,9 +313,8 @@ public abstract class AbstractSVGGradientElementBridge
 
             String s = stopElement.getAttributeNS(null, SVG_OFFSET_ATTRIBUTE);
             if (s.length() == 0) {
-                throw new BridgeException
-                    (ctx, stopElement, ERR_ATTRIBUTE_MISSING,
-                     new Object[] {SVG_OFFSET_ATTRIBUTE});
+                //use default value according to the specification
+                s = "0";
             }
             float offset;
             try {
