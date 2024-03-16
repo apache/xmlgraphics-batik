@@ -70,7 +70,7 @@ public class BaseScriptingEnvironment {
      * Constant used to describe inline scripts.
      * <pre>
      * {0} - URL of document containing script.
-     * {1} - Element tag
+     * {1} - Element tag.
      * {2} - line number of element.
      * </pre>
      */
@@ -81,7 +81,7 @@ public class BaseScriptingEnvironment {
      * Constant used to describe inline scripts.
      * <pre>
      * {0} - URL of document containing script.
-     * {1} - Event attribute name
+     * {1} - Event attribute name.
      * {2} - line number of element.
      * </pre>
      */
@@ -95,28 +95,22 @@ public class BaseScriptingEnvironment {
         Element elt = doc.getDocumentElement();
         if ((elt != null) &&
             SVGConstants.SVG_NAMESPACE_URI.equals(elt.getNamespaceURI())) {
-            if (elt.getAttributeNS
-                (null, SVGConstants.SVG_ONABORT_ATTRIBUTE).length() > 0) {
+            if ( !elt.getAttributeNS( null, SVGConstants.SVG_ONABORT_ATTRIBUTE ).isEmpty() ) {
                 return true;
             }
-            if (elt.getAttributeNS
-                (null, SVGConstants.SVG_ONERROR_ATTRIBUTE).length() > 0) {
+            if ( !elt.getAttributeNS( null, SVGConstants.SVG_ONERROR_ATTRIBUTE ).isEmpty() ) {
                 return true;
             }
-            if (elt.getAttributeNS
-                (null, SVGConstants.SVG_ONRESIZE_ATTRIBUTE).length() > 0) {
+            if ( !elt.getAttributeNS( null, SVGConstants.SVG_ONRESIZE_ATTRIBUTE ).isEmpty() ) {
                 return true;
             }
-            if (elt.getAttributeNS
-                (null, SVGConstants.SVG_ONUNLOAD_ATTRIBUTE).length() > 0) {
+            if ( !elt.getAttributeNS( null, SVGConstants.SVG_ONUNLOAD_ATTRIBUTE ).isEmpty() ) {
                 return true;
             }
-            if (elt.getAttributeNS
-                (null, SVGConstants.SVG_ONSCROLL_ATTRIBUTE).length() > 0) {
+            if ( !elt.getAttributeNS( null, SVGConstants.SVG_ONSCROLL_ATTRIBUTE ).isEmpty() ) {
                 return true;
             }
-            if (elt.getAttributeNS
-                (null, SVGConstants.SVG_ONZOOM_ATTRIBUTE).length() > 0) {
+            if ( !elt.getAttributeNS( null, SVGConstants.SVG_ONZOOM_ATTRIBUTE ).isEmpty() ) {
                 return true;
             }
             return isDynamicElement(ctx, doc.getDocumentElement());
@@ -141,60 +135,46 @@ public class BaseScriptingEnvironment {
             }
         }
         if (SVGConstants.SVG_NAMESPACE_URI.equals(elt.getNamespaceURI())) {
-            if (elt.getAttributeNS
-                (null, SVGConstants.SVG_ONKEYUP_ATTRIBUTE).length() > 0) {
+            if ( !elt.getAttributeNS( null, SVGConstants.SVG_ONKEYUP_ATTRIBUTE ).isEmpty() ) {
                 return true;
             }
-            if (elt.getAttributeNS
-                (null, SVGConstants.SVG_ONKEYDOWN_ATTRIBUTE).length() > 0) {
+            if ( !elt.getAttributeNS( null, SVGConstants.SVG_ONKEYDOWN_ATTRIBUTE ).isEmpty() ) {
                 return true;
             }
-            if (elt.getAttributeNS
-                (null, SVGConstants.SVG_ONKEYPRESS_ATTRIBUTE).length() > 0) {
+            if ( !elt.getAttributeNS( null, SVGConstants.SVG_ONKEYPRESS_ATTRIBUTE ).isEmpty() ) {
                 return true;
             }
-            if (elt.getAttributeNS
-                (null, SVGConstants.SVG_ONLOAD_ATTRIBUTE).length() > 0) {
+            if ( !elt.getAttributeNS( null, SVGConstants.SVG_ONLOAD_ATTRIBUTE ).isEmpty() ) {
                 return true;
             }
-            if (elt.getAttributeNS
-                (null, SVGConstants.SVG_ONERROR_ATTRIBUTE).length() > 0) {
+            if ( !elt.getAttributeNS( null, SVGConstants.SVG_ONERROR_ATTRIBUTE ).isEmpty() ) {
                 return true;
             }
-            if (elt.getAttributeNS
-                (null, SVGConstants.SVG_ONACTIVATE_ATTRIBUTE).length() > 0) {
+            if ( !elt.getAttributeNS( null, SVGConstants.SVG_ONACTIVATE_ATTRIBUTE ).isEmpty() ) {
                 return true;
             }
-            if (elt.getAttributeNS
-                (null, SVGConstants.SVG_ONCLICK_ATTRIBUTE).length() > 0) {
+            if ( !elt.getAttributeNS( null, SVGConstants.SVG_ONCLICK_ATTRIBUTE ).isEmpty() ) {
                 return true;
             }
-            if (elt.getAttributeNS
-                (null, SVGConstants.SVG_ONFOCUSIN_ATTRIBUTE).length() > 0) {
+            if ( !elt.getAttributeNS( null, SVGConstants.SVG_ONFOCUSIN_ATTRIBUTE ).isEmpty() ) {
                 return true;
             }
-            if (elt.getAttributeNS
-                (null, SVGConstants.SVG_ONFOCUSOUT_ATTRIBUTE).length() > 0) {
+            if ( !elt.getAttributeNS( null, SVGConstants.SVG_ONFOCUSOUT_ATTRIBUTE ).isEmpty() ) {
                 return true;
             }
-            if (elt.getAttributeNS
-                (null, SVGConstants.SVG_ONMOUSEDOWN_ATTRIBUTE).length() > 0) {
+            if ( !elt.getAttributeNS( null, SVGConstants.SVG_ONMOUSEDOWN_ATTRIBUTE ).isEmpty() ) {
                 return true;
             }
-            if (elt.getAttributeNS
-                (null, SVGConstants.SVG_ONMOUSEMOVE_ATTRIBUTE).length() > 0) {
+            if ( !elt.getAttributeNS( null, SVGConstants.SVG_ONMOUSEMOVE_ATTRIBUTE ).isEmpty() ) {
                 return true;
             }
-            if (elt.getAttributeNS
-                (null, SVGConstants.SVG_ONMOUSEOUT_ATTRIBUTE).length() > 0) {
+            if ( !elt.getAttributeNS( null, SVGConstants.SVG_ONMOUSEOUT_ATTRIBUTE ).isEmpty() ) {
                 return true;
             }
-            if (elt.getAttributeNS
-                (null, SVGConstants.SVG_ONMOUSEOVER_ATTRIBUTE).length() > 0) {
+            if ( !elt.getAttributeNS( null, SVGConstants.SVG_ONMOUSEOVER_ATTRIBUTE ).isEmpty() ) {
                 return true;
             }
-            if (elt.getAttributeNS
-                (null, SVGConstants.SVG_ONMOUSEUP_ATTRIBUTE).length() > 0) {
+            if ( !elt.getAttributeNS( null, SVGConstants.SVG_ONMOUSEUP_ATTRIBUTE ).isEmpty() ) {
                 return true;
             }
         }
@@ -241,7 +221,7 @@ public class BaseScriptingEnvironment {
      */
     protected ParsedURL docPURL;
 
-    protected Set languages = new HashSet();
+    protected Set<String> languages = new HashSet<>();
 
     /**
      * The default Interpreter for the document
@@ -252,7 +232,7 @@ public class BaseScriptingEnvironment {
      * Map of {@link Interpreter} to {@link org.apache.batik.bridge.Window}
      * objects.
      */
-    protected Map windowObjects = new HashMap();
+    protected Map<Interpreter, org.apache.batik.bridge.Window> windowObjects = new HashMap<>();
 
     /**
      * Set of &lt;script&gt; elements that have already been executed.
@@ -273,10 +253,8 @@ public class BaseScriptingEnvironment {
     /**
      * Returns the Window object for the specified {@link Interpreter}.
      */
-    public org.apache.batik.bridge.Window getWindow(Interpreter interp,
-                                                    String lang) {
-        org.apache.batik.bridge.Window w =
-            (org.apache.batik.bridge.Window) windowObjects.get(interp);
+    public org.apache.batik.bridge.Window getWindow(Interpreter interp, String lang) {
+        org.apache.batik.bridge.Window w = windowObjects.get(interp);
         if (w == null) {
             w = interp == null ? new Window(null, null)
                                : createWindow(interp, lang);
@@ -296,9 +274,8 @@ public class BaseScriptingEnvironment {
     /**
      * Creates a new Window object.
      */
-    protected org.apache.batik.bridge.Window createWindow(Interpreter interp,
-                                                          String lang) {
-        
+    protected org.apache.batik.bridge.Window createWindow(Interpreter interp, String lang) {
+
         return new Window(interp, lang);
     }
 
@@ -377,10 +354,9 @@ public class BaseScriptingEnvironment {
             } while (n.getNodeType() != Node.DOCUMENT_NODE);
         }
 
-        String type = script.getAttributeNS
-            (null, SVGConstants.SVG_TYPE_ATTRIBUTE);
+        String type = script.getAttributeNS(null, SVGConstants.SVG_TYPE_ATTRIBUTE);
 
-        if (type.length() == 0) {
+        if ( type.isEmpty() ) {
             type = SVGConstants.SVG_SCRIPT_TYPE_DEFAULT_VALUE;
         }
 
@@ -458,7 +434,7 @@ public class BaseScriptingEnvironment {
             String desc = null;
             Reader reader = null;
 
-            if (href.length() > 0) {
+            if ( !href.isEmpty() ) {
                 desc = href;
 
                 // External script.
@@ -480,8 +456,8 @@ public class BaseScriptingEnvironment {
                         // No encoding was specified in the MIME type, so
                         // infer it according to RFC 4329.
                         if (purl.hasContentTypeParameter("version")) {
-                            // Future versions of application/ecmascript 
-                            // are not supported, so skip this script 
+                            // Future versions of application/ecmascript
+                            // are not supported, so skip this script
                             // element if the version parameter is present.
                             return;
                         }
@@ -497,7 +473,7 @@ public class BaseScriptingEnvironment {
                                         buf[1] == (byte)0xfe) {
                                     if (read >= 4 && buf[2] == 0 &&
                                             buf[3] == 0) {
-                                        enc = "UTF32-LE";
+                                        enc = "UTF-32LE";
                                         pbis.skip(4);
                                     } else {
                                         enc = "UTF-16LE";
@@ -508,7 +484,7 @@ public class BaseScriptingEnvironment {
                                     enc = "UTF-16BE";
                                     pbis.skip(2);
                                 } else if (read >= 3
-                                        && buf[0] == (byte)0xef 
+                                        && buf[0] == (byte)0xef
                                         && buf[1] == (byte)0xbb
                                         && buf[2] == (byte)0xbf) {
                                     enc = "UTF-8";
@@ -544,7 +520,7 @@ public class BaseScriptingEnvironment {
                 // Inline script.
                 Node n = script.getFirstChild();
                 if (n != null) {
-                    StringBuffer sb = new StringBuffer();
+                    StringBuilder sb = new StringBuilder();
                     while (n != null) {
                         if (n.getNodeType() == Node.CDATA_SECTION_NODE
                             || n.getNodeType() == Node.TEXT_NODE)
@@ -625,9 +601,8 @@ public class BaseScriptingEnvironment {
                        false);
         NodeEventTarget t = (NodeEventTarget)elt;
 
-        final String s =
-            elt.getAttributeNS(null, SVGConstants.SVG_ONLOAD_ATTRIBUTE);
-        if (s.length() == 0) {
+        final String s = elt.getAttributeNS(null, SVGConstants.SVG_ONLOAD_ATTRIBUTE);
+        if ( s.isEmpty() ) {
             // No script to run so just dispatch the event to DOM
             // (For java presumably).
             t.dispatchEvent(ev);
@@ -643,7 +618,7 @@ public class BaseScriptingEnvironment {
         }
 
         if (checkCanRun) {
-            // Check that it is ok to run embeded scripts
+            // Check that it is ok to run embedded scripts
             checkCompatibleScriptURL(lang, docPURL);
             checkCanRun = false; // we only check once for onload handlers
         }
@@ -718,8 +693,7 @@ public class BaseScriptingEnvironment {
     }
 
     protected void dispatchSVGDocEvent(String eventType) {
-        SVGSVGElement root =
-            (SVGSVGElement)document.getDocumentElement();
+        SVGSVGElement root = (SVGSVGElement)document.getDocumentElement();
         // Event is dispatched on outermost SVG element.
         EventTarget t = root;
 
@@ -778,6 +752,7 @@ public class BaseScriptingEnvironment {
          * Implements {@link
          * org.apache.batik.bridge.Window#setInterval(String,long)}.
          */
+        @Override
         public Object setInterval(final String script, long interval) {
             return null;
         }
@@ -786,6 +761,7 @@ public class BaseScriptingEnvironment {
          * Implements {@link
          * org.apache.batik.bridge.Window#setInterval(Runnable,long)}.
          */
+        @Override
         public Object setInterval(final Runnable r, long interval) {
             return null;
         }
@@ -794,6 +770,7 @@ public class BaseScriptingEnvironment {
          * Implements {@link
          * org.apache.batik.bridge.Window#clearInterval(Object)}.
          */
+        @Override
         public void clearInterval(Object interval) {
         }
 
@@ -801,6 +778,7 @@ public class BaseScriptingEnvironment {
          * Implements {@link
          * org.apache.batik.bridge.Window#setTimeout(String,long)}.
          */
+        @Override
         public Object setTimeout(final String script, long timeout) {
             return null;
         }
@@ -817,13 +795,14 @@ public class BaseScriptingEnvironment {
          * Implements {@link
          * org.apache.batik.bridge.Window#clearTimeout(Object)}.
          */
+        @Override
         public void clearTimeout(Object timeout) {
         }
 
         /**
          * Parses the given XML string into a DocumentFragment of the
          * given document or a new document if 'doc' is null.
-         * The implementation in this class always returns 'null'
+         * The implementation in this class always returns 'null'.
          * @return The document/document fragment or null on error.
          */
         public Node parseXML(String text, Document doc) {
@@ -880,12 +859,14 @@ public class BaseScriptingEnvironment {
         /**
          * Displays an alert dialog box.
          */
+        @Override
         public void alert(String message) {
         }
 
         /**
          * Displays a confirm dialog box.
          */
+        @Override
         public boolean confirm(String message) {
             return false;
         }
@@ -893,6 +874,7 @@ public class BaseScriptingEnvironment {
         /**
          * Displays an input dialog box.
          */
+        @Override
         public String prompt(String message) {
             return null;
         }
@@ -900,6 +882,7 @@ public class BaseScriptingEnvironment {
         /**
          * Displays an input dialog box, given the default value.
          */
+        @Override
         public String prompt(String message, String defVal) {
             return null;
         }
@@ -907,6 +890,7 @@ public class BaseScriptingEnvironment {
         /**
          * Returns the current BridgeContext.
          */
+        @Override
         public BridgeContext getBridgeContext() {
             return bridgeContext;
         }
@@ -914,6 +898,7 @@ public class BaseScriptingEnvironment {
         /**
          * Returns the associated interpreter.
          */
+        @Override
         public Interpreter getInterpreter() {
             return interpreter;
         }
@@ -921,6 +906,7 @@ public class BaseScriptingEnvironment {
         /**
          * Returns the Location.
          */
+        @Override
         public Location getLocation() {
             return null;
         }
@@ -928,6 +914,7 @@ public class BaseScriptingEnvironment {
         /**
          * Returns the parent Window object.
          */
+        @Override
         public org.apache.batik.w3c.dom.Window getParent() {
             return null;
         }

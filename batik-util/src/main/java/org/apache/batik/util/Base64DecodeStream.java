@@ -20,13 +20,14 @@ package org.apache.batik.util;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 
 /**
  * This class implements a Base64 Character decoder as specified in RFC1113.
  * Unlike some other encoding schemes there is nothing in this encoding that
  * tells the decoder where a buffer starts or stops, so to use it you will need
  * to isolate your encoded data into a single chunk and then feed them
- * this decoder. The simplest way to do that is to read all of the encoded
+ * this decoder. The simplest way to do that is to read all the encoded
  * data into a string and then use:
  * <pre>
  *      byte    data[];
@@ -57,8 +58,7 @@ public class Base64DecodeStream extends InputStream {
     private static final byte[] pem_array = new byte[256];
 
     static {
-        for (int i=0; i<pem_array.length; i++)
-            pem_array[i] = -1;
+        Arrays.fill( pem_array, (byte) -1 );
 
         int idx = 0;
         for (char c='A'; c<='Z'; c++) {
