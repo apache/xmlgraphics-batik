@@ -143,6 +143,12 @@
     <testGroup id="tests.spec.coordinates">
         <test id="samples/tests/spec/coordinates/percentagesAndUnits.svg" />
         <test id="samples/tests/spec/coordinates/em.svg" />
+        <test id="samples/tests/spec/coordinates/animRotateCenter.svg-0,50,180"
+              class="org.apache.batik.test.svg.SVGAnimatedRotateCenterTest" />
+        <test id="samples/tests/spec/coordinates/animRotateCenter.svg-50,50,270"
+              class="org.apache.batik.test.svg.SVGAnimatedRotateCenterTest" />
+        <test id="samples/tests/spec/coordinates/animRotateCenter.svg-50,50,90"
+              class="org.apache.batik.test.svg.SVGAnimatedRotateCenterTest" />
     </testGroup>
 
     <testGroup id="tests.spec.filters">

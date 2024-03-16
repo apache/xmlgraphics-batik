@@ -284,7 +284,7 @@ public abstract class AbstractSVGTransformList
                     setScale(matrix.getA(), matrix.getD());
                     break;
                 case SVGTransform.SVG_TRANSFORM_ROTATE:
-                    if (matrix.getE() == 0.0f) {
+                    if (matrix.getE() == 0.0f && matrix.getF() == 0.0f) {
                         rotate(transform.getAngle());
                     } else {
                         angleOnly = false;

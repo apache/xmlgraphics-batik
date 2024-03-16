@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+
+<!--
+  - [BATIK-1361]: https://issues.apache.org/jira/browse/BATIK-1361
+  -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg"
+     width="200" height="200" viewBox="0 0 200 200">
+  <title>Animated rotate transform with center</title>
+
+  <g stroke="red">
+    <line x1="0" y1="100.5" x2="200" y2="100.5" />
+    <line x1="100.5" y1="0" x2="100.5" y2="200" />
+  </g>
+  <rect x="50.5" y="50.5" width="99" height="99"
+        stroke="currentColor" fill="none"
+        stroke-opacity="0.5" stroke-dasharray="0 0.5 5 4.5" />
+
+  <g transform="translate(50 50)" id="container">
+    <rect x="0" y="0" width="100" height="100"
+          stroke="none" fill="cornflowerblue">
+      <animateTransform attributeName="transform" type="rotate"
+                        from="270 50 50" to="630 50 50" dur="4s" />
+    </rect>
+  </g>
+
+</svg>
