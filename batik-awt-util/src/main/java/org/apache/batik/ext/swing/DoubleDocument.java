@@ -65,7 +65,7 @@ public class DoubleDocument extends PlainDocument {
         // Now, test that new value is within range.
         String added = new String(digit, 0, j);
         try{
-            StringBuffer val = new StringBuffer(curVal);
+            StringBuilder val = new StringBuilder(curVal);
             val.insert(offs, added);
             String valStr = val.toString();
             if( valStr.equals(".") || valStr.equals("-") || valStr.equals("-."))

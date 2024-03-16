@@ -955,7 +955,7 @@ public class Main implements Application {
         }
 
         // Now, save the list of visited URL into the preferences
-        StringBuffer lastVisitedBuffer = new StringBuffer( lastVisited.size() * 8 );
+        StringBuilder lastVisitedBuffer = new StringBuilder( lastVisited.size() * 8 );
 
         for (Object aLastVisited : lastVisited) {
             try {
