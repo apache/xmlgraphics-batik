@@ -32,6 +32,7 @@ import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.SVGFeatureStrings;
 import org.apache.batik.util.XMLResourceDescriptor;
 
+import org.apache.xmlgraphics.util.UnitConv;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGAElement;
 import org.w3c.dom.svg.SVGDocument;
@@ -51,6 +52,10 @@ public class UserAgentAdapter implements UserAgent {
      * The BridgeContext to use for error information.
      */
     protected BridgeContext ctx;
+
+    private float sourceResolution = 96;
+
+    private float targetResolution = UnitConv.IN2PT;
 
     /**
      * Sets the BridgeContext to be used for error information.
@@ -125,7 +130,7 @@ public class UserAgentAdapter implements UserAgent {
      * Returns the size of a px CSS unit in millimeters.
      */
     public float getPixelUnitToMillimeter() {
-        return 0.26458333333333333333333333333333f; // 96dpi
+        return UnitConv.IN2MM / getSourceResolution();
     }
 
     /**
@@ -149,8 +154,7 @@ public class UserAgentAdapter implements UserAgent {
      * Returns the  medium font size. 
      */
     public float getMediumFontSize() {
-        // 9pt (72pt = 1in)
-        return 9f * 25.4f / (72f * getPixelUnitToMillimeter());
+        return 9f * UnitConv.IN2MM / (getTargetResolution() * getPixelUnitToMillimeter());
     }
 
     /**
@@ -463,5 +467,17 @@ public class UserAgentAdapter implements UserAgent {
      */
     public FontFamilyResolver getFontFamilyResolver() {
         return DefaultFontFamilyResolver.SINGLETON;
+    }
+
+    public float getSourceResolution() { return sourceResolution; }
+
+    public float getTargetResolution() { return targetResolution; }
+
+    public void setSourceResolution(float sourceResolution) {
+        this.sourceResolution = sourceResolution;
+    }
+
+    public void setTargetResolution(float targetResolution) {
+        this.targetResolution = targetResolution;
     }
 }

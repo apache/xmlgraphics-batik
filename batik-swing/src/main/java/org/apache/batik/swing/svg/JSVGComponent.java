@@ -3097,6 +3097,22 @@ public class JSVGComponent extends JGVTComponent {
         public FontFamilyResolver getFontFamilyResolver() {
             return userAgent.getFontFamilyResolver();
         }
+
+        public float getSourceResolution() {
+            return userAgent.getSourceResolution();
+        }
+
+        public float getTargetResolution() {
+            return userAgent.getTargetResolution();
+        }
+
+        public void setSourceResolution(float sourceResolution) {
+            userAgent.setSourceResolution(sourceResolution);
+        }
+
+        public void setTargetResolution(float targetResolution) {
+            userAgent.setTargetResolution(targetResolution);
+        }
     }
 
     /**
@@ -3704,6 +3720,22 @@ public class JSVGComponent extends JGVTComponent {
 
         public FontFamilyResolver getFontFamilyResolver() {
             return DefaultFontFamilyResolver.SINGLETON;
+        }
+
+        public float getSourceResolution() {
+            return svgUserAgent.getSourceResolution();
+        }
+
+        public float getTargetResolution() {
+            return svgUserAgent.getTargetResolution();
+        }
+
+        public void setSourceResolution(float sourceResolution) {
+            svgUserAgent.setSourceResolution(sourceResolution);
+        }
+
+        public void setTargetResolution(float targetResolution) {
+            svgUserAgent.setTargetResolution(targetResolution);
         }
     }
 

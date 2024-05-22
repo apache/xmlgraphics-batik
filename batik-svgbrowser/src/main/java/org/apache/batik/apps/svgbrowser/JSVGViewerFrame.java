@@ -145,6 +145,7 @@ import org.apache.batik.util.gui.xmleditor.XMLTextEditor;
 import org.apache.batik.util.resources.ResourceManager;
 import org.apache.batik.xml.XMLUtilities;
 
+import org.apache.xmlgraphics.util.UnitConv;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.css.ViewCSS;
@@ -2744,6 +2745,10 @@ public class JSVGViewerFrame
      */
     protected class UserAgent implements SVGUserAgent {
 
+        private float sourceResolution = 96;
+
+        private float targetResolution = UnitConv.IN2PT;
+
         /**
          * Creates a new SVGUserAgent.
          */
@@ -2817,7 +2822,7 @@ public class JSVGViewerFrame
          * Returns the size of a px CSS unit in millimeters.
          */
         public float getPixelUnitToMillimeter() {
-            return 0.26458333333333333333333333333333f; // 96dpi
+            return UnitConv.IN2MM / getSourceResolution();
         }
 
         /**
@@ -2842,7 +2847,7 @@ public class JSVGViewerFrame
          */
         public float getMediumFontSize() {
             // 9pt (72pt == 1in)
-            return 9f * 25.4f / (72f * getPixelUnitToMillimeter());
+            return 9f * UnitConv.IN2MM / (getTargetResolution() * getPixelUnitToMillimeter());
         }
 
         /**
@@ -3077,6 +3082,26 @@ public class JSVGViewerFrame
             if (s != null) {
                 s.checkLoadExternalResource();
             }
+        }
+
+        @Override
+        public float getTargetResolution() {
+            return targetResolution;
+        }
+
+        @Override
+        public float getSourceResolution() {
+            return sourceResolution;
+        }
+
+        @Override
+        public void setTargetResolution(float targetResolution) {
+            this.targetResolution = targetResolution;
+        }
+
+        @Override
+        public void setSourceResolution(float sourceResolution) {
+            this.sourceResolution = sourceResolution;
         }
     }
 
