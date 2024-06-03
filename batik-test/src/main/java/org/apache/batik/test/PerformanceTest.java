@@ -18,6 +18,7 @@
  */
 package org.apache.batik.test;
 
+import java.util.Arrays;
 import java.util.Vector;
 
 /**
@@ -74,7 +75,9 @@ public abstract class PerformanceTest extends AbstractTest {
     /**
      * Force implementations to only implement <code>runOp</code>
      * and other performance specific methods.
+     * @return the results of AbstractTest's run method
      */
+    @Override
     public final TestReport run() {
         return super.run();
     }
@@ -82,8 +85,10 @@ public abstract class PerformanceTest extends AbstractTest {
     /**
      * Force implementations to only implement <code>runOp</code>
      * and other performance specific methods.
+     * @return false always, indicating failure
      */
-    public final boolean runImplBasic() throws Exception {
+    @Override
+    public final boolean runImplBasic() {
         // Should never be called for a PerformanceTest
         return false;
     }
@@ -95,18 +100,21 @@ public abstract class PerformanceTest extends AbstractTest {
      * or not the score is within the allowed deviation of the
      * reference score.
      *
+     * @return the test report
+     * @throws java.lang.Exception if an error occurred
      * @see #runRef
      * @see #runOp
      */
+    @Override
     public final TestReport runImpl() throws Exception {
         int iter = 50;
 
-        double refUnit = 0;
-        long refStart = 0;
-        long refEnd = 0;
-        long opEnd = 0;
-        long opStart = 0;
-        double opLength = 0;
+        double refUnit;
+        long refStart;
+        long refEnd;
+        long opEnd;
+        long opStart;
+        double opLength;
 
         // Run once to remove class load time from timing.
         runRef();
@@ -114,8 +122,9 @@ public abstract class PerformanceTest extends AbstractTest {
         // System.gc();
 
         double[] scores = new double[iter];
-
-        for (int i=0; i<iter; i++) {
+        // Count bad scores so it doesn't get stuck forever
+        int badScores = 0;
+        for (int i=0; i<iter; ) {
             if ( i%2 == 0) {
                 refStart = System.currentTimeMillis();
                 runRef();
@@ -133,9 +142,18 @@ public abstract class PerformanceTest extends AbstractTest {
                 refUnit = refEnd - opEnd;
                 opLength = opEnd - opStart;
             }
+            // Only accept finite and non-zero scores
+            if (opLength > 0.0 && refUnit > 0.0) {
+                scores[i++] = opLength / refUnit;
+                System.err.print(".");
+            } else {
+                System.err.print("!");
+                if (++badScores > iter) {
+                    // Too many bad scores
+                    throw new IllegalStateException("Unable to obtain reliable timings");
 
-            scores[i] = opLength / refUnit;
-            System.err.println(".");
+                }
+            }
             // System.err.println(">>>>>>>> scores[" + i + "] = " + scores[i] + " (" + refUnit + " / " + opLength + ")");
             System.gc();
         }
@@ -143,7 +161,7 @@ public abstract class PerformanceTest extends AbstractTest {
         System.err.println();
 
         // Now, sort the scores
-        sort(scores);
+        Arrays.sort(scores);
 
         // Compute the mean score based on the scores, not accounting
         // for the lowest and highest scores
@@ -184,22 +202,6 @@ public abstract class PerformanceTest extends AbstractTest {
         }
     }
 
-    protected void sort(double[] a) throws Exception {
-        for (int i = a.length - 1; i>=0; i--) {
-            boolean swapped = false;
-            for (int j = 0; j<i; j++) {
-                if (a[j] > a[j+1]) {
-                    double d = a[j];
-                    a[j] = a[j+1];
-                    a[j+1] = d;
-                    swapped = true;
-                }
-            }
-            if (!swapped)
-                return;
-        }
-    }
-
     /**
      * Runs the reference operation.
      * By default, this runs the same BufferedImage drawing
@@ -220,6 +222,7 @@ public abstract class PerformanceTest extends AbstractTest {
 
     /**
      * Runs the tested operation
+     * @throws java.lang.Exception if an error occurred
      */
     protected abstract void runOp() throws Exception;
 }
