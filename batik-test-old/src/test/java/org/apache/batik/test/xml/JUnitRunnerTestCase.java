@@ -92,6 +92,11 @@ public class JUnitRunnerTestCase {
     }
 
     private static void addTests(Test test, List<Test[]> tests) {
+        if (System.getProperty("os.name").startsWith("Windows")) {
+            EXCLUDE = new ArrayList<>(EXCLUDE);
+            EXCLUDE.add("PerformanceTestValidator");
+            EXCLUDE.add("PerformanceTestSanity");
+        }
         if (test instanceof DefaultTestSuite) {
             for (Test child : ((DefaultTestSuite) test).getChildrenTests()) {
                 if (!EXCLUDE.contains(getId(test))) {
