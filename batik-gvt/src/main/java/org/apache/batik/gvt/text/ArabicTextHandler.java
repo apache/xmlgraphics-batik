@@ -620,6 +620,12 @@ public final class ArabicTextHandler {
 
         null,                                          // 0x0628
         null,                                          // 0x0629
+        null,                                          // 0x062A
+        null,                                          // 0x062B
+        null,                                          // 0x062C
+        null,                                          // 0x062D
+        null,                                          // 0x062E
+        null,                                          // 0x062F
         null,                                          // 0x0630
         null,                                          // 0x0631
         null,                                          // 0x0632
