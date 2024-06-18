@@ -116,7 +116,7 @@ public class PNGTranscoder extends ImageTranscoder {
                 "org.apache.batik.ext.awt.image.codec.png.PNGTranscoderInternalCodecWriteAdapter");
         if (adapter == null) {
             adapter = getWriteAdapter(
-                "org.apache.batik.transcoder.image.PNGTranscoderImageIOWriteAdapter");
+                "org.apache.batik.ext.awt.image.codec.imageio.PNGTranscoderImageIOWriteAdapter");
         }
         if (adapter == null) {
             throw new TranscoderException(
