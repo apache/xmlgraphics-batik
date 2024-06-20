@@ -1221,13 +1221,13 @@ class PNGImage extends SimpleRenderedImage {
     private void parse_tEXt_chunk(PNGChunk chunk) {
 
         byte b;
-        StringBuffer key = new StringBuffer();
+        StringBuilder key = new StringBuilder();
         int textIndex = 0;
         while ((b = chunk.getByte(textIndex++)) != 0) {
             key.append( (char)b );
         }
 
-        StringBuffer value= new StringBuffer();
+        StringBuilder value= new StringBuilder();
         for (int i = textIndex; i < chunk.getLength(); i++) {
             value.append( (char)chunk.getByte(i) );
         }
@@ -1340,14 +1340,14 @@ class PNGImage extends SimpleRenderedImage {
     private void parse_zTXt_chunk(PNGChunk chunk) {
 
         int textIndex = 0;
-        StringBuffer key = new StringBuffer();
+        StringBuilder key = new StringBuilder();
         byte b;
         while ((b = chunk.getByte(textIndex++)) != 0) {
             key.append( (char)b );
         }
         /* int method = */ chunk.getByte(textIndex++);
 
-        StringBuffer value = new StringBuffer();
+        StringBuilder value = new StringBuilder();
         try {
             int length = chunk.getLength() - textIndex;
             byte[] data = chunk.getData();
