@@ -2747,8 +2747,6 @@ public class JSVGViewerFrame
 
         private float sourceResolution = 96;
 
-        private float targetResolution = UnitConv.IN2PT;
-
         /**
          * Creates a new SVGUserAgent.
          */
@@ -2847,7 +2845,7 @@ public class JSVGViewerFrame
          */
         public float getMediumFontSize() {
             // 9pt (72pt == 1in)
-            return 9f * UnitConv.IN2MM / (getTargetResolution() * getPixelUnitToMillimeter());
+            return 9f * UnitConv.IN2MM / (UnitConv.IN2PT * getPixelUnitToMillimeter());
         }
 
         /**
@@ -3085,18 +3083,8 @@ public class JSVGViewerFrame
         }
 
         @Override
-        public float getTargetResolution() {
-            return targetResolution;
-        }
-
-        @Override
         public float getSourceResolution() {
             return sourceResolution;
-        }
-
-        @Override
-        public void setTargetResolution(float targetResolution) {
-            this.targetResolution = targetResolution;
         }
 
         @Override

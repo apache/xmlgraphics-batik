@@ -3102,17 +3102,10 @@ public class JSVGComponent extends JGVTComponent {
             return userAgent.getSourceResolution();
         }
 
-        public float getTargetResolution() {
-            return userAgent.getTargetResolution();
-        }
-
         public void setSourceResolution(float sourceResolution) {
             userAgent.setSourceResolution(sourceResolution);
         }
 
-        public void setTargetResolution(float targetResolution) {
-            userAgent.setTargetResolution(targetResolution);
-        }
     }
 
     /**
@@ -3726,16 +3719,8 @@ public class JSVGComponent extends JGVTComponent {
             return svgUserAgent.getSourceResolution();
         }
 
-        public float getTargetResolution() {
-            return svgUserAgent.getTargetResolution();
-        }
-
         public void setSourceResolution(float sourceResolution) {
             svgUserAgent.setSourceResolution(sourceResolution);
-        }
-
-        public void setTargetResolution(float targetResolution) {
-            svgUserAgent.setTargetResolution(targetResolution);
         }
     }
 

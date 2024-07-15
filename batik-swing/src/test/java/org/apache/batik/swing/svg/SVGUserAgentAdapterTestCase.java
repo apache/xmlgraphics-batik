@@ -26,54 +26,34 @@ import static org.junit.Assert.assertEquals;
 public class SVGUserAgentAdapterTestCase {
 
     @Test
-    public void testEqualResolution_72() {
-        checkGetMediumFontSize(72f, 72f, 9f);
+    public void testMediumFontResolution_72() {
+        checkGetMediumFontSize(72f, 9f);
     }
 
     @Test
-    public void testEqualResolution_96() {
-        checkGetMediumFontSize(96f, 96f, 9f);
+    public void testMediumFontResolution_96() {
+        checkGetMediumFontSize(96f, 12f);
     }
 
     @Test
-    public void testDiffResolution_72_96() {
-        checkGetMediumFontSize(72f, 96f, 6.74f);
+    public void testPixelMM_72() { checkGetPixelUnitToMillimeter(72f); }
+
+    @Test
+    public void testPixelMM_96() {
+        checkGetPixelUnitToMillimeter(96f);
     }
 
-    @Test
-    public void testDiffResolution_96_72() {
-        checkGetMediumFontSize(96f, 72f, 12f);
-    }
-
-    @Test
-    public void testPixelMM_72() {
-        checkGetPixelUnitToMillimeter(72f, 72f);
-    }
-
-    @Test
-    public void testPixelMM_96() { checkGetPixelUnitToMillimeter(96f, 96f); }
-
-    @Test
-    public void testPixelMM_72_96() { checkGetPixelUnitToMillimeter(72f, 96f); }
-
-    @Test
-    public void testPixelMM_96_72() {
-        checkGetPixelUnitToMillimeter(96f, 72f);
-    }
-
-    private void checkGetMediumFontSize(float sourceRes, float targetRes, float expectedSize) {
+    private void checkGetMediumFontSize(float sourceRes, float expectedSize) {
         SVGUserAgentAdapter adapter = new SVGUserAgentAdapter();
         adapter.setSourceResolution(sourceRes);
-        adapter.setTargetResolution(targetRes);
 
         // Size must be calculated based on the dpi settings
         assertEquals(expectedSize, adapter.getMediumFontSize(), 0.01);
     }
 
-    private void checkGetPixelUnitToMillimeter(float sourceRes, float targetRes) {
+    private void checkGetPixelUnitToMillimeter(float sourceRes) {
         SVGUserAgentAdapter adapter = new SVGUserAgentAdapter();
         adapter.setSourceResolution(sourceRes);
-        adapter.setTargetResolution(targetRes);
 
         // Pixel unit to mm must be calculated using the resolution set in the conf
         // instead of assuming what the resolution is

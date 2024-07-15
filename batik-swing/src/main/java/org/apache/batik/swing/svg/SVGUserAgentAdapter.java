@@ -54,8 +54,6 @@ public class SVGUserAgentAdapter implements SVGUserAgent {
 
     private float sourceResolution = 96;
 
-    private float targetResolution = UnitConv.IN2PT;
-
     public SVGUserAgentAdapter() { }
 
     /**
@@ -136,7 +134,7 @@ public class SVGUserAgentAdapter implements SVGUserAgent {
      * Returns the  medium font size.
      */
     public float getMediumFontSize() {
-        return 9f * UnitConv.IN2MM / (getTargetResolution() * getPixelUnitToMillimeter());
+        return 9f * UnitConv.IN2MM / (UnitConv.IN2PT * getPixelUnitToMillimeter());
     }
 
     /**
@@ -360,15 +358,7 @@ public class SVGUserAgentAdapter implements SVGUserAgent {
         return sourceResolution;
     }
 
-    public float getTargetResolution() {
-        return targetResolution;
-    }
-
     public void setSourceResolution(float sourceResolution) {
         this.sourceResolution = sourceResolution;
-    }
-
-    public void setTargetResolution(float targetResolution) {
-        this.targetResolution = targetResolution;
     }
 }

@@ -228,11 +228,7 @@ public interface SVGUserAgent {
     void checkLoadExternalResource(ParsedURL resourceURL,
                                    ParsedURL docURL) throws SecurityException;
 
-    float getTargetResolution();
-
     float getSourceResolution();
-
-    void setTargetResolution(float targetResolution);
 
     void setSourceResolution(float sourceResolution);
 }

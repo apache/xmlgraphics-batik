@@ -55,8 +55,6 @@ public class UserAgentAdapter implements UserAgent {
 
     private float sourceResolution = 96;
 
-    private float targetResolution = UnitConv.IN2PT;
-
     /**
      * Sets the BridgeContext to be used for error information.
      */
@@ -154,7 +152,7 @@ public class UserAgentAdapter implements UserAgent {
      * Returns the  medium font size. 
      */
     public float getMediumFontSize() {
-        return 9f * UnitConv.IN2MM / (getTargetResolution() * getPixelUnitToMillimeter());
+        return 9f * UnitConv.IN2MM / (UnitConv.IN2PT * getPixelUnitToMillimeter());
     }
 
     /**
@@ -471,13 +469,7 @@ public class UserAgentAdapter implements UserAgent {
 
     public float getSourceResolution() { return sourceResolution; }
 
-    public float getTargetResolution() { return targetResolution; }
-
     public void setSourceResolution(float sourceResolution) {
         this.sourceResolution = sourceResolution;
-    }
-
-    public void setTargetResolution(float targetResolution) {
-        this.targetResolution = targetResolution;
     }
 }
