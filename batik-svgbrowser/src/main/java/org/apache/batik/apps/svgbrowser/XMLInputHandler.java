@@ -165,6 +165,7 @@ public class XMLInputHandler implements SquiggleInputHandler {
         
         // First, load the input XML document into a generic DOM tree
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        dbf.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
         dbf.setValidating(false);
         dbf.setNamespaceAware(true);
 
