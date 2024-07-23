@@ -71,7 +71,7 @@ public class CmapIndexEntry {
                 default: encoding = "";
             }
         }
-        return new StringBuffer()
+        return new StringBuilder()
         .append( "platform id: " )
         .append( platformId )
         .append( platform )

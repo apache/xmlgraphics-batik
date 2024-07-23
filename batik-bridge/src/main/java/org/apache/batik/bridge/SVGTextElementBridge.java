@@ -846,8 +846,8 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
     protected AttributedString buildAttributedString(BridgeContext ctx,
                                                      Element element) {
 
-        AttributedStringBuffer asb = new AttributedStringBuffer();
-        fillAttributedStringBuffer(ctx, element, true, null, null, null, asb);
+        AttributedStringBuilder asb = new AttributedStringBuilder();
+        fillAttributedStringBuilder(ctx, element, true, null, null, null, asb);
         return asb.toAttributedString();
     }
 
@@ -861,15 +861,15 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
     protected int endLimit;
 
     /**
-     * Fills the given AttributedStringBuffer.
+     * Fills the given AttributedStringBuilder.
      */
-    protected void fillAttributedStringBuffer(BridgeContext ctx,
+    protected void fillAttributedStringBuilder(BridgeContext ctx,
                                               Element element,
                                               boolean top,
                                               TextPath textPath,
                                               Integer bidiLevel,
                                               Map initialAttributes,
-                                              AttributedStringBuffer asb) {
+                                              AttributedStringBuilder asb) {
         // 'requiredFeatures', 'requiredExtensions', 'systemLanguage' &
         // 'display="none".
         if ((!SVGUtilities.matchUserAgent(element, ctx.getUserAgent())) ||
@@ -927,7 +927,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                 if (ln.equals(SVG_TSPAN_TAG) ||
                     ln.equals(SVG_ALT_GLYPH_TAG)) {
                     int before = asb.count;
-                    fillAttributedStringBuffer(ctx,
+                    fillAttributedStringBuilder(ctx,
                                                nodeElement,
                                                false,
                                                textPath,
@@ -944,7 +944,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                         = textPathBridge.createTextPath(ctx, nodeElement);
                     if (newTextPath != null) {
                         int before = asb.count;
-                        fillAttributedStringBuffer(ctx,
+                        fillAttributedStringBuilder(ctx,
                                                    nodeElement,
                                                    false,
                                                    newTextPath,
@@ -991,7 +991,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                          SVG_EVENT_CLICK, l, false);
 
                     int before = asb.count;
-                    fillAttributedStringBuffer(ctx,
+                    fillAttributedStringBuilder(ctx,
                                                nodeElement,
                                                false,
                                                textPath,
@@ -1046,7 +1046,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
     protected String normalizeString(String s,
                                      boolean preserve,
                                      boolean stripfirst) {
-        StringBuffer sb = new StringBuffer(s.length());
+        StringBuilder sb = new StringBuilder(s.length());
         if (preserve) {
             for (int i = 0; i < s.length(); i++) {
                 char c = s.charAt(i);
@@ -1104,7 +1104,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
     /**
      * This class is used to build an AttributedString.
      */
-    protected static class AttributedStringBuffer {
+    protected static class AttributedStringBuilder {
 
         /**
          * The strings.
@@ -1127,9 +1127,9 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         protected int length;
 
         /**
-         * Creates a new empty AttributedStringBuffer.
+         * Creates a new empty AttributedStringBuilder.
          */
-        public AttributedStringBuffer() {
+        public AttributedStringBuilder() {
             strings    = new ArrayList();
             attributes = new ArrayList();
             count      = 0;
@@ -1137,7 +1137,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         }
 
         /**
-         * Tells whether this AttributedStringBuffer is empty.
+         * Tells whether this AttributedStringBuilder is empty.
          */
         public boolean isEmpty() {
             return count == 0;
@@ -1224,7 +1224,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                                             (Map)attributes.get(0));
             }
 
-            StringBuffer sb = new StringBuffer( strings.size() * 5 );
+            StringBuilder sb = new StringBuilder( strings.size() * 5 );
             for (Object string : strings) {
                 sb.append((String) string);
             }
@@ -1261,7 +1261,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                 return (String)strings.get(0);
             }
 
-            StringBuffer sb = new StringBuffer( strings.size() * 5 );
+            StringBuilder sb = new StringBuilder( strings.size() * 5 );
             for (Object string : strings) {
                 sb.append((String) string);
             }

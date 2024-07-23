@@ -178,7 +178,7 @@ public class SVGRescaleOp extends AbstractSVGFilterConverter {
             //
 
             // Process filter attribute
-//            StringBuffer filterAttrBuf = new StringBuffer(URL_PREFIX);
+//            StringBuilder filterAttrBuf = new StringBuilder(URL_PREFIX);
 //            filterAttrBuf.append(SIGN_POUND);
 //            filterAttrBuf.append(filterDef.getAttributeNS(null, SVG_ID_ATTRIBUTE));
 //            filterAttrBuf.append(URL_SUFFIX);

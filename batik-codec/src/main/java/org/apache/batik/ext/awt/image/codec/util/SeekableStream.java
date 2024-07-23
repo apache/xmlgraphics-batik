@@ -867,7 +867,7 @@ public abstract class SeekableStream extends InputStream implements DataInput {
      * @exception  IOException  if an I/O error occurs.
      */
     public final String readLine() throws IOException {
-        StringBuffer input = new StringBuffer();
+        StringBuilder input = new StringBuilder();
         int c = -1;
         boolean eol = false;
 
