@@ -19,10 +19,16 @@
 
 package org.apache.batik.svggen.font;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.Set;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Scanner;
 
 import org.apache.batik.svggen.font.table.CmapFormat;
 import org.apache.batik.svggen.font.table.Feature;
@@ -262,6 +268,109 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
     }
 
     /**
+     * Implements an Iterator interface to select required glyphs based on user
+     *
+     * @version $Id$
+     * @author <a href="mailto:nilam.gaikwad@nxp.com">Nilam Gaikwad</a>
+     */
+    public static class GlyphSelector implements Iterator<Integer> {
+
+	    static final int GLYPH_SELECTOR_LINEAR_RANGE     = 1;
+	    static final int GLYPH_SELECTOR_NON_LINEAR_RANGE = 2;
+
+        int type;
+        int startIndex, endIndex;
+        int currentIndex = 0;
+        List<Integer> requiredGlyphIndexes = null;
+
+        /**
+         * GlyphSelector Default constructore
+         */
+        public GlyphSelector() {
+            init(-1,-1);
+        }
+
+        /**
+         * GlyphSelector constructor which prepare list of unicode glyph number
+         * to extract from TTF file.
+         *
+         * @param fileName A file containing unicode glyph number list.
+         */
+        public GlyphSelector(String fileName) {
+            init(fileName);
+        }
+
+        /**
+         * Initializes glyphSelector list from given disk file.
+         *
+         * @param fileName File which contains list of unicode number of glyphs
+         *                    to extract from TTF file.
+         */
+        protected void init(String fileName) {
+            /* This is non-linear glyph selector */
+            type = GLYPH_SELECTOR_NON_LINEAR_RANGE;
+
+            /* Populate array */
+            requiredGlyphIndexes = new ArrayList<Integer>();
+            requiredGlyphIndexes.clear();
+            currentIndex = 0;
+
+            try {
+                Scanner intList = new Scanner(new File(fileName));
+                while (intList.hasNextInt()) {
+                    requiredGlyphIndexes.add(intList.nextInt());
+                }
+                intList.close();
+            } catch (FileNotFoundException e) {
+                System.err.println(e);
+            }
+        }
+
+        /**
+         * Initializes Unicode number extractor for given start-end range.
+         *
+         * @param start The starting unicode number from required glyphs.
+         * @param end The last unicode number from required glyphs.
+         */
+        protected void init(int start, int end) {
+            type = GLYPH_SELECTOR_LINEAR_RANGE;
+            startIndex = start;
+            endIndex = end;
+            currentIndex = startIndex;
+        }
+
+        /**
+         * Returns true if there are additional unicode number to extract from TTF font
+         * Return false otherwise
+         */
+        public boolean hasNext() {
+            boolean result = false;
+            if (type == GLYPH_SELECTOR_LINEAR_RANGE) {
+                if (currentIndex >= startIndex && currentIndex < endIndex)
+                    result = true;
+            } else if (type == GLYPH_SELECTOR_NON_LINEAR_RANGE) {
+                if (currentIndex < requiredGlyphIndexes.size())
+                    result = true;
+            }
+            return result;
+        }
+
+        /**
+         * Returns a unicode character number which user has required for glyph extraction
+         */
+        public Integer next() {
+            Integer iVal = 0;
+            if (type == GLYPH_SELECTOR_LINEAR_RANGE) {
+                iVal = currentIndex;
+            } else if (type == GLYPH_SELECTOR_NON_LINEAR_RANGE) {
+                iVal = requiredGlyphIndexes.get(currentIndex);
+            }
+            currentIndex++;
+            return iVal;
+        }
+    }
+
+    /**
      * Returns a &lt;font&gt;&#x2e;&#x2e;&#x2e;&lt;/font&gt; block,
      * defining the specified font.
      *
@@ -270,8 +379,9 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
      * @param first The first character in the output range
      * @param last The last character in the output range
      * @param forceAscii Force the use of the ASCII character map
+     * @param glyphSelector Iterator object which contains list of glyph indexs for extraction
      */
-    protected static void writeFontAsSVGFragment(PrintStream ps, Font font, String id, int first, int last, boolean autoRange, boolean forceAscii)
+    protected static void writeFontAsSVGFragment(PrintStream ps, Font font, String id, int first, int last, boolean autoRange, boolean forceAscii, GlyphSelector glyphSelector)
     throws Exception {
         //    StringBuffer sb = new StringBuffer();
         //    int horiz_advance_x = font.getHmtxTable().getAdvanceWidth(
@@ -362,6 +472,7 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
             initialSubst, medialSubst, terminalSubst, ""));
 
         try {
+            boolean glyphSelectorReInitRequired = (autoRange == true || ( first != -1 && last != -1));
             if (first == -1) {
                 if (!autoRange) first = DEFAULT_FIRST;
                 else            first = cmapFmt.getFirst();
@@ -371,9 +482,14 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
                 else            last = cmapFmt.getLast();
             }
 
-            // Include our requested range
+            // Include our requested characters
             Set glyphSet = new HashSet();
-            for (int i = first; i <= last; i++) {
+            if (glyphSelectorReInitRequired) {
+                glyphSelector.init(first, last);
+            }
+
+            while (glyphSelector.hasNext()) {
+                int i = glyphSelector.next().intValue();
                 int glyphIndex = cmapFmt.mapCharCode(i);
                 //        ps.println(String.valueOf(i) + " -> " + String.valueOf(glyphIndex));
                 //      if (font.getGlyphs()[glyphIndex] != null)
@@ -712,6 +828,7 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
 
     public static final char   ARG_KEY_START_CHAR = '-';
     public static final String ARG_KEY_CHAR_RANGE_LOW = "-l";
+    public static final String ARG_REQUIRED_UNICODE_LIST = "-u";
     public static final String ARG_KEY_CHAR_RANGE_HIGH = "-h";
     public static final String ARG_KEY_ID = "-id";
     public static final String ARG_KEY_ASCII = "-ascii";
@@ -728,6 +845,7 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
             String path = parseArgs(args, null);
             String low = parseArgs(args, ARG_KEY_CHAR_RANGE_LOW);
             String high = parseArgs(args, ARG_KEY_CHAR_RANGE_HIGH);
+            String unicodeCharListFile = parseArgs(args, ARG_REQUIRED_UNICODE_LIST);
             String id = parseArgs(args, ARG_KEY_ID);
             String ascii = parseArgs(args, ARG_KEY_ASCII);
             String testCard = parseArgs(args, ARG_KEY_TESTCARD);
@@ -735,6 +853,7 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
             String autoRange = parseArgs(args, ARG_KEY_AUTO_RANGE);
             PrintStream ps = null;
             FileOutputStream fos = null;
+            GlyphSelector gs = new GlyphSelector();
 
             // What are we outputting to?
             if (outPath != null) {
@@ -750,6 +869,10 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
             if (path != null) {
                 Font font = Font.create(path);
 
+                if (unicodeCharListFile != null) {
+                    gs.init(unicodeCharListFile);
+                }
+
                 // Write the various parts of the SVG file
                 writeSvgBegin(ps);
                 writeSvgDefsBegin(ps);
@@ -760,7 +883,8 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
                     (low != null ? Integer.parseInt(low) : -1),
                     (high != null ? Integer.parseInt(high) : -1),
                     (autoRange != null),
-                    (ascii != null));
+                    (ascii != null),
+                    gs);
                 writeSvgDefsEnd(ps);
                 if (testCard != null) {
                     String fontFamily = font.getNameTable().getRecord(Table.nameFontFamilyName);
