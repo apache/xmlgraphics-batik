@@ -317,8 +317,44 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
 
             try {
                 Scanner intList = new Scanner(new File(fileName));
-                while (intList.hasNextInt()) {
-                    requiredGlyphIndexes.add(intList.nextInt());
+                while (intList.hasNext()) {
+                    String s = intList.next();
+
+                    if (s.length() > 0) {
+                        int radix, p0, v;
+                        boolean intParsingDone = false;
+                        char[] cl = s.toCharArray();
+
+                        if (cl[0] == '0' && (cl[1] == 'x' || cl[1] == 'X')) {
+                            radix = 16;
+                            p0 = 2;
+                        } else {
+                            radix = 10;
+                            p0 = 0;
+                        }
+                        v = 0;
+                        for (int i = p0; i < cl.length; i++) {
+                            char c = cl[i];
+                            if (c >= 'A' && c <= 'F')
+                                v = v * radix + c - 'A' + 10;
+                            else if (c >= 'a' && c <= 'f')
+                                v = v * radix + c - 'a' + 10;
+                            else if (c >= '0' && c <= '9')
+                                v = v * radix + c - '0';
+                            else
+                                break;
+                            intParsingDone = true;
+                        }
+                        cl = null;
+
+                        if (intParsingDone == false) {
+                            System.err.printf("WARNING: Not-parsed string [%s]\n", s);
+                        } else if (requiredGlyphIndexes.contains(v) == false) {
+                            requiredGlyphIndexes.add(v);
+                        } else {
+                            System.err.printf("WARNING: Duplicate string [%s]\n", s);
+                        }
+                    }
                 }
                 intList.close();
             } catch (FileNotFoundException e) {
