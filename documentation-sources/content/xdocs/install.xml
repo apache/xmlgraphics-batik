@@ -237,12 +237,6 @@ jar xvf batik-1.6.zip</source>
           you put the <code>jython.jar</code> file in the Batik <code>lib</code>
           directory.
         </li>
-        <li>
-          For Tcl, you need to download Jacl &amp; TclBlend distribution at
-          <a href="http://dev.scriptics.com/software/java/">http://dev.scriptics.com/software/java/</a>.
-          Then you put the <code>jacl.jar</code> and <code>tcljava.jar</code>
-          files in the Batik <code>lib</code> directory.
-        </li>
       </ul>
       <p>
         Conversely, you can remove the <code>js.jar</code> of the Batik
