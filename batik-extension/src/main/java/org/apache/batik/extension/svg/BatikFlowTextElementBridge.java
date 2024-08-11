@@ -321,7 +321,7 @@ public class BatikFlowTextElementBridge extends SVGTextElementBridge
         divTPI.fillPaint = Color.black;
         elemTPI.put(div, divTPI);
 
-        AttributedStringBuffer asb = new AttributedStringBuffer();
+        AttributedStringBuilder asb = new AttributedStringBuilder();
         List paraEnds  = new ArrayList();
         List paraElems = new ArrayList();
         List lnLocs    = new ArrayList();
@@ -337,13 +337,13 @@ public class BatikFlowTextElementBridge extends SVGTextElementBridge
 
             String ln = e.getLocalName();
             if (ln.equals(BATIK_EXT_FLOW_PARA_TAG)) {
-                fillAttributedStringBuffer
+                fillAttributedStringBuilder
                     (ctx, e, true, null, null, asb, lnLocs);
 
                 paraElems.add(e);
                 paraEnds.add(asb.length());
             } else if (ln.equals(BATIK_EXT_FLOW_REGION_BREAK_TAG)) {
-                fillAttributedStringBuffer
+                fillAttributedStringBuilder
                         (ctx, e, true, null, null, asb, lnLocs);
 
                 paraElems.add(e);
@@ -510,14 +510,14 @@ public class BatikFlowTextElementBridge extends SVGTextElementBridge
     }
 
     /**
-     * Fills the given AttributedStringBuffer.
+     * Fills the given AttributedStringBuilder.
      */
-    protected void fillAttributedStringBuffer(BridgeContext ctx,
+    protected void fillAttributedStringBuilder(BridgeContext ctx,
                                               Element element,
                                               boolean top,
                                               Integer bidiLevel,
                                               Map initialAttributes,
-                                              AttributedStringBuffer asb,
+                                              AttributedStringBuilder asb,
                                               List lnLocs) {
         // 'requiredFeatures', 'requiredExtensions', 'systemLanguage' &
         // 'display="none".
@@ -574,7 +574,7 @@ public class BatikFlowTextElementBridge extends SVGTextElementBridge
 
                 if (ln.equals(BATIK_EXT_FLOW_LINE_TAG)) {
                     int before = asb.length();
-                    fillAttributedStringBuffer(ctx, nodeElement, false,
+                    fillAttributedStringBuilder(ctx, nodeElement, false,
                                                subBidiLevel, initialAttributes,
                                                asb, lnLocs);
                     // System.out.println("Line: " + asb.length() +
@@ -586,7 +586,7 @@ public class BatikFlowTextElementBridge extends SVGTextElementBridge
                 } else if (ln.equals(BATIK_EXT_FLOW_SPAN_TAG) ||
                            ln.equals(SVG_ALT_GLYPH_TAG)) {
                     int before = asb.length();
-                    fillAttributedStringBuffer(ctx, nodeElement, false,
+                    fillAttributedStringBuilder(ctx, nodeElement, false,
                                                subBidiLevel, initialAttributes,
                                                asb, lnLocs);
                     if (asb.length() != before) {
@@ -618,7 +618,7 @@ public class BatikFlowTextElementBridge extends SVGTextElementBridge
                              false, null);
                     }
                     int before = asb.length();
-                    fillAttributedStringBuffer(ctx, nodeElement, false,
+                    fillAttributedStringBuilder(ctx, nodeElement, false,
                                                subBidiLevel, initialAttributes,
                                                asb, lnLocs);
                     if (asb.length() != before) {
