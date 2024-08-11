@@ -305,6 +305,7 @@ public class SVGAccuracyTest extends AbstractTest
             return false;
         }
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        dbf.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
         dbf.setNamespaceAware(true);
         DocumentBuilder db = dbf.newDocumentBuilder();
         Document doc1 = db.parse(new ByteArrayInputStream(ref));
