@@ -425,6 +425,8 @@ To display the available targets type:
         <include name="docs/**"/>
         <include name="extensions/**"/>
         <include name="lib/*.jar"/>
+        <exclude name="lib/junit*.jar"/>
+        <exclude name="lib/hamcrest*.jar"/>
         <include name="lib/make-squiggle-app.sh"/>
       </zipfileset>
       <zipfileset dir="lib" prefix="${project}-${completeVersion}/lib">
@@ -460,6 +462,8 @@ To display the available targets type:
         <include name="svn-revision"/>
         <include name="contrib/**"/>
         <include name="lib/**"/>
+        <exclude name="lib/junit*.jar"/>
+        <exclude name="lib/hamcrest*.jar"/>
         <include name="documentation-sources/**"/>
         <include name="resources/**"/>
         <include name="samples/**"/>
@@ -494,6 +498,8 @@ To display the available targets type:
         <include name="docs/**"/>
         <include name="extensions/**"/>
         <include name="lib/*.jar"/>
+        <exclude name="lib/junit*.jar"/>
+        <exclude name="lib/hamcrest*.jar"/>
         <include name="lib/make-squiggle-app.sh"/>
       </tarfileset>
       <tarfileset dir="lib" prefix="${project}-${completeVersion}/lib">
@@ -529,6 +535,8 @@ To display the available targets type:
         <include name="svn-revision"/>
         <include name="contrib/**"/>
         <include name="lib/**"/>
+        <exclude name="lib/junit*.jar"/>
+        <exclude name="lib/hamcrest*.jar"/>
         <include name="documentation-sources/**"/>
         <include name="resources/**"/>
         <include name="samples/**"/>
@@ -621,6 +629,8 @@ To display the available targets type:
         <include name="svn-revision"/>
         <include name="contrib/**"/>
         <include name="lib/**"/>
+        <exclude name="lib/junit*.jar"/>
+        <exclude name="lib/hamcrest*.jar"/>
         <include name="documentation-sources/**"/>
         <include name="resources/**"/>
         <include name="samples/**"/>
@@ -684,6 +694,8 @@ JAVA=/usr/bin/java
       <fileset dir="${build}">
         <include name="*.jar"/>
         <include name="lib/**"/>
+        <exclude name="lib/junit*.jar"/>
+        <exclude name="lib/hamcrest*.jar"/>
         <include name="extensions/**"/>
       </fileset>
       <fileset dir="${src}">
