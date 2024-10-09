@@ -129,7 +129,7 @@
         <configuration>
           <archive>
             <manifestEntries>
-              <Automatic-Module-Name>org.apache.xmlgraphics.batik.brdige</Automatic-Module-Name>
+              <Automatic-Module-Name>org.apache.xmlgraphics.batik.bridge</Automatic-Module-Name>
             </manifestEntries>
           </archive>
         </configuration>
