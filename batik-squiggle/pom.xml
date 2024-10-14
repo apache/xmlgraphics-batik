@@ -59,6 +59,8 @@
               <mainClass>org.apache.batik.apps.svgbrowser.Main</mainClass>
               <addClasspath>true</addClasspath>
               <classpathPrefix>lib/</classpathPrefix>
+              <useUniqueVersions>false</useUniqueVersions>
+              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
             </manifest>
             <manifestEntries>
               <Automatic-Module-Name>org.apache.xmlgraphics.batik.squiggle</Automatic-Module-Name>

@@ -69,6 +69,8 @@
               <mainClass>org.apache.batik.apps.slideshow.Main</mainClass>
               <addClasspath>true</addClasspath>
               <classpathPrefix>lib/</classpathPrefix>
+              <useUniqueVersions>false</useUniqueVersions>
+              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
             </manifest>
             <manifestEntries>
               <Automatic-Module-Name>org.apache.xmlgraphics.batik.slideshow</Automatic-Module-Name>

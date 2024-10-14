@@ -83,6 +83,9 @@
         <version>${jar.version}</version>
         <configuration>
           <archive>
+            <manifest>
+              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+            </manifest>          
             <manifestEntries>
               <Automatic-Module-Name>org.apache.xmlgraphics.batik.util</Automatic-Module-Name>
             </manifestEntries>
