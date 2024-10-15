@@ -83,7 +83,7 @@ public class BidiAttributedCharacterIterator implements AttributedCharacterItera
             // of null keys/values).
             as = new AttributedString(aci);
         } else {
-            StringBuffer strB = new StringBuffer( numChars );
+            StringBuilder strB = new StringBuilder( numChars );
             char c = aci.first();
             for (int i = 0; i < numChars; i++) {
                 strB.append(c);
@@ -164,7 +164,7 @@ public class BidiAttributedCharacterIterator implements AttributedCharacterItera
                                      numChars, maxBiDi);
 
         // construct the string in the new order
-        StringBuffer reorderedString = new StringBuffer( numChars );
+        StringBuilder reorderedString = new StringBuilder( numChars );
         int reorderedFirstChar = 0;
         for (int i = 0; i < numChars; i++) {
             int srcIdx = newCharOrder[i];
