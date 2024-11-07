@@ -1341,7 +1341,7 @@ public class GlyphLayout implements TextSpanLayout {
                 gv.setGlyphTransform(i, glyphTransform);
             }
 
-            aciIndex += gv.getCharacterCount(i,i);
+            aciIndex = getAciIndex(aciIndex, i);
             if (aciIndex >= charMap.length)
                 aciIndex = charMap.length-1;
             ch = aci.setIndex(aciIndex+aciStart);
@@ -1435,7 +1435,7 @@ public class GlyphLayout implements TextSpanLayout {
                         transparentStart = -1;
                     }
                 }
-                aciIndex += gv.getCharacterCount(i,i);
+                aciIndex = getAciIndex(aciIndex, i);
                 if (aciIndex >= charMap.length)
                     aciIndex = charMap.length-1;
                 ch = aci.setIndex(aciIndex+aciStart);
@@ -1449,6 +1449,10 @@ public class GlyphLayout implements TextSpanLayout {
         spacingApplied = false;
         glyphAdvances  = null;
         pathApplied    = false;
+    }
+
+    protected int getAciIndex(int aciIndex, int loopIndex) {
+        return aciIndex + gv.getCharacterCount(loopIndex, loopIndex);
     }
 
     /**
@@ -1886,7 +1890,7 @@ public class GlyphLayout implements TextSpanLayout {
             }
             currentPosition += glyphAdvance;
             glyphOffset += nextGlyphOffset;
-            currentChar += gv.getCharacterCount(i,i);
+            currentChar = getAciIndex(currentChar, i);
             if (currentChar >= charMap.length)
                 currentChar = charMap.length-1;
             ch = aci.setIndex(currentChar+start);
