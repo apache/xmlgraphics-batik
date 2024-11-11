@@ -1,0 +1,38 @@
+# This workflow will build a Java project with Ant (includes mvn install)
+
+name: Java CI with Ant
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    name: Test with Java ${{ matrix.jdk }} ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        jdk: ['8', '11']
+        os: [ubuntu-latest]
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up JDK ${{ matrix.jdk }}
+      uses: actions/setup-java@v4
+      with:
+        java-version: ${{ matrix.jdk }}
+        distribution: 'temurin'
+        cache: maven
+
+    - name: Install Ant
+      run: sudo apt-get install ant ant-optional -y
+
+    # Ant build requires a mvn install to be run first
+    - name: Build with Maven
+      run: mvn install
+
+    - name: Build jars with Ant
+      run: ant -noinput -buildfile build.xml jars
