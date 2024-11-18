@@ -18,6 +18,7 @@
  */
 package org.apache.batik.test.xml;
 
+import org.apache.batik.script.rhino.RhinoClassShutter;
 import org.apache.batik.test.DefaultTestSuite;
 import org.apache.batik.test.Test;
 import org.apache.batik.test.TestException;
@@ -57,6 +58,9 @@ public class JUnitRunnerTestCase {
         fos.close();
         tmp.deleteOnExit();
         System.setProperty("java.security.policy", tmp.getAbsolutePath());
+        RhinoClassShutter.WHITELIST.addAll(Arrays.asList("java.io.PrintStream", "java.lang.System", "java.net.URL",
+                ".*Permission", "org.w3c.dom.*", "org.apache.batik.w3c.*", "org.apache.batik.anim.*",
+                "org.apache.batik.dom.*", "org.apache.batik.css.*"));
     }
 
     @Parameterized.Parameters
@@ -88,6 +92,11 @@ public class JUnitRunnerTestCase {
     }
 
     private static void addTests(Test test, List<Test[]> tests) {
+        if (System.getProperty("os.name").startsWith("Windows")) {
+            EXCLUDE = new ArrayList<>(EXCLUDE);
+            EXCLUDE.add("PerformanceTestValidator");
+            EXCLUDE.add("PerformanceTestSanity");
+        }
         if (test instanceof DefaultTestSuite) {
             for (Test child : ((DefaultTestSuite) test).getChildrenTests()) {
                 if (!EXCLUDE.contains(getId(test))) {
@@ -120,19 +129,21 @@ public class JUnitRunnerTestCase {
         String id = getId(test);
         System.out.println("Running: " + id);
         TestReport report = test.run();
+        StringBuilder error = new StringBuilder();
         if (!report.hasPassed()) {
-            System.out.println("Failed: " + id);
+            error.append("Failed: ").append(id).append("\n");
             if (report.getDescription() != null) {
                 for (TestReport.Entry entry : report.getDescription()) {
-                    System.out.println(entry.getKey() + " " + entry.getValue());
+                    error.append(entry.getKey()).append(" ").append(entry.getValue()).append("\n");
                 }
             }
         }
-        Assert.assertTrue(id, report.hasPassed());
+        Assert.assertTrue(error.toString(), report.hasPassed());
     }
 
     private static List<String> EXCLUDE = Arrays.asList(
 //fail on CI
+"ShowSVG",
 "ATransform.defaultContextGeneration",
 "Bug4945.defaultContextGeneration",
 "Bug6535.defaultContextGeneration",

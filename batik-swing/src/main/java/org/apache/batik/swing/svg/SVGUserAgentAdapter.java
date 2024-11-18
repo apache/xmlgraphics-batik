@@ -25,6 +25,7 @@ import org.apache.batik.bridge.RelaxedExternalResourceSecurity;
 import org.apache.batik.bridge.RelaxedScriptSecurity;
 import org.apache.batik.bridge.ScriptSecurity;
 import org.apache.batik.util.ParsedURL;
+import org.apache.xmlgraphics.util.UnitConv;
 import org.w3c.dom.Element;
 
 /*
@@ -50,6 +51,9 @@ import org.apache.batik.bridge.NoLoadScriptSecurity;
  * @version $Id$
  */
 public class SVGUserAgentAdapter implements SVGUserAgent {
+
+    private float sourceResolution = 96;
+
     public SVGUserAgentAdapter() { }
 
     /**
@@ -106,7 +110,7 @@ public class SVGUserAgentAdapter implements SVGUserAgent {
      * Returns the size of a px CSS unit in millimeters.
      */
     public float getPixelUnitToMillimeter() {
-        return 0.26458333333333333333333333333333f; // 96dpi
+        return UnitConv.IN2MM / getSourceResolution();
     }
 
     /**
@@ -130,8 +134,7 @@ public class SVGUserAgentAdapter implements SVGUserAgent {
      * Returns the  medium font size.
      */
     public float getMediumFontSize() {
-        // 9pt (72pt == 1in)
-        return 9f * 25.4f / (72f * getPixelUnitToMillimeter());
+        return 9f * UnitConv.IN2MM / (UnitConv.IN2PT * getPixelUnitToMillimeter());
     }
 
     /**
@@ -349,5 +352,13 @@ public class SVGUserAgentAdapter implements SVGUserAgent {
         if (s != null) {
             s.checkLoadExternalResource();
         }
+    }
+
+    public float getSourceResolution() {
+        return sourceResolution;
+    }
+
+    public void setSourceResolution(float sourceResolution) {
+        this.sourceResolution = sourceResolution;
     }
 }

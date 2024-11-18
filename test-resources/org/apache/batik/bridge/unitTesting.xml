@@ -418,12 +418,12 @@
             <property name="ExpectedErrorCode" class="java.lang.String"
                       value="attribute.malformed" />
         </test>
-        <test id="bridge/error/linearGradient-missing-offset">
+        <!--<test id="bridge/error/linearGradient-missing-offset">
             <property name="ExpectedExceptionClass" class="java.lang.String"
                       value="org.apache.batik.bridge.BridgeException" />
             <property name="ExpectedErrorCode" class="java.lang.String"
                       value="attribute.missing" />
-        </test>
+        </test>-->
         <test id="bridge/error/linearGradient-spreadMethod-invalid">
             <property name="ExpectedExceptionClass" class="java.lang.String"
                       value="org.apache.batik.bridge.BridgeException" />
@@ -515,12 +515,12 @@
             <property name="ExpectedErrorCode" class="java.lang.String"
                       value="attribute.malformed" />
         </test>
-        <test id="bridge/error/radialGradient-missing-offset">
+        <!--<test id="bridge/error/radialGradient-missing-offset">
             <property name="ExpectedExceptionClass" class="java.lang.String"
                       value="org.apache.batik.bridge.BridgeException" />
             <property name="ExpectedErrorCode" class="java.lang.String"
                       value="attribute.missing" />
-        </test>
+        </test>-->
         <test id="bridge/error/radialGradient-r-negative">
             <property name="ExpectedExceptionClass" class="java.lang.String"
                       value="org.apache.batik.bridge.BridgeException" />

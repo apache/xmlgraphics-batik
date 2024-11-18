@@ -309,4 +309,8 @@ public interface UserAgent {
 
     /** Returns the Font Family Resolver */
     FontFamilyResolver getFontFamilyResolver();
+
+    float getSourceResolution();
+
+    void setSourceResolution(float sourceResolution);
 }

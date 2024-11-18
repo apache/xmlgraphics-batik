@@ -4,6 +4,26 @@ Change Log
 The following log records some of the most important changes.
 Bug fixing is an ongoing task, so it is implied in all sub-releases.
 
+1.18
+----
+
+BATIK-1225: PNG transcoder references nonexistent class
+BATIK-1285: Set offset to 0 if missing in stop tag
+BATIK-1318: Validate throws NPE
+BATIK-1355: Missing arabic characters
+BATIK-1361: Animated rotate tranform ignores y-origin at exactly 270 degrees
+BATIK-1362: Set an automatic module name
+BATIK-1363: Ignore inkscape properties
+BATIK-1364: Switch to spotbugs
+FOP-3135: Allow source and target resolution configuration
+
+1.17
+----
+
+BATIK-1346: Allow configuration of rhino whitelist
+BATIK-1347: Switch to empty whitelist for rhino
+BATIK-1349: Block loading external resource by default
+
 1.16
 ----
 

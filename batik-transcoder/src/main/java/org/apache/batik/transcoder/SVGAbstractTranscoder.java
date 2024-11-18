@@ -36,7 +36,7 @@ import org.apache.batik.bridge.DefaultScriptSecurity;
 import org.apache.batik.bridge.ExternalResourceSecurity;
 import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.bridge.NoLoadScriptSecurity;
-import org.apache.batik.bridge.NoLoadExternalResourceSecurity;
+import org.apache.batik.bridge.RelaxedExternalResourceSecurity;
 import org.apache.batik.bridge.RelaxedScriptSecurity;
 import org.apache.batik.bridge.SVGUtilities;
 import org.apache.batik.bridge.ScriptSecurity;
@@ -1116,9 +1116,9 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
 
         public ExternalResourceSecurity getExternalResourceSecurity(ParsedURL resourceURL, ParsedURL docURL) {
             if (isAllowExternalResources()) {
-                return super.getExternalResourceSecurity(resourceURL, docURL);
+                return new RelaxedExternalResourceSecurity(resourceURL, docURL);
             }
-            return new NoLoadExternalResourceSecurity();
+            return super.getExternalResourceSecurity(resourceURL, docURL);
         }
 
         public boolean isAllowExternalResources() {
@@ -1126,7 +1126,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
             if (b != null) {
                 return b;
             }
-            return true;
+            return false;
         }
     }
 }

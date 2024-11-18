@@ -20,7 +20,7 @@ package org.apache.batik.script.rhino;
 
 import org.mozilla.javascript.ClassShutter;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,7 +30,7 @@ import java.util.List;
  * @version $Id$
  */
 public class RhinoClassShutter implements ClassShutter {
-    private static final List<String> WHITELIST = Arrays.asList("java.io.PrintStream", "java.lang.System", "java.net.URL");
+    public static final List<String> WHITELIST = new ArrayList<>();
 
     /*
     public RhinoClassShutter() {
@@ -59,56 +59,11 @@ public class RhinoClassShutter implements ClassShutter {
      * Returns whether the given class is visible to scripts.
      */
     public boolean visibleToScripts(String fullClassName) {
-        if (!WHITELIST.contains(fullClassName) && !fullClassName.endsWith("Permission") && !fullClassName.startsWith("org.")) {
-            return false;
-        }
-
-        // Don't let them mess with script engine's internals.
-        if (fullClassName.startsWith("org.mozilla.javascript"))
-            return false;
-
-        if (fullClassName.startsWith("org.apache.batik.")) {
-            // Just get package within batik.
-            String batikPkg = fullClassName.substring(17);
-
-            // Don't let them mess with Batik script internals.
-            if (batikPkg.startsWith("script"))
-                return false;
-
-            // Don't let them get global structures.
-            if (batikPkg.startsWith("apps"))
-                return false;
-
-            // Don't let them get scripting stuff from bridge, but specifically
-            // allow access to:
-            //
-            //   o.a.b.bridge.ScriptingEnvironment$Window$IntervalScriptTimerTask
-            //   o.a.b.bridge.ScriptingEnvironment$Window$IntervalRunnableTimerTask
-            //   o.a.b.bridge.ScriptingEnvironment$Window$TimeoutScriptTimerTask
-            //   o.a.b.bridge.ScriptingEnvironment$Window$TimeoutRunnableTimerTask
-            //
-            // since objects of these classes are returned by setInterval() and
-            // setTimeout().
-            if (batikPkg.startsWith("bridge.")) {
-                String batikBridgeClass = batikPkg.substring(7);
-                if (batikBridgeClass.startsWith("ScriptingEnvironment")) {
-                    if (batikBridgeClass.startsWith("$Window$", 20)) {
-                        String c = batikBridgeClass.substring(28);
-                        if (c.equals("IntervalScriptTimerTask")
-                                || c.equals("IntervalRunnableTimerTask")
-                                || c.equals("TimeoutScriptTimerTask")
-                                || c.equals("TimeoutRunnableTimerTask")) {
-                            return true;
-                        }
-                    }
-                    return false;
-                }
-                if (batikBridgeClass.startsWith("BaseScriptingEnvironment")) {
-                    return false;
-                }
+        for (String v : WHITELIST) {
+            if (fullClassName.matches(v)) {
+                return true;
             }
         }
-
-        return true;
+        return false;
     }
 }
