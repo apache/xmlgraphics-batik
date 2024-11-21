@@ -113,6 +113,11 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
      */
     public CompositeGraphicsNode buildCompositeGraphicsNode
             (BridgeContext ctx, Element e, CompositeGraphicsNode gn) {
+
+        if (ctx.stopAfterConsumeUseElementBridgeCalculationLimit()) {
+            return null;
+        }
+
         // get the referenced element
         SVGOMUseElement ue = (SVGOMUseElement) e;
         String uri = ue.getHref().getAnimVal();
@@ -159,6 +164,9 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
             for (Node n = localRefElement.getFirstChild();
                  n != null;
                  n = localRefElement.getFirstChild()) {
+                if (ctx.stopAfterConsumeUseElementBridgeCalculationLimit()) {
+                    return null;
+                }
                 svgElement.appendChild(n);
             }
             localRefElement = svgElement;
