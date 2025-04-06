@@ -60,16 +60,6 @@
       <artifactId>batik-xml</artifactId>
       <version>${project.version}</version>
     </dependency>
-    <dependency>
-      <groupId>xml-apis</groupId>
-      <artifactId>xml-apis</artifactId>
-      <version>${xmlapis.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>xml-apis</groupId>
-      <artifactId>xml-apis-ext</artifactId>
-      <version>${xmlapisext.version}</version>
-    </dependency>
   </dependencies>
 
   <build>
