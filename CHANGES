@@ -4,6 +4,14 @@ Change Log
 The following log records some of the most important changes.
 Bug fixing is an ongoing task, so it is implied in all sub-releases.
 
+1.19
+----
+
+BATIK-1374: Automatic-Module-Name incorrect
+BATIK-1373: Squiggle has wrong version text
+BATIK-1375: Optimise mvn repo checking
+FOP-3180: Glyph positions ignored when using a custom font
+
 1.18
 ----
 
