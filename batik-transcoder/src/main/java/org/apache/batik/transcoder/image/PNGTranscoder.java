@@ -50,7 +50,7 @@ public class PNGTranscoder extends ImageTranscoder {
     public UserAgent getUserAgent() {
         return this.userAgent;
     }
-    
+
     /**
      * Creates a new ARGB image with the specified dimension.
      * @param width the image width in pixels
@@ -78,7 +78,7 @@ public class PNGTranscoder extends ImageTranscoder {
             return null;
         }
     }
-    
+
     /**
      * Writes the specified image to the specified output.
      * @param img the image to write
@@ -120,23 +120,23 @@ public class PNGTranscoder extends ImageTranscoder {
         }
         if (adapter == null) {
             throw new TranscoderException(
-                    "Could not write PNG file because no WriteAdapter is availble");
+                    "Could not write PNG file because no WriteAdapter is available");
         }
         adapter.writeImage(this, img, output);
     }
-    
+
     // --------------------------------------------------------------------
     // PNG specific interfaces
     // --------------------------------------------------------------------
 
     /**
-     * This interface is used by <code>PNGTranscoder</code> to write PNG images 
+     * This interface is used by <code>PNGTranscoder</code> to write PNG images
      * through different codecs.
      *
      * @version $Id$
      */
     public interface WriteAdapter {
-        
+
         /**
          * Writes the specified image to the specified output.
          * @param transcoder the calling PNGTranscoder
@@ -144,11 +144,11 @@ public class PNGTranscoder extends ImageTranscoder {
          * @param output the output where to store the image
          * @throws TranscoderException if an error occured while storing the image
          */
-        void writeImage(PNGTranscoder transcoder, BufferedImage img, 
+        void writeImage(PNGTranscoder transcoder, BufferedImage img,
                 TranscoderOutput output) throws TranscoderException;
 
     }
-    
+
 
     // --------------------------------------------------------------------
     // Keys definition
@@ -176,9 +176,9 @@ public class PNGTranscoder extends ImageTranscoder {
      *   </tr>
      *   <tr>
      *     <th valign="top" align="right">Description:</th>
-     *     <td valign="top">Controls the gamma correction of the PNG image. 
-     *       A value of zero for gamma disables the generation 
-     *       of a gamma chunk.  No value causes an sRGB chunk 
+     *     <td valign="top">Controls the gamma correction of the PNG image.
+     *       A value of zero for gamma disables the generation
+     *       of a gamma chunk.  No value causes an sRGB chunk
      *       to be generated.</td>
      *   </tr>
      * </table>
@@ -217,11 +217,11 @@ public class PNGTranscoder extends ImageTranscoder {
      *   </tr>
      *   <tr>
      *     <th valign="top" align="right">Description:</th>
-     *     <td valign="top">Turns on the reduction of the image to index 
-     *       colors by specifying color bit depth, 1, 2, 4 or 8. The resultant 
+     *     <td valign="top">Turns on the reduction of the image to index
+     *       colors by specifying color bit depth, 1, 2, 4 or 8. The resultant
      *       PNG will be an indexed PNG with color bit depth specified.</td>
      *   </tr>
-     * </table> 
+     * </table>
      */
     public static final TranscodingHints.Key KEY_INDEXED
         = new IntegerKey();
