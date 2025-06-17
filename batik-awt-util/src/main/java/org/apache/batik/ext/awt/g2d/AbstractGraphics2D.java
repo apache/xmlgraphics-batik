@@ -1336,7 +1336,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements Cloneable
      * <code>Component</code>.  To change the background
      * of the <code>Component</code>, use appropriate methods of
      * the <code>Component</code>.
-     * @param color the background color that isused in
+     * @param color the background color that issued in
      * subsequent calls to <code>clearRect</code>
      * @see #getBackground
      * @see java.awt.Graphics#clearRect
