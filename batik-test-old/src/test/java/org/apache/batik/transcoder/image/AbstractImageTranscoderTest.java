@@ -222,7 +222,7 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
      */
     protected class DiffImageTranscoder extends ImageTranscoder {
 
-        /** The result of the image comparaison. */
+        /** The result of the image comparison. */
         protected boolean state;
 
         /** The reference image. */
