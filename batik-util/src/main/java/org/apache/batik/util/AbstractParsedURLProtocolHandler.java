@@ -25,13 +25,13 @@ package org.apache.batik.util;
  * @author <a href="mailto:thomas.deweese@kodak.com">Thomas DeWeese</a>
  * @version $Id$
  */
-public abstract class AbstractParsedURLProtocolHandler 
+public abstract class AbstractParsedURLProtocolHandler
  implements ParsedURLProtocolHandler {
 
     protected String protocol;
 
     /**
-     * Constrcut a ProtocolHandler for <code>protocol</code>
+     * Construct a ProtocolHandler for <code>protocol</code>
      */
     public AbstractParsedURLProtocolHandler(String protocol) {
         this.protocol = protocol;
