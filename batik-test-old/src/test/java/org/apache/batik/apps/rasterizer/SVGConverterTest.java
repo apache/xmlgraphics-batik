@@ -19,6 +19,7 @@
 
 package org.apache.batik.apps.rasterizer;
 
+import org.apache.batik.svggen.SVGConverter;
 import org.apache.batik.test.*;
 import org.apache.batik.test.svg.ImageCompareTest;
 import org.apache.batik.transcoder.Transcoder;
@@ -47,7 +48,7 @@ public class SVGConverterTest extends DefaultTestSuite {
         AbstractTest t = null;
 
         //
-        // Test Trancoder usage
+        // Test Transcoder usage
         //
         t = new TranscoderConfigTest(DestinationType.PNG,
                                      org.apache.batik.transcoder.image.PNGTranscoder.class);
@@ -441,7 +442,7 @@ abstract class AbstractConfigTest extends AbstractTest implements SVGConverterCo
         = "ConfigTest.entry.key.expected.transcoder.class";
 
     public static final String ENTRY_KEY_COMPUTED_TRANSCODER_CLASS
-        = "ConfigTest.entry.key.computed.trancoder.class";
+        = "ConfigTest.entry.key.computed.transcoder.class";
 
     /**
      * Error if the hints do not match

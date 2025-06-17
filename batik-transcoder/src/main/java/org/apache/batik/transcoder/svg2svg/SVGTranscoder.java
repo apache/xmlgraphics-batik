@@ -38,7 +38,7 @@ import org.apache.batik.transcoder.keys.StringKey;
 import org.w3c.dom.Document;
 
 /**
- * This class is a trancoder from SVG to SVG.
+ * This class is a transcoder from SVG to SVG.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
