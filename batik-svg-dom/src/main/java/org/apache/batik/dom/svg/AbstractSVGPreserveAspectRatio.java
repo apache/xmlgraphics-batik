@@ -189,7 +189,7 @@ public abstract class AbstractSVGPreserveAspectRatio
 
         /**
          * Invoked when 'none' been parsed.
-         * @exception ParseException if an error occured while processing
+         * @exception ParseException if an error occurred while processing
          * the transform
          */
         public void none() throws ParseException {
@@ -198,7 +198,7 @@ public abstract class AbstractSVGPreserveAspectRatio
 
         /**
          * Invoked when 'xMaxYMax' has been parsed.
-         * @exception ParseException if an error occured while processing
+         * @exception ParseException if an error occurred while processing
          * the transform
          */
         public void xMaxYMax() throws ParseException {
@@ -207,7 +207,7 @@ public abstract class AbstractSVGPreserveAspectRatio
 
         /**
          * Invoked when 'xMaxYMid' has been parsed.
-         * @exception ParseException if an error occured while processing
+         * @exception ParseException if an error occurred while processing
          * the transform
          */
         public void xMaxYMid() throws ParseException {
@@ -216,7 +216,7 @@ public abstract class AbstractSVGPreserveAspectRatio
 
         /**
          * Invoked when 'xMaxYMin' has been parsed.
-         * @exception ParseException if an error occured while processing
+         * @exception ParseException if an error occurred while processing
          * the transform
          */
         public void xMaxYMin() throws ParseException {
@@ -225,7 +225,7 @@ public abstract class AbstractSVGPreserveAspectRatio
 
         /**
          * Invoked when 'xMidYMax' has been parsed.
-         * @exception ParseException if an error occured while processing
+         * @exception ParseException if an error occurred while processing
          * the transform
          */
         public void xMidYMax() throws ParseException {
@@ -234,7 +234,7 @@ public abstract class AbstractSVGPreserveAspectRatio
 
         /**
          * Invoked when 'xMidYMid' has been parsed.
-         * @exception ParseException if an error occured while processing
+         * @exception ParseException if an error occurred while processing
          * the transform
          */
         public void xMidYMid() throws ParseException {
@@ -243,7 +243,7 @@ public abstract class AbstractSVGPreserveAspectRatio
 
         /**
          * Invoked when 'xMidYMin' has been parsed.
-         * @exception ParseException if an error occured while processing
+         * @exception ParseException if an error occurred while processing
          * the transform
          */
         public void xMidYMin() throws ParseException {
@@ -252,7 +252,7 @@ public abstract class AbstractSVGPreserveAspectRatio
 
         /**
          * Invoked when 'xMinYMax' has been parsed.
-         * @exception ParseException if an error occured while processing
+         * @exception ParseException if an error occurred while processing
          * the transform
          */
         public void xMinYMax() throws ParseException {
@@ -261,7 +261,7 @@ public abstract class AbstractSVGPreserveAspectRatio
 
         /**
          * Invoked when 'xMinYMid' has been parsed.
-         * @exception ParseException if an error occured while processing
+         * @exception ParseException if an error occurred while processing
          * the transform
          */
         public void xMinYMid() throws ParseException {
@@ -270,7 +270,7 @@ public abstract class AbstractSVGPreserveAspectRatio
 
         /**
          * Invoked when 'xMinYMin' has been parsed.
-         * @exception ParseException if an error occured while processing
+         * @exception ParseException if an error occurred while processing
          * the transform
          */
         public void xMinYMin() throws ParseException {
@@ -279,7 +279,7 @@ public abstract class AbstractSVGPreserveAspectRatio
 
         /**
          * Invoked when 'meet' has been parsed.
-         * @exception ParseException if an error occured while processing
+         * @exception ParseException if an error occurred while processing
          * the transform
          */
         public void meet() throws ParseException {
@@ -288,7 +288,7 @@ public abstract class AbstractSVGPreserveAspectRatio
 
         /**
          * Invoked when 'slice' has been parsed.
-         * @exception ParseException if an error occured while processing
+         * @exception ParseException if an error occurred while processing
          * the transform
          */
         public void slice() throws ParseException {

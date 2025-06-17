@@ -160,7 +160,7 @@ public class SVGTranscoder extends AbstractTranscoder {
      * Transcodes the specified input in the specified output.
      * @param input the input to transcode
      * @param output the ouput where to transcode
-     * @exception TranscoderException if an error occured while transcoding
+     * @exception TranscoderException if an error occurred while transcoding
      */
     public void transcode(TranscoderInput input, TranscoderOutput output)
         throws TranscoderException {

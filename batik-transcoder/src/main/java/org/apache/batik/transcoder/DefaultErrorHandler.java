@@ -20,8 +20,8 @@ package org.apache.batik.transcoder;
 
 /**
  * A default <code>ErrorHandler</code> that throws a
- * <code>TranscoderException</code> when a fatal error occured and display
- * a message when a warning or an error occured.
+ * <code>TranscoderException</code> when a fatal error occurred and display
+ * a message when a warning or an error occurred.
  *
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @version $Id$
@@ -29,7 +29,7 @@ package org.apache.batik.transcoder;
 public class DefaultErrorHandler implements ErrorHandler {
 
     /**
-     * Invoked when an error occured while transcoding.
+     * Invoked when an error occurred while transcoding.
      * @param ex the error informations encapsulated in a TranscoderException
      * @exception TranscoderException if the method want to forward
      * the exception
@@ -39,7 +39,7 @@ public class DefaultErrorHandler implements ErrorHandler {
     }
 
     /**
-     * Invoked when an fatal error occured while transcoding.
+     * Invoked when an fatal error occurred while transcoding.
      * @param ex the fatal error informations encapsulated in a
      * TranscoderException
      * @exception TranscoderException if the method want to forward
@@ -50,7 +50,7 @@ public class DefaultErrorHandler implements ErrorHandler {
     }
 
     /**
-     * Invoked when a warning occured while transcoding.
+     * Invoked when a warning occurred while transcoding.
      * @param ex the warning informations encapsulated in a TranscoderException
      * @exception TranscoderException if the method want to forward
      * the exception
