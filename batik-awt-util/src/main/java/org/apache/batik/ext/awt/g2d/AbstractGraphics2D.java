@@ -79,7 +79,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements Cloneable
 
     /**
      * @param textAsShapes if true, all text is turned into shapes in the
-     *        convertion. No text is output.
+     *        conversion. No text is output.
      *
      */
     public AbstractGraphics2D(boolean textAsShapes) {

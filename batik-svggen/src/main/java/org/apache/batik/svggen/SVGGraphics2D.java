@@ -270,7 +270,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
      * @param extensionHandler defines how Java 2D API extensions map
      *                         to SVG Nodes.
      * @param textAsShapes if true, all text is turned into SVG shapes in the
-     *        convertion. No SVG text is output.
+     *        conversion. No SVG text is output.
      *
      * @exception SVGGraphics2DRuntimeException if domFactory is null.
      */
@@ -309,7 +309,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
      * @param generatorCtx the <code>SVGGeneratorContext</code> instance
      * that will provide all useful information to the generator.
      * @param textAsShapes if true, all text is turned into SVG shapes in the
-     *        convertion. No SVG text is output.
+     *        conversion. No SVG text is output.
      *
      * @exception SVGGraphics2DRuntimeException if generatorContext is null.
      */

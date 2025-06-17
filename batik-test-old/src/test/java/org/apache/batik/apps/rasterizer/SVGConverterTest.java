@@ -728,7 +728,7 @@ abstract class AbstractConfigTest extends AbstractTest implements SVGConverterCo
         computedConfig.sources = new ArrayList( sources );
         computedConfig.dest = new ArrayList( dest );
         computedConfig.hints = new HashMap(hints);
-        return false; // Do not proceed with the convertion process,
+        return false; // Do not proceed with the conversion process,
         // we are only checking the config in this test.
     }
 
@@ -749,7 +749,7 @@ abstract class AbstractConfigTest extends AbstractTest implements SVGConverterCo
 }
 
 /**
- * Tests that a convertion task goes without exception.
+ * Tests that a conversion task goes without exception.
  */
 class OperationTest extends AbstractTest{
     public TestReport runImpl() throws Exception {
@@ -777,7 +777,7 @@ class TranscoderConfigTest extends AbstractConfigTest {
     /**
      * @param dstType type of result image
      * @param expectedTranscoderClass class for the Transcoder expected to perform
-     *        the convertion.
+     *        the conversion.
      */
     public TranscoderConfigTest(DestinationType dstType,
                                 Class expectedTranscoderClass){

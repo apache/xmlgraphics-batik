@@ -26,7 +26,7 @@ import java.text.AttributedString;
 
 
 /**
- * This test validates the convertion of Java 2D AffineTransform into SVG
+ * This test validates the conversion of Java 2D AffineTransform into SVG
  * Shapes.
  *
  * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>

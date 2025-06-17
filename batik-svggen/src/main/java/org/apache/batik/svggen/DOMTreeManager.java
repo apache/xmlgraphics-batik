@@ -258,7 +258,7 @@ public class DOMTreeManager implements SVGSyntax, ErrorConstants {
                 createElementNS(SVG_NAMESPACE_URI, SVG_SVG_TAG);
         }
 
-        // Enable background if required by AlphaComposite convertion
+        // Enable background if required by AlphaComposite conversion
         if (gcConverter.getCompositeConverter().
             getAlphaCompositeConverter().requiresBackgroundAccess())
             svg.setAttributeNS

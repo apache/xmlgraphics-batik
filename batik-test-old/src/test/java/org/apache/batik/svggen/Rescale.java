@@ -28,7 +28,7 @@ import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 
 /**
- * This test validates the convertion of Java 2D RescaleOp
+ * This test validates the conversion of Java 2D RescaleOp
  * into an SVG filer.
  *
  * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>
