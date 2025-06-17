@@ -1770,7 +1770,7 @@ public abstract class AbstractDocument
         protected Node relatedNode;
 
         /**
-         * The exception which cuased this error.
+         * The exception which caused this error.
          */
         protected Object relatedException;
 
