@@ -1283,7 +1283,7 @@ public abstract class AbstractDocument
     protected boolean normalizeDocument(Element e,
                                         boolean cdataSections,
                                         boolean comments,
-                                        boolean elementContentWhitepace,
+                                        boolean elementContentWhitespace,
                                         boolean namespaceDeclarations,
                                         boolean namespaces,
                                         boolean splitCdataSections,
@@ -1324,7 +1324,7 @@ public abstract class AbstractDocument
                 } else {
                     n = t;
                 }
-                if (!elementContentWhitepace) {
+                if (!elementContentWhitespace) {
                     // remove element content whitespace text nodes
                     nt = n.getNodeType();
                     if (nt == Node.TEXT_NODE) {
@@ -1611,7 +1611,7 @@ public abstract class AbstractDocument
                     if (!normalizeDocument((Element) m,
                                            cdataSections,
                                            comments,
-                                           elementContentWhitepace,
+                                           elementContentWhitespace,
                                            namespaceDeclarations,
                                            namespaces,
                                            splitCdataSections,
