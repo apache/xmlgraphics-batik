@@ -252,7 +252,7 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
          *
          * @param img the image to write
          * @param output the output (ignored)
-         * @throw TranscoderException if an error occurred while storing the
+         * @throws TranscoderException if an error occurred while storing the
          * image
          */
         public void writeImage(BufferedImage img, TranscoderOutput output)
