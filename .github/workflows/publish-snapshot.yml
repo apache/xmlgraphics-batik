@@ -1,0 +1,40 @@
+# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
+
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: Publish Snapshot
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  build:
+    name: Publish Snapshot with Java ${{ matrix.jdk }} ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        jdk: ['8']
+        os: [ubuntu-latest]
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up JDK ${{ matrix.jdk }}
+      uses: actions/setup-java@v4
+      with:
+        java-version: ${{ matrix.jdk }}
+        distribution: 'temurin'
+        cache: maven
+        server-id: apache.snapshots.https
+        server-username: NEXUS_USER
+        server-password: NEXUS_PW
+    - name: Deploy
+      run: mvn -B deploy -DskipTests
+      env:
+          NEXUS_USER: ${{ secrets.NEXUS_USER }}
+          NEXUS_PW: ${{ secrets.NEXUS_PW }}
