@@ -270,6 +270,28 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      */
     protected float animationLimitingAmount;
 
+    protected int useElementBridgeCalculationLimit = DEFAULT_USE_ELEMENT_CALCULATION_BRIDGE_LIMIT;
+
+    public static final int DEFAULT_USE_ELEMENT_CALCULATION_BRIDGE_LIMIT = 1024;
+
+    public int getUseElementBridgeCalculationLimit() {
+        return useElementBridgeCalculationLimit;
+    }
+
+    public void setUseElementBridgeCalculationLimit(int useElementBridgeCalculationLimit) {
+        this.useElementBridgeCalculationLimit = useElementBridgeCalculationLimit;
+    }
+
+    public boolean stopAfterConsumeUseElementBridgeCalculationLimit() {
+        int useElementBridgeCalculationLimit = this.getUseElementBridgeCalculationLimit();
+        if (useElementBridgeCalculationLimit <= 0) {
+            return true;
+        }
+        --useElementBridgeCalculationLimit;
+        this.setUseElementBridgeCalculationLimit(useElementBridgeCalculationLimit);
+        return false;
+    }
+
     /**
      * By default we share a unique instance of InterpreterPool.
      */

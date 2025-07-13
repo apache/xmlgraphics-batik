@@ -1,0 +1,5 @@
+<svg viewBox="0 0 30 10" xmlns="http://www.w3.org/2000/svg" fill-opacity="1" width="512" height="512" stroke-width="0" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <circle id="myCircle" cx="5" cy="5" r="4" stroke="blue"/>
+    <use xlink:href="#myCircle" x="10" fill="cyan"/>
+    <use xlink:href="#myCircle" x="20" fill="red"/>
+</svg>
