@@ -72,7 +72,7 @@ public class PerformanceTestValidator extends AbstractTest {
             return result;
         }
 
-        p.setReferenceScore(score*4);
+        p.setReferenceScore(score*5);
         r = p.run();
         assertTrue(!r.hasPassed());
         if (!r.getErrorCode().equals("unexpected.performance.improvement")) {

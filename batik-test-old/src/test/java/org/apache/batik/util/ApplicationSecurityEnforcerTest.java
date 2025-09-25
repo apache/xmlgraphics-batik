@@ -94,7 +94,10 @@ public class ApplicationSecurityEnforcerTest extends DefaultTestSuite {
             } catch (UnsupportedOperationException e) {
                 return true;
             } finally {
-                System.setSecurityManager(null);
+                try {
+                    System.setSecurityManager(null);
+                } catch (UnsupportedOperationException e) {
+                }
             }
 
             return false;
@@ -117,7 +120,10 @@ public class ApplicationSecurityEnforcerTest extends DefaultTestSuite {
                     return true;
                 }
             } finally {
-                System.setSecurityManager(null);
+                try {
+                    System.setSecurityManager(null);
+                } catch (UnsupportedOperationException e) {
+                }
             }
 
             return false;
