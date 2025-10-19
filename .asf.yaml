@@ -4,6 +4,9 @@ github:
   labels:
     - batik
     - apache
+  protected_branches:
+    main:
+      required_linear_history: true
 
 notifications:
   commits:      commits@xmlgraphics.apache.org
