@@ -91,11 +91,6 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>xml-apis</groupId>
-      <artifactId>xml-apis-ext</artifactId>
-      <version>${xmlapisext.version}</version>
-    </dependency>
-    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>${junit.version}</version>
