@@ -194,7 +194,7 @@ import org.w3c.dom.svg.SVGSVGElement;
  * resolution used to display an SVG document (controling the pixel to
  * millimeter conversion factor), perform an operation in respond to a click on
  * an hyperlink, control the default language to use, or specify a user
- * stylesheet, or how to display errors when an error occured while
+ * stylesheet, or how to display errors when an error occurred while
  * building/rendering a document (invalid XML file, missing attributes...).</p>
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>

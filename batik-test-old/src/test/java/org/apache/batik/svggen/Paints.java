@@ -28,7 +28,7 @@ import java.awt.TexturePaint;
 import java.awt.image.BufferedImage;
 
 /**
- * This test validates the convertion of Java 2D paints
+ * This test validates the conversion of Java 2D paints
  * into an SVG attributes.
  *
  * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>

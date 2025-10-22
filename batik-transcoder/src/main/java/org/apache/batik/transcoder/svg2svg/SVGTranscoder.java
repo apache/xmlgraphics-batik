@@ -38,7 +38,7 @@ import org.apache.batik.transcoder.keys.StringKey;
 import org.w3c.dom.Document;
 
 /**
- * This class is a trancoder from SVG to SVG.
+ * This class is a transcoder from SVG to SVG.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
@@ -160,7 +160,7 @@ public class SVGTranscoder extends AbstractTranscoder {
      * Transcodes the specified input in the specified output.
      * @param input the input to transcode
      * @param output the ouput where to transcode
-     * @exception TranscoderException if an error occured while transcoding
+     * @exception TranscoderException if an error occurred while transcoding
      */
     public void transcode(TranscoderInput input, TranscoderOutput output)
         throws TranscoderException {

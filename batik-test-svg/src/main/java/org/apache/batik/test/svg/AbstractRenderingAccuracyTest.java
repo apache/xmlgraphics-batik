@@ -135,7 +135,7 @@ public abstract class AbstractRenderingAccuracyTest extends AbstractTest {
         = "SVGRenderingAccuracyTest.entry.key.difference.image";
 
     /**
-     * Entry describing that an internal error occured while
+     * Entry describing that an internal error occurred while
      * generating the test failure description
      */
     public static final String ENTRY_KEY_INTERNAL_ERROR

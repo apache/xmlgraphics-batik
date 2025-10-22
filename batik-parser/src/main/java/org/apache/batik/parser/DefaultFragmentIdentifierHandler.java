@@ -49,7 +49,7 @@ public class DefaultFragmentIdentifierHandler
     /**
      * Invoked when an ID has been parsed.
      * @param s The string that represents the parsed ID.
-     * @exception ParseException if an error occured while processing the
+     * @exception ParseException if an error occurred while processing the
      *                           fragment identifier
      */
     public void idReference(String s) throws ParseException {
@@ -61,7 +61,7 @@ public class DefaultFragmentIdentifierHandler
      * @param y the y coordinate of the viewbox.
      * @param width the width of the viewbox.
      * @param height the height of the viewbox.
-     * @exception ParseException if an error occured while processing the
+     * @exception ParseException if an error occurred while processing the
      *                           fragment identifier
      */
     public void viewBox(float x, float y, float width, float height)
@@ -70,7 +70,7 @@ public class DefaultFragmentIdentifierHandler
 
     /**
      * Invoked when a view target specification starts.
-     * @exception ParseException if an error occured while processing the
+     * @exception ParseException if an error occurred while processing the
      *                           fragment identifier
      */
     public void startViewTarget() throws ParseException {
@@ -79,7 +79,7 @@ public class DefaultFragmentIdentifierHandler
     /**
      * Invoked when a view target component has been parsed.
      * @param name the target name.
-     * @exception ParseException if an error occured while processing the
+     * @exception ParseException if an error occurred while processing the
      *                           fragment identifier
      */
     public void viewTarget(String name) throws ParseException {
@@ -87,7 +87,7 @@ public class DefaultFragmentIdentifierHandler
 
     /**
      * Invoked when a view target specification ends.
-     * @exception ParseException if an error occured while processing the
+     * @exception ParseException if an error occurred while processing the
      *                           fragment identifier
      */
     public void endViewTarget() throws ParseException {
@@ -164,7 +164,7 @@ public class DefaultFragmentIdentifierHandler
     /**
      * Invoked when a 'zoomAndPan' specification has been parsed.
      * @param magnify true if 'magnify' has been parsed.
-     * @exception ParseException if an error occured while processing the
+     * @exception ParseException if an error occurred while processing the
      *                           fragment identifier
      */
     public void zoomAndPan(boolean magnify) {

@@ -23,7 +23,7 @@ import java.awt.geom.*;
 import java.awt.image.*;
 
 /**
- * This test validates the convertion of Java 2D RenderingHints
+ * This test validates the conversion of Java 2D RenderingHints
  * into an SVG attributes.
  *
  * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>
