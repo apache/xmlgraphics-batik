@@ -394,7 +394,12 @@ public class Scanner {
                                          reader.getColumn());
             case '-':
                 nextChar();
-                if (current == 'i') {
+                if (ScannerUtilities.isCSSIdentifierStartCharacter((char)current)) {
+                    while (current != -1 && current != ';') {
+                        nextChar();
+                    }
+                    nextChar();
+                    type = LexicalUnits.COMMENT;
                     return;
                 }
                 if (current != '-') {

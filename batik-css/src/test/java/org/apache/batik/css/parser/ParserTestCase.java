@@ -38,5 +38,11 @@ public class ParserTestCase {
         });
         parser.parseStyleDeclaration("a:b;-inkscape-font-specification:'Calibri, Normal';c:d");
         Assert.assertTrue(properties.toString(), properties.contains("c"));
+        properties.clear();
+        parser.parseStyleDeclaration("-inkscape-font-specification:'Calibri, Normal';c:d");
+        Assert.assertTrue(properties.toString(), properties.contains("c"));
+        properties.clear();
+        parser.parseStyleDeclaration("-a:1;c:d");
+        Assert.assertTrue(properties.toString(), properties.contains("c"));
     }
 }
