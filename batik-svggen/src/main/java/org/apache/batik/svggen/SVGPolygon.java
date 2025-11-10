@@ -45,7 +45,7 @@ public class SVGPolygon extends SVGGraphicObjectConverter {
         Element svgPolygon =
             generatorContext.domFactory.createElementNS(SVG_NAMESPACE_URI,
                                                         SVG_POLYGON_TAG);
-        StringBuffer points = new StringBuffer(" ");
+        StringBuilder points = new StringBuilder(" ");
         PathIterator pi = polygon.getPathIterator(null);
         float[] seg = new float[6];
         while(!pi.isDone()){
@@ -77,7 +77,7 @@ public class SVGPolygon extends SVGGraphicObjectConverter {
     /**
      *  Appends a coordinate to the path data
      */
-    private void appendPoint(StringBuffer points, float x, float y){
+    private void appendPoint(StringBuilder points, float x, float y){
         points.append(doubleString(x));
         points.append(SPACE);
         points.append(doubleString(y));

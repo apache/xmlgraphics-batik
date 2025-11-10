@@ -57,7 +57,7 @@ public class DirectoryEntry {
     }
 
     public String toString() {
-        return new StringBuffer()
+        return new StringBuilder()
             .append((char)((tag>>24)&0xff))
             .append((char)((tag>>16)&0xff))
             .append((char)((tag>>8)&0xff))

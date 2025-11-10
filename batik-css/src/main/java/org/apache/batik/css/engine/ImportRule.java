@@ -63,7 +63,7 @@ public class ImportRule extends MediaRule {
      * Returns a printable representation of this import rule.
      */
     public String toString(CSSEngine eng) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append("@import \"");
         sb.append(uri);
         sb.append("\"");

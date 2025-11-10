@@ -1296,7 +1296,7 @@ public abstract class AbstractDocument
                     || !cdataSections && nt == Node.CDATA_SECTION_NODE) {
                 // coalesce text nodes
                 Node t = n;
-                StringBuffer sb = new StringBuffer();
+                StringBuilder sb = new StringBuilder();
                 sb.append(t.getNodeValue());
                 n = n.getNextSibling();
                 while (n != null && (n.getNodeType() == Node.TEXT_NODE
