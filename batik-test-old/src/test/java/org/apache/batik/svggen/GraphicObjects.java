@@ -23,7 +23,7 @@ import java.awt.geom.*;
 import java.awt.image.*;
 
 /**
- * This test validates the convertion of the three elementary
+ * This test validates the conversion of the three elementary
  * thypes of Java 2D API graphic objects: shapes, text and
  * images
  *

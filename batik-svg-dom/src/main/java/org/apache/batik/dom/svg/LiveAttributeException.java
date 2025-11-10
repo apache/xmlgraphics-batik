@@ -34,7 +34,7 @@ public class LiveAttributeException extends RuntimeException {
     public static final short ERR_ATTRIBUTE_NEGATIVE  = 2;
 
     /**
-     * The element on which the error occured.
+     * The element on which the error occurred.
      */
     protected Element e;
 
@@ -58,7 +58,7 @@ public class LiveAttributeException extends RuntimeException {
      * Constructs a new <code>LiveAttributeException</code> with the specified
      * parameters.
      *
-     * @param e the element on which the error occured
+     * @param e the element on which the error occurred
      * @param an the attribute name
      * @param code the error code
      * @param val the malformed attribute value

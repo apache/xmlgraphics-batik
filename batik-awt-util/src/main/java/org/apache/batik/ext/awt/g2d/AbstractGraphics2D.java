@@ -79,7 +79,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements Cloneable
 
     /**
      * @param textAsShapes if true, all text is turned into shapes in the
-     *        convertion. No text is output.
+     *        conversion. No text is output.
      *
      */
     public AbstractGraphics2D(boolean textAsShapes) {
@@ -978,7 +978,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements Cloneable
      * @param s the <code>Shape</code> to check for a hit
      * @param onStroke flag used to choose between testing the
      * stroked or the filled shape.  If the flag is <code>true</code>, the
-     * <code>Stroke</code> oultine is tested.  If the flag is
+     * <code>Stroke</code> outline is tested.  If the flag is
      * <code>false</code>, the filled <code>Shape</code> is tested.
      * @return <code>true</code> if there is a hit; <code>false</code>
      * otherwise.
@@ -1336,7 +1336,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements Cloneable
      * <code>Component</code>.  To change the background
      * of the <code>Component</code>, use appropriate methods of
      * the <code>Component</code>.
-     * @param color the background color that isused in
+     * @param color the background color that issued in
      * subsequent calls to <code>clearRect</code>
      * @see #getBackground
      * @see java.awt.Graphics#clearRect

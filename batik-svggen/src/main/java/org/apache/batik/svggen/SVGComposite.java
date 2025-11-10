@@ -44,12 +44,12 @@ import org.apache.batik.ext.awt.g2d.GraphicContext;
  */
 public class SVGComposite implements SVGConverter {
     /**
-     * All AlphaComposite convertion is handed to svgAlphaComposite
+     * All AlphaComposite conversion is handed to svgAlphaComposite
      */
     private SVGAlphaComposite svgAlphaComposite;
 
     /**
-     * All custom Composite convertion is handed to svgCustomComposite
+     * All custom Composite conversion is handed to svgCustomComposite
      */
     private SVGCustomComposite svgCustomComposite;
 

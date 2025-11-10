@@ -579,7 +579,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
      * Invoked when an MutationEvent of type 'DOMSubtree' is fired.
      */
     public void handleDOMSubtreeModifiedEvent(MutationEvent evt) {
-        //an operation occured onto the children of the
+        //an operation occurred onto the children of the
         //text element, check if the layout was discarded
         if (laidoutText == null) {
             computeLaidoutText(ctx, e, getTextNode());

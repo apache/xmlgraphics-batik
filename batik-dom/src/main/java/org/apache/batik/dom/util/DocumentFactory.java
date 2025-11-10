@@ -52,7 +52,7 @@ public interface DocumentFactory {
      * @param ns The namespace URI of the root element of the document.
      * @param root The name of the root element of the document.
      * @param uri The document URI.
-     * @exception IOException if an error occured while reading the document.
+     * @exception IOException if an error occurred while reading the document.
      */
     Document createDocument(String ns, String root, String uri) throws IOException;
 
@@ -62,7 +62,7 @@ public interface DocumentFactory {
      * @param root The name of the root element of the document.
      * @param uri The document URI.
      * @param is The document input stream.
-     * @exception IOException if an error occured while reading the document.
+     * @exception IOException if an error occurred while reading the document.
      */
     Document createDocument(String ns, String root, String uri, InputStream is)
         throws IOException;
@@ -73,7 +73,7 @@ public interface DocumentFactory {
      * @param root The name of the root element of the document.
      * @param uri The document URI.
      * @param r An XMLReader instance
-     * @exception IOException if an error occured while reading the document.
+     * @exception IOException if an error occurred while reading the document.
      */
     Document createDocument(String ns, String root, String uri, XMLReader r)
         throws IOException;
@@ -84,7 +84,7 @@ public interface DocumentFactory {
      * @param root The name of the root element of the document.
      * @param uri The document URI.
      * @param r The document reader.
-     * @exception IOException if an error occured while reading the document.
+     * @exception IOException if an error occurred while reading the document.
      */
     Document createDocument(String ns, String root, String uri, Reader r)
         throws IOException;
