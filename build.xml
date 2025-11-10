@@ -199,9 +199,6 @@ To display the available targets type:
     <available property="jpython.present" classname="org.python.util.PythonInterpreter">
       <classpath refid="libs-classpath"/>
     </available>
-    <available property="jacl.present" classname="tcl.lang.Interp">
-      <classpath refid="libs-classpath"/>
-    </available>
     
     <!-- When compiling Batik under GNU Classpath, the Sun codecs are not available. -->
     <condition property="sun-codecs.present">
@@ -240,15 +237,9 @@ To display the available targets type:
         <equals arg1="${jpython.present}" arg2="true"/>
       </not>
     </condition>
-    <condition property="javadoc-exclusion-jacl"
-               value="org.apache.batik.script.jacl">
-      <not>
-        <equals arg1="${jacl.present}" arg2="true"/>
-      </not>
-    </condition>
   
     <property name="javadoc-exclusions"
-              value="${javadoc-exclusion-rhino},${javadoc-exclusion-jpython},${javadoc-exclusion-jacl}"/>
+              value="${javadoc-exclusion-rhino},${javadoc-exclusion-jpython}"/>
   
     <uptodate property="IWasLoadedUpToDate" 
      targetfile="${testresources}/org/apache/batik/bridge/IWasLoaded.jar">
@@ -1055,7 +1046,6 @@ JAVA=/usr/bin/java
       <exclude name="**/*.html"/>
       <exclude name="**/rhino/*"   unless="rhino.present"/>      
       <exclude name="**/jpython/*" unless="jpython.present"/>
-      <exclude name="**/jacl/*"    unless="jacl.present"/>
       <exclude name="${package-prefix}/ext/awt/image/codec/jpeg/*"
                unless="sun-codecs.present"/>
       <exclude name="${package-prefix}/ext/awt/image/codec/tiff/*"

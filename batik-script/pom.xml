@@ -70,11 +70,6 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>${compiler.version}</version><!--$NO-MVN-MAN-VER$-->
-        <configuration>
-          <excludes>
-            <exclude>**/jacl/*</exclude>
-          </excludes>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

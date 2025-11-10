@@ -36,8 +36,7 @@ import org.w3c.dom.Document;
  *
  * <p>By default, it is able to create interpreters for ECMAScript,
  * Python and Tcl scripting languages if you provide the right jar
- * files in your CLASSPATH (i.e.  Rhino, JPython and Jacl jar
- * files).</p>
+ * files in your CLASSPATH (i.e.  Rhino and JPython jar files).</p>
  *
  * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>
  * @version $Id$
