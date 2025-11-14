@@ -150,18 +150,19 @@ public class AWTGlyphGeometryCache {
     protected void rehash () {
         Entry[] oldTable = table;
 
-        table = new Entry[oldTable.length * 2 + 1];
+        Entry[] newTable = new Entry[oldTable.length * 2 + 1];
 
         for (int i = oldTable.length-1; i >= 0; i--) {
             for (Entry old = oldTable[i]; old != null;) {
                 Entry e = old;
                 old = old.next;
 
-                int index = e.hash % table.length;
-                e.next = table[index];
-                table[index] = e;
+                int index = e.hash % newTable.length;
+                e.next = newTable[index];
+                newTable[index] = e;
             }
         }
+		table = newTable;
     }
 
     /**
