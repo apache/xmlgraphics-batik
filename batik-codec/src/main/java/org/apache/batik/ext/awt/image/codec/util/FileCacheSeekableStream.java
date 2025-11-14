@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
+import java.nio.file.Files;
 
 /**
  * A subclass of <code>SeekableStream</code> that may be used to wrap
@@ -76,7 +77,7 @@ public final class FileCacheSeekableStream extends SeekableStream {
     public FileCacheSeekableStream(InputStream stream)
         throws IOException {
         this.stream = stream;
-        this.cacheFile = File.createTempFile("jai-FCSS-", ".tmp");
+        this.cacheFile = Files.createTempFile("jai-FCSS-", ".tmp").toFile();
         cacheFile.deleteOnExit();
         this.cache = new RandomAccessFile(cacheFile, "rw");
     }
