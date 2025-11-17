@@ -39,17 +39,17 @@ import org.apache.batik.ext.awt.g2d.GraphicContext;
  */
 public class SVGPaint implements SVGConverter {
     /**
-     * All GradientPaint convertions are handed to svgLinearGradient
+     * All GradientPaint conversions are handed to svgLinearGradient
      */
     private SVGLinearGradient svgLinearGradient;
 
     /**
-     * All TexturePaint convertions are handed to svgTextureGradient
+     * All TexturePaint conversions are handed to svgTextureGradient
      */
     private SVGTexturePaint svgTexturePaint;
 
     /**
-     * All Color convertions are handed to svgColor
+     * All Color conversions are handed to svgColor
      */
     private SVGColor svgColor;
 

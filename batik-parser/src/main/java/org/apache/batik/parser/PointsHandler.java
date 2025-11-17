@@ -30,7 +30,7 @@ public interface PointsHandler {
 
     /**
      * Invoked when the points attribute starts.
-     * @exception ParseException if an error occured while processing the
+     * @exception ParseException if an error occurred while processing the
      *                           points
      */
     void startPoints() throws ParseException;
@@ -39,14 +39,14 @@ public interface PointsHandler {
      * Invoked when a point has been parsed.
      * @param x the x coordinate of the point
      * @param y the y coordinate of the point
-     * @exception ParseException if an error occured while processing the
+     * @exception ParseException if an error occurred while processing the
      *                           points
      */
     void point(float x, float y) throws ParseException;
 
     /**
      * Invoked when the points attribute ends.
-     * @exception ParseException if an error occured while processing the
+     * @exception ParseException if an error occurred while processing the
      *                           points
      */
     void endPoints() throws ParseException;

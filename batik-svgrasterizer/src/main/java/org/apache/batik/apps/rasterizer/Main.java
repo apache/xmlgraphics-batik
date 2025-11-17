@@ -213,7 +213,7 @@ public class Main implements SVGConverterController {
                         w = Float.parseFloat(wStr);
                         h = Float.parseFloat(hStr);
                     }catch(NumberFormatException e){
-                        // If an error occured, the x, y, w, h
+                        // If an error occurred, the x, y, w, h
                         // values will not be valid
                     }
 
@@ -270,7 +270,7 @@ public class Main implements SVGConverterController {
                         g = Integer.parseInt(gStr);
                         b = Integer.parseInt(bStr);
                     }catch(NumberFormatException e){
-                        // If an error occured, the a, r, g, b
+                        // If an error occurred, the a, r, g, b
                         // values will not be in the 0-255 range
                         // and the next if test will fail
                     }

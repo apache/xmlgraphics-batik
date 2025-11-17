@@ -23,7 +23,7 @@ import java.awt.geom.*;
 import java.awt.image.*;
 
 /**
- * This test validates convertion of Java 2D clip inot SVG clipPath
+ * This test validates conversion of Java 2D clip inot SVG clipPath
  * definition and attributes.
  *
  * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>

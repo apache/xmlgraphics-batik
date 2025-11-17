@@ -29,13 +29,13 @@ package org.apache.batik.parser;
 public interface PathHandler {
     /**
      * Invoked when the path starts.
-     * @exception ParseException if an error occured while processing the path
+     * @exception ParseException if an error occurred while processing the path
      */
     void startPath() throws ParseException;
 
     /**
      * Invoked when the path ends.
-     * @exception ParseException if an error occured while processing the path
+     * @exception ParseException if an error occurred while processing the path
      */
     void endPath() throws ParseException;
 
@@ -44,7 +44,7 @@ public interface PathHandler {
      * <p>Command : <b>m</b>
      * @param x the relative x coordinate for the end point
      * @param y the relative y coordinate for the end point
-     * @exception ParseException if an error occured while processing the path
+     * @exception ParseException if an error occurred while processing the path
      */
     void movetoRel(float x, float y) throws ParseException;
 
@@ -53,14 +53,14 @@ public interface PathHandler {
      * <p>Command : <b>M</b>
      * @param x the absolute x coordinate for the end point
      * @param y the absolute y coordinate for the end point
-     * @exception ParseException if an error occured while processing the path
+     * @exception ParseException if an error occurred while processing the path
      */
     void movetoAbs(float x, float y) throws ParseException;
 
     /**
      * Invoked when a closepath has been parsed.
      * <p>Command : <b>z</b> | <b>Z</b>
-     * @exception ParseException if an error occured while processing the path
+     * @exception ParseException if an error occurred while processing the path
      */
     void closePath() throws ParseException;
 
@@ -69,7 +69,7 @@ public interface PathHandler {
      * <p>Command : <b>l</b>
      * @param x the relative x coordinates for the end point
      * @param y the relative y coordinates for the end point
-     * @exception ParseException if an error occured while processing the path
+     * @exception ParseException if an error occurred while processing the path
      */
     void linetoRel(float x, float y) throws ParseException;
 
@@ -78,7 +78,7 @@ public interface PathHandler {
      * <p>Command : <b>L</b>
      * @param x the absolute x coordinate for the end point
      * @param y the absolute y coordinate for the end point
-     * @exception ParseException if an error occured while processing the path
+     * @exception ParseException if an error occurred while processing the path
      */
     void linetoAbs(float x, float y) throws ParseException;
 
@@ -86,7 +86,7 @@ public interface PathHandler {
      * Invoked when an horizontal relative line command has been parsed.
      * <p>Command : <b>h</b>
      * @param x the relative X coordinate of the end point
-     * @exception ParseException if an error occured while processing the path
+     * @exception ParseException if an error occurred while processing the path
      */
     void linetoHorizontalRel(float x) throws ParseException;
 
@@ -94,7 +94,7 @@ public interface PathHandler {
      * Invoked when an horizontal absolute line command has been parsed.
      * <p>Command : <b>H</b>
      * @param x the absolute X coordinate of the end point
-     * @exception ParseException if an error occured while processing the path
+     * @exception ParseException if an error occurred while processing the path
      */
     void linetoHorizontalAbs(float x) throws ParseException;
 
@@ -102,7 +102,7 @@ public interface PathHandler {
      * Invoked when a vertical relative line command has been parsed.
      * <p>Command : <b>v</b>
      * @param y the relative Y coordinate of the end point
-     * @exception ParseException if an error occured while processing the path
+     * @exception ParseException if an error occurred while processing the path
      */
     void linetoVerticalRel(float y) throws ParseException;
 
@@ -110,7 +110,7 @@ public interface PathHandler {
      * Invoked when a vertical absolute line command has been parsed.
      * <p>Command : <b>V</b>
      * @param y the absolute Y coordinate of the end point
-     * @exception ParseException if an error occured while processing the path
+     * @exception ParseException if an error occurred while processing the path
      */
     void linetoVerticalAbs(float y) throws ParseException;
 
@@ -123,7 +123,7 @@ public interface PathHandler {
      * @param y2 the relative y coordinate for the second control point
      * @param x the relative x coordinate for the end point
      * @param y the relative y coordinate for the end point
-     * @exception ParseException if an error occured while processing the path
+     * @exception ParseException if an error occurred while processing the path
      */
     void curvetoCubicRel(float x1, float y1, 
                          float x2, float y2, 
@@ -139,7 +139,7 @@ public interface PathHandler {
      * @param y2 the absolute y coordinate for the second control point
      * @param x the absolute x coordinate for the end point
      * @param y the absolute y coordinate for the end point
-     * @exception ParseException if an error occured while processing the path
+     * @exception ParseException if an error occurred while processing the path
      */
     void curvetoCubicAbs(float x1, float y1, 
                          float x2, float y2, 
@@ -155,7 +155,7 @@ public interface PathHandler {
      * @param y2 the relative y coordinate for the second control point
      * @param x the relative x coordinate for the end point
      * @param y the relative y coordinate for the end point
-     * @exception ParseException if an error occured while processing the path
+     * @exception ParseException if an error occurred while processing the path
      */
     void curvetoCubicSmoothRel(float x2, float y2, 
                                float x, float y) throws ParseException;
@@ -170,7 +170,7 @@ public interface PathHandler {
      * @param y2 the absolute y coordinate for the second control point
      * @param x the absolute x coordinate for the end point
      * @param y the absolute y coordinate for the end point
-     * @exception ParseException if an error occured while processing the path
+     * @exception ParseException if an error occurred while processing the path
      */
     void curvetoCubicSmoothAbs(float x2, float y2, 
                                float x, float y) throws ParseException;
@@ -182,7 +182,7 @@ public interface PathHandler {
      * @param y1 the relative y coordinate for the control point
      * @param x the relative x coordinate for the end point
      * @param y the relative x coordinate for the end point
-     * @exception ParseException if an error occured while processing the path
+     * @exception ParseException if an error occurred while processing the path
      */
     void curvetoQuadraticRel(float x1, float y1, 
                              float x, float y) throws ParseException;
@@ -194,7 +194,7 @@ public interface PathHandler {
      * @param y1 the absolute y coordinate for the control point
      * @param x the absolute x coordinate for the end point
      * @param y the absolute x coordinate for the end point
-     * @exception ParseException if an error occured while processing the path
+     * @exception ParseException if an error occurred while processing the path
      */
     void curvetoQuadraticAbs(float x1, float y1, 
                              float x, float y) throws ParseException;
@@ -207,7 +207,7 @@ public interface PathHandler {
      * <p>Command : <b>t</b>
      * @param x the relative x coordinate for the end point 
      * @param y the relative y coordinate for the end point 
-     * @exception ParseException if an error occured while processing the path
+     * @exception ParseException if an error occurred while processing the path
      */
     void curvetoQuadraticSmoothRel(float x, float y) throws ParseException;
 
@@ -219,7 +219,7 @@ public interface PathHandler {
      * <p>Command : <b>T</b>
      * @param x the absolute x coordinate for the end point 
      * @param y the absolute y coordinate for the end point 
-     * @exception ParseException if an error occured while processing the path
+     * @exception ParseException if an error occurred while processing the path
      */
     void curvetoQuadraticSmoothAbs(float x, float y) throws ParseException;
 
@@ -234,7 +234,7 @@ public interface PathHandler {
      * @param sweepFlag the value of the sweep-flag 
      * @param x the relative x coordinate for the end point 
      * @param y the relative y coordinate for the end point 
-     * @exception ParseException if an error occured while processing the path
+     * @exception ParseException if an error occurred while processing the path
      */
     void arcRel(float rx, float ry, 
                 float xAxisRotation, 
@@ -253,7 +253,7 @@ public interface PathHandler {
      * @param sweepFlag the value of the sweep-flag 
      * @param x the absolute x coordinate for the end point 
      * @param y the absolute y coordinate for the end point 
-     * @exception ParseException if an error occured while processing the path
+     * @exception ParseException if an error occurred while processing the path
      */
     void arcAbs(float rx, float ry, 
                 float xAxisRotation, 

@@ -48,7 +48,7 @@ public class TiledImageTranscoder extends SVGAbstractTranscoder {
      * @param document the document to transcode
      * @param uri the uri of the document or null if any
      * @param output the ouput where to transcode
-     * @exception TranscoderException if an error occured while transcoding
+     * @exception TranscoderException if an error occurred while transcoding
      */
     protected void transcode(Document document,
                              String uri,

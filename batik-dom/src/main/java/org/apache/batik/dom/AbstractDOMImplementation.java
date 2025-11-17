@@ -74,7 +74,7 @@ public abstract class AbstractDOMImplementation
         registerFeature("Traversal",          "2.0");
         registerFeature("XPath",              "3.0");
     }
-    
+
     /**
      * Registers a DOM feature.
      */
@@ -123,7 +123,7 @@ public abstract class AbstractDOMImplementation
     /**
      * <b>DOM</b>: Implements
      * {@link org.w3c.dom.DOMImplementation#getFeature(String,String)}.
-     * No compound document support, so just return this DOMImlpementation
+     * No compound document support, so just return this DOMImplementation
      * where appropriate.
      */
     public Object getFeature(String feature, String version) {

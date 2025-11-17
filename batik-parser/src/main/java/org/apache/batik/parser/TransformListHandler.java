@@ -30,7 +30,7 @@ public interface TransformListHandler {
     /**
      * Invoked when the tranform starts.
      *
-     * @exception ParseException if an error occured while processing
+     * @exception ParseException if an error occurred while processing
      * the transform 
      */
     void startTransformList() throws ParseException;
@@ -38,7 +38,7 @@ public interface TransformListHandler {
     /**
      * Invoked when 'matrix(a, b, c, d, e, f)' has been parsed.
      *
-     * @exception ParseException if an error occured while processing
+     * @exception ParseException if an error occurred while processing
      * the transform 
      */
     void matrix(float a, float b, float c, float d, float e, float f)
@@ -47,7 +47,7 @@ public interface TransformListHandler {
     /**
      * Invoked when 'rotate(theta)' has been parsed.
      *
-     * @exception ParseException if an error occured while processing
+     * @exception ParseException if an error occurred while processing
      * the transform 
      */
     void rotate(float theta) throws ParseException;
@@ -55,7 +55,7 @@ public interface TransformListHandler {
     /**
      * Invoked when 'rotate(theta, cx, cy)' has been parsed.
      *
-     * @exception ParseException if an error occured while processing
+     * @exception ParseException if an error occurred while processing
      * the transform 
      */
     void rotate(float theta, float cx, float cy) throws ParseException;
@@ -63,7 +63,7 @@ public interface TransformListHandler {
     /**
      * Invoked when 'translate(tx)' has been parsed.
      *
-     * @exception ParseException if an error occured while processing
+     * @exception ParseException if an error occurred while processing
      * the transform 
      */
     void translate(float tx) throws ParseException;
@@ -71,7 +71,7 @@ public interface TransformListHandler {
     /**
      * Invoked when 'translate(tx, ty)' has been parsed.
      *
-     * @exception ParseException if an error occured while processing
+     * @exception ParseException if an error occurred while processing
      * the transform 
      */
     void translate(float tx, float ty) throws ParseException;
@@ -79,7 +79,7 @@ public interface TransformListHandler {
     /**
      * Invoked when 'scale(sx)' has been parsed.
      *
-     * @exception ParseException if an error occured while processing
+     * @exception ParseException if an error occurred while processing
      * the transform 
      */
     void scale(float sx) throws ParseException;
@@ -87,7 +87,7 @@ public interface TransformListHandler {
     /**
      * Invoked when 'scale(sx, sy)' has been parsed.
      *
-     * @exception ParseException if an error occured while processing
+     * @exception ParseException if an error occurred while processing
      * the transform 
      */
     void scale(float sx, float sy) throws ParseException;
@@ -95,7 +95,7 @@ public interface TransformListHandler {
     /**
      * Invoked when 'skewX(skx)' has been parsed.
      *
-     * @exception ParseException if an error occured while processing
+     * @exception ParseException if an error occurred while processing
      * the transform 
      */
     void skewX(float skx) throws ParseException;
@@ -103,7 +103,7 @@ public interface TransformListHandler {
     /**
      * Invoked when 'skewY(sky)' has been parsed.
      *
-     * @exception ParseException if an error occured while processing
+     * @exception ParseException if an error occurred while processing
      * the transform
      */
     void skewY(float sky) throws ParseException;
@@ -111,7 +111,7 @@ public interface TransformListHandler {
     /**
      * Invoked when the transform ends.
      *
-     * @exception ParseException if an error occured while processing
+     * @exception ParseException if an error occurred while processing
      * the transform
      */
     void endTransformList() throws ParseException;
