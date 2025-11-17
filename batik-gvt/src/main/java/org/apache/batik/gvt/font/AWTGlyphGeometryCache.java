@@ -20,12 +20,12 @@ package org.apache.batik.gvt.font;
 
 import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
-import java.lang.ref.ReferenceQueue;
 import java.lang.ref.SoftReference;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * This class represents a doubly indexed hash table, which holds
- * soft references to the contained glyph geometry informations.
+ * This class holds
+ * soft references to the contained glyph geometry information using a {@link java.util.concurrent.ConcurrentHashMap}.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @author <a href="mailto:tkormann@ilog.fr">Thierry Kormann</a>
@@ -38,26 +38,20 @@ public class AWTGlyphGeometryCache {
      */
     protected static final int INITIAL_CAPACITY = 71;
 
-    /**
-     * The underlying array
-     */
-    protected Entry[] table;
+    private static <T> T getIfSet(SoftReference<T> ref) {
+        return ref == null ? null : ref.get();
+    }
 
     /**
-     * The number of entries
+     * The underlying map
      */
-    protected int count;
-
-    /**
-     * The reference queue.
-     */
-    protected ReferenceQueue referenceQueue = new ReferenceQueue();
+    ConcurrentHashMap<Character, SoftReference<Value>> cache;
 
     /**
      * Creates a new AWTGlyphGeometryCache.
      */
     public AWTGlyphGeometryCache() {
-        table = new Entry[INITIAL_CAPACITY];
+        this(INITIAL_CAPACITY);
     }
 
     /**
@@ -65,14 +59,14 @@ public class AWTGlyphGeometryCache {
      * @param c The inital capacity.
      */
     public AWTGlyphGeometryCache(int c) {
-        table = new Entry[c];
+        cache = new ConcurrentHashMap<>(c);
     }
 
     /**
      * Returns the size of this table.
      */
     public int size() {
-        return count;
+        return cache.size();
     }
 
     /**
@@ -80,15 +74,7 @@ public class AWTGlyphGeometryCache {
      * @return the value or null
      */
     public Value get(char c) {
-        int hash  = hashCode(c) & 0x7FFFFFFF;
-        int index = hash % table.length;
-
-        for (Entry e = table[index]; e != null; e = e.next) {
-            if ((e.hash == hash) && e.match(c)) {
-                return (Value)e.get();
-            }
-        }
-        return null;
+        return getIfSet(cache.get(c));
     }
 
     /**
@@ -96,103 +82,14 @@ public class AWTGlyphGeometryCache {
      * @return the old value or null
      */
     public Value put(char c, Value value) {
-        removeClearedEntries();
-
-        int hash  = hashCode(c) & 0x7FFFFFFF;
-        int index = hash % table.length;
-
-        Entry e = table[index];
-        if (e != null) {
-            if ((e.hash == hash) && e.match(c)) {
-                Object old = e.get();
-                table[index] = new Entry(hash, c, value, e.next);
-                return (Value)old;
-            }
-            Entry o = e;
-            e = e.next;
-            while (e != null) {
-                if ((e.hash == hash) && e.match(c)) {
-                    Object old = e.get();
-                    e = new Entry(hash, c, value, e.next);
-                    o.next = e;
-                    return (Value)old;
-                }
-
-                o = e;
-                e = e.next;
-            }
-        }
-
-        // The key is not in the hash table
-        int len = table.length;
-        if (count++ >= (len - (len >> 2))) {
-            // more than 75% loaded: grow
-            rehash();
-            index = hash % table.length;
-        }
-
-        table[index] = new Entry(hash, c, value, table[index]);
-        return null;
+        return getIfSet(cache.put(c, new SoftReference<>(value)));
     }
 
     /**
      * Clears the table.
      */
     public void clear() {
-        table = new Entry[INITIAL_CAPACITY];
-        count = 0;
-        referenceQueue = new ReferenceQueue();
-    }
-
-    /**
-     * Rehash the table
-     */
-    protected void rehash () {
-        Entry[] oldTable = table;
-
-        table = new Entry[oldTable.length * 2 + 1];
-
-        for (int i = oldTable.length-1; i >= 0; i--) {
-            for (Entry old = oldTable[i]; old != null;) {
-                Entry e = old;
-                old = old.next;
-
-                int index = e.hash % table.length;
-                e.next = table[index];
-                table[index] = e;
-            }
-        }
-    }
-
-    /**
-     * Computes a hash code corresponding to the given objects.
-     */
-    protected int hashCode(char c) {
-        return c;
-    }
-
-    /**
-     * Removes the cleared entries.
-     */
-    protected void removeClearedEntries() {
-        Entry e;
-        while ((e = (Entry)referenceQueue.poll()) != null) {
-            int index = e.hash % table.length;
-            Entry t = table[index];
-            if (t == e) {
-                table[index] = e.next;
-            } else {
-                loop: for (;t!=null;) {
-                    Entry c = t.next;
-                    if (c == e) {
-                        t.next = e.next;
-                        break loop;
-                    }
-                    t = c;
-                }
-            }
-            count--;
-        }
+        cache.clear();
     }
 
     /**
@@ -232,44 +129,6 @@ public class AWTGlyphGeometryCache {
          */
         public Rectangle2D getOutlineBounds2D() {
             return outlineBounds;
-        }
-    }
-
-    /**
-     * To manage collisions
-     */
-    protected class Entry extends SoftReference {
-
-        /**
-         * The hash code
-         */
-        public int hash;
-
-        /**
-         * The character
-         */
-        public char c;
-
-        /**
-         * The next entry
-         */
-        public Entry next;
-
-        /**
-         * Creates a new entry
-         */
-        public Entry(int hash, char c, Value value, Entry next) {
-            super(value, referenceQueue);
-            this.hash  = hash;
-            this.c  = c;
-            this.next  = next;
-        }
-
-        /**
-         * Whether this entry match the given keys.
-         */
-        public boolean match(char o2) {
-            return (c == o2);
         }
     }
 }
