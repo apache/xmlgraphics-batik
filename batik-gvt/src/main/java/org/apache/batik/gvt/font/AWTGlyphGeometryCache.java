@@ -44,11 +44,9 @@ public class AWTGlyphGeometryCache {
 
     /**
      * Sets a new value for the given variable
-     * @return the old value or null
      */
-    public Value put(char c, Value value) {
+    public void put(char c, Value value) {
         table.put(c, value);
-        return value;
     }
 
     /**
