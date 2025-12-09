@@ -188,8 +188,8 @@
   </profiles>
 
   <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/xmlgraphics/batik/trunk/</connection>
-    <url>scm:svn:https://svn.apache.org/repos/asf/xmlgraphics/batik/trunk/</url>
+    <connection>scm:git:https://github.com/apache/xmlgraphics-batik.git</connection>
+    <url>scm:git:https://github.com/apache/xmlgraphics-batik.git</url>
     <developerConnection></developerConnection>
   </scm>
 
