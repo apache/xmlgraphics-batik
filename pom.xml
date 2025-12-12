@@ -189,7 +189,7 @@
 
   <scm>
     <connection>scm:git:https://github.com/apache/xmlgraphics-batik.git</connection>
-    <url>scm:git:https://github.com/apache/xmlgraphics-batik.git</url>
+    <url>https://github.com/apache/xmlgraphics-batik.git</url>
     <developerConnection></developerConnection>
   </scm>
 
