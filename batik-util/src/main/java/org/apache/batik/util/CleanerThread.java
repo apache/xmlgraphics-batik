@@ -22,6 +22,8 @@ import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.lang.ref.PhantomReference;
 
 /**
@@ -34,14 +36,16 @@ import java.lang.ref.PhantomReference;
  */
 public class CleanerThread extends Thread {
 
-    static volatile ReferenceQueue queue = null;
-    static CleanerThread  thread = null;
+    static volatile ReferenceQueue<?> queue = null;
+    static CleanerThread thread = null;
+    /* latch to signal CleanerThread shutdown request */
+    private CountDownLatch shutdownLatch = new CountDownLatch(1);
 
-    public static ReferenceQueue getReferenceQueue() {
+    public static ReferenceQueue<?> getReferenceQueue() {
 
-        if ( queue == null ) {
-            synchronized (CleanerThread.class) {
-                queue = new ReferenceQueue();
+        synchronized (CleanerThread.class) {
+            if ( queue == null ) {
+                queue = new ReferenceQueue<>();
                 thread = new CleanerThread();
             }
         }
@@ -94,29 +98,38 @@ public class CleanerThread extends Thread {
 
     protected CleanerThread() {
         super("Batik CleanerThread");
-        setDaemon(true);
         start();
     }
 
+    @Override
     public void run() {
-        while(true) {
-            try {
-                Reference ref;
-                try {
-                    ref = queue.remove();
+        try {
+            while(!shutdownLatch.await(100, TimeUnit.SECONDS)) {
+                Reference<?> ref;
+                do {
+                    ref = queue.poll();
                     // System.err.println("Cleaned: " + ref);
-                } catch (InterruptedException ie) {
-                    continue;
-                }
+                    if (ref != null && ref instanceof ReferenceCleared) {
+                        ReferenceCleared rc = (ReferenceCleared)ref;
+                        rc.cleared();
+                    }
+                } while (ref != null);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 
-                if (ref instanceof ReferenceCleared) {
-                    ReferenceCleared rc = (ReferenceCleared)ref;
-                    rc.cleared();
-                }
-            } catch (ThreadDeath td) {
-                throw td;
-            } catch (Throwable t) {
-                t.printStackTrace();
+    /**
+     * Request CleanerThread shutdown and wait for it to finish.
+     */
+    public static void shutdown() throws InterruptedException {
+        synchronized (CleanerThread.class) {
+            if (thread != null) {
+                thread.shutdownLatch.countDown();
+                thread.join();
+                queue = null;
+                thread = null;
             }
         }
     }
