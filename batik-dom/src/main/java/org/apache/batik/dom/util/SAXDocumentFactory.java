@@ -242,7 +242,7 @@ public class SAXDocumentFactory
      * @param ns The namespace URI of the root element of the document.
      * @param root The name of the root element of the document.
      * @param uri The document URI.
-     * @exception IOException if an error occured while reading the document.
+     * @exception IOException if an error occurred while reading the document.
      */
     public Document createDocument(String ns, String root, String uri)
         throws IOException {
@@ -252,7 +252,7 @@ public class SAXDocumentFactory
     /**
      * Creates a Document instance.
      * @param uri The document URI.
-     * @exception IOException if an error occured while reading the document.
+     * @exception IOException if an error occurred while reading the document.
      */
     public Document createDocument(String uri)
         throws IOException {
@@ -265,7 +265,7 @@ public class SAXDocumentFactory
      * @param root The name of the root element of the document.
      * @param uri The document URI.
      * @param is The document input stream.
-     * @exception IOException if an error occured while reading the document.
+     * @exception IOException if an error occurred while reading the document.
      */
     public Document createDocument(String ns, String root, String uri,
                                    InputStream is) throws IOException {
@@ -278,7 +278,7 @@ public class SAXDocumentFactory
      * Creates a Document instance.
      * @param uri The document URI.
      * @param is The document input stream.
-     * @exception IOException if an error occured while reading the document.
+     * @exception IOException if an error occurred while reading the document.
      */
     public Document createDocument(String uri, InputStream is)
         throws IOException {
@@ -293,7 +293,7 @@ public class SAXDocumentFactory
      * @param root The name of the root element of the document.
      * @param uri The document URI.
      * @param r The document reader.
-     * @exception IOException if an error occured while reading the document.
+     * @exception IOException if an error occurred while reading the document.
      */
     public Document createDocument(String ns, String root, String uri,
                                    Reader r) throws IOException {
@@ -308,7 +308,7 @@ public class SAXDocumentFactory
      * @param root The name of the root element of the document.
      * @param uri The document URI.
      * @param r an XMLReaderInstance
-     * @exception IOException if an error occured while reading the document.
+     * @exception IOException if an error occurred while reading the document.
      */
     public Document createDocument(String ns, String root, String uri,
                                    XMLReader r) throws IOException {
@@ -335,7 +335,7 @@ public class SAXDocumentFactory
      * Creates a Document instance.
      * @param uri The document URI.
      * @param r The document reader.
-     * @exception IOException if an error occured while reading the document.
+     * @exception IOException if an error occurred while reading the document.
      */
     public Document createDocument(String uri, Reader r) throws IOException {
         InputSource inp = new InputSource(r);
@@ -349,7 +349,7 @@ public class SAXDocumentFactory
      * @param root The name of the root element.
      * @param uri The document URI.
      * @param is  The document input source.
-     * @exception IOException if an error occured while reading the document.
+     * @exception IOException if an error occurred while reading the document.
      */
     protected Document createDocument(String ns, String root, String uri,
                                       InputSource is)
@@ -415,7 +415,7 @@ public class SAXDocumentFactory
     /**
      * Creates a Document.
      * @param is  The document input source.
-     * @exception IOException if an error occured while reading the document.
+     * @exception IOException if an error occurred while reading the document.
      */
     protected Document createDocument(InputSource is)
         throws IOException {

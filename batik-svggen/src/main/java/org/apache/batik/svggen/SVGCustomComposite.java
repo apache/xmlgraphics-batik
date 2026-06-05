@@ -66,7 +66,7 @@ public class SVGCustomComposite extends AbstractSVGConverter {
 
         if (compositeDesc == null) {
             // First time this composite is used. Request handler
-            // to do the convertion
+            // to do the conversion
             SVGCompositeDescriptor desc =
                 generatorContext.
                 extensionHandler.handleComposite(composite,

@@ -39,22 +39,22 @@ import java.util.List;
  */
 public class SVGBufferedImageOp extends AbstractSVGFilterConverter {
     /**
-     * All LookupOp convertion is handed to svgLookupOp
+     * All LookupOp conversion is handed to svgLookupOp
      */
     private SVGLookupOp svgLookupOp;
 
     /**
-     * All RescaleOp convertion is handed to svgRescaleOp
+     * All RescaleOp conversion is handed to svgRescaleOp
      */
     private SVGRescaleOp svgRescaleOp;
 
     /**
-     * All ConvolveOp convertion is handed to svgConvolveOp
+     * All ConvolveOp conversion is handed to svgConvolveOp
      */
     private SVGConvolveOp svgConvolveOp;
 
     /**
-     * All custom BufferedImageOp convertion is handed to '
+     * All custom BufferedImageOp conversion is handed to '
      * svgCustomBufferedImageOp.
      */
     private SVGCustomBufferedImageOp svgCustomBufferedImageOp;

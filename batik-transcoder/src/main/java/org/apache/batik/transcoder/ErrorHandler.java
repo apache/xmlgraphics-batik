@@ -42,7 +42,7 @@ package org.apache.batik.transcoder;
 public interface ErrorHandler {
 
     /**
-     * Invoked when an error occured while transcoding.
+     * Invoked when an error occurred while transcoding.
      * @param ex the error informations encapsulated in a TranscoderException
      * @exception TranscoderException if the method want to forward
      * the exception
@@ -50,7 +50,7 @@ public interface ErrorHandler {
     void error(TranscoderException ex) throws TranscoderException;
 
     /**
-     * Invoked when an fatal error occured while transcoding.
+     * Invoked when an fatal error occurred while transcoding.
      * @param ex the fatal error informations encapsulated in a
      * TranscoderException
      * @exception TranscoderException if the method want to forward
@@ -59,7 +59,7 @@ public interface ErrorHandler {
     void fatalError(TranscoderException ex) throws TranscoderException;
 
     /**
-     * Invoked when a warning occured while transcoding.
+     * Invoked when a warning occurred while transcoding.
      * @param ex the warning informations encapsulated in a TranscoderException
      * @exception TranscoderException if the method want to forward
      * the exception

@@ -397,7 +397,7 @@ public interface GraphicsNode {
 
     /**
      * Returns the bounds of the area covered by this node, without
-     * taking any of its rendering attribute into accoun. That is,
+     * taking any of its rendering attribute into account. That is,
      * exclusive of any clipping, masking, filtering or stroking, for
      * example. The returned value is transformed by the concatenation
      * of the input transform and this node's transform.

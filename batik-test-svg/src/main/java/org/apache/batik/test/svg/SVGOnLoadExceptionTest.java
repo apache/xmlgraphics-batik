@@ -98,14 +98,14 @@ public class SVGOnLoadExceptionTest extends AbstractTest {
         = "SVGOnLoadExceptionTest.error.exception.did.not.occur";
 
     /**
-     * Error when an exception occured, but not of the expected
+     * Error when an exception occurred, but not of the expected
      * class
      */
     public static final String ERROR_UNEXPECTED_EXCEPTION
         = "SVGOnLoadExceptionTest.error.unexpected.exception";
 
     /**
-     * Error when a BridgeException occured, as expected, but
+     * Error when a BridgeException occurred, as expected, but
      * with an unexpected error code
      */
     public static final String ERROR_UNEXPECTED_ERROR_CODE

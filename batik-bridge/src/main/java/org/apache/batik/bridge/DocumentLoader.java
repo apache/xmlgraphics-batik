@@ -95,7 +95,7 @@ public class DocumentLoader {
     /**
      * Returns a document from the specified uri.
      * @param uri the uri of the document
-     * @exception IOException if an I/O error occured while loading
+     * @exception IOException if an I/O error occurred while loading
      * the document
      */
     public Document loadDocument(String uri) throws IOException {
@@ -117,7 +117,7 @@ public class DocumentLoader {
     /**
      * Returns a document from the specified uri.
      * @param uri the uri of the document
-     * @exception IOException if an I/O error occured while loading
+     * @exception IOException if an I/O error occurred while loading
      * the document
      */
     public Document loadDocument(String uri, InputStream is)

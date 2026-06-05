@@ -66,7 +66,7 @@ public class Any2LsRGBRed extends AbstractRed {
     }
 
     /**
-     * Gamma for linear to sRGB convertion
+     * Gamma for linear to sRGB conversion
      */
     private static final double GAMMA = 2.4;
     private static final double LFACT = 1.0/12.92;

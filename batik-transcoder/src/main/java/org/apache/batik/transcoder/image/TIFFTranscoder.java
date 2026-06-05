@@ -41,7 +41,7 @@ public class TIFFTranscoder extends ImageTranscoder {
     /**
      * Constructs a new transcoder that produces tiff images.
      */
-    public TIFFTranscoder() { 
+    public TIFFTranscoder() {
         hints.put(KEY_FORCE_TRANSPARENT_WHITE, Boolean.FALSE);
     }
 
@@ -49,7 +49,7 @@ public class TIFFTranscoder extends ImageTranscoder {
     public UserAgent getUserAgent() {
         return this.userAgent;
     }
-    
+
     /**
      * Creates a new ARGB image with the specified dimension.
      * @param width the image width in pixels
@@ -77,12 +77,12 @@ public class TIFFTranscoder extends ImageTranscoder {
             return null;
         }
     }
-    
+
     /**
      * Writes the specified image to the specified output.
      * @param img the image to write
      * @param output the output where to store the image
-     * @throws TranscoderException if an error occured while storing the image
+     * @throws TranscoderException if an error occurred while storing the image
      */
     public void writeImage(BufferedImage img, TranscoderOutput output)
             throws TranscoderException {
@@ -113,35 +113,35 @@ public class TIFFTranscoder extends ImageTranscoder {
         }
         if (adapter == null) {
             throw new TranscoderException(
-                    "Could not write TIFF file because no WriteAdapter is availble");
+                    "Could not write TIFF file because no WriteAdapter is available");
         }
         adapter.writeImage(this, img, output);
     }
-    
+
     // --------------------------------------------------------------------
     // TIFF specific interfaces
     // --------------------------------------------------------------------
 
     /**
-     * This interface is used by <code>TIFFTranscoder</code> to write TIFF images 
+     * This interface is used by <code>TIFFTranscoder</code> to write TIFF images
      * through different codecs.
      *
      * @version $Id$
      */
     public interface WriteAdapter {
-        
+
         /**
          * Writes the specified image to the specified output.
          * @param transcoder the calling PNGTranscoder
          * @param img the image to write
          * @param output the output where to store the image
-         * @throws TranscoderException if an error occured while storing the image
+         * @throws TranscoderException if an error occurred while storing the image
          */
-        void writeImage(TIFFTranscoder transcoder, BufferedImage img, 
+        void writeImage(TIFFTranscoder transcoder, BufferedImage img,
                 TranscoderOutput output) throws TranscoderException;
 
     }
-    
+
 
     // --------------------------------------------------------------------
     // Keys definition
@@ -180,7 +180,7 @@ public class TIFFTranscoder extends ImageTranscoder {
      *       over a white background in a viewer that supports
      *       transparency.</td>
      *   </tr>
-     * </table> 
+     * </table>
      */
     public static final TranscodingHints.Key KEY_FORCE_TRANSPARENT_WHITE
         = ImageTranscoder.KEY_FORCE_TRANSPARENT_WHITE;
@@ -212,5 +212,5 @@ public class TIFFTranscoder extends ImageTranscoder {
      */
     public static final TranscodingHints.Key KEY_COMPRESSION_METHOD
         = new StringKey();
-    
+
 }

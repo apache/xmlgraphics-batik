@@ -86,7 +86,7 @@ public class Any2sRGBRed extends AbstractRed {
    }
 
     /**
-     * Exponent for linear to sRGB convertion
+     * Exponent for linear to sRGB conversion
      */
     private static final double GAMMA = 2.4;
 

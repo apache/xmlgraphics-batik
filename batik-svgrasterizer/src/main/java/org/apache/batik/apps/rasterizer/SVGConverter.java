@@ -173,7 +173,7 @@ public class SVGConverter {
         = "SVGConverter.error.unable.to.create.output.dir";
 
     //
-    // Reported when an error occurs while convertion the
+    // Reported when an error occurs while conversion the
     // source file.
     //
     public static final String ERROR_WHILE_RASTERIZING_FILE

@@ -22,7 +22,7 @@ import java.awt.*;
 import java.awt.geom.*;
 
 /**
- * This test validates the convertion of Java 2D shapes into SVG
+ * This test validates the conversion of Java 2D shapes into SVG
  * Shapes.
  *
  * @author <a href="mailto:vhardy@eng.sun.com">Vincent Hardy</a>
