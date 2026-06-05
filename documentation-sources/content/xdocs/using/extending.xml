@@ -731,14 +731,12 @@
       </p>
       <p>
         Batik comes with implementations of <code>Interpreter</code> and
-        <code>IntepreterFactory</code> to support TCL and Python script in
-        SVG documents, if the Jacl and Jython distributions are installed,
-        respectively.  See the classes in the
-        <code>org.apache.batik.script.jacl</code> and
-        <code>org.apache.batik.script.jython</code> packages to guidance
+        <code>IntepreterFactory</code> to support Python script in
+        SVG documents, if the Jython distributions is installed. See the classes
+        in the <code>org.apache.batik.script.jython</code> packages to guidance
         on how to implement the interpreter interfaces, and the
         <a href="site:install">installation notes</a> on what jar files are
-        needed for TCL and Python support.
+        needed for Python support.
       </p>
     </section>
   </body>
