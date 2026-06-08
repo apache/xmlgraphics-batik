@@ -287,6 +287,42 @@ public abstract class TextUtilities implements CSSConstants, ErrorConstants {
     }
 
     /**
+     * Converts the dominant-baseline CSS value to a string usable as a
+     * text attribute, or null if the value is "auto".
+     * @param e the element
+     */
+    public static String convertDominantBaseline(Element e) {
+        Value v = CSSUtilities.getComputedStyle
+            (e, SVGCSSEngine.DOMINANT_BASELINE_INDEX);
+        if (v.getPrimitiveType() == CSSPrimitiveValue.CSS_IDENT) {
+            String s = v.getStringValue();
+            if (CSS_AUTO_VALUE.equals(s)) {
+                return null;
+            }
+            return s;
+        }
+        return null;
+    }
+
+    /**
+     * Converts the alignment-baseline CSS value to a string usable as a
+     * text attribute, or null if the value is "auto" or "baseline".
+     * @param e the element
+     */
+    public static String convertAlignmentBaseline(Element e) {
+        Value v = CSSUtilities.getComputedStyle
+            (e, SVGCSSEngine.ALIGNMENT_BASELINE_INDEX);
+        if (v.getPrimitiveType() == CSSPrimitiveValue.CSS_IDENT) {
+            String s = v.getStringValue();
+            if (CSS_AUTO_VALUE.equals(s) || CSS_BASELINE_VALUE.equals(s)) {
+                return null;
+            }
+            return s;
+        }
+        return null;
+    }
+
+    /**
      * Converts a kerning CSS value to a value usable as a text
      * attribute, or null.
      * @param e the element
