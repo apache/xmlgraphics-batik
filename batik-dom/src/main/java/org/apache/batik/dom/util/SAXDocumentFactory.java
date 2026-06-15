@@ -397,77 +397,134 @@ public class SAXDocumentFactory
     }
 
     static SAXParserFactory saxFactory;
-    static {
-        saxFactory = SAXParserFactory.newInstance();
-        try {
-            saxFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
-            saxFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-            saxFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-        } catch (SAXNotRecognizedException e) {
-            e.printStackTrace();
-        } catch (SAXNotSupportedException e) {
-            e.printStackTrace();
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-        }
+static {
+    saxFactory = SAXParserFactory.newInstance();
+    try {
+        saxFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+        saxFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+        saxFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+        // 添加更多安全特性
+        saxFactory.setFeature("http://xml.org/sax/features/validation", false);
+        saxFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+        saxFactory.setXIncludeAware(false);
+        saxFactory.setNamespaceAware(true);
+    } catch (SAXNotRecognizedException | SAXNotSupportedException | ParserConfigurationException e) {
+        // 安全特性设置失败，抛出异常而不是静默继续
+        throw new RuntimeException("Failed to configure secure SAX parser factory", e);
     }
+}
 
-    /**
-     * Creates a Document.
-     * @param is  The document input source.
-     * @exception IOException if an error occured while reading the document.
-     */
-    protected Document createDocument(InputSource is)
-        throws IOException {
-        try {
-            if (parserClassName != null) {
-                parser = XMLReaderFactory.createXMLReader(parserClassName);
-            } else {
-                SAXParser saxParser;
-                try {
-                    saxParser = saxFactory.newSAXParser();
-                } catch (ParserConfigurationException pce) {
-                    throw new IOException("Could not create SAXParser: "
-                            + pce.getMessage());
-                }
-                parser = saxParser.getXMLReader();
+/**
+ * Creates a Document.
+ * @param is  The document input source.
+ * @exception IOException if an error occurred while reading the document.
+ */
+protected Document createDocument(InputSource is) throws IOException {
+    XMLReader parser = null;
+    try {
+        if (parserClassName != null) {
+            parser = XMLReaderFactory.createXMLReader(parserClassName);
+        } else {
+            SAXParser saxParser;
+            try {
+                saxParser = saxFactory.newSAXParser();
+            } catch (ParserConfigurationException pce) {
+                throw new IOException("Could not create SAXParser: " + pce.getMessage(), pce);
             }
-
-            parser.setContentHandler(this);
-            parser.setDTDHandler(this);
-            parser.setEntityResolver(this);
-            parser.setErrorHandler((errorHandler == null) ?
-                                   this : errorHandler);
-
-            parser.setFeature("http://xml.org/sax/features/namespaces",
-                              true);
-            parser.setFeature("http://xml.org/sax/features/namespace-prefixes",
-                              true);
-            parser.setFeature("http://xml.org/sax/features/validation",
-                              isValidating);
-            parser.setFeature("http://xml.org/sax/features/external-general-entities", false);
-            parser.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-            parser.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-            parser.setProperty("http://xml.org/sax/properties/lexical-handler",
-                               this);
-            parser.parse(is);
-        } catch (SAXException e) {
-            Exception ex = e.getException();
-            if (ex != null && ex instanceof InterruptedIOException) {
-                throw (InterruptedIOException)ex;
-            }
-            throw new SAXIOException(e);
+            parser = saxParser.getXMLReader();
         }
 
-        currentNode  = null;
-        Document ret = document;
-        document     = null;
-        doctype      = null;
-        locator      = null;
-        parser       = null;
-        return ret;
+        // 配置解析器安全特性
+        configureParserSecurity(parser);
+        
+        parser.setContentHandler(this);
+        parser.setDTDHandler(this);
+        parser.setEntityResolver(this);
+        parser.setErrorHandler((errorHandler == null) ? this : errorHandler);
+
+        parser.setFeature("http://xml.org/sax/features/namespaces", true);
+        parser.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
+        parser.setFeature("http://xml.org/sax/features/validation", isValidating);
+        
+        // 再次确保安全特性已设置
+        setSecurityFeatures(parser);
+        
+        parser.setProperty("http://xml.org/sax/properties/lexical-handler", this);
+        parser.parse(is);
+    } catch (SAXException e) {
+        Exception ex = e.getException();
+        if (ex instanceof InterruptedIOException) {
+            throw (InterruptedIOException) ex;
+        }
+        throw new SAXIOException(e);
+    } finally {
+        // 清理资源
+        cleanup();
     }
 
+    currentNode = null;
+    Document ret = document;
+    document = null;
+    doctype = null;
+    locator = null;
+    parser = null;
+    return ret;
+}
+
+/**
+ * 配置解析器安全特性
+ */
+private void configureParserSecurity(XMLReader parser) throws SAXException {
+    try {
+        setSecurityFeatures(parser);
+    } catch (SAXException e) {
+        throw new SAXException("Failed to configure secure XML parser", e);
+    }
+}
+
+/**
+ * 设置安全特性
+ */
+private void setSecurityFeatures(XMLReader parser) throws SAXException {
+    // 禁用外部实体
+    parser.setFeature("http://xml.org/sax/features/external-general-entities", false);
+    parser.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+    parser.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+    
+    // 添加更多安全特性
+    try {
+        parser.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+    } catch (SAXException e) {
+        // 某些解析器可能不支持此特性，记录警告但继续
+        System.err.println("Warning: Disallow doctype feature not supported: " + e.getMessage());
+    }
+    
+    try {
+        parser.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", false);
+        parser.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+    } catch (SAXException e) {
+        // 记录警告但继续
+        System.err.println("Warning: DTD loading features not supported: " + e.getMessage());
+    }
+}
+
+/**
+ * 清理资源
+ */
+private void cleanup() {
+    // 清理任何需要清理的资源
+    if (parser != null) {
+        try {
+            // 某些XMLReader实现可能有清理方法
+            if (parser instanceof org.xml.sax.helpers.XMLReaderAdapter) {
+                // 特定清理逻辑
+            }
+        } catch (Exception e) {
+            // 记录但不要抛出，因为这是清理操作
+            System.err.println("Warning: Error during parser cleanup: " + e.getMessage());
+        }
+    }
+}
     /**
      * Returns the document descriptor associated with the latest created
      * document.
