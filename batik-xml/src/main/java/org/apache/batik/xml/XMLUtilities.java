@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PushbackInputStream;
 import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.batik.util.EncodingUtilities;
 
@@ -125,7 +126,7 @@ public class XMLUtilities extends XMLCharacters {
     }
 
     /**
-     * Tests whether the given character is a valid aphabetic character.
+     * Tests whether the given character is a valid alphabetic character.
      */
     public static boolean isXMLAlphabeticCharacter(char c) {
         return (c < 128) &&
@@ -170,12 +171,12 @@ public class XMLUtilities extends XMLCharacters {
     /**
      * Creates a Reader initialized to scan the characters in the given
      * XML document's InputStream.
-     * @param is The input stream positionned at the beginning of an
+     * @param is The input stream positioned at the beginning of an
      *        XML document.
-     * @return a Reader positionned at the beginning of the XML document
+     * @return a Reader positioned at the beginning of the XML document
      *         It is created from an encoding figured out from the first
      *         few bytes of the document. As a consequence the given
-     *         input stream is not positionned anymore at the beginning
+     *         input stream is not positioned anymore at the beginning
      *         of the document when this method returns.
      */
     public static Reader createXMLDocumentReader(InputStream is)
@@ -236,7 +237,7 @@ public class XMLUtilities extends XMLCharacters {
             }
         }
 
-        return new InputStreamReader(pbis, "UTF8");
+        return new InputStreamReader(pbis, StandardCharsets.UTF_8 );
     }
 
     /**
@@ -379,7 +380,7 @@ public class XMLUtilities extends XMLCharacters {
         }
         sc = (char)c;
 
-        StringBuffer enc = new StringBuffer();
+        StringBuilder enc = new StringBuilder();
         for (;;) {
             c = r.read();
             if (c == -1) {

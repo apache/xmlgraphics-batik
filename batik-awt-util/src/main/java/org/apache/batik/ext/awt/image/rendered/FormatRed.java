@@ -32,6 +32,7 @@ import java.awt.image.Raster;
 import java.awt.image.SampleModel;
 import java.awt.image.SinglePixelPackedSampleModel;
 import java.awt.image.WritableRaster;
+import java.util.Arrays;
 
 import org.apache.batik.ext.awt.image.GraphicsUtil;
 
@@ -175,8 +176,7 @@ public class FormatRed extends AbstractRed {
 
         if (sm instanceof ComponentSampleModel) {
             int [] bitsPer = new int[bands];
-            for (int i=0; i<bands; i++)
-                bitsPer[i] = bits;
+            Arrays.fill( bitsPer, bits );
 
             return new ComponentColorModel
                 (cs, bitsPer, hasAlpha, preMult,
