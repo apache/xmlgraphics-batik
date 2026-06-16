@@ -18,6 +18,8 @@
  */
 package org.apache.batik.test.xml;
 
+import org.apache.commons.io.FileUtils;
+
 import org.apache.batik.script.rhino.RhinoClassShutter;
 import org.apache.batik.test.DefaultTestSuite;
 import org.apache.batik.test.Test;
@@ -69,6 +71,15 @@ public class JUnitRunnerTestCase {
     }
 
     private static Collection<Test[]> getTests() throws ParserConfigurationException, IOException, SAXException, TestException {
+        new File("test-references/org/apache/batik/ext/awt/geom/candidate").mkdir();
+        new File("test-references/org/apache/batik/ext/awt/geom/variation").mkdir();
+        for (File file : FileUtils.listFiles(new File("test-references"), new String[]{"png"}, true)) {
+            file = file.getParentFile();
+            if (!file.getName().contains("candidate")) {
+                new File(file, "candidate-variation").mkdir();
+                new File(file, "candidate-reference").mkdir();
+            }
+        }
         File uriStr = new File("test-resources/org/apache/batik/test/regard.xml");
         URL url = uriStr.toURI().toURL();
         DocumentBuilder docBuilder
@@ -142,23 +153,8 @@ public class JUnitRunnerTestCase {
     }
 
     private static List<String> EXCLUDE = Arrays.asList(
-//fail on CI
 "ShowSVG",
-"ATransform.defaultContextGeneration",
-"Bug4945.defaultContextGeneration",
-"Bug6535.defaultContextGeneration",
-"Bug17965.defaultContextGeneration",
-"Color1.defaultContextGeneration",
-"Color2.defaultContextGeneration",
-"Gradient.defaultContextGeneration",
-"IdentityTest.defaultContextGeneration",
-"NegativeLengths.defaultContextGeneration",
-"ShearTest.defaultContextGeneration",
-"TextSpacePreserve.defaultContextGeneration",
-"BasicShapes.defaultContextGeneration",
-"TransformCollapse.defaultContextGeneration",
-"BasicShapes2.defaultContextGeneration",
-"BStroke.defaultContextGeneration",
+"org.apache.batik.svggen.SVGAccuracyTestValidator$SameAsReferenceImage",
 "Color1.renderingCheck",
 "Lookup.renderingCheck",
 "Rescale.renderingCheck",
@@ -600,19 +596,6 @@ public class JUnitRunnerTestCase {
 "jarCheckLoadSameAsDocument(scripts=application/java-archive)(scriptOrigin=document)(secure=true)",
 "jarCheckLoadSameAsDocument(scripts=application/java-archive)(scriptOrigin=document)(secure=false)",
 "jarCheckPermissionsGranted",
-// exclude additional failures appearing under JDK 1.8.0_152 on MacOS
-"Bug4389.renderingCheck",
-"Bug4389.ContextrenderingCheck",
-"Bug6535.ContextrenderingCheck",
-"Bug17965.renderingCheck",
-"Bug17965.ContextrenderingCheck",
-"IdentityTest.renderingCheck",
-"IdentityTest.ContextrenderingCheck",
-"rlm.sort",
-"rlm.containsall",
-"rlm.removeall",
-"rlm.retainall",
-"rlm.merge",
-"rlm.subtract"
+"Bug6535.ContextrenderingCheck"
     );
 }
