@@ -71,7 +71,7 @@ public class SVGClip extends AbstractSVGConverter {
         SVGClipDescriptor clipDesc = null;
 
         if (clip != null) {
-            StringBuffer clipPathAttrBuf = new StringBuffer(URL_PREFIX);
+            StringBuilder clipPathAttrBuf = new StringBuilder(URL_PREFIX);
 
             // First, convert to a GeneralPath so that the
             GeneralPath clipPath = new GeneralPath(clip);

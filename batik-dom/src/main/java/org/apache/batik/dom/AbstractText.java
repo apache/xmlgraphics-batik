@@ -130,7 +130,7 @@ public abstract class AbstractText
      * <b>DOM</b>: Implements {@link org.w3c.dom.Text#getWholeText()}.
      */
     public String getWholeText() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (Node n = this;
                 n != null;
                 n = getPreviousLogicallyAdjacentTextNode(n)) {

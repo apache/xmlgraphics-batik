@@ -557,7 +557,7 @@ public class AnimatableTransformListValue extends AnimatableValue {
      * Returns the CSS text representation of the value.
      */
     public String toStringRep() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         Iterator i = transforms.iterator();
         while (i.hasNext()) {
             AbstractSVGTransform t = (AbstractSVGTransform) i.next();

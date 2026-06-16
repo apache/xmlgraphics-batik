@@ -106,7 +106,7 @@ public class SAXDocumentFactory
     /**
      * Contains collected string data.  May be Text, CDATA or Comment.
      */
-    protected StringBuffer stringBuffer = new StringBuffer();
+    protected StringBuilder stringBuilder = new StringBuilder();
 
     /**
      * The DTD to use when the document is created.
@@ -114,7 +114,7 @@ public class SAXDocumentFactory
     protected DocumentType doctype;
 
     /**
-     * Indicates if stringBuffer has content, needed in case of
+     * Indicates if stringBuilder has content, needed in case of
      * zero sized "text" content.
      */
     protected boolean stringContent;
@@ -558,7 +558,7 @@ public class SAXDocumentFactory
         isStandalone = false;
         xmlVersion   = XMLConstants.XML_VERSION_10;
 
-        stringBuffer.setLength(0);
+        stringBuilder.setLength(0);
         stringContent = false;
 
         if (createDocumentDescriptor) {
@@ -693,8 +693,8 @@ public class SAXDocumentFactory
     public void appendStringData() {
         if (!stringContent) return;
 
-        String str = stringBuffer.toString();
-        stringBuffer.setLength(0); // reuse buffer.
+        String str = stringBuilder.toString();
+        stringBuilder.setLength(0); // reuse buffer.
         stringContent = false;
         if (currentNode == null) {
             if (inCDATA) preInfo.add(new CDataInfo(str));
@@ -713,7 +713,7 @@ public class SAXDocumentFactory
      */
     public void characters(char[] ch, int start, int length)
         throws SAXException {
-        stringBuffer.append(ch, start, length);
+        stringBuilder.append(ch, start, length);
         stringContent = true;
     }
 
@@ -726,7 +726,7 @@ public class SAXDocumentFactory
                                     int start,
                                     int length)
         throws SAXException {
-        stringBuffer.append(ch, start, length);
+        stringBuilder.append(ch, start, length);
         stringContent = true;
     }
 

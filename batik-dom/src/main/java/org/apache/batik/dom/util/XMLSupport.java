@@ -84,7 +84,7 @@ public final class XMLSupport implements XMLConstants {
      */
     public static String defaultXMLSpace(String data) {
         int nChars = data.length();
-        StringBuffer result = new StringBuffer( nChars );
+        StringBuilder result = new StringBuilder( nChars );
         boolean space = false;
         for (int i = 0; i < nChars; i++) {
             char c = data.charAt(i);
@@ -114,7 +114,7 @@ public final class XMLSupport implements XMLConstants {
      */
     public static String preserveXMLSpace(String data) {
         int nChars = data.length();
-        StringBuffer result = new StringBuffer( nChars );
+        StringBuilder result = new StringBuilder( nChars );
         for (int i = 0; i < data.length(); i++) {
             char c = data.charAt(i);
             switch (c) {

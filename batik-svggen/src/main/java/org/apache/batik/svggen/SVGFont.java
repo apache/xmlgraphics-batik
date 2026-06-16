@@ -498,7 +498,7 @@ public class SVGFont extends AbstractSVGConverter {
          * this keeps all added characters in order. It can be cleared from toSVG()
          * when glyphs are created for some characters.
          */
-        private StringBuffer freshChars = new StringBuffer( 40 );
+        private StringBuilder freshChars = new StringBuilder( 40 );
 
         CharListHelper() {
 
@@ -516,7 +516,7 @@ public class SVGFont extends AbstractSVGConverter {
          * reset the string of recently added characters - used after glyphs were created for them.
          */
         void clearNewChars(){
-            freshChars = new StringBuffer( 40 );
+            freshChars = new StringBuilder( 40 );
         }
 
         /**

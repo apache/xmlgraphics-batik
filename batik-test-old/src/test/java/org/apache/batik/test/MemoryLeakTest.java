@@ -113,7 +113,7 @@ public abstract class MemoryLeakTest  extends AbstractTest {
         for (int i=0; i<NUM_GC; i++)
             rt.gc();
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         boolean passed = true;
         synchronized (objs) {
             for (String desc : descs) {
@@ -187,7 +187,7 @@ public abstract class MemoryLeakTest  extends AbstractTest {
             rt.gc();
 
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         synchronized (objs) {
             boolean passed = true;
             for (Object o1 : objs.values()) {

@@ -195,7 +195,7 @@ public class ParsedURLDefaultProtocolHandler
         if (idx == -1) return str; // quick out..
 
         int prev=0;
-        StringBuffer ret = new StringBuffer();
+        StringBuilder ret = new StringBuilder();
         while (idx != -1) {
             if (idx != prev)
                 ret.append(str.substring(prev, idx));

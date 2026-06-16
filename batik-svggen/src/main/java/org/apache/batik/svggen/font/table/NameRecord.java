@@ -65,7 +65,7 @@ public class NameRecord {
     }
 
     protected void loadString(RandomAccessFile raf, int stringStorageOffset) throws IOException {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         raf.seek(stringStorageOffset + stringOffset);
         if (platformId == Table.platformAppleUnicode) {
             

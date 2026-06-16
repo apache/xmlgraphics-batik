@@ -97,7 +97,7 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
         "SVGFont.config.svg.test.card.end";
 
     protected static String encodeEntities(String s) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < s.length(); i++) {
             if (s.charAt(i) == XML_CHAR_LT) {
                 sb.append(XML_ENTITY_LT);
@@ -123,7 +123,7 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
             return "";
         }
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         int offset = 0;
 
         while (offset < count) {
@@ -198,7 +198,7 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
     }
 
     protected static String getSVGFontFaceElement(Font font) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         String fontFamily = font.getNameTable().getRecord(Table.nameFontFamilyName);
         short unitsPerEm = font.getHeadTable().getUnitsPerEm();
         String panose = font.getOS2Table().getPanose().toString();
@@ -273,7 +273,7 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
      */
     protected static void writeFontAsSVGFragment(PrintStream ps, Font font, String id, int first, int last, boolean autoRange, boolean forceAscii)
     throws Exception {
-        //    StringBuffer sb = new StringBuffer();
+        //    StringBuilder sb = new StringBuilder();
         //    int horiz_advance_x = font.getHmtxTable().getAdvanceWidth(
         //      font.getHheaTable().getNumberOfHMetrics() - 1);
         int horiz_advance_x = font.getOS2Table().getAvgCharWidth();
@@ -427,7 +427,7 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
             String attrib,
             String code) {
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         int firstIndex = 0;
         int count = 0;
         int i;
@@ -486,7 +486,7 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
         // sb.append("/>");
 
         // Chop-up the string into 255 character lines
-        chopUpStringBuffer(sb);
+        chopUpStringBuilder(sb);
 
         return sb.toString();
     }
@@ -501,7 +501,7 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
             SingleSubst arabTermSubst,
             String code) {
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         boolean substituted = false;
 
         // arabic = "initial | medial | terminal | isolated"
@@ -590,7 +590,7 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
         String leftGlyphName = post.getGlyphName(kp.getLeft());
         String rightGlyphName = post.getGlyphName(kp.getRight());
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         // sb.append("<hkern ");
         sb.append(XML_OPEN_TAG_START).append(SVG_HKERN_TAG).append(XML_SPACE);
 
@@ -632,7 +632,7 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
     }
 /*
     protected static String getGlyphAsPath(Glyph glyph) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         int firstIndex = 0;
         int count = 0;
         int i;
@@ -782,7 +782,7 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
         }
     }
 
-    private static void chopUpStringBuffer(StringBuffer sb) {
+    private static void chopUpStringBuilder(StringBuilder sb) {
         if (sb.length() < 256) {
             return;
         } else {
@@ -802,7 +802,7 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
     }
 
     /*private static String translateSVG(int x, int y, String svgText) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append("<g transform=\"translate(")
             .append(String.valueOf(x))
             .append(" ")

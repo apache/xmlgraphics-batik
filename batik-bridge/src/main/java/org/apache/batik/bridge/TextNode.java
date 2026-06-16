@@ -153,7 +153,7 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
         if (aci == null) {
             text = "";
         } else {
-            StringBuffer buf = new StringBuffer(aci.getEndIndex());
+            StringBuilder buf = new StringBuilder(aci.getEndIndex());
             for (char c = aci.first();
                  c != CharacterIterator.DONE;
                  c = aci.next()) {

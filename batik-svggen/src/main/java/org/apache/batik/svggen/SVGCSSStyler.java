@@ -54,7 +54,7 @@ public class SVGCSSStyler implements SVGSyntax{
             // Has to be an Element, as it has attributes
             // According to spec.
             Element element = (Element)node;
-            StringBuffer styleAttrBuffer = new StringBuffer();
+            StringBuilder styleAttrBuffer = new StringBuilder();
             int nAttr = attributes.getLength();
             List toBeRemoved = new ArrayList();
             for(int i=0; i<nAttr; i++){

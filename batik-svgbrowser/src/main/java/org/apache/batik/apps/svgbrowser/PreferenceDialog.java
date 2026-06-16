@@ -639,7 +639,7 @@ public class PreferenceDialog extends JDialog
                         host.getText());
         model.setString(PREFERENCE_KEY_PROXY_PORT,
                         port.getText());
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         Enumeration e = mediaListModel.elements();
         while (e.hasMoreElements()) {
             sb.append((String) e.nextElement());

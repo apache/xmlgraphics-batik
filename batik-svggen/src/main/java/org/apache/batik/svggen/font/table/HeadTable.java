@@ -135,7 +135,7 @@ public class HeadTable implements Table {
     }
 
     public String toString() {
-        return new StringBuffer()
+        return new StringBuilder()
             .append("head\n\tversionNumber: ").append(versionNumber)
             .append("\n\tfontRevision: ").append(fontRevision)
             .append("\n\tcheckSumAdjustment: ").append(checkSumAdjustment)

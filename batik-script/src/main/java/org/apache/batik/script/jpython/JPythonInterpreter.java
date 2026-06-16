@@ -58,7 +58,7 @@ public class JPythonInterpreter implements org.apache.batik.script.Interpreter {
         throws IOException {
 
         // oups jpython doesn't accept reader in its eval method :-(
-        StringBuffer sbuffer = new StringBuffer();
+        StringBuilder sbuffer = new StringBuilder();
         char[] buffer = new char[1024];
         int val = 0;
         while ((val = scriptreader.read(buffer)) != -1) {
