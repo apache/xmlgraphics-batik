@@ -1077,6 +1077,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
                             ParsedURL burl;
                             burl = ((SVGOMDocument)document).getParsedURL();
                             final ParsedURL purl = new ParsedURL(burl, uri);
+                            userAgent.checkLoadExternalResource(purl, burl);
                             String e = null;
                             if (enc != null) {
                                 e = EncodingUtilities.javaEncoding(enc);
@@ -1161,15 +1162,11 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
             Thread t = new Thread() {
                     public void run() {
                         try {
-                            String base =
-                                document.getDocumentURI();
-                            URL url;
-                            if (base == null) {
-                                url = new URL(uri);
-                            } else {
-                                url = new URL(new URL(base), uri);
-                            }
-                            // TODO: Change this to use ParsedURL for the POST?
+                            ParsedURL documentParsedURL = ((SVGOMDocument)document).getParsedURL();
+                            ParsedURL purl = new ParsedURL(documentParsedURL, uri);
+                            userAgent.checkLoadExternalResource(purl, documentParsedURL);
+
+                            URL url = new URL(purl.toString());
                             final URLConnection conn = url.openConnection();
                             conn.setDoOutput(true);
                             conn.setDoInput(true);
