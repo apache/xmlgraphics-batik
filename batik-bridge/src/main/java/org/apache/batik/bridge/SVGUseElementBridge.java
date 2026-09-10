@@ -22,6 +22,8 @@ import java.awt.Cursor;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.apache.batik.anim.dom.AbstractSVGAnimatedLength;
 import org.apache.batik.anim.dom.AnimatedLiveAttributeValue;
@@ -35,6 +37,7 @@ import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.constants.XMLConstants;
 
+import org.apache.batik.util.ParsedURL;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -51,6 +54,8 @@ import org.w3c.dom.svg.SVGUseElement;
  * @version $Id$
  */
 public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
+
+    private List<ParsedURL> parsedUrlsRefs = new LinkedList<>();
 
     /**
      * Used to handle mutation of the referenced content. This is
@@ -121,6 +126,15 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
                                       new Object[] {"xlink:href"});
         }
 
+        // Add cycle detection
+        SVGOMDocument doc = (SVGOMDocument) e.getOwnerDocument();
+        ParsedURL purl = new ParsedURL(doc.getURL(), uri);
+        if (parsedUrlsRefs.contains(purl)) {
+            throw new BridgeException(ctx, e,
+                    ERR_XLINK_HREF_CIRCULAR_DEPENDENCIES,
+                    new Object[] {uri});
+        }
+        parsedUrlsRefs.add(purl);
         Element refElement = ctx.getReferencedElement(e, uri);
 
         SVGOMDocument document, refDocument;
@@ -293,7 +307,8 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
                 (target, XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMCharacterDataModified",
                  l, true);
         }
-        
+
+        parsedUrlsRefs.remove(purl);
         return gn;
     }
 
