@@ -37,4 +37,19 @@ public class DefaultExternalResourceSecurityTestCase {
                 "comes from different location than the document itself. This is not allowed for security reasons and " +
                 "that resource will not be loaded.");
     }
+
+    @Test
+    public void testUrls() {
+        checkLoadExternalResource("http://example.com/doc.svg", "file://example.com/etc/passwd");
+        checkLoadExternalResource("file:///tmp/doc.svg", "jar:file:///tmp/evil.jar!/payload.xml");
+        checkLoadExternalResource("http://example.com/doc.svg", "file://evil.com/etc/passwd");
+        checkLoadExternalResource("http://example.com/doc.svg", "http://evil.com/image.png");
+    }
+
+    private void checkLoadExternalResource(String docUrl, String resourceUrl) {
+        ParsedURL doc = new ParsedURL(docUrl);
+        ParsedURL res = new ParsedURL(resourceUrl);
+        DefaultExternalResourceSecurity security = new DefaultExternalResourceSecurity(res, doc);
+        Assert.assertThrows(SecurityException.class, security::checkLoadExternalResource);
+    }
 }
