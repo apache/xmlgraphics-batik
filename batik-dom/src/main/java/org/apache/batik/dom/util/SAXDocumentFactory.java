@@ -312,6 +312,13 @@ public class SAXDocumentFactory
      */
     public Document createDocument(String ns, String root, String uri,
                                    XMLReader r) throws IOException {
+        try {
+            r.setFeature("http://xml.org/sax/features/external-general-entities", false);
+            r.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            r.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+        } catch (SAXException e) {
+            throw new IOException(e);
+        }
         r.setContentHandler(this);
         r.setDTDHandler(this);
         r.setEntityResolver(this);
