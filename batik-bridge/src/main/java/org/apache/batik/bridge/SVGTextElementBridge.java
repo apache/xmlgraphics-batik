@@ -129,6 +129,14 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         AttributedCharacterIterator.Attribute BASELINE_SHIFT
         = GVTAttributedCharacterIterator.TextAttribute.BASELINE_SHIFT;
 
+    public static final
+        AttributedCharacterIterator.Attribute DOMINANT_BASELINE
+        = GVTAttributedCharacterIterator.TextAttribute.DOMINANT_BASELINE;
+
+    public static final
+        AttributedCharacterIterator.Attribute ALIGNMENT_BASELINE
+        = GVTAttributedCharacterIterator.TextAttribute.ALIGNMENT_BASELINE;
+
     protected AttributedString laidoutText;
 
     // This is used to track the TextPainterInfo for each element
@@ -709,8 +717,10 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         // first try to find CSS properties that change the layout
         for (int property : properties) {
             switch (property) {         // fall-through is intended
+                case SVGCSSEngine.ALIGNMENT_BASELINE_INDEX:
                 case SVGCSSEngine.BASELINE_SHIFT_INDEX:
                 case SVGCSSEngine.DIRECTION_INDEX:
+                case SVGCSSEngine.DOMINANT_BASELINE_INDEX:
                 case SVGCSSEngine.DISPLAY_INDEX:
                 case SVGCSSEngine.FONT_FAMILY_INDEX:
                 case SVGCSSEngine.FONT_SIZE_INDEX:
@@ -1602,6 +1612,18 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         Object bs = TextUtilities.convertBaselineShift(element);
         if (bs != null) {
             result.put(BASELINE_SHIFT, bs);
+        }
+
+        // Dominant baseline
+        String db = TextUtilities.convertDominantBaseline(element);
+        if (db != null) {
+            result.put(DOMINANT_BASELINE, db);
+        }
+
+        // Alignment baseline
+        String ab = TextUtilities.convertAlignmentBaseline(element);
+        if (ab != null) {
+            result.put(ALIGNMENT_BASELINE, ab);
         }
 
         // Unicode-bidi mode
