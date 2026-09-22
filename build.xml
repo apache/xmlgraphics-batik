@@ -1350,7 +1350,11 @@ JAVA=/usr/bin/java
         <path refid="libs-classpath"/>
         <pathelement location="resources"/>
       </classpath>
-      <arg line="${args}"/>
+      <arg line="/usr/share/fonts/truetype/liberation2/LiberationMono-Regular.ttf"/>
+      <arg line="-u"/>
+      <arg line="list-h.txt"/>
+      <arg line="-o"/>
+      <arg line="out3.svg"/>
     </java>
   </target>
 
