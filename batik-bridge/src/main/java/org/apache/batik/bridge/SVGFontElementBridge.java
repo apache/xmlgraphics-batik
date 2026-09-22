@@ -81,7 +81,7 @@ public class SVGFontElementBridge extends AbstractSVGBridge {
             if (glyphCodes[i].length() > 1) {
                 // ligature, may need to reverse if arabic so that it is in visual order
                 if (ArabicTextHandler.arabicChar(glyphCodes[i].charAt(0))) {
-                    glyphCodes[i] = (new StringBuffer(glyphCodes[i])).reverse().toString();
+                    glyphCodes[i] = (new StringBuilder(glyphCodes[i])).reverse().toString();
                 }
             }
             glyphNames[i] = glyphElement.getAttributeNS(null, SVG_GLYPH_NAME_ATTRIBUTE);

@@ -182,7 +182,7 @@ public class RhinoInterpreter implements Interpreter {
                 if (ii == null) ii = ImportInfo.getImports();
 
                 // import Java lang package & DOM Level 3 & SVG DOM packages
-                StringBuffer sb = new StringBuffer();
+                StringBuilder sb = new StringBuilder();
                 Iterator iter;
                 iter = ii.getPackages();
                 while (iter.hasNext()) {

@@ -82,7 +82,7 @@ public class SVGArc extends SVGGraphicObjectConverter {
 
         Element svgPath = generatorContext.domFactory.createElementNS
             (SVG_NAMESPACE_URI, SVG_PATH_TAG);
-        StringBuffer d = new StringBuffer( 64 );
+        StringBuilder d = new StringBuilder( 64 );
 
         Point2D startPt = arc.getStartPoint();
         Point2D endPt   = arc.getEndPoint();

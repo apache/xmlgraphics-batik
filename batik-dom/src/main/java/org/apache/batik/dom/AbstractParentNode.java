@@ -304,7 +304,7 @@ public abstract class AbstractParentNode extends AbstractNode {
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getTextContent()}.
      */
     public String getTextContent() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (Node n = getFirstChild(); n != null; n = n.getNextSibling()) {
             switch (n.getNodeType()) {
                 case COMMENT_NODE:

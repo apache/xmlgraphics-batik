@@ -427,8 +427,8 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
     protected void dumpACIWord(AttributedString as) {
         if (as == null) return;
 
-        StringBuffer chars = new StringBuffer();
-        StringBuffer brkStr = new StringBuffer();
+        StringBuilder chars = new StringBuilder();
+        StringBuilder brkStr = new StringBuilder();
         AttributedCharacterIterator aci = as.getIterator();
         AttributedCharacterIterator.Attribute WORD_LIMIT =
             TextLineBreaks.WORD_LIMIT;
@@ -488,7 +488,7 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
         divTPI.fillPaint = Color.black;
         elemTPI.put(div, divTPI);
 
-        AttributedStringBuffer asb = new AttributedStringBuffer();
+        AttributedStringBuilder asb = new AttributedStringBuilder();
         List paraEnds  = new ArrayList();
         List paraElems = new ArrayList();
         List lnLocs    = new ArrayList();
@@ -504,13 +504,13 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
 
             String ln = e.getLocalName();
             if (ln.equals(SVG12Constants.SVG_FLOW_PARA_TAG)) {
-                fillAttributedStringBuffer
+                fillAttributedStringBuilder
                     (ctx, e, true, null, null, asb, lnLocs);
 
                 paraElems.add(e);
                 paraEnds.add(asb.length());
             } else if (ln.equals(SVG12Constants.SVG_FLOW_REGION_BREAK_TAG)) {
-                fillAttributedStringBuffer
+                fillAttributedStringBuilder
                     (ctx, e, true, null, null, asb, lnLocs);
 
                 paraElems.add(e);
@@ -619,14 +619,14 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
     protected int startLen;
 
     /**
-     * Fills the given AttributedStringBuffer.
+     * Fills the given AttributedStringBuilder.
      */
-    protected void fillAttributedStringBuffer(BridgeContext ctx,
+    protected void fillAttributedStringBuilder(BridgeContext ctx,
                                               Element element,
                                               boolean top,
                                               Integer bidiLevel,
                                               Map initialAttributes,
-                                              AttributedStringBuffer asb,
+                                              AttributedStringBuilder asb,
                                               List lnLocs) {
         // 'requiredFeatures', 'requiredExtensions', 'systemLanguage' &
         // 'display="none".
@@ -698,7 +698,7 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
 
                 if (ln.equals(SVG12Constants.SVG_FLOW_LINE_TAG)) {
                     int before = asb.length();
-                    fillAttributedStringBuffer(ctx, nodeElement, false,
+                    fillAttributedStringBuilder(ctx, nodeElement, false,
                                                subBidiLevel, initialAttributes,
                                                asb, lnLocs);
                     // System.out.println("Line: " + asb.length() +
@@ -711,7 +711,7 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
                 } else if (ln.equals(SVG12Constants.SVG_FLOW_SPAN_TAG) ||
                            ln.equals(SVG12Constants.SVG_ALT_GLYPH_TAG)) {
                     int before = asb.length();
-                    fillAttributedStringBuffer(ctx, nodeElement, false,
+                    fillAttributedStringBuilder(ctx, nodeElement, false,
                                                subBidiLevel, initialAttributes,
                                                asb, lnLocs);
                     if (asb.length() != before) {
@@ -743,7 +743,7 @@ public class SVGFlowRootElementBridge extends SVG12TextElementBridge {
                              false, null);
                     }
                     int before = asb.length();
-                    fillAttributedStringBuffer(ctx, nodeElement, false,
+                    fillAttributedStringBuilder(ctx, nodeElement, false,
                                                subBidiLevel, initialAttributes,
                                                asb, lnLocs);
                     if (asb.length() != before) {

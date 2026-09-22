@@ -149,7 +149,7 @@ public class StyleDeclaration {
      * Returns a printable representation of this style rule.
      */
     public String toString(CSSEngine eng) {
-        StringBuffer sb = new StringBuffer( count * 8 );
+        StringBuilder sb = new StringBuilder( count * 8 );
         for (int i = 0; i < count; i++) {
             sb.append(eng.getPropertyName(indexes[i]));
             sb.append(": ");
