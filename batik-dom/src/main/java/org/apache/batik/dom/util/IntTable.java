@@ -19,12 +19,13 @@
 package org.apache.batik.dom.util;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 /**
  * A simple hashtable, not synchronized, with fixed load factor,
  * that maps objects to ints.
  * This implementation is not Thread-safe.
- * 
+ *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
@@ -228,9 +229,7 @@ public class IntTable implements Serializable {
      * Clears the table.
      */
     public void clear() {
-        for (int i = 0; i < table.length; i++) {
-            table[i] = null;
-        }
+        Arrays.fill( table, null );
         count = 0;
     }
 
