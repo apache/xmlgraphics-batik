@@ -439,10 +439,6 @@
             Python for which you need to download the
             <a href="http://www.jython.org">Jython</a> engine, and
           </li>
-          <li>
-            Tcl for which you need to download the
-            <a href="http://dev.scriptics.com/software/java/">Jacl</a> engine.
-          </li>
         </ul>
         <p>
           To get more information on how to install optional
