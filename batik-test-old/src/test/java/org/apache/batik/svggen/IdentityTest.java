@@ -23,7 +23,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 
 /**
- * This test validates the convertion of Java 2D AffineTransform into SVG
+ * This test validates the conversion of Java 2D AffineTransform into SVG
  * Shapes.
  *
  * @author <a href="mailto:vincent.hardy@sun.com">Vincent Hardy</a>

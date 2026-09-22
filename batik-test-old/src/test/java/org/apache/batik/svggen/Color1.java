@@ -23,7 +23,7 @@ import java.awt.RenderingHints;
 import java.awt.Font;
 
 /**
- * This test validates convertion of Java 2D Color into SVG fill,
+ * This test validates conversion of Java 2D Color into SVG fill,
  * stroke and opacity attributes.
  *
  * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>

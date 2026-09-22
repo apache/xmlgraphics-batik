@@ -722,7 +722,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         initializeViewport(ctx, e, result, vb, bounds);
 
         // add a listener on the outermost svg element of the SVG image.
-        // if an event occured inside the SVG image document, send it
+        // if an event occurred inside the SVG image document, send it
         // to the <image> element (inside the original document).
         if (ctx.isInteractive()) {
             listener = new ForwardEventListener(svgElement, e);

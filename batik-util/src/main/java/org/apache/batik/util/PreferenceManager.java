@@ -151,7 +151,7 @@ public class PreferenceManager
      * in the following order: in the directory set by
      * {@link #setPreferenceDirectory} if it exists, in the user
      * home directory and then in the current user directory.
-     * @exception IOException if an error occured when reading the file.
+     * @exception IOException if an error occurred when reading the file.
      * @see #save
      */
     public void load()
@@ -203,7 +203,7 @@ public class PreferenceManager
      * loaded or save it will save it at the same location. In other cases
      * it will save it in the directory set by {@link #setPreferenceDirectory}
      * if has been set and exists, otherwise in the user home directory.
-     * @exception IOException if an error occured when writing the file or
+     * @exception IOException if an error occurred when writing the file or
      * if is impossible to write the file at all available locations.
      * @see #load
      */

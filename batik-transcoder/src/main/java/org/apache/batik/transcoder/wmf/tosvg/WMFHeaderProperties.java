@@ -714,7 +714,7 @@ public class WMFHeaderProperties extends AbstractWMFReader {
      *  There will be no resizing if one of the following properties is true :
      *  <ul>
      *  <li>the brush and the pen objects are < 0 (null objects)</li>
-     *  <li>the color of the geometric Shape is white, and no other Shapes has occured</li>
+     *  <li>the color of the geometric Shape is white, and no other Shapes has occurred</li>
      *  </ul>
      */
     private void paint(int brushObject, int penObject, Shape shape) {
@@ -737,7 +737,7 @@ public class WMFHeaderProperties extends AbstractWMFReader {
      *  There will be no resizing if one of the following properties is true :
      *  <ul>
      *  <li>the pen objects is < 0 (null object)</li>
-     *  <li>the color of the geometric Shape is white, and no other Shapes has occured</li>
+     *  <li>the color of the geometric Shape is white, and no other Shapes has occurred</li>
      *  </ul>
      */
     private void paintWithPen(int penObject, Shape shape) {

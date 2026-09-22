@@ -36,7 +36,7 @@ public class GraphicsNodeChangeEvent extends GraphicsNodeEvent {
     /**
      * The id for the "changeStarted" event. This change event occurs
      * when a change has started on a graphics node (but no changes have
-     * occured on the graphics node it's self).
+     * occurred on the graphics node it's self).
      */
     public static final int CHANGE_STARTED = CHANGE_FIRST;
 

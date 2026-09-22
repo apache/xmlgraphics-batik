@@ -123,7 +123,7 @@ public class JUnitRunnerTestCase {
     public JUnitRunnerTestCase(Test test) {
         this.test = test;
     }
-    
+
     @org.junit.Test
     public void test() throws ParserConfigurationException, SAXException, TestException, IOException {
         String id = getId(test);
@@ -224,7 +224,7 @@ public class JUnitRunnerTestCase {
 "transcoder.image.hints.media.screen",
 "transcoder.image.hints.defaultFontFamily.Arial",
 "transcoder.image.hints.defaultFontFamily.Times",
-"trancoder.image.hints.defaultFontFamily.TotoTimes",
+"transcoder.image.hints.defaultFontFamily.TotoTimes",
 "transcoder.image.hints.alternateStylesheet.s1",
 "transcoder.image.hints.alternateStylesheet.s2",
 "transcoder.image.hints.alternateStylesheet.s3",

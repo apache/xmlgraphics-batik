@@ -67,7 +67,7 @@ public class PropertyManagerTest extends AbstractTest {
         "PropertyManagerTest.error.invalid.value";
 
     /**
-     * The error code if an exception occured while creating the manager.
+     * The error code if an exception occurred while creating the manager.
      */
     public static final String ERROR_INSTANTIATION =
         "PropertyManagerTest.error.instantiation";

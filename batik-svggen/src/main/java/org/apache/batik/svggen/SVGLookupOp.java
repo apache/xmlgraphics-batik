@@ -42,7 +42,7 @@ import org.w3c.dom.Element;
 public class SVGLookupOp extends AbstractSVGFilterConverter {
 
     /**
-     * Gamma for linear to sRGB convertion
+     * Gamma for linear to sRGB conversion
      */
     private static final double GAMMA = 1.0/2.4;
 

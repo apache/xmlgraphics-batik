@@ -81,7 +81,7 @@ public abstract class ImageTranscoder extends SVGAbstractTranscoder {
      * @param document the document to transcode
      * @param uri the uri of the document or null if any
      * @param output the ouput where to transcode
-     * @exception TranscoderException if an error occured while transcoding
+     * @exception TranscoderException if an error occurred while transcoding
      */
     protected void transcode(Document document,
                              String uri,
@@ -195,7 +195,7 @@ public abstract class ImageTranscoder extends SVGAbstractTranscoder {
      * Writes the specified image to the specified output.
      * @param img the image to write
      * @param output the output where to store the image
-     * @throws TranscoderException if an error occured while storing the image
+     * @throws TranscoderException if an error occurred while storing the image
      */
     public abstract void writeImage(BufferedImage img, TranscoderOutput output)
         throws TranscoderException;

@@ -131,7 +131,7 @@ public class SVGLoadEventDispatcher extends HaltingThread {
     }
 
     /**
-     * Returns the exception, if any occured.
+     * Returns the exception, if any occurred.
      */
     public Exception getException() {
         return exception;
