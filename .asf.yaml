@@ -5,16 +5,23 @@ github:
     - batik
     - apache
   rulesets:
-    - name: "Branch Protection"
+    - name: "Branch Protection Main"
       type: branch
       branches:
         includes:
           - "main"
+      restrict_deletion: true
+      restrict_force_push: true
+      required_linear_history: true
+    - name: "Branch Protection"
+      type: branch
+      branches:
+        includes:
           - "batik*"
           - "release*"
       restrict_deletion: true
       restrict_force_push: true
-      required_linear_history: true
+      required_linear_history: false
 
 notifications:
   commits:      commits@xmlgraphics.apache.org
