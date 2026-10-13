@@ -1170,6 +1170,7 @@ JAVA=/usr/bin/java
         <include name="xml*.jar"/>
         <include name="junit*.jar"/>
         <include name="hamcrest*.jar"/>
+        <include name="commons-logging*.jar"/>
       </fileset>
     </delete>
     <copy todir="${basedir}/lib">
@@ -1179,6 +1180,7 @@ JAVA=/usr/bin/java
         <include name="xml*.jar"/>
         <include name="junit*.jar"/>
         <include name="hamcrest*.jar"/>
+        <include name="commons-logging*.jar"/>
       </fileset>
     </copy>
   </target>
