@@ -4,6 +4,23 @@ Change Log
 The following log records some of the most important changes.
 Bug fixing is an ongoing task, so it is implied in all sub-releases.
 
+1.20
+----
+
+BATIK-1397: Throw exception when SVG has circular reference
+BATIK-1399: Harden validation in SAXDocumentFactory
+BATIK-1398: Check url protocol when loading document
+BATIK-1395: Add secure processing to XMLInputHandler
+BATIK-1394: Use document baseuri for color profile
+BATIK-1393: Data url handles mediatype as host
+BATIK-1392: Make font values xml safe
+BATIK-1391: Correct url
+BATIK-1388: Show css error message when no base uri
+BATIK-1386: Mark vendor properties as comments
+BATIK-1380: Remove xml-apis from modules that don't require it
+BATIK-1271: Make AWTGlyphGeometryCache thread safe
+FOP-3284: Reduce access rights to temp files
+
 1.19
 ----
 
