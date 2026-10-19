@@ -46,7 +46,7 @@ public class GVTBuilder implements SVGConstants {
      *
      * @param ctx the bridge context
      * @param document the SVG document to build
-     * @exception BridgeException if an error occured while constructing
+     * @exception BridgeException if an error occurred while constructing
      * the GVT tree
      */
     public GraphicsNode build(BridgeContext ctx, Document document) {
@@ -112,7 +112,7 @@ public class GVTBuilder implements SVGConstants {
      *
      * @param ctx the bridge context
      * @param e the element to build
-     * @exception BridgeException if an error occured while constructing
+     * @exception BridgeException if an error occurred while constructing
      * the GVT tree
      */
     public GraphicsNode build(BridgeContext ctx, Element e) {
@@ -160,7 +160,7 @@ public class GVTBuilder implements SVGConstants {
      * @param e the element to build
      * @param parentNode the composite graphics node, parent of the
      *                   graphics node to build
-     * @exception BridgeException if an error occured while constructing
+     * @exception BridgeException if an error occurred while constructing
      * the GVT tree
      */
     protected void buildComposite(BridgeContext ctx,
@@ -180,7 +180,7 @@ public class GVTBuilder implements SVGConstants {
      * @param e the element to build
      * @param parentNode the composite graphics node, parent of the
      *                   graphics node to build
-     * @exception BridgeException if an error occured while constructing
+     * @exception BridgeException if an error occurred while constructing
      * the GVT tree
      */
     protected void buildGraphicsNode(BridgeContext ctx,

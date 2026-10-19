@@ -27,7 +27,7 @@
 <!-- @version $Id$ -->
 <!-- ====================================================================== -->
 
-<svg xmlns="http://www.w3.org/2000/svg" 
+<svg xmlns="http://www.w3.org/2000/svg"
      xmlns:xlink="http://www.w3.org/1999/xlink"
      id="body" width="640" height="480" viewBox="0 0 640 480">
 
@@ -100,7 +100,7 @@
                 }
         }
 
-        // Makes the current object to disapear
+        // Makes the current object to disappear
         function goObject() {
                 if (_focalDistance+_incFocalDistance <= _minFocalDistance) {
                         switchToObject();
@@ -176,7 +176,7 @@
                 setInterval('animate()', 20);
         }
 
-        // switch object 
+        // switch object
         function switchToObject() {
                 _currentObject++;
                 if (_currentObject == _objects.length) {
@@ -221,7 +221,7 @@
                 }
         }
 
-        // Builds the shapes according to the current points 3D 
+        // Builds the shapes according to the current points 3D
         function buildShape(index) {
                 var e = _shapes[index];
                 var face = _faces[index];
@@ -250,8 +250,8 @@
                 if (z == 0) {
                        z = 1;
                 }
-                destPt2d[0] = _focalDistance * x / (800-z) + _xOrigin; 
-                destPt2d[1] = _focalDistance * y / (800-z) + _yOrigin; 
+                destPt2d[0] = _focalDistance * x / (800-z) + _xOrigin;
+                destPt2d[1] = _focalDistance * y / (800-z) + _yOrigin;
         }
 
 
@@ -292,7 +292,7 @@
                 var s1 = Math.sin(alpha);
                 var c2 = Math.cos(beta);
                 var s2 = Math.sin(beta);
-                var c3 = Math.cos(gamma);    
+                var c3 = Math.cos(gamma);
                 var s3 = Math.sin(gamma);
 
                 matrix[0] = c1 * c2;

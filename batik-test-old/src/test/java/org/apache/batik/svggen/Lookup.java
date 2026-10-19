@@ -30,7 +30,7 @@ import java.awt.image.ByteLookupTable;
 import java.awt.image.LookupTable;
 
 /**
- * This test validates the convertion of Java 2D LookupOp
+ * This test validates the conversion of Java 2D LookupOp
  * into an SVG filer.
  *
  * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>

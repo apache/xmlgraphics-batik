@@ -64,7 +64,7 @@ public class SVGCustomPaint extends AbstractSVGConverter {
 
         if (paintDesc == null) {
             // First time this paint is used. Request handler
-            // to do the convertion
+            // to do the conversion
             paintDesc =
                 generatorContext.extensionHandler.
                 handlePaint(paint,
