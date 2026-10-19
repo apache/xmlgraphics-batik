@@ -122,7 +122,7 @@ public class SVGOMStyleElement
                 String text = "";
                 Node n = getFirstChild();
                 if (n != null) {
-                    StringBuffer sb = new StringBuffer();
+                    StringBuilder sb = new StringBuilder();
                     while (n != null) {
                         if (n.getNodeType() == Node.CDATA_SECTION_NODE
                             || n.getNodeType() == Node.TEXT_NODE)

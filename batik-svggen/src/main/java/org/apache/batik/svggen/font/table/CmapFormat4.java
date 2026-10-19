@@ -122,7 +122,7 @@ public class CmapFormat4 extends CmapFormat {
     }
 
     public String toString() {
-        return new StringBuffer( 80 )
+        return new StringBuilder( 80 )
         .append(super.toString())
         .append(", segCountX2: ")
         .append(segCountX2)
@@ -151,7 +151,7 @@ public class CmapFormat4 extends CmapFormat {
      */
     private static String intToStr( int[] array ){
         int nSlots = array.length;
-        StringBuffer workBuff = new StringBuffer( nSlots * 8 );
+        StringBuilder workBuff = new StringBuilder( nSlots * 8 );
         workBuff.append( '[' );
         for( int i= 0; i < nSlots; i++ ){
             workBuff.append( array[ i ] );

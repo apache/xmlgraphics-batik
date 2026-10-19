@@ -145,7 +145,7 @@ public class FontFamilyManager extends AbstractValueManager {
                 break;
 
             case LexicalUnit.SAC_IDENT:
-                StringBuffer sb = new StringBuffer(lu.getStringValue());
+                StringBuilder sb = new StringBuilder(lu.getStringValue());
                 lu = lu.getNextLexicalUnit();
                 if (lu != null && isIdentOrNumber(lu)) {
                     do {

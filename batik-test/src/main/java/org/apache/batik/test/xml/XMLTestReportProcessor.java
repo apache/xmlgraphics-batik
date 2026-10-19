@@ -605,7 +605,7 @@ public class XMLTestReportProcessor
      * in attribute values.
      */
     protected String encode(String attrValue){
-        StringBuffer sb = new StringBuffer(attrValue);
+        StringBuilder sb = new StringBuilder(attrValue);
         replace(sb, XML_CHAR_AMP, XML_ENTITY_AMP);
         replace(sb, XML_CHAR_LT, XML_ENTITY_LT);
         replace(sb, XML_CHAR_GT, XML_ENTITY_GT);
@@ -614,7 +614,7 @@ public class XMLTestReportProcessor
         return sb.toString();
     }
 
-    protected void replace(StringBuffer s,
+    protected void replace(StringBuilder s,
                              char c,
                              String r){
         String v = s.toString() + 1;

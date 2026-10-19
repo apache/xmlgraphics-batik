@@ -1098,7 +1098,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
                                 }
                             }
                             r = new BufferedReader(r);
-                            final StringBuffer sb = new StringBuffer();
+                            final StringBuilder sb = new StringBuilder();
                             int read;
                             char[] buf = new char[4096];
                             while ((read = r.read(buf, 0, buf.length)) != -1) {
@@ -1221,7 +1221,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
                                 r = new InputStreamReader(is, e);
                             r = new BufferedReader(r);
 
-                            final StringBuffer sb = new StringBuffer();
+                            final StringBuilder sb = new StringBuilder();
                             int read;
                             char[] buf = new char[4096];
                             while ((read = r.read(buf, 0, buf.length)) != -1) {
