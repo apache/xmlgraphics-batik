@@ -35,6 +35,7 @@ import java.awt.image.DirectColorModel;
 import java.awt.image.Raster;
 import java.awt.image.SampleModel;
 import java.awt.image.WritableRaster;
+import java.util.Arrays;
 
 import org.apache.batik.ext.awt.image.GraphicsUtil;
 
@@ -86,7 +87,7 @@ public class AffineRed extends AbstractRed {
         // back aliasing effects...
         ColorModel cm = fixColorModel(src);
 
-        // fix my sample model so it makes sense given my size.
+        // fix my sample model, so it makes sense given my size.
         SampleModel sm = fixSampleModel(src, cm, myBounds);
 
         Point2D pt = new Point2D.Float(src.getTileGridXOffset(),
@@ -225,8 +226,7 @@ public class AffineRed extends AbstractRed {
         }
 
         int [] bits = new int[b];
-        for (int i=0; i<b; i++)
-            bits[i] = 8;
+        Arrays.fill( bits, 8 );
         return new ComponentColorModel(cs, bits, true, true,
                                        Transparency.TRANSLUCENT,
                                        DataBuffer.TYPE_INT);
