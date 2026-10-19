@@ -231,7 +231,8 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
 
         ///////////////////////////////////////////////////////////////////////
 
-        gn.getChildren().add(refNode);
+        if (refNode != null)
+            gn.getChildren().add(refNode);
 
         gn.setTransform(computeTransform((SVGTransformable) e, ctx));
 
