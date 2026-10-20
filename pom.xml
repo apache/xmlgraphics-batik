@@ -17,8 +17,10 @@
     <compiler.version>3.3</compiler.version>
     <dependency.version>3.1.1</dependency.version>
     <findbugs.version>3.1.12.2</findbugs.version>
+    <gpg.version>3.2.4</gpg.version>
     <jar.version>3.1.1</jar.version>
     <java.version>1.8</java.version>
+    <javadoc.version>3.6.3</javadoc.version>
     <junit.version>4.13.2</junit.version>
     <jython.version>2.7.4</jython.version>
     <org.slf4j.simpleLogger.defaultLogLevel>error</org.slf4j.simpleLogger.defaultLogLevel>
@@ -26,6 +28,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <release.version>2.5.2</release.version>
     <rhino.version>1.7.15.1</rhino.version>
+    <source.version>3.3.1</source.version>
     <surefire.version>2.18.1</surefire.version>
     <xmlapis.version>1.4.01</xmlapis.version>
     <xmlapisext.version>1.3.04</xmlapisext.version>
@@ -147,6 +150,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
+          <version>${javadoc.version}</version>
           <configuration>
             <source>8</source>
             <doclint>none</doclint>
@@ -185,6 +189,52 @@
         </pluginManagement>
       </build>
     </profile>
+    <profile>
+      <id>release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <version>${source.version}</version>
+            <executions>
+              <execution>
+                <id>attach-sources</id>
+                <goals>
+                  <goal>jar-no-fork</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>attach-javadocs</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>${gpg.version}</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
   </profiles>
 
   <scm>
@@ -207,6 +257,10 @@
   </repositories>
 
   <distributionManagement>
+    <repository>
+      <id>apache.releases.https</id>
+      <url>https://repository.apache.org/service/local/staging/deploy/maven2</url>
+    </repository>
     <snapshotRepository>
       <id>apache.snapshots.https</id>
       <url>https://repository.apache.org/content/repositories/snapshots</url>
