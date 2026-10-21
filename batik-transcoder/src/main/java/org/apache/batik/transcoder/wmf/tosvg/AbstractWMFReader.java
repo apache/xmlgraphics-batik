@@ -21,6 +21,7 @@ package org.apache.batik.transcoder.wmf.tosvg;
 
 import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.List;
@@ -86,6 +87,29 @@ public abstract class AbstractWMFReader {
         short i = (short)(0xffff & iTemp);
         i |= ((0xff) & js[ 0 ] );
         return i;
+    }
+
+    /**
+     * Read <code>len</code> bytes from the DataInputStream. The buffer grows
+     * with the data actually read, so an inconsistent record size in a
+     * truncated file results in an EOFException rather than up-front
+     * allocation of the declared length.
+     */
+    protected byte[] readBytes(DataInputStream is, int len) throws IOException {
+        if (len < 0) {
+            throw new IOException("Invalid record size: " + len);
+        }
+        int chunkSize = Math.min(len, 65536);
+        ByteArrayOutputStream bos = new ByteArrayOutputStream(chunkSize);
+        byte[] chunk = new byte[chunkSize];
+        int remaining = len;
+        while (remaining > 0) {
+            int n = Math.min(remaining, chunkSize);
+            is.readFully(chunk, 0, n);
+            bos.write(chunk, 0, n);
+            remaining -= n;
+        }
+        return bos.toByteArray();
     }
 
     /**

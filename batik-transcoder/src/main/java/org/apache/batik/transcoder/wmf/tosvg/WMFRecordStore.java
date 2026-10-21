@@ -210,9 +210,7 @@ public class WMFRecordStore extends AbstractWMFReader {
                     // don't need to read the end of the record,
                     // because it will always be completely used
                     int len = (2*(recSize-9));
-                    byte[] lfFaceName = new byte[ len ];
-                    byte ch;
-                    for ( int i = 0; i < len; i++ ) lfFaceName[ i ] = is.readByte();
+                    byte[] lfFaceName = readBytes( is, len );
 
                     String str = new String( lfFaceName );    // what locale ?? ascii ?? platform ??
 
@@ -610,8 +608,7 @@ public class WMFRecordStore extends AbstractWMFReader {
                     int dx = (int)(readShort( is ) * xSign * scaleXY);  
 
                     int len = 2*recSize - 20;
-                    byte[] bitmap = new byte[len];
-                    for (int i = 0; i < len; i++) bitmap[i] = is.readByte();
+                    byte[] bitmap = readBytes(is, len);
 
                     mr = new MetaRecord.ByteRecord(bitmap);
                     mr.numPoints = recSize;
@@ -641,8 +638,7 @@ public class WMFRecordStore extends AbstractWMFReader {
                     int dx = (int)(readShort( is ) * xSign * scaleXY);  
                     
                     int len = 2*recSize - 22;
-                    byte[] bitmap = new byte[len];
-                    for (int i = 0; i < len; i++) bitmap[i] = is.readByte();
+                    byte[] bitmap = readBytes(is, len);
                     
                     mr = new MetaRecord.ByteRecord(bitmap);
                     mr.numPoints = recSize;
@@ -673,9 +669,7 @@ public class WMFRecordStore extends AbstractWMFReader {
 
                     int len = 2*recSize - 18;
                     if (len > 0) {
-                        byte[] bitmap = new byte[len];
-                        for (int i = 0; i < len; i++)
-                            bitmap[i] = is.readByte();
+                        byte[] bitmap = readBytes(is, len);
                         mr = new MetaRecord.ByteRecord(bitmap);
                         mr.numPoints = recSize;
                         mr.functionId = functionId;
@@ -701,8 +695,7 @@ public class WMFRecordStore extends AbstractWMFReader {
                 {
                     int type = is.readInt() & 0xff;
                     int len = 2*recSize - 4;
-                    byte[] bitmap = new byte[len];
-                    for (int i = 0; i < len; i++) bitmap[i] = is.readByte();
+                    byte[] bitmap = readBytes(is, len);
 
                     mr = new MetaRecord.ByteRecord(bitmap);
                     mr.numPoints = recSize;

@@ -323,9 +323,7 @@ public class WMFHeaderProperties extends AbstractWMFReader {
                     // don't need to read the end of the record,
                     // because it will always be completely used
                     int len = (2*(recSize-9));
-                    byte[] lfFaceName = new byte[ len ];
-                    byte ch;
-                    for ( int i = 0; i < len; i++ ) lfFaceName[ i ] = is.readByte();
+                    byte[] lfFaceName = readBytes( is, len );
                     String face = new String( lfFaceName );
 
                     // FIXED : management of font names
@@ -557,8 +555,7 @@ public class WMFHeaderProperties extends AbstractWMFReader {
                 resizeImageBounds((int)(dx + widthDst), (int)(dy + heightDst));                
 
                 int len = 2*recSize - 22;
-                byte[] bitmap = new byte[len];
-                for (int i = 0; i < len; i++) bitmap[i] = is.readByte();
+                readBytes(is, len); // skip the bitmap, bounds already computed
             }
             break;                                                
             case WMFConstants.META_DIBBITBLT: {
