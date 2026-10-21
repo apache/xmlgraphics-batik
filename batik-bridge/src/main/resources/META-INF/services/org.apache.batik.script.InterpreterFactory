@@ -24,7 +24,5 @@
 
 # ECMAScript
 org.apache.batik.bridge.RhinoInterpreterFactory
-# TCL
-#org.apache.batik.script.jacl.JaclInterpreterFactory
 # Python
 #org.apache.batik.script.jpython.JPythonInterpreterFactory
