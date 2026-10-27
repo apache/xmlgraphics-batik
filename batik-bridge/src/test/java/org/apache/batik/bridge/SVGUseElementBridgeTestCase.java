@@ -19,7 +19,6 @@
 package org.apache.batik.bridge;
 
 import java.io.File;
-import java.io.InputStream;
 
 import org.apache.batik.anim.dom.SAXSVGDocumentFactory;
 import org.apache.batik.gvt.GraphicsNode;
@@ -32,13 +31,13 @@ import static org.junit.Assert.assertThrows;
 
 public class SVGUseElementBridgeTestCase implements ErrorConstants {
 
-    private static final String CIRCULAR_SVG = "src/test/resources/circular.svg";
+    private static final String CIRCULAR_SVG = "/circular.svg";
 
     @Test
     public void testCircularUseReferenceIsDetected() throws Exception {
         SAXSVGDocumentFactory f = new SAXSVGDocumentFactory(XMLResourceDescriptor.getXMLParserClassName());
-        InputStream is = SVGUseElementBridgeTestCase.class.getResourceAsStream(CIRCULAR_SVG);
-        Document doc = f.createDocument(CIRCULAR_SVG, is);
+        String uri = SVGUseElementBridgeTestCase.class.getResource(CIRCULAR_SVG).toString();
+        Document doc = f.createDocument(uri);
 
         GVTBuilder builder = new GVTBuilder();
         BridgeContext ctx = new BridgeContext(new UserAgentAdapter());

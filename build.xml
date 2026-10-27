@@ -427,6 +427,9 @@ To display the available targets type:
         <include name="lib/*.jar"/>
         <exclude name="lib/junit*.jar"/>
         <exclude name="lib/hamcrest*.jar"/>
+        <exclude name="lib/mockito*.jar"/>
+        <exclude name="lib/byte-buddy*.jar"/>
+        <exclude name="lib/objenesis*.jar"/>
         <include name="lib/make-squiggle-app.sh"/>
       </zipfileset>
       <zipfileset dir="lib" prefix="${project}-${completeVersion}/lib">
@@ -464,6 +467,9 @@ To display the available targets type:
         <include name="lib/**"/>
         <exclude name="lib/junit*.jar"/>
         <exclude name="lib/hamcrest*.jar"/>
+        <exclude name="lib/mockito*.jar"/>
+        <exclude name="lib/byte-buddy*.jar"/>
+        <exclude name="lib/objenesis*.jar"/>
         <include name="documentation-sources/**"/>
         <include name="resources/**"/>
         <include name="samples/**"/>
@@ -500,6 +506,9 @@ To display the available targets type:
         <include name="lib/*.jar"/>
         <exclude name="lib/junit*.jar"/>
         <exclude name="lib/hamcrest*.jar"/>
+        <exclude name="lib/mockito*.jar"/>
+        <exclude name="lib/byte-buddy*.jar"/>
+        <exclude name="lib/objenesis*.jar"/>
         <include name="lib/make-squiggle-app.sh"/>
       </tarfileset>
       <tarfileset dir="lib" prefix="${project}-${completeVersion}/lib">
@@ -537,6 +546,9 @@ To display the available targets type:
         <include name="lib/**"/>
         <exclude name="lib/junit*.jar"/>
         <exclude name="lib/hamcrest*.jar"/>
+        <exclude name="lib/mockito*.jar"/>
+        <exclude name="lib/byte-buddy*.jar"/>
+        <exclude name="lib/objenesis*.jar"/>
         <include name="documentation-sources/**"/>
         <include name="resources/**"/>
         <include name="samples/**"/>
@@ -631,6 +643,9 @@ To display the available targets type:
         <include name="lib/**"/>
         <exclude name="lib/junit*.jar"/>
         <exclude name="lib/hamcrest*.jar"/>
+        <exclude name="lib/mockito*.jar"/>
+        <exclude name="lib/byte-buddy*.jar"/>
+        <exclude name="lib/objenesis*.jar"/>
         <include name="documentation-sources/**"/>
         <include name="resources/**"/>
         <include name="samples/**"/>
@@ -696,6 +711,9 @@ JAVA=/usr/bin/java
         <include name="lib/**"/>
         <exclude name="lib/junit*.jar"/>
         <exclude name="lib/hamcrest*.jar"/>
+        <exclude name="lib/mockito*.jar"/>
+        <exclude name="lib/byte-buddy*.jar"/>
+        <exclude name="lib/objenesis*.jar"/>
         <include name="extensions/**"/>
       </fileset>
       <fileset dir="${src}">
@@ -740,7 +758,12 @@ JAVA=/usr/bin/java
       <src path="batik-test-svg/src/main/java"/>
       <src path="batik-test-swing/src/main/java"/>
       <src path="batik-util/src/test/java"/>
-      <exclude name="org/apache/batik/util/*TestCases.java"/>
+      <src path="batik-bridge/src/test/java"/>
+      <src path="batik-script/src/test/java"/>
+      <src path="batik-svggen/src/test/java"/>
+      <src path="batik-css/src/test/java"/>
+      <src path="batik-transcoder/src/test/java"/>
+      <src path="batik-swing/src/test/java"/>
       <exclude name="org/apache/batik/util/*TestSuite.java"/>
       <classpath>
         <pathelement location="${dest}"/>
@@ -1170,6 +1193,9 @@ JAVA=/usr/bin/java
         <include name="xml*.jar"/>
         <include name="junit*.jar"/>
         <include name="hamcrest*.jar"/>
+        <include name="mockito*.jar"/>
+        <include name="byte-buddy*.jar"/>
+        <include name="objenesis*.jar"/>
         <include name="commons-logging*.jar"/>
       </fileset>
     </delete>
@@ -1180,6 +1206,9 @@ JAVA=/usr/bin/java
         <include name="xml*.jar"/>
         <include name="junit*.jar"/>
         <include name="hamcrest*.jar"/>
+        <include name="mockito*.jar"/>
+        <include name="byte-buddy*.jar"/>
+        <include name="objenesis*.jar"/>
         <include name="commons-logging*.jar"/>
       </fileset>
     </copy>
@@ -1637,6 +1666,8 @@ JAVA=/usr/bin/java
         <path refid="libs-build-classpath"/>
         <pathelement location="resources"/>
         <pathelement location="test-resources"/>
+        <pathelement location="batik-bridge/src/test/resources"/>
+        <pathelement location="batik-util/src/test/resources"/>
     </path>               
     <mkdir dir="${junit.reports.dir}"/>
     <junit dir="${basedir}" haltonfailure="yes" fork="true" forkmode="once" printsummary="yes" showoutput="true">
@@ -1651,7 +1682,7 @@ JAVA=/usr/bin/java
         <enable/>
       </assertions>
       <batchtest todir="${junit.reports.dir}">
-        <fileset dir="classes" includes="**/*TestCase.class"/>
+        <fileset dir="classes" includes="**/*TestCase.class,**/*TestCases.class"/>
       </batchtest>
     </junit>
   </target>

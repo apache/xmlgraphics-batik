@@ -21,7 +21,7 @@ package org.apache.batik.script.rhino;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class RhinoClassShutterTest {
+public class RhinoClassShutterTestCase {
     @Test
     public void testImports() {
         String runtimeClass = "java.lang.Runtime";

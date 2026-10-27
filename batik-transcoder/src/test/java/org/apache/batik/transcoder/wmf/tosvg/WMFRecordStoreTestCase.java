@@ -39,7 +39,7 @@ import static org.junit.Assert.fail;
  * so a record that claims a size much larger than the remaining input is
  * reported as a read error rather than attempting a huge allocation.
  */
-public class WMFRecordStoreTest {
+public class WMFRecordStoreTestCase {
 
     /** Writes a 16-bit little-endian value. */
     private static void writeShort(ByteArrayOutputStream out, int v) {
