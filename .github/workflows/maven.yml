@@ -5,7 +5,7 @@ name: Java CI with Maven
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "temp/ssteiner-tests" ]
   pull_request:
     branches: [ "main" ]
 
@@ -21,6 +21,14 @@ jobs:
 
     steps:
     - uses: actions/checkout@v6
+    - name: Install Arial font
+      # svggen tests reference Arial, without it Java falls back to Dialog
+      if: runner.os == 'Linux'
+      run: |
+        echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
+        sudo apt-get update
+        sudo apt-get install -y ttf-mscorefonts-installer
+        fc-list | grep -i arial
     - name: Set up JDK ${{ matrix.jdk }}
       uses: actions/setup-java@v5
       with:

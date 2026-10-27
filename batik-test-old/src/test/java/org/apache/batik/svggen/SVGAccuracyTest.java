@@ -47,6 +47,10 @@ import org.apache.batik.dom.GenericDOMImplementation;
 import org.apache.commons.io.IOUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.DocumentType;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -222,7 +226,8 @@ public class SVGAccuracyTest extends AbstractTest
 
         InputStream newStream = new ByteArrayInputStream(bos.toByteArray());
 
-        if (xmlEqual(bos.toByteArray())) {
+        String xmlDifference = xmlDifference(bos.toByteArray());
+        if (xmlDifference == null) {
             return report;
         }
 
@@ -290,6 +295,7 @@ public class SVGAccuracyTest extends AbstractTest
             report.addDescriptionEntry(Messages.formatMessage(ENTRY_KEY_COLUMN_FOUND_VALUE,null), foundChar);
             report.addDescriptionEntry(Messages.formatMessage(ENTRY_KEY_REFERENCE_LINE,null), refLine);
             report.addDescriptionEntry(Messages.formatMessage(ENTRY_KEY_NEW_LINE,null), newLine);
+            report.addDescriptionEntry("First XML difference", xmlDifference);
             report.setPassed(false);
         }
         else{
@@ -299,19 +305,95 @@ public class SVGAccuracyTest extends AbstractTest
         return report;
     }
 
-    private boolean xmlEqual(byte[] data) throws ParserConfigurationException, IOException, SAXException {
+    /**
+     * Returns a description of the first difference between the reference and the generated
+     * document, or null if they are equal.
+     */
+    private String xmlDifference(byte[] data) throws ParserConfigurationException, IOException, SAXException {
         byte[] ref = IOUtils.toByteArray(refURL.openStream());
         if (ref.length == 0) {
-            return false;
+            return "empty reference";
         }
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setNamespaceAware(true);
+        // Compare the documents as written, DTD default attributes would only add noise
+        dbf.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
         DocumentBuilder db = dbf.newDocumentBuilder();
         Document doc1 = db.parse(new ByteArrayInputStream(ref));
-        doc1.normalizeDocument();
+        // normalize, not normalizeDocument, which downloads the DTD from w3.org on JDK 8
+        doc1.normalize();
         Document doc2 = db.parse(new ByteArrayInputStream(data));
-        doc2.normalizeDocument();
-        return doc1.isEqualNode(doc2);
+        doc2.normalize();
+        if (doc1.isEqualNode(doc2)) {
+            return null;
+        }
+        String difference = firstDifference(doc1, doc2, "");
+        return difference != null ? difference : "documents differ";
+    }
+
+    /**
+     * Descends to the deepest node that is not equal according to isEqualNode
+     * and describes it.
+     */
+    private static String firstDifference(Node expected, Node found, String path) {
+        if (expected.isEqualNode(found)) {
+            return null;
+        }
+        path += "/" + expected.getNodeName();
+        NamedNodeMap expectedAttrs = expected.getAttributes();
+        NamedNodeMap foundAttrs = found.getAttributes();
+        if (expectedAttrs != null && foundAttrs != null) {
+            if (expectedAttrs.getLength() != foundAttrs.getLength()) {
+                return path + " expected " + expectedAttrs.getLength() + " attributes found "
+                        + foundAttrs.getLength();
+            }
+            for (int i = 0; i < expectedAttrs.getLength(); i++) {
+                Node attr = expectedAttrs.item(i);
+                Node other = attr.getLocalName() != null
+                        ? foundAttrs.getNamedItemNS(attr.getNamespaceURI(), attr.getLocalName())
+                        : foundAttrs.getNamedItem(attr.getNodeName());
+                if (other == null) {
+                    return path + " missing attribute " + describe(attr);
+                }
+                if (!attr.isEqualNode(other)) {
+                    return path + " attribute expected " + describe(attr) + " found " + describe(other);
+                }
+            }
+        }
+        NodeList expectedChildren = expected.getChildNodes();
+        NodeList foundChildren = found.getChildNodes();
+        int n = Math.min(expectedChildren.getLength(), foundChildren.getLength());
+        for (int i = 0; i < n; i++) {
+            String difference = firstDifference(expectedChildren.item(i), foundChildren.item(i), path);
+            if (difference != null) {
+                return difference;
+            }
+        }
+        if (expectedChildren.getLength() != foundChildren.getLength()) {
+            return path + " expected " + expectedChildren.getLength() + " children found "
+                    + foundChildren.getLength();
+        }
+        return path + " expected " + describe(expected) + " found " + describe(found);
+    }
+
+    private static String describe(Node node) {
+        StringBuilder sb = new StringBuilder("[type=").append(node.getNodeType())
+                .append(" name=").append(node.getNodeName())
+                .append(" localName=").append(node.getLocalName())
+                .append(" namespace=").append(node.getNamespaceURI())
+                .append(" prefix=").append(node.getPrefix())
+                .append(" value=").append(node.getNodeValue());
+        if (node instanceof DocumentType) {
+            DocumentType docType = (DocumentType) node;
+            sb.append(" publicId=").append(docType.getPublicId())
+                    .append(" systemId=").append(docType.getSystemId())
+                    .append(" internalSubset=").append(docType.getInternalSubset())
+                    .append(" entities=").append(docType.getEntities() == null ? null
+                            : docType.getEntities().getLength())
+                    .append(" notations=").append(docType.getNotations() == null ? null
+                            : docType.getNotations().getLength());
+        }
+        return sb.append("]").toString();
     }
 
     public int computeColumnNumber(String aStr, String bStr){
@@ -382,6 +464,10 @@ public class SVGAccuracyTest extends AbstractTest
         GraphicContextDefaults defaults
             = new GraphicContextDefaults();
         defaults.font = new Font("Arial", Font.PLAIN, 12);
+        if (!"Arial".equals(defaults.font.getFamily())) {
+            throw new IllegalStateException("Arial font is not installed, Java falls back to "
+                    + defaults.font.getFamily() + " and the output will not match the reference");
+        }
         ctx.setGraphicContextDefaults(defaults);
         ctx.setPrecision(12);
         return new SVGGraphics2D(ctx, false);
