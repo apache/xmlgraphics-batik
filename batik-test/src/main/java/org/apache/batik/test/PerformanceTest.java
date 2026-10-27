@@ -126,19 +126,19 @@ public abstract class PerformanceTest extends AbstractTest {
         int badScores = 0;
         for (int i=0; i<iter; ) {
             if ( i%2 == 0) {
-                refStart = System.currentTimeMillis();
+                refStart = System.nanoTime();
                 runRef();
-                refEnd = System.currentTimeMillis();
+                refEnd = System.nanoTime();
                 runOp();
-                opEnd = System.currentTimeMillis();
+                opEnd = System.nanoTime();
                 refUnit = refEnd - refStart;
                 opLength = opEnd - refEnd;
             } else {
-                opStart = System.currentTimeMillis();
+                opStart = System.nanoTime();
                 runOp();
-                opEnd = System.currentTimeMillis();
+                opEnd = System.nanoTime();
                 runRef();
-                refEnd = System.currentTimeMillis();
+                refEnd = System.nanoTime();
                 refUnit = refEnd - opEnd;
                 opLength = opEnd - opStart;
             }

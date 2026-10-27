@@ -184,8 +184,10 @@ public class SVGRenderingAccuracyTest extends AbstractRenderingAccuracyTest {
         if (validate){
             t.addTranscodingHint(PNGTranscoder.KEY_XML_PARSER_VALIDATING,
                                  Boolean.TRUE);
-            t.addTranscodingHint(PNGTranscoder.KEY_XML_PARSER_CLASSNAME,
-                                 VALIDATING_PARSER);
+            if (isClassAvailable(VALIDATING_PARSER)) {
+                t.addTranscodingHint(PNGTranscoder.KEY_XML_PARSER_CLASSNAME,
+                                     VALIDATING_PARSER);
+            }
         }
 
         if (userLanguage != null){
@@ -193,6 +195,15 @@ public class SVGRenderingAccuracyTest extends AbstractRenderingAccuracyTest {
                                  userLanguage);
         }
         return t;
+    }
+
+    private static boolean isClassAvailable(String className) {
+        try {
+            Class.forName(className);
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
     }
 
     /**

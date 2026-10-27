@@ -36,6 +36,9 @@ public class PerformanceTestValidator extends AbstractTest {
         // cycle of using a performance test.
         // ===========================================================
         SimplePerformanceTest p = new SimplePerformanceTest();
+        // The score varies by 20-25% between runs, the checks below use
+        // factors of 0.5 and 5 so a wide deviation still detects them
+        p.setAllowedScoreDeviation(0.5);
         TestReport r = p.run();
         assertTrue(!r.hasPassed());
         assertTrue(r.getErrorCode().equals("no.reference.score.set"));

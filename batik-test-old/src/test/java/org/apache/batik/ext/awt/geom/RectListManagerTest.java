@@ -177,6 +177,7 @@ public class RectListManagerTest extends AbstractTest {
             // Now write a canidate reference/variation file...
             if (can.exists())
                 can.delete();
+            can.getParentFile().mkdirs();
 
             FileOutputStream fos = new FileOutputStream(can);
             PrintStream ps = new PrintStream(fos);
