@@ -19,6 +19,8 @@
 package org.apache.batik.test.xml;
 
 import org.apache.batik.script.rhino.RhinoClassShutter;
+import org.apache.batik.svggen.SVGAccuracyTest;
+import org.apache.batik.svggen.SVGAccuracyTestValidator;
 import org.apache.batik.test.DefaultTestSuite;
 import org.apache.batik.test.Test;
 import org.apache.batik.test.TestException;
@@ -27,6 +29,7 @@ import org.apache.batik.test.TestReport;
 import org.apache.batik.test.TestReportProcessor;
 
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -37,6 +40,7 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import java.awt.Font;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -128,6 +132,12 @@ public class JUnitRunnerTestCase {
     public void test() throws ParserConfigurationException, SAXException, TestException, IOException {
         String id = getId(test);
         System.out.println("Running: " + id);
+        if (test instanceof SVGAccuracyTest
+                || test.getClass().getName().startsWith(SVGAccuracyTestValidator.class.getName())) {
+            // svggen references are generated with Arial, without it Java falls back to Dialog
+            Assume.assumeTrue("Arial font is not installed",
+                    "Arial".equals(new Font("Arial", Font.PLAIN, 12).getFamily()));
+        }
         TestReport report = test.run();
         StringBuilder error = new StringBuilder();
         if (!report.hasPassed()) {
