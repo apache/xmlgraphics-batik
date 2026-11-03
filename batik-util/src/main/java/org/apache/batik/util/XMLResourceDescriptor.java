@@ -72,8 +72,9 @@ public class XMLResourceDescriptor {
         parserProps = new Properties();
         try {
             Class cls = XMLResourceDescriptor.class;
-            InputStream is = cls.getResourceAsStream(RESOURCES);
-            parserProps.load(is);
+            try (InputStream is = cls.getResourceAsStream(RESOURCES)) {
+                parserProps.load(is);
+            }
         } catch (IOException ioe) {
             throw new MissingResourceException(ioe.getMessage(),
                                                RESOURCES, null);
