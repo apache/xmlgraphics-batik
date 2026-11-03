@@ -31,7 +31,7 @@ public class HaltingThread extends Thread {
     /**
      * Boolean indicating if this thread has ever been 'halted'.
      */
-    protected boolean beenHalted = false;
+    protected volatile boolean beenHalted = false;
 
     public HaltingThread() { }
 
