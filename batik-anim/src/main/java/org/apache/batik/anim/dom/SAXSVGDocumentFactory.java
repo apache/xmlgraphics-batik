@@ -128,7 +128,7 @@ public class SAXSVGDocumentFactory
      * Creates a SVG Document instance.
      * @param uri The document URI.
      * @param inp The document input stream.
-     * @exception IOException if an error occured while reading the document.
+     * @exception IOException if an error occurred while reading the document.
      */
     public SVGDocument createSVGDocument(String uri, InputStream inp)
         throws IOException {
