@@ -29,6 +29,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashMap;
@@ -1168,6 +1169,11 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
 
                             URL url = new URL(purl.toString());
                             final URLConnection conn = url.openConnection();
+                            if (conn instanceof HttpURLConnection) {
+                                // Do not follow redirects to locations that
+                                // were not checked by the user agent.
+                                ((HttpURLConnection) conn).setInstanceFollowRedirects(false);
+                            }
                             conn.setDoOutput(true);
                             conn.setDoInput(true);
                             conn.setUseCaches(false);
@@ -1212,6 +1218,11 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
                             w.close();
                             os.close();
 
+                            if (conn instanceof HttpURLConnection
+                                    && isRedirect(((HttpURLConnection) conn).getResponseCode())) {
+                                ((HttpURLConnection) conn).disconnect();
+                                throw new IOException("Redirect from " + url + " was not followed");
+                            }
                             InputStream is = conn.getInputStream();
                             Reader r;
                             e = UTF_8;

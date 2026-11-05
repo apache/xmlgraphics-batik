@@ -19,9 +19,18 @@
 package org.apache.batik.bridge;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.StringReader;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
+import com.sun.net.httpserver.HttpServer;
 
 import org.apache.batik.anim.dom.SAXSVGDocumentFactory;
 import org.apache.batik.script.Interpreter;
@@ -46,33 +55,36 @@ public class ScriptingEnvironmentTestCase {
     private static final String EVIL_URL = "file://etc/passwd";
     private static final String SVG = "<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10'/>";
 
-    private RunnableQueue rq;
+    private RunnableQueue runnableQueue;
 
     @Before
     public void setUp() {
-        rq = RunnableQueue.createRunnableQueue();
-        rq.resumeExecution();
+        runnableQueue = RunnableQueue.createRunnableQueue();
+        runnableQueue.resumeExecution();
     }
 
     @After
     public void tearDown() {
-        if (rq != null && rq.getThread() != null) {
-            rq.getThread().halt();
+        if (runnableQueue != null && runnableQueue.getThread() != null) {
+            runnableQueue.getThread().halt();
         }
     }
 
-    private ScriptingEnvironment createEnvironment(RecordingUserAgent ua) throws IOException {
-        SAXSVGDocumentFactory f = new SAXSVGDocumentFactory(
-                XMLResourceDescriptor.getXMLParserClassName());
-        SVGDocument doc = f.createSVGDocument(DOC_URL, new StringReader(SVG));
+    private ScriptingEnvironment createEnvironment(RecordingUserAgent userAgent) throws IOException {
+        return createEnvironment(userAgent, DOC_URL);
+    }
 
-        UpdateManager um = mock(UpdateManager.class);
-        when(um.getUpdateRunnableQueue()).thenReturn(rq);
+    private ScriptingEnvironment createEnvironment(RecordingUserAgent userAgent, String docUrl) throws IOException {
+        SAXSVGDocumentFactory factory = new SAXSVGDocumentFactory(XMLResourceDescriptor.getXMLParserClassName());
+        SVGDocument doc = factory.createSVGDocument(docUrl, new StringReader(SVG));
+
+        UpdateManager updateManager = mock(UpdateManager.class);
+        when(updateManager.getUpdateRunnableQueue()).thenReturn(runnableQueue);
 
         BridgeContext ctx = mock(BridgeContext.class);
-        when(ctx.getUserAgent()).thenReturn(ua);
+        when(ctx.getUserAgent()).thenReturn(userAgent);
         when(ctx.getDocument()).thenReturn(doc);
-        when(ctx.getUpdateManager()).thenReturn(um);
+        when(ctx.getUpdateManager()).thenReturn(updateManager);
 
         return new ScriptingEnvironment(ctx);
     }
@@ -106,11 +118,11 @@ public class ScriptingEnvironmentTestCase {
 
     @Test
     public void testGetURLAllowsSameOriginResource() throws Exception {
-        RecordingUserAgent ua = new RecordingUserAgent();
-        ScriptingEnvironment se = createEnvironment(ua);
+        RecordingUserAgent userAgent = new RecordingUserAgent();
+        ScriptingEnvironment scriptingEnvironment = createEnvironment(userAgent);
 
         Interpreter mockInterpreter = mock(Interpreter.class);
-        Window window = se.getWindow(mockInterpreter, "text/ecmascript");
+        Window window = scriptingEnvironment.getWindow(mockInterpreter, "text/ecmascript");
 
         final CountDownLatch done = new CountDownLatch(1);
         URLDoneInfo info = new URLDoneInfo();
@@ -126,7 +138,7 @@ public class ScriptingEnvironmentTestCase {
                 });
 
         assertTrue("getURL callback was never invoked", done.await(10, TimeUnit.SECONDS));
-        assertTrue("checkLoadExternalResource must be called", ua.checked);
+        assertTrue("checkLoadExternalResource must be called", userAgent.checked);
         assertTrue("same-origin/data getURL() should succeed", info.success);
         assertEquals("data: resource content should be returned to the callback", "hello", info.content);
     }
@@ -159,6 +171,67 @@ public class ScriptingEnvironmentTestCase {
         assertNull("no content should be returned for a blocked request", info.content);
     }
 
+    @Test
+    public void testPostURLDoesNotReportRedirectAsSuccess() throws Exception {
+        final AtomicInteger resultHits = new AtomicInteger();
+        HttpServer server = HttpServer.create(
+                new InetSocketAddress(InetAddress.getByName("127.0.0.1"), 0), 0);
+        // /submit/<code> answers with the given redirect status code.
+        server.createContext("/submit/", new HttpHandler() {
+            public void handle(HttpExchange exchange) throws IOException {
+                exchange.getRequestBody().close();
+                String path = exchange.getRequestURI().getPath();
+                int code = Integer.parseInt(path.substring(path.lastIndexOf('/') + 1));
+                exchange.getResponseHeaders().set("Location", "/result");
+                exchange.sendResponseHeaders(code, -1);
+                exchange.close();
+            }
+        });
+        server.createContext("/result", new HttpHandler() {
+            public void handle(HttpExchange exchange) throws IOException {
+                resultHits.incrementAndGet();
+                byte[] body = "result".getBytes(StandardCharsets.UTF_8);
+                exchange.sendResponseHeaders(200, body.length);
+                OutputStream outputStream = exchange.getResponseBody();
+                outputStream.write(body);
+                outputStream.close();
+            }
+        });
+        server.start();
+        try {
+            String base = "http://127.0.0.1:" + server.getAddress().getPort();
+            RecordingUserAgent userAgent = new RecordingUserAgent();
+            ScriptingEnvironment scriptEnv = createEnvironment(userAgent, base + "/doc.svg");
+
+            Interpreter mockInterpreter = mock(Interpreter.class);
+            Window window = scriptEnv.getWindow(mockInterpreter, "text/ecmascript");
+
+            for (int code : new int[] {300, 301, 302, 303, 305, 307, 308}) {
+                final CountDownLatch done = new CountDownLatch(1);
+                URLDoneInfo info = new URLDoneInfo();
+
+                window.postURL(base + "/submit/" + code, "body",
+                        new Window.URLResponseHandler() {
+                            public void getURLDone(boolean success, String mime, String content) {
+                                info.setSuccess(success);
+                                info.setContent(content);
+                                done.countDown();
+                            }
+                        },
+                        "text/plain", null);
+
+                assertTrue("postURL callback was never invoked for " + code,
+                        done.await(10, TimeUnit.SECONDS));
+                assertFalse("a " + code + " response must not be reported as success", info.success);
+                assertNull("no content should be returned for a " + code + " response", info.content);
+            }
+            assertTrue("checkLoadExternalResource must be called", userAgent.checked);
+            assertEquals("redirect target must not be requested", 0, resultHits.get());
+        } finally {
+            server.stop(0);
+        }
+    }
+
     private static class URLDoneInfo {
         boolean success;
         String content;
@@ -172,8 +245,8 @@ public class ScriptingEnvironmentTestCase {
     }
 
     private static class RecordingUserAgent extends UserAgentAdapter {
-        volatile boolean checked;
-        volatile ParsedURL checkedResource;
+        private boolean checked;
+        private ParsedURL checkedResource;
 
         @Override
         public void checkLoadExternalResource(ParsedURL resourceURL, ParsedURL docURL) throws SecurityException {
