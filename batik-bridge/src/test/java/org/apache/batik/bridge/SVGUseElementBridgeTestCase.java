@@ -18,7 +18,7 @@
  */
 package org.apache.batik.bridge;
 
-import java.io.File;
+import java.awt.geom.Rectangle2D;
 
 import org.apache.batik.anim.dom.SAXSVGDocumentFactory;
 import org.apache.batik.gvt.GraphicsNode;
@@ -32,22 +32,47 @@ import static org.junit.Assert.assertThrows;
 public class SVGUseElementBridgeTestCase implements ErrorConstants {
 
     private static final String CIRCULAR_SVG = "/circular.svg";
+    private static final String REPEATED_USE_SVG = "/repeatedUse.svg";
+    private static final String EXTERNAL_USE_SVG = "/externalUse.svg";
 
     @Test
-    public void testCircularUseReferenceIsDetected() throws Exception {
+    public void testCircularUseReferenceIsDetected() {
+        assertCircularReferenceDetected(false);
+    }
+
+    @Test
+    public void testCircularUseReferenceIsDetectedInDynamicContext() {
+        assertCircularReferenceDetected(true);
+    }
+
+    @Test
+    public void testRepeatedUseOfSameElementIsNotCircular() throws Exception {
+        GraphicsNode root = build(REPEATED_USE_SVG, false);
+        assertEquals("Both 'use' elements must render the referenced rect",
+                new Rectangle2D.Double(0, 0, 30, 10), root.getGeometryBounds());
+    }
+
+    @Test
+    public void testSameFragmentInExternalDocumentIsNotCircular() throws Exception {
+        GraphicsNode root = build(EXTERNAL_USE_SVG, false);
+        assertEquals("The rect from the external document must be rendered",
+                new Rectangle2D.Double(0, 0, 10, 10), root.getGeometryBounds());
+    }
+
+    private static void assertCircularReferenceDetected(boolean dynamic) {
+        BridgeException e = assertThrows(
+                "Circular references must be detected to avoid possible denial of service attacks",
+                BridgeException.class, () -> build(CIRCULAR_SVG, dynamic));
+        assertEquals("Must use the correct xlink reference", ERR_XLINK_HREF_CIRCULAR_DEPENDENCIES, e.getCode());
+    }
+
+    private static GraphicsNode build(String resource, boolean dynamic) throws Exception {
         SAXSVGDocumentFactory f = new SAXSVGDocumentFactory(XMLResourceDescriptor.getXMLParserClassName());
-        String uri = SVGUseElementBridgeTestCase.class.getResource(CIRCULAR_SVG).toString();
+        String uri = SVGUseElementBridgeTestCase.class.getResource(resource).toString();
         Document doc = f.createDocument(uri);
 
-        GVTBuilder builder = new GVTBuilder();
         BridgeContext ctx = new BridgeContext(new UserAgentAdapter());
-
-        BridgeException e = assertThrows("BridgeException reporting a circular dependency", BridgeException.class,
-                () -> {
-                    GraphicsNode gn = builder.build(ctx, doc);
-                    gn.getBounds();
-                });
-
-        assertEquals("Must use the correct xlink reference", ERR_XLINK_HREF_CIRCULAR_DEPENDENCIES, e.getCode());
+        ctx.setDynamic(dynamic);
+        return new GVTBuilder().build(ctx, doc);
     }
 }

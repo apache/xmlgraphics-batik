@@ -22,8 +22,6 @@ import java.awt.Cursor;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
-import java.util.LinkedList;
-import java.util.List;
 
 import org.apache.batik.anim.dom.AbstractSVGAnimatedLength;
 import org.apache.batik.anim.dom.AnimatedLiveAttributeValue;
@@ -54,8 +52,6 @@ import org.w3c.dom.svg.SVGUseElement;
  * @version $Id$
  */
 public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
-
-    private List<ParsedURL> parsedUrlsRefs = new LinkedList<>();
 
     /**
      * Used to handle mutation of the referenced content. This is
@@ -107,6 +103,35 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
     }
 
     /**
+     * Returns true if the specified 'use' element references the same
+     * URL as one of the 'use' elements whose shadow tree contains it.
+     *
+     * @param useElement the 'use' element to check
+     */
+    private static boolean isCircularReference(SVGOMUseElement useElement) {
+        ParsedURL purl = getReferencedURL(useElement);
+        Node node = useElement.getParentNode();
+        while (node != null) {
+            if (node instanceof SVGOMUseShadowRoot) {
+                node = ((SVGOMUseShadowRoot) node).getCSSParentNode();
+                if (purl.equals(getReferencedURL((SVGOMUseElement) node))) {
+                    return true;
+                }
+            }
+            node = node.getParentNode();
+        }
+        return false;
+    }
+
+    /**
+     * Returns the URL referenced by the specified 'use' element, resolved
+     * against the element's base URI as done by {@link URIResolver}.
+     */
+    private static ParsedURL getReferencedURL(SVGOMUseElement useElement) {
+        return new ParsedURL(useElement.getBaseURI(), useElement.getHref().getAnimVal());
+    }
+
+    /**
      * Creates a <code>GraphicsNode</code> from the input element and
      * populates the input <code>CompositeGraphicsNode</code>
      *
@@ -126,15 +151,13 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
                                       new Object[] {"xlink:href"});
         }
 
-        // Add cycle detection
-        SVGOMDocument doc = (SVGOMDocument) e.getOwnerDocument();
-        ParsedURL purl = new ParsedURL(doc.getURL(), uri);
-        if (parsedUrlsRefs.contains(purl)) {
+        // check if there is circular dependencies
+        if (isCircularReference(ue)) {
             throw new BridgeException(ctx, e,
                     ERR_XLINK_HREF_CIRCULAR_DEPENDENCIES,
                     new Object[] {uri});
         }
-        parsedUrlsRefs.add(purl);
+
         Element refElement = ctx.getReferencedElement(e, uri);
 
         SVGOMDocument document, refDocument;
@@ -308,7 +331,6 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
                  l, true);
         }
 
-        parsedUrlsRefs.remove(purl);
         return gn;
     }
 
