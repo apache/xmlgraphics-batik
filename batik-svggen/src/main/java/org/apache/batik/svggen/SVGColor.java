@@ -112,7 +112,7 @@ public class SVGColor extends AbstractSVGConverter{
         String cssColor = (String)colorMap.get(color);
         if (cssColor==null) {
             // color is not one of the predefined colors
-            StringBuffer cssColorBuffer = new StringBuffer(RGB_PREFIX);
+            StringBuilder cssColorBuffer = new StringBuilder(RGB_PREFIX);
             cssColorBuffer.append(color.getRed());
             cssColorBuffer.append(COMMA);
             cssColorBuffer.append(color.getGreen());

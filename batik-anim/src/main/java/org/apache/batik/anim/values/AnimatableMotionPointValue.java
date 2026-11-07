@@ -157,7 +157,7 @@ public class AnimatableMotionPointValue extends AnimatableValue {
      * Returns a string representation of this object.
      */
     public String toStringRep() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append(formatNumber(x));
         sb.append(',');
         sb.append(formatNumber(y));

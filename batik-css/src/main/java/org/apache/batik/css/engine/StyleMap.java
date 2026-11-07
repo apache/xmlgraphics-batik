@@ -304,7 +304,7 @@ public class StyleMap {
         // eng.getNumberOfProperties() for StyleMaps that were created
         // by that CSSEngine.
         int nSlots = values.length;
-        StringBuffer sb = new StringBuffer(nSlots * 8);
+        StringBuilder sb = new StringBuilder(nSlots * 8);
         for (int i = 0; i < nSlots; i++) {
             Value v = values[i];
             if (v == null) continue;

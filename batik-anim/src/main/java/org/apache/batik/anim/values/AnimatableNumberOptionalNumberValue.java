@@ -163,7 +163,7 @@ public class AnimatableNumberOptionalNumberValue extends AnimatableValue {
      * Returns the CSS text representation of the value.
      */
     public String getCssText() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append(formatNumber(number));
         if (hasOptionalNumber) {
             sb.append(' ');

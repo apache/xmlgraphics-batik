@@ -69,7 +69,7 @@ public abstract class CmapFormat {
     public abstract int getLast();
 
     public String toString() {
-        return new StringBuffer()
+        return new StringBuilder()
         .append("format: ")
         .append(format)
         .append(", length: ")

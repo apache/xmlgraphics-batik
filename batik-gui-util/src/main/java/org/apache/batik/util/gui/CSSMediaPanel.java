@@ -216,7 +216,7 @@ public class CSSMediaPanel extends JPanel implements ActionMap {
      * Returns the media list as a string separated by space.
      */
     public String getMediaAsString() {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         Enumeration e = listModel.elements();
         while (e.hasMoreElements()) {
             buffer.append((String)e.nextElement());

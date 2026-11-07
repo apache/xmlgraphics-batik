@@ -172,7 +172,7 @@ public class SVGTransform extends AbstractSVGConverter{
         //
         int nPresentations = presentation.size();
 
-        StringBuffer transformStackBuffer = new StringBuffer( nPresentations * 8 );
+        StringBuilder transformStackBuffer = new StringBuilder( nPresentations * 8 );
         for(i = 0; i < nPresentations; i++) {
             transformStackBuffer.append(convertTransform((TransformStackElement) presentation.get(i)));
             transformStackBuffer.append(SPACE);
@@ -186,7 +186,7 @@ public class SVGTransform extends AbstractSVGConverter{
      * Converts an AffineTransform to an SVG transform string
      */
     final String convertTransform(TransformStackElement transformElement){
-        StringBuffer transformString = new StringBuffer();
+        StringBuilder transformString = new StringBuilder();
         double[] transformParameters = transformElement.getTransformParameters();
         switch(transformElement.getType().toInt()){
         case TransformType.TRANSFORM_TRANSLATE:

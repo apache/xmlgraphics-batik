@@ -178,7 +178,7 @@ public class SVGOMDocument
      * <b>DOM</b>: Implements {@link SVGDocument#getTitle()}.
      */
     public String getTitle() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         boolean preserve = false;
 
         for (Node n = getDocumentElement().getFirstChild();

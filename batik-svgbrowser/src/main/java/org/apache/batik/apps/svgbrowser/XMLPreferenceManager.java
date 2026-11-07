@@ -128,7 +128,7 @@ public class XMLPreferenceManager extends PreferenceManager {
                     if (n.getNodeName().equals("property")) {
                         String name = ((Element)n).getAttributeNS(null, "name");
                         
-                        StringBuffer cont = new StringBuffer();
+                        StringBuilder cont = new StringBuilder();
                         for (Node c = n.getFirstChild();
                              c != null;
                              c = c.getNextSibling()) {

@@ -142,7 +142,7 @@ public class SVGLinearGradient extends AbstractSVGConverter {
             //
             // Build Paint descriptor
             //
-            StringBuffer paintAttrBuf = new StringBuffer(URL_PREFIX);
+            StringBuilder paintAttrBuf = new StringBuilder(URL_PREFIX);
             paintAttrBuf.append(SIGN_POUND);
             paintAttrBuf.append(gradientDef.getAttributeNS(null, SVG_ID_ATTRIBUTE));
             paintAttrBuf.append(URL_SUFFIX);

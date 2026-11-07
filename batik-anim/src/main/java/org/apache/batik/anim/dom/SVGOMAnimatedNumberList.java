@@ -391,7 +391,7 @@ public class SVGOMAnimatedNumberList
             if (itemList.size() == 0) {
                 return "";
             }
-            StringBuffer sb = new StringBuffer( itemList.size() * 8 );
+            StringBuilder sb = new StringBuilder( itemList.size() * 8 );
             Iterator i = itemList.iterator();
             if (i.hasNext()) {
                 sb.append(((SVGItem) i.next()).getValueAsString());

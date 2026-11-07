@@ -33,7 +33,7 @@ public class PathParserTest extends AbstractTest {
     protected String sourcePath;
     protected String destinationPath;
 
-    protected StringBuffer buffer;
+    protected StringBuilder buffer;
     protected String resultPath;
 
     /**
@@ -76,7 +76,7 @@ public class PathParserTest extends AbstractTest {
         public TestHandler() {}
 
         public void startPath() throws ParseException {
-            buffer = new StringBuffer();
+            buffer = new StringBuilder();
         }
         
         public void movetoRel(float x, float y) throws ParseException {

@@ -939,7 +939,7 @@ public class CSSOMValue
         public void listTextChanged(int idx, String text) throws DOMException {
             ListValue lv = (ListValue)getValue();
             int len = lv.getLength();
-            StringBuffer sb = new StringBuffer( len * 8 );
+            StringBuilder sb = new StringBuilder( len * 8 );
             for (int i = 0; i < idx; i++) {
                 sb.append(lv.item(i).getCssText());
                 sb.append(lv.getSeparatorChar());
@@ -960,7 +960,7 @@ public class CSSOMValue
             throws DOMException {
             ListValue lv = (ListValue)getValue();
             int len = lv.getLength();
-            StringBuffer sb = new StringBuffer( len * 8 );
+            StringBuilder sb = new StringBuilder( len * 8 );
             for (int i = 0; i < idx; i++) {
                 sb.append(lv.item(i).getCssText());
                 sb.append(lv.getSeparatorChar());
@@ -980,7 +980,7 @@ public class CSSOMValue
             throws DOMException {
             ListValue lv = (ListValue)getValue();
             int len = lv.getLength();
-            StringBuffer sb = new StringBuffer( len * 8 );
+            StringBuilder sb = new StringBuilder( len * 8 );
             for (int i = 0; i < idx; i++) {
                 sb.append(lv.item(i).getCssText());
                 sb.append(lv.getSeparatorChar());
