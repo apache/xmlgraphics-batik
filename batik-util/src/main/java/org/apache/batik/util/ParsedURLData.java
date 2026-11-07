@@ -45,6 +45,8 @@ public class ParsedURLData {
     protected static final String HTTP_ACCEPT_HEADER          = "Accept";
     protected static final String HTTP_ACCEPT_LANGUAGE_HEADER = "Accept-Language";
     protected static final String HTTP_ACCEPT_ENCODING_HEADER = "Accept-Encoding";
+    protected static final int CONNECT_TIMEOUT = 5000;
+    protected static final int READ_TIMEOUT = 20000;
 
     protected static List acceptedEncodings = new LinkedList();
     static {
@@ -543,6 +545,8 @@ loop2:          while (i < len) {
                 }
                 urlC.setRequestProperty(HTTP_ACCEPT_ENCODING_HEADER,
                                         encodingHeader);
+                urlC.setConnectTimeout(CONNECT_TIMEOUT);
+                urlC.setReadTimeout(READ_TIMEOUT);
             }
 
             contentType       = urlC.getContentType();
