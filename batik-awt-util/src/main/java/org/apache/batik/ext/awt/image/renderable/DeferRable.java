@@ -28,7 +28,7 @@ import java.util.Vector;
 
 /**
  * This class allows for the return of a proxy object quickly, while a
- * heavy weight object is constrcuted in a background Thread.  This
+ * heavy weight object is constructed in a background Thread.  This
  * proxy object will then block if any methods are called on it that
  * require talking to the source object.
  *

@@ -32,7 +32,7 @@ import org.w3c.dom.svg.SVGDocument;
  */
 public class BridgeException extends RuntimeException {
 
-    /** The element on which the error occured. */
+    /** The element on which the error occurred. */
     protected Element e;
 
     /** The error code. */
@@ -46,7 +46,7 @@ public class BridgeException extends RuntimeException {
     /** The paramters to use for the error message. */
     protected Object [] params;
 
-    /** The line number on which the error occured. */
+    /** The line number on which the error occurred. */
     protected int line;
 
     /** The graphics node that represents the current state of the GVT tree. */

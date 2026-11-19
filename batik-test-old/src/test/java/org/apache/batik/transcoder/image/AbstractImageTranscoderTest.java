@@ -76,7 +76,7 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
         "AbstractImageTranscoderTest.error.difference.image";
 
     /**
-     * Error when an exception occured while transcoding.
+     * Error when an exception occurred while transcoding.
      */
     public static final String ERROR_TRANSCODING =
         "AbstractImageTranscoderTest.error.transcoder.exception";
@@ -222,7 +222,7 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
      */
     protected class DiffImageTranscoder extends ImageTranscoder {
 
-        /** The result of the image comparaison. */
+        /** The result of the image comparison. */
         protected boolean state;
 
         /** The reference image. */
@@ -252,7 +252,7 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
          *
          * @param img the image to write
          * @param output the output (ignored)
-         * @throw TranscoderException if an error occured while storing the
+         * @throws TranscoderException if an error occurred while storing the
          * image
          */
         public void writeImage(BufferedImage img, TranscoderOutput output)

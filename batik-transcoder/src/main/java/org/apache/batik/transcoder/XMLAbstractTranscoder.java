@@ -67,7 +67,7 @@ public abstract class XMLAbstractTranscoder extends AbstractTranscoder {
      *
      * @param input the XML input to transcode
      * @param output the ouput where to transcode
-     * @exception TranscoderException if an error occured while transcoding
+     * @exception TranscoderException if an error occurred while transcoding
      */
     public void transcode(TranscoderInput input, TranscoderOutput output)
             throws TranscoderException {
@@ -168,7 +168,7 @@ public abstract class XMLAbstractTranscoder extends AbstractTranscoder {
      * @param document the document to transcode
      * @param uri the uri of the document or null if any
      * @param output the ouput where to transcode
-     * @exception TranscoderException if an error occured while transcoding
+     * @exception TranscoderException if an error occurred while transcoding
      */
     protected abstract void transcode(Document document,
                                       String uri,

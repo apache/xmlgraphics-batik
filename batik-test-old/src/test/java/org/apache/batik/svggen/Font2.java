@@ -25,11 +25,11 @@ import java.awt.RenderingHints;
 import java.awt.font.FontRenderContext;
 
 /**
- * This test validates the convertion of Java 2D text into
+ * This test validates the conversion of Java 2D text into
  * SVG Shapes, one of the options of the SVGGraphics2D constructor.
  * This is the same test as Font testing with regards to the
  * Java 2D API code, except that it validates text to shapes
- * convertion.
+ * conversion.
  *
  * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>
  * @author <a href="mailto:vhardy@eng.sun.com">Vincent Hardy</a>

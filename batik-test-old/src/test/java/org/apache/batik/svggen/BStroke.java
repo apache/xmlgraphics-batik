@@ -22,7 +22,7 @@ import java.awt.*;
 import java.awt.geom.*;
 
 /**
- * This test validates convertion of BasicStroke
+ * This test validates conversion of BasicStroke
  *
  * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>
  * @author <a href="mailto:vhardy@eng.sun.com">Vincent Hardy</a>

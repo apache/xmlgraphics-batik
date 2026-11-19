@@ -1192,7 +1192,7 @@ public class DOMViewer extends JFrame implements ActionMap {
 
         /**
          * Checks whether the DOMViewer can be used to edit the document and if
-         * true refreshes the DOMViewer after the DOM Mutation event occured.
+         * true refreshes the DOMViewer after the DOM Mutation event occurred.
          *
          * @param runnable
          *            The runnable to invoke for refresh
@@ -1298,7 +1298,7 @@ public class DOMViewer extends JFrame implements ActionMap {
         }
 
         /**
-         * Checks what type of the "DOMAttrModified" mutation event occured, and
+         * Checks what type of the "DOMAttrModified" mutation event occurred, and
          * invokes the appropriate method to register the change.
          *
          * @param mevt
@@ -1338,8 +1338,8 @@ public class DOMViewer extends JFrame implements ActionMap {
         }
 
         /**
-         * Checks if the document change that occured should be registered. If
-         * the document change has occured out of the DOMViewer, the state of
+         * Checks if the document change that occurred should be registered. If
+         * the document change has occurred out of the DOMViewer, the state of
          * the history browser should be HistoryBrowserState.IDLE. Otherwise, if
          * the DOMViewer caused the change, one of the following states is
          * active: HistoryBrowserState.EXECUTING, HistoryBrowserState.UNDOING,
@@ -1360,7 +1360,7 @@ public class DOMViewer extends JFrame implements ActionMap {
 
         /**
          * Puts the document change in the current history browser's interface
-         * compound command if the document change occured outside of the
+         * compound command if the document change occurred outside of the
          * DOMViewer.
          *
          * @param mevt

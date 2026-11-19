@@ -265,7 +265,7 @@ public class SVGAltGlyphElementBridge extends AbstractSVGBridge
             // this is ok, it is possible that the glyph at the given
             // uri is not available. 
 
-            // Display an error message if a security exception occured
+            // Display an error message if a security exception occurred
             if (ERR_URI_UNSECURE.equals(e.getCode())) {
                 ctx.getUserAgent().displayError(e);
             }

@@ -49,7 +49,7 @@ public class SVGDocumentLoaderEvent extends EventObject {
 
     /**
      * Returns the associated SVG document, or null if the loading
-     * was just started or an error occured.
+     * was just started or an error occurred.
      */
     public SVGDocument getSVGDocument() {
         return svgDocument;

@@ -5,9 +5,9 @@
    The ASF licenses this file to You under the Apache License, Version 2.0
    (the "License"); you may not use this file except in compliance with
    the License.  You may obtain a copy of the License at
-   
+
         http://www.apache.org/licenses/LICENSE-2.0
-   
+
    Unless required by applicable law or agreed to in writing, software
    distributed under the License is distributed on an "AS IS" BASIS,
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,7 +19,7 @@
 <!-- @author tkormann@ilog.fr                                               -->
 <!-- @version $Id$ -->
 <!-- ====================================================================== -->
-<testSuite id="transcoder.image.unitTesting" 
+<testSuite id="transcoder.image.unitTesting"
            name="org.apache.batik.transcoder.image.ImageTranscoder Unit Testing">
 
 <!-- ================================================================== -->
@@ -497,7 +497,7 @@
   <arg class="java.lang.String" value="Times" />
 </test>
 
-<test id="trancoder.image.hints.defaultFontFamily.TotoTimes">
+<test id="transcoder.image.hints.defaultFontFamily.TotoTimes">
   <arg class="java.lang.String" value="samples/tests/spec/styling/defaultFontFamily.svg" />
   <arg class="java.lang.String" value="test-references/samples/tests/spec/styling/defaultFontFamilyTimes.png" />
   <arg class="java.lang.String" value="toto, Times" />

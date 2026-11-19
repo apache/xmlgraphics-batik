@@ -128,7 +128,7 @@ public class SAXSVGDocumentFactory
      * Creates a SVG Document instance.
      * @param uri The document URI.
      * @param inp The document input stream.
-     * @exception IOException if an error occured while reading the document.
+     * @exception IOException if an error occurred while reading the document.
      */
     public SVGDocument createSVGDocument(String uri, InputStream inp)
         throws IOException {
@@ -139,7 +139,7 @@ public class SAXSVGDocumentFactory
      * Creates a SVG Document instance.
      * @param uri The document URI.
      * @param r The document reader.
-     * @exception IOException if an error occured while reading the document.
+     * @exception IOException if an error occurred while reading the document.
      */
     public SVGDocument createSVGDocument(String uri, Reader r)
         throws IOException {
@@ -150,7 +150,7 @@ public class SAXSVGDocumentFactory
      * Creates a SVG Document instance.
      * This method supports gzipped sources.
      * @param uri The document URI.
-     * @exception IOException if an error occured while reading the document.
+     * @exception IOException if an error occurred while reading the document.
      */
     public Document createDocument(String uri) throws IOException {
         ParsedURL purl = new ParsedURL(uri);
@@ -213,7 +213,7 @@ public class SAXSVGDocumentFactory
      * Creates a SVG Document instance.
      * @param uri The document URI.
      * @param inp The document input stream.
-     * @exception IOException if an error occured while reading the document.
+     * @exception IOException if an error occurred while reading the document.
      */
     public Document createDocument(String uri, InputStream inp)
         throws IOException {
@@ -242,7 +242,7 @@ public class SAXSVGDocumentFactory
      * Creates a SVG Document instance.
      * @param uri The document URI.
      * @param r The document reader.
-     * @exception IOException if an error occured while reading the document.
+     * @exception IOException if an error occurred while reading the document.
      */
     public Document createDocument(String uri, Reader r)
         throws IOException {
@@ -272,7 +272,7 @@ public class SAXSVGDocumentFactory
      * @param ns The namespace URI of the root element of the document.
      * @param root The name of the root element of the document.
      * @param uri The document URI.
-     * @exception IOException if an error occured while reading the document.
+     * @exception IOException if an error occurred while reading the document.
      */
     public Document createDocument(String ns, String root, String uri)
         throws IOException {
@@ -289,7 +289,7 @@ public class SAXSVGDocumentFactory
      * @param root The name of the root element of the document.
      * @param uri The document URI.
      * @param is The document input stream.
-     * @exception IOException if an error occured while reading the document.
+     * @exception IOException if an error occurred while reading the document.
      */
     public Document createDocument(String ns, String root, String uri,
                                    InputStream is) throws IOException {
@@ -306,7 +306,7 @@ public class SAXSVGDocumentFactory
      * @param root The name of the root element of the document.
      * @param uri The document URI.
      * @param r The document reader.
-     * @exception IOException if an error occured while reading the document.
+     * @exception IOException if an error occurred while reading the document.
      */
     public Document createDocument(String ns, String root, String uri,
                                    Reader r) throws IOException {

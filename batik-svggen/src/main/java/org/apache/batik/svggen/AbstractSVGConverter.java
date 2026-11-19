@@ -25,9 +25,9 @@ import java.util.Map;
 
 /**
  * Abstract class with common utility methods used by subclasses
- * for specific convertion operations. It holds a reference to a
+ * for specific conversion operations. It holds a reference to a
  * domFactory Document, which many implementations use, and provides
- * a convenience method, to offers a convertion of double values
+ * a convenience method, to offers a conversion of double values
  * to String that remove the trailing '.' character on integral
  * values.
  *

@@ -25,7 +25,7 @@ import java.awt.RenderingHints;
 import java.awt.font.FontRenderContext;
 
 /**
- * This test validates the convertion of Java 2D Fonts into
+ * This test validates the conversion of Java 2D Fonts into
  * SVG font attributes.
  *
  * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>
