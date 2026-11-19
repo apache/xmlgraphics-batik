@@ -40,7 +40,7 @@ public class SquiggleInputHandlerFilter extends FileFilter {
     }
 
     public String getDescription() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         String[] extensions = handler.getHandledExtensions();
         int n = extensions != null ? extensions.length : 0;
         for (int i=0; i<n; i++) {

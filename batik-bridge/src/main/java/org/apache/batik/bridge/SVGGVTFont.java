@@ -681,7 +681,7 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
                                             CharacterIterator ci) {
         // construct a string from the glyphCodes
         int nGlyphs = glyphCodes.length;
-        StringBuffer workBuff = new StringBuffer( nGlyphs );
+        StringBuilder workBuff = new StringBuilder( nGlyphs );
         for (int glyphCode : glyphCodes) {
             workBuff.append(glyphUnicodes[glyphCode]);
         }

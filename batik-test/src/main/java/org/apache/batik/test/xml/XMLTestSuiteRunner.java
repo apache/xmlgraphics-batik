@@ -134,9 +134,9 @@ public class XMLTestSuiteRunner implements XTRunConstants, XTSConstants{
 
         public String traceUnusedIds(){
             Object[] ui = unmatchedIds.toArray();
-            StringBuffer sb = null;
+            StringBuilder sb = null;
             if(ui != null && ui.length > 0){
-                sb = new StringBuffer();
+                sb = new StringBuilder();
                 sb.append(ui[0].toString());
                 for(int i=1; i<ui.length; i++){
                     sb.append(", ");

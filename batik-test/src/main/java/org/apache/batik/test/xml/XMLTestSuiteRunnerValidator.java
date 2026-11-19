@@ -246,7 +246,7 @@ public class XMLTestSuiteRunnerValidator extends DefaultTestSuite {
         }
 
         protected String arrayToString(Object[] array){
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             if(array != null){
                 if(array.length > 0){
                     sb.append(array[0]);
@@ -260,7 +260,7 @@ public class XMLTestSuiteRunnerValidator extends DefaultTestSuite {
         }
 
         protected String reportIdsToString(TestReport r){
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             if(r != null){
                 sb.append(r.getTest().getQualifiedId());
                 if(r instanceof TestSuiteReport){
@@ -279,7 +279,7 @@ public class XMLTestSuiteRunnerValidator extends DefaultTestSuite {
             return sb.toString();
         }
 
-        protected void appendReportIds(TestReport r, StringBuffer sb){
+        protected void appendReportIds(TestReport r, StringBuilder sb){
             if(r != null){
                 sb.append(", ");
                 sb.append(r.getTest().getQualifiedId());

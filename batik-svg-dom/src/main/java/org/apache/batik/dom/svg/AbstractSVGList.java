@@ -423,7 +423,7 @@ public abstract class AbstractSVGList {
         Iterator it = value.iterator();
         if (it.hasNext()) {
             SVGItem item = (SVGItem) it.next();
-            StringBuffer buf = new StringBuffer( value.size() * 8 );
+            StringBuilder buf = new StringBuilder( value.size() * 8 );
             buf.append(  item.getValueAsString() );
             while (it.hasNext()) {
                 item = (SVGItem) it.next();

@@ -1808,7 +1808,7 @@ public class DOMViewer extends JFrame implements ActionMap {
             }
 
             protected String createDocumentText(Document doc) {
-                StringBuffer sb = new StringBuffer();
+                StringBuilder sb = new StringBuilder();
                 sb.append("Nodes: ");
                 sb.append(nodeCount(doc));
                 return sb.toString();

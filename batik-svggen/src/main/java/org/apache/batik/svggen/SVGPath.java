@@ -83,7 +83,7 @@ public class SVGPath extends SVGGraphicObjectConverter {
      * @return the value of the corresponding d attribute
      */
      public static String toSVGPathData(Shape path, SVGGeneratorContext gc) {
-        StringBuffer d = new StringBuffer( 40 );
+        StringBuilder d = new StringBuilder( 40 );
         PathIterator pi = path.getPathIterator(null);
         float[] seg = new float[6];
         int segType = 0;
@@ -136,7 +136,7 @@ public class SVGPath extends SVGGraphicObjectConverter {
     /**
      * Appends a coordinate to the path data
      */
-    private static void appendPoint(StringBuffer d, float x, float y, SVGGeneratorContext gc) {
+    private static void appendPoint(StringBuilder d, float x, float y, SVGGeneratorContext gc) {
         d.append(gc.doubleString(x));
         d.append(SPACE);
         d.append(gc.doubleString(y));

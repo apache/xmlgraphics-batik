@@ -152,7 +152,7 @@ public class StyleSheet {
      * Returns a printable representation of this style-sheet.
      */
     public String toString(CSSEngine eng) {
-        StringBuffer sb = new StringBuffer( size * 8 );
+        StringBuilder sb = new StringBuilder( size * 8 );
         for (int i = 0; i < size; i++) {
             sb.append(rules[i].toString(eng));
         }

@@ -88,7 +88,7 @@ public class DeviceColor extends AbstractValue {
      *  A string representation of the current value.
      */
     public String getCssText() {
-        StringBuffer sb = new StringBuffer( count * 8 );
+        StringBuilder sb = new StringBuilder( count * 8 );
         if (nChannel) {
             sb.append(DEVICE_NCHANNEL_COLOR_FUNCTION);
         } else {

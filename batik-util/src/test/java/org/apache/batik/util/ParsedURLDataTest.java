@@ -110,7 +110,7 @@ public class ParsedURLDataTest extends AbstractTest {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (int i=0; i<num; i++) {
             int val = data[i] &0xFF;
             if (val < 16) {

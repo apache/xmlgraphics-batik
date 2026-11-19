@@ -119,7 +119,7 @@ public abstract class AbstractAttr extends AbstractParentNode implements Attr {
         if (n == null) {
             return first.getNodeValue();
         }
-        StringBuffer result = new StringBuffer(first.getNodeValue());
+        StringBuilder result = new StringBuilder(first.getNodeValue());
         do {
             result.append(n.getNodeValue());
             n = n.getNextSibling();

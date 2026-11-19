@@ -42,7 +42,7 @@ public abstract class TextUtilities implements CSSConstants, ErrorConstants {
      * Returns the content of the given element.
      */
     public static String getElementContent(Element e) {
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         for (Node n = e.getFirstChild();
              n != null;
              n = n.getNextSibling()) {

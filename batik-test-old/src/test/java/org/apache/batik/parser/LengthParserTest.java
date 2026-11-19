@@ -33,7 +33,7 @@ public class LengthParserTest extends AbstractTest {
     protected String sourceLength;
     protected String destinationLength;
 
-    protected StringBuffer buffer;
+    protected StringBuilder buffer;
     protected String resultLength;
 
     /**
@@ -76,7 +76,7 @@ public class LengthParserTest extends AbstractTest {
         public TestHandler() {}
 
         public void startLength() throws ParseException {
-            buffer = new StringBuffer();
+            buffer = new StringBuilder();
         }
         
         public void lengthValue(float v) throws ParseException {
