@@ -132,6 +132,12 @@ public class GlyphLayout implements TextSpanLayout {
     private static final AttributedCharacterIterator.Attribute BASELINE_SHIFT
         = GVTAttributedCharacterIterator.TextAttribute.BASELINE_SHIFT;
 
+    private static final AttributedCharacterIterator.Attribute DOMINANT_BASELINE
+        = GVTAttributedCharacterIterator.TextAttribute.DOMINANT_BASELINE;
+
+    private static final AttributedCharacterIterator.Attribute ALIGNMENT_BASELINE
+        = GVTAttributedCharacterIterator.TextAttribute.ALIGNMENT_BASELINE;
+
     private static final AttributedCharacterIterator.Attribute WRITING_MODE
         = GVTAttributedCharacterIterator.TextAttribute.WRITING_MODE;
 
@@ -153,6 +159,8 @@ public class GlyphLayout implements TextSpanLayout {
         runAtts.add(DY);
         runAtts.add(ROTATION);
         runAtts.add(BASELINE_SHIFT);
+        runAtts.add(DOMINANT_BASELINE);
+        runAtts.add(ALIGNMENT_BASELINE);
     }
 
     protected static Set szAtts = new HashSet();
@@ -1084,6 +1092,8 @@ public class GlyphLayout implements TextSpanLayout {
 
         Float x=null, y=null, dx=null, dy=null, rotation=null;
         Object baseline=null;
+        String dominantBl=null;
+        String alignmentBl=null;
 
         float shift_x_pos = 0;
         float shift_y_pos = 0;
@@ -1102,6 +1112,8 @@ public class GlyphLayout implements TextSpanLayout {
                 dy       = (Float) aci.getAttribute(DY);
                 rotation = (Float) aci.getAttribute(ROTATION);
                 baseline = aci.getAttribute(BASELINE_SHIFT);
+                dominantBl = (String) aci.getAttribute(DOMINANT_BASELINE);
+                alignmentBl = (String) aci.getAttribute(ALIGNMENT_BASELINE);
             }
 
             GVTGlyphMetrics gm = gv.getGlyphMetrics(i);
@@ -1224,6 +1236,22 @@ public class GlyphLayout implements TextSpanLayout {
                         ox = baselineAdjust;
                     } else {
                         oy = -baselineAdjust;
+                    }
+                }
+
+                // Apply dominant-baseline and alignment-baseline offsets.
+                // dominant-baseline shifts the element so the specified
+                // baseline sits at the coordinate position.
+                // alignment-baseline shifts a child element so its specified
+                // baseline aligns with the parent's dominant baseline.
+                float dbOffset = getBaselineOffset(dominantBl, metrics);
+                float abOffset = getBaselineOffset(alignmentBl, metrics);
+                float blAdjust = dbOffset - abOffset;
+                if (blAdjust != 0f) {
+                    if (vertical) {
+                        ox += blAdjust;
+                    } else {
+                        oy -= blAdjust;
                     }
                 }
 
@@ -2045,5 +2073,55 @@ public class GlyphLayout implements TextSpanLayout {
     @Override
     public void maybeReverse(boolean mirror){
         gv.maybeReverse(mirror);
+    }
+
+    /**
+     * Returns the vertical offset (positive = above the alphabetic baseline)
+     * for the named SVG baseline value, using the given font metrics.
+     * Returns 0 for null, "auto", "baseline", or unrecognized values.
+     *
+     * @param baselineValue the SVG baseline identifier string
+     * @param metrics       the line metrics for the current font
+     * @return the offset from the alphabetic baseline (positive = up)
+     */
+    protected static float getBaselineOffset(String baselineValue,
+                                             GVTLineMetrics metrics) {
+        if (baselineValue == null) {
+            return 0f;
+        }
+        float ascent  = metrics.getAscent();
+        float descent = metrics.getDescent();
+        switch (baselineValue) {
+        case "alphabetic":
+        case "auto":
+        case "baseline":
+            return 0f;
+        case "ideographic":
+            // Bottom of the ideographic em box ≈ descent below alphabetic
+            return -descent;
+        case "hanging":
+            // Hanging baseline — near the top of the em box
+            return ascent * 0.8f;
+        case "mathematical":
+            // Mathematical baseline — approximately at the math axis
+            return metrics.getStrikethroughOffset()
+                   + ascent * 0.1f;
+        case "central":
+            // Midpoint between ascent and descent
+            return (ascent - descent) / 2.0f;
+        case "middle":
+            // SVG middle ≈ x-height / 2 ≈ strikethrough offset
+            return metrics.getStrikethroughOffset();
+        case "text-before-edge":  // SVG 1.1 name
+        case "text-top":          // CSS name
+        case "before-edge":
+            return ascent;
+        case "text-after-edge":   // SVG 1.1 name
+        case "text-bottom":       // CSS name
+        case "after-edge":
+            return -descent;
+        default:
+            return 0f;
+        }
     }
 }

@@ -310,6 +310,16 @@ public interface GVTAttributedCharacterIterator extends AttributedCharacterItera
         public static final TextAttribute BASELINE_SHIFT =
                                           new TextAttribute("BASELINE_SHIFT");
 
+        /** Dominant baseline for this character span (String value from CSS).
+         */
+        public static final TextAttribute DOMINANT_BASELINE =
+                                          new TextAttribute("DOMINANT_BASELINE");
+
+        /** Alignment baseline for this character span (String value from CSS).
+         */
+        public static final TextAttribute ALIGNMENT_BASELINE =
+                                          new TextAttribute("ALIGNMENT_BASELINE");
+
         /** Directional writing mode applied to this character span.
          */
         public static final TextAttribute WRITING_MODE =
